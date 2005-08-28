@@ -143,7 +143,7 @@ begin
     SetContainerMenuToggleSize;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtkWidgetSet(InterfaceObject).RegroupMenuItem(HMENU(MenuItem),GroupIndex);
+      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(MenuItem),GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
@@ -151,13 +151,13 @@ end;
 function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
   { TODO: cleanup }
-  Result := HMENU(TGtkWidgetSet(InterfaceObject).CreateComponent(AMenuItem));
+  Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenuItem));
 end;
 
 procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AMenuItem);
+  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
 procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
@@ -240,7 +240,7 @@ end;
 function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   { TODO: cleanup }
-  Result := HMENU(TGtkWidgetSet(InterfaceObject).CreateComponent(AMenu));
+  Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenu));
 end;
 
 { TGtkWSPopupMenu }

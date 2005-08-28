@@ -165,7 +165,7 @@ var
       rectBitmap := RECT(0, 0, bmpWidth, bmpHeight);
       FillRect(hdcTransBitmap, rectBitmap, hbrTrans);
       // blit menu icon transparently
-      TWin32WidgetSet(InterfaceObject).MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, 
+      TWin32WidgetSet(WidgetSet).MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, 
         bmpHeight, hdcOrigBitmap, 0, 0, hbmpMask, 0, 0);
       // scale to correct size
       StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, SRCCOPY);
@@ -376,7 +376,7 @@ var
   MenuHandle, AppHandle: HWND;
 begin
   MenuHandle := APopupMenu.Handle;
-  AppHandle := TWin32WidgetSet(InterfaceObject).AppHandle;
+  AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWindowInfo(AppHandle)^.PopupMenu := MenuHandle;
   TrackPopupMenuEx(MenuHandle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, Nil);

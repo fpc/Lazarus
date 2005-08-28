@@ -249,7 +249,7 @@ end;
 
 procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
-  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AWinControl);
+  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AWinControl);
 end;
 
 function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -300,12 +300,12 @@ end;
 procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods use ShowHide also, can't move code
-  TGtkWidgetSet(InterfaceObject).ShowHide(AWinControl);
+  TGtkWidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
 procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin                
-  TGtkWidgetSet(InterfaceObject).SetResizeRequest(PGtkWidget(AWinControl.Handle));
+  TGtkWidgetSet(WidgetSet).SetResizeRequest(PGtkWidget(AWinControl.Handle));
 end;
 
 procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
@@ -520,7 +520,7 @@ begin
       if TStaticText(AWinControl).ShowAccelChar then begin
         If {TStaticText(AWinControl).WordWrap and }(TStaticText(AWinControl).Caption<>'') then begin
           DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, True);
+          aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, True);
           DeleteDC(DC);
         end
         else
@@ -535,7 +535,7 @@ begin
 {
         If TStaticText(AWinControl).WordWrap then begin
           DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, False);
+          aLabel := TGtkWidgetSet(WidgetSet).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, False);
           gtk_label_set_text(PGtkLabel(p), aLabel);
           StrDispose(aLabel);
           DeleteDC(DC);
@@ -627,7 +627,7 @@ end;
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
 begin
   if (GtkWindow=nil) then exit;
-  TGtkWidgetSet(InterfaceObject).UnsetResizeRequest(PgtkWidget(GtkWindow));
+  TGtkWidgetSet(WidgetSet).UnsetResizeRequest(PgtkWidget(GtkWindow));
 
   if ModalWindows=nil then ModalWindows:=TFPList.Create;
   ModalWindows.Add(GtkWindow);
@@ -641,7 +641,7 @@ begin
   {$IFDEF VerboseTransient}
   DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
   {$ENDIF}
-  TGtkWidgetSet(InterfaceObject).UpdateTransientWindows;
+  TGtkWidgetSet(WidgetSet).UpdateTransientWindows;
 end;
 
 { TGtkWSBaseScrollingWinControl }

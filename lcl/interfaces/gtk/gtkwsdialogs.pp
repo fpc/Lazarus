@@ -164,13 +164,13 @@ end;
 function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 begin
   { TODO: cleanup }
-  Result := TGtkWidgetSet(InterfaceObject).CreateComponent(ACommonDialog);
+  Result := TGtkWidgetSet(WidgetSet).CreateComponent(ACommonDialog);
 end;
 
 procedure TGtkWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(ACommonDialog);
+  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
 end;
 
 initialization

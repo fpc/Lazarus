@@ -96,7 +96,7 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetPixel(X, Y: Integer): TColor;
 begin
-  Result := InterfaceObject.DCGetPixel(Self.Handle, X, Y);
+  Result := WidgetSet.DCGetPixel(Self.Handle, X, Y);
 end;
 
 {-----------------------------------------------}
@@ -104,7 +104,7 @@ end;
 {-----------------------------------------------}
 procedure TCanvas.SetPixel(X, Y: Integer; Value: TColor);
 begin
-  InterfaceObject.DCSetPixel(Self.Handle, X, Y, Value);
+  WidgetSet.DCSetPixel(Self.Handle, X, Y, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ end;
 procedure TCanvas.RealizeAutoRedraw;
 begin
   if FAutoRedraw and HandleAllocated then
-    InterfaceObject.DCRedraw(Handle);
+    WidgetSet.DCRedraw(Handle);
 end;
 
 {------------------------------------------------------------------------------

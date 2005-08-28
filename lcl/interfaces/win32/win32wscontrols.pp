@@ -151,7 +151,7 @@ begin
     begin
       Parent := AWinControl.Parent.Handle;
     end else
-      Parent := TWin32WidgetSet(InterfaceObject).AppHandle;
+      Parent := TWin32WidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
     WindowTitle := nil;
@@ -440,7 +440,7 @@ end;
 procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods also use ShowHide, can't move code
-  TWin32WidgetSet(InterfaceObject).ShowHide(AWinControl);
+  TWin32WidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
 

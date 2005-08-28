@@ -207,7 +207,7 @@ var
       SrcDC := CreateCompatibleDC(hdcNewBitmap);
       OldSrcBmp := SelectObject(SrcDC, BitmapHandle);
       FillRect(MaskDC, BitmapRect, BitBtn.Brush.Handle);
-      TWin32WidgetSet(InterfaceObject).MaskBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC, 
+      TWin32WidgetSet(WidgetSet).MaskBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC, 
         0, 0, BitBtn.Glyph.MaskHandle, 0, 0);
     end else begin
       MaskBmp := BitmapHandle;
@@ -224,7 +224,7 @@ var
     end else begin
       TextFlags := TextFlags or DSS_DISABLED;
       // when not themed, windows wants a white background picture for disabled button image
-      themesActive := TWin32WidgetSet(InterfaceObject).ThemesActive;
+      themesActive := TWin32WidgetSet(WidgetSet).ThemesActive;
       if not themesActive then
         FillRect(hdcNewBitmap, BitmapRect, GetStockObject(WHITE_BRUSH));
       if BitmapHandle <> 0 then 
@@ -366,7 +366,7 @@ begin
   BitmapRect.right := newWidth;
   BitmapRect.bottom := newHeight;
   // destroy previous bitmap, set new bitmap
-  if TWin32WidgetSet(InterfaceObject).ThemesActive then
+  if TWin32WidgetSet(WidgetSet).ThemesActive then
   begin
     // winxp draws BM_SETIMAGE bitmap with old style button!
     // need to use BCM_SETIMAGELIST

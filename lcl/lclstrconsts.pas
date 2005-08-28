@@ -184,7 +184,7 @@ ResourceString
   rsIsAlreadyAssociatedWith = '%s is already associated with %s';
   rsCanvasDoesNotAllowDrawing = 'Canvas does not allow drawing';
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
-  rsNoInterfaceObject = 'No interface object. '
+  rsNoWidgetSet = 'No widgetset object. '
     +'Plz check if the unit "interfaces" was added to the programs uses clause.';
   rsCanNotFocus = 'Can not focus';
   rsListIndexExceedsBounds = 'List index exceeds bounds (%d)';

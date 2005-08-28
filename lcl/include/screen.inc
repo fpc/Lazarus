@@ -391,7 +391,7 @@ end;
 
 Function TScreen.GetHintFont: TFont;
 begin
-  if not InterfaceObject.InitHintFont(FHintFont) then
+  if not WidgetSet.InitHintFont(FHintFont) then
   begin
 //    FHintFont.Name := 'courier';
     FHintFont.Name:=DefFontData.Name;

@@ -49,13 +49,13 @@ Function TMouse.GetCursorPos : TPoint;
 var
   p : TPoint;
 Begin
-  InterfaceObject.GetCursorPos(p);
+  WidgetSet.GetCursorPos(p);
   Result := P;
 end;
 
 procedure TMouse.SetCursorPos(AValue : TPoint);
 Begin
-  InterfaceObject.SetCursorPos(AValue.X, AValue.Y);
+  WidgetSet.SetCursorPos(AValue.X, AValue.Y);
 end;
 
 function TMouse.GetIsDragging: Boolean;

@@ -1965,7 +1965,8 @@ end;
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
 Begin
   AComponent.SetDesigning(Value);
-  if Value then InterfaceObject.SetDesigning(AComponent);
+  //TODO: Remove widgetset from this code
+  if Value then WidgetSet.SetDesigning(AComponent);
 end;
 
 {------------------------------------------------------------------------------}

@@ -98,8 +98,8 @@ type
     property Cancel: Boolean read FCancel write SetCancel default false;
     property TabStop default true;
   end;
-  
-  
+
+
   { TButton }
 
   TButton = class(TCustomButton)
@@ -165,8 +165,8 @@ type
 
 
   { TCustomBitBtn }
-                 
-  // when adding items here, also update TBitBtn.GetCaptionOfKind               
+
+  // when adding items here, also update TBitBtn.GetCaptionOfKind
   TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo,
                  bkClose, bkAbort, bkRetry, bkIgnore, bkAll,
                  bkNoToAll, bkYesToAll);
@@ -208,10 +208,10 @@ type
     property Margin: integer read FMargin write SetMargin default -1;
     property Spacing: Integer read FSpacing write SetSpacing default 3;
   end;
-  
-  
+
+
   { TBitBtn }
-  
+
   TBitBtn = class(TCustomBitBtn)
   published
     property Action;
@@ -331,10 +331,10 @@ type
     property Spacing: integer read FSpacing write SetSpacing default 4;
     property Transparent: Boolean read FTransparent write SetTransparent default true;
   end;
-  
-  
+
+
   { TSpeedButton }
-  
+
   TSpeedButton = class(TCustomSpeedButton)
   published
     property Action;
@@ -373,7 +373,7 @@ type
 
 procedure Register;
 
-implementation  
+implementation
 
 uses
   WSButtons;
@@ -401,8 +401,3 @@ end;
 {$I speedbutton.inc}
 
 end.
-
-
-
-
-

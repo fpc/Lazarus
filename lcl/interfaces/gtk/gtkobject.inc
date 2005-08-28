@@ -166,7 +166,7 @@ begin
   {$IFDEF Use_KeyStateList}
   FKeyStateList_ := TFPList.Create;
   {$ENDIF}
-  
+
   DestroyConnectedWidgetCB:=@DestroyConnectedWidget;
 
   FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
@@ -205,7 +205,7 @@ begin
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
-  
+
   GTKWidgetSet := Self;
 end;
 
@@ -324,7 +324,7 @@ var
 begin
   ReAllocMem(FExtUTF8OutCache,0);
   FExtUTF8OutCacheSize:=0;
-  
+
   FreeAllStyles;
   FreeGDKCursors;
   FreeStockItems;
@@ -351,7 +351,7 @@ begin
     DebugLn(ProcName, Format(rsWarningUnremovedPaintMessages,
       [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
   end;
-  
+
   {$ifndef TraceGdiCalls}
   if (FDeviceContexts.Count > 0)
   then begin
@@ -370,7 +370,7 @@ begin
     DebugLn();
   end;
   {$endif}
-  
+
   if (FGDIObjects.Count > 0)
   then begin
     DebugLn(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
@@ -424,7 +424,7 @@ begin
       FTimerData.Delete (n);
     end;
   end;
-  
+
   {$ifdef TraceGdiCalls}
   if (FGDIObjects.Count > 0)
   then begin
@@ -481,7 +481,7 @@ begin
   g_log_remove_handler(nil, FLogHandlerID);
 
   GTKWidgetSet := nil;
-  
+
   inherited Destroy;
 end;
 
@@ -948,7 +948,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
       {$ENDIF}
       exit;
     end;
-  
+
     LCLControl:=TWinControl(GetLCLObject(MainWidget));
     if LCLControl=nil then exit;
     {$IFDEF VerboseSizeMsg}
@@ -1150,7 +1150,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
 
 begin
   SendCachedGtkResizeNotifications;
-end;    
+end;
 
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.SetLabelCaption
@@ -1163,7 +1163,7 @@ end;
 
   Sets the Caption of a gtklabel. If a accelerator is present, it is connected.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar); 
+procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar);
 var
   Caption, Pattern: String;
   AccelKey: Char;
@@ -1172,17 +1172,17 @@ begin
   LabelFromAmpersands(Caption, Pattern, AccelKey);
 
   gtk_label_set_text(ALabel, PChar(Caption));
-  
+
   {$ifdef gtk1}
   gtk_label_set_pattern(ALabel, PChar(Pattern));
   {$endif gtk1}
-  
+
   if AComponent = nil then Exit;
   if ASignalWidget = nil then Exit;
   if ASignal = '' then Exit;
-  
+
   // update the Accelerator
-  if AccelKey = #0 
+  if AccelKey = #0
   then Accelerate(AComponent, ASignalWidget, GDK_VOIDSYMBOL, 0, ASignal)
   else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
 end;
@@ -1441,13 +1441,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.HandleEvents
+  Method: TGtkWidgetSet.AppProcessMessages
   Params:  None
   Returns: Nothing
 
   Handle all pending messages of the GTK engine and of this interface
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.HandleEvents;
+procedure TGtkWidgetSet.AppProcessMessages;
 
   function PendingGtkMessagesExists: boolean;
   begin
@@ -1504,13 +1504,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.WaitMessage
+  Method: TGtkWidgetSet.AppWaitMessage
   Params:  None
   Returns: Nothing
 
   Passes execution control to the GTK engine till something happens
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.WaitMessage;
+procedure TGtkWidgetSet.AppWaitMessage;
 begin
   WaitingForMessages:=true;
   gtk_main_iteration_do(True);
@@ -2263,7 +2263,7 @@ begin
   17..32: Desc^.BitsPerPixel:=32;
   else    Desc^.BitsPerPixel:=64;
   end;
-  
+
   // LineEnd
   Image := gdk_image_new(GDK_IMAGE_NORMAL, Visual, 1, 1);
   if Image = nil
@@ -2421,7 +2421,7 @@ begin
   finally
     gdk_image_destroy(AnImage);
   end;
-  
+
   if MaskBitmap<>nil then begin
     // get mask
     {$IFDEF VerboseRawImage}
@@ -2468,7 +2468,7 @@ begin
     DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),' theType=',dbgs(AnImage^.thetype),' depth=',dbgs(AnImage^.depth),' BitsPerpixel=',dbgs(AnImage^.bpp));
     DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
-  
+
     // See also GetWindowRawImageDescription
     RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// gdk_image_get uses rileDWordBoundary
     {case AnImage^.Depth of
@@ -2577,7 +2577,7 @@ var
     Depth: Integer;
   begin
     {$IFDEF VerboseStretchCopyArea}
-    
+
     DebugLn('ScaleAndROP START DestGC=',DbgS(DestGC),
       ' SrcPixmap=',DbgS(SrcPixmap),
       ' SrcMaskPixmap=',DbgS(SrcMaskPixmap));
@@ -2679,7 +2679,7 @@ var
       end;
     end;
   end;
-  
+
   function SrcDevBitmapToDrawable: Boolean;
   var
     SrcPixmap, MaskPixmap: PGdkPixmap;
@@ -2885,7 +2885,7 @@ var
     else
       Result := Unsupported;
   end;
-  
+
   procedure RaiseSrcDrawableNil;
   begin
     RaiseException('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]);
@@ -3062,7 +3062,7 @@ begin
     else
       Result := DrawableToDrawable;
   end;
-  
+
   if TempPixmap<>nil then
     gdk_pixmap_unref(TempPixmap);
   if TempMaskPixmap<>nil then
@@ -3213,7 +3213,7 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
     ConnectSenderSignal(AnObject, 'focus-out-event', @gtkKillFocusCB);
     ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtkKillFocusCBAfter);
   end;
-  
+
   procedure ConnectKeyPressReleaseEvents(const AnObject: PGTKObject);
   begin
     //debugln('ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
@@ -3292,7 +3292,7 @@ begin
        if ALCLObject is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
                    PGtkCombo(gObject)^.entry), 'changed', @gtkchangedCB)
-       else 
+       else
        if ALCLObject is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else if ALCLObject is TCustomCheckbox then
@@ -3679,7 +3679,7 @@ begin
           'hide', @gtkComboBoxHideAfter);
       end;
     end;
-    
+
     LM_SelChange:
     begin
       if ALCLObject is TCustomListBox then begin
@@ -3911,7 +3911,7 @@ begin
       Begin
         SetCallback(LM_CLICKED, AGTKObject, ALCLObject);
       End;
-      
+
       csRadioButton, csCheckBox, csToggleBox:
       begin
         SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
@@ -3929,7 +3929,7 @@ begin
         SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
         SetCallback(LM_COMMAND, AGTKObject, ALCLObject);
       End;
-      
+
       csListBox:
       Begin
         SetCallback(LM_SELCHANGE, AGTKObject, ALCLObject);
@@ -4487,7 +4487,7 @@ begin
   // set initial filename
   if OpenDialog.Filename<>'' then
     gtk_file_selection_set_filename(FileSelWidget,PChar(OpenDialog.Filename));
-    
+
   if InitialFilter <> 'none' then
     PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
 end;
@@ -4580,7 +4580,7 @@ begin
                                         GTK_FONT_FILTER_BASE, FontType,
                                         nil, nil, nil, nil, SpacingFilter, nil);
   {$ENDIF}
-           
+
   InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
@@ -4653,7 +4653,7 @@ begin
 
   Set_RC_Name(ALCLObject, AGTKObject);
 
-  if ASetupProps then 
+  if ASetupProps then
     { TODO: call this in CreateHandle when converted: SetProperties(ALCLObject) };
 
   if AGTKObject <> nil then begin
@@ -4755,7 +4755,7 @@ begin
   if ACustomForm.Parent=nil then begin
     // create a floating form
     Result := gtk_window_new(WindowType);
-    
+
     gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
       FormResizableMap[ABorderStyle], 0);
     PCaption:=PChar(ACustomForm.Caption);
@@ -4968,7 +4968,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-  
+
   Creates a gtk_toolbar and puts a fixed widget as client area.
   Since we are not using the gtk tool buttons, we can put any LCL control as
   child and get all LCL TControl abilities.
@@ -5582,7 +5582,7 @@ begin
         gdk_window_set_functions(AWindow, func);
       end;
       ShareWindowAccelGroups(SenderWidget);
-      
+
       // capturing is always gtkwindow dependent. On showing a new window
       // the gtk will put a new widget on the grab stack.
       // -> release our capture
@@ -5722,7 +5722,7 @@ var
   Child: PGtkWidget;
 begin
   Assert(False, 'Trace:In AutoRedraw in GTKObject');
-  
+
   Child := PgtkWidget(CanvasHandle);
   Widget := GetFixedWidget(Child);
   pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
@@ -7016,4 +7016,3 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
-

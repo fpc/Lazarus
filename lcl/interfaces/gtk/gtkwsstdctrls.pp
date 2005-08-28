@@ -451,7 +451,7 @@ end;
 function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
   ): integer;
 begin
-  Result:=TGtkWidgetSet(InterfaceObject).GetListBoxIndexAtY(ACustomListBox, 0);
+  Result:=TGtkWidgetSet(WidgetSet).GetListBoxIndexAtY(ACustomListBox, 0);
 end;
 
 procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
@@ -540,7 +540,7 @@ procedure TGtkWSCustomListBox.SetSelectionMode(
 begin
   //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
   //  debugln('TGtkWSCustomListBox.SetSelectionMode ',DbgSName(ACustomListBox));
-  TGtkWidgetSet(InterfaceObject).SetSelectionMode(ACustomListBox,
+  TGtkWidgetSet(WidgetSet).SetSelectionMode(ACustomListBox,
     PGtkWidget(ACustomListBox.Handle), AMultiSelect, AExtendedSelect);
 end;
 

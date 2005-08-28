@@ -26,7 +26,7 @@
 
 procedure PrepareSynchronize;
 begin
-  TWin32WidgetSet(InterfaceObject).HandleWakeMainThread(nil);
+  TWin32WidgetSet(WidgetSet).HandleWakeMainThread(nil);
 end;
 
 { addition XP messages }
@@ -234,7 +234,7 @@ Var
     
     // create a paint message
     GetClassName(Window, winClassName, 20);
-    isNotebook := TWin32WidgetSet(InterfaceObject).ThemesActive and 
+    isNotebook := TWin32WidgetSet(WidgetSet).ThemesActive and 
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     parentPaint := WindowInfo^.isTabPage or (WindowInfo^.hasTabParent and (WParam <> 0));
 
@@ -551,11 +551,11 @@ Begin
     End;
     WM_ACTIVATEAPP:
     Begin
-      if Window = TWin32WidgetSet(InterfaceObject).AppHandle then
+      if Window = TWin32WidgetSet(WidgetSet).AppHandle then
       begin
         if WParam <> 0 then
         begin
-          Windows.SetWindowPos(TWin32WidgetSet(InterfaceObject).AppHandle, HWND_TOP, 
+          Windows.SetWindowPos(TWin32WidgetSet(WidgetSet).AppHandle, HWND_TOP, 
             0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
         // activate/deactivate main window
@@ -605,7 +605,7 @@ Begin
     End;
     WM_CLOSE:
     Begin
-      if (Window = TWin32WidgetSet(InterfaceObject).AppHandle) and 
+      if (Window = TWin32WidgetSet(WidgetSet).AppHandle) and 
         (Application.MainForm <> nil) then
       begin
         Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
@@ -805,7 +805,7 @@ Begin
     Begin
       If WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
-      If Window=TWin32WidgetSet(InterfaceObject).FAppHandle then
+      If Window=TWin32WidgetSet(WidgetSet).FAppHandle then
         if WParam=0 then
           DisableApplicationWindows(Window)
         else
@@ -816,7 +816,7 @@ Begin
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be 
       // recreated when the enabled state is changed
-      if not TWin32WidgetSet(InterfaceObject).ThemesActive
+      if not TWin32WidgetSet(WidgetSet).ThemesActive
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     End;
@@ -1038,7 +1038,7 @@ Begin
         // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
         P.X := X;
         P.Y := Y;
-        TargetWindow := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
+        TargetWindow := TWin32WidgetSet(WidgetSet).WindowFromPoint(P);
         if TargetWindow = HWND(nil) then
           exit;
 
@@ -1198,7 +1198,7 @@ Begin
           Flags := SW_HIDE
         else
           Flags := SW_SHOW;
-        Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle, Flags);
+        Windows.ShowWindow(TWin32WidgetSet(WidgetSet).FAppHandle, Flags);
       end;
     End;
     WM_SYSCHAR:
@@ -1289,7 +1289,7 @@ Begin
     WM_THEMECHANGED:
     begin
       // winxp theme changed, recheck whether themes are enabled
-      TWin32WidgetSet(InterfaceObject).UpdateThemesActive;
+      TWin32WidgetSet(WidgetSet).UpdateThemesActive;
     end;
   End;
 

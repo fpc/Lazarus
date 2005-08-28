@@ -256,20 +256,22 @@ type
     // control functions for messages, callbacks
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
-    constructor Create;
-    destructor Destroy; override;
-    procedure HandleEvents; override;
-    procedure WaitMessage; override;
-    procedure SendCachedLCLMessages; override;
-    procedure AppTerminate; override;
+    // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
+    procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SendCachedLCLMessages; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
-    
+
     // helper routines needed by interface methods
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
@@ -280,7 +282,7 @@ type
                                MultiSelect, ExtendedSelect: boolean); virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
-  
+
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -337,7 +339,7 @@ uses
   Buttons, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
-  
+
 const
   GtkNil = nil;
 
@@ -437,4 +439,3 @@ finalization
   InternalFinal;
 
 end.
-

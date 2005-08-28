@@ -93,14 +93,14 @@ const
 
   { month picker, date picker, time picker, updown }
   ICC_DATE_CLASSES       = $00000100;
-  
+
 Type
   PInitCommonControlsEx = ^TInitCommonControlsEx;
   TInitCommonControlsEx = packed record
     dwSize: dword;
     dwICC: dword;
   end;
-  
+
   { Win32 interface-object class }
   TWin32WidgetSet = Class(TWidgetSet)
   Private
@@ -140,7 +140,7 @@ Type
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
-    
+
   Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -159,8 +159,8 @@ Type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
-    Procedure HandleEvents; Override;
-    Procedure WaitMessage; Override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
     Procedure AppTerminate; Override;
     procedure ShowHide(Sender: TObject);
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
@@ -171,7 +171,7 @@ Type
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
-    
+
     // thread synchronize support
     procedure HandleWakeMainThread(Sender: TObject);
 
@@ -201,7 +201,7 @@ function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
-    
+
 Implementation
 
 Uses
@@ -270,9 +270,8 @@ Initialization
   MouseDownWindow := 0;
 
 
-Finalization
+finalization
 
   Assert(False, 'Trace:win32int.pp - Finalization');
 
-End.
-
+end.

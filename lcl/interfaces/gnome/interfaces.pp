@@ -36,9 +36,9 @@ uses
   GnomeInt, Forms;
 
 initialization
-  InterfaceObject := TGnomeWidgetSet.Create;
+  WidgetSet := TGnomeWidgetSet.Create;
 
 finalization
-  FreeInterfaceObject;
+  FreeWidgetSet;
 
 end.

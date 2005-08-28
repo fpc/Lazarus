@@ -133,7 +133,7 @@ begin
       Result := TApplication(Owner).Handle
 }
     else
-      Result := TWin32WidgetSet(InterfaceObject).AppHandle;
+      Result := TWin32WidgetSet(WidgetSet).AppHandle;
   end;
 end;
 

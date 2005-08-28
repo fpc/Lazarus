@@ -37,6 +37,7 @@ uses
   GraphType, GraphMath;
 
 type
+  TApplicationMainLoop = procedure of object;
 
   { TWidgetSet }
 
@@ -46,9 +47,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure HandleEvents; virtual; abstract;
-    procedure WaitMessage; virtual; abstract;
     procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
+    procedure AppRun(const ALoop: TApplicationMainLoop); virtual;
+    procedure AppWaitMessage; virtual; abstract;
+    procedure AppProcessMessages; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
@@ -95,7 +97,7 @@ var
   PromptDialogFunction: TPromptDialogFunction;
 
 var
-  InterfaceObject: TWidgetSet=nil;
+  WidgetSet: TWidgetSet=nil;
 
 implementation
 
@@ -112,4 +114,3 @@ finalization
   InputDialogFunction:=nil;
 
 end.
-

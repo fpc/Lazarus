@@ -37,5 +37,8 @@ procedure TWidgetSet.PassCmdLineOptions;
 begin
 end;
 
-
+procedure TWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+begin
+  if Assigned(ALoop) then ALoop;
+end;
 

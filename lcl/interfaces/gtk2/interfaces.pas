@@ -36,9 +36,9 @@ uses
   Gtk2Int, Forms;
 
 initialization
-  InterfaceObject := TGtk2WidgetSet.Create;
+  WidgetSet := TGtk2WidgetSet.Create;
 
 finalization
-  FreeInterfaceObject;
+  FreeWidgetSet;
 
 end.

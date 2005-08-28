@@ -182,14 +182,14 @@ begin
   AllocWindowInfo(FAppHandle);
 
   // set nice main icon
-  SendMessage(FAppHandle, WM_SETICON, ICON_BIG, 
+  SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
     Windows.LoadIcon(MainInstance, 'MAINICON'));
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
-  
+
   // initialize ScreenInfo
   Handle := GetDesktopWindow;
   DC := Windows.GetDC(Handle);
@@ -197,10 +197,10 @@ begin
   ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(Handle, DC);
-  
+
   // Thread.Synchronize support
   WakeMainThread := @HandleWakeMainThread;
-  
+
   Assert(False, 'Trace:Win32Object.Init - Exit');
 end;
 
@@ -290,13 +290,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.HandleEvents
+  Method: TWin32WidgetSet.AppProcessMessages
   Params:  None
   Returns: Nothing
 
   Handle all pending messages
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.HandleEvents;
+procedure TWin32WidgetSet.AppProcessMessages;
 var
   AMessage: TMsg;
   AccelTable: HACCEL;
@@ -315,13 +315,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.WaitMessage
+  Method: TWin32WidgetSet.AppWaitMessage
   Params:  None
   Returns: Nothing
 
   Passes execution control to Windows
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.WaitMessage;
+procedure TWin32WidgetSet.AppWaitMessage;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
   Windows.WaitMessage;
@@ -523,7 +523,7 @@ begin
   DebugLn('WARNING: TWin32WidgetSet.CreateComponent is deprecated, should not be reachable!!');
   Result := 0;
 end;
- 
+
  {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AssignSelf
   Params: Window - The window to assign
@@ -631,5 +631,3 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
-
-

@@ -543,17 +543,17 @@ begin
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
     Case (Message.SizeType and not SIZE_SourceIsInterface) of
-      SIZENORMAL : 
+      SIZENORMAL :
         if Showing then
           FWindowState := wsNormal;
-      SIZEICONIC : 
+      SIZEICONIC :
       begin
         if Showing then
           FWindowState := wsMinimized;
         if Application.MainForm = Self then
           Application.Minimize;
       end;
-      SIZEFULLSCREEN: 
+      SIZEFULLSCREEN:
         if Showing then
           FWindowState := wsMaximized;
     end;
@@ -835,7 +835,7 @@ begin
         if (Msg = LM_SetFocus) and not (csDesigning in ComponentState)
         then begin
           FocusHandle := 0;
-          
+
           if FormStyle = fsMDIFORM
           then begin
             // ToDo
@@ -849,7 +849,7 @@ begin
               // get or create handle of FActiveControl
               FocusHandle := FActiveControl.Handle;
           end;
-          
+
           TheMessage.Result:=0;
           if FocusHandle <> 0
           then begin
@@ -1077,7 +1077,7 @@ begin
     if HandleAllocated then
     begin
       FMenu.HandleNeeded;
-      InterfaceObject.AttachMenuToWindow(FMenu);
+      WidgetSet.AttachMenuToWindow(FMenu);
     end;
   end;
 end;
@@ -1461,7 +1461,7 @@ end;
 
 {------------------------------------------------------------------------------
   TCustomForm Method SetFocusedControl
-  
+
   Switch focus.
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
@@ -1469,9 +1469,9 @@ var
   ParentForm: TCustomForm;
 begin
   Result := False;
-  
+
   if (csDestroying in Control.ComponentState) then exit;
-  
+
   if (Parent<>nil) then begin
     ParentForm:=GetParentForm(Self);
     if ParentForm<>nil then
@@ -1508,12 +1508,12 @@ begin
     Control.ControlState := Control.ControlState + [csFocusing];
     try
       // change focus
-      
+
     finally
       Control.ControlState := Control.ControlState - [csFocusing];
     end;
   end;
-  
+
   {
   Inc(FocusCount);
 
@@ -1586,7 +1586,7 @@ begin
   Result := false;
   if Assigned(FOnShortcut) then
     FOnShortcut(Message, Result);
-  if Result then 
+  if Result then
     exit;
   if Assigned(FMenu) then
   begin
@@ -1618,7 +1618,7 @@ begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
-  
+
   if Parent=nil then begin
     TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
     DC:=GetDC(Handle);
@@ -1635,7 +1635,7 @@ begin
   if FMenu <> nil then
   begin
     FMenu.HandleNeeded;
-    InterfaceObject.AttachMenuToWindow(FMenu);
+    WidgetSet.AttachMenuToWindow(FMenu);
   end;
 
   // activate focus if visible
@@ -1684,7 +1684,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCustomForm.BeginFormUpdate;
-  
+
   Called after all childs handles are created.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.ChildHandlesCreated;
@@ -1754,7 +1754,7 @@ begin
       if Y < 0 then Y := 0;
       SetBounds(X, Y, Width, Height);
     end;
-    
+
     if (fsFirstShow in FFormState) then begin
       Exclude(FFormState,fsFirstShow);
       DoFirstShow;
@@ -1836,7 +1836,7 @@ begin
           which will wait for new messages. Under Win32 there is always a next
           message, so it works there. The LCL is OS independent, and so it uses
           a better way: }
-        InterfaceObject.HandleEvents; // process all events
+        WidgetSet.AppProcessMessages; // process all events
         if Application.Terminated then
           ModalResult := mrCancel;
         if ModalResult <> 0 then begin
@@ -1962,7 +1962,3 @@ begin
     TControl(Owner).RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
-
-
-// included by forms.pp
-

@@ -4,7 +4,7 @@
   All Winapi related stuff goes here.
   This file is used by LCLIntf.pas
   If a procedure is platform dependent then it should call:
-    InterfaceObject.MyDependentProc
+    WidgetSet.MyDependentProc
 
   If a procedure insn't platform dependent, it is no part of InterfaseBase has
   to be implementerd here
@@ -29,59 +29,59 @@
   These functions redirect to the platform specific interface object.
 
   Note:
-    the section for not referring InterfaceObject is at the end
+    the section for not referring WidgetSet is at the end
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
 function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean;
 begin
-  Result := InterfaceObject.Arc(DC,Left,Top,width,height,angle1,angle2);
+  Result := WidgetSet.Arc(DC,Left,Top,width,height,angle1,angle2);
 end;
 
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
 begin
-  Result := InterfaceObject.AngleChord(DC,x,y,width,height,angle1,angle2);
+  Result := WidgetSet.AngleChord(DC,x,y,width,height,angle1,angle2);
 end;
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 begin
-  Result := InterfaceObject.BeginPaint(Handle,PS);
+  Result := WidgetSet.BeginPaint(Handle,PS);
 end;
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
-  Result := InterfaceObject.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
+  Result := WidgetSet.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
 
 Function BringWindowToTop(hWnd : HWND): Boolean;
 begin
-  Result := InterfaceObject.BringWindowToTop(hWnd);
+  Result := WidgetSet.BringWindowToTop(hWnd);
 end;
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; WParam: WParam; LParam: LParam) : Integer;
 begin
-  Result := InterfaceObject.CallNextHookEx(hhk, ncode, WParam, LParam);
+  Result := WidgetSet.CallNextHookEx(hhk, ncode, WParam, LParam);
 end;
 
 Function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer;
 begin
-  Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, WParam, LParam);
+  Result := WidgetSet.CallWindowProc(lpPrevWndFunc, Handle, Msg, WParam, LParam);
 end;
 
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
-  Result := InterfaceObject.ClientToScreen(Handle, P);
+  Result := WidgetSet.ClientToScreen(Handle, P);
 end;
 
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
-  Result := InterfaceObject.CombineRgn(Dest, Src1, Src2, fnCombineMode);
+  Result := WidgetSet.CombineRgn(Dest, Src1, Src2, fnCombineMode);
 end;
 
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint;
   BitmapBits: Pointer): HBITMAP;
 begin
-  Result := InterfaceObject.CreateBitmap(Width, Height, Planes, BitCount,
+  Result := WidgetSet.CreateBitmap(Width, Height, Planes, BitCount,
                                          BitmapBits);
 end;
 
@@ -89,188 +89,188 @@ function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
 begin
-  Result := InterfaceObject.CreateDIBitmap(DC,InfoHeader,dwUsage,InitBits,
+  Result := WidgetSet.CreateDIBitmap(DC,InfoHeader,dwUsage,InitBits,
                                            InitInfo,wUsage);
 end;
 
 function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
   var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
 begin
-  Result := InterfaceObject.CreateDIBSection(DC,BitmapInfo,Usage,
+  Result := WidgetSet.CreateDIBSection(DC,BitmapInfo,Usage,
                                              Bits,SectionHandle,Offset);
 end;
 
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 begin
-  Result := InterfaceObject.CreateBrushIndirect(LogBrush);
+  Result := WidgetSet.CreateBrushIndirect(LogBrush);
 end;
 
 Function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 Begin
-  Result := InterfaceObject.CreateCaret(Handle, Bitmap, width, Height);
+  Result := WidgetSet.CreateCaret(Handle, Bitmap, width, Height);
 end;
 
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 begin
-  Result := InterfaceObject.CreateCompatibleBitmap(DC, Width, Height);
+  Result := WidgetSet.CreateCompatibleBitmap(DC, Width, Height);
 end;
 
 function CreateCompatibleDC(DC: HDC): HDC;
 begin
-  Result := InterfaceObject.CreateCompatibleDC(DC);
+  Result := WidgetSet.CreateCompatibleDC(DC);
 end;
 
 function CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
-  Result := InterfaceObject.CreateFontIndirect(LogFont);
+  Result := WidgetSet.CreateFontIndirect(LogFont);
 end;
 
 function CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 begin
-  Result := InterfaceObject.CreateFontIndirectEx(LogFont,LongFontName);
+  Result := WidgetSet.CreateFontIndirectEx(LogFont,LongFontName);
 end;
 
 function CreatePalette(const LogPalette: TLogPalette): HPalette;
 begin
-  Result := InterfaceObject.CreatePalette(LogPalette);
+  Result := WidgetSet.CreatePalette(LogPalette);
 end;
 
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
-  Result := InterfaceObject.CreatePenIndirect(LogPen);
+  Result := WidgetSet.CreatePenIndirect(LogPen);
 end;
 
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
 Begin
-  Result := InterfaceObject.CreatePolygonRgn(Points, NumPts, FillMode);
+  Result := WidgetSet.CreatePolygonRgn(Points, NumPts, FillMode);
 end;
 
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 Begin
-  Result := InterfaceObject.CreateRectRgn(X1,Y1,X2,Y2);
+  Result := WidgetSet.CreateRectRgn(X1,Y1,X2,Y2);
 end;
 
 Procedure DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
-  InterfaceObject.DeleteCriticalSection(CritSection);
+  WidgetSet.DeleteCriticalSection(CritSection);
 end;
 
 function DeleteDC(hDC: HDC): Boolean;
 begin
-  Result := InterfaceObject.DeleteDC(hDC);
+  Result := WidgetSet.DeleteDC(hDC);
 end;
 
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
-  Result := InterfaceObject.DeleteObject(GDIObject);
+  Result := WidgetSet.DeleteObject(GDIObject);
 end;
 
 function DestroyCaret(Handle : HWND): Boolean;
 Begin
-  Result := InterfaceObject.DestroyCaret(Handle);
+  Result := WidgetSet.DestroyCaret(Handle);
 end;
 
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
 Begin
-  Result := InterfaceObject.DrawFrameControl(DC, Rect, uType, uState);
+  Result := WidgetSet.DrawFrameControl(DC, Rect, uType, uState);
 end;
 
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 Begin
-  Result := InterfaceObject.DrawEdge(DC, Rect, edge, grfFlags);
+  Result := WidgetSet.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 begin
-  Result := InterfaceObject.DrawText(DC, Str, Count, Rect, Flags);
+  Result := WidgetSet.DrawText(DC, Str, Count, Rect, Flags);
 end;
 
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
 begin
-  Result := InterfaceObject.DPtoLP(DC,Points,Count);
+  Result := WidgetSet.DPtoLP(DC,Points,Count);
 end;
 
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  Result := InterfaceObject.EnableScrollBar(Wnd, wSBflags, wArrows);
+  Result := WidgetSet.EnableScrollBar(Wnd, wSBflags, wArrows);
 end;
 
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Result := InterfaceObject.EnableWindow(hWnd, bEnable);
+  Result := WidgetSet.EnableWindow(hWnd, bEnable);
 end;
 
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
-  Result:=InterfaceObject.EndPaint(Handle,PS);
+  Result:=WidgetSet.EndPaint(Handle,PS);
 end;
 
 procedure EnterCriticalSection(var CritSection: TCriticalSection);
 begin
-  InterfaceObject.EnterCriticalSection(CritSection);
+  WidgetSet.EnterCriticalSection(CritSection);
 end;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
 begin
-  Result := InterfaceObject.Ellipse(DC,x1,y1,x2,y2);
+  Result := WidgetSet.Ellipse(DC,x1,y1,x2,y2);
 end;
 
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
 begin
-  Result := InterfaceObject.ExcludeClipRect(DC,Left,Top,Right,Bottom);
+  Result := WidgetSet.ExcludeClipRect(DC,Left,Top,Right,Bottom);
 end;
 
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
-  Result := InterfaceObject.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
+  Result := WidgetSet.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
 end;
 
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
 begin
-  Result := InterfaceObject.ExtSelectClipRGN(DC, RGN, Mode);
+  Result := WidgetSet.ExtSelectClipRGN(DC, RGN, Mode);
 end;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
-  Result := InterfaceObject.FillRect(DC, Rect, Brush);
+  Result := WidgetSet.FillRect(DC, Rect, Brush);
 end;
 
 function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
 begin
-  Result := InterfaceObject.FillRgn(DC,RegionHnd,hbr);
+  Result := WidgetSet.FillRgn(DC,RegionHnd,hbr);
 end;
 
 function FloodFill(DC: HDC; X, Y: Integer;
   Color: TGraphicsColor; FillStyle: TGraphicsFillStyle;
   Brush: HBRUSH): Boolean;
 begin
-  Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
+  Result := WidgetSet.FloodFill(DC,X,Y,Color,FillStyle,Brush);
 end;
 
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
 begin
-  Result:= InterfaceObject.FrameRect(DC, ARect, hBr);
+  Result:= WidgetSet.FrameRect(DC, ARect, hBr);
 end;
 
 Function GetActiveWindow : HWND;
 begin
-  Result := InterfaceObject.GetActiveWindow;
+  Result := WidgetSet.GetActiveWindow;
 end;
 
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 begin
-  Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
+  Result := WidgetSet.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
 function GetCapture: HWND;
 Begin
-  Result := InterfaceObject.GetCapture;
+  Result := WidgetSet.GetCapture;
 end;
 
 function GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
-  Result := InterfaceObject.GetCaretPos(lpPoint);
+  Result := WidgetSet.GetCaretPos(lpPoint);
 end;
 
 {------------------------------------------------------------------------------
@@ -286,158 +286,158 @@ end;
  ------------------------------------------------------------------------------}
 function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
-  Result := InterfaceObject.GetClientRect(handle, Rect);
+  Result := WidgetSet.GetClientRect(handle, Rect);
 end;
 
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
-  Result := InterfaceObject.GetClipBox(DC, lpRect);
+  Result := WidgetSet.GetClipBox(DC, lpRect);
 end;
 
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
 begin
-  Result := InterfaceObject.GetClipRGN(DC, RGN);
+  Result := WidgetSet.GetClipRGN(DC, RGN);
 end;
 
 Function GetCursorPos(var lpPoint:TPoint): Boolean;
 Begin
-  Result := InterfaceObject.GetCursorPos(lpPoint);
+  Result := WidgetSet.GetCursorPos(lpPoint);
 end;
 
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
 begin
-  Result := InterfaceObject.GetCharABCWidths(DC, p2, p3, ABCStructs);
+  Result := WidgetSet.GetCharABCWidths(DC, p2, p3, ABCStructs);
 end;
 
 function GetDC(hWnd: HWND): HDC;
 begin
-  Result := InterfaceObject.GetDC(hWnd);
+  Result := WidgetSet.GetDC(hWnd);
 end;
 
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
   Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  Result := InterfaceObject.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits,
+  Result := WidgetSet.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits,
                                       BitInfo, Usage);
 end;
 
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
-  Result := InterfaceObject.GetDeviceCaps(DC, Index);
+  Result := WidgetSet.GetDeviceCaps(DC, Index);
 end;
 
 
 function GetFocus: HWND;
 begin
-  Result := InterfaceObject.GetFocus;
+  Result := WidgetSet.GetFocus;
 end;
 
 function GetFontLanguageInfo(DC: HDC): DWord;
 begin
-  Result := InterfaceObject.GetFontLanguageInfo(DC);
+  Result := WidgetSet.GetFontLanguageInfo(DC);
 end;
 
 function GetKeyState(nVirtKey: Integer): Smallint;
 begin
-  Result := InterfaceObject.GetKeyState(nVirtKey);
+  Result := WidgetSet.GetKeyState(nVirtKey);
 end;
 
 function GetMapMode(DC: HDC): Integer;
 begin
-  Result := InterfaceObject.GetMapMode(DC);
+  Result := WidgetSet.GetMapMode(DC);
 end;
 
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
-  Result := InterfaceObject.GetObject(GDIObject, BufSize, Buf);
+  Result := WidgetSet.GetObject(GDIObject, BufSize, Buf);
 end;
 
 function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT;
 begin
-  Result := InterfaceObject.GetPaletteEntries(Palette,StartIndex,NumEntries,
+  Result := WidgetSet.GetPaletteEntries(Palette,StartIndex,NumEntries,
                                               PaletteEntries);
 end;
 
 Function GetParent(Handle : HWND): HWND;
 begin
-  Result := InterfaceObject.GetParent(Handle);
+  Result := WidgetSet.GetParent(Handle);
 end;
 
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
-  Result := InterfaceObject.GetProp(Handle,Str);
+  Result := WidgetSet.GetProp(Handle,Str);
 end;
 
 Function GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
 begin
-  Result := InterfaceObject.GetRGNBox(RGN, lpRect);
+  Result := WidgetSet.GetRGNBox(RGN, lpRect);
 end;
 
 function GetROP2(DC: HDC): integer;
 begin
-  result := InterfaceObject.GetROP2(DC);
+  result := WidgetSet.GetROP2(DC);
 end;
 
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
-  Result := InterfaceObject.GetScrollInfo(Handle, SBStyle, ScrollInfo);
+  Result := WidgetSet.GetScrollInfo(Handle, SBStyle, ScrollInfo);
 end;
 
 function GetStockObject(Value : Integer): Longint;
 begin
-  Result := InterfaceObject.GetStockObject(Value);
+  Result := WidgetSet.GetStockObject(Value);
 end;
 
 function GetSysColor(nIndex: Integer): DWORD;
 begin
-  Result := InterfaceObject.GetSysColor(nIndex);
+  Result := WidgetSet.GetSysColor(nIndex);
 end;
 
 function GetSystemMetrics(nIndex: Integer): Integer;
 begin
-  Result := InterfaceObject.GetSystemMetrics(nIndex);
+  Result := WidgetSet.GetSystemMetrics(nIndex);
 end;
 
 function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT;
 begin
-  Result := InterfaceObject.GetSystemPaletteEntries(DC,StartIndex,NumEntries,
+  Result := WidgetSet.GetSystemPaletteEntries(DC,StartIndex,NumEntries,
                                                     PaletteEntries);
 end;
 
 function GetTextColor(DC: HDC) : TColorRef;
 begin
-  Result := InterfaceObject.GetTextColor(DC);
+  Result := WidgetSet.GetTextColor(DC);
 end;
 
 function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer;
   MaxCount, PartialWidths: PInteger; var Size: LCLType.TSize): Boolean;
 begin
-  Result := InterfaceObject.GetTextExtentExPoint(DC,Str,Count,MaxWidth,MaxCount,
+  Result := WidgetSet.GetTextExtentExPoint(DC,Str,Count,MaxWidth,MaxCount,
                                                  PartialWidths,Size);
 end;
 
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: LCLType.TSize): Boolean;
 begin
-  Result := InterfaceObject.GetTextExtentPoint(DC, Str, Count, Size);
+  Result := WidgetSet.GetTextExtentPoint(DC, Str, Count, Size);
 end;
 
 function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer;
   var Size: LCLType.TSize): Boolean;
 begin
-  Result := InterfaceObject.GetTextExtentPoint32(DC, Str, Count, Size);
+  Result := WidgetSet.GetTextExtentPoint32(DC, Str, Count, Size);
 end;
 
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
-  Result := InterfaceObject.GetTextMetrics(DC, TM);
+  Result := WidgetSet.GetTextMetrics(DC, TM);
 end;
 
 function GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
 begin
-  Result := InterfaceObject.GetWindowLong(Handle, int);
+  Result := WidgetSet.GetWindowLong(Handle, int);
 end;
 
 {------------------------------------------------------------------------------
@@ -450,7 +450,7 @@ end;
 ------------------------------------------------------------------------------}
 Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
-  Result := InterfaceObject.GetWindowRect(Handle, Rect);
+  Result := WidgetSet.GetWindowRect(Handle, Rect);
 end;
 
 {------------------------------------------------------------------------------
@@ -460,23 +460,23 @@ end;
 ------------------------------------------------------------------------------}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 begin
-  Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
+  Result := WidgetSet.GetWindowSize(Handle, Width, Height);
 end;
 
 Function GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 begin
- Result := InterfaceObject.GetWindowOrgEx(dc,P);
+ Result := WidgetSet.GetWindowOrgEx(dc,P);
 end;
 
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
 begin
-  Result := InterfaceObject.GradientFill(DC, Vertices, NumVertices, Meshes, NumMeshes, Mode);
+  Result := WidgetSet.GradientFill(DC, Vertices, NumVertices, Meshes, NumMeshes, Mode);
 end;
 
 function HideCaret(hWnd: HWND): Boolean;
 begin
-  Result := InterfaceObject.HideCaret(hWnd);
+  Result := WidgetSet.HideCaret(hWnd);
 end;
 
 {------------------------------------------------------------------------------
@@ -497,313 +497,313 @@ end;
  ------------------------------------------------------------------------------}
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 Begin
-  Result := InterfaceObject.IntersectClipRect(dc,Left,Top,Right,Bottom);
+  Result := WidgetSet.IntersectClipRect(dc,Left,Top,Right,Bottom);
 end;
 
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
-  Result := InterfaceObject.InvalidateRect(aHandle, ARect, bErase);
+  Result := WidgetSet.InvalidateRect(aHandle, ARect, bErase);
 end;
 
 function IsDBCSLeadByte(TestChar: Byte): boolean;
 begin
-  Result := InterfaceObject.IsDBCSLeadByte(TestChar);
+  Result := WidgetSet.IsDBCSLeadByte(TestChar);
 end;
 
 function IsWindowEnabled(handle: HWND): boolean;
 begin
-  Result := InterfaceObject.IsWindowEnabled(Handle);
+  Result := WidgetSet.IsWindowEnabled(Handle);
 end;
 
 function IsWindowVisible(handle: HWND): boolean;
 begin
-  Result := InterfaceObject.IsWindowVisible(Handle);
+  Result := WidgetSet.IsWindowVisible(Handle);
 end;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
-  InterfaceObject.InitializeCriticalSection(CritSection);
+  WidgetSet.InitializeCriticalSection(CritSection);
 end;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection);
 begin
-  InterfaceObject.LeaveCriticalSection(CritSection);
+  WidgetSet.LeaveCriticalSection(CritSection);
 end;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
-  Result := InterfaceObject.LineTo(DC, X, Y);
+  Result := WidgetSet.LineTo(DC, X, Y);
 end;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
-  Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
+  Result := WidgetSet.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
 end;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
-  Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
+  Result := WidgetSet.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
 end;
 
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType : Cardinal): integer;
 begin
-  Result:= InterfaceObject.MessageBox(hWnd, lpText, lpCaption, uType);
+  Result:= WidgetSet.MessageBox(hWnd, lpText, lpCaption, uType);
 end;
 
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  Result := InterfaceObject.MoveToEx(DC, X, Y, OldPoint);
+  Result := WidgetSet.MoveToEx(DC, X, Y, OldPoint);
 end;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
-  Result := InterfaceObject.PeekMessage(lpMsg,Handle,
+  Result := WidgetSet.PeekMessage(lpMsg,Handle,
                                         wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
 end;
 
 function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
   StartX,StartY,EndX,EndY: Integer): Boolean;
 begin
-  Result := InterfaceObject.Pie(DC,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+  Result := WidgetSet.Pie(DC,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                                 StartX,StartY,EndX,EndY);
 end;
 
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin
-  Result := InterfaceObject.PolyBezier(DC,Points,NumPts,Filled,Continuous);
+  Result := WidgetSet.PolyBezier(DC,Points,NumPts,Filled,Continuous);
 end;
 
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 begin
-  Result := InterfaceObject.Polygon(DC,Points,NumPts,Winding);
+  Result := WidgetSet.Polygon(DC,Points,NumPts,Winding);
 end;
 
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 begin
-  Result := InterfaceObject.Polyline(DC,Points,NumPts);
+  Result := WidgetSet.Polyline(DC,Points,NumPts);
 end;
 
 function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean;
 begin
-  Result := InterfaceObject.PostMessage(Handle, Msg, WParam, LParam);
+  Result := WidgetSet.PostMessage(Handle, Msg, WParam, LParam);
 end;
 
 function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean;
 begin
-  Result := InterfaceObject.PtInRegion(RGN,X,Y);
+  Result := WidgetSet.PtInRegion(RGN,X,Y);
 end;
 
 function RealizePalette(DC: HDC): Cardinal;
 begin
-  Result := InterfaceObject.RealizePalette(DC);
+  Result := WidgetSet.RealizePalette(DC);
 end;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  Result := InterfaceObject.Rectangle(DC, X1, Y1, X2, Y2);
+  Result := WidgetSet.Rectangle(DC, X1, Y1, X2, Y2);
 end;
 
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result := InterfaceObject.RectVisible(dc,ARect);
+  Result := WidgetSet.RectVisible(dc,ARect);
 end;
 
 function ReleaseCapture:  Boolean;
 begin
-  Result := InterfaceObject.ReleaseCapture;
+  Result := WidgetSet.ReleaseCapture;
 end;
 
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
-  Result := InterfaceObject.ReleaseDC(hWnd, DC);
+  Result := WidgetSet.ReleaseDC(hWnd, DC);
 end;
 
 function RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
-  Result := InterfaceObject.RemoveProp(Handle, Str);
+  Result := WidgetSet.RemoveProp(Handle, Str);
 end;
 
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 begin
-  Result := InterfaceObject.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+  Result := WidgetSet.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
 end;
 
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  Result := InterfaceObject.RestoreDC(DC, SavedDC)
+  Result := WidgetSet.RestoreDC(DC, SavedDC)
 end;
 
 function SaveDC(DC: HDC) : Integer;
 begin
-  Result := InterfaceObject.SaveDC(DC)
+  Result := WidgetSet.SaveDC(DC)
 end;
 
 Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 begin
-  Result := InterfaceObject.ScreenToClient(Handle, P);
+  Result := WidgetSet.ScreenToClient(Handle, P);
 end;
 
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 begin
-  Result := InterfaceObject.ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip, hrgnUpdate, prcUpdate, flags);
+  Result := WidgetSet.ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip, hrgnUpdate, prcUpdate, flags);
 end;
 
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 begin
-  Result := InterfaceObject.SendMessage(HandleWnd, Msg, WParam, LParam);
+  Result := WidgetSet.SendMessage(HandleWnd, Msg, WParam, LParam);
 end;
 
 function SetActiveWindow(Handle: HWND): HWND;
 begin
-  Result := InterfaceObject.SetActiveWindow(Handle);
+  Result := WidgetSet.SetActiveWindow(Handle);
 end;
 
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef;  //pbd
 begin
-  Result := InterfaceObject.SetBkColor(DC, Color);
+  Result := WidgetSet.SetBkColor(DC, Color);
 end;
 
 Function SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
-  Result := InterfaceObject.SetBkMode(DC, bkMode);
+  Result := WidgetSet.SetBkMode(DC, bkMode);
 end;
 
 function SetCapture(AHandle: HWND): HWND;
 begin
-  Result := InterfaceObject.SetCapture(AHandle);
+  Result := WidgetSet.SetCapture(AHandle);
 end;
 
 function SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result := InterfaceObject.SetCaretPos(X, Y);
+  Result := WidgetSet.SetCaretPos(X, Y);
 end;
 
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result := InterfaceObject.SetCaretPosEx(Handle, X, Y);
+  Result := WidgetSet.SetCaretPosEx(Handle, X, Y);
 end;
 
 function SetCursor(hCursor: HICON): HCURSOR;
 begin
-  Result := InterfaceObject.SetCursor(hCursor);
+  Result := WidgetSet.SetCursor(hCursor);
 end;
 
 function SetCursorPos(X, Y: Integer): Boolean;
 begin
-  Result := InterfaceObject.SetCursorPos(X, Y);
+  Result := WidgetSet.SetCursorPos(X, Y);
 end;
 
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
-  Result := InterfaceObject.SetProp(Handle,Str,Data);
+  Result := WidgetSet.SetProp(Handle,Str,Data);
 end;
 
 function SetROP2(DC: HDC; Mode: Integer): Integer;
 begin
-  Result := InterfaceObject.SetRop2(Dc, Mode);
+  Result := WidgetSet.SetRop2(Dc, Mode);
 end;
 
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
-  Result := InterfaceObject.SelectClipRGN(DC, RGN);
+  Result := WidgetSet.SelectClipRGN(DC, RGN);
 end;
 
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
-  Result := InterfaceObject.SelectObject(DC, GDIObj);
+  Result := WidgetSet.SelectObject(DC, GDIObj);
 end;
 
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
 begin
-  Result := InterfaceObject.SelectPalette(DC, Palette, ForceBackground);
+  Result := WidgetSet.SelectPalette(DC, Palette, ForceBackground);
 end;
 
 function SetFocus(hWnd: HWND): HWND;
 begin
 //DebugLn('[winapi.inc SetFocus] A');
-  Result := InterfaceObject.SetFocus(hWnd);
+  Result := WidgetSet.SetFocus(hWnd);
 //DebugLn('[winapi.inc SetFocus] END');
 end;
 
 function SetMapMode(DC: HDC; MapMode: Integer): Integer;
 begin
-  Result := InterfaceObject.SetMapMode(DC,MapMode);
+  Result := WidgetSet.SetMapMode(DC,MapMode);
 end;
 
 function SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
-  Result := InterfaceObject.SetSCrollInfo(Handle, SBStyle, ScrollInfo, Redraw)
+  Result := WidgetSet.SetSCrollInfo(Handle, SBStyle, ScrollInfo, Redraw)
 end;
 
 function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer;
 begin
-  Result := InterfaceObject.SetStretchBltMode(DC,StretchMode);
+  Result := WidgetSet.SetStretchBltMode(DC,StretchMode);
 end;
 
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean;
 begin
-  Result := InterfaceObject.SetSysColors(cElements, lpaElements, lpaRgbValues);
+  Result := WidgetSet.SetSysColors(cElements, lpaElements, lpaRgbValues);
 end;
 
 function SetTextAlign(DC: HDC; Flags: UINT): UINT;
 begin
-  Result := InterfaceObject.SetTextAlign(DC,Flags);
+  Result := WidgetSet.SetTextAlign(DC,Flags);
 end;
 
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
-  Result := InterfaceObject.SetTextCharacterExtra(_hdc, nCharExtra);
+  Result := WidgetSet.SetTextCharacterExtra(_hdc, nCharExtra);
 end;
 
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  Result := InterfaceObject.SetTextColor(DC, Color);
+  Result := WidgetSet.SetTextColor(DC, Color);
 end;
 
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;
 begin
-  Result := InterfaceObject.SetWindowLong(handle, Idx, NewLong);
+  Result := WidgetSet.SetWindowLong(handle, Idx, NewLong);
 end;
 
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 begin
-  Result := InterfaceObject.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
+  Result := WidgetSet.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
 end;
 
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 begin
-  Result := InterfaceObject.SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+  Result := WidgetSet.SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 end;
 
 function ShowCaret(hWnd: HWND): Boolean;
 begin
-  Result := InterfaceObject.ShowCaret(hWnd)
+  Result := WidgetSet.ShowCaret(hWnd)
 end;
 
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
 begin
-  Result := InterfaceObject.ShowScrollBar(Handle, wBar, bShow);
+  Result := WidgetSet.ShowScrollBar(Handle, wBar, bShow);
 end;
 
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
-  Result := InterfaceObject.ShowWindow(hWnd,nCmdShow);
+  Result := WidgetSet.ShowWindow(hWnd,nCmdShow);
 end;
 
 procedure Sleep(dwMilliseconds: DWORD);
 begin
-  InterfaceObject.Sleep(dwMilliseconds);
+  WidgetSet.Sleep(dwMilliseconds);
 end;
 
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
-  Result := InterfaceObject.StretchBlt(DestDC, X, Y, Width, Height,
+  Result := WidgetSet.StretchBlt(DestDC, X, Y, Width, Height,
                                    SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
 
@@ -811,28 +811,28 @@ function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
   SrcY, SrcWidth, SrcHeight: Integer; Bits: Pointer; var BitsInfo: TBitmapInfo;
   Usage: UINT; Rop: DWORD): Integer;
 begin
-  Result := InterfaceObject.StretchDIBits(DC,DestX,DestY,DestWidth,DestHeight,
+  Result := WidgetSet.StretchDIBits(DC,DestX,DestY,DestWidth,DestHeight,
                           SrcX,SrcY,SrcWidth,SrcHeight,Bits,BitsInfo,Usage,Rop);
 end;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
-  Result := InterfaceObject.TextOut(DC, X, Y, Str, Count);
+  Result := WidgetSet.TextOut(DC, X, Y, Str, Count);
 end;
 
 function UpdateWindow(Handle: HWND): Boolean;
 begin
-  Result := InterfaceObject.UpdateWindow(Handle);
+  Result := WidgetSet.UpdateWindow(Handle);
 end;
 
 function VkKeyScan(AChar: Char): Short;
 begin
-  Result := InterfaceObject.VkKeyScan(AChar);
+  Result := WidgetSet.VkKeyScan(AChar);
 end;
 
 function WindowFromPoint(Point : TPoint) : HWND;
 begin
-  Result := InterfaceObject.WindowFromPoint(Point);
+  Result := WidgetSet.WindowFromPoint(Point);
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -890,7 +890,7 @@ end;
  ------------------------------------------------------------------------------}
 function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 begin
-  Result := InterfaceObject.CreateEllipticRgn(p1,p2,p3,p4);
+  Result := WidgetSet.CreateEllipticRgn(p1,p2,p3,p4);
 end;
 
 {------------------------------------------------------------------------------
@@ -1335,4 +1335,3 @@ begin
 end;
 
 //##apiwiz##epi##   // Do not remove
-

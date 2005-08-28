@@ -142,7 +142,7 @@ function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 begin
   // For now default to the old creation routines
-  Result := InterfaceObject.CreateComponent(AWinControl);
+  Result := WidgetSet.CreateComponent(AWinControl);
 end;
 
 procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);

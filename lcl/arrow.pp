@@ -111,7 +111,7 @@ end;
 
 procedure TArrow.Paint;
 begin
-  InterfaceObject.DrawArrow(Self, Canvas);
+  WidgetSet.DrawArrow(Self, Canvas);
   inherited Paint;
 end;
 

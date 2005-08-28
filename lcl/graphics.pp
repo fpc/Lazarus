@@ -135,7 +135,7 @@ const
   pmNotMask = FPCanvas.pmNotMask;
   pmXor = FPCanvas.pmXor;
   pmNotXor = FPCanvas.pmNotXor;
-  
+
   bsSolid = FPCanvas.bsSolid;
   bsClear = FPCanvas.bsClear;
   bsHorizontal = FPCanvas.bsHorizontal;
@@ -144,7 +144,7 @@ const
   bsBDiagonal = FPCanvas.bsBDiagonal;
   bsCross = FPCanvas.bsCross;
   bsDiagCross = FPCanvas.bsDiagCross;
-  
+
 type
   TFillStyle = TGraphicsFillStyle;
   TFillMode = (fmAlternate, fmWinding);
@@ -511,14 +511,14 @@ type
 
 
   { TPen }
-  
+
   TPenData = record
     Handle: HPen;
     Color: TColor;
     Width: Integer;
     Style: TPenStyle;
   end;
-  
+
   TPenHandleCache = class(TBlockResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
@@ -1026,7 +1026,7 @@ type
 
 
   { TBitmapImage
-  
+
     Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
     TBitmap, only the reference count will be increased and both will share the
     same TBitmapImage }
@@ -1205,7 +1205,7 @@ type
   { TFPImageBitmap }
   { Use this class to easily create a TBitmap descendent for FPImage
     reader and writer }
-  
+
   TFPImageBitmap = class(TBitmap)
   public
     class function GetFileExtensions: string; override;
@@ -1242,7 +1242,7 @@ type
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   end;
 
-  
+
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
@@ -1341,7 +1341,7 @@ var
     - initialized on Interface startup }
   ScreenInfo: TScreenInfo=(PixelsPerInchX:72;PixelsPerInchY:72;
                            ColorDepth:24;Initialized:false;);
-  
+
   FontResourceCache: TFontHandleCache;
   PenResourceCache: TPenHandleCache;
   BrushResourceCache: TBrushHandleCache;
@@ -1770,7 +1770,7 @@ end;
 
 const
   IconSignature: array [0..3] of char = #0#0#1#0;
-  
+
 function TestStreamIsIcon(const AStream: TStream): boolean;
 var
   Signature: array[0..3] of char;
@@ -1850,4 +1850,3 @@ finalization
 
 
 end.
-

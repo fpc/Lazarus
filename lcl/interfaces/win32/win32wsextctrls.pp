@@ -299,7 +299,7 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
-  if TWin32WidgetSet(InterfaceObject).ThemesActive then
+  if TWin32WidgetSet(WidgetSet).ThemesActive then
   with Params.WindowInfo^ do
   begin
     hasTabParent := true;
@@ -409,7 +409,7 @@ begin
   for I := ANotebook.PageCount - 1 downto 0 do
     Windows.SendMessage(WinHandle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-  TWin32WidgetSet(InterfaceObject).GetClientRect(WinHandle, R);
+  TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
   R.Right := R.Right - R.Left;
   R.Bottom := R.Bottom - R.Top;
   for I := 0 to ANotebook.PageCount - 1 do

@@ -106,7 +106,7 @@ end;
 procedure TCustomTimer.KillTimer;
 begin
   if FTimerHandle <> cIdNoTimer then begin
-    InterfaceObject.DestroyTimer(FTimerHandle);
+    WidgetSet.DestroyTimer(FTimerHandle);
     FTimerHandle := cIdNoTimer;
     if Assigned(OnStopTimer) then OnStopTimer(Self);
   end;
@@ -131,7 +131,7 @@ begin
   if (FEnabled) and (FInterval > 0)
   and (([csDesigning,csLoading]*ComponentState=[]))
   and Assigned (FOnTimer) then begin
-    FTimerHandle := InterfaceObject.CreateTimer(FInterval, @Timer);
+    FTimerHandle := WidgetSet.CreateTimer(FInterval, @Timer);
     if FTimerHandle=0 then begin
       FTimerHandle:=cIdNoTimer;
       raise EOutOfResources.Create(SNoTimers);

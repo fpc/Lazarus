@@ -2809,12 +2809,13 @@ end;
 procedure TWinControl.CreateParams(var Params : TCreateParams);
 begin
   FillChar(Params, SizeOf(Params),0);
-  with Params do
-  begin
-    Caption := PChar(FCaption);
-    Style := WS_CHILD or WS_CLIPSIBLINGS;
-    if (Parent <> nil) then WndParent := Parent.Handle;
-  end;
+  Params.Caption := PChar(FCaption);
+  Params.Style := WS_CHILD or WS_CLIPSIBLINGS;
+  if (Parent <> nil) then Params.WndParent := Parent.Handle;
+  Params.X := FLeft;
+  Params.Y := FTop;
+  Params.Width := FWidth;
+  Params.Height := FHeight;
 end;
 
 {------------------------------------------------------------------------------}

@@ -24,7 +24,7 @@ unit WSLCLClasses;
 
 {$mode objfpc}{$H+}
 
-{.$DEFINE VerboseWSRegistration}
+{$DEFINE VerboseWSRegistration}
 
 interface
 ////////////////////////////////////////////////////

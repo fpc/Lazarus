@@ -104,7 +104,7 @@ begin
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
-  
+
   FOldExitProc:=ExitProc;
   ExitProc:=@BeforeFinalization;
 end;
@@ -119,15 +119,15 @@ begin
   if Self=nil then
     RaiseGDBException('TApplication.Destroy Self=nil');
   Include(FFlags,AppDestroying);
-  
+
   if Assigned(FOnDestroy) then FOnDestroy(Self);
-  
+
   ExitProc:=FOldExitProc;
-  
+
   DoFreeReleaseComponents;
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
-  
+
   // shutting down
   CancelHint;
   ShowHint := False;
@@ -136,7 +136,7 @@ begin
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
   FreeThenNil(FFormList);
-  
+
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
   do
     FreeThenNil(FApplicationHandlers[HandlerType]);
@@ -144,7 +144,7 @@ begin
   UnregisterFindGlobalComponentProc(@FindApplicationComponent);
 
   inherited Destroy;
-  
+
   Include(FFlags,AppDoNotReleaseComponents);
   DoFreeReleaseComponents;
 
@@ -158,7 +158,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.BringToFront;
 begin
-  InterfaceObject.AppBringToFront;
+  WidgetSet.AppBringToFront;
 end;
 
 {------------------------------------------------------------------------------
@@ -238,7 +238,7 @@ end;
 procedure TApplication.Minimize;
 begin
   //debugln('TApplication.Minimize');
-  InterfaceObject.AppMinimize;
+  WidgetSet.AppMinimize;
 end;
 
 {------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.ProcessMessages;
 begin
-  InterfaceObject.HandleEvents;
+  WidgetSet.AppProcessMessages;
 end;
 
 {------------------------------------------------------------------------------
@@ -267,14 +267,14 @@ procedure TApplication.Initialize;
 begin
   inherited Initialize;
   // interface object and screen
-  if (InterfaceObject=nil)
-//  or (AnsiCompareText(InterfaceObject.Classname,'TWIDGETSET')=0) 
-  or (InterfaceObject.ClassType = TWidgetSet) 
+  if (WidgetSet=nil)
+//  or (AnsiCompareText(WidgetSet.Classname,'TWIDGETSET')=0)
+  or (WidgetSet.ClassType = TWidgetSet)
   then begin
-    DebugLn('ERROR: ',rsNoInterfaceObject);
-    raise Exception.Create(rsNoInterfaceObject);
+    DebugLn('ERROR: ',rsNoWidgetSet);
+    raise Exception.Create(rsNoWidgetSet);
   end;
-  InterfaceObject.AppInit(ScreenInfo);
+  WidgetSet.AppInit(ScreenInfo);
   ScreenInfo.Initialized:=true;
   Screen.UpdateScreen;
   // application icon
@@ -339,13 +339,14 @@ begin
   Done := True;
   if (FIdleLockCount=0) and Assigned(FOnIdle) then FOnIdle(Self, Done);
   NotifyIdleHandler;
-  if Done then begin
+  if Done
+  then begin
     // wait till something happens
     if (FIdleLockCount=0) then
       DoIdleActions;
     Include(FFlags,AppWaiting);
     Exclude(FFlags,AppIdleEndSent);
-    InterfaceObject.WaitMessage;
+    WidgetSet.AppWaitMessage;
     if (FIdleLockCount=0) then
       DoOnIdleEnd;
     Exclude(FFlags,AppWaiting);
@@ -615,7 +616,7 @@ begin
   if (HintInfo.HintWindowClass=nil)
   or (not HintInfo.HintWindowClass.InheritsFrom(THintWindow)) then
     HintInfo.HintWindowClass := HintWindowClass;
-  
+
   if CanShow and Assigned(FOnShowHint) then
     FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
   if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
@@ -753,7 +754,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TApplication.DoFreeReleaseComponents
-  
+
   Free all components that were queued for freeing (ReleaseComponent)
  ------------------------------------------------------------------------------}
 procedure TApplication.DoFreeReleaseComponents;
@@ -872,7 +873,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleMessage;
 begin
-  InterfaceObject.HandleEvents; // process all events
+  WidgetSet.AppProcessMessages; // process all events
   if not Terminated then Idle;
 end;
 
@@ -977,7 +978,16 @@ end;
   MainForm is loaded and control is passed to event processor.
 ------------------------------------------------------------------------------}
 procedure TApplication.Run;
+begin
+  if (FMainForm <> nil) and FShowMainForm then FMainForm.Show;
+  WidgetSet.AppRun(@RunLoop);
+end;
 
+{------------------------------------------------------------------------------
+  TApplication RunLoop
+  control is passed to event processor.
+------------------------------------------------------------------------------}
+procedure TApplication.RunLoop;
   procedure RunMessage;
   begin
     HandleMessage;
@@ -986,7 +996,6 @@ procedure TApplication.Run;
   end;
 
 begin
-  if (FMainForm <> nil) and FShowMainForm then FMainForm.Show;
   repeat
     if CaptureExceptions then begin
       // run with try..except
@@ -1141,7 +1150,7 @@ end;
 procedure TApplication.Terminate;
 begin
   inherited Terminate;
-  InterfaceObject.AppTerminate;
+  WidgetSet.AppTerminate;
 end;
 
 procedure TApplication.DisableIdleHandler;
@@ -1219,7 +1228,7 @@ var
   AControl: TWinControl;
 begin
   if Key=VK_UNKNOWN then exit;
-  
+
   if Sender is TWinControl then begin
     AControl:=TWinControl(Sender);
     //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
@@ -1323,7 +1332,7 @@ begin
     if Result then
       exit;
   end;
-  
+
   // next: if there is a modal form, let it handle the short cut
   ModalForm:=Screen.GetCurrentModalForm;
   if ModalForm<>nil then begin
@@ -1481,6 +1490,3 @@ begin
   Result := False;
   if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction,Result);
 end;
-
-// included by forms.pp
-

@@ -22,24 +22,24 @@
  *****************************************************************************
 }
 
-Unit Interfaces;
+unit Interfaces;
 
 {$mode objfpc}{$H+}
 
-Interface 
+interface 
 
-Uses
+uses
   InterfaceBase;
 
-Implementation
+implementation
 
 uses
   Win32Int, Forms;
 
-Initialization
-  InterfaceObject := TWin32WidgetSet.Create;
+initialization
+  WidgetSet := TWin32WidgetSet.Create;
 
-Finalization
-  FreeInterfaceObject;
+finalization
+  FreeWidgetSet;
 
-End.
+end.

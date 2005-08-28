@@ -40,9 +40,9 @@ uses
   GTKInt, Forms;
 
 initialization
-  InterfaceObject:= TGTKWidgetSet.Create;
+  WidgetSet:= TGTKWidgetSet.Create;
 
 finalization
-  FreeInterfaceObject;
+  FreeWidgetSet;
 
 end.

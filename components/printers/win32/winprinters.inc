@@ -65,7 +65,7 @@ begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
       Flags:=aFlag;
-      hWndOwner:=TWin32WidgetSet(InterfaceObject).AppHandle;
+      hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
 
       PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
@@ -164,7 +164,7 @@ begin
     if fDC=0 then
       fDC:=CreateIC(PChar('winspool'),PChar(PDev.Device),
            PChar(PDev.Port),@PDev.DevMode);
-           
+
     if fDC=0 then
       raise EPrinter.Create(Format('Invalide printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then

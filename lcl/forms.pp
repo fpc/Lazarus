@@ -920,6 +920,7 @@ type
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TApplicationHandlerType;
                             const Handler: TMethod);
+    procedure RunLoop;
   protected
     function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler;
@@ -1215,7 +1216,7 @@ type
 var
   MessageBoxFunction: TMessageBoxFunction;
 
-procedure FreeInterfaceObject;
+procedure FreeWidgetSet;
 
 procedure Register;
 
@@ -1443,16 +1444,16 @@ begin
     Result := Copy(Hint, I + 1, Maxint);
 end;
 
-procedure FreeInterfaceObject;
+procedure FreeWidgetSet;
 begin
-  //debugln('FreeInterfaceObject');
+  //debugln('FreeWidgetSet');
   if Application=nil then exit;
   Application.Free;
   Application:=nil;
   FreeAllClipBoards;
   CallInterfaceFinalizationHandlers;
-  InterfaceObject.Free;
-  InterfaceObject:=nil;
+  WidgetSet.Free;
+  WidgetSet:=nil;
 end;
 
 

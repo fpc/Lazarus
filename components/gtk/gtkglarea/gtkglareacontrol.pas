@@ -30,7 +30,7 @@ uses
   OpenGLGtkWidget
   {$ENDIF}
   ;
-  
+
 type
   TGtkGlAreaMakeCurrentEvent = procedure(Sender: TObject;
     var Allow: boolean) of object;
@@ -72,10 +72,10 @@ type
     property SharedArea: TCustomGTKGLAreaControl read FSharedArea write SetSharedArea;
     property Widget: PGtkGLArea read GetWidget;
   end;
-  
-  
+
+
   { TGTKGLAreaControl }
-  
+
   TGTKGLAreaControl = class(TCustomGTKGLAreaControl)
   published
     property Align;
@@ -106,16 +106,16 @@ type
     property ShowHint;
     property Visible;
   end;
-  
-  
+
+
   { TWSGTKGLAreaControl }
-  
+
   TWSGTKGLAreaControl = class(TWSWinControl)
   public
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
   end;
-  
+
 
 function GetCurrentGtkGLAreaControl: TGTKGLAreaControl;
 
@@ -370,7 +370,7 @@ begin
     else
       NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
     Result:=longint(NewWidget);
-    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(AWinControl,NewWidget,
+    TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,
                                                          true);
   end;
 end;

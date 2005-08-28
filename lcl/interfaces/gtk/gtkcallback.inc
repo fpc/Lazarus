@@ -747,8 +747,13 @@ begin
 
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
-  Info := GetWidgetInfo(widget, False);
-  if Info <> nil then Dispose(Info);
+  
+  // ---
+  // MWE: why is free widget info not used here ???
+  //Info := GetWidgetInfo(widget, False);
+  //if Info <> nil then Dispose(Info);
+  // ---
+  FreeWidgetInfo(Widget);
 end;
 
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;
