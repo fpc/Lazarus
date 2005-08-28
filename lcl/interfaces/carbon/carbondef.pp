@@ -1,10 +1,10 @@
-{ $Id: $
+{ $Id$
                     -----------------------------------------
                     carbondef.pp  -  Type & Const definitions
                     -----------------------------------------
  
  @created(Wed Aug 26st WET 2005)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
 
  This unit contains type & const definitions needed in the Carbon <-> LCL interface

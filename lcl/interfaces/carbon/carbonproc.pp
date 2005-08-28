@@ -1,10 +1,10 @@
-{ $Id: $
+{ $Id$
                   ----------------------------------------
                   carbonproc.pp  -  Carbon interface procs
                   ----------------------------------------
  
  @created(Wed Aug 26st WET 2005)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
 
  This unit contains procedures/functions needed for the Carbon <-> LCL interface 
