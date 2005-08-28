@@ -202,6 +202,10 @@ msgstr "Categoria"
 msgid "Char"
 msgstr ""
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "Editor de grupos de checagem"
@@ -426,6 +430,10 @@ msgstr "Índice da imagem"
 msgid "Image list editor"
 msgstr "Editor de lista de imagens"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr "Inserir"
@@ -469,6 +477,10 @@ msgstr "Dialoga de carregamento de imagem"
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
 msgstr "Carregar figura"
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr ""
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -526,6 +538,10 @@ msgstr "Objeto"
 msgid "Object Inspector"
 msgstr "Inspetor de Objetos"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Abrir"
@@ -574,6 +590,10 @@ msgstr "Atualizar"
 msgid "Remove from Favorites"
 msgstr "Remover dos favoritos"
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "S&alvar Como"
@@ -581,6 +601,10 @@ msgstr "S&alvar Como"
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Salvar como"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -657,6 +681,10 @@ msgstr "Dialogo de edição de texto"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Subitem"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

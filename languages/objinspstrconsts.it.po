@@ -212,6 +212,10 @@ msgstr "Categoria"
 msgid "Char"
 msgstr "Carattere"
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -436,6 +440,10 @@ msgstr "Indice immagine"
 msgid "Image list editor"
 msgstr "Editor elenco immagini"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr "Inserimento"
@@ -478,6 +486,10 @@ msgstr "Carica finestra di dialogo immagine"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
+msgstr ""
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
 msgstr ""
 
 #: objinspstrconsts:oismethod
@@ -536,6 +548,10 @@ msgstr "Oggetto"
 msgid "Object Inspector"
 msgstr "Ispettore oggetti"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Apri"
@@ -584,6 +600,10 @@ msgstr "Aggiorna"
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "S&alva come..."
@@ -591,6 +611,10 @@ msgstr "S&alva come..."
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Salva come"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -667,6 +691,10 @@ msgstr "Finestra di dialogo editor delle stringhe"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Voce sottostante"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

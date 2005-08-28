@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2005-03-13 22:25+0100\n"
+"PO-Revision-Date: 2005-08-26 16:26+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -151,7 +151,7 @@ msgstr "Rückschritt"
 
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
-msgstr ""
+msgstr "Bitmaps"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
@@ -319,7 +319,7 @@ msgstr "Pos1"
 
 #: lclstrconsts:rsicon
 msgid "Icon"
-msgstr ""
+msgstr "Symbol"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
@@ -335,11 +335,11 @@ msgstr "Einfg"
 
 #: lclstrconsts:rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr ""
+msgstr "Ungültiges Datum: %s"
 
 #: lclstrconsts:rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr ""
+msgstr "Ungültiges Datum: %s. Es muß zwischen %s und %s sein"
 
 #: lclstrconsts:sinvalidindex
 msgid "Invalid ImageList Index"
@@ -475,11 +475,11 @@ msgstr "Pause-Taste"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
-msgstr ""
+msgstr "Pixmap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr ""
+msgstr "PNG-Grafik"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

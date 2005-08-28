@@ -486,6 +486,18 @@ msgstr ""
 msgid "Jump to previous error"
 msgstr ""
 
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
 msgstr ""
@@ -3570,6 +3582,18 @@ msgstr ""
 msgid "&Goto Bookmark"
 msgstr ""
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
 msgstr ""
@@ -4122,6 +4146,18 @@ msgstr ""
 msgid "User First"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecgotomarker
 msgid "Go to Marker %d"
 msgstr ""
@@ -4352,6 +4388,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccompletecode
 msgid "Complete code"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecextractproc

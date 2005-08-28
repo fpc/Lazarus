@@ -306,6 +306,30 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr ""
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
+
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr ""
@@ -740,5 +764,9 @@ msgstr ""
 
 #: objinspstrconsts:oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
+msgstr ""
+
+#: objinspstrconsts:oisok2
+msgid "Ok"
 msgstr ""
 

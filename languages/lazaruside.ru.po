@@ -2686,6 +2686,14 @@ msgstr "Переход к строке"
 msgid "Goto line :"
 msgstr "Строка :"
 
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Переход к выделенной строке исходника"
@@ -3458,9 +3466,17 @@ msgstr "Переход вперед"
 msgid "Jump to"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Переход к след. ошибке"
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
@@ -4206,6 +4222,10 @@ msgstr "Новая строка"
 msgid "Next"
 msgstr "Следующий"
 
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Не найдено секции ResourceString"
@@ -4773,6 +4793,10 @@ msgstr "Предпросмотр"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Предпросмотр(max длина=1)"
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -5758,6 +5782,14 @@ msgstr "Точка с запятой"
 msgid "Set Marker %d"
 msgstr "Установить маркер %d"
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
 msgstr "Установить все элементы по умолчанию"
@@ -5845,6 +5877,10 @@ msgstr "Все проц-ры при ошибках"
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Показать кнопки закрытия закладок"
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"

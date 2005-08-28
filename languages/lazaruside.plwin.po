@@ -2697,6 +2697,14 @@ msgstr "IdŸ do wiersza..."
 msgid "Goto line :"
 msgstr "IdŸ do wiersza :"
 
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
 msgstr "PrzejdŸ do zaznaczonej linii Ÿród³a"
@@ -3469,8 +3477,16 @@ msgstr "Przeskocz do przodu"
 msgid "Jump to"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
 msgstr ""
 
 #: lazarusidestrconsts:lismenujumptopreverror
@@ -4217,6 +4233,10 @@ msgstr "Nowa linia"
 msgid "Next"
 msgstr "Nastêpny"
 
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Nie znalaz³em sekcji ResourceString."
@@ -4784,6 +4804,10 @@ msgstr "Podgl¹d"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Podgl¹d (maks. d³ugoœæ wiersza = 1)"
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -5769,6 +5793,14 @@ msgstr "Œrednik"
 msgid "Set Marker %d"
 msgstr "Ustaw znacznik %d"
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
 msgstr "Domyœlny wygl¹d wszystkich elementów"
@@ -5855,6 +5887,10 @@ msgstr "Wszystkie procs przy b³êdzie"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures

@@ -2686,6 +2686,14 @@ msgstr "Vés a la línia"
 msgid "Goto line :"
 msgstr "Vés a la línia:"
 
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Vés a la línia del codi seleccionada"
@@ -3458,9 +3466,17 @@ msgstr "Salta endavant"
 msgid "Jump to"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Salta al següent error"
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
@@ -4206,6 +4222,10 @@ msgstr "Nova línia"
 msgid "Next"
 msgstr "Següent"
 
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "No s'ha trobat la secció de la cadena del recurs"
@@ -4773,6 +4793,10 @@ msgstr "Visualització prèvia"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Visualització prèvia (long. màx. línia = 1)"
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -5758,6 +5782,14 @@ msgstr "Punt i coma"
 msgid "Set Marker %d"
 msgstr "Posiciona el marcador %d"
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
 msgstr "Predetermina tots els elements"
@@ -5845,6 +5877,10 @@ msgstr "Mostra tots els processos quan es trobi un error"
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Mostra els botons de tancar en el llibre de notes"
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"

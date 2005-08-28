@@ -202,6 +202,10 @@ msgstr "Categorie"
 msgid "Char"
 msgstr "Char"
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -426,6 +430,10 @@ msgstr "Plaatjes Index"
 msgid "Image list editor"
 msgstr "Image list bewerker"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr "Invoegen"
@@ -468,6 +476,10 @@ msgstr "Laad Plaatjes Dialoog"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
+msgstr ""
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
 msgstr ""
 
 #: objinspstrconsts:oismethod
@@ -526,6 +538,10 @@ msgstr "Object"
 msgid "Object Inspector"
 msgstr "Object Inspector"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Open"
@@ -574,6 +590,10 @@ msgstr "Verversen"
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "Opslaan &Als..."
@@ -581,6 +601,10 @@ msgstr "Opslaan &Als..."
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Opslaan als"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -657,6 +681,10 @@ msgstr "Strings Editor Dialoog"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Sub onderdeel"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

@@ -2686,6 +2686,14 @@ msgstr ""
 msgid "Goto line :"
 msgstr ""
 
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
 msgstr ""
@@ -3458,8 +3466,16 @@ msgstr ""
 msgid "Jump to"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
 msgstr ""
 
 #: lazarusidestrconsts:lismenujumptopreverror
@@ -4206,6 +4222,10 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr ""
@@ -4772,6 +4792,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
@@ -5758,6 +5782,14 @@ msgstr ""
 msgid "Set Marker %d"
 msgstr ""
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
 msgstr ""
@@ -5844,6 +5876,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures

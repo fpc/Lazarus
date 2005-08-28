@@ -1668,12 +1668,13 @@ end;
 procedure TOICustomPropertyGrid.DoTabKey;
 begin
   if Column=oipgcValue then begin
-    //Column:=
+    Column:=oipgcName;
+    Self.SetFocus;
   end else begin
-
+    Column:=oipgcValue;
+    if FCurrentEdit<>nil then
+      FCurrentEdit.SetFocus;
   end;
-  // ToDo: implement completion
-  if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
 end;
 
 procedure TOICustomPropertyGrid.EraseBackground(DC: HDC);

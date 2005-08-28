@@ -202,6 +202,10 @@ msgstr ""
 msgid "Char"
 msgstr ""
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "CheckGroup:n muokkain"
@@ -426,6 +430,10 @@ msgstr ""
 msgid "Image list editor"
 msgstr ""
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr ""
@@ -469,6 +477,10 @@ msgstr "Tuo kuva"
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
 msgstr "Tuo kuva"
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr ""
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -526,6 +538,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "Komponenttimuokkain"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr ""
@@ -574,12 +590,20 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr "Poista suositummista"
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
+msgstr ""
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
@@ -656,6 +680,10 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
+msgstr ""
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
 msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile

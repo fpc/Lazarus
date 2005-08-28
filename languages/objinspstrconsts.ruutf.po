@@ -211,6 +211,10 @@ msgstr "Категория"
 msgid "Char"
 msgstr ""
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -435,6 +439,10 @@ msgstr "индекс рисунка"
 msgid "Image list editor"
 msgstr "Редактор списка рисунков"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr ""
@@ -477,6 +485,10 @@ msgstr "Диалог загрузки изображения"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
+msgstr ""
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
 msgstr ""
 
 #: objinspstrconsts:oismethod
@@ -535,6 +547,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "инспектор объектов"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr ""
@@ -583,12 +599,20 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
+msgstr ""
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
@@ -666,6 +690,10 @@ msgstr "Диалог ввода строк"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Подэлемент"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

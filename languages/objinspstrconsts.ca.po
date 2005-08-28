@@ -202,6 +202,10 @@ msgstr "Categoria"
 msgid "Char"
 msgstr "Caràcter"
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -426,6 +430,10 @@ msgstr "Índex de les imatges"
 msgid "Image list editor"
 msgstr "Editor de la llista de les imatges"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr "Insereix"
@@ -468,6 +476,10 @@ msgstr "Carrega el diàleg de l'imatge"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
+msgstr ""
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
 msgstr ""
 
 #: objinspstrconsts:oismethod
@@ -526,6 +538,10 @@ msgstr "Objecte"
 msgid "Object Inspector"
 msgstr "Inspector dels objectes"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Obre"
@@ -574,6 +590,10 @@ msgstr "Refresca"
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "&Anomena i desa.."
@@ -581,6 +601,10 @@ msgstr "&Anomena i desa.."
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Anomena i desa"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -657,6 +681,10 @@ msgstr "Diàleg editor de les cadenes"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Subelement"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
