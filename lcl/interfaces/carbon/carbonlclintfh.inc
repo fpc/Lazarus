@@ -44,10 +44,6 @@ function IntfSendsUTF8KeyPress: boolean; override;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarUpdate(StatusBar: TObject); override;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

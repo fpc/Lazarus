@@ -41,7 +41,7 @@ uses
   InterfaceBase,
   // carbon bindings
 
-  { ToDo }
+  Carbon, CarbonUtils, CarbonExtra,
 
   // LCL
   Controls, Forms, Dialogs, LCLStrConsts, LMessages, LCLProc, LCLIntf, LCLType,
@@ -50,18 +50,23 @@ uses
 
 type
   TCarbonWidgetSet = class(TWidgetSet)
+  private
+    // This variable must be maintained by your thread scheduling
+    // code to accurately reflect the number of threads that are
+    // ready and need time for computation.
+    FNumberOfRunningThreads: SInt32;
+    // Set when the QuitEventHandler terminates
+    FTerminating: Boolean;
   protected
     procedure PassCmdLineOptions; override;
   public
     constructor Create;
     destructor Destroy; override;
-    function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
-                              data : pointer) : integer; override;
-    procedure HandleEvents; override;
-    procedure WaitMessage; override;
-    procedure SendCachedLCLMessages; override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
+    procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppTerminate; override;
-    procedure AppInit; override;
+    procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
 
     // create and destroy
@@ -91,12 +96,12 @@ uses
 ////////////////////////////////////////////////////
 // CarbonWSActnList,
 // CarbonWSArrow,
-// CarbonWSButtons,
+ CarbonWSButtons,
 // CarbonWSCalendar,
 // CarbonWSCheckLst,
 // CarbonWSCListBox,
 // CarbonWSComCtrls,
-// CarbonWSControls,
+ CarbonWSControls,
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,
 // CarbonWSDialogs,
@@ -105,7 +110,7 @@ uses
 // CarbonWSExtCtrls,
 // CarbonWSExtDlgs,
 // CarbonWSFileCtrl,
-// CarbonWSForms,
+ CarbonWSForms,
 // CarbonWSGrids,
 // CarbonWSImgList,
 // CarbonWSMaskEdit,
@@ -117,7 +122,7 @@ uses
 ////////////////////////////////////////////////////
   Math, Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
-  
+
 // the implementation of the utility methods
 {$I carbonobject.inc}
 // the implementation of the winapi compatibility methods
@@ -143,4 +148,3 @@ finalization
   InternalFinal;
 
 end.
-

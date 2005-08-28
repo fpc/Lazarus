@@ -428,12 +428,6 @@ begin
   Result:=inherited GetKeyState(nVirtKey);
 end;
 
-function TCarbonWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-begin
-  Result:=inherited GetNotebookTabIndexAtPos(Handle, ClientPos);
-end;
-
 function TCarbonWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
 begin
@@ -786,16 +780,9 @@ begin
   Result:=inherited SetBkMode(DC, bkMode);
 end;
 
-function TCarbonWidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
-  MinItemsHeight, MinItemCount: integer): boolean;
+function TCarbonWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result:=inherited SetComboMinDropDownSize(Handle, MinItemsWidth,
-    MinItemsHeight, MinItemCount);
-end;
-
-function TCarbonWidgetSet.SetCapture(Value: Longint): Longint;
-begin
-  Result:=inherited SetCapture(Value);
+  Result:=inherited SetCapture(AHandle);
 end;
 
 function TCarbonWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
@@ -812,6 +799,12 @@ function TCarbonWidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
   Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
+end;
+
+function TCarbonWidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+begin
+  Result:=inherited SetComboMinDropDownSize(Handle, MinItemsWidth,
+    MinItemsHeight, MinItemCount);
 end;
 
 function TCarbonWidgetSet.SetFocus(hWnd: HWND): HWND;

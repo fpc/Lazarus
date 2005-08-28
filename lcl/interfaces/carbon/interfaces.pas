@@ -40,9 +40,9 @@ uses
   CarbonInt, Forms;
 
 initialization
-  InterfaceObject:= TCarbonWidgetSet.Create;
+  WidgetSet:= TCarbonWidgetSet.Create;
 
 finalization
-  FreeInterfaceObject;
+  FreeWidgetSet;
 
 end.

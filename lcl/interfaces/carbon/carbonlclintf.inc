@@ -86,23 +86,6 @@ begin
   Result:=inherited ReplaceBitmapMask(Image, Mask, NewMask);
 end;
 
-procedure TCarbonWidgetSet.StatusBarPanelUpdate(StatusBar: TObject;
-  Index: integer);
-begin
-  inherited StatusBarPanelUpdate(StatusBar, Index);
-end;
-
-procedure TCarbonWidgetSet.StatusBarSetText(StatusBar: TObject;
-  PanelIndex: integer);
-begin
-  inherited StatusBarSetText(StatusBar, PanelIndex);
-end;
-
-procedure TCarbonWidgetSet.StatusBarUpdate(StatusBar: TObject);
-begin
-  inherited StatusBarUpdate(StatusBar);
-end;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

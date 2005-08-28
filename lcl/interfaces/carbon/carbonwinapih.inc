@@ -111,7 +111,6 @@ function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Po
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
-function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
@@ -183,7 +182,7 @@ function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
-function SetCapture(Value : Longint): Longint; override;
+function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
