@@ -3357,6 +3357,7 @@ procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: integer;
     AnchorToNeighbour(ResizeSide,0,Sibling);
     AnchorParallel(FixedSide1,0,Sibling);
     AnchorParallel(FixedSide2,0,Sibling);
+    BorderSpacing.SetSpace(ResizeSide,Space);
   end;
 
 var

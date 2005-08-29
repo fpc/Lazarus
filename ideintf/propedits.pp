@@ -1367,11 +1367,11 @@ type
     Memo: TMemo;
     OKButton, CancelButton: TBitBtn;
     SortButton: TButton;
-    Bevel: TBevel;
+    Panel: TPanel;
     StatusLabel: TLabel;
     Editor: TPropertyEditor;
     constructor Create(TheOwner: TComponent); override;
-    procedure AddButtons(var x, y, BtnWidth: integer); virtual;
+    procedure AddButtons; virtual;
   end;
 
 //==============================================================================
@@ -4551,12 +4551,6 @@ end;
 { TStringsPropEditorDlg }
 
 constructor TStringsPropEditorDlg.Create(TheOwner : TComponent);
-var
-  x: Integer;
-  y: Integer;
-  MaxX: LongInt;
-  MaxY: LongInt;
-  w: Integer;
 begin
   inherited Create(TheOwner);
   Position := poScreenCenter;
@@ -4564,72 +4558,66 @@ begin
   Height := 250;
   Caption := oisStringsEditorDialog;
 
-  Bevel:= TBevel.Create(Self);
-  x:=4;
-  y:=4;
-  MaxX:=Self.ClientWidth;
-  MaxY:=Self.ClientHeight;
-  with Bevel do begin
-    Parent:= Self;
-    Shape:= bsFrame;
-    SetBounds(x, y, MaxX-2*x, MaxY-y-34);
-    Anchors:= [akLeft, akTop, akRight, akBottom];
+  Panel := TPanel.Create(Self);
+  with Panel do begin
+    Parent:=Self;
+    BorderSpacing.Around:=4;
+    BevelInner:=bvLowered;
+    Align:=alTop;
   end;
 
   StatusLabel:= TLabel.Create(Self);
-  x:=8;
-  y:=8;
   with StatusLabel do begin
-    Parent:= Self;
-    SetBounds(x,y,MaxX-2*x, Height);
-    Anchors:= [akLeft, akTop, akRight];
+    Parent:=Panel;
+    Left:=7;
+    Top:=5;
     Caption:= ois0Lines0Chars;
   end;
 
   Memo := TMemo.Create(self);
-  y:=StatusLabel.Top+StatusLabel.Height;
   with Memo do begin
-    Parent:= Self;
-    SetBounds(x,y,MaxX-2*x,MaxY-y-38);
-    Anchors:= [akLeft, akTop, akRight, akBottom];
+    Parent:= Panel;
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,2,StatusLabel);
     Memo.OnChange:= @MemoChanged;
   end;
   
-  x:=MaxX;
-  y:=MaxY-30;
-  w:=80;
-  AddButtons(x,y,w);
+  AddButtons;
+  
+  Panel.AnchorToNeighbour(akBottom,4,OKButton);
+  
+  CancelControl:=CancelButton;
+  DefaultControl:=OKButton;
 end;
 
-procedure TStringsPropEditorDlg.AddButtons(var x, y, BtnWidth: integer);
+procedure TStringsPropEditorDlg.AddButtons;
 begin
   OKButton := TBitBtn.Create(Self);
   with OKButton do Begin
-    Parent := Self;
-    Kind:= bkOK;
-    dec(x,BtnWidth+8);
-    SetBounds(x,y,BtnWidth,Height);
-    Anchors:= [akRight, akBottom];
+    Parent:=Self;
+    Kind:=bkOK;
+    AutoSize:=true;
+    Anchors:=[akRight,akBottom];
+    AnchorParallel(akRight,4,Parent);
+    AnchorParallel(akBottom,4,Parent);
   end;
 
   CancelButton := TBitBtn.Create(Self);
   with CancelButton do Begin
-    Parent := Self;
-    Kind:= bkCancel;
-    dec(x,BtnWidth+8);
-    SetBounds(x,y,BtnWidth,Height);
-    Anchors:= [akRight, akBottom];
+    Parent:=Self;
+    Kind:=bkCancel;
+    AutoSize:=true;
+    AnchorToCompanion(akRight,5,OKButton);
   end;
 
   if Assigned(ShowSortSelectionDialogFunc) then begin
     SortButton := TButton.Create(Self);
     with SortButton do Begin
-      Parent := Self;
-      dec(x,BtnWidth+8);
-      SetBounds(x,y,BtnWidth,Height);
-      Anchors:= [akRight, akBottom];
+      Parent:=Self;
       Caption:=oisSort;
       OnClick:=@SortButtonClick;
+      AutoSize:=true;
+      AnchorToCompanion(akRight,5,CancelButton);
     end;
   end;
 end;

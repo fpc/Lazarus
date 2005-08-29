@@ -253,7 +253,7 @@ Type
     FCollectedValues: TAliasStrings;
     procedure AddValue(const s: string); virtual;
   public
-    procedure AddButtons(var x, y, BtnWidth: integer); override;
+    procedure AddButtons; override;
   end;
 
   
@@ -2074,18 +2074,17 @@ begin
     FCollectedValues.Values[s]:=s;
 end;
 
-procedure TAliasStringsPropEditorDlg.AddButtons(var x, y, BtnWidth: integer);
+procedure TAliasStringsPropEditorDlg.AddButtons;
 begin
-  inherited AddButtons(x, y, BtnWidth);
+  inherited AddButtons;
 
   GetDefaultValuesButton := TButton.Create(Self);
   with GetDefaultValuesButton do Begin
-    Parent := Self;
-    dec(x,BtnWidth+8);
-    SetBounds(x,y,BtnWidth,Height);
-    Anchors:= [akRight, akBottom];
+    Parent:=Self;
     Caption:='Get Defaults';
     OnClick:=@GetDefaultValuesButtonClick;
+    AutoSize:=true;
+    AnchorToCompanion(akRight,5,SortButton);
   end;
 end;
 
