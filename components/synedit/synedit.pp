@@ -1665,7 +1665,7 @@ begin
         if (First = Last) then
           Result := Copy(Lines[First], ColFrom, ColTo - ColFrom)
         else begin
-          // step1: calclate total length of result string
+          // step1: calculate total length of result string
           TotalLen := Max(0, Length(Lines[First]) - ColFrom + 1);
           for i := First + 1 to Last - 1 do
             Inc(TotalLen, Length(Lines[i]));
@@ -1680,7 +1680,11 @@ begin
             CopyAndForward(Lines[i], 1, MaxInt, P);
             CopyAndForward(sLineBreak, 1, MaxInt, P);
           end;
+          {$IFDEF SYN_LAZARUS}
+          CopyPaddedAndForward(Lines[Last], 1, ColTo - 1, P);
+          {$ELSE}
           CopyAndForward(Lines[Last], 1, ColTo - 1, P);
+          {$ENDIF}
         end;
       smColumn:
         begin
