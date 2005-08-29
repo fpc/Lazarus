@@ -1016,7 +1016,7 @@ begin
     if (LazPackage<>ARequiredPackage)
     and (not LazPackage.Requires(PkgComponent.PkgFile.LazPackage))
     then
-      Params.Dependency:=ARequiredPackage.CreateDependencyForThisPkg(nil);
+      Params.Dependency:=ARequiredPackage.CreateDependencyWithOwner(nil);
   end;
 
   ModalResult:=mrOk;

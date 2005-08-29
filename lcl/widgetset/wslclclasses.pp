@@ -24,7 +24,7 @@ unit WSLCLClasses;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseWSRegistration}
+{off $DEFINE VerboseWSRegistration}
 
 interface
 ////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ interface
 ////////////////////////////////////////////////////
 // 1) Only class methods allowed
 // 2) Class methods have to be published and virtual
-// 3) To get as little as posible circles, the uses
+// 3) To get as little as possible circles, the uses
 //    clause should contain only those LCL units 
 //    needed for registration. WSxxx units are OK
 // 4) To improve speed, register only classes in the 

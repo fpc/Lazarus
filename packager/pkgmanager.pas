@@ -78,6 +78,8 @@ type
                                        Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
       APackage: TLazPackage; const Filename: string): TModalResult;
+    function OnPackageEditorAddToProject(Sender: TObject; APackage: TLazPackage;
+                                     OnlyTestIfPossible: boolean): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     function OnPackageEditorPublishPackage(Sender: TObject;
@@ -228,8 +230,10 @@ type
     function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; override;
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
-    procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
-    function AddProjectDependency(AProject: TProject; ADependency: TPkgDependency): TModalResult;
+    function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
+                                  OnlyTestIfPossible: boolean = false): TModalResult; override;
+    function AddProjectDependency(AProject: TProject;
+                                  ADependency: TPkgDependency): TModalResult;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
@@ -747,6 +751,12 @@ function TPkgManager.OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
   APackage: TLazPackage; const Filename: string): TModalResult;
 begin
   Result:=MainIDE.DoDeleteAmbiguousFiles(Filename);
+end;
+
+function TPkgManager.OnPackageEditorAddToProject(Sender: TObject;
+  APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
+begin
+  Result:=AddProjectDependency(Project1,APackage,OnlyTestIfPossible);
 end;
 
 function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
@@ -1784,7 +1794,7 @@ begin
   // add them to auto install list
   for i:=0 to PackageGraph.LazarusBasePackages.Count-1 do begin
     BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
-    Dependency:=BasePackage.CreateDependencyForThisPkg(Self);
+    Dependency:=BasePackage.CreateDependencyWithOwner(Self);
     PackageGraph.OpenDependency(Dependency);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
   end;
@@ -1940,6 +1950,7 @@ begin
   PackageEditors.OnRevertPackage:=@OnPackageEditorRevertPackage;
   PackageEditors.OnPublishPackage:=@OnPackageEditorPublishPackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
+  PackageEditors.OnAddToProject:=@OnPackageEditorAddToProject;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSourcePackage;
@@ -2188,19 +2199,23 @@ begin
   OpenProjectDependencies(AProject,true);
 end;
 
-procedure TPkgManager.AddProjectDependency(AProject: TProject;
-  APackage: TLazPackage);
+function TPkgManager.AddProjectDependency(AProject: TProject;
+  APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
 var
   NewDependency: TPkgDependency;
 begin
+  Result:=mrCancel;
   // check if the dependency is already there
   if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
     APackage.Name)<>nil
-  then
+  then begin
+    // package already there
+    Result:=mrCancel;
     exit;
+  end;
   // add a dependency for the package to the project
-  NewDependency:=APackage.CreateDependencyForThisPkg(AProject);
-  AddProjectDependency(AProject,NewDependency);
+  NewDependency:=APackage.CreateDependencyWithOwner(AProject);
+  Result:=AddProjectDependency(AProject,NewDependency);
 end;
 
 function TPkgManager.AddProjectDependency(AProject: TProject;
@@ -2271,7 +2286,7 @@ begin
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.CreateNewPackage(lisPkgMangNewPackage);
   PackageGraph.AddDependencyToPackage(NewPackage,
-                PackageGraph.FCLPackage.CreateDependencyForThisPkg(NewPackage));
+                PackageGraph.FCLPackage.CreateDependencyWithOwner(NewPackage));
   NewPackage.Modified:=false;
 
   // open a package editor
@@ -3524,7 +3539,7 @@ begin
       RequiredPackage:=TLazPackage(PkgList[i]);
       if RequiredPackage.AutoInstall=pitNope then begin
         RequiredPackage.AutoInstall:=pitStatic;
-        Dependency:=RequiredPackage.CreateDependencyForThisPkg(Self);
+        Dependency:=RequiredPackage.CreateDependencyWithOwner(Self);
         Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
         PackageGraph.OpenDependency(Dependency);
         NeedSaving:=true;

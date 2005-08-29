@@ -62,6 +62,9 @@ type
   TOnCompilePackage =
     function(Sender: TObject; APackage: TLazPackage;
              CompileClean, CompileRequired: boolean): TModalResult of object;
+  TOnAddPkgToProject =
+    function(Sender: TObject; APackage: TLazPackage;
+             OnlyTestIfPossible: boolean): TModalResult of object;
   TOnInstallPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnUninstallPackage =
@@ -124,6 +127,7 @@ type
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxClick(Sender: TObject);
+    procedure AddToProjectClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -187,6 +191,7 @@ type
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
       AnIncludeFile: string);
+    function CanBeAddedToProject: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -210,6 +215,7 @@ type
   private
     FItems: TList; // list of TPackageEditorForm
     fLayouts: TAVLTree;// tree of TPackageEditorLayout sorted for filename
+    FOnAddToProject: TOnAddPkgToProject;
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
     FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
@@ -258,6 +264,8 @@ type
     function ViewPkgSourcePackage(APackage: TLazPackage): TModalResult;
     function DeleteAmbiguousFiles(APackage: TLazPackage;
                                   const Filename: string): TModalResult;
+    function AddToProject(APackage: TLazPackage;
+                          OnlyTestIfPossible: boolean): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -291,6 +299,8 @@ type
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnImExportCompilerOptions: TNotifyEvent
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
+    property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
+                                                write FOnAddToProject;
   end;
   
 var
@@ -540,6 +550,13 @@ begin
   if ItemCnt>0 then
     AddPopupMenuItem('-',nil,true);
 
+  AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
+                   CanBeAddedToProject);
+  AddPopupMenuItem(lisPckEditInstall, @InstallBitBtnClick, InstallBitBtn.Enabled
+    );
+  AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
+          (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
+  AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem(lisMenuSave, @SaveBitBtnClick, SaveBitBtn.Enabled);
   AddPopupMenuItem(lisMenuSaveAs, @SaveAsClick, not LazPackage.AutoCreated);
   AddPopupMenuItem(lisMenuRevert, @RevertClick, (not LazPackage.AutoCreated) and
@@ -556,11 +573,6 @@ begin
   AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem(lisCodeTemplAdd, @AddBitBtnClick, AddBitBtn.Enabled);
   AddPopupMenuItem(lisExtToolRemove, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
-  AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem(lisPckEditInstall, @InstallBitBtnClick, InstallBitBtn.Enabled
-    );
-  AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
-          (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
   AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem(lisPckEditGeneralOptions, @OptionsBitBtnClick,
     OptionsBitBtn.Enabled);
@@ -1070,6 +1082,12 @@ begin
   CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
   LazPackage.Modified:=not Removed;
   UpdateAll;
+end;
+
+procedure TPackageEditorForm.AddToProjectClick(Sender: TObject);
+begin
+  if LazPackage=nil then exit;
+  PackageEditors.AddToProject(LazPackage,false);
 end;
 
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
@@ -1907,6 +1925,12 @@ begin
   end;
 end;
 
+function TPackageEditorForm.CanBeAddedToProject: boolean;
+begin
+  if LazPackage=nil then exit;
+  Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
+end;
+
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
   PackageEditors.SavePackage(LazPackage,SaveAs);
@@ -2249,21 +2273,27 @@ function TPackageEditors.CreateNewFile(Sender: TObject;
 begin
   Result:=mrCancel;
   if Assigned(OnCreateNewFile) then
-    Result:=OnCreateNewFile(Sender,Params);
+    Result:=OnCreateNewFile(Sender,Params)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.SavePackage(APackage: TLazPackage;
   SaveAs: boolean): TModalResult;
 begin
   if Assigned(OnSavePackage) then
-    Result:=OnSavePackage(Self,APackage,SaveAs);
+    Result:=OnSavePackage(Self,APackage,SaveAs)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.CompilePackage(APackage: TLazPackage;
   CompileClean, CompileRequired: boolean): TModalResult;
 begin
   if Assigned(OnCompilePackage) then
-    Result:=OnCompilePackage(Self,APackage,CompileClean,CompileRequired);
+    Result:=OnCompilePackage(Self,APackage,CompileClean,CompileRequired)
+  else
+    Result:=mrCancel;
 end;
 
 procedure TPackageEditors.UpdateAllEditors;
@@ -2276,20 +2306,26 @@ end;
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnInstallPackage) then
-    Result:=OnInstallPackage(Self,APackage);
+    Result:=OnInstallPackage(Self,APackage)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.UninstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnUninstallPackage) then
-    Result:=OnUninstallPackage(Self,APackage);
+    Result:=OnUninstallPackage(Self,APackage)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.ViewPkgSourcePackage(APackage: TLazPackage
   ): TModalResult;
 begin
   if Assigned(OnViewPackageSource) then
-    Result:=OnViewPackageSource(Self,APackage);
+    Result:=OnViewPackageSource(Self,APackage)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.DeleteAmbiguousFiles(APackage: TLazPackage;
@@ -2301,16 +2337,29 @@ begin
     Result:=mrOk;
 end;
 
+function TPackageEditors.AddToProject(APackage: TLazPackage;
+  OnlyTestIfPossible: boolean): TModalResult;
+begin
+  if Assigned(OnAddToProject) then
+    Result:=OnAddToProject(Self,APackage,OnlyTestIfPossible)
+  else
+    Result:=mrCancel;
+end;
+
 function TPackageEditors.RevertPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnRevertPackage) then
-    Result:=OnRevertPackage(Self,APackage);
+    Result:=OnRevertPackage(Self,APackage)
+  else
+    Result:=mrCancel;
 end;
 
 function TPackageEditors.PublishPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnPublishPackage) then
-    Result:=OnPublishPackage(Self,APackage);
+    Result:=OnPublishPackage(Self,APackage)
+  else
+    Result:=mrCancel;
 end;
 
 { TPackageEditorLayout }

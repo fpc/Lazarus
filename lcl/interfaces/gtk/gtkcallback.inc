@@ -734,7 +734,6 @@ end;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
-  Info: PWinWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
 
@@ -748,11 +747,6 @@ begin
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
   
-  // ---
-  // MWE: why is free widget info not used here ???
-  //Info := GetWidgetInfo(widget, False);
-  //if Info <> nil then Dispose(Info);
-  // ---
   FreeWidgetInfo(Widget);
 end;
 

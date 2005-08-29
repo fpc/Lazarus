@@ -731,7 +731,7 @@ type
   public
     constructor Create(Stream: TStream);
     procedure ReadSignature;
-    procedure Read(var Buf; Count: Longint);
+    procedure Read(out Buf; Count: Longint);
     function ReadInteger: Longint;
     function ReadValue: TDelphiValueType;
     function NextValue: TDelphiValueType;
@@ -801,7 +801,7 @@ begin
     ReadError(rsInvalidStreamFormat);
 end;
 
-procedure TDelphiReader.Read(var Buf; Count: Longint);
+procedure TDelphiReader.Read(out Buf; Count: Longint);
 begin
   FStream.Read(Buf,Count);
 end;
@@ -2114,6 +2114,7 @@ end;
 
 function ReadLRSWord(s: TStream): word;
 begin
+  Result:=0;
   s.Read(Result,2);
   {$IFDEF Endian_BIG}
   Result:=((Result and $ff) shl 8) or (Result shr 8);
@@ -2122,6 +2123,7 @@ end;
 
 function ReadLRSInteger(s: TStream): integer;
 begin
+  Result:=0;
   s.Read(Result,4);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2130,6 +2132,7 @@ end;
 
 function ReadLRSCardinal(s: TStream): cardinal;
 begin
+  Result:=0;
   s.Read(Result,4);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2138,6 +2141,7 @@ end;
 
 function ReadLRSInt64(s: TStream): int64;
 begin
+  Result:=0;
   s.Read(Result,8);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,8);
@@ -2146,6 +2150,7 @@ end;
 
 function ReadLRSSingle(s: TStream): Single;
 begin
+  Result:=0;
   s.Read(Result,4);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2154,6 +2159,7 @@ end;
 
 function ReadLRSDouble(s: TStream): Double;
 begin
+  Result:=0;
   s.Read(Result,8);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,8);
@@ -2162,6 +2168,7 @@ end;
 
 function ReadLRSExtended(s: TStream): Extended;
 begin
+  Result:=0;
   {$IFDEF CPUi386}
   s.Read(Result,10);
   {$ENDIF}
@@ -2172,6 +2179,7 @@ end;
 
 function ReadLRSCurrency(s: TStream): Currency;
 begin
+  Result:=0;
   s.Read(Result,8);
   {$IFDEF Endian_BIG}
   ReverseBytes(@Result,8);
@@ -2401,6 +2409,7 @@ end;
 
 function TLRSObjectReader.ReadIntegerContent: integer;
 begin
+  Result:=0;
   Read(Result,4);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2505,19 +2514,21 @@ var
   e: array[1..10] of byte;
 {$endif}
 begin
+  Result:=0;
   {$ifdef FPC_HAS_TYPE_EXTENDED}
-  Read(Result, 10);
-  {$ifdef ENDIAN_BIG}
-  ReverseBytes(@Result, 10);
-  {$endif ENDIAN_BIG}
+    Read(Result, 10);
+    {$ifdef ENDIAN_BIG}
+      ReverseBytes(@Result, 10);
+    {$endif ENDIAN_BIG}
   {$else FPC_HAS_TYPE_EXTENDED}
-  Read(e, 10);
-  Result := ConvertLRSExtendedToDouble(@e);
+    Read(e, 10);
+    Result := ConvertLRSExtendedToDouble(@e);
   {$endif FPC_HAS_TYPE_EXTENDED}
 end;
 
 function TLRSObjectReader.ReadSingle: Single;
 begin
+  Result:=0;
   Read(Result, 4);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2526,6 +2537,7 @@ end;
 
 function TLRSObjectReader.ReadCurrency: Currency;
 begin
+  Result:=0;
   Read(Result, 8);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,8);
@@ -2534,6 +2546,7 @@ end;
 
 function TLRSObjectReader.ReadDate: TDateTime;
 begin
+  Result:=0;
   Read(Result, 8);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,8);
@@ -2564,11 +2577,13 @@ end;
 
 function TLRSObjectReader.ReadInt8: ShortInt;
 begin
+  Result:=0;
   Read(Result, 1);
 end;
 
 function TLRSObjectReader.ReadInt16: SmallInt;
 begin
+  Result:=0;
   Read(Result, 2);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,2);
@@ -2577,6 +2592,7 @@ end;
 
 function TLRSObjectReader.ReadInt32: LongInt;
 begin
+  Result:=0;
   Read(Result, 4);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,4);
@@ -2585,6 +2601,7 @@ end;
 
 function TLRSObjectReader.ReadInt64: Int64;
 begin
+  Result:=0;
   Read(Result, 8);
   {$ifdef Endian_BIG}
   ReverseBytes(@Result,8);

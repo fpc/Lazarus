@@ -924,7 +924,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
 
     // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg(Result));
+    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
 
     // add registering units
     AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
@@ -997,7 +997,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
 
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
@@ -1053,7 +1053,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
 
     // add units
     AddFile('actionseditor.pas','ActionsEditor',pftUnit,[],cpBase);
@@ -1120,8 +1120,8 @@ begin
     UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/custom');
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
-    AddRequiredDependency(SynEditPackage.CreateDependencyForThisPkg(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(SynEditPackage.CreateDependencyWithOwner(Result));
 
     Modified:=false;
   end;

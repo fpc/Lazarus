@@ -682,7 +682,7 @@ type
     procedure RemoveRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
-    function CreateDependencyForThisPkg(NewOwner: TObject): TPkgDependency;
+    function CreateDependencyWithOwner(NewOwner: TObject): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TList);
     // components
@@ -2877,7 +2877,7 @@ begin
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
 end;
 
-function TLazPackage.CreateDependencyForThisPkg(
+function TLazPackage.CreateDependencyWithOwner(
   NewOwner: TObject): TPkgDependency;
 begin
   Result:=TPkgDependency.Create;

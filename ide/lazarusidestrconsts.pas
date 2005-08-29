@@ -2490,6 +2490,7 @@ resourcestring
   lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile clean';
   lisPckEditRecompileAllRequired = 'Recompile all required';
+  lisPckEditAddToProject = 'Add to project';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
   lisPckEditViewPackgeSource = 'View Package Source';
