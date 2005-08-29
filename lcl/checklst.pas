@@ -1,7 +1,7 @@
 { $Id$
  /***************************************************************************
-                               checklst.pp
-                               -----------
+                               checklst.pas
+                               ------------
 
                    Initial Revision  : Thu Jun 19 CST 2003
 
@@ -28,8 +28,8 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, LCLType, GraphType, Graphics, LMessages, LResources,
-  Controls, StdCtrls;
+  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, LMessages,
+  LResources, Controls, StdCtrls;
   
 
 type
@@ -108,14 +108,16 @@ type
 
 { TCustomCheckListBox }
 
-procedure TCustomCheckListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
+procedure TCustomCheckListBox.AssignCacheToItemData(const AIndex: Integer;
+  const AData: Pointer);
 begin
   inherited AssignCacheToItemData(AIndex, AData);
   if PCachedItemData(AData + FItemDataOffset)^
   then SendItemChecked(AIndex, True);
 end;
 
-procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
+procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer;
+  const AData: Pointer);
 begin
   inherited AssignItemDataToCache(AIndex, AData);
   PCachedItemData(AData + FItemDataOffset)^ := Checked[AIndex];
@@ -138,18 +140,21 @@ function TCustomCheckListBox.GetChecked(const AIndex: Integer): Boolean;
 begin
   CheckIndex(AIndex);
 
-  if HandleAllocated
-  then Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetChecked(Self, AIndex)
-  else Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
+  if HandleAllocated then
+    Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetChecked(Self, AIndex)
+  else
+    Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
 end;
 
-procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
+procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer;
+  const AChecked: Boolean);
 begin
   if HandleAllocated then
-    TWSCustomCheckListBoxClass(WidgetSetClass).SetChecked(Self, AIndex, AChecked);
+    TWSCustomCheckListBoxClass(WidgetSetClass).SetChecked(Self,AIndex,AChecked);
 end;
 
-procedure TCustomCheckListBox.SetChecked(const AIndex: Integer; const AValue: Boolean);
+procedure TCustomCheckListBox.SetChecked(const AIndex: Integer;
+  const AValue: Boolean);
 begin
   CheckIndex(AIndex);
 
@@ -178,6 +183,7 @@ begin
     for i:=0 to ChecksCount-1 do begin
       v:=ord(Checks[i+1]);
       Checked[i]:=((v and 1)>0);
+      //debugln('TCustomCheckListBox.ReadData Checked[',dbgs(i),']=',dbgs(Checked[i]),' v=',dbgs(v));
     end;
   end;
 end;
@@ -196,6 +202,7 @@ begin
     for i:=0 to ChecksCount-1 do begin
       v:=0;
       if Checked[i] then inc(v,1);
+      //debugln('TCustomCheckListBox.WriteData Checked[',dbgs(i),']=',dbgs(Checked[i]));
       Checks[i+1]:=chr(v);
     end;
     Stream.WriteBuffer(Checks[1], ChecksCount);

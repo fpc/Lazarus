@@ -384,43 +384,6 @@ type
   TLMNoParams = TWMNoParams;
 {$endif}
 
-(*
-//TODO: Remove
-  TLMCanvasCreate = Record
-     pparent : Pointer;
-     pCanvas : Pointer;
-  end;
-
-  pTLMCanvasCreate = ^TLMCanvasCreate;
-
-  PLMCanvasDrawRect = ^TLMCanvasDrawRect;
-  TLMCanvasDrawRect = Record
-     R : TRect;
-     ReDraw : Boolean;
-     PenColor : TGraphicsColor;
-    end;
-
-  PLMCanvasDrawLine = ^TLMCanvasDrawLine;
-  TLMCanvasDrawLine = Record
-     x1 : Integer;
-     y1 : Integer;
-     x2 : Integer;
-     y2 : Integer;
-     PenColor : TGraphicsColor;
-     ReDraw : Boolean;
-    end;
-
-  PLMCanvasDrawText = ^TLMCanvasDrawText;
-  TLMCanvasDrawText = Record
-     x1 : Integer;
-     y1 : Integer;
-     Str : String;
-     Font : TObject;
-     PenColor : TGraphicsColor;
-     ReDraw : Boolean;
-    end;
-*)
-
   TLMEraseBkgnd = record
     Msg: Cardinal;
     DC: HDC;
@@ -436,19 +399,6 @@ type
   end;
 
   TLMGetTextLength = TLMNoParams;
-
-(*
-//TODO: remove
-
-  PLMInsertText = ^TLMInsertText;
-  TLMInsertText = record
-    Msg : Cardinal;
-    NewText : String;
-    Length : Integer;
-    Position : Integer;
-    UserData : Pointer;
-  end;
-*)
 
   TLMKey = record
     Msg: Cardinal;

@@ -52,11 +52,12 @@ type
 
 implementation
 
-function  TGtkWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer): boolean;
+function  TGtkWSCustomCheckListBox.GetChecked(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): boolean;
 var
-  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
+  Widget      : PGtkWidget; // pointer to gtk-widget (local use when neccessary)
+  ChildWidget : PGtkWidget; // generic pointer to a child gtk-widget
+                            // (local use when neccessary)
   ListItem    : PGtkListItem;
 begin
   Result := false;
@@ -72,8 +73,9 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer; const AChecked: boolean);
+procedure TGtkWSCustomCheckListBox.SetChecked(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AChecked: boolean);
 var
   Widget, ChildWidget: PGtkWidget;
   ListItem: PGtkListItem;

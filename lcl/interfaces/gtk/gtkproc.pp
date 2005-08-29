@@ -572,11 +572,9 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
 
 // signals
 // new signal procs, these will obsolete the old ones
-// MG: Say who?
-// MWE: says me !
-// new signalshandlers are attached localy in the new WSxxx classes
+// new signalshandlers are attached locally in the new WSxxx classes
 // they also have PWidgetInfo as data (and not the TControl)
-// singnals are now also handled dedicated and localy, so no case statements
+// singnals are now also handled dedicated and locally, so no case statements
 // anymore in signal handlers
 procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
@@ -584,9 +582,8 @@ procedure SignalConnectAfter(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
 
 // old signal procs
-// MG: why old?
-// MWE: since they are used in attachcallbacs, and they pass TControl as data
-//      One day attachsignals gets removed.
+// since they are used in attachcallbacks, and they pass TControl as data
+// One day attachsignals gets removed.
 procedure ConnectSignal(const AnObject: PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
@@ -603,6 +600,11 @@ procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
 
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
+  
+{$IFDEF GTK1}
+function G_OBJECT(p: Pointer): PGtkObject;
+function G_CALLBACK(p: Pointer): TGTKSignalFunc;
+{$ENDIF}
 //--
   
 // accelerators

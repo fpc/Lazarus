@@ -261,7 +261,7 @@ type
     procedure DestroyWnd; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
-    procedure LMChange(var msg); message LM_CHANGED;
+    procedure LMChange(var Msg); message LM_CHANGED;
     procedure Change; dynamic;
     procedure Select; dynamic;
     procedure DropDown; dynamic;

@@ -65,7 +65,7 @@ implementation
 function  TWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox; 
   const AIndex: integer): boolean;
 begin
-  result := false;
+  Result := false;
 end;
 
 procedure TWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox; 

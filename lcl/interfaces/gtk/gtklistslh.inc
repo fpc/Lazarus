@@ -19,6 +19,8 @@
 }
 
 type
+  { TGtkListStringList }
+
   TGtkListStringsState = (glsItemCacheNeedsUpdate);
   TGtkListStringsStates = set of TGtkListStringsState;
   
@@ -73,6 +75,8 @@ type
     property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
   end;
+
+  { TGtkCListStringList }
 
   TGtkCListStringList = class(TStrings)
   private

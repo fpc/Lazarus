@@ -122,6 +122,47 @@ begin
   Result := gtkListItemDrawAfterCB(Widget, @Event^.Area, data);
 end;
 
+{------------------------------------------------------------------------------
+  function gtkListItemToggledCB(Widget: PGtkWidget; Data: gPointer): GBoolean; cdecl;
+
+  Called when a toggle button has change in a
+  TGtkListStringList (TCustomCheckListBox).
+------------------------------------------------------------------------------}
+function gtkListItemToggledCB(Widget: PGtkWidget; Data: gPointer): GBoolean; cdecl;
+var
+  GtkList: PGtkList;
+  LCLList: TGtkListStringList;
+  //ItemIndex: LongInt;
+  Mess: TLMessage;
+begin
+  Result:=true;
+
+  //DebugLn('gtkListItemDrawCB ');
+
+  // get context
+  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  if GtkList=nil then
+    RaiseException('gtkListItemToggledCB GtkList=nil');
+  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+                              GtkListItemLCLListTag));
+  if LCLList=nil then
+    RaiseException('gtkListItemToggledCB LCLList=nil');
+  if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
+
+  // get itemindex and area
+  //ItemIndex:=g_list_index(GtkList^.children,Data);
+  
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
+  if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
+    gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
+  end;
+
+  Mess.Msg := LM_CHANGED;
+  Mess.Result := 0;
+  DeliverMessage(LCLList.Owner, Mess);
+end;
+
 {*************************************************************}
 {                      TGtkListStringList methods             }
 {*************************************************************}
@@ -217,6 +258,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
+var
+  ChildWidget: Pointer;
 begin
   gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
   gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
@@ -231,7 +274,12 @@ begin
   {$else}
   gtk_signal_connect_after(PGtkObject(li), 'draw',
                            TGTKSignalFunc(@gtkListItemDrawAfterCB),li);
-  {$endif}		    
+  {$endif}
+  if FWithCheckBox then begin
+    ChildWidget := PPointer(PGTKBox(PGtkBin(Li)^.child)^.Children^.Data)^;
+    g_signal_connect_after(G_OBJECT(ChildWidget), 'toggled',
+                           G_CALLBACK(@gtkListItemToggledCB), li);
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -7645,6 +7645,18 @@ begin
   end;
 end;
 
+{$IFDEF GTK1}
+function G_OBJECT(p: Pointer): PGtkObject;
+begin
+  Result:=PGtkObject(p);
+end;
+
+function G_CALLBACK(p: Pointer): TGTKSignalFunc;
+begin
+  Result:=TGTKSignalFunc(p);
+end;
+{$ENDIF}
+
 Function DeleteAmpersands(var Str : String) : Longint;
 // convert double ampersands to single & and delete single &
 // return the position of the letter after the first deleted single ampersand
