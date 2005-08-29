@@ -323,6 +323,7 @@ End;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppWaitMessage;
 Begin
+  RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
   Windows.WaitMessage;
   Assert(False,'Trace:Leave wait message');

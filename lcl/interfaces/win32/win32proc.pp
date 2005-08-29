@@ -81,6 +81,7 @@ Procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
+
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
@@ -91,6 +92,8 @@ function GetWindowInfo(Window: HWND): PWindowInfo;
 function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
+procedure AddToChangedMenus(Window: HWnd);
+procedure RedrawMenus;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -102,6 +105,7 @@ type
 var
   DefaultWindowInfo: TWindowInfo;
   WindowInfoAtom: ATOM;
+  ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
 
 implementation
 
@@ -1026,6 +1030,47 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure AddToChangedMenus(Window: HWnd);
+
+  Adds Window to the list of windows which need to redraw the main menu.
+-------------------------------------------------------------------------------}
+procedure AddToChangedMenus(Window: HWnd);
+{only add window handle if it does not yet exist in the list}
+  function FindHandle: integer;
+  var i: integer;
+  begin
+    for i := 0 to ChangedMenus.Count - 1 do
+      if HWnd(ChangedMenus[i]) = Window then
+      begin
+        Result := i;
+        exit;
+      end;
+    Result := ChangedMenus.Count;
+  end;
+
+begin
+  if FindHandle = ChangedMenus.Count then // Window handle is not yet in the list
+    ChangedMenus.Add(Pointer(Window));
+end;
+    
+{------------------------------------------------------------------------------
+  Method: RedrawMenus
+  Params:  None
+  Returns: Nothing
+
+  Redraws all changed menus
+ ------------------------------------------------------------------------------}
+procedure RedrawMenus;
+begin
+  while ChangedMenus.Count > 0 do
+  begin
+    DrawMenuBar(HWND(ChangedMenus[0]));
+    ChangedMenus.Delete(0);
+  end;
+end;
+
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1035,11 +1080,13 @@ initialization
 
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
+  ChangedMenus := TList.Create;
 
 finalization
 
   Windows.GlobalDeleteAtom(WindowInfoAtom);
   WindowInfoAtom := 0;
+  ChangedMenus.Free;
 
 end.
 

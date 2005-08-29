@@ -119,7 +119,7 @@ begin
       TWinControl(AMenuItem.Owner).HandleAllocated and
       TWinControl(AMenuItem.Owner).Visible and
       ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
 end;
 
 procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -252,7 +252,7 @@ begin
       TWinControl(AMenuItem.Owner).HandleAllocated and
       TWinControl(AMenuItem.Owner).Visible and
       ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
 end;
 
 function  TWin32WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
@@ -273,7 +273,7 @@ begin
   and TCustomForm(AMenu.Parent).HandleAllocated 
   and TCustomForm(AMenu.Parent).Visible
   and not (csDestroying in AMenu.Parent.ComponentState) then
-    DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
+    AddToChangedMenus(TWinControl(AMenu.Parent).Handle);
 end;
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
@@ -340,6 +340,11 @@ begin
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
+  if (AMenuItem.Owner is TWinControl) and
+    TWinControl(AMenuItem.Owner).HandleAllocated and
+    TWinControl(AMenuItem.Owner).Visible and
+    ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
+    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
 end;
 
 function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
@@ -353,7 +358,11 @@ begin
   else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
   MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
   Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+  if (AMenuItem.Owner is TWinControl) and
+    TWinControl(AMenuItem.Owner).HandleAllocated and
+    TWinControl(AMenuItem.Owner).Visible and
+    ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
+    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
 end;
 
 
