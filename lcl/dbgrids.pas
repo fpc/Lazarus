@@ -405,6 +405,7 @@ type
     //property SelectedRows;
   published
     property Align;
+    property AlternateColor;
     property Anchors;
     property AutoAdvance default aaRightDown;
     property AutoFillColumns;
@@ -910,7 +911,7 @@ begin
     
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgdbgrid}
-      DebugLn('---> UpdateData: Field[', edField.Fieldname, ']=', FTempText,' INIT');
+      DebugLn('---> UpdateData: Field[', edField.Fieldname, '(',edField.AsString,')]=', FTempText,' INIT');
       {$endif}
       
       StartUpdating;
@@ -1830,7 +1831,7 @@ var
   end;
 begin
   {$ifdef dbgdbgrid}DebugLn('dbgrid.mousedown - INIT');{$endif}
-  if (csDesigning in componentState) or not GCache.ValidGrid then
+  if (csDesigning in componentState) {or not GCache.ValidGrid }then
     exit;
 
   if UpdatingData then begin
@@ -2350,7 +2351,6 @@ begin
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
-  DefaultTextStyle.Wordbreak := False;
 
   DefaultRowHeight := 18;
 
