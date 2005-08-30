@@ -97,7 +97,7 @@ begin
      begin
        repeat
          // check if special file
-         if ((FileInfo.Name='.') or (FileInfo.Name='..')) or
+         if ((FileInfo.Name='.') or (FileInfo.Name='..')) or (FileInfo.Name='')
             (((faHidden and FileInfo.Attr)>0) and
               IgnoreHidden) then continue;
          Result:= ((faDirectory and FileInfo.Attr)>0);
@@ -136,7 +136,9 @@ begin
           SortList.Sorted:= True;
           repeat
             // check if special file
-            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            then
+              continue;
             // if this is a directory then add it to the tree.
             if ((faDirectory and FileInfo.Attr)>0) then
             begin

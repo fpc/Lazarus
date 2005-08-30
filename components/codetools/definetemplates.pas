@@ -3050,7 +3050,8 @@ var
       if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
           AFilename:=FileInfo.Name;
-          if (AFilename='.') or (AFilename='..') then continue;
+          if (AFilename='') or (AFilename='.') or (AFilename='..') then
+            continue;
           //debugln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
           i:=High(IgnoreDirs);
           while (i>=Low(IgnoreDirs)) and (AFilename<>IgnoreDirs[i]) do dec(i);

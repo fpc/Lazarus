@@ -750,7 +750,8 @@ begin
   if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
       CurFilename:=CurSrcDir+FileInfo.Name;
       if (FileInfo.Attr and faDirectory)>0 then begin
         if not DeleteDirectory(CurFilename,false) then exit;

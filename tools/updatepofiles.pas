@@ -326,7 +326,7 @@ begin
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
   if SysUtils.FindFirst(Path+FindMask,faAnyFile,FileInfo)=0 then begin
     repeat
-      if (FileInfo.Name='.') or (FileInfo.Name='..')
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
       CurExt:=ExtractFileExt(FileInfo.Name);
       if (CompareFilenames(CurExt,'.po')<>0)

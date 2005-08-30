@@ -180,6 +180,8 @@ begin
   if SysUtils.FindFirst(SearchMask,faAnyFile,FileInfo)=0
   then begin
     repeat
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+      then continue;
       ID:=copy(FileInfo.Name,length('lazaruside.')+1,
                length(FileInfo.Name)-length('lazaruside..po'));
       //writeln('CollectTranslations A ',FileInfo.Name,' ID=',ID);

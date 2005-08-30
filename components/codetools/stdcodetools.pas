@@ -683,7 +683,9 @@ function TStandardCodeTool.FixUnitInFilenameCaseInUsesSection(
     begin
       repeat
         // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then
+          continue;
         if (SysUtils.CompareText(CurFilename,FileInfo.Name)=0)
         then begin
           if (Result='') or (FileInfo.Name=CurFilename) then

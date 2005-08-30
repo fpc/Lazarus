@@ -283,7 +283,8 @@ var
     then begin
       repeat
         // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then continue;
         FullFilename:=MainDirectory+FileInfo.Name;
         if (FileInfo.Attr and faDirectory)>0 then begin
           if SubDirsCheckbox.Checked then begin

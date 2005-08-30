@@ -10242,7 +10242,9 @@ var
           end;
           repeat
             // check if special file
-            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            then
+              continue;
             CurFilename:=CurDirectory+FileInfo.Name;
             if FileIsText(CurFilename) then
               Files.Add(CurFilename);

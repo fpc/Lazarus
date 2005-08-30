@@ -2778,7 +2778,8 @@ var
     then begin
       repeat
         // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then continue;
         Result.Add(FileInfo.Name);
         //debugln('AddDirectoryListing ',FileInfo.Name);
       until SysUtils.FindNext(FileInfo)<>0;

@@ -261,7 +261,8 @@ begin
   then begin
     repeat
       // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
       if (AnsiCompareText(CaseInsensitiveFilename,FileInfo.Name)=0)
       and ((not IgnoreExact)
            or (CompareFilenames(CaseInsensitiveFilename,FileInfo.Name)<>0))
@@ -297,7 +298,8 @@ begin
     ShortFilename:=ExtractFilename(Filename);
     repeat
       // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
       if CompareFilenames(ShortFilename,FileInfo.Name)=0 then begin
         Result:=FileInfo.Name;
         break;
@@ -749,7 +751,8 @@ begin
   then begin
     repeat
       // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
       // check extension
       if CompareFileExt(FileInfo.Name,Ext,false)=0 then begin
         Result:=AppendPathDelim(Directory)+FileInfo.Name;
@@ -1967,7 +1970,8 @@ var
     if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then continue;
         CurFilename:=CurSrcDir+FileInfo.Name;
         // check if src file
         if FilenameIsMatching(DestDirectory,CurFilename,false) then continue;

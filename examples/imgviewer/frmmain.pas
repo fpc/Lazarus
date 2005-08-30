@@ -234,8 +234,7 @@ begin
       if FindFirst(Directory+'*',faDirectory,Info)=0 then
         try
           Repeat
-          If (Info.Name<>'.') and
-             (info.name<>'..') and
+          If (Info.Name<>'.') and (Info.Name<>'') and (info.name<>'..') and
              ((Info.Attr and faDirectory)<>0) then
             AddDir(Directory+Info.name,True);
           until (FindNext(Info)<>0)

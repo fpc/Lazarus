@@ -394,7 +394,7 @@ begin
       begin
         repeat
           // check if special file, skip directories this time
-          if (FileInfo.Name='.') or (FileInfo.Name='..')
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
           or ((faDirectory and FileInfo.Attr)>0) then continue;
           //Make sure this is a text file as it will be searched
           if FileIsReadable(TempDir + FileInfo.Name)
@@ -425,7 +425,9 @@ begin
           // check if directory and not special file
           if ((faDirectory and FileInfo.Attr)>0)
             and (FileInfo.Name<>'.') and (FileInfo.Name<>'..')
-            then DoFindInFiles(TempDir + FileInfo.Name);
+            and (FileInfo.Name<>'')
+            then
+              DoFindInFiles(TempDir + FileInfo.Name);
           if fAbort and not fAborting then
           begin
             fAborting:= True;

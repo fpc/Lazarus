@@ -238,7 +238,7 @@ var
    var
       dirq : TSearchRec;
    begin
-   	if assigned(fChangeFolderEvent) then
+        if assigned(fChangeFolderEvent) then
            fChangeFolderEvent(fullpath,FolderInfo);
 
         doserror := findfirst(fullpath+sfi,attr,dirq);

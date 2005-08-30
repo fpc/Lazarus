@@ -968,6 +968,7 @@ begin
       UnitName:=ExtractFilenameOnly(ShortFilename);
       repeat
         if (FileInfo.Name='.') or (FileInfo.Name='..')
+        or (FileInfo.Name='')
         or ((FileInfo.Attr and faDirectory)<>0) then continue;
         if (ShortFilename=FileInfo.Name) then continue;
         if (AnsiCompareText(ShortFilename,FileInfo.Name)<>0)
@@ -1069,7 +1070,7 @@ begin
         FileInfoNeedClose:=true;
         if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
-            if (FileInfo.Name='.') or (FileInfo.Name='..')
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
             if FilenameIsPascalUnit(FileInfo.Name) then
               CurUnitTree:=SourceUnitTree

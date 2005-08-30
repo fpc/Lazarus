@@ -246,8 +246,10 @@ begin
    if FindFirst(directory + msk, faDirectory, search) = 0 then
    begin
      repeat
-       if ((search.Attr and faDirectory) = faDirectory) and (search.Name[1] <> '.') then
-         GetAllFiles(directory + search.Name + delimeter + ExtractFileName(mask),unignore,subdirs);
+       if ((search.Attr and faDirectory) = faDirectory)
+       and (search.Name[1] <> '.') and (search.Name<>'') then
+         GetAllFiles(directory + search.Name + delimeter + ExtractFileName(mask),
+                     unignore,subdirs);
      until FindNext(search) <> 0;
      FindClose(search);
    end;

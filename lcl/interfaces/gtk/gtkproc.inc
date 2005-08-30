@@ -3331,7 +3331,7 @@ begin
   then
     repeat
       if ((Info.Attr and faDirectory) = faDirectory) and (Info.Name <> '.')
-      and (Info.Name <> '..') then
+      and (Info.Name <> '..') and (Info.Name<>'') then
         StrList.Add(AppendPathDelim(Info.Name));
     until FindNext(Info) <> 0;
   FindClose(Info);

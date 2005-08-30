@@ -203,7 +203,7 @@ begin
     try
       Repeat
         If ((Info.Attr and faDirectory)<>0)
-           and not ((Info.Name='.') or (Info.Name='..')) then
+           and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
           With Add as TProjectTemplate do
             InitFromDir(D+Info.Name);
       Until FindNext(Info)<>0;
@@ -400,7 +400,7 @@ begin
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
-            (Info.Name<>'.') and (info.Name<>'..') then
+            (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'') then
          GetFileList(Dir+Info.Name+PathSeparator);
         until FindNext(Info)<>0;
       finally
@@ -435,8 +435,9 @@ begin
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
-            (Info.Name<>'.') and (info.Name<>'..') then
-         CopyAndSubstituteDir(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
+            (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'')
+          then
+            CopyAndSubstituteDir(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
         until FindNext(Info)<>0;
       finally
         FindClose(Info);
