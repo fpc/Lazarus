@@ -12,7 +12,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Width = 596
   object FilenameGroupBox: TGroupBox
     Align = alTop
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'FilenameGroupBox'
     ClientHeight = 42
@@ -25,7 +24,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Width = 586
     object FilenameEdit: TEdit
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.Right = 5
       TabOrder = 0
       Text = 'FilenameEdit'
@@ -37,8 +35,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object FilenameButton: TButton
       Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.OnChange = nil
       Caption = '...'
+      OnClick = FilenameButtonClick
       TabOrder = 1
       AnchorSideBottom.Control = FilenameEdit
       AnchorSideBottom.Side = asrBottom
@@ -51,9 +49,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object OkButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.OnChange = nil
     BorderSpacing.Right = 14
     Caption = 'OkButton'
+    OnClick = OkButtonClick
     TabOrder = 1
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = CancelButton
@@ -66,7 +64,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.OnChange = nil
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
@@ -78,7 +75,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object TemplateGroupBox: TGroupBox
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'TemplateGroupBox'
     ClientHeight = 306
@@ -93,7 +89,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     object TemplateListBox: TListBox
       Align = alLeft
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.OnChange = nil
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
@@ -102,15 +97,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object TemplateSynEdit: TSynEdit
       Align = alBottom
-      BorderSpacing.OnChange = nil
       Font.Height = -18
       Font.Name = 'courier'
       Height = 150
       Name = 'TemplateSynEdit'
       TabOrder = 1
       Width = 582
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = ASynPasSyn
       Keystrokes = <      
@@ -437,7 +429,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
-      SelectedColor.OnChange = nil
       Cursor = crIBeam
       Height = 150
       Top = 156
@@ -455,7 +446,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Width = 582
     end
     object AddButton: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'AddButton'
       OnClick = AddButtonClick
       TabOrder = 2
@@ -464,7 +454,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Width = 115
     end
     object DeleteButton: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'DeleteButton'
       OnClick = DeleteButtonClick
       TabOrder = 3
@@ -474,7 +463,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Width = 115
     end
     object EditButton: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'EditButton'
       OnClick = EditButtonClick
       TabOrder = 4

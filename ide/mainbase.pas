@@ -677,6 +677,8 @@ begin
                    lisMenuGeneralOptions,'menu_environmentoptions');
     CreateMenuItem(ParentMI,itmEnvEditorOptions,'itmEnvEditorOptions',
                    lisMenuEditorOptions,'menu_editoroptions');
+    CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
+                   lisMenuEditCodeTemplates,'');
     CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',
                    lisMenDebuggerOptions,'');
     CreateMenuItem(ParentMI,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',
@@ -862,6 +864,7 @@ begin
     // environment menu
     itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
     itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
+    itmEnvCodeTemplates.ShortCut:=CommandToShortCut(ecEditCodeTemplates);
     itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
     itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
     itmEnvRescanFPCSrcDir.ShortCut:=CommandToShortCut(ecRescanFPCSrcDir);

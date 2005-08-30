@@ -42,7 +42,7 @@ uses
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterPHP,
   Laz_XMLCfg, IDEWindowIntf,
-  IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
+  IDECommands, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
 
 type
@@ -386,19 +386,6 @@ type
     AutoDelayTrackBar:TTrackBar;
     AutoDelayMinLabel:TLabel;
     AutoDelayMaxLabel:TLabel;
-    CodeTemplatesGroupBox:TGroupBox;
-    CodeTemplateFileNameLabel:TLabel;
-    CodeTemplateFileNameComboBox:TComboBox;
-    CodeTemplateFileNameButton:TButton;
-    CodeTemplatesLabel:TLabel;
-    CodeTemplateListBox:TListBox;
-    CodeTemplateAddButton:TButton;
-    CodeTemplateEditButton:TButton;
-    CodeTemplateDeleteButton:TButton;
-    CodeTemplateCodeLabel:TLabel;
-    CodeTemplateCodePreview:TPreviewEditor;
-    CodeTemplateIndentTypeRadioGroup: TRadioGroup;
-    SynAutoComplete:TSynEditAutoComplete;
 
     // buttons at bottom
     OkButton:TButton;
@@ -436,11 +423,6 @@ type
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
     // code tools
-    procedure CodeTemplateListBoxMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-    procedure CodeTemplateFileNameButtonClick(Sender:TObject);
-    procedure CodeTemplateButtonClick(Sender:TObject);
-    procedure CodeTemplatesGroupBoxResize(Sender: TObject);
 
     // buttons at bottom
     procedure OkButtonClick(Sender:TObject);
@@ -448,10 +430,9 @@ type
   private
     FormCreating: boolean;
     PreviewSyn: TCustomSyn;
-    PreviewEdits:array[1..3] of TPreviewEditor;
+    PreviewEdits:array[1..2] of TPreviewEditor;
     CurLanguageID: integer; // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
-    CurCodeTemplate: integer;
     UpdatingColor: boolean;
     fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
     fColorSchemes: TStringList; // list of LanguageName=ColorScheme
@@ -501,9 +482,6 @@ type
     // code tools
     procedure SetupCodeToolsPage;
     procedure ResizeCodeToolsPage;
-    procedure FillCodeTemplateListBox;
-    procedure ShowCurCodeTemplate;
-    procedure SaveCurCodeTemplate;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -534,6 +512,8 @@ function ShowEditorOptionsDialog:TModalResult;
 function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
+function BuildBorlandDCIFile(
+  ACustomSynAutoComplete: TCustomSynAutoComplete):boolean;
 
 implementation
 
@@ -639,7 +619,7 @@ begin
         if Value[ep] in [#10,#13] then begin
           sl.Add(copy(Value,sp,ep-sp));
           inc(ep);
-          if (ep<=length(Value)) and (Value[ep] in [#10,#13]) 
+          if (ep<=length(Value)) and (Value[ep] in [#10,#13])
           and (Value[ep]<>Value[ep-1]) then inc(ep);
           sp:=ep;
         end else inc(ep);
@@ -2191,8 +2171,6 @@ begin
     IDEDialogLayoutList.ApplyLayout(Self,480,480);
     OnResize:=@EditorOptionsFormResize;
     
-    SynAutoComplete:=TSynEditAutoComplete.Create(Self);
-
     MainNoteBook:=TNoteBook.Create(Self);
     with MainNoteBook do
     begin
@@ -2248,7 +2226,6 @@ begin
 
   PreviewEdits[1]:=DisplayPreview;
   PreviewEdits[2]:=ColorPreview;
-  PreviewEdits[3]:=CodeTemplateCodePreview;
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
   begin
     if PreviewEdits[a]<>nil then
@@ -2267,7 +2244,6 @@ begin
         end;
       end;
   end;
-  CodeTemplateCodePreview.Gutter.Visible:=false;
 
   // general options
   
@@ -2286,26 +2262,7 @@ begin
   ShowCurAttribute;
   
   // code Tools options
-  with SynAutoComplete do begin
-    s:=EditorOpts.CodeTemplateFileName;
-    if FileExists(s) then
-      try
-        AutoCompleteList.LoadFromFile(s);
-      except
-        DebugLn('NOTE: unable to read code template file ''',s,'''');
-      end;
-  end;
-  FillCodeTemplateListBox;
-  with CodeTemplateListBox do
-    if Items.Count>0 then begin
-      Selected[0]:=true;
-      ShowCurCodeTemplate;
-    end;
-  if EditorOpts.CodeTemplateIndentToTokenStart then
-    CodeTemplateIndentTypeRadioGroup.ItemIndex:=0
-  else
-    CodeTemplateIndentTypeRadioGroup.ItemIndex:=1;
-    
+
   MainNoteBook.PageIndex:=0;
   FormCreating:=false;
   
@@ -2323,83 +2280,6 @@ end;
 
 
 // general
-
-procedure TEditorOptionsForm.CodeTemplatesGroupBoxResize(Sender: TObject);
-begin
-  with CodeTemplateFileNameLabel do begin
-    Top:=5;
-    Left:=7;
-    Width:=110;
-  end;
-
-  with CodeTemplateFileNameComboBox do begin
-    Top:=3;
-    Left:=CodeTemplateFileNameLabel.Left+CodeTemplateFileNameLabel.Width+2;
-    Width:=CodeTemplatesGroupBox.Width-12-Left-Height;
-  end;
-
-  with CodeTemplateFileNameButton do begin
-    Top:=CodeTemplateFileNameComboBox.Top+2;
-    Width:=CodeTemplateFileNameComboBox.Height-5;
-    Left:=CodeTemplatesGroupBox.Width-9-Width;
-    Height:=Width;
-  end;
-
-  with CodeTemplateAddButton do begin
-    Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
-    Width:=50;
-    Left:=CodeTemplateFileNameLabel.Left;
-    Height:=23;
-  end;
-
-  with CodeTemplateEditButton do begin
-    Top:=CodeTemplateAddButton.Top+CodeTemplateAddButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-  end;
-
-  with CodeTemplateDeleteButton do begin
-    Top:=CodeTemplateEditButton.Top+CodeTemplateEditButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-  end;
-
-  with CodeTemplatesLabel do begin
-    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
-    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
-    Width:=60;
-  end;
-
-  with CodeTemplateListBox do begin
-    Top:=CodeTemplatesLabel.Top;
-    Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
-    Width:=Parent.ClientWidth-8-Left;
-    Height:=80;
-  end;
-
-  with CodeTemplateCodeLabel do begin
-    Top:=CodeTemplateListBox.Top+CodeTemplateListBox.Height+5;
-    Left:=CodeTemplatesLabel.Left;
-    Width:=CodeTemplatesLabel.Width;
-    Height:=CodeTemplatesLabel.Height;
-  end;
-
-  with CodeTemplateCodePreview do begin
-    Top:=CodeTemplateCodeLabel.Top;
-    Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
-    Width:=CodeTemplateListBox.Width;
-    Height:=CodeTemplatesGroupBox.ClientHeight-Top;
-  end;
-
-  with CodeTemplateIndentTypeRadioGroup do begin
-    Left:=CodeTemplateAddButton.Left;
-    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
-    Width:=CodeTemplateCodePreview.Left-Left-8;
-    Height:=70;
-  end;
-end;
 
 procedure TEditorOptionsForm.EditorOptionsFormResize(Sender: TObject);
 begin
@@ -3251,147 +3131,6 @@ begin
     while Items.TopLvlCount>EditingKeyMap.CategoryCount do
       Items.TopLvlItems[Items.TopLvlCount-1].Delete;
     EndUpdate;
-  end;
-end;
-
-procedure TEditorOptionsForm.ShowCurCodeTemplate;
-var i,sp,ep:integer;
-  s:ansistring;
-begin
-  CodeTemplateCodePreview.Lines.BeginUpdate;
-  CodeTemplateCodePreview.Lines.Clear;
-  i:=0;
-  while i<CodeTemplateListBox.Items.Count do begin
-    if CodeTemplateListBox.Selected[i] then begin
-      CurCodeTemplate:=i;
-      s:=SynAutoComplete.CompletionValues[i];
-      sp:=1;
-      ep:=1;
-      while ep<=length(s) do begin
-        if s[ep] in [#10,#13] then begin
-          CodeTemplateCodePreview.Lines.Add(copy(s,sp,ep-sp));
-          inc(ep);
-          if (ep<=length(s)) and (s[ep] in [#10,#13]) and (s[ep-1]<>s[ep]) then
-            inc(ep);
-          sp:=ep;
-        end else inc(ep);
-      end;
-      if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
-        CodeTemplateCodePreview.Lines.Add(copy(s,sp,ep-sp));
-      break;
-    end;
-    inc(i);
-  end;
-  CodeTemplateCodePreview.Lines.EndUpdate;
-  CodeTemplateCodePreview.Invalidate;
-end;
-
-procedure TEditorOptionsForm.SaveCurCodeTemplate;
-var
-  NewValue: string;
-  l: integer;
-begin
-  if CurCodeTemplate<0 then exit;
-  NewValue:=CodeTemplateCodePreview.Lines.Text;
-  // remove last end EOL
-  if NewValue<>'' then begin
-    l:=length(NewValue);
-    if NewValue[l] in [#10,#13] then begin
-      dec(l);
-      if (l>0) and (NewValue[l] in [#10,#13])
-      and (NewValue[l]<>NewValue[l+1]) then
-        dec(l);
-      SetLength(NewValue,l);
-    end;
-  end;
-  SynAutoComplete.CompletionValues[CurCodeTemplate]:=NewValue;
-end;
-
-procedure TEditorOptionsForm.FillCodeTemplateListBox;
-var a:integer;
-begin
-  with CodeTemplateListBox do begin
-    Items.BeginUpdate;
-    Items.Clear;
-    for a:=0 to SynAutoComplete.Completions.Count-1 do begin
-      Items.Add(SynAutoComplete.Completions[a]
-          +' - "'+SynAutoComplete.CompletionComments[a]+'"');
-    end;
-    Items.EndUpdate;
-  end;
-end;
-
-procedure TEditorOptionsForm.CodeTemplateListBoxMouseUp(Sender:TObject;
-  Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-begin
-  SaveCurCodeTemplate;
-  ShowCurCodeTemplate;
-end;
-
-procedure TEditorOptionsForm.CodeTemplateButtonClick(Sender:TObject);
-var Token,Comment:ansistring;
-  Index:integer;
-begin
-  SaveCurCodeTemplate;
-  if Sender=CodeTemplateAddButton then begin
-    Token:='new';
-    Comment:='(custom)';
-    CurCodeTemplate:=-1;
-    if AddCodeTemplate(SynAutoComplete,Token,Comment)=mrOk then begin
-      SynAutoComplete.AddCompletion(Token, '', Comment);
-      FillCodeTemplateListBox;
-      Index:=SynAutoComplete.Completions.IndexOf(Token);
-      if (Index>=0) and (Index<CodeTemplateListBox.Items.Count) then begin
-        CodeTemplateListBox.Selected[Index]:=true;
-        CodeTemplateListBox.ItemIndex:=Index;
-      end;
-      ShowCurCodeTemplate;
-    end;
-  end else if Sender=CodeTemplateEditButton then begin
-    Index:=CurCodeTemplate;
-    if Index<CodeTemplateListBox.Items.Count then begin
-      if EditCodeTemplate(SynAutoComplete,Index)=mrOk then begin
-        CodeTemplateListBox.Items[Index]:=
-           SynAutoComplete.Completions[Index]
-           +' - "'+SynAutoComplete.CompletionComments[Index]+'"';
-        ShowCurCodeTemplate;
-      end;
-    end;
-  end else if Sender=CodeTemplateDeleteButton then begin
-    if CurCodeTemplate>=0 then begin
-      if MessageDlg(dlgDelTemplate
-          +'"'+SynAutoComplete.Completions[CurCodeTemplate]+' - '
-          +SynAutoComplete.CompletionComments[CurCodeTemplate]+'"'
-          +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK then begin
-        SynAutoComplete.DeleteCompletion(CurCodeTemplate);
-        dec(CurCodeTemplate);
-        FillCodeTemplateListBox;
-        if (CurCodeTemplate>=0) 
-        and (CurCodeTemplate<CodeTemplateListBox.Items.Count) then begin
-          CodeTemplateListBox.Selected[CurCodeTemplate]:=true;
-          CodeTemplateListBox.ItemIndex:=CurCodeTemplate;
-        end;
-        ShowCurCodeTemplate;
-      end;
-    end;
-  end;
-end;
-
-procedure TEditorOptionsForm.CodeTemplateFileNameButtonClick(Sender:TObject);
-var OpenDialog:TOpenDialog;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    with OpenDialog do begin
-      Title:=dlgChsCodeTempl;
-      Filter:='DCI file (*.dci)|*.dci|'+dlgAllFiles+'|*.*';
-      if Execute then
-        CodeTemplateFileNameComboBox.Text:=FileName;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
   end;
 end;
 
@@ -4787,159 +4526,12 @@ begin
     Width:=70;
     Caption:='1.5 '+ dlgTimeSecondUnit;
   end;
-
-  CodeTemplatesGroupBox:=TGroupBox.Create(Self);
-  with CodeTemplatesGroupBox do begin
-    Name:='CodeTemplatesGroupBox';
-    Parent:=MainNoteBook.Page[4];
-    Top:=AutomaticFeaturesGroupBox.Top+AutomaticFeaturesGroupBox.Height+5;
-    Left:=AutomaticFeaturesGroupBox.Left;
-    Width:=AutomaticFeaturesGroupBox.Width;
-    Height:=250;
-    Caption:=dlgEdCodeTempl;
-    OnResize:=@CodeTemplatesGroupBoxResize;
-  end;
-
-  CodeTemplateFileNameLabel:=TLabel.Create(Self);
-  with CodeTemplateFileNameLabel do begin
-    Name:='CodeTemplateFileNameLabel';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=5;
-    Left:=7;
-    Width:=110;
-    Caption:=dlgTplFName;
-  end;
-
-  CodeTemplateFileNameComboBox:=TComboBox.Create(Self);
-  with CodeTemplateFileNameComboBox do begin
-    Name:='CodeTemplateFileNameComboBox';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=3;
-    Left:=CodeTemplateFileNameLabel.Left+CodeTemplateFileNameLabel.Width+2;
-    Width:=CodeTemplatesGroupBox.Width-12-Left-Height;
-    Text:=EditorOpts.CodeTemplateFileName;
-    OnChange:=@ComboBoxOnChange;
-    OnKeyDown:=@ComboBoxOnKeyDown;
-    OnExit:=@ComboBoxOnExit;
-  end;
-
-  CodeTemplateFileNameButton:=TButton.Create(Self);
-  with CodeTemplateFileNameButton do begin
-    Name:='CodeTemplateFileNameButton';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateFileNameComboBox.Top+2;
-    Width:=CodeTemplateFileNameComboBox.Height-5;
-    Left:=CodeTemplatesGroupBox.Width-9-Width;
-    Height:=Width;
-    Caption:='...';
-    OnClick:=@CodeTemplateFileNameButtonClick;
-  end;
-
-  CodeTemplateAddButton:=TButton.Create(Self);
-  with CodeTemplateAddButton do begin
-    Name:='CodeTemplateAddButton';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
-    Width:=50;
-    Left:=CodeTemplateFileNameLabel.Left;
-    Height:=23;
-    Caption:=dlgEdAdd;
-    OnClick:=@CodeTemplateButtonClick;
-  end;
-
-  CodeTemplateEditButton:=TButton.Create(Self);
-  with CodeTemplateEditButton do begin
-    Name:='CodeTemplateEditButton';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateAddButton.Top+CodeTemplateAddButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-    Caption:=dlgEdEdit;
-    OnClick:=@CodeTemplateButtonClick;
-  end;
-
-  CodeTemplateDeleteButton:=TButton.Create(Self);
-  with CodeTemplateDeleteButton do begin
-    Name:='CodeTemplateDeleteButton';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateEditButton.Top+CodeTemplateEditButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-    Caption:=dlgEdDelete;
-    OnClick:=@CodeTemplateButtonClick;
-  end;
-
-  CodeTemplatesLabel:=TLabel.Create(Self);
-  with CodeTemplatesLabel do begin
-    Name:='CodeTemplatesLabel';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
-    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
-    Width:=60;
-    Caption:='Templates';
-  end;
-
-  CodeTemplateListBox:=TListBox.Create(Self);
-  with CodeTemplateListBox do begin
-    Name:='CodeTemplateListBox';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplatesLabel.Top;
-    Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
-    Width:=Parent.ClientWidth-8-Left;
-    Height:=80;
-    OnMouseUp:=@CodeTemplateListBoxMouseUp;
-  end;
-
-  CodeTemplateCodeLabel:=TLabel.Create(Self);
-  with CodeTemplateCodeLabel do begin
-    Name:='CodeTemplateCodeLabel';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateListBox.Top+CodeTemplateListBox.Height+5;
-    Left:=CodeTemplatesLabel.Left;
-    Width:=CodeTemplatesLabel.Width;
-    Height:=CodeTemplatesLabel.Height;
-    Caption:='Code';
-  end;
-
-  CodeTemplateCodePreview:=TPreviewEditor.Create(Self);
-  with CodeTemplateCodePreview do begin
-    Name:='CodeTemplateCodePreview';
-    Parent:=CodeTemplatesGroupBox;
-    Top:=CodeTemplateCodeLabel.Top;
-    Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
-    Width:=CodeTemplateListBox.Width;
-    Height:=CodeTemplatesGroupBox.ClientHeight-20-Top;
-    Lines.Clear;
-    Gutter.Visible:=false;
-  end;
-  
-  CodeTemplateIndentTypeRadioGroup:=TRadioGroup.Create(Self);
-  with CodeTemplateIndentTypeRadioGroup do begin
-    Name:='CodeTemplateIndentTypeRadioGroup';
-    Parent:=CodeTemplatesGroupBox;
-    Left:=CodeTemplateAddButton.Left;
-    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
-    Width:=CodeTemplateCodePreview.Left-Left-8;
-    Height:=70;
-    Caption:=dlgIndentCodeTo;
-    with Items do begin
-      BeginUpdate;
-      Add('Token start');
-      Add('Line start');
-      EndUpdate;
-    end;
-  end;
-
-  CurCodeTemplate:=-1;
 end;
 
 procedure TEditorOptionsForm.ResizeCodeToolsPage;
-var MaxX, MaxY:integer;
+var MaxX:integer;
 begin
   MaxX:=Width-5;
-  MaxY:=ClientHeight-76;
 
   with AutomaticFeaturesGroupBox do begin
     Top:=5;
@@ -5004,13 +4596,6 @@ begin
     Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
     Width:=70;
   end;
-
-  with CodeTemplatesGroupBox do begin
-    Top:=AutomaticFeaturesGroupBox.Top+AutomaticFeaturesGroupBox.Height+5;
-    Left:=AutomaticFeaturesGroupBox.Left;
-    Width:=AutomaticFeaturesGroupBox.Width;
-    Height:=MaxY-Top-10;
-  end;
 end;
 
 procedure TEditorOptionsForm.SetupButtonBar;
@@ -5059,13 +4644,12 @@ begin
 end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender:TObject);
-var res: TModalResult;
+var
   SynOptions: TSynEditorOptions;
   i: integer;
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-  SaveCurCodeTemplate;
-  
+
   // save all values
   EditorOpts.KeyMap.Assign(EditingKeyMap);
   SynOptions:=PreviewEdits[1].Options-[eoNoSelection,eoNoCaret];
@@ -5112,26 +4696,8 @@ begin
   EditorOpts.AutoToolTipExprEval:=AutoToolTipExprEvalCheckBox.Checked;
   EditorOpts.AutoToolTipSymbTools:=AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoDelayInMSec:=AutoDelayTrackBar.Position*250;
-  EditorOpts.CodeTemplateFileName:=CodeTemplateFileNameComboBox.Text;
-  EditorOpts.CodeTemplateIndentToTokenStart:=
-    (CodeTemplateIndentTypeRadioGroup.ItemIndex=0);
 
   EditorOpts.Save;
-
-  if BuildBorlandDCIFile(SynAutoComplete) then begin
-    Res:=mrOk;
-    repeat
-      try
-        SynAutoComplete.AutoCompleteList.SaveToFile(
-          EditorOpts.CodeTemplateFileName);
-      except
-        res:=MessageDlg(' Unable to write code templates to file '''
-          +EditorOpts.CodeTemplateFileName+'''! ',mtError
-          ,[mbAbort, mbIgnore, mbRetry],0);
-        if res=mrAbort then exit;
-      end;
-    until Res<>mrRetry;
-  end;
 
   ModalResult:=mrOk;
 end;

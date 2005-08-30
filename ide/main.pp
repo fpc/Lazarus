@@ -107,6 +107,7 @@ uses
   ViewUnit_dlg,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
+  CodeTemplatesDlg,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, Translations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -269,6 +270,7 @@ type
     // environment menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
     procedure mnuEnvEditorOptionsClicked(Sender: TObject);
+    procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
@@ -1922,6 +1924,7 @@ begin
   with MainIDEBar do begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
     itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
+    itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
     itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
@@ -3281,6 +3284,12 @@ Begin
     EditorOptionsForm.Free;
   end;
 End;
+
+procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
+begin
+  if ShowCodeTemplateDialog=mrOk then
+    SourceNotebook.ReloadEditorOptions;
+end;
 
 procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender: TObject);
 begin

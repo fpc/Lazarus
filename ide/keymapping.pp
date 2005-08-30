@@ -240,9 +240,10 @@ const
   ecConfigBuildLazarus   = ecUserFirst + 803;
   ecEnvironmentOptions   = ecUserFirst + 804;
   ecEditorOptions        = ecUserFirst + 805;
-  ecCodeToolsOptions     = ecUserFirst + 806;
-  ecCodeToolsDefinesEd   = ecUserFirst + 807;
-  ecRescanFPCSrcDir      = ecUserFirst + 808;
+  ecEditCodeTemplates    = ecUserFirst + 806;
+  ecCodeToolsOptions     = ecUserFirst + 807;
+  ecCodeToolsDefinesEd   = ecUserFirst + 808;
+  ecRescanFPCSrcDir      = ecUserFirst + 809;
 
   // help menu
   ecAboutLazarus         = ecUserFirst + 900;
@@ -708,6 +709,7 @@ begin
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1014,6 +1016,7 @@ begin
   // environment menu
   ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1579,7 +1582,8 @@ begin
 
     // environment menu
     ecEnvironmentOptions    : Result:= srkmecEnvironmentOptions;
-    ecEditorOptions         : Result:= lismenueditoroptions;
+    ecEditorOptions         : Result:= lisMenuEditorOptions;
+    ecEditCodeTemplates     : Result:= lisMenuEditCodeTemplates;
     ecCodeToolsOptions      : Result:= srkmecCodeToolsOptions;
     ecCodeToolsDefinesEd    : Result:= srkmecCodeToolsDefinesEd;
     ecRescanFPCSrcDir       : Result:= lisMenuRescanFPCSourceDirectory;
@@ -2488,6 +2492,7 @@ begin
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];
   AddDefault(C,'General environment options',ecEnvironmentOptions);
   AddDefault(C,'Editor options',ecEditorOptions);
+  AddDefault(C,'Edit Code Templates',ecEditCodeTemplates);
   AddDefault(C,'CodeTools options',ecCodeToolsOptions);
   AddDefault(C,'CodeTools defines editor',ecCodeToolsDefinesEd);
   AddDefault(C,'Rescan FPC source directory',ecRescanFPCSrcDir);

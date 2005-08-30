@@ -24,16 +24,17 @@
     A dialog for adding and editing code templates
 
 }
-unit CodeTemplateDialog;
+unit CodeTemplatesDlg;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  LazarusIDEStrConsts, StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls,
-  EditorOptions, SynCompletion;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls,
+  SynEditAutoComplete, InputHistory,
+  LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -56,7 +57,9 @@ type
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
+    procedure FilenameButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure OkButtonClick(Sender: TObject);
     procedure TemplateListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     SynAutoComplete: TSynEditAutoComplete;
@@ -292,6 +295,8 @@ end;
 { TCodeTemplateDialog }
 
 procedure TCodeTemplateDialog.FormCreate(Sender: TObject);
+var
+  s: String;
 begin
   SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
@@ -316,17 +321,48 @@ begin
       end;
   end;
   FillCodeTemplateListBox;
-  with CodeTemplateListBox do
+  with TemplateListBox do
     if Items.Count>0 then begin
-      Selected[0]:=true;
+      ItemIndex:=0;
       ShowCurCodeTemplate;
     end;
+end;
+
+procedure TCodeTemplateDialog.OkButtonClick(Sender: TObject);
+var
+  Res: TModalResult;
+begin
+  SaveCurCodeTemplate;
+
+  EditorOpts.CodeTemplateFileName:=FilenameEdit.Text;
+  //EditorOpts.CodeTemplateIndentToTokenStart:=
+  //  (CodeTemplateIndentTypeRadioGroup.ItemIndex=0);
+
+  EditorOpts.Save;
+
+  if BuildBorlandDCIFile(SynAutoComplete) then begin
+    Res:=mrOk;
+    repeat
+      try
+        SynAutoComplete.AutoCompleteList.SaveToFile(
+          EditorOpts.CodeTemplateFileName);
+      except
+        res:=MessageDlg(' Unable to write code templates to file '''
+          +EditorOpts.CodeTemplateFileName+'''! ',mtError
+          ,[mbAbort, mbIgnore, mbRetry],0);
+        if res=mrAbort then exit;
+      end;
+    until Res<>mrRetry;
+  end;
+
+  ModalResult:=mrOk;
 end;
 
 procedure TCodeTemplateDialog.AddButtonClick(Sender: TObject);
 var
   Token: String;
   Comment: String;
+  Index: LongInt;
 begin
   SaveCurCodeTemplate;
   Token:='new';
@@ -354,22 +390,42 @@ begin
       +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK then begin
     SynAutoComplete.DeleteCompletion(i);
     FillCodeTemplateListBox;
-    if (i>=0) and (i<CodeTemplateListBox.Items.Count) then begin
-      CodeTemplateListBox.ItemIndex:=i;
+    if (i>=0) and (i<TemplateListBox.Items.Count) then begin
+      TemplateListBox.ItemIndex:=i;
     end;
     ShowCurCodeTemplate;
   end;
 end;
 
 procedure TCodeTemplateDialog.EditButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
   i:=TemplateListBox.ItemIndex;
   if i<0 then exit;
   if EditCodeTemplate(SynAutoComplete,i)=mrOk then begin
-    CodeTemplateListBox.Items[i]:=
+    TemplateListBox.Items[i]:=
        SynAutoComplete.Completions[i]
        +' - "'+SynAutoComplete.CompletionComments[i]+'"';
     ShowCurCodeTemplate;
+  end;
+end;
+
+procedure TCodeTemplateDialog.FilenameButtonClick(Sender: TObject);
+var OpenDialog:TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    with OpenDialog do begin
+      Title:=dlgChsCodeTempl;
+      Filter:='DCI file (*.dci)|*.dci|'+dlgAllFiles+'|*.*';
+      if Execute then
+        FilenameEdit.Text:=FileName;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
   end;
 end;
 
@@ -403,7 +459,6 @@ begin
   TemplateSynEdit.Lines.Clear;
   i:=TemplateListBox.ItemIndex;
   if i>=0 then begin
-    CurCodeTemplate:=i;
     s:=SynAutoComplete.CompletionValues[i];
     sp:=1;
     ep:=1;
@@ -431,7 +486,7 @@ var
 begin
   i:=TemplateListBox.ItemIndex;
   if i<0 then exit;
-  NewValue:=CodeTemplateCodePreview.Lines.Text;
+  NewValue:=TemplateSynEdit.Lines.Text;
   // remove last EOL
   if NewValue<>'' then begin
     l:=length(NewValue);

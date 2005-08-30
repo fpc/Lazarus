@@ -255,6 +255,7 @@ type
     // environment menu
     itmEnvGeneralOptions: TMenuItem;
     itmEnvEditorOptions: TMenuItem;
+    itmEnvCodeTemplates: TMenuItem;
     itmEnvDebuggerOptions: TMenuItem;
     itmEnvCodeToolsOptions: TMenuItem;
     itmEnvCodeToolsDefinesEditor: TMenuItem;
