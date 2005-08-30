@@ -220,6 +220,9 @@ implementation
 
 constructor TPrinter.Create;
 begin
+  if ClassType=TPrinter then
+    raise Exception.Create('TPrinter is an abstract base class.'
+    +' Please use a printer implementation like the package printers4lazarus.');
   Inherited Create;
   fPrinterIndex:=-1;  //By default, use the default printer
   fCanvas:=nil;
@@ -457,7 +460,8 @@ begin
   if aValue<1 then aValue:=1;
   if Printers.Count>0 then
     DoSetCopies(aValue)
-  else raise EPrinter.Create('zero printer definied !');
+  else
+    raise EPrinter.Create('No printer found.');
 end;
 
 procedure TPrinter.SetOrientation(const AValue: TPrinterOrientation);
@@ -484,7 +488,7 @@ begin
 
     SetPrinter(aName);
   end
-  else raise EPrinter.Create('zero printer definied !');
+  else raise EPrinter.Create('No printers defined !');
 end;
 
 //If not Printer selected, Select the default printer
