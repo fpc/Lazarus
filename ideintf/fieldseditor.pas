@@ -67,7 +67,7 @@ type
     procedure DoSelected(All: boolean);
     procedure SelectionChanged;
     procedure OnComponentRenamed(AComponent: TComponent);
-    procedure OnDeletePersistent(var APersistent: TPersistent);
+    procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnGetSelection(const ASelection: TPersistentSelectionList);
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
@@ -136,7 +136,7 @@ begin
   RefreshFieldsListBox(False);
 
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-  GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
   GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
@@ -332,7 +332,7 @@ begin
     Caption := rsTitle + ' - ' + LinkDataset.Name;
 end;
 
-procedure TDSFieldsEditorFrm.OnDeletePersistent(var APersistent: TPersistent);
+procedure TDSFieldsEditorFrm.OnPersistentDeleting(APersistent: TPersistent);
 var i: integer;
 begin
   if APersistent = LinkDataset then begin

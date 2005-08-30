@@ -850,6 +850,9 @@ Begin
       else
         Temp.Free;
     end;
+  end else begin
+    if FreeComponent then
+      AComponent.Free;
   end;
 end;
 

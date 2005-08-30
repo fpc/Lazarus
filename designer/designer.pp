@@ -1740,6 +1740,7 @@ procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
 var
   Hook: TPropertyEditorHook;
 begin
+  if APersistent=nil then exit;
   //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
   PopupMenuComponentEditor:=nil;
   // unselect component
@@ -1766,7 +1767,9 @@ begin
     Hook.PersistentDeleting(APersistent);
   // delete component
   if APersistent is TComponent then
-    TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt);
+    TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
+  else if FreeIt then
+    APersistent.Free;
   // unmark component
   DeletingPersistent.Remove(APersistent);
   IgnoreDeletingPersistent.Remove(APersistent);
@@ -1840,6 +1843,7 @@ var
   AWinControl: TWinControl;
   ChildControl: TControl;
 Begin
+  if APersistent=nil then exit;
   {$IFDEF VerboseDesigner}
   DebugLn('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',DbgS(APersistent));
   {$ENDIF}

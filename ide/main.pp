@@ -356,7 +356,7 @@ type
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
     procedure OnPropHookPersistentAdded(APersistent: TPersistent;
                                         Select: boolean);
-    procedure OnPropHookDeletePersistent(APersistent: TPersistent);
+    procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -1393,6 +1393,7 @@ begin
   GlobalDesignHook.AddHandlerBeforeAddPersistent(@OnPropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
+  GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
@@ -11618,18 +11619,22 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.OnPropHookDeletePersistent(APersistent: TPersistent);
+procedure TMainIDE.OnPropHookDeletePersistent(var APersistent: TPersistent);
 var
   ADesigner: TDesigner;
   AComponent: TComponent;
 begin
+  if APersistent=nil then exit;
   DebugLn('TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
   if APersistent is TComponent then begin
     AComponent:=TComponent(APersistent);
     ADesigner:=TDesigner(FindRootDesigner(AComponent));
     if ADesigner=nil then exit;
     ADesigner.RemovePersistentAndChilds(AComponent);
+  end else begin
+    APersistent.Free;
   end;
+  APersistent:=nil;
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
