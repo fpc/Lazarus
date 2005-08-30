@@ -1572,6 +1572,7 @@ resourcestring
   lisLazBuildWithStaticPackages = 'With Packages';
   lisLazBuildRestartAfterBuild = 'Restart After Successfull Build';
   lisLazBuildOk = 'Ok';
+  lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';

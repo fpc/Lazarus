@@ -275,7 +275,7 @@ var
   i: Integer;
   CurControl: TControl;
 begin
-  debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' ',dbgs(TCheckBox(Sender).Checked));
+  //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' ',dbgs(TCheckBox(Sender).Checked));
   if FUpdating or (Values=nil) then exit;
   if Sender=LeftAnchoredCheckBox then
     Kind:=akLeft
@@ -291,7 +291,7 @@ begin
   CurSide:=Values.Sides[Kind];
   //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange CurSide.AmbiguousEnabled=',dbgs(CurSide.AmbiguousEnabled),' CurSide.Enabled=',dbgs(CurSide.Enabled),' NewValue=',dbgs(NewValue));
   if CurSide.AmbiguousEnabled or (CurSide.Enabled<>NewValue) then begin
-    debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
+    //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
     // user changed an anchor
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
@@ -317,7 +317,7 @@ var
   CurControl: TControl;
   Kind: TAnchorKind;
 begin
-  debugln('TAnchorDesigner.BorderSpaceSpinEditChange ',DbgSName(Sender),' ',dbgs(TSpinEdit(Sender).Value));
+  //debugln('TAnchorDesigner.BorderSpaceSpinEditChange ',DbgSName(Sender),' ',dbgs(TSpinEdit(Sender).Value));
   if FUpdating or (Values=nil) then exit;
   Around:=false;
   if Sender=LeftBorderSpaceSpinEdit then
@@ -340,7 +340,7 @@ begin
   or ((not Around) and (CurSide.AmbiguousBorderSpace
                         or (CurSide.BorderSpace<>NewValue)))
   then begin
-    debugln('TAnchorDesigner.BorderSpaceSpinEditChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
+    //debugln('TAnchorDesigner.BorderSpaceSpinEditChange ',DbgSName(Sender),' NewValue=',dbgs(NewValue));
     // user changed a BorderSpace
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
@@ -366,7 +366,7 @@ var
   CurControl: TControl;
   NewValue: String;
 begin
-  debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' ',TComboBox(Sender).Text);
+  //debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' ',TComboBox(Sender).Text);
   if FUpdating or (Values=nil) then exit;
   if Sender=LeftSiblingComboBox then
     Kind:=akLeft
@@ -388,7 +388,7 @@ begin
     end else begin
       NewSibling:=nil;
     end;
-    debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' NewSibling=',DbgSName(NewSibling));
+    //debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' NewSibling=',DbgSName(NewSibling));
     // user changed a sibling
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
@@ -410,7 +410,7 @@ var
   i: Integer;
   CurControl: TControl;
 begin
-  debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender),' ',dbgs(TSpeedButton(Sender).Down));
+  //debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender),' ',dbgs(TSpeedButton(Sender).Down));
   if FUpdating or (Values=nil) then exit;
   if Sender=LeftRefCenterSpeedButton then begin
     Kind:=akLeft;
@@ -464,7 +464,7 @@ begin
   CurSide:=Values.Sides[Kind];
   if CurSide.AmbiguousSide or (CurSide.Side<>Side) then
   begin
-    debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender));
+    //debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender));
     // user changed a sibling
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;

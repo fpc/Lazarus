@@ -393,6 +393,7 @@ type
     procedure RefreshPropertyValues;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
+    procedure SetItemIndexAndFocus(NewItemIndex: integer);
   public
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default clBtnFace;
@@ -1462,6 +1463,12 @@ begin
   SetRowValue;
 end;
 
+procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer);
+begin
+  ItemIndex:=NewItemIndex;
+  if FCurrentEdit<>nil then FCurrentEdit.SetFocus;
+end;
+
 function TOICustomPropertyGrid.CanEditRowValue: boolean;
 begin
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue,pgsUpdatingEditControl]<>[])
@@ -1606,7 +1613,7 @@ begin
             ItemIndex:=Index;
           end;
         end else begin
-          ItemIndex:=Index;
+          SetItemIndexAndFocus(Index);
         end;
       end;
     end;
@@ -1628,10 +1635,10 @@ begin
   case Key of
   
   VK_UP:
-    if (ItemIndex>0) then ItemIndex:=ItemIndex-1;
+    if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
 
   VK_Down:
-    if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
     
   VK_TAB:
     DoTabKey;

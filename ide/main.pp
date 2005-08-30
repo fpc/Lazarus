@@ -3924,7 +3924,7 @@ begin
     ObjectInspector1.EventGrid.ItemIndex:=-1;
     ObjectInspector1.FavouriteGrid.ItemIndex:=-1;
   end;
-  debugln('TMainIDE.DoRemoveDanglingEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
+  //debugln('TMainIDE.DoRemoveDanglingEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
   // remove dangling methods
   Result:=RemoveDanglingEvents(AnUnitInfo.Component,AnUnitInfo.Source,true,
                                ComponentModified);

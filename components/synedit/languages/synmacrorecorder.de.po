@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2005-08-26 16:52+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"Last-Translator: JÃ¶rg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: synmacrorecorder:scannotpause
