@@ -964,13 +964,13 @@ begin
     UsageOptions.UnitPath:=SetDirSeparators(
        '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);'
       +'$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
-    UsageOptions.CustomOptions:='-dLCL';
+    UsageOptions.CustomOptions:='-dLCL -dLCL$(LCLWidgetType)';
     // add include path
     CompilerOptions.IncludeFiles:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     AddLCLLinkPaths(UsageOptions);
 
-    // use the lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o
+    // use the lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o
     // file as indicator, if LCL has been recompiled
     OutputStateFile:=SetDirSeparators(
       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o');
