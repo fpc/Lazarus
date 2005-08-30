@@ -356,6 +356,7 @@ type
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
     procedure OnPropHookPersistentAdded(APersistent: TPersistent;
                                         Select: boolean);
+    procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
     procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
 
     // designer events
@@ -373,8 +374,6 @@ type
                                         AComponentClass: TRegisteredComponent);
     procedure OnDesignerPersistentDeleted(Sender: TObject;
                                           APersistent: TPersistent);
-    procedure OnDesignerRemovePersistent(Sender: TObject;
-                                         APersistent: TPersistent);
     procedure OnDesignerModified(Sender: TObject);
     procedure OnDesignerActivated(Sender: TObject);
     procedure OnDesignerCloseQuery(Sender: TObject);
@@ -1393,6 +1392,7 @@ begin
   GlobalDesignHook.AddHandlerBeforeAddPersistent(@OnPropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
@@ -2519,7 +2519,6 @@ Begin
     OnPasteComponent:=@OnDesignerPasteComponent;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
-    OnRemovePersistent:=@OnDesignerRemovePersistent;
     OnRenameComponent:=@OnDesignerRenameComponent;
     OnSetDesigning:=@OnDesignerSetDesigning;
     OnShowOptions:=@OnDesignerShowOptions;
@@ -9446,8 +9445,7 @@ begin
   ObjectInspector1.FillPersistentComboBox;
 end;
 
-procedure TMainIDE.OnDesignerRemovePersistent(Sender: TObject;
-  APersistent: TPersistent);
+procedure TMainIDE.OnPropHookPersistentDeleting(APersistent: TPersistent);
 var
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
@@ -9455,18 +9453,22 @@ var
   OwnerClassName: string;
   CurDesigner: TDesigner;
 begin
-  CurDesigner:=TDesigner(Sender);
+  if not (APersistent is TComponent) then exit;
+
+  CurDesigner:=TDesigner(FindRootDesigner(TComponent(APersistent)));
+  if CurDesigner=nil then exit;
+  
   if dfDestroyingForm in CurDesigner.Flags then exit;
 
   if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
                 [ctfSwitchToFormSource]) then exit;
   ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then
-    RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
+    RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
   // find source for form
   ActiveUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
   if ActiveUnitInfo=nil then begin
-    RaiseException('[TMainIDE.OnDesignerAddComponent] Error: form without source');
+    RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
   end;
   if APersistent is TComponent then begin
     // remove component definition from owner source
