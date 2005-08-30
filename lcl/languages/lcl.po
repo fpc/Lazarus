@@ -79,7 +79,7 @@ msgid "Overwrite file ?"
 msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists
-msgid "The file \"%s\" already exists.\015Overwrite ?"
+msgid "The file \"%s\" already exists. Overwrite ?"
 msgstr ""
 
 #: lclstrconsts:rsfdpathmustexist
@@ -418,8 +418,8 @@ msgstr ""
 msgid "Unsupported bitmap format."
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""
 
 #: lclstrconsts:rscannotfocus

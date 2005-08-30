@@ -428,10 +428,6 @@ msgstr "Siguiente"
 msgid "No MDI form present."
 msgstr "No hay formulario MDI presente"
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "No hay interfaz para el objeto. Por favor compruebe si la unidad \"interfaces\" se ha añadido a la clausula de uses del programa."
-
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "No hay temporizadores disponibles"
@@ -439,6 +435,10 @@ msgstr "No hay temporizadores disponibles"
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
 msgstr "No a todo"
+
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr ""
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -561,8 +561,8 @@ msgid "The directory \"%s\" does not exist."
 msgstr "El directorio \"%s\" no existe."
 
 #: lclstrconsts:rsfdfilealreadyexists
-msgid "The file \"%s\" already exists.\015Overwrite ?"
-msgstr "Ya existe el archivo \"%s\" \015¿Sobreescribir?"
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr ""
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."

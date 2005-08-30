@@ -418,10 +418,6 @@ msgstr "Següent"
 msgid "No MDI form present."
 msgstr "No hi ha forma MDI present."
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "No hi ha objecte d'interfície. Si us plau, comproveu si la unitat \"interfaces\" s'ha afegit a la clàusula Uses"
-
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "No hi ha temporitzadors disponibles"
@@ -429,6 +425,10 @@ msgstr "No hi ha temporitzadors disponibles"
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
 msgstr "No a tot"
+
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr ""
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -551,8 +551,8 @@ msgid "The directory \"%s\" does not exist."
 msgstr "No existeix el directori \"%s\"."
 
 #: lclstrconsts:rsfdfilealreadyexists
-msgid "The file \"%s\" already exists.\015Overwrite ?"
-msgstr "Ja existeix el fitxer \"%s\". \015El voleu sobreescriure ?"
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr ""
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."

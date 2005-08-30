@@ -7458,6 +7458,10 @@ msgstr ""
 msgid "Recompile all required"
 msgstr ""
 
+#: lazarusidestrconsts:lispckeditaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
 msgstr ""

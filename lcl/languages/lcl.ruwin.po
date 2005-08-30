@@ -418,10 +418,6 @@ msgstr ""
 msgid "No MDI form present."
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Нет объекта интерфейса. Проверьте, был ли модуль \"interfaces\" добавлен к секции uses программы."
-
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "Недоступны таймеры"
@@ -429,6 +425,10 @@ msgstr "Недоступны таймеры"
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
 msgstr "Нет для всех"
+
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr ""
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -551,8 +551,8 @@ msgid "The directory \"%s\" does not exist."
 msgstr "Каталог \"%s\" не существует."
 
 #: lclstrconsts:rsfdfilealreadyexists
-msgid "The file \"%s\" already exists.\015Overwrite ?"
-msgstr "Файл \"%s\" уже существует.\015 Переписать ?"
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr ""
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
