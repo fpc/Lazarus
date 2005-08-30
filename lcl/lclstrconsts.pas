@@ -60,7 +60,7 @@ ResourceString
   // file dialog
   rsfdOpenFile           = 'Open existing file';
   rsfdOverwriteFile      = 'Overwrite file ?';
-  rsfdFileAlreadyExists  = 'The file "%s" already exists.'#13'Overwrite ?';
+  rsfdFileAlreadyExists  = 'The file "%s" already exists. Overwrite ?';
   rsfdPathMustExist      = 'Path must exist';
   rsfdPathNoExist        = 'The path "%s" does not exist.';
   rsfdFileMustExist      = 'File must exist';
