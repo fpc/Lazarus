@@ -33,8 +33,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls,
-  SynEditAutoComplete, InputHistory,
-  LazarusIDEStrConsts, EditorOptions;
+  SynEditAutoComplete, IDECommands,
+  InputHistory, LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -63,11 +63,14 @@ type
     procedure TemplateListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     SynAutoComplete: TSynEditAutoComplete;
+    LastTemplate: integer;
   public
     procedure FillCodeTemplateListBox;
     procedure ShowCurCodeTemplate;
     procedure SaveCurCodeTemplate;
   end;
+
+  { TCodeTemplateEditForm }
 
   TCodeTemplateEditForm = class(TForm)
     TokenLabel:TLabel;
@@ -297,9 +300,13 @@ end;
 procedure TCodeTemplateDialog.FormCreate(Sender: TObject);
 var
   s: String;
+  ColorScheme: String;
 begin
   SynAutoComplete:=TSynEditAutoComplete.Create(Self);
+  LastTemplate:=-1;
 
+  // init captions
+  Caption:=lisMenuEditCodeTemplates;
   AddButton.Caption:=lisCodeTemplAdd;
   EditButton.Caption:=lisCodeToolsDefsEdit;
   DeleteButton.Caption:=dlgEdDelete;
@@ -310,7 +317,19 @@ begin
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 
+  // init synedit
+  ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.GetLanguageName);
+  EditorOpts.AddSpecialHilightAttribsToHighlighter(ASynPasSyn);
+  EditorOpts.ReadHighlighterSettings(ASynPasSyn,ColorScheme);
+  if EditorOpts.UseSyntaxHighlight then
+    TemplateSynEdit.Highlighter:=ASynPasSyn
+  else
+    TemplateSynEdit.Highlighter:=nil;
+  EditorOpts.GetSynEditSettings(TemplateSynEdit);
+  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,[caSourceEditor]);
   TemplateSynEdit.Gutter.Visible:=false;
+
+  // init SynAutoComplete
   with SynAutoComplete do begin
     s:=EditorOpts.CodeTemplateFileName;
     if FileExists(s) then
@@ -320,6 +339,8 @@ begin
         DebugLn('NOTE: unable to read code template file ''',s,'''');
       end;
   end;
+  
+  // init listbox
   FillCodeTemplateListBox;
   with TemplateListBox do
     if Items.Count>0 then begin
@@ -458,8 +479,11 @@ begin
   TemplateSynEdit.Lines.BeginUpdate;
   TemplateSynEdit.Lines.Clear;
   i:=TemplateListBox.ItemIndex;
+  //debugln('TCodeTemplateDialog.ShowCurCodeTemplate A i=',dbgs(i));
   if i>=0 then begin
+    LastTemplate:=-1;
     s:=SynAutoComplete.CompletionValues[i];
+    //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
     sp:=1;
     ep:=1;
     while ep<=length(s) do begin
@@ -474,6 +498,7 @@ begin
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
       TemplateSynEdit.Lines.Add(copy(s,sp,ep-sp));
   end;
+  LastTemplate:=i;
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
 end;
@@ -484,8 +509,9 @@ var
   l: integer;
   i: LongInt;
 begin
-  i:=TemplateListBox.ItemIndex;
-  if i<0 then exit;
+  if LastTemplate<0 then exit;
+  i:=LastTemplate;
+  //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate A i=',dbgs(i));
   NewValue:=TemplateSynEdit.Lines.Text;
   // remove last EOL
   if NewValue<>'' then begin
