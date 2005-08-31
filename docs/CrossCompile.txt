@@ -4,7 +4,132 @@ Hints to cross compile under linux/xxxBSD
 
 Thanks to Vincent Snijders for the hints.
 
+================================================================================
+
 A.
+for fpc 2.0 and up
+
+The following steps don't need the root user. They can be done as normal user.
+
+1. Download the fpc sources
+  The binaries are not enough.
+  See www.freepascal.org. You can use the svn or a daily snapshot.
+
+  For example:
+
+  []$ mkdir freepascal
+  []$ cd freepascal
+  []$ svn co http://svn.freepascal.org/svn/fpc/trunk fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/trunk/install install
+  
+  For the following examples the fpc sources were downloaded to ~/sources/fpc.
+
+
+2. Download the binutils.
+  For example binutils-2.14.tar.gz downloaded to
+  ~/download/binutils-2.14.tar.gz.
+
+  Homepage:
+    http://www.gnu.org/software/binutils/
+  Download
+    http://ftp.gnu.org/gnu/binutils/
+  At the time of writing the version was binutils-2.16.tar.gz.
+  
+  For example:
+  
+  []$ cd download
+  []$ wget http://ftp.gnu.org/gnu/binutils/binutils-2.16.tar.gz
+
+
+3. Cross build binutils
+
+  In the fpc source directory there is a script to build the binutils for all
+  cross platforms: install/cross/buildcrossbinutils
+  Create a copy of the script:
+
+  []$ cd ~/freepascal/install/cross/
+  []$ cp buildcrossbinutils buildcrossbinutils.sh
+
+  Edit the variables at the start of the new script.
+
+  The BASE variable points to a building and installation directory. So, it
+  should be an empty directory. For example:
+  
+  BASE=~/freepascal/binutils
+
+  Now the download file. If you downloaded ~/download/binutils-2.14.tar.gz then
+  set
+  BINUTILSPATH=~/download/
+  BINUTILSBASE=binutils
+  BINUTILSVERSION=2.14
+  BINUTILS_GZIP=yes
+
+  The script will automatically connect this to ~/download/binutils-2.14.tar.gz.
+  The rest variables define what target platforms you have. The default is to
+  build quite a lot, so compilation will take some time (hours).
+  For cross compile to windows, you need only
+
+  TARGETS_WIN="mingw32"
+  
+  and to comment all other:
+  
+  #BSD="freebsd netbsd openbsd"
+  #TARGETS_WIN="cygwin mingw32 msdosdjgpp"
+  #TARGETS_I386="${BSD} linux solaris darwin"
+  #TARGETS_POWERPC="${BSD} linux darwin"
+  #TARGETS_SPARC="${BSD} linux solaris"
+  #TARGETS_M68k=
+
+
+  Then run the script:
+
+  []$ sh buildcrossbinutils.sh
+  
+  The script creates a subdirectory 'logs' full of log files. If something goes
+  wrong, start there. The scripts should end with a message 'Failed targets: '
+  without failed targets.
+
+
+4. Cross build fpc
+
+  In the fpc source directory there is a script to build the fpc snapshot for
+  all cross platforms: install/cross/buildcrosssnapshot
+  Create a copy of the script:
+
+  []$ cd ~/freepascal/install/cross/
+  []$ cp buildcrosssnapshot buildcrosssnapshot.sh
+
+  Edit the variables at the start of the new script.
+
+  Normally you will change at least CROSSTOOLSROOT, FPCCVS, TARGETS_OS
+  and TARGETS_CPU. For example:
+  
+  CROSSTOOLSROOT=~/freepascal/binutils/cross
+  FPCCVS=~/freepascal/fpc
+  TARGETS_OS="win32"
+  TARGETS_CPU="i386"
+  
+  And fix the line
+    MOS=cygwin
+  to
+    MOS=mingw32
+
+
+  Then run the script:
+
+  []$ sh buildcrosssnapshot.sh
+
+  This will create the fpc binaries under
+  ~/freepascal/binutils/cross/destination/.
+
+
+
+
+
+================================================================================
+
+
+B.
 For fpc 1.0.x:
 
 Hints to cross compile win32 binaries under linux
@@ -102,90 +227,5 @@ switch.
 
 
 ================================================================================
-
-B.
-for fpc 1.9 and up
-
-The following steps don't need the root user. They can be done as normal user.
-
-1. Download the fpc sources
-  The binaries are not enough.
-  See www.freepascal.org. You can use the cvs or a daily snapshot.
-  For the following examples the fpc sources were downloaded to ~/sources/fpc.
-
-2. Download the binutils.
-  For example binutils-2.14.tar.gz downloaded to
-  ~/download/binutils-2.14.tar.gz.
-
-
-3. Cross build binutils
-
-  In the fpc source directory there is a script to build the binutils for all
-  cross platforms: install/cross/buildcrossbinutils
-  Create a copy of the script:
-
-  []$ cd ~/sources/fpc/install/cross/
-  []$ cp buildcrossbinutils buildcrossbinutils.sh
-
-  Edit the variables at the start of the new script.
-
-  The BASE variable points to a building and installation directory. So, it
-  should be an empty directory. For example:
-  BASE=~/cross_fpc
-
-  Now the download file. If you downloaded ~/download/binutils-2.14.tar.gz then
-  set
-  BINUTILSPATH=~/download/
-  BINUTILSBASE=binutils
-  BINUTILSVERSION=2.14
-  BINUTILS_GZIP=yes
-
-  The script will automatically connect this to ~/download/binutils-2.14.tar.gz.
-  The rest variables define what target platforms you have. The default is to
-  build quite a lot, so compilation will take some time (hours).
-  For cross compile to windows, you need only
-
-  TARGETS_WIN="mingw32"
-  
-  and to comment all other:
-  
-  #BSD="freebsd netbsd openbsd"
-  #TARGETS_WIN="cygwin mingw32 msdosdjgpp"
-  #TARGETS_I386="${BSD} linux solaris darwin"
-  #TARGETS_POWERPC="${BSD} linux darwin"
-  #TARGETS_SPARC="${BSD} linux solaris"
-  #TARGETS_M68k=
-
-
-  Then run the script:
-
-  []$ sh buildcrossbinutils.sh
-  
-  The script creates a subdirectory 'logs' full of log files. If something goes
-  wrong, start there.
-
-
-4. Cross build fpc
-
-  In the fpc source directory there is a script to build the fpc snapshot for
-  all cross platforms: install/cross/buildcrosssnapshot
-  Create a copy of the script:
-
-  []$ cd ~/sources/fpc/install/cross/
-  []$ cp buildcrosssnapshot buildcrosssnapshot.sh
-
-  Edit the variables at the start of the new script.
-
-  Normally you will change at least CROSSTOOLSROOT, FPCCVS, TARGETS_OS
-  and TARGETS_CPU. For example:
-  
-  CROSSTOOLSROOT=~/cross_fpc/cross
-  FPCCVS=~/sources/fpc
-  TARGETS_OS="win32"
-  TARGETS_CPU="i386"
-  
-  Then run the script:
-
-  []$ sh buildcrosssnapshot.sh
 
 

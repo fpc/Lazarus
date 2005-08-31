@@ -763,7 +763,7 @@ type
     
     // methods for debugging, compiling and external tools
     function GetTestBuildDir: string; override;
-    function GetProjectTargetFilename: string;
+    function GetProjectTargetFilename: string; override;
     function GetTargetOS: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;

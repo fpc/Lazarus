@@ -55,8 +55,6 @@ type
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; Parent: TWinControl;
     var NewComponent: TComponent) of object;
-  TOnRemovePersistent = procedure(Sender: TObject; APersistent: TPersistent)
-    of object;
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
   TOnGetNonVisualCompIcon = procedure(Sender: TObject;
@@ -104,7 +102,6 @@ type
     FOnPasteComponent: TOnPasteComponent;
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
-    FOnRemovePersistent: TOnRemovePersistent;
     FOnRenameComponent: TOnRenameComponent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
@@ -313,8 +310,6 @@ type
                                                  write FOnPasteComponent;
     property OnPropertiesChanged: TNotifyEvent
                            read FOnPropertiesChanged write FOnPropertiesChanged;
-    property OnRemovePersistent: TOnRemovePersistent
-                             read FOnRemovePersistent write FOnRemovePersistent;
     property OnRenameComponent: TOnRenameComponent
                                read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning
@@ -1758,9 +1753,6 @@ begin
     IgnoreDeletingPersistent.Remove(APersistent);
     exit;
   end;
-  // call RemoveComponent handler
-  if Assigned(FOnRemovePersistent) then
-    FOnRemovePersistent(Self,APersistent);
   // call component deleting handlers
   Hook:=GetPropertyEditorHook;
   if Hook<>nil then

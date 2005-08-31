@@ -1675,9 +1675,9 @@ begin
 
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
   NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-  if NewWorkingDir=''
-  then NewWorkingDir:=Project1.ProjectDirectory;
-  FDebugger.WorkingDir:=NewWorkingDir;
+  if NewWorkingDir='' then
+    NewWorkingDir:=ExtractFilePath(MainIDE.GetProjectTargetFilename);
+  FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
   // set filename after workingdir
   FDebugger.FileName := LaunchingApplication;
   FDebugger.Arguments := LaunchingParams;
