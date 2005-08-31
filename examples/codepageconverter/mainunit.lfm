@@ -1,26 +1,27 @@
 object LazConverterForm: TLazConverterForm
-  Caption = 'Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.5'
+  Caption = 'Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6'
   ClientHeight = 463
-  ClientWidth = 612
+  ClientWidth = 578
   Constraints.MinHeight = 463
   Constraints.MinWidth = 578
   OnShow = Form1Show
-  PixelsPerInch = 95
+  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 611
+  HorzScrollBar.Page = 577
   VertScrollBar.Page = 462
-  Left = 322
+  Left = 286
   Height = 463
-  Top = 225
-  Width = 612
+  Top = 118
+  Width = 578
   object Panel1: TPanel
+    Align = alTop
     BorderSpacing.OnChange = nil
-    ClientHeight = 192
-    ClientWidth = 612
+    ClientHeight = 200
+    ClientWidth = 578
     FullRepaint = False
     TabOrder = 0
-    Height = 192
-    Width = 612
+    Height = 200
+    Width = 578
     object Label1: TLabel
       BorderSpacing.OnChange = nil
       Caption = 'Path to your project:'
@@ -56,7 +57,7 @@ object LazConverterForm: TLazConverterForm
       Left = 8
       Height = 17
       Top = 149
-      Width = 593
+      Width = 559
     end
     object Edit1: TEdit
       Anchors = [akTop, akLeft, akRight]
@@ -65,7 +66,7 @@ object LazConverterForm: TLazConverterForm
       Left = 8
       Height = 23
       Top = 32
-      Width = 513
+      Width = 479
     end
     object Button1: TButton
       Anchors = [akTop, akRight]
@@ -73,7 +74,7 @@ object LazConverterForm: TLazConverterForm
       Caption = 'Path'
       OnClick = Button1Click
       TabOrder = 1
-      Left = 530
+      Left = 496
       Height = 23
       Top = 32
       Width = 75
@@ -81,36 +82,26 @@ object LazConverterForm: TLazConverterForm
     object ComboBox1: TComboBox
       BorderSpacing.OnChange = nil
       MaxLength = 0
-      TabOrder = 3
+      TabOrder = 2
       Left = 8
-      Height = 25
+      Height = 21
       Top = 80
       Width = 200
     end
     object ComboBox2: TComboBox
       BorderSpacing.OnChange = nil
       MaxLength = 0
-      TabOrder = 6
+      TabOrder = 5
       Left = 216
-      Height = 25
+      Height = 21
       Top = 80
       Width = 200
-    end
-    object CheckBox1: TCheckBox
-      AllowGrayed = True
-      BorderSpacing.OnChange = nil
-      Caption = 'Include subdirectories'
-      TabOrder = 2
-      Left = 424
-      Height = 23
-      Top = 80
-      Width = 176
     end
     object Button2: TButton
       BorderSpacing.OnChange = nil
       Caption = 'Search'
       OnClick = Button2Click
-      TabOrder = 4
+      TabOrder = 3
       Left = 8
       Height = 25
       Top = 112
@@ -120,7 +111,7 @@ object LazConverterForm: TLazConverterForm
       BorderSpacing.OnChange = nil
       Caption = 'Convert'
       OnClick = Button3Click
-      TabOrder = 5
+      TabOrder = 4
       Left = 88
       Height = 25
       Top = 112
@@ -130,24 +121,21 @@ object LazConverterForm: TLazConverterForm
       Align = alBottom
       BorderSpacing.OnChange = nil
       Max = 100
-      TabOrder = 7
+      TabOrder = 6
       TabStop = True
       Left = 1
       Height = 17
-      Top = 174
-      Width = 610
+      Top = 182
+      Width = 576
     end
   end
-  object Memo1: TMemo
-    Align = alBottom
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    ReadOnly = True
+  object FileListBox1: TFileListBox
+    Align = alClient
+    PopupMenu = PopupMenu1
     TabOrder = 1
-    WordWrap = False
     Height = 263
     Top = 200
-    Width = 612
+    Width = 578
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Select Directory'
@@ -155,5 +143,13 @@ object LazConverterForm: TLazConverterForm
     Title = 'Select Directory'
     left = 8
     top = 480
+  end
+  object PopupMenu1: TPopupMenu
+    left = 272
+    top = 123
+    object MenuItem1: TMenuItem
+      Caption = 'Remove from conversion'
+      OnClick = MenuItem1Click
+    end
   end
 end

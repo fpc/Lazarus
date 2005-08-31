@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, ComCtrls, Menus
-  {$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF};
+  {$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF}, FileCtrl;
 
 type
 
@@ -38,32 +38,35 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     Edit1: TEdit;
+    FileListBox1: TFileListBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label6: TLabel;
-    Memo1: TMemo;
+    MenuItem1: TMenuItem;
     Panel1: TPanel;
+    PopupMenu1: TPopupMenu;
     ProgressBar1: TProgressBar;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Form1Show(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
-
+    procedure CountFiles;
   end; 
 
 var
   LazConverterForm: TLazConverterForm;
-  allfiles:tstringlist;
+  
+const msgdone = 'Searching done... press CONVERT button! Files: ';
 
 implementation
 
@@ -83,218 +86,34 @@ begin
   result:=tmp;
 end;
 
-Function LocWord(StartAT,Wordno:integer;Str:string):integer;
-{local proc used by PosWord and Extract word}
-var
- W,L: integer;
- Spacebefore: boolean;
+procedure TLazConverterForm.CountFiles;
 begin
-   If (Str = '') or (wordno < 1) or (StartAT > length(Str)) then
-   begin
-       LocWord := 0;
-       exit;
-   end;
-   SpaceBefore := true;
-   W := 0;
-   L := length(Str);
-   StartAT := pred(StartAT);
-   While (W < Wordno) and (StartAT <= length(Str)) do
-   begin
-       StartAT := succ(StartAT);
-       If SpaceBefore and (Str[StartAT] <> ' ') then
-       begin
-           W := succ(W);
-           SpaceBefore := false;
-       end
-       else
-           If (SpaceBefore = false) and (Str[StartAT] = ' ') then
-               SpaceBefore := true;
-   end;
-   If W = Wordno then
-      LocWord := StartAT
-   else
-      LocWord := 0;
-end;
-
-
-Function ExtractWords(StartWord,NoWords:integer;Str:string):string;
-var Start, finish : integer;
-begin
-   If Str = '' then
-   begin
-       ExtractWords := '';
-       exit;
-   end;
-   Start := LocWord(1,StartWord,Str);
-   If Start <> 0 then
-      finish := LocWord(Start,succ(NoWords),Str)
-   else
-   begin
-       ExtractWords := '';
-       exit;
-   end;
-   If finish = 0 then {5.02A}
-      finish := succ(length(Str));
-   Repeat
-       finish := pred(finish);
-   Until Str[finish] <> ' ';
-   ExtractWords := copy(Str,Start,succ(finish-Start));
-end;  {Func ExtractWords}
-
-
-Function WordCnt(Str:string):integer;
-var
- W,I: integer;
- SpaceBefore: boolean;
-begin
-   If Str = '' then
-   begin
-       WordCnt := 0;
-       exit;
-   end;
-   SpaceBefore := true;
-   W := 0;
-   For  I :=  1 to length(Str) do
-   begin
-       If SpaceBefore and (Str[I] <> ' ') then
-       begin
-           W := succ(W);
-           SpaceBefore := false;
-       end
-       else
-           If (SpaceBefore = false) and (Str[I] = ' ') then
-               SpaceBefore := true;
-   end;
-   WordCnt := W;
-end;
-
-
-
-function IsIn(Iskano:string; baza:string):boolean;
-var
-    index,mindex,counter:integer;
-    tmp1:string;
-    tmp2:string;
-begin
-  result:=false;
-  tmp1:=uppercase(iskano);
-  tmp2:=uppercase(baza);
-  counter:=0;
-  if pos('"',tmp1)<>0 then
+  if FileListBox1.Items.Count-1<>-1 then
   begin
-    mindex:=1;
-    tmp1:=Replace(tmp1,'"','');
-    if pos(tmp1,tmp2)<>0 then
-    begin
-      counter:=1;
-    end;
-  end else
-  begin
-    mindex:=WordCnt(tmp1);
-    if mindex>0 then
-    begin
-      for index:=1 to mindex do
-      begin
-        if Pos(ExtractWords(index,1,tmp1),tmp2)<>0 then inc(counter);
-      end;
-    end;
-  end;
-  if counter=mindex then
-  begin
-    result:=true;
-  end;
+    label6.caption:=msgdone+inttostr(FileListBox1.Items.Count-1);
+  end else label6.caption:=msgdone+'0';
 end;
-
-
-procedure GetAllFiles(mask: string; unignore:string; subdirs:boolean);
-var
- search: TSearchRec;
- directory: string;
- tmp:string;
-
-const
-{$ifdef unix}
- msk='*';
- delimeter='/';
- {$else}
- msk='*.*';
- delimeter='\';
-{$endif}
-
-begin
- directory := ExtractFilePath(mask);
-
- // find all files
- if FindFirst(mask, faAnyFile-faDirectory, search) = 0 then
- begin
-   repeat
-     // add the files to the listbox
-     tmp:=trim(ExtractFileExt(search.Name));
-     if tmp<>'' then
-     begin
-       if pos('.',tmp)=1 then delete(tmp,1,1);
-       if IsIn(tmp,unignore) then
-       begin
-         allfiles.add(directory + search.Name);
-       end;
-     end;
-   until FindNext(search) <> 0;
- end;
- if subdirs then
- begin
-   // Subdirectories/ Unterverzeichnisse
-   if FindFirst(directory + msk, faDirectory, search) = 0 then
-   begin
-     repeat
-       if ((search.Attr and faDirectory) = faDirectory)
-       and (search.Name[1] <> '.') and (search.Name<>'') then
-         GetAllFiles(directory + search.Name + delimeter + ExtractFileName(mask),
-                     unignore,subdirs);
-     until FindNext(search) <> 0;
-     FindClose(search);
-   end;
- end;
-end;
-
-
-
-{ TLazConverterForm }
-
-
 
 procedure TLazConverterForm.Button1Click(Sender: TObject);
 begin
   if SelectDirectoryDialog1.Execute then
   begin
-    edit1.text:=IncludeTrailingPathDelimiter(ExtractFileDir(SelectDirectoryDialog1.FileName));
+    edit1.text:=IncludeTrailingPathDelimiter(SelectDirectoryDialog1.FileName);
   end;
 end;
 
 procedure TLazConverterForm.Button2Click(Sender: TObject);
-var tmp:string;
-
-const
-{$ifdef unix}
-  msk='*';
-{$else}
-  msk='*.*';
-{$endif}
 begin
-  memo1.text:='';
-  tmp:=trim(Edit1.text);
-  if tmp='' then
+  if trim(edit1.text)='' then
   begin
     button1click(sender);abort;
   end;
-  edit1.text:=IncludeTrailingPathDelimiter(tmp);
-  if DirectoryExists(tmp) then
-  begin
-    AllFiles.Text:='';
-    GetAllFiles(tmp+msk,'pas lfm lrs inc',checkbox1.checked);
-    label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(allfiles.count);
-    memo1.text:=allfiles.text;
-    caption:=allfiles[0];
-  end;
+  FileListBox1.Mask:='';
+  FileListBox1.Directory:='';
+  FileListBox1.Clear;
+  FileListBox1.Directory:=Edit1.text;
+  FileListBox1.Mask:='*.pas;*.lfm;*.lrs;*.inc;*.lrt';
+  CountFiles;
 end;
 
 procedure TLazConverterForm.Button3Click(Sender: TObject);
@@ -390,31 +209,31 @@ var tmp:tstringlist;
    end;
 
 begin
-  if allfiles.Count-1=-1 then abort;
+  if FileListBox1.Items.count-1=-1 then abort;
   if trim(combobox1.text)='' then abort;
   if trim(combobox2.text)='' then abort;
   tmp:=tstringlist.create;
   try
     ProgressBar1.Min:=0;
-    ProgressBar1.Max:=allfiles.count;
+    ProgressBar1.Max:=FileListBox1.Items.count;
     ProgressBar1.StepBy(1);
-    for i:=0 to allfiles.count-1 do
+    for i:=0 to FileListBox1.Items.count-1 do
     begin
       ok:=true;
       try
-        tmp.LoadFromFile(allfiles[i]);
+        tmp.LoadFromFile(FileListBox1.Directory+FileListBox1.Items[i]);
       except
         ok:=false;
       end;
       if ok then
       begin
-        if pos('.LRS',uppercase(allfiles[i]))<>0 then
+        if uppercase(ExtractFileExt(FileListBox1.Items[i]))='.LRS' then
         begin
           if ConvertMeLRS(tmp) then
           begin
             ok:=true;
             try
-              tmp.SaveToFile(allfiles[i]);
+              tmp.SaveToFile(FileListBox1.Directory+FileListBox1.Items[i]);
             except ok:=false; end;
           end;
         end else
@@ -423,7 +242,7 @@ begin
           begin
             ok:=true;
             try
-              tmp.SaveToFile(allfiles[i]);
+              tmp.SaveToFile(FileListBox1.Directory+FileListBox1.Items[i]);
             except ok:=false; end;
           end;
         end;
@@ -434,6 +253,9 @@ begin
     ProgressBar1.Position:=0;
     tmp.free;
     label6.caption:='Done!';
+    FileListBox1.Mask:='';
+    FileListBox1.Directory:='';
+    FileListBox1.Clear;
   end;
 end;
 
@@ -448,15 +270,25 @@ begin
   except end;
   ComboBox1.text:='';
   ComboBox2.text:='';
-  CheckBox1.Checked:=True;
   Edit1.SetFocus;
+  FileListBox1.Mask:='';
+  FileListBox1.Directory:='';
+  FileListBox1.Clear;
+end;
+
+procedure TLazConverterForm.MenuItem1Click(Sender: TObject);
+begin
+ if FileListBox1.Items.count-1=-1 then abort;
+ try
+  FileListBox1.Items.Delete(FileListBox1.ItemIndex);
+ except end;
+ CountFiles;
 end;
 
 initialization
   {$I mainunit.lrs}
-  allfiles:=tstringlist.create;
 
 finalization
-  allfiles.free;
+
 end.
 
