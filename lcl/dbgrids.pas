@@ -2994,10 +2994,10 @@ end;
 
 function TColumn.GetDisplayName: string;
 begin
-  if FFieldName='' then
-    result := 'column'
+  if FFieldName<>'' then
+    Result:=FFieldName
   else
-    Result:=FFieldName;
+    Result:=inherited GetDisplayName;
 end;
 
 function TColumn.GetDefaultAlignment: TAlignment;

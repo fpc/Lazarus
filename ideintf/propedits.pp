@@ -3338,6 +3338,7 @@ begin
   if Collection=nil then exit;
   Collection.Add;
   FillCollectionListBox;
+  UpdateCaption;
   Modified;
 end;
 
@@ -3384,6 +3385,7 @@ begin
     end;
   end;
   UpdateButtons;
+  UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
@@ -3629,6 +3631,7 @@ begin
     end;
   end;
   FillCollectionListBox;
+  UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.Modified;

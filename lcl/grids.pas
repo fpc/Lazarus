@@ -7403,7 +7403,10 @@ end;
 
 function TGridColumn.GetDisplayName: string;
 begin
-  Result := 'GridColumn';
+  if Title.Caption<>'' then
+    Result := Title.Caption
+  else
+    Result := 'GridColumn';
 end;
 
 function TGridColumn.GetDefaultAlignment: TAlignment;
