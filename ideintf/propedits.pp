@@ -3338,6 +3338,9 @@ begin
   if Collection=nil then exit;
   Collection.Add;
   FillCollectionListBox;
+  if CollectionListBox.Items.Count>0 then
+    CollectionListBox.ItemIndex := CollectionListBox.Items.Count-1;
+  SelectInObjectInspector(true);
   UpdateCaption;
   Modified;
 end;
