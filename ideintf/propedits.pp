@@ -3340,7 +3340,7 @@ begin
   FillCollectionListBox;
   if CollectionListBox.Items.Count>0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count-1;
-  SelectInObjectInspector(true);
+  SelectInObjectInspector(false);
   UpdateCaption;
   Modified;
 end;
