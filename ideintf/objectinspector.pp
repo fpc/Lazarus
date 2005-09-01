@@ -3216,7 +3216,7 @@ procedure TObjectInspector.OnCutPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then begin
+  if (Selection.Count > 0) and (Selection[0] is TComponent) then begin
     ADesigner:=FindRootDesigner(TComponent(Selection[0]));
     if ADesigner is TComponentEditorDesigner then begin
       TComponentEditorDesigner(ADesigner).CutSelection;
@@ -3228,7 +3228,7 @@ procedure TObjectInspector.OnCopyPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then
+  if (Selection.Count > 0) and (Selection[0] is TComponent) then
   begin
     ADesigner:=FindRootDesigner(TComponent(Selection[0]));
     if ADesigner is TComponentEditorDesigner then begin
@@ -3241,7 +3241,7 @@ procedure TObjectInspector.OnPastePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if ComponentTree.Selection.Count > 0 then begin
+  if Selection.Count > 0 then begin
     ADesigner:=FindRootDesigner(TComponent(Selection[0]));
     if ADesigner is TComponentEditorDesigner then begin
       TComponentEditorDesigner(ADesigner).PasteSelection([cpsfReplace]);
@@ -3253,7 +3253,7 @@ procedure TObjectInspector.OnDeletePopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
 begin
-  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then
+  if (Selection.Count > 0) and (Selection[0] is TComponent) then
   begin
     ADesigner:=FindRootDesigner(TComponent(Selection[0]));
     if ADesigner is TComponentEditorDesigner then begin
@@ -3527,7 +3527,7 @@ begin
   else
     UndoPropertyPopupMenuItem.Enabled:=false;
   ShowHintsPopupMenuItem.Checked:=PropertyGrid.ShowHint;
-  if (ComponentTree.Selection.Count > 0) and FShowComponentTree then begin
+  if (Selection.Count > 0) and FShowComponentTree then begin
     CutPopupMenuItem.Visible := true;
     CopyPopupMenuItem.Visible := true;
     PastePopupMenuItem.Visible := true;

@@ -46,7 +46,8 @@ type
     procedure DoSelectionChanged; override;
     function GetImageFor(AComponent:TComponent):integer;
     procedure DropObject(Sender, Source: TObject; X, Y: Integer);
-    procedure AcceptDrop(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure AcceptDrop(Sender, Source: TObject; X, Y: Integer;
+                         State: TDragState; var Accept: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

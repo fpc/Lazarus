@@ -3346,9 +3346,9 @@ begin
     SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
                                             .OnClickMethod:=@BookMarkSetClicked;
   end;
-  SrcEditMenuSetFreeBookmark.OnClickMethod:=@SetFreeBookmarkClicked;
-  SrcEditMenuNextBookmark.OnClickMethod:=@NextBookmarkClicked;
-  SrcEditMenuPrevBookmark.OnClickMethod:=@PrevBookmarkClicked;
+  SrcEditMenuSetFreeBookmark.OnClickMethod:=@BookMarkSetClicked;
+  SrcEditMenuNextBookmark.OnClickMethod:=@BookMarkNextClicked;
+  SrcEditMenuPrevBookmark.OnClickMethod:=@BookMarkPrevClicked;
 
   SrcEditMenuAddBreakpoint.OnClickMethod:=@AddBreakpointClicked;
   SrcEditMenuAddWatchAtCursor.OnClickMethod:=@AddWatchAtCursor;
