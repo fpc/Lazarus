@@ -175,6 +175,9 @@ destructor TMenuItem.Destroy;
 var
   i : integer;
 begin
+  i:=FMenuItemHandlers[mihtDestroy].Count;
+  while FMenuItemHandlers[mihtDestroy].NextDownIndex(i) do
+    TNotifyEvent(FMenuItemHandlers[mihtDestroy][i])(Self);
   if FBitmap<>nil then
     FreeAndNil(FBitmap);
   DestroyHandle;
@@ -794,6 +797,40 @@ begin
     if (TheImgList<>nil) and (FImageIndex<TheImgList.Count) then
       Result:=Point(TheImgList.Width,TheImgList.Height);
   end;
+end;
+
+procedure TMenuItem.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TMenuItemHandlerType;
+begin
+  inherited RemoveAllHandlersOfObject(AnObject);
+  for HandlerType:=Low(TMenuItemHandlerType) to High(TMenuItemHandlerType) do
+    FMenuItemHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TMenuItem.AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
+  AsLast: boolean);
+begin
+  AddHandler(mihtDestroy,TMethod(OnDestroyEvent),AsLast);
+end;
+
+procedure TMenuItem.RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
+begin
+  RemoveHandler(mihtDestroy,TMethod(OnDestroyEvent));
+end;
+
+procedure TMenuItem.AddHandler(HandlerType: TMenuItemHandlerType;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FMenuItemHandlers[HandlerType]=nil then
+    FMenuItemHandlers[HandlerType]:=TMethodList.Create;
+  FMenuItemHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TMenuItem.RemoveHandler(HandlerType: TMenuItemHandlerType;
+  const AMethod: TMethod);
+begin
+  FMenuItemHandlers[HandlerType].Remove(AMethod);
 end;
 
 function TMenuItem.MenuVisibleIndex: integer;

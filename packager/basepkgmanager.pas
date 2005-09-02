@@ -83,7 +83,7 @@ type
     procedure SaveSettings; virtual; abstract;
     procedure UpdateVisibleComponentPalette; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
-    procedure OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc); virtual; abstract;
+    procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); virtual; abstract;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;

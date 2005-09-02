@@ -325,7 +325,7 @@ type
                                    CaretPos: TPoint) of object;
   TOnInitIdentCompletion = procedure(Sender: TObject; JumpToError: boolean;
                                      out Handled, Abort: boolean) of object;
-  TSrcEditPopupMenuEvent = procedure(AddMenuItemProc: TAddMenuItemProc
+  TSrcEditPopupMenuEvent = procedure(const AddMenuItemProc: TAddMenuItemProc
                                      ) of object;
   TOnShowCodeContext = procedure(JumpToError: boolean;
                                  out Abort: boolean) of object;
@@ -408,8 +408,10 @@ type
   private
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
+    {$IFDEF DisableMenuIntf}
     fCustomPopupMenuItems: TList;
     fContextPopupMenuItems: TList;
+    {$ENDIF}
     fIdentCompletionJumpToError: boolean;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
@@ -461,11 +463,11 @@ type
     procedure RemoveUserDefinedMenuItems;
     function AddUserDefinedPopupMenuItem(const NewCaption: string;
                                      const NewEnabled: boolean;
-                                     const NewOnClick: TNotifyEvent): TMenuItem;
+                                     const NewOnClick: TNotifyEvent): TIDEMenuItem;
     procedure RemoveContextMenuItems;
     function AddContextPopupMenuItem(const NewCaption: string;
                                      const NewEnabled: boolean;
-                                     const NewOnClick: TNotifyEvent): TMenuItem;
+                                     const NewOnClick: TNotifyEvent): TIDEMenuItem;
 
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
@@ -2484,10 +2486,6 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
-  {$IFDEF UseMenuIntf}
-  SourceEditorMenuRoot.MenuItem:=nil;
-  {$ENDIF}
-
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
@@ -2504,8 +2502,10 @@ begin
   FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
+  {$IFDEF DisableMenuIntf}
   FreeThenNil(fCustomPopupMenuItems);
   FreeThenNil(fContextPopupMenuItems);
+  {$ENDIF}
 
   inherited Destroy;
 end;
@@ -3058,7 +3058,7 @@ begin
 end;
 
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
-{$IFDEF UseMenuIntf}
+{$IFNDEF DisableMenuIntf}
 var
   ASrcEdit: TSourceEditor;
   BookMarkID, BookMarkX, BookMarkY: integer;
@@ -3076,8 +3076,8 @@ var
   SelAvailAndWritable: Boolean;
   CurFilename: String;
 begin
-  //RemoveUserDefinedMenuItems;
-  //RemoveContextMenuItems;
+  RemoveUserDefinedMenuItems;
+  RemoveContextMenuItems;
 
   ASrcEdit:=
          FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
@@ -3135,14 +3135,14 @@ begin
     if Marks<>nil then begin
       for i:=0 to MarkCount-1 do begin
         CurMark:=Marks[i];
-        //CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
+        CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
       end;
       FreeMem(Marks);
     end;
   end;
 
   // add context specific menu items
-  {CurFilename:=ASrcEdit.FileName;
+  CurFilename:=ASrcEdit.FileName;
   if FilenameIsPascalUnit(CurFilename)
   and (FilenameIsAbsolute(CurFilename)) then begin
     if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
@@ -3164,7 +3164,7 @@ begin
       AddContextPopupMenuItem(
         'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
         true,@OnPopupMenuOpenPPFile);
-  end;}
+  end;
 
   //if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 end;
@@ -3316,11 +3316,11 @@ begin
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
-{$IFDEF UseMenuIntf}
+{$IFNDEF DisableMenuIntf}
 var
   i: Integer;
 begin
-  debugln('TSourceNotebook.BuildPopupMenu');
+  //debugln('TSourceNotebook.BuildPopupMenu');
   
   SrcPopupMenu := TPopupMenu.Create(Self);
   with SrcPopupMenu do begin
@@ -3330,8 +3330,11 @@ begin
   
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
-  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
+  {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
+  SourceEditorMenuRoot.ConsistencyCheck;
+  {$ENDIF}
+  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
 
   SrcEditMenuFindDeclaration.OnClickMethod:=@FindDeclarationClicked;
   SrcEditMenuOpenFileAtCursor.OnClickMethod:=@OpenAtCursorClicked;
@@ -3671,6 +3674,11 @@ end;
 {$ENDIF}
 
 procedure TSourceNotebook.RemoveUserDefinedMenuItems;
+{$IFNDEF DisableMenuIntf}
+begin
+  SrcEditMenuSectionFirstDynamic.Clear;
+end;
+{$ELSE}
 var
   AMenuItem: TMenuItem;
 begin
@@ -3681,9 +3689,17 @@ begin
     fCustomPopupMenuItems.Delete(fCustomPopupMenuItems.Count-1);
   end;
 end;
+{$ENDIF}
 
 function TSourceNotebook.AddUserDefinedPopupMenuItem(const NewCaption: string;
-  const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TMenuItem;
+  const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TIDEMenuItem;
+{$IFNDEF DisableMenuIntf}
+begin
+  Result:=RegisterIDEMenuCommand(SrcEditMenuSectionFirstDynamic.GetPath,
+    'Dynamic',NewCaption,NewOnClick);
+  Result.Enabled:=NewEnabled;
+end;
+{$ELSE}
 var
   NewIndex: Integer;
 begin
@@ -3696,8 +3712,17 @@ begin
   Result.OnClick:=NewOnClick;
   SrcPopUpMenu.Items.Insert(NewIndex,Result);
 end;
+{$ENDIF}
 
 procedure TSourceNotebook.RemoveContextMenuItems;
+{$IFNDEF DisableMenuIntf}
+begin
+  SrcEditMenuSectionFileDynamic.Clear;
+  {$IFDEF VerboseMenuIntf}
+  SrcEditMenuSectionFileDynamic.WriteDebugReport('TSourceNotebook.RemoveContextMenuItems ');
+  {$ENDIF}
+end;
+{$ELSE}
 var
   AMenuItem: TMenuItem;
 begin
@@ -3708,9 +3733,17 @@ begin
     fContextPopupMenuItems.Delete(fContextPopupMenuItems.Count-1);
   end;
 end;
+{$ENDIF}
 
 function TSourceNotebook.AddContextPopupMenuItem(const NewCaption: string;
-  const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TMenuItem;
+  const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TIDEMenuItem;
+{$IFNDEF DisableMenuIntf}
+begin
+  Result:=RegisterIDEMenuCommand(SrcEditMenuSectionFileDynamic.GetPath,
+    'FileDynamic',NewCaption,NewOnClick);
+  Result.Enabled:=NewEnabled;
+end;
+{$ELSE}
 var
   NewIndex: Integer;
 begin
@@ -3730,6 +3763,7 @@ begin
   NewIndex:=fContextPopupMenuItems.Count+ClosePageMenuItem.MenuIndex;
   SrcPopUpMenu.Items.Insert(NewIndex,Result);
 end;
+{$ENDIF}
 
 {-------------------------------------------------------------------------------
   Procedure TSourceNotebook.EditorChanged

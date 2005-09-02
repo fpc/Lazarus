@@ -332,7 +332,7 @@ type
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
     procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
     procedure OnSrcNotebookShowSearchResultsView(Sender: TObject);
-    procedure OnSrcNoteBookPopupMenu(AddMenuItemProc: TAddMenuItemProc);
+    procedure OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
@@ -11214,7 +11214,8 @@ begin
   CreateSearchResultWindow;
 end;
 
-procedure TMainIDE.OnSrcNoteBookPopupMenu(AddMenuItemProc: TAddMenuItemProc);
+procedure TMainIDE.OnSrcNoteBookPopupMenu(
+  const AddMenuItemProc: TAddMenuItemProc);
 begin
   PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
 end;

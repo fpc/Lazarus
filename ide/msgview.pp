@@ -208,7 +208,6 @@ begin
   ClearItems;
   FreeThenNil(FItems);
   FreeThenNil(FVisibleItems);
-  MessagesMenuRoot.MenuItem:=nil;
   inherited Destroy;
 end;
 

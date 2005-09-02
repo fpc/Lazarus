@@ -255,8 +255,7 @@ end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
 begin
-  debugln('TCodeExplorerView.CodeExplorerViewDestroy');
-  CodeExplorerMenuRoot.MenuItem:=nil;
+  //debugln('TCodeExplorerView.CodeExplorerViewDestroy');
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);

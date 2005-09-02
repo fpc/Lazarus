@@ -3039,25 +3039,25 @@ begin
   Result:=Control.ManualDock(NewDockSite,DropControl,ControlSide);
 end;
 
-procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
+procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
   AsLast: boolean);
 begin
   AddHandler(chtOnResize,TMethod(OnResizeEvent),AsLast);
 end;
 
-procedure TControl.RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
+procedure TControl.RemoveHandlerOnResize(const OnResizeEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnResize,TMethod(OnResizeEvent));
 end;
 
-procedure TControl.AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
-  AsLast: boolean);
+procedure TControl.AddHandlerOnChangeBounds(
+  const OnChangeBoundsEvent: TNotifyEvent; AsLast: boolean);
 begin
   AddHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsLast);
 end;
 
-procedure TControl.RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent
-  );
+procedure TControl.RemoveHandlerOnChangeBounds(
+  const OnChangeBoundsEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
 end;

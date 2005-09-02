@@ -194,7 +194,7 @@ type
     procedure SaveSettings; override;
     procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
-    procedure OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc); override;
+    procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); override;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
@@ -2113,8 +2113,8 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc
-  );
+procedure TPkgManager.OnSourceEditorPopupMenu(
+  const AddMenuItemProc: TAddMenuItemProc);
 var
   PkgFile: TPkgFile;
 begin

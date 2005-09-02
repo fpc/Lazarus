@@ -49,9 +49,6 @@ type
   
   TGetSourceMarkHintEvent =
     procedure(SenderMark: TSourceMark; var Hint: string) of object;
-  TAddMenuItemProc =
-    function (const NewCaption: string; const NewEnabled: boolean;
-              const NewOnClick: TNotifyEvent): TMenuItem of object;
   TCreateSourceMarkPopupMenuEvent =
     procedure(SenderMark: TSourceMark;
               const AddMenuItem: TAddMenuItemProc) of object;
@@ -98,7 +95,7 @@ type
                                   ALine: integer): integer;
     function GetFilename: string;
     function GetHint: string; virtual;
-    procedure CreatePopupMenuItems(AddMenuItemProc: TAddMenuItemProc);
+    procedure CreatePopupMenuItems(const AddMenuItemProc: TAddMenuItemProc);
   public
     // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
@@ -392,7 +389,8 @@ begin
     TGetSourceMarkHintEvent(FHandlers[smhGetHint][i])(Self,Result);
 end;
 
-procedure TSourceMark.CreatePopupMenuItems(AddMenuItemProc: TAddMenuItemProc);
+procedure TSourceMark.CreatePopupMenuItems(
+  const AddMenuItemProc: TAddMenuItemProc);
 var
   i: Integer;
 begin

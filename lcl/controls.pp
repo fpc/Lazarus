@@ -985,7 +985,7 @@ type
     procedure DoOnShowHint(HintInfo: Pointer);
     procedure VisibleChanging; dynamic;
     procedure AddHandler(HandlerType: TControlHandlerType;
-                         const AMethod: TMethod; AsLast: boolean);
+                         const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
@@ -1104,11 +1104,12 @@ type
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
-    procedure AddHandlerOnResize(OnResizeEvent: TNotifyEvent; AsLast: boolean);
-    procedure RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
-    procedure AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
-                                       AsLast: boolean);
-    procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
+    procedure AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
+                                 AsLast: boolean = false);
+    procedure RemoveHandlerOnResize(const OnResizeEvent: TNotifyEvent);
+    procedure AddHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent;
+                                       AsLast: boolean = false);
+    procedure RemoveHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent);
   public
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;

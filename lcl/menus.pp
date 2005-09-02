@@ -91,6 +91,10 @@ type
 
 
   { TMenuItem }
+  
+  TMenuItemHandlerType = (
+    mihtDestroy
+    );
 
   TMenuItem = class(TLCLComponent)
   private
@@ -119,6 +123,7 @@ type
     FShowAlwaysCheckable: boolean;
     FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
+    FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     function GetBitmap: TBitmap;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
@@ -203,6 +208,16 @@ type
     procedure Clear;
     function HasBitmap: boolean;
     function GetIconSize: TPoint; virtual;
+  public
+    // Event lists
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+    procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
+                                  AsLast: boolean = false);
+    procedure RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
+    procedure AddHandler(HandlerType: TMenuItemHandlerType;
+                         const AMethod: TMethod; AsLast: boolean);
+    procedure RemoveHandler(HandlerType: TMenuItemHandlerType;
+                            const AMethod: TMethod);
   public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;

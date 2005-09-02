@@ -41,7 +41,9 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
   Laz_XMLCfg,
-  SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
+  SynEdit, CodeCache, CodeToolManager,
+  MenuIntf,
+  LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
