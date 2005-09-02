@@ -1114,6 +1114,7 @@ begin
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
   FreeThenNil(IDEMenuRoots);
+  FreeThenNil(IDECommandScopes);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
@@ -1709,6 +1710,8 @@ end;
 
 procedure TMainIDE.SetupStandardIDEMenuItems;
 begin
+  CreateStandardIDECommandScopes;
+  
   IDEMenuRoots:=TIDEMenuRoots.Create;
   RegisterStandardSourceEditorMenuItems;
   RegisterStandardMessagesViewMenuItems;

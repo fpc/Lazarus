@@ -24,9 +24,13 @@
    
    Commands are sorted into categories. For example:
      ecCopy is in the category 'Selection'.
+     This is only to help the user find commands.
      
-   Every command can have a menu item.
-
+   Scopes:
+     Command can work globally or only in some IDE windows.
+     For example: When the user presses a key in the source editor, the IDE
+       first searches in all commands with the Scope IDECmdScopeSrcEdit.
+       Then it will search in all commands without scope.
 }
 unit IDECommands;
 
@@ -35,7 +39,7 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Menus;
+  Classes, SysUtils, Forms, LCLType, Menus, TextTools;
   
 type
   TCommandArea = (
@@ -55,6 +59,55 @@ const
 
 
 type
+  TIDECommandKeys = class;
+
+  { TIDECommandScope }
+  { A TIDECommandScope defines a set of IDE windows that will share the same
+    IDE commands. }
+
+  TIDECommandScope = class(TPersistent)
+  private
+    FName: string;
+    FIDEWindows: TFPList;
+    FCommands: TFPList;
+    function GetCommands(Index: integer): TIDECommandKeys;
+    function GetIDEWindows(Index: integer): TCustomForm;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddWindow(AnWindow: TCustomForm);
+    function IDEWindowCount: integer;
+    procedure AddCommand(ACommand: TIDECommandKeys);
+    function CommandCount: integer;
+  public
+    property Name: string read FName;
+    property IDEWindows[Index: integer]: TCustomForm read GetIDEWindows;
+    property Commands[Index: integer]: TIDECommandKeys read GetCommands;
+  end;
+
+  { TIDECommandScopes }
+
+  TIDECommandScopes = class(TPersistent)
+  private
+    FItems: TFPList;
+    function GetItems(Index: integer): TIDECommandScope;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add(NewItem: TIDECommandScope);
+    function IndexOf(AnItem: TIDECommandScope): Integer;
+    function IndexByName(const AName: string): Integer;
+    function FindByName(const AName: string): TIDECommandScope;
+    function CreateUniqueName(const AName: string): string;
+    function Count: integer;
+  public
+    property Items[Index: integer]: TIDECommandScope read GetItems;
+  end;
+  
+
+  { TIDEShortCut }
+
   TIDEShortCut = record
     Key1: word;
     Shift1: TShiftState;
@@ -62,8 +115,9 @@ type
     Shift2: TShiftState;
   end;
 
-  //---------------------------------------------------------------------------
-  // TIDECommandCategory is used to divide the commands in handy packets
+  { TIDECommandCategory }
+  { TIDECommandCategory is used to divide the commands in handy packets }
+    
   TIDECommandCategory = class(TList)
   protected
     FAreas: TCommandAreas;
@@ -77,10 +131,11 @@ type
     property Areas: TCommandAreas read FAreas;
     procedure Delete(Index: Integer); virtual;
   end;
-
-  //---------------------------------------------------------------------------
-  // class for storing the keys of a single command
-  // (shortcut-command relationship)
+  
+  
+  { TIDECommandKeys }
+  { class for storing the keys of a single command
+    (shortcut-command relationship) }
   TIDECommandKeys = class
   private
     FCategory: TIDECommandCategory;
@@ -124,7 +179,6 @@ type
   TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
 
 var
-  // will be set by the IDE
   OnExecuteIDEShortCut: TExecuteIDEShortCut;
   OnExecuteIDECommand: TExecuteIDECommand;
 
@@ -134,6 +188,18 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState)
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
 function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
+
+
+var
+  // will be set by the IDE
+  IDECommandScopes: TIDECommandScopes = nil;
+var
+  IDECmdScopeSrcEdit: TIDECommandScope;
+  IDECmdScopeDesigner: TIDECommandScope;
+
+procedure CreateStandardIDECommandScopes;
+function RegisterIDECommandScope(const Name: string): TIDECommandScope;
+
 
 implementation
 
@@ -174,11 +240,17 @@ begin
     Result:=ShortCut(VK_UNKNOWN,[]);
 end;
 
-{ TIDECommandCategory }
-
-procedure TIDECommandCategory.Delete(Index: Integer);
+procedure CreateStandardIDECommandScopes;
 begin
-  inherited Delete(Index);
+  IDECommandScopes:=TIDECommandScopes.Create;
+  IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
+  IDECmdScopeDesigner:=RegisterIDECommandScope('Designer');
+end;
+
+function RegisterIDECommandScope(const Name: string): TIDECommandScope;
+begin
+  Result:=TIDECommandScope.Create;
+  IDECommandScopes.Add(Result);
 end;
 
 { TIDECommandKeys }
@@ -256,6 +328,128 @@ begin
   Result:='"'+GetLocalizedName+'"';
   if Category<>nil then
     Result:=Result+' in "'+Category.Description+'"';
+end;
+
+{ TIDECommandScopes }
+
+function TIDECommandScopes.GetItems(Index: integer): TIDECommandScope;
+begin
+  Result:=TIDECommandScope(FItems[Index]);
+end;
+
+constructor TIDECommandScopes.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TIDECommandScopes.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TIDECommandScopes.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do Items[i].Free;
+  FItems.Clear;
+end;
+
+procedure TIDECommandScopes.Add(NewItem: TIDECommandScope);
+begin
+  NewItem.fName:=CreateUniqueName(NewItem.Name);
+  FItems.Add(NewItem);
+end;
+
+function TIDECommandScopes.IndexOf(AnItem: TIDECommandScope): Integer;
+begin
+  Result:=FItems.IndexOf(AnItem);
+end;
+
+function TIDECommandScopes.IndexByName(const AName: string): Integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(AName,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TIDECommandScopes.FindByName(const AName: string): TIDECommandScope;
+var
+  i: LongInt;
+begin
+  i:=IndexByName(AName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TIDECommandScopes.CreateUniqueName(const AName: string): string;
+begin
+  Result:=AName;
+  if IndexByName(Result)<0 then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while IndexByName(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+function TIDECommandScopes.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+{ TIDECommandCategory }
+
+procedure TIDECommandCategory.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+end;
+
+{ TIDECommandScope }
+
+function TIDECommandScope.GetIDEWindows(Index: integer): TCustomForm;
+begin
+  Result:=TCustomForm(FIDEWindows[Index]);
+end;
+
+function TIDECommandScope.GetCommands(Index: integer): TIDECommandKeys;
+begin
+  Result:=TIDECommandKeys(FCommands[Index]);
+end;
+
+constructor TIDECommandScope.Create;
+begin
+  FIDEWindows:=TFPList.Create;
+  FCommands:=TFPList.Create;
+end;
+
+destructor TIDECommandScope.Destroy;
+begin
+  FreeAndNil(FIDEWindows);
+  FreeAndNil(FCommands);
+  inherited Destroy;
+end;
+
+procedure TIDECommandScope.AddWindow(AnWindow: TCustomForm);
+begin
+  FIDEWindows.Add(AnWindow);
+end;
+
+function TIDECommandScope.IDEWindowCount: integer;
+begin
+  Result:=FIDEWindows.Count;
+end;
+
+procedure TIDECommandScope.AddCommand(ACommand: TIDECommandKeys);
+begin
+  FCommands.Add(ACommand);
+end;
+
+function TIDECommandScope.CommandCount: integer;
+begin
+  Result:=FCommands.Count;
 end;
 
 end.
