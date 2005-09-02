@@ -1899,6 +1899,7 @@ lcl/widgetset/wsspin.pp svneol=native#text/pascal
 lcl/widgetset/wsstdctrls.pp svneol=native#text/pascal
 lcl/widgetset/wstoolwin.pp svneol=native#text/pascal
 lcl/xmlpropstorage.pas svneol=native#text/pascal
+/localize.bat svneol=native#text/plain
 /localize.sh -text svneol=native#application/x-sh
 packager/addfiletoapackagedlg.lfm svneol=native#text/plain
 packager/addfiletoapackagedlg.lrs svneol=native#text/pascal
