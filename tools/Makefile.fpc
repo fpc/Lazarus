@@ -9,7 +9,7 @@ version=0.9b
 
 [target]
 dirs=apiwizz
-programs=lazres
+programs=lazres updatepofiles
 
 [require]
 packages=rtl fcl
@@ -37,16 +37,11 @@ export LCL_PLATFORM
 
 
 [rules]
-.PHONY: all makefile makefiles
+.PHONY: all
 
 all: apiwizz_all
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
         $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
 
 # end.
 
