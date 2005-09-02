@@ -806,6 +806,10 @@ msgstr ""
 msgid "Editor options"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
 msgstr ""
@@ -4996,6 +5000,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
 msgstr ""
 
 #: lazarusidestrconsts:lissavesettings

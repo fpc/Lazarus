@@ -1076,6 +1076,10 @@ msgstr "Quelltexterzeugung"
 msgid "Code Explorer"
 msgstr "CodeExplorer..."
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "CodeTools"
@@ -6291,6 +6295,10 @@ msgstr "Vorlagenvorschau"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Vorlagendateiname"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"

@@ -1073,6 +1073,10 @@ msgstr "Code creatie"
 msgid "Code Explorer"
 msgstr "Code Verkenner"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "Code Hulpmiddelen"
@@ -6287,6 +6291,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
 msgstr ""
 
 #: lazarusidestrconsts:liscomptest

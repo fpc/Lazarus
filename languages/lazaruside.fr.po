@@ -1073,6 +1073,10 @@ msgstr "Création de code"
 msgid "Code Explorer"
 msgstr "Explorateur de code"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "Audit de code"
@@ -6288,6 +6292,10 @@ msgstr "Prévisualisation d'un modèle"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Fichier modèle"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"

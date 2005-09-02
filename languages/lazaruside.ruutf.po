@@ -1062,6 +1062,10 @@ msgstr "Создание кода"
 msgid "Code Explorer"
 msgstr "Обозреватель кода"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "CodeTools"
@@ -6277,6 +6281,10 @@ msgstr "Просмотр шаблона"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Имя файла шаблона"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"

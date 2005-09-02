@@ -1062,6 +1062,10 @@ msgstr ""
 msgid "Code Explorer"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr ""
@@ -6276,6 +6280,10 @@ msgstr "Mallin esikatselu"
 
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
 msgstr ""
 
 #: lazarusidestrconsts:liscomptest

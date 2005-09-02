@@ -1062,6 +1062,10 @@ msgstr "Creació del codi"
 msgid "Code Explorer"
 msgstr "Explorador del codi"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "Eines del codi"
@@ -6277,6 +6281,10 @@ msgstr "Vista preliminar de la plantilla"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Nom fit. Plantilla"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"

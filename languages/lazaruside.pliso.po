@@ -1073,6 +1073,10 @@ msgstr "Tworzenie ¼ród³a"
 msgid "Code Explorer"
 msgstr "Przegl±darka ¼róde³"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "Narzêdzia ¼róde³"
@@ -6288,6 +6292,10 @@ msgstr "Podgl±d szablonu"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Plik szablonu"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
