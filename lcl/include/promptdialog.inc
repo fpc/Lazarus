@@ -162,7 +162,7 @@ begin
   ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
-  SetInitialBounds(200,100);
+  SetInitialBounds(0,0,200,100);
   MSG         := AMSG;
   Buttons     := nil;
   FBitmap := nil;

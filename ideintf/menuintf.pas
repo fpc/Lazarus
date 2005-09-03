@@ -256,7 +256,7 @@ type
 
 var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
-  // Popupmenu of the SourceEditor:
+  // Source Editor: Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection;
   // Source Editor: First dynamic section for often used context sensitive stuff
   SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
@@ -264,21 +264,21 @@ var
   SrcEditMenuSectionFirstStatic: TIDEMenuSection;
   // Source Editor: Clipboard section (e.g. cut, copy, paste)
   SrcEditMenuSectionClipboard: TIDEMenuSection;
-  // Source Editor: register the File Specific dynamic section
+  // Source Editor: File Specific dynamic section
   SrcEditMenuSectionFileDynamic: TIDEMenuSection;
-  // Source Editor: register the marks section
+  // Source Editor: Marks section
   SrcEditMenuSectionMarks: TIDEMenuSection;
-  // Source Editor: register the Goto Bookmarks Submenu
+  // Source Editor: Goto Bookmarks Submenu
   SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
-  // Source Editor: register the Set Bookmarks Submenu
+  // Source Editor: Set Bookmarks Submenu
   SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-  // Source Editor: register the Flags section
+  // Source Editor: Flags section
   SrcEditMenuSectionFlags: TIDEMenuSection;
-  // register the Debug submenu
+  // Source Editor: Debug submenu
   SrcEditSubMenuDebug: TIDEMenuSection;
-  // register the Move Page section
+  // Source Editor: Move Page section
   SrcEditMenuSectionMovePage: TIDEMenuSection;
-  // register the Refactor submenu
+  // Source Editor: Refactor submenu
   SrcEditSubMenuRefactor: TIDEMenuSection;
 
   MessagesMenuRoot: TIDEMenuSection;
