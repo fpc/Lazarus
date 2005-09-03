@@ -336,36 +336,6 @@ type
   { TSourceNotebook }
 
   TSourceNotebook = class(TForm)
-    AddBreakpointMenuItem: TMenuItem;
-    AddWatchAtCursorMenuItem: TMenuItem;
-    ClosePageMenuItem: TMenuItem;
-    CompleteCodeMenuItem: TMenuItem;
-    DebugMenuItem: TMenuItem;
-    EditorPropertiesMenuItem: TMenuItem;
-    EncloseSelectionMenuItem: TMenuItem;
-    ExtractProcMenuItem: TMenuItem;
-    InvertAssignmentMenuItem: TMenuItem;
-    FindDeclarationMenuItem: TMenuItem;
-    CutMenuItem: TMenuItem;
-    CopyMenuItem: TMenuItem;
-    PasteMenuItem: TMenuItem;
-    GotoBookmarkMenuItem: TMenuItem;
-    SetFreeBookmarkMenuItem: TMenuItem;
-    NextBookmarkMenuItem: TMenuItem;
-    PrevBookmarkMenuItem: TMenuItem;
-    MoveEditorLeftMenuItem: TMenuItem;
-    MoveEditorRightMenuItem: TMenuItem;
-    OpenFileAtCursorMenuItem: TMenuItem;
-    ReadOnlyMenuItem: TMenuItem;
-    RefactorMenuItem: TMenuItem;
-    FindIdentifierReferencesMenuItem: TMenuItem;
-    RenameIdentifierMenuItem: TMenuItem;
-    RunToCursorMenuItem: TMenuItem;
-    SetBookmarkMenuItem: TMenuItem;
-    ShowLineNumbersMenuItem: TMenuItem;
-    ShowUnitInfoMenuItem: TMenuItem;
-    ViewCallStackMenuItem: TMenuItem;
-
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     Notebook: TNotebook;
@@ -4561,7 +4531,7 @@ var
   MenuItem: TMenuItem;
   ActEdit,AnEdit:TSourceEditor;
 Begin
-  MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
+  MenuItem := SrcEditSubMenuSetBookmarks.Items[Value].MenuItem;
   MenuItem.Checked := not MenuItem.Checked;
   ActEdit:=GetActiveSE;
 
@@ -4677,10 +4647,8 @@ end;
 
 Procedure TSourceNotebook.BookMarkSet(Value: Integer);
 var
-  MenuItem: TMenuItem;
   ActEdit,AnEdit:TSourceEditor;
 Begin
-  MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
   ActEdit:=GetActiveSE;
 
   AnEdit:=FindBookmark(Value);
@@ -4689,8 +4657,8 @@ Begin
   end;
   ActEdit.EditorComponent.SetBookMark(Value,
      ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
-  MenuItem.Checked := true;
-  GotoBookmarkMenuItem[Value].Checked:=true;
+  (SrcEditSubMenuSetBookmarks[Value] as TIDEMenuCommand).Checked := true;
+  TIDEMenuCommand(SrcEditSubMenuGotoBookmarks[Value]).Checked:=true;
 end;
 
 procedure TSourceNotebook.BookMarkSetFree;

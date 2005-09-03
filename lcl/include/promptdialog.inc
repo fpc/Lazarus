@@ -50,7 +50,7 @@ type
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
       DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
-    Destructor Destroy; Override;
+    destructor Destroy; override;
   end;
 
 {** Return the localized or not title of dialog}
@@ -155,15 +155,14 @@ end;
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
   DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
 begin
-  inherited Create (Application);
+  inherited Create(nil);
 
   OnKeyDown :=@PromptDialogKeyDown;
 
   ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
-  Width       := 200;
-  Height      := 100;
+  SetInitialBounds(200,100);
   MSG         := AMSG;
   Buttons     := nil;
   FBitmap := nil;
@@ -241,6 +240,7 @@ begin
   // calculate the width & height we need to display the Message
   If MSG = '' then
     MSG := '   ';
+
   TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
   SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
