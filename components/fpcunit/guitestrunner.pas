@@ -252,7 +252,7 @@ begin
       BuildTree(Node, TTestSuite(ASuite.Test[i]))
     else
       if TObject(ASuite.Test[i]).InheritsFrom(TTestDecorator) then
-        BuildTree(Node, TTestSuite(TTestDecorator(ASuite.Test[i]).Test))
+        BuildTree(Node, TTestSuite(TTestDecorator(ASuite.Test[i]).Test));
     node.ImageIndex := 12;
     node.SelectedIndex := 12;
   end;
