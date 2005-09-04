@@ -943,8 +943,8 @@ begin
   DoNotSplitLineAfter:=DefaultDoNotSplitLineAfter;
   DoInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
   DoInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
-  DoNotInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
-  DoNotInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
+  DoNotInsertSpaceInFront:=DefaultDoNotInsertSpaceInFront;
+  DoNotInsertSpaceAfter:=DefaultDoNotInsertSpaceAfter;
   PropertyReadIdentPrefix:='Get';
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
@@ -1298,13 +1298,25 @@ begin
            or (LastAtomType in DoInsertSpaceAfter))
       then
         AddAtom(Result,' ');
+      {if (CurAtomType=atIdentifier) and (LastAtomType=atColon) then begin
+        DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
+          +' CurAtomType='+AtomTypeNames[CurAtomType]
+          +' LastAtomType=',AtomTypeNames[LastAtomType]
+          +' CurNot='+dbgs(CurAtomType in DoNotInsertSpaceInFront)
+          +' LastNot='+dbgs(LastAtomType in DoNotInsertSpaceAfter)
+          +' Cur='+dbgs(CurAtomType in DoInsertSpaceInFront)
+          +' Last='+dbgs(LastAtomType in DoInsertSpaceAfter)
+          +' ..."'+copy(Result,length(Result)-10,10)+'"');
+      end;}
+      
       if (not (CurAtomType in DoNotSplitLineInFront))
       and (not (LastAtomType in DoNotSplitLineAfter)) then
         LastSplitPos:=length(Result)+1;
-      {DebugLn('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
-      '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
-      '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
-      ' ..."',copy(Result,length(Result)-10,10),'"');}
+      {DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
+      +' CurAtomType='+AtomTypeNames[CurAtomType]
+      +' LastAtomType=',AtomTypeNames[LastAtomType]
+      +'  '+dbgs(LastAtomType in DoInsertSpaceAfter)+' LastSplitPos='+dbgs(LastSplitPos)
+      +' ..."'+copy(Result,length(Result)-10,10)+'"');}
       AddAtom(Result,CurAtom);
       LastAtomType:=CurAtomType;
     end;
