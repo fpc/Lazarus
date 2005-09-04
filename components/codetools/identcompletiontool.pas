@@ -630,6 +630,11 @@ function TIdentCompletionTool.CollectAllIdentifiers(
     p: TFindContext;
   begin
     Result:=true;
+    exit;
+    // TODO: this detects protected, but some protected are allowed:
+    // The protected to public/published properties
+    // For example: TStringGrid.Row
+    
     if ClassAndAncestors=nil then exit;
     CurClassNode:=FoundContext.Node;
     while (CurClassNode<>nil)
@@ -638,7 +643,7 @@ function TIdentCompletionTool.CollectAllIdentifiers(
     if CurClassNode=nil then exit;
     p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
     if IndexOfFindContext(ClassAndAncestors,@p)>=0 then begin
-      // this class node is the class or on of the ancestors of the class
+      // this class node is the class or one of the ancestors of the class
       // of the start context of the identifier completion
       exit;
     end;
