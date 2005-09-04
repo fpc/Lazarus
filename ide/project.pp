@@ -723,7 +723,12 @@ begin
       exit;
     end;
   end;
-  fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
+  NewUnitName:=CodeToolBoss.GetSourceName(fSource,false);
+  if (NewUnitName='') then begin
+    NewUnitName:=ExtractFileNameOnly(Filename);
+    if CompareText(NewUnitName,fUnitName)=0 then exit;
+    fUnitName:=NewUnitName;
+  end;
 end;
 
 function TUnitInfo.CreateUnitName: string;

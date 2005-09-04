@@ -4363,10 +4363,13 @@ begin
       // find the ancestor type in the source
       NewAncestorName:='';
       AncestorType:=TForm;
-      CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
-                                    NewAncestorName,true);
+      if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
+                                           NewAncestorName,true)
+      then begin
+        DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+      end;
       if NewAncestorName<>'' then begin
-        if AnsiCompareText(NewAncestorName,'TDataModule')=0 then begin
+        if CompareText(NewAncestorName,'TDataModule')=0 then begin
           // use our TDataModule
           // (some fpc versions have non designable TDataModule)
           AncestorType:=TDataModule;

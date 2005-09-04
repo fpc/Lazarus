@@ -73,6 +73,7 @@ Type
     procedure OnClickMoveDown(Sender: TObject);
     procedure SetModified(const AValue: boolean);
     procedure MoveImageIndex(Direction : Directions);
+    procedure AddImageToList(FileName: string);
   public
     mnuLVPopup : TPopupMenu;
     constructor Create(aOwner: TComponent); override;
@@ -122,53 +123,58 @@ begin
   end;
 end;
 
+procedure TImageListEditorDlg.AddImageToList(FileName: string);
+var Ext: string;
+    i: integer;
+    Bmp: TBitmap;
+    AListItem: TListItem;
+begin
+  Ext:=ExtractFileExt(FileName);
+  //Check if the file is supported
+  for i:=Low(FormatsSupported) to High(FormatsSupported) do
+  begin
+    if AnsiCompareText(Ext,FormatsSupported[i]) = 0 then
+    begin
+      fImg.Picture.LoadFromFile(FileName);
+      Break;
+    end;
+  end;
+  //If the image is loaded, then add to list
+  if Assigned(fImg.Picture.Graphic) then
+  begin
+    if not fImg.Picture.Graphic.Empty then
+    begin
+      Bmp:=TBitMap.Create;
+      Bmp.LoadFromFile(FileName);
+      Modified:=true;
+      i:=fImgL.Add(Bmp,nil);
+      AListItem:=fLV.Items.Add;
+      AListItem.Caption:=IntToStr(i);
+      AListItem.ImageIndex:=i;
+      fLV.Selected:=AListItem;
+    end;
+  end;
+end;
+
 //Select new image file and add in list
 procedure TImageListEditorDlg.OnClickAdd(Sender: TObject);
 Var OpenDlg: TOpenDialog;
-    Ext    : String;
     FileName: String;
-    AListItem: TListItem;
     i      : Integer;
-    Bmp    : TBitMap;
 begin
  Opendlg := TOpenDialog.Create(Self);
  Try
-   Opendlg.Options:=[ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
+   Opendlg.Options:=[ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofAllowMultiSelect];
    Opendlg.Filter:='All supported files (*.xpm;*.bmp)|*.xpm;*.bmp|'+
                    'Pixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp';
-   OpenDlg.InitialDir:=fDirName; //last rirectory
+   OpenDlg.InitialDir:=fDirName; //last directory
    
    If OpenDlg.Execute then
    begin
+     fDirName:=ExtractFilePath(FileName); //save the directory
      FileName:=OpenDlg.FileName;
-     Ext:=ExtractFileExt(FileName);
-
-     //Check if the file is supported
-     For i:=Low(FormatsSupported) to High(FormatsSupported) do
-     begin
-       If AnsiCompareText(Ext,FormatsSupported[I]) = 0 then
-       begin
-         fImg.Picture.LoadFromFile(FileName);
-         fDirName:=ExtractFilePath(FileName); //save the directory
-         Break;
-       end;
-     end;
-
-     //If the image is loaded, then add to list
-     If Assigned(fImg.Picture.Graphic) then
-     begin
-       If not fImg.Picture.Graphic.Empty then
-       begin
-         Bmp:=TBitMap.Create;
-         Bmp.LoadFromFile(FileName);
-         Modified:=true;
-         i:=fImgL.Add(Bmp,nil);
-         AListItem:=fLV.Items.Add;
-         AListItem.Caption:=IntToStr(i);
-         AListItem.ImageIndex:=i;
-         fLV.Selected:=AListItem;
-       end;
-    end;
+     for i := 0 to OpenDlg.Files.Count - 1 do
+       AddImageToList(OpenDlg.Files[i]);
    end;
  finally
    OpenDlg.Free;
