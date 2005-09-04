@@ -109,6 +109,8 @@ type
     DoNotSplitLineAfter: TAtomTypes;
     DoInsertSpaceInFront: TAtomTypes;
     DoInsertSpaceAfter: TAtomTypes;
+    DoNotInsertSpaceInFront: TAtomTypes;
+    DoNotInsertSpaceAfter: TAtomTypes;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
@@ -256,6 +258,8 @@ const
   DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
   DefaultDoInsertSpaceInFront: TAtomTypes = [];
   DefaultDoInsertSpaceAfter: TAtomTypes = [atColon,atComma,atSemicolon];
+  DefaultDoNotInsertSpaceInFront: TAtomTypes = [];
+  DefaultDoNotInsertSpaceAfter: TAtomTypes = [atDirectiveStart];
 
 function AtomTypeNameToType(const s: string): TAtomType;
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
@@ -939,6 +943,8 @@ begin
   DoNotSplitLineAfter:=DefaultDoNotSplitLineAfter;
   DoInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
   DoInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
+  DoNotInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
+  DoNotInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
   PropertyReadIdentPrefix:='Get';
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
@@ -1127,6 +1133,10 @@ begin
           if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
             inc(CurPos);
             CurAtomType:=atDirectiveStart;
+            while (CurPos<=SrcLen) and (IsIdentChar[Src[CurPos]]) do
+              inc(CurPos);
+            if (CurPos<=SrcLen) and (Src[CurPos] in ['+','-']) then
+              inc(CurPos);
           end else begin
             CurAtomType:=atCommentStart;
           end;
@@ -1144,6 +1154,10 @@ begin
             if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
               inc(CurPos);
               CurAtomType:=atDirectiveStart;
+              while (CurPos<=SrcLen) and (IsIdentChar[Src[CurPos]]) do
+                inc(CurPos);
+              if (CurPos<=SrcLen) and (Src[CurPos] in ['+','-']) then
+                inc(CurPos);
             end else begin
               CurAtomType:=atCommentStart;
             end;
@@ -1169,6 +1183,10 @@ begin
             if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
               inc(CurPos);
               CurAtomType:=atDirectiveStart;
+              while (CurPos<=SrcLen) and (IsIdentChar[Src[CurPos]]) do
+                inc(CurPos);
+              if (CurPos<=SrcLen) and (Src[CurPos] in ['+','-']) then
+                inc(CurPos);
             end else begin
               CurAtomType:=atCommentStart;
             end;
@@ -1222,6 +1240,18 @@ begin
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
+  IndentSize: integer): string;
+begin
+  Result:=BeautifyStatement(AStatement,IndentSize,[]);
+end;
+
+function TBeautifyCodeOptions.BeautifyStatementLeftAligned(
+  const AStatement: string; IndentSize: integer): string;
+begin
+  Result:=BeautifyStatement(AStatement,IndentSize,[bcfNoIndentOnBreakLine]);
+end;
+
+function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
   IndentSize: integer; BeautifyFlags: TBeautifyCodeFlags): string;
 var CurAtom: string;
   OldIndent: Integer;
@@ -1262,9 +1292,11 @@ begin
           break;
       until false;
       if ((Result='') or (Result[length(Result)]<>' '))
+      and (not (CurAtomType in DoNotInsertSpaceInFront))
+      and (not (LastAtomType in DoNotInsertSpaceAfter))
       and ((CurAtomType in DoInsertSpaceInFront)
-      or (LastAtomType in DoInsertSpaceAfter))
-      and (CurAtom<>'$') then
+           or (LastAtomType in DoInsertSpaceAfter))
+      then
         AddAtom(Result,' ');
       if (not (CurAtomType in DoNotSplitLineInFront))
       and (not (LastAtomType in DoNotSplitLineAfter)) then
@@ -1282,18 +1314,6 @@ begin
   end;
   //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
   //DebugLn('**********************************************************');
-end;
-
-function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
-  IndentSize: integer): string;
-begin
-  Result:=BeautifyStatement(AStatement,IndentSize,[]);
-end;
-
-function TBeautifyCodeOptions.BeautifyStatementLeftAligned(
-  const AStatement: string; IndentSize: integer): string;
-begin
-  Result:=BeautifyStatement(AStatement,IndentSize,[bcfNoIndentOnBreakLine]);
 end;
 
 function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,

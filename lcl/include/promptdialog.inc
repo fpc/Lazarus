@@ -158,6 +158,7 @@ begin
   inherited Create(nil);
 
   OnKeyDown :=@PromptDialogKeyDown;
+  //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
   ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;

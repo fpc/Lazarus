@@ -275,6 +275,7 @@ const
       +'begin'#13
       +'  A:=@B.C;D:=3;'#13
       +'  {$I unit1.lrs}'#13
+      +'  {$R-}{$R+}'#13
       +'end;';
 
 function AtomTypeDescriptionToType(const s: string): TAtomType;
