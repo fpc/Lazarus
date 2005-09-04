@@ -113,6 +113,7 @@ type
     property BorderSpacing;
     property Cancel;
     property Caption;
+    property Color;
     property Constraints;
     property Default;
     property Enabled;
