@@ -19,7 +19,7 @@
 
 function TNotebook.GetActiveNotebookPageComponent: TPage;
 begin
-  Result:=TPage(GetActiveNotebookPageComponent);
+  Result:=TPage(GetActivePageComponent);
 end;
 
 function TNotebook.GetNoteBookPage(Index: Integer): TPage;

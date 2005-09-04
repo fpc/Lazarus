@@ -2,19 +2,19 @@
 This source is only used to compile and install the package.
  }
 
-unit JPEGForLazarus;
+unit JPEGForLazarus; 
 
 interface
 
 uses
-  LazJPEG, LazarusPackageIntf;
+  LazJPEG, LazarusPackageIntf; 
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-end;
+end; 
 
 initialization
-  RegisterPackage('JPEGForLazarus',@Register);
+  RegisterPackage('JPEGForLazarus', @Register); 
 end.
