@@ -174,6 +174,7 @@ end;
 destructor TMenuItem.Destroy;
 var
   i : integer;
+  HandlerType: TMenuItemHandlerType;
 begin
   i:=FMenuItemHandlers[mihtDestroy].Count;
   while FMenuItemHandlers[mihtDestroy].NextDownIndex(i) do
@@ -191,6 +192,8 @@ begin
   FreeAndNil(FItems);
   FreeAndNil(FActionLink);
   FreeAndNil(FImageChangeLink);
+  for HandlerType:= low(TMenuItemHandlerType) to high(TMenuItemHandlerType) do
+    FreeAndNil(FMenuItemHandlers[HandlerType]);
   if FParent<>nil then
     FParent.FItems.Remove(Self);
   if FCommand <> 0 then CommandPool[FCommand] := False;
