@@ -606,6 +606,7 @@ type
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Clear;
     procedure SelectAll;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;
@@ -676,7 +677,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value: String);
-    procedure Clear;
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;

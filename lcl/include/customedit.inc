@@ -58,6 +58,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomEdit.Clear
+  Params: ---
+  Returns: nothing
+
+  Clear the text.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.Clear;
+begin
+  Text := '';
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomEdit.GetSelText
   Params: ---
   Returns: selected text

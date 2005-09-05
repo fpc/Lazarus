@@ -65,14 +65,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomMemo.Clear;
- ------------------------------------------------------------------------------}
-procedure TCustomMemo.Clear;
-begin
-  Lines.Clear;
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
