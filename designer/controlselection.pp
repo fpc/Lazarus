@@ -1055,8 +1055,9 @@ begin
     NewRight:=FLeft+FWidth;
     NewBottom:=FTop+FHeight;
     {$IFDEF VerboseDesigner}
-    DebugLn('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
-    ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    DebugLn('[TControlSelection.DoApplyUserBounds] S Old=',
+      DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
+      ' User=',Dbgs(FLeft,FTop,FWidth,FHeight));
     {$ENDIF}
     Items[0].SetFormRelativeBounds(
       Min(NewLeft,NewRight),
@@ -1068,8 +1069,9 @@ begin
   end else if Count>1 then begin
     // multi selection
     {$IFDEF VerboseDesigner}
-    DebugLn('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
-    ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    DebugLn('[TControlSelection.DoApplyUserBounds] M Old=',
+      DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
+      ' User=',DbgS(FLeft,FTop,FWidth,FHeight));
     {$ENDIF}
 
     // ToDo: sort selection with parent level and size/move parents first
@@ -1093,8 +1095,8 @@ begin
         if NewHeight<1 then NewHeight:=1;
         Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
         {$IFDEF VerboseDesigner}
-        DebugLn('  i=',i,' ',Items[i].Persistent.Name,
-        ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
+        DebugLn('  i=',Dbgs(i),' ',DbgSName(Items[i].Persistent),
+        ' ',DbgS(Items[i].Left,Items[i].Top,Items[i].Width,Items[i].Height));
         {$ENDIF}
       end;
       InvalidateGuideLinesCache;
@@ -2054,7 +2056,7 @@ begin
   if (Count=0) or (IsResizing) then exit;
   if (dx=0) and (dy=0) then exit;
   {$IFDEF VerboseDesigner}
-  DebugLn('[TControlSelection.SizeSelection] A  ',dx,',',dy);
+  DebugLn('[TControlSelection.SizeSelection] A  ',DbgS(dx),',',DbgS(dy));
   {$ENDIF}
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
@@ -2099,8 +2101,8 @@ var g:TGrabIndex;
 begin
   if FControls.Count>0 then begin
     {$IFDEF VerboseDesigner}
-    DebugLn('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
-    ,FGrabbers[4].Left,',',FGrabbers[4].Top);
+    DebugLn('[TControlSelection.GrabberAtPos] ',Dbgs(x),',',Dbgs(y),'  '
+    ,Dbgs(FGrabbers[4].Left),',',DbgS(FGrabbers[4].Top));
     {$ENDIF}
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
