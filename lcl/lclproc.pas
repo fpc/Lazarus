@@ -110,6 +110,7 @@ function StrToDouble(const s: string): double;
 // debugging
 procedure RaiseGDBException(const Msg: string);
 procedure DumpExceptionBackTrace;
+procedure DumpStack;
 
 procedure DebugLn(const S: String; Args: array of const);
 procedure DebugLn;
@@ -599,6 +600,13 @@ begin
   for FrameNumber := 0 to FrameCount-1 do
     DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
 end;
+
+procedure DumpStack;
+Begin
+  if assigned(DebugText) then
+    Dump_Stack(DebugText^, get_frame);
+End;
+
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);
 begin
