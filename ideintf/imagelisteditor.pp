@@ -159,7 +159,6 @@ end;
 //Select new image file and add in list
 procedure TImageListEditorDlg.OnClickAdd(Sender: TObject);
 Var OpenDlg: TOpenDialog;
-    FileName: String;
     i      : Integer;
 begin
  Opendlg := TOpenDialog.Create(Self);
@@ -172,7 +171,6 @@ begin
    If OpenDlg.Execute then
    begin
      fDirName:=ExtractFilePath(OpenDlg.FileName); //save the directory
-     FileName:=OpenDlg.FileName;
      for i := 0 to OpenDlg.Files.Count - 1 do
        AddImageToList(OpenDlg.Files[i]);
    end;

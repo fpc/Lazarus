@@ -160,6 +160,7 @@ begin
     Top:= Self.ClientHeight - Height - 4;
     Kind:= bkCancel;
     Anchors:= [akBottom, akRight];
+    Cancel:= true;
   end;
 
   OkButton:=TBitBtn.Create(Self);
@@ -169,6 +170,7 @@ begin
     Top:= CancelButton.Top;
     Kind:= bkOk;
     Anchors:= [akBottom, akRight];
+    Default:= true;
   end;
 
   IDEDialogLayoutList.ApplyLayout(Self, 430, 375);
