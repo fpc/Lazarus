@@ -39,6 +39,7 @@ type
   private
     FItemDataOffset: Integer;
     function GetChecked(const AIndex: Integer): Boolean;
+    function GetCount: integer;
     procedure SetChecked(const AIndex: Integer; const AValue: Boolean);
     procedure SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
   protected
@@ -51,6 +52,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
+    property Count: integer read GetCount;
   end;
   
   
@@ -144,6 +146,11 @@ begin
     Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetChecked(Self, AIndex)
   else
     Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
+end;
+
+function TCustomCheckListBox.GetCount: integer;
+begin
+  Result := Items.Count;
 end;
 
 procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer;
