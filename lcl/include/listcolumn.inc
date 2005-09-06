@@ -140,7 +140,7 @@ begin
   WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
 end;
 
-procedure TListColumn.SetCaption(const AValue: String);
+procedure TListColumn.SetCaption(const AValue: TTranslateString);
 var
   LV: TCustomListView;
   WSC: TWSCustomListViewClass;

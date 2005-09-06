@@ -658,7 +658,7 @@ type
   private
     FAlignment: TAlignment;
     FAutoSize: Boolean;
-    FCaption: String;
+    FCaption: TTranslateString;
     FMinWidth: TWidth;
     FMaxWidth: TWidth;
     FVisible: Boolean;
@@ -673,7 +673,7 @@ type
     procedure SetMinWidth(const AValue: TWidth);
     procedure SetMaxWidth(const AValue: TWidth);
     procedure SetWidth(const AValue: TWidth);
-    procedure SetCaption(const AValue: String);
+    procedure SetCaption(const AValue: TTranslateString);
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetImageIndex(const AValue: TImageIndex);
   protected
@@ -686,7 +686,7 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    property Caption: string read FCaption write SetCaption;
+    property Caption: TTranslateString read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property MaxWidth: TWidth read FMaxWidth write SetMaxWidth default 0;
     property MinWidth: TWidth read FMinWidth write SetMinWidth default 0;
