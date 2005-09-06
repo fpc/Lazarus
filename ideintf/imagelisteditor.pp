@@ -171,7 +171,7 @@ begin
    
    If OpenDlg.Execute then
    begin
-     fDirName:=ExtractFilePath(FileName); //save the directory
+     fDirName:=ExtractFilePath(OpenDlg.FileName); //save the directory
      FileName:=OpenDlg.FileName;
      for i := 0 to OpenDlg.Files.Count - 1 do
        AddImageToList(OpenDlg.Files[i]);

@@ -1531,7 +1531,7 @@ begin
   LastMouseMovePos:= GetFormRelativeMousePosition(Form);
   if (OldMouseMovePos.X=LastMouseMovePos.X)
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
-  
+
   if ControlSelection.SelectionForm=Form then
     Grabber:=ControlSelection.GrabberAtPos(
                          LastMouseMovePos.X, LastMouseMovePos.Y)
@@ -2211,7 +2211,9 @@ var
 begin
   NewFormBounds:=Form.BoundsRect;
   if FDefaultFormBoundsValid then begin
-    if not CompareRect(@NewFormBounds,@FDefaultFormBounds) then begin
+    if (not CompareRect(@NewFormBounds,@FLastFormBounds))
+    and (not CompareRect(@NewFormBounds,@FDefaultFormBounds)) then begin
+      //debugln('TDesigner.CheckFormBounds');
       Modified;
       if ControlSelection.SelectionForm=Form then begin
         ControlSelection.CheckForLCLChanges(true);

@@ -1821,11 +1821,11 @@ var i:integer;
   g:TGrabIndex;
 begin
   if cssNotSavingBounds in FStates then exit;
+  //debugln('TControlSelection.SaveBounds');
   if FUpdateLock>0 then begin
     Include(FStates,cssBoundsNeedsSaving);
     exit;
   end;
-//writeln('TControlSelection.SaveBounds');
   for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
   FOldLeft:=FRealLeft;
@@ -2026,14 +2026,15 @@ var
 begin
   Result:=false;
   if (Count=0) or (IsResizing) then exit;
+  NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
+  NewTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
   {$IFDEF VerboseDesigner}
   DebugLn('[TControlSelection.MoveSelectionWithSnapping] A  ',
     'TotalD='+dbgs(TotalDX)+','+dbgs(TotalDY),
     ' CurBounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight),
-    ' OldBounds='+dbgs(FOldLeft)+','+dbgs(FOldTop)+','+dbgs(FOldWidth)+','+dbgs(FOldHeight));
+    ' OldBounds='+dbgs(FOldLeft)+','+dbgs(FOldTop)+','+dbgs(FOldWidth)+','+dbgs(FOldHeight)
+    +' NewPos='+dbgs(NewLeft)+','+dbgs(NewTop));
   {$ENDIF}
-  NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
-  NewTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
   if (NewLeft<>FLeft) or (NewTop<>FTop) then begin
     Result:=true;
     BeginResizing;
