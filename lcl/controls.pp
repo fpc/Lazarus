@@ -1045,6 +1045,7 @@ type
     // size
     procedure AdjustSize; virtual;
     function AutoSizeDelayed: boolean; virtual;
+    function NeedParentForAutoSize: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
                                 Sibling: TControl);
     procedure AnchorParallel(Side: TAnchorKind; Space: integer;

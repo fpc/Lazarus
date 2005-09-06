@@ -1903,13 +1903,25 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.AutoSizeCanStart: boolean;
 begin
-  Result:=false;
-  if not AutoSize then exit;
-  if AutoSizing then exit;
-  if (csDestroying in ComponentState) then exit;
-  if (not (Visible or ((csDesigning in ComponentState)
-                       and (csNoDesignVisible in ControlStyle)))) then exit;
-  Result:=true;
+  Result:=AutoSize
+          and (not AutoSizing)
+          and (not (csDestroying in ComponentState))
+          and (Visible or ((csDesigning in ComponentState)
+                           and (not (csNoDesignVisible in ControlStyle))));
+  {$IFDEF VerboseCanAutoSize}
+  if AutoSize and not Result then begin
+    DbgOut('TControl.AutoSizeCanStart Self='+DbgSName(Self)+' ');
+    if not AutoSize then DebugLn('not AutoSize')
+    else if AutoSizing then DebugLn('AutoSizing')
+    else if csDestroying in ComponentState then DebugLn('csDestroying in ComponentState')
+    else if not (Visible or ((csDesigning in ComponentState)
+                           and (not (csNoDesignVisible in ControlStyle)))) then
+      DebugLn('Visible=',dbgs(Visible),
+              ' csDesigning=',dbgs(csDesigning in ComponentState),
+              ' csNoDesignVisible=',dbgs(csNoDesignVisible in ControlStyle))
+    else DebugLn('?');
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1926,9 +1938,25 @@ begin
           or (not Visible)
           // if there is no parent, then this control is not visible
           //  (TCustomForm will override this)
-          or (Parent=nil)
+          or (NeedParentForAutoSize and (Parent=nil))
           // if there is a parent, ask it
           or ((Parent<>nil) and Parent.AutoSizeDelayed);
+  {$IFDEF VerboseCanAutoSize}
+  if Result and AutoSize then begin
+    DbgOut('TControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
+    if csLoading in ComponentState then debugln('csLoading')
+    else if csDestroying in ComponentState then debugln('csDestroying')
+    else if not Visible then debugln('Visible')
+    else if NeedParentForAutoSize and (Parent=nil) then debugln('NeedParentForAutoSize and (Parent=nil)')
+    else if ((Parent<>nil) and Parent.AutoSizeDelayed) then debugln('Parent.AutoSizeDelayed')
+    else debugln('?');
+  end;
+  {$ENDIF}
+end;
+
+function TControl.NeedParentForAutoSize: Boolean;
+begin
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------

@@ -59,10 +59,7 @@ begin
     exit;
   end;
   
-  if AutoSizing or not AutoSize then
-    Exit;
-  if ([csLoading,csDestroying]*ComponentState<>[])
-  or (Parent = nil) or Parent.AutoSizeDelayed then
+  if AutoSizeDelayed then
     exit;
   AutoSizing := True;
   try
@@ -234,8 +231,7 @@ var
   CurFontHeight: LongInt;
 begin
   Result:=false;
-  if (Parent=nil) or (Parent.AutoSizeDelayed) or (TheText='')
-  or (MaxWidth<1) or (MaxHeight<1) then exit;
+  if AutoSizeDelayed or (TheText='') or (MaxWidth<1) or (MaxHeight<1) then exit;
   AFont:=TFont.Create;
   AFont.Assign(Font);
   CurFontHeight:=AFont.Height;

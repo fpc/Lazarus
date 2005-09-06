@@ -1382,6 +1382,7 @@ begin
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
+  ObjectInspector1.BorderStyle:=bsSizeToolWin;
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);

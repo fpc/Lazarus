@@ -477,7 +477,7 @@ type
     procedure Hide;
     procedure Show;
     procedure ShowOnTop;
-    function AutoSizeDelayed: boolean; override;
+    function NeedParentForAutoSize: Boolean; override;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
     procedure DefocusControl(Control: TWinControl; Removing: Boolean);

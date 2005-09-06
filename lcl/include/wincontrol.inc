@@ -61,6 +61,14 @@ begin
           or (wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
+  {$IFDEF VerboseCanAutoSize}
+  if Result and AutoSize then begin
+    DbgOut('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
+    if not HandleAllocated then debugln('not HandleAllocated')
+    else if wcfCreatingChildHandles in FWinControlFlags then debugln('wcfCreatingChildHandles')
+    else debugln('inherited AutoSizeDelayed');
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

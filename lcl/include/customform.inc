@@ -1428,18 +1428,9 @@ begin
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
 end;
 
-function TCustomForm.AutoSizeDelayed: boolean;
+function TCustomForm.NeedParentForAutoSize: Boolean;
 begin
-  Result:=// no autosize during loading or destruction
-          ([csLoading,csDestroying]*ComponentState<>[])
-          // no handle means not visible
-          or (not HandleAllocated)
-          // during handle creation no autosize
-          or (wcfCreatingChildHandles in FWinControlFlags)
-          // no autosize for invisible forms
-          or (not Visible)
-          // if there is a parent, ask it
-          or ((Parent<>nil) and Parent.AutoSizeDelayed);
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
