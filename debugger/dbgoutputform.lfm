@@ -4,16 +4,15 @@ object DbgOutputForm: TDbgOutputForm
   ClientWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 199
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 201
   Left = 108
   Height = 200
   Top = 140
   Width = 400
   object txtOutput: TMemo
     Align = alClient
-    BorderSpacing.OnChange = nil
+    PopupMenu = mnuPopup
     PopupMenu = mnuPopup
     TabOrder = 0
     Height = 200

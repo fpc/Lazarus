@@ -11,6 +11,7 @@ object WatchesDlg: TWatchesDlg
   Width = 500
   object lvWatches: TListView
     Align = alClient
+    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Expression'

@@ -2,24 +2,25 @@ object LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 199
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 201
   Left = 359
   Height = 200
   Top = 126
   Width = 500
   object lvLocals: TListView
     Align = alClient
-    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Name'
-        Width = 10
+        ImageIndex = -1
+        Visible = True
+        Width = 150
       end    
       item
         Caption = 'Value'
-        Width = 10
+        ImageIndex = -1
+        Visible = True
       end>
     MultiSelect = True
     ViewStyle = vsReport

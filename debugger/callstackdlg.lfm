@@ -1,31 +1,33 @@
 object CallStackDlg: TCallStackDlg
-  ActiveControl = lvCallStack
   Caption = 'CallStack'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 96
   Visible = True
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 199
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 201
   Left = 843
   Height = 200
   Top = 202
   Width = 500
   object lvCallStack: TListView
     Align = alClient
-    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Source'
-        Width = 10
+        ImageIndex = -1
+        Visible = True
+        Width = 150
       end    
       item
         Caption = 'Line'
-        Width = 10
+        ImageIndex = -1
+        Visible = True
+        Width = 50
       end    
       item
         Caption = 'Function'
-        Width = 10
+        ImageIndex = -1
+        Visible = True
       end>
     ViewStyle = vsReport
     OnDblClick = lvCallStackDBLCLICK

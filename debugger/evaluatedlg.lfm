@@ -3,44 +3,15 @@ object EvaluateDlg: TEvaluateDlg
   Caption = 'Evaluate/Modify'
   ClientHeight = 296
   ClientWidth = 400
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 295
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 297
   Left = 351
   Height = 296
   Top = 136
   Width = 400
-  object Label1: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = '&Expression:'
-    Color = clNone
-    Left = 8
-    Height = 17
-    Top = 56
-    Width = 65
-  end
-  object Label2: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = '&Result:'
-    Color = clNone
-    Left = 8
-    Height = 17
-    Top = 104
-    Width = 65
-  end
-  object lblNewValue: TLabel
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = '&New value:'
-    Color = clNone
-    Left = 8
-    Height = 13
-    Top = 248
-    Width = 65
-  end
   object ToolBar1: TToolBar
     AutoSize = True
-    BorderSpacing.OnChange = nil
     ButtonHeight = 50
     ButtonWidth = 75
     Caption = 'ToolBar1'
@@ -58,7 +29,6 @@ object EvaluateDlg: TEvaluateDlg
       Enabled = False
       Left = 226
       Height = 50
-      Top = 2
       Width = 75
     end
     object tbWatch: TToolButton
@@ -67,7 +37,6 @@ object EvaluateDlg: TEvaluateDlg
       OnClick = tbWatchClick
       Left = 151
       Height = 50
-      Top = 2
       Width = 75
     end
     object tbModify: TToolButton
@@ -75,46 +44,62 @@ object EvaluateDlg: TEvaluateDlg
       Enabled = False
       Left = 76
       Height = 50
-      Top = 2
       Width = 75
     end
     object tbEvaluate: TToolButton
       Caption = 'E&valuate'
       Enabled = False
       OnClick = tbEvaluateClick
-      Left = 1
       Height = 50
-      Top = 2
       Width = 75
     end
   end
+  object Label1: TLabel
+    Caption = '&Expression:'
+    Left = 8
+    Height = 17
+    Top = 56
+    Width = 65
+  end
   object cmbExpression: TComboBox
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     MaxLength = 0
     OnChange = cmbExpressionChange
     TabOrder = 2
     Left = 8
-    Height = 21
+    Height = 25
     Top = 72
     Width = 384
   end
+  object Label2: TLabel
+    Caption = '&Result:'
+    Left = 8
+    Height = 17
+    Top = 104
+    Width = 65
+  end
   object txtResult: TMemo
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    TabOrder = 1
+    TabOrder = 4
     Left = 8
     Height = 124
     Top = 120
     Width = 384
   end
+  object lblNewValue: TLabel
+    Anchors = [akLeft, akBottom]
+    Caption = '&New value:'
+    Left = 8
+    Height = 13
+    Top = 248
+    Width = 65
+  end
   object cmbNewValue: TComboBox
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     MaxLength = 0
-    TabOrder = 3
+    TabOrder = 6
     Left = 8
-    Height = 21
+    Height = 25
     Top = 264
     Width = 384
   end

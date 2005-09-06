@@ -1,13 +1,11 @@
 object BreakpointsDlg: TBreakpointsDlg
-  ActiveControl = lvBreakPoints
   Caption = 'Breakpoint list'
   ClientHeight = 205
   ClientWidth = 560
   OnCreate = BreakpointsDlgCREATE
-  PixelsPerInch = 96
   Visible = True
-  HorzScrollBar.Page = 559
-  VertScrollBar.Page = 204
+  HorzScrollBar.Page = 561
+  VertScrollBar.Page = 206
   Left = 340
   Height = 205
   Top = 117
@@ -15,35 +13,32 @@ object BreakpointsDlg: TBreakpointsDlg
   HelpType = htKeyword
   object lvBreakPoints: TListView
     Align = alClient
-    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'State'
-        Width = 10
       end    
       item
         Caption = 'Filename/Address'
-        Width = 10
+        Width = 150
       end    
       item
         Caption = 'Line/Length'
-        Width = 10
+        Width = 100
       end    
       item
         Caption = 'Condition'
-        Width = 10
+        Width = 75
       end    
       item
         Caption = 'Action'
-        Width = 10
       end    
       item
         Caption = 'Pass Count'
-        Width = 10
+        Width = 100
       end    
       item
         Caption = 'Group'
-        Width = 10
+        Width = 0
       end>
     MultiSelect = True
     PopupMenu = mnuPopup
