@@ -2,13 +2,13 @@ object DiffDlg: TDiffDlg
   Caption = 'Diff dialog'
   ClientHeight = 500
   ClientWidth = 600
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 599
   VertScrollBar.Page = 499
-  Left = 197
+  Left = 328
   Height = 500
-  Top = 91
+  Top = 219
   Width = 600
   HelpType = htKeyword
   object SaveDiffButton: TButton
@@ -45,7 +45,7 @@ object DiffDlg: TDiffDlg
   object Text1GroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Text1GroupBox'
-    ClientHeight = 62
+    ClientHeight = 63
     ClientWidth = 580
     ParentColor = True
     TabOrder = 3
@@ -89,7 +89,7 @@ object DiffDlg: TDiffDlg
   object Text2GroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Text2GroupBox'
-    ClientHeight = 62
+    ClientHeight = 63
     ClientWidth = 580
     ParentColor = True
     TabOrder = 4
@@ -145,6 +145,7 @@ object DiffDlg: TDiffDlg
   end
   object DiffSynEdit: TSynEdit
     BorderSpacing.OnChange = nil
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Color = clBlack
     Font.Height = -12
     Font.Name = 'courier'

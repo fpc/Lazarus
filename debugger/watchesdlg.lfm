@@ -2,7 +2,7 @@ object WatchesDlg: TWatchesDlg
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   Left = 314
@@ -11,7 +11,6 @@ object WatchesDlg: TWatchesDlg
   Width = 500
   object lvWatches: TListView
     Align = alClient
-    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Expression'
@@ -23,6 +22,7 @@ object WatchesDlg: TWatchesDlg
       end>
     MultiSelect = True
     PopupMenu = mnuPopup
+    RowSelect = True
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
     OnMouseDown = lvWatchesMouseDown
