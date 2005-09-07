@@ -82,15 +82,16 @@ begin
 //    NM_CUSTOMDRAW:
 //    LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
-      Item := Items[nm^.iItem];
+      Item := FListItems[nm^.iItem];
+      if Item = nil then Exit; //? nm^.iItem > Items.Count ?
       Exclude(Item.FFlags, lifCreated);
       if not (lifDestroying in Item.FFlags)
       then Item.Delete;
     end;
     LVN_DELETEALLITEMS: begin
-      for n := Items.Count - 1 downto 0 do
+      for n := FListItems.Count - 1 downto 0 do
       begin
-        Item := Items[n];
+        Item := FListItems[n];
         Exclude(Item.FFlags, lifCreated);
         if not (lifDestroying in Item.FFlags)
         then Item.Delete;
@@ -368,10 +369,12 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
 begin
+  // Better destroy the wincontrol (=widget) first. So wo don't have to delete
+  // all items/columns and we won't get notifications for each.
+  inherited Destroy;
   FreeAndNil(FColumns);
   FreeAndNil(FImageChangeLink);
   FreeAndNil(FListItems);
-  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
