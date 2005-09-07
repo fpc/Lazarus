@@ -1093,6 +1093,10 @@ msgstr ""
 msgid "Code templates"
 msgstr ""
 
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
 msgstr ""
@@ -3753,6 +3757,10 @@ msgstr ""
 msgid "Lines"
 msgstr ""
 
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
 msgstr ""
@@ -4157,6 +4165,10 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
 msgstr "جذاذة &جديدة"
@@ -4367,6 +4379,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
+msgstr ""
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
@@ -5075,6 +5091,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
+msgstr ""
+
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
 msgstr ""
 
 #: lazarusidestrconsts:listodolistrefresh
@@ -5979,6 +5999,10 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
 msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
@@ -7453,6 +7477,10 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr ""
@@ -7739,6 +7767,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
+msgstr ""
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere

@@ -1096,6 +1096,10 @@ msgstr "Quelltextvorlagenvervollständigung"
 msgid "Code templates"
 msgstr "Quelltextvorlagen"
 
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
 msgstr "CodeTools Defines Editor"
@@ -3756,6 +3760,10 @@ msgstr "Zeilenauswahlmodus"
 msgid "Lines"
 msgstr "Zeilen"
 
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
 msgstr "Smart linken"
@@ -4160,6 +4168,10 @@ msgstr "Name:"
 msgid "Naming"
 msgstr "Namensvergabe"
 
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
 msgstr "Neu"
@@ -4371,6 +4383,10 @@ msgstr "Alte Vorfahren"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Alte Klasse"
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5079,6 +5095,10 @@ msgstr "Referenz"
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Erneuern"
+
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
+msgstr ""
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -5983,6 +6003,10 @@ msgstr "Einfache Syntax (z.B. * statt .*)"
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr "Größe"
+
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
+msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -7456,6 +7480,10 @@ msgstr "Nichtgespeichertes Paket"
 msgid "Up"
 msgstr "Hoch"
 
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Aktualisieren/Neuerstellen"
@@ -7743,6 +7771,10 @@ msgstr "Überwachte Ausdrücke"
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
 msgstr "Beim Erzeugen neuer Formulare diese zu den Autogenerierten hinzufügen"
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"

@@ -1854,8 +1854,11 @@ resourcestring
   lisUIDIncludedBy = 'Included by:';
   lisUIDClear = 'Clear';
   lisUIDPathsReadOnly = 'Paths (Read Only)';
+  lisUIDUnit = 'Unit';
   lisUIDSrc = 'Src';
   lisUIDOk = 'Ok';
+  lisUIDSize = 'Size:';
+  lisUIDLines = 'Lines:';
   lisUIShowCodeToolsValues = 'Show CodeTools Values';
   
   // unit editor
@@ -2824,6 +2827,12 @@ resourcestring
   lisNewClass = 'New Class';
   lisOldAncestors = 'Old Ancestors';
   lisNewAncestors = 'New Ancestors';
+  lisCEOCodeExplorer = 'CodeExplorer Options';
+  lisCEOUpdate = 'Update';
+  lisCEORefreshAutomatically = 'Refresh automatically';
+  lisCEONeverOnlyManually = 'Never, only manually';
+  lisCEOWhenSwitchingFile = 'When switching file in source editor';
+  lisCEOOnIdle = 'On idle';
 
 implementation
 end.

@@ -1082,6 +1082,10 @@ msgstr "Завершение шаблонов кода"
 msgid "Code templates"
 msgstr "Шаблоны кода"
 
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
 msgstr "Редактор определений Codetools"
@@ -3742,6 +3746,10 @@ msgstr "Режим выбора строк"
 msgid "Lines"
 msgstr "Строки"
 
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
 msgstr "Умное связывание"
@@ -4146,6 +4154,10 @@ msgstr "Имя:"
 msgid "Naming"
 msgstr "Названия"
 
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
 msgstr "Создать"
@@ -4357,6 +4369,10 @@ msgstr ""
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Старый класс"
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5065,6 +5081,10 @@ msgstr "Ссылки на объекты"
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Обновить"
+
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
+msgstr ""
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -5969,6 +5989,10 @@ msgstr "Простой синтаксис (напр., * вместо .*)"
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr "Размер"
+
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
+msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -7442,6 +7466,10 @@ msgstr "Несохранённый пакет"
 msgid "Up"
 msgstr "Вверх"
 
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Обновить/перебрать"
@@ -7729,6 +7757,10 @@ msgstr "Окно наблюдений"
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
 msgstr "При создании новых форм добавить их к автосоздаваемым"
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"

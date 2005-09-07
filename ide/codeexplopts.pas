@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   Laz_XMLCfg, Buttons, ExtCtrls, FileUtil,
-  LazConf, IDEProcs;
+  LazConf, IDEProcs, LazarusIDEStrConsts;
 
 type
   { TCodeExplorerOptions }
@@ -252,15 +252,15 @@ end;
 procedure TCodeExplorerDlg.CodeExplorerDlgCreate(Sender: TObject);
 begin
   FOptions:=TCodeExplorerOptions.Create;
-  Caption:='CodeExplorer Options';
-  OkButton.Caption:='Apply';
-  CancelButton.Caption:='Cancel';
-  UpdatePage.Caption:='Update';
-  RefreshRadioGroup.Caption:='Refresh automatically';
+  Caption:=lisCEOCodeExplorer;
+  OkButton.Caption:=dlgButApply;
+  CancelButton.Caption:=dlgCancel;
+  UpdatePage.Caption:=lisCEOUpdate;
+  RefreshRadioGroup.Caption:=lisCEORefreshAutomatically;
   with RefreshRadioGroup do begin
-    Items[0]:='Never, only manually';
-    Items[1]:='When switching file in source editor';
-    Items[2]:='On idle';
+    Items[0]:=lisCEONeverOnlyManually;
+    Items[1]:=lisCEOWhenSwitchingFile;
+    Items[2]:=lisCEOOnIdle;
   end;
 end;
 

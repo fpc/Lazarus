@@ -171,7 +171,7 @@ begin
       Parent:=self;
       Left:=UName.Left;
       top:=64;
-      caption:='Size:';
+      caption:=lisUIDSize;
     end;
 
     ulines:=TLabel.create(self);
@@ -180,7 +180,7 @@ begin
       Parent:=self;
       Left:=UName.Left;
       top:=84;
-      caption:='Lines:';
+      caption:=lisUIDLines;
     end;
 
     upath:=TLabel.create(self);
@@ -296,7 +296,7 @@ begin
       Parent:=PathsGroupBox;
       Left:=2;
       Top:=2;
-      Caption:='Unit';
+      Caption:=lisUIDUnit;
     end;
     
     UnitPathEdit:=TEdit.Create(Self);

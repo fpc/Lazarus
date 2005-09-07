@@ -5810,12 +5810,24 @@ msgstr ""
 msgid "Paths (Read Only)"
 msgstr ""
 
+#: lazarusidestrconsts:lisuidunit
+msgid "Unit"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
 msgstr ""
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
@@ -8440,5 +8452,29 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewancestors
 msgid "New Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
+
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
+msgstr ""
+
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
 msgstr ""
 

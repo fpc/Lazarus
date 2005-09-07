@@ -1093,6 +1093,10 @@ msgstr "Dokañczenie szablonu kodu"
 msgid "Code templates"
 msgstr "Szablony ¼róde³"
 
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
 msgstr ""
@@ -3753,6 +3757,10 @@ msgstr "Tryb wyboru linii"
 msgid "Lines"
 msgstr "Wiersza"
 
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
 msgstr "£±cz sprytnie"
@@ -4157,6 +4165,10 @@ msgstr "Nazwa:"
 msgid "Naming"
 msgstr "Nazewnictwo"
 
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
 msgstr "Nowy"
@@ -4367,6 +4379,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
+msgstr ""
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
@@ -5076,6 +5092,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Od¶wie¿"
+
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
+msgstr ""
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -5980,6 +6000,10 @@ msgstr "Uproszczona sk³adnia (np. * zamiast .*)"
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
 msgstr "Rozmiar"
+
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
+msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -7453,6 +7477,10 @@ msgstr "Niezapisany pakiet"
 msgid "Up"
 msgstr "W górê"
 
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Od¶wie¿/przebuduj"
@@ -7740,6 +7768,10 @@ msgstr "Czujki"
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
 msgstr "Nowe formularze dodawaj do tworzonych automatycznie"
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
