@@ -253,7 +253,6 @@ msgid "Confirm delete"
 msgstr ""
 
 #: objinspstrconsts:sccsilconfirme
-#, fuzzy
 msgid "Confirme clear all images ?"
 msgstr "¿Confirme limpiar todas las imágenes?"
 
@@ -686,7 +685,6 @@ msgid "StringGrid Editor ..."
 msgstr "Editor de StringGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
-#, fuzzy
 msgid "Strings Editor Dialog"
 msgstr "Diálogo Editor de Strings"
 
