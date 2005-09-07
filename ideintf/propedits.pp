@@ -5359,6 +5359,7 @@ begin
 end;
 
 procedure TPropertyEditorHook.PersistentDeleting(APersistent: TPersistent);
+// call this to tell all IDE parts to remove all references from the APersistent
 var
   i: Integer;
 begin
@@ -5368,13 +5369,15 @@ begin
 end;
 
 procedure TPropertyEditorHook.DeletePersistent(var APersistent: TPersistent);
+// Call this to actually free APersistent
+// One of the hooks will free it.
 var
   i: Integer;
 begin
   if APersistent=nil then exit;
   i:=GetHandlerCount(htDeletePersistent);
   if i>0 then begin
-    while GetNextHandlerIndex(htDeletePersistent,i) do
+    while (APersistent<>nil) and GetNextHandlerIndex(htDeletePersistent,i) do
       TPropHookDeletePersistent(FHandlers[htDeletePersistent][i])(APersistent);
   end else
     FreeThenNil(APersistent);

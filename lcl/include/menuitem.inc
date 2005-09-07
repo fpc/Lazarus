@@ -176,6 +176,7 @@ var
   i : integer;
   HandlerType: TMenuItemHandlerType;
 begin
+  //debugln('TMenuItem.Destroy A ',dbgsName(Self));
   i:=FMenuItemHandlers[mihtDestroy].Count;
   while FMenuItemHandlers[mihtDestroy].NextDownIndex(i) do
     TNotifyEvent(FMenuItemHandlers[mihtDestroy][i])(Self);
@@ -197,6 +198,7 @@ begin
   if FParent<>nil then
     FParent.FItems.Remove(Self);
   if FCommand <> 0 then CommandPool[FCommand] := False;
+  //debugln('TMenuItem.Destroy B ',dbgsName(Self));
   inherited Destroy;
 end;
 

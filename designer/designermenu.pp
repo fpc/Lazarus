@@ -1837,13 +1837,14 @@ begin
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
-    // Deletes an MenuItem
+    // Deletes a MenuItem
     7: begin
          if (index_sequence[Ind + 1] = -1) then
          begin
            //MenuItem.Remove(MenuItem[index_sequence[Ind]]);
-           GlobalDesignHook.PersistentDeleting(MenuItem[index_sequence[Ind]]);
-           MenuItem[index_sequence[Ind]].Free;
+           temp_menuitem:=MenuItem[index_sequence[Ind]];
+           GlobalDesignHook.DeletePersistent(temp_menuitem);
+           //MenuItem[index_sequence[Ind]].Free;
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
@@ -1853,8 +1854,9 @@ begin
          begin
            for i := MenuItem[index_sequence[Ind]].Count - 1 downto 0 do
            begin
-             GlobalDesignHook.PersistentDeleting(MenuItem[index_sequence[Ind]].Items[i]);
-             MenuItem[index_sequence[Ind]].Delete(i);
+             temp_menuitem:=MenuItem[index_sequence[Ind]].Items[i];
+             GlobalDesignHook.DeletePersistent(temp_menuitem);
+             //MenuItem[index_sequence[Ind]].Delete(i);
              //MenuItem[index_sequence[Ind]].Items.Free
            end;
          end else
