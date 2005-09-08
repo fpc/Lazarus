@@ -27,8 +27,8 @@ unit FrmMain;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,process, fpdeutil;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,process, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);
@@ -653,7 +653,7 @@ begin
       cmd:=cmd+' --disable-function-results';
     If DisableArguments then
       cmd:=cmd+' --disable-arguments';
-    Writeln(cmd);
+    DebugLn(cmd);
     With TProcess.Create(Nil) do
       try
         CommandLine:=cmd;
@@ -661,7 +661,7 @@ begin
         Execute;
         If (ExitStatus<>0) then
           begin
-          Writeln('error detected ',ExitStatus );
+          DebugLn('error detected ',DbgS(ExitStatus));
           If FileExists(OutputFile) then
             Result:=MessageDlg(SSkelErrorWithFile,[ExitStatus],mtWarning,mbYesNo,0)=mrYes
           else
