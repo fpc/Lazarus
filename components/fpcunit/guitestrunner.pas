@@ -405,7 +405,7 @@ end;
 
 procedure TGUITestRunner.StartTest(ATest: TTest);
 begin
-  if ATest=0 then ;
+  //if ATest=0 then ;
 end;
 
 procedure TGUITestRunner.EndTest(ATest: TTest);
