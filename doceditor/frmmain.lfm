@@ -13,6 +13,7 @@ object MainForm: TMainForm
   Height = 544
   Width = 602
   object TBMain: TToolBar
+    BorderSpacing.OnChange = nil
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
@@ -187,6 +188,7 @@ object MainForm: TMainForm
   end
   object PCFiles: TPageControl
     Align = alClient
+    BorderSpacing.OnChange = nil
     TabOrder = 1
     Left = 5
     Height = 468

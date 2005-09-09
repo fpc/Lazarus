@@ -40,16 +40,22 @@ Type
 
   TCustomElementEditor = Class(TPanel)
   private
+    FChangedEvent: TNotifyEvent;
     Felement : TDomElement;
     FGetElementList: TGetElementListEvent;
     FSavedNode,
     FModified : Boolean;
     FTargetFileName: string;
     FGetInitialDir: TGetInitialDirEvent;
+    FChangeEvent: TNotifyEvent;
+    FOnChangeCount: Integer;
+    procedure SetModified(const AValue: Boolean);
   Protected
     Function GetCurrentSelection : String; virtual; abstract;
     Procedure SetElement (Value : TDomElement); virtual;
     Function GetInitialDir: String;
+    procedure LockOnChange;
+    procedure UnLockOnChange;
   Public
     Procedure Refresh; virtual; abstract;
     Function  TestSave(S : String) : Boolean; virtual; abstract;
@@ -63,11 +69,12 @@ Type
     Procedure InsertTable(Cols,Rows : Integer; UseHeader : Boolean); virtual; abstract;
     Property  Element : TDomElement Read FElement Write SetElement;
     Property  CurrentSelection : String Read GetCurrentSelection;
-    Property  Modified : Boolean Read FModified Write FModified;
+    Property  Modified : Boolean Read FModified Write SetModified;
     Property  SavedNode : Boolean Read FSavedNode Write FSavedNode;
     Property  TargetFileName: String read FTargetFileName write FTargetFileName;
     Property  OnGetElementList : TGetElementListEvent Read FGetElementList Write FGetElementList;
     Property  OnGetInitialDir: TGetInitialDirEvent read FGetInitialdir write FGetInitialDir;
+    Property  OnChange: TNotifyEvent read FChangeEvent write FChangeEvent;
   end;
   
   { TElementEditor }
@@ -133,6 +140,13 @@ uses frmexample,frmLink;
 
 { TCustomElementEditor }
 
+procedure TCustomElementEditor.SetModified(const AValue: Boolean);
+begin
+  FModified := AValue;
+  if (FOnChangeCount=0) and FModified and Assigned(FChangeEvent) then
+    FChangeEvent(Self);
+end;
+
 procedure TCustomElementEditor.SetElement(Value: TDomElement);
 
 begin
@@ -144,6 +158,16 @@ begin
   result := '';
   if Assigned(FGetInitialDir) then
     result := FGetInitialdir();
+end;
+
+procedure TCustomElementEditor.LockOnChange;
+begin
+  FOnChangeCount := 1;
+end;
+
+procedure TCustomElementEditor.UnLockOnChange;
+begin
+  FOnChangeCount := 0;
 end;
 
 { ---------------------------------------------------------------------
@@ -158,6 +182,7 @@ Var
   L : Tlabel;
 
 begin
+  LockOnChange;
   Inherited;
   FExampleNodes:=TList.create;
   ILElements:=TImageList.Create(Self);
@@ -450,6 +475,7 @@ begin
   else
     FLabel.Text:=SNoElement;
   S:=TStringStream.Create('');
+  LockOnChange;
   Try
     FShortEntry.Text:=RemoveLineFeeds(NodeToString(FShortNode));
     FDescrMemo.Text:=NodeToString(FDescrNode);
@@ -471,6 +497,7 @@ begin
     FModified:=False;
   Finally
     S.Free;
+    UnLockOnChange;
   end;
 end;
 
@@ -603,7 +630,7 @@ begin
       S:=Format('<%s>%s</%s>',[TagName,S,TagName]);
       Seltext:=S;
       SelLength:=Length(S);
-      FModified:=True;
+      Modified:=True;
       end;
 end;
 
@@ -711,7 +738,7 @@ Procedure TElementEditor.OnTextModified(Sender : TObject);
 
 begin
   if Sender=nil then ;
-  FModified:=True;
+  Modified:=True;
 end;
 
 procedure TElementEditor.DoAddExample(Sender: TObject);

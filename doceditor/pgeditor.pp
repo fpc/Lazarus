@@ -83,6 +83,7 @@ Type
     Function  GetModified : Boolean;
     Function MakeBackup(FN : String) : Boolean;
     Procedure DisplayDocument;
+    Procedure ElementChanged(Sender: TObject);
   Public
     Constructor Create(AOwner : TComponent); override;
     Function  FirstPackage : TDomElement;
@@ -139,6 +140,7 @@ begin
   Felement.Align:=AlClient;
   FElement.OnGetElementList:=@GetELementList;
   FElement.OnGetInitialDir:=@GetInitialDir;
+  FElement.OnChange:=@ElementChanged;
 end;
 
 
@@ -227,6 +229,11 @@ Procedure TEditorPage.DisplayDocument;
 
 begin
   FPackages.DescriptionNode:=FDocument.DocumentElement;
+end;
+
+procedure TEditorPage.ElementChanged(Sender: TObject);
+begin
+  TPackageEditor(FPackages).UpdateSelectedNodeStatus;
 end;
 
 

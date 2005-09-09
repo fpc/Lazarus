@@ -80,7 +80,6 @@ ResourceString
                'See http://www.freepascal.org/';
   SFileStructure  = 'Documentation structure';
   SModuleElements = 'Elements for selected node';
-  
 { ---------------------------------------------------------------------
     Menu strings
   ---------------------------------------------------------------------}
@@ -115,6 +114,8 @@ ResourceString
 
   SMenuRename           = 'Rename';
   SMenuDelete           = 'Delete';
+  SMenuExpandAll        = 'Expand All';
+  SMenuCollapseAll      = 'Collapse All';
 
   SMenuExtra            = 'Extra';
   SMenuExtraoptions     = 'Options';

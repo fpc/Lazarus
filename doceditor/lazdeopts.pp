@@ -39,6 +39,12 @@ Var
   CmdMakeSkel      : String;
   cmdFPDoc         : String;
   
+Const
+  ImgIndxNew        = 0;
+  ImgIndxEdited     = 1;
+  ImgIndxModified   = 2;
+  imgIndxFinished   = 3;
+  
 Procedure LoadOptions;
 Procedure SaveOptions;
 Function  GetOptionFileName : String;

@@ -86,7 +86,10 @@ Type
     FMRenameMenu,
     FMDeleteMenu,
     FERenameMenu,
+    FECollapseAllMenu,
+    FEExpandAllMenu,
     FEDeleteMenu : TMenuItem;
+    FImagelist : TImageList;
     // Callbacks for visual controls.
     Procedure ModuleChange(Sender: TObject; Node: TTreeNode);
     Procedure ModuleChanging(Sender: TObject; Node: TTreeNode;
@@ -98,6 +101,8 @@ Type
     Procedure TreeClick(Sender: TObject);
     Procedure MenuRenameClick(Sender : TObject);
     Procedure MenuDeleteClick(Sender : TObject);
+    Procedure MenuCollapseAllClick(Sender: TObject);
+    procedure MenuExpandAllClick(Sender: TObject);
     // Internal node methods.
     Procedure DeleteNode(Msg : String; N : TTreeNode; E : TDomElement);
     Procedure DeleteElementNode(N : TTreeNode);
@@ -126,6 +131,9 @@ Type
     Procedure SetCurrentModuleNode(N : TTreeNode);
     Procedure SetCurrentPackageNode(N : TTreeNode);
     Procedure SetCurrentTopicNode(T : TTreeNode);
+    // Other methods
+    procedure UpdateNodeImage(N: TTreeNode);
+    procedure SetNodeImage(N: TTreeNode; Index: Integer);
   Protected
     Procedure SetCurrentModule(Value : TDomElement); override;
     Procedure SetCurrentPackage(Value : TDomElement); override;
@@ -144,6 +152,7 @@ Type
     Procedure RenameModule(M : TDomElement); override;
     Procedure RenameElement(E : TDomElement); override;
     Procedure RenameTopic(T : TDomElement); override;
+    procedure UpdateSelectedNodeStatus;
     Property ModuleTree : TTreeView Read FModuleTree;
     Property ElementTree : TTreeView Read FElementTree;
   end;
@@ -151,7 +160,7 @@ Type
 
 implementation
 
-uses frmNewNode;
+uses frmNewNode, graphics;
 
 { ---------------------------------------------------------------------
   Auxiliary routines
@@ -246,7 +255,9 @@ end;
   ---------------------------------------------------------------------}
 
 Constructor TPackageEditor.Create(AOwner : TComponent);
-
+var
+  TmpPanel: TPanel;
+  
   Function NewMenuItem(ACaption : String; AOnClick : TNotifyEvent) : TMenuItem;
 
   begin
@@ -257,6 +268,12 @@ Constructor TPackageEditor.Create(AOwner : TComponent);
 
 begin
   Inherited;
+  FImageList := TImageList.Create(Self);
+  Fimagelist.AddFromLazarusResource('node_new');      // ImgIndxNew
+  Fimagelist.AddFromLazarusResource('node_edit');     // ImgIndxEdited
+  Fimagelist.AddFromLazarusResource('node_modified'); // ImgIndxModified
+  Fimagelist.AddFromLazarusResource('node_finished'); // ImgIndxFinished
+
   FLModules:=Tlabel.Create(Self);
   With FLModules do
     begin
@@ -271,6 +288,7 @@ begin
     Parent:=Self;
     Align:=AlTop;
     Height:=150;
+    Images:=FImageList;
     OnChange:=@ModuleChange;
     OnChanging:=@ModuleChanging;
     // Till the above two get fixed, use this
@@ -301,6 +319,7 @@ begin
     begin
     Parent:=FpElements;
     Align:=AlClient;
+    Images:=FImageList;
     OnChange:=@ElementChange;
     OnChanging:=@ElementChanging;
     // Till the above two get fixed, use this:
@@ -309,8 +328,13 @@ begin
   PEMenu:=TPopupMenu.Create(Self);
   FERenameMenu:=NewMenuItem(SMenuRename,@MenuRenameClick);
   FEDeleteMenu:=NewMenuItem(SMenuDelete,@MenuDeleteClick);
+  FEExpandAllMenu:=NewMenuItem(SMenuExpandAll,@MenuExpandAllClick);
+  FECollapseAllMenu:=NewMenuItem(SMenuCollapseAll,@MenuCollapseAllClick);
   PEMenu.Items.Add(FERenameMenu);
   PEMenu.Items.Add(FEDeleteMenu);
+  PEMenu.Items.Add(NewMenuItem('-',nil));
+  PEMEnu.Items.Add(FEExpandAllMenu);
+  PEMenu.Items.Add(FECollapseAllMenu);
   FElementTree.PopupMenu:=PEMenu;
   PMMenu:=TPopupMenu.Create(Self);
   FMRenameMenu:=NewMenuItem(SMenuRename,@MenuRenameClick);
@@ -493,6 +517,21 @@ begin
     end;
 end;
 
+procedure TPackageEditor.MenuCollapseAllClick(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  ElementTree.FullCollapse;
+  Node := ElementTree.Items.GetFirstNode;
+  if Node<>nil then
+    Node.Expand(False);
+end;
+
+procedure TPackageEditor.MenuExpandAllClick(Sender: TObject);
+begin
+  ElementTree.FullExpand;
+end;
+
 
 Procedure TPackageEditor.SetModuleNode(N : TTreeNode);
 
@@ -662,6 +701,59 @@ begin
     RenameNode(SRenameTopic,N);
 end;
 
+procedure DebugElement(Element: TDomElement);
+var
+  Level: integer;
+const
+  NType:Array[0..12] of String[30] =
+  (
+  '0:UNKNOWN',
+  '1:ELEMENT_NODE',
+  '2:ATTRIBUTE_NODE',
+  '3:TEXT_NODE',
+  '4:CDATA_SECTION_NODE',
+  '5:ENTITY_REFERENCE_NODE',
+  '6:ENTITY_NODE',
+  '7:PROCESSING_INSTRUCTION_NODE',
+  '8:COMMENT_NODE',
+  '9:DOCUMENT_NODE',
+  '10:DOCUMENT_TYPE_NODE',
+  '11:DOCUMENT_FRAGMENT_NODE',
+  '12:NOTATION_NODE'
+  );
+  function GetLevelSpc: String;
+  begin
+    SetLength(Result, Level*2);
+    FillChar(Result[1], Level*2, ' ');
+  end;
+  procedure DebugNodes(Node: TDomNode);
+  begin
+    Node := Node.FirstChild;
+    while node<>nil do begin
+      WriteLn(GetLevelSpc, 'Node=',Node.NodeName,' Type=',NType[Node.NodeType],' Value=',Node.NodeValue);
+      if (node.NodeType = ELEMENT_NODE) then begin
+        Inc(Level);
+        DebugNodes(Node);
+        Dec(Level);
+      end;
+      Node := Node.NextSibling;
+    end;
+  end;
+begin
+  if assigned(Element) then begin
+    WriteLn('Element: ', Element['name'],': ');
+    level := 1;
+    DebugNodes(Element);
+  end else
+    WriteLn('Element <nil>');
+end;
+
+
+procedure TPackageEditor.UpdateSelectedNodeStatus;
+begin
+  if ElementTree.Selected<>nil then
+    SetNodeImage(ElementTree.Selected, ImgIndxModified);
+end;
 
 Procedure TPackageEditor.RenameElement(E : TDomElement);
 
@@ -697,6 +789,7 @@ begin
     FModuleNode:=FElementTree.Items.Add(Nil,Module['name']);
     S:=TStringList.Create;
     Try
+      // get sorted list of elements
       Node:=Module.FirstChild;
       While Assigned(Node) do
         begin
@@ -705,12 +798,15 @@ begin
         Node:=Node.NextSibling;
         end;
       S.Sorted:=True;
+      // root node
       TNode:=FModuleNode;
+      // process list of elements, create levels
       For I:=0 to S.Count-1 do
         begin
         PNode:=Nil;
         SNode:=TNode;
         N:=S[i];
+        // look for a tentative new parents
         While (SNode<>FModuleNode) and (PNode=Nil) do
           begin
           PN:=TDomElement(SNode.Data)['name']+'.';
@@ -725,6 +821,7 @@ begin
           System.Delete(N,1,L);
         TNode:=FElementTree.Items.AddChild(PNode,N);
         TNode.Data:=S.Objects[i];
+        UpdateNodeImage(TNode);
         end;
       Finally
         S.Free;
@@ -960,6 +1057,58 @@ begin
  FModuleTree.Selected:=T;
  If (CurrentElement<>Nil) then
    CurrentElement:=Nil;
+end;
+
+procedure TPackageEditor.UpdateNodeImage(N: TTreeNode);
+var
+  ImgIndex: Integer;
+  Node: TDomNode;
+  Element: TDomElement;
+begin
+  if assigned(N) then begin
+
+    Element := TDomElement(N.Data);
+    //DebugElement(Element);
+    if not Assigned(Element) then
+      exit;
+      
+    // get image index accoding of element edit state
+    ImgIndex := ImgIndxNew;
+    node := Element.FirstChild;
+    while Assigned(node) do begin
+      if (node.NodeType=ELEMENT_NODE) and node.HasChildNodes then begin
+        if
+          (
+            (node.NodeName = 'short') or
+            (node.NodeName = 'descr') or
+            (node.NodeName = 'sealso') or
+            (node.NodeName = 'example') or
+            (node.NodeName = 'errors')
+          ) then begin
+          ImgIndex := ImgIndxModified;
+          break;
+        end;
+      end;
+      Node := Node.NextSibling;
+    end;
+
+    // assign index to node and propagate status to parent
+    SetNodeImage(N, ImgIndex);
+  end;
+end;
+
+procedure TPackageEditor.SetNodeImage(N: TTreeNode; Index: Integer);
+begin
+  N.ImageIndex := Index;
+  N.SelectedIndex := Index;
+  if Index>ImgIndxEdited then
+    while assigned(N.Parent) do begin
+      N := N.Parent;
+      if N.ImageIndex < ImgIndxEdited then begin
+        N.ImageIndex := ImgIndxEdited;
+        N.SelectedIndex := ImgIndxEdited;
+      end;
+    end;
 end;
 
 Procedure TPackageEditor.SetCurrentElement(E : TDomElement);

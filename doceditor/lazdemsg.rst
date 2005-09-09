@@ -299,6 +299,14 @@ lazdemsg.smenurename='Rename'
 lazdemsg.smenudelete='Delete'
 
 
+# hash value = 138578252
+lazdemsg.smenuexpandall='Expand All'
+
+
+# hash value = 53573292
+lazdemsg.smenucollapseall='Collapse All'
+
+
 # hash value = 5045121
 lazdemsg.smenuextra='Extra'
 
