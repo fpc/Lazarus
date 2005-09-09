@@ -261,7 +261,6 @@ Var Flags          : DWORD;
     InfoPrt        : PChar;
     i              : Integer;
     DefaultPrinter : array[0..79] of Char;
-    LstStr         : TStringList;
     PDev           : TPrinterDevice;
 
 begin
@@ -310,13 +309,18 @@ begin
           if Level=2 then
           begin
             PDev:=TPrinterDevice.Create;
-            PDev.Name   :=PPRINTER_INFO_2(InfoPrt)^.pPrinterName;
-            PDev.Device :=PPRINTER_INFO_2(InfoPrt)^.PDevMode^.dmDeviceName;
-            PDev.Driver :=PPRINTER_INFO_2(InfoPrt)^.pDriverName;
-            PDev.Port   :=PPRINTER_INFO_2(InfoPrt)^.pPortName;
-            PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
-            PDev.DefaultPaper:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^.dmPaperSize;
-
+            PDev.Name  :=PPRINTER_INFO_2(InfoPrt)^.pPrinterName;
+            PDev.Driver:=PPRINTER_INFO_2(InfoPrt)^.pDriverName;
+            PDev.Port  :=PPRINTER_INFO_2(InfoPrt)^.pPortName;
+            if PPRINTER_INFO_2(InfoPrt)^.PDevMode <> nil then begin
+              PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
+              PDev.Device:=PDev.DevMode.dmDeviceName;
+              PDev.DefaultPaper:=PDev.DevMode.dmPaperSize;
+            end
+            else begin
+              PDev.Device:='';
+              PDev.DefaultPaper:=0;
+            end;
             if AnsiCompareText(PDev.Name,DefaultPrinter)<>0 then
               Lst.AddObject(PDev.Name,PDev)
             else
