@@ -28,29 +28,6 @@
 { $DEFINE VerboseMouseBugfix}
 
 {------------------------------------------------------------------------------
-  TWinControl AdjustSize
-  
-  Calls DoAutoSize smart.
-  During loading and handle creation the calls are delayed.
-  
-  This method do the same as TWinControl.DoAutoSize at the beginning.
-  But since DoAutoSize is commonly overriden by existing Delphi components,
-  they do not all tests, which can result in too much overhead. To reduce this
-  the LCL calls AdjustSize instead.
-------------------------------------------------------------------------------}
-procedure TWinControl.AdjustSize;
-begin
-  If not AutoSizeCanStart then exit;
-  if AutoSizeDelayed then begin
-    //debugln('TWinControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
-    Include(FWinControlFlags,wcfAutoSizeNeeded);
-    exit;
-  end;
-  //debugln('TWinControl.AdjustSize DoAutoSize ',DbgSName(Self));
-  DoAutoSize;
-end;
-
-{------------------------------------------------------------------------------
   function TWinControl.AutoSizeDelayed: boolean;
 ------------------------------------------------------------------------------}
 function TWinControl.AutoSizeDelayed: boolean;
@@ -716,12 +693,12 @@ begin
 
     if cfRequestAlignNeeded in Child.FControlFlags then
       Child.RequestAlign;
+    if cfAutoSizeNeeded in Child.FControlFlags then
+      Child.AdjustSize;
 
     if Child is TWinControl then begin
       AWinControl:=TWinControl(Child);
       AWinControl.ResizeDelayedAutoSizeChilds;
-      if wcfAutoSizeNeeded in AWinControl.FWinControlFlags then
-        AWinControl.AdjustSize;
       if wcfReAlignNeeded in AWinControl.FWinControlFlags then
         AWinControl.ReAlign;
     end;
@@ -747,7 +724,7 @@ begin
   //debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   If not AutoSizeCanStart then exit;
   if AutoSizeDelayed then begin
-    Include(FWinControlFlags,wcfAutoSizeNeeded);
+    Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
 
@@ -808,7 +785,7 @@ begin
   finally
     AutoSizing := False;
   end;
-  Exclude(FWinControlFlags,wcfAutoSizeNeeded);
+  Exclude(FControlFlags,cfAutoSizeNeeded);
 end;
 
 {------------------------------------------------------------------------------}
@@ -4046,7 +4023,7 @@ begin
       TControl(FControls[i]).ParentFormHandleInitialized;
   end;
   //debugln('TWinControl.ParentFormHandleInitialized A ',DbgSName(Self));
-  if wcfAutoSizeNeeded in FWinControlFlags then AdjustSize;
+  if cfAutoSizeNeeded in FControlFlags then AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -4085,25 +4062,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.Loaded;
 begin
-  inherited Loaded;
-  if HandleAllocated
-  then begin              
+  if HandleAllocated then begin
     // Set cached caption
     TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
     InvalidatePreferredSize;
 
-    if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then
-    begin
+    if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then begin
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
       FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
     end;
   end;
+
+  inherited Loaded;
   
   FixupTabList;
-
-  // autosize this control
-  if wcfAutoSizeNeeded in FWinControlFlags then
-    AdjustSize;
   RealizeBounds;
 
   // align the childs

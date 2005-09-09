@@ -29,12 +29,24 @@
 {------------------------------------------------------------------------------
   TControl.AdjustSize
 
-  Calls DoAutoSize. This method tries to reduce this calls during loading and
-  handle creation.
+  Calls DoAutoSize smart.
+  During loading and handle creation the calls are delayed.
+
+  This method do the same as TWinControl.DoAutoSize at the beginning.
+  But since DoAutoSize is commonly overriden by existing Delphi components,
+  they do not all tests, which can result in too much overhead. To reduce this
+  the LCL calls AdjustSize instead.
 ------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-  if not (csLoading in ComponentState) then DoAutoSize;
+  If not AutoSizeCanStart then exit;
+  if AutoSizeDelayed then begin
+    //debugln('TControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
+    Include(FControlFlags,cfAutoSizeNeeded);
+    exit;
+  end;
+  //debugln('TControl.AdjustSize DoAutoSize ',DbgSName(Self));
+  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -2362,6 +2374,9 @@ begin
   // align this control and the brothers
   if cfRequestAlignNeeded in FControlFlags then
     RequestAlign;
+  // autosize this control
+  if cfAutoSizeNeeded in FControlFlags then
+    AdjustSize;
   if Action <> nil then ActionChange(Action, True);
 end;
 

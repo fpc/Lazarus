@@ -684,6 +684,7 @@ type
   
   TControlFlag = (
     cfRequestAlignNeeded,
+    cfAutoSizeNeeded,
     cfClientWidthLoaded,
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,
@@ -1332,7 +1333,6 @@ type
     wcfReAlignNeeded,
     wcfAligningControls,
     wcfEraseBackground,
-    wcfAutoSizeNeeded,
     wcfCreatingHandle,      // Set while constructing the handle of this control
     wcfInitializing,        // Set while initializing during handle creation
     wcfCreatingChildHandles // Set while constructing the handles of the childs
@@ -1586,7 +1586,6 @@ type
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
-    procedure AdjustSize; override;
     function AutoSizeDelayed: boolean; override;
     procedure BeginUpdateBounds;
     procedure EndUpdateBounds;
