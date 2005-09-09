@@ -27,7 +27,7 @@
      This is only to help the user find commands.
      
    Scopes:
-     Command can work globally or only in some IDE windows.
+     A command can work globally or only in some IDE windows.
      For example: When the user presses a key in the source editor, the IDE
        first searches in all commands with the Scope IDECmdScopeSrcEdit.
        Then it will search in all commands without scope.
@@ -41,6 +41,7 @@ interface
 uses
   Classes, SysUtils, Forms, LCLType, Menus, TextTools;
   
+{$IFNDEF UseIDEScopes}
 type
   TCommandArea = (
     caMenu,
@@ -56,7 +57,7 @@ const
   caSrcEditOnly = [caSourceEditor];
   caDesign = [caMenu,caDesigner];
   caDesignOnly = [caDesigner];
-
+{$ENDIF}
 
 type
   TIDECommandKeys = class;
@@ -79,6 +80,7 @@ type
     function IDEWindowCount: integer;
     procedure AddCommand(ACommand: TIDECommandKeys);
     function CommandCount: integer;
+    function HasIDEWindow(AnWindow: TCustomForm): boolean;
   public
     property Name: string read FName;
     property IDEWindows[Index: integer]: TCustomForm read GetIDEWindows;
@@ -120,7 +122,11 @@ type
     
   TIDECommandCategory = class(TList)
   protected
+    {$IFDEF UseIDEScopes}
+    FScope: TIDECommandScope;
+    {$ELSE}
     FAreas: TCommandAreas;
+    {$ENDIF}
     FDescription: string;
     FName: string;
     FParent: TIDECommandCategory;
@@ -128,8 +134,12 @@ type
     property Name: string read FName;
     property Description: string read FDescription;
     property Parent: TIDECommandCategory read FParent;
-    property Areas: TCommandAreas read FAreas;
     procedure Delete(Index: Integer); virtual;
+    {$IFDEF UseIDEScopes}
+    property Scope: TIDECommandScope read FScope write FScope;
+    {$ELSE}
+    property Areas: TCommandAreas read FAreas;
+    {$ENDIF}
   end;
   
   
@@ -175,7 +185,11 @@ function IDEShortCut(Key1: word; Shift1: TShiftState;
 type
   TExecuteIDEShortCut = procedure(Sender: TObject;
                                   var Key: word; Shift: TShiftState;
-                                  Areas: TCommandAreas) of object;
+                                  {$IFDEF UseIDEScopes}
+                                  IDEWindow: TCustomForm
+                                  {$ELSE}
+                                  Areas: TCommandAreas
+                                  {$ENDIF}) of object;
   TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
 
 var
@@ -183,7 +197,7 @@ var
   OnExecuteIDECommand: TExecuteIDECommand;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-                             Areas: TCommandAreas);
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF});
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
@@ -214,10 +228,11 @@ begin
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-  Areas: TCommandAreas);
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF});
 begin
   if (OnExecuteIDECommand<>nil) and (Key<>VK_UNKNOWN) then
-    OnExecuteIDEShortCut(Sender,Key,Shift,Areas);
+    OnExecuteIDEShortCut(Sender,Key,Shift,
+                         {$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word;
@@ -450,6 +465,15 @@ end;
 function TIDECommandScope.CommandCount: integer;
 begin
   Result:=FCommands.Count;
+end;
+
+function TIDECommandScope.HasIDEWindow(AnWindow: TCustomForm): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to FIDEWindows.Count-1 do
+    if TCustomForm(FIDEWindows[i])=AnWindow then exit(true);
+  Result:=false;
 end;
 
 end.

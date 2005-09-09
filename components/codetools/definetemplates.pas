@@ -2098,6 +2098,7 @@ var
       ReadValue(DirDef,copy(CurValue,MacroFuncNameEnd+1
           ,MacroEnd-MacroFuncNameEnd-2),CurDefinePath,MacroParam);
       // execute the macro function
+      //debugln('Substitute MacroFuncName="',MacroFuncName,'" MacroParam="',MacroParam,'"');
       MacroStr:=ExecuteMacroFunction(MacroFuncName,MacroParam);
     end else begin
       // Macro variable
@@ -2147,9 +2148,11 @@ var
       inc(BufferPos,RestLen);
     end;
     // copy the buffer into NewValue
+    //DebugLn('    [ReadValue] Old="',copy(NewValue,1,100),'"');
     SetLength(NewValue,BufferPos);
     if BufferPos>0 then
       Move(Buffer^,NewValue[1],BufferPos);
+    //DebugLn('    [ReadValue] New="',copy(NewValue,1,100),'"');
     // clean up
     FreeMem(Buffer);
     Buffer:=nil;
@@ -2158,7 +2161,7 @@ var
 var MacroStart,MacroEnd: integer;
   ValueLen: Integer;
 begin
-  //  DebugLn('    [ReadValue] A   "',PreValue,'"');
+  //  DebugLn('    [ReadValue] A   "',copy(PreValue,1,100),'"');
   NewValue:=PreValue;
   if NewValue='' then exit;
   MacroStart:=1;
@@ -2187,7 +2190,6 @@ begin
     MacroStart:=MacroEnd;
   end;
   if Buffer<>nil then SetNewValue;
-  //  DebugLn('    [ReadValue] END "',NewValue,'"');
 end;
 
 procedure TDefineTree.MarkTemplatesOwnedBy(TheOwner: TObject; const MustFlags,

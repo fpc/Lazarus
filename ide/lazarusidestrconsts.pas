@@ -97,6 +97,7 @@ resourcestring
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
   lisMakeExe = 'Make Executable';
+  lisProjectMakroProperties = 'Project makro properties';
   lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu

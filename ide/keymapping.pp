@@ -280,7 +280,8 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     constructor Create(const AName, ADescription: string;
-    TheAreas: TCommandAreas);
+                       {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
+                       {$ELSE}TheAreas: TCommandAreas{$ENDIF});
   end;
   
   //---------------------------------------------------------------------------
@@ -303,7 +304,8 @@ type
     function GetRelation(Index:integer):TKeyCommandRelation;
     function GetRelationCount:integer;
     function AddCategory(const Name, Description: string;
-       TheAreas: TCommandAreas): integer;
+       {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
+       {$ELSE}TheAreas: TCommandAreas{$ENDIF}): integer;
     function Add(Category: TKeyCommandCategory; const Name: string;
        Command:word;  const TheKeyA, TheKeyB: TIDEShortCut):integer;
     function AddDefault(Category: TKeyCommandCategory; const Name: string;
@@ -317,16 +319,22 @@ type
     procedure Clear;
     function Count: integer;
     function CategoryCount: integer;
-    function Find(Key: TIDEShortCut; Areas: TCommandAreas): TKeyCommandRelation;
+    function Find(Key: TIDEShortCut;
+      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+      ): TKeyCommandRelation;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
-    function TranslateKey(Key: word; Shift: TShiftState; Areas: TCommandAreas): word;
+    function TranslateKey(Key: word; Shift: TShiftState;
+      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF};
+      UseLastKey: boolean = true
+      ): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
-	procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
-                       Areas: TCommandAreas);
+    procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
+                       {$IFDEF UseIDEScopes}IDEWindow: TCustomForm
+                       {$ELSE}Areas: TCommandAreas{$ENDIF});
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
   public
@@ -364,7 +372,9 @@ type
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
-    function ResolveConflicts(Key: TIDEShortCut; Areas: TCommandAreas): boolean;
+    function ResolveConflicts(Key: TIDEShortCut;
+      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+      ): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     KeyCommandRelationList:TKeyCommandRelationList;
@@ -2044,7 +2054,8 @@ begin
 end;
 
 function TKeyMappingEditForm.ResolveConflicts(Key: TIDEShortCut;
-  Areas: TCommandAreas): boolean;
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  ): boolean;
 var
   ConflictRelation: TKeyCommandRelation;
   ConflictName: String;
@@ -2747,14 +2758,19 @@ begin
 end;
 
 function TKeyCommandRelationList.Find(Key: TIDEShortCut;
-  Areas: TCommandAreas):TKeyCommandRelation;
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  ): TKeyCommandRelation;
 var
   a:integer;
 begin
   Result:=nil;
   if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
+    {$IFDEF UseIDEScopes}
+    if not Category.Scope.HasIDEWindow(IDEWindow) then continue;
+    {$ELSE}
     if Category.Areas*Areas=[] then continue;
+    {$ENDIF}
     if ((KeyA.Key1=Key.Key1) and (KeyA.Shift1=Key.Shift1) and
         (KeyA.Key2=Key.Key2) and (KeyA.Shift2=Key.Shift2))
     or ((KeyB.Key1=Key.Key1) and (KeyB.Shift1=Key.Shift1) and
@@ -2779,7 +2795,9 @@ begin
 end;
 
 procedure TKeyCommandRelationList.AssignTo(
-  ASynEditKeyStrokes:TSynEditKeyStrokes; Areas: TCommandAreas);
+  ASynEditKeyStrokes:TSynEditKeyStrokes;
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  );
 var
   a,b,MaxKeyCnt,KeyCnt:integer;
   Key: TSynEditKeyStroke;
@@ -2900,9 +2918,11 @@ begin
 end;
 
 function TKeyCommandRelationList.AddCategory(const Name, Description: string;
-  TheAreas: TCommandAreas): integer;
+  {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
+  {$ELSE}TheAreas: TCommandAreas{$ENDIF}): integer;
 begin
-  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,TheAreas));
+  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,
+                         {$IFDEF UseIDEScopes}TheScope{$ELSE}TheAreas{$ENDIF}));
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
@@ -2917,23 +2937,40 @@ begin
   Result:=nil;
 end;
 
-function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState; Areas: TCommandAreas): word;
+function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF};
+  UseLastKey: boolean
+  ): word;
+{ If UseLastKey = true then only search for commmands with one key.
+  If UseLastKey = false then search first for a command with a two keys
+    combination (i.e. the last key plus this one)
+    and then for a command with one key.
+  If no command was found the key is stored in fLastKey.Key1.
+}
 var
   ARelation: TKeyCommandRelation;
 begin
-  fLastKey.Key2 := Key;
-  fLastKey.Shift2 := Shift;
-  ARelation := Find(fLastKey, Areas);
+  if UseLastKey and (fLastKey.Key1<>VK_UNKNOWN) then begin
+    // the last key had no command
+    // => try a two key combination command
+    fLastKey.Key2 := Key;
+    fLastKey.Shift2 := Shift;
+    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
+  end else begin
+    ARelation := nil;
+  end;
   if ARelation = nil then
   begin
+    // search for a one key command
     fLastKey.Key1 := Key;
     fLastKey.Shift1 := Shift;
     fLastKey.Key2 := VK_UNKNOWN;
     fLastKey.Shift2 := [];
-    ARelation := Find(fLastKey, Areas);
+    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
   end;
   if ARelation<>nil then
   begin
+    // the key has a command -> key was used => clear fLastKey
     fLastKey.Key1 := VK_UNKNOWN;
     fLastKey.Shift1 := [];
     fLastKey.Key2 := VK_UNKNOWN;
@@ -2944,7 +2981,8 @@ begin
     Result:=ecNone;
 end;
 
-function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation): integer;
+function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation
+  ): integer;
 begin
   Result:=fRelations.IndexOf(ARelation);
 end;
@@ -2976,12 +3014,17 @@ begin
 end;
 
 constructor TKeyCommandCategory.Create(const AName, ADescription: string;
-  TheAreas: TCommandAreas);
+  {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
+  {$ELSE}TheAreas: TCommandAreas{$ENDIF});
 begin
   inherited Create;
   FName:=AName;
   FDescription:=ADescription;
+  {$IFDEF UseIDEScopes}
+  FScope:=TheScope;
+  {$ELSE}
   FAreas:=TheAreas;
+  {$ENDIF}
 end;
 
 

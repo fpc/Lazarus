@@ -413,7 +413,6 @@ type
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
-    procedure SetModified(const AValue: boolean);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetMainUnitID(const AValue: Integer);
@@ -427,6 +426,7 @@ type
     procedure SetFlags(const AValue: TProjectFlags); override;
     function GetProjectInfoFile: string; override;
     procedure SetProjectInfoFile(const NewFilename: string); override;
+    procedure SetModified(const AValue: boolean); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -567,7 +567,6 @@ type
     property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
-    property Modified: boolean read fModified write SetModified;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -1781,8 +1780,8 @@ end;
 procedure TProject.SetModified(const AValue: boolean);
 begin
   if AValue=Modified then exit;
-  fModified:=AValue;
-  if not fModified then PublishOptions.Modified:=false;
+  inherited SetModified(AValue);
+  if not Modified then PublishOptions.Modified:=false;
 end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
@@ -2589,7 +2588,7 @@ end;
 function TProject.SomethingModified: boolean;
 var i: integer;
 begin
-  Result:=Modified;
+  Result:=Modified or SessionModified;
   for i:=0 to UnitCount-1 do Result:=Result or Units[i].Modified;
   Result:=Result or CompilerOptions.Modified;
 end;

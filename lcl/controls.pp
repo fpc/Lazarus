@@ -643,7 +643,8 @@ type
     property Kind: TAnchorKind read FKind;
   published
     property Control: TControl read FControl write SetControl;
-    property Side: TAnchorSideReference read FSide write SetSide stored IsSideStored;
+    property Side: TAnchorSideReference read FSide write SetSide
+                           stored IsSideStored default TAnchorSideReference(-1);
   end;
 
 
@@ -2664,7 +2665,7 @@ end;
 
 function TAnchorSide.IsSideStored: boolean;
 begin
-  Result:=(Control<>nil) and (FSide<>DefaultSideForAnchorKind[FKind]);
+  Result:=(Control<>nil) and (Side<>DefaultSideForAnchorKind[Kind]);
 end;
 
 procedure TAnchorSide.SetSide(const AValue: TAnchorSideReference);

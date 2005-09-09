@@ -25,6 +25,7 @@ unit FileUtil;
 interface
 
 uses
+  // For Smart Linking: Do not use the LCL!
   Classes, SysUtils, LCLStrConsts;
 
 // file attributes and states

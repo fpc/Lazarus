@@ -46,7 +46,7 @@ unit TransferMacros;
 
 interface
 
-uses Classes, SysUtils, FileUtil, LazarusIDEStrConsts, MacroIntf;
+uses Classes, SysUtils, LCLProc, FileUtil, LazarusIDEStrConsts, MacroIntf;
 
 type
   TTransferMacro = class;
@@ -217,6 +217,8 @@ begin
   if (m<fItems.Count) and (AnsiCompareText(NewMacro.Name,Items[m].Name)>0) then
     inc(m);
   fItems.Insert(m,NewMacro);
+  //if NewMacro.MacroFunction<>nil then
+  //  debugln('TTransferMacroList.Add A ',NewMacro.Name);
 end;
 
 function TTransferMacroList.SubstituteStr(var s:string): boolean;

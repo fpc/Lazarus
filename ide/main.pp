@@ -288,7 +288,9 @@ type
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
                                   var Handled: boolean);
     procedure OnExecuteIDEShortCut(Sender: TObject;
-                       var Key: word; Shift: TShiftState; Areas: TCommandAreas);
+                       var Key: word; Shift: TShiftState;
+                       {$IFDEF UseIDEScopes}IDEWindow: TCustomForm
+                       {$ELSE}TheAreas: TCommandAreas{$ENDIF});
     procedure OnExecuteIDECommand(Sender: TObject; Command: word);
 
     // Environment options dialog events
@@ -771,13 +773,14 @@ type
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
     function GetProjPublishDir: string;
-    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
+    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
                                   var Handled, Abort: boolean);
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string): string;
-    function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
-    function OnMacroFuncMakeExe(const Filename:string; var Abort: boolean):string;
-    procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
+    function OnMacroPromptFunction(const s:string; var Abort: boolean): string;
+    function OnMacroFuncMakeExe(const Filename:string; var Abort: boolean): string;
+    function OnMacroFuncProject(const Param: string; var Abort: boolean): string;
+    procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
@@ -1528,6 +1531,8 @@ begin
                     lisProjectSrcPath,nil,[]));
   MacroList.Add(TTransferMacro.Create('MakeExe','',
                     lisMakeExe,@OnMacroFuncMakeExe,[]));
+  MacroList.Add(TTransferMacro.Create('Project','',
+                    lisProjectMakroProperties,@OnMacroFuncProject,[]));
 
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
@@ -2368,7 +2373,8 @@ begin
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
-  Shift: TShiftState; Areas: TCommandAreas);
+  Shift: TShiftState;
+  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}TheAreas: TCommandAreas{$ENDIF});
 var
 //  CommandRelation: TKeyCommandRelation;
 //  Handled: Boolean;
@@ -2381,7 +2387,7 @@ begin
 //  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
 //  if Handled then Key:=VK_UNKNOWN;
   //debugln('TMainIDE.OnExecuteIDEShortCut Key '+dbgs(Key)+' pressed');
-  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,Areas);
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}TheAreas{$ENDIF});
   if (Command = ecNone) then exit;
   Handled := false;
   OnProcessIDECommand(Sender, Command, Handled);
@@ -6234,7 +6240,7 @@ begin
   if Project1.MainUnitID>=0 then begin
     // read MainUnit Source
     Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
-                             [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
+                           [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
     if Result=mrIgnore then Result:=mrAbort;
     if Result=mrAbort then exit;
     Project1.MainUnitInfo.Source:=NewBuf;
@@ -8650,6 +8656,25 @@ begin
   DebugLn('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
+function TMainIDE.OnMacroFuncProject(const Param: string; var Abort: boolean
+  ): string;
+begin
+  if Project1<>nil then begin
+    if CompareText(Param,'SrcPath')=0 then
+      Result:=Project1.CompilerOptions.GetSrcPath(false)
+    else if CompareText(Param,'IncPath')=0 then
+      Result:=Project1.CompilerOptions.GetIncludePath(false)
+    else if CompareText(Param,'UnitPath')=0 then
+      Result:=Project1.CompilerOptions.GetUnitPath(false)
+    else begin
+      Result:='<Invalid parameter for makro Project:'+Param+'>';
+      debugln('WARNING: TMainIDE.OnMacroFuncProject: ',Result);
+    end;
+  end else begin
+    Result:='';
+  end;
+end;
+
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
 // replace all transfer macros in command line
 begin
@@ -9944,14 +9969,17 @@ begin
   if Project1=nil then exit;
   FuncData:=PReadFunctionData(Data);
   Param:=FuncData^.Param;
-  if AnsiCompareText(Param,'SrcPath')=0 then
+  debugln('TMainIDE.MacroFunctionProject A Param="',Param,'"');
+  if CompareText(Param,'SrcPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false)
-  else if AnsiCompareText(Param,'IncPath')=0 then
+  else if CompareText(Param,'IncPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false)
-  else if AnsiCompareText(Param,'UnitPath')=0 then
+  else if CompareText(Param,'UnitPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false)
-  else
-    FuncData^.Result:='';
+  else begin
+    FuncData^.Result:='<unknown parameter for CodeTools Makro project:"'+Param+'">';
+    debugln('TMainIDE.MacroFunctionProject WARNING: ',FuncData^.Result);
+  end;
 end;
 
 procedure TMainIDE.OnCompilerGraphStampIncreased;

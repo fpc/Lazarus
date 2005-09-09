@@ -484,6 +484,8 @@ type
   TLazProject = class(TPersistent)
   private
     FLazCompilerOptions: TLazCompilerOptions;
+    fModified: boolean;
+    FSessionModified: boolean;
     fTitle: String;
     FSessionStorage: TProjectSessionStorage;
   protected
@@ -499,6 +501,8 @@ type
     function GetProjectInfoFile: string; virtual; abstract;
     procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); virtual;
+    procedure SetModified(const AValue: boolean); virtual;
+    procedure SetSessionModified(const AValue: boolean); virtual;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     function CreateProjectFile(const Filename: string
@@ -523,6 +527,10 @@ type
                                read GetProjectInfoFile write SetProjectInfoFile;
     property SessionStorage: TProjectSessionStorage read FSessionStorage
                                                     write SetSessionStorage;
+    property Modified: boolean read fModified
+                       write SetModified; // project data (not units, session)
+    property SessionModified: boolean read FSessionModified
+                       write SetSessionModified; // project session data (not units, data)
   end;
   TLazProjectClass = class of TLazProject;
 
@@ -965,6 +973,18 @@ procedure TLazProject.SetSessionStorage(const AValue: TProjectSessionStorage);
 begin
   if FSessionStorage=AValue then exit;
   FSessionStorage:=AValue;
+end;
+
+procedure TLazProject.SetModified(const AValue: boolean);
+begin
+  if fModified=AValue then exit;
+  fModified:=AValue;
+end;
+
+procedure TLazProject.SetSessionModified(const AValue: boolean);
+begin
+  if FSessionModified=AValue then exit;
+  FSessionModified:=AValue;
 end;
 
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);

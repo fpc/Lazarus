@@ -921,7 +921,7 @@ type
     property Color default clBtnFace;
     property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
-    property ParentColor stored ParentColorIsStored;
+    property ParentColor default true;
     property TabStop default False;
   end;
 
