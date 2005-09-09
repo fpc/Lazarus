@@ -1414,9 +1414,10 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                         AControlList: TList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
-    Function CanTab: Boolean; override;
+    procedure ResizeDelayedAutoSizeChilds; virtual;
+    function CanTab: Boolean; override;
     procedure DoDragMsg(var DragMsg: TCMDrag); override;
-    Procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     function  ContainsControl(Control: TControl): Boolean;

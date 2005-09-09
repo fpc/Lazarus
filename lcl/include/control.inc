@@ -1908,8 +1908,8 @@ begin
           and (not (csDestroying in ComponentState))
           and (Visible or ((csDesigning in ComponentState)
                            and (not (csNoDesignVisible in ControlStyle))));
-  {$IFDEF VerboseCanAutoSize}
   if AutoSize and not Result then begin
+    {$IFDEF VerboseCanAutoSize}
     DbgOut('TControl.AutoSizeCanStart Self='+DbgSName(Self)+' ');
     if not AutoSize then DebugLn('not AutoSize')
     else if AutoSizing then DebugLn('AutoSizing')
@@ -1920,8 +1920,8 @@ begin
               ' csDesigning=',dbgs(csDesigning in ComponentState),
               ' csNoDesignVisible=',dbgs(csNoDesignVisible in ControlStyle))
     else DebugLn('?');
+    {$ENDIF}
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1935,7 +1935,7 @@ begin
   Result:=// no autosize during loading or destruction
           ([csLoading,csDestroying]*ComponentState<>[])
           // no autosize for invisible controls
-          or (not Visible)
+          or ((not Visible) and (not (csDesigning in ComponentState)))
           // if there is no parent, then this control is not visible
           //  (TCustomForm will override this)
           or (NeedParentForAutoSize and (Parent=nil))

@@ -704,6 +704,30 @@ begin
   AdjustSize;
 end;
 
+procedure TWinControl.ResizeDelayedAutoSizeChilds;
+var
+  i: Integer;
+  Child: TControl;
+  AWinControl: TWinControl;
+begin
+  for i:=0 to ControlCount-1 do begin
+    Child:=Controls[i];
+    if Child.AutoSizeDelayed then continue;
+
+    if cfRequestAlignNeeded in Child.FControlFlags then
+      Child.RequestAlign;
+
+    if Child is TWinControl then begin
+      AWinControl:=TWinControl(Child);
+      AWinControl.ResizeDelayedAutoSizeChilds;
+      if wcfAutoSizeNeeded in AWinControl.FWinControlFlags then
+        AWinControl.AdjustSize;
+      if wcfReAlignNeeded in AWinControl.FWinControlFlags then
+        AWinControl.ReAlign;
+    end;
+  end;
+end;
+
 Procedure TWinControl.DoAutoSize;
 var
   I : Integer;
@@ -4565,6 +4589,8 @@ begin
   or (csNoDesignVisible in ControlStyle)
   then
     UpdateControlState;
+    
+  ResizeDelayedAutoSizeChilds;
 end;
 
 procedure TWinControl.ControlsAligned;
