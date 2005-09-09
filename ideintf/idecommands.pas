@@ -238,7 +238,7 @@ end;
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  OnExecuteIDEShortCut(Sender,Key,Shift,caMenuOnly);
+  OnExecuteIDEShortCut(Sender,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caMenuOnly{$ENDIF});
 end;
 
 procedure ExecuteIDECommand(Sender: TObject; Command: word);

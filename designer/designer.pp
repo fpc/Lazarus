@@ -50,8 +50,6 @@ type
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
     Value: boolean) of object;
-  TOnPersistentAdded = procedure(Sender: TObject; APersistent: TPersistent;
-    ComponentClass: TRegisteredComponent) of object;
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; Parent: TWinControl;
     var NewComponent: TComponent) of object;
@@ -94,7 +92,6 @@ type
     FMirrorVerticalMenuItem: TMenuItem;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
-    FOnPersistentAdded: TOnPersistentAdded;
     FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
@@ -294,8 +291,6 @@ type
     property LookupRoot: TComponent read FLookupRoot;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
-    property OnPersistentAdded: TOnPersistentAdded
-                                 read FOnPersistentAdded write FOnPersistentAdded;
     property OnPersistentDeleted: TOnPersistentDeleted
                              read FOnPersistentDeleted write FOnPersistentDeleted;
     property OnGetNonVisualCompIcon: TOnGetNonVisualCompIcon
@@ -877,8 +872,7 @@ procedure TDesigner.NotifyPersistentAdded(APersistent: TPersistent);
 begin
   try
     GiveComponentsNames;
-    if Assigned(FOnPersistentAdded) then
-      FOnPersistentAdded(Self,APersistent,nil);
+    GlobalDesignHook.PersistentAdded(APersistent,false);
   except
     on E: Exception do
       MessageDlg('Error:',E.Message,mtError,[mbOk],0);

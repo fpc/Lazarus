@@ -3401,7 +3401,10 @@ var
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
                              DeclarationTool.Tree.Root,CleanDeclCursorPos,true);
     Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
-    if Identifier='' then exit;
+    if Identifier='' then begin
+      debugln('FindDeclarationNode Identifier="',Identifier,'"');
+      exit;
+    end;
 
     // find alias declaration node
     debugln('FindDeclarationNode DeclarationNode=',DeclarationNode.DescAsString);
@@ -3468,6 +3471,7 @@ begin
     // search identifiers
     MaxPos:=Tree.FindLastPosition;
     if MaxPos>SrcLen then MaxPos:=SrcLen;
+    //debugln('FindReferences StartPos=',dbgs(StartPos),' MaxPos=',dbgs(MaxPos));
     SearchIdentifiers;
 
     // create the reference list

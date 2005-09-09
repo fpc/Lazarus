@@ -373,7 +373,7 @@ type
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
     function ResolveConflicts(Key: TIDEShortCut;
-      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+      {$IFDEF UseIDEScopes}Scope: TIDECommandScope{$ELSE}Areas: TCommandAreas{$ENDIF}
       ): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1953,7 +1953,8 @@ begin
     end;
   end;
 
-  if not ResolveConflicts(NewKeyA, CurRelation.Category.Areas) then
+  if not ResolveConflicts(NewKeyA,
+    CurRelation.Category.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF}) then
   begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
@@ -1987,7 +1988,8 @@ begin
     NewKeyB.Key2:=VK_UNKNOWN;
     NewKeyB.Shift2:=[];
   end
-  else if not ResolveConflicts(NewKeyB, CurRelation.Category.Areas)
+  else if not ResolveConflicts(NewKeyB,
+            CurRelation.Category.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF})
   then begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
@@ -2054,7 +2056,7 @@ begin
 end;
 
 function TKeyMappingEditForm.ResolveConflicts(Key: TIDEShortCut;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  {$IFDEF UseIDEScopes}Scope: TIDECommandScope{$ELSE}Areas: TCommandAreas{$ENDIF}
   ): boolean;
 var
   ConflictRelation: TKeyCommandRelation;

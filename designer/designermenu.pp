@@ -48,7 +48,7 @@ type
     Edit_template_description: TEdit;
     Label_template_description: TLabel;
     Label_template_view: TLabel;
-    ListBox: TListBox;
+    TemplatesListBox: TListBox;
     ListBoxView: TListBox;
     OkButton: TButton;
     CancelButton: TButton;
@@ -87,6 +87,8 @@ type
     ID: string;
   end;
   
+  { TDesignerMainMenu }
+
   TDesignerMainMenu = class(TCustomControl)
   private
     fRoot: PDesignerMenuItem;
@@ -137,7 +139,8 @@ type
     procedure InsertFromTemplateClick(Sender: TObject);
     procedure SaveAsTemplateClick(Sender: TObject);
     procedure DeleteFromTemplateClick(Sender: TObject);
-    procedure OnComponentModified(Sender: TObject);
+    procedure OnDesignerModified(Sender: TObject);
+    procedure OnComponentAdded(Sender: TObject);
 
     // Functions for editing menus
     function AddNewItemBefore(MenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
@@ -279,7 +282,8 @@ begin
 
   //Handler for renaming a caption in the OI for some menuitem to rename also a
   // designermenuitem
-  GlobalDesignHook.AddHandlerModified(@OnComponentModified);
+  GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
+  //GlobalDesignHook.AddHandlerPersistentAdded(@OnComponentAdded);
 
   new(Root);
   fMenu:=aMenu;
@@ -1271,7 +1275,7 @@ end;
 // --------------------------------------------------------------------------------------------------------------//
 // Some property og some object has changed -> we need to know if caption of some menuitem has changed ----------//
 // --------------------------------------------------------------------------------------------------------------//
-procedure TDesignerMainMenu.OnComponentModified(Sender: TObject);
+procedure TDesignerMainMenu.OnDesignerModified(Sender: TObject);
 var
   Selection: TPersistentSelectionList;
   i: Integer;
@@ -1293,7 +1297,7 @@ begin
         // ToDo
         // how to get the Designer menu item?
         DesignerMenuItem:=FindDesignerMenuItem(MenuItem);
-        //writeln('TDesignerMainMenu.OnComponentModified A ',MenuItem.Name,' ',DesignerMenuItem<>nil,' ',MenuItem.Caption);
+        //writeln('TDesignerMainMenu.OnDesignerModified A ',MenuItem.Name,' ',DesignerMenuItem<>nil,' ',MenuItem.Caption);
         if DesignerMenuItem = nil then Continue;
         
         ChangeCaption(DesignerMenuItem, MenuItem.Caption);
@@ -1305,6 +1309,11 @@ begin
   finally
     Selection.Free;
   end;
+end;
+
+procedure TDesignerMainMenu.OnComponentAdded(Sender: TObject);
+begin
+
 end;
 
 // ------------------------------------------------------//
@@ -1938,8 +1947,8 @@ begin
     Text:=lisMenuEditorTemplatePreview;
   end;
   
-  ListBox:=TListBox.Create(self);
-  with ListBox do
+  TemplatesListBox:=TListBox.Create(self);
+  with TemplatesListBox do
   begin
     Parent:=self;
     Left:=10;
@@ -1976,9 +1985,9 @@ begin
   // Default templates
   if (fAction = 1) then
   begin
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardFileMenu);
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardEditMenu);
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardHelpMenu);
+    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardFileMenu);
+    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardEditMenu);
+    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardHelpMenu);
   end;
   
   // Templates from menutemplates.xml
@@ -1987,15 +1996,15 @@ begin
   templatemenuitem:='menu_';
   while (XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists') <> 'does_not_exists') do
   begin
-    ListBox.Items.Add(XMLConfig.GetValue(templatemenuitem + str_i + '/Description/Value','does_not_exists'));
+    TemplatesListBox.Items.Add(XMLConfig.GetValue(templatemenuitem + str_i + '/Description/Value','does_not_exists'));
     Inc(i);
     Str(i,str_i);
   end;
   
   // Select the first menu on list and show it in "Template Preview"
-  if (ListBox.Items.Count > 0) then
+  if (TemplatesListBox.Items.Count > 0) then
   begin
-    ListBox.Selected[0]:=true;
+    TemplatesListBox.Selected[0]:=true;
     if (fAction = 1) then
       TemplateView('', 1)
     else
@@ -2033,8 +2042,8 @@ procedure TTemplateMenuForm.OkButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:=0 to ListBox.Items.Count-1 do
-    if ListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
+  for i:=0 to TemplatesListBox.Items.Count-1 do
+    if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
   if (fAction = 2) and (Edit_template_description.Text <> '') then
   begin
     Description:=Edit_template_description.Text;
@@ -2136,8 +2145,8 @@ var
   str_i: string;
 begin
   ListBoxView.Clear;
-  for i:=0 to ListBox.Items.Count-1 do
-    if ListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
+  for i:=0 to TemplatesListBox.Items.Count-1 do
+    if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
 
   if (fAction <> 1) then
   begin

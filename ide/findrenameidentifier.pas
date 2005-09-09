@@ -145,7 +145,10 @@ begin
     for i:=0 to Files.Count-1 do begin
       LoadResult:=
                LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
-      if LoadResult=mrAbort then exit;
+      if LoadResult=mrAbort then begin
+        debugln('GatherIdentifierReferences unable to load "',Code.Filename,'"');
+        exit;
+      end;
       if LoadResult<>mrOk then continue;
       
       // search references
@@ -154,9 +157,11 @@ begin
         DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
         Code, not SearchInComments, ListOfPCodeXYPosition) then
       begin
+        debugln('GatherIdentifierReferences unable to FindReferences in "',Code.Filename,'"');
         Result:=mrAbort;
         exit;
       end;
+      //debugln('GatherIdentifierReferences FindReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
 
       // add to tree
       if ListOfPCodeXYPosition<>nil then begin

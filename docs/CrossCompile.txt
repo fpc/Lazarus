@@ -7,11 +7,27 @@ Thanks to Vincent Snijders for the hints.
 ================================================================================
 
 A.
-for fpc 2.0 and up
+for fpc 2.0 and up. On linux and bsd to other platforms like windows.
+
+Abstract:
+  The following describes how to setup the binutils, fpc and lazarus for
+  crosscompiling to other targets. Once you have these cross files you can
+  switch easily in the Lazarus IDE between any of the target platforms.
+
+  It is important that the FPC units have the same date/version for all
+  platforms, because you will use only one compiler. That means:
+    Whenever you update your FPC, you must update all other cross fpc units too.
+
 
 The following steps don't need the root user. They can be done as normal user.
 
 1. Download the fpc sources
+
+  IMPORTANT: Your current FPC must be the same version/date as the fpc sources.
+  If your installed fpc is different, you can compile a new fpc from the
+  sources.
+
+
   The binaries are not enough.
   See www.freepascal.org. You can use the svn or a daily snapshot.
 
@@ -23,7 +39,7 @@ The following steps don't need the root user. They can be done as normal user.
   []$ svn co http://svn.freepascal.org/svn/fpcbuild/trunk/install install
   
   For the following examples the fpc sources were downloaded to ~/sources/fpc.
-
+  
 
 2. Download the binutils.
   For example binutils-2.14.tar.gz downloaded to
@@ -50,7 +66,7 @@ The following steps don't need the root user. They can be done as normal user.
   []$ cd ~/freepascal/install/cross/
   []$ cp buildcrossbinutils buildcrossbinutils.sh
 
-  Edit the variables at the start of the new script.
+  Edit the variables at the start of the new script:
 
   The BASE variable points to a building and installation directory. So, it
   should be an empty directory. For example:
@@ -64,8 +80,8 @@ The following steps don't need the root user. They can be done as normal user.
   BINUTILSVERSION=2.14
   BINUTILS_GZIP=yes
 
-  The script will automatically connect this to ~/download/binutils-2.14.tar.gz.
-  The rest variables define what target platforms you have. The default is to
+  The script will automatically combine this to ~/download/binutils-2.14.tar.gz.
+  The other variables define what target platforms you have. The default is to
   build quite a lot, so compilation will take some time (hours).
   For cross compile to windows, you need only
 
@@ -83,6 +99,7 @@ The following steps don't need the root user. They can be done as normal user.
 
   Then run the script:
 
+  []$ cd ~/freepascal/install/cross/
   []$ sh buildcrossbinutils.sh
   
   The script creates a subdirectory 'logs' full of log files. If something goes

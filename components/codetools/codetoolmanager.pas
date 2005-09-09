@@ -1506,7 +1506,10 @@ begin
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
   if not FindMainDeclaration(IdentifierCode,X,Y,NewCode,NewX,NewY,NewTopLine)
-  then exit;
+  then begin
+    DebugLn('TCodeToolManager.FindReferences unable to FindMainDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+    exit;
+  end;
   if not InitCurCodeTool(TargetCode) then exit;
   CursorPos.X:=NewX;
   CursorPos.Y:=NewY;
@@ -1536,7 +1539,7 @@ var
 begin
   Result:=false;
   { $IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier);
+  DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
   { $ENDIF}
   if TreeOfPCodeXYPosition=nil then begin
     Result:=true;
@@ -1557,7 +1560,7 @@ begin
     CurCodePos:=PCodeXYPosition(ANode.Data);
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    DebugLn('TCodeToolManager.RenameIdentifier A ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
+    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);

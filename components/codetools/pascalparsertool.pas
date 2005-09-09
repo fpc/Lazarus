@@ -1793,6 +1793,7 @@ begin
   ReadNextAtom;
   if CurPos.Flag<>cafPoint then
     RaiseCharExpectedButAtomFound('.');
+  CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   CurSection:=ctnNone;
   Result:=true;

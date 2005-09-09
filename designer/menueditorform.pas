@@ -130,6 +130,7 @@ end;
 procedure TMainMenuEditorForm.OnPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 begin
+  debugln('TMainMenuEditorForm.OnPersistentAdded ',dbgsName(APersistent));
   if APersistent is TMenu then
     UpdateListOfMenus;
 end;

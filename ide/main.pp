@@ -372,8 +372,6 @@ type
                             TxtCompStream: TStream; ParentControl: TWinControl;
                             var NewComponent: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerPersistentAdded(Sender: TObject; APersistent: TPersistent;
-                                        AComponentClass: TRegisteredComponent);
     procedure OnDesignerPersistentDeleted(Sender: TObject;
                                           APersistent: TPersistent);
     procedure OnDesignerModified(Sender: TObject);
@@ -2520,7 +2518,6 @@ Begin
     TheFormEditor := FormEditor1;
     OnActivated:=@OnDesignerActivated;
     OnCloseQuery:=@OnDesignerCloseQuery;
-    OnPersistentAdded:=@OnDesignerPersistentAdded;
     OnPersistentDeleted:=@OnDesignerPersistentDeleted;
     OnGetNonVisualCompIcon:=
            @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
@@ -9433,40 +9430,6 @@ begin
   ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnDesignerPersistentAdded(Sender: TObject;
-  APersistent: TPersistent; AComponentClass: TRegisteredComponent);
-var
-  ActiveUnitInfo: TUnitInfo;
-  ActiveSrcEdit: TSourceEditor;
-  ADesigner: TDesigner;
-begin
-  if not (Sender is TDesigner) then begin
-    DebugLn('TMainIDE.OnDesignerPersistentAdded ERROR: Sender.ClassName=',
-            Sender.ClassName);
-    exit;
-  end;
-  if AComponentClass=nil then
-    AComponentClass:=IDEComponentPalette.FindComponent(APersistent.ClassName);
-  ADesigner:=TDesigner(Sender);
-  if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
-    [ctfSwitchToFormSource])
-  then exit;
-
-  if AComponentClass<>nil then begin
-  // add needed package to required packages
-    PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
-    // add needed unit to source
-    CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-                                          AComponentClass.GetUnitName,'');
-    ActiveUnitInfo.Modified:=true;
-    
-    // add component definitions to form source
-    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
-  end;
-
-  ObjectInspector1.FillPersistentComboBox;
-end;
-
 procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
   APersistent: TPersistent);
 var
@@ -10338,7 +10301,10 @@ begin
   // let user choose the search scope
   Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
     DeclarationCaretXY,Rename,Rename,nil);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    debugln('TMainIDE.DoFindRenameIdentifier failed: let user choose the search scope');
+    exit;
+  end;
   
   Files:=nil;
   OwnerList:=nil;
@@ -10347,6 +10313,9 @@ begin
     // create the file list
     Files:=TStringList.Create;
     Files.Add(TargetUnitInfo.Filename);
+    if CompareFilenames(DeclarationUnitInfo.Filename,TargetUnitInfo.Filename)<>0
+    then
+      Files.Add(DeclarationUnitInfo.Filename);
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
     
@@ -10381,14 +10350,20 @@ begin
 
     // add user defined extra files
     Result:=AddExtraFiles(Files);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoFindRenameIdentifier unable to add user defined extra files');
+      exit;
+    end;
 
     // gather identifiers
     Result:=GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
       DeclarationCaretXY,Options.SearchInComments,TreeOfPCodeXYPosition);
     if CodeToolBoss.ErrorMessage<>'' then
       DoJumpToCodeToolBossError;
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoFindRenameIdentifier unable to gather identifiers');
+      exit;
+    end;
 
     // show result
     if (not Options.Rename) or (not Rename) then begin
@@ -10404,6 +10379,7 @@ begin
         Identifier,Options.RenameTo)
       then begin
         DoJumpToCodeToolBossError;
+        debugln('TMainIDE.DoFindRenameIdentifier unable to rename identifier');
         Result:=mrCancel;
         exit;
       end;
@@ -11523,7 +11499,8 @@ begin
 end;
 
 procedure TMainIDE.OnPropHookShowMethod(const AMethodName: ShortString);
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
@@ -11618,10 +11595,13 @@ procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 var
   ComponentClass: TRegisteredComponent;
-  ADesigner: TIDesigner;
+  ADesigner: TDesigner;
   AComponent: TComponent;
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
 begin
   DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
+  ADesigner:=nil;
   if APersistent is TComponent then
     AComponent:=TComponent(APersistent)
   else
@@ -11644,9 +11624,26 @@ begin
     SetDesigning(AComponent,true);
     //writeln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
     // add to source
-    ADesigner:=FindRootDesigner(AComponent);
+    ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
-  OnDesignerPersistentAdded(ADesigner,APersistent,ComponentClass);
+
+  if ComponentClass<>nil then begin
+  // add needed package to required packages
+    PkgBoss.AddProjectRegCompDependency(Project1,ComponentClass);
+    if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
+      [ctfSwitchToFormSource])
+    then exit;
+    // add needed unit to source
+    CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
+                                          ComponentClass.GetUnitName,'');
+    ActiveUnitInfo.Modified:=true;
+
+    // add component definitions to form source
+    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
+  end;
+
+  ObjectInspector1.FillPersistentComboBox;
+
   //writeln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
   if Select then begin
