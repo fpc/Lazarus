@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              wslclclasses.pp                              * 
- *                              ---------------                              * 
+ *                              wslclclasses.pp                              *
+ *                              ---------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,15 +28,15 @@ unit WSLCLClasses;
 
 interface
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // 1) Only class methods allowed
 // 2) Class methods have to be published and virtual
 // 3) To get as little as possible circles, the uses
-//    clause should contain only those LCL units 
+//    clause should contain only those LCL units
 //    needed for registration. WSxxx units are OK
-// 4) To improve speed, register only classes in the 
-//    initialization section which actually 
+// 4) To improve speed, register only classes in the
+//    initialization section which actually
 //    implement something
 // 5) To enable your XXX widgetset units, look at
 //    the uses clause of the XXXintf.pp
@@ -53,11 +53,11 @@ type
   TWSPrivate = class(TObject)
   end;
   TWSPrivateClass = class of TWSPrivate;
-  
+
   { TWSLCLComponent }
 
 {$M+}
-  TWSLCLComponent = class(TObject) 
+  TWSLCLComponent = class(TObject)
   protected
     class function WSPrivate: TWSPrivateClass; //inline;
   end;
@@ -118,15 +118,15 @@ begin
   while cls <> nil do
   begin
     idx := MWSRegisterIndex.IndexOf(cls.ClassName);
-    if idx <> -1 
+    if idx <> -1
     then begin
-      Node := PClassNode(MWSRegisterIndex.Objects[idx]);  
+      Node := PClassNode(MWSRegisterIndex.Objects[idx]);
       Result := TWSLCLComponentClass(Node^.VClass);
       Exit;
     end;
     cls := cls.ClassParent;
   end;
-end;   
+end;
 
 type
   TMethodNameTableEntry = packed record
@@ -139,29 +139,29 @@ type
     Entries: packed array[0..9999999] of TMethodNameTableEntry;
   end;
   PMethodNameTable =  ^TMethodNameTable;
-  
+
   TPointerArray = packed array[0..9999999] of Pointer;
   PPointerArray = ^TPointerArray;
 
 procedure RegisterWSComponent(const AComponent: TComponentClass;
   const AWSComponent: TWSLCLComponentClass;
   const AWSPrivate: TWSPrivateClass = nil);
-  
+
   function GetNode(const AClass: TClass): PClassNode;
   var
     idx: Integer;
     Name: String;
-  begin  
+  begin
     if (AClass = nil)
     or not (AClass.InheritsFrom(TLCLComponent))
     then begin
       Result := nil;
       Exit;
     end;
-    
+
     Name := AClass.ClassName;
     idx := MComponentIndex.IndexOf(Name);
-    if idx = -1 
+    if idx = -1
     then begin
       New(Result);
       Result^.LCLClass := TComponentClass(AClass);
@@ -184,7 +184,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       Result := PClassNode(MComponentIndex.Objects[idx]);
     end;
   end;
-  
+
   function FindParentWSClassNode(const ANode: PClassNode): PClassNode;
   begin
     Result := ANode^.Parent;
@@ -194,14 +194,14 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       Result := Result^.Parent;
     end;
     Result := nil;
-  end;        
-  
+  end;
+
   function FindCommonAncestor(const AClass1, AClass2: TClass): TClass;
   begin
     Result := AClass1;
     if AClass2.InheritsFrom(Result)
     then Exit;
-    
+
     Result := AClass2;
     while Result <> nil do
     begin
@@ -209,10 +209,10 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       then Exit;
       Result := Result.ClassParent;
     end;
-    
+
     Result := nil;
   end;
-  
+
   procedure CreateVClass(const ANode: PClassNode);
   var
     ParentWSNode: PClassNode;
@@ -220,9 +220,9 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     Vvmt, Cvmt, Pvmt: PPointerArray;
     Cmnt: PMethodNameTable;
     SearchAddr: Pointer;
-    n, idx: Integer;    
+    n, idx: Integer;
     WSPrivate: TClass;
-    Processed: array[0..VIRTUAL_VMT_COUNT-1] of Boolean; 
+    Processed: array[0..VIRTUAL_VMT_COUNT-1] of Boolean;
     {$IFDEF VerboseWSRegistration}
     Indent: String;
     {$ENDIF}
@@ -245,7 +245,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     // Initially copy the WSClass
     // Tricky part, the source may get beyond read mem limit
     Move(Pointer(ANode^.WSClass)^, ANode^.VClass^, VIRTUAL_VMT_SIZE);
-    
+
     // Set WSPrivate class
     ParentWSNode := FindParentWSClassNode(ANode);
     if ParentWSNode = nil
@@ -257,7 +257,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       {$ENDIF}
       Exit;
     end;
-    
+
     if WSPrivate = TWSPrivate
     then begin
       if ParentWSNode^.VClass = nil
@@ -280,11 +280,11 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     DebugLn('Common: ', CommonClass.ClassName);
     Indent := '';
     {$ENDIF}
-    
+
     Vvmt := ANode^.VClass + vmtMethodStart;
     Pvmt := ParentWSNode^.VClass + vmtMethodStart;
     FillChar(Processed[0], SizeOf(Processed), 0);
-    
+
     while CommonClass <> nil do
     begin
       Cmnt := PPointer(Pointer(CommonClass) + vmtMethodTable)^;
@@ -297,14 +297,14 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
 
         Cvmt := Pointer(CommonClass) + vmtMethodStart;
         Assert(Cmnt^.Count < VIRTUAL_VMT_COUNT, 'MethodTable count is larger that assumed VIRTUAL_VMT_COUNT');
-            
-        // Loop though the VMT to see what is overridden    
+
+        // Loop though the VMT to see what is overridden
         for n := 0 to Cmnt^.Count - 1 do
-        begin                
+        begin
           {$IFDEF VerboseWSRegistration}
           DebugLn(Indent, 'Search: ', Cmnt^.Entries[n].Name^);
           {$ENDIF}
-          
+
           SearchAddr := Cmnt^.Entries[n].Addr;
           for idx := 0 to VIRTUAL_VMT_COUNT - 1 do
           begin
@@ -312,9 +312,9 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
             then begin
               {$IFDEF VerboseWSRegistration}
               DebugLn(Indent, 'Found at index: ', IntToStr(idx));
-              {$ENDIF}          
-              
-              if Processed[idx] 
+              {$ENDIF}
+
+              if Processed[idx]
               then begin
                 {$IFDEF VerboseWSRegistration}
                 DebugLn(Indent, 'Procesed -> skipping');
@@ -322,7 +322,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
                 Break;
               end;
               Processed[idx] := True;
-              
+
               if  (Vvmt^[idx] = SearchAddr)  //original
               and (Pvmt^[idx] <> SearchAddr) //overridden by parent
               then begin
@@ -331,7 +331,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
                 {$ENDIF}
                 Vvmt^[idx] := Pvmt^[idx];
               end;
-              
+
               Break;
             end;
             if idx = VIRTUAL_VMT_COUNT - 1
@@ -344,25 +344,25 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       end;
       CommonClass := Commonclass.ClassParent;
     end;
-    
+
     // Adjust classname
     ANode^.VClassName := '(V)' + ANode^.WSClass.ClassName;
     PPointer(ANode^.VClass + vmtClassName)^ := @ANode^.VClassName;
     // Adjust classparent
     PPointer(ANode^.VClass + vmtParent)^ := PPointer(Pointer(ParentWSNode^.WSClass) + vmtParent)^;
-    // Delete methodtable entry         
+    // Delete methodtable entry
     PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
   end;
-  
+
   procedure UpdateChildren(const ANode: PClassNode);
   var
     Node: PClassNode;
-  begin           
+  begin
     Node := ANode^.Child;
     while Node <> nil do
     begin
       if Node^.WSClass <> nil
-      then begin 
+      then begin
         {$IFDEF VerboseWSRegistration}
         DebugLn('Update VClass for: ', Node^.WSClass.ClassName);
         {$ENDIF}
@@ -372,22 +372,22 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       Node := Node^.Sibling;
     end;
   end;
-  
+
 var
   Node: PClassNode;
-begin          
+begin
   Node := GetNode(AComponent);
   if Node = nil then Exit;
-  
+
   if Node^.WSClass = nil
   then MWSRegisterIndex.AddObject(AComponent.ClassName, TObject(Node));
-  
+
   Node^.WSClass := AWSComponent;
   {$IFDEF VerboseWSRegistration}
   DebugLn('Create VClass for: ', Node^.WSClass.ClassName);
   {$ENDIF}
-  CreateVClass(Node); 
-  
+  CreateVClass(Node);
+
   // Since child classes may depend on us, recreate them
   UpdateChildren(Node);
 end;
@@ -404,7 +404,7 @@ begin
 end;
 
 procedure DoFinalization;
-var                
+var
   n: Integer;
   Node: PClassNode;
 begin
