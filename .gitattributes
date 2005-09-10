@@ -1959,6 +1959,7 @@ tools/install/create_lazarus_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_snapshot_rpm.sh svneol=native#text/plain
 tools/install/create_lazarus_tgz_from_local_dir.sh -text svneol=native#application/x-sh
+tools/install/cross_unix/update_cross_fpc.sh svneol=native#text/plain
 tools/install/cvsexportlocal.pas svneol=native#text/pascal
 tools/install/do_nothing.sh -text svneol=native#application/x-sh
 tools/install/download_and_build_fpc_rpm.sh -text svneol=native#application/x-sh
