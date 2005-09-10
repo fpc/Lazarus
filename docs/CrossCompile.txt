@@ -14,15 +14,68 @@ Abstract:
   crosscompiling to other targets. Once you have these cross files you can
   switch easily in the Lazarus IDE between any of the target platforms.
 
-  It is important that the FPC units have the same date/version for all
-  platforms, because you will use only one compiler. That means:
-    Whenever you update your FPC, you must update all other cross fpc units too.
+IMPORTANT: The FPC units must have the same date/version for all platforms,
+  because you will use only one compiler. That means:
+  Whenever you update your FPC, you must update all other cross fpc units too.
 
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A.1
+
+Requirements:
+  An installed and working fpc. Preferrably the latest stable release.
+  A good internet connection or manually downloaded FPC sources and binutils.
 
 The following steps don't need the root user. They can be done as normal user.
 
-There is a script in tools/install/cross_unix/update_cross_fpc.sh, that will
-do the below steps. It downloads bintuils, fpc and builds the cross targets.
+There are some scripts in <lazarusdir>/tools/install/cross_unix/.
+The script "update_cross_fpc.sh" compiles and setups everything in the home
+directory of the current user. Therefore it does not need a root account.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Quick start:
+If you have a good internet connection, then you can just type
+
+[]$ cd <lazarusdir>/tools/install/cross_unix/
+[]$ ./update_cross_fpc.sh all
+
+This will download the needed sources, compile them for your platform plus
+i386-win32 and installs them for the current user.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+What needs to be downloaded:
+
+For cross compilation you need a cross compiler, cross linker, cross assembler,
+... . FPC is already a cross compiler for all supported targets. The rest is
+provided by the binutils, which will be compiled for every needed target system.
+
+The script needs the binutils sources and the FPC sources. By default it will do
+
+  []$ mkdir -p ~/freepascal/download
+  []$ cd ~/freepascal/download
+  []$ wget http://ftp.gnu.org/gnu/binutils/binutils-2.16.tar.gz
+
+If you don't have a good internet connection, you can download it manually.
+
+And by default the script will download the FPC SVN source tree via
+
+  []$ svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 ~/freepascal/fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install ~/freepascal/install
+
+This requires an installed 'svn' package.
+
+If you don't have a good internet connection, you can download them manually
+from http://www.freepascal.org/develop.html#sourcesv20. Unpack the fpc sources
+to ~/freepascal/fpc, that means there should be a directory
+~/freepascal/fpc/compiler/.
+TODO: write, where you can get the fpc 'install' directory sources.
+
+
+================================================================================
+
+What the lazarus scripts do / Doing it by hand:
 
 
 1. Download the fpc sources
@@ -158,6 +211,7 @@ do the below steps. It downloads bintuils, fpc and builds the cross targets.
 
 ================================================================================
 
+Obsolete:
 
 B.
 For fpc 1.0.x:
@@ -239,11 +293,12 @@ Or if you did not link the four files (asw, ldw, ...) to /usr/bin:
 'ppc386 -FD/your/directory -Twin32 pascalfile.pas'
 
 
+================================================================================
+
 4. Cross compiling the LCL
 4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
 4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
-    set 'Target OS' to win32. Then 'build lazarus'. The win32 interface is not
-    complete enough for the IDE, but many of the components already work.
+    set 'Target OS' to win32. Then 'build lazarus'.
 
 
 5. Cross compiling a project

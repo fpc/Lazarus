@@ -7657,9 +7657,9 @@ end;
 { TPickListCellEditor }
 procedure TPickListCellEditor.WndProc(var TheMessage: TLMessage);
 begin
-	{$IfDef GridTraceMsg}
-	TransMsg('PicklistEditor: ', TheMessage);
-	{$Endif}
+  {$IfDef GridTraceMsg}
+  TransMsg('PicklistEditor: ', TheMessage);
+  {$Endif}
   if TheMessage.msg=LM_KILLFOCUS then begin
     // MWE: ???
     // TODO: why are only the lower bytes of a handle checked ???

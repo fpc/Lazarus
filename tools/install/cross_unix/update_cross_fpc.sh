@@ -16,13 +16,91 @@ BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils/
 # the FPC targets
 Targets="i386-win32";
 
-# steps
+# where to install the fpc+binutils executables
+# Only used if called with 'install'. This directory must be in $PATH.
+InstallBin=~/bin/
+
+# what intel platform do you want/need to build for?
+MyIntel=i686
+
+#===============================================================================
+# parse command line parameters
 DownloadBinutils=no
 DownloadFPC=no
 BuildBinutils=no
 BuildCrossFPC=no
 BuildNormalFPC=no
-CreateFPCCfg=yes
+CreateFPCCfg=no
+InstallAsDefault=no   # install ~/fpc.cfg, binaries to ~/bin
+
+Params=$@
+for p in $Params; do
+  case "$p" in
+  all)
+    DownloadBinutils=yes
+    DownloadFPC=yes
+    BuildBinutils=yes
+    BuildCrossFPC=yes
+    BuildNormalFPC=yes
+    CreateFPCCfg=yes
+    ;;
+  downloadbinutils)
+    DownloadBinutils=yes
+    ;;
+  downloadfpc)
+    DownloadFPC=yes
+    ;;
+  buildbinutils)
+    BuildBinutils=yes
+    ;;
+  buildnormalfpc)
+    BuildNormalFPC=yes
+    ;;
+  buildcrossfpc)
+    BuildCrossFPC=yes
+    ;;
+  createfpccfg)
+    CreateFPCCfg=yes
+    ;;
+  install)
+    InstallAsDefault=yes
+    ;;
+  installbin=*)
+    InstallBin=$(echo $p | sed -e 's#^installbin=##')
+    ;;
+  *)
+    echo "Unknown option: $p"
+    echo
+    echo "Usage:"
+    echo "  $0 [all] [downloadbinutils] [downloadfpc] [buildbinutils] [buildnormalfpc] [buildcrossfpc] [createfpccfg]"
+    exit -1
+    ;;
+  esac
+done
+
+#===============================================================================
+
+# expand paths
+BuildRoot=$(echo $BuildRoot)
+InstallBin=$(echo $InstallBin)
+
+# the 'bin' directory - where to put the fpc+binutils executables
+# On InstallAsDefault=yes they will be copied to $HomeBin
+BinDir=$BuildRoot/bin/
+
+# check install path
+if [ $InstallAsDefault = "yes" ]; then
+  # check if the $InstallBin is in $PATH
+  TrimmedPath=$(echo $InstallBin | sed -e 's#/$##g' -e 's#//#/#')
+  if [ -z $(echo $PATH | egrep "(^|:)$TrimmedPath(:|$)") ]; then
+    echo "ERROR: $InstallBin not in \$PATH."
+    echo "This script installs FPC and binutils executables to a directory"
+    echo "that is in your search PATH before your installed FPC."
+    echo "Either prepend it to \$PATH or define another with installbin=<path>"
+  fi
+  
+  BinDir=$InstallBin
+fi
 
 #===============================================================================
 # calculate targets
@@ -69,6 +147,7 @@ if [ $DownloadBinutils = "yes" ]; then
   if [ ! -f $BinutilsTGZ ]; then
     mkdir -p $DownloadDir
     cd $DownloadDir
+    echo "Downloading $BinutilsDownloadPath/$BinutilsFilename ..."
     wget $BinutilsDownloadPath/$BinutilsFilename
   fi
 fi
@@ -80,24 +159,26 @@ if [ $DownloadFPC = "yes" ]; then
   cd $BuildRoot
   if [ -f fpc ]; then
     cd fpc
+    echo "SVN update for FPC ..."
     svn cleanup
     svn up
   else
+    echo "SVN checkout for FPC ..."
     svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
   fi
   if [ -f install ]; then
     cd install
+    echo "SVN update for FPC install ..."
     svn cleanup
     svn up
   else
+    echo "SVN checkout for FPC install ..."
     svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
   fi
 fi
 
 #===============================================================================
 # setup some variables
-BinDir=$BuildRoot/bin/
-
 # retrieve the version information
 VersionFile="$BuildRoot/fpc/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -128,7 +209,31 @@ if [ $BuildBinutils = "yes" ]; then
 
   # build the cross binutils
   echo "HINT: when something goes wrong see the log files in $BuildRoot/bintuils/logs/"
+  rm -rf $BuildRoot/binutils
   sh buildcrossbinutils.sh
+  
+  # link binaries into the bin directory, so that FPC can find them
+  mkdir -p $BinDir
+  for Target in $Targets; do
+    TargetCPU=$(echo $Target | sed -e 's#^\(.*\)-.*$#\1#')
+    TargetOS=$(echo $Target | sed -e 's#^.*-\(.*\)$#\1#')
+    BinUtilsCPU=$TargetCPU
+    BinUtilsOS=$TargetOS
+
+    if [ $TargetOS = "win32" ]; then
+      BinUtilsOS="mingw32"
+      BinUtilsCPU=$MyIntel
+    fi
+    
+    BinUtilsDir=$BuildRoot/binutils/cross/bin/
+    BinUtilsPrefix="$BinUtilsCPU-$BinUtilsOS-"
+
+    cd ${BinUtilsDir}
+    for binutility in $(ls -B ${BinUtilsPrefix}*); do
+      link=$(echo $binutility | sed -e "s#$BinUtilsPrefix#${TargetCPU}-${TargetOS}-#")
+      ln -sf ${BinUtilsDir}${binutility} ${BinDir}${link}
+    done
+  done
 fi
 
 #===============================================================================
@@ -183,14 +288,15 @@ if [ $BuildNormalFPC = "yes" ]; then
   mkdir -p ${LOGDIR}
 
   cd $BuildRoot/fpc
-  echo "building non cross fpc for target $CPU-$OS in $BuildRoot/bintuils/cross/destination/"
-  echo "see logs in $BuildRoot/bintuils/cross/logs/"
+  echo "building non cross fpc for target $CPU-$OS in $DESTDIR"
+  echo "see logs in $LOGDIR"
   ${MAKE} clean all > ${LOGDIR}snapbuild-${CPU}-${OS} 2>&1
   ${MAKE} install INSTALL_PREFIX=${DESTDIR} LIBDIR=${BASELIBDIR}/${CPU}-${OS} OPT="-Xd -Xt -gl" > ${LOGDIR}snapinstalllog-${CPU}-${OS} 2>&1
   
-  # save samplecfg
+  # save samplecfg, ppc386
   mkdir -p $BinDir
   cp ${DESTDIR}lib/fpc/$CompilerVersionStr/samplecfg $BinDir
+  cp ${DESTDIR}lib/fpc/$CompilerVersionStr/ppc* $BinDir
 fi
 
 #===============================================================================
@@ -198,7 +304,33 @@ fi
 if [ $CreateFPCCfg = "yes" ]; then
   echo "building ~/fpc.cfg ..."
 
-  $BuildRoot/bin/samplecfg $BuildRoot/binutils/cross/destination/lib/fpc/$CompilerVersionStr/ ~/freepascal
+  DestDir=~/freepascal
+  $BuildRoot/bin/samplecfg $BuildRoot/binutils/cross/destination/lib/fpc/$CompilerVersionStr/ $DestDir
+  FPCCfg=$DestDir/fpc.cfg
+  
+  # add -FD and -XP entry for cross compiling
+  echo "# set binutils paths for crosscompiling" >> $FPCCfg
+  echo "#IFDEF FPC_CROSSCOMPILING" >> $FPCCfg
+  echo "  -FD${BinDir}" >> $FPCCfg
+  echo '  -XP$fpctarget-' >> $FPCCfg
+  echo "#ENDIF" >> $FPCCfg
+  
+  # test the fpc.cfg
+  echo "Testing compiling test.pas ..."
+  TestPas="$BuildRoot/test.pas"
+  echo "program Test;" > $TestPas
+  echo "{$mode objfpc}{$H+}" >> $TestPas
+  echo "uses Classes, SysUtils;" >> $TestPas
+  echo "begin" >> $TestPas
+  echo "  writeln('Test');" >> $TestPas
+  echo "end." >> $TestPas
+  cd $BuildRoot
+  $BinDir/ppc386 test.pas
+
+  if [ $InstallAsDefault = "yes" ]; then
+    echo "Installing ~/fpc.cfg ..."
+    cp $BuildRoot/fpc.cfg ~/fpc.cfg
+  fi
 fi
 
 # end.
