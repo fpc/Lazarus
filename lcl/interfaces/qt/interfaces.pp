@@ -30,22 +30,19 @@ unit interfaces;
 interface
 
 uses 
-   InterfaceBase;
-
-var
-   InterfaceObject : TWidgetSet;
+  InterfaceBase;
 
 implementation
 
 uses 
-   QTInt;
+  QTInt, Forms;
 
 initialization
 
-   InterfaceObject := TQtWidgetSet.Create;
+  WidgetSet := TQtWidgetSet.Create;
 
 finalization
 
-   InterfaceObject.Free;
+  WidgetSet.Free;
 
 end.

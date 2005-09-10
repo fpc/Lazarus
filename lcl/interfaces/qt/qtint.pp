@@ -54,7 +54,7 @@ type
     procedure SetCallback(Msg : LongInt; Sender : TObject); override;
     procedure RemoveCallbacks(Sender : TObject); override;
     procedure DoEvents; override;
-    procedure HandleEvents; override;
+    procedure AppProcessMessages; override;
     procedure AppTerminate; override;
     procedure Init; override;
   end;
@@ -224,7 +224,3 @@ finalization
   KeyStateList.Free;
 
 end.
-
-
-
-

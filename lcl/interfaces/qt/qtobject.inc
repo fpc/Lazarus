@@ -160,7 +160,7 @@ procedure TQtWidgetSet.DoEvents;
 begin
  Assert(False, 'Trace:*******QT ENGINE HAS ENTERED EVENT ITTERATOR*******');
 end;
-procedure TQtWidgetSet.HandleEvents;
+procedure TQtWidgetSet.AppProcessMessages;
 begin
  MainLoop;
 end;
