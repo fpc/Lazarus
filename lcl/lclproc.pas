@@ -29,7 +29,7 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType;
+  Classes, SysUtils, Math, FPCAdds, FileUtil, LCLStrConsts, LCLType;
 
 type
   { TMethodList - array of TMethod }
@@ -238,6 +238,7 @@ function NtoLE(const AValue: QWord): QWord;
 
 
 implementation
+
 
 var
   InterfaceFinalizationHandlers: TFPList;
@@ -851,7 +852,7 @@ var
 begin
   DebugFileName := GetDebugFileName;
   if (length(DebugFileName)>0) and
-    (DirectoryExists(ExtractFileDir(DebugFileName))) then begin
+    (DirPathExists(ExtractFileDir(DebugFileName))) then begin
 
     new(DebugText);
     DebugTextAlloced := true;
