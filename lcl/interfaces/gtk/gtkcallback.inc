@@ -236,7 +236,7 @@ begin
         SetCursor(TheWinControl, crDefault);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
         UpdateWidgetStyleOfControl(TheWinControl);
-        
+
         if TheWinControl is TCustomPage then
           UpdateNotebookPageTab(nil,TheWinControl);
       end;
@@ -746,7 +746,7 @@ begin
 
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
-  
+
   FreeWidgetInfo(Widget);
 end;
 
@@ -1514,7 +1514,7 @@ var
       if not Result then exit;
     end;
   end;
-  
+
   procedure AddFile(List: TStrings; const NewFile: string);
   var
     i: Integer;
@@ -2078,7 +2078,7 @@ begin
   UpdateNoteBookClientWidget(TObject(Data));
 
   // gtkswitchpage is called before the switch
-  
+
   // send first the TCN_SELCHANGING to ask if switch is allowed
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_NOTIFY;
@@ -2432,7 +2432,7 @@ begin
      (Range^.Timer<>nil) then
     { gtk2 pre gtk2.6 ONLY, tested gtk2.0.
       Later versions (gtk2.6+) have a change-value signal that includes scrolltype anyways }
-               
+
     Result := PUnOpaqueTimer(Range^.Timer)^.ScrollType
   else
     Result := GTK_SCROLL_NONE;
@@ -2468,8 +2468,8 @@ begin
 end;
 {$ENDIF VerboseGtkScrollbars}
 
-function ScrollTypeToSbCode(IsVertSB: boolean; ScrollType:TGtkScrollType;
-                            UpdatePolicy:TGtkUpdateType): Integer;
+function ScrollTypeToSbCode(IsVertSB: boolean; ScrollType: TGtkScrollType;
+                            UpdatePolicy: TGtkUpdateType): Integer;
 begin
   case ScrollType of
     GTK_SCROLL_STEP_BACKWARD:
@@ -2533,7 +2533,7 @@ begin
   end;
 end;
 
-function GTK26HScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType; 
+function GTK26HScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType;
 Value: gdouble;
   data: gpointer): gboolean; cdecl;
 var
@@ -2542,10 +2542,10 @@ begin
   Result := CallBackDefaultReturn;
   Msg.Msg := LM_HSCROLL;
   with Msg do begin
-    if Range^.Adjustment^.value <= High(pos) then
-      pos := Round(Range^.Adjustment^.Value)
-    else
-      pos := High(pos); { Out of simple range }
+    Pos := Round(Range^.Adjustment^.Value);
+    if Pos < High(SmallPos)
+    then SmallPos := Pos
+    else SmallPos := High(SmallPos);
     ScrollBar := HWND(Range);
     ScrollCode := ScrollTypeToSbCode(False, Scroll,
       gtk_range_get_update_policy(Range));
@@ -2561,10 +2561,10 @@ begin
   Result := CallBackDefaultReturn;
   Msg.Msg := LM_VSCROLL;
   with Msg do begin
-    if Range^.Adjustment^.value <= High(pos) then
-      pos := Round(Range^.Adjustment^.Value)
-    else
-      pos := High(pos); { Out of simple range }
+    Pos := Round(Range^.Adjustment^.Value);
+    if Pos < High(SmallPos)
+    then SmallPos := Pos
+    else SmallPos := High(SmallPos);
     ScrollBar := HWND(Range);
     ScrollCode := ScrollTypeToSbCode(True, Scroll,
       gtk_range_get_update_policy(Range));
@@ -2584,10 +2584,10 @@ begin
   if Scroll<>nil then begin
     Msg.Msg := LM_HSCROLL;
     with Msg do begin
-      if Adjustment^.value <= High(pos) then
-        pos := Round(Adjustment^.Value)
-      else
-        pos := High(pos); { Out of simple range }
+      Pos := Round(Adjustment^.Value);
+      if Pos < High(SmallPos)
+      then SmallPos := Pos
+      else SmallPos := High(SmallPos);
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(False, ScrollType,
@@ -2609,10 +2609,10 @@ begin
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
     with Msg do begin
-      if Adjustment^.value <= High(pos) then
-        pos := Round(Adjustment^.Value)
-      else
-        pos := High(pos); { Out of simple range }
+      Pos := Round(Adjustment^.Value);
+      if Pos < High(SmallPos)
+      then SmallPos := Pos
+      else SmallPos := High(SmallPos);
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(True, ScrollType,

@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                             GtkWSControls.pp                              * 
- *                             ----------------                              * 
+ *                             GtkWSControls.pp                              *
+ *                             ----------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -65,7 +65,7 @@ type
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
   end;
   TGtkWSWinControlPrivateClass = class of TGtkWSWinControlPrivate;
-  
+
 
   { TGtkWSWinControl }
 
@@ -120,7 +120,7 @@ type
   protected
   public
   end;
-  
+
   { TGtkWSBaseScrollingWinControl }
   {
     TGtkWSBaseScrollingWinControl is a shared gtk only base implementation of
@@ -163,7 +163,7 @@ implementation
 uses
   GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
   StdCtrls, LCLProc, LCLIntf;
-  
+
 
 // Helper functions
 
@@ -188,7 +188,7 @@ end;
 type
   TWinControlHack = class(TWinControl)
   end;
-  
+
 procedure TGtkWSWinControl.AddControl(const AControl: TControl);
 var
   AParent: TWinControl;
@@ -200,7 +200,7 @@ begin
   if (AControl.Parent is TToolbar) then
     exit;
   {$ENDIF}
-  
+
   AParent := TWinControl(AControl).Parent;
   //debugln('LM_AddChild: ',TWinControl(Sender).Name,' ',dbgs(AParent<>nil));
   if not Assigned(AParent) then begin
@@ -304,7 +304,7 @@ begin
 end;
 
 procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
-begin                
+begin
   TGtkWidgetSet(WidgetSet).SetResizeRequest(PGtkWidget(AWinControl.Handle));
 end;
 
@@ -382,7 +382,7 @@ end;
 procedure TGtkWSWinControl.SetCursor(const AControl: TControl;
   const ACursor: TCursor);
 begin
-  GtkProc.SetCursor(AControl as TWinControl, ACursor); 
+  GtkProc.SetCursor(AControl as TWinControl, ACursor);
 end;
 
 procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
@@ -398,7 +398,7 @@ procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
-begin                
+begin
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := gint16(ALeft);
   Allocation.Y := gint16(ATop);
@@ -412,7 +412,7 @@ procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
-begin                
+begin
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
@@ -479,7 +479,7 @@ begin
   case AWinControl.fCompStyle of
   csBitBtn,
   csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
-  
+
 {$IFDEF OldToolBar}
   csToolButton:
     with PgtkButton(P)^ do
@@ -541,7 +541,7 @@ begin
           DeleteDC(DC);
         end
         else
-}      
+}
           gtk_label_set_text(PGtkLabel(p), pLabel);
         gtk_label_set_pattern(PGtkLabel(p), nil);
       end;
@@ -650,7 +650,7 @@ function GtkWSBaseScrollingWinControl_HValueChanged(AAdjustment: PGTKAdjustment;
 var
   ScrollingData: PBaseScrollingWinControlData;
   Msg: TLMHScroll;
-  OldValue, V, U, StepI, PageI: Integer;
+  OldValue, V, U, L, StepI, PageI: Integer;
   X, Y: GInt;
   Mask: TGdkModifierType;
 begin
@@ -662,6 +662,7 @@ begin
   // round values
   V := Round(AAdjustment^.Value);
   U := Round(AAdjustment^.Upper);
+  L := Round(AAdjustment^.Lower);
   StepI := Round(AAdjustment^.Step_Increment);
   PageI := Round(AAdjustment^.Page_Increment);
 
@@ -685,6 +686,10 @@ begin
   // get scrollcode
   if ssLeft in GTKEventState2ShiftState(Word(Mask))
   then Msg.ScrollCode := SB_THUMBTRACK
+  else if V <= L
+  then Msg.ScrollCode := SB_TOP
+  else if V >= U
+  then Msg.ScrollCode := SB_BOTTOM
   else if V - OldValue = StepI
   then Msg.ScrollCode := SB_LINERIGHT
   else if OldValue - V = StepI
@@ -693,10 +698,11 @@ begin
   then Msg.ScrollCode := SB_PAGERIGHT
   else if OldValue - V = PageI
   then Msg.ScrollCode := SB_PAGELEFT
-  else if V >= U
-  then Msg.ScrollCode := SB_ENDSCROLL
   else Msg.ScrollCode := SB_THUMBPOSITION;
-  Msg.Pos := SmallInt(V);
+  Msg.Pos := V;
+  if V < High(Msg.SmallPos)
+  then Msg.SmallPos := V
+  else Msg.SmallPos := High(Msg.SmallPos);
   Msg.ScrollBar := HWND(ScrollingData^.HScroll);
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
@@ -706,7 +712,7 @@ function GtkWSBaseScrollingWinControl_VValueChanged(AAdjustment: PGTKAdjustment;
 var
   ScrollingData: PBaseScrollingWinControlData;
   Msg: TLMHScroll;
-  OldValue, V, U, StepI, PageI: Integer;
+  OldValue, V, U, L, StepI, PageI: Integer;
   X, Y: GInt;
   Mask: TGdkModifierType;
 begin
@@ -718,6 +724,7 @@ begin
   // round values
   V := Round(AAdjustment^.Value);
   U := Round(AAdjustment^.Upper);
+  L := Round(AAdjustment^.Lower);
   StepI := Round(AAdjustment^.Step_Increment);
   PageI := Round(AAdjustment^.Page_Increment);
 
@@ -741,6 +748,10 @@ begin
   // Get scrollcode
   if ssLeft in GTKEventState2ShiftState(Word(Mask))
   then Msg.ScrollCode := SB_THUMBTRACK
+  else if V <= L
+  then Msg.ScrollCode := SB_TOP
+  else if V >= U
+  then Msg.ScrollCode := SB_BOTTOM
   else if V - OldValue = StepI
   then Msg.ScrollCode := SB_LINEDOWN
   else if OldValue - V = StepI
@@ -749,10 +760,11 @@ begin
   then Msg.ScrollCode := SB_PAGEDOWN
   else if OldValue - V = PageI
   then Msg.ScrollCode := SB_PAGEUP
-  else if V >= U
-  then Msg.ScrollCode := SB_ENDSCROLL
   else Msg.ScrollCode := SB_THUMBPOSITION;
-  Msg.Pos := SmallInt(V);
+  Msg.Pos := V;
+  if V < High(Msg.SmallPos)
+  then Msg.SmallPos := V
+  else Msg.SmallPos := High(Msg.SmallPos);
   Msg.ScrollBar := HWND(ScrollingData^.HScroll);
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;

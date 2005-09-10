@@ -113,10 +113,10 @@ type
   TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown);
 
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
-  
+
   TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn); //SSY
   TCleanOptions = set of TGridZone;
-  
+
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
 
 const
@@ -213,7 +213,7 @@ type
   TGridOperationEvent =
     procedure (Sender: TObject; IsColumn:Boolean;
                sIndex,tIndex: Integer) of object;
-               
+
   THdrEvent =
     procedure(Sender: TObject; IsColumn: Boolean; index: Integer) of object;
 
@@ -224,7 +224,7 @@ type
   TSelectEditorEvent =
     procedure(Sender: TObject; Col,Row: Integer;
               var Editor: TWinControl) of object;
-              
+
   TOnPrepareCanvasEvent =
     procedure(sender: TObject; Col,Row: Integer;
               aState:TGridDrawState) of object;
@@ -389,7 +389,7 @@ type
     procedure ColumnChanged;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;
-    
+
     property  IsDefaultFont: boolean read FIsDefaultFont;
   public
     constructor Create(ACollection: TCollection); override;
@@ -710,7 +710,7 @@ type
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
-    
+
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
     procedure InternalSetColCount(ACount: Integer);
@@ -1021,9 +1021,9 @@ type
     property OnStartDrag;
 }
   end;
-  
-  
-  
+
+
+
   { TDrawGrid }
 
   TDrawGrid = class(TCustomDrawGrid)
@@ -1113,7 +1113,7 @@ type
     property OnStartDrag;
 }
   end;
-  
+
 
   { TCustomStringGrid }
 
@@ -1165,8 +1165,8 @@ type
       property Rows[index: Integer]: TStrings read GetRows write SetRows;
       property UseXORFeatures;
   end;
-  
-  
+
+
   { TStringGrid }
 
   TStringGrid = class(TCustomStringGrid)
@@ -1317,7 +1317,7 @@ begin
         CM_PARENTCTL3DCHANGED:    Result := 'CM_PARENTCTL3DCHANGED';
         CM_UIACTIVATE:            Result := 'CM_UIACTIVATE';
         CM_CONTROLLISTCHANGE:     Result := 'CM_CONTROLLISTCHANGE';
-        
+
         CM_PARENTCOLORCHANGED:    Result := 'CM_PARENTCOLORCHANGED';
         CM_PARENTFONTCHANGED:     Result := 'CM_PARENTFONTCHANGED';
         CM_PARENTSHOWHINTCHANGED: Result := 'CM_PARENTSHOWHINTCHANGED';
@@ -1335,7 +1335,7 @@ begin
         CN_KEYDOWN:               Result := 'CN_KEYDOWN';
         CN_KEYUP:                 Result := 'CN_KEYUP';
         CN_CHAR:                  Result := 'CN_CHAR';
-        
+
         // NORMAL MESSAGES
         LM_SETFOCUS:              Result := 'LM_SetFocus';
         LM_LBUTTONDOWN:           Result := 'LM_MOUSEDOWN';
@@ -1458,7 +1458,7 @@ begin
 
   if FUpdatingAutoFillCols then
     exit;
-    
+
   FUpdatingAutoFillCols:=True;
   try
     // if needed, last size can be obtained from FLastWidth
@@ -1635,17 +1635,17 @@ begin
 
     if FEditor.Parent=nil then
       FEditor.Visible:=False;
-      
+
     if FEditor.Parent<>Self then
       FEditor.Parent:=Self;
-      
+
     FEditor.TabStop:=False;
 
     Msg.MsgID:=GM_SETGRID;
     Msg.Grid:=Self;
     Msg.Options:=0;
     FEditor.Dispatch(Msg);
-    
+
     FEditorOptions := Msg.Options + 1; // force new editor setup
     SetEditorOptions(Msg.Options);
   end;
@@ -2026,20 +2026,20 @@ var
     FGCache.ClientHeight := Height - Integer(BorderStyle);
     HsbRange:=Width - Dv;
     VsbRange:=Height - Dh;
-    
+
     HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or
       (ScrollBarAutomatic(ssHorizontal) and (FGCache.GridWidth > FGCache.ClientWidth));
     VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or
       (ScrollBarAutomatic(ssVertical) and (FGCache.GridHeight > FGCache.ClientHeight));
-      
+
     if ScrollBarAutomatic(ssHorizontal) then
       HsbVisible := not AutoFillColumns and (HsbVisible or (VsbVisible and (TW>HsbRange)));
     if ScrollBarAutomatic(ssVertical) then
       VsbVisible := VsbVisible or (HsbVisible and (TH>VsbRange));
-      
+
     if not HSBVisible then DH:=0;
     if not VSbVisible then DV:=0;
-    
+
     Dec(FGCache.ClientWidth, DV);
     Dec(FGCache.ClientHeight, DH);
   end;
@@ -2072,14 +2072,14 @@ var
   end;
 begin
   if FCols=nil then exit; // not yet initialized or already destroyed
-  
+
   if AutoFillColumns then
     InternalAutoFillColumns;
-    
+
   CalcNewCachedSizes;
-  
+
   CalcScrollbarsVisiblity;
-  
+
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
   FGCache.MaxTopLeft:=CalcMaxTopLeft;
@@ -2100,7 +2100,7 @@ begin
   DebugLn(' ClientHeight=', IntToStr(FGCache.ClientHeight));
   DebugLn('MaxTopLeft',Dbgs(FGCache.MaxTopLeft));
   {$Endif}
-  
+
   CacheVisibleGrid;
 
   CalcScrollbarsRange;
@@ -2292,7 +2292,7 @@ var
 begin
 
   OldTopLeft:=fTopLeft;
-  
+
   while (fTopLeft.x>=0) and
         (fTopLeft.x<ColCount)and
         (fTopLeft.y>=0) and
@@ -2320,7 +2320,7 @@ begin
     Inc(FTopLeft.x, XInc);
     Inc(FTopLeft.y, YInc);
   end;
-  
+
   Result:=not PointIgual(OldTopleft,FTopLeft);
   if result then doTopleftChange(False)
   else ResetOffset(True, True);
@@ -2459,7 +2459,7 @@ begin
   bigger := aWidth > ColWidths[aCol];
   ColWidths[aCol]:=aWidth;
   EndUpdate(uoNone);
-  
+
   R := CellRect(aCol, 0);
   R.Bottom := FGCache.MaxClientXY.Y+1;
   if bigger then
@@ -2468,7 +2468,7 @@ begin
     R.Right := FGCache.ClientWidth;
   if aCol=FTopLeft.x then
     R.Left := FGCache.FixedWidth;
-    
+
   InvalidateRect(handle, @R, True);
 end;
 
@@ -2491,7 +2491,7 @@ begin
     R.Bottom := FGCache.ClientHeight;
   if aRow=FTopLeft.y then
     R.Top := FGCache.FixedHeight;
-    
+
   InvalidateRect(handle, @R, True);
 end;
 
@@ -2714,7 +2714,7 @@ begin
           DrawFocusRect(FCol,FRow, R);
       end;
     end;
-    
+
   end;
 
 
@@ -2876,8 +2876,8 @@ end;
 
 procedure TCustomGrid.WMGetDlgCode(var Msg: TLMNoParams);
 begin
-	Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
-	if goTabs in Options then Msg.Result:= Msg.Result or DLGC_WANTTAB;
+  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
+  if goTabs in Options then Msg.Result:= Msg.Result or DLGC_WANTTAB;
 end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
@@ -2894,7 +2894,7 @@ begin
 
   if not HandleAllocated then
     exit;
-    
+
   if FEditor<>nil then
     EditorGetValue;
 
@@ -2905,28 +2905,28 @@ begin
       // Scrolls to start / end of the text
     SB_TOP:        C := 0;
     SB_BOTTOM:     C := TL;
-      // Scrolls one line up / down
-    SB_LINEDOWN:   C := CTL + GetColWidths( FTopLeft.X );
-    SB_LINEUP:     C := CTL - GetColWidths( FTopLeft.X - 1);
+      // Scrolls one line left / right
+    SB_LINERIGHT:  C := CTL + GetColWidths( FTopLeft.X );
+    SB_LINELEFT:   C := CTL - GetColWidths( FTopLeft.X - 1);
       // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
-    SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
+    SB_PAGERIGHT:  C := CTL + FGCache.ClientWidth;
+    SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := GetScrollBarPosition(SBS_HORZ);
+      C := message.Pos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := GetScrollBarPosition(SBS_HORZ)
+        C := message.Pos
       else
         Exit;
       // Ends scrolling
     SB_ENDSCROLL:
       Exit;
   end;
-  
+
   if C > TL then C := TL else
   if C < 0 then C := 0;
-  
+
 
   {$Ifdef dbgScroll}
   DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
@@ -2996,17 +2996,17 @@ begin
     SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
     SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
       // Scrolls to the current scroll bar position
-  SB_THUMBPOSITION:
-    C := GetScrollBarPosition(SBS_VERT);
-  SB_THUMBTRACK:
-    if goThumbTracking in Options then
-      C := GetScrollBarPosition(SBS_VERT)
-    else
-      Exit;
+    SB_THUMBPOSITION:
+      C := message.Pos;
+    SB_THUMBTRACK:
+      if goThumbTracking in Options then
+        C := message.Pos
+      else
+        Exit;
       // Ends scrolling
     SB_ENDSCROLL: Exit;
   end;
-  
+
   if C > Tl then C := TL else
   if C < 0 then C := 0;
 
@@ -3245,7 +3245,7 @@ var
 begin
   OldTopLeft := FTopLeft;
   Result:= False;
-  
+
   with FTopleft do
   if CheckCols and (X>FixedCols) then begin
     W := FGCache.ScrollWidth-ColWidths[aCol]-PtrInt(FGCache.AccumWidth[aCol]);
@@ -3317,7 +3317,7 @@ begin
   if FEditorOptions<>AValue then begin
     if FEditor=nil then exit;
     FEditorOptions:=AValue;
-    
+
     if FEditorOptions and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then begin
       FEditor.OnKeyDown:=@EditorKeyDown;
     end;
@@ -3412,7 +3412,7 @@ end;
 
 procedure TCustomGrid.SetBorderStyle(NewStyle: TBorderStyle);
 begin
-  if BorderStyle<>NewStyle then 
+  if BorderStyle<>NewStyle then
   begin
     inherited;
     if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
@@ -3663,10 +3663,10 @@ begin
 
     while Offset>(PtrInt(AccumWidth[Index])+GetColWidths(Index)-1) do
       Inc(Index);
-      
+
     Rest:=Offset;
     if Index<>0 then Rest:=Offset-PtrInt(AccumWidth[Index]);
-    
+
   end else begin
 
     if Fisical and (Offset>FixedHeight-1) then begin
@@ -3678,10 +3678,10 @@ begin
         Exit; // Out of Range
       end;
     end;
-    
+
     while Offset>(PtrInt(AccumHeight[Index])+GetRowHeights(Index)-1) do
       Inc(Index);
-      
+
     Rest:=Offset;
     if Index<>0 then Rest:=Offset-PtrInt(AccumHeight[Index]);
 
@@ -3744,7 +3744,7 @@ var
 begin
   if csDestroying in ComponentState then
     exit;
-    
+
   if AColumn=nil then
     if Columns.Enabled then begin
       InternalSetColCount( FixedCols + Columns.VisibleCount )
@@ -3972,11 +3972,11 @@ begin
           // normal selecting
           fGridState:=gsSelecting;
           FSplitter:=MouseToCell(Point(X,Y));
-          
+
           WasFocused := Focused;
           if not WasFocused then
             SetFocus;
-          
+
           if not (goEditing in Options) or
             (ExtendedSelect and not EditorAlwaysShown) then begin
             if ssShift in Shift then begin
@@ -3995,7 +3995,7 @@ begin
               exit;
             //end;
           end;
-          
+
           if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
             if EditorAlwaysShown then begin
               SelectEditor;
@@ -4003,7 +4003,7 @@ begin
             end;
             MoveSelection;
           end;
-          
+
         end;
       end;
   end;
@@ -4046,7 +4046,7 @@ begin
   case fGridState of
     gsNormal:
       CellClick(cur.x, cur.y);
-      
+
     gsSelecting:
       begin
         if SelectActive then begin
@@ -4595,7 +4595,7 @@ begin
 
   if (FEditor<>nil) and EditorAlwaysShown then
     EditorShow(true);
-    
+
   {$IfDef dbgGrid}DebugLn(' MoveExtend FIN FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
 
@@ -4628,9 +4628,9 @@ begin
     NCol:=FCol + DCol;
     NRow:=FRow + DRow;
   end;
-  
+
   Checklimits(NCol, NRow);
-  
+
   // Increment
   if DCol<0 then CInc:=-1 else
   if DCol>0 then CInc:= 1
@@ -4638,7 +4638,7 @@ begin
   if DRow<0 then RInc:=-1 else
   if DRow>0 then RInc:= 1
   else           RInc:= 0;
-  
+
   // Calculate
   SelOk:=SelectCell(NCol,NRow);
   Result:=False;
@@ -4657,13 +4657,13 @@ function TCustomGrid.TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer
 begin
 
   Result:=False;
-  
+
   if FixedGrid then
     exit;
 
   dCol:=FCol*(1-Byte(not Relative))+DCol;
   dRow:=FRow*(1-Byte(not Relative))+DRow;
-  
+
   CheckLimits( dCol, dRow );
 
   // Change on Focused cell?
@@ -5278,7 +5278,7 @@ begin
       aaRightDown:  aa := aaLeftDown;
       aaLeftDown:   aa := aaRightDown;
     end;
-    
+
   case aa of
     aaRight,aaRightDown: ACol := integer(FCol<ColCount-1);
     aaLeft, aaLeftDown : ACol := -integer(FCol>FixedCols);
@@ -5339,7 +5339,7 @@ begin
       bs := cbsAuto;
 
     result := EditorByStyle( Bs );
-    
+
     // by default do the editor setup here
     // if user wants to change our setup, this can
     // be done in OnSelectEditor
@@ -5616,9 +5616,9 @@ begin
   FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + GetSystemMetricsGapSize(SM_CXVSCROLL);
   //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
-  
+
   FColumns := CreateColumns;
-  
+
   FTitleFont := TFont.Create;
   FTitleFont.OnChange := @OnTitleFontChanged;
 
@@ -5651,10 +5651,10 @@ begin
   Color:=clWindow;
   FAlternateColor := Color;
   FAltColorStartNormal := true;
-  
+
   FDefaultTextStyle := Canvas.TextStyle;
   FDefaultTextStyle.Wordbreak := False;
-  
+
   FButtonEditor := TButtonCellEditor.Create(nil);
   FButtonEditor.Name:='ButtonEditor';
   FButtonEditor.Caption:='...';
@@ -5666,11 +5666,11 @@ begin
   FStringEditor.Text:='';
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
-  
+
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
-  
+
   FFastEditing := True;
 end;
 
@@ -6191,7 +6191,7 @@ begin
     inherited ColRowMoved(IsColumn, FromIndex, ToIndex)
   else
     FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
-    
+
   if Assigned(OnColRowMoved) then
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
 end;
@@ -6319,7 +6319,7 @@ begin
   end;
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
-  
+
   Inc(ARect.Top,3);
   Dec(ARect.Bottom,3);
   Inc(ARect.Left,3);
@@ -6479,7 +6479,7 @@ begin
       for j:=0 to RowCount-1 do
         if Cells[i,j]<>'' then Inc(c);
     WriteInteger(c);
-    
+
     for i:=0 to ColCount-1 do
       for j:=0 to RowCount-1 do
         if Cells[i,j]<>'' then begin
@@ -6816,12 +6816,12 @@ var
 begin
   if StartCol>EndCol then SwapInt(StartCol,EndCol);
   if StartRow>EndRow then SwapInt(StartRow,EndRow);
-  
+
   if StartCol<0 then StartCol:=0;
   if EndCol>ColCount-1 then EndCol:=ColCount-1;
   if StartRow<0 then StartRow:=0;
   if EndRow>RowCount-1 then EndRow:=RowCount-1;
-  
+
   BeginUpdate;
   for aCol:=StartCol to EndCol do
     for aRow:= StartRow to EndRow do
@@ -7661,6 +7661,9 @@ begin
 	TransMsg('PicklistEditor: ', TheMessage);
 	{$Endif}
   if TheMessage.msg=LM_KILLFOCUS then begin
+    // MWE: ???
+    // TODO: why are only the lower bytes of a handle checked ???
+    // In the LCL a Handle has the size of a PtrUInt
     if (TheMessage.WParam and $FFFF) = Handle then begin
       // what a weird thing, we are losing the focus
       // and giving it to ourselves
@@ -7716,13 +7719,13 @@ begin
   {$Endif}
   inherited KeyDown(Key,Shift);
   case Key of
-  
+
     VK_F2:
       if AllSelected then begin
         SelLength := 0;
         SelStart := Length(Text);
       end;
-      
+
     VK_RETURN:
       if DroppedDown then begin
         CheckEditingKey;
@@ -7733,14 +7736,14 @@ begin
         end;
       end else
         doEditorKeyDown;
-        
+
     VK_DELETE:
       CheckEditingKey;
-      
+
     VK_UP, VK_DOWN:
       if not DroppedDown then
         doGridKeyDown;
-        
+
     VK_LEFT, VK_RIGHT:
       if GetFastEntry then begin
         IntSel:=
@@ -7750,7 +7753,7 @@ begin
             doGridKeyDown;
       end;
     end;
-    
+
     VK_END, VK_HOME:
       ;
     else

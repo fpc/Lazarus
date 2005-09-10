@@ -44,6 +44,8 @@ type
   TScrollCode = (
     // !!! Beware. The position of these enums must correspond to the SB_xxx
     // values in LCLType  (Delphi compatibility, not our decision)
+    // MWE: Don't know it this still is a requirement
+    //      afaik have I remeved all casts from the LCL
     scLineUp,   // = SB_LINEUP
     scLineDown, // = SB_LINEDOWN
     scPageUp,   // = SB_PAGEUP
@@ -101,10 +103,10 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
   end;
-  
-  
+
+
   { TScrollBar }
-  
+
   TScrollBar = class(TCustomScrollBar)
   published
     property Align;
@@ -1161,8 +1163,8 @@ type
     procedure Paint; override;
     property AutoSize default True;
   end;
-  
-  
+
+
   { TLabel }
 
   TLabel = class(TCustomLabel)

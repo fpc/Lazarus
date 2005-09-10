@@ -43,7 +43,7 @@ uses
 type
   TCustomDbGrid = class;
   TColumn = class;
-  
+
   TDBGridOption = (
     dgEditing,                          // Ya
     dgTitles,                           // Ya
@@ -60,16 +60,16 @@ type
     dgMultiselect
   );
   TDbGridOptions = set of TDbGridOption;
-  
+
   TDbGridExtraOption = (
     dgeAutoColumns,       // if uncustomized columns, add them anyway?
     dgeCheckboxColumn     // enable the use of checkbox in columns
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
-  
+
   TDbGridStatusItem = (gsVisibleMove, gsUpdatingData);
   TDbGridStatus = set of TDbGridStatusItem;
-  
+
   TDBGridCheckBoxState = (gcbpUnChecked, gcbpChecked, gcbpGrayed);
 
   TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
@@ -103,7 +103,7 @@ type
     FOnRecordChanged: TFieldNotifyEvent;
     FOnUpdateData: TDataSetNotifyEvent;
     fOldFirstRecord: Integer;
-    
+
     function GetDataSetName: string;
     function GetFields(Index: Integer): TField;
     procedure SetDataSetName(const AValue: string);
@@ -202,7 +202,7 @@ type
   end;
 
   TColumnOrder = (coDesignOrder, coFieldIndexOrder);
-  
+
   { TDbGridColumns }
   TDbGridColumns = class(TGridColumns)
   private
@@ -279,7 +279,7 @@ type
     procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
     procedure UpdateData;
-    
+
     // Temporal
     function GetColumnCount: Integer;
 
@@ -295,7 +295,7 @@ type
     procedure EndVisualChange;
     procedure DoLayoutChanged;
     //procedure WriteColumns(Writer: TWriter);
-    
+
     procedure RestoreEditor;
     function  ISEOF: boolean;
     function  ValidDataSet: boolean;
@@ -304,7 +304,7 @@ type
     procedure EndUpdating;
     function  UpdatingData: boolean;
     procedure SwapCheckBox;
-    function ValueMatch(const BaseValue, TestValue: string): Boolean; 
+    function ValueMatch(const BaseValue, TestValue: string): Boolean;
   protected
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -336,11 +336,11 @@ type
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
     function  GetDefaultColumnTitle(Column: Integer): string; override;
-    
+
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
-    
+
     function  GridCanModify: boolean;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
@@ -362,7 +362,7 @@ type
     procedure VisualChange; override;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
-    
+
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDbGridOptions read FOptions write SetOptions;
     property OptionsExtra: TDbgridExtraOptions read FExtraOptions write SetExtraOptions;
@@ -387,8 +387,8 @@ type
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
-  
-  
+
+
   TdbGrid=class(TCustomDbGrid)
   public
     property Canvas;
@@ -469,7 +469,7 @@ type
     property OnTitleClick;
     property OnUserCheckboxBitmap;
   end;
-  
+
   PCharArray   = Array[0..6+13] of PChar;
 
 const
@@ -546,7 +546,7 @@ const
   '+++++++++++++');
 
 procedure Register;
- 
+
 implementation
 
 procedure Register;
@@ -806,7 +806,7 @@ begin
 
   if IsOptionChanged(dgeCheckboxColumn) then
     Invalidate;
-  
+
   if IsOptionChanged(dgeAutoColumns) then begin
     if dgeAutoColumns in aValue then
       AddAutomaticColumns
@@ -814,7 +814,7 @@ begin
       RemoveAutomaticColumns;
     UpdateActive;
   end;
-  
+
 end;
 
 procedure TCustomDbGrid.SetOptions(const AValue: TDbGridOptions);
@@ -824,22 +824,22 @@ begin
   if FOptions<>AValue then begin
     FOptions:=AValue;
     OldOptions := inherited Options;
-    
+
    if dgRowSelect in FOptions then
     FOptions := FOptions - [dgEditing, dgAlwaysShowEditor];
-    
+
     BeginLayout;
-    
+
     if dgRowLines in fOptions then
       Include(OldOptions, goHorzLine)
     else
       Exclude(OldOptions, goHorzLine);
-      
+
     if dgColLines in fOptions then
       Include(OldOptions, goVertLine)
     else
       Exclude(OldOptions, goVertLine);
-    
+
     if dgColumnResize in fOptions then
       Include(OldOptions, goColSizing)
     else
@@ -864,9 +864,9 @@ begin
       Include(OldOptions, goTabs)
     else
       Exclude(OldOptions, goTabs);
-      
+
     inherited Options := OldOptions;
-    
+
     EndLayout;
   end;
 end;
@@ -908,22 +908,22 @@ begin
   if not UpdatingData and (FEditingColumn>-1) and FDatalink.Editing then begin
     SelField := SelectedField;
     edField := GetFieldFromGridColumn(FEditingColumn);
-    
+
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgdbgrid}
       DebugLn('---> UpdateData: Field[', edField.Fieldname, '(',edField.AsString,')]=', FTempText,' INIT');
       {$endif}
-      
+
       StartUpdating;
       edField.AsString := FTempText;
       EndUpdating;
-      
+
       EditingColumn(FEditingColumn, False);
       {$ifdef dbgdbgrid}
       DebugLn('<--- UpdateData: Chk: Field:=',edField.ASString,' END');
       {$endif}
     end;
-    
+
   end;
 end;
 
@@ -950,7 +950,7 @@ var
   IsSeq: boolean;
   aPos: Integer;
   DeltaRec: integer;
-  
+
   function MaxPos: Integer;
   begin
     if IsSeq then
@@ -970,13 +970,13 @@ var
     else
       aPos := 2;
   end;
-  
+
   procedure DsMoveBy(Delta: Integer);
   begin
     FDataLink.MoveBy(Delta);
     CalcPos(Delta);
   end;
-  
+
   procedure DsGoto(BOF: boolean);
   begin
     if BOF then FDatalink.DataSet.First
@@ -986,7 +986,7 @@ var
 
 begin
   if not FDatalink.Active then exit;
-  
+
   {$ifdef dbgdbgrid}
   DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
           ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
@@ -1011,7 +1011,7 @@ begin
         aPos := Message.Pos;
         if aPos>=MaxPos then
           dsGoto(False)
-        else if aPos=0 then
+        else if aPos<=0 then
           dsGoto(True)
         else if IsSeq then
           FDatalink.DataSet.RecNo := aPos
@@ -1307,9 +1307,9 @@ begin
     exit;
 
   for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
-  
+
     F:= FDataLink.DataSet.Fields[i];
-    
+
     if TDbGridColumns(Columns).ColumnFromField(F) <> nil then
       // this field is already in the collection. This could only happen
       // if AddAutomaticColumns was called out of LayoutChanged.
@@ -1323,7 +1323,7 @@ begin
         Visible := F.Visible;
       end;
     end;
-    
+
   end;
   // honor the field.index
   TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
@@ -1336,7 +1336,7 @@ var
 begin
   if not GridCanModify then
     exit; // raise exception?
-    
+
   SelField := SelectedField;
 
   if SelField.DataType=ftBoolean then
@@ -1424,7 +1424,7 @@ begin
         FSelectionLock := False;
       end;
     end;
-    
+
     if Assigned(OnColumnMoved) then
       OnColumnMoved(Self, FromIndex, ToIndex);
   end;
@@ -1435,7 +1435,7 @@ begin
   Result := cbsAuto;
   if Columns.Enabled then
     Result := ColumnFromGridColumn(aCol).ButtonStyle;
-    
+
   if (Result=cbsAuto) and (F<>nil) then
     case F.DataType of
       ftBoolean: Result := cbsCheckboxColumn;
@@ -1569,7 +1569,7 @@ procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   DeltaCol,DeltaRow: Integer;
   WasCancelled: boolean;
-  
+
   procedure DoOnKeyDown;
   begin
     if Assigned(OnKeyDown) then
@@ -1643,15 +1643,15 @@ var
 begin
   {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
   case Key of
-  
+
     VK_TAB:
       begin
         doOnKeyDown;
         if Key<>0 then begin
           if dgTabs in Options then begin
-          
+
             GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
-            
+
             if DeltaRow > 0 then
               WasCancelled := doVkDown
             else
@@ -1659,7 +1659,7 @@ begin
               WasCancelled := doVKUp
             else
               WasCancelled := false;
-              
+
             if not WasCancelled and (DeltaCol<>0) then
               Col := Col + DeltaCol;
 
@@ -1667,7 +1667,7 @@ begin
           end;
         end;
       end;
-      
+
     VK_DELETE:
       begin
         doOnKeyDown;
@@ -1681,7 +1681,7 @@ begin
           Key := 0;
         end;
       end;
-      
+
     VK_DOWN:
       if ValidDataSet then begin
         DoOnKeyDown;
@@ -1690,7 +1690,7 @@ begin
           Key := 0;
         end;
       end;
-      
+
     VK_UP:
       if ValidDataSet then begin
         doOnKeyDown;
@@ -1699,7 +1699,7 @@ begin
           key := 0;
          end;
       end;
-      
+
     VK_NEXT:
       begin
         doOnKeyDown;
@@ -1708,7 +1708,7 @@ begin
           Key := 0;
         end;
       end;
-      
+
     VK_PRIOR:
       begin
         doOnKeyDown;
@@ -1717,7 +1717,7 @@ begin
           key := 0;
         end;
       end;
-      
+
     VK_ESCAPE:
       begin
         doOnKeyDown;
@@ -1732,7 +1732,7 @@ begin
           Key:=0;
         end;
       end;
-      
+
     VK_INSERT:
       begin
         doOnKeyDown;
@@ -1742,7 +1742,7 @@ begin
           Key:=0;
         end;
       end;
-      
+
     VK_HOME:
       begin
         doOnKeyDown;
@@ -1756,7 +1756,7 @@ begin
           Key:=0;
         end;
       end;
-      
+
     VK_END:
       begin
         doOnKeyDown;
@@ -1770,7 +1770,7 @@ begin
           Key:=0;
         end;
       end;
-      
+
     VK_SPACE:
       begin
         doOnKeyDown;
@@ -1838,12 +1838,12 @@ begin
     {$ifdef dbgdbgrid}DebugLn('DbGrid.MouseDown - UpdatingData');{$endif}
     exit;
   end;
-  
+
   if button<>mbLeft then begin
     doInherited;
     exit;
   end;
-  
+
   {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   case Gz of
@@ -2285,7 +2285,7 @@ begin
         if RecCount<2 then RecCount:=2;
       end else
         RecCount := 2;
-        
+
       RowCount := RecCount;
       FixedRows := FRCount;
       FixedCols := FCCount;
@@ -2339,16 +2339,16 @@ begin
 
   FOptions := [dgColumnResize, dgTitles, dgIndicator, dgRowLines, dgColLines,
     dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing, dgAlwaysShowSelection];
-    
+
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
      goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
      goColSizing ];
 
   FExtraOptions := [dgeAutoColumns, dgeCheckboxColumn];
-  
+
   AutoAdvance := aaRightDown;
-  
+
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
 
@@ -2442,7 +2442,7 @@ begin
   // field.datatype might be ftBoolean or some other cases
   if Style=cbsAuto then
     Style := ColumnEditorStyle(Col, SelectedField);
-    
+
   Result:=inherited EditorByStyle(Style);
 end;
 

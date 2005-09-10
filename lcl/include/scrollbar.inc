@@ -164,44 +164,55 @@ end;
 procedure TCustomScrollBar.DoScroll(var Message: TLMScroll);
 var
   ScrollPos: Integer;
+  ScrollCode: TScrollCode;
   NewPos: Longint;
-  ScrollInfo: TScrollInfo;
 begin
-  with Message do
-  begin
-    NewPos := FPosition;
-    case TScrollCode(ScrollCode) of
-      scLineUp:
-        Dec(NewPos, FSmallChange * FRTLFactor);
-      scLineDown:
-        Inc(NewPos, FSmallChange * FRTLFactor);
-      scPageUp:
-        Dec(NewPos, FLargeChange * FRTLFactor);
-      scPageDown:
-        Inc(NewPos, FLargeChange * FRTLFactor);
-      scPosition, scTrack:
-        with ScrollInfo do
-        begin
-          cbSize := SizeOf(ScrollInfo);
-          fMask := SIF_ALL;
-          GetScrollInfo(Handle, SB_CTL, ScrollInfo);
-          NewPos := nTrackPos;
-          { We need to reverse the positioning because SetPosition below
-            calls SetParams that reverses the position. This acts as a
-            double negative. }
-          if not NotRightToLeft then NewPos := FMax - NewPos;
-        end;
-      scTop:
-        NewPos := FMin;
-      scBottom:
-        NewPos := FMax;
+  NewPos := FPosition;
+  case Message.ScrollCode of
+    SB_LINEUP: begin
+      ScrollCode := scLineUp;
+      Dec(NewPos, FSmallChange * FRTLFactor);
     end;
-    if NewPos < FMin then NewPos := FMin;
-    if NewPos > FMax then NewPos := FMax;
-    ScrollPos := NewPos;
-    Scroll(TScrollCode(ScrollCode), ScrollPos);
-    SetPosition(ScrollPos);
+    SB_LINEDOWN: begin
+      ScrollCode := scLineDown;
+      Inc(NewPos, FSmallChange * FRTLFactor);
+    end;
+    SB_PAGEUP: begin
+      ScrollCode := scPageUp;
+      Dec(NewPos, FLargeChange * FRTLFactor);
+    end;
+    SB_PAGEDOWN: begin
+      ScrollCode := scPageDown;
+      Inc(NewPos, FLargeChange * FRTLFactor);
+    end;
+    SB_THUMBPOSITION, SB_THUMBTRACK: begin
+      if Message.ScrollCode = SB_THUMBPOSITION
+      then ScrollCode := scPosition
+      else ScrollCode := scTrack;
+      { We need to reverse the positioning because SetPosition below
+        calls SetParams that reverses the position. This acts as a
+        double negative. }
+      if NotRightToLeft
+      then NewPos := Message.Pos
+      else NewPos := FMax - Message.Pos;
+    end;
+    SB_TOP: begin
+      ScrollCode := scTop;
+      NewPos := FMin;
+    end;
+    SB_BOTTOM: begin
+      ScrollCode := scBottom;
+      NewPos := FMax;
+    end;
+  else
+    Exit;
   end;
+
+  if NewPos < FMin then NewPos := FMin;
+  if NewPos > FMax then NewPos := FMax;
+  ScrollPos := NewPos;
+  Scroll(ScrollCode, ScrollPos);
+  SetPosition(ScrollPos);
 end;
 
 procedure TCustomScrollBar.CNHScroll(var Message: TLMHScroll);

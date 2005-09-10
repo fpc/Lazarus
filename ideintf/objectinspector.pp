@@ -38,7 +38,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
+  LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, LMessages,
   LResources, PairSplitter, ConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors;
@@ -342,7 +342,7 @@ type
     procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
           ARect: TRect; State: TOwnerDrawState);
 
-    procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure SetBackgroundColor(const AValue: TColor);
     procedure SetReferences(const AValue: TColor);
     procedure SetSubPropertiesColor(const AValue: TColor);
@@ -847,7 +847,7 @@ begin
   UpdateScrollBar;
 end;
 
-procedure TOICustomPropertyGrid.WMVScroll(var Msg: TWMScroll);
+procedure TOICustomPropertyGrid.WMVScroll(var Msg: TLMScroll);
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text

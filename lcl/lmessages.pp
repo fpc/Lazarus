@@ -237,7 +237,7 @@ const
   LM_PARENTNOTIFY      = $0210;
   LM_CAPTURECHANGED    = $0215;
   LM_DROPFILES         = $0233;
-  
+
   LM_SELCHANGE         = $0234;
 
 
@@ -344,11 +344,6 @@ const
   //-------------
 
 type
-// Defined in LCLType
-//  UINT = LongWord;
-//  BOOL = Boolean;
-
-
   { LCL Messages }
 
   TLMDrawItems = record
@@ -404,9 +399,9 @@ type
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused2 : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     KeyData: PtrInt;
     Result: LRESULT;
   end;
@@ -454,9 +449,9 @@ type
     Msg: Cardinal;
     Active: WordBool;
     Minimized: WordBool;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     ActiveWindow: HWND;
     Result: LRESULT;
   end;
@@ -464,9 +459,9 @@ type
   TLMNCActivate = record
     Msg: Cardinal;
     Active: LongBool;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused2 : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     Unused: LPARAM;
     Result: LRESULT;
   end;
@@ -491,20 +486,6 @@ type
     PaintStruct: PPaintStruct;
     Result: LRESULT;
   end;
-
-(*
-//TODO: Remove
-  TLMResize = record
-    Msg : Cardinal;
-    Left  : Integer;
-    Top : Integer;
-    Width : Integer;
-    Height : Integer;
-    UserData : Pointer;
-  end;
-
-  TLMMoveResize = TLMResize;
-*)
 
   PWindowPos = ^TWindowPos;
   tagWINDOWPOS = record
@@ -542,9 +523,9 @@ type
   TLMNCCalcSize = record
     Msg: Cardinal;
     CalcValidRects: LongBool;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     CalcSize_Params: PNCCalcSizeParams;
     Result: LResult;
   end;
@@ -570,9 +551,9 @@ type
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused2 : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     KeyData: LPARAM;
     Result: LRESULT;
   end;
@@ -582,25 +563,14 @@ type
     Msg: Cardinal;
     ErrSpec: Word;
     Unused1 : Word;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused2 : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     Unused: LPARAM;
     Result: LRESULT;
   end;
 
   TLMTimeChange = TLMNoParams;
-
-//  TODO: REmove
-(*
-  //Used to set the statusbar's text
-  PLMSetControlText = ^TLMSetControlText;
-  TLMSetControlText = record
-    fCompStyle : Longint;
-    Panel : Integer;
-    Userdata : PChar;
-  end;
-*)
 
   TLMSetText = record
     Msg: Cardinal;
@@ -608,19 +578,6 @@ type
     Text: PChar;
     Result: LRESULT;
   end;
-
-//TODO: Remove
-(*
-  TLMKeyEvent = Record
-    Msg: Cardinal;
-    KeyChar: Char;
-    Key: Word;
-    State : TShiftState;
-    Length : Integer;
-    Str : PChar;
-    UserData : Pointer;
-   end;
-*)
 
 //TODO: make compatible with WM_MOUSEWHEEL ?
   PLMMouseEvent = ^TLMMouseEvent;
@@ -663,9 +620,9 @@ type
     SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
     Width: Word;
     Height: Word;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     Result: LResult;
   End;
 {$else}
@@ -703,33 +660,40 @@ type
   TLMEnter = TLMNoPara;
   TLMExit  = TLMNoPara;
 
-{$if defined(ver1_0) or not(defined(win32))}
+// MWE: TLMScroll has not the same size as the VCL/Winapi counterpart.
+// IMO we don't have to force all widgetsets to be compatible in a shortcoming
+// in the win32 API.
+// So POS: SmallInt -> LongInt and a win32compatible smallpos is added
+// Due to this, the record is a LongInt to large.
+
+{.$if defined(ver1_0) or not(defined(win32))}
   TLMScroll = record
     Msg: Cardinal;
     ScrollCode: SmallInt; // SB_xxx
-    Pos: SmallInt;
-{$ifdef cpu64}    
+    SmallPos: SmallInt;
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     ScrollBar: HWND;
-    Result: LRESULT;
+    Result: LRESULT;  // See remark
+    Pos: LongInt;     //
   end;
 
   TLMHScroll = TLMScroll;
   TLMVScroll = TLMScroll;
-{$else}
-  TLMScroll = TWMScroll;
-  TLMHScroll = TWMScroll;
-  TLMVScroll = TWMScroll;
-{$endif}
+{.$else}
+//  TLMScroll = TWMScroll;
+//  TLMHScroll = TWMScroll;
+//  TLMVScroll = TWMScroll;
+{.$endif}
 
 {$if defined(ver1_0) or not(defined(win32))}
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     Status: LPARAM;
     Result: LRESULT;
   end;
@@ -763,9 +727,9 @@ type
     Msg: Cardinal;
     ItemID: Word;
     NotifyCode: Word;
-{$ifdef cpu64}    
+{$ifdef cpu64}
     Unused : Longint;
-{$endif cpu64}    
+{$endif cpu64}
     Ctl: HWND;
     Result: LRESULT;
   end;

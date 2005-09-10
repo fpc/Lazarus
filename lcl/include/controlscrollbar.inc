@@ -309,29 +309,28 @@ begin
   If (csDesigning in FControl.ComponentState) then
     exit; //prevent wierdness in IDE.
 
-  with Message do
-  begin
-    NewPos := FPosition;
-    case ScrollCode of
-      SB_LINEUP:
-        Dec(NewPos, FIncrement);
-      SB_LINEDOWN:
-        Inc(NewPos, FIncrement);
-      SB_PAGEUP:
-        Dec(NewPos, FPage);
-      SB_PAGEDOWN:
-        Inc(NewPos, FPage);
-      SB_THUMBPOSITION, SB_THUMBTRACK:
-        NewPos := GetPosition; { Read scroll bar as TLMScroll message does not provide full range }
-      SB_TOP:
-        NewPos := 0;
-      SB_BOTTOM:
-        NewPos := Range;
-    end;
-    if NewPos < 0 then NewPos := 0;
-    if NewPos > Range then NewPos := Range;
-    SetPosition(NewPos);
+  NewPos := FPosition;
+  case Message.ScrollCode of
+    SB_LINEUP:
+      Dec(NewPos, FIncrement);
+    SB_LINEDOWN:
+      Inc(NewPos, FIncrement);
+    SB_PAGEUP:
+      Dec(NewPos, FPage);
+    SB_PAGEDOWN:
+      Inc(NewPos, FPage);
+    SB_THUMBPOSITION, SB_THUMBTRACK:
+      NewPos := Message.Pos;
+    SB_TOP:
+      NewPos := 0;
+    SB_BOTTOM:
+      NewPos := Range;
+  else
+    Exit;
   end;
+  if NewPos < 0 then NewPos := 0;
+  if NewPos > Range then NewPos := Range;
+  SetPosition(NewPos);
 end;
 
 procedure TControlScrollBar.ControlUpdateScrollBars;

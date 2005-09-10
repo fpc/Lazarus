@@ -299,7 +299,7 @@ type
     constructor Create(AOwner: TCustomSynEdit);
     destructor Destroy; override;
   end;
-  
+
   {$IFDEF SYN_LAZARUS}
   // aIndex parameters of Line notifications are 0-based.
   TSynCustomLineIndenter = class(TComponent)
@@ -329,7 +329,7 @@ type
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
+    procedure WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_HSCROLL;
 {$IFDEF SYN_MBCSSUPPORT}
     procedure WMImeComposition(var Msg: TMessage); message WM_IME_COMPOSITION;
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
@@ -344,7 +344,7 @@ type
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF}
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
     fFirstLine: integer;
     fBlockBegin: TPoint;   // logical position (byte)
@@ -2388,7 +2388,7 @@ begin
     exit;
   end;
   MouseCapture := False;
-  if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth) 
+  if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth)
     {$IFDEF SYN_LAZARUS}and (Button = mbLeft){$ENDIF} then
     DoOnGutterClick(X, Y)
   else
@@ -2589,7 +2589,7 @@ var
               BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true)
             else
               BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine], iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
-          
+
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end else
@@ -2632,7 +2632,7 @@ var
 
     Canvas.Brush.Color:=clWhite;
     Canvas.Rectangle(rcNode);
-    
+
     //draw bottom handle to paragraph line
     Canvas.MoveTo((rcNode.Left + rcNode.Right) div 2, rcNode.Bottom);
     Canvas.LineTo((rcNode.Left + rcNode.Right) div 2, rcCodeFold.Bottom);
@@ -2709,7 +2709,7 @@ begin
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
         //InternalFillRect(DC, rcLine);
-        
+
         if not TSynEditStringList(fLines).Folded[iLine] then
           if fGutter.ShowCodeFolding then
             fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
@@ -2738,7 +2738,7 @@ begin
   end else begin
     InternalFillRect(dc, AClip);
   end;
-  
+
   //draw the code folding marks
   if fGutter.ShowCodeFolding then
   begin
@@ -2746,7 +2746,7 @@ begin
     begin
       Pen.Color := clDkGray;
       Pen.Width := 1;
-      
+
       rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
       for iLine := FirstLine to LastLine do
       begin
@@ -2755,7 +2755,7 @@ begin
         begin
           // next line rect
           rcLine.Top := rcLine.Bottom;
-        
+
           Inc(rcLine.Bottom, fTextHeight);
 
           rcCodeFold.Left := 0;
@@ -2775,7 +2775,7 @@ begin
       end;
     end;
   end;
-  
+
   // the gutter separator if visible
   if AClip.Right >= fGutterWidth - 2 then
     with Canvas do begin
@@ -5476,7 +5476,7 @@ begin
     Msg.Result := Msg.Result or DLGC_WANTTAB;
 end;
 
-procedure TCustomSynEdit.WMHScroll(var Msg: TWMScroll);
+procedure TCustomSynEdit.WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the line
@@ -5555,7 +5555,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TCustomSynEdit.WMVScroll(var Msg: TWMScroll);
+procedure TCustomSynEdit.WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
 {$IFNDEF SYN_LAZARUS}
 // ToDo HintWindow
 var
@@ -8335,7 +8335,7 @@ procedure TCustomSynEdit.SetSelStart(const Value: integer);
   begin
     result := length(Data) + length(LineEnding);
   end;
-  
+
 var
   loop: integer;
   count: integer;
@@ -9576,7 +9576,7 @@ begin
       NewPos.X:=1;
     end;
   end;
-  
+
   MoveCaretAndSelection(OldPos, NewPos, Selection);
 end;
 
