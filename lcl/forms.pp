@@ -154,8 +154,8 @@ type
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure DoOnResize; override;
-    Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
-    Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
+    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
@@ -315,7 +315,7 @@ type
 
   TBorderIcon = (biSystemMenu, biMinimize, biMaximize, biHelp);
   TBorderIcons = set of TBorderIcon;
-    
+
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject;
                                var CanClose : boolean) of object;
@@ -323,7 +323,7 @@ type
     var CallHelp: Boolean): Boolean of object;
 
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
-  
+
   TFormStateType = (
     fsCreating,  // initializing (form streaming)
     fsVisible,   // form should be shown
@@ -338,7 +338,7 @@ type
 
   TModalResult = low(Integer)..high(Integer);
   PModalResult = ^TModalResult;
-  
+
   TFormHandlerType = (
     fhtFirstShow,
     fhtClose,
@@ -503,7 +503,7 @@ type
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
-    property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons 
+    property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons
       default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle
                       read FFormBorderStyle write SetFormBorderStyle default bsSizeable;
@@ -836,14 +836,14 @@ type
     AppDoNotReleaseComponents
     );
   TApplicationFlags = set of TApplicationFlag;
-  
+
   TApplicationNavigationOption = (
     anoTabToSelectNext,
     anoReturnForDefaultControl,
     anoEscapeForCancelControl
     );
   TApplicationNavigationOptions = set of TApplicationNavigationOption;
-  
+
   TApplicationHandlerType = (
     ahtIdle,
     ahtIdleEnd,
@@ -1110,10 +1110,10 @@ type
     Procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
     function UniqueName(const BaseName: string): string; virtual; abstract;
   end;
-  
-  
+
+
   { TFormPropertyStorage }
-  
+
   TFormPropertyStorage = class(TControlPropertyStorage)
   private
     procedure FormFirstShow(Sender: TObject);
@@ -1682,7 +1682,7 @@ initialization
   {$IFDEF UseFCLDataModule}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
   {$ENDIF}
-  
+
   // keep this comment line, there is parser a bug in fpc 1.0.x
 
 finalization
