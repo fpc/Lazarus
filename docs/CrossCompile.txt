@@ -21,6 +21,10 @@ Abstract:
 
 The following steps don't need the root user. They can be done as normal user.
 
+There is a script in tools/install/cross_unix/update_cross_fpc.sh, that will
+do the below steps. It downloads bintuils, fpc and builds the cross targets.
+
+
 1. Download the fpc sources
 
   IMPORTANT: Your current FPC must be the same version/date as the fpc sources.
@@ -33,12 +37,21 @@ The following steps don't need the root user. They can be done as normal user.
 
   For example:
 
-  []$ mkdir freepascal
-  []$ cd freepascal
+  []$ mkdir ~/freepascal/
+  []$ cd ~/freepascal/
+  []$ svn co http://svn.freepascal.org/svn/fpc/branches/fixes_2_0 fpc
+  []$ svn co http://svn.freepascal.org/svn/fpcbuild/branches/fixes_2_0/install install
+  
+  If you want the unstable development version use:
+  
   []$ svn co http://svn.freepascal.org/svn/fpc/trunk fpc
   []$ svn co http://svn.freepascal.org/svn/fpcbuild/trunk/install install
   
-  For the following examples the fpc sources were downloaded to ~/sources/fpc.
+  Keep in mind that the development version has a lot more features, but often
+  some serious bugs.
+
+  For the following examples the fpc sources were downloaded
+  to ~/freepascal/fpc.
   
 
 2. Download the binutils.
@@ -53,7 +66,7 @@ The following steps don't need the root user. They can be done as normal user.
   
   For example:
   
-  []$ cd download
+  []$ cd ~/download
   []$ wget http://ftp.gnu.org/gnu/binutils/binutils-2.16.tar.gz
 
 

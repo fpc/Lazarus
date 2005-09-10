@@ -3948,6 +3948,7 @@ begin
         SetCallback(LM_CUTTOCLIP,  AGTKObject, ALCLObject);
         SetCallback(LM_COPYTOCLIP,  AGTKObject, ALCLObject);
         SetCallback(LM_PASTEFROMCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_INSERTTEXT,  AGTKObject, ALCLObject);
       end;
 
       csMemo:
