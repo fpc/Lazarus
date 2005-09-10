@@ -81,12 +81,14 @@ done
 #===============================================================================
 
 # expand paths
-BuildRoot=$(echo $BuildRoot)
-InstallBin=$(echo $InstallBin)
+BuildRoot=$(echo $BuildRoot | sed -e 's#//#/#g' -e 's#/$##')
+InstallBin=$(echo $InstallBin | sed -e 's#//#/#g' -e 's#/$##')
 
 # the 'bin' directory - where to put the fpc+binutils executables
 # On InstallAsDefault=yes they will be copied to $HomeBin
 BinDir=$BuildRoot/bin/
+
+CompilerName="ppc386"
 
 # check install path
 if [ $InstallAsDefault = "yes" ]; then
@@ -97,8 +99,25 @@ if [ $InstallAsDefault = "yes" ]; then
     echo "This script installs FPC and binutils executables to a directory"
     echo "that is in your search PATH before your installed FPC."
     echo "Either prepend it to \$PATH or define another with installbin=<path>"
+    exit -1
   fi
-  
+  # check if $InstallBin is in before the system compiler
+  mkdir -p $InstallBin
+  NewCompilerName=$InstallBin/$CompilerName
+  if [ ! -f $NewCompilerName ]; then
+    touch $NewCompilerName
+    chomd a+x $NewCompilerName
+  fi
+  hash -r
+  FoundFPC=$(which $CompilerName)
+  if [ ! $FoundFPC = $NewCompilerName ]; then
+    echo "ERROR: $InstallBin not early enough in \$PATH."
+    echo "This script installs FPC and binutils executables to a directory"
+    echo "that is in your search PATH before your installed FPC."
+    echo "Either prepend it to \$PATH or define another with installbin=<path>"
+    exit -1
+  fi
+
   BinDir=$InstallBin
 fi
 
@@ -264,7 +283,7 @@ fi
 
 #===============================================================================
 # build normal FPC
-# compile the non cross FPC into the smae structure, so that the fpc.cfg
+# compile the non cross FPC into the same structure, so that the fpc.cfg
 # can be very simple.
 if [ $BuildNormalFPC = "yes" ]; then
   echo "building normal FPC ..."
@@ -325,11 +344,11 @@ if [ $CreateFPCCfg = "yes" ]; then
   echo "  writeln('Test');" >> $TestPas
   echo "end." >> $TestPas
   cd $BuildRoot
-  $BinDir/ppc386 test.pas
+  $BinDir/$CompilerName test.pas
 
   if [ $InstallAsDefault = "yes" ]; then
     echo "Installing ~/fpc.cfg ..."
-    cp $BuildRoot/fpc.cfg ~/fpc.cfg
+    cp $BuildRoot/fpc.cfg ~/.fpc.cfg
   fi
 fi
 
