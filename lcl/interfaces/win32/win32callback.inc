@@ -730,10 +730,6 @@ Begin
       if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
           or (Msg = WM_CTLCOLORSCROLLBAR) then
       begin
-        if WindowInfo^.isGroupBox then
-        begin
-          lWinControl.EraseBackground(WParam);
-        end else
         if GetWindowInfo(LParam)^.hasTabParent then
         begin
           // need to draw transparently, draw background
@@ -744,6 +740,10 @@ Begin
           LMessage.Result := GetStockObject(HOLLOW_BRUSH);
           SetBkMode(WParam, TRANSPARENT);
           WinProcess := false;
+        end else
+        if WindowInfo^.isGroupBox then
+        begin
+          lWinControl.EraseBackground(WParam);
         end;
       end;
       if WinProcess then

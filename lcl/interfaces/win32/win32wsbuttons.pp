@@ -147,8 +147,8 @@ const
     Image 4 = button focus       
   }
 
-  XPBitBtn_ImageIndexToEnabled: array[0..4] of Boolean = 
-    (true, true, true, false, true);
+  XPBitBtn_ImageIndexToEnabled: array[1..6] of Boolean = 
+    (true, true, true, false, true, true);
   
 type
   BUTTON_IMAGELIST = packed record
@@ -264,6 +264,7 @@ var
     DeleteDC(MaskDC);
 
     SetBkMode(hdcNewBitmap, TRANSPARENT);
+    SetTextColor(hdcNewBitmap, 0);
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
     SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
@@ -382,7 +383,7 @@ begin
       ButtonImageList.margin.bottom := 5;
       ButtonImageList.uAlign := BUTTON_IMAGELIST_ALIGN_CENTER;
       // for some reason, if bitmap added to imagelist, need to redrawn, otherwise it's black!?
-      for I := 0 to 4 do
+      for I := 1 to 6 do
       begin
         DrawBitmap(XPBitBtn_ImageIndexToEnabled[I]);
         ImageList_AddMasked(ButtonImageList.himl, NewBitmap, ColorToRGB(BitBtn.Brush.Color));
