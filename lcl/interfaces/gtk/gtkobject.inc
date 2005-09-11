@@ -3685,6 +3685,10 @@ begin
       if ALCLObject is TCustomListBox then begin
         ConnectSenderSignalAfter(PgtkObject(gCore),
           'selection_changed', @gtkListBoxSelectionChangedAfter);
+        ConnectSenderSignalAfter(PgtkObject(gCore),
+          'select_child', @gtkListBoxSelectChildAfter);
+        ConnectSenderSignalAfter(PgtkObject(gCore),
+          'unselect_child', @gtkListBoxUnselectChildAfter);
       end;
     end;
 

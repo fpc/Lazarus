@@ -7891,13 +7891,94 @@ end;
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
-{off $DEFINE VerboseFocus}
+{off$DEFINE VerboseFocus}
+  function FindFocusWidget(AWidget: PGtkWidget): PGtkWidget;
+  var
+    WinWidgetInfo: PWinWidgetInfo;
+    ImplWidget: PGtkWidget;
+    GList: PGlist;
+  begin
+    // Default to the widget, try to find other
+    Result := AWidget;
+
+    // Combo
+    if GtkWidgetIsA(AWidget, gtk_combo_get_type)
+    then begin
+      // handle is a gtk combo
+      {$IfDef VerboseFocus}
+      DebugLn('  D taking gtkcombo entry');
+      {$EndIf}
+      Result := PgtkWidget(PGtkCombo(AWidget)^.entry);
+      Exit;
+    end;
+
+    // check if widget has a WinWidgetInfo record
+    WinWidgetInfo := GetWidgetInfo(AWidget, false);
+    if WinWidgetInfo = nil then Exit;
+    
+    ImplWidget:= WinWidgetInfo^.CoreWidget;
+    if ImplWidget = nil then Exit;
+    // set default to the implementation widget
+    Result := ImplWidget;
+    
+    // handle has an ImplementationWidget
+    if GtkWidgetIsA(ImplWidget, gtk_list_get_type)
+    then begin
+      {$IfDef VerboseFocus}
+      DebugLn('  E using list');
+      {$EndIf}
+      // Try the last added selected
+      if (selection_mode(PGtkList(ImplWidget)^) in [GTK_SELECTION_MULTIPLE, GTK_SELECTION_EXTENDED])
+      and (PGtkList(ImplWidget)^.last_focus_child <> nil)
+      then begin
+        Result := PGtkList(ImplWidget)^.last_focus_child;
+        {$IfDef VerboseFocus}
+        DebugLn('  E.1 using last_focus_child');
+        {$EndIf}
+        Exit;
+      end;
+
+      // If there is a selection, try the first
+      GList := PGtkList(ImplWidget)^.selection;
+      if (GList <> nil) and (GList^.data <> nil)
+      then begin
+        Result := GList^.data;
+        {$IfDef VerboseFocus}
+        DebugLn('  E.2 using 1st selection');
+        {$EndIf}
+        Exit;
+      end;
+      
+      // If not in browse mode, set focus to the first child
+      // in browsemode, the focused item cannot be selected by mouse
+//      if selection_mode(PGtkList(ImplWidget)^) = GTK_SELECTION_BROWSE
+//      then begin
+//        {$IfDef VerboseFocus}
+//        DebugLn('  E.3 Browse mode -> using ImplWidget');
+//        {$EndIf}
+//        Exit;
+//      end;
+
+      GList := PGtkList(ImplWidget)^.children;
+      if GList = nil then Exit;
+      if GList^.Data = nil then Exit;
+      Result := GList^.Data;
+      {$IfDef VerboseFocus}
+      DebugLn('  E.4 using 1st child');
+      {$EndIf}
+
+      Exit;
+    end;
+
+    {$IfDef VerboseFocus}
+    DebugLn('  E taking ImplementationWidget');
+    {$EndIf}
+  end;
+
 var
-  Widget, TopLevel, ImplWidget, NewFocusWidget: PGtkWidget;
-  WinWidgetInfo: PWinWidgetInfo;
+  Widget, TopLevel, NewFocusWidget: PGtkWidget;
   {$IfDef VerboseFocus}
-  LCLObject, AWinControl: TWinControl;
-  NewTopLevel: PGtkWidget;
+  AWinControl: TWinControl;
   {$EndIf}
   NewTopLevelWidget: PGtkWidget;
   NewTopLevelObject: TObject;
@@ -7908,7 +7989,6 @@ begin
   {$IfDef VerboseFocus}
   DebugLn('');
   debugln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
-  LCLObject:=TWinControl(GetLCLObject(Widget));
   {$EndIf}
   if hwnd = 0 then begin
     Result:=0;
@@ -7958,46 +8038,8 @@ begin
       end;
     end;
     
-    if (NewFocusWidget=nil)
-    and GtkWidgetIsA(Widget, gtk_combo_get_type) then begin
-      // handle is a gtk combo
-      {$IfDef VerboseFocus}
-      DebugLn('  D taking gtkcombo entry');
-      {$EndIf}
-      NewFocusWidget:=PgtkWidget(PGtkCombo(Widget)^.entry);
-    end;
-    if NewFocusWidget=nil then begin
-      // check if widget has a WinWidgetInfo record
-      WinWidgetInfo:=GetWidgetInfo(Widget, false);
-      if (WinWidgetInfo<>nil) then begin
-        ImplWidget:= WinWidgetInfo^.CoreWidget;
-        if ImplWidget <> nil then begin
-          // handle has an ImplementationWidget
-          if GtkWidgetIsA(ImplWidget, gtk_list_get_type) then begin
-            {$IfDef VerboseFocus}
-            DebugLn('  E using list');
-            {$EndIf}
-            if selection_mode(PGtkList(ImplWidget)^) > GTK_SELECTION_BROWSE then
-              NewFocusWidget:=PGtkList(ImplWidget)^.last_focus_child;
-            if (NewFocusWidget = nil) and (PGtkList(ImplWidget)^.selection <> nil) then
-              NewFocusWidget := (PGtkList(ImplWidget)^.selection)^.data;
-            if (NewFocusWidget = nil) and (gtk_container_children(PGtkContainer(ImplWidget)) <> nil) then
-              NewFocusWidget := g_list_first(gtk_container_children(PGtkContainer(ImplWidget)))^.data;
-          end else begin
-            {$IfDef VerboseFocus}
-            DebugLn('  E taking ImplementationWidget');
-            {$EndIf}
-            NewFocusWidget:=ImplWidget;
-          end;
-        end;
-      end;
-    end;
-    if (NewFocusWidget=nil) then begin
-      NewFocusWidget:=Widget;
-      {$IfDef VerboseFocus}
-      DebugLn('  F taking default ');
-      {$EndIf}
-    end;
+    NewFocusWidget := FindFocusWidget(Widget);
+    
     {$IfDef VerboseFocus}
     write('  G NewFocusWidget=',DbgS(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
     write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));

@@ -1152,6 +1152,43 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
+  procedure CheckListSelection;
+  var
+    List: PGlist;
+    ListWidget: PGtkList;
+    R: TRect;
+    Info: PWinWidgetInfo;
+  begin
+    // When in browse mode and a listbox is focused and nothing is selected,
+    // the first item is focused.
+    // Clicking with the mouse on this item won't select it.
+
+    Info := GetWidgetInfo(Widget, false);
+    if Info = nil then Exit;
+    if Info^.CoreWidget = nil then Exit;
+    if not GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then Exit;
+    ListWidget := PGtkList(Info^.CoreWidget);
+
+    // Check mode
+    if selection_mode(ListWidget^) <> GTK_SELECTION_BROWSE then Exit;
+
+    // Check selection
+    List := ListWidget^.selection;
+    if (List <> nil) and (List^.data <> nil) then Exit;
+
+    // Check if there are children
+    List := ListWidget^.children;
+    if List = nil then Exit;
+    if List^.Data = nil then Exit;
+
+    // we need only to check the first
+    with PGtkWidget(List^.Data)^.allocation do
+      R := Bounds(X, Y, Width, Height);
+    if not PtInRect(R, Point(Trunc(event^.X), Trunc(event^.Y))) then Exit;
+    // Select it
+    gtk_list_item_select(PGtkListItem(List^.Data));
+  end;
+  
 var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
@@ -1183,6 +1220,9 @@ begin
   UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
+    // fix gtklist selection first
+    CheckListSelection;
+
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
@@ -1220,7 +1260,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
     DbgSName(TObject(Data)),
-    ' Widget=',DbgS(Widget),
+    ' Widget=',DbgS(Widget), ' ', gtk_type_name(Widget^.theObject.klass^.thetype),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)));
   {$ENDIF}
 
@@ -2988,6 +3028,34 @@ begin
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
   DeliverMessage(Data, Mess);
+end;
+
+function gtkListBoxSelectChildAfter(widget, child: PGtkWidget; data: gPointer
+  ): GBoolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
+  Result := CallBackDefaultReturn;
+
+//  EventTrace('gtkListBoxSelectionChangedAfter', data);
+//  FillChar(Mess,SizeOf(Mess),0);
+//  Mess.msg := LM_SelChange;
+//  DeliverMessage(Data, Mess);
+end;
+
+function gtkListBoxUnselectChildAfter(widget, child: PGtkWidget; data: gPointer
+  ): GBoolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
+  Result := CallBackDefaultReturn;
+
+//  EventTrace('gtkListBoxSelectionChangedAfter', data);
+//  FillChar(Mess,SizeOf(Mess),0);
+//  Mess.msg := LM_SelChange;
+//  DeliverMessage(Data, Mess);
 end;
 
 

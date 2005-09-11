@@ -249,6 +249,9 @@ procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
 function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
+function gtkListBoxUnselectChildAfter(widget, child: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkListBoxSelectChildAfter(widget, child: PGtkWidget; data: gPointer): GBoolean; cdecl;
+
 
 // gtkDragCallback.inc headers
 Function edit_drag_data_received(widget: pgtkWidget;
