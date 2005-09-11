@@ -3030,34 +3030,6 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-function gtkListBoxSelectChildAfter(widget, child: PGtkWidget; data: gPointer
-  ): GBoolean; cdecl;
-var
-  Mess: TLMessage;
-begin
-  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
-  Result := CallBackDefaultReturn;
-
-//  EventTrace('gtkListBoxSelectionChangedAfter', data);
-//  FillChar(Mess,SizeOf(Mess),0);
-//  Mess.msg := LM_SelChange;
-//  DeliverMessage(Data, Mess);
-end;
-
-function gtkListBoxUnselectChildAfter(widget, child: PGtkWidget; data: gPointer
-  ): GBoolean; cdecl;
-var
-  Mess: TLMessage;
-begin
-  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
-  Result := CallBackDefaultReturn;
-
-//  EventTrace('gtkListBoxSelectionChangedAfter', data);
-//  FillChar(Mess,SizeOf(Mess),0);
-//  Mess.msg := LM_SelChange;
-//  DeliverMessage(Data, Mess);
-end;
-
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
