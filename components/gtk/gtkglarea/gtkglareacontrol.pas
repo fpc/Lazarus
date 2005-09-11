@@ -340,7 +340,7 @@ end;
 
 procedure TCustomGTKGLAreaControl.UpdateFrameTimeDiff;
 begin
-  FCurrentFrameTime:=GetTickCount;
+  FCurrentFrameTime:=integer(GetTickCount);
   if FLastFrameTime=0 then
     FLastFrameTime:=FCurrentFrameTime;
   // calculate time since last call:

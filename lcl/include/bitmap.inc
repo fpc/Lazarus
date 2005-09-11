@@ -815,8 +815,7 @@ end;
 
 procedure TBitmap.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
 begin
-  if ImgWriter.ClassType=TFPWriterBMP then
-    TFPWriterBMP(ImgWriter).BytesPerPixel:=4; // allow alpha
+
 end;
 
 procedure TBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
