@@ -7928,7 +7928,7 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
       DebugLn('  E using list');
       {$EndIf}
       // Try the last added selected
-      if (selection_mode(PGtkList(ImplWidget)^) in [GTK_SELECTION_MULTIPLE, GTK_SELECTION_EXTENDED])
+      if not (selection_mode(PGtkList(ImplWidget)^) in [GTK_SELECTION_SINGLE, GTK_SELECTION_BROWSE])
       and (PGtkList(ImplWidget)^.last_focus_child <> nil)
       then begin
         Result := PGtkList(ImplWidget)^.last_focus_child;
