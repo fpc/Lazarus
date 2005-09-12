@@ -80,6 +80,7 @@ type
     FComponentPrefix: string;
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
+    FErrors: TLRPositionLinks;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
     procedure SetComponentPrefix(const AValue: string);
   protected
@@ -164,8 +165,8 @@ type
                                        read FOnReaderError write FOnReaderError;
     property OnPropertyNotFound: TJITPropertyNotFoundEvent
                              read FOnPropertyNotFound write FOnPropertyNotFound;
-    property CurReadJITComponent:TComponent read FCurReadJITComponent;
-    property CurReadClass:TClass read FCurReadClass;
+    property CurReadJITComponent: TComponent read FCurReadJITComponent;
+    property CurReadClass: TClass read FCurReadClass;
     property CurReadChild: TComponent read FCurReadChild;
     property CurReadChildClass: TComponentClass read FCurReadChildClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
@@ -173,6 +174,7 @@ type
     property CurUnknownClass: string read FCurUnknownClass;
     property ComponentPrefix: string read FComponentPrefix
                                      write SetComponentPrefix;
+    property Errors: TLRPositionLinks read FErrors;
   end;
 
 
@@ -501,12 +503,14 @@ begin
   inherited Create;
   FComponentPrefix:='Form';
   FJITComponents:=TList.Create;
+  FErrors:=TLRPositionLinks.Create;
 end;
 
 destructor TJITComponentList.Destroy;
 begin
   while FJITComponents.Count>0 do DestroyJITComponent(FJITComponents.Count-1);
   FJITComponents.Free;
+  FErrors.Free;
   inherited Destroy;
 end;
 
@@ -548,7 +552,13 @@ var
   OldClass: TClass;
 begin
   OldClass:=Items[Index].ClassType;
-  Items[Index].Free;
+  try
+    Items[Index].Free;
+  except
+    on E: Exception do begin
+      DebugLn('[TJITComponentList.DestroyJITComponent] ERROR destroying component ',E.Message);
+    end;
+  end;
   FreeJITClass(OldClass);
   FJITComponents.Delete(Index);
 end;
@@ -558,7 +568,7 @@ function TJITComponentList.FindComponentByClassName(
 begin
   Result:=FJITComponents.Count-1;
   while (Result>=0)
-  and (AnsiCompareText(Items[Result].ClassName,AClassName)<>0) do
+  and (CompareText(Items[Result].ClassName,AClassName)<>0) do
     dec(Result);
 end;
 
@@ -566,7 +576,7 @@ function TJITComponentList.FindComponentByName(const AName:shortstring):integer;
 begin
   Result:=FJITComponents.Count-1;
   while (Result>=0)
-  and (AnsiCompareText(Items[Result].Name,AName)<>0) do
+  and (CompareText(Items[Result].Name,AName)<>0) do
     dec(Result);
 end;
 
@@ -680,17 +690,11 @@ begin
     on E: Exception do begin
       DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
          +' of Class ''',NewClassName,''' Error: ',E.Message);
-      Result:=-1;
-      if FCurReadJITComponent<>nil then begin
+      if Result>=0 then begin
         // try freeing the unfinished thing
-        try
-          FCurReadJITComponent.Free;
-        except
-          on E: Exception do begin
-            DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR destroying component ',E.Message);
-          end;
-        end;
         FCurReadJITComponent:=nil;
+        DestroyJITComponent(Result);
+        Result:=-1;
       end;
     end;
   end;
@@ -1299,6 +1303,7 @@ const
 var
   ErrorType: TJITFormError;
   Action: TModalResult;
+  ErrorBinPos: Int64;
 begin
   ErrorType:=jfeReaderError;
   Action:=mrCancel;
@@ -1309,10 +1314,16 @@ begin
     ErrorType:=jfeUnknownProperty;
     Action:=mrIgnore;
   end;
+  if Reader.Driver is TLRSObjectReader then begin
+    // save error position
+    ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
+    FErrors.Add(-1,ErrorBinPos,nil);
+  end;
   if Assigned(OnReaderError) then
     OnReaderError(Self,ErrorType,Action);
   Handled:=Action in [mrIgnore];
   FCurUnknownProperty:='';
+  
   DebugLn('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   DebugLn('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',BoolToStr(Handled));
   DebugLn('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');

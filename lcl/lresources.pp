@@ -117,6 +117,8 @@ type
     function ReadWideString: WideString;override;
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
+  public
+    property Stream: TStream read FStream;
   end;
   TLRSObjectReaderClass = class of TLRSObjectReader;
   
@@ -172,6 +174,43 @@ type
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
   
+  TLRPositionLink = record
+    LFMPosition: int64;
+    LRSPosition: int64;
+    Data: Pointer;
+  end;
+  PLRPositionLink = ^TLRPositionLink;
+  
+  { TLRPositionLinks }
+
+  TLRPositionLinks = class
+  private
+    FItems: TFPList;
+    FCount: integer;
+    function GetData(Index: integer): Pointer;
+    function GetLFM(Index: integer): Int64;
+    function GetLRS(Index: integer): Int64;
+    procedure SetCount(const AValue: integer);
+    procedure SetData(Index: integer; const AValue: Pointer);
+    procedure SetLFM(Index: integer; const AValue: Int64);
+    procedure SetLRS(Index: integer; const AValue: Int64);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Sort(LFMPositions: Boolean);
+    function IndexOf(const Position: int64; LFMPositions: Boolean): integer;
+    function IndexOfRange(const FromPos, ToPos: int64;
+                          LFMPositions: Boolean): integer;
+    procedure SetPosition(const FromPos, ToPos, MappedPos: int64;
+                          LFMtoLRSPositions: Boolean);
+    procedure Add(const LFMPos, LRSPos: Int64; Data: Pointer);
+  public
+    property LFM[Index: integer]: int64 read GetLFM write SetLFM;
+    property LRS[Index: integer]: int64 read GetLRS write SetLRS;
+    property Data[Index: integer]: Pointer read GetData write SetData;
+    property Count: integer read FCount write SetCount;
+  end;
+  
 var
   LazarusResources: TLResourceList;
 
@@ -185,10 +224,8 @@ function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
 procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
-function LFMtoLRSfile(const LFMfilename: string): boolean;
- // returns true if successful
-function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;
- // returns true if successful
+function LFMtoLRSfile(const LFMfilename: string): boolean;// true on success
+function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;// true on success
 function FindLFMClassName(LFMStream: TStream):AnsiString;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
@@ -196,7 +233,8 @@ type
   TLRSStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
   
 procedure LRSObjectBinaryToText(Input, Output: TStream);
-procedure LRSObjectTextToBinary(Input, Output: TStream);
+procedure LRSObjectTextToBinary(Input, Output: TStream;
+                                Links: TLRPositionLinks = nil);
 procedure LRSObjectToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
 
@@ -243,6 +281,10 @@ procedure WriteLRSNull(s: TStream; Count: integer);
 procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
   EndBigDouble: PByte);
 procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
+
+
+function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
+function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
 
 
 implementation
@@ -1568,7 +1610,8 @@ begin
   end;
 end;
 
-procedure LRSObjectTextToBinary(Input, Output: TStream);
+procedure LRSObjectTextToBinary(Input, Output: TStream;
+  Links: TLRPositionLinks);
 var
   parser: TParser;
   OldDecimalSeparator: Char;
@@ -1656,6 +1699,16 @@ var
     SetLength(Result,length(s));
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
+  end;
+  
+  procedure ParserNextToken;
+  var
+    OldSourcePos: LongInt;
+  begin
+    OldSourcePos:=Parser.SourcePos;
+    Parser.NextToken;
+    if Links<>nil then
+      Links.SetPosition(OldSourcePos,Parser.SourcePos,Output.Position,true);
   end;
 
   procedure ProcessProperty; forward;
@@ -1860,6 +1913,10 @@ var
   end;
 
 begin
+  if Links<>nil then begin
+    // sort links for LFM positions
+    Links.Sort(true);
+  end;
   parser := TParser.Create(Input);
   OldDecimalSeparator:=DecimalSeparator;
   DecimalSeparator:='.';
@@ -1971,7 +2028,7 @@ begin
   Result:=TReader.Create(s,4096);
   {$IFDEF TRANSLATESTRING}
   if Assigned(LRSTranslator) then
-   Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
+    Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
   {$ENDIF}
   DestroyDriver:=false;
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
@@ -2254,6 +2311,36 @@ begin
     w:=(w shr 8) or ((w and $ff) shl 8);
     s.Write(w,2);
   end;
+end;
+
+function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
+var
+  p1: Int64;
+  p2: Int64;
+begin
+  p1:=PLRPositionLink(Item1)^.LFMPosition;
+  p2:=PLRPositionLink(Item2)^.LFMPosition;
+  if p1<p2 then
+    Result:=1
+  else if p1>p2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
+var
+  p1: Int64;
+  p2: Int64;
+begin
+  p1:=PLRPositionLink(Item1)^.LRSPosition;
+  p2:=PLRPositionLink(Item2)^.LRSPosition;
+  if p1<p2 then
+    Result:=1
+  else if p1>p2 then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 procedure WriteLRSNull(s: TStream; Count: integer);
@@ -3131,6 +3218,167 @@ end;
 procedure InternalInit;
 begin
   LazarusResources:=TLResourceList.Create;
+end;
+
+{ TLRPositionLinks }
+
+function TLRPositionLinks.GetLFM(Index: integer): Int64;
+begin
+  Result:=PLRPositionLink(FItems[Index])^.LFMPosition;
+end;
+
+function TLRPositionLinks.GetData(Index: integer): Pointer;
+begin
+  Result:=PLRPositionLink(FItems[Index])^.Data;
+end;
+
+function TLRPositionLinks.GetLRS(Index: integer): Int64;
+begin
+  Result:=PLRPositionLink(FItems[Index])^.LRSPosition;
+end;
+
+procedure TLRPositionLinks.SetCount(const AValue: integer);
+var
+  i: LongInt;
+  Item: PLRPositionLink;
+begin
+  if FCount=AValue then exit;
+  // free old items
+  for i:=AValue to FCount-1 do begin
+    Item:=PLRPositionLink(FItems[i]);
+    Dispose(Item);
+  end;
+  // create new items
+  FItems.Count:=AValue;
+  for i:=FCount to AValue-1 do begin
+    New(Item);
+    Item^.LFMPosition:=-1;
+    Item^.LRSPosition:=-1;
+    Item^.Data:=nil;
+    FItems[i]:=Item;
+  end;
+  FCount:=AValue;
+end;
+
+procedure TLRPositionLinks.SetData(Index: integer; const AValue: Pointer);
+begin
+  PLRPositionLink(FItems[Index])^.Data:=AValue;
+end;
+
+procedure TLRPositionLinks.SetLFM(Index: integer; const AValue: Int64);
+begin
+  PLRPositionLink(FItems[Index])^.LFMPosition:=AValue;
+end;
+
+procedure TLRPositionLinks.SetLRS(Index: integer; const AValue: Int64);
+begin
+  PLRPositionLink(FItems[Index])^.LRSPosition:=AValue;
+end;
+
+constructor TLRPositionLinks.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TLRPositionLinks.Destroy;
+begin
+  Count:=0;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TLRPositionLinks.Sort(LFMPositions: Boolean);
+begin
+  if LFMPositions then
+    FItems.Sort(@CompareLRPositionLinkWithLFMPosition)
+  else
+    FItems.Sort(@CompareLRPositionLinkWithLRSPosition)
+end;
+
+function TLRPositionLinks.IndexOf(const Position: int64; LFMPositions: Boolean
+  ): integer;
+var
+  l, r, m: integer;
+  p: Int64;
+begin
+  // binary search for the line
+  l:=0;
+  r:=FCount-1;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    if LFMPositions then
+      p:=PLRPositionLink(FItems[m])^.LFMPosition
+    else
+      p:=PLRPositionLink(FItems[m])^.LRSPosition;
+    if p>Position then begin
+      // too high, search lower
+      r:=m-1;
+    end else if p<Position then begin
+      // too low, search higher
+      l:=m+1;
+    end else begin
+      // position found
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+function TLRPositionLinks.IndexOfRange(const FromPos, ToPos: int64;
+  LFMPositions: Boolean): integer;
+var
+  l, r, m: integer;
+  p: Int64;
+  Item: PLRPositionLink;
+begin
+  // binary search for the line
+  l:=0;
+  r:=FCount-1;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    Item:=PLRPositionLink(FItems[m]);
+    if LFMPositions then
+      p:=Item^.LFMPosition
+    else
+      p:=Item^.LRSPosition;
+    if p>=ToPos then begin
+      // too high, search lower
+      r:=m-1;
+    end else if p<FromPos then begin
+      // too low, search higher
+      l:=m+1;
+    end else begin
+      // position found
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+procedure TLRPositionLinks.SetPosition(const FromPos, ToPos, MappedPos: int64;
+  LFMtoLRSPositions: Boolean);
+var
+  i: LongInt;
+begin
+  i:=IndexOfRange(FromPos,ToPos,LFMtoLRSPositions);
+  if i>=0 then
+    if LFMtoLRSPositions then
+      PLRPositionLink(FItems[i])^.LRSPosition:=MappedPos
+    else
+      PLRPositionLink(FItems[i])^.LFMPosition:=MappedPos;
+end;
+
+procedure TLRPositionLinks.Add(const LFMPos, LRSPos: Int64; Data: Pointer);
+var
+  Item: PLRPositionLink;
+begin
+  Count:=Count+1;
+  Item:=PLRPositionLink(FItems[Count-1]);
+  Item^.LFMPosition:=LFMPos;
+  Item^.LRSPosition:=LRSPos;
+  Item^.Data:=Data;
 end;
 
 initialization

@@ -137,6 +137,7 @@ type
   { TLFMValueNodeSymbol - a LFM value of type symbol }
   
   TLFMSymbolType = (
+    lfmsNone,
     lfmsTrue,
     lfmsFalse,
     lfmsNil,
@@ -201,7 +202,8 @@ type
     lfmeObjectIncompatible,
     lfmePropertyNameMissing,
     lfmePropertyHasNoSubProperties,
-    lfmeIdentifierNotPublished
+    lfmeIdentifierNotPublished,
+    lfmeEndNotFound
     );
   TLFMErrorTypes = set of TLFMErrorType;
 
@@ -273,7 +275,8 @@ const
     'ObjectIncompatible',
     'PropertyNameMissing',
     'PropertyHasNoSubProperties',
-    'IdentifierNotPublished'
+    'IdentifierNotPublished',
+    'EndNotFound'
     );
     
 procedure FreeListOfPInstancePropInfo(List: TFPList);
@@ -442,7 +445,9 @@ begin
       SymbolNode:=TLFMValueNodeSymbol(CurNode);
       if SymbolNode=nil then ;
       s := Parser.TokenString;
-      if CompareText(s, 'True') = 0 then
+      if CompareText(s, 'End') = 0 then
+        SymbolNode.SymbolType:=lfmsNone
+      else if CompareText(s, 'True') = 0 then
         SymbolNode.SymbolType:=lfmsTrue
       else if CompareText(s, 'False') = 0 then
         SymbolNode.SymbolType:=lfmsFalse
@@ -453,7 +458,8 @@ begin
         SymbolNode.SymbolType:=lfmsIdentifier;
         Parser.TokenComponentIdent;
       end;
-      Parser.NextToken;
+      if SymbolNode.SymbolType<>lfmsNone then
+        Parser.NextToken;
       CloseChildNode;
     end;
     
@@ -553,6 +559,7 @@ end;
 procedure TLFMTree.ProcessObject;
 var
   ObjectNode: TLFMObjectNode;
+  ObjectStartLine: LongInt;
 begin
   CreateChildNode(TLFMObjectNode);
   ObjectNode:=TLFMObjectNode(CurNode);
@@ -565,6 +572,7 @@ begin
   end;
   Parser.NextToken;
   Parser.CheckToken(toSymbol);
+  ObjectStartLine:=Parser.SourceLine;
   ObjectNode.Name := '';
   ObjectNode.TypeName := Parser.TokenString;
   ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
@@ -586,7 +594,14 @@ begin
     ProcessProperty;
 
   // read child objects
-  while not Parser.TokenSymbolIs('END') do ProcessObject;
+  while not Parser.TokenSymbolIs('END') do begin
+    if Parser.Token=toEOF then begin
+      Parser.Error('END not found for'
+        +' object='+ObjectNode.Name+':'+ObjectNode.TypeName
+        +' starting at line '+IntToStr(ObjectStartLine));
+    end;
+    ProcessObject;
+  end;
   Parser.NextToken; // Skip 'END' token
   
   CloseChildNode;
