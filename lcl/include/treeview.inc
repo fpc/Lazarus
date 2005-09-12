@@ -1931,7 +1931,7 @@ begin
             'TTreeNodes.GetNodeFromIndex: Consistency error - SubTreeCount=0');
         if J<=Index then begin
           // Index > absolute index of next sibling -> search in next sibling
-          Result:=Result.GetNext;
+          Result:=Result.GetNextSibling;
           I:=J;
         end else
           break;
