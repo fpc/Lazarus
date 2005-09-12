@@ -6,7 +6,7 @@ object SearchForm: TSearchForm
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
   ParentFont = True
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poOwnerFormCenter
   HorzScrollBar.Page = 427
   VertScrollBar.Page = 148
@@ -16,6 +16,7 @@ object SearchForm: TSearchForm
   Width = 428
   object Panel2: TPanel
     Align = alClient
+    BorderSpacing.OnChange = nil
     BevelInner = bvLowered
     ClientHeight = 149
     ClientWidth = 428
@@ -23,10 +24,10 @@ object SearchForm: TSearchForm
     ParentFont = True
     TabOrder = 0
     TabStop = True
-    OnClick = Panel2Click
     Height = 149
     Width = 428
     object lblMatches: TLabel
+      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
@@ -34,6 +35,7 @@ object SearchForm: TSearchForm
       Width = 321
     end
     object MatchesLabel: TLabel
+      BorderSpacing.OnChange = nil
       Caption = 'Matches'
       Color = clNone
       Left = 16
@@ -42,7 +44,7 @@ object SearchForm: TSearchForm
       Width = 64
     end
     object lblProgress: TLabel
-      AutoSize = False
+      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
@@ -50,6 +52,7 @@ object SearchForm: TSearchForm
       Width = 320
     end
     object SearchingLabel: TLabel
+      BorderSpacing.OnChange = nil
       Caption = 'Searching:'
       Color = clNone
       Left = 16
@@ -58,6 +61,7 @@ object SearchForm: TSearchForm
       Width = 64
     end
     object SearchTextLabel: TLabel
+      BorderSpacing.OnChange = nil
       Caption = 'Search Text:'
       Color = clNone
       Left = 16
@@ -66,6 +70,7 @@ object SearchForm: TSearchForm
       Width = 80
     end
     object lblSearchText: TLabel
+      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
@@ -74,6 +79,7 @@ object SearchForm: TSearchForm
     end
     object btnCancel: TButton
       AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Cancel'
       Default = True
       OnClick = btnAbortCLICK

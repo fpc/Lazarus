@@ -53,7 +53,6 @@ type
     lblProgress: TLABEL;
     lblSearchText: TLABEL;
     Panel2: TPANEL;
-    procedure Panel2Click(Sender: TObject);
     procedure SearchFormCREATE(Sender: TObject);
     procedure SearchFormDESTROY(Sender: TObject);
     procedure btnAbortCLICK(Sender: TObject);
@@ -71,7 +70,6 @@ type
     fAbort: boolean;
     fAbortString: string;
     fAborting: boolean;
-    fCharWidth: longint;
     fSearchProject: boolean;
     fSearchOpen: boolean;
     fSearchFileList: TStringList;
@@ -115,10 +113,6 @@ begin
 end;
 
 procedure TSearchForm.SearchFormCREATE(Sender: TObject);
-var
-  FormFont: THandle;
-  tm : TTextmetric;
-  DC: HDC;
 begin
   //Set Defaults
   MatchesLabel.Caption:=lissMatches;
@@ -139,21 +133,7 @@ begin
   fSearchOpen:= false;
   fSearchFiles:= false;
   self.Caption:= dlgSearchCaption;
-  try
-    DC:= GetDC(0);
-    FormFont:= SelectObject(DC, Font.Handle);
-    GetTextMetrics(DC, tm);
-    fCharWidth:= tm.tmAveCharWidth;
-  finally
-    SelectObject(DC, FormFont);
-    ReleaseDC(0, DC);
-  end;//finally
 end;//SearchFormCreate
-
-procedure TSearchForm.Panel2Click(Sender: TObject);
-begin
-
-end;
 
 procedure TSearchForm.SearchFormDESTROY(Sender: TObject);
 begin
@@ -508,20 +488,14 @@ end;//UpdateMatches
 procedure TSearchForm.UpdateProgress(FileName: string);
 var
   DisplayFileName: string;
-  OldDisplayFileNameLength:Integer;
 begin
   DisplayFileName := FileName;
-  OldDisplayFileNameLength := Length(DisplayFileName) + Length(fPad);
-  While ((Length(DisplayFileName) * fCharWidth) >= lblProgress.Width) do
+  lblProgress.Caption:= DisplayFileName;
+  while (lblProgress.Left + lblProgress.Width)> lblProgress.Parent.ClientWidth-12 do
   begin
     DisplayFileName:= PadAndShorten(DisplayFileName);
-    if Length(DisplayFileName) < OldDisplayFileNameLength
-    then
-      OldDisplayFileNameLength := Length(DisplayFileName)
-    else
-      Break;
+    lblProgress.Caption := DisplayFileName;
   end;//while
-  lblProgress.Caption:= DisplayFileName;
 end;//UpdateProgress
 
 function TSearchForm.PadAndShorten(FileName: string): string;
