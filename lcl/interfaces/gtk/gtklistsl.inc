@@ -163,6 +163,32 @@ begin
   DeliverMessage(LCLList.Owner, Mess);
 end;
 
+procedure GtkListItemSelectAfterCB(Widget: PGtkWidget; data: gpointer); cdecl;
+var
+  GtkList: PGtkList;
+  LCLList: TGtkListStringList;
+  //ItemIndex: LongInt;
+  Mess: TLMessage;
+begin
+  // get context
+  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  if GtkList=nil then
+    RaiseException('gtkListItemSelectAfterCB GtkList=nil');
+  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+                              GtkListItemLCLListTag));
+  if LCLList=nil then
+    RaiseException('gtkListItemSelectAfterCB LCLList=nil');
+  if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
+
+  // get itemindex and area
+  //ItemIndex:=g_list_index(GtkList^.children,Data);
+
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
+  Mess.Msg := LM_SELCHANGE;
+  Mess.Result := 0;
+  DeliverMessage(LCLList.Owner, Mess);
+end;
 {*************************************************************}
 {                      TGtkListStringList methods             }
 {*************************************************************}
@@ -279,6 +305,10 @@ begin
     ChildWidget := PPointer(PGTKBox(PGtkBin(Li)^.child)^.Children^.Data)^;
     g_signal_connect_after(G_OBJECT(ChildWidget), 'toggled',
                            G_CALLBACK(@gtkListItemToggledCB), li);
+  end;
+  if FOwner is TCustomComboBox then begin
+    gtk_signal_connect_after(PGtkObject(li), 'select',
+                           TGTKSignalFunc(@gtkListItemSelectAfterCB),li);
   end;
 end;
 

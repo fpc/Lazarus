@@ -640,7 +640,7 @@ type
     procedure Delete(const AIndex : Integer);
     function FindCaption(StartIndex: Integer; Value: string;
                      Partial, Inclusive, Wrap: Boolean;
-                     PartStart: Boolean{$IFNDEF 1_0} = True{$ENDIF}): TListItem;
+                     PartStart: Boolean = True): TListItem;
     function FindData(const AData: Pointer): TListItem;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);

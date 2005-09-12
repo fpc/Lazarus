@@ -796,6 +796,13 @@ begin
   end;
 end;
 
+procedure TCustomComboBox.LMSelChange(var TheMessage);
+begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if Assigned(OnSelect) then
+    OnSelect(Self);
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
 
