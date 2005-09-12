@@ -1944,8 +1944,9 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.AutoSizeDelayed: boolean;
 begin
-  Result:=// no autosize during loading or destruction
-          ([csLoading,csDestroying]*ComponentState<>[])
+  Result:=(FAutoSizingLockCount>0)
+          // no autosize during loading or destruction
+          or ([csLoading,csDestroying]*ComponentState<>[])
           // no autosize for invisible controls
           or ((not Visible) and (not (csDesigning in ComponentState)))
           // if there is no parent, then this control is not visible
@@ -1956,7 +1957,8 @@ begin
   {$IFDEF VerboseCanAutoSize}
   if Result and AutoSize then begin
     DbgOut('TControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
-    if csLoading in ComponentState then debugln('csLoading')
+    if FAutoSizingLockCount>0 then debugln('FAutoSizingLockCount=',dbgs(FAutoSizingLockCount))
+    else if csLoading in ComponentState then debugln('csLoading')
     else if csDestroying in ComponentState then debugln('csDestroying')
     else if not Visible then debugln('Visible')
     else if NeedParentForAutoSize and (Parent=nil) then debugln('NeedParentForAutoSize and (Parent=nil)')
@@ -3510,6 +3512,19 @@ begin
     Exclude(AControl.FControlFlags,cfPreferredSizeValid);
     AControl:=AControl.Parent;
   end;
+end;
+
+procedure TControl.DisableAutoSizing;
+begin
+  inc(FAutoSizingLockCount);
+end;
+
+procedure TControl.EnableAutoSizing;
+begin
+  if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
+  dec(FAutoSizingLockCount);
+  if FAutoSizingLockCount=0 then
+    AdjustSize;
 end;
 
 {------------------------------------------------------------------------------

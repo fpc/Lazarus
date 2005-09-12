@@ -821,8 +821,13 @@ begin
 end;
 
 procedure TMainForm.ApplyOptions;
+var
+  i: Integer;
 begin
   ShowHint := ShowHelpHints;
+  for i:=0 to ComponentCount-1 do
+    if Components[i] is TToolButton then
+      TToolButton(Components[i]).ShowHint:=ShowHelpHints;
 end;
 
 

@@ -255,9 +255,7 @@ end;
   ---------------------------------------------------------------------}
 
 Constructor TPackageEditor.Create(AOwner : TComponent);
-var
-  TmpPanel: TPanel;
-  
+
   Function NewMenuItem(ACaption : String; AOnClick : TNotifyEvent) : TMenuItem;
 
   begin
@@ -521,6 +519,7 @@ procedure TPackageEditor.MenuCollapseAllClick(Sender: TObject);
 var
   Node: TTreeNode;
 begin
+  if Sender=nil then ;
   ElementTree.FullCollapse;
   Node := ElementTree.Items.GetFirstNode;
   if Node<>nil then
@@ -529,6 +528,7 @@ end;
 
 procedure TPackageEditor.MenuExpandAllClick(Sender: TObject);
 begin
+  if Sender=nil then ;
   ElementTree.FullExpand;
 end;
 

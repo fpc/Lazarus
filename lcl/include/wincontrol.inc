@@ -34,6 +34,7 @@ function TWinControl.AutoSizeDelayed: boolean;
 begin
   Result:=// no handle means not visible
           (not HandleAllocated)
+          or (not FShowing)
           // during handle creation no autosize
           or (wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
@@ -42,6 +43,7 @@ begin
   if Result and AutoSize then begin
     DbgOut('TWinControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
     if not HandleAllocated then debugln('not HandleAllocated')
+    else if not FShowing then debugln('not FShowing')
     else if wcfCreatingChildHandles in FWinControlFlags then debugln('wcfCreatingChildHandles')
     else debugln('inherited AutoSizeDelayed');
   end;
@@ -687,6 +689,7 @@ var
   Child: TControl;
   AWinControl: TWinControl;
 begin
+  if AutoSizeDelayed then exit;
   for i:=0 to ControlCount-1 do begin
     Child:=Controls[i];
     if Child.AutoSizeDelayed then continue;
@@ -1413,6 +1416,8 @@ begin
     if not ok then
       FShowing := not bShow;
   end;
+  
+  if FShowing then ResizeDelayedAutoSizeChilds;
 end;
 
 procedure TWinControl.Update;

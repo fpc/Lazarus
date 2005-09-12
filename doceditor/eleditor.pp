@@ -40,7 +40,6 @@ Type
 
   TCustomElementEditor = Class(TPanel)
   private
-    FChangedEvent: TNotifyEvent;
     Felement : TDomElement;
     FGetElementList: TGetElementListEvent;
     FSavedNode,
@@ -519,6 +518,7 @@ begin
   If Not Result then
     begin
     SS:=TStringStream.Create(Head+S+Tail);
+    D:=nil;
     Try
       Try
         ReadXmlFile(D,SS);

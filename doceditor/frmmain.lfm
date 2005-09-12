@@ -6,14 +6,13 @@ object MainForm: TMainForm
   OnCloseQuery = MainFormCloseQuery
   OnCreate = MainFormCreate
   OnDestroy = MainFormDestroy
-  PixelsPerInch = 75
+  PixelsPerInch = 112
   HorzScrollBar.Page = 601
   VertScrollBar.Page = 517
   Left = 189
   Height = 544
   Width = 602
   object TBMain: TToolBar
-    BorderSpacing.OnChange = nil
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
@@ -188,7 +187,6 @@ object MainForm: TMainForm
   end
   object PCFiles: TPageControl
     Align = alClient
-    BorderSpacing.OnChange = nil
     TabOrder = 1
     Left = 5
     Height = 468

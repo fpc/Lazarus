@@ -437,31 +437,36 @@ begin
   DebugLn('TCustomNotebook.InsertPage A ',Name,' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption);
   {$ENDIF}
-  if Index<FPageList.Count then
-    NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
-  else
-    NewZPosition:=-1;
-  FPageList.Insert(Index,APage);
-  APage.Parent := Self;
-  if NewZPosition>=0 then
-    SetControlIndex(APage,NewZPosition);
-  if PageIndex = -1 then
-    FPageIndex := Index;
+  APage.DisableAutoSizing;
+  try
+    if Index<FPageList.Count then
+      NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
+    else
+      NewZPosition:=-1;
+    FPageList.Insert(Index,APage);
+    APage.Parent := Self;
+    if NewZPosition>=0 then
+      SetControlIndex(APage,NewZPosition);
+    if PageIndex = -1 then
+      FPageIndex := Index;
 
-{$ifndef WIN32}
-  // TODO: remove when gtk widgetset fixed to show tabpage tab upon
-  //   AddPage, instead of needing TabPage.Visible := true
-  APage.Visible := true;
-{$endif}
+  {$ifndef WIN32}
+    // TODO: remove when gtk widgetset fixed to show tabpage tab upon
+    //   AddPage, instead of needing TabPage.Visible := true
+    APage.Visible := true;
+  {$endif}
 
-  UpdateDesignerFlags(Index);
+    UpdateDesignerFlags(Index);
 
-  if HandleAllocated and (not (csLoading in ComponentState)) then begin
-    //TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
-    ChildPageSetTabVisible(APage, APage.TabVisible, Index);
-    Include(APage.FFlags, pfAdded);
-    if PageIndex = Index then
-      DoSendPageIndex;
+    if HandleAllocated and (not (csLoading in ComponentState)) then begin
+      //TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
+      ChildPageSetTabVisible(APage, APage.TabVisible, Index);
+      Include(APage.FFlags, pfAdded);
+      if PageIndex = Index then
+        DoSendPageIndex;
+    end;
+  finally
+    APage.EnableAutoSizing;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TCustomNotebook.InsertPage END ',Name,' Index=',
@@ -486,10 +491,11 @@ begin
     TWSCustomNotebookClass(WidgetSetClass).MovePage(Self, APage, NewIndex);
 end;
 
-procedure TCustomNoteBook.ChildPageSetTabVisible(APage: TCustomPage; AValue: Boolean; AIndex: Integer);
+procedure TCustomNoteBook.ChildPageSetTabVisible(APage: TCustomPage;
+  AValue: Boolean; AIndex: Integer);
 var
-X: Integer;
-RealIndex: Integer;
+  X: Integer;
+  RealIndex: Integer;
 begin
   RealIndex:= AIndex;
   for X := 0 to AIndex-1 do

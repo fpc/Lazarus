@@ -233,6 +233,7 @@ end;
 
 procedure TEditorPage.ElementChanged(Sender: TObject);
 begin
+  if Sender=nil then ;
   TPackageEditor(FPackages).UpdateSelectedNodeStatus;
 end;
 

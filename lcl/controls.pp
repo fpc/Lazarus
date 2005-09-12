@@ -719,6 +719,7 @@ type
     FAlign: TAlign;
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
+    FAutoSizingLockCount: Integer;
     FAutoSize: Boolean;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
@@ -1065,6 +1066,8 @@ type
                                Raw: boolean); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
+    procedure DisableAutoSizing;
+    procedure EnableAutoSizing;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
@@ -1600,6 +1603,8 @@ type
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+    procedure DisableAlign;
+    procedure EnableAlign;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(ParentWindow: HWnd);
@@ -1617,8 +1622,6 @@ type
     Procedure BroadCast(var ToAllMessage);
     procedure NotifyControls(Msg: Word);
     procedure DefaultHandler(var AMessage); override;
-    Procedure DisableAlign;
-    Procedure EnableAlign;
     function  GetTextLen: Integer; override;
     Procedure Invalidate; override;
     Procedure InsertControl(AControl: TControl);
