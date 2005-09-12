@@ -9,6 +9,9 @@ USES
   About, StdCtrls, ExtCtrls;
 
 TYPE
+
+  { TForm1 }
+
   TForm1 = CLASS(TForm)
     Bevel1: TBEVEL;
     LanguageButton: TBUTTON;
@@ -30,6 +33,8 @@ TYPE
     procedure Form1CREATE(Sender: TObject);
     PROCEDURE Form1SHOW(Sender: TObject);
     procedure LanguageButtonCLICK(Sender: TObject);
+    procedure Listbox1DrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
   PUBLIC
     FUNCTION CalcEasterday(aYear: Word): TDateTime;
   END;
@@ -107,6 +112,12 @@ begin
     PentecostLabel.Caption:='Pfingsten';
     CorpusCristiLabel.Caption:='Fronleichnam';
   end;
+end;
+
+procedure TForm1.Listbox1DrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+begin
+  Listbox1.Canvas.TextRect(ARect, ARect.Left+2, ARect.Top, Listbox1.Items[Index]);
 end;
 
 FUNCTION TForm1.CalcEasterday(aYear: WORD): TDateTime;
