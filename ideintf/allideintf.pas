@@ -49,7 +49,8 @@ uses
   ProjectIntf,
   PropEdits,
   SrcEditorIntf,
-  TextTools;
+  TextTools,
+  TreeViewPropEdit;
 
 implementation
 
