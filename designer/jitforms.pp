@@ -646,6 +646,8 @@ begin
   {$ENDIF}
   try
     Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass);
+    if Result<0 then exit;
+
     {$IFDEF VerboseJITForms}
     writeln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
     {$ENDIF}
@@ -679,6 +681,17 @@ begin
       DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
          +' of Class ''',NewClassName,''' Error: ',E.Message);
       Result:=-1;
+      if FCurReadJITComponent<>nil then begin
+        // try freeing the unfinished thing
+        try
+          FCurReadJITComponent.Free;
+        except
+          on E: Exception do begin
+            DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR destroying component ',E.Message);
+          end;
+        end;
+        FCurReadJITComponent:=nil;
+      end;
     end;
   end;
 end;
@@ -739,24 +752,39 @@ begin
   Instance:=TComponent(FCurReadClass.NewInstance);
   //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
   TComponent(FCurReadJITComponent):=Instance;
-  ok:=false;
   try
-    // set into design mode
-    SetComponentDesignMode(Instance,true);
-    // finish 'create' component
-    Instance.Create(nil);
-    if NewComponentName<>'' then
-      Instance.Name:=NewComponentName;
-    DoRenameClass(FCurReadClass,NewClassName);
-    ok:=true;
-  //debugln('[TJITForms.DoCreateJITComponent] Initialization was successful! FormName="',NewFormName,'"');
-  finally
-    if not ok then begin
-      TComponent(FCurReadJITComponent):=nil;
-      DebugLn('[TJITForms.DoCreateJITComponent] Error while creating instance');
+    ok:=false;
+    try
+      // set into design mode
+      SetComponentDesignMode(Instance,true);
+      // finish 'create' component
+      Instance.Create(nil);
+      if NewComponentName<>'' then
+        Instance.Name:=NewComponentName;
+      DoRenameClass(FCurReadClass,NewClassName);
+      ok:=true;
+    //debugln('[TJITForms.DoCreateJITComponent] Initialization was successful! FormName="',NewFormName,'"');
+    finally
+      if not ok then begin
+        TComponent(FCurReadJITComponent):=nil;
+        DebugLn('[TJITForms.DoCreateJITComponent] Error while creating instance: NewComponentName="',NewComponentName,'" NewClassName="',NewClassName,'" NewUnitName="',NewUnitName,'"');
+      end;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('[TJITForms.DoCreateJITComponent] Error ',E.Message);
+      try
+        FreeJITClass(FCurReadClass);
+        Instance.Free;
+      except
+        on E: Exception do begin
+          DebugLn('[TJITForms.DoCreateJITComponent] Error while destroying instance: NewComponentName="',NewComponentName,'" NewClassName="',NewClassName,'" NewUnitName="',NewUnitName,'" ',E.Message);
+        end;
+      end;
     end;
   end;
-  Result:=FJITComponents.Add(FCurReadJITComponent);
+  if FCurReadJITComponent<>nil then
+    Result:=FJITComponents.Add(FCurReadJITComponent);
 end;
 
 procedure TJITComponentList.DoFinishReading;
