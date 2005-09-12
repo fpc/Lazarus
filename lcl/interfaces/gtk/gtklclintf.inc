@@ -168,7 +168,7 @@ begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
         MinWidth:=Widget^.requisition.Width;
       end;
-      //DebugLn('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
+      //DebugLn('TGtkWidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
       exit;

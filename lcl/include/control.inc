@@ -2496,12 +2496,13 @@ begin
   and (NewBaseParentClientSize.X=FBaseParentClientSize.X)
   and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
   then exit;
-  {if csDesigning in ComponentState then
-  DebugLn('TControl.UpdateBaseBounds ',Name,':',ClassName,
-    ' OldBounds=',FBaseBounds.Left,',',FBaseBounds.Top,',',FBaseBounds.Right-FBaseBounds.Left,',',FBaseBounds.Bottom-FBaseBounds.Top,
-    ' OldClientSize=',FBaseParentClientSize.X,',',FBaseParentClientSize.Y,
-    ' NewBounds=',NewBaseBounds.Left,',',NewBaseBounds.Top,',',NewBaseBounds.Right-NewBaseBounds.Left,',',NewBaseBounds.Bottom-NewBaseBounds.Top,
-    ' NewClientSize=',NewBaseParentClientSize.X,',',NewBaseParentClientSize.Y,
+  //if csDesigning in ComponentState then
+  {if CompareText(ClassName,'TScrollBar')=0 then
+    DebugLn('TControl.UpdateBaseBounds '+dbgs(Self)+
+    ' OldBounds='+dbgs(FBaseBounds)+
+    ' OldClientSize='+dbgs(FBaseParentClientSize)+
+    ' NewBounds='+dbgs(NewBaseBounds)+
+    ' NewClientSize='+dbgs(NewBaseParentClientSize)+
     '');}
   FBaseBounds:=NewBaseBounds;
   FBaseParentClientSize:=NewBaseParentClientSize;
@@ -2568,6 +2569,10 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
+  if csLoading in ComponentState then begin
+    inc(FReadBounds.Right,Value-FReadBounds.Left);
+    FReadBounds.Left:=Value;
+  end;
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
 
@@ -2579,6 +2584,10 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
+  if csLoading in ComponentState then begin
+    inc(FReadBounds.Bottom,Value-FReadBounds.Top);
+    FReadBounds.Top:=Value;
+  end;
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
 
@@ -2602,8 +2611,10 @@ procedure TControl.SetWidth(Value: Integer);
 
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
+  if csLoading in ComponentState then
+    FReadBounds.Right:=FReadBounds.Left+Value;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, Max(0,Value), FHeight);
@@ -2629,8 +2640,10 @@ procedure TControl.SetHeight(Value: Integer);
 
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',dbgs(Value));
   {$ENDIF}
+  if csLoading in ComponentState then
+    FReadBounds.Bottom:=FReadBounds.Top+Value;
   if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
     CheckDesignBounds;
   SetBounds(FLeft, FTop, FWidth, Max(0,Value));

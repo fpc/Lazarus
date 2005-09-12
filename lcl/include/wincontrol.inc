@@ -201,7 +201,7 @@ var
 
   begin
     {$IFDEF CHECK_POSITION}
-    if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+    if CompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -3887,6 +3887,7 @@ begin
     FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
     if not HandleAllocated then
       RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
+    //debugln('TWinControl.CreateWnd ',DbgSName(Self));
     Constraints.UpdateInterfaceConstraints;
     InvalidatePreferredSize;
     TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
@@ -3931,28 +3932,6 @@ begin
   //DebugLn('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
 end;
-
-{------------------------------------------------------------------------------
-  procedure TWinControl.CreateComponent(TheOwner : TComponent);
-------------------------------------------------------------------------------}
-(*
-procedure TWinControl.CreateComponent(TheOwner : TComponent);
-
-  procedure RaiseError(const Msg: string);
-  begin
-    RaiseGDBException('TWinControl.CreateComponent: '+Name+':'+ClassName+' '+Msg);
-  end;
-
-begin
-  if HandleAllocated then
-    RaiseError('Handle already created');
-  CNSendMessage(LM_CREATE, Self, nil);
-  Constraints.UpdateInterfaceConstraints;
-  FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
-  if not HandleAllocated then
-    RaiseError('Handle creation failed');
-end;
-*)
 
 {------------------------------------------------------------------------------
   TWinControl Destroy Component

@@ -787,6 +787,7 @@ type
     FPopupMenu: TPopupMenu;
     FPreferredWidth: integer;
     FPreferredHeight: integer;
+    FReadBounds: TRect;
     FSessionProperties: string;
     FShowHint: Boolean;
     FSizeLock: integer;
@@ -874,10 +875,6 @@ type
     procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
     procedure RequestAlign; dynamic;
-    procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
-                               UseLoadedValues: boolean); virtual;
-    procedure LockBaseBounds;
-    procedure UnlockBaseBounds;
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
@@ -1061,13 +1058,19 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
-                                Lock: boolean); virtual;
+                                Lock: boolean = true); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     procedure DisableAutoSizing;
     procedure EnableAutoSizing;
+    procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
+                               UseLoadedValues: boolean); virtual;
+    procedure LockBaseBounds;
+    procedure UnlockBaseBounds;
+    property BaseBounds: TRect read FBaseBounds;
+    property ReadBounds: TRect read FReadBounds;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;

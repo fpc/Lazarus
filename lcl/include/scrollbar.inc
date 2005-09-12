@@ -80,15 +80,23 @@ var
   OldWidth: Integer;
   OldHeight: Integer;
 begin
-  if FKind <> Value then
-  begin
+  if FKind <> Value then begin
     FKind := Value;
     // switch width and height
     OldWidth:=Width;
     OldHeight:=Height;
+    if csLoading in ComponentState then begin
+      if ReadBounds.Right>ReadBounds.Left then
+        OldWidth:=ReadBounds.Right-ReadBounds.Left;
+      if ReadBounds.Bottom>ReadBounds.Top then
+        OldHeight:=ReadBounds.Bottom-ReadBounds.Top;
+      //debugln('TCustomScrollBar.SetKind ',DbgSName(Self),' ',dbgs(ReadBounds),' OldWidth=',dbgs(OldWidth),' OldHeight=',dbgs(OldHeight));
+    end;
     // TODO: Remove RecreateWnd
-    if HandleAllocated
-    then RecreateWnd(Self);
+    if HandleAllocated then
+      RecreateWnd(Self)
+    else
+      Constraints.UpdateInterfaceConstraints;
     SetBounds(Left,Top,OldHeight,OldWidth);
   end;
 end;
