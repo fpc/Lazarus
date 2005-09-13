@@ -104,14 +104,8 @@ begin
   begin
     if (Item.ImageIndex>=0) then
     begin
-      //Clear old image
-      fImg.Picture.BitMap.Canvas.Brush.Color:=clWhite;
-      fImg.Picture.BitMap.Canvas.FillRect(Rect(0,0,fImg.Width,fImg.Height));
-
-      //Draw new image
       Bmp:=TBitMap.Create;
       fImgL.GetBitmap(Item.ImageIndex,Bmp);
-
       fImg.Picture.BitMap:=Bmp;
       Bmp.Free;
 
