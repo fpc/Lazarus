@@ -249,12 +249,13 @@ const
 const
   {$ifdef GTK2}GTK_WINDOW_DIALOG=GTK_WINDOW_TOPLEVEL;{$endif}
   FormStyleMap : array[TFormBorderStyle] of TGtkWindowType = (
+    // GTK_WINDOW_DIALOG for stay on top forms
     GTK_WINDOW_DIALOG,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
     GTK_WINDOW_DIALOG,  // bsDialog
-    GTK_WINDOW_DIALOG,  // bsToolWindow
-    GTK_WINDOW_DIALOG   // bsSizeToolWin
+    GTK_WINDOW_TOPLEVEL,  // bsToolWindow
+    GTK_WINDOW_TOPLEVEL   // bsSizeToolWin
   );
   FormResizableMap : array[TFormBorderStyle] of gint = (
     0, // bsNone
