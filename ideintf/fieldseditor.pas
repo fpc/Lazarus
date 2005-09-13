@@ -113,11 +113,10 @@ resourcestring
 
 procedure TDSFieldsEditorFrm.AddFieldsActnExecute(Sender: TObject);
 var FieldsList: TFieldsListFrm;
-    mr: TModalResult;
 begin
   FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
   try
-    mr := FieldsList.ShowModal;
+    FieldsList.ShowModal;
   finally
     FieldsList.Free;
   end;
