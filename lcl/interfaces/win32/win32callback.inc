@@ -419,49 +419,81 @@ Var
     ScrollbarHandle := HWND(LParam);
     if ScrollbarHandle<>0 then
       lWinControl := GetWindowInfo(ScrollbarHandle)^.WinControl;
-    if lWinControl is TCustomTrackBar then begin
+    if lWinControl is TCustomTrackBar 
+    then begin
       LMessage.Msg := LM_CHANGED;
+      Exit;
+    end;
+
+    PLMsg:=@LMScroll;
+    with LMScroll do
+    begin
+      Msg := LMsg;
+      ScrollCode := SmallInt(Lo(WParam));
+      SmallPos := 0;
+      ScrollBar := ScrollbarHandle;
+      Pos := 0;
+    end;
+
+    if not (Lo(WParam) in [SB_THUMBTRACK, SB_THUMBPOSITION]) then Exit;
+
+    // For thumb messges, retrieve the real position,
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    if Lo(WParam) = SB_THUMBTRACK
+    then begin
+      ScrollInfo.fMask := SIF_TRACKPOS;
+      // older windows versions may not support trackpos, so fill it with some default
+      ScrollInfo.nTrackPos := Hi(WParam);
     end
     else begin
-      // Retrieve the real position,
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      // 
-      if Lo(WParam) = SB_ENDSCROLL
-      then begin                    
-        // Windows doesn't give a pos on endscroll. We will provide one
-        // Don't know if there is any code relying on this
-        ScrollInfo.fMask := SIF_POS;
-      end
-      else begin
-        ScrollInfo.fMask := SIF_TRACKPOS;
-        // older windows doesn't support trackpos, so fill it with some default
-        ScrollInfo.nTrackPos := Hi(WParam);
-      end;
+      ScrollInfo.fMask := SIF_POS;
+      // older windows versions may not support trackpos, so fill it with some default
+      ScrollInfo.nPos := Hi(WParam);
+    end;
 
-      if ScrollbarHandle <> 0
-      then begin
-        // The message is send by a scrollbar
-        GetScrollInfo(ScrollbarHandle, SB_CTL, ScrollInfo);
-      end
-      else begin
-        // The message is send by a window's standard scrollbar
-        if LMsg = LM_HSCROLL
-        then GetScrollInfo(Window, SB_HORZ, ScrollInfo)
-        else GetScrollInfo(Window, SB_VERT, ScrollInfo);
-      end;
-      PLMsg:=@LMScroll;
-      with LMScroll do
-      begin
-        Msg := LMsg;
-        ScrollCode := SmallInt(Lo(WParam));
-        if ScrollCode = SB_ENDSCROLL
-        then Pos := ScrollInfo.nPos
-        else Pos := ScrollInfo.nTrackPos;
-        if Pos < High(SmallPos)
-        then SmallPos := Pos
-        else SmallPos := High(SmallPos);
-        ScrollBar := ScrollbarHandle;
-      end;
+    if ScrollbarHandle <> 0
+    then begin
+      // The message is send by a scrollbar
+      GetScrollInfo(ScrollbarHandle, SB_CTL, ScrollInfo);
+    end
+    else begin
+      // The message is send by a window's standard scrollbar
+      if LMsg = LM_HSCROLL
+      then GetScrollInfo(Window, SB_HORZ, ScrollInfo)
+      else GetScrollInfo(Window, SB_VERT, ScrollInfo);
+    end;
+   
+    with LMScroll do
+    begin     
+      if Lo(WParam) = SB_THUMBTRACK
+      then Pos := ScrollInfo.nTrackPos
+      else Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);   
+      // Note on the above
+      // When using the scrollwheel, windows sends SB_THUMBTRACK 
+      // messages, but only when scroll.max < 32K. So in that case 
+      // Hi(WParam) won't cycle.
+      // When ending scrollbar tracking we also get those 
+      // messages. Now Hi(WParam) is cycling.
+      // To get the correct value you need to use GetScrollInfo.
+      //
+      // Now there is a problem. GetScrollInfo returns the old position
+      // while using the wheelmouse, and during tracking it returns
+      // the new position.              
+      // To get around this, I use the most significant part of the 
+      // value returned by ScrollInfo, since that is always correct
+      // The missing least significant part is given by Hi(WParam)
+      // (since it is cycling) and is also always valid.
+      // So the combination of both also is.
+      // In the case of the wheelmouse this only works if the 
+      // difference between the old pos and the new pos is < 64K.
+      // I think we safely can asuume that (you wont get messages
+      // anyhow if the range was > 32K :).
+      // MWE.
+      
+
+      if Pos < High(SmallPos)
+      then SmallPos := Pos
+      else SmallPos := High(SmallPos);
     end;
   end;
 
