@@ -967,6 +967,7 @@ type
     function GetAction: TBasicAction; virtual;
     function RealGetText: TCaption; virtual;
     procedure RealSetText(const Value: TCaption); virtual;
+    function GetCachedText(var CachedText: TCaption): boolean; virtual;
     procedure SetAction(Value: TBasicAction); virtual;
     procedure SetColor(Value: TColor); virtual;
     procedure SetEnabled(Value: Boolean); virtual;

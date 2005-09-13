@@ -3175,6 +3175,12 @@ begin
   Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
+function TControl.GetCachedText(var CachedText: TCaption): boolean;
+begin
+  CachedText := FCaption;
+  Result:= true;
+end;
+
 {------------------------------------------------------------------------------
   TControl SetText
 ------------------------------------------------------------------------------}

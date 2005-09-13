@@ -668,6 +668,7 @@ type
     procedure DestroyHandle; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
+    function GetCachedText(var CachedText: TCaption): boolean; override;
     procedure SetLines(const Value: TStrings);
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);

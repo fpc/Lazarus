@@ -3953,6 +3953,8 @@ end;
   created. Place cached property code here.
  ------------------------------------------------------------------------------}
 procedure TWinControl.InitializeWnd;
+var
+  CachedText: string;
 begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
@@ -3978,7 +3980,8 @@ begin
 
   // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) then begin
-    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+    if GetCachedText(CachedText) then
+      TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
     InvalidatePreferredSize;
   end;
 
@@ -4045,10 +4048,13 @@ end;
   procedure TWinControl.Loaded;
  ------------------------------------------------------------------------------}
 procedure TWinControl.Loaded;
+var
+  CachedText: string;
 begin
   if HandleAllocated then begin
     // Set cached caption
-    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+    if GetCachedText(CachedText) then
+      TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
     InvalidatePreferredSize;
 
     if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then begin

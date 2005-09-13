@@ -143,6 +143,11 @@ begin
   Lines.Text := Value;
 end;
 
+function TCustomMemo.GetCachedText(var CachedText: TCaption): boolean;
+begin
+  Result:= false;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomMemo.SetLines
   Params: 
