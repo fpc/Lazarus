@@ -606,9 +606,6 @@ begin
       end;
     end;
 
-    // get all required packages
-    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
-
     // try save all modified packages
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
