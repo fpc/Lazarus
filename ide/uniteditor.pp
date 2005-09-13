@@ -56,7 +56,7 @@ uses
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
+  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf;
 
 type
@@ -470,6 +470,7 @@ type
        Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
        Shift: TShiftstate; X,Y: Integer);
+    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //hintwindow stuff
     FHintWindow: THintWindow;
@@ -509,6 +510,10 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure ShowLazDoc;  //DBlaszijk 11-sep-05
+    procedure UpdateLazDoc;  //DBlaszijk 11-sep-05
+    procedure LazDocNewPage; //DBlaszijk 11-sep-05
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
@@ -2480,6 +2485,53 @@ begin
   inherited Destroy;
 end;
 
+procedure TSourceNotebook.ShowLazDoc;
+begin
+  {$IFNDEF EnableLazDoc}
+  exit;
+  {$ENDIF}
+  DoShowLazDoc;
+  LazDocNewPage;
+end;
+
+procedure TSourceNotebook.LazDocNewPage;
+var
+  SrcEdit: TSourceEditor;
+begin
+  {$IFNDEF EnableLazDoc}
+  exit;
+  {$ENDIF}
+  //try to find if the file belongs to LCL
+  //for other projects the location of the doc file could
+  //be found through the lpi file
+  if Assigned(LazDocForm) then
+  begin
+    SrcEdit:=GetActiveSE;
+
+    if FileIsInPath(SrcEdit.FileName,EnvironmentOptions.LazarusDirectory+'lcl')
+    then
+      //load the XML file
+      LazDocForm.DocFileName := EnvironmentOptions.LazarusDirectory +
+                        SetDirSeparators('docs/xml/lcl/')+
+                        ChangeFileExt(ExtractFileName(SrcEdit.FileName),'.xml');
+  end;
+end;
+
+procedure TSourceNotebook.UpdateLazDoc;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+
+  //try to find if the file belongs to LCL
+  //for other projects the location of the doc file could
+  //be found through the lpi file
+  if FileIsInPath(SrcEdit.FileName,EnvironmentOptions.LazarusDirectory+'lcl')
+  then
+    LazDocForm.UpdateLazDoc(SrcEdit.EditorComponent.Lines,
+                            SrcEdit.EditorComponent.CaretXY);
+end;
+
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
   ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean;
   Index: integer): boolean;
@@ -3771,9 +3823,7 @@ Begin
   {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
   Result.EditorComponent.BeginUpdate;
-  {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE C ');
-  {$ENDIF}
+
   FSourceEditorList.Add(Result);
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
@@ -3785,6 +3835,8 @@ Begin
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnMouseUp := @EditorMouseUp;
+  Result.OnKeyDown :=@EditorKeyDown;
+
   Result.EditorComponent.EndUpdate;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE end ');
@@ -5066,6 +5118,9 @@ Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
+
+  LazDocNewPage;
+  
   //writeln('TSourceNotebook.NotebookPageChanged ',Notebook.Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
@@ -5305,6 +5360,17 @@ begin
       FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
     end;
   end;
+  if Assigned(LazDocForm) then
+    UpdateLazDoc;
+end;
+
+procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if not Assigned(LazDocForm) then Exit;
+
+  if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME] then
+    UpdateLazDoc;
 end;
 
 procedure TSourceNotebook.ShowSynEditHint(const MousePos: TPoint);
@@ -5479,7 +5545,6 @@ begin
       Left := 5;
       Width:=Self.Width-2*Left;
       Caption := lisUEGotoLine;
-      Visible := True;
     end;
 
     Edit1 := TEdit.Create(self);
@@ -5491,7 +5556,6 @@ begin
       Left := 5;
       Caption := '';
       OnKeyDown:=@Edit1KeyDown;
-      Visible := True;
     end;
 
     btnOK := TBitbtn.Create(self);
@@ -5503,7 +5567,6 @@ begin
       Left := 40;
       kind := bkOK;
       Default:=false;
-      Visible := True;
     end;
 
     btnCancel := TBitbtn.Create(self);
@@ -5515,7 +5578,6 @@ begin
       Left := 120;
       kind := bkCancel;
       Default:=false;
-      Visible := True;
     end;
   end;
   ActiveControl:=Edit1;

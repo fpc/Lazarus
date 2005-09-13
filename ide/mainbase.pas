@@ -653,6 +653,7 @@ begin
     CreateMenuItem(ParentMI,itmToolGuessMisplacedIFDEF,'itmToolGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
     CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString);
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff);
+    CreateMenuItem(ParentMI,itmToolLazDoc,'itmToolLazDoc','LazDoc');   //DBlaszijk 5-sep-05
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM);
@@ -854,6 +855,7 @@ begin
     itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
     itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
     itmToolDiff.ShortCut:=CommandToShortCut(ecDiff);
+    //itmToolLazDoc.ShortCut:=CommandToShortCut(ecLazDoc);   //DBlaszijk 5-sep-05
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolCheckLFM.ShortCut:=CommandToShortCut(ecCheckLFM);
     itmToolConvertDelphiUnit.ShortCut:=CommandToShortCut(ecConvertDelphiUnit);

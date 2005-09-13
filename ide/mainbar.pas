@@ -249,6 +249,7 @@ type
     itmToolConvertDFMtoLFM: TMenuItem;
     itmToolMakeResourceString: TMenuItem;
     itmToolDiff: TMenuItem;
+    itmToolLazDoc: TMenuItem;   //DBlaszijk 5-sep-05
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 

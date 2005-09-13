@@ -259,6 +259,7 @@ type
     procedure mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
     procedure mnuToolMakeResourceStringClicked(Sender: TObject);
     procedure mnuToolDiffClicked(Sender: TObject);
+    procedure mnuToolLazDocClicked(Sender: TObject);  //DBlaszijk 5-sep-05
     procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
@@ -1916,6 +1917,7 @@ begin
     itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
     itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
+    itmToolLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
@@ -3002,6 +3004,12 @@ end;
 procedure TMainIDE.mnuToolDiffClicked(Sender: TObject);
 begin
   DoDiff;
+end;
+
+//DBlaszijk 5-sep-05
+procedure TMainIDE.mnuToolLazDocClicked(Sender: TObject);
+begin
+  SourceNotebook.ShowLazDoc;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -9932,7 +9940,7 @@ begin
   if Project1=nil then exit;
   FuncData:=PReadFunctionData(Data);
   Param:=FuncData^.Param;
-  debugln('TMainIDE.MacroFunctionProject A Param="',Param,'"');
+  //debugln('TMainIDE.MacroFunctionProject A Param="',Param,'"');
   if CompareText(Param,'SrcPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false)
   else if CompareText(Param,'IncPath')=0 then

@@ -1,0 +1,19 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TLazDocForm','FORMDATA',[
+  'TPF0'#11'TLazDocForm'#10'LazDocForm'#13'ActiveControl'#7#9'TabSheet1'#7'Capt'
+  +'ion'#6#13'LazDoc editor'#12'ClientHeight'#3#195#0#11'ClientWidth'#3#241#2#8
+  +'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'#3
+  +#240#2#18'VertScrollBar.Page'#3#194#0#4'Left'#3#245#0#6'Height'#3#195#0#3'To'
+  +'p'#3#250#1#5'Width'#3#241#2#0#12'TPageControl'#11'PageControl'#10'ActivePag'
+  +'e'#7#9'TabSheet1'#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#0#11
+  +'TabPosition'#7#8'tpBottom'#6'Height'#3#195#0#5'Width'#3#241#2#0#9'TTabSheet'
+  +#9'TabSheet1'#7'Caption'#6#9'TabSheet1'#12'ClientHeight'#3#169#0#11'ClientWi'
+  +'dth'#3#233#2#6'Height'#3#169#0#5'Width'#3#233#2#0#5'TMemo'#9'DescrMemo'#5'A'
+  +'lign'#7#8'alClient'#12'Font.CharSet'#7#12'ANSI_CHARSET'#10'Font.Color'#7#7
+  +'clBlack'#11'Font.Height'#2#244#9'Font.Name'#6#11'Courier New'#10'Font.Pitch'
+  +#7#7'fpFixed'#8'OnChange'#7#15'DescrMemoChange'#8'TabOrder'#2#0#6'Height'#3
+  +#169#0#5'Width'#3#233#2#0#0#0#0#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#18
+  +'Open existing file'#11'FilterIndex'#2#0#5'Title'#6#18'Open existing file'#4
+  +'left'#2#29#3'top'#3#208#2#0#0#0
+]);
