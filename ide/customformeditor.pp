@@ -1236,6 +1236,7 @@ Begin
         NewComponent := TypeClass.Create(OwnerComponent);
       except
         on e: Exception do begin
+          DumpExceptionBackTrace;
           MessageDlg('Error creating component',
             'Error creating component: '+TypeClass.ClassName,
             mtError,[mbCancel],0);
