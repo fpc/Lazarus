@@ -1,5 +1,6 @@
 object LazDocForm: TLazDocForm
   ActiveControl = ErrorsTabSheet
+  BorderStyle = bsSizeToolWin
   Caption = 'LazDoc editor'
   ClientHeight = 195
   ClientWidth = 753

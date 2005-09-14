@@ -389,6 +389,13 @@ var
   n: TDOMNode;
   S: String;
   child: TDOMNode;
+  function ToUnixLineEnding(s: string): string;
+  begin
+    if LineEnding=#10 then
+      Result := s
+    else
+      Result := StringReplace(s, LineEnding, #10, [rfReplaceAll]);
+  end;
 begin
   n := NodeByName(FCurrentElement);
 
@@ -415,28 +422,24 @@ begin
 
       if S = 'descr' then
       begin
-        DescrMemo.Lines.Delimiter := #10;
-
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(DescrMemo.Lines.DelimitedText);
+          child := doc.CreateTextNode(ToUnixLineEnding(DescrMemo.Lines.Text));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := DescrMemo.Lines.DelimitedText;
+          n.FirstChild.NodeValue := ToUnixLineEnding(DescrMemo.Lines.Text);
       end;
 
       if S = 'errors' then
       begin
-        ErrorsMemo.Lines.Delimiter := #10;
-
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(ErrorsMemo.Lines.DelimitedText);
+          child := doc.CreateTextNode(ToUnixLineEnding(ErrorsMemo.Lines.Text));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue :=ErrorsMemo.Lines.DelimitedText;
+          n.FirstChild.NodeValue := ToUnixLineEnding(ErrorsMemo.Lines.Text);
       end;
 
     end;

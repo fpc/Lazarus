@@ -1,29 +1,29 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TLazDocForm','FORMDATA',[
-  'TPF0'#11'TLazDocForm'#10'LazDocForm'#13'ActiveControl'#7#14'ErrorsTabSheet'#7
-  +'Caption'#6#13'LazDoc editor'#12'ClientHeight'#3#195#0#11'ClientWidth'#3#241
-  +#2#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'
-  +#3#240#2#18'VertScrollBar.Page'#3#194#0#4'Left'#3#245#0#6'Height'#3#195#0#3
-  +'Top'#3#250#1#5'Width'#3#241#2#0#12'TPageControl'#11'PageControl'#10'ActiveP'
-  +'age'#7#14'ErrorsTabSheet'#5'Align'#7#8'alClient'#8'TabIndex'#2#2#8'TabOrder'
-  +#2#0#11'TabPosition'#7#8'tpBottom'#6'Height'#3#195#0#5'Width'#3#241#2#0#9'TT'
-  +'abSheet'#13'ShortTabSheet'#7'Caption'#6#13'ShortTabSheet'#12'ClientHeight'#3
-  +#169#0#11'ClientWidth'#3#233#2#6'Height'#3#169#0#5'Width'#3#233#2#0#5'TEdit'
-  +#9'ShortEdit'#5'Align'#7#5'alTop'#22'BorderSpacing.OnChange'#13#8'OnChange'#7
-  +#15'DescrMemoChange'#8'TabOrder'#2#0#4'Text'#6#9'ShortEdit'#6'Height'#2#23#5
-  +'Width'#3#233#2#0#0#0#9'TTabSheet'#13'DescrTabSheet'#7'Caption'#6#13'DescrTa'
-  +'bSheet'#12'ClientHeight'#3#169#0#11'ClientWidth'#3#233#2#6'Height'#3#169#0#5
-  +'Width'#3#233#2#0#5'TMemo'#9'DescrMemo'#5'Align'#7#8'alClient'#12'Font.CharS'
-  +'et'#7#12'ANSI_CHARSET'#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#244#9
-  +'Font.Name'#6#11'Courier New'#10'Font.Pitch'#7#7'fpFixed'#13'Lines.Strings'#1
-  +#6#9'DescrMemo'#0#8'OnChange'#7#15'DescrMemoChange'#8'TabOrder'#2#0#6'Height'
-  +#3#169#0#5'Width'#3#233#2#0#0#0#9'TTabSheet'#14'ErrorsTabSheet'#7'Caption'#6
-  +#14'ErrorsTabSheet'#12'ClientHeight'#3#169#0#11'ClientWidth'#3#233#2#6'Heigh'
-  +'t'#3#169#0#5'Width'#3#233#2#0#5'TMemo'#10'ErrorsMemo'#5'Align'#7#8'alClient'
-  +#22'BorderSpacing.OnChange'#13#12'Font.CharSet'#7#12'ANSI_CHARSET'#10'Font.C'
-  +'olor'#7#7'clBlack'#11'Font.Height'#2#244#9'Font.Name'#6#11'Courier New'#10
-  +'Font.Pitch'#7#7'fpFixed'#13'Lines.Strings'#1#6#10'ErrorsMemo'#0#8'OnChange'
-  +#7#15'DescrMemoChange'#8'TabOrder'#2#0#6'Height'#3#169#0#5'Width'#3#233#2#0#0
-  +#0#0#0
+  'TPF0'#11'TLazDocForm'#10'LazDocForm'#13'ActiveControl'#7#14'ErrorsTabSheet'
+  +#11'BorderStyle'#7#13'bsSizeToolWin'#7'Caption'#6#13'LazDoc editor'#12'Clien'
+  +'tHeight'#3#195#0#11'ClientWidth'#3#241#2#8'OnCreate'#7#10'FormCreate'#13'Pi'
+  +'xelsPerInch'#2'`'#18'HorzScrollBar.Page'#3#240#2#18'VertScrollBar.Page'#3
+  +#194#0#4'Left'#3#245#0#6'Height'#3#195#0#3'Top'#3#250#1#5'Width'#3#241#2#0#12
+  +'TPageControl'#11'PageControl'#10'ActivePage'#7#14'ErrorsTabSheet'#5'Align'#7
+  +#8'alClient'#8'TabIndex'#2#2#8'TabOrder'#2#0#11'TabPosition'#7#8'tpBottom'#6
+  +'Height'#3#195#0#5'Width'#3#241#2#0#9'TTabSheet'#13'ShortTabSheet'#7'Caption'
+  +#6#13'ShortTabSheet'#12'ClientHeight'#3#169#0#11'ClientWidth'#3#233#2#6'Heig'
+  +'ht'#3#169#0#5'Width'#3#233#2#0#5'TEdit'#9'ShortEdit'#5'Align'#7#5'alTop'#22
+  +'BorderSpacing.OnChange'#13#8'OnChange'#7#15'DescrMemoChange'#8'TabOrder'#2#0
+  +#4'Text'#6#9'ShortEdit'#6'Height'#2#23#5'Width'#3#233#2#0#0#0#9'TTabSheet'#13
+  +'DescrTabSheet'#7'Caption'#6#13'DescrTabSheet'#12'ClientHeight'#3#169#0#11'C'
+  +'lientWidth'#3#233#2#6'Height'#3#169#0#5'Width'#3#233#2#0#5'TMemo'#9'DescrMe'
+  +'mo'#5'Align'#7#8'alClient'#12'Font.CharSet'#7#12'ANSI_CHARSET'#10'Font.Colo'
+  +'r'#7#7'clBlack'#11'Font.Height'#2#244#9'Font.Name'#6#11'Courier New'#10'Fon'
+  +'t.Pitch'#7#7'fpFixed'#13'Lines.Strings'#1#6#9'DescrMemo'#0#8'OnChange'#7#15
+  +'DescrMemoChange'#8'TabOrder'#2#0#6'Height'#3#169#0#5'Width'#3#233#2#0#0#0#9
+  +'TTabSheet'#14'ErrorsTabSheet'#7'Caption'#6#14'ErrorsTabSheet'#12'ClientHeig'
+  +'ht'#3#169#0#11'ClientWidth'#3#233#2#6'Height'#3#169#0#5'Width'#3#233#2#0#5
+  +'TMemo'#10'ErrorsMemo'#5'Align'#7#8'alClient'#22'BorderSpacing.OnChange'#13
+  +#12'Font.CharSet'#7#12'ANSI_CHARSET'#10'Font.Color'#7#7'clBlack'#11'Font.Hei'
+  +'ght'#2#244#9'Font.Name'#6#11'Courier New'#10'Font.Pitch'#7#7'fpFixed'#13'Li'
+  +'nes.Strings'#1#6#10'ErrorsMemo'#0#8'OnChange'#7#15'DescrMemoChange'#8'TabOr'
+  +'der'#2#0#6'Height'#3#169#0#5'Width'#3#233#2#0#0#0#0#0
 ]);
