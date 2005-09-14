@@ -216,9 +216,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.RemoveAllMethodsOfObject">
-        <short/>
-        <descr/>
-        <errors/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -677,9 +677,10 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RaiseGDBException">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Raises an exception.</short>
+        <descr>Normally, GDB does not catch fpc Exception objects, therefore this procedure raises a standard divide by zero exception which is catched by GDB. 
+</descr>
+        <errors></errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -688,15 +689,14 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLn">
-        <short></short>
+        <short>Writes a string to the debug output.</short>
         <descr>Writes a string to the debug output.
 
 The default debug output is the console.
 
 This can be overriden by passing the --debug-log=&lt;myfile.txt&gt; parameter on the command line of the application. Then the output is written to &lt;myfile.txt&gt;
 </descr>
-        <errors>""
-</errors>
+        <errors></errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
