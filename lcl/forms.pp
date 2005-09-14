@@ -551,6 +551,7 @@ type
                                        default wsNormal;
   end;
 
+  TCustomFormClass = class of TCustomForm;
 
   { TForm }
 

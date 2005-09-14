@@ -61,30 +61,38 @@ const
 
 type
   TIDECommandKeys = class;
+  TIDECommandCategory = class;
 
+  { TIDECommandScope
+    A TIDECommandScope defines a set of IDE windows that will share the same
+    IDE commands. An IDE command can be valid in several scopes at the same
+    time. }
+    
   { TIDECommandScope }
-  { A TIDECommandScope defines a set of IDE windows that will share the same
-    IDE commands. }
 
   TIDECommandScope = class(TPersistent)
   private
     FName: string;
-    FIDEWindows: TFPList;
-    FCommands: TFPList;
-    function GetCommands(Index: integer): TIDECommandKeys;
+    FIDEWindows: TFPList;// list of TCustomForm
+    FIDEWindowClasses: TFPList;// list of TCustomFormClass
+    FCategories: TFPList;
+    function GetCategories(Index: integer): TIDECommandCategory;
+    function GetIDEWindowClasses(Index: integer): TCustomFormClass;
     function GetIDEWindows(Index: integer): TCustomForm;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddWindow(AnWindow: TCustomForm);
+    procedure AddWindow(AWindow: TCustomForm);
+    procedure RemoveWindow(AWindow: TCustomForm);
     function IDEWindowCount: integer;
-    procedure AddCommand(ACommand: TIDECommandKeys);
-    function CommandCount: integer;
+    function IDEWindowClassCount: integer;
+    function CategoryCount: integer;
     function HasIDEWindow(AnWindow: TCustomForm): boolean;
   public
     property Name: string read FName;
     property IDEWindows[Index: integer]: TCustomForm read GetIDEWindows;
-    property Commands[Index: integer]: TIDECommandKeys read GetCommands;
+    property IDEWindowClasses[Index: integer]: TCustomFormClass read GetIDEWindowClasses;
+    property Categories[Index: integer]: TIDECommandCategory read GetCategories;
   end;
 
   { TIDECommandScopes }
@@ -117,26 +125,31 @@ type
     Shift2: TShiftState;
   end;
 
-  { TIDECommandCategory }
-  { TIDECommandCategory is used to divide the commands in handy packets }
+  { TIDECommandCategory
+    TIDECommandCategory is used to divide the commands in handy packets }
     
   TIDECommandCategory = class(TList)
   protected
-    {$IFDEF UseIDEScopes}
-    FScope: TIDECommandScope;
-    {$ELSE}
-    FAreas: TCommandAreas;
-    {$ENDIF}
     FDescription: string;
     FName: string;
     FParent: TIDECommandCategory;
+    {$IFDEF UseIDEScopes}
+    FScope: TIDECommandScope;
+    procedure SetScope(const AValue: TIDECommandScope);
+    {$ELSE}
+    FAreas: TCommandAreas;
+    {$ENDIF}
+  public
+    {$IFDEF UseIDEScopes}
+    destructor Destroy; override;
+    {$ENDIF}
   public
     property Name: string read FName;
     property Description: string read FDescription;
     property Parent: TIDECommandCategory read FParent;
     procedure Delete(Index: Integer); virtual;
     {$IFDEF UseIDEScopes}
-    property Scope: TIDECommandScope read FScope write FScope;
+    property Scope: TIDECommandScope read FScope write SetScope;
     {$ELSE}
     property Areas: TCommandAreas read FAreas;
     {$ENDIF}
@@ -417,6 +430,24 @@ end;
 
 { TIDECommandCategory }
 
+{$IFDEF UseIDEScopes}
+procedure TIDECommandCategory.SetScope(const AValue: TIDECommandScope);
+begin
+  if FScope=AValue then exit;
+  if FScope<>nil then
+    FScope.FCategories.Remove(Self);
+  FScope:=AValue;
+  if FScope<>nil then
+    FScope.FCategories.Add(Self);
+end;
+
+destructor TIDECommandCategory.Destroy;
+begin
+  Scope:=nil;
+  inherited Destroy;
+end;
+{$ENDIF}
+
 procedure TIDECommandCategory.Delete(Index: Integer);
 begin
   inherited Delete(Index);
@@ -429,27 +460,47 @@ begin
   Result:=TCustomForm(FIDEWindows[Index]);
 end;
 
-function TIDECommandScope.GetCommands(Index: integer): TIDECommandKeys;
+function TIDECommandScope.GetCategories(Index: integer): TIDECommandCategory;
 begin
-  Result:=TIDECommandKeys(FCommands[Index]);
+  Result:=TIDECommandCategory(FCategories[Index]);
+end;
+
+function TIDECommandScope.GetIDEWindowClasses(Index: integer): TCustomFormClass;
+begin
+  Result:=TCustomFormClass(FIDEWindowClasses[Index]);
 end;
 
 constructor TIDECommandScope.Create;
 begin
   FIDEWindows:=TFPList.Create;
-  FCommands:=TFPList.Create;
+  FIDEWindowClasses:=TFPList.Create;
+  FCategories:=TFPList.Create;
 end;
 
 destructor TIDECommandScope.Destroy;
+{$IFDEF UseIDEScopes}
+var
+  i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF UseIDEScopes}
+  for i:=FCategories.Count-1 downto 0 do
+    Categories[i].Scope:=nil;
+  {$ENDIF}
+  FreeAndNil(FIDEWindowClasses);
   FreeAndNil(FIDEWindows);
-  FreeAndNil(FCommands);
+  FreeAndNil(FCategories);
   inherited Destroy;
 end;
 
-procedure TIDECommandScope.AddWindow(AnWindow: TCustomForm);
+procedure TIDECommandScope.AddWindow(AWindow: TCustomForm);
 begin
-  FIDEWindows.Add(AnWindow);
+  FIDEWindows.Add(AWindow);
+end;
+
+procedure TIDECommandScope.RemoveWindow(AWindow: TCustomForm);
+begin
+  FIDEWindows.Remove(AWindow);
 end;
 
 function TIDECommandScope.IDEWindowCount: integer;
@@ -457,14 +508,14 @@ begin
   Result:=FIDEWindows.Count;
 end;
 
-procedure TIDECommandScope.AddCommand(ACommand: TIDECommandKeys);
+function TIDECommandScope.IDEWindowClassCount: integer;
 begin
-  FCommands.Add(ACommand);
+  Result:=FIDEWindowClasses.Count;
 end;
 
-function TIDECommandScope.CommandCount: integer;
+function TIDECommandScope.CategoryCount: integer;
 begin
-  Result:=FCommands.Count;
+  Result:=FCategories.Count;
 end;
 
 function TIDECommandScope.HasIDEWindow(AnWindow: TCustomForm): boolean;
@@ -472,7 +523,11 @@ var
   i: Integer;
 begin
   for i:=0 to FIDEWindows.Count-1 do
-    if TCustomForm(FIDEWindows[i])=AnWindow then exit(true);
+    if TCustomForm(FIDEWindows[i])=AnWindow then
+      exit(true);
+  for i:=0 to FIDEWindowClasses.Count-1 do
+    if AnWindow.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+      exit(true);
   Result:=false;
 end;
 

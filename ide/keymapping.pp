@@ -377,7 +377,7 @@ type
       ): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
-    KeyCommandRelationList:TKeyCommandRelationList;
+    KeyCommandRelationList: TKeyCommandRelationList;
     KeyIndex:integer;
   end;
 
@@ -1778,7 +1778,7 @@ begin
   AddAttributesAndKey;
 end;
 
-function KeyAndShiftStateToEditorKeyString(Key:  TIDEShortCut):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key:  TIDEShortCut): String;
 begin
   Result := KeyAndShiftStateToEditorKeyString(Key.Key1, Key.Shift1);
   if (Key.Key2<>VK_UNKNOWN) then
@@ -2058,13 +2058,15 @@ end;
 function TKeyMappingEditForm.ResolveConflicts(Key: TIDEShortCut;
   {$IFDEF UseIDEScopes}Scope: TIDECommandScope{$ELSE}Areas: TCommandAreas{$ENDIF}
   ): boolean;
+type
+  TConflictType = (ctNone,ctConflictKeyA,ctConflictKeyB);
 var
   ConflictRelation: TKeyCommandRelation;
   ConflictName: String;
   CurRelation: TKeyCommandRelation;
   CurName: String;
   j: integer;
-  conflictType: integer;
+  conflictType: TConflictType;
 begin
   // search for conflict
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
@@ -2073,92 +2075,54 @@ begin
     Result:=true;
     exit;
   end;
-  //Try to find a relation that conflicts
-  for j:=0 to KeyCommandRelationList.RelationCount-1 do
-    with KeyCommandRelationList.Relations[j] do
+  //Try to find an IDE command that conflicts
+  for j:=0 to KeyCommandRelationList.RelationCount-1 do begin
+    conflictType:=ctNone;
+    ConflictRelation:=KeyCommandRelationList.Relations[j];
+    with ConflictRelation do
     begin
-      if (j=KeyIndex) or (Category.Areas*Areas=[]) then continue;
+      if (j=KeyIndex) then continue;
+      {$IFDEF UseIDEScopes}
+      {$WARN TODO: TKeyMappingEditForm.ResolveConflicts}
+      {$ELSE}
+      if (Category.Areas*Areas=[]) then continue;
+      {$ENDIF}
       
-      if (Key.Key1=KeyA.Key1) and (Key.Shift1=KeyA.Shift1) then
-        if (Key.Key2=KeyA.Key2) and (Key.Shift2=KeyA.Shift2) then
-        begin
-          ConflictRelation:=KeyCommandRelationList.Relations[j];
-          conflictType:=1;  // Key = KeyA of this relation
-          break;
-        end
-        else begin
-          if (Key.Key2<>VK_UNKNOWN) and (KeyA.Key2=VK_UNKNOWN) then
-          begin
-            ConflictRelation:=KeyCommandRelationList.Relations[j];
-            conflictType:=3;  // Key is two-key combo, while KeyA is not
-            break;
-          end;
-          if (Key.Key2=VK_UNKNOWN) and (KeyA.Key2<>VK_UNKNOWN) then
-          begin
-            ConflictRelation:=KeyCommandRelationList.Relations[j];
-            conflictType:=3;  // KeyA is two-key combo, while Key is not
-            break;
-          end;
-        end
-      else if (Key.Key1=KeyB.Key1) and (Key.Shift1=KeyB.Shift1) then
-        if (Key.Key2=KeyB.Key2) and (Key.Shift2=KeyB.Shift2) then
-        begin
-          ConflictRelation:=KeyCommandRelationList.Relations[j];
-          conflictType:=2;  // Key = KeyB of this relation
-          break;
-        end
-        else begin
-          if (Key.Key2<>VK_UNKNOWN) and (KeyB.Key2=VK_UNKNOWN) then
-          begin
-            ConflictRelation:=KeyCommandRelationList.Relations[j];
-            conflictType:=4;  // Key is two-key combo, while KeyB is not
-            break;
-          end;
-          if (Key.Key2=VK_UNKNOWN) and (KeyB.Key2<>VK_UNKNOWN) then
-          begin
-            ConflictRelation:=KeyCommandRelationList.Relations[j];
-            conflictType:=4;  // KeyB is two-key combo, while Key is not
-            break;
-          end;
-        end
-      else
-        conflictType:=0;
+      if ((Key.Key1=KeyA.Key1) and (Key.Shift1=KeyA.Shift1))
+      and (((Key.Key2=KeyA.Key2) and (Key.Shift2=KeyA.Shift2))
+            or (Key.Key2=VK_UNKNOWN) or (KeyA.Key2=VK_UNKNOWN))
+      then begin
+        conflictType:=ctConflictKeyA; // KeyA bites
+      end
+      else if ((Key.Key1=KeyB.Key1) and (Key.Shift1=KeyB.Shift1))
+      and (((Key.Key2=KeyB.Key2) and (Key.Shift2=KeyB.Shift2))
+           or (Key.Key2<>VK_UNKNOWN) or (KeyB.Key2=VK_UNKNOWN))
+      then begin
+        conflictType:=ctConflictKeyB; // KeyB bites
+      end;
     end;
-  if (conflictType<>0) then
-  begin
-    CurName:=CurRelation.GetCategoryAndName;
-    ConflictName:=ConflictRelation.GetCategoryAndName;
-    case conflictType of
-      1,2:begin
-        if MessageDlg('Conflict found',
-           'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
-           'is already assigned to '+ConflictName+'.'#13+#13+
-           'Remove the old assignment and assign the key to the new function'#13+
-           CurName+'?', mtConfirmation,[mbOk,mbCancel],0) <> mrOk then
-        begin
-          Result:=false;
-          exit;
-        end;
+    if (conflictType<>ctNone) then begin
+      CurName:=CurRelation.GetCategoryAndName;
+      ConflictName:=ConflictRelation.GetCategoryAndName;
+      if conflictType=ctConflictKeyA then
+        ConflictName:=ConflictName
+                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyA)
+      else
+        ConflictName:=ConflictName
+                 +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyB);
+      if MessageDlg('Conflict found',
+         'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
+         'is already assigned to '+ConflictName+'.'#13+#13+
+         'Remove the old assignment and assign the key to the new function'#13+
+         CurName+'?', mtConfirmation,[mbOk,mbCancel],0) <> mrOk then
+      begin
+        Result:=false;
+        exit;
       end;
-      3,4:begin
-        if (conflictType=1) then
-          ConflictName:=ConflictName+' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyA)
-        else
-          ConflictName:=ConflictName+' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyB);
-        if MessageDlg('Conflict found',
-           'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
-           'conflicts with '+ConflictName+')'+#13+
-           'Remove the old assignment and assign the key to the new function'#13+
-           CurName+'?', mtConfirmation,[mbOk,mbCancel],0) <> mrOk then
-        begin
-          Result:=false;
-          exit;
-        end;
-      end;
-    end; // case
-    if (conflictType=1) then
-      ConflictRelation.KeyA:=ConflictRelation.KeyB;
-    ConflictRelation.ClearKeyB;
+      if (conflictType=ctConflictKeyA) then
+        ConflictRelation.KeyA:=ConflictRelation.KeyB;
+      ConflictRelation.ClearKeyB;
+    end;
   end;
 
   Result:=true;
