@@ -95,7 +95,7 @@ const
 
 var
   LazDocForm: TLazDocForm;
-  doc: TXMLdocument;
+  doc: TXMLdocument = nil; // maybe better to make it a member field of TLazFormDoc
 
 procedure DoShowLazDoc;
 
@@ -106,7 +106,7 @@ implementation
 procedure DoShowLazDoc;
 begin
   if LazDocForm = Nil then
-    LazDocForm := TLazDocForm.Create(Nil);
+    Application.CreateForm(TLazDocForm, LazDocForm);
 
   LazDocForm.Show;
 end;
@@ -118,8 +118,8 @@ begin
 
     FDocFileName := Value;
 
-    if not Assigned(doc) then
-      doc := TXMLDocument.Create;
+    if Assigned(doc) then
+      FreeAndNil(doc);
 
     ReadXMLFile(doc, FDocFileName);
 
@@ -451,6 +451,9 @@ end;
 
 initialization
   {$I lazdocfrm.lrs}
+  
+finalization
+  FreeAndNil(doc)
 
 end.
 
