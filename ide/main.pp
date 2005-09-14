@@ -1917,7 +1917,12 @@ begin
     itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
     itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
+{$IFDEF EnableLazDoc}
     itmToolLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
+{$ELSE}
+    itmToolLazDoc.Visible := false;
+    itmToolLazDoc.Enabled := false;
+{$ENDIF}
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
