@@ -1,3 +1,4 @@
+{  $Id$  }
 { Copyright (C) 2005 Alexandru Alexandrov
   Date: 11.06.2005
 
@@ -222,7 +223,7 @@ begin
   try
     case RadioGroup1.ItemIndex of
       0: begin //Create calc field
-        fldType := TFieldType(SelectType.Items.Objects[SelectType.ItemIndex]);
+        fldType := TFieldType(PtrUInt(SelectType.Items.Objects[SelectType.ItemIndex]));
         NewField := CreateField(fldType, CheckName(EditName.Text));
         NewField.Calculated := True;
         NewField.FieldKind := fkCalculated;
@@ -304,7 +305,7 @@ end ;
 procedure TNewFieldFrm.SetButtons;
 begin
   if SelectType.ItemIndex >= 0 then
-    case TFieldType(SelectType.Items.Objects[SelectType.ItemIndex]) of
+    case TFieldType(PtrUInt( SelectType.Items.Objects[SelectType.ItemIndex])) of
       ftString: EditSize.Enabled := True;
       else EditSize.Enabled := False;
     end
@@ -346,7 +347,7 @@ begin
   SelectType.Clear;
   SelectType.Sorted := False;
   for i := Low(Fieldtypenames) to High(Fieldtypenames) do begin
-    SelectType.Items.AddObject(Fieldtypenames[i], Tobject(i));
+    SelectType.Items.AddObject(Fieldtypenames[i], Tobject(PtrUInt(i)));
   end;
   SelectType.Sorted := True;
 end;
