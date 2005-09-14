@@ -752,7 +752,6 @@ Begin
 }
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     begin
-      // Groupbox (which is a button) doesn't erase it's background properly
       // it's needed for winxp themes where controls send the WM_ERASEBKGND
       // message to their parent to clear their background and then draw
       // transparently
@@ -772,10 +771,6 @@ Begin
           LMessage.Result := GetStockObject(HOLLOW_BRUSH);
           SetBkMode(WParam, TRANSPARENT);
           WinProcess := false;
-        end else
-        if WindowInfo^.isGroupBox then
-        begin
-          lWinControl.EraseBackground(WParam);
         end;
       end;
       if WinProcess then
@@ -892,9 +887,16 @@ Begin
       EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
       if (eraseBkgndCommand <> ecNoMsg) and not WindowInfo^.hasTabParent then
       begin
-        LMessage.Msg := LM_ERASEBKGND;
-        LMessage.WParam := WParam;
-        LMessage.LParam := LParam;
+        if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox 
+            and (lWinControl <> nil) then
+        begin
+          // Groupbox (which is a button) doesn't erase it's background properly; force repaint
+          lWinControl.EraseBackground(WParam);
+        end else begin
+          LMessage.Msg := LM_ERASEBKGND;
+          LMessage.WParam := WParam;
+          LMessage.LParam := LParam;
+        end;
       end else begin
         if WindowInfo^.hasTabParent and ((lWinControl = nil)
             or not (csOpaque in lWinControl.ControlStyle)) then
