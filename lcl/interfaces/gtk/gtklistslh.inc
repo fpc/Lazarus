@@ -50,7 +50,8 @@ type
     procedure ConnectItemCallbacks(Index: integer);
     procedure ConnectItemCallbacks(Li: PGtkListItem); virtual;
     procedure ConnectAllCallbacks; virtual;
-    procedure RemoveItemCallbacks(Index: integer); virtual;
+    procedure RemoveItemCallbacks(Index: integer);
+    procedure RemoveItemCallbacks(AItem: PGtkListItem); virtual;
     procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
     function CacheValid: boolean;

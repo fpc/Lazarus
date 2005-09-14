@@ -317,12 +317,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.ConnectAllCallbacks;
 var
-  i, Cnt: integer;
+  i: Integer;
 begin
   BeginUpdate;
-  Cnt:=Count-1;
-  for i:=0 to Cnt-1 do
-    ConnectItemCallbacks(i);
+  UpdateItemCache;
+  i := FCachedCount - 1;
+  while i >= 0 do
+  begin
+    ConnectItemCallbacks(FCachedItems[i]);
+    Dec(i);
+  end;
   EndUpdate;
 end;
 
@@ -331,20 +335,35 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.RemoveItemCallbacks(Index: integer);
-var
-  ListItem: PGtkListItem;
 begin
   UpdateItemCache;
-  ListItem:=FCachedItems[Index];
-  gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
-  gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);
+  RemoveItemCallbacks(FCachedItems[Index]);
+end;
+
+procedure TGtkListStringList.RemoveItemCallbacks(AItem: PGtkListItem);
+var
+  ChildWidget: Pointer;
+begin
+  gtk_object_set_data(PGtkObject(AItem), GtkListItemLCLListTag, nil);
+  gtk_object_set_data(PGtkObject(AItem), GtkListItemGtkListTag, nil);
   {$ifdef GTK2}
   g_signal_handlers_disconnect_by_func(
-    G_OBJECT(ListItem),G_CALLBACK(@gtkListItemExposeEvent),ListItem);
+    G_OBJECT(AItem), G_CALLBACK(@gtkListItemExposeEvent), AItem);
   {$else}
   gtk_signal_disconnect_by_func(
-    PGtkObject(ListItem),TGTKSignalFunc(@gtkListItemDrawAfterCB),ListItem);
+    PGtkObject(AItem), TGTKSignalFunc(@gtkListItemDrawAfterCB), AItem);
   {$endif}
+  if FWithCheckBox
+  then begin
+    ChildWidget := PPointer(PGTKBox(PGtkBin(AItem)^.child)^.Children^.Data)^;
+    gtk_signal_disconnect_by_func(
+      PGtkObject(ChildWidget), TGTKSignalFunc(@gtkListItemToggledCB), AItem);
+  end;
+  if FOwner is TCustomComboBox
+  then begin
+    gtk_signal_disconnect_by_func(
+      PGtkObject(AItem), TGTKSignalFunc(@gtkListItemSelectAfterCB), AItem);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -356,8 +375,13 @@ var
   i: integer;
 begin
   BeginUpdate;
-  for i:=0 to Count-1 do
-    RemoveItemCallbacks(i);
+  UpdateItemCache;
+  i := FCachedCount - 1;
+  while i >= 0 do
+  begin
+    RemoveItemCallbacks(FCachedItems[i]);
+    Dec(i);
+  end;
   EndUpdate;
 end;
 
