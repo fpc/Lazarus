@@ -333,7 +333,7 @@ type
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
-                       {$IFDEF UseIDEScopes}IDEWindow: TCustomForm
+                       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass
                        {$ELSE}Areas: TCommandAreas{$ENDIF});
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
@@ -2083,7 +2083,7 @@ begin
     begin
       if (j=KeyIndex) then continue;
       {$IFDEF UseIDEScopes}
-      {$WARN TODO: TKeyMappingEditForm.ResolveConflicts}
+      {$WARNING TODO: TKeyMappingEditForm.ResolveConflicts}
       {$ELSE}
       if (Category.Areas*Areas=[]) then continue;
       {$ENDIF}
@@ -2199,11 +2199,12 @@ var
   C: TKeyCommandCategory;
 begin
   Clear;
-  
+
   // create default keymapping
 
   // moving
-  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,caSrcEdit)];
+  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,
+              {$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Move cursor word left',ecWordLeft);
   AddDefault(C,'Move cursor word right',ecWordRight);
   AddDefault(C,'Move cursor to line start',ecLineStart);
@@ -2222,7 +2223,7 @@ begin
   AddDefault(C,'Scroll right one char',ecScrollRight);
 
   // selection
-  C:=Categories[AddCategory('Selection',srkmCatSelection,caSrcEdit)];
+  C:=Categories[AddCategory('Selection',srkmCatSelection,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Copy selection to clipboard',ecCopy);
   AddDefault(C,'Cut selection to clipboard',ecCut);
   AddDefault(C,'Paste clipboard to current position',ecPaste);
@@ -2256,7 +2257,7 @@ begin
   AddDefault(C,'Select paragraph',ecSelectParagraph);
 
   // editing - without menu items in the IDE bar
-  C:=Categories[AddCategory('text editing commands',srkmCatEditing,caSrcEditOnly)];
+  C:=Categories[AddCategory('text editing commands',srkmCatEditing,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Delete last char',ecDeleteLastChar);
   AddDefault(C,'Delete char at cursor',ecDeleteChar);
   AddDefault(C,'Delete to end of word',ecDeleteWord);
@@ -2267,7 +2268,6 @@ begin
   AddDefault(C,'Delete whole text',ecClearAll);
   AddDefault(C,'Break line and move cursor',ecLineBreak);
   AddDefault(C,'Break line, leave cursor',ecInsertLine);
-  // TODO: these commands do have a menu item
   AddDefault(C,'Insert from Character Map',ecInsertCharacter);
   AddDefault(C,'Insert GPL notice',ecInsertGPLNotice);
   AddDefault(C,'Insert LGPL notice',ecInsertLGPLNotice);
@@ -2284,12 +2284,12 @@ begin
   AddDefault(C,'Insert CVS keyword Source',ecInsertCVSSource);
 
   // command commands
-  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,caAll)];
+  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'Undo',ecUndo);
   AddDefault(C,'Redo',ecRedo);
 
   // search & replace
-  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,caAll)];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Go to matching bracket',ecMatchBracket);
   AddDefault(C,'Find text',ecFind);
   AddDefault(C,'Find next',ecFindNext);
@@ -2307,7 +2307,7 @@ begin
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
   // marker - without menu items in the IDE bar
-  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
+  C:=Categories[AddCategory('Marker',srkmCatMarker,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Set free Bookmark',ecSetFreeBookmark);
   AddDefault(C,'Previous Bookmark',ecPrevBookmark);
   AddDefault(C,'Next Bookmark',ecNextBookmark);
@@ -2333,7 +2333,7 @@ begin
   AddDefault(C,'Set marker 9',ecSetMarker9);
 
   // codetools
-  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,caSrcEdit)];
+  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Code template completion',ecAutoCompletion);
   AddDefault(C,'Word completion',ecWordCompletion);
   AddDefault(C,'Complete code',ecCompleteCode);
@@ -2354,7 +2354,7 @@ begin
   AddDefault(C,'Goto include directive',ecGotoIncludeDirective);
 
   // source notebook - without menu items in the IDE bar
-  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caSrcEditOnly)];
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Go to next editor',ecNextEditor);
   AddDefault(C,'Go to prior editor',ecPrevEditor);
   AddDefault(C,'Add break point',ecAddBreakPoint);
@@ -2373,7 +2373,7 @@ begin
   AddDefault(C,'Go to source editor 10',ecGotoEditor0);
 
   // file menu
-  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,caAll)];
+  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'New',ecNew);
   AddDefault(C,'NewUnit',ecNewUnit);
   AddDefault(C,'NewForm',ecNewForm);
@@ -2389,7 +2389,7 @@ begin
   AddDefault(C,'Quit',ecQuit);
 
   // view menu
-  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,caAll)];
+  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'Toggle view Object Inspector',ecToggleObjectInsp);
   AddDefault(C,'Toggle view Source Editor',ecToggleSourceEditor);
   AddDefault(C,'Toggle view Code Explorer',ecToggleCodeExpl);
@@ -2409,7 +2409,7 @@ begin
   AddDefault(C,'View Anchor Editor',ecViewAnchorEditor);
 
   // project menu
-  C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,caAll)];
+  C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'New project',ecNewProject);
   AddDefault(C,'New project from file',ecNewProjectFromFile);
   AddDefault(C,'Open project',ecOpenProject);
@@ -2424,7 +2424,7 @@ begin
   AddDefault(C,'View project options',ecProjectOptions);
 
   // run menu
-  C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,caAll)];
+  C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'Build project/program',ecBuild);
   AddDefault(C,'Build all files of project/program',ecBuildAll);
   AddDefault(C,'Abort building',ecAbortBuild);
@@ -2445,7 +2445,7 @@ begin
   AddDefault(C,'Add watch',ecAddWatch);
 
   // components menu
-  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
+  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'Open package',ecOpenPackage);
   AddDefault(C,'Open package file',ecOpenPackageFile);
   AddDefault(C,'Open package of current unit',ecOpenPackageOfCurUnit);
@@ -2455,7 +2455,7 @@ begin
   AddDefault(C,'Configure custom components',ecConfigCustomComps);
 
   // tools menu
-  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];
+  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'External Tools settings',ecExtToolSettings);
   AddDefault(C,'Build Lazarus',ecBuildLazarus);
   AddDefault(C,'Configure "Build Lazarus"',ecConfigBuildLazarus);
@@ -2466,7 +2466,7 @@ begin
   AddDefault(C,'Convert Delphi project to Lazarus project',ecConvertDelphiProject);
 
   // environment menu
-  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];
+  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'General environment options',ecEnvironmentOptions);
   AddDefault(C,'Editor options',ecEditorOptions);
   AddDefault(C,'Edit Code Templates',ecEditCodeTemplates);
@@ -2475,26 +2475,25 @@ begin
   AddDefault(C,'Rescan FPC source directory',ecRescanFPCSrcDir);
 
   // help menu
-  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];
+  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'About Lazarus',ecAboutLazarus);
   AddDefault(C,'Online Help',ecOnlineHelp);
   AddDefault(C,'Configure Help',ecConfigureHelp);
   AddDefault(C,'Context sensitive help',ecContextHelp);
 
   // designer  - without menu items in the IDE bar (at least no direct)
-  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,{$IFDEF UseIDEScopes}IDECmdScopeDesigner{$ELSE}caDesignOnly{$ENDIF})];
   AddDefault(C,'Copy selected Components to clipboard',ecDesignerCopy);
   AddDefault(C,'Cut selected Components to clipboard' ,ecDesignerCut);
   AddDefault(C,'Paste Components from clipboard'      ,ecDesignerPaste);
   AddDefault(C,'Select parent component'              ,ecDesignerSelectParent);
-  // MWE: todo: implement the next also as menu on ide bar ?
   AddDefault(C,'Move component to front'              ,ecDesignerMoveToFront);
   AddDefault(C,'Move component to back'               ,ecDesignerMoveToBack);
   AddDefault(C,'Move component one forward'           ,ecDesignerForwardOne);
   AddDefault(C,'Move component one back'              ,ecDesignerBackOne);
 
   // custom keys (for experts, task groups, dynamic menu items, etc)
-  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,caAll)];
+  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
 end;
 
 procedure TKeyCommandRelationList.Clear;
@@ -2749,7 +2748,7 @@ begin
 end;
 
 function TKeyCommandRelationList.FindByCommand(
-  ACommand:word):TKeyCommandRelation;
+  ACommand: word):TKeyCommandRelation;
 var a:integer;
 begin
   Result:=nil;
@@ -2761,8 +2760,8 @@ begin
 end;
 
 procedure TKeyCommandRelationList.AssignTo(
-  ASynEditKeyStrokes:TSynEditKeyStrokes;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  ASynEditKeyStrokes: TSynEditKeyStrokes;
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
   );
 var
   a,b,MaxKeyCnt,KeyCnt:integer;
@@ -2772,7 +2771,13 @@ begin
   for a:=0 to FRelations.Count-1 do begin
     CurRelation:=Relations[a];
     if (CurRelation.KeyA.Key1=VK_UNKNOWN)
-    or ((CurRelation.Category.Areas*Areas)=[]) then
+    {$IFDEF UseIDEScopes}
+    or ((CurRelation.Category.Scope<>nil)
+        and (not CurRelation.Category.Scope.HasIDEWindow(IDEWindow)))
+    {$ELSE}
+    or ((CurRelation.Category.Areas*Areas)=[])
+    {$ENDIF}
+    then
       MaxKeyCnt:=0
     else if CurRelation.KeyB.Key1=VK_UNKNOWN then
       MaxKeyCnt:=1
@@ -2836,7 +2841,8 @@ begin
   // copy categories
   for i:=0 to List.CategoryCount-1 do begin
     CurCategory:=List.Categories[i];
-    AddCategory(CurCategory.Name,CurCategory.Description,CurCategory.Areas);
+    AddCategory(CurCategory.Name,CurCategory.Description,
+                CurCategory.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF});
   end;
   
   // copy keys

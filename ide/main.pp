@@ -127,6 +127,7 @@ type
     //procedure FormShow(Sender: TObject);
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure MainIDEFormActivate(Sender: TObject);
     //procedure FormPaint(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
@@ -1247,6 +1248,11 @@ begin
   CanClose:=(DoCloseProject <> mrAbort);
 end;
 
+procedure TMainIDE.MainIDEFormActivate(Sender: TObject);
+begin
+  DoCheckFilesOnDisk;
+end;
+
 {------------------------------------------------------------------------------}
 type
   TMoveFlags = set of (mfTop, mfLeft);
@@ -1549,6 +1555,8 @@ procedure TMainIDE.SetupIDEInterface;
 begin
   IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
   IDECommands.OnExecuteIDEShortCut:=@OnExecuteIDEShortCut;
+  CreateStandardIDECommandScopes;
+  IDECmdScopeSrcEdit.AddWindowClass(TSourceNotebook);
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -1966,6 +1974,7 @@ procedure TMainIDE.ConnectMainBarEvents;
 begin
   MainIDEBar.OnClose := @MainIDEFormClose;
   MainIDEBar.OnCloseQuery := @MainIDEFormCloseQuery;
+  MainIDEBar.OnActivate := @MainIDEFormActivate;
 end;
 
 {------------------------------------------------------------------------------}

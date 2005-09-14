@@ -39,7 +39,7 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, Forms, LCLType, Menus, TextTools;
+  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, TextTools;
   
 {$IFNDEF UseIDEScopes}
 type
@@ -84,10 +84,13 @@ type
     destructor Destroy; override;
     procedure AddWindow(AWindow: TCustomForm);
     procedure RemoveWindow(AWindow: TCustomForm);
+    procedure AddWindowClass(AWindowClass: TCustomFormClass);
+    procedure RemoveWindowClass(AWindowClass: TCustomFormClass);
     function IDEWindowCount: integer;
     function IDEWindowClassCount: integer;
     function CategoryCount: integer;
-    function HasIDEWindow(AnWindow: TCustomForm): boolean;
+    function HasIDEWindow(AWindow: TCustomForm): boolean;
+    function HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
   public
     property Name: string read FName;
     property IDEWindows[Index: integer]: TCustomForm read GetIDEWindows;
@@ -222,6 +225,7 @@ var
   IDECommandScopes: TIDECommandScopes = nil;
 var
   IDECmdScopeSrcEdit: TIDECommandScope;
+  IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeDesigner: TIDECommandScope;
 
 procedure CreateStandardIDECommandScopes;
@@ -495,12 +499,26 @@ end;
 
 procedure TIDECommandScope.AddWindow(AWindow: TCustomForm);
 begin
+  if FIDEWindows.IndexOf(AWindow)>=0 then
+    RaiseGDBException('TIDECommandScope.AddWindow');
   FIDEWindows.Add(AWindow);
 end;
 
 procedure TIDECommandScope.RemoveWindow(AWindow: TCustomForm);
 begin
   FIDEWindows.Remove(AWindow);
+end;
+
+procedure TIDECommandScope.AddWindowClass(AWindowClass: TCustomFormClass);
+begin
+  if FIDEWindowClasses.IndexOf(AWindowClass)>=0 then
+    RaiseGDBException('TIDECommandScope.AddWindowClass');
+  FIDEWindowClasses.Add(AWindowClass);
+end;
+
+procedure TIDECommandScope.RemoveWindowClass(AWindowClass: TCustomFormClass);
+begin
+  FIDEWindowClasses.Remove(AWindowClass);
 end;
 
 function TIDECommandScope.IDEWindowCount: integer;
@@ -518,15 +536,27 @@ begin
   Result:=FCategories.Count;
 end;
 
-function TIDECommandScope.HasIDEWindow(AnWindow: TCustomForm): boolean;
+function TIDECommandScope.HasIDEWindow(AWindow: TCustomForm): boolean;
 var
   i: Integer;
 begin
   for i:=0 to FIDEWindows.Count-1 do
-    if TCustomForm(FIDEWindows[i])=AnWindow then
+    if TCustomForm(FIDEWindows[i])=AWindow then
       exit(true);
   for i:=0 to FIDEWindowClasses.Count-1 do
-    if AnWindow.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+    if AWindow.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+      exit(true);
+  Result:=(AWindow<>nil)
+          and HasIDEWindowClass(TCustomFormClass(AWindow.ClassType));
+end;
+
+function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass
+  ): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to FIDEWindowClasses.Count-1 do
+    if AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
       exit(true);
   Result:=false;
 end;

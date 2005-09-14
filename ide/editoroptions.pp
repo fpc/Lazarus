@@ -2065,7 +2065,7 @@ begin
   ASynEdit.MaxUndo:=fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
   
-  KeyMap.AssignTo(ASynEdit.KeyStrokes,[caSourceEditor]);
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}[caSourceEditor]{$ENDIF});
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
