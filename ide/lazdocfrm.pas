@@ -54,21 +54,26 @@ type
   TFPDocNode = record
     Short: String;
     Descr: String;
+    Errors: String;
   end;
 
   { TLazDocForm }
 
   TLazDocForm = class(TForm)
     DescrMemo: TMemo;
-    OpenDialog1: TOpenDialog;
+    ShortEdit: TEdit;
+    ErrorsMemo: TMemo;
     PageControl: TPageControl;
-    TabSheet1: TTabSheet;
+    DescrTabSheet: TTabSheet;
+    ErrorsTabSheet: TTabSheet;
+    ShortTabSheet: TTabSheet;
     procedure DescrMemoChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
     FDocFileName: String;
     FCurrentElement: String;
+    FLastElement: String;
     procedure SetDocFileName(Value: String);
     function NodeByName(ElementName: String): TDOMNode;
     function GetFirstChildValue(n: TDOMNode): String;
@@ -119,7 +124,9 @@ begin
     ReadXMLFile(doc, FDocFileName);
 
     //clear all element editors/viewers
+    ShortEdit.Clear;
     DescrMemo.Clear;
+    ErrorsMemo.Clear;
 
     SetCaption;
 
@@ -133,12 +140,19 @@ end;
 procedure TLazDocForm.FormCreate(Sender: TObject);
 begin
   Caption := MAINFORMCAPTION;
-
+  
   with PageControl do
   begin
-    Page[0].Caption := 'Description';
+    Page[0].Caption := 'Short';
+    Page[1].Caption := 'Description';
+    Page[2].Caption := 'Errors';
     PageIndex := 0;
   end;
+
+  //clear all element editors/viewers
+  ShortEdit.Clear;
+  DescrMemo.Clear;
+  ErrorsMemo.Clear;
 end;
 
 function TLazDocForm.NodeByName(ElementName: String): TDOMNode;
@@ -146,6 +160,15 @@ var
   n: TDOMNode;
 begin
   Result := Nil;
+
+  if not Assigned(doc) then
+  begin
+    {$ifdef dbgLazDoc}
+    DebugLn('TLazDocForm.NodeByName: document is not set');
+    {$endif}
+
+    Exit;
+  end;
 
   //get first node
   n := doc.FindNode('fpdoc-descriptions');
@@ -219,12 +242,9 @@ begin
 
       if S = 'descr' then
         Result.Descr := GetFirstChildValue(Node);
-      //else if S='errors' then
-      //FErrorsNode:=Node.NodeValue
-      //else if S='seealso' then
-      //FSeeAlsoNode:=Node.NodeValue
-      //else if S='example' then
-      //FExampleNodes.Add(n);
+
+      if S='errors' then
+        Result.Errors := GetFirstChildValue(Node);
     end;
     Node := Node.NextSibling;
   end;
@@ -240,7 +260,7 @@ begin
   ypos := startpos.y;
 
   result := '';
-  while (src[ypos][xpos] <> '(') and (src[ypos][xpos] <> ';') do
+  while (src[ypos][xpos] <> '(') and (src[ypos][xpos] <> ';') and (src[ypos][xpos] <> ':') do
   begin
     Result := Result + src[ypos][xpos];
     Inc(xpos);
@@ -303,6 +323,7 @@ procedure TLazDocForm.UpdateLazDoc(source: TStrings; pos: TPoint);
 var
   dn: TFPDocNode;
   n: TDOMNode;
+  EnabledState: boolean;
 begin
   if not Assigned(doc) then
   begin
@@ -317,20 +338,50 @@ begin
 
   SetCaption;
 
+  //do not continue if FCurrentElement=FLastElement
+  //or FCurrentElement is empty (J. Reyes)
+  if (FCurrentElement = FLastElement) or (FCurrentElement = '') then
+    Exit;
+    
+  FLastElement := FCurrentElement;
+
   n := NodeByName(FCurrentElement);
 
-  DescrMemo.Enabled := Assigned(n);
+  EnabledState := Assigned(n);
+
+  ShortEdit.Enabled := True;
+  DescrMemo.Enabled := True;
+  ErrorsMemo.Enabled := True;
+
+  //detach the update method, because changing the text already
+  //commits to XML. Fix later, hack now ;)
+  ShortEdit.OnChange := nil;
+  DescrMemo.OnChange := nil;
+  ErrorsMemo.OnChange := nil;
 
   if Assigned(n) then
   begin
     dn := ElementFromNode(n);
 
-    DescrMemo.Lines.Text := dn.Descr;
+    ShortEdit.Text := dn.Short;
+    DescrMemo.Lines.Text := ConvertLineEndings(dn.Descr);
+    ErrorsMemo.Lines.Text := ConvertLineEndings(dn.Errors);
   end
   else
   begin
+    ShortEdit.Text := NODOCUMENTATION;
     DescrMemo.Lines.Text := NODOCUMENTATION;
+    ErrorsMemo.Lines.Text := NODOCUMENTATION;
   end;
+  
+  //attach the update method again
+  ShortEdit.OnChange := @DescrMemoChange;
+  DescrMemo.OnChange := @DescrMemoChange;
+  ErrorsMemo.OnChange := @DescrMemoChange;
+
+  ShortEdit.Enabled := EnabledState;
+  DescrMemo.Enabled := EnabledState;
+  ErrorsMemo.Enabled := EnabledState;
 end;
 
 procedure TLazDocForm.DescrMemoChange(Sender: TObject);
@@ -351,16 +402,43 @@ begin
     begin
       S := n.NodeName;
 
-      if S = 'descr' then
+      if S = 'short' then
       begin
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(DescrMemo.Text);
+          child := doc.CreateTextNode(ShortEdit.Text);
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := DescrMemo.Text;
+          n.FirstChild.NodeValue := ShortEdit.Text;
       end;
+
+      if S = 'descr' then
+      begin
+        DescrMemo.Lines.Delimiter := #10;
+
+        if not Assigned(n.FirstChild) then
+        begin
+          child := doc.CreateTextNode(DescrMemo.Lines.DelimitedText);
+          n.AppendChild(child);
+        end
+        else
+          n.FirstChild.NodeValue := DescrMemo.Lines.DelimitedText;
+      end;
+
+      if S = 'errors' then
+      begin
+        ErrorsMemo.Lines.Delimiter := #10;
+
+        if not Assigned(n.FirstChild) then
+        begin
+          child := doc.CreateTextNode(ErrorsMemo.Lines.DelimitedText);
+          n.AppendChild(child);
+        end
+        else
+          n.FirstChild.NodeValue :=ErrorsMemo.Lines.DelimitedText;
+      end;
+
     end;
     n := n.NextSibling;
   end;
