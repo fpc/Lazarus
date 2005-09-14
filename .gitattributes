@@ -559,39 +559,39 @@ docs/xml/lcl/grids.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/imglist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/inipropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfacebase.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/interfaces/gtk/gtkdef.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkfontcache.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkglobals.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkint.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkmsgqueue.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkproc.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwinapiwindow.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsactnlist.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsarrow.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsbuttons.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwscalendar.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwschecklst.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsclistbox.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwscomctrls.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwscontrols.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsdbctrls.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsdbgrids.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsdialogs.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsdirsel.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwseditbtn.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsextctrls.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsextdlgs.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsfilectrl.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsforms.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsgrids.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsimglist.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsmaskedit.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsmenus.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwspairsplitter.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsspin.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwsstdctrls.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=native#text/xml
-docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=native#text/xml
+docs/xml/lcl/interfaces/gtk/gtkdef.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkfontcache.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkglobals.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkint.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkmsgqueue.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkproc.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwinapiwindow.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsactnlist.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsarrow.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsbuttons.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwscalendar.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwschecklst.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsclistbox.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwscomctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwscontrols.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsdbctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsdbgrids.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsdialogs.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsdirsel.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwseditbtn.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsextctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsextdlgs.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsfilectrl.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsforms.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsgrids.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsimglist.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsmaskedit.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsmenus.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwspairsplitter.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsspin.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwsstdctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
