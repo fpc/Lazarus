@@ -6046,6 +6046,8 @@ begin
   writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags,' ProjectInfoFile=',Project1.ProjectInfoFile);
   {$ENDIF}
   
+  if DoCheckFilesOnDisk in [mrCancel,mrAbort] then exit;
+  
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
   for i:=0 to Project1.UnitCount-1 do begin
@@ -6132,7 +6134,7 @@ begin
       if (Project1.MainUnitID<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorFile(i,[sfProjectSaving]
-                                +[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
+                                +Flags*[sfSaveToTestDir,sfCheckAmbiguousFiles]);
         if Result=mrAbort then exit;
       end;
     end;

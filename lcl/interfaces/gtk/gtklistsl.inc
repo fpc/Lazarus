@@ -164,6 +164,37 @@ begin
 end;
 
 procedure GtkListItemSelectAfterCB(Widget: PGtkWidget; data: gpointer); cdecl;
+
+  procedure RaiseGTKListNotFound;
+  var
+    s: String;
+    ChildWidget: PGtkWidget;
+    BoxWidget: PGtkBox;
+    LabelWidget: PGtkLabel;
+    LabelText: PChar;
+  begin
+    s:='gtkListItemSelectAfterCB GtkList=nil li='+dbgs(Widget);
+    ChildWidget:=PGtkBin(Widget)^.child;
+    LabelWidget:=nil;
+    if GtkWidgetIsA(ChildWidget,gtk_label_get_type) then
+      LabelWidget:=PGTKLabel(ChildWidget)
+    else if GtkWidgetIsA(ChildWidget,gtk_box_get_type) then begin
+      BoxWidget:=PGTKBox(ChildWidget);
+      if (BoxWidget^.Children<>nil)
+      and (BoxWidget^.Children^.Next<>nil) then begin
+        LabelWidget:=BoxWidget^.Children^.Next^.Data;
+        if not GtkWidgetIsA(PGtkWidget(LabelWidget),gtk_label_get_type) then
+          LabelWidget:=nil;
+      end;
+    end;
+    if LabelWidget<>nil then begin
+      LabelText:=nil;
+      gtk_label_get(LabelWidget, @LabelText);
+      s:=s+' Text="'+DbgStr(StrPas(LabelText))+'"';
+    end;
+    RaiseException(s);
+  end;
+
 var
   GtkList: PGtkList;
   LCLList: TGtkListStringList;
@@ -173,7 +204,7 @@ begin
   // get context
   GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
-    RaiseException('gtkListItemSelectAfterCB GtkList=nil');
+    RaiseGTKListNotFound;
   LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
