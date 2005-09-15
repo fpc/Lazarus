@@ -1636,6 +1636,7 @@ Begin
   Handled:=false;
   Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
                                                      TheMessage.CharCode,Shift);
+  //DebugLn('TDesigner.KEYDOWN Command=',dbgs(Command));
   DoProcessCommand(Self,Command,Handled);
 
   if not Handled then begin

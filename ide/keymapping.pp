@@ -2373,7 +2373,7 @@ begin
   AddDefault(C,'Go to source editor 10',ecGotoEditor0);
 
   // file menu
-  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
   AddDefault(C,'New',ecNew);
   AddDefault(C,'NewUnit',ecNewUnit);
   AddDefault(C,'NewForm',ecNewForm);

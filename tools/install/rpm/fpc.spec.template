@@ -90,11 +90,11 @@ NEWPP=`pwd`/compiler/%{ppcname}
 INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} \
                 INSTALL_PREFIX=%{buildroot}%{_prefix} \
                 INSTALL_LIBDIR=%{buildroot}%{_libdir} \
-		INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/%{version} \
-		CODPATH=%{buildroot}%{_libdir}/%{name}/lexyacc \
+                INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/%{version} \
+                CODPATH=%{buildroot}%{_libdir}/%{name}/lexyacc \
                 INSTALL_DOCDIR=%{buildroot}%{_defaultdocdir}/%{name}-%{version} \
                 INSTALL_BINDIR=%{buildroot}%{_bindir}
-		INSTALL_EXAMPLEDIR=%{buildroot}%{_defaultdocdir}/%{name}-%{version}/examples"
+                INSTALL_EXAMPLEDIR=%{buildroot}%{_defaultdocdir}/%{name}-%{version}/examples"
 make compiler_install ${INSTALLOPTS}
 make rtl_install ${INSTALLOPTS}
 make packages_install ${INSTALLOPTS}
