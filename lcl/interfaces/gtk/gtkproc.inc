@@ -338,7 +338,13 @@ end;
 {$IfNDef NoGdkPixbufLib}
 Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
 begin
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('gdk_pixbuf_render_pixmap_and_mask A1');
+  {$ENDIF}
   gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('gdk_pixbuf_render_pixmap_and_mask A2');
+  {$ENDIF}
 end;
 {$EndIf}
 
@@ -1282,7 +1288,13 @@ begin
     '');
   {$ENDIF}
   DummyMask:=nil;
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('ScalePixmap A1');
+  {$ENDIF}
   gdk_pixbuf_render_pixmap_and_mask(ScaleDest,NewPixmap,DummyMask,0);
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('ScalePixmap A2');
+  {$ENDIF}
 
   // clean up
   {$IFDEF VerboseStretchCopyArea}
@@ -5245,7 +5257,13 @@ begin
       DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('LoadPixbufFromLazResource A1');
+  {$ENDIF}
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('LoadPixbufFromLazResource A2');
+  {$ENDIF}
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;

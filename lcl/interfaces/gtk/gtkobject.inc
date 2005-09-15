@@ -1808,17 +1808,29 @@ var
   begin
     Result := False;
     SRC := nil;
+    {$IFDEF VerboseGdkPixbuf}
+    debugln('TGtkWidgetSet.LoadFromPixbufFile A1');
+    {$ENDIF}
     SRC := gdk_pixbuf_new_from_file(FileName{$IFDEF Gtk2},nil{$ENDIF});
+    {$IFDEF VerboseGdkPixbuf}
+    debugln('TGtkWidgetSet.LoadFromPixbufFile A2');
+    {$ENDIF}
     If SRC = nil then
       exit;
     Width := gdk_pixbuf_get_width(Src);
     Height := gdk_pixbuf_get_height(Src);
 
     TMP := CreateCompatibleBitmap(0, Width, Height);
+    {$IFDEF VerboseGdkPixbuf}
+    debugln('TGtkWidgetSet.LoadFromPixbufFile B1');
+    {$ENDIF}
     gdk_pixbuf_render_pixmap_and_mask(Src,
       PGDIObject(TMP)^.GDIPixmapObject,
       PGDIObject(TMP)^.GDIBitmapMaskObject,
       0);
+    {$IFDEF VerboseGdkPixbuf}
+    debugln('TGtkWidgetSet.LoadFromPixbufFile B2');
+    {$ENDIF}
 
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
@@ -1921,10 +1933,16 @@ Type
 
     With PGDIObject(Bitmap)^ do begin
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+      {$IFDEF VerboseGdkPixbuf}
+      debugln('TGtkWidgetSet.LoadFromPixbufData A1');
+      {$ENDIF}
       gdk_pixbuf_render_pixmap_and_mask(Src,
         GDIPixmapObject,
         GDIBitmapMaskObject,
         0);
+      {$IFDEF VerboseGdkPixbuf}
+      debugln('TGtkWidgetSet.LoadFromPixbufData A2');
+      {$ENDIF}
 
 
       Depth := gdk_drawable_get_depth(GDIPixmapObject);
@@ -1995,10 +2013,16 @@ var
       gbBitmap:
         If Bitmap^.GDIBitmapObject <> nil then begin
          {$IfNDef NoGDKPixbuflib}
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize A1');
+          {$ENDIF}
            Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
              Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize A2');
+          {$ENDIF}
          {$else}
            {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
@@ -2008,8 +2032,14 @@ var
       gbPixmap:
         If Bitmap^.GDIPixmapObject <> nil then begin
          {$IfNDef NoGDKPixbuflib}
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize B1');
+          {$ENDIF}
            Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject,
              Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+          {$IFDEF VerboseGdkPixbuf}
+          debugln('DataSourceInitialize B2');
+          {$ENDIF}
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
          {$else}
@@ -5647,7 +5677,13 @@ begin
       DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('LoadPixbufFromLazResource A1');
+  {$ENDIF}
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
+  {$IFDEF VerboseGdkPixbuf}
+  debugln('LoadPixbufFromLazResource A2');
+  {$ENDIF}
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
