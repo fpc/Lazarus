@@ -218,6 +218,10 @@ msgstr "(неизвестный макрос: %s)"
 msgid "0.9.9 beta"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocnotagcaption
+msgid "<NONE>"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
 msgstr "<выберите существующий файл>"
@@ -1922,6 +1926,10 @@ msgstr "Прикреплён"
 msgid "Documentation Editor"
 msgstr "Редактор документации"
 
+#: lazarusidestrconsts:lislazdocnodocumentation
+msgid "Documentation entry does not exist"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr ""
@@ -3610,6 +3618,14 @@ msgstr "Запускающее приложение недопустимо"
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
 
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocmainformcaption
+msgid "LazDoc editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr ""
@@ -4950,6 +4966,10 @@ msgstr "Обнаружен файл сведений проекта"
 msgid "Project is runnable"
 msgstr "Проект запускаемый"
 
+#: lazarusidestrconsts:lisprojectmakroproperties
+msgid "Project makro properties"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
 msgstr "Команды меню Проект"
@@ -5836,6 +5856,10 @@ msgstr "Shift"
 
 #: lazarusidestrconsts:srkmecshifttab
 msgid "Shift Tab"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocshorttag
+msgid "Short"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto

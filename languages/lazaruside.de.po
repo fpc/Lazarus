@@ -232,6 +232,10 @@ msgstr "(unbekanntes Makro: %s)"
 msgid "0.9.9 beta"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocnotagcaption
+msgid "<NONE>"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
 msgstr "<Wählen Sie eine vorhandene Datei>"
@@ -1936,6 +1940,10 @@ msgstr "Angedockt"
 msgid "Documentation Editor"
 msgstr "Dokumentationseditor"
 
+#: lazarusidestrconsts:lislazdocnodocumentation
+msgid "Documentation entry does not exist"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Domain"
@@ -3624,6 +3632,14 @@ msgstr "Aufrufendes Programm ungültig"
 msgid "Launching target command line"
 msgstr "Startkommando des Projektes"
 
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocmainformcaption
+msgid "LazDoc editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr "Lazarus"
@@ -4964,6 +4980,10 @@ msgstr "Projekteinstellungsdatei gefunden"
 msgid "Project is runnable"
 msgstr "Projekt ist lauffähig"
 
+#: lazarusidestrconsts:lisprojectmakroproperties
+msgid "Project makro properties"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
 msgstr "Projektmenübefehle"
@@ -5851,6 +5871,10 @@ msgstr "Umsch"
 #: lazarusidestrconsts:srkmecshifttab
 msgid "Shift Tab"
 msgstr "Umsch-Tab"
+
+#: lazarusidestrconsts:lislazdocshorttag
+msgid "Short"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
