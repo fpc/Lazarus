@@ -1,34 +1,34 @@
 object LazDocForm: TLazDocForm
-  ActiveControl = ErrorsTabSheet
+  ActiveControl = ShortTabSheet
   BorderStyle = bsSizeToolWin
   Caption = 'LazDoc editor'
-  ClientHeight = 195
+  ClientHeight = 117
   ClientWidth = 753
   OnCreate = FormCreate
   PixelsPerInch = 96
   HorzScrollBar.Page = 752
-  VertScrollBar.Page = 194
-  Left = 245
-  Height = 195
-  Top = 506
+  VertScrollBar.Page = 116
+  Left = 260
+  Height = 117
+  Top = 584
   Width = 753
   object PageControl: TPageControl
-    ActivePage = ErrorsTabSheet
+    ActivePage = ShortTabSheet
     Align = alClient
-    BorderSpacing.OnChange = nil
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
-    Height = 195
+    Height = 117
     Width = 753
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 169
+      ClientHeight = 91
       ClientWidth = 745
-      Height = 169
+      Height = 91
       Width = 745
       object ShortEdit: TEdit
         Align = alTop
+        BorderSpacing.OnChange = nil
         OnChange = DescrMemoChange
         TabOrder = 0
         Text = 'ShortEdit'
@@ -38,13 +38,12 @@ object LazDocForm: TLazDocForm
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 169
+      ClientHeight = 91
       ClientWidth = 745
-      Height = 169
+      Height = 91
       Width = 745
       object DescrMemo: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -12
@@ -55,18 +54,19 @@ object LazDocForm: TLazDocForm
         )
         OnChange = DescrMemoChange
         TabOrder = 0
-        Height = 169
+        Height = 91
         Width = 745
       end
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 169
+      ClientHeight = 91
       ClientWidth = 745
-      Height = 169
+      Height = 91
       Width = 745
       object ErrorsMemo: TMemo
         Align = alClient
+        BorderSpacing.OnChange = nil
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -12
@@ -77,7 +77,7 @@ object LazDocForm: TLazDocForm
         )
         OnChange = DescrMemoChange
         TabOrder = 0
-        Height = 169
+        Height = 91
         Width = 745
       end
     end

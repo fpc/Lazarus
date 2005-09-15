@@ -2835,6 +2835,14 @@ resourcestring
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
 
+  lisMenuLazDoc = 'LazDoc';
+  lisLazDocMainFormCaption = 'LazDoc editor';
+  lisLazDocNoTagCaption = '<NONE>';
+  lisLazDocNoDocumentation = 'Documentation entry does not exist';
+  lisLazDocShortTag = 'Short';
+  lisLazDocDescrTag = 'Description';
+  lisLazDocErrorsTag = 'Errors';
+
 implementation
 end.
 

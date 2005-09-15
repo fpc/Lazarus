@@ -41,6 +41,7 @@ uses
   DOM,
   Forms,
   Graphics,
+  LazarusIDEStrConsts,
   LCLProc,
   LResources,
   StdCtrls,
@@ -89,10 +90,6 @@ type
     property DocFileName: String read FDocFileName write SetDocFileName;
   end;
 
-const
-  MAINFORMCAPTION = 'LazDoc editor';
-  NODOCUMENTATION = 'Documentation entry does not exist';
-
 var
   LazDocForm: TLazDocForm;
   doc: TXMLdocument = nil; // maybe better to make it a member field of TLazFormDoc
@@ -139,13 +136,13 @@ end;
 
 procedure TLazDocForm.FormCreate(Sender: TObject);
 begin
-  Caption := MAINFORMCAPTION;
+  Caption := lisLazDocMainFormCaption;
   
   with PageControl do
   begin
-    Page[0].Caption := 'Short';
-    Page[1].Caption := 'Description';
-    Page[2].Caption := 'Errors';
+    Page[0].Caption := lisLazDocShortTag;
+    Page[1].Caption := lisLazDocDescrTag;
+    Page[2].Caption := lisLazDocErrorsTag;
     PageIndex := 0;
   end;
 
@@ -302,6 +299,16 @@ begin
       Result := ExtractFuncProc(Point(xpos, ypos), 'function', source);
       Exit;
     end;
+    if PosEx('constructor', source[ypos], xpos) = 1 then
+    begin
+      Result := ExtractFuncProc(Point(xpos, ypos), 'constructor', source);
+      Exit;
+    end;
+    if PosEx('desctructor', source[ypos], xpos) = 1 then
+    begin
+      Result := ExtractFuncProc(Point(xpos, ypos), 'desctructor', source);
+      Exit;
+    end;
   end;
 end;
 
@@ -309,12 +316,12 @@ procedure TLazDocForm.SetCaption;
 var
   strCaption: String;
 begin
-  strCaption := MAINFORMCAPTION + ' - ';
+  strCaption := lisLazDocMainFormCaption + ' - ';
 
   if FCurrentElement <> '' then
     strCaption := strCaption + FCurrentElement + ' - '
   else
-    strCaption := strCaption + '<NONE> - ';
+    strCaption := strCaption + lisLazDocNoTagCaption + ' - ';
 
   Caption := strCaption + FDocFileName;
 end;
@@ -369,9 +376,9 @@ begin
   end
   else
   begin
-    ShortEdit.Text := NODOCUMENTATION;
-    DescrMemo.Lines.Text := NODOCUMENTATION;
-    ErrorsMemo.Lines.Text := NODOCUMENTATION;
+    ShortEdit.Text := lisLazDocNoDocumentation;
+    DescrMemo.Lines.Text := lisLazDocNoDocumentation;
+    ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
   end;
   
   //attach the update method again
