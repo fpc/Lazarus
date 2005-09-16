@@ -76,8 +76,8 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetPrimaryConfigPath(const NewValue: String);
 begin
-writeln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileName(NewValue),'"');
-  PrimaryConfigPath:=ExpandFileName{FExpand}(NewValue);
+  debugln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileName(NewValue),'"');
+  PrimaryConfigPath:=ExpandFileName(NewValue);
 end;
 
 {---------------------------------------------------------------------------
@@ -85,7 +85,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetSecondaryConfigPath(const NewValue: String);
 begin
-  SecondaryConfigPath:=ExpandFileName{FExpand}(NewValue);
+  SecondaryConfigPath:=ExpandFileName(NewValue);
 end;
 
 {---------------------------------------------------------------------------
@@ -241,7 +241,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
-  PrimaryConfigPath:=ExpandFileName{FExpand}('~/.lazarus');
+  PrimaryConfigPath:=ExpandFileName('~/.lazarus');
   SecondaryConfigPath:='/etc/lazarus';
 end;
 
