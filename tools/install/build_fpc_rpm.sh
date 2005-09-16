@@ -53,18 +53,19 @@ fi
 TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   rm -rf $TmpDir
+  mkdir -p $TmpDir
 
   #ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
   #echo "extracting FPC from local cvs ..."
   #./cvsexportlocal $FPCSrcDir $TmpDir
   echo "extracting FPC from local svn ..."
-  svn export $FPCSrcDir $TmpDir
+  svn export $FPCSrcDir $TmpDir/fpc
 else
   TmpDir=$FPCSrcDir
 fi
 
 # retrieve the version information
-VersionFile="$TmpDir/compiler/version.pas"
+VersionFile="$TmpDir/fpc/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -79,22 +80,21 @@ fi
 #------------------------------------------------------------------------------
 # patch sources
 
-FPCMakefile=$TmpDir/Makefile
 SmartStripScript=smart_strip.sh
 ReplaceScript=replace_in_files.pl
 
 
 # set version numbers in all Makefiles
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
+perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/fpc/*
 
 # update smart_strip.sh
-#ATM: not needed: cp $SmartStripScript $TmpDir/install/
+#ATM: not needed: cp $SmartStripScript $TmpDir/fpc/install/
 
 if [ "$PkgType" = "deb" ]; then
   # build fpc debs
 
   # change debian files
-  DebianRulezDir=$TmpDir/install/debian/
+  DebianRulezDir=$TmpDir/fpc/install/debian/
   Date=`date --rfc-822`
 
   # prepend changelog information, needed for version
@@ -125,7 +125,7 @@ if [ "$PkgType" = "deb" ]; then
 
 
   # compile
-  cd $TmpDir/
+  cd $TmpDir/fpc
   make debcopy
   cd -
   cd /usr/src/fpc-$LazVersion
@@ -149,7 +149,7 @@ else
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   
-  tar cvz $TempDir/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz /usr/src/redhat/SOURCES/$TempDir/fpc
+  tar czf /usr/src/redhat/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz -C $TmpDir fpc
 
   #----------------------------------------------------------------------------
   # compile
@@ -161,11 +161,7 @@ else
   cd -
   rpmbuild --nodeps -ba $SpecFile
 
-  #----------------------------------------------------------------------------
-  # put rpms to normal places
-  #----------------------------------------------------------------------------
-  cp $TmpDir/fpc-*.i386.rpm /usr/src/redhat/RPMS/i386/
-  cp $TmpDir/fpc-*.src.rpm /usr/src/redhat/SRPMS/
+  echo "The new rpms can be found in /usr/src/redhat/RPMS/i386/"
 fi
 
 # end.
