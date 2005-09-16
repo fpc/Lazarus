@@ -487,26 +487,12 @@ var
   Widget: PGtkWidget;// pointer to gtk-widget
 begin
   Handle := ACustomListBox.Handle;
-  if (ACustomListBox.fCompStyle in [csListBox, csCheckListBox]) then
-  begin
-    { In TempWidget, a viewport is stored }
-    Widget:= PGtkWidget(PGtkBin(Handle)^.child);
-    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
-    then
-      gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
-    else
-      gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
-  end else 
-  if ACustomListBox.fCompStyle = csCListBox then
-  begin
-    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
-    then
-      gtk_viewport_set_shadow_type(
-        PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_NONE)
-    else
-      gtk_viewport_set_shadow_type(
-        PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_IN);
-  end;
+  Widget:= PGtkWidget(PGtkBin(Handle)^.child);
+  if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
+  then
+    gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
+  else
+    gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
 end;
 
 procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;

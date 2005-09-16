@@ -319,7 +319,8 @@ end;
 
 procedure TGtk2WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
-  inherited SetBorder(ACustomListBox);
+  // TODO
+  debugln('TGtk2WSCustomListBox.SetBorder TODO');
 end;
 
 procedure TGtk2WSCustomListBox.SetItemIndex(
