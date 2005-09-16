@@ -40,7 +40,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
 
@@ -62,7 +62,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
   msg.NMHdr := @NM;
@@ -86,7 +86,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_INSERTITEM;
   NM.iItem := StrToInt(gtk_tree_path_to_string(path));
   msg.NMHdr := @NM;
@@ -122,7 +122,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn.Index;
@@ -145,7 +145,7 @@ begin
   for i := 0 to Widgets^.ItemCache.Count -1 do begin
 
     FillChar(NM, SizeOf(NM), 0);
-    NM.hdr.hwndfrom := longint(Widgets^.MainView);
+    NM.hdr.hwndfrom := PtrInt(Widgets^.MainView);
     NM.hdr.code := LVN_ITEMCHANGED;
     AIndex := Widgets^.ItemCache.Strings[i];
     NM.iItem := StrToInt(AIndex);
@@ -183,7 +183,7 @@ begin
   
   
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(WidgetInfo^.CoreWidget);
+  NM.hdr.hwndfrom := PtrInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_ITEMCHANGING;
   NM.iItem := StrToInt(Str);
   NM.iSubItem := 0;//AColumn;
