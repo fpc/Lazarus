@@ -4,7 +4,7 @@
 # Abstract: Download, compile binutils and FPC
 
 set -e
-set -x
+#set -x
 
 # This is the root for all download and building directories
 BuildRoot=~/freepascal
@@ -58,6 +58,7 @@ done
 
 # expand paths
 BuildRoot=$(echo $BuildRoot | sed -e 's#//#/#g' -e 's#/$##')
+Targets='i386-win32'
 
 #===============================================================================
 # download and build binutils and fpc
@@ -85,6 +86,8 @@ fi
 #===============================================================================
 # build fpc_crosswin32 rpm
 if [ $BuildCrossWin32RPM = "yes" ]; then
+
+
   #----------------------------------------------------------------------------
   # retrieve the version information
   #----------------------------------------------------------------------------
@@ -97,30 +100,73 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   Release=$(date +%y%m%d)
 
   #----------------------------------------------------------------------------
-  # create source directory
+  # create temporary directories
   #----------------------------------------------------------------------------
-  TmpDir=/tmp/fpc_patchdir
-  rm -rf $TmpDir
-  mkdir -p $TmpDir
+  TmpSrcDir=/tmp/fpc_crosswin32
+  rm -rf $TmpSrcDir
+  mkdir -p $TmpSrcDir
   
-  
+  #----------------------------------------------------------------------------
+  # collect binutils
+  #----------------------------------------------------------------------------
+  BinDir=$TmpSrcDir/usr/bin/
+  mkdir -p $BinDir
+  MyIntel=i686
+  for Target in $Targets; do
+    TargetCPU=$(echo $Target | sed -e 's#^\(.*\)-.*$#\1#')
+    TargetOS=$(echo $Target | sed -e 's#^.*-\(.*\)$#\1#')
+    BinUtilsCPU=$TargetCPU
+    BinUtilsOS=$TargetOS
+
+    if [ $TargetOS = "win32" ]; then
+      BinUtilsOS="mingw32"
+      BinUtilsCPU=$MyIntel
+    fi
+
+    BinUtilsDir=$BuildRoot/binutils/cross/bin/
+    BinUtilsPrefix="$BinUtilsCPU-$BinUtilsOS-"
+
+    cd ${BinUtilsDir}
+    for binutility in $(ls -B ${BinUtilsPrefix}*); do
+      NewName=$(echo $binutility | sed -e "s#$BinUtilsPrefix#fpc-${TargetCPU}-${TargetOS}-#")
+      cp ${BinUtilsDir}${binutility} ${BinDir}${NewName}
+    done
+    cd -
+  done
+
+  #----------------------------------------------------------------------------
+  # collect fpc libs (e.g. .ppu/.o)
+  #----------------------------------------------------------------------------
+  for Target in $Targets; do
+    FPCLibDir=lib/fpc/$CompilerVersionStr/units # !!! no / at end
+    
+    mkdir -p $TmpSrcDir/$FPCLibDir
+    cp -a $BuildRoot/binutils/cross/destination/$FPCLibDir/$Target $TmpSrcDir/$FPCLibDir/
+  done
+
+  #----------------------------------------------------------------------------
+  # create tgz
+  #----------------------------------------------------------------------------
+  SrcTGZ=$(../rpm/get_rpm_source_dir.sh)/SOURCES/fpc_crosswin32-$CompilerVersionStr-$Release.tar.gz
+
+  cd $TmpSrcDir
+  tar czf $SrcTGZ .
+  cd -
 
   #----------------------------------------------------------------------------
   # change spec file
   #----------------------------------------------------------------------------
   SpecFileTemplate=../rpm/fpc_crosswin32.spec.template
-  SpecFile=../rpm/fpc_crosswin32.spec
+  SpecFile=fpc_crosswin32.spec
   cat $SpecFileTemplate | \
     sed -e 's/FPCVERSION/'"$CompilerVersionStr/" \
         -e 's/FPCRELEASE/'"$Release/" \
     > $SpecFile
     
-  #----------------------------------------------------------------------------
-  # compile
-  #----------------------------------------------------------------------------
+
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in /usr/src/redhat/RPMS/i386/"
+  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/"
 fi
 
 # end.

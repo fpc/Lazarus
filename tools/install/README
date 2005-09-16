@@ -10,23 +10,21 @@ TGZ
 Creating the fpcsrc tgz:
 
   There are two ways to do it and so there are two scripts. The first downloads
-  the fpc cvs and packs it. The second uses an existing fpc cvs directory,
+  the fpc svn and packs it. The second uses an existing fpc svn directory,
   copies it, remove unnecessary files and packs it. The second script is
   therefore much faster, but it may miss removing every old, unnecessary files.
   
   The download and pack script:
-  The script create_fpc_export_tgz.sh makes a cvs export of the fpc.
-  
-  For 1.0.11: ./create_fpc_export_tgz.sh stable 05/20/04
+  The script create_fpc_export_tgz.sh makes a svn export of the fpc.
 
-  For 1.9: ./create_fpc_export_tgz.sh devel 05/20/04
+  For 2.1.x: ./create_fpc_export_tgz.sh devel 05/20/04
 
   The 05/20/04 means may 20th 2004.
   
   The copy and pack script:
   The script create_fpc_tgz_from_local_dir.sh needs as parameter the fpc cvs
   directory and compresses it to a tgz. For example
-  ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-1.0.10.tgz
+  ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-2.0.1.tgz
 
 
 Creating the lazarus tgz:
@@ -51,27 +49,29 @@ RPM:
 
 Creating the fpc and the fpcsrc rpm:
 
-  There are two versions of the compiler: the old 1.0.11 and the new (but not
-  yet released) developer version 1.9. To build them, you must install fpc
-  first. Install the stable fpc release (1.0.10). Note: The 1.0.11 can not be
-  built with a 1.9 compiler and the recommended startup compiler for the 1.9.x
-  is the released fpc 1.0.10.
+  There are two versions of the compiler: the old 2..0.x and the new (but not
+  yet released) developer version 2.1.x. To build them, you must install fpc
+  first. Install the stable fpc release (2.0.x). Note: The 2.0.x can not be
+  built with a 2.1.x compiler and the recommended startup compiler for the 2.1.x
+  is the released fpc 2.0.x.
 
   If you have your own fpc sources you can build the fpc rpm with:
     Become root and do:
-    cd <lazarus_directory>/tools/install
-    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc 040501
 
-  The 040501 stands for: 2004 may 1st
+    cd <lazarus_directory>/tools/install
+    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc 050601
+
+  The 050601 stands for: 2005 june 1st
   
   Then build the fpcsrc rpm. Become root and do:
+
     cd <lazarus_directory>/tools/install
-    ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc 040501
+    ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc 050601
 
 
   The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
-    For 1.0.11: ./create_fpc_rpm.sh stable
-    For 1.9:    ./create_fpc_rpm.sh devel
+    For 2.0.x: ./create_fpc_rpm.sh stable
+    For 2.1.x: ./create_fpc_rpm.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current
@@ -93,7 +93,7 @@ Creating the lazarus rpm:
 
 Creating other system specific rpms:
 
-  rpm --rebuild lazarus-0.9.1-1.src.rpm
+  rpm --rebuild lazarus-0.9.10.src.rpm
 
 
 --------------------------------------------------------------------------------
@@ -102,13 +102,13 @@ Debian:
 
 Creating the debian fpc and fpcsrc packages:
 
-  There are two versions of the compiler: the stable 1.0.11 and the unstable
-  developer version 1.9. To build them, you must install fpc first. Install the
-  stable fpc release (1.0.10). Note: The 1.0.11 can not be built with a 1.9
+  There are two versions of the compiler: the stable 2.0.x and the unstable
+  developer version 2.1.x. To build them, you must install fpc first. Install the
+  stable fpc release (2.0.x). Note: The 2.0.x can not be built with a 2.1.x
   compiler.
   The create_fpc_deb.sh works nearly automatically. Become root and execute it.
-  For 1.0.11: ./create_fpc_deb.sh stable
-  For 1.9:    ./create_fpc_deb.sh devel
+  For 2.0.x: ./create_fpc_deb.sh stable
+  For 2.1.x: ./create_fpc_deb.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current
@@ -145,12 +145,12 @@ Creating the DMG packages for FPC and Lazarus:
 5. cd compiler
    sudo make installsymlink INSTALL_PREFIX=~/fpcinst/usr/local
    Fix sym link:
-   sudo ln -sf /usr/local/lib/fpc/1.9.5/ppcppc ~/fpcinst/usr/local/bin/ppcppc
+   sudo ln -sf /usr/local/lib/fpc/2.1.1/ppcppc ~/fpcinst/usr/local/bin/ppcppc
 6. unzip the <lazarus>/tools/install/macosx/fpc_installer_info.zip somewhere,
-   open "fpc 1.9.5.pmsp" (it will open in PackageMaker) change the "resources"
+   open "fpc 2.1.1.pmsp" (it will open in PackageMaker) change the "resources"
    path so it points to the unzipped fpc_resources directory and the "files"
    path so it points to ~/fpcinst and then choose File->Create Package
-7. Put the package in a directory called "Free Pascal Compiler 1.9.5",
+7. Put the package in a directory called "Free Pascal Compiler 2.1.1",
    add in the "Introduction.txt" and "ReadMe.txt" files from the dmg you
    already downloaded and create a (compressed or not doesn't really
    matter, the package is already compressed) disk image from the folder

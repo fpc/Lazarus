@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 set -e
 
 #------------------------------------------------------------------------------
@@ -149,7 +149,8 @@ else
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   
-  tar czf /usr/src/redhat/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz -C $TmpDir fpc
+  SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz
+  tar czf $SrcTGZ -C $TmpDir fpc
 
   #----------------------------------------------------------------------------
   # compile
@@ -161,7 +162,7 @@ else
   cd -
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in /usr/src/redhat/RPMS/i386/"
+  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/"
 fi
 
 # end.

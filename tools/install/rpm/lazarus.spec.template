@@ -30,7 +30,7 @@ strip lazarus
 strip startlazarus
 
 %install
-rm -rf %{buildroot}
+[ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
 mkdir -p %{buildroot}%{_libdir}/%{name}
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
@@ -43,7 +43,7 @@ cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
 ln -sf ../%{_lib}/%{name}/%{name} %{buildroot}%{_bindir}/%{name}
 
 %clean
-rm -rf %{buildroot}
+[ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
 
 #%post
 #update-desktop-database &> /dev/null ||:
