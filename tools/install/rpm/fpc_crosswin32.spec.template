@@ -1,0 +1,28 @@
+Name:           fpc_crosswin32
+Version:        FPCVERSION
+Release:        FPCRELEASE
+Summary:        Free Pascal Compiler cross binaries for win32
+
+Group:          Development/Languages
+License:        GPL and modified LGPL
+URL:            http://www.freepascal.org/
+Source0:        ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/%{name}-%{version}-%{release}.source.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires:       glibc, binutils, fpc=FPCVERSION
+BuildRequires:  binutils, glibc-devel
+
+%description
+
+Units and binutils needed by Freepascal to cross compile to target win32.
+
+%prep
+%setup -c
+
+%build
+
+%install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_libdir}/%{name}
+mkdir -p %{buildroot}%{_bindir}
+

@@ -68,11 +68,14 @@ for p in $Params; do
   installbin=*)
     InstallBin=$(echo $p | sed -e 's#^installbin=##')
     ;;
+  targets=*)
+    Targets=$p
+    ;;
   *)
     echo "Unknown option: $p"
     echo
     echo "Usage:"
-    echo "  $0 [all] [downloadbinutils] [downloadfpc] [buildbinutils] [buildnormalfpc] [buildcrossfpc] [createfpccfg]"
+    echo "  $0 [all] [downloadbinutils] [downloadfpc] [buildbinutils] [buildnormalfpc] [buildcrossfpc] [createfpccfg] [install] [installbin=<dir>] [targets=<i386-win32>]"
     exit -1
     ;;
   esac

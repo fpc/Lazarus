@@ -161,7 +161,7 @@ else
   cd -
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpms can be found in /usr/src/redhat/RPMS/i386/"
+  echo "The new rpm can be found in /usr/src/redhat/RPMS/i386/"
 fi
 
 # end.
