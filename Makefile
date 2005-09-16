@@ -3442,5 +3442,5 @@ install:
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 else
-	ln -sf /usr/bin/lazarus $(LAZARUS_INSTALL_DIR)/lazarus
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus /usr/bin/lazarus
 endif
