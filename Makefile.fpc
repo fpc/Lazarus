@@ -29,10 +29,16 @@ destdir=$(BASEDIR)/dist
 [prerules]
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 #
+ifeq ($(OS_TARGET),win32)
+LAZARUS_INSTALL_DIR=C:\lazarus
+else
+LAZARUS_INSTALL_DIR=/usr/share/lazarus
+endif
+
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples
+.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
 ide:
@@ -76,6 +82,17 @@ purge: cleanlaz
 
 clean: cleanlaz
 
-#install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
+#-----------------------------------------------------------------------------
+# Many C expect 'make install' to copy the binaries to somewhere
+# Copy the lazarus tree to /usr/share/lazarus and set a link
+install:
+        $(COPYTREE) . $(LAZARUS_INSTALL_DIR)
+ifeq ($(OS_TARGET),win32)
+
+else
+        ln -sf /usr/bin/lazarus $(LAZARUS_INSTALL_DIR)/lazarus
+endif
+
+
 # end.
 
