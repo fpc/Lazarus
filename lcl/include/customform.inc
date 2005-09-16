@@ -463,6 +463,7 @@ begin
     SetActive(Message.Active {<> WA_INACTIVE});
   FActive:=true;
   Activate;
+  if Application<>nil then Application.Activate;
 end;
 
 {------------------------------------------------------------------------------
@@ -475,6 +476,7 @@ end;
 procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
 begin
   FActive:=false;
+  if Application<>nil then Application.Deactivate;
   Deactivate;
 end;
 

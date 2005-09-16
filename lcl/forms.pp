@@ -833,6 +833,7 @@ type
     AppIdleEndSent,
     AppHandlingException,
     AppNoExceptionMessages,
+    AppActive, // application has focus
     AppDestroying,
     AppDoNotReleaseComponents
     );
@@ -850,6 +851,8 @@ type
     ahtIdleEnd,
     ahtKeyDownBefore, // before interface and LCL
     ahtKeyDownAfter,  // after interface and LCL
+    ahtActivate,
+    ahtDeactivate,
     ahtUserInput
     );
 
@@ -885,6 +888,8 @@ type
     FOldExitProc: Pointer;
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
+    FOnActivate: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
@@ -922,10 +927,14 @@ type
     procedure RemoveHandler(HandlerType: TApplicationHandlerType;
                             const Handler: TMethod);
     procedure RunLoop;
+    procedure Activate;
+    procedure Deactivate;
   protected
     function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler;
     procedure NotifyIdleEndHandler;
+    procedure NotifyActivateHandler;
+    procedure NotifyDeactivateHandler;
     function IsHintMsg(var Msg: TMsg): Boolean;
     procedure DoOnMouseMove; virtual;
     procedure ShowHintWindow(const Info: THintInfoAtMouse);
@@ -975,21 +984,22 @@ type
                                    var Key: Word; Shift: TShiftState);
     procedure ControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ControlKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure AddOnIdleHandler(Handler: TNotifyEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure AddOnIdleHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnIdleHandler(Handler: TNotifyEvent);
-    procedure AddOnIdleEndHandler(Handler: TNotifyEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure AddOnIdleEndHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnIdleEndHandler(Handler: TNotifyEvent);
     procedure AddOnUserInputHandler(Handler: TOnUserInputEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                                    AsLast: Boolean=true);
     procedure RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
     procedure AddOnKeyDownBeforeHandler(Handler: TKeyEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+                                        AsLast: Boolean=true);
     procedure RemoveOnKeyDownBeforeHandler(Handler: TKeyEvent);
-    procedure AddOnKeyDownHandler(Handler: TKeyEvent;
-                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure AddOnKeyDownHandler(Handler: TKeyEvent; AsLast: Boolean=true);
     procedure RemoveOnKeyDownHandler(Handler: TKeyEvent);
+    procedure AddOnActivateHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnActivateHandler(Handler: TNotifyEvent);
+    procedure AddOnDeactivateHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnDeactivateHandler(Handler: TNotifyEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
@@ -1015,6 +1025,8 @@ type
     property MainForm: TForm read FMainForm;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;

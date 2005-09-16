@@ -127,10 +127,10 @@ type
     //procedure FormShow(Sender: TObject);
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure MainIDEFormActivate(Sender: TObject);
     //procedure FormPaint(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
+    procedure OnApplicationActivate(Sender: TObject);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 
     // file menu
@@ -451,6 +451,8 @@ type
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
                                     // display the correct tab
+    FCheckingFilesOnDisk: boolean;
+    FCheckFilesOnDiskNeeded: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
@@ -693,7 +695,7 @@ type
                           IsPartOfProject:boolean): TModalResult; override;
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
                                    AskUser: boolean): TModalresult;
-    function DoCheckFilesOnDisk: TModalResult; override;
+    function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; override;
@@ -1061,6 +1063,7 @@ begin
   // set OnIdle handlers
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
   Application.AddOnIdleHandler(@OnApplicationIdle,true);
+  Application.AddOnActivateHandler(@OnApplicationActivate,true);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm,true);
   SetupHints;
 
@@ -1246,11 +1249,6 @@ begin
   end;
 
   CanClose:=(DoCloseProject <> mrAbort);
-end;
-
-procedure TMainIDE.MainIDEFormActivate(Sender: TObject);
-begin
-  DoCheckFilesOnDisk;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1974,7 +1972,6 @@ procedure TMainIDE.ConnectMainBarEvents;
 begin
   MainIDEBar.OnClose := @MainIDEFormClose;
   MainIDEBar.OnCloseQuery := @MainIDEFormCloseQuery;
-  MainIDEBar.OnActivate := @MainIDEFormActivate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -6046,7 +6043,7 @@ begin
   writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags,' ProjectInfoFile=',Project1.ProjectInfoFile);
   {$ENDIF}
   
-  if DoCheckFilesOnDisk in [mrCancel,mrAbort] then exit;
+  if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
   
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
@@ -8209,36 +8206,51 @@ begin
   Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
 end;
 
-function TMainIDE.DoCheckFilesOnDisk: TModalResult;
+function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
   AnUnitList: TList; // list of TUnitInfo
   i: integer;
   CurUnit: TUnitInfo;
 begin
   Result:=mrOk;
+  if FCheckingFilesOnDisk then exit;
   if Project1=nil then exit;
-  InvalidateFileStateCache;
-  Project1.GetUnitsChangedOnDisk(AnUnitList);
-  if AnUnitList=nil then exit;
-  Result:=ShowDiskDiffsDialog(AnUnitList);
-  if Result in [mrYesToAll] then
-    Result:=mrOk;
-  for i:=0 to AnUnitList.Count-1 do begin
-    CurUnit:=TUnitInfo(AnUnitList[i]);
-    if Result=mrOk then begin
-      if CurUnit.EditorIndex>=0 then begin
-        Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
-      end else if CurUnit.IsMainUnit then begin
-        Result:=DoRevertMainUnit;
-      end else
-        Result:=mrIgnore;
-      if Result=mrAbort then exit;
-    end else begin
-      CurUnit.IgnoreCurrentFileDateOnDisk;
-    end;
-    Result:=mrOk;
+  if Screen.GetCurrentModalForm<>nil then exit;
+
+  if not Instantaneous then begin
+    FCheckFilesOnDiskNeeded:=true;
+    exit;
   end;
-  AnUnitList.Free;
+  FCheckFilesOnDiskNeeded:=false;
+
+  //debugln('TMainIDE.DoCheckFilesOnDisk');
+  FCheckingFilesOnDisk:=true;
+  try
+    InvalidateFileStateCache;
+    Project1.GetUnitsChangedOnDisk(AnUnitList);
+    if AnUnitList=nil then exit;
+    Result:=ShowDiskDiffsDialog(AnUnitList);
+    if Result in [mrYesToAll] then
+      Result:=mrOk;
+    for i:=0 to AnUnitList.Count-1 do begin
+      CurUnit:=TUnitInfo(AnUnitList[i]);
+      if Result=mrOk then begin
+        if CurUnit.EditorIndex>=0 then begin
+          Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
+        end else if CurUnit.IsMainUnit then begin
+          Result:=DoRevertMainUnit;
+        end else
+          Result:=mrIgnore;
+        if Result=mrAbort then exit;
+      end else begin
+        CurUnit.IgnoreCurrentFileDateOnDisk;
+      end;
+      Result:=mrOk;
+    end;
+    AnUnitList.Free;
+  finally
+    FCheckingFilesOnDisk:=false;
+  end;
 end;
 
 function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
@@ -10928,7 +10940,6 @@ end;
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);
 begin
   FDisplayState:= dsSource;
-  DoCheckFilesOnDisk;
 end;
 
 Procedure TMainIDE.OnDesignerActivated(Sender: TObject);
@@ -11287,6 +11298,14 @@ begin
                                              and AnUnitInfo.HasResources;
     end;
   end;
+  
+  if FCheckFilesOnDiskNeeded then
+    DoCheckFilesOnDisk(true);
+end;
+
+procedure TMainIDE.OnApplicationActivate(Sender: TObject);
+begin
+  DoCheckFilesOnDisk;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);

@@ -337,8 +337,10 @@ begin
   MouseIdle(GetControlAtMouse);
 
   Done := True;
-  if (FIdleLockCount=0) and Assigned(FOnIdle) then FOnIdle(Self, Done);
-  NotifyIdleHandler;
+  if (FIdleLockCount=0) then begin
+    if Assigned(FOnIdle) then FOnIdle(Self, Done);
+    NotifyIdleHandler;
+  end;
   if Done
   then begin
     // wait till something happens
@@ -492,7 +494,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TApplication.NotifyIdleHandler;
+  procedure TApplication.ValidateHelpSystem;
  ------------------------------------------------------------------------------}
 function TApplication.ValidateHelpSystem: Boolean;
 begin
@@ -522,6 +524,26 @@ begin
   i:=FApplicationHandlers[ahtIdleEnd].Count;
   while FApplicationHandlers[ahtIdleEnd].NextDownIndex(i) do
     TNotifyEvent(FApplicationHandlers[ahtIdleEnd][i])(Self);
+end;
+
+procedure TApplication.NotifyActivateHandler;
+var
+  i: integer;
+begin
+  if Assigned(OnActivate) then OnActivate(Self);
+  i:=FApplicationHandlers[ahtActivate].Count;
+  while FApplicationHandlers[ahtActivate].NextDownIndex(i) do
+    TNotifyEvent(FApplicationHandlers[ahtActivate][i])(Self);
+end;
+
+procedure TApplication.NotifyDeactivateHandler;
+var
+  i: integer;
+begin
+  if Assigned(OnDeactivate) then OnDeactivate(Self);
+  i:=FApplicationHandlers[ahtDeactivate].Count;
+  while FApplicationHandlers[ahtDeactivate].NextDownIndex(i) do
+    TNotifyEvent(FApplicationHandlers[ahtDeactivate][i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1011,6 +1033,24 @@ begin
   until Terminated;
 end;
 
+procedure TApplication.Activate;
+begin
+  if AppActive in FFlags then exit;
+  Include(FFlags,AppActive);
+  NotifyActivateHandler;
+end;
+
+procedure TApplication.Deactivate;
+begin
+  if (not (AppActive in FFlags)) then exit;
+  if (FindControl(GetFocus)<>nil) then begin
+    // another control of this application has got the focus
+    exit;
+  end;
+  Exclude(FFlags,AppActive);
+  NotifyDeactivateHandler;
+end;
+
 {------------------------------------------------------------------------------}
 {       TApplication WndPRoc                                                   }
 {                                                                              }
@@ -1302,6 +1342,28 @@ end;
 procedure TApplication.RemoveOnKeyDownHandler(Handler: TKeyEvent);
 begin
   RemoveHandler(ahtKeyDownAfter,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnActivateHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtActivate,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnActivateHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtActivate,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnDeactivateHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtDeactivate,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnDeactivateHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtDeactivate,TMethod(Handler));
 end;
 
 procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
