@@ -88,7 +88,7 @@ ReplaceScript=replace_in_files.pl
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
 
 # update smart_strip.sh
-#cp $SmartStripScript $TmpDir/install/
+#ATM: not needed: cp $SmartStripScript $TmpDir/install/
 
 if [ "$PkgType" = "deb" ]; then
   # build fpc debs
@@ -137,20 +137,19 @@ if [ "$PkgType" = "deb" ]; then
 else
   # build fpc rpm
 
+  SpecFileTemplate=rpm/fpc.spec.template
   SpecFile=rpm/fpc.spec
   SrcPatch=fpcsrc-patch
 
-  # update smart_strip.sh
-  # ATM not needed: cp $SmartSripScript $TmpDir/install/
-
   # change spec file
-  cat $SpecFile | \
+  cat $SpecFileTemplate | \
     sed -e 's/^Version: .*/Version: '"$LazVersion/" \
         -e 's/^Release: .*/Release: '"$LazRelease/" \
-    > $SpecFile.New
+    > $SpecFile
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
-  mv $SpecFile.New $SpecFile
+  
+  tar cvz $TempDir/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz /usr/src/redhat/SOURCES/$TempDir/fpc
 
   #----------------------------------------------------------------------------
   # compile

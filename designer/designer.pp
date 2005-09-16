@@ -1211,7 +1211,7 @@ Begin
               ControlSelection.Delete(CompIndex);
             end;
           end else begin
-            // no shift key (single selection or kept multiselection)
+            // no shift key (single selection or keeping multiselection)
 
             if (CompIndex<0) then begin
               // select only this component

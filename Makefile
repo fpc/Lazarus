@@ -3295,7 +3295,6 @@ debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
 units: fpc_units $(addsuffix _units,$(TARGET_DIRS))
-examples: fpc_examples $(addsuffix _examples,$(TARGET_DIRS))
 shared: $(addsuffix _shared,$(TARGET_DIRS))
 install: fpc_install $(addsuffix _install,$(TARGET_DIRS))
 sourceinstall: fpc_sourceinstall
@@ -3309,11 +3308,11 @@ distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
 cleanall: fpc_cleanall $(addsuffix _cleanall,$(TARGET_DIRS))
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean cleanall info makefiles
+.PHONY: debug smart release units shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
+.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples
 ide:
 	$(MAKE) -C ide ide
 idepkg:
@@ -3322,6 +3321,8 @@ starter:
 	$(MAKE) -C ide starter
 tools: lcl components
 	$(MAKE) -C tools
+examples: lcl components
+	$(MAKE) -C examples
 all: lcl components packager/registration ideintf designer packager ide starter
 cleanide:
 	$(MAKE) -C ide cleanide

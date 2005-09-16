@@ -32,7 +32,7 @@ RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
+.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples
 
 #-----------------------------------------------------------------------------
 ide:
@@ -49,6 +49,10 @@ starter:
 #-----------------------------------------------------------------------------
 tools: lcl components
         $(MAKE) -C tools
+        
+#-----------------------------------------------------------------------------
+examples: lcl components
+        $(MAKE) -C examples
 
 #-----------------------------------------------------------------------------
 all: lcl components packager/registration ideintf designer packager ide starter
