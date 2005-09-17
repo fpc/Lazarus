@@ -480,7 +480,7 @@ end;
 procedure TAnchorDesigner.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  ExecuteIDEShortCut(Self,Key,Shift,caMenuOnly);
+  ExecuteIDEShortCut(Self,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caMenuOnly{$ENDIF});
 end;
 
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);

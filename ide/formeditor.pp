@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
-  ObjectInspector, Designer, FormEditingIntf;
+  ObjectInspector, Designer, IDECommands, FormEditingIntf;
 
 type
 
@@ -59,6 +59,7 @@ procedure CreateFormEditor;
 begin
   FormEditor1 := TFormEditor.Create;
   FormEditingHook := FormEditor1;
+  IDECmdScopeDesignerOnly.AddWindowClass(TDesignerIDECommandForm);
 end;
 
 procedure FreeFormEditor;

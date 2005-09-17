@@ -291,7 +291,7 @@ type
                                   var Handled: boolean);
     procedure OnExecuteIDEShortCut(Sender: TObject;
                        var Key: word; Shift: TShiftState;
-                       {$IFDEF UseIDEScopes}IDEWindow: TCustomForm
+                       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass
                        {$ELSE}TheAreas: TCommandAreas{$ENDIF});
     procedure OnExecuteIDECommand(Sender: TObject; Command: word);
 
@@ -1167,7 +1167,7 @@ end;
 procedure TMainIDE.OIRemainingKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  OnExecuteIDEShortCut(Sender,Key,Shift,caDesign);
+  OnExecuteIDEShortCut(Sender,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caDesign{$ENDIF});
 end;
 
 procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
@@ -1554,7 +1554,9 @@ begin
   IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
   IDECommands.OnExecuteIDEShortCut:=@OnExecuteIDEShortCut;
   CreateStandardIDECommandScopes;
-  IDECmdScopeSrcEdit.AddWindowClass(TSourceNotebook);
+  IDECmdScopeSrcEdit.AddWindowClass(TSourceEditorWindowInterface);
+  IDECmdScopeSrcEdit.AddWindowClass(nil);
+  IDECmdScopeSrcEditOnly.AddWindowClass(TSourceEditorWindowInterface);
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -2383,7 +2385,7 @@ end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}TheAreas: TCommandAreas{$ENDIF});
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}TheAreas: TCommandAreas{$ENDIF});
 var
 //  CommandRelation: TKeyCommandRelation;
 //  Handled: Boolean;
@@ -2396,7 +2398,7 @@ begin
 //  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
 //  if Handled then Key:=VK_UNKNOWN;
   //debugln('TMainIDE.OnExecuteIDEShortCut Key '+dbgs(Key)+' pressed');
-  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}TheAreas{$ENDIF});
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}TheAreas{$ENDIF});
   if (Command = ecNone) then exit;
   Handled := false;
   OnProcessIDECommand(Sender, Command, Handled);

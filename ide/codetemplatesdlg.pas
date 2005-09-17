@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls,
-  SynEditAutoComplete, IDECommands,
+  SynEditAutoComplete, IDECommands, SrcEditorIntf,
   InputHistory, LazarusIDEStrConsts, EditorOptions;
 
 type
@@ -326,7 +326,7 @@ begin
   else
     TemplateSynEdit.Highlighter:=nil;
   EditorOpts.GetSynEditSettings(TemplateSynEdit);
-  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,[caSourceEditor]);
+  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
   TemplateSynEdit.Gutter.Visible:=false;
 
   // init SynAutoComplete

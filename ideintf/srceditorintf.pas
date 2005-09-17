@@ -20,10 +20,13 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Forms;
   
 type
   TSourceEditorInterface = class
+  end;
+
+  TSourceEditorWindowInterface = class(TForm)
   end;
 
 implementation

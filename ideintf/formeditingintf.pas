@@ -74,7 +74,7 @@ type
     Function FormModified        : Boolean; virtual; abstract;
     Function MarkModified        : Boolean; virtual; abstract;
     Function GetFormComponent    : TIComponentInterface; virtual; abstract;
-    Function FindComponent	   : TIComponentInterface; virtual; abstract;
+    Function FindComponent       : TIComponentInterface; virtual; abstract;
     Function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
 
     Function GetSelCount: Integer; virtual; abstract;
@@ -134,6 +134,10 @@ type
                                          ): Boolean; virtual; abstract;
   end;
 
+type
+  TDesignerIDECommandForm = class(TCustomForm)
+    // dummy form class, use by the IDE commands for keys in the designers
+  end;
 
 var
   FormEditingHook: TAbstractFormEditor; // will be set by the IDE

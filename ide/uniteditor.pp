@@ -335,7 +335,7 @@ type
 
   { TSourceNotebook }
 
-  TSourceNotebook = class(TForm)
+  TSourceNotebook = class(TSourceEditorWindowInterface)
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     Notebook: TNotebook;
@@ -2380,7 +2380,7 @@ begin
 
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,[caSourceEditor]);
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
 
   // popup menu
   BuildPopupMenu;
@@ -4805,7 +4805,7 @@ Begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,[caSourceEditor]);
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
   if NoteBook<>nil then begin
     if EditorOpts.ShowTabCloseButtons then
       NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]

@@ -41,7 +41,8 @@ uses
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterPHP,
-  Laz_XMLCfg, IDEWindowIntf,
+  Laz_XMLCfg,
+  IDEWindowIntf, SrcEditorIntf,
   IDECommands, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
 
@@ -2065,7 +2066,7 @@ begin
   ASynEdit.MaxUndo:=fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
   
-  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}[caSourceEditor]{$ENDIF});
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
@@ -2140,7 +2141,7 @@ begin
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.ReadOnly:=true;
 
-  KeyMap.AssignTo(ASynEdit.KeyStrokes,[caSourceEditor]);
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
 end;
 
 
@@ -2234,7 +2235,7 @@ begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
-        EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,[caSourceEditor]);
+        EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
         if a<>3 then
         begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
@@ -2748,7 +2749,8 @@ begin
       FillKeyMappingTreeView;
       for i:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i]<>nil then
-          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes,[caSourceEditor]);
+          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes,
+                         {$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
     end;
   end;
 end;

@@ -73,27 +73,20 @@ type
   TIDECommandScope = class(TPersistent)
   private
     FName: string;
-    FIDEWindows: TFPList;// list of TCustomForm
     FIDEWindowClasses: TFPList;// list of TCustomFormClass
     FCategories: TFPList;
     function GetCategories(Index: integer): TIDECommandCategory;
     function GetIDEWindowClasses(Index: integer): TCustomFormClass;
-    function GetIDEWindows(Index: integer): TCustomForm;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddWindow(AWindow: TCustomForm);
-    procedure RemoveWindow(AWindow: TCustomForm);
     procedure AddWindowClass(AWindowClass: TCustomFormClass);
     procedure RemoveWindowClass(AWindowClass: TCustomFormClass);
-    function IDEWindowCount: integer;
     function IDEWindowClassCount: integer;
     function CategoryCount: integer;
-    function HasIDEWindow(AWindow: TCustomForm): boolean;
     function HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
   public
     property Name: string read FName;
-    property IDEWindows[Index: integer]: TCustomForm read GetIDEWindows;
     property IDEWindowClasses[Index: integer]: TCustomFormClass read GetIDEWindowClasses;
     property Categories[Index: integer]: TIDECommandCategory read GetCategories;
   end;
@@ -202,7 +195,7 @@ type
   TExecuteIDEShortCut = procedure(Sender: TObject;
                                   var Key: word; Shift: TShiftState;
                                   {$IFDEF UseIDEScopes}
-                                  IDEWindow: TCustomForm
+                                  IDEWindowClass: TCustomFormClass
                                   {$ELSE}
                                   Areas: TCommandAreas
                                   {$ENDIF}) of object;
@@ -213,7 +206,7 @@ var
   OnExecuteIDECommand: TExecuteIDECommand;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF});
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF});
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
@@ -226,7 +219,7 @@ var
 var
   IDECmdScopeSrcEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnly: TIDECommandScope;
-  IDECmdScopeDesigner: TIDECommandScope;
+  IDECmdScopeDesignerOnly: TIDECommandScope;
 
 procedure CreateStandardIDECommandScopes;
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
@@ -245,11 +238,11 @@ begin
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF});
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF});
 begin
   if (OnExecuteIDECommand<>nil) and (Key<>VK_UNKNOWN) then
     OnExecuteIDEShortCut(Sender,Key,Shift,
-                         {$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
+                        {$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word;
@@ -276,7 +269,8 @@ procedure CreateStandardIDECommandScopes;
 begin
   IDECommandScopes:=TIDECommandScopes.Create;
   IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
-  IDECmdScopeDesigner:=RegisterIDECommandScope('Designer');
+  IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
+  IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
 end;
 
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
@@ -459,11 +453,6 @@ end;
 
 { TIDECommandScope }
 
-function TIDECommandScope.GetIDEWindows(Index: integer): TCustomForm;
-begin
-  Result:=TCustomForm(FIDEWindows[Index]);
-end;
-
 function TIDECommandScope.GetCategories(Index: integer): TIDECommandCategory;
 begin
   Result:=TIDECommandCategory(FCategories[Index]);
@@ -476,7 +465,6 @@ end;
 
 constructor TIDECommandScope.Create;
 begin
-  FIDEWindows:=TFPList.Create;
   FIDEWindowClasses:=TFPList.Create;
   FCategories:=TFPList.Create;
 end;
@@ -492,21 +480,8 @@ begin
     Categories[i].Scope:=nil;
   {$ENDIF}
   FreeAndNil(FIDEWindowClasses);
-  FreeAndNil(FIDEWindows);
   FreeAndNil(FCategories);
   inherited Destroy;
-end;
-
-procedure TIDECommandScope.AddWindow(AWindow: TCustomForm);
-begin
-  if FIDEWindows.IndexOf(AWindow)>=0 then
-    RaiseGDBException('TIDECommandScope.AddWindow');
-  FIDEWindows.Add(AWindow);
-end;
-
-procedure TIDECommandScope.RemoveWindow(AWindow: TCustomForm);
-begin
-  FIDEWindows.Remove(AWindow);
 end;
 
 procedure TIDECommandScope.AddWindowClass(AWindowClass: TCustomFormClass);
@@ -521,11 +496,6 @@ begin
   FIDEWindowClasses.Remove(AWindowClass);
 end;
 
-function TIDECommandScope.IDEWindowCount: integer;
-begin
-  Result:=FIDEWindows.Count;
-end;
-
 function TIDECommandScope.IDEWindowClassCount: integer;
 begin
   Result:=FIDEWindowClasses.Count;
@@ -536,27 +506,14 @@ begin
   Result:=FCategories.Count;
 end;
 
-function TIDECommandScope.HasIDEWindow(AWindow: TCustomForm): boolean;
-var
-  i: Integer;
-begin
-  for i:=0 to FIDEWindows.Count-1 do
-    if TCustomForm(FIDEWindows[i])=AWindow then
-      exit(true);
-  for i:=0 to FIDEWindowClasses.Count-1 do
-    if AWindow.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
-      exit(true);
-  Result:=(AWindow<>nil)
-          and HasIDEWindowClass(TCustomFormClass(AWindow.ClassType));
-end;
-
 function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass
   ): boolean;
 var
   i: Integer;
 begin
   for i:=0 to FIDEWindowClasses.Count-1 do
-    if AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+    if (FIDEWindowClasses[i]=nil)
+    or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
       exit(true);
   Result:=false;
 end;

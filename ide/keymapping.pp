@@ -320,12 +320,12 @@ type
     function Count: integer;
     function CategoryCount: integer;
     function Find(Key: TIDEShortCut;
-      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+      {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
       ): TKeyCommandRelation;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
     function TranslateKey(Key: word; Shift: TShiftState;
-      {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF};
+      {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF};
       UseLastKey: boolean = true
       ): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
@@ -2482,7 +2482,7 @@ begin
   AddDefault(C,'Context sensitive help',ecContextHelp);
 
   // designer  - without menu items in the IDE bar (at least no direct)
-  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,{$IFDEF UseIDEScopes}IDECmdScopeDesigner{$ELSE}caDesignOnly{$ENDIF})];
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,{$IFDEF UseIDEScopes}IDECmdScopeDesignerOnly{$ELSE}caDesignOnly{$ENDIF})];
   AddDefault(C,'Copy selected Components to clipboard',ecDesignerCopy);
   AddDefault(C,'Cut selected Components to clipboard' ,ecDesignerCut);
   AddDefault(C,'Paste Components from clipboard'      ,ecDesignerPaste);
@@ -2723,7 +2723,7 @@ begin
 end;
 
 function TKeyCommandRelationList.Find(Key: TIDEShortCut;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF}
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
   ): TKeyCommandRelation;
 var
   a:integer;
@@ -2732,7 +2732,7 @@ begin
   if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
     {$IFDEF UseIDEScopes}
-    if not Category.Scope.HasIDEWindow(IDEWindow) then continue;
+    if not Category.Scope.HasIDEWindowClass(IDEWindowClass) then continue;
     {$ELSE}
     if Category.Areas*Areas=[] then continue;
     {$ENDIF}
@@ -2772,8 +2772,8 @@ begin
     CurRelation:=Relations[a];
     if (CurRelation.KeyA.Key1=VK_UNKNOWN)
     {$IFDEF UseIDEScopes}
-    or ((CurRelation.Category.Scope<>nil)
-        and (not CurRelation.Category.Scope.HasIDEWindow(IDEWindow)))
+    or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
+        and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
     {$ELSE}
     or ((CurRelation.Category.Areas*Areas)=[])
     {$ENDIF}
@@ -2910,7 +2910,7 @@ begin
 end;
 
 function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindow: TCustomForm{$ELSE}Areas: TCommandAreas{$ENDIF};
+  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF};
   UseLastKey: boolean
   ): word;
 { If UseLastKey = true then only search for commmands with one key.
@@ -2927,7 +2927,7 @@ begin
     // => try a two key combination command
     fLastKey.Key2 := Key;
     fLastKey.Shift2 := Shift;
-    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
+    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
   end else begin
     ARelation := nil;
   end;
@@ -2938,7 +2938,7 @@ begin
     fLastKey.Shift1 := Shift;
     fLastKey.Key2 := VK_UNKNOWN;
     fLastKey.Shift2 := [];
-    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindow{$ELSE}Areas{$ENDIF});
+    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
   end;
   if ARelation<>nil then
   begin
