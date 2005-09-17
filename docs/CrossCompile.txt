@@ -17,6 +17,7 @@ Abstract:
 IMPORTANT: The FPC units must have the same date/version for all platforms,
   because you will use only one compiler. That means:
   Whenever you update your FPC, you must update all other cross fpc units too.
+  The scripts will help you doing this.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -31,6 +32,7 @@ The following steps don't need the root user. They can be done as normal user.
 There are some scripts in <lazarusdir>/tools/install/cross_unix/.
 The script "update_cross_fpc.sh" compiles and setups everything in the home
 directory of the current user. Therefore it does not need a root account.
+Th script "build_linux_cross_win32_rpm.sh" creates the rpm fpc_crosswin32.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -38,10 +40,10 @@ Quick start:
 If you have a good internet connection, then you can just type
 
 []$ cd <lazarusdir>/tools/install/cross_unix/
-[]$ ./update_cross_fpc.sh all
+[]$ ./update_cross_fpc.sh all installasdefault
 
 This will download the needed sources, compile them for your platform plus
-i386-win32 and installs them for the current user.
+i386-win32.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

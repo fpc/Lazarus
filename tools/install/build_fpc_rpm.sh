@@ -31,6 +31,7 @@ if [ "x$FPCSrcDir" = "x" ]; then
   echo $Usage
   exit -1
 fi
+FPCSrcDir=$(echo $FPCSrcDir)
 shift
 
 LazRelease=$1
