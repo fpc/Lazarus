@@ -5790,7 +5790,7 @@ var ActiveSrcEdit: TSourceEditor;
   //  If FName is not found, we'll check extensions pp and pas too
   //  Returns true if found. FName contains the full file+path in that case
   var TempFile,TempPath,CurPath,FinalFile, Ext: String;
-      i,p,c: Integer;
+      p,c: Integer;
       PasExt: TPascalExtType;
   begin
     if SPath='' then SPath:='.';

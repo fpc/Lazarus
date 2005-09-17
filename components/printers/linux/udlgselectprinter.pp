@@ -44,12 +44,10 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls,LCLType,
-  Printers,osPrinters,
+  Printers, osPrinters,
   CUPSDyn,libc;
 
 type
-  TPrintRange = (prAllPages, prCurrentPage, prSelection, prPageNums);
-  
   TdlgSelectPrinter = class(TForm)
     Bevel1: TBEVEL;
     btnProp: TBUTTON;

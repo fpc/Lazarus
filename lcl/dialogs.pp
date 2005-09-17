@@ -20,16 +20,6 @@
  *                                                                           *
  *****************************************************************************
 }
-
-{
-@author(TMyClass - Michael A. Hess <author@emailaddress.com>)                       
-@author(TMyOtherClass - Other Author Name <otherauthor@emailaddress.com>)                       
-@created()
-@lastmod()
-
-Detailed description of the Unit.
-} 
-
 unit Dialogs;
 
 {$mode objfpc}{$H+}
@@ -311,6 +301,47 @@ type
                  frHideUpDown, frMatchCase, frDisableMatchCase, frDisableUpDown,
                  frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp);
   TFindOptions = set of TFindOption;
+  
+
+{ TPrinterSetupDialog }
+
+  TCustomPrinterSetupDialog = class(TCommonDialog)
+  end;
+
+
+{ TPrintDialog }
+
+  TPrintRange = (prAllPages, prSelection, prPageNums, prCurrentPage);
+  TPrintDialogOption = (poPrintToFile, poPageNums, poSelection, poWarning,
+    poHelp, poDisablePrintToFile);
+  TPrintDialogOptions = set of TPrintDialogOption;
+
+  TCustomPrintDialog = class(TCommonDialog)
+  private
+    FFromPage: Integer;
+    FNumCopies: Integer;
+    FToPage: Integer;
+    FCollate: Boolean;
+    FOptions: TPrintDialogOptions;
+    FPrintToFile: Boolean;
+    FPrintRange: TPrintRange;
+    FMinPage: Integer;
+    FMaxPage: Integer;
+    FCopies: Integer;
+  public
+    constructor Create(TheOwner: TComponent); override;
+  public
+    property Collate: Boolean read FCollate write FCollate default False;
+    property Copies: Integer read FCopies write FNumCopies default 0;
+    property FromPage: Integer read FFromPage write FFromPage default 0;
+    property MinPage: Integer read FMinPage write FMinPage default 0;
+    property MaxPage: Integer read FMaxPage write FMaxPage default 0;
+    property Options: TPrintDialogOptions read FOptions write FOptions default [];
+    property PrintToFile: Boolean read FPrintToFile write FPrintToFile default False;
+    property PrintRange: TPrintRange read FPrintRange write FPrintRange default prAllPages;
+    property ToPage: Integer read FToPage write FToPage default 0;
+  end;
+
 
 { MessageDlg }
 
@@ -424,6 +455,14 @@ end;
 {$I messagedialogs.inc}
 {$I promptdialog.inc}
 {$I colorbutton.inc}
+
+{ TCustomPrintDialog }
+
+constructor TCustomPrintDialog.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FPrintRange:=prAllPages;
+end;
 
 initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
