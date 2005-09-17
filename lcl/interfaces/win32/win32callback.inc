@@ -851,6 +851,12 @@ Begin
             ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
             DC := PDrawItemStruct(LParam)^._hDC;
           end;
+          if WindowInfo <> @DefaultWindowInfo then
+          begin
+            WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
+            WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState 
+              and ODS_SELECTED) = ODS_SELECTED;
+          end;
           WinProcess := false;
         end;
       end else begin

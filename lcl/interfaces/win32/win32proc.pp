@@ -52,6 +52,8 @@ Type
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
     ignoreNextChar: boolean;  // ignore next WM_(SYS)CHAR message
     MaxLength: dword;
+    DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
+    DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
   end;
 
@@ -942,6 +944,7 @@ var
 begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
+  WindowInfo^.DrawItemIndex := -1;
   Windows.SetProp(Window, PChar(dword(WindowInfoAtom)), dword(WindowInfo));
   Result := WindowInfo;
 end;
@@ -1079,6 +1082,7 @@ end;
 initialization
 
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TList.Create;
 

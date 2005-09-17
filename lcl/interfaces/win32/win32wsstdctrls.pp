@@ -472,8 +472,17 @@ begin
 end;
 
 function  TWin32WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  WindowInfo: PWindowInfo;
+  winHandle: HWND;
 begin
-  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
+  winHandle := ACustomListBox.Handle;
+  WindowInfo := GetWindowInfo(winHandle);
+  // if we're handling a WM_DRAWITEM, then LB_GETSEL is not reliable, check stored info
+  if (WindowInfo^.DrawItemIndex <> -1) and (WindowInfo^.DrawItemIndex = AIndex) then
+    Result := WindowInfo^.DrawItemSelected
+  else
+    Result := Windows.SendMessage(winHandle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
 end;
 
 function  TWin32WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
