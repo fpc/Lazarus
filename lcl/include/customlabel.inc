@@ -52,6 +52,7 @@ end;
 Procedure TCustomLabel.DoAutoSize;
 var
   NewWidth, NewHeight: integer;
+  CurAnchors: TAnchors;
 begin
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
   if OptimalFill and (not AutoSize) then begin
@@ -65,7 +66,16 @@ begin
   try
     CalcSize(NewWidth, NewHeight);
     //debugln('TCustomLabel.DoAutoSize ',dbgs(Left),' ',dbgs(Top),' ',dbgs(NewWidth),' ',dbgs(NewHeight));
-    SetBounds(Left, Top, NewWidth, NewHeight);
+    CurAnchors:=[];
+    if Align in [alLeft,alRight,alBottom,alTop,alClient] then
+      CurAnchors:=AnchorAlign[Align];
+    CurAnchors:=Anchors+CurAnchors;
+    if CurAnchors*[akLeft,akRight]=[akLeft,akRight] then
+      NewWidth:=Width;
+    if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
+      NewHeight:=Height;
+
+    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   finally
     AutoSizing := False;
   end;

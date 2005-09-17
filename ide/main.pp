@@ -1849,6 +1849,12 @@ begin
     itmViewInspector.OnClick := @mnuViewInspectorClicked;
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
+{$IFDEF EnableLazDoc}
+    itmViewLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
+{$ELSE}
+    itmViewLazDoc.Visible := false;
+    itmViewLazDoc.Enabled := false;
+{$ENDIF}
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
@@ -1921,12 +1927,6 @@ begin
     itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
     itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
-{$IFDEF EnableLazDoc}
-    itmToolLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
-{$ELSE}
-    itmToolLazDoc.Visible := false;
-    itmToolLazDoc.Enabled := false;
-{$ENDIF}
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;

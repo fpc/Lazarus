@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
   
   Abstract:
-    This unit defines a form for the lazarus environment options and a class to
+    This unit defines a dialog for the lazarus environment options and a class to
     store the options in a xml file.
 
 }
@@ -42,7 +42,7 @@ uses
   InputHistory, EditorOptions, Translations;
 
 const
-  EnvOptsVersion: integer = 104;
+  EnvOptsVersion: integer = 105;
 
   //----------------------------------------------------------------------------
   
@@ -146,7 +146,7 @@ type
     FMinimizeAllOnMinimizeMain: boolean;
     FHideIDEOnRun: boolean;
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     FShowGrid: boolean;
     FSnapToGrid: boolean;
     FGridSizeX: integer;
@@ -214,6 +214,8 @@ type
     fPascalFileExtension: TPascalExtType;
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
+    
+    FLazDocPathList: TStrings;
 
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
@@ -263,7 +265,7 @@ type
                                                write FMinimizeAllOnMinimizeMain;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
     property SnapToGrid: boolean read FSnapToGrid write FSnapToGrid;
     property GridColor: TColor read FGridColor write FGridColor;
@@ -379,6 +381,9 @@ type
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
 
+    //lazdoc
+    property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
+    
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
     
@@ -394,20 +399,37 @@ type
   TOnSaveEnvironmentSettings = procedure (Sender: TObject;
         EnvironmentOptions: TEnvironmentOptions) of object;
 
-  { TEnvironmentOptionsDialog: form for environment options }
+  { TEnvironmentOptionsDialog: EnvironmentOptionsDialog for environment options }
   
   TEnvOptsDialogPage = (eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
     eodpWindowPositions, eodpFormEditor, eodpObjectInspector, eodpFiles,
     eodpBackup, eodpNaming);
   
+  { TEnvironmentOptionsDialog }
+
   TEnvironmentOptionsDialog = class(TForm)
     NoteBook: TNoteBook;
+    FilesPage: TPage;
+    DesktopPage: TPage;
+    WindowsPage: TPage;
+    FormEditorPage: TPage;
+    ObjectInspectorPage: TPage;
+    BackupPage: TPage;
+    NamingPage: TPage;
+    LazDocPage: TPage;
+    SelectDirectoryDialog: TSelectDirectoryDialog;
+
+    //lazdoc settings
+    LazDocBrowseButton: TButton;
+    LazDocPathEdit: TEdit;
+    LazDocDeletePathButton: TButton;
+    LazDocAddPathButton: TButton;
+    LazDocPathsGroupBox: TGroupBox;
+    LazDocListBox: TListBox;
 
     // language
     LanguageGroupBox: TGroupBox;
     LanguageComboBox: TComboBox;
-    
-    // auto save
     AutoSaveGroupBox: TGroupBox;
     AutoSaveEditorFilesCheckBox: TCheckBox;
     AutoSaveProjectCheckBox: TCheckBox;
@@ -418,14 +440,14 @@ type
     DesktopFilesGroupBox: TGroupBox;
     SaveDesktopSettingsToFileButton: TButton;
     LoadDesktopSettingsFromFileButton: TButton;
-    
+
     // hints
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
     
     // messages view
     MsgViewDblClickJumpsCheckBox: TCheckBox;
-    
+
     // window layout
     WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
@@ -433,7 +455,7 @@ type
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
     HideIDEOnRunCheckBox: TCheckBox;
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     GridGroupBox: TGroupBox;
     ShowGridCheckBox: TCheckBox;
     GridColorLabel: TLabel;
@@ -538,35 +560,21 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     
-    procedure BackupOtherGroupBoxResize(Sender: TObject);
-    procedure BackupProjectGroupBoxResize(Sender: TObject);
     procedure BakTypeRadioGroupClick(Sender: TObject);
-    procedure CompilerPathGroupBoxResize(Sender: TObject);
-    procedure FPCSourceDirGroupBoxResize(Sender: TObject);
-    procedure MakePathGroupBoxResize(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
-    procedure FormEditMiscGroupBoxResize(Sender: TObject);
-    procedure GridGroupBoxResize(Sender: TObject);
-    procedure GuideLinesGroupBoxResize(Sender: TObject);
-    procedure LazarusDirGroupBoxResize(Sender: TObject);
+    procedure FormEditorPageResize(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure LazDocAddPathButtonClick(Sender: TObject);
+    procedure LazDocBrowseButtonClick(Sender: TObject);
+    procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure OnBackupPageResize(Sender: TObject);
-    procedure OnDesktopPageResize(Sender: TObject);
-    procedure OnFilesPageResize(Sender: TObject);
-    procedure OnFormEditorPageResize(Sender: TObject);
-    procedure OnNamingPageResize(Sender: TObject);
-    procedure OnObjectInspectorPageResize(Sender: TObject);
-    procedure OnWindowsPageResize(Sender: TObject);
-    procedure RubberbandGroupBoxResize(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
-    procedure TestBuildDirGroupBoxResize(Sender: TObject);
     procedure WindowPositionsListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-    procedure EnvironmentOptionsDialogResize(Sender: TObject);
-    procedure WindowPositionsGroupBoxResize(Sender: TObject);
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
@@ -576,8 +584,6 @@ type
     FOldFPCSourceDir: string;
     FOldMakeFilename: string;
     FOldTestDir: string;
-    function CreateColorItem(ATop: Integer; AParent: TWinControl;
-                             const ACaption: String): TColorButton;
 
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
@@ -587,13 +593,7 @@ type
     procedure SetupObjectInspectorPage(Page: integer);
     procedure SetupBackupPage(Page: integer);
     procedure SetupNamingPage(Page: integer);
-    procedure ResizeFilesPage;
-    procedure ResizeDesktopPage;
-    procedure ResizeWindowsPage;
-    procedure ResizeFormEditorPage;
-    procedure ResizeObjectInspectorPage;
-    procedure ResizeBackupPage;
-    procedure ResizeNamingPage;
+    procedure SetupLazDocPage(Page: integer);
     procedure SetWindowPositionsItem(Index: integer);
     function CheckValues: boolean;
     function CheckLazarusDir: boolean;
@@ -795,7 +795,7 @@ begin
   FMinimizeAllOnMinimizeMain:=false;
   FHideIDEOnRun:=false;
 
-  // form editor
+  // EnvironmentOptionsDialog editor
   FShowGrid:=true;
   FGridColor:=clBlack;
   FSnapToGrid:=true;
@@ -870,6 +870,8 @@ begin
   // naming
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
+
+  FLazDocPathList:=TStringList.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -891,6 +893,7 @@ begin
   fIDEWindowLayoutList.Free;
   FConfigStore.Free;
   FXMLCfg.Free;
+  FLazDocPathList.Free;
   inherited Destroy;
 end;
 
@@ -1001,7 +1004,7 @@ begin
     FHideIDEOnRun:=XMLConfig.GetValue(
       Path+'Desktop/HideIDEOnRun/Value',false);
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     FShowGrid:=XMLConfig.GetValue(
        Path+'FormEditor/ShowGrid',true);
     FGridColor:=XMLConfig.GetValue(
@@ -1142,6 +1145,9 @@ begin
     // naming
     LoadPascalFileExt(Path+'');
 
+    //lazdoc
+    FLazDocPathList.Text := XMLConfig.GetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
+
     if FileVersion>=103 then begin
       fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
         Path+'CharcaseFileAction/Value',''));
@@ -1204,7 +1210,6 @@ var XMLConfig: TXMLConfig;
                              DebuggerName[dtNone]);
   end;
   
-
 begin
   try
     XMLConfig:=GetXMLCfg(true);
@@ -1235,7 +1240,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
       false);
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
     XMLConfig.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
     XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
@@ -1350,6 +1355,9 @@ begin
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],
       AmbiguousFileActionNames[afaAsk]);
+
+    //lazdoc
+    XMLConfig.SetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
@@ -1527,28 +1535,10 @@ end;
 constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,510,480);
+  IDEDialogLayoutList.ApplyLayout(Self,500,512);
   Caption:=lisMenuGeneralOptions;
-  OnResize:=@EnvironmentOptionsDialogResize;
-  
-  NoteBook:=TNoteBook.Create(Self);
-  with NoteBook do begin
-    Name:='NoteBook';
-    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-    Parent:=Self;
-    if PageCount>0 then
-      Pages[0]:=dlgEnvFiles
-    else
-      Pages.Add(dlgEnvFiles);
-    Pages.Add(dlgDesktop);
-    Pages.Add(dlgWindows);
-    Pages.Add(dlgFrmEditor);
-    Pages.Add(dlgObjInsp);
-    Pages.Add(dlgEnvBckup);
-    Pages.Add(dlgNaming);
-    PageIndex:=0;
-  end;
+
+  NoteBook.PageIndex:=0;
 
   SetupFilesPage(0);
   SetupDesktopPage(1);
@@ -1557,33 +1547,10 @@ begin
   SetupObjectInspectorPage(4);
   SetupBackupPage(5);
   SetupNamingPage(6);
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Width:=70;
-    Height:=23;
-    Left:=Self.ClientWidth-Width-15;
-    Top:=Self.ClientHeight-Height-15;
-    Parent:=Self;
-    Caption:=dlgCancel;
-    OnClick:=@CancelButtonClick;
-  end;
-  CancelControl:=CancelButton;
+  SetupLazDocPage(7);
 
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Width:=CancelButton.Width;
-    Height:=CancelButton.Height;
-    Left:=CancelButton.Left-15-Width;
-    Top:=CancelButton.Top;
-    Parent:=Self;
-    Caption:='Ok';//"Ok" may be the same in any language. If not, change
-    OnClick:=@OkButtonClick;
-  end;
-  
-  OnResize(nil);
+  CancelButton.Caption:=dlgCancel;
+  CancelControl:=CancelButton;
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
@@ -1593,276 +1560,88 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 var
-  MaxX: integer;
   i: Integer;
   LangID: String;
 begin
-  NoteBook.Page[Page].OnResize:=@OnDesktopPageResize;
-
-  MaxX:=ClientWidth-5;
-
-  // language
-  LanguageGroupBox:=TGroupBox.Create(Self);
-  with LanguageGroupBox do begin
-    Name:='LanguageGroupBox';
-    Left:=8;
-    Top:=2;
-    Width:=(MaxX div 2) - 15;
-    Height:=50;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgEnvLanguage;
-    Visible:=true;
-  end;
+  NoteBook.Page[Page].Caption := dlgDesktop;
   
-  LanguageComboBox:=TComboBox.Create(Self);
-  with LanguageComboBox do begin
-    Name:='LanguageComboBox';
-    Left:=5;
-    Top:=3;
-    Width:=LanguageGroupBox.ClientWidth-2*Left;
-    Parent:=LanguageGroupBox;
-    with Items do
-    begin
-      BeginUpdate;
-      for i:=0 to LazarusTranslations.Count-1 do begin
-        LangID:=LazarusTranslations[i].ID;
-        if LangID='' then
-          //No [] if automatic
-          Add(GetLazarusLanguageLocalizedName(LangID))
-        else
-          Add(GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']');
-      end;
-      EndUpdate;
+  // language
+  LanguageGroupBox.Caption:=dlgEnvLanguage;
+
+  with LanguageComboBox.Items do
+  begin
+    BeginUpdate;
+    for i:=0 to LazarusTranslations.Count-1 do begin
+      LangID:=LazarusTranslations[i].ID;
+      if LangID='' then
+        //No [] if automatic
+        Add(GetLazarusLanguageLocalizedName(LangID))
+      else
+        Add(GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']');
     end;
+    EndUpdate;
   end;
 
   // auto save
-  AutoSaveGroupBox:=TGroupBox.Create(Self);
-  with AutoSaveGroupBox do begin
-    Name:='AutoSaveGroupBox';
-    Left:=LanguageGroupBox.Left;
-    Top:=LanguageGroupBox.Top+LanguageGroupBox.Height+5;
-    Width:=LanguageGroupBox.Width;
-    Height:=108;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgAutoSave;
-    Visible:=true;
-  end;
-  
-  AutoSaveEditorFilesCheckBox:=TCheckBox.Create(Self);
-  with AutoSaveEditorFilesCheckBox do begin
-    Name:='AutoSaveEditorFilesCheckBox';
-    Left:=2;
-    Top:=2;
-    Width:=AutoSaveGroupBox.ClientWidth-2;
-    Height:=20;
-    Parent:=AutoSaveGroupBox;
-    Caption:=dlgEdFiles;
-    Enabled:=false;
-    Visible:=true;
-  end;
-  
-  AutoSaveProjectCheckBox:=TCheckBox.Create(Self);
-  with AutoSaveProjectCheckBox do begin
-    Name:='AutoSaveProjectCheckBox';
-    Left:=2;
-    Top:=27;
-    Width:=AutoSaveGroupBox.ClientWidth-2;
-    Height:=20;
-    Parent:=AutoSaveGroupBox;
-    Caption:=dlgEnvProject;
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  AutoSaveIntervalInSecsLabel:=TLabel.Create(Self);
-  with AutoSaveIntervalInSecsLabel do begin
-    Name:='AutoSaveIntervalInSecsLabel';
-    Left:=4;
-    Top:=54;
-    Width:=90;
-    Height:=23;
-    Parent:=AutoSaveGroupBox;
-    Caption:=dlgIntvInSec;
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  AutoSaveIntervalInSecsComboBox:=TComboBox.Create(Self);
-  with AutoSaveIntervalInSecsComboBox do begin
-    Name:='AutoSaveIntervalInSecsComboBox';
-    Left:=AutoSaveIntervalInSecsLabel.Left+AutoSaveIntervalInSecsLabel.Width+5;
-    Top:=AutoSaveIntervalInSecsLabel.Top+2;
-    Width:=AutoSaveGroupBox.ClientWidth-Left-10;
-    Parent:=AutoSaveGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('1200');
-      Add('600');
-      Add('300');
-      Add('120');
-      EndUpdate;
-    end;
-    Enabled:=false;
-  end;
+  AutoSaveGroupBox.Caption:=dlgAutoSave;
+  AutoSaveEditorFilesCheckBox.Caption:=dlgEdFiles;
+  AutoSaveProjectCheckBox.Caption:=dlgEnvProject;
+  AutoSaveIntervalInSecsLabel.Caption:=dlgIntvInSec;
 
   // desktop files
-  DesktopFilesGroupBox:=TGroupBox.Create(Self);
-  with DesktopFilesGroupBox do begin
-    Name:='DesktopFilesGroupBox';
-    Left:=AutoSaveGroupBox.Left;
-    Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
-    Width:=AutoSaveGroupBox.Width;
-    Height:=90;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgDesktopFiles;
-    Visible:=true;
-  end;
+  DesktopFilesGroupBox.Caption:=dlgDesktopFiles;
+  SaveDesktopSettingsToFileButton.Caption:=dlgSaveDFile;
+  LoadDesktopSettingsFromFileButton.Caption:=dlgLoadDFile;
 
-  SaveDesktopSettingsToFileButton:=TButton.Create(Self);
-  with SaveDesktopSettingsToFileButton do begin
-    Name:='SaveDesktopSettingsToFileButton';
-    Left:=5;
-    Top:=5;
-    Width:=DesktopFilesGroupBox.ClientWidth-15;
-    Height:=25;
-    Parent:=DesktopFilesGroupBox;
-    Caption:=dlgSaveDFile;
-    OnClick:=@SaveDesktopSettingsToFileButtonClick;
-    Visible:=true;
-  end;
-
-  LoadDesktopSettingsFromFileButton:=TButton.Create(Self);
-  with LoadDesktopSettingsFromFileButton do begin
-    Name:='LoadDesktopSettingsFromFileButton';
-    Parent:=DesktopFilesGroupBox;
-    Caption:=dlgLoadDFile;
-    OnClick:=@LoadDesktopSettingsFromFileButtonClick;
-  end;
-  
   // hints
-  ShowHintsForComponentPaletteCheckBox:=TCheckBox.Create(Self);
-  with ShowHintsForComponentPaletteCheckBox do begin
-    Name:='ShowHintsForComponentPaletteCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgPalHints;
-  end;
-  
-  ShowHintsForMainSpeedButtonsCheckBox:=TCheckBox.Create(Self);
-  with ShowHintsForMainSpeedButtonsCheckBox do begin
-    Name:='ShowHintsForMainSpeedButtonsCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgSpBHints;
-  end;
-  
+  ShowHintsForComponentPaletteCheckBox.Caption:=dlgPalHints;
+  ShowHintsForMainSpeedButtonsCheckBox.Caption:=dlgSpBHints;
+
   // messages view
-  MsgViewDblClickJumpsCheckBox:=TCheckBox.Create(Self);
-  with MsgViewDblClickJumpsCheckBox do begin
-    Name:='MsgViewDblClickJumpsCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
-  end;
+  MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
 begin
-  NoteBook.Page[Page].OnResize:=@OnWindowsPageResize;
+  NoteBook.Page[Page].Caption := dlgWindows;
 
   // windows
-  MinimizeAllOnMinimizeMainCheckBox:=TCheckBox.Create(Self);
-  with MinimizeAllOnMinimizeMainCheckBox do begin
-    Name:='MinimizeAllOnMinimizeMainCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgMinimizeAllOnMinimizeMain;
-    Enabled:=false;
-  end;
-
-  HideIDEOnRunCheckBox:=TCheckBox.Create(Self);
-  with HideIDEOnRunCheckBox do begin
-    Name:='HideIDEOnRunCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgHideIDEOnRun;
-  end;
+  MinimizeAllOnMinimizeMainCheckBox.Caption:=dlgMinimizeAllOnMinimizeMain;
+  HideIDEOnRunCheckBox.Caption:=dlgHideIDEOnRun;
 
   // Window Positions
-  WindowPositionsGroupBox:=TGroupBox.Create(Self);
-  with WindowPositionsGroupBox do begin
-    Name:='WindowPositionsGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgWinPos;
-    OnResize:=@WindowPositionsGroupBoxResize;
+  WindowPositionsGroupBox.Caption:=dlgWinPos;
+  with WindowPositionsListBox.Items do begin
+    BeginUpdate;
+    Add(dlgMainMenu);
+    Add(dlgSrcEdit);
+    Add(dlgMsgs);
+    Add(dlgObjInsp);
+    Add(lisMenuProjectInspector);
+    Add(lisCodeExplorer);
+    Add(lisMenuPackageGraph);
+    Add(dlgUnitDepCaption);
+    EndUpdate;
   end;
-
-  WindowPositionsListBox:=TListBox.Create(Self);
-  with WindowPositionsListBox do begin
-    Name:='WindowPositionsListBox';
-    Parent:=WindowPositionsGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add(dlgMainMenu);
-      Add(dlgSrcEdit);
-      Add(dlgMsgs);
-      Add(dlgObjInsp);
-      Add(lisMenuProjectInspector);
-      Add(lisCodeExplorer);
-      Add(lisMenuPackageGraph);
-      Add(dlgUnitDepCaption);
-      EndUpdate;
-    end;
-    OnMouseUp:=@WindowPositionsListBoxMouseUp;
-    BorderSpacing.Around:=2;
-    Align:=alTop;
-    Height:=100;
-  end;
-
   WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
   with WindowPositionsBox do begin
     Name:='WindowPositionsBox';
     Parent:=WindowPositionsGroupBox;
-    BorderSpacing.Around:=2;
+    BorderSpacing.Around:=6;
     Align:=alBottom;
-    AnchorToNeighbour(akTop,2,WindowPositionsListBox);
+    AnchorToNeighbour(akTop,6,WindowPositionsListBox);
   end;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
-var MaxX:integer;
 begin
-  NoteBook.Page[Page].OnResize:=@OnBackupPageResize;
+  NoteBook.Page[Page].Caption := dlgEnvBckup;
 
-  MaxX:=ClientWidth-5;
+  BackupHelpLabel.Caption:=dlgEnvBackupHelpNote;
 
-  BackupHelpLabel:=TLabel.Create(Self);
-  with BackupHelpLabel do begin
-    Name:='BackupHelpLabel';
-    Left:=5;
-    Top:=2;
-    Width:=MaxX-Left*2;
-    Height:=23;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgEnvBackupHelpNote;
-  end;
+  BackupProjectGroupBox.Caption:=dlgProjFiles;
 
-  BackupProjectGroupBox:=TGroupBox.Create(Self);
-  with BackupProjectGroupBox do begin
-    Name:='BackupProjectGroupBox';
-    Left:=4;
-    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=(MaxX div 2) - 11;
-    Height:=260;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgProjFiles;
-    OnResize:=@BackupProjectGroupBoxResize;
-  end;
-
-  BakProjTypeRadioGroup:=TRadioGroup.Create(Self);
   with BakProjTypeRadioGroup do begin
-    Name:='BakProjTypeRadioGroup';
-    Left:=5;
-    Top:=4;
-    Width:=BackupProjectGroupBox.ClientWidth-Left-Left-4;
-    Height:=140;
-    Parent:=BackupProjectGroupBox;
     Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
@@ -1874,115 +1653,42 @@ begin
       Add(dlgBckUpSubDir);
       EndUpdate;
     end;
-    OnClick:=@BakTypeRadioGroupClick;
-    Visible:=true;
   end;
 
-  BakProjAddExtLabel:=TLabel.Create(Self);
-  with BakProjAddExtLabel do begin
-    Name:='BakProjAddExtLabel';
-    Left:=5;
-    Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
-    Width:=BakProjTypeRadioGroup.Width-62;
-    Height:=23;
-    Parent:=BackupProjectGroupBox;
-    Caption:=dlgEdCustomExt;
-    Visible:=true;
+  BakProjAddExtLabel.Caption:=dlgEdCustomExt;
+
+  with BakProjAddExtComboBox.Items do begin
+    BeginUpdate;
+    Add('bak');
+    Add('old');
+    EndUpdate;
   end;
 
-  BakProjAddExtComboBox:=TComboBox.Create(Self);
-  with BakProjAddExtComboBox do begin
-    Name:='BakProjAddExtComboBox';
-    Left:=BakProjAddExtLabel.Left+BakProjAddExtLabel.Width+2;
-    Top:=BakProjAddExtLabel.Top;
-    Width:=60;
-    Parent:=BackupProjectGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('bak');
-      Add('old');
-      EndUpdate;
-    end;
+  BakProjMaxCounterLabel.Caption:=dlgMaxCntr;
+
+  with BakProjMaxCounterComboBox.Items do begin
+    BeginUpdate;
+    Add('1');
+    Add('2');
+    Add('3');
+    Add('5');
+    Add('9');
+    Add(BakMaxCounterInfiniteTxt);
+    EndUpdate;
   end;
 
-  BakProjMaxCounterLabel:=TLabel.Create(Self);
-  with BakProjMaxCounterLabel do begin
-    Name:='BakProjMaxCounterLabel';
-    Left:=5;
-    Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
-    Width:=110;
-    Height:=23;
-    Parent:=BackupProjectGroupBox;
-    Caption:=dlgMaxCntr;
-    Visible:=true;
+  BakProjSubDirLabel.Caption:=dlgEdBSubDir;
+
+  with BakProjSubDirComboBox.Items do begin
+    BeginUpdate;
+    Add(BakNoSubDirTxt);
+    Add('backup');
+    EndUpdate;
   end;
 
-  BakProjMaxCounterComboBox:=TComboBox.Create(Self);
-  with BakProjMaxCounterComboBox do begin
-    Name:='BakProjMaxCounterComboBox';
-    Left:=BakProjMaxCounterLabel.Left+BakProjMaxCounterLabel.Width+2;
-    Top:=BakProjMaxCounterLabel.Top;
-    Width:=100;
-    Parent:=BackupProjectGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('1');
-      Add('2');
-      Add('3');
-      Add('5');
-      Add('9');
-      Add(BakMaxCounterInfiniteTxt);
-      EndUpdate;
-    end;
-  end;
+  BackupOtherGroupBox.Caption:=dlgEnvOtherFiles;
 
-  BakProjSubDirLabel:=TLabel.Create(Self);
-  with BakProjSubDirLabel do begin
-    Name:='BakProjSubDirLabel';
-    Left:=5;
-    Top:=BakProjMaxCounterLabel.Top+BakProjMaxCounterLabel.Height+5;
-    Width:=110;
-    Height:=23;
-    Parent:=BackupProjectGroupBox;
-    Caption:=dlgEdBSubDir;
-    Visible:=true;
-  end;
-
-  BakProjSubDirComboBox:=TComboBox.Create(Self);
-  with BakProjSubDirComboBox do begin
-    Name:='BakProjSubDirComboBox';
-    Left:=BakProjSubDirLabel.Left+BakProjSubDirLabel.Width+2;
-    Top:=BakProjSubDirLabel.Top;
-    Width:=100;
-    Parent:=BackupProjectGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add(BakNoSubDirTxt);
-      Add('backup');
-      EndUpdate;
-    end;
-  end;
-
-  BackupOtherGroupBox:=TGroupBox.Create(Self);
-  with BackupOtherGroupBox do begin
-    Name:='BackupOtherGroupBox';
-    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
-    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=(MaxX div 2) - 11;
-    Height:=260;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgEnvOtherFiles;
-    OnResize:=@BackupOtherGroupBoxResize;
-  end;
-
-  BakOtherTypeRadioGroup:=TRadioGroup.Create(Self);
   with BakOtherTypeRadioGroup do begin
-    Name:='BakOtherTypeRadioGroup';
-    Left:=5;
-    Top:=4;
-    Width:=BackupOtherGroupBox.ClientWidth-Left-Left-4;
-    Height:=140;
-    Parent:=BackupOtherGroupBox;
     Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
@@ -1994,302 +1700,85 @@ begin
       Add(dlgBckUpSubDir);
       EndUpdate;
     end;
-    OnClick:=@BakTypeRadioGroupClick;
-    Visible:=true;
   end;
 
-  BakOtherAddExtLabel:=TLabel.Create(Self);
-  with BakOtherAddExtLabel do begin
-    Name:='BakOtherAddExtLabel';
-    Left:=5;
-    Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
-    Width:=BakOtherTypeRadioGroup.Width-62;
-    Height:=23;
-    Parent:=BackupOtherGroupBox;
-    Caption:=dlgEdCustomExt;
-    Visible:=true;
+  BakOtherAddExtLabel.Caption:=dlgEdCustomExt;
+
+  with BakOtherAddExtComboBox.Items do begin
+    BeginUpdate;
+    Add('bak');
+    Add('old');
+    EndUpdate;
   end;
 
-  BakOtherAddExtComboBox:=TComboBox.Create(Self);
-  with BakOtherAddExtComboBox do begin
-    Name:='BakOtherAddExtComboBox';
-    Left:=BakOtherAddExtLabel.Left+BakOtherAddExtLabel.Width+2;
-    Top:=BakOtherAddExtLabel.Top;
-    Width:=60;
-    Parent:=BackupOtherGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('bak');
-      Add('old');
-      EndUpdate;
-    end;
+  BakOtherMaxCounterLabel.Caption:=dlgMaxCntr;
+
+  with BakOtherMaxCounterComboBox.Items do begin
+    BeginUpdate;
+    Add('1');
+    Add('2');
+    Add('3');
+    Add('5');
+    Add('9');
+    Add(BakMaxCounterInfiniteTxt);
+    EndUpdate;
   end;
 
-  BakOtherMaxCounterLabel:=TLabel.Create(Self);
-  with BakOtherMaxCounterLabel do begin
-    Name:='BakOtherMaxCounterLabel';
-    Left:=5;
-    Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
-    Width:=110;
-    Height:=23;
-    Parent:=BackupOtherGroupBox;
-    Caption:=dlgMaxCntr;
-    Visible:=true;
-  end;
+  BakOtherSubDirLabel.Caption:=dlgEdBSubDir;
 
-  BakOtherMaxCounterComboBox:=TComboBox.Create(Self);
-  with BakOtherMaxCounterComboBox do begin
-    Name:='BakOtherMaxCounterComboBox';
-    Left:=BakOtherMaxCounterLabel.Left+BakOtherMaxCounterLabel.Width+2;
-    Top:=BakOtherMaxCounterLabel.Top;
-    Width:=100;
-    Parent:=BackupOtherGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('1');
-      Add('2');
-      Add('3');
-      Add('5');
-      Add('9');
-      Add(BakMaxCounterInfiniteTxt);
-      EndUpdate;
-    end;
-  end;
-
-  BakOtherSubDirLabel:=TLabel.Create(Self);
-  with BakOtherSubDirLabel do begin
-    Name:='BakOtherSubDirLabel';
-    Left:=5;
-    Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
-    Width:=110;
-    Height:=23;
-    Parent:=BackupOtherGroupBox;
-    Caption:=dlgEdBSubDir;
-  end;
-
-  BakOtherSubDirComboBox:=TComboBox.Create(Self);
-  with BakOtherSubDirComboBox do begin
-    Name:='BakOtherSubDirComboBox';
-    Left:=BakOtherSubDirLabel.Left+BakOtherSubDirLabel.Width+2;
-    Top:=BakOtherSubDirLabel.Top;
-    Width:=100;
-    Parent:=BackupOtherGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add(dlgBakDirectory);
-      Add('backup');
-      EndUpdate;
-    end;
+  with BakOtherSubDirComboBox.Items do begin
+    BeginUpdate;
+    Add(dlgBakDirectory);
+    Add('backup');
+    EndUpdate;
   end;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 begin
-  NoteBook.Page[Page].OnResize:=@OnFilesPageResize;
+  NoteBook.Page[Page].Caption := dlgEnvFiles;
 
-  MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
-  with MaxRecentOpenFilesComboBox do begin
-    Name:='MaxRecentOpenFilesComboBox';
-    Left:=4;
-    Top:=4;
-    Width:=60;
-    with Items do begin
-      BeginUpdate;
-      Add('5');
-      Add('10');
-      Add('15');
-      Add('20');
-      Add('25');
-      Add('30');
-      EndUpdate;
-    end;
-    AutoSize:=true;
-    Parent:=NoteBook.Page[Page];
+  MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
+
+  MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
+
+  OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
+
+  LazarusDirGroupBox.Caption:=dlgLazarusDir;
+
+  with LazarusDirComboBox.Items do begin
+    BeginUpdate;
+    Add(ProgramDirectory);
+    EndUpdate;
   end;
 
-  MaxRecentOpenFilesLabel:=TLabel.Create(Self);
-  with MaxRecentOpenFilesLabel do begin
-    Name:='MaxRecentOpenFilesLabel';
-    AutoSize:=true;
-    Caption:=dlgMaxRecentFiles;
-    Parent:=NoteBook.Page[Page];
-    AnchorVerticalCenterTo(MaxRecentOpenFilesComboBox);
-    AnchorToNeighbour(akLeft,5,MaxRecentOpenFilesComboBox);
-  end;
+  CompilerPathGroupBox.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
 
-  MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
-  with MaxRecentProjectFilesComboBox do begin
-    Name:='MaxRecentProjectFilesComboBox';
-    Left:=4;
-    Width:=60;
-    with Items do begin
-      BeginUpdate;
-      Add('5');
-      Add('10');
-      Add('15');
-      Add('20');
-      Add('25');
-      Add('30');
-      EndUpdate;
-    end;
-    AutoSize:=true;
-    Parent:=NoteBook.Page[Page];
-    AnchorToNeighbour(akTop,2,MaxRecentOpenFilesComboBox);
-  end;
-
-  MaxRecentProjectFilesLabel:=TLabel.Create(Self);
-  with MaxRecentProjectFilesLabel do begin
-    Name:='MaxRecentProjectFilesLabel';
-    AutoSize:=true;
-    Caption:=dlgMaxRecentProjs;
-    Parent:=NoteBook.Page[Page];
-    AnchorVerticalCenterTo(MaxRecentProjectFilesComboBox);
-    AnchorToNeighbour(akLeft,5,MaxRecentProjectFilesComboBox);
-  end;
-
-  OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
-  with OpenLastProjectAtStartCheckBox do begin
-    Name:='OpenLastProjectAtStartCheckBox';
-    AutoSize:=true;
-    Caption:=dlgQOpenLastPrj;
-    Parent:=NoteBook.Page[Page];
-    AnchorToNeighbour(akTop,5,MaxRecentProjectFilesComboBox);
-  end;
-
-  LazarusDirGroupBox:=TGroupBox.Create(Self);
-  with LazarusDirGroupBox do begin
-    Name:='LazarusDirGroupBox';
-    Caption:=dlgLazarusDir;
-    OnResize:=@LazarusDirGroupBoxResize;
-    Parent:=NoteBook.Page[Page];
-  end;
-
-  LazarusDirComboBox:=TComboBox.Create(Self);
-  with LazarusDirComboBox do begin
-    Name:='LazarusDirComboBox';
-    Parent:=LazarusDirGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add(ProgramDirectory);
-      EndUpdate;
-    end;
-  end;
-  
-  LazarusDirButton:=TButton.Create(Self);
-  with LazarusDirButton do begin
-    Name:='LazarusDirButton';
-    Parent:=LazarusDirGroupBox;
-    Caption:='...';
-    OnClick:=@DirectoriesButtonClick;
-  end;
-
-  CompilerPathGroupBox:=TGroupBox.Create(Self);
-  with CompilerPathGroupBox do begin
-    Name:='CompilerPathGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
-    OnResize:=@CompilerPathGroupBoxResize;
-  end;
-
-  CompilerPathComboBox:=TComboBox.Create(Self);
   with CompilerPathComboBox do begin
-    Name:='CompilerPathComboBox';
-    Parent:=CompilerPathGroupBox;
     Items.BeginUpdate;
     GetDefaultCompilerFilenames(Items);
     Items.EndUpdate;
   end;
 
-  CompilerPathButton:=TButton.Create(Self);
-  with CompilerPathButton do begin
-    Name:='CompilerPathButton';
-    Parent:=CompilerPathGroupBox;
-    Caption:='...';
-    OnClick:=@FilesButtonClick;
+  FPCSourceDirGroupBox.Caption:=dlgFpcSrcPath;
+
+  MakePathGroupBox.Caption:=dlgMakePath;
+
+  with MakePathComboBox.Items do begin
+    BeginUpdate;
+    Add('/usr/bin/make');
+    EndUpdate;
   end;
 
-  FPCSourceDirGroupBox:=TGroupBox.Create(Self);
-  with FPCSourceDirGroupBox do begin
-    Name:='FPCSourceDirGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgFpcSrcPath;
-    OnResize:=@FPCSourceDirGroupBoxResize;
-  end;
+  TestBuildDirGroupBox.Caption:=dlgTestPrjDir;
 
-  FPCSourceDirComboBox:=TComboBox.Create(Self);
-  with FPCSourceDirComboBox do begin
-    Name:='FPCSourceDirComboBox';
-    Parent:=FPCSourceDirGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('');
-      EndUpdate;
-    end;
-  end;
-  
-  FPCSourceDirButton:=TButton.Create(Self);
-  with FPCSourceDirButton do begin
-    Name:='FPCSourceDirButton';
-    Parent:=FPCSourceDirGroupBox;
-    Caption:='...';
-    OnClick:=@DirectoriesButtonClick;
-  end;
-
-  MakePathGroupBox:=TGroupBox.Create(Self);
-  with MakePathGroupBox do begin
-    Name:='MakePathGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgMakePath;
-    OnResize:=@MakePathGroupBoxResize;
-  end;
-
-  MakePathComboBox:=TComboBox.Create(Self);
-  with MakePathComboBox do begin
-    Name:='MakePathComboBox';
-    Parent:=MakePathGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('/usr/bin/make');
-      EndUpdate;
-    end;
-  end;
-
-  MakePathButton:=TButton.Create(Self);
-  with MakePathButton do begin
-    Name:='MakePathButton';
-    Parent:=MakePathGroupBox;
-    Caption:='...';
-    OnClick:=@FilesButtonClick;
-  end;
-
-  TestBuildDirGroupBox:=TGroupBox.Create(Self);
-  with TestBuildDirGroupBox do begin
-    Name:='TestBuildDirGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgTestPrjDir;
-    OnResize:=@TestBuildDirGroupBoxResize;
-  end;
-
-  TestBuildDirComboBox:=TComboBox.Create(Self);
-  with TestBuildDirComboBox do begin
-    Name:='TestBuildDirComboBox';
-    Parent:=TestBuildDirGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add('/tmp');
-      Add('/var/tmp');
-      Add('c:/tmp');
-      Add('c:/windows/temp');
-      EndUpdate;
-    end;
-  end;
-
-  TestBuildDirButton:=TButton.Create(Self);
-  with TestBuildDirButton do begin
-    Name:='TestBuildDirButton';
-    Parent:=TestBuildDirGroupBox;
-    Caption:='...';
-    OnClick:=@DirectoriesButtonClick;
+  with TestBuildDirComboBox.Items do begin
+    BeginUpdate;
+    Add('/tmp');
+    Add('/var/tmp');
+    Add('c:/tmp');
+    Add('c:/windows/temp');
+    EndUpdate;
   end;
 end;
 
@@ -2314,386 +1803,62 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
 
   procedure SetupGridGroupBox;
   begin
-    ShowGridCheckBox:=TCheckBox.Create(Self);
-    with ShowGridCheckBox do begin
-      Name:='ShowGridCheckBox';
-      Left:=6;
-      Top:=2;
-      Width:=200;
-      Caption:=dlgQShowGrid;
-      Parent:=GridGroupBox;
-    end;
-
-    GridColorButton:=TColorButton.Create(Self);
-    with GridColorButton do begin
-      Name:='GridColorButton';
-      Left:=ShowGridCheckBox.Left;
-      Top:=ShowGridCheckBox.Top+ShowGridCheckBox.Height+5;
-      Width:=50;
-      Height:=25;
-      Parent:=GridGroupBox;
-    end;
-
-    GridColorLabel:=TLabel.Create(Self);
-    with GridColorLabel do begin
-      Name:='GridColorLabel';
-      Left:=GridColorButton.Left+GridColorButton.Width+5;
-      Top:=GridColorButton.Top+2;
-      Width:=100;
-      Caption:=dlgGridColor;
-      Parent:=GridGroupBox;
-    end;
-
-    SnapToGridCheckBox:=TCheckBox.Create(Self);
-    with SnapToGridCheckBox do begin
-      Name:='SnapToGridCheckBox';
-      Top:=GridColorLabel.Top+GridColorLabel.Height+10;
-      Left:=ShowGridCheckBox.Left;
-      Width:=ShowGridCheckBox.Width;
-      Height:=ShowGridCheckBox.Height;
-      Parent:=GridGroupBox;
-      Caption:=dlgQSnapToGrid;
-    end;
-
-    GridSizeXComboBox:=TComboBox.Create(Self);
-    with GridSizeXComboBox do begin
-      Name:='GridSizeXComboBox';
-      Left:=ShowGridCheckBox.Left;
-      Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
-      Width:=60;
-      Parent:=GridGroupBox;
-      with Items do begin
-        BeginUpdate;
-        Add('2');
-        Add('5');
-        Add('8');
-        Add('10');
-        Add('12');
-        Add('15');
-        Add('20');
-        Add('25');
-        Add('30');
-        EndUpdate;
-      end;
-      Hint:=dlgGridXHint;
-      ShowHint:=true;
-    end;
-
-    GridSizeXLabel:=TLabel.Create(Self);
-    with GridSizeXLabel do begin
-      Name:='GridSizeXLabel';
-      Left:=GridSizeXComboBox.Left+GridSizeXComboBox.Width+5;
-      Top:=GridSizeXComboBox.Top-2;
-      Width:=150;
-      Caption:=dlgGridX;
-      Parent:=GridGroupBox;
-    end;
-
-    GridSizeYComboBox:=TComboBox.Create(Self);
-    with GridSizeYComboBox do begin
-      Name:='GridSizeYComboBox';
-      Left:=GridSizeXComboBox.Left;
-      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+4;
-      Width:=GridSizeXComboBox.Width;
-      Parent:=GridGroupBox;
-      with Items do begin
-        BeginUpdate;
-        Assign(GridSizeXComboBox.Items);
-        EndUpdate;
-      end;
-      Hint:=dlgGridYHint;
-      ShowHint:=true;
-    end;
-
-    GridSizeYLabel:=TLabel.Create(Self);
-    with GridSizeYLabel do begin
-      Name:='GridSizeYLabel';
-      Left:=GridSizeXLabel.Left;
-      Top:=GridSizeYComboBox.Top-1;
-      Width:=GridSizeXLabel.Width;
-      Parent:=GridGroupBox;
-      Caption:=dlgGridY;
-    end;
+    ShowGridCheckBox.Caption:=dlgQShowGrid;
+    GridColorLabel.Caption:=dlgGridColor;
+    SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
+    GridSizeXComboBox.Hint:=dlgGridXHint;
+    GridSizeXLabel.Caption:=dlgGridX;
+    GridSizeYComboBox.Hint:=dlgGridYHint;
+    GridSizeYLabel.Caption:=dlgGridY;
   end;
 
   procedure SetupGuideLinesGroupBox;
   begin
-    ShowGuideLinesCheckBox:=TCheckBox.Create(Self);
-    with ShowGuideLinesCheckBox do begin
-      Name:='ShowGuideLinesCheckBox';
-      Left:=5;
-      Top:=5;
-      Width:=GuideLinesGroupBox.ClientWidth-2*Left;
-      Parent:=GuideLinesGroupBox;
-      Caption:=dlgGuideLines;
-      Visible:=true;
-    end;
-    
-    SnapToGuideLinesCheckBox:=TCheckBox.Create(Self);
-    with SnapToGuideLinesCheckBox do begin
-      Name:='SnapToGuideLinesCheckBox';
-      Left:=ShowGuideLinesCheckBox.Left;
-      Top:=ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5;
-      Width:=ShowGuideLinesCheckBox.Width;
-      Parent:=GuideLinesGroupBox;
-      Caption:=dlgSnapGuideLines;
-      Visible:=true;
-    end;
-    
-    GuideLineColorLeftTopButton:=TColorButton.Create(Self);
-    with GuideLineColorLeftTopButton do begin
-      Name:='GuideLineColorLeftTopButton';
-      Left:=SnapToGuideLinesCheckBox.Left;
-      Top:=SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5;
-      Width:=50;
-      Height:=25;
-      Parent:=GuideLinesGroupBox;
-      Visible:=true;
-    end;
-    
-    GuideLineColorLeftTopLabel:=TLabel.Create(Self);
-    with GuideLineColorLeftTopLabel do begin
-      Name:='GuideLineColorLeftTopLabel';
-      Left:=GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5;
-      Top:=GuideLineColorLeftTopButton.Top+2;
-      Width:=150;
-      Parent:=GuideLinesGroupBox;
-      Caption:=dlgLeftTopClr;
-      Visible:=true;
-    end;
-
-    GuideLineColorRightBottomButton:=TColorButton.Create(Self);
-    with GuideLineColorRightBottomButton do begin
-      Name:='GuideLineColorRightBottomButton';
-      Left:=GuideLineColorLeftTopButton.Left;
-      Top:=GuideLineColorLeftTopButton.Top
-          +GuideLineColorLeftTopButton.Height+5;
-      Width:=50;
-      Height:=25;
-      Parent:=GuideLinesGroupBox;
-      Visible:=true;
-    end;
-
-    GuideLineColorRightBottomLabel:=TLabel.Create(Self);
-    with GuideLineColorRightBottomLabel do begin
-      Name:='GuideLineColorRightBottomLabel';
-      Left:=GuideLineColorLeftTopLabel.Left;
-      Top:=GuideLineColorRightBottomButton.Top+2;
-      Width:=GuideLineColorLeftTopLabel.Width;
-      Parent:=GuideLinesGroupBox;
-      Caption:=dlgRightBottomClr;
-    end;
+    ShowGuideLinesCheckBox.Caption:=dlgGuideLines;
+    SnapToGuideLinesCheckBox.Caption:=dlgSnapGuideLines;
+    GuideLineColorLeftTopLabel.Caption:=dlgLeftTopClr;
+    GuideLineColorRightBottomLabel.Caption:=dlgRightBottomClr;
   end;
   
   procedure SetupMiscGroupBox;
-  var
-    x: Integer;
-    y: Integer;
-    w: Integer;
   begin
-    x:=5;
-    y:=5;
-    w:=300;
-  
-    ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
-    with ShowComponentCaptionsCheckBox do begin
-      Name:='ShowComponentCaptionsCheckBox';
-      SetBounds(x,y,w,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgShowCaps;
-      inc(y,Height+5);
-    end;
+    ShowComponentCaptionsCheckBox.Caption:=dlgShowCaps;
+    ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
+    AutoCreateFormsOnOpenCheckBox.Caption:=dlgAutoForm;
+    RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
+    GrabberColorLabel.Caption:=dlgGrabberColor;
+    MarkerColorLabel.Caption:=dlgMarkerColor;
 
-    ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
-    with ShowEditorHintsCheckBox do begin
-      Name:='ShowEditorHintsCheckBox';
-      SetBounds(x,y,w,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgShowEdrHints;
-      inc(y,Height+5);
-    end;
-
-    AutoCreateFormsOnOpenCheckBox:=TCheckBox.Create(Self);
-    with AutoCreateFormsOnOpenCheckBox do begin
-      Name:='AutoCreateFormsOnOpenCheckBox';
-      SetBounds(x,y,w,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgAutoForm;
-      inc(y,Height+5);
-    end;
-
-    RightClickSelectsCheckBox:=TCheckBox.Create(Self);
-    with RightClickSelectsCheckBox do begin
-      Name:='RightClickSelectsCheckBox';
-      SetBounds(x,y,w,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgRightClickSelects;
-      inc(y,Height+5);
-    end;
-
-    GrabberColorButton:=TColorButton.Create(Self);
-    with GrabberColorButton do begin
-      Name:='GrabberColorButton';
-      SetBounds(x,y,50,25);
-      Parent:=FormEditMiscGroupBox;
-      inc(y,Height+5);
-    end;
-
-    GrabberColorLabel:=TLabel.Create(Self);
-    with GrabberColorLabel do begin
-      Name:='GrabberColorLabel';
-      SetBounds(GrabberColorButton.Left+GrabberColorButton.Width+5,
-                GrabberColorButton.Top+5,110,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgGrabberColor;
-    end;
-
-    MarkerColorButton:=TColorButton.Create(Self);
-    with MarkerColorButton do begin
-      Name:='MarkerColorButton';
-      SetBounds(x,y,50,25);
-      Parent:=FormEditMiscGroupBox;
-      inc(y,Height+5);
-    end;
-
-    MarkerColorLabel:=TLabel.Create(Self);
-    with MarkerColorLabel do begin
-      Name:='MarkerColorLabel';
-      SetBounds(MarkerColorButton.Left+MarkerColorButton.Width+5,
-                MarkerColorButton.Top+5,110,Height);
-      Parent:=FormEditMiscGroupBox;
-      Caption:=dlgMarkerColor;
-    end;
-
-    DesignerPaintLazyCheckBox:=TCheckBox.Create(Self);
     with DesignerPaintLazyCheckBox do begin
-      Name:='DesignerPaintLazyCheckBox';
-      SetBounds(x,y,w,Height);
-      Parent:=FormEditMiscGroupBox;
       Caption:=lisFEPaintDesignerItemsOnIdle;
       Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
-      ShowHint:=true;
     end;
   end;
   
   procedure SetupRubberbandBox;
   begin
-    RubberbandSelectColorButton:=TColorButton.Create(Self);
-    with RubberbandSelectColorButton do begin
-      Name:='RubberbandSelectColorButton';
-      Left:=2;
-      Top:=2;
-      Width:=50;
-      Height:=25;
-      Parent:=RubberbandGroupBox;
-    end;
-    
-    RubberbandSelectColorLabel:=TLabel.Create(Self);
-    with RubberbandSelectColorLabel do begin
-      Name:='RubberbandSelectColorLabel';
-      Left:=RubberbandSelectColorButton.Left+RubberbandSelectColorButton.Width+2;
-      Top:=RubberbandSelectColorButton.Top+2;
-      Width:=100;
-      Parent:=RubberbandGroupBox;
-      Caption:=dlgRuberbandSelectionColor;
-    end;
-
-    RubberbandCreateColorButton:=TColorButton.Create(Self);
-    with RubberbandCreateColorButton do begin
-      Name:='RubberbandCreateColorButton';
-      Left:=2;
-      Top:=RubberbandSelectColorButton.Top+RubberbandSelectColorButton.Height+3;
-      Width:=50;
-      Height:=25;
-      Parent:=RubberbandGroupBox;
-    end;
-
-    RubberbandCreateColorLabel:=TLabel.Create(Self);
-    with RubberbandCreateColorLabel do begin
-      Name:='RubberbandCreateColorLabel';
-      Left:=RubberbandCreateColorButton.Left+RubberbandCreateColorButton.Width+2;
-      Top:=RubberbandCreateColorButton.Top+2;
-      Width:=100;
-      Parent:=RubberbandGroupBox;
-      Caption:=dlgRuberbandCreationColor;
-    end;
-
-    RubberbandSelectsGrandChildsCheckBox:=TCheckBox.Create(Self);
-    with RubberbandSelectsGrandChildsCheckBox do begin
-      Name:='RubberbandSelectsGrandChildsCheckBox';
-      Left:=5;
-      Top:=RubberbandCreateColorButton.Top+RubberbandCreateColorButton.Height+3;
-      Width:=150;
-      Parent:=RubberbandGroupBox;
-      Caption:=dlgRubberbandSelectsGrandChilds;
-    end;
+    RubberbandSelectColorLabel.Caption:=dlgRuberbandSelectionColor;
+    RubberbandCreateColorLabel.Caption:=dlgRuberbandCreationColor;
+    RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChilds;
   end;
 
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  // form editor page
-  NoteBook.Page[Page].OnResize:=@OnFormEditorPageResize;
+  // EnvironmentOptionsDialog editor page
+  NoteBook.Page[Page].Caption := dlgFrmEditor;
 
-  x:=5;
-  y:=5;
-  w:=(Notebook.Page[Page].ClientWidth-3*Left) div 2;
-  h:=170;
-  GridGroupBox:=TGroupBox.Create(Self);
-  with GridGroupBox do begin
-    Name:='GridGroupBox';
-    SetBounds(x,y,w,h);
-    Parent:=Notebook.Page[Page];
-    Caption:=dlgEnvGrid;
-    OnResize:=@GridGroupBoxResize;
-  end;
-  
+  GridGroupBox.Caption:=dlgEnvGrid;
+
   SetupGridGroupBox;
   
-  GuideLinesGroupBox:=TGroupBox.Create(Self);
-  inc(y,h+5);
-  h:=Notebook.Page[Page].ClientHeight-5-y;
-  with GuideLinesGroupBox do begin
-    Name:='GuideLinesGroupBox';
-    SetBounds(x,y,w,h);
-    Left:=GridGroupBox.Left+GridGroupBox.Width+5;
-    Top:=GridGroupBox.Top;
-    Width:=GridGroupBox.Width;
-    Height:=GridGroupBox.Height;
-    Parent:=Notebook.Page[Page];
-    Caption:=dlgEnvLGuideLines;
-    OnResize:=@GuideLinesGroupBoxResize;
-  end;
-  
+  GuideLinesGroupBox.Caption:=dlgEnvLGuideLines;
+
   SetupGuideLinesGroupBox;
 
-  RubberbandGroupBox:=TGroupBox.Create(Self);
-  inc(x,w);
-  y:=5;
-  h:=120;
-  with RubberbandGroupBox do begin
-    Name:='RubberbandGroupBox';
-    SetBounds(x,y,w,h);
-    Parent:=Notebook.Page[Page];
-    Caption:=dlgRubberBandGroup;
-    OnResize:=@RubberbandGroupBoxResize;
-  end;
+  RubberbandGroupBox.Caption:=dlgRubberBandGroup;
 
   SetupRubberbandBox;
 
-  FormEditMiscGroupBox:=TGroupBox.Create(Self);
-  inc(y,h+5);
-  h:=Notebook.Page[Page].ClientHeight-5-y;
-  with FormEditMiscGroupBox do begin
-    Name:='FormEditMiscGroupBox';
-    SetBounds(x,y,w,h);
-    Parent:=Notebook.Page[Page];
-    Caption:=dlgEnvMisc;
-    OnResize:=@FormEditMiscGroupBoxResize;
-  end;
+  FormEditMiscGroupBox.Caption:=dlgEnvMisc;
 
   SetupMiscGroupBox;
 end;
@@ -2701,15 +1866,10 @@ end;
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
 var
   pe: TPascalExtType;
-  Space: Integer;
 begin
-  NoteBook.Page[Page].OnResize:=@OnNamingPageResize;
-  Space:=5;
+  NoteBook.Page[Page].Caption := dlgNaming;
 
-  PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
   with PascalFileExtRadiogroup do begin
-    Name:='PascalFileExtRadiogroup';
-    SetBounds(Space,Space,300,80);
     Caption:=dlgPasExt;
     with Items do begin
       BeginUpdate;
@@ -2718,13 +1878,9 @@ begin
           Add(PascalExtension[pe]);
       EndUpdate;
     end;
-    Parent:=NoteBook.Page[Page];
-    AnchorParallel(akRight,Space,Parent);
   end;
 
-  CharcaseFileActionRadioGroup:=TRadioGroup.Create(Self);
   with CharcaseFileActionRadioGroup do begin
-    Name:='CharcaseFileActionRadioGroup';
     Caption:=dlgCharCaseFileAct;
     with Items do begin
       BeginUpdate;
@@ -2733,17 +1889,9 @@ begin
       Add(dlgnoAutomaticRenaming);
       EndUpdate;
     end;
-    Height:=95;
-    AnchorParallel(akLeft,0,PascalFileExtRadiogroup);
-    AnchorParallel(akRight,0,PascalFileExtRadiogroup);
-    AnchorToNeighbour(akTop,Space,PascalFileExtRadiogroup);
-    Parent:=NoteBook.Page[Page];
   end;
 
-  AmbiguousFileActionRadioGroup:=TRadioGroup.Create(Self);
   with AmbiguousFileActionRadioGroup do begin
-    Name := 'AmbiguousFileActionRadioGroup';
-    Height:=150;
     Caption:=dlgAmbigFileAct;
     with Items do begin
       BeginUpdate;
@@ -2754,275 +1902,18 @@ begin
       Add(dlgIgnoreVerb);
       EndUpdate;
     end;
-    Parent:=NoteBook.Page[Page];
-    AnchorParallel(akLeft,0,CharcaseFileActionRadioGroup);
-    AnchorParallel(akRight,0,CharcaseFileActionRadioGroup);
-    AnchorToNeighbour(akTop,Space,CharcaseFileActionRadioGroup);
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.ResizeDesktopPage;
-var MaxX:integer;
-  x: Integer;
-  y: Integer;
-  w: Integer;
+procedure TEnvironmentOptionsDialog.SetupLazDocPage(Page: integer);
 begin
-  MaxX:=ClientWidth-5;
-
-  // language
-  with LanguageGroupBox do begin
-    SetBounds(8,2,Max(20,(MaxX div 2)) - 15,50);
-  end;
-
-  with LanguageComboBox do begin
-    SetBounds(5,3,Max(10,LanguageGroupBox.ClientWidth-2*Left),Height);
-  end;
-
-  // auto save
-  with AutoSaveGroupBox do begin
-    Left:=LanguageGroupBox.Left;
-    Top:=LanguageGroupBox.Top+LanguageGroupBox.Height+5;
-    Width:=LanguageGroupBox.Width;
-    Height:=108;
-  end;
-
-  with AutoSaveEditorFilesCheckBox do begin
-    Left:=2;
-    Top:=2;
-    Width:=AutoSaveGroupBox.ClientWidth-2;
-    Height:=20;
-  end;
-
-  with AutoSaveProjectCheckBox do begin
-    Left:=2;
-    Top:=27;
-    Width:=AutoSaveGroupBox.ClientWidth-2;
-    Height:=20;
-  end;
-
-  with AutoSaveIntervalInSecsLabel do begin
-    Left:=4;
-    Top:=58;
-    Width:=90;
-    Height:=23;
-  end;
-
-  with AutoSaveIntervalInSecsComboBox do begin
-    Left:=AutoSaveIntervalInSecsLabel.Left+AutoSaveIntervalInSecsLabel.Width+5;
-    Top:=AutoSaveIntervalInSecsLabel.Top+2;
-    Width:=AutoSaveGroupBox.ClientWidth-Left-10;
-    Height:=23;
-  end;
-
-  // desktop files
-  with DesktopFilesGroupBox do begin
-    Left:=AutoSaveGroupBox.Left;
-    Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
-    Width:=AutoSaveGroupBox.Width;
-    Height:=90;
-  end;
-
-  with SaveDesktopSettingsToFileButton do begin
-    Left:=5;
-    Top:=5;
-    Width:=Max(10,DesktopFilesGroupBox.ClientWidth-15);
-    Height:=25;
-  end;
-
-  with LoadDesktopSettingsFromFileButton do begin
-    Left:=5;
-    Top:=38;
-    Width:=SaveDesktopSettingsToFileButton.Width;
-    Height:=25;
-  end;
-
-  // hints
-  x:=DesktopFilesGroupBox.Left;
-  y:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
-  with ShowHintsForComponentPaletteCheckBox do begin
-    w:=Max(10,Parent.ClientWidth-x);
-    SetBounds(x,y,w,Height);
-    inc(y,Height+5);
-  end;
-
-  with ShowHintsForMainSpeedButtonsCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+5);
-  end;
-
-  // messages view
-  with MsgViewDblClickJumpsCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+5);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeWindowsPage;
-var
-  x: Integer;
-  w: Integer;
-  y: Integer;
-  h: Integer;
-begin
-  x:=10;
-  w:=MinimizeAllOnMinimizeMainCheckBox.Parent.ClientWidth-2*x;
-  y:=10;
-  h:=MinimizeAllOnMinimizeMainCheckBox.Parent.ClientHeight-y-2;
-
-  // window minimizing and hiding
-  with MinimizeAllOnMinimizeMainCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+5);
-  end;
-
-  with HideIDEOnRunCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+10);
-  end;
-
-  // Window Positions
-  with WindowPositionsGroupBox do
-    SetBounds(x,y,Max(10,(w div 2)-5),h-y);
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
-var
-  y: Integer;
-  x: Integer;
-  w: Integer;
-  h: Integer;
-  CurParent: TWinControl;
-begin
-  // form editor page
-  CurParent:=GridGroupBox.Parent;
-  x:=5;
-  y:=5;
-  w:=(CurParent.ClientWidth-3*x) div 2;
-  h:=170;
-  with GridGroupBox do SetBounds(x,y,w,h);
-  inc(y,h+5);
-  h:=CurParent.ClientHeight-y-5;
-  with GuideLinesGroupBox do SetBounds(x,y,w,h);
-  inc(x,w+5);
-  y:=5;
-  h:=120;
-  with RubberbandGroupBox do SetBounds(x,y,w,h);
-  inc(y,h+5);
-  h:=CurParent.ClientHeight-y-5;
-  with FormEditMiscGroupBox do SetBounds(x,y,w,h);
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
-var
-  HalfWidth:integer;
-begin
-  HalfWidth:=ObjectInspectorColorsGroupBox.Parent.ClientWidth div 2;
-  // object inspector
-  with ObjectInspectorColorsGroupBox do begin
-    Left:=5;
-    Top:=2;
-    Width:=HalfWidth-15;
-  end;
-
-  with OIMiscGroupBox do begin
-    Left:=HalfWidth+5;
-    Top:=ObjectInspectorColorsGroupBox.Top;
-    Width:=HalfWidth-15;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeFilesPage;
-var
-  y: Integer;
-  SpaceH: Integer;
-  x: Integer;
-  w: Integer;
-  h: Integer;
-begin
-  y:=OpenLastProjectAtStartCheckBox.Top
-        +OpenLastProjectAtStartCheckBox.Height+8;
-  SpaceH:=10;
-  x:=4;
-  w:=LazarusDirGroupBox.Parent.ClientWidth-2*x;
-  h:=50;
-
-  with LazarusDirGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-
-  with CompilerPathGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-
-  with FPCSourceDirGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-
-  with MakePathGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-
-  with TestBuildDirGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeBackupPage;
-var MaxX:integer;
-begin
-  MaxX:=BackupHelpLabel.Parent.ClientWidth;
-
-  with BackupHelpLabel do begin
-    Left:=5;
-    Top:=2;
-    Width:=MaxX-Left*2;
-    Height:=23;
-  end;
-
-  with BackupProjectGroupBox do begin
-    Left:=4;
-    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=(MaxX div 2) - 11;
-    Height:=260;
-  end;
-
-  with BackupOtherGroupBox do begin
-    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
-    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=Max(10,(MaxX div 2) - 11);
-    Height:=260;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.ResizeNamingPage;
-begin
-end;
-
-procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
-  Sender: TObject);
-begin
-  with NoteBook do begin
-    SetBounds(0,0,Max(100,Self.ClientWidth),Max(100,Self.ClientHeight-50));
-  end;
-
-  with CancelButton do begin
-    Width:=70;
-    Height:=23;
-    Left:=Max(0,Self.ClientWidth-Width-15);
-    Top:=Max(0,Self.ClientHeight-Height-15);
-  end;
-
-  with OkButton do begin
-    Width:=CancelButton.Width;
-    Height:=CancelButton.Height;
-    Left:=Max(0,CancelButton.Left-15-Width);
-    Top:=CancelButton.Top;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
-  Sender: TObject);
-begin
+  NoteBook.Page[Page].Caption := lisLazDoc;
+  
+  LazDocPathsGroupBox.Caption := lisLazDocPathsGroupBox;
+  LazDocAddPathButton.Caption := lisLazDocAddPathButton;
+  LazDocDeletePathButton.Caption := lisLazDocDeletePathButton;
+  
+  LazDocPathEdit.Clear;
 end;
 
 procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
@@ -3041,44 +1932,6 @@ begin
     BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
   end;
 end;
-
-procedure TEnvironmentOptionsDialog.CompilerPathGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-  w: Integer;
-begin
-  w:=CompilerPathGroupBox.ClientWidth;
-  x:=w-25;
-  with CompilerPathComboBox do
-    SetBounds(2,0,x-1-2,Height);
-  with CompilerPathButton do
-    SetBounds(x+1,0,w-2-x-1,CompilerPathComboBox.Height);
-end;
-
-procedure TEnvironmentOptionsDialog.FPCSourceDirGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-  w: Integer;
-begin
-  w:=FPCSourceDirGroupBox.ClientWidth;
-  x:=w-25;
-  with FPCSourceDirComboBox do
-    SetBounds(2,0,x-1-2,Height);
-  with FPCSourceDirButton do
-    SetBounds(x+1,0,w-2-x-1,FPCSourceDirComboBox.Height);
-end;
-
-procedure TEnvironmentOptionsDialog.MakePathGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-  w: Integer;
-begin
-  w:=MakePathGroupBox.ClientWidth;
-  x:=w-25;
-  with MakePathComboBox do
-    SetBounds(2,0,x-1-2,Height);
-  with MakePathButton do
-    SetBounds(x+1,0,w-2-x-1,MakePathComboBox.Height);end;
 
 procedure TEnvironmentOptionsDialog.FilesButtonClick(Sender: TObject);
 var
@@ -3164,235 +2017,46 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.BackupProjectGroupBoxResize(Sender: TObject
+procedure TEnvironmentOptionsDialog.FormEditorPageResize(Sender: TObject);
+var
+  w: Integer;
+begin
+  w:=(FormEditorPage.ClientWidth-4*5) div 3;
+  RubberbandGroupBox.Width:=w;
+  GuideLinesGroupBox.Width:=w;
+end;
+
+procedure TEnvironmentOptionsDialog.FormResize(Sender: TObject);
+var
+  w: integer;
+begin
+  w := Round(Int((GridGroupBox.Width - 12) / 3));
+
+  RubberBandGroupBox.Width := w;
+  FormEditMiscGroupBox.Width := w;
+  GuideLinesGroupBox.Width := w;
+end;
+
+procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
+begin
+  LazDocListBox.Items.Add(LazDocPathEdit.Text);
+end;
+
+procedure TEnvironmentOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
+begin
+  if SelectDirectoryDialog.Execute then
+    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
+end;
+
+procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
   );
 begin
-  with BakProjTypeRadioGroup do begin
-    Left:=5;
-    Top:=4;
-    Width:=BackupProjectGroupBox.ClientWidth-Left-Left-4;
-    Height:=140;
-  end;
-
-  with BakProjAddExtLabel do begin
-    Left:=5;
-    Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
-    Width:=Max(10,BakProjTypeRadioGroup.Width-62);
-    Height:=23;
-  end;
-
-  with BakProjAddExtComboBox do begin
-    Left:=BakProjAddExtLabel.Left+BakProjAddExtLabel.Width+2;
-    Top:=BakProjAddExtLabel.Top;
-    Width:=60;
-    Height:=25;
-  end;
-
-  with BakProjMaxCounterLabel do begin
-    Left:=5;
-    Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
-    Width:=Max(10,BakProjTypeRadioGroup.Width-102);
-    Height:=23;
-  end;
-
-  with BakProjMaxCounterComboBox do begin
-    Left:=BakProjMaxCounterLabel.Left+BakProjMaxCounterLabel.Width+2;
-    Top:=BakProjMaxCounterLabel.Top;
-    Width:=100;
-    Height:=25;
-  end;
-
-  with BakProjSubDirLabel do begin
-    Left:=5;
-    Top:=BakProjMaxCounterLabel.Top+BakProjMaxCounterLabel.Height+5;
-    Width:=BakProjTypeRadioGroup.Width-102;
-    Height:=23;
-  end;
-
-  with BakProjSubDirComboBox do begin
-    Left:=BakProjSubDirLabel.Left+BakProjSubDirLabel.Width+2;
-    Top:=BakProjSubDirLabel.Top;
-    Width:=100;
-    Height:=25;
-  end;
+  LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
-procedure TEnvironmentOptionsDialog.BackupOtherGroupBoxResize(Sender: TObject);
+procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
 begin
-  with BakOtherTypeRadioGroup do begin
-    Left:=5;
-    Top:=4;
-    Width:=BackupOtherGroupBox.ClientWidth-Left-Left-4;
-    Height:=140;
-  end;
 
-  with BakOtherAddExtLabel do begin
-    Left:=5;
-    Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
-    Width:=Max(10,BakOtherTypeRadioGroup.Width-62);
-    Height:=23;
-  end;
-
-  with BakOtherAddExtComboBox do begin
-    Left:=BakOtherAddExtLabel.Left+BakOtherAddExtLabel.Width+2;
-    Top:=BakOtherAddExtLabel.Top;
-    Width:=60;
-    Height:=25;
-  end;
-
-  with BakOtherMaxCounterLabel do begin
-    Left:=5;
-    Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
-    Width:=Max(10,BakOtherTypeRadioGroup.Width-102);
-    Height:=23;
-  end;
-
-  with BakOtherMaxCounterComboBox do begin
-    Left:=BakOtherMaxCounterLabel.Left+BakOtherMaxCounterLabel.Width+2;
-    Top:=BakOtherMaxCounterLabel.Top;
-    Width:=100;
-    Height:=25;
-  end;
-
-  with BakOtherSubDirLabel do begin
-    Left:=5;
-    Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
-    Width:=Max(10,BakOtherTypeRadioGroup.Width-102);
-    Height:=23;
-  end;
-
-  with BakOtherSubDirComboBox do begin
-    Left:=BakOtherSubDirLabel.Left+BakOtherSubDirLabel.Width+2;
-    Top:=BakOtherSubDirLabel.Top;
-    Width:=100;
-    Height:=25;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.FormEditMiscGroupBoxResize(Sender: TObject);
-var
-  w: Integer;
-begin
-  w:=FormEditMiscGroupBox.ClientWidth-10;
-  with ShowComponentCaptionsCheckBox do begin
-    SetBounds(5,5,w,Height);
-  end;
-
-  with ShowEditorHintsCheckBox do begin
-    SetBounds(ShowComponentCaptionsCheckBox.Left,
-              ShowComponentCaptionsCheckBox.Top
-               +ShowComponentCaptionsCheckBox.Height+5,
-              w,Height);
-  end;
-
-  with AutoCreateFormsOnOpenCheckBox do begin
-    SetBounds(ShowEditorHintsCheckBox.Left,
-              ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
-              w,Height);
-  end;
-
-  with RightClickSelectsCheckBox do begin
-    SetBounds(AutoCreateFormsOnOpenCheckBox.Left,
-              AutoCreateFormsOnOpenCheckBox.Top+AutoCreateFormsOnOpenCheckBox.Height+5,
-              w,Height);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.GridGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-begin
-  with ShowGridCheckBox do begin
-    SetBounds(6,2,Parent.ClientWidth-7,Height);
-  end;
-
-  with GridColorButton do begin
-    SetBounds(ShowGridCheckBox.Left,
-              ShowGridCheckBox.Top+ShowGridCheckBox.Height+5,
-              50,25);
-  end;
-
-  with GridColorLabel do begin
-    x:=GridColorButton.Left+GridColorButton.Width+5;
-    SetBounds(x,GridColorButton.Top+2,Parent.ClientWidth-x-2,Height);
-  end;
-
-  with SnapToGridCheckBox do begin
-    SetBounds(ShowGridCheckBox.Left,
-              GridColorLabel.Top+GridColorLabel.Height+10,
-              ShowGridCheckBox.Width,
-              ShowGridCheckBox.Height);
-  end;
-
-  with GridSizeXComboBox do begin
-    SetBounds(ShowGridCheckBox.Left,
-              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,60,Height);
-  end;
-
-  with GridSizeXLabel do begin
-    X:=GridSizeXComboBox.Left+GridSizeXComboBox.Width+5;
-    SetBounds(X,GridSizeXComboBox.Top+2,Parent.ClientWidth-X-2,Height);
-  end;
-
-  with GridSizeYComboBox do begin
-    SetBounds(GridSizeXComboBox.Left,
-              GridSizeXComboBox.Top+GridSizeXComboBox.Height+4,
-              GridSizeXComboBox.Width,Height);
-  end;
-
-  with GridSizeYLabel do begin
-    SetBounds(GridSizeXLabel.Left,GridSizeYComboBox.Top+2,
-              GridSizeXLabel.Width,Height);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.GuideLinesGroupBoxResize(Sender: TObject);
-begin
-  with ShowGuideLinesCheckBox do begin
-    SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
-  end;
-
-  with SnapToGuideLinesCheckBox do begin
-    SetBounds(ShowGuideLinesCheckBox.Left,
-              ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5,
-              ShowGuideLinesCheckBox.Width,Height);
-  end;
-
-  with GuideLineColorLeftTopButton do begin
-    SetBounds(SnapToGuideLinesCheckBox.Left,
-              SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5,
-              50,25);
-  end;
-
-  with GuideLineColorLeftTopLabel do begin
-    SetBounds(GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5,
-              GuideLineColorLeftTopButton.Top+2,150,Height);
-  end;
-
-  with GuideLineColorRightBottomButton do begin
-    SetBounds(GuideLineColorLeftTopButton.Left,
-              GuideLineColorLeftTopButton.Top
-                +GuideLineColorLeftTopButton.Height+5,50,25);
-  end;
-
-  with GuideLineColorRightBottomLabel do begin
-    SetBounds(GuideLineColorLeftTopLabel.Left,
-              GuideLineColorRightBottomButton.Top+2,
-              GuideLineColorLeftTopLabel.Width,Height);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.LazarusDirGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-  w: Integer;
-begin
-  w:=LazarusDirGroupBox.ClientWidth;
-  x:=w-25;
-  with LazarusDirComboBox do
-    SetBounds(2,0,x-1-2,Height);
-  with LazarusDirButton do
-    SetBounds(x+1,0,w-2-x-1,LazarusDirComboBox.Height);
 end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
@@ -3406,47 +2070,6 @@ procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
-end;
-
-procedure TEnvironmentOptionsDialog.OnBackupPageResize(Sender: TObject);
-begin
-  ResizeBackupPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnDesktopPageResize(Sender: TObject);
-begin
-  ResizeDesktopPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnFilesPageResize(Sender: TObject);
-begin
-  ResizeFilesPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnFormEditorPageResize(Sender: TObject);
-begin
-  ResizeFormEditorPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnNamingPageResize(Sender: TObject);
-begin
-  ResizeNamingPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnObjectInspectorPageResize(Sender: TObject
-  );
-begin
-  ResizeObjectInspectorPage;
-end;
-
-procedure TEnvironmentOptionsDialog.OnWindowsPageResize(Sender: TObject);
-begin
-  ResizeWindowsPage;
-end;
-
-procedure TEnvironmentOptionsDialog.RubberbandGroupBoxResize(Sender: TObject);
-begin
-
 end;
 
 procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
@@ -3518,19 +2141,6 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.TestBuildDirGroupBoxResize(Sender: TObject);
-var
-  x: Integer;
-  w: Integer;
-begin
-  w:=TestBuildDirGroupBox.ClientWidth;
-  x:=w-25;
-  with TestBuildDirComboBox do
-    SetBounds(2,0,x-1-2,Height);
-  with TestBuildDirButton do
-    SetBounds(x+1,0,w-2-x-1,TestBuildDirComboBox.Height);
-end;
-
 procedure TEnvironmentOptionsDialog.ReadSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
 var i: integer;
@@ -3581,7 +2191,7 @@ begin
     // messages view
     MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     ShowGridCheckBox.Checked:=ShowGrid;
     GridColorButton.ButtonColor:=GridColor;
     SnapToGridCheckBox.Checked:=SnapToGrid;
@@ -3673,6 +2283,9 @@ begin
 
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
+    
+    //lazdoc
+    LazDocListBox.Items.AddStrings(LazDocPathList);
   end;
 end;
 
@@ -3724,7 +2337,7 @@ begin
     // messages view
     MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
 
-    // form editor
+    // EnvironmentOptionsDialog editor
     ShowGrid:=ShowGridCheckBox.Checked;
     GridColor:=GridColorButton.ButtonColor;
     SnapToGrid:=SnapToGridCheckBox.Checked;
@@ -3811,110 +2424,29 @@ begin
     else
       PascalFileExtension:=petPAS;
 
+    //lazdoc
+    LazDocPathList := LazDocListBox.Items;
+
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
   end;
 end;
 
-function TEnvironmentOptionsDialog.CreateColorItem(
-  ATop: Integer; AParent: TWinControl; const ACaption: String): TColorButton;
-var
-  ColorButton:TColorButton;
-  ColorLabel:TLabel;
-begin
-  ColorButton:=TColorButton.Create(Self);
-  with ColorButton do begin
-    Name:='ColorButton'+IntToStr(ATop);
-    Left:=6;
-    Top:=ATop;
-    Width:=50;
-    Height:=25;
-    Parent:=AParent;
-  end;
-
-  ColorLabel:=TLabel.Create(Self);
-  with ColorLabel do begin
-    Name:='ColorLabel'+IntToStr(ATop);
-    Left:=ColorButton.Left+ColorButton.Width+5;
-    Top:=ColorButton.Top+2;
-    Caption:=ACaption;
-    Left:=ColorButton.Left+ColorButton.Width+5;
-    AutoSize:=true;
-    Parent:=AParent;
-    AnchorVerticalCenterTo(ColorButton);
-  end;
-  Result:=ColorButton;
-end;
-
 procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
-var HalfWidth: integer;
 begin
-  NoteBook.Page[Page].OnResize:=@OnObjectInspectorPageResize;
-
-  HalfWidth:=ClientWidth div 2;
+  NoteBook.Page[Page].Caption := dlgObjInsp;
 
   // object inspector
-  ObjectInspectorColorsGroupBox:=TGroupBox.Create(Self);
-  with ObjectInspectorColorsGroupBox do begin
-    Name:='ObjectInspectorColorsGroupBox';
-    Left:=5;
-    Top:=2;
-    Width:= HalfWidth-15;
-    Height:=200;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgEnvColors;
-  end;
-
-  OIBackgroundColorButton:=CreateColorItem(5, ObjectInspectorColorsGroupBox, dlgBackColor);
-  OISubPropsColorButton:=CreateColorItem(32, ObjectInspectorColorsGroupBox, dlgSubPropkColor);
-  OIReferencesColorButton:=CreateColorItem(59, ObjectInspectorColorsGroupBox, dlgReferenceColor);
-  OIValueColorButton:=CreateColorItem(86, ObjectInspectorColorsGroupBox, dlgValueColor);
-  OIDefaultValueColorButton:=CreateColorItem(113, ObjectInspectorColorsGroupBox, dlgDefValueColor);
-  OIPropNameColorButton:=CreateColorItem(140, ObjectInspectorColorsGroupBox, dlgPropNameColor);
-
-  OIMiscGroupBox:=TGroupBox.Create(Self);
-  with OIMiscGroupBox do begin
-    Name:='OIMiscGroupBox';
-    Left:=HalfWidth+5;
-    Top:=ObjectInspectorColorsGroupBox.Top;
-    Width:=HalfWidth-15;
-    Height:=120;
-    Caption:=dlgOIMiscellaneous;
-    Parent:=NoteBook.Page[Page];
-  end;
-  
-  OIDefaultItemHeightSpinEdit:=TSpinEdit.Create(Self);
-  with OIDefaultItemHeightSpinEdit do begin
-    Name:='OIDefaultItemHeightSpinEdit';
-    Left:=6;
-    Top:=4;
-    Width:=50;
-    Decimal_Places:=0;
-    MinValue:=0;
-    MaxValue:=100;
-    Parent:=OIMiscGroupBox;
-  end;
-  
-  OIDefaultItemHeightLabel:=TLabel.Create(Self);
-  with OIDefaultItemHeightLabel do begin
-    Name:='OIDefaultItemHeightLabel';
-    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
-    Top:=OIDefaultItemHeightSpinEdit.Top+2;
-    Caption:=dlgOIItemHeight;
-    AutoSize:=true;
-    Parent:=OIMiscGroupBox;
-    AnchorVerticalCenterTo(OIDefaultItemHeightSpinEdit);
-  end;
-
-  OIShowHintCheckBox:=TCheckBox.Create(Self);
-  with OIShowHintCheckBox do begin
-    Name := 'OIShowHintCheckBox';
-    Left := 6;
-    Top := 33;
-    Caption := lisShowHintsInObjectInspector;
-    Parent := OIMiscGroupBox;
-    AnchorToNeighbour(akTop,8,OIDefaultItemHeightSpinEdit);
-  end;
+  ObjectInspectorColorsGroupBox.Caption:=dlgEnvColors;
+  OIBackgroundColorLabel.Caption:=dlgBackColor;
+  OISubPropsColorLabel.Caption:=dlgSubPropkColor;
+  OIReferencesColorLabel.Caption:=dlgReferenceColor;
+  OIValueColorLabel.Caption:=dlgValueColor;
+  OIDefaultValueColorLabel.Caption:=dlgDefValueColor;
+  OIPropNameColorLabel.Caption:=dlgPropNameColor;
+  OIMiscGroupBox.Caption:=dlgOIMiscellaneous;
+  OIDefaultItemHeightLabel.Caption:=dlgOIItemHeight;
+  OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
 end;
 
 procedure TEnvironmentOptionsDialog.WindowPositionsListBoxMouseUp(
@@ -4013,6 +2545,9 @@ begin
   
   Result:=true;
 end;
+
+initialization
+  {$I environmentopts.lrs}
 
 end.
 

@@ -24,6 +24,11 @@
  *                                                                         *
  ***************************************************************************
 }
+
+{
+  see for todo list: http://wiki.lazarus.freepascal.org/index.php/LazDoc
+}
+
 unit LazDocFrm;
 
 {$mode objfpc}{$H+}
@@ -48,6 +53,7 @@ uses
   StrUtils,
   SynEdit,
   SysUtils,
+  IDEProcs,
   XMLread,
   XMLwrite;
 
@@ -68,10 +74,11 @@ type
     DescrTabSheet: TTabSheet;
     ErrorsTabSheet: TTabSheet;
     ShortTabSheet: TTabSheet;
-    procedure DescrMemoChange(Sender: TObject);
+    procedure DocumentationTagChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
+    FChanged: boolean;
     FDocFileName: String;
     FCurrentElement: String;
     FLastElement: String;
@@ -84,8 +91,10 @@ type
     function GetNearestSourceElement(source: tStrings;
       caretpos: tpoint): String;
     procedure SetCaption;
+    procedure Save;
   public
     { public declarations }
+    procedure Reset;
     procedure UpdateLazDoc(source: TStrings; pos: TPoint);
     property DocFileName: String read FDocFileName write SetDocFileName;
   end;
@@ -112,7 +121,9 @@ procedure TLazDocForm.SetDocFileName(Value: String);
 begin
   if FileExists(Value) and (Value <> FDocFileName) then
   begin
-
+    //reset Self
+    Reset;
+    
     FDocFileName := Value;
 
     if Assigned(doc) then
@@ -150,6 +161,8 @@ begin
   ShortEdit.Clear;
   DescrMemo.Clear;
   ErrorsMemo.Clear;
+  
+  FChanged := False;
 end;
 
 function TLazDocForm.NodeByName(ElementName: String): TDOMNode;
@@ -326,6 +339,13 @@ begin
   Caption := strCaption + FDocFileName;
 end;
 
+procedure TLazDocForm.Reset;
+begin
+  FreeAndNil(Doc);
+  FCurrentElement := '';
+  SetCaption;
+end;
+
 procedure TLazDocForm.UpdateLazDoc(source: TStrings; pos: TPoint);
 var
   dn: TFPDocNode;
@@ -360,12 +380,6 @@ begin
   DescrMemo.Enabled := True;
   ErrorsMemo.Enabled := True;
 
-  //detach the update method, because changing the text already
-  //commits to XML. Fix later, hack now ;)
-  ShortEdit.OnChange := nil;
-  DescrMemo.OnChange := nil;
-  ErrorsMemo.OnChange := nil;
-
   if Assigned(n) then
   begin
     dn := ElementFromNode(n);
@@ -381,29 +395,22 @@ begin
     ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
   end;
   
-  //attach the update method again
-  ShortEdit.OnChange := @DescrMemoChange;
-  DescrMemo.OnChange := @DescrMemoChange;
-  ErrorsMemo.OnChange := @DescrMemoChange;
-
+  FChanged := False;
+  
   ShortEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
 end;
 
-procedure TLazDocForm.DescrMemoChange(Sender: TObject);
+procedure TLazDocForm.Save;
 var
   n: TDOMNode;
   S: String;
   child: TDOMNode;
-  function ToUnixLineEnding(s: string): string;
-  begin
-    if LineEnding=#10 then
-      Result := s
-    else
-      Result := StringReplace(s, LineEnding, #10, [rfReplaceAll]);
-  end;
 begin
+  //nothing changed, so exit
+  if not FChanged then Exit;
+
   n := NodeByName(FCurrentElement);
 
   if not Assigned(n) then
@@ -431,22 +438,22 @@ begin
       begin
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(ToUnixLineEnding(DescrMemo.Lines.Text));
+          child := doc.CreateTextNode(StringListToText(DescrMemo.Lines,#10));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := ToUnixLineEnding(DescrMemo.Lines.Text);
+          n.FirstChild.NodeValue := StringListToText(DescrMemo.Lines,#10);
       end;
 
       if S = 'errors' then
       begin
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(ToUnixLineEnding(ErrorsMemo.Lines.Text));
+          child := doc.CreateTextNode(StringListToText(ErrorsMemo.Lines,#10));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := ToUnixLineEnding(ErrorsMemo.Lines.Text);
+          n.FirstChild.NodeValue := StringListToText(ErrorsMemo.Lines,#10);
       end;
 
     end;
@@ -454,6 +461,13 @@ begin
   end;
 
   WriteXMLFile(doc, FDocFileName);
+  
+  FChanged := False;
+end;
+
+procedure TLazDocForm.DocumentationTagChange(Sender: TObject);
+begin
+  FChanged := True;
 end;
 
 initialization

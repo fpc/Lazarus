@@ -686,6 +686,7 @@ resourcestring
   lisIncludeFilter = 'Include Filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
+  lisLazDoc = 'LazDoc';
   dlgCancel = 'Cancel';
   lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
@@ -2835,14 +2836,17 @@ resourcestring
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
 
-  lisMenuLazDoc = 'LazDoc';
+  lisMenuLazDoc = 'LazDoc Editor';
   lisLazDocMainFormCaption = 'LazDoc editor';
   lisLazDocNoTagCaption = '<NONE>';
   lisLazDocNoDocumentation = 'Documentation entry does not exist';
   lisLazDocShortTag = 'Short';
   lisLazDocDescrTag = 'Description';
   lisLazDocErrorsTag = 'Errors';
-
+  lisLazDocAddPathButton = 'Add path';
+  lisLazDocDeletePathButton = 'Remove path';
+  lisLazDocPathsGroupBox = 'LazDoc settings';
+  
 implementation
 end.
 

@@ -170,6 +170,7 @@ type
     itmViewInspector: TMenuItem;
     itmViewSourceEditor: TMenuItem;
     itmViewCodeExplorer : TMenuItem;
+    itmViewLazDoc: TMenuItem;   //DBlaszijk 5-sep-05
     itmViewUnits : TMenuItem;
     itmViewForms : TMenuItem;
     itmViewUnitDependencies : TMenuItem;
@@ -249,7 +250,6 @@ type
     itmToolConvertDFMtoLFM: TMenuItem;
     itmToolMakeResourceString: TMenuItem;
     itmToolDiff: TMenuItem;
-    itmToolLazDoc: TMenuItem;   //DBlaszijk 5-sep-05
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 

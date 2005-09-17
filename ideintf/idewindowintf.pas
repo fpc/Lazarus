@@ -71,7 +71,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ApplyLayout(ADialog: TControl;
-                          DefaultWidth, DefaultHeight: integer);
+                          DefaultWidth, DefaultHeight: integer;
+                          UseAsMin: boolean = true);
     procedure ApplyLayout(ADialog: TControl);
     procedure SaveLayout(ADialog: TControl);
     procedure Clear;
@@ -198,7 +199,7 @@ begin
 end;
 
 procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl;
-  DefaultWidth, DefaultHeight: integer);
+  DefaultWidth, DefaultHeight: integer; UseAsMin: boolean);
 var
   ALayout: TIDEDialogLayout;
   NewWidth, NewHeight: integer;
@@ -211,6 +212,10 @@ begin
   end else begin
     NewWidth:=DefaultWidth;
     NewHeight:=DefaultHeight;
+  end;
+  if UseAsMin then begin
+    if NewWidth<DefaultWidth then NewWidth:=DefaultWidth;
+    if NewHeight<DefaultHeight then NewHeight:=DefaultHeight;
   end;
   ADialog.SetBounds(ADialog.Left,ADialog.Top,NewWidth,NewHeight);
 end;

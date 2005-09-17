@@ -510,6 +510,7 @@ begin
     CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector);
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor);
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer);
+    CreateMenuItem(ParentMI,itmViewLazDoc,'itmViewLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits);
@@ -653,7 +654,6 @@ begin
     CreateMenuItem(ParentMI,itmToolGuessMisplacedIFDEF,'itmToolGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
     CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString);
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff);
-    CreateMenuItem(ParentMI,itmToolLazDoc,'itmToolLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM);
@@ -799,6 +799,7 @@ begin
     itmViewSourceEditor.ShortCut:=CommandToShortCut(ecToggleSourceEditor);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
+    //itmViewLazDoc.ShortCut:=CommandToShortCut(ecLazDoc);   //DBlaszijk 5-sep-05
     itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);
     itmViewUnitInfo.ShortCut:=CommandToShortCut(ecViewUnitInfo);
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
@@ -855,7 +856,6 @@ begin
     itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
     itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
     itmToolDiff.ShortCut:=CommandToShortCut(ecDiff);
-    //itmToolLazDoc.ShortCut:=CommandToShortCut(ecLazDoc);   //DBlaszijk 5-sep-05
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolCheckLFM.ShortCut:=CommandToShortCut(ecCheckLFM);
     itmToolConvertDelphiUnit.ShortCut:=CommandToShortCut(ecConvertDelphiUnit);

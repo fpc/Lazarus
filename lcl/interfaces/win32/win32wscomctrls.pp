@@ -330,7 +330,7 @@ procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
 var
   R: TRect;
 begin
-  // statusbars cannot be resized by the LCL, so actual size is prefered size
+  // statusbars cannot be resized by the LCL, so actual size is preferred size
   if Windows.GetWindowRect(AWinControl.Handle, R) then begin
     PreferredHeight:= R.Bottom - R.Top;
     PreferredWidth:= R.Right - R.Left;

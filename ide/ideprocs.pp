@@ -177,7 +177,7 @@ function BinaryStrToText(const s: string): string;
 function SplitString(const s: string; Delimiter: char): TStringList;
 function SpecialCharsToSpaces(const s: string): string;
 function StringListToText(List: TStrings; const Delimiter: string;
-                          IgnoreEmptyLines: boolean): string;
+                          IgnoreEmptyLines: boolean = false): string;
 
 // environment
 function EnvironmentAsStringList: TStringList;

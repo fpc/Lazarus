@@ -2494,9 +2494,25 @@ begin
   LazDocNewPage;
 end;
 
+function FindPathFromFile(FileNamePath: string): string;
+var
+  i: integer;
+  fn: string;
+begin
+  Result := '';
+  fn := SetDirSeparators('/') + ChangeFileExt(ExtractFileName(FileNamePath), '.xml');
+  for i:= 0 to Pred(EnvironmentOptions.LazDocPathList.Count) do
+    if FileExists(EnvironmentOptions.LazDocPathList[i] + fn) then
+    begin
+      Result := EnvironmentOptions.LazDocPathList[i];
+      Exit;
+  end;
+end;
+
 procedure TSourceNotebook.LazDocNewPage;
 var
   SrcEdit: TSourceEditor;
+  DocPath: string;
 begin
   {$IFNDEF EnableLazDoc}
   exit;
@@ -2508,11 +2524,11 @@ begin
   begin
     SrcEdit:=GetActiveSE;
 
-    if FileIsInPath(SrcEdit.FileName,EnvironmentOptions.LazarusDirectory+'lcl')
-    then
+    DocPath := FindPathFromFile(SrcEdit.FileName);
+    
+    if DocPath <> '' then
       //load the XML file
-      LazDocForm.DocFileName := EnvironmentOptions.LazarusDirectory +
-                        SetDirSeparators('docs/xml/lcl/')+
+      LazDocForm.DocFileName := DocPath + SetDirSeparators('/') +
                         ChangeFileExt(ExtractFileName(SrcEdit.FileName),'.xml');
   end;
 end;
@@ -2520,14 +2536,16 @@ end;
 procedure TSourceNotebook.UpdateLazDoc;
 var
   SrcEdit: TSourceEditor;
+  DocPath: string;
 begin
   SrcEdit:=GetActiveSE;
 
   //try to find if the file belongs to LCL
   //for other projects the location of the doc file could
   //be found through the lpi file
-  if FileIsInPath(SrcEdit.FileName,EnvironmentOptions.LazarusDirectory+'lcl')
-  then
+  DocPath := FindPathFromFile(SrcEdit.FileName);
+
+  if DocPath <> '' then
     LazDocForm.UpdateLazDoc(SrcEdit.EditorComponent.Lines,
                             SrcEdit.EditorComponent.CaretXY);
 end;

@@ -221,7 +221,7 @@ var
       CurAlignAnchors:=[];
       if Align in [alLeft,alRight,alBottom,alTop,alClient] then
         CurAlignAnchors:=AnchorAlign[Align];
-      CurAnchors:=Control.Anchors+CurAlignAnchors;
+      CurAnchors:=Anchors+CurAlignAnchors;
       //WidthIsFixed:=[akLeft,akRight]*CurAnchors=[akLeft,akRight];
       //HeightIsFixed:=[akTop,akBottom]*CurAnchors=[akTop,akBottom];
 
