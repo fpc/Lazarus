@@ -123,7 +123,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, FPCAdds, LCLType, LResources, LCLIntf, GraphType, Graphics;
+  Classes, SysUtils, LCLproc, FPCAdds, LCLType, LResources, LCLIntf, GraphType,
+  Graphics;
 
 { for delphi compatibility:
 
@@ -150,6 +151,8 @@ type
     Stream: TMemoryStream;
   end;
 
+  { TClipboard }
+
   TClipboard = Class(TPersistent)
   private
     FAllocated: Boolean;    // = has ownership
@@ -175,15 +178,21 @@ type
     procedure InternalOnRequest(const RequestedFormatID: TClipboardFormat;
       AStream: TStream);
     procedure SetAsText(const Value: string);
-    procedure SetBuffer(FormatID: TClipboardFormat; var Buffer; Size: Integer);
+    function SetBuffer(FormatID: TClipboardFormat;
+                       var Buffer; Size: Integer): Boolean;
     procedure SetOnRequest(AnOnRequest: TClipboardRequestEvent);
+    procedure BeginUpdate;
+    function EndUpdate: Boolean;
+    function IsUpdating: Boolean;
+    function CanReadFromInterface: Boolean;
+    function CanReadFromCache: Boolean;
   public
     function AddFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
     function AddFormat(FormatID: TClipboardFormat; var Buffer; Size: Integer): Boolean;
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure Clear;
-    procedure Close; // dummy for delphi compatibility only
+    procedure Close;
     constructor Create;
     constructor Create(AClipboardType: TClipboardType);
     destructor Destroy; override;
@@ -199,12 +208,12 @@ type
     function HasFormat(FormatID: TClipboardFormat): Boolean;
     function HasFormatName(const FormatName: string): Boolean;
     function HasPictureFormat: boolean;
-    procedure Open; // dummy for delphi compatibility only
+    procedure Open;
     //procedure SetAsHandle(Format: integer; Value: THandle);
-    procedure SetComponent(Component: TComponent);
-    procedure SetFormat(FormatID: TClipboardFormat; Stream: TStream);
-    procedure SetSupportedFormats(AFormatCount: integer;
-                                  FormatList: PClipboardFormat);
+    function SetComponent(Component: TComponent): Boolean;
+    function SetFormat(FormatID: TClipboardFormat; Stream: TStream): Boolean;
+    function SetSupportedFormats(AFormatCount: integer;
+                                  FormatList: PClipboardFormat): Boolean;
     procedure SetTextBuf(Buffer: PChar);
     property AsText: string read GetAsText write SetAsText;
     property ClipboardType: TClipboardType read FClipboardType;

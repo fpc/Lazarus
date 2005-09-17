@@ -1410,6 +1410,9 @@ type
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
     function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
+    procedure Insert(AControl: TControl);
+    procedure Insert(AControl: TControl; Index: integer);
+    procedure Remove(AControl: TControl);
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AssignTo(Dest: TPersistent); override;
@@ -1514,7 +1517,7 @@ type
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
   protected
-    Function  FindNextControl(CurrentControl: TWinControl; GoForward,
+    function  FindNextControl(CurrentControl: TWinControl; GoForward,
                               CheckTabStop, CheckParent: Boolean): TWinControl;
     function  RealGetText: TCaption; override;
     function  GetBorderStyle: TBorderStyle;
@@ -1631,9 +1634,6 @@ type
     Procedure InsertControl(AControl: TControl);
     Procedure InsertControl(AControl: TControl; Index: integer);
     Procedure RemoveControl(AControl: TControl);
-    Procedure Insert(AControl: TControl);
-    Procedure Insert(AControl: TControl; Index: integer);
-    Procedure Remove(AControl: TControl);
     procedure Repaint; override;
     Procedure SetFocus; virtual;
     Function FindChildControl(const ControlName: String): TControl;
