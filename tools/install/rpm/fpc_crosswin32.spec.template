@@ -39,13 +39,13 @@ cp -a lib/fpc/%{version}/units/* %{buildroot}%{_libdir}/fpc/%{version}/units/
 
 %post
 # add -FD and -XP entry for cross compiling
-echo "# set binutils paths for crosscompiling # fpc_crosswin32" >> /etc/fpc.cfg
-echo "#IFDEF FPC_CROSSCOMPILING               # fpc_crosswin32" >> /etc/fpc.cfg
-echo '  -XPfpc-i386-win32-                    # fpc_crosswin32' >> /etc/fpc.cfg
-echo "#ENDIF                                  # fpc_crosswin32" >> /etc/fpc.cfg
+echo '# set binutils paths for crosscompiling # fpc_crosswin32' >> /etc/fpc.cfg
+echo '#IFDEF FPC_CROSSCOMPILING               # fpc_crosswin32' >> /etc/fpc.cfg
+echo '  -XPfpc-i386-win32-' >> /etc/fpc.cfg
+echo '#ENDIF                                  # fpc_crosswin32' >> /etc/fpc.cfg
 
 %postun
-cat /etc/fpc.cfg | grep - v '# fpc_crosswin32' > /etc/fpc.cfg.rpmtemp
+cat /etc/fpc.cfg | egrep -v '# fpc_crosswin32|-XPfpc-i386-win32-' > /etc/fpc.cfg.rpmtemp
 mv /etc/fpc.cfg.rpmtemp /etc/fpc.cfg
 
 %files

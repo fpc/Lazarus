@@ -132,8 +132,6 @@ if [ "$PkgType" = "deb" ]; then
   ./debian/rules binary-arch
   cd -
   
-  # ToDo: install latest 1.0.10 tar, fix -dHasUnix,
-
 else
   # build fpc rpm
 
@@ -162,7 +160,7 @@ else
   cd -
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/"
+  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$LazVersion-$LazRelease.i386.rpm"
 fi
 
 # end.

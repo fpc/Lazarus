@@ -11,6 +11,7 @@ BuildRoot=~/freepascal
 
 #===============================================================================
 # parse command line parameters
+echo "parsing parameters ..."
 DownloadBinutils=no
 DownloadFPC=no
 BuildBinutils=no
@@ -80,6 +81,7 @@ if [ $BuildCrossFPC = "yes" ]; then
 fi
 if [ ! -z $Params ]; then
   Params="$Params targets=i386-win32"
+  echo "calling update_cross_fpc.sh $Params ..."
   ./update_cross_fpc.sh $Params
 fi
 
@@ -87,10 +89,10 @@ fi
 # build fpc_crosswin32 rpm
 if [ $BuildCrossWin32RPM = "yes" ]; then
 
-
   #----------------------------------------------------------------------------
   # retrieve the version information
   #----------------------------------------------------------------------------
+  echo -n "retrieving the FPC version ..."
   VersionFile="$BuildRoot/fpc/compiler/version.pas"
   CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
   CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -98,17 +100,20 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 
   Release=$(date +%y%m%d)
+  echo " $CompilerVersionStr-$Release"
 
   #----------------------------------------------------------------------------
-  # create temporary directories
+  # create temporary directory
   #----------------------------------------------------------------------------
   TmpSrcDir=/tmp/fpc_crosswin32
+  echo "create temporary directory $TmpSrcDir ..."
   rm -rf $TmpSrcDir
   mkdir -p $TmpSrcDir
   
   #----------------------------------------------------------------------------
   # collect binutils
   #----------------------------------------------------------------------------
+  echo "collecting binutils from $BuildRoot/binutils/cross/bin/ ..."
   BinDir=$TmpSrcDir/usr/bin/
   mkdir -p $BinDir
   MyIntel=i686
@@ -137,6 +142,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   #----------------------------------------------------------------------------
   # collect fpc libs (e.g. .ppu/.o)
   #----------------------------------------------------------------------------
+  echo "collecting fpc libs (e.g. .ppu/.o) from $BuildRoot/binutils/cross/destination/ ..."
   for Target in $Targets; do
     FPCLibDir=lib/fpc/$CompilerVersionStr/units # !!! no / at end
     
@@ -147,6 +153,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   #----------------------------------------------------------------------------
   # create tgz
   #----------------------------------------------------------------------------
+  echo "creating tgz ..."
   SrcTGZ=$(../rpm/get_rpm_source_dir.sh)/SOURCES/fpc_crosswin32-$CompilerVersionStr-$Release.tar.gz
 
   cd $TmpSrcDir
@@ -156,6 +163,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   #----------------------------------------------------------------------------
   # change spec file
   #----------------------------------------------------------------------------
+  echo "creating spec file ..."
   SpecFileTemplate=../rpm/fpc_crosswin32.spec.template
   SpecFile=fpc_crosswin32.spec
   cat $SpecFileTemplate | \
@@ -166,7 +174,9 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
 
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/"
+  echo "The new rpm can be found at $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc_crosswin32-$CompilerVersionStr-$Release.i386.rpm"
+else
+  echo "To build the rpm call this script with parameter all or buildcrosswin32rpm"
 fi
 
 # end.

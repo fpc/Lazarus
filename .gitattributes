@@ -1977,6 +1977,7 @@ tools/install/replace_in_files.pl -text svneol=native#application/x-perl
 tools/install/rpm/create_nonroot_rpmmacros.sh svneol=native#text/plain
 tools/install/rpm/fpc.spec.template svneol=native#text/plain
 tools/install/rpm/fpc_crosswin32.spec.template svneol=native#text/plain
+tools/install/rpm/get_rpm_source_dir.sh svneol=native#text/plain
 tools/install/rpm/lazarus.spec.template svneol=native#text/plain
 tools/install/setup.sh -text svneol=native#application/x-sh
 tools/install/smart_strip.sh -text svneol=native#application/x-sh
