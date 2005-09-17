@@ -120,6 +120,7 @@ begin
         Stream.Position:=OldPosition;
       end else
         FData[i].Stream.Clear;
+      FSupportedFormatsChanged:=true;
     end;
   finally
     Result:=EndUpdate;
@@ -139,6 +140,7 @@ begin
     FData[i].Stream.Clear;
     if Size>0 then
       FData[i].Stream.Write(Buffer,Size);
+    FSupportedFormatsChanged:=true;
   finally
     Result:=EndUpdate;
   end;
@@ -211,8 +213,11 @@ begin
     for i:=0 to FCount-1 do
       FormatList[i]:=FData[i].FormatID;
     //DebugLn('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
-    FAllocated:=ClipboardGetOwnerShip(ClipboardType,@InternalOnRequest,FCount,
-      FormatList);
+    FAllocated:=true;
+    if not ClipboardGetOwnerShip(ClipboardType,@InternalOnRequest,FCount,
+                                 FormatList)
+    then
+      FAllocated:=false;
     FreeMem(FormatList);
     FSupportedFormatsChanged:=false;
   end;
@@ -317,6 +322,7 @@ begin
       Writer.Destroy;
     end;
     s.Position:=0;
+    FSupportedFormatsChanged:=true;
   finally
     Result:=EndUpdate;
   end;
@@ -368,6 +374,7 @@ begin
       FData[i].Stream.Write(Buffer,Size);
       FData[i].Stream.Position:=0;
     end;
+    FSupportedFormatsChanged:=true;
   finally
     Result:=EndUpdate;
   end;

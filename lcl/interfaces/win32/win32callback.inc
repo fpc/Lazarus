@@ -816,6 +816,9 @@ Begin
     WM_DESTROYCLIPBOARD:
     Begin
       if assigned(OnClipBoardRequest) then begin
+        {$IFDEF VerboseWin32Clipbrd}
+        debugln('WM_DESTROYCLIPBOARD');
+        {$ENDIF}
         OnClipBoardRequest(0, nil);
         OnClipBoardRequest := nil;
         LMessage.Result := 0;

@@ -361,7 +361,12 @@ End;
 Function TWin32WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): String;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Start');
-  Windows.GetClipboardFormatName(FormatID, @Result, MAX_PATH);
+  SetLength(Result,1000);
+  Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
+  SetLength(Result,StrLen(PChar(Result)));
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
+  {$ENDIF}
   Assert(False, 'Trace:TWin32WidgetSet.ClipboardFormatToMimeType - Exit');
 End;
 
@@ -382,6 +387,9 @@ var
 Begin
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetData FormatID=',dbgs(FormatID));
+  {$ENDIF}
   if (FormatID=0) or (Stream=nil) or
     not Windows.IsClipboardFormatAvailable(FormatID) then exit;
 
@@ -423,9 +431,17 @@ var
 Begin
   Result := false;
   List := nil;
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetData ');
+  {$ENDIF}
+  if not Windows.OpenClipboard(HWND(AppHandle)) then begin
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetData OpenClipboard failed');
+    {$ENDIF}
+    exit;
+  end;
   Count := CountClipboardFormats;
   GetMem(List, Count * SizeOf(TClipboardFormat));
-  Windows.OpenClipboard(HWND(AppHandle));
   try
     c := 0;
     FormatID := 0;
@@ -465,8 +481,6 @@ End;
 Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
-Var
-  I: Integer;
 
   procedure PutTextOnClipBoard;
   var
@@ -480,8 +494,10 @@ Var
       OnRequestProc(Windows.CF_TEXT, MemStream);
       MemStream.Position:=0;
       TextLength := Integer(MemStream.Size);
-      DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, TextLength+1);
+      DataHandle := Windows.GlobalAlloc(
+                     Windows.GMEM_MOVEABLE+Windows.GMEM_DDESHARE, TextLength+1);
       if (DataHandle=HWND(0)) then begin
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' TextLength=',dbgs(TextLength));
         Result := false;
         exit;
       end;
@@ -489,18 +505,28 @@ Var
       try
         MemStream.Read(TextData[0], TextLength);
         TextData[TextLength] := #0;
+        {$IFDEF VerboseWin32Clipbrd}
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip Commit TextLength=',dbgs(TextLength));
+        {$ENDIF}
+        // Put it on the clipboard as CF_TEXT
+        if Windows.SetClipboardData(Windows.CF_TEXT, DataHandle)=0 then
+          debugln('WARNING: TWin32WidgetSet.ClipboardGetOwnerShip.PutTextOnClipBoard SetClipboardData failed');
       finally
         GlobalUnlock(DataHandle);
       end;
-      // Put it on the clipboard as CF_TEXT
-      Windows.SetClipboardData(Windows.CF_TEXT, DataHandle);
     finally
       MemStream.Free;
     end;
   end;
 
+Var
+  I: Integer;
 Begin
   Result := false;
+  
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetOwnerShip START FormatCount=',dbgs(FormatCount),' OnRequestProc=',dbgs(OnRequestProc=nil));
+  {$ENDIF}
 
   if ClipboardType<>ctClipBoard then begin
   { the win32 interface does not support this kind of clipboard,
@@ -510,31 +536,48 @@ Begin
     platform does not support it.
     Of course this will only be a local clipboard, invisible to other
     applications. }
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetOwnerShip unsupported ClipboardType under win32');
+    {$ENDIF}
     Result := true;
     exit;
   end;
 
   if (FormatCount=0) or (OnRequestProc=nil) then begin
-  { The LCL indicates is doesn't have the clipboard data anymore
+  { The LCL indicates it doesn't have the clipboard data anymore
     and the interface can't use the OnRequestProc anymore.}
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetOwnerShip clearing OnClipBoardRequest');
+    {$ENDIF}
     OnClipBoardRequest := nil;
     Result := true;
   end else begin
   { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
     when emptying the clipboard}
     OnClipBoardRequest := nil;
-    if not Windows.OpenClipboard(FAppHandle) then exit;
+    if not Windows.OpenClipboard(FAppHandle) then begin
+      {$IFDEF VerboseWin32Clipbrd}
+      debugln('TWin32WidgetSet.ClipboardGetOwnerShip A OpenClipboard failed');
+      {$ENDIF}
+      exit;
+    end;
     try
-      if not Windows.EmptyClipboard then exit;
-
-       // if we got here, assume everything goes OK.
+      if not Windows.EmptyClipboard then begin
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A EmptyClipboard failed');
+        exit;
+      end;
       Result := true;
       for I := 0 To FormatCount-1 do begin
-        if Formats[i]=Windows.CF_TEXT then PutTextOnClipBoard;
+        {$IFDEF VerboseWin32Clipbrd}
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A Formats['+dbgs(i)+']=',dbgs(Formats[i]));
+        {$ENDIF}
+        if Formats[i]=Windows.CF_TEXT then
+          PutTextOnClipBoard;
       end;
-      OnClipBoardRequest := OnRequestProc;
     finally
-      Windows.CloseClipboard;
+      if not Windows.CloseClipboard then begin
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
+      end;
     end;
   end;
 End;
@@ -551,6 +594,9 @@ Begin
     Result := Windows.CF_TEXT
   else
     Result := Windows.RegisterClipboardFormat(PChar(AMimeType));
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardRegisterFormat AMimeType="',AMimeType,'" Result=',dbgs(Result));
+  {$ENDIF}
 End;
 
 {------------------------------------------------------------------------------
