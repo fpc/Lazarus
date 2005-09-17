@@ -277,11 +277,17 @@ end;
 
 function FilenameIsPascalSource(const Filename: string): boolean;
 var Ext: string;
+  p: Integer;
+  AnUnitName: String;
 begin
+  AnUnitName:=ExtractFileNameOnly(Filename);
+  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then
+    exit(false);
   Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
-          or (Ext='.dpr') or (Ext='.dpk'))
-          and (ExtractFileNameOnly(Filename)<>'');
+  for p:=Low(PascalFileExt) to High(PascalFileExt) do
+    if Ext=PascalFileExt[p] then
+      exit(true);
+  Result:=(Ext='.lpr') or (Ext='.dpr') or (Ext='.dpk');
 end;
 
 function FindShortFileNameOnDisk(const Filename: string): string;

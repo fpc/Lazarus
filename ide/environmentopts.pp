@@ -79,10 +79,10 @@ const
   { Naming }
 
 type
-  TPascalExtType = (petNone, petPAS, petPP);
+  TPascalExtType = (petNone, petPAS, petPP, petP);
 
 const
-  PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
+  PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp', '.p');
 
 
   { Ambiguous files }
@@ -1348,9 +1348,11 @@ begin
     fExternalTools.Save(XMLConfig,Path+'ExternalTools/');
 
     // naming
-    XMLConfig.SetDeleteValue( Path+'Naming/PascalFileExtension', PascalExtension[fPascalFileExtension],'.pas');
+    XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
+                             PascalExtension[fPascalFileExtension],'.pas');
 
-    XMLConfig.SetDeleteValue( Path+'CharcaseFileAction/Value', ord(fCharcaseFileAction), ord(ccfaAutoRename));
+    XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
+                             ord(fCharcaseFileAction), ord(ccfaAutoRename));
 
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],
@@ -1878,6 +1880,7 @@ begin
           Add(PascalExtension[pe]);
       EndUpdate;
     end;
+    PascalFileExtRadiogroup.Columns:=PascalFileExtRadiogroup.Items.Count;
   end;
 
   with CharcaseFileActionRadioGroup do begin

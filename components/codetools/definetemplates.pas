@@ -516,6 +516,8 @@ function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
 var
   UnitLinkLen: integer;
+  pe: TCTPascalExtType;
+  AliasFilename: String;
 begin
   Result:=false;
   Filename:='';
@@ -556,13 +558,16 @@ begin
             exit;
           end;
           // try also different extensions
-          if CompareFileExt(Filename,'.pp',false)=0 then
-            Filename:=ChangeFileExt(Filename,'.pas')
-          else
-            Filename:=ChangeFileExt(Filename,'.pp');
-          if FileExistsCached(Filename) then begin
-            Result:=true;
-            exit;
+          for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
+            if CompareFileExt(Filename,CTPascalExtension[pe],false)<>0 then
+            begin
+              AliasFilename:=ChangeFileExt(Filename,'.pas');
+              if FileExistsCached(AliasFilename) then begin
+                Filename:=AliasFilename;
+                Result:=true;
+                exit;
+              end;
+            end;
           end;
         end;
         UnitLinkStart:=UnitLinkEnd;
@@ -3066,7 +3071,7 @@ var
             BrowseDirectory(AFilename);
           end else begin
             Ext:=UpperCaseStr(ExtractFileExt(AFilename));
-            if (Ext='.PP') or (Ext='.PAS') then begin
+            if (Ext='.PP') or (Ext='.PAS') or (Ext='.P') then begin
               // pascal unit found
               UnitName:=FileInfo.Name;
               UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));

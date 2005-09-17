@@ -1400,11 +1400,14 @@ var
     if SearchSource then begin
       if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
       if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
+      if LoadFile(ADir+AnUnitName+'.p',Result) then exit;
       {$IFNDEF win32}
       if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
       if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
+      if LoadFile(ADir+lowercase(AnUnitName)+'.p',Result) then exit;
       if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pp',Result) then exit;
       if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pas',Result) then exit;
+      if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.p',Result) then exit;
       {$ENDIF}
     end else begin
       if LoadFile(ADir+AnUnitName+CompiledSrcExt,Result) then exit;
@@ -1502,6 +1505,7 @@ var
   function SearchUnitInUnitLinks(const TheUnitName: string): TCodeBuffer;
   var UnitLinks, CurFilename: string;
     UnitLinkStart, UnitLinkEnd, UnitLinkLen: integer;
+    pe: TCTPascalExtType;
   begin
     Result:=nil;
     UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
@@ -1538,10 +1542,13 @@ var
             LoadFile(CurFilename,Result);
             if Result=nil then begin
               // try also different extensions
-              if CompareFileExt(CurFilename,'.pp',false)=0 then
-                LoadFile(ChangeFileExt(CurFilename,'.pas'),Result)
-              else
-                LoadFile(ChangeFileExt(CurFilename,'.pp'),Result);
+              for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
+                if CompareFileExt(CurFilename,CTPascalExtension[pe],false)<>0
+                then
+                  LoadFile(ChangeFileExt(CurFilename,CTPascalExtension[pe]),
+                           Result);
+                  if Result<>nil then break;
+              end;
             end;
             exit;
           end;

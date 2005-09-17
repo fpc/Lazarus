@@ -903,9 +903,7 @@ begin
     Result:=pftLRS
   else if CompareFileExt(AFilename,'.inc',true)=0 then
     Result:=pftInclude
-  else if CompareFileExt(AFilename,'.pas',true)=0 then
-    Result:=pftUnit
-  else if CompareFileExt(AFilename,'.pp',true)=0 then
+  else if FilenameIsPascalUnit(AFilename) then
     Result:=pftUnit
   else if FileIsText(AFilename) then
     Result:=pftText

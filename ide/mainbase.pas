@@ -1202,6 +1202,7 @@ function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string;
 
 var
   Ext, LowExt: string;
+  i: integer;
 begin
   Result:=mrOk;
   if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit;
@@ -1211,10 +1212,12 @@ begin
   if FilenameIsPascalUnit(AFilename) then begin
     Ext:=ExtractFileExt(AFilename);
     LowExt:=lowercase(Ext);
-    if LowExt='.pp' then
-      Result:=CheckFile(ChangeFileExt(AFilename,'.pas'))
-    else if LowExt='.pas' then
-      Result:=CheckFile(ChangeFileExt(AFilename,'.pp'));
+    for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
+      if LowExt<>PascalFileExt[i] then begin
+        Result:=CheckFile(ChangeFileExt(AFilename,PascalFileExt[i]));
+        if Result<>mrOk then exit;
+      end;
+    end;
   end;
 end;
 

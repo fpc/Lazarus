@@ -133,9 +133,13 @@ end;
   function FilenameIsPascalUnit(const Filename: string): boolean;
  ------------------------------------------------------------------------------}
 function FilenameIsPascalUnit(const Filename: string): boolean;
+var
+  i: Integer;
 begin
-  Result:=(CompareFileExt(Filename,'.pp',false)=0)
-       or (CompareFileExt(Filename,'.pas',false)=0);
+  for i:=Low(PascalFileExt) to High(PascalFileExt) do
+    if CompareFileExt(Filename,PascalFileExt[i],false)=0 then
+      exit(true);
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------

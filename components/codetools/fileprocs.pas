@@ -83,6 +83,12 @@ function FilenameIsMatching(const Mask, Filename: string;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 
+type
+  TCTPascalExtType = (petNone, petPAS, petPP, petP);
+
+const
+  CTPascalExtension: array[TCTPascalExtType] of string =
+    ('', '.pas', '.pp', '.p');
 
 // debugging
 procedure DebugLn;

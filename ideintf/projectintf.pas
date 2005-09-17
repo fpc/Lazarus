@@ -727,8 +727,7 @@ begin
   if FDefaultFilename=AValue then exit;
   FDefaultFilename:=AValue;
   DefaultFileExt:=ExtractFileExt(FDefaultFilename);
-  FIsPascalUnit:=(CompareFileExt(DefaultFileExt,'.pp',false)=0)
-              or (CompareFileExt(DefaultFileExt,'.pas',false)=0);
+  FIsPascalUnit:=FilenameIsPascalUnit(DefaultFileExt);
 end;
 
 procedure TProjectFileDescriptor.SetName(const AValue: string);

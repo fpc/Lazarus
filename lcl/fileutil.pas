@@ -57,6 +57,9 @@ function ProgramDirectory: string;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 
 // filename parts
+const
+  PascalFileExt: array[1..3] of string = ('.pas','.pp','.p');
+
 function ExtractFileNameOnly(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;

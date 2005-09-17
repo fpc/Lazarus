@@ -5791,6 +5791,7 @@ var ActiveSrcEdit: TSourceEditor;
   //  Returns true if found. FName contains the full file+path in that case
   var TempFile,TempPath,CurPath,FinalFile, Ext: String;
       i,p,c: Integer;
+      PasExt: TPascalExtType;
   begin
     if SPath='' then SPath:='.';
     Result:=true;
@@ -5817,12 +5818,8 @@ var ActiveSrcEdit: TSourceEditor;
           2: TempFile:=UpperCase(FName);
         end;
         if ExtractFileExt(TempFile)='' then begin
-          for i:=0 to 2 do begin
-            case i of
-              1: Ext:='.pp';
-              2: Ext:='.pas';
-              else Ext:='';
-            end;
+          for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
+            Ext:=PascalExtension[PasExt];
             FinalFile:=ExpandFileName(CurPath+TempFile+Ext);
             if FileExists(FinalFile) then begin
               FName:=FinalFile;
@@ -7434,6 +7431,7 @@ var
   LFMUnitInfo: TUnitInfo;
   UnitFilename: String;
   PascalBuf: TCodeBuffer;
+  i: integer;
 begin
   // check, if a .lfm file is opened in the source editor
   GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
@@ -7446,17 +7444,20 @@ begin
     exit;
   end;
   // try to find the pascal unit
-  UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.pas');
-  if not FileExists(UnitFilename) then begin
-    UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.pp');
-    if not FileExists(UnitFilename) then begin
-      MessageDlg('No pascal file',
-        'Unable to find pascal unit (.pas,.pp) for .lfm file'#13
-        +'"'+LFMUnitInfo.Filename+'"',
-        mtError,[mbCancel],0);
-      Result:=mrCancel;
-      exit;
-    end;
+  for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
+    UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,PascalFileExt[i]);
+    if FileExists(UnitFilename) then
+      break
+    else
+      UnitFilename:='';
+  end;
+  if UnitFilename='' then begin
+    MessageDlg('No pascal file',
+      'Unable to find pascal unit (.pas,.pp) for .lfm file'#13
+      +'"'+LFMUnitInfo.Filename+'"',
+      mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
   end;
 
   if ToolStatus<>itNone then begin
