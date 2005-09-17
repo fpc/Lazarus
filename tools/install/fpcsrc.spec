@@ -3,7 +3,7 @@ Version: LAZVERSION
 Release: LAZRELEASE
 Copyright: LGPL2
 Group: Development/Languages
-Source: %{name}-%{version}-%{release}.tgz
+Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.freepascal.org/

@@ -4,44 +4,49 @@ set -x
 set -e
 
 # get date of day
-Year=`date +%y`
-Month=`date +%m`
-Day=`date +%d`
+Year=$(date +%y)
+Month=$(date +%m)
+Day=$(date +%d)
 
 # get installed fpc version
-FPCRPM=`rpm -qa | egrep '^fpc-'`
+echo "getting installed fpc version ..."
+FPCRPM=$(rpm -qa | egrep '^fpc-')
 if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
 FPCRPMVersion=`echo $FPCRPM | sed -e 's/fpc-//g'`
+echo "installed fpc version: $FPCRPMVersion"
 
 Date=$Year$Month$Day
-LazVersion=0.9.8
-LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
-SrcTGZ=lazarus-$Date.tgz
+LazVersion=$(./get_lazarus_version.sh)
+LazRelease=$(echo $FPCRPM | sed -e 's/-/_/g')
+Src=lazarus-$LazVersion-$LazRelease.tar.gz
+SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
 TmpDir=/tmp/lazarus$LazVersion
-SpecFile=lazarus-$LazVersion-$LazRelease.spec
+SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
-# download lazarus cvs if necessary
+# download lazarus svn if necessary
+echo "creating lazarus tgz ..."
 if [ ! -f $SrcTGZ ]; then
   sh create_lazarus_export_tgz.sh $SrcTGZ
 fi
 
-# put src tgz into rpm build directory
-cp $SrcTGZ /usr/src/redhat/SOURCES/
-
 # create spec file
-cat lazarus.spec | \
+echo "creating lazarus spec file ..."
+cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
-      -e "s/LAZRELEASE/$LazRelease/" \
-      -e "s/LAZSOURCE/$SrcTGZ/" \
+      -e "s/LAZRELEASE/$LazRelease/g" \
+      -e "s/LAZSOURCE/$Src/" \
       -e "s/FPCBUILDVERSION/2.0.0/" \
       -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
   > $SpecFile
 
 # build rpm
+echo "building rpm ..."
 rpm -ba $SpecFile || rpmbuild -ba $SpecFile
+
+echo "The new rpm can be found at $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/lazarus-$LazVersion-$LazRelease.i386.rpm"
 
 # end.
 

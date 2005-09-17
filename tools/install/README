@@ -47,48 +47,49 @@ Creating the lazarus tgz:
 
 RPM:
 
+How to create RPM packages as normal user / non root:
+
+  You don't need to be root to built rpm packages.
+  You only need a ~/.rpmacros file overriding some values. The script
+  <lazarusdir>/tools/install/rpm/create_nonroot_macros.sh will setup one. Do:
+
+    []$ cd <lazarusdir>/tools/install/rpm
+    []$ ./create_nonroot_macros.sh
+
+  From now all new rpms will be built in ~/rpm/.
+
+
 Creating the fpc and the fpcsrc rpm:
 
-  There are two versions of the compiler: the old 2..0.x and the new (but not
+  There are two versions of the compiler: the old 2.0.x and the new (but not
   yet released) developer version 2.1.x. To build them, you must install fpc
-  first. Install the stable fpc release (2.0.x). Note: The 2.0.x can not be
-  built with a 2.1.x compiler and the recommended startup compiler for the 2.1.x
-  is the released fpc 2.0.x.
+  first. Install the stable fpc release (2.0.x).
+  Note: The 2.0.x can not be built with a 2.1.x compiler and the recommended
+  startup compiler for the 2.1.x is the released fpc 2.0.x.
 
   If you have your own fpc sources you can build the fpc rpm with:
-    Become root and do:
 
-    cd <lazarus_directory>/tools/install
-    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc 050601
+  []$ cd <lazarus_directory>/tools/install
+  []$ ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc
 
-  The 050601 stands for: 2005 june 1st
-  
-  Then build the fpcsrc rpm. Become root and do:
+  Then build the fpcsrc rpm:
 
-    cd <lazarus_directory>/tools/install
-    ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc 050601
+  []$ ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc
 
-
-  The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
-    For 2.0.x: ./create_fpc_rpm.sh stable
-    For 2.1.x: ./create_fpc_rpm.sh devel
-
-  What it does: First it checks if the fpc source tgz is already created and
-  if not, it automatically downloads it. The script does not use the current
-  version, but the latest known to work with lazarus. Then it unpacks the
-  source, compiles it and builds the rpm. Normally you can find the rpms under
-  /usr/src/redhat/RPMS/i386/ and /usr/src/redhat/SRPMS/.
+  Normally you can find the rpms under /usr/src/redhat/RPMS/i386/
+  and /usr/src/redhat/SRPMS/.
+  Or if you have a ~/.rpmmacros file the new rpm will be in ~/rpm/RPMS/i386/
+  and ~/rpm/SRPMS/.
 
 
 Creating the lazarus rpm:
 
   Important:
-  If you have created a new fpc RPM, then you should install it, *before* you
+  If you have created a new fpc RPM, then you should install it *before* you
   build the lazarus RPM. Otherwise the compiled lazarus RPM is not compatible
   to the fpc RPM.
 
-  As root:
-  Execute create_lazarus_rpm.sh.
+  []$ ./create_lazarus_rpm.sh.
 
 
 Creating other system specific rpms:

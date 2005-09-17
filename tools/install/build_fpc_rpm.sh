@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] [deb] <FPCSrcDir> <release>"
+Usage="Usage: $0 [nodocs] [notemp] [deb] <FPCSrcDir> [release]"
 
 WithDOCS=yes
 if [ "x$1" = "xnodocs" ]; then
@@ -27,17 +27,17 @@ if [ "x$1" = "xdeb" ]; then
 fi
 
 FPCSrcDir=$1
-shift
 if [ "x$FPCSrcDir" = "x" ]; then
   echo $Usage
   exit -1
 fi
+shift
 
 LazRelease=$1
-shift
 if [ "x$LazRelease" = "x" ]; then
-  echo $Usage
-  exit -1
+  LazRelease=$(date +%y%m%d)
+else
+  shift
 fi
 
 if [ ! -d $FPCSrcDir/compiler ]; then
@@ -52,7 +52,10 @@ fi
 # create a temporary copy of the fpc sources to patch it
 TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
-  rm -rf $TmpDir
+  if [ -d $TmpDir ]; then
+    rm -rf $TmpDir/*
+    rm -r $TmpDir
+  fi
   mkdir -p $TmpDir
 
   #ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
@@ -65,6 +68,7 @@ else
 fi
 
 # retrieve the version information
+echo -n "getting FPC version from local svn ..."
 VersionFile="$TmpDir/fpc/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -74,6 +78,7 @@ LazVersion="$CompilerVersion.$CompilerRelease"
 if [ "$CompilerPatch" != "0" ]; then
   LazVersion="$LazVersion.$CompilerPatch"
 fi
+echo " $CompilerVersionStr-$LazRelease"
 
 
 
@@ -85,6 +90,7 @@ ReplaceScript=replace_in_files.pl
 
 
 # set version numbers in all Makefiles
+echo "set version numbers in all Makefiles ..."
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/fpc/*
 
 # update smart_strip.sh
@@ -135,9 +141,9 @@ if [ "$PkgType" = "deb" ]; then
 else
   # build fpc rpm
 
+  echo "creating spec file ..."
   SpecFileTemplate=rpm/fpc.spec.template
   SpecFile=rpm/fpc.spec
-  SrcPatch=fpcsrc-patch
 
   # change spec file
   cat $SpecFileTemplate | \
@@ -148,6 +154,7 @@ else
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   
   SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz
+  echo "creating $SrcTGZ ..."
   tar czf $SrcTGZ -C $TmpDir fpc
 
   #----------------------------------------------------------------------------
@@ -156,11 +163,9 @@ else
   if [ "$WithDOCS" = "no" ]; then
     export NODOCS=1
   fi
-  cd $TmpDir
-  cd -
   rpmbuild --nodeps -ba $SpecFile
 
-  echo "The new rpm can be found in $(../rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$LazVersion-$LazRelease.i386.rpm"
+  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-$LazVersion-$LazRelease.i386.rpm"
 fi
 
 # end.

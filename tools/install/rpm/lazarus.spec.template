@@ -6,7 +6,7 @@ Summary:        Lazarus Component Library and IDE
 Group:          Development/Languages
 License:        GPL and modified LGPL
 URL:            http://www.lazarus.freepascal.org/
-Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{release}.source.tar.gz
+Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{release}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
@@ -24,8 +24,7 @@ component library - LCL, which is also included in this package.
 
 %build
 cd lazarus
-make OPT="-n @$FPCCfg"
-# -Fl/opt/gnome/lib
+make OPT="-Fl/opt/gnome/lib"
 strip lazarus
 strip startlazarus
 
