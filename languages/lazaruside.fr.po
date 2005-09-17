@@ -365,6 +365,10 @@ msgstr "Ajouter le point de saut à l'historique"
 msgid "Add options to dependent packages and projects"
 msgstr "Ajouter les options aux paquets et projets dépendants"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Ajouter les chemins aux paquets/projets dépendants"
@@ -3629,12 +3633,20 @@ msgstr "Lancement de l'application non valide"
 msgid "Launching target command line"
 msgstr "Lancement de la cible avec la ligne de commande"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5208,6 +5220,10 @@ msgstr ""
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Retirer du projet"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"

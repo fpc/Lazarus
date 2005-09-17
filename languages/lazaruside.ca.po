@@ -354,6 +354,10 @@ msgstr "Afegeix un punt de salt a la història"
 msgid "Add options to dependent packages and projects"
 msgstr "Afegeix les opcions en els paquets i projectes dependents"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Afegeix les trajectòries en els paquets/projectes dependents"
@@ -3618,12 +3622,20 @@ msgstr "L'execució de l'aplicació no és vàlida"
 msgid "Launching target command line"
 msgstr "Executant línia d'ordres de destinació"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5197,6 +5209,10 @@ msgstr ""
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Elimina del projecte"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"

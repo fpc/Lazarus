@@ -365,6 +365,10 @@ msgstr "Dodaj punkt skoku do historii"
 msgid "Add options to dependent packages and projects"
 msgstr "dodaj opcje do zale¿nych pakietów i projektów"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Dodaj œcie¿ki do zale¿nych pakietów/projektów"
@@ -3629,12 +3633,20 @@ msgstr ""
 msgid "Launching target command line"
 msgstr "Linia poleceñ uruchamianego programu"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5207,6 +5219,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem

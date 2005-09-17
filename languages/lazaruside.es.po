@@ -364,6 +364,10 @@ msgstr "Añadir punto de salto al historial"
 msgid "Add options to dependent packages and projects"
 msgstr "Añadir opciones a los proyectos y paquetes dependientes"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Añadir rutas a los paquetes/proyectos dependientes"
@@ -3628,12 +3632,20 @@ msgstr ""
 msgid "Launching target command line"
 msgstr "Lanzando línea de comandos"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5207,6 +5219,10 @@ msgstr "Remover de propiedades favoritas"
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Eliminar del proyecto"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"

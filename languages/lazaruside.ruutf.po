@@ -354,6 +354,10 @@ msgstr "Добавить точку перехода в историю"
 msgid "Add options to dependent packages and projects"
 msgstr "Добавить параметры к зависимым пакетам и проектам"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Добавить пути к зависимым пакетам/проектам"
@@ -3618,12 +3622,20 @@ msgstr "Запускающее приложение недопустимо"
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5197,6 +5209,10 @@ msgstr ""
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Удалить из проекта"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"

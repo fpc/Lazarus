@@ -1846,6 +1846,10 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdoc
+msgid "LazDoc"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
 msgstr ""
@@ -8483,7 +8487,7 @@ msgid "On idle"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc"
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
@@ -8508,5 +8512,17 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocerrorstag
 msgid "Errors"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 

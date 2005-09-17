@@ -368,6 +368,10 @@ msgstr "Sprungmarke speichern"
 msgid "Add options to dependent packages and projects"
 msgstr "Einstellungen zu abhängigen Paketen und Projekten hinzufügen"
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Pfade zu abhängigen Paketen und Projekten aufnehmen"
@@ -3632,12 +3636,20 @@ msgstr "Aufrufendes Programm ungültig"
 msgid "Launching target command line"
 msgstr "Startkommando des Projektes"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5211,6 +5223,10 @@ msgstr "Von den bevorzugten Eigenschaften entfernen"
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Vom Projekt entfernen"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"

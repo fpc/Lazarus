@@ -231,7 +231,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
-msgstr ""
+msgstr "<GEEN>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -364,6 +364,10 @@ msgstr "Springpunt aan geschiedenis toevoegen"
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Opties aan packages en projecten toevoegen"
+
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -1939,7 +1943,7 @@ msgstr "Documentatie bewerker"
 
 #: lazarusidestrconsts:lislazdocnodocumentation
 msgid "Documentation entry does not exist"
-msgstr ""
+msgstr "Documentatie op dit punt bestaat niet"
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
@@ -3629,12 +3633,20 @@ msgstr "Starten applicatie is ongeldig"
 msgid "Launching target command line"
 msgstr "starten v. command line"
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr "LazDoc"
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr "LazDoc Editor"
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5209,6 +5221,10 @@ msgstr ""
 msgid "Remove from project"
 msgstr "Verwijder van Project"
 
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
 msgstr "Verwijder geselecteerde items"
@@ -5871,7 +5887,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
-msgstr ""
+msgstr "Kort"
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"

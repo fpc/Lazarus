@@ -354,6 +354,10 @@ msgstr "Lisää hyppy historia"
 msgid "Add options to dependent packages and projects"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr ""
@@ -3618,12 +3622,20 @@ msgstr ""
 msgid "Launching target command line"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
+#: lazarusidestrconsts:lislazdoc
 msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
@@ -5196,6 +5208,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
