@@ -683,7 +683,7 @@ const
   SB_Horz = 0;
   SB_Vert = 1;
   SB_CTL = 2;
-  SB_BOTH = 3;
+  SB_BOTH = 3;  //What would this do ??? it is not a used winapi constant
 
 {Scroll Bar Commands}
   SB_LINEUP = 0;

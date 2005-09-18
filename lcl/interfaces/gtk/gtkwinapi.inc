@@ -116,8 +116,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: BeginPaint
-  Params:  
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
@@ -238,7 +238,7 @@ begin
         WindowDesktop := GDK_WINDOW_GET_DESKTOP(FormWindow);
         // this prevents the window from appearing on a different desktop
         // which could be undesirable.
-        
+
         // check if the window is on all desktops or is on the current desktop
         if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then
         begin
@@ -399,7 +399,7 @@ var FormatAtom, FormatTry: Cardinal;
       end;
       SupportedCnt:=SelData.Length div (SelData.Format shr 3);
       SupportedFormats:=PGdkAtom(SelData.Data);
-      
+
       {a:=SupportedCnt-1;
       while (a>=0) do begin
         debugln(' ',dbgs(a),' ',GdkAtomToStr(SupportedFormats[a]),' "',p,'"');
@@ -973,7 +973,7 @@ begin
     ImgDepth:=RawImage.Description.Depth;
     ImgData:=RawImage.Data;
     ImgDataSize:=RawImage.DataSize;
-    
+
     if ImgDepth=1 then begin
       // create a GdkBitmap
       if RawImage.Data<>nil then begin
@@ -1266,7 +1266,7 @@ begin
 
     If GdiObject^.Visual = nil then begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
-      If GdiObject^.Visual = nil then 
+      If GdiObject^.Visual = nil then
         GdiObject^.Visual := gdk_visual_get_system;
       GdiObject^.SystemVisual := True;
     end
@@ -1391,13 +1391,13 @@ var
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
     Result:=GdiObject^.GDIFontObject<>nil;
-    
+
     if Result then begin
       Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
       if Desc<>nil then
         Desc.xlfd:=s;
     end;
-    
+
     {$IFDEF VerboseFonts}
     //if GdiObject^.GDIFontObject<>nil then
       DebugLn('  Tried "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
@@ -1412,7 +1412,7 @@ var
     DebugLn('TGtkWidgetSet.CreateFontIndirectEx.LoadDefaultFont');
     {$ENDIF}
   end;
-  
+
   function GetDefaultFontFamilyName: string;
   begin
     Result:=GetDefaultFontName;
@@ -1420,7 +1420,7 @@ var
       Result := ExtractXLFDItem(LongFontName,2);
     if Result='' then Result:='*';
   end;
-  
+
   function ExtractXLFDItemMask(const ALongFontName: string;
     Index: Integer): string;
   begin
@@ -1438,7 +1438,7 @@ var
     Result:=AFont<>nil;
     if Result then gdk_font_unref(AFont);
   end;
-  
+
   function CheckFontNameIsMangledXLogicalFontDesc(const ALongFontName: string
     ): boolean;
   var
@@ -1452,7 +1452,7 @@ var
     if Result then
       debugln('WARNING: Fontnamt "',ALongFontName,'" seems to be a XLFD fontname, but has 14<>',dbgs(c),' minus signs');
   end;
-  
+
 
 begin
   // For info about xlfd see:
@@ -1468,7 +1468,7 @@ begin
 
   try
     GdiObject^.LogFont := LogFont;
-    
+
     CachedFont:=FontCache.FindGDKFontDesc(LogFont,LongFontName);
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
@@ -1530,12 +1530,12 @@ begin
       end;
 
       FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
-      
+
       if (CompareText(FamilyName,'default')<>0)
       and (not FamilyNameExists) then begin
         FamilyName:='default';
       end;
-      
+
       if CompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
         DebugLn('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
@@ -1701,7 +1701,7 @@ begin
         end;
       end;
     end;
-     
+
 
     {$IFDEF VerboseFonts}
     write('CreateFontIndirect->');
@@ -1755,16 +1755,16 @@ begin
     if LoadFont then exit;
 
     // try all spacings
-    if spacing<>'*' then begin 
+    if spacing<>'*' then begin
       Spacing := '*';
       if LoadFont then exit;
-    end; 
+    end;
 
-    if charSetCoding<>'*' then begin 
+    if charSetCoding<>'*' then begin
       charsetCoding := '*';
-      charSetRegistry:= '*'; 
+      charSetRegistry:= '*';
       if LoadFont then exit;
-    end; 
+    end;
 
     if (Foundry<>'*') then begin
       // try all Families
@@ -1772,7 +1772,7 @@ begin
       FamilyName := '*';
       if LoadFont then exit;
     end;
-    
+
     // nothing exists -> use default
     LoadDefaultFont;
 
@@ -1808,7 +1808,7 @@ var
   GObject: PGdiObject;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePalette]');
-  
+
   GObject := NewGDIObject(gdiPalette);
   GObject^.SystemPalette := False;
   GObject^.PaletteRealized := False;
@@ -1820,7 +1820,7 @@ begin
   {$ENDIF}
 
   GObject^.PaletteVisual := gdk_visual_get_best_with_type(GObject^.VisualType);
-  if GObject^.PaletteVisual = nil 
+  if GObject^.PaletteVisual = nil
   then begin
     GObject^.PaletteVisual := GDK_Visual_Get_System;
     GDK_Visual_Ref(GObject^.PaletteVisual);
@@ -1914,7 +1914,7 @@ begin
 
     If GdiObject^.Visual = nil then begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth);
-      If GdiObject^.Visual = nil then 
+      If GdiObject^.Visual = nil then
         GdiObject^.Visual := gdk_visual_get_system;
       GdiObject^.SystemVisual := True;
     end
@@ -1936,7 +1936,7 @@ begin
   {$IFDEF DebugGDKTraps}
   EndGDKErrorTrap;
   {$ENDIF}
-  
+
   Result := HBITMAP(GdiObject);
 end;
 
@@ -2634,7 +2634,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
-  
+
   procedure DrawEdges(var R: TRect; GC: pgdkGC; Drawable:PGdkDrawable;
     const TopLeftColor, BottomRightColor: TGDKColor);
   begin
@@ -2658,7 +2658,7 @@ function TGtkWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
       dec(R.Right);
     end;
   end;
-  
+
 Var
   InnerTL, OuterTL,
   InnerBR, OuterBR: TGDKColor;
@@ -3024,7 +3024,7 @@ end;
 function TGtkWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Assert(False, Format('Trace:  [TGtkWidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
-  
+
   if hWnd <> 0 then
     gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
   Result:=true;
@@ -3032,8 +3032,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: EndPaint
-  Params:  
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
@@ -3073,7 +3073,7 @@ begin
       // draw
       gdk_window_copy_area(Widget^.Window, DevContext.GC, 0,0,
         DCDrawable, 0, 0, Width, Height);
-        
+
       {LCLObject:=GetParentLCLObject(Widget);
       if (LCLObject is TPanel)
       and (csDesigning in TPanel(LCLObject).ComponentState) then begin
@@ -3083,7 +3083,7 @@ begin
           ' Origin=',x,',',y,
           ' ',Widget^.allocation.x,',',Widget^.allocation.y);
       end;}
-        
+
       // restore caret
       if CaretWasVisible then
         GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
@@ -3516,7 +3516,7 @@ begin
       //DebugLn('TGtkWidgetSet.FillRect Color=',DbgS(CurrentBrush^.GDIBrushColor.ColorRef));
 
       SelectGDKBrushProps(DC);
-      
+
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
       and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
@@ -3530,7 +3530,7 @@ begin
                            Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                            Width, Height);
       end;
-      
+
       // Restore current brush
       if BrushChanged then begin
         SelectedColors:=dcscCustom;
@@ -3714,8 +3714,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetDIBits
-  Params:  
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
@@ -3739,8 +3739,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetBitmapBits
-  Params:  
-  Returns: 
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
@@ -4412,7 +4412,7 @@ end;
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
     WindowHandle: HWND; var OriginDiff: TPoint): boolean;
-    
+
   Returns the origin of PaintDC relative to the window handle.
   Example:
     A PaintDC of a TButton at 20,10 with a DC Offset of 0,0 on a form and the
@@ -7060,7 +7060,7 @@ begin
         ReleaseDC(0,HDC(pSavedDC));
         aDC.SavedContext:=nil;
       end;
-      
+
       // Release all graphic objects
       DeleteObject(HGDIObj(aDC.CurrentBrush));
       DeleteObject(HGDIObj(aDC.CurrentPen));
@@ -7481,7 +7481,7 @@ begin
             ClipRegion:=0;
         end;
       end;
-      
+
     else
       RaiseInvalidGDIType;
     end;
@@ -7520,7 +7520,7 @@ function TGtkWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WPara
   lParam: LParam): LResult;
 var
   OldMsg: Cardinal;
-  
+
   procedure PreparePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
   var
     GtkPaintData: TLMGtkPaintData;
@@ -7597,12 +7597,12 @@ var
       GtkPaintData.Free;
     end;
   end;
-  
+
   procedure DisposePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
   begin
     if OldMsg=LM_GtkPAINT then begin
       FinalizePaintMessage(@AMessage);
-      
+
       //if (csDesigning in TComponent(TargetObject).ComponentState)
       //and (TargetObject is TWinControl) then
       //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
@@ -7618,7 +7618,7 @@ var
       //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end;
   end;
-  
+
 var
   AMessage: TLMessage;
   Target: TObject;
@@ -7639,7 +7639,7 @@ begin
 
     // deliver it
     Result := DeliverMessage(Target, AMessage);
-    
+
     if (Msg=LM_PAINT) or (Msg=LM_INTERNALPAINT) or (Msg=LM_GtkPaint) then begin
       DisposePaintMessage(Target,AMessage);
     end;
@@ -7783,7 +7783,7 @@ begin
 
   // return old capture handle
   Result := GetCapture;
-  
+
   // capture
   CaptureMouseForWidget(Widget, mctLCL);
 end;
@@ -7915,12 +7915,12 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
     // check if widget has a WinWidgetInfo record
     WinWidgetInfo := GetWidgetInfo(AWidget, false);
     if WinWidgetInfo = nil then Exit;
-    
+
     ImplWidget:= WinWidgetInfo^.CoreWidget;
     if ImplWidget = nil then Exit;
     // set default to the implementation widget
     Result := ImplWidget;
-    
+
     // handle has an ImplementationWidget
     if GtkWidgetIsA(ImplWidget, gtk_list_get_type)
     then begin
@@ -7948,7 +7948,7 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
         {$EndIf}
         Exit;
       end;
-      
+
       // If not in browse mode, set focus to the first child
       // in browsemode, the focused item cannot be selected by mouse
 //      if selection_mode(PGtkList(ImplWidget)^) = GTK_SELECTION_BROWSE
@@ -8008,7 +8008,7 @@ begin
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TGtkWidgetSet.SetFocus: Widget is not visible');
   {$EndIf}
-  
+
   if Result=hWnd then exit;
 
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
@@ -8037,9 +8037,9 @@ begin
         exit;
       end;
     end;
-    
+
     NewFocusWidget := FindFocusWidget(Widget);
-    
+
     {$IfDef VerboseFocus}
     write('  G NewFocusWidget=',DbgS(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
     write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));
@@ -8159,28 +8159,44 @@ function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
     end;
     SetRangeUpdatePolicy(Range);
   end;
-  
+
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
   Adjustment: PGtkAdjustment;
+  Layout: PgtkLayout;
   Scroll: PGTKWidget;
-  NewPolicy: Integer;
-  i: Integer;
+  IsScrollWindow: Boolean;
 begin
   Result := 0;
   if (Handle = 0) then exit;
 
   //DebugLn('TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
 
-  Adjustment := nil;
-  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
-  If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+  Scroll := gtk_object_get_data(PGTKObject(Handle), odnScrollArea);
+  if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
+  then begin
+    IsScrollWindow := True;
+  end
+  else begin
     Scroll := PGTKWidget(Handle);
+    IsScrollWindow := GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type);
+  end;
+
+  if IsScrollWindow
+  then begin
+    Layout := GetFixedWidget(PGTKObject(Handle));
+    if not GtkWidgetIsA(PGtkWidget(Layout), gtk_layout_get_type)
+    then Layout := nil;
+  end
+  else begin
+    Layout := nil;
+  end;
+  
 
   // scrollbar update policy
   if (Scrollinfo.fmask and SIF_UPDATEPOLICY <> 0) then begin
-    if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+    if IsScrollWindow then
       SetScrolledWindowUpdatePolicy(PGTKScrolledWindow(Scroll))
     else if GtkWidgetIsA(PgtkWidget(Scroll), gtk_clist_get_type) then
       SetScrolledWindowUpdatePolicy(PGTKScrolledWindow(@PgtkCList(Scroll)^.container))
@@ -8196,50 +8212,66 @@ begin
   Adjustment:=nil;
   case SBStyle of
     SB_HORZ:
-      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
-        Adjustment := gtk_scrolled_window_get_hadjustment(
-                         PGTKScrolledWindow(Scroll))
+      if IsScrollWindow
+      then begin
+        Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Scroll));
+        if Layout <> nil
+        then gtk_layout_set_size(Layout, ScrollInfo.nMax - ScrollInfo.nMin, Layout^.height);
+      end
+      // obsolete stuff
+      else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type)
+      then begin
+        // this one shouldn't be possible, scrolbar messages are sent to the CTL
+        DebugLN('!!! direct SB_HORZ call to scrollbar');
+        Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
+      end
+      else
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type)
+      then begin
+        //clist
+        DebugLn('[SetScrollInfo] Obsolete use of CList ???');
+        Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
+      end;
+
+    SB_VERT:
+      If IsScrollWindow
+      then begin
+        Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Scroll));
+        if Layout <> nil
+        then gtk_layout_set_size(Layout, Layout^.Width, ScrollInfo.nMax - ScrollInfo.nMin);
+      end
+      // obsolete stuff
+      else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type)
+      then begin
+        // this one shouldn't be possible, scrolbar messages are sent to the CTL
+        DebugLN('!!! direct SB_VERT call to scrollbar');
+        Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment;
+      end
+      else if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type)
+      then begin
+        //clist
+        DebugLn('[SetScrollInfo] Obsolete use of CList ???');
+        Adjustment := gtk_clist_get_vadjustment(PgtkCList(Scroll));
+      end;
+
+    SB_CTL:
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type) then
+        Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       else
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type) then
         Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
-      else  //clist
-      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type) then
-        Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
-
-    SB_VERT:
-      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
-        Adjustment := gtk_scrolled_window_get_vadjustment(
-                         PGTKScrolledWindow(Scroll))
       else
-      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type) then
-        Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
-      else  //clist
-      if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type) then
-        Adjustment := gtk_clist_get_vadjustment(PgtkCList(Scroll));
-
-    SB_CTL:
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
         Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
-
+    SB_BOTH:
+       DebugLn('[SetScrollInfo] Got SB_BOTH ???');
   end;
 
   if Adjustment = nil then exit;
 
   with ScrollInfo, Adjustment^ do begin
-    //DebugLn('SetScrollInfo Value=',Value);
-    // workaround for strange floating point bug
-    for i:=0 to 2 do begin
-      try
-        Result := RoundToInt(Value);
-        break;
-      except
-        on e: Exception do begin
-          DebugLn('TGtkWidgetSet.SetScrollInfo Workaround for ',E.Message,' try: ',dbgs(i));
-          Result:=0;
-        end;
-      end;
-    end;
-    //DebugLn('SetScrollInfo Result=',Result);
+    Result := Round(Value);
+
     if (fMask and SIF_POS) <> 0
     then Value := nPos;
     if (fMask and SIF_RANGE) <> 0
@@ -8263,37 +8295,33 @@ begin
     ' Handle=',DbgS(Handle));}
 
     // do we have to set this always ?
+    // ??? what is this for code ????
+    // why not change adjustment if we don't do a redraw ???
     if bRedraw then
     begin
-      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
-      begin
-        if SBStyle in [SB_BOTH, SB_HORZ] then begin
-          NewPolicy:=POLICY[bRedraw];
-          gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[NewPolicy,nil]);
-        end;
-        if SBStyle in [SB_BOTH, SB_VERT] then begin
-          NewPolicy:=POLICY[bRedraw];
-          gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[NewPolicy,nil]);
+      if IsScrollWindow
+      then begin
+        case SBStyle of
+          SB_HORZ: gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[POLICY[bRedraw],nil]);
+          SB_VERT: gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[bRedraw],nil]);
         end;
       end
-      else
-      begin
+      else begin
         if (SBSTYLE = SB_CTL)
         and GtkWidgetIsA(PGtkWidget(Scroll),gtk_widget_get_type) then
           gtk_widget_show(PGTKWidget(Scroll))
         else
           gtk_widget_hide(PGTKWidget(Scroll))
       end;
-      {DebugLn('');
-      DebugLn('TGtkWidgetSet.SetScrollInfo: ',
-      ' lower=',RoundToInt(lower),'/',nMin,
-      ' upper=',RoundToInt(upper),'/',nMax,
-      ' value=',RoundToInt(value),'/',nPos,
-      ' step_increment=',RoundToInt(step_increment),'/',1,
-      ' page_increment=',RoundToInt(page_increment),'/',nPage,
-      ' page_size=',RoundToInt(page_size),'/',nPage,
-      '');}
 
+(*
+      DebugLn('TGtkWidgetSet.SetScrollInfo:' +
+       ' lower=%d/%d upper=%d/%d value=%d/%d' +
+       ' step_increment=%d/1 page_increment=%d/%d page_size=%d/%d', [
+       Round(lower),nMin, Round(upper),nMax, Round(value),nPos,
+       Round(step_increment), Round(page_increment),nPage, Round(page_size),nPage]
+      );
+*)
       gtk_adjustment_changed(Adjustment);
     end;
   end;
@@ -8458,7 +8486,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
-  
+
   procedure SetZOrderOnFixedWidget(Widget, FixedWidget: PGtkWidget);
   var
     OldListItem: PGList;
@@ -8522,7 +8550,7 @@ function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
     end;
     {$ENDIF}
   end;
-  
+
   procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
   begin
     //DebugLn('TGtkWidgetSet.SetWindowPos.SetZOrderOnLayoutWidget Not implemented: ZOrdering .. on ',GetWidgetDebugReport(LayoutWidget));
@@ -8550,7 +8578,7 @@ begin
   end else if (SWP_NOZORDER and uFlags)=0 then begin
     FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
-    
+
     //DebugLn('TGtkWidgetSet.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
     if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
       // parent's client area is a gtk_fixed widget
