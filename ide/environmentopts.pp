@@ -1146,7 +1146,9 @@ begin
     LoadPascalFileExt(Path+'');
 
     //lazdoc
-    FLazDocPathList.Text := XMLConfig.GetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
+    if FLazDocPathList<>nil then
+      FLazDocPathList.Text :=
+                  XMLConfig.GetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
 
     if FileVersion>=103 then begin
       fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
@@ -1359,7 +1361,8 @@ begin
       AmbiguousFileActionNames[afaAsk]);
 
     //lazdoc
-    XMLConfig.SetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
+    if FLazDocPathList<>nil then
+      XMLConfig.SetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
