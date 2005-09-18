@@ -227,6 +227,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+          var PreferredWidth, PreferredHeight: integer); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
@@ -1009,6 +1011,31 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl; 
+  var PreferredWidth, PreferredHeight: integer);
+var
+  textSize: Windows.SIZE;
+  winHandle: HWND;
+  canvasHandle: HDC;
+  oldFontHandle: HFONT;
+  text: string;
+begin
+  winHandle := AWinControl.Handle;
+  canvasHandle := GetDC(winHandle);
+  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Handle);
+  text := AWinControl.Caption;
+  if GetTextExtentPoint32(canvasHandle, PChar(text), Length(text), textSize) then
+  begin
+    // ~5 pixels spacing between checkbox and text, and 2 pixels margin for rounding error
+    PreferredWidth := GetSystemMetrics(SM_CXMENUCHECK) - GetSystemMetrics(SM_CXBORDER) + textSize.cx + 7;
+    PreferredHeight := GetSystemMetrics(SM_CYMENUCHECK) - GetSystemMetrics(SM_CYBORDER);
+    if textSize.cy > PreferredHeight then
+      PreferredHeight := textSize.cy;
+  end;
+  SelectObject(canvasHandle, oldFontHandle);
+  ReleaseDC(winHandle, canvasHandle);
 end;
 
 function  TWin32WSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
