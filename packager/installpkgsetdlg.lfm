@@ -5,17 +5,18 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
   OnResize = InstallPkgSetDialogResize
-  PixelsPerInch = 90
-  HorzScrollBar.Page = 530
-  VertScrollBar.Page = 372
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 528
+  VertScrollBar.Page = 370
   Left = 319
   Height = 371
   Top = 178
   Width = 529
   object InstallPkgGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 286
+    ClientHeight = 285
     ClientWidth = 236
     ParentColor = True
     TabOrder = 0
@@ -26,49 +27,53 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object InstallListBox: TListBox
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       ClickOnSelChange = False
       MultiSelect = True
       OnSelectionChange = InstallListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
-      Height = 185
+      Height = 184
       Width = 236
     end
     object UninstallButton: TButton
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       Caption = 'UninstallButton'
       OnClick = UninstallButtonClick
       TabOrder = 1
       Left = 6
       Height = 25
-      Top = 193
+      Top = 192
       Width = 224
     end
     object ImportButton: TButton
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       Caption = 'ImportButton'
       OnClick = ImportButtonClick
       TabOrder = 2
       Left = 6
       Height = 25
-      Top = 225
+      Top = 224
       Width = 224
     end
     object ExportButton: TButton
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       Caption = 'ExportButton'
       OnClick = ExportButtonClick
       TabOrder = 3
       Left = 6
       Height = 25
-      Top = 257
+      Top = 256
       Width = 224
     end
   end
   object AvailablePkgGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 286
+    ClientHeight = 285
     ClientWidth = 236
     ParentColor = True
     TabOrder = 1
@@ -79,28 +84,31 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object AvailableListBox: TListBox
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       ClickOnSelChange = False
       MultiSelect = True
       OnSelectionChange = AvailableListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
-      Height = 250
+      Height = 249
       Width = 236
     end
     object AddToInstallButton: TButton
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       Caption = 'AddToInstallButton'
       OnClick = AddToInstallButtonClick
       TabOrder = 1
       Left = 6
       Height = 25
-      Top = 257
+      Top = 256
       Width = 224
     end
   end
   object CancelButton: TButton
     Anchors = [akLeft, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
+    Cancel = True
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
@@ -112,6 +120,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   object SaveAndRebuildButton: TButton
     Anchors = [akLeft, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     Caption = 'SaveAndRebuildButton'
     OnClick = InstallButtonClick
     TabOrder = 3
@@ -123,6 +132,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   object SaveAndExitButton: TButton
     Anchors = [akLeft, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     Caption = 'SaveAndExitButton'
     OnClick = SaveAndExitButtonClick
     TabOrder = 4
