@@ -725,7 +725,9 @@ var
   dx: Integer;
   dy: Integer;
 begin
+  {$IFDEF VerboseAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
+  {$ENDIF}
   If not AutoSizeCanStart then exit;
   if AutoSizeDelayed then begin
     Include(FControlFlags,cfAutoSizeNeeded);
