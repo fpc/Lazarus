@@ -2836,7 +2836,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
-msgstr ""
+msgstr "Pienennä Lazaruksen käyttöliittymä ohjelmaa suorittaessa "
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select only a string expression and try again."
@@ -4428,7 +4428,7 @@ msgstr "Avaa"
 
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
-msgstr ""
+msgstr "Avaa %s"
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -5908,7 +5908,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr ""
+msgstr "Näytä rivinumerot"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
