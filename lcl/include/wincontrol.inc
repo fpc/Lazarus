@@ -284,11 +284,7 @@ var
 
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-<<<<<<< .mine
-      //if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
-=======
       if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
->>>>>>> .r7741
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
@@ -407,19 +403,11 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
-<<<<<<< .mine
-      if CompareText(Control.ClassName,'TPanel')=0 then
-        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]='+dbgs(akRight in AnchorAlign[AAlign]),
-                ' akLeft in Control.Anchors='+dbgs(akLeft in Control.Anchors),
-                ' ARect=',dbgs(ARect),
-                ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewRight)+','+dbgs(NewBottom));
-=======
       if CompareText(Control.ClassName,CheckPostionClassName)=0 then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
                 ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
                 //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
                 ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
->>>>>>> .r7741
       {$ENDIF}
       if akLeft in AnchorAlign[AAlign] then begin
         if (akRight in CurAnchors) then begin
@@ -502,18 +490,10 @@ var
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-<<<<<<< .mine
-      //if CompareText(Control.ClassName,'TScrollBar')=0 then
-=======
       if CompareText(Control.ClassName,CheckPostionClassName)=0 then
->>>>>>> .r7741
       with Control do
-<<<<<<< .mine
         DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',DbgSName(Control),
                 ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewRight)+','+dbgs(NewBottom));
-=======
-        DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),' Align=',AlignNames[AAlign]);
->>>>>>> .r7741
       {$ENDIF}
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
