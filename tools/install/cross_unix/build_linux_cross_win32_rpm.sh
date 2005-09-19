@@ -133,7 +133,10 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
 
     cd ${BinUtilsDir}
     for binutility in $(ls -B ${BinUtilsPrefix}*); do
-      NewName=$(echo $binutility | sed -e "s#$BinUtilsPrefix#fpc-${TargetCPU}-${TargetOS}-#")
+      NewName=$(echo $binutility | sed -e "s#^$BinUtilsPrefix##")
+      if [ ! $NewName = "windres" ]; then
+        NewName="fpc-${TargetCPU}-${TargetOS}-$NewName"
+      fi
       cp ${BinUtilsDir}${binutility} ${BinDir}${NewName}
     done
     cd -
