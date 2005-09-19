@@ -217,6 +217,8 @@ type
   private
   protected
   public
+    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+          var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TWin32WSCustomCheckBox }
@@ -989,6 +991,18 @@ begin
   RecreateWnd(ACustomStaticText);
 end;
 
+{ TWin32WSButtonControl }
+
+procedure TWin32WSButtonControl.GetPreferredSize(const AWinControl: TWinControl; 
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    Inc(PreferredWidth, 20);
+    Inc(PreferredHeight, 12);
+  end;
+end;
+
 { TWin32WSCustomCheckBox }
 
 function TWin32WSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
@@ -1016,26 +1030,16 @@ end;
 procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl; 
   var PreferredWidth, PreferredHeight: integer);
 var
-  textSize: Windows.SIZE;
-  winHandle: HWND;
-  canvasHandle: HDC;
-  oldFontHandle: HFONT;
-  text: string;
+  iconHeight: integer;
 begin
-  winHandle := AWinControl.Handle;
-  canvasHandle := GetDC(winHandle);
-  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Handle);
-  text := AWinControl.Caption;
-  if GetTextExtentPoint32(canvasHandle, PChar(text), Length(text), textSize) then
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     // ~5 pixels spacing between checkbox and text, and 2 pixels margin for rounding error
-    PreferredWidth := GetSystemMetrics(SM_CXMENUCHECK) - GetSystemMetrics(SM_CXBORDER) + textSize.cx + 7;
-    PreferredHeight := GetSystemMetrics(SM_CYMENUCHECK) - GetSystemMetrics(SM_CYBORDER);
-    if textSize.cy > PreferredHeight then
-      PreferredHeight := textSize.cy;
+    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK) - GetSystemMetrics(SM_CXBORDER) + 7);
+    iconHeight := GetSystemMetrics(SM_CYMENUCHECK) - GetSystemMetrics(SM_CYBORDER);
+    if iconHeight > PreferredHeight then
+      PreferredHeight := iconHeight;
   end;
-  SelectObject(canvasHandle, oldFontHandle);
-  ReleaseDC(winHandle, canvasHandle);
 end;
 
 function  TWin32WSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
@@ -1133,7 +1137,7 @@ initialization
   RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);
-//  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
+  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);

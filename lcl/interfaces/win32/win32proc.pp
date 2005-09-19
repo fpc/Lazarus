@@ -96,6 +96,7 @@ procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1071,6 +1072,26 @@ begin
     DrawMenuBar(HWND(ChangedMenus[0]));
     ChangedMenus.Delete(0);
   end;
+end;
+
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+var
+  textSize: Windows.SIZE;
+  winHandle: HWND;
+  canvasHandle: HDC;
+  oldFontHandle: HFONT;
+begin
+  winHandle := AWinControl.Handle;
+  canvasHandle := GetDC(winHandle);
+  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Handle);
+  Result := Windows.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
+  if Result then
+  begin
+    Width := textSize.cx;
+    Height := textSize.cy;
+  end;
+  SelectObject(canvasHandle, oldFontHandle);
+  ReleaseDC(winHandle, canvasHandle);
 end;
 
 

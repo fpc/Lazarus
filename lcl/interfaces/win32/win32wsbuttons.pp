@@ -56,6 +56,8 @@ type
   TWin32WSBitBtn = class(TWSBitBtn)
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+          var PreferredWidth, PreferredHeight: integer); override;
     class procedure SetBounds(const AWinControl: TWinControl;
           const ALeft, ATop, AWidth, AHeight: integer); override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
@@ -78,7 +80,7 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
 implementation
 
 uses
-  Win32Int, InterfaceBase;
+  Win32Int, InterfaceBase, Win32Proc;
 
 { TWin32WSButton }
 
@@ -431,6 +433,40 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+procedure TWin32WSBitBtn.GetPreferredSize(const AWinControl: TWinControl; 
+  var PreferredWidth, PreferredHeight: integer);
+var
+  BitmapInfo: BITMAP; // Buffer for bitmap
+  BitBtn: TBitBtn absolute AWinControl;
+  Glyph: TBitmap;
+  spacing: integer;
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    Glyph := BitBtn.Glyph;
+    if not Glyph.Empty then
+    begin
+      Windows.GetObject(Glyph.Handle, sizeof(BitmapInfo), @BitmapInfo);
+      if BitBtn.Spacing = -1 then
+        spacing := 8
+      else
+        spacing := BitBtn.Spacing;
+      if BitBtn.Layout in [blGlyphLeft, blGlyphRight] then
+      begin
+        Inc(PreferredWidth, spacing + BitmapInfo.bmWidth);
+        if BitmapInfo.bmHeight > PreferredHeight then
+          PreferredHeight := BitmapInfo.bmHeight;
+      end else begin
+        Inc(PreferredHeight, spacing + BitmapInfo.bmHeight);
+        if BitmapInfo.bmWidth > PreferredWidth then
+          PreferredWidth := BitmapInfo.bmWidth;
+      end;
+    end;
+    Inc(PreferredWidth, 20);
+    Inc(PreferredHeight, 12);
+  end;
 end;
 
 procedure TWin32WSBitBtn.SetBounds(const AWinControl: TWinControl;
