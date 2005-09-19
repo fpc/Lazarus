@@ -320,6 +320,8 @@ type
 
   { TPopupMenu }
 
+  TPopupAlignment = (paLeft, paRight, paCenter);
+
   TPopupMenu = class(TMenu)
   private
     FAutoPopup : Boolean;
@@ -353,6 +355,20 @@ var
   ActivePopupMenu: TPopupMenu;
   OnMenuPopupHandler: TNotifyEvent;
 
+function NewMenu(Owner: TComponent; const AName: string;
+                 const Items: array of TMenuItem): TMainMenu;
+function NewPopupMenu(Owner: TComponent; const AName: string;
+                      Alignment: TPopupAlignment; AutoPopup: Boolean;
+                      const Items: array of TMenuItem): TPopupMenu;
+function NewSubMenu(const ACaption: string; hCtx: THelpContext;
+                    const AName: string; const Items: array of TMenuItem;
+                    TheEnabled: Boolean = True): TMenuItem;
+function NewItem(const ACaption: string; AShortCut: TShortCut;
+                 AChecked, TheEnabled: Boolean; TheOnClick: TNotifyEvent;
+                 hCtx: THelpContext; const AName: string): TMenuItem;
+function NewLine: TMenuItem;
+
+
 procedure Register;
 
 implementation
@@ -361,7 +377,7 @@ uses
   WSMenus,
   Forms {KeyDataToShiftState};
 
-{ Menu command managment }
+{ Menu command management }
 
 var
   CommandPool: TBits;
@@ -372,6 +388,86 @@ begin
     CommandPool:=TBits.Create(32);
   Result := CommandPool.OpenBit;
   CommandPool[Result] := True;
+end;
+
+{ Easy Menu building }
+
+procedure AddMenuItems(AMenu: TMenu; const Items: array of TMenuItem);
+
+  procedure SetOwner(Item: TMenuItem);
+  var
+    i: Integer;
+  begin
+    if Item.Owner=nil then
+      AMenu.Owner.InsertComponent(Item);
+    for i:=0 to Item.Count-1 do
+      SetOwner(Item[i]);
+  end;
+
+var
+  i: Integer;
+begin
+  for i:=Low(Items) to High(Items) do begin
+    SetOwner(Items[i]);
+    AMenu.FItems.Add(Items[i]);
+  end;
+end;
+
+function NewMenu(Owner: TComponent; const AName: string;
+  const Items: array of TMenuItem): TMainMenu;
+begin
+  Result:=TMainMenu.Create(Owner);
+  Result.Name:=AName;
+  AddMenuItems(Result,Items);
+end;
+
+function NewPopupMenu(Owner: TComponent; const AName: string;
+  Alignment: TPopupAlignment; AutoPopup: Boolean;
+  const Items: array of TMenuItem): TPopupMenu;
+begin
+  Result:=TPopupMenu.Create(Owner);
+  Result.Name:=AName;
+  Result.AutoPopup:=AutoPopup;
+  if Alignment=paLeft then ;
+  // TODO Result.Alignment:=Alignment;
+  AddMenuItems(Result,Items);
+end;
+
+function NewSubMenu(const ACaption: string; hCtx: THelpContext;
+  const AName: string; const Items: array of TMenuItem; TheEnabled: Boolean
+  ): TMenuItem;
+var
+  i: Integer;
+begin
+  Result:=TMenuItem.Create(nil);
+  for i:=Low(Items) to High(Items) do
+    Result.Add(Items[i]);
+  Result.Caption:=ACaption;
+  Result.HelpContext:=hCtx;
+  Result.Name:=AName;
+  Result.Enabled:=TheEnabled;
+end;
+
+function NewItem(const ACaption: string; AShortCut: TShortCut; AChecked,
+  TheEnabled: Boolean; TheOnClick: TNotifyEvent; hCtx: THelpContext;
+  const AName: string): TMenuItem;
+begin
+  Result:=TMenuItem.Create(nil);
+  with Result do begin
+    Caption:=ACaption;
+    ShortCut:=AShortCut;
+    OnClick:=TheOnClick;
+    HelpContext:=hCtx;
+    Checked:=AChecked;
+    Enabled:=TheEnabled;
+    Name:=AName;
+  end;
+end;
+
+function NewLine: TMenuItem;
+begin
+  Result := TMenuItem.Create(nil);
+  Result.Caption := '-';
 end;
 
 procedure Register;
