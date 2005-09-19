@@ -431,8 +431,8 @@ begin
   {$IFDEF CHECK_POSITION}
   if csDesigning in ComponentState then
     DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
-      ' Old=',Left,',',Top,',',Width,',',Height,
-      ' New=',aLeft,',',aTop,',',aWidth,',',aHeight,
+      ' Old=',DbgS(Left,Top,Width,Height),
+      ' New=',DbgS(aLeft,aTop,aWidth,aHeight),
       '');
   {$ENDIF}
   FLeft:= ALeft;
@@ -2568,7 +2568,7 @@ end;
 procedure TControl.SetLeft(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',DbgS(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin
     inc(FReadBounds.Right,Value-FReadBounds.Left);
@@ -2583,7 +2583,7 @@ end;
 procedure TControl.SetTop(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Dbgs(Value));
   {$ENDIF}
   if csLoading in ComponentState then begin
     inc(FReadBounds.Bottom,Value-FReadBounds.Top);
@@ -3572,7 +3572,7 @@ end;
 procedure TControl.WMSize(Var Message : TLMSize);
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+  DebugLn('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',DbgS(Message.Width),' Message.Height=',DbgS(Message.Height),' Width=',DbgS(Width),' Height=',DbgS(Height));
   {$ENDIF}
   //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
@@ -3591,7 +3591,7 @@ end;
 procedure TControl.WMMove(var Message: TLMMove);
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
+  DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',DbgS(Message.XPos),' Message.YPos=',DbgS(Message.YPos),' OldLeft=',DbgS(Left),' OldTop=',DbgS(Top));
   {$ENDIF}
   { Just sync the coordinates }
   SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height,Parent<>nil);

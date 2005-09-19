@@ -26,6 +26,9 @@
 {$ENDIF}
 
 { $DEFINE CHECK_POSITION}
+{$IFDEF CHECK_POSITION}
+const CheckPostionClassName = 'TPanel';
+{$ENDIF}
 { $DEFINE VerboseMouseBugfix}
 
 {------------------------------------------------------------------------------
@@ -202,7 +205,7 @@ var
 
   begin
     {$IFDEF CHECK_POSITION}
-    if CompareText(Control.ClassName,'TScrollBar')=0 then
+    if CompareText(Control.ClassName,CheckPostionClassName)=0 then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -280,7 +283,7 @@ var
 
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' ',Name,':',ClassName,
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
@@ -359,14 +362,14 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if CompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
-          ' Control=',Name,':',ClassName,
-          ' Old=',Left,',',Top,',',Width,',',Height,
-          ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
+          ' Control=',Dbgs(Control),
+          ' Old=',DbgS(Left,Top,Width,Height),
+          ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
           '');
       {$ENDIF}
     end;
@@ -399,11 +402,11 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
-      if CompareText(Control.ClassName,'TScrollBar')=0 then
-        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
-                ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
-                ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
-                ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);
+      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
+                ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
+                //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
+                ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
       {$ENDIF}
       if akLeft in AnchorAlign[AAlign] then begin
         if (akRight in CurAnchors) then begin
@@ -468,15 +471,15 @@ var
       
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if CompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
           ' Control=',Name,':',ClassName,
-          ' Old=',Left,',',Top,',',Width,',',Height,
-          ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
-          ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
+          ' Old=',DbgS(Left,Top,Width,Height),
+          ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
+          //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
           '');
       {$ENDIF}
     end;
@@ -486,9 +489,9 @@ var
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if CompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
       with Control do
-        DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
+        DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),' Align=',AlignNames[AAlign]);
       {$ENDIF}
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
@@ -504,9 +507,9 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
       with Control do
-        DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
+        DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',DbgS(Left,Top,Width,Height));
       {$ENDIF}
     end;
 
@@ -553,13 +556,13 @@ var
     end;
 
     {$IFDEF CHECK_POSITION}
-    if CompareText(Control.ClassName,'TScrollBar')=0 then
+    if CompareText(Control.ClassName,CheckPostionClassName)=0 then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
-        ' ',Left,',',Top,',',Width,',',Height,
+        ' ',DbgS(Left,Top,Width,Height),
         ' Align=',AlignNames[AAlign],
-        ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
+        //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
         '');
     {$ENDIF}
   end;
@@ -892,8 +895,8 @@ begin
     // client rect changed since last AlignControl
     {$IFDEF VerboseClientRectBugFix}
     DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
-      ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
-      ' New=',r.RIght,'x',r.Bottom);
+      ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
+      ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
     {$ENDIF}
     FAdjustClientRectRealized:=r;
     ReAlign;
@@ -975,15 +978,15 @@ begin
     GetClientRect;
   end;
   {$IFDEF VerboseClientRectBugFix}
-  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight,
-  ' OldHeight=',FHeight,' NewHeight=',AHeight);
+  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',DbgS(FClientWidth),',',DbgS(FClientHeight),
+  ' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
   {$ENDIF}
   inc(FClientWidth,AWidth-FWidth);
   if (FClientWidth<0) then FClientWidth:=0;
   inc(FClientHeight,AHeight-FHeight);
   if (FClientHeight<0) then FClientHeight:=0;
   {$IFDEF VerboseClientRectBugFix}
-  DebugLn(' NewClient=',FClientWidth,',',FClientHeight);
+  DebugLn(' NewClient=',DbgS(FClientWidth),',',DbgS(FClientHeight));
   {$ENDIF}
 
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
@@ -1362,8 +1365,8 @@ begin
       Width:= FWidth;
       Height:= FHeight;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TScrollBar')=0 then
-      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',DbgS(Width),' Height=',DbgS(Height));
       {$ENDIF}
     end;
     WindowProc(TLMessage(SizeMsg));
@@ -1376,8 +1379,8 @@ begin
       XPos:= FLeft;
       YPos:= FTop;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,'TScrollBar')=0 then
-      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',Dbgs(XPos),' YPos=',Dbgs(YPos));
       {$ENDIF}
     end;
     WindowProc(TLMessage(MoveMsg));
@@ -4320,13 +4323,13 @@ var
 begin
   {$IFDEF CHECK_POSITION}
   //if csDesigning in ComponentState then
-  if AnsiCompareText(ClassName,'TScrollBar')=0 then
+  if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
   DebugLn('[TWinControl.SetBounds] START ',Name,':',ClassName,
-  ' Old=',Left,',',Top,',',Width,',',Height,
-  ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
-  ' Lock=',BoundsLockCount,
-  ' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
-  ',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
+  ' Old=',DbgS(Left,Top,Width,Height),
+  ' -> New=',DbgS(ALeft,ATop,AWidth,AHeight),
+  ' Lock=',DbgS(BoundsLockCount),
+  ' Realized=',DbgS(FBoundsRealized.Left,FBoundsRealized.Top,
+  FBoundsRealized.Right-FBoundsRealized.Left,FBoundsRealized.Bottom-FBoundsRealized.Top)
   );
   {$ENDIF}
   if BoundsLockCount<>0 then exit;
@@ -4341,10 +4344,10 @@ begin
     try
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(ClassName,'TScrollBar')=0 then
+      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
       DebugLn('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
-      ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
-      ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
+      ' OldBounds=',Dbgs(Left,Top,Left+Width,Top+Height),
+      ' -> New=',Dbgs(ALeft,ATop,ALeft+AWidth,ATop+AHeight));
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
       NewBounds:=Bounds(Left, Top, Width, Height);
@@ -4591,7 +4594,7 @@ begin
     // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
     //if csDesigning in ComponentState then
-    if AnsiCompareText(ClassName,'TScrollBar')=0 then
+    if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
     DebugLn('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
