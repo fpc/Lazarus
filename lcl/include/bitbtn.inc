@@ -76,6 +76,7 @@ end;
 Procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
 Begin
   FButtonGlyph.Glyph := AValue;
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
@@ -127,6 +128,7 @@ Begin
   FLayout := AValue;
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.SetMargin(const AValue: integer);
@@ -135,6 +137,7 @@ begin
   FMargin := AValue;
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.SetNumGlyphs(AValue: Integer);
@@ -147,7 +150,6 @@ begin
     FButtonGlyph.NumGlyphs :=  TNumGlyphs(AValue);
     Invalidate;
   end;
-
 end;
 
 Procedure TCustomBitBtn.SetSpacing(AValue: Integer);
@@ -156,6 +158,7 @@ Begin
   FSpacing := AValue;
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.RealizeKind;
@@ -208,6 +211,12 @@ begin
   TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);  
   TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);  
   TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);  
+end;
+
+procedure TCustomBitBtn.TextChanged;
+begin
+  inherited TextChanged;
+  AdjustSize;
 end;
 
 // included by buttons.pp

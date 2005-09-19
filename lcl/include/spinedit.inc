@@ -36,7 +36,7 @@ begin
   Result:=true; // fpc bug, default value is always 0
 end;
 
-procedure TCustomSpinEdit.CMTextChanged(var Message: TLMessage);
+procedure TCustomSpinEdit.TextChanged;
 begin
   if Value=fLastValueOnChange then exit;
   fLastValueOnChange:=Value;

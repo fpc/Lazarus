@@ -105,7 +105,7 @@ type
     procedure CursorInc(CursorPos: Integer; Incr: Integer);
     procedure CursorDec(CursorPos: Integer);
     procedure ArrowKeys(CharCode: Word; Shift: TShiftState);
-    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
+    procedure TextChanged; override;
   protected
     procedure ReformatText(const NewMask: string);
     procedure SetCursor(Pos: Integer);
@@ -1080,7 +1080,7 @@ begin
   end;
 end;
 
-procedure TCustomMaskEdit.CMTextChanged(var Message: TLMessage);
+procedure TCustomMaskEdit.TextChanged;
 var
   Temp: Integer;
 begin

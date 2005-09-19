@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-procedure TCustomLabel.CMTextChanged(var Message: TLMSetText);
+procedure TCustomLabel.TextChanged;
 begin
   Invalidate;
   AdjustSize;

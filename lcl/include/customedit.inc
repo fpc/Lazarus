@@ -348,7 +348,7 @@ end;
   Params:  Value to set FModified to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.CMTextChanged(var Message : TLMessage);
+Procedure TCustomEdit.TextChanged;
 var
   Temp : String;
 Begin

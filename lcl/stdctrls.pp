@@ -593,7 +593,7 @@ type
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
     procedure CreateWnd; override;
-    procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
+    procedure TextChanged; override;
     procedure Change; dynamic;
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
@@ -1132,7 +1132,7 @@ type
     procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
-    procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
+    procedure TextChanged; override;
     procedure Resize; override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;

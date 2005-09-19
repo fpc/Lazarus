@@ -198,6 +198,7 @@ type
     procedure Click; override;
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
+    procedure TextChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;

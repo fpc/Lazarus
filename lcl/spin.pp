@@ -66,7 +66,7 @@ type
     Procedure UpdateControl;
     function ValueIsStored: boolean;
   protected
-    procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
+    procedure TextChanged; override;
     procedure SetDecimals(Num: Integer);
     Function GetValue: Single;
     procedure SetValue(const Num: Single);
