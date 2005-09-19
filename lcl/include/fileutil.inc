@@ -1121,6 +1121,83 @@ begin
   end;
 end;
 
+function FindDiskFilename(const Filename: string): string;
+// Searches for the filename case on disk.
+// The file must exist.
+// For example:
+//   If Filename='file' and there is only a 'File' then 'File' will be returned.
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  FileInfo: TSearchRec;
+  CurDir: String;
+  CurFile: String;
+  AliasFile: String;
+  Ambiguous: Boolean;
+begin
+  Result:=Filename;
+  if not FileExists(Filename) then exit;
+  // check every directory and filename
+  StartPos:=1;
+  {$IFDEF Win32}
+  // uppercase Drive letter and skip it
+  if ((length(Result)>=2) and (Result[1] in ['A'..'Z','a'..'z'])
+  and (Result[2]=':')) then begin
+    StartPos:=3;
+    if Result[1] in ['a'..'z'] then
+      Result[1]:=upcase(Result[1]);
+  end;
+  {$ENDIF}
+  repeat
+    // skip PathDelim
+    while (StartPos<=length(Result)) and (Result[StartPos]=PathDelim) do
+      inc(StartPos);
+    // find end of filename part
+    EndPos:=StartPos;
+    while (EndPos<=length(Result)) and (Result[EndPos]<>PathDelim) do
+      inc(EndPos);
+    if EndPos>StartPos then begin
+      // search file
+      CurDir:=copy(Result,1,StartPos-1);
+      CurFile:=copy(Result,StartPos,EndPos-StartPos);
+      AliasFile:='';
+      Ambiguous:=false;
+      if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+      begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+          then
+            continue;
+          if CompareText(FileInfo.Name,CurFile)=0 then begin
+            //writeln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
+            if FileInfo.Name=CurFile then begin
+              // file found, has already the correct name
+              AliasFile:='';
+              break;
+            end else begin
+              // alias found, but has not the correct name
+              if AliasFile='' then begin
+                AliasFile:=FileInfo.Name;
+              end else begin
+                // there are more than one candidate
+                Ambiguous:=true;
+                break;
+              end;
+            end;
+          end;
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;
+      SysUtils.FindClose(FileInfo);
+      if (AliasFile<>'') and (not Ambiguous) then begin
+        // better filename found -> replace
+        Result:=CurDir+AliasFile+copy(Result,EndPos,length(Result));
+      end;
+    end;
+    StartPos:=EndPos+1;
+  until StartPos>length(Result);
+end;
+
 function GetAllFilesMask: string;
 begin
   {$IFDEF win32}

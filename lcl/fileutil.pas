@@ -82,11 +82,12 @@ type
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 
+function GetAllFilesMask: string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
-function GetAllFilesMask: string;
+function FindDiskFilename(const Filename: string): string;
 
 // file actions
 function ReadFileToString(const Filename: string): string;

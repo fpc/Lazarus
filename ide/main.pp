@@ -5317,6 +5317,7 @@ var
   OtherUnitIndex: Integer;
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
+  DiskFilename: String;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
@@ -5333,6 +5334,12 @@ begin
 
   // normalize filename
   AFilename:=TrimFilename(AFilename);
+  DiskFilename:=FindDiskFilename(AFilename);
+  if DiskFilename<>AFilename then begin
+    debugln('WARNING: TMainIDE.DoOpenEditorFile Opening "',DiskFilename,'" instead "',DiskFilename,'"');
+    AFilename:=DiskFilename;
+  end;
+  
   FilenameNoPath:=ExtractFilename(AFilename);
 
   // check to not open directories

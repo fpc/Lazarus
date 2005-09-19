@@ -665,12 +665,15 @@ end;
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
+  TheFilename: String;
 begin
   //DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
   Result:=true;
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(Filename, fmCreate);
+    // keep filename case on disk
+    TheFilename:=FindDiskFilename(Filename);
+    fs:=TFileStream.Create(TheFilename, fmCreate);
     try
       if fSrcLen>0 then
         fs.Write(FSource[1],length(FSource));
