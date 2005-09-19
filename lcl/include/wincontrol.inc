@@ -725,7 +725,7 @@ var
   dx: Integer;
   dy: Integer;
 begin
-  //debugln('TWinControl.DoAutoSize ',DbgSName(Self));
+  debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   If not AutoSizeCanStart then exit;
   if AutoSizeDelayed then begin
     Include(FControlFlags,cfAutoSizeNeeded);
@@ -2950,8 +2950,13 @@ begin
     Include(FWinControlFlags,wcfReAlignNeeded);
     exit;
   end;
-  //DebugLn('TWinControl.ReAlign ',Name,':',ClassName);
+  {$IFDEF VerboseAutoSize}
+  DebugLn('TWinControl.ReAlign A',Name,':',ClassName,' ', Dbgs(BoundsRect));
+  {$ENDIF}
   AlignControl(nil);
+  {$IFDEF VerboseAutoSize}
+  DebugLn('TWinControl.ReAlign B',Name,':',ClassName,' ', Dbgs(BoundsRect));
+  {$ENDIF}
   Exclude(FWinControlFlags,wcfReAlignNeeded);
 end;
 
