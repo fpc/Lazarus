@@ -9503,6 +9503,9 @@ begin
     RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
   end;
   if APersistent is TComponent then begin
+    // remember cursor position
+    SourceNotebook.AddJumpPointClicked(Self);
+
     // remove component definition from owner source
     OwnerClassName:=CurDesigner.LookupRoot.ClassName;
     CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
@@ -11672,11 +11675,15 @@ begin
   end;
 
   if ComponentClass<>nil then begin
-  // add needed package to required packages
+    // add needed package to required packages
     PkgBoss.AddProjectRegCompDependency(Project1,ComponentClass);
     if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
       [ctfSwitchToFormSource])
     then exit;
+    
+    // remember cursor position
+    SourceNotebook.AddJumpPointClicked(Self);
+    
     // add needed unit to source
     CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
                                           ComponentClass.GetUnitName,'');
