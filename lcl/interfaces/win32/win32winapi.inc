@@ -2128,7 +2128,7 @@ begin
   WP.length := SizeOf(WP);
   Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
   if (WP.showCmd=SW_MAXIMIZE) then begin
-  // if the form is maximized, you can't use the normal size
+    // if the form is maximized, you can't use the normal size
     Result := Boolean(Windows.GetWindowRect(Handle,@R));
     with R Do
     begin
@@ -2142,6 +2142,9 @@ begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
+  WindowInfo := GetWindowInfo(Handle);
+
+  //debugln('TWin32WidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
 
   // convert top level lcl window coordinaties to win32 coord
   Style := Windows.GetWindowLong(Handle, GWL_STYLE);
@@ -2165,7 +2168,6 @@ begin
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
 
-  WindowInfo := GetWindowInfo(Handle);
   if (WindowInfo^.WinControl is TCustomSpinEdit) then
     AdjustForBuddySize;
 end;
@@ -2987,7 +2989,7 @@ var
   Style, ExStyle: Integer;
   OldRect, OldClientRect: Windows.RECT;
 Begin
-//writeln('[TWin32WidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
+  //debugln('[TWin32WidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
   Style := Windows.GetWindowLong(HWnd, GWL_STYLE);
   ExStyle := Windows.GetWindowLong(HWnd, GWL_EXSTYLE);
   Windows.GetWindowRect(HWnd, @OldRect);

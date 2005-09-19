@@ -1899,6 +1899,7 @@ end;
 
 procedure TControl.AnchorSideChanged(TheAnchorSide: TAnchorSide);
 begin
+  //debugln('TControl.AnchorSideChanged ',DbgSName(Self));
   RequestAlign;
 end;
 
@@ -2462,9 +2463,11 @@ procedure TControl.RequestAlign;
 begin
   if (Parent = nil) or (csDestroying in ComponentState) then exit;
   if (csLoading in ComponentState) or (not Parent.HandleAllocated) then begin
+    //debugln('TControl.RequestAlign csLoading or not HandleAllocated ',DbgSName(Self));
     Include(FControlFlags,cfRequestAlignNeeded);
     exit;
   end;
+  //debugln('TControl.RequestAlign AlignControl ',DbgSName(Self));
   Parent.AlignControl(Self);
   Exclude(FControlFlags,cfRequestAlignNeeded);
 end;

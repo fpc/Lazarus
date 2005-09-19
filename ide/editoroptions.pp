@@ -4396,6 +4396,8 @@ begin
     AnchorToNeighbour(akLeft,10,TextItalicCheckBox);
     AutoSize:=true;
   end;
+  
+  ColorElementListBox.AnchorParallel(akBottom,0,TextAttributesGroupBox);
 
   ColorPreview:=TPreviewEditor.Create(Self);
   with ColorPreview do

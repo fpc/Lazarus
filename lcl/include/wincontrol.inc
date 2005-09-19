@@ -72,6 +72,7 @@ procedure TWinControl.AlignControls(AControl: TControl;
   var RemainingClientRect: TRect);
 var
   AlignList: TList;
+  BoundsMutated: boolean;
   RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
                                // e.g. Right=3 means borderspace of 3
 
@@ -283,9 +284,13 @@ var
 
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
+<<<<<<< .mine
+      //if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+=======
       if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
+>>>>>>> .r7741
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
-        ' ',Name,':',ClassName,
+        ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
         ' ParBaseClient='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
         ' ParClient='+dbgs(Control.Parent.ClientWidth)+','+dbgs(Control.Parent.ClientHeight),
@@ -402,11 +407,19 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
+<<<<<<< .mine
+      if CompareText(Control.ClassName,'TPanel')=0 then
+        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]='+dbgs(akRight in AnchorAlign[AAlign]),
+                ' akLeft in Control.Anchors='+dbgs(akLeft in Control.Anchors),
+                ' ARect=',dbgs(ARect),
+                ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewRight)+','+dbgs(NewBottom));
+=======
       if CompareText(Control.ClassName,CheckPostionClassName)=0 then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
                 ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
                 //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
                 ' New=',DbgS(NewLeft,NewTop,NewRight,NewBottom));
+>>>>>>> .r7741
       {$ENDIF}
       if akLeft in AnchorAlign[AAlign] then begin
         if (akRight in CurAnchors) then begin
@@ -489,12 +502,22 @@ var
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
+<<<<<<< .mine
+      //if CompareText(Control.ClassName,'TScrollBar')=0 then
+=======
       if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+>>>>>>> .r7741
       with Control do
+<<<<<<< .mine
+        DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',DbgSName(Control),
+                ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewRight)+','+dbgs(NewBottom));
+=======
         DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),' Align=',AlignNames[AAlign]);
+>>>>>>> .r7741
       {$ENDIF}
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
+      BoundsMutated:=true;
       Control.SetAlignedBounds(NewLeft, NewTop, NewWidth, NewHeight);
       // Sometimes SetBounds change the bounds. For example due to constraints.
       // update the new bounds
@@ -629,9 +652,12 @@ var
 var
   i: Integer;
   ChildControl: TControl;
+  OldRemainingClientRect: TRect;
+  OldRemainingBorderSpace: TRect;
 begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
+  //debugln('TWinControl.AlignControls ',DbgSName(Self));
 
   // unset all align needed flags
   Exclude(FWinControlFlags,wcfReAlignNeeded);
@@ -656,13 +682,28 @@ begin
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',RemainingClientRect.Left,',',RemainingClientRect.Top,',',RemainingClientRect.Right,',',RemainingClientRect.Bottom);
       AlignList := TList.Create;
       try
-        DoAlign(alTop);
-        DoAlign(alBottom);
-        DoAlign(alLeft);
-        DoAlign(alRight);
-        DoAlign(alClient);
-        DoAlign(alCustom);
-        DoAlign(alNone);
+        // Auto aligning/anchoring can be very interdependent.
+        // In worst case the n-2 depends on the n-1, the n-3 depends on n-2
+        // and so forth. This is allowed, so do up to n steps.
+        // Do not more, to avoid endless loops, if there are circle
+        // dependencies.
+        for i:=0 to ControlCount-1 do begin
+          // align and anchor child controls
+          BoundsMutated:=false;
+          OldRemainingClientRect:=RemainingClientRect;
+          OldRemainingBorderSpace:=RemainingBorderSpace;
+          DoAlign(alTop);
+          DoAlign(alBottom);
+          DoAlign(alLeft);
+          DoAlign(alRight);
+          DoAlign(alClient);
+          DoAlign(alCustom);
+          DoAlign(alNone);
+          if not BoundsMutated then break;
+          // update again
+          RemainingClientRect:=OldRemainingClientRect;
+          RemainingBorderSpace:=OldRemainingBorderSpace;
+        end;
       finally
         AlignList.Free;
       end;
@@ -1136,6 +1177,7 @@ begin
     // for example: if the Width in LCL differ from the Width of the Interface
     // object, then adjust the clientwidth accordingly
     LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
+    //debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
     Result.Right:=Width-(InterfaceWidth-Result.Right);
     Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     StoreClientRect(Result);
@@ -4576,8 +4618,9 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  //DebugLn('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-  //' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+  //if CompareText(ClassName,'TStringsPropEditorDlg')=0 then
+  //  DebugLn('TWinControl.DoSendBoundsToInterface A ',DbgSName(Self),' Old=',dbgs(FBoundsRealized),
+  //          ' New=',dbgs(NewBounds));
   FBoundsRealized:=NewBounds;
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
 end;
