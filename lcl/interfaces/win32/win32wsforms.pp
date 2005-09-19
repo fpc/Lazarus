@@ -303,6 +303,7 @@ end;
 procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: Boolean);
 begin
+  if not AForm.HandleAllocated then exit;
   if (Application <> nil) and (AForm = Application.MainForm) then
     exit;
 
