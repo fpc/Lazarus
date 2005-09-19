@@ -4308,6 +4308,7 @@ begin
     Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
+    Anchors:=[akLeft];
     AutoSize:=true;
   end;
 
@@ -4345,7 +4346,7 @@ begin
     Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+3;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
-    AnchorVerticalCenterTo(BackGroundColorButton);
+    Anchors:=[akLeft];
     AutoSize:=true;
   end;
 
