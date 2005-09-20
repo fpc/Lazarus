@@ -549,7 +549,7 @@ type
     procedure BtnClick(Sender: TObject);
   protected
     procedure ErrorBeep;
-    procedure TextChanged; virtual;
+    procedure TextChange; virtual;
   public
     constructor CreateLayout(AOwner: TComponent; ALayout: TCalculatorLayout);
     procedure CalcKeyPress(Sender: TObject; var Key: char);
@@ -641,11 +641,11 @@ begin
   if FText <> Value then
     begin
     FText:=Value;
-    TextChanged;
+    TextChange;
     end;
 end;
 
-procedure TCalculatorPanel.TextChanged;
+procedure TCalculatorPanel.TextChange;
 begin
   if Assigned(FControl) then
     TLabel(FControl).Caption:=FText;
