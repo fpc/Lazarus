@@ -47,7 +47,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, OldAvLTree;
+  SysUtils, Classes, Avl_Tree;
 
 
 type
