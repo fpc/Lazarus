@@ -1584,9 +1584,11 @@ begin
                                                         DefinePropertiesReader);
         except
           on E: Exception do begin
-            debugln('TCustomFormEditor.GetDefineProperties Error calling DefineProperties for ',
-              CacheItem.RegisteredComponent.ComponentClass.Classname,
-              ': ',E.Message);
+            DbgOut('TCustomFormEditor.GetDefineProperties Error calling DefineProperties for ');
+            if (CacheItem.RegisteredComponent<>nil) then begin
+              DbgOut(CacheItem.RegisteredComponent.ComponentClass.Classname);
+            end;
+            DebugLn(' : ',E.Message);
           end;
         end;
         // free component
