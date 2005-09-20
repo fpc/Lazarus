@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, StdCtrls, Forms, Controls, Buttons, Menus, ComCtrls, ExtCtrls,
-  Dialogs;
+  Dialogs, MenuIntf;
 
 type
   { TMainIDEBar }
@@ -64,6 +64,248 @@ type
     StepOverSpeedButton : TSpeedButton;
     OpenFilePopUpMenu   : TPopupMenu;
 
+    {$IFDEF UseMenuIntf}
+    // MainMenu
+    mnuMainMenu: TMainMenu;
+    mnuMain: TIDEMenuSection;
+
+    // file menu
+    mnuFile: TIDEMenuSection;
+      itmFileNew: TIDEMenuSection;
+        itmFileNewUnit: TIDEMenuCommand;
+        itmFileNewForm: TIDEMenuCommand;
+        itmFileNewOther: TIDEMenuCommand;
+      itmFileOpenSave: TIDEMenuSection;
+        itmFileOpen: TIDEMenuCommand;
+        itmFileRevert: TIDEMenuCommand;
+        itmFileRecentOpen: TIDEMenuSection;
+        itmFileSave: TIDEMenuCommand;
+        itmFileSaveAs: TIDEMenuCommand;
+        itmFileSaveAll: TIDEMenuCommand;
+        itmFileClose: TIDEMenuCommand;
+        itmFileCloseAll: TIDEMenuCommand;
+        itmFileCleanDirectory: TIDEMenuCommand;
+      itmFileIDEStart: TIDEMenuSection;
+        itmFileRestart: TIDEMenuCommand;
+        itmFileQuit: TIDEMenuCommand;
+
+    // edit menu
+    mnuEdit: TIDEMenuSection;
+      itmEditReUndo: TIDEMenuSection;
+        itmEditUndo: TIDEMenuCommand;
+        itmEditRedo: TIDEMenuCommand;
+      itmEditClipboard: TIDEMenuSection;
+        itmEditCut: TIDEMenuCommand;
+        itmEditCopy: TIDEMenuCommand;
+        itmEditPaste: TIDEMenuCommand;
+      itmEditBlockIndentation: TIDEMenuSection;
+        itmEditIndentBlock: TIDEMenuCommand;
+        itmEditUnindentBlock: TIDEMenuCommand;
+        itmEditEncloseBlock: TIDEMenuCommand;
+        itmEditCommentBlock: TIDEMenuCommand;
+        itmEditUncommentBlock: TIDEMenuCommand;
+        itmEditConditionalBlock: TIDEMenuCommand;
+        itmEditSortBlock: TIDEMenuCommand;
+      itmEditBlockCharConversion: TIDEMenuSection;
+        itmEditUpperCaseBlock: TIDEMenuCommand;
+        itmEditLowerCaseBlock: TIDEMenuCommand;
+        itmEditTabsToSpacesBlock: TIDEMenuCommand;
+      itmEditSelections: TIDEMenuSection;
+        itmEditSelectionBreakLines: TIDEMenuCommand;
+        itmEditSelect: TIDEMenuSection;
+          itmEditSelectAll: TIDEMenuCommand;
+          itmEditSelectToBrace: TIDEMenuCommand;
+          itmEditSelectCodeBlock: TIDEMenuCommand;
+          itmEditSelectLine: TIDEMenuCommand;
+          itmEditSelectParagraph: TIDEMenuCommand;
+      itmEditInsertions: TIDEMenuSection;
+        itmEditInsertCharacter: TIDEMenuCommand;
+        itmEditInsertText: TIDEMenuSection;
+          itmEditInsertCVSKeyWord: TIDEMenuCommand;
+            itmEditInsertCVSAuthor: TIDEMenuCommand;
+            itmEditInsertCVSDate: TIDEMenuCommand;
+            itmEditInsertCVSHeader: TIDEMenuCommand;
+            itmEditInsertCVSID: TIDEMenuCommand;
+            itmEditInsertCVSLog: TIDEMenuCommand;
+            itmEditInsertCVSName: TIDEMenuCommand;
+            itmEditInsertCVSRevision: TIDEMenuCommand;
+            itmEditInsertCVSSource: TIDEMenuCommand;
+          itmEditInsertGeneral: TIDEMenuCommand;
+            itmEditInsertGPLNotice: TIDEMenuCommand;
+            itmEditInsertLGPLNotice: TIDEMenuCommand;
+            itmEditInsertUsername: TIDEMenuCommand;
+            itmEditInsertDateTime: TIDEMenuCommand;
+            itmEditInsertChangeLogEntry: TIDEMenuCommand;
+      itmEditCodeTools: TIDEMenuSection;
+        itmEditCompleteCode: TIDEMenuCommand;
+        itmEditExtractProc: TIDEMenuCommand;
+
+    // search menu
+    mnuSearch: TIDEMenuSection;
+      itmSearchFindReplace: TIDEMenuSection;
+        itmSearchFind: TIDEMenuCommand;
+        itmSearchFindNext: TIDEMenuCommand;
+        itmSearchFindPrevious: TIDEMenuCommand;
+        itmSearchFindInFiles: TIDEMenuCommand;
+        itmSearchFindIdentifierRefs: TIDEMenuCommand;
+        itmSearchReplace: TIDEMenuCommand;
+        itmIncrementalFind: TIDEMenuCommand;
+        itmGotoLine: TIDEMenuCommand;
+      itmJumpings: TIDEMenuSection;
+        itmJumpBack: TIDEMenuCommand;
+        itmJumpForward: TIDEMenuCommand;
+        itmAddJumpPoint: TIDEMenuCommand;
+        itmJumpHistory: TIDEMenuCommand;
+        itmJumpToNextError: TIDEMenuCommand;
+        itmJumpToPrevError: TIDEMenuCommand;
+      itmBookmarks: TIDEMenuSection;
+        itmSetFreeBookmark: TIDEMenuCommand;
+        itmJumpToNextBookmark: TIDEMenuCommand;
+        itmJumpToPrevBookmark: TIDEMenuCommand;
+      itmCodeToolSearches: TIDEMenuSection;
+        itmFindDeclaration: TIDEMenuCommand;
+        itmSearchRenameIdentifier: TIDEMenuCommand;
+        itmFindBlockOtherEnd: TIDEMenuCommand;
+        itmFindBlockStart: TIDEMenuCommand;
+        itmOpenFileAtCursor: TIDEMenuCommand;
+        itmGotoIncludeDirective: TIDEMenuCommand;
+
+    // view menu
+    mnuView: TIDEMenuSection;
+    itmViewMainWindows: TIDEMenuSection;
+      itmViewInspector: TIDEMenuCommand;
+      itmViewSourceEditor: TIDEMenuCommand;
+      itmViewCodeExplorer: TIDEMenuCommand;
+      itmViewLazDoc: TIDEMenuCommand;
+    itmViewUnitWindows: TIDEMenuSection;
+      itmViewUnits: TIDEMenuCommand;
+      itmViewForms: TIDEMenuCommand;
+      itmViewUnitDependencies: TIDEMenuCommand;
+      itmViewUnitInfo: TIDEMenuCommand;
+      itmViewToggleFormUnit: TIDEMenuCommand;
+    itmViewSecondaryWindows: TIDEMenuSection;
+      itmViewAnchorEditor: TIDEMenuCommand;
+      itmViewMessage: TIDEMenuCommand;
+      itmViewSearchResults: TIDEMenuCommand;
+      itmViewDebugWindows: TIDEMenuSection;
+        itmViewWatches: TIDEMenuCommand;
+        itmViewBreakpoints: TIDEMenuCommand;
+        itmViewLocals: TIDEMenuCommand;
+        itmViewCallStack: TIDEMenuCommand;
+        itmViewDebugOutput: TIDEMenuCommand;
+
+    // project menu
+    mnuProject: TIDEMenuSection;
+      itmProjectNews: TIDEMenuSection;
+        itmProjectNew: TIDEMenuCommand;
+        itmProjectNewFromFile: TIDEMenuCommand;
+      itmProjectOpens: TIDEMenuSection;
+        itmProjectOpen: TIDEMenuCommand;
+        itmProjectRecentOpen: TIDEMenuCommand;
+      itmProjectSaves: TIDEMenuSection;
+        itmProjectSave: TIDEMenuCommand;
+        itmProjectSaveAs: TIDEMenuCommand;
+        itmProjectPublish: TIDEMenuCommand;
+      itmProjectWindows: TIDEMenuSection;
+        itmProjectInspector: TIDEMenuCommand;
+        itmProjectOptions: TIDEMenuCommand;
+        itmProjectCompilerOptions: TIDEMenuCommand;
+        itmProjectViewToDos: TIDEMenuCommand;
+      itmProjectAddRemoves: TIDEMenuSection;
+        itmProjectAddTo: TIDEMenuCommand;
+        itmProjectRemoveFrom: TIDEMenuCommand;
+        itmProjectViewSource: TIDEMenuCommand;
+      {$IFDEF TRANSLATESTRING}
+      itmProjectPoFiles:TIDEMenuCommand;
+        itmProjectCreatePoFiles:TIDEMenuCommand;
+        itmProjectCollectPoFiles:TIDEMenuCommand;
+      {$ENDIF}
+
+    // run menu
+    mnuRun: TIDEMenuSection;
+      itmRunBuilding: TIDEMenuSection;
+        itmRunMenuBuild: TIDEMenuCommand;
+        itmRunMenuBuildAll: TIDEMenuCommand;
+        itmRunMenuAbortBuild: TIDEMenuCommand;
+      itmRunnning: TIDEMenuSection;
+        itmRunMenuRun: TIDEMenuCommand;
+        itmRunMenuPause: TIDEMenuCommand;
+        itmRunMenuStepInto: TIDEMenuCommand;
+        itmRunMenuStepOver: TIDEMenuCommand;
+        itmRunMenuRunToCursor: TIDEMenuCommand;
+        itmRunMenuStop: TIDEMenuCommand;
+        itmRunMenuRunParameters: TIDEMenuCommand;
+        itmRunMenuResetDebugger: TIDEMenuCommand;
+      itmRunBuildignFile: TIDEMenuSection;
+        itmRunMenuBuildFile: TIDEMenuCommand;
+        itmRunMenuRunFile: TIDEMenuCommand;
+        itmRunMenuConfigBuildFile: TIDEMenuCommand;
+      itmRunDebugging: TIDEMenuSection;
+        itmRunMenuInspect: TIDEMenuCommand;
+        itmRunMenuEvaluate: TIDEMenuCommand;
+        itmRunMenuAddWatch: TIDEMenuCommand;
+        itmRunMenuAddBreakpoint: TIDEMenuCommand;
+        itmRunMenuAddBpSource: TIDEMenuCommand;
+
+    // components menu
+    mnuComponents: TIDEMenuSection;
+      itmPkgOpening: TIDEMenuCommand;
+        itmPkgOpenPackage: TIDEMenuCommand;
+        itmPkgOpenPackageFile: TIDEMenuCommand;
+        itmPkgOpenPackageOfCurUnit: TIDEMenuCommand;
+        itmPkgOpenRecent: TIDEMenuCommand;
+      itmPkgUnits: TIDEMenuCommand;
+        itmPkgAddCurUnitToPkg: TIDEMenuCommand;
+      itmPkgGraphs: TIDEMenuCommand;
+        itmPkgPkgGraph: TIDEMenuCommand;
+        itmPkgEditInstallPkgs: TIDEMenuCommand;
+        {$IFDEF CustomIDEComps}
+        itmCompsConfigCustomComps: TIDEMenuCommand;
+        {$ENDIF}
+
+    // tools menu
+    mnuTools: TIDEMenuSection;
+      itmCustomTools: TIDEMenuSection;
+        itmToolConfigure: TIDEMenuCommand;
+      itmCodeToolChecks: TIDEMenuSection;
+        itmToolSyntaxCheck: TIDEMenuCommand;
+        itmToolGuessUnclosedBlock: TIDEMenuCommand;
+        itmToolGuessMisplacedIFDEF: TIDEMenuCommand;
+      itmDelphiConversion: TIDEMenuSection;
+        itmToolCheckLFM: TIDEMenuCommand;
+        itmToolConvertDelphiUnit: TIDEMenuCommand;
+        itmToolConvertDelphiProject: TIDEMenuCommand;
+        itmToolConvertDFMtoLFM: TIDEMenuCommand;
+      itmSecondaryTools: TIDEMenuSection;
+        itmToolMakeResourceString: TIDEMenuCommand;
+        itmToolDiff: TIDEMenuCommand;
+      itmBuildingLazarus: TIDEMenuSection;
+        itmToolBuildLazarus: TIDEMenuCommand;
+        itmToolConfigureBuildLazarus: TIDEMenuCommand;
+
+    // environment menu
+    mnuEnvironment: TIDEMenuSection;
+      itmOptionsDialogs: TIDEMenuSection;
+        itmEnvGeneralOptions: TIDEMenuCommand;
+        itmEnvEditorOptions: TIDEMenuCommand;
+        itmEnvCodeTemplates: TIDEMenuCommand;
+        itmEnvDebuggerOptions: TIDEMenuCommand;
+        itmEnvCodeToolsOptions: TIDEMenuCommand;
+        itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
+      itmIDECache: TIDEMenuSection;
+        itmEnvRescanFPCSrcDir: TIDEMenuCommand;
+
+    // windows menu
+    mnuWindows: TIDEMenuSection;
+
+    // help menu
+    mnuHelp: TIDEMenuSection;
+      itmOnlineHelps: TIDEMenuSection;
+        itmHelpOnlineHelp: TIDEMenuCommand;
+        itmHelpConfigureHelp: TIDEMenuCommand;
+      itmInfoHelps: TIDEMenuSection;
+        itmHelpAboutLazarus: TIDEMenuCommand;
+    {$ELSE}
     // MainMenu
     mnuMain: TMainMenu;
 
@@ -266,6 +508,7 @@ type
     itmHelpAboutLazarus: TMenuItem;
     itmHelpOnlineHelp: TMenuItem;
     itmHelpConfigureHelp: TMenuItem;
+    {$ENDIF}
 
     // component palette
     ComponentNotebook : TNotebook;

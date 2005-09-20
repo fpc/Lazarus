@@ -249,8 +249,8 @@ begin
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
-  CEJumpToIDEMenuCommand.OnClickMethod:=@JumpToMenuitemCLICK;
-  CERefreshIDEMenuCommand.OnClickMethod:=@RefreshMenuitemCLICK;
+  CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
+  CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);

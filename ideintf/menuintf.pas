@@ -100,7 +100,7 @@ type
     property Hint: String read GetHint write SetHint;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
-    property OnClickMethod: TNotifyEvent read FOnClickMethod write FOnClickMethod;
+    property OnClick: TNotifyEvent read FOnClickMethod write FOnClickMethod;
     property OnClickProc: TNotifyProcedure read FOnClickProc write FOnClickProc;
     property Caption: string read GetCaption write SetCaption;
     property Section: TIDEMenuSection read FSection write SetSection;
@@ -336,7 +336,7 @@ begin
   Result:=TIDEMenuSection.Create(Name);
   Result.ChildsAsSubMenu:=true;
   Result.Caption:=Caption;
-  Result.OnClickMethod:=OnClickMethod;
+  Result.OnClick:=OnClickMethod;
   Result.OnClickProc:=OnClickProc;
   Parent.AddLast(Result);
 end;
@@ -353,7 +353,7 @@ begin
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuCommand.Create(Name);
   Result.Caption:=Caption;
-  Result.OnClickMethod:=OnClickMethod;
+  Result.OnClick:=OnClickMethod;
   Result.OnClickProc:=OnClickProc;
   Result.Command:=Command;
   Parent.AddLast(Result);
@@ -363,7 +363,7 @@ end;
 
 procedure TIDEMenuItem.MenuItemClick(Sender: TObject);
 begin
-  if Assigned(OnClickMethod) then OnClickMethod(Sender);
+  if Assigned(OnClick) then OnClick(Sender);
   if Assigned(OnClickProc) then OnClickProc(Sender);
 end;
 

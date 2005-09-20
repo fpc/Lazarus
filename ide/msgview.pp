@@ -193,10 +193,10 @@ Begin
   MessagesMenuRoot.MenuItem:=MainPopupMenu.Items;
   //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
   
-  MsgHelpIDEMenuCommand.OnClickMethod:=@HelpMenuItemClick;
-  MsgCopyIDEMenuCommand.OnClickMethod:=@CopyMenuItemClick;
-  MsgCopyAllIDEMenuCommand.OnClickMethod:=@CopyAllMenuItemClick;
-  MsgSaveAllToFileIDEMenuCommand.OnClickMethod:=@SaveAllToFileMenuItemClick;
+  MsgHelpIDEMenuCommand.OnClick:=@HelpMenuItemClick;
+  MsgCopyIDEMenuCommand.OnClick:=@CopyMenuItemClick;
+  MsgCopyAllIDEMenuCommand.OnClick:=@CopyAllMenuItemClick;
+  MsgSaveAllToFileIDEMenuCommand.OnClick:=@SaveAllToFileMenuItemClick;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   KeyPreview:=true;

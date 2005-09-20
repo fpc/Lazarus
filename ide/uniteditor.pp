@@ -3256,43 +3256,43 @@ begin
   {$ENDIF}
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
 
-  SrcEditMenuFindDeclaration.OnClickMethod:=@FindDeclarationClicked;
-  SrcEditMenuOpenFileAtCursor.OnClickMethod:=@OpenAtCursorClicked;
+  SrcEditMenuFindDeclaration.OnClick:=@FindDeclarationClicked;
+  SrcEditMenuOpenFileAtCursor.OnClick:=@OpenAtCursorClicked;
 
-  SrcEditMenuClosePage.OnClickMethod:=@CloseClicked;
-  SrcEditMenuCut.OnClickMethod:=@CutClicked;
-  SrcEditMenuCopy.OnClickMethod:=@CopyClicked;
-  SrcEditMenuPaste.OnClickMethod:=@PasteClicked;
+  SrcEditMenuClosePage.OnClick:=@CloseClicked;
+  SrcEditMenuCut.OnClick:=@CutClicked;
+  SrcEditMenuCopy.OnClick:=@CopyClicked;
+  SrcEditMenuPaste.OnClick:=@PasteClicked;
   for i:=0 to 9 do begin
     SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i))
-                                           .OnClickMethod:=@BookmarkGotoClicked;
+                                           .OnClick:=@BookmarkGotoClicked;
     SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
-                                            .OnClickMethod:=@BookMarkSetClicked;
+                                            .OnClick:=@BookMarkSetClicked;
   end;
-  SrcEditMenuSetFreeBookmark.OnClickMethod:=@BookMarkSetClicked;
-  SrcEditMenuNextBookmark.OnClickMethod:=@BookMarkNextClicked;
-  SrcEditMenuPrevBookmark.OnClickMethod:=@BookMarkPrevClicked;
+  SrcEditMenuSetFreeBookmark.OnClick:=@BookMarkSetClicked;
+  SrcEditMenuNextBookmark.OnClick:=@BookMarkNextClicked;
+  SrcEditMenuPrevBookmark.OnClick:=@BookMarkPrevClicked;
 
-  SrcEditMenuAddBreakpoint.OnClickMethod:=@AddBreakpointClicked;
-  SrcEditMenuAddWatchAtCursor.OnClickMethod:=@AddWatchAtCursor;
-  SrcEditMenuRunToCursor.OnClickMethod:=@RunToClicked;
-  SrcEditMenuViewCallStack.OnClickMethod:=@ViewCallStackClick;
+  SrcEditMenuAddBreakpoint.OnClick:=@AddBreakpointClicked;
+  SrcEditMenuAddWatchAtCursor.OnClick:=@AddWatchAtCursor;
+  SrcEditMenuRunToCursor.OnClick:=@RunToClicked;
+  SrcEditMenuViewCallStack.OnClick:=@ViewCallStackClick;
 
-  SrcEditMenuMoveEditorLeft.OnClickMethod:=@MoveEditorLeftClicked;
-  SrcEditMenuMoveEditorRight.OnClickMethod:=@MoveEditorRightClicked;
+  SrcEditMenuMoveEditorLeft.OnClick:=@MoveEditorLeftClicked;
+  SrcEditMenuMoveEditorRight.OnClick:=@MoveEditorRightClicked;
 
-  SrcEditMenuCompleteCode.OnClickMethod:=@CompleteCodeMenuItemClick;
-  SrcEditMenuEncloseSelection.OnClickMethod:=@EncloseSelectionMenuItemClick;
-  SrcEditMenuExtractProc.OnClickMethod:=@ExtractProcMenuItemClick;
-  SrcEditMenuInvertAssignment.OnClickMethod:=@InvertAssignmentMenuItemClick;
-  SrcEditMenuFindIdentifierReferences.OnClickMethod:=
+  SrcEditMenuCompleteCode.OnClick:=@CompleteCodeMenuItemClick;
+  SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
+  SrcEditMenuExtractProc.OnClick:=@ExtractProcMenuItemClick;
+  SrcEditMenuInvertAssignment.OnClick:=@InvertAssignmentMenuItemClick;
+  SrcEditMenuFindIdentifierReferences.OnClick:=
                                          @FindIdentifierReferencesMenuItemClick;
-  SrcEditMenuRenameIdentifier.OnClickMethod:=@RenameIdentifierMenuItemClick;
+  SrcEditMenuRenameIdentifier.OnClick:=@RenameIdentifierMenuItemClick;
 
-  SrcEditMenuReadOnly.OnClickMethod:=@ReadOnlyClicked;
-  SrcEditMenuShowLineNumbers.OnClickMethod:=@ToggleLineNumbersClicked;
-  SrcEditMenuShowUnitInfo.OnClickMethod:=@ShowUnitInfo;
-  SrcEditMenuEditorProperties.OnClickMethod:=@EditorPropertiesClicked;
+  SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
+  SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
+  SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
+  SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 end;
 
 procedure TSourceNotebook.RemoveUserDefinedMenuItems;

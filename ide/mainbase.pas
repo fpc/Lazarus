@@ -60,8 +60,8 @@ uses
   Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
-  LazConf, LazarusIDEStrConsts, SrcEditorIntf,
-  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler, LazIDEIntf,
+  LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
+  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg,
   TransferMacros, ObjectInspector, PropEdits, OutputFilter, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
@@ -89,8 +89,13 @@ type
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
                              const MenuItemName, MenuItemCaption: String;
                              const bmpName: String; mnuEnabled: Boolean);
+    {$IFDEF UseMenuIntf}
+    procedure CreateMainMenuItem(var Section: TIDEMenuSection;
+                                 const MenuItemName, MenuItemCaption: String);
+    {$ELSE}
     procedure CreateMainMenuItem(MainMenu: TMainMenu; var MenuItem: TMenuItem;
                                  const MenuItemName, MenuItemCaption: String);
+    {$ENDIF}
     procedure SetupMainMenu; virtual;
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
@@ -299,6 +304,14 @@ begin
   MenuItemParent.Add(MenuItem);
 end;
 
+{$IFDEF UseMenuIntf}
+procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
+  const MenuItemName, MenuItemCaption: String);
+begin
+  Section:=RegisterIDEMenuSection(MainIDEBar.mnuMain.GetPath,MenuItemName);
+  Section.Caption := MenuItemCaption;
+end;
+{$ELSE}
 procedure TMainIDEBase.CreateMainMenuItem(MainMenu: TMainMenu;
   var MenuItem: TMenuItem; const MenuItemName, MenuItemCaption: String);
 begin
@@ -307,9 +320,27 @@ begin
   MenuItem.Caption := MenuItemCaption;
   MainMenu.items.Add(MenuItem);
 end;
+{$ENDIF}
 
 procedure TMainIDEBase.SetupMainMenu;
 begin
+  {$IFDEF UseMenuIntf}
+  MainIDEBar.mnuMainMenu := TMainMenu.Create(MainIDEBar);
+  with MainIDEBar do begin
+    mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',mnuMainMenu.Items);
+    CreateMainMenuItem(mnuFile,'mnuFile',lisMenuFile);
+    CreateMainMenuItem(mnuEdit,'mnuEdit',lisMenuEdit);
+    CreateMainMenuItem(mnuSearch,'mnuSearch',lisMenuSearch);
+    CreateMainMenuItem(mnuView,'mnuView',lisMenuView);
+    CreateMainMenuItem(mnuProject,'mnuProject',lisMenuProject);
+    CreateMainMenuItem(mnuRun,'mnuRun',lisMenuRun);
+    CreateMainMenuItem(mnuComponents,'mnuComponents',lisMenuComponents);
+    CreateMainMenuItem(mnuTools,'mnuTools',lisMenuTools);
+    CreateMainMenuItem(mnuEnvironment,'mnuEnvironment',lisMenuEnvironent);
+    CreateMainMenuItem(mnuWindows,'mnuWindows',lisMenuWindows);
+    CreateMainMenuItem(mnuHelp,'mnuHelp',lisMenuHelp);
+  end;
+  {$ELSE}
   MainIDEBar.mnuMain := TMainMenu.Create(MainIDEBar);
   with MainIDEBar do begin
     mnuMain.Name:='mnuMainMenu';
@@ -326,6 +357,7 @@ begin
     CreateMainMenuItem(mnuMain,mnuWindows,'mnuWindows',lisMenuWindows);
     CreateMainMenuItem(mnuMain,mnuHelp,'mnuHelp',lisMenuHelp);
   end;
+  {$ENDIF}
 end;
 
 procedure TMainIDEBase.SetupFileMenu;
