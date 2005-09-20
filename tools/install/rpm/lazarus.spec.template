@@ -24,7 +24,11 @@ component library - LCL, which is also included in this package.
 
 %build
 cd lazarus
-make OPT="-Fl/opt/gnome/lib"
+MAKEOPTS="-Fl/opt/gnome/lib"
+if [ -n "$FPCCfg" ]; then
+  MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
+fi
+make OPT="$MAKEOPTS"
 strip lazarus
 strip startlazarus
 

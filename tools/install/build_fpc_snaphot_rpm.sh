@@ -44,7 +44,7 @@ fi
 #------------------------------------------------------------------------------
 
 # create a temporary copy of the fpc sources to patch it
-TmpDir=/tmp/fpc
+TmpDir=/tmp/`whoami`/fpc
 rm -rf $TmpDir
 
 echo "extracting FPC from local svn ..."
@@ -65,7 +65,7 @@ fi
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
 
 # create a source tar.gz
-cd /tmp
+cd $TmpDir
 tar -czf ~/rpmbuild/SOURCES/fpc-2.1.1-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir

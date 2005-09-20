@@ -66,7 +66,8 @@ cp -a packages fpcsrc
 rm -rf packages/extra/amunits
 rm -rf packages/extra/winunits
 
-STARTPP=`which %{ppcname}`
+# STARTPP=`which %{ppcname}`
+STARTPP=/usr/local/bin/ppc386
 NEWPP=`pwd`/compiler/%{ppcname}
 NEWFPDOC=`pwd`/utils/fpdoc/fpdoc
 DATA2INC=`pwd`/utils/data2inc

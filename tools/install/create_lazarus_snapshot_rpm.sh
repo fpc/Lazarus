@@ -35,7 +35,8 @@ if [ ! -f $FPCRPM ]; then
   exit
 fi
 
-TmpFPCDir=~/tmp/fpc
+User=`whoami`
+TmpFPCDir=/tmp/$User/fpc
 if [ -e $TmpFPCDir ]; then
   rm -rf $TmpFPCDir
 fi 
@@ -61,7 +62,7 @@ svn export $LazSrcDir $TmpDir
 
 # create a source tar.gz
 cd $TmpDir/..
-tar -czf ~/rpmbuild/SOURCES/lazarus-$LazVersion-$Date.source.tar.gz lazarus
+tar -czf ~/rpmbuild/SOURCES/lazarus-$LazVersion-$Date.tar.gz lazarus
 
 # remove the tempdir
 cd -
