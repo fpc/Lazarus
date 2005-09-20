@@ -117,7 +117,7 @@ uses
 // CarbonWSMenus,
 // CarbonWSPairSplitter,
 // CarbonWSSpin,
-// CarbonWSStdCtrls,
+CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   Math, Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,

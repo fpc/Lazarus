@@ -61,6 +61,7 @@ type
   protected
   public
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   TCarbonWSWinControlPrivate = class(TWSPrivate)
@@ -145,6 +146,11 @@ begin
   CFString := CFStringCreateWithCString(nil, PChar(AText), DEFAULT_CFSTRING_ENCODING);
   SetControlTitleWithCFString(ControlRef(AWinControl.Handle), CFString);
   CFRelease(Pointer(CFString));
+end;
+
+procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  DisposeControl(ControlRef(AWinControl.Handle));
 end;
 
   { TCarbonWSWinControlPrivate }

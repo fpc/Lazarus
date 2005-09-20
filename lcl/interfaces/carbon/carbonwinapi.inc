@@ -416,6 +416,7 @@ end;
 function TCarbonWidgetSet.GetFocus: HWND;
 begin
   Result:=inherited GetFocus;
+  DebugLn('TODO:  TCarbonWidgetSet.GetFocus');
 end;
 
 function TCarbonWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
@@ -575,6 +576,7 @@ end;
 function TCarbonWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result:=inherited IsWindowVisible(handle);
+  DebugLn('TODO:  TCarbonWidgetSet.IsWindowVisible');
 end;
 
 procedure TCarbonWidgetSet.LeaveCriticalSection(
@@ -810,6 +812,7 @@ end;
 function TCarbonWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
   Result:=inherited SetFocus(hWnd);
+  DebugLn('TODO:  TCarbonWidgetSet.SetFocus');
 end;
 
 function TCarbonWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
