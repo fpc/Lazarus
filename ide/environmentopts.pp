@@ -2431,7 +2431,7 @@ begin
       PascalFileExtension:=petPAS;
 
     //lazdoc
-    LazDocPathList := LazDocListBox.Items;
+    LazDocPathList.Assign(LazDocListBox.Items);
 
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
