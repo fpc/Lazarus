@@ -383,7 +383,7 @@ end;
 procedure TClipboard.SetTextBuf(Buffer: PChar);
 begin
   if Buffer=nil then Buffer:=#0;
-  SetBuffer(PredefinedClipboardFormat(pcfText),Buffer^,StrLen(Buffer));
+  SetBuffer(PredefinedClipboardFormat(pcfText),Buffer^,StrLen(Buffer)+1);
 end;
 
 function TClipboard.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;

@@ -481,6 +481,36 @@ End;
 Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
+  
+  procedure PutOnClipBoard(FormatID: integer);
+  var
+    DataStream: TStream;
+    DataHandle : Windows.HGLOBAL;
+    DataPtr: pointer;
+  begin
+    if assigned(OnClipBoardRequest) then begin
+      DataStream := TMemoryStream.Create;
+      try
+        OnClipBoardRequest(FormatID, DataStream);
+        DataStream.Position:=0;
+        DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, DataStream.Size);
+        if (DataHandle=HWND(0)) then begin
+          debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(DataStream.Size));
+          Result := false;
+          exit;
+        end;
+        DataPtr := GlobalLock(DataHandle);
+        try
+          DataStream.Read(DataPtr^, DataStream.Size);
+        finally
+          Windows.GlobalUnlock(DataHandle);
+        end;
+        Windows.SetClipboardData(FormatID, DataHandle);
+      finally
+        DataStream.Free;
+      end;
+    end;
+  end;
 
   procedure PutTextOnClipBoard;
   var
@@ -567,12 +597,12 @@ Begin
         exit;
       end;
       Result := true;
+      OnClipBoardRequest := OnRequestProc;
       for I := 0 To FormatCount-1 do begin
         {$IFDEF VerboseWin32Clipbrd}
         debugln('TWin32WidgetSet.ClipboardGetOwnerShip A Formats['+dbgs(i)+']=',dbgs(Formats[i]));
         {$ENDIF}
-        if Formats[i]=Windows.CF_TEXT then
-          PutTextOnClipBoard;
+        PutOnClipBoard(Formats[i]);
       end;
     finally
       if not Windows.CloseClipboard then begin
