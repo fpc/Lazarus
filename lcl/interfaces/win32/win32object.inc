@@ -225,7 +225,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppBringToFront;
 begin
-  SetWindowPos(FAppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+  Windows.SetForegroundWindow(FAppHandle);
 end;
 
 procedure TWin32WidgetSet.SetDesigning(AComponent: TComponent);
