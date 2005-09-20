@@ -1580,15 +1580,16 @@ Begin
     end;
   end;
 
-  // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
-  if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN))
-      and (WindowInfo <> @DefaultWindowInfo)
-      and (PLMsg^.Result <> 0) then
-    WindowInfo^.ignoreNextChar := true;
-  // stop ignoring if KEYUP has come by (not all keys generate CHAR)
-  if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP))
-      and (WindowInfo <> @DefaultWindowInfo) then
-    WindowInfo^.ignoreNextChar := false;
+  // make sure there is a WindowInfo to store the info
+  if Assigned(WindowInfo) and (WindowInfo <> @DefaultWindowInfo) then begin
+    // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
+    if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN))
+        and (PLMsg^.Result <> 0) then
+      WindowInfo^.ignoreNextChar := true;
+    // stop ignoring if KEYUP has come by (not all keys generate CHAR)
+    if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP)) then
+      WindowInfo^.ignoreNextChar := false;
+  end;
 
   { LMMouseEvent and LMInsertText have no Result field }
 
