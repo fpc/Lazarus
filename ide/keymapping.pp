@@ -286,14 +286,17 @@ type
   
   //---------------------------------------------------------------------------
   // class for storing the keys of a single command (key-command relationship)
-  TKeyCommandRelation = class(TIDECommandKeys)
+  TKeyCommandRelation = class(TIDECommand)
   public
     function GetLocalizedName: string; override;
   end;
 
   //---------------------------------------------------------------------------
   // class for a list of key - command relations
-  TKeyCommandRelationList = class
+
+  { TKeyCommandRelationList }
+
+  TKeyCommandRelationList = class(TIDECommands)
   private
     fLastKey: TIDEShortCut; // for multiple key commands
     FCustomKeyCount: integer;
@@ -322,6 +325,7 @@ type
     function Find(Key: TIDEShortCut;
       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
       ): TKeyCommandRelation;
+    function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
     function TranslateKey(Key: word; Shift: TShiftState;
@@ -2746,6 +2750,12 @@ begin
       exit;
     end;
   end;
+end;
+
+function TKeyCommandRelationList.FindIDECommand(ACommand: word
+  ): TIDECommand;
+begin
+  Result:=FindByCommand(ACommand);
 end;
 
 function TKeyCommandRelationList.FindByCommand(

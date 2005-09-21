@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
   Laz_XMLCfg,
   SynEdit, CodeCache, CodeToolManager,
-  MenuIntf,
+  MenuIntf, IDECommands,
   LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
@@ -1441,7 +1441,29 @@ begin
 end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
+
+  {$IFDEF UseMenuIntf}
+  function GetCommand(ACommand: word): TIDECommand;
+  begin
+    Result:=IDECommandList.FindIDECommand(ACommand);
+  end;
+  {$ENDIF}
+
 begin
+  {$IFDEF UseMenuIntf}
+  with MainIDEBar do
+  begin
+    itmViewWatches.Command:=GetCommand(ecToggleWatches);
+    itmViewBreakpoints.Command:=GetCommand(ecToggleBreakPoints);
+    itmViewDebugOutput.Command:=GetCommand(ecToggleDebuggerOut);
+    itmViewLocals.Command:=GetCommand(ecToggleLocals);
+    itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
+
+    itmRunMenuInspect.Command:=GetCommand(ecInspect);
+    itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
+    itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
+  end;
+  {$ELSE}
   with MainIDEBar, EditorOpts.KeyMap do
   begin
     itmViewWatches.ShortCut := CommandToShortCut(ecToggleWatches);
@@ -1454,6 +1476,7 @@ begin
     itmRunMenuEvaluate.ShortCut := CommandToShortCut(ecEvaluate);
     itmRunMenuAddWatch.ShortCut := CommandToShortCut(ecAddWatch);
   end;
+  {$ENDIF}
 end;
 
 procedure TDebugManager.UpdateButtonsAndMenuItems;

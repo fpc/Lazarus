@@ -64,6 +64,7 @@ type
     FSection: TIDEMenuSection;
     FSectionIndex: Integer;
     FSize: integer;
+    FTag: Integer;
     FVisible: Boolean;
     FLastVisibleActive: boolean;
     procedure MenuItemClick(Sender: TObject);
@@ -110,6 +111,7 @@ type
     property MenuItemClass: TMenuItemClass read FMenuItemClass write FMenuItemClass;
     property SectionIndex: Integer read FSectionIndex;
     property AutoFreeMenuItem: boolean read FAutoFreeMenuItem write FAutoFreeMenuItem;
+    property Tag: Integer read FTag write FTag;
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
   
@@ -201,7 +203,7 @@ type
   private
     FAutoCheck: boolean;
     FChecked: Boolean;
-    FCommand: TIDECommandKeys;
+    FCommand: TIDECommand;
     FDefault: Boolean;
     FGroupIndex: Byte;
     FRadioItem: Boolean;
@@ -215,10 +217,10 @@ type
     procedure SetRadioItem(const AValue: Boolean); virtual;
     procedure SetRightJustify(const AValue: boolean); virtual;
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
-    procedure SetCommand(const AValue: TIDECommandKeys); virtual;
+    procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
   public
-    property Command: TIDECommandKeys read FCommand write SetCommand;
+    property Command: TIDECommand read FCommand write SetCommand;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Checked: Boolean read FChecked write SetChecked default False;
     property Default: Boolean read FDefault write SetDefault default False;
@@ -295,7 +297,7 @@ function RegisterIDESubMenu(const Path, Name, Caption: string;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommandKeys = nil
+                                const Command: TIDECommand = nil
                                 ): TIDEMenuCommand;
 
 implementation
@@ -344,7 +346,7 @@ end;
 
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
   const OnClickMethod: TNotifyEvent; const OnClickProc: TNotifyProcedure;
-  const Command: TIDECommandKeys): TIDEMenuCommand;
+  const Command: TIDECommand): TIDEMenuCommand;
 var
   Parent: TIDEMenuSection;
 begin
@@ -364,8 +366,8 @@ end;
 
 procedure TIDEMenuItem.MenuItemClick(Sender: TObject);
 begin
-  if Assigned(OnClick) then OnClick(Sender);
-  if Assigned(OnClickProc) then OnClickProc(Sender);
+  if Assigned(OnClick) then OnClick(Self);
+  if Assigned(OnClickProc) then OnClickProc(Self);
 end;
 
 procedure TIDEMenuItem.MenuItemDestroy(Sender: TObject);
@@ -1263,7 +1265,7 @@ begin
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
 end;
 
-procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommandKeys);
+procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommand);
 begin
   if FCommand=AValue then exit;
   FCommand:=AValue;

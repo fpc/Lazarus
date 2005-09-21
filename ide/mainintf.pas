@@ -64,7 +64,7 @@ uses
   Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
-  ObjectInspector,
+  ObjectInspector, MenuIntf,
   LazConf, LazarusIDEStrConsts, MacroIntf,
   ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   LazIDEIntf,
@@ -202,7 +202,9 @@ type
 
     procedure UpdateWindowsMenu; virtual; abstract;
     procedure SaveEnvironment; virtual; abstract;
-    procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
+    procedure SetRecentSubMenu({$IFDEF UseMenuIntf}Section: TIDEMenuSection;
+                               {$ELSE}Section: TMenuItem;{$ENDIF}
+                               FileList: TStringList;
                                OnClickEvent: TNotifyEvent); virtual; abstract;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;

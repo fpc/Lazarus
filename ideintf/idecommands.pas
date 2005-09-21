@@ -60,7 +60,7 @@ const
 {$ENDIF}
 
 type
-  TIDECommandKeys = class;
+  TIDECommand = class;
   TIDECommandCategory = class;
 
   { TIDECommandScope
@@ -152,10 +152,10 @@ type
   end;
   
   
-  { TIDECommandKeys }
+  { TIDECommand }
   { class for storing the keys of a single command
     (shortcut-command relationship) }
-  TIDECommandKeys = class
+  TIDECommand = class
   private
     FCategory: TIDECommandCategory;
     FCommand: word;
@@ -181,6 +181,11 @@ type
     property Command: word read FCommand;  // see the ecXXX constants above
     property LocalizedName: string read GetLocalizedName write SetLocalizedName;
     property Category: TIDECommandCategory read FCategory write SetCategory;
+  end;
+
+  TIDECommands = class
+  public
+    function FindIDECommand(ACommand:word): TIDECommand; virtual; abstract;
   end;
 
 const
@@ -215,6 +220,7 @@ function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
 
 var
   // will be set by the IDE
+  IDECommandList: TIDECommands;
   IDECommandScopes: TIDECommandScopes = nil;
 var
   IDECmdScopeSrcEdit: TIDECommandScope;
@@ -279,9 +285,9 @@ begin
   IDECommandScopes.Add(Result);
 end;
 
-{ TIDECommandKeys }
+{ TIDECommand }
 
-function TIDECommandKeys.GetLocalizedName: string;
+function TIDECommand.GetLocalizedName: string;
 begin
   if FLocalizedName<>'' then
     Result:=FLocalizedName
@@ -289,13 +295,13 @@ begin
     Result:=Name;
 end;
 
-procedure TIDECommandKeys.SetLocalizedName(const AValue: string);
+procedure TIDECommand.SetLocalizedName(const AValue: string);
 begin
   if FLocalizedName=AValue then exit;
   FLocalizedName:=AValue;
 end;
 
-procedure TIDECommandKeys.SetCategory(const AValue: TIDECommandCategory);
+procedure TIDECommand.SetCategory(const AValue: TIDECommandCategory);
 begin
   if FCategory=AValue then exit;
   // unbind
@@ -307,7 +313,7 @@ begin
     Category.Add(Self);
 end;
 
-function TIDECommandKeys.AsShortCut: TShortCut;
+function TIDECommand.AsShortCut: TShortCut;
 var
   CurKey: TIDEShortCut;
 begin
@@ -326,7 +332,7 @@ begin
     Result:=Result+scAlt;
 end;
 
-constructor TIDECommandKeys.Create(TheCategory: TIDECommandCategory;
+constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
   const TheName: String; TheCommand: word;
   const TheKeyA, TheKeyB: TIDEShortCut);
 begin
@@ -339,17 +345,17 @@ begin
   Category:=TheCategory;
 end;
 
-procedure TIDECommandKeys.ClearKeyA;
+procedure TIDECommand.ClearKeyA;
 begin
   KeyA:=CleanIDEShortCut;
 end;
 
-procedure TIDECommandKeys.ClearKeyB;
+procedure TIDECommand.ClearKeyB;
 begin
   KeyB:=CleanIDEShortCut;
 end;
 
-function TIDECommandKeys.GetCategoryAndName: string;
+function TIDECommand.GetCategoryAndName: string;
 begin
   Result:='"'+GetLocalizedName+'"';
   if Category<>nil then

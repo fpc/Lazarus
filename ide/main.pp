@@ -563,7 +563,9 @@ type
         var Handled: boolean; Data: TObject);
 
   public
+    {$IFNDEF UseMenuIntf}
     CustomExtToolMenuSeparator: TMenuItem;
+    {$ENDIF}
     CurDefinesCompilerFilename: String;
     CurDefinesCompilerOptions: String;
     class procedure ParseCmdLineOptions;
@@ -973,6 +975,7 @@ begin
 
   EditorOpts:=TEditorOptions.Create;
   EditorOpts.Load;
+  IDECommandList:=EditorOpts.KeyMap;
 
   EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
@@ -1935,7 +1938,9 @@ begin
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
+  {$IFNDEF UseMenuIntf}
   CustomExtToolMenuSeparator:=nil;
+  {$ENDIF}
   UpdateCustomToolsInMenu;
 end;
 
@@ -2359,7 +2364,7 @@ begin
     mnuViewInspectorClicked(Self);
 
   ecAboutLazarus:
-    MainIDEBar.itmHelpAboutLazarus.Click;
+    MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
     
   ecAddBreakPoint:
     SourceNotebook.AddBreakpointClicked(Self);
@@ -3140,8 +3145,13 @@ procedure TMainIDE.mnuCustomExtToolClick(Sender: TObject);
 var
   Index: integer;
 begin
+  {$IFDEF UseMenuIntf}
+  if not (Sender is TIDEMenuItem) then exit;
+  Index:=MainIDEBar.itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
+  {$ELSE}
   if CustomExtToolMenuSeparator=nil then exit;
   Index:=TMenuItem(Sender).MenuIndex-CustomExtToolMenuSeparator.MenuIndex-1;
+  {$ENDIF}
   if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
   DoRunExternalTool(Index);
 end;
@@ -7778,6 +7788,20 @@ var
   ToolCount: integer;
 
   procedure CreateToolMenuItems;
+  {$IFDEF UseMenuIntf}
+  var
+    Section: TIDEMenuSection;
+  begin
+    Section:=MainIDEBar.itmCustomTools;
+    // add enough menuitems
+    while Section.Count-1<ToolCount do
+      RegisterIDEMenuCommand(Section.GetPath,
+                          'itmToolCustomExt'+IntToStr(Section.Count),'');
+    // delete unneeded menuitems
+    while Section.Count-1>ToolCount do
+      Section[Section.Count-1].Free;
+  end;
+  {$ELSE}
   var
     CurMenuItem: TMenuItem;
     LastIndex, FirstIndex, ExistingCount: integer;
@@ -7810,22 +7834,35 @@ var
       dec(ExistingCount);
     end;
   end;
+  {$ENDIF}
 
   procedure SetToolMenuItems;
   var
-    CurMenuItem: TMenuItem;
+    CurMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
     i, Index: integer;
     ExtTool: TExternalToolOptions;
   begin
+    {$IFDEF UseMenuIntf}
+    i:=1;
+    {$ELSE}
     if CustomExtToolMenuSeparator=nil then exit;
     i:=CustomExtToolMenuSeparator.MenuIndex+1;
+    {$ENDIF}
     Index:=0;
-    while (i<MainIDEBar.mnuTools.Count) do begin
+    while (i<MainIDEBar.{$IFDEF UseMenuIntf}itmCustomTools{$ELSE}mnuTools{$ENDIF}.Count) do begin
+      {$IFDEF UseMenuIntf}
+      CurMenuItem:=MainIDEBar.itmCustomTools[i];
+      {$ELSE}
       CurMenuItem:=MainIDEBar.mnuTools[i];
       if CurMenuItem.Caption='-' then break;
+      {$ENDIF}
       ExtTool:=EnvironmentOptions.ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
+      {$IFDEF UseMenuIntf}
+      {$WARNING TODO ExtTool Shortcut}
+      {$ELSE}
       CurMenuItem.ShortCut:=ShortCut(ExtTool.Key,ExtTool.Shift);
+      {$ENDIF}
       CurMenuItem.OnClick:=@mnuCustomExtToolClick;
       inc(i);
       inc(Index);
@@ -7842,8 +7879,8 @@ function TMainIDE.PrepareForCompile: TModalResult;
 begin
   Result:=mrOk;
   if ToolStatus=itDebugger then begin
-    Result:=MessageDlg('Stop debugging?',
-      'Stop current debugging and rebuild project?',
+    Result:=MessageDlg(lisStopDebugging2,
+      lisStopCurrentDebuggingAndRebuildProject,
       mtConfirmation,[mbYes,mbNo,mbAbort],0);
     if Result=mrNo then Result:=mrCancel;
     if Result<>mrYes then exit;

@@ -1619,6 +1619,9 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisStopDebugging2 = 'Stop debugging?';
+  lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and '
+    +'rebuild project?';
   lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%'
     +'s%s';
   lisCodeToolsDefsErrorWhileWriting = 'Error while writing %s%s%s%s%s';
