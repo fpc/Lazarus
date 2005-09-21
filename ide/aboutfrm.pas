@@ -55,7 +55,10 @@ type
 
 
 function ShowAboutForm: TModalResult;
-  
+
+var
+  LazarusRevisionStr: string;
+
 function GetLazarusRevision: string;
 
 implementation
@@ -71,20 +74,20 @@ begin
 end;
 
 function GetLazarusRevision: string;
-const RevisionStr =
-'{  $Id$  }';
 var
   p: Integer;
   l: Integer;
 begin
   // use first number as revision
   p:=1;
-  while (p<=length(RevisionStr)) and (not (RevisionStr[p] in ['0'..'9'])) do
+  while (p<=length(LazarusRevisionStr))
+  and (not (LazarusRevisionStr[p] in ['0'..'9'])) do
     inc(p);
   l:=1;
-  while (p+l<=length(RevisionStr)) and (RevisionStr[p+l] in ['0'..'9']) do
+  while (p+l<=length(LazarusRevisionStr))
+  and (LazarusRevisionStr[p+l] in ['0'..'9']) do
     inc(l);
-  Result:=copy(RevisionStr,p,l);
+  Result:=copy(LazarusRevisionStr,p,l);
 end;
 
 { TAboutForm }

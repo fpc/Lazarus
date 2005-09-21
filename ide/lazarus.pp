@@ -51,13 +51,18 @@ uses
   Forms, LCLProc,
   Splash,
   Main,
+  AboutFrm,
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
   {$ENDIF}
   MainBase;
-  
+
+const RevisionStr =
+'{  $Id$  }';
+
 begin
+  LazarusRevisionStr:=RevisionStr;
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
 
