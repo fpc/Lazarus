@@ -84,6 +84,7 @@ type
         itmFileSaveAll: TIDEMenuCommand;
         itmFileClose: TIDEMenuCommand;
         itmFileCloseAll: TIDEMenuCommand;
+      itmFileDirectories: TIDEMenuSection;
         itmFileCleanDirectory: TIDEMenuCommand;
       itmFileIDEStart: TIDEMenuSection;
         itmFileRestart: TIDEMenuCommand;

@@ -68,6 +68,7 @@ type
     FLastVisibleActive: boolean;
     procedure MenuItemClick(Sender: TObject);
     procedure MenuItemDestroy(Sender: TObject);
+    procedure BitmapChange(Sender: TObject);
   protected
     function GetBitmap: TBitmap; virtual;
     function GetCaption: string; virtual;
@@ -373,6 +374,11 @@ begin
   FAutoFreeMenuItem:=false;
 end;
 
+procedure TIDEMenuItem.BitmapChange(Sender: TObject);
+begin
+  if MenuItem<>nil then MenuItem.Bitmap:=Bitmap;
+end;
+
 procedure TIDEMenuItem.SetEnabled(const AValue: Boolean);
 begin
   if FEnabled=AValue then exit;
@@ -383,8 +389,10 @@ end;
 
 function TIDEMenuItem.GetBitmap: TBitmap;
 begin
-  if FBitmap=nil then
+  if FBitmap=nil then begin
     FBitmap:=TBitmap.Create;
+    FBitmap.OnChange:=@BitmapChange;
+  end;
   FBitmap.Transparent:=True;
   Result:=FBitmap;
 end;

@@ -81,6 +81,20 @@ type
     OwningComponent: TComponent;
 
     function CreateMenuSeparator : TMenuItem;
+    {$IFDEF UseMenuIntf}
+    procedure CreateMenuItem(Section: TIDEMenuSection;
+                             var MenuItem: TIDEMenuCommand;
+                             const MenuItemName, MenuItemCaption: String;
+                             const bmpName: String = '';
+                             mnuEnabled: Boolean = true);
+    procedure CreateMenuSeparatorSection(ParentSection: TIDEMenuSection;
+                             var Section: TIDEMenuSection; const AName: String);
+    procedure CreateMenuSubSection(ParentSection: TIDEMenuSection;
+                             var Section: TIDEMenuSection;
+                             const AName, ACaption: String);
+    procedure CreateMainMenuItem(var Section: TIDEMenuSection;
+                                 const MenuItemName, MenuItemCaption: String);
+    {$ELSE}
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
                              const MenuItemName, MenuItemCaption: String);
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
@@ -89,10 +103,6 @@ type
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
                              const MenuItemName, MenuItemCaption: String;
                              const bmpName: String; mnuEnabled: Boolean);
-    {$IFDEF UseMenuIntf}
-    procedure CreateMainMenuItem(var Section: TIDEMenuSection;
-                                 const MenuItemName, MenuItemCaption: String);
-    {$ELSE}
     procedure CreateMainMenuItem(MainMenu: TMainMenu; var MenuItem: TMenuItem;
                                  const MenuItemName, MenuItemCaption: String);
     {$ENDIF}
@@ -277,6 +287,39 @@ begin
   Result.Caption := '-';
 end;
 
+{$IFDEF UseMenuIntf}
+procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
+  var MenuItem: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
+  const bmpName: String; mnuEnabled: Boolean);
+begin
+  MenuItem:=RegisterIDEMenuCommand(Section.GetPath,MenuItemName,MenuItemCaption);
+  MenuItem.Enabled:=mnuEnabled;
+  if bmpName<>'' then
+    MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
+end;
+
+procedure TMainIDEBase.CreateMenuSeparatorSection(
+  ParentSection: TIDEMenuSection; var Section: TIDEMenuSection;
+  const AName: String);
+begin
+  Section:=RegisterIDEMenuSection(ParentSection.GetPath,AName);
+  Section.ChildsAsSubMenu := false;
+end;
+
+procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
+  var Section: TIDEMenuSection; const AName, ACaption: String);
+begin
+  Section:=RegisterIDEMenuSection(ParentSection.GetPath,AName);
+  Section.Caption:=ACaption;
+end;
+
+procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
+  const MenuItemName, MenuItemCaption: String);
+begin
+  Section:=RegisterIDEMenuSection(MainIDEBar.mnuMain.GetPath,MenuItemName);
+  Section.Caption := MenuItemCaption;
+end;
+{$ELSE}
 procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
   const MenuItemName, MenuItemCaption: String);
 begin
@@ -304,14 +347,6 @@ begin
   MenuItemParent.Add(MenuItem);
 end;
 
-{$IFDEF UseMenuIntf}
-procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
-  const MenuItemName, MenuItemCaption: String);
-begin
-  Section:=RegisterIDEMenuSection(MainIDEBar.mnuMain.GetPath,MenuItemName);
-  Section.Caption := MenuItemCaption;
-end;
-{$ELSE}
 procedure TMainIDEBase.CreateMainMenuItem(MainMenu: TMainMenu;
   var MenuItem: TMenuItem; const MenuItemName, MenuItemCaption: String);
 begin
@@ -362,35 +397,51 @@ end;
 
 procedure TMainIDEBase.SetupFileMenu;
 var
-  ParentMI: TMenuItem;
+  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
 begin
   ParentMI:=MainIDEBar.mnuFile;
   with MainIDEBar do begin
+    {$IFDEF UseMenuIntf}
+    CreateMenuSeparatorSection(ParentMI,itmFileNew,'itmFileNew');
+    {$ENDIF}
     CreateMenuItem(ParentMI,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'menu_new');
     CreateMenuItem(ParentMI,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'menu_new');
     CreateMenuItem(ParentMI,itmFileNewOther,'itmFileNewOther',lisMenuNewOther,'menu_new');
 
+    {$IFDEF UseMenuIntf}
+    CreateMenuSeparatorSection(ParentMI,itmFileOpenSave,'itmFileOpenSave');
+    {$ELSE}
     ParentMI.Add(CreateMenuSeparator);
+    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileOpen,'itmFileOpen',lisMenuOpen,'menu_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
-    CreateMenuItem(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent,'');
+    {$IFDEF UseMenuIntf}
+    CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
+    {$ELSE}
+    CreateMenuItem(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
+    {$ENDIF}
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_save');
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisMenuSaveAll,'menu_save');
     CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuClose,'menu_close',false);
     CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'',false);
 
+    {$IFDEF UseMenuIntf}
+    CreateMenuSeparatorSection(ParentMI,itmFileDirectories,'itmFileDirectories');
+    {$ELSE}
     ParentMI.Add(CreateMenuSeparator);
+    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileCleanDirectory,'itmFileCleanDirectory',lisMenuCleanDirectory);
 
+    {$IFDEF UseMenuIntf}
+    CreateMenuSeparatorSection(ParentMI,itmFileIDEStart,'itmFileIDEStart');
+    {$ELSE}
     ParentMI.Add(CreateMenuSeparator);
+    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart);
-
-    ParentMI.Add(CreateMenuSeparator);
-
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit);
   end;
 end;
