@@ -23,7 +23,7 @@ if exist tools\updatepofiles.exe goto SkipTools
 echo The updatepofiles tool was not found, compiling tools ...
 echo.
 cd tools
-make updatepofiles
+make updatepofiles.exe
 cd..
 :SkipTools
 

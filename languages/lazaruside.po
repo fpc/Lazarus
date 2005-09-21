@@ -1666,6 +1666,10 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: lazarusidestrconsts:lissvnrevision
+msgid "SVN Revision: "
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "Close"
 msgstr ""

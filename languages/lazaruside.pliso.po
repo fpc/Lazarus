@@ -5449,6 +5449,10 @@ msgstr "Russian(CP1251)"
 msgid "Russian(UTF8)"
 msgstr ""
 
+#: lazarusidestrconsts:lissvnrevision
+msgid "SVN Revision: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr "Taka sama nazwa (w podkatalogu)"

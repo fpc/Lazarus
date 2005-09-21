@@ -5438,6 +5438,10 @@ msgstr "Rus(CP1251)"
 msgid "Russian(UTF8)"
 msgstr "Rus(UTF8)"
 
+#: lazarusidestrconsts:lissvnrevision
+msgid "SVN Revision: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr "El mateix nom (a un subdirectori)"
