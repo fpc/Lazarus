@@ -511,10 +511,15 @@ function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass
 var
   i: Integer;
 begin
-  for i:=0 to FIDEWindowClasses.Count-1 do
-    if (FIDEWindowClasses[i]=nil)
-    or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+  if AWindowClass<>nil then begin
+    for i:=0 to FIDEWindowClasses.Count-1 do
+      if (FIDEWindowClasses[i]=nil)
+      or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
+        exit(true);
+  end else begin
+    if FIDEWindowClasses.IndexOf(nil)>=0 then
       exit(true);
+  end;
   Result:=false;
 end;
 

@@ -35,10 +35,11 @@ type
 
   TAboutForm = class(TForm)
     Button1: TBitBtn;
-    Label2: TLABEL;
+    BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
-    Label1: TLABEL;
+    VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
+    RevisionLabel: TLabel;
     Notebook1:TNotebook;
     AboutPage:TPage;
     ContributorsPage:TPage;
@@ -48,13 +49,14 @@ type
     procedure LoadContributors;
   public
     procedure Paint; override;
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(THeOwner: TComponent); override;
     destructor Destroy; override;
-  end; 
+  end;
 
 
 function ShowAboutForm: TModalResult;
   
+function GetLazarusRevision: string;
 
 implementation
 
@@ -68,13 +70,28 @@ begin
   AboutForm.Free;
 end;
 
+function GetLazarusRevision: string;
+const RevisionStr =
+'{  $Id$  }';
+var
+  p: Integer;
+  l: Integer;
+begin
+  // use first number as revision
+  p:=1;
+  while (p<=length(RevisionStr)) and (not (RevisionStr[p] in ['0'..'9'])) do
+    inc(p);
+  l:=1;
+  while (p+l<=length(RevisionStr)) and (RevisionStr[p+l] in ['0'..'9']) do
+    inc(l);
+  Result:=copy(RevisionStr,p,l);
+end;
+
 { TAboutForm }
 
-constructor TAboutForm.Create(AOwner: TComponent);
-const Revision =
-'{  $Id$  }';
+constructor TAboutForm.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
 end;
 
 destructor TAboutForm.Destroy;
@@ -89,6 +106,7 @@ procedure TAboutForm.AboutFormCreate(Sender:TObject);
   {The compiler generated date string is always of the form y/m/d.
    This function gives it a string respresentation according to the
    shortdateformat}
+
   function GetLocalizedBuildDate(): string;
   var
     BuildDate: string;
@@ -104,12 +122,14 @@ procedure TAboutForm.AboutFormCreate(Sender:TObject);
       StrToWord(Copy(BuildDate,SlashPos2+1,Length(BuildDate)-SlashPos2)));
     Result := DateTimeToStr(Date);
   end;
+
 begin
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Caption:=lisAboutLazarus;
-  Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
-  Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
+  VersionLabel.Caption := lisVersion+' #: '+lisLazarusVersionString;
+  RevisionLabel.Caption := lisSVNRevision+GetLazarusRevision;
+  BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
   Constraints.MinWidth:= 600;
@@ -142,7 +162,7 @@ procedure TAboutForm.Paint;
 begin
   inherited Paint;
   if FPixmap <>nil
-  then Canvas.Copyrect(Bounds(12, 44, Width, Height)
+  then Canvas.Copyrect(Bounds(12, 70, Width, Height)
     ,FPixmap.Canvas, Rect(0,0, Width, Height));
 end;
 

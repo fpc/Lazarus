@@ -1,40 +1,39 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TAboutForm','FORMDATA',[
-  'TPF0'#10'TAboutForm'#9'AboutForm'#13'ActiveControl'#7#9'AboutPage'#7'Caption'
-  +#6#13'About Lazarus'#12'ClientHeight'#3#245#0#11'ClientWidth'#3'A'#2#8'OnCre'
-  +'ate'#7#15'AboutFormCreate'#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScreen'
-  +'Center'#18'HorzScrollBar.Page'#3'@'#2#18'VertScrollBar.Page'#3#244#0#4'Left'
-  +#3'_'#1#6'Height'#3#245#0#3'Top'#3#133#1#5'Width'#3'A'#2#0#6'TLabel'#6'Label'
-  +'1'#9'Alignment'#7#8'taCenter'#22'BorderSpacing.OnChange'#13#7'Caption'#6#10
-  +'Version #:'#11'ParentColor'#9#4'Left'#2#14#6'Height'#2#13#3'Top'#2#6#5'Widt'
-  +'h'#2'2'#0#0#6'TLabel'#6'Label2'#9'Alignment'#7#8'taCenter'#22'BorderSpacing'
-  +'.OnChange'#13#7'Caption'#6#5'Date:'#11'ParentColor'#9#4'Left'#2#14#6'Height'
-  +#2#13#3'Top'#2#23#5'Width'#2#27#0#0#7'TBitBtn'#7'Button1'#22'BorderSpacing.O'
-  +'nChange'#13#7'Caption'#6#5'Close'#10'Glyph.Data'#10#251#2#0#0#247#2#0#0'/* '
-  +'XPM */'#10'static char * botaoFechar_xpm[] = {'#10'"24 24 2 1",'#10'" '#9'c'
-  +' None",'#10'".'#9'c #000000",'#10'"                        ",'#10'"        '
-  +'                ",'#10'"                        ",'#10'"                   '
-  +'     ",'#10'"                        ",'#10'"                        ",'#10
-  +'"       .      .         ",'#10'"        .    ...        ",'#10'"        ..'
-  +'  ....        ",'#10'"         .. ...         ",'#10'"         .....       '
-  +'   ",'#10'"          ...           ",'#10'"         .....          ",'#10'"'
-  +'        .......         ",'#10'"       ...  ....        ",'#10'"      ...  '
-  +'  ....       ",'#10'"     ...      ..        ",'#10'"                      '
-  +'  ",'#10'"                        ",'#10'"                        ",'#10'" '
-  +'                       ",'#10'"                        ",'#10'"            '
-  +'            ",'#10'"                        "};'#10#11'ModalResult'#2#1#8'T'
-  +'abOrder'#2#1#4'Left'#2'N'#6'Height'#2#25#3'Top'#3#184#0#5'Width'#2'K'#0#0#9
-  +'TNotebook'#9'Notebook1'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBot'
-  +'tom'#0#22'BorderSpacing.OnChange'#13#9'PageIndex'#2#0#4'Left'#3#215#0#6'Hei'
-  +'ght'#3#236#0#3'Top'#2#6#5'Width'#3'f'#1#0#5'TPage'#9'AboutPage'#7'Caption'#6
-  +#5'About'#11'ClientWidth'#3'^'#1#12'ClientHeight'#3#210#0#6'Height'#3#210#0#5
-  +'Width'#3'^'#1#0#5'TMemo'#9'AboutMemo'#5'Align'#7#8'alClient'#22'BorderSpaci'
-  +'ng.OnChange'#13#8'ReadOnly'#9#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2
-  +#0#6'Height'#3#210#0#5'Width'#3'^'#1#0#0#0#5'TPage'#16'ContributorsPage'#7'C'
-  +'aption'#6#12'Contributors'#11'ClientWidth'#3'^'#1#12'ClientHeight'#3#210#0#7
-  +'Visible'#8#6'Height'#3#210#0#5'Width'#3'^'#1#0#5'TMemo'#16'ContributorsMemo'
-  +#5'Align'#7#8'alClient'#22'BorderSpacing.OnChange'#13#8'ReadOnly'#9#10'Scrol'
-  +'lBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#6'Height'#3#202#0#5'Width'#3']'#1#0
-  +#0#0#0#0
+  'TPF0'#10'TAboutForm'#9'AboutForm'#7'Caption'#6#13'About Lazarus'#12'ClientHe'
+  +'ight'#3#14#1#11'ClientWidth'#3'`'#2#8'OnCreate'#7#15'AboutFormCreate'#13'Pi'
+  +'xelsPerInch'#2'p'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3
+  +'_'#2#18'VertScrollBar.Page'#3#13#1#4'Left'#3'_'#1#6'Height'#3#14#1#3'Top'#3
+  +#133#1#5'Width'#3'`'#2#0#6'TLabel'#12'VersionLabel'#9'Alignment'#7#8'taCente'
+  +'r'#7'Caption'#6#10'Version #:'#11'ParentColor'#9#4'Left'#2#14#6'Height'#2#12
+  +#3'Top'#2#6#5'Width'#2'9'#0#0#6'TLabel'#14'BuildDateLabel'#9'Alignment'#7#8
+  +'taCenter'#7'Caption'#6#5'Date:'#11'ParentColor'#9#4'Left'#2#14#6'Height'#2
+  +#12#3'Top'#2#23#5'Width'#2#29#0#0#6'TLabel'#13'RevisionLabel'#22'BorderSpaci'
+  +'ng.OnChange'#13#7'Caption'#6#13'RevisionLabel'#5'Color'#7#6'clNone'#4'Left'
+  +#2#14#6'Height'#2#12#3'Top'#2'('#5'Width'#2'O'#0#0#7'TBitBtn'#7'Button1'#7'C'
+  +'aption'#6#5'Close'#10'Glyph.Data'#10#251#2#0#0#247#2#0#0'/* XPM */'#10'stat'
+  +'ic char * botaoFechar_xpm[] = {'#10'"24 24 2 1",'#10'" '#9'c None",'#10'".'
+  +#9'c #000000",'#10'"                        ",'#10'"                        '
+  +'",'#10'"                        ",'#10'"                        ",'#10'"   '
+  +'                     ",'#10'"                        ",'#10'"       .      '
+  +'.         ",'#10'"        .    ...        ",'#10'"        ..  ....        "'
+  +','#10'"         .. ...         ",'#10'"         .....          ",'#10'"    '
+  +'      ...           ",'#10'"         .....          ",'#10'"        .......'
+  +'         ",'#10'"       ...  ....        ",'#10'"      ...    ....       ",'
+  +#10'"     ...      ..        ",'#10'"                        ",'#10'"       '
+  +'                 ",'#10'"                        ",'#10'"                  '
+  +'      ",'#10'"                        ",'#10'"                        ",'#10
+  +'"                        "};'#10#11'ModalResult'#2#1#8'TabOrder'#2#1#4'Left'
+  +#2'F'#6'Height'#2#25#3'Top'#3#225#0#5'Width'#2'K'#0#0#9'TNotebook'#9'Noteboo'
+  +'k1'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#9'PageIndex'#2
+  +#0#4'Left'#3#215#0#6'Height'#3#5#1#3'Top'#2#6#5'Width'#3#133#1#0#5'TPage'#9
+  +'AboutPage'#7'Caption'#6#5'About'#11'ClientWidth'#3#129#1#12'ClientHeight'#3
+  +#231#0#4'Left'#2#2#6'Height'#3#231#0#3'Top'#2#28#5'Width'#3#129#1#0#5'TMemo'
+  +#9'AboutMemo'#5'Align'#7#8'alClient'#8'ReadOnly'#9#10'ScrollBars'#7#10'ssAut'
+  +'oBoth'#8'TabOrder'#2#0#6'Height'#3#231#0#5'Width'#3#129#1#0#0#0#5'TPage'#16
+  +'ContributorsPage'#7'Caption'#6#12'Contributors'#11'ClientWidth'#3#133#1#12
+  +'ClientHeight'#3#5#1#7'Visible'#8#6'Height'#3#5#1#5'Width'#3#133#1#0#5'TMemo'
+  +#16'ContributorsMemo'#5'Align'#7#8'alClient'#8'ReadOnly'#9#10'ScrollBars'#7
+  +#10'ssAutoBoth'#8'TabOrder'#2#0#6'Height'#3#5#1#5'Width'#3#133#1#0#0#0#0#0
 ]);

@@ -2732,7 +2732,8 @@ begin
   if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
     {$IFDEF UseIDEScopes}
-    if not Category.Scope.HasIDEWindowClass(IDEWindowClass) then continue;
+    if (Category.Scope<>nil)
+    and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
     {$ELSE}
     if Category.Areas*Areas=[] then continue;
     {$ENDIF}

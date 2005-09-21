@@ -580,6 +580,7 @@ resourcestring
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
   lisDate = 'Date';
+  lisSVNRevision = 'SVN Revision: ';
   lisClose = 'Close';
   lisAboutLazarusMsg =
        'License: GPL/LGPL'
