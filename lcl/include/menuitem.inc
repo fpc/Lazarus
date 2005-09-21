@@ -884,7 +884,7 @@ procedure TMenuItem.SetCaption(const AValue: string);
 begin
   if FCaption = AValue then exit;
   FCaption := AValue;
-  if HandleAllocated then
+  if HandleAllocated and ((Parent<>nil) or (FMenu=nil)) then
     TWSMenuItemClass(WidgetSetClass).SetCaption(Self, AValue);
   OwnerFormDesignerModified(Self);
 end;
