@@ -71,10 +71,11 @@ end;
 { TAboutForm }
 
 constructor TAboutForm.Create(AOwner: TComponent);
+const Revision =
+'{  $Id$  }';
 begin
   inherited Create(AOwner);
 end;
-
 
 destructor TAboutForm.Destroy;
 begin
