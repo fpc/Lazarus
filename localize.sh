@@ -15,7 +15,7 @@ set -e
 
 if [ ! -x tools/updatepofiles ]; then
   cd tools
-  make
+  make updatepofiles
   cd -
 fi
 
