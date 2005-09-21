@@ -1,1 +1,1 @@
-const RevisionStr='$ID $';
+const RevisionStr=' $ID revision.inc $ ';
