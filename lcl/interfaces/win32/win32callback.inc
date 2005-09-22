@@ -386,7 +386,7 @@ Var
     end;
   end;
 
-  procedure DestroySpinEditBuddy(SpinEditHandle: HWND);
+  procedure DestroyFloatSpinEditBuddy(SpinEditHandle: HWND);
   var
     Buddy: HWND;
   begin
@@ -394,7 +394,7 @@ Var
     DestroyWindow(Buddy);
   end;
 
-  procedure EnableSpinEditBuddy(SpinEditHandle: HWND; Enable: boolean);
+  procedure EnableFloatSpinEditBuddy(SpinEditHandle: HWND; Enable: boolean);
   var
     Buddy: HWND;
   begin
