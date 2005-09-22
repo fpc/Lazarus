@@ -1188,7 +1188,7 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
     // Select it
     gtk_list_item_select(PGtkListItem(List^.Data));
   end;
-  
+
 var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
@@ -2620,7 +2620,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
-  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
+  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_HSCROLL;
     with Msg do begin
@@ -2645,7 +2645,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
-  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar'));
+  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
     with Msg do begin

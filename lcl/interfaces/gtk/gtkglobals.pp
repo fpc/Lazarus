@@ -419,6 +419,8 @@ var
 const
   odnScrollArea = 'scroll_area'; // the gtk_scrolled_window of a widget
                                  // used by TCustomForm and TScrollbox
+  odnScrollBar = 'ScrollBar'; // Gives the scrollbar the tgtkrange is belonging to
+                              // Used by TScrollbar, TScrollbox and TWinApiWidget
 
 const
   CallBackDefaultReturn = {$IFDEF GTK2}false{$ELSE}true{$ENDIF};

@@ -4747,7 +4747,7 @@ begin
   if Adjustment <> nil
   then with Adjustment^ do
   begin
-    gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
                         PGTKScrolledWindow(Result)^.VScrollBar);
     Step_Increment := 1;
   end;
@@ -4757,7 +4757,7 @@ begin
   if Adjustment <> nil
   then with Adjustment^ do
   begin
-    gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
                         PGTKScrolledWindow(Result)^.HScrollBar);
     Step_Increment := 1;
   end;
@@ -5402,7 +5402,7 @@ begin
         P := gtk_hscrollbar_new(Adjustment)
       else
         P := gtk_vscrollbar_new(Adjustment);
-      gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', P);
+      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, P);
     end;
 
   csScrolledWindow :
@@ -5468,6 +5468,16 @@ begin
                                      GTK_POLICY_NEVER);
 
       gtk_object_set_data(P,odnScrollArea, TempWidget);
+      
+      Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(TempWidget));
+      if Adjustment <> nil
+      then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+                               PGTKScrolledWindow(TempWidget)^.vscrollbar);
+
+      Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(TempWidget));
+      if Adjustment <> nil
+      then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+                               PGTKScrolledWindow(TempWidget)^.hscrollbar);
 
       TempWidget2 := gtk_layout_new(nil, nil);
       gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
