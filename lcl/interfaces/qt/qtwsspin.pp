@@ -39,17 +39,17 @@ uses
 
 type
 
-  { TQtWSCustomSpinEdit }
+  { TQtWSCustomFloatSpinEdit }
 
-  TQtWSCustomSpinEdit = class(TWSCustomSpinEdit)
+  TQtWSCustomSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
   end;
 
-  { TQtWSSpinEdit }
+  { TQtWSFloatSpinEdit }
 
-  TQtWSSpinEdit = class(TWSSpinEdit)
+  TQtWSFloatSpinEdit = class(TWSFloatSpinEdit)
   private
   protected
   public
@@ -66,7 +66,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TQtWSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TQtWSSpinEdit);
+//  RegisterWSComponent(TCustomFloatSpinEdit, TQtWSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TQtWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

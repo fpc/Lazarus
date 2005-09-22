@@ -36,26 +36,26 @@ uses
 
 type
 
-  { TGtkWSCustomSpinEdit }
+  { TGtkWSCustomFloatSpinEdit }
 
-  TGtkWSCustomSpinEdit = class(TWSCustomSpinEdit)
+  TGtkWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
-    class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
-    class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
-    class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; override;
+    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
-    class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); override;
+    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); override;
 
-    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); override;
+    class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
 function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
-function GetSpinGtkEntry(Spin: TCustomSpinEdit): PGtkEntry;
-function GetGtkSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
-function GetSpinGtkEditable(Spin: TCustomSpinEdit): PGtkOldEditable;
+function GetSpinGtkEntry(Spin: TCustomFloatSpinEdit): PGtkEntry;
+function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
+function GetSpinGtkEditable(Spin: TCustomFloatSpinEdit): PGtkOldEditable;
 
 implementation
 
@@ -64,78 +64,81 @@ begin
   Result:=PGtkEntry(@(Spin^.entry));
 end;
 
-function GetSpinGtkEntry(Spin: TCustomSpinEdit): PGtkEntry;
+function GetSpinGtkEntry(Spin: TCustomFloatSpinEdit): PGtkEntry;
 begin
   Result:=GetGtkSpinEntry(PGtkSpinButton(Spin.Handle));
 end;
 
-function GetGtkSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
+function GetGtkFloatSpinEditable(Spin: PGtkSpinButton): PGtkOldEditable;
 begin
   Result:=PGtkOldEditable(@(Spin^.entry));
 end;
 
-function GetSpinGtkEditable(Spin: TCustomSpinEdit): PGtkOldEditable;
+function GetSpinGtkEditable(Spin: TCustomFloatSpinEdit): PGtkOldEditable;
 begin
-  Result:=GetGtkSpinEditable(PGtkSpinButton(Spin.Handle));
+  Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
 end;
 
-{ TGtkWSCustomSpinEdit }
+{ TGtkWSCustomFloatSpinEdit }
 
 //const
 //  GtkValueEmpty: array[boolean] of integer = (0,1);
 
-function TGtkWSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit
+function TGtkWSCustomFloatSpinEdit.GetSelStart(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit
   ): integer;
 begin
-  Result := WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomSpinEdit)));
+  Result :=
+           WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)));
 end;
 
-function TGtkWSCustomSpinEdit.GetSelLength(
-  const ACustomSpinEdit: TCustomSpinEdit): integer;
+function TGtkWSCustomFloatSpinEdit.GetSelLength(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
-  with GetSpinGtkEditable(ACustomSpinEdit)^ do
+  with GetSpinGtkEditable(ACustomFloatSpinEdit)^ do
     Result := Abs(integer(selection_end_pos)-integer(selection_start_pos));
 end;
 
-function TGtkWSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit
-  ): single;
+function TGtkWSCustomFloatSpinEdit.GetValue(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   Result:=gtk_spin_button_get_value_as_float(
-                                        PGtkSpinButton(ACustomSpinEdit.Handle));
+                                   PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 end;
 
-procedure TGtkWSCustomSpinEdit.SetSelStart(
-  const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
+procedure TGtkWSCustomFloatSpinEdit.SetSelStart(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
-  gtk_editable_set_position(GetSpinGtkEditable(ACustomSpinEdit), NewStart);
+  gtk_editable_set_position(GetSpinGtkEditable(ACustomFloatSpinEdit), NewStart);
 end;
 
-procedure TGtkWSCustomSpinEdit.SetSelLength(
-  const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+procedure TGtkWSCustomFloatSpinEdit.SetSelLength(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
-  WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomSpinEdit)),NewLength);
+  WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)),
+                     NewLength);
 end;
 
-procedure TGtkWSCustomSpinEdit.UpdateControl(
-  const ACustomSpinEdit: TCustomSpinEdit);
+procedure TGtkWSCustomFloatSpinEdit.UpdateControl(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
   AnAdjustment: PGtkAdjustment;
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
 begin
-  wHandle := ACustomSpinEdit.Handle;
+  wHandle := ACustomFloatSpinEdit.Handle;
   SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
   AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);
-  if (AnAdjustment^.lower<>ACustomSpinEdit.MinValue)
-  or (AnAdjustment^.upper<>ACustomSpinEdit.MaxValue) then
+  if (AnAdjustment^.lower<>ACustomFloatSpinEdit.MinValue)
+  or (AnAdjustment^.upper<>ACustomFloatSpinEdit.MaxValue) then
   begin
-    AnAdjustment^.lower:=ACustomSpinEdit.MinValue;
-    AnAdjustment^.upper:=ACustomSpinEdit.MaxValue;
+    AnAdjustment^.lower:=ACustomFloatSpinEdit.MinValue;
+    AnAdjustment^.upper:=ACustomFloatSpinEdit.MaxValue;
     gtk_adjustment_changed(AnAdjustment);
   end;
-  gtk_spin_button_set_digits(SpinWidget, ACustomSpinEdit.DecimalPlaces);
-  gtk_spin_button_set_value(SpinWidget,ACustomSpinEdit.Value);
-  AnAdjustment^.step_increment := ACustomSpinEdit.ClimbRate;
+  gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
+  gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
+  AnAdjustment^.step_increment := ACustomFloatSpinEdit.ClimbRate;
 end;
 
 initialization
@@ -146,7 +149,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomSpinEdit, TGtkWSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TGtkWSSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TGtkWSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TGtkWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

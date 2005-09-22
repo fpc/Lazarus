@@ -1104,9 +1104,9 @@ Type
   end;
 
 
-  { TTICustomSpinEdit }
+  { TTICustomFloatSpinEdit }
   
-  TTICustomSpinEdit = class(TCustomSpinEdit)
+  TTICustomFloatSpinEdit = class(TCustomFloatSpinEdit)
   private
     FLink: TPropertyLink;
     FUseRTTIMinMax: boolean;
@@ -1127,16 +1127,16 @@ Type
   end;
   
   
-  { TTISpinEdit }
+  { TTIFloatSpinEdit }
   
-  TTISpinEdit = class(TTICustomSpinEdit)
+  TTIFloatSpinEdit = class(TTICustomFloatSpinEdit)
   published
     property Align;
     property Anchors;
     property BorderSpacing;
-    property Climb_Rate;
+    property ClimbRate;
     property Constraints;
-    property Decimal_Places;
+    property DecimalPlaces;
     property Enabled;
     property Link;
     property MaxValue;
@@ -1371,7 +1371,7 @@ procedure Register;
 begin
   RegisterComponents('RTTI',[TTIEdit,TTIComboBox,TTIButton,TTICheckBox,
     TTILabel,TTIGroupBox,TTIRadioGroup,TTICheckGroup,TTICheckListBox,
-    TTIListBox,TTIMemo,TTICalendar,TTIImage,TTISpinEdit,TTITrackBar,
+    TTIListBox,TTIMemo,TTICalendar,TTIImage,TTIFloatSpinEdit,TTITrackBar,
     TTIProgressBar,TTIMaskEdit,TTIColorButton,TMultiPropertyLink]);
 end;
 
@@ -2738,22 +2738,22 @@ begin
   FLink.EditingDone;
 end;
 
-{ TTICustomSpinEdit }
+{ TTICustomFloatSpinEdit }
 
-procedure TTICustomSpinEdit.SetLink(const AValue: TPropertyLink);
+procedure TTICustomFloatSpinEdit.SetLink(const AValue: TPropertyLink);
 begin
   if FLink=AValue then exit;
   FLink.Assign(AValue);
 end;
 
-procedure TTICustomSpinEdit.SetUseRTTIMinMax(const AValue: boolean);
+procedure TTICustomFloatSpinEdit.SetUseRTTIMinMax(const AValue: boolean);
 begin
   if FUseRTTIMinMax=AValue then exit;
   FUseRTTIMinMax:=AValue;
   if UseRTTIMinMax then GetRTTIMinMax;
 end;
 
-procedure TTICustomSpinEdit.LinkLoadFromProperty(Sender: TObject);
+procedure TTICustomFloatSpinEdit.LinkLoadFromProperty(Sender: TObject);
 begin
   if Sender=nil then ;
   if (FLink.Editor=nil) then exit;
@@ -2763,14 +2763,14 @@ begin
   end;
 end;
 
-procedure TTICustomSpinEdit.LinkSaveToProperty(Sender: TObject);
+procedure TTICustomFloatSpinEdit.LinkSaveToProperty(Sender: TObject);
 begin
   if Sender=nil then ;
   if FLink.Editor=nil then exit;
   FLink.SetAsText(FloatToStr(Value));
 end;
 
-procedure TTICustomSpinEdit.LinkEditorChanged(Sender: TObject);
+procedure TTICustomFloatSpinEdit.LinkEditorChanged(Sender: TObject);
 var
   TypeData: PTypeData;
   PropKind: TTypeKind;
@@ -2790,8 +2790,8 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinValue;
         MaxValue:=TypeData^.MaxValue;
-        Climb_Rate:=1;
-        Decimal_Places:=0;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
       end;
 
     tkInt64:
@@ -2799,8 +2799,8 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinInt64Value;
         MaxValue:=TypeData^.MaxInt64Value;
-        Climb_Rate:=1;
-        Decimal_Places:=0;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
       end;
       
     tkQWord:
@@ -2808,8 +2808,8 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinQWordValue;
         MaxValue:=TypeData^.MaxQWordValue;
-        Climb_Rate:=1;
-        Decimal_Places:=0;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
       end;
 
     else
@@ -2828,12 +2828,12 @@ begin
   end;
 end;
 
-procedure TTICustomSpinEdit.GetRTTIMinMax;
+procedure TTICustomFloatSpinEdit.GetRTTIMinMax;
 begin
   if UseRTTIMinMax then GetRTTIMinMax;
 end;
 
-constructor TTICustomSpinEdit.Create(TheOwner: TComponent);
+constructor TTICustomFloatSpinEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FUseRTTIMinMax:=true;
@@ -2848,19 +2848,19 @@ begin
   FLink.OnEditorChanged:=@LinkEditorChanged;
 end;
 
-destructor TTICustomSpinEdit.Destroy;
+destructor TTICustomFloatSpinEdit.Destroy;
 begin
   FreeThenNil(FLink);
   inherited Destroy;
 end;
 
-procedure TTICustomSpinEdit.Loaded;
+procedure TTICustomFloatSpinEdit.Loaded;
 begin
   inherited Loaded;
   FLink.LoadFromProperty;
 end;
 
-procedure TTICustomSpinEdit.EditingDone;
+procedure TTICustomFloatSpinEdit.EditingDone;
 begin
   inherited EditingDone;
   FLink.EditingDone;

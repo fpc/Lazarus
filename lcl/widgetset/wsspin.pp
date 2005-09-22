@@ -49,54 +49,54 @@ uses
   WSLCLClasses, WSControls;
 
 type
-  { TWSCustomSpinEdit }
+  { TWSCustomFloatSpinEdit }
 
-  TWSCustomSpinEdit = class(TWSWinControl)
-    class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
-    class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
-    class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; virtual;
+  TWSCustomFloatSpinEdit = class(TWSWinControl)
+    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
+    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; virtual;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; virtual;
 
-    class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); virtual;
-    class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); virtual;
+    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); virtual;
+    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); virtual;
 
-    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); virtual;
+    class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); virtual;
   end;
-  TWSCustomSpinEditClass = class of TWSCustomSpinEdit;
+  TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
 
-  { TWSSpinEdit }
+  { TWSFloatSpinEdit }
 
-  TWSSpinEdit = class(TWSCustomSpinEdit)
+  TWSFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   end;
 
 
 implementation
 
-{ TWSCustomSpinEdit }
+{ TWSCustomFloatSpinEdit }
 
-function  TWSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;
+function  TWSCustomFloatSpinEdit.GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
   result := -1;
 end;
 
-function  TWSCustomSpinEdit.GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer;
+function  TWSCustomFloatSpinEdit.GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
   result := 0;
 end;
 
-function  TWSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit): single;
+function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   result := 0.0;
 end;
 
-procedure TWSCustomSpinEdit.SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
+procedure TWSCustomFloatSpinEdit.SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
 end;
 
-procedure TWSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+procedure TWSCustomFloatSpinEdit.SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
 end;
 
-procedure TWSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
+procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 begin
 end;
 
@@ -106,7 +106,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomSpinEdit, TWSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TWSSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

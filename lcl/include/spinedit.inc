@@ -17,7 +17,7 @@
 }
 
 {-----------------------------------------------------------------------------}
-procedure TCustomSpinEdit.UpdateControl;
+procedure TCustomFloatSpinEdit.UpdateControl;
 begin
   if MaxValue<MinValue then fMaxValue:=MinValue;
   if Value<fMinValue then Value:=fMinValue;
@@ -27,16 +27,16 @@ begin
     fValueNeedsUpdate:=true;
     exit;
   end;
-  TWSCustomSpinEditClass(WidgetSetClass).UpdateControl(Self);
+  TWSCustomFloatSpinEditClass(WidgetSetClass).UpdateControl(Self);
   fValueNeedsUpdate:=false;
 end;
 
-function TCustomSpinEdit.ValueIsStored: boolean;
+function TCustomFloatSpinEdit.ValueIsStored: boolean;
 begin
   Result:=true; // fpc bug, default value is always 0
 end;
 
-procedure TCustomSpinEdit.TextChanged;
+procedure TCustomFloatSpinEdit.TextChanged;
 begin
   if Value=fLastValueOnChange then exit;
   fLastValueOnChange:=Value;
@@ -45,48 +45,48 @@ begin
   if HandleAllocated and (not (csLoading in ComponentState)) then Change;
 end;
 
-procedure TCustomSpinEdit.SetMaxValue(const AValue: single);
+procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: single);
 begin
   if FMaxValue=AValue then exit;
   FMaxValue:=AValue;
   UpdateControl;
 end;
 
-function TCustomSpinEdit.ClimbRateIsStored: boolean;
+function TCustomFloatSpinEdit.ClimbRateIsStored: boolean;
 begin
   Result := FClimbRate <> 1;
 end;
 
-function TCustomSpinEdit.GetModified: Boolean;
+function TCustomFloatSpinEdit.GetModified: Boolean;
 begin
   Result := FModified;
 end;
 
-function TCustomSpinEdit.GetSelLength: integer;
+function TCustomFloatSpinEdit.GetSelLength: integer;
 begin
   if HandleAllocated then
-    FSelLength := TWSCustomSpinEditClass(WidgetSetClass).GetSelLength(Self);
+    FSelLength := TWSCustomFloatSpinEditClass(WidgetSetClass).GetSelLength(Self);
   Result:= FSelLength;
 end;
 
-function TCustomSpinEdit.GetSelStart: integer;
+function TCustomFloatSpinEdit.GetSelStart: integer;
 begin
   if HandleAllocated then
-    FSelStart:= TWSCustomSpinEditClass(WidgetSetClass).GetSelStart(Self);
+    FSelStart:= TWSCustomFloatSpinEditClass(WidgetSetClass).GetSelStart(Self);
   Result:= FSelStart;
 end;
 
-function TCustomSpinEdit.GetSelText: String;
+function TCustomFloatSpinEdit.GetSelText: String;
 begin
   Result:= Copy(Text, SelStart + 1, SelLength)
 end;
 
-function TCustomSpinEdit.MaxValueIsStored: boolean;
+function TCustomFloatSpinEdit.MaxValueIsStored: boolean;
 begin
   Result:=true; // fpc bug, default value is always 0
 end;
 
-function TCustomSpinEdit.MinValueIsStored: boolean;
+function TCustomFloatSpinEdit.MinValueIsStored: boolean;
 begin
   Result:=true; // fpc bug, default value is always 0
 end;
@@ -94,33 +94,33 @@ end;
 
 {-----------------------------------------------------------------------------}
 
-procedure TCustomSpinEdit.SetMinValue(const AValue: single);
+procedure TCustomFloatSpinEdit.SetMinValue(const AValue: single);
 begin
   if FMinValue=AValue then exit;
   FMinValue:=AValue;
   UpdateControl;
 end;
 
-procedure TCustomSpinEdit.SetModified(const AValue: Boolean);
+procedure TCustomFloatSpinEdit.SetModified(const AValue: Boolean);
 begin
   FModified := AValue;
 end;
 
-procedure TCustomSpinEdit.SetSelLength(const AValue: integer);
+procedure TCustomFloatSpinEdit.SetSelLength(const AValue: integer);
 begin
   FSelLength:= AValue;
   if HandleAllocated then
-    TWSCustomSpinEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
+    TWSCustomFloatSpinEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
 end;
 
-procedure TCustomSpinEdit.SetSelStart(const AValue: integer);
+procedure TCustomFloatSpinEdit.SetSelStart(const AValue: integer);
 begin
   FSelStart:= AValue;
   if HandleAllocated then
-    TWSCustomSpinEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
+    TWSCustomFloatSpinEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
 end;
 
-procedure TCustomSpinEdit.SetSelText(const AValue: String);
+procedure TCustomFloatSpinEdit.SetSelText(const AValue: String);
 var
   OldText, NewText: string;
 begin
@@ -130,21 +130,21 @@ begin
   Text:=NewText;
 end;
 
-procedure TCustomSpinEdit.SetValueEmpty(const AValue: boolean);
+procedure TCustomFloatSpinEdit.SetValueEmpty(const AValue: boolean);
 begin
   if FValueEmpty=AValue then exit;
   FValueEmpty:=AValue;
   UpdateControl;
 end;
 
-procedure TCustomSpinEdit.SetClimbRate(const Num : Single);
+procedure TCustomFloatSpinEdit.SetClimbRate(const Num : Single);
 begin
   if fClimbRate = Num then exit;
   fClimbRate := Num;
   UpdateControl;
 end;
 
-procedure TCustomSpinEdit.InitializeWnd;
+procedure TCustomFloatSpinEdit.InitializeWnd;
 var
   ASelStart, ASelLength : integer;
 begin
@@ -158,13 +158,13 @@ begin
   end;
 end;
 
-procedure TCustomSpinEdit.Loaded;
+procedure TCustomFloatSpinEdit.Loaded;
 begin
   inherited Loaded;
   if fValueNeedsUpdate then UpdateControl;
 end;
 
-procedure TCustomSpinEdit.Change;
+procedure TCustomFloatSpinEdit.Change;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
@@ -172,7 +172,7 @@ begin
 end;
 
 {-----------------------------------------------------------------------------}
-Procedure TCustomSpinEdit.SetValue(const num : Single);
+Procedure TCustomFloatSpinEdit.SetValue(const num : Single);
 begin
   if FValue = Num then exit;
   FValue := Num;
@@ -182,16 +182,16 @@ begin
 end;
 
 {-----------------------------------------------------------------------------}
-Function TCustomSpinEdit.GetValue: Single;
+Function TCustomFloatSpinEdit.GetValue: Single;
 begin
   if HandleAllocated and (not fValueNeedsUpdate) then begin
-    FValue := TWSCustomSpinEditClass(WidgetSetClass).GetValue(Self);
+    FValue := TWSCustomFloatSpinEditClass(WidgetSetClass).GetValue(Self);
   end;
   Result := fValue;
 end;
 
 {-----------------------------------------------------------------------------}
-procedure TCustomSpinEdit.SetDecimals(Num : Integer);
+procedure TCustomFloatSpinEdit.SetDecimals(Num : Integer);
 begin
   if fDecimals = Num then exit;
   fDecimals := Num;
@@ -199,7 +199,7 @@ begin
 end;
 
 {-----------------------------------------------------------------------------}
-constructor TCustomSpinEdit.Create(TheOwner : TComponent);
+constructor TCustomFloatSpinEdit.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csSpinEdit;
@@ -217,18 +217,18 @@ begin
 end;
 
 {-----------------------------------------------------------------------------}
-destructor TCustomSpinEdit.Destroy;
+destructor TCustomFloatSpinEdit.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TCustomSpinEdit.DestroyComponent;
+procedure TCustomFloatSpinEdit.DestroyComponent;
 begin
   GetValue;
   inherited DestroyComponent;
 end;
 
-procedure TCustomSpinEdit.SelectAll;
+procedure TCustomFloatSpinEdit.SelectAll;
 begin
   if Text <> '' then begin
     SetSelStart(0);
@@ -236,27 +236,79 @@ begin
   end;
 end;
 
-procedure TCustomSpinEdit.ClearSelection;
+procedure TCustomFloatSpinEdit.ClearSelection;
 begin
   if SelLength > 0 then
     SelText := '';
 end;
 
-procedure TCustomSpinEdit.CopyToClipboard;
+procedure TCustomFloatSpinEdit.CopyToClipboard;
 begin
   Clipboard.AsText := SelText;
 end;
 
-procedure TCustomSpinEdit.CutToClipboard;
+procedure TCustomFloatSpinEdit.CutToClipboard;
 begin
   CopyToClipboard;
   ClearSelection;
 end;
 
-procedure TCustomSpinEdit.PasteFromClipboard;
+procedure TCustomFloatSpinEdit.PasteFromClipboard;
 begin
   if Clipboard.HasFormat(CF_TEXT) then
     SelText := Clipboard.AsText;
+end;
+
+{ TCustomSpinEdit }
+
+function TCustomSpinEdit.GetClimbRate: integer;
+begin
+  Result:=round(FClimbRate);
+end;
+
+function TCustomSpinEdit.GetMaxValue: integer;
+begin
+  Result:=round(FMaxValue);
+end;
+
+function TCustomSpinEdit.GetMinValue: integer;
+begin
+  Result:=round(FMinValue);
+end;
+
+function TCustomSpinEdit.GetValue: integer;
+begin
+  Result:=round(inherited GetValue);
+end;
+
+procedure TCustomSpinEdit.SetClimbRate(const AValue: integer);
+begin
+  if ClimbRate=AValue then exit;
+  inherited SetClimbRate(AValue);
+end;
+
+procedure TCustomSpinEdit.SetMaxValue(const AValue: integer);
+begin
+  if MaxValue=AValue then exit;
+  inherited SetMaxValue(AValue);
+end;
+
+procedure TCustomSpinEdit.SetMinValue(const AValue: integer);
+begin
+  if MinValue=AValue then exit;
+  inherited SetMinValue(AValue);
+end;
+
+procedure TCustomSpinEdit.SetValue(const AValue: integer);
+begin
+  if Value=AValue then exit;
+  inherited SetValue(AValue);
+end;
+
+constructor TCustomSpinEdit.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  fDecimals:=0;
 end;
 
 // included by spin.pp

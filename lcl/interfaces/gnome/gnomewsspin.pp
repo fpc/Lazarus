@@ -39,17 +39,17 @@ uses
 
 type
 
-  { TGnomeWSCustomSpinEdit }
+  { TGnomeWSCustomFloatSpinEdit }
 
-  TGnomeWSCustomSpinEdit = class(TWSCustomSpinEdit)
+  TGnomeWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
   end;
 
-  { TGnomeWSSpinEdit }
+  { TGnomeWSFloatSpinEdit }
 
-  TGnomeWSSpinEdit = class(TWSSpinEdit)
+  TGnomeWSFloatSpinEdit = class(TWSFloatSpinEdit)
   private
   protected
   public
@@ -66,7 +66,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TGnomeWSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TGnomeWSSpinEdit);
+//  RegisterWSComponent(TCustomFloatSpinEdit, TGnomeWSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TGnomeWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

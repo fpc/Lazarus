@@ -704,7 +704,7 @@ Begin
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
           end
-        else if (lWinControl is TCustomEdit) or (lWinControl is TCustomSpinEdit) then
+        else if (lWinControl is TCustomEdit) or (lWinControl is TCustomFloatSpinEdit) then
           case Hi(WParam) of
             EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
           end
@@ -805,8 +805,8 @@ Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
-      if lWinControl is TCustomSpinEdit then
-        DestroySpinEditBuddy(Window);
+      if lWinControl is TCustomFloatSpinEdit then
+        DestroyFloatSpinEditBuddy(Window);
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -879,8 +879,8 @@ Begin
         else
           EnableApplicationWindows(Window);
 
-      If (lWinControl is TCustomSpinEdit) then
-        EnableSpinEditBuddy(Window, WParam<>0);
+      If (lWinControl is TCustomFloatSpinEdit) then
+        EnableFloatSpinEditBuddy(Window, WParam<>0);
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be
       // recreated when the enabled state is changed

@@ -584,7 +584,6 @@ begin
   with VersionMajorSpinEdit do begin
     Name:='VersionMajorSpinEdit';
     Parent:=VersionGroupBox;
-    Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;
   end;
@@ -600,7 +599,6 @@ begin
   with VersionMinorSpinEdit do begin
     Name:='VersionMinorSpinEdit';
     Parent:=VersionGroupBox;
-    Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;
   end;
@@ -616,7 +614,6 @@ begin
   with VersionReleaseSpinEdit do begin
     Name:='VersionReleaseSpinEdit';
     Parent:=VersionGroupBox;
-    Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;
   end;
@@ -632,7 +629,6 @@ begin
   with VersionBuildSpinEdit do begin
     Name:='VersionBuildSpinEdit';
     Parent:=VersionGroupBox;
-    Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;
   end;

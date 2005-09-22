@@ -39,17 +39,17 @@ uses
 
 type
 
-  { TCarbonWSCustomSpinEdit }
+  { TCarbonWSCustomFloatSpinEdit }
 
-  TCarbonWSCustomSpinEdit = class(TWSCustomSpinEdit)
+  TCarbonWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
   end;
 
-  { TCarbonWSSpinEdit }
+  { TCarbonWSFloatSpinEdit }
 
-  TCarbonWSSpinEdit = class(TWSSpinEdit)
+  TCarbonWSFloatSpinEdit = class(TWSFloatSpinEdit)
   private
   protected
   public
@@ -66,7 +66,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TCarbonWSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TCarbonWSSpinEdit);
+//  RegisterWSComponent(TCustomFloatSpinEdit, TCarbonWSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TCarbonWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

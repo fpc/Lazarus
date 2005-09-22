@@ -40,9 +40,9 @@ uses
   
 type
 
-  { TWin32WSCustomSpinEdit }
+  { TWin32WSCustomFloatSpinEdit }
 
-  TWin32WSCustomSpinEdit = class(TWSCustomSpinEdit)
+  TWin32WSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
@@ -50,20 +50,20 @@ type
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
-    class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
-    class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; override;
+    class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
-    class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); override;
+    class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
-    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); override;
+    class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
-  { TWin32WSSpinEdit }
+  { TWin32WSFloatSpinEdit }
 
-  TWin32WSSpinEdit = class(TWSSpinEdit)
+  TWin32WSFloatSpinEdit = class(TWSFloatSpinEdit)
   private
   protected
   public
@@ -72,25 +72,26 @@ type
 
 implementation
 
-{ TWin32WSCustomSpinEdit }
+{ TWin32WSCustomFloatSpinEdit }
 
-procedure UpdateSpinEditControl(const Handle: HWND; const ASpinEdit: TCustomSpinEdit);
+procedure UpdateFloatSpinEditControl(const Handle: HWND;
+  const AFloatSpinEdit: TCustomFloatSpinEdit);
 var
   minval, maxval: integer;
 begin
   // initialize extremes
-  minval := Trunc(ASpinEdit.MinValue);
-  maxval := Trunc(ASpinEdit.MaxValue);
+  minval := Trunc(AFloatSpinEdit.MinValue);
+  maxval := Trunc(AFloatSpinEdit.MaxValue);
   if (minval = 0) and (maxval = 0) then
   begin
     minval := low(integer);
     maxval := high(integer);
   end;
   SendMessage(Handle, UDM_SETRANGE32, minval, maxval);
-  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(ASpinEdit.Value)));
+  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(AFloatSpinEdit.Value)));
 end;
   
-function TWin32WSCustomSpinEdit.CreateHandle(const AWinControl: TWinControl;
+function TWin32WSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -106,7 +107,7 @@ begin
       0, 0,       // size - ignored for buddy
       Parent, 0, HInstance, Buddy,
       0, 0, 0);
-    UpdateSpinEditControl(Window, TCustomSpinEdit(AWinControl));
+    UpdateFloatSpinEditControl(Window, TCustomFloatSpinEdit(AWinControl));
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, true);
@@ -117,7 +118,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSCustomSpinEdit.AdaptBounds(const AWinControl: TWinControl;
+procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle, BuddyHandle: HWND;
@@ -131,32 +132,41 @@ begin
   SuppressMove := true;
 end;
 
-function  TWin32WSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;
+function  TWin32WSCustomFloatSpinEdit.GetSelStart(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
-  Result := EditGetSelStart(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0));
+  Result := EditGetSelStart(SendMessage(ACustomFloatSpinEdit.Handle,
+                            UDM_GETBUDDY, 0, 0));
 end;
 
-function  TWin32WSCustomSpinEdit.GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer;
+function  TWin32WSCustomFloatSpinEdit.GetSelLength(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
-  Result := EditGetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0));
+  Result := EditGetSelLength(SendMessage(ACustomFloatSpinEdit.Handle,
+                             UDM_GETBUDDY, 0, 0));
 end;
 
-function  TWin32WSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit): single;
+function  TWin32WSCustomFloatSpinEdit.GetValue(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
-  Result := SendMessage(ACustomSpinEdit.Handle, UDM_GETPOS32, 0, 0);
+  Result := SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETPOS32, 0, 0);
 end;
 
-procedure TWin32WSCustomSpinEdit.SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
+procedure TWin32WSCustomFloatSpinEdit.SetSelStart(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
-  EditSetSelStart(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewStart); 
+  EditSetSelStart(SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETBUDDY, 0, 0),
+                  NewStart);
 end;
 
-procedure TWin32WSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+procedure TWin32WSCustomFloatSpinEdit.SetSelLength(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
-  EditSetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewLength); 
+  EditSetSelLength(SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETBUDDY, 0, 0),
+                   NewLength);
 end;
 
-procedure TWin32WSCustomSpinEdit.ShowHide(const AWinControl: TWinControl);
+procedure TWin32WSCustomFloatSpinEdit.ShowHide(const AWinControl: TWinControl);
 var
   Buddy: HWND;
 begin
@@ -170,9 +180,10 @@ begin
 
 end;
 
-procedure TWin32WSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
+procedure TWin32WSCustomFloatSpinEdit.UpdateControl(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 begin
-  UpdateSpinEditControl(ACustomSpinEdit.Handle, ACustomSpinEdit);
+  UpdateFloatSpinEditControl(ACustomFloatSpinEdit.Handle, ACustomFloatSpinEdit);
 end;
 
 initialization
@@ -183,7 +194,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomSpinEdit, TWin32WSCustomSpinEdit);
-//  RegisterWSComponent(TSpinEdit, TWin32WSSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TWin32WSCustomFloatSpinEdit);
+//  RegisterWSComponent(TFloatSpinEdit, TWin32WSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

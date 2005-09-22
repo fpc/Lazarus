@@ -2112,7 +2112,7 @@ var
 begin
   Result:=false;
   WindowInfo := GetWindowInfo(Handle);
-  if (WindowInfo^.WinControl is TCustomSpinEdit) then
+  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
   if not Windows.GetWindowRect(Handle,@R) then exit;
   LeftTop.X:=R.Left;
@@ -2198,7 +2198,7 @@ begin
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
 
-  if (WindowInfo^.WinControl is TCustomSpinEdit) then
+  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
     AdjustForBuddySize;
 end;
 
