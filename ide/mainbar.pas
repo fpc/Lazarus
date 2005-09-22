@@ -67,6 +67,7 @@ type
     {$IFDEF UseMenuIntf}
     // MainMenu
     mnuMainMenu: TMainMenu;
+
     mnuMain: TIDEMenuSection;
 
     // file menu

@@ -482,9 +482,9 @@ end;
 procedure THelpManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
-    itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-    itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
-    itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
+  itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
+  itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
+  itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
   end;
 end;
 

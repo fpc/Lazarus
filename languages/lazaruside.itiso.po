@@ -6204,6 +6204,14 @@ msgstr "Arresto il debug?"
 msgid "Stop after number of errors:"
 msgstr "Ferma dopo un certo numero di errori:"
 
+#: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
+msgid "Stop current debugging and rebuild project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopdebugging2
+msgid "Stop debugging?"
+msgstr ""
+
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Arresto il debug?"

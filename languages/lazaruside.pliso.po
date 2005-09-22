@@ -6205,6 +6205,14 @@ msgstr "Zatrzymaæ odpluskwianie?"
 msgid "Stop after number of errors:"
 msgstr "Zatrzymuj po liczbie b³êdów:"
 
+#: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
+msgid "Stop current debugging and rebuild project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopdebugging2
+msgid "Stop debugging?"
+msgstr ""
+
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
 msgstr "Zatrzymaæ odpluskwianie?"

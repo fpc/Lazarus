@@ -288,7 +288,9 @@ var
   SrcEditSubMenuRefactor: TIDEMenuSection;
 
   MessagesMenuRoot: TIDEMenuSection;
+
   CodeExplorerMenuRoot: TIDEMenuSection;
+
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;

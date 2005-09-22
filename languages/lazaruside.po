@@ -5146,6 +5146,14 @@ msgstr ""
 msgid "Write error"
 msgstr ""
 
+#: lazarusidestrconsts:lisstopdebugging2
+msgid "Stop debugging?"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
+msgid "Stop current debugging and rebuild project?"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr ""
