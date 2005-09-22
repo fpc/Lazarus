@@ -857,7 +857,10 @@ begin
   if Enabled then Flags:=Flags+'E';
   if RadioItem then Flags:=Flags+'R';
   if Checked then Flags:=Flags+'C';
-  debugln(Prefix,' Name="',Name,'" Caption="',DbgStr(Caption),'" Flags=',Flags);
+  DbgOut(Prefix,' Name="',Name,'" Caption="',DbgStr(Caption),'" Flags=',Flags);
+  if Parent<>nil then
+    DbgOut(' ',dbgs(MenuIndex),'/',dbgs(Parent.Count));
+  DebugLn('');
   for i:=0 to Count-1 do
     Items[i].WriteDebugReport(Prefix+'  ');
 end;

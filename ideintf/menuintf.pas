@@ -90,11 +90,13 @@ type
     function HasBitmap: Boolean;
     procedure CreateMenuItem; virtual;
     function GetPath: string;
+    function GetRoot: TIDEMenuItem;
     function VisibleActive: boolean; virtual;
     function GetContainerSection: TIDEMenuSection;
     function GetContainerMenuItem: TMenuItem;
     function Size: integer; virtual;
-    procedure WriteDebugReport(const Prefix: string); virtual;
+    procedure WriteDebugReport(const Prefix: string;
+                               MenuItemDebugReport: boolean); virtual;
     procedure ConsistencyCheck; virtual;
   public
     property Name: string read FName write SetName;
@@ -177,7 +179,8 @@ type
     function Size: integer; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure WriteDebugReport(const Prefix: string); override;
+    procedure WriteDebugReport(const Prefix: string;
+                               MenuItemDebugReport: boolean); override;
     procedure ConsistencyCheck; override;
   public
     property ChildsAsSubMenu: boolean read FChildsAsSubMenu
@@ -565,6 +568,12 @@ begin
   end;
 end;
 
+function TIDEMenuItem.GetRoot: TIDEMenuItem;
+begin
+  Result:=Self;
+  while Result.Section<>nil do Result:=Result.Section;
+end;
+
 function TIDEMenuItem.VisibleActive: boolean;
 // true if Visible=true and not hidden
 // false if menu item is hidden (e.g. due to no context, see TIDEMenuSection)
@@ -598,9 +607,12 @@ begin
   Result:=FSize;
 end;
 
-procedure TIDEMenuItem.WriteDebugReport(const Prefix: string);
+procedure TIDEMenuItem.WriteDebugReport(const Prefix: string;
+  MenuItemDebugReport: boolean);
 begin
   debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'" VisibleActive=',dbgs(VisibleActive));
+  if MenuItemDebugReport and (MenuItem<>nil) then
+    MenuItem.WriteDebugReport(Prefix);
 end;
 
 procedure TIDEMenuItem.ConsistencyCheck;
@@ -724,6 +736,10 @@ var
         {$IFDEF VerboseMenuIntf}
         debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
         {$ENDIF}
+        if ContainerMenuIndex>ContainerMenuItem.Count then begin
+          debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
+          GetRoot.WriteDebugReport(' Top ',true);
+        end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FTopSeparator);
       end;
     end;
@@ -792,11 +808,17 @@ var
         {$IFDEF VerboseMenuIntf}
         debugln('TIDEMenuSection.UpdateMenuStructure CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
         {$ENDIF}
+        if ContainerMenuIndex>ContainerMenuItem.Count then begin
+          debugln('TIDEMenuSection.UpdateMenuStructure CREATE BottomSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
+          GetRoot.WriteDebugReport(' Bottom ',true);
+        end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FBottomSeparator);
       end;
     end;
   end;
 
+var
+  i: Integer;
 begin
   if (FInvalidChildStartIndex>FInvalidChildEndIndex) then exit;
   if FUpdateLock>0 then begin
@@ -812,7 +834,7 @@ begin
     debugln('TIDEMenuSection.UpdateMenuStructure Front Section="',Section.Name,'" Name="',Name,'" Section.Invalid=',dbgs(Section.FInvalidChildStartIndex),'..',dbgs(Section.FInvalidChildEndIndex),' Count=',dbgs(Count),' SectionIndex=',dbgs(SectionIndex));
     {$ENDIF}
     Section.UpdateMenuStructure;
-  end else begin
+  end else if FInvalidChildStartIndex<Count then begin
     // the sections in front are uptodate
     ContainerMenuItem:=GetContainerMenuItem;
     if ChildsAsSubMenu then
@@ -830,6 +852,8 @@ begin
       inc(ContainerMenuIndex);
 
     // update childs
+    for i:=0 to FInvalidChildStartIndex-1 do
+      inc(ContainerMenuIndex,Items[i].Size);
     while (FInvalidChildStartIndex<=FInvalidChildEndIndex)
     and (FInvalidChildStartIndex<Count) do begin
       Item:=Items[FInvalidChildStartIndex];
@@ -841,7 +865,7 @@ begin
         CurSection:=TIDEMenuSection(Item)
       else
         CurSection:=nil;
-        // insert menu item
+      // insert menu item
       if (CurSection=nil) or CurSection.ChildsAsSubMenu then begin
         if ContainerMenuItem<>nil then begin
           Item.CreateMenuItem;
@@ -861,6 +885,7 @@ begin
         CurSection.UpdateMenuStructure;
       end;
       // next
+      //debugln('TIDEMenuSection.UpdateMenuStructure Increase ContainerMenuIndex MenuItem Name="',Name,'" Item="',Item.Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' Item.Size=',dbgs(Item.Size));
       inc(ContainerMenuIndex,Item.Size);
     end;
 
@@ -920,12 +945,14 @@ end;
 procedure TIDEMenuSection.ItemVisibleActiveChanged(AnItem: TIDEMenuItem);
 var
   OldVisibleActive: Boolean;
+  NowVisibleActive: Boolean;
 begin
   if imssClearing in FStates then
     exit;
-  if AnItem.VisibleActive=AnItem.FLastVisibleActive then
+  NowVisibleActive:=(AnItem.Section<>nil) and AnItem.VisibleActive;
+  if NowVisibleActive=AnItem.FLastVisibleActive then
     RaiseGDBException('');
-  AnItem.FLastVisibleActive:=AnItem.VisibleActive;
+  AnItem.FLastVisibleActive:=NowVisibleActive;
 
   Invalidate(AnItem.SectionIndex,AnItem.SectionIndex);
   {$IFDEF VerboseMenuIntf}
@@ -934,7 +961,7 @@ begin
   OldVisibleActive:=VisibleActive;
 
   // update FVisibleCount
-  if AnItem.VisibleActive then
+  if NowVisibleActive then
     inc(FVisibleCount)
   else
     dec(FVisibleCount);
@@ -983,7 +1010,6 @@ begin
   
   FreeSeparators;
 
-  UpdateSize(-FItems.Count);
   for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
   FItems.Clear;
   FChildMenuItemsCreated:=false;
@@ -1014,7 +1040,7 @@ begin
   AnItem.fName:=CreateUniqueName(AnItem.Name);
   FItems.Insert(Index,AnItem);
   UpdateChildsIndex(Index);
-  UpdateSize(1);
+  UpdateSize(AnItem.Size);
   AnItem.FSection:=Self;
   if AnItem.VisibleActive then
     ItemVisibleActiveChanged(AnItem);
@@ -1031,7 +1057,7 @@ begin
   OldVisibleActive:=AnItem.VisibleActive;
   FItems.Delete(AnItem.SectionIndex);
   UpdateChildsIndex(AnItem.SectionIndex);
-  UpdateSize(-1);
+  UpdateSize(-AnItem.Size);
   AnItem.FSection:=nil;
   if OldVisibleActive then
     ItemVisibleActiveChanged(AnItem);
@@ -1136,12 +1162,15 @@ begin
   UpdateMenuStructure;
 end;
 
-procedure TIDEMenuSection.WriteDebugReport(const Prefix: string);
+procedure TIDEMenuSection.WriteDebugReport(const Prefix: string;
+  MenuItemDebugReport: boolean);
 var
   i: Integer;
 begin
-  inherited WriteDebugReport(Prefix);
-  for i:=0 to Count-1 do Items[i].WriteDebugReport(Prefix+'  ');
+  debugln(Prefix,'SectionIndex=',dbgs(SectionIndex),' Name="',DbgStr(Name),'" VisibleActive=',dbgs(VisibleActive),' ChildsAsSubMenu='+dbgs(ChildsAsSubMenu),' ContainerIndex='+dbgs(GetContainerIndex(false)),' Size='+dbgs(Size));
+  for i:=0 to Count-1 do Items[i].WriteDebugReport(Prefix+'  ',false);
+  if MenuItemDebugReport and (MenuItem<>nil) then
+    MenuItem.WriteDebugReport(Prefix);
 end;
 
 procedure TIDEMenuSection.ConsistencyCheck;
@@ -1179,9 +1208,15 @@ end;
 
 procedure TIDEMenuSection.FreeSeparators;
 begin
-  FNeedTopSeparator:=false;
+  if FNeedTopSeparator then begin
+    UpdateSize(-1);
+    FNeedTopSeparator:=false;
+  end;
   FreeAndNil(FTopSeparator);
-  FNeedBottomSeparator:=false;
+  if FNeedBottomSeparator then begin
+    UpdateSize(-1);
+    FNeedBottomSeparator:=false;
+  end;
   FreeAndNil(FBottomSeparator);
 end;
 

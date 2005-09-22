@@ -314,8 +314,7 @@ procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
   var Section: TIDEMenuSection; const AName, ACaption: String;
   const bmpName: String = '');
 begin
-  Section:=RegisterIDEMenuSection(ParentSection.GetPath,AName);
-  Section.Caption:=ACaption;
+  Section:=RegisterIDESubMenu(ParentSection.GetPath,AName,ACaption);
   if bmpName<>'' then
     Section.Bitmap.LoadFromLazarusResource(bmpName);
 end;
@@ -323,8 +322,8 @@ end;
 procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
   const MenuItemName, MenuItemCaption: String);
 begin
-  Section:=RegisterIDEMenuSection(MainIDEBar.mnuMain.GetPath,MenuItemName);
-  Section.Caption := MenuItemCaption;
+  Section:=RegisterIDESubMenu(MainIDEBar.mnuMain.GetPath,MenuItemName,
+                              MenuItemCaption);
 end;
 {$ELSE}
 procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
@@ -428,7 +427,7 @@ begin
     CreateMenuItem(ParentMI,itmFileOpen,'itmFileOpen',lisMenuOpen,'menu_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
     {$IFDEF UseMenuIntf}
-    CreateMenuSubSection(mnuFile,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
+    CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     {$ELSE}
     CreateMenuItem(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     {$ENDIF}
