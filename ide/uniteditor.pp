@@ -2488,19 +2488,35 @@ begin
 end;
 
 function FindPathFromFile(FileNamePath: string): string;
+{$IFDEF EnableLazDoc}
 var
   i: integer;
   fn: string;
+  pathlist: TStrings;
 begin
   Result := '';
+  pathlist := TStringList.Create;
+
+  //get global lazdoc paths
+  pathlist.AddStrings(EnvironmentOptions.LazDocPathList);
+  //get project lazdoc paths
+  pathlist.AddStrings(LazarusIDE.ActiveProject.LazDocPathList);
+  
   fn := SetDirSeparators('/') + ChangeFileExt(ExtractFileName(FileNamePath), '.xml');
-  for i:= 0 to Pred(EnvironmentOptions.LazDocPathList.Count) do
-    if FileExists(EnvironmentOptions.LazDocPathList[i] + fn) then
+  for i:= 0 to Pred(pathlist.Count) do
+    if FileExists(pathlist[i] + fn) then
     begin
-      Result := EnvironmentOptions.LazDocPathList[i];
+      Result := pathlist[i];
+      pathlist.Free;
       Exit;
   end;
+  pathlist.Free;
 end;
+{$ELSE}
+begin
+  Result:=FileNamePath;
+end;
+{$ENDIF}
 
 procedure TSourceNotebook.LazDocNewPage;
 var
@@ -2520,9 +2536,15 @@ begin
     DocPath := FindPathFromFile(SrcEdit.FileName);
     
     if DocPath <> '' then
-      //load the XML file
+    begin
+      //load the .xml file
       LazDocForm.DocFileName := DocPath + SetDirSeparators('/') +
                         ChangeFileExt(ExtractFileName(SrcEdit.FileName),'.xml');
+
+      UpdateLazDoc;
+    end
+    else
+      LazDocForm.Reset;
   end;
 end;
 
@@ -2530,17 +2552,24 @@ procedure TSourceNotebook.UpdateLazDoc;
 var
   SrcEdit: TSourceEditor;
   DocPath: string;
+  CaretPos: TPoint;
 begin
   SrcEdit:=GetActiveSE;
 
-  //try to find if the file belongs to LCL
-  //for other projects the location of the doc file could
-  //be found through the lpi file
+  //find a path that contains the .xml file
   DocPath := FindPathFromFile(SrcEdit.FileName);
 
   if DocPath <> '' then
+  begin
+    CaretPos := SrcEdit.EditorComponent.CaretXY;
+    Dec(CaretPos.x);
+    Dec(CaretPos.y);
+
     LazDocForm.UpdateLazDoc(SrcEdit.EditorComponent.Lines,
-                            SrcEdit.EditorComponent.CaretXY);
+                            CaretPos);
+  end
+  else
+    LazDocForm.Reset;
 end;
 
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
@@ -4663,7 +4692,9 @@ var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
 
+  {$IFDEF EnableLazDoc}
   LazDocNewPage;
+  {$ENDIF}
   
   //writeln('TSourceNotebook.NotebookPageChanged ',Notebook.Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
@@ -4904,17 +4935,21 @@ begin
       FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
     end;
   end;
+  {$IFDEF EnableLazDoc}
   if Assigned(LazDocForm) then
     UpdateLazDoc;
+  {$ENDIF}
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  {$IFDEF EnableLazDoc}
   if not Assigned(LazDocForm) then Exit;
 
   if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME] then
     UpdateLazDoc;
+  {$ENDIF}
 end;
 
 procedure TSourceNotebook.ShowSynEditHint(const MousePos: TPoint);

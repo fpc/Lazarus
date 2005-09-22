@@ -911,6 +911,7 @@ ide/patheditordlg.pas svneol=native#text/pascal
 ide/project.pp svneol=native#text/pascal
 ide/projectdefs.pas svneol=native#text/pascal
 ide/projectinspector.pas svneol=native#text/pascal
+ide/projectopts.lfm svneol=native#text/plain
 ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
 ide/publishmodule.pas svneol=native#text/pascal

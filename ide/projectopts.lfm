@@ -1,0 +1,398 @@
+object ProjectOptionsDialog: TProjectOptionsDialog
+  ActiveControl = Page4
+  Caption = 'ProjectOptionsDialog'
+  ClientHeight = 375
+  ClientWidth = 430
+  OnClose = ProjectOptionsClose
+  OnResize = ProjectOptionsResize
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 429
+  VertScrollBar.Page = 374
+  Left = 552
+  Height = 375
+  Top = 284
+  Width = 430
+  object Notebook: TNotebook
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    PageIndex = 3
+    Height = 338
+    Width = 430
+    object Page1: TPage
+      Caption = 'Page1'
+      ClientWidth = 422
+      ClientHeight = 330
+      Visible = False
+      Height = 330
+      Width = 422
+      object AppSettingsGroupBox: TGroupBox
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'AppSettingsGroupBox'
+        ClientHeight = 55
+        ClientWidth = 406
+        ParentColor = True
+        TabOrder = 0
+        Left = 6
+        Height = 73
+        Top = 6
+        Width = 410
+        object TitleLabel: TLabel
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'TitleLabel'
+          Color = clNone
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 394
+        end
+        object TitleEdit: TEdit
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          TabOrder = 0
+          Text = 'TitleEdit'
+          Left = 6
+          Height = 23
+          Top = 19
+          Width = 394
+        end
+      end
+      object OutputSettingsGroupBox: TGroupBox
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'OutputSettingsGroupBox'
+        ClientHeight = 55
+        ClientWidth = 406
+        ParentColor = True
+        TabOrder = 1
+        Left = 6
+        Height = 73
+        Top = 85
+        Width = 410
+        object TargetFileLabel: TLabel
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'TargetFileLabel'
+          Color = clNone
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 394
+        end
+        object TargetFileEdit: TEdit
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          TabOrder = 0
+          Text = 'TargetFileEdit'
+          Left = 6
+          Height = 23
+          Top = 19
+          Width = 394
+        end
+      end
+    end
+    object Page2: TPage
+      Caption = 'Page2'
+      ClientWidth = 422
+      ClientHeight = 330
+      Visible = False
+      Height = 330
+      Width = 422
+      object FormsAutoCreatedLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'FormsAutoCreatedLabel'
+        Color = clNone
+        Left = 36
+        Height = 13
+        Top = 10
+        Width = 116
+      end
+      object FormsAvailFormsLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'FormsAvailFormsLabel'
+        Color = clNone
+        Left = 252
+        Height = 13
+        Top = 10
+        Width = 106
+      end
+      object FormsAutoCreatedListBox: TListBox
+        BorderSpacing.OnChange = nil
+        MultiSelect = True
+        TabOrder = 0
+        Left = 36
+        Height = 242
+        Top = 32
+        Width = 168
+      end
+      object FormsAvailFormsListBox: TListBox
+        BorderSpacing.OnChange = nil
+        MultiSelect = True
+        TabOrder = 1
+        Left = 244
+        Height = 242
+        Top = 32
+        Width = 168
+      end
+      object FormsMoveAutoCreatedFormUpBtn: TArrow
+        ArrowType = atUp
+        BorderSpacing.OnChange = nil
+        OnClick = FormsMoveAutoCreatedFormUpBtnClick
+        Left = 6
+        Height = 24
+        Top = 32
+        Width = 24
+      end
+      object FormsMoveAutoCreatedFormsDownBtn: TArrow
+        ArrowType = atDown
+        BorderSpacing.OnChange = nil
+        OnClick = FormsMoveAutoCreatedFormDownBtnClick
+        Left = 6
+        Height = 24
+        Top = 60
+        Width = 24
+      end
+      object FormsRemoveFromAutoCreatedFormsBtn: TArrow
+        ArrowType = atRight
+        BorderSpacing.OnChange = nil
+        OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
+        Left = 212
+        Height = 24
+        Top = 32
+        Width = 24
+      end
+      object FormsAddToAutoCreatedFormsBtn: TArrow
+        BorderSpacing.OnChange = nil
+        OnClick = FormsAddToAutoCreatedFormsBtnClick
+        Left = 212
+        Height = 24
+        Top = 60
+        Width = 24
+      end
+      object FormsAutoCreateNewFormsCheckBox: TCheckBox
+        Align = alBottom
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
+        Caption = 'FormsAutoCreateNewFormsCheckBox'
+        TabOrder = 2
+        Left = 6
+        Height = 23
+        Top = 283
+        Width = 410
+      end
+    end
+    object Page3: TPage
+      Caption = 'Page3'
+      ClientWidth = 422
+      ClientHeight = 330
+      Visible = False
+      Height = 330
+      Width = 422
+      object SaveClosedUnitInfoCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'SaveClosedUnitInfoCheckBox'
+        TabOrder = 0
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 410
+      end
+      object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
+        TabOrder = 1
+        Left = 6
+        Height = 23
+        Top = 103
+        Width = 410
+      end
+      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
+        TabOrder = 2
+        Left = 6
+        Height = 23
+        Top = 132
+        Width = 410
+      end
+      object MainUnitIsPascalSourceCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 16
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitIsPascalSourceCheckBox'
+        TabOrder = 3
+        Left = 6
+        Height = 23
+        Top = 74
+        Width = 410
+      end
+      object SaveOnlyProjectUnitInfoCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'SaveOnlyProjectUnitInfoCheckBox'
+        TabOrder = 4
+        Left = 6
+        Height = 23
+        Top = 35
+        Width = 410
+      end
+      object MainUnitHasTitleStatementCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasTitleStatementCheckBox'
+        TabOrder = 5
+        Left = 6
+        Height = 23
+        Top = 161
+        Width = 410
+      end
+      object RunnableCheckBox: TCheckBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'RunnableCheckBox'
+        TabOrder = 6
+        Left = 6
+        Height = 23
+        Top = 190
+        Width = 410
+      end
+    end
+    object Page4: TPage
+      Caption = 'Page4'
+      ClientWidth = 422
+      ClientHeight = 330
+      Height = 330
+      Width = 422
+      object Label2: TLabel
+        Align = alTop
+        Caption = 'NOTE: only absolute paths are supported now'
+        Color = clNone
+        Height = 17
+        Top = 222
+        Width = 422
+      end
+      object LazDocPathsGroupBox: TGroupBox
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'LazDocPathsGroupBox'
+        ClientHeight = 192
+        ClientWidth = 406
+        ParentColor = True
+        TabOrder = 0
+        Left = 6
+        Height = 210
+        Top = 6
+        Width = 410
+        object LazDocListBox: TListBox
+          Align = alTop
+          BorderSpacing.Around = 6
+          TabOrder = 0
+          Left = 6
+          Height = 108
+          Top = 6
+          Width = 394
+        end
+        object LazDocAddPathButton: TButton
+          Caption = 'LazDocAddPathButton'
+          OnClick = LazDocAddPathButtonClick
+          TabOrder = 1
+          Left = 6
+          Height = 25
+          Top = 122
+          Width = 75
+        end
+        object LazDocDeletePathButton: TButton
+          Caption = 'LazDocDeletePathButton'
+          OnClick = LazDocDeletePathButtonClick
+          TabOrder = 2
+          Left = 90
+          Height = 25
+          Top = 122
+          Width = 75
+        end
+        object LazDocPathEdit: TEdit
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 3
+          Text = 'LazDocPathEdit'
+          Left = 6
+          Height = 23
+          Top = 154
+          Width = 358
+        end
+        object LazDocBrowseButton: TButton
+          Anchors = [akTop, akRight]
+          Caption = '...'
+          OnClick = LazDocBrowseButtonClick
+          TabOrder = 4
+          Left = 369
+          Height = 23
+          Top = 154
+          Width = 23
+        end
+      end
+    end
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 344
+    Height = 25
+    Top = 344
+    Width = 75
+  end
+  object OKButton: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 2
+    Left = 256
+    Height = 25
+    Top = 344
+    Width = 75
+  end
+  object SelectDirectoryDialog: TSelectDirectoryDialog
+    Title = 'Select Directory'
+    FilterIndex = 0
+    Title = 'Select Directory'
+    left = 344
+    top = 8
+  end
+end

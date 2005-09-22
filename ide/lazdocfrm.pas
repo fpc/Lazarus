@@ -46,6 +46,7 @@ uses
   DOM,
   Forms,
   Graphics,
+  IDEProcs,
   LazarusIDEStrConsts,
   LCLProc,
   LResources,
@@ -53,7 +54,6 @@ uses
   StrUtils,
   SynEdit,
   SysUtils,
-  IDEProcs,
   XMLread,
   XMLwrite;
 
@@ -78,7 +78,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
-    FChanged: boolean;
+    FChanged: Boolean;
     FDocFileName: String;
     FCurrentElement: String;
     FLastElement: String;
@@ -101,7 +101,7 @@ type
 
 var
   LazDocForm: TLazDocForm;
-  doc: TXMLdocument = nil; // maybe better to make it a member field of TLazFormDoc
+  doc: TXMLdocument = Nil; //maybe better to make it a member field of TLazFormDoc
 
 procedure DoShowLazDoc;
 
@@ -123,18 +123,13 @@ begin
   begin
     //reset Self
     Reset;
-    
+
     FDocFileName := Value;
 
     if Assigned(doc) then
       FreeAndNil(doc);
 
     ReadXMLFile(doc, FDocFileName);
-
-    //clear all element editors/viewers
-    ShortEdit.Clear;
-    DescrMemo.Clear;
-    ErrorsMemo.Clear;
 
     SetCaption;
 
@@ -148,7 +143,7 @@ end;
 procedure TLazDocForm.FormCreate(Sender: TObject);
 begin
   Caption := lisLazDocMainFormCaption;
-  
+
   with PageControl do
   begin
     Page[0].Caption := lisLazDocShortTag;
@@ -157,11 +152,8 @@ begin
     PageIndex := 0;
   end;
 
-  //clear all element editors/viewers
-  ShortEdit.Clear;
-  DescrMemo.Clear;
-  ErrorsMemo.Clear;
-  
+  Reset;
+
   FChanged := False;
 end;
 
@@ -221,17 +213,19 @@ begin
   if Assigned(n.FirstChild) then
   begin
     {$ifdef dbgLazDoc}
-    DebugLn('TLazDocForm.GetFirstChildValue: retrieving node ' + n.NodeName + '=' + n.FirstChild.NodeValue);
+    DebugLn('TLazDocForm.GetFirstChildValue: retrieving node ' +
+      n.NodeName + '=' + n.FirstChild.NodeValue);
     {$endif}
 
-    Result := n.FirstChild.NodeValue
+    Result := n.FirstChild.NodeValue;
   end
   else
   begin
     {$ifdef dbgLazDoc}
-    DebugLn('TLazDocForm.GetFirstChildValue: retrieving empty node ' + n.NodeName);
+    DebugLn('TLazDocForm.GetFirstChildValue: retrieving empty node ' +
+      n.NodeName);
     {$endif}
-    
+
     Result := '';
   end;
 end;
@@ -253,7 +247,7 @@ begin
       if S = 'descr' then
         Result.Descr := GetFirstChildValue(Node);
 
-      if S='errors' then
+      if S = 'errors' then
         Result.Errors := GetFirstChildValue(Node);
     end;
     Node := Node.NextSibling;
@@ -270,7 +264,8 @@ begin
   ypos := startpos.y;
 
   result := '';
-  while (src[ypos][xpos] <> '(') and (src[ypos][xpos] <> ';') and (src[ypos][xpos] <> ':') do
+  while (src[ypos][xpos] <> '(') and (src[ypos][xpos] <> ';') and
+    (src[ypos][xpos] <> ':') do
   begin
     Result := Result + src[ypos][xpos];
     Inc(xpos);
@@ -336,21 +331,32 @@ begin
   else
     strCaption := strCaption + lisLazDocNoTagCaption + ' - ';
 
-  Caption := strCaption + FDocFileName;
+  if FDocFileName <> '' then
+    Caption := strCaption + FDocFileName
+  else
+    Caption := strCaption + lisLazDocNoTagCaption;
 end;
 
 procedure TLazDocForm.Reset;
 begin
   FreeAndNil(Doc);
   FCurrentElement := '';
+  FDocFileName    := '';
   SetCaption;
+
+  //clear all element editors/viewers
+  ShortEdit.Clear;
+  DescrMemo.Clear;
+  ErrorsMemo.Clear;
+
+  FChanged := False;
 end;
 
 procedure TLazDocForm.UpdateLazDoc(source: TStrings; pos: TPoint);
 var
   dn: TFPDocNode;
-  n: TDOMNode;
-  EnabledState: boolean;
+  n:  TDOMNode;
+  EnabledState: Boolean;
 begin
   if not Assigned(doc) then
   begin
@@ -369,7 +375,7 @@ begin
   //or FCurrentElement is empty (J. Reyes)
   if (FCurrentElement = FLastElement) or (FCurrentElement = '') then
     Exit;
-    
+
   FLastElement := FCurrentElement;
 
   n := NodeByName(FCurrentElement);
@@ -394,9 +400,9 @@ begin
     DescrMemo.Lines.Text := lisLazDocNoDocumentation;
     ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
   end;
-  
+
   FChanged := False;
-  
+
   ShortEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
@@ -407,9 +413,11 @@ var
   n: TDOMNode;
   S: String;
   child: TDOMNode;
+
 begin
   //nothing changed, so exit
-  if not FChanged then Exit;
+  if not FChanged then
+    Exit;
 
   n := NodeByName(FCurrentElement);
 
@@ -424,7 +432,6 @@ begin
       S := n.NodeName;
 
       if S = 'short' then
-      begin
         if not Assigned(n.FirstChild) then
         begin
           child := doc.CreateTextNode(ShortEdit.Text);
@@ -432,36 +439,31 @@ begin
         end
         else
           n.FirstChild.NodeValue := ShortEdit.Text;
-      end;
 
       if S = 'descr' then
-      begin
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(StringListToText(DescrMemo.Lines,#10));
+          child := doc.CreateTextNode(StringListToText(DescrMemo.Lines, #10));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := StringListToText(DescrMemo.Lines,#10);
-      end;
+          n.FirstChild.NodeValue := StringListToText(DescrMemo.Lines, #10);
 
       if S = 'errors' then
-      begin
         if not Assigned(n.FirstChild) then
         begin
-          child := doc.CreateTextNode(StringListToText(ErrorsMemo.Lines,#10));
+          child := doc.CreateTextNode(StringListToText(ErrorsMemo.Lines, #10));
           n.AppendChild(child);
         end
         else
-          n.FirstChild.NodeValue := StringListToText(ErrorsMemo.Lines,#10);
-      end;
+          n.FirstChild.NodeValue := StringListToText(ErrorsMemo.Lines, #10);
 
     end;
     n := n.NextSibling;
   end;
 
   WriteXMLFile(doc, FDocFileName);
-  
+
   FChanged := False;
 end;
 
@@ -472,9 +474,8 @@ end;
 
 initialization
   {$I lazdocfrm.lrs}
-  
+
 finalization
   FreeAndNil(doc)
 
 end.
-

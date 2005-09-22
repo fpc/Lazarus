@@ -15,7 +15,6 @@ object LazDocForm: TLazDocForm
   object PageControl: TPageControl
     ActivePage = ShortTabSheet
     Align = alClient
-    BorderSpacing.OnChange = nil
     TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
@@ -29,6 +28,7 @@ object LazDocForm: TLazDocForm
       Width = 745
       object ShortEdit: TEdit
         Align = alTop
+        BorderSpacing.OnChange = nil
         OnChange = DocumentationTagChange
         TabOrder = 0
         Text = 'ShortEdit'
@@ -44,7 +44,6 @@ object LazDocForm: TLazDocForm
       Width = 745
       object DescrMemo: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -12
@@ -67,6 +66,7 @@ object LazDocForm: TLazDocForm
       Width = 745
       object ErrorsMemo: TMemo
         Align = alClient
+        BorderSpacing.OnChange = nil
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -12
