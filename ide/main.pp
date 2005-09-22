@@ -5253,7 +5253,10 @@ begin
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  if ActiveUnitInfo.Component=FLastFormActivated then
+  if (ActiveUnitInfo.Component<>nil)
+  and (FLastFormActivated<>nil)
+  and (TDesigner(FLastFormActivated.Designer).LookupRoot=ActiveUnitInfo.Component)
+  then
     FLastFormActivated:=nil;
 
   // save some meta data of the source
@@ -8565,7 +8568,8 @@ var
 begin
   if SourceNoteBook.NoteBook = nil then exit;
   if FLastFormActivated <> nil then begin
-    ActiveUnitInfo:= Project1.UnitWithComponent(FLastFormActivated);
+    ActiveUnitInfo:= Project1.UnitWithComponent(
+                             TDesigner(FLastFormActivated.Designer).LookupRoot);
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
     begin
       SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
@@ -10993,7 +10997,7 @@ end;
 Procedure TMainIDE.OnDesignerActivated(Sender: TObject);
 begin
   FDisplayState:= dsForm;
-  FLastFormActivated := TDesigner(Sender).Form;
+  FLastFormActivated := (Sender as TDesigner).Form;
   UpdateIDEComponentPalette;
 end;
 
