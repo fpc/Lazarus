@@ -1178,11 +1178,13 @@ var
   SrcFilename: String;
   MainUnitName: String;
   MakefileFPCFilename: String;
+  BaseDir: String;
 begin
   Result:=mrCancel;
 
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
+  BaseDir:=APackage.Directory;
 
   e:=LineEnding;
   s:='';
@@ -1193,8 +1195,9 @@ begin
   s:=s+'version='+APackage.Version.AsString+e;
   s:=s+''+e;
   s:=s+'[compiler]'+e;
-  s:=s+'unittargetdir='+APackage.CompilerOptions.GetUnitOutPath(true)+e;
-  s:=s+'unitdir='+APackage.CompilerOptions.GetUnitPath(true)+e;
+  s:=s+'unittargetdir='+CreateRelativePath(
+                       APackage.CompilerOptions.GetUnitOutPath(true),BaseDir)+e;
+  s:=s+'unitdir='+APackage.CompilerOptions.GetUnitPath(true)+';.'+e;
   s:=s+'options=-gl'+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;
@@ -1215,9 +1218,9 @@ begin
   s:=s+''+e;
   s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT)'+e;
 
-  MakefileFPCFilename:=AppendPathDelim(
-                 APackage.CompilerOptions.GetUnitOutPath(false))+'Makefile.fpc';
+  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
   
+  debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
   Result:=MainIDE.DoSaveStringToFile(MakefileFPCFilename,s,
                                'Makefile.fpc for package '+APackage.IDAsString);
   if Result<>mrOk then exit;

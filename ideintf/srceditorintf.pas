@@ -85,7 +85,7 @@ type
     // update
     procedure BeginUndoBlock; virtual; abstract;
     procedure EndUndoBlock; virtual; abstract;
-    procedure BeginUpdate; virtual; abstract;
+    procedure BeginUpdate; virtual; abstract; // block painting
     procedure EndUpdate; virtual; abstract;
     procedure IncreaseIgnoreCodeBufferLock; virtual; abstract;
     procedure DecreaseIgnoreCodeBufferLock; virtual; abstract;

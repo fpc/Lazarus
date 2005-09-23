@@ -1620,7 +1620,7 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
    property Count: integer;
    property Color: TColor read FColor write SetColor;
    property Items[Index1, Index2: integer]: integer read GetItems; default;
-   property X: integer index 1 read GetCoords write SetCoords stored IsStored;
+   property X: integer index 1 read GetCoords write SetCoords stored IsStored; deprecated;
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
 
  property specifiers without parameters:
@@ -1660,6 +1660,10 @@ begin
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       RaiseSemicolonAfterPropSpecMissing('nodefault');
+  end else if UpAtomIs('DEPRECATED') then begin
+    ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then
+      RaiseSemicolonAfterPropSpecMissing('deprecated');
   end else
     UndoReadNextAtom;
   // close property
