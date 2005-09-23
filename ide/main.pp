@@ -2485,13 +2485,13 @@ end;
 
 procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
 var
-  TheMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
+  TheMenuItem: TMenuItem;
   Index, SeparatorIndex: integer;
   AFilename: string;
 begin
-  TheMenuItem:=(Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF});
+  TheMenuItem:=(Sender as TMenuItem);
   if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.{$IFDEF UseMenuIntf}SectionIndex{$ELSE}MenuIndex{$ENDIF};
+  Index:=TheMenuItem.MenuIndex;
   SeparatorIndex:=0;
   while SeparatorIndex<MainIDEBar.OpenFilePopupMenu.Items.Count do begin
     if MainIDEBar.OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then

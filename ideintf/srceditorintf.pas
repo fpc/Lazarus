@@ -33,8 +33,6 @@ type
 
   TSourceEditorInterface = class
   protected
-    function GetSelection: string; virtual; abstract;
-    procedure SetSelection(const AValue: string); virtual; abstract;
     function GetBlockBegin: TPoint; virtual; abstract;
     function GetBlockEnd: TPoint; virtual; abstract;
     function GetCodeToolsBuffer: TObject; virtual; abstract;
@@ -45,6 +43,7 @@ type
     function GetLines: TStrings; virtual; abstract;
     function GetLineText: string; virtual; abstract;
     function GetReadOnly: Boolean; virtual; abstract;
+    function GetSelection: string; virtual; abstract;
     function GetSelEnd: Integer; virtual; abstract;
     function GetSelStart: Integer; virtual; abstract;
     function GetSourceText: string; virtual; abstract;
@@ -56,6 +55,7 @@ type
     procedure SetLines(const AValue: TStrings); virtual; abstract;
     procedure SetLineText(const AValue: string); virtual; abstract;
     procedure SetReadOnly(const AValue: Boolean); virtual; abstract;
+    procedure SetSelection(const AValue: string); virtual; abstract;
     procedure SetSelEnd(const AValue: Integer); virtual; abstract;
     procedure SetSelStart(const AValue: Integer); virtual; abstract;
     procedure SetSourceText(const AValue: string); virtual; abstract;
@@ -105,11 +105,11 @@ type
     property Lines: TStrings read GetLines write SetLines;// the whole file
     property CurrentLineText: string read GetLineText write SetLineText;// source of current line
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property Selection: string read GetSelection write SetSelection;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SourceText: string read GetSourceText write SetSourceText;// the whole file
     property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
-    property Selection: string read GetSelection write SetSelection;
   end;
 
   { TSourceEditorWindowInterface }
