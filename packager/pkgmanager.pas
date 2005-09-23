@@ -1174,7 +1174,7 @@ end;
 function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
 var
   s: String;
-  e: Char;
+  e: string;
   SrcFilename: String;
   MainUnitName: String;
   MakefileFPCFilename: String;
