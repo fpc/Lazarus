@@ -369,17 +369,17 @@ begin
   MainIDEBar.mnuMainMenu := TMainMenu.Create(MainIDEBar);
   with MainIDEBar do begin
     mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',mnuMainMenu.Items);
-    CreateMainMenuItem(mnuFile,'mnuFile',lisMenuFile);
-    CreateMainMenuItem(mnuEdit,'mnuEdit',lisMenuEdit);
-    CreateMainMenuItem(mnuSearch,'mnuSearch',lisMenuSearch);
-    CreateMainMenuItem(mnuView,'mnuView',lisMenuView);
-    CreateMainMenuItem(mnuProject,'mnuProject',lisMenuProject);
-    CreateMainMenuItem(mnuRun,'mnuRun',lisMenuRun);
-    CreateMainMenuItem(mnuComponents,'mnuComponents',lisMenuComponents);
-    CreateMainMenuItem(mnuTools,'mnuTools',lisMenuTools);
-    CreateMainMenuItem(mnuEnvironment,'mnuEnvironment',lisMenuEnvironent);
-    CreateMainMenuItem(mnuWindows,'mnuWindows',lisMenuWindows);
-    CreateMainMenuItem(mnuHelp,'mnuHelp',lisMenuHelp);
+    CreateMainMenuItem(mnuFile,'File',lisMenuFile);
+    CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
+    CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);
+    CreateMainMenuItem(mnuView,'View',lisMenuView);
+    CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
+    CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
+    CreateMainMenuItem(mnuComponents,'Components',lisMenuComponents);
+    CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
+    CreateMainMenuItem(mnuEnvironment,'Environment',lisMenuEnvironent);
+    CreateMainMenuItem(mnuWindows,'Windows',lisMenuWindows);
+    CreateMainMenuItem(mnuHelp,'Help',lisMenuHelp);
   end;
   {$ELSE}
   MainIDEBar.mnuMain := TMainMenu.Create(MainIDEBar);

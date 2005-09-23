@@ -114,7 +114,7 @@ type
     HostApplicationBrowseBtn: TBitBtn;
     CmdLineParametersGroupBox: TGroupBox;
     CmdLineParametersEdit: TEdit;
-    UseLaunchingApplicationBevel: TBevel;
+    UseLaunchingApplicationGroupBox: TGroupBox;
     UseLaunchingApplicationCheckBox: TCheckBox;
     UseLaunchingApplicationComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
@@ -392,80 +392,81 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
-var w: integer;
 begin
-  w:=Self.ClientWidth-15;
   HostApplicationGroupBox:=TGroupBox.Create(Self);
   with HostApplicationGroupBox do begin
     Name:='HostApplicationGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,5,w,60);
-    Caption:=dlgHostApplication ;
-    Visible:=true;
+    SetBounds(5,5,Width,55);
+    AnchorParallel(akRight,5,Parent);
+    Caption:=dlgHostApplication;
   end;
   
   HostApplicationEdit:=TEdit.Create(Self);
   with HostApplicationEdit do begin
     Name:='HostApplicationEdit';
     Parent:=HostApplicationGroupBox;
-    SetBounds(5,5,w-10-35,25);
-    Caption:='';
-    Visible:=true;
+    Left:=5;
+    Top:=2;
   end;
   
   HostApplicationBrowseBtn:=TBitBtn.Create(Self);
   with HostApplicationBrowseBtn do begin
     Name:='HostApplicationBrowseBtn';
     Parent:=HostApplicationGroupBox;
-    SetBounds(HostApplicationEdit.Left+HostApplicationEdit.Width+2,5,25,25);
+    AnchorToCompanion(akLeft,2,HostApplicationEdit);
+    AnchorParallel(akTop,0,HostApplicationEdit);
+    AnchorParallel(akBottom,0,HostApplicationEdit);
+    AnchorParallel(akRight,5,Parent);
+    Anchors:=Anchors-[akLeft];
+    Width:=25;
     Caption:='...';
     HostApplicationBrowseBtn.OnClick:=@HostApplicationBrowseBtnClick;
-    Visible:=true;
   end;
+  HostApplicationEdit.AnchorToNeighbour(akRight,2,HostApplicationBrowseBtn);
   
   CmdLineParametersGroupBox:=TGroupBox.Create(Self);
   with CmdLineParametersGroupBox do begin
     Name:='CmdLineParametersGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,HostApplicationGroupBox.Top+HostApplicationGroupBox.Height+5,
-                 w,60);
-    Caption:=dlgCommandLineParams ;
-    Visible:=true;
+    AnchorToCompanion(akTop,8,HostApplicationGroupBox);
+    Height:=55;
+    Caption:=dlgCommandLineParams;
   end;
   
   CmdLineParametersEdit:=TEdit.Create(Self);
   with CmdLineParametersEdit do begin
     Name:='CmdLineParametersEdit';
     Parent:=CmdLineParametersGroupBox;
-    SetBounds(5,5,w-15,25);
+    SetBounds(5,5,Parent.ClientWidth-10,Height);
+    Anchors:=[akLeft,akTop,akRight];
     Caption:='';
-    Visible:=true;
   end;
   
-  UseLaunchingApplicationBevel:=TBevel.Create(Self);
-  with UseLaunchingApplicationBevel do begin
-    Name:='UseLaunchingApplicationBevel';
+  UseLaunchingApplicationGroupBox:=TGroupBox.Create(Self);
+  with UseLaunchingApplicationGroupBox do begin
+    Name:='UseLaunchingApplicationGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(
-      5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
+    AnchorToCompanion(akTop,8,CmdLineParametersGroupBox);
+    Height:=80;
   end;
   
   UseLaunchingApplicationCheckBox:=TCheckBox.Create(Self);
   with UseLaunchingApplicationCheckBox do begin
     Name:='UseLaunchingApplicationCheckBox';
-    Parent:=NoteBook.Page[0];
-    SetBounds(15,
-      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,245,25);
+    Parent:=UseLaunchingApplicationGroupBox;
+    SetBounds(5,0,Width,Height);
+    AutoSize:=true;
     Caption:=dlgUseLaunchingApp;
   end;
   
   UseLaunchingApplicationComboBox:=TComboBox.Create(Self);
   with UseLaunchingApplicationComboBox do begin
     Name:='UseLaunchingApplicationComboBox';
-    Parent:=NoteBook.Page[0];
-    SetBounds(UseLaunchingApplicationCheckBox.Left,
-                 UseLaunchingApplicationCheckBox.Top
-                 +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
+    Parent:=UseLaunchingApplicationGroupBox;
+    Left:=5;
+    AnchorToNeighbour(akTop,0,UseLaunchingApplicationCheckBox);
+    AnchorParallel(akRight,5,Parent);
     with Items do begin
       BeginUpdate;
       Items.Add(DefaultLauncherApplication);
@@ -475,65 +476,65 @@ begin
       {$ENDIF}
       EndUpdate;
     end;
-    Visible:=true;
   end;
   
   WorkingDirectoryGroupBox:=TGroupBox.Create(Self);
   with WorkingDirectoryGroupBox do begin
     Name:='WorkingDirectoryGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,UseLaunchingApplicationComboBox.Top
-                   +UseLaunchingApplicationComboBox.Height+15,w,60);
+    AnchorToCompanion(akTop,8,UseLaunchingApplicationGroupBox);
+    Height:=55;
     Caption:=dlgROWorkingDirectory;
-    Visible:=true;
   end;
   
   WorkingDirectoryEdit:=TEdit.Create(Self);
   with WorkingDirectoryEdit do begin
     Name:='WorkingDirectoryEdit';
     Parent:=WorkingDirectoryGroupBox;
-    SetBounds(5,5,w-10-35,25);
-    Caption:='';
-    Visible:=true;
+    Left:=5;
+    Top:=3;
   end;
   
   WorkingDirectoryBtn:=TBitBtn.Create(Self);
   with WorkingDirectoryBtn do begin
     Name:='WorkingDirectoryBtn';
     Parent:=WorkingDirectoryGroupBox;
-    SetBounds(WorkingDirectoryEdit.Left+WorkingDirectoryEdit.Width+2,5,25,25);
+    AnchorParallel(akTop,0,WorkingDirectoryEdit);
+    AnchorParallel(akBottom,0,WorkingDirectoryEdit);
+    AnchorParallel(akRight,5,Parent);
+    Anchors:=Anchors-[akLeft];
+    Width:=25;
     Caption:='...';
     WorkingDirectoryBtn.OnClick:=@WorkingDirectoryBtnClick;
-    Visible:=true;
   end;
+  WorkingDirectoryEdit.AnchorToNeighbour(akRight,2,WorkingDirectoryBtn);
   
   DisplayGroupBox:=TGroupBox.Create(Self);
   with DisplayGroupBox do begin
     Name:='DisplayGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
-                 w,80);
-    Caption:=dlgRunODisplay ;
-    Visible:=true;
+    AnchorToCompanion(akTop,8,WorkingDirectoryGroupBox);
+    Height:=80;
+    Caption:=dlgRunODisplay;
   end;
   
   UseDisplayCheckBox:=TCheckBox.Create(Self);
   with UseDisplayCheckBox do begin
     Name:='UseDisplayCheckBox';
     Parent:=DisplayGroupBox;
-    SetBounds(5,3,200,Height);
+    SetBounds(5,3,Width,Height);
+    AutoSize:=true;
     Caption:=dlgRunOUsedisplay;
     Checked:=false;
-    Visible:=true;
   end;
 
   DisplayEdit:=TEdit.Create(Self);
   with DisplayEdit do begin
     Name:='DisplayEdit';
     Parent:=DisplayGroupBox;
-    SetBounds(5,UseDisplayCheckBox.Top+UseDisplayCheckBox.Height+3,w-15,25);
-    Caption:='';
-    Visible:=true;
+    AnchorToNeighbour(akTop,1,UseDisplayCheckBox);
+    AnchorParallel(akLeft,5,Parent);
+    AnchorParallel(akRight,5,Parent);
   end;
 end;
 
@@ -548,7 +549,6 @@ begin
     Parent:=NoteBook.Page[1];
     SetBounds(5,5,w,150);
     Caption:=dlgRunOSystemVariables ;
-    Visible:=true;
   end;
   
   SystemVariablesListView:=TListView.Create(Self);
@@ -566,7 +566,6 @@ begin
     ViewStyle := vsReport;
     SortType := stText;
     Align:=alClient;
-    Visible:=true;
   end;
   
   UserOverridesGroupBox:=TGroupBox.Create(Self);
@@ -577,7 +576,6 @@ begin
                  w,150);
     Caption:=dlgRunOUserOverrides;
     OnResize:=@UserOverridesGroupBoxResize;
-    Visible:=true;
   end;
   
   UserOverridesListView:=TListView.Create(Self);
@@ -598,7 +596,6 @@ begin
     Columns.EndUpdate;
     ViewStyle := vsReport;
     SortType := stText;
-    Visible:=true;
   end;
 
   UserOverridesAddButton:=TButton.Create(Self);
@@ -610,7 +607,6 @@ begin
     Width:=100;
     Caption:=dlgEdAdd;
     OnClick:=@UserOverridesAddButtonClick;
-    Visible:=true;
   end;
 
   UserOverridesEditButton:=TButton.Create(Self);
@@ -622,7 +618,6 @@ begin
     Width:=100;
     Caption:=dlgEdEdit;
     OnClick:=@UserOverridesEditButtonClick;
-    Visible:=true;
   end;
 
   UserOverridesDeleteButton:=TButton.Create(Self);
@@ -634,7 +629,6 @@ begin
     Width:=100;
     Caption:=dlgEdDelete;
     OnClick:=@UserOverridesDeleteButtonClick;
-    Visible:=true;
   end;
 
   IncludeSystemVariablesCheckBox:=TCheckBox.Create(Self);
@@ -645,7 +639,6 @@ begin
     Caption:=dlgIncludeSystemVariables ;
     Checked:=false;
     Enabled:=false;
-    Visible:=true;
   end;
 end;
 
@@ -660,68 +653,7 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.ResizeLocalPage;
-var w: integer;
 begin
-  w:=Self.ClientWidth-15;
-  
-  with HostApplicationGroupBox do begin
-    SetBounds(5,5,w,60);
-  end;
-
-  with HostApplicationEdit do begin
-    SetBounds(5,5,w-10-35,25);
-  end;
-
-  with HostApplicationBrowseBtn do begin
-    SetBounds(HostApplicationEdit.Left+HostApplicationEdit.Width+2,5,25,25);
-  end;
-
-  with CmdLineParametersGroupBox do begin
-    SetBounds(5,HostApplicationGroupBox.Top+HostApplicationGroupBox.Height+5,
-                 w,60);
-  end;
-
-  with CmdLineParametersEdit do begin
-    SetBounds(5,5,w-15,25);
-  end;
-
-  with UseLaunchingApplicationBevel do begin
-    SetBounds(
-      5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
-  end;
-
-  with UseLaunchingApplicationCheckBox do begin
-    SetBounds(15,
-      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,250,25);
-  end;
-
-  with UseLaunchingApplicationComboBox do begin
-    SetBounds(UseLaunchingApplicationCheckBox.Left,
-                 UseLaunchingApplicationCheckBox.Top
-                 +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
-  end;
-
-  with WorkingDirectoryGroupBox do begin
-    SetBounds(5,UseLaunchingApplicationComboBox.Top
-                   +UseLaunchingApplicationComboBox.Height+15,w,60);
-  end;
-
-  with WorkingDirectoryEdit do begin
-    SetBounds(5,5,w-10-35,25);
-  end;
-
-  with WorkingDirectoryBtn do begin
-    SetBounds(WorkingDirectoryEdit.Left+WorkingDirectoryEdit.Width+2,5,25,25);
-  end;
-
-  with DisplayGroupBox do begin
-    SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
-                 w,80);
-  end;
-
-  with DisplayEdit do begin
-    SetBounds(5,UseDisplayCheckBox.Top+UseDisplayCheckBox.Height+3,w-15,25);
-  end;
 end;
 
 procedure TRunParamsOptsDlg.ResizeEnvironmentPage;
