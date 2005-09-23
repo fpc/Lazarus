@@ -102,13 +102,13 @@ type
     property CursorTextXY: TPoint read GetCursorTextXY write SetCursorTextXY;
     property EditorControl: TWinControl read GetEditorControl;// normally TSynEdit
     property FileName: string read GetFileName;
-    property Lines: TStrings read GetLines write SetLines;
-    property LineText: string read GetLineText write SetLineText;
+    property Lines: TStrings read GetLines write SetLines;// the whole file
+    property LineText: string read GetLineText write SetLineText;// source of current line
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;
-    property SourceText: string read GetSourceText write SetSourceText;
-    property TopLine: Integer read GetTopLine write SetTopLine;
+    property SourceText: string read GetSourceText write SetSourceText;// the whole file
+    property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
     property Selection: string read GetSelection write SetSelection;
   end;
 
