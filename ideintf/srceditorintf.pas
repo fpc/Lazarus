@@ -33,31 +33,31 @@ type
 
   TSourceEditorInterface = class
   protected
-    function GetLineText: string; virtual; abstract;
-    procedure SetLineText(const AValue: string); virtual; abstract;
-    function GetReadOnly: Boolean; virtual; abstract;
-    procedure SetReadOnly(const AValue: Boolean); virtual; abstract;
-    function GetSourceText: string; virtual; abstract;
-    procedure SetSourceText(const AValue: string); virtual; abstract;
-    function GetTopLine: Integer; virtual; abstract;
-    procedure SetTopLine(const AValue: Integer); virtual; abstract;
-    function GetFileName: string; virtual; abstract;
-    function GetEditorControl: TWinControl; virtual; abstract;
+    function GetBlockBegin: TPoint; virtual; abstract;
+    function GetBlockEnd: TPoint; virtual; abstract;
     function GetCodeToolsBuffer: TObject; virtual; abstract;
     function GetCursorScreenXY: TPoint; virtual; abstract;
     function GetCursorTextXY: TPoint; virtual; abstract;
-    procedure SetCursorScreenXY(const AValue: TPoint); virtual; abstract;
-    procedure SetCursorTextXY(const AValue: TPoint); virtual; abstract;
-    function GetBlockBegin: TPoint; virtual; abstract;
-    function GetBlockEnd: TPoint; virtual; abstract;
-    procedure SetBlockBegin(const AValue: TPoint); virtual; abstract;
-    procedure SetBlockEnd(const AValue: TPoint); virtual; abstract;
+    function GetEditorControl: TWinControl; virtual; abstract;
+    function GetFileName: string; virtual; abstract;
+    function GetLines: TStrings; virtual; abstract;
+    function GetLineText: string; virtual; abstract;
+    function GetReadOnly: Boolean; virtual; abstract;
     function GetSelEnd: Integer; virtual; abstract;
     function GetSelStart: Integer; virtual; abstract;
+    function GetSourceText: string; virtual; abstract;
+    function GetTopLine: Integer; virtual; abstract;
+    procedure SetBlockBegin(const AValue: TPoint); virtual; abstract;
+    procedure SetBlockEnd(const AValue: TPoint); virtual; abstract;
+    procedure SetCursorScreenXY(const AValue: TPoint); virtual; abstract;
+    procedure SetCursorTextXY(const AValue: TPoint); virtual; abstract;
+    procedure SetLines(const AValue: TStrings); virtual; abstract;
+    procedure SetLineText(const AValue: string); virtual; abstract;
+    procedure SetReadOnly(const AValue: Boolean); virtual; abstract;
     procedure SetSelEnd(const AValue: Integer); virtual; abstract;
     procedure SetSelStart(const AValue: Integer); virtual; abstract;
-    function GetLines: TStrings; virtual; abstract;
-    procedure SetLines(const AValue: TStrings); virtual; abstract;
+    procedure SetSourceText(const AValue: string); virtual; abstract;
+    procedure SetTopLine(const AValue: Integer); virtual; abstract;
   public
     // selections
     function SelectionAvailable: boolean; virtual; abstract;
@@ -89,22 +89,22 @@ type
 
     // search and replace
     function SearchReplace(const ASearch, AReplace: string;
-                           SearchOptions: TSrcEditSearchOption): integer; virtual; abstract;
+                           SearchOptions: TSrcEditSearchOptions): integer; virtual; abstract;
   public
-    property FileName: string read GetFileName;
-    property EditorControl: TWinControl read GetEditorControl;// normally TSynEdit
+    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
+    property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property CodeToolsBuffer: TObject read GetCodeToolsBuffer;
     property CursorScreenXY: TPoint read GetCursorScreenXY write SetCursorScreenXY;
     property CursorTextXY: TPoint read GetCursorTextXY write SetCursorTextXY;
-    property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
-    property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
-    property SelStart: Integer read GetSelStart write SetSelStart;
-    property SelEnd: Integer read GetSelEnd write SetSelEnd;
-    property TopLine: Integer read GetTopLine write SetTopLine;
-    property SourceText: string read GetSourceText write SetSourceText;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property LineText: string read GetLineText write SetLineText;
+    property EditorControl: TWinControl read GetEditorControl;// normally TSynEdit
+    property FileName: string read GetFileName;
     property Lines: TStrings read GetLines write SetLines;
+    property LineText: string read GetLineText write SetLineText;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;
+    property SelStart: Integer read GetSelStart write SetSelStart;
+    property SourceText: string read GetSourceText write SetSourceText;
+    property TopLine: Integer read GetTopLine write SetTopLine;
   end;
 
   { TSourceEditorWindowInterface }

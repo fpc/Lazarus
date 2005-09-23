@@ -218,7 +218,7 @@ type
     procedure StartFindAndReplace(Replace:boolean);
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
-    procedure DoFindAndReplace;
+    function DoFindAndReplace: Integer;
     procedure FindNext;
     procedure FindPrevious;
     procedure ShowGotoLineDialog;
@@ -294,7 +294,7 @@ type
 
     // text
     function SearchReplace(const ASearch, AReplace: string;
-                           SearchOptions: TSrcEditSearchOption): integer; override;
+                           SearchOptions: TSrcEditSearchOptions): integer; override;
     function GetSourceText: string; override;
     procedure SetSourceText(const AValue: string); override;
     function LineCount: Integer; override;
@@ -1021,13 +1021,13 @@ begin
   InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
   InputHistories.Save;
   DoFindAndReplace;
-End;
+end;
 
 {------------------------------F I N D  A G A I N ----------------------------}
 procedure TSourceEditor.FindNext;
 var
   OldOptions: TSynSearchOptions;
-Begin
+begin
   if snIncrementalFind in FSourceNoteBook.States then begin
     FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
     FSourceNoteBook.DoIncrementalSearch;
@@ -1053,12 +1053,13 @@ Begin
   FindReplaceDlg.Options:=OldOptions;
 End;
 
-procedure TSourceEditor.DoFindAndReplace;
+function TSourceEditor.DoFindAndReplace: integer;
 var
   OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
   NewTopLine: integer;
 begin
+  Result:=0;
   if SourceNotebook<>nil then
     SourceNotebook.AddJumpPointClicked(Self);
   OldCaretXY:=EditorComponent.CaretXY;
@@ -1070,7 +1071,7 @@ begin
   end;
   //debugln('TSourceEditor.DoFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'" ssoEntireScope=',dbgs(ssoEntireScope in FindReplaceDlg.Options),' ssoBackwards=',dbgs(ssoBackwards in FindReplaceDlg.Options));
   try
-    EditorComponent.SearchReplace(
+    Result:=EditorComponent.SearchReplace(
       FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);
   except
     on E: ERegExpr do begin
@@ -2427,10 +2428,32 @@ begin
 end;
 
 function TSourceEditor.SearchReplace(const ASearch, AReplace: string;
-  SearchOptions: TSrcEditSearchOption): integer;
+  SearchOptions: TSrcEditSearchOptions): integer;
+const
+  SrcEdit2SynEditSearchOption: array[TSrcEditSearchOption] of TSynSearchOption =(
+    ssoMatchCase,
+    ssoWholeWord,
+    ssoBackwards,
+    ssoEntireScope,
+    ssoSelectedOnly,
+    ssoReplace,
+    ssoReplaceAll,
+    ssoPrompt,
+    ssoRegExpr,
+    ssoRegExprMultiLine
+  );
+var
+  OldOptions, NewOptions: TSynSearchOptions;
+  o: TSrcEditSearchOption;
 begin
-  {$WARNING TODO TSourceEditor.SearchReplace}
-  Result:=0;
+  OldOptions:=FindReplaceDlg.Options;
+  NewOptions:=[];
+  for o:=Low(TSrcEditSearchOption) to High(TSrcEditSearchOption) do
+    if o in SearchOptions then
+      Include(NewOptions,SrcEdit2SynEditSearchOption[o]);
+  FindReplaceDlg.Options:=NewOptions;
+  Result:=DoFindAndReplace;
+  FindReplaceDlg.Options:=OldOptions;
 end;
 
 function TSourceEditor.GetSourceText: string;
