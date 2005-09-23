@@ -340,7 +340,7 @@ Begin
   $0400: Result := 'WM_USER';
   $8000: Result := 'WM_APP';
   Else
-    Result := 'Unknown WM_Message = $' + IntToHex(WM_Message, 4);
+    Result := 'Unknown(' + IntToStr(WM_Message) + ')';
   End; {Case}
 End;
 

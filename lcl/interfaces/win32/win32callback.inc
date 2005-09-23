@@ -830,7 +830,7 @@ Begin
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
         lWinControl := WindowInfo^.WinControl;
-      {$IFDEF MSG_DEBUG|}
+      {$IFDEF MSG_DEBUG}
       with PDrawItemStruct(LParam)^ do
         writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
       {$ENDIF}
