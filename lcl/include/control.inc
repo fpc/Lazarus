@@ -740,6 +740,11 @@ begin
   end;
 end;
 
+procedure TControl.CMTextChanged(var Message: TLMessage);
+begin
+  TextChanged;
+end;
+
 {------------------------------------------------------------------------------
        TControl.CMParentColorChanged
 
@@ -3181,7 +3186,6 @@ end;
 
 procedure TControl.TextChanged;
 begin
-  Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
 function TControl.GetCachedText(var CachedText: TCaption): boolean;

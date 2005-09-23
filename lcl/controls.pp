@@ -918,6 +918,7 @@ type
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
   protected
     // drag and drop
     procedure CalculateDockSizes;

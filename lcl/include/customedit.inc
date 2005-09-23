@@ -352,6 +352,8 @@ Procedure TCustomEdit.TextChanged;
 var
   Temp : String;
 Begin
+  //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
+  
   //check to see if the charcase should affect the text.
   if FCharCase = ecUppercase then
   Begin
