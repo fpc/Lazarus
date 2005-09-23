@@ -85,7 +85,7 @@ type
     procedure EndUpdate; virtual; abstract;
     procedure IncreaseIgnoreCodeBufferLock; virtual; abstract;
     procedure DecreaseIgnoreCodeBufferLock; virtual; abstract;
-    procedure UpdateCodeBuffer; virtual; abstract;// copy the source from EditorComponent
+    procedure UpdateCodeBuffer; virtual; abstract;// copy the source from EditorComponent to the codetools
 
     // search and replace
     function SearchReplace(const ASearch, AReplace: string;

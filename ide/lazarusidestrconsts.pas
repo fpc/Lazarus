@@ -2501,6 +2501,7 @@ resourcestring
   lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile clean';
   lisPckEditRecompileAllRequired = 'Recompile all required';
+  lisPckEditCreateMakefile = 'Create Makefile';
   lisPckEditAddToProject = 'Add to project';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';

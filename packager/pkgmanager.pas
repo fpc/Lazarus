@@ -74,6 +74,8 @@ type
     function OnPackageEditorCompilePackage(Sender: TObject;
                           APackage: TLazPackage;
                           CompileClean, CompileRequired: boolean): TModalResult;
+    function OnPackageEditorCreateMakefile(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                        Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
@@ -150,6 +152,7 @@ type
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
+    function DoWriteMakefile(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
                                  Globals: TGlobalCompilerOptions;
@@ -181,6 +184,7 @@ type
     procedure SortAutoInstallDependencies;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
                                     const AnUnitName, AnUnitInFilename: string);
+                                    
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -261,11 +265,11 @@ type
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
-    function DoCompilePackage(APackage: TLazPackage;
-                              Globals: TGlobalCompilerOptions;
-                              Flags: TPkgCompileFlags): TModalResult; override;
+    function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                              Globals: TGlobalCompilerOptions = nil): TModalResult; override;
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
+    function DoCreatePackageMakefile(APackage: TLazPackage): TModalResult;
 
     // package installation
     procedure LoadInstalledPackages; override;
@@ -689,7 +693,13 @@ begin
   Flags:=[];
   if CompileClean then Include(Flags,pcfCleanCompile);
   if CompileRequired then Include(Flags,pcfCompileDependenciesClean);
-  Result:=DoCompilePackage(APackage,nil,Flags);
+  Result:=DoCompilePackage(APackage,Flags,nil);
+end;
+
+function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoCreatePackageMakefile(APackage);
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -1161,6 +1171,12 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
+begin
+  Result:=mrCancel;
+  
+end;
+
 function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
   FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
   Policies: TPackageUpdatePolicies): TModalResult;
@@ -1178,9 +1194,9 @@ begin
     try
       i:=0;
       while i<AutoPackages.Count do begin
-        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),Globals,
+        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),
                       [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                       pcfDoNotSaveEditorFiles]);
+                       pcfDoNotSaveEditorFiles],Globals);
         if Result<>mrOk then exit;
         inc(i);
       end;
@@ -1953,6 +1969,7 @@ begin
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSourcePackage;
   PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnImExportCompilerOptions:=@OnPackageEditorImExportCompilerOptions;
+  PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -2597,8 +2614,7 @@ begin
 end;
 
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
-  Globals: TGlobalCompilerOptions;
-  Flags: TPkgCompileFlags): TModalResult;
+  Flags: TPkgCompileFlags; Globals: TGlobalCompilerOptions): TModalResult;
 var
   PkgCompileTool: TExternalToolOptions;
   CompilerFilename: String;
@@ -2681,19 +2697,28 @@ begin
         DebugLn('TPkgManager.DoCompilePackage CheckAmbiguousPackageUnits failed');
         exit;
       end;
+      
+      // create Makefile
+      if pcfCreateMakefile in Flags then begin
+        Result:=DoWriteMakefile(APackage);
+        if Result<>mrOk then exit;
+      end;
 
       // run compilation tool 'Before'
-      Result:=MainIDE.DoExecuteCompilationTool(
-        APackage.CompilerOptions.ExecuteBefore,
-        APackage.Directory,'Executing command before');
-      if Result<>mrOk then exit;
+      if not (pcfDoNotCompilePackage in Flags) then begin
+        Result:=MainIDE.DoExecuteCompilationTool(
+          APackage.CompilerOptions.ExecuteBefore,
+          APackage.Directory,'Executing command before');
+        if Result<>mrOk then exit;
+      end;
 
       // create external tool to run the compiler
       DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
       DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
       DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
 
-      if not APackage.CompilerOptions.SkipCompiler then begin
+      if (not APackage.CompilerOptions.SkipCompiler)
+      and (not (pcfDoNotCompilePackage in Flags)) then begin
         // check compiler filename
         try
           CheckIfFileIsExecutable(CompilerFilename);
@@ -2743,10 +2768,12 @@ begin
       end;
 
       // run compilation tool 'After'
-      Result:=MainIDE.DoExecuteCompilationTool(
-        APackage.CompilerOptions.ExecuteAfter,
-        APackage.Directory,'Executing command after');
-      if Result<>mrOk then exit;
+      if not (pcfDoNotCompilePackage in Flags) then begin
+        Result:=MainIDE.DoExecuteCompilationTool(
+          APackage.CompilerOptions.ExecuteAfter,
+          APackage.Directory,'Executing command after');
+        if Result<>mrOk then exit;
+      end;
     finally
       MessagesView.EndBlock;
     end;
@@ -2907,6 +2934,13 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage
+  ): TModalResult;
+begin
+  Result:=DoCompilePackage(APackage,[pcfDoNotCompileDependencies,
+                           pcfDoNotCompilePackage,pcfCreateMakefile],nil);
 end;
 
 function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string;

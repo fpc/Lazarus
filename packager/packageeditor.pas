@@ -46,6 +46,8 @@ uses
   AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
   
 type
+  TOnCreatePkgMakefile =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnOpenFile =
     function(Sender: TObject; const Filename: string): TModalResult of object;
   TOnOpenPkgFile =
@@ -135,6 +137,7 @@ type
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
+    procedure CreateMakefileClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
@@ -218,6 +221,7 @@ type
     FOnAddToProject: TOnAddPkgToProject;
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
+    FOnCreatePkgMakefile: TOnCreatePkgMakefile;
     FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
@@ -266,6 +270,7 @@ type
                                   const Filename: string): TModalResult;
     function AddToProject(APackage: TLazPackage;
                           OnlyTestIfPossible: boolean): TModalResult;
+    function CreateMakefile(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -301,6 +306,8 @@ type
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
     property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
                                                 write FOnAddToProject;
+    property OnCreateMakefile: TOnCreatePkgMakefile read FOnCreatePkgMakefile
+                                                     write FOnCreatePkgMakefile;
   end;
   
 var
@@ -567,9 +574,11 @@ begin
   AddPopupMenuItem(lisPckEditCompile, @CompileBitBtnClick, CompileBitBtn.Enabled
     );
   AddPopupMenuItem(lisPckEditRecompileClean, @CompileCleanClick,
-    CompileBitBtn.Enabled);
+                   CompileBitBtn.Enabled);
   AddPopupMenuItem(lisPckEditRecompileAllRequired, @CompileAllCleanClick,
-    CompileBitBtn.Enabled);
+                   CompileBitBtn.Enabled);
+  AddPopupMenuItem(lisPckEditCreateMakefile, @CreateMakefileClick,
+                   CompileBitBtn.Enabled);
   AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem(lisCodeTemplAdd, @AddBitBtnClick, AddBitBtn.Enabled);
   AddPopupMenuItem(lisExtToolRemove, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
@@ -1214,6 +1223,11 @@ begin
   end;
   UpdateButtons;
   UpdateStatusBar;
+end;
+
+procedure TPackageEditorForm.CreateMakefileClick(Sender: TObject);
+begin
+  PackageEditors.CreateMakefile(LazPackage);
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
@@ -2342,6 +2356,14 @@ function TPackageEditors.AddToProject(APackage: TLazPackage;
 begin
   if Assigned(OnAddToProject) then
     Result:=OnAddToProject(Self,APackage,OnlyTestIfPossible)
+  else
+    Result:=mrCancel;
+end;
+
+function TPackageEditors.CreateMakefile(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnCreateMakefile) then
+    Result:=OnCreateMakefile(Self,APackage)
   else
     Result:=mrCancel;
 end;

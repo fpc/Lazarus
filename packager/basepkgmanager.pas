@@ -63,9 +63,11 @@ type
   TPkgCompileFlag = (
     pcfCleanCompile,  // append -B to the compiler options
     pcfDoNotCompileDependencies,
+    pcfDoNotCompilePackage,
     pcfCompileDependenciesClean,
     pcfOnlyIfNeeded,
-    pcfDoNotSaveEditorFiles
+    pcfDoNotSaveEditorFiles,
+    pcfCreateMakefile
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
@@ -132,9 +134,8 @@ type
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
-    function DoCompilePackage(APackage: TLazPackage;
-                      Globals: TGlobalCompilerOptions;
-                      Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
+    function DoCompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
+                              Globals: TGlobalCompilerOptions = nil): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
                       
@@ -167,9 +168,11 @@ const
   PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
     'pcfCleanCompile',
     'pcfDoNotCompileDependencies',
+    'pcfDoNotCompilePackage',
     'pcfCompileDependenciesClean',
     'pcfOnlyIfNeeded',
-    'pcfAutomatic'
+    'pcfDoNotSaveEditorFiles',
+    'pcfCreateMakefile'
     );
 
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;

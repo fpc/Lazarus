@@ -1,3 +1,12 @@
+"Last-Translator: Matthijs Willemstein\n"
+"PO-Revision-Date: 2005-04-29 10:04+0200\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Language-Team:  <en@li.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+"Project-Id-Version: lazaruside.nl\n"
+"MIME-Version: 1"
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   commando1 \""
@@ -356,7 +365,7 @@ msgstr "Opties aan packages en projecten toevoegen"
 
 #: lazarusidestrconsts:lislazdocaddpathbutton
 msgid "Add path"
-msgstr ""
+msgstr "Pad toevoegen"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -1072,7 +1081,7 @@ msgstr "Code Verkenner"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates"
-msgstr ""
+msgstr "Broncode templates"
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1092,7 +1101,7 @@ msgstr "Broncode templates"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
-msgstr ""
+msgstr "CodeEplorer opties"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -1164,7 +1173,7 @@ msgstr "Commando "
 
 #: lazarusidestrconsts:liscommandafter
 msgid "Command after"
-msgstr ""
+msgstr "Commando uitvoer"
 
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
@@ -1708,7 +1717,7 @@ msgstr "Verwijder het oude Package bestand?"
 
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
-msgstr ""
+msgstr "Al deze bestanden verwijderen"
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
@@ -1852,7 +1861,7 @@ msgstr "Doel package"
 
 #: lazarusidestrconsts:lisdestinationdirectory
 msgid "Destination directory"
-msgstr ""
+msgstr "Doel directorie"
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -2184,7 +2193,7 @@ msgstr "Evalueer/Verander"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
-msgstr ""
+msgstr "Uitzonderingen filter"
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -2708,11 +2717,11 @@ msgstr "Ga naar regel :"
 
 #: lazarusidestrconsts:uemnextbookmark
 msgid "Goto next Bookmark"
-msgstr ""
+msgstr "Ga naar volgend Bookmark"
 
 #: lazarusidestrconsts:uemprevbookmark
 msgid "Goto previous Bookmark"
-msgstr ""
+msgstr "Ga naar vorig Bookmark"
 
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
@@ -2952,7 +2961,7 @@ msgstr "Aantal te negeren spaties"
 
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
-msgstr ""
+msgstr "Negeer binaire bestanden"
 
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
@@ -3004,7 +3013,7 @@ msgstr "Include bestanden (-Fi):"
 
 #: lazarusidestrconsts:lisincludefilter
 msgid "Include Filter"
-msgstr ""
+msgstr "Include filter"
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -3488,7 +3497,7 @@ msgstr "Spring naar"
 
 #: lazarusidestrconsts:lismenujumptonextbookmark
 msgid "Jump to next bookmark"
-msgstr ""
+msgstr "Spring naar volgend bookmark"
 
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
@@ -3496,7 +3505,7 @@ msgstr "Spring naar volgende fout"
 
 #: lazarusidestrconsts:lismenujumptoprevbookmark
 msgid "Jump to previous bookmark"
-msgstr ""
+msgstr "Spring naar vorig bookmark"
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
@@ -3556,7 +3565,7 @@ msgstr "Sleutelwoord"
 
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
-msgstr ""
+msgstr "Sleutelwoord policy"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -3628,15 +3637,15 @@ msgstr "LazDoc"
 
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"
-msgstr ""
+msgstr "LazDoc Editor"
 
 #: lazarusidestrconsts:lislazdocmainformcaption
 msgid "LazDoc editor"
-msgstr "LazDoc Editor"
+msgstr "LazDoc editor"
 
 #: lazarusidestrconsts:lislazdocpathsgroupbox
 msgid "LazDoc settings"
-msgstr ""
+msgstr "LazDoc instellingen"
 
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
@@ -3720,7 +3729,7 @@ msgstr "Linker zijden"
 
 #: lazarusidestrconsts:lisleftspaceequally
 msgid "Left space equally"
-msgstr ""
+msgstr "Linker kant evenredig verdelen"
 
 #: lazarusidestrconsts:dlgleftpos
 msgid "Left:"
@@ -3776,15 +3785,15 @@ msgstr "Regels"
 
 #: lazarusidestrconsts:lisuidlines
 msgid "Lines:"
-msgstr ""
+msgstr "Regels:"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
-msgstr ""
+msgstr "Slim linken"
 
 #: lazarusidestrconsts:dlglinklibraries
 msgid "Link Style:"
-msgstr ""
+msgstr "Linkstijl"
 
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
@@ -3828,7 +3837,7 @@ msgstr "Kleine letters, eerste letter hoofdletter."
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
-msgstr ""
+msgstr "Macros"
 
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
@@ -3852,7 +3861,7 @@ msgstr "De hoofd unit is pascal broncode"
 
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
-msgstr ""
+msgstr "Major"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
@@ -3952,7 +3961,7 @@ msgstr "Minimum Versie:"
 
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
-msgstr ""
+msgstr "Minor"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
@@ -4144,7 +4153,7 @@ msgstr "Breng naar voren"
 
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
-msgstr ""
+msgstr "Meervoudig"
 
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
@@ -4184,7 +4193,7 @@ msgstr "Naamgeving"
 
 #: lazarusidestrconsts:lisceoneveronlymanually
 msgid "Never, only manually"
-msgstr ""
+msgstr "Nooit, alleen handmatig"
 
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
@@ -4268,7 +4277,7 @@ msgstr "Volgende"
 
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
-msgstr ""
+msgstr "Volgend bookmark"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -4336,7 +4345,7 @@ msgstr "Normale selectie modus"
 
 #: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
-msgstr ""
+msgstr "Het filter is gewoonlijk een regular expressie. In de eenvoudige syntax betekent een . een gewoon karakter, een * staat voor alles, een ? staat voor elk willekeurig karakter. Komma's en puntkomma's zijn scheidingstekens tussen alternatieven. Bijvoorbeeld: *.pas;*.pp staat voor ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
@@ -4844,7 +4853,7 @@ msgstr "Voorbeeld (Max regellengte = 1)"
 
 #: lazarusidestrconsts:srkmecprevbookmark
 msgid "Previous Bookmark"
-msgstr ""
+msgstr "Vorig Bookmark"
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -4868,7 +4877,7 @@ msgstr "Private methode"
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr ""
+msgstr "Waarschijnlijk moet je nog wat packages installeren voordat je verder gaat.%s%sWaarschuwing:%sHet project is afhankelijk van sommige packages, die units bevatten met de Register procedure. De register procedure wordt gewoonlijk gebruikt voor het installeren van componenten in de IDE. De volgende packages zijn nog niet in de IDE geinstalleerd. Als je een form dat deze componenten bevat, probeert te openen in de IDE zal dat vervelende resultaten geven.%s%sDit heeft geen impact op het laden van het project of de bijbehorende broncode.%s%sDit betekent alleen: Het is een slecht idee om deze forms te openen om te bewerken, voordat de missende package zijn geinstalleerd.%s%s"
 
 #: lazarusidestrconsts:lisprocedure
 msgid "Procedure"
@@ -4904,7 +4913,7 @@ msgstr "Programma bestandsnaam:"
 
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
-msgstr ""
+msgstr "Project"
 
 #: lazarusidestrconsts:lisprojectsuccessfullybuilt
 msgid "Project %s%s%s successfully built. :)"
@@ -4920,7 +4929,7 @@ msgstr "Project Include Path"
 
 #: lazarusidestrconsts:lisprojectinformation
 msgid "Project Information"
-msgstr ""
+msgstr "Project informatie"
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
@@ -4980,7 +4989,7 @@ msgstr "Project is 'runnable'"
 
 #: lazarusidestrconsts:lisprojectmakroproperties
 msgid "Project makro properties"
-msgstr ""
+msgstr "Project macro properties"
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5100,7 +5109,7 @@ msgstr "Opnieuw"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr ""
+msgstr "Beperk het opnieuw tekenen"
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
@@ -5116,7 +5125,7 @@ msgstr "Verversen"
 
 #: lazarusidestrconsts:lisceorefreshautomatically
 msgid "Refresh automatically"
-msgstr ""
+msgstr "Automatisch verversen"
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -5152,7 +5161,7 @@ msgstr "Reguliere expressies"
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
-msgstr ""
+msgstr "Vrijgeven"
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
 msgid "Reload from disk"
@@ -5172,11 +5181,11 @@ msgstr "Verwijder alle ongeldige properties"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
-msgstr "Verwijder"
+msgstr "Verwijder afhankelijkheid"
 
 #: lazarusidestrconsts:lispckeditremovedependencyfrompackage
 msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
-msgstr ""
+msgstr "Verwijder afhankelijkheid %s%s%s%suit package %s%s%s"
 
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
@@ -5212,7 +5221,7 @@ msgstr "Verwijder van Project"
 
 #: lazarusidestrconsts:lislazdocdeletepathbutton
 msgid "Remove path"
-msgstr ""
+msgstr "Verwijder pad"
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
@@ -5380,7 +5389,7 @@ msgstr "Rechter marge kleur"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves caret"
-msgstr ""
+msgstr "Rechter muistoets verplaats caret"
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -5388,7 +5397,7 @@ msgstr "Rechter kanten"
 
 #: lazarusidestrconsts:lisrightspaceequally
 msgid "Right space equally"
-msgstr ""
+msgstr "Verdeel rechter kant evenredig"
 
 #: lazarusidestrconsts:dlgrubberbandgroup
 msgid "Rubber band"
@@ -5440,7 +5449,7 @@ msgstr "Russisch(UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
-msgstr ""
+msgstr "SVN revisie"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -5496,7 +5505,7 @@ msgstr "Project Opslaan Als ..."
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
-msgstr ""
+msgstr "Sla instelling op"
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
@@ -5540,7 +5549,7 @@ msgstr "Bewaar editor informatie voor gesloten bestanden"
 
 #: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
-msgstr ""
+msgstr "Bewaar editor info voor bestanden buiten het project"
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
@@ -5552,7 +5561,7 @@ msgstr "Bestand %s%s%s%sopslaan voor het sluiten van form %s%s%s?"
 
 #: lazarusidestrconsts:lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
-msgstr ""
+msgstr "Bewaar info van gesloten editor bestanden"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5748,15 +5757,15 @@ msgstr "Selecteer een Template"
 
 #: lazarusidestrconsts:srkmecselup
 msgid "Select Up"
-msgstr ""
+msgstr "Selecteer omhoog"
 
 #: lazarusidestrconsts:srkmecselwordleft
 msgid "Select Word Left"
-msgstr ""
+msgstr "Selecteer linker woord"
 
 #: lazarusidestrconsts:srkmecselwordright
 msgid "Select Word Right"
-msgstr ""
+msgstr "Selecteer rechter woord"
 
 #: lazarusidestrconsts:lisselectahelpitem
 msgid "Select a help item:"
@@ -5848,11 +5857,11 @@ msgstr "Zet markering %d"
 
 #: lazarusidestrconsts:uemsetfreebookmark
 msgid "Set a free Bookmark"
-msgstr ""
+msgstr "Plaats een beschikbaar Bookmark"
 
 #: lazarusidestrconsts:lismenusetfreebookmark
 msgid "Set a free bookmark"
-msgstr ""
+msgstr "Plaats een beschikbaar bookmark"
 
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -5864,7 +5873,7 @@ msgstr "Geef element standaard waarde"
 
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
-msgstr ""
+msgstr "Geef property variabele een waarde"
 
 #: lazarusidestrconsts:lislazbuildsettobuildall
 msgid "Set to %sBuild All%s"
@@ -5880,7 +5889,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
-msgstr ""
+msgstr "Kort"
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
@@ -5892,7 +5901,7 @@ msgstr "Toon alles"
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr ""
+msgstr "Laat waarde van CodeTools zien"
 
 #: lazarusidestrconsts:dlgcoshowerr
 msgid "Show Errors"
@@ -5948,7 +5957,7 @@ msgstr "Toon sluitknoppen in notebook"
 
 #: lazarusidestrconsts:srkmecshowcodecontext
 msgid "Show code context"
-msgstr ""
+msgstr "Laat code samenhang zien"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -6024,7 +6033,7 @@ msgstr "Toon gebruikte bestanden"
 
 #: lazarusidestrconsts:lissimplesyntax
 msgid "Simple Syntax"
-msgstr ""
+msgstr "Eenvoudige syntax"
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -6036,7 +6045,7 @@ msgstr "Grootte"
 
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
-msgstr ""
+msgstr "Grootte"
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -6360,7 +6369,7 @@ msgstr "Template bestandsnaam"
 
 #: lazarusidestrconsts:lisctdtemplates
 msgid "Templates"
-msgstr ""
+msgstr "Templates"
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
@@ -7624,15 +7633,15 @@ msgstr "Variabele prefix"
 
 #: lazarusidestrconsts:liscodetoolsdefsvariable
 msgid "Variable:"
-msgstr ""
+msgstr "Variabele:"
 
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
-msgstr ""
+msgstr "Variabele: %s"
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
-msgstr ""
+msgstr "Aantal melding tijdens compilatie:"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -7688,7 +7697,7 @@ msgstr "Toon Broncode"
 
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
-msgstr ""
+msgstr "Laat bron (.lfm) zien"
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -7812,7 +7821,7 @@ msgstr "Nieuwe forms toevoegen aan de \"auto-created forms\""
 
 #: lazarusidestrconsts:lisceowhenswitchingfile
 msgid "When switching file in source editor"
-msgstr ""
+msgstr "Bij het wisselen van bestand in de editor"
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
