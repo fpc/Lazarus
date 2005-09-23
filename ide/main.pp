@@ -7862,7 +7862,9 @@ var
       ExtTool:=EnvironmentOptions.ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
       {$IFDEF UseMenuIntf}
-      {$WARNING TODO ExtTool Shortcut}
+      if CurMenuItem is TIDEMenuCommand then
+        TIDEMenuCommand(CurMenuItem).Command:=
+          EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+Index);
       {$ELSE}
       CurMenuItem.ShortCut:=ShortCut(ExtTool.Key,ExtTool.Shift);
       {$ENDIF}

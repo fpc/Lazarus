@@ -1307,7 +1307,7 @@ begin
   if FCommand=AValue then exit;
   FCommand:=AValue;
   if MenuItem<>nil then
-    MenuItem.ShortCut:=IDEShortCutToMenuShortCut(AValue.KeyA);
+    MenuItem.ShortCut:=IDEShortCutToMenuShortCut(AValue.ShortcutA);
 end;
 
 procedure TIDEMenuCommand.SetMenuItem(const AValue: TMenuItem);
@@ -1321,7 +1321,7 @@ begin
     MenuItem.RightJustify:=RightJustify;
     MenuItem.ShowAlwaysCheckable:=ShowAlwaysCheckable;
     if Command<>nil then
-      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(Command.KeyA)
+      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(Command.ShortcutA)
     else
       MenuItem.ShortCut:=ShortCut(0,[]);
     MenuItem.GroupIndex:=GroupIndex;

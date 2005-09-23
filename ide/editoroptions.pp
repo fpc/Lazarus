@@ -3082,16 +3082,16 @@ begin
     end else
       s:='';
     Result:=Result+s;
-    if (KeyA.Key1=VK_UNKNOWN) and (KeyB.Key1=VK_UNKNOWN) then
+    if (ShortcutA.Key1=VK_UNKNOWN) and (ShortcutB.Key1=VK_UNKNOWN) then
       Result:=Result+'none'
-    else if (KeyA.Key1=VK_UNKNOWN) then
-      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyB)
-    else if (KeyB.Key1=VK_UNKNOWN) then
-      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA)
+    else if (ShortcutA.Key1=VK_UNKNOWN) then
+      Result:=Result+KeyAndShiftStateToEditorKeyString(ShortcutB)
+    else if (ShortcutB.Key1=VK_UNKNOWN) then
+      Result:=Result+KeyAndShiftStateToEditorKeyString(ShortcutA)
     else
-      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA)
+      Result:=Result+KeyAndShiftStateToEditorKeyString(ShortcutA)
            +'  or  '+
-           KeyAndShiftStateToEditorKeyString(KeyB);
+           KeyAndShiftStateToEditorKeyString(ShortcutB);
   end;
 end;
 

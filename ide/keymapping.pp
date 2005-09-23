@@ -34,8 +34,9 @@ interface
 uses
   LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
+  Dialogs, StringHashList,
   SynEdit, SynEditKeyCmds, Laz_XMLCfg,
-  Dialogs, StringHashList, LazarusIDEStrConsts, IDECommands;
+  LazarusIDEStrConsts, TextTools, IDECommands;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -261,10 +262,8 @@ const
   ecDesignerForwardOne   = ecUserFirst + 1006;
   ecDesignerBackOne      = ecUserFirst + 1007;
 
-  // custom tools
-  ecCustomToolFirst      = ecUserFirst + 2000;
-  ecCustomToolLast       = ecUserFirst + 2999;
-
+  // custom commands
+  ecLazarusLast          = ecUserFirst + 2000;
 
 type
   TKeyMapScheme = (
@@ -299,7 +298,6 @@ type
   TKeyCommandRelationList = class(TIDECommands)
   private
     fLastKey: TIDEShortCut; // for multiple key commands
-    FCustomKeyCount: integer;
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
@@ -313,7 +311,6 @@ type
        Command:word;  const TheKeyA, TheKeyB: TIDEShortCut):integer;
     function AddDefault(Category: TKeyCommandCategory; const Name: string;
        Command:word):integer;
-    procedure SetCustomKeyCount(const NewCount: integer);
     procedure SetExtToolCount(NewCount: integer);
   public
     constructor Create;
@@ -328,6 +325,7 @@ type
     function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
+    function FindCommandByName(const CommandName: string): TKeyCommandRelation;
     function TranslateKey(Key: word; Shift: TShiftState;
       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF};
       UseLastKey: boolean = true
@@ -341,9 +339,20 @@ type
                        {$ELSE}Areas: TCommandAreas{$ENDIF});
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
+    function CreateUniqueCategoryName(const AName: string): string;
+    function CreateUniqueCommandName(const AName: string): string;
+    function CreateNewCommandID: word;
+    {$IFDEF UseIDEScopes}
+    function CreateCategory(Parent: TIDECommandCategory;
+                            const AName, Description: string;
+                            Scope: TIDECommandScope): TIDECommandCategory; override;
+    function CreateCommand(Category: TIDECommandCategory;
+                           const AName, Description: string;
+                           const TheShortcutA, TheShortcutB: TIDEShortCut
+                           ): TIDECommand; override;
+    {$ENDIF}
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
-    property CustomKeyCount: integer read FCustomKeyCount write SetCustomKeyCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     property RelationCount:integer read GetRelationCount;
     property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
@@ -403,7 +412,7 @@ procedure GetDefaultKeyForClassicScheme(Command: word;
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToStr(Shift:TShiftState):AnsiString;
-function KeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
+function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
 function EditorKeyStringIsIrregular(const s: string): boolean;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
@@ -1260,12 +1269,12 @@ begin
   Result:=IntToStr(i);
 end;
 
-function KeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
+function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
 begin
-  Result:=IntToStr(KeyA.Key1) + ',' + ShiftStateToStr(KeyA.Shift1) + ',' +
-          IntToStr(KeyA.Key2) + ',' + ShiftStateToStr(KeyA.Shift2) + ',' +
-          IntToStr(KeyB.Key1) + ',' + ShiftStateToStr(KeyB.Shift1) + ',' +
-          IntToStr(KeyB.Key2) + ',' + ShiftStateToStr(KeyB.Shift2);
+  Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
+          IntToStr(ShortcutA.Key2) + ',' + ShiftStateToStr(ShortcutA.Shift2) + ',' +
+          IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1) + ',' +
+          IntToStr(ShortcutB.Key2) + ',' + ShiftStateToStr(ShortcutB.Shift2);
 end;
 
 function EditorKeyStringIsIrregular(const s: string): boolean;
@@ -1309,34 +1318,34 @@ begin
       with KeyCommandRelationList.Relations[Index] do
       begin
         CommandLabel.Caption:=srkmCommand+LocalizedName;
-        if (KeyA.Key1<>VK_UNKNOWN) then
+        if (ShortcutA.Key1<>VK_UNKNOWN) then
         begin
-          KeyCtrlCheckBox[0].Checked:=ssCtrl in KeyA.Shift1;
-          KeyAltCheckBox[0].Checked:=ssAlt in KeyA.Shift1;
-          KeyShiftCheckBox[0].Checked:=ssShift in KeyA.Shift1;
-          InitComboBox(KeyComboBox[0],KeyA.Key1);
+          KeyCtrlCheckBox[0].Checked:=ssCtrl in ShortcutA.Shift1;
+          KeyAltCheckBox[0].Checked:=ssAlt in ShortcutA.Shift1;
+          KeyShiftCheckBox[0].Checked:=ssShift in ShortcutA.Shift1;
+          InitComboBox(KeyComboBox[0],ShortcutA.Key1);
         end;
-        if (KeyA.Key2<>VK_UNKNOWN) then
+        if (ShortcutA.Key2<>VK_UNKNOWN) then
         begin
-          KeyCtrlCheckBox[1].Checked:=ssCtrl in KeyA.Shift2;
-          KeyAltCheckBox[1].Checked:=ssAlt in KeyA.Shift2;
-          KeyShiftCheckBox[1].Checked:=ssShift in KeyA.Shift2;
-          InitComboBox(KeyComboBox[1],KeyA.Key2);
+          KeyCtrlCheckBox[1].Checked:=ssCtrl in ShortcutA.Shift2;
+          KeyAltCheckBox[1].Checked:=ssAlt in ShortcutA.Shift2;
+          KeyShiftCheckBox[1].Checked:=ssShift in ShortcutA.Shift2;
+          InitComboBox(KeyComboBox[1],ShortcutA.Key2);
         end;
 
-        if (KeyB.Key1<>VK_UNKNOWN) then
+        if (ShortcutB.Key1<>VK_UNKNOWN) then
         begin
-          KeyCtrlCheckBox[2].Checked:=ssCtrl in KeyB.Shift1;
-          KeyAltCheckBox[2].Checked:=ssAlt in KeyB.Shift1;
-          KeyShiftCheckBox[2].Checked:=ssShift in KeyB.Shift1;
-          InitComboBox(KeyComboBox[2],KeyB.Key1);
+          KeyCtrlCheckBox[2].Checked:=ssCtrl in ShortcutB.Shift1;
+          KeyAltCheckBox[2].Checked:=ssAlt in ShortcutB.Shift1;
+          KeyShiftCheckBox[2].Checked:=ssShift in ShortcutB.Shift1;
+          InitComboBox(KeyComboBox[2],ShortcutB.Key1);
         end;
-        if (KeyB.Key2<>VK_UNKNOWN) then
+        if (ShortcutB.Key2<>VK_UNKNOWN) then
         begin
-          KeyCtrlCheckBox[3].Checked:=ssCtrl in KeyB.Shift2;
-          KeyAltCheckBox[3].Checked:=ssAlt in KeyB.Shift2;
-          KeyShiftCheckBox[3].Checked:=ssShift in KeyB.Shift2;
-          InitComboBox(KeyComboBox[3],KeyB.Key2);
+          KeyCtrlCheckBox[3].Checked:=ssCtrl in ShortcutB.Shift2;
+          KeyAltCheckBox[3].Checked:=ssAlt in ShortcutB.Shift2;
+          KeyShiftCheckBox[3].Checked:=ssShift in ShortcutB.Shift2;
+          InitComboBox(KeyComboBox[3],ShortcutB.Key2);
         end;
       end;
       Result:=ShowModal;
@@ -1591,8 +1600,6 @@ begin
     ..ecExtToolLast         : Result:= Format(srkmecExtTool,[cmd-ecExtToolFirst+1]);
     ecMakeResourceString    : Result:= srkmecMakeResourceString;
     ecDiff                  : Result:= srkmecDiff;
-    ecCustomToolFirst
-    ..ecCustomToolLast      : Result:= Format(srkmecCustomTool,[cmd-ecCustomToolFirst+1]);
 
     // environment menu
     ecEnvironmentOptions    : Result:= srkmecEnvironmentOptions;
@@ -1935,7 +1942,7 @@ begin
   NewKeyA:=CleanIDEShortCut;
   NewKeyB:=CleanIDEShortCut;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick A KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+  //debugln('TKeyMappingEditForm.OkButtonClick A ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
   // get old relation
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
@@ -1964,11 +1971,11 @@ begin
     exit;
   end;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+  //debugln('TKeyMappingEditForm.OkButtonClick B ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
   // get settings for key2
   NewKeyB.Key1:=EditorKeyStringToVKCode(KeyComboBox[2].Text);
-  //debugln('TKeyMappingEditForm.OkButtonClick B2 KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB),' ',Key2KeyComboBox.Text);
+  //debugln('TKeyMappingEditForm.OkButtonClick B2 ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB),' ',Key2KeyComboBox.Text);
   if NewKeyB.Key1<>VK_UNKNOWN then
   begin
     if KeyCtrlCheckBox[2].Checked then include(NewKeyB.Shift1,ssCtrl);
@@ -1999,7 +2006,7 @@ begin
     exit;
   end;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick C KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+  //debugln('TKeyMappingEditForm.OkButtonClick C ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
   if NewKeyA.Key1=VK_UNKNOWN then
   begin
@@ -2010,12 +2017,12 @@ begin
     NewKeyB.Shift2:=[];
   end;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick D KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+  //debugln('TKeyMappingEditForm.OkButtonClick D ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
-  CurRelation.KeyA:=NewKeyA;
-  CurRelation.KeyB:=NewKeyB;
+  CurRelation.ShortcutA:=NewKeyA;
+  CurRelation.ShortcutB:=NewKeyB;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+  //debugln('TKeyMappingEditForm.OkButtonClick B ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
   ModalResult:=mrOk;
 end;
 
@@ -2086,23 +2093,24 @@ begin
     with ConflictRelation do
     begin
       if (j=KeyIndex) then continue;
+      
       {$IFDEF UseIDEScopes}
-      {$WARNING TODO: TKeyMappingEditForm.ResolveConflicts}
+      if not Category.ScopeIntersects(Scope) then continue;
       {$ELSE}
       if (Category.Areas*Areas=[]) then continue;
       {$ENDIF}
       
-      if ((Key.Key1=KeyA.Key1) and (Key.Shift1=KeyA.Shift1))
-      and (((Key.Key2=KeyA.Key2) and (Key.Shift2=KeyA.Shift2))
-            or (Key.Key2=VK_UNKNOWN) or (KeyA.Key2=VK_UNKNOWN))
+      if ((Key.Key1=ShortcutA.Key1) and (Key.Shift1=ShortcutA.Shift1))
+      and (((Key.Key2=ShortcutA.Key2) and (Key.Shift2=ShortcutA.Shift2))
+            or (Key.Key2=VK_UNKNOWN) or (ShortcutA.Key2=VK_UNKNOWN))
       then begin
-        conflictType:=ctConflictKeyA; // KeyA bites
+        conflictType:=ctConflictKeyA; // ShortcutA bites
       end
-      else if ((Key.Key1=KeyB.Key1) and (Key.Shift1=KeyB.Shift1))
-      and (((Key.Key2=KeyB.Key2) and (Key.Shift2=KeyB.Shift2))
-           or (Key.Key2<>VK_UNKNOWN) or (KeyB.Key2=VK_UNKNOWN))
+      else if ((Key.Key1=ShortcutB.Key1) and (Key.Shift1=ShortcutB.Shift1))
+      and (((Key.Key2=ShortcutB.Key2) and (Key.Shift2=ShortcutB.Shift2))
+           or (Key.Key2<>VK_UNKNOWN) or (ShortcutB.Key2=VK_UNKNOWN))
       then begin
-        conflictType:=ctConflictKeyB; // KeyB bites
+        conflictType:=ctConflictKeyB; // ShortcutB bites
       end;
     end;
     if (conflictType<>ctNone) then begin
@@ -2110,10 +2118,10 @@ begin
       ConflictName:=ConflictRelation.GetCategoryAndName;
       if conflictType=ctConflictKeyA then
         ConflictName:=ConflictName
-                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyA)
+                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutA)
       else
         ConflictName:=ConflictName
-                 +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyB);
+                 +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB);
       if MessageDlg('Conflict found',
          'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
          'is already assigned to '+ConflictName+'.'#13+#13+
@@ -2124,8 +2132,8 @@ begin
         exit;
       end;
       if (conflictType=ctConflictKeyA) then
-        ConflictRelation.KeyA:=ConflictRelation.KeyB;
-      ConflictRelation.ClearKeyB;
+        ConflictRelation.ShortcutA:=ConflictRelation.ShortcutB;
+      ConflictRelation.ClearShortcutB;
     end;
   end;
 
@@ -2227,7 +2235,7 @@ begin
   AddDefault(C,'Scroll right one char',ecScrollRight);
 
   // selection
-  C:=Categories[AddCategory('Selection',srkmCatSelection,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('Selection',srkmCatSelection,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
   AddDefault(C,'Copy selection to clipboard',ecCopy);
   AddDefault(C,'Cut selection to clipboard',ecCut);
   AddDefault(C,'Paste clipboard to current position',ecPaste);
@@ -2261,7 +2269,7 @@ begin
   AddDefault(C,'Select paragraph',ecSelectParagraph);
 
   // editing - without menu items in the IDE bar
-  C:=Categories[AddCategory('text editing commands',srkmCatEditing,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('text editing commands',srkmCatEditing,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
   AddDefault(C,'Delete last char',ecDeleteLastChar);
   AddDefault(C,'Delete char at cursor',ecDeleteChar);
   AddDefault(C,'Delete to end of word',ecDeleteWord);
@@ -2293,7 +2301,7 @@ begin
   AddDefault(C,'Redo',ecRedo);
 
   // search & replace
-  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
   AddDefault(C,'Go to matching bracket',ecMatchBracket);
   AddDefault(C,'Find text',ecFind);
   AddDefault(C,'Find next',ecFindNext);
@@ -2551,39 +2559,6 @@ begin
   Result:=Add(Category,Name,Command,TheKeyA,TheKeyB);
 end;
 
-procedure TKeyCommandRelationList.SetCustomKeyCount(const NewCount: integer);
-var i: integer;
-  CustomCat: TKeyCommandCategory;
-  CustomRelation: TKeyCommandRelation;
-begin
-  if FCustomKeyCount=NewCount then exit;
-  CustomCat:=FindCategoryByName(KeyCategoryCustomName);
-  if NewCount>FCustomKeyCount then begin
-    // increase available custom commands
-    while NewCount>FCustomKeyCount do begin
-      Add(CustomCat,Format(srkmecCustomTool,[FCustomKeyCount]),
-          ecCustomToolFirst+FCustomKeyCount,
-          CleanIDEShortCut,CleanIDEShortCut);
-      inc(FCustomKeyCount);
-    end;
-  end else begin
-    // decrease available custom commands
-    i:=CustomCat.Count-1;
-    while (i>=0) and (FCustomKeyCount>NewCount) do begin
-      if TObject(CustomCat[i]) is TKeyCommandRelation then begin
-        CustomRelation:=TKeyCommandRelation(CustomCat[i]);
-        if (CustomRelation.Command>=ecCustomToolFirst)
-        and (CustomRelation.Command<=ecCustomToolLast) then begin
-          fRelations.Remove(CustomRelation);
-          CustomCat.Delete(i);
-          dec(FCustomKeyCount);
-        end;
-      end;
-      dec(i);
-    end;
-  end;
-end;
-
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
 var i: integer;
   ExtToolCat: TKeyCommandCategory;
@@ -2643,10 +2618,10 @@ var a,b,p:integer;
     if (i and 4)>0 then Include(Result,ssAlt);
   end;
 
-  function OldKeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
+  function OldKeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
   begin
-    Result:=IntToStr(KeyA.Key1) + ',' + ShiftStateToStr(KeyA.Shift1) + ',' +
-            IntToStr(KeyB.Key1) + ',' + ShiftStateToStr(KeyB.Shift1);
+    Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
+            IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1);
   end;
 
 // LoadFromXMLConfig
@@ -2686,7 +2661,7 @@ begin
       Key2:=0;
       Shift2:=[];
     end;
-    Relations[a].KeyA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
+    Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
     Key1:=word(ReadNextInt);
     Shift1:=IntToShiftState(ReadNextInt);
     if FileVersion>2 then begin
@@ -2696,7 +2671,7 @@ begin
       Key2:=0;
       Shift2:=[];
     end;
-    Relations[a].KeyB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
+    Relations[a].ShortcutB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
   end;
   Result:=true;
 end;
@@ -2716,7 +2691,7 @@ begin
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
     with Relations[a] do begin
-      CurKeyStr:=KeyValuesToStr(KeyA,KeyB);
+      CurKeyStr:=KeyValuesToStr(ShortcutA,ShortcutB);
       GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
       DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheKeyB);
     end;
@@ -2741,10 +2716,10 @@ begin
     {$ELSE}
     if Category.Areas*Areas=[] then continue;
     {$ENDIF}
-    if ((KeyA.Key1=Key.Key1) and (KeyA.Shift1=Key.Shift1) and
-        (KeyA.Key2=Key.Key2) and (KeyA.Shift2=Key.Shift2))
-    or ((KeyB.Key1=Key.Key1) and (KeyB.Shift1=Key.Shift1) and
-        (KeyB.Key2=Key.Key2) and (KeyB.Shift2=Key.Shift2)) then
+    if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
+        (ShortcutA.Key2=Key.Key2) and (ShortcutA.Shift2=Key.Shift2))
+    or ((ShortcutB.Key1=Key.Key1) and (ShortcutB.Shift1=Key.Shift1) and
+        (ShortcutB.Key2=Key.Key2) and (ShortcutB.Shift2=Key.Shift2)) then
     begin
       Result:=Relations[a];
       exit;
@@ -2781,7 +2756,7 @@ var
 begin
   for a:=0 to FRelations.Count-1 do begin
     CurRelation:=Relations[a];
-    if (CurRelation.KeyA.Key1=VK_UNKNOWN)
+    if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
     {$IFDEF UseIDEScopes}
     or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
         and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
@@ -2790,7 +2765,7 @@ begin
     {$ENDIF}
     then
       MaxKeyCnt:=0
-    else if CurRelation.KeyB.Key1=VK_UNKNOWN then
+    else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
       MaxKeyCnt:=1
     else
       MaxKeyCnt:=2;
@@ -2806,16 +2781,16 @@ begin
           Key.Free;
         end else if KeyCnt=1 then begin
           // Define key1 for this command
-          Key.Key:=CurRelation.KeyA.Key1;
-          Key.Shift:=CurRelation.KeyA.Shift1;
-          Key.Key2:=CurRelation.KeyA.Key2;
-          Key.Shift2:=CurRelation.KeyA.Shift2;
+          Key.Key:=CurRelation.ShortcutA.Key1;
+          Key.Shift:=CurRelation.ShortcutA.Shift1;
+          Key.Key2:=CurRelation.ShortcutA.Key2;
+          Key.Shift2:=CurRelation.ShortcutA.Shift2;
         end else if KeyCnt=2 then begin
           // Define key2 for this command
-          Key.Key:=CurRelation.KeyB.Key1;
-          Key.Shift:=CurRelation.KeyB.Shift1;
-          Key.Key2:=CurRelation.KeyB.Key2;
-          Key.Shift2:=CurRelation.KeyB.Shift2;
+          Key.Key:=CurRelation.ShortcutB.Key1;
+          Key.Shift:=CurRelation.ShortcutB.Shift1;
+          Key.Key2:=CurRelation.ShortcutB.Key2;
+          Key.Shift2:=CurRelation.ShortcutB.Shift2;
         end;
         inc(KeyCnt);
       end;
@@ -2826,15 +2801,15 @@ begin
       Key:=ASynEditKeyStrokes.Add;
       Key.Command:=CurRelation.Command;
       if KeyCnt=1 then begin
-        Key.Key:=CurRelation.KeyA.Key1;
-        Key.Shift:=CurRelation.KeyA.Shift1;
-        Key.Key2:=CurRelation.KeyA.Key2;
-        Key.Shift2:=CurRelation.KeyA.Shift2;
+        Key.Key:=CurRelation.ShortcutA.Key1;
+        Key.Shift:=CurRelation.ShortcutA.Shift1;
+        Key.Key2:=CurRelation.ShortcutA.Key2;
+        Key.Shift2:=CurRelation.ShortcutA.Shift2;
       end else begin
-        Key.Key:=CurRelation.KeyB.Key1;
-        Key.Shift:=CurRelation.KeyB.Shift1;
-        Key.Key2:=CurRelation.KeyB.Key2;
-        Key.Shift2:=CurRelation.KeyB.Shift2;
+        Key.Key:=CurRelation.ShortcutB.Key1;
+        Key.Shift:=CurRelation.ShortcutB.Shift1;
+        Key.Key2:=CurRelation.ShortcutB.Key2;
+        Key.Shift2:=CurRelation.ShortcutB.Shift2;
       end;
       inc(KeyCnt);
     end;
@@ -2861,7 +2836,7 @@ begin
     CurRelation:=List.Relations[i];
     CurCategory:=FindCategoryByName(CurRelation.Category.Name);
     Add(CurCategory,CurRelation.Name,CurRelation.Command,
-      CurRelation.KeyA,CurRelation.KeyB);
+      CurRelation.ShortcutA,CurRelation.ShortcutB);
   end;
 
   // copy ExtToolCount
@@ -2885,10 +2860,55 @@ begin
                                               TheKeyA,TheKeyB);
     kmsCustom: ;
     end;
-    CurRelation.KeyA:=TheKeyA;
-    CurRelation.KeyB:=TheKeyB;
+    CurRelation.ShortcutA:=TheKeyA;
+    CurRelation.ShortcutB:=TheKeyB;
   end;
 end;
+
+function TKeyCommandRelationList.CreateUniqueCategoryName(const AName: string
+  ): string;
+begin
+  Result:=AName;
+  if FindCategoryByName(Result)=nil then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while FindCategoryByName(Result)<>nil do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+function TKeyCommandRelationList.CreateUniqueCommandName(const AName: string
+  ): string;
+begin
+  Result:=AName;
+  if FindCommandByName(Result)=nil then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while FindCommandByName(Result)<>nil do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+function TKeyCommandRelationList.CreateNewCommandID: word;
+begin
+  Result:=ecLazarusLast;
+  while FindByCommand(Result)<>nil do inc(Result);
+end;
+
+{$IFDEF UseIDEScopes}
+function TKeyCommandRelationList.CreateCategory(Parent: TIDECommandCategory;
+  const AName, Description: string; Scope: TIDECommandScope): TIDECommandCategory;
+begin
+  Result:=Categories[
+                AddCategory(CreateUniqueCategoryName(AName),Description,Scope)];
+end;
+
+function TKeyCommandRelationList.CreateCommand(Category: TIDECommandCategory;
+  const AName, Description: string; const TheShortcutA,
+  TheShortcutB: TIDEShortCut): TIDECommand;
+begin
+  Result:=Relations[Add(Category as TKeyCommandCategory,
+                        CreateUniqueCommandName(AName),
+                        CreateNewCommandID,TheShortcutA,TheShortcutB)];
+  Result.LocalizedName:=Description;
+end;
+{$ENDIF}
 
 function TKeyCommandRelationList.GetCategory(Index: integer): TKeyCommandCategory;
 begin
@@ -2915,6 +2935,18 @@ begin
   for i:=0 to CategoryCount-1 do
     if CategoryName=Categories[i].Name then begin
       Result:=Categories[i];
+      exit;
+    end;
+  Result:=nil;
+end;
+
+function TKeyCommandRelationList.FindCommandByName(const CommandName: string
+  ): TKeyCommandRelation;
+var i: integer;
+begin
+  for i:=0 to RelationCount-1 do
+    if CommandName=Relations[i].Name then begin
+      Result:=Relations[i];
       exit;
     end;
   Result:=nil;

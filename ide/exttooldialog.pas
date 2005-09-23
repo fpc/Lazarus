@@ -244,8 +244,8 @@ begin
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
-      Items[i].Key:=KeyCommandRelation.KeyA.Key1;
-      Items[i].Shift:=KeyCommandRelation.KeyA.Shift1;
+      Items[i].Key:=KeyCommandRelation.ShortcutA.Key1;
+      Items[i].Shift:=KeyCommandRelation.ShortcutA.Shift1;
     end else begin
       Items[i].Key:=VK_UNKNOWN;
       Items[i].Shift:=[];
@@ -390,7 +390,7 @@ begin
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
-      KeyCommandRelation.KeyA:=IDEShortCut(Items[i].Key,Items[i].Shift,
+      KeyCommandRelation.ShortcutA:=IDEShortCut(Items[i].Key,Items[i].Shift,
                                            VK_UNKNOWN,[]);
     end else begin
       DebugLn('[TExternalToolList.SaveShortCuts] Error: '

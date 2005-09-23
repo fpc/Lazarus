@@ -85,6 +85,7 @@ type
     function IDEWindowClassCount: integer;
     function CategoryCount: integer;
     function HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
+    function Intersects(AScope: TIDECommandScope): boolean;
   public
     property Name: string read FName;
     property IDEWindowClasses[Index: integer]: TCustomFormClass read GetIDEWindowClasses;
@@ -120,10 +121,13 @@ type
     Key2: word;
     Shift2: TShiftState;
   end;
+  PIDEShortCut = ^TIDEShortCut;
 
   { TIDECommandCategory
     TIDECommandCategory is used to divide the commands in handy packets }
     
+  { TIDECommandCategory }
+
   TIDECommandCategory = class(TList)
   protected
     FDescription: string;
@@ -138,6 +142,7 @@ type
   public
     {$IFDEF UseIDEScopes}
     destructor Destroy; override;
+    function ScopeIntersects(AScope: TIDECommandScope): boolean;
     {$ENDIF}
   public
     property Name: string read FName;
@@ -161,31 +166,48 @@ type
     FCommand: word;
     FLocalizedName: string;
     FName: String;
+    FShortcutA: TIDEShortCut;
+    FShortcutB: TIDEShortCut;
   protected
     function GetLocalizedName: string; virtual;
     procedure SetLocalizedName(const AValue: string); virtual;
     procedure SetCategory(const AValue: TIDECommandCategory); virtual;
+    procedure SetShortcutA(const AValue: TIDEShortCut); virtual;
+    procedure SetShortcutB(const AValue: TIDEShortCut); virtual;
   public
     function AsShortCut: TShortCut; virtual;
     constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
-      TheCommand: word; const TheKeyA, TheKeyB: TIDEShortCut);
+      TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut);
   public
-    KeyA: TIDEShortCut;
-    KeyB: TIDEShortCut;
-    DefaultKeyA: TIDEShortCut;
-    DefaultKeyB: TIDEShortCut;
-    procedure ClearKeyA;
-    procedure ClearKeyB;
+    DefaultShortcutA: TIDEShortCut;
+    DefaultShortcutB: TIDEShortCut;
+    procedure ClearShortcutA;
+    procedure ClearShortcutB;
     function GetCategoryAndName: string;
+  public
     property Name: String read FName;
-    property Command: word read FCommand;  // see the ecXXX constants above
+    property Command: word read FCommand;// see the ecXXX constants in ../ide/keymapping.pp
     property LocalizedName: string read GetLocalizedName write SetLocalizedName;
     property Category: TIDECommandCategory read FCategory write SetCategory;
+    property ShortcutA: TIDEShortCut read FShortcutA write SetShortcutA;
+    property ShortcutB: TIDEShortCut read FShortcutB write SetShortcutB;
   end;
+
+
+  { TIDECommands }
 
   TIDECommands = class
   public
-    function FindIDECommand(ACommand:word): TIDECommand; virtual; abstract;
+    function FindIDECommand(ACommand: word): TIDECommand; virtual; abstract;
+    {$IFDEF UseIDEScopes}
+    function CreateCategory(Parent: TIDECommandCategory;
+                            const Name, Description: string;
+                            Scope: TIDECommandScope = nil): TIDECommandCategory; virtual; abstract;
+    function CreateCommand(Category: TIDECommandCategory;
+                           const Name, Description: string;
+                           const TheShortcutA, TheShortcutB: TIDEShortCut
+                           ): TIDECommand; virtual; abstract;
+    {$ENDIF}
   end;
 
 const
@@ -193,17 +215,17 @@ const
     (Key1: VK_UNKNOWN; Shift1: []; Key2: VK_UNKNOWN; Shift2: []);
 
 function IDEShortCut(Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState): TIDEShortCut;
+  Key2: word = VK_UNKNOWN; Shift2: TShiftState = []): TIDEShortCut;
 
 
 type
-  TExecuteIDEShortCut = procedure(Sender: TObject;
-                                  var Key: word; Shift: TShiftState;
-                                  {$IFDEF UseIDEScopes}
-                                  IDEWindowClass: TCustomFormClass
-                                  {$ELSE}
-                                  Areas: TCommandAreas
-                                  {$ENDIF}) of object;
+  TExecuteIDEShortCut =
+    procedure(Sender: TObject; var Key: word; Shift: TShiftState;
+              {$IFDEF UseIDEScopes}
+              IDEWindowClass: TCustomFormClass
+              {$ELSE}
+              Areas: TCommandAreas
+              {$ENDIF}) of object;
   TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
 
 var
@@ -227,9 +249,31 @@ var
   IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
 
-procedure CreateStandardIDECommandScopes;
+{$IFDEF UseIDEScopes}
+// register a new IDE command category (i.e. set of commands)
+function RegisterIDECommandCategory(Parent: TIDECommandCategory;
+                          const Name, Description: string): TIDECommandCategory;
+
+// register a new IDE command (i.e. a shortcut, IDE function)
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string): TIDECommand;
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string; Key1: word; Shift1: TShiftState): TIDECommand;
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string; const ShortCut1: TIDEShortCut): TIDECommand;
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string;
+  const ShortCut1, ShortCut2: TIDEShortCut): TIDECommand;
+{$ENDIF}
+
+// register a new IDE command scope (i.e. a set of windows)
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 
+procedure CreateStandardIDECommandScopes;
+
+
+function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
+function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
 
 implementation
 
@@ -279,6 +323,88 @@ begin
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
 end;
 
+function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
+var
+  ShortCut1: PIDEShortCut;
+  ShortCut2: PIDEShortCut;
+begin
+  ShortCut1:=PIDEShortCut(Data1);
+  ShortCut2:=PIDEShortCut(Data2);
+  if ShortCut1^.Key1>ShortCut2^.Key1 then
+    Result:=1
+  else if ShortCut1^.Key1<ShortCut2^.Key1 then
+    Result:=-1
+  else if integer(ShortCut1^.Shift1)>integer(ShortCut2^.Shift1) then
+    Result:=1
+  else if integer(ShortCut1^.Shift1)<integer(ShortCut2^.Shift1) then
+    Result:=-1
+  else if ShortCut1^.Key2>ShortCut2^.Key2 then
+    Result:=1
+  else if ShortCut1^.Key2<ShortCut2^.Key2 then
+    Result:=-1
+  else if integer(ShortCut1^.Shift2)>integer(ShortCut2^.Shift2) then
+    Result:=1
+  else if integer(ShortCut1^.Shift2)<integer(ShortCut2^.Shift2) then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
+var
+  ShortCut1: PIDEShortCut;
+  ShortCut2: PIDEShortCut;
+begin
+  ShortCut1:=PIDEShortCut(Data1);
+  ShortCut2:=PIDEShortCut(Data2);
+  if ShortCut1^.Key1>ShortCut2^.Key1 then
+    Result:=1
+  else if ShortCut1^.Key1<ShortCut2^.Key1 then
+    Result:=-1
+  else if integer(ShortCut1^.Shift1)>integer(ShortCut2^.Shift1) then
+    Result:=1
+  else if integer(ShortCut1^.Shift1)<integer(ShortCut2^.Shift1) then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+{$IFDEF UseIDEScopes}
+function RegisterIDECommandCategory(Parent: TIDECommandCategory;
+  const Name, Description: string): TIDECommandCategory;
+begin
+  Result:=IDECommandList.CreateCategory(Parent,Name,Description);
+end;
+
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string): TIDECommand;
+begin
+  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(VK_UNKNOWN,[]));
+end;
+
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string;
+  Key1: word; Shift1: TShiftState): TIDECommand;
+begin
+  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(Key1,Shift1));
+end;
+
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string;  const ShortCut1: TIDEShortCut): TIDECommand;
+begin
+  Result:=RegisterIDECommand(Category,Name,Description,
+                             ShortCut1,IDEShortCut(VK_UNKNOWN,[]));
+end;
+
+function RegisterIDECommand(Category: TIDECommandCategory;
+  const Name, Description: string;
+  const ShortCut1, ShortCut2: TIDEShortCut): TIDECommand;
+begin
+  Result:=IDECommandList.CreateCommand(Category,Name,Description,
+                                       ShortCut1,ShortCut2);
+end;
+{$ENDIF}
+
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 begin
   Result:=TIDECommandScope.Create;
@@ -286,6 +412,18 @@ begin
 end;
 
 { TIDECommand }
+
+procedure TIDECommand.SetShortcutA(const AValue: TIDEShortCut);
+begin
+  if CompareIDEShortCuts(@FShortcutA,@AValue)=0 then exit;
+  FShortcutA:=AValue;
+end;
+
+procedure TIDECommand.SetShortcutB(const AValue: TIDEShortCut);
+begin
+  if CompareIDEShortCuts(@FShortcutB,@AValue)=0 then exit;
+  FShortcutB:=AValue;
+end;
 
 function TIDECommand.GetLocalizedName: string;
 begin
@@ -317,10 +455,10 @@ function TIDECommand.AsShortCut: TShortCut;
 var
   CurKey: TIDEShortCut;
 begin
-  if (KeyA.Key1<>VK_UNKNOWN) and (KeyA.Key2=VK_UNKNOWN) then
-    CurKey:=KeyA
-  else if (KeyB.Key1<>VK_UNKNOWN) and (KeyB.Key2=VK_UNKNOWN) then
-    CurKey:=KeyB
+  if (ShortcutA.Key1<>VK_UNKNOWN) and (ShortcutA.Key2=VK_UNKNOWN) then
+    CurKey:=ShortcutA
+  else if (ShortcutB.Key1<>VK_UNKNOWN) and (ShortcutB.Key2=VK_UNKNOWN) then
+    CurKey:=ShortcutB
   else
     CurKey:=CleanIDEShortCut;
   Result:=CurKey.Key1;
@@ -334,25 +472,25 @@ end;
 
 constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
   const TheName: String; TheCommand: word;
-  const TheKeyA, TheKeyB: TIDEShortCut);
+  const TheShortcutA, TheShortcutB: TIDEShortCut);
 begin
   fCommand:=TheCommand;
   fName:=TheName;
-  KeyA:=TheKeyA;
-  KeyB:=TheKeyB;
-  DefaultKeyA:=KeyA;
-  DefaultKeyB:=KeyB;
+  ShortcutA:=TheShortcutA;
+  ShortcutB:=TheShortcutB;
+  DefaultShortcutA:=ShortcutA;
+  DefaultShortcutB:=ShortcutB;
   Category:=TheCategory;
 end;
 
-procedure TIDECommand.ClearKeyA;
+procedure TIDECommand.ClearShortcutA;
 begin
-  KeyA:=CleanIDEShortCut;
+  ShortcutA:=CleanIDEShortCut;
 end;
 
-procedure TIDECommand.ClearKeyB;
+procedure TIDECommand.ClearShortcutB;
 begin
-  KeyB:=CleanIDEShortCut;
+  ShortcutB:=CleanIDEShortCut;
 end;
 
 function TIDECommand.GetCategoryAndName: string;
@@ -450,6 +588,15 @@ begin
   Scope:=nil;
   inherited Destroy;
 end;
+
+function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope
+  ): boolean;
+begin
+  if Scope=nil then
+    Result:=(AScope=nil) or (AScope.HasIDEWindowClass(nil))
+  else
+    Result:=Scope.Intersects(AScope);
+end;
 {$ENDIF}
 
 procedure TIDECommandCategory.Delete(Index: Integer);
@@ -527,6 +674,21 @@ begin
       exit(true);
   end;
   Result:=false;
+end;
+
+function TIDECommandScope.Intersects(AScope: TIDECommandScope): boolean;
+var
+  i: Integer;
+begin
+  if AScope=nil then
+    Result:=FIDEWindowClasses.IndexOf(nil)>=0
+  else begin
+    for i:=0 to FIDEWindowClasses.Count-1 do begin
+      if AScope.FIDEWindowClasses.IndexOf(FIDEWindowClasses[i])>=0 then
+        exit(true);
+    end;
+    Result:=false;
+  end;
 end;
 
 end.
