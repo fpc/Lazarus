@@ -488,6 +488,9 @@ type
     FSessionModified: boolean;
     fTitle: String;
     FSessionStorage: TProjectSessionStorage;
+    {$IFDEF EnableLazDoc}
+    FLazDocPathList: TStrings;
+    {$ENDIF}
   protected
     FFlags: TProjectFlags;
     procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
@@ -531,7 +534,11 @@ type
                        write SetModified; // project data (not units, session)
     property SessionModified: boolean read FSessionModified
                        write SetSessionModified; // project session data (not units, data)
+    {$IFDEF EnableLazDoc}
+    property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
+    {$ENDIF}
   end;
+
   TLazProjectClass = class of TLazProject;
 
 
@@ -1002,6 +1009,9 @@ constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
   FSessionStorage:=pssInProjectInfo;
+  {$IFDEF EnableLazDoc}
+  FLazDocPathList := TStringList.Create;
+  {$ENDIF}
 end;
 
 function TLazProject.ShortDescription: string;

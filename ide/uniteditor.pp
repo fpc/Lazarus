@@ -2494,6 +2494,7 @@ var
   fn: string;
   pathlist: TStrings;
 begin
+{$IFDEF EnableLazDoc}
   Result := '';
   pathlist := TStringList.Create;
 
@@ -2511,6 +2512,7 @@ begin
       Exit;
   end;
   pathlist.Free;
+{$ENDIF}
 end;
 {$ELSE}
 begin
