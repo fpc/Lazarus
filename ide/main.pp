@@ -2080,7 +2080,7 @@ procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+  AFileName:=ExpandFilename({$IFDEF UseMenuIntf}(Sender as TIDEMenuItem){$ELSE}TMenuItem(Sender){$ENDIF}.Caption);
   if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin
@@ -2485,13 +2485,13 @@ end;
 
 procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
 var
-  TheMenuItem: TMenuItem;
+  TheMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
   Index, SeparatorIndex: integer;
   AFilename: string;
 begin
-  TheMenuItem:=TMenuItem(Sender);
+  TheMenuItem:=(Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF});
   if TheMenuItem.Caption='-' then exit;
-  Index:=TheMenuItem.MenuIndex;
+  Index:=TheMenuItem.{$IFDEF UseMenuIntf}SectionIndex{$ELSE}MenuIndex{$ENDIF};
   SeparatorIndex:=0;
   while SeparatorIndex<MainIDEBar.OpenFilePopupMenu.Items.Count do begin
     if MainIDEBar.OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then
@@ -2781,7 +2781,7 @@ begin
       OpenDialog.Free;
     end;
   end else if Sender is TMenuItem then begin
-    AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+    AFileName:=ExpandFilename((Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF}).Caption);
     if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentProjectFileToEnvironment(AFilename);
     end else begin

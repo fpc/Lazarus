@@ -947,7 +947,7 @@ procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+  AFileName:=ExpandFilename((Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF}).Caption);
   if DoOpenPackageFile(AFilename,[pofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin
@@ -1175,10 +1175,17 @@ function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
 var
   s: String;
   e: Char;
+  SrcFilename: String;
+  MainUnitName: String;
+  MakefileFPCFilename: String;
 begin
   Result:=mrCancel;
-  s:='';
+
+  SrcFilename:=APackage.GetSrcFilename;
+  MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
+
   e:=LineEnding;
+  s:='';
   s:=s+'#   Makefile.fpc for '+APackage.IDAsString+e;
   s:=s+''+e;
   s:=s+'[package]'+e;
@@ -1191,22 +1198,8 @@ begin
   s:=s+'options=-gl'+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;
-  s:=s+'units='+e;
-  s:=s+'implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \'+e;
-  s:=s+'  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \'+e;
-  s:=s+'  synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \'+e;
-  s:=s+'  syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \'+e;
-  s:=s+'  synhighlighterposition synhighlighterjava synhighlightercss \'+e;
-  s:=s+'  synhighlighterphp synhighlightertex synhighlighterhashentries \'+e;
-  s:=s+'  synhighlightersql'+e;
-  s:=s+''+e;
-  s:=s+'[require]'+e;
-  s:=s+'# Adding lcl does not work, because it adds the source path.'+e;
-  s:=s+'#packages=lcl'+e;
-  s:=s+'packages=fcl regexpr'+e;
-  s:=s+''+e;
-  s:=s+'[default]'+e;
-  s:=s+'#lcldir=../../lcl'+e;
+  s:=s+'units='+CreateRelativePath(SrcFilename,APackage.Directory)+e;
+  //s:=s+'implicitunits=syntextdrawer'+e; // TODO list all unit names
   s:=s+''+e;
   s:=s+'[clean]'+e;
   s:=s+'files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \'+e;
@@ -1218,9 +1211,21 @@ begin
   s:=s+'.PHONY: cleartarget all'+e;
   s:=s+''+e;
   s:=s+'cleartarget:'+e;
-  s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)'+e;
+  s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/'+MainUnitName+'$(PPUEXT)'+e;
   s:=s+''+e;
-  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditunits$(PPUEXT)'+e;
+  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT)'+e;
+
+  MakefileFPCFilename:=AppendPathDelim(
+                 APackage.CompilerOptions.GetUnitOutPath(false))+'Makefile.fpc';
+  
+  Result:=MainIDE.DoSaveStringToFile(MakefileFPCFilename,s,
+                               'Makefile.fpc for package '+APackage.IDAsString);
+  if Result<>mrOk then exit;
+  
+  // call fpcmake to create the Makefile
+  
+  
+  Result:=mrOk;
 end;
 
 function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
