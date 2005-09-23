@@ -4,33 +4,30 @@ object dlgSelectPrinter: TdlgSelectPrinter
   ClientWidth = 537
   OnCreate = dlgSelectPrinterCREATE
   OnShow = dlgSelectPrinterSHOW
-  PixelsPerInch = 75
+  PixelsPerInch = 112
   HorzScrollBar.Page = 536
   VertScrollBar.Page = 384
-  Left = 464
+  Left = 430
   Height = 385
-  Top = 153
+  Top = 208
   Width = 537
   object labCUPS: TLabel
-    BorderSpacing.OnChange = nil
     Caption = 'CUPS (Common Unix Printing System)'
     Color = clNone
     Left = 8
-    Height = 17
+    Height = 12
     Top = 152
-    Width = 229
+    Width = 211
   end
   object labCUPSServer: TLabel
-    BorderSpacing.OnChange = nil
     Caption = 'labCUPSServer'
     Color = clNone
     Left = 240
-    Height = 17
+    Height = 12
     Top = 152
-    Width = 296
+    Width = 87
   end
   object Groupbox1: TGroupBox
-    BorderSpacing.OnChange = nil
     Caption = ' Printer '
     ClientHeight = 119
     ClientWidth = 525
@@ -42,7 +39,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
     Top = 8
     Width = 529
     object ImgPrn: TImage
-      BorderSpacing.OnChange = nil
       Transparent = True
       Left = 124
       Height = 19
@@ -50,7 +46,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 17
     end
     object Label1: TLabel
-      BorderSpacing.OnChange = nil
       Caption = 'Name'
       Color = clNone
       Left = 19
@@ -59,7 +54,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 97
     end
     object Label2: TLabel
-      BorderSpacing.OnChange = nil
       Caption = 'State'
       Color = clNone
       Left = 17
@@ -68,7 +62,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 99
     end
     object Label3: TLabel
-      BorderSpacing.OnChange = nil
       Caption = 'Location'
       Color = clNone
       Left = 18
@@ -77,7 +70,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 98
     end
     object Label4: TLabel
-      BorderSpacing.OnChange = nil
       Caption = 'Description'
       Color = clNone
       Left = 17
@@ -86,8 +78,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 99
     end
     object labState: TLabel
-      AutoSize = True
-      BorderSpacing.OnChange = nil
       Caption = 'labState'
       Color = clNone
       Left = 128
@@ -96,8 +86,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 391
     end
     object labLocation: TLabel
-      AutoSize = True
-      BorderSpacing.OnChange = nil
       Caption = 'labLocation'
       Color = clNone
       Left = 128
@@ -106,7 +94,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 391
     end
     object labComment: TLabel
-      BorderSpacing.OnChange = nil
       Caption = 'labComment'
       Color = clNone
       Left = 126
@@ -115,7 +102,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 389
     end
     object cbPrinters: TComboBox
-      BorderSpacing.OnChange = nil
       MaxLength = 0
       OnChange = cbPrintersCHANGE
       OnKeyPress = cbPrintersKEYPRESS
@@ -129,7 +115,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 291
     end
     object btnProp: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'Properties ...'
       OnClick = btnPropCLICK
       TabOrder = 1
@@ -140,20 +125,19 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
   end
   object NbOpts: TNotebook
-    BorderSpacing.OnChange = nil
     PageIndex = 0
     Height = 168
     Top = 176
     Width = 537
     object pgCopies: TPage
       Caption = 'Copies'
-      ClientWidth = 537
-      ClientHeight = 146
-      Height = 146
-      Top = 22
-      Width = 537
+      ClientWidth = 533
+      ClientHeight = 138
+      Left = 2
+      Height = 138
+      Top = 28
+      Width = 533
       object gbPages: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Select pages '
         ClientHeight = 115
         ClientWidth = 258
@@ -165,7 +149,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Top = 6
         Width = 262
         object Bevel1: TBevel
-          BorderSpacing.OnChange = nil
           Height = 3
           Left = 14
           Name = 'Bevel1'
@@ -179,7 +162,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Width = 230
         end
         object labPage: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'Pages'
           Color = clNone
           Left = 14
@@ -188,7 +170,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Width = 102
         end
         object edRange: TEdit
-          BorderSpacing.OnChange = nil
           TabOrder = 0
           Left = 92
           Height = 23
@@ -196,7 +177,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Width = 112
         end
         object edPageSet: TComboBox
-          BorderSpacing.OnChange = nil
           Items.Strings = (
             'All pages'
             'Odd pages'
@@ -215,7 +195,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object rbCurrentPage: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Current page'
           DragCursor = crDefault
           Enabled = False
@@ -227,7 +206,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object rbRange: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Range'
           DragCursor = crDefault
           TabOrder = 4
@@ -238,7 +216,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object rbAllPage: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'All '
           Checked = True
           DragCursor = crDefault
@@ -251,7 +228,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
       end
       object gbCopies: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Copies '
         ClientHeight = 114
         ClientWidth = 253
@@ -264,7 +240,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Width = 257
         object imgCollate: TImage
           AutoSize = True
-          BorderSpacing.OnChange = nil
           Proportional = True
           Transparent = True
           Left = 6
@@ -273,7 +248,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Width = 93
         end
         object lanNumCopies: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'Number of copies'
           Color = clNone
           Left = 6
@@ -282,8 +256,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Width = 113
         end
         object edCopies: TSpinEdit
-          BorderSpacing.OnChange = nil
-          Decimal_Places = 0
+          ClimbRate = 1
           MaxValue = 100
           TabOrder = 0
           Left = 134
@@ -293,7 +266,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object cbCollate: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Collate'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
@@ -305,7 +277,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
         object cbReverse: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Reverse'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
@@ -319,13 +290,13 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object pgAdvance: TPage
       Caption = 'Advanced'
-      ClientWidth = 537
-      ClientHeight = 146
-      Height = 146
-      Top = 22
-      Width = 537
+      ClientWidth = 533
+      ClientHeight = 138
+      Left = 2
+      Height = 138
+      Top = 28
+      Width = 533
       object labTask: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Delayed task'
         Color = clNone
         Left = 7
@@ -334,7 +305,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Width = 201
       end
       object Label5: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Priority'
         Color = clNone
         Left = 7
@@ -343,7 +313,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Width = 112
       end
       object cbTasktime: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'Immediate'
           'Never (suspending)'
@@ -369,7 +338,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Width = 200
       end
       object edTimeTask: TMaskEdit
-        BorderSpacing.OnChange = nil
         DragCursor = crDefault
         EditMask = '99:99:99'
         MaxLength = 8
@@ -382,16 +350,15 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Width = 58
       end
       object edPriority: TSpinEdit
-        BorderSpacing.OnChange = nil
-        Decimal_Places = 0
+        ClimbRate = 1
         MaxValue = 100
+        TabOrder = 3
         Left = 127
         Height = 20
         Top = 42
         Width = 50
       end
       object tkbPriority: TTrackBar
-        BorderSpacing.OnChange = nil
         DragCursor = crDefault
         Frequency = 10
         Max = 100
@@ -419,7 +386,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
   object Panel1: TPanel
     Align = alBottom
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
     ClientHeight = 41
     ClientWidth = 537
     FullRepaint = False
@@ -430,7 +396,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
     Width = 537
     object btnCancel: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
@@ -442,7 +407,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object btnPrint: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       Caption = 'Print'
       Default = True
       ModalResult = 1
@@ -454,7 +418,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 99
     end
     object btnReduc: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'More ...'
       OnClick = btnReducCLICK
       TabOrder = 2
@@ -464,7 +427,6 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 88
     end
     object btnPreview: TButton
-      BorderSpacing.OnChange = nil
       Caption = 'Preview'
       ModalResult = 6
       TabOrder = 3

@@ -3,15 +3,40 @@ object TableForm: TTableForm
   Caption = 'Insert new table'
   ClientHeight = 97
   ClientWidth = 282
-  PixelsPerInch = 90
+  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 283
-  VertScrollBar.Page = 98
-  Left = 333
+  HorzScrollBar.Page = 281
+  VertScrollBar.Page = 96
+  Left = 339
   Height = 97
-  Top = 149
+  Top = 162
   Width = 282
+  object LSERows: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = '&Rows'
+    Color = clNone
+    FocusControl = SERows
+    Layout = tlCenter
+    Left = 3
+    Height = 12
+    Top = 32
+    Width = 39
+  end
+  object LSEColumns: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'Co&lumns'
+    Color = clNone
+    FocusControl = SEColumns
+    Layout = tlCenter
+    Left = 3
+    Height = 12
+    Top = 56
+    Width = 57
+  end
   object BOK: TButton
+    BorderSpacing.OnChange = nil
     Caption = '&OK'
     Default = True
     ModalResult = 1
@@ -22,6 +47,7 @@ object TableForm: TTableForm
     Width = 75
   end
   object BCancel: TButton
+    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
@@ -33,53 +59,29 @@ object TableForm: TTableForm
   end
   object CBUseHeaderRow: TCheckBox
     AllowGrayed = True
-    AutoSize = True
+    BorderSpacing.OnChange = nil
     Caption = 'Use &header row'
     TabOrder = 2
     Left = 72
-    Height = 23
+    Height = 26
     Top = 8
-    Width = 120
+    Width = 115
   end
   object SERows: TSpinEdit
-    Decimal_Places = 0
+    BorderSpacing.OnChange = nil
+    ClimbRate = 1
     MaxValue = 100
-    TabStop = True
     TabOrder = 3
-    Decimal_Places = 0
-    MaxValue = 100
     Left = 72
     Height = 20
     Top = 32
     Width = 65
   end
-  object LSERows: TLabel
-    Alignment = taRightJustify
-    Caption = '&Rows'
-    FocusControl = SERows
-    Layout = tlCenter
-    Left = 3
-    Height = 17
-    Top = 32
-    Width = 61
-  end
-  object LSEColumns: TLabel
-    Alignment = taRightJustify
-    Caption = 'Co&lumns'
-    FocusControl = SEColumns
-    Layout = tlCenter
-    Left = 3
-    Height = 17
-    Top = 56
-    Width = 61
-  end
   object SEColumns: TSpinEdit
-    Decimal_Places = 0
+    BorderSpacing.OnChange = nil
+    ClimbRate = 1
     MaxValue = 100
-    TabStop = True
-    TabOrder = 6
-    Decimal_Places = 0
-    MaxValue = 100
+    TabOrder = 4
     Left = 72
     Height = 20
     Top = 56

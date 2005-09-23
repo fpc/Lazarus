@@ -5,17 +5,16 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   ClientWidth = 480
   OnCreate = DebuggerOptionsFormCREATE
   OnDestroy = DebuggerOptionsFormDESTROY
-  PixelsPerInch = 90
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 479
   VertScrollBar.Page = 441
-  Left = 411
+  Left = 410
   Height = 442
-  Top = 185
+  Top = 196
   Width = 480
   object nbDebugOptions: TNotebook
     Align = alTop
-    BorderSpacing.OnChange = nil
     PageIndex = 0
     Height = 398
     Width = 480
@@ -28,7 +27,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Top = 28
       Width = 476
       object gbDebuggerType: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Debugger type and path'
         ClientHeight = 69
         ClientWidth = 468
@@ -40,7 +38,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 8
         Width = 472
         object cmbDebuggerType: TComboBox
-          BorderSpacing.OnChange = nil
           MaxLength = 0
           OnChange = cmbDebuggerTypeCHANGE
           ParentCtl3D = False
@@ -51,7 +48,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 268
         end
         object cmbDebuggerPath: TComboBox
-          BorderSpacing.OnChange = nil
           MaxLength = 0
           ParentCtl3D = False
           TabOrder = 1
@@ -61,7 +57,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 428
         end
         object cmdOpenDebuggerPath: TButton
-          BorderSpacing.OnChange = nil
           Caption = '...'
           OnClick = cmdOpenDebuggerPathCLICK
           TabOrder = 2
@@ -72,7 +67,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbAdditionalSearchPath: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Additional search path'
         ClientHeight = 35
         ClientWidth = 468
@@ -84,7 +78,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 100
         Width = 472
         object txtAdditionalPath: TEdit
-          BorderSpacing.OnChange = nil
           TabOrder = 0
           Left = 6
           Height = 25
@@ -92,7 +85,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 428
         end
         object cmdOpenAdditionalPath: TButton
-          BorderSpacing.OnChange = nil
           Caption = '...'
           OnClick = cmdOpenAdditionalPathClick
           TabOrder = 1
@@ -103,7 +95,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbDebuggerSpecific: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Debugger specific options (depends on type of debugger)'
         ClientHeight = 234
         ClientWidth = 468
@@ -116,7 +107,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Width = 472
         object pnlDebugSpecific: TPanel
           Align = alClient
-          BorderSpacing.OnChange = nil
           BevelOuter = bvNone
           BorderWidth = 4
           ClientHeight = 234
@@ -129,7 +119,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gcbDebuggerGeneralOptions: TCheckGroup
-        BorderSpacing.OnChange = nil
         Caption = 'Debugger general options'
         Items.Strings = (
           'Show message on stop'
@@ -153,7 +142,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Top = 28
       Width = 476
       object gbGeneral: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'General'
         ClientHeight = 132
         ClientWidth = 230
@@ -166,7 +154,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Width = 230
         object chkClearLogOnRun: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Clear log on run'
           TabOrder = 0
           Left = 4
@@ -176,7 +163,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkLimitLinecount: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Limit linecount to'
           TabOrder = 1
           Left = 4
@@ -185,13 +171,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 119
         end
         object seLimitLinecount: TSpinEdit
-          BorderSpacing.OnChange = nil
-          Climb_Rate = 7.10933840589535E-34
+          ClimbRate = 1
           Enabled = False
-          MaxValue = 7.10933840589535E-34
-          MinValue = 7.10933840589535E-34
+          MaxValue = 100
           TabOrder = 2
-          Value = 7.10933840589535E-34
           Left = 28
           Height = 20
           Top = 53
@@ -199,7 +182,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbMessages: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Messages'
         ClientHeight = 188
         ClientWidth = 232
@@ -213,7 +195,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Width = 232
         object chkMessagesBreakpoint: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Breakpoint'
           TabOrder = 0
           Left = 4
@@ -223,7 +204,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesProcess: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Process'
           TabOrder = 1
           Left = 4
@@ -233,7 +213,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesThread: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Thread'
           TabOrder = 2
           Left = 4
@@ -243,7 +222,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesModule: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Module'
           TabOrder = 3
           Left = 4
@@ -253,7 +231,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesOutput: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Output'
           TabOrder = 4
           Left = 4
@@ -263,7 +240,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesWindow: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Window'
           TabOrder = 5
           Left = 4
@@ -273,7 +249,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesInterface: TCheckBox
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Interface'
           TabOrder = 6
           Left = 4
@@ -292,7 +267,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Top = 28
       Width = 476
       object bgIgnoreExceptions: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Ignore these exceptions'
         ClientHeight = 328
         ClientWidth = 468
@@ -304,7 +278,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 8
         Width = 468
         object cmdExceptionRemove: TButton
-          BorderSpacing.OnChange = nil
           Caption = 'Remove'
           Enabled = False
           OnClick = cmdExceptionRemoveCLICK
@@ -315,7 +288,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 75
         end
         object cmdExceptionAdd: TButton
-          BorderSpacing.OnChange = nil
           Caption = 'Add'
           OnClick = cmdExceptionAddCLICK
           TabOrder = 1
@@ -325,7 +297,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 75
         end
         object clbExceptions: TCheckListBox
-          BorderSpacing.OnChange = nil
           OnClick = clbExceptionsCLICK
           TabOrder = 2
           TopIndex = -1
@@ -337,7 +308,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object chkBreakOnException: TCheckBox
         AllowGrayed = True
-        BorderSpacing.OnChange = nil
         Caption = 'Break on Lazarus Exceptions'
         TabOrder = 1
         Left = 2
@@ -355,7 +325,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       Top = 28
       Width = 476
       object gbSignals: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = 'Signals'
         ClientHeight = 354
         ClientWidth = 468
@@ -367,7 +336,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Top = 8
         Width = 468
         object cmdSignalRemove: TButton
-          BorderSpacing.OnChange = nil
           Caption = 'Remove'
           Enabled = False
           TabOrder = 0
@@ -377,7 +345,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 75
         end
         object cmdSignalAdd: TButton
-          BorderSpacing.OnChange = nil
           Caption = 'Add'
           TabOrder = 1
           Left = 296
@@ -386,7 +353,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Width = 75
         end
         object lvSignals: TListView
-          BorderSpacing.OnChange = nil
           Columns = <          
             item
               Caption = 'Name'
@@ -401,7 +367,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
             end          
             item
               Caption = 'Resume'
-              Width = 0
+              Width = 5
             end>
           PopupMenu = popSignal
           ViewStyle = vsReport
@@ -414,7 +380,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object cmdCancel: TButton
-    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -425,7 +390,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Width = 75
   end
   object cmdOK: TButton
-    BorderSpacing.OnChange = nil
     Caption = 'OK'
     Default = True
     OnClick = cmdOKCLICK
