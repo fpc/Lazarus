@@ -228,7 +228,7 @@ type
     // selections
     function SelectionAvailable: boolean; override;
     function GetText(OnlySelection: boolean): string; override;
-    Procedure SelectText(LineNum, CharStart, LineNum2, CharEnd: Integer); override;
+    procedure SelectText(const StartPos, EndPos: TPoint); override;
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); override;
     procedure EncloseSelection;
     procedure UpperCaseSelection;
@@ -257,6 +257,8 @@ type
     function GetSelStart: Integer; override;
     procedure SetSelEnd(const AValue: Integer); override;
     procedure SetSelStart(const AValue: Integer); override;
+    function GetSelection: string; override;
+    procedure SetSelection(const AValue: string); override;
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
 
@@ -1705,6 +1707,16 @@ begin
   FEditor.SelStart:=AValue;
 end;
 
+function TSourceEditor.GetSelection: string;
+begin
+  Result:=FEditor.SelText;
+end;
+
+procedure TSourceEditor.SetSelection(const AValue: string);
+begin
+  FEditor.SelText:=AValue;
+end;
+
 procedure TSourceEditor.CopyToClipboard;
 begin
   FEditor.CopyToClipboard;
@@ -2102,16 +2114,10 @@ Begin
   FEditor.CaretY := Num;
 end;
 
-Procedure TSourceEditor.SelectText(LineNum,CharStart,LineNum2,CharEnd: Integer);
-var
-  P: TPoint;
+Procedure TSourceEditor.SelectText(const StartPos, EndPos: TPoint);
 Begin
-  P.X := CharStart;
-  P.Y := LineNum;
-  FEditor.BlockBegin := P;
-  P.X := CharEnd;
-  P.Y := LineNum2;
-  FEditor.BlockEnd := P;
+  FEditor.BlockBegin := StartPos;
+  FEditor.BlockEnd := EndPos;
 end;
 
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;

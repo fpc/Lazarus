@@ -33,6 +33,8 @@ type
 
   TSourceEditorInterface = class
   protected
+    function GetSelection: string;
+    procedure SetSelection(const AValue: string);
     function GetBlockBegin: TPoint; virtual; abstract;
     function GetBlockEnd: TPoint; virtual; abstract;
     function GetCodeToolsBuffer: TObject; virtual; abstract;
@@ -62,7 +64,8 @@ type
     // selections
     function SelectionAvailable: boolean; virtual; abstract;
     function GetText(OnlySelection: boolean): string; virtual; abstract;
-    procedure SelectText(LineNum, CharStart, LineNum2, CharEnd: Integer); virtual; abstract;
+    procedure SelectText(LineNum, CharStart, LineNum2, CharEnd: Integer);
+    procedure SelectText(const StartPos, EndPos: TPoint); virtual; abstract;
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); virtual; abstract;
     procedure CopyToClipboard; virtual; abstract;
     procedure CutToClipboard; virtual; abstract;
@@ -105,6 +108,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SourceText: string read GetSourceText write SetSourceText;
     property TopLine: Integer read GetTopLine write SetTopLine;
+    property Selection: string read GetSelection write SetSelection;
   end;
 
   { TSourceEditorWindowInterface }
@@ -122,6 +126,14 @@ var
   SourceEditorWindow: TSourceEditorWindowInterface = nil;// set by the IDE
 
 implementation
+
+{ TSourceEditorInterface }
+
+procedure TSourceEditorInterface.SelectText(LineNum, CharStart, LineNum2,
+  CharEnd: Integer);
+begin
+  SelectText(Point(CharStart,LineNum),Point(CharEnd,LineNum2));
+end;
 
 end.
 
