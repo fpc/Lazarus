@@ -223,7 +223,7 @@ var
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
-    if Screen.CustomForms[i].Caption=TMenuItem(Sender).Caption then begin
+    if Screen.CustomForms[i].Caption=(Sender as {$IFDEF UseMenuIntf}TIDEMenuCommand{$ELSE}TMenuItem{$ENDIF}).Caption then begin
       Screen.CustomForms[i].BringToFront;
       break;
     end;
