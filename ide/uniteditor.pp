@@ -4296,10 +4296,10 @@ end;
 Procedure TSourceNotebook.BookMarkGotoClicked(Sender: TObject);
 // popup menu goto bookmark clicked
 var
-  MenuItem: TMenuItem;
+  MenuItem: TIDEMenuItem;
 Begin
-  MenuItem := TMenuItem(sender);
-  GotoBookMark(MenuItem.MenuIndex);
+  MenuItem := Sender as TIDEMenuItem;
+  GotoBookMark(MenuItem.SectionIndex);
 end;
 
 Procedure TSourceNotebook.ReadOnlyClicked(Sender: TObject);
@@ -4362,12 +4362,12 @@ end;
 
 Procedure TSourceNotebook.ToggleLineNumbersClicked(Sender: TObject);
 var
-  MenuITem: TMenuItem;
+  MenuITem: TIDEMenuCommand;
   ActEdit:TSourceEditor;
   i: integer;
   ShowLineNumbers: boolean;
 begin
-  MenuItem := TMenuITem(Sender);
+  MenuItem := Sender as TIDEMenuCommand;
   ActEdit:=GetActiveSE;
   MenuItem.Checked := not(ActEdit.EditorComponent.Gutter.ShowLineNumbers);
   ShowLineNumbers:=MenuItem.Checked;
@@ -4415,10 +4415,10 @@ end;
 
 Procedure TSourceNotebook.BookMarkToggle(Value: Integer);
 var
-  MenuItem: TMenuItem;
+  MenuItem: TIDEMenuCommand;
   ActEdit,AnEdit:TSourceEditor;
 Begin
-  MenuItem := SrcEditSubMenuSetBookmarks.Items[Value].MenuItem;
+  MenuItem := SrcEditSubMenuSetBookmarks.Items[Value] as TIDEMenuCommand;
   MenuItem.Checked := not MenuItem.Checked;
   ActEdit:=GetActiveSE;
 

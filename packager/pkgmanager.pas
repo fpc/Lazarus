@@ -1172,9 +1172,55 @@ begin
 end;
 
 function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
+var
+  s: String;
+  e: Char;
 begin
   Result:=mrCancel;
-  
+  s:='';
+  e:=LineEnding;
+  s:=s+'#   Makefile.fpc for '+APackage.IDAsString+e;
+  s:=s+''+e;
+  s:=s+'[package]'+e;
+  s:=s+'name='+lowercase(APackage.Name)+e;
+  s:=s+'version='+APackage.Version.AsString+e;
+  s:=s+''+e;
+  s:=s+'[compiler]'+e;
+  s:=s+'unittargetdir='+APackage.CompilerOptions.GetUnitOutPath(true)+e;
+  s:=s+'unitdir='+APackage.CompilerOptions.GetUnitPath(true)+e;
+  s:=s+'options=-gl'+e; // ToDo do the other options
+  s:=s+''+e;
+  s:=s+'[target]'+e;
+  s:=s+'units='+e;
+  s:=s+'implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \'+e;
+  s:=s+'  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \'+e;
+  s:=s+'  synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \'+e;
+  s:=s+'  syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \'+e;
+  s:=s+'  synhighlighterposition synhighlighterjava synhighlightercss \'+e;
+  s:=s+'  synhighlighterphp synhighlightertex synhighlighterhashentries \'+e;
+  s:=s+'  synhighlightersql'+e;
+  s:=s+''+e;
+  s:=s+'[require]'+e;
+  s:=s+'# Adding lcl does not work, because it adds the source path.'+e;
+  s:=s+'#packages=lcl'+e;
+  s:=s+'packages=fcl regexpr'+e;
+  s:=s+''+e;
+  s:=s+'[default]'+e;
+  s:=s+'#lcldir=../../lcl'+e;
+  s:=s+''+e;
+  s:=s+'[clean]'+e;
+  s:=s+'files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \'+e;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \'+e;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \'+e;
+  s:=s+'      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))'+e;
+  s:=s+''+e;
+  s:=s+'[rules]'+e;
+  s:=s+'.PHONY: cleartarget all'+e;
+  s:=s+''+e;
+  s:=s+'cleartarget:'+e;
+  s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)'+e;
+  s:=s+''+e;
+  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditunits$(PPUEXT)'+e;
 end;
 
 function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
