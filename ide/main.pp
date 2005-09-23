@@ -2780,7 +2780,7 @@ begin
     finally
       OpenDialog.Free;
     end;
-  end else if Sender is TMenuItem then begin
+  end else if Sender is {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF} then begin
     AFileName:=ExpandFilename((Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF}).Caption);
     if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentProjectFileToEnvironment(AFilename);
