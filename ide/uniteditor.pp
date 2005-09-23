@@ -155,12 +155,9 @@ type
     Function GetModified: Boolean;
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode: Boolean;
-    Function GetReadOnly: Boolean;
-    procedure SetReadOnly(NewValue: boolean);
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
-    function GetFilename: string;
 
     function GotoLine(Value: Integer): Integer;
 
@@ -193,8 +190,14 @@ type
       SrcLogEntry: TSourceLogEntry);
     procedure StartIdentCompletion(JumpToError: boolean);
 
-    procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
-    procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
+    procedure LinesInserted(sender: TObject; FirstLine, Count: Integer);
+    procedure LinesDeleted(sender: TObject; FirstLine, Count: Integer);
+
+    function GetFilename: string; override;
+    function GetEditorControl: TWinControl; override;
+    function GetCodeToolsBuffer: TObject; override;
+    Function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(const NewValue: boolean); override;
 
     property Visible: Boolean read FVisible write SetVisible default False;
   public
@@ -203,9 +206,13 @@ type
     Function Close: Boolean;
 
     // codebuffer
-    procedure IncreaseIgnoreCodeBufferLock;
-    procedure DecreaseIgnoreCodeBufferLock;
-    procedure UpdateCodeBuffer; // copy the source from EditorComponent
+    procedure BeginUndoBlock; override;
+    procedure EndUndoBlock; override;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+    procedure IncreaseIgnoreCodeBufferLock; override;
+    procedure DecreaseIgnoreCodeBufferLock; override;
+    procedure UpdateCodeBuffer; override;// copy the source from EditorComponent
 
     // dialogs
     procedure StartFindAndReplace(Replace:boolean);
@@ -219,10 +226,10 @@ type
     procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
 
     // selections
-    function SelectionAvailable: boolean;
-    function GetText(OnlySelection: boolean): string;
-    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd: Integer);
-    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string);
+    function SelectionAvailable: boolean; override;
+    function GetText(OnlySelection: boolean): string; override;
+    Procedure SelectText(LineNum, CharStart, LineNum2, CharEnd: Integer); override;
+    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); override;
     procedure EncloseSelection;
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
@@ -246,25 +253,58 @@ type
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
-    
+    function GetSelEnd: Integer; override;
+    function GetSelStart: Integer; override;
+    procedure SetSelEnd(const AValue: Integer); override;
+    procedure SetSelStart(const AValue: Integer); override;
+    procedure CopyToClipboard; override;
+    procedure CutToClipboard; override;
+
     // context help
     procedure FindHelpForSourceAtCursor;
 
     // editor commands
-    procedure DoEditorExecuteCommand(EditorCommand: integer);
+    procedure DoEditorExecuteCommand(EditorCommand: word);
 
     // used to get the word at the mouse cursor
-    Function GetWordAtPosition(Position: TPoint): String;
+    function GetWordAtPosition(Position: TPoint): String;
     function GetWordFromCaret(const ACaretPos: TPoint): String;
     function GetWordFromCaretEx(const ACaretPos: TPoint;
       const ALeftLimit, ARightLimit: TCharSet): String;
-    Function GetWordAtCurrentCaret: String;
+    function GetWordAtCurrentCaret: String;
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
     function PositionInSelection(const APosition: TPoint): Boolean;
 
     // cursor
-    Function GetCaretPosFromCursorPos(CursorPos: TPoint): TPoint;
+    function GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
     procedure CenterCursor;
+    function TextToScreenPosition(const Position: TPoint): TPoint; override;
+    function ScreenToTextPosition(const Position: TPoint): TPoint; override;
+    function GetCursorScreenXY: TPoint; override;
+    function GetCursorTextXY: TPoint; override;
+    procedure SetCursorScreenXY(const AValue: TPoint); override;
+    procedure SetCursorTextXY(const AValue: TPoint); override;
+    function GetBlockBegin: TPoint; override;
+    function GetBlockEnd: TPoint; override;
+    procedure SetBlockBegin(const AValue: TPoint); override;
+    procedure SetBlockEnd(const AValue: TPoint); override;
+    function GetTopLine: Integer; override;
+    procedure SetTopLine(const AValue: Integer); override;
+    function CursorInPixel: TPoint; override;
+
+    // text
+    function SearchReplace(const ASearch, AReplace: string;
+                           SearchOptions: TSrcEditSearchOption): integer; override;
+    function GetSourceText: string; override;
+    procedure SetSourceText(const AValue: string); override;
+    function LineCount: Integer; override;
+    function WidthInChars: Integer; override;
+    function HeightInLines: Integer; override;
+    function CharWidth: integer; override;
+    function GetLineText: string; override;
+    procedure SetLineText(const AValue: string); override;
+    function GetLines: TStrings; override;
+    procedure SetLines(const AValue: TStrings); override;
 
     // notebook
     procedure Activate;
@@ -282,7 +322,6 @@ type
     property EditorComponent: TSynEdit read FEditor;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
     property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
-    property FileName: AnsiString read GetFileName;
     property InsertMode: Boolean read GetInsertmode;
     property Modified: Boolean read GetModified write SetModified;
     property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
@@ -523,6 +562,8 @@ type
     function FindSourceEditorWithFilename(const Filename: string): TSourceEditor;
     Function GetActiveSE: TSourceEditor;
     procedure SetActiveSE(SrcEdit: TSourceEditor);
+    function GetActiveEditor: TSourceEditorInterface; override;
+    procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     procedure CheckCurrentCodeBufferChanged;
 
     procedure LockAllEditorsInSourceChangeCache;
@@ -884,19 +925,19 @@ end;
 Function TSourceEditor.GotoLine(Value: Integer): Integer;
 Var
   P: TPoint;
-  TopLine: integer;
+  NewTopLine: integer;
 Begin
   TSourceNotebook(Owner).AddJumpPointClicked(Self);
   P.X := 1;
   P.Y := Value;
-  TopLine := P.Y - (FEditor.LinesInWindow div 2);
-  if TopLine < 1 then TopLine:=1;
+  NewTopLine := P.Y - (FEditor.LinesInWindow div 2);
+  if NewTopLine < 1 then NewTopLine:=1;
   FEditor.CaretXY := P;
   with FEditor do begin
     BlockBegin:=CaretXY;
     BlockEnd:=CaretXY;
   end;
-  FEditor.TopLine := TopLine;
+  FEditor.TopLine := NewTopLine;
   Result:=FEditor.CaretY;
 end;
 
@@ -1016,7 +1057,7 @@ procedure TSourceEditor.DoFindAndReplace;
 var
   OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
-  TopLine: integer;
+  NewTopLine: integer;
 begin
   if SourceNotebook<>nil then
     SourceNotebook.AddJumpPointClicked(Self);
@@ -1046,9 +1087,9 @@ begin
     MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
     TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
   end else begin
-    TopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
-    if TopLine < 1 then TopLine:=1;
-    EditorComponent.TopLine := TopLine;
+    NewTopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
+    if NewTopLine < 1 then NewTopLine:=1;
+    EditorComponent.TopLine := NewTopLine;
   end;
 end;
 
@@ -1094,7 +1135,7 @@ Begin
   Result:=FEditor.ReadOnly;
 End;
 
-procedure TSourceEditor.SetReadOnly(NewValue: boolean);
+procedure TSourceEditor.SetReadOnly(const NewValue: boolean);
 begin
   FEditor.ReadOnly:=NewValue;
 end;
@@ -1643,6 +1684,36 @@ begin
   FEditor.SelText:='$'+AKeyWord+'$'+LineEnding;
 end;
 
+function TSourceEditor.GetSelEnd: Integer;
+begin
+  Result:=FEditor.SelEnd;
+end;
+
+function TSourceEditor.GetSelStart: Integer;
+begin
+  Result:=FEditor.SelStart;
+end;
+
+procedure TSourceEditor.SetSelEnd(const AValue: Integer);
+begin
+  FEditor.SelEnd:=AValue;
+end;
+
+procedure TSourceEditor.SetSelStart(const AValue: Integer);
+begin
+  FEditor.SelStart:=AValue;
+end;
+
+procedure TSourceEditor.CopyToClipboard;
+begin
+  FEditor.CopyToClipboard;
+end;
+
+procedure TSourceEditor.CutToClipboard;
+begin
+  FEditor.CutToClipboard;
+end;
+
 procedure TSourceEditor.FindHelpForSourceAtCursor;
 begin
   DebugLn('TSourceEditor.FindHelpForSourceAtCursor A');
@@ -2111,6 +2182,26 @@ Begin
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
 end;
 
+procedure TSourceEditor.BeginUndoBlock;
+begin
+  FEditor.BeginUndoBlock;
+end;
+
+procedure TSourceEditor.EndUndoBlock;
+begin
+  FEditor.EndUndoBlock;
+end;
+
+procedure TSourceEditor.BeginUpdate;
+begin
+  FEditor.BeginUpdate;
+end;
+
+procedure TSourceEditor.EndUpdate;
+begin
+  FEditor.EndUpdate;
+end;
+
 Procedure TSourceEditor.ReParent(AParent: TWInControl);
 Begin
   CreateEditor(FAOwner,AParent);
@@ -2141,6 +2232,16 @@ begin
     Result:=FCodeBuffer.Filename
   else
     Result:='';
+end;
+
+function TSourceEditor.GetEditorControl: TWinControl;
+begin
+  Result:=FEditor;
+end;
+
+function TSourceEditor.GetCodeToolsBuffer: TObject;
+begin
+  Result:=CodeBuffer;
 end;
 
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
@@ -2183,21 +2284,21 @@ begin
     OnKeyDown(Sender, Key, Shift);
 end;
 
-Function TSourceEditor.GetCaretPosFromCursorPos(CursorPos: TPoint): TPoint;
+Function TSourceEditor.GetCaretPosFromCursorPos(const CursorPos: TPoint): TPoint;
 var
-  TopLine: Integer;
+  NewTopLine: Integer;
   LineHeight: Integer;
   LineNum: Integer;
   XLine: Integer;
 begin
   //Figure out the line number
-  TopLine := FEditor.TopLine;
+  NewTopLine := FEditor.TopLine;
   LineHeight := FEditor.LineHeight;
   if CursorPos.Y > 1 then
     LineNum := CursorPos.Y div LineHeight
   else
     LineNum := 1;
-  LineNum := LineNum + (TopLine);
+  LineNum := LineNum + NewTopLine;
   XLine := CursorPos.X div FEditor.CharWidth;
   if XLine = 0 then inc(XLine);
 
@@ -2218,6 +2319,128 @@ begin
   NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
   if NewTopLine<1 then NewTopLine:=1;
   EditorComponent.TopLine:=NewTopLine;
+end;
+
+function TSourceEditor.TextToScreenPosition(const Position: TPoint): TPoint;
+begin
+  Result:=FEditor.LogicalToPhysicalPos(Position);
+end;
+
+function TSourceEditor.ScreenToTextPosition(const Position: TPoint): TPoint;
+begin
+  Result:=FEditor.PhysicalToLogicalPos(Position);
+end;
+
+function TSourceEditor.LineCount: Integer;
+begin
+  Result:=FEditor.Lines.Count;
+end;
+
+function TSourceEditor.WidthInChars: Integer;
+begin
+  Result:=FEditor.CharsInWindow;
+end;
+
+function TSourceEditor.HeightInLines: Integer;
+begin
+  Result:=FEditor.LinesInWindow;
+end;
+
+function TSourceEditor.CharWidth: integer;
+begin
+  Result:=FEditor.CharWidth;
+end;
+
+function TSourceEditor.GetLineText: string;
+begin
+  Result:=FEditor.LineText;
+end;
+
+procedure TSourceEditor.SetLineText(const AValue: string);
+begin
+  FEditor.LineText:=AValue;
+end;
+
+function TSourceEditor.GetLines: TStrings;
+begin
+  Result:=FEditor.Lines;
+end;
+
+procedure TSourceEditor.SetLines(const AValue: TStrings);
+begin
+  FEditor.Lines:=AValue;
+end;
+
+function TSourceEditor.GetCursorScreenXY: TPoint;
+begin
+  Result:=FEditor.CaretXY;
+end;
+
+function TSourceEditor.GetCursorTextXY: TPoint;
+begin
+  Result:=FEditor.LogicalCaretXY;
+end;
+
+procedure TSourceEditor.SetCursorScreenXY(const AValue: TPoint);
+begin
+  FEditor.CaretXY:=AValue;
+end;
+
+procedure TSourceEditor.SetCursorTextXY(const AValue: TPoint);
+begin
+  FEditor.LogicalCaretXY:=AValue;
+end;
+
+function TSourceEditor.GetBlockBegin: TPoint;
+begin
+  Result:=FEditor.BlockBegin;
+end;
+
+function TSourceEditor.GetBlockEnd: TPoint;
+begin
+  Result:=FEditor.BlockEnd;
+end;
+
+procedure TSourceEditor.SetBlockBegin(const AValue: TPoint);
+begin
+  FEditor.BlockBegin:=AValue;
+end;
+
+procedure TSourceEditor.SetBlockEnd(const AValue: TPoint);
+begin
+  FEditor.BlockEnd:=AValue;
+end;
+
+function TSourceEditor.GetTopLine: Integer;
+begin
+  Result:=FEditor.TopLine;
+end;
+
+procedure TSourceEditor.SetTopLine(const AValue: Integer);
+begin
+  FEditor.TopLine:=AValue;
+end;
+
+function TSourceEditor.CursorInPixel: TPoint;
+begin
+  Result:=Point(FEditor.CaretXPix,FEditor.CaretYPix);
+end;
+
+function TSourceEditor.SearchReplace(const ASearch, AReplace: string;
+  SearchOptions: TSrcEditSearchOption): integer;
+begin
+  {$WARNING TODO TSourceEditor.SearchReplace}
+  Result:=0;
+end;
+
+function TSourceEditor.GetSourceText: string;
+begin
+  Result:=FEditor.Text;
+end;
+
+procedure TSourceEditor.SetSourceText(const AValue: string);
+begin
+  FEditor.Text:=AValue;
 end;
 
 procedure TSourceEditor.Activate;
@@ -2319,7 +2542,7 @@ begin
   FVisible:=Value;
 end;
 
-procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: integer);
+procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: word);
 begin
   EditorComponent.CommandProcessor(TSynEditorCommand(EditorCommand),' ',nil);
 end;
@@ -2335,6 +2558,8 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
+  
+  SourceEditorWindow:=Self;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
 
@@ -2474,6 +2699,7 @@ begin
   FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
+  SourceEditorWindow:=nil;
 
   inherited Destroy;
 end;
@@ -2985,12 +3211,12 @@ var
   Prefix: String;
   I: Integer;
   NewStr: String;
-  ActiveEditor: TSynEdit;
+  CurEdit: TSynEdit;
 Begin
   CurCompletionControl := Sender as TSynCompletion;
   S := TStringList.Create;
   Prefix := CurCompletionControl.CurrentString;
-  ActiveEditor:=GetActiveSE.EditorComponent;
+  CurEdit:=GetActiveSE.EditorComponent;
   case CurrentCompletionType of
    ctIdentCompletion:
      InitIdentCompletion(S);
@@ -3020,7 +3246,7 @@ Begin
   S.Free;
   CurCompletionControl.CurrentString:=Prefix;
   // set colors
-  if (ActiveEditor<>nil) and (CurCompletionControl.TheForm<>nil) then begin
+  if (CurEdit<>nil) and (CurCompletionControl.TheForm<>nil) then begin
     with CurCompletionControl.TheForm do begin
       BackgroundColor:=FActiveEditDefaultBGColor;
       clSelect:=FActiveEditSelectedBGColor;
@@ -3453,6 +3679,17 @@ begin
   i:=FindPageWithEditor(SrcEdit);
   if i>=0 then
     NoteBook.PageIndex:=i;
+end;
+
+function TSourceNotebook.GetActiveEditor: TSourceEditorInterface;
+begin
+  Result:=GetActiveSE;
+end;
+
+procedure TSourceNotebook.SetActiveEditor(const AValue: TSourceEditorInterface
+  );
+begin
+  SetActiveSE(AValue as TSourceEditor);
 end;
 
 procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
@@ -4022,10 +4259,10 @@ end;
 Procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
 // popup menu:  set bookmark clicked
 var
-  MenuItem: TMenuItem;
+  MenuItem: TIDEMenuItem;
 Begin
-  MenuItem := TMenuItem(sender);
-  BookMarkSet(MenuItem.MenuIndex);
+  MenuItem := Sender as TIDEMenuItem;
+  BookMarkSet(MenuItem.SectionIndex);
 end;
 
 procedure TSourceNotebook.BookmarkSetFreeClicked(Sender: TObject);
@@ -4043,7 +4280,7 @@ Begin
 end;
 
 Procedure TSourceNotebook.ReadOnlyClicked(Sender: TObject);
-var ActEdit:TSourceEditor;
+var ActEdit: TSourceEditor;
 begin
   ActEdit:=GetActiveSE;
   if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil)
@@ -4274,7 +4511,7 @@ end;
 
 Procedure TSourceNotebook.BookMarkSet(Value: Integer);
 var
-  ActEdit,AnEdit:TSourceEditor;
+  ActEdit, AnEdit: TSourceEditor;
 Begin
   ActEdit:=GetActiveSE;
 
