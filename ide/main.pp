@@ -5495,6 +5495,7 @@ begin
     if Result<>mrOk then exit;
     if Handled then exit;
   end;
+  debugln('TMainIDE.DoOpenEditorFile ',NewUnitInfo.Filename,' ',NewUnitInfo.UnitName);
 
   // check readonly
   NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)

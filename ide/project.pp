@@ -719,19 +719,22 @@ procedure TUnitInfo.ReadUnitNameFromSource(TryCache: boolean);
 var
   NewUnitName: String;
 begin
-  if TryCache then begin
+  NewUnitName:='';
+  if TryCache then
     NewUnitName:=CodeToolBoss.GetCachedSourceName(Source);
-    if NewUnitName<>'' then begin
-      fUnitName:=NewUnitName;
+  if NewUnitName='' then
+    NewUnitName:=CodeToolBoss.GetSourceName(fSource,false);
+  if NewUnitName='' then begin
+    // unable to parse the source
+    // use default: the filename
+    NewUnitName:=ExtractFileNameOnly(Filename);
+    if CompareText(NewUnitName,fUnitName)=0 then begin
+      // the last stored unitname has the better case
       exit;
     end;
   end;
-  NewUnitName:=CodeToolBoss.GetSourceName(fSource,false);
-  if (NewUnitName='') then begin
-    NewUnitName:=ExtractFileNameOnly(Filename);
-    if CompareText(NewUnitName,fUnitName)=0 then exit;
+  if NewUnitName<>'' then
     fUnitName:=NewUnitName;
-  end;
 end;
 
 function TUnitInfo.CreateUnitName: string;
