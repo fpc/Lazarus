@@ -1,11 +1,11 @@
 The following people contributed to Lazarus:
 
+A. J. Venter
 Alexander Shiyan
 Alexandru Alexandrov
 Andreas Hausladen
 Andrew Haines
 Andrew Johnson
-A. J. Venter
 Bob Wingard
 Boris Arko
 Christian Iversen
@@ -65,6 +65,7 @@ Stefan Hille
 Tom Lisjac
 Tony Maro
 Vasily I. Volchenko
+Vincent Beuselinck
 Vincent Snijders
 Wojciech Malinowski
 
