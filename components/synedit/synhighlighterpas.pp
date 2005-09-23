@@ -499,6 +499,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'deprecated')=0 then writeln('TSynPasSyn.KeyHash ',Result);
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -788,7 +789,12 @@ begin
   begin
     if fRange = rsProperty then Result := tkKey else Result := tkIdentifier;
   end else
-    if KeyComp('Interface') then Result := tkKey else Result := tkIdentifier;
+    if KeyComp('Interface') then
+      Result := tkKey
+    else if KeyComp('Deprecated') then
+      Result := tkKey
+    else
+      Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func84: TtkTokenKind;
