@@ -103,7 +103,7 @@ type
     property EditorControl: TWinControl read GetEditorControl;// normally TSynEdit
     property FileName: string read GetFileName;
     property Lines: TStrings read GetLines write SetLines;// the whole file
-    property LineText: string read GetLineText write SetLineText;// source of current line
+    property CurrentLineText: string read GetLineText write SetLineText;// source of current line
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;
