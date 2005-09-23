@@ -4350,6 +4350,7 @@ var
   NewAncestorName: String;
   APersistentClass: TPersistentClass;
   ACaption, AText: String;
+  NewUnitName: String;
 begin
   // check installed packages
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -4446,9 +4447,12 @@ begin
       if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
 
       // create JIT component
+      NewUnitName:=AnUnitInfo.UnitName;
+      if NewUnitName='' then
+        NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
       CInterface := TComponentInterface(
                       FormEditor1.CreateComponentFromStream(BinLFMStream,
-                            AncestorType,copy(AnUnitInfo.UnitName,1,255),true));
+                            AncestorType,copy(NewUnitName,1,255),true));
       if CInterface=nil then begin
         // error streaming component -> examine lfm file
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
