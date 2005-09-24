@@ -1217,6 +1217,7 @@ var
   MakefileFPCFilename: String;
   UnitOutputPath: String;
   UnitPath: String;
+  FPCMakeTool: TExternalToolOptions;
 begin
   Result:=mrCancel;
 
@@ -1267,7 +1268,32 @@ begin
   if Result<>mrOk then exit;
   
   // call fpcmake to create the Makefile
-  
+  FPCMakeTool:=TExternalToolOptions.Create;
+  try
+    FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
+    FPCMakeTool.WorkingDirectory:=APackage.Directory;
+    FPCMakeTool.Filename:='fpcmake';
+    FPCMakeTool.CmdLineParams:='-TAll';
+    FPCMakeTool.EnvironmentOverrides.Add(
+                               'FPCDIR='+EnvironmentOptions.FPCSourceDirectory);
+
+    // clear old errors
+    SourceNotebook.ClearErrorLines;
+
+    // compile package
+    Result:=EnvironmentOptions.ExternalTools.Run(FPCMakeTool,
+                          MainIDE.MacroList,nil,nil);
+    if Result<>mrOk then begin
+      Result:=MessageDlg('fpcmake failed',
+        'Calling fpcmake to create Makefile from '
+        +MakefileFPCFilename+' failed.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  finally
+    // clean up
+    FPCMakeTool.Free;
+  end;
   
   Result:=mrOk;
 end;
