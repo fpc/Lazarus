@@ -749,7 +749,7 @@ begin
       if (AllComponentText[EndPos] in ['e','E'])
       and (EndPos>1)
       and (AllComponentText[EndPos-1] in [#10,#13])
-      and (AnsiCompareText(copy(AllComponentText,EndPos,3),'END')=0)
+      and (CompareText(copy(AllComponentText,EndPos,3),'END')=0)
       and ((EndPos+3>length(AllComponentText))
            or (AllComponentText[EndPos+3] in [#10,#13]))
       then begin

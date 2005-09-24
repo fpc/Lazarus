@@ -3488,7 +3488,7 @@ begin
         true,@OnPopupMenuOpenPFile);
   end;
 
-  //if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
+  if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
