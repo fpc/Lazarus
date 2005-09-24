@@ -1172,19 +1172,61 @@ begin
 end;
 
 function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
+
+  procedure Replace(var s: string; const SearchTxt, ReplaceTxt: string);
+  var
+    p: LongInt;
+  begin
+    repeat
+      p:=Pos(SearchTxt,s);
+      if p<=1 then break;
+      s:=copy(s,1,p-1)+ReplaceTxt+copy(s,p+length(SearchTxt),length(s));
+    until false;
+  end;
+
+  function ConvertLazarusToMakefileMakros(const s: string): string;
+  begin
+    Result:=s;
+    Replace(Result,'$(TargetCPU)','%(CPU_TARGET)');
+    Replace(Result,'$(TargetOS)','%(OS_TARGET)');
+    Result:=APackage.SubstitutePkgMacro(Result);
+    Result:=ParseString(APackage.CompilerOptions.ParsedOpts,Result);
+    Replace(Result,'%(CPU_TARGET)','$(CPU_TARGET)');
+    Replace(Result,'%(OS_TARGET)','$(OS_TARGET)');
+  end;
+  
+  function ConvertLazarusToMakefileSearchPath(const s: string): string;
+  begin
+    Result:=CreateRelativeSearchPath(
+                         TrimSearchPath(ConvertLazarusToMakefileMakros(s),''),
+                         APackage.Directory);
+    Replace(Result,';',' ');
+  end;
+
+  function ConvertLazarusToMakefileDirectory(const s: string): string;
+  begin
+    Result:=CreateRelativePath(TrimFilename(
+                         ConvertLazarusToMakefileMakros(s)),APackage.Directory);
+  end;
+
 var
   s: String;
   e: string;
   SrcFilename: String;
   MainUnitName: String;
   MakefileFPCFilename: String;
-  BaseDir: String;
+  UnitOutputPath: String;
+  UnitPath: String;
 begin
   Result:=mrCancel;
 
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
-  BaseDir:=APackage.Directory;
+  UnitPath:=APackage.CompilerOptions.GetUnitPath(false,false)+';.';
+  UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
+  
+  UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
+  UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
 
   e:=LineEnding;
   s:='';
@@ -1195,9 +1237,8 @@ begin
   s:=s+'version='+APackage.Version.AsString+e;
   s:=s+''+e;
   s:=s+'[compiler]'+e;
-  s:=s+'unittargetdir='+CreateRelativePath(
-                       APackage.CompilerOptions.GetUnitOutPath(true),BaseDir)+e;
-  s:=s+'unitdir='+APackage.CompilerOptions.GetUnitPath(true)+';.'+e;
+  s:=s+'unittargetdir='+UnitOutputPath+e;
+  s:=s+'unitdir='+UnitPath+e;
   s:=s+'options=-gl'+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;
@@ -3865,7 +3906,7 @@ begin
   PkgList.Free;
   if AddOptionsList<>nil then begin
     // combine options of same type
-    GatherInheritedOptions(AddOptionsList,InheritedOptionStrings);
+    GatherInheritedOptions(AddOptionsList,true,InheritedOptionStrings);
     AddOptionsList.Free;
   end;
 

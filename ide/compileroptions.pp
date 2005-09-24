@@ -174,11 +174,15 @@ type
   TCompilationToolClass = class of TCompilationTool;
 
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
+
+  { TBaseCompilerOptions }
+
   TBaseCompilerOptions = class(TLazCompilerOptions)
   private
     FBaseDirectory: string;
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
-    fInheritedOptions: TInheritedCompOptsStrings;
+    fInheritedParsedOptions: TInheritedCompOptsStrings;
+    fInheritedUnparsedOptions: TInheritedCompOptsStrings;
     fInheritedOptParseStamps: integer;
     fInheritedOptGraphStamps: integer;
     fLoaded: Boolean;
@@ -237,17 +241,26 @@ type
     procedure GetInheritedCompilerOptions(var OptionsList: TList); virtual;
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
-                                RelativeToBaseDir: boolean): string; virtual;
+                                RelativeToBaseDir: boolean;
+                                Parsed: boolean = true): string; virtual;
     function GetDefaultMainSourceFileName: string; virtual;
     function NeedsLinkerOpts: boolean;
-    function GetUnitPath(RelativeToBaseDir: boolean): string;
-    function GetIncludePath(RelativeToBaseDir: boolean): string;
-    function GetSrcPath(RelativeToBaseDir: boolean): string;
-    function GetLibraryPath(RelativeToBaseDir: boolean): string;
-    function GetUnitOutPath(RelativeToBaseDir: boolean): string;
+    function GetUnitPath(RelativeToBaseDir: boolean;
+                         Parsed: boolean = true): string;
+    function GetIncludePath(RelativeToBaseDir: boolean;
+                            Parsed: boolean = true): string;
+    function GetSrcPath(RelativeToBaseDir: boolean;
+                        Parsed: boolean = true): string;
+    function GetLibraryPath(RelativeToBaseDir: boolean;
+                            Parsed: boolean = true): string;
+    function GetUnitOutPath(RelativeToBaseDir: boolean;
+                            Parsed: boolean = true): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
+    function GetUnparsedPath(Option: TParsedCompilerOptString;
+                             InheritedOption: TInheritedCompilerOption;
+                             RelativeToBaseDir: boolean): string;
     function ShortenPath(const SearchPath: string;
                                MakeAlwaysRelative: boolean): string;
     function GetCustomOptions: string;
@@ -277,6 +290,8 @@ type
     or a package or the IDE needs to use the package.
   }
   
+  { TAdditionalCompilerOptions }
+
   TAdditionalCompilerOptions = class
   private
     FBaseDirectory: string;
@@ -287,6 +302,7 @@ type
     FObjectPath: string;
     fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
+    FSrcPath: string;
     FUnitPath: string;
   protected
     procedure SetBaseDirectory(const AValue: string); virtual;
@@ -296,6 +312,7 @@ type
     procedure SetLinkerOptions(const AValue: string); virtual;
     procedure SetObjectPath(const AValue: string); virtual;
     procedure SetUnitPath(const AValue: string); virtual;
+    procedure SetSrcPath(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
@@ -304,10 +321,12 @@ type
                                 AdjustPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function GetOwnerName: string; virtual;
+    function GetOption(AnOption: TInheritedCompilerOption): string;
   public
     property Owner: TObject read fOwner;
     property UnitPath: string read FUnitPath write SetUnitPath;
     property IncludePath: string read FIncludePath write SetIncludePath;
+    property SrcPath: string read FSrcPath write SetSrcPath;
     property ObjectPath: string read FObjectPath write SetObjectPath;
     property LibraryPath: string read FLibraryPath write SetLibraryPath;
     property LinkerOptions: string read FLinkerOptions write SetLinkerOptions;
@@ -344,7 +363,7 @@ procedure IncreaseCompilerGraphStamp;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string): string;
                      
-procedure GatherInheritedOptions(AddOptionsList: TList;
+procedure GatherInheritedOptions(AddOptionsList: TList; Parsed: boolean;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 function InheritedOptionsToCompilerParameters(
   var InheritedOptionStrings: TInheritedCompOptsStrings;
@@ -395,7 +414,7 @@ begin
   Result:=OnParseString(Options,UnparsedValue);
 end;
 
-procedure GatherInheritedOptions(AddOptionsList: TList;
+procedure GatherInheritedOptions(AddOptionsList: TList; Parsed: boolean;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 var
   i: Integer;
@@ -406,34 +425,65 @@ begin
       AddOptions:=TAdditionalCompilerOptions(AddOptionsList[i]);
       if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
 
-      // unit search path
-      InheritedOptionStrings[icoUnitPath]:=
-        MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
-      // include search path
-      InheritedOptionStrings[icoIncludePath]:=
-        MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosIncludePath));
-      // src search path
-      InheritedOptionStrings[icoSrcPath]:=
-        MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosSrcPath));
-      // object search path
-      InheritedOptionStrings[icoObjectPath]:=
-        MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosObjectPath));
-      // library search path
-      InheritedOptionStrings[icoLibraryPath]:=
-        MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosLibraryPath));
-      // linker options
-      InheritedOptionStrings[icoLinkerOptions]:=
-        MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosLinkerOptions));
-      // custom options
-      InheritedOptionStrings[icoCustomOptions]:=
-        MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
-                     AddOptions.ParsedOpts.GetParsedValue(pcosCustomOptions));
+      if Parsed then begin
+        // unit search path
+        InheritedOptionStrings[icoUnitPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
+        // include search path
+        InheritedOptionStrings[icoIncludePath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosIncludePath));
+        // src search path
+        InheritedOptionStrings[icoSrcPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosSrcPath));
+        // object search path
+        InheritedOptionStrings[icoObjectPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosObjectPath));
+        // library search path
+        InheritedOptionStrings[icoLibraryPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosLibraryPath));
+        // linker options
+        InheritedOptionStrings[icoLinkerOptions]:=
+          MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosLinkerOptions));
+        // custom options
+        InheritedOptionStrings[icoCustomOptions]:=
+          MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
+                       AddOptions.ParsedOpts.GetParsedValue(pcosCustomOptions));
+      end else begin
+        // unit search path
+        InheritedOptionStrings[icoUnitPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
+                           AddOptions.GetOption(icoUnitPath));
+        // include search path
+        InheritedOptionStrings[icoIncludePath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
+                           AddOptions.GetOption(icoUnitPath));
+        // src search path
+        InheritedOptionStrings[icoSrcPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
+                           AddOptions.GetOption(icoUnitPath));
+        // object search path
+        InheritedOptionStrings[icoObjectPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
+                           AddOptions.GetOption(icoUnitPath));
+        // library search path
+        InheritedOptionStrings[icoLibraryPath]:=
+          MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
+                           AddOptions.GetOption(icoUnitPath));
+        // linker options
+        InheritedOptionStrings[icoLinkerOptions]:=
+          MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
+                             AddOptions.GetOption(icoUnitPath));
+        // custom options
+        InheritedOptionStrings[icoCustomOptions]:=
+          MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
+                             AddOptions.GetOption(icoUnitPath));
+      end;
     end;
   end;
 end;
@@ -1111,7 +1161,10 @@ begin
   fInheritedOptParseStamps:=InvalidParseStamp;
   fInheritedOptGraphStamps:=InvalidParseStamp;
   for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
-    fInheritedOptions[i]:='';
+  begin
+    fInheritedParsedOptions[i]:='';
+    fInheritedUnparsedOptions[i]:='';
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1175,10 +1228,12 @@ end;
 
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.GetInheritedOption(
-    Option: TInheritedCompilerOption; RelativeToBaseDir: boolean): string;
+    Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
+    Parsed: boolean = true): string;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.GetInheritedOption(
-  Option: TInheritedCompilerOption; RelativeToBaseDir: boolean): string;
+  Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
+  Parsed: boolean): string;
 var
   OptionsList: TList;
 begin
@@ -1190,13 +1245,17 @@ begin
     OptionsList:=nil;
     GetInheritedCompilerOptions(OptionsList);
     if OptionsList<>nil then begin
-      GatherInheritedOptions(OptionsList,fInheritedOptions);
+      GatherInheritedOptions(OptionsList,true,fInheritedParsedOptions);
+      GatherInheritedOptions(OptionsList,false,fInheritedUnparsedOptions);
       OptionsList.Free;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
     fInheritedOptGraphStamps:=CompilerGraphStamp;
   end;
-  Result:=fInheritedOptions[Option];
+  if Parsed then
+    Result:=fInheritedParsedOptions[Option]
+  else
+    Result:=fInheritedUnparsedOptions[Option];
   if RelativeToBaseDir then begin
     if Option in [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath] then
       Result:=CreateRelativeSearchPath(Result,BaseDirectory);
@@ -1213,32 +1272,49 @@ begin
   Result:=not (ccloNoLinkerOpts in fDefaultMakeOptionsFlags);
 end;
 
-function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean): string;
+function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
+  Parsed: boolean): string;
 begin
-  Result:=GetParsedPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir);
+  if Parsed then
+    Result:=GetParsedPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir)
+  else
+    Result:=GetUnparsedPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir)
 end;
 
-function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean
-  ): string;
+function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean;
+  Parsed: boolean): string;
 begin
-  Result:=GetParsedPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir);
+  if Parsed then
+    Result:=GetParsedPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir)
+  else
+    Result:=GetUnparsedPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir);
 end;
 
-function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean): string;
+function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean;
+  Parsed: boolean): string;
 begin
-  Result:=GetParsedPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir);
+  if Parsed then
+    Result:=GetParsedPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir)
+  else
+    Result:=GetUnparsedPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir);
 end;
 
-function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean
-  ): string;
+function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;
+  Parsed: boolean): string;
 begin
-  Result:=GetParsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir);
+  if Parsed then
+    Result:=GetParsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir)
+  else
+    Result:=GetUnparsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir);
 end;
 
-function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean
-  ): string;
+function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;
+  Parsed: boolean = true): string;
 begin
-  Result:=ParsedOpts.GetParsedValue(pcosOutputDir);
+  if Parsed then
+    Result:=ParsedOpts.GetParsedValue(pcosOutputDir)
+  else
+    Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
   if (not RelativeToBaseDir) then
     CreateAbsolutePath(Result,BaseDirectory);
 end;
@@ -1265,7 +1341,7 @@ begin
   {$ENDIF}
 
   // inherited path
-  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir);
+  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,true);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
@@ -1278,6 +1354,41 @@ begin
   {$ENDIF}
 end;
 
+function TBaseCompilerOptions.GetUnparsedPath(Option: TParsedCompilerOptString;
+  InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean
+  ): string;
+var
+  CurrentPath: String;
+  InheritedPath: String;
+begin
+  // current path
+  CurrentPath:=ParsedOpts.UnparsedValues[Option];
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetUnparsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
+
+  if (not RelativeToBaseDir) then
+    CreateAbsolutePath(CurrentPath,BaseDirectory);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetUnparsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
+
+  // inherited path
+  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,false);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetUnparsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
+  {$ENDIF}
+
+  Result:=MergeSearchPaths(CurrentPath,InheritedPath);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetUnparsedPath Total ',dbgsName(Self),' Result="',Result,'"');
+  {$ENDIF}
+end;
+
 function TBaseCompilerOptions.GetCustomOptions: string;
 var
   CurCustomOptions: String;
@@ -1286,7 +1397,7 @@ begin
   // custom options
   CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
   // inherited custom options
-  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true);
+  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,true);
   // concatenate
   if CurCustomOptions<>'' then
     Result:=CurCustomOptions+' '+InhCustomOptions
@@ -1695,7 +1806,7 @@ Processor specific options:
 
   // inherited Linker options
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true);
+    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true,true);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
@@ -1787,7 +1898,7 @@ Processor specific options:
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
   // inherited object path
-  InhObjectPath:=GetInheritedOption(icoObjectPath,true);
+  InhObjectPath:=GetInheritedOption(icoObjectPath,true,true);
   if (InhObjectPath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', InhObjectPath);
 
@@ -2193,6 +2304,13 @@ begin
   ParsedOpts.SetUnparsedValue(pcosCustomOptions,fCustomOptions);
 end;
 
+procedure TAdditionalCompilerOptions.SetSrcPath(const AValue: string);
+begin
+  if FSrcPath=AValue then exit;
+  FSrcPath:=AValue;
+  ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
+end;
+
 procedure TAdditionalCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
   if FBaseDirectory=AValue then exit;
@@ -2293,6 +2411,22 @@ begin
     Result:=fOwner.Classname
   else
     Result:='Has no owner';
+end;
+
+function TAdditionalCompilerOptions.GetOption(AnOption: TInheritedCompilerOption
+  ): string;
+begin
+  case AnOption of
+  icoUnitPath: Result:=UnitPath;
+  icoIncludePath: Result:=IncludePath;
+  icoObjectPath: Result:=ObjectPath;
+  icoLibraryPath: Result:=LibraryPath;
+  icoSrcPath: Result:=SrcPath;
+  icoLinkerOptions: Result:=LinkerOptions;
+  icoCustomOptions: Result:=CustomOptions;
+  else
+    RaiseGDBException(''); // inconsistency detected
+  end;
 end;
 
 { TParsedCompilerOptions }

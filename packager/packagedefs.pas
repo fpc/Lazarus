@@ -389,6 +389,7 @@ type
     procedure SetLinkerOptions(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetUnitPath(const AValue: string); override;
+    procedure SetSrcPath(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
     function GetOwnerName: string; override;
@@ -608,7 +609,6 @@ type
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro; var s: string;
       var Handled, Abort: boolean);
     procedure SetUserReadOnly(const AValue: boolean);
-    function SubstitutePkgMacro(const s: string): string;
     procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
     procedure UpdateSourceDirectories;
@@ -645,6 +645,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
+    function SubstitutePkgMacro(const s: string): string;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
     function SearchFile(const ShortFilename: string;
@@ -3402,6 +3403,13 @@ procedure TPkgAdditionalCompilerOptions.SetUnitPath(const AValue: string);
 begin
   if AValue=UnitPath then exit;
   inherited SetUnitPath(AValue);
+  LazPackage.Modified:=true;
+end;
+
+procedure TPkgAdditionalCompilerOptions.SetSrcPath(const AValue: string);
+begin
+  if AValue=SrcPath then exit;
+  inherited SetSrcPath(AValue);
   LazPackage.Modified:=true;
 end;
 
