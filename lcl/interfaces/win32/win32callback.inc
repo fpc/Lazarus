@@ -70,12 +70,36 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
 var
   PrevWndProc: Windows.WNDPROC;
+{$ifdef MSG_DEBUG}
+  depthLen: integer;
+{$endif}
+  setComboWindow: boolean;
 begin
+{$ifdef MSG_DEBUG}
+  depthLen := Length(MessageStackDepth);
+  if depthLen > 0 then
+    MessageStackDepth[depthLen] := '#';
+{$endif}
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
   if PrevWndProc = nil then
     Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
-  else
+  else begin
+    // combobox child edit weirdness: combobox handling WM_SIZE will compare text
+    // to list of strings, and if appears in there, will set the text, and select it
+    // WM_GETTEXTLENGTH, WM_GETTEXT, WM_SETTEXT, EM_SETSEL
+    // combobox sends WM_SIZE to itself indirectly, check recursion
+    setComboWindow := (Msg = WM_SIZE) and (ComboBoxHandleSizeWindow = 0) 
+        and GetWindowInfo(Windows.GetTopWindow(Window))^.isComboEdit;
+    if setComboWindow then
+      ComboBoxHandleSizeWindow := Window;
     Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
+    if setComboWindow then
+      ComboBoxHandleSizeWindow := 0;
+  end;
+{$ifdef MSG_DEBUG}
+  if depthLen > 0 then
+    MessageStackDepth[depthLen] := ' ';
+{$endif}
 end;
 
 type
@@ -84,10 +108,7 @@ const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
 var
-  EraseBkgndStack: dword;
-{$ifdef MSG_DEBUG}
-  MessageStackDepth: string;
-{$endif}
+  EraseBkgndStack: dword = 0;
 
 procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
 begin
@@ -561,6 +582,11 @@ Var
     end
   end;
 
+  function IsComboEditSelection: boolean;
+  begin
+    Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
+  end;
+    
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -574,6 +600,25 @@ Begin
   WindowInfo := GetWindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
+    // combobox child edit weirdness
+    // prevent combobox WM_SIZE message to get/set/compare text to list, to select text
+    if IsComboEditSelection then
+    begin
+      case Msg of
+        WM_GETTEXTLENGTH, EM_SETSEL:
+        begin
+          Result := 0;
+          exit;
+        end;
+        WM_GETTEXT:
+        begin
+          if WParam > 0 then
+            PChar(LParam)^ := #0;
+          Result := 0;
+          exit;
+        end;
+      end;
+    end;
     lWinControl := WindowInfo^.AWinControl;
     // filter messages we want to pass on to LCL
     if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)

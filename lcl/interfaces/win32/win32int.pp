@@ -246,10 +246,14 @@ type
 var
   MouseDownTime: dword;
   MouseDownPos: TPoint;
-  MouseDownWindow: HWND;
+  MouseDownWindow: HWND = 0;
   MouseDownFocusWindow: HWND;
-  MouseDownFocusStatus: TMouseDownFocusStatus;
+  MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
+  ComboBoxHandleSizeWindow: HWND = 0;
   OnClipBoardRequest: TClipboardRequestEvent;
+{$ifdef MSG_DEBUG}
+  MessageStackDepth: string = '';
+{$endif}
 
 {$I win32listsl.inc}
 {$I win32callback.inc}
@@ -260,15 +264,8 @@ var
 Initialization
 
   Assert(False, 'Trace:win32int.pp - Initialization');
-{$ifdef MSG_DEBUG}
-  MessageStackDepth := '';
-{$endif}
-  EraseBkgndStack := 0;
   { initialize mousedownclick to far before double click time }
-  MouseDownFocusStatus := mfNone;
   MouseDownTime := GetTickCount - 5000;
-  MouseDownWindow := 0;
-
 
 finalization
 
