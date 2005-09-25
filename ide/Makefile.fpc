@@ -48,6 +48,7 @@ destdir=$(BASEDIR)/dist
 
 [prerules]
 RCPP?=$(firstword $(strip $(subst /,$(PATHSEP),$(wildcard $(addsuffix /cpp$(SRCEXEEXT),$(SEARCHPATH))))))
+
 #
 # LCL Platform
 ifndef LCL_PLATFORM
@@ -59,11 +60,13 @@ override COMPILER_UNITDIR+=../lcl/nonwin32
 endif
 endif
 export LCL_PLATFORM
+
 #
 # LibPaths
 ifeq ($(OS_TARGET),darwin)
 LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
 endif
+
 #
 # user config
 ifndef LAZARUS_CONFIG_DIR
@@ -74,10 +77,19 @@ LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
 endif
 endif
 export LAZARUS_CONFIG_DIR
+
 #
 # idemake.cfg
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
+
+#
+# big ide
+ifdef LAZARUS_BIG
+LAZARUS_IDE_CONFIG=bigidemake.cfg
+LAZARUS_CONFIG_DIR=.
+LAZARUS_BIG_COMPONENT_DIRS=rtticontrols
+endif
 
 #
 # apptype gui
@@ -87,7 +99,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: ide idepkg starter all clean cleanide purge
+.PHONY: ide idepkg idebig starter all clean cleanide purge
 .SUFFIXES: .rc .res
 
 %.res: %.rc

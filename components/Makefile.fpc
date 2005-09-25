@@ -17,7 +17,6 @@ files=$(wildcard ./units/*$(OEXT)) \
       $(wildcard ./custom/*$(PPUEXT)) \
       $(wildcard ./custom/*$(RSTEXT))
 
-
 [rules]
 
 cleanlaz: clean

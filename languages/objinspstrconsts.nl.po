@@ -16,7 +16,7 @@ msgstr " Geselecteerd plaatje "
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr ""
+msgstr "%d regels, %d letters"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
@@ -112,7 +112,7 @@ msgstr "&Ongedaan maken"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "&Omhoog"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -124,11 +124,11 @@ msgstr "(Onbekend)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
-msgstr ""
+msgstr "(geen)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr ""
+msgstr "O regels, 0 letters"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -140,7 +140,7 @@ msgstr "Action List Bewerker"
 
 #: objinspstrconsts:ilesadd
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -148,15 +148,15 @@ msgstr "Toevoegen ..."
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr ""
+msgstr "Nieuw item toevoegen"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr ""
+msgstr "Pagina toevoegen"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Aan favorieten toevoegen"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -204,7 +204,7 @@ msgstr "Char"
 
 #: objinspstrconsts:oischaractersforblanks
 msgid "Characters for Blanks"
-msgstr ""
+msgstr "Karakters voor sspaties"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -224,7 +224,7 @@ msgstr "Opschonen"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr ""
+msgstr "Plaatje wissen"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -232,11 +232,11 @@ msgstr "Kleur Selecteren"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "Componentnaam %s%s%s is geen geldige indentifier"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
-msgstr ""
+msgstr "Componenten"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -308,11 +308,11 @@ msgstr "Verwijder onderdelen %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr ""
+msgstr "Verwijder pagina"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr ""
+msgstr "Item %d \"%s\" verwijderen?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -320,7 +320,7 @@ msgstr "Dialoog"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "&Neer"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -364,7 +364,7 @@ msgstr "Eruit"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
-msgstr ""
+msgstr "Favorieten"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -432,7 +432,7 @@ msgstr "Image list bewerker"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Invoer masker"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -440,7 +440,7 @@ msgstr "Invoegen"
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr ""
+msgstr "Pagina invoegen"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -456,7 +456,7 @@ msgstr "Interface"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
+msgstr "Ongeldige properie waarde"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -476,19 +476,19 @@ msgstr "Laad Plaatjes Dialoog"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr ""
+msgstr "Laad plaatje"
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
-msgstr ""
+msgstr "Maskers..."
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr "Method"
+msgstr "Methode"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Wijzig het item"
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
@@ -500,11 +500,11 @@ msgstr "Ga naar boven"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Pagina naar links"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Pagina naar rechts"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -548,7 +548,7 @@ msgstr "Open"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr ""
+msgstr "Opties"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -576,7 +576,7 @@ msgstr "Eigenschappen"
 
 #: objinspstrconsts:oispropertiesof
 msgid "Properties of %s"
-msgstr ""
+msgstr "Properties van %s"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
@@ -588,11 +588,11 @@ msgstr "Verversen"
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr ""
+msgstr "Verwijder van favorieten"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
-msgstr ""
+msgstr "Voorbeeld masker:"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -608,7 +608,7 @@ msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr ""
+msgstr "Sla plaatje op"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -644,7 +644,7 @@ msgstr "Zet naar standaardinstelling: %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr ""
+msgstr "Laat componenten boom zien"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
@@ -652,7 +652,7 @@ msgstr ""
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr ""
+msgstr "Laat pagina zien ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -684,7 +684,7 @@ msgstr "Sub onderdeel"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
-msgstr ""
+msgstr "Test Invoer"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

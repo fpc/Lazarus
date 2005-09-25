@@ -1438,8 +1438,8 @@ msgid "Copyright (C) <year> <name of author>%sThis library is free software; you
 msgstr "Prawa autorskie (C) <year> <name of author>%sNiniejsza biblioteka jest wolnym oprogramowaniem; mo¿esz j± rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Mniejszej Powszechnej Licencji Publicznej GNU, wydanej przez Fundacjê Wolnego Oprogramowania - wed³ug wersji 2 tej Licencji lub (wed³ug twojego wyboru) której¶ z pó¼niejszych wersji. %sNiniejsza biblioteka rozpowszechniana jest z nadziej±, i¿ bêdzie ona u¿yteczna - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji siêgnij do Mniejszej Powszechnej Licencji Publicznej GNU. %sZ pewno¶ci± wraz z niniejsz± bibliotek± otrzyma³e¶ te¿ egzemplarz Mniejszej Powszechnej Licencji Publicznej GNU (GNU General Public License); je¶li nie - napisz do Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 
 #: lazarusidestrconsts:lisgplnotice
-msgid "Copyright (C) <year> <name of author>%sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "Prawa autorskie (C) <year> <name of author>%sNiniejszy program jest wolnym oprogramowaniem; mo¿esz go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej GNU, wydanej przez Fundacjê Wolnego Oprogramowania - wed³ug wersji 2 tej Licencji lub (wed³ug twojego wyboru) której¶ z pó¼niejszych wersji. %sNiniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji siêgnij do Powszechnej Licencji Publicznej GNU. %sZ pewno¶ci± wraz z niniejszym programem otrzyma³e¶ te¿ egzemplarz Powszechnej Licencji Publicznej GNU (GNU General Public License); je¶li nie - napisz do Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1476,6 +1476,10 @@ msgstr "Utwórz 'Defines' dla katalogu Lazarusa"
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Utwórz makra FPC i ¶cie¿ki dla katalogu z projektem fpc"
+
+#: lazarusidestrconsts:lispckeditcreatemakefile
+msgid "Create Makefile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
