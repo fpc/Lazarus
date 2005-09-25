@@ -740,7 +740,7 @@ begin
   Result:=true;
 end;
 
-procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+procedure SetComboBoxText(AComboBox:TComboBox; const AText: String);
 var a:integer;
 begin
   a:=AComboBox.Items.IndexOf(AText);
@@ -750,9 +750,10 @@ begin
     AComboBox.Items.Add(AText);
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
   end;
+  AComboBox.Text:=AText;
 end;
 
-procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
+procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
   MaxCount: integer);
 var a:integer;
 begin
@@ -766,6 +767,7 @@ begin
     while AComboBox.Items.Count>MaxCount do
       AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
+  AComboBox.Text:=AText;
 end;
 
 { TEnvironmentOptions }
@@ -1675,6 +1677,7 @@ begin
 
   with BakProjAddExtComboBox.Items do begin
     BeginUpdate;
+    Clear;
     Add('bak');
     Add('old');
     EndUpdate;
@@ -1684,6 +1687,7 @@ begin
 
   with BakProjMaxCounterComboBox.Items do begin
     BeginUpdate;
+    Clear;
     Add('1');
     Add('2');
     Add('3');
@@ -1695,8 +1699,10 @@ begin
 
   BakProjSubDirLabel.Caption:=dlgEdBSubDir;
 
+  BakProjSubDirComboBox.Text:='';
   with BakProjSubDirComboBox.Items do begin
     BeginUpdate;
+    Clear;
     Add(BakNoSubDirTxt);
     Add('backup');
     EndUpdate;
@@ -1731,6 +1737,7 @@ begin
 
   with BakOtherMaxCounterComboBox.Items do begin
     BeginUpdate;
+    Clear;
     Add('1');
     Add('2');
     Add('3');
@@ -1744,6 +1751,7 @@ begin
 
   with BakOtherSubDirComboBox.Items do begin
     BeginUpdate;
+    Clear;
     Add(dlgBakDirectory);
     Add('backup');
     EndUpdate;
@@ -2410,10 +2418,9 @@ begin
         MaxCounter:=0
       else
         MaxCounter:=StrToIntDef(BakProjMaxCounterComboBox.Text,1);
-      if BakProjSubDirComboBox.Text=BakNoSubDirTxt then
-        SubDirectory:=''
-      else
-        SubDirectory:=BakProjSubDirComboBox.Text;
+      SubDirectory:=BakProjSubDirComboBox.Text;
+      if SubDirectory=BakNoSubDirTxt then
+        SubDirectory:='';
     end;
     with BackupInfoOtherFiles do begin
       case BakOtherTypeRadioGroup.ItemIndex of

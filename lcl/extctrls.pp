@@ -146,7 +146,8 @@ type
     function GetPageIndex: Integer;
     procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
-    procedure ChildPageSetTabVisible(APage: TCustomPage; AValue: Boolean; AIndex: Integer);
+    procedure ChildPageSetTabVisible(APage: TCustomPage; AValue: Boolean;
+                                     AIndex: Integer);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);

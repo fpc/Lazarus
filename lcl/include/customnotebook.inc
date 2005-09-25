@@ -499,7 +499,7 @@ var
 begin
   RealIndex:= AIndex;
   for X := 0 to AIndex-1 do
-    if not(Page[X].TabVisible) then Dec(RealIndex);
+    if not (Page[X].TabVisible) then Dec(RealIndex);
   if AValue then
     TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, RealIndex)
   else
