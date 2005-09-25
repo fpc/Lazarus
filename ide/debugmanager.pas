@@ -992,7 +992,7 @@ end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
 begin                       
-  ViewDebugDialog(TDebugDialogType(TMenuItem(Sender).Tag));
+  ViewDebugDialog(TDebugDialogType((Sender as TIDEMenuItem).Tag));
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
