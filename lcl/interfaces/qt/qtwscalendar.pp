@@ -39,9 +39,9 @@ uses
 
 type
 
-  { TQtWSCalendar }
+  { TQtWSCustomCalendar }
 
-  TQtWSCalendar = class(TWSCalendar)
+  TQtWSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public
@@ -58,6 +58,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TQtWSCalendar);
+//  RegisterWSComponent(TCustomCalendar, TQtWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

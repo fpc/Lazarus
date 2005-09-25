@@ -39,9 +39,9 @@ uses
 
 type
 
-  { TWin32WSCalendar }
+  { TWin32WSCustomCalendar }
 
-  TWin32WSCalendar = class(TWSCalendar)
+  TWin32WSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public
@@ -61,9 +61,9 @@ implementation
 uses
   Win32Int, InterfaceBase;
 
-{ TWin32WSCalendar }
+{ TWin32WSCustomCalendar }
 
-function TWin32WSCalendar.CreateHandle(const AWinControl: TWinControl;
+function TWin32WSCustomCalendar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -90,7 +90,7 @@ const
   MCM_FIRST             = $1000;
   MCM_GETMINREQRECT     = MCM_FIRST + 9;
       
-procedure TWin32WSCalendar.AdaptBounds(const AWinControl: TWinControl;
+procedure TWin32WSCustomCalendar.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle: HWND;
@@ -102,7 +102,7 @@ begin
   Height := lRect.Bottom;
 end;
 
-function  TWin32WSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+function  TWin32WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   ST: SystemTime;
 begin
@@ -111,7 +111,7 @@ begin
     Result := EncodeDate(WYear,WMonth,WDay);
 end;
 
-procedure TWin32WSCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+procedure TWin32WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   ST: SystemTime;
 begin
@@ -119,12 +119,12 @@ begin
   SendMessage(ACalendar.Handle, MCM_SETCURSEL, 0, Windows.LParam(@ST));
 end;
 
-procedure TWin32WSCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
+procedure TWin32WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
 begin
   // TODO: implement me!
 end;
 
-procedure TWin32WSCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+procedure TWin32WSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
 begin
   // TODO: implement me!
 end;
@@ -137,6 +137,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCalendar, TWin32WSCalendar);
+  RegisterWSComponent(TCustomCalendar, TWin32WSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

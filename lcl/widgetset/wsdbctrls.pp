@@ -92,7 +92,7 @@ type
 
   { TWSDBCalendar }
 
-  TWSDBCalendar = class(TWSCalendar)
+  TWSDBCalendar = class(TWSCustomCalendar)
   end;
 
   { TWSDBCustomNavigator }

@@ -37,9 +37,9 @@ uses
 
 type
 
-  { TGtkWSCalendar }
+  { TGtkWSCustomCalendar }
 
-  TGtkWSCalendar = class(TWSCalendar)
+  TGtkWSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public
@@ -65,7 +65,7 @@ begin
   Result:=PGtkCalendar(WinWidgetInfo^.CoreWidget);
 end;
 
-function  TGtkWSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   Year, Month, Day: word;  //used for csCalendar
 begin
@@ -74,7 +74,7 @@ begin
   Result := EncodeDate(Year,Month+1,Day);
 end;
 
-procedure TGtkWSCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+procedure TGtkWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   Year, Month, Day: string;
   GtkCalendar: PGtkCalendar;
@@ -87,7 +87,7 @@ begin
   gtk_calendar_select_day(GtkCalendar,StrToInt(Day));
 end;
 
-procedure TGtkWSCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; 
+procedure TGtkWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
 var
   num: dword;
@@ -113,7 +113,7 @@ begin
   gtk_Calendar_Display_options(GetGtkCalendar(ACalendar), gtkCalendarDisplayOptions);
 end;
 
-procedure TGtkWSCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
+procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
   const AReadOnly: boolean);
 var
   GtkCalendar: PGtkCalendar;
@@ -133,6 +133,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCalendar, TGtkWSCalendar);
+  RegisterWSComponent(TCustomCalendar, TGtkWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

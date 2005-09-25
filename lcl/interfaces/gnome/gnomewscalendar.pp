@@ -39,9 +39,9 @@ uses
 
 type
 
-  { TGnomeWSCalendar }
+  { TGnomeWSCustomCalendar }
 
-  TGnomeWSCalendar = class(TWSCalendar)
+  TGnomeWSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public
@@ -58,6 +58,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TGnomeWSCalendar);
+//  RegisterWSComponent(TCustomCalendar, TGnomeWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

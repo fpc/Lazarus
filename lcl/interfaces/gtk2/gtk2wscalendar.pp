@@ -41,7 +41,7 @@ type
 
   { TGtk2WSCalendar }
 
-  TGtk2WSCalendar = class(TWSCalendar)
+  TGtk2WSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public

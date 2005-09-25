@@ -247,7 +247,7 @@ Procedure TCustomCalendar.GetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    FDate := TWSCalendarClass(WidgetSetClass).GetDateTime(Self);
+    FDate := TWSCustomCalendarClass(WidgetSetClass).GetDateTime(Self);
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.GetProps A ',FDate,' ',FDateAsString);
@@ -263,9 +263,9 @@ begin
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
-    TWSCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
-    TWSCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
-    TWSCalendarClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+    TWSCustomCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
+    TWSCustomCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
+    TWSCustomCalendarClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   end else begin
     FPropsChanged:=true;
   end;
@@ -277,7 +277,7 @@ var
   OldDay, OldMonth, OldYear: word;
   NewDay, NewMonth, NewYear: word;
 begin
-  NewDate := TWSCalendarClass(WidgetSetClass).GetDateTime(Self);
+  NewDate := TWSCustomCalendarClass(WidgetSetClass).GetDateTime(Self);
   if (NewDate=FDate) then exit;
   DecodeDate(NewDate, NewYear, NewMonth, NewDay);
   DecodeDate(FDate, OldYear, OldMonth, OldDay);

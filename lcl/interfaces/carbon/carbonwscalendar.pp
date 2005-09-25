@@ -39,9 +39,9 @@ uses
 
 type
 
-  { TCarbonWSCalendar }
+  { TCarbonWSCustomCalendar }
 
-  TCarbonWSCalendar = class(TWSCalendar)
+  TCarbonWSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
   public
@@ -58,6 +58,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TCarbonWSCalendar);
+//  RegisterWSComponent(TCustomCalendar, TCarbonWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.

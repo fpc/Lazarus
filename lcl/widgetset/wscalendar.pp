@@ -49,10 +49,10 @@ uses
   WSLCLClasses, WSControls;
 
 type
-  { TWSCalendar }
+  { TWSCustomCalendar }
 
-  TWSCalendarClass = class of TWSCalendar;
-  TWSCalendar = class(TWSWinControl)
+  TWSCustomCalendarClass = class of TWSCustomCalendar;
+  TWSCustomCalendar = class(TWSWinControl)
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); virtual;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
@@ -63,21 +63,21 @@ type
 
 implementation
 
-function  TWSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+function  TWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
   Result := 0.0;
 end;
 
-procedure TWSCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+procedure TWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 begin
 end;
 
-procedure TWSCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; 
+procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
 begin
 end;
 
-procedure TWSCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+procedure TWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
 begin
 end;
 
@@ -87,6 +87,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TWSCalendar);
+//  RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
 ////////////////////////////////////////////////////
 end.
