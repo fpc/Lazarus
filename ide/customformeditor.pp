@@ -1356,6 +1356,8 @@ Begin
       end;
     except
       on e: Exception do begin
+        DebugLn(e.Message);
+        DumpExceptionBackTrace;
         MessageDlg(lisErrorMovingComponent,
           Format(lisErrorMovingComponent2, [Temp.Component.Name,
             Temp.Component.ClassName]),
