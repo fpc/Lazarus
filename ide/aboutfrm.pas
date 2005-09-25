@@ -34,7 +34,7 @@ type
   { TAboutForm }
 
   TAboutForm = class(TForm)
-    Button1: TBitBtn;
+    CloseButton: TBitBtn;
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
     VersionLabel: TLABEL;
@@ -147,7 +147,7 @@ begin
     +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
   LoadContributors;
-  Button1.Caption:=lisClose;
+  CloseButton.Caption:=lisClose;
 end;
 
 procedure TAboutForm.LoadContributors;
