@@ -33,7 +33,7 @@ unit LazDocFrm;
 
 {$mode objfpc}{$H+}
 
-{$define dbgLazDoc}
+{ $define dbgLazDoc}
 
 interface
 
@@ -44,6 +44,7 @@ uses
   Controls,
   Dialogs,
   DOM,
+  ExtCtrls,
   Forms,
   Graphics,
   IDEProcs,
@@ -62,20 +63,39 @@ type
     Short: String;
     Descr: String;
     Errors: String;
+    SeeAlso: String;
   end;
 
   { TLazDocForm }
 
   TLazDocForm = class(TForm)
+    AddLinkButton: TButton;
+    DeleteLinkButton: TButton;
     DescrMemo: TMemo;
+    LinkTextEdit: TEdit;
+    LinkIdEdit: TEdit;
+    LinkListBox: TListBox;
+    Panel1: TPanel;
     ShortEdit: TEdit;
     ErrorsMemo: TMemo;
     PageControl: TPageControl;
     DescrTabSheet: TTabSheet;
     ErrorsTabSheet: TTabSheet;
     ShortTabSheet: TTabSheet;
+    BoldFormatButton: TSpeedButton;
+    ItalicFormatButton: TSpeedButton;
+    InsertCodeTagButton: TSpeedButton;
+    InsertRemarkButton: TSpeedButton;
+    InsertVarTagButton: TSpeedButton;
+    UnderlineFormatButton: TSpeedButton;
+    SeeAlsoTabSheet: TTabSheet;
+    procedure AddLinkButtonClick(Sender: TObject);
+    procedure DeleteLinkButtonClick(Sender: TObject);
     procedure DocumentationTagChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure FormatButtonClick(Sender: TObject);
+    procedure LinkListBoxClick(Sender: TObject);
   private
     { private declarations }
     FChanged: Boolean;
@@ -149,12 +169,104 @@ begin
     Page[0].Caption := lisLazDocShortTag;
     Page[1].Caption := lisLazDocDescrTag;
     Page[2].Caption := lisLazDocErrorsTag;
+    Page[3].Caption := lisLazDocSeeAlsoTag;
     PageIndex := 0;
   end;
 
-  Reset;
+  BoldFormatButton.Hint := lisLazDocHintBoldFormat;
+  ItalicFormatButton.Hint := lisLazDocHintItalicFormat;
+  UnderlineFormatButton.Hint := lisLazDocHintUnderlineFormat;
+  InsertCodeTagButton.Hint := lisLazDocHintInsertCodeTag;
+  InsertRemarkButton.Hint := lisLazDocHintRemarkTag;
+  InsertVarTagButton.Hint := lisLazDocHintVarTag;
 
-  FChanged := False;
+  AddLinkButton.Caption := lisLazDocAddLinkButton;
+  DeleteLinkButton.Caption := lisLazDocDeleteLinkButton;
+
+  Reset;
+  
+  Resize;
+end;
+
+procedure TLazDocForm.FormResize(Sender: TObject);
+begin
+  LinkIdEdit.Width := (AddLinkButton.Left - LinkIdEdit.Left - 12) div 2;
+  LinkTextEdit.Left := LinkIdEdit.Left + LinkIdEdit.Width + 6;
+  LinkTextEdit.Width := LinkIdEdit.Width;
+end;
+
+procedure TLazDocForm.FormatButtonClick(Sender: TObject);
+begin
+  case TSpeedButton(Sender).Tag of
+    //bold
+    0: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<b>' + DescrMemo.SelText + '</b>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<b>' + ErrorsMemo.SelText + '</b>';
+       end;
+    //italic
+    1: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<i>' + DescrMemo.SelText + '</i>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<i>' + ErrorsMemo.SelText + '</i>';
+       end;
+    //underline
+    2: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<u>' + DescrMemo.SelText + '</u>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<u>' + ErrorsMemo.SelText + '</u>';
+       end;
+    //codetag
+    3: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<p><code>' + DescrMemo.SelText + '</code></p>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<p><code>' + ErrorsMemo.SelText + '</code></p>';
+       end;
+    //remarktag
+    4: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<p><remark>' + DescrMemo.SelText + '</remark></p>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<p><remark>' + ErrorsMemo.SelText + '</remark></p>';
+       end;
+    //vartag
+    5: begin
+         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+           DescrMemo.SelText := '<var>' + DescrMemo.SelText + '</var>';
+         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+           ErrorsMemo.SelText := '<var>' + ErrorsMemo.SelText + '</var>';
+       end;
+  end;
+end;
+
+procedure TLazDocForm.LinkListBoxClick(Sender: TObject);
+var
+  strTmp: string;
+  intTmp: integer;
+  index: integer;
+  intStart: integer;
+begin
+  //split the link into Id and Text
+  index := LinkListBox.ItemIndex;
+  
+  if index = -1 then Exit;
+  
+  intStart := PosEx('"', LinkListBox.Items[index], 1);
+  
+  intTmp := PosEx('"', LinkListBox.Items[index], intStart + 1);
+  
+  LinkIdEdit.Text := Copy(LinkListBox.Items[index], intStart + 1, intTmp - intStart - 1);
+  
+  strTmp := Copy(LinkListBox.Items[index], intTmp + 2, Length(LinkListBox.Items[index]));
+
+  if strTmp = '>' then
+    LinkTextEdit.Text := ''
+  else
+    LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
 end;
 
 function TLazDocForm.NodeByName(ElementName: String): TDOMNode;
@@ -249,6 +361,9 @@ begin
 
       if S = 'errors' then
         Result.Errors := GetFirstChildValue(Node);
+
+      if S = 'seealso' then
+        Result.SeeAlso := GetFirstChildValue(Node);
     end;
     Node := Node.NextSibling;
   end;
@@ -348,6 +463,9 @@ begin
   ShortEdit.Clear;
   DescrMemo.Clear;
   ErrorsMemo.Clear;
+  LinkIdEdit.Clear;
+  LinkTextEdit.Clear;
+  LinkListBox.Clear;
 
   FChanged := False;
 end;
@@ -367,14 +485,17 @@ begin
     Exit;
   end;
 
-  FCurrentElement := GetNearestSourceElement(source, pos);
+  //save the current changes to documentation
+  Save;
 
-  SetCaption;
+  FCurrentElement := GetNearestSourceElement(source, pos);
 
   //do not continue if FCurrentElement=FLastElement
   //or FCurrentElement is empty (J. Reyes)
   if (FCurrentElement = FLastElement) or (FCurrentElement = '') then
     Exit;
+
+  SetCaption;
 
   FLastElement := FCurrentElement;
 
@@ -385,6 +506,11 @@ begin
   ShortEdit.Enabled := True;
   DescrMemo.Enabled := True;
   ErrorsMemo.Enabled := True;
+  LinkIdEdit.Enabled := True;
+  LinkTextEdit.Enabled := True;
+  LinkListBox.Enabled := True;
+  AddLinkButton.Enabled := True;
+  DeleteLinkButton.Enabled := True;
 
   if Assigned(n) then
   begin
@@ -393,12 +519,18 @@ begin
     ShortEdit.Text := dn.Short;
     DescrMemo.Lines.Text := ConvertLineEndings(dn.Descr);
     ErrorsMemo.Lines.Text := ConvertLineEndings(dn.Errors);
+    LinkListBox.Items.Text := ConvertLineEndings(dn.SeeAlso);
+    LinkIdEdit.Clear;
+    LinkTextEdit.Clear;
   end
   else
   begin
     ShortEdit.Text := lisLazDocNoDocumentation;
     DescrMemo.Lines.Text := lisLazDocNoDocumentation;
     ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
+    LinkIdEdit.Text := lisLazDocNoDocumentation;
+    LinkTextEdit.Text := lisLazDocNoDocumentation;
+    LinkListBox.Clear;
   end;
 
   FChanged := False;
@@ -406,6 +538,11 @@ begin
   ShortEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
+  LinkIdEdit.Enabled := EnabledState;
+  LinkTextEdit.Enabled := EnabledState;
+  LinkListBox.Enabled := EnabledState;
+  AddLinkButton.Enabled := EnabledState;
+  DeleteLinkButton.Enabled := EnabledState;
 end;
 
 procedure TLazDocForm.Save;
@@ -458,6 +595,14 @@ begin
         else
           n.FirstChild.NodeValue := StringListToText(ErrorsMemo.Lines, #10);
 
+      if S = 'seealso' then
+        if not Assigned(n.FirstChild) then
+        begin
+          child := doc.CreateTextNode(StringListToText(LinkListBox.Items, #10));
+          n.AppendChild(child);
+        end
+        else
+          n.FirstChild.NodeValue := StringListToText(LinkListBox.Items, #10);
     end;
     n := n.NextSibling;
   end;
@@ -470,6 +615,29 @@ end;
 procedure TLazDocForm.DocumentationTagChange(Sender: TObject);
 begin
   FChanged := True;
+end;
+
+procedure TLazDocForm.AddLinkButtonClick(Sender: TObject);
+begin
+  if Trim(LinkIdEdit.Text) <> '' then
+  begin
+    if Trim(LinkTextEdit.Text) = '' then
+      LinkListBox.Items.Add('<link id="' + Trim(LinkIdEdit.Text) + '"/>')
+    else
+      LinkListBox.Items.Add('<link id="' + Trim(LinkIdEdit.Text) + '">' + LinkTextEdit.Text + '</link>');
+
+    FChanged := True;
+  end;
+end;
+
+procedure TLazDocForm.DeleteLinkButtonClick(Sender: TObject);
+begin
+  if LinkListBox.ItemIndex >= 0 then
+  begin
+    LinkListBox.Items.Delete(LinkListBox.ItemIndex);
+
+    FChanged := True;
+  end;
 end;
 
 initialization

@@ -2849,10 +2849,19 @@ resourcestring
   lisLazDocShortTag = 'Short';
   lisLazDocDescrTag = 'Description';
   lisLazDocErrorsTag = 'Errors';
+  lisLazDocSeeAlsoTag = 'See also';
   lisLazDocAddPathButton = 'Add path';
   lisLazDocDeletePathButton = 'Remove path';
   lisLazDocPathsGroupBox = 'LazDoc settings';
-  
+  lisLazDocHintBoldFormat = 'Insert bold formatting tag';
+  lisLazDocHintItalicFormat = 'Insert italic formatting tag';
+  lisLazDocHintUnderlineFormat = 'Insert underline formatting tag';
+  lisLazDocHintInsertCodeTag = 'Insert code formatting tag';
+  lisLazDocHintRemarkTag = 'Insert remark formatting tag';
+  lisLazDocHintVarTag = 'Insert var formatting tag';
+  lisLazDocAddLinkButton = 'Add link';
+  lisLazDocDeleteLinkButton = 'Delete link';
+
 implementation
 end.
 

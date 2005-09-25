@@ -1225,7 +1225,13 @@ images/downarrow.ico -text svneol=unset#image/x-icon
 images/downarrow.xpm -text svneol=native#image/x-xpixmap
 images/fonts.ico -text svneol=unset#image/x-icon
 images/fonts.xpm -text svneol=native#image/x-xpixmap
+images/formatbold.bmp -text
+images/formatitalic.bmp -text
+images/formatunderline.bmp -text
 images/ide_icon48x48.png -text svneol=unset#image/png
+images/insertcodetag.xpm svneol=native#text/plain
+images/insertremark.xpm svneol=native#text/plain
+images/insertvartag.xpm svneol=native#text/plain
 images/keymapcategory.xpm -text svneol=native#image/x-xpixmap
 images/keymaprelation.xpm -text svneol=native#image/x-xpixmap
 images/laz_images.lrs svneol=native#text/pascal
