@@ -1645,6 +1645,12 @@ var
   Key1: TKeyCommandRelation;
   Key2: TKeyCommandRelation;
   
+  procedure Add(const s: string);
+  begin
+    debugln(s);
+    Protocol.Add(s);
+  end;
+
   procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
   begin
     if (ShortCut1.Key1<>VK_UNKNOWN)
@@ -1660,16 +1666,17 @@ var
       inc(Result);
       if Protocol<>nil then
       begin
-        Protocol.Add(srkmConflic+IntToStr(Result));
-        Protocol.Add(srkmCommand1+Key1.Category.Description+' '
+        Add(srkmConflic+IntToStr(Result));
+        Add(srkmCommand1+Key1.Category.Description+' '
           +EditorCommandToDescriptionString(Key1.Command)+'"'
           +'->'+KeyAndShiftStateToEditorKeyString(ShortCut1));
-        Protocol.Add(srkmConflicW);
-        Protocol.Add(srkmCommand2+Key2.Category.Description+' '
+        Add(srkmConflicW);
+        Add(srkmCommand2+Key2.Category.Description+' '
           +EditorCommandToDescriptionString(Key2.Command)+'"'
-          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut2)
-         );
-        Protocol.Add('');
+          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut2));
+        Add('');
+        Key1.Category.WriteScopeDebugReport;
+        Key2.Category.WriteScopeDebugReport;
       end;
     end;
   end;

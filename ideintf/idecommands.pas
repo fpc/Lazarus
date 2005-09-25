@@ -86,6 +86,7 @@ type
     function CategoryCount: integer;
     function HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
     function Intersects(AScope: TIDECommandScope): boolean;
+    procedure WriteDebugReport;
   public
     property Name: string read FName;
     property IDEWindowClasses[Index: integer]: TCustomFormClass read GetIDEWindowClasses;
@@ -143,6 +144,7 @@ type
     {$IFDEF UseIDEScopes}
     destructor Destroy; override;
     function ScopeIntersects(AScope: TIDECommandScope): boolean;
+    procedure WriteScopeDebugReport;
     {$ENDIF}
   public
     property Name: string read FName;
@@ -596,6 +598,15 @@ begin
   else
     Result:=Scope.Intersects(AScope);
 end;
+
+procedure TIDECommandCategory.WriteScopeDebugReport;
+begin
+  debugln('TIDECommandCategory.WriteScopeDebugReport ',Name,'=',Description);
+  if Scope<>nil then
+    Scope.WriteDebugReport
+  else
+    debugln('  Scope=nil');
+end;
 {$ENDIF}
 
 procedure TIDECommandCategory.Delete(Index: Integer);
@@ -687,6 +698,19 @@ begin
         exit(true);
     end;
     Result:=false;
+  end;
+end;
+
+procedure TIDECommandScope.WriteDebugReport;
+var
+  i: Integer;
+begin
+  debugln('TIDECommandScope.WriteDebugReport ',Name);
+  for i:=0 to FIDEWindowClasses.Count-1 do begin
+    if FIDEWindowClasses[i]=nil then
+      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' nil')
+    else
+      debugln('  ',dbgs(i),'/',dbgs(FIDEWindowClasses.Count),' ',TClass(FIDEWindowClasses[i]).ClassName);
   end;
 end;
 

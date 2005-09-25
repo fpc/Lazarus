@@ -497,7 +497,7 @@ type
     procedure SetupSourceNotebook;
     procedure SetupTransferMacros;
     procedure SetupControlSelection;
-    procedure SetupIDEInterface;
+    procedure SetupIDECommands;
     procedure SetupStartProject;
     procedure ReOpenIDEWindows;
 
@@ -974,8 +974,8 @@ begin
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts:=TEditorOptions.Create;
+  SetupIDECommands;
   EditorOpts.Load;
-  IDECommandList:=EditorOpts.KeyMap;
 
   EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
@@ -1047,7 +1047,6 @@ begin
   SetupFormEditor;
   SetupSourceNotebook;
   SetupControlSelection;
-  SetupIDEInterface;
 
   // Main IDE bar created and setup completed -> Show it
   MainIDEBar.Show;
@@ -1552,14 +1551,17 @@ begin
   TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
 end;
 
-procedure TMainIDE.SetupIDEInterface;
+procedure TMainIDE.SetupIDECommands;
 begin
+  IDECommandList:=EditorOpts.KeyMap;
   IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
   IDECommands.OnExecuteIDEShortCut:=@OnExecuteIDEShortCut;
   CreateStandardIDECommandScopes;
   IDECmdScopeSrcEdit.AddWindowClass(TSourceEditorWindowInterface);
   IDECmdScopeSrcEdit.AddWindowClass(nil);
   IDECmdScopeSrcEditOnly.AddWindowClass(TSourceEditorWindowInterface);
+
+  EditorOpts.KeyMap.CreateDefaultMapping;
 end;
 
 procedure TMainIDE.SetupStartProject;

@@ -132,6 +132,9 @@ begin
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+lisLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+GetLazarusRevision;
+
+  RevisionLabel.Visible:=false; // deactivated
+
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;

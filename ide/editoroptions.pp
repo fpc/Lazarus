@@ -1153,7 +1153,6 @@ begin
   // Key Mappings
   fKeyMappingScheme:='default';
   fKeyMap:=TKeyCommandRelationList.Create;
-  fKeyMap.CreateDefaultMapping;
 
   // Color options
   fHighlighterList:=TEditOptLangList.Create;
