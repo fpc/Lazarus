@@ -1118,13 +1118,13 @@ begin
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
   FreeThenNil(IDEMenuRoots);
-  FreeThenNil(IDECommandScopes);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
+  FreeThenNil(IDECommandScopes);
 
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
