@@ -279,8 +279,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     constructor Create(const AName, ADescription: string;
-                       {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
-                       {$ELSE}TheAreas: TCommandAreas{$ENDIF});
+                       TheScope: TIDECommandScope);
   end;
   
   //---------------------------------------------------------------------------
@@ -305,8 +304,7 @@ type
     function GetRelation(Index:integer):TKeyCommandRelation;
     function GetRelationCount:integer;
     function AddCategory(const Name, Description: string;
-       {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
-       {$ELSE}TheAreas: TCommandAreas{$ENDIF}): integer;
+       TheScope: TIDECommandScope): integer;
     function Add(Category: TKeyCommandCategory; const Name: string;
        Command:word;  const TheKeyA, TheKeyB: TIDEShortCut):integer;
     function AddDefault(Category: TKeyCommandCategory; const Name: string;
@@ -319,30 +317,25 @@ type
     procedure Clear;
     function Count: integer;
     function CategoryCount: integer;
-    function Find(Key: TIDEShortCut;
-      {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
-      ): TKeyCommandRelation;
+    function Find(Key: TIDEShortCut; IDEWindowClass: TCustomFormClass
+                  ): TKeyCommandRelation;
     function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
     function FindCommandByName(const CommandName: string): TKeyCommandRelation;
     function TranslateKey(Key: word; Shift: TShiftState;
-      {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF};
-      UseLastKey: boolean = true
-      ): word;
+      IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
-                       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass
-                       {$ELSE}Areas: TCommandAreas{$ENDIF});
+                       IDEWindowClass: TCustomFormClass);
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
     function CreateUniqueCategoryName(const AName: string): string;
     function CreateUniqueCommandName(const AName: string): string;
     function CreateNewCommandID: word;
-    {$IFDEF UseIDEScopes}
     function CreateCategory(Parent: TIDECommandCategory;
                             const AName, Description: string;
                             Scope: TIDECommandScope): TIDECommandCategory; override;
@@ -350,7 +343,6 @@ type
                            const AName, Description: string;
                            const TheShortcutA, TheShortcutB: TIDEShortCut
                            ): TIDECommand; override;
-    {$ENDIF}
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
@@ -385,9 +377,7 @@ type
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
-    function ResolveConflicts(Key: TIDEShortCut;
-      {$IFDEF UseIDEScopes}Scope: TIDECommandScope{$ELSE}Areas: TCommandAreas{$ENDIF}
-      ): boolean;
+    function ResolveConflicts(Key: TIDEShortCut; Scope: TIDECommandScope): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     KeyCommandRelationList: TKeyCommandRelationList;
@@ -398,13 +388,8 @@ function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): 
 function KeyAndShiftStateToEditorKeyString(Key: TIDEShortCut): String;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
-{$IFDEF UseIDEScopes}
 function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
    Protocol: TStrings; var Index1,Index2:integer):integer;
- {$ELSE}
-function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
-   Protocol: TStrings; var Index1,Index2:integer):integer;
-{$ENDIF}
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
@@ -1635,7 +1620,6 @@ begin
   end;
 end;
 
-{$IFDEF UseIDEScopes}
 function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 // 0 = ok, no errors
@@ -1696,51 +1680,6 @@ begin
     end;
   end;
 end;
-{$ELSE}
-function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
-   Protocol: TStrings; var Index1,Index2:integer):integer;
-// 0 = ok, no errors
-// >0 number of errors found
-var
-  a,b:integer;
-  Key1,Key2:TSynEditKeyStroke;
-begin
-  Result:=0;
-  for a:=0 to ASynEditKeyStrokes.Count-1 do begin
-    Key1:=ASynEditKeyStrokes[a];
-    for b:=a+1 to ASynEditKeyStrokes.Count-1 do begin
-      Key2:=ASynEditKeyStrokes[b];
-      if (Key1.Key=VK_UNKNOWN)
-      or (Key1.Command=Key2.Command)
-      then
-        continue;
-      if ((Key1.Key=Key2.Key) and (Key1.Shift=Key2.Shift))
-      and ((Key1.Key2=Key2.Key2) and (Key1.Shift2=Key2.Shift2))
-      then begin
-        // consistency error
-        if Result=0 then begin
-          Index1:=a;
-          Index2:=b;
-        end;
-        inc(Result);
-        if Protocol<>nil then
-        begin
-          Protocol.Add(srkmConflic+IntToStr(Result));
-          Protocol.Add(srkmCommand1
-            +EditorCommandToDescriptionString(Key1.Command)+'"'
-            +'->'+KeyAndShiftStateToEditorKeyString(Key1.Key, Key1.Shift));
-          Protocol.Add(srkmConflicW);
-          Protocol.Add(srkmCommand2
-            +EditorCommandToDescriptionString(Key2.Command)+'"'
-            +'->'+KeyAndShiftStateToEditorKeyString(Key2.Key, Key2.Shift)
-           );
-          Protocol.Add('');
-        end;
-      end;
-    end;
-  end;
-end;
-{$ENDIF}
 
 function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): AnsiString;
 var
@@ -2033,7 +1972,7 @@ begin
   end;
 
   if not ResolveConflicts(NewKeyA,
-    CurRelation.Category.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF}) then
+    CurRelation.Category.Scope) then
   begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
@@ -2067,8 +2006,7 @@ begin
     NewKeyB.Key2:=VK_UNKNOWN;
     NewKeyB.Shift2:=[];
   end
-  else if not ResolveConflicts(NewKeyB,
-            CurRelation.Category.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF})
+  else if not ResolveConflicts(NewKeyB,CurRelation.Category.Scope)
   then begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
@@ -2135,8 +2073,7 @@ begin
 end;
 
 function TKeyMappingEditForm.ResolveConflicts(Key: TIDEShortCut;
-  {$IFDEF UseIDEScopes}Scope: TIDECommandScope{$ELSE}Areas: TCommandAreas{$ENDIF}
-  ): boolean;
+  Scope: TIDECommandScope): boolean;
 type
   TConflictType = (ctNone,ctConflictKeyA,ctConflictKeyB);
 var
@@ -2162,12 +2099,8 @@ begin
     begin
       if (j=KeyIndex) then continue;
       
-      {$IFDEF UseIDEScopes}
       if not Category.ScopeIntersects(Scope) then continue;
-      {$ELSE}
-      if (Category.Areas*Areas=[]) then continue;
-      {$ENDIF}
-      
+
       if ((Key.Key1=ShortcutA.Key1) and (Key.Shift1=ShortcutA.Shift1))
       and (((Key.Key2=ShortcutA.Key2) and (Key.Shift2=ShortcutA.Shift2))
             or (Key.Key2=VK_UNKNOWN) or (ShortcutA.Key2=VK_UNKNOWN))
@@ -2284,7 +2217,7 @@ begin
 
   // moving
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,
-              {$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEdit{$ENDIF})];
+                IDECmdScopeSrcEditOnly)];
   AddDefault(C,'Move cursor word left',ecWordLeft);
   AddDefault(C,'Move cursor word right',ecWordRight);
   AddDefault(C,'Move cursor to line start',ecLineStart);
@@ -2303,7 +2236,8 @@ begin
   AddDefault(C,'Scroll right one char',ecScrollRight);
 
   // selection
-  C:=Categories[AddCategory('Selection',srkmCatSelection,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
+  C:=Categories[AddCategory('Selection',srkmCatSelection,
+                IDECmdScopeSrcEditOnly)];
   AddDefault(C,'Copy selection to clipboard',ecCopy);
   AddDefault(C,'Cut selection to clipboard',ecCut);
   AddDefault(C,'Paste clipboard to current position',ecPaste);
@@ -2337,7 +2271,8 @@ begin
   AddDefault(C,'Select paragraph',ecSelectParagraph);
 
   // editing - without menu items in the IDE bar
-  C:=Categories[AddCategory('text editing commands',srkmCatEditing,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
+  C:=Categories[AddCategory('text editing commands',srkmCatEditing,
+                IDECmdScopeSrcEditOnly)];
   AddDefault(C,'Delete last char',ecDeleteLastChar);
   AddDefault(C,'Delete char at cursor',ecDeleteChar);
   AddDefault(C,'Delete to end of word',ecDeleteWord);
@@ -2364,12 +2299,13 @@ begin
   AddDefault(C,'Insert CVS keyword Source',ecInsertCVSSource);
 
   // command commands
-  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
   AddDefault(C,'Undo',ecUndo);
   AddDefault(C,'Redo',ecRedo);
 
   // search & replace
-  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,{$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEditOnly{$ENDIF})];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,
+                IDECmdScopeSrcEditOnly)];
   AddDefault(C,'Go to matching bracket',ecMatchBracket);
   AddDefault(C,'Find text',ecFind);
   AddDefault(C,'Find next',ecFindNext);
@@ -2387,7 +2323,7 @@ begin
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
   // marker - without menu items in the IDE bar
-  C:=Categories[AddCategory('Marker',srkmCatMarker,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEdit)];
   AddDefault(C,'Set free Bookmark',ecSetFreeBookmark);
   AddDefault(C,'Previous Bookmark',ecPrevBookmark);
   AddDefault(C,'Next Bookmark',ecNextBookmark);
@@ -2413,7 +2349,7 @@ begin
   AddDefault(C,'Set marker 9',ecSetMarker9);
 
   // codetools
-  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEdit)];
   AddDefault(C,'Code template completion',ecAutoCompletion);
   AddDefault(C,'Word completion',ecWordCompletion);
   AddDefault(C,'Complete code',ecCompleteCode);
@@ -2434,7 +2370,8 @@ begin
   AddDefault(C,'Goto include directive',ecGotoIncludeDirective);
 
   // source notebook - without menu items in the IDE bar
-  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,{$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,
+                IDECmdScopeSrcEdit)];
   AddDefault(C,'Go to next editor',ecNextEditor);
   AddDefault(C,'Go to prior editor',ecPrevEditor);
   AddDefault(C,'Add break point',ecAddBreakPoint);
@@ -2453,7 +2390,7 @@ begin
   AddDefault(C,'Go to source editor 10',ecGotoEditor0);
 
   // file menu
-  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];
   AddDefault(C,'New',ecNew);
   AddDefault(C,'NewUnit',ecNewUnit);
   AddDefault(C,'NewForm',ecNewForm);
@@ -2469,7 +2406,7 @@ begin
   AddDefault(C,'Quit',ecQuit);
 
   // view menu
-  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,nil)];
   AddDefault(C,'Toggle view Object Inspector',ecToggleObjectInsp);
   AddDefault(C,'Toggle view Source Editor',ecToggleSourceEditor);
   AddDefault(C,'Toggle view Code Explorer',ecToggleCodeExpl);
@@ -2489,7 +2426,7 @@ begin
   AddDefault(C,'View Anchor Editor',ecViewAnchorEditor);
 
   // project menu
-  C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,nil)];
   AddDefault(C,'New project',ecNewProject);
   AddDefault(C,'New project from file',ecNewProjectFromFile);
   AddDefault(C,'Open project',ecOpenProject);
@@ -2504,7 +2441,7 @@ begin
   AddDefault(C,'View project options',ecProjectOptions);
 
   // run menu
-  C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,nil)];
   AddDefault(C,'Build project/program',ecBuild);
   AddDefault(C,'Build all files of project/program',ecBuildAll);
   AddDefault(C,'Abort building',ecAbortBuild);
@@ -2525,7 +2462,7 @@ begin
   AddDefault(C,'Add watch',ecAddWatch);
 
   // components menu
-  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,nil)];
   AddDefault(C,'Open package',ecOpenPackage);
   AddDefault(C,'Open package file',ecOpenPackageFile);
   AddDefault(C,'Open package of current unit',ecOpenPackageOfCurUnit);
@@ -2535,7 +2472,7 @@ begin
   AddDefault(C,'Configure custom components',ecConfigCustomComps);
 
   // tools menu
-  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,nil)];
   AddDefault(C,'External Tools settings',ecExtToolSettings);
   AddDefault(C,'Build Lazarus',ecBuildLazarus);
   AddDefault(C,'Configure "Build Lazarus"',ecConfigBuildLazarus);
@@ -2546,7 +2483,7 @@ begin
   AddDefault(C,'Convert Delphi project to Lazarus project',ecConvertDelphiProject);
 
   // environment menu
-  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];
   AddDefault(C,'General environment options',ecEnvironmentOptions);
   AddDefault(C,'Editor options',ecEditorOptions);
   AddDefault(C,'Edit Code Templates',ecEditCodeTemplates);
@@ -2555,14 +2492,14 @@ begin
   AddDefault(C,'Rescan FPC source directory',ecRescanFPCSrcDir);
 
   // help menu
-  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];
   AddDefault(C,'About Lazarus',ecAboutLazarus);
   AddDefault(C,'Online Help',ecOnlineHelp);
   AddDefault(C,'Configure Help',ecConfigureHelp);
   AddDefault(C,'Context sensitive help',ecContextHelp);
 
   // designer  - without menu items in the IDE bar (at least no direct)
-  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,{$IFDEF UseIDEScopes}IDECmdScopeDesignerOnly{$ELSE}caDesignOnly{$ENDIF})];
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];
   AddDefault(C,'Copy selected Components to clipboard',ecDesignerCopy);
   AddDefault(C,'Cut selected Components to clipboard' ,ecDesignerCut);
   AddDefault(C,'Paste Components from clipboard'      ,ecDesignerPaste);
@@ -2573,7 +2510,7 @@ begin
   AddDefault(C,'Move component one back'              ,ecDesignerBackOne);
 
   // custom keys (for experts, task groups, dynamic menu items, etc)
-  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,{$IFDEF UseIDEScopes}nil{$ELSE}caAll{$ENDIF})];
+  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,nil)];
 end;
 
 procedure TKeyCommandRelationList.Clear;
@@ -2770,20 +2707,15 @@ begin
 end;
 
 function TKeyCommandRelationList.Find(Key: TIDEShortCut;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
-  ): TKeyCommandRelation;
+  IDEWindowClass: TCustomFormClass): TKeyCommandRelation;
 var
   a:integer;
 begin
   Result:=nil;
   if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
-    {$IFDEF UseIDEScopes}
     if (Category.Scope<>nil)
     and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
-    {$ELSE}
-    if Category.Areas*Areas=[] then continue;
-    {$ENDIF}
     if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
         (ShortcutA.Key2=Key.Key2) and (ShortcutA.Shift2=Key.Shift2))
     or ((ShortcutB.Key1=Key.Key1) and (ShortcutB.Shift1=Key.Shift1) and
@@ -2814,9 +2746,7 @@ begin
 end;
 
 procedure TKeyCommandRelationList.AssignTo(
-  ASynEditKeyStrokes: TSynEditKeyStrokes;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF}
-  );
+  ASynEditKeyStrokes: TSynEditKeyStrokes; IDEWindowClass: TCustomFormClass);
 var
   a,b,MaxKeyCnt,KeyCnt:integer;
   Key: TSynEditKeyStroke;
@@ -2825,12 +2755,8 @@ begin
   for a:=0 to FRelations.Count-1 do begin
     CurRelation:=Relations[a];
     if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
-    {$IFDEF UseIDEScopes}
     or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
         and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
-    {$ELSE}
-    or ((CurRelation.Category.Areas*Areas)=[])
-    {$ENDIF}
     then
       MaxKeyCnt:=0
     else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
@@ -2895,8 +2821,7 @@ begin
   // copy categories
   for i:=0 to List.CategoryCount-1 do begin
     CurCategory:=List.Categories[i];
-    AddCategory(CurCategory.Name,CurCategory.Description,
-                CurCategory.{$IFDEF UseIDEScopes}Scope{$ELSE}Areas{$ENDIF});
+    AddCategory(CurCategory.Name,CurCategory.Description,CurCategory.Scope);
   end;
   
   // copy keys
@@ -2959,7 +2884,6 @@ begin
   while FindByCommand(Result)<>nil do inc(Result);
 end;
 
-{$IFDEF UseIDEScopes}
 function TKeyCommandRelationList.CreateCategory(Parent: TIDECommandCategory;
   const AName, Description: string; Scope: TIDECommandScope): TIDECommandCategory;
 begin
@@ -2976,7 +2900,6 @@ begin
                         CreateNewCommandID,TheShortcutA,TheShortcutB)];
   Result.LocalizedName:=Description;
 end;
-{$ENDIF}
 
 function TKeyCommandRelationList.GetCategory(Index: integer): TKeyCommandCategory;
 begin
@@ -2989,11 +2912,10 @@ begin
 end;
 
 function TKeyCommandRelationList.AddCategory(const Name, Description: string;
-  {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
-  {$ELSE}TheAreas: TCommandAreas{$ENDIF}): integer;
+  TheScope: TIDECommandScope): integer;
 begin
   Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,
-                         {$IFDEF UseIDEScopes}TheScope{$ELSE}TheAreas{$ENDIF}));
+                          TheScope));
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
@@ -3021,9 +2943,7 @@ begin
 end;
 
 function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF};
-  UseLastKey: boolean
-  ): word;
+  IDEWindowClass: TCustomFormClass; UseLastKey: boolean): word;
 { If UseLastKey = true then only search for commmands with one key.
   If UseLastKey = false then search first for a command with a two keys
     combination (i.e. the last key plus this one)
@@ -3038,7 +2958,7 @@ begin
     // => try a two key combination command
     fLastKey.Key2 := Key;
     fLastKey.Shift2 := Shift;
-    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
+    ARelation := Find(fLastKey,IDEWindowClass);
   end else begin
     ARelation := nil;
   end;
@@ -3049,7 +2969,7 @@ begin
     fLastKey.Shift1 := Shift;
     fLastKey.Key2 := VK_UNKNOWN;
     fLastKey.Shift2 := [];
-    ARelation := Find(fLastKey,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
+    ARelation := Find(fLastKey,IDEWindowClass);
   end;
   if ARelation<>nil then
   begin
@@ -3097,17 +3017,12 @@ begin
 end;
 
 constructor TKeyCommandCategory.Create(const AName, ADescription: string;
-  {$IFDEF UseIDEScopes}TheScope: TIDECommandScope
-  {$ELSE}TheAreas: TCommandAreas{$ENDIF});
+  TheScope: TIDECommandScope);
 begin
   inherited Create;
   FName:=AName;
   FDescription:=ADescription;
-  {$IFDEF UseIDEScopes}
   FScope:=TheScope;
-  {$ELSE}
-  FAreas:=TheAreas;
-  {$ENDIF}
 end;
 
 

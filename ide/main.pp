@@ -291,8 +291,7 @@ type
                                   var Handled: boolean);
     procedure OnExecuteIDEShortCut(Sender: TObject;
                        var Key: word; Shift: TShiftState;
-                       {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass
-                       {$ELSE}TheAreas: TCommandAreas{$ENDIF});
+                       IDEWindowClass: TCustomFormClass);
     procedure OnExecuteIDECommand(Sender: TObject; Command: word);
 
     // Environment options dialog events
@@ -563,9 +562,6 @@ type
         var Handled: boolean; Data: TObject);
 
   public
-    {$IFNDEF UseMenuIntf}
-    CustomExtToolMenuSeparator: TMenuItem;
-    {$ENDIF}
     CurDefinesCompilerFilename: String;
     CurDefinesCompilerOptions: String;
     class procedure ParseCmdLineOptions;
@@ -1169,7 +1165,7 @@ end;
 procedure TMainIDE.OIRemainingKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  OnExecuteIDEShortCut(Sender,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caDesign{$ENDIF});
+  OnExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
 
 procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
@@ -1940,9 +1936,6 @@ begin
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
-  {$IFNDEF UseMenuIntf}
-  CustomExtToolMenuSeparator:=nil;
-  {$ENDIF}
   UpdateCustomToolsInMenu;
 end;
 
@@ -2082,7 +2075,7 @@ procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename({$IFDEF UseMenuIntf}(Sender as TIDEMenuItem){$ELSE}TMenuItem(Sender){$ENDIF}.Caption);
+  AFileName:=ExpandFilename((Sender as TIDEMenuItem).Caption);
   if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin
@@ -2392,20 +2385,12 @@ end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}TheAreas: TCommandAreas{$ENDIF});
+  IDEWindowClass: TCustomFormClass);
 var
-//  CommandRelation: TKeyCommandRelation;
-//  Handled: Boolean;
   Command: Word;
   Handled: Boolean;
 begin
-//  CommandRelation:=EditorOpts.KeyMap.Find(Key,Shift,Areas);
-//  if (CommandRelation=nil) or (CommandRelation.Command=ecNone) then exit;
-//  Handled:=false;
-//  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
-//  if Handled then Key:=VK_UNKNOWN;
-  //debugln('TMainIDE.OnExecuteIDEShortCut Key '+dbgs(Key)+' pressed');
-  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,{$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}TheAreas{$ENDIF});
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,IDEWindowClass);
   if (Command = ecNone) then exit;
   Handled := false;
   OnProcessIDECommand(Sender, Command, Handled);
@@ -2782,8 +2767,8 @@ begin
     finally
       OpenDialog.Free;
     end;
-  end else if Sender is {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF} then begin
-    AFileName:=ExpandFilename((Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF}).Caption);
+  end else if Sender is TIDEMenuItem then begin
+    AFileName:=ExpandFilename(TIDEMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentProjectFileToEnvironment(AFilename);
     end else begin
@@ -3147,13 +3132,8 @@ procedure TMainIDE.mnuCustomExtToolClick(Sender: TObject);
 var
   Index: integer;
 begin
-  {$IFDEF UseMenuIntf}
   if not (Sender is TIDEMenuItem) then exit;
   Index:=MainIDEBar.itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
-  {$ELSE}
-  if CustomExtToolMenuSeparator=nil then exit;
-  Index:=TMenuItem(Sender).MenuIndex-CustomExtToolMenuSeparator.MenuIndex-1;
-  {$ENDIF}
   if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
   DoRunExternalTool(Index);
 end;
@@ -7797,7 +7777,6 @@ var
   ToolCount: integer;
 
   procedure CreateToolMenuItems;
-  {$IFDEF UseMenuIntf}
   var
     Section: TIDEMenuSection;
   begin
@@ -7810,70 +7789,22 @@ var
     while Section.Count-1>ToolCount do
       Section[Section.Count-1].Free;
   end;
-  {$ELSE}
-  var
-    CurMenuItem: TMenuItem;
-    LastIndex, FirstIndex, ExistingCount: integer;
-  begin
-    // add separator
-    if (ToolCount>0) and (CustomExtToolMenuSeparator=nil) then begin
-      CustomExtToolMenuSeparator:=CreateMenuSeparator;
-      MainIDEBar.mnuTools.Add(CustomExtToolMenuSeparator);
-    end;
-    // add enough menuitems
-    if CustomExtToolMenuSeparator=nil then exit;
-    FirstIndex:=CustomExtToolMenuSeparator.MenuIndex+1;
-    LastIndex:=FirstIndex;
-    while (LastIndex<MainIDEBar.mnuTools.Count)
-    and (MainIDEBar.mnuTools[LastIndex].Caption<>'-') do
-      inc(LastIndex);
-    ExistingCount:=LastIndex-FirstIndex;
-    while ExistingCount<ToolCount do begin
-      CurMenuItem := TMenuItem.Create(OwningComponent);
-      CurMenuItem.Name:='itmToolCustomExt'+IntToStr(ExistingCount);
-      CurMenuItem.Caption:=CurMenuItem.Name;
-      MainIDEBar.mnuTools.Insert(LastIndex,CurMenuItem);
-      inc(LastIndex);
-      inc(ExistingCount);
-    end;
-    // delete unneeded menuitems
-    while ExistingCount>ToolCount do begin
-      MainIDEBar.mnuTools[LastIndex-1].Free;
-      dec(LastIndex);
-      dec(ExistingCount);
-    end;
-  end;
-  {$ENDIF}
 
   procedure SetToolMenuItems;
   var
-    CurMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
+    CurMenuItem: TIDEMenuItem;
     i, Index: integer;
     ExtTool: TExternalToolOptions;
   begin
-    {$IFDEF UseMenuIntf}
     i:=1;
-    {$ELSE}
-    if CustomExtToolMenuSeparator=nil then exit;
-    i:=CustomExtToolMenuSeparator.MenuIndex+1;
-    {$ENDIF}
     Index:=0;
-    while (i<MainIDEBar.{$IFDEF UseMenuIntf}itmCustomTools{$ELSE}mnuTools{$ENDIF}.Count) do begin
-      {$IFDEF UseMenuIntf}
+    while (i<MainIDEBar.itmCustomTools.Count) do begin
       CurMenuItem:=MainIDEBar.itmCustomTools[i];
-      {$ELSE}
-      CurMenuItem:=MainIDEBar.mnuTools[i];
-      if CurMenuItem.Caption='-' then break;
-      {$ENDIF}
       ExtTool:=EnvironmentOptions.ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
-      {$IFDEF UseMenuIntf}
       if CurMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(CurMenuItem).Command:=
           EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+Index);
-      {$ELSE}
-      CurMenuItem.ShortCut:=ShortCut(ExtTool.Key,ExtTool.Shift);
-      {$ENDIF}
       CurMenuItem.OnClick:=@mnuCustomExtToolClick;
       inc(i);
       inc(Index);

@@ -41,24 +41,6 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, LCLType, Menus, TextTools;
   
-{$IFNDEF UseIDEScopes}
-type
-  TCommandArea = (
-    caMenu,
-    caSourceEditor,
-    caDesigner
-    );
-  TCommandAreas = set of TCommandArea;
-
-const
-  caAll = [caMenu, caSourceEditor, caDesigner];
-  caMenuOnly = [caMenu];
-  caSrcEdit = [caMenu,caSourceEditor];
-  caSrcEditOnly = [caSourceEditor];
-  caDesign = [caMenu,caDesigner];
-  caDesignOnly = [caDesigner];
-{$ENDIF}
-
 type
   TIDECommand = class;
   TIDECommandCategory = class;
@@ -134,28 +116,18 @@ type
     FDescription: string;
     FName: string;
     FParent: TIDECommandCategory;
-    {$IFDEF UseIDEScopes}
     FScope: TIDECommandScope;
     procedure SetScope(const AValue: TIDECommandScope);
-    {$ELSE}
-    FAreas: TCommandAreas;
-    {$ENDIF}
   public
-    {$IFDEF UseIDEScopes}
     destructor Destroy; override;
     function ScopeIntersects(AScope: TIDECommandScope): boolean;
     procedure WriteScopeDebugReport;
-    {$ENDIF}
   public
     property Name: string read FName;
     property Description: string read FDescription;
     property Parent: TIDECommandCategory read FParent;
     procedure Delete(Index: Integer); virtual;
-    {$IFDEF UseIDEScopes}
     property Scope: TIDECommandScope read FScope write SetScope;
-    {$ELSE}
-    property Areas: TCommandAreas read FAreas;
-    {$ENDIF}
   end;
   
   
@@ -201,7 +173,6 @@ type
   TIDECommands = class
   public
     function FindIDECommand(ACommand: word): TIDECommand; virtual; abstract;
-    {$IFDEF UseIDEScopes}
     function CreateCategory(Parent: TIDECommandCategory;
                             const Name, Description: string;
                             Scope: TIDECommandScope = nil): TIDECommandCategory; virtual; abstract;
@@ -209,7 +180,6 @@ type
                            const Name, Description: string;
                            const TheShortcutA, TheShortcutB: TIDEShortCut
                            ): TIDECommand; virtual; abstract;
-    {$ENDIF}
   end;
 
 const
@@ -223,11 +193,7 @@ function IDEShortCut(Key1: word; Shift1: TShiftState;
 type
   TExecuteIDEShortCut =
     procedure(Sender: TObject; var Key: word; Shift: TShiftState;
-              {$IFDEF UseIDEScopes}
-              IDEWindowClass: TCustomFormClass
-              {$ELSE}
-              Areas: TCommandAreas
-              {$ENDIF}) of object;
+              IDEWindowClass: TCustomFormClass) of object;
   TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
 
 var
@@ -235,7 +201,7 @@ var
   OnExecuteIDECommand: TExecuteIDECommand;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF});
+  IDEWindowClass: TCustomFormClass);
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
@@ -250,7 +216,6 @@ var
   IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
 
-{$IFDEF UseIDEScopes}
 // register a new IDE command category (i.e. set of commands)
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;
                           const Name, Description: string): TIDECommandCategory;
@@ -265,7 +230,6 @@ function RegisterIDECommand(Category: TIDECommandCategory;
 function RegisterIDECommand(Category: TIDECommandCategory;
   const Name, Description: string;
   const ShortCut1, ShortCut2: TIDEShortCut): TIDECommand;
-{$ENDIF}
 
 // register a new IDE command scope (i.e. a set of windows)
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
@@ -289,17 +253,16 @@ begin
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
-  {$IFDEF UseIDEScopes}IDEWindowClass: TCustomFormClass{$ELSE}Areas: TCommandAreas{$ENDIF});
+  IDEWindowClass: TCustomFormClass);
 begin
   if (OnExecuteIDECommand<>nil) and (Key<>VK_UNKNOWN) then
-    OnExecuteIDEShortCut(Sender,Key,Shift,
-                        {$IFDEF UseIDEScopes}IDEWindowClass{$ELSE}Areas{$ENDIF});
+    OnExecuteIDEShortCut(Sender,Key,Shift,IDEWindowClass);
 end;
 
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-  OnExecuteIDEShortCut(Sender,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caMenuOnly{$ENDIF});
+  OnExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
 
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
@@ -370,7 +333,6 @@ begin
     Result:=0;
 end;
 
-{$IFDEF UseIDEScopes}
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;
   const Name, Description: string): TIDECommandCategory;
 begin
@@ -404,7 +366,6 @@ begin
   Result:=IDECommandList.CreateCommand(Category,Name,Description,
                                        ShortCut1,ShortCut2);
 end;
-{$ENDIF}
 
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 begin
@@ -573,7 +534,6 @@ end;
 
 { TIDECommandCategory }
 
-{$IFDEF UseIDEScopes}
 procedure TIDECommandCategory.SetScope(const AValue: TIDECommandScope);
 begin
   if FScope=AValue then exit;
@@ -607,7 +567,6 @@ begin
   else
     debugln('  Scope=nil');
 end;
-{$ENDIF}
 
 procedure TIDECommandCategory.Delete(Index: Integer);
 begin
@@ -633,15 +592,11 @@ begin
 end;
 
 destructor TIDECommandScope.Destroy;
-{$IFDEF UseIDEScopes}
 var
   i: Integer;
-{$ENDIF}
 begin
-  {$IFDEF UseIDEScopes}
   for i:=FCategories.Count-1 downto 0 do
     Categories[i].Scope:=nil;
-  {$ENDIF}
   FreeAndNil(FIDEWindowClasses);
   FreeAndNil(FCategories);
   inherited Destroy;

@@ -1751,7 +1751,7 @@ end;
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
   Shift: TShiftState): word;
 begin
-  Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,{$IFDEF UseIDEScopes}TDesignerIDECommandForm{$ELSE}[caDesigner]{$ENDIF});
+  Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,TDesignerIDECommandForm);
 end;
 
 Function TCustomFormEditor.CreateComponentInterface(

@@ -1442,15 +1442,12 @@ end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
 
-  {$IFDEF UseMenuIntf}
   function GetCommand(ACommand: word): TIDECommand;
   begin
     Result:=IDECommandList.FindIDECommand(ACommand);
   end;
-  {$ENDIF}
 
 begin
-  {$IFDEF UseMenuIntf}
   with MainIDEBar do
   begin
     itmViewWatches.Command:=GetCommand(ecToggleWatches);
@@ -1463,20 +1460,6 @@ begin
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
   end;
-  {$ELSE}
-  with MainIDEBar, EditorOpts.KeyMap do
-  begin
-    itmViewWatches.ShortCut := CommandToShortCut(ecToggleWatches);
-    itmViewBreakpoints.ShortCut := CommandToShortCut(ecToggleBreakPoints);
-    itmViewDebugOutput.ShortCut := CommandToShortCut(ecToggleDebuggerOut);
-    itmViewLocals.ShortCut := CommandToShortCut(ecToggleLocals);
-    itmViewCallStack.ShortCut := CommandToShortCut(ecToggleCallStack);
-    
-    itmRunMenuInspect.ShortCut := CommandToShortCut(ecInspect);
-    itmRunMenuEvaluate.ShortCut := CommandToShortCut(ecEvaluate);
-    itmRunMenuAddWatch.ShortCut := CommandToShortCut(ecAddWatch);
-  end;
-  {$ENDIF}
 end;
 
 procedure TDebugManager.UpdateButtonsAndMenuItems;

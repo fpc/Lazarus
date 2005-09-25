@@ -2065,7 +2065,7 @@ begin
   ASynEdit.MaxUndo:=fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
   
-  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,TSourceEditorWindowInterface);
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit:TSynEdit);
@@ -2140,7 +2140,7 @@ begin
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.ReadOnly:=true;
 
-  KeyMap.AssignTo(ASynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+  KeyMap.AssignTo(ASynEdit.KeyStrokes,TSourceEditorWindowInterface);
 end;
 
 
@@ -2234,7 +2234,7 @@ begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
-        EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+        EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,TSourceEditorWindowInterface);
         if a<>3 then
         begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
@@ -2749,7 +2749,7 @@ begin
       for i:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i]<>nil then
           EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes,
-                         {$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+                                 TSourceEditorWindowInterface);
     end;
   end;
 end;
@@ -2808,9 +2808,7 @@ var Protocol:TStringList;
 begin
   Protocol:=TStringList.Create;
   try
-    ErrorCount:=KeyStrokesConsistencyErrors(
-        {$IFDEF UseIDEScopes}EditingKeyMap{$ELSE}DisplayPreview.KeyStrokes{$ENDIF}
-        ,Protocol, Index1, Index2);
+    ErrorCount:=KeyStrokesConsistencyErrors(EditingKeyMap,Protocol,Index1,Index2);
     if ErrorCount>0 then begin
       KeyMapErrorsForm:=TKeyMapErrorsForm.Create(nil);
       try

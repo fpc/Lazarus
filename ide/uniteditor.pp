@@ -2634,7 +2634,7 @@ begin
 
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
 
   // popup menu
   BuildPopupMenu;
@@ -5104,7 +5104,7 @@ Begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,TSourceEditorWindowInterface);
   if NoteBook<>nil then begin
     if EditorOpts.ShowTabCloseButtons then
       NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]

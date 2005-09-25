@@ -326,7 +326,8 @@ begin
   else
     TemplateSynEdit.Highlighter:=nil;
   EditorOpts.GetSynEditSettings(TemplateSynEdit);
-  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,{$IFDEF UseIDEScopes}TSourceEditorWindowInterface{$ELSE}[caSourceEditor]{$ENDIF});
+  EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,
+                             TSourceEditorWindowInterface);
   TemplateSynEdit.Gutter.Visible:=false;
 
   // init SynAutoComplete

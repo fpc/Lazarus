@@ -202,9 +202,7 @@ type
 
     procedure UpdateWindowsMenu; virtual; abstract;
     procedure SaveEnvironment; virtual; abstract;
-    procedure SetRecentSubMenu({$IFDEF UseMenuIntf}Section: TIDEMenuSection;
-                               {$ELSE}Section: TMenuItem;{$ENDIF}
-                               FileList: TStringList;
+    procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); virtual; abstract;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;

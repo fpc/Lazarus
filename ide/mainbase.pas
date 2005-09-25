@@ -82,7 +82,6 @@ type
     OwningComponent: TComponent;
 
     function CreateMenuSeparator : TMenuItem;
-    {$IFDEF UseMenuIntf}
     procedure CreateMenuItem(Section: TIDEMenuSection;
                              var MenuItem: TIDEMenuCommand;
                              const MenuItemName, MenuItemCaption: String;
@@ -96,18 +95,6 @@ type
                              const bmpName: String = '');
     procedure CreateMainMenuItem(var Section: TIDEMenuSection;
                                  const MenuItemName, MenuItemCaption: String);
-    {$ELSE}
-    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             const MenuItemName, MenuItemCaption: String);
-    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             const MenuItemName, MenuItemCaption: String;
-                             const bmpName: String);
-    procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             const MenuItemName, MenuItemCaption: String;
-                             const bmpName: String; mnuEnabled: Boolean);
-    procedure CreateMainMenuItem(MainMenu: TMainMenu; var MenuItem: TMenuItem;
-                                 const MenuItemName, MenuItemCaption: String);
-    {$ENDIF}
     procedure SetupMainMenu; virtual;
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
@@ -168,9 +155,7 @@ type
                              ): TModalResult; override;
 
     procedure UpdateWindowsMenu; override;
-    procedure SetRecentSubMenu({$IFDEF UseMenuIntf}Section: TIDEMenuSection;
-                               {$ELSE}Section: TMenuItem;{$ENDIF}
-                               FileList: TStringList;
+    procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
 
     function DoJumpToCodePosition(
@@ -223,7 +208,8 @@ var
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
-    if Screen.CustomForms[i].Caption=(Sender as {$IFDEF UseMenuIntf}TIDEMenuCommand{$ELSE}TMenuItem{$ENDIF}).Caption then begin
+    if Screen.CustomForms[i].Caption=(Sender as TIDEMenuCommand).Caption then
+    begin
       Screen.CustomForms[i].BringToFront;
       break;
     end;
@@ -291,7 +277,6 @@ begin
   Result.Caption := '-';
 end;
 
-{$IFDEF UseMenuIntf}
 procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
   var MenuItem: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
   const bmpName: String; mnuEnabled: Boolean);
@@ -325,47 +310,9 @@ begin
   Section:=RegisterIDESubMenu(MainIDEBar.mnuMain.GetPath,MenuItemName,
                               MenuItemCaption);
 end;
-{$ELSE}
-procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  const MenuItemName, MenuItemCaption: String);
-begin
-  CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,'');
-end;
-
-procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  const MenuItemName, MenuItemCaption: String; const bmpName: String);
-begin
-  CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,bmpName,
-                 true);
-end;
-
-procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  const MenuItemName, MenuItemCaption: String; const bmpName: String;
-  mnuEnabled: Boolean);
-begin
-  MenuItem:=TMenuItem.Create(MainIDEBar);
-  MenuItem.Name:=MenuItemName;
-  MenuItem.Caption := MenuItemCaption;
-  if not mnuEnabled then
-    MenuItem.enabled:=mnuEnabled;
-  if bmpName<>'' then
-    MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
-  MenuItemParent.Add(MenuItem);
-end;
-
-procedure TMainIDEBase.CreateMainMenuItem(MainMenu: TMainMenu;
-  var MenuItem: TMenuItem; const MenuItemName, MenuItemCaption: String);
-begin
-  MenuItem:=TMenuItem.Create(MainIDEBar);
-  MenuItem.Name:=MenuItemName;
-  MenuItem.Caption := MenuItemCaption;
-  MainMenu.items.Add(MenuItem);
-end;
-{$ENDIF}
 
 procedure TMainIDEBase.SetupMainMenu;
 begin
-  {$IFDEF UseMenuIntf}
   MainIDEBar.mnuMainMenu := TMainMenu.Create(MainIDEBar);
   with MainIDEBar do begin
     mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',mnuMainMenu.Items);
@@ -381,77 +328,39 @@ begin
     CreateMainMenuItem(mnuWindows,'Windows',lisMenuWindows);
     CreateMainMenuItem(mnuHelp,'Help',lisMenuHelp);
   end;
-  {$ELSE}
-  MainIDEBar.mnuMain := TMainMenu.Create(MainIDEBar);
-  with MainIDEBar do begin
-    mnuMain.Name:='mnuMainMenu';
-    Menu := mnuMain;
-    CreateMainMenuItem(mnuMain,mnuFile,'mnuFile',lisMenuFile);
-    CreateMainMenuItem(mnuMain,mnuEdit,'mnuEdit',lisMenuEdit);
-    CreateMainMenuItem(mnuMain,mnuSearch,'mnuSearch',lisMenuSearch);
-    CreateMainMenuItem(mnuMain,mnuView,'mnuView',lisMenuView);
-    CreateMainMenuItem(mnuMain,mnuProject,'mnuProject',lisMenuProject);
-    CreateMainMenuItem(mnuMain,mnuRun,'mnuRun',lisMenuRun);
-    CreateMainMenuItem(mnuMain,mnuComponents,'mnuComponents',lisMenuComponents);
-    CreateMainMenuItem(mnuMain,mnuTools,'mnuTools',lisMenuTools);
-    CreateMainMenuItem(mnuMain,mnuEnvironment,'mnuEnvironment',lisMenuEnvironent);
-    CreateMainMenuItem(mnuMain,mnuWindows,'mnuWindows',lisMenuWindows);
-    CreateMainMenuItem(mnuMain,mnuHelp,'mnuHelp',lisMenuHelp);
-  end;
-  {$ENDIF}
 end;
 
 procedure TMainIDEBase.SetupFileMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuFile,itmFileNew,'itmFileNew');
     ParentMI:=itmFileNew;
-    {$ELSE}
-    ParentMI:=mnuFile;
-    {$ENDIF}
-    
+
     CreateMenuItem(ParentMI,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'menu_new');
     CreateMenuItem(ParentMI,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'menu_new');
     CreateMenuItem(ParentMI,itmFileNewOther,'itmFileNewOther',lisMenuNewOther,'menu_new');
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileOpen,'itmFileOpen',lisMenuOpen,'menu_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
-    {$ENDIF}
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_save');
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisMenuSaveAll,'menu_save');
     CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuClose,'menu_close',false);
     CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'',false);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuFile,itmFileDirectories,'itmFileDirectories');
     ParentMI:=itmFileDirectories;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileCleanDirectory,'itmFileCleanDirectory',lisMenuCleanDirectory);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart);
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit);
@@ -460,37 +369,25 @@ end;
 
 procedure TMainIDEBase.SetupEditMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
-  SubParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
-  SubSubParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
+  SubParentMI: TIDEMenuSection;
+  SubSubParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditReUndo,'itmEditReUndo');
     ParentMI:=itmEditReUndo;
-    {$ELSE}
-    ParentMI:=mnuEdit;
-    {$ENDIF}
     CreateMenuItem(ParentMI,itmEditUndo,'itmEditUndo',lisMenuUndo,'menu_undo');
     CreateMenuItem(ParentMI,itmEditRedo,'itmEditRedo',lisMenuRedo,'menu_redo');
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditClipboard,'itmEditClipboard');
     ParentMI:=itmEditClipboard;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'menu_cut');
     CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'menu_copy');
     CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'menu_paste');
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockIndentation,'itmEditBlockIndentation');
     ParentMI:=itmEditBlockIndentation;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
     CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
@@ -500,23 +397,15 @@ begin
     CreateMenuItem(ParentMI,itmEditConditionalBlock,'itmEditConditionalBlock',lisMenuConditionalSelection);
     CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockCharConversion,'itmEditBlockCharConversion');
     ParentMI:=itmEditBlockCharConversion;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection);
     CreateMenuItem(ParentMI,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection);
     CreateMenuItem(ParentMI,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);
     CreateMenuItem(ParentMI,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(mnuEdit,itmEditSelect,'itmEditSelect',lisMenuSelect);
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmEditSelect,'itmEditSelect',lisMenuSelect);
-    {$ENDIF}
     begin
       // select sub menu items
       SubParentMI:=itmEditSelect;
@@ -527,27 +416,15 @@ begin
       CreateMenuItem(SubParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
     end;
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditInsertions,'itmEditInsertions');
     ParentMI:=itmEditInsertions;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
-    
+
     CreateMenuItem(ParentMI,itmEditInsertCharacter,'itmEditInsertCharacter',lisMenuInsertCharacter);
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmEditInsertText,'itmEditInsertText',lisMenuInsertText);
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmEditInsertText,'itmEditInsertText',lisMenuInsertText);
-    {$ENDIF}
      begin
       // insert text sub menu items
       SubParentMI:=itmEditInsertText;
-      {$IFDEF UseMenuIntf}
       CreateMenuSubSection(SubParentMI,itmEditInsertCVSKeyWord,'itmEditInsertCVSKeyWord',lisMenuInsertCVSKeyword);
-      {$ELSE}
-      CreateMenuItem(SubParentMI,itmEditInsertCVSKeyWord,'itmEditInsertCVSKeyWord',lisMenuInsertCVSKeyword);
-      {$ENDIF}
       begin
         // insert CVS keyword sub menu items
         SubSubParentMI:=itmEditInsertCVSKeyWord;
@@ -561,11 +438,7 @@ begin
         CreateMenuItem(SubSubParentMI,itmEditInsertCVSSource,'itmEditInsertCVSSource','Source');
       end;
 
-      {$IFDEF UseMenuIntf}
       CreateMenuSubSection(SubParentMI,itmEditInsertGeneral,'itmEditInsertGeneral',lisMenuInsertGeneral);
-      {$ELSE}
-      CreateMenuItem(SubParentMI,itmEditInsertGeneral,'itmEditInsertGeneral',lisMenuInsertGeneral);
-      {$ENDIF}
       begin
         // insert general text sub menu items
         SubSubParentMI:=itmEditInsertGeneral;
@@ -577,12 +450,8 @@ begin
       end;
     end;
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEdit,itmEditMenuCodeTools,'itmEditMenuCodeTools');
     ParentMI:=itmEditMenuCodeTools;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEditCompleteCode,'itmEditCompleteCode',lisMenuCompleteCode);
     CreateMenuItem(ParentMI,itmEditExtractProc,'itmEditExtractProc',lisMenuExtractProc);
@@ -591,15 +460,11 @@ end;
 
 procedure TMainIDEBase.SetupSearchMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuSearch,itmSearchFindReplace,'itmSearchFindReplace');
     ParentMI:=itmSearchFindReplace;
-    {$ELSE}
-    ParentMI:=mnuSearch;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmSearchFind,'itmSearchFind',lisMenuFind);
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext);
@@ -609,12 +474,8 @@ begin
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
     CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuSearch,itmJumpings,'itmJumpings');
     ParentMI:=itmJumpings;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmJumpBack,'itmJumpBack',lisMenuJumpBack);
     CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward);
@@ -623,23 +484,15 @@ begin
     CreateMenuItem(ParentMI,itmJumpToNextError,'itmJumpToNextError',lisMenuJumpToNextError);
     CreateMenuItem(ParentMI,itmJumpToPrevError,'itmJumpToPrevError',lisMenuJumpToPrevError);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
     ParentMI:=itmBookmarks;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmSetFreeBookmark,'itmSetFreeBookmark',lisMenuSetFreeBookmark);
     CreateMenuItem(ParentMI,itmJumpToNextBookmark,'itmJumpToNextBookmark',lisMenuJumpToNextBookmark);
     CreateMenuItem(ParentMI,itmJumpToPrevBookmark,'itmJumpToPrevBookmark',lisMenuJumpToPrevBookmark);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuSearch,itmCodeToolSearches,'itmCodeToolSearches');
     ParentMI:=itmCodeToolSearches;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmFindBlockOtherEnd,'itmFindBlockOtherEnd',lisMenuFindBlockOtherEndOfCodeBlock);
     CreateMenuItem(ParentMI,itmFindBlockStart,'itmFindBlockStart',lisMenuFindCodeBlockStart);
@@ -653,27 +506,19 @@ end;
 
 procedure TMainIDEBase.SetupViewMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuView,itmViewMainWindows,'itmViewMainWindows');
     ParentMI:=itmViewMainWindows;
-    {$ELSE}
-    ParentMI:=mnuView;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector);
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor);
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer);
     CreateMenuItem(ParentMI,itmViewLazDoc,'itmViewLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits);
     CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms);
@@ -681,21 +526,13 @@ begin
     CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo);
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
     CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor);
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'menu_debugger');
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'menu_debugger');
-    {$ENDIF}
     begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'menu_watches');
       CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'menu_breakpoints');
@@ -708,74 +545,46 @@ end;
 
 procedure TMainIDEBase.SetupProjectMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectNewSection,'itmProjectNewSection');
     ParentMI:=itmProjectNewSection;
-    {$ELSE}
-    ParentMI:=mnuProject;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject);
     CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectOpenSection,'itmProjectOpenSection');
     ParentMI:=itmProjectOpenSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_openproject');
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject);
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject);
-    {$ENDIF}
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectSaveSection,'itmProjectSaveSection');
     ParentMI:=itmProjectSaveSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject);
     CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs);
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
     ParentMI:=itmProjectWindowSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmProjectInspector,'itmProjectInspector',lisMenuProjectInspector,'menu_projectinspector');
     CreateMenuItem(ParentMI,itmProjectOptions,'itmProjectOptions',lisMenuProjectOptions,'menu_projectoptions');
     CreateMenuItem(ParentMI,itmProjectCompilerOptions,'itmProjectCompilerOptions',lisMenuCompilerOptions);
     CreateMenuItem(ParentMI,itmProjectViewToDos,'itmProjectViewToDos',lisMenuViewProjectTodos);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectAddRemoveSection,'itmProjectAddRemoveSection');
     ParentMI:=itmProjectAddRemoveSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmProjectAddTo,'itmProjectAddTo',lisMenuAddToProject);
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject);
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewSource);
 
     {$IFDEF TRANSLATESTRING}
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuProject,itmProjectPoFileSection,'itmProjectPoFileSection');
     ParentMI:=itmProjectPoFileSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
     CreateMenuItem(ParentMI, itmProjectCreatePoFiles,'itmProjectCreatePoFiles', lisMenuCreatePoFile);
     CreateMenuItem(ParentMI, itmProjectCollectPoFiles, 'itmProjectCollectPoFiles', lisMenuCollectPoFil);
     {$ENDIF}
@@ -784,26 +593,18 @@ end;
 
 procedure TMainIDEBase.SetupRunMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuRun,itmRunBuilding,'itmRunBuilding');
     ParentMI:=itmRunBuilding;
-    {$ELSE}
-    ParentMI:=mnuRun;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuBuildAll,'itmRunMenuBuildAll',lisMenuBuildAll,'menu_buildall');
     CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run');
     CreateMenuItem(ParentMI,itmRunMenuPause,'itmRunMenuPause',lisMenuPause,'menu_pause');
@@ -814,81 +615,49 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters);
     CreateMenuItem(ParentMI,itmRunMenuResetDebugger,'itmRunMenuResetDebugger',lisMenuResetDebugger);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuRun,itmRunBuildingFile,'itmRunBuildingFile');
     ParentMI:=itmRunBuildingFile;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmRunMenuBuildFile,'itmRunMenuBuildFile',lisMenuBuildFile);
     CreateMenuItem(ParentMI,itmRunMenuRunFile,'itmRunMenuRunFile',lisMenuRunFile);
     CreateMenuItem(ParentMI,itmRunMenuConfigBuildFile,'itmRunMenuConfigBuildFile',lisMenuConfigBuildFile);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuRun,itmRunDebugging,'itmRunDebugging');
     ParentMI:=itmRunDebugging;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmRunMenuInspect,'itmRunMenuInspect',lisMenuInspect, '', False);
     CreateMenuItem(ParentMI,itmRunMenuEvaluate,'itmRunMenuEvaluate',lisMenuEvaluate, '', False);
     CreateMenuItem(ParentMI,itmRunMenuAddWatch,'itmRunMenuAddWatch',lisMenuAddWatch, '', False);
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmRunMenuAddBreakpoint,'itmRunMenuAddBreakpoint',lisMenuAddBreakpoint, '');
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmRunMenuAddBreakpoint,'itmRunMenuAddBreakpoint',lisMenuAddBreakpoint, '');
-    {$ENDIF}
       CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBPSource,'itmRunMenuAdddBPSource',lisMenuAddBPSource, '', False);
   end;
 end;
 
 procedure TMainIDEBase.SetupComponentsMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuComponents,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
-    {$ELSE}
-    ParentMI:=mnuComponents;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_package');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_package');
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit,'pkg_package');
-    {$IFDEF UseMenuIntf}
     CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package');
-    {$ELSE}
-    CreateMenuItem(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package');
-    {$ENDIF}
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuComponents,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_addunittopackage');
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuComponents,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph');
     CreateMenuItem(ParentMI,itmPkgEditInstallPkgs,'itmPkgEditInstallPkgs',lisMenuEditInstallPkgs,'pkg_package_install');
 
     {$IFDEF CustomIDEComps}
-    {$IFDEF UseMenuIntf}
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
     CreateMenuItem(ParentMI,itmCompsConfigCustomComps,'itmCompsConfigCustomComps',lisMenuConfigCustomComps);
     {$ENDIF}
   end;
@@ -896,57 +665,37 @@ end;
 
 procedure TMainIDEBase.SetupToolsMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuTools,itmCustomTools,'itmCustomTools');
     ParentMI:=itmCustomTools;
-    {$ELSE}
-    ParentMI:=mnuTools;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuSettings);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuTools,itmCodeToolChecks,'itmCodeToolChecks');
     ParentMI:=itmCodeToolChecks;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmToolSyntaxCheck,'itmToolSyntaxCheck',lisMenuQuickSyntaxCheck);
     CreateMenuItem(ParentMI,itmToolGuessUnclosedBlock,'itmToolGuessUnclosedBlock',lisMenuGuessUnclosedBlock);
     CreateMenuItem(ParentMI,itmToolGuessMisplacedIFDEF,'itmToolGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
     ParentMI:=itmSecondaryTools;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString);
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
     ParentMI:=itmDelphiConversion;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM);
     CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit);
     CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject);
     CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_buildlazarus');
     CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus);
@@ -955,15 +704,11 @@ end;
 
 procedure TMainIDEBase.SetupEnvironmentMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEnvironment,itmOptionsDialogs,'itmOptionsDialogs');
     ParentMI:=itmOptionsDialogs;
-    {$ELSE}
-    ParentMI:=mnuEnvironment;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environmentoptions');
@@ -979,12 +724,8 @@ begin
                    'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,
                    'menu_codetoolsdefineseditor');
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuEnvironment,itmIDECacheSection,'itmIDECacheSection');
     ParentMI:=itmIDECacheSection;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',
                    lisMenuRescanFPCSourceDirectory);
@@ -998,27 +739,19 @@ end;
 
 procedure TMainIDEBase.SetupHelpMenu;
 var
-  ParentMI: {$IFDEF UseMenuIntf}TIDEMenuSection{$ELSE}TMenuItem{$ENDIF};
+  ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuHelp,itmOnlineHelps,'itmOnlineHelps');
     ParentMI:=itmOnlineHelps;
-    {$ELSE}
-    ParentMI:=mnuHelp;
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmHelpOnlineHelp,'itmHelpOnlineHelp',
                    lisMenuOnlineHelp);
     CreateMenuItem(ParentMI,itmHelpConfigureHelp,'itmHelpConfigureHelp',
                    lisMenuConfigureHelp);
 
-    {$IFDEF UseMenuIntf}
     CreateMenuSeparatorSection(mnuHelp,itmInfoHelps,'itmInfoHelps');
     ParentMI:=itmInfoHelps;
-    {$ELSE}
-    ParentMI.Add(CreateMenuSeparator);
-    {$ENDIF}
 
     CreateMenuItem(ParentMI,itmHelpAboutLazarus,'itmHelpAboutLazarus',
                    lisMenuAboutLazarus);
@@ -1027,15 +760,12 @@ end;
 
 procedure TMainIDEBase.LoadMenuShortCuts;
 
-  {$IFDEF UseMenuIntf}
   function GetCommand(ACommand: word): TIDECommand;
   begin
     Result:=IDECommandList.FindIDECommand(ACommand);
   end;
-  {$ENDIF}
 
 begin
-  {$IFDEF UseMenuIntf}
   with MainIDEBar do begin
     // file menu
     itmFileNewUnit.Command:=GetCommand(ecNewUnit);
@@ -1199,171 +929,6 @@ begin
     itmHelpOnlineHelp.Command:=GetCommand(ecOnlineHelp);
     itmHelpConfigureHelp.Command:=GetCommand(ecConfigureHelp);
   end;
-  {$ELSE}
-  with MainIDEBar, EditorOpts.KeyMap do begin
-    // file menu
-    itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
-    itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
-    itmFileNewOther.ShortCut:=CommandToShortCut(ecNew);
-    itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
-    itmFileRevert.ShortCut:=CommandToShortCut(ecRevert);
-    itmFileSave.ShortCut:=CommandToShortCut(ecSave);
-    itmFileSaveAs.ShortCut:=CommandToShortCut(ecSaveAs);
-    itmFileSaveAll.ShortCut:=CommandToShortCut(ecSaveAll);
-    itmFileClose.ShortCut:=CommandToShortCut(ecClose);
-    itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
-    itmFileCleanDirectory.ShortCut:=CommandToShortCut(ecCleanDirectory);
-    itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
-    itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
-
-    // edit menu
-    itmEditUndo.ShortCut:=CommandToShortCut(ecUndo);
-    itmEditRedo.ShortCut:=CommandToShortCut(ecRedo);
-    itmEditCut.ShortCut:=CommandToShortCut(ecCut);
-    itmEditCopy.ShortCut:=CommandToShortCut(ecCopy);
-    itmEditPaste.ShortCut:=CommandToShortCut(ecPaste);
-    itmEditIndentBlock.ShortCut:=CommandToShortCut(ecBlockIndent);
-    itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
-    itmEditEncloseBlock.ShortCut:=CommandToShortCut(ecSelectionEnclose);
-    itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
-    itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
-    itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
-    itmEditCommentBlock.ShortCut:=CommandToShortCut(ecSelectionComment);
-    itmEditUncommentBlock.ShortCut:=CommandToShortCut(ecSelectionUncomment);
-    itmEditConditionalBlock.ShortCut:=CommandToShortCut(ecSelectionConditional);
-    itmEditSortBlock.ShortCut:=CommandToShortCut(ecSelectionSort);
-    itmEditSelectionBreakLines.ShortCut:=CommandToShortCut(ecSelectionBreakLines);
-    itmEditSelectAll.ShortCut:=CommandToShortCut(ecSelectAll);
-    itmEditSelectToBrace.ShortCut:=CommandToShortCut(ecSelectToBrace);
-    itmEditSelectCodeBlock.ShortCut:=CommandToShortCut(ecSelectCodeBlock);
-    itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
-    itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
-    itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
-    itmEditExtractProc.ShortCut:=CommandToShortCut(ecExtractProc);
-
-    itmEditInsertCVSAuthor.ShortCut:=CommandToShortCut(ecInsertCVSAuthor);
-    itmEditInsertCVSDate.ShortCut:=CommandToShortCut(ecInsertCVSDate);
-    itmEditInsertCVSHeader.ShortCut:=CommandToShortCut(ecInsertCVSHeader);
-    itmEditInsertCVSID.ShortCut:=CommandToShortCut(ecInsertCVSID);
-    itmEditInsertCVSLog.ShortCut:=CommandToShortCut(ecInsertCVSLog);
-    itmEditInsertCVSName.ShortCut:=CommandToShortCut(ecInsertCVSName);
-    itmEditInsertCVSRevision.ShortCut:=CommandToShortCut(ecInsertCVSRevision);
-    itmEditInsertCVSSource.ShortCut:=CommandToShortCut(ecInsertCVSSource);
-
-    itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
-    itmEditInsertLGPLNotice.ShortCut:=CommandToShortCut(ecInsertLGPLNotice);
-    itmEditInsertUsername.ShortCut:=CommandToShortCut(ecInsertUserName);
-    itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
-    itmEditInsertChangeLogEntry.ShortCut:=CommandToShortCut(ecInsertChangeLogEntry);
-
-    // search menu
-    itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
-    itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);
-    itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
-    itmSearchFindInFiles.ShortCut:=CommandToShortCut(ecFindInFiles);
-    itmSearchFindIdentifierRefs.ShortCut:=CommandToShortCut(ecFindIdentifierRefs);
-    itmSearchReplace.ShortCut:=CommandToShortCut(ecReplace);
-    itmSearchRenameIdentifier.ShortCut:=CommandToShortCut(ecRenameIdentifier);
-    itmIncrementalFind.ShortCut:=CommandToShortCut(ecIncrementalFind);
-    itmGotoLine.ShortCut:=CommandToShortCut(ecGotoLineNumber);
-    itmJumpBack.ShortCut:=CommandToShortCut(ecJumpBack);
-    itmJumpForward.ShortCut:=CommandToShortCut(ecJumpForward);
-    itmAddJumpPoint.ShortCut:=CommandToShortCut(ecAddJumpPoint);
-    itmJumpHistory.ShortCut:=CommandToShortCut(ecViewJumpHistory);
-    itmJumpToNextError.ShortCut:=CommandToShortCut(ecJumpToNextError);
-    itmJumpToPrevError.ShortCut:=CommandToShortCut(ecJumpToPrevError);
-    itmSetFreeBookmark.ShortCut:=CommandToShortCut(ecSetFreeBookmark);
-    itmJumpToNextBookmark.ShortCut:=CommandToShortCut(ecNextBookmark);
-    itmJumpToPrevBookmark.ShortCut:=CommandToShortCut(ecPrevBookmark);
-    itmFindBlockOtherEnd.ShortCut:=CommandToShortCut(ecFindBlockOtherEnd);
-    itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
-    itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);
-    itmOpenFileAtCursor.ShortCut:=CommandToShortCut(ecOpenFileAtCursor);
-    itmGotoIncludeDirective.ShortCut:=CommandToShortCut(ecGotoIncludeDirective);
-
-    // view menu
-    itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
-    itmViewSourceEditor.ShortCut:=CommandToShortCut(ecToggleSourceEditor);
-    itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
-    itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
-    //itmViewLazDoc.ShortCut:=CommandToShortCut(ecLazDoc);   //DBlaszijk 5-sep-05
-    itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);
-    itmViewUnitInfo.ShortCut:=CommandToShortCut(ecViewUnitInfo);
-    itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
-    itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
-    itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
-    itmViewSearchResults.ShortCut:=CommandToShortCut(ecToggleSearchResults);
-    itmViewAnchorEditor.ShortCut:=CommandToShortCut(ecViewAnchorEditor);
-
-    // project menu
-    itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
-    itmProjectNewFromFile.ShortCut:=CommandToShortCut(ecNewProjectFromFile);
-    itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
-    itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
-    itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
-    itmProjectPublish.ShortCut:=CommandToShortCut(ecPublishProject);
-    itmProjectInspector.ShortCut:=CommandToShortCut(ecProjectInspector);
-    itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
-    itmProjectCompilerOptions.ShortCut:=CommandToShortCut(ecCompilerOptions);
-    itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
-    itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
-    itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);
-
-    // run menu
-    itmRunMenuBuild.ShortCut:=CommandToShortCut(ecBuild);
-    itmRunMenuBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
-    itmRunMenuAbortBuild.ShortCut:=CommandToShortCut(ecAbortBuild);
-    itmRunMenuRun.ShortCut:=CommandToShortCut(ecRun);
-    itmRunMenuPause.ShortCut:=CommandToShortCut(ecPause);
-    itmRunMenuStepInto.ShortCut:=CommandToShortCut(ecStepInto);
-    itmRunMenuStepOver.ShortCut:=CommandToShortCut(ecStepOver);
-    itmRunMenuRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
-    itmRunMenuStop.ShortCut:=CommandToShortCut(ecStopProgram);
-    itmRunMenuResetDebugger.ShortCut:=CommandToShortCut(ecResetDebugger);
-    itmRunMenuRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
-    itmRunMenuBuildFile.ShortCut:=CommandToShortCut(ecBuildFile);
-    itmRunMenuRunFile.ShortCut:=CommandToShortCut(ecRunFile);
-    itmRunMenuConfigBuildFile.ShortCut:=CommandToShortCut(ecConfigBuildFile);
-
-    // components menu
-    itmPkgOpenPackage.ShortCut:=CommandToShortCut(ecOpenPackage);
-    itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
-    itmPkgOpenPackageOfCurUnit.ShortCut:=CommandToShortCut(ecOpenPackageOfCurUnit);
-    itmPkgAddCurUnitToPkg.ShortCut:=CommandToShortCut(ecAddCurUnitToPkg);
-    itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
-    itmPkgEditInstallPkgs.ShortCut:=CommandToShortCut(ecEditInstallPkgs);
-    {$IFDEF CustomIDEComps}
-    itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
-    {$ENDIF}
-
-    // tools menu
-    itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
-    itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
-    itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
-    itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
-    itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
-    itmToolDiff.ShortCut:=CommandToShortCut(ecDiff);
-    itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
-    itmToolCheckLFM.ShortCut:=CommandToShortCut(ecCheckLFM);
-    itmToolConvertDelphiUnit.ShortCut:=CommandToShortCut(ecConvertDelphiUnit);
-    itmToolConvertDelphiProject.ShortCut:=CommandToShortCut(ecConvertDelphiProject);
-    itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
-    itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
-
-    // environment menu
-    itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
-    itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
-    itmEnvCodeTemplates.ShortCut:=CommandToShortCut(ecEditCodeTemplates);
-    itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
-    itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
-    itmEnvRescanFPCSrcDir.ShortCut:=CommandToShortCut(ecRescanFPCSrcDir);
-
-    // help menu
-    itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
-    itmHelpOnlineHelp.ShortCut:=CommandToShortCut(ecOnlineHelp);
-    itmHelpConfigureHelp.ShortCut:=CommandToShortCut(ecConfigureHelp);
-  end;
-  {$ENDIF}
 end;
 
 function TMainIDEBase.GetToolStatus: TIDEToolStatus;
@@ -1713,7 +1278,7 @@ procedure TMainIDEBase.UpdateWindowsMenu;
 var
   WindowsList: TList;
   i: Integer;
-  CurMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
+  CurMenuItem: TIDEMenuItem;
   AForm: TForm;
 begin
   WindowsList:=TList.Create;
@@ -1741,13 +1306,8 @@ begin
     if MainIDEBar.mnuWindows.Count>i then
       CurMenuItem:=MainIDEBar.mnuWindows.Items[i]
     else begin
-      {$IFDEF UseMenuIntf}
       CurMenuItem:=RegisterIDEMenuCommand(MainIDEBar.mnuWindows.GetPath,
                                           'Window'+IntToStr(i),'');
-      {$ELSE}
-      CurMenuItem:=TMenuItem.Create(MainIDEBar);
-      MainIDEBar.mnuWindows.Add(CurMenuItem);
-      {$ENDIF}
       CurMenuItem.OnClick:=@mnuWindowsItemClick;
     end;
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
@@ -1759,25 +1319,16 @@ begin
   WindowsList.Free;
 end;
 
-procedure TMainIDEBase.SetRecentSubMenu(
-  {$IFDEF UseMenuIntf}Section: TIDEMenuSection;
-  {$ELSE}Section: TMenuItem;{$ENDIF}
+procedure TMainIDEBase.SetRecentSubMenu(Section: TIDEMenuSection;
   FileList: TStringList; OnClickEvent: TNotifyEvent);
 var
   i: integer;
-  AMenuItem: {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF};
+  AMenuItem: TIDEMenuItem;
 begin
   // create enough menuitems
   while Section.Count<FileList.Count do begin
-    {$IFDEF UseMenuIntf}
     AMenuItem:=RegisterIDEMenuCommand(Section.GetPath,
                               Section.Name+'Recent'+IntToStr(Section.Count),'');
-    {$ELSE}
-    AMenuItem:=TMenuItem.Create(MainIDEBar);
-    AMenuItem.Name:=
-      Section.Name+'Recent'+IntToStr(Section.Count);
-    Section.Add(AMenuItem);
-    {$ENDIF}
   end;
   // delete unused menuitems
   while Section.Count>FileList.Count do

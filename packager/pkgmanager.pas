@@ -947,7 +947,7 @@ procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename((Sender as {$IFDEF UseMenuIntf}TIDEMenuItem{$ELSE}TMenuItem{$ENDIF}).Caption);
+  AFileName:=ExpandFilename((Sender as TIDEMenuItem).Caption);
   if DoOpenPackageFile(AFilename,[pofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin

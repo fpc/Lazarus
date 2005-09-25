@@ -452,7 +452,7 @@ end;
 procedure TPkgGraphExplorer.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  ExecuteIDEShortCut(Self,Key,Shift,{$IFDEF UseIDEScopes}nil{$ELSE}caMenuOnly{$ENDIF});
+  ExecuteIDEShortCut(Self,Key,Shift,nil);
 end;
 
 constructor TPkgGraphExplorer.Create(TheOwner: TComponent);
