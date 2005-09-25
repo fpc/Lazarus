@@ -2809,7 +2809,8 @@ var Protocol:TStringList;
 begin
   Protocol:=TStringList.Create;
   try
-    ErrorCount:=KeyStrokesConsistencyErrors(DisplayPreview.KeyStrokes
+    ErrorCount:=KeyStrokesConsistencyErrors(
+        {$IFDEF UseIDEScopes}EditingKeyMap{$ELSE}DisplayPreview.KeyStrokes{$ENDIF}
         ,Protocol, Index1, Index2);
     if ErrorCount>0 then begin
       KeyMapErrorsForm:=TKeyMapErrorsForm.Create(nil);

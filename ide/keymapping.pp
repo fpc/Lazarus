@@ -353,7 +353,7 @@ type
     {$ENDIF}
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
-    property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
+    property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
     property RelationCount:integer read GetRelationCount;
     property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
   end;
@@ -394,12 +394,17 @@ type
     KeyIndex:integer;
   end;
 
-function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState):AnsiString;
-function KeyAndShiftStateToEditorKeyString(Key: TIDEShortCut):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): String;
+function KeyAndShiftStateToEditorKeyString(Key: TIDEShortCut): String;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
+{$IFDEF UseIDEScopes}
+function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
+   Protocol: TStrings; var Index1,Index2:integer):integer;
+ {$ELSE}
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
+{$ENDIF}
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
@@ -1630,6 +1635,61 @@ begin
   end;
 end;
 
+{$IFDEF UseIDEScopes}
+function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
+   Protocol: TStrings; var Index1,Index2:integer):integer;
+// 0 = ok, no errors
+// >0 number of errors found
+var
+  a,b:integer;
+  Key1: TKeyCommandRelation;
+  Key2: TKeyCommandRelation;
+  
+  procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
+  begin
+    if (ShortCut1.Key1<>VK_UNKNOWN)
+    and (ShortCut1.Key1=ShortCut2.Key1) and (ShortCut1.Shift1=ShortCut2.Shift1)
+    and (((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
+        or (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN))
+    then begin
+      // conflict found
+      if Result=0 then begin
+        Index1:=a;
+        Index2:=b;
+      end;
+      inc(Result);
+      if Protocol<>nil then
+      begin
+        Protocol.Add(srkmConflic+IntToStr(Result));
+        Protocol.Add(srkmCommand1+Key1.Category.Description+' '
+          +EditorCommandToDescriptionString(Key1.Command)+'"'
+          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut1));
+        Protocol.Add(srkmConflicW);
+        Protocol.Add(srkmCommand2+Key2.Category.Description+' '
+          +EditorCommandToDescriptionString(Key2.Command)+'"'
+          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut2)
+         );
+        Protocol.Add('');
+      end;
+    end;
+  end;
+  
+begin
+  Result:=0;
+  for a:=0 to Keymap.Count-1 do begin
+    Key1:=Keymap[a];
+    for b:=a+1 to Keymap.Count-1 do begin
+      Key2:=Keymap[b];
+      if (not Key1.Category.ScopeIntersects(Key2.Category.Scope)) then
+        continue;
+      Check(Key1.ShortcutA,Key2.ShortcutA);
+      Check(Key1.ShortcutA,Key2.ShortcutB);
+      Check(Key1.ShortcutB,Key2.ShortcutA);
+      Check(Key1.ShortcutB,Key2.ShortcutB);
+    end;
+  end;
+end;
+{$ELSE}
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 // 0 = ok, no errors
@@ -1673,6 +1733,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): AnsiString;
 var
@@ -2216,7 +2277,7 @@ begin
 
   // moving
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,
-              {$IFDEF UseIDEScopes}IDECmdScopeSrcEdit{$ELSE}caSrcEdit{$ENDIF})];
+              {$IFDEF UseIDEScopes}IDECmdScopeSrcEditOnly{$ELSE}caSrcEdit{$ENDIF})];
   AddDefault(C,'Move cursor word left',ecWordLeft);
   AddDefault(C,'Move cursor word right',ecWordRight);
   AddDefault(C,'Move cursor to line start',ecLineStart);

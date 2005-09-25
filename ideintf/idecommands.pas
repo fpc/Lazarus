@@ -165,7 +165,7 @@ type
     FCategory: TIDECommandCategory;
     FCommand: word;
     FLocalizedName: string;
-    FName: String;
+        FName: String;
     FShortcutA: TIDEShortCut;
     FShortcutB: TIDEShortCut;
   protected
@@ -238,7 +238,6 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState)
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
 function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
-
 
 var
   // will be set by the IDE
