@@ -27,7 +27,7 @@ begin
   fTabVisible := True;
   ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds,csNoDesignVisible];
 
-  // height and width dependent on parent, align to client rect
+  // height and width depends on parent, align to client rect
   Align := alClient;
   Caption := '';
   Visible := false;

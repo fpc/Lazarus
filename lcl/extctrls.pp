@@ -65,12 +65,12 @@ type
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
   public
-    property PageIndex: Integer read GetPageIndex write SetPageIndex;
-    property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
     function IsVisible: Boolean; override;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex;
+    property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     property Left stored False;
     property Top stored False;

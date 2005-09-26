@@ -3399,15 +3399,13 @@ begin
 end;
 
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
-var
-  Bs: TBorderStyle;
 begin
   if FFlat=AValue then exit;
   FFlat:=AValue;
   if FGridBorderStyle=bsSingle then
     UpdateBorderStyle
   else
-  Invalidate;
+    Invalidate;
 end;
 
 procedure TCustomGrid.SetFocusRectVisible(const AValue: Boolean);
