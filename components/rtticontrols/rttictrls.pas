@@ -82,6 +82,8 @@ Type
   
   TTestEditing = function(Sender: TObject): boolean of object;
 
+  { TCustomPropertyLink }
+
   TCustomPropertyLink = class(TPersistent)
   private
     FAliasValues: TAliasStrings;
@@ -153,6 +155,7 @@ Type
                                  IfNoValuesAvailableAddAllAlias: boolean);
     procedure AssignCollectedAliasValuesTo(DestList: TStrings);
     function HasAliasValues: boolean;
+    procedure BuildEnumAliasValues(AStringArray: PString);
   public
     // for Set property editors
     procedure AssignSetEnumsAliasTo(DestList: TStrings);
@@ -1348,12 +1351,33 @@ Type
 
 function GetPropertyLinkOfComponent(AComponent: TComponent
   ): TCustomPropertyLink;
+procedure CreateEnumAliasValues(EnumType: PTypeInfo; List: TStrings;
+  AStringArray: PString);
 
 procedure Register;
 
 
 implementation
 
+procedure CreateEnumAliasValues(EnumType: PTypeInfo; List: TStrings;
+  AStringArray: PString);
+var
+  AName: String;
+  AnAliasName: String;
+  i: LongInt;
+begin
+  List.BeginUpdate;
+  List.Clear;
+  //debugln('CreateEnumAliasValues ',EnumType^.Name);
+  with GetTypeData(EnumType)^ do
+    for i := MinValue to MaxValue do begin
+      AName := GetEnumName(EnumType, i);
+      AnAliasName := AStringArray[i];
+      //debugln('CreateEnumAliasValues ',AName+'='+AnAliasName);
+      List.Add(AName+'='+AnAliasName);
+    end;
+  List.EndUpdate;
+end;
 
 function GetPropertyLinkOfComponent(AComponent: TComponent
   ): TCustomPropertyLink;
@@ -1847,6 +1871,24 @@ end;
 function TCustomPropertyLink.HasAliasValues: boolean;
 begin
   Result:=(AliasValues<>nil) and (AliasValues.Count>0);
+end;
+
+procedure TCustomPropertyLink.BuildEnumAliasValues(AStringArray: PString);
+{ Example:
+
+  type
+    TMyEnum = (enum1,enum2);
+  const
+    MyEnumNamesArray: array[TMyEnum] of string = ('Enum1','Enum2');
+
+  MyTIComboBox.Link.BuildEnumAliasValues(@MyEnumNamesArray[TMyEnum(0)]);
+}
+begin
+  CreateEditor;
+  if (Editor=nil) or (not (Editor is TEnumPropertyEditor)) then exit;
+  CreateEnumAliasValues(Editor.GetPropType,AliasValues,AStringArray);
+  if Assigned(OnEditorChanged) then
+    OnEditorChanged(Self);
 end;
 
 procedure TCustomPropertyLink.AssignSetEnumsAliasTo(DestList: TStrings);
