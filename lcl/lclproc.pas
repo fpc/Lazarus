@@ -861,7 +861,6 @@ begin
       Append(DebugText^)
     else
       Rewrite(DebugText^);
-    writeln(DebugText^,'Created.');
   end
   else begin
     if TextRec(Output).Mode=fmClosed then

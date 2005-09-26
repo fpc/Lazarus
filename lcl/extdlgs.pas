@@ -1220,6 +1220,7 @@ begin
     ModalResult:=mrOK;
     OnClick:=@GetNewDate;
     Align:=alRight;
+    Default:=True;
   end;
 
   cancelButton:=TButton.Create(Self);
@@ -1231,6 +1232,7 @@ begin
     Width:=DF.Canvas.TextWidth(CancelCaption)+2*dw;;
     ModalResult:=mrCancel;
     Align:=alLeft;
+    Cancel:=True;
   end;
 
   Result:=DF.ShowModal=mrOK;
