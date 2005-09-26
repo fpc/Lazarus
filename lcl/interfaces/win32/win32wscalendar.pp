@@ -76,7 +76,7 @@ begin
     pClassName := 'SysMonthCal32';
     WindowTitle := StrCaption;
     Flags := WS_CHILD or WS_VISIBLE;
-    SubClassWndProc := nil;
+    SubClassWndProc := @WindowProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
