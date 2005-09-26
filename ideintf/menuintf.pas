@@ -383,11 +383,24 @@ var
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
+function RegisterIDEMenuSection(Parent: TIDEMenuSection;
+                                const Name: string): TIDEMenuSection;
 function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
+function RegisterIDESubMenu(Parent: TIDEMenuSection;
+                            const Name, Caption: string;
+                            const OnClickMethod: TNotifyEvent = nil;
+                            const OnClickProc: TNotifyProcedure = nil
+                            ): TIDEMenuSection;
 function RegisterIDESubMenu(const Path, Name, Caption: string;
                             const OnClickMethod: TNotifyEvent = nil;
                             const OnClickProc: TNotifyProcedure = nil
                             ): TIDEMenuSection;
+function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
+                                const Name, Caption: string;
+                                const OnClickMethod: TNotifyEvent = nil;
+                                const OnClickProc: TNotifyProcedure = nil;
+                                const Command: TIDECommand = nil
+                                ): TIDEMenuCommand;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
@@ -399,24 +412,38 @@ implementation
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
   ): TIDEMenuSection;
 begin
-  {$IFDEF VerboseMenuIntf}
   //debugln('RegisterIDEMenuRoot Name="',Name,'"');
-  {$ENDIF}
   Result:=TIDEMenuSection.Create(Name);
   IDEMenuRoots.RegisterMenuRoot(Result);
   Result.MenuItem:=MenuItem;
+end;
+
+function RegisterIDEMenuSection(Parent: TIDEMenuSection; const Name: string
+  ): TIDEMenuSection;
+begin
+  Result:=TIDEMenuSection.Create(Name);
+  Result.ChildsAsSubMenu:=false;
+  Parent.AddLast(Result);
 end;
 
 function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
 var
   Parent: TIDEMenuSection;
 begin
-  {$IFDEF VerboseMenuIntf}
   //debugln('RegisterIDEMenuSection Path="',Path,'" Name="',Name,'"');
-  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
+  Result:=RegisterIDEMenuSection(Parent,Name);
+end;
+
+function RegisterIDESubMenu(Parent: TIDEMenuSection; const Name,
+  Caption: string; const OnClickMethod: TNotifyEvent;
+  const OnClickProc: TNotifyProcedure): TIDEMenuSection;
+begin
   Result:=TIDEMenuSection.Create(Name);
-  Result.ChildsAsSubMenu:=false;
+  Result.ChildsAsSubMenu:=true;
+  Result.Caption:=Caption;
+  Result.OnClick:=OnClickMethod;
+  Result.OnClickProc:=OnClickProc;
   Parent.AddLast(Result);
 end;
 
@@ -426,15 +453,21 @@ function RegisterIDESubMenu(const Path, Name, Caption: string;
 var
   Parent: TIDEMenuSection;
 begin
-  {$IFDEF VerboseMenuIntf}
   //debugln('RegisterIDESubMenu Path="',Path,'" Name="',Name,'"');
-  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
-  Result:=TIDEMenuSection.Create(Name);
-  Result.ChildsAsSubMenu:=true;
+  Result:=RegisterIDESubMenu(Parent,Name,Caption,OnClickMethod,OnClickProc);
+end;
+
+function RegisterIDEMenuCommand(Parent: TIDEMenuSection; const Name,
+  Caption: string; const OnClickMethod: TNotifyEvent;
+  const OnClickProc: TNotifyProcedure; const Command: TIDECommand
+  ): TIDEMenuCommand;
+begin
+  Result:=TIDEMenuCommand.Create(Name);
   Result.Caption:=Caption;
   Result.OnClick:=OnClickMethod;
   Result.OnClickProc:=OnClickProc;
+  Result.Command:=Command;
   Parent.AddLast(Result);
 end;
 
@@ -444,16 +477,10 @@ function RegisterIDEMenuCommand(const Path, Name, Caption: string;
 var
   Parent: TIDEMenuSection;
 begin
-  {$IFDEF VerboseMenuIntf}
   //debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
-  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
-  Result:=TIDEMenuCommand.Create(Name);
-  Result.Caption:=Caption;
-  Result.OnClick:=OnClickMethod;
-  Result.OnClickProc:=OnClickProc;
-  Result.Command:=Command;
-  Parent.AddLast(Result);
+  Result:=RegisterIDEMenuCommand(Parent,Name,Caption,OnClickMethod,OnClickProc,
+                                 Command);
 end;
 
 { TIDEMenuItem }
