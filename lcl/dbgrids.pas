@@ -2039,11 +2039,13 @@ end;
 
 procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
 begin
-  if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then
-    if FIsEditingCheckBox then
-			SwapCheckBox
-    else
-    	FIsEditingCheckBox := True;
+  if (aCol>=FixedCols)and(aRow>=FixedRows) then begin
+    if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then
+      if FIsEditingCheckBox then
+  			SwapCheckBox
+      else
+      	FIsEditingCheckBox := True;
+  end;
   if Assigned(OnCellClick) then
     OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
 end;
