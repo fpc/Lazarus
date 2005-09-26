@@ -481,6 +481,8 @@ type
 
   { TLazProject - interface class to a Lazarus project }
 
+  { TLazProject }
+
   TLazProject = class(TPersistent)
   private
     FLazCompilerOptions: TLazCompilerOptions;
@@ -508,6 +510,9 @@ type
     procedure SetSessionModified(const AValue: boolean); virtual;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
+    {$IFDEF EnableLazDoc}
+    destructor Destroy; override;
+    {$ENDIF}
     function CreateProjectFile(const Filename: string
                                ): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
@@ -1013,6 +1018,14 @@ begin
   FLazDocPathList := TStringList.Create;
   {$ENDIF}
 end;
+
+{$IFDEF EnableLazDoc}
+destructor TLazProject.Destroy;
+begin
+  FreeAndNil(FLazDocPathList);
+  inherited Destroy;
+end;
+{$ENDIF}
 
 function TLazProject.ShortDescription: string;
 begin
