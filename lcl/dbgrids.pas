@@ -34,6 +34,7 @@ unit DBGrids;
 
 {$mode objfpc}{$H+}
 {$define EnableIsSeq}
+{.$define UseTitleFont}
 interface
 
 uses
@@ -67,7 +68,8 @@ type
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
-  TDbGridStatusItem = (gsVisibleMove, gsUpdatingData);
+  TDbGridStatusItem = (gsVisibleMove, gsUpdatingData, gsAddingAutoColumns,
+    gsRemovingAutoColumns);
   TDbGridStatus = set of TDbGridStatusItem;
 
   TDBGridCheckBoxState = (gcbpUnChecked, gcbpChecked, gcbpGrayed);
@@ -252,7 +254,10 @@ type
     FOldControlStyle: TControlStyle;
     FIsEditingCheckBox: Boolean;  // For checkbox column editing emulation (by SSY)
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
+    FNeedUpdateWidths: boolean;
     procedure EmptyGrid;
+    procedure CheckWidths;
+    function GetCurrentColumn: TColumn;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     function GetRecordCount: Integer;
@@ -350,6 +355,7 @@ type
     procedure Loaded; override;
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure Paint; override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
     procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
@@ -363,7 +369,9 @@ type
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
 
+    property GridStatus: TDbGridStatus read FGridStatus write FGridStatus;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property NeedUpdateWidths: boolean write FNeedUpdateWidths;
     property Options: TDbGridOptions read FOptions write SetOptions;
     property OptionsExtra: TDbgridExtraOptions read FExtraOptions write SetExtraOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
@@ -385,12 +393,14 @@ type
     destructor Destroy; override;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
+    property SelectedColumn: TColumn read GetCurrentColumn;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
 
 
   TdbGrid=class(TCustomDbGrid)
   public
+    property BorderColor;
     property Canvas;
     property DefaultTextStyle;
     property EditorBorderStyle;
@@ -590,11 +600,53 @@ end;
 
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
 begin
-  //result := Canvas.TextWidth('W l') div 3;
   if Canvas.HandleAllocated then
     result := Canvas.TextWidth('MX') div 2
   else
-    Result := 8;
+    result := 8;
+end;
+
+function CalcColumnFieldWidth(Canvas: TCanvas; hasTitle: boolean;
+  aTitle: String; aTitleFont: TFont; Field: TField): Integer;
+var
+  aCharWidth: Integer;
+  aFont: TFont;
+  UseTitleFont: boolean;
+begin
+  if (Field=nil) or (Field.DisplayWidth=0) then
+    Result := DEFCOLWIDTH
+  else begin
+  
+    aCharWidth := CalcCanvasCharWidth(Canvas);
+    if Field.DisplayWidth>Length(aTitle) then
+      result := aCharWidth * Field.DisplayWidth
+    else
+      result := aCharWidth * Length(aTitle);
+
+    if HasTitle then begin
+      UseTitleFont :=
+        (Canvas.Font.Size<>aTitleFont.Size) or
+        (Canvas.Font.Style<>aTitleFont.Style) or
+        (Canvas.Font.CharSet<>aTitleFont.CharSet) or
+        (Canvas.Font.Name<>aTitleFont.Name);
+      if UseTitleFont then begin
+        aFont := TFont.Create;
+        aFont.Assign(Canvas.Font);
+        Canvas.Font := aTitleFont;
+      end;
+      try
+        aCharWidth := Canvas.TextWidth(ATitle)+6;
+        if aCharWidth>Result then
+          Result := aCharWidth;
+      finally
+        if UseTitleFont then begin
+          Canvas.Font := aFont;
+          aFont.Free;
+        end;
+      end;
+    end; // if HasTitle ...
+    
+  end; // if (Field=nil) or (Field.DisplayWidth=0) ...
 end;
 
 { TCustomdbGrid }
@@ -649,6 +701,24 @@ begin
   FixedCols := 1;
   FixedRows := 1;
   ColWidths[0]:=12;
+end;
+
+procedure TCustomDbGrid.CheckWidths;
+begin
+  if FNeedUpdateWidths then begin
+    BeginUpdate;
+    VisualChange;
+    EndUpdate(uoNone);
+    FNeedUpdateWidths := False;
+  end;
+end;
+
+function TCustomDbGrid.GetCurrentColumn: TColumn;
+begin
+  if Columns.Enabled then
+    Result := TColumn(Columns[SelectedIndex])
+  else
+    Result := nil;
 end;
 
 function TCustomDbGrid.GetCurrentField: TField;
@@ -1059,7 +1129,7 @@ begin
   else begin
     if F.DisplayWidth = 0 then
       if Canvas.HandleAllocated then
-        result := Canvas.TextWidth( F.DisplayName ) + 4
+        result := Canvas.TextWidth( F.DisplayName ) + 3
       else
         Result := DefaultColWidth
     else
@@ -1189,10 +1259,13 @@ begin
     aPage := 0;
     aPos := 0;
   end;
+  
+  //ScrollBarRange(SB_VERT, aRange, aPage);
+  //ScrollBarPosition(SB_VERT, aPos);
   FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   {$ifdef WIN32}
-  ScrollInfo.fMask := SIF_ALL;
+  ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
   ScrollInfo.ntrackPos := 0;
   {$else}
   ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
@@ -1204,6 +1277,7 @@ begin
   ScrollInfo.nPos := aPos;
   ScrollInfo.nPage := aPage;
   SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
+  
   FOldPosition := aPos;
   {$ifdef dbgdbgrid}
   DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
@@ -1303,30 +1377,37 @@ var
 begin
   // add as many columns as there are fields in the dataset
   // do this only at runtime.
-  if (csDesigning in ComponentState) or not FDatalink.Active then
+  if (csDesigning in ComponentState) or not FDatalink.Active or
+    (gsRemovingAutoColumns in FGridStatus) then
     exit;
 
-  for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
+  Include(FGridStatus, gsAddingAutoColumns);
+  try
+    for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
 
-    F:= FDataLink.DataSet.Fields[i];
+      F:= FDataLink.DataSet.Fields[i];
 
-    if TDbGridColumns(Columns).ColumnFromField(F) <> nil then
-      // this field is already in the collection. This could only happen
-      // if AddAutomaticColumns was called out of LayoutChanged.
-      // to avoid duplicate columns skip this field.
-      continue;
+      if TDbGridColumns(Columns).ColumnFromField(F) <> nil then
+        // this field is already in the collection. This could only happen
+        // if AddAutomaticColumns was called out of LayoutChanged.
+        // to avoid duplicate columns skip this field.
+        continue;
 
-    if (F<>nil) then begin
-      with TColumn(Columns.Add) do begin
-        FIsAutomaticColumn := True;
-        Field := F;
-        Visible := F.Visible;
+      if (F<>nil) then begin
+        with TDbGridColumns(Columns).Add do begin
+          FIsAutomaticColumn := True;
+          Field := F;
+          Visible := F.Visible;
+        end;
       end;
-    end;
 
+    end;
+    // honor the field.index
+    TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
+  finally
+    Exclude(FGridStatus, gsAddingAutoColumns);
   end;
-  // honor the field.index
-  TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
+  
 end;
 
 procedure TCustomDbGrid.SwapCheckBox;
@@ -1869,6 +1950,12 @@ end;
   {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown END'); {$Endif}
 end;
 
+procedure TCustomDbGrid.Paint;
+begin
+  CheckWidths;
+  inherited Paint;
+end;
+
 procedure TCustomDbGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
@@ -1904,6 +1991,10 @@ begin
     Result:= true
   else
     Result:=inherited ScrollBarAutomatic(Which);
+  {$ifdef dbgScroll}
+  DebugLn('TCustomDbGrid.ScrollbarAutomatic Which=',dbgs(Ord(Which)),
+    ' Result=',dbgs(Result));
+  {$endif}
 end;
 
 function TCustomDbGrid.SelectCell(aCol, aRow: Integer): boolean;
@@ -2014,10 +2105,10 @@ begin
     if ValidDataSet and (dgCancelOnExit in Options) and
       InsertCancelable then
     begin
-        FDataLink.DataSet.Cancel;
-        EditorCancelEditing;
-      end;
+      FDataLink.DataSet.Cancel;
+      EditorCancelEditing;
     end;
+  end;
   inherited DoExit;
   {$ifdef dbgdbgrid}DebugLn('DbGrid.DoExit FIN');{$Endif}
 end;
@@ -2132,7 +2223,7 @@ end;
 procedure TCustomDbGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
-  if {Self.Focused and }(dgAlwaysShowSelection in Options) and
+  if Self.Focused and (dgAlwaysShowSelection in Options) and
     FDatalink.Active then
   begin
     CalcFocusRect(aRect);
@@ -2274,18 +2365,26 @@ begin
   try
     Result := GetColumnCount;
     if Result > 0 then begin
+
       if dgTitles in Options then FRCount := 1 else FRCount := 0;
       if dgIndicator in Options then FCCount := 1 else FCCount := 0;
-
       InternalSetColCount(Result + FCCount);
-      //ColCount := Result + FCCount;
+
       if FDataLink.Active then begin
         UpdateBufferCount;
-        RecCount := FDataLink.RecordCount + FRCount;
-        if RecCount<2 then RecCount:=2;
-      end else
-        RecCount := 2;
+        RecCount := FDataLink.RecordCount;
+        if RecCount<1 then
+          RecCount := 1;
+      end else begin
+        RecCount := 0;
+        if FRCount=0 then
+          // need to be as large enought to hold indicator
+          // if there is one, and if there are no titles
+          RecCount := FCCount;
+      end;
 
+      Inc(RecCount, FRCount);
+      
       RowCount := RecCount;
       FixedRows := FRCount;
       FixedCols := FCCount;
@@ -2299,13 +2398,17 @@ end;
 procedure TCustomDbGrid.UpdateVertScrollbar(const aVisible: boolean;
   const aRange, aPage: Integer);
 begin
-    if (Scrollbars in [ssAutoVertical, ssAutoBoth]) then begin
-      // ssAutovertical and ssAutoBoth would get the scrollbar hidden
-      // but this case should be handled as if the scrollbar where
-      // ssVertical or ssBoth
-      ScrollBarShow(SB_VERT, True)
-    end else
-      ScrollBarShow(SB_VERT, AVisible);
+  {$ifdef DbgScroll}
+  DebugLn('TCustomDBGrid.UpdateVertScrollbar: Vis=',dbgs(aVisible),
+    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
+  {$endif}
+  if (Scrollbars in [ssAutoVertical, ssAutoBoth]) then begin
+    // ssAutovertical and ssAutoBoth would get the scrollbar hidden
+    // but this case should be handled as if the scrollbar where
+    // ssVertical or ssBoth
+    ScrollBarShow(SB_VERT, True)
+  end else
+    ScrollBarShow(SB_VERT, AVisible);
 end;
 
 procedure TCustomDbGrid.VisualChange;
@@ -2663,8 +2766,11 @@ end;
 procedure TDbGridColumns.RemoveAutoColumns;
 var
   i: Integer;
+  G: TCustomDbGrid;
 begin
   if HasAutomaticColumns then begin
+    G := TCustomDbGrid(Grid);
+    Include(G.GridStatus, gsRemovingAutoColumns);
     BeginUpdate;
     try
       for i:=Count-1 downto 0 do
@@ -2672,6 +2778,7 @@ begin
           Delete(i);
     finally
       EndUpdate;
+      Exclude(G.GridStatus, gsRemovingAutoColumns);
     end;
   end;
 end;
@@ -2732,7 +2839,15 @@ begin
 end;
 
 function TDbGridColumns.Add: TColumn;
+var
+  G: TCustomDbGrid;
 begin
+  G := TCustomDbGrid(Grid);
+  if G<>nil then begin
+    // remove automatic columns before adding user columns
+    if not (gsAddingAutoColumns in G.GridStatus) then
+      RemoveAutoColumns;
+  end;
   result := TColumn( inherited add );
 end;
 
@@ -2898,12 +3013,40 @@ end;
 function TColumn.GetDefaultWidth: Integer;
 var
   AGrid: TCustomDbGrid;
+  WasAllocated: boolean;
+  aDC: HDC;
 begin
   AGrid := TCustomDBGrid(Grid);
-  if (AGrid<>nil)and(AGrid.HandleAllocated)and(FField<>nil) then
-    result := FField.DisplayWidth * CalcCanvasCharWidth(AGrid.Canvas)
-  else
-    result := 64;
+  if AGrid<>nil then begin
+    WasAllocated := aGrid.Canvas.HandleAllocated;
+    if not WasAllocated then begin
+      aDC := GetDC(0); // desktop canvas
+      aGrid.Canvas.Handle := aDC;
+      aGrid.Canvas.Font := aGrid.Font;
+    end;
+
+    if AGrid.Canvas.HandleAllocated then begin
+      if FField<>nil then
+        result := CalcColumnFieldWidth(
+          aGrid.Canvas,
+          dgTitles in aGrid.Options,
+          Title.Caption,
+          Title.Font,
+          FField)
+      else
+        result := AGrid.DefaultColWidth
+    end else begin
+      aGrid.NeedUpdateWidths := True;
+      result := DEFCOLWIDTH;
+    end;
+    
+    if not WasAllocated then begin
+      aGrid.Canvas.Handle := 0;
+      ReleaseDC(0, aDC);
+    end;
+      
+  end else
+    result := DEFCOLWIDTH;
 end;
 
 function TColumn.CreateTitle: TGridColumnTitle;

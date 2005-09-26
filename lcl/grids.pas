@@ -34,7 +34,6 @@ The log was moved to end of file, search for: The_Log
 }
 
 {$define UseClipRect}
-{$define GoodClipping}
 {$define LooseCount}
 unit Grids;
 
@@ -67,6 +66,9 @@ const
   EO_HOOKKEYUP    =   $8;
   EO_HOOKEXIT     =   $10;
   EO_SELECTALL    =   $20;
+
+const
+  DEFCOLWIDTH = 64;
 
 type
   EGridException = class(Exception);
@@ -413,7 +415,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
     property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored;
     property Title: TGridColumnTitle read FTitle write SetTitle;
-    property Width: Integer read GetWidth write SetWidth stored IsWidthStored default 64;
+    property Width: Integer read GetWidth write SetWidth stored IsWidthStored default DEFCOLWIDTH;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
   end;
 
@@ -463,8 +465,8 @@ type
       ScrollHeight: Integer;  // ClientHeight-FixedHeight
       VisibleGrid: TRect;     // Visible non fixed rectagle of cells
       MaxClientXY: Tpoint;    // VisibleGrid.BottomRight (pixel) coordinates
-      ValidGridX: boolean;    // true if there are not fixed columns to show
-      ValidGridY: boolean;    // true if there are not fixed rows to show
+      ValidRows: boolean;    // true if there are not fixed columns to show
+      ValidCols: boolean;    // true if there are not fixed rows to show
       ValidGrid: boolean;     // true if there are not fixed cells to show
       AccumWidth: TList;       // Accumulated width per column
       AccumHeight: TList;     // Accumulated Height per row
@@ -481,6 +483,7 @@ type
     FAlternateColor: TColor;
     FAutoAdvance: TAutoAdvance;
     FAutoFillColumns: boolean;
+    FBorderColor: TColor;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
     FEditorHidingCount: Integer;
@@ -536,6 +539,7 @@ type
     FUpdatingAutoFillCols: boolean;
     FPrevLine: boolean;
     FPrevValue: Integer;
+    FGridBorderStyle: TBorderStyle;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -544,6 +548,7 @@ type
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
+    procedure SetBorderColor(const AValue: TColor);
     procedure SetColumns(const AValue: TGridColumns);
     procedure SetEditorOptions(const AValue: Integer);
     procedure SetEditorBorderStyle(const AValue: TBorderStyle);
@@ -572,6 +577,7 @@ type
     function  GetColWidths(Acol: Integer): Integer;
     function  GetColumns: TGridColumns;
     function  GetEditorBorderStyle: TBorderStyle;
+    function  GetBorderWidth: Integer;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
@@ -581,6 +587,7 @@ type
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
     procedure InternalAutoFillColumns;
+    function  InternalNeedBorder: boolean;
     procedure InternalSetColWidths(aCol,aValue: Integer);
     procedure InternalSetFixedCols(const AValue: Integer);
     procedure InternalUpdateColumnWidths;
@@ -623,9 +630,6 @@ type
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
-    {
-    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
-    }
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
@@ -720,6 +724,7 @@ type
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
     procedure InvalidateRow(ARow: Integer);
+    procedure InvalidateFocused;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
@@ -761,6 +766,7 @@ type
     procedure UnLockEditor;
     procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
+    procedure UpdateBorderStyle;
     procedure VisualChange; virtual;
     //procedure ValidateCols(FromCol, ToCol: Integer);
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
@@ -773,11 +779,12 @@ type
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
     property BorderStyle default bsSingle;
+    property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default 64;
+    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default 20;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
@@ -914,6 +921,7 @@ type
 
     procedure DefaultDrawCell(aCol,aRow: Integer; var aRect: TRect; aState:TGridDrawState); virtual;
     // properties
+    property BorderColor;
     property Canvas;
     property Col;
     property ColWidths;
@@ -1494,7 +1502,7 @@ begin
     end else
       ForcedIndex := -1;
 
-    AvailableSize := Width {ClientWidth} - FixedSizeWidth - Integer(BorderStyle);
+    AvailableSize := Width {ClientWidth} - FixedSizeWidth - GetBorderWidth;
     if AvailableSize<0 then begin
       // There is no space available to fill with
       // Variable Size Columns, what to do?
@@ -1506,8 +1514,6 @@ begin
         GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
         if aPriority>0 then
           SetColumnWidth(i, 0);
-          //SetColWidths(i,0);
-          //SetRawColWidths(i,0);
       end;
     end else begin
       // Simpler case: There is actually available space to
@@ -1519,11 +1525,8 @@ begin
         if (APriority>0) or (i=ForcedIndex) then
           if i=ColCount-1 then
             // the last column gets all space left
-            //SetColWidths(i, AvailableSize + FixedSizeWidth)
             SetColumnWidth(i, AvailableSize + FixedSizeWidth)
           else
-            //SetColWidths(i, AvailableSize)
-            //SetRawColWidths(i, AvailableSize);
             SetColumnWidth(i, AvailableSize);
       end;
     end;
@@ -1532,15 +1535,24 @@ begin
   end;
 end;
 
+function TCustomGrid.InternalNeedBorder: boolean;
+begin
+  {$IFDEF WIN32}
+  result := FFlat and (FGridBorderStyle = bsSingle);
+  {$ELSE}
+  result := FGridBorderStyle = bsSingle;
+  {$ENDIF}
+end;
+
 procedure TCustomGrid.InternalSetColCount(ACount: Integer);
 var
   OldC: Integer;
 begin
-  if ACount=FCols.Count then Exit;
+  OldC := FCols.Count;
+  if ACount=OldC then Exit;
   if ACount<1 then
     Clear
   else begin
-    OldC:=FCols.Count;
     CheckFixedCount(ACount, RowCount, FFixedCols, FFixedRows);
     CheckCount(ACount, RowCount);
     AdjustCount(True, OldC, ACount);
@@ -1795,7 +1807,8 @@ begin
       if RowCount=0 then begin
         FFixedRows:=0;
         FTopLeft.Y:=0;
-        AddDel(FRows, 1); FGCache.AccumHeight.Count:=1;
+        AddDel(FRows, 1);
+        FGCache.AccumHeight.Count:=1;
       end;
     end;
     SizeChanged(OldValue, OldCount);
@@ -1808,7 +1821,8 @@ begin
       if FCols.Count=0 then begin
         FFixedCols:=0;
         FTopLeft.X:=0;
-        AddDel(FCols, 1); FGCache.AccumWidth.Count:=1;
+        AddDel(FCols, 1);
+        FGCache.AccumWidth.Count:=1;
       end;
     end;
     SizeChanged(OldCount, OldValue);
@@ -1829,11 +1843,11 @@ procedure TCustomGrid.SetRowCount(Valor: Integer);
 var
   OldR: Integer;
 begin
-  if Valor=FRows.Count then Exit;
+  OldR := FRows.Count;
+  if Valor=OldR then Exit;
   if Valor<1 then
     clear
   else begin
-    OldR:=FRows.Count;
     CheckFixedCount(ColCount, Valor, FFixedCols, FFixedRows);
     CheckCount(ColCount, Valor);
     AdjustCount(False, OldR, Valor);
@@ -1860,7 +1874,8 @@ var
 begin
   if Valor=fDefRowHeight then Exit;
   FDefRowheight:=Valor;
-  for i:=0 to RowCount-1 do FRows[i] := Pointer(-1);
+  for i:=0 to RowCount-1 do
+    FRows[i] := Pointer(-1);
   VisualChange;
 end;
 
@@ -1923,7 +1938,6 @@ begin
     CacheVisibleGrid;
     Invalidate;
   end;
-  //UpdateScrollBarPos(nil);
   updateScrollBarPos(ssBoth);
 end;
 
@@ -2002,7 +2016,7 @@ var
       FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(i);
       if i<FixedCols then FGCache.FixedWidth:=FGCache.GridWidth;
       {$IfDef dbgVisualChange}
-      DebugLn('FGCache.AccumWidth[',i,']=',Integer(FGCache.AccumWidth[i]));
+      //DebugLn('FGCache.AccumWidth[',dbgs(i),']=',dbgs(Integer(FGCache.AccumWidth[i])));
       {$Endif}
     end;
     FGCache.Gridheight:=0;
@@ -2012,18 +2026,18 @@ var
       FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(i);
       if i<FixedRows then FGCache.FixedHeight:=FGCache.GridHeight;
       {$IfDef dbgVisualChange}
-      DebugLn('FGCache.AccumHeight[',i,']=',Integer(FGCache.AccumHeight[i]));
+      //DebugLn('FGCache.AccumHeight[',dbgs(i),']=',dbgs(Integer(FGCache.AccumHeight[i])));
       {$Endif}
     end;
   end;
-  procedure CalcScrollbarsVisiblity;
+  procedure CalcScrollbarsVisibility;
   begin
     Dh:=FGSMHBar;
     DV:=FGSMVBar;
     TW:=FGCache.GridWidth;
     TH:=FGCache.GridHeight;
-    FGCache.ClientWidth:= Width - Integer(BorderStyle);
-    FGCache.ClientHeight := Height - Integer(BorderStyle);
+    FGCache.ClientWidth:= Width - GetBorderWidth;
+    FGCache.ClientHeight := Height - GetBorderWidth;
     HsbRange:=Width - Dv;
     VsbRange:=Height - Dh;
 
@@ -2049,7 +2063,7 @@ var
       // Horizontal scrollbar
       if ScrollBarAutomatic(ssHorizontal) then begin
         if HSbVisible then begin
-          HsbRange:=GridWidth + 2 - Integer(BorderStyle){+ dv};
+          HsbRange:=GridWidth + 2 - GetBorderWidth;
           if not (goSmoothScroll in Options) then begin
             TW:= PtrInt(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
             HsbRange:=HsbRange + TW - FixedWidth + 1;
@@ -2060,7 +2074,7 @@ var
       // Vertical scrollbar
       if ScrollBarAutomatic(ssVertical)  then begin
         if VSbVisible then begin
-          VSbRange:= GridHeight + 2 - Integer(BorderStyle){ + dh};
+          VSbRange:= GridHeight + 2 - GetBorderWidth;
           if not (goSmoothScroll in Options) then begin
             TH:= PtrInt(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
             VsbRange:=VsbRange + TH -FixedHeight + 1;
@@ -2075,10 +2089,8 @@ begin
 
   if AutoFillColumns then
     InternalAutoFillColumns;
-
   CalcNewCachedSizes;
-
-  CalcScrollbarsVisiblity;
+  CalcScrollbarsVisibility;
 
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
@@ -2088,25 +2100,22 @@ begin
     FGCache.TLRowOff:=0;
   end;
   {$Ifdef DbgVisualChange}
-  DbgOut('Width=',IntTostr(Width));
-  DbgOut(' Height=',IntToStr(height));
-  DbgOut(' GWidth=',IntTostr(TW));
-  DbgOut(' GHeight=',IntToStr(TH));
-  DbgOut(' HsbRange=',IntToStr(HsbRange));
-  DbgOut(' VsbRange=',IntToStr(VSbRange));
-  DbgOut(' Vbar=',IntToStr(VSbVisible));
-  DebugLn(' HSb=',IntToStr(HsbVisible));
-  DbgOut('ClientWidth=', IntToStr(FGCAche.ClientWidth));
-  DebugLn(' ClientHeight=', IntToStr(FGCache.ClientHeight));
-  DebugLn('MaxTopLeft',Dbgs(FGCache.MaxTopLeft));
+  DbgOut('Width=',dbgs(Width));
+  DbgOut(' Height=',dbgs(height));
+  DbgOut(' GWidth=',dbgs(TW));
+  DbgOut(' GHeight=',dbgs(TH));
+  DbgOut(' HsbRange=',dbgs(HsbRange));
+  DbgOut(' VsbRange=',dbgs(VSbRange));
+  DbgOut(' Vbar=',dbgs(VSbVisible));
+  DebugLn(' Hbar=',dbgs(HsbVisible));
+  DbgOut('ClientWidth=',dbgs(FGCAche.ClientWidth));
+  DebugLn(' ClientHeight=',dbgs(FGCache.ClientHeight));
+  DebugLn('MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
-
   CacheVisibleGrid;
-
   CalcScrollbarsRange;
   UpdateVertScrollBar(VsbVisible, VsbRange, FGCache.ClientHeight);
   UpdateHorzScrollBar(HsbVisible, HsbRange, FGCache.ClientWidth);
-  //UpdateScrollBars;
   Invalidate;
 end;
 {
@@ -2412,11 +2421,14 @@ begin
     end else begin
       AColor := GetColumnColor(aCol, gdFixed in AState);
       if not (gdFixed in AState) and (FAlternateColor<>AColor) then  begin
+        if AColor=Color then begin
+          // column color = grid Color, Allow override color
         // 1. default color after fixed rows
         // 2. always use absolute alternate color based in odd & even row
         if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
            (not FAltColorStartNormal and Odd(ARow)) {(2)} then
             AColor := FAlternateColor;
+      end;
       end;
       Canvas.Brush.Color := AColor;
       SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
@@ -2443,8 +2455,8 @@ begin
     if ChkRow or ChkCol then begin
       CacheVisibleGrid;
       Invalidate;
-      if ChkCol then updateScrollBarPos(ssHorizontal);//UpdateScrollBarPos(HorzScrollBar);
-      if ChkRow then updateScrollBarPos(ssVertical);//UpdateScrolLBarPos(VertScrollBar);
+      if ChkCol then updateScrollBarPos(ssHorizontal);
+      if ChkRow then updateScrollBarPos(ssVertical);
     end;
   end;
 end;
@@ -2521,15 +2533,20 @@ procedure TCustomGrid.DrawBorder;
 var
   R: TRect;
 begin
-  if BorderStyle = bsSingle then begin
+  if InternalNeedBorder then begin
+    {$ifdef sbars}
+    R := Rect(0,0,Width-1,Height-1);
+    {$else}
     R := Rect(0,0,FGCache.ClientWidth, FGCache.Clientheight);
+    {$endif}
     with R, Canvas do begin
-      Pen.Color := cl3DDKShadow;
+      Pen.Color := fBorderColor;
       MoveTo(0,0);
       LineTo(0,Bottom);
       LineTo(Right, Bottom);
       LineTo(Right, 0);
       LineTo(0,0);
+      Pixels[Right, Bottom] := fBorderColor; // workaround
     end;
   end;
 end;
@@ -2743,14 +2760,14 @@ begin
   Cr:=Bounds(0,0, FGCache.ClientWidth, FGCache.ClientHeight);
   if P.x<Cr.Right then begin
     Cr.Left:=P.x;
-    Canvas.Brush.Color:=Color;
+    Canvas.Brush.Color:= Color;
     Canvas.FillRect(cr);
     Cr.Left:=0;
     Cr.Right:=p.x;
   end;
   if P.y<Cr.Bottom then begin
     Cr.Top:=p.y;
-    Canvas.Brush.Color:=Color;
+    Canvas.Brush.Color:= Color;
     Canvas.FillRect(cr);
   end;
 end;
@@ -2883,16 +2900,14 @@ end;
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
   C,TL,CTL: Integer;
-{$ifdef GoodClipping}
   R: TRect;
-{$endif}
 begin
 
   {$IfDef dbgScroll}
   DebugLn('HSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
-  if not HandleAllocated then
+  if not FGCache.ValidGrid or not HandleAllocated then
     exit;
 
   if FEditor<>nil then
@@ -2932,7 +2947,7 @@ begin
   DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
   {$Endif}
   ScrollBarPosition(SB_HORZ, C);
-  C:= C + FGCache.FixedWidth + Integer(BorderStyle);
+  C:= C + FGCache.FixedWidth + GetBorderWidth;
   {$Ifdef dbgScroll}
   DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
   {$Endif}
@@ -2955,28 +2970,22 @@ begin
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
-    {$IFDEF GoodClipping}
     R.Topleft:=Point(FGCache.FixedWidth, 0);
     R.BottomRight:= FGCache.MaxClientXY;
     InvalidateRect(Handle, @R, false);
-    {$ELSE}
-    Invalidate;
-    {$ENDIF}
   end;
 end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
   C, TL, CTL: Integer;
-  {$IFDEF GoodClipping}
   R: TRect;
-  {$ENDIF}
 begin
   {$IfDef dbgScroll}
   DebugLn('VSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
-  if not HandleAllocated then
+  if not FGCache.ValidGrid or not HandleAllocated then
     exit;
 
   if FEditor<>nil then
@@ -3014,7 +3023,7 @@ begin
   DebugLn('---- Position=',IntToStr(C), ' FixedHeight=',IntToStr(FGCache.FixedHeight));
   {$Endif}
   ScrollBarPosition(SB_VERT, C);
-  C:= C + FGCache.FixedHeight + Integer(BorderStyle);
+  C:= C + FGCache.FixedHeight + GetBorderWidth;
   {$Ifdef dbgScroll}
   DebugLn('---- NewPosition=',IntToStr(C));
   {$Endif}
@@ -3036,13 +3045,9 @@ begin
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
-    {$IFDEF GoodClipping}
     R.TopLeft:=Point(0, FGCache.FixedHeight);
     R.BottomRight:=FGCache.MaxClientXY;
     InvalidateRect(Handle, @R, false);
-    {$ELSE}
-    Invalidate;
-    {$ENDIF}
   end;
 end;
 
@@ -3056,6 +3061,7 @@ begin
   else
     DebugLn('ExternalWindow');
   {$endif}
+  inherited WMKillFocus(Message);
 end;
 
 procedure TCustomGrid.WMSetFocus(var message: TLMSetFocus);
@@ -3067,6 +3073,7 @@ begin
   else
     DebugLn('ExternalWindow');
   {$endif}
+  inherited WMSetFocus(Message);
 end;
 
 procedure TCustomGrid.WMChar(var message: TLMChar);
@@ -3290,6 +3297,14 @@ begin
     Result := FStringEditor.BorderStyle;
 end;
 
+function TCustomGrid.GetBorderWidth: Integer;
+begin
+  if InternalNeedBorder then
+    Result := 1
+  else
+    Result := 0
+end;
+
 function TCustomGrid.GetColumns: TGridColumns;
 begin
   result := FColumns;
@@ -3305,6 +3320,14 @@ begin
   FAutoFillColumns := AValue;
   if FAutoFillColumns then
     VisualChange;
+end;
+
+procedure TCustomGrid.SetBorderColor(const AValue: TColor);
+begin
+  if FBorderColor=AValue then exit;
+  FBorderColor:=AValue;
+  if BorderStyle<>bsNone then
+    Invalidate;
 end;
 
 procedure TCustomGrid.SetColumns(const AValue: TGridColumns);
@@ -3376,9 +3399,14 @@ begin
 end;
 
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
+var
+  Bs: TBorderStyle;
 begin
   if FFlat=AValue then exit;
   FFlat:=AValue;
+  if FGridBorderStyle=bsSingle then
+    UpdateBorderStyle
+  else
   Invalidate;
 end;
 
@@ -3412,15 +3440,9 @@ end;
 
 procedure TCustomGrid.SetBorderStyle(NewStyle: TBorderStyle);
 begin
-  if BorderStyle<>NewStyle then
-  begin
-    inherited;
-    if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
-    begin
-      VisualChange;
-      if CheckTopLeft(Col, Row, True, True) then
-        VisualChange;
-    end;
+  if FGridBorderStyle<>NewStyle then begin
+    FGridBorderStyle := NewStyle;
+    UpdateBorderStyle;
   end;
 end;
 
@@ -3430,9 +3452,9 @@ begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
     with VisibleGrid do begin
-      ValidGridX := (left>=0) and (Right>=Left) and (ColCount>0) and (RowCount>0);
-      ValidGridY := (top>=0) and (bottom>=Top) and (ColCount>0) and (RowCount>0);
-      ValidGrid := ValidGridX and ValidGridY;
+      ValidRows := (left>=0) and (Right>=Left) and (ColCount>0) and (RowCount>0);
+      ValidCols := (top>=0) and (bottom>=Top) and (ColCount>0) and (RowCount>0);
+      ValidGrid := ValidRows and ValidCols;
     end;
   end;
 end;
@@ -3645,7 +3667,7 @@ begin
   Index:=0;
   Rest:=0;
   Result := False;
-  Offset := Offset - Integer(BorderStyle);
+  Offset := Offset - GetBorderWidth;
   if Offset<0 then Exit; // Out of Range;
 
   with FGCache do
@@ -3653,9 +3675,9 @@ begin
     // begin to count Cols from 0 but ...
     if Fisical and (Offset>FixedWidth-1) then begin
       Index := FTopLeft.X;  // In scrolled view, then begin from FtopLeft col
-      if Index<ColCount then
+      if (Index>=0) and (Index<ColCount) then
         Offset:=Offset-FixedWidth+PtrInt(AccumWidth[Index])+TLColOff;
-      if (Index>=ColCount) or (Offset>GridWidth-1) then begin
+      if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
         Index := ColCount-1;
         exit;
       end;
@@ -3671,9 +3693,9 @@ begin
 
     if Fisical and (Offset>FixedHeight-1) then begin
       Index:=FTopLeft.Y;
-      if Index<RowCount then
+      if (Index>=0) and (Index<RowCount) then
         Offset:=Offset-FixedHeight+PtrInt(AccumHeight[Index])+TLRowOff;
-      if (Index>=RowCount) or (Offset>GridHeight-1) then begin
+      if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
         Index:=RowCount-1;
         Exit; // Out of Range
       end;
@@ -3705,7 +3727,7 @@ begin
       Ini:=PtrInt(AccumHeight[index]);
       Dim:= GetRowHeights(index);
     end;
-    Ini := Ini + Integer(BorderStyle);
+    Ini := Ini + GetBorderWidth;
     if not Fisical then begin
       Fin:=Ini + Dim;
       Exit;
@@ -3763,9 +3785,12 @@ begin
 end;
 
 function TCustomGrid.MouseToGridZone(X, Y: Integer): TGridZone;
+var
+  aBorderWidth: Integer;
 begin
-  if X<FGCache.FixedWidth+Integer(BorderStyle) then
-    if Y<FGcache.FixedHeight+Integer(BorderStyle) then
+  aBorderWidth := GetBorderWidth;
+  if X<FGCache.FixedWidth+aBorderWidth then
+    if Y<FGcache.FixedHeight+aBorderWidth then
       Result:=gzFixedCells
     else
       if RowCount>FixedRows then
@@ -3773,8 +3798,8 @@ begin
       else
         Result:=gzInvalid
   else
-  if Y<FGCache.FixedHeight+Integer(BorderStyle) then
-    if X<FGCache.FixedWidth+Integer(BorderStyle) then
+  if Y<FGCache.FixedHeight+aBorderWidth then
+    if X<FGCache.FixedWidth+aBorderWidth then
       Result:=gzFixedCells
     else
       if ColCount>FixedCols then
@@ -3960,6 +3985,11 @@ begin
       end;
     gzNormal:
       if not (csDesigning in componentState) then begin
+      
+        WasFocused := Focused;
+        if not WasFocused then
+          SetFocus;
+
         if FExtendedColSizing and
           (Cursor=crHSplit) and
           (goColSizing in Options) then begin
@@ -3972,10 +4002,6 @@ begin
           // normal selecting
           fGridState:=gsSelecting;
           FSplitter:=MouseToCell(Point(X,Y));
-
-          WasFocused := Focused;
-          if not WasFocused then
-            SetFocus;
 
           if not (goEditing in Options) or
             (ExtendedSelect and not EditorAlwaysShown) then begin
@@ -4042,10 +4068,12 @@ var
 begin
   inherited MouseUp(Button, Shift, X, Y);
   {$IfDef dbgGrid}DebugLn('MouseUP INIT');{$Endif}
+  
   Cur:=MouseToCell(Point(x,y));
   case fGridState of
     gsNormal:
-      CellClick(cur.x, cur.y);
+      if not FixedGrid then
+        CellClick(cur.x, cur.y);
 
     gsSelecting:
       begin
@@ -4275,7 +4303,8 @@ begin
     {$IfDef dbgGrid}DebugLn('DoExit - EditorShowing');{$Endif}
   end else begin
     {$IfDef dbgGrid}DebugLn('DoExit - Ext');{$Endif}
-    //Invalidate;
+    if not EditorAlwaysShown then
+      InvalidateFocused;
   end;
   inherited DoExit;
 end;
@@ -4291,7 +4320,8 @@ begin
       SelectEditor;
       if Feditor<>nil then
         EditorShow(true);
-    end;
+    end else
+      InvalidateFocused;
   end;
 end;
 
@@ -4538,6 +4568,17 @@ begin
   InvalidateRect(Handle, @R, True);
 end;
 
+procedure TCustomGrid.InvalidateFocused;
+begin
+  if FGCache.ValidGrid then begin
+    {$ifdef dbgGrid}DebugLn('InvalidateFocused');{$Endif}
+    if goRowSelect in Options then
+      InvalidateRow(Row)
+    else
+      InvalidateCell(Col,Row);
+  end;
+end;
+
 function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 var
   InvalidateAll: Boolean;
@@ -4682,6 +4723,10 @@ end;
 procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
   const aRange,aPage: Integer);
 begin
+  {$ifdef DbgScroll}
+  DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=',dbgs(aVisible),
+    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
+  {$endif}
   ScrollBarShow(SB_HORZ, aVisible);
   if aVisible then
     ScrollBarRange(SB_HORZ, aRange, aPage);
@@ -4690,9 +4735,30 @@ end;
 procedure TCustomGrid.UpdateVertScrollbar(const aVisible: boolean;
   const aRange,aPage: Integer);
 begin
+  {$ifdef DbgScroll}
+  DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=',dbgs(aVisible),
+    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
+  {$endif}
   ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
     ScrollbarRange(SB_VERT, aRange, aPage );
+end;
+
+procedure TCustomGrid.UpdateBorderStyle;
+var
+  ABorderStyle: TBorderStyle;
+begin
+  if not Flat and (FGridBorderStyle=bsSingle) then
+    ABorderStyle := bsSingle
+  else
+    ABorderStyle := bsNone;
+  inherited SetBorderStyle(ABorderStyle);
+  if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
+  begin
+    VisualChange;
+    if CheckTopLeft(Col, Row, True, True) then
+      VisualChange;
+  end;
 end;
 
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -4859,7 +4925,9 @@ end;
 
 procedure TCustomGrid.EditorShow(const SelAll: boolean);
 begin
-  if csDesigning in ComponentState then exit;
+  if csDesigning in ComponentState then
+    exit;
+    
   if not HandleAllocated then
     Exit;
 
@@ -5523,7 +5591,7 @@ begin
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
       DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', 20);
-      DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', 64);
+      DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
 
       Path:='grid/design/columns/';
       k:=cfg.getValue(Path+'columncount',0);
@@ -5614,7 +5682,6 @@ begin
   FGCache.AccumHeight:=TList.Create;
   FGSMHBar := GetSystemMetrics(SM_CYHSCROLL) + GetSystemMetricsGapSize(SM_CYHSCROLL);
   FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + GetSystemMetricsGapSize(SM_CXVSCROLL);
-  //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
 
   FColumns := CreateColumns;
@@ -5630,13 +5697,13 @@ begin
      goSmoothScroll ];
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
-  fDefColWidth:=64;//40;
+  fDefColWidth:=DEFCOLWIDTH;
   fDefRowHeight:=20;//18;
   fGridLineColor:=clSilver;//clGray;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
-  FSelectedColor:= clBlack;
+  FSelectedColor:= clHighlight;
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
   SetBounds(0,0,200,100);
@@ -5645,7 +5712,9 @@ begin
   FixedCols:=1;
   FixedRows:=1;
   Editor:=nil;
+  FBorderColor := cl3DDKShadow;
   BorderStyle := bsSingle;
+
 
   ParentColor := False;
   Color:=clWindow;
@@ -6133,31 +6202,25 @@ begin
 end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
-{.$ifdef FocusXOR}
 var
   DCIndex: Integer;
   FOldFocusColor: TColor;
-{.$endif}
 begin
   // Draw focused cell if we have the focus
   if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
   begin
     CalcFocusRect(aRect);
-    {.$ifdef FocusXOR}
     if FUseXORFeatures then begin
       DCIndex := SaveDC(Canvas.Handle);
       FOldFocusColor := FFocusColor;
       FFocusColor:= clWhite;
       Canvas.Pen.Mode := pmXOR;
     end;
-    {.$endif}
     DrawRubberRect(Canvas, aRect, FFocusColor);
-    {.$ifdef FocusXOR}
     if FUseXORFeatures then begin
       RestoreDC(Canvas.Handle, DCIndex);
       FFocusColor := FOldFocusColor;
     end;
-    {.$endif}
   end;
 end;
 
@@ -6259,14 +6322,13 @@ end;
 
 constructor TCustomDrawGrid.Create(AOwner: TComponent);
 begin
-  fGrid:=CreateVirtualGrid; //TVirtualGrid.Create;
+  fGrid:=CreateVirtualGrid;
   inherited Create(AOwner);
 end;
 
 destructor TCustomDrawGrid.Destroy;
 begin
   {$Ifdef dbg}DebugLn('TCustomDrawGrid.Destroy');{$Endif}
-  //DebugLn('Font.Name',Font.Name);
   FreeThenNil(FGrid);
   inherited Destroy;
 end;
@@ -6320,18 +6382,8 @@ begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
 
-  Inc(ARect.Top,3);
-  Dec(ARect.Bottom,3);
-  Inc(ARect.Left,3);
-  Dec(ARect.Right,3);
-
   if (goFixedRowNumbering in Options) and (FixedCols >= 1) and (aCol = 0) then
-    Canvas.TextRect(aRect,ARect.Left,ARect.Top, IntTostr(aRow));
-
-  Dec(ARect.Top,3);
-  Inc(ARect.Bottom,3);
-  Dec(ARect.Left,3);
-  Inc(ARect.Right,3);
+    Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, IntTostr(aRow));
 end;
 
 { TCustomStringGrid }
@@ -7316,9 +7368,11 @@ end;
 
 procedure TGridColumn.SetWidth(const AValue: Integer);
 begin
-  if FWidth = nil then
+  if FWidth = nil then begin
+    if AValue=GetDefaultWidth then
+      exit;
     New(FWidth)
-  else if FWidth^ = AVAlue then
+  end else if FWidth^ = AVAlue then
     exit;
   FWidth^ := AValue;
   FWidthChanged:=true;
@@ -7341,8 +7395,14 @@ begin
 end;
 
 function TGridColumn.GetDefaultWidth: Integer;
+var
+  tmpGrid: TCustomGrid;
 begin
-  result := 64;
+  tmpGrid := Grid;
+  if tmpGrid<>nil then
+    result := tmpGrid.DefaultColWidth
+  else
+    result := DEFCOLWIDTH;
 end;
 
 function TGridColumn.GetDefaultMaxSize: Integer;
