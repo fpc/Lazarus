@@ -20,7 +20,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Major="1"/>
+    <Version Major="1" Release="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="semaphorgrids.pas"/>

@@ -5194,11 +5194,11 @@ begin
       end;
     SM_CXEDGE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXEDGE           ');
+        Result := 2;
       end;
     SM_CYEDGE:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYEDGE           ');
+        Result := 2;
       end;
     SM_CXFIXEDFRAME:
       begin

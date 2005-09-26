@@ -111,12 +111,19 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; override;
     procedure KeyPress(var Key: Char); override;
+    procedure LoadBase(tabella:TStringList; autoadjust:boolean);
+    procedure SaveBase(tabella:TStringList; addMarker:boolean);
+    procedure LoadFromString(StringName:string; autoadjust:boolean);
   public
     { Public declarations }
-    procedure LoadFromFileG(FileName:string;autoadjust:boolean);
+    procedure LoadFromFileG(FileName:string; autoadjust:boolean);
     procedure SaveToFileG(FileName:String;addMarker:boolean);
+    procedure SaveToString(var StringName:String; addMarker:boolean);
+    procedure AssignG(SG: TSemaphorGrid; autoadjust:boolean);
+    procedure AssignToG(SG: TSemaphorGrid; autoadjust:boolean);
     procedure AutoWidth;
     procedure AutoHeight;
+    procedure AutoFit;
     procedure ExportToExcel(FileName:string;SelfExt:boolean);
     procedure DeleteColumn(j:integer);
     procedure DeleteRow(i:integer);
@@ -151,7 +158,6 @@ procedure TSemaphorGrid.DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridD
 const dr=4;
 var Rect:TRect;
     MyStyle:TTextStyle;
-    OldBrushColor: TColor;
 begin
   PrepareCanvas(aCol,aRow,aState);
   Canvas.FillRect(aRect);
@@ -159,6 +165,11 @@ begin
 
   MyStyle:=Canvas.TextStyle;
   MyStyle.Alignment:=Alignment;
+  //text space
+  aRect.Left:=aRect.Left+dr;
+  aRect.Right:=aRect.Right-dr;
+  aRect.Bottom:=aRect.Bottom-dr;
+  aRect.Top:=aRect.Top+dr;
   Canvas.TextRect(aRect,aRect.Left, aRect.Top, Cells[aCol,aRow],MyStyle);
   if not Semaphor then
     exit;
@@ -274,17 +285,16 @@ begin
   end;
 end;
 
-procedure TSemaphorGrid.LoadFromFileG(FileName:string;autoadjust:boolean);
-var i,j:integer;
+procedure TSemaphorGrid.LoadBase(tabella:TStringList; autoadjust:boolean);
+var riga:TStringList;
     strtmp,strFirst:string;
-    tabella,riga:TStringList;
+    i,j:integer;
     strj:string;
 begin
-  tabella:=TStringList.Create;
   riga:=TStringList.Create;
-  tabella.LoadFromFile(Filename);
-
   strFirst:=tabella.Strings[0];
+  RowCount:=FixedRows+2;//to prevent grid exception
+  ColCount:=FixedCols+2;
   if pos(SemaphorMarker,strFirst)<>0 then begin
     Delete(strFirst,1,pos(CHSEP,strFirst));//delete marker+CHSEP
     j:=pos(CHSEP,strFirst)-1;
@@ -317,7 +327,7 @@ begin
       if ColCount<j+1 then
         ColCount:=j+1;
       Rows[i-1]:=riga;
-    end
+    end;
   end else begin
     RowCount:=FixedRows+1;
     ColCount:=FixedCols+1;
@@ -343,7 +353,6 @@ begin
       Rows[i]:=riga;
     end
   end;
-  tabella.Free;
   riga.Free;
 
   if autoadjust then
@@ -368,17 +377,15 @@ begin
   end;
 end;
 
-{ FileName: file to store data }
-procedure TSemaphorGrid.SaveToFileG(FileName:String;addMarker:boolean);
-var i,j:integer;
+procedure TSemaphorGrid.SaveBase(tabella:TStringList; addMarker:boolean);
+var riga:TStringList;
     strtmp:string;
-    tabella,riga:TStringList;
+    i,j:integer;
 begin
-  tabella:=TStringList.Create;
   riga:=TStringList.Create;
   if addMarker then begin
     strtmp:=SemaphorMarker+CHSEP+IntToStr(FixedCols)+CHSEP+IntToStr(FixedRows);//store n° fixed cols and rows
-    for j:=0 to ExWidths.Count-1 do //store the widths of hidden cols if any (and then the hidden cols)
+    for j:=0 to ExWidths.Count-1 do //store the widths of hided cols if any (and then the hided cols)
       strtmp:=strtmp+CHSEP+ExWidths.Strings[j];
     tabella.Add(strtmp);
   end;
@@ -389,9 +396,58 @@ begin
       strtmp:=strtmp+CHSEP+riga.Strings[j];
     tabella.Add(strtmp);
   end;
-  tabella.SaveToFile(FileName);
   riga.Free;
+end;
+
+procedure TSemaphorGrid.LoadFromFileG(FileName:string;autoadjust:boolean);
+var tabella:TStringList;
+begin
+  tabella:=TStringList.Create;
+  tabella.LoadFromFile(Filename);
+  LoadBase(tabella,autoadjust);
   tabella.Free;
+end;
+
+{ FileName: file to store data }
+procedure TSemaphorGrid.SaveToFileG(FileName:String;addMarker:boolean);
+var tabella:TStringList;
+begin
+  tabella:=TStringList.Create;
+  SaveBase(tabella,addMarker);
+  tabella.SaveToFile(FileName);
+  tabella.Free;
+end;
+
+procedure TSemaphorGrid.LoadFromString(StringName:string; autoadjust:boolean);
+var tabella:TStringList;
+begin
+  tabella:=TStringList.Create;
+  tabella.Text:=StringName;
+  LoadBase(tabella,autoadjust);
+  tabella.Free;
+end;
+
+procedure TSemaphorGrid.SaveToString(var StringName:String; addMarker:boolean);
+var tabella:TStringList;
+begin
+  tabella:=TStringList.Create;
+  SaveBase(tabella,addMarker);
+  StringName:=tabella.Text;
+  tabella.Free;
+end;
+
+procedure TSemaphorGrid.AssignG(SG: TSemaphorGrid; autoadjust:boolean);
+var strtmp:string;
+begin
+  SG.SaveToString(strtmp,true);
+  LoadFromString(strtmp, autoadjust);
+end;
+
+procedure TSemaphorGrid.AssignToG(SG: TSemaphorGrid; autoadjust:boolean);
+var strtmp:string;
+begin
+  SaveToString(strtmp,true);
+  SG.LoadFromString(strtmp, autoadjust);
 end;
 
 procedure TSemaphorGrid.AutoWidth;
@@ -399,7 +455,11 @@ var j,Wtmp:integer;
 begin
   Wtmp:=0;
   if BorderStyle=bsSingle then
+    {$IFDEF WIN32}
     Wtmp:=Wtmp+2*GetSystemMetrics(SM_CXFIXEDFRAME);
+    {$ELSE}
+    Wtmp:=Wtmp+2*1;//GetSystemMetrics(SM_CXFIXEDFRAME);
+    {$ENDIF}
   for j:=0 to ColCount-1 do
     Wtmp:=Wtmp+GridLineWidth+ColWidths[j];
   Wtmp:=Wtmp-2*GridLineWidth;
@@ -414,7 +474,11 @@ var i,Htmp:integer;
 begin
   Htmp:=0;
   if BorderStyle=bsSingle then
+    {$IFDEF WIN32}
     Htmp:=Htmp+2*GetSystemMetrics(SM_CYFIXEDFRAME);
+    {$ELSE}
+    Htmp:=Htmp+2*1;//GetSystemMetrics(SM_CYFIXEDFRAME);
+    {$ENDIF}
   for i:=0 to RowCount-1 do
     Htmp:=Htmp+GridLineWidth+RowHeights[i];
   Htmp:=Htmp-2*GridLineWidth;
@@ -422,6 +486,16 @@ begin
     Htmp:=Htmp+GetSystemMetrics(SM_CYVSCROLL);
   end;
   Height:=Htmp;
+end;
+
+procedure TSemaphorGrid.AutoFit;
+begin
+  AutoWidth;
+  AutoHeight;
+  if not ScrollBarIsVisible(SB_Vert) then
+    AutoWidth;
+  if not ScrollBarIsVisible(SB_Horz) then
+    AutoHeight;
 end;
 
 { FileName: file to export data; SelfExt: if true SemaphorGrid change the file
@@ -450,7 +524,6 @@ function TSemaphorGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
 var
   S1,S2: String;
   V1,V2: Extended;
-  D1,D2: TDate;
 begin
   case FSortType of
     tsAlphabetic:

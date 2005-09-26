@@ -873,6 +873,10 @@ end;
 function TWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := 0;
+  case nIndex of
+  SM_CXEDGE: Result:=2;
+  SM_CYEDGE: Result:=2;
+  end;
 end;
 
 function TWidgetSet.GetSystemPaletteEntries(DC: HDC;

@@ -38,6 +38,9 @@ type
     Button10: TButton;
     Button11: TButton;
     Button12: TButton;
+    Button13: TButton;
+    Button14: TButton;
+    Button15: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -49,15 +52,19 @@ type
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     OpenDialog1: TOpenDialog;
-    Panel1: TPanel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     SaveDialog1: TSaveDialog;
     SemaphorGrid1: TSemaphorGrid;
+    SemaphorGrid2: TSemaphorGrid;
+    SemaphorGrid3: TSemaphorGrid;
     ToggleBox1: TToggleBox;
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -109,6 +116,28 @@ begin
     TD:=TDirection(RadioButton1.Checked);
     SemaphorGrid1.SortFromColumn(1,tsAutomatic,TD,false);
   end;
+end;
+
+procedure TForm1.Button13Click(Sender: TObject);
+begin
+  SemaphorGrid1.AutoFit;
+end;
+
+procedure TForm1.Button14Click(Sender: TObject);
+begin
+  SemaphorGrid1.AssignToG(SemaphorGrid2,false);
+  SemaphorGrid3.AssignG(SemaphorGrid2,true);
+end;
+
+procedure TForm1.Button15Click(Sender: TObject);
+var strtmp:string;
+    oldCHSEP:char;
+begin
+  oldCHSEP:=SemaphorGrid1.CHSEP;
+  SemaphorGrid1.CHSEP:=#32;
+  SemaphorGrid1.SaveToString(strtmp,false);
+  ShowMessage(strtmp);
+  SemaphorGrid1.CHSEP:=oldCHSEP;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
