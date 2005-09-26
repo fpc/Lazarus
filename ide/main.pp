@@ -1752,14 +1752,14 @@ end;
 
 procedure TMainIDE.SetRecentFilesMenu;
 begin
-  SetRecentSubMenu(MainIDEBar.itmFileRecentOpen,
+  SetRecentSubMenu(itmFileRecentOpen,
                    EnvironmentOptions.RecentOpenFiles,
                    @mnuOpenRecentClicked);
 end;
 
 procedure TMainIDE.SetRecentProjectFilesMenu;
 begin
-  SetRecentSubMenu(MainIDEBar.itmProjectRecentOpen,
+  SetRecentSubMenu(itmProjectRecentOpen,
                    EnvironmentOptions.RecentProjectFiles,
                    @mnuOpenProjectClicked);
 end;
@@ -3133,7 +3133,7 @@ var
   Index: integer;
 begin
   if not (Sender is TIDEMenuItem) then exit;
-  Index:=MainIDEBar.itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
+  Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
   if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
   DoRunExternalTool(Index);
 end;
@@ -7780,7 +7780,7 @@ var
   var
     Section: TIDEMenuSection;
   begin
-    Section:=MainIDEBar.itmCustomTools;
+    Section:=itmCustomTools;
     // add enough menuitems
     while Section.Count-1<ToolCount do
       RegisterIDEMenuCommand(Section.GetPath,
@@ -7798,8 +7798,8 @@ var
   begin
     i:=1;
     Index:=0;
-    while (i<MainIDEBar.itmCustomTools.Count) do begin
-      CurMenuItem:=MainIDEBar.itmCustomTools[i];
+    while (i<itmCustomTools.Count) do begin
+      CurMenuItem:=itmCustomTools[i];
       ExtTool:=EnvironmentOptions.ExternalTools[Index];
       CurMenuItem.Caption:=ExtTool.Title;
       if CurMenuItem is TIDEMenuCommand then

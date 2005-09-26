@@ -262,6 +262,93 @@ type
 
 var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
+
+  // IDE MainMenu
+  mnuMain: TIDEMenuSection;
+
+    // file menu
+    mnuFile: TIDEMenuSection;
+      itmFileNew: TIDEMenuSection;
+      itmFileOpenSave: TIDEMenuSection;
+        itmFileRecentOpen: TIDEMenuSection;
+      itmFileDirectories: TIDEMenuSection;
+      itmFileIDEStart: TIDEMenuSection;
+
+    // edit menu
+    mnuEdit: TIDEMenuSection;
+      itmEditReUndo: TIDEMenuSection;
+      itmEditClipboard: TIDEMenuSection;
+      itmEditBlockIndentation: TIDEMenuSection;
+      itmEditBlockCharConversion: TIDEMenuSection;
+      itmEditSelect: TIDEMenuSection;
+      itmEditInsertions: TIDEMenuSection;
+        itmEditInsertText: TIDEMenuSection;
+          itmEditInsertCVSKeyWord: TIDEMenuSection;
+          itmEditInsertGeneral: TIDEMenuSection;
+      itmEditMenuCodeTools: TIDEMenuSection;
+
+    // search menu
+    mnuSearch: TIDEMenuSection;
+      itmSearchFindReplace: TIDEMenuSection;
+      itmJumpings: TIDEMenuSection;
+      itmBookmarks: TIDEMenuSection;
+      itmCodeToolSearches: TIDEMenuSection;
+
+    // view menu
+    mnuView: TIDEMenuSection;
+      itmViewMainWindows: TIDEMenuSection;
+      itmViewUnitWindows: TIDEMenuSection;
+      itmViewSecondaryWindows: TIDEMenuSection;
+        itmViewDebugWindows: TIDEMenuSection;
+
+    // project menu
+    mnuProject: TIDEMenuSection;
+      itmProjectNewSection: TIDEMenuSection;
+      itmProjectOpenSection: TIDEMenuSection;
+        itmProjectRecentOpen: TIDEMenuSection;
+      itmProjectSaveSection: TIDEMenuSection;
+      itmProjectWindowSection: TIDEMenuSection;
+      itmProjectAddRemoveSection: TIDEMenuSection;
+      {$IFDEF TRANSLATESTRING}
+      itmProjectPoFileSection: TIDEMenuSection;
+      {$ENDIF}
+
+    // run menu
+    mnuRun: TIDEMenuSection;
+      itmRunBuilding: TIDEMenuSection;
+      itmRunnning: TIDEMenuSection;
+      itmRunBuildingFile: TIDEMenuSection;
+      itmRunDebugging: TIDEMenuSection;
+        itmRunMenuAddBreakpoint: TIDEMenuSection;
+
+    // components menu
+    mnuComponents: TIDEMenuSection;
+      itmPkgOpening: TIDEMenuSection;
+        itmPkgOpenRecent: TIDEMenuSection;
+      itmPkgUnits: TIDEMenuSection;
+      itmPkgGraphSection: TIDEMenuSection;
+
+    // tools menu
+    mnuTools: TIDEMenuSection;
+      itmCustomTools: TIDEMenuSection;
+      itmCodeToolChecks: TIDEMenuSection;
+      itmSecondaryTools: TIDEMenuSection;
+      itmDelphiConversion: TIDEMenuSection;
+      itmBuildingLazarus: TIDEMenuSection;
+
+    // environment menu
+    mnuEnvironment: TIDEMenuSection;
+      itmOptionsDialogs: TIDEMenuSection;
+      itmIDECacheSection: TIDEMenuSection;
+
+    // windows menu
+    mnuWindows: TIDEMenuSection;
+
+    // help menu
+    mnuHelp: TIDEMenuSection;
+      itmOnlineHelps: TIDEMenuSection;
+      itmInfoHelps: TIDEMenuSection;
+
   // Source Editor: Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection;
   // Source Editor: First dynamic section for often used context sensitive stuff
@@ -287,8 +374,10 @@ var
   // Source Editor: Refactor submenu
   SrcEditSubMenuRefactor: TIDEMenuSection;
 
+  // Messages window popupmenu
   MessagesMenuRoot: TIDEMenuSection;
 
+  // CodeExplorer window popupmenu
   CodeExplorerMenuRoot: TIDEMenuSection;
 
 

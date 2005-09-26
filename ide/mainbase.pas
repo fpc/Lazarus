@@ -307,7 +307,7 @@ end;
 procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
   const MenuItemName, MenuItemCaption: String);
 begin
-  Section:=RegisterIDESubMenu(MainIDEBar.mnuMain.GetPath,MenuItemName,
+  Section:=RegisterIDESubMenu(mnuMain.GetPath,MenuItemName,
                               MenuItemCaption);
 end;
 
@@ -1303,18 +1303,18 @@ begin
   end;
   // create menuitems
   for i:=0 to WindowsList.Count-1 do begin
-    if MainIDEBar.mnuWindows.Count>i then
-      CurMenuItem:=MainIDEBar.mnuWindows.Items[i]
+    if mnuWindows.Count>i then
+      CurMenuItem:=mnuWindows.Items[i]
     else begin
-      CurMenuItem:=RegisterIDEMenuCommand(MainIDEBar.mnuWindows.GetPath,
+      CurMenuItem:=RegisterIDEMenuCommand(mnuWindows.GetPath,
                                           'Window'+IntToStr(i),'');
       CurMenuItem.OnClick:=@mnuWindowsItemClick;
     end;
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
   end;
   // remove unused menuitems
-  while MainIDEBar.mnuWindows.Count>WindowsList.Count do
-    MainIDEBar.mnuWindows.Items[MainIDEBar.mnuWindows.Count-1].Free;
+  while mnuWindows.Count>WindowsList.Count do
+    mnuWindows.Items[mnuWindows.Count-1].Free;
   // clean up
   WindowsList.Free;
 end;

@@ -2156,7 +2156,7 @@ end;
 
 procedure TPkgManager.SetRecentPackagesMenu;
 begin
-  MainIDE.SetRecentSubMenu(MainIDEBar.itmPkgOpenRecent,
+  MainIDE.SetRecentSubMenu(itmPkgOpenRecent,
      EnvironmentOptions.RecentPackageFiles,@MainIDEitmOpenRecentPackageClicked);
 end;
 
