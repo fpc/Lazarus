@@ -553,8 +553,8 @@ end;
 function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope
   ): boolean;
 begin
-  if Scope=nil then
-    Result:=(AScope=nil) or (AScope.HasIDEWindowClass(nil))
+  if (Scope=nil) or (AScope=nil) then
+    Result:=true
   else
     Result:=Scope.Intersects(AScope);
 end;
@@ -644,12 +644,15 @@ end;
 function TIDECommandScope.Intersects(AScope: TIDECommandScope): boolean;
 var
   i: Integer;
+  CurClass: TCustomFormClass;
 begin
   if AScope=nil then
-    Result:=FIDEWindowClasses.IndexOf(nil)>=0
+    Result:=true
   else begin
     for i:=0 to FIDEWindowClasses.Count-1 do begin
-      if AScope.FIDEWindowClasses.IndexOf(FIDEWindowClasses[i])>=0 then
+      CurClass:=TCustomFormClass(FIDEWindowClasses[i]);
+      if (CurClass=nil)
+      or (AScope.FIDEWindowClasses.IndexOf(FIDEWindowClasses[i])>=0) then
         exit(true);
     end;
     Result:=false;

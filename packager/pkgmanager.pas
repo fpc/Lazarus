@@ -567,9 +567,14 @@ var
   NewOutDir: String;
 begin
   if DirectoryIsWritableCached(AnOutDirectory) then exit;
+
+  ForceDirectory(AnOutDirectory);
+  if DirectoryIsWritableCached(AnOutDirectory) then exit;
+  //debugln('TPkgManager.GetWritablePkgOutputDirectory AnOutDirectory=',AnOutDirectory,' ',dbgs(DirectoryIsWritable(AnOutDirectory)));
+  
   // output directory is not writable
   // -> redirect to home directory
-  NewOutDir:=SetDirSeparators('/$(TargetCPU)/$(TargetOS)');
+  NewOutDir:=SetDirSeparators('/$(TargetCPU)-$(TargetOS)');
   MainIDE.MacroList.SubstituteStr(NewOutDir);
   NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
                           +APackage.Name+NewOutDir);
@@ -689,11 +694,17 @@ function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
   APackage: TLazPackage; CompileClean, CompileRequired: boolean): TModalResult;
 var
   Flags: TPkgCompileFlags;
+  Globals: TGlobalCompilerOptions;
 begin
   Flags:=[];
   if CompileClean then Include(Flags,pcfCleanCompile);
   if CompileRequired then Include(Flags,pcfCompileDependenciesClean);
-  Result:=DoCompilePackage(APackage,Flags,nil);
+  if Project1<>nil then
+    Globals:=Project1.CompilerOptions.Globals
+  else
+    Globals:=nil;
+  //debugln('TPkgManager.OnPackageEditorCompilePackage OS=',Globals.TargetOS);
+  Result:=DoCompilePackage(APackage,Flags,Globals);
 end;
 
 function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;

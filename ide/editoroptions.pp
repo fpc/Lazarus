@@ -214,17 +214,17 @@ type
     function ReadPascalColorScheme: string;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: string);
     procedure GetDefaultsForPascalAttribute(Attr: TSynHighlightElement;
-      const SynColorScheme: string);
+                                            const SynColorScheme: string);
     procedure ReadHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string); 
     procedure ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
-      SynColorScheme: string; DefaultPascalSyn: TPreviewPasSyn);
+                      SynColorScheme: string; DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string);
     procedure GetSpecialLineColors(Syn: TCustomSyn; 
-      AddHilightAttr: TAdditionalHilightAttribute; var Special: boolean;
-      var FG, BG: TColor);
+                                   AddHilightAttr: TAdditionalHilightAttribute;
+                                   var Special: boolean; var FG, BG: TColor);
   published
     // general options
-    property SynEditOptions:TSynEditorOptions read fSynEditOptions
+    property SynEditOptions: TSynEditorOptions read fSynEditOptions
                             write fSynEditOptions default SynEditDefaultOptions;
     property CtrlMouseLinks: boolean read fCtrlMouseLinks write fCtrlMouseLinks;
     property ShowTabCloseButtons: boolean read fShowTabCloseButtons
@@ -233,31 +233,31 @@ type
                                     write fUndoAfterSave default true;
     property FindTextAtCursor: boolean read fFindTextAtCursor
                                        write fFindTextAtCursor default true;
-    property UseSyntaxHighlight:boolean
+    property UseSyntaxHighlight: boolean
                 read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
     property CopyWordAtCursorOnCopyNone: boolean read FCopyWordAtCursorOnCopyNone
                                               write FCopyWordAtCursorOnCopyNone;
     property ShowGutterHints: boolean read FShowGutterHints write FShowGutterHints;
-    property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
-    property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
-    property TabWidth:integer read fTabWidth write fTabWidth default 8;
+    property BlockIndent: integer read fBlockIndent write fBlockIndent default 2;
+    property UndoLimit: integer read fUndoLimit write fUndoLimit default 32767;
+    property TabWidth: integer read fTabWidth write fTabWidth default 8;
 
     // Display options
-    property VisibleRightMargin:boolean
-        read fVisibleRightMargin write fVisibleRightMargin default true;
-    property VisibleGutter:boolean
-        read fVisibleGutter write fVisibleGutter default true;
-    property ShowLineNumbers:boolean
-        read fShowLineNumbers write fShowLineNumbers default false;
-    property GutterColor:TColor read fGutterColor write fGutterColor default clBtnFace;
-    property GutterWidth:integer read fGutterWidth write fGutterWidth default 30;
-    property RightMargin:integer read fRightMargin write fRightMargin default 80;
-    property RightMarginColor:integer 
-        read fRightMarginColor write fRightMarginColor default clBtnFace;
-    property EditorFont:Ansistring read fEditorFont write fEditorFont;
-    property EditorFontHeight:integer read fEditorFontHeight write FEditorFontHeight;
-    property ExtraLineSpacing:integer
-        read fExtraLineSpacing write fExtraLineSpacing default 0;
+    property VisibleRightMargin: boolean read fVisibleRightMargin
+                                         write fVisibleRightMargin default true;
+    property VisibleGutter: boolean read fVisibleGutter
+                                    write fVisibleGutter default true;
+    property ShowLineNumbers: boolean read fShowLineNumbers
+                                      write fShowLineNumbers default false;
+    property GutterColor: TColor read fGutterColor write fGutterColor default clBtnFace;
+    property GutterWidth: integer read fGutterWidth write fGutterWidth default 30;
+    property RightMargin: integer read fRightMargin write fRightMargin default 80;
+    property RightMarginColor: integer read fRightMarginColor
+                                       write fRightMarginColor default clBtnFace;
+    property EditorFont: string read fEditorFont write fEditorFont;
+    property EditorFontHeight: integer read fEditorFontHeight write FEditorFontHeight;
+    property ExtraLineSpacing: integer read fExtraLineSpacing
+                                       write fExtraLineSpacing default 0;
 
     // Key Mappings
     property KeyMappingScheme:Ansistring
@@ -378,48 +378,48 @@ type
     ColorPreview:TPreviewEditor;
 
     // Code Tools options
-    AutomaticFeaturesGroupBox:TGroupBox;
+    AutomaticFeaturesGroupBox: TGroupBox;
     AutoIdentifierCompletionCheckBox: TCheckBox;
     AutoCodeParametersCheckBox: TCheckBox;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
-    AutoDelayLabel:TLabel;
-    AutoDelayTrackBar:TTrackBar;
-    AutoDelayMinLabel:TLabel;
-    AutoDelayMaxLabel:TLabel;
+    AutoDelayLabel: TLabel;
+    AutoDelayTrackBar: TTrackBar;
+    AutoDelayMinLabel: TLabel;
+    AutoDelayMaxLabel: TLabel;
 
     // buttons at bottom
-    OkButton:TButton;
-    CancelButton:TButton;
+    OkButton: TButton;
+    CancelButton: TButton;
 
     // form
     procedure EditorOptionsFormResize(Sender: TObject);
 
     // general
     procedure GeneralCheckBoxOnClick(Sender: TObject);
-    procedure ComboBoxOnChange(Sender:TObject);
-    procedure ComboBoxOnExit(Sender:TObject);
+    procedure ComboBoxOnChange(Sender: TObject);
+    procedure ComboBoxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject;
                                 var Key: Word; Shift: TShiftState);
     procedure ColorButtonColorChanged(Sender:TObject);
 
     // display
     procedure FontDialogApplyClicked(Sender: TObject);
-    procedure EditorFontButtonClick(Sender:TObject);
+    procedure EditorFontButtonClick(Sender: TObject);
 
     // key mapping
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
-    procedure KeyMappingTreeViewMouseUp(Sender:TObject;
-       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
+    procedure KeyMappingTreeViewMouseUp(Sender: TObject;
+                       Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
     // color
     procedure ColorElementListBoxSelectionChange(Sender: TObject;
-       User: boolean);
+                                                 User: boolean);
     procedure ColorPreviewMouseUp(Sender:TObject;
-       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
+                       Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: integer;
-       var Special: boolean; var FG, BG: TColor);
+                                  var Special: boolean; var FG, BG: TColor);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
@@ -2808,7 +2808,7 @@ var Protocol:TStringList;
 begin
   Protocol:=TStringList.Create;
   try
-    ErrorCount:=KeyStrokesConsistencyErrors(EditingKeyMap,Protocol,Index1,Index2);
+    ErrorCount:=FindKeymapConflicts(EditingKeyMap,Protocol,Index1,Index2);
     if ErrorCount>0 then begin
       KeyMapErrorsForm:=TKeyMapErrorsForm.Create(nil);
       try

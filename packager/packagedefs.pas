@@ -2226,7 +2226,8 @@ begin
   if not (lpfDestroying in FFlags) then begin
     FFlags:=[lpfAutoIncrementVersionOnBuild];
     FAutoUpdate:=pupAsNeeded;
-    fCompilerOptions.UnitOutputDirectory:='lib'+PathDelim;
+    fCompilerOptions.UnitOutputDirectory:=
+                          'lib'+PathDelim+'$(TargetCPU)-$(Target_OS)'+PathDelim;
     FUsageOptions.UnitPath:='$(PkgOutDir)';
   end else begin
     FFlags:=[lpfDestroying];

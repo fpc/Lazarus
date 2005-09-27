@@ -284,7 +284,13 @@ type
   
   //---------------------------------------------------------------------------
   // class for storing the keys of a single command (key-command relationship)
+
+  { TKeyCommandRelation }
+
   TKeyCommandRelation = class(TIDECommand)
+  protected
+    procedure SetShortcutA(const AValue: TIDEShortCut); override;
+    procedure SetShortcutB(const AValue: TIDEShortCut); override;
   public
     function GetLocalizedName: string; override;
   end;
@@ -385,10 +391,10 @@ type
   end;
 
 function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): String;
-function KeyAndShiftStateToEditorKeyString(Key: TIDEShortCut): String;
+function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
-function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
+function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
@@ -577,7 +583,7 @@ begin
   ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToPrevError: SetResult(VK_F8,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
-  ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_O,[ssCtrl],VK_A,[]);
+  ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // marker
   ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1631,7 +1637,7 @@ begin
   end;
 end;
 
-function KeyStrokesConsistencyErrors(Keymap: TKeyCommandRelationList;
+function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 // 0 = ok, no errors
 // >0 number of errors found
@@ -1648,10 +1654,11 @@ var
 
   procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
   begin
-    if (ShortCut1.Key1<>VK_UNKNOWN)
-    and (ShortCut1.Key1=ShortCut2.Key1) and (ShortCut1.Shift1=ShortCut2.Shift1)
-    and (((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
-        or (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN))
+    if (ShortCut1.Key1=VK_UNKNOWN) then exit;
+    if (ShortCut1.Key1<>ShortCut2.Key1) or (ShortCut1.Shift1<>ShortCut2.Shift1)
+    then exit;
+    if ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
+        or (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
     then begin
       // conflict found
       if Result=0 then begin
@@ -1682,6 +1689,10 @@ begin
     Key1:=Keymap[a];
     for b:=a+1 to Keymap.Count-1 do begin
       Key2:=Keymap[b];
+      {if (Key2.Command=ecConfigBuildLazarus)
+      and (Key1.Command=ecFindNext) then begin
+        debugln('FindKeymapConflicts ',dbgs(Key1.Category.ScopeIntersects(Key2.Category.Scope)),' ',dbgsName(Key1.Category.Scope),' ',dbgsName(Key2.Category.Scope));
+      end;}
       if (not Key1.Category.ScopeIntersects(Key2.Category.Scope)) then
         continue;
       Check(Key1.ShortcutA,Key2.ShortcutA);
@@ -1807,7 +1818,7 @@ begin
   AddAttributesAndKey;
 end;
 
-function KeyAndShiftStateToEditorKeyString(Key:  TIDEShortCut): String;
+function KeyAndShiftStateToEditorKeyString(const Key:  TIDEShortCut): String;
 begin
   Result := KeyAndShiftStateToEditorKeyString(Key.Key1, Key.Shift1);
   if (Key.Key2<>VK_UNKNOWN) then
@@ -2195,6 +2206,24 @@ end;
 
 { TKeyCommandRelation }
 
+procedure TKeyCommandRelation.SetShortcutA(const AValue: TIDEShortCut);
+begin
+  inherited SetShortcutA(AValue);
+  {if Command=ecBlockIndent then begin
+    debugln('TKeyCommandRelation.SetShortcutA ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(ShortcutB));
+  end;}
+end;
+
+procedure TKeyCommandRelation.SetShortcutB(const AValue: TIDEShortCut);
+begin
+  inherited SetShortcutB(AValue);
+  {if Command=ecBlockIndent then begin
+    debugln('TKeyCommandRelation.SetShortcutB ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(ShortcutB));
+    if ShortcutB.Key2=VK_UNKNOWN then
+      RaiseGDBException('');
+  end;}
+end;
+
 function TKeyCommandRelation.GetLocalizedName: string;
 begin
   Result:=EditorCommandLocalizedName(Command,Name);
@@ -2572,6 +2601,9 @@ var
   TheKeyA, TheKeyB: TIDEShortCut;
 begin
   GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+  {if Command=ecBlockIndent then begin
+    debugln('TKeyCommandRelationList.AddDefault A ',KeyAndShiftStateToEditorKeyString(TheKeyA),' ',KeyAndShiftStateToEditorKeyString(TheKeyB));
+  end;}
   Result:=Add(Category,Name,Command,TheKeyA,TheKeyB);
 end;
 
@@ -2612,7 +2644,7 @@ function TKeyCommandRelationList.LoadFromXMLConfig(
   XMLConfig:TXMLConfig; const Prefix: String):boolean;
 var a,b,p:integer;
   Name:ShortString;
-  DefaultStr,NewValue: String;
+  NewValue: String;
 
   function ReadNextInt:integer;
   begin
@@ -2655,39 +2687,39 @@ begin
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
     GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
-    if FileVersion>2 then
-      DefaultStr:=KeyValuesToStr(TheKeyA, TheKeyB)
-    else
-      DefaultStr:=OldKeyValuesToStr(TheKeyA, TheKeyB);
-    //if Relations[a].Command=ecCopy then debugln('  DefaultStr=',DefaultStr);
 
     if FileVersion<2 then
-      NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr)
+      NewValue:=XMLConfig.GetValue(Prefix+Name,'')
     else
-      NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
-    //if Relations[a].Command=ecCopy then debugln('  NewValue=',NewValue);
+      NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value','');
+    //if Relations[a].Command=ecBlockIndent then debugln('  NewValue=',NewValue);
+    if NewValue='' then begin
+      Relations[a].ShortcutA:=TheKeyA;
+      Relations[a].ShortcutB:=TheKeyB;
+    end else begin
+      p:=1;
+      Key1:=word(ReadNextInt);
+      Shift1:=IntToShiftState(ReadNextInt);
+      if FileVersion>2 then begin
+        Key2:=word(ReadNextInt);
+        Shift2:=IntToShiftState(ReadNextInt);
+      end else begin
+        Key2:=VK_UNKNOWN;
+        Shift2:=[];
+      end;
+      Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
 
-    p:=1;
-    Key1:=word(ReadNextInt);
-    Shift1:=IntToShiftState(ReadNextInt);
-    if FileVersion>2 then begin
-      Key2:=word(ReadNextInt);
-      Shift2:=IntToShiftState(ReadNextInt);
-    end else begin
-      Key2:=0;
-      Shift2:=[];
+      Key1:=word(ReadNextInt);
+      Shift1:=IntToShiftState(ReadNextInt);
+      if FileVersion>2 then begin
+        Key2:=word(ReadNextInt);
+        Shift2:=IntToShiftState(ReadNextInt);
+      end else begin
+        Key2:=VK_UNKNOWN;
+        Shift2:=[];
+      end;
+      Relations[a].ShortcutB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
     end;
-    Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
-    Key1:=word(ReadNextInt);
-    Shift1:=IntToShiftState(ReadNextInt);
-    if FileVersion>2 then begin
-      Key2:=word(ReadNextInt);
-      Shift2:=IntToShiftState(ReadNextInt);
-    end else begin
-      Key2:=0;
-      Shift2:=[];
-    end;
-    Relations[a].ShortcutB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
   end;
   Result:=true;
 end;
