@@ -202,18 +202,21 @@ procedure TControlScrollBar.AutoCalcRange;
 
   procedure AutoCalcHRange;
   var
-    I : Integer;
+    i: Integer;
     TmpRange : Longint;
-    IncludeControl : Boolean;
+    c: TControl;
   begin
     TmpRange := 0;
-    For I := 0 to FControl.ControlCount - 1 do
-      With FControl.Controls[I] do
-        if Visible then begin
-          IncludeControl := (Align = alLeft) or (Align = alNone);
-          If IncludeControl then
-            TmpRange := Max(TmpRange, Left + Width);
-        end;
+    for i := 0 to FControl.ControlCount - 1 do
+    begin
+      c := FControl.Controls[I];
+      if not C.Visible then Continue;
+      if (c.Align <> alLeft) and (c.Align <> alNone) then Continue;
+      
+      TmpRange := Max(TmpRange, c.Left + c.Width);
+      if c.Left < 0
+      then DebugLn('Child.Left = %d, Control.Left = %d', [c.Left, FControl.Left]);
+    end;
     Range := TmpRange;
   end;
 
