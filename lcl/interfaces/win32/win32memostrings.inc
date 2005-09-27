@@ -116,7 +116,7 @@ LineStart,
 LineEnd: Integer;
 begin
  LineStart := GetLineStart(Index);
- LineEnd := GetLineStart(Index+1)- Length(LineEnding);
+ LineEnd := GetLineStart(Index+1);
  if LineEnd < 0 then LineEnd := LineStart+GetLineLength(Index);
  SendMessage(fHandle, EM_SETSEL, LineStart, LineEnd);
  SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar('')));
