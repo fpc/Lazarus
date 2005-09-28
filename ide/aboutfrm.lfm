@@ -1,5 +1,5 @@
 object AboutForm: TAboutForm
-  ActiveControl = CloseButton
+  ActiveControl = AboutPage
   Caption = 'About Lazarus'
   ClientHeight = 270
   ClientWidth = 608
@@ -14,7 +14,6 @@ object AboutForm: TAboutForm
   Width = 608
   object VersionLabel: TLabel
     Alignment = taCenter
-    BorderSpacing.OnChange = nil
     Caption = 'Version #:'
     ParentColor = True
     Left = 14
@@ -24,7 +23,6 @@ object AboutForm: TAboutForm
   end
   object BuildDateLabel: TLabel
     Alignment = taCenter
-    BorderSpacing.OnChange = nil
     Caption = 'Date:'
     ParentColor = True
     Left = 14
@@ -33,6 +31,7 @@ object AboutForm: TAboutForm
     Width = 27
   end
   object RevisionLabel: TLabel
+    BorderSpacing.OnChange = nil
     Caption = 'RevisionLabel'
     Color = clNone
     Left = 14
@@ -41,7 +40,7 @@ object AboutForm: TAboutForm
     Width = 65
   end
   object CloseButton: TBitBtn
-    BorderSpacing.OnChange = nil
+    AutoSize = True
     Cancel = True
     Caption = 'Close'
     Glyph.Data = {
@@ -73,13 +72,12 @@ object AboutForm: TAboutForm
     ModalResult = 1
     TabOrder = 1
     Left = 70
-    Height = 25
+    Height = 36
     Top = 225
-    Width = 75
+    Width = 73
   end
   object Notebook1: TNotebook
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     PageIndex = 0
     Left = 215
     Height = 261
@@ -93,7 +91,6 @@ object AboutForm: TAboutForm
       Width = 381
       object AboutMemo: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
@@ -105,11 +102,11 @@ object AboutForm: TAboutForm
       Caption = 'Contributors'
       ClientWidth = 381
       ClientHeight = 235
+      Visible = False
       Height = 235
       Width = 381
       object ContributorsMemo: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
