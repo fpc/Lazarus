@@ -1426,7 +1426,7 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                         AControlList: TList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
-    procedure ResizeDelayedAutoSizeChilds; virtual;
+    procedure ResizeDelayedAutoSizeChildren; virtual;
     function CanTab: Boolean; override;
     procedure DoDragMsg(var DragMsg: TCMDrag); override;
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
