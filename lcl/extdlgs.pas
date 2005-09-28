@@ -1187,11 +1187,11 @@ begin
   DF.Caption:=FDialogTitle;
   DF.Position:=poMainFormCenter;
   DF.BorderStyle:=bsDialog;
+  DF.AutoSize:=true;
 
   FCalendar:=TCalendar.Create(Self);
   with FCalendar do begin
     Parent:=DF;
-    DF.Width:=Width;
     Align:=alTop;
     DateTime:=Self.Date;
     DisplaySettings:=Self.DisplaySettings;
@@ -1205,8 +1205,7 @@ begin
     Parent:=DF;
     Caption:='';
     Height:=32;
-    DF.Height:=FCalendar.Height+Height;
-    Align:=alBottom;
+    AnchorToCompanion(akTop, 0, FCalendar);
     BevelOuter:=bvLowered;
   end;
 
