@@ -2276,7 +2276,7 @@ begin
     //either an Event or an enumeration or Boolean
     CurRow:=Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
-    if TypeKind in [tkEnumeration,tkBool] then begin
+    if TypeKind in [tkEnumeration,tkBool, tkSet] then begin
       // set value to next value in list
       FillComboboxItems;
       if ValueComboBox.Items.Count = 0 then Exit;
