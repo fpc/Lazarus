@@ -292,15 +292,15 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
 var
-  x: Integer;
   w: Integer;
+  x: Integer;
 begin
-  x:=10;
-  w:=(ClientWidth-3*x) div 2;
-  with InstallPkgGroupBox do
-    SetBounds(x,Top,w,Height);
-  with AvailablePkgGroupBox do
-    SetBounds(x+w+x,Top,w,Height);
+  x := 6;
+  w := (ClientWidth - 3 * x) div 2;
+  InstallPkgGroupBox.SetBounds(x, x, w, Height - 48);
+  AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 48);
+
+  SaveAndRebuildButton.Left := (Width - SaveAndRebuildButton.Width) div 2 ;
 end;
 
 procedure TInstallPkgSetDialog.SaveAndExitButtonClick(Sender: TObject);

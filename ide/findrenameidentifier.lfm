@@ -1,10 +1,11 @@
 object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
+  BorderStyle = bsSizeToolWin
   Caption = 'FindRenameIdentifierDialog'
   ClientHeight = 435
   ClientWidth = 452
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 451
   VertScrollBar.Page = 434
@@ -13,81 +14,100 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   Top = 163
   Width = 452
   object CurrentGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = 'CurrentGroupBox'
-    ClientHeight = 55
-    ClientWidth = 434
+    ClientHeight = 56
+    ClientWidth = 436
     ParentColor = True
     TabOrder = 0
-    Left = 8
-    Height = 72
-    Top = 8
-    Width = 438
+    Left = 6
+    Height = 74
+    Top = 6
+    Width = 440
     object CurrentListBox: TListBox
       Align = alClient
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       ClickOnSelChange = False
       TabOrder = 0
-      TopIndex = -1
-      Height = 55
-      Width = 434
+      Left = 6
+      Height = 44
+      Top = 6
+      Width = 424
     end
   end
   object NewGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
+    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 36
-    ClientWidth = 434
+    ClientHeight = 58
+    ClientWidth = 436
     ParentColor = True
     TabOrder = 1
-    Left = 8
-    Height = 53
-    Top = 91
-    Width = 438
+    Left = 6
+    Height = 76
+    Top = 86
+    Width = 440
     object NewEdit: TEdit
-      Anchors = [akTop, akLeft, akRight]
+      Align = alTop
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'NewEdit'
       Left = 6
       Height = 23
       Top = 6
-      Width = 262
+      Width = 424
     end
     object RenameCheckBox: TCheckBox
+      Align = alTop
       AllowGrayed = True
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       Caption = 'RenameCheckBox'
       OnChange = RenameCheckBoxChange
       TabOrder = 1
       UseOnChange = True
-      Left = 276
-      Height = 23
-      Top = 6
-      Width = 151
+      Left = 6
+      Height = 13
+      Top = 35
+      Width = 424
     end
   end
   object ScopeGroupBox: TGroupBox
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
+    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 211
-    ClientWidth = 435
+    ClientHeight = 206
+    ClientWidth = 436
     ParentColor = True
     TabOrder = 2
-    Left = 8
-    Height = 228
-    Top = 156
-    Width = 439
+    Left = 6
+    Height = 224
+    Top = 168
+    Width = 440
     object ScopeCommentsCheckBox: TCheckBox
+      Align = alTop
       AllowGrayed = True
-      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       Caption = 'ScopeCommentsCheckBox'
       TabOrder = 0
       Left = 6
-      Height = 24
-      Top = 181
-      Width = 419
+      Height = 13
+      Top = 184
+      Width = 424
     end
     object ScopeRadioGroup: TRadioGroup
-      Anchors = [akTop, akLeft, akRight]
+      Align = alTop
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       Caption = 'ScopeRadioGroup'
       Items.Strings = (
         'in current unit'
@@ -98,46 +118,53 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ParentColor = True
       Left = 6
       Height = 112
-      Top = 5
-      Width = 419
+      Top = 6
+      Width = 424
     end
     object ExtraFilesGroupBox: TGroupBox
-      Anchors = [akTop, akLeft, akRight]
+      Align = alTop
+      BorderSpacing.OnChange = nil
+      BorderSpacing.Around = 6
       Caption = 'ExtraFilesGroupBox'
-      ClientHeight = 27
-      ClientWidth = 415
+      ClientHeight = 36
+      ClientWidth = 420
       ParentColor = True
       TabOrder = 2
       Left = 6
-      Height = 44
-      Top = 125
-      Width = 419
+      Height = 54
+      Top = 124
+      Width = 424
       object ExtraFilesEdit: TEdit
-        Anchors = [akTop, akLeft, akRight]
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
         TabOrder = 0
         Text = 'ExtraFilesEdit'
         Left = 6
         Height = 23
-        Width = 406
+        Top = 6
+        Width = 408
       end
     end
   end
   object FindOrRenameButton: TButton
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'FindOrRenameButton'
     OnClick = FindOrRenameButtonClick
     TabOrder = 3
-    Left = 90
+    Left = 120
     Height = 25
     Top = 400
     Width = 233
   end
   object CancelButton: TButton
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 4
-    Left = 338
+    Left = 357
     Height = 25
     Top = 400
     Width = 89

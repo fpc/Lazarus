@@ -126,7 +126,7 @@ begin
       Name:='WholeWordsOnlyCheckBox';
       Parent:=OptionsGroupBox;
       SetBounds(CaseSensitiveCheckBox.Left,
-           CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+5,
+           CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+2,
            CaseSensitiveCheckBox.Width,20);
       Caption:=lisFindFileWholeWordsOnly;
     end;
@@ -136,7 +136,7 @@ begin
       Name:='RegularExpressionsCheckBox';
       Parent:=OptionsGroupBox;
       SetBounds(CaseSensitiveCheckBox.Left,
-           WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+5,
+           WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+2,
            CaseSensitiveCheckBox.Width,20);
       Caption:=lisFindFileRegularExpressions;
     end;
@@ -267,19 +267,15 @@ begin
   end;
 
   with CaseSensitiveCheckBox do begin
-    SetBounds(8,2,OptionsGroupBox.ClientWidth-20,20);
+    Width:=OptionsGroupBox.ClientWidth;
   end;
 
   with WholeWordsOnlyCheckBox do begin
-    SetBounds(CaseSensitiveCheckBox.Left,
-         CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+5,
-         CaseSensitiveCheckBox.Width,20);
+    Width:=OptionsGroupBox.ClientWidth;
   end;
 
   with RegularExpressionsCheckBox do begin
-    SetBounds(CaseSensitiveCheckBox.Left,
-         WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+5,
-         CaseSensitiveCheckBox.Width,20);
+    Width:=OptionsGroupBox.ClientWidth;
   end;
 
   with WhereRadioGroup do begin
