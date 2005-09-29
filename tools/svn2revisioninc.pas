@@ -121,7 +121,7 @@ begin
   AssignFile(RevisionIncText, RevisionIncFileName);
   Rewrite(RevisionIncText);
   writeln(RevisionIncText, '// Created by Svn2RevisionInc');
-  writeln(RevisionIncText, 'const RevisionStr = ''', RevisionStr, '''');
+  writeln(RevisionIncText, 'const RevisionStr = ''', RevisionStr, ''';');
   CloseFile(RevisionIncText);
   writeln(format('Created %s for revision: %s',
     [RevisionIncFileName, RevisionStr]));
