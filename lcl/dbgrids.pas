@@ -818,10 +818,11 @@ begin
   // todo: Use a fast interface method to scroll a rectangular section of window
   //       if distance=+, Row[Distance] to Row[RowCount-2] UP
   //       if distance=-, Row[FixedRows+1] to Row[RowCount+Distance] DOWN
-  if Distance<>0 then
+  if Distance<>0 then begin
+    Row:= FixedRows + FDataLink.ActiveRecord;
     Invalidate
-  else
-  UpdateActive;
+  end else
+    UpdateActive;
 end;
 
 procedure TCustomDbGrid.OnUpdateData(aDataSet: TDataSet);
