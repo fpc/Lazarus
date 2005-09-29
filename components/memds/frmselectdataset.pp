@@ -134,7 +134,7 @@ begin
           DSN:=Items[ItemIndex];
         DS:=Nil;
         I:=0;
-        While (DS=Nil) and (I<F.ComponentCount-1) do
+        While (DS=Nil) and (I<F.ComponentCount) do
           if (F.Components[i] is TDataset) and
              (F.Components[i].Name=DSN) then
             DS:=F.Components[i] as TDataset
