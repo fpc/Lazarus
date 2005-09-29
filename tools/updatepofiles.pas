@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Name:
-       updatepofiles - creates an lazarus resource file from files
+       updatepofiles - updates po files.
 
   Synopsis:
        updatepofiles filename1.po [filename2.po ... filenameN.po]

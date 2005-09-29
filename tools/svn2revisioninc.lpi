@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <LazDoc Paths=""/>
+    <Units Count="11">
+      <Unit0>
+        <CursorPos X="70" Y="100"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="svn2revisioninc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <TopLine Value="83"/>
+        <UnitName Value="Svn2RevisionInc"/>
+        <UsageCount Value="23"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="13" Y="8"/>
+        <Filename Value="C:\lazarus\source\fpc\2.1\fcl\inc\process.pp"/>
+        <TopLine Value="1"/>
+        <UnitName Value="process"/>
+        <UsageCount Value="11"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="1" Y="426"/>
+        <EditorIndex Value="5"/>
+        <Filename Value="updatepofiles.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="118"/>
+        <UnitName Value="UpdatePoFiles"/>
+        <UsageCount Value="12"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="22" Y="41"/>
+        <EditorIndex Value="4"/>
+        <Filename Value="C:\lazarus\source\lazarus\lcl\fileutil.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="14"/>
+        <UnitName Value="FileUtil"/>
+        <UsageCount Value="12"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="3" Y="5335"/>
+        <Filename Value="C:\lazarus\source\lazarus\lcl\grids.pas"/>
+        <TopLine Value="5330"/>
+        <UnitName Value="Grids"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="33" Y="63"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\rtl\objpas\objpas.pp"/>
+        <TopLine Value="46"/>
+        <UnitName Value="objpas"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <CursorPos X="15" Y="95"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\inc\process.pp"/>
+        <TopLine Value="78"/>
+        <UnitName Value="process"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <CursorPos X="3" Y="31"/>
+        <EditorIndex Value="3"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\inc\pipes.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="14"/>
+        <UnitName Value="Pipes"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <CursorPos X="3" Y="180"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\win32\process.inc"/>
+        <TopLine Value="166"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <CursorPos X="1" Y="1"/>
+        <EditorIndex Value="2"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\xmlread.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="XMLRead"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <CursorPos X="15" Y="204"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="200"/>
+        <UnitName Value="DOM"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPackages>
+    <JumpHistory Count="24" HistoryIndex="23">
+      <Position1>
+        <Filename Value="C:\lazarus\source\lazarus\lcl\FileUtil.pas"/>
+        <Caret Line="46" Column="30" TopLine="29"/>
+      </Position1>
+      <Position2>
+        <Filename Value="C:\lazarus\source\lazarus\lcl\fileutil.pas"/>
+        <Caret Line="47" Column="40" TopLine="30"/>
+      </Position2>
+      <Position3>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="1" Column="1" TopLine="27"/>
+      </Position3>
+      <Position4>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="75" Column="11" TopLine="58"/>
+      </Position4>
+      <Position5>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="89" Column="24" TopLine="64"/>
+      </Position5>
+      <Position6>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="110" Column="14" TopLine="79"/>
+      </Position6>
+      <Position7>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="66" Column="45" TopLine="49"/>
+      </Position7>
+      <Position8>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="71" Column="14" TopLine="54"/>
+      </Position8>
+      <Position9>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="61" Column="16" TopLine="54"/>
+      </Position9>
+      <Position10>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="77" Column="74" TopLine="60"/>
+      </Position10>
+      <Position11>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="78" Column="31" TopLine="64"/>
+      </Position11>
+      <Position12>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="70" Column="16" TopLine="61"/>
+      </Position12>
+      <Position13>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="47" Column="42" TopLine="30"/>
+      </Position13>
+      <Position14>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="93" Column="28" TopLine="62"/>
+      </Position14>
+      <Position15>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="89" Column="22" TopLine="72"/>
+      </Position15>
+      <Position16>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Caret Line="208" Column="34" TopLine="179"/>
+      </Position16>
+      <Position17>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Caret Line="52" Column="13" TopLine="35"/>
+      </Position17>
+      <Position18>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="88" Column="21" TopLine="72"/>
+      </Position18>
+      <Position19>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Caret Line="382" Column="31" TopLine="365"/>
+      </Position19>
+      <Position20>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Caret Line="353" Column="38" TopLine="349"/>
+      </Position20>
+      <Position21>
+        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
+        <Caret Line="245" Column="37" TopLine="241"/>
+      </Position21>
+      <Position22>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="99" Column="46" TopLine="72"/>
+      </Position22>
+      <Position23>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="98" Column="98" TopLine="80"/>
+      </Position23>
+      <Position24>
+        <Filename Value="svn2revisioninc.pas"/>
+        <Caret Line="100" Column="64" TopLine="83"/>
+      </Position24>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="15">
+      <Item1>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="151"/>
+      </Item1>
+      <Item2>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="112"/>
+      </Item2>
+      <Item3>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="34"/>
+      </Item3>
+      <Item4>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="162"/>
+      </Item4>
+      <Item5>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="128"/>
+      </Item5>
+      <Item6>
+        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32wsstdctrls.pp"/>
+        <Line Value="881"/>
+      </Item6>
+      <Item7>
+        <Source Value="C:\lazarus\source\fpc\2.1\rtl\objpas\classes\stringl.inc"/>
+        <Line Value="188"/>
+      </Item7>
+      <Item8>
+        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32wsstdctrls.pp"/>
+        <Line Value="914"/>
+      </Item8>
+      <Item9>
+        <Source Value="C:\lazarus\source\fpc\2.1\rtl\objpas\classes\reader.inc"/>
+        <Line Value="770"/>
+      </Item9>
+      <Item10>
+        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32memostrings.inc"/>
+        <Line Value="74"/>
+      </Item10>
+      <Item11>
+        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
+        <Line Value="146"/>
+      </Item11>
+      <Item12>
+        <Source Value="C:\lazarus\source\lazarus\ide\uniteditor.pp"/>
+        <Line Value="1996"/>
+      </Item12>
+      <Item13>
+        <Source Value="C:\lazarus\source\lazarus\lcl\FPCAdds.pas"/>
+        <Line Value="83"/>
+      </Item13>
+      <Item14>
+        <Source Value="C:\lazarus\source\lazarus\lcl\calendar.pp"/>
+        <Line Value="163"/>
+      </Item14>
+      <Item15>
+        <Source Value="C:\lazarus\source\lazarus\lcl\calendar.pp"/>
+        <Line Value="266"/>
+      </Item15>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="FWidgetSetClass"/>
+      </Item1>
+      <Item2>
+        <Expression Value="FWidgetSetClass^"/>
+      </Item2>
+    </Watches>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

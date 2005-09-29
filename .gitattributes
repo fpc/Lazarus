@@ -2009,4 +2009,6 @@ tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
 tools/runwait.sh -text svneol=native#application/x-sh
+tools/svn2revisioninc.lpi svneol=native#text/plain
+tools/svn2revisioninc.pas svneol=native#text/plain
 tools/updatepofiles.pas svneol=native#text/pascal
