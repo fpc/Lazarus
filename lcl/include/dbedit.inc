@@ -182,6 +182,15 @@ begin
   Result := FDataLink.Edit;
 end;
 
+function TDBEdit.GetEditText: string;
+begin
+  if not (csDesigning in ComponentState) and not FDatalink.Active then begin
+    Result := '';
+    exit;
+  end;
+  Result:=inherited GetEditText;
+end;
+
 procedure TDBEdit.Change;
 begin
   //need to override this to make sure the datalink gets notified

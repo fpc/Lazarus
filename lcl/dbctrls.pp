@@ -142,6 +142,7 @@ Type
       Operation: TOperation); override;
 
     function EditCanModify: Boolean; override;
+    function GetEditText: string; override;
 
     procedure Change; override;
     procedure Reset; override;
@@ -180,7 +181,6 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property Text;
     property Visible;
     property OnChange;
     property OnClick;

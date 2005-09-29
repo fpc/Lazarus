@@ -91,7 +91,6 @@ type
     function AddEditFormat(const Value: string; Active: Boolean): string;
     function RemoveEditFormat(const Value: string): string;
     function FindLiteralChar (MaskOffset: Integer; InChar: Char): Integer;
-    function GetEditText: string;
     function GetMasked: Boolean;
     function GetMaskText: string;
     function GetMaxLength: Integer;
@@ -118,6 +117,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Reset; virtual;
+    function GetEditText: string; virtual;
     function GetFirstEditChar: Integer;
     function GetLastEditChar: Integer;
     function GetNextEditChar(Offset: Integer): Integer;
