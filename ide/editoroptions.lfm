@@ -1,0 +1,1746 @@
+object EditorOptionsForm: TEditorOptionsForm
+  Caption = 'EditorOptionsForm'
+  ClientHeight = 519
+  ClientWidth = 477
+  PixelsPerInch = 112
+  Position = poScreenCenter
+  HorzScrollBar.Page = 476
+  VertScrollBar.Page = 518
+  Left = 469
+  Height = 519
+  Top = 143
+  Width = 477
+  object MainNotebook: TNotebook
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    PageIndex = 0
+    Height = 479
+    Width = 477
+    object Page1: TPage
+      Caption = 'Page1'
+      ClientWidth = 473
+      ClientHeight = 449
+      Left = 2
+      Height = 449
+      Top = 28
+      Width = 473
+      object BlockIndentLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'BlockIndentLabel'
+        Color = clNone
+        Left = 114
+        Height = 12
+        Top = 301
+        Width = 96
+      end
+      object UndoLimitLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'UndoLimitLabel'
+        Color = clNone
+        Left = 114
+        Height = 12
+        Top = 327
+        Width = 85
+      end
+      object TabWidthsLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'TabWidthsLabel'
+        Color = clNone
+        Left = 114
+        Height = 12
+        Top = 355
+        Width = 89
+      end
+      object EditorOptionsGroupBox: TCheckGroup
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'EditorOptionsGroupBox'
+        Columns = 2
+        OnClick = GeneralCheckBoxOnClick
+        ParentColor = True
+        Left = 6
+        Height = 280
+        Top = 6
+        Width = 461
+      end
+      object BlockIndentComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        Items.Strings = (
+          '1'
+          '2'
+          '4'
+          '8'
+        )
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 1
+        Left = 6
+        Height = 21
+        Top = 298
+        Width = 100
+      end
+      object UndoLimitComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        Items.Strings = (
+          '32767'
+          '4096'
+          '512'
+        )
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 2
+        Left = 6
+        Height = 21
+        Top = 325
+        Width = 100
+      end
+      object TabWidthsComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        Items.Strings = (
+          '1'
+          '2'
+          '4'
+          '8'
+        )
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 3
+        Left = 6
+        Height = 21
+        Top = 352
+        Width = 100
+      end
+    end
+    object Page2: TPage
+      Caption = 'Page2'
+      ClientWidth = 473
+      ClientHeight = 449
+      Left = 2
+      Height = 449
+      Top = 28
+      Width = 473
+      object MarginAndGutterGroupBox: TGroupBox
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'MarginAndGutterGroupBox'
+        ClientHeight = 128
+        ClientWidth = 461
+        ParentColor = True
+        TabOrder = 0
+        Left = 6
+        Height = 128
+        Top = 6
+        Width = 461
+        object RightMarginLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'RightMarginLabel'
+          Color = clNone
+          Left = 358
+          Height = 17
+          Top = 10
+          Width = 90
+        end
+        object RightMarginColorButton: TColorButton
+          BorderSpacing.OnChange = nil
+          BorderWidth = 2
+          OnColorChanged = ColorButtonColorChanged
+          Left = 246
+          Height = 21
+          Top = 32
+          Width = 100
+        end
+        object GutterColorButton: TColorButton
+          BorderSpacing.OnChange = nil
+          BorderWidth = 2
+          OnColorChanged = ColorButtonColorChanged
+          Left = 246
+          Height = 21
+          Top = 80
+          Width = 100
+        end
+        object RightMarginColorLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'RightMarginColorLabel'
+          Color = clNone
+          Left = 358
+          Height = 17
+          Top = 34
+          Width = 90
+        end
+        object GutterWidthLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'GutterWidthLabel'
+          Color = clNone
+          Left = 358
+          Height = 17
+          Top = 60
+          Width = 90
+        end
+        object GutterColorLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'GutterColorLabel'
+          Color = clNone
+          Left = 358
+          Height = 17
+          Top = 82
+          Width = 90
+        end
+        object VisibleRightMarginCheckBox: TCheckBox
+          BorderSpacing.OnChange = nil
+          Caption = 'VisibleRightMarginCheckBox'
+          Enabled = False
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 0
+          Left = 6
+          Height = 23
+          Top = 8
+          Width = 232
+        end
+        object VisibleGutterCheckBox: TCheckBox
+          BorderSpacing.OnChange = nil
+          Caption = 'VisibleGutterCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 1
+          Left = 6
+          Height = 23
+          Top = 32
+          Width = 232
+        end
+        object ShowLineNumbersCheckBox: TCheckBox
+          BorderSpacing.OnChange = nil
+          Caption = 'ShowLineNumbersCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 2
+          Left = 6
+          Height = 23
+          Top = 56
+          Width = 232
+        end
+        object RightMarginComboBox: TComboBox
+          BorderSpacing.OnChange = nil
+          Items.Strings = (
+            '80'
+            '78'
+            '76'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 3
+          Left = 246
+          Height = 21
+          Top = 8
+          Width = 100
+        end
+        object GutterWidthComboBox: TComboBox
+          BorderSpacing.OnChange = nil
+          Items.Strings = (
+            '40'
+            '35'
+            '30'
+            '25'
+            '20'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 4
+          Left = 246
+          Height = 21
+          Top = 58
+          Width = 100
+        end
+      end
+      object EditorFontGroupBox: TGroupBox
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
+        Caption = 'EditorFontGroupBox'
+        ClientHeight = 136
+        ClientWidth = 461
+        ParentColor = True
+        TabOrder = 1
+        Left = 6
+        Height = 136
+        Top = 140
+        Width = 461
+        object EditorFontLabel: TLabel
+          Align = alTop
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'EditorFontLabel'
+          Color = clNone
+          Left = 6
+          Height = 17
+          Top = 6
+          Width = 449
+        end
+        object EditorFontHeightLabel: TLabel
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'EditorFontHeightLabel'
+          Color = clNone
+          Left = 116
+          Height = 17
+          Top = 60
+          Width = 342
+        end
+        object ExtraLineSpacingLabel: TLabel
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'ExtraLineSpacingLabel'
+          Color = clNone
+          Left = 116
+          Height = 17
+          Top = 90
+          Width = 342
+        end
+        object EditorFontComboBox: TComboBox
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 0
+          Text = 'EditorFontComboBox'
+          AnchorSideRight.Control = EditorFontButton
+          Left = 6
+          Height = 21
+          Top = 29
+          Width = 424
+        end
+        object EditorFontButton: TButton
+          Anchors = [akTop, akRight]
+          BorderSpacing.OnChange = nil
+          Caption = '...'
+          OnClick = EditorFontButtonClick
+          TabOrder = 1
+          Left = 436
+          Height = 21
+          Top = 29
+          Width = 16
+        end
+        object EditorFontHeightComboBox: TComboBox
+          BorderSpacing.OnChange = nil
+          Items.Strings = (
+            '10'
+            '11'
+            '12'
+            '13'
+            '14'
+            '15'
+            '16'
+            '17'
+            '18'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 2
+          Left = 6
+          Height = 21
+          Top = 58
+          Width = 100
+        end
+        object ExtraLineSpacingComboBox: TComboBox
+          BorderSpacing.OnChange = nil
+          Items.Strings = (
+            '0'
+            '1'
+            '2'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 3
+          Left = 6
+          Height = 21
+          Top = 88
+          Width = 100
+        end
+      end
+      object DisplayPreview: TSynEdit
+        Align = alBottom
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = -16
+        Font.Name = 'courier'
+        Height = 161
+        Name = 'DisplayPreview'
+        TabOrder = 2
+        Width = 461
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
+        Gutter.CodeFoldingWidth = 14
+        Keystrokes = <        
+          item
+            Command = 3
+            ShortCut = 38
+          end        
+          item
+            Command = 103
+            ShortCut = 8230
+          end        
+          item
+            Command = 211
+            ShortCut = 16422
+          end        
+          item
+            Command = 4
+            ShortCut = 40
+          end        
+          item
+            Command = 104
+            ShortCut = 8232
+          end        
+          item
+            Command = 212
+            ShortCut = 16424
+          end        
+          item
+            Command = 1
+            ShortCut = 37
+          end        
+          item
+            Command = 101
+            ShortCut = 8229
+          end        
+          item
+            Command = 5
+            ShortCut = 16421
+          end        
+          item
+            Command = 105
+            ShortCut = 24613
+          end        
+          item
+            Command = 2
+            ShortCut = 39
+          end        
+          item
+            Command = 102
+            ShortCut = 8231
+          end        
+          item
+            Command = 6
+            ShortCut = 16423
+          end        
+          item
+            Command = 106
+            ShortCut = 24615
+          end        
+          item
+            Command = 10
+            ShortCut = 34
+          end        
+          item
+            Command = 110
+            ShortCut = 8226
+          end        
+          item
+            Command = 14
+            ShortCut = 16418
+          end        
+          item
+            Command = 114
+            ShortCut = 24610
+          end        
+          item
+            Command = 9
+            ShortCut = 33
+          end        
+          item
+            Command = 109
+            ShortCut = 8225
+          end        
+          item
+            Command = 13
+            ShortCut = 16417
+          end        
+          item
+            Command = 113
+            ShortCut = 24609
+          end        
+          item
+            Command = 7
+            ShortCut = 36
+          end        
+          item
+            Command = 107
+            ShortCut = 8228
+          end        
+          item
+            Command = 15
+            ShortCut = 16420
+          end        
+          item
+            Command = 115
+            ShortCut = 24612
+          end        
+          item
+            Command = 8
+            ShortCut = 35
+          end        
+          item
+            Command = 108
+            ShortCut = 8227
+          end        
+          item
+            Command = 16
+            ShortCut = 16419
+          end        
+          item
+            Command = 116
+            ShortCut = 24611
+          end        
+          item
+            Command = 223
+            ShortCut = 45
+          end        
+          item
+            Command = 201
+            ShortCut = 16429
+          end        
+          item
+            Command = 604
+            ShortCut = 8237
+          end        
+          item
+            Command = 502
+            ShortCut = 46
+          end        
+          item
+            Command = 603
+            ShortCut = 8238
+          end        
+          item
+            Command = 501
+            ShortCut = 8
+          end        
+          item
+            Command = 501
+            ShortCut = 8200
+          end        
+          item
+            Command = 504
+            ShortCut = 16392
+          end        
+          item
+            Command = 601
+            ShortCut = 32776
+          end        
+          item
+            Command = 602
+            ShortCut = 40968
+          end        
+          item
+            Command = 509
+            ShortCut = 13
+          end        
+          item
+            Command = 199
+            ShortCut = 16449
+          end        
+          item
+            Command = 201
+            ShortCut = 16451
+          end        
+          item
+            Command = 610
+            ShortCut = 24649
+          end        
+          item
+            Command = 509
+            ShortCut = 16461
+          end        
+          item
+            Command = 510
+            ShortCut = 16462
+          end        
+          item
+            Command = 503
+            ShortCut = 16468
+          end        
+          item
+            Command = 611
+            ShortCut = 24661
+          end        
+          item
+            Command = 604
+            ShortCut = 16470
+          end        
+          item
+            Command = 603
+            ShortCut = 16472
+          end        
+          item
+            Command = 507
+            ShortCut = 16473
+          end        
+          item
+            Command = 506
+            ShortCut = 24665
+          end        
+          item
+            Command = 601
+            ShortCut = 16474
+          end        
+          item
+            Command = 602
+            ShortCut = 24666
+          end        
+          item
+            Command = 301
+            ShortCut = 16432
+          end        
+          item
+            Command = 302
+            ShortCut = 16433
+          end        
+          item
+            Command = 303
+            ShortCut = 16434
+          end        
+          item
+            Command = 304
+            ShortCut = 16435
+          end        
+          item
+            Command = 305
+            ShortCut = 16436
+          end        
+          item
+            Command = 306
+            ShortCut = 16437
+          end        
+          item
+            Command = 307
+            ShortCut = 16438
+          end        
+          item
+            Command = 308
+            ShortCut = 16439
+          end        
+          item
+            Command = 309
+            ShortCut = 16440
+          end        
+          item
+            Command = 310
+            ShortCut = 16441
+          end        
+          item
+            Command = 351
+            ShortCut = 24624
+          end        
+          item
+            Command = 352
+            ShortCut = 24625
+          end        
+          item
+            Command = 353
+            ShortCut = 24626
+          end        
+          item
+            Command = 354
+            ShortCut = 24627
+          end        
+          item
+            Command = 355
+            ShortCut = 24628
+          end        
+          item
+            Command = 356
+            ShortCut = 24629
+          end        
+          item
+            Command = 357
+            ShortCut = 24630
+          end        
+          item
+            Command = 358
+            ShortCut = 24631
+          end        
+          item
+            Command = 359
+            ShortCut = 24632
+          end        
+          item
+            Command = 360
+            ShortCut = 24633
+          end        
+          item
+            Command = 231
+            ShortCut = 24654
+          end        
+          item
+            Command = 232
+            ShortCut = 24643
+          end        
+          item
+            Command = 233
+            ShortCut = 24652
+          end        
+          item
+            Command = 612
+            ShortCut = 9
+          end        
+          item
+            Command = 613
+            ShortCut = 8201
+          end        
+          item
+            Command = 250
+            ShortCut = 24642
+          end>
+        Lines.Strings = (
+          'DisplayPreview'
+        )
+        ReadOnly = True
+        SelectedColor.OnChange = nil
+        OnSpecialLineColors = OnSpecialLineColors
+        Cursor = crIBeam
+        Left = 6
+        Height = 161
+        Top = 282
+        Width = 461
+      end
+    end
+    object Page3: TPage
+      Caption = 'Page3'
+      ClientWidth = 473
+      ClientHeight = 449
+      Left = 2
+      Height = 449
+      Top = 28
+      Width = 473
+      object KeyMappingHelpLabel: TLabel
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'KeyMappingHelpLabel'
+        Color = clNone
+        Left = 6
+        Height = 12
+        Top = 68
+        Width = 461
+      end
+      object KeyMappingChooseSchemeButton: TButton
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'KeyMappingChooseSchemeButton'
+        OnClick = KeyMappingChooseSchemeButtonClick
+        TabOrder = 0
+        Left = 6
+        Height = 25
+        Top = 6
+        Width = 461
+      end
+      object KeyMappingConsistencyCheckButton: TButton
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'KeyMappingConsistencyCheckButton'
+        OnClick = KeyMappingConsistencyCheckButtonClick
+        TabOrder = 1
+        Left = 6
+        Height = 25
+        Top = 37
+        Width = 461
+      end
+      object KeyMappingTreeView: TTreeView
+        Align = alClient
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
+        DefaultItemHeight = 23
+        Images = ImageList
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 2
+        OnMouseUp = KeyMappingTreeViewMouseUp
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
+        Left = 6
+        Height = 357
+        Top = 86
+        Width = 461
+      end
+    end
+    object Page4: TPage
+      Caption = 'Page4'
+      ClientWidth = 473
+      ClientHeight = 449
+      Left = 2
+      Height = 449
+      Top = 28
+      Width = 473
+      object LanguageLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'LanguageLabel'
+        Color = clNone
+        Left = 214
+        Height = 12
+        Top = 12
+        Width = 87
+      end
+      object ColorSchemeLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'ColorSchemeLabel'
+        Color = clNone
+        Left = 214
+        Height = 12
+        Top = 36
+        Width = 106
+      end
+      object FileExtensionsLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'FileExtensionsLabel'
+        Color = clNone
+        Left = 214
+        Height = 12
+        Top = 60
+        Width = 112
+      end
+      object ColorElementLabel: TLabel
+        BorderSpacing.OnChange = nil
+        Caption = 'ColorElementLabel'
+        Color = clNone
+        Left = 4
+        Height = 12
+        Top = 90
+        Width = 105
+      end
+      object LanguageComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 0
+        Text = 'LanguageComboBox'
+        Left = 3
+        Height = 21
+        Top = 10
+        Width = 200
+      end
+      object ColorSchemeComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 1
+        Text = 'ColorSchemeComboBox'
+        Left = 3
+        Height = 21
+        Top = 34
+        Width = 200
+      end
+      object FileExtensionsComboBox: TComboBox
+        BorderSpacing.OnChange = nil
+        Items.Strings = (
+          'pp;pas;inc;lpr;lrs;dpr;dpk'
+          'pp;pas;inc;lpr;lrs'
+          'pp;pas;inc'
+        )
+        MaxLength = 0
+        OnChange = ComboBoxOnChange
+        OnExit = ComboBoxOnExit
+        OnKeyDown = ComboBoxOnKeyDown
+        TabOrder = 2
+        Left = 3
+        Height = 21
+        Top = 58
+        Width = 200
+      end
+      object ColorPreview: TSynEdit
+        Align = alBottom
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 4
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = -16
+        Font.Name = 'courier'
+        Height = 98
+        Name = 'ColorPreview'
+        TabOrder = 3
+        Width = 465
+        OnMouseDown = ColorPreviewMouseUp
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
+        Gutter.CodeFoldingWidth = 14
+        Keystrokes = <        
+          item
+            Command = 3
+            ShortCut = 38
+          end        
+          item
+            Command = 103
+            ShortCut = 8230
+          end        
+          item
+            Command = 211
+            ShortCut = 16422
+          end        
+          item
+            Command = 4
+            ShortCut = 40
+          end        
+          item
+            Command = 104
+            ShortCut = 8232
+          end        
+          item
+            Command = 212
+            ShortCut = 16424
+          end        
+          item
+            Command = 1
+            ShortCut = 37
+          end        
+          item
+            Command = 101
+            ShortCut = 8229
+          end        
+          item
+            Command = 5
+            ShortCut = 16421
+          end        
+          item
+            Command = 105
+            ShortCut = 24613
+          end        
+          item
+            Command = 2
+            ShortCut = 39
+          end        
+          item
+            Command = 102
+            ShortCut = 8231
+          end        
+          item
+            Command = 6
+            ShortCut = 16423
+          end        
+          item
+            Command = 106
+            ShortCut = 24615
+          end        
+          item
+            Command = 10
+            ShortCut = 34
+          end        
+          item
+            Command = 110
+            ShortCut = 8226
+          end        
+          item
+            Command = 14
+            ShortCut = 16418
+          end        
+          item
+            Command = 114
+            ShortCut = 24610
+          end        
+          item
+            Command = 9
+            ShortCut = 33
+          end        
+          item
+            Command = 109
+            ShortCut = 8225
+          end        
+          item
+            Command = 13
+            ShortCut = 16417
+          end        
+          item
+            Command = 113
+            ShortCut = 24609
+          end        
+          item
+            Command = 7
+            ShortCut = 36
+          end        
+          item
+            Command = 107
+            ShortCut = 8228
+          end        
+          item
+            Command = 15
+            ShortCut = 16420
+          end        
+          item
+            Command = 115
+            ShortCut = 24612
+          end        
+          item
+            Command = 8
+            ShortCut = 35
+          end        
+          item
+            Command = 108
+            ShortCut = 8227
+          end        
+          item
+            Command = 16
+            ShortCut = 16419
+          end        
+          item
+            Command = 116
+            ShortCut = 24611
+          end        
+          item
+            Command = 223
+            ShortCut = 45
+          end        
+          item
+            Command = 201
+            ShortCut = 16429
+          end        
+          item
+            Command = 604
+            ShortCut = 8237
+          end        
+          item
+            Command = 502
+            ShortCut = 46
+          end        
+          item
+            Command = 603
+            ShortCut = 8238
+          end        
+          item
+            Command = 501
+            ShortCut = 8
+          end        
+          item
+            Command = 501
+            ShortCut = 8200
+          end        
+          item
+            Command = 504
+            ShortCut = 16392
+          end        
+          item
+            Command = 601
+            ShortCut = 32776
+          end        
+          item
+            Command = 602
+            ShortCut = 40968
+          end        
+          item
+            Command = 509
+            ShortCut = 13
+          end        
+          item
+            Command = 199
+            ShortCut = 16449
+          end        
+          item
+            Command = 201
+            ShortCut = 16451
+          end        
+          item
+            Command = 610
+            ShortCut = 24649
+          end        
+          item
+            Command = 509
+            ShortCut = 16461
+          end        
+          item
+            Command = 510
+            ShortCut = 16462
+          end        
+          item
+            Command = 503
+            ShortCut = 16468
+          end        
+          item
+            Command = 611
+            ShortCut = 24661
+          end        
+          item
+            Command = 604
+            ShortCut = 16470
+          end        
+          item
+            Command = 603
+            ShortCut = 16472
+          end        
+          item
+            Command = 507
+            ShortCut = 16473
+          end        
+          item
+            Command = 506
+            ShortCut = 24665
+          end        
+          item
+            Command = 601
+            ShortCut = 16474
+          end        
+          item
+            Command = 602
+            ShortCut = 24666
+          end        
+          item
+            Command = 301
+            ShortCut = 16432
+          end        
+          item
+            Command = 302
+            ShortCut = 16433
+          end        
+          item
+            Command = 303
+            ShortCut = 16434
+          end        
+          item
+            Command = 304
+            ShortCut = 16435
+          end        
+          item
+            Command = 305
+            ShortCut = 16436
+          end        
+          item
+            Command = 306
+            ShortCut = 16437
+          end        
+          item
+            Command = 307
+            ShortCut = 16438
+          end        
+          item
+            Command = 308
+            ShortCut = 16439
+          end        
+          item
+            Command = 309
+            ShortCut = 16440
+          end        
+          item
+            Command = 310
+            ShortCut = 16441
+          end        
+          item
+            Command = 351
+            ShortCut = 24624
+          end        
+          item
+            Command = 352
+            ShortCut = 24625
+          end        
+          item
+            Command = 353
+            ShortCut = 24626
+          end        
+          item
+            Command = 354
+            ShortCut = 24627
+          end        
+          item
+            Command = 355
+            ShortCut = 24628
+          end        
+          item
+            Command = 356
+            ShortCut = 24629
+          end        
+          item
+            Command = 357
+            ShortCut = 24630
+          end        
+          item
+            Command = 358
+            ShortCut = 24631
+          end        
+          item
+            Command = 359
+            ShortCut = 24632
+          end        
+          item
+            Command = 360
+            ShortCut = 24633
+          end        
+          item
+            Command = 231
+            ShortCut = 24654
+          end        
+          item
+            Command = 232
+            ShortCut = 24643
+          end        
+          item
+            Command = 233
+            ShortCut = 24652
+          end        
+          item
+            Command = 612
+            ShortCut = 9
+          end        
+          item
+            Command = 613
+            ShortCut = 8201
+          end        
+          item
+            Command = 250
+            ShortCut = 24642
+          end>
+        Lines.Strings = (
+          'ColorPreview'
+        )
+        ReadOnly = True
+        SelectedColor.OnChange = nil
+        OnSpecialLineColors = OnSpecialLineColors
+        Cursor = crIBeam
+        Left = 4
+        Height = 98
+        Top = 347
+        Width = 465
+      end
+      object ColorElementListBox: TListBox
+        BorderSpacing.OnChange = nil
+        OnSelectionChange = ColorElementListBoxSelectionChange
+        TabOrder = 4
+        TopIndex = -1
+        Left = 3
+        Height = 230
+        Top = 108
+        Width = 200
+      end
+      object SetAttributeToDefaultButton: TButton
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.OnChange = nil
+        Caption = 'SetAttributeToDefaultButton'
+        OnClick = SetAttributeToDefaultButtonClick
+        TabOrder = 5
+        Left = 212
+        Height = 25
+        Top = 90
+        Width = 255
+      end
+      object SetAllAttributesToDefaultButton: TButton
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.OnChange = nil
+        Caption = 'SetAllAttributesToDefaultButton'
+        OnClick = SetAllAttributesToDefaultButtonClick
+        TabOrder = 6
+        Left = 212
+        Height = 25
+        Top = 122
+        Width = 255
+      end
+      object TextAttributesGroupBox: TGroupBox
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.OnChange = nil
+        Caption = 'Attributes'
+        ClientHeight = 184
+        ClientWidth = 255
+        ParentColor = True
+        TabOrder = 7
+        Left = 212
+        Height = 184
+        Top = 154
+        Width = 255
+        object ForeGroundLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'ForeGroundLabel'
+          Color = clNone
+          Left = 8
+          Height = 12
+          Width = 98
+        end
+        object ForegroundColorButton: TColorButton
+          BorderSpacing.OnChange = nil
+          BorderWidth = 2
+          OnColorChanged = ColorButtonColorChanged
+          Left = 8
+          Height = 21
+          Top = 16
+          Width = 75
+        end
+        object BackGroundColorButton: TColorButton
+          BorderWidth = 2
+          OnColorChanged = ColorButtonColorChanged
+          Left = 8
+          Height = 21
+          Top = 58
+          Width = 75
+        end
+        object BackGroundLabel: TLabel
+          Caption = 'BackGroundLabel'
+          Color = clNone
+          Left = 8
+          Height = 12
+          Top = 42
+          Width = 100
+        end
+        object ForeGroundUseDefaultCheckBox: TCheckBox
+          Anchors = [akTop, akLeft, akRight]
+          Caption = 'ForeGroundUseDefaultCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 0
+          Left = 94
+          Height = 24
+          Top = 12
+          Width = 148
+        end
+        object BackGroundUseDefaultCheckBox: TCheckBox
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.OnChange = nil
+          Caption = 'BackGroundUseDefaultCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 1
+          Left = 94
+          Height = 24
+          Top = 56
+          Width = 148
+        end
+        object TextBoldCheckBox: TCheckBox
+          Align = alBottom
+          BorderSpacing.Around = 6
+          Caption = 'TextBoldCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 2
+          Left = 6
+          Height = 24
+          Top = 94
+          Width = 243
+        end
+        object TextItalicCheckBox: TCheckBox
+          Align = alBottom
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'TextItalicCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 3
+          Left = 6
+          Height = 24
+          Top = 124
+          Width = 243
+        end
+        object TextUnderlineCheckBox: TCheckBox
+          Align = alBottom
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'TextUnderlineCheckBox'
+          OnClick = GeneralCheckBoxOnClick
+          TabOrder = 4
+          Left = 6
+          Height = 24
+          Top = 154
+          Width = 243
+        end
+      end
+    end
+    object Page5: TPage
+      Caption = 'Page5'
+      ClientWidth = 473
+      ClientHeight = 449
+      Left = 2
+      Height = 449
+      Top = 28
+      Width = 473
+      object AutomaticFeaturesGroupBox: TGroupBox
+        Align = alClient
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 6
+        Caption = 'AutomaticFeaturesGroupBox'
+        ClientHeight = 420
+        ClientWidth = 457
+        ParentColor = True
+        TabOrder = 0
+        Left = 6
+        Height = 437
+        Top = 6
+        Width = 461
+        object AutoDelayLabel: TLabel
+          Align = alTop
+          BorderSpacing.Top = 24
+          BorderSpacing.Around = 6
+          Caption = 'AutoDelayLabel'
+          Color = clNone
+          Left = 6
+          Height = 12
+          Top = 150
+          Width = 445
+        end
+        object AutoDelayMinLabel: TLabel
+          BorderSpacing.OnChange = nil
+          Caption = 'AutoDelayMinLabel'
+          Color = clNone
+          AnchorSideTop.Control = AutoDelayTrackBar
+          Left = 6
+          Height = 12
+          Top = 191
+          Width = 111
+        end
+        object AutoDelayMaxLabel: TLabel
+          Alignment = taRightJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.OnChange = nil
+          Caption = 'AutoDelayMaxLabel'
+          Color = clNone
+          AnchorSideTop.Control = AutoDelayTrackBar
+          Left = 333
+          Height = 12
+          Top = 191
+          Width = 114
+        end
+        object AutoIdentifierCompletionCheckBox: TCheckBox
+          Align = alTop
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'AutoIdentifierCompletionCheckBox'
+          TabOrder = 0
+          Left = 6
+          Height = 24
+          Top = 6
+          Width = 445
+        end
+        object AutoCodeParametersCheckBox: TCheckBox
+          Align = alTop
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'AutoCodeParametersCheckBox'
+          Enabled = False
+          TabOrder = 1
+          Left = 6
+          Height = 24
+          Top = 66
+          Width = 445
+        end
+        object AutoToolTipExprEvalCheckBox: TCheckBox
+          Align = alTop
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'AutoToolTipExprEvalCheckBox'
+          TabOrder = 2
+          Left = 6
+          Height = 24
+          Top = 96
+          Width = 445
+        end
+        object AutoToolTipSymbToolsCheckBox: TCheckBox
+          Align = alTop
+          BorderSpacing.OnChange = nil
+          BorderSpacing.Around = 6
+          Caption = 'AutoToolTipSymbToolsCheckBox'
+          Enabled = False
+          TabOrder = 3
+          Left = 6
+          Height = 24
+          Top = 36
+          Width = 445
+        end
+        object AutoDelayTrackBar: TTrackBar
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Max = 6
+          Min = 2
+          Position = 2
+          ScalePos = trTop
+          TabOrder = 4
+          Max = 6
+          Min = 2
+          Position = 2
+          ScalePos = trTop
+          Left = 6
+          Height = 23
+          Top = 168
+          Width = 445
+        end
+      end
+    end
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'CancelButton'
+    OnClick = CancelButtonClick
+    TabOrder = 1
+    Left = 392
+    Height = 25
+    Top = 483
+    Width = 75
+  end
+  object OkButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 2
+    Left = 312
+    Height = 25
+    Top = 483
+    Width = 75
+  end
+  object ImageList: TImageList
+    Height = 21
+    Width = 21
+    left = 464
+    top = 16
+    Bitmap = {
+      6C690200000015000000150000004E1000002F2A2058504D202A2F0A73746174
+      69632063686172202A206B65796D617063617465676F72795F78706D5B5D203D
+      207B0A223232203232203139312032222C0A2220200963204E6F6E65222C0A22
+      2E2009632023344234453438222C0A222B2009632023384439313842222C0A22
+      402009632023414141454138222C0A22232009632023433343374332222C0A22
+      242009632023443244364431222C0A22252009632023413141344131222C0A22
+      262009632023383038353741222C0A222A2009632023423542414230222C0A22
+      3D2009632023393039333844222C0A222D2009632023394139433939222C0A22
+      3B2009632023393339343933222C0A223E2009632023424343304243222C0A22
+      2C2009632023453645414535222C0A22272009632023423042324145222C0A22
+      292009632023344534453442222C0A22212009632023414442314141222C0A22
+      7E2009632023414442314138222C0A227B2009632023433043344244222C0A22
+      5D2009632023384439303843222C0A225E2009632023384238443842222C0A22
+      2F2009632023393739413937222C0A22282009632023453445374534222C0A22
+      5F2009632023393539373932222C0A223A2009632023343634393432222C0A22
+      3C2009632023334534303341222C0A225B2009632023373837413738222C0A22
+      7D2009632023453745394537222C0A227C2009632023443144324430222C0A22
+      312009632023414442304143222C0A22322009632023423642384234222C0A22
+      332009632023424142444239222C0A22342009632023434644334346222C0A22
+      352009632023374538303743222C0A22362009632023353235363444222C0A22
+      372009632023344334463437222C0A22382009632023334233443336222C0A22
+      392009632023344535303441222C0A22302009632023393739423935222C0A22
+      612009632023413841434135222C0A22622009632023434243464342222C0A22
+      632009632023433043354331222C0A22642009632023413741414137222C0A22
+      652009632023424242434242222C0A22662009632023463046324630222C0A22
+      672009632023454546304546222C0A22682009632023453345354533222C0A22
+      692009632023434143444341222C0A226A2009632023424443304244222C0A22
+      6B2009632023393439383933222C0A226C2009632023373137353642222C0A22
+      6D2009632023363036333539222C0A226E2009632023344234453436222C0A22
+      6F2009632023374438313738222C0A22702009632023423542394230222C0A22
+      712009632023393539383934222C0A22722009632023413941414138222C0A22
+      732009632023443344354433222C0A22742009632023434344304343222C0A22
+      752009632023453645414536222C0A22762009632023413041343945222C0A22
+      772009632023343134343430222C0A22782009632023444144434441222C0A22
+      792009632023424342454242222C0A227A2009632023413341364132222C0A22
+      412009632023423642424234222C0A22422009632023423442384233222C0A22
+      432009632023384439313843222C0A22442009632023364337323636222C0A22
+      452009632023354636333542222C0A22462009632023394541333942222C0A22
+      472009632023414242304137222C0A22482009632023434143444336222C0A22
+      492009632023384639303845222C0A224A2009632023394239433941222C0A22
+      4B2009632023394439463944222C0A224C2009632023444144444441222C0A22
+      4D2009632023384338463841222C0A224E2009632023344134443436222C0A22
+      4F2009632023334333463338222C0A22502009632023354536313543222C0A22
+      512009632023393939453935222C0A22522009632023373637393734222C0A22
+      532009632023364236443642222C0A22542009632023453445384534222C0A22
+      552009632023444545324445222C0A22562009632023423042344146222C0A22
+      572009632023373337363731222C0A22582009632023454145444541222C0A22
+      592009632023443144334430222C0A225A2009632023413841424135222C0A22
+      602009632023413841434137222C0A22202E09632023443444394433222C0A22
+      2E2E09632023443944444438222C0A222B2E09632023373137343730222C0A22
+      402E09632023353435383530222C0A22232E09632023344334463438222C0A22
+      242E09632023343334363344222C0A22252E09632023393139373843222C0A22
+      262E09632023423042374141222C0A222A2E09632023384539323843222C0A22
+      3D2E09632023443144354430222C0A222D2E09632023373737393736222C0A22
+      3B2E09632023374337463743222C0A223E2E09632023423942434239222C0A22
+      2C2E09632023424442464244222C0A22272E09632023344234433437222C0A22
+      292E09632023363536373634222C0A22212E09632023463346354633222C0A22
+      7E2E09632023454245434542222C0A227B2E09632023453545374535222C0A22
+      5D2E09632023414442304144222C0A225E2E09632023383538383833222C0A22
+      2F2E09632023373437383645222C0A22282E09632023363036343542222C0A22
+      5F2E09632023344535333439222C0A223A2E09632023343234363344222C0A22
+      3C2E09632023374137443741222C0A225B2E09632023443344364432222C0A22
+      7D2E09632023414542324142222C0A227C2E09632023423342384230222C0A22
+      312E09632023443044334345222C0A22322E09632023423842434238222C0A22
+      332E09632023453145354531222C0A22342E09632023413041343946222C0A22
+      352E09632023344535313442222C0A22362E09632023344435313439222C0A22
+      372E09632023453445364534222C0A22382E09632023453745384537222C0A22
+      392E09632023453245354532222C0A22302E09632023444545334445222C0A22
+      612E09632023444445324444222C0A22622E09632023413641424134222C0A22
+      632E09632023373537413730222C0A22642E09632023363436383545222C0A22
+      652E09632023353235373443222C0A22662E09632023344134443435222C0A22
+      672E09632023423342374233222C0A22682E09632023454646324546222C0A22
+      692E09632023463146324631222C0A226A2E09632023443444374434222C0A22
+      6B2E09632023424242454242222C0A226C2E09632023414542314144222C0A22
+      6D2E09632023393339373931222C0A226E2E09632023363436383546222C0A22
+      6F2E09632023354336313537222C0A22702E09632023344234463436222C0A22
+      712E09632023343734423431222C0A22722E09632023424242444241222C0A22
+      732E09632023444345314443222C0A22742E09632023413641424133222C0A22
+      752E09632023373537413646222C0A22762E09632023363636423631222C0A22
+      772E09632023344134453435222C0A22782E09632023444344464443222C0A22
+      792E09632023454646304546222C0A227A2E09632023453945394539222C0A22
+      412E09632023453245374532222C0A22422E09632023443744434437222C0A22
+      432E09632023373537393646222C0A22442E09632023363136353542222C0A22
+      452E09632023344635343439222C0A22462E09632023343634423431222C0A22
+      472E09632023393439373934222C0A22482E09632023443544394435222C0A22
+      492E09632023444645344446222C0A224A2E09632023444445314443222C0A22
+      4B2E09632023413141373943222C0A224C2E09632023373437393645222C0A22
+      4D2E09632023353035343443222C0A224E2E09632023454245454542222C0A22
+      4F2E09632023444645334446222C0A22502E09632023444144454441222C0A22
+      512E09632023413041343944222C0A22522E09632023363336373545222C0A22
+      532E09632023344435323438222C0A22542E09632023384439303844222C0A22
+      552E09632023374338303739222C0A22562E09632023334534313342222C0A22
+      572E09632023364436463644222C0A22582E09632023443244364432222C0A22
+      592E09632023444245304441222C0A225A2E09632023394541343939222C0A22
+      602E09632023373437413645222C0A22202B09632023354636343542222C0A22
+      2E2B09632023384238453842222C0A222B2B09632023443044334430222C0A22
+      402B09632023443644394435222C0A22232B09632023393239373844222C0A22
+      242B09632023354135453534222C0A22252B09632023363236323631222C0A22
+      2020202020202020202020202020202020202020202020202020202020202020
+      202020202020202020202020222C0A2220202020202020202020202020202020
+      20202020202020202020202020202020202020202020202020202020222C0A22
+      2020202020202020202020202020202020202020202020202020202020202020
+      202020202020202020202020222C0A2220202020202020202020202020202020
+      20202020202020202020202020202020202020202020202020202020222C0A22
+      2020202020202020202020202E202B2040202320242025202020202020202020
+      202020202020202020202020222C0A222020202020202020202026202A203D20
+      2D203B203E202C202720292020202020202020202020202020202020222C0A22
+      202020202020202021207E207B205D205E202F2028205F203A203C2020202020
+      202020202020202020202020222C0A222020202020205B207D207C2031203220
+      33203420352036203720382039203020612062206320642020202020222C0A22
+      202020202020652066206720682069206A206B206C206D206E206F2070207120
+      722073207420752076207720222C0A22202020202020782079207A2041204220
+      642043204420452046204720482049204A204B204C204D204E204F20222C0A22
+      202020202020502051205220532054204C20552056205720582059205A206020
+      202E2E2E2B2E402E232E242E222C0A2220202020252E262E2A2E3D2E2D2E3B2E
+      3E2E2C2E272E292E212E7E2E58207B2E5D2E5E2E2F2E282E5F2E3A2E222C0A22
+      20203C2E5B2E7D2E7C2E312E322E332E342E352E362E232E372E382E392E302E
+      612E622E632E642E652E662E222C0A222020672E682E692E6A2E6B2E6C2E6D2E
+      6E2E6F2E702E712E722E28205520732E732E742E752E762E772E2020222C0A22
+      2020782E792E7A2E392E412E422E4620432E442E452E462E2020472E482E492E
+      4A2E4B2E4C2E4D2E20202020222C0A2220202C2E4E2E7B2E4F2E732E502E512E
+      2F2E522E532E2020202020202020542E5D2E552E562E202020202020222C0A22
+      20202020572E582E612E732E592E5A2E602E202B202020202020202020202020
+      202020202020202020202020222C0A2220202020202020202E2B2B2B402B232B
+      242B2020202020202020202020202020202020202020202020202020222C0A22
+      202020202020202020202020252B202020202020202020202020202020202020
+      202020202020202020202020222C0A2220202020202020202020202020202020
+      20202020202020202020202020202020202020202020202020202020222C0A22
+      2020202020202020202020202020202020202020202020202020202020202020
+      202020202020202020202020222C0A2220202020202020202020202020202020
+      20202020202020202020202020202020202020202020202020202020227D3B0A
+      BE0C00002F2A2058504D202A2F0A7374617469632063686172202A206B65796D
+      617072656C6174696F6E5F78706D5B5D203D207B0A2232322032322031333420
+      32222C0A2220200963204E6F6E65222C0A222E2009632023433043304330222C
+      0A222B2009632023434343434343222C0A22402009632023434143414341222C
+      0A22232009632023433943394339222C0A22242009632023433843384338222C
+      0A22252009632023433743374337222C0A22262009632023433643364336222C
+      0A222A2009632023433543354335222C0A223D2009632023433143314331222C
+      0A222D2009632023424142414241222C0A223B2009632023423842384238222C
+      0A223E2009632023423442344234222C0A222C2009632023414441444144222C
+      0A22272009632023413041304130222C0A22292009632023463646364636222C
+      0A22212009632023454545454545222C0A227E2009632023453645364536222C
+      0A227B2009632023453745374537222C0A225D2009632023453845384538222C
+      0A225E2009632023453545354535222C0A222F2009632023453445344534222C
+      0A22282009632023453245324532222C0A225F2009632023444544454445222C
+      0A223A2009632023373937393739222C0A223C2009632023413541354135222C
+      0A225B2009632023463946394639222C0A227D2009632023443944394439222C
+      0A227C2009632023443744374437222C0A22312009632023444244424442222C
+      0A22322009632023453145314531222C0A22332009632023453945394539222C
+      0A22342009632023454245424542222C0A22352009632023454445444544222C
+      0A22362009632023454645464546222C0A22372009632023434443444344222C
+      0A22382009632023423242324232222C0A22392009632023373437343734222C
+      0A22302009632023413441344134222C0A22612009632023463746374637222C
+      0A22622009632023463546354635222C0A22632009632023443844384438222C
+      0A22642009632023444144414441222C0A22652009632023463146314631222C
+      0A22662009632023434243424342222C0A22672009632023413841384138222C
+      0A22682009632023364636463646222C0A22692009632023413241324132222C
+      0A226A2009632023463346334633222C0A226B2009632023444444444444222C
+      0A226C2009632023453045304530222C0A226D2009632023453345334533222C
+      0A226E2009632023423942394239222C0A226F2009632023394539453945222C
+      0A22702009632023364436443644222C0A22712009632023413141314131222C
+      0A22722009632023454145414541222C0A22732009632023384438443844222C
+      0A22742009632023463246324632222C0A22752009632023463446344634222C
+      0A22762009632023394439443944222C0A22772009632023364236423642222C
+      0A22782009632023463046304630222C0A22792009632023423142314231222C
+      0A227A2009632023433343334333222C0A22412009632023393439343934222C
+      0A22422009632023363936393639222C0A22432009632023454345434543222C
+      0A22442009632023393339333933222C0A22452009632023383938393839222C
+      0A22462009632023363336333633222C0A22472009632023424642464246222C
+      0A22482009632023384238423842222C0A22492009632023363536353635222C
+      0A224A2009632023433443344334222C0A224B2009632023363136313631222C
+      0A224C2009632023443144314431222C0A224D2009632023424342434243222C
+      0A224E2009632023383438343834222C0A224F2009632023363036303630222C
+      0A22502009632023393739373937222C0A22512009632023364536453645222C
+      0A22522009632023393639363936222C0A22532009632023363236323632222C
+      0A22542009632023443244324432222C0A22552009632023463846384638222C
+      0A22562009632023374637463746222C0A22572009632023354435443544222C
+      0A22582009632023394639463946222C0A22592009632023353535353535222C
+      0A225A2009632023374237423742222C0A22602009632023354335433543222C
+      0A22202E09632023374337433743222C0A222E2E09632023384538453845222C
+      0A222B2E09632023393039303930222C0A22402E09632023464146414641222C
+      0A22232E09632023423642364236222C0A22242E09632023373837383738222C
+      0A22252E09632023354135413541222C0A22262E09632023394339433943222C
+      0A222A2E09632023444644464446222C0A223D2E09632023464246424642222C
+      0A222D2E09632023414541454145222C0A223B2E09632023373337333733222C
+      0A223E2E09632023353635363536222C0A222C2E09632023394139413941222C
+      0A22272E09632023443544354435222C0A22292E09632023424242424242222C
+      0A22212E09632023423742374237222C0A227E2E09632023414141414141222C
+      0A227B2E09632023353435343534222C0A225D2E09632023393539353935222C
+      0A225E2E09632023373737373737222C0A222F2E09632023343834383438222C
+      0A22282E09632023343534353435222C0A225F2E09632023343734373437222C
+      0A223A2E09632023344234423442222C0A223C2E09632023344634463446222C
+      0A225B2E09632023353035303530222C0A227D2E09632023344334433443222C
+      0A227C2E09632023344534453445222C0A22312E09632023364336433643222C
+      0A22322E09632023353135313531222C0A22332E09632023383138313831222C
+      0A22342E09632023334533453345222C0A22352E09632023343234323432222C
+      0A22362E09632023343034303430222C0A22372E09632023343334333433222C
+      0A22382E09632023343634363436222C0A22392E09632023343934393439222C
+      0A22302E09632023323932393239222C0A22612E09632023323332333233222C
+      0A22622E09632023323232323232222C0A22632E09632023323432343234222C
+      0A22202020202020202020202020202020202020202020202020202020202020
+      2020202020202020202020202020222C0A222020202020202020202020202020
+      202020202020202020202020202020202020202020202020202020202020222C
+      0A222020202020202E202B204020402023202420252026202A203D202D203B20
+      3E202C2027202020202020202020222C0A222020202027202920292021207E20
+      7E207E207B205D207E205E202F2028205F202B203B203A20202020202020222C
+      0A22202020203C205B2029207D207C2031205F2032202F207E20332034203520
+      3620372038203920202020202020222C0A222020202030206120622063206420
+      5F2032202F207E2033203420352036206520662067206820202020202020222C
+      0A222020202069206A206A2064206B206C206D207E205D2033206E207D206520
+      6A2026206F207020202020202020222C0A22202020207120362065205F206C20
+      6D205E205D20722032207320332074207520262076207720202020202020222C
+      0A22202020207120352078206C2028205E207B2072205E2079206F2024206A20
+      62207A2041204220202020202020222C0A22202020202720352078206D205E20
+      7B2072204320442045202C2046207D202920472048204920202020202020222C
+      0A22202020202720432078205E207E203320342021206B2031204A204B204C20
+      61204D204E204F20202020202020222C0A22202020202720342078207B203320
+      3420352078205020512052205320542055202D2056205720202020202020222C
+      0A222020202058205D2036203320342035203620652059206B20632057204C20
+      5B203B205A206020202020202020222C0A22202020206F205E20432034203520
+      3620652074203C20202E2E2E2B2E4020402E232E242E252E202020202020222C
+      0A2220202020262E2A2E5D20212036207820742075206220432062205B20402E
+      3D2E2D2E3B2E3E2E202020202020222C0A22202020202C2E272E282031202520
+      292E6E206E20212E3E203820792079207E2E5A2077207B2E202020202020222C
+      0A22202020205D2E37202E205E2E2F2E282E5F2E3A2E3C2E5B2E7D2E5F2E2F2E
+      7C2E3E2E312E322E202020202020222C0A2220202020332E262E6020342E352E
+      362E352E372E382E2F2E282E372E372E282E392E59207D2E202020202020222C
+      0A222020202020202020302E612E612E622E622E622E622E622E622E622E622E
+      622E622E632E2020202020202020222C0A222020202020202020202020202020
+      202020202020202020202020202020202020202020202020202020202020222C
+      0A22202020202020202020202020202020202020202020202020202020202020
+      2020202020202020202020202020222C0A222020202020202020202020202020
+      202020202020202020202020202020202020202020202020202020202020227D
+      3B0A
+    }
+  end
+end

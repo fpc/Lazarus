@@ -831,6 +831,7 @@ ide/diffdialog.pas svneol=native#text/pascal
 ide/diffpatch.pas svneol=native#text/pascal
 ide/diskdiffsdialog.pas svneol=native#text/pascal
 ide/editdefinetree.pas svneol=native#text/pascal
+ide/editoroptions.lfm svneol=native#text/plain
 ide/editoroptions.lrs svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
 ide/encloseselectiondlg.lfm svneol=native#text/plain

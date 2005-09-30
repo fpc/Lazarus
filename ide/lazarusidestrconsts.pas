@@ -800,6 +800,7 @@ resourcestring
 
   // editor options
   dlgEdDisplay = 'Display';
+  lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
   dlgEdColor = 'Color';
   dlgKeyMappingErrors = 'Key mapping errors';
@@ -840,9 +841,9 @@ resourcestring
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
-  dlgBlockIndent = 'Block indent:';
-  dlgUndoLimit = 'Undo limit:';
-  dlgTabWidths = 'Tab widths:';
+  dlgBlockIndent = 'Block indent';
+  dlgUndoLimit = 'Undo limit';
+  dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';
