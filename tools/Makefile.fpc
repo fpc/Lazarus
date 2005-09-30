@@ -9,7 +9,7 @@ version=0.9b
 
 [target]
 dirs=apiwizz
-programs=lazres updatepofiles
+programs=lazres svn2revisioninc updatepofiles 
 
 [require]
 packages=rtl fcl
@@ -41,6 +41,7 @@ export LCL_PLATFORM
 
 all: apiwizz_all
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
+        $(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc.pas$(EXEEXT)
         $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
 
 # end.

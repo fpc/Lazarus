@@ -51,6 +51,10 @@ var
   RevisionIncFileName: string;
   RevisionStr: string = 'Unknown';
   
+const
+  RevisionIncComment = '// Created by Svn2RevisionInc';
+  ConstStart = 'const RevisionStr = ''';
+  
 function FindRevision: boolean;
 var
   SvnDir: string;
@@ -87,7 +91,6 @@ var
     EntriesFileName: string;
     EntriesDoc: TXMLDocument;
     EntryNode: TDomNode;
-    NameAttribute: TDOMNode;
   begin
     Result:=false;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
@@ -114,14 +117,29 @@ begin
     Result := GetRevisionFromSvnVersion or GetRevisionFromEntries;
 end;
 
+function IsValidRevisionInc: boolean;
+var
+  Lines: TStringList;
+begin
+  Result:=false;
+  if FileExists(RevisionIncFileName) then begin
+    Lines := TStringList.Create;
+    Lines.LoadFromFile(RevisionIncFileName);
+    if (Lines.Count=2) and
+      (Lines[1]=RevisionIncComment) and
+      (copy(Lines[2], 1, length(ConstStart))=ConstStart) then
+      Result:=true;
+  end;
+end;
+
 procedure WriteRevisionInc;
 var
   RevisionIncText: Text;
 begin
   AssignFile(RevisionIncText, RevisionIncFileName);
   Rewrite(RevisionIncText);
-  writeln(RevisionIncText, '// Created by Svn2RevisionInc');
-  writeln(RevisionIncText, 'const RevisionStr = ''', RevisionStr, ''';');
+  writeln(RevisionIncText, RevisionIncComment);
+  writeln(RevisionIncText, ConstStart, RevisionStr, ''';');
   CloseFile(RevisionIncText);
   writeln(format('Created %s for revision: %s',
     [RevisionIncFileName, RevisionStr]));
@@ -152,7 +170,7 @@ begin
     writeln('Usage: ',ExtractFileName(ParamStr(0)),' sourcedir revision.inc');
     halt(1);
   end;
-  if FindRevision or not FileExists(RevisionIncFileName) then
+  if FindRevision or not IsValidRevisionInc then
     WriteRevisionInc;
 end.
 
