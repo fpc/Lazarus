@@ -29,7 +29,7 @@ implementation
 {$linklib iconv}
 {$endif linux}
 
-Uses
+Uses 
   BaseUnix,
   ctypes,
   unix,
@@ -38,11 +38,22 @@ Uses
   initc,
   LCLProc;
 
-Const
+const
 {$ifdef Linux}
     libiconvname='c';  // is in libc under Linux.
 {$else}
     libiconvname='iconv';
+{$endif}
+
+{$ifdef darwin}
+type
+// defined in libc, but there the iconv* functions are in the wrong lib
+// they aren't defind in darwin/ptypes :(
+  size_t = cuint32;
+  psize_t = ^size_t;    
+  wint_t = cint32;
+  wchar_t = widechar;
+  pwchar_t = ^wchar_t;
 {$endif}
 
 { Case-mapping "arrays" }
@@ -68,6 +79,7 @@ const
 {$else linux}
 {$ifdef darwin}
   CODESET = 0;
+  ESysEILSEQ = 92;
 {$else darwin}
 {$ifdef FreeBSD} // actually FreeBSD5. internationalisation is afaik not default on 4.
   CODESET = 0;
@@ -85,21 +97,22 @@ const
   unicode_encoding = 'UNICODEBIG';
 {$endif  FPC_LITTLE_ENDIAN}
 
+{$ifdef darwin}
+  _ICONVSYMPREFIX = 'lib';
+{$else}  
+  _ICONVSYMPREFIX = '';
+{$endif}
+
 type
   piconv_t = ^iconv_t;
   iconv_t = pointer;
   nl_item = cint;
+  
 
 function nl_langinfo(__item:nl_item):pchar;cdecl;external libiconvname name 'nl_langinfo';
-{$ifndef Darwin}
-function iconv_open(__tocode:pchar; __fromcode:pchar):iconv_t;cdecl;external libiconvname name 'iconv_open';
-function iconv(__cd:iconv_t; __inbuf:ppchar; __inbytesleft:psize_t; __outbuf:ppchar; __outbytesleft:psize_t):size_t;cdecl;external libiconvname name 'iconv';
-function iconv_close(__cd:iconv_t):cint;cdecl;external libiconvname name 'iconv_close';
-{$else}
-function iconv_open(__tocode:pchar; __fromcode:pchar):iconv_t;cdecl;external libiconvname name 'libiconv_open';
-function iconv(__cd:iconv_t; __inbuf:ppchar; __inbytesleft:psize_t; __outbuf:ppchar; __outbytesleft:psize_t):size_t;cdecl;external libiconvname name 'libiconv';
-function iconv_close(__cd:iconv_t):cint;cdecl;external libiconvname name 'libiconv_close';
-{$endif}
+function iconv_open(__tocode:pchar; __fromcode:pchar):iconv_t;cdecl;external libiconvname name _ICONVSYMPREFIX+'iconv_open';
+function iconv(__cd:iconv_t; __inbuf:ppchar; __inbytesleft:psize_t; __outbuf:ppchar; __outbytesleft:psize_t):size_t;cdecl;external libiconvname name _ICONVSYMPREFIX+'iconv';
+function iconv_close(__cd:iconv_t):cint;cdecl;external libiconvname name _ICONVSYMPREFIX+'iconv_close';
 
 var
   iconv_ansi2wide,
