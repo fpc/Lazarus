@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts,
   StringHashList
-  {$IFNDEF win32}{$IFNDEF NoUTF8Translations}
+  {$IFDEF linux}{$IFNDEF NoUTF8Translations}
   ,LazCWString
   {$ENDIF}{$ENDIF};
 
