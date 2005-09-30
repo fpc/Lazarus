@@ -367,7 +367,12 @@ begin
       tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
     end;
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
-    TextRect(R, TextLeft, TextTop, Caption, TR);
+    if not Enabled then begin
+      Font.Color := clBtnHighlight;
+      textRect(R, TextLeft + 1, TextTop + 1, Caption, TR);
+      Font.color := clBtnShadow;
+    end;
+    TextRect(R, TextLeft, TextTop, Caption, TR)
   end;
 end;
 
