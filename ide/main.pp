@@ -1422,7 +1422,7 @@ end;
 
 procedure TMainIDE.SetupFormEditor;
 begin
-  FormEditor1 := TFormEditor.Create;
+  CreateFormEditor;
   FormEditor1.Obj_Inspector := ObjectInspector1;
 end;
 
@@ -3410,8 +3410,6 @@ begin
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
   // clear formeditor
-  if not Assigned(FormEditor1) then
-    FormEditor1 := TFormEditor.Create;
   FormEditor1.ClearSelection;
 
   // Figure out where we want to put the new form
@@ -4424,8 +4422,6 @@ begin
       TxtLFMStream.Free;
     end;
     if ComponentLoadingOk then begin
-      if not Assigned(FormEditor1) then
-        FormEditor1 := TFormEditor.Create;
       if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
 
       // create JIT component

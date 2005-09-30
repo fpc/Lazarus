@@ -1370,22 +1370,8 @@ end;
 
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
-//var LocalizedLoading: Boolean;
 begin
-  //GlobalNameSpace.BeginWrite; // hold lock across all ancestor loads (performance)
-  try
-    //LocalizedLoading:=(Instance.ComponentState * [csInline,csLoading])=[];
-    //if LocalizedLoading then BeginGlobalLoading; // push new loadlist onto stack
-    try
-      Result:=InitLazResourceComponent(Instance,RootAncestor);
-      //Result:=InitComponent(Instance.ClassType);
-      //if LocalizedLoading then NotifyGlobalLoading; // call Loaded
-    finally
-      //if LocalizedLoading then EndGlobalLoading; // pop loadlist off stack
-    end;
-  finally
-    //GlobalNameSpace.EndWrite;
-  end;
+  Result:=InitLazResourceComponent(Instance,RootAncestor);
 end;
 
 function FindRootDesigner(AComponent: TComponent): TIDesigner;

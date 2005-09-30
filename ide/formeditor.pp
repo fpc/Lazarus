@@ -31,8 +31,8 @@ unit FormEditor;
 interface
 
 uses
-  Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
-  ObjectInspector, Designer, IDECommands, FormEditingIntf;
+  Classes, LCLProc, Controls, Forms, Buttons, SysUtils, Graphics,
+  ObjectInspector, Designer, IDECommands, FormEditingIntf, CustomFormEditor;
 
 type
 
@@ -47,7 +47,7 @@ type
   end;
 
 var
-  FormEditor1: TFormEditor;
+  FormEditor1: TFormEditor = nil;
   
 procedure CreateFormEditor;
 procedure FreeFormEditor;
@@ -57,13 +57,16 @@ implementation
 
 procedure CreateFormEditor;
 begin
-  FormEditor1 := TFormEditor.Create;
-  FormEditingHook := FormEditor1;
-  IDECmdScopeDesignerOnly.AddWindowClass(TDesignerIDECommandForm);
+  if FormEditor1=nil then begin
+    FormEditor1 := TFormEditor.Create;
+    FormEditingHook := FormEditor1;
+    IDECmdScopeDesignerOnly.AddWindowClass(TDesignerIDECommandForm);
+  end;
 end;
 
 procedure FreeFormEditor;
 begin
+  if FormEditor1=nil then exit;
   FormEditingHook:=nil;
   FormEditor1.Free;
   FormEditor1:=nil;

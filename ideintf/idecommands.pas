@@ -60,7 +60,7 @@ type
     function GetCategories(Index: integer): TIDECommandCategory;
     function GetIDEWindowClasses(Index: integer): TCustomFormClass;
   public
-    constructor Create;
+    constructor Create(const TheName: string);
     destructor Destroy; override;
     procedure AddWindowClass(AWindowClass: TCustomFormClass);
     procedure RemoveWindowClass(AWindowClass: TCustomFormClass);
@@ -369,7 +369,7 @@ end;
 
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 begin
-  Result:=TIDECommandScope.Create;
+  Result:=TIDECommandScope.Create(Name);
   IDECommandScopes.Add(Result);
 end;
 
@@ -585,8 +585,9 @@ begin
   Result:=TCustomFormClass(FIDEWindowClasses[Index]);
 end;
 
-constructor TIDECommandScope.Create;
+constructor TIDECommandScope.Create(const TheName: string);
 begin
+  FName:=TheName;
   FIDEWindowClasses:=TFPList.Create;
   FCategories:=TFPList.Create;
 end;
@@ -630,10 +631,11 @@ var
   i: Integer;
 begin
   if AWindowClass<>nil then begin
-    for i:=0 to FIDEWindowClasses.Count-1 do
+    for i:=0 to FIDEWindowClasses.Count-1 do begin
       if (FIDEWindowClasses[i]=nil)
       or AWindowClass.InheritsFrom(TCustomFormClass(FIDEWindowClasses[i])) then
         exit(true);
+    end;
   end else begin
     if FIDEWindowClasses.IndexOf(nil)>=0 then
       exit(true);

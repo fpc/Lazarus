@@ -2756,18 +2756,21 @@ var
 begin
   Result:=nil;
   if Key.Key1=VK_UNKNOWN then exit;
-  for a:=0 to FRelations.Count-1 do with Relations[a] do begin
-    if (Category.Scope<>nil)
-    and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
-    if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
-        (ShortcutA.Key2=Key.Key2) and (ShortcutA.Shift2=Key.Shift2))
-    or ((ShortcutB.Key1=Key.Key1) and (ShortcutB.Shift1=Key.Shift1) and
-        (ShortcutB.Key2=Key.Key2) and (ShortcutB.Shift2=Key.Shift2)) then
-    begin
-      Result:=Relations[a];
-      exit;
+  for a:=0 to FRelations.Count-1 do
+    with Relations[a] do begin
+      //if Command=ecDesignerSelectParent then
+      //  debugln('TKeyCommandRelationList.Find A ',Category.Scope.Name,' ',dbgsName(IDEWindowClass),' ',dbgs(IDECmdScopeDesignerOnly.IDEWindowClassCount),' ',dbgsName(IDECmdScopeDesignerOnly.IDEWindowClasses[0]));
+      if (Category.Scope<>nil)
+      and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
+      if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
+          (ShortcutA.Key2=Key.Key2) and (ShortcutA.Shift2=Key.Shift2))
+      or ((ShortcutB.Key1=Key.Key1) and (ShortcutB.Shift1=Key.Shift1) and
+          (ShortcutB.Key2=Key.Key2) and (ShortcutB.Shift2=Key.Shift2)) then
+      begin
+        Result:=Relations[a];
+        exit;
+      end;
     end;
-  end;
 end;
 
 function TKeyCommandRelationList.FindIDECommand(ACommand: word
