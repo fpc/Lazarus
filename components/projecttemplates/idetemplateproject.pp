@@ -36,30 +36,48 @@ procedure Register;
 
 implementation
 
-uses frmtemplateVariables,ConfigStorage,newitemintf;
+uses
+  contnrs,frmTemplateSettings,frmtemplateVariables,ConfigStorage,newitemintf,
+  menuintf,idecommands;
 
 Var
   TemplateProjectDescriptor : TTemplateProjectDescriptor;
   IDETemplates : TProjectTemplates;
-  
+  itmFileNewFromTemplate : TIDEMenuSection;
+  MenuList : TObjectList;
+
+Type
+  { TIDEObject }
+
+  TIDEObject=Class(TObject)
+    FProjDesc : TTemplateProjectDescriptor;
+    FProjMenu : TIDEMenuCommand;
+    Constructor Create(AProjDesc : TTemplateProjectDescriptor;
+                       AProjMenu : TIDEMenuCommand);
+  end;
+
+{ TIDEObject }
+
+constructor TIDEObject.Create(AProjDesc: TTemplateProjectDescriptor;
+                              AProjMenu: TIDEMenuCommand);
+
+begin
+  FPRojDesc:=AProjDesc;
+  FPRojMenu:=AProjMenu;
+end;
+
 Const
   STemplateCategory = 'Template projects';
+  STemplateSettings = 'itmTemplateSettings';
+  SItmtemplate = 'itmTemplate';
   
-Procedure RegisterTemplateCategory;
+Resourcestring
+  SProjectTemplateSettings = 'Project templates options';
+  SNewFromTemplate = 'New project from template';
 
-begin
-  NewIDEItems.Add(STemplateCategory);
-end;
-
-procedure RegisterTemplateProject(ATemplate : TProjectTemplate);
-
-var
-  ProjDesc: TTemplateProjectDescriptor;
-  
-begin
-  ProjDesc:=TTemplateProjectDescriptor.Create(Atemplate);
-  RegisterProjectDescriptor(ProjDesc,STemplateCategory);
-end;
+{ ---------------------------------------------------------------------
+  Configuration
+  ---------------------------------------------------------------------}
 
 Function GetTemplateDir : String;
 
@@ -70,20 +88,6 @@ begin
     Finally
       Free;
     end;
-end;
-
-procedure Register;
-
-Var
-  I : Integer;
-  D : String;
-  
-begin
-  D:=GetTemplateDir;
-  IDETemplates:=TProjectTemplates.Create(D);
-  RegisterTemplateCategory;
-  For I:=0 to IDETemplates.Count-1 do
-    RegisterTemplateProject(IDETemplates[i]);
 end;
 
 procedure SaveTemplateSettings;
@@ -98,6 +102,104 @@ begin
     end;
 end;
 
+{ ---------------------------------------------------------------------
+  Registration
+  ---------------------------------------------------------------------}
+
+Procedure RegisterTemplateCategory;
+
+begin
+  NewIDEItems.Add(STemplateCategory);
+end;
+
+Procedure DoProject(Sender : TObject);
+
+Var
+  I : Integer;
+  Desc : TTemplateProjectDescriptor;
+
+begin
+  I:=MenuList.count-1;
+  Desc:=Nil;
+  While (Desc=Nil) and (I>=0) do
+    begin
+    With TIDEObject(MenuList[i]) do
+      if FProjMenu=Sender then
+        Desc:=FProjDesc;
+    Dec(i);
+    end;
+  If Desc<>Nil then
+    LazarusIDE.DoNewProject(Desc);
+end;
+
+procedure RegisterKnowntemplates;
+
+Var
+  I : Integer;
+  ATemplate : TProjectTemplate;
+  ProjDesc : TTemplateProjectDescriptor;
+  ProjMenu : TIDEMenuCommand;
+
+begin
+  For I:=0 to IDETemplates.Count-1 do
+    begin
+    Atemplate:=IDETemplates[i];
+    ProjDesc:=TTemplateProjectDescriptor.Create(Atemplate);
+    RegisterProjectDescriptor(ProjDesc,STemplateCategory);
+    ProjMenu:=RegisterIDEMenuCommand(itmFileNewFromTemplate,
+                                     SItmtemplate+Atemplate.Name,
+                                     ATemplate.Name,
+                                     Nil,@DoProject,Nil);
+    MenuList.Add(TIDEObject.Create(ProjDesc,ProjMenu));
+    end;
+end;
+
+procedure UnRegisterKnowntemplates;
+
+Var
+  I : Integer;
+
+begin
+  For I:=MenuList.Count-1 downto 0 do
+    begin
+    With TIDEObject(MenuList[i]) do
+      begin
+      ProjectDescriptors.UnregisterDescriptor(FProjDesc);
+      FreeAndNil(FProjMenu);
+      end;
+    MenuList.Delete(I);
+    end;
+end;
+
+procedure ChangeSettings(Sender : TObject);
+
+begin
+  With TTemplateSettingsForm.Create(Application) do
+    Try
+      Templates:=IDETemplates;
+      if ShowModal=mrOK then
+        begin
+        SaveTemplateSettings;
+        UnRegisterKnownTemplates;
+        RegisterKnownTemplates;
+        end;
+    Finally
+      Free;
+    end;
+end;
+
+procedure Register;
+
+begin
+  RegisterIdeMenuCommand(itmCustomTools,STemplateSettings,SProjectTemplateSettings,nil,@ChangeSettings);
+  itmFileNewFromTemplate:=RegisterIDESubMenu(itmFileNew,
+                                             'itmFileFromtemplate',
+                                             SNewFromTemplate);
+  IDETemplates:=TProjectTemplates.Create(GetTemplateDir);
+  RegisterTemplateCategory;
+  RegisterKnownTemplates;
+end;
+
 
 { TTemplateProjectDescriptor }
 
@@ -109,6 +211,7 @@ var
 begin
   With TProjectVariablesForm.Create(Application) do
     try
+      Caption:=Caption+' '+FTemplate.Name;
       FVariables.Assign(FTemplate.Variables);
       I:=FVariables.IndexOfName('ProjName');
       if (I<>-1) then
@@ -126,8 +229,6 @@ begin
         FVariables.Values['ProjName']:=FProjectName;
         FVariables.Values['ProjDir']:=FProjectDirectory;
         end;
-      if SettingsChanged then
-        SaveTemplateSettings;
     finally
       Free;
     end;
@@ -244,4 +345,8 @@ begin
     Result:=mrCancel;
 end;
 
+Initialization
+  MenuList:=TObjectList.Create;
+Finalization
+  FreeAndNil(MenuList);
 end.

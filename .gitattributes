@@ -189,6 +189,7 @@ components/printers/win32/winprinters.inc svneol=native#text/pascal
 components/printers/win32/winprinters_h.inc svneol=native#text/pascal
 components/printers/win32/winutilprn.pas svneol=native#text/pascal
 components/printers/win32/winutilprnconst.inc svneol=native#text/pascal
+components/projecttemplates/README svneol=native#text/plain
 components/projecttemplates/frmtemplatesettings.lfm svneol=native#text/plain
 components/projecttemplates/frmtemplatesettings.lrs svneol=native#text/plain
 components/projecttemplates/frmtemplatesettings.pas svneol=native#text/plain

@@ -12,7 +12,6 @@ object TemplateSettingsForm: TTemplateSettingsForm
   Width = 400
   object Label1: TLabel
     AutoSize = False
-    BorderSpacing.OnChange = nil
     Caption = '&Directory with templates:'
     Color = clNone
     FocusControl = DETemplates
@@ -23,7 +22,6 @@ object TemplateSettingsForm: TTemplateSettingsForm
     Width = 160
   end
   object BOK: TButton
-    BorderSpacing.OnChange = nil
     Caption = '&OK'
     Default = True
     ModalResult = 1
@@ -35,9 +33,9 @@ object TemplateSettingsForm: TTemplateSettingsForm
     Width = 91
   end
   object BCancel: TButton
-    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = '&Cancel'
+    ModalResult = 2
     TabOrder = 1
     Left = 192
     Height = 25
@@ -47,9 +45,7 @@ object TemplateSettingsForm: TTemplateSettingsForm
   object DETemplates: TDirectoryEdit
     ButtonWidth = 23
     NumGlyphs = 1
-    BorderSpacing.OnChange = nil
     TabOrder = 2
-    BorderSpacing.OnChange = nil
     TabOrder = 2
     Left = 8
     Height = 23

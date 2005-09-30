@@ -6,14 +6,13 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn, frmTemplateSettings;
+  Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn;
 
 type
 
   { TProjectVariablesForm }
 
   TProjectVariablesForm = class(TForm)
-    BConfig1: TButton;
     BOK: TButton;
     BCancel: TButton;
     DEProject: TDirectoryEdit;
@@ -22,7 +21,6 @@ type
     Label2: TLabel;
     PDescription: TPanel;
     SGVariables: TStringGrid;
-    procedure BConfig1Click(Sender: TObject);
     procedure BOKClick(Sender: TObject);
     procedure ProjectVariablesFormShow(Sender: TObject);
   private
@@ -77,17 +75,6 @@ begin
     end;
 end;
 
-procedure TProjectVariablesForm.BConfig1Click(Sender: TObject);
-begin
-  With TTemplateSettingsForm.Create(Self) do
-    try
-      Templates:=Self.Templates;
-      If ShowModal=MROK then
-        SettingsChanged:=True;
-    Finally
-      Free;
-    end;
-end;
 
 procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);
 
