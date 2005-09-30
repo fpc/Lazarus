@@ -22,10 +22,6 @@ program bitbutton;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF Win32}
-{$APPTYPE GUI}
-{$ENDIF}
-
 uses
   interfaces, forms, bitbtnform;
 

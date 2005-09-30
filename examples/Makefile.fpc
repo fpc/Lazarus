@@ -81,3 +81,9 @@ endif
 export LCL_PLATFORM
 endif
 
+#
+# apptype gui
+ifeq ($(OS_TARGET),win32)
+LAZARUS_OPT+= -WG
+endif
+
