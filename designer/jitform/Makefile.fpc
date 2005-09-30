@@ -9,7 +9,7 @@ version=0.9b
 
 [compiler]
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
-unittargetdir=../units
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)
 options=-gl
 
 [target]
