@@ -1040,21 +1040,8 @@ end;
   Adds Window to the list of windows which need to redraw the main menu.
 -------------------------------------------------------------------------------}
 procedure AddToChangedMenus(Window: HWnd);
-{only add window handle if it does not yet exist in the list}
-  function FindHandle: integer;
-  var i: integer;
-  begin
-    for i := 0 to ChangedMenus.Count - 1 do
-      if HWnd(ChangedMenus[i]) = Window then
-      begin
-        Result := i;
-        exit;
-      end;
-    Result := ChangedMenus.Count;
-  end;
-
 begin
-  if FindHandle = ChangedMenus.Count then // Window handle is not yet in the list
+  if ChangedMenus.IndexOf(Pointer(Window)) = -1 then // Window handle is not yet in the list
     ChangedMenus.Add(Pointer(Window));
 end;
     
@@ -1066,12 +1053,12 @@ end;
   Redraws all changed menus
  ------------------------------------------------------------------------------}
 procedure RedrawMenus;
+var
+  I: integer;
 begin
-  while ChangedMenus.Count > 0 do
-  begin
-    DrawMenuBar(HWND(ChangedMenus[0]));
-    ChangedMenus.Delete(0);
-  end;
+  for I := 0 to  ChangedMenus.Count - 1 do
+    DrawMenuBar(HWND(ChangedMenus[I]));
+  ChangedMenus.Clear;
 end;
 
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;

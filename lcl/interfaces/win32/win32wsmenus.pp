@@ -87,6 +87,20 @@ type
 
 implementation
 
+{ helper routines }
+
+procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
+var
+  lMenu: TMenu;
+begin
+  lMenu := AMenuItem.GetParentMenu;
+  if (lMenu<>nil) and (lMenu.Parent<>nil)
+  and (lMenu.Parent is TCustomForm)
+  and TCustomForm(lMenu.Parent).HandleAllocated 
+  and not (csDestroying in lMenu.Parent.ComponentState) then
+    AddToChangedMenus(TCustomForm(lMenu.Parent).Handle);
+end;
+
 { TWin32WSMenuItem }
 
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
@@ -114,12 +128,7 @@ begin
     else fType := MFT_SEPARATOR;
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  // owner could be a popupmenu too
-  if (AMenuItem.Owner is TWinControl) and
-      TWinControl(AMenuItem.Owner).HandleAllocated and
-      TWinControl(AMenuItem.Owner).Visible and
-      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -247,12 +256,7 @@ begin
   if dword(InsertMenuItem(ParentMenuHandle,
        AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
     DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
-  // owner could be a popupmenu too
-  if (AMenuItem.Owner is TWinControl) and
-      TWinControl(AMenuItem.Owner).HandleAllocated and
-      TWinControl(AMenuItem.Owner).Visible and
-      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 function  TWin32WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
@@ -261,19 +265,11 @@ begin
 end;
 
 procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
-var
-  AMenu: TMenu;
 begin
   { not assigned when this the menuitem of a TMenu; handle is destroyed above }
   if Assigned(AMenuItem.Parent) then
     DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
-  AMenu := AMenuItem.GetParentMenu;
-  if (AMenu<>nil) and (AMenu.Parent<>nil)
-  and (AMenu.Parent is TCustomForm)
-  and TCustomForm(AMenu.Parent).HandleAllocated 
-  and TCustomForm(AMenu.Parent).Visible
-  and not (csDestroying in AMenu.Parent.ComponentState) then
-    AddToChangedMenus(TWinControl(AMenu.Parent).Handle);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
@@ -340,11 +336,7 @@ begin
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
-  if (AMenuItem.Owner is TWinControl) and
-    TWinControl(AMenuItem.Owner).HandleAllocated and
-    TWinControl(AMenuItem.Owner).Visible and
-    ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
@@ -358,11 +350,7 @@ begin
   else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
   MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
   Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  if (AMenuItem.Owner is TWinControl) and
-    TWinControl(AMenuItem.Owner).HandleAllocated and
-    TWinControl(AMenuItem.Owner).Visible and
-    ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    AddToChangedMenus(TWinControl(AMenuItem.Owner).Handle);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 
