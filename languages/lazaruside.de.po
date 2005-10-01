@@ -446,7 +446,7 @@ msgstr "Suche nach mehrfachen Zeilen erlauben"
 
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
-msgstr "Alfabetisch"
+msgstr "Alphabetisch"
 
 #: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
@@ -3202,7 +3202,7 @@ msgstr "Vorlage einfügen"
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
-msgstr "Alfabetisch einfügen"
+msgstr "Alphabetisch einfügen"
 
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
