@@ -37,26 +37,26 @@ uses
   SysUtils, ExtCtrls, Controls;
 
 type
-	TForm1 = class(TFORM)
-          Scrollbar1 : TScrollbar;
-          Button1 : TButton;
-          Button2 : TButton;
-          Button3 : TButton;
-          Button4 : TButton;
-          Procedure Button1Clicked(sender : tobject);
-          Procedure Button2Clicked(sender : tobject);
-          Procedure Button3Clicked(sender : tobject);
-          Procedure Button4Clicked(sender : tobject);
-          Procedure scrollbar1Changed(sender : tobject);
-          procedure Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-	public
-          constructor Create(AOwner: TComponent); override;	
-	  Procedure FormKill(Sender : TObject);
-	protected
-	end;
+  TForm1 = class(TFORM)
+    Scrollbar1 : TScrollbar;
+    Button1 : TButton;
+    Button2 : TButton;
+    Button3 : TButton;
+    Button4 : TButton;
+    Procedure Button1Clicked(sender : tobject);
+    Procedure Button2Clicked(sender : tobject);
+    Procedure Button3Clicked(sender : tobject);
+    Procedure Button4Clicked(sender : tobject);
+    Procedure scrollbar1Changed(sender : tobject);
+    procedure Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;	
+    Procedure FormKill(Sender : TObject);
+  protected
+  end;
 
 var
-Form1 : TForm1;
+  Form1 : TForm1;
 
 constructor TForm1.Create(AOwner: TComponent);	
 begin

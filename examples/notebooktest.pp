@@ -41,7 +41,7 @@ uses
   Graphics, ExtCtrls, LclProc;
 
 type
-	  
+
   TForm1 = class(TFORM)
     notebook1 : TNotebook;
     Button1: TButton; 

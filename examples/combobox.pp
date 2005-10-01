@@ -35,43 +35,43 @@ uses
   SysUtils, Extctrls, Controls;
 
 type
-	TForm1 = class(TFORM)
-	public
-	  Label1 : TLabel;
-	  Label2 : TLabel;
-	  Label3 : TLabel;
-	  Button1: TButton;
-    	  Button2: TButton;
-	  Button3: TButton;
-	  Button4: TButton;
-	  Button5: TButton;
-	  Button6: TButton;
-	  Button7: TButton;
-	  Edit1 : TEdit;
-	  mnuMain: TMainMenu;
-    	  itmFileQuit: TMenuItem;
-    	  itmFile: TMenuItem;
-          ComboBox1 : TComboBox;
-          ComboBox2 : TComboBox;
-          Memo1     : TMemo;
-          constructor Create(AOwner: TComponent); override;	
-          procedure LoadMainMenu;
-	  Procedure FormKill(Sender : TObject);
-	  procedure mnuQuitClicked(Sender : TObject);
-	protected
-	  procedure Button1CLick(Sender : TObject);
-	  procedure Button2CLick(Sender : TObject);
-	  procedure Button3CLick(Sender : TObject);
-	  procedure Button4CLick(Sender : TObject);
-	  procedure Button5CLick(Sender : TObject);
-	  procedure Button6CLick(Sender : TObject);
-	  procedure Button7CLick(Sender : TObject);
-	  procedure ComboOnChange (Sender:TObject);
-	  procedure ComboOnClick (Sender:TObject);
-	end;
+  TForm1 = class(TFORM)
+  public
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Edit1: TEdit;
+    mnuMain: TMainMenu;
+    itmFileQuit: TMenuItem;
+    itmFile: TMenuItem;
+    ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
+    Memo1: TMemo;
+    constructor Create(AOwner: TComponent); override;
+    procedure LoadMainMenu;
+    procedure FormKill(Sender: TObject);
+    procedure mnuQuitClicked(Sender: TObject);
+  protected
+    procedure Button1CLick(Sender: TObject);
+    procedure Button2CLick(Sender: TObject);
+    procedure Button3CLick(Sender: TObject);
+    procedure Button4CLick(Sender: TObject);
+    procedure Button5CLick(Sender: TObject);
+    procedure Button6CLick(Sender: TObject);
+    procedure Button7CLick(Sender: TObject);
+    procedure ComboOnChange(Sender: TObject);
+    procedure ComboOnClick(Sender: TObject);
+  end;
 
 var
-Form1 : TForm1;
+  Form1 : TForm1;
 
 constructor TForm1.Create(AOwner: TComponent);	
 begin

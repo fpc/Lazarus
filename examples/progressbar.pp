@@ -3,8 +3,8 @@
                           progressbar - example
                           ---------------------
 
-		   Just a simple example to show & verify functionality
-		   of the lazarus TTimer / TProgressBar classes.
+                   Just a simple example to show & verify functionality
+                   of the lazarus TTimer / TProgressBar classes.
 
                    Initial Revision  : Sun Aug 15 1999
 
@@ -41,36 +41,35 @@ uses
 
 
 type
-	TForm1 = class(TFORM)
-	public
-	  Progre1: TProgressBar;	  
-	  Timer0 : TTimer;
-	  Button1: TButton;
-    	  Button2: TButton;
-	  Button3: TButton;
-	  Button4: TButton;
-	  Button5: TButton;
-       	  Button6: TButton;
-       	  Button7: TButton;
-          mnuFile: TMainMenu;
-          itmFileQuit: TMenuItem;
-          constructor Create(AOwner: TComponent); override;	
-          procedure LoadMainMenu;
-	  procedure mnuQuitClicked(Sender : TObject);
-	protected
-	  procedure Button1CLick(Sender : TObject);
-	  procedure Button2CLick(Sender : TObject);
-	  procedure Button3CLick(Sender : TObject);
-	  procedure Button4CLick(Sender : TObject);
-	  procedure Button5CLick(Sender : TObject);
-	  procedure Button6CLick(Sender : TObject);
-	  procedure Button7CLick(Sender : TObject);
-	  procedure TimedOut(Sender : TObject);
-	end;
+  TForm1 = class(TFORM)
+  public
+    Progre1: TProgressBar;
+    Timer0 : TTimer;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    mnuFile: TMainMenu;
+    itmFileQuit: TMenuItem;
+    constructor Create(AOwner: TComponent); override;
+    procedure LoadMainMenu;
+    procedure mnuQuitClicked(Sender : TObject);
+  protected
+    procedure Button1CLick(Sender : TObject);
+    procedure Button2CLick(Sender : TObject);
+    procedure Button3CLick(Sender : TObject);
+    procedure Button4CLick(Sender : TObject);
+    procedure Button5CLick(Sender : TObject);
+    procedure Button6CLick(Sender : TObject);
+    procedure Button7CLick(Sender : TObject);
+    procedure TimedOut(Sender : TObject);
+  end;
 
 var
-Form1 : TForm1;
-
+  Form1 : TForm1;
 
 
 constructor TForm1.Create(AOwner: TComponent);	

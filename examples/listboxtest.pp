@@ -23,15 +23,13 @@ program ListBoxTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls{,
-  CListBox};
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls;
 
 type
   TListBoxTestForm = class(TForm)
   public
     Button1, Button2, Button3, Button4:   TButton;
     ListBox:  TListBox;
-//    ListBox:  TCListBox;
     constructor Create(AOwner: TComponent); override;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
