@@ -281,7 +281,7 @@ procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
   var MenuItem: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
   const bmpName: String; mnuEnabled: Boolean);
 begin
-  MenuItem:=RegisterIDEMenuCommand(Section.GetPath,MenuItemName,MenuItemCaption);
+  MenuItem:=RegisterIDEMenuCommand(Section,MenuItemName,MenuItemCaption);
   MenuItem.Enabled:=mnuEnabled;
   if bmpName<>'' then
     MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
@@ -291,7 +291,7 @@ procedure TMainIDEBase.CreateMenuSeparatorSection(
   ParentSection: TIDEMenuSection; var Section: TIDEMenuSection;
   const AName: String);
 begin
-  Section:=RegisterIDEMenuSection(ParentSection.GetPath,AName);
+  Section:=RegisterIDEMenuSection(ParentSection,AName);
   Section.ChildsAsSubMenu := false;
 end;
 
@@ -299,7 +299,7 @@ procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
   var Section: TIDEMenuSection; const AName, ACaption: String;
   const bmpName: String = '');
 begin
-  Section:=RegisterIDESubMenu(ParentSection.GetPath,AName,ACaption);
+  Section:=RegisterIDESubMenu(ParentSection,AName,ACaption);
   if bmpName<>'' then
     Section.Bitmap.LoadFromLazarusResource(bmpName);
 end;
@@ -307,8 +307,7 @@ end;
 procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
   const MenuItemName, MenuItemCaption: String);
 begin
-  Section:=RegisterIDESubMenu(mnuMain.GetPath,MenuItemName,
-                              MenuItemCaption);
+  Section:=RegisterIDESubMenu(mnuMain,MenuItemName,MenuItemCaption);
 end;
 
 procedure TMainIDEBase.SetupMainMenu;

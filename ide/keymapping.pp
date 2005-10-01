@@ -311,6 +311,7 @@ type
     function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
                          TheScope: TIDECommandScope): integer;
+    function Add(Category: TIDECommandCategory; Command: TIDECommand):integer;
     function Add(Category: TIDECommandCategory; const Name: string;
                  Command: word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
     function AddDefault(Category: TIDECommandCategory; const Name: string;
@@ -2875,8 +2876,7 @@ begin
   for i:=0 to List.Count-1 do begin
     CurRelation:=List.Relations[i];
     CurCategory:=FindCategoryByName(CurRelation.Category.Name);
-    Add(CurCategory,CurRelation.Name,CurRelation.Command,
-      CurRelation.ShortcutA,CurRelation.ShortcutB);
+    Add(CurCategory,CurRelation);
   end;
 
   // copy ExtToolCount
@@ -2964,6 +2964,14 @@ function TKeyCommandRelationList.AddCategory(const Name, Description: string;
 begin
   Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,
                           TheScope));
+end;
+
+function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
+  Command: TIDECommand): integer;
+begin
+  Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Command.Name,
+                         Command.Command,Command.ShortcutA,Command.ShortcutB));
+  Relations[Result].LocalizedName:=Command.LocalizedName;
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string

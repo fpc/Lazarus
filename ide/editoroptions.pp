@@ -252,18 +252,18 @@ type
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
     procedure GetDefaultsForPascalAttribute(Attr: TSynHighlightElement;
-      const SynColorScheme: String);
+                                            const SynColorScheme: String);
     procedure ReadHighlighterSettings(Syn: TCustomSyn;
-      SynColorScheme: String);
+                                      SynColorScheme: String);
     procedure ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
-      SynColorScheme: String;
-      DefaultPascalSyn: TPreviewPasSyn);
+                                                 SynColorScheme: String;
+                                                 DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TCustomSyn;
-      SynColorScheme: String);
+                                       SynColorScheme: String);
     procedure GetSpecialLineColors(Syn: TCustomSyn;
-      AddHilightAttr:
-      TAdditionalHilightAttribute;
-      var Special: Boolean; var FG, BG: TColor);
+                                   AddHilightAttr:
+                                   TAdditionalHilightAttribute;
+                                   var Special: Boolean; var FG, BG: TColor);
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -490,7 +490,7 @@ type
     procedure SetupKeyMappingsPage(Page: Integer);
     function KeyMappingRelationToString(Index: Integer): String;
     function KeyMappingRelationToString(KeyRelation:
-      TKeyCommandRelation): String;
+                                        TKeyCommandRelation): String;
     procedure FillKeyMappingTreeView;
 
     // color
@@ -3320,9 +3320,9 @@ begin
   with KeyRelation do
   begin
     Result := copy(LocalizedName, 1, 40);
-    if length(Result) < 37 then
+    if length(Result) < 40 then
     begin
-      SetLength(s, (37 - length(Result)));
+      SetLength(s, (40 - length(Result)));
       FillChar(s[1], length(s), ' ');
     end
     else
