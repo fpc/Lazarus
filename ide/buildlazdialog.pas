@@ -108,6 +108,7 @@ type
     FItemSynEdit: TBuildLazarusItem;
     FExtraOptions: string;
     FRestartAfterBuild: boolean;
+    FConfirmBuild: boolean;
     FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
@@ -117,6 +118,7 @@ type
     function GetCount: integer;
     function GetItems(Index: integer): TBuildLazarusItem;
     procedure SetRestartAfterBuild(const AValue: boolean);
+    procedure SetConfirmBuild(const AValue: boolean);
     procedure SetTargetDirectory(const AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetWithStaticPackages(const AValue: boolean);
@@ -156,6 +158,7 @@ type
                                          write SetWithStaticPackages;
     property RestartAfterBuild: boolean read FRestartAfterBuild
                                         write SetRestartAfterBuild;
+    property ConfirmBuild: boolean read FConfirmBuild write SetConfirmBuild;
     property Globals: TGlobalCompilerOptions read FGlobals;
   end;
   
@@ -168,6 +171,7 @@ type
     ItemsListBox: TListBox;
     WithStaticPackagesCheckBox: TCheckBox;
     RestartAfterBuildCheckBox: TCheckBox;
+    ConfirmBuildCheckBox: TCheckBox;
     OptionsLabel: TLabel;
     OptionsEdit: TEdit;
     LCLInterfaceRadioGroup: TRadioGroup;
@@ -709,6 +713,10 @@ begin
     SetBounds(x,y,Parent.ClientWidth-x-10,Height);
     inc(y,Height+3);
   end;
+  with ConfirmBuildCheckBox do begin
+    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
+    inc(y,Height+3);
+  end;
 
   inc(x,w+10);
   y:=BuildAllButton.Top;
@@ -902,6 +910,7 @@ begin
   LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
+  ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   
@@ -917,6 +926,7 @@ begin
   Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
+  Options.ConfirmBuild:=ConfirmBuildCheckBox.Checked;
   Options.TargetOS:=TargetOSEdit.Text;
   Options.TargetDirectory:=TargetDirectoryComboBox.Text;
 
@@ -1088,6 +1098,13 @@ begin
     Caption:=lisLazBuildRestartAfterBuild;
   end;
 
+  ConfirmBuildCheckBox:=TCheckBox.Create(Self);
+  with ConfirmBuildCheckBox do begin
+    Name:='ConfirmBuildCheckBox';
+    Parent:=Self;
+    Caption:=lisLazBuildConfirmBuild;
+  end;
+
   OkButton:=TButton.Create(Self);
   with OkButton do begin
     Parent:=Self;
@@ -1131,6 +1148,8 @@ begin
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,
                            true);
+  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,
+                           true);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
                            true);
 
@@ -1154,6 +1173,7 @@ begin
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
   RestartAfterBuild:=Source.RestartAfterBuild;
+  ConfirmBuild:=Source.ConfirmBuild;
   fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
   for i:=0 to Source.Count-1 do begin
     SrcItem:=Source.Items[i];
@@ -1222,6 +1242,7 @@ begin
                   XMLConfig.GetValue(Path+'TargetDirectory/Value',
                                      DefaultTargetDirectory)));
   FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+  FConfirmBuild:=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
 
   // auto install packages
@@ -1256,6 +1277,12 @@ procedure TBuildLazarusOptions.SetRestartAfterBuild(const AValue: boolean);
 begin
   if FRestartAfterBuild=AValue then exit;
   FRestartAfterBuild:=AValue;
+end;
+
+procedure TBuildLazarusOptions.SetConfirmBuild(const AValue: boolean);
+begin
+  if FConfirmBuild=AValue then exit;
+  FConfirmBuild:=AValue;
 end;
 
 procedure TBuildLazarusOptions.SetWithStaticPackages(const AValue: boolean);

@@ -3094,6 +3094,9 @@ end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
+  if MiscellaneousOptions.BuildLazOpts.ConfirmBuild then
+    if MessageDlg(lisConfirmLazarusRebuild, mtConfirmation, mbYesNo, 0)=mrNo then
+      exit;
   DoBuildLazarus([]);
 end;
 

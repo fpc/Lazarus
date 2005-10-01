@@ -1546,6 +1546,7 @@ resourcestring
   lisDocumentationEditor = 'Documentation Editor';
    
   // Build lazarus dialog
+  lisConfirmLazarusRebuild = 'Do You want ReBuild Lazarus?';
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
@@ -1577,6 +1578,7 @@ resourcestring
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With Packages';
   lisLazBuildRestartAfterBuild = 'Restart After Successfull Build';
+  lisLazBuildConfirmBuild = 'Confirm Before ReBuild Lazarus';
   lisLazBuildOk = 'Ok';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
