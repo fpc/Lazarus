@@ -171,6 +171,8 @@ type
   { TIDECommands }
 
   TIDECommands = class
+  protected
+    function GetCategory(Index: integer): TIDECommandCategory; virtual; abstract;
   public
     function FindIDECommand(ACommand: word): TIDECommand; virtual; abstract;
     function CreateCategory(Parent: TIDECommandCategory;
@@ -180,6 +182,9 @@ type
                            const Name, Description: string;
                            const TheShortcutA, TheShortcutB: TIDEShortCut
                            ): TIDECommand; virtual; abstract;
+    function CategoryCount: integer; virtual; abstract;
+  public
+    property Categories[Index: integer]: TIDECommandCategory read GetCategory;
   end;
 
 const

@@ -306,15 +306,15 @@ type
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
-    function GetCategory(Index: integer): TKeyCommandCategory;
-    function GetRelation(Index:integer):TKeyCommandRelation;
-    function GetRelationCount:integer;
+    function GetCategory(Index: integer): TIDECommandCategory; override;
+    function GetRelation(Index: integer): TKeyCommandRelation;
+    function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
-       TheScope: TIDECommandScope): integer;
-    function Add(Category: TKeyCommandCategory; const Name: string;
-       Command:word;  const TheKeyA, TheKeyB: TIDEShortCut):integer;
-    function AddDefault(Category: TKeyCommandCategory; const Name: string;
-       Command:word):integer;
+                         TheScope: TIDECommandScope): integer;
+    function Add(Category: TIDECommandCategory; const Name: string;
+                 Command: word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
+    function AddDefault(Category: TIDECommandCategory; const Name: string;
+                        Command: word):integer;
     procedure SetExtToolCount(NewCount: integer);
   public
     constructor Create;
@@ -322,12 +322,12 @@ type
     procedure CreateDefaultMapping;
     procedure Clear;
     function Count: integer;
-    function CategoryCount: integer;
+    function CategoryCount: integer; override;
     function Find(Key: TIDEShortCut; IDEWindowClass: TCustomFormClass
                   ): TKeyCommandRelation;
     function FindIDECommand(ACommand:word): TIDECommand; override;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
-    function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
+    function FindCategoryByName(const CategoryName: string): TIDECommandCategory;
     function FindCommandByName(const CommandName: string): TKeyCommandRelation;
     function TranslateKey(Key: word; Shift: TShiftState;
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
@@ -353,7 +353,6 @@ type
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
     property RelationCount:integer read GetRelationCount;
-    property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
   end;
 
   //---------------------------------------------------------------------------
@@ -2249,7 +2248,7 @@ end;
 
 procedure TKeyCommandRelationList.CreateDefaultMapping;
 var
-  C: TKeyCommandCategory;
+  C: TIDECommandCategory;
 begin
   Clear;
 
@@ -2587,7 +2586,7 @@ begin
   Result:=FRelations.Count;
 end;
 
-function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
+function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
   const Name: string;
   Command:word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
 begin
@@ -2595,7 +2594,7 @@ begin
                          TheKeyA,TheKeyB));
 end;
 
-function TKeyCommandRelationList.AddDefault(Category: TKeyCommandCategory;
+function TKeyCommandRelationList.AddDefault(Category: TIDECommandCategory;
   const Name: string; Command: word): integer;
 var
   TheKeyA, TheKeyB: TIDEShortCut;
@@ -2609,7 +2608,7 @@ end;
 
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
 var i: integer;
-  ExtToolCat: TKeyCommandCategory;
+  ExtToolCat: TIDECommandCategory;
   ExtToolRelation: TKeyCommandRelation;
 begin
   if NewCount=fExtToolCount then exit;
@@ -2859,7 +2858,7 @@ end;
 procedure TKeyCommandRelationList.Assign(List: TKeyCommandRelationList);
 var
   i: Integer;
-  CurCategory: TKeyCommandCategory;
+  CurCategory: TIDECommandCategory;
   CurRelation: TKeyCommandRelation;
 begin
   Clear;
@@ -2947,9 +2946,10 @@ begin
   Result.LocalizedName:=Description;
 end;
 
-function TKeyCommandRelationList.GetCategory(Index: integer): TKeyCommandCategory;
+function TKeyCommandRelationList.GetCategory(Index: integer
+  ): TIDECommandCategory;
 begin
-  Result:=TKeyCommandCategory(fCategories[Index]);
+  Result:=TIDECommandCategory(fCategories[Index]);
 end;
 
 function TKeyCommandRelationList.CategoryCount: integer;
@@ -2965,7 +2965,7 @@ begin
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
-  ): TKeyCommandCategory;
+  ): TIDECommandCategory;
 var i: integer;
 begin
   for i:=0 to CategoryCount-1 do

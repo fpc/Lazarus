@@ -3347,7 +3347,7 @@ procedure TEditorOptionsForm.FillKeyMappingTreeView;
 var
   i, j: Integer;
   NewCategoryNode, NewKeyNode: TTreeNode;
-  CurCategory: TKeyCommandCategory;
+  CurCategory: TIDECommandCategory;
   CurKeyRelation: TKeyCommandRelation;
 begin
   with KeyMappingTreeView do
