@@ -110,6 +110,7 @@ begin
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
+    TS.SystemFont:=Canvas.Font.IsDefault;
     Canvas.TextRect(ARect,ARect.Left,ARect.Top, Caption, TS);
   end;
 end;

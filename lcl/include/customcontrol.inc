@@ -80,6 +80,12 @@ begin
   if Assigned(FOnPaint) then FOnPaint(Self);
 end;
 
+procedure TCustomControl.FontChanged(Sender: TObject);
+begin
+  Canvas.Font:=Font;
+  inherited FontChanged(Sender);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomControl.LMPaint
   Params:   Msg: The paint message

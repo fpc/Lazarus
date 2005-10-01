@@ -1751,7 +1751,7 @@ begin
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FWinControlFlags,wcfFontChanged);
-    //NotifyControls(CM_ ...);
+    Invalidate;
   end else
     Include(FWinControlFlags,wcfFontChanged);
 end;
