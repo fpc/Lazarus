@@ -50,6 +50,7 @@ type
     dgTitles,                           // Ya
     dgIndicator,                        // Ya
     dgColumnResize,                     // Ya
+    dgColumnMove,                       // Ya
     dgColLines,                         // Ya
     dgRowLines,                         // Ya
     dgTabs,                             // Ya
@@ -915,6 +916,11 @@ begin
       Include(OldOptions, goColSizing)
     else
       Exclude(OldOptions, goColSizing);
+      
+    if dgColumnMove in fOptions then
+      Include(OldOptions, goColMoving)
+    else
+      Exclude(OldOptions, goColMoving);
 
     if dgAlwaysShowEditor in FOptions then
       Include(OldOptions, goAlwaysShowEditor)
@@ -2443,8 +2449,9 @@ begin
 
   FDefaultColWidths := True;
 
-  FOptions := [dgColumnResize, dgTitles, dgIndicator, dgRowLines, dgColLines,
-    dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing, dgAlwaysShowSelection];
+  FOptions := [dgColumnResize, dgColumnMove, dgTitles, dgIndicator, dgRowLines,
+    dgColLines, dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing,
+    dgAlwaysShowSelection];
 
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
