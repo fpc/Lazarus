@@ -2225,7 +2225,9 @@ end;
 
 function TKeyCommandRelation.GetLocalizedName: string;
 begin
-  Result:=EditorCommandLocalizedName(Command,Name);
+  Result:=inherited GetLocalizedName;
+  if Result='' then
+    Result:=EditorCommandLocalizedName(Command,Name);
 end;
 
 { TKeyCommandRelationList }

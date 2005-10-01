@@ -3319,7 +3319,7 @@ var
 begin
   with KeyRelation do
   begin
-    Result := copy(EditorCommandLocalizedName(Command, Name), 1, 37);
+    Result := copy(LocalizedName, 1, 40);
     if length(Result) < 37 then
     begin
       SetLength(s, (37 - length(Result)));

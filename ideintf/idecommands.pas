@@ -139,7 +139,7 @@ type
     FCategory: TIDECommandCategory;
     FCommand: word;
     FLocalizedName: string;
-        FName: String;
+    FName: String;
     FShortcutA: TIDEShortCut;
     FShortcutB: TIDEShortCut;
   protected
