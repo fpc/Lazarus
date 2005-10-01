@@ -30,6 +30,7 @@ begin
   TabStop := true;
   // set default alignment
   Align := alNone;
+  BorderSpacing.InnerBorder:=2;
   // setup default sizes
   SetInitialBounds(0,0,75,25);
 end;

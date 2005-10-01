@@ -4412,9 +4412,15 @@ var
   NewHeight: Integer;
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
-  if HandleAllocated then
+  if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                                PreferredWidth, PreferredHeight);
+    if (PreferredWidth>0) then
+      inc(PreferredWidth,BorderSpacing.InnerBorder*2);
+    if PreferredHeight>0 then
+      inc(PreferredHeight,BorderSpacing.InnerBorder*2);
+  end;
+  
   if ControlCount>0 then begin
 
     // get the size requirements for the child controls

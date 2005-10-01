@@ -621,11 +621,9 @@ type
     clVerticalThenHorizontal
     );
 
-  { TCustomRadioGroup }
-
   TCustomRadioGroup = class(TCustomGroupBox)
-    procedure ItemExit(Sender: TObject);
   private
+    FAutoFill: Boolean;
     FButtonList: TList; // list of TRadioButton
     FColumnLayout: TColumnLayout;
     FColumns: integer;
@@ -642,7 +640,10 @@ type
     procedure Changed(Sender: TObject);
     procedure ItemEnter(Sender: TObject);
     procedure DoPositionButtons;
+    procedure SetAutoFill(const AValue: Boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
+    procedure ItemExit(Sender: TObject);
+    procedure ItemResize(Sender: TObject);
   protected
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
@@ -652,18 +653,19 @@ type
     function GetItemIndex: integer;
     procedure Resize; override;
     procedure CheckItemIndexChanged; virtual;
-  protected
-    property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
-    property Items: TStrings read FItems write SetItem;
-    property Columns: integer read FColumns write SetColumns default 1;
-    property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function CanModify: boolean; virtual;
     procedure CreateWnd; override;
     function Rows: integer;
+  public
+    property AutoFill: Boolean read FAutoFill write SetAutoFill;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
+    property Items: TStrings read FItems write SetItem;
+    property Columns: integer read FColumns write SetColumns default 1;
+    property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
 
@@ -673,6 +675,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoFill;
     property BorderSpacing;
     property Caption;
     property ChildSizing;

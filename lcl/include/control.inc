@@ -3555,8 +3555,10 @@ procedure TControl.EnableAutoSizing;
 begin
   if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
   dec(FAutoSizingLockCount);
-  if FAutoSizingLockCount=0 then
-    AdjustSize;
+  if FAutoSizingLockCount=0 then begin
+    if cfAutoSizeNeeded in FControlFlags then
+      AdjustSize;
+  end;
 end;
 
 {------------------------------------------------------------------------------

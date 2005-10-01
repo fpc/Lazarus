@@ -117,11 +117,12 @@ begin
   while (FButtonList.Count<FItems.Count) do begin
     Temp := TRadioButton.Create(Self);
     Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
-    Temp.AutoSize := False;
+    Temp.AutoSize := True;
     Temp.OnClick := @Clicked;
     Temp.OnChange := @Changed;
     Temp.OnEnter :=@ItemEnter;
     Temp.OnExit :=@ItemExit;
+    Temp.OnResize := @ItemResize;
     include(temp.ControlStyle, csNoDesignSelectable);
     FButtonList.Add(Temp);
   end;
@@ -184,6 +185,11 @@ end;
 procedure TCustomRadioGroup.ItemExit(Sender: TObject);
 begin
   DoExit;
+end;
+
+procedure TCustomRadioGroup.ItemResize(Sender: TObject);
+begin
+  DoPositionButtons;
 end;
 
 {------------------------------------------------------------------------------
@@ -395,21 +401,32 @@ var
   nextLeft: integer;
   vertDist: integer;
   horzDist: integer;
-  rbWidth: integer;
   MaxRows: Integer;
+  UsedColumnCount: integer;
+  UsedRowCount: integer;
 begin
-  if (FItems.Count>0) and (FColumns>0) then begin
+  if FButtonList.Count=0 then exit;
+  
+  if TRadioButton(FButtonList[0]).AutoSizeDelayed then exit;
+  DisableAutoSizing;
+  try
+    UsedColumnCount:=FColumns;
+    if UsedColumnCount<1 then UsedColumnCount:=1;
+    if AutoFill and (UsedColumnCount>FButtonList.Count) then
+      UsedColumnCount:=FButtonList.Count;
+
+    UsedRowCount:=((FButtonList.Count-1) div UsedColumnCount)+1;
+    
     // position in rows and columns
-    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
-    horzDist := (Width - 20) DIV FColumns;
+    vertDist := (Height - 20) DIV UsedRowCount;
+    horzDist := (Width - 20) DIV UsedColumnCount;
     nextTop  := 0;
     nextLeft := 10;
-    rbWidth  := horzDist;
-    MaxRows := (FItems.Count+FColumns-1) div FColumns;
+    MaxRows := (FButtonList.Count+FColumns-1) div FColumns;
     i := 0;
-    while i < FItems.Count do begin
+    while i < FButtonList.Count do begin
       CurButton := TRadioButton(FButtonList[i]);
-      CurButton.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
+      CurButton.SetBounds(nextLeft,nextTop,CurButton.Width,CurButton.Height);
 
       inc (i);
       if FColumnLayout=clHorizontalThenVertical then begin
@@ -428,7 +445,16 @@ begin
         end;
       end;
     end;
+  finally
+    EnableAutoSizing;
   end;
+end;
+
+procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
+begin
+  if FAutoFill=AValue then exit;
+  FAutoFill:=AValue;
+  DoPositionButtons;
 end;
 
 procedure TCustomRadioGroup.SetColumnLayout(const AValue: TColumnLayout);

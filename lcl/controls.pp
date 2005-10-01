@@ -537,6 +537,11 @@ type
         Example: Left=3 and Around=5 results in a minimum spacing to the left
         of 8.
 
+    InnerBorder: integer;
+        This is added to the preferred size.
+        For example: A buttons widget returns 75x25 on GetPreferredSize.
+        CalculatePreferredSize adds 2 times the InnerBorder to the width and
+        height.
   }
   
   TSpacingSize = 0..MaxInt;
@@ -548,12 +553,14 @@ type
     FAround: TSpacingSize;
     FBottom: TSpacingSize;
     FControl: TControl;
+    FInnerBorder: Integer;
     FLeft: TSpacingSize;
     FOnChange: TNotifyEvent;
     FRight: TSpacingSize;
     FTop: TSpacingSize;
     procedure SetAround(const AValue: TSpacingSize);
     procedure SetBottom(const AValue: TSpacingSize);
+    procedure SetInnerBorder(const AValue: Integer);
     procedure SetLeft(const AValue: TSpacingSize);
     procedure SetRight(const AValue: TSpacingSize);
     procedure SetSpace(Kind: TAnchorKind; const AValue: integer);
@@ -577,6 +584,7 @@ type
     property Right: TSpacingSize read FRight write SetRight;
     property Bottom: TSpacingSize read FBottom write SetBottom;
     property Around: TSpacingSize read FAround write SetAround;
+    property InnerBorder: Integer read FInnerBorder write SetInnerBorder;
   end;
   
   
@@ -1265,13 +1273,13 @@ type
   TChildControlEnlargeStyle = (
       cesAnchorAligning, // (like Delphi)
       cesScaleChilds, // scale childs, keep space between childs fixed
-      cesHomogenousChildGrowth, // enlarge childs equally
+      cesHomogenousChildGrowth, // enlarge childs equally (i.e. by the same amount of pixel)
       cesHomogenousSpaceGrowth  // enlarge space between childs equally
     );
   TChildControlShrinkStyle = (
       cssAnchorAligning, // (like Delphi)
       cssScaleChilds, // scale childs
-      cssHomogenousChildDecrease // shrink childs equally
+      cssHomogenousChildDecrease // shrink childs equally (i.e. by the same amount of pixel)
     );
 
   TControlChildSizing = class(TPersistent)
@@ -1347,8 +1355,6 @@ type
     wcfCreatingChildHandles // Set while constructing the handles of the childs
     );
   TWinControlFlags = set of TWinControlFlag;
-
-  { TWinControl }
 
   TWinControl = class(TControl)
   private
@@ -2019,7 +2025,6 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect);
 
-
 // register (called by the package initialization in design mode)
 procedure Register;
 
@@ -2441,6 +2446,13 @@ procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);
 begin
   if FBottom=AValue then exit;
   FBottom:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetInnerBorder(const AValue: Integer);
+begin
+  if FInnerBorder=AValue then exit;
+  FInnerBorder:=AValue;
   Change;
 end;
 
