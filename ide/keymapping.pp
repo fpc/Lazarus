@@ -2209,8 +2209,10 @@ end;
 procedure TKeyCommandRelation.SetShortcutA(const AValue: TIDEShortCut);
 begin
   inherited SetShortcutA(AValue);
-  {if Command=ecBlockIndent then begin
+  {if Command=12000 then begin
     debugln('TKeyCommandRelation.SetShortcutA ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(ShortcutB));
+    if AValue.Key1=VK_UNKNOWN then
+      RaiseGDBException('');
   end;}
 end;
 
@@ -2260,6 +2262,8 @@ begin
   // moving
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,
                 IDECmdScopeSrcEditOnly)];
+  //p:=Relations[Add(C,'Name1',12000,IDEShortCut(vk_P,[ssShift,ssAlt],VK_UNKNOWN,[]),CLeanIDEShortCut)];
+  //debugln('TKeyCommandRelationList.Add A ',p.Name,' ',KeyAndShiftStateToEditorKeyString(p.ShortcutA),' ',dbgs(p));
   AddDefault(C,'Move cursor word left',ecWordLeft);
   AddDefault(C,'Move cursor word right',ecWordRight);
   AddDefault(C,'Move cursor to line start',ecLineStart);
@@ -2677,7 +2681,6 @@ var a,b,p:integer;
 // LoadFromXMLConfig
 var
   FileVersion: integer;
-  TheKeyA, TheKeyB: TIDEShortCut;
   Key1, Key2: word;
   Shift1, Shift2: TShiftState;
 begin
@@ -2688,7 +2691,6 @@ begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
-    GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
 
     if FileVersion<2 then
       NewValue:=XMLConfig.GetValue(Prefix+Name,'')
@@ -2696,8 +2698,8 @@ begin
       NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value','');
     //if Relations[a].Command=ecBlockIndent then debugln('  NewValue=',NewValue);
     if NewValue='' then begin
-      Relations[a].ShortcutA:=TheKeyA;
-      Relations[a].ShortcutB:=TheKeyB;
+      Relations[a].ShortcutA:=Relations[a].DefaultShortcutA;
+      Relations[a].ShortcutB:=Relations[a].DefaultShortcutB;
     end else begin
       p:=1;
       Key1:=word(ReadNextInt);
@@ -2972,6 +2974,8 @@ begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Command.Name,
                          Command.Command,Command.ShortcutA,Command.ShortcutB));
   Relations[Result].LocalizedName:=Command.LocalizedName;
+  //if Command.Command=12000 then
+  //  debugln('TKeyCommandRelationList.Add A ',Command.Name,' ',KeyAndShiftStateToEditorKeyString(Command.ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Relations[Result].ShortcutA),' ',dbgs(Command));
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
