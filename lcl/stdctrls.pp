@@ -708,6 +708,7 @@ type
     property DragMode;
     property EchoMode;
     property Enabled;
+    property Font;
     property MaxLength;
     property OnChange;
     property OnChangeBounds;

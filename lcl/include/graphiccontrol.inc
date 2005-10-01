@@ -71,6 +71,12 @@ begin
   end;
 end;
 
+procedure TGraphicControl.FontChanged(Sender: TObject);
+begin
+  Canvas.Font:=Font;
+  inherited FontChanged(Sender);
+end;
+
 {------------------------------------------------------------------------------
   Method: TGraphicControl.Paint
   Params:   none

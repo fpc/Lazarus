@@ -77,6 +77,7 @@ type
     property Width stored False;
     property Height stored False;
     property TabOrder stored False;
+    property Visible stored false;
   end;
 
   TCustomPageClass = class of TCustomPage;
@@ -234,7 +235,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property TabOrder stored False;
-    property Visible;
+    property Visible stored False;
   end;
 
 

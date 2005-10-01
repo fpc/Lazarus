@@ -1658,6 +1658,7 @@ type
     FOnPaint: TNotifyEvent;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
+    procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;

@@ -349,6 +349,7 @@ type
     property Down;
     property Enabled;
     property Flat;
+    property Font;
     property Glyph;
     property GroupIndex;
     property Layout;

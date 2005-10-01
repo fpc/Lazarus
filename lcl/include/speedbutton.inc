@@ -510,7 +510,7 @@ begin
     TXTStyle.ShowPrefix := True;
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
-    TXTStyle.SystemFont := True;//Match System Default Style
+    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
     With PaintRect, OffsetCap do begin
       Left := Left + X;
       Top := Top + Y;
