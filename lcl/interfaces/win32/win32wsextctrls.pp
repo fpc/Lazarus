@@ -252,12 +252,12 @@ end;
 procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
 var
   Page: TCustomPage;
-  ControlList: TList;
+  ControlList: TFPList;
   lWinControl: TWinControl;
   I: integer;
 begin
   Page := Notebook.CustomPage(NewIndex);
-  ControlList := TList.Create;
+  ControlList := TFPList.Create;
   try
     Page.GetTabOrderList(ControlList);
     I := 0;
