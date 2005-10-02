@@ -4,15 +4,16 @@ object CodeExplorerDlg: TCodeExplorerDlg
   ClientWidth = 400
   OnCreate = CodeExplorerDlgCreate
   OnDestroy = CodeExplorerDlgDestroy
-  PixelsPerInch = 90
-  HorzScrollBar.Page = 401
-  VertScrollBar.Page = 301
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
   Left = 290
   Height = 300
   Top = 163
   Width = 400
   object OkButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
@@ -23,6 +24,7 @@ object CodeExplorerDlg: TCodeExplorerDlg
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1
@@ -58,6 +60,15 @@ object CodeExplorerDlg: TCodeExplorerDlg
         Height = 105
         Top = 11
         Width = 354
+      end
+      object FollowCursorCheckBox: TCheckBox
+        Caption = 'FollowCursorCheckBox'
+        TabOrder = 1
+        Visible = False
+        Left = 14
+        Height = 24
+        Top = 134
+        Width = 158
       end
     end
   end

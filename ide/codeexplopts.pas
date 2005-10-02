@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   Laz_XMLCfg, Buttons, ExtCtrls, FileUtil,
-  LazConf, IDEProcs, LazarusIDEStrConsts;
+  LazConf, IDEProcs, LazarusIDEStrConsts, StdCtrls;
 
 type
   { TCodeExplorerOptions }
@@ -49,6 +49,7 @@ type
   
   TCodeExplorerOptions = class(TPersistent)
   private
+    FFollowCursor: boolean;
     FOptionsFilename: string;
     FRefresh: TCodeExplorerRefresh;
   public
@@ -63,11 +64,13 @@ type
   public
     property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
+    property FollowCursor: boolean read FFollowCursor write FFollowCursor;
   end;
 
   { TCodeExplorerDlg }
 
   TCodeExplorerDlg = class(TForm)
+    FollowCursorCheckBox: TCheckBox;
     MainNotebook: TNotebook;
     OkButton: TButton;
     CancelButton: TButton;
@@ -135,7 +138,7 @@ constructor TCodeExplorerOptions.Create;
 begin
   FOptionsFilename:=
                 AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
-  FRefresh:=cerDefault;
+  Clear;
 end;
 
 destructor TCodeExplorerOptions.Destroy;
@@ -146,6 +149,7 @@ end;
 procedure TCodeExplorerOptions.Clear;
 begin
   FRefresh:=cerDefault;
+  FFollowCursor:=true;
 end;
 
 procedure TCodeExplorerOptions.Assign(Source: TPersistent);
@@ -155,6 +159,7 @@ begin
   if Source is TCodeExplorerOptions then begin
     Src:=TCodeExplorerOptions(Source);
     FRefresh:=Src.Refresh;
+    FFollowCursor:=Src.FollowCursor;
   end else
     inherited Assign(Source);
 end;
@@ -203,14 +208,18 @@ procedure TCodeExplorerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   Clear;
-  FRefresh:=CodeExplorerRefreshNameToEnum(XMLConfig.GetValue('Refresh/Value',''));
+  FRefresh:=CodeExplorerRefreshNameToEnum(
+                                   XMLConfig.GetValue(Path+'Refresh/Value',''));
+  FFollowCursor:=XMLConfig.GetValue(Path+'FollowCursor',true);
 end;
 
 procedure TCodeExplorerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
-  XMLConfig.SetDeleteValue('Refresh/Value',CodeExplorerRefreshNames[FRefresh],
+  XMLConfig.SetDeleteValue(Path+'Refresh/Value',
+                           CodeExplorerRefreshNames[FRefresh],
                            CodeExplorerRefreshNames[cerDefault]);
+  XMLConfig.SetDeleteValue(Path+'FollowCursor',FFollowCursor,true);
 end;
 
 { TCodeExplorerDlg }
@@ -237,7 +246,7 @@ begin
   else
     RefreshRadioGroup.ItemIndex:=1;
   end;
-
+  FollowCursorCheckBox.Checked:=Options.FollowCursor;
 end;
 
 procedure TCodeExplorerDlg.SaveFormToOptions;
@@ -247,6 +256,7 @@ begin
   1: FOptions.Refresh:=cerSwitchEditorPage;
   2: FOptions.Refresh:=cerOnIdle;
   end;
+  Options.FollowCursor:=FollowCursorCheckBox.Checked;
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgCreate(Sender: TObject);
@@ -262,6 +272,7 @@ begin
     Items[1]:=lisCEOWhenSwitchingFile;
     Items[2]:=lisCEOOnIdle;
   end;
+  FollowCursorCheckBox.Caption:=lisCEFollowCursor;
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgDestroy(Sender: TObject);

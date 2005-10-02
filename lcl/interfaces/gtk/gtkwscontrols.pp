@@ -611,6 +611,7 @@ begin
 
   Widget := GetWidgetWithWindow(AWincontrol.Handle);
   if Widget = nil then Exit;
+  if Widget^.Window=nil then exit;
 
   case APosition of
     wszpBack:  begin

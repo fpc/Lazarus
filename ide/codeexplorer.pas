@@ -73,7 +73,7 @@ type
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+                                Shift: TShiftState);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);

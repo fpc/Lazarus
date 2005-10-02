@@ -2844,6 +2844,7 @@ resourcestring
   lisCEONeverOnlyManually = 'Never, only manually';
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
+  lisCEFollowCursor = 'Follow cursor';
 
   lisMenuLazDoc = 'LazDoc Editor';
   lisLazDocMainFormCaption = 'LazDoc editor';
