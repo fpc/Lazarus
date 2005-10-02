@@ -631,10 +631,20 @@ var
   
   procedure DoAlignNotAligned;
   // All controls, not aligned by their own properties, can be auto aligned.
+  {$IFDEF EnableChildSizing}
+  type
+    TLine = record
+    
+    end;
+    PLine = ^TLine;
+  
   var
     i: Integer;
     Control: TControl;
     LineCount: LongInt;
+    OrthogonalLineCount: Integer;
+    Lines:
+  {$ENDIF}
   begin
     // check if other aligning is enabled
     if (ChildSizing.EnlargeHorizontal=cesAnchorAligning)
@@ -644,7 +654,8 @@ var
     and (ChildSizing.Layout=cclNone)
     then
       exit;
-  
+
+    {$IFDEF EnableChildSizing}
     /// collect all 'not aligned' controls
     AlignList.Clear;
     for i:=0 to ControlCount-1 do begin
@@ -659,10 +670,12 @@ var
     end;
     if AlignList.Count=0 then exit;
     
-    //
+    // calculate lines of controls, based on preferred sizes
     LineCount:=ChildSizing.Lines;
     if LineCount>AlignList.Count then LineCount:=AlignList.Count;
-    
+    OrthogonalLineCount:=((AlignList.Count-1) div LineCount)+1;
+    GetMem(Lines,LineCount*SizeOf(TLine));
+    {$ENDIF}
   end;
   
 var
