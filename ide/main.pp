@@ -113,7 +113,7 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg,
+  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg, AboutFrm,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -8369,7 +8369,7 @@ procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
 begin
   if MainIDEBar=nil then exit;
-  NewCaption := Format(lisLazarusEditorV, [lisLazarusVersionString]);
+  NewCaption := Format(lisLazarusEditorV, [LazarusVersionStr]);
   if Project1<>nil then begin
     if Project1.Title<>'' then
       NewCaption:=NewCaption +' - '+Project1.Title
