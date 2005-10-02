@@ -1,5 +1,5 @@
 :: This setting need to change for every build
-SET LAZVERSION=0.9.8
+SET LAZVERSION=0.9.10
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler

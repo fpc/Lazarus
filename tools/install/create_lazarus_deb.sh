@@ -16,7 +16,7 @@ Month=`date +%m`
 Day=`date +%d`
 
 Date=20$Year$Month$Day
-LazVersion=0.9.8
+LazVersion=0.9.10
 LazRelease=`dpkg -s fp-compiler | grep '^Version' | sed -e 's/Version: //'`
 LazRelease=`echo $LazRelease | sed -e 's/-/_/g'`
 SrcTGZ=lazarus-$Date.tgz

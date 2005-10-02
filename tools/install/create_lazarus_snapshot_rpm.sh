@@ -52,7 +52,7 @@ export FPC
 cd -
 
 # create a temporary copy of the lazarus sources for packaging
-LazVersion=0.9.9
+LazVersion=0.9.11
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
 TmpDir=/tmp/lazarus
 
