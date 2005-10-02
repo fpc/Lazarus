@@ -386,10 +386,10 @@ procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 
   function FindFirstControl: TWinControl;
   var
-    List: TList;
+    List: TFPList;
     I: Integer;
   begin
-    List := TList.Create;
+    List := TFPList.Create;
     Result := nil;
     try
       GetTabOrderList(List);

@@ -86,7 +86,7 @@ type
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
-    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -349,7 +349,9 @@ begin
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
 end;
 
-procedure TGtkWSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
+procedure TGtkWSWinControl.SetChildZPosition(
+  const AWinControl, AChild: TWinControl;
+  const AOldPos, ANewPos: Integer; const AChildren: TFPList);
 var
   n: Integer;
   child: TWinControlHack;

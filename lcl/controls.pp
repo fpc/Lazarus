@@ -1281,6 +1281,12 @@ type
       cssScaleChilds, // scale childs
       cssHomogenousChildDecrease // shrink childs equally (i.e. by the same amount of pixel)
     );
+    
+  TControlChildrenLayout = (
+      cclNone,
+      cclLeftToRightThenTopToBottom,
+      cclTopToBottomThenLeftToRight
+    );
 
   TControlChildSizing = class(TPersistent)
   private
@@ -1288,15 +1294,19 @@ type
     FEnlargeHorizontal: TChildControlEnlargeStyle;
     FEnlargeVertical: TChildControlEnlargeStyle;
     FHorizontalSpacing: integer;
+    FLayout: TControlChildrenLayout;
     FLeftRightSpacing: integer;
+    FLines: integer;
     FOnChange: TNotifyEvent;
     FShrinkHorizontal: TChildControlShrinkStyle;
     FShrinkVertical: TChildControlShrinkStyle;
     FTopBottomSpacing: integer;
     FVerticalSpacing: integer;
+    procedure SetLines(const AValue: integer);
     procedure SetEnlargeHorizontal(const AValue: TChildControlEnlargeStyle);
     procedure SetEnlargeVertical(const AValue: TChildControlEnlargeStyle);
     procedure SetHorizontalSpacing(const AValue: integer);
+    procedure SetLayout(const AValue: TControlChildrenLayout);
     procedure SetLeftRightSpacing(const AValue: integer);
     procedure SetShrinkHorizontal(const AValue: TChildControlShrinkStyle);
     procedure SetShrinkVertical(const AValue: TChildControlShrinkStyle);
@@ -1321,6 +1331,8 @@ type
                             write SetShrinkHorizontal default cssAnchorAligning;
     property ShrinkVertical: TChildControlShrinkStyle read FShrinkVertical
                               write SetShrinkVertical default cssAnchorAligning;
+    property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
+    property Lines: integer read FLines write SetLines;
   published
     property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
     property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
@@ -1366,10 +1378,10 @@ type
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
-    FControls: TList;    // the child controls (only TControl, no TWinControl)
-    FWinControls: TList; // the child controls (only TWinControl, no TControl)
+    FControls: TFPList;    // the child controls (only TControl, no TWinControl)
+    FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
-    FDockClients: TList;
+    FDockClients: TFPList;
     //FDockSite: Boolean;
     FDoubleBuffered: Boolean;
     FClientWidth: Integer;
@@ -1396,7 +1408,7 @@ type
     FShowing: Boolean;
     FTabOrder: integer;
     FTabStop: Boolean;
-    FTabList: TList;
+    FTabList: TFPList;
     FUseDockManager: Boolean;
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
@@ -1430,7 +1442,7 @@ type
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
-                        AControlList: TList; var ARect: TRect): Boolean; virtual;
+                     AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
     procedure ResizeDelayedAutoSizeChildren; virtual;
     function CanTab: Boolean; override;
@@ -1646,7 +1658,7 @@ type
     Procedure SetFocus; virtual;
     Function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
-    Procedure GetTabOrderList(List: TList);
+    procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
@@ -2563,6 +2575,13 @@ begin
   Change;
 end;
 
+procedure TControlChildSizing.SetLines(const AValue: integer);
+begin
+  if FLines=AValue then exit;
+  FLines:=AValue;
+  Change;
+end;
+
 procedure TControlChildSizing.SetEnlargeVertical(
   const AValue: TChildControlEnlargeStyle);
 begin
@@ -2575,6 +2594,13 @@ procedure TControlChildSizing.SetHorizontalSpacing(const AValue: integer);
 begin
   if FHorizontalSpacing=AValue then exit;
   FHorizontalSpacing:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetLayout(const AValue: TControlChildrenLayout);
+begin
+  if FLayout=AValue then exit;
+  FLayout:=AValue;
   Change;
 end;
 
@@ -2619,6 +2645,7 @@ constructor TControlChildSizing.Create(OwnerControl: TControl);
 begin
   FControl:=OwnerControl;
   inherited Create;
+  FLayout:=cclNone;
   FEnlargeHorizontal:=cesAnchorAligning;
   FEnlargeVertical:=cesAnchorAligning;
   FShrinkHorizontal:=cssAnchorAligning;

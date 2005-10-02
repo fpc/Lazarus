@@ -2256,7 +2256,7 @@ var
   function BackgroundClipped: Boolean;
   var
     R: TRect;
-    List: TList;
+    List: TFPList;
     I: Integer;
     C: TControl;
   begin

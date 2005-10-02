@@ -80,7 +80,7 @@ type
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
     class procedure SetColor(const AWinControl: TWinControl); virtual;
-    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); virtual;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); virtual;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); virtual;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
@@ -187,7 +187,9 @@ procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABo
 begin
 end;
 
-procedure TWSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
+procedure TWSWinControl.SetChildZPosition(
+  const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer;
+  const AChildren: TFPList);
 begin
 end;
 

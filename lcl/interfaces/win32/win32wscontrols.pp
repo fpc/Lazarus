@@ -70,7 +70,9 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
-    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
+                                      const AOldPos, ANewPos: Integer;
+                                      const AChildren: TFPList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -323,7 +325,9 @@ begin
   RecreateWnd(AWinControl);
 end;
 
-procedure TWin32WSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
+procedure TWin32WSWinControl.SetChildZPosition(
+  const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer;
+  const AChildren: TFPList);
 var
   AfterWnd: hWnd;
   n, StopPos: Integer;

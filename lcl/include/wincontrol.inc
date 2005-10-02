@@ -71,7 +71,7 @@ end;
 procedure TWinControl.AlignControls(AControl: TControl;
   var RemainingClientRect: TRect);
 var
-  AlignList: TList;
+  AlignList: TFPList;
   BoundsMutated: boolean;
   RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
                                // e.g. Right=3 means borderspace of 3
@@ -628,7 +628,43 @@ var
       for I := 0 to AlignList.Count - 1 do
         DoPosition(TControl(AlignList[I]), AAlign);
   end;
-
+  
+  procedure DoAlignNotAligned;
+  // All controls, not aligned by their own properties, can be auto aligned.
+  var
+    i: Integer;
+    Control: TControl;
+    LineCount: LongInt;
+  begin
+    // check if other aligning is enabled
+    if (ChildSizing.EnlargeHorizontal=cesAnchorAligning)
+    and (ChildSizing.EnlargeVertical=cesAnchorAligning)
+    and (ChildSizing.ShrinkHorizontal=cssAnchorAligning)
+    and (ChildSizing.ShrinkVertical=cssAnchorAligning)
+    and (ChildSizing.Layout=cclNone)
+    then
+      exit;
+  
+    /// collect all 'not aligned' controls
+    AlignList.Clear;
+    for i:=0 to ControlCount-1 do begin
+      Control := Controls[i];
+      if (Control.Align=alNone)
+      and (Control.Anchors=[akLeft,akTop])
+      and (Control.AnchorSide[akLeft].Control=nil)
+      and (Control.AnchorSide[akTop].Control=nil)
+      then begin
+        AlignList.Add(Control);
+      end;
+    end;
+    if AlignList.Count=0 then exit;
+    
+    //
+    LineCount:=ChildSizing.Lines;
+    if LineCount>AlignList.Count then LineCount:=AlignList.Count;
+    
+  end;
+  
 var
   i: Integer;
   ChildControl: TControl;
@@ -660,7 +696,7 @@ begin
         ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing,
         ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing);
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',RemainingClientRect.Left,',',RemainingClientRect.Top,',',RemainingClientRect.Right,',',RemainingClientRect.Bottom);
-      AlignList := TList.Create;
+      AlignList := TFPList.Create;
       try
         // Auto aligning/anchoring can be very interdependent.
         // In worst case the n-2 depends on the n-1, the n-3 depends on n-2
@@ -679,6 +715,7 @@ begin
           DoAlign(alClient);
           DoAlign(alCustom);
           DoAlign(alNone);
+          DoAlignNotAligned;
           if not BoundsMutated then break;
           // update again
           RemainingClientRect:=OldRemainingClientRect;
@@ -697,7 +734,7 @@ begin
 end;
 
 function TWinControl.DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
-  AControlList: TList; var ARect: TRect): Boolean;
+  AControlList: TFPList; var ARect: TRect): Boolean;
 begin
   Result:=false;
 end;
@@ -1265,9 +1302,10 @@ end;
   * The FControls are always below the FWinControls.
   * FControls and FWinControls can be nil
 ------------------------------------------------------------------------------}
-procedure TWinControl.SetChildZPosition(const AChild: TControl; const APosition: Integer);
+procedure TWinControl.SetChildZPosition(const AChild: TControl;
+  const APosition: Integer);
 var
-  list: TList;
+  list: TFPList;
   idx, NewPos: Integer;
   IsWinControl: boolean;
 begin
@@ -1309,7 +1347,8 @@ begin
   if IsWinControl
   then begin
     if HandleAllocated and TWinControl(AChild).HandleAllocated
-    then TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self, TWinControl(AChild), idx, NewPos, list);
+    then TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self,
+                            TWinControl(AChild), idx, NewPos, list);
   end
   else begin
     AChild.InvalidateControl(AChild.Visible, True, True);
@@ -1479,7 +1518,7 @@ function TWinControl.PerformTab(ForwardTab: boolean): boolean;
 
 var
   I : Integer;
-  List : TList;
+  List : TFPList;
   FirstFocus, OldFocus, NewFocus : TWinControl;
   TopLevel : TWinControl;
 begin
@@ -1489,7 +1528,7 @@ begin
   If TopLevel = nil then
     exit;
   try
-    List := TList.Create;
+    List := TFPList.Create;
     TopLevel.GetTabOrderList(List);
     FirstFocus := nil;
     For I := 0 to List.Count - 1 do
@@ -1555,11 +1594,11 @@ end;
 procedure TWinControl.FlipChildren(AllLevels: Boolean);
 var
   i: Integer;
-  FlipControls: TList;
+  FlipControls: TFPList;
   CurControl: TControl;
 begin
   if ControlCount = 0 then exit;
-  FlipControls := TList.Create;
+  FlipControls := TFPList.Create;
   
   DisableAlign;
   try
@@ -1601,13 +1640,13 @@ end;
 function TWinControl.FindNextControl(CurrentControl: TWinControl;
   GoForward, CheckTabStop, CheckParent: boolean): TWinControl;
 var
-  List : TList;
+  List : TFPList;
   Next : TWinControl;
   I, J : Longint;
 begin
   Try
     Result := nil;
-    List := TList.Create;
+    List := TFPList.Create;
     GetTabOrderList(List);
     //for i:=0 to List.Count-1 do begin
     //  debugln('TWinControl.FindNextControl TabOrderList ',dbgs(i),' ',DbgSName(TObject(List[i])));
@@ -1654,12 +1693,12 @@ end;
 procedure TWinControl.FixupTabList;
 var
   Count, I, J: Integer;
-  List: TList;
+  List: TFPList;
   Control: TWinControl;
 begin
   if FWinControls <> nil then
   begin
-    List := TList.Create;
+    List := TFPList.Create;
     try
       Count := FWinControls.Count;
       List.Count := Count;
@@ -1683,7 +1722,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl GetTabOrderList
 ------------------------------------------------------------------------------}
-Procedure TWinControl.GetTabOrderList(List: TList);
+Procedure TWinControl.GetTabOrderList(List: TFPList);
 var
   I : Integer;
   lWinControl : TWinControl;
@@ -4314,7 +4353,7 @@ begin
       FDockManager := nil;
     end
     else begin
-      if FDockClients = nil then FDockClients := TList.Create;
+      if FDockClients = nil then FDockClients := TFPList.Create;
       FDockManager := CreateDockManager;
     end;
   end;

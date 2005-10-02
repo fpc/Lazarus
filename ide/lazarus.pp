@@ -88,6 +88,7 @@ begin
     Application.Run;
   except
     debugln('lazarus.pp - unhandled exception');
+    Halt;
   end;
   if (SplashForm<>nil) then begin
     SplashForm.Free;
