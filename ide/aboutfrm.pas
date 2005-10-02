@@ -56,6 +56,8 @@ type
 
 function ShowAboutForm: TModalResult;
 
+const
+  LazarusVersionStr= '0.9.10';
 var
   LazarusRevisionStr: string;
 
@@ -130,7 +132,8 @@ begin
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Caption:=lisAboutLazarus;
-  VersionLabel.Caption := lisVersion+' #: '+lisLazarusVersionString;
+  VersionLabel.Caption := lisVersion+' #: '+
+     format(lisLazarusVersionString,[LazarusVersionStr]);
   RevisionLabel.Caption := lisSVNRevision+GetLazarusRevision;
 
   RevisionLabel.Visible:=false; // deactivated
