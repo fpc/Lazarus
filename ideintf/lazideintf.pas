@@ -76,6 +76,14 @@ type
     );
   TSearchIDEFileFlags = set of TSearchIDEFileFlag;
 
+  // find source flags
+  TFindSourceFlag = (
+    fsfSearchForProject,
+    fsfUseIncludePaths,
+    fsfUseDebugPath
+    );
+  TFindSourceFlags = set of TFindSourceFlag;
+
   { TLazIDEInterface }
 
   TLazIDEInterface = class(TComponent)
@@ -85,6 +93,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     
+    function FindUnitFile(const AFilename: string): string; virtual; abstract;
+    function FindSourceFile(const AFilename, BaseDirectory: string;
+                            Flags: TFindSourceFlags): string; virtual; abstract;
+
     function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
         NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags): TModalResult;

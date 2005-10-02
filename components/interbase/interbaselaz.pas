@@ -1,6 +1,5 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package InterbaseLaz 1.0.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
 unit InterbaseLaz; 
@@ -18,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('InterbaseLaz', @Register)
+  RegisterPackage('InterbaseLaz', @Register); 
 end.

@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
   Menus, LResources, AVL_Tree,
-  PropEdits, FormEditingIntf,
+  PropEdits, FormEditingIntf, LazIDEIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -162,6 +162,7 @@ procedure TComponentPalette.PopupMenuPopup(Sender: TObject);
 var
   PkgComponent: TPkgComponent;
   APackage: TLazPackage;
+  UnitFilename: String;
 begin
   PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
   APackage:=nil;
@@ -173,8 +174,13 @@ begin
   end else begin
     OpenPackageMenuItem.Caption:='Open Package '+APackage.IDAsString;
     OpenPackageMenuItem.Visible:=true;
-    OpenUnitMenuItem.Caption:='Open Unit '+PkgComponent.PkgFile.Filename;
+    UnitFilename:=PkgComponent.PkgFile.Filename;
+    if not FileExists(UnitFilename) then
+      UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
+                                              APackage.Directory,[]);
+    OpenUnitMenuItem.Caption:='Open Unit '+UnitFilename;
     OpenUnitMenuItem.Visible:=true;
+    OpenUnitMenuItem.Enabled:=FileExists(UnitFilename);
   end;
 end;
 

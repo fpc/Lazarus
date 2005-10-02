@@ -117,14 +117,6 @@ type
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
 
-  // find source flags
-  TFindSourceFlag = (
-    fsfSearchForProject,
-    fsfUseIncludePaths,
-    fsfUseDebugPath
-    );
-  TFindSourceFlags = set of TFindSourceFlag;
-
   { TMainIDEInterface }
 
   TMainIDEInterface = class(TLazIDEInterface)
@@ -145,9 +137,6 @@ type
     procedure HideIDE; virtual; abstract;
     procedure UnhideIDE; virtual; abstract;
 
-    function FindUnitFile(const AFilename: string): string; virtual; abstract;
-    function FindSourceFile(const AFilename, BaseDirectory: string;
-                            Flags: TFindSourceFlags): string; virtual; abstract;
     procedure GetCurrentUnitInfo(var ActiveSourceEditor: TSourceEditorInterface;
                               var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;

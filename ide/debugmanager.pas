@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
   Laz_XMLCfg,
   SynEdit, CodeCache, CodeToolManager,
-  MenuIntf, IDECommands,
+  MenuIntf, IDECommands, LazIDEIntf,
   LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
