@@ -61,6 +61,7 @@ const
 var
   LazarusRevisionStr: string;
 
+function GetLazarusVersionString : string;
 function GetLazarusRevision: string;
 
 implementation
@@ -73,6 +74,11 @@ begin
   AboutForm:=TAboutForm.Create(nil);
   Result:=AboutForm.ShowModal;
   AboutForm.Free;
+end;
+
+function GetLazarusVersionString: string;
+begin
+  Result:=format(lisLazarusVersionString,[LazarusVersionStr]);
 end;
 
 function GetLazarusRevision: string;

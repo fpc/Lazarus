@@ -8369,7 +8369,7 @@ procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
 begin
   if MainIDEBar=nil then exit;
-  NewCaption := Format(lisLazarusEditorV, [LazarusVersionStr]);
+  NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
   if Project1<>nil then begin
     if Project1.Title<>'' then
       NewCaption:=NewCaption +' - '+Project1.Title
