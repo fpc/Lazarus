@@ -29,6 +29,7 @@ if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
 make OPT="$MAKEOPTS"
+make tools
 strip lazarus
 strip startlazarus
 
