@@ -30,6 +30,10 @@ msgstr "%s (aan het debuggen ...)"
 msgid "%s - (new project)"
 msgstr "%s - (nieuw project)"
 
+#: lazarusidestrconsts:lislazarusversionstring
+msgid "%s beta"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr "%s bytes"
@@ -214,10 +218,6 @@ msgstr "(geen subdirectory)"
 msgid "(unknown macro: %s)"
 msgstr "(onbekende macro: %s)"
 
-#: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.9 beta"
-msgstr "0.9.9 beta"
-
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr "<GEEN>"
@@ -349,6 +349,10 @@ msgstr "Springpunt toevoegen"
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
 msgstr "Springpunt aan geschiedenis toevoegen"
+
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -647,8 +651,8 @@ msgid "Block"
 msgstr "Blok"
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
-msgstr "Blok Insprining:"
+msgid "Block indent"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -1314,6 +1318,10 @@ msgstr "Configureer aanpasbare hulpmiddelen ..."
 msgid "Configure installed packages"
 msgstr "Configureer geinstalleerde packages"
 
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Bevestig veranderingen"
@@ -1738,6 +1746,10 @@ msgstr "Verwijderen mislukt"
 msgid "Delete file failed"
 msgstr "Verwijderen bestand mislukt"
 
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
 msgstr "Verwijder node"
@@ -1909,6 +1921,10 @@ msgstr "Toon regelnummers in Run-time Error Backtraces"
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid in hoofd en kleine letters. Bijv. A en a"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do You want ReBuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2533,6 +2549,10 @@ msgstr "Repareer .lfm bestand"
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Focus naar Broncode Editor"
+
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -3190,6 +3210,14 @@ msgstr "Invoegen Template"
 msgid "Insert alphabetically"
 msgstr "Alfabetisch invoegen"
 
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
 msgstr "Context gevoelig invoegen"
@@ -3210,6 +3238,10 @@ msgstr "Invoegen van Karakter Map"
 msgid "Insert from Charactermap"
 msgstr "Invoegen vanaf de karaktermap"
 
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
 msgstr "Node als \"child\" invoegen"
@@ -3217,6 +3249,10 @@ msgstr "Node als \"child\" invoegen"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Node onder invoegen"
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -3229,6 +3265,14 @@ msgstr "Spatie voor invoegen"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Invoegen Tekst"
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -5678,6 +5722,10 @@ msgstr "Bezig met zoeken ..."
 msgid "Searching: %s"
 msgstr "Zoek naar: %s"
 
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
+
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
 msgstr "Zie meldingen."
@@ -6306,9 +6354,9 @@ msgstr "Tab laat blokken inspringen"
 msgid "Tab order..."
 msgstr "Tab volgorde..."
 
-#: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
-msgstr "Tab afstand:"
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
@@ -7383,8 +7431,8 @@ msgid "Undo after save"
 msgstr "Ongedaan maken na Opslaan"
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
-msgstr "Ongedaan maken Limiet"
+msgid "Undo limit"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

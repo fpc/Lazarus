@@ -30,6 +30,10 @@ msgstr "%s (идёт отладка ...)"
 msgid "%s - (new project)"
 msgstr "%s - (новый проект)"
 
+#: lazarusidestrconsts:lislazarusversionstring
+msgid "%s beta"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr "%s байт"
@@ -214,10 +218,6 @@ msgstr "(нет подкаталога)"
 msgid "(unknown macro: %s)"
 msgstr "(неизвестный макрос: %s)"
 
-#: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.9 beta"
-msgstr ""
-
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr ""
@@ -349,6 +349,10 @@ msgstr "Добавить точку перехода"
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
 msgstr "Добавить точку перехода в историю"
+
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -647,8 +651,8 @@ msgid "Block"
 msgstr "Блок"
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
-msgstr "Выделение блока:"
+msgid "Block indent"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -1314,6 +1318,10 @@ msgstr "Настроить инструменты пользователя"
 msgid "Configure installed packages"
 msgstr "Настроить установленные пакеты"
 
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Подтвердить изменения"
@@ -1738,6 +1746,10 @@ msgstr "Удаление не удалось"
 msgid "Delete file failed"
 msgstr "Удаление файла не удалось"
 
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
 msgstr "Удалить элемент"
@@ -1909,6 +1921,10 @@ msgstr "Выдать номера строк в ошибках времени и
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Различать регистр букв, например, А и а"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do You want ReBuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2533,6 +2549,10 @@ msgstr "Исправить файл LFM"
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Фокус в редактор исходников"
+
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -3190,6 +3210,14 @@ msgstr "Вставить шаблон"
 msgid "Insert alphabetically"
 msgstr "Вставить по алфавиту"
 
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
 msgstr "Вставить с учётом контекста"
@@ -3210,6 +3238,10 @@ msgstr "Вставить из таблицы символов"
 msgid "Insert from Charactermap"
 msgstr "Вставить из таблицы символов"
 
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
 msgstr "Вставить элемент как дочерний"
@@ -3217,6 +3249,10 @@ msgstr "Вставить элемент как дочерний"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Вставить элемент ниже"
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -3229,6 +3265,14 @@ msgstr "Вставлять пробелы перед"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Вставить текст"
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -5678,6 +5722,10 @@ msgstr "Поиск..."
 msgid "Searching: %s"
 msgstr "Ищу: %s"
 
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
+
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
 msgstr "См. сообщения."
@@ -6306,9 +6354,9 @@ msgstr "ТАБ выделяет блоки"
 msgid "Tab order..."
 msgstr ""
 
-#: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
-msgstr "Ширина табулятора"
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
@@ -7383,8 +7431,8 @@ msgid "Undo after save"
 msgstr "Откат после сохранения"
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
-msgstr "Предел откатов:"
+msgid "Undo limit"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

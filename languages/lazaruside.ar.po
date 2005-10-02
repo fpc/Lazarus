@@ -41,6 +41,10 @@ msgstr "%sبصدد ترميم  "
 msgid "%s - (new project)"
 msgstr "%s - مشروع جديد"
 
+#: lazarusidestrconsts:lislazarusversionstring
+msgid "%s beta"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr ""
@@ -225,10 +229,6 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr ""
 
-#: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.9 beta"
-msgstr ""
-
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr ""
@@ -359,6 +359,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
@@ -658,7 +662,7 @@ msgid "Block"
 msgstr ""
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
+msgid "Block indent"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
@@ -1325,6 +1329,10 @@ msgstr ""
 msgid "Configure installed packages"
 msgstr ""
 
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
 msgstr ""
@@ -1749,6 +1757,10 @@ msgstr ""
 msgid "Delete file failed"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
 msgstr ""
@@ -1919,6 +1931,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
+msgstr ""
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do You want ReBuild Lazarus?"
 msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
@@ -2543,6 +2559,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
+msgstr ""
+
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
@@ -3201,6 +3221,14 @@ msgstr ""
 msgid "Insert alphabetically"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
 msgstr ""
@@ -3221,12 +3249,20 @@ msgstr ""
 msgid "Insert from Charactermap"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
 msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
@@ -3239,6 +3275,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
@@ -5689,6 +5733,10 @@ msgstr ""
 msgid "Searching: %s"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
+
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
 msgstr ""
@@ -6317,8 +6365,8 @@ msgstr ""
 msgid "Tab order..."
 msgstr ""
 
-#: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
@@ -7394,7 +7442,7 @@ msgid "Undo after save"
 msgstr ""
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
+msgid "Undo limit"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent

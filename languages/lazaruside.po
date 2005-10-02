@@ -3,7 +3,7 @@ msgid "Enter translation language"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.9 beta"
+msgid "%s beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisleaveemptyfo
@@ -2250,6 +2250,10 @@ msgstr ""
 msgid "Display"
 msgstr ""
 
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeymapping
 msgid "Key Mappings"
 msgstr ""
@@ -2411,15 +2415,15 @@ msgid "Home key jumps to nearest start"
 msgstr ""
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
+msgid "Block indent"
 msgstr ""
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
+msgid "Undo limit"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
+msgid "Tab widths"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmargingutter
@@ -4894,6 +4898,10 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr ""
 
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do You want ReBuild Lazarus?"
+msgstr ""
+
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr ""
@@ -5008,6 +5016,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
 msgid "Restart After Successfull Build"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
@@ -8502,6 +8514,10 @@ msgstr ""
 msgid "On idle"
 msgstr ""
 
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulazdoc
 msgid "LazDoc Editor"
 msgstr ""
@@ -8530,6 +8546,10 @@ msgstr ""
 msgid "Errors"
 msgstr ""
 
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocaddpathbutton
 msgid "Add path"
 msgstr ""
@@ -8540,5 +8560,37 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocpathsgroupbox
 msgid "LazDoc settings"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
 msgstr ""
 

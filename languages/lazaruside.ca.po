@@ -30,6 +30,10 @@ msgstr "%s (s'està depurant ...)"
 msgid "%s - (new project)"
 msgstr "%s - (nou projecte)"
 
+#: lazarusidestrconsts:lislazarusversionstring
+msgid "%s beta"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
 msgstr "%s octets"
@@ -214,10 +218,6 @@ msgstr "(sense subdirectori)"
 msgid "(unknown macro: %s)"
 msgstr "(macroinstrucció desconeguda: %s)"
 
-#: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.9 beta"
-msgstr ""
-
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
 msgstr ""
@@ -349,6 +349,10 @@ msgstr "Afegeix un punt de salt"
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
 msgstr "Afegeix un punt de salt a la història"
+
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -647,8 +651,8 @@ msgid "Block"
 msgstr "Bloc"
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
-msgstr "Sagna bloc:"
+msgid "Block indent"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -1314,6 +1318,10 @@ msgstr "Configura les eines personalitzades ..."
 msgid "Configure installed packages"
 msgstr "Configura els paquets intal·lats"
 
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Confirma els canvis"
@@ -1738,6 +1746,10 @@ msgstr "Ha fallat l'eliminació"
 msgid "Delete file failed"
 msgstr "Ha fallat l'eliminació del fitxer"
 
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
 msgstr "Elimina el node"
@@ -1909,6 +1921,10 @@ msgstr "Mostra els números de línia en errors en temps d'execució en seguiments 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingeix entre lletres grans i petites p.ex. A i a"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do You want ReBuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2533,6 +2549,10 @@ msgstr "Fixa el fitxer LFM"
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Focalitza a editor del codi font"
+
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -3190,6 +3210,14 @@ msgstr "Insereix la plantilla"
 msgid "Insert alphabetically"
 msgstr "Insereix alfabèticament"
 
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
 msgstr "Insereix sensitivament al context"
@@ -3210,6 +3238,10 @@ msgstr "Insereix desde el mapa de caràcters"
 msgid "Insert from Charactermap"
 msgstr "Insereix desde el mapa de caràcters"
 
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
 msgstr "Insereix el node com a fill"
@@ -3217,6 +3249,10 @@ msgstr "Insereix el node com a fill"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Insereix el node avall"
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -3229,6 +3265,14 @@ msgstr "Insereix espai davant de"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Insereix el text"
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -5678,6 +5722,10 @@ msgstr "Cercant..."
 msgid "Searching: %s"
 msgstr "Cercant: %s"
 
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
+
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
 msgstr "Visualitza els missatges."
@@ -6306,9 +6354,9 @@ msgstr "El tabulador sagna blocs"
 msgid "Tab order..."
 msgstr ""
 
-#: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
-msgstr "Amplades del tabulador:"
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
@@ -7383,8 +7431,8 @@ msgid "Undo after save"
 msgstr "Desfés després de desar"
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
-msgstr "Max.desfer:"
+msgid "Undo limit"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
