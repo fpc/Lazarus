@@ -25,7 +25,7 @@ if [ "x$Download" = "xyes" ]; then
   cd -
 else
   echo "extracting lazarus from local svn ..."
-  SourceDir=$(pwd | sed -e 's#lazarus/tools.*$#lazarus#')
+  SourceDir=$(pwd | sed -e 's#\(/lazarus[^/]*\)/tools.*$#\1#')
   rm -rf /tmp/lazarus
   svn export $SourceDir /tmp/lazarus
 fi

@@ -28,7 +28,7 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-make OPT="$MAKEOPTS"
+make all OPT="$MAKEOPTS"
 make tools
 strip lazarus
 strip startlazarus
