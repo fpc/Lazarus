@@ -58,6 +58,7 @@ uses
   {$ENDIF}
   MainBase;
 
+const LazarusVersionStr = '0.9.10';
 const RevisionStr={$I revision.inc}
 
 begin
