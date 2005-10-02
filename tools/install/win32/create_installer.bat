@@ -6,15 +6,13 @@ SET LAZVERSION=0.9.10
 SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the fpc sources checked out of cvs
-SET FPCSVNDIR=c:\lazarus\source\fpc-2.0.0
+SET FPCSVNDIR=c:\lazarus\source\fpc\2.0
 
 :: Path to the lazarus sources checked out of cvs
-SET LAZCVSDIR=c:\lazarus\source\lazsource
-::SET LAZCVSDIR=c:\lazarus\source\lazarus
+SET LAZSVNDIR=c:\lazarus\source\lazarus-0.9.10
 
-:: Path to fpc 1.0.10 compiler
-SET RELEASE_PPC=c:\fpc\bin\ppc386-release.exe
-::SET RELEASE_PPC=c:\fpc\1.9.8\bin\i386-win32\ppc386.exe
+:: Path to fpc 2.0.0 compiler
+SET RELEASE_PPC=c:\fpc\2.0.0\bin\i386-win32\ppc386.exe
 
 :: Path to the directory containing some third party utilities used by fpc
 :: it will be copied completely to the pp\bin\win32 directory
@@ -29,8 +27,8 @@ SET GDBDIR=c:\lazarus\source\mingw
 :: In this directory an image of the installation will be built.
 SET BUILDDIR=c:\temp\lazbuild
 
-:: Path to the tool to create an export using a local cvs directory
-SET EXPORTCVS=c:\lazarus\source\lazarus\tools\install\cvsexportlocal.exe
+:: Path to the svn executable
+SET SVN="c:\program files\subversion\bin\svn.exe"
 
 :: Path to the directory containing translated version of the GPL license
 SET LICENSEDIR=c:\lazarus\source\license
@@ -53,13 +51,15 @@ ECHO Starting at: > %LOGFILE%
 SET OLDPATH=%PATH%
 SET PATH=%FPCBINDIR%
 
-:: copy lazarus dir
-%EXPORTCVS% %LAZCVSDIR% %BUILDDIR% >> %LOGFILE%
+::: copy lazarus dir
+rmdir /s /q %BUILDDIR%
+%SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
 
 :: copy fpc source
-%EXPORTCVS% %FPCSVNDIR%\rtl %BUILDDIR%\fpcsrc\rtl >> %LOGFILE%
-%EXPORTCVS% %FPCSVNDIR%\fcl %BUILDDIR%\fpcsrc\fcl >> %LOGFILE%
-%EXPORTCVS% %FPCSVNDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
+gmkdir -p %BUILDDIR%\fpcsrc
+%SVN% export %FPCSVNDIR%\rtl %BUILDDIR%\fpcsrc\rtl >> %LOGFILE%
+%SVN% export %FPCSVNDIR%\fcl %BUILDDIR%\fpcsrc\fcl >> %LOGFILE%
+%SVN% export %FPCSVNDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
 
 call build-fpc.bat
 
