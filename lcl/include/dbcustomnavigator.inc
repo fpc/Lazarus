@@ -53,6 +53,26 @@ end;
 
 { TDBCustomNavigator }
 
+procedure TDBCustomNavigator.DefaultHintsChanged(Sender: TObject);
+var
+  OldNotify: TNotifyEvent;
+begin
+  if FDefaultHints.Text = FOriginalHints then
+    exit;
+  
+  OldNotify := TStringList(FHints).OnChange;
+  TStringlist(FHints).OnChange := nil;
+  TStringList(FDefaultHints).OnChange := nil;
+  try
+    FHints.Assign(FDefaultHints);
+    FDefaultHints.Clear;
+    UpdateHints;
+  finally
+    TStringlist(FHints).OnChange := OldNotify;
+  end;
+  
+end;
+
 function TDBCustomNavigator.GetDataSource: TDataSource;
 begin
   Result:=FDataLink.DataSource;
@@ -282,8 +302,11 @@ var
   i: Integer;
 begin
   if (FDefaultHints.Count=0) then begin
+    TStringList(FDefaultHints).OnChange:=nil;
     for CurButton:=Low(Buttons) to High(Buttons) do
       FDefaultHints.Add(GetDBNavButtonHint(CurButton));
+    FOriginalHints := FDefaultHints.Text;
+    TStringList(FDefaultHints).OnChange:=@DefaultHintsChanged;
   end;
   i:=0;
   for CurButton:=Low(Buttons) to High(Buttons) do begin

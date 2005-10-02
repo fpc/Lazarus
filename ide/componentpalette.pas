@@ -163,6 +163,7 @@ var
   PkgComponent: TPkgComponent;
   APackage: TLazPackage;
   UnitFilename: String;
+  ShownFilename: String;
 begin
   PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
   APackage:=nil;
@@ -174,11 +175,16 @@ begin
   end else begin
     OpenPackageMenuItem.Caption:='Open Package '+APackage.IDAsString;
     OpenPackageMenuItem.Visible:=true;
-    UnitFilename:=PkgComponent.PkgFile.Filename;
-    if not FileExists(UnitFilename) then
+    ShownFilename:=PkgComponent.PkgFile.Filename;
+    UnitFilename:=APackage.SubstitutePkgMacro(ShownFilename);
+    LazarusIDE.SubstituteMakros(UnitFilename);
+    if not FileExists(UnitFilename) then begin
       UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
                                               APackage.Directory,[]);
-    OpenUnitMenuItem.Caption:='Open Unit '+UnitFilename;
+      if FileExists(UnitFilename) then
+        UnitFilename:=ShownFilename;
+    end;
+    OpenUnitMenuItem.Caption:='Open Unit '+ShownFilename;
     OpenUnitMenuItem.Visible:=true;
     OpenUnitMenuItem.Enabled:=FileExists(UnitFilename);
   end;

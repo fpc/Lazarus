@@ -748,6 +748,9 @@ const
     );
 
 type
+
+  { TDBCustomNavigator }
+
   TDBCustomNavigator = class(TCustomPanel)
   private
     FBeforeAction: TDBNavClickEvent;
@@ -762,6 +765,8 @@ type
     FHints: TStrings;
     FUpdateButtonsNeeded: boolean;
     FUpdateButtonsLock: integer;
+    FOriginalHints: String;
+    procedure DefaultHintsChanged(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetHints: TStrings;
     procedure SetDataSource(const AValue: TDataSource);

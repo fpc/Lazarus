@@ -804,6 +804,9 @@ type
     procedure SaveEnvironment; override;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    
+    // makros
+    function SubstituteMakros(var s: string): boolean; override;
   end;
 
 
@@ -3155,6 +3158,11 @@ begin
     IDEWindowLayoutList.StoreWindowPositions;
     ObjectInspectorOptions.Assign(ObjectInspector1);
   end;
+end;
+
+function TMainIDE.SubstituteMakros(var s: string): boolean;
+begin
+  Result:=MacroList.SubstituteStr(s);
 end;
 
 procedure TMainIDE.LoadDesktopSettings(

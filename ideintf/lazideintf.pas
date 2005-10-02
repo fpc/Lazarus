@@ -123,6 +123,8 @@ type
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags;
        TryWithoutNumber: boolean): string; virtual; abstract;
+       
+    function SubstituteMakros(var s: string): boolean; virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
 
