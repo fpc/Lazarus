@@ -20,7 +20,7 @@ echo "installed fpc version: $FPCRPMVersion"
 
 Date=$Year$Month$Day
 LazVersion=$(./get_lazarus_version.sh)
-LazRelease=$(echo $FPCRPM | sed -e 's/-/_/g')
+LazRelease='0' # $(echo $FPCRPM | sed -e 's/-/_/g')
 Src=lazarus-$LazVersion-$LazRelease.tar.gz
 SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
 TmpDir=/tmp/lazarus$LazVersion
@@ -37,9 +37,9 @@ echo "creating lazarus spec file ..."
 cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/g" \
-      -e "s/LAZSOURCE/$Src/" \
-      -e "s/FPCBUILDVERSION/2.0.0/" \
-      -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
+      -e "s/LAZSOURCE/$Src/g" \
+      -e "s/FPCBUILDVERSION/2.0.0/g" \
+      -e "s/FPCVERSION/$FPCRPMVersion/g" \
   > $SpecFile
 
 # build rpm
