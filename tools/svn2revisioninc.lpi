@@ -12,12 +12,12 @@
     <LazDoc Paths=""/>
     <Units Count="11">
       <Unit0>
-        <CursorPos X="26" Y="111"/>
+        <CursorPos X="17" Y="32"/>
         <EditorIndex Value="0"/>
         <Filename Value="svn2revisioninc.pas"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="92"/>
+        <TopLine Value="24"/>
         <UnitName Value="Svn2RevisionInc"/>
         <UsageCount Value="25"/>
       </Unit0>
@@ -30,7 +30,7 @@
       </Unit1>
       <Unit2>
         <CursorPos X="1" Y="426"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="1"/>
         <Filename Value="updatepofiles.pas"/>
         <Loaded Value="True"/>
         <TopLine Value="1"/>
@@ -39,9 +39,7 @@
       </Unit2>
       <Unit3>
         <CursorPos X="22" Y="41"/>
-        <EditorIndex Value="3"/>
         <Filename Value="C:\lazarus\source\lazarus\lcl\fileutil.pas"/>
-        <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="FileUtil"/>
         <UsageCount Value="13"/>
@@ -69,9 +67,7 @@
       </Unit6>
       <Unit7>
         <CursorPos X="3" Y="31"/>
-        <EditorIndex Value="2"/>
         <Filename Value="C:\lazarus\source\fpc\2.0\fcl\inc\pipes.pp"/>
-        <Loaded Value="True"/>
         <TopLine Value="14"/>
         <UnitName Value="Pipes"/>
         <UsageCount Value="12"/>
@@ -91,9 +87,7 @@
       </Unit9>
       <Unit10>
         <CursorPos X="15" Y="204"/>
-        <EditorIndex Value="1"/>
         <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\dom.pp"/>
-        <Loaded Value="True"/>
         <TopLine Value="200"/>
         <UnitName Value="DOM"/>
         <UsageCount Value="11"/>
@@ -119,36 +113,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <JumpHistory Count="7" HistoryIndex="6">
-      <Position1>
-        <Filename Value="C:\lazarus\source\lazarus\lcl\FileUtil.pas"/>
-        <Caret Line="46" Column="30" TopLine="29"/>
-      </Position1>
-      <Position2>
-        <Filename Value="C:\lazarus\source\lazarus\lcl\fileutil.pas"/>
-        <Caret Line="47" Column="40" TopLine="30"/>
-      </Position2>
-      <Position3>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
-        <Caret Line="208" Column="34" TopLine="179"/>
-      </Position3>
-      <Position4>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
-        <Caret Line="52" Column="13" TopLine="35"/>
-      </Position4>
-      <Position5>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
-        <Caret Line="382" Column="31" TopLine="365"/>
-      </Position5>
-      <Position6>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
-        <Caret Line="353" Column="38" TopLine="349"/>
-      </Position6>
-      <Position7>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\DOM.pp"/>
-        <Caret Line="245" Column="37" TopLine="241"/>
-      </Position7>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

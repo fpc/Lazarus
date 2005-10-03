@@ -33,9 +33,10 @@
        svnversion to get the revision number.
        If that fails - for example, because it can't find svnversion - it opens
        .svn/entries to get the revision number of the source directory.
-       
+
        If it can't find revision information, it checks whether the revision.inc
-       exists. If it doesn't exist, it will create one, indicating that the
+       exists. If it exists and seems to be created with, it will leave the file
+       as is. Otherwise it will create a new revision.inc, indicating that the
        revision number is unknown.
 
 }
