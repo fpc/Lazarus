@@ -2,14 +2,14 @@
                   ----------------------------------------
                   carbonproc.pp  -  Carbon interface procs
                   ----------------------------------------
- 
+
  @created(Wed Aug 26st WET 2005)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
+ @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
 
- This unit contains procedures/functions needed for the Carbon <-> LCL interface 
+ This unit contains procedures/functions needed for the Carbon <-> LCL interface
  Common carbon untilities (usable by other projects) go to CarbonUtils
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -27,35 +27,38 @@
 unit CarbonProc;
 {$mode objfpc}{$H+}
 
-interface       
+interface
 
 uses
-  Carbon,
-  LCLProc, Controls, LMessages, Forms,
+  FPCMacOSAll,
+  LCLProc, LCLClasses, Controls, LMessages, Forms, Avl_Tree, SysUtils,
   CarbonDef;
-  
-function CreateWidgetInfo(AWidget: Pointer; AObject: TObject): PWidgetInfo;
+
+function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent): PWidgetInfo;
 procedure FreeWidgetInfo(AInfo: PWidgetInfo);
 function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
 
 function DeliverMessage(ATarget: TObject; var AMessage): Integer;
 
+function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
+procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
+
 implementation
 
-
-function CreateWidgetInfo(AWidget: Pointer; AObject: TObject): PWidgetInfo;
+function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent): PWidgetInfo;
 begin
   New(Result);
   FillChar(Result^, SizeOf(Result^), 0);
   Result^.LCLObject := AObject;
   Result^.Widget := AWidget;
+  Result^.WSClass := AObject.WidgetSetClass;
 
-  if IsValidControlHandle(AWidget) 
+  if IsValidControlHandle(AWidget)
   then begin
     SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
   end
   else begin
-    // there is no (cheap) check for windows so assume a window 
+    // there is no (cheap) check for windows so assume a window
     // when it is not a control.
     SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
   end;
@@ -65,18 +68,18 @@ procedure FreeWidgetInfo(AInfo: PWidgetInfo);
 begin
   if AInfo = nil then Exit;
 
-  if (AInfo^.UserData <> nil) and (AInfo^.DataOwner) 
+  if (AInfo^.UserData <> nil) and (AInfo^.DataOwner)
   then begin
     System.FreeMem(AInfo^.UserData);
     AInfo^.UserData := nil;
   end;
 
-  if IsValidControlHandle(AInfo^.Widget) 
+  if IsValidControlHandle(AInfo^.Widget)
   then begin
     RemoveControlProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
   end
   else begin
-    // there is no (cheap) check for windows so assume a window 
+    // there is no (cheap) check for windows so assume a window
     // when it is not a control.
     RemoveWindowProperty(AInfo^.Widget, LAZARUS_FOURCC, WIDGETINFO_FOURCC);
   end;
@@ -85,18 +88,18 @@ begin
 end;
 
 function GetWidgetInfo(AWidget: Pointer): PWidgetInfo;
-var 
+var
   m: LongWord;
 begin
   Result := nil;
-  if IsValidControlHandle(AWidget) 
+  if IsValidControlHandle(AWidget)
   then begin
-    GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), m, @Result);
+    GetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
   end
-  else begin   
-    // there is no (cheap) check for windows so assume a window 
+  else begin
+    // there is no (cheap) check for windows so assume a window
     // when it is not a control.
-    GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), m, @Result);
+    GetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @m, @Result);
   end;
 end;
 
@@ -109,8 +112,8 @@ end;
   dispatcher
  ------------------------------------------------------------------------------}
 function DeliverMessage(ATarget: TObject; var AMessage): Integer;
-begin                   
-  if ATarget = nil 
+begin
+  if ATarget = nil
   then begin
     DebugLn('[DeliverMessage] Target = nil');
     Result := 0;
@@ -128,5 +131,89 @@ begin
   Result := TLMessage(AMessage).Result;
 end;
 
+//=====================================================
+// UPP mamanger
+//=====================================================
+type
+  TUPPAVLTreeNode = class(TAVLTreeNode)
+  public
+    UPP: EventHandlerUPP;
+    RefCount: Integer;
+    procedure Clear; reintroduce; // not overridable, so reintroduce since we only will call this clear
+    destructor Destroy; override;
+  end;
+
+var
+  UPPTree: TAVLTree = nil;
+
+procedure TUPPAVLTreeNode.Clear;
+begin
+  if UPP <> nil
+  then begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+  inherited Clear;
+end;
+
+destructor TUPPAVLTreeNode.Destroy;
+begin
+  if UPP <> nil
+  then begin
+    DisposeEventHandlerUPP(UPP);
+    UPP := nil;
+  end;
+  inherited Destroy;
+end;
+
+
+function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
+var
+  node: TUPPAVLTreeNode;
+begin
+  if UPPTree = nil then UPPTree := TAVLTree.Create;
+  node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
+  if node = nil
+  then begin
+    node := TUPPAVLTreeNode.Create;
+    node.Data := AHandler;
+    node.UPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
+    UPPTree.Add(node);
+  end;
+  Inc(node.Refcount);
+  Result := node.UPP;
+end;
+
+procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
+var
+  node: TUPPAVLTreeNode;
+begin
+  if UPPTree = nil then Exit; //???
+  node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
+  if node = nil then Exit; //???
+  if node.Refcount <= 0
+  then begin
+    DebugLn('[UnRegisterEventHandler] UPPInconsistency, node.refcount <= 0');
+    Exit;
+  end;
+
+  Dec(node.Refcount);
+  if node.Refcount > 0 then Exit;
+
+  // Sigh !
+  // there doesn't exist a light version of the avltree without buildin memmanager
+  // So, just free it and "pollute" the memmanager with our classes;
+  // Freeing our node is also not an option, since that would
+  // corrupt the tree (no handling for that).
+  // Tweaking the memmanager is also not possible since only the class is public
+  // and not the manager itself.
+
+  node.Clear;
+  UPPTree.Delete(node);
+end;
+
+finalization
+  if UPPTree <> nil
+  then FreeAndNil(UPPTree);
 
 end.

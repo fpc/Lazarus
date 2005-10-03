@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSControls.pp                              * 
- *                              ---------------                              * 
+ *                            CarbonWSControls.pp                            *
+ *                              ---------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,13 +28,13 @@ interface
 
 uses
   // libs
-  Carbon, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils, CarbonExtra,
   // LCL
-  Controls, LCLType, LMessages, LCLProc, 
+  Controls, LCLType, LMessages, LCLProc,
   // widgetset
-  WSControls, WSLCLClasses, WSProc, 
+  WSControls, WSLCLClasses, WSProc,
   // interface
-  CarbonDef, CarbonProc;
+  CarbonDef, CarbonProc, CarbonPrivate;
 
 type
 
@@ -64,15 +64,6 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
-  TCarbonWSWinControlPrivate = class(TWSPrivate)
-  private
-  protected
-    class procedure InstallControlHandler(AInfo: PWidgetInfo; AClass: TFourCC; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
-  public
-    class procedure SetEvents(AInfo: PWidgetInfo); virtual;
-  end;
-  TCarbonWSWinControlPrivateClass = class of TCarbonWSWinControlPrivate;
-
   { TCarbonWSGraphicControl }
 
   TCarbonWSGraphicControl = class(TWSGraphicControl)
@@ -101,76 +92,24 @@ type
 implementation
 
   { TCarbonWSWinControl }
-  
-var  
-  MCarbonWSWinControl_Dispose_UPP: EventHandlerUPP = nil;
-  MCarbonWSWinControl_Hit_UPP: EventHandlerUPP = nil;
-  
-  
-function CarbonWSWinControl_Dispose(ANextHandler: EventHandlerCallRef;
-                                    AEvent: EventRef;
-                                    AInfo: PWidgetInfo): OSStatus; stdcall;  
-var
-  Msg: TLMessage;
-begin
-  Result := CallNextEventHandler(ANextHandler, AEvent); 
-
-  FillChar(Msg, SizeOf(Msg),0);
-  Msg.msg := LM_DESTROY;
-  DeliverMessage(AInfo^.LCLObject, Msg);
-  
-  FreeWidgetInfo(AInfo);
-end;
-
-function CarbonWSWinControl_Hit(ANextHandler: EventHandlerCallRef;
-                                AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; stdcall;  
-var
-  Msg: TLMessage;
-begin
-  Result := CallNextEventHandler(ANextHandler, AEvent); 
-  FillChar(Msg, SizeOf(Msg),0);
-  Msg.msg := LM_CLICKED;
-  DeliverMessage(AInfo^.LCLObject, Msg);
-end; 
-
-// ---------------
 
 procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
-var         
+var
   CFString: CFStringRef;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
 
-  CFString := CFStringCreateWithCString(nil, PChar(AText), DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(PChar(AText)), DEFAULT_CFSTRING_ENCODING);
   SetControlTitleWithCFString(ControlRef(AWinControl.Handle), CFString);
   CFRelease(Pointer(CFString));
 end;
 
 procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
+  if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
+  then Exit;
   DisposeControl(ControlRef(AWinControl.Handle));
-end;
-
-  { TCarbonWSWinControlPrivate }
-
-procedure TCarbonWSWinControlPrivate.InstallControlHandler(AInfo: PWidgetInfo; AClass: TFourCC; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
-var
-  eventSpec: EventTypeSpec;
-begin 
-  if AUPP = nil
-  then AUPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
-
-  eventSpec := MakeEventSpec(AClass, AKind);
-  InstallControlEventHandler(AInfo^.Widget, AUPP, 1, eventSpec, Pointer(AInfo), nil);
-end;
-  
-procedure TCarbonWSWinControlPrivate.SetEvents(AInfo: PWidgetInfo); 
-begin           
-  InstallControlHandler(AInfo, kEventClassControl, kEventControlDispose, @CarbonWSWinControl_Dispose, MCarbonWSWinControl_Dispose_UPP);
-  InstallControlHandler(AInfo, kEventClassControl, kEventControlHit, @CarbonWSWinControl_Hit, MCarbonWSWinControl_Hit_UPP);
-  WriteLN('controls: Events set')
 end;
 
 initialization
@@ -183,14 +122,14 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TCarbonWSDragImageList);
 //  RegisterWSComponent(TControl, TCarbonWSControl);
-  RegisterWSComponent(TWinControl, TCarbonWSWinControl, TCarbonWSWinControlPrivate);
+  RegisterWSComponent(TWinControl, TCarbonWSWinControl, TCarbonPrivateHiView);
 //  RegisterWSComponent(TGraphicControl, TCarbonWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TCarbonWSCustomControl);
 //  RegisterWSComponent(TImageList, TCarbonWSImageList);
 ////////////////////////////////////////////////////
 
 finalization
-  if MCarbonWSWinControl_Dispose_UPP <> nil then DisposeEventHandlerUPP(MCarbonWSWinControl_Dispose_UPP);
-  if MCarbonWSWinControl_Hit_UPP <> nil then DisposeEventHandlerUPP(MCarbonWSWinControl_Hit_UPP);
+//  if MCarbonWSWinControl_Dispose_UPP <> nil then DisposeEventHandlerUPP(MCarbonWSWinControl_Dispose_UPP);
+//  if MCarbonWSWinControl_Hit_UPP <> nil then DisposeEventHandlerUPP(MCarbonWSWinControl_Hit_UPP);
 
 end.

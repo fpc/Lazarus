@@ -41,7 +41,7 @@ uses
   InterfaceBase,
   // carbon bindings
 
-  Carbon, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils, CarbonExtra,
 
   // LCL
   Controls, Forms, Dialogs, LCLStrConsts, LMessages, LCLProc, LCLIntf, LCLType,

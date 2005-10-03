@@ -99,12 +99,11 @@ function EventLoopEventHandler(inHandlerCallRef: EventHandlerCallRef;
 var
   QuitUPP: EventHandlerUPP;
   QuitHandler: EventHandlerRef;
-  EventSpec: EventTypeSpec;
   Loop: TApplicationMainLoop = nil;
   Dummy: LongWord;
 begin
   // Get our TApplicationMainLoop
-  Result := GetEventParameter(inEvent, MakeFourCC('Loop'), MakeFourCC('TAML'), Dummy, SizeOf(Loop), Dummy, @Loop);
+  Result := GetEventParameter(inEvent, MakeFourCC('Loop'), MakeFourCC('TAML'), @Dummy, SizeOf(Loop), @Dummy, @Loop);
   if Result <> noErr then Exit;
   if not Assigned(Loop) then Exit;
 
@@ -114,9 +113,7 @@ begin
   if QuitUPP = nil then Exit;
 
   try
-    EventSpec.eventClass := MakeFourCC(kEventClassApplication);
-    EventSpec.eventKind := kEventAppQuit;
-    Result := InstallEventHandler(GetApplicationEventTarget, QuitUPP, 1, EventSpec, nil, @QuitHandler);
+    Result := InstallApplicationEventHandler(QuitUPP, 1, MakeEventSpec(kEventClassApplication, kEventAppQuit), nil, @QuitHandler);
     if Result <> noErr then Exit;
 
     try
@@ -190,7 +187,7 @@ begin
     // standard event handlers are installed while our event loop runs.
 
     EventSpec := MakeEventSpec('Laz ', 'Main');
-    if InstallEventHandler(GetApplicationEventTarget, EventLoopUPP, 1, EventSpec, nil, @EventLoopHandler) <> noErr
+    if InstallApplicationEventHandler(EventLoopUPP, 1, EventSpec, nil, @EventLoopHandler) <> noErr
     then Exit;
 
     try

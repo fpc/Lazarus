@@ -26,15 +26,15 @@ unit CarbonWSButtons;
 
 interface
 
-uses     
+uses
   // libs
-  Carbon, 
+  FPCMacOSAll,
   // LCL
   Controls, Buttons, LCLType,
   // widgetset
   WSButtons, WSLCLClasses,
   // interface
-  CarbonDef, CarbonProc,
+  CarbonDef, CarbonProc, CarbonPrivate,
   CarbonWSControls;
 
 type
@@ -85,14 +85,14 @@ begin
   R.Right := AParams.X + AParams.Width;
   R.Bottom := AParams.Y + AParams.Height;
 
-  CFString := CFStringCreateWithCString(nil, AParams.Caption, DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
   if CreatePushButtonControl(WindowRef(AParams.WndParent), R, CFString, Control) = noErr
   then Result := TLCLIntfHandle(Control);
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
-  
+
   Info := CreateWidgetInfo(Control, AWinControl);
-  TCarbonWSWinControlPrivateClass(WSPrivate).SetEvents(Info);
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 
 

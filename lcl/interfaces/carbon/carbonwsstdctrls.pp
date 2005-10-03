@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              CarbonWSStdCtrls.pp                              * 
- *                              ---------------                              * 
+ *                              CarbonWSStdCtrls.pp                              *
+ *                              ---------------                              *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,16 +28,16 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Carbon, CarbonDef, CarbonProc, CarbonUtils,
-  Controls, StdCtrls, LCLType,	
+  FPCMacOSAll, CarbonDef, CarbonProc, CarbonUtils,
+  Controls, StdCtrls, LCLType,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
-  CarbonWSControls;
+  CarbonWSControls, CarbonPrivate;
 type
 
   { TCarbonWSScrollBar }
@@ -102,7 +102,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;    
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
@@ -235,43 +235,44 @@ begin
   R.Right := AParams.X + AParams.Width;
   R.Bottom := AParams.Y + AParams.Height;
 
-  CFString := CFStringCreateWithCString(nil, AParams.Caption, DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
   if CreateEditTextControl(WindowRef(AParams.WndParent), R, CFString, (Edit.PasswordChar <> #0),true, nil, Control) = noErr
   then Result := TLCLIntfHandle(Control);
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
-  
+
   New(IsResize);
   IsResize^ := Edit.PasswordChar <> #0;
-  
+
   Info := CreateWidgetInfo(Control, AWinControl);
   Info^.UserData := IsResize;
   Info^.DataOwner := True;
-  TCarbonWSWinControlPrivateClass(WSPrivate).SetEvents(Info);
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 
 function  TCarbonWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
-  RecSize: Carbon.Size;
+  RecSize: FPCMacOSAll.Size;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart')
   then Exit;
 
   Result := 0;
   Control := ControlRef(ACustomEdit.Handle);
-  if GetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextSelectionTag),
-    SizeOf(ControlEditTextSelectionRec), @SelData, RecSize) <> noErr then ;//sExit;
-    
+  if GetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+      SizeOf(ControlEditTextSelectionRec), @SelData, @RecSize) <> noErr
+  then Exit;
+
   Result := SelData.SelStart;
 end;
 
-function  TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer; 
+function  TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
-  RecSize: Carbon.Size;
+  RecSize: FPCMacOSAll.Size;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength')
   then Exit;
@@ -279,18 +280,18 @@ begin
   Result := 0;
   Control := ControlRef(ACustomEdit.Handle);
 
-  if GetControlData(Control, kControlEntireControl,
-                    MakeFourCC(kControlEditTextSelectionTag),
-                    SizeOf(ControlEditTextSelectionRec), @SelData, RecSize) <> noErr then exit;
-  Result := SelData.SelEnd - SelData.SelStart;
+  if GetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+                    SizeOf(ControlEditTextSelectionRec), @SelData, @RecSize) <> noErr then exit;
 
+  Result := SelData.SelEnd - SelData.SelStart;
 end;
+
 procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
 begin
  // TODO
 end;
 
-procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); 
+procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
  //TODO
 end;
@@ -300,7 +301,7 @@ begin
  //AFAICS this will have to be checked in a callback
 end;
 
-procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); 
+procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 var
   Control: ControlRef;
   NeedsPassword: Boolean;
@@ -313,14 +314,14 @@ begin
   Info := GetWidgetInfo(Pointer(ACustomEdit.Handle));
   IsPassword := PBoolean(Info^.UserData)^;
   NeedsPassword := (NewChar <> #0);
-  
+
   if IsPassword = NeedsPassword then exit;
   PBoolean(Info^.UserData)^ := NeedsPassword;
   RecreateWnd(ACustomEdit);
 
 end;
 
-procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); 
+procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 var
   Control: ControlRef;
 begin
@@ -329,27 +330,27 @@ begin
 
   Control := ControlRef(ACustomEdit.Handle);
 
-  SetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextLockedTag),
-                                             SizeOf(Boolean), @NewReadOnly);
+  SetControlData(Control, kControlEntireControl, kControlEditTextLockedTag,
+                 SizeOf(Boolean), @NewReadOnly);
 end;
 
-procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); 
+procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
-  RecSize: Carbon.Size;
+  RecSize: FPCMacOSAll.Size;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart')
   then Exit;
 
   Control := ControlRef(ACustomEdit.Handle);
 
-  if GetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextSelectionTag),
-                                             SizeOf(ControlEditTextSelectionRec), @SelData, RecSize) <> noErr then exit;
+  if GetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+                    SizeOf(ControlEditTextSelectionRec), @SelData, @RecSize) <> noErr then exit;
 
   SelData.SelStart := NewStart;
-  SetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextSelectionTag),
-                                             SizeOf(ControlEditTextSelectionRec), @SelData);
+  SetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+                 SizeOf(ControlEditTextSelectionRec), @SelData);
 
 end;
 
@@ -357,18 +358,18 @@ procedure TCarbonWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLe
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
-  RecSize: Carbon.Size;
+  RecSize: FPCMacOSAll.Size;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength')
   then Exit;
 
   Control := ControlRef(ACustomEdit.Handle);
-  if GetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextSelectionTag),
-                                             SizeOf(ControlEditTextSelectionRec), @SelData, RecSize) <> noErr then Exit;
+  if GetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+                    SizeOf(ControlEditTextSelectionRec), @SelData, @RecSize) <> noErr then Exit;
 
   SelData.SelEnd := SelData.SelStart + NewLength;
-  SetControlData(Control, kControlEntireControl, MakeFourCC(kControlEditTextSelectionTag),
-                                             SizeOf(ControlEditTextSelectionRec), @SelData);
+  SetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
+                 SizeOf(ControlEditTextSelectionRec), @SelData);
 
 end;
 
