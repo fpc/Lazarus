@@ -10,7 +10,7 @@ Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires:  
-Requires:       fpc-src = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf-devel, gtk+, gtk+-devel, gdb, glibc-devel, gdk-pixbuf
+Requires:       fpcsrc = FPCVERSION, fpc = FPCVERSION, gdk-pixbuf-devel, gtk+, gtk+-devel, gdb, glibc-devel, gdk-pixbuf
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
