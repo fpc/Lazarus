@@ -268,7 +268,7 @@ begin
                                   RawImage^.Description.AlphaLineEnd);
       UsedBitsPerLine:=Width*RawImage^.Description.AlphaBitsPerPixel;
       if RawImage^.MaskSize<((Height*BitsPerLine+7) shr 3) then
-        raise Exception('RawImageMaskIsEmpty Invalid MaskSize');
+        raise Exception.Create('RawImageMaskIsEmpty Invalid MaskSize');
       if (BitsPerLine and 7)=0 then begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
