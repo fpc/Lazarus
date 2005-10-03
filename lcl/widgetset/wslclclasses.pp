@@ -58,7 +58,7 @@ type
 
 {$M+}
   TWSLCLComponent = class(TObject)
-  protected
+  public
     class function WSPrivate: TWSPrivateClass; //inline;
   end;
 {$M-}

@@ -39,11 +39,11 @@ type
   private
     FWidgetSetClass: TWSLCLComponentClass;
   protected
-    property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
   public             
     procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
+    property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
   end;
 
 implementation                    
