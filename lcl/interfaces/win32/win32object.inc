@@ -412,6 +412,7 @@ begin
   begin
     AWinControl := TWinControl(AMenu.Owner);
     Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
+    AddToChangedMenus(AWinControl.Handle);
   end;
 end;
 
