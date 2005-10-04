@@ -5,8 +5,7 @@ object MessagesView: TMessagesView
   ClientWidth = 722
   KeyPreview = True
   OnKeyDown = MessagesViewKeyDown
-  PixelsPerInch = 96
-  Position = poScreenCenter
+  PixelsPerInch = 112
   HorzScrollBar.Page = 721
   VertScrollBar.Page = 78
   Left = 262
@@ -15,10 +14,10 @@ object MessagesView: TMessagesView
   Width = 722
   object MessageView: TListBox
     Align = alClient
-    BorderSpacing.OnChange = nil
     MultiSelect = True
     PopupMenu = MainPopupMenu
     TabOrder = 0
+    TopIndex = -1
     Height = 79
     Width = 722
   end

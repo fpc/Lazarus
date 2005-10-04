@@ -35,20 +35,28 @@ unit Splash;
 interface
 
 uses
-  Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls, LResources,
-  LCLIntf{must be used before graphics}, Graphics;
+  Buttons,
+  Classes,
+  Controls,
+  ExtCtrls,
+  Forms,
+  Graphics,
+  LResources,
+  StdCtrls,
+  SysUtils;
 
 type
+
+  { TSplashForm }
+
   TSplashForm = class(TForm)
-    procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
+    Image: TImage;
+    Timer: TTimer;
+    procedure ApplicationOnIdle(Sender: TObject; var Done: boolean);
+    procedure TimerTimer(Sender: TObject);
   private
-    FPixmap : TPixmap;
-    FTimer : TTimer;
-    procedure HideFormTimer(Sender : TObject);
   protected
-    procedure Click; override;
   public
-    procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure StartTimer;
@@ -57,85 +65,41 @@ type
 var
   SplashForm: TSplashForm;
 
-
 implementation
-
 
 constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  BorderStyle  := bsNone;
-  FormStyle := fsStayOnTop;
-  Caption := 'Lazarus';
 
-  FPixmap := TPixmap.Create;
-  FPixmap.LoadFromLazarusResource('splash_logo');
-  Width := FPixmap.Width;
-  Height := FPixmap.Height;
-  Position:= poScreenCenter;
-
-  FTimer := TTimer.Create(self);
-  with FTimer do
-  begin
-    Interval := 500;
-    OnTimer := @HideFormTimer;
-    Enabled := False;
-  end;
-
-  Application.OnIdle:=@ApplicationOnIdle;
+  Application.OnIdle := @ApplicationOnIdle;
 end;
 
 destructor TSplashForm.Destroy;
 begin
-  FPixmap.Free;
-  FPixmap:=nil;
-  FTimer.Free;
-  FTimer:=nil;
-  if Application.OnIdle=@ApplicationOnIdle then
-    Application.OnIdle:=nil;
+  if Application.OnIdle = @ApplicationOnIdle then
+    Application.OnIdle := nil;
+
   inherited Destroy;
-  SplashForm:=nil;
+
+  SplashForm := nil;
 end;
 
-procedure TSplashForm.Click; 
-begin
-  Hide;
-  if FTimer<>nil then begin
-    FTimer.Enabled := False;
-    //Release resources
-    FTimer.Free;
-    FTimer:=nil;
-    FPixmap.Free;
-    FPixmap:=nil;
-  end;
-end;
-
-procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
+procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: boolean);
 begin
   Hide;
 end;
 
-procedure TSplashForm.HideFormTimer(Sender : TObject);
+procedure TSplashForm.TimerTimer(Sender: TObject);
 begin
-  Click;
-end;
-
-procedure TSplashForm.Paint;
-begin
-  inherited Paint;
-  if FPixmap <>nil
-  then Canvas.Copyrect(Bounds(0, 0, Width, Height),FPixmap.Canvas,
-                       Rect(0,0, Width, Height));
+  Hide;
 end;
 
 procedure TSplashForm.StartTimer;
 begin
-  if FTimer<>nil then
-    FTimer.Enabled := True;
+  Timer.Enabled := True;
 end;
 
 initialization
   {$I splash.lrs}
 
 end.
-

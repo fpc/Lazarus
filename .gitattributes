@@ -954,6 +954,7 @@ ide/showcompileropts.pas svneol=native#text/pascal
 ide/sortselectiondlg.pas svneol=native#text/pascal
 ide/sourceeditprocs.pas svneol=native#text/pascal
 ide/sourcemarks.pas svneol=native#text/pascal
+ide/splash.lfm svneol=native#text/plain
 ide/splash.lrs svneol=native#text/pascal
 ide/splash.pp svneol=native#text/pascal
 ide/startlazarus.lpr svneol=native#text/pascal
