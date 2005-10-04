@@ -121,12 +121,15 @@ procedure TMaskEditorForm.SampleMasksListBoxClick(Sender: TObject);
 var
   S1, S2:string;
 begin
-  TestMaskEdit.Text:='';
-  S1:=SampleMasksListBox.Items[SampleMasksListBox.ItemIndex];
-  Delete(S1, 1, Pos('|', S1));
-  S2:=Copy(S1, 1, Pos('|', S1)-1);
-  Delete(S1, 1, Pos('|', S1));
-  EditMask:=S2;
+  if (SampleMasksListBox.Items.Count>0) then
+  begin
+    TestMaskEdit.Text:='';
+    S1:=SampleMasksListBox.Items[SampleMasksListBox.ItemIndex];
+    Delete(S1, 1, Pos('|', S1));
+    S2:=Copy(S1, 1, Pos('|', S1)-1);
+    Delete(S1, 1, Pos('|', S1));
+    EditMask:=S2;
+  end;
 end;
 
 procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
