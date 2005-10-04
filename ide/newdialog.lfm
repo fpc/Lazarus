@@ -1,0 +1,81 @@
+object NewOtherDialog: TNewOtherDialog
+  BorderStyle = bsSizeToolWin
+  Caption = 'NewOtherDialog'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnResize = FormResize
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 481
+  Height = 300
+  Top = 362
+  Width = 400
+  object ItemsTreeView: TTreeView
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 15
+    TabOrder = 0
+    OnClick = ItemsTreeViewClick
+    OnDblClick = OkButtonClick
+    OnSelectionChanged = ItemsTreeViewSelectionChanged
+    Left = 6
+    Height = 250
+    Top = 6
+    Width = 178
+  end
+  object DescriptionGroupBox: TGroupBox
+    BorderSpacing.Around = 6
+    Caption = 'DescriptionGroupBox'
+    ClientHeight = 232
+    ClientWidth = 196
+    ParentColor = True
+    TabOrder = 1
+    AnchorSideLeft.Control = ItemsTreeView
+    Left = 190
+    Height = 250
+    Top = 6
+    Width = 200
+    object DescriptionLabel: TLabel
+      Align = alClient
+      BorderSpacing.Around = 6
+      Caption = 'DescriptionLabel'
+      Color = clNone
+      WordWrap = True
+      Left = 6
+      Height = 220
+      Top = 6
+      Width = 184
+    end
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 306
+    Height = 29
+    Top = 265
+    Width = 88
+  end
+  object OkButton: TButton
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OkButton'
+    Enabled = False
+    OnClick = OkButtonClick
+    TabOrder = 3
+    AnchorSideRight.Control = CancelButton
+    Left = 231
+    Height = 29
+    Top = 265
+    Width = 69
+  end
+end
