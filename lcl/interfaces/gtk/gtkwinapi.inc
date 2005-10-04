@@ -8241,7 +8241,7 @@ begin
         then begin
           if (ScrollInfo.fMask and SIF_RANGE) <> 0
           then gtk_layout_set_size(Layout, ScrollInfo.nMax - ScrollInfo.nMin, Layout^.height);
-          Result := Layout^.xoffset;
+          Result := round(Layout^.hadjustment^.value);
         end;
       end
       // obsolete stuff
@@ -8267,7 +8267,7 @@ begin
         then begin
           if (ScrollInfo.fMask and SIF_RANGE) <> 0
           then gtk_layout_set_size(Layout, Layout^.Width, ScrollInfo.nMax - ScrollInfo.nMin);
-          Result := Layout^.yoffset;
+          Result := round(Layout^.vadjustment^.value);
         end;
       end
       // obsolete stuff
