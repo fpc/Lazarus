@@ -1,0 +1,12 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TMessagesView','FORMDATA',[
+  'TPF0'#13'TMessagesView'#12'MessagesView'#11'BorderStyle'#7#13'bsSizeToolWin'
+  +#7'Caption'#6#12'MessagesView'#12'ClientHeight'#2'O'#11'ClientWidth'#3#210#2
+  +#10'KeyPreview'#9#9'OnKeyDown'#7#19'MessagesViewKeyDown'#13'PixelsPerInch'#2
+  +'`'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3#209#2#18'VertS'
+  +'crollBar.Page'#2'N'#4'Left'#3#6#1#6'Height'#2'O'#3'Top'#3#6#2#5'Width'#3#210
+  +#2#0#8'TListBox'#11'MessageView'#5'Align'#7#8'alClient'#11'MultiSelect'#9#9
+  +'PopupMenu'#7#13'MainPopupMenu'#8'TabOrder'#2#0#6'Height'#2'O'#5'Width'#3#210
+  +#2#0#0#10'TPopupMenu'#13'MainPopupMenu'#4'left'#2'.'#3'top'#2')'#0#0#0
+]);

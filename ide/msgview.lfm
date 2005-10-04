@@ -1,0 +1,29 @@
+object MessagesView: TMessagesView
+  BorderStyle = bsSizeToolWin
+  Caption = 'MessagesView'
+  ClientHeight = 79
+  ClientWidth = 722
+  KeyPreview = True
+  OnKeyDown = MessagesViewKeyDown
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 721
+  VertScrollBar.Page = 78
+  Left = 262
+  Height = 79
+  Top = 518
+  Width = 722
+  object MessageView: TListBox
+    Align = alClient
+    BorderSpacing.OnChange = nil
+    MultiSelect = True
+    PopupMenu = MainPopupMenu
+    TabOrder = 0
+    Height = 79
+    Width = 722
+  end
+  object MainPopupMenu: TPopupMenu
+    left = 46
+    top = 41
+  end
+end
