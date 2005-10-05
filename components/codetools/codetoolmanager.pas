@@ -571,7 +571,7 @@ begin
   FCursorBeyondEOL:=true;
   FIndentSize:=2;
   FJumpCentered:=true;
-  FSourceExtensions:='.pp;.pas;.lpr;.lpk;.dpr;.dpk';
+  FSourceExtensions:='.pp;.pas;.p;.lpr;.lpk;.dpr;.dpk';
   FVisibleEditorLines:=20;
   FWriteExceptions:=true;
   FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);

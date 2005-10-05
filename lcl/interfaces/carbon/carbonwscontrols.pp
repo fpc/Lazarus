@@ -60,6 +60,7 @@ type
   private
   protected
   public
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
@@ -92,6 +93,34 @@ type
 implementation
 
   { TCarbonWSWinControl }
+
+function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  CFString: CFStringRef;
+  Str: Pointer;
+  StrSize: CFIndex; //Integer;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
+  then Exit;
+
+  Result := CopyControlTitleAsCFString(ControlRef(AWinControl.Handle), CFString) = NoErr;
+  if Result = False then Exit;
+  
+  // Try the quick way first
+  Str := CFStringGetCStringPtr(CFString, DEFAULT_CFSTRING_ENCODING);
+  // if that doesn't work this will
+  if Str = nil then begin
+    StrSize := CFStringGetLength(CFString)*SizeOf(WideChar);
+    GetMem(Str,(StrSize));
+    Result := CFStringGetCString(CFString, Str, StrSize, DEFAULT_CFSTRING_ENCODING);
+  end;
+
+  CFRelease(Pointer(CFString));
+  if Result = False then Exit;
+  AText := PChar(Str);
+  
+end;
 
 procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 var

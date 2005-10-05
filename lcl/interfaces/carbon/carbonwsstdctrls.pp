@@ -106,6 +106,7 @@ type
 
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -114,7 +115,8 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -225,7 +227,8 @@ var
   CFString: CFStringRef;
   R: Rect;
   Info: PWidgetInfo;
-  IsResize: PBoolean;
+  IsPassword: PBoolean;
+  SingleLine: Boolean = True;
 begin
   Result := 0;
   Edit := AWinControl as TCustomEdit;
@@ -236,16 +239,20 @@ begin
   R.Bottom := AParams.Y + AParams.Height;
 
   CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
-  if CreateEditTextControl(WindowRef(AParams.WndParent), R, CFString, (Edit.PasswordChar <> #0),true, nil, Control) = noErr
+  if CreateEditUniCodeTextControl(WindowRef(AParams.WndParent), R, CFString, (Edit.PasswordChar <> #0), nil, Control) = noErr
   then Result := TLCLIntfHandle(Control);
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
-  New(IsResize);
-  IsResize^ := Edit.PasswordChar <> #0;
+  New(IsPassword);
+  IsPassword^ := Edit.PasswordChar <> #0;
+  
+  SetControlData(Control, kControlEntireControl, kControlEditTextSingleLineTag,
+                 SizeOf(Boolean), @SingleLine);
+
 
   Info := CreateWidgetInfo(Control, AWinControl);
-  Info^.UserData := IsResize;
+  Info^.UserData := IsPassword;
   Info^.DataOwner := True;
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
@@ -284,6 +291,40 @@ begin
                     SizeOf(ControlEditTextSelectionRec), @SelData, @RecSize) <> noErr then exit;
 
   Result := SelData.SelEnd - SelData.SelStart;
+end;
+
+function TCarbonWSCustomEdit.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  Control: ControlRef;
+  TextType: ResType;
+  CFString: CFStringRef;
+  RecSize: FPCMacOSAll.Size;
+  Str: Pointer;
+  StrSize: CFIndex; //Integer;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'GetText')
+  then Exit;
+
+  Result := False;
+  Control := ControlRef(AWinControl.Handle);
+  if PBoolean(GetWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
+    TextType := kControlEditTextPasswordCFStringTag
+  else
+    TextType := kControlEditTextCFStringTag;
+    
+  if GetControlData(Control, kControlEntireControl, TextType,
+      SizeOf(CFStringRef), @CFString, @RecSize) <> noErr
+  then Exit;
+
+  StrSize := CFStringGetLength(CFString)*SizeOf(WideChar);
+  GetMem(Str,(StrSize));
+  Result := CFStringGetCString(CFString, Str, StrSize, DEFAULT_CFSTRING_ENCODING);
+
+  CFRelease(Pointer(CFString));
+  
+  if Result = False then Exit;
+  AText := PChar(Str);
 end;
 
 procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
@@ -371,6 +412,28 @@ begin
   SetControlData(Control, kControlEntireControl, kControlEditTextSelectionTag,
                  SizeOf(ControlEditTextSelectionRec), @SelData);
 
+end;
+
+procedure TCarbonWSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  Control: ControlRef;
+  TextType: ResType;
+  CFString: CFStringRef;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText')
+  then Exit;
+
+  Control := ControlRef(AWinControl.Handle);
+  if PBoolean(GetWidgetInfo(Pointer(AWincontrol.Handle))^.UserData)^ = True then// IsPassword
+    TextType := kControlEditTextPasswordCFStringTag
+  else
+    TextType := kControlEditTextCFStringTag;
+
+  CFString := CFStringCreateWithCString(nil, Pointer(AText), DEFAULT_CFSTRING_ENCODING);
+  SetControlData(Control, kControlEntireControl, TextType, SizeOf(CFStringRef), @CFString);
+
+  CFRelease(Pointer(CFString));
 end;
 
 procedure TCarbonWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer);

@@ -643,6 +643,7 @@ begin
     Add('ABSTRACT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    ADD('MWPASCAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DISPID'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DYNAMIC'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -664,6 +665,7 @@ begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -694,6 +696,7 @@ begin
     Add('POPSTACK'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    ADD('MWPASCAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FAR'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
