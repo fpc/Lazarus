@@ -268,7 +268,7 @@ begin
   if StatusBar.Panels.Count=0 then begin
     // SETPARTS 0,0 does not work :S
     Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
-    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(''));    
+    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PChar('')));
     exit;
   end;
   Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
