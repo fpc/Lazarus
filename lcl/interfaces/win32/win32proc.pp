@@ -348,6 +348,7 @@ function WindowPosFlagsToString(Flags: UINT): string;
 var
   FlagsStr: string;
 begin
+  FlagsStr := '';
   if (Flags and SWP_DRAWFRAME) <> 0 then
     FlagsStr := FlagsStr + '|SWP_DRAWFRAME';
   if (Flags and SWP_HIDEWINDOW) <> 0 then
