@@ -983,10 +983,38 @@ end;
 
 function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
+{ parse parameter list
+
+ examples:
+   procedure ProcName;  virtual; abstract;
+   function FuncName(Parameter1: Type1; Parameter2: Type2): ResultType;
+   constructor Create;
+   destructor Destroy;  override;
+   class function X: integer;
+   function QWidget_mouseGrabber(): QWidgetH; cdecl;
+   procedure Intf.Method = ImplementingMethodName;
+   function CommitUrlCacheEntry; // only Delphi
+   procedure MacProcName(c: char; ...); external;
+
+ proc specifiers without parameters:
+   stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
+
+ proc specifiers with parameters:
+   message <id or number>;
+   external;
+   external <id>;
+   external name <id>;
+   external <id or number> name <id>;
+   external <id or number> index <id>;
+   [alias: <string constant>]
+   [external name <string constant>]
+   [internconst:in_const_round, external name 'FPC_ROUND'];
+   dispid <id>;
+}
 var CloseBracket: char;
   Desc: TCodeTreeNodeDesc;
   Node: TCodeTreeNode;
-  
+
   procedure ReadPrefixModifier;
   begin
     // read parameter prefix modifier
@@ -1038,55 +1066,73 @@ begin
     CloseBracket:=#0;
   if not (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then begin
     repeat
-      ReadPrefixModifier;
-      // read parameter name(s)
-      repeat
-        if not AtomIsIdentifier(ExceptionOnError) then exit;
-        if (phpCreateNodes in Attr) then begin
-          CreateChildNode;
-          CurNode.Desc:=Desc;
+      if AtomIs('...') then begin
+        // MacPas '...' VarArgs parameter
+        if (Scanner.CompilerMode<>cmMacPas) then begin
+          if ExceptionOnError then
+            RaiseIdentExpectedButAtomFound
+          else
+            exit;
         end;
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(phpWithParameterNames in Attr,Attr);
-        if CurPos.Flag<>cafComma then
-          break
-        else begin
+        ReadNextAtom;
+        // parse end of parameter list
+        if (CurPos.StartPos>SrcLen)
+        or (Src[CurPos.StartPos]<>CloseBracket) then
+          if ExceptionOnError then
+            RaiseCharExpectedButAtomFound(CloseBracket)
+          else exit;
+        break;
+      end else begin
+        ReadPrefixModifier;
+        // read parameter name(s)
+        repeat
+          if not AtomIsIdentifier(ExceptionOnError) then exit;
           if (phpCreateNodes in Attr) then begin
-            CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
-            EndChildNode;
+            CreateChildNode;
+            CurNode.Desc:=Desc;
           end;
           if not Extract then
             ReadNextAtom
           else
-            ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+            ExtractNextAtom(phpWithParameterNames in Attr,Attr);
+          if CurPos.Flag<>cafComma then
+            break
+          else begin
+            if (phpCreateNodes in Attr) then begin
+              CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+              EndChildNode;
+            end;
+            if not Extract then
+              ReadNextAtom
+            else
+              ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+          end;
+        until false;
+        // read type
+        if CurPos.Flag=cafColon then begin
+          if not Extract then
+            ReadNextAtom
+          else
+            ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],
+                            Attr);
+          if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
+          if CurPos.Flag=cafEqual then begin
+            // read default value
+            ReadDefaultValue;
+          end;
+        end else begin
+          // no type -> variant
+          if (phpCreateNodes in Attr) then begin
+            CreateChildNode;
+            CurNode.Desc:=ctnVariantType;
+            CurNode.EndPos:=CurNode.StartPos;
+            EndChildNode;
+          end;
         end;
-      until false;
-      // read type
-      if CurPos.Flag=cafColon then begin
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],
-                          Attr);
-        if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
-        if CurPos.Flag=cafEqual then begin
-          // read default value
-          ReadDefaultValue;
-        end;
-      end else begin
-        // no type -> variant
         if (phpCreateNodes in Attr) then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnVariantType;
-          CurNode.EndPos:=CurNode.StartPos;
+          CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
         end;
-      end;
-      if (phpCreateNodes in Attr) then begin
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
       end;
       // read next parameter
       if (CurPos.StartPos>SrcLen) then
@@ -1097,7 +1143,7 @@ begin
         break;
       if (CurPos.Flag<>cafSemicolon) then
         if ExceptionOnError then
-          RaiseCharExpectedButAtomFound(CloseBracket)
+          RaiseCharExpectedButAtomFound(';')
         else exit;
       if not Extract then
         ReadNextAtom
@@ -1200,10 +1246,6 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
   var HasForwardModifier: boolean): boolean;
 { parse parameter list, result type, of object, method specifiers
 
-  IsMethod: true if parsing in a class/object
-  IsFunction: 'function'
-  IsType: parsing type definition. e.g. 'Event: procedure of object'
-
 
  examples:
    procedure ProcName;  virtual; abstract;
@@ -1214,6 +1256,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    function QWidget_mouseGrabber(): QWidgetH; cdecl;
    procedure Intf.Method = ImplementingMethodName;
    function CommitUrlCacheEntry; // only Delphi
+   procedure MacProcName(c: char; ...); external;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline

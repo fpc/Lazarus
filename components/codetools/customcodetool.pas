@@ -1018,10 +1018,16 @@ begin
       begin
         inc(CurPos.EndPos);
         if (Src[CurPos.EndPos]<>'.') then begin
+          // '.'
           CurPos.Flag:=cafPoint;
         end else begin
-          // ..
           inc(CurPos.EndPos);
+          if (Src[CurPos.EndPos]<>'.') then begin
+            // '..'
+          end else begin
+            // '...'
+            inc(CurPos.EndPos);
+          end;
         end;
       end;
     else
@@ -1029,12 +1035,15 @@ begin
       c2:=Src[CurPos.EndPos];
       // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
       if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-      or ((c1='<') and (c2='>')) // not equal
-      or ((c1='>') and (c2='<'))
-      or ((c1='.') and (c2='.')) // subrange
-      or ((c1='*') and (c2='*'))
-      then inc(CurPos.EndPos);
-      if ((c1='@') and (c2='@')) then begin
+        or ((c1='<') and (c2='>')) // not equal
+        or ((c1='>') and (c2='<'))
+        or ((c1='.') and (c2='.'))
+        or ((c1='*') and (c2='*'))
+        then begin
+          // 2 character operator/symbol
+          inc(CurPos.EndPos);
+      end
+      else if ((c1='@') and (c2='@')) then begin
         // @@ label
         repeat
           inc(CurPos.EndPos);
