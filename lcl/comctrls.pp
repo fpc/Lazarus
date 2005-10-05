@@ -628,7 +628,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     function GetCount : Integer;
     function GetItem(const AIndex: Integer): TListItem;
-    function IndexOf(const AItem: TListItem): Integer;
     procedure IntfCreateItems;
     procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
@@ -642,6 +641,7 @@ type
                      Partial, Inclusive, Wrap: Boolean;
                      PartStart: Boolean = True): TListItem;
     function FindData(const AData: Pointer): TListItem;
+    function IndexOf(const AItem: TListItem): Integer;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
     property Count: Integer read GetCount;
