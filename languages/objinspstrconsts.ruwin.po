@@ -546,6 +546,10 @@ msgstr ""
 msgid "Open"
 msgstr "Открыть"
 
+#: objinspstrconsts:oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr ""
+
 #: objinspstrconsts:oisoptions
 msgid "Options"
 msgstr "Опции"

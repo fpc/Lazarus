@@ -330,6 +330,10 @@ msgstr ""
 msgid "Test Input"
 msgstr ""
 
+#: objinspstrconsts:oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr ""
