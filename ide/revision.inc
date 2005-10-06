@@ -1,1 +1,1 @@
-'{ $Id: revision.inc 1 2005-09-21 10:30:00Z mattias $ }';
+{ $Id$ Thu Oct  6 22:11:48 CEST 2005 }

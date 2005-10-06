@@ -58,7 +58,7 @@ uses
   {$ENDIF}
   MainBase;
 
-const RevisionStr={$I revision.inc}
+const RevisionStr='0'; {$I revision.inc}
 
 begin
   LazarusRevisionStr:=RevisionStr;

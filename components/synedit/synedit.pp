@@ -894,6 +894,9 @@ type
     property Constraints;
 {$ENDIF}
     property Color;
+    {$IFDEF SYN_LAZARUS}
+    property Cursor default crIBeam;
+    {$ENDIF}
     property Ctl3D;
     property Enabled;
     property Font;
