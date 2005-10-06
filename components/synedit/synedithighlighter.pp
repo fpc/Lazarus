@@ -109,9 +109,27 @@ type
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
     hcRegistry      // supports LoadFrom/SaveToRegistry
+    {$IFDEF SYN_LAZARUS}
+    ,hcCodeFolding  // supports codefolding
+    {$ENDIF}
   );
 
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
+  
+  {$IFDEF EnableCodeFold}
+  TSynCustomCodeFoldBlock = class
+  public
+    property Range: Pointer;
+    property Level: integer;
+  end;
+
+  TSynCustomHighlighterRange = class
+  public
+    property Range: Pointer;
+    property CodeFoldStackSize: cardinal;
+    property CodeFoldStack[Index: integer]: TSynCustomCodeFoldBlock;
+  end;
+  {$ENDIF}
 
 const
   SYN_ATTR_COMMENT           =   0;
@@ -190,9 +208,12 @@ type
     property LanguageName: string read GetLanguageName;
 
     //code fold
+    {$IFDEF EnableCodeFold}
+    {$ELSE}
     procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
                              FoldIndex: integer; FoldType: TSynEditCodeFoldType); virtual;
     procedure InitCodeFold(Lines: TStrings); virtual;
+    {$ENDIF}
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
@@ -988,6 +1009,8 @@ begin
   end;
 end;
 
+{$IFDEF EnableCodeFold}
+{$ELSE}
 procedure TSynCustomHighlighter.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
   FoldIndex: integer; FoldType: TSynEditCodeFoldType);
 begin
@@ -996,6 +1019,7 @@ end;
 procedure TSynCustomHighlighter.InitCodeFold(Lines: TStrings);
 begin
 end;
+{$ENDIF}
 
 {$IFNDEF SYN_CPPB_1}
 initialization

@@ -252,10 +252,12 @@ type
     procedure EnumUserSettings(settings: TStrings); override;
 
     //code fold
+    {$IFDEF EnableCodeFold}
+    {$ELSE}
     procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
                              FoldIndex: integer; FoldType: TSynEditCodeFoldType); override;
     procedure InitCodeFold(Lines: TStrings); override;
-
+    {$ENDIF}
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -1766,6 +1768,8 @@ begin
   FD4syntax := Value;
 end;
 
+{$IFDEF EnableCodeFold}
+{$ELSE}
 procedure TSynPasSyn.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
   FoldIndex: integer; FoldType: TSynEditCodeFoldType);
 begin
@@ -1852,81 +1856,8 @@ begin
   //for iLine:=0 to Lines.Count-1 do begin
   //  debugln('  ',dbgs(iLine+1),' ',dbgs(ord(TSynEditStringList(Lines).FoldType[iLine])));
   //end;
-
-{  Index := 0;
-
-  i := 1;
-  //until interface
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or (Pos('interface', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-  Inc(i);
-
-  //until implementation
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or (Pos('implementation', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-
-  //until start procedure / function declaration
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or
-        (Pos('procedure', Trim(Lines[i])) = 1) or
-        (Pos('function', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-
-  //each procedure / function
-  //search until procedure / function declaration is found
-  while i < Lines.Count do
-  begin
-    //start procedure / function
-    SetCodeFoldItem(i, False, Index, cfExpanded);
-
-    //search until end procedure / function is found
-      while (i < Lines.Count) and (Pos('begin', Trim(Lines[i])) <> 0) do
-      begin
-        Inc(i);
-        SetCodeFoldItem(i, False, Index, cfContinue);
-      end;
-
-    EndIndex := 1;
-    Inc(i);
-    while (i < Lines.Count) and (EndIndex <> 0) do
-    begin
-      Inc(i);
-
-      if Pos('begin', Trim(Lines[i])) <> 0 then Inc(EndIndex);
-      if Pos('end;', Trim(Lines[i])) <> 0 then Dec(EndIndex);
-
-      SetCodeFoldItem(i, False, Index, cfContinue);
-    end;
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfEnd);
-
-    while (i < Lines.Count) and
-          (Pos('procedure', Trim(Lines[i])) <> 1) and
-          (Pos('function', Trim(Lines[i])) <> 1) do
-    begin
-      Inc(i);
-      SetCodeFoldItem(i, False, Index, cfNone);
-    end;
-  end;}
 end;
-
+{$ENDIF}
 
 initialization
   MakeIdentTable;

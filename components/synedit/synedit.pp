@@ -680,7 +680,10 @@ type
   public
     //code fold
     procedure CodeFoldAction(Y: integer);
+    {$IFDEF EnableCodeFold}
+    {$ELSE}
     procedure InitCodeFold;
+    {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
@@ -2542,6 +2545,8 @@ begin
   end;
 end;
 
+{$IFDEF EnableCodeFold}
+{$ELSE}
 {
   procedure TCustomSynEdit.InitCodeFold;
 
@@ -2554,6 +2559,7 @@ begin
     fHighLighter.InitCodeFold(Lines);
   end;
 end;
+{$ENDIF}
 
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
 var
