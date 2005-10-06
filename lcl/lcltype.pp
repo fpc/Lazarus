@@ -139,10 +139,6 @@ type
 
   PHKEY = ^HKEY;
 
-// from Delphis sysutils.pas
-  PByteArray = ^TByteArray;
-  TByteArray = array[0..32767] of Byte;
-
 var
   hInstance: HINST;
 

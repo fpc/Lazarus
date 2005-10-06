@@ -122,6 +122,7 @@ resourcestring
   oisSampleMasks = 'Sample Masks:';
   oisCharactersForBlanks = 'Characters for Blanks';
   oisTestInput = 'Test Input';
+  oisOpenMaskFile = 'Open masks file (*.dem)';
   cActionListEditorDialogCategory = 'Dialog';
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';

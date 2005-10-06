@@ -4,7 +4,7 @@ object MaskEditorForm: TMaskEditorForm
   ClientHeight = 239
   ClientWidth = 507
   OnCreate = MaskEditorFormCreate
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poDesktopCenter
   HorzScrollBar.Page = 506
   VertScrollBar.Page = 238
@@ -13,32 +13,36 @@ object MaskEditorForm: TMaskEditorForm
   Top = 248
   Width = 507
   object InputMaskLabel: TLabel
+    BorderSpacing.OnChange = nil
     Caption = '&Input Mask:'
     Color = clNone
     FocusControl = InputMaskEdit
     Left = 8
-    Height = 17
+    Height = 13
     Top = 8
-    Width = 65
+    Width = 64
   end
   object SampleMasksLabel: TLabel
+    BorderSpacing.OnChange = nil
     Caption = '&Sample Masks:'
     Color = clNone
     Left = 208
-    Height = 17
+    Height = 13
     Top = 5
-    Width = 192
+    Width = 77
   end
   object CharactersForBlanksLabel: TLabel
+    BorderSpacing.OnChange = nil
     Caption = 'Character for Blanks:'
     Color = clNone
     FocusControl = CharactersForBlanksEdit
     Left = 8
-    Height = 17
+    Height = 13
     Top = 62
-    Width = 118
+    Width = 102
   end
   object InputMaskEdit: TEdit
+    BorderSpacing.OnChange = nil
     OnChange = InputMaskEditChange
     TabOrder = 0
     Left = 8
@@ -48,9 +52,9 @@ object MaskEditorForm: TMaskEditorForm
   end
   object SampleMasksListBox: TListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     OnClick = SampleMasksListBoxClick
     TabOrder = 1
-    TopIndex = -1
     Left = 208
     Height = 174
     Top = 24
@@ -58,6 +62,8 @@ object MaskEditorForm: TMaskEditorForm
   end
   object OkButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 2
@@ -68,6 +74,8 @@ object MaskEditorForm: TMaskEditorForm
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
@@ -78,6 +86,8 @@ object MaskEditorForm: TMaskEditorForm
   end
   object HelpButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = '&Help'
     TabOrder = 4
     Left = 423
@@ -87,6 +97,8 @@ object MaskEditorForm: TMaskEditorForm
   end
   object LoadSampleMasksButton: TButton
     Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = '&Masks...'
     OnClick = LoadSampleMasksButtonClick
     TabOrder = 5
@@ -97,6 +109,7 @@ object MaskEditorForm: TMaskEditorForm
   end
   object CharactersForBlanksEdit: TEdit
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     BorderSpacing.Left = 3
     MaxLength = 1
     OnChange = CharactersForBlankEditChange
@@ -104,22 +117,24 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideLeft.Control = CharactersForBlanksLabel
     AnchorSideRight.Control = InputMaskEdit
     AnchorSideRight.Side = asrBottom
-    Left = 129
+    Left = 113
     Height = 23
     Top = 56
-    Width = 71
+    Width = 87
   end
   object SaveLiteralCheckBox: TCheckBox
+    BorderSpacing.OnChange = nil
     Caption = 'Save &Literal Characters'
     OnClick = SaveLiteralCheckBoxClick
     TabOrder = 7
     UseOnChange = True
     Left = 8
-    Height = 23
+    Height = 13
     Top = 88
-    Width = 194
+    Width = 138
   end
   object TestInputPanel: TPanel
+    BorderSpacing.OnChange = nil
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 66
@@ -131,6 +146,7 @@ object MaskEditorForm: TMaskEditorForm
     Top = 118
     Width = 192
     object TestInputLabel: TLabel
+      BorderSpacing.OnChange = nil
       Caption = '&Test Input:'
       Color = clNone
       Left = 8
@@ -139,6 +155,7 @@ object MaskEditorForm: TMaskEditorForm
       Width = 65
     end
     object TestMaskEdit: TMaskEdit
+      BorderSpacing.OnChange = nil
       TabOrder = 0
       Left = 8
       Height = 23
@@ -148,11 +165,11 @@ object MaskEditorForm: TMaskEditorForm
   end
   object OpenDialog1: TOpenDialog
     Options = [ofNoChangeDir, ofEnableSizing, ofViewDetail]
-    Title = 'Открыть существующий файл'
+    Title = 'Open mask file (*.dem)'
     DefaultExt = '.dem'
     Filter = 'Edit Masks (*.dem)|*.dem|All Files (*.*)|*.*'
     FilterIndex = 0
-    Title = 'Открыть существующий файл'
+    Title = 'Open mask file (*.dem)'
     left = 48
     top = 240
   end
