@@ -62,185 +62,176 @@ end;
 
 function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                AWIndowInfo: PWidgetInfo): OSStatus; mwpascal;
 var
-  Msg: PLMessage;
-  LMessage: TLMessage;
-  LMMouse: TLMMouse;           // used by WM_LBUTTONDBLCLK
-  LMMouseMove: TLMMouseMove;   // used by WM_MOUSEMOVE
-  LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
-  EventKind: UInt32;
-  Control: ControlRef;
-  CarbonPt: FPCMacOSALL.Point;
-  FCLPoint: TPoint;
-    //
-    // helper functions used commonly
-    //
-      function GetClickCount: Integer;
-      var
-        ClickCount: UInt32;
-      begin
-        GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil, SizeOf(ClickCount), nil, @ClickCount);
-        Result := ClickCount;
-      end;
-      function GetMouseButton:Integer;
-      var
-        MouseButton: EventMouseButton;
-      begin
-        GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
-        Result := MouseButton;
-      end;
-
-      function GetMousePoint: TPoint;
-      var
-        MousePoint: HIPoint;//QDPoint;
-        ARect: FPCMacOSAll.Rect;
-      begin
-        ARect.Left := 0;
-        ARect.Top := 0;
-        GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
-        HIViewConvertPoint(MousePoint,nil, HiViewRef(AInfo^.Widget));
-        if AInfo^.LCLObject is TCustomForm then
-          GetWindowStructureWidths(WindowRef(AInfo^.Widget), ARect);
-        Result.X := Trunc(MousePoint.X-ARect.left);
-        Result.Y := Trunc(MousePoint.Y-ARect.top);
-        //WriteLn('Mouse to Widget Coords: X=',Result.X,' Y=',Result.Y);
-      end;
-    //
-    // handler functions
-    //
-      procedure HandleMouseDownEvent;
-      var
-        MouseButton: Integer;
-        ClickCount: Integer;
-        MousePoint: TPoint;
-      begin
-        Msg := @LMMouse;
-        FillChar(LMMouse, SizeOf(LMMouse),0);
-
-        ClickCount := GetClickCount;
-        MouseButton := GetMouseButton;
-        MousePoint := GetMousePoint;
-        
-        case ClickCount of
-          1:  begin
-                case MouseButton of
-                  1: LMMouse.Msg := LM_LBUTTONDOWN;
-                  2: LMMouse.Msg := LM_RBUTTONDOWN;
-                  3: LMMouse.Msg := LM_MButtonDown;
-                end;
-              end;
-          2:  begin
-                case MouseButton of
-                  1: LMMouse.Msg := LM_MBUTTONDBLCLK;
-                  2: LMMouse.Msg := LM_RBUTTONDBLCLK;
-                  3: LMMouse.Msg := LM_MBUTTONDBLCLK;
-                end;
-              end;
-          3:  begin
-                case MouseButton of
-                  1: LMMouse.Msg := LM_LBUTTONTRIPLECLK;
-                  2: LMMouse.Msg := LM_RBUTTONTRIPLECLK;
-                  3: LMMouse.Msg := LM_MBUTTONTRIPLECLK;
-                end;
-              end;
-          4:
-              begin
-                case MouseButton of
-                  1: LMMouse.Msg := LM_LBUTTONQUADCLK;
-                  2: LMMouse.Msg := LM_RBUTTONQUADCLK;
-                  3: LMMouse.Msg := LM_MBUTTONQUADCLK;
-                end;
-              end;
-        end;
-
-        LMMouse.XPos := MousePoint.X;
-        LMMouse.YPos := MousePoint.Y;
-
-        //LMMouse.Keys;
-        {$Warning CarbonPrivateWindow_MouseProc LMMouse.Keys TODO}
-      end;
-      procedure HandleMouseUpEvent;
-      var
-        MouseButton: Integer;
-        MousePoint: TPoint;
-      begin
-        // this is not called if NextHandler is called on MouseDown
-        // perhaps mousetracking can fix this
-        Msg := @LMMouse;
-        FillChar(LMMouse, SizeOf(LMMouse),0);
-
-        MouseButton := GetMouseButton;
-        MousePoint := GetMousePoint;
-
-        case MouseButton of
-          1: LMMouse.Msg := LM_LBUTTONUP;
-          2: LMMouse.Msg := LM_RBUTTONUP;
-          3: LMMouse.Msg := LM_MButtonUP;
-        end;
-
-        LMMouse.XPos := MousePoint.X;
-        LMMouse.YPos := MousePoint.Y;
-
-        //LMMouse.Keys;
-
-      end;
-
-      procedure HandleMouseMovedEvent;
-      var
-        MousePoint: TPoint;
-      begin
-        Msg := @LMMouseMove;
-        FillChar(LMMouseMove, SizeOf(LMMouseMove),0);
-        
-        MousePoint := GetMousePoint;
-        
-        LMMouseMove.Msg := LM_MOUSEMOVE;
-        LMMouseMove.XPos := MousePoint.X;
-        LMMouseMove.YPos := MousePoint.Y;
-      end;
-
-      procedure HandleMouseDraggedEvent;
-      begin
-        //TODO
-      end;
-
-      procedure HandleMouseWheelEvent;
-      begin
-        //TODO should be simple
-      end;
-begin
-  Msg := @LMessage;
-  FillChar(LMessage, SizeOf(TLMessage), 0);
-  LMessage.Msg := LM_NULL;
-
-  //Find out which control the mouse event should occur for
-  FCLPoint := GetMousePoint;
-  CarbonPt.h := FCLPoint.X;
-  CarbonPt.v := FCLPoint.Y;
-  Control := FindControlUnderMouse(CarbonPt, WindowRef(AInfo^.Widget),nil);
-  
-  if Control <> nil then begin
-    AInfo := GetWidgetInfo(Pointer(Control));
+  Control: ControlRef;  // the control we are dealing with
+                        // or the rootcontrol if none found          
+                                
+//
+// helper functions used commonly
+//
+  function GetClickCount: Integer;
+  var
+    ClickCount: UInt32;
+  begin
+    GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil, SizeOf(ClickCount), nil, @ClickCount);
+    Result := ClickCount;
   end;
 
+  function GetMouseButton:Integer;
+  var
+    MouseButton: EventMouseButton;
+  begin
+    GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
+    Result := MouseButton;
+  end;
+
+  function GetMousePoint: TPoint;
+  var
+    MousePoint: HIPoint;//QDPoint;
+  begin
+    GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
+    HIViewConvertPoint(MousePoint, nil, Control);
+    Result.X := Round(MousePoint.X);
+    Result.Y := Round(MousePoint.Y);
+    // WriteLn('Mouse to Widget Coords: X=',Result.X,' Y=',Result.Y);
+  end;
+//
+// handler functions
+//
+  procedure HandleMouseDownEvent(var AMsg);
+  const
+    MSGKIND: array[1..4, 1..3] of Integer = (
+      (LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN),
+      (LM_LBUTTONDBLCLK, LM_RBUTTONDBLCLK, LM_MBUTTONDBLCLK),
+      (LM_LBUTTONTRIPLECLK, LM_RBUTTONTRIPLECLK, LM_MBUTTONTRIPLECLK),
+      (LM_LBUTTONQUADCLK, LM_RBUTTONQUADCLK, LM_MBUTTONQUADCLK)
+    );
+  var
+    MouseButton: Integer;
+    ClickCount: Integer;
+    MousePoint: TPoint;
+    Msg: ^TLMMouse;
+  begin
+    Msg := @AMsg;
+
+    ClickCount := GetClickCount;
+    MouseButton := GetMouseButton;
+    MousePoint := GetMousePoint;
+    
+    if (ClickCount < Low(MSGKIND))
+    or (ClickCount > Low(MSGKIND))
+    then ClickCount := 1;
+    
+    if  (MouseButton >= Low(MSGKIND))
+    and (MouseButton <= High(MSGKIND))
+    then Msg^.Msg := MSGKIND[ClickCount, MouseButton];
+
+    Msg^.XPos := MousePoint.X;
+    Msg^.YPos := MousePoint.Y;
+
+    //LMMouse.Keys;
+    {$Warning CarbonPrivateWindow_MouseProc LMMouse.Keys TODO}
+  end;
+
+  procedure HandleMouseUpEvent(var AMsg);
+  const 
+    MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
+  var
+    MouseButton: Integer;
+    MousePoint: TPoint;
+    Msg: ^TLMMouse;
+  begin
+    // this is not called if NextHandler is called on MouseDown
+    // perhaps mousetracking can fix this
+    Msg := @AMsg;
+
+    MouseButton := GetMouseButton;
+    MousePoint := GetMousePoint;
+    
+    if  (MouseButton >= Low(MSGKIND))
+    and (MouseButton <= High(MSGKIND))
+    then Msg^.Msg := MSGKIND[MouseButton];
+
+    Msg^.XPos := MousePoint.X;
+    Msg^.YPos := MousePoint.Y;
+
+    //LMMouse.Keys;
+  end;
+
+  procedure HandleMouseMovedEvent(var AMsg);
+  var
+    MousePoint: TPoint;
+    MSg: ^TLMMouseMove;
+  begin
+    Msg := @AMsg;
+    
+    MousePoint := GetMousePoint;
+    
+    Msg^.Msg := LM_MOUSEMOVE;
+    Msg^.XPos := MousePoint.X;
+    Msg^.YPos := MousePoint.Y;
+  end;
+
+  procedure HandleMouseDraggedEvent(var AMsg);
+  begin
+    //TODO
+  end;
+
+  procedure HandleMouseWheelEvent(var AMsg);
+  begin
+    //TODO should be simple
+  end;
+  
+var
+  Msg: record
+    Message: TLMessage;
+    Extra: array[0..20] of Byte; // some messages are a bit larger, make some room
+  end;  
+  EventKind: UInt32;
+  Root: ControlRef;
+  Info: PWidgetInfo;
+begin
+  FillChar(Msg, SizeOf(Msg), 0);
+
+  //Find out which control the mouse event should occur for
+  GetRootControl(AWindowInfo^.Widget, Root);
+  Control := nil;
+  HIViewGetViewForMouseEvent(Root, AEvent, Control);
+  if Control = nil 
+  then Control := Root;
+  
+  // if a control other than root is found, send the message 
+  // to the control instead of the window 
+  // if a lower control without widgetInfo is found, use its parent
+  // Note: HIViewGetViewForMouseEvent returns the root if noting found
+  Info := nil;
+  while Control <> Root do
+  begin
+    Info := GetWidgetInfo(Pointer(Control));
+    if Info <> nil then Break;
+    Control := HIViewGetSuperview(Control);
+  end;
+  if (Info = nil) or (Control = Root)
+  then Info := AWindowInfo;
+  
   EventKind := GetEventKind(AEvent);
   case EventKind of
-    kEventMouseDown       : HandleMouseDownEvent;
-    kEventMouseUp         : HandleMouseUpEvent;
-    kEventMouseMoved      : HandleMouseMovedEvent;
-    kEventMouseDragged    : HandleMouseDraggedEvent;
+    kEventMouseDown       : HandleMouseDownEvent(Msg);
+    kEventMouseUp         : HandleMouseUpEvent(Msg);
+    kEventMouseMoved      : HandleMouseMovedEvent(Msg);
+    kEventMouseDragged    : HandleMouseDraggedEvent(Msg);
 
     //For the enter and exit events tracking must be enabled
     //tracking is enabled by defining a rect that you want to track
     // TODO: Tracking
-    kEventMouseEntered    : LMessage.Msg := CM_MOUSEENTER;
-    kEventMouseExited     : LMessage.Msg := CM_MOUSELEAVE;
+    kEventMouseEntered    : Msg.Message.Msg := CM_MOUSEENTER;
+    kEventMouseExited     : Msg.Message.Msg := CM_MOUSELEAVE;
 
-    kEventMouseWheelMoved : HandleMouseWheelEvent;
+    kEventMouseWheelMoved : HandleMouseWheelEvent(Msg);
   end;
   
-  if DeliverMessage(AInfo^.LCLObject, Msg^) = 0 then begin
+  if DeliverMessage(Info^.LCLObject, Msg) = 0 then begin
     Result := CallNextEventHandler(ANextHandler, AEvent);
   end
   else begin
