@@ -6706,7 +6706,7 @@ msgstr "Die Datei %s%s%s%swurde nicht gefunden.%sWollen Sie selbst nach ihr such
 
 #: lazarusidestrconsts:listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
-msgstr "Die Datei %s%s%s%swurde nicht gefunden.%s\"Übergehen\" lädt das Projekt weiter,%s\"Abbruch\" stoppt das Laden."
+msgstr "Die Datei %s%s%s%swurde nicht gefunden.%s"Übergehen" lädt das Projekt weiter,%s"Abbruch" stoppt das Laden."
 
 #: lazarusidestrconsts:uefilerotext1
 msgid "The file \""

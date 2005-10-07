@@ -5488,7 +5488,7 @@ msgstr "Russisch(UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
-msgstr "SVN revisie"
+msgstr "SVN revisie: "
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
