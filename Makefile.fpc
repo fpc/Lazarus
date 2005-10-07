@@ -41,7 +41,7 @@ endif
 .PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
-ide:
+ide: 
         $(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------

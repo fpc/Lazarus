@@ -1962,7 +1962,7 @@ begin
           // if there is a parent, ask it
           or ((Parent<>nil) and Parent.AutoSizeDelayed);
   {$IFDEF VerboseCanAutoSize}
-  if Result and AutoSize then begin
+  if Result {and AutoSize} then begin
     DbgOut('TControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
     if FAutoSizingLockCount>0 then debugln('FAutoSizingLockCount=',dbgs(FAutoSizingLockCount))
     else if csLoading in ComponentState then debugln('csLoading')

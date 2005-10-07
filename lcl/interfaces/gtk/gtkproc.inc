@@ -6510,7 +6510,7 @@ begin
   gtk_widget_show(ScrolledWidget);
   ClientAreaWidget := gtk_layout_new(nil, nil);
   WindowStyle:=GetStyle(lgsWindow);
-  gtk_widget_set_style(ClientAreaWidget,WindowStyle);
+  //gtk_widget_set_style(ClientAreaWidget,WindowStyle);
   //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 

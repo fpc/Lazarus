@@ -1,9 +1,10 @@
 object AboutForm: TAboutForm
+  ActiveControl = AboutPage
   Caption = 'About Lazarus'
   ClientHeight = 270
   ClientWidth = 608
   OnCreate = AboutFormCreate
-  PixelsPerInch = 81
+  PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 607
   VertScrollBar.Page = 269
@@ -17,9 +18,9 @@ object AboutForm: TAboutForm
     Caption = 'Version #:'
     ParentColor = True
     Left = 14
-    Height = 12
+    Height = 13
     Top = 6
-    Width = 57
+    Width = 50
   end
   object BuildDateLabel: TLabel
     Alignment = taCenter
@@ -27,21 +28,22 @@ object AboutForm: TAboutForm
     Caption = 'Date:'
     ParentColor = True
     Left = 14
-    Height = 12
+    Height = 13
     Top = 23
-    Width = 29
+    Width = 27
   end
   object RevisionLabel: TLabel
     Caption = 'RevisionLabel'
     Color = clNone
     Left = 14
-    Height = 12
+    Height = 13
     Top = 40
-    Width = 79
+    Width = 65
   end
   object CloseButton: TBitBtn
     AutoSize = True
     BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Close'
     Glyph.Data = {
@@ -73,9 +75,9 @@ object AboutForm: TAboutForm
     ModalResult = 1
     TabOrder = 1
     Left = 70
-    Height = 30
+    Height = 40
     Top = 225
-    Width = 65
+    Width = 77
   end
   object Notebook1: TNotebook
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -87,38 +89,34 @@ object AboutForm: TAboutForm
     Width = 389
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 385
-      ClientHeight = 231
-      Left = 2
-      Height = 231
-      Top = 28
-      Width = 385
+      ClientWidth = 381
+      ClientHeight = 235
+      Height = 235
+      Width = 381
       object AboutMemo: TMemo
         Align = alClient
         BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Height = 231
-        Width = 385
+        Height = 235
+        Width = 381
       end
     end
     object ContributorsPage: TPage
       Caption = 'Contributors'
-      ClientWidth = 385
-      ClientHeight = 231
-      Left = 2
-      Height = 231
-      Top = 28
-      Width = 385
+      ClientWidth = 381
+      ClientHeight = 235
+      Height = 235
+      Width = 381
       object ContributorsMemo: TMemo
         Align = alClient
         BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Height = 231
-        Width = 385
+        Height = 235
+        Width = 381
       end
     end
   end

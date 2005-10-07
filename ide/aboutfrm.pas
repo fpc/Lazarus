@@ -60,9 +60,8 @@ const
   LazarusVersionStr= '0.9.11';
 var
   LazarusRevisionStr: string;
-
+  
 function GetLazarusVersionString : string;
-function GetLazarusRevision: string;
 
 implementation
 
@@ -79,23 +78,6 @@ end;
 function GetLazarusVersionString: string;
 begin
   Result:=format(lisLazarusVersionString,[LazarusVersionStr]);
-end;
-
-function GetLazarusRevision: string;
-var
-  p: Integer;
-  l: Integer;
-begin
-  // use first number as revision
-  p:=1;
-  while (p<=length(LazarusRevisionStr))
-  and (not (LazarusRevisionStr[p] in ['0'..'9'])) do
-    inc(p);
-  l:=1;
-  while (p+l<=length(LazarusRevisionStr))
-  and (LazarusRevisionStr[p+l] in ['0'..'9']) do
-    inc(l);
-  Result:=copy(LazarusRevisionStr,p,l);
 end;
 
 { TAboutForm }
@@ -138,11 +120,8 @@ begin
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Caption:=lisAboutLazarus;
-  VersionLabel.Caption := lisVersion+' #: '+
-     format(lisLazarusVersionString,[LazarusVersionStr]);
-  RevisionLabel.Caption := lisSVNRevision+GetLazarusRevision;
-
-  RevisionLabel.Visible:=false; // deactivated
+  VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
+  RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
 
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   AboutPage.Caption:=lisMenuTemplateAbout;
