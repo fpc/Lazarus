@@ -53,6 +53,8 @@ begin
   DeliverMessage(AInfo^.LCLObject, Msg);
 end;
 
+
+
 // ==================================================================
 // C L A S S 
 // ==================================================================
@@ -73,22 +75,28 @@ end;
 *)
 
 procedure TCarbonPrivateHiView.RegisterEvents(AInfo: PWidgetInfo);
+var
+  MouseSpec: array [0..6] of EventTypeSpec;
+  TmpSpec: EventTypeSpec;
 begin
   // TODO, move both to the CarbonPrivateHIView handler
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDispose);
   InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Dispose), 
-    1, MakeEventSpec(kEventClassControl, kEventControlDispose), Pointer(AInfo), nil);
+    1, @TmpSpec, Pointer(AInfo), nil);
 
-  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Hit), 
-    1, MakeEventSpec(kEventClassControl, kEventControlHit), Pointer(AInfo), nil);
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
+  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Hit),
+    1, @TmpSpec, Pointer(AInfo), nil);
 
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlDispose, RegisterEventHandler(@CarbonWSWinControl_Dispose));
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlHit, @CarbonWSWinControl_Hit, MCarbonWSWinControl_Hit_UPP);
-//  WriteLN('controls: Events set')
+  DebugLN(TWinControl(Ainfo^.LCLObject).Name,':', TWinControl(Ainfo^.LCLObject).ClassName ,' Events set')
 end;
 
 procedure TCarbonPrivateHiView.UnregisterEvents;
 begin
   UnregisterEventHandler(@CarbonPrivateHIView_Dispose);
   UnregisterEventHandler(@CarbonPrivateHIView_Hit);
+//  UnregisterEventHandler(@CarbonPrivateHIView_MouseProc);
 end;
 

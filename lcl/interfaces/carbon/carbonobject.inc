@@ -99,6 +99,7 @@ function EventLoopEventHandler(inHandlerCallRef: EventHandlerCallRef;
 var
   QuitUPP: EventHandlerUPP;
   QuitHandler: EventHandlerRef;
+  TmpSpec: EventTypeSpec;
   Loop: TApplicationMainLoop = nil;
   Dummy: LongWord;
 begin
@@ -113,7 +114,8 @@ begin
   if QuitUPP = nil then Exit;
 
   try
-    Result := InstallApplicationEventHandler(QuitUPP, 1, MakeEventSpec(kEventClassApplication, kEventAppQuit), nil, @QuitHandler);
+    TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppQuit);
+    Result := InstallApplicationEventHandler(QuitUPP, 1, @TmpSpec, nil, @QuitHandler);
     if Result <> noErr then Exit;
 
     try
@@ -187,7 +189,7 @@ begin
     // standard event handlers are installed while our event loop runs.
 
     EventSpec := MakeEventSpec('Laz ', 'Main');
-    if InstallApplicationEventHandler(EventLoopUPP, 1, EventSpec, nil, @EventLoopHandler) <> noErr
+    if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil, @EventLoopHandler) <> noErr
     then Exit;
 
     try

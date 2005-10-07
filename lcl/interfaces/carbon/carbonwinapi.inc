@@ -368,8 +368,13 @@ begin
 end;
 
 function TCarbonWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
+var
+  Pt: Point;
 begin
-  Result:=inherited GetCursorPos(lpPoint);
+  GetGlobalMouse(Pt);
+  lpPoint.X := Pt.h;
+  lpPoint.Y := Pt.v;
+  Result := True;
 end;
 
 function TCarbonWidgetSet.GetDC(hWnd: HWND): HDC;

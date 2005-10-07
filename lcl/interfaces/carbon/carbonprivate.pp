@@ -33,7 +33,7 @@ uses
   // libs
   FPCMacOSAll, CarbonUtils, 
   // LCL
-  LCLType, LMessages, LCLProc,
+  LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
