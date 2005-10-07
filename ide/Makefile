@@ -2947,6 +2947,9 @@ endif
 %.res: %.rc
 	windres -i $< -o $@ --preprocessor $(RCPP)
 ide: $(COMPILER_UNITTARGETDIR)
+ifeq ($(wildcard ../tools/svn2revisioninc$(EXEEXT)),) 
+	$(MAKE) -C ../tools svn2revisioninc$(EXEEXT) OPT=""
+endif
 	../tools/svn2revisioninc$(EXEEXT) .. revision.inc
 ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
