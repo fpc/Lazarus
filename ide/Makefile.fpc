@@ -107,22 +107,24 @@ endif
 
 #-----------------------------------------------------------------------------
 ide: $(COMPILER_UNITTARGETDIR)
-ifeq ($(wildcard ../tools/svn2revisioninc$(EXEEXT)),) 
-	$(MAKE) -C ../tools svn2revisioninc$(EXEEXT) OPT=""
+ifneq ($(USESVN2REVISIONINC),0)
+ifeq ($(wildcard ../tools/svn2revisioninc$(EXEEXT)),)
+        $(MAKE) -C ../tools svn2revisioninc$(EXEEXT) OPT=''
 endif
 	../tools/svn2revisioninc$(EXEEXT) .. revision.inc
 ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
+endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=../lazarus$(EXEEXT) lazarus$(EXEEXT)
+        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=../lazarus$(EXEEXT) lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
 idepkg: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=../lazarus$(EXEEXT) lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+        $(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
@@ -130,9 +132,9 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=../startlazarus$(EXEEXT) startlazarus$(EXEEXT)
+        $(MAKE) --assume-new=../startlazarus.lpr startlazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=../startlazarus$(EXEEXT) startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=../startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
