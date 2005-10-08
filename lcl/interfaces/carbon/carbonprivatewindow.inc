@@ -60,19 +60,46 @@ end;
 
 //Generic function that handles all types of mouse events
 
+procedure TrackProgress(AControl: ControlRef; APartCode: ControlPartCode); mwpascal;
+var
+  Modifiers, ButtonState: UInt32;                                   
+  MousePoint: HIPoint;
+  pt: FPCMacOSAll.Point;
+  
+begin                                                                               
+  GetGlobalMouse(Pt);
+  MousePoint.X := pt.h;
+  MousePoint.Y := pt.v;
+  // todo, convert to correct co-ordinates
+  HIViewConvertPoint(MousePoint, nil, AControl);
+  Modifiers := GetCurrentKeyModifiers;
+  ButtonState := GetCurrentButtonState;
+
+  DebugLn('-- track, x:%d, y:%d, m:0x%x, b:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers, ButtonState]);
+end;
+
 function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
                                    AEvent: EventRef;
                                    AInfo: PWidgetInfo): OSStatus; mwpascal;      
 var
-  Modifiers: UInt32;                                   
-  MousePoint: HIPoint;//QDPoint;
+  Modifiers, ButtonState: UInt32;                                   
+  MousePoint: HIPoint;//QDPoint;   
+  ActionUPP, OldActionUPP: ControlActionUPP;
 begin                                   
+  DebugLn('-- Control track A');
   GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil, SizeOf(Modifiers), nil, @Modifiers);
-  GetEventParameter(AEvent, kEventParamMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
+  GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
+  GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, sizeof(ActionUPP), nil, @OldActionUPP);
+  ButtonState := GetCurrentEventButtonState;
 
+  ActionUPP := NewControlActionUPP(@TrackProgress);   
+  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(ActionUPP), @ActionUPP);
 
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-  DebugLn('Control track, x:%d, y:%d, m:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers]);
+  Result := CallNextEventHandler(ANextHandler, AEvent);                                                 
+  SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(OldActionUPP), @OldActionUPP);
+  DisposeControlActionUPP(ActionUPP);
+  
+  DebugLn('-- Control track B, x:%d, y:%d, m:0x%x, b:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers, ButtonState]);
 end;
                                    
 function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
@@ -131,6 +158,7 @@ var
     pt: FPCMacOSAll.Point;
     mtr: MouseTrackingResult;
   begin
+    DebugLN('-- mouse down --');
     Msg := @AMsg;
 
     ClickCount := GetClickCount;
@@ -151,14 +179,14 @@ var
     //LMMouse.Keys;
     {$Warning CarbonPrivateWindow_MouseProc LMMouse.Keys TODO}
     
-//    Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
-//    InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack), 
-//      1, @Spec, nil, nil);
+    Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+    InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack), 
+      1, @Spec, nil, nil);
     
-    repeat
-      TrackMouseLocation(nil, Pt, mtr);
-      DebugLn('Mouse track, x:%d, y:%d, m:0x%x', [Round(pt.h), Round(pt.v), mtr]);
-    until mtr = kMouseTrackingMouseUp;
+//    repeat
+//      TrackMouseLocation(nil, Pt, mtr);
+//      DebugLn('Mouse track, x:%d, y:%d, m:0x%x', [Round(pt.h), Round(pt.v), mtr]);
+//    until mtr = kMouseTrackingMouseUp;
     
   end;
 
@@ -170,6 +198,7 @@ var
     MousePoint: TPoint;
     Msg: ^TLMMouse;
   begin
+    DebugLN('-- mouse up --');
     // this is not called if NextHandler is called on MouseDown
     // perhaps mousetracking can fix this
     Msg := @AMsg;
@@ -192,6 +221,7 @@ var
     MousePoint: TPoint;
     MSg: ^TLMMouseMove;
   begin
+    DebugLN('-- mouse move --');
     Msg := @AMsg;
     
     MousePoint := GetMousePoint;
@@ -203,11 +233,13 @@ var
 
   procedure HandleMouseDraggedEvent(var AMsg);
   begin
+    DebugLN('-- mouse dragged --');
     //TODO
   end;
 
   procedure HandleMouseWheelEvent(var AMsg);
   begin
+    DebugLN('-- mouse wheel --');
     //TODO should be simple
   end;
   

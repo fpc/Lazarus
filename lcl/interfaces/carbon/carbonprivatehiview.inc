@@ -53,6 +53,13 @@ begin
   DeliverMessage(AInfo^.LCLObject, Msg);
 end;
 
+function CarbonPrivateHIView_MouseMove(ANextHandler: EventHandlerCallRef;
+                                AEvent: EventRef;
+                                AInfo: PWidgetInfo): OSStatus; mwpascal;
+begin
+  WriteLN('MouseMove');
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
 
 
 // ==================================================================
@@ -88,6 +95,12 @@ begin
   InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_Hit),
     1, @TmpSpec, Pointer(AInfo), nil);
 
+  MouseSpec[0] := MakeEventSpec(kEventClassMouse, kEventMouseMoved);
+  MouseSpec[1] := MakeEventSpec(kEventClassMouse, kEventMouseDragged);
+  
+  InstallControlEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateHIView_MouseMove),
+    2, @MouseSpec[0], Pointer(AInfo), nil);
+    
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlDispose, RegisterEventHandler(@CarbonWSWinControl_Dispose));
 //  InstallControlHandler(AInfo, kEventClassControl, kEventControlHit, @CarbonWSWinControl_Hit, MCarbonWSWinControl_Hit_UPP);
   DebugLN(TWinControl(Ainfo^.LCLObject).Name,':', TWinControl(Ainfo^.LCLObject).ClassName ,' Events set')
