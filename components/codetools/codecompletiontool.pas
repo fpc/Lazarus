@@ -2761,6 +2761,20 @@ begin
   BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
 
   // find CodeTreeNode at cursor
+  // skip newline chars
+  while (CleanCursorPos>1) and (Src[CleanCursorPos] in [#10,#13]) do
+    dec(CleanCursorPos);
+  // skip space (first try left)
+  while (CleanCursorPos>1) and (Src[CleanCursorPos] in [' ',#9,';']) do
+    dec(CleanCursorPos);
+  if (CleanCursorPos>0) and (CleanCursorPos<SrcLen)
+  and (Src[CleanCursorPos] in [#10,#13]) then begin
+    // then try right
+    repeat
+      inc(CleanCursorPos);
+    until (CleanCursorPos>=SrcLen) or (not (Src[CleanCursorPos] in [' ',#9]));
+  end;
+  
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
   {$IFDEF CTDEBUG}
@@ -2782,6 +2796,7 @@ begin
   {$ENDIF}
   
   // test if forward proc
+  debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
   ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
   if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
     ProcNode:=CursorNode;

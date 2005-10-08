@@ -53,7 +53,7 @@ interface
 uses
   SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  LCLProc, LCLIntf, LCLType,
   {$ELSE}
   Windows, Messages, Registry,
   {$ENDIF}
@@ -68,11 +68,17 @@ type
   TRangeState = (rsANil, rsAnsi, rsAnsiAsm, rsAsm, rsBor, rsBorAsm,
     {$IFDEF SYN_LAZARUS}rsDirective, rsDirectiveAsm,{$ENDIF}
     rsProperty, rsUnKnown);
+    
+  {$IFDEF EnableCodeFold}
+  TPascalCodeFoldBlockType = (cfbtNone, cfbtBeginEnd);
+  {$ENDIF}
 
   TProcTableProc = procedure of object;
 
   PIdentFuncTableFunc = ^TIdentFuncTableFunc;
   TIdentFuncTableFunc = function: TtkTokenKind of object;
+
+  { TSynPasSyn }
 
   TSynPasSyn = class(TSynCustomHighlighter)
   private
@@ -224,6 +230,10 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
+    {$IFDEF EnableCodeFold}
+    function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType
+                                ): TSynCustomCodeFoldBlock;
+    {$ENDIF}
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetCapabilities: TSynHighlighterCapabilities; override;
@@ -246,17 +256,14 @@ type
     procedure Next; override;
     procedure ResetRange; override;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
-      LineNumber:Integer); override;
+      LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
 
     //code fold
     {$IFDEF EnableCodeFold}
-    {$ELSE}
-    procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
-                             FoldIndex: integer; FoldType: TSynEditCodeFoldType); override;
-    procedure InitCodeFold(Lines: TStrings); override;
+    function TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
     {$ENDIF}
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
@@ -570,6 +577,12 @@ begin
     then begin
       Result := tkKey;
       fRange := rsUnknown;
+      {$IFDEF EnableCodeFold}
+      //debugln('TSynPasSyn.Func23 ',dbgs(ord(TopPascalCodeFoldBlockType)));
+      //CodeFoldRange.WriteDebugReport;
+      if TopPascalCodeFoldBlockType in [cfbtBeginEnd] then
+        EndCodeFoldBlock;
+      {$ENDIF}
     end else begin
       Result := tkKey; // @@end label
     end;
@@ -631,7 +644,14 @@ end;
 
 function TSynPasSyn.Func37: TtkTokenKind;
 begin
-  if KeyComp('Begin') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Begin') then begin
+    Result := tkKey;
+    {$IFDEF EnableCodeFold}
+    StartPascalCodeFoldBlock(cfbtBeginEnd);
+    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)));
+    {$ENDIF}
+  end else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func38: TtkTokenKind;
@@ -1119,6 +1139,9 @@ begin
   fLine := NewValue;
   fLineLen:=length(fLine);
   Run := 1;
+  {$IFDEF EnableCodeFold}
+  Inherited SetLine(NewValue,LineNumber);
+  {$ENDIF}
   {$ELSE}
   fLine := PChar(NewValue);
   Run := 0;
@@ -1577,17 +1600,33 @@ end;
 
 function TSynPasSyn.GetRange: Pointer;
 begin
+  {$IFDEF EnableCodeFold}
+  // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
+  // -> update now
+  CodeFoldRange.RangeType:=Pointer(PtrInt(fRange));
+  // return a fixed copy of the current CodeFoldRange instance
+  Result := inherited GetRange;
+  {$ELSE}
   Result := Pointer(PtrInt(fRange));
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
+  {$IFDEF EnableCodeFold}
+  inherited SetRange(Value);
+  fRange := TRangeState(PtrInt(CodeFoldRange.RangeType));
+  {$ELSE}
   fRange := TRangeState(PtrInt(Value));
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.ResetRange;
 begin
   fRange:= rsUnknown;
+  {$IFDEF EnableCodeFold}
+  Inherited ResetRange;
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.EnumUserSettings(settings: TStrings);
@@ -1613,6 +1652,20 @@ begin
     end;
   end;
 end;
+
+{$IFDEF EnableCodeFold}
+function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
+begin
+  Result:=TPascalCodeFoldBlockType(PtrInt(inherited TopCodeFoldBlockType));
+end;
+
+function TSynPasSyn.StartPascalCodeFoldBlock(
+  ABlockType: TPascalCodeFoldBlockType): TSynCustomCodeFoldBlock;
+begin
+  Result:=TSynCustomCodeFoldBlock(
+                     inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType))));
+end;
+{$endif}
 
 function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
 // Possible parameter values:
@@ -1753,7 +1806,8 @@ end;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
 function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
 begin
-  Result := inherited GetCapabilities + [hcUserSettings];
+  Result := inherited GetCapabilities + [hcUserSettings
+                                 {$IFDEF EnableCodeFold},hcCodeFolding{$ENDIF}];
 end;
 
 {begin}                                                                         //mh 2000-10-08
@@ -1767,97 +1821,6 @@ procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
 end;
-
-{$IFDEF EnableCodeFold}
-{$ELSE}
-procedure TSynPasSyn.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
-  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
-begin
-  TSynEditStringList(Lines).Folded[Line]:=Folded;
-  TSynEditStringList(Lines).FoldIndex[Line]:=FoldIndex;
-  TSynEditStringList(Lines).FoldType[Line]:=FoldType;
-end;
-
-procedure TSynPasSyn.InitCodeFold(Lines: TStrings);
-type
-  TIndentStackItem = record
-    Indent: integer;
-    Line: integer;
-  end;
-
-var
-  iLine: Integer;
-  CurLine: string;
-  CurIndent: Integer;
-  Stack: array of TIndentStackItem;
-  StackPtr: Integer;
-  BlockStart: LongInt;
-  BlockIndex: Integer;
-  i: Integer;
-
-  procedure PushIndent(ALine, AnIndent: integer);
-  begin
-    inc(StackPtr);
-    if length(Stack)=StackPtr then
-      SetLength(Stack,StackPtr+1);
-    Stack[StackPtr].Line:=ALine;
-    Stack[StackPtr].Indent:=AnIndent;
-  end;
-
-begin
-  StackPtr:=-1;
-  BlockIndex:=0;
-  for iLine:=0 to Lines.Count-1 do begin
-    // set defaults
-    if StackPtr>0 then
-      SetCodeFoldItem(Lines, iLine, false,0,cfContinue)
-    else
-      SetCodeFoldItem(Lines, iLine,false,0,cfNone);
-
-    // get current line, with tabs expanded
-    CurLine:=TSynEditStringList(Lines).ExpandedStrings[iLine];
-    // count indenting
-    CurIndent:=0;
-    while (CurIndent<length(CurLine)) and (CurLine[CurIndent+1]=' ') do
-      inc(CurIndent);
-
-    if CurIndent>=length(CurLine) then begin
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' skipping empty line');
-      // empty line -> skip
-    end else if StackPtr<0 then begin
-      // first line with content
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
-      PushIndent(iLine,CurIndent);
-    end else if Stack[StackPtr].Indent<CurIndent then begin
-      // more indenting -> block start
-      BlockStart:=Stack[StackPtr].Line;
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' more indenting -> block start BlockStart=',dbgs(BlockStart+1));
-      inc(BlockIndex);
-      SetCodeFoldItem(Lines,BlockStart,false,BlockIndex,cfExpanded);
-      SetCodeFoldItem(Lines,iLine,false,0,cfContinue);
-      if StackPtr=0 then
-        for i:=BlockStart+1 to iLine-1 do
-          SetCodeFoldItem(Lines,i,false,0,cfContinue);
-      PushIndent(iLine,CurIndent);
-    end else if Stack[StackPtr].Indent>CurIndent then begin
-      // less indenting -> one or more blocks end
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' less indenting -> one or more blocks end');
-      SetCodeFoldItem(Lines,Pred(iLine),false,0,cfEnd);
-      while (StackPtr>=0) and (Stack[StackPtr].Indent>=CurIndent) do
-        dec(StackPtr);
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
-      PushIndent(iLine,CurIndent);
-    end else begin
-      // same indenting
-      Stack[StackPtr].Line:=iLine;
-    end;
-  end;
-
-  //for iLine:=0 to Lines.Count-1 do begin
-  //  debugln('  ',dbgs(iLine+1),' ',dbgs(ord(TSynEditStringList(Lines).FoldType[iLine])));
-  //end;
-end;
-{$ENDIF}
 
 initialization
   MakeIdentTable;

@@ -40,7 +40,7 @@ uses
 {$ELSE}
   Graphics,
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  LCLProc, LCLIntf, LCLType, AvgLvlTree,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -109,7 +109,7 @@ type
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
     hcRegistry      // supports LoadFrom/SaveToRegistry
-    {$IFDEF SYN_LAZARUS}
+    {$IFDEF EnableCodeFold}
     ,hcCodeFolding  // supports codefolding
     {$ENDIF}
   );
@@ -131,28 +131,36 @@ type
     property Level: integer read FLevel write FLevel;
   end;
   PSynCustomCodeFoldBlock = ^TSynCustomCodeFoldBlock;
+  TSynCustomCodeFoldBlockClass = class of TSynCustomCodeFoldBlock;
 
   { TSynCustomHighlighterRange }
 
   TSynCustomHighlighterRange = class
   private
+    FBlockClass: TSynCustomCodeFoldBlockClass;
     FCodeFoldStack: PSynCustomCodeFoldBlock;
     FCodeFoldStackSize: integer;
+    FCodeFoldStackCapacity: integer;
     FRangeType: Pointer;
+    FTop: TSynCustomCodeFoldBlock;
     function GetCodeFoldStack(Index: integer): TSynCustomCodeFoldBlock;
   public
-    constructor Create; virtual;
+    constructor Create(Template: TSynCustomHighlighterRange); virtual;
     destructor Destroy; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; virtual;
-    function Add(Block: TSynCustomCodeFoldBlock): integer;
-    procedure Delete(Index: integer);
-    procedure Clear;
+    function Add(ABlockType: Pointer = nil; ALevel: integer = 0): TSynCustomCodeFoldBlock;
+    procedure Pop;
+    procedure Clear; virtual;
     procedure Assign(Src: TSynCustomHighlighterRange); virtual;
+    procedure WriteDebugReport;
   public
     property RangeType: Pointer read FRangeType write FRangeType;
     property CodeFoldStackSize: integer read FCodeFoldStackSize;
     property CodeFoldStack[Index: integer]: TSynCustomCodeFoldBlock read GetCodeFoldStack;
+    property BlockClass: TSynCustomCodeFoldBlockClass read FBlockClass write FBlockClass;
+    property Top: TSynCustomCodeFoldBlock read FTop;
   end;
+  TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange;
   {$ENDIF}
 
 const
@@ -164,10 +172,21 @@ const
   SYN_ATTR_SYMBOL            =   5;                                             //mh 2001-09-13
 
 type
+  {$IFDEF EnableCodeFold}
+  TSynCustomHighlighterRanges = class;
+  {$ENDIF}
+
+  { TSynCustomHighlighter }
+
   TSynCustomHighlighter = class(TComponent)
   private
     fAttributes: TStringList;
     fAttrChangeHooks: TSynNotifyEventChain;
+    {$IFDEF EnableCodeFold}
+    FCodeFoldRange: TSynCustomHighlighterRange;
+    FCapabilities: TSynHighlighterCapabilities;
+    FMinimumCodeFoldBlockLevel: integer;
+    {$ENDIF}
     fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
@@ -175,6 +194,9 @@ type
   protected
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
+    {$IFDEF EnableCodeFold}
+    fRanges: TSynCustomHighlighterRanges;
+    {$ENDIF}
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
@@ -189,6 +211,14 @@ type
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
+    {$IFDEF EnableCodeFold}
+    // code fold - only valid if hcCodeFolding in Capabilities
+    property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
+    function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
+    function TopCodeFoldBlockType: Pointer;
+    function StartCodeFoldBlock(ABlockType: Pointer): TSynCustomCodeFoldBlock; virtual;
+    procedure EndCodeFoldBlock; virtual;
+    {$ENDIF}
   public
     procedure DefHighlightChange(Sender: TObject);
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -216,7 +246,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); virtual; abstract;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); virtual; {$IFNDEF EnableCodeFold}abstract;{$ENDIF}
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;
@@ -231,8 +261,9 @@ type
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
 
-    //code fold
     {$IFDEF EnableCodeFold}
+    property MinimumCodeFoldBlockLevel: integer read FMinimumCodeFoldBlockLevel;
+    function CurrentCodeFoldBlockLevel: integer;
     {$ELSE}
     procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
                              FoldIndex: integer; FoldType: TSynEditCodeFoldType); virtual;
@@ -242,7 +273,8 @@ type
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
       read GetAttribute;
-    property Capabilities: TSynHighlighterCapabilities read GetCapabilities;
+    property Capabilities: TSynHighlighterCapabilities
+       read {$IFDEF EnableCodeFold}FCapabilities{$ELSE}GetCapabilities{$ENDIF};
     property SampleSource: string read GetSampleSource write SetSampleSource;
     property CommentAttribute: TSynHighlighterAttributes
       index SYN_ATTR_COMMENT read GetDefaultAttribute;
@@ -264,6 +296,26 @@ type
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
+{$IFDEF EnableCodeFold}
+  { TSynCustomHighlighterRanges }
+
+  TSynCustomHighlighterRanges = class
+  private
+    FAllocatedCount: integer;
+    FHighlighterClass: TSynCustomHighlighterClass;
+    FItems: TAvgLvlTree;
+  public
+    constructor Create(TheHighlighterClass: TSynCustomHighlighterClass);
+    destructor Destroy; override;
+    function GetEqual(Range: TSynCustomHighlighterRange
+                      ): TSynCustomHighlighterRange;
+    procedure Allocate;
+    procedure Release;
+    property HighlighterClass: TSynCustomHighlighterClass read FHighlighterClass;
+    property AllocatedCount: integer read FAllocatedCount;
+  end;
+{$ENDIF}
+
 {$IFNDEF SYN_CPPB_1}
   TSynHighlighterList = class(TList)
   private
@@ -283,6 +335,13 @@ type
     TSynCustomHighlighterClass);
   function GetPlaceableHighlighters: TSynHighlighterList;
 {$ENDIF}
+
+{$IFDEF EnableCodeFold}
+function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
+function AllocateHighlighterRanges(
+     HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
+{$ENDIF}
+
 
 implementation
 
@@ -367,16 +426,62 @@ end;
 var
   G_PlaceableHighlighters: TSynHighlighterList;
 
-  function GetPlaceableHighlighters: TSynHighlighterList;
-  begin
-    Result := G_PlaceableHighlighters;
-  end;
+function GetPlaceableHighlighters: TSynHighlighterList;
+begin
+  Result := G_PlaceableHighlighters;
+end;
 
-  procedure RegisterPlaceableHighlighter(highlighter: TSynCustomHighlighterClass);
-  begin
-    if G_PlaceableHighlighters.hlList.IndexOf(highlighter) < 0 then
-      G_PlaceableHighlighters.hlList.Add(highlighter);
+procedure RegisterPlaceableHighlighter(highlighter: TSynCustomHighlighterClass);
+begin
+  if G_PlaceableHighlighters.hlList.IndexOf(highlighter) < 0 then
+    G_PlaceableHighlighters.hlList.Add(highlighter);
+end;
+{$ENDIF}
+
+{$IFDEF EnableCodeFold}
+function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
+var
+  Range1: TSynCustomHighlighterRange;
+  Range2: TSynCustomHighlighterRange;
+begin
+  Range1:=TSynCustomHighlighterRange(Data1);
+  Range2:=TSynCustomHighlighterRange(Data2);
+  Result:=Range1.Compare(Range2);
+end;
+
+var
+  HighlighterRanges: TFPList = nil;
+
+function IndexOfHighlighterRanges(
+  HighlighterClass: TSynCustomHighlighterClass): integer;
+begin
+  if HighlighterRanges=nil then
+    Result:=-1
+  else begin
+    Result:=HighlighterRanges.Count-1;
+    while (Result>=0)
+    and (TSynCustomHighlighterRanges(HighlighterRanges[Result]).HighlighterClass
+      <>HighlighterClass)
+    do
+      dec(Result);
   end;
+end;
+
+function AllocateHighlighterRanges(
+  HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
+var
+  i: LongInt;
+begin
+  if HighlighterRanges=nil then HighlighterRanges:=TFPList.Create;
+  i:=IndexOfHighlighterRanges(HighlighterClass);
+  if i>=0 then begin
+    Result:=TSynCustomHighlighterRanges(HighlighterRanges[i]);
+    Result.Allocate;
+  end else begin
+    Result:=TSynCustomHighlighterRanges.Create(HighlighterClass);
+    HighlighterRanges.Add(Result);
+  end;
+end;
 {$ENDIF}
 
 { TSynHighlighterAttributes }
@@ -730,6 +835,9 @@ end;
 
 constructor TSynCustomHighlighter.Create(AOwner: TComponent);
 begin
+  {$IFDEF EnableCodeFold}
+  FCapabilities:=GetCapabilities;
+  {$ENDIF}
   inherited Create(AOwner);
   fWordBreakChars := TSynWordBreakChars;
   fAttributes := TStringList.Create;
@@ -737,10 +845,22 @@ begin
   fAttributes.Sorted := TRUE;
   fAttrChangeHooks := TSynNotifyEventChain.CreateEx(Self);
   fDefaultFilter := '';
+  {$IFDEF EnableCodeFold}
+  if hcCodeFolding in Capabilities then begin
+    FCodeFoldRange:=GetRangeClass.Create(nil);
+    fRanges:=AllocateHighlighterRanges(TSynCustomHighlighterClass(ClassType));
+  end;
+  {$ENDIF}
 end;
 
 destructor TSynCustomHighlighter.Destroy;
 begin
+  {$IFDEF EnableCodeFold}
+  if hcCodeFolding in Capabilities then begin
+    FreeAndNil(FCodeFoldRange);
+    fRanges.Release;
+  end;
+  {$ENDIF}
   FreeHighlighterAttributes;
   fAttributes.Free;
   fAttrChangeHooks.Free;
@@ -956,6 +1076,14 @@ end;
 function TSynCustomHighlighter.GetRange: pointer;
 begin
   Result := nil;
+  {$IFDEF EnableCodeFold}
+  if (hcCodeFolding in Capabilities) then begin
+    // FCodeFoldRange is the working range and changed steadily
+    // => return a fixed copy of the current CodeFoldRange instance,
+    //    that can be stored by other classes (e.g. TSynEdit)
+    Result:=fRanges.GetEqual(FCodeFoldRange);
+  end;
+  {$ENDIF}
 end;
 
 function TSynCustomHighlighter.GetSampleSource: string;
@@ -987,6 +1115,11 @@ end;
 
 procedure TSynCustomHighlighter.ResetRange;
 begin
+  {$IFDEF EnableCodeFold}
+  if (hcCodeFolding in Capabilities) then begin
+    FCodeFoldRange.Clear;
+  end;
+  {$ENDIF}
 end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
@@ -1005,6 +1138,12 @@ end;
 
 procedure TSynCustomHighlighter.SetRange(Value: Pointer);
 begin
+  {$IFDEF EnableCodeFold}
+  if (hcCodeFolding in Capabilities) then begin
+    FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
+    FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
+  end;
+  {$ENDIF}
 end;
 
 procedure TSynCustomHighlighter.SetDefaultFilter(Value: string);
@@ -1034,6 +1173,44 @@ begin
 end;
 
 {$IFDEF EnableCodeFold}
+procedure TSynCustomHighlighter.SetLine(const NewValue: String;
+  LineNumber: Integer);
+begin
+  if (hcCodeFolding in Capabilities) then begin
+    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+  end;
+end;
+
+function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
+begin
+  Result:=CodeFoldRange.CodeFoldStackSize;
+end;
+
+function TSynCustomHighlighter.GetRangeClass: TSynCustomHighlighterRangeClass;
+begin
+  Result:=TSynCustomHighlighterRange;
+end;
+
+function TSynCustomHighlighter.TopCodeFoldBlockType: Pointer;
+begin
+  if CodeFoldRange.CodeFoldStackSize>0 then
+    Result:=CodeFoldRange.Top.BlockType
+  else
+    Result:=nil;
+end;
+
+function TSynCustomHighlighter.StartCodeFoldBlock(ABlockType: Pointer
+  ): TSynCustomCodeFoldBlock;
+begin
+  Result:=CodeFoldRange.Add(ABlockType);
+end;
+
+procedure TSynCustomHighlighter.EndCodeFoldBlock;
+begin
+  CodeFoldRange.Pop;
+  if FMinimumCodeFoldBlockLevel>CodeFoldRange.CodeFoldStackSize then
+    FMinimumCodeFoldBlockLevel:=CodeFoldRange.CodeFoldStackSize;
+end;
 {$ELSE}
 procedure TSynCustomHighlighter.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
   FoldIndex: integer; FoldType: TSynEditCodeFoldType);
@@ -1079,9 +1256,12 @@ begin
   Result:=FCodeFoldStack[Index];
 end;
 
-constructor TSynCustomHighlighterRange.Create;
+constructor TSynCustomHighlighterRange.Create(
+  Template: TSynCustomHighlighterRange);
 begin
-
+  FBlockClass:=TSynCustomCodeFoldBlock;
+  if Template<>nil then
+    Assign(Template);
 end;
 
 destructor TSynCustomHighlighterRange.Destroy;
@@ -1095,72 +1275,152 @@ function TSynCustomHighlighterRange.Compare(Range: TSynCustomHighlighterRange
 var
   i: Integer;
 begin
-  if RangeType>Range.RangeType then
+  if RangeType<Range.RangeType then
     Result:=1
-  else if RangeType<Range.RangeType then
+  else if RangeType>Range.RangeType then
     Result:=-1
-  else if CodeFoldStackSize>Range.CodeFoldStackSize then
-    Result:=1
   else if CodeFoldStackSize<Range.CodeFoldStackSize then
+    Result:=1
+  else if CodeFoldStackSize>Range.CodeFoldStackSize then
     Result:=-1
   else begin
-    i:=0;
-    while i<CodeFoldStackSize do begin
+    for i:=0 to CodeFoldStackSize-1 do begin
       Result:=FCodeFoldStack[i].Compare(Range.FCodeFoldStack[i]);
       if Result<>0 then exit;
-      inc(i);
     end;
     Result:=0;
   end;
 end;
 
-function TSynCustomHighlighterRange.Add(Block: TSynCustomCodeFoldBlock
-  ): integer;
+function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
+  ALevel: integer): TSynCustomCodeFoldBlock;
+var
+  i: Integer;
 begin
   inc(FCodeFoldStackSize);
-  ReAllocMem(FCodeFoldStack,SizeOf(Pointer)*FCodeFoldStackSize);
-  FCodeFoldStack[FCodeFoldStackSize-1]:=Block;
-  Result:=FCodeFoldStackSize;
+  if FCodeFoldStackCapacity<FCodeFoldStackSize then begin
+    FCodeFoldStackCapacity:=FCodeFoldStackSize;
+    ReAllocMem(FCodeFoldStack,SizeOf(Pointer)*FCodeFoldStackCapacity);
+    for i:=FCodeFoldStackSize-1 to FCodeFoldStackCapacity-1 do
+      FCodeFoldStack[i]:=FBlockClass.Create;
+  end;
+  Result:=FCodeFoldStack[FCodeFoldStackSize-1];
+  Result.BlockType:=ABlockType;
+  Result.Level:=ALevel;
+  FTop:=Result;
 end;
 
-procedure TSynCustomHighlighterRange.Delete(Index: integer);
+procedure TSynCustomHighlighterRange.Pop;
+// can be called, even if there is no stack
+// because it's normal, that sources under development have unclosed blocks
 begin
-  FCodeFoldStack[Index].Free;
-  if Index<FCodeFoldStackSize-1 then
-    System.Move(FCodeFoldStack[Index+1],FCodeFoldStack[Index],
-      SizeOf(Pointer)*(FCodeFoldStackSize-Index-1));
-  ReAllocMem(FCodeFoldStack,SizeOf(Pointer)*FCodeFoldStackSize);
+  //debugln('TSynCustomHighlighterRange.Pop AAAAAAAAAAAA');
+  if FCodeFoldStackSize>0 then
+    dec(FCodeFoldStackSize);
+  if FCodeFoldStackSize>0 then
+    FTop:=FCodeFoldStack[FCodeFoldStackSize-1]
+  else
+    FTop:=nil;
 end;
 
 procedure TSynCustomHighlighterRange.Clear;
 var
   i: Integer;
 begin
-  if FCodeFoldStackSize>0 then begin
-    for i:=0 to FCodeFoldStackSize-1 do
+  FRangeType:=nil;
+  if FCodeFoldStackCapacity>0 then begin
+    for i:=0 to FCodeFoldStackCapacity-1 do
       FCodeFoldStack[i].Free;
     ReAllocMem(FCodeFoldStack,0);
+    FCodeFoldStackCapacity:=0;
+    FCodeFoldStackSize:=0;
   end;
+  FTop:=nil;
 end;
 
 procedure TSynCustomHighlighterRange.Assign(Src: TSynCustomHighlighterRange);
 var
   i: Integer;
 begin
-  FRangeType:=Src.FRangeType;
-  
-  // copy stack
-  // delete unneeded stack items
-  for i:=Src.FCodeFoldStackSize+1 to FCodeFoldStackSize do
-    FCodeFoldStack[i].Free;
-  ReAllocMem(FCodeFoldStack,SizeOf(Pointer)*Src.FCodeFoldStackSize);
-  // create needed stack items
-  for i:=FCodeFoldStackSize to Src.FCodeFoldStackSize-1 do
-    FCodeFoldStack[i]:=TSynCustomCodeFoldBlock.Create;
-  FCodeFoldStackSize:=Src.FCodeFoldStackSize;
-  // copy stack items
-  for i:=0 to FCodeFoldStackSize-1 do
-    FCodeFoldStack[i].Assign(Src.FCodeFoldStack[i]);
+  if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
+    FRangeType:=Src.FRangeType;
+
+    // enlarge stack
+    if FCodeFoldStackCapacity<Src.FCodeFoldStackSize then begin
+      ReAllocMem(FCodeFoldStack,SizeOf(Pointer)*Src.FCodeFoldStackSize);
+      for i:=FCodeFoldStackCapacity to Src.FCodeFoldStackSize-1 do
+        FCodeFoldStack[i]:=FBlockClass.Create;
+      FCodeFoldStackCapacity:=Src.FCodeFoldStackSize;
+    end;
+    // copy stack items
+    FCodeFoldStackSize:=Src.FCodeFoldStackSize;
+    for i:=0 to FCodeFoldStackSize-1 do
+      FCodeFoldStack[i].Assign(Src.FCodeFoldStack[i]);
+  end else begin
+    Clear;
+  end;
+  if FCodeFoldStackSize>0 then
+    FTop:=FCodeFoldStack[0]
+  else
+    FTop:=nil;
+end;
+
+procedure TSynCustomHighlighterRange.WriteDebugReport;
+var
+  i: Integer;
+begin
+  debugln('TSynCustomHighlighterRange.WriteDebugReport ',DbgSName(Self),
+    ' RangeType=',dbgs(RangeType),' StackSize=',dbgs(CodeFoldStackSize));
+  for i:=0 to CodeFoldStackSize-1 do begin
+    debugln('  i=',dbgs(i),' BlockType=',dbgs(CodeFoldStack[i].BlockType),' Level=',dbgs(CodeFoldStack[i].Level));
+  end;
+end;
+
+{ TSynCustomHighlighterRanges }
+
+constructor TSynCustomHighlighterRanges.Create(
+  TheHighlighterClass: TSynCustomHighlighterClass);
+begin
+  Allocate;
+  FItems:=TAvgLvlTree.Create(@CompareSynHighlighterRanges);
+end;
+
+destructor TSynCustomHighlighterRanges.Destroy;
+begin
+  if HighlighterRanges<>nil then begin
+    HighlighterRanges.Remove(Self);
+    if HighlighterRanges.Count=0 then
+      FreeAndNil(HighlighterRanges);
+  end;
+  FItems.FreeAndClear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+function TSynCustomHighlighterRanges.GetEqual(Range: TSynCustomHighlighterRange
+  ): TSynCustomHighlighterRange;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FItems.Find(Range);
+  if Node<>nil then begin
+    Result:=TSynCustomHighlighterRange(Node.Data);
+  end else begin
+    Result:=TSynCustomHighlighterRange.Create(Range);
+    FItems.Add(Result);
+  end;
+  //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
+end;
+
+procedure TSynCustomHighlighterRanges.Allocate;
+begin
+  inc(FAllocatedCount);
+end;
+
+procedure TSynCustomHighlighterRanges.Release;
+begin
+  dec(FAllocatedCount);
+  if FAllocatedCount=0 then Free;
 end;
 {$ENDIF}
 

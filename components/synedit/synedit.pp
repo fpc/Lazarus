@@ -679,7 +679,7 @@ type
     {$ENDIF}
   public
     //code fold
-    procedure CodeFoldAction(Y: integer);
+    procedure CodeFoldAction(iLine: integer);
     {$IFDEF EnableCodeFold}
     {$ELSE}
     procedure InitCodeFold;
@@ -2207,8 +2207,10 @@ begin
     {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
-  if (X < fGutterWidth) then
+  if (X < fGutterWidth) then begin
     Include(fStateFlags, sfPossibleGutterClick);
+    DoOnGutterClick(X, Y);
+  end;
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
   {$ELSE}
@@ -2396,8 +2398,11 @@ begin
   MouseCapture := False;
   if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth)
     {$IFDEF SYN_LAZARUS}and (Button = mbLeft){$ENDIF} then
-    DoOnGutterClick(X, Y)
-  else
+  begin
+    {$IFNDEF SYN_LAZARUS}
+    DoOnGutterClick(X, Y);
+    {$ENDIF}
+  end else
   if fStateFlags * [sfDblClicked,
       {$IFDEF SYN_LAZARUS}sfTripleClicked,sfQuadClicked,{$ENDIF}
       sfWaitForDragging] = [sfWaitForDragging] then
@@ -2434,9 +2439,35 @@ var
   allmrk: TSynEditMarks;
   mark  : TSynEditMark;
 begin
+  {$IFDEF SYN_LAZARUS}
+  line := PixelsToRowColumn(Point(X, Y)).Y;
+  //debugln('TCustomSynEdit.DoOnGutterClick A ',dbgs(line));
+  if line <= Lines.Count then begin
+    mark := nil;
+    if Gutter.ShowCodeFolding and (X<Gutter.CodeFoldingWidth) then begin
+      CodeFoldAction(line);
+    end else begin
+      Marks.GetMarksForLine(line, allmrk);
+      offs := 0;
+      for i := 1 to maxMarks do begin
+        if assigned(allmrk[i]) then begin
+          Inc(offs, BookMarkOptions.XOffset);
+          if X < offs then begin
+            mark := allmrk[i];
+            break;
+          end;
+        end;
+      end; //for
+    end;
+    if Assigned(fOnGutterClick) then begin
+      fOnGutterClick(Self, X, Y, line, mark);
+    end;
+  end;
+  {$ELSE}
   if Assigned(fOnGutterClick) then begin
     line := PixelsToRowColumn(Point(X, Y)).Y;
     if line <= Lines.Count then begin
+      mark := nil;
       Marks.GetMarksForLine(line, allmrk);
       offs := 0;
       mark := nil;
@@ -2452,6 +2483,7 @@ begin
       fOnGutterClick(Self, X, Y, line, mark);
     end;
   end;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.Paint;
@@ -2476,7 +2508,7 @@ begin
   // lines
   nL1 := Max(TopLine + rcClip.Top div fTextHeight, TopLine);
   nL2 := Min(TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
-    Lines.Count);
+             Lines.Count);
   // Now paint everything while the caret is hidden.
   HideCaret;
   try
@@ -2506,45 +2538,78 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.CodeFoldAction(Y: integer);
+procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
+// iLine is 1 based as parameter
+// and 0 based in the procedure below
+
+  procedure UpdateFolded(var iLine: integer);
+  var
+    FoldType: TSynEditCodeFoldType;
+    Level: LongInt;
+    CurFoldType: TSynEditCodeFoldType;
+  begin
+    FoldType:=TSynEditStringList(fLines).FoldType[iLine];
+    Level:=TSynEditStringList(fLines).FoldEndLevel[iLine];
+    if FoldType=cfCollapsed then begin
+      // fold all lines including sub blocks
+      inc(iLine);
+      while (iLine<Lines.Count)
+      and (TSynEditStringList(fLines).FoldMinLevel[iLine]>=Level) do begin
+        //debugln('UpdateFolded Fold ',dbgs(iLine),' ',Lines[iLine]);
+        TSynEditStringList(fLines).Folded[iLine]:=true;
+        inc(iLine);
+      end;
+      // fold last line of block
+      if (iLine<Lines.Count)
+      and (TSynEditStringList(fLines).FoldType[iLine]=cfEnd) then begin
+        //debugln('UpdateFolded Fold END ',dbgs(iLine),' ',Lines[iLine]);
+        TSynEditStringList(fLines).Folded[iLine]:=true;
+        inc(iLine);
+      end;
+    end else if FoldType=cfExpanded then begin
+      // expand all lines of this block and all sub expanded blocks
+      // sub blocks, that are collapsed, remain collapsed
+      inc(iLine);
+      while (iLine<Lines.Count)
+      and (TSynEditStringList(fLines).FoldMinLevel[iLine]>=Level) do begin
+        //debugln('UpdateFolded Expand ',dbgs(iLine),' ',Lines[iLine]);
+        TSynEditStringList(fLines).Folded[iLine]:=false;
+        CurFoldType:=TSynEditStringList(fLines).FoldType[iLine];
+        if CurFoldType in [cfExpanded,cfCollapsed] then
+          UpdateFolded(iLine);
+        inc(iLine);
+      end;
+      // expand last line of block
+      if (iLine<Lines.Count)
+      and (TSynEditStringList(fLines).FoldType[iLine]=cfEnd) then begin
+        //debugln('UpdateFolded Expand END ',dbgs(iLine),' ',Lines[iLine]);
+        TSynEditStringList(fLines).Folded[iLine]:=false;
+        inc(iLine);
+      end;
+    end;
+  end;
+
 var
-  iLine: integer;
+  FoldType: TSynEditCodeFoldType;
 begin
-  iLine := PixelsToRowColumn(Point(0, Y)).Y {+ TopLine - 2} - 1;
-  {$IFDEF DebugCodeFolding}
-  showmessage(IntToStr(iLine));
-  {$ENDIF}
-
-  case TSynEditStringList(fLines).FoldType[iLine] of
-  cfExpanded:
-    begin
-      //collapse the branch
-      debugln('collapsing node: ',dbgs(iLine));
-      TSynEditStringList(fLines).FoldType[iLine] := cfCollapsed;
-
-      repeat
-        Inc(iLine);
-        TSynEditStringList(fLines).Folded[iLine] := False;
-        //Inc(iLine);
-      until (TSynEditStringList(fLines).FoldType[iLine]
-             in [cfExpanded,cfCollapsed,cfEnd]);
-      Invalidate;
+  dec(iLine);
+  if (iLine<0) or (iLine>=Lines.Count) then exit;
+  FoldType:=TSynEditStringList(fLines).FoldType[iLine];
+  //debugln('TCustomSynEdit.CodeFoldAction A ',dbgs(iLine),' ',dbgs(ord(FoldType)));
+  if FoldType in [cfExpanded,cfCollapsed] then begin
+    if FoldType=cfExpanded then begin
+      // collapse the branch
+      FoldType:=cfCollapsed;
+      //debugln('collapsing node: ',dbgs(iLine));
+    end else begin
+      // expand the branch
+      //debugln('expanding node: ',dbgs(iLine));
+      FoldType:=cfExpanded;
     end;
+    TSynEditStringList(fLines).FoldType[iLine] := FoldType;
+    UpdateFolded(iLine);
 
-  cfCollapsed:
-    begin
-      //expand the branch
-      debugln('expanding node: ',dbgs(iLine));
-      TSynEditStringList(fLines).FoldType[iLine] := cfExpanded;
-      //Inc(iLine);
-      repeat
-        Inc(iLine);
-        TSynEditStringList(fLines).Folded[iLine] := True;
-        //Inc(iLine);
-      until (TSynEditStringList(fLines).FoldType[iLine]
-             in [cfExpanded,cfCollapsed,cfEnd]);
-      Invalidate;
-    end;
+    Invalidate;
   end;
 end;
 
@@ -2833,7 +2898,7 @@ procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
   FirstCol, LastCol: integer);
 {$IFDEF SYN_LAZARUS}
 // FirstLine, LastLine are based 1
-// FirstCol, LastCol are screen based without scrolling (physical position).
+// FirstCol, LastCol are screen based 1 without scrolling (physical position).
 //  i.e. the real screen position is fTextOffset+Pred(FirstCol)*CharWidth
 var
   bDoRightEdge: boolean; // right edge
@@ -2856,6 +2921,7 @@ var
   SelEndLogical: integer; // nSelEnd converted to logical in current line
     // painting the background and the text
   rcLine, rcToken: TRect;
+  CurLine: integer; // line index for the loop
   TokenAccu: record
     // Note: s is not managed as a string, it will only grow!!!
     // Never use AppendStr or "+", use Len and MaxLen instead and
@@ -2878,9 +2944,6 @@ var
   nAntiBracketY: integer; // one based
 
   LinkFGCol: TColor;
-
-    nLine : integer;
-    ypos : integer;
 
 { local procedures }
 
@@ -3042,8 +3105,9 @@ var
     pszText: PChar;
     nCharsToPaint: integer;
     nX: integer;
-    nLine: integer;
+    {$IFDEF EnableCodeFold}
     ypos: integer;
+    {$ENDIF}
   const
     ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
@@ -3074,14 +3138,17 @@ var
       // draw edge
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      //codefold draw splitter line
-      ypos := rcToken.Bottom - 1;
-      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
-      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
-      begin
-        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+      {$IFDEF EnableCodeFold}
+      // codefold draw splitter line
+      if CurLine>=0 then begin
+        ypos := rcToken.Bottom - 1;
+        if TSynEditStringList(Lines).FoldType[CurLine] in [cfEnd] then
+        begin
+          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+          LCLIntf.LineTo(dc, fGutterWidth, ypos);
+        end;
       end;
+      {$ENDIF}
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
         pszText, nCharsToPaint);
@@ -3104,8 +3171,9 @@ var
     C1SelPhys: integer;
     C2Phys: integer;
     C2SelPhys: LongInt;
-    nLine : integer;
+    {$IFDEF EnableCodeFold}
     ypos : integer;
+    {$ENDIF}
   begin
     // Compute some helper variables.
     nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
@@ -3205,14 +3273,17 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
 
-      //codefold draw splitter line
-      ypos := rcToken.Bottom - 1;
-      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
-      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
-      begin
-        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-        LCLIntf.LineTo(dc, fGutterWidth, ypos);
-      end;
+        {$IFDEF EnableCodeFold}
+        // codefold draw splitter line
+        if CurLine>=0 then begin
+          ypos := rcToken.Bottom - 1;
+          if TSynEditStringList(Lines).FoldType[CurLine] in [cfEnd] then
+          begin
+            LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+            LCLIntf.LineTo(dc, fGutterWidth, ypos);
+          end;
+        end;
+        {$ENDIF}
       end;
     end;
   end;
@@ -3436,7 +3507,6 @@ var
 
   procedure PaintLines;
   var
-    nLine: integer; // line index for the loop
     sLine: string; // the current line
     sToken: PChar; // highlighter token info
     nTokenPos, nTokenLen: integer;
@@ -3456,16 +3526,18 @@ var
       SetLength(TokenAccu.s, TokenAccu.MaxLen);
     end;
     // Now loop through all the lines. The indices are valid for Lines.
-    for nLine := FirstLine to LastLine do begin
+    CurLine := FirstLine-1;
+    while CurLine<LastLine do begin
+      inc(CurLine);
 
-      if TSynEditStringList(fLines).Folded[nLine] then begin
+      if TSynEditStringList(fLines).Folded[CurLine-1] then begin
         // this line is folded -> skip
-        //debugln('line folded ',dbgs(nLine));
+        //debugln('line folded ',dbgs(CurLine));
         continue;
       end;
 
       // Get the line.
-      sLine := Lines[nLine - 1];
+      sLine := Lines[CurLine - 1];
       // Get the information about the line selection. Three different parts
       // are possible (unselected before, selected, unselected after), only
       // unselected or only selected means bComplexLine will be FALSE. Start
@@ -3476,13 +3548,13 @@ var
       SelStartLogical:= 0;
       SelEndLogical:= 0;
       // Does the selection intersect the visible area?
-      if bSelectionVisible and (nLine >= nSelL1) and (nLine <= nSelL2) then begin
+      if bSelectionVisible and (CurLine >= nSelL1) and (CurLine <= nSelL2) then begin
         // Default to a fully selected line. This is correct for the smLine
         // selection mode and a good start for the smNormal mode.
         nSelStart := FirstCol;
         nSelEnd := LastCol + 1;
         if (SelectionMode = smColumn) or
-          ((SelectionMode = smNormal) and (nLine = nSelL1))
+          ((SelectionMode = smNormal) and (CurLine = nSelL1))
         then
           if (nSelCol1 > LastCol) then begin
             nSelStart := 0;
@@ -3492,7 +3564,7 @@ var
             bComplexLine := TRUE;
           end;
         if (SelectionMode = smColumn) or
-          ((SelectionMode = smNormal) and (nLine = nSelL2))
+          ((SelectionMode = smNormal) and (CurLine = nSelL2))
         then
           if (nSelCol2 < FirstCol) then begin
             nSelStart := 0;
@@ -3511,7 +3583,7 @@ var
       // use special values for them.
       colFG := Font.Color;
       colBG := colEditorBG;
-      bSpecialLine := DoOnSpecialLineColors(nLine, colFG, colBG);
+      bSpecialLine := DoOnSpecialLineColors(CurLine, colFG, colBG);
       if bSpecialLine then begin
         // The selection colors are just swapped, like seen in Delphi.
         colSelFG := colBG;
@@ -3563,9 +3635,9 @@ var
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
-//        fHighlighter.SetRange(Lines.Objects[nLine - 1]);
-        fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[nLine - 1]);     //mh 2000-10-10
-        fHighlighter.SetLine(sLine, nLine - 1);
+//        fHighlighter.SetRange(Lines.Objects[CurLine - 1]);
+        fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[CurLine - 1]);     //mh 2000-10-10
+        fHighlighter.SetLine(sLine, CurLine - 1);
         // Try to concatenate as many tokens as possible to minimize the count
         // of ExtTextOut calls necessary. This depends on the selection state
         // or the line having special colors. For spaces the foreground color
@@ -3597,12 +3669,12 @@ var
             // Store the token chars with the attributes in the TokenAccu
             // record. This will paint any chars already stored if there is
             // a (visible) change in the attributes.
-            if (fLastCtrlMouseLinkY<>nLine)
+            if (fLastCtrlMouseLinkY<>CurLine)
             or (nTokenPos+1<>fLastCtrlMouseLinkX1)
             then begin
-              if ((nBracketY<>nLine) or (nTokenPos+nTokenLen<=nBracketX)
+              if ((nBracketY<>CurLine) or (nTokenPos+nTokenLen<=nBracketX)
                 or (nTokenPos>nBracketX))
-              and ((nAntiBracketY<>nLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
+              and ((nAntiBracketY<>CurLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
                 or (nTokenPos>nAntiBracketX)) then
               begin
                 // normal token
@@ -3616,12 +3688,12 @@ var
                     colFG, colBG, Font.Style);
               end else begin
                 // token with bracket hilighting
-                DrawHilightBracketToken(attr,sToken,nLine,
+                DrawHilightBracketToken(attr,sToken,CurLine,
                   nTokenPos,nTokenLen,TokenPhysStart);
               end;
             end else begin
               // token is link
-              DrawCtrlMouseToken(attr,sToken,nLine,nTokenPos,nTokenLen,
+              DrawCtrlMouseToken(attr,sToken,CurLine,nTokenPos,nTokenLen,
                                  TokenPhysStart,TokenPhysEnd);
             end;
           end;
@@ -3633,6 +3705,7 @@ var
         PaintHighlightToken(TRUE);
       end;
     end;
+    CurLine:=-1;
   end;
 
   procedure InitializeHighlightBrackets;
@@ -3760,7 +3833,12 @@ var
 
 { end local procedures }
 
+{$IFDEF EnableCodeFold}
+var
+  ypos : integer;
+{$ENDIF}
 begin
+  CurLine:=-1;
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -3821,14 +3899,15 @@ begin
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
 
+      {$IFDEF EnableCodeFold}
       //codefold draw splitter line
       ypos := rcToken.Bottom - 1;
-      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
-      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
-      begin
+      if (LastLine<Lines.Count)
+      and (TSynEditStringList(Lines).FoldType[LastLine] in [cfEnd]) then begin
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
         LCLIntf.LineTo(dc, fGutterWidth, ypos);
       end;
+      {$ENDIF}
     end;
   end;
 
@@ -5637,21 +5716,51 @@ begin
 end;
 
 function TCustomSynEdit.ScanFrom(Index: integer): integer;
+{$IFDEF EnableCodeFold}
+var
+  CodeFoldMinLevel: LongInt;
+  CodeFoldEndLevel: LongInt;
+  CodeFoldType: TSynEditCodeFoldType;
+  LastCodeFoldEndLevel: LongInt;
+{$ENDIF}
 begin
+  //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index));
   Result := Index;
   if Index >= Lines.Count - 1 then Exit;
   fHighlighter.SetLine(Lines[Result], Result);
   inc(Result);
   fHighlighter.NextToEol;
-{begin}                                                                         //mh 2000-10-10
-//  while fHighlighter.GetRange <> fLines.Objects[Result] do begin
   while fHighlighter.GetRange <> TSynEditStringList(Lines).Ranges[Result] do
   begin
-//    Lines.Objects[Result] := fHighlighter.GetRange;
-    TSynEditStringList(Lines).Ranges[Result] := fHighlighter.GetRange;
-{end}                                                                           //mh 2000-10-10
+    //debugln('TSynCustomHighlighter.ScanFrom WHILE ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel),' ',Lines[Result]);
+    TSynEditStringList(Lines).Ranges[Result{$IFNDEF SYN_LAZARUS}-1{$ENDIF}] := fHighlighter.GetRange;
+    {$IFDEF EnableCodeFold}
+    CodeFoldMinLevel:=fHighlighter.MinimumCodeFoldBlockLevel;
+    CodeFoldEndLevel:=fHighlighter.CurrentCodeFoldBlockLevel;
+    CodeFoldType:=cfNone;
+    if CodeFoldEndLevel>CodeFoldMinLevel then begin
+      // block started (and not closed in the same line)
+      CodeFoldType:=cfExpanded;
+    end else if (Result>1) then begin
+      LastCodeFoldEndLevel:=TSynEditStringList(Lines).FoldEndLevel[Result-2];
+      if LastCodeFoldEndLevel>CodeFoldMinLevel then begin
+        // block closed
+        CodeFoldType:=cfEnd;
+      end else if CodeFoldEndLevel>0 then begin
+        // block continuing
+        CodeFoldType:=cfContinue;
+      end;
+    end;
+    TSynEditStringList(Lines).Folded[Result-1] := false;
+    TSynEditStringList(Lines).FoldMinLevel[Result-1] := CodeFoldMinLevel;
+    TSynEditStringList(Lines).FoldEndLevel[Result-1] := CodeFoldEndLevel;
+    TSynEditStringList(Lines).FoldType[Result-1] := CodeFoldType;
+    //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',Lines[Result-1]);
+    {$ENDIF}
     fHighlighter.SetLine(Lines[Result], Result);
+    //debugln('TSynCustomHighlighter.ScanFrom SetLine ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel),' ',Lines[Result]);
     fHighlighter.NextToEol;
+    //debugln('TSynCustomHighlighter.ScanFrom NextEOL ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel));
     inc(Result);
     if Result = Lines.Count then
       break;

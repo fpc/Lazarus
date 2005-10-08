@@ -58,7 +58,13 @@ type
   TSynEditStringFlag = (sfHasTabs, sfHasNoTabs, sfExpandedLengthUnknown);
   TSynEditStringFlags = set of TSynEditStringFlag;
   {$IFDEF SYN_LAZARUS}
-  TSynEditCodeFoldType = (cfNone, cfCollapsed, cfExpanded, cfContinue, cfEnd);
+  TSynEditCodeFoldType = (
+    cfNone,       // line is not in a block
+    cfCollapsed,  // line is start of collapsed block
+    cfExpanded,   // line is start of expanded block
+    cfContinue,   // line is middle part of block(s)
+    cfEnd         // line is end of block(s)
+    );
   {$ENDIF}
 {end}                                                                           //mh 2000-10-19
 
@@ -66,13 +72,14 @@ type
   TSynEditStringRec = record
     fString: string;
     fObject: TObject;
-    fRange: TSynEditRange;
+    fRange: TSynEditRange; // range at start of line
 {begin}                                                                         //mh 2000-10-19
     fExpandedLength: integer;
     fFlags: TSynEditStringFlags;
     {$IFDEF SYN_LAZARUS}
     fFolded: boolean;
-    fFoldIndex: LongInt;
+    fFoldMinLevel: LongInt; // minimum block depth in this line
+    fFoldEndLevel: LongInt; // block depth at end of this line
     fFoldType: TSynEditCodeFoldType;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
@@ -112,10 +119,12 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
-    function GetFoldIndex(Index: integer): integer;
+    function GetFoldEndLevel(Index: integer): integer;
+    function GetFoldMinLevel(Index: integer): integer;
     function GetFoldType(Index: integer): TSynEditCodeFoldType;
     function GetFolded(Index: integer): boolean;
-    procedure SetFoldIndex(Index: integer; const AValue: integer);
+    procedure SetFoldEndLevel(Index: integer; const AValue: integer);
+    procedure SetFoldMinLevel(Index: integer; const AValue: integer);
     procedure SetFoldType(Index: integer; const AValue: TSynEditCodeFoldType);
     procedure SetFolded(Index: integer; const AValue: boolean);
     {$ENDIF}
@@ -179,8 +188,10 @@ type
     property OnPutted: TStringListIndexEvent read fOnPutted write fOnPutted;
     {$IFDEF SYN_LAZARUS}
     property Folded[Index: integer]: boolean read GetFolded write SetFolded;
-    property FoldIndex[Index: integer]: integer read GetFoldIndex
-                                                write SetFoldIndex;
+    property FoldMinLevel[Index: integer]: integer read GetFoldMinLevel
+                                                   write SetFoldMinLevel;
+    property FoldEndLevel[Index: integer]: integer read GetFoldEndLevel
+                                                   write SetFoldEndLevel;
     property FoldType[Index: integer]: TSynEditCodeFoldType read GetFoldType
                                                             write SetFoldType;
     {$ENDIF}
@@ -688,10 +699,18 @@ begin
     end;
 end;
 
-function TSynEditStringList.GetFoldIndex(Index: integer): integer;
+function TSynEditStringList.GetFoldEndLevel(Index: integer): integer;
 begin
   if (Index >= 0) and (Index < fCount) then
-    Result := fList^[Index].fFoldIndex
+    Result := fList^[Index].fFoldEndLevel
+  else
+    Result := 0;
+end;
+
+function TSynEditStringList.GetFoldMinLevel(Index: integer): integer;
+begin
+  if (Index >= 0) and (Index < fCount) then
+    Result := fList^[Index].fFoldMinLevel
   else
     Result := 0;
 end;
@@ -712,11 +731,18 @@ begin
     Result := false;
 end;
 
-procedure TSynEditStringList.SetFoldIndex(Index: integer; const AValue: integer
-  );
+procedure TSynEditStringList.SetFoldEndLevel(Index: integer;
+  const AValue: integer);
 begin
   if (Index >= 0) and (Index < fCount) then
-    fList^[Index].fFoldIndex := AValue;
+    fList^[Index].fFoldEndLevel := AValue;
+end;
+
+procedure TSynEditStringList.SetFoldMinLevel(Index: integer;
+  const AValue: integer);
+begin
+  if (Index >= 0) and (Index < fCount) then
+    fList^[Index].fFoldMinLevel := AValue;
 end;
 
 procedure TSynEditStringList.SetFoldType(Index: integer;
@@ -852,7 +878,8 @@ begin
     fFlags := [sfExpandedLengthUnknown];
     {$IFDEF SYN_LAZARUS}
     fFolded:=false;
-    fFoldIndex:=0;
+    fFoldMinLevel:=0;
+    fFoldEndLevel:=0;
     fFoldType:=cfNone;
     {$ENDIF}
 {end}                                                                           //mh 2000-10-19
