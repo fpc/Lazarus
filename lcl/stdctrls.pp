@@ -1038,6 +1038,7 @@ type
   published
     property AllowGrayed;
     property Anchors;
+    property AutoSize default false;
     property BorderSpacing;
     property Caption;
     property Checked;
