@@ -23,6 +23,8 @@
  *****************************************************************************
 }
 
+{$DEFINE DebugEventLoop}
+
 { TCarbonWidgetSet }
 
 {
@@ -219,10 +221,18 @@ procedure TCarbonWidgetSet.AppProcessMessages;
 var
   Target: EventTargetRef;
   Event: EventRef;
+  {$IFDEF DebugEventLoop}
+  EC: array[0..4] of char;
+  {$ENDIF}
 begin
   Target := GetEventDispatcherTarget;
   repeat
     if ReceiveNextEvent(0, nil, kEventDurationNoWait, True, Event) <> noErr then Break;
+    {$IFDEF DebugEventLoop}
+    PInteger(@EC)^ := GetEventClass(Event);
+    EC[4] := #0;
+    DebugLn('EventClass: ''%s'' EventKind: 0x%8.8x', [EC, GetEventKind(Event)]);
+    {$ENDIF}
     SendEventToEventTarget(Event, Target);
     ReleaseEvent(Event);
   until Application.Terminated;

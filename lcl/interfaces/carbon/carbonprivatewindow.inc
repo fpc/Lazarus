@@ -33,7 +33,7 @@ begin
   // Message results : 0 - do nothing, 1 - destroy or hide window
   if DeliverMessage(AInfo^.LCLObject, Msg) = 0
   then begin
-    Result := eventNotHandledErr;
+    Result := noErr;
     Exit;
   end;
 
@@ -60,6 +60,21 @@ end;
 
 //Generic function that handles all types of mouse events
 
+function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
+                                   AEvent: EventRef;
+                                   AInfo: PWidgetInfo): OSStatus; mwpascal;      
+var
+  Modifiers: UInt32;                                   
+  MousePoint: HIPoint;//QDPoint;
+begin                                   
+  GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil, SizeOf(Modifiers), nil, @Modifiers);
+  GetEventParameter(AEvent, kEventParamMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
+
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+  DebugLn('Control track, x:%d, y:%d, m:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers]);
+end;
+                                   
 function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
                                 AWIndowInfo: PWidgetInfo): OSStatus; mwpascal;
@@ -112,6 +127,9 @@ var
     ClickCount: Integer;
     MousePoint: TPoint;
     Msg: ^TLMMouse;
+    Spec: EventTypeSpec;
+    pt: FPCMacOSAll.Point;
+    mtr: MouseTrackingResult;
   begin
     Msg := @AMsg;
 
@@ -127,11 +145,21 @@ var
     and (MouseButton <= High(MSGKIND))
     then Msg^.Msg := MSGKIND[ClickCount, MouseButton];
 
-    Msg^.XPos := MousePoint.X;
+    Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
 
     //LMMouse.Keys;
     {$Warning CarbonPrivateWindow_MouseProc LMMouse.Keys TODO}
+    
+//    Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+//    InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack), 
+//      1, @Spec, nil, nil);
+    
+    repeat
+      TrackMouseLocation(nil, Pt, mtr);
+      DebugLn('Mouse track, x:%d, y:%d, m:0x%x', [Round(pt.h), Round(pt.v), mtr]);
+    until mtr = kMouseTrackingMouseUp;
+    
   end;
 
   procedure HandleMouseUpEvent(var AMsg);
@@ -232,7 +260,7 @@ begin
   end;
   
   if DeliverMessage(Info^.LCLObject, Msg) = 0 then begin
-    Result := CallNextEventHandler(ANextHandler, AEvent);
+    Result :=  EventNotHandledErr; //CallNextEventHandler(ANextHandler, AEvent);
   end
   else begin
     // the LCL does not want the event propagated
