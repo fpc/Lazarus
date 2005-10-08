@@ -328,6 +328,8 @@ type
     Procedure ValueEditDblClick(Sender : TObject);
     procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
       Shift: TShiftState; X,Y:integer);
+    procedure ValueEditMouseMove(Sender: TObject; Shift: TShiftState;
+      X,Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
@@ -391,6 +393,8 @@ type
     procedure Paint;  override;
     procedure PropEditLookupRootChange;
     procedure RefreshPropertyValues;
+    procedure ScrollToActiveItem;
+    procedure ScrollToItem(NewIndex: Integer);
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
     procedure SetItemIndexAndFocus(NewItemIndex: integer);
@@ -717,6 +721,7 @@ begin
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
     OnMouseDown := @ValueEditMouseDown;
+    OnMouseMove := @ValueEditMouseMove;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueEditExit;
     OnChange:=@ValueEditChange;
@@ -732,6 +737,7 @@ begin
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
     OnMouseDown := @ValueEditMouseDown;
+    OnMouseMove := @ValueEditMouseMove;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueComboBoxExit;
     //OnChange:=@ValueComboBoxChange; the on change event is called even,
@@ -863,7 +869,7 @@ begin
     SB_THUMBPOSITION,
     SB_THUMBTRACK: TopY := Msg.Pos;
       // Ends scrolling
-    SB_ENDSCROLL: ;
+    SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
   end;
 end;
 
@@ -1089,6 +1095,9 @@ begin
     
     // update value
     RefreshValueEdit;
+    
+    //invalidate changed subproperties
+    DoPaint(True);
   end;
 end;
 
@@ -1109,6 +1118,7 @@ end;
 procedure TOICustomPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  ScrollToActiveItem;
   HandleStandardKeys(Key,Shift);
 end;
 
@@ -1152,6 +1162,7 @@ end;
 procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
+  ScrollToActiveItem;
   HandleStandardKeys(Key,Shift);
 end;
 
@@ -1163,6 +1174,7 @@ end;
 
 procedure TOICustomPropertyGrid.ValueButtonClick(Sender: TObject);
 begin
+  ScrollToActiveItem;
   DoCallEdit;
 end;
 
@@ -1196,10 +1208,9 @@ begin
   FCurrentEditorLookupRoot:=nil;
   if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
     NewRow:=Rows[NewIndex];
-    if NewRow.Bottom>=TopY+(ClientHeight-2*BorderWidth) then
-      TopY:=NewRow.Bottom-(ClientHeight-2*BorderWidth)+1
-    else if NewRow.Top<TopY then
-      TopY:=NewRow.Top;
+
+    ScrollToItem(NewIndex);
+    
     NewRow.Editor.Activate;
     if paDialog in NewRow.Editor.GetAttributes then begin
       FCurrentButton:=ValueButton;
@@ -1283,14 +1294,14 @@ begin
     if CurRow<>nil then
       ExpandRow(CurRow.Index);
   end;
+  // update scrollbar
+  FTopY:=0;
+  UpdateScrollBar;
   // reselect
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then begin
     ItemIndex:=CurRow.Index;
   end;
-  // update scrollbar
-  FTopY:=0;
-  UpdateScrollBar;
   // paint
   Invalidate;
 end;
@@ -1514,6 +1525,9 @@ end;
 
 procedure TOICustomPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
+var
+  IconX,Index:integer;
+  PointedRow:TOIpropertyGridRow;
 begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
   inherited MouseDown(Button,Shift,X,Y);
@@ -1524,6 +1538,28 @@ begin
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
       FDragging:=true;
+    end
+    else
+    begin
+      Index:=MouseToIndex(Y,false);
+      if (Index>=0) and (Index<FRows.Count) then
+      begin
+        PointedRow:=Rows[Index];
+        if paSubProperties in PointedRow.Editor.GetAttributes then
+        begin
+          IconX:=GetTreeIconX(Index);
+          if ((X>=IconX) and (X<=IconX+FIndent)) or (ssDouble in Shift) then
+          begin
+            if PointedRow.Expanded then
+              ShrinkRow(Index)
+            else
+              ExpandRow(Index);
+          end;
+        end;
+        
+        SetItemIndexAndFocus(Index);
+        SetCaptureControl(Self);
+      end;
     end;
   end;
 end;
@@ -1545,12 +1581,22 @@ begin
     end else begin
       EndDragSplitter;
     end;
-  end else begin
+  end
+  else
+  begin
     if (abs(SplitDistance)<=2) then begin
       Cursor:=crHSplit;
     end else begin
       Cursor:=crDefault;
     end;
+    
+    if ssLeft in Shift then
+    begin
+      Index := MouseToIndex(Y, False);
+      SetItemIndexAndFocus(Index);
+      SetCaptureControl(Self);
+    end;
+    
     // to check if the property text fits in its box, if not show a hint
     if ShowHint then begin
       Index := MouseToIndex(y,false);
@@ -1589,35 +1635,10 @@ end;
 
 procedure TOICustomPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
-var
-  IconX,Index:integer;
-  PointedRow:TOIpropertyGridRow;
-  WasDragging: boolean;
 begin
-  WasDragging:=FDragging;
   if FDragging then EndDragSplitter;
+  SetCaptureControl(nil);
   inherited MouseUp(Button,Shift,X,Y);
-
-  if Button=mbLeft then begin
-    if not WasDragging then begin
-      Index:=MouseToIndex(Y,false);
-      if (Index>=0) and (Index<FRows.Count) then begin
-        IconX:=GetTreeIconX(Index);
-        if (X>=IconX) and (X<=IconX+FIndent) then begin
-          PointedRow:=Rows[Index];
-          if paSubProperties in PointedRow.Editor.GetAttributes then begin
-            if PointedRow.Expanded then
-              ShrinkRow(Index)
-            else
-              ExpandRow(Index);
-            ItemIndex:=Index;
-          end;
-        end else begin
-          SetItemIndexAndFocus(Index);
-        end;
-      end;
-    end;
-  end;
 end;
 
 procedure TOICustomPropertyGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1746,7 +1767,7 @@ begin
   if FTopY<>NewTopY then begin
     FTopY:=NewTopY;
     UpdateScrollBar;
-    ItemIndex:=-1;
+    AlignEditComponents;
     Invalidate;
   end;
 end;
@@ -2003,6 +2024,25 @@ begin
   DoPaint(true);
 end;
 
+procedure TOICustomPropertyGrid.ScrollToActiveItem;
+begin
+  ScrollToItem(FItemIndex);
+end;
+
+procedure TOICustomPropertyGrid.ScrollToItem(NewIndex: Integer);
+var
+  NewRow: TOIPropertyGridRow;
+begin
+  if (NewIndex >= 0) and (NewIndex < FRows.Count) then
+  begin
+    NewRow := Rows[NewIndex];
+    if NewRow.Bottom >= TopY + (ClientHeight - 2*BorderWidth) then
+      TopY := NewRow.Bottom- (ClientHeight - 2*BorderWidth) + 1
+    else
+      if NewRow.Top < TopY then TopY := NewRow.Top;
+  end;
+end;
+
 procedure TOICustomPropertyGrid.PropEditLookupRootChange;
 begin
   // When the LookupRoot changes, no changes can be stored
@@ -2244,6 +2284,15 @@ procedure TOICustomPropertyGrid.ValueEditMouseDown(Sender : TObject;
 begin
   //hide the hint window!
   if FHintWindow.Visible then FHintWindow.Visible := False;
+  ScrollToActiveItem;
+end;
+
+procedure TOICustomPropertyGrid.ValueEditMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: integer);
+begin
+  // when the cursor is divider change it to default
+  if (Sender as TControl).Parent.Cursor <> crDefault then
+    (Sender as TControl).Parent.Cursor := crDefault;
 end;
 
 procedure TOICustomPropertyGrid.IncreaseChangeStep;
