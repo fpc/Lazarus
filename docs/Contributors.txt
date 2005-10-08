@@ -43,8 +43,8 @@ Marc Weustink
 Martin Patik
 Martin Smat
 Martyn Ranyard
-Mattias Gaertner
 Matthijs Willemstein
+Mattias Gaertner
 Mazen Neifer
 Michael A. Hess
 Micha Nelissen
@@ -65,6 +65,7 @@ Sergio Marcelo
 Shane Miller
 Stefan Hille
 Tom Lisjac
+Tomáš Gregorovič
 Tony Maro
 Vasily I. Volchenko
 Vincent Beuselinck
