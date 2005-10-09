@@ -2948,13 +2948,13 @@ endif
 	windres -i $< -o $@ --preprocessor $(RCPP)
 ide: $(COMPILER_UNITTARGETDIR)
 ifneq ($(USESVN2REVISIONINC),0)
-ifeq ($(wildcard ../tools/svn2revisioninc$(EXEEXT)),)
-	$(MAKE) -C ../tools svn2revisioninc$(EXEEXT) OPT=''
+ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
+	$(MAKE) -C ../tools svn2revisioninc$(SRCEXEEXT) OS_TARGET=$(OS_SOURCE) OPT=''
 endif
-	../tools/svn2revisioninc$(EXEEXT) .. revision.inc
+	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
+endif
 ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
-endif
 endif
 ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT)
