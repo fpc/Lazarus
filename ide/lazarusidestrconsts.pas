@@ -689,6 +689,7 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   lisLazDoc = 'LazDoc';
+  lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
   lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
@@ -1097,6 +1098,7 @@ resourcestring
   dlgHostApplication = 'Host application';
   dlgCommandLineParams = 'Command line parameters (without application name)';
   dlgUseLaunchingApp = 'Use launching application';
+  lisUseLaunchingApplicationGroupBox = 'Launching application';
   dlgROWorkingDirectory = 'Working directory';
   dlgRunODisplay = 'Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
   dlgRunOUsedisplay = 'Use display';
@@ -1546,7 +1548,7 @@ resourcestring
   lisDocumentationEditor = 'Documentation Editor';
    
   // Build lazarus dialog
-  lisConfirmLazarusRebuild = 'Do You want ReBuild Lazarus?';
+  lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus?';
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
@@ -2865,7 +2867,9 @@ resourcestring
   lisLazDocHintVarTag = 'Insert var formatting tag';
   lisLazDocAddLinkButton = 'Add link';
   lisLazDocDeleteLinkButton = 'Delete link';
-
+  lisLazDocExampleTag = 'Example';
+  lisLazDocBrowseExampleButton = 'Browse';
+  
 implementation
 end.
 

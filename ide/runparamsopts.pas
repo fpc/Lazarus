@@ -54,8 +54,9 @@ uses
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
     files and are able to convert them.
-} 
-const RunParamsOptionsVersion = '1';
+}
+const
+  RunParamsOptionsVersion = '1';
 
 type
   {
@@ -71,7 +72,7 @@ type
     fLaunchingApplicationPathPlusParams: string;
     fWorkingDirectory: string;
     fDisplay: string;
-    
+
     // environment options
     fUserOverrides: TStringList;
     fIncludeSystemVariables: boolean;
@@ -80,63 +81,65 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Load(XMLConfig: TXMLConfig; const Path: string;
-                  AdjustPathDelims: boolean): TModalResult;
+      AdjustPathDelims: boolean): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure AssignEnvironmentTo(Strings: TStrings);
-    
+
     // local options
     property HostApplicationFilename: string
-           read fHostApplicationFilename write fHostApplicationFilename;
-    property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
+      Read fHostApplicationFilename Write fHostApplicationFilename;
+    property CmdLineParams: string Read fCmdLineParams Write fCmdLineParams;
     property UseLaunchingApplication: boolean
-           read fUseLaunchingApplication write fUseLaunchingApplication;
+      Read fUseLaunchingApplication Write fUseLaunchingApplication;
     property LaunchingApplicationPathPlusParams: string
-           read fLaunchingApplicationPathPlusParams
-           write fLaunchingApplicationPathPlusParams;
-    property WorkingDirectory: string 
-           read fWorkingDirectory write fWorkingDirectory;
-    property UseDisplay: boolean read fUseDisplay write FUseDisplay;
-    property Display: string read fDisplay write fDisplay;
-    
+      Read fLaunchingApplicationPathPlusParams Write fLaunchingApplicationPathPlusParams;
+    property WorkingDirectory: string Read fWorkingDirectory Write fWorkingDirectory;
+    property UseDisplay: boolean Read fUseDisplay Write FUseDisplay;
+    property Display: string Read fDisplay Write fDisplay;
+
     // environment options
-    property UserOverrides: TStringList read fUserOverrides;
+    property UserOverrides: TStringList Read fUserOverrides;
     property IncludeSystemVariables: boolean
-          read fIncludeSystemVariables write fIncludeSystemVariables;
+      Read fIncludeSystemVariables Write fIncludeSystemVariables;
   end;
 
   {
     TRunParamsOptsDlg is the form of the run parameters options dialog
   }
+
+  { TRunParamsOptsDlg }
+
   TRunParamsOptsDlg = class(TForm)
-    Notebook: TNotebook;
-    HostApplicationGroupBox: TGroupBox;
-    HostApplicationEdit: TEdit;
-    HostApplicationBrowseBtn: TBitBtn;
-    CmdLineParametersGroupBox: TGroupBox;
-    CmdLineParametersEdit: TEdit;
-    UseLaunchingApplicationGroupBox: TGroupBox;
-    UseLaunchingApplicationCheckBox: TCheckBox;
-    UseLaunchingApplicationComboBox: TComboBox;
-    WorkingDirectoryGroupBox: TGroupBox;
-    WorkingDirectoryEdit: TEdit;
-    WorkingDirectoryBtn: TBitBtn;
-    DisplayGroupBox: TGroupBox;
     UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
-    SystemVariablesGroupBox: TGroupBox;
-    SystemVariablesListView: TListView;
-    UserOverridesGroupBox: TGroupBox;
-    UserOverridesListView: TListView;
+    DisplayGroupBox: TGroupBox;
+    HostApplicationBrowseBtn: TButton;
     UserOverridesAddButton: TButton;
     UserOverridesEditButton: TButton;
     UserOverridesDeleteButton: TButton;
+    WorkingDirectoryBtn: TButton;
+    WorkingDirectoryEdit: TEdit;
+    WorkingDirectoryGroupBox: TGroupBox;
+    UseLaunchingApplicationCheckBox: TCheckBox;
     IncludeSystemVariablesCheckBox: TCheckBox;
+    UseLaunchingApplicationComboBox: TComboBox;
+    CmdLineParametersEdit: TEdit;
+    HostApplicationEdit: TEdit;
+    UseLaunchingApplicationGroupBox: TGroupBox;
+    CmdLineParametersGroupBox: TGroupBox;
+    HostApplicationGroupBox: TGroupBox;
+    UserOverridesGroupBox: TGroupBox;
+    SystemVariablesGroupBox: TGroupBox;
+    SystemVariablesListView: TListView;
+    UserOverridesListView: TListView;
+    Notebook: TNotebook;
+    Page1:    TPage;
+    Page2:    TPage;
     OkButton: TButton;
     CancelButton: TButton;
+    procedure FormResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
-    procedure RunParamsOptsDlgResize(Sender: TObject);
-    procedure UserOverridesGroupBoxResize(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);
@@ -146,23 +149,20 @@ type
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
-    procedure ResizeNotebook;
-    procedure ResizeLocalPage;
-    procedure ResizeEnvironmentPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
     procedure FillListView(ListView: TListView; sl: TStringList);
     procedure FillSystemVariablesListView;
     procedure FillUserOverridesListView;
     procedure SaveToOptions;
     procedure SaveUserOverrides;
-    procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
+    procedure SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
   public
     constructor Create(AnOwner: TComponent); override;
-    property Options: TRunParamsOptions read fOptions write SetOptions;
+    property Options: TRunParamsOptions Read fOptions Write SetOptions;
   end;
 
 
-function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions):TModalResult;
+function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
 
 
 implementation
@@ -170,18 +170,18 @@ implementation
 
 const
   DefaultLauncherApplication =
-    '/usr/X11R6/bin/xterm -T ''Lazarus Run Output'''
-    +' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
+    '/usr/X11R6/bin/xterm -T ''Lazarus Run Output''' +
+    ' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
 
-function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions):TModalResult;
+function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
 var
   RunParamsOptsForm: TRunParamsOptsDlg;
 begin
-  Result:=mrCancel;
-  RunParamsOptsForm:=TRunParamsOptsDlg.Create(nil);
+  Result := mrCancel;
+  RunParamsOptsForm := TRunParamsOptsDlg.Create(nil);
   try
-    RunParamsOptsForm.Options:=RunParamsOptions;
-    Result:=RunParamsOptsForm.ShowModal;
+    RunParamsOptsForm.Options := RunParamsOptions;
+    Result := RunParamsOptsForm.ShowModal;
   finally
     RunParamsOptsForm.Free;
   end;
@@ -192,7 +192,7 @@ end;
 constructor TRunParamsOptions.Create;
 begin
   inherited Create;
-  fUserOverrides:=TStringList.Create;
+  fUserOverrides := TStringList.Create;
   Clear;
 end;
 
@@ -205,132 +205,130 @@ end;
 procedure TRunParamsOptions.Clear;
 begin
   // local options
-  fHostApplicationFilename:='';
-  fCmdLineParams:='';
-  fUseLaunchingApplication:=false;
-  fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
-  fWorkingDirectory:='';
-  fUseDisplay:=false;
-  fDisplay:=':0';
-    
+  fHostApplicationFilename := '';
+  fCmdLineParams := '';
+  fUseLaunchingApplication := False;
+  fLaunchingApplicationPathPlusParams := DefaultLauncherApplication;
+  fWorkingDirectory := '';
+  fUseDisplay := False;
+  fDisplay    := ':0';
+
   // environment options
   fUserOverrides.Clear;
-  fIncludeSystemVariables:=false;
+  fIncludeSystemVariables := False;
 end;
 
-function TRunParamsOptions.Load(XMLConfig: TXMLConfig;
-  const Path: string; AdjustPathDelims: boolean): TModalResult;
+function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
+  AdjustPathDelims: boolean): TModalResult;
 
 
   function f(const Filename: string): string;
   begin
-    Result:=SwitchPathDelims(Filename,AdjustPathDelims);
+    Result := SwitchPathDelims(Filename, AdjustPathDelims);
   end;
 
   procedure LoadUserOverrides(const APath: string);
-  var i, Cnt: integer;
+  var
+    i, Cnt: integer;
   begin
     fUserOverrides.Clear;
-    Cnt:=XMLConfig.GetValue(APath+'Count',0);
-    for i:=0 to Cnt-1 do begin
+    Cnt := XMLConfig.GetValue(APath + 'Count', 0);
+    for i := 0 to Cnt - 1 do
+    begin
       fUserOverrides.Values[XMLConfig.GetValue(
-          APath+'Variable'+IntToStr(i)+'/Name','')]
-        :=XMLConfig.GetValue(APath+'Variable'+IntToStr(i)+'/Value','');
+        APath + 'Variable' + IntToStr(i) + '/Name', '')] :=
+        XMLConfig.GetValue(APath + 'Variable' + IntToStr(i) + '/Value', '');
     end;
   end;
 
 begin
   // local options
-  fHostApplicationFilename:=f(XMLConfig.GetValue(
-    Path+'RunParams/local/HostApplicationFilename/Value',
-      fHostApplicationFilename));
-  fCmdLineParams:=f(XMLConfig.GetValue(
-    Path+'RunParams/local/CommandLineParams/Value',
-      fCmdLineParams));
-  fUseLaunchingApplication:=XMLConfig.GetValue(
-    Path+'RunParams/local/LaunchingApplication/Use',
-      fUseLaunchingApplication);
-  fLaunchingApplicationPathPlusParams:=f(XMLConfig.GetValue(
-    Path+'RunParams/local/LaunchingApplication/PathPlusParams',
-      fLaunchingApplicationPathPlusParams));
-  if (fLaunchingApplicationPathPlusParams='') then
-    fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
-  fWorkingDirectory:=f(XMLConfig.GetValue(
-    Path+'RunParams/local/WorkingDirectory/Value',
-      fWorkingDirectory));
-  fUseDisplay:=XMLConfig.GetValue(
-    Path+'RunParams/local/Display/Use',
-      fUseDisplay);
-  fDisplay:=XMLConfig.GetValue(
-    Path+'RunParams/local/Display/Value',
-      fDisplay);
+  fHostApplicationFilename := f(XMLConfig.GetValue(
+    Path + 'RunParams/local/HostApplicationFilename/Value',
+    fHostApplicationFilename));
+  fCmdLineParams := f(XMLConfig.GetValue(
+    Path + 'RunParams/local/CommandLineParams/Value', fCmdLineParams));
+  fUseLaunchingApplication := XMLConfig.GetValue(
+    Path + 'RunParams/local/LaunchingApplication/Use', fUseLaunchingApplication);
+  fLaunchingApplicationPathPlusParams :=
+    f(XMLConfig.GetValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
+    fLaunchingApplicationPathPlusParams));
+  if (fLaunchingApplicationPathPlusParams = '') then
+    fLaunchingApplicationPathPlusParams := DefaultLauncherApplication;
+  fWorkingDirectory := f(XMLConfig.GetValue(
+    Path + 'RunParams/local/WorkingDirectory/Value', fWorkingDirectory));
+  fUseDisplay := XMLConfig.GetValue(Path + 'RunParams/local/Display/Use',
+    fUseDisplay);
+  fDisplay    := XMLConfig.GetValue(Path + 'RunParams/local/Display/Value', fDisplay);
 
   // environment options
-  LoadUserOverrides(Path+'RunParams/environment/UserOverrides/');
-  fIncludeSystemVariables:=XMLConfig.GetValue(
-    Path+'RunParams/environment/IncludeSystemVariables/Value',
-      fIncludeSystemVariables);
-  
-  Result:=mrOk;
+  LoadUserOverrides(Path + 'RunParams/environment/UserOverrides/');
+  fIncludeSystemVariables := XMLConfig.GetValue(
+    Path + 'RunParams/environment/IncludeSystemVariables/Value',
+    fIncludeSystemVariables);
+
+  Result := mrOk;
 end;
 
 function TRunParamsOptions.Save(XMLConfig: TXMLConfig;
   const Path: string): TModalResult;
 
   procedure SaveUserOverrides(const APath: string);
-  var i: integer;
+  var
+    i: integer;
   begin
-    XMLConfig.SetDeleteValue(APath+'Count',fUserOverrides.Count,0);
-    for i:=0 to fUserOverrides.Count-1 do begin
-      XMLConfig.SetValue(APath+'Variable'+IntToStr(i)+'/Name',
+    XMLConfig.SetDeleteValue(APath + 'Count', fUserOverrides.Count, 0);
+    for i := 0 to fUserOverrides.Count - 1 do
+    begin
+      XMLConfig.SetValue(APath + 'Variable' + IntToStr(i) + '/Name',
         fUserOverrides.Names[i]);
-      XMLConfig.SetValue(APath+'Variable'+IntToStr(i)+'/Value',
+      XMLConfig.SetValue(APath + 'Variable' + IntToStr(i) + '/Value',
         fUserOverrides.Values[fUserOverrides.Names[i]]);
     end;
   end;
 
 begin
   // save a format version to distinguish old formats
-  XMLConfig.SetValue(Path+'RunParams/local/FormatVersion/Value',
+  XMLConfig.SetValue(Path + 'RunParams/local/FormatVersion/Value',
     RunParamsOptionsVersion);
 
   // local options
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/HostApplicationFilename/Value',
-    fHostApplicationFilename,'');
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/CommandLineParams/Value',
-    fCmdLineParams,'');
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/LaunchingApplication/Use',
-    fUseLaunchingApplication,false);
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/LaunchingApplication/PathPlusParams',
-    fLaunchingApplicationPathPlusParams,'');
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/WorkingDirectory/Value',
-    fWorkingDirectory,'');
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/Display/Use',
-    fUseDisplay,false);
-  XMLConfig.SetDeleteValue(Path+'RunParams/local/Display/Value',
-    fDisplay,':0');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/HostApplicationFilename/Value',
+    fHostApplicationFilename, '');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/CommandLineParams/Value',
+    fCmdLineParams, '');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/Use',
+    fUseLaunchingApplication, False);
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
+    fLaunchingApplicationPathPlusParams, '');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/WorkingDirectory/Value',
+    fWorkingDirectory, '');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Use',
+    fUseDisplay, False);
+  XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Value',
+    fDisplay, ':0');
 
   // environment options
-  SaveUserOverrides(Path+'RunParams/environment/UserOverrides/');
-  XMLConfig.SetDeleteValue(Path+'RunParams/environment/IncludeSystemVariables/Value',
-    fIncludeSystemVariables,false);
-  
-  Result:=mrOk;
+  SaveUserOverrides(Path + 'RunParams/environment/UserOverrides/');
+  XMLConfig.SetDeleteValue(Path + 'RunParams/environment/IncludeSystemVariables/Value',
+    fIncludeSystemVariables, False);
+
+  Result := mrOk;
 end;
 
 procedure TRunParamsOptions.AssignEnvironmentTo(Strings: TStrings);
 var
-  idx: Integer;
+  idx: integer;
 begin
-  IDEProcs.AssignEnvironmentTo(Strings,UserOverrides);
-  if UseDisplay
-  then begin
+  IDEProcs.AssignEnvironmentTo(Strings, UserOverrides);
+  if UseDisplay then
+  begin
     // assignment is not allowed in a sorted list
     // Strings.Values['DISPLAY']:=Display;
     idx := Strings.IndexOfName('DISPLAY');
-    if idx <> -1
-    then Strings.Delete(idx);
-    Strings.Add('DISPLAY=' + Display)
+    if idx <> -1 then
+      Strings.Delete(idx);
+    Strings.Add('DISPLAY=' + Display);
   end;
 end;
 
@@ -340,51 +338,22 @@ end;
 constructor TRunParamsOptsDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=500;
-    Height:=450;
-    Position:=poScreenCenter;
-    Caption:=dlgRunParameters;
-    OnResize:=@RunParamsOptsDlgResize;
 
-    SetupNotebook;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      SetBounds(270,Self.ClientHeight-40,100,25);
-      Caption:='Ok';
-      OnClick:=@OkButtonClick;
-    end;
-    
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      SetBounds(390,OkButton.Top,100,25);
-      Caption:=dlgCancel;
-      ModalResult := mrCancel;
-    end;
-    CancelControl:=CancelButton;
-  end;
-  RunParamsOptsDlgResize(nil);
+  Caption := dlgRunParameters;
+  SetupNotebook;
+  OkButton.Caption := lisOkBtn;
+  CancelButton.Caption := dlgCancel;
+  CancelControl := CancelButton;
+  FormResize(nil);
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
-// create the notebook
 begin
-  Notebook:=TNotebook.Create(Self);
-  with Notebook do begin
-    Name:='Notebook';
-    Parent:=Self;
-    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-    if PageCount>0 then
-      Pages[0]:=dlgRunOLocal 
-    else
-      Pages.Add(dlgRunOLocal);
-    Pages.Add(dlgRunOEnvironment);
-    PageIndex:=0;
+  with Notebook do
+  begin
+    Page[0].Caption := dlgRunOLocal;
+    Page[1].Caption := dlgRunOEnvironment;
+    PageIndex := 0;
   end;
 
   SetupLocalPage;
@@ -393,374 +362,122 @@ end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
 begin
-  HostApplicationGroupBox:=TGroupBox.Create(Self);
-  with HostApplicationGroupBox do begin
-    Name:='HostApplicationGroupBox';
-    Parent:=NoteBook.Page[0];
-    SetBounds(5,5,Width,55);
-    AnchorParallel(akRight,5,Parent);
-    Caption:=dlgHostApplication;
-  end;
-  
-  HostApplicationEdit:=TEdit.Create(Self);
-  with HostApplicationEdit do begin
-    Name:='HostApplicationEdit';
-    Parent:=HostApplicationGroupBox;
-    Left:=5;
-    Top:=2;
-  end;
-  
-  HostApplicationBrowseBtn:=TBitBtn.Create(Self);
-  with HostApplicationBrowseBtn do begin
-    Name:='HostApplicationBrowseBtn';
-    Parent:=HostApplicationGroupBox;
-    AnchorToCompanion(akLeft,2,HostApplicationEdit);
-    AnchorParallel(akTop,0,HostApplicationEdit);
-    AnchorParallel(akBottom,0,HostApplicationEdit);
-    AnchorParallel(akRight,5,Parent);
-    Anchors:=Anchors-[akLeft];
-    Width:=25;
-    Caption:='...';
-    HostApplicationBrowseBtn.OnClick:=@HostApplicationBrowseBtnClick;
-  end;
-  HostApplicationEdit.AnchorToNeighbour(akRight,2,HostApplicationBrowseBtn);
-  
-  CmdLineParametersGroupBox:=TGroupBox.Create(Self);
-  with CmdLineParametersGroupBox do begin
-    Name:='CmdLineParametersGroupBox';
-    Parent:=NoteBook.Page[0];
-    AnchorToCompanion(akTop,8,HostApplicationGroupBox);
-    Height:=55;
-    Caption:=dlgCommandLineParams;
-  end;
-  
-  CmdLineParametersEdit:=TEdit.Create(Self);
-  with CmdLineParametersEdit do begin
-    Name:='CmdLineParametersEdit';
-    Parent:=CmdLineParametersGroupBox;
-    SetBounds(5,5,Parent.ClientWidth-10,Height);
-    Anchors:=[akLeft,akTop,akRight];
-    Caption:='';
-  end;
-  
-  UseLaunchingApplicationGroupBox:=TGroupBox.Create(Self);
-  with UseLaunchingApplicationGroupBox do begin
-    Name:='UseLaunchingApplicationGroupBox';
-    Parent:=NoteBook.Page[0];
-    AnchorToCompanion(akTop,8,CmdLineParametersGroupBox);
-    Height:=80;
-  end;
-  
-  UseLaunchingApplicationCheckBox:=TCheckBox.Create(Self);
-  with UseLaunchingApplicationCheckBox do begin
-    Name:='UseLaunchingApplicationCheckBox';
-    Parent:=UseLaunchingApplicationGroupBox;
-    SetBounds(5,0,Width,Height);
-    AutoSize:=true;
-    Caption:=dlgUseLaunchingApp;
-  end;
-  
-  UseLaunchingApplicationComboBox:=TComboBox.Create(Self);
-  with UseLaunchingApplicationComboBox do begin
-    Name:='UseLaunchingApplicationComboBox';
-    Parent:=UseLaunchingApplicationGroupBox;
-    Left:=5;
-    AnchorToNeighbour(akTop,0,UseLaunchingApplicationCheckBox);
-    AnchorParallel(akRight,5,Parent);
-    with Items do begin
-      BeginUpdate;
-      Items.Add(DefaultLauncherApplication);
+  HostApplicationGroupBox.Caption   := dlgHostApplication;
+  HostApplicationBrowseBtn.Caption  := '...';
+  CmdLineParametersGroupBox.Caption := dlgCommandLineParams;
+  CmdLineParametersEdit.Clear;
+  UseLaunchingApplicationGroupBox.Caption := lisUseLaunchingApplicationGroupBox;
+  UseLaunchingApplicationCheckBox.Caption := dlgUseLaunchingApp;
+
+  with UseLaunchingApplicationComboBox.Items do
+  begin
+    BeginUpdate;
+    Add(DefaultLauncherApplication);
       {$IFNDEF win32}
-      Items.Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
-               +' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
+    Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
+      + ' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
       {$ENDIF}
-      EndUpdate;
-    end;
-  end;
-  
-  WorkingDirectoryGroupBox:=TGroupBox.Create(Self);
-  with WorkingDirectoryGroupBox do begin
-    Name:='WorkingDirectoryGroupBox';
-    Parent:=NoteBook.Page[0];
-    AnchorToCompanion(akTop,8,UseLaunchingApplicationGroupBox);
-    Height:=55;
-    Caption:=dlgROWorkingDirectory;
-  end;
-  
-  WorkingDirectoryEdit:=TEdit.Create(Self);
-  with WorkingDirectoryEdit do begin
-    Name:='WorkingDirectoryEdit';
-    Parent:=WorkingDirectoryGroupBox;
-    Left:=5;
-    Top:=3;
-  end;
-  
-  WorkingDirectoryBtn:=TBitBtn.Create(Self);
-  with WorkingDirectoryBtn do begin
-    Name:='WorkingDirectoryBtn';
-    Parent:=WorkingDirectoryGroupBox;
-    AnchorParallel(akTop,0,WorkingDirectoryEdit);
-    AnchorParallel(akBottom,0,WorkingDirectoryEdit);
-    AnchorParallel(akRight,5,Parent);
-    Anchors:=Anchors-[akLeft];
-    Width:=25;
-    Caption:='...';
-    WorkingDirectoryBtn.OnClick:=@WorkingDirectoryBtnClick;
-  end;
-  WorkingDirectoryEdit.AnchorToNeighbour(akRight,2,WorkingDirectoryBtn);
-  
-  DisplayGroupBox:=TGroupBox.Create(Self);
-  with DisplayGroupBox do begin
-    Name:='DisplayGroupBox';
-    Parent:=NoteBook.Page[0];
-    AnchorToCompanion(akTop,8,WorkingDirectoryGroupBox);
-    Height:=80;
-    Caption:=dlgRunODisplay;
-  end;
-  
-  UseDisplayCheckBox:=TCheckBox.Create(Self);
-  with UseDisplayCheckBox do begin
-    Name:='UseDisplayCheckBox';
-    Parent:=DisplayGroupBox;
-    SetBounds(5,3,Width,Height);
-    AutoSize:=true;
-    Caption:=dlgRunOUsedisplay;
-    Checked:=false;
+    EndUpdate;
   end;
 
-  DisplayEdit:=TEdit.Create(Self);
-  with DisplayEdit do begin
-    Name:='DisplayEdit';
-    Parent:=DisplayGroupBox;
-    AnchorToNeighbour(akTop,1,UseDisplayCheckBox);
-    AnchorParallel(akLeft,5,Parent);
-    AnchorParallel(akRight,5,Parent);
-  end;
+  WorkingDirectoryGroupBox.Caption := dlgROWorkingDirectory;
+  WorkingDirectoryBtn.Caption := '...';
+  DisplayGroupBox.Caption := dlgRunODisplay;
+  UseDisplayCheckBox.Caption := dlgRunOUsedisplay;
+  DisplayEdit.Parent := DisplayGroupBox;
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
-var w: integer;
 begin
-  w:=Self.ClientWidth-15;
-  
-  SystemVariablesGroupBox:=TGroupBox.Create(Self);
-  with SystemVariablesGroupBox do begin
-    Name:='SystemVariablesGroupBox';
-    Parent:=NoteBook.Page[1];
-    SetBounds(5,5,w,150);
-    Caption:=dlgRunOSystemVariables ;
-  end;
-  
-  SystemVariablesListView:=TListView.Create(Self);
-  with SystemVariablesListView do begin
-    Name:='SystemVariablesListView';
-    Parent:=SystemVariablesGroupBox;
+  SystemVariablesGroupBox.Caption := dlgRunOSystemVariables;
+
+  with SystemVariablesListView do
+  begin
     Columns.BeginUpdate;
-    Columns.Clear;
-    Columns.Add;
-    Columns.Add;
-    Columns[0].Caption:=dlgRunOVariable;
-    Columns[0].Width:=130;
-    Columns[1].Caption:=dlgRunOValue;
+    Columns[0].Caption := dlgRunOVariable;
+    Columns[1].Caption := dlgRunOValue;
     Columns.EndUpdate;
-    ViewStyle := vsReport;
-    SortType := stText;
-    Align:=alClient;
   end;
-  
-  UserOverridesGroupBox:=TGroupBox.Create(Self);
-  with UserOverridesGroupBox do begin
-    Name:='UserOverridesGroupBox';
-    Parent:=NoteBook.Page[1];
-    SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
-                 w,150);
-    Caption:=dlgRunOUserOverrides;
-    OnResize:=@UserOverridesGroupBoxResize;
-  end;
-  
-  UserOverridesListView:=TListView.Create(Self);
-  with UserOverridesListView do begin
-    Name:='UserOverridesListView';
-    Parent:=UserOverridesGroupBox;
-    Left:=5;
-    Top:=5;
-    Width:=Parent.ClientWidth-17;
-    Height:=Parent.ClientHeight-68;
+
+  UserOverridesGroupBox.Caption := dlgRunOUserOverrides;
+
+  with UserOverridesListView do
+  begin
     Columns.BeginUpdate;
-    Columns.Clear;
-    Columns.Add;
-    Columns.Add;
-    Columns[0].Caption:=dlgRunOVariable;
-    Columns[0].Width:=130;
-    Columns[1].Caption:=dlgRunOValue;
+    Columns[0].Caption := dlgRunOVariable;
+    Columns[1].Caption := dlgRunOValue;
     Columns.EndUpdate;
-    ViewStyle := vsReport;
-    SortType := stText;
   end;
 
-  UserOverridesAddButton:=TButton.Create(Self);
-  with UserOverridesAddButton do begin
-    Name:='UserOverridesAddButton';
-    Parent:=UserOverridesGroupBox;
-    Left:=5;
-    Top:=Parent.ClientHeight-Height-28;
-    Width:=100;
-    Caption:=dlgEdAdd;
-    OnClick:=@UserOverridesAddButtonClick;
-  end;
-
-  UserOverridesEditButton:=TButton.Create(Self);
-  with UserOverridesEditButton do begin
-    Name:='UserOverridesEditButton';
-    Parent:=UserOverridesGroupBox;
-    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
-    Top:=UserOverridesAddButton.Top;
-    Width:=100;
-    Caption:=dlgEdEdit;
-    OnClick:=@UserOverridesEditButtonClick;
-  end;
-
-  UserOverridesDeleteButton:=TButton.Create(Self);
-  with UserOverridesDeleteButton do begin
-    Name:='UserOverridesDeleteButton';
-    Parent:=UserOverridesGroupBox;
-    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
-    Top:=UserOverridesEditButton.Top;
-    Width:=100;
-    Caption:=dlgEdDelete;
-    OnClick:=@UserOverridesDeleteButtonClick;
-  end;
-
-  IncludeSystemVariablesCheckBox:=TCheckBox.Create(Self);
-  with IncludeSystemVariablesCheckBox do begin
-    Name:='IncludeSystemVariablesCheckBox';
-    Parent:=NoteBook.Page[1];
-    SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
-    Caption:=dlgIncludeSystemVariables ;
-    Checked:=false;
-    Enabled:=false;
-  end;
-end;
-
-procedure TRunParamsOptsDlg.ResizeNotebook;
-begin
-  with Notebook do begin
-    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-  end;
-
-  ResizeLocalPage;
-  ResizeEnvironmentPage;
-end;
-
-procedure TRunParamsOptsDlg.ResizeLocalPage;
-begin
-end;
-
-procedure TRunParamsOptsDlg.ResizeEnvironmentPage;
-var w: integer;
-begin
-  w:=Self.ClientWidth-15;
-
-  with SystemVariablesGroupBox do begin
-    SetBounds(5,5,w,150);
-  end;
-
-  with UserOverridesGroupBox do begin
-    SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
-                 w,150);
-  end;
-
-  with IncludeSystemVariablesCheckBox do begin
-    SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
-  end;
+  UserOverridesAddButton.Caption    := dlgEdAdd;
+  UserOverridesEditButton.Caption   := dlgEdEdit;
+  UserOverridesDeleteButton.Caption := dlgEdDelete;
+  IncludeSystemVariablesCheckBox.Caption := dlgIncludeSystemVariables;
 end;
 
 procedure TRunParamsOptsDlg.OkButtonClick(Sender: TObject);
 begin
   SaveToOptions;
-  ModalResult:=mrOk;
+  ModalResult := mrOk;
+end;
+
+procedure TRunParamsOptsDlg.FormResize(Sender: TObject);
+begin
+  SystemVariablesGroupBox.Height := (Notebook.Page[1].Height - 37) div 2;
+  UserOverridesGroupBox.Height   := SystemVariablesGroupBox.Height;
+
+  SystemVariablesListView.Column[0].Width := SystemVariablesListView.Width div 2;
+  SystemVariablesListView.Column[1].Width := SystemVariablesListView.Column[0].Width;
+
+  UserOverridesListView.Column[0].Width := UserOverridesListView.Width div 2;
+  UserOverridesListView.Column[1].Width := UserOverridesListView.Column[0].Width;
 end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);
-var OpenDialog: TOpenDialog;
+var
+  OpenDialog: TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Self);
-  with OpenDialog do begin
+  OpenDialog := TOpenDialog.Create(Self);
+  with OpenDialog do
+  begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    if HostApplicationEdit.Text<>'' then
-      OpenDialog.InitialDir:=ExtractFilePath(HostApplicationEdit.Text);
-    OpenDialog.Filename:=HostApplicationEdit.Text;
-    if OpenDialog.Execute then begin
-      if (FileIsExecutable(OpenDialog.Filename))
-      or (MessageDlg(lisRunParamsFileNotExecutable,
-          Format(lisRunParamsTheHostApplicationIsNotExecutable, ['"',
-            OpenDialog.Filename, '"']),
-          mtWarning,[mbCancel,mbIgnore],0)=mrIgnore) then
+    if HostApplicationEdit.Text <> '' then
+      OpenDialog.InitialDir := ExtractFilePath(HostApplicationEdit.Text);
+    OpenDialog.Filename := HostApplicationEdit.Text;
+    if OpenDialog.Execute then
+    begin
+      if (FileIsExecutable(OpenDialog.Filename)) or
+        (MessageDlg(lisRunParamsFileNotExecutable,
+        Format(lisRunParamsTheHostApplicationIsNotExecutable,
+        ['"', OpenDialog.Filename, '"']), mtWarning, [mbCancel, mbIgnore], 0) =
+        mrIgnore) then
       begin
-        HostApplicationEdit.Text:=OpenDialog.Filename;
+        HostApplicationEdit.Text := OpenDialog.Filename;
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   end;
 end;
 
-procedure TRunParamsOptsDlg.RunParamsOptsDlgResize(Sender: TObject);
-begin
-  ResizeNotebook;
-
-  with OkButton do begin
-    SetBounds(270,Self.ClientHeight-40,100,25);
-  end;
-
-  with CancelButton do begin
-    SetBounds(390,OkButton.Top,100,25);
-  end;
-end;
-
-procedure TRunParamsOptsDlg.UserOverridesGroupBoxResize(Sender: TObject);
-begin
-  with UserOverridesAddButton do begin
-    Left:=5;
-    Top:=Parent.ClientHeight-Height-5;
-    Width:=100;
-  end;
-
-  with UserOverridesEditButton do begin
-    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
-    Top:=UserOverridesAddButton.Top;
-    Width:=100;
-  end;
-
-  with UserOverridesDeleteButton do begin
-    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
-    Top:=UserOverridesEditButton.Top;
-    Width:=100;
-  end;
-
-  with UserOverridesListView do begin
-    Left:=0;
-    Top:=0;
-    Width:=Parent.ClientWidth-2*Left;
-    Height:=UserOverridesAddButton.Top-Top-5;
-  end;
-end;
-
 procedure TRunParamsOptsDlg.WorkingDirectoryBtnClick(Sender: TObject);
-var OpenDialog: TOpenDialog;
+var
+  OpenDialog: TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Self);
-  with OpenDialog do begin
+  OpenDialog := TOpenDialog.Create(Self);
+  with OpenDialog do
+  begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    if WorkingDirectoryEdit.Text<>'' then
-      OpenDialog.InitialDir:=ExtractFilePath(WorkingDirectoryEdit.Text);
-    OpenDialog.Filename:=HostApplicationEdit.Text;
-    if OpenDialog.Execute then begin
-      if (DirPathExists(OpenDialog.Filename))
-      or (MessageDlg(dlgDirectoryDoesNotExist ,
-          dlgTheDirectory +OpenDialog.Filename+dlgDoesNotExist ,
-          mtWarning,[mbIgnore,mbCancel],0)=mrIgnore) then
+    if WorkingDirectoryEdit.Text <> '' then
+      OpenDialog.InitialDir := ExtractFilePath(WorkingDirectoryEdit.Text);
+    OpenDialog.Filename := HostApplicationEdit.Text;
+    if OpenDialog.Execute then
+    begin
+      if (DirPathExists(OpenDialog.Filename)) or
+        (MessageDlg(dlgDirectoryDoesNotExist, dlgTheDirectory +
+        OpenDialog.Filename + dlgDoesNotExist, mtWarning, [mbIgnore, mbCancel], 0) =
+        mrIgnore) then
       begin
-        WorkingDirectoryEdit.Text:=OpenDialog.Filename;
+        WorkingDirectoryEdit.Text := OpenDialog.Filename;
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -770,21 +487,25 @@ end;
 procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);
 var
   Variable, Value: string;
-  NewLI, SelLI: TListItem;
+  NewLI, SelLI:    TListItem;
 begin
-  SelLI:=SystemVariablesListView.Selected;
-  if SelLI<>nil then begin
-    Variable:=SelLI.Caption;
-    Value:=SelLI.SubItems[0];
-  end else begin
-    Variable:='';
-    Value:='';
+  SelLI := SystemVariablesListView.Selected;
+  if SelLI <> nil then
+  begin
+    Variable := SelLI.Caption;
+    Value    := SelLI.SubItems[0];
+  end
+  else
+  begin
+    Variable := '';
+    Value    := '';
   end;
-  if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
-    NewLI:=UserOverridesListView.Items.Add;
-    NewLI.Caption:=Variable;
+  if ShowSysVarUserOverrideDialog(Variable, Value) = mrOk then
+  begin
+    NewLI := UserOverridesListView.Items.Add;
+    NewLI.Caption := Variable;
     NewLI.SubItems.Add(Value);
-    UserOverridesListView.Selected:=NewLI;
+    UserOverridesListView.Selected := NewLI;
   end;
 end;
 
@@ -793,114 +514,123 @@ var
   Variable, Value: string;
   SelLI: TListItem;
 begin
-  SelLI:=UserOverridesListView.Selected;
-  if SelLI=nil then exit;
-  Variable:=SelLI.Caption;
-  Value:=SelLI.SubItems[0];
-  if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
-    SelLI.Caption:=Variable;
-    SelLI.SubItems[0]:=Value;
+  SelLI := UserOverridesListView.Selected;
+  if SelLI = nil then
+    exit;
+  Variable := SelLI.Caption;
+  Value    := SelLI.SubItems[0];
+  if ShowSysVarUserOverrideDialog(Variable, Value) = mrOk then
+  begin
+    SelLI.Caption     := Variable;
+    SelLI.SubItems[0] := Value;
   end;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesDeleteButtonClick(Sender: TObject);
 var
-  SelLI: TListItem;
+  SelLI:    TListItem;
   OldIndex: integer;
 begin
-  SelLI:=UserOverridesListView.Selected;
-  if SelLI<>nil then begin
-    OldIndex:=SelLI.Index;
+  SelLI := UserOverridesListView.Selected;
+  if SelLI <> nil then
+  begin
+    OldIndex := SelLI.Index;
     SelLI.Delete;
-    if OldIndex=UserOverridesListView.Items.Count then
-      dec(OldIndex);
-    if OldIndex>=0 then
-      UserOverridesListView.Selected:=UserOverridesListView.Items[OldIndex];
+    if OldIndex = UserOverridesListView.Items.Count then
+      Dec(OldIndex);
+    if OldIndex >= 0 then
+      UserOverridesListView.Selected := UserOverridesListView.Items[OldIndex];
   end;
 end;
 
 procedure TRunParamsOptsDlg.SaveToOptions;
 begin
   // local
-  fOptions.HostApplicationFilename:=Trim(HostApplicationEdit.Text);
-  fOptions.CmdLineParams:=Trim(CmdLineParametersEdit.Text);
-  fOptions.UseLaunchingApplication:=UseLaunchingApplicationCheckBox.Checked;
-  fOptions.LaunchingApplicationPathPlusParams:=
-                                     Trim(UseLaunchingApplicationComboBox.Text);
-  fOptions.WorkingDirectory:=Trim(WorkingDirectoryEdit.Text);
-  fOptions.UseDisplay:=UseDisplayCheckBox.Checked;
-  fOptions.Display:=Trim(DisplayEdit.Text);
-  
+  fOptions.HostApplicationFilename := Trim(HostApplicationEdit.Text);
+  fOptions.CmdLineParams := Trim(CmdLineParametersEdit.Text);
+  fOptions.UseLaunchingApplication := UseLaunchingApplicationCheckBox.Checked;
+  fOptions.LaunchingApplicationPathPlusParams :=
+    Trim(UseLaunchingApplicationComboBox.Text);
+  fOptions.WorkingDirectory := Trim(WorkingDirectoryEdit.Text);
+  fOptions.UseDisplay := UseDisplayCheckBox.Checked;
+  fOptions.Display    := Trim(DisplayEdit.Text);
+
   // environment
   SaveUserOverrides;
 
-  fOptions.IncludeSystemVariables:=IncludeSystemVariablesCheckBox.Checked;
+  fOptions.IncludeSystemVariables := IncludeSystemVariablesCheckBox.Checked;
 end;
 
 procedure TRunParamsOptsDlg.SaveUserOverrides;
-var i: integer;
+var
+  i: integer;
 begin
   Options.UserOverrides.Clear;
-  for i:=0 to UserOverridesListView.Items.Count-1 do begin
-    Options.UserOverrides.Values[UserOverridesListView.Items[i].Caption]:=
+  for i := 0 to UserOverridesListView.Items.Count - 1 do
+  begin
+    Options.UserOverrides.Values[UserOverridesListView.Items[i].Caption] :=
       UserOverridesListView.Items[i].SubItems[0];
   end;
 end;
 
-procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox;
-  AText: AnsiString);
-var a:integer;
+procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
+var
+  a: integer;
 begin
-  a:=AComboBox.Items.IndexOf(AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
+  a := AComboBox.Items.IndexOf(AText);
+  if a >= 0 then
+    AComboBox.ItemIndex := a
+  else
+  begin
     AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+    AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);
   end;
 end;
 
 procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
 begin
-  fOptions:=NewOptions;
-  
+  fOptions := NewOptions;
+
   // local
-  HostApplicationEdit.Text:=fOptions.HostApplicationFilename;
-  CmdLineParametersEdit.Text:=fOptions.CmdLineParams;
-  UseLaunchingApplicationCheckBox.Checked:=fOptions.UseLaunchingApplication;
+  HostApplicationEdit.Text   := fOptions.HostApplicationFilename;
+  CmdLineParametersEdit.Text := fOptions.CmdLineParams;
+  UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
   SetComboBoxText(UseLaunchingApplicationComboBox,
-                  fOptions.LaunchingApplicationPathPlusParams);
-  WorkingDirectoryEdit.Text:=fOptions.WorkingDirectory;
-  UseDisplayCheckBox.Checked:=fOptions.UseDisplay;
-  DisplayEdit.Text:=fOptions.Display;
-  
+    fOptions.LaunchingApplicationPathPlusParams);
+  WorkingDirectoryEdit.Text := fOptions.WorkingDirectory;
+  UseDisplayCheckBox.Checked := fOptions.UseDisplay;
+  DisplayEdit.Text := fOptions.Display;
+
   // environment
   FillSystemVariablesListView;
   FillUserOverridesListView;
-  
-  IncludeSystemVariablesCheckBox.Checked:=fOptions.IncludeSystemVariables;
+
+  IncludeSystemVariablesCheckBox.Checked := fOptions.IncludeSystemVariables;
 end;
 
 procedure TRunParamsOptsDlg.FillListView(ListView: TListView; sl: TStringList);
 var
   i: integer;
   Variable, Value: string;
-Begin
-  with ListView.Items do begin
+begin
+  with ListView.Items do
+  begin
     //BeginUpdate;
-    for i:=0 to sl.Count-1 do begin
-      Variable:=sl.Names[i];
-      Value:=sl.Values[Variable];
-      if Count<=i then begin
+    for i := 0 to sl.Count - 1 do
+    begin
+      Variable := sl.Names[i];
+      Value    := sl.Values[Variable];
+      if Count <= i then
+      begin
         // add line to listview
         Add;
         Item[i].SubItems.Add('');
       end;
-      Item[i].Caption:=Variable;
-      Item[i].SubItems[0]:=Value;
+      Item[i].Caption     := Variable;
+      Item[i].SubItems[0] := Value;
     end;
-    while Count>sl.Count do
-      Delete(Count-1);
+    while Count > sl.Count do
+      Delete(Count - 1);
     //EndUpdate;
   end;
 end;
@@ -908,16 +638,18 @@ end;
 procedure TRunParamsOptsDlg.FillSystemVariablesListView;
 var
   EnvList: TStringList;
-Begin
-  EnvList:=EnvironmentAsStringList;
-  FillListView(SystemVariablesListView,EnvList);
+begin
+  EnvList := EnvironmentAsStringList;
+  FillListView(SystemVariablesListView, EnvList);
   EnvList.Free;
 end;
 
 procedure TRunParamsOptsDlg.FillUserOverridesListView;
-Begin
-  FillListView(UserOverridesListView,Options.UserOverrides);
+begin
+  FillListView(UserOverridesListView, Options.UserOverrides);
 end;
 
+initialization
+  {$I runparamsopts.lrs}
 
 end.
