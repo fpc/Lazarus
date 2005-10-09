@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [deb] <FPCSrcDir>"
+Usage="Usage: $0 [nodocs] [deb] <FPCSrcDir> [Starting Compiler]"
 
 WithDOCS=yes
 if [ "x$1" = "xnodocs" ]; then
@@ -25,6 +25,11 @@ shift
 if [ "x$FPCSrcDir" = "x" ]; then
   echo $Usage
   exit -1
+fi
+
+STARTPP=$1
+if [ -n "$STARTPP" ]; then
+  export STARTPP
 fi
 
 LazRelease=`date +%Y%m%d`
@@ -65,7 +70,7 @@ fi
 perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
 
 # create a source tar.gz
-cd $TmpDir
+cd $TmpDir/..
 tar -czf ~/rpmbuild/SOURCES/fpc-2.1.1-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir

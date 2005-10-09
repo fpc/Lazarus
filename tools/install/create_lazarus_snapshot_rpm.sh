@@ -25,8 +25,6 @@ if [ ! -d $LazSrcDir/.svn ]; then
   exit -1
 fi
 
-
-
 Date=`date +%Y%m%d`
 # get fpc snapshot rpm
 FPCRPM=~/rpmbuild/RPMS/i586/fpc-2.1.1-$Date.i586.rpm
@@ -54,11 +52,15 @@ cd -
 # create a temporary copy of the lazarus sources for packaging
 LazVersion=0.9.11
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
-TmpDir=/tmp/lazarus
+TmpDir=/tmp/`whoami`/lazarus
 
 rm -rf $TmpDir
 echo "extracting Lazarus source from local svn ..."
 svn export $LazSrcDir $TmpDir
+if [ ! -e ../svn2revisioninc ]; then
+  make -C ../.. tools OPT="-n @$FPCCfg"
+fi
+../svn2revisioninc $LazSrcDir $TmpDir/ide/revision.inc
 
 # create a source tar.gz
 cd $TmpDir/..
