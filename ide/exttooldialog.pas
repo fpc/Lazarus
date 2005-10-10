@@ -516,6 +516,7 @@ begin
       SetBounds(Self.ClientWidth-200, Self.ClientHeight-40,80,25);
       Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
+      Default:=true;
       Visible:=true; 
     end;
     
@@ -526,6 +527,7 @@ begin
       SetBounds(Self.ClientWidth-100, Self.ClientHeight-40,80,25);
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
+      Cancel:=true;
       Visible:=true; 
     end;
   end;    
