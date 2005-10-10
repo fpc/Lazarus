@@ -80,7 +80,8 @@ type
     procedure RefreshFieldsListBox(SelectAllNew: boolean);
   public
     { public declarations }
-    constructor Create(AOwner: TComponent; ADataset: TDataset; ADesigner: TComponentEditorDesigner);
+    constructor Create(AOwner: TComponent; ADataset: TDataset;
+      ADesigner: TComponentEditorDesigner); reintroduce;
     property Designer: TComponentEditorDesigner read FDesigner write FDesigner;
     property ComponentEditor: TFieldsComponentEditor write FComponentEditor;
   end;

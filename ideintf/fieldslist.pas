@@ -52,7 +52,7 @@ type
   public
     { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
-      ADesigner: TComponentEditorDesigner);
+      ADesigner: TComponentEditorDesigner); reintroduce;
   end;
 
 var
