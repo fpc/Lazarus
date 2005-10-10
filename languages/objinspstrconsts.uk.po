@@ -1,0 +1,668 @@
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr " Малюнки "
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr " Властивості елементу "
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr " Елементи "
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr " Обраний малюнок "
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr "%s: Вже зареєстрований "
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr "%s: Не зареєстрований"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr "%u елементів обрано"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Додати"
+
+#: objinspstrconsts:oistdactdatasetcancelheadline
+msgid "&Cancel"
+msgstr "&Відмінити"
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "&Зміст"
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
+msgstr "&Копіювати"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Видалити"
+
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Редагувати"
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "&Перший"
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "&Допомога про підказки"
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "&Вставити"
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "&Останній"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr "&Завантажити"
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "&Наступний"
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr "&Гаразд"
+
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr "&Відкрити..."
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr "&Вставити"
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "&Попередній"
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "&Перезавантажити"
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "&Зберегти"
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "&Зміст Шукати"
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Відкотити"
+
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr "&Вверх"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Все)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Невідомий)"
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr "Дія"
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr "Редактор списку дій"
+
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr "Додати"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr "Додати..."
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr "Додати новий пункт"
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
+msgstr "Нова сторінка"
+
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "Додати до улюблених"
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr "Все"
+
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr "Всі файли (*.*)|*.*"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr "Масив"
+
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr "Браузер %s%s%s недоступний."
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr "Браузер %s%s%s не знайдено"
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr "О&чистити"
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr "Знехтувати"
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr "Категорія"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr "Символ"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr "Клас"
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr "Очистити"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr "Очистити малюнок"
+
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Обрати колір"
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Підтвердити видалення"
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr "Підтверджуєте очистку всіх зображень' ?"
+
+#: objinspstrconsts:oiscopy
+msgid "Copy"
+msgstr "Копіювати"
+
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Створити подію за замовчуванням"
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr ""
+
+#: objinspstrconsts:oiscut
+msgid "Cut"
+msgstr "Вирізати"
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "База даних"
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
+msgstr ""
+
+#: objinspstrconsts:oisdelete
+msgid "Delete"
+msgstr "Видалити"
+
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "Видалити дію"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "Видалити елемент %s%s%s?"
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr "Видалити сторінку"
+
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr "Видалити елемент %d \"%s\"?"
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr "Діалог"
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr "&Вниз"
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr "&Вихід"
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
+msgstr "Редагувати"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Редагувати список дій..."
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "Перечислення"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr "Помилка"
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Помилка завантаження зображення"
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "Помилка завантаження зображення %s%s%s:%s%s"
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr "Помилка процесу виконання %s%s%s:%s%s"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Події"
+
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr "Вихід"
+
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr "Улюблені"
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr "Файл"
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr "Перший"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr "Дійсний"
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr "Обрати шрифт"
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr "Допомога"
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "Допомога Зміст"
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "Довідкова база %s%s%s не знайшла переглядача для сторінки довідки типу %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Довідкову базу %s%s%s не знайдено"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Контекст довідки %s не знайдений в базі даних %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Контекст довідки %s не знайдений."
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr "Ключ довідки %s%s%s не знайдений в базі даних %s%s%s"
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr "Ключа довідки %s%s%s не знайдено"
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr "Елемент довідки %s%s%s не має довідкової бази"
+
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Довідка про допомогу"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr "Індекс малюнка"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr "Редактор списку малюнків"
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr "Вставити"
+
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr "Вставити сторінку"
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr "Ціле64"
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr "Ціле"
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr "Інтерфейс"
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Мітка"
+
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr "Останній"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Редактор ListView"
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Діалог завантаження зображення"
+
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr "Завантажити малюнок"
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "Метод"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr "Змінити пункт"
+
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr "Пересунути Вниз"
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr "Пересунути Вверх"
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr "Пересунути сторінку вліво"
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr "Пересунути сторінку вправо"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Новий"
+
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
+msgstr "Нова Дія"
+
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "Нова Стандартна Дія"
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr "Наступний"
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "Не знайдено браузера HTML.%Визначте його в Довідка->Настроїти довідку->Переглядачі"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Не знайдено допомоги до стрічки %d, колонки %d з %s."
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr "Об'єкт"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Інспектор об'єктів"
+
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr "Відкрити"
+
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr "Опції"
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "В&ідправити"
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "Панель Описи"
+
+#: objinspstrconsts:oispaste
+msgid "Paste"
+msgstr "Вставити"
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr "Відправити"
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr "Попередній"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Властивості"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr "Запис"
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Перезавантажити"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "Прибрати з Улюблених"
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr "&Зберегти як ..."
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr "Зберегти як"
+
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr "Зберегти малюнок"
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "&Зберегти Все"
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr "&Обрати Колір"
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr "&Обрати Шрифт"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Обрати Все"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Обрати файл"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr "Встановити"
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr "Встановити величину за замовчуванням"
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr "Встановити за замовчуванням: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "Показати Дерево Компонентів"
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr "Показати Хінти"
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
+msgstr "Показати 'сторінку'..."
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "Впорядкування"
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr ""
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr "Стрічка"
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr "Редактор StringGrid"
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr "Редактор StringGrid ..."
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Діалог Введення Стрічок"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr "Піделемент"
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr "Довідкова база %s%s%s не змогла знайти файл %s%s%s."
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr "Макрос %s в BrowserParams має бути замінений на URL."
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "Панель інструментів"
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Пошук по змісту"
+
+#: objinspstrconsts:oisundo
+msgid "Undo"
+msgstr "Відкотити"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr "Невідомий"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "Значення:"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr ""
+
