@@ -69,7 +69,7 @@ type
     {$IFDEF SYN_LAZARUS}rsDirective, rsDirectiveAsm,{$ENDIF}
     rsProperty, rsUnKnown);
     
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   TPascalCodeFoldBlockType = (cfbtNone, cfbtBeginEnd);
   {$ENDIF}
 
@@ -230,7 +230,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType
                                 ): TSynCustomCodeFoldBlock;
     {$ENDIF}
@@ -262,7 +262,7 @@ type
     procedure EnumUserSettings(settings: TStrings); override;
 
     //code fold
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     function TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
     {$ENDIF}
   published
@@ -577,8 +577,8 @@ begin
     then begin
       Result := tkKey;
       fRange := rsUnknown;
-      {$IFDEF EnableCodeFold}
-      //debugln('TSynPasSyn.Func23 ',dbgs(ord(TopPascalCodeFoldBlockType)));
+      {$IFDEF SYN_LAZARUS}
+      //debugln('TSynPasSyn.Func23 END ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber));
       //CodeFoldRange.WriteDebugReport;
       if TopPascalCodeFoldBlockType in [cfbtBeginEnd] then
         EndCodeFoldBlock;
@@ -646,9 +646,9 @@ function TSynPasSyn.Func37: TtkTokenKind;
 begin
   if KeyComp('Begin') then begin
     Result := tkKey;
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     StartPascalCodeFoldBlock(cfbtBeginEnd);
-    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)));
+    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
     {$ENDIF}
   end else
     Result := tkIdentifier;
@@ -1139,9 +1139,7 @@ begin
   fLine := NewValue;
   fLineLen:=length(fLine);
   Run := 1;
-  {$IFDEF EnableCodeFold}
   Inherited SetLine(NewValue,LineNumber);
-  {$ENDIF}
   {$ELSE}
   fLine := PChar(NewValue);
   Run := 0;
@@ -1600,7 +1598,7 @@ end;
 
 function TSynPasSyn.GetRange: Pointer;
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrInt(fRange));
@@ -1613,7 +1611,7 @@ end;
 
 procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   inherited SetRange(Value);
   fRange := TRangeState(PtrInt(CodeFoldRange.RangeType));
   {$ELSE}
@@ -1624,7 +1622,7 @@ end;
 procedure TSynPasSyn.ResetRange;
 begin
   fRange:= rsUnknown;
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   Inherited ResetRange;
   {$ENDIF}
 end;
@@ -1653,7 +1651,7 @@ begin
   end;
 end;
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 function TSynPasSyn.TopPascalCodeFoldBlockType: TPascalCodeFoldBlockType;
 begin
   Result:=TPascalCodeFoldBlockType(PtrInt(inherited TopCodeFoldBlockType));
@@ -1807,7 +1805,7 @@ end;
 function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
 begin
   Result := inherited GetCapabilities + [hcUserSettings
-                                 {$IFDEF EnableCodeFold},hcCodeFolding{$ENDIF}];
+                                    {$IFDEF SYN_LAZARUS},hcCodeFolding{$ENDIF}];
 end;
 
 {begin}                                                                         //mh 2000-10-08

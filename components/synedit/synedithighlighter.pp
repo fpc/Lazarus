@@ -109,14 +109,14 @@ type
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
     hcRegistry      // supports LoadFrom/SaveToRegistry
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     ,hcCodeFolding  // supports codefolding
     {$ENDIF}
   );
 
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
   
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   { TSynCustomCodeFoldBlock }
 
   TSynCustomCodeFoldBlock = class
@@ -172,7 +172,7 @@ const
   SYN_ATTR_SYMBOL            =   5;                                             //mh 2001-09-13
 
 type
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   TSynCustomHighlighterRanges = class;
   {$ENDIF}
 
@@ -182,7 +182,7 @@ type
   private
     fAttributes: TStringList;
     fAttrChangeHooks: TSynNotifyEventChain;
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     FCodeFoldRange: TSynCustomHighlighterRange;
     FCapabilities: TSynHighlighterCapabilities;
     FMinimumCodeFoldBlockLevel: integer;
@@ -194,7 +194,7 @@ type
   protected
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     fRanges: TSynCustomHighlighterRanges;
     {$ENDIF}
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
@@ -211,7 +211,7 @@ type
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     // code fold - only valid if hcCodeFolding in Capabilities
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
@@ -246,7 +246,8 @@ type
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); virtual; {$IFNDEF EnableCodeFold}abstract;{$ENDIF}
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+                      LineNumber:Integer); virtual; {$IFNDEF SYN_LAZARUS}abstract;{$ENDIF}
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;
@@ -261,20 +262,16 @@ type
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
 
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     property MinimumCodeFoldBlockLevel: integer read FMinimumCodeFoldBlockLevel;
     function CurrentCodeFoldBlockLevel: integer;
-    {$ELSE}
-    procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
-                             FoldIndex: integer; FoldType: TSynEditCodeFoldType); virtual;
-    procedure InitCodeFold(Lines: TStrings); virtual;
     {$ENDIF}
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
       read GetAttribute;
     property Capabilities: TSynHighlighterCapabilities
-       read {$IFDEF EnableCodeFold}FCapabilities{$ELSE}GetCapabilities{$ENDIF};
+       read {$IFDEF SYN_LAZARUS}FCapabilities{$ELSE}GetCapabilities{$ENDIF};
     property SampleSource: string read GetSampleSource write SetSampleSource;
     property CommentAttribute: TSynHighlighterAttributes
       index SYN_ATTR_COMMENT read GetDefaultAttribute;
@@ -296,7 +293,7 @@ type
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
   { TSynCustomHighlighterRanges }
 
   TSynCustomHighlighterRanges = class
@@ -336,7 +333,7 @@ type
   function GetPlaceableHighlighters: TSynHighlighterList;
 {$ENDIF}
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
 function AllocateHighlighterRanges(
      HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
@@ -438,7 +435,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
 var
   Range1: TSynCustomHighlighterRange;
@@ -835,7 +832,7 @@ end;
 
 constructor TSynCustomHighlighter.Create(AOwner: TComponent);
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   FCapabilities:=GetCapabilities;
   {$ENDIF}
   inherited Create(AOwner);
@@ -845,7 +842,7 @@ begin
   fAttributes.Sorted := TRUE;
   fAttrChangeHooks := TSynNotifyEventChain.CreateEx(Self);
   fDefaultFilter := '';
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   if hcCodeFolding in Capabilities then begin
     FCodeFoldRange:=GetRangeClass.Create(nil);
     fRanges:=AllocateHighlighterRanges(TSynCustomHighlighterClass(ClassType));
@@ -855,7 +852,7 @@ end;
 
 destructor TSynCustomHighlighter.Destroy;
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   if hcCodeFolding in Capabilities then begin
     FreeAndNil(FCodeFoldRange);
     fRanges.Release;
@@ -1076,7 +1073,7 @@ end;
 function TSynCustomHighlighter.GetRange: pointer;
 begin
   Result := nil;
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     // FCodeFoldRange is the working range and changed steadily
     // => return a fixed copy of the current CodeFoldRange instance,
@@ -1115,7 +1112,7 @@ end;
 
 procedure TSynCustomHighlighter.ResetRange;
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Clear;
   end;
@@ -1138,7 +1135,7 @@ end;
 
 procedure TSynCustomHighlighter.SetRange(Value: Pointer);
 begin
-  {$IFDEF EnableCodeFold}
+  {$IFDEF SYN_LAZARUS}
   if (hcCodeFolding in Capabilities) then begin
     FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
     FMinimumCodeFoldBlockLevel:=FCodeFoldRange.CodeFoldStackSize;
@@ -1172,7 +1169,7 @@ begin
   end;
 end;
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 procedure TSynCustomHighlighter.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
@@ -1183,7 +1180,10 @@ end;
 
 function TSynCustomHighlighter.CurrentCodeFoldBlockLevel: integer;
 begin
-  Result:=CodeFoldRange.CodeFoldStackSize;
+  if CodeFoldRange<>nil then
+    Result:=CodeFoldRange.CodeFoldStackSize
+  else
+    Result:=0;
 end;
 
 function TSynCustomHighlighter.GetRangeClass: TSynCustomHighlighterRangeClass;
@@ -1193,7 +1193,7 @@ end;
 
 function TSynCustomHighlighter.TopCodeFoldBlockType: Pointer;
 begin
-  if CodeFoldRange.CodeFoldStackSize>0 then
+  if (CodeFoldRange<>nil) and (CodeFoldRange.CodeFoldStackSize>0) then
     Result:=CodeFoldRange.Top.BlockType
   else
     Result:=nil;
@@ -1224,7 +1224,7 @@ end;
 
 {$IFNDEF SYN_CPPB_1}
 
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 { TSynCustomCodeFoldBlock }
 
 function TSynCustomCodeFoldBlock.Compare(Block: TSynCustomCodeFoldBlock

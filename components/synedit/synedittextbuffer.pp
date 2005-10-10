@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
-  FPCAdds, LCLIntf, LCLType,
+  LCLProc, FPCAdds, LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -537,6 +537,12 @@ begin
           fRange := NullRange;
           fExpandedLength := -1;
           fFlags := [sfExpandedLengthUnknown];
+          {$IFDEF SYN_LAZARUS}
+          fFolded:=false;
+          fFoldMinLevel:=0;
+          fFoldEndLevel:=0;
+          fFoldType:=cfNone;
+          {$ENDIF}
         end;
         Inc(fCount);
       end;
@@ -729,6 +735,7 @@ begin
     Result := fList^[Index].fFolded
   else
     Result := false;
+  //if Result then debugln('TSynEditStringList.GetFolded Index=',dbgs(Index));
 end;
 
 procedure TSynEditStringList.SetFoldEndLevel(Index: integer;
@@ -754,6 +761,7 @@ end;
 
 procedure TSynEditStringList.SetFolded(Index: integer; const AValue: boolean);
 begin
+  //if AValue then RaiseGDBException('');
   if (Index >= 0) and (Index < fCount) then
     fList^[Index].fFolded := AValue;
 end;

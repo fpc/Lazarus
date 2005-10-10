@@ -1910,7 +1910,7 @@ begin
       writeln('');
       {$ENDIF}
       FEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(FEditor.Lines);
+      FCodeBuffer.AssignTo(FEditor.Lines,true);
       FEditor.EndUpdate;
     end;
     if IsActiveOnNoteBook then SourceNoteBook.UpdateStatusBar;
@@ -2000,8 +2000,7 @@ writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLo
     FEditor.EndUndoBlock;
     FEditor.EndUpdate;
   end else begin
-    if Sender.IsEqual(FEditor.Lines) then exit;
-    Sender.AssignTo(FEditor.Lines);
+    Sender.AssignTo(FEditor.Lines,false);
   end;
 end;
 

@@ -196,6 +196,7 @@ type
     fCtrlMouseLinks: Boolean;
     fUndoAfterSave: Boolean;
     fUseSyntaxHighlight: Boolean;
+    FUseCodeFolding: Boolean;
     FCopyWordAtCursorOnCopyNone: Boolean;
     FShowGutterHints: Boolean;
     fBlockIndent: Integer;
@@ -278,6 +279,8 @@ type
       read fFindTextAtCursor write fFindTextAtCursor default True;
     property UseSyntaxHighlight: Boolean
       read fUseSyntaxHighlight write fUseSyntaxHighlight default True;
+    property UseCodeFolding: Boolean
+      read FUseCodeFolding write FUseCodeFolding default True;
     property CopyWordAtCursorOnCopyNone: Boolean
       read FCopyWordAtCursorOnCopyNone write FCopyWordAtCursorOnCopyNone;
     property ShowGutterHints: Boolean read FShowGutterHints
@@ -1286,6 +1289,9 @@ begin
     fUseSyntaxHighlight :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/UseSyntaxHighlight', True);
+    FUseCodeFolding :=
+      XMLConfig.GetValue(
+      'EditorOptions/General/Editor/UseCodeFolding', False);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
     fUndoLimit :=
@@ -1431,6 +1437,8 @@ begin
       , fFindTextAtCursor, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseSyntaxHighlight'
       , fUseSyntaxHighlight, True);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UseCodeFolding'
+      , FUseCodeFolding, False);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
       , fBlockIndent, 2);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoLimit'
@@ -2270,6 +2278,7 @@ begin
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
+  ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
   ASynEdit.RightEdge := fRightMargin;
@@ -2294,6 +2303,7 @@ begin
   // Display options
   fVisibleGutter := ASynEdit.Gutter.Visible;
   fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
+  FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
   fGutterColor   := ASynEdit.Gutter.Color;
   fGutterWidth   := ASynEdit.Gutter.Width;
   fRightMargin   := ASynEdit.RightEdge;
@@ -2301,7 +2311,6 @@ begin
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
   fUndoLimit     := ASynEdit.MaxUndo;
-  // XXX:  update all checkboxes, comboboxes...
 end;
 
 procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(
@@ -3439,6 +3448,7 @@ begin
     Items.Add(dlgDoubleClickLine);
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgUseSyntaxHighlight);
+    Items.Add(dlgUseCodeFolding);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
     Items.Add(dlgHomeKeyJumpsToNearestStart);
 
@@ -3480,6 +3490,7 @@ begin
       eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgFindTextatCursor)] := EditorOpts.FindTextAtCursor;
     Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := EditorOpts.UseSyntaxHighlight;
+    Checked[Items.IndexOf(dlgUseCodeFolding)] := EditorOpts.UseCodeFolding;
     Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] :=
       EditorOpts.CopyWordAtCursorOnCopyNone;
     Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] :=
@@ -3726,6 +3737,8 @@ begin
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgFindTextatCursor);
   EditorOpts.UseSyntaxHighlight :=
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgUseSyntaxHighlight);
+  EditorOpts.UseCodeFolding :=
+    CheckGroupItemChecked(EditorOptionsGroupBox,dlgUseCodeFolding);
   EditorOpts.CtrlMouseLinks :=
     CheckGroupItemChecked(EditorOptionsGroupBox,dlgMouseLinks);
   i := StrToIntDef(UndoLimitComboBox.Text, 32767);

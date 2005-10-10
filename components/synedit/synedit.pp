@@ -678,11 +678,9 @@ type
     procedure SetSelStart(const Value: integer);
     {$ENDIF}
   public
+    {$IFDEF SYN_LAZARUS}
     //code fold
     procedure CodeFoldAction(iLine: integer);
-    {$IFDEF EnableCodeFold}
-    {$ELSE}
-    procedure InitCodeFold;
     {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
@@ -750,6 +748,8 @@ type
     function PixelsToRowColumn(Pixels: TPoint): TPoint;
     {$IFDEF SYN_LAZARUS}
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
+    function ScreenRowToRow(ScreenRow: integer): integer;
+    function RowToScreenRow(PhysicalRow: integer): integer;
     {$ENDIF}
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -1093,6 +1093,9 @@ end;
 {$ENDIF}
 
 function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
+// converts the client area coordinate
+// to Caret position (screen position, (1,1) based)
+// To get the text/physical position use PixelsToLogicalPos
 var
   f: Single;
 begin
@@ -1102,8 +1105,12 @@ begin
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
+  {$IFDEF SYN_LAZARUS}
+  Result := Point(RoundOff(f), ScreenRowToRow(Pixels.Y div fTextHeight));
+  {$ELSE}
   Result := Point(RoundOff(f), Pixels.Y div fTextHeight + TopLine);
-{$IFDEF SYN_MBCSSUPPORT}
+  {$ENDIF}
+  {$IFDEF SYN_MBCSSUPPORT}
   if (Result.Y >= 1) and (Result.Y <= Lines.Count) then begin
     s := Lines[Result.Y - 1];
     if (Length(s) >= Result.x) and (ByteType(s, Result.X) = mbTrailByte) then
@@ -1113,7 +1120,7 @@ begin
         Inc(Result.X);
   end;
   fMBCSStepAside := False;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -1121,17 +1128,53 @@ function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
 begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
 end;
+
+function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer): integer;
+begin
+  Result:=TopLine;
+  if ScreenRow>LinesInWindow then ScreenRow:=LinesInWindow;
+  while ScreenRow>0 do begin
+    if (Result>Lines.Count)
+    or (not TSynEditStringList(fLines).Folded[Result-1]) then
+      dec(ScreenRow);
+    inc(Result);
+  end;
+end;
+
+function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
+// returns 0 for lines above visible screen (<TopLine)
+// and returns LinesInWindow+1 for lines below visible screen
+var
+  i: LongInt;
+begin
+  Result:=0;
+  if PhysicalRow<TopLine then exit;
+  i:=TopLine;
+  while (Result<=LinesInWindow) and (i<PhysicalRow) do begin
+    if (i>Lines.Count)
+    or (not TSynEditStringList(fLines).Folded[i-1]) then
+      inc(Result);
+    inc(i);
+  end;
+end;
 {$ENDIF}
 
 function TCustomSynEdit.RowColumnToPixels(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
+// converts Caret position (screen position (1,1) based)
+// to client area coordinate
 begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
+  {$IFDEF SYN_LAZARUS}
+  Result.Y := RowToScreenRow(Result.Y) * fTextHeight + 1;
+  {$ELSE}
   Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
+// set caret to pixel position
 begin
   CaretXY := PixelsToRowColumn(Point(X,Y));
 end;
@@ -1867,11 +1910,21 @@ begin
       { find the visible lines first }
       if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
       FirstLine := Max(FirstLine, TopLine);
-      LastLine := Min(LastLine, TopLine + LinesInWindow);
+      LastLine := Min(LastLine,
+                      {$IFDEF SYN_LAZARUS}
+                      ScreenRowToRow(LinesInWindow)
+                      {$ELSE}
+                      TopLine + LinesInWindow
+                      {$ENDIF}
+                      );
       { any line visible? }
       if (LastLine >= FirstLine) then begin
-        rcInval := Rect(0, fTextHeight * (FirstLine - TopLine),
-          fGutterWidth, fTextHeight * (LastLine - TopLine + 1));
+        rcInval := Rect(0,
+          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
+                        {$ELSE}(FirstLine - TopLine){$ENDIF},
+          fGutterWidth,
+          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(LastLine+1)
+                        {$ELSE}(LastLine - TopLine + 1){$ENDIF});
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else
@@ -1899,12 +1952,21 @@ begin
       { find the visible lines first }
       if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
       FirstLine := Max(FirstLine, TopLine);
-      LastLine := Min(LastLine, TopLine + LinesInWindow);
+      LastLine := Min(LastLine,
+                      {$IFDEF SYN_LAZARUS}
+                      ScreenRowToRow(LinesInWindow)
+                      {$ELSE}
+                      TopLine + LinesInWindow
+                      {$ENDIF}
+                      );
       { any line visible? }
       if (LastLine >= FirstLine) then begin
-        rcInval := Rect(fGutterWidth, fTextHeight * (FirstLine - TopLine),
-          ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}
-          , fTextHeight * (LastLine - TopLine + 1));
+        rcInval := Rect(fGutterWidth,
+          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
+                        {$ELSE}(FirstLine - TopLine){$ENDIF},
+          ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF},
+          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(LastLine+1)
+                        {$ELSE}(LastLine - TopLine + 1){$ENDIF});
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else
@@ -2506,8 +2568,14 @@ begin
   nC2 := nC1 +
     (rcClip.Right - fGutterWidth - 2 + CharWidth - 1) div CharWidth;
   // lines
-  nL1 := Max(TopLine + rcClip.Top div fTextHeight, TopLine);
-  nL2 := Min(TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
+  nL1 := Max({$IFDEF SYN_LAZARUS}TopLine + rcClip.Top div fTextHeight
+             {$ELSE}ScreenRowToRow(rcClip.Top div fTextHeight){$ENDIF},
+             TopLine);
+  nL2 := Min({$IFDEF SYN_LAZARUS}
+             ScreenRowToRow((rcClip.Bottom-1) div fTextHeight+1),
+             {$ELSE}
+             TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
+             {$ENDIF}
              Lines.Count);
   // Now paint everything while the caret is hidden.
   HideCaret;
@@ -2576,8 +2644,9 @@ procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
         TSynEditStringList(fLines).Folded[iLine]:=false;
         CurFoldType:=TSynEditStringList(fLines).FoldType[iLine];
         if CurFoldType in [cfExpanded,cfCollapsed] then
-          UpdateFolded(iLine);
-        inc(iLine);
+          UpdateFolded(iLine)
+        else
+          inc(iLine);
       end;
       // expand last line of block
       if (iLine<Lines.Count)
@@ -2613,22 +2682,6 @@ begin
   end;
 end;
 
-{$IFDEF EnableCodeFold}
-{$ELSE}
-{
-  procedure TCustomSynEdit.InitCodeFold;
-
-  A simple heuristic to create codefolds for text with same space indent
- }
-procedure TCustomSynEdit.InitCodeFold;
-begin
-  if Assigned(fHighLighter) then
-  begin
-    fHighLighter.InitCodeFold(Lines);
-  end;
-end;
-{$ENDIF}
-
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
 var
   i, iLine: integer;
@@ -2659,10 +2712,7 @@ var
           iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
         with fBookMarkOpt do
           if not TSynEditStringList(fLines).Folded[iLine] then
-            if fGutter.ShowCodeFolding then
-              BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true)
-            else
-              BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine], iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
+            BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine], iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
 
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
@@ -2675,10 +2725,7 @@ var
             10);
         end;
         if not TSynEditStringList(fLines).Folded[iLine] then
-          if fGutter.ShowCodeFolding then
-            fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iLine * fTextHeight, fTextHeight)
-          else
-            fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
+          fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end;
@@ -2782,18 +2829,11 @@ begin
         // erase the background and draw the line number string in one go
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
-        //InternalFillRect(DC, rcLine);
-
         if not TSynEditStringList(fLines).Folded[iLine] then
           if fGutter.ShowCodeFolding then
             fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
           else
             fTextDrawer.ExtTextOut(fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
-
-        //LCLIntf.DrawText(DC, PChar(S), Length(S), rcLine,
-        //  DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
-        //LCLIntf.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
-        //  @rcLine, PChar(s), Length(s), nil);
         {$ELSE}
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
           @rcLine, PChar(s), Length(s), nil);
@@ -3105,9 +3145,7 @@ var
     pszText: PChar;
     nCharsToPaint: integer;
     nX: integer;
-    {$IFDEF EnableCodeFold}
     ypos: integer;
-    {$ENDIF}
   const
     ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
@@ -3138,17 +3176,14 @@ var
       // draw edge
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      {$IFDEF EnableCodeFold}
       // codefold draw splitter line
-      if CurLine>=0 then begin
+      if Gutter.ShowCodeFolding and (CurLine>=0)
+      and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd]) then
+      begin
         ypos := rcToken.Bottom - 1;
-        if TSynEditStringList(Lines).FoldType[CurLine] in [cfEnd] then
-        begin
-          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-          LCLIntf.LineTo(dc, fGutterWidth, ypos);
-        end;
+        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+        LCLIntf.LineTo(dc, fGutterWidth, ypos);
       end;
-      {$ENDIF}
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
         pszText, nCharsToPaint);
@@ -3171,9 +3206,7 @@ var
     C1SelPhys: integer;
     C2Phys: integer;
     C2SelPhys: LongInt;
-    {$IFDEF EnableCodeFold}
     ypos : integer;
-    {$ENDIF}
   begin
     // Compute some helper variables.
     nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
@@ -3273,17 +3306,14 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
 
-        {$IFDEF EnableCodeFold}
         // codefold draw splitter line
-        if CurLine>=0 then begin
+        if Gutter.ShowCodeFolding and (CurLine>=0)
+        and (TSynEditStringList(Lines).FoldType[CurLine-1] in [cfEnd]) then
+        begin
           ypos := rcToken.Bottom - 1;
-          if TSynEditStringList(Lines).FoldType[CurLine] in [cfEnd] then
-          begin
-            LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
-            LCLIntf.LineTo(dc, fGutterWidth, ypos);
-          end;
+          LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+          LCLIntf.LineTo(dc, fGutterWidth, ypos);
         end;
-        {$ENDIF}
       end;
     end;
   end;
@@ -3635,7 +3665,6 @@ var
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
         // line - the internal highlighter range might be wrong.
-//        fHighlighter.SetRange(Lines.Objects[CurLine - 1]);
         fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[CurLine - 1]);     //mh 2000-10-10
         fHighlighter.SetLine(sLine, CurLine - 1);
         // Try to concatenate as many tokens as possible to minimize the count
@@ -3833,10 +3862,8 @@ var
 
 { end local procedures }
 
-{$IFDEF EnableCodeFold}
 var
   ypos : integer;
-{$ENDIF}
 begin
   CurLine:=-1;
   colEditorBG := Color;
@@ -3890,7 +3917,7 @@ begin
 
   // If there is anything visible below the last line, then fill this as well.
   rcToken := AClip;
-  rcToken.Top := (LastLine - TopLine + 1) * fTextHeight;
+  rcToken.Top := RowToScreenRow(LastLine + 1) * fTextHeight;
   if (rcToken.Top < rcToken.Bottom) then begin
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
@@ -3899,15 +3926,13 @@ begin
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
 
-      {$IFDEF EnableCodeFold}
       //codefold draw splitter line
-      ypos := rcToken.Bottom - 1;
-      if (LastLine<Lines.Count)
-      and (TSynEditStringList(Lines).FoldType[LastLine] in [cfEnd]) then begin
+      if Gutter.ShowCodeFolding and (LastLine<Lines.Count)
+      and (TSynEditStringList(Lines).FoldType[LastLine-1] in [cfEnd]) then begin
+        ypos := rcToken.Bottom - 1;
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
         LCLIntf.LineTo(dc, fGutterWidth, ypos);
       end;
-      {$ENDIF}
     end;
   end;
 
@@ -5705,7 +5730,7 @@ begin
       // Ends scrolling
     SB_ENDSCROLL:
       {$IFNDEF SYN_LAZARUS}
-      if eoShowScrollHint in fOptions then
+      ifSYN_LAZARUS eoShowScrollHint in fOptions then
         with GetScrollHint do begin
           Visible := FALSE;
           ActivateHint(Rect(0, 0, 0, 0), '');
@@ -5716,7 +5741,7 @@ begin
 end;
 
 function TCustomSynEdit.ScanFrom(Index: integer): integer;
-{$IFDEF EnableCodeFold}
+{$IFDEF SYN_LAZARUS}
 var
   CodeFoldMinLevel: LongInt;
   CodeFoldEndLevel: LongInt;
@@ -5734,13 +5759,14 @@ begin
   begin
     //debugln('TSynCustomHighlighter.ScanFrom WHILE ',dbgs(fHighlighter.CurrentCodeFoldBlockLevel),' ',Lines[Result]);
     TSynEditStringList(Lines).Ranges[Result{$IFNDEF SYN_LAZARUS}-1{$ENDIF}] := fHighlighter.GetRange;
-    {$IFDEF EnableCodeFold}
+    {$IFDEF SYN_LAZARUS}
     CodeFoldMinLevel:=fHighlighter.MinimumCodeFoldBlockLevel;
     CodeFoldEndLevel:=fHighlighter.CurrentCodeFoldBlockLevel;
     CodeFoldType:=cfNone;
     if CodeFoldEndLevel>CodeFoldMinLevel then begin
       // block started (and not closed in the same line)
       CodeFoldType:=cfExpanded;
+      //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' MinLevel=',dbgs(CodeFoldMinLevel),' EndLevel=',dbgs(CodeFoldEndLevel),' CodeFoldType=',dbgs(ord(CodeFoldType)),' ',Lines[Result-1]);
     end else if (Result>1) then begin
       LastCodeFoldEndLevel:=TSynEditStringList(Lines).FoldEndLevel[Result-2];
       if LastCodeFoldEndLevel>CodeFoldMinLevel then begin
@@ -5791,6 +5817,7 @@ begin
 *)
 procedure TCustomSynEdit.ListAdded(Index: integer);
 begin
+  //debugln('TCustomSynEdit.ListAdded ',dbgs(Index),' ',dbgs(Assigned(fHighlighter)));
   if Assigned(fHighlighter) then begin
     if (Index > 0) then begin
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
@@ -5873,10 +5900,15 @@ begin
 end;
 
 procedure TCustomSynEdit.ListScanRanges(Sender: TObject);
+{$IFNDEF SYN_LAZARUS}
 var
   i: integer;
+{$ENDIF}
 begin
   if Assigned(fHighlighter) and (Lines.Count > 0) then begin
+    {$IFDEF SYN_LAZARUS}
+    ScanFrom(0);
+    {$ELSE}
     fHighlighter.ResetRange;
 {begin}                                                                         //mh 2000-10-10
 (*
@@ -5898,6 +5930,7 @@ begin
       Inc(i);
     until i >= Lines.Count;
 {end}                                                                           //mh 2000-10-10
+    {$ENDIF}
   end;
 end;
 

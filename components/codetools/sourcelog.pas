@@ -140,7 +140,7 @@ type
     function GetLines(StartLine, EndLine: integer): string;
     function IsEqual(sl: TStrings): boolean;
     procedure Assign(sl: TStrings);
-    procedure AssignTo(sl: TStrings);
+    procedure AssignTo(sl: TStrings; UseAddStrings: Boolean);
     procedure LoadFromStream(s: TStream);
     procedure SaveToStream(s: TStream);
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
@@ -523,6 +523,8 @@ end;
 procedure TSourceLog.BuildLineRanges;
 var p,line:integer;
 begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   //DebugLn('[TSourceLog.BuildLineRanges] A Self=',DbgS(Self),',LineCount=',FLineCount,' Len=',SourceLength);
   if FLineCount>=0 then exit;
   if FLineRanges<>nil then begin
@@ -570,6 +572,7 @@ begin
     end;
   end;
   //DebugLn('[TSourceLog.BuildLineRanges] END ',FLineCount);
+  {$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
 
 procedure TSourceLog.LineColToPosition(Line, Column: integer;
@@ -745,24 +748,35 @@ begin
   DecreaseHookLock;
 end;
 
-procedure TSourceLog.AssignTo(sl: TStrings);
+procedure TSourceLog.AssignTo(sl: TStrings; UseAddStrings: Boolean);
 var y: integer;
   s: string;
+  TempList: TStringList;
 begin
   if sl=nil then exit;
   if IsEqual(sl) then exit;
-  sl.BeginUpdate;
-  sl.Clear;
-  BuildLineRanges;
-  sl.Capacity:=fLineCount;
-  for y:=0 to fLineCount-1 do begin
-    s:='';
-    SetLength(s,fLineRanges[y].EndPos-fLineRanges[y].StartPos);
-    if s<>'' then
-      System.Move(fSource[fLineRanges[y].StartPos],s[1],length(s));
-    sl.Add(s);
+  if UseAddStrings then begin
+    TempList:=TStringList.Create;
+    AssignTo(TempList,false);
+    sl.BeginUpdate;
+    sl.Clear;
+    sl.AddStrings(TempList);
+    sl.EndUpdate;
+    TempList.Free;
+  end else begin
+    sl.BeginUpdate;
+    sl.Clear;
+    BuildLineRanges;
+    sl.Capacity:=fLineCount;
+    for y:=0 to fLineCount-1 do begin
+      s:='';
+      SetLength(s,fLineRanges[y].EndPos-fLineRanges[y].StartPos);
+      if s<>'' then
+        System.Move(fSource[fLineRanges[y].StartPos],s[1],length(s));
+      sl.Add(s);
+    end;
+    sl.EndUpdate;
   end;
-  sl.EndUpdate;
 end;
 
 procedure TSourceLog.LoadFromStream(s: TStream);
