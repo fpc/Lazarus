@@ -141,8 +141,6 @@ begin
     Result:=rsLanguageRussianUTF
   else if CompareText(ID,'es')=0 then
     Result:=rsLanguageSpanish
-  else if CompareText(ID,'esutf')=0 then
-    Result:=rsLanguageSpanishUTF
   else if CompareText(ID,'fi')=0 then
     Result:=rsLanguageFinnish
   else if CompareText(ID,'fiwin')=0 then
@@ -153,6 +151,8 @@ begin
     Result:=rsLanguageArabic
   else if CompareText(ID,'pb')=0 then
     Result:=rsLanguagePortugues
+  else if CompareText(ID,'ua')=0 then
+    Result:=rsLanguageUkranian
   else
     Result:=ID;
 end;

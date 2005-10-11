@@ -1096,6 +1096,10 @@ msgstr ""
 msgid "Code Tools"
 msgstr "CodeTools"
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "Codeparameter"
@@ -1936,10 +1940,6 @@ msgstr "Zeilennummern in Laufzeitfehler-Backtraces anzeigen"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Groß- und Kleinschreibung unterscheiden"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr ""
@@ -1955,6 +1955,10 @@ msgstr "Zeile nicht teilen nach:"
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Wollen Sie die Änderungen am Paket %s wirklich verwerfen und es neu aus der Datei laden?"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2215,6 +2219,10 @@ msgstr "Escape"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Prüfen/Ändern"
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3676,6 +3684,10 @@ msgstr "Letzter"
 msgid "Last (i.e. at end of source)"
 msgstr "Letzter (z.B. am Ende des Quelltexts)"
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Aufrufendes Programm ungültig"
@@ -4448,7 +4460,7 @@ msgstr "Objekt"
 msgid "Object Inspector"
 msgstr "Objektinspektor"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "OK"
 
@@ -6200,10 +6212,6 @@ msgstr "Leertaste"
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Spanisch (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Quelle"
@@ -7103,6 +7111,10 @@ msgstr "Typ:"
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "GROSSBUCHSTABEN"
+
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

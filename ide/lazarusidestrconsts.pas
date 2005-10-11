@@ -1523,7 +1523,6 @@ resourcestring
   rsLanguageEnglish     = 'English';
   rsLanguageDeutsch     = 'Deutsch';
   rsLanguageSpanish     = 'Spanish';
-  rsLanguageSpanishUTF  = 'Spanish (UTF8)';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
   rsLanguageRussianWin  = 'Russian(CP1251)';
@@ -1539,6 +1538,7 @@ resourcestring
   rsLanguageHebrew      = 'Hebrew';
   rsLanguageArabic      = 'Arabic';
   rsLanguagePortugues   = 'Portuguese';
+  rsLanguageUkranian    = 'Ukranian';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';

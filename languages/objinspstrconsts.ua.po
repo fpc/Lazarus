@@ -14,6 +14,10 @@ msgstr " Елементи "
 msgid " Selected image "
 msgstr " Обраний малюнок "
 
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
 msgstr "%s: Вже зареєстрований "
@@ -118,6 +122,14 @@ msgstr "(Все)"
 msgid "(Unknown)"
 msgstr "(Невідомий)"
 
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Дія"
@@ -190,6 +202,10 @@ msgstr "Категорія"
 msgid "Char"
 msgstr "Символ"
 
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr ""
+
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
@@ -213,6 +229,14 @@ msgstr "Очистити малюнок"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Обрати колір"
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr ""
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -406,6 +430,10 @@ msgstr "Індекс малюнка"
 msgid "Image list editor"
 msgstr "Редактор списку малюнків"
 
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
 msgstr "Вставити"
@@ -426,6 +454,10 @@ msgstr "Ціле"
 msgid "Interface"
 msgstr "Інтерфейс"
 
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Мітка"
@@ -445,6 +477,10 @@ msgstr "Діалог завантаження зображення"
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
 msgstr "Завантажити малюнок"
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr ""
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -502,9 +538,17 @@ msgstr "Об'єкт"
 msgid "Object Inspector"
 msgstr "Інспектор об'єктів"
 
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Відкрити"
+
+#: objinspstrconsts:oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr ""
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -534,6 +578,10 @@ msgstr "Попередній"
 msgid "Properties"
 msgstr "Властивості"
 
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr ""
+
 #: objinspstrconsts:oisrecord
 msgid "Record"
 msgstr "Запис"
@@ -546,6 +594,10 @@ msgstr "Перезавантажити"
 msgid "Remove from Favorites"
 msgstr "Прибрати з Улюблених"
 
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "&Зберегти як ..."
@@ -553,6 +605,10 @@ msgstr "&Зберегти як ..."
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Зберегти як"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -629,6 +685,10 @@ msgstr "Діалог Введення Стрічок"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Піделемент"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

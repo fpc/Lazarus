@@ -1082,6 +1082,10 @@ msgstr "Шаблоны кода"
 msgid "Code Tools"
 msgstr "CodeTools"
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "Параметры кода"
@@ -1922,10 +1926,6 @@ msgstr "Выдать номера строк в ошибках времени и
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Различать регистр букв, например, А и а"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr ""
@@ -1941,6 +1941,10 @@ msgstr "Не разрывать строку после:"
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Вы действительно хотите сбросить все изменения в пакете %s и загрузить его из файла?"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2201,6 +2205,10 @@ msgstr "Escape"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Вычислить/Изменить..."
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3662,6 +3670,10 @@ msgstr "Последним"
 msgid "Last (i.e. at end of source)"
 msgstr "Последний (т.е. в конце исходника)"
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Запускающее приложение недопустимо"
@@ -4434,7 +4446,7 @@ msgstr "Объект"
 msgid "Object Inspector"
 msgstr "Инспектор объектов"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "ОК"
 
@@ -6186,10 +6198,6 @@ msgstr "Кнопка пробел"
 msgid "Spanish"
 msgstr "Испанский"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Испанский (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Исх"
@@ -7089,6 +7097,10 @@ msgstr "Тип:"
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "ВЕРХНИЙ РЕГИСТР"
+
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

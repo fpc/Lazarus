@@ -1082,6 +1082,10 @@ msgstr ""
 msgid "Code Tools"
 msgstr ""
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr ""
@@ -1922,10 +1926,6 @@ msgstr ""
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr ""
@@ -1940,6 +1940,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
+msgstr ""
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
@@ -2200,6 +2204,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
 msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
@@ -3662,6 +3670,10 @@ msgstr ""
 msgid "Last (i.e. at end of source)"
 msgstr ""
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr ""
@@ -4434,7 +4446,7 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "Komponenttimuokkain"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
 
@@ -6186,10 +6198,6 @@ msgstr ""
 msgid "Spanish"
 msgstr "espanja"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr ""
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr ""
@@ -7089,6 +7097,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "ISOT KIRJAIMET"
+
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

@@ -1082,6 +1082,10 @@ msgstr "Broncode templates"
 msgid "Code Tools"
 msgstr "Code Hulpmiddelen"
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "Parameters"
@@ -1922,10 +1926,6 @@ msgstr "Toon regelnummers in Run-time Error Backtraces"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid in hoofd en kleine letters. Bijv. A en a"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Laat splash scherm niet zien"
@@ -1941,6 +1941,10 @@ msgstr "Splits een regel niet na :"
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Bent u zeker om alle wijzigingen aan package %s te verliezen en te herladen uit bestand?"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2201,6 +2205,10 @@ msgstr "Verlaat"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Evalueer/Verander ..."
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3662,6 +3670,10 @@ msgstr "Laatste"
 msgid "Last (i.e. at end of source)"
 msgstr "Laatste (einde broncode)"
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Starten applicatie is ongeldig"
@@ -4434,7 +4446,7 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "Object Inspector"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
 
@@ -6186,10 +6198,6 @@ msgstr "Spatie toets"
 msgid "Spanish"
 msgstr "Spaans"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Spaans (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Src"
@@ -7089,6 +7097,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "HOOFDLETTERS"
+
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

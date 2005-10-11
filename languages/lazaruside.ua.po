@@ -1,23 +1,3 @@
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "                      Do not show splash screen"
-msgstr "                      Не показувати заставки "
-
-#: lazarusidestrconsts:lisskiploadinglastproject
-msgid "                      Skip loading last project"
-msgstr "                     Пропустити завантеження останнього проекта"
-
-#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
-msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "                     файл, куди буде записуватись наладочна інформація. Якщо не вказан., наладочна інформація виводится в консоль."
-
-#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "                      primary config directory, where Lazarus stores its config files. Default is "
-msgstr "                     головний каталог налаштувань, де Lazarus зберігає своі файли налаштувань. За замовчуванням"
-
-#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "                     вторинний каталог налаштувань, де Lazarus шукає свої шаблони налаштувань. За замовчуванням "
-
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   команда1 \""
@@ -49,6 +29,10 @@ msgstr "%s (йде налагодження ...)"
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
 msgstr "%s - (новий проект)"
+
+#: lazarusidestrconsts:lislazarusversionstring
+msgid "%s beta"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
@@ -234,8 +218,8 @@ msgstr "(немає підкаталогу)"
 msgid "(unknown macro: %s)"
 msgstr "(невідомий макрос: %s)"
 
-#: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.8 beta"
+#: lazarusidestrconsts:lislazdocnotagcaption
+msgid "<NONE>"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -366,9 +350,17 @@ msgstr "Додати точку переходу"
 msgid "Add jump point to history"
 msgstr "Додати точку переходу до історії"
 
+#: lazarusidestrconsts:lislazdocaddlinkbutton
+msgid "Add link"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Додати параметри до підпорядкованих пакетів і проектів"
+
+#: lazarusidestrconsts:lislazdocaddpathbutton
+msgid "Add path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
@@ -659,8 +651,8 @@ msgid "Block"
 msgstr "Заблокувати"
 
 #: lazarusidestrconsts:dlgblockindent
-msgid "Block indent:"
-msgstr "Блочний відступ:"
+msgid "Block indent"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -1082,9 +1074,17 @@ msgstr "Створення коду"
 msgid "Code Explorer"
 msgstr "Оглядач коду"
 
+#: lazarusidestrconsts:lismenueditcodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
 msgstr "Інструменти коду"
+
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1097,6 +1097,10 @@ msgstr "Завершення шаблонів коду"
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Шаблони коду"
+
+#: lazarusidestrconsts:lisceocodeexplorer
+msgid "CodeExplorer Options"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -1165,6 +1169,10 @@ msgstr "Кома"
 #: lazarusidestrconsts:srkmcommand
 msgid "Command "
 msgstr "Команда"
+
+#: lazarusidestrconsts:liscommandafter
+msgid "Command after"
+msgstr ""
 
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
@@ -1314,6 +1322,10 @@ msgstr "Налаштувати інструменти користувача"
 msgid "Configure installed packages"
 msgstr "Налаштувати встановлені пакети"
 
+#: lazarusidestrconsts:lislazbuildconfirmbuild
+msgid "Confirm Before ReBuild Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
 msgstr "Підтвердити зміни"
@@ -1427,8 +1439,8 @@ msgid "Copyright (C) <year> <name of author>%sThis library is free software; you
 msgstr "Авторське право (С) <рік> <ім'я автора>%sЦя бібліотека є безкоштовним ПЗ; Ви можете розповсюджувати її та/або змінювати за умовам GNU Library General Public License як опубліковано Free Software Foundation; або вересії 2 Ліцензії, або (на Ваш вибір) будь-якою пізнішою вересією. %sЦя програма розповсюджується з надією бути корисною, але БЕЗ ВСЯКОЇ ГАРАНТІЇ; навіть без такої, що мається на увазі ТОРГІВЕЛЬНОЇ гарантії або ВІДПОВІДНОСТІ ВИЗНАЧЕНІЙ МЕТІ. Див. GNU Library General Public License для подальшої інформації. %sВи повинні були одержати копію GNU Library General Public License з цією бібліотекою; якщо такої не має, напишіть в Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, США."
 
 #: lazarusidestrconsts:lisgplnotice
-msgid "Copyright (C) <year> <name of author>%sThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "Авторське право (С) <рік> <ім'я автора>%sЦя програма  є безкоштовним ПЗ; Ви можете розповсюджувати її та/або змінювати за умовам GNU Library General Public License як опубліковано Free Software Foundation; або вересії 2 Ліцензії, або (на Ваш вибір) будь-якою пізнішою вересією. %sЦя програма розповсюджується з надією бути корисною, але БЕЗ ВСЯКОЇ ГАРАНТІЇ; навіть без такої, що мається на увазі ТОРГІВЕЛЬНОЇ гарантії або ВІДПОВІДНОСТІ ВИЗНАЧЕНІЙ МЕТІ. Див. GNU Library General Public License для подальшої інформації. %sВи повинні були одержати копію GNU Library General Public License з цією бібліотекою; якщо такої не має, напишіть в Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, США."
+msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1465,6 +1477,10 @@ msgstr "Створити налаштування для каталогу Lazaru
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Створити макроси FPC і шляхи до каталогу проекту FPC"
+
+#: lazarusidestrconsts:lispckeditcreatemakefile
+msgid "Create Makefile"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -1706,6 +1722,10 @@ msgstr "Видалити останній символ"
 msgid "Delete Old Package File?"
 msgstr "Видалити старий файл пакета?"
 
+#: lazarusidestrconsts:lisdeleteallthesefiles
+msgid "Delete all these files?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Видалити файл з подібним іменем?"
@@ -1729,6 +1749,10 @@ msgstr "Видалення не вдалося"
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Видалення файла не вдалося"
+
+#: lazarusidestrconsts:lislazdocdeletelinkbutton
+msgid "Delete link"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
@@ -1846,6 +1870,10 @@ msgstr "Файли робочого столу"
 msgid "Destination Package"
 msgstr "Пакет призначення"
 
+#: lazarusidestrconsts:lisdestinationdirectory
+msgid "Destination directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Каталог %s%s%s є некоректним.%sОберіть шлях до компілятора."
@@ -1898,6 +1926,10 @@ msgstr "Вивести номери стрічок в помилках часу 
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Розрізняти регістр букв, наприклад, А і а"
 
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
+
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Не розривати стрічку перед:"
@@ -1910,6 +1942,10 @@ msgstr "Не розривати стрічку після:"
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Ви дійсно бажаєте забути всі зміни до пакету %s і завантажити його з файла?"
 
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
 msgstr "Пришвартований"
@@ -1917,6 +1953,10 @@ msgstr "Пришвартований"
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Редактор документації"
+
+#: lazarusidestrconsts:lislazdocnodocumentation
+msgid "Documentation entry does not exist"
+msgstr ""
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
@@ -2165,6 +2205,14 @@ msgstr "Escape"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Обчислити/Змінити..."
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
+
+#: lazarusidestrconsts:lisexcludefilter
+msgid "Exclude Filter"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -2510,6 +2558,10 @@ msgstr "Виправити файл LFM"
 msgid "Focus to source editor"
 msgstr "Фокус в редакторі джерел"
 
+#: lazarusidestrconsts:liscefollowcursor
+msgid "Follow cursor"
+msgstr ""
+
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
 msgstr "Колір переднього плану"
@@ -2685,6 +2737,14 @@ msgstr "Перейти до стрічки"
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
 msgstr "Перейти до стрічки :"
+
+#: lazarusidestrconsts:uemnextbookmark
+msgid "Goto next Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemprevbookmark
+msgid "Goto previous Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
@@ -2922,6 +2982,10 @@ msgstr "Ігнорувати пробіли"
 msgid "Ignore amount of space chars"
 msgstr "Ігнорувати кількість пробілів"
 
+#: lazarusidestrconsts:lisignorebinaries
+msgid "Ignore binaries"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
 msgstr "Ігнорувати різні завершення стрічок (напр., #10 = #13#10)"
@@ -2969,6 +3033,10 @@ msgstr "Включити код Assert"
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files (-Fi):"
 msgstr "Додані файли (-Fi):"
+
+#: lazarusidestrconsts:lisincludefilter
+msgid "Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -3150,6 +3218,14 @@ msgstr "Вставити шаблон"
 msgid "Insert alphabetically"
 msgstr "Вставити за алфавітом"
 
+#: lazarusidestrconsts:lislazdochintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
 msgstr "Вставити з врахуванням контексту"
@@ -3170,6 +3246,10 @@ msgstr "Вставити з таблиці символів"
 msgid "Insert from Charactermap"
 msgstr "Вставити з таблиці символів"
 
+#: lazarusidestrconsts:lislazdochintitalicformat
+msgid "Insert italic formatting tag"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
 msgstr "Вставити елемент як дочірній"
@@ -3177,6 +3257,10 @@ msgstr "Вставити елемент як дочірній"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Вставити елемент нижче"
+
+#: lazarusidestrconsts:lislazdochintremarktag
+msgid "Insert remark formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -3189,6 +3273,14 @@ msgstr "Вставити пробіл перед"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Вставити текст"
+
+#: lazarusidestrconsts:lislazdochintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdochintvartag
+msgid "Insert var formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -3446,9 +3538,21 @@ msgstr "Перейти назад"
 msgid "Jump forward"
 msgstr "Перейти вперед"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptonextbookmark
+msgid "Jump to next bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Перехід до наст. помилки"
+
+#: lazarusidestrconsts:lismenujumptoprevbookmark
+msgid "Jump to previous bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
@@ -3566,6 +3670,10 @@ msgstr "Остання"
 msgid "Last (i.e. at end of source)"
 msgstr "Останній (напр. в кінці тексту)"
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Виконуваний додаток є неправильним"
@@ -3573,6 +3681,22 @@ msgstr "Виконуваний додаток є неправильним"
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
 msgstr "Командна стрічка виконуваної програми"
+
+#: lazarusidestrconsts:lislazdoc
+msgid "LazDoc"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulazdoc
+msgid "LazDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocmainformcaption
+msgid "LazDoc editor"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocpathsgroupbox
+msgid "LazDoc settings"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
@@ -3709,6 +3833,10 @@ msgstr "Метод селекції рядка"
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
 msgstr "Рядки"
+
+#: lazarusidestrconsts:lisuidlines
+msgid "Lines:"
+msgstr ""
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
@@ -4114,6 +4242,10 @@ msgstr "Ім'я:"
 msgid "Naming"
 msgstr "Присвоєння імен"
 
+#: lazarusidestrconsts:lisceoneveronlymanually
+msgid "Never, only manually"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
 msgstr "Новий"
@@ -4194,6 +4326,10 @@ msgstr "Новий рядок"
 msgid "Next"
 msgstr "Далі"
 
+#: lazarusidestrconsts:srkmecnextbookmark
+msgid "Next Bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
 msgstr "Не знайдено секції в ResourceString"
@@ -4258,6 +4394,10 @@ msgstr "Нормальний Код"
 msgid "Normal selection mode"
 msgstr "Нормальний режим обрання"
 
+#: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
+msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
 msgstr "Це не є проектом Delphi"
@@ -4306,7 +4446,7 @@ msgstr "Об'єкт"
 msgid "Object Inspector"
 msgstr "Інспектор об'єктів"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Гаразд"
 
@@ -4317,6 +4457,10 @@ msgstr "Старі предки"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Старий клас"
+
+#: lazarusidestrconsts:lisceoonidle
+msgid "On idle"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -4341,6 +4485,10 @@ msgstr "Тільки текстові файли"
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Відкрити"
+
+#: lazarusidestrconsts:lisopenlfm
+msgid "Open %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4485,6 +4633,10 @@ msgstr "Вихідна тека"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "Переповнення"
+
+#: lazarusidestrconsts:lisoverridelanguage
+msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgstr ""
 
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
@@ -4738,6 +4890,10 @@ msgstr "Польська(CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "Польська(ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Попереднє проглядання"
@@ -4745,6 +4901,10 @@ msgstr "Попереднє проглядання"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Попереднє проглядання(max длина=1)"
+
+#: lazarusidestrconsts:srkmecprevbookmark
+msgid "Previous Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -4818,6 +4978,10 @@ msgstr "Шлях до файлів проекта"
 msgid "Project Include Path"
 msgstr "Шляхи, що включені до проекта"
 
+#: lazarusidestrconsts:lisprojectinformation
+msgid "Project Information"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
 msgstr "Інспектор проекта"
@@ -4873,6 +5037,10 @@ msgstr "Виявлений info-файл проекта"
 #: lazarusidestrconsts:lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Проект є виконуваним"
+
+#: lazarusidestrconsts:lisprojectmakroproperties
+msgid "Project makro properties"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5006,6 +5174,10 @@ msgstr "Посилання"
 msgid "Refresh"
 msgstr "Оновити"
 
+#: lazarusidestrconsts:lisceorefreshautomatically
+msgid "Refresh automatically"
+msgstr ""
+
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
 msgstr "Оновити елементи todo"
@@ -5097,6 +5269,10 @@ msgstr "Прибрати з улюблених властивостей"
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Видалити з проекта"
+
+#: lazarusidestrconsts:lislazdocdeletepathbutton
+msgid "Remove path"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremoveselecteditem
 msgid "Remove selected item"
@@ -5322,6 +5498,10 @@ msgstr "Російська(CP1251)"
 msgid "Russian(UTF8)"
 msgstr "Російська (UTF8)"
 
+#: lazarusidestrconsts:lissvnrevision
+msgid "SVN Revision: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr "Те ж самеім'я (в підкаталозі)"
@@ -5374,6 +5554,10 @@ msgstr "Зберегти проект %s (*.lpi)"
 msgid "Save Project As..."
 msgstr "Зберегти проект як..."
 
+#: lazarusidestrconsts:lissavesettings
+msgid "Save Settings"
+msgstr ""
+
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr "Зберегти всі"
@@ -5414,6 +5598,10 @@ msgstr "Збер. робочий стіл в файл"
 msgid "Save editor info for closed files"
 msgstr "Зберігати відомості про закриті файли"
 
+#: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
+msgid "Save editor info of non project files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Зберігати відомості тільки про файли проекта"
@@ -5421,6 +5609,10 @@ msgstr "Зберігати відомості тільки про файли п�
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr "Зберегти файл %s%s%sперед закриттям форми %s%s%s?"
+
+#: lazarusidestrconsts:lissaveinfoofclosededitorfiles
+msgid "Save info of closed editor files"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5541,6 +5733,10 @@ msgstr "Пошук..."
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
 msgstr "Щукаю: %s"
+
+#: lazarusidestrconsts:lislazdocseealsotag
+msgid "See also"
+msgstr ""
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
@@ -5678,6 +5874,10 @@ msgstr "Виділити до самого кінця"
 msgid "Select to brace"
 msgstr "Виділити до дужки"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Виділити елемент:"
@@ -5710,6 +5910,14 @@ msgstr "Крапка з комою"
 msgid "Set Marker %d"
 msgstr "Встановити маркер %d"
 
+#: lazarusidestrconsts:uemsetfreebookmark
+msgid "Set a free Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusetfreebookmark
+msgid "Set a free bookmark"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetallelementdefault
 msgid "Set all elements to default"
 msgstr "Встановити всі елементи за замовчуванням"
@@ -5732,6 +5940,10 @@ msgstr "Shift"
 
 #: lazarusidestrconsts:srkmecshifttab
 msgid "Shift Tab"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocshorttag
+msgid "Short"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
@@ -5761,6 +5973,10 @@ msgstr "Показати підказки"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Підказки для непотрібних модулів в головному джерелі"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -5793,6 +6009,10 @@ msgstr "Всі проц-ри при помилках"
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Показати кнопки закриття закладок"
+
+#: lazarusidestrconsts:srkmecshowcodecontext
+msgid "Show code context"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -5866,6 +6086,10 @@ msgstr ""
 msgid "Show used files"
 msgstr "Показати використані файли"
 
+#: lazarusidestrconsts:lissimplesyntax
+msgid "Simple Syntax"
+msgstr ""
+
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Простий синтаксис (напр., * замість .*)"
@@ -5874,9 +6098,17 @@ msgstr "Простий синтаксис (напр., * замість .*)"
 msgid "Size"
 msgstr "Розмір"
 
+#: lazarusidestrconsts:lisuidsize
+msgid "Size:"
+msgstr ""
+
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
 msgstr "Пропустити виклику компілятора"
+
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "Skip loading last project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -5966,10 +6198,6 @@ msgstr "Кнопка пробіл"
 msgid "Spanish"
 msgstr "Іспанська"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Іспанська (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Джр"
@@ -6025,6 +6253,14 @@ msgstr "Зупинити налагодження?"
 #: lazarusidestrconsts:dlgstopafternrerr
 msgid "Stop after number of errors:"
 msgstr "Зупинка після купи помилок"
+
+#: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
+msgid "Stop current debugging and rebuild project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisstopdebugging2
+msgid "Stop debugging?"
+msgstr ""
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -6126,9 +6362,9 @@ msgstr "ТАБ виділяє блоки"
 msgid "Tab order..."
 msgstr "Чергування ..."
 
-#: lazarusidestrconsts:dlgtabwidths
-msgid "Tab widths:"
-msgstr "Ширина табулятора"
+#: lazarusidestrconsts:liseotabwidths
+msgid "Tab widths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
@@ -6181,6 +6417,10 @@ msgstr "Проглядання шаблона"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Ім'я файлу шаблона"
+
+#: lazarusidestrconsts:lisctdtemplates
+msgid "Templates"
+msgstr ""
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
@@ -6858,6 +7098,10 @@ msgstr "Тип:"
 msgid "UPPERCASE"
 msgstr "ВЕРХНІЙ РЕГІСТР"
 
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
+
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
 msgstr "Не можу перетворити бінарний потік в текст"
@@ -7199,8 +7443,8 @@ msgid "Undo after save"
 msgstr "Відкат після збереження"
 
 #: lazarusidestrconsts:dlgundolimit
-msgid "Undo limit:"
-msgstr "Межа відкатів:"
+msgid "Undo limit"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
@@ -7246,7 +7490,7 @@ msgstr "Модуль %s%s%s був видалений з пакета"
 msgid "Unit File Name:"
 msgstr "Файлове ім'я модуля:"
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Відомості про модулі"
 
@@ -7338,6 +7582,10 @@ msgstr "Незбережений пакет"
 msgid "Up"
 msgstr "Вверх"
 
+#: lazarusidestrconsts:lisceoupdate
+msgid "Update"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Оновити/перезібрати"
@@ -7354,9 +7602,17 @@ msgstr "Використання"
 msgid "Use Ansi Strings"
 msgstr "Використовувати стрічки Ansi"
 
+#: lazarusidestrconsts:lisuseexcludefilter
+msgid "Use Exclude Filter"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "Використовувати модуль Heaprc"
+
+#: lazarusidestrconsts:lisuseincludefilter
+msgid "Use Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"
@@ -7458,7 +7714,7 @@ msgstr "Вертикальний крок сітки"
 msgid "View Anchor Editor"
 msgstr "Показати редактор прив'язок"
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Показати стек викликів"
 
@@ -7493,6 +7749,10 @@ msgstr "Показати результати пошуку"
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
 msgstr "Проглядання джерела"
+
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -7613,6 +7873,10 @@ msgstr "Вікно спостережень"
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
 msgstr "При створенні нових форм додати їх до автостворюваних"
+
+#: lazarusidestrconsts:lisceowhenswitchingfile
+msgid "When switching file in source editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
@@ -7762,6 +8026,10 @@ msgstr "за замовчуванням (%s)"
 msgid "evaluate/modify"
 msgstr "розрахувати/змінити"
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
 msgstr "в проекті:"
@@ -7862,6 +8130,10 @@ msgstr "головний файл-джерело пакету"
 msgid "pause program"
 msgstr "призупинити програму"
 
+#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
+msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "тільки для читання"
@@ -7913,6 +8185,10 @@ msgstr "пошук в каталогах"
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
 msgstr "сек"
+
+#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
+msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"

@@ -1854,6 +1854,10 @@ msgstr ""
 msgid "LazDoc"
 msgstr ""
 
+#: lazarusidestrconsts:lisokbtn
+msgid "Ok"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
 msgstr ""
@@ -2404,6 +2408,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
+msgstr ""
+
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
@@ -3352,6 +3360,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
+msgstr ""
+
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
 msgstr ""
 
 #: lazarusidestrconsts:dlgroworkingdirectory
@@ -4818,10 +4830,6 @@ msgstr ""
 msgid "Spanish"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr ""
@@ -4882,6 +4890,10 @@ msgstr ""
 msgid "Portuguese"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""
@@ -4899,7 +4911,7 @@ msgid "Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
+msgid "Do you want to rebuild Lazarus?"
 msgstr ""
 
 #: lazarusidestrconsts:liscleanlazarussource
@@ -8592,5 +8604,13 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
+
+#: lazarusidestrconsts:lislazdocbrowseexamplebutton
+msgid "Browse"
 msgstr ""
 

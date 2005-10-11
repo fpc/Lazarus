@@ -1092,6 +1092,10 @@ msgstr ""
 msgid "Code Tools"
 msgstr "Strumenti del codice"
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "Parametri del codice"
@@ -1932,10 +1936,6 @@ msgstr "Mostra i numeri di linea nelle backtrace degli errori di esecuzione"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingui tra lettere maiuscole e minuscole per es. tra A e a"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr ""
@@ -1951,6 +1951,10 @@ msgstr "Non spezzare le righe dietro a:"
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Vuoi veramente eliminare tutti i cambiamenti al pacchetto %s e ricaricarlo dal file?"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2211,6 +2215,10 @@ msgstr "Escape"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Valuta/modifica..."
+
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3672,6 +3680,10 @@ msgstr "Ultima"
 msgid "Last (i.e. at end of source)"
 msgstr "Ultima (cioè alla fine del sorgente)"
 
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Esecuzione applicazione non valida"
@@ -4444,7 +4456,7 @@ msgstr "Oggetto"
 msgid "Object Inspector"
 msgstr "Analizzatore oggetti"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Ok"
 
@@ -6196,10 +6208,6 @@ msgstr "Barra spaziatrice"
 msgid "Spanish"
 msgstr "Spagnolo"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Spagnolo (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Src"
@@ -7099,6 +7107,10 @@ msgstr "Tipo"
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "MAIUSCOLO"
+
+#: lazarusidestrconsts:rslanguageukranian
+msgid "Ukranian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
