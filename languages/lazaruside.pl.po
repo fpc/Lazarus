@@ -7109,8 +7109,8 @@ msgstr "Typ:"
 msgid "UPPERCASE"
 msgstr "WIELKIMI LITERAMI"
 
-#: lazarusidestrconsts:rslanguageukranian
-msgid "Ukranian"
+#: lazarusidestrconsts:rslanguageukrainian
+msgid "Ukrainian"
 msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext

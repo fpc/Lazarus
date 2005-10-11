@@ -7098,8 +7098,8 @@ msgstr ""
 msgid "UPPERCASE"
 msgstr "HOOFDLETTERS"
 
-#: lazarusidestrconsts:rslanguageukranian
-msgid "Ukranian"
+#: lazarusidestrconsts:rslanguageukrainian
+msgid "Ukrainian"
 msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext

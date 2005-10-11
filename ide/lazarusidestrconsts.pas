@@ -1538,7 +1538,7 @@ resourcestring
   rsLanguageHebrew      = 'Hebrew';
   rsLanguageArabic      = 'Arabic';
   rsLanguagePortugues   = 'Portuguese';
-  rsLanguageUkranian    = 'Ukranian';
+  rsLanguageUkrainian   = 'Ukrainian';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';

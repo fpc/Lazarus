@@ -152,7 +152,7 @@ begin
   else if CompareText(ID,'pb')=0 then
     Result:=rsLanguagePortugues
   else if CompareText(ID,'ua')=0 then
-    Result:=rsLanguageUkranian
+    Result:=rsLanguageUkrainian
   else
     Result:=ID;
 end;

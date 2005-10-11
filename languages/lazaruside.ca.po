@@ -7098,8 +7098,8 @@ msgstr "Tipus:"
 msgid "UPPERCASE"
 msgstr "MAJÚSCULES"
 
-#: lazarusidestrconsts:rslanguageukranian
-msgid "Ukranian"
+#: lazarusidestrconsts:rslanguageukrainian
+msgid "Ukrainian"
 msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext

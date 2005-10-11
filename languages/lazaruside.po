@@ -4890,8 +4890,8 @@ msgstr ""
 msgid "Portuguese"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguageukranian
-msgid "Ukranian"
+#: lazarusidestrconsts:rslanguageukrainian
+msgid "Ukrainian"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
