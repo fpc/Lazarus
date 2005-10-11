@@ -184,6 +184,7 @@ begin
     Parent:=Self;
     Caption:=lisMenuOpen;
     OnClick:=@OpenButtonClick;
+    Default:=true;
   end;
   
   CancelButton:=TButton.Create(Self);
@@ -192,6 +193,7 @@ begin
     Parent:=Self;
     Caption:=dlgCancel;
     ModalResult:=mrCancel;
+    Cancel:=true;
   end;
 end;
 
