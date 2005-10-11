@@ -114,6 +114,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazarusDirButton: TButton
           Anchors = [akTop, akRight]
           BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -146,6 +147,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object CompilerPathButton: TButton
           Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -178,6 +180,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object FPCSourceDirButton: TButton
           Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -210,6 +213,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object MakePathButton: TButton
           Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -242,6 +246,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object TestBuildDirButton: TButton
           Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -262,8 +267,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.OnChange = nil
         Caption = 'LanguageGroupBox'
-        ClientHeight = 38
-        ClientWidth = 632
+        ClientHeight = 56
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 0
         Left = 4
@@ -295,8 +300,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.OnChange = nil
         Caption = 'AutoSaveGroupBox'
-        ClientHeight = 118
-        ClientWidth = 632
+        ClientHeight = 136
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 2
         Left = 4
@@ -358,8 +363,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.OnChange = nil
         Caption = 'DesktopFilesGroupBox'
-        ClientHeight = 79
-        ClientWidth = 632
+        ClientHeight = 97
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 3
         Left = 4
@@ -369,6 +374,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object SaveDesktopSettingsToFileButton: TButton
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = 'SaveDesktopSettingsToFileButton'
           OnClick = SaveDesktopSettingsToFileButtonClick
           TabOrder = 0
@@ -380,6 +386,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LoadDesktopSettingsFromFileButton: TButton
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = 'LoadDesktopSettingsFromFileButton'
           OnEnter = LoadDesktopSettingsFromFileButtonClick
           TabOrder = 1
@@ -434,8 +441,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object WindowPositionsGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'WindowPositionsGroupBox'
-        ClientHeight = 345
-        ClientWidth = 632
+        ClientHeight = 363
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 2
         Left = 4
@@ -465,8 +472,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'GridGroupBox'
-        ClientHeight = 112
-        ClientWidth = 626
+        ClientHeight = 130
+        ClientWidth = 630
         ParentColor = True
         TabOrder = 0
         Left = 6
@@ -578,8 +585,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'GuideLinesGroupBox'
-        ClientHeight = 316
-        ClientWidth = 202
+        ClientHeight = 334
+        ClientWidth = 206
         ParentColor = True
         TabOrder = 1
         Left = 222
@@ -647,8 +654,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'FormEditMiscGroupBox'
-        ClientHeight = 316
-        ClientWidth = 198
+        ClientHeight = 334
+        ClientWidth = 202
         ParentColor = True
         TabOrder = 2
         AnchorSideRight.Control = FormEditorPage
@@ -743,8 +750,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft]
         BorderSpacing.Around = 6
         Caption = 'RubberbandGroupBox'
-        ClientHeight = 316
-        ClientWidth = 206
+        ClientHeight = 334
+        ClientWidth = 210
         ParentColor = True
         TabOrder = 3
         Left = 6
@@ -948,7 +955,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 20
           Top = 24
-          Width = 608
+          Width = 612
         end
       end
     end
@@ -970,8 +977,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object BackupProjectGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'BackupProjectGroupBox'
-        ClientHeight = 183
-        ClientWidth = 632
+        ClientHeight = 201
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 0
         Left = 4
@@ -1051,8 +1058,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.OnChange = nil
         Caption = 'BackupOtherGroupBox'
-        ClientHeight = 178
-        ClientWidth = 632
+        ClientHeight = 196
+        ClientWidth = 636
         ParentColor = True
         TabOrder = 1
         Left = 4
@@ -1172,7 +1179,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       Caption = 'LazDocPage'
       ClientWidth = 642
       ClientHeight = 482
-      Visible = False
       Height = 482
       Width = 642
       object Label1: TLabel
@@ -1210,6 +1216,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazDocAddPathButton: TButton
           AutoSize = True
           BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -1222,6 +1229,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSize = True
           BorderSpacing.OnChange = nil
           BorderSpacing.Left = 10
+          BorderSpacing.InnerBorder = 2
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -1244,6 +1252,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         object LazDocBrowseButton: TButton
           Anchors = [akTop, akRight]
           BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
@@ -1258,6 +1267,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
     Caption = 'CancelButton'
     OnClick = CancelButtonClick
     TabOrder = 1
@@ -1268,7 +1279,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   end
   object OkButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'Ok'
+    Default = True
     OnClick = OkButtonClick
     TabOrder = 2
     Left = 485
