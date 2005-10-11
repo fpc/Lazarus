@@ -36,9 +36,9 @@
        .svn/entries to get the revision number of the source directory.
 
        If it can't find revision information, it checks whether the revision.inc
-       exists. If it exists and seems to be created with, it will leave the file
-       as is. Otherwise it will create a new revision.inc, indicating that the
-       revision number is unknown.
+       exists. If it exists and seems to be created with svn2revisioninc, it
+       will leave the file as is. Otherwise it will create a new revision.inc,
+       indicating that the revision number is unknown.
 
 }
 program Svn2RevisionInc;

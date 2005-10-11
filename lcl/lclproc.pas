@@ -194,6 +194,7 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 procedure UTF8FixBroken(P: PChar);
+function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
 
 
 // ======================================================================
@@ -1680,6 +1681,63 @@ begin
         p^:=' ';
     end
   end;
+end;
+
+function  UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
+var
+  Source: PChar;
+  Dest: PChar;
+  SourceEnd: PChar;
+  CharLen: integer;
+
+  // Copies from SourceStart to Source to Dest and updates Dest
+  procedure CopyPart; inline;
+  var
+    CopyLength: SizeInt;
+  begin
+    CopyLength := Source - SourceStart;
+    move(SourceStart^ , Dest^, CopyLength);
+    inc(Dest, CopyLength);
+  end;
+
+begin
+  Source:= SourceStart;
+  SetLength(Result, SourceLen);
+  Dest:=PChar(Result);
+  SourceEnd := Source + SourceLen;
+  while Source<SourceEnd do begin
+    CharLen := UTF8CharacterLength(Source);
+    if (CharLen=1) and (Source^='\') then begin
+      CopyPart;
+      inc(Source);
+      if Source^ in ['t', 'n', '"', '\'] then begin
+        case Source^ of
+         't' : Dest^ := #9;
+         '"' : Dest^ := '"';
+         '\' : Dest^ := '\';
+         'n' :
+         // fpc 2.1.1 stores string constants as array of char so maybe this
+         // will work for without ifdef (once available in 2.0.x too):
+         // move(lineending, dest^, sizeof(LineEnding));
+{$IFDEF win32}
+               begin
+                 move(lineending[1], dest^, length(LineEnding));
+                 inc(dest^, length(LineEnding)-1);
+               end;
+{$ELSE}
+               Dest^ := LineEnding;
+{$ENDIF}
+        end;
+        inc(Source);
+        inc(Dest);
+      end;
+      SourceStart := Source;
+    end
+    else
+      Inc(Source, CharLen);
+  end;
+  CopyPart;
+  SetLength(Result, Dest - PChar(Result));
 end;
 
 //==============================================================================

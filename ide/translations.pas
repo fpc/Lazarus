@@ -451,7 +451,8 @@ begin
       end else if CompareMem(LineStart,sMsgID,7) then begin
         MsgID:=copy(s,LineStart-p+8,LineLen-8);
       end else if CompareMem(LineStart,sMsgStr,8) then begin
-        MsgStr:=copy(s,LineStart-p+9,LineLen-9);
+        //MsgStr:=copy(s,LineStart-p+9,LineLen-9);
+        MsgStr:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
         Add(Identifier,MsgID,MsgStr);
       end;
     end;
