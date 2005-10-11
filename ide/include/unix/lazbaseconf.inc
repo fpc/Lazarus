@@ -198,15 +198,15 @@ end;
 
 procedure GetLanguageIDs(var Lang, FallbackLang: string);
 begin
-  Lang := GetEnv('LC_ALL');
+  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
   FallbackLang:='';
 
   if Length(Lang) = 0 then
   begin
-    Lang := GetEnv('LC_MESSAGES');
+    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
     if Length(Lang) = 0 then
     begin
-      Lang := GetEnv('LANG');
+      Lang := SysUtils.GetEnvironmentVariable('LANG');
       if Length(Lang) = 0 then
         exit;   // no language defined via environment variables
     end;

@@ -98,11 +98,9 @@ function GetTempFilename(const Path, Prefix: string): string;
 
 implementation
 
+{$IFNDEF win32}
 uses
-{$IFDEF win32}
-  Dos;
-{$ELSE}
-  Unix,BaseUnix;
+  Unix, BaseUnix;
 {$ENDIF}
 
 var

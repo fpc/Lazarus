@@ -27,7 +27,6 @@
  ***************************************************************************
 }
 uses
-  Dos,
   Unix, BaseUnix;
 
 function GetDefaultTargetOS: string;

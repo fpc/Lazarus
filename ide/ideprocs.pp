@@ -204,12 +204,11 @@ procedure FreeListObjects(List: TList; FreeList: boolean);
 implementation
 
 
+{$IfNDef Win32}
 // to get more detailed error messages consider the os
 uses
-  Dos
-  {$IfNDef Win32}
-       ,Unix,BaseUnix
-  {$EndIf};
+  Unix, BaseUnix;
+{$EndIf}
 
 function AddToRecentList(const s: string; RecentList: TStrings;
   Max: integer): boolean;
@@ -1861,17 +1860,17 @@ end;
 
 function GetCurrentUserName: string;
 begin
-  Result:=GetEnv('USER');
+  Result:=GetEnvironmentVariable('USER');
 end;
 
 function GetCurrentMailAddress: string;
 begin
-  Result:='<'+GetCurrentUserName+'@'+GetEnv('HOSTNAME')+'>';
+  Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariable('HOSTNAME')+'>';
 end;
 
 procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
 begin
-  SearchPath:=GetEnv('PATH');
+  SearchPath:=GetEnvironmentVariable('PATH');
   Delim:=':';
 end;
 
@@ -1897,9 +1896,9 @@ var
   Variable, Value: string;
 Begin
   Result:=TStringList.Create;
-  SysVarCount:=EnvCount;
+  SysVarCount:=GetEnvironmentVariableCount;
   for i:=0 to SysVarCount-1 do begin
-    Variable:=EnvStr(i+1);
+    Variable:=GetEnvironmentString(i+1);
     e:=1;
     while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
     Value:=copy(Variable,e+1,length(Variable)-e);

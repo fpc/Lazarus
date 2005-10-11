@@ -777,7 +777,7 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',{$ifdef Unix}FpGetEnv{$else}GetEnv{$endif}('PATH'),':',
+    Result:=SearchFileInPath(Result,'',GetEnvironmentVariable('PATH'),':',
                              [sffDontSearchInBasePath]);
   end;
   // resolve links

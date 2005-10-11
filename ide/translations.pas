@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts,
-  StringHashList
+  StringHashList, LazConf
   {$IFDEF linux}{$IFNDEF NoUTF8Translations}
   ,LazCWString
   {$ENDIF}{$ENDIF};
@@ -110,9 +110,6 @@ var
 
 
 implementation
-
-uses
-  Dos, LazConf;
 
 function GetLazarusLanguageLocalizedName(const ID: string): String;
 begin

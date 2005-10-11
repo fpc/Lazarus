@@ -29,7 +29,6 @@
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
-  Dos,
   BaseUnix, Unix;
 
 function GetDefaultTargetOS: string;
