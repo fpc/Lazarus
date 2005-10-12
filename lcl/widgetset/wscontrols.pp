@@ -73,6 +73,8 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
@@ -147,6 +149,18 @@ end;
 
 procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
+end;
+
+function TWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; 
+begin
+  // for now default to the WinAPI version
+  Result := WidgetSet.GetClientBounds(AWincontrol.Handle, ARect);
+end;
+
+function TWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; 
+begin
+  // for now default to the WinAPI version
+  Result := WidgetSet.GetClientRect(AWincontrol.Handle, ARect);
 end;
 
 {------------------------------------------------------------------------------

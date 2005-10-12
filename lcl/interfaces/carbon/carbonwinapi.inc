@@ -302,8 +302,15 @@ begin
 end;
 
 function TCarbonWidgetSet.GetActiveWindow: HWND;
+var
+  Window: WindowRef;
 begin
-  Result:=inherited GetActiveWindow;
+  Result := 0;//Inherited GetFocus;
+  Window := GetWindowList;
+  while (Window <> nil) and not IsWindowActive(Window) do begin
+    Window := GetNextWindow(Window);
+  end;
+  Result := HWND(Window);
 end;
 
 function TCarbonWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
@@ -340,16 +347,30 @@ begin
   Result:=inherited GetCharABCWidths(DC, p2, p3, ABCStructs);
 end;
 
-function TCarbonWidgetSet.GetClientBounds(handle: HWND; var ARect: TRect
-  ): Boolean;
+function TCarbonWidgetSet.GetClientBounds(handle: HWND; var ARect: TRect): Boolean;
+var
+ Info: PWidgetInfo;
+ WinControl: TWinControl;
 begin
-  Result:=inherited GetClientBounds(handle, ARect);
+  Result := False;
+  Info := GetwidgetInfo(Pointer(Handle));
+  if Info = nil then Exit;
+  
+  WinControl := TWinControl(Info^.LCLObject);
+  Result := TCarbonWSWinControlClass(WinControl.WidgetSetClass).GetClientBounds(WinControl, ARect);
 end;
 
-function TCarbonWidgetSet.GetClientRect(handle: HWND; var ARect: TRect
-  ): Boolean;
+function TCarbonWidgetSet.GetClientRect(handle: HWND; var ARect: TRect): Boolean;
+var
+ Info: PWidgetInfo;
+ WinControl: TWinControl;
 begin
-  Result:=inherited GetClientRect(handle, ARect);
+  Result := False;
+  Info := GetwidgetInfo(Pointer(Handle));
+  if Info = nil then Exit;
+  
+  WinControl := TWinControl(Info^.LCLObject);
+  Result := TCarbonWSWinControlClass(WinControl.WidgetSetClass).GetClientRect(WinControl, ARect);
 end;
 
 function TCarbonWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
@@ -419,9 +440,19 @@ begin
 end;
 
 function TCarbonWidgetSet.GetFocus: HWND;
+var
+  Control: ControlRef;
+  Window: WindowRef;
 begin
-  Result:=inherited GetFocus;
-  DebugLn('TODO:  TCarbonWidgetSet.GetFocus');
+  Result := 0;//Inherited GetFocus;
+  Window := GetWindowList;
+  while (Window <> nil) and not IsWindowActive(Window) do begin
+    Window := GetNextWindow(Window);
+  end;
+  if Window = nil then Exit;
+  Control := nil;
+  GetKeyboardFocus(Window, Control);
+  Result := HWND(Control);
 end;
 
 function TCarbonWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
@@ -774,7 +805,10 @@ end;
 
 function TCarbonWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
-  Result:=inherited SetActiveWindow(Handle);
+  Result := 0;
+  if Handle = 0 then exit; 
+  Result := GetActiveWindow;
+  if ActivateWindow(WindowRef(Handle), True) <> NoErr then Result := 0;
 end;
 
 function TCarbonWidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;

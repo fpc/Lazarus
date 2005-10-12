@@ -120,6 +120,7 @@ uses
 CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
+  CarbonDef, CarbonProc,
   Math, Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
 

@@ -28,7 +28,7 @@ interface
 
 uses
   // libs
-  FPCMacOSAll, CarbonUtils, CarbonExtra,
+  FPCMacOSAll, CarbonUtils, CarbonExtra, Classes,
   // LCL
   Controls, LCLType, LMessages, LCLProc,
   // widgetset
@@ -56,13 +56,16 @@ type
 
   { TCarbonWSWinControl }
 
+  TCarbonWSWinControlClass = class of TCarbonWSWincontrol;
   TCarbonWSWinControl = class(TWSWinControl)
   private
   protected
   public
-    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCarbonWSGraphicControl }
@@ -139,6 +142,32 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
   then Exit;
   DisposeControl(ControlRef(AWinControl.Handle));
+end;
+
+function TCarbonWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
+  var ARect: TRect): Boolean;
+var
+  AHiRect: HIRect;
+begin
+  Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
+  if not Result then Exit;
+  ARect.Top := Trunc(AHiRect.Origin.y);
+  ARect.Left := Trunc(AHiRect.Origin.x);
+  ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
+  ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
+end;
+
+function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
+  var ARect: TRect): Boolean;
+var
+  AHiRect: HIRect;
+begin
+  Result := HIViewGetBounds(HIViewRef(AWinControl.Handle), AHiRect) = 0;
+  if not Result then Exit;
+  ARect.Top := 0;//AHiRect.Origin.y;
+  ARect.Left := 0;//AHiRect.Origin.x;
+  ARect.Right := ARect.Left + Trunc(AHiRect.size.width);
+  ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
 end;
 
 initialization

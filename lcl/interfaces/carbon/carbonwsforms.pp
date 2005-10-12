@@ -72,7 +72,7 @@ type
   end;
 
   { TCarbonWSCustomForm }
-
+  TCarbonWSCustomFormClass = class of TCarbonWSCustomForm;
   TCarbonWSCustomForm = class(TWSCustomForm)
   private
   protected

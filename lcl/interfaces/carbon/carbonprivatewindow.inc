@@ -65,39 +65,90 @@ var
   Modifiers, ButtonState: UInt32;                                   
   MousePoint: HIPoint;
   pt: FPCMacOSAll.Point;
-  
-begin                                                                               
+  Window: WindowRef;
+  R: FPCMacOSAll.Rect;
+  Msg: TLMMouseMove;
+  Info:PWidgetInfo;
+begin
   GetGlobalMouse(Pt);
-  MousePoint.X := pt.h;
-  MousePoint.Y := pt.v;
-  // todo, convert to correct co-ordinates
+  Window := HIViewGetWindow(AControl);
+  GetWindowBounds(Window, kWindowStructureRgn, R);
+  MousePoint.X := pt.h - R.left;
+  MousePoint.Y := pt.v - R.Top;
+
   HIViewConvertPoint(MousePoint, nil, AControl);
+
   Modifiers := GetCurrentKeyModifiers;
   ButtonState := GetCurrentButtonState;
-
+  
+  Msg.Msg := LM_MOUSEMOVE;
+  Msg.XPos := Trunc(MousePoint.X);
+  Msg.YPos := Trunc(MousePoint.Y);
+  Info := GetWidgetInfo(AControl);
+  if Info = nil then begin
+    //AControl should be fine but if it isn't, default to the window
+    Info := GetWidgetInfo(Window);//HIViewGetFirstSubview(HiViewRef(AControl)));
+  end;
+    
+  if Info <> nil 
+  then DeliverMessage(Info^.LCLObject, Msg);
+    
   DebugLn('-- track, x:%d, y:%d, m:0x%x, b:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers, ButtonState]);
 end;
 
 function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
                                    AEvent: EventRef;
-                                   AInfo: PWidgetInfo): OSStatus; mwpascal;      
+                                   AInfo: PWidgetInfo): OSStatus; mwpascal;
+const
+    MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
 var
+  Control: ControlRef;
   Modifiers, ButtonState: UInt32;                                   
   MousePoint: HIPoint;//QDPoint;   
   ActionUPP, OldActionUPP: ControlActionUPP;
+  pt: FPCMacOSAll.Point;
+  MouseButton: EventMouseButton;
+  Window: WindowRef;
+  R: FPCMacOSAll.Rect;
+  Msg: TLMMouseMove;
 begin                                   
   DebugLn('-- Control track A');
   GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil, SizeOf(Modifiers), nil, @Modifiers);
   GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
   GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, sizeof(ActionUPP), nil, @OldActionUPP);
+  GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
   ButtonState := GetCurrentEventButtonState;
 
   ActionUPP := NewControlActionUPP(@TrackProgress);   
   SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(ActionUPP), @ActionUPP);
 
-  Result := CallNextEventHandler(ANextHandler, AEvent);                                                 
+  // this does not return until the mouse is released
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+                                                   
   SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, sizeof(OldActionUPP), @OldActionUPP);
   DisposeControlActionUPP(ActionUPP);
+  
+  // now we will create a MouseUp message to send the LCL
+  Control := ControlRef(AInfo^.Widget);
+  GetGlobalMouse(Pt);
+  Window := HIViewGetWindow(Control);
+  GetWindowBounds(Window, kWindowStructureRgn, R);
+  MousePoint.X := pt.h - R.left;
+  MousePoint.Y := pt.v - R.Top;
+
+  HIViewConvertPoint(MousePoint, nil, Control);
+
+  Modifiers := GetCurrentKeyModifiers;
+  ButtonState := GetCurrentButtonState;
+
+  if  (MouseButton >= Low(MSGKIND))
+  and (MouseButton <= High(MSGKIND))
+  then Msg.Msg := MSGKIND[MouseButton];
+
+  Msg.XPos := Trunc(MousePoint.X);
+  Msg.YPos := Trunc(MousePoint.Y);
+
+  DeliverMessage(AInfo^.LCLObject, Msg);
   
   DebugLn('-- Control track B, x:%d, y:%d, m:0x%x, b:0x%x', [Round(MousePoint.X), Round(MousePoint.Y), Modifiers, ButtonState]);
 end;
@@ -108,6 +159,8 @@ function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
 var
   Control: ControlRef;  // the control we are dealing with
                         // or the rootcontrol if none found          
+  Info: PWidgetInfo;    // the info specific to the mouse event
+                        // or the window's widgetinfo if none found
                                 
 //
 // helper functions used commonly
@@ -155,8 +208,6 @@ var
     MousePoint: TPoint;
     Msg: ^TLMMouse;
     Spec: EventTypeSpec;
-    pt: FPCMacOSAll.Point;
-    mtr: MouseTrackingResult;
   begin
     DebugLN('-- mouse down --');
     Msg := @AMsg;
@@ -181,12 +232,7 @@ var
     
     Spec := MakeEventSpec(kEventClassControl, kEventControlTrack);
     InstallControlEventHandler(Control, RegisterEventHandler(@CarbonPrivateWindow_ControlTrack), 
-      1, @Spec, nil, nil);
-    
-//    repeat
-//      TrackMouseLocation(nil, Pt, mtr);
-//      DebugLn('Mouse track, x:%d, y:%d, m:0x%x', [Round(pt.h), Round(pt.v), mtr]);
-//    until mtr = kMouseTrackingMouseUp;
+      1, @Spec, Info, nil);
     
   end;
 
@@ -250,7 +296,6 @@ var
   end;  
   EventKind: UInt32;
   Root: ControlRef;
-  Info: PWidgetInfo;
 begin
   FillChar(Msg, SizeOf(Msg), 0);
 
@@ -279,11 +324,12 @@ begin
   case EventKind of
     kEventMouseDown       : HandleMouseDownEvent(Msg);
     kEventMouseUp         : HandleMouseUpEvent(Msg);
-    kEventMouseMoved      : HandleMouseMovedEvent(Msg);
-    kEventMouseDragged    : HandleMouseDraggedEvent(Msg);
+    kEventMouseMoved,//      : HandleMouseMovedEvent(Msg);
+    kEventMouseDragged    : HandleMouseMovedEvent(Msg);//HandleMouseDraggedEvent(Msg);
 
     //For the enter and exit events tracking must be enabled
     //tracking is enabled by defining a rect that you want to track
+    // SEE FPCMacOSAll line 134390
     // TODO: Tracking
     kEventMouseEntered    : Msg.Message.Msg := CM_MOUSEENTER;
     kEventMouseExited     : Msg.Message.Msg := CM_MOUSELEAVE;
@@ -291,6 +337,7 @@ begin
     kEventMouseWheelMoved : HandleMouseWheelEvent(Msg);
   end;
   
+  // Msg is set in the Appropriate HandleMousexxx procedure
   if DeliverMessage(Info^.LCLObject, Msg) = 0 then begin
     Result :=  EventNotHandledErr; //CallNextEventHandler(ANextHandler, AEvent);
   end
