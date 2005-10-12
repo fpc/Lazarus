@@ -1023,9 +1023,9 @@ var
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
-    // ~5 pixels spacing between checkbox and text, and 2 pixels margin for rounding error
-    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK) - GetSystemMetrics(SM_CXBORDER) + 7);
-    iconHeight := GetSystemMetrics(SM_CYMENUCHECK) - GetSystemMetrics(SM_CYBORDER);
+    // 7 pixels spacing between checkbox and text
+    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK) + 7);
+    iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
   end;

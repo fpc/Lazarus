@@ -1071,7 +1071,7 @@ var
 begin
   winHandle := AWinControl.Handle;
   canvasHandle := GetDC(winHandle);
-  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Handle);
+  oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   Result := Windows.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
   if Result then
   begin
