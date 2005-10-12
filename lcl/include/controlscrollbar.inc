@@ -213,9 +213,12 @@ procedure TControlScrollBar.AutoCalcRange;
       if not C.Visible then Continue;
       if (c.Align <> alLeft) and (c.Align <> alNone) then Continue;
       
-      TmpRange := Max(TmpRange, c.Left + c.Width);
-      if c.Left < 0
-      then DebugLn('Child.Left = %d, Control.Left = %d', [c.Left, FControl.Left]);
+      // the left of a control is negative when it is scrolled to the left,
+      // so add FPosition
+      // MWE: temporary disabled until WM_MOVE messages are send for all gtklayout childs
+      TmpRange := Max(TmpRange, {FPosition +} c.Left + c.Width);
+      {if c.Left < 0
+      then DebugLn('Child.Left = %d, Control.Left = %d', [c.Left, FControl.Left]);}
     end;
     Range := TmpRange;
   end;
