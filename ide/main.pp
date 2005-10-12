@@ -6510,8 +6510,8 @@ var
   s, ShortUnitName: string;
 begin
   Result:=mrCancel;
-  BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-  if ActiveUnitInfo<>nil then begin
+  if BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[])
+    and (ActiveUnitInfo<>nil) then begin
     if ActiveUnitInfo.IsPartOfProject=false then begin
       if not ActiveUnitInfo.IsVirtual then
         s:='"'+ActiveUnitInfo.Filename+'"'
