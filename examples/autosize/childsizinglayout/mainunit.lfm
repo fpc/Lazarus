@@ -1,0 +1,111 @@
+object ChildsizingLayoutDemoForm: TChildsizingLayoutDemoForm
+  Caption = 'Childsizing.Layout Demonstration'
+  ClientHeight = 463
+  ClientWidth = 728
+  OnCreate = FormCreate
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 727
+  VertScrollBar.Page = 462
+  Left = 290
+  Height = 463
+  Top = 163
+  Width = 728
+  object LayoutLabel: TLabel
+    AutoSize = False
+    Caption = 'This is a demonstration of the TWinControl.ChildSizing.Layout property. First change in the radiogroupbox to the right the Layout and watch the LayoutGroupbox. The buttons will automatically align.'
+    Color = clNone
+    WordWrap = True
+    Left = 10
+    Height = 102
+    Top = 10
+    Width = 367
+  end
+  object LayoutGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'LayoutGroupBox'
+    ClientHeight = 212
+    ClientWidth = 376
+    ParentColor = True
+    TabOrder = 0
+    Left = 335
+    Height = 229
+    Top = 225
+    Width = 380
+  end
+  object LayoutTIRadioGroup: TTIRadioGroup
+    BorderSpacing.OnChange = nil
+    Caption = 'LayoutGroupbox.ChildSizing.Layout'
+    ParentColor = True
+    Left = 390
+    Height = 102
+    Top = 10
+    Width = 321
+  end
+  object ButtonCountRadioGroup: TRadioGroup
+    BorderSpacing.OnChange = nil
+    Caption = 'Number of Buttons'
+    ColumnLayout = clVerticalThenHorizontal
+    Columns = 4
+    Items.Strings = (
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '7'
+      '9'
+      '11'
+      '13'
+      '15'
+      '17'
+    )
+    OnClick = ButtonCountRadioGroupClick
+    ParentColor = True
+    Left = 20
+    Height = 110
+    Top = 130
+    Width = 260
+  end
+  object ControlsPerLineTIRadioGroup: TTIRadioGroup
+    BorderSpacing.OnChange = nil
+    Caption = 'LayoutGroupbox.ChildSizing.ControlsPerLine'
+    Columns = 6
+    Link.AliasValues.Strings = (
+      '0=0'
+      '1=1'
+      '2=2'
+      '3=3'
+      '4=4'
+      '5=5'
+    )
+    ParentColor = True
+    ParentShowHint = False
+    ShowHint = True
+    Left = 290
+    Height = 55
+    Hint = 'The LineLength property sets the number of controls per column/row.'
+    Top = 130
+    Width = 421
+  end
+  object ChildSizingGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
+    Caption = 'LayoutGroupbox.ChildSizing'
+    ClientHeight = 184
+    ClientWidth = 256
+    ParentColor = True
+    TabOrder = 4
+    Left = 20
+    Height = 201
+    Top = 253
+    Width = 260
+    object ChildSizingTIPropertyGrid: TTIPropertyGrid
+      Align = alClient
+      BorderSpacing.OnChange = nil
+      BorderStyle = bsSingle
+      ValueFont.Color = clMaroon
+      Height = 184
+      Width = 256
+    end
+  end
+end

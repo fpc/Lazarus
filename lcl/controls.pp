@@ -574,6 +574,7 @@ type
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
     procedure GetSpaceAround(var SpaceAround: TRect);
     function GetSpace(Kind: TAnchorKind): Integer;
+    function GetSideSpace(Kind: TAnchorKind): Integer;
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
@@ -1071,7 +1072,7 @@ type
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean = true); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
-                               Raw: boolean); virtual;
+                               Raw: boolean = false); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     procedure DisableAutoSizing;
@@ -1291,18 +1292,18 @@ type
   TControlChildSizing = class(TPersistent)
   private
     FControl: TControl;
+    FControlsPerLine: integer;
     FEnlargeHorizontal: TChildControlEnlargeStyle;
     FEnlargeVertical: TChildControlEnlargeStyle;
     FHorizontalSpacing: integer;
     FLayout: TControlChildrenLayout;
     FLeftRightSpacing: integer;
-    FLines: integer;
     FOnChange: TNotifyEvent;
     FShrinkHorizontal: TChildControlShrinkStyle;
     FShrinkVertical: TChildControlShrinkStyle;
     FTopBottomSpacing: integer;
     FVerticalSpacing: integer;
-    procedure SetLines(const AValue: integer);
+    procedure SetControlsPerLine(const AValue: integer);
     procedure SetEnlargeHorizontal(const AValue: TChildControlEnlargeStyle);
     procedure SetEnlargeVertical(const AValue: TChildControlEnlargeStyle);
     procedure SetHorizontalSpacing(const AValue: integer);
@@ -1322,7 +1323,11 @@ type
   public
     property Control: TControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    // TODO: publish the properties when implemented
+  published
+    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
+    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
+    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
+    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
     property EnlargeHorizontal: TChildControlEnlargeStyle read FEnlargeHorizontal
                            write SetEnlargeHorizontal default cesAnchorAligning;
     property EnlargeVertical: TChildControlEnlargeStyle read FEnlargeVertical
@@ -1332,12 +1337,7 @@ type
     property ShrinkVertical: TChildControlShrinkStyle read FShrinkVertical
                               write SetShrinkVertical default cssAnchorAligning;
     property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
-    property Lines: integer read FLines write SetLines;
-  published
-    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
-    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
-    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
-    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
+    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine;
   end;
 
 
@@ -1433,6 +1433,8 @@ type
     procedure Insert(AControl: TControl);
     procedure Insert(AControl: TControl; Index: integer);
     procedure Remove(AControl: TControl);
+    procedure AlignNonAlignedControls(ListOfControls: TFPList;
+                                      var BoundsModified: Boolean);
   protected
     FWinControlFlags: TWinControlFlags;
     procedure AssignTo(Dest: TPersistent); override;
@@ -2550,12 +2552,16 @@ end;
 
 function TControlBorderSpacing.GetSpace(Kind: TAnchorKind): Integer;
 begin
-  Result:=Around;
+  Result:=Around+GetSideSpace(Kind);
+end;
+
+function TControlBorderSpacing.GetSideSpace(Kind: TAnchorKind): Integer;
+begin
   case Kind of
-  akLeft: inc(Result,Left);
-  akTop: inc(Result,Top);
-  akRight: inc(Result,Right);
-  akBottom: inc(Result,Bottom);
+  akLeft: Result:=Left;
+  akTop: Result:=Top;
+  akRight: Result:=Right;
+  akBottom: Result:=Bottom;
   end;
 end;
 
@@ -2575,10 +2581,10 @@ begin
   Change;
 end;
 
-procedure TControlChildSizing.SetLines(const AValue: integer);
+procedure TControlChildSizing.SetControlsPerLine(const AValue: integer);
 begin
-  if FLines=AValue then exit;
-  FLines:=AValue;
+  if FControlsPerLine=AValue then exit;
+  FControlsPerLine:=AValue;
   Change;
 end;
 
@@ -2601,6 +2607,7 @@ procedure TControlChildSizing.SetLayout(const AValue: TControlChildrenLayout);
 begin
   if FLayout=AValue then exit;
   FLayout:=AValue;
+  //debugln('TControlChildSizing.SetLayout ',DbgSName(Control));
   Change;
 end;
 
@@ -2668,6 +2675,8 @@ begin
     FEnlargeVertical:=SrcSizing.EnlargeVertical;
     FShrinkHorizontal:=SrcSizing.ShrinkHorizontal;
     FShrinkVertical:=SrcSizing.ShrinkVertical;
+    FControlsPerLine:=SrcSizing.ControlsPerLine;
+    FLayout:=SrcSizing.Layout;
 
     Change;
   end else
@@ -2688,7 +2697,9 @@ begin
       and (FEnlargeHorizontal=Sizing.EnlargeHorizontal)
       and (FEnlargeVertical=Sizing.EnlargeVertical)
       and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
-      and (FShrinkVertical=Sizing.ShrinkVertical);
+      and (FShrinkVertical=Sizing.ShrinkVertical)
+      and (FControlsPerLine=Sizing.ControlsPerLine)
+      and (FLayout=Sizing.Layout);
 end;
 
 procedure TControlChildSizing.Change;

@@ -82,7 +82,6 @@ var
     CurControl: TControl;
   begin
     Result := True;
-
     for I := ControlCount - 1 downto 0 do
     begin
       CurControl:=Controls[I];
@@ -90,6 +89,7 @@ var
       or (CurControl.Anchors <> [akLeft, akTop])
       or (CurControl.AnchorSide[akLeft].Control<>nil)
       or (CurControl.AnchorSide[akTop].Control<>nil)
+      or (ChildSizing.Layout<>cclNone)
       then Exit;
     end;
     Result := False;
@@ -631,36 +631,20 @@ var
   
   procedure DoAlignNotAligned;
   // All controls, not aligned by their own properties, can be auto aligned.
-  {$IFDEF EnableChildSizing}
-  type
-    TLine = record
-    
-    end;
-    PLine = ^TLine;
-  
   var
     i: Integer;
     Control: TControl;
-    LineCount: LongInt;
-    OrthogonalLineCount: Integer;
-    Lines:
-  {$ENDIF}
   begin
-    // check if other aligning is enabled
-    if (ChildSizing.EnlargeHorizontal=cesAnchorAligning)
-    and (ChildSizing.EnlargeVertical=cesAnchorAligning)
-    and (ChildSizing.ShrinkHorizontal=cssAnchorAligning)
-    and (ChildSizing.ShrinkVertical=cssAnchorAligning)
-    and (ChildSizing.Layout=cclNone)
-    then
+    // check if ChildSizing aligning is enabled
+    if (ChildSizing.Layout=cclNone) then
       exit;
 
-    {$IFDEF EnableChildSizing}
     /// collect all 'not aligned' controls
     AlignList.Clear;
     for i:=0 to ControlCount-1 do begin
       Control := Controls[i];
       if (Control.Align=alNone)
+      and Control.Visible
       and (Control.Anchors=[akLeft,akTop])
       and (Control.AnchorSide[akLeft].Control=nil)
       and (Control.AnchorSide[akTop].Control=nil)
@@ -668,14 +652,10 @@ var
         AlignList.Add(Control);
       end;
     end;
+    //debugln('DoAlignNotAligned ',DbgSName(Self),' AlignList.Count=',dbgs(AlignList.Count));
     if AlignList.Count=0 then exit;
-    
-    // calculate lines of controls, based on preferred sizes
-    LineCount:=ChildSizing.Lines;
-    if LineCount>AlignList.Count then LineCount:=AlignList.Count;
-    OrthogonalLineCount:=((AlignList.Count-1) div LineCount)+1;
-    GetMem(Lines,LineCount*SizeOf(TLine));
-    {$ENDIF}
+
+    AlignNonAlignedControls(AlignList,BoundsMutated);
   end;
   
 var
@@ -754,8 +734,9 @@ end;
 
 procedure TWinControl.DoChildSizingChange(Sender: TObject);
 begin
+  //debugln('TWinControl.DoChildSizingChange ',DbgSName(Self));
   InvalidatePreferredSize;
-  AdjustSize;
+  ReAlign;
 end;
 
 procedure TWinControl.ResizeDelayedAutoSizeChildren;
@@ -3045,7 +3026,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl Remove                                                          }
 {------------------------------------------------------------------------------}
-Procedure TWinControl.Remove(AControl : TControl);
+procedure TWinControl.Remove(AControl : TControl);
 begin
   if AControl <> nil then
   begin
@@ -3058,13 +3039,279 @@ begin
       Listremove(FControls, AControl);
     AControl.FParent := Nil;
   end;
-End;
+end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl RemoveFocus                                                      }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.RemoveFocus(Removing : Boolean);
-  //TODO: FINISH TWINCONTROL.REMOVEFOCUS
+procedure TWinControl.AlignNonAlignedControls(ListOfControls: TFPList;
+  var BoundsModified: Boolean);
+{ All controls, not aligned by their own properties, can be auto aligned.
+
+  Example:
+    cclLeftToRightThenTopToBottom
+
+  +-----------------------------------+  Block
+  |+---------------------------------+| /
+  || Control1 | Control2 | Control 3 ||/
+  |+---------------------------------+|
+  |+---------------------------------+|
+  || Control4  |Control5|  Control 6 |----Box
+  |+---------------------------------+|
+  |+---------------------------------+|
+  || Control7     | Control8         ||
+  |+---------------------------------+|
+  +-----------------------------------+
+
+  Block is the outer rectangle and contains an array of TBox.
+  Each box contains a list of controls.
+}
+type
+  PBox = ^TBox;
+  TBox = record
+    MinimumSize: TPoint;
+    MaximumSize: TPoint; // 0 means no maximum
+    PreferredSize: TPoint;
+    Border: TRect;
+    NewSize: TPoint;
+    ChildCount: Integer;
+    Childs: PBox;
+  end;
+  
+  procedure RaiseConsistencyError;
+  begin
+    RaiseGDBException('TWinControl.AlignNonAlignedControls '+DbgSName(Self));
+  end;
+  
+  procedure AllocateBoxChilds(Box: PBox; NewChildCount: Integer);
+  var
+    Size: Integer;
+  begin
+    if NewChildCount=0 then RaiseConsistencyError;
+    if NewChildCount=Box^.ChildCount then exit;
+    Size:=NewChildCount*SizeOf(TBox);
+    GetMem(Box^.Childs,Size);
+    FillChar(Box^.Childs[0],Size,0);
+    Box^.ChildCount:=NewChildCount;
+  end;
+  
+var
+  i: Integer;
+  Control: TControl;
+  ControlsPerLine: LongInt; // number of controls per line
+  LineIndex: LongInt; // index of line
+  LinePos: LongInt; // position in line
+  SpaceBetween: LongInt;
+  Block: TBox;
+  Line: PBox;
+  Item: PBox;
+  LineLeft: LongInt;
+  LineTop: LongInt;
+  NewLeft: LongInt;
+  NewTop: LongInt;
+  NewWidth: LongInt;
+  NewHeight: LongInt;
+begin
+  // check if ChildSizing aligning is enabled
+  if (ChildSizing.Layout=cclNone) or (ListOfControls.Count=0) then
+    exit;
+
+  debugln('TWinControl.AlignNonAlignedControls ',DbgSName(Self),' ListOfControls.Count=',dbgs(ListOfControls.Count));
+  // allocate Lines
+  FillChar(Block,SizeOf(Block),0);
+  ControlsPerLine:=ChildSizing.ControlsPerLine;
+  if (ControlsPerLine<=0) or (ControlsPerLine>ListOfControls.Count) then
+    ControlsPerLine:=ListOfControls.Count;
+  debugln('TWinControl.AlignNonAlignedControls Allocate ControlsPerLine=',dbgs(ControlsPerLine));
+  // allocate line array for Block
+  AllocateBoxChilds(@Block,((ListOfControls.Count-1) div ControlsPerLine)+1);
+  // allocate arrays for the lines
+  for LineIndex:=0 to Block.ChildCount-2 do
+    AllocateBoxChilds(@Block.Childs[LineIndex],ControlsPerLine);
+  AllocateBoxChilds(@Block.Childs[Block.ChildCount-1],
+                    ((ListOfControls.Count-1) mod ControlsPerLine)+1);
+
+  // collect control bounds
+  for i:=0 to ListOfControls.Count-1 do begin
+    Control:=TControl(ListOfControls[i]);
+    LineIndex:=i div ControlsPerLine;
+    LinePos:=i mod ControlsPerLine;
+    debugln('TWinControl.AlignNonAlignedControls collect control bounds ',DbgSName(Control),' LineIndex=',dbgs(LineIndex),' LinePos=',dbgs(LinePos));
+    if (LineIndex>=Block.ChildCount) then RaiseConsistencyError;
+    Line:=@(Block.Childs[LineIndex]);
+    if LinePos>=Line^.ChildCount then RaiseConsistencyError;
+    Item:=@(Line^.Childs[LinePos]);
+
+    Control.BorderSpacing.GetSpaceAround(Item^.Border);
+    Item^.MinimumSize:=Point(Control.Constraints.EffectiveMinWidth,
+                      Control.Constraints.EffectiveMinHeight);
+    Item^.MaximumSize:=Point(Control.Constraints.EffectiveMaxWidth,
+                      Control.Constraints.EffectiveMaxHeight);
+    Control.GetPreferredSize(Item^.PreferredSize.x,Item^.PreferredSize.y,false);
+    debugln('TWinControl.AlignNonAlignedControls ChildControl=',DbgSName(Control),' Prefer=',dbgs(Item^.PreferredSize),' Min=',dbgs(Item^.MinimumSize),' Max=',dbgs(Item^.MaximumSize),' Border=',dbgs(Item^.Border));
+  end;
+
+  // calculate line bounds
+  for i:=0 to ListOfControls.Count-1 do begin
+    Control:=TControl(ListOfControls[i]);
+    LineIndex:=i div ControlsPerLine;
+    LinePos:=i mod ControlsPerLine;
+    Line:=@(Block.Childs[LineIndex]);
+    Item:=@(Line^.Childs[LinePos]);
+    
+    if LinePos=0 then begin
+      Line^.MinimumSize:=Item^.MinimumSize;
+      Line^.MaximumSize:=Item^.MaximumSize;
+      Line^.PreferredSize:=Item^.PreferredSize;
+      Line^.Border:=Item^.Border;
+    end else begin
+      // expand line
+      if ChildSizing.Layout=cclLeftToRightThenTopToBottom then begin
+        // expand to right of line
+        SpaceBetween:=Max(Max(Item^.Border.Left,Line^.Border.Right),
+                          ChildSizing.HorizontalSpacing);
+        inc(Line^.MinimumSize.X,Item^.MinimumSize.X+SpaceBetween);
+        inc(Line^.MaximumSize.X,Item^.MaximumSize.X+SpaceBetween);
+        inc(Line^.PreferredSize.X,Item^.PreferredSize.X+SpaceBetween);
+        Line^.Border.Right:=Control.BorderSpacing.GetSpace(akRight);
+      end else begin
+        // add to bottom of line
+        SpaceBetween:=Max(Max(Item^.Border.Top,Line^.Border.Bottom),
+                          ChildSizing.VerticalSpacing);
+        inc(Line^.MinimumSize.Y,Item^.MinimumSize.Y+SpaceBetween);
+        inc(Line^.MaximumSize.Y,Item^.MaximumSize.Y+SpaceBetween);
+        inc(Line^.PreferredSize.Y,Item^.PreferredSize.Y+SpaceBetween);
+        Line^.Border.Bottom:=Control.BorderSpacing.GetSpace(akBottom);
+      end;
+    end;
+    debugln('TWinControl.AlignNonAlignedControls LineIndex=',dbgs(LineIndex),' LinePos=',dbgs(LinePos),' Control=',DbgSName(Control),' LinePrefer=',dbgs(Line^.PreferredSize),' LineMin=',dbgs(Line^.MinimumSize),' LineMax=',dbgs(Line^.MaximumSize),' LineBorder=',dbgs(Line^.Border));
+  end;
+
+  // apply ChildSizing border spacings to line bounds
+  for LineIndex:=0 to Block.ChildCount-1 do begin
+    Line:=@(Block.Childs[LineIndex]);
+    if (ChildSizing.Layout=cclLeftToRightThenTopToBottom) then begin
+      if i=0 then
+        Line^.Border.Top:=Max(Line^.Border.Top,ChildSizing.TopBottomSpacing)
+      else
+        Line^.Border.Top:=Max(Line^.Border.Top,ChildSizing.VerticalSpacing);
+      if (i=Block.ChildCount-1) then
+        Line^.Border.Bottom:=Max(Line^.Border.Bottom,ChildSizing.TopBottomSpacing)
+      else
+        Line^.Border.Bottom:=Max(Line^.Border.Bottom,ChildSizing.VerticalSpacing);
+      Line^.Border.Left:=Max(Line^.Border.Left,ChildSizing.HorizontalSpacing);
+      Line^.Border.Right:=Max(Line^.Border.Right,ChildSizing.HorizontalSpacing);
+    end else begin
+      if i=0 then
+        Line^.Border.Left:=Max(Line^.Border.Left,ChildSizing.LeftRightSpacing)
+      else
+        Line^.Border.Left:=Max(Line^.Border.Left,ChildSizing.HorizontalSpacing);
+      if (i=Block.ChildCount-1) then
+        Line^.Border.Right:=Max(Line^.Border.Right,ChildSizing.LeftRightSpacing)
+      else
+        Line^.Border.Right:=Max(Line^.Border.Right,ChildSizing.HorizontalSpacing);
+      Line^.Border.Top:=Max(Line^.Border.Top,ChildSizing.VerticalSpacing);
+      Line^.Border.Bottom:=Max(Line^.Border.Bottom,ChildSizing.VerticalSpacing);
+    end;
+    debugln('TWinControl.AlignNonAlignedControls LineIndex=',dbgs(LineIndex),' LinePrefer=',dbgs(Line^.PreferredSize),' LineMin=',dbgs(Line^.MinimumSize),' LineMax=',dbgs(Line^.MaximumSize),' LineBorder=',dbgs(Line^.Border));
+  end;
+
+  // collect block bounds (= total bounds of all lines)
+  Block.MinimumSize:=Block.Childs[0].MinimumSize;
+  Block.MaximumSize:=Block.Childs[0].MaximumSize;
+  Block.PreferredSize:=Block.Childs[0].PreferredSize;
+  Block.Border:=Block.Childs[0].Border;
+  debugln('TWinControl.AlignNonAlignedControls BlkPrefer=',dbgs(Block.PreferredSize),' BlkMin=',dbgs(Block.MinimumSize),' BlkMax=',dbgs(Block.MaximumSize),' BlkBorder=',dbgs(Block.Border));
+  for LineIndex:=1 to Block.ChildCount-1 do begin
+    Line:=@(Block.Childs[LineIndex]);
+    if (ChildSizing.Layout=cclLeftToRightThenTopToBottom) then begin
+      // expand block to bottom
+      SpaceBetween:=Max(Max(Block.Border.Bottom,Line^.Border.Top),
+                        ChildSizing.VerticalSpacing);
+      inc(Block.MinimumSize.Y,Line^.MinimumSize.Y+SpaceBetween);
+      inc(Block.MaximumSize.Y,Line^.MaximumSize.Y+SpaceBetween);
+      inc(Block.PreferredSize.Y,Line^.PreferredSize.Y+SpaceBetween);
+    end else begin
+      // next line is placed at the right side
+      SpaceBetween:=Max(Max(Block.Border.Right,Line^.Border.Left),
+                        ChildSizing.HorizontalSpacing);
+      inc(Block.MinimumSize.X,Line^.MinimumSize.X+SpaceBetween);
+      inc(Block.MaximumSize.X,Line^.MaximumSize.X+SpaceBetween);
+      inc(Block.PreferredSize.X,Line^.PreferredSize.X+SpaceBetween);
+    end;
+    debugln('TWinControl.AlignNonAlignedControls LineIndex=',dbgs(LineIndex),' BlkPrefer=',dbgs(Block.PreferredSize),' BlkMin=',dbgs(Block.MinimumSize),' BlkMax=',dbgs(Block.MaximumSize),' BlkBorder=',dbgs(Block.Border));
+  end;
+
+  // resize total
+  for LineIndex:=0 to Block.ChildCount-1 do begin
+    Line:=@(Block.Childs[LineIndex]);
+    Line^.NewSize:=Line^.PreferredSize;
+    // TODO
+  end;
+
+  // resize lines
+  for LineIndex:=0 to Block.ChildCount-1 do begin
+    Line:=@(Block.Childs[LineIndex]);
+    for i:=0 to Line^.ChildCount-1 do begin
+      Item:=@(Line^.Childs[i]);
+      Item^.NewSize:=Item^.PreferredSize;
+      // TODO
+    end;
+  end;
+
+  // apply sizes to controls
+  LineLeft:=Block.Border.Left;
+  LineTop:=Block.Border.Top;
+  NewLeft:=LineLeft;
+  NewTop:=LineTop;
+  for i:=0 to ListOfControls.Count-1 do begin
+    Control:=TControl(ListOfControls[i]);
+    LineIndex:=i div ControlsPerLine;
+    LinePos:=i mod ControlsPerLine;
+    Line:=@(Block.Childs[LineIndex]);
+    Item:=@(Line^.Childs[LinePos]);
+    
+    NewWidth:=Item^.NewSize.X;
+    NewHeight:=Item^.NewSize.Y;
+    if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
+    or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
+      { $IFDEF CHECK_POSITION}
+      //if csDesigning in Control.ComponentState then
+      //if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+      with Control do
+        DebugLn('[TWinControl.AlignNonAlignedControls] NEW BOUNDS Control=',DbgSName(Control),
+                ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewWidth)+'x'+dbgs(NewHeight));
+      { $ENDIF}
+      // lock the base bounds, so that the new automatic bounds do not override
+      // the user settings
+      //BoundsModified:=true;
+      //Control.SetAlignedBounds(NewLeft,NewTop,NewWidth,NewHeight);
+    end;
+    
+    if LinePos<Line^.ChildCount-1 then begin
+      // next control in line
+      if ChildSizing.Layout=cclLeftToRightThenTopToBottom then
+        inc(NewLeft,NewWidth+Item^.Border.Right)
+      else
+        inc(NewTop,NewHeight+Item^.Border.Bottom);
+    end else begin
+      // next line
+      if ChildSizing.Layout=cclLeftToRightThenTopToBottom then
+        inc(LineTop,Line^.NewSize.Y+Line^.Border.Bottom)
+      else
+        inc(LineLeft,Line^.NewSize.X+Line^.Border.Right);
+      NewLeft:=LineLeft;
+      NewTop:=LineTop;
+    end;
+  end;
+  
+  // clean up
+  for LineIndex:=0 to Block.ChildCount-1 do
+    FreeMem(Block.Childs[LineIndex].Childs);
+  FreeMem(Block.Childs);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl RemoveFocus
+------------------------------------------------------------------------------}
+procedure TWinControl.RemoveFocus(Removing : Boolean);
 var
   Form: TCustomForm;
 begin
@@ -3072,9 +3319,9 @@ begin
   if Form <> nil then Form.DefocusControl(Self, Removing);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl UpdateControlState                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl UpdateControlState
+------------------------------------------------------------------------------}
 procedure TWinControl.UpdateControlState;
 var AWinControl: TWinControl;
 begin
@@ -4347,7 +4594,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
 begin
-  if (FChildSizing=AValue) or (FChildSizing.IsEqual(AValue)) then exit;
+  if (FChildSizing=AValue) then exit;
   FChildSizing.Assign(AValue);
 end;
 
