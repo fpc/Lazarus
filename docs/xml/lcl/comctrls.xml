@@ -6274,10 +6274,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TProgressBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Progress Bar</short>
+        <descr>Progress Bar: a control that appears at or near the bottom of form or window. It depicts the progress of a process, or what proportion of the progress is complete. A series of coloured rectangles appears in the control, filling it from left to right or from top to bottom as the process progresses</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TProgressBar.Align">
@@ -9490,10 +9488,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTrackBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Track Bar</short>
+        <descr>Track Bar: a device that appears at the  bottom of  a window or panel or form, showing the progress of a process or allowing the user to select (with the mouse pointer) a value denoting how much of a procedure  is to be accepted.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTrackBar.Align">

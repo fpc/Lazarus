@@ -196,7 +196,7 @@
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
         <short>Custom Scroll Bar</short>
-        <descr>Custom Scroll Bar:  the base type from which Control Basr are derived</descr>
+        <descr>Custom Scroll Bar:  the base type from which Control Bars are derived</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomScrollBar.FKind">
@@ -512,7 +512,7 @@
       <!-- object Visibility: default -->
       <element name="TScrollBar">
         <short>Scroll Bar</short>
-        <descr>Scroll Bar for Text Box or Memo. Can be none, horizontal, vertical or both. May appear automatically when the text goes outside the window. Scroll codes may be line up or down, page up or down, track the mouse, top of panel, bottom of panel, or end scroll.</descr>
+        <descr>Scroll Bar for Text Box or Memo. Can be none, horizontal, vertical or both. May appear automatically when the text goes outside the window. <br/>Scroll codes may be line up or down, page up or down, track the mouse, top of panel, bottom of panel, or end scroll.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.Align">
@@ -750,8 +750,8 @@
         <short>Group Box</short>
         <descr>Group Box. Allows a number of objects to be grouped physically and conceptually
 on the form; they can be moved around together and have certain properties in
-common. They share the same scope for several variables, which are hidden from
-objects outside the group. They can interact with one another, for example
+common. <br/>They share the same scope for several variables, which are hidden from
+objects outside the group. <br/>They can interact with one another, for example
 radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
@@ -4715,9 +4715,9 @@ or the message may be changed dynamically, eg <br/>
       <element name="TButtonControl">
         <short>Button Control</short>
         <descr>Button Control:  Base Type for the Button (including Radio Button) and Check Box types ;
-processes the detection of clicks and changes, and the checked/unchecked state of the component.
+processes the detection of clicks and changes, and the checked/unchecked state of the component.<br/>
 A rectangular button, whose shape can be specified,
-and which usually has an informative caption. It is designed to be pressed or selected by the mouse cursor, and usually initiates some activity with the OnClick Event.Properties can include Checked, Click (mouse clicks on button) and the actions to be taken on a change in a property.</descr>
+and which usually has an informative caption. It is designed to be pressed or selected by the mouse cursor, and usually initiates some activity with the OnClick Event. <br/>Properties can include Checked, Click (mouse clicks on button) and the actions to be taken on a change in a property.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TButtonControl.FClicksDisabled">
@@ -4863,7 +4863,7 @@ and which usually has an informative caption. It is designed to be pressed or se
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
         <short>Check Box State</short>
-        <descr>Check Box State: a set of constants defining the possible states of a Check Box - Checked, meaning it has been selected; Unchecked meaning irt has not been selected or has been deselected; Grayed meaning it has been rendered inoperative or unable to be selected and appears grey or faintly visible on the Form</descr>
+        <descr>Check Box State: a set of constants defining the possible states of a Check Box - <br/>Checked, meaning it has been selected; <br/>Unchecked meaning irt has not been selected or has been deselected; <br/>Grayed meaning it has been rendered inoperative or unable to be selected and appears grey or faintly visible on the Form</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbUnchecked">
@@ -5265,7 +5265,7 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       <!-- object Visibility: default -->
       <element name="TToggleBox">
         <short>Toggle Box</short>
-        <descr>Toggle Box: a labelled box capable of being checked (when it becomes recessed) or unchecked (when it is raised). The 'state' property can be tested for cbUnchecked or cbChecked and actions can be associated with mouse clicks or other movements</descr>
+        <descr>Toggle Box: a labelled box capable of being checked (when it becomes recessed) or unchecked (when it is raised). <br/>The 'state' property can be tested for cbUnchecked or cbChecked and actions can be associated with mouse clicks or other movements</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TToggleBox.Create">
@@ -5455,7 +5455,7 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       <!-- object Visibility: default -->
       <element name="TRadioButton">
         <short>Radio Button</short>
-        <descr>Radio Button: a button which works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected. Several radio buttons are usually grouped together in a Group Box or Radio Group. When a button is selected, the actions associated with that button are initiated.</descr>
+        <descr>Radio Button: a button which works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected. <br/>Several radio buttons are usually grouped together in a Group Box or Radio Group. When a button is selected, the actions associated with that button are initiated.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TRadioButton.RealSetText">

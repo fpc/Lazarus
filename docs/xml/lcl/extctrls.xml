@@ -1787,7 +1787,7 @@
       <!-- object Visibility: default -->
       <element name="TShape">
         <short>Shape</short>
-        <descr>Shape: An arbitrary graphic geometrical shape placed on the Form</descr>
+        <descr>Shape: An arbitrary graphic geometrical shape placed on the Form. It may be one of a series of standard shapes defined by TShapeType</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TShape.FPen">
@@ -3027,7 +3027,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       <!-- object Visibility: default -->
       <element name="TBevel">
         <short>Bevel</short>
-        <descr>A bevel placed around the edge of buttons and other components</descr>
+        <descr>A bevel placed around the edge of buttons and other components. Its appearance is governed by TBevelShape, TBevelStyle and TBevelwidth</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBevel.FStyle">
@@ -4525,8 +4525,7 @@ requiring the user to select one af a set of alternatives</descr>
       <!-- object Visibility: default -->
       <element name="TLabeledEdit">
         <short>Labelled Edit</short>
-        <descr>Labelled Edit: An Edit Box with a permanently attached Label;
-saves time and effort over placing separate Label and Edit Box on Form. The Label property is described in the parent component, TCustomLabeledEdit</descr>
+        <descr>Labelled Edit: An Edit Box with a permanently attached Label;<br/>saves time and effort over placing separate Label and Edit Box on Form. The Label property is described in the parent component, TCustomLabeledEdit</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Anchors">
@@ -4960,7 +4959,7 @@ saves time and effort over placing separate Label and Edit Box on Form. The Labe
       <element name="TPanel">
         <short>Panel</short>
         <descr>Panel: A defined rectangular area of the form into which other components
-can be placed to group then functionally and geographically</descr>
+can be placed to group them functionally and geographically</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.Align">
