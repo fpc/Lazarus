@@ -1198,10 +1198,17 @@ Begin
     end;
     WM_NCHITTEST:
     begin
-      if (lWinControl <> nil) and (lWinControl.FCompStyle = csHintWindow) then
-      begin
-        LMessage.Result := HTTRANSPARENT;
-        WinProcess := false;
+      if (lWinControl <> nil) then begin
+        if (lWinControl.FCompStyle = csHintWindow) then
+        begin
+          LMessage.Result := HTTRANSPARENT;
+          WinProcess := false;
+        end
+        else if (lWinControl is TCustomGroupBox) then
+        begin
+          LMessage.Result := HTCLIENT;
+          WinProcess := false;
+        end;
       end;
     end;
     WM_NCLBUTTONDOWN:
