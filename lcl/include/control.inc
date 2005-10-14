@@ -2890,7 +2890,7 @@ begin
   Result:=(Visible
           or ((csDesigning in ComponentState)
               and not (csNoDesignVisible in ControlStyle)))
-          and not (csReadingState in ControlState);
+          and not (csLoading in ComponentState);
 end;
 
 {------------------------------------------------------------------------------
