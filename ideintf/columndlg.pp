@@ -288,8 +288,9 @@ begin
     try
       ListColumn.Width := StrToInt(WidthEdit.Caption);
     except
-      raise Exception.Create('Invalid numeric Value');
-      WidthEdit.Caption := '0';
+      showmessage('Invalid numeric Value');
+      // revert to previous value
+      WidthEdit.Caption := IntToStr(ListColumn.Width);
     end;
 end;
 
