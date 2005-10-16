@@ -137,7 +137,6 @@ Type
         Desc: PRawImageDescription);
 
     Function WinRegister: Boolean;
-    Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
 

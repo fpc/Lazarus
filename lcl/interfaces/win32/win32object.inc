@@ -465,26 +465,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.PaintPixmap
-  Params: Surface    - The surface onto which to paint the pixmap
-          PixmapData - Data necessary in drawing the pixmap
-  Returns: Nothing
-
-  Paints a pixmap on a surface (control).
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.PaintPixmap(Surface: TObject; PixmapData: Pointer);
-Var
-  DC: HDC;
-  Pixmap: HIcon;
-Begin
-  DC := GetDC((Surface As TWinControl).Handle);
-  Pixmap := CreatePixmapIndirect(PixmapData, 0);
-  DrawIcon(DC, TWinControl(Surface).Left, TWinControl(Surface).Top, Pixmap);
-  ReleaseDC(TWinControl(Surface).Handle, DC);
-  DeleteObject(Pixmap);
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.NormalizeIconName
   Params: IconName - The name of the icon to normalize
   Returns: Nothing
