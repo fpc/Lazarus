@@ -3,8 +3,8 @@ Quick Start for translators:
 For example finnish translation:
 Search for all *.fi.po files. They are simple text files, with an easy format.
 Edit them with programs like kbabel.
-Run 'sh localize.sh' to update translations. This will create the various .mo
-files.
+Run 'sh localize.sh' to update translations.
+
 Send the updated xxx.fi.po files to patch@dommelstein.net.
 Do not send diffs for .po files.
 
@@ -16,7 +16,7 @@ internationalization of the lazarus IDE.
 
 There are a few other directories for the codetools and the lcl. They work
 all the same. All language files can easily be updated with the
-<lazarusdir>/localize.sh script.
+<lazarusdir>/localize.sh or <lazarusdir>\localize.bat script.
 
 
 All text and messages used in the IDE (except the special designer units)
@@ -28,7 +28,7 @@ Since this is a fpc-only format it must be converted with the rstconv program:
 cd <lazarusdir>/languages
 rstconv -i ../lazarusidestrconsts.rst -o lazaruside.po
 
-Hint: this is done by <lazarusdir>/localize.sh
+Hint: this is done by <lazarusdir>/localize.sh or <lazarusdir>\localize.bat.
 
 This will create the file lazaruside.po, which should be translated in all
 required languages to a lazaruside.xx.po file. For the xx see the gettext unit
@@ -39,19 +39,6 @@ russian (KOI8-R): lazaruside.ru.po
 spanish:          lazaruside.es.po
 french:           lazaruside.fr.po
 italian:          lazaruside.it.po
-
-
-After the translation, the lazaruside.xx.po file is converted to an .mo file
-with the msgfmt program:
-
-msgfmt -v -o lazaruside.xx.mo lazaruside.xx.po
-
-where xx is the language id.
-Hint: this is done by <lazarusdir>/localize.sh too
-
-
-(The same for objinspstrconsts.xx.po, codetoolsstrconsts.xx.po, lcl.xx.po)
-Hint: this is also done by <lazarusdir>/localize.sh
 
 
 
