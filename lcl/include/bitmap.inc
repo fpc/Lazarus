@@ -755,7 +755,7 @@ begin
   ImgWriter:=nil;
   try
     IntfImg:=TLazIntfImage.Create(0,0);
-    IntfImg.LoadFromBitmap(Handle,0);
+    IntfImg.LoadFromBitmap(Handle,FImage.FMaskHandle);
     
     if WriterClass=nil then begin
       // automatically use a TFPCustomImageWriterClass

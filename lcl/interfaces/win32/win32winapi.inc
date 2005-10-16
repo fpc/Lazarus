@@ -1771,7 +1771,8 @@ procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
   const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte; 
   var Size: Cardinal);
 var
-  bmInfo: TBitmapInfo;
+  bmInfoBuffer: array[0..sizeof(TBitmapInfo)+256*sizeof(Windows.RGBQUAD)] of byte;
+  bmInfo: TBitmapInfo absolute bmInfoBuffer;
   ScreenDC: HDC;
 begin
   // initialize bitmapinfo structure
@@ -1784,17 +1785,11 @@ begin
   bmInfo.bmiHeader.biPlanes := 1;
   bmInfo.bmiHeader.biBitCount := BitmapInfo.bmBitsPixel;
   bmInfo.bmiHeader.biCompression := BI_RGB;
+  bmInfo.bmiHeader.biSizeImage := 0;
+  Size := ((BitmapInfo.bmWidthBytes+3) and not 3) * (SrcRect.Bottom-SrcRect.Top);
   ScreenDC := GetDC(0);
-  // allocate memory for pixel data, N scanlines
-  if GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, nil, bmInfo, DIB_RGB_COLORS) <> 0 then
-  begin
-    Size := bmInfo.bmiHeader.biSizeImage;
-    GetMem(Data, Size);
-    GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
-  end else begin
-    Data := nil;
-    Size := 0;
-  end;
+  GetMem(Data, Size);
+  GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
   // release resources
   ReleaseDC(0, ScreenDC);
 end;
@@ -3133,13 +3128,13 @@ Begin
   begin
     if (Width = SrcWidth) and (Height = SrcHeight) then
     begin
-      Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
+      Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
     end else begin
-      Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
+      Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
     end;
   end else begin
-    MaskDC := CreateCompatibleDC(0);
-    SaveObj := SelectObject(MaskDC, Mask);
+    MaskDC := Windows.CreateCompatibleDC(0);
+    SaveObj := Windows.SelectObject(MaskDC, Mask);
     PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
     PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
     if (Width = SrcWidth) and (Height = SrcHeight) then
@@ -3154,8 +3149,8 @@ Begin
     end;
     Windows.SetTextColor(DestDC, PrevTextColor);
     Windows.SetBkColor(DestDC, PrevBkColor);
-    SelectObject(MaskDC, SaveObj);
-    DeleteDC(MaskDC);
+    Windows.SelectObject(MaskDC, SaveObj);
+    Windows.DeleteDC(MaskDC);
   end;
   Result := true;
 end;

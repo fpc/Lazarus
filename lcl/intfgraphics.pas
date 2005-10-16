@@ -336,11 +336,13 @@ type
     BFI: TBitMapInfoHeader;  // The header as read from the stream.
     FPalette: PFPcolor;      // Buffer with Palette entries.
     FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
+    FTransparentColor: TFPColor; // color which should be interpreted as transparent
     LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
 
     // SetupRead will allocate the needed buffers, and read the colormap if needed.
     procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
       ReadPalette: Boolean); virtual;
+    function  ColorToTrans(const InColor: TFPColor): TFPColor;
     procedure ReadScanLine(Row: Integer; Stream: TStream); virtual;
     procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); virtual;
     function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; virtual;
@@ -3073,6 +3075,14 @@ begin
     end;
 end;
 
+function TLazReaderBMP.ColorToTrans(const InColor: TFPColor): TFPColor;
+begin
+  if InColor = FTransparentColor then
+    Result := FPImage.colTransparent
+  else
+    Result := InColor;
+end;
+
 procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
   ReadPalette: Boolean);
 var
@@ -3146,23 +3156,23 @@ begin
          img.colors[Column,Row]:=FPalette[0];
    4 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=FPalette[(LineBuf[Column div 2] shr (((Column+1) and 1)*4)) and $0f];
+        img.colors[Column,Row]:=FPalette[(LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f];
    8 :
       for Column:=0 to img.Width-1 do
         img.colors[Column,Row]:=FPalette[LineBuf[Column]];
    15:
       for Column := 0 to img.Width - 1 do
-        Img.colors[Column, Row] := Bmp15BitToFPColor(PWord(LineBuf)[Column]);
+        Img.colors[Column,Row]:=ColorToTrans(Bmp15BitToFPColor(PWord(LineBuf)[Column]));
    16 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=Bmp16BitToFPColor(PWord(LineBuf)[Column]);
+        img.colors[Column,Row]:=ColorToTrans(Bmp16BitToFPColor(PWord(LineBuf)[Column]));
    24 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
-   32 :
+        img.colors[Column,Row]:=ColorToTrans(BmpRGBToFPColor(PColorRGB(LineBuf)[Column]));
+   32 :  // BmpRGBA already does transparency
       for Column:=0 to img.Width-1 do
         img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
-    end;
+  end;
 end;
 
 procedure TLazReaderBMP.InternalRead(Stream: TStream; Img: TFPCustomImage);
@@ -3199,6 +3209,22 @@ const
 Var
   PixelMasks: TPixelMasks;
   Row : Integer;
+  firstLine: boolean;
+
+  procedure SaveTransparentColor;
+  begin
+    // define transparent color: 1-8 use palette, 15-24 use fixed color
+    case FBitsPerPixel of
+     1 : FPalette[(LineBuf[0] shr 7) and 1] := fpimage.colTransparent;
+     4 : FPalette[(LineBuf[0] shr 4) and $f] := fpimage.colTransparent;
+     8 : FPalette[LineBuf[0]] := fpimage.colTransparent;
+     15: FTransparentColor := Bmp15BitToFPColor(PWord(LineBuf)[0]);
+     16: FTransparentColor := Bmp16BitToFPColor(PWord(LineBuf)[0]); 
+     24: FTransparentColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
+     32: ; // BmpRGBA already does transparency
+    end;
+  end;
+  
 begin
   { This will move past any junk after the BFI header }
   Stream.Position:=Stream.Position+TStreamSeekType(BFI.biSize-SizeOf(BFI));
@@ -3303,8 +3329,14 @@ begin
     raise FPImageException.CreateFmt('Wrong bitmap bit count: %d', [BFI.biBitCount]);
   end;
   Try
+    firstLine := true;
     for Row := Img.Height - 1 downto 0 do begin
       ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
+      if firstLine then
+      begin
+        SaveTransparentColor;
+        firstLine := false;
+      end;
       WriteScanLine(Row,Img);
       end;
   finally
