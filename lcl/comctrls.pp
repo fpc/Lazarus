@@ -889,6 +889,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginUpdate;
+    procedure Clear;
     procedure EndUpdate;
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
     property BoundingRect: TRect read GetBoundingRect;

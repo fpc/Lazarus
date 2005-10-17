@@ -392,6 +392,11 @@ begin
   then TWSCustomListViewClass(WidgetSetClass).BeginUpdate(Self);
 end;
 
+procedure TCustomListView.Clear;
+begin
+  FListItems.Clear;
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView EndUpdate                                               }
 {------------------------------------------------------------------------------}
