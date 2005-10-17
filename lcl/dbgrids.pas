@@ -1419,24 +1419,24 @@ end;
 
 procedure TCustomDbGrid.SwapCheckBox;
 var
-	TempColumn: TColumn;
   SelField: TField;
+  TempColumn: TColumn;
 begin
   if not GridCanModify then
-    exit; // raise exception?
+    exit;
 
   SelField := SelectedField;
-
-  if SelField.DataType=ftBoolean then
+  TempColumn := TColumn(ColumnFromGridColumn(Col));
+  if (TempColumn<>nil) and not TempColumn.ReadOnly then
   begin
-    SelField.Dataset.Edit;
-  	SelField.AsBoolean := not SelField.AsBoolean
-  end else
-  begin
-    TempColumn := TColumn(ColumnFromGridColumn(Col));
-    if not TempColumn.ReadOnly then
+    if SelField.DataType=ftBoolean then
     begin
-      SelField.Dataset.Edit;
+      SelField.DataSet.Edit;
+    	SelField.AsBoolean := not SelField.AsBoolean
+    end
+    else
+    begin
+      SelField.DataSet.Edit;
       if ValueMatch(TempColumn.ValueChecked, SelField.AsString) then
         SelField.AsString := TempColumn.ValueUnchecked
       else
