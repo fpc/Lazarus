@@ -222,7 +222,6 @@ function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
 function ShowCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure Sleep(dwMilliseconds: DWORD); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
   SrcY, SrcWidth, SrcHeight: Integer; Bits: Pointer; var BitsInfo: TBitmapInfo;

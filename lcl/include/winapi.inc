@@ -795,11 +795,6 @@ begin
   Result := WidgetSet.ShowWindow(hWnd,nCmdShow);
 end;
 
-procedure Sleep(dwMilliseconds: DWORD);
-begin
-  WidgetSet.Sleep(dwMilliseconds);
-end;
-
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin

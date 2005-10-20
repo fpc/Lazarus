@@ -1393,10 +1393,6 @@ begin
   Result:=false;
 end;
 
-procedure TWidgetSet.Sleep(dwMilliseconds: DWORD);
-begin
-end;
-
 function TWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
