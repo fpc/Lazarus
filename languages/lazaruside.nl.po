@@ -6988,7 +6988,7 @@ msgstr "Dit bestand is niet aanwezig in een van de geladen packages."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Dit bestans is automatisch aangemaakt door Lazarus. Niet wijzigen!"
+msgstr "Dit bestand is automatisch aangemaakt door Lazarus. Niet wijzigen!"
 
 #: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
