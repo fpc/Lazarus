@@ -812,7 +812,7 @@ begin
   Date:=trunc(FDate);
   Text:=DateToStr(Date);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
-  DialogTitle:='Select a date';
+  DialogTitle:=rsPickDate;
   OKCaption:='OK';
   CancelCaption:='Cancel';
   ReadOnly:=true;
