@@ -1049,6 +1049,7 @@ type
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;// output device independent handle
+    FBitmapCanvas: TCanvas; // current canvas selected into
     FSaveStream: TMemoryStream;
     FSaveStreamClass: TFPCustomImageWriterClass;
     FSaveStreamType: TBitmapNativeType;
@@ -1063,6 +1064,7 @@ type
     destructor Destroy; override;
     function HandleAllocated: boolean; override;
     function GetHandleType: TBitmapHandleType;
+    property BitmapCanvas: TCanvas read FBitmapCanvas write FBitmapCanvas;
     property SaveStream: TMemoryStream read FSaveStream write FSaveStream;
     property SaveStreamType: TBitmapNativeType read FSaveStreamType write FSaveStreamType;
     property SaveStreamClass: TFPCustomImageWriterClass read FSaveStreamClass write FSaveStreamClass;

@@ -447,65 +447,19 @@ procedure TButtonGlyphPropEditor.Edit;
 var
   TheDialog: TGraphicPropertyEditorForm;
   ABitmap: TBitmap;
-
-  Procedure LoadBitmap;
-  var
-    ext : String;
-    TempBitmap: TBitmap;
-  begin
-    Ext := ExtractFileExt(TheDialog.FileName);
-    if (CompareText(Ext, '.xpm') = 0)
-    or (CompareText(Ext, '.bmp') = 0) then begin
-      If FileExists(TheDialog.FileName) then begin
-        TempBitmap := TBitmap.Create;
-        try
-          // try to load
-          TempBitmap.LoadFromFile(TheDialog.FileName);
-          // no exception -> loading ok
-          ABitmap.Assign(TempBitmap);
-        finally
-          TempBitmap.Free;
-        end;
-      end;
-    end
-    else begin
-      ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
-      {ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
-      ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
-      With ABitmap.Canvas do begin
-        Brush.Color := clWhite;
-        FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-        Draw(0, 0, TheDialog.Preview.Picture.Graphic);
-      end;}
-    end;
-  end;
-  
 begin
   //debugln('TButtonGlyphPropEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
-    If not ABitmap.Empty then begin
+    if not ABitmap.Empty then begin
       TheDialog.Preview.Picture.Assign(ABitmap);
-      {With TheDialog.Preview.Picture.Bitmap do begin
-        Width := ABitmap.Width;
-        Height := ABitmap.Height;
-        Canvas.Brush.Color := clWhite;
-        Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-        Canvas.Draw(0, 0, ABitmap);
-      end;}
     end;
     if (TheDialog.ShowModal = mrOK) then begin
-      If TheDialog.Preview.Picture.Graphic <> nil then begin
-        if TheDialog.Modified then begin
-          LoadBitmap;
-        end;
-      end
-      else begin
-        ABitmap.Width:=0;
-        ABitmap.Height:=0;
+      if TheDialog.Modified then begin
+        ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
+        Modified;
       end;
-      Modified;
     end;
   finally
     TheDialog.Free;

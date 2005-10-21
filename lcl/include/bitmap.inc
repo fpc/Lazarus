@@ -88,6 +88,9 @@ begin
       IntfImage.Free;
     end;
     Changed(Self);
+  end else if Source = nil then begin
+    FreeSaveStream;
+    SetWidthHeight(0,0);
   end else
     inherited Assign(Source);
 end;
@@ -657,8 +660,8 @@ begin
 
   UnshareImage(false);
   if UseSize and (Size = 0) then begin
-    Width:=0;
-    Height:=0;
+    FreeSaveStream;
+    SetWidthHeight(0,0);
     exit;
   end;
 
