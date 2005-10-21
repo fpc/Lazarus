@@ -561,6 +561,7 @@ Type
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ScrollBars;
+    property TabOrder;
     property Tabstop;
     property Visible;
     property WordWrap stored WordWrapIsStored;
