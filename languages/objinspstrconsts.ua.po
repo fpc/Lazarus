@@ -172,11 +172,11 @@ msgstr "Масив"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr ""
+msgstr "Доступні Action Classes:"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
-msgstr ""
+msgstr "Boolean"
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -184,7 +184,7 @@ msgstr "Браузер %s%s%s недоступний."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr "Браузер %s%s%s не знайдено"
+msgstr "Браузера %s%s%s не знайдено"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -208,11 +208,11 @@ msgstr ""
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "Редактор Check Group"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr ""
+msgstr "Редактор CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -256,31 +256,31 @@ msgstr "Створити подію за замовчуванням"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
-msgstr ""
+msgstr "Ctrl+A"
 
 #: objinspstrconsts:oistdacteditcopyshortcut
 msgid "Ctrl+C"
-msgstr ""
+msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
-msgstr ""
+msgstr "Ctrl+O"
 
 #: objinspstrconsts:oistdacteditpasteshortcut
 msgid "Ctrl+V"
-msgstr ""
+msgstr "Ctrl+V"
 
 #: objinspstrconsts:oistdacteditcutshortcut
 msgid "Ctrl+X"
-msgstr ""
+msgstr "Ctrl+X"
 
 #: objinspstrconsts:oistdacteditundoshortcut
 msgid "Ctrl+Z"
-msgstr ""
+msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "Вир&ізати"
 
 #: objinspstrconsts:oiscut
 msgid "Cut"
@@ -292,7 +292,7 @@ msgstr "База даних"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
@@ -352,7 +352,7 @@ msgstr "Помилка завантаження зображення %s%s%s:%s%s
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr "Помилка процесу виконання %s%s%s:%s%s"
+msgstr "Помилка при виконанні %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -444,7 +444,7 @@ msgstr "Вставити сторінку"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
-msgstr "Ціле64"
+msgstr "Int64"
 
 #: objinspstrconsts:oisinteger
 msgid "Integer"
@@ -524,7 +524,7 @@ msgstr "Наступний"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Не знайдено браузера HTML.%Визначте його в Довідка->Настроїти довідку->Переглядачі"
+msgstr "Не знайдено браузера HTML.%Визначте його в Довідка->Налаштувати довідку->Переглядачі"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -545,10 +545,6 @@ msgstr ""
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Відкрити"
-
-#: objinspstrconsts:oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr ""
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -664,7 +660,7 @@ msgstr "Впорядкування"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr ""
+msgstr "Standard Action Classes"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -720,9 +716,9 @@ msgstr "Значення:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
-msgstr ""
+msgstr "Variant"
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr ""
+msgstr "Word"
 

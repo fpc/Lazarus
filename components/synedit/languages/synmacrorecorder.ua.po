@@ -1,0 +1,16 @@
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr "Можу лише призупинись, коли записую"
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr "Можу лише продовжити, якщо зупинений"
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Не можу відкотити макрос, коли записую"
+
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Не можу писати макрос, коли записую"
+
