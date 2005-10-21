@@ -431,7 +431,7 @@ begin
   and (TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo) then
     Result:=Result+LineEnding
       +' WARNING: TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo('
-      +DbgS(TypeData^.ParentInfo)+'<>'+
+      +DbgS(TypeData^.ParentInfo)+'<>'
       +DbgS(AClass.ClassParent.ClassInfo)+'<>'+')'+LineEnding;
   Result:=Result+' PropCount='+IntToStr(TypeData^.PropCount);
   Result:=Result+' UnitName="'+TypeData^.UnitName+'"';

@@ -1306,10 +1306,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
               +'(const '+SetPropertyVariablename+': '+PropType+');'
               +BeautifyCodeOpts.LineEnd
               +'begin'+BeautifyCodeOpts.LineEnd
-              +GetIndentStr(BeautifyCodeOpts.Indent)+
+              +GetIndentStr(BeautifyCodeOpts.Indent)
                 +'if '+VariableName+'='+SetPropertyVariablename+' then exit;'
                 +BeautifyCodeOpts.LineEnd
-              +GetIndentStr(BeautifyCodeOpts.Indent)+
+              +GetIndentStr(BeautifyCodeOpts.Indent)
                 +VariableName+':='+SetPropertyVariablename+';'
                 +BeautifyCodeOpts.LineEnd
               +'end;';

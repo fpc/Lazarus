@@ -3394,7 +3394,7 @@ begin
     +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
-  s:=s+
+  s:=s
     +';'+Dir+'rtl'+DS+SrcOS+DS
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;

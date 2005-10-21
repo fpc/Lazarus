@@ -720,7 +720,7 @@ begin
   if ResStrExistsInCurrentSection(Result) then begin
     i:=2;
     while ResStrExistsInCurrentSection(Result+IntToStr(i)) do inc(i);
-    Result:=Result++IntToStr(i);
+    Result:=Result+IntToStr(i);
   end;
 end;
 

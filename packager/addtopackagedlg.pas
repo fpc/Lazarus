@@ -1818,7 +1818,7 @@ begin
     NewFileName:=lowercase(NewFileName);
 
   // append pascal file extension
-  NewFileName:=NewFileName+
+  NewFileName:=NewFileName
        +EnvironmentOpts.PascalExtension[EnvironmentOptions.PascalFileExtension];
   // prepend path
   if LazPackage.HasDirectory then
