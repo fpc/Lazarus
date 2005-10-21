@@ -57,6 +57,7 @@ begin
     // TBitmap can share image data
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
+    FTransparent := SrcBitmap.Transparent;
     if SrcBitmap.FImage=FImage then exit;
 
     //DebugLn('TBitMap.Assign A  RefCount=',FImage.RefCount);
