@@ -3255,6 +3255,9 @@ begin
 end;
 
 procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  I: Integer;
+  Node: TTreeNode;
 begin
   inherited KeyDown(Key, Shift);
 
@@ -3272,12 +3275,73 @@ begin
       Key:=VK_UNKNOWN;
     end;
 
-  VK_Left:
-    if (Selected<>nil) then Selected.Expanded:=false;
+  VK_LEFT:
+    if (Selected<>nil) then
+    begin
+      if Selected.Expanded then
+        Selected.Expanded := False
+      else
+        if (Selected.GetPrevExpanded = Selected.Parent) and
+           (Selected.Parent <> nil) then Selected := Selected.Parent;
+    end;
 
-  VK_Right:
-    if (Selected<>nil) then Selected.Expanded:=true;
+  VK_RIGHT:
+    if (Selected<>nil) then
+    begin
+      if Selected.Expanded then
+        Selected := Selected.GetNextExpanded
+      else
+        Selected.Expanded := True;
+    end;
+    
+  VK_ADD:
+    if (Selected<>nil) then Selected.Expanded := True;
+    
+  VK_SUBTRACT:
+    if (Selected<>nil) then Selected.Expanded := False;
 
+  VK_HOME:
+    if Items.Count > 0 then
+      Selected := Items[0];
+      
+  VK_END:
+    if Items.Count > 0 then
+      Selected := Items.GetLastExpandedSubNode;
+      
+  VK_PRIOR: // Page Up
+    if (Selected <> nil) then
+    begin
+      I := Pred(ClientHeight div DefaultItemHeight);
+      Node := Selected;
+
+      while (I > 0) do
+        if Node.GetPrevExpanded <> nil then
+        begin
+          Node := Node.GetPrevExpanded;
+          Dec(I);
+        end
+        else Break;
+
+      Selected := Node;
+    end;
+    
+  VK_NEXT: // Page Down
+    if (Selected <> nil) then
+    begin
+      I := Pred(ClientHeight div DefaultItemHeight);
+      Node := Selected;
+
+      while (I > 0) do
+        if Node.GetNextExpanded <> nil then
+        begin
+          Node := Node.GetNextExpanded;
+          Dec(I);
+        end
+        else Break;
+
+      Selected := Node;
+    end;
+    
   end;
 end;
 
