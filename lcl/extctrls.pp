@@ -273,6 +273,7 @@ type
     property OnResize;
     property Options;
     property PageIndex;
+    property PopupMenu;
     property ShowTabs;
   end;
 

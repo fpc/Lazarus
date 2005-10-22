@@ -2269,7 +2269,7 @@ begin
     {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
-  if (X < fGutterWidth) then begin
+  if (X < fGutterWidth) and (Button=mbLeft) then begin
     Include(fStateFlags, sfPossibleGutterClick);
     DoOnGutterClick(X, Y);
   end;
