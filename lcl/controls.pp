@@ -1271,18 +1271,13 @@ type
         B and C.
   }
 
-  TChildControlEnlargeStyle = (
-      cesAnchorAligning, // (like Delphi)
-      cesScaleChilds, // scale childs, keep space between childs fixed
-      cesHomogenousChildGrowth, // enlarge childs equally (i.e. by the same amount of pixel)
-      cesHomogenousSpaceGrowth  // enlarge space between childs equally
+  TChildControlResizeStyle = (
+      crsAnchorAligning, // (like Delphi)
+      crsScaleChilds, // scale childs, keep space between childs fixed
+      crsHomogenousChildResize, // enlarge childs equally (i.e. by the same amount of pixel)
+      crsHomogenousSpaceResize  // enlarge space between childs equally
     );
-  TChildControlShrinkStyle = (
-      cssAnchorAligning, // (like Delphi)
-      cssScaleChilds, // scale childs
-      cssHomogenousChildDecrease // shrink childs equally (i.e. by the same amount of pixel)
-    );
-    
+
   TControlChildrenLayout = (
       cclNone,
       cclLeftToRightThenTopToBottom,
@@ -1293,24 +1288,24 @@ type
   private
     FControl: TControl;
     FControlsPerLine: integer;
-    FEnlargeHorizontal: TChildControlEnlargeStyle;
-    FEnlargeVertical: TChildControlEnlargeStyle;
+    FEnlargeHorizontal: TChildControlResizeStyle;
+    FEnlargeVertical: TChildControlResizeStyle;
     FHorizontalSpacing: integer;
     FLayout: TControlChildrenLayout;
     FLeftRightSpacing: integer;
     FOnChange: TNotifyEvent;
-    FShrinkHorizontal: TChildControlShrinkStyle;
-    FShrinkVertical: TChildControlShrinkStyle;
+    FShrinkHorizontal: TChildControlResizeStyle;
+    FShrinkVertical: TChildControlResizeStyle;
     FTopBottomSpacing: integer;
     FVerticalSpacing: integer;
     procedure SetControlsPerLine(const AValue: integer);
-    procedure SetEnlargeHorizontal(const AValue: TChildControlEnlargeStyle);
-    procedure SetEnlargeVertical(const AValue: TChildControlEnlargeStyle);
+    procedure SetEnlargeHorizontal(const AValue: TChildControlResizeStyle);
+    procedure SetEnlargeVertical(const AValue: TChildControlResizeStyle);
     procedure SetHorizontalSpacing(const AValue: integer);
     procedure SetLayout(const AValue: TControlChildrenLayout);
     procedure SetLeftRightSpacing(const AValue: integer);
-    procedure SetShrinkHorizontal(const AValue: TChildControlShrinkStyle);
-    procedure SetShrinkVertical(const AValue: TChildControlShrinkStyle);
+    procedure SetShrinkHorizontal(const AValue: TChildControlResizeStyle);
+    procedure SetShrinkVertical(const AValue: TChildControlResizeStyle);
     procedure SetTopBottomSpacing(const AValue: integer);
     procedure SetVerticalSpacing(const AValue: integer);
   protected
@@ -1328,14 +1323,14 @@ type
     property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
     property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
     property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
-    property EnlargeHorizontal: TChildControlEnlargeStyle read FEnlargeHorizontal
-                           write SetEnlargeHorizontal default cesAnchorAligning;
-    property EnlargeVertical: TChildControlEnlargeStyle read FEnlargeVertical
-                             write SetEnlargeVertical default cesAnchorAligning;
-    property ShrinkHorizontal: TChildControlShrinkStyle read FShrinkHorizontal
-                            write SetShrinkHorizontal default cssAnchorAligning;
-    property ShrinkVertical: TChildControlShrinkStyle read FShrinkVertical
-                              write SetShrinkVertical default cssAnchorAligning;
+    property EnlargeHorizontal: TChildControlResizeStyle read FEnlargeHorizontal
+                           write SetEnlargeHorizontal default crsAnchorAligning;
+    property EnlargeVertical: TChildControlResizeStyle read FEnlargeVertical
+                             write SetEnlargeVertical default crsAnchorAligning;
+    property ShrinkHorizontal: TChildControlResizeStyle read FShrinkHorizontal
+                            write SetShrinkHorizontal default crsAnchorAligning;
+    property ShrinkVertical: TChildControlResizeStyle read FShrinkVertical
+                              write SetShrinkVertical default crsAnchorAligning;
     property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
     property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine;
   end;
@@ -2574,7 +2569,7 @@ end;
 { TControlChildSizing }
 
 procedure TControlChildSizing.SetEnlargeHorizontal(
-  const AValue: TChildControlEnlargeStyle);
+  const AValue: TChildControlResizeStyle);
 begin
   if FEnlargeHorizontal=AValue then exit;
   FEnlargeHorizontal:=AValue;
@@ -2589,7 +2584,7 @@ begin
 end;
 
 procedure TControlChildSizing.SetEnlargeVertical(
-  const AValue: TChildControlEnlargeStyle);
+  const AValue: TChildControlResizeStyle);
 begin
   if FEnlargeVertical=AValue then exit;
   FEnlargeVertical:=AValue;
@@ -2619,7 +2614,7 @@ begin
 end;
 
 procedure TControlChildSizing.SetShrinkHorizontal(
-  const AValue: TChildControlShrinkStyle);
+  const AValue: TChildControlResizeStyle);
 begin
   if FShrinkHorizontal=AValue then exit;
   FShrinkHorizontal:=AValue;
@@ -2627,7 +2622,7 @@ begin
 end;
 
 procedure TControlChildSizing.SetShrinkVertical(
-  const AValue: TChildControlShrinkStyle);
+  const AValue: TChildControlResizeStyle);
 begin
   if FShrinkVertical=AValue then exit;
   FShrinkVertical:=AValue;
@@ -2653,10 +2648,10 @@ begin
   FControl:=OwnerControl;
   inherited Create;
   FLayout:=cclNone;
-  FEnlargeHorizontal:=cesAnchorAligning;
-  FEnlargeVertical:=cesAnchorAligning;
-  FShrinkHorizontal:=cssAnchorAligning;
-  FShrinkVertical:=cssAnchorAligning;
+  FEnlargeHorizontal:=crsAnchorAligning;
+  FEnlargeVertical:=crsAnchorAligning;
+  FShrinkHorizontal:=crsAnchorAligning;
+  FShrinkVertical:=crsAnchorAligning;
 end;
 
 procedure TControlChildSizing.Assign(Source: TPersistent);

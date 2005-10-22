@@ -94,7 +94,7 @@ begin
     LayoutGroupBox.Controls[LayoutGroupBox.ControlCount-1].Free;
   LayoutGroupBox.EnableAlign;
 
-  // make sure ButtonCountRadioGroup show the correct count
+  // make sure ButtonCountRadioGroup shows the correct count
   ButtonCountRadioGroup.ItemIndex:=
                         ButtonCountRadioGroup.Items.IndexOf(IntToStr(NewCount));
 end;

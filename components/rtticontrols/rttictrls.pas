@@ -1889,6 +1889,7 @@ begin
   CreateEnumAliasValues(Editor.GetPropType,AliasValues,AStringArray);
   if Assigned(OnEditorChanged) then
     OnEditorChanged(Self);
+  LoadFromProperty;
 end;
 
 procedure TCustomPropertyLink.AssignSetEnumsAliasTo(DestList: TStrings);
@@ -2288,14 +2289,14 @@ begin
   if Sender=nil then ;
   //writeln('TTICustomComboBox.LinkLoadFromProperty A FLink.GetAsText=',FLink.GetAsText,' Text=',Text);
   if (FLink.Editor=nil) then exit;
-  //writeln('TTICustomComboBox.LinkLoadFromProperty B FLink.Editor=',FLink.Editor.ClassName);
+  //debugln('TTICustomComboBox.LinkLoadFromProperty B ',dbgsName(Self),' FLink.Editor=',FLink.Editor.ClassName,' FLink.GetAsText=',FLink.GetAsText);
   Text:=FLink.GetAsText;
 end;
 
 procedure TTICustomComboBox.LinkSaveToProperty(Sender: TObject);
 begin
   if Sender=nil then ;
-  //writeln('TTICustomComboBox.LinkSaveToProperty FLink.GetAsText=',FLink.GetAsText,' Text=',Text);
+  //debugln('TTICustomComboBox.LinkSaveToProperty ',dbgsName(Self),' FLink.GetAsText=',FLink.GetAsText,' Text=',Text);
   if (FLink.Editor=nil) then exit;
   FLink.SetAsText(Text);
 end;

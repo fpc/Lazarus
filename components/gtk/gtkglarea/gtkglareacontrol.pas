@@ -124,12 +124,13 @@ procedure Register;
 implementation
 
 const
-  InitAttrList: array [1..11] of LongInt = (
+  InitAttrList: array [1..13] of LongInt = (
     GDK_GL_RGBA,
     GDK_GL_RED_SIZE, 1,
     GDK_GL_GREEN_SIZE, 1,
     GDK_GL_BLUE_SIZE, 1,
-    GDK_GL_DEPTH_SIZE,1,
+    GDK_GL_DEPTH_SIZE, 1,
+    GDK_GL_STENCIL_SIZE, 1,
     GDK_GL_DOUBLEBUFFER,
     GDK_GL_None
     );
