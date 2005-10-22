@@ -2006,8 +2006,12 @@ begin
   if csLoading in ComponentState then begin
     FLoadedClientSize.Y:=Value;
     Include(FControlFlags,cfClientHeightLoaded);
+  end else begin
+    // during loading the ClientHeight is not used to set the Height of the
+    // control, but only to restore autosizing. For example Anchors=[akBottom]
+    // needs ClientHeight.
+    SetClientSize(Point(ClientWidth, Value));
   end;
-  SetClientSize(Point(ClientWidth, Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -2030,8 +2034,12 @@ begin
   if csLoading in ComponentState then begin
     FLoadedClientSize.X:=Value;
     Include(FControlFlags,cfClientWidthLoaded);
+  end else begin
+    // during loading the ClientWidth is not used to set the Width of the
+    // control, but only to restore autosizing. For example Anchors=[akRight]
+    // needs ClientWidth.
+    SetClientSize(Point(Value, ClientHeight));
   end;
-  SetClientSize(Point(Value, ClientHeight));
 end;
 
 {------------------------------------------------------------------------------}
