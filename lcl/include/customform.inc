@@ -847,9 +847,11 @@ begin
             and FActiveControl.Visible and FActiveControl.Enabled
             and ([csLoading,csDestroying]*ComponentState=[])
             and not FActiveControl.ParentDestroyingHandle
-            then
+            then begin
               // get or create handle of FActiveControl
               FocusHandle := FActiveControl.Handle;
+              //debugln('TCustomForm.WndProc A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl),' FocusHandle=',dbgs(FocusHandle));
+            end;
           end;
 
           TheMessage.Result:=0;

@@ -105,8 +105,10 @@ type
     function GetMessage: string;
     function GetVisibleItems(Index: integer): TMessageLine;
     procedure SetLastLineIsProgress(const AValue: boolean);
+    procedure DoSelectionChange;
   protected
     fBlockCount: integer;
+    FLastSelectedIndex: integer;
     function GetSelectedLineIndex: integer;
     procedure SetSelectedLineIndex(const AValue: integer);
   public
@@ -114,7 +116,7 @@ type
     destructor Destroy; override;
     procedure DeleteLine(Index: integer);
     procedure Add(const Msg, CurDir: string;
-      ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
+                  ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
     procedure AddProgress(const Msg, CurDir: string);
     procedure AddSeparator;
@@ -186,6 +188,7 @@ begin
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems := TList.Create;
   FVisibleItems := TList.Create;
+  FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
 
@@ -443,9 +446,7 @@ procedure TMessagesView.MessageViewDblClicked(Sender: TObject);
 begin
   if not EnvironmentOptions.MsgViewDblClickJumps then
     exit;
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-    if Assigned(OnSelectionChanged) then
-      OnSelectionChanged(self);
+  DoSelectionChange;
 end;
 
 procedure TMessagesView.CopyAllMenuItemClick(Sender: TObject);
@@ -469,9 +470,7 @@ procedure TMessagesView.MessageViewClicked(Sender: TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then
     exit;
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-    if Assigned(OnSelectionChanged) then
-      OnSelectionChanged(self);
+  DoSelectionChange;
 end;
 
 procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: word;
@@ -540,6 +539,20 @@ begin
   if FLastLineIsProgress then
     MessageView.Items.Delete(MessageView.Items.Count - 1);
   FLastLineIsProgress := AValue;
+end;
+
+procedure TMessagesView.DoSelectionChange;
+var
+  NewSelectedIndex: LongInt;
+begin
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then begin
+    NewSelectedIndex:=GetSelectedLineIndex;
+    if NewSelectedIndex<>FLastSelectedIndex then begin
+      FLastSelectedIndex:=NewSelectedIndex;
+      if Assigned(OnSelectionChanged) then
+        OnSelectionChanged(Self);
+    end;
+  end;
 end;
 
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
