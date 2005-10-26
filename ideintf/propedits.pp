@@ -4700,8 +4700,13 @@ begin
   try
     TheDialog.Editor:=Self;
     TheDialog.Memo.Text:=AString;
-    if (TheDialog.ShowModal = mrOK) then
-      SetStrValue(TheDialog.Memo.Text);
+    if (TheDialog.ShowModal = mrOK) then begin
+      AString:=TheDialog.Memo.Text;
+      //erase the last lineending if any
+      if copy(AString,length(AString)-length(LineEnding)+1,length(LineEnding))=LineEnding then
+        delete(AString, length(AString)-length(LineEnding)+1,length(LineEnding));
+      SetStrValue(AString);
+    end;
   finally
     TheDialog.Free;
   end;
@@ -6101,7 +6106,7 @@ begin
     TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TControl, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
     nil,'Tag',TTabOrderPropertyEditor);
