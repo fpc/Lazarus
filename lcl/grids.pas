@@ -547,6 +547,7 @@ type
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     procedure CheckIndex(IsColumn: Boolean; Index: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
+    function  GetSelectedColumn: TGridColumn;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
@@ -823,6 +824,7 @@ type
     property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
     property SelectActive: Boolean read FSelectActive write SetSelectActive;
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
+    property SelectedColumn: TGridColumn read GetSelectedColumn;
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property TitleFont: TFont read FTitleFont write SetTitleFont;
@@ -943,6 +945,7 @@ type
     property RowHeights;
     property SaveOptions;
     property SelectedColor;
+    property SelectedColumn;
     property Selection;
     //property TabStops;
     property TopRow;
@@ -3292,6 +3295,11 @@ begin
     doTopleftChange(False)
 end;
 
+function TCustomGrid.GetSelectedColumn: TGridColumn;
+begin
+  Result := ColumnFromGridColumn(Col);
+end;
+
 function TCustomGrid.IsAltColorStored: boolean;
 begin
   result := FAlternateColor <> Color;
@@ -3793,10 +3801,13 @@ begin
   end else begin
     aCol := Columns.IndexOf(AColumn);
     if ACol>=0 then begin
+      VisualChange;
+      {
       if aColumn.WidthChanged then
         VisualChange
       else
         InvalidateCol(FixedCols + ACol);
+      }
     end;
   end;
 end;
