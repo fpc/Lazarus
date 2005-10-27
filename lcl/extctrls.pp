@@ -1018,5 +1018,8 @@ end;
 {$I bevel.inc}
 {$I customimage.inc}
 
+initialization
+  DockSplitterClass:=TSplitter;
+
 end.
 

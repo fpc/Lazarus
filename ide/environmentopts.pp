@@ -1443,7 +1443,8 @@ begin
   with NewLayout do begin
     FormID:=TheFormID;
     WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
+       iwpCustomPosition,iwpUseWindowManagerSetting
+       {$IFDEF IDEDocking},iwpDocked{$ENDIF}];
     OnApply:=@Self.InternOnApplyWindowLayout;
     DefaultWindowPlacement:=iwpRestoreWindowGeometry;
   end;

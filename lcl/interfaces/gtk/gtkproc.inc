@@ -3123,6 +3123,8 @@ begin
       TObject(LCLHandledKeyEvents[i]).Free;
     LCLHandledKeyEvents.Free;
     LCLHandledKeyEvents:=nil;
+  end;
+  if LCLHandledKeyAfterEvents<>nil then begin
     for i:=0 to LCLHandledKeyAfterEvents.Count-1 do
       TObject(LCLHandledKeyAfterEvents[i]).Free;
     LCLHandledKeyAfterEvents.Free;
@@ -8081,7 +8083,7 @@ begin
                  GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
 
     bsSizeToolWin :Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                   GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+                   GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_RESIZEH;
   end;
 end;
 

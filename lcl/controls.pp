@@ -416,6 +416,7 @@ type
     FDropAlign: TAlign;
     FDropOnControl: TControl;
     FFloating: Boolean;
+    FIncreaseDockArea: Boolean;
     procedure SetBrush(Value: TBrush);
   protected
     procedure AdjustDockRect(ARect: TRect); virtual;
@@ -434,6 +435,7 @@ type
     property DropOnControl: TControl read FDropOnControl;
     property Floating: Boolean read FFloating write FFloating;
     property FrameWidth: Integer read GetFrameWidth;
+    property IncreaseDockArea: Boolean read FIncreaseDockArea;
   end;
 
 
@@ -744,6 +746,7 @@ type
     FCtl3D: Boolean;
     FCursor: TCursor;
     FDockOrientation: TDockOrientation;
+    FDockSplitter: TControl;// splitter control for Align docking
     FDragCursor: TCursor;
     FDragKind: TDragKind;
     FDragMode: TDragMode;
@@ -1044,15 +1047,19 @@ type
       // So, don't use it anymore.
   public
     // drag and dock
-    Procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
+    procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     function ManualDock(NewDockSite: TWinControl;
       DropControl: TControl = nil;
-      ControlSide: TAlign = alNone): Boolean;
-    function ManualFloat(TheScreenRect: TRect): Boolean;
+      ControlSide: TAlign = alNone;
+      KeepDockSiteSize: Boolean = true): Boolean;
+    function ManualFloat(TheScreenRect: TRect;
+      KeepDockSiteSize: Boolean = true): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
+    function GetDockSplitterWidth: integer;
+    function GetDockSplitterHeight: integer;
   public
     // size
     procedure AdjustSize; virtual;
@@ -1500,7 +1507,8 @@ type
     procedure DoDockOver(Source: TDragDockObject; X, Y: Integer;
                          State: TDragState; var Accept: Boolean); dynamic;
     procedure DoRemoveDockClient(Client: TControl); dynamic;
-    function  DoUnDock(NewTarget: TWinControl; Client: TControl): Boolean; dynamic;
+    function  DoUnDock(NewTarget: TWinControl; Client: TControl;
+                       KeepDockSiteSize: Boolean = true): Boolean; dynamic;
     procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
                           MousePos: TPoint; var CanDock: Boolean); dynamic;
     procedure ReloadDockedControl(const AControlName: string;
@@ -1635,22 +1643,22 @@ type
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
     procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
-    Function CanFocus: Boolean;
+    function CanFocus: Boolean;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
-    Function Focused: Boolean; virtual;
+    function Focused: Boolean; virtual;
     function PerformTab(ForwardTab: boolean): boolean; virtual;
     function ControlByName(const ControlName: string): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
-    Procedure BroadCast(var ToAllMessage);
+    procedure BroadCast(var ToAllMessage);
     procedure NotifyControls(Msg: Word);
     procedure DefaultHandler(var AMessage); override;
     function  GetTextLen: Integer; override;
-    Procedure Invalidate; override;
-    Procedure InsertControl(AControl: TControl);
-    Procedure InsertControl(AControl: TControl; Index: integer);
-    Procedure RemoveControl(AControl: TControl);
+    procedure Invalidate; override;
+    procedure InsertControl(AControl: TControl);
+    procedure InsertControl(AControl: TControl; Index: integer);
+    procedure RemoveControl(AControl: TControl);
     procedure Repaint; override;
     Procedure SetFocus; virtual;
     Function FindChildControl(const ControlName: String): TControl;
@@ -1920,8 +1928,11 @@ type
     property DockSite: TWinControl read FDockSite write FDockSite;
     property RootZone: TDockZone read FRootZone;
   end;
+  
+var
+  DockSplitterClass: TControlClass = nil;
 
-
+type
   { TMouse }
 
   TMouse = class

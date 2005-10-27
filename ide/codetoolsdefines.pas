@@ -642,7 +642,7 @@ begin
     FileNames[1]:=DefaultCompiler;
     FileFlags[1]:=[iftFilename];
 
-    FileTitles[2]:=lisCodeToolsDefsFPCCVSSourceDirectory;
+    FileTitles[2]:=lisCodeToolsDefsFPCSVNSourceDirectory;
     FileDescs[2]:=BreakString(
       lisCodeToolsDefsTheFreePascalCVSSourceDirectory, 60, 0);
     FileNames[2]:=DefaultFPCSrcDir;
@@ -760,12 +760,12 @@ begin
     UnitSearchPath:='';
 
     BeginUpdate;
-    Caption:=lisCodeToolsDefsCreateDefinesForFreePascalCVSSources;
+    Caption:=lisCodeToolsDefsCreateDefinesForFreePascalSVNSources;
     FileCount:=2;
 
-    FileTitles[0]:=lisCodeToolsDefsFPCCVSSourceDirectory;
-    FileDescs[0]:=lisCodeToolsDefsTheFreePascalCVSSourceDir;
-    FileNames[0]:='~/fpc_sources/1.1/fpc';
+    FileTitles[0]:=lisCodeToolsDefsFPCSVNSourceDirectory;
+    FileDescs[0]:=lisCodeToolsDefsTheFreePascalSVNSourceDir;
+    FileNames[0]:='~/fpc_sources/2.1/fpc';
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     FileTitles[1]:=lisCodeToolsDefscompilerPath;
@@ -1377,7 +1377,7 @@ begin
               
   AddMenuItem(InsertFPCSourceDirTemplateMenuItem,
               'InsertFPCSourceDirTemplateMenuItem',
-              lisCodeToolsDefsInsertFreePascalCVSSource,
+              lisCodeToolsDefsInsertFreePascalSVNSource,
               InsertTemplateMenuItem);
   InsertFPCSourceDirTemplateMenuItem.OnClick:=
               @InsertFPCSourceDirDefinesTemplateMenuItemClick;

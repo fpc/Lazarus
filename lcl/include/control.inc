@@ -1184,6 +1184,16 @@ Begin
   Result := (DragControl = self);
 end;
 
+function TControl.GetDockSplitterWidth: integer;
+begin
+  Result:=4; // TODO
+end;
+
+function TControl.GetDockSplitterHeight: integer;
+begin
+  Result:=4; // TODO
+end;
+
 {------------------------------------------------------------------------------
        TControl GetBoundsRect
 ------------------------------------------------------------------------------}
@@ -2947,7 +2957,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
   
-  
+  Docks this control into NewDockSite at ARect.
 ------------------------------------------------------------------------------}
 procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 
@@ -2958,6 +2968,7 @@ procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 
 var
   OldHostDockSite: TWinControl;
+  Side: TAnchorKind;
 begin
   if (csDocking in FControlState) then
     RaiseAlreadyDocking;
@@ -2968,11 +2979,31 @@ begin
     OldHostDockSite:=HostDockSite;
 
     if OldHostDockSite<>NewDockSite then begin
+      if FDockSplitter<>nil then
+        FDockSplitter.Parent:=nil;
       // HostDockSite will change -> prepare
       if (OldHostDockSite<>nil) and (OldHostDockSite.FDockClients<>nil) then
         OldHostDockSite.FDockClients.Remove(Self);
       if (NewDockSite<>nil) and (NewDockSite.FDockClients<>nil) then
         NewDockSite.FDockClients.Add(Self);
+    end;
+
+    //debugln('TControl.Dock A ',DbgSName(Self));
+    if (NewDockSite<>nil) and (DockSplitterClass<>nil) then begin
+      if (FDockSplitter=nil) then
+        FDockSplitter:=DockSplitterClass.Create(Self);
+      case Align of
+      alLeft:  Side:=akLeft;
+      alTop:   Side:=akTop;
+      alRight: Side:=akRight;
+      alBottom:Side:=akBottom;
+      else
+        Side:=akLeft;
+      end;
+      FDockSplitter.AnchorToCompanion(Side,0,Self,false);
+      FDockSplitter.AnchorParallel(OppositeAnchor[Side],0,NewDockSite);
+      FDockSplitter.Parent:=NewDockSite;
+      debugln('TControl.Dock Adding Splitter ',DbgSName(Self));
     end;
 
     DoDock(NewDockSite,ARect);
@@ -3002,7 +3033,7 @@ end;
   and ControlSide is ignored.
 ------------------------------------------------------------------------------}
 function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
-  ControlSide: TAlign): Boolean;
+  ControlSide: TAlign; KeepDockSiteSize: Boolean): Boolean;
 var
   NewBounds: TRect;
   DockObject: TDragDockObject;
@@ -3047,6 +3078,7 @@ begin
           FDragTarget := NewDockSite;
           FDropAlign := ControlSide;
           FDropOnControl := DropControl;
+          FIncreaseDockArea := not KeepDockSiteSize;
           DockRect := Bounds(NewPosition.X,NewPosition.Y,Width,Height);
         end;
         // map from screen coordinates to new HostSite coordinates
@@ -3062,18 +3094,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TControl.ManualFloat(TheScreenRect: TRect): Boolean;
+  function TControl.ManualFloat(TheScreenRect: TRect;
+    KeepDockSiteSize: Boolean = true): Boolean;
 
   Undock and float.
   Float means here: create the floating dock site and dock this control into it.
   Exception: Forms do not need float dock sites and float on their own.
 ------------------------------------------------------------------------------}
-function TControl.ManualFloat(TheScreenRect: TRect): Boolean;
+function TControl.ManualFloat(TheScreenRect: TRect;
+  KeepDockSiteSize: Boolean): Boolean;
 var
   FloatHost: TWinControl;
 begin
   // undock from old floating host dock site
-  Result := (HostDockSite=nil) or HostDockSite.DoUndock(nil,Self);
+  Result := (HostDockSite=nil)
+            or HostDockSite.DoUndock(nil,Self,KeepDockSiteSize);
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -8,10 +9,10 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleproject2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <Units Count="2">
       <Unit0>
@@ -21,7 +22,7 @@
         <UsageCount Value="31"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="12" Y="28"/>
+        <CursorPos X="20" Y="33"/>
         <EditorIndex Value="0"/>
         <Filename Value="example2.pas"/>
         <ComponentName Value="Form1"/>
@@ -57,7 +58,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="3"/>
+    <Version Value="5"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>

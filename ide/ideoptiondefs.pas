@@ -236,7 +236,7 @@ type
       read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
     property OnApply: TOnApplyIDEWindowLayout read fOnApply write fOnApply;
   end;
-  
+
   { TIDEWindowLayoutList }
 
   TIDEWindowLayoutList = class(TList)
@@ -846,8 +846,10 @@ end;
 
 procedure TIDEWindowSetupLayoutComponent.LoadFrom(AnLayout: TIDEWindowLayout);
 var
-  CurY: integer;
   APlacement: TIDEWindowPlacement;
+  CurY1: Integer;
+  CurY2: LongInt;
+  Col2X: Integer;
   
   procedure SetLabelAndEdit(var ALabel: TLabel;
     var AnEdit: TEdit;  const ACaption: string; x, y: integer);
@@ -858,14 +860,12 @@ var
         Parent:=Self;
         SetBounds(x,y,45,Height);
         Caption:=ACaption;
-        Visible:=true;
       end;
       if AnEdit=nil then AnEdit:=TEdit.Create(Self);
       with AnEdit do begin
         Parent:=Self;
         SetBounds(x+ALabel.Width+3,y,40,Height);
         Text:='';
-        Visible:=true;
       end;
     end else begin
       FreeAndNil(ALabel);
@@ -888,7 +888,9 @@ var
   
 begin
   if AnLayout=nil then exit;
-  CurY:=5;
+  CurY1:=5;
+  CurY2:=CurY1;
+  Col2X:=300;
   for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
     if APlacement in AnLayout.WindowPlacementsAllowed then
@@ -898,8 +900,8 @@ begin
       with PlacementRadioButtons[APlacement] do
       begin
         Parent:=Self;
-        SetBounds(5,CurY,Self.ClientWidth-Left,Height);
-        inc(CurY,Height+2);
+        SetBounds(5,CurY1,Width,Height);
+        inc(CurY1,Height+2);
         OnClick:=@RadioButtonClick;
         Caption:=GetRadioBtnCaptions(APlacement);
         Checked:=(APlacement=AnLayout.WindowPlacement);
@@ -909,14 +911,14 @@ begin
       iwpCustomPosition:
         begin
           // custom window position
-          SetLabelAndEdit(LeftLabel,LeftEdit,dlgLeftPos,15,CurY);
+          SetLabelAndEdit(LeftLabel,LeftEdit,dlgLeftPos,Col2X,CurY2);
           SetLabelAndEdit(TopLabel,TopEdit,dlgTopPos,
-            LeftEdit.Left+LeftEdit.Width+15,CurY);
-          inc(CurY,LeftEdit.Height+3);
-          SetLabelAndEdit(WidthLabel,WidthEdit,dlgWidthPos,15,CurY);
+            LeftEdit.Left+LeftEdit.Width+15,CurY2);
+          inc(CurY2,LeftEdit.Height+3);
+          SetLabelAndEdit(WidthLabel,WidthEdit,dlgWidthPos,LeftLabel.Left,CurY2);
           SetLabelAndEdit(HeightLabel,HeightEdit,DlgHeightPos,
-            WidthEdit.Left+WidthEdit.Width+15,CurY);
-          inc(CurY,WidthEdit.Height+3);
+            WidthEdit.Left+WidthEdit.Width+15,CurY2);
+          inc(CurY2,WidthEdit.Height+3);
           if AnLayout.CustomCoordinatesAreValid then begin
             LeftEdit.Text:=IntToStr(AnLayout.Left);
             TopEdit.Text:=IntToStr(AnLayout.Top);
@@ -941,14 +943,14 @@ begin
     end;
   end;
   
-  inc(CurY,2);
+  inc(CurY1,2);
   if ApplyButton=nil then
     ApplyButton:=TButton.Create(Self);
      
   with ApplyButton do
   begin
     Parent:=Self;
-    SetBounds(5,CurY,Width,Height);
+    SetBounds(Col2X,CurY2,Width,Height);
     OnClick:=@ApplyButtonClick;
     Caption:=dlgButApply;
     AutoSize:=true;

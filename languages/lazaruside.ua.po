@@ -63,8 +63,8 @@ msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s - некоректна назва модуля"
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
-msgid "%s%sClick OK if are sure to do that."
-msgstr "%s%sНатисніть ОК, якщо впевнені, що хочете це зробити."
+msgid "%s%sClick OK if you are sure to do that."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -1082,6 +1082,10 @@ msgstr "Кодові шаблони"
 msgid "Code Tools"
 msgstr "Інструменти коду"
 
+#: lazarusidestrconsts:dlgusecodefolding
+msgid "Code folding (experimental)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "Параметри коду"
@@ -1458,13 +1462,13 @@ msgstr "Створити налаштування для %s Теки"
 msgid "Create Defines for %s Project"
 msgstr "Створити налаштування для %s Проекту"
 
-#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcvssources
-msgid "Create Defines for Free Pascal CVS Sources"
-msgstr "Створити налаштування для кодів CVS FPC"
-
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
 msgstr "Створити налаштування для компілятора FreePascal"
+
+#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
+msgid "Create Defines for Free Pascal SVN Sources"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -1922,10 +1926,6 @@ msgstr "Вивести номери стрічок в помилках часу 
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Розрізняти регістр букв, наприклад, А і а"
 
-#: lazarusidestrconsts:lisconfirmlazarusrebuild
-msgid "Do You want ReBuild Lazarus?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Не показувати заставки "
@@ -1941,6 +1941,10 @@ msgstr "Не розривати стрічку після:"
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr "Ви дійсно бажаєте забути всі зміни до пакету %s і завантажити його з файлу?"
+
+#: lazarusidestrconsts:lisconfirmlazarusrebuild
+msgid "Do you want to rebuild Lazarus?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2202,6 +2206,10 @@ msgstr "Escape"
 msgid "Evaluate/Modify ..."
 msgstr "Обчислити/Змінити..."
 
+#: lazarusidestrconsts:lislazdocexampletag
+msgid "Example"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -2286,9 +2294,9 @@ msgstr "Здобути процедуру"
 msgid "Extract procedure"
 msgstr "Здобути процедуру"
 
-#: lazarusidestrconsts:liscodetoolsdefsfpccvssourcedirectory
-msgid "FPC CVS source directory"
-msgstr "CVS-тека кодів FPC"
+#: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
+msgid "FPC SVN source directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -3150,10 +3158,6 @@ msgstr "Вставити шаблон з теки Delphi 7"
 msgid "Insert Delphi 7 Project Template"
 msgstr "Вставити шаблон проекту Delphi 7"
 
-#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcvssource
-msgid "Insert Free Pascal CVS Source Template"
-msgstr "Вставити шаблон коду CVS FreePascal"
-
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
 msgstr "Вставити шаблон компілятора FreePascal"
@@ -3161,6 +3165,10 @@ msgstr "Вставити шаблон компілятора FreePascal"
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
 msgstr "Вставити шаблон проекту FreePascal"
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
+msgid "Insert Free Pascal SVN Source Template"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -3562,13 +3570,13 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep X caret"
-msgstr "Зберігати Х курсора"
-
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
 msgstr "Залишати всі текстові файли"
+
+#: lazarusidestrconsts:dlgkeepcaretx
+msgid "Keep caret X position"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -3661,6 +3669,10 @@ msgstr "Остання"
 #: lazarusidestrconsts:dlglast
 msgid "Last (i.e. at end of source)"
 msgstr "Останній (напр. в кінці коду)"
+
+#: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
+msgid "Launching application"
+msgstr ""
 
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -4434,7 +4446,7 @@ msgstr "Об'єкт"
 msgid "Object Inspector"
 msgstr "Інспектор об'єкту"
 
-#: lazarusidestrconsts:lislazbuildok
+#: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Гаразд"
 
@@ -6186,10 +6198,6 @@ msgstr "Кнопка пробіл"
 msgid "Spanish"
 msgstr "Іспанська"
 
-#: lazarusidestrconsts:rslanguagespanishutf
-msgid "Spanish (UTF8)"
-msgstr "Іспанська (UTF8)"
-
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
 msgstr "Джр"
@@ -6490,13 +6498,13 @@ msgstr "FCL - бібліотека компонентів FreePascal - забе�
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
 msgstr "Тека кодів FPC \"%s\" виглядає некоректною. Як правило, вона вміщує теки rtl, fcl, packages, compiler, ... ."
 
-#: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedir
-msgid "The Free Pascal CVS source directory."
-msgstr "Тека кодів CVS FreePascal"
+#: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
+msgid "The Free Pascal SVN source directory."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal CVS source directory. Not required. This will improve find declarationand debugging."
-msgstr "Тека кодів CVS FreePascal. Не вимагається. Покращить пошук описів і налагодження."
+msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+msgstr ""
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
@@ -6823,8 +6831,8 @@ msgid "The page name %s%s%s is too long (max 100 chars)."
 msgstr "Ім'я пакету %s%s%s занадто довге (до 100 симв.)."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC CVS source below. Used to autocreate macros."
-msgstr "Шлях до компилятора FreePascal для цього проекту. Потрібен тільки якщо Ви раніше встановили FPC CVS. Використовується для автостворення макросів."
+msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
@@ -7089,6 +7097,10 @@ msgstr "Тип:"
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "ВЕРХНІЙ РЕГІСТР"
+
+#: lazarusidestrconsts:rslanguageukrainian
+msgid "Ukrainian"
+msgstr ""
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

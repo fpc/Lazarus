@@ -1015,7 +1015,9 @@ begin
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
+  {$IFNDEF IDEDocking}
   MainIDEBar.Constraints.MaxHeight:=100;
+  {$ENDIF}
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
   HiddenWindowsOnRun:=TList.Create;
@@ -11954,43 +11956,77 @@ procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
 var
   l: TNonModalIDEWindow;
   BarBottom: Integer;
+  DockingAllowed: Boolean;
+  NewHeight: Integer;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
-  // writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
-  if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
-  then begin
-    case ALayout.WindowState of
-    iwsMinimized: ALayout.Form.WindowState:=wsMinimized;
-    iwsMaximized: ALayout.Form.WindowState:=wsMaximized;
-    end;
+  // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
+  DockingAllowed:={$IFDEF IDEDocking}true{$ELSE}false{$ENDIF};
+  if DockingAllowed then begin
+    ALayout.Form.Constraints.MaxHeight:=0;
+  end;
 
-    if (ALayout.CustomCoordinatesAreValid) then begin
-      // explicit position
-      ALayout.Form.SetRestoredBounds(
-        ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+  l:=NonModalIDEFormIDToEnum(ALayout.FormID);
+  if DockingAllowed then begin
+    if l in [nmiwSourceNoteBookName] then
+      ALayout.WindowPlacement:=iwpDocked;
+  end;
+
+  case ALayout.WindowPlacement of
+  iwpCustomPosition,iwpRestoreWindowGeometry:
+    begin
+      case ALayout.WindowState of
+      iwsMinimized: ALayout.Form.WindowState:=wsMinimized;
+      iwsMaximized: ALayout.Form.WindowState:=wsMaximized;
+      end;
+
+      if (ALayout.CustomCoordinatesAreValid) then begin
+        // explicit position
+        ALayout.Form.SetRestoredBounds(
+          ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+        exit;
+      end;
+
+      if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
+        exit;
+    end;
+  
+  iwpUseWindowManagerSetting:
+    begin
       exit;
     end;
-
-    if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
-      exit;
-  end else if ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]
-  then begin
-    exit;
   end;
   // no layout found => use default
   BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
   // default window positions
-  l:=NonModalIDEFormIDToEnum(ALayout.FormID);
   case l of
   nmiwMainIDEName:
-    ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
+    begin
+      NewHeight:=95;
+      if (MainIDEBar.ComponentNotebook<>nil)
+      and (MainIDEBar.ComponentNotebook.ActivePageComponent<>nil) then begin
+        dec(NewHeight,MainIDEBar.ComponentNotebook.ActivePageComponent.ClientHeight-25);
+      end;
+      ALayout.Form.SetBounds(0,0,Screen.Width-10,NewHeight);
+      if DockingAllowed then begin
+        ALayout.Form.Align:=alTop;
+      end;
+    end;
   nmiwSourceNoteBookName:
-    ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
-      Max(50,Screen.Height-200-BarBottom));
+    begin
+      ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
+        Max(50,Screen.Height-200-BarBottom));
+      if DockingAllowed then begin
+        debugln('TMainIDE.OnApplyWindowLayout ',dbgsName(ALayout.Form));
+        ALayout.Form.ManualDock(MainIDEBar,nil,alBottom,false);
+      end;
+    end;
   nmiwUnitDependenciesName:
     ALayout.Form.SetBounds(200,200,400,300);
   nmiwCodeExplorerName:
-    ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+    begin
+      ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+    end;
   nmiwClipbrdHistoryName:
     ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
   nmiwPkgGraphExplorer:
@@ -11998,8 +12034,10 @@ begin
   nmiwProjectInspector:
     ALayout.Form.SetBounds(210,150,400,300);
   nmiwMessagesViewName:
-    ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
-      Max(50,Screen.Width-300),80);
+    begin
+      ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
+        Max(50,Screen.Width-300),80);
+    end;
   else
     if ALayout.FormID=DefaultObjectInspectorName then begin
       ALayout.Form.SetBounds(

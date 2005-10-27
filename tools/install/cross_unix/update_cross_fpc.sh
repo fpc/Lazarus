@@ -109,7 +109,7 @@ if [ $InstallAsDefault = "yes" ]; then
   NewCompilerName=$InstallBin/$CompilerName
   if [ ! -f $NewCompilerName ]; then
     touch $NewCompilerName
-    chomd a+x $NewCompilerName
+    chmod a+x $NewCompilerName
   fi
   hash -r
   FoundFPC=$(which $CompilerName)

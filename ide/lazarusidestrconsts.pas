@@ -71,7 +71,7 @@ resourcestring
   // component palette
   lisSelectionTool = 'Selection tool';
   
-  // macros
+  // makros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
   lisCursorRowInCUrrentEditor = 'Cursor row in current editor';
   lisCompilerFilename = 'Compiler filename';
@@ -822,7 +822,7 @@ resourcestring
   dlgDragDropEd = 'Drag Drop editing';
   dlgDropFiles = 'Drop files';
   dlgHalfPageScroll = 'Half page scroll';
-  dlgKeepCaretX = 'Keep X caret';
+  dlgKeepCaretX = 'Keep caret X position';
   dlgPersistentCaret = 'Persistent caret';
   dlgRightMouseMovesCursor = 'Right mouse moves caret';
   dlgScrollByOneLess = 'Scroll by one less';
@@ -1046,7 +1046,7 @@ resourcestring
     +'standard config filenames the FreePascal compiler is looking for. This '
     +'can result in ONLY parsing the additional config and skipping the '
     +'standard config.';
-  lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if are sure to do that.';
+  lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you are sure to do that.';
   lisCOCallOn = 'Call on:';
   lisCOCallOnCompile = 'Compile';
   lisCOCallOnBuild = 'Build';
@@ -1661,9 +1661,9 @@ resourcestring
   lisCodeToolsDefscompilerPath = 'compiler path';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisProject = 'The path to '
     +'the free pascal compiler for this project. Only required if you set the '
-    +'FPC CVS source below. Used to autocreate macros.';
-  lisCodeToolsDefsFPCCVSSourceDirectory = 'FPC CVS source directory';
-  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal CVS '
+    +'FPC SVN source below. Used to autocreate macros.';
+  lisCodeToolsDefsFPCSVNSourceDirectory = 'FPC SVN source directory';
+  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal SVN '
     +'source directory. Not required. This will improve find declarationand '
     +'debugging.';
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
@@ -1671,9 +1671,9 @@ resourcestring
   lisCodeToolsDefsThePathToTheFreePascalCompilerForExample = 'The '
     +'path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s '
     +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
-  lisCodeToolsDefsCreateDefinesForFreePascalCVSSources = 'Create Defines for '
-    +'Free Pascal CVS Sources';
-  lisCodeToolsDefsTheFreePascalCVSSourceDir = 'The Free Pascal CVS source '
+  lisCodeToolsDefsCreateDefinesForFreePascalSVNSources = 'Create Defines for '
+    +'Free Pascal SVN Sources';
+  lisCodeToolsDefsTheFreePascalSVNSourceDir = 'The Free Pascal SVN source '
     +'directory.';
   lisCodeToolsDefsCreateDefinesForLazarusDir = 'Create Defines for Lazarus '
     +'Directory';
@@ -1727,7 +1727,7 @@ resourcestring
     +'Template';
   lisCodeToolsDefsInsertFreePascalCompilerT = 'Insert Free Pascal Compiler '
     +'Template';
-  lisCodeToolsDefsInsertFreePascalCVSSource = 'Insert Free Pascal CVS Source '
+  lisCodeToolsDefsInsertFreePascalSVNSource = 'Insert Free Pascal SVN Source '
     +'Template';
   lisCodeToolsDefsInsertLazarusDirectoryTem = 'Insert Lazarus Directory '
     +'Template';

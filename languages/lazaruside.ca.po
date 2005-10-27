@@ -63,8 +63,8 @@ msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s no és un nom d'unitat vàlid"
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
-msgid "%s%sClick OK if are sure to do that."
-msgstr "%s%sPremeu D'ACORD si n'esteu segur."
+msgid "%s%sClick OK if you are sure to do that."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -1462,13 +1462,13 @@ msgstr "Crea les definicions pel directori %s"
 msgid "Create Defines for %s Project"
 msgstr "Crea les definicions pel projecte %s"
 
-#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcvssources
-msgid "Create Defines for Free Pascal CVS Sources"
-msgstr "Crea les definicions per les fonts CVS del Free Pascal"
-
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
 msgstr "Crea les definicions pel compilador Free Pascal"
+
+#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
+msgid "Create Defines for Free Pascal SVN Sources"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -2294,9 +2294,9 @@ msgstr "Extrau el procediment"
 msgid "Extract procedure"
 msgstr "Extrau el procediment"
 
-#: lazarusidestrconsts:liscodetoolsdefsfpccvssourcedirectory
-msgid "FPC CVS source directory"
-msgstr "Directori CVS del codi font del FPC"
+#: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
+msgid "FPC SVN source directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -3158,10 +3158,6 @@ msgstr "Insereix plantilla del compilador Delphi 7"
 msgid "Insert Delphi 7 Project Template"
 msgstr "Insereix plantilla de projecte Delphi 7"
 
-#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcvssource
-msgid "Insert Free Pascal CVS Source Template"
-msgstr "Insereix plantilla de les fonts CVS del Free Pascal"
-
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
 msgstr "Insereix plantilla del compilador Free Pascal"
@@ -3169,6 +3165,10 @@ msgstr "Insereix plantilla del compilador Free Pascal"
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
 msgstr "Insereix plantilla del projecte Free Pascal"
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
+msgid "Insert Free Pascal SVN Source Template"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -3570,13 +3570,13 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep X caret"
-msgstr "Manté l'intercalació X"
-
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
 msgstr "Manté tots els fitxers de text"
+
+#: lazarusidestrconsts:dlgkeepcaretx
+msgid "Keep caret X position"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -6498,13 +6498,13 @@ msgstr "La FCL - FreePascal Component Library, proveeix les classes base per l'o
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
 msgstr "El directori del codi font del FPC \"%s\" no sembla correcte. Normalment conté directoris com rtl, fcl, packages, compiler, ... ."
 
-#: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedir
-msgid "The Free Pascal CVS source directory."
-msgstr "El directori CVS del codi font del Free Pascal"
+#: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
+msgid "The Free Pascal SVN source directory."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal CVS source directory. Not required. This will improve find declarationand debugging."
-msgstr "El directori font CVS del Free Pascal. No es requereix. Això millora la recerca de depuració a les declaracions."
+msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+msgstr ""
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
@@ -6831,8 +6831,8 @@ msgid "The page name %s%s%s is too long (max 100 chars)."
 msgstr "El nom de pàgina %s%s%s és massa llarg (max 100 car.)"
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC CVS source below. Used to autocreate macros."
-msgstr "La trajectòria del Free Pascal per aquest projecte. Es requereix només si heu definit el codi font del FPC CVS. Utilitzat per auto-crear macrosinstruccions."
+msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."

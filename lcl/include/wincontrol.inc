@@ -3030,8 +3030,10 @@ end;
   function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
     ): Boolean;
  ------------------------------------------------------------------------------}
-function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
-  ): Boolean;
+function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl;
+  KeepDockSiteSize: Boolean): Boolean;
+var
+  NewBounds: TRect;
 begin
   DebugLn('TWinControl.DoUnDock ',Name,' NewTarget=',DbgSName(NewTarget),' Client=',DbgSName(Client));
   if Assigned(FOnUnDock) then begin
@@ -3039,6 +3041,23 @@ begin
     FOnUnDock(Self,Client,NewTarget,Result);
     if not Result then exit;
   end;
+  if not KeepDockSiteSize then begin
+    NewBounds:=BoundsRect;
+    case Client.Align of
+    alLeft:
+      inc(NewBounds.Left,GetDockSplitterWidth+Client.Width);
+    alTop:
+      inc(NewBounds.Top,GetDockSplitterHeight+Client.Height);
+    alRight:
+      dec(NewBounds.Right,GetDockSplitterWidth+Client.Width);
+    alBottom:
+      dec(NewBounds.Bottom,GetDockSplitterHeight+Client.Height);
+    end;
+    SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
+                      NewBounds.Right-NewBounds.Left,
+                      NewBounds.Bottom-NewBounds.Top);
+  end;
+
   // ToDo Dock
   //Result := (Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0);
 end;
@@ -5000,6 +5019,7 @@ var
   DestRect: TRect;
   //ParentForm: TCustomForm;
   MappedLeftTop: TPoint;
+  NewBounds: TRect;
 begin
   // get dock destination rectangle and map it to the client area
   DestRect := DockObject.DockRect;
@@ -5013,6 +5033,32 @@ begin
       // Delphi ignores the DropAlign when no DockManager is available
       // Why that?
       DockObject.Control.Align:=DockObject.DropAlign;
+      
+      if DockObject.IncreaseDockArea then begin
+        NewBounds := BoundsRect;
+        case DockObject.DropAlign of
+        alLeft:
+          dec(NewBounds.Left,GetDockSplitterWidth+DockObject.Control.Width);
+        alTop:
+          dec(NewBounds.Top,GetDockSplitterHeight+DockObject.Control.Height);
+        alRight:
+          inc(NewBounds.Right,GetDockSplitterWidth+DockObject.Control.Width);
+        alBottom:
+          inc(NewBounds.Bottom,GetDockSplitterHeight+DockObject.Control.Height);
+        end;
+        if NewBounds.Left<0 then
+          NewBounds.Left:=0;
+        if NewBounds.Top<0 then
+          NewBounds.Top:=0;
+        if NewBounds.Right>Screen.Width then
+          NewBounds.Right:=Screen.Width;
+        if NewBounds.Bottom>Screen.Height then
+          NewBounds.Bottom:=Screen.Height;
+        debugln('TWinControl.DockDrop IncreaseDockArea ',DbgSName(Self),' ',dbgs(NewBounds));
+        SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
+                          NewBounds.Right-NewBounds.Left,
+                          NewBounds.Bottom-NewBounds.Top);
+      end;
     end;
     DockObject.Control.Dock(Self, DestRect);
     if UseDockManager and (DockManager <> nil) then
