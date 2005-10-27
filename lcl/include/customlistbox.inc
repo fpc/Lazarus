@@ -225,8 +225,12 @@ begin
   end;
 end;
 
-procedure TCustomListBox.IntfSelectionChanged;
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.LMSelChange(var TheMessage);
+------------------------------------------------------------------------------}
+procedure TCustomListBox.LMSelChange(var TheMessage);
 begin
+  //debugln('TCustomListBox.LMSelChange ',DbgSName(Self),' ',dbgs(ItemIndex));
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   //debugln('TCustomListBox.LMSelChange ',Name,':',ClassName,' ItemIndex=',dbgs(ItemIndex),' FLockSelectionChange=',dbgs(FLockSelectionChange));
   if FLockSelectionChange=0 then
@@ -234,22 +238,13 @@ begin
   DoSelectionChange(FLockSelectionChange=0);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomListBox.LMSelChange(var TheMessage);
-------------------------------------------------------------------------------}
-procedure TCustomListBox.LMSelChange(var TheMessage);
+procedure TCustomListBox.WMLButtonUp(var Message: TLMLButtonUp);
 begin
-  //debugln('TCustomListBox.LMSelChange ',DbgSName(Self),' ',dbgs(ItemIndex));
-  IntfSelectionChanged;
-end;
-
-procedure TCustomListBox.WMLButtonDown(var Message: TLMLButtonDown);
-begin
-  //debugln('TCustomListBox.WMLButtonDown ',DbgSName(Self),' ',dbgs(ItemIndex));
-  inherited WMLButtonDown(Message);
   // prevent Click to be called twice when using selchange as click
   if ClickOnSelChange and FClickTriggeredBySelectionChange then
     Exclude(FControlState, csClicked);
+  //debugln('TCustomListBox.WMLButtonDown ',DbgSName(Self),' ',dbgs(ItemIndex));
+  inherited WMLButtonUp(Message);
   // reset flag
   FClickTriggeredBySelectionChange:=false;
 end;

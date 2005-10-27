@@ -420,7 +420,7 @@ type
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
-    procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
+    procedure WMLButtonUp(Var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
@@ -464,10 +464,6 @@ type
     procedure Clear; virtual;
     procedure LockSelectionChange;
     procedure UnlockSelectionChange;
-  public
-    { to be called by widgetset backend }
-    // equivalent of LM_SELCHANGED
-    procedure IntfSelectionChanged; virtual;
   public
     property Align;
     property Anchors;
