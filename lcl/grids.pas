@@ -69,6 +69,7 @@ const
 
 const
   DEFCOLWIDTH = 64;
+  DEFROWHEIGHT= 20;
 
 type
   EGridException = class(Exception);
@@ -675,7 +676,8 @@ type
     procedure DrawBorder;
     procedure DrawByRows; virtual;
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
-    procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; astate: TGridDrawState); virtual;
+    procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
+    procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawColRowMoving;
     procedure DrawEdges;
     //procedure DrawFixedCells; virtual;
@@ -785,7 +787,7 @@ type
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
-    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default 20;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default DEFROWHEIGHT;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -2845,6 +2847,20 @@ begin
   end;
 end;
 
+procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState; aText: String);
+begin
+  case Canvas.TextStyle.Alignment of
+    Classes.taLeftJustify: Inc(aRect.Left, 3);
+    Classes.taRightJustify: Dec(aRect.Right, 3);
+  end;
+  case Canvas.TextStyle.Layout of
+    tlTop: Inc(aRect.Top, 3);
+    tlBottom: Dec(aRect.Bottom, 3);
+  end;
+  Canvas.TextRect(aRect,ARect.Left,ARect.Top, aText);
+end;
+
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
 begin
   if FColumns.Enabled then
@@ -3765,13 +3781,16 @@ begin
   if csDestroying in ComponentState then
     exit;
 
-  if AColumn=nil then
+  if AColumn=nil then begin
     if Columns.Enabled then begin
-      InternalSetColCount( FixedCols + Columns.VisibleCount )
+      if FixedCols + Columns.VisibleCount <> ColCount then
+        InternalSetColCount( FixedCols + Columns.VisibleCount )
+      else
+        VisualChange;
     end else
       if not (csloading in ComponentState) then
-      ColCount := FixedCols + 1
-  else begin
+        ColCount := FixedCols + 1
+  end else begin
     aCol := Columns.IndexOf(AColumn);
     if ACol>=0 then begin
       if aColumn.WidthChanged then
@@ -4108,7 +4127,6 @@ begin
       end;
     gsColSizing:
       begin
-        {.$ifdef UseXOR}
         if FUseXORFeatures then begin
           if FPrevLine then
             DrawXorVertLine(FPrevValue);
@@ -4116,12 +4134,10 @@ begin
           FPrevValue := -1;
           ResizeColumn(FSplitter.x, x-FSplitter.y);
         end;
-        {.$endif}
         HeaderSized( True, FSplitter.X);
       end;
     gsRowSizing:
       begin
-        {.$ifdef UseXOR}
         if FUseXORFeatures then begin
           if FPrevLine then
             DrawXorHorzLine(FPrevValue);
@@ -4129,7 +4145,6 @@ begin
           FPrevValue := -1;
           ResizeRow(FSplitter.y, y-FSplitter.x);
         end;
-        {.$endif}
         HeaderSized( False, FSplitter.Y);
       end;
   end;
@@ -5588,7 +5603,7 @@ begin
       RowCount:=Cfg.GetValue('grid/design/rowcount', 5);
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
-      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', 20);
+      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
       DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
 
       Path:='grid/design/columns/';
@@ -5696,8 +5711,8 @@ begin
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
   fDefColWidth:=DEFCOLWIDTH;
-  fDefRowHeight:=20;//18;
-  fGridLineColor:=clSilver;//clGray;
+  fDefRowHeight:=DEFROWHEIGHT;
+  fGridLineColor:=clSilver;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
@@ -6188,14 +6203,24 @@ end;
 
 procedure TCustomDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
+var
+  OldDefaultDrawing: boolean;
 begin
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
     PrepareCanvas(aCol, aRow, aState);
     if DefaultDrawing then
       Canvas.FillRect(aRect);
     OnDrawCell(Self,aCol,aRow,aRect,aState)
-  end else
+  end else begin
+    OldDefaultDrawing:=FDefaultDrawing;
+    FDefaultDrawing:=True;
+    try
+      PrepareCanvas(aCol, aRow, aState);
+    finally
+      FDefaultDrawing:=OldDefaultDrawing;
+    end;
     DefaultDrawCell(aCol,aRow,aRect,aState);
+  end;
   inherited DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
@@ -6368,17 +6393,17 @@ end;
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
 var
-  OldDefaultDrawing: boolean;
+  C: TGridColumn;
 begin
-  OldDefaultDrawing:=FDefaultDrawing;
-  FDefaultDrawing:=True;
-  try
-    PrepareCanvas(aCol, aRow, aState);
-  finally
-    FDefaultDrawing:=OldDefaultDrawing;
-  end;
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
+
+  if Columns.Enabled and (gdFixed in aState) and (aRow=0) then begin
+    // draw the column title if there is any
+    C := ColumnFromGridColumn(aCol);
+    if C<>nil then
+      DrawCellText(aCol,aRow,aRect,aState,C.Title.Caption);
+  end;
 
   if (goFixedRowNumbering in Options) and (FixedCols >= 1) and (aCol = 0) then
     Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, IntTostr(aRow));
@@ -6658,17 +6683,8 @@ procedure TCustomStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
-  if DefaultDrawing then begin
-    case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(aRect.Left, 3);
-      Classes.taRightJustify: Dec(aRect.Right, 3);
-    end;
-    case Canvas.TextStyle.Layout of
-      tlTop: Inc(aRect.Top, 3);
-      tlBottom: Dec(aRect.Bottom, 3);
-    end;
-    Canvas.TextRect(aRect,ARect.Left,ARect.Top, Cells[aCol,aRow]);
-  end;
+  if DefaultDrawing then
+    DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
 end;
 
 function TCustomStringGrid.GetEditText(aCol, aRow: Integer): string;

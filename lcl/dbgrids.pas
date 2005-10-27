@@ -1577,17 +1577,6 @@ procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
     else
       result := dsInactive;
   end;
-  procedure FixRectangle;
-  begin
-    case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(aRect.Left, 3);
-      Classes.taRightJustify: Dec(aRect.Right, 3);
-    end;
-    case Canvas.TextStyle.Layout of
-      tlTop: Inc(aRect.Top, 3);
-      tlBottom: Dec(aRect.Bottom, 3);
-    end;
-  end;
 var
   S: string;
   F: TField;
@@ -1599,10 +1588,8 @@ begin
       dbgOut('>');
       {$endif}
     end else
-    if (aRow=0)and(ACol>=FixedCols) then begin
-      FixRectangle;
-      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetColumnTitle(aCol));
-    end;
+    if (aRow=0)and(ACol>=FixedCols) then
+      DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
   end else begin
     F := GetFieldFromGridColumn(aCol);
     case ColumnEditorStyle(aCol, F) of
@@ -1616,8 +1603,7 @@ begin
             S := '(blob)';
         end else
           S := '';
-        FixRectangle;
-        Canvas.TextRect(Arect,ARect.Left,ARect.Top, S);
+        DrawCellText(aCol,aRow,aRect,aState,S);
       end;
     end;
   end;
@@ -2504,31 +2490,16 @@ procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
     else
       result := dsInactive;
   end;
-  function FixRectangle: TRect;
-  begin
-    result := Rect;
-    case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(Result.Left, 3);
-      Classes.taRightJustify: Dec(Result.Right, 3);
-    end;
-    case Canvas.TextStyle.Layout of
-      tlTop: Inc(Result.Top, 3);
-      tlBottom: Dec(Result.Bottom, 3);
-    end;
-  end;
 var
   S: string;
   F: TField;
-  R: TRect;
 begin
   if gdFixed in State then begin
     if (DataCol=0)and FDrawingActiveRecord then
       DrawArrow(Canvas, Rect, GetDataSetState)
     else
-    if (DataCol>=FixedCols) then begin
-      R := FixRectangle();
-      Canvas.TextRect(R,R.Left,R.Top,GetColumnTitle(DataCol));
-    end;
+    if (DataCol>=FixedCols) then
+      DrawCellText(0{dummy}, DataCol{dummy}, Rect, State,GetColumnTitle(DataCol));
   end else begin
     F := GetFieldFromGridColumn(DataCol);
     case ColumnEditorStyle(DataCol, F) of
@@ -2542,8 +2513,7 @@ begin
             S := '(blob)';
         end else
           S := '';
-        FixRectangle();
-        Canvas.TextRect(rect,Rect.Left,Rect.Top, S);
+        DrawCellText(0, DataCol, Rect, State, S);
       end;
     end;
   end;
