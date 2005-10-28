@@ -68,6 +68,9 @@ for p in $Params; do
   installbin=*)
     InstallBin=$(echo $p | sed -e 's#^installbin=##')
     ;;
+  buildroot=*)
+    BuildRoot=$(echo $p | sed -e 's#^buildroot=##')
+    ;;
   targets=*)
     Targets=$p
     ;;
@@ -75,7 +78,7 @@ for p in $Params; do
     echo "Unknown option: $p"
     echo
     echo "Usage:"
-    echo "  $0 [all] [downloadbinutils] [downloadfpc] [buildbinutils] [buildnormalfpc] [buildcrossfpc] [createfpccfg] [install] [installbin=<dir>] [targets=<i386-win32>]"
+    echo "  $0 [all] [downloadbinutils] [downloadfpc] [buildbinutils] [buildnormalfpc] [buildcrossfpc] [createfpccfg] [install] [installbin=<dir>] [targets=<i386-win32>] [buildroot=<dir default=~/freepascal/>]"
     exit -1
     ;;
   esac

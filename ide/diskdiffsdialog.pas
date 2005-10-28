@@ -228,7 +228,6 @@ begin
       Width:=Self.ClientWidth-2*Left;
       Height:=Self.ClientHeight-50-Top;
       Caption:=lisDiskDiffChangedFiles;
-      Visible:=true;
       OnResize:=@MainGroupBoxResize;
     end;
     
@@ -240,7 +239,6 @@ begin
       Top:=0;
       Height:=60;
       Align:=alTop;
-      Visible:=true;
       OnMouseUp:=@FilesListBoxMouseUp;
     end;
     
@@ -255,7 +253,6 @@ begin
       ReadOnly:=true;
       Gutter.Visible:=false;
       Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
-      Visible:=true;
     end;
     
     RevertAllButton:=TButton.Create(Self);
@@ -264,11 +261,10 @@ begin
       Parent:=Self;
       Left:=50;
       Top:=Self.ClientHeight-40;
-      Width:=150;
+      AutoSize:=true;
       Caption:=lisDiskDiffRevertAll;
       ModalResult:=mrYesToAll;
       Default:=true;
-      Visible:=true;
     end;
     
     IgnoreDiskChangesButton:=TButton.Create(Self);
@@ -277,10 +273,10 @@ begin
       Parent:=Self;
       Left:=RevertAllButton.Left+RevertAllButton.Width+10;
       Top:=RevertAllButton.Top;
-      Width:=150;
+      AutoSize:=true;
+      AnchorToNeighbour(akLeft,10,RevertAllButton);
       Caption:=lisDiskDiffIgnoreDiskChanges;
       ModalResult:=mrIgnore;
-      Visible:=true;
     end;
 
     OnResize:=@DiskDiffsDlgResize;

@@ -80,7 +80,7 @@ type
     property CaretsXY[Index: integer]: TPoint read GetCaretsXY write SetCaretsXY;
     property Codes[Index: integer]: TCodeBuffer read GetCodes write SetCodes;
   end;
-
+  
 const
   PascalClassSectionKeywords: array[TPascalClassSection] of string = (
     'private',

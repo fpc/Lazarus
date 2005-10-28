@@ -216,6 +216,8 @@ type
     LastGatheredIdentParent: TCodeTreeNode;
     LastGatheredIdentLevel: integer;
     ClassAndAncestors: TFPList;// list of PCodeXYPosition
+    FoundPublicProperties: TAVLTree;// tree of PChar (pointing to the
+                                    // property names in source)
   protected
     CurrentIdentifierList: TIdentifierList;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
@@ -419,9 +421,9 @@ begin
   if FFilteredList=nil then FFilteredList:=TFPList.Create;
   FFilteredList.Count:=0;
   FFilteredList.Capacity:=FItems.Count;
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
-  { $ENDIF}
+  {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
@@ -434,9 +436,9 @@ begin
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count));
-  { $ENDIF}
+  {$ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
 
@@ -623,37 +625,62 @@ end;
 function TIdentCompletionTool.CollectAllIdentifiers(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
-  
+var
+  Ident: PChar;
+  CurContextParent: TCodeTreeNode;
+
   function ProtectedNodeIsInAllowedClass: boolean;
   var
     CurClassNode: TCodeTreeNode;
     p: TFindContext;
   begin
-    Result:=true;
-    exit;
-    // TODO: this detects protected, but some protected are allowed:
-    // The protected to public/published properties
-    // For example: TStringGrid.Row
-    
-    if ClassAndAncestors=nil then exit;
-    CurClassNode:=FoundContext.Node;
-    while (CurClassNode<>nil)
-    and (not (CurClassNode.Desc in [ctnClass,ctnClassInterface])) do
-      CurClassNode:=CurClassNode.Parent;
-    if CurClassNode=nil then exit;
-    p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
-    if IndexOfFindContext(ClassAndAncestors,@p)>=0 then begin
-      // this class node is the class or one of the ancestors of the class
-      // of the start context of the identifier completion
-      exit;
+    if ClassAndAncestors<>nil then begin
+      // start of the identifier completion is in a method or class
+      // => all protected ancestor classes are allowed as well.
+      CurClassNode:=FoundContext.Node;
+      while (CurClassNode<>nil)
+      and (not (CurClassNode.Desc in [ctnClass,ctnClassInterface])) do
+        CurClassNode:=CurClassNode.Parent;
+      if CurClassNode=nil then exit;
+      p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
+      if IndexOfFindContext(ClassAndAncestors,@p)>=0 then begin
+        // this class node is the class or one of the ancestors of the class
+        // of the start context of the identifier completion
+        exit(true);
+      end;
+    end;
+
+    Result:=false;
+  end;
+  
+  function PropertyIsOverridenPublicPublish: boolean;
+  begin
+    // protected properties can be made public in child classes.
+    //debugln('PropertyIsOverridenPublicPublish Identifier=',GetIdentifier(Ident),' Find=',dbgs((FoundPublicProperties<>nil) and (FoundPublicProperties.Find(Ident)<>nil)));
+    if FoundPublicProperties<>nil then begin
+      if FoundPublicProperties.Find(Ident)<>nil then begin
+        // there is a public/published property with the same name
+        exit(true);
+      end;
     end;
     Result:=false;
   end;
   
+  procedure SavePublicPublishedProperty;
+  begin
+    if FoundPublicProperties=nil then begin
+      // create tree
+      FoundPublicProperties:=
+                         TAVLTree.Create(TListSortCompare(@CompareIdentifiers))
+    end else if FoundPublicProperties.Find(Ident)<>nil then begin
+      // identifier is already public
+    end;
+    FoundPublicProperties.Add(Ident);
+    //debugln('SavePublicPublishedProperty Identifier=',GetIdentifier(Ident),' Find=',dbgs(FoundPublicProperties.Find(Ident)<>nil));
+  end;
+  
 var
   NewItem: TIdentifierListItem;
-  Ident: PChar;
-  CurContextParent: TCodeTreeNode;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -686,7 +713,9 @@ begin
       if (FoundContext.Node.Parent.Desc=ctnClassProtected) then begin
         // protected defnitions are only accessible from descendants
         if ProtectedNodeIsInAllowedClass then begin
-          //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+          //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected in ANCESTOR '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+        end else if (FoundContext.Node.Desc=ctnProperty) then begin
+          //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Protected made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
         end else begin
           //debugln('TIdentCompletionTool.CollectAllIdentifiers FORBIDDEN Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
           exit;
@@ -717,8 +746,17 @@ begin
     
   ctnProperty:
     begin
-      if FoundContext.Tool.PropNodeIsTypeLess(FoundContext.Node) then exit;
       Ident:=FoundContext.Tool.GetPropertyNameIdentifier(FoundContext.Node);
+      if FoundContext.Tool.PropNodeIsTypeLess(FoundContext.Node) then begin
+        if FoundContext.Node.Parent.Desc in [ctnClassPublic,ctnClassPublished]
+        then
+          SavePublicPublishedProperty;
+        exit;
+      end;
+      if (FoundContext.Node.Parent.Desc in [ctnClassPrivate,ctnClassProtected])
+      and (not PropertyIsOverridenPublicPublish) then begin
+        exit;
+      end;
     end;
     
   end;
@@ -878,6 +916,7 @@ var
   GatherContext: TFindContext;
   ExprType: TExpressionType;
   ContextExprStartPos: Integer;
+  StartInSubContext: Boolean;
 begin
   Result:=false;
   if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
@@ -926,6 +965,7 @@ begin
       ' Expr=',StringToPascalConst(copy(Src,ContextExprStartPos,
                     IdentStartPos-ContextExprStartPos)));
     {$ENDIF}
+    StartInSubContext:=false;
     if ContextExprStartPos<IdentStartPos then begin
       MoveCursorToCleanPos(IdentStartPos);
       Params.ContextNode:=CursorNode;
@@ -934,8 +974,10 @@ begin
                      fdfSearchInParentNodes,fdfSearchInAncestors];
       ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
                                              Params);
-      if (ExprType.Desc=xtContext) then
+      if (ExprType.Desc=xtContext) then begin
         GatherContext:=ExprType.Context;
+        StartInSubContext:=true;
+      end;
     end;
     
     // search and gather identifiers in context
@@ -949,8 +991,10 @@ begin
       // gather all identifiers in context
       Params.ContextNode:=GatherContext.Node;
       Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                     fdfCollect,fdfFindVariable];
+      Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+      if not StartInSubContext then
+        Include(Params.Flags,fdfSearchInParentNodes);
+
       if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
         Exclude(Params.Flags,fdfSearchInParentNodes);
       {$IFDEF CTDEBUG}
@@ -1008,6 +1052,7 @@ begin
     Result:=true;
   finally
     FreeListOfPFindContext(ClassAndAncestors);
+    FreeAndNil(FoundPublicProperties);
     Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;

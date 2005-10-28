@@ -3123,7 +3123,7 @@ begin
       // add one entry per item
       CodeToolBoss.IdentifierList.Prefix:=Prefix;
       ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
-      DebugLn('InitIdentCompletion B Prefix=',Prefix,' ItemCnt=',IntToStr(ItemCnt));
+      //DebugLn('InitIdentCompletion B Prefix=',Prefix,' ItemCnt=',IntToStr(ItemCnt));
       CurCompletionControl.Position:=0;
       for i:=0 to ItemCnt-1 do
         s.Add('Dummy');
