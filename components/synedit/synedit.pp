@@ -2519,9 +2519,10 @@ begin
             break;
           end;
         end;
-      end; //for
+      end;
     end;
     if Assigned(fOnGutterClick) then begin
+      // for compatibility invoke this only on the markable area
       fOnGutterClick(Self, X, Y, line, mark);
     end;
   end;
