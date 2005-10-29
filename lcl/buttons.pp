@@ -394,6 +394,7 @@ type
 var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
+
 procedure Register;
 
 implementation

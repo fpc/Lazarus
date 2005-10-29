@@ -1372,9 +1372,7 @@ end;
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 var
   w: Integer;
-  yDiff: Integer;
 begin
-  yDiff:=22;
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
 
