@@ -438,7 +438,6 @@ type
     procedure ExchangeColumn(Index,WithIndex: Integer);
     procedure InsertColumn(Index: Integer);
   public
-    constructor Create(AGrid: TCustomGrid);
     constructor Create(AGrid: TCustomGrid; aItemClass: TCollectionItemClass);
     function Add: TGridColumn;
     function RealIndex(Index: Integer): Integer;
@@ -503,6 +502,7 @@ type
     FDefColWidth, FDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
     FOnEditButtonClick: TNotifyEvent;
+    FOnPickListSelect: TNotifyEvent;
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
@@ -531,6 +531,7 @@ type
     FDefaultTextStyle: TTextStyle;
     FLastWidth: Integer;
     FTitleFont, FLastFont: TFont;
+    FTitleFontIsDefault: boolean;
     FColumns: TGridColumns;
     FButtonEditor: TButtonCellEditor;
     FStringEditor: TStringCellEditor;
@@ -681,10 +682,7 @@ type
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawColRowMoving;
     procedure DrawEdges;
-    //procedure DrawFixedCells; virtual;
-    //procedure DrawFocused; virtual;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); virtual;
-    //procedure DrawInteriorCells; virtual;
     procedure DrawRow(aRow: Integer); virtual;
     procedure EditButtonClicked(Sender: TObject);
     procedure EditordoGetValue; virtual;
@@ -697,6 +695,7 @@ type
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     function  FixedGrid: boolean;
+    procedure FontChanged(Sender: TObject); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
     function  GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
     function  GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
@@ -742,6 +741,7 @@ type
     procedure MoveSelection; virtual;
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Index,Rest:Integer): boolean;
     procedure Paint; override;
+    procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResizeColumn(aCol, aWidth: Integer);
@@ -771,7 +771,6 @@ type
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure UpdateBorderStyle;
     procedure VisualChange; virtual;
-    //procedure ValidateCols(FromCol, ToCol: Integer);
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
     procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
     procedure WMKillFocus(var message: TLMKillFocus); message LM_KILLFOCUS;
@@ -839,6 +838,7 @@ type
     property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
+    property OnPickListSelect: TNotifyEvent read FOnPickListSelect write FOnPickListSelect;
     property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
@@ -1017,6 +1017,7 @@ type
     property OnMouseUp;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPickListSelect;
     property OnPrepareCanvas;
     property OnSelectEditor;
     property OnSelection;
@@ -1079,6 +1080,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TitleFont;
     property TitleStyle;
     property Visible;
     property VisibleColCount;
@@ -1109,6 +1111,7 @@ type
     property OnMouseUp;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPickListSelect;
     property OnPrepareCanvas;
     property OnSelectEditor;
     property OnSelection;
@@ -1222,6 +1225,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TitleFont;
     property TitleStyle;
     property Visible;
     property VisibleColCount;
@@ -1253,6 +1257,7 @@ type
     property OnMouseUp;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPickListSelect;
     property OnPrepareCanvas;
     property OnResize;
     property OnSelectEditor;
@@ -2123,21 +2128,7 @@ begin
   UpdateHorzScrollBar(HsbVisible, HsbRange, FGCache.ClientWidth);
   Invalidate;
 end;
-{
-procedure TCustomGrid.ValidateCols(FromCol, ToCol: Integer);
-var
-  i: Integer;
-  R1,R2: TRect;
-begin
-  if ToCol<FromCol then
-    SwapInt(FromCol, ToCol);
-  R1:=CellRect(FromCol, 0);
-  R2:=CellRect(ToCol, 0);
-  R1.Right := R2.Right;
-  R1.Bottom:=FGCache.MaxClientXY.Y;
-  //ValidateRect(Handle, @R1, True);
-end;
-}
+
 procedure TCustomGrid.CreateParams(var Params: TCreateParams);
 const
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
@@ -2412,6 +2403,12 @@ begin
   end;
 end;
 
+procedure TCustomGrid.PickListItemSelected(Sender: TObject);
+begin
+  if Assigned(OnPickListSelect) then
+    OnPickListSelect(Self);
+end;
+
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
 var
   AColor: TColor;
@@ -2428,12 +2425,12 @@ begin
       if not (gdFixed in AState) and (FAlternateColor<>AColor) then  begin
         if AColor=Color then begin
           // column color = grid Color, Allow override color
-        // 1. default color after fixed rows
-        // 2. always use absolute alternate color based in odd & even row
-        if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
-           (not FAltColorStartNormal and Odd(ARow)) {(2)} then
-            AColor := FAlternateColor;
-      end;
+          // 1. default color after fixed rows
+          // 2. always use absolute alternate color based in odd & even row
+          if (FAltColorStartNormal and Odd(ARow-FixedRows)) {(1)} or
+             (not FAltColorStartNormal and Odd(ARow)) {(2)} then
+              AColor := FAlternateColor;
+        end;
       end;
       Canvas.Brush.Color := AColor;
       SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
@@ -2556,46 +2553,6 @@ begin
   end;
 end;
 
-(*
-procedure TCustomGrid.DrawFixedCells;
-var
-  Gds: TGridDrawState;
-  i,j: Integer;
-begin
-  Gds:=[gdFixed];
-  // Draw fixed fixed Cells
-  For i:=0 to FFixedCols-1 do
-    For j:=0 to fFixedRows-1 do
-      DrawCell(i,j, CellRect(i,j), gds);
-
-  with FGCache.VisibleGrid do begin
-    // Draw fixed column headers
-    For i:=left to Right do
-      For j:=0 to fFixedRows-1 do
-        DrawCell(i,j, CellRect(i,j), gds);
-    // Draw fixed row headers
-    For i:=0 to FFixedCols-1 do
-      For j:=Top to Bottom do
-        DrawCell(i,j, CellRect(i,j), gds);
-  end;
-end;
-
-procedure TCustomGrid.DrawInteriorCells;
-var
-  Gds: TGridDrawState;
-  i,j: Integer;
-begin
-  with FGCache.VisibleGrid do begin
-    For i:=Left to Right do
-      For j:=Top to Bottom do begin
-        Gds:=[];
-        if (i=FCol)and(J=FRow) then Continue;
-        if IsCellSelected(i,j) then Include(gds, gdSelected);
-        DrawCell(i,j, CellRect(i,j), gds);
-      end;
-  end;
-end;
-*)
 procedure TCustomGrid.DrawColRowMoving;
 {$ifdef AlternativeMoveIndicator}
 var
@@ -2866,12 +2823,11 @@ end;
 
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
 begin
-  if FColumns.Enabled then
+  FTitleFontIsDefault := False;
+  if FColumns.Enabled then begin
     FColumns.TitleFontChanged;
-  ColumnsChanged(nil);
-  //else
-  //  VisualChange;
-  //  LayoutChanged;
+    ColumnsChanged(nil);
+  end;
 end;
 
 procedure TCustomGrid.ReadColumns(Reader: TReader);
@@ -3336,7 +3292,7 @@ end;
 
 function TCustomGrid.CreateColumns: TGridColumns;
 begin
-  result := TGridColumns.Create(Self);
+  result := TGridColumns.Create(Self, TGridColumn);
 end;
 
 procedure TCustomGrid.SetAutoFillColumns(const AValue: boolean);
@@ -4979,6 +4935,18 @@ begin
   result := (FixedCols=ColCount) or (FixedRows=RowCount)
 end;
 
+procedure TCustomGrid.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  if FColumns.Enabled then
+    FColumns.FontChanged;
+  if FTitleFontIsDefault then begin
+    FTitleFont.Assign(Font);
+    FTitleFontIsDefault := True;
+  end;
+  ColumnsChanged(nil);
+end;
+
 procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
@@ -5712,6 +5680,7 @@ begin
 
   FTitleFont := TFont.Create;
   FTitleFont.OnChange := @OnTitleFontChanged;
+  FTitleFontIsDefault := True;
 
   FAutoAdvance := aaRight;
   FFocusRectVisible := True;
@@ -5763,6 +5732,7 @@ begin
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
+  FPickListEditor.OnSelect := @PickListItemSelected;
 
   FFastEditing := True;
 end;
@@ -6409,7 +6379,8 @@ begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
 
-  if Columns.Enabled and (gdFixed in aState) and (aRow=0) then begin
+  if Columns.Enabled and (gdFixed in aState) and
+    (aCol>=FixedCols) and (aRow=0) then begin
     // draw the column title if there is any
     C := ColumnFromGridColumn(aCol);
     if C<>nil then
@@ -6694,8 +6665,13 @@ procedure TCustomStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
-  if DefaultDrawing then
-    DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
+  if DefaultDrawing then begin
+    if Columns.Enabled and (gdFixed in aState) and
+      (aCol>=FixedCols) and (aRow=0) then
+      //inherited already did
+    else
+      DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
+  end;
 end;
 
 function TCustomStringGrid.GetEditText(aCol, aRow: Integer): string;
@@ -6955,6 +6931,7 @@ begin
     FFont.Assign( AGrid.TitleFont )
   else
     FFont.Assign( FColumn.Font );
+  FIsDefaultTitleFont := True;
 end;
 
 function TGridColumnTitle.GetFont: TFont;
@@ -6987,7 +6964,7 @@ end;
 
 function TGridColumnTitle.IsFontStored: boolean;
 begin
-  result := FFont <> nil;
+  result := not IsDefaultFont;
 end;
 
 function TGridColumnTitle.IsLayoutStored: boolean;
@@ -7089,7 +7066,6 @@ constructor TGridColumnTitle.Create(TheColumn: TGridColumn);
 begin
   inherited Create;
   FColumn := TheColumn;
-
   FIsDefaultTitleFont := True;
   FFont := TFont.Create;
   FillTitleDefaultFont;
@@ -7552,6 +7528,7 @@ begin
   AGrid := Grid;
   if (AGrid<>nil) then begin
     FFont.Assign(AGrid.Font);
+    FIsDefaultFont := True;
   end;
 end;
 
@@ -7604,8 +7581,9 @@ var
 begin
   for i:=0 to Count-1 do begin
     c := Items[i];
-    if (c<>nil)and(c.Title.IsDefaultFont) then
+    if (c<>nil)and(c.Title.IsDefaultFont) then begin
       c.Title.FillTitleDefaultFont;
+    end;
   end;
 end;
 
@@ -7616,8 +7594,9 @@ var
 begin
   for i:=0 to Count-1 do begin
     c := Items[i];
-    if (c<>nil)and(c.IsDefaultFont) then
+    if (c<>nil)and(c.IsDefaultFont) then begin
       c.FillDefaultFont;
+    end;
   end;
 end;
 
@@ -7660,12 +7639,6 @@ begin
   Add;
   MoveColumn(Count-1, Index);
   EndUpdate;
-end;
-
-constructor TGridColumns.Create(AGrid: TCustomGrid);
-begin
-  inherited Create( TGridColumn );
-  FGrid := AGrid;
 end;
 
 constructor TGridColumns.Create(AGrid: TCustomGrid;

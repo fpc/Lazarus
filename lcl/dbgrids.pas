@@ -34,7 +34,6 @@ unit DBGrids;
 
 {$mode objfpc}{$H+}
 {$define EnableIsSeq}
-{.$define UseTitleFont}
 interface
 
 uses
@@ -218,7 +217,6 @@ type
     function  HasDesignColumns: boolean;
     procedure RemoveAutoColumns;
   public
-    constructor Create(AGrid: TCustomDBGrid);
     function  Add: TColumn;
     procedure LinkFields;
     procedure ResetColumnsOrder(ColumnOrder: TColumnOrder);
@@ -290,10 +288,6 @@ type
     function GetColumnCount: Integer;
 
     function DefaultFieldColWidth(F: TField): Integer;
-    function GetDsFieldFromGridColumn(Column: Integer): TField;
-    function GetFieldFromGridColumn(Column: Integer): TField;
-    function GetGridColumnFromField(F: TField): Integer;
-    function FieldIndexFromGridColumn(Column: Integer): Integer;
 
     procedure UpdateGridColumnSizes;
     procedure UpdateScrollbarRange;
@@ -338,15 +332,17 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
+    function  FieldIndexFromGridColumn(Column: Integer): Integer;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
     function  GetDefaultColumnTitle(Column: Integer): string; override;
-
+    function  GetDsFieldFromGridColumn(Column: Integer): TField;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    function  GetFieldFromGridColumn(Column: Integer): TField;
+    function  GetGridColumnFromField(F: TField): Integer;
     function  GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
-
     function  GridCanModify: boolean;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
@@ -1535,7 +1531,7 @@ end;
 
 function TCustomDbGrid.CreateColumns: TGridColumns;
 begin
-  result := TDbGridColumns.Create(Self);
+  result := TDbGridColumns.Create(Self, TColumn);
 end;
 
 procedure TCustomDbGrid.CreateWnd;
@@ -2811,11 +2807,6 @@ begin
   finally
     L.Free;
   end;
-end;
-
-constructor TDbGridColumns.Create(AGrid: TCustomDBGrid);
-begin
-  inherited Create( AGrid, TColumn );
 end;
 
 function TDbGridColumns.Add: TColumn;
