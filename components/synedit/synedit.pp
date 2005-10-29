@@ -5679,6 +5679,7 @@ var
   ScrollHint: THintWindow;
 {$ENDIF}
 begin
+  //debugln('TCustomSynEdit.WMVScroll A ',DbgSName(Self),' Msg.ScrollCode=',dbgs(Msg.ScrollCode),' SB_PAGEDOWN=',dbgs(SB_PAGEDOWN),' SB_PAGEUP=',dbgs(SB_PAGEUP));
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP: TopLine := 1;

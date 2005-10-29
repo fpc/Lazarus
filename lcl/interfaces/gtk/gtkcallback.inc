@@ -2451,7 +2451,7 @@ end;
 {$IFDEF gtk1}
 function gtk_range_get_update_policy(range: PGTKRange): TGtkUpdateType;
 begin
-  result := policy(Range^)
+  result := policy(Range^);
 end;
 {$ENDIF}
 
@@ -2466,7 +2466,7 @@ type
 {$ENDIF}
 begin
 {$IFDEF gtk1}
-  Result :=Scroll_type(Range^);
+  Result := Scroll_type(Range^);
 {$ELSE}
   if (gtk_major_version=2) and (gtk_minor_version<6) and
      (Range^.Timer<>nil) then
@@ -2531,7 +2531,7 @@ begin
       if IsVertSB then
         Result := SB_PAGEDOWN
       else
-       Result := SB_PAGERIGHT;
+        Result := SB_PAGERIGHT;
     {$ifdef GTK2}
     GTK_SCROLL_STEP_UP:
       Result := SB_LINEUP;
@@ -2631,7 +2631,7 @@ begin
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(False, ScrollType,
-        gtk_range_get_update_policy(Scroll));
+                                       gtk_range_get_update_policy(Scroll));
     end;
     DeliverMessage(Data, Msg);
   end;
@@ -2653,10 +2653,13 @@ begin
       if Pos < High(SmallPos)
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
+      //DebugLn('GTKVScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
+      // GTK1 has a bug with wheel mouse. It sometimes gives the wrong direction.
       ScrollCode := ScrollTypeToSbCode(True, ScrollType,
-        gtk_range_get_update_policy(Scroll));
+                                       gtk_range_get_update_policy(Scroll));
+      //DebugLn('GTKVScrollCB B Adjustment^.Value=',dbgs(Adjustment^.Value),' ScrollCode=',dbgs(ScrollCode),' ScrollType=',dbgs(ScrollType));
     end;
     DeliverMessage(Data, Msg);
   end;

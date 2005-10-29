@@ -164,15 +164,28 @@ end;
 
 procedure TCustomBitBtn.RealizeKind;
 var
-  ABitmap: TBitmap;
+  GlyphValid: Boolean;
+  CustomGlyph: TBitmap;
 begin
   if (Kind<>bkCustom) 
   then begin
-    ABitmap := Glyph;
-    if ABitmap = nil 
-    then ABitmap := TBitmap.Create;
-    ABitmap.Handle := LoadStockPixmap(BitBtnImages[FKind]);
-    Glyph := ABitmap;
+    GlyphValid:=false;
+    
+    // first let the user override
+    if GetDefaultBitBtnGlyph<>nil then begin
+      CustomGlyph:=GetDefaultBitBtnGlyph(Kind);
+      if CustomGlyph<>nil then begin
+        Glyph.Assign(CustomGlyph);
+        CustomGlyph.Free;
+        GlyphValid:=true;
+      end;
+    end;
+
+    // then ask the widgetset
+    if not GlyphValid then begin
+      Glyph.Handle := LoadStockPixmap(BitBtnImages[FKind]);
+      GlyphValid:=true;
+    end;
   end;
 
   if not (csLoading in ComponentState) 

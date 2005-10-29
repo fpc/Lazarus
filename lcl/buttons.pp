@@ -213,6 +213,8 @@ type
 
 
   { TBitBtn }
+  { To set custom bitbtn glyphs for the whole application, see below for
+    GetDefaultBitBtnGlyph }
 
   TBitBtn = class(TCustomBitBtn)
   published
@@ -372,7 +374,25 @@ type
     property PopupMenu;
   end;
 
+  { To override the default TBitBtn glyphs set GetDefaultBitBtnGlyph below.
+    Example:
 
+    function GetBitBtnGlyph(Kind: TBitBtnKind): TBitmap;
+    begin
+      if Kind in [bkOK, bkCancel] then begin
+        Result:=TBitmap.Create;
+        case Kind of
+          bkOk:      Result.Assign(MyOkGlyph);
+          bkCancel:  Result.Assign(MyCancelGlyph);
+        end;
+      end else
+        Result:=nil;
+    end;
+    }
+type
+  TGetDefaultBitBtnGlyph = function(Kind: TBitBtnKind): TBitmap;
+var
+  GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
 procedure Register;
 
