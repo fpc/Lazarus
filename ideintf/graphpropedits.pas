@@ -120,6 +120,17 @@ type
     procedure GetValues(Proc: TGetStringProc); override;
   end;
 
+{ TFontCharsetPropertyEditor
+  PropertyEditor editor for the TFontCharset properties.
+  Displays Charset as constant name if exists, otherwise an integer. }
+
+  TFontCharsetPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
 
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
@@ -142,10 +153,12 @@ type
     FColor:TColor;
     FBrushStyle:TBrushStyle;
     FPenStyle:TPenStyle;
+    FCharset: TFontCharset;
   published
     property Color:TColor read FColor write FColor;
     property BrushStyle:TBrushStyle read FBrushStyle;
     property PenStyle:TPenStyle read FPenStyle;
+    property CharSet: TFontCharset read FCharSet;
   end;
 //==============================================================================
 
@@ -606,6 +619,57 @@ begin
     Proc(Screen.Fonts[I]);
 end;
 
+{ TFontCharsetPropertyEditor }
+
+function TFontCharsetPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paMultiSelect,paSortList,paValueList,paRevertable,paHasDefaultValue];
+end;
+
+function TFontCharsetPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
+begin
+  Result := CharsetToString(OrdValue);
+end;
+
+procedure TFontCharsetPropertyEditor.GetValues(Proc: TGetStringProc);
+begin
+  proc(CharsetToString(ANSI_CHARSET));
+  proc(CharsetToString(DEFAULT_CHARSET));
+  proc(CharsetToString(SYMBOL_CHARSET));
+  proc(CharsetToString(MAC_CHARSET));
+  proc(CharsetToString(SHIFTJIS_CHARSET));
+  proc(CharsetToString(HANGEUL_CHARSET));
+  proc(CharsetToString(JOHAB_CHARSET));
+  proc(CharsetToString(GB2312_CHARSET));
+  proc(CharsetToString(CHINESEBIG5_CHARSET));
+  proc(CharsetToString(GREEK_CHARSET));
+  proc(CharsetToString(TURKISH_CHARSET));
+  proc(CharsetToString(VIETNAMESE_CHARSET));
+  proc(CharsetToString(HEBREW_CHARSET));
+  proc(CharsetToString(ARABIC_CHARSET));
+  proc(CharsetToString(BALTIC_CHARSET));
+  proc(CharsetToString(RUSSIAN_CHARSET));
+  proc(CharsetToString(THAI_CHARSET));
+  proc(CharsetToString(EASTEUROPE_CHARSET));
+  proc(CharsetToString(OEM_CHARSET));
+  proc(CharsetToString(FCS_ISO_10646_1));
+end;
+
+procedure TFontCharsetPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  CValue: Longint;
+begin
+  if not SameText(NewValue,'DEFAULT_CHARSET') then begin
+    CValue := StringToCharset(NewValue);
+    if CValue = DEFAULT_CHARSET then
+      inherited SetValue(NewValue)
+    else
+      SetOrdValue(CValue);
+  end else
+    SetOrdValue(DEFAULT_CHARSET);
+end;
+
 { TBrushStylePropertyEditor }
 
 procedure TBrushStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
@@ -788,6 +852,8 @@ initialization
     TButtonGlyphPropEditor);
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBtn,'Glyph',
     TButtonGlyphPropEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TFontCharset'),
+    nil, 'CharSet', TFontCharsetPropertyEditor);
 
 
 finalization

@@ -1106,6 +1106,8 @@ type
   DIBSECTION = tagDIBSECTION;
 
 const
+  RASTER_FONTTYPE = 1;
+  DEVICE_FONTTYPE = 2;
   TRUETYPE_FONTTYPE = 4;
 
   GCP_DBCS = 1;
@@ -1197,6 +1199,7 @@ const
   THAI_CHARSET        = 222;
   EASTEUROPE_CHARSET  = 238;
   OEM_CHARSET         = 255;
+  // additional charsets
 
 //-----------
 // Font Sets
@@ -1246,7 +1249,31 @@ const
   FW_DEMIBOLD   = FW_SEMIBOLD;
   FW_ULTRABOLD  = FW_EXTRABOLD;
   FW_BLACK      = FW_HEAVY;
+  
+  FOUNDRYCHAR_OPEN  = '[';  // added for support foundry encoded in family name
+  FOUNDRYCHAR_CLOSE = ']';  // also needed to drop foundry when creating font in windows
 
+//--------------
+// XFLD constans
+//--------------
+  XLFD_FONTNAME_REG = 0;
+  XLFD_FOUNDRY      = 1;
+  XLFD_FAMILY       = 2;
+  XLFD_WEIGHTNAME   = 3;
+  XLFD_SLANT        = 4;
+  XLFD_WIDTHNAME    = 5;
+  XLFD_STYLENAME    = 6;
+  XLFD_PIXELSIZE    = 7;
+  XLFD_POINTSIZE    = 8;
+  XLFD_RESX         = 9;
+  XLFD_RESY         = 10;
+  XLFD_SPACING      = 11;
+  XLFD_AVG_WIDTH    = 12;
+  XLFD_CHARSET_REG  = 13;
+  XLFD_CHARSET_COD  = 14;
+  
+  
+  
 //==============================================
 // Brush constants
 //==============================================
@@ -1721,6 +1748,7 @@ type
   LOGFONTW = tagLOGFONTW;
 
   LOGFONT = LOGFONTA;
+  LPLOGFONT = ^LOGFONT;
 
   PLogBrush = ^TLogBrush;
   tagLOGBRUSH = record
@@ -1856,7 +1884,6 @@ type
     tmPitchAndFamily: Byte;
     tmCharSet: Byte;
   end;
-
   tagTEXTMETRIC = tagTEXTMETRICA;
   TTextMetricA = tagTEXTMETRICA;
   TTextMetricW = tagTEXTMETRICW;
@@ -1864,8 +1891,50 @@ type
   TEXTMETRICA = tagTEXTMETRICA;
   TEXTMETRICW = tagTEXTMETRICW;
   TEXTMETRIC = TEXTMETRICA;
+  
 
+  TNewTextMetric = record
+    tmHeight: Longint;
+    tmAscent: Longint;
+    tmDescent: Longint;
+    tmInternalLeading: Longint;
+    tmExternalLeading: Longint;
+    tmAveCharWidth: Longint;
+    tmMaxCharWidth: Longint;
+    tmWeight: Longint;
+    tmOverhang: Longint;
+    tmDigitizedAspectX: Longint;
+    tmDigitizedAspectY: Longint;
+    tmFirstChar: AnsiChar;
+    tmLastChar: AnsiChar;
+    tmDefaultChar: AnsiChar;
+    tmBreakChar: AnsiChar;
+    tmItalic: Byte;
+    tmUnderlined: Byte;
+    tmStruckOut: Byte;
+    tmPitchAndFamily: Byte;
+    tmCharSet: Byte;
+    ntmFlags: DWORD;
+    ntmSizeEM: UINT;
+    ntmCellHeight: UINT;
+    ntmAvgWidth: UINT;
+  end;
 
+  TFontSignature = record
+    fsUsb : array[0..3] of DWORD;
+    fsCsb : array[0..1] of DWORD;
+  end;
+
+  TNewTextMetricEx = record
+    ntmentm : TNewTextMetric;
+    ntmeFontSignature : TFontSignature;
+  end;
+
+  FontEnumProc = function (var ELogFont:TEnumLogFont; var Metric:TNewTextMetric;
+    FontType:longint; Data:LParam):longint; stdcall;
+     
+  FontEnumExProc = function (var ELogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
+    FontType: Longint; Data:LParam):Longint; stdcall;
 
   PWndClassExA = ^TWndClassExA;
   PWndClassExW = ^TWndClassExW;
@@ -2143,6 +2212,8 @@ function LoWord(i: integer): word;
 Function Char2VK(C : Char) : Word;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
+function CharSetToString(const Charset: Integer): String;
+function StringToCharset(Charset: string): byte;
 
 
 implementation
@@ -2326,6 +2397,81 @@ Begin
   End; {Case}
 End;
 
+function CharSetToString(const Charset: Integer): String;
+begin
+  case Charset of
+    ANSI_CHARSET:         result := 'ANSI_CHARSET';
+    DEFAULT_CHARSET:      result := 'DEFAULT_CHARSET';
+    SYMBOL_CHARSET:       result := 'SYMBOL_CHARSET';
+    MAC_CHARSET:          result := 'MAC_CHARSET';
+    SHIFTJIS_CHARSET:     result := 'SHIFTJIS_CHARSET';
+    HANGEUL_CHARSET:      result := 'HANGEUL_CHARSET';
+    JOHAB_CHARSET:        result := 'JOHAB_CHARSET';
+    GB2312_CHARSET:       result := 'GB2312_CHARSET';
+    CHINESEBIG5_CHARSET:  result := 'CHINESEBIG5_CHARSET';
+    GREEK_CHARSET:        result := 'GREEK_CHARSET';
+    TURKISH_CHARSET:      result := 'TURKISH_CHARSET';
+    VIETNAMESE_CHARSET:   result := 'VIETNAMESE_CHARSET';
+    HEBREW_CHARSET:       result := 'HEBREW_CHARSET';
+    ARABIC_CHARSET:       result := 'ARABIC_CHARSET';
+    BALTIC_CHARSET:       result := 'BALTIC_CHARSET';
+    RUSSIAN_CHARSET:      result := 'RUSSIAN_CHARSET';
+    THAI_CHARSET:         result := 'THAI_CHARSET';
+    EASTEUROPE_CHARSET:   result := 'EASTEUROPE_CHARSET';
+    OEM_CHARSET:          result := 'OEM_CHARSET';
+    FCS_ISO_10646_1:      result := 'UNICODE';
+    FCS_ISO_8859_1:       result := 'FCS_ISO_8859_1';
+    FCS_ISO_8859_2:       result := 'FCS_ISO_8859_2';
+    FCS_ISO_8859_3:       result := 'FCS_ISO_8859_3';
+    FCS_ISO_8859_4:       result := 'FCS_ISO_8859_4';
+    FCS_ISO_8859_5:       result := 'FCS_ISO_8859_5';
+    FCS_ISO_8859_6:       result := 'FCS_ISO_8859_6';
+    FCS_ISO_8859_7:       result := 'FCS_ISO_8859_7';
+    FCS_ISO_8859_8:       result := 'FCS_ISO_8859_8';
+    FCS_ISO_8859_9:       result := 'FCS_ISO_8859_9';
+    FCS_ISO_8859_10:      result := 'FCS_ISO_8859_10';
+    FCS_ISO_8859_15:      result := 'FCS_ISO_8859_15';
+  end;
+end;
+
+function StringToCharset(Charset: string): Byte;
+begin
+  Charset := uppercase(charset);
+  if Charset = 'ANSI_CHARSET' then result := ANSI_CHARSET else
+  if Charset = 'DEFAULT_CHARSET' then result := DEFAULT_CHARSET else
+  if Charset = 'SYMBOL_CHARSET' then result := SYMBOL_CHARSET else
+  if Charset = 'MAC_CHARSET' then result := MAC_CHARSET else
+  if Charset = 'SHIFTJIS_CHARSET' then result := SHIFTJIS_CHARSET else
+  if Charset = 'HANGEUL_CHARSET' then result := SHIFTJIS_CHARSET else
+  if Charset = 'JOHAB_CHARSET' then result := JOHAB_CHARSET else
+  if Charset = 'GB2312_CHARSET' then result := GB2312_CHARSET else
+  if Charset = 'CHINESEBIG5_CHARSET' then result := CHINESEBIG5_CHARSET else
+  if Charset = 'GREEK_CHARSET' then result := GREEK_CHARSET else
+  if Charset = 'TURKISH_CHARSET' then result := TURKISH_CHARSET else
+  if Charset = 'VIETNAMESE_CHARSET' then result := VIETNAMESE_CHARSET else
+  if Charset = 'HEBREW_CHARSET' then result := HEBREW_CHARSET else
+  if Charset = 'ARABIC_CHARSET' then result := ARABIC_CHARSET else
+  if Charset = 'BALTIC_CHARSET' then result := BALTIC_CHARSET else
+  if Charset = 'RUSSIAN_CHARSET' then result := RUSSIAN_CHARSET else
+  if Charset = 'THAI_CHARSET' then result := THAI_CHARSET else
+  if Charset = 'EASTEUROPE_CHARSET' then result := EASTEUROPE_CHARSET else
+  if Charset = 'OEM_CHARSET' then result := OEM_CHARSET else
+  if Charset = 'UNICODE' then result := FCS_ISO_10646_1 else
+  if Charset = 'FCS_ISO_8859_1' then result := FCS_ISO_8859_1 else
+  if Charset = 'FCS_ISO_8859_2' then result := FCS_ISO_8859_2 else
+  if Charset = 'FCS_ISO_8859_3' then result := FCS_ISO_8859_3 else
+  if Charset = 'FCS_ISO_8859_4' then result := FCS_ISO_8859_4 else
+  if Charset = 'FCS_ISO_8859_5' then result := FCS_ISO_8859_5 else
+  if Charset = 'FCS_ISO_8859_6' then result := FCS_ISO_8859_6 else
+  if Charset = 'FCS_ISO_8859_7' then result := FCS_ISO_8859_7 else
+  if Charset = 'FCS_ISO_8859_8' then result := FCS_ISO_8859_8 else
+  if Charset = 'FCS_ISO_8859_9' then result := FCS_ISO_8859_9 else
+  if Charset = 'FCS_ISO_8859_10' then result := FCS_ISO_8859_10 else
+  if Charset = 'FCS_ISO_8859_15' then result := FCS_ISO_8859_15
+  else
+    result := DEFAULT_CHARSET;
+  
+end;
 
 end.
 

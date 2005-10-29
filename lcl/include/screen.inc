@@ -215,11 +215,47 @@ begin
   RemoveHandler(snActiveFormChanged,TMethod(OnActiveFormChanged));
 end;
 
+function EnumFontsNoDups(
+  var LogFont: TEnumLogFontEx;
+  var Metric: TNewTextMetricEx;
+  FontType: Longint;
+  Data: LParam):LongInt; stdcall;
+var
+  L: TStrings;
+  S: String;
+begin
+  L := TStrings(Data);
+  S := LogFont.elfLogFont.lfFaceName;
+  if L.IndexOf(S)<0 then
+    L.Add(S);
+  result := 1;
+end;
+
+procedure GetScreenFontsList(FontList: TStrings);
+var
+  lf: TLogFont;
+  DC: HDC;
+begin
+  lf.lfCharSet := DEFAULT_CHARSET;
+  lf.lfFaceName := '';
+  lf.lfPitchAndFamily := 0;
+  DC := GetDC(0);
+  try
+    EnumFontFamiliesEX(DC, @lf, @EnumFontsNoDups, LongInt(FontList), 0);
+  finally
+    ReleaseDC(0, DC);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TScreen.GetFonts : TStrings;
  ------------------------------------------------------------------------------}
 function TScreen.GetFonts : TStrings;
 begin
+  if FFonts.Count=0 then begin
+    GetScreenFontsList(FFonts);
+    TStringList(FFonts).Sort;
+  end;
   Result := FFonts;
 end;
 

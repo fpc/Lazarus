@@ -27,7 +27,7 @@ unit GtkWSGrids;
 interface
 
 uses
-  Grids, WSGrids, WSLCLClasses;
+  Controls, Graphics, Grids, WSGrids, WSLCLClasses;
 
 type
 
@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TGtkWSDrawGrid }
@@ -66,6 +67,14 @@ type
 
 implementation
 
+{ TGtkWSCustomGrid }
+
+procedure TGtkWSCustomGrid.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  //
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -75,7 +84,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TStringCellEditor, TGtkWSStringCellEditor);
-//  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid);
+  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid);
 //  RegisterWSComponent(TDrawGrid, TGtkWSDrawGrid);
 //  RegisterWSComponent(TStringGrid, TGtkWSStringGrid);
 ////////////////////////////////////////////////////

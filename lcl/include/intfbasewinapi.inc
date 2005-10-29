@@ -647,6 +647,19 @@ begin
   DebugLn('TWidgetSet.EnterCriticalSection Not implemented yet');
 end;
 
+function TWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
+begin
+  DebugLn('EnumFontFamilies is not yet implemented for this widgetset');
+  result := 0;
+end;
+
+function TWidgetSet.EnumFontFamiliesEx(DC: HDC; LpLogFont:PLogFont;
+  Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint;
+begin
+  DebugLn('EnumFontFamiliesEx is not yet implemented for this widgetset');
+  result := 0;
+end;
+
 function TWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   Points : PPoint;

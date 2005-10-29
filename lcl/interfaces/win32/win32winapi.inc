@@ -1219,6 +1219,21 @@ Begin
   Result := Integer(Windows.EndPaint(Handle, @PS));
 End;
 
+function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
+  EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
+begin
+  result := Windows.EnumFontFamilies(DC,Family,
+    Windows.FontEnumProc(EnumFontFamProc), Lparam);
+end;
+
+function TWin32WidgetSet.EnumFontFamiliesEx(DC:HDC; lpLogFont:PLogFont;
+  Callback: FontEnumExProc; LParam:Lparam; flags:dword):longint;
+begin
+  result := Windows.EnumFontFamiliesEx(DC,
+    windows.LPLOGFONT(lpLogFont),
+    windows.FontEnumExProc(Callback), Lparam, Flags);
+end;
+
 {------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  dc, Left, Top, Right, Bottom

@@ -1364,6 +1364,9 @@ var
   n: Integer;
   sn, cs: Float;
   CachedFont: TGdkFontCacheDescriptor;
+  CharsetRec: PCharSetEncodingRec;
+  Weightlist: TStringlist;
+
 
   function LoadFont: boolean;
   var
@@ -1394,14 +1397,67 @@ var
 
     if Result then begin
       Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
-      if Desc<>nil then
+      if Desc<>nil then begin
         Desc.xlfd:=s;
+        {$ifdef VerboseFonts}
+        debugLn('for LongFontName=', LongFontName,' got: ',S);
+        {$endif}
+      end;
     end;
+  end;
 
-    {$IFDEF VerboseFonts}
-    //if GdiObject^.GDIFontObject<>nil then
-      DebugLn('  Tried "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
-    {$ENDIF}
+  function LoadFontEx: boolean;
+  var
+    head,S,tail: string;
+    Desc: TGdkFontCacheDescriptor;
+    i,j: integer;
+    aSlant: String;
+  begin
+    Result := false;
+    aSlant := Slant;
+    with logfont do
+    for j:=0 to CharSetEncodingList.Count-1 do begin
+      CharSetRec := CharsetEncodingList[j];
+      if (CharsetRec = nil) or (CharSetRec^.CharSet<>LogFont.lfCharset) then
+        continue;
+        
+      CharSetCoding := CharsetRec^.CharSetCod;
+      CharSetRegistry := CharSetRec^.CharSetReg;
+
+      if ((lfWeight <> FW_NORMAL) and (lfWeight <> FW_BOLD)) or
+        (WeightName<>'*') then begin
+        result := LoadFont;
+        if result then
+          exit;
+      end;
+      
+      Head := FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-';
+      Tail := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
+             +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing
+             +'-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
+      for i:=0 to WeightList.Count-1 do begin
+        aSlant := Slant;
+        repeat
+          S:=Head+WeightList[i]+'-'+aSlant+Tail;
+          GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
+          Result:=GdiObject^.GDIFontObject<>nil;
+          {$ifdef VerboseFonts}
+          DebugLn('LogFontEx: Trying ',S,' Matched=',dbgs(Result));
+          {$endif}
+          if Result then begin
+            Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+            if Desc<>nil then
+              Desc.xlfd:=s;
+            exit;
+          end;
+          if aSlant='i' then
+            aSlant:='o'
+          else
+            break;
+        until false;
+      end;
+      
+    end;
   end;
 
   procedure LoadDefaultFont;
@@ -1433,7 +1489,8 @@ var
     AFont: PGdkFont;
     S: String;
   begin
-    S := '*-*-'+FamilyName+'*-*-*-*-*-*-*-*-*-*-*-*-*';
+    //S := '*-*-'+FamilyName+'*-*-*-*-*-*-*-*-*-*-*-*-*';
+    S := '-'+Foundry+'-'+FamilyName+'-*-*-*-*-*-*-*-*-*-*-*-*';
     AFont:=gdk_font_load(PChar(s));
     Result:=AFont<>nil;
     if Result then gdk_font_unref(AFont);
@@ -1452,8 +1509,7 @@ var
     if Result then
       debugln('WARNING: Fontnamt "',ALongFontName,'" seems to be a XLFD fontname, but has 14<>',dbgs(c),' minus signs');
   end;
-
-
+  
 begin
   // For info about xlfd see:
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
@@ -1501,6 +1557,8 @@ begin
     ' Long="',LongFontName,'" IsXLFD=',dbgs(IsFontNameXLogicalFontDesc(LongFontName))
     ,' ',dbgs(ord(LogFont.lfFaceName[0])));
     {$ENDIF}
+    
+    
     if IsFontNameXLogicalFontDesc(LongFontName) then begin
       FontNameRegistry := ExtractXLFDItemMask(LongFontName,0);
       Foundry          := ExtractXLFDItemMask(LongFontName,1);
@@ -1519,7 +1577,7 @@ begin
       CharSetCoding    := ExtractXLFDItemMask(LongFontName,14);
     end else if CheckFontNameIsMangledXLogicalFontDesc(LongFontName) then begin
     end;
-
+    
     with LogFont do
     begin
 
@@ -1531,14 +1589,28 @@ begin
 
       FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
 
-      if (CompareText(FamilyName,'default')<>0)
-      and (not FamilyNameExists) then begin
-        FamilyName:='default';
+      if (CompareText(FamilyName,'default')<>0) then begin
+      
+        // check if we have foundry enconded in family name
+        n := pos(FOUNDRYCHAR_OPEN, FamilyName);
+        if n<>0 then begin
+          Foundry := copy(FamilyName, n+1, Length(FamilyName));
+          familyName := trim(copy(familyName, 1, n-1));
+          n := pos(FOUNDRYCHAR_CLOSE,Foundry);
+          if n<>0 then
+            Delete(Foundry, n, Length(Foundry));
+        end;
+        // else
+        //  FamilyName := LongFontName;
+          
+        if not FamilyNameExists then
+          FamilyName:='default';
+        
       end;
 
       if CompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
-        DebugLn('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
+        DebugLn('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',dbgs(LogFont.lfHeight));
         {$ENDIF}
         if (LogFont.lfHeight=0) then begin
           LoadDefaultFont;
@@ -1563,10 +1635,10 @@ begin
         case lfWeight of
           FW_DONTCARE   : WeightName := '*';
           FW_LIGHT      : WeightName := 'light';
-          FW_NORMAL     : WeightName := 'normal';
+          FW_NORMAL     : if CharsetCoding<>'*' then WeightName := 'normal'; // try several later
           FW_MEDIUM     : WeightName := 'medium';
           FW_SEMIBOLD   : WeightName := 'demi bold';
-          FW_BOLD       : WeightName := 'bold';
+          FW_BOLD       : if CharsetCoding<>'*' then WeightName := 'bold'; // try several later
 
           else begin
             n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
@@ -1647,58 +1719,24 @@ begin
         then AverageWidth := '*'
         else AverageWidth := InttoStr(lfWidth * 10);
       end;
-
+      
       if CharSetCoding =  '*' then begin
-        case lfCharset of
-        FCS_ISO_10646_1: begin
-            CharSetRegistry:='iso10646';
-            CharSetCoding:='1';
-          end;
-        fcs_ISO_8859_1: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='1';
-          end;
-        fcs_ISO_8859_2: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='2';
-          end;
-        fcs_ISO_8859_3: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='3';
-          end;
-        fcs_ISO_8859_4: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='4';
-          end;
-        fcs_ISO_8859_5: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='5';
-          end;
-        fcs_ISO_8859_6: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='6';
-          end;
-        fcs_ISO_8859_7: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='7';
-          end;
-        fcs_ISO_8859_8: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='8';
-          end;
-        fcs_ISO_8859_9: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='9';
-          end;
-        fcs_ISO_8859_10: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='10';
-          end;
-        fcs_ISO_8859_15: begin
-            CharSetRegistry:='iso8859';
-            CharSetCoding:='15';
-          end;
+        // this sections tries several combinations of charset-weightname-slant
+        //
+        WeightList := TStringList.Create;
+        if LogFOnt.LfWeight = FW_BOLD then
+          // bold appears most times
+          WeightList.CommaText := 'bold,semibold,demibold,black'
+        else
+          // medium appears most times
+          WeightList.CommaText := 'normal,medium,regular,light';
+        try
+          if LoadFontEx then
+            exit;
+        finally
+          WeightList.Free;
         end;
+        CharSetcoding := '*';
       end;
     end;
 
@@ -1708,6 +1746,7 @@ begin
     {$ENDIF}
     if LoadFont then exit;
 
+    {
     if (WeightName='normal') then begin
       WeightName:='medium';
       if LoadFont then exit;
@@ -1723,7 +1762,7 @@ begin
       WeightName:='demi bold';
       if LoadFont then exit;
     end;
-
+    }
     // try all weights
     WeightName := '*';
     if LoadFont then exit;
@@ -1780,7 +1819,7 @@ begin
     if GdiObject^.GDIFontObject = nil
     then begin
       {$IFDEF VerboseFonts}
-      DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',DbgS(GdiObject),'  ',FGDIObjects.Count);
+      DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',DbgS(GdiObject),'  ',dbgs(FGDIObjects.Count));
       {$ENDIF}
       DisposeGDIObject(GdiObject);
       Result := 0;
@@ -3090,6 +3129,403 @@ begin
     end;
     {$ENDIF}
     ReleaseDC(Handle, PS.HDC);
+  end;
+end;
+
+{.$define VerboseEnumFonts}
+function TGtkWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
+  EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
+var
+  xFonts: PPChar;
+  FontList: TStringList;
+  EnumLogFont: TEnumLogFont;
+  Metric: TNewTextMetric;
+  I,N: Integer;
+  tmp: String;
+  FontType: Integer;
+begin
+  result := 0;
+  if not Assigned(EnumFontFamProc) then begin
+    result := 2;
+    DebugLn('EnumFontFamProc Callback not set');
+    // todo: raise exception?
+    exit;
+  end;
+  FontList := TStringlist.Create;
+  try
+    if Family<>'' then Tmp := '-*-'+Family+'-*-*-*-*-*-*-*-*-*-*-*-*'
+    else               Tmp := '-*'; // get rid of aliases
+    {$ifdef VerboseEnumFonts}
+    WriteLn('Looking for fonts matching: ', tmp);
+    {$endif}
+    XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
+    try
+      for I := 0 to N - 1 do
+        if XFonts[I] <> nil then begin
+          Tmp := ExtractFamilyFromXLFDName(XFonts[I]);
+          {$ifdef VerboseEnumFonts}
+          WriteLn(I:5,' [', tmp, '] Font=',XFonts[i]);
+          {$endif}
+          if Tmp <> '' then begin
+            if family='' then begin
+              // get just the font names
+              if FontList.IndexOf(Tmp) < 0 then begin
+                EnumLogFont.elfLogFont := XLFDNameToLogFont(XFonts[i]);
+                FillChar(Metric, SizeOf(Metric), #0);
+                FontType := 0; // todo: GetFontTypeFromXLDF or FontId
+                EnumLogFont.elfFullName := '';
+                EnumFontFamProc(EnumLogFont, Metric, FontType, Lparam);
+                FontList.Append(Tmp);
+              end;
+            end else begin
+              EnumLogFont.elfLogFont := XLFDNameToLogFont(XFonts[i]);
+              EnumlogFont.elfFullname := '';
+              EnumLogFont.elfStyle := '';
+              FillChar(Metric, SizeOf(Metric), #0);
+              FontType := 0; // todo: GetFontTypeFromXLDF or FontId
+              EnumFontFamProc(EnumLogFont, Metric, FontType, Lparam);
+            end;
+          end;
+        end;
+    finally
+      XFreeFontNames(XFonts);
+    end;
+  finally
+    Fontlist.Free;
+  end;
+end;
+
+function TGtkWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint;
+  
+type
+  TXLFD=record
+    Foundry: string[15];
+    Family, CharsetReg, CharsetCod: string[32];
+    WeightName,widthName,StyleName: string[20];
+    Slant: string[5];
+    PixelSize,PointSize,ResX,ResY: Integer;
+  end;
+
+var
+  Xlfd: TXLFD;
+  CharsetFilter: TStringList;
+  EnumLogFont: TEnumLogFontEx;
+  Metric: TNewTextMetricEx;
+
+  function ParseXLFDFont(const font: string): boolean;
+    function MyStrToIntDef(const s: string; def: integer): integer;
+    begin
+      result := StrToIntDef(s, Def);
+      if result=0 then
+        result := def
+    end;
+  begin
+    result := IsFontNameXLogicalFontDesc(font);
+    fillchar(Xlfd, SizeOf(Xlfd), 0);
+    if result then with Xlfd do begin
+      Foundry     := ExtractXLFDItem(Font, XLFD_FOUNDRY);
+      Family      := ExtractXLFDItem(Font, XLFD_FAMILY);
+      CharsetReg  := ExtractXLFDItem(Font, XLFD_CHARSET_REG);
+      CharSetCod  := ExtractXLFDItem(Font, XLFD_CHARSET_COD);
+      WeightName  := ExtractXLFDItem(Font, XLFD_WEIGHTNAME);
+      Slant       := ExtractXLFDItem(Font, XLFD_SLANT);
+      WidthName   := ExtractXLFDItem(Font, XLFD_WIDTHNAME);
+      StyleName   := ExtractXLFDItem(Font, XLFD_STYLENAME);
+      ResX        := MyStrToIntDef(ExtractXLFDItem(Font, XLFD_RESX), 72);
+      ResY        := MyStrToIntDef(ExtractXLFDItem(Font, XLFD_RESX), 72);
+      PixelSize   := StrToIntDef(ExtractXLFDItem(Font, XLFD_PIXELSIZE), 0);
+      PointSize   := StrToIntDef(ExtractXLFDItem(Font, XLFD_POINTSIZE), 0);
+    end;
+  end;
+  
+  function XLFDToFontStyle: string;
+  var
+    s: string;
+  begin
+    result := xlfd.WeightName;
+    s :=lowercase(xlfd.Slant);
+    if s='i'  then result := result + ' '+ 'italic' else
+    if s='o'  then result := result + ' '+ 'oblique' else
+    if s='ri' then result := result + ' '+ 'reverse italic' else
+    if s='ro' then result := result + ' '+ 'reverse oblique'
+    else begin
+      if (S<>'r')and(S<>'') then
+        result := result + ' ' + S;
+    end;
+  end;
+  
+  procedure QueueCharsetFilter(Charset: byte);
+  var
+    i: integer;
+    rec: PCharsetEncodingRec;
+    s: string;
+  begin
+    for i:=0 to CharsetEncodingList.count-1 do begin
+      Rec := CharsetEncodingList[i];
+      if (Rec=nil) or (Rec^.CharSet<>Charset) or (not Rec^.EnumMap) then
+        continue;
+      s := Rec^.CharSetReg;
+      if Rec^.CharsetRegPart then
+        s := s + '*';
+      s := s + '-' + Rec^.CharSetCod;
+      if Rec^.CharsetCodPart then
+        s := s + '*';
+      CharsetFilter.Add(s);
+    end;
+  end;
+
+  function XLFDToCharset: byte;
+  const
+    CharsetPriority: array[1..19] of byte =
+    (
+      SYMBOL_CHARSET,       MAC_CHARSET,      SHIFTJIS_CHARSET,
+      HANGEUL_CHARSET,      JOHAB_CHARSET,    GB2312_CHARSET,
+      CHINESEBIG5_CHARSET,  GREEK_CHARSET,    TURKISH_CHARSET,
+      VIETNAMESE_CHARSET,   HEBREW_CHARSET,   ARABIC_CHARSET,
+      BALTIC_CHARSET,       RUSSIAN_CHARSET,  THAI_CHARSET,
+      EASTEUROPE_CHARSET,   OEM_CHARSET,      FCS_ISO_10646_1,
+      ANSI_CHARSET
+    );
+  var
+    i,n: integer;
+    rec: PCharsetEncodingRec;
+  begin
+    for i := Low(CharsetPriority) to High(CharsetPriority) do
+      for n:= 0 to CharsetEncodingList.count-1 do begin
+        rec := CharsetEncodingList[n];
+        if (rec=nil) or (rec^.CharSet<>CharsetPriority[i]) then
+          continue;
+        // try to match registry part
+        if rec^.CharSetReg<>'*' then begin
+          if rec^.CharsetRegPart then begin
+            if pos(rec^.CharSetReg, xlfd.CharsetReg)=0 then
+              continue;
+          end else begin
+            if AnsiCompareText(Rec^.CharSetReg, xlfd.CharsetReg) <> 0 then
+              continue;
+          end;
+        end;
+        // try to match coding part
+        if rec^.CharSetCod<>'*' then begin
+          if rec^.CharsetCodPart then begin
+            if pos(rec^.CharSetCod, xlfd.CharsetCod)=0 then
+              continue;
+          end else begin
+            if AnsiCompareText(Rec^.CharSetCod, xlfd.CharsetCod) <> 0 then
+              continue;
+          end;
+        end;
+        // this one is good enought to match bot registry and encondig part
+        result := CharsetPriority[i];
+        exit;
+      end;
+    result := DEFAULT_CHARSET;
+  end;
+
+  function XLFDCharsetToScript: string;
+  begin
+    result := xlfd.CharsetReg + '-' + xlfd.CharsetCod;
+  end;
+  
+  function FoundryAndFamilyFilter(const FaceName: string): string;
+  var
+    foundry,family: string;
+    i: LongInt;
+  begin
+    if FaceName='' then begin
+      family := '*';
+      foundry := '*';
+    end else begin
+      family := FaceName;
+      // look for foundry encoded in family name
+      i := pos(FOUNDRYCHAR_OPEN, family);
+      if i<>0 then begin
+        Foundry := copy(Family, i+1, Length(Family));
+        family := trim(copy(family, 1, i-1));
+        i := pos(FOUNDRYCHAR_CLOSE, Foundry);
+        if i<>0 then
+          Delete(Foundry, i, Length(Foundry))
+        else
+          ; // ill formed but it's ok.
+      end else
+        Foundry := '*';
+    end;
+    result := Foundry+'-'+Family;
+  end;
+  
+  function XLFDFamilyFace: string;
+  begin
+    with xlfd do
+    if (Length(Foundry)>0) and (Length(Family) + length(Foundry) + 3 < 31) then
+      result := Family + ' '+ FOUNDRYCHAR_OPEN + Foundry + FOUNDRYCHAR_CLOSE
+    else
+      result := Family;
+  end;
+  
+  function XLFDToFontType: integer;
+  begin
+    if (xlfd.PointSize=0)and(xlfd.PixelSize=0) then
+      result := TRUETYPE_FONTTYPE
+    else
+      result := RASTER_FONTTYPE or DEVICE_FONTTYPE;
+  end;
+
+  // process the current xlfd font, if user returns 0 from callback finish
+  function ProcessXFont(const index: integer; const font: string;
+    FontList: TStringList): boolean;
+  var
+    FontType: Integer;
+    tmp: string;
+    FullSearch: boolean;
+  begin
+    FullSearch := ( lpLogFont^.lfFaceName = '');
+    result := false;
+    with xlfd, EnumLogFont do
+    if FullSearch then begin
+      //
+      // quick enumeration of fonts, make sure this is
+      // documented because only some fields are filled !!!
+      //
+      Foundry    := ExtractXLFDItem(Font, XLFD_FOUNDRY);
+      Family     := ExtractXLFDItem(Font, XLFD_FAMILY);
+      tmp := XLFDFamilyFace();
+      
+      if FontList.IndexOf(tmp) < 0 then begin
+        PixelSize  := StrToIntDef(ExtractXLFDItem(Font, XLFD_PIXELSIZE), 0);
+        PointSize  := StrToIntDef(ExtractXLFDItem(Font, XLFD_POINTSIZE), 0);
+        CharsetReg := ExtractXLFDItem(Font, XLFD_CHARSET_REG);
+        CharsetCod := ExtractXLFDItem(Font, XLFD_CHARSET_COD);
+        FontType := XLFDToFontType();
+        elfLogFont.lfCharSet := XLFDToCharset();
+        elfLogFont.lfFaceName := tmp;
+        result := Callback(EnumLogFont, Metric, FontType, LParam)=0;
+        FontList.Append(tmp);
+      end;
+    end else
+    if ParseXLFDFont(Font) then begin
+      //
+      // slow enumeration of fonts, only if face is present
+      //
+      // family
+      tmp := XLFDFamilyFace();
+      {$ifdef verboseEnumFonts}
+      DebugLn(dbgs(index),' face=', tmp, ' Font=', Font);
+      {$endif}
+
+      //if FontList.IndexOf(tmp) < 0 then begin
+
+        // Fonttype
+        FontType := XLFDToFontType();
+        // LogFont
+        elfLogFont := XLFDNameToLogFont(Font);
+        elfLogFont.lfFaceName := tmp;
+        elfLogFont.lfCharSet := XLFDToCharset();
+        // from logfont
+
+        elfStyle := XLFDToFontStyle();
+
+        elfScript := XLFDCharsetToScript();
+        // tempted to feed here full xlfd, but 63 chars might be to small
+        if Foundry = '' then
+          elfFullName := Family
+        else
+          elfFullName := Foundry + ' ' + Family ;
+
+        // Metric
+        //
+        fillchar(metric.ntmeFontSignature,
+          sizeOf(metric.ntmeFontSignature), 0);
+        with metric.ntmentm do begin
+          tmheight := elfLogFont.lfHeight;
+          tmAveCharWidth := elfLogFont.lfWidth;
+          tmWeight :=  elfLogFont.lfWeight;
+          tmDigitizedAspectX := ResX;
+          tmDigitizedAspectY := ResY;
+          tmItalic := elfLogFont.lfItalic;
+          tmUnderlined := elfLogFont.lfUnderline;
+          tmStruckOut := elfLogFont.lfStrikeOut;
+          tmPitchAndFamily := elfLogFont.lfPitchAndFamily;
+          tmCharSet := elfLogFont.lfCharSet;
+          // todo fields
+          tmMaxCharWidth := elfLogFont.lfWidth; // todo
+          tmAscent  := 0;           // todo
+          tmDescent := 0;           // todo
+          tmInternalLeading := 0;   // todo
+          tmExternalLeading := 0;   // todo
+          tmOverhang := 0;          // todo;
+          tmFirstChar := ' ';       // todo, atm ascii
+          tmLastChar  := #255;      // todo, atm ascii
+          tmDefaultChar := '.';     // todo, atm dot
+          tmBreakChar := ' ';       // todo, atm space
+          ntmFlags := 0;                // todo combination of NTM_XXXX constants
+          ntmSizeEM := tmHeight;        // todo
+          ntmCellHeight :=  ntmSizeEM;  // todo
+          ntmAvgWidth :=  ntmSizeEM;    // todo
+        end; // with metric.ntmentm do ...
+
+        // do callback
+        result := Callback(EnumLogFont, Metric, FontType, LParam) = 0;
+        FontList.Append(tmp);
+      //end; // if not FullSearch or (FontList.IndexOf(tmp) < 0 then ...
+    end; // with xlfd, EnumLogFont do ...
+  end;
+var
+  xFonts: PPChar;
+  FontList: TStringList;
+  I,J,N: Integer;
+  Tmp,FandF: String;
+begin
+  result := 0;
+  // initial checks
+  if not Assigned(Callback) then begin
+    result := 2;
+    DebugLn('EnumFontFamiliesEx: EnumFontFamProcEx Callback not set');
+    // todo: raise exception?
+    exit;
+  end;
+  if not Assigned(lpLogFont) then begin
+    result := 3;
+    DebugLn('EnumFontFamiliesEx: lpLogFont not set');
+    // todo: enumerate all fonts?
+    exit;
+  end;
+  
+  // foundry and family filter
+  FandF := FoundryAndFamilyFilter(lpLogFont^.lfFaceName);
+  
+  // charset
+  // pitchandfamily
+  // todo: ignored atm
+
+  FontList := TStringlist.Create;
+  CharSetFilter := TStringList.Create;
+  try
+    QueueCharSetFilter(lpLogFont^.lfCharSet);
+    {$ifdef verboseEnumFonts}
+    for j:=0 to CharSetFilter.Count-1 do begin
+      tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-*-*-'+CharSetFilter[j];
+      DebugLn('EnumFontFamiliesEx: will enumerate fonts matching: ', tmp);
+    end;
+    {$endif}
+    for j:=0 to CharSetFilter.Count-1 do begin
+      tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-*-*-'+CharSetFilter[j];
+      XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
+      try
+        {$ifdef VerboseEnumFonts}
+        DebugLn('EnumFontFamiliesEx: found ',dbgs(N),' fonts matching: ', tmp);
+        {$endif}
+        for i:=0 to N-1 do
+          if XFonts[i]<>nil then
+            if ProcessXFont(i, XFonts[i], FontList) then
+              break;
+      finally
+        XFreeFontNames(XFonts);
+      end;
+    end;
+  finally
+    Fontlist.Free;
+    CharSetFilter.Free;
   end;
 end;
 

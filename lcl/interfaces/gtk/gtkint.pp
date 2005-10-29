@@ -327,7 +327,7 @@ uses
 // GtkWSExtDlgs,
 // GtkWSFileCtrl,
  GtkWSForms,
-// GtkWSGrids,
+ GtkWSGrids,
 // GtkWSImgList,
 // GtkWSMaskEdit,
  GtkWSMenus,
@@ -409,7 +409,11 @@ begin
   CursorToGDKCursor[crHelp]     := GDK_QUESTION_ARROW;
   CursorToGDKCursor[crHandPoint]:= GDK_Hand1;
   CursorToGDKCursor[crSizeAll]  := GDK_FLEUR;
-
+  
+  // charset encodings
+  CharSetEncodingList := TList.Create;
+  CreateDefaultCharsetEncodings;
+  
   InitDesignSignalMasks;
 end;
 
@@ -428,6 +432,13 @@ begin
     FreeClipboardTargetEntries(c);
   ClipboardSelectionData.Free;
   ClipboardSelectionData:=nil;
+  
+  // charset encodings
+  if CharSetEncodingList<>nil then begin
+    ClearCharSetEncodings;
+    CharSetEncodingList.Free;
+    CharSetEncodingList:=nil;
+  end;
 end;
 
 

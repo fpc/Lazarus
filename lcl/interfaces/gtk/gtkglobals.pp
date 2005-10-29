@@ -430,8 +430,30 @@ const
 var
   AvgFontCharsBuffer: array[#32..#127] of char;
   AvgFontCharsBufLen: integer;
+  
+type
+  Charsetstr=string[15];
+  PCharSetEncodingRec=^TCharSetEncodingRec;
+  TCharSetEncodingRec=record
+    CharSet: byte;              // winapi charset value
+    CharSetReg:CharSetStr;      // Charset Registry Pattern
+    CharSetCod:CharSetStr;      // Charset Encoding Pattern
+    EnumMap: boolean;           // this mapping is meanful when enumerating fonts?
+    CharsetRegPart: boolean;    // is CharsetReg a partial pattern?
+    CharsetCodPart: boolean;    // is CharsetCod a partial pattern?
+  end;
+
+var
+  CharSetEncodingList: TList;
+  
+  procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;
+    ToEnum:boolean=true; CrPart:boolean=false; CcPart:boolean=false);
+  procedure ClearCharsetEncodings;
+  procedure CreateDefaultCharsetEncodings;
+  
 
 implementation
+
 
 procedure InternalInit;
 var
@@ -445,6 +467,92 @@ begin
   UseTransientForModalWindows:=true;
   UpdatingTransientWindows:=false;
   CurrentSentPaintMessageTarget:=nil;
+end;
+
+procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;
+  ToEnum:boolean=true; CrPart:boolean=false; CcPart:boolean=false);
+var
+  Rec: PCharsetEncodingRec;
+begin
+   New(Rec);
+   Rec^.Charset := CharSet;
+   Rec^.CharsetReg := CharSetReg;
+   Rec^.CharsetCod := CharSetCod;
+   Rec^.EnumMap := ToEnum;
+   Rec^.CharsetRegPart := CrPart;
+   Rec^.CharsetCodPart := CcPart;
+   CharSetEncodingList.Add(Rec);
+end;
+
+procedure ClearCharsetEncodings;
+var
+  Rec: PCharsetEncodingRec;
+  i: Integer;
+begin
+  for i:=0 to CharsetEncodingList.Count-1 do begin
+    Rec := CharsetEncodingList[i];
+    if Rec<>nil then
+      Dispose(Rec);
+  end;
+  CharsetEncodingList.Clear;
+end;
+
+procedure CreateDefaultCharsetEncodings;
+begin
+  ClearCharsetEncodings;
+
+  AddCharsetEncoding(ANSI_CHARSET,        'iso8859',  '1',    false);
+  AddCharsetEncoding(ANSI_CHARSET,        'iso8859',  '3',    false);
+  AddCharsetEncoding(ANSI_CHARSET,        'iso8859',  '15',   false);
+  AddCharsetEncoding(ANSI_CHARSET,        'ansi',     '0');
+  AddCharsetEncoding(ANSI_CHARSET,        '*',        'cp1252');
+  AddCharsetEncoding(ANSI_CHARSET,        'iso8859',  '*');
+  AddCharsetEncoding(DEFAULT_CHARSET,     '*',        '*');
+  AddCharsetEncoding(SYMBOL_CHARSET,      '*',        'fontspecific');
+  AddCharsetEncoding(MAC_CHARSET,         '*',        'cpxxxx'); // todo
+  AddCharsetEncoding(SHIFTJIS_CHARSET,    'jis',      '0',    true, true);
+  AddCharsetEncoding(SHIFTJIS_CHARSET,    '*',        'cp932');
+  AddCharsetEncoding(HANGEUL_CHARSET,     '*',        'cp949');
+  AddCharsetEncoding(JOHAB_CHARSET,       '*',        'cp1361');
+  AddCharsetEncoding(GB2312_CHARSET,      'gb2312',   '0',    true, true);
+  AddCharsetEncoding(CHINESEBIG5_CHARSET, 'big5',     '0',    true, true);
+  AddCharsetEncoding(CHINESEBIG5_CHARSET, '*',        'cp950');
+  AddCharsetEncoding(GREEK_CHARSET,       'iso8859',  '7');
+  AddCharsetEncoding(GREEK_CHARSET,       '*',        'cp1253');
+  AddCharsetEncoding(TURKISH_CHARSET,     'iso8859',  '9');
+  AddCharsetEncoding(TURKISH_CHARSET,     '*',        'cp1254');
+  AddCharsetEncoding(VIETNAMESE_CHARSET,  '*',        'cp1258');
+  AddCharsetEncoding(HEBREW_CHARSET,      'iso8859',  '8');
+  AddCharsetEncoding(HEBREW_CHARSET,      '*',        'cp1255');
+  AddCharsetEncoding(ARABIC_CHARSET,      'iso8859',  '6');
+  AddCharsetEncoding(ARABIC_CHARSET,      '*',        'cp1256');
+  AddCharsetEncoding(BALTIC_CHARSET,      'iso8859',  '13');
+  AddCharsetEncoding(BALTIC_CHARSET,      'iso8859',  '4');  // northern europe
+  AddCharsetEncoding(BALTIC_CHARSET,      'iso8859',  '14'); // CELTIC_CHARSET
+  AddCharsetEncoding(BALTIC_CHARSET,      '*',        'cp1257');
+  AddCharsetEncoding(RUSSIAN_CHARSET,     'iso8859',  '5');
+  AddCharsetEncoding(RUSSIAN_CHARSET,     'koi8',     '*');
+  AddCharsetEncoding(RUSSIAN_CHARSET,     '*',        'cp1251');
+  AddCharsetEncoding(THAI_CHARSET,        'iso8859',  '11');
+  AddCharsetEncoding(THAI_CHARSET,        'tis620',   '*',  true, true);
+  AddCharsetEncoding(THAI_CHARSET,        '*',        'cp874');
+  AddCharsetEncoding(EASTEUROPE_CHARSET,  'iso8859',  '2');
+  AddCharsetEncoding(EASTEUROPE_CHARSET,  '*',        'cp1250');
+  AddCharsetEncoding(OEM_CHARSET,         'ascii',    '0');
+  AddCharsetEncoding(OEM_CHARSET,         'iso646',   '*',  true, true);
+  AddCharsetEncoding(FCS_ISO_10646_1,     'iso10646', '1');
+  AddCharsetEncoding(FCS_ISO_8859_1,      'iso8859',  '1');
+  AddCharsetEncoding(FCS_ISO_8859_2,      'iso8859',  '2');
+  AddCharsetEncoding(FCS_ISO_8859_3,      'iso8859',  '3');
+  AddCharsetEncoding(FCS_ISO_8859_4,      'iso8859',  '4');
+  AddCharsetEncoding(FCS_ISO_8859_5,      'iso8859',  '5');
+  AddCharsetEncoding(FCS_ISO_8859_6,      'iso8859',  '6');
+  AddCharsetEncoding(FCS_ISO_8859_7,      'iso8859',  '7');
+  AddCharsetEncoding(FCS_ISO_8859_8,      'iso8859',  '8');
+  AddCharsetEncoding(FCS_ISO_8859_9,      'iso8859',  '9');
+  AddCharsetEncoding(FCS_ISO_8859_10,     'iso8859',  '10');
+  AddCharsetEncoding(FCS_ISO_8859_15,     'iso8859',  '15');
+  
 end;
 
 initialization
