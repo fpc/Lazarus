@@ -6086,6 +6086,10 @@ end;
 function TGtkWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   DCOrigin: TPoint;
+  FromX: Integer;
+  FromY: Integer;
+  ToX: Integer;
+  ToY: Integer;
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
@@ -6101,8 +6105,17 @@ begin
 
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
-                      X+DCOrigin.X, Y+DCOrigin.Y);
+        FromX:=PenPos.X+DCOrigin.X;
+        FromY:=PenPos.Y+DCOrigin.Y;
+        ToX:=X+DCOrigin.X;
+        ToY:=Y+DCOrigin.Y;
+        {debugln('TGtkWidgetSet.LineTo A ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
+        if (FromX>ToX) or ((FromX=ToX) and (FromY>ToY)) then begin
+          // in these cases gdk starts and ends drawing a line one point later
+          debugln('TGtkWidgetSet.LineTo SWAPPED ',dbgs(FromX),' ',dbgs(FromY),' ',dbgs(ToX),' ',dbgs(ToY));
+        end;}
+        //gdk_gc_set_line_attributes(gc,1,GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+        gdk_draw_line(Drawable, GC, FromX, FromY, ToX, ToY);
         {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
         PenPos:= Point(X, Y);
       end else

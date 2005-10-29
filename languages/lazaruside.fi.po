@@ -324,7 +324,7 @@ msgstr "Lisää editorin tiedosto projektiin"
 
 #: lazarusidestrconsts:lisprojaddeditorfile
 msgid "Add editor files"
-msgstr ""
+msgstr "Lisää editorissa avoinna olevia tiedostoja"
 
 #: lazarusidestrconsts:lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -336,7 +336,7 @@ msgstr "Lisää tiedosto projektiin:"
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Lisää tiedostoja"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -376,7 +376,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr ""
+msgstr "Lisää projektiin"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
@@ -472,7 +472,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr ""
+msgstr "Toiminta moniselitteisten tai epäselvien tiedostojen kanssa"
 
 #: lazarusidestrconsts:lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -868,7 +868,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
-msgstr ""
+msgstr "Keskelle ikkunaa"
 
 #: lazarusidestrconsts:liscenters
 msgid "Centers"
@@ -1324,7 +1324,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
-msgstr ""
+msgstr "Pyydä vahvistus ennenkuin Lazarus uudelleen muodostetaan(/käännetään)"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1700,7 +1700,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
-msgstr ""
+msgstr "Viive"
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
@@ -1944,7 +1944,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr ""
+msgstr "Haluatteko uudelleen muodostaa (eli kääntää) Lazaruksen?"
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2428,7 +2428,7 @@ msgstr "Tiedosto ei ole Pascal:n käännösyksikkö (unit)"
 
 #: lazarusidestrconsts:lisa2pfilename2
 msgid "Filename"
-msgstr ""
+msgstr "Tiedoston nimi"
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
 msgid "Filename differs from Packagename"
@@ -3896,19 +3896,19 @@ msgstr "Päävalikko"
 
 #: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
-msgstr ""
+msgstr "Pääohjelmassa on Application.CreateForm -lause tai -lauseet"
 
 #: lazarusidestrconsts:lismainunithasapplicationtitlestatements
 msgid "Main Unit has Application.Title statements"
-msgstr ""
+msgstr "Pääohjelmassa on Application.Title -lause"
 
 #: lazarusidestrconsts:lismainunithasusessectioncontainingallunitsofproject
 msgid "Main Unit has Uses Section containing all Units of project"
-msgstr ""
+msgstr "Pääohjelman Uses -esittelyosassa on kaikki projektin käännösyksiköt (eli unitit)"
 
 #: lazarusidestrconsts:lismainunitispascalsource
 msgid "Main Unit is Pascal Source"
-msgstr ""
+msgstr "Pääohjelma on Pascal-kielinen lähdekoodi"
 
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
@@ -6394,8 +6394,8 @@ msgstr ""
 msgid "Target OS:"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
@@ -6408,6 +6408,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target i386"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
@@ -7100,7 +7104,7 @@ msgstr "ISOT KIRJAIMET"
 
 #: lazarusidestrconsts:rslanguageukrainian
 msgid "Ukrainian"
-msgstr ""
+msgstr "ukraina"
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"

@@ -6405,9 +6405,9 @@ msgstr "Specyficzne opcje docelowego OS"
 msgid "Target OS:"
 msgstr "Docelowy OS:"
 
-#: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
-msgstr "Docelowa architektura procesora:"
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -6420,6 +6420,10 @@ msgstr "Docelowa nazwa programu + parametry"
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Docelowa nazwa programu"
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target i386"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"

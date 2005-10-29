@@ -6394,8 +6394,8 @@ msgstr ""
 msgid "Target OS:"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
@@ -6408,6 +6408,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target i386"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview

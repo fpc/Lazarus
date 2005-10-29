@@ -6408,9 +6408,9 @@ msgstr "Zielbetriebssystemspezifische Einstellungen"
 msgid "Target OS:"
 msgstr "Zielbetriebssystem:"
 
-#: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
-msgstr "Zielprozessor:"
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -6423,6 +6423,10 @@ msgstr "Zieldateiname und Parameter des Projekts"
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Zieldateiname des Projekts"
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target i386"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"

@@ -6394,9 +6394,9 @@ msgstr "Opcions especifiques del SO de destinació"
 msgid "Target OS:"
 msgstr "SO dest:"
 
-#: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
-msgstr "Processador de destinació"
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -6409,6 +6409,10 @@ msgstr "Nom del fitxer destinació + paràmetres"
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Nom del fitxer destinació del projecte"
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target i386"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"

@@ -605,7 +605,10 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
-    g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(ptrint(Ord(AVisible))));
+    if AVisible then
+      g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(ptrint(1)))
+    else
+      g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(ptrint(0)));
     if TLVHack(ALV).ViewStyle = vsReport then begin
       gtk_tree_view_column_set_visible(GtkColumn, AVisible);
     end;
@@ -1207,7 +1210,9 @@ procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
       begin
         for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
           GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
-          if not(Show) or (Show and Boolean(g_object_get_data(G_OBJECT(GtkColumn), PChar('Visible')))) then
+          if not(Show)
+          or (Show and (ptrint(g_object_get_data(G_OBJECT(GtkColumn), PChar('Visible')))<>0))
+          then
             gtk_tree_view_column_set_visible(GtkColumn, Show);
         end;
 

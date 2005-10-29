@@ -2967,7 +2967,11 @@ msgid "Smaller Code"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtargetproc
-msgid "Target Processor:"
+msgid "Target i386"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetplatform
+msgid "Target Platform:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgoptimiz
@@ -3000,6 +3004,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetcpu
+msgid "Target CPU"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugging

@@ -2516,9 +2516,9 @@ begin
                    RawImage.Description.AlphaLineEnd);
     if BytesPerLine<>AnImage^.bpl then
       RaiseGDBException('AnImage^.bpl<>BytesPerLine '+IntToStr(AnImage^.bpl)+'<>'+IntToStr(BytesPerLine));
-    if AnImage^.Height<>RawImage.Description.Height then
+    if cardinal(AnImage^.Height)<>RawImage.Description.Height then
       RaiseGDBException('AnImage^.Height<>RawImage.Description.Height '+IntToStr(AnImage^.Height)+'<>'+IntToStr(RawImage.Description.Height));
-    if AnImage^.Width<>RawImage.Description.Width then
+    if cardinal(AnImage^.Width)<>RawImage.Description.Width then
       RaiseGDBException('AnImage^.Width<>RawImage.Description.Width '+IntToStr(AnImage^.Width)+'<>'+IntToStr(RawImage.Description.Width));
 
     RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;

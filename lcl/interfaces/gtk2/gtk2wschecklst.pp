@@ -110,13 +110,13 @@ end;
 
 procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
-var
-Selection: PGtkTreeSelection;
+//var
+//  Selection: PGtkTreeSelection;
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidgetInfo^.CoreWidget), TComponent(AWidgetInfo^.LCLObject));
 
-  Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
+  {Selection :=} gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   //SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
 
