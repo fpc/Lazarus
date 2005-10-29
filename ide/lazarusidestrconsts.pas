@@ -987,7 +987,8 @@ resourcestring
   dlgCONormal = 'Normal Code';
   dlgCOFast = 'Faster Code';
   dlgCOSmaller = 'Smaller Code';
-  dlgTargetProc = 'Target Processor:';
+  dlgTargetProc = 'Target i386';
+  dlgTargetPlatform = 'Target Platform:';
   dlgOptimiz = 'Optimizations:';
   dlgCOKeepVarsReg = 'Keep certain variables in registers';
   dlgUncertOpt = 'Uncertain Optimizations';
@@ -996,6 +997,7 @@ resourcestring
   dlgLevel2Opt = 'Level 2 (Level 1 + Slower Optimizations)';
   dlgLevel3Opt = 'Level 3 (Level 2 + Uncertain)';
   dlgTargetOS = 'Target OS';
+  dlgTargetCPU = 'Target CPU';
   dlgCODebugging = 'Debugging:';
   dlgCOGDB = 'Generate Debugging Info For GDB (Slows Compiling)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';
@@ -2873,4 +2875,3 @@ resourcestring
   
 implementation
 end.
-

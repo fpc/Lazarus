@@ -42,31 +42,14 @@ uses
   OutputFilter, HelpOptions, MainIntf, LazConf;
 
 type
-  { TBaseHelpManager }
-
-  TBaseHelpManager = class(TComponent)
-  public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-  public
-    procedure ConnectMainBarEvents; virtual;
-    procedure LoadHelpOptions; virtual; abstract;
-    procedure SaveHelpOptions; virtual; abstract;
-
-    function ShowHelpForSourcePosition(const Filename: string;
-                                       const CodePos: TPoint;
-                                       var ErrMsg: string): TShowHelpResult; virtual; abstract;
-    procedure ShowHelpForMessage(Line: integer); virtual; abstract;
-  end;
-
-
   { TIDEHelpDatabases }
 
   TIDEHelpDatabases = class(THelpDatabases)
   public
-    function ShowHelpSelector(Query: THelpQuery; Nodes: TList;
+    function ShowHelpSelector(Query: THelpQuery; Nodes: THelpNodeQueryList;
                               var ErrMsg: string;
-                              var Selection: THelpNode): TShowHelpResult; override;
+                              var Selection: THelpNodeQuery
+                              ): TShowHelpResult; override;
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); override;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
@@ -138,25 +121,6 @@ var
   
 implementation
 
-{ TBaseHelpManager }
-
-constructor TBaseHelpManager.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  HelpBoss:=Self;
-end;
-
-destructor TBaseHelpManager.Destroy;
-begin
-  HelpBoss:=nil;
-  inherited Destroy;
-end;
-
-procedure TBaseHelpManager.ConnectMainBarEvents;
-begin
-
-end;
-
 { THelpSelectorDialog }
 
 type
@@ -168,12 +132,12 @@ type
     procedure HelpSelectorDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
   private
-    FNodes: TList;
-    procedure SetNodes(const AValue: TList);
+    FNodes: THelpNodeQueryList;
+    procedure SetNodes(const AValue: THelpNodeQueryList);
     procedure FillNodesListBox;
   public
     constructor Create(TheOwner: TComponent); override;
-    property Nodes: TList read FNodes write SetNodes;
+    property Nodes: THelpNodeQueryList read FNodes write SetNodes;
   end;
 
 procedure THelpSelectorDialog.HelpSelectorDialogClose(Sender: TObject;
@@ -182,7 +146,7 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure THelpSelectorDialog.SetNodes(const AValue: TList);
+procedure THelpSelectorDialog.SetNodes(const AValue: THelpNodeQueryList);
 begin
   if FNodes=AValue then exit;
   FNodes:=AValue;
@@ -192,14 +156,14 @@ end;
 procedure THelpSelectorDialog.FillNodesListBox;
 var
   List: TStringList;
-  Node: THelpNode;
   i: Integer;
+  NodeQuery: THelpNodeQuery;
 begin
   List:=TStringList.Create;
   if (Nodes<>nil) then begin
     for i:=0 to Nodes.Count-1 do begin
-      Node:=TObject(Nodes[i]) as THelpNode;
-      List.Add(Node.Title);
+      NodeQuery:=Nodes[i];
+      List.Add(NodeQuery.AsString);
     end;
   end;
   NodesListBox.Items.Assign(List);
@@ -210,7 +174,7 @@ constructor THelpSelectorDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,300);
+  IDEDialogLayoutList.ApplyLayout(Self,500,200);
   OnClose:=@HelpSelectorDialogClose;
 
   NodesGroupBox:=TGroupBox.Create(Self);
@@ -220,7 +184,7 @@ begin
     Left:=5;
     Top:=5;
     Width:=Self.ClientWidth-10;
-    Height:=Self.ClientWidth-40;
+    Height:=Self.ClientHeight-50;
     Anchors:=[akLeft,akTop,akRight,akBottom];
     Caption:=lisSelectAHelpItem;
   end;
@@ -259,8 +223,11 @@ end;
 
 { TIDEHelpDatabases }
 
-function TIDEHelpDatabases.ShowHelpSelector(Query: THelpQuery; Nodes: TList;
-  var ErrMsg: string; var Selection: THelpNode): TShowHelpResult;
+function TIDEHelpDatabases.ShowHelpSelector(Query: THelpQuery;
+  Nodes: THelpNodeQueryList;
+  var ErrMsg: string;
+  var Selection: THelpNodeQuery
+  ): TShowHelpResult;
 var
   Dialog: THelpSelectorDialog;
   i: LongInt;
@@ -273,7 +240,7 @@ begin
     if Dialog.ShowModal=mrOk then begin
       i:=Dialog.NodesListBox.ItemIndex;
       if i>=0 then begin
-        Selection:=THelpNode(Nodes[i]);
+        Selection:=Nodes[i];
         Result:=shrSuccess;
       end;
     end;
@@ -321,7 +288,7 @@ function TIDEHelpDatabases.ShowHelpForSourcePosition(
   Query: THelpQuerySourcePosition; var ErrMsg: string): TShowHelpResult;
 begin
   Result:=HelpBoss.ShowHelpForSourcePosition(Query.Filename,
-                                                   Query.SourcePosition,ErrMsg);
+                                             Query.SourcePosition,ErrMsg);
 end;
 
 { THelpManager }
@@ -455,6 +422,7 @@ end;
 constructor THelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  HelpBoss:=Self;
   HelpOpts:=THelpOptions.Create;
   HelpOpts.SetDefaultFilename;
   HelpDatabases:=TIDEHelpDatabases.Create;
@@ -476,6 +444,7 @@ begin
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
   FreeThenNil(FLCLHelpDBPath);
+  HelpBoss:=nil;
   inherited Destroy;
 end;
 

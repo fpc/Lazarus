@@ -40,6 +40,7 @@ type
     function ShowURL(const URL, Title: string;
                      var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+                      QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
     function GetEffectiveBaseURL: string;
     procedure Load(Storage: TConfigStorage); override;
@@ -160,7 +161,8 @@ begin
 end;
 
 function THTMLHelpDatabase.ShowHelp(Query: THelpQuery;
-  BaseNode, NewNode: THelpNode; var ErrMsg: string): TShowHelpResult;
+  BaseNode, NewNode: THelpNode; QueryItem: THelpQueryItem;
+  var ErrMsg: string): TShowHelpResult;
 begin
   ErrMsg:='';
   Result:=shrContextNotFound;

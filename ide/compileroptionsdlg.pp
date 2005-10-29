@@ -114,7 +114,14 @@ type
     radGenFaster: TRadioButton;
     radGenSmaller: TRadioButton;
 
-    grpTargetProc: TRadioGroup;
+    grpTargetPlatform: TGroupBox;
+    lblTargetOS : TLabel;
+    TargetOSComboBox: TComboBox;
+    lblTargetCPU : TLabel;
+    TargetCPUComboBox: TComboBox;
+    lblTargeti386Proc : TLabel;
+    Targeti386ProcComboBox: TComboBox;
+    TargetOSGroupBox: TGroupBox;
 
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
@@ -124,8 +131,6 @@ type
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
 
-    TargetOSGroupBox: TGroupBox;
-    TargetOSComboBox: TComboBox;
 
     { Linking Controls }
     LinkingPage: TPage;
@@ -640,10 +645,6 @@ begin
   i:=LCLWidgetTypeRadioGroup.Items.IndexOf(Options.LCLWidgetType);
   if i<0 then i:=0;
   LCLWidgetTypeRadioGroup.ItemIndex:=i;
-  i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
-  if i<0 then i:=0;  // 0 is default
-  TargetOSComboBox.ItemIndex:=i;
-  TargetOSComboBox.Text:=Options.TargetOS;
 
   // parsing
   if (Options.AssemblerStyle in [1,2,3])  then
@@ -681,10 +682,19 @@ begin
     cgcSmallerCode: radGenSmaller.Checked := true;
   end;
 
+  i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
+  if i<0 then i:=0;  // 0 is default
+  TargetOSComboBox.ItemIndex:=i;
+  TargetOSComboBox.Text:=Options.TargetOS;
+  i:=TargetCPUComboBox.Items.IndexOf(Options.TargetCPU);
+  if i<0 then i:=0;  // 0 is default
+  TargetCPUComboBox.ItemIndex:=i;
+  TargetCPUComboBox.Text:=Options.TargetCPU;
+
   case Options.TargetProcessor of
-    1..3: grpTargetProc.ItemIndex:=Options.TargetProcessor;
+    1..3: Targeti386ProcComboBox.ItemIndex:=Options.TargetProcessor;
   else
-    grpTargetProc.ItemIndex:=0;
+    Targeti386ProcComboBox.ItemIndex := 0;
   end;
 
   chkOptVarsInReg.Checked := Options.VariablesInRegisters;
@@ -845,7 +855,8 @@ var
   hs: LongInt;
   i: integer;
   OldCompOpts: TBaseCompilerOptions;
-  NewTargetOS: String;
+  NewTargetOS,
+  NewTargetCPU: String;
   Options: TBaseCompilerOptions;
   NewDontUseConfigFile: Boolean;
   NewCustomConfigFile: Boolean;
@@ -943,8 +954,17 @@ begin
   else
     Options.Generate := cgcNormalCode;
 
-  Options.TargetProcessor := grpTargetProc.ItemIndex;
+  NewTargetOS:=TargetOSComboBox.Text;
+  if TargetOSComboBox.Items.IndexOf(NewTargetOS)<=0 then
+    NewTargetOS:='';
+  Options.TargetOS:=NewTargetOS;
 
+  NewTargetCPU:=TargetCPUComboBox.Text;
+  if TargetCPUComboBox.Items.IndexOf(NewTargetCPU)<=0 then
+    NewTargetCPU:='';
+  Options.TargetCPU:=NewTargetCPU;
+
+  Options.TargetProcessor := Targeti386ProcComboBox.ItemIndex;
   Options.VariablesInRegisters := chkOptVarsInReg.Checked;
   Options.UncertainOptimizations := chkOptUncertain.Checked;
 
@@ -1000,12 +1020,6 @@ begin
   Options.CustomOptions := memCustomOptions.Text;
 
   Options.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
-
-
-  NewTargetOS:=TargetOSComboBox.Text;
-  if TargetOSComboBox.Items.IndexOf(NewTargetOS)<=0 then
-    NewTargetOS:='';
-  Options.TargetOS:=NewTargetOS;
 
   // compilation
   Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
@@ -1358,7 +1372,9 @@ end;
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 var
   w: Integer;
+  yDiff: Integer;
 begin
+  yDiff:=22;
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
 
@@ -1467,8 +1483,8 @@ begin
   begin
     Parent := CodeGenPage;
     Top := grpSmartLinkUnit.Top + grpSmartLinkUnit.Height + 6;
-    Left := 10;
-    Height := 90;
+    Left := 5;
+    Height := 100;
     Width := 150;
     Caption := dlgCOGenerate;
   end;
@@ -1506,21 +1522,109 @@ begin
 
   {------------------------------------------------------------}
 
-  grpTargetProc := TRadioGroup.Create(Self);
-  with grpTargetProc do
+  grpTargetPlatform := TGroupBox.Create(Self);
+  with grpTargetPlatform do
   begin
+    Name := 'grpTargetPlatform';
     Parent := CodeGenPage;
     Top := grpGenerate.Top;
     Left := grpGenerate.Left + grpGenerate.Width + 10;
-    Height := 90;
+    Height := 100;
     Width := 300;
-    Caption := dlgTargetProc;
+    Caption := dlgTargetPlatform;
+  end;
+
+  TargetOSComboBox:=TComboBox.Create(Self);
+  with TargetOSComboBox do begin
+    Name:='TargetOSComboBox';
+    Parent := grpTargetPlatform;
+    Left := 100;
+    Top := 0;
+    Width := grpTargetPlatform.ClientWidth-Left-10;
     with Items do begin
-      Add('default (none)');
+      Add('('+rsiwpDefault+')');
+      Add('Darwin');
+      Add('FreeBSD');
+      Add('Linux');
+      Add('NetBSD');
+      Add('OpenBSD');
+      Add('Solaris');
+      Add('Win32');
+      Add('WinCE');
+      //Add('go32v2'); 
+      //Add('os2'); 
+      //Add('beos'); 
+      //Add('qnx'); 
+      //Add('netware'); 
+      //Add('wdosx'); 
+      //Add('emx'); 
+      //Add('watcom'); 
+      //Add('netwlibc');
+      //Add('amiga');
+      //Add('atari');
+      //Add('palmos'); 
+      //Add('macos'); 
+      //Add('morphos'); 
+    end;
+    ItemIndex:=0;
+  end;
+
+  lblTargetOS := TLabel.Create(Self);
+  with lblTargetOS do begin
+    Name := 'lblTargetOS';
+    Parent := grpTargetPlatform;
+    Left := 4;
+    AnchorVerticalCenterTo(TargetOSComboBox);
+    Caption :=dlgTargetOS+' (-T)';
+  end;
+
+  TargetCPUComboBox:=TComboBox.Create(Self);
+  with TargetCPUComboBox do begin
+    Name:='TargetCPUComboBox';
+    Parent := grpTargetPlatform;
+    AnchorToCompanion(akTop,1,TargetOSComboBox);
+    with Items do begin
+      Add('('+rsiwpDefault+')');
+      Add('arm');
+      Add('i386');
+      Add('m68k');
+      Add('powerpc');
+      Add('sparc');
+      Add('x86_64');
+    end;
+    ItemIndex:=0;
+  end;
+
+  lblTargetCPU := TLabel.Create(Self);
+  with lblTargetCPU do begin
+    Name := 'lblTargetCPU';
+    Parent := grpTargetPlatform;
+    Left := 4;
+    AnchorVerticalCenterTo(TargetCPUComboBox);
+    Caption :=dlgTargetCPU+' (-d)';
+  end;
+
+  Targeti386ProcComboBox:=TComboBox.Create(Self);
+  with Targeti386ProcComboBox do begin
+    Name:='Targeti386ProcComboBox';
+    Parent := grpTargetPlatform;
+    AnchorToCompanion(akTop,1,TargetCPUComboBox);
+    with Items do begin
+      Add('('+rsiwpDefault+')');
       Add('386/486 (-Op1)');
       Add('Pentium/Pentium MMX (-Op2)');
       Add('Pentium Pro/Pentium II/C6x86/K6 (-Op3)');
     end;
+    ItemIndex:=0;
+  end;
+
+  lblTargeti386Proc := TLabel.Create(Self);
+  with lblTargeti386Proc do begin
+    Name := 'lblTargeti386Proc';
+    Parent := grpTargetPlatform;
+    Left := 4;
+    AnchorVerticalCenterTo(Targeti386ProcComboBox);
+    Caption := dlgTargetProc;
   end;
 
   {------------------------------------------------------------}
@@ -1529,8 +1633,8 @@ begin
   with grpOptimizations do
   begin
     Parent := CodeGenPage;
-    Top := grpTargetProc.Top + grpTargetProc.Height + 6;
-    Left := 10;
+    Top := grpTargetPlatform.Top + grpTargetPlatform.Height + 6;
+    Left := 5;
     Height := 150;
     Width := 360;
     Caption := dlgOptimiz;
@@ -1596,38 +1700,7 @@ begin
     Left := 5;
     Width := w;
   end;
-
-  {-----------------------------------------------------}
-
-  TargetOSGroupBox:=TGroupBox.Create(Self);
-  with TargetOSGroupBox do begin
-    Name:='TargetOSGroupBox';
-    Parent := CodeGenPage;
-    Left := grpOptimizations.Left+grpOptimizations.Width+5;
-    Top:=grpOptimizations.Top;
-    Width:=150;
-    Height:=45;
-    Caption:=dlgTargetOS+' (-T)';
-  end;
-
-  TargetOSComboBox:=TComboBox.Create(Self);
-  with TargetOSComboBox do begin
-    Name:='TargetOSComboBox';
-    Parent := TargetOSGroupBox;
-    Align:=alTop;
-    with Items do begin
-      Add('('+rsiwpDefault+')');
-      Add('Darwin');
-      Add('FreeBSD');
-      Add('Linux');
-      Add('NetBSD');
-      Add('OpenBSD');
-      Add('Win32');
-    end;
-    ItemIndex:=0;
-  end;
 end;
-
 {------------------------------------------------------------------------------
   TfrmCompilerOptions SetupLinkingTab
 ------------------------------------------------------------------------------}
@@ -2802,4 +2875,3 @@ begin
 end;
 
 end.
-

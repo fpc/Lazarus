@@ -34,6 +34,7 @@ type
   TFPDocHTMLHelpDatabase = class(THTMLHelpDatabase)
   public
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+                      QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
   end;
   
@@ -43,7 +44,8 @@ implementation
 { TFPDocHTMLHelpDatabase }
 
 function TFPDocHTMLHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
-  NewNode: THelpNode; var ErrMsg: string): TShowHelpResult;
+  NewNode: THelpNode; QueryItem: THelpQueryItem;
+  var ErrMsg: string): TShowHelpResult;
 var
   ContextList: TPascalHelpContextList;
   UnitName: String;
@@ -55,9 +57,9 @@ var
   p: LongInt;
 begin
   if (Query is THelpQueryPascalContexts)
-  and (NewNode.QueryItem is TPascalHelpContextList) then begin
+  and (QueryItem is TPascalHelpContextList) then begin
     // a pascal context query
-    ContextList:=TPascalHelpContextList(NewNode.QueryItem);
+    ContextList:=TPascalHelpContextList(QueryItem);
     if (ContextList.Count>0) and (ContextList.List[0].Descriptor=pihcFilename)
     then begin
       // extract unit filename
@@ -121,7 +123,7 @@ begin
     end;
   end;
   // otherwise use default
-  Result:=inherited ShowHelp(Query, BaseNode, NewNode, ErrMsg);
+  Result:=inherited ShowHelp(Query, BaseNode, NewNode, QueryItem, ErrMsg);
 end;
 
 end.
