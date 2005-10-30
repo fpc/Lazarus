@@ -425,7 +425,6 @@ type
     property MinSize: integer read FMinSize write SetMinSize default 30;
     property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
     property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
-    property Width default 5;
     property Cursor default crHSplit;
     property ResizeAnchor: TAnchorKind read FResizeAnchor write SetResizeAnchor default akLeft;
   end;

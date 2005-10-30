@@ -441,8 +441,6 @@ type
 
   { TDockManager is an abstract class for managing a dock site's docked
     controls. See TDockTree below for the more info.
-    
-    This class exists for Delphi compatibility.
     }
   TDockManager = class(TPersistent)
   public
@@ -635,6 +633,10 @@ type
 
 
     }
+  TAnchorSideChangeOperation = (ascoAdd, ascoRemove, ascoChangeSide);
+
+  { TAnchorSide }
+
   TAnchorSide = class(TPersistent)
   private
     FControl: TControl;
@@ -646,6 +648,7 @@ type
     procedure SetSide(const AValue: TAnchorSideReference);
   public
     constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
+    destructor Destroy; override;
     procedure GetSidePosition(var ReferenceControl: TControl;
                 var ReferenceSide: TAnchorSideReference; var Position: Integer);
     procedure Assign(Source: TPersistent); override;
@@ -730,6 +733,7 @@ type
     FAlign: TAlign;
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
+    fAnchoredControls: TFPList; // list of TControl anchored to this control
     FAutoSizingLockCount: Integer;
     FAutoSize: Boolean;
     FBaseBounds: TRect;
@@ -746,7 +750,6 @@ type
     FCtl3D: Boolean;
     FCursor: TCursor;
     FDockOrientation: TDockOrientation;
-    FDockSplitter: TControl;// splitter control for Align docking
     FDragCursor: TCursor;
     FDragKind: TDragKind;
     FDragMode: TDragMode;
@@ -813,6 +816,7 @@ type
     procedure DoActionChange(Sender: TObject);
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetAnchorSideIndex(Index: integer): TAnchorSide;
+    function GetAnchoredControls(Index: integer): TControl;
     function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
@@ -872,6 +876,8 @@ type
     procedure DoAutoSize; virtual;
     function AutoSizeCanStart: boolean; virtual;
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
+    procedure ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
+                                       Operation: TAnchorSideChangeOperation); virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value: Boolean); virtual;
@@ -1058,8 +1064,6 @@ type
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
-    function GetDockSplitterWidth: integer;
-    function GetDockSplitterHeight: integer;
   public
     // size
     procedure AdjustSize; virtual;
@@ -1074,6 +1078,8 @@ type
     procedure AnchorToCompanion(Side: TAnchorKind; Space: integer;
                                 Sibling: TControl;
                                 FreeCompositeSide: boolean = true);
+    function AnchoredControlCount: integer;
+    property AnchoredControls[Index: integer]: TControl read GetAnchoredControls;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
@@ -1972,6 +1978,15 @@ const
     { alCustom }
     [akLeft, akTop]
     );
+  MainAlignAnchor: array[TAlign] of TAnchorKind = (
+    akLeft,   // alNone
+    akTop,    // alTop
+    akBottom, // alBottom
+    akLeft,   // alLeft
+    akRight,  // alRight
+    akLeft,   // alClient
+    akLeft    // alCustom
+    );
   OppositeAnchor: array[TAnchorKind] of TAnchorKind = (
     akBottom, // akTop,
     akRight,  // akLeft,
@@ -2722,12 +2737,20 @@ procedure TAnchorSide.SetControl(const AValue: TControl);
     raise Exception.Create('TAnchorSide.SetControl AValue=FOwner');
   end;
 
+var
+  OldControl: TControl;
 begin
   if (AValue=FOwner) then RaiseOwnerCircle;
   if FControl=AValue then exit;
+  OldControl:=FControl;
+  FControl:=nil;
   FControl:=AValue;
+  if OldControl<>nil then
+    OldControl.ForeignAnchorSideChanged(Self,ascoRemove);
   //debugln('TAnchorSide.SetControl A ',DbgSName(FOwner));
   FOwner.AnchorSideChanged(Self);
+  if FControl<>nil then
+    FControl.ForeignAnchorSideChanged(Self,ascoAdd);
 end;
 
 function TAnchorSide.IsSideStored: boolean;
@@ -2757,6 +2780,8 @@ begin
   end;
   FSide:=AValue;
   FOwner.AnchorSideChanged(Self);
+  if FControl<>nil then
+    FControl.ForeignAnchorSideChanged(Self,ascoChangeSide);
 end;
 
 constructor TAnchorSide.Create(TheOwner: TControl; TheKind: TAnchorKind);
@@ -2765,6 +2790,18 @@ begin
   FOwner:=TheOwner;
   FKind:=TheKind;
   FSide:=DefaultSideForAnchorKind[FKind];
+end;
+
+destructor TAnchorSide.Destroy;
+var
+  OldControl: TControl;
+begin
+  OldControl:=Control;
+  FControl:=nil;
+  //DebugLN('TAnchorSide.Destroy A ',DbgSName(Owner));
+  if OldControl<>nil then
+    OldControl.ForeignAnchorSideChanged(Self,ascoRemove);
+  inherited Destroy;
 end;
 
 procedure TAnchorSide.GetSidePosition(var ReferenceControl: TControl;

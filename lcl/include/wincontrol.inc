@@ -3045,13 +3045,13 @@ begin
     NewBounds:=BoundsRect;
     case Client.Align of
     alLeft:
-      inc(NewBounds.Left,GetDockSplitterWidth+Client.Width);
+      inc(NewBounds.Left,Client.Width);
     alTop:
-      inc(NewBounds.Top,GetDockSplitterHeight+Client.Height);
+      inc(NewBounds.Top,Client.Height);
     alRight:
-      dec(NewBounds.Right,GetDockSplitterWidth+Client.Width);
+      dec(NewBounds.Right,Client.Width);
     alBottom:
-      dec(NewBounds.Bottom,GetDockSplitterHeight+Client.Height);
+      dec(NewBounds.Bottom,Client.Height);
     end;
     SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
                       NewBounds.Right-NewBounds.Left,
@@ -5038,13 +5038,13 @@ begin
         NewBounds := BoundsRect;
         case DockObject.DropAlign of
         alLeft:
-          dec(NewBounds.Left,GetDockSplitterWidth+DockObject.Control.Width);
+          dec(NewBounds.Left,DockObject.Control.Width);
         alTop:
-          dec(NewBounds.Top,GetDockSplitterHeight+DockObject.Control.Height);
+          dec(NewBounds.Top,DockObject.Control.Height);
         alRight:
-          inc(NewBounds.Right,GetDockSplitterWidth+DockObject.Control.Width);
+          inc(NewBounds.Right,DockObject.Control.Width);
         alBottom:
-          inc(NewBounds.Bottom,GetDockSplitterHeight+DockObject.Control.Height);
+          inc(NewBounds.Bottom,DockObject.Control.Height);
         end;
         if NewBounds.Left<0 then
           NewBounds.Left:=0;

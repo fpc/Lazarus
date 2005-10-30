@@ -13,7 +13,8 @@ object EditorOptionsForm: TEditorOptionsForm
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    BorderSpacing.OnChange = nil
+    PageIndex = 4
     Height = 479
     Width = 477
     object Page1: TPage
@@ -25,7 +26,6 @@ object EditorOptionsForm: TEditorOptionsForm
       Top = 28
       Width = 473
       object BlockIndentLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'BlockIndentLabel'
         Color = clNone
         Left = 114
@@ -34,7 +34,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 96
       end
       object UndoLimitLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'UndoLimitLabel'
         Color = clNone
         Left = 114
@@ -43,7 +42,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 85
       end
       object TabWidthsLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'TabWidthsLabel'
         Color = clNone
         Left = 114
@@ -53,6 +51,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object EditorOptionsGroupBox: TCheckGroup
         Align = alTop
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'EditorOptionsGroupBox'
         Columns = 2
@@ -64,7 +63,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 461
       end
       object BlockIndentComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           '1'
           '2'
@@ -82,7 +80,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 100
       end
       object UndoLimitComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           '32767'
           '4096'
@@ -99,7 +96,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 100
       end
       object TabWidthsComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           '1'
           '2'
@@ -127,6 +123,7 @@ object EditorOptionsForm: TEditorOptionsForm
       Width = 473
       object MarginAndGutterGroupBox: TGroupBox
         Align = alTop
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'MarginAndGutterGroupBox'
         ClientHeight = 128
@@ -138,7 +135,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Top = 6
         Width = 461
         object RightMarginLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'RightMarginLabel'
           Color = clNone
           Left = 358
@@ -147,7 +143,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 90
         end
         object RightMarginColorButton: TColorButton
-          BorderSpacing.OnChange = nil
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
           Left = 246
@@ -156,7 +151,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 100
         end
         object GutterColorButton: TColorButton
-          BorderSpacing.OnChange = nil
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
           Left = 246
@@ -165,7 +159,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 100
         end
         object RightMarginColorLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'RightMarginColorLabel'
           Color = clNone
           Left = 358
@@ -174,7 +167,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 90
         end
         object GutterWidthLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'GutterWidthLabel'
           Color = clNone
           Left = 358
@@ -183,7 +175,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 90
         end
         object GutterColorLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'GutterColorLabel'
           Color = clNone
           Left = 358
@@ -192,7 +183,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 90
         end
         object VisibleRightMarginCheckBox: TCheckBox
-          BorderSpacing.OnChange = nil
           Caption = 'VisibleRightMarginCheckBox'
           Enabled = False
           OnClick = GeneralCheckBoxOnClick
@@ -203,7 +193,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 232
         end
         object VisibleGutterCheckBox: TCheckBox
-          BorderSpacing.OnChange = nil
           Caption = 'VisibleGutterCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 1
@@ -213,7 +202,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 232
         end
         object ShowLineNumbersCheckBox: TCheckBox
-          BorderSpacing.OnChange = nil
           Caption = 'ShowLineNumbersCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 2
@@ -223,7 +211,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 232
         end
         object RightMarginComboBox: TComboBox
-          BorderSpacing.OnChange = nil
           Items.Strings = (
             '80'
             '78'
@@ -240,7 +227,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 100
         end
         object GutterWidthComboBox: TComboBox
-          BorderSpacing.OnChange = nil
           Items.Strings = (
             '40'
             '35'
@@ -261,7 +247,6 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object EditorFontGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'EditorFontGroupBox'
         ClientHeight = 136
@@ -274,7 +259,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 461
         object EditorFontLabel: TLabel
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -287,7 +271,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontHeightLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'EditorFontHeightLabel'
           Color = clNone
@@ -298,7 +281,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object ExtraLineSpacingLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'ExtraLineSpacingLabel'
           Color = clNone
@@ -309,7 +291,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontComboBox: TComboBox
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           MaxLength = 0
           OnChange = ComboBoxOnChange
@@ -325,7 +306,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = EditorFontButtonClick
           TabOrder = 1
@@ -335,7 +316,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 16
         end
         object EditorFontHeightComboBox: TComboBox
-          BorderSpacing.OnChange = nil
           Items.Strings = (
             '10'
             '11'
@@ -358,7 +338,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 100
         end
         object ExtraLineSpacingComboBox: TComboBox
-          BorderSpacing.OnChange = nil
           Items.Strings = (
             '0'
             '1'
@@ -377,7 +356,6 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object DisplayPreview: TSynEdit
         Align = alBottom
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -16
@@ -386,8 +364,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Name = 'DisplayPreview'
         TabOrder = 2
         Width = 461
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -714,7 +690,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 6
@@ -733,7 +708,6 @@ object EditorOptionsForm: TEditorOptionsForm
       Width = 473
       object KeyMappingHelpLabel: TLabel
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -746,10 +720,10 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object KeyMappingChooseSchemeButton: TButton
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
+        BorderSpacing.InnerBorder = 2
         Caption = 'KeyMappingChooseSchemeButton'
         OnClick = KeyMappingChooseSchemeButtonClick
         TabOrder = 0
@@ -760,10 +734,10 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object KeyMappingConsistencyCheckButton: TButton
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
+        BorderSpacing.InnerBorder = 2
         Caption = 'KeyMappingConsistencyCheckButton'
         OnClick = KeyMappingConsistencyCheckButtonClick
         TabOrder = 1
@@ -774,7 +748,6 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object KeyMappingTreeView: TTreeView
         Align = alClient
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         DefaultItemHeight = 23
         Images = ImageList
@@ -798,7 +771,6 @@ object EditorOptionsForm: TEditorOptionsForm
       Top = 28
       Width = 473
       object LanguageLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'LanguageLabel'
         Color = clNone
         Left = 214
@@ -807,7 +779,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 87
       end
       object ColorSchemeLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'ColorSchemeLabel'
         Color = clNone
         Left = 214
@@ -816,7 +787,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 106
       end
       object FileExtensionsLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'FileExtensionsLabel'
         Color = clNone
         Left = 214
@@ -825,7 +795,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 112
       end
       object ColorElementLabel: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'ColorElementLabel'
         Color = clNone
         Left = 4
@@ -834,7 +803,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 105
       end
       object LanguageComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         MaxLength = 0
         OnChange = ComboBoxOnChange
         OnExit = ComboBoxOnExit
@@ -847,7 +815,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 200
       end
       object ColorSchemeComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         MaxLength = 0
         OnChange = ComboBoxOnChange
         OnExit = ComboBoxOnExit
@@ -860,7 +827,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 200
       end
       object FileExtensionsComboBox: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'pp;pas;inc;lpr;lrs;dpr;dpk'
           'pp;pas;inc;lpr;lrs'
@@ -878,7 +844,6 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Align = alBottom
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 4
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -16
@@ -888,8 +853,6 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         Width = 465
         OnMouseDown = ColorPreviewMouseUp
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1216,7 +1179,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 4
@@ -1225,7 +1187,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 465
       end
       object ColorElementListBox: TListBox
-        BorderSpacing.OnChange = nil
         OnSelectionChange = ColorElementListBoxSelectionChange
         TabOrder = 4
         TopIndex = -1
@@ -1236,7 +1197,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object SetAttributeToDefaultButton: TButton
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'SetAttributeToDefaultButton'
         OnClick = SetAttributeToDefaultButtonClick
         TabOrder = 5
@@ -1247,7 +1208,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object SetAllAttributesToDefaultButton: TButton
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'SetAllAttributesToDefaultButton'
         OnClick = SetAllAttributesToDefaultButtonClick
         TabOrder = 6
@@ -1258,7 +1219,6 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object TextAttributesGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.OnChange = nil
         Caption = 'Attributes'
         ClientHeight = 184
         ClientWidth = 255
@@ -1269,7 +1229,6 @@ object EditorOptionsForm: TEditorOptionsForm
         Top = 154
         Width = 255
         object ForeGroundLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'ForeGroundLabel'
           Color = clNone
           Left = 8
@@ -1277,7 +1236,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 98
         end
         object ForegroundColorButton: TColorButton
-          BorderSpacing.OnChange = nil
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
           Left = 8
@@ -1286,6 +1244,7 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 75
         end
         object BackGroundColorButton: TColorButton
+          BorderSpacing.OnChange = nil
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
           Left = 8
@@ -1294,6 +1253,7 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 75
         end
         object BackGroundLabel: TLabel
+          BorderSpacing.OnChange = nil
           Caption = 'BackGroundLabel'
           Color = clNone
           Left = 8
@@ -1303,6 +1263,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object ForeGroundUseDefaultCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.OnChange = nil
           Caption = 'ForeGroundUseDefaultCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 0
@@ -1313,7 +1274,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object BackGroundUseDefaultCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
           Caption = 'BackGroundUseDefaultCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 1
@@ -1324,6 +1284,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextBoldCheckBox: TCheckBox
           Align = alBottom
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'TextBoldCheckBox'
           OnClick = GeneralCheckBoxOnClick
@@ -1335,7 +1296,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextItalicCheckBox: TCheckBox
           Align = alBottom
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'TextItalicCheckBox'
           OnClick = GeneralCheckBoxOnClick
@@ -1347,7 +1307,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextUnderlineCheckBox: TCheckBox
           Align = alBottom
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'TextUnderlineCheckBox'
           OnClick = GeneralCheckBoxOnClick
@@ -1369,7 +1328,6 @@ object EditorOptionsForm: TEditorOptionsForm
       Width = 473
       object AutomaticFeaturesGroupBox: TGroupBox
         Align = alClient
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
         ClientHeight = 420
@@ -1382,6 +1340,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 461
         object AutoDelayLabel: TLabel
           Align = alTop
+          BorderSpacing.OnChange = nil
           BorderSpacing.Top = 24
           BorderSpacing.Around = 6
           Caption = 'AutoDelayLabel'
@@ -1392,7 +1351,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Width = 445
         end
         object AutoDelayMinLabel: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'AutoDelayMinLabel'
           Color = clNone
           AnchorSideTop.Control = AutoDelayTrackBar
@@ -1404,7 +1362,6 @@ object EditorOptionsForm: TEditorOptionsForm
         object AutoDelayMaxLabel: TLabel
           Alignment = taRightJustify
           Anchors = [akTop, akRight]
-          BorderSpacing.OnChange = nil
           Caption = 'AutoDelayMaxLabel'
           Color = clNone
           AnchorSideTop.Control = AutoDelayTrackBar
@@ -1415,7 +1372,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoIdentifierCompletionCheckBox: TCheckBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'AutoIdentifierCompletionCheckBox'
           TabOrder = 0
@@ -1426,7 +1382,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoCodeParametersCheckBox: TCheckBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'AutoCodeParametersCheckBox'
           Enabled = False
@@ -1438,7 +1393,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoToolTipExprEvalCheckBox: TCheckBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'AutoToolTipExprEvalCheckBox'
           TabOrder = 2
@@ -1449,7 +1403,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoToolTipSymbToolsCheckBox: TCheckBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Caption = 'AutoToolTipSymbToolsCheckBox'
           Enabled = False
@@ -1461,6 +1414,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoDelayTrackBar: TTrackBar
           Align = alTop
+          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -1483,6 +1437,8 @@ object EditorOptionsForm: TEditorOptionsForm
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     OnClick = CancelButtonClick
     TabOrder = 1
@@ -1493,6 +1449,8 @@ object EditorOptionsForm: TEditorOptionsForm
   end
   object OkButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 2

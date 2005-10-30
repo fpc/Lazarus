@@ -554,8 +554,9 @@ begin
     NewClientHeight:=Bounds.Bottom-Bounds.Top;
     NewWidth:=Result.Width-Result.ClientWidth+NewClientWidth;
     NewHeight:=Result.Height-Result.ClientHeight+NewClientHeight;
-    Result.SetBounds(Bounds.Top,Bounds.Left,NewWidth,NewHeight);
-    SetClientSize(Point(NewClientWidth,NewClientHeight));
+    Result.SetBounds(Bounds.Left,Bounds.Top,NewWidth,NewHeight);
+    Result.SetClientSize(Point(NewClientWidth,NewClientHeight));
+    debugln('TControl.CreateFloatingDockSite A ',DbgSName(Self),' ',DbgSName(Result),' ',dbgs(Result.BoundsRect));
   end;
 end;
 
@@ -1184,16 +1185,6 @@ Begin
   Result := (DragControl = self);
 end;
 
-function TControl.GetDockSplitterWidth: integer;
-begin
-  Result:=4; // TODO
-end;
-
-function TControl.GetDockSplitterHeight: integer;
-begin
-  Result:=4; // TODO
-end;
-
 {------------------------------------------------------------------------------
        TControl GetBoundsRect
 ------------------------------------------------------------------------------}
@@ -1341,6 +1332,11 @@ begin
   else
   Result:=nil;
   end;
+end;
+
+function TControl.GetAnchoredControls(Index: integer): TControl;
+begin
+  Result:=TControl(fAnchoredControls[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -1918,6 +1914,20 @@ begin
   RequestAlign;
 end;
 
+procedure TControl.ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
+  Operation: TAnchorSideChangeOperation);
+begin
+  //debugln('TControl.ForeignAnchorSideChanged A ',DbgSName(TheAnchorSide.Owner),' Operation=',dbgs(ord(Operation)),' Anchor=',dbgs(ord(TheAnchorSide.Kind)));
+  if TheAnchorSide.Control=Self then begin
+    if fAnchoredControls=nil then
+      fAnchoredControls:=TFPList.Create;
+    if fAnchoredControls.IndexOf(TheAnchorSide.Owner)<0 then
+      fAnchoredControls.Add(TheAnchorSide.Owner);
+  end else if fAnchoredControls<>nil then begin
+    fAnchoredControls.Remove(TheAnchorSide.Owner);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TControl.AutoSizeCanStart: boolean;
   
@@ -2171,6 +2181,7 @@ begin
   if Operation = opRemove then begin
     if AComponent = PopupMenu then PopupMenu := nil
     else if AComponent = Action then Action := nil;
+    //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
     for Kind:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if (FAnchorSides[Kind]<>nil) and (FAnchorSides[Kind].Control=AComponent)
       then
@@ -2968,7 +2979,6 @@ procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 
 var
   OldHostDockSite: TWinControl;
-  Side: TAnchorKind;
 begin
   if (csDocking in FControlState) then
     RaiseAlreadyDocking;
@@ -2979,8 +2989,6 @@ begin
     OldHostDockSite:=HostDockSite;
 
     if OldHostDockSite<>NewDockSite then begin
-      if FDockSplitter<>nil then
-        FDockSplitter.Parent:=nil;
       // HostDockSite will change -> prepare
       if (OldHostDockSite<>nil) and (OldHostDockSite.FDockClients<>nil) then
         OldHostDockSite.FDockClients.Remove(Self);
@@ -2989,22 +2997,6 @@ begin
     end;
 
     //debugln('TControl.Dock A ',DbgSName(Self));
-    if (NewDockSite<>nil) and (DockSplitterClass<>nil) then begin
-      if (FDockSplitter=nil) then
-        FDockSplitter:=DockSplitterClass.Create(Self);
-      case Align of
-      alLeft:  Side:=akLeft;
-      alTop:   Side:=akTop;
-      alRight: Side:=akRight;
-      alBottom:Side:=akBottom;
-      else
-        Side:=akLeft;
-      end;
-      FDockSplitter.AnchorToCompanion(Side,0,Self,false);
-      FDockSplitter.AnchorParallel(OppositeAnchor[Side],0,NewDockSite);
-      FDockSplitter.Parent:=NewDockSite;
-      debugln('TControl.Dock Adding Splitter ',DbgSName(Self));
-    end;
 
     DoDock(NewDockSite,ARect);
     
@@ -3112,11 +3104,12 @@ begin
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
-    debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect),' FloatHost=',dbgs(FloatHost<>nil));
+    FloatHost.Visible := true;
+    //debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect),' FloatHost=',dbgs(FloatHost<>nil));
     if FloatHost<>nil then
       Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
     else
-      Dock(FloatHost,TheScreenRect);
+      Dock(nil,TheScreenRect);
   end;
 end;
 
@@ -3280,6 +3273,8 @@ destructor TControl.Destroy;
 var
   HandlerType: TControlHandlerType;
   Side: TAnchorKind;
+  i: Integer;
+  CurAnchorSide: TAnchorSide;
 begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
@@ -3289,10 +3284,19 @@ begin
     FreeThenNil(FAnchorSides[Side]);
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
+  if fAnchoredControls<>nil then begin
+    for i:=0 to fAnchoredControls.Count-1 do
+      for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        CurAnchorSide:=AnchoredControls[i].AnchorSide[Side];
+        if CurAnchorSide.FControl=Self then
+          CurAnchorSide.FControl:=nil;
+      end;
+    FreeThenNil(fAnchoredControls);
+  end;
   FreeThenNil(FFont);
-  //DebugLn('[TControl.Destroy] B ',Name,':',ClassName);
+  //DebugLn('[TControl.Destroy] B ',DbgSName(Self));
   inherited Destroy;
-  //DebugLn('[TControl.Destroy] END ',Name,':',ClassName);
+  //DebugLn('[TControl.Destroy] END ',DbgSName(Self));
   for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
     FreeThenNil(FControlHandlers[HandlerType]);
 end;
@@ -3495,6 +3499,14 @@ begin
   akTop:    AnchorCompanionSides(akTop,akBottom,akLeft,akRight);
   akBottom: AnchorCompanionSides(akBottom,akTop,akLeft,akRight);
   end;
+end;
+
+function TControl.AnchoredControlCount: integer;
+begin
+  if fAnchoredControls=nil then
+    Result:=0
+  else
+    Result:=fAnchoredControls.Count;
 end;
 
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);

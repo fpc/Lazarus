@@ -101,8 +101,8 @@ procedure TCustomSplitter.StartSplitterMove(Restart: boolean;
 begin
   if (not Restart) and FSplitDragging then exit;
   FSplitDragging := True;
-  fSplitterStartMouseXY:=MouseXY;
-  fSplitterStartLeftTop:= Point(Left,Top);
+  fSplitterStartMouseXY := MouseXY;
+  fSplitterStartLeftTop := Point(Left,Top);
 end;
 
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -282,20 +282,26 @@ var
       akRight:
         begin
           Parent.DisableAlign;
-          CurResizeControl.Left := CurResizeControl.Left
-                                   + (CurResizeControl.Width - NewSize);
-          CurResizeControl.Width := NewSize;
-          Parent.EnableAlign;
+          try
+            CurResizeControl.Left := CurResizeControl.Left
+                                     + (CurResizeControl.Width - NewSize);
+            CurResizeControl.Width := NewSize;
+          finally
+            Parent.EnableAlign;
+          end;
         end;
       akTop:
         CurResizeControl.Height := NewSize;
       akBottom:
         begin
           Parent.DisableAlign;
-          CurResizeControl.Top := CurResizeControl.Top
-                                  + (CurResizeControl.Height - NewSize);
-          CurResizeControl.Height := NewSize;
-          Parent.EnableAlign;
+          try
+            CurResizeControl.Top := CurResizeControl.Top
+                                    + (CurResizeControl.Height - NewSize);
+            CurResizeControl.Height := NewSize;
+          finally
+            Parent.EnableAlign;
+          end;
         end;
     end;
   end;
@@ -387,18 +393,28 @@ var
     end;
   end;
   
+  function GetParentsClientSize: integer;
+  begin
+    if ResizeAnchor in [akLeft,akRight] then
+      Result:=Parent.ClientWidth
+    else
+      Result:=Parent.ClientHeight;
+  end;
+
 var
   Offset: Integer;
   StartSize: Integer;
   EndSize: Integer;
   NewSize: Integer;
   MousePos: TPoint;
+  i: Integer;
+  OffsetMaxLower: integer;
+  OffsetMaxUpper: integer;
+  CurMaxShrink: integer;
+  CurMaxEnlarge: integer;
 begin
   inherited MouseMove(Shift, X, Y);
   if (ssLeft in Shift) and (Parent <> nil) then begin
-    // get the control to resize
-    CurResizeControl := GetResizeControl;
-    if not Assigned(CurResizeControl) then Exit;
 
     // While resizing X, Y are not valid. Use absolute mouse position.
     GetCursorPos(MousePos);
@@ -407,11 +423,14 @@ begin
     Offset := CalcOffset(MousePos.X, MousePos.Y);
     if Offset = 0 then Exit;
     
-    CurOtherResizeControl := GetOtherResizeControl;
-
     if Align in [alLeft,alTop,alRight,alBottom] then begin
       // aligned Splitter
       // -> consider aligned siblings for minimum and maximum movement
+
+      // get the control to resize
+      CurResizeControl := GetResizeControl;
+      if not Assigned(CurResizeControl) then Exit;
+      CurOtherResizeControl := GetOtherResizeControl;
 
       // calculate minimum size
       StartSize := 1;
@@ -454,41 +473,64 @@ begin
             end;
         end;
       end;
+
+      NewSize := CalcNewSize(StartSize, EndSize, Offset);
+
+      // OnCanResize event
+      if CheckNewSize(NewSize)
+      then SetAlignControlSize(NewSize);
+      
     end else begin
       // anchored Splitter
       // -> consider anchored siblings for minimum and maximum movement
-      StartSize := Max(fMinSize,
-                       GetControlConstraintsMinSize(CurResizeControl));
-      EndSize := GetControlConstraintsMaxSize(CurResizeControl);
-      //debugln('TCustomSplitter.MouseMove A StartSize=',dbgs(StartSize),' EndSize=',dbgs(EndSize));
-      if (CurOtherResizeControl<>nil)
-      and (OppositeAnchor[FResizeAnchor]
-           in (CurOtherResizeControl.Anchors
-               +AnchorAlign[CurOtherResizeControl.Align]))
-      then begin
-        // CurOtherResizeControl will be resized too
-        // -> consider Constraints of CurOtherResizeControl too
-        if GetControlConstraintsMaxSize(CurOtherResizeControl)>0 then
-          StartSize := Max(StartSize,
-                           GetControlSize(CurResizeControl)
-                           +GetControlConstraintsMaxSize(CurOtherResizeControl)
-                           -GetControlSize(CurOtherResizeControl));
-        EndSize := Min(EndSize,
-                       GetControlSize(CurResizeControl)
-                       +GetControlSize(CurOtherResizeControl)
-                       -GetControlConstraintsMinSize(CurOtherResizeControl));
-        //debugln('TCustomSplitter.MouseMove B CurOtherResizeControl=',DbgSName(CurOtherResizeControl),' StartSize=',dbgs(StartSize),' EndSize=',dbgs(EndSize));
+
+      // OffsetMaxLower = maximum the Splitter can be moved top/left
+      OffsetMaxLower := Max(0,GetControlMinPos(Self)-fMinSize);
+      // OffsetMaxUpper = maximum the Splitter can be moved bottom/right
+      OffsetMaxUpper := Max(0,GetParentsClientSize
+                              -GetControlSize(Self)-GetControlMinPos(Self));
+
+      for i:=0 to AnchoredControlCount-1 do begin
+        CurResizeControl:=AnchoredControls[i];
+        debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl));
+        if (CurResizeControl.AnchorSide[ResizeAnchor].Control=Self)
+        or (CurResizeControl.AnchorSide[OppositeAnchor[ResizeAnchor]].Control=Self)
+        then begin
+          // this control uses this Splitter as anchor
+          // => moving the Splitter will resize CurResizeControl
+          // => consider the constraints of CurResizeControl
+          //    for minimum and maximum movement
+          
+          // calculate how much the CurResizeControl can be shrinked
+          CurMaxShrink:=Max(0,GetControlSize(CurResizeControl)-
+                        GetControlConstraintsMinSize(CurResizeControl));
+          // calculate how much the CurResizeControl can be enlarged
+          CurMaxEnlarge:=Max(0,GetControlConstraintsMaxSize(CurResizeControl)
+                         -GetControlSize(CurResizeControl));
+          debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge));
+
+          // apply to the offset boundaries
+          if (CurResizeControl.AnchorSide[akLeft].Control=Self)
+          or (CurResizeControl.AnchorSide[akTop].Control=Self) then begin
+            OffsetMaxLower:=Min(OffsetMaxLower,CurMaxShrink);
+            OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxEnlarge);
+          end else begin
+            OffsetMaxLower:=Min(OffsetMaxLower,CurMaxEnlarge);
+            OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxShrink);
+          end;
+        end;
       end;
-      // do not move Splitter out of Parent's client area
-      EndSize := Min(EndSize,GetParentsClientLimit);
-      //debugln('TCustomSplitter.MouseMove C StartSize=',dbgs(StartSize),' EndSize=',dbgs(EndSize));
+      
+      // apply the offset boundaries to the offset
+      Offset:=Max(Min(Offset,OffsetMaxUpper),-OffsetMaxLower);
+
+      // move splitter
+      if ResizeAnchor in [akLeft,akRight] then begin
+        Left:=Left+Offset;
+      end else begin
+        Top:=Top+Offset;
+      end;
     end;
-
-    NewSize := CalcNewSize(StartSize, EndSize, Offset);
-
-    // OnCanResize event
-    if CheckNewSize(NewSize)
-    then SetAlignControlSize(NewSize);
   end;
 end;
 
@@ -566,9 +608,6 @@ var
   OldHeight: Integer;
   OldResizeAnchor: TAnchorKind;
 begin
-  if (Self.Align = Value) or (Value=alClient) then Exit;
-  OldWidth := Self.Width;
-  OldHeight := Self.Height;
   OldResizeAnchor:=ResizeAnchor;
   case Value of
   alLeft:   FResizeAnchor:=akLeft;
@@ -576,26 +615,36 @@ begin
   alRight:  FResizeAnchor:=akRight;
   alBottom: FResizeAnchor:=akBottom;
   end;
-  
-  inherited SetAlign(Value);
+  if ((Align = Value) and (OldResizeAnchor=FResizeAnchor))
+  or (Value=alClient) then
+    Exit;
+  OldWidth := Width;
+  OldHeight := Height;
 
-  if ResizeAnchor in [akLeft,akRight] then
-    Cursor := crHSplit
-  else
-    Cursor := crVSplit;
+  DisableAlign;
+  try
+    inherited SetAlign(Value);
 
-  CheckAlignment;
+    if ResizeAnchor in [akLeft,akRight] then
+      Cursor := crHSplit
+    else
+      Cursor := crVSplit;
 
-  if (OldResizeAnchor in [akLeft,akRight])=(ResizeAnchor in [akLeft,akRight])
-  then begin
-    // keep width and height
-    SetBounds(Left,Top,OldWidth,OldHeight);
-  end else begin
-    // resize
-    if Align in [alLeft,alRight] then
-      Width:=OldHeight
-    else if Align in [alTop,alBottom] then
-      Height:=OldWidth;
+    CheckAlignment;
+
+    if (OldResizeAnchor in [akLeft,akRight])=(ResizeAnchor in [akLeft,akRight])
+    then begin
+      // keep width and height
+      SetBounds(Left,Top,OldWidth,OldHeight);
+    end else begin
+      // resize
+      if Align in [alLeft,alRight] then
+        Width:=OldHeight
+      else if Align in [alTop,alBottom] then
+        Height:=OldWidth;
+    end;
+  finally
+    EnableAlign;
   end;
 end;
 
@@ -637,6 +686,7 @@ begin
   FBeveled:=false;
   FMinSize:=30;
   FResizeAnchor:=akLeft;
+
   Align:=alLeft;
   Width:=5;
 end;
