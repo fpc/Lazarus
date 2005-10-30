@@ -1386,11 +1386,7 @@ var
       ]);}
 
     //DebugLn('  Trying "',S,'"');
-    {S:=FontNameRegistry+','+Foundry+','+FamilyName+','+WeightName
-       +','+Slant+','+SetwidthName+','+AddStyleName+','+PixelSize
-       +','+PointSize+','+ResolutionX+','+ResolutionY+','+Spacing+','+AverageWidth
-       +','+CharSetRegistry+','+CharSetCoding;
-    DebugLn('  Trying B "',S,'"');}
+    DebugLn('  Trying Font "',S,'"');
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
     Result:=GdiObject^.GDIFontObject<>nil;
@@ -1426,8 +1422,8 @@ var
 
       if ((lfWeight <> FW_NORMAL) and (lfWeight <> FW_BOLD)) or
         (WeightName<>'*') then begin
-        result := LoadFont;
-        if result then
+        Result := LoadFont;
+        if Result then
           exit;
       end;
       
@@ -1576,6 +1572,7 @@ begin
       CharSetRegistry  := ExtractXLFDItemMask(LongFontName,13);
       CharSetCoding    := ExtractXLFDItemMask(LongFontName,14);
     end else if CheckFontNameIsMangledXLogicalFontDesc(LongFontName) then begin
+      // warned
     end;
     
     with LogFont do
@@ -1591,7 +1588,7 @@ begin
 
       if (CompareText(FamilyName,'default')<>0) then begin
       
-        // check if we have foundry enconded in family name
+        // check if we have foundry encoded in family name
         n := pos(FOUNDRYCHAR_OPEN, FamilyName);
         if n<>0 then begin
           Foundry := copy(FamilyName, n+1, Length(FamilyName));

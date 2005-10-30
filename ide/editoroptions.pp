@@ -439,6 +439,7 @@ type
 
     // display
     procedure FontDialogApplyClicked(Sender: TObject);
+    procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure EditorFontButtonClick(Sender: TObject);
 
     // key mapping
@@ -2597,6 +2598,15 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.EditorFontComboBoxEditingDone(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := Low(PreviewEdits) to High(PreviewEdits) do
+    if PreviewEdits[i] <> Nil then
+      PreviewEdits[i].Font.Name:=EditorFontComboBox.Text;
+end;
+
 procedure TEditorOptionsForm.ColorButtonColorChanged(Sender: TObject);
 var
   a: Integer;
@@ -2682,7 +2692,7 @@ begin
       PreviewEdits[a].Font.Assign(TFontDialog(Sender).Font);
   EditorFontComboBox.Text := DisplayPreview.Font.Name;
   SetComboBoxText(EditorFontHeightComboBox,
-    IntToStr(DisplayPreview.Font.Height));
+                  IntToStr(DisplayPreview.Font.Height));
 end;
 
 procedure TEditorOptionsForm.EditorFontButtonClick(Sender: TObject);
@@ -2857,8 +2867,8 @@ begin
   ;
 end;
 
-procedure TEditorOptionsForm.ComboBoxOnKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TEditorOptionsForm.ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
