@@ -815,7 +815,11 @@ begin
           while true do begin
             case Src[CurPos.StartPos] of
             #0:  if CurPos.StartPos>SrcLen then break;
-            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '{': if Scanner.NestedComments then
+              begin
+                //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
+                inc(CommentLvl);
+              end;
             '}':
               begin
                 dec(CommentLvl);

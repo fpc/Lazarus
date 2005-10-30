@@ -10541,8 +10541,12 @@ begin
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
-  end else
-    DoJumpToCodeToolBossError;
+  end else begin
+    if CodeToolBoss.ErrorMessage='' then begin
+      MessageDlg('Success','All blocks looks ok.',mtInformation,[mbOk],0);
+    end else
+      DoJumpToCodeToolBossError;
+  end;
 end;
 
 procedure TMainIDE.DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);

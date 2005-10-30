@@ -511,7 +511,7 @@ begin
     if UpAtomIs('USES') then
       ReadUsesSection(true);
     repeat
-      //DebugLn('[TPascalParserTool.BuildTree] ALL '+GetAtom);
+      //DebugLn('[TPascalParserTool.BuildTree] ALL ',GetAtom);
       if not DoAtom then break;
       if CurSection=ctnNone then begin
         EndOfSourceFound:=true;

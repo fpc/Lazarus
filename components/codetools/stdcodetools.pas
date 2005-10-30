@@ -4214,17 +4214,42 @@ begin
         bkwClass, bkwObject, bkwInterface, bkwDispInterface:
           begin
             ReadNextAtom;
-            if AtomIsChar(';')
-            or ((CurBlockWord=bkwClass) and UpAtomIs('OF'))
+            if AtomIsChar(';') // forward class
+            or ((CurBlockWord=bkwClass) and UpAtomIs('OF')) // 'class of'
             or ((CurBlockWord=bkwClass)
-                and (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE')))
+                and (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE'))) // 'class procedure'
             or ((CurBlockWord=bkwObject) and LastUpAtomIs(0,'OF')) then
             begin
               // forward class or 'class of' or class method or 'of object'
             end else begin
-              UndoReadNextAtom;
               BlockType:=CurBlockWord;
               BlockStart:=CurPos.StartPos;
+              // read ancestor list  class(...)
+              if CurPos.Flag=cafRoundBracketOpen then begin
+                repeat
+                  ReadNextAtom;
+                  if AtomIsIdentifier(false) then begin
+                    ReadNextAtom;
+                    if CurPos.Flag=cafPoint then begin
+                      ReadNextAtom;
+                      AtomIsIdentifier(true);
+                    end;
+                  end;
+                  if CurPos.Flag=cafRoundBracketClose then break;
+                  if CurPos.Flag<>cafComma then begin
+                    exit(false);
+                  end;
+                until false;
+              end;
+              ReadNextAtom;
+              // a semicolon directly behind the ancestor list ends the class
+              if (CurPos.Flag in [cafEnd,cafSemicolon]) then begin
+                // class ends
+                BlockType:=bkwNone;
+              end else begin
+                // class continues
+                UndoReadNextAtom;
+              end;
             end;
           end;
 
