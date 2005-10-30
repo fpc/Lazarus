@@ -1,6 +1,6 @@
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr " Малюнки "
+msgstr " Зображення "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
@@ -12,11 +12,11 @@ msgstr " Елементи "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr " Обраний малюнок "
+msgstr " Обране зображення "
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr ""
+msgstr "%d рядків, %d символів"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
@@ -36,7 +36,7 @@ msgstr "&Додати"
 
 #: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
-msgstr "&Відмінити"
+msgstr "&Скасувати"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -108,7 +108,7 @@ msgstr "&Зміст Шукати"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr "&Відкотити"
+msgstr "&ВІдмінити дію"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
@@ -124,11 +124,11 @@ msgstr "(Невідомий)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
-msgstr ""
+msgstr "ніякий"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr ""
+msgstr "0 рядків, 0 символів"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -180,11 +180,11 @@ msgstr "Boolean"
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr "Браузер %s%s%s недоступний."
+msgstr "Переглядач %s%s%s недоступний."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr "Браузера %s%s%s не знайдено"
+msgstr "Переглядача %s%s%s не знайдено"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -192,7 +192,7 @@ msgstr "О&чистити"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
-msgstr "Знехтувати"
+msgstr "Скасувати"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -204,11 +204,11 @@ msgstr "Символ"
 
 #: objinspstrconsts:oischaractersforblanks
 msgid "Characters for Blanks"
-msgstr ""
+msgstr "Символи для Blanks"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr "Редактор Check Group"
+msgstr "Редактор CheckGroup"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
@@ -224,7 +224,7 @@ msgstr "Очистити"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr "Очистити малюнок"
+msgstr "Очистити зображення"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -232,11 +232,11 @@ msgstr "Обрати колір"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "Назва компонету %s%s%s є неправильним ідентифікатором"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
-msgstr ""
+msgstr "Компонент"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -244,7 +244,7 @@ msgstr "Підтвердити видалення"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr "Підтверджуєте очистку всіх зображень' ?"
+msgstr "Підтверджуєте очистку всіх зображень ?"
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
@@ -396,19 +396,19 @@ msgstr "Довідкова база %s%s%s не знайшла перегляд�
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr "Довідкову базу %s%s%s не знайдено"
+msgstr "Довідкова база %s%s%s не знайдена"
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr "Контекст довідки %s не знайдений в базі даних %s%s%s."
+msgstr "Контексту довідки %s не знайдено в базі даних %s%s%s."
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr "Контекст довідки %s не знайдений."
+msgstr "Контексту довідки %s не знайдено."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Ключ довідки %s%s%s не знайдений в базі даних %s%s%s"
+msgstr "Ключа довідки %s%s%s не знайдено в базі даних %s%s%s"
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -424,15 +424,15 @@ msgstr "Довідка про допомогу"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr "Індекс малюнка"
+msgstr "Індекс зображення"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Редактор списку малюнків"
+msgstr "Редактор списку зображень"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Маска Введення"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -448,7 +448,7 @@ msgstr "Int64"
 
 #: objinspstrconsts:oisinteger
 msgid "Integer"
-msgstr "Ціле"
+msgstr "Integer"
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
@@ -456,7 +456,7 @@ msgstr "Інтерфейс"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
+msgstr "Неправильна величина властивості"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -476,11 +476,11 @@ msgstr "Діалог завантаження зображення"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr "Завантажити малюнок"
+msgstr "Завантажити зображення"
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
-msgstr ""
+msgstr "Маски..."
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -524,11 +524,11 @@ msgstr "Наступний"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Не знайдено браузера HTML.%Визначте його в Довідка->Налаштувати довідку->Переглядачі"
+msgstr "Переглядача HTML не знайдено.%Визначте його в Довідка->Налаштувати довідку->Переглядачі"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr "Не знайдено допомоги до стрічки %d, колонки %d з %s."
+msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -540,19 +540,15 @@ msgstr "Інспектор об'єктів"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
+msgstr "Гаразд"
 
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
 msgstr "Відкрити"
 
-#: objinspstrconsts:oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr ""
-
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr "Опції"
+msgstr "Параметри"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -580,7 +576,7 @@ msgstr "Властивості"
 
 #: objinspstrconsts:oispropertiesof
 msgid "Properties of %s"
-msgstr ""
+msgstr "Властивості %s"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
@@ -596,7 +592,7 @@ msgstr "Прибрати з Улюблених"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
-msgstr ""
+msgstr "Приклади Масок:"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -608,11 +604,11 @@ msgstr "Зберегти як"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr ""
+msgstr "Зберегти Літеральні Символи"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr "Зберегти малюнок"
+msgstr "Зберегти зображення"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -652,7 +648,7 @@ msgstr "Показати Дерево Компонентів"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr "Показати Хінти"
+msgstr "Показати Поради"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
@@ -668,7 +664,7 @@ msgstr "Standard Action Classes"
 
 #: objinspstrconsts:oisstring
 msgid "String"
-msgstr "Стрічка"
+msgstr "Рядок"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
@@ -680,7 +676,7 @@ msgstr "Редактор StringGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Діалог Введення Стрічок"
+msgstr "Редактор рядків"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -688,7 +684,7 @@ msgstr "Піделемент"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
-msgstr ""
+msgstr "Тестове Введення"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -708,7 +704,7 @@ msgstr "Пошук по змісту"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
-msgstr "Відкотити"
+msgstr "Відмінити дію"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
@@ -720,9 +716,9 @@ msgstr "Значення:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
-msgstr "Variant"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr "Word"
+msgstr ""
 

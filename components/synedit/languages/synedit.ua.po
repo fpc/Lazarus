@@ -4,7 +4,7 @@ msgstr "%d - %d"
 
 #: syneditstrconst:syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "Асемблерні файли 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "Файли асемблера 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst:syns_shortcutnone
 msgid "<none>"
@@ -44,7 +44,7 @@ msgstr "Кеш-файли (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst:syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Каскадні Stylesheets (*.css)|*.css"
+msgstr "Каскадні таблиці стилів (*.css)|*.css"
 
 #: syneditstrconst:syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
@@ -72,7 +72,7 @@ msgstr "Файли Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
+msgstr "HP48 Файли (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -92,7 +92,7 @@ msgstr "INI-файли (*.ini)|*.ini"
 
 #: syneditstrconst:syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Установочні скрипти Inno (*.iss)|*.iss"
+msgstr "Скрипти встановлення Inno (*.iss)|*.iss"
 
 #: syneditstrconst:syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -184,11 +184,11 @@ msgstr "Файли Tex"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Комбінація \"%s\" вже присвоєна іншій команді редактора. (%s)"
+msgstr "Комбінацію \"%s\" вже присвоєно іншій команді редактора. (%s)"
 
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
-msgstr "Верхня стрічка: %d"
+msgstr "Верхній рядок: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
@@ -208,5 +208,5 @@ msgstr "Документи XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xs
 
 #: syneditstrconst:syns_filterx86asm
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "Файли асемблеру x86 (*.asm)|*.ASM"
+msgstr "Файли асемблера x86 (*.asm)|*.ASM"
 

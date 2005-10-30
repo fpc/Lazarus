@@ -65,6 +65,7 @@ Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller
 Stefan Hille
+Taras Boychuk
 Tom Lisjac
 Tomáš Gregorovič
 Tony Maro

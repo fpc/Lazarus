@@ -243,7 +243,7 @@ implementation
 
 var
   InterfaceFinalizationHandlers: TFPList;
-  DebugTextAlloced: boolean;
+  DebugTextAllocated: boolean;
   DebugText: ^Text;
 
 
@@ -856,7 +856,7 @@ begin
     (DirPathExists(ExtractFileDir(DebugFileName))) then begin
 
     new(DebugText);
-    DebugTextAlloced := true;
+    DebugTextAllocated := true;
     Assign(DebugText^, DebugFileName);
     if FileExists(DebugFileName) then
       Append(DebugText^)
@@ -868,16 +868,16 @@ begin
       DebugText := nil
     else
       DebugText := @Output;
-    DebugTextAlloced := false;
+    DebugTextAllocated := false;
   end;
 end;
 
 procedure FinalizeDebugOutput;
 begin
-  if DebugTextAlloced then begin
+  if DebugTextAllocated then begin
     Close(DebugText^);
     Dispose(DebugText);
-    DebugTextAlloced := false;
+    DebugTextAllocated := false;
   end;
 end;
 
