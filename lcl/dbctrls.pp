@@ -651,6 +651,7 @@ Type
     property Field: TField read GetField;
   published
     property Align;
+    property Anchors;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
     property AutoSize;
     property Center;
