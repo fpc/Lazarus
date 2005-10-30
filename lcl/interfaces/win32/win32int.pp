@@ -249,6 +249,7 @@ var
   MouseDownFocusWindow: HWND;
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
   ComboBoxHandleSizeWindow: HWND = 0;
+  IgnoreNextChar: boolean = false;  // ignore next WM_(SYS)CHAR message
   OnClipBoardRequest: TClipboardRequestEvent;
 {$ifdef MSG_DEBUG}
   MessageStackDepth: string = '';

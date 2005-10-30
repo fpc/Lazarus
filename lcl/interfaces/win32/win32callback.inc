@@ -632,9 +632,9 @@ Begin
     lWinControl := WindowInfo^.WinControl;
   end;
 
-  if WindowInfo^.ignoreNextChar and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
+  if IgnoreNextChar and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
-    WindowInfo^.ignoreNextChar := false;
+    IgnoreNextChar := false;
     Result := 1;
     exit;
   end;
@@ -1637,10 +1637,10 @@ Begin
     // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
     if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN))
         and (PLMsg^.Result <> 0) then
-      WindowInfo^.ignoreNextChar := true;
+      IgnoreNextChar := true;
     // stop ignoring if KEYUP has come by (not all keys generate CHAR)
     if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP)) then
-      WindowInfo^.ignoreNextChar := false;
+      IgnoreNextChar := false;
   end;
 
   { LMMouseEvent and LMInsertText have no Result field }
