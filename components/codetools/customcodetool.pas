@@ -134,6 +134,7 @@ type
     procedure RaiseIdentExpectedButAtomFound;
     procedure RaiseBracketOpenExpectedButAtomFound;
     procedure RaiseBracketCloseExpectedButAtomFound;
+    procedure RaiseUndoImpossible;
     procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
   protected
     LastErrorMessage: string;
@@ -218,7 +219,7 @@ type
     function StringIsKeyWord(const Word: string): boolean;
     
     // cursor moving
-    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
+    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); inline;
     procedure MoveCursorToCleanPos(ACleanPos: integer);
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
     procedure MoveCursorToAtomPos(const AnAtomPos: TAtomPosition);
@@ -241,14 +242,14 @@ type
     // read atoms
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
-    function ReadNextAtomIs(const AnAtom: shortstring): boolean;
-    function ReadNextUpAtomIs(const AnAtom: shortstring): boolean;
-    function ReadNextAtomIsChar(const c: char): boolean;
-    function AtomIsChar(const c: char): boolean;
+    function ReadNextAtomIs(const AnAtom: shortstring): boolean; inline;
+    function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; inline;
+    function ReadNextAtomIsChar(const c: char): boolean; inline;
+    function AtomIsChar(const c: char): boolean; inline;
     function AtomIsKeyWord: boolean;
-    function AtomIsNumber: boolean;
+    function AtomIsNumber: boolean; inline;
     function AtomIsRealNumber: boolean;
-    function AtomIsStringConstant: boolean;
+    function AtomIsStringConstant: boolean; inline;
     function AtomIsCharConstant: boolean;
     function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
@@ -275,7 +276,7 @@ type
     function ExtractIdentifier(CleanStartPos: integer): string;
 
     procedure CreateChildNode;
-    procedure EndChildNode;
+    procedure EndChildNode; inline;
     function DoAtom: boolean; virtual;
 
     // write lock
@@ -442,6 +443,10 @@ begin
   DirtySrc.SetGap(CursorPos,NewDirtyStartPos,NewDirtyGapStart,NewDirtyGapEnd);
 end;
 
+procedure TCustomCodeTool.RaiseUndoImpossible;
+begin
+  RaiseException('TCustomCodeTool.UndoReadNextAtom impossible');
+end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
 begin
@@ -1430,12 +1435,6 @@ begin
 end;
 
 procedure TCustomCodeTool.UndoReadNextAtom;
-
-  procedure RaiseUndoImpossible;
-  begin
-    RaiseException('TCustomCodeTool.UndoReadNextAtom impossible');
-  end;
-
 begin
   if LastAtoms.Count>0 then begin
     NextPos:=CurPos;

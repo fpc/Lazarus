@@ -4185,7 +4185,7 @@ begin
           break;
       if (CurBlockWord=bkwInterface) and (not LastAtomIs(0,'=')) then
         CurBlockWord:=bkwNone;
-        
+
       if (CurBlockWord=bkwEnd) then begin
         ReadNextAtom;
         if AtomIsChar('.') then begin
@@ -4214,16 +4214,19 @@ begin
         bkwClass, bkwObject, bkwInterface, bkwDispInterface:
           begin
             ReadNextAtom;
-            if AtomIsChar(';') // forward class
-            or ((CurBlockWord=bkwClass) and UpAtomIs('OF')) // 'class of'
-            or ((CurBlockWord=bkwClass)
-                and (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE'))) // 'class procedure'
-            or ((CurBlockWord=bkwObject) and LastUpAtomIs(0,'OF')) then
+            if AtomIsChar(';') then begin
+              // forward class
+            end else if ((CurBlockWord=bkwClass) and UpAtomIs('OF')) then begin
+              // 'class of'
+            end else if ((CurBlockWord=bkwClass)
+            and (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE'))) then begin
+              // 'class procedure'
+            end else if ((CurBlockWord=bkwObject) and LastUpAtomIs(0,'OF')) then
             begin
-              // forward class or 'class of' or class method or 'of object'
+              // or 'of object'
             end else begin
               BlockType:=CurBlockWord;
-              BlockStart:=CurPos.StartPos;
+              BlockStart:=LastAtoms.GetValueAt(0).StartPos;
               // read ancestor list  class(...)
               if CurPos.Flag=cafRoundBracketOpen then begin
                 repeat
@@ -4240,8 +4243,8 @@ begin
                     exit(false);
                   end;
                 until false;
+                ReadNextAtom;
               end;
-              ReadNextAtom;
               // a semicolon directly behind the ancestor list ends the class
               if (CurPos.Flag in [cafEnd,cafSemicolon]) then begin
                 // class ends
@@ -4273,9 +4276,9 @@ begin
         and (GetLineIndent(Src,CurPos.StartPos)<>GetLineIndent(Src,BlockStart))
         then begin
           // different indent -> unclosed block found
-          if GetLineIndent(Src,BlockStart)>=GetLineIndent(Src,CurPos.StartPos)
+          if GetLineIndent(Src,BlockStart)>GetLineIndent(Src,CurPos.StartPos)
           then begin
-            // the current block is more or equal indented than the next block
+            // the current block is more indented than the next block
             // -> probably the current block misses a block end
             MoveCursorToCleanPos(BlockStart);
           end;
