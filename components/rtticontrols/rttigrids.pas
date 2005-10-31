@@ -510,6 +510,8 @@ begin
       FTIObjectCount:=TCollection(FListObject).Count
     else if FListObject is TList then
       FTIObjectCount:=TList(FListObject).Count
+    else if FListObject is TFPList then
+      FTIObjectCount:=TFPList(FListObject).Count
     else begin
       // ListObject is not valid
     end;
@@ -1033,6 +1035,7 @@ var
   List: TList;
   AnObject: TObject;
   ACollection: TCollection;
+  FPList: TFPList;
 begin
   Result:=nil;
   if (Index<0) or (Index>=TIObjectCount) then exit;
@@ -1065,6 +1068,18 @@ begin
       end;
     end else begin
       AnObject:=TObject(List[Index]);
+      Result:=AnObject as TPersistent;
+    end;
+  end else if ListObject is TFPList then begin
+    FPList:=TFPList(ListObject);
+    if csDesigning in ComponentState then begin
+      try
+        AnObject:=TObject(FPList[Index]);
+        Result:=AnObject as TPersistent;
+      except
+      end;
+    end else begin
+      AnObject:=TObject(FPList[Index]);
       Result:=AnObject as TPersistent;
     end;
   end;

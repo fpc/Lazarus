@@ -222,8 +222,8 @@ begin
     end else begin
       {$IFDEF SYN_LAZARUS}
       i:=-1;
-      if Assigned(fOnTokenNotFound) then
-        fOnTokenNotFound(Self,'',AEditor,i);
+      if Assigned(OnTokenNotFound) then
+        OnTokenNotFound(Self,'',AEditor,i);
       if i>=0 then
         ExecuteCompletion(FCompletions[i], AEditor);
       {$ENDIF}
@@ -245,8 +245,8 @@ begin
     ParseCompletionList;
   Len := Length(AToken);
   {$IFDEF SYN_LAZARUS}
-  if (Len=0) and Assigned(fOnTokenNotFound) then
-    fOnTokenNotFound(Self,AToken,AEditor,i);
+  if (Len=0) and Assigned(OnTokenNotFound) then
+    OnTokenNotFound(Self,AToken,AEditor,i);
   {$ENDIF}
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)

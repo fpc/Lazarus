@@ -207,7 +207,7 @@ type
     function ReturnFromIncludeFileAndIsEnd: boolean;
     function ReadIdentifier: string;
     function ReadUpperIdentifier: string;
-    procedure SkipSpace; inline;
+    procedure SkipSpace; {$IFDEF UseInline}inline;{$ENDIF}
     procedure SkipComment;
     procedure SkipDelphiComment;
     procedure SkipOldTPComment;
@@ -219,9 +219,9 @@ type
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
     procedure InitKeyWordList;
-    function DoEndToken: boolean; inline;
-    function DoDefaultIdentToken: boolean; inline;
-    function DoEndOfInterfaceToken: boolean; inline;
+    function DoEndToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoDefaultIdentToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoEndOfInterfaceToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
   private
     // directives
     FDirectiveName: shortstring;

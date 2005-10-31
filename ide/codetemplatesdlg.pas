@@ -32,9 +32,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls,
-  SynEditAutoComplete, IDECommands, SrcEditorIntf,
-  InputHistory, LazarusIDEStrConsts, EditorOptions;
+  StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls, SynEditAutoComplete,
+  IDECommands, SrcEditorIntf, InputHistory, LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -73,26 +72,26 @@ type
   { TCodeTemplateEditForm }
 
   TCodeTemplateEditForm = class(TForm)
-    TokenLabel:TLabel;
-    TokenEdit:TEdit;
-    CommentLabel:TLabel;
-    CommentEdit:TEdit;
-    OkButton:TButton;
-    CancelButton:TButton;
+    TokenLabel: TLabel;
+    TokenEdit: TEdit;
+    CommentLabel: TLabel;
+    CommentEdit: TEdit;
+    OkButton: TButton;
+    CancelButton: TButton;
     procedure CodeTemplateEditFormResize(Sender: TObject);
-    procedure OkButtonClick(Sender:TObject);
+    procedure OkButtonClick(Sender: TObject);
   public
-    constructor Create(AOwner:TComponent); override;
-    SynAutoComplete:TSynEditAutoComplete;
-    TemplateIndex:integer;
+    constructor Create(TheOwner: TComponent); override;
+    SynAutoComplete: TSynEditAutoComplete;
+    TemplateIndex: integer;
   end;
 
 function ShowCodeTemplateDialog: TModalResult;
 
-function AddCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
-  var Token,Comment:ansistring):TModalResult;
-function EditCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
-  Index:integer):TModalResult;
+function AddCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
+  var Token, Comment: string): TModalResult;
+function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
+  Index: integer): TModalResult;
 
 implementation
 
@@ -159,9 +158,9 @@ end;
 
 { TCodeTemplateEditForm }
 
-constructor TCodeTemplateEditForm.Create(AOwner:TComponent);
+constructor TCodeTemplateEditForm.Create(TheOwner:TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
     Height:=150;

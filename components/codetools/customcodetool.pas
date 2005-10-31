@@ -219,7 +219,7 @@ type
     function StringIsKeyWord(const Word: string): boolean;
     
     // cursor moving
-    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); inline;
+    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); {$IFDEF UseInline}inline;{$ENDIF}
     procedure MoveCursorToCleanPos(ACleanPos: integer);
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
     procedure MoveCursorToAtomPos(const AnAtomPos: TAtomPosition);
@@ -242,14 +242,14 @@ type
     // read atoms
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
-    function ReadNextAtomIs(const AnAtom: shortstring): boolean; inline;
-    function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; inline;
-    function ReadNextAtomIsChar(const c: char): boolean; inline;
-    function AtomIsChar(const c: char): boolean; inline;
+    function ReadNextAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function ReadNextAtomIsChar(const c: char): boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function AtomIsChar(const c: char): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsKeyWord: boolean;
-    function AtomIsNumber: boolean; inline;
+    function AtomIsNumber: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsRealNumber: boolean;
-    function AtomIsStringConstant: boolean; inline;
+    function AtomIsStringConstant: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsCharConstant: boolean;
     function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
@@ -276,7 +276,7 @@ type
     function ExtractIdentifier(CleanStartPos: integer): string;
 
     procedure CreateChildNode;
-    procedure EndChildNode; inline;
+    procedure EndChildNode; {$IFDEF UseInline}inline;{$ENDIF}
     function DoAtom: boolean; virtual;
 
     // write lock

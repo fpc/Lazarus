@@ -10171,6 +10171,7 @@ begin
       end;
       dec(y);
     end;
+    Result:=1;
   end;
 end;
 {$ENDIF}

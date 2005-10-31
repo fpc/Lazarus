@@ -429,12 +429,15 @@ Type
   end;
 
 
-  { TICustomComboBox }
+  { TTICustomComboBox }
 
   TTICustomComboBox = class(TCustomComboBox)
   private
+    FHistoryCaseSensitive: boolean;
     FLink: TPropertyLink;
+    FMaxHistoryCount: integer;
     procedure SetLink(const AValue: TPropertyLink);
+    procedure SetMaxHistoryCount(const AValue: integer);
   protected
     procedure LinkLoadFromProperty(Sender: TObject); virtual;
     procedure LinkSaveToProperty(Sender: TObject); virtual;
@@ -448,6 +451,10 @@ Type
     procedure Loaded; override;
     procedure EditingDone; override;
     property Link: TPropertyLink read FLink write SetLink;
+    property MaxHistoryCount: integer read FMaxHistoryCount
+           write SetMaxHistoryCount;// set this to a value > 0 to enable history
+    property HistoryCaseSensitive: boolean read FHistoryCaseSensitive
+                                           write FHistoryCaseSensitive;
   end;
   
   
@@ -466,7 +473,9 @@ Type
     property DropDownCount;
     property Enabled;
     property Font;
+    property HistoryCaseSensitive;
     property Link;
+    property MaxHistoryCount;
     property MaxLength;
     property OnChange;
     property OnChangeBounds;
@@ -1166,6 +1175,64 @@ Type
   end;
   
   
+  { TTICustomSpinEdit }
+
+  TTICustomSpinEdit = class(TCustomSpinEdit)
+  private
+    FLink: TPropertyLink;
+    FUseRTTIMinMax: boolean;
+    procedure SetLink(const AValue: TPropertyLink);
+    procedure SetUseRTTIMinMax(const AValue: boolean);
+  protected
+    procedure LinkLoadFromProperty(Sender: TObject); virtual;
+    procedure LinkSaveToProperty(Sender: TObject); virtual;
+    procedure LinkEditorChanged(Sender: TObject); virtual;
+    procedure GetRTTIMinMax; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Loaded; override;
+    procedure EditingDone; override;
+    property Link: TPropertyLink read FLink write SetLink;
+    property UseRTTIMinMax: boolean read FUseRTTIMinMax write SetUseRTTIMinMax default true;
+  end;
+
+
+  { TTISpinEdit }
+
+  TTISpinEdit = class(TTICustomSpinEdit)
+  published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property ClimbRate;
+    property Constraints;
+    property Enabled;
+    property Link;
+    property MaxValue;
+    property MinValue;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property UseRTTIMinMax;
+    property Visible;
+  end;
+
+
   { TTICustomTrackBar }
 
   TTICustomTrackBar = class(TCustomTrackBar)
@@ -1395,8 +1462,8 @@ procedure Register;
 begin
   RegisterComponents('RTTI',[TTIEdit,TTIComboBox,TTIButton,TTICheckBox,
     TTILabel,TTIGroupBox,TTIRadioGroup,TTICheckGroup,TTICheckListBox,
-    TTIListBox,TTIMemo,TTICalendar,TTIImage,TTIFloatSpinEdit,TTITrackBar,
-    TTIProgressBar,TTIMaskEdit,TTIColorButton,TMultiPropertyLink]);
+    TTIListBox,TTIMemo,TTICalendar,TTIImage,TTIFloatSpinEdit,TTISpinEdit,
+    TTITrackBar,TTIProgressBar,TTIMaskEdit,TTIColorButton,TMultiPropertyLink]);
 end;
 
 { TAliasStrings }
@@ -2284,6 +2351,12 @@ begin
   FLink.Assign(AValue);
 end;
 
+procedure TTICustomComboBox.SetMaxHistoryCount(const AValue: integer);
+begin
+  if FMaxHistoryCount=AValue then exit;
+  FMaxHistoryCount:=AValue;
+end;
+
 procedure TTICustomComboBox.LinkLoadFromProperty(Sender: TObject);
 begin
   if Sender=nil then ;
@@ -2294,11 +2367,25 @@ begin
 end;
 
 procedure TTICustomComboBox.LinkSaveToProperty(Sender: TObject);
+var
+  i: Integer;
 begin
   if Sender=nil then ;
   //debugln('TTICustomComboBox.LinkSaveToProperty ',dbgsName(Self),' FLink.GetAsText=',FLink.GetAsText,' Text=',Text);
   if (FLink.Editor=nil) then exit;
   FLink.SetAsText(Text);
+  
+  // update history
+  if (MaxHistoryCount>0) and ((Items.Count=0) or (Items[0]<>Text)) then begin
+    Items.BeginUpdate;
+    Items.Insert(0,Text);
+    for i:=Items.Count-1 downto 1 do
+      if (i>=MaxHistoryCount) or (Items[i]=Text)
+      or ((not HistoryCaseSensitive) and (AnsiCompareText(Items[i],Text)=0))
+      then
+        Items.Delete(i);
+    Items.EndUpdate;
+  end;
 end;
 
 constructor TTICustomComboBox.Create(TheOwner: TComponent);
@@ -2904,6 +2991,134 @@ begin
 end;
 
 procedure TTICustomFloatSpinEdit.EditingDone;
+begin
+  inherited EditingDone;
+  FLink.EditingDone;
+end;
+
+{ TTICustomSpinEdit }
+
+procedure TTICustomSpinEdit.SetLink(const AValue: TPropertyLink);
+begin
+  if FLink=AValue then exit;
+  FLink.Assign(AValue);
+end;
+
+procedure TTICustomSpinEdit.SetUseRTTIMinMax(const AValue: boolean);
+begin
+  if FUseRTTIMinMax=AValue then exit;
+  FUseRTTIMinMax:=AValue;
+  if UseRTTIMinMax then GetRTTIMinMax;
+end;
+
+procedure TTICustomSpinEdit.LinkLoadFromProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
+  try
+    Value:=StrToInt(FLink.GetAsText);
+  except
+  end;
+end;
+
+procedure TTICustomSpinEdit.LinkSaveToProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if FLink.Editor=nil then exit;
+  FLink.SetAsText(IntToStr(Value));
+end;
+
+procedure TTICustomSpinEdit.LinkEditorChanged(Sender: TObject);
+var
+  TypeData: PTypeData;
+  PropKind: TTypeKind;
+  OldLinkSaveEnabled: Boolean;
+  f: integer;
+begin
+  if Sender=nil then ;
+  if FLink.Editor=nil then exit;
+  OldLinkSaveEnabled:=FLink.SaveEnabled;
+  FLink.SaveEnabled:=false;
+  try
+    PropKind:=FLink.Editor.GetPropType^.Kind;
+    case PropKind of
+
+    tkInteger,tkChar,tkEnumeration,tkWChar:
+      begin
+        TypeData:=GetTypeData(FLink.Editor.GetPropType);
+        MinValue:=TypeData^.MinValue;
+        MaxValue:=TypeData^.MaxValue;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
+      end;
+
+    tkInt64:
+      begin
+        TypeData:=GetTypeData(FLink.Editor.GetPropType);
+        MinValue:=TypeData^.MinInt64Value;
+        MaxValue:=TypeData^.MaxInt64Value;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
+      end;
+
+    tkQWord:
+      begin
+        TypeData:=GetTypeData(FLink.Editor.GetPropType);
+        MinValue:=TypeData^.MinQWordValue;
+        MaxValue:=TypeData^.MaxQWordValue;
+        ClimbRate:=1;
+        DecimalPlaces:=0;
+      end;
+
+    else
+      begin
+        try
+          f:=StrToInt(FLink.GetAsText);
+        except
+        end;
+        if f<MinValue then MinValue:=f;
+        if f>MaxValue then MaxValue:=f;
+      end;
+
+    end;
+  finally
+    FLink.SaveEnabled:=OldLinkSaveEnabled;
+  end;
+end;
+
+procedure TTICustomSpinEdit.GetRTTIMinMax;
+begin
+  if UseRTTIMinMax then GetRTTIMinMax;
+end;
+
+constructor TTICustomSpinEdit.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FUseRTTIMinMax:=true;
+  FLink:=TPropertyLink.Create(Self);
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
+                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
+                 {tkClass,tkObject,tkWChar,tkBool},tkInt64,
+                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
+  FLink.OnSaveToProperty:=@LinkSaveToProperty;
+  FLink.OnEditorChanged:=@LinkEditorChanged;
+end;
+
+destructor TTICustomSpinEdit.Destroy;
+begin
+  FreeThenNil(FLink);
+  inherited Destroy;
+end;
+
+procedure TTICustomSpinEdit.Loaded;
+begin
+  inherited Loaded;
+  FLink.LoadFromProperty;
+end;
+
+procedure TTICustomSpinEdit.EditingDone;
 begin
   inherited EditingDone;
   FLink.EditingDone;

@@ -155,8 +155,7 @@ type
     Function GetModified: Boolean;
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode: Boolean;
-    procedure SetCodeTemplates(
-         NewCodeTemplates: TSynEditAutoComplete);
+    procedure SetCodeTemplates(NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
 
     function GotoLine(Value: Integer): Integer;
@@ -648,7 +647,7 @@ type
     Property CodeTemplateModul: TSynEditAutoComplete
        read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
-                                AnEditor: TCustomSynEdit; var Index:integer);
+                                   AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(
        var Source: TStrings; SourceIndex: integer);
     procedure OnIdentCompletionTimer(Sender: TObject);
