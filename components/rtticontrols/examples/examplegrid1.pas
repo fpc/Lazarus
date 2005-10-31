@@ -30,8 +30,6 @@ type
     TIGrid1: TTIGrid;
     procedure Form1Create(Sender: TObject);
     procedure Form1Destroy(Sender: TObject);
-    procedure Form1MouseDown(Sender: TOBject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
   public
@@ -73,12 +71,6 @@ begin
   TIGrid1.ListObject:=nil;
   // free collection
   MyCollection.Free;
-end;
-
-procedure TForm1.Form1MouseDown(Sender: TOBject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  WriteLn('------------------------------');
 end;
 
 initialization
