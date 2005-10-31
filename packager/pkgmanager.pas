@@ -3008,7 +3008,7 @@ begin
   // append registration code only for design time packages
   if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
     RegistrationCode:=
-      +'procedure Register;'+e
+      'procedure Register;'+e
       +'begin'+e
       +RegistrationCode
       +'end;'+e
@@ -3035,7 +3035,7 @@ begin
       +'uses'+e
       +'  '+UsedUnits+';'+e
       +e;
-  Src:=Src+
+  Src:=Src
       +'implementation'+e
       +e
       +RegistrationCode
