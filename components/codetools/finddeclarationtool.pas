@@ -3879,11 +3879,11 @@ begin
     if ClassNode.Desc=ctnClass then begin
       // if this class is not TObject, TObject is class ancestor
       SearchBaseClass:=
-        not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
+                    not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
     end else begin
       // if this class is not IInterface, IInterface is ancestor
       SearchBaseClass:=
-        not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface');
+                 not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface');
     end;
     if not SearchBaseClass then exit;
   end;
@@ -5136,12 +5136,13 @@ var
   procedure ResolveEdgedBracketOpen;
   { for example:  a[]
       this could be:
-        1. ranged array
-        2. dynamic array
-        3. indexed pointer
-        4. default property
-        5. indexed property
-        6. string character
+        1. ranged array      e.g. array[1..2] of
+        2. dynamic array     e.g. array of integer
+        3. variant array     e.g. array of const
+        4. indexed pointer   e.g. PInteger[1]
+        5. default property  e.g. Items[Index: integer]
+        6. indexed property  e.g. Items[Index: integer]
+        7. string character  e.g. string[3]
   }
 
     procedure RaiseTypeIdentNotFound;
@@ -5176,13 +5177,36 @@ var
       ExprType.Context.Node:=nil;
       exit;
     end;
+    
+    //debugln('ResolveEdgedBracketOpen A ',ExprType.Context.Node.DescAsString);
     case ExprType.Context.Node.Desc of
 
     ctnOpenArrayType,ctnRangedArrayType:
-      // the array type is the last child node
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                               ExprType.Context.Node.LastChild);
+      begin
+        // the array type is the last child node
+        //debugln('ResolveEdgedBracketOpen Open/RangedArray LastChild=',ExprType.Context.Node.LastChild.DescAsString);
+        if ExprType.Context.Node.LastChild.Desc=ctnOfConstType then begin
+          // 'array of const'; the array type is 'TVarData'
 
+          // => search 'TVarData'
+          Params.Save(OldInput);
+          Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
+                         fdfExceptionOnNotFound]
+                        +fdfGlobals*Params.Flags
+                        -[fdfTopLvlResolving];
+          // special identifier for TVarData
+          Params.SetIdentifier(Self,'tvardata',nil);
+          Params.ContextNode:=ExprType.Context.Node;
+          ExprType.Context.Tool.FindIdentifierInContext(Params);
+          ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                                Params.NewNode);
+          Params.Load(OldInput);
+        end else begin
+          ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+                                               ExprType.Context.Node.LastChild);
+        end;
+      end;
+                                               
     ctnPointerType:
       // the pointer type is the only child node
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,

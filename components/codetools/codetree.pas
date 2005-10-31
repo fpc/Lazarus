@@ -333,6 +333,7 @@ begin
 
   ctnIdentifier: Result:='Identifier';
   ctnOpenArrayType: Result:='Open Array Type';
+  ctnOfConstType: Result:='Of Const';
   ctnRangedArrayType: Result:='Ranged Array Type';
   ctnRecordType: Result:='Record Type';
   ctnRecordCase: Result:='Record Case';
@@ -355,7 +356,7 @@ begin
   ctnCaseStatement: Result:='Case Statement';
 
   else
-    Result:='invalid descriptor';
+    Result:='invalid descriptor ('+IntToStr(Desc)+')';
   end;
 end;
 
