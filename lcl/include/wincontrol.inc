@@ -5442,7 +5442,7 @@ begin
   and (not (csLoading in ComponentState))
   and (not CompareRect(@NewBounds,@FBoundsRealized)) then
   begin
-    // the new bounds were not yet sent to the InterfaceObject -> send them
+    // the new bounds were not yet sent to the WidgetSet -> send them
     {$IFDEF CHECK_POSITION}
     //if csDesigning in ComponentState then
     if AnsiCompareText(ClassName,CheckPostionClassName)=0 then

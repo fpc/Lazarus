@@ -563,7 +563,7 @@ begin
 end;
 
 function TClipboard.HasFormat(FormatID: TClipboardFormat): Boolean;
-// ask interfaceobject
+// ask widgetset
 var List: PClipboardFormat;
   cnt, i: integer;
 begin
@@ -701,7 +701,7 @@ begin
 end;
 
 function TClipboard.GetFormatCount: Integer;
-// ask interfaceobject
+// ask widgetset
 var List: PClipboardFormat;
 begin
   //DebugLn('[TClipboard.GetFormatCount]');

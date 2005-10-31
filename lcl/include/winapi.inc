@@ -214,13 +214,13 @@ end;
 function EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 begin
-  WidgetSet.EnumFontFamilies(DC, Family, EnumFontFamProc, LParam);
+  Result := WidgetSet.EnumFontFamilies(DC, Family, EnumFontFamProc, LParam);
 end;
 
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
   Callback: FontEnumExProc; LParam: Lparam; flags: dword): longint;
 begin
-  WidgetSet.EnumFontFamiliesEx(DC, lpLogFont, Callback, LParam, flags);
+  Result := WidgetSet.EnumFontFamiliesEx(DC, lpLogFont, Callback, LParam, flags);
 end;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
