@@ -1368,10 +1368,25 @@ var
   Weightlist: TStringlist;
 
 
+  function LoadFontXLFD(aXLFD: string): boolean;
+  var
+    Desc: TGdkFontCacheDescriptor;
+  begin
+    GdiObject^.GDIFontObject := gdk_font_load(PChar(aXLFD));
+    Result:=GdiObject^.GDIFontObject<>nil;
+    {$ifdef VerboseFonts}
+    DebugLn('LoadFontXLFD: Trying ',aXLFD,' Matched=',dbgs(Result));
+    {$endif}
+    if Result then begin
+      Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+      if Desc<>nil then
+        Desc.xlfd:=aXLFD;
+    end;
+  end;
+
   function LoadFont: boolean;
   var
     S: string;
-    Desc: TGdkFontCacheDescriptor;
   begin
     S:=FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-'+WeightName
        +'-'+Slant+'-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
@@ -1387,73 +1402,51 @@ var
 
     //DebugLn('  Trying "',S,'"');
     DebugLn('  Trying Font "',S,'"');
-
-    GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
-    Result:=GdiObject^.GDIFontObject<>nil;
-
-    if Result then begin
-      Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
-      if Desc<>nil then begin
-        Desc.xlfd:=s;
-        {$ifdef VerboseFonts}
-        debugLn('for LongFontName=', LongFontName,' got: ',S);
-        {$endif}
-      end;
-    end;
+    result := LoadFontXLFD(S);
   end;
 
+  function LoadFontExCharset: boolean;
+  var
+    i: Integer;
+    aSlant,head,tail: string;
+  begin
+    Result := False;
+    Head := FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-';
+    Tail := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
+           +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing
+           +'-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
+    for i:=0 to WeightList.Count-1 do begin
+      aSlant := Slant;
+      repeat
+        result := LoadFontXLFD(Head+WeightList[i]+'-'+aSlant+Tail);
+        if result then
+          exit;
+        if aSlant='i' then
+          aSlant:='o'
+        else
+          break;
+      until false;
+    end;
+  end;
+  
   function LoadFontEx: boolean;
   var
-    head,S,tail: string;
-    Desc: TGdkFontCacheDescriptor;
-    i,j: integer;
-    aSlant: String;
+    j: integer;
   begin
     Result := false;
-    aSlant := Slant;
-    with logfont do
-    for j:=0 to CharSetEncodingList.Count-1 do begin
-      CharSetRec := CharsetEncodingList[j];
-      if (CharsetRec = nil) or (CharSetRec^.CharSet<>LogFont.lfCharset) then
-        continue;
-        
-      CharSetCoding := CharsetRec^.CharSetCod;
-      CharSetRegistry := CharSetRec^.CharSetReg;
-
-      if ((lfWeight <> FW_NORMAL) and (lfWeight <> FW_BOLD)) or
-        (WeightName<>'*') then begin
-        Result := LoadFont;
-        if Result then
-          exit;
+    if CharSetRegistry<>'*' then
+      result := LoadFontExCharset
+    else
+      for j:=0 to CharSetEncodingList.Count-1 do begin
+        CharSetRec := CharsetEncodingList[j];
+        if (CharsetRec = nil) or (CharSetRec^.CharSet<>LogFont.lfCharset) then
+          continue;
+        CharSetCoding := CharsetRec^.CharSetCod;
+        CharSetRegistry := CharSetRec^.CharSetReg;
+        result := LoadFontExCharset;
+        if result then
+          break;
       end;
-      
-      Head := FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-';
-      Tail := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
-             +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing
-             +'-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
-      for i:=0 to WeightList.Count-1 do begin
-        aSlant := Slant;
-        repeat
-          S:=Head+WeightList[i]+'-'+aSlant+Tail;
-          GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
-          Result:=GdiObject^.GDIFontObject<>nil;
-          {$ifdef VerboseFonts}
-          DebugLn('LogFontEx: Trying ',S,' Matched=',dbgs(Result));
-          {$endif}
-          if Result then begin
-            Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
-            if Desc<>nil then
-              Desc.xlfd:=s;
-            exit;
-          end;
-          if aSlant='i' then
-            aSlant:='o'
-          else
-            break;
-        until false;
-      end;
-      
-    end;
   end;
 
   procedure LoadDefaultFont;
@@ -1510,14 +1503,11 @@ begin
   // For info about xlfd see:
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
   // Lets fill in all the xlfd parts. Assume we have scalable fonts.
-
   {$IFDEF VerboseFonts}
   DebugLn('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',dbgs(LogFont.lfHeight),' LongName=',LongFontName);
   {$ENDIF}
-
   Result := 0;
   GDIObject := NewGDIObject(gdiFont);
-
   try
     GdiObject^.LogFont := LogFont;
 
@@ -1525,6 +1515,9 @@ begin
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
       GdiObject^.GDIFontObject := TGdkFontCacheItem(CachedFont.Item).GdkFont;
+      {$IFDEF VerboseFonts}
+      WriteLn('Was in cache: ', Integer(CachedFont));
+      {$ENDIF}
       exit;
     end;
 
@@ -1584,7 +1577,7 @@ begin
         Exit;
       end;
 
-      FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
+      FamilyName := StrPas(lfFaceName);
 
       if (CompareText(FamilyName,'default')<>0) then begin
       
@@ -1593,13 +1586,11 @@ begin
         if n<>0 then begin
           Foundry := copy(FamilyName, n+1, Length(FamilyName));
           familyName := trim(copy(familyName, 1, n-1));
-          n := pos(FOUNDRYCHAR_CLOSE,Foundry);
+          n := pos(FOUNDRYCHAR_CLOSE, Foundry);
           if n<>0 then
             Delete(Foundry, n, Length(Foundry));
         end;
-        // else
-        //  FamilyName := LongFontName;
-          
+
         if not FamilyNameExists then
           FamilyName:='default';
         
@@ -1632,11 +1623,10 @@ begin
         case lfWeight of
           FW_DONTCARE   : WeightName := '*';
           FW_LIGHT      : WeightName := 'light';
-          FW_NORMAL     : if CharsetCoding<>'*' then WeightName := 'normal'; // try several later
+          FW_NORMAL     : ; // try several later
           FW_MEDIUM     : WeightName := 'medium';
           FW_SEMIBOLD   : WeightName := 'demi bold';
-          FW_BOLD       : if CharsetCoding<>'*' then WeightName := 'bold'; // try several later
-
+          FW_BOLD       : ; // try several later
           else begin
             n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
             if n = 0
@@ -1717,53 +1707,37 @@ begin
         else AverageWidth := InttoStr(lfWidth * 10);
       end;
       
-      if CharSetCoding =  '*' then begin
-        // this sections tries several combinations of charset-weightname-slant
-        //
-        WeightList := TStringList.Create;
-        if LogFOnt.LfWeight = FW_BOLD then
-          // bold appears most times
-          WeightList.CommaText := 'bold,semibold,demibold,black'
-        else
-          // medium appears most times
-          WeightList.CommaText := 'normal,medium,regular,light';
-        try
-          if LoadFontEx then
-            exit;
-        finally
-          WeightList.Free;
-        end;
-        CharSetcoding := '*';
+      // this section tries several combinations of charset-weightname-slant
+      //
+      WeightList := TStringList.Create;
+      if LogFOnt.LfWeight = FW_BOLD then
+        // bold appears most times
+        WeightList.CommaText := 'bold,semibold,demibold,black,*'
+      else
+        // medium appears most times but if there is normal, use it
+        WeightList.CommaText := 'normal,medium,regular,light,*';
+      if WeightName<>'*' then
+        WeightList.Insert(0, WeightName);
+      try
+        if LoadFontEx then
+          exit;
+      finally
+        WeightList.Free;
       end;
     end;
 
+    // next checks are fall over
 
     {$IFDEF VerboseFonts}
     write('CreateFontIndirect->');
     {$ENDIF}
-    if LoadFont then exit;
-
     {
-    if (WeightName='normal') then begin
-      WeightName:='medium';
-      if LoadFont then exit;
-    end else if (WeightName='bold') then begin
-      WeightName:='black';
-      if LoadFont then exit;
-    end;
-
-    if (WeightName='medium') then begin
-      WeightName:='regular';
-      if LoadFont then exit;
-    end else if (WeightName='black') then begin
-      WeightName:='demi bold';
-      if LoadFont then exit;
-    end;
-    }
+    if LoadFont then exit;
+    
     // try all weights
     WeightName := '*';
     if LoadFont then exit;
-
+    }
     // try one height lower
     PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
     if LoadFont then exit;
@@ -1779,7 +1753,7 @@ begin
       Spacing:='c';
       if LoadFont then exit;
     end;
-
+    {
     // try instead of italic -> oblique
     if (Slant='i') then begin
       Slant := 'o';
@@ -1789,7 +1763,7 @@ begin
     // try all slants
     Slant := '*';
     if LoadFont then exit;
-
+    }
     // try all spacings
     if spacing<>'*' then begin
       Spacing := '*';
