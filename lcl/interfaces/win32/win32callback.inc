@@ -1054,9 +1054,6 @@ Begin
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
         CheckListBoxLButtonDown;
-      // RadioButton functionality
-      if lWinControl is TRadioButton then
-        Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
       // focus window
       if (Windows.GetFocus <> Window) and
           ((lWinControl = nil) or (lWinControl.CanFocus)) then
@@ -1306,6 +1303,9 @@ Begin
       LMessage.Msg := LM_SETFOCUS;
       if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
+      // RadioButton functionality
+      if (lWinControl <> nil) and (lWinControl is TRadioButton) then
+        Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
     End;
     WM_SHOWWINDOW:
     Begin
