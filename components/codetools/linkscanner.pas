@@ -204,9 +204,10 @@ type
     IfLevel: integer;
     KeywordFuncList: TKeyWordFunctionList;
     procedure ReadNextToken;
+    function ReturnFromIncludeFileAndIsEnd: boolean;
     function ReadIdentifier: string;
     function ReadUpperIdentifier: string;
-    procedure SkipSpace;
+    procedure SkipSpace; inline;
     procedure SkipComment;
     procedure SkipDelphiComment;
     procedure SkipOldTPComment;
@@ -218,9 +219,9 @@ type
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
     procedure InitKeyWordList;
-    function DoEndToken: boolean;
-    function DoDefaultIdentToken: boolean;
-    function DoEndOfInterfaceToken: boolean;
+    function DoEndToken: boolean; inline;
+    function DoDefaultIdentToken: boolean; inline;
+    function DoEndOfInterfaceToken: boolean; inline;
   private
     // directives
     FDirectiveName: shortstring;
@@ -872,26 +873,25 @@ begin
   Result:=FLinkCount;
 end;
 
-procedure TLinkScanner.ReadNextToken;
-
-  function ReturnFromIncludeFileAndCheck: boolean;
-  begin
-    Result:=false;
-    if not ReturnFromIncludeFile then begin
-      SrcPos:=SrcLen+1; // make sure SrcPos stands somewhere
-      TokenStart:=SrcPos;
-      TokenType:=lsttSrcEnd;
-      Result:=true;
-    end;
+function TLinkScanner.ReturnFromIncludeFileAndIsEnd: boolean;
+begin
+  Result:=false;
+  if not ReturnFromIncludeFile then begin
+    SrcPos:=SrcLen+1; // make sure SrcPos stands somewhere
+    TokenStart:=SrcPos;
+    TokenType:=lsttSrcEnd;
+    Result:=true;
   end;
+end;
 
+procedure TLinkScanner.ReadNextToken;
 var
   c1: char;
   c2: char;
 begin
   // Skip all spaces and comments
   //DebugLn(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
-  if (SrcPos>SrcLen) and ReturnFromIncludeFileAndCheck then exit;
+  if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
   c1:=Src[SrcPos];
   if IsCommentStartChar[c1] or IsSpaceChar[c1] then begin
     while true do begin
@@ -916,7 +916,7 @@ begin
         until (SrcPos>SrcLen) or (not (IsSpaceChar[Src[SrcPos]]));
       end else
         break;
-      if (SrcPos>SrcLen) and ReturnFromIncludeFileAndCheck then exit;
+      if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
       c1:=Src[SrcPos];
     end;
   end;
@@ -1128,7 +1128,7 @@ begin
           EndOfInterfaceFound:=true;
           EndOfSourceFound:=true;
           break;
-        end else if SrcPos>SrcLen then
+        end else if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then
           break;
         LastTokenType:=TokenType;
       until false;
