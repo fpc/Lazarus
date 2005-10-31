@@ -720,6 +720,7 @@ Begin
     on E: Exception do begin
       DebugLn('TComponentInterface.Delete ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
+      DumpExceptionBackTrace;
       MessageDlg('Error',
         'An exception occured during deletion of'#13
         +'"'+OldName+':'+OldClassName+'"'#13
