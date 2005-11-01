@@ -2734,6 +2734,7 @@ procedure TAnchorSide.SetControl(const AValue: TControl);
 
   procedure RaiseOwnerCircle;
   begin
+    DebugLN('RaiseOwnerCircle AValue=',DbgSName(AValue),' FOwner=',DbgSName(FOwner));
     raise Exception.Create('TAnchorSide.SetControl AValue=FOwner');
   end;
 
@@ -2744,13 +2745,13 @@ begin
   if FControl=AValue then exit;
   OldControl:=FControl;
   FControl:=nil;
-  FControl:=AValue;
   if OldControl<>nil then
     OldControl.ForeignAnchorSideChanged(Self,ascoRemove);
-  //debugln('TAnchorSide.SetControl A ',DbgSName(FOwner));
-  FOwner.AnchorSideChanged(Self);
+  FControl:=AValue;
+  //debugln('TAnchorSide.SetControl A ',DbgSName(FOwner),' FControl=',DbgSName(FControl));
   if FControl<>nil then
     FControl.ForeignAnchorSideChanged(Self,ascoAdd);
+  FOwner.AnchorSideChanged(Self);
 end;
 
 function TAnchorSide.IsSideStored: boolean;

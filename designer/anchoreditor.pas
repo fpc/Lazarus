@@ -694,9 +694,15 @@ var
   CurComponent: TComponent;
   CurControl: TControl;
 begin
+  Result:=nil;
   Root:=GlobalDesignHook.LookupRoot;
   if not (Root is TComponent) then exit;
   RootComponent:=TComponent(Root);
+  if (RootComponent is TControl)
+  and (CompareText(Sibling,ControlToStr(TControl(RootComponent)))=0) then begin
+    Result:=TControl(RootComponent);
+    exit;
+  end;
   for i:=0 to RootComponent.ComponentCount-1 do begin
     CurComponent:=TComponent(RootComponent.Components[i]);
     if CurComponent is TControl then begin
