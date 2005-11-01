@@ -297,6 +297,7 @@ begin
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
+  ctnClassGUID: Result:='GUID';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';
