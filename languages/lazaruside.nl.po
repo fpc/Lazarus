@@ -7726,9 +7726,17 @@ msgstr "Toon Call Stack"
 msgid "View Code Explorer"
 msgstr "Toon Code Verkenner"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Toon Forms"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7789,6 +7797,10 @@ msgstr "Toon Breekpunten"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Toon Call Stack"
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

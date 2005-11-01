@@ -16,7 +16,7 @@ msgstr ""
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr ""
+msgstr "%d riviä, %d merkkiä"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
@@ -128,7 +128,7 @@ msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr ""
+msgstr "Ei rivejä eikä merkkejä"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -432,7 +432,7 @@ msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Lukemisessa käytettävä maski:"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -480,7 +480,7 @@ msgstr "Tuo kuva"
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
-msgstr ""
+msgstr "Tuo maski"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -548,7 +548,7 @@ msgstr ""
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr ""
+msgstr "Avaa maskitiedosto (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -596,7 +596,7 @@ msgstr "Poista suositummista"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
-msgstr ""
+msgstr "Näyte maskeja:"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -680,7 +680,7 @@ msgstr ""
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "Merkkijonojen muokkain"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -688,7 +688,7 @@ msgstr ""
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
-msgstr ""
+msgstr "Maskin testauspaikka"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

@@ -7736,9 +7736,17 @@ msgstr "Mostra lo stack delle chiamate"
 msgid "View Code Explorer"
 msgstr "Mostra l'esplorer del codice"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Vista form"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7799,6 +7807,10 @@ msgstr "Mostra i breakpoint"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Mostra lo stack chiamate"
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

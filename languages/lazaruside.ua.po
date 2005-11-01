@@ -7726,9 +7726,17 @@ msgstr "Показати стек викликів"
 msgid "View Code Explorer"
 msgstr "Показати оглядач коду"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Показати форми"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7789,6 +7797,10 @@ msgstr "Переглядання точок зупинки"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Переглядання стеку викликів"
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

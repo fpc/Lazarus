@@ -7737,9 +7737,17 @@ msgstr "Poka¿ stos wywo³añ"
 msgid "View Code Explorer"
 msgstr "Poka¿ eksploratora kodu"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Poka¿ formularze"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7799,6 +7807,10 @@ msgstr "Poka¿ pu³apki"
 
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout

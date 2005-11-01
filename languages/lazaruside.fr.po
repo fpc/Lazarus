@@ -7738,9 +7738,17 @@ msgstr "Afficher la pile d'appels"
 msgid "View Code Explorer"
 msgstr "Afficher l'explorateur de code"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Afficher les fiches"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7801,6 +7809,10 @@ msgstr "Afficher les points d'arrêt"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Afficher la pile d'appel"
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

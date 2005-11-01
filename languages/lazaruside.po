@@ -566,6 +566,14 @@ msgstr ""
 msgid "View Anchor Editor"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
+
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
 msgstr ""
@@ -4420,6 +4428,14 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewanchoreditor
 msgid "View anchor editor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectoggleidespeedbtns
+msgid "View IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecwordcompletion

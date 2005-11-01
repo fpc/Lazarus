@@ -7726,9 +7726,17 @@ msgstr "Mostra la pila de les crides"
 msgid "View Code Explorer"
 msgstr "Mostra l'explorador del codi"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Mostra les formes"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7789,6 +7797,10 @@ msgstr "Mostra els punts de ruptura"
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
 msgstr "Mostra la pila de les crides"
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

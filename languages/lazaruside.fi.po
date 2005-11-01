@@ -7726,9 +7726,17 @@ msgstr ""
 msgid "View Code Explorer"
 msgstr "Näytä koodiselain"
 
+#: lazarusidestrconsts:lismenuviewcomponentpalette
+msgid "View Component Palette"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Näytä lomakkeet"
+
+#: lazarusidestrconsts:lismenuviewidespeedbuttons
+msgid "View IDE speed buttons"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7788,6 +7796,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecallstack
 msgid "View call stack"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglecomppalette
+msgid "View component palette"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
