@@ -1886,7 +1886,7 @@ var
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
         ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-             phpWithoutClassKeyword,phpAddClassname,phpWithVarModifiers,
+             phpAddClassname,phpWithVarModifiers,
              phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
         TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,true);
