@@ -115,11 +115,6 @@ begin
   end;
 end;
 
-function TCustomPanel.ParentColorIsStored: boolean;
-begin
-  Result:=not ParentColor;
-end;
-
 function TCustomPanel.CanTab: Boolean;
 begin
   Result:=false;

@@ -913,7 +913,6 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
-    function ParentColorIsStored: boolean;
     Function CanTab: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
