@@ -3041,7 +3041,7 @@ end;
 
 destructor TColumn.Destroy;
 begin
-  if FValueChecked<>nil then StrDispose(FValueUnchecked);
+  if FValueChecked<>nil then StrDispose(FValueChecked);
   if FValueUnchecked<>nil then StrDispose(FValueUnchecked);
   inherited Destroy;
 end;

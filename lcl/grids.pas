@@ -4944,7 +4944,6 @@ begin
     FTitleFont.Assign(Font);
     FTitleFontIsDefault := True;
   end;
-  ColumnsChanged(nil);
 end;
 
 procedure TCustomGrid.EditorPos;
