@@ -189,8 +189,8 @@ type
     function ReadTilVariableEnd(ExceptionOnError: boolean): boolean;
     function ReadTilStatementEnd(ExceptionOnError,
         CreateNodes: boolean): boolean;
-    function ReadWithStatement(ExceptionOnError,
-        CreateNodes: boolean): boolean;
+    function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
+    function ReadOnStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     procedure ReadVariableType;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
@@ -679,6 +679,8 @@ begin
       ReadNextAtom;
       if UpAtomIs('WITH') then
         ReadWithStatement(true,true);
+      if UpAtomIs('ON') then
+        ReadOnStatement(true,true);
       if UpAtomIs('CASE') then begin
         // ToDo
       end;
@@ -2244,7 +2246,7 @@ function TPascalParserTool.ReadWithStatement(ExceptionOnError,
   CreateNodes: boolean): boolean;
 var WithVarNode: TCodeTreeNode;
 begin
-  ReadNextAtom; // read 'with'
+  ReadNextAtom; // read variable name
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnWithVariable;
@@ -2285,6 +2287,60 @@ begin
       WithVarNode.EndPos:=CurPos.StartPos;
       WithVarNode:=WithVarNode.PriorBrother;
     end;
+  end;
+  Result:=true;
+end;
+
+function TPascalParserTool.ReadOnStatement(ExceptionOnError,
+  CreateNodes: boolean): boolean;
+begin
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnOnBlock;
+  end;
+  // read variable name
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  if CreateNodes then begin
+    // ctnOnIdentifier for the variable
+    CreateChildNode;
+    CurNode.Desc:=ctnOnIdentifier;
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end;
+  // read :
+  ReadNextAtom;
+  if CurPos.Flag<>cafColon then
+    RaiseCharExpectedButAtomFound(':');
+  // read type: e.g. Exception, or unit.Exception
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  if CreateNodes then begin
+    // ctnOnIdentifier for the type
+    CreateChildNode;
+    CurNode.Desc:=ctnOnIdentifier;
+  end;
+  ReadNextAtom;
+  if CurPos.Flag=cafPoint then begin
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  if CreateNodes then begin
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
+  // ctnOnStatement
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnOnStatement;
+  end;
+  ReadTilStatementEnd(true,CreateNodes);
+  if CreateNodes then begin
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // ctnOnStatement
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // ctnOnVariable
   end;
   Result:=true;
 end;

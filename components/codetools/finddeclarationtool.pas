@@ -2206,6 +2206,25 @@ var
       Result:=CheckResult(true,false);
     end;
   end;
+  
+  function SearchInOnBlockDefinition: boolean;
+  begin
+    Result:=false;
+    if ContextNode.FirstChild=nil then exit;
+    //debugln('SearchInOnBlockDefinition B ',GetIdentifier(@UpperSrc[ContextNode.StartPos]));
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(ContextNode.FirstChild.StartPos,Params.Identifier)
+    then begin
+      {$IFDEF ShowTriedIdentifiers}
+      DebugLn('  ON Identifier found="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
+      // identifier found
+      Params.SetResult(Self,ContextNode.FirstChild);
+      Result:=CheckResult(true,true);
+      if not (fdfCollect in Params.Flags) then
+        exit;
+    end;
+  end;
 
   function SearchInSourceName: boolean;
   // returns: true if ok to exit
@@ -2224,6 +2243,8 @@ var
       {$ENDIF}
       Params.SetResult(Self,ContextNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
+      if not (fdfCollect in Params.Flags) then
+        exit;
     end;
     if (not (fdfIgnoreUsedUnits in Params.Flags))
     and FindIdentifierInHiddenUsedUnits(Params) then begin
@@ -2532,6 +2553,9 @@ begin
             and CheckResult(true,false) then
               exit;
           end;
+          
+        ctnOnBlock:
+          if SearchInOnBlockDefinition then exit;
 
         ctnPointerType:
           begin
@@ -2835,7 +2859,12 @@ begin
         Params.Load(OldInput);
         exit;
       end else
-      if (Result.Node.Desc=ctnIdentifier) then begin
+      if (Result.Node.Desc=ctnOnIdentifier) and (Result.Node.PriorBrother=nil)
+      then begin
+        // this is the ON variable node, the type comes right behind
+        Result.Node:=Result.Node.NextBrother;
+      end else
+      if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier]) then begin
         // this type is just an alias for another type
         // -> search the basic type
         if Result.Node.Parent=nil then

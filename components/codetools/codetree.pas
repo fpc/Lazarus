@@ -116,9 +116,9 @@ const
 
   ctnWithVariable    = 90;
   ctnWithStatement   = 91;
-  ctnCaseBlock       = 92;
-  ctnCaseVariable    = 93;
-  ctnCaseStatement   = 94;
+  ctnOnBlock         = 92;
+  ctnOnIdentifier    = 93;
+  ctnOnStatement     = 94;
 
 
   // combined values
@@ -140,7 +140,7 @@ const
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
-                         ctnCaseBlock,ctnCaseStatement,ctnCaseVariable];
+                         ctnOnBlock,ctnOnIdentifier,ctnOnStatement];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =
@@ -352,9 +352,9 @@ begin
 
   ctnWithVariable: Result:='With Variable';
   ctnWithStatement: Result:='With Statement';
-  ctnCaseBlock: Result:='Case Block';
-  ctnCaseVariable: Result:='Case Variable';
-  ctnCaseStatement: Result:='Case Statement';
+  ctnOnBlock: Result:='On Block';
+  ctnOnIdentifier: Result:='On Identifier';
+  ctnOnStatement: Result:='On Statement';
 
   else
     Result:='invalid descriptor ('+IntToStr(Desc)+')';
