@@ -215,6 +215,8 @@ type
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
+    procedure mnuViewComponentPaletteClicked(Sender: TObject);
+    procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
@@ -799,6 +801,8 @@ type
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor;
+    procedure DoToggleViewComponentPalette;
+    procedure DoToggleViewIDESpeedButtons;
 
     // editor and environment options
     procedure SaveEnvironment; override;
@@ -1296,6 +1300,7 @@ begin
     Caption:= '';
     BevelWidth:=1;
     BevelOuter:=bvRaised;
+    Visible:=EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
 
@@ -1349,6 +1354,7 @@ begin
     Top := 0;
     Width := MainIDEBar.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
+    Visible:=EnvironmentOptions.ComponentPaletteVisible;
   end;
 end;
 
@@ -1871,6 +1877,8 @@ begin
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
+    itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
+    itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
   end;
 end;
 
@@ -1989,6 +1997,16 @@ end;
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
 begin
   DoViewAnchorEditor;
+end;
+
+procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
+begin
+  DoToggleViewComponentPalette;
+end;
+
+procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
+begin
+  DoToggleViewIDESpeedButtons;
 end;
 
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -2602,6 +2620,18 @@ begin
   AnchorDesigner.Show;
   if not WasVisible then
     AnchorDesigner.ShowOnTop;
+end;
+
+procedure TMainIDE.DoToggleViewComponentPalette;
+begin
+  MainIDEBar.ComponentNotebook.Visible:=not MainIDEBar.ComponentNotebook.Visible;
+  EnvironmentOptions.ComponentPaletteVisible:=MainIDEBar.ComponentNotebook.Visible;
+end;
+
+procedure TMainIDE.DoToggleViewIDESpeedButtons;
+begin
+  MainIDEBar.pnlSpeedButtons.Visible:=not MainIDEBar.pnlSpeedButtons.Visible;
+  EnvironmentOptions.IDESpeedButtonsVisible:=MainIDEBar.pnlSpeedButtons.Visible;
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);

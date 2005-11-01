@@ -164,6 +164,8 @@ const
   ecToggleCallStack      = ecUserFirst + 314;
   ecToggleSearchResults  = ecUserFirst + 315;
   ecViewAnchorEditor     = ecUserFirst + 316;
+  ecToggleCompPalette    = ecUserFirst + 317;
+  ecToggleIDESpeedBtns   = ecUserFirst + 318;
 
   // sourcenotebook commands
   ecNextEditor           = ecUserFirst + 330;
@@ -685,6 +687,8 @@ begin
   ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -992,6 +996,8 @@ begin
   ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1535,6 +1541,8 @@ begin
     ecViewUnitDependencies  : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo          : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor      : Result:= srkmecViewAnchorEditor;
+    ecToggleCompPalette     : Result:= srkmecToggleCompPalette;
+    ecToggleIDESpeedBtns    : Result:= srkmecToggleIDESpeedBtns;
 
     // codetools
     ecWordCompletion        : Result:= srkmecWordCompletion;
@@ -2470,6 +2478,8 @@ begin
   AddDefault(C,'Focus to source editor',ecJumpToEditor);
   AddDefault(C,'Toggle between Unit and Form',ecToggleFormUnit);
   AddDefault(C,'View Anchor Editor',ecViewAnchorEditor);
+  AddDefault(C,'Toggle view component palette',ecToggleCompPalette);
+  AddDefault(C,'Toggle view IDE speed buttons',ecToggleIDESpeedBtns);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,nil)];

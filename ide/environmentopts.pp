@@ -122,13 +122,16 @@ const
 
 type
   { class for storing environment options }
+
+  { TEnvironmentOptions }
+
   TEnvironmentOptions = class
   private
-    FDebuggerSearchPath: string;
     FDesignerPaintLazy: boolean;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
+    FIDESpeedButtonsVisible: boolean;
     FXMLCfg: TXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
@@ -145,6 +148,8 @@ type
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FMinimizeAllOnMinimizeMain: boolean;
     FHideIDEOnRun: boolean;
+    FComponentPaletteVisible: boolean;
+    FDebuggerSearchPath: string;
 
     // EnvironmentOptionsDialog editor
     FShowGrid: boolean;
@@ -266,6 +271,10 @@ type
     property MinimizeAllOnMinimizeMain: boolean read FMinimizeAllOnMinimizeMain
                                                write FMinimizeAllOnMinimizeMain;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
+    property ComponentPaletteVisible: boolean read FComponentPaletteVisible
+                                              write FComponentPaletteVisible;
+    property IDESpeedButtonsVisible: boolean read FIDESpeedButtonsVisible
+                                             write FIDESpeedButtonsVisible;
 
     // EnvironmentOptionsDialog editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -799,6 +808,8 @@ begin
     IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FMinimizeAllOnMinimizeMain:=false;
   FHideIDEOnRun:=false;
+  FComponentPaletteVisible:=true;
+  FIDESpeedButtonsVisible:=true;
 
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
@@ -1012,6 +1023,10 @@ begin
       Path+'Desktop/MinimizeAllOnMinimizeMain/Value',true);
     FHideIDEOnRun:=XMLConfig.GetValue(
       Path+'Desktop/HideIDEOnRun/Value',false);
+    FComponentPaletteVisible:=XMLConfig.GetValue(
+      Path+'Desktop/ComponentPaletteVisible/Value',true);
+    FIDESpeedButtonsVisible:=XMLConfig.GetValue(
+      Path+'Desktop/IDESpeedButtonsVisible/Value',true);
 
     // EnvironmentOptionsDialog editor
     FShowGrid:=XMLConfig.GetValue(
@@ -1249,9 +1264,13 @@ begin
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/');
     FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
     XMLConfig.SetDeleteValue(Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
-      FMinimizeAllOnMinimizeMain,true);
+                             FMinimizeAllOnMinimizeMain,true);
     XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
-      false);
+                             false);
+    XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
+                             FComponentPaletteVisible,true);
+    XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',
+                             FIDESpeedButtonsVisible,true);
 
     // EnvironmentOptionsDialog editor
     XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);

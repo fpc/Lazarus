@@ -205,6 +205,8 @@ resourcestring
   lisMenuViewSearchResults = 'Search Results';
   lisSearchAgain = 'Search again';
   lisMenuViewAnchorEditor = 'View Anchor Editor';
+  lisMenuViewComponentPalette = 'View Component Palette';
+  lisMenuViewIDESpeedButtons = 'View IDE speed buttons';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
@@ -1400,6 +1402,8 @@ resourcestring
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';
+  srkmecToggleCompPalette         = 'View component palette';
+  srkmecToggleIDESpeedBtns        = 'View IDE speed buttons';
 
   // codetools
   srkmecWordCompletion            = 'Word completion';
