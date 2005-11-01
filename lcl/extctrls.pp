@@ -379,7 +379,7 @@ type
     moves it with the mouse, the control to the left with the same Align=alLeft
     will be resized.
     The second more flexible possibility is to set the properties Align=alNone,
-    AnchorSides and Orientation.
+    AnchorSides and ResizeAnchor.
     }
   TCustomSplitter = class(TCustomControl)
   private

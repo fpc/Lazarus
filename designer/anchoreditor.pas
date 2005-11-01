@@ -394,7 +394,15 @@ begin
     if SelectedControls=nil then exit;
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
-      CurControl.AnchorSide[Kind].Control:=NewSibling;
+      try
+        CurControl.AnchorSide[Kind].Control:=NewSibling;
+      except
+        on E: Exception do begin
+          MessageDlg('Error',
+            'Unable to set AnchorSide Control'#13
+            +E.Message,mtError,[mbCancel],0);
+        end;
+      end;
     end;
     GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
