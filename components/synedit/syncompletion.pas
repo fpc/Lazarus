@@ -228,6 +228,8 @@ type
     property Width: Integer read FWidth write SetWidth;
   end;
 
+  { TSynCompletion }
+
   TSynCompletion = class(TSynBaseCompletion)
   private
     FShortCut: TShortCut;
@@ -268,6 +270,8 @@ type
     property OnCodeCompletion: TCodeCompletionEvent
       read FOnCodeCompletion write FOnCodeCompletion;
   end;
+
+  { TSynAutoComplete }
 
   TSynAutoComplete = class(TComponent)
   private

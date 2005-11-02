@@ -2876,6 +2876,7 @@ resourcestring
   lisLazDocDeleteLinkButton = 'Delete link';
   lisLazDocExampleTag = 'Example';
   lisLazDocBrowseExampleButton = 'Browse';
+  lisEnableMakros = 'Enable Makros';
   
 implementation
 end.

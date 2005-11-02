@@ -452,6 +452,7 @@ type
     property OnCanResize;
     property OnChangeBounds;
     property OnMoved;
+    property ResizeAnchor;
   end;
 
 

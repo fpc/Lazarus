@@ -41,6 +41,7 @@ type
 
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
+    UseMakrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
     CancelButton: TButton;
@@ -313,6 +314,7 @@ begin
   TemplateGroupBox.Caption:=lisCTDTemplates;
   OkButton.Caption:=lisLazBuildOk;
   FilenameGroupBox.Caption:=lisToDoLFile;
+  UseMakrosCheckBox.Caption:=lisEnableMakros;
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 
@@ -473,9 +475,24 @@ end;
 
 procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
+  EnableMakros: boolean;
+  LineCount: integer;
+
+  procedure AddLine(const s: string);
+  begin
+    if (LineCount=0) and (s='$(EnableMakros)') then
+      EnableMakros:=true
+    else
+      TemplateSynEdit.Lines.Add(s);
+    inc(LineCount);
+  end;
+
+var
   i, sp, ep: integer;
   s: string;
 begin
+  EnableMakros:=false;
+  LineCount:=0;
   TemplateSynEdit.Lines.BeginUpdate;
   TemplateSynEdit.Lines.Clear;
   i:=TemplateListBox.ItemIndex;
@@ -488,7 +505,7 @@ begin
     ep:=1;
     while ep<=length(s) do begin
       if s[ep] in [#10,#13] then begin
-        TemplateSynEdit.Lines.Add(copy(s,sp,ep-sp));
+        AddLine(copy(s,sp,ep-sp));
         inc(ep);
         if (ep<=length(s)) and (s[ep] in [#10,#13]) and (s[ep-1]<>s[ep]) then
           inc(ep);
@@ -496,11 +513,13 @@ begin
       end else inc(ep);
     end;
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
+      AddLine(copy(s,sp,ep-sp));
       TemplateSynEdit.Lines.Add(copy(s,sp,ep-sp));
   end;
   LastTemplate:=i;
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
+  UseMakrosCheckBox.Checked:=EnableMakros;
 end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
@@ -524,6 +543,8 @@ begin
       SetLength(NewValue,l);
     end;
   end;
+  if UseMakrosCheckBox.Checked then
+    NewValue:='$(EnableMakros)'+LineEnding+NewValue;
   SynAutoComplete.CompletionValues[i]:=NewValue;
 end;
 

@@ -51,7 +51,7 @@ uses
   Dialogs, Laz_XMLCfg, LazConf, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
-  EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
+  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
 
 type
   TUnitInfo = class;
@@ -77,8 +77,12 @@ type
     );
 
   //---------------------------------------------------------------------------
+
+  { TUnitInfo }
+
   TUnitInfo = class(TLazProjectFile)
   private
+    FAutoReferenceSourceDir: boolean;
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
@@ -115,6 +119,8 @@ type
     fUnitName: String;
     fUsageCount: extended;
     fUserReadOnly:  Boolean;
+    FSourceDirectoryReferenced: boolean;
+    FSourceDirNeedReference: boolean;
 
     function GetHasResources:boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
@@ -127,6 +133,7 @@ type
     function GetPrevPartOfProject: TUnitInfo;
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
+    procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
@@ -169,6 +176,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: extended);
+    procedure UpdateSourceDirectoryReference;
 
     procedure SetSourceText(const SourceText: string); override;
     function GetSourceText: string; override;
@@ -222,6 +230,9 @@ type
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
+    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
+    property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
+                                             write SetAutoReferenceSourceDir;
   end;
 
 
@@ -284,6 +295,7 @@ type
     FProject: TProject;
     FUpdateLock: integer;
     procedure UpdateMain;
+    procedure UpdateDefinesForSourceDirectories;
   public
     constructor Create(OwnerProject: TProject);
     destructor Destroy; override;
@@ -292,6 +304,7 @@ type
     procedure EndUpdate;
     procedure CompilerFlagsChanged;
     procedure AllChanged;
+    procedure SourceDirectoriesChanged;
     procedure UpdateGlobalValues;
   public
     property Owner: TProject read FProject;
@@ -391,6 +404,7 @@ type
     //fProjectType: TProjectType;
     fPublishOptions: TPublishProjectOptions;
     fRunParameterOptions: TRunParamsOptions;
+    FSourceDirectories: TFileReferenceList;
     fTargetFileExt: String;
     fUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
@@ -417,6 +431,8 @@ type
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
+    procedure UpdateSourceDirectories;
+    procedure SourceDirectoriesChanged(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -539,6 +555,8 @@ type
 
     // paths
     procedure AddSrcPath(const SrcPathAddition: string); override;
+    function GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;
+    function GetOutputDirectory: string;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -580,6 +598,7 @@ type
     property PublishOptions: TPublishProjectOptions
                                      read fPublishOptions write fPublishOptions;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
+    property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
@@ -999,6 +1018,22 @@ begin
   end;
 end;
 
+procedure TUnitInfo.UpdateSourceDirectoryReference;
+begin
+  if (not AutoReferenceSourceDir) or (FProject=nil) then exit;
+  if FSourceDirNeedReference then begin
+    if not SourceDirectoryReferenced then begin
+      //Project.SourceDirectories.AddFilename(FDirectory);
+      FSourceDirectoryReferenced:=true;
+    end;
+  end else begin
+    if SourceDirectoryReferenced then begin
+      //Project.SourceDirectories.RemoveFilename(FDirectory);
+      FSourceDirectoryReferenced:=false;
+    end;
+  end;
+end;
+
 procedure TUnitInfo.SetSourceText(const SourceText: string);
 begin
   Source.Source:=SourceText;
@@ -1111,6 +1146,14 @@ begin
   Result:=fPrev[uilWithEditorIndex];
 end;
 
+procedure TUnitInfo.SetAutoReferenceSourceDir(const AValue: boolean);
+begin
+  if FAutoReferenceSourceDir=AValue then exit;
+  FAutoReferenceSourceDir:=AValue;
+  if FSourceDirNeedReference then
+    UpdateSourceDirectoryReference;
+end;
+
 procedure TUnitInfo.SetBuildFileIfActive(const AValue: boolean);
 begin
   if FBuildFileIfActive=AValue then exit;
@@ -1220,6 +1263,9 @@ begin
   fMainUnitID := -1;
   fModified := false;
   fProjectInfoFile := '';
+  FSourceDirectories:=TFileReferenceList.Create;
+  FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
+
   UpdateProjectDirectory;
   fPublishOptions:=TPublishProjectOptions.Create(Self);
   fRunParameterOptions:=TRunParamsOptions.Create;
@@ -1446,6 +1492,7 @@ var
   Path: String;
   OldProjectType: TOldProjectType;
   xmlconfig: TXMLConfig;
+  SourceDirectoriesUpdated: Boolean;
 
   procedure LoadCompilerOptions;
   var
@@ -1531,6 +1578,7 @@ begin
       exit;
     end;
 
+    SourceDirectoriesUpdated:=true;
     try
       Path:='ProjectOptions/';
       fPathDelimChanged:=
@@ -1554,6 +1602,7 @@ begin
         OldSrcPath := xmlconfig.GetValue(Path+'General/SrcPath/Value','');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
+      SourceDirectoriesUpdated:=false;
       NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
       for i := 0 to NewUnitCount - 1 do begin
         NewUnitInfo:=TUnitInfo.Create(nil);
@@ -1561,6 +1610,8 @@ begin
         NewUnitInfo.LoadFromXMLConfig(
            xmlconfig,Path+'Units/Unit'+IntToStr(i)+'/');
       end;
+      UpdateSourceDirectories;
+      SourceDirectoriesUpdated:=true;
 
       {$IFDEF EnableLazDoc}
       //lazdoc
@@ -1595,6 +1646,8 @@ begin
       if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
 
     finally
+      if not SourceDirectoriesUpdated then
+        UpdateSourceDirectories;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
       try
@@ -1736,6 +1789,7 @@ begin
   fMainUnitID := -1;
   fModified := false;
   fProjectInfoFile := '';
+  FSourceDirectories.Clear;
   UpdateProjectDirectory;
   fPublishOptions.Clear;
   fTargetFileExt := GetDefaultExecutableExt;
@@ -2555,6 +2609,21 @@ begin
                                             SetDirSeparators(SrcPathAddition));
 end;
 
+function TProject.GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean
+  ): string;
+begin
+  Result:=SourceDirectories.CreateSearchPathFromAllFiles;
+  if WithProjectDir then
+    Result:=MergeSearchPaths(Result,ProjectDirectory);
+  if WithoutOutputDir then
+    Result:=RemoveSearchPaths(Result,GetOutputDirectory);
+end;
+
+function TProject.GetOutputDirectory: string;
+begin
+  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+end;
+
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -2811,6 +2880,31 @@ begin
   CompilerOptions.BaseDirectory:=fProjectDirectory;
 end;
 
+procedure TProject.UpdateSourceDirectories;
+var
+  Cnt: Integer;
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  Cnt:=fUnitList.Count;
+  for i:=0 to Cnt-1 do begin
+    AnUnitInfo:=Units[i];
+    AnUnitInfo.FSourceDirectoryReferenced:=false;
+  end;
+  fSourceDirectories.Clear;
+  for i:=0 to Cnt-1 do begin
+    AnUnitInfo:=Units[i];
+    AnUnitInfo.AutoReferenceSourceDir:=true;
+    AnUnitInfo.UpdateSourceDirectoryReference;
+  end;
+  //DebugLn('TProject.UpdateSourceDirectories B ',UnitCount,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
+end;
+
+procedure TProject.SourceDirectoriesChanged(Sender: TObject);
+begin
+  FDefineTemplates.SourceDirectoriesChanged;
+end;
+
 function TProject.GetMainFile: TLazProjectFile;
 begin
   Result:=MainUnitInfo;
@@ -3060,6 +3154,11 @@ begin
   // ClearCache is here unnessary, because it is only a block
 end;
 
+procedure TProjectDefineTemplates.UpdateDefinesForSourceDirectories;
+begin
+
+end;
+
 procedure TProjectDefineTemplates.CompilerFlagsChanged;
 begin
   if FUpdateLock>0 then begin
@@ -3077,8 +3176,14 @@ end;
 procedure TProjectDefineTemplates.AllChanged;
 begin
   CompilerFlagsChanged;
+  SourceDirectoriesChanged;
   UpdateGlobalValues;
   CodeToolBoss.DefineTree.ClearCache;
+end;
+
+procedure TProjectDefineTemplates.SourceDirectoriesChanged;
+begin
+
 end;
 
 procedure TProjectDefineTemplates.UpdateGlobalValues;

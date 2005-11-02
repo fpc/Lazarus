@@ -58,6 +58,8 @@ type
                            AEditor: TCustomSynEdit; var Index:integer) of object;
   {$ENDIF}
 
+  { TCustomSynAutoComplete }
+
   TCustomSynAutoComplete = class(TComponent)
   protected
     fAutoCompleteList: TStrings;
@@ -120,6 +122,8 @@ type
       read fIndentToTokenStart write fIndentToTokenStart;
     {$ENDIF}
   end;
+
+  { TSynEditAutoComplete }
 
   TSynEditAutoComplete = class(TCustomSynAutoComplete)
   published
@@ -303,7 +307,7 @@ begin
         if IndentToTokenStart then begin
           IndentLen := p.x - Len - 1;
         end else begin
-          // indent as line of token
+          // indent the same as the first line
           IndentLen:=1;
           if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
             s:=AEditor.Lines[p.y-1];
