@@ -12,6 +12,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Width = 596
   object FilenameGroupBox: TGroupBox
     Align = alTop
+    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'FilenameGroupBox'
     ClientHeight = 42
@@ -24,6 +25,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Width = 586
     object FilenameEdit: TEdit
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       BorderSpacing.Right = 5
       TabOrder = 0
       Text = 'FilenameEdit'
@@ -35,6 +37,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object FilenameButton: TButton
       Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Caption = '...'
       OnClick = FilenameButtonClick
       TabOrder = 1
@@ -49,7 +53,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object OkButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     BorderSpacing.Right = 14
+    BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 1
@@ -64,6 +70,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
@@ -75,6 +83,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object TemplateGroupBox: TGroupBox
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'TemplateGroupBox'
     ClientHeight = 306
@@ -87,22 +96,26 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Top = 69
     Width = 586
     object TemplateListBox: TListBox
-      Align = alLeft
       Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
-      Height = 151
-      Width = 447
+      AnchorSideBottom.Control = TemplateSynEdit
+      Height = 156
+      Width = 408
     end
     object TemplateSynEdit: TSynEdit
       Align = alBottom
+      BorderSpacing.OnChange = nil
       Font.Height = -18
       Font.Name = 'courier'
       Height = 150
       Name = 'TemplateSynEdit'
       TabOrder = 1
       Width = 582
+      BookMarkOptions.OnChange = nil
+      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = ASynPasSyn
       Keystrokes = <      
@@ -429,6 +442,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
+      SelectedColor.OnChange = nil
       Cursor = crIBeam
       Height = 150
       Top = 156
@@ -446,30 +460,49 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Width = 582
     end
     object AddButton: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Caption = 'AddButton'
       OnClick = AddButtonClick
       TabOrder = 2
       Left = 457
-      Height = 32
+      Height = 30
       Width = 115
     end
     object DeleteButton: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Caption = 'DeleteButton'
       OnClick = DeleteButtonClick
       TabOrder = 3
       Left = 457
-      Height = 32
-      Top = 44
+      Height = 30
+      Top = 36
       Width = 115
     end
     object EditButton: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Caption = 'EditButton'
       OnClick = EditButtonClick
       TabOrder = 4
       Left = 457
-      Height = 32
-      Top = 92
+      Height = 30
+      Top = 71
       Width = 115
+    end
+    object UseMakrosCheckBox: TCheckBox
+      Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
+      Caption = 'UseMakrosCheckBox'
+      TabOrder = 5
+      Left = 439
+      Height = 23
+      Top = 106
+      Width = 133
     end
   end
   object ASynPasSyn: TSynPasSyn

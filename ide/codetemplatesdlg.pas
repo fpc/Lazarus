@@ -514,7 +514,6 @@ begin
     end;
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
       AddLine(copy(s,sp,ep-sp));
-      TemplateSynEdit.Lines.Add(copy(s,sp,ep-sp));
   end;
   LastTemplate:=i;
   TemplateSynEdit.Lines.EndUpdate;
