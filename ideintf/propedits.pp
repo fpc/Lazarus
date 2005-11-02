@@ -4651,13 +4651,14 @@ begin
 end;
 
 procedure TStringsPropEditorDlg.MemoChanged(Sender : TObject);
+var
+  NumChars: integer;
 begin
+  NumChars := Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding);
   if Memo.Lines.Count=1 then
-    StatusLabel.Text:= Format(ois1LineDChars, [Memo.Lines.Count,
-      (Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding))])
+    StatusLabel.Text:= Format(ois1LineDChars, [NumChars])
   else
-    StatusLabel.Text:= Format(oisDLinesDChars, [
-      (Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding))]);
+    StatusLabel.Text:= Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
 end;
 
 { TStringsPropertyEditor }
