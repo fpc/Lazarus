@@ -224,7 +224,7 @@ var
   L: TStrings;
   S: String;
 begin
-  L := TStrings(Data);
+  L := TStrings(PtrInt(Data));
   S := LogFont.elfLogFont.lfFaceName;
   if L.IndexOf(S)<0 then
     L.Add(S);
@@ -241,7 +241,7 @@ begin
   lf.lfPitchAndFamily := 0;
   DC := GetDC(0);
   try
-    EnumFontFamiliesEX(DC, @lf, @EnumFontsNoDups, LongInt(FontList), 0);
+    EnumFontFamiliesEX(DC, @lf, @EnumFontsNoDups, PtrInt(FontList), 0);
   finally
     ReleaseDC(0, DC);
   end;
