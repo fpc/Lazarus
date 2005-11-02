@@ -243,7 +243,7 @@ begin
     end;
     //debugln('TGtkWSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
     gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
-                                GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+                                  GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
   end;
 end;
 

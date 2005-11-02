@@ -8101,15 +8101,15 @@ begin
     ABorderStyle:=bsSizeable;
 
   Case ABorderStyle of
-    bsNone : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+    bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
 
     bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
 
     bsSizeable : Result := GDK_FUNC_ALL;
 
-    bsDialog : Result := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE or
-                GDK_FUNC_MOVE;
+    bsDialog : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
+                or GDK_FUNC_MOVE;
 
     bsToolWindow : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
@@ -8118,6 +8118,15 @@ begin
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
                 GDK_FUNC_RESIZE;
   end;
+
+  // X warns if marking a fixed size window resizeable:
+  if ((AForm.Constraints.MinWidth>0)
+  and (AForm.Constraints.MinWidth=AForm.Constraints.MaxWidth))
+  or ((AForm.Constraints.MinHeight>0)
+  and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
+    Result:=Result-GDK_FUNC_RESIZE;
+
+  //debugln('GetWindowFunction A ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)));
 end;
 
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
