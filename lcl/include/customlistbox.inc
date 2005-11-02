@@ -61,9 +61,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
- procedure TCustomListBox.CreateWnd
+ procedure TCustomListBox.CreateHandle
 ------------------------------------------------------------------------------}
-procedure TCustomListBox.CreateWnd;
+procedure TCustomListBox.CreateHandle;
 var
   NewStrings : TStrings;
   i, cnt: integer;
@@ -71,7 +71,7 @@ var
 begin
   LockSelectionChange;
   //DebugLn('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
-  inherited CreateWnd;
+  inherited CreateHandle;
   //DebugLn('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
   TWSCustomListBoxClass(WidgetSetClass).SetBorder(Self);
@@ -100,9 +100,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{ procedure TCustomListBox.DestroyWnd                                       }
+{ procedure TCustomListBox.DestroyHandle                                       }
 {------------------------------------------------------------------------------}
-procedure TCustomListBox.DestroyWnd;
+procedure TCustomListBox.DestroyHandle;
 var
   NewStrings : TExtendedStringList;
   i, Cnt: integer;
@@ -131,7 +131,7 @@ begin
     FCacheValid := True;
     //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   end;
-  inherited DestroyWnd;
+  inherited DestroyHandle;
   //DebugLn('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
   UnlockSelectionChange;
 end;
