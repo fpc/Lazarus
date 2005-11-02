@@ -5363,48 +5363,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
-
-  Returns the radio group list with the GroupIndex of the MenuItem
- ------------------------------------------------------------------------------}
-function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
-var
-  ParentMenuItem: TMenuItem;
-  i: integer;
-begin
-  Result:=nil;
-  if (LCLMenuItem=nil) or (LCLMenuItem.GroupIndex=0) then exit;
-  ParentMenuItem:=LCLMenuItem.Parent;
-  if ParentMenuItem=nil then exit;
-  for i:=0 to ParentMenuItem.Count-1 do begin
-    if ParentMenuItem[i].RadioItem
-    and (ParentMenuItem[i].GroupIndex=LCLMenuItem.GroupIndex)
-    and (ParentMenuItem[i]<>LCLMenuItem)
-    and ParentMenuItem[i].HandleAllocated
-    and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
-                      GTK_TYPE_RADIO_MENU_ITEM) then
-    begin
-      Result:=gtk_radio_menu_item_group(
-                                 GTK_RADIO_MENU_ITEM(Pointer(ParentMenuItem[i].Handle)));
-      exit;
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
-
-  Returns the radio group list with the GroupIndex of the MenuItem
- ------------------------------------------------------------------------------}
-function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
-begin
-  if MenuItem=nil then
-    Result:=nil
-  else
-    Result:=GetRadioMenuItemGroup(TMenuItem(GetLCLObject(MenuItem)));
-end;
-
-{------------------------------------------------------------------------------
   procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
 
   Calls LockOnChange for all groupmembers

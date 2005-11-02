@@ -665,8 +665,6 @@ function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
 // menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
-function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
-function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
 procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
