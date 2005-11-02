@@ -674,8 +674,9 @@ end;
 
 procedure TCustomSplitter.Paint;
 begin
-  DrawSplitter(Canvas.Handle,Rect(0,0,Width,Height),
-               FResizeAnchor in [akTop,akBottom]);
+  TWSCustomSplitterClass(WidgetSetClass).DrawSplitter(Self);
+  //DrawSplitter(Canvas.Handle,Rect(0,0,Width,Height),
+  //             FResizeAnchor in [akTop,akBottom]);
 end;
 
 constructor TCustomSplitter.Create(TheOwner: TComponent);

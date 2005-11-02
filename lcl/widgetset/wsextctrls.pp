@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, ExtCtrls, Classes,
+  LCLProc, Controls, ExtCtrls, Classes,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls;
 
@@ -92,7 +92,10 @@ type
   { TWSCustomSplitter }
 
   TWSCustomSplitter = class(TWSCustomControl)
+  public
+    class procedure DrawSplitter(const ASplitter: TCustomSplitter); virtual;
   end;
+  TWSCustomSplitterClass = class of TWSCustomSplitter;
 
   { TWSSplitter }
 
@@ -235,7 +238,8 @@ begin
   Result:=60;
 end;
 
-function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
+function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook;
+  AIndex: Integer): Integer;
 begin
   Result := AIndex;
 end;
@@ -246,7 +250,8 @@ begin
   Result := -1;
 end;
 
-procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
+  const AIndex: integer);
 begin
 end;
 
@@ -255,12 +260,22 @@ procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
 begin
 end;
 
-procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
+  const ATabPosition: TTabPosition);
 begin
 end;
 
-procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+  AShowTabs: boolean);
 begin
+end;
+
+{ TWSCustomSplitter }
+
+class procedure TWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
+  );
+begin
+  debugln('TWSCustomSplitter.DrawSplitter TODO');
 end;
 
 initialization
@@ -275,7 +290,7 @@ initialization
 //  RegisterWSComponent(TNotebook, TWSNotebook);
 //  RegisterWSComponent(TShape, TWSShape);
 //  RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TWSSplitter);
+//  RegisterWSComponent(TCustomSplitter, TWSCustomSplitter);
 //  RegisterWSComponent(TPaintBox, TWSPaintBox);
 //  RegisterWSComponent(TCustomImage, TWSCustomImage);
 //  RegisterWSComponent(TImage, TWSImage);

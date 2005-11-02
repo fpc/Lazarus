@@ -7721,7 +7721,7 @@ begin
     // MWE: ???
     // TODO: why are only the lower bytes of a handle checked ???
     // In the LCL a Handle has the size of a PtrUInt
-    if (TheMessage.WParam and $FFFF) = Handle then begin
+    if (cardinal(TheMessage.WParam) and $FFFF) = cardinal(Handle) then begin
       // what a weird thing, we are losing the focus
       // and giving it to ourselves
       TheMessage.Result := 0; // doesn't allow such thing

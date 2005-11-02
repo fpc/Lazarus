@@ -2726,7 +2726,7 @@ begin
       SelectedColors := dcscCustom;
 
       // Draw outer rect
-      if Bouter then
+      if BOuter then
         DrawEdges(R,GC,Drawable,OuterTL,OuterBR);
 
       // Draw inner rect

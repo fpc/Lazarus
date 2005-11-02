@@ -32,7 +32,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, ExtCtrls, Classes, Controls, LCLType, SysUtils,
+  SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase, 
   Win32WSControls;
@@ -104,6 +104,7 @@ type
   private
   protected
   public
+    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TWin32WSSplitter }
@@ -534,6 +535,17 @@ end;
 
 
 
+{ TWin32WSCustomSplitter }
+
+procedure TWin32WSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
+  );
+begin
+  // TODO: beveled
+  LCLIntf.DrawSplitter(ASplitter.Canvas.Handle,
+                       Rect(0,0,ASplitter.Width,ASplitter.Height),
+                       ASplitter.ResizeAnchor in [akTop,akBottom]);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -547,7 +559,7 @@ initialization
 //  RegisterWSComponent(TPage, TWin32WSPage);
 //  RegisterWSComponent(TNotebook, TWin32WSNotebook);
 //  RegisterWSComponent(TShape, TWin32WSShape);
-//  RegisterWSComponent(TCustomSplitter, TWin32WSCustomSplitter);
+  RegisterWSComponent(TCustomSplitter, TWin32WSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TWin32WSSplitter);
 //  RegisterWSComponent(TPaintBox, TWin32WSPaintBox);
 //  RegisterWSComponent(TCustomImage, TWin32WSCustomImage);

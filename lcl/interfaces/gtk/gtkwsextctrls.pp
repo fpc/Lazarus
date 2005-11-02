@@ -27,13 +27,13 @@ unit GtkWSExtCtrls;
 interface
 
 uses
-  LCLProc, Controls,
+  LCLProc, LCLType, LCLIntf, Controls,
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
   gtk, gdk, glib,
 {$ENDIF GTK2}
-  GtkGlobals, GtkProc, ExtCtrls, Classes,
+  GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
 
 type
@@ -98,6 +98,7 @@ type
   private
   protected
   public
+    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TGtkWSSplitter }
@@ -437,6 +438,57 @@ begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
+{ TGtkWSCustomSplitter }
+
+procedure TGtkWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
+var
+  Widget: PGtkWidget;
+  ClientWidget: Pointer;
+  DCOrigin: TPoint;
+  Detail: PChar;
+  Area: TGdkRectangle;
+  Style: PGtkStyle;
+  AWindow: PGdkWindow;
+  DevContext: TDeviceContext;
+  ARect: TRect;
+begin
+  if not ASplitter.HandleAllocated then exit;
+  DevContext:=TDeviceContext(ASplitter.Canvas.Handle);
+  Widget:=PGtkWidget(ASplitter.Handle);
+  ClientWidget:=GetFixedWidget(Widget);
+  if ClientWidget<>nil then
+    Widget:=ClientWidget;
+  AWindow:=DevContext.Drawable;
+
+  Style:=GetStyle(lgsButton);
+  if ASplitter.ResizeAnchor in [akTop,akBottom] then begin
+    Detail:='hpaned';
+  end else begin
+    Detail:='vpaned';
+  end;
+
+  DCOrigin:=GetDCOffset(DevContext);
+  Area.X:=DCOrigin.X;
+  Area.Y:=DCOrigin.Y;
+  Area.Width:=ASplitter.Width;
+  Area.Height:=ASplitter.Height;
+  
+  if ASplitter.Beveled then begin
+    ARect:=Bounds(Area.x,Area.y,Area.Width,Area.Height);
+    DrawEdge(HDC(DevContext),ARect,BDR_RAISEDOUTER,BF_ADJUST+BF_RECT);
+    Area.X:=ARect.Left;
+    Area.Y:=ARect.Top;
+    Area.Width:=ARect.Right-ARect.Left;
+    Area.Height:=ARect.Bottom-ARect.Top;
+  end;
+
+  gtk_paint_box(Style, AWindow,
+    GTK_WIDGET_STATE(Widget),
+    GTK_SHADOW_NONE,
+    @Area, Widget, Detail,
+    Area.X,Area.Y,Area.Width,Area.Height);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -450,7 +502,7 @@ initialization
 //  RegisterWSComponent(TPage, TGtkWSPage);
 //  RegisterWSComponent(TNotebook, TGtkWSNotebook);
 //  RegisterWSComponent(TShape, TGtkWSShape);
-//  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
+  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TGtkWSSplitter);
 //  RegisterWSComponent(TPaintBox, TGtkWSPaintBox);
 //  RegisterWSComponent(TCustomImage, TGtkWSCustomImage);
