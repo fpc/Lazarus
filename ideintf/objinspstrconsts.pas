@@ -210,6 +210,7 @@ resourcestring
   // property editors
   oisSort = 'Sort';
   oisDLinesDChars = '%d lines, %d chars';
+  ois1LineDChars = '1 line, %d chars';
   oisStringsEditorDialog = 'Strings Editor Dialog';
   ois0Lines0Chars = '0 lines, 0 chars';
   oisInvalidPropertyValue = 'Invalid property value';
