@@ -61,18 +61,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
- procedure TCustomListBox.CreateHandle
+ procedure TCustomListBox.InitializeWnd
 ------------------------------------------------------------------------------}
-procedure TCustomListBox.CreateHandle;
+procedure TCustomListBox.InitializeWnd;
 var
   NewStrings : TStrings;
   i, cnt: integer;
   OldItems: TExtendedStringList;
 begin
   LockSelectionChange;
-  //DebugLn('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
-  inherited CreateHandle;
-  //DebugLn('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.InitializeWnd] A ',FItems.ClassName);
+  inherited InitializeWnd;
+  //DebugLn('[TCustomListBox.InitializeWnd] B ',FItems.ClassName);
   // create
   TWSCustomListBoxClass(WidgetSetClass).SetBorder(Self);
 
@@ -96,13 +96,13 @@ begin
   // free old items
   OldItems.Free;
   UnlockSelectionChange;
-  //DebugLn('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.InitializeWnd] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
-{ procedure TCustomListBox.DestroyHandle                                       }
+{ procedure TCustomListBox.FinalizeWnd                                       }
 {------------------------------------------------------------------------------}
-procedure TCustomListBox.DestroyHandle;
+procedure TCustomListBox.FinalizeWnd;
 var
   NewStrings : TExtendedStringList;
   i, Cnt: integer;
@@ -112,7 +112,7 @@ begin
   // save ItemIndex on destroy handle
   if ([csDestroying,csLoading]*ComponentState=[]) then
     GetItemIndex;
-  //DebugLn('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.FinalizeWnd] A ',FItems.ClassName);
   // create internal item list
   if Assigned(FItems) then begin;
     NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
@@ -129,10 +129,10 @@ begin
     // new item list is the internal item list
     FItems:= NewStrings;
     FCacheValid := True;
-    //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
+    //DebugLn('[TCustomListBox.FinalizeWnd] B ',FItems.ClassName);
   end;
-  inherited DestroyHandle;
-  //DebugLn('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
+  inherited FinalizeWnd;
+  //DebugLn('[TCustomListBox.FinalizeWnd] END ',FItems.ClassName);
   UnlockSelectionChange;
 end;
 

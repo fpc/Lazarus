@@ -426,8 +426,8 @@ type
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
     procedure Loaded; override;
-    procedure CreateHandle; override;
-    procedure DestroyHandle; override;
+    procedure InitializeWnd; override;
+    procedure FinalizeWnd; override;
     procedure CheckIndex(const AIndex: Integer);
     function GetItemHeight: Integer;
     function GetItemIndex: integer; virtual;
