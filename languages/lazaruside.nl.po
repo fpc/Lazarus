@@ -1878,10 +1878,6 @@ msgstr "Doel directorie"
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Doel folder %s%s%s is ongeldig.%sKies a.u.b. een geldig pad."
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "Duits"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Verschil"
@@ -1981,6 +1977,10 @@ msgstr "Sleep-en-plaats bewerking"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Sleep bestanden"
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2546,10 +2546,6 @@ msgstr "Zoek Tekst (op cursor)"
 msgid "Finnish"
 msgstr "Fins"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "Fins voor MS Windows"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Repareer .lfm bestand"
@@ -2681,6 +2677,10 @@ msgstr "Genereer code voor valgrind"
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
 msgstr "Genereer:"
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
+msgstr ""
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"

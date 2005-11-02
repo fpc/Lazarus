@@ -1892,10 +1892,6 @@ msgstr ""
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Zielverzeichnis %s%s%s ist ungültig.%sBitte wählen Sie einen kompletten Pfad."
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "Deutsch"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Diff"
@@ -1995,6 +1991,10 @@ msgstr "Editieren mit Drag&&Drop"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Dateien ablegen"
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2560,10 +2560,6 @@ msgstr "Text am Cursor suchen"
 msgid "Finnish"
 msgstr "Finnisch"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "Finnisch für MS Windows"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ".LFM-Datei korrigieren"
@@ -2695,6 +2691,10 @@ msgstr "Code für valgrind erzeugen"
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
 msgstr "Erzeuge:"
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
+msgstr ""
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"

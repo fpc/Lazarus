@@ -4846,8 +4846,8 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagespanish
@@ -4898,10 +4898,6 @@ msgstr ""
 msgid "Finnish"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
 msgstr ""
@@ -4916,6 +4912,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageukrainian
 msgid "Ukrainian"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption

@@ -1878,10 +1878,6 @@ msgstr ""
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "saksa"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Eroavuudet"
@@ -1980,6 +1976,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
@@ -2546,10 +2546,6 @@ msgstr "Etsi oletuksena kursorin osoittamaa tekstiä"
 msgid "Finnish"
 msgstr "suomi"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "suomi MS Windows-merkistölle"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -2680,6 +2676,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
 msgstr ""
 
 #: lazarusidestrconsts:dlggetposition

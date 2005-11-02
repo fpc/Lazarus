@@ -1878,10 +1878,6 @@ msgstr ""
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Каталог %s%s%s некорркетен.%sВыберите путь к компилятору."
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "Немецкий"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Разница Diff"
@@ -1981,6 +1977,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Бросить файлы"
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2546,10 +2546,6 @@ msgstr "Найти текст под курсором"
 msgid "Finnish"
 msgstr "Финский"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "Финский для MS Windows"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Исправить файл LFM"
@@ -2681,6 +2677,10 @@ msgstr "Создать код для valgrind"
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
 msgstr "Создать:"
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
+msgstr ""
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"

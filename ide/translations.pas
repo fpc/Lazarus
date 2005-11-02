@@ -118,7 +118,7 @@ begin
   else if CompareText(ID,'en')=0 then
     Result:=rsLanguageEnglish
   else if CompareText(ID,'de')=0 then
-    Result:=rsLanguageDeutsch
+    Result:=rsLanguageGerman
   else if CompareText(ID,'ca')=0 then
     Result:=rsLanguageCatalan
   else if CompareText(ID,'fr')=0 then
@@ -143,8 +143,6 @@ begin
     Result:=rsLanguageSpanish
   else if CompareText(ID,'fi')=0 then
     Result:=rsLanguageFinnish
-  else if CompareText(ID,'fiwin')=0 then
-    Result:=rsLanguageFinnishWin
   else if CompareText(ID,'he')=0 then
     Result:=rsLanguageHebrew
   else if CompareText(ID,'ar')=0 then
@@ -153,6 +151,8 @@ begin
     Result:=rsLanguagePortugues
   else if CompareText(ID,'ua')=0 then
     Result:=rsLanguageUkrainian
+  else if CompareText(ID,'nl')=0 then
+    Result:=rsLanguageDutch
   else
     Result:=ID;
 end;

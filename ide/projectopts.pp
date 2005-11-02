@@ -167,6 +167,8 @@ begin
   inherited Create(TheOwner);
 
   Caption := dlgProjectOptions;
+  OKButton.Caption:=lisOkBtn;
+  CancelButton.Caption:=dlgCancel;
 
   NoteBook.PageIndex := 0;
 

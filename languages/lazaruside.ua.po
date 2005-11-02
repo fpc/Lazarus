@@ -1878,10 +1878,6 @@ msgstr "Тека призначення"
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Тека %s%s%s є некоректною %sВиберіть шлях до компілятора."
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "Німецька"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Diff"
@@ -1981,6 +1977,10 @@ msgstr "Редагування типу Drag Drop"
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "Кинути файли"
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2546,10 +2546,6 @@ msgstr "Знайти текст над курсором"
 msgid "Finnish"
 msgstr "Фінська"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "Фінська для MS Windows"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Виправити файл LFM"
@@ -2681,6 +2677,10 @@ msgstr "Створити код для valgrind"
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
 msgstr "Створити:"
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
+msgstr ""
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"

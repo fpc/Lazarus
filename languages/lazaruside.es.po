@@ -1888,10 +1888,6 @@ msgstr ""
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "El directorio destino %s%s%s es inválido.%sPor favor escoja una ruta completa."
 
-#: lazarusidestrconsts:rslanguagedeutsch
-msgid "Deutsch"
-msgstr "Alemán"
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Diff"
@@ -1990,6 +1986,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagedutch
+msgid "Dutch"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuenvironent
@@ -2556,10 +2556,6 @@ msgstr "Buscar texto desde cursor"
 msgid "Finnish"
 msgstr "Finlandés"
 
-#: lazarusidestrconsts:rslanguagefinnishwin
-msgid "Finnish for MS Windows"
-msgstr "Finlandés para MS Windows"
-
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -2691,6 +2687,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
 msgstr "Generar:"
+
+#: lazarusidestrconsts:rslanguagegerman
+msgid "German"
+msgstr ""
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"

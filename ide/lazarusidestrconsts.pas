@@ -1527,7 +1527,7 @@ resourcestring
   // Languages
   rsLanguageAutomatic   = 'Automatic (or english)';
   rsLanguageEnglish     = 'English';
-  rsLanguageDeutsch     = 'Deutsch';
+  rsLanguageGerman      = 'German';
   rsLanguageSpanish     = 'Spanish';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
@@ -1540,11 +1540,11 @@ resourcestring
   rsLanguageItalianISO  = 'Italian(ISO 8859-1)';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';
-  rsLanguageFinnishWin  = 'Finnish for MS Windows';
   rsLanguageHebrew      = 'Hebrew';
   rsLanguageArabic      = 'Arabic';
   rsLanguagePortugues   = 'Portuguese';
   rsLanguageUkrainian   = 'Ukrainian';
+  rsLanguageDutch       = 'Dutch';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
