@@ -222,10 +222,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomFloatSpinEdit.DestroyComponent;
+procedure TCustomFloatSpinEdit.FinalizeWnd;
 begin
   GetValue;
-  inherited DestroyComponent;
+  inherited FinalizeWnd;
 end;
 
 procedure TCustomFloatSpinEdit.SelectAll;

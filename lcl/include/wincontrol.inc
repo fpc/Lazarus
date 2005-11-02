@@ -4762,17 +4762,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl Destroy Component
-------------------------------------------------------------------------------}
-procedure TWinControl.DestroyComponent;
-begin
-  if not HandleAllocated then
-    RaiseGDBException('TWinControl.DestroyComponent Handle already destroyed');
-  TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
-  InvalidatePreferredSize;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TWinControl.InitializeWnd
   Params:  none
   Returns: Nothing
@@ -4815,6 +4804,18 @@ begin
 
   // send pending resize event
   Resize;
+end;
+
+procedure TWinControl.FinalizeWnd;
+var
+  S: string;
+begin
+  if not HandleAllocated then
+    RaiseGDBException('TWinControl.FinalizeWnd Handle already destroyed');
+  // make sure our text is saved
+  if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
+  then FCaption := S;
+  RemoveProp(Handle,'WinControl');
 end;
 
 {------------------------------------------------------------------------------
@@ -4909,16 +4910,11 @@ end;
   Destroys the interface object.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd;
-var
-  S: String;
 begin
-  if HandleAllocated 
-  then begin    
-    // make sure our text is saved
-    if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
-    then FCaption := S;
-    RemoveProp(Handle,'WinControl');
-    DestroyComponent;
+  if HandleAllocated then begin
+    FinalizeWnd;
+    TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
+    InvalidatePreferredSize;
     Handle := 0;
   end;
 end;
@@ -5442,7 +5438,7 @@ begin
   and (not (csLoading in ComponentState))
   and (not CompareRect(@NewBounds,@FBoundsRealized)) then
   begin
-    // the new bounds were not yet sent to the WidgetSet -> send them
+    // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
     //if csDesigning in ComponentState then
     if AnsiCompareText(ClassName,CheckPostionClassName)=0 then

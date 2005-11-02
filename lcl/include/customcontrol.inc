@@ -61,11 +61,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomControl.DestroyComponent;
+procedure TCustomControl.DestroyWnd;
 begin
   if FCanvas<>nil then
     TControlCanvas(FCanvas).FreeHandle;
-  inherited DestroyComponent;
+  inherited DestroyWnd;
 end;
 
 {------------------------------------------------------------------------------

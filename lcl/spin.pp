@@ -72,12 +72,12 @@ type
     procedure SetValue(const Num: Single);
     procedure SetClimbRate(const Num: Single);
     procedure InitializeWnd; override;
+    procedure FinalizeWnd; override;
     procedure Loaded; override;
     procedure Change; dynamic;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DestroyComponent; override;
     procedure SelectAll;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;

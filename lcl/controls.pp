@@ -1465,7 +1465,6 @@ type
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
-    procedure DestroyComponent; virtual;
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; Override;
@@ -1565,6 +1564,7 @@ type
     procedure DestroyHandle; virtual;
     procedure DestroyWnd; virtual;
     procedure DoFlipChildren; dynamic;
+    procedure FinalizeWnd; virtual; // gets called before the Handle is destroyed.
     procedure FixupTabList;
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; virtual; // gets called after the Handle is created and before the child handles are created
@@ -1710,7 +1710,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DestroyComponent; override;
+    procedure DestroyWnd; override;
     procedure Paint; virtual;
   public
     property Canvas: TCanvas read FCanvas write FCanvas;
