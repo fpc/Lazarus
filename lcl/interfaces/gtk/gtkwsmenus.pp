@@ -228,9 +228,15 @@ end;
 
 function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
+var
+  LCLMenuItem: TMenuItem;
 begin
-  {TODO: cleanup}
-  Result:=TGTKWidgetSet(WidgetSet).RadioMenuItemGroup(AMenuItem.Handle, RadioItem);
+  LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
+  if LCLMenuItem<>nil then begin
+    LCLMenuItem.RecreateHandle;
+    Result:=true;
+  end else
+    Result := false;
 end;
 
 function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;

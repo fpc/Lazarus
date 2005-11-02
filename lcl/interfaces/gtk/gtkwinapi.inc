@@ -7143,25 +7143,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: RadioMenuItemGroup
-  Params:  hndMenu: HMENU; bRadio: Boolean
-  Returns: Nothing
-
-  Change the group of menuitems to 'radio' or to 'checked'.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
-var
-  LCLMenuItem: TMenuItem;
-begin
-  LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
-  if LCLMenuItem<>nil then begin
-    LCLMenuItem.RecreateHandle;
-    Result:=true;
-  end else
-    Result := false;
-end;
-
-{------------------------------------------------------------------------------
   Function: RealizePalette
   Params:  DC: HDC
   Returns: Nothing
