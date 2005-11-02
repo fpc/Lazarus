@@ -687,7 +687,7 @@ end;
 
 procedure TCustomPropertyStorage.WriteInteger(const Ident: string; Value: Longint);
 begin
-  DoReadInteger(RootSection, Ident, Value);
+  DoWriteInteger(RootSection, Ident, Value);
 end;
 
 procedure TCustomPropertyStorage.EraseSections;
