@@ -365,11 +365,6 @@ begin
   Result := WidgetSet.RadialPieWithAngles(DC, X,Y,Width,Height,Angle1,Angle2);
 end;
 
-function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
-begin
-  Result := WidgetSet.RadioMenuItemGroup(hndMenu,bRadio);
-end;
-
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;
 begin
   Result := WidgetSet.RegroupMenuItem(hndMenu,GroupIndex);

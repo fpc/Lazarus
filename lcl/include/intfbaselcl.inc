@@ -539,11 +539,6 @@ begin
   Result := True;
 end;
 
-function TWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
-begin
-  Result := false;
-end;
-
 function TWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
 begin
   Result := false;

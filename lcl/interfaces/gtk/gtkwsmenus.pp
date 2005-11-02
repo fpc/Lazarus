@@ -50,6 +50,7 @@ type
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
+    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
   end;
 
@@ -223,6 +224,13 @@ begin
   gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
                            Enabled and (AMenuItem.Caption<>'-'));
   Result := True;
+end;
+
+function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+  const RadioItem: boolean): boolean;
+begin
+  {TODO: cleanup}
+  Result:=TGTKWidgetSet(WidgetSet).RadioMenuItemGroup(AMenuItem.Handle, RadioItem);
 end;
 
 function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;

@@ -715,12 +715,6 @@ begin
   Result:=inherited RadialPie(DC, x, y, width, height, sx, sy, ex, ey);
 end;
 
-function TCarbonWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean
-  ): Boolean;
-begin
-  Result:=inherited RadioMenuItemGroup(hndMenu, bRadio);
-end;
-
 function TCarbonWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
   Result:=inherited RealizePalette(DC);

@@ -1013,7 +1013,7 @@ begin
     end;
     if (FParent <> nil) and not (csReading in ComponentState)
     and (HandleAllocated) then
-      RadioMenuItemGroup(Handle,FRadioItem);
+      TWSMenuItemClass(WidgetSetClass).SetRadioItem(Self, AValue);
   end;
 end;
 

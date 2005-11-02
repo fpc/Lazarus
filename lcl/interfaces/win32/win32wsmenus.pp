@@ -53,8 +53,8 @@ type
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
+    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override; 
-    
   end;
 
   { TWin32WSMenu }
@@ -99,6 +99,23 @@ begin
   and TCustomForm(lMenu.Parent).HandleAllocated 
   and not (csDestroying in lMenu.Parent.ComponentState) then
     AddToChangedMenus(TCustomForm(lMenu.Parent).Handle);
+end;
+
+function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Integer; Value: boolean): boolean;
+var
+  MenuInfo: MENUITEMINFO;
+begin
+  MenuInfo.cbSize := sizeof(MenuInfo);
+  MenuInfo.fMask := MIIM_TYPE;
+  MenuInfo.dwTypeData := nil;  // don't retrieve caption
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  if Value then
+    MenuInfo.fType := MenuInfo.fType or Flag
+  else
+    MenuInfo.fType := MenuInfo.fType and (not Flag);
+  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  TriggerFormUpdate(AMenuItem);
 end;
 
 { TWin32WSMenuItem }
@@ -243,6 +260,7 @@ begin
       dwTypeData:=nil;
       cch:=0;
     end;
+    if AMenuItem.RadioItem then fType := fType or MFT_RADIOCHECK;
     if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
     if AmenuItem.HasIcon then {adds the menuitem icon}
     begin
@@ -298,20 +316,20 @@ function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: bo
   begin
     Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
   end;
-  
-  procedure InterfaceTurnSiblingsOff(aMI: TMenuItem);
+
+  procedure InterfaceTurnSiblingsOff(AMenuItem: TMenuItem);
   var
     aParent, aSibling: TMenuItem;
     i: integer;
   begin
     // Just check all siblings that are in the same group
     // TMenuItem.TurnSiblingsOff should have modified internal flags
-    aParent := aMI.Parent;
+    aParent := AMenuItem.Parent;
     if aParent <> nil then
-      for i := 0 to aParent.Count-1 do 
+      for i := 0 to aParent.Count-1 do
       begin
         aSibling := aParent.Items[i];
-        if (aSibling <> aMI) and aSibling.RadioItem and (aSibling.GroupIndex=aMI.GroupIndex) then
+        if (aSibling <> AMenuItem) and aSibling.RadioItem and (aSibling.GroupIndex=AMenuItem.GroupIndex) then
           doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
       end;
   end;
@@ -339,18 +357,35 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
+function TWin32WSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+  const RadioItem: boolean): boolean;
+var
+  AParent, ASibling: TMenuItem;
+  i: integer;
+begin
+  // Change all siblings that are in the same group
+  AParent := AMenuItem.Parent;
+  if AParent <> nil then begin
+    Result := True;
+    for i := 0 to AParent.Count-1 do
+    begin
+      ASibling := AParent.Items[i];
+      if (AMenuItem.GroupIndex<>0) and
+         (ASibling.GroupIndex=AMenuItem.GroupIndex) then begin
+        Result := Result and ChangeMenuFlag(ASibling, MFT_RADIOCHECK, RadioItem);
+        // make sure siblings have same state as the LCL has set them
+        Result := Result and SetCheck(ASibling, ASibling.Checked);
+      end;
+    end;
+  end
+  else Result := False;
+end;
+
 function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 var
   MenuInfo: MENUITEMINFO;
 begin
-  MenuInfo.cbSize := sizeof(MenuInfo);
-  MenuInfo.fMask := MIIM_TYPE;
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  if Justified then MenuInfo.fType := MenuInfo.fType or MFT_RIGHTJUSTIFY
-  else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
-  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  TriggerFormUpdate(AMenuItem);
+  Result := ChangeMenuFlag(AMenuItem, MFT_RIGHTJUSTIFY, Justified);
 end;
 
 

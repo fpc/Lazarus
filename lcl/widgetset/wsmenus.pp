@@ -60,7 +60,8 @@ type
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); virtual;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; virtual;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; virtual;
-    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual; 
+    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; virtual;
+    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual;
   end;
   TWSMenuItemClass = class of TWSMenuItem;
 
@@ -121,6 +122,12 @@ begin
 end;
 
 function TWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+begin
+  Result := false;
+end;
+
+function TWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+  const RadioItem: boolean): boolean;
 begin
   Result := false;
 end;
