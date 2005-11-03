@@ -4669,7 +4669,6 @@ begin
     TWinControl(ALCLObject).Handle := THandle(AGTKObject);
     if AGTKObject <> nil then begin
       gtk_object_set_data(AGTKObject, 'Sender', ALCLObject);
-      SetResizeRequest(AGTKObject);
     end;
   end
   else
