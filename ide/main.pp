@@ -1863,12 +1863,7 @@ begin
     itmViewInspector.OnClick := @mnuViewInspectorClicked;
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
-{$IFDEF EnableLazDoc}
     itmViewLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
-{$ELSE}
-    itmViewLazDoc.Visible := false;
-    itmViewLazDoc.Enabled := false;
-{$ENDIF}
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
@@ -2019,7 +2014,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuFindDeclarationClicked(Sender: TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
+  if SourceNoteBook.Notebook=nil then exit;
   DoFindDeclarationAtCursor;
 end;
 
@@ -2113,13 +2108,13 @@ end;
 
 procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  DoOpenEditorFile('',SourceNoteBook.NoteBook.PageIndex,[ofRevert]);
+  if SourceNoteBook.Notebook=nil then exit;
+  DoOpenEditorFile('',SourceNoteBook.Notebook.PageIndex,[ofRevert]);
 end;
 
 procedure TMainIDE.mnuOpenFileAtCursorClicked(Sender: TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
+  if SourceNoteBook.Notebook=nil then exit;
   DoOpenFileAtCursor(Sender);
 end;
 
@@ -2130,14 +2125,14 @@ end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfCheckAmbiguousFiles]);
+  if SourceNoteBook.Notebook=nil then exit;
+  DoSaveEditorFile(SourceNoteBook.Notebook.PageIndex,[sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
+  if SourceNoteBook.Notebook=nil then exit;
+  DoSaveEditorFile(SourceNoteBook.Notebook.PageIndex,
                    [sfSaveAs,sfCheckAmbiguousFiles]);
 end;
 
@@ -2149,13 +2144,13 @@ end;
 procedure TMainIDE.mnuCloseClicked(Sender: TObject);
 var PageIndex: integer;
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
+  if SourceNoteBook.Notebook=nil then exit;
   if Sender is TPage then begin
-    PageIndex:=SourceNoteBook.NoteBook.Pages.IndexOfObject(Sender);
+    PageIndex:=SourceNoteBook.Notebook.Pages.IndexOfObject(Sender);
     if PageIndex<0 then
-      PageIndex:=SourceNoteBook.NoteBook.PageIndex;
+      PageIndex:=SourceNoteBook.Notebook.PageIndex;
   end else begin
-    PageIndex:=SourceNoteBook.NoteBook.PageIndex;
+    PageIndex:=SourceNoteBook.Notebook.PageIndex;
   end;
   DoCloseEditorFile(PageIndex,[cfSaveFirst]);
 end;
@@ -2163,8 +2158,8 @@ end;
 procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
 begin
   DoSaveAll([]);
-  while (SourceNoteBook.NoteBook<>nil)
-  and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,
+  while (SourceNoteBook.Notebook<>nil)
+  and (DoCloseEditorFile(SourceNoteBook.Notebook.PageIndex,
        [cfSaveFirst])=mrOk) do ;
 end;
 
@@ -4925,7 +4920,7 @@ begin
 
   // update editor indices in project
   if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
-    Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+    Project1.InsertEditorIndex(SourceNotebook.Notebook.PageIndex);
   AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
 
   // restore source editor settings
@@ -5050,8 +5045,8 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
-    Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
-    NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+    Project1.InsertEditorIndex(SourceNotebook.Notebook.PageIndex);
+    NewUnitInfo.EditorIndex:=SourceNotebook.Notebook.PageIndex;
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
@@ -5312,7 +5307,7 @@ begin
 
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
-  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.NoteBook<>nil;
+  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.Notebook<>nil;
   MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
   // close file in project
@@ -5446,7 +5441,7 @@ begin
       end;
       if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
         // file already open -> change source notebook page
-        SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
+        SourceNoteBook.Notebook.PageIndex:=NewUnitInfo.EditorIndex;
         Result:=mrOk;
         exit;
       end;
@@ -5570,7 +5565,7 @@ begin
   // check if main unit is already open in source editor
   if (MainUnitInfo.EditorIndex>=0) and (not ProjectLoading) then begin
     // already loaded -> switch to source editor
-    SourceNotebook.NoteBook.PageIndex:=MainUnitInfo.EditorIndex;
+    SourceNotebook.Notebook.PageIndex:=MainUnitInfo.EditorIndex;
     Result:=mrOk;
     exit;
   end;
@@ -5650,7 +5645,7 @@ Begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           if AnUnitInfo.EditorIndex>=0 then begin
-            SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex;
+            SourceNoteBook.Notebook.PageIndex:=AnUnitInfo.EditorIndex;
           end else begin
             if Project1.MainUnitInfo=AnUnitInfo then
               Result:=DoOpenMainUnit(false)
@@ -6197,7 +6192,7 @@ begin
     exit;
   end;
   // close all loaded files
-  while SourceNotebook.NoteBook<>nil do begin
+  while SourceNotebook.Notebook<>nil do begin
     Result:=DoCloseEditorFile(SourceNotebook.Notebook.PageCount-1,
                               [cfProjectClosing]);
     if Result=mrAbort then exit;
@@ -6356,7 +6351,7 @@ begin
     then begin
       // open source was successful (at least the source)
       if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-        Project1.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
+        Project1.ActiveEditorIndexAtStart:=SourceNoteBook.Notebook.PageIndex;
       LastEditorIndex:=LowestEditorIndex;
     end else begin
       // failed to open entirely -> mark as unloaded, so that next time
@@ -6373,8 +6368,8 @@ begin
   {$ENDIF}
 
   // set active editor source editor
-  if (SourceNoteBook.NoteBook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
-  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.PageCount)
+  if (SourceNoteBook.Notebook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
+  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.Notebook.PageCount)
   then
     SourceNoteBook.Notebook.PageIndex:=Project1.ActiveEditorIndexAtStart;
 

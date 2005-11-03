@@ -604,10 +604,8 @@ type
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits write SetUnits;
     property UpdateLock: integer read FUpdateLock;
-    {$IFDEF EnableLazDoc}
       //lazdoc
     property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
-    {$ENDIF}
   end;
 
 const
@@ -1413,10 +1411,8 @@ begin
           ,TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
 
-      {$IFDEF EnableLazDoc}
       //lazdoc
       xmlconfig.SetValue(Path+'LazDoc/Paths', LazDocPathList.Text);
-      {$ENDIF}
 
       SaveUnits;
 
@@ -1613,10 +1609,8 @@ begin
       UpdateSourceDirectories;
       SourceDirectoriesUpdated:=true;
 
-      {$IFDEF EnableLazDoc}
       //lazdoc
       LazDocPathList.Text := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
-      {$ENDIF}
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options

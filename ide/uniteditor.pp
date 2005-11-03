@@ -376,9 +376,9 @@ type
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
+    Notebook: TNoteBook;
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
-    Notebook: TNotebook;
     procedure AddBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure DeleteBreakpointClicked(Sender: TObject);
@@ -2659,33 +2659,6 @@ begin
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
-  // statusbar
-  StatusBar := TStatusBar.Create(self);
-    with Statusbar do
-      begin
-       Parent := Self;
-       Name := 'StatusBar';
-       Visible := True;
-       SimpleText := 'This is a test';
-       Panels.Add;       //x,y coord
-       Panels.Add;       //Readonly/Modified
-       Panels.Add;       //OVR/INS
-       Panels.Add;       //Unitname
-       Panels[0].Text := '';
-       Panels[0].Width := 100;
-       Panels[0].Bevel := pbLowered;
-       Panels[1].Text := '';
-       Panels[1].Bevel := pbLowered;
-       Panels[1].Width := 150;
-       Panels[2].Text := '';
-       Panels[2].Bevel := pbLowered;
-       Panels[2].Width := 50;
-       Panels[3].Text := 'INS';
-       Panels[3].Bevel := pbLowered;
-       Panels[3].Width := 50;
-       SimplePanel := False;
-      end;
-
   // goto dialog
   GotoDialog := TfrmGoto.Create(self);
 
@@ -2736,21 +2709,16 @@ end;
 
 procedure TSourceNotebook.ShowLazDoc;
 begin
-  {$IFNDEF EnableLazDoc}
-  exit;
-  {$ENDIF}
   DoShowLazDoc;
   LazDocNewPage;
 end;
 
 function FindPathFromFile(FileNamePath: string): string;
-{$IFDEF EnableLazDoc}
 var
   i: integer;
   fn: string;
   pathlist: TStrings;
 begin
-{$IFDEF EnableLazDoc}
   Result := '';
   pathlist := TStringList.Create;
 
@@ -2768,22 +2736,13 @@ begin
       Exit;
   end;
   pathlist.Free;
-{$ENDIF}
 end;
-{$ELSE}
-begin
-  Result:=FileNamePath;
-end;
-{$ENDIF}
 
 procedure TSourceNotebook.LazDocNewPage;
 var
   SrcEdit: TSourceEditor;
   DocPath: string;
 begin
-  {$IFNDEF EnableLazDoc}
-  exit;
-  {$ENDIF}
   //try to find if the file belongs to LCL
   //for other projects the location of the doc file could
   //be found through the lpi file
@@ -4962,10 +4921,8 @@ var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
 
-  {$IFDEF EnableLazDoc}
   LazDocNewPage;
-  {$ENDIF}
-  
+
   //writeln('TSourceNotebook.NotebookPageChanged ',Notebook.Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
@@ -5205,21 +5162,17 @@ begin
       FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
     end;
   end;
-  {$IFDEF EnableLazDoc}
   if Assigned(LazDocForm) then
     UpdateLazDoc;
-  {$ENDIF}
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  {$IFDEF EnableLazDoc}
   if not Assigned(LazDocForm) then Exit;
 
   if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME] then
     UpdateLazDoc;
-  {$ENDIF}
 end;
 
 procedure TSourceNotebook.ShowSynEditHint(const MousePos: TPoint);
@@ -5495,7 +5448,7 @@ end;
 
 initialization
   InternalInit;
-
+  {$I uniteditor.lrs}
 {$I ../images/bookmark.lrs}
 
 finalization

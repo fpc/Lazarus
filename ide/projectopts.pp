@@ -257,10 +257,8 @@ begin
     (pfMainUnitHasTitleStatement in AProject.Flags);
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
   
-  {$IFDEF EnableLazDoc}
   //lazdoc
   LazDocListBox.Items.Assign(Project.LazDocPathList);
-  {$ENDIF}
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
@@ -307,10 +305,8 @@ begin
     SetAutoCreateForms;
     SetProjectTitle;
     
-    {$IFDEF EnableLazDoc}
     //lazdoc
     Project.LazDocPathList.Assign(LazDocListBox.Items);
-    {$ENDIF}
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);
@@ -318,21 +314,18 @@ end;
 
 procedure TProjectOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   if LazDocPathEdit.Text <> '' then
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   if SelectDirectoryDialog.Execute then
     LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
 end;
 
 procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 

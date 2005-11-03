@@ -220,10 +220,8 @@ type
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
     
-    {$IFDEF EnableLazDoc}
     FLazDocPathList: TStrings;
-    {$ENDIF}
-    
+
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
     
@@ -392,11 +390,9 @@ type
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
 
-    {$IFDEF EnableLazDoc}
     //lazdoc
     property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
-    {$ENDIF}
-    
+
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
     
@@ -887,9 +883,7 @@ begin
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
 
-  {$IFDEF EnableLazDoc}
   FLazDocPathList:=TStringList.Create;
-  {$ENDIF}
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -911,9 +905,7 @@ begin
   fIDEWindowLayoutList.Free;
   FConfigStore.Free;
   FXMLCfg.Free;
-  {$IFDEF EnableLazDoc}
   FLazDocPathList.Free;
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -1169,12 +1161,10 @@ begin
     // naming
     LoadPascalFileExt(Path+'');
 
-    {$IFDEF EnableLazDoc}
     //lazdoc
     if FLazDocPathList<>nil then
       FLazDocPathList.Text :=
                   XMLConfig.GetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
-    {$ENDIF}
 
     if FileVersion>=103 then begin
       fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
@@ -1390,11 +1380,9 @@ begin
       AmbiguousFileActionNames[fAmbiguousFileAction],
       AmbiguousFileActionNames[afaAsk]);
 
-    {$IFDEF EnableLazDoc}
     //lazdoc
     if FLazDocPathList<>nil then
       XMLConfig.SetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
-    {$ENDIF}
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
@@ -2084,14 +2072,12 @@ end;
 
 procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   if LazDocPathEdit.Text <> '' then
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
 procedure TEnvironmentOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   if SelectDirectoryDialog.Execute then
     LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
 end;
@@ -2099,7 +2085,6 @@ end;
 procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
   );
 begin
-  {$IFNDEF EnableLazDoc}Exit;{$ENDIF}
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
@@ -2328,10 +2313,8 @@ begin
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
     
-    {$IFDEF EnableLazDoc}
     //lazdoc
     LazDocListBox.Items.AddStrings(LazDocPathList);
-    {$ENDIF}
   end;
 end;
 
@@ -2469,10 +2452,8 @@ begin
     else
       PascalFileExtension:=petPAS;
 
-    {$IFDEF EnableLazDoc}
     //lazdoc
     LazDocPathList.Assign(LazDocListBox.Items);
-    {$ENDIF}
 
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);

@@ -58,23 +58,29 @@ uses
   XMLread,
   XMLwrite;
 
+const
+  SHORT = 1;
+  DESCR = 2;
+  ERRORS = 4;
+  SEEALSO = 5;
+  EXAMPLE = 6;
+  NODEITEMS = EXAMPLE;  //always make nodeitems equal to higest element
+
 type
-  TFPDocNode = record
-    Short: String;
-    Descr: String;
-    Errors: String;
-    SeeAlso: String;
-  end;
+  TFPDocNode = array [1..NODEITEMS] of String;
 
   { TLazDocForm }
 
   TLazDocForm = class(TForm)
     AddLinkButton: TButton;
+    BrowseExampleButton: TButton;
+    ExampleEdit: TEdit;
+    LinkIdComboBox: TComboBox;
     DeleteLinkButton: TButton;
     DescrMemo: TMemo;
     LinkTextEdit: TEdit;
-    LinkIdEdit: TEdit;
     LinkListBox: TListBox;
+    OpenDialog: TOpenDialog;
     Panel1: TPanel;
     ShortEdit: TEdit;
     ErrorsMemo: TMemo;
@@ -87,22 +93,31 @@ type
     InsertCodeTagButton: TSpeedButton;
     InsertRemarkButton: TSpeedButton;
     InsertVarTagButton: TSpeedButton;
+    ExampleTabSheet: TTabSheet;
     UnderlineFormatButton: TSpeedButton;
     SeeAlsoTabSheet: TTabSheet;
     procedure AddLinkButtonClick(Sender: TObject);
+    procedure BrowseExampleButtonClick(Sender: TObject);
     procedure DeleteLinkButtonClick(Sender: TObject);
     procedure DocumentationTagChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
+    procedure LinkChange(Sender: TObject);
     procedure LinkListBoxClick(Sender: TObject);
   private
     { private declarations }
-    FChanged: Boolean;
+    FLinkIndex: Integer;
+    FChanged:   Boolean;
     FDocFileName: String;
     FCurrentElement: String;
     FLastElement: String;
+    function GetModuleNode: TDOMNode;
+    function GetFirstElement: TDOMNode;
+    procedure GetElementList;
+    function MakeLink: String;
     procedure SetDocFileName(Value: String);
+    procedure InsertElement(ElementName: String);
     function NodeByName(ElementName: String): TDOMNode;
     function GetFirstChildValue(n: TDOMNode): String;
     function ElementFromNode(Node: TDOMNode): TFPDocNode;
@@ -121,7 +136,8 @@ type
 
 var
   LazDocForm: TLazDocForm;
-  doc: TXMLdocument = Nil; //maybe better to make it a member field of TLazFormDoc
+  doc: TXMLdocument = Nil;
+//maybe better to make it a member field of TLazFormDoc
 
 procedure DoShowLazDoc;
 
@@ -137,8 +153,77 @@ begin
   LazDocForm.Show;
 end;
 
+function TLazDocForm.GetModuleNode: TDOMNode;
+var
+  n: TDOMNode;
+begin
+  //get first node
+  n := doc.FindNode('fpdoc-descriptions');
+
+  //proceed to package (could there be more packages in one file??)
+  n := n.FirstChild;
+
+  //proceed to module  (could there be more modules in one file??)
+  n := n.FirstChild;
+  while n.NodeName <> 'module' do
+    n := n.NextSibling;
+
+  Result := n;
+end;
+
+function TLazDocForm.GetFirstElement: TDOMNode;
+var
+  n: TDOMNode;
+begin
+  //get first module node
+  n := GetModuleNode;
+
+  //proceed to element
+  n := n.FirstChild;
+  while n.NodeName <> 'element' do
+    n := n.NextSibling;
+
+  Result := n;
+end;
+
+procedure TLazDocForm.GetElementList;
+var
+  n: TDOMNode;
+begin
+  LinkIdComboBox.Clear;
+
+  if not Assigned(doc) then
+  begin
+    {$ifdef dbgLazDoc}
+    DebugLn('TLazDocForm.GetElementList: document is not set');
+    {$endif}
+
+    Exit;
+  end;
+
+  //get first element node
+  n := GetFirstElement;
+
+  //search all elements
+  while Assigned(n) do
+  begin
+    //showmessage(TDomElement(n)['name']);
+    LinkIdComboBox.Items.Add(TDomElement(n)['name']);
+
+    n := n.NextSibling;
+
+    if not Assigned(n) then
+      Exit;
+
+    while n.NodeName = '#comment' do
+      n := n.NextSibling;
+  end;
+end;
+
 procedure TLazDocForm.SetDocFileName(Value: String);
 begin
+  LinkIdComboBox.Clear;
+
   if FileExists(Value) and (Value <> FDocFileName) then
   begin
     //reset Self
@@ -153,10 +238,11 @@ begin
 
     SetCaption;
 
+    GetElementList;
+
     {$ifdef dbgLazDoc}
     DebugLn('TLazDocForm.SetDocFileName: document is set: ' + Value);
     {$endif}
-
   end;
 end;
 
@@ -164,12 +250,15 @@ procedure TLazDocForm.FormCreate(Sender: TObject);
 begin
   Caption := lisLazDocMainFormCaption;
 
+  FLinkIndex := -1;
+
   with PageControl do
   begin
     Page[0].Caption := lisLazDocShortTag;
     Page[1].Caption := lisLazDocDescrTag;
     Page[2].Caption := lisLazDocErrorsTag;
     Page[3].Caption := lisLazDocSeeAlsoTag;
+    Page[4].Caption := lisLazDocExampleTag;
     PageIndex := 0;
   end;
 
@@ -183,90 +272,116 @@ begin
   AddLinkButton.Caption := lisLazDocAddLinkButton;
   DeleteLinkButton.Caption := lisLazDocDeleteLinkButton;
 
+  BrowseExampleButton.Caption := lisLazDocBrowseExampleButton;
+
   Reset;
-  
+
   Resize;
 end;
 
 procedure TLazDocForm.FormResize(Sender: TObject);
 begin
-  LinkIdEdit.Width := (AddLinkButton.Left - LinkIdEdit.Left - 12) div 2;
-  LinkTextEdit.Left := LinkIdEdit.Left + LinkIdEdit.Width + 6;
-  LinkTextEdit.Width := LinkIdEdit.Width;
+  LinkIdComboBox.Width := (AddLinkButton.Left - LinkIdComboBox.Left - 8) div 2;
+  LinkTextEdit.Left    := LinkIdComboBox.Left + LinkIdComboBox.Width + 4;
+  LinkTextEdit.Width   := LinkIdComboBox.Width;
 end;
 
 procedure TLazDocForm.FormatButtonClick(Sender: TObject);
+
+  procedure InsertTag(starttag, endtag: String);
+  begin
+    if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+      DescrMemo.SelText := starttag + DescrMemo.SelText + endtag;
+    if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+      ErrorsMemo.SelText := starttag + ErrorsMemo.SelText + endtag;
+  end;
+
 begin
   case TSpeedButton(Sender).Tag of
     //bold
-    0: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<b>' + DescrMemo.SelText + '</b>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<b>' + ErrorsMemo.SelText + '</b>';
-       end;
+    0:
+      InsertTag('<b>', '</b>');
     //italic
-    1: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<i>' + DescrMemo.SelText + '</i>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<i>' + ErrorsMemo.SelText + '</i>';
-       end;
+    1:
+      InsertTag('<i>', '</i>');
     //underline
-    2: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<u>' + DescrMemo.SelText + '</u>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<u>' + ErrorsMemo.SelText + '</u>';
-       end;
+    2:
+      InsertTag('<u>', '</u>');
     //codetag
-    3: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<p><code>' + DescrMemo.SelText + '</code></p>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<p><code>' + ErrorsMemo.SelText + '</code></p>';
-       end;
+    3:
+      InsertTag('<p><code>', '</code></p>');
     //remarktag
-    4: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<p><remark>' + DescrMemo.SelText + '</remark></p>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<p><remark>' + ErrorsMemo.SelText + '</remark></p>';
-       end;
+    4:
+      InsertTag('<p><remark>', '</remark></p>');
     //vartag
-    5: begin
-         if PageControl.ActivePage.Caption = lisLazDocDescrTag then
-           DescrMemo.SelText := '<var>' + DescrMemo.SelText + '</var>';
-         if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
-           ErrorsMemo.SelText := '<var>' + ErrorsMemo.SelText + '</var>';
-       end;
+    5:
+      InsertTag('<var>', '</var>');
   end;
+end;
+
+procedure TLazDocForm.LinkChange(Sender: TObject);
+begin
+  if FLinkIndex = -1 then
+    Exit;
+
+  LinkListBox.Items.Strings[FLinkIndex] := MakeLink;
 end;
 
 procedure TLazDocForm.LinkListBoxClick(Sender: TObject);
 var
-  strTmp: string;
-  intTmp: integer;
-  index: integer;
-  intStart: integer;
+  strTmp: String;
+  intTmp: Integer;
+  intStart: Integer;
 begin
   //split the link into Id and Text
-  index := LinkListBox.ItemIndex;
-  
-  if index = -1 then Exit;
-  
-  intStart := PosEx('"', LinkListBox.Items[index], 1);
-  
-  intTmp := PosEx('"', LinkListBox.Items[index], intStart + 1);
-  
-  LinkIdEdit.Text := Copy(LinkListBox.Items[index], intStart + 1, intTmp - intStart - 1);
-  
-  strTmp := Copy(LinkListBox.Items[index], intTmp + 2, Length(LinkListBox.Items[index]));
+  FLinkIndex := LinkListBox.ItemIndex;
+
+  if FLinkIndex = -1 then
+    Exit;
+
+  intStart := PosEx('"', LinkListBox.Items[FLinkIndex], 1);
+
+  intTmp := PosEx('"', LinkListBox.Items[FLinkIndex], intStart + 1);
+
+  LinkIdComboBox.Text := Copy(LinkListBox.Items[FLinkIndex],
+    intStart + 1, intTmp - intStart - 1);
+
+  strTmp := Copy(LinkListBox.Items[FLinkIndex], intTmp + 2,
+    Length(LinkListBox.Items[FLinkIndex]));
 
   if strTmp = '>' then
     LinkTextEdit.Text := ''
   else
     LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
+end;
+
+procedure TLazDocForm.InsertElement(ElementName: String);
+var
+  n: TDOMNode;
+  child: TDOMNode;
+begin
+  Exit;
+
+  //preparations being made for adding nodes
+  //having to finalize adding comment
+
+  //get first module node
+  n := GetModuleNode;
+
+  //TODO: insert element comment (important or not!!)
+  child := doc.CreateComment('test');
+  n.AppendChild(child);
+
+  child := doc.CreateElement('element');
+  TDOMElement(child).SetAttribute('name', ElementName);
+  child.AppendChild(doc.CreateElement('short'));
+  child.AppendChild(doc.CreateElement('descr'));
+  child.AppendChild(doc.CreateElement('errors'));
+  child.AppendChild(doc.CreateElement('seealso'));
+  child.AppendChild(doc.CreateElement('example'));
+  n.AppendChild(child);
+
+  WriteXMLFile(doc, FDocFileName);
 end;
 
 function TLazDocForm.NodeByName(ElementName: String): TDOMNode;
@@ -284,29 +399,20 @@ begin
     Exit;
   end;
 
-  //get first node
-  n := doc.FindNode('fpdoc-descriptions');
-
-  //proceed to package (could there be more packages in one file??)
-  n := n.FirstChild;
-
-  //proceed to module  (could there be more modules in one file??)
-  n := n.FirstChild;
-  while n.NodeName <> 'module' do
-    n := n.NextSibling;
-
-  //proceed to element
-  n := n.FirstChild;
-  while n.NodeName <> 'element' do
-    n := n.NextSibling;
+  //get first element node
+  n := GetFirstElement;
 
   //search elements for ElementName
   while Assigned(n) and (TDomElement(n)['name'] <> ElementName) do
   begin
     n := n.NextSibling;
 
+    //no element found
     if not Assigned(n) then
+    begin
+      InsertElement(ElementName);
       Exit;
+    end;
 
     while n.NodeName = '#comment' do
       n := n.NextSibling;
@@ -354,16 +460,19 @@ begin
       S := Node.NodeName;
 
       if S = 'short' then
-        Result.Short := GetFirstChildValue(Node);
+        Result[SHORT] := GetFirstChildValue(Node);
 
       if S = 'descr' then
-        Result.Descr := GetFirstChildValue(Node);
+        Result[DESCR] := GetFirstChildValue(Node);
 
       if S = 'errors' then
-        Result.Errors := GetFirstChildValue(Node);
+        Result[ERRORS] := GetFirstChildValue(Node);
 
       if S = 'seealso' then
-        Result.SeeAlso := GetFirstChildValue(Node);
+        Result[SEEALSO] := GetFirstChildValue(Node);
+
+      if S = 'example' then
+        Result[EXAMPLE] := GetFirstChildValue(Node);
     end;
     Node := Node.NextSibling;
   end;
@@ -463,9 +572,10 @@ begin
   ShortEdit.Clear;
   DescrMemo.Clear;
   ErrorsMemo.Clear;
-  LinkIdEdit.Clear;
+  LinkIdComboBox.Text := '';
   LinkTextEdit.Clear;
   LinkListBox.Clear;
+  ExampleEdit.Clear;
 
   FChanged := False;
 end;
@@ -503,34 +613,27 @@ begin
 
   EnabledState := Assigned(n);
 
-  ShortEdit.Enabled := True;
-  DescrMemo.Enabled := True;
-  ErrorsMemo.Enabled := True;
-  LinkIdEdit.Enabled := True;
-  LinkTextEdit.Enabled := True;
-  LinkListBox.Enabled := True;
-  AddLinkButton.Enabled := True;
-  DeleteLinkButton.Enabled := True;
-
   if Assigned(n) then
   begin
     dn := ElementFromNode(n);
 
-    ShortEdit.Text := dn.Short;
-    DescrMemo.Lines.Text := ConvertLineEndings(dn.Descr);
-    ErrorsMemo.Lines.Text := ConvertLineEndings(dn.Errors);
-    LinkListBox.Items.Text := ConvertLineEndings(dn.SeeAlso);
-    LinkIdEdit.Clear;
+    ShortEdit.Text := dn[SHORT];
+    DescrMemo.Lines.Text := ConvertLineEndings(dn[DESCR]);
+    ErrorsMemo.Lines.Text := ConvertLineEndings(dn[ERRORS]);
+    LinkListBox.Items.Text := ConvertLineEndings(dn[SEEALSO]);
+    LinkIdComboBox.Text := '';
     LinkTextEdit.Clear;
+    ExampleEdit.Text := Copy(dn[EXAMPLE], 16, Length(dn[EXAMPLE]) - 19);
   end
   else
   begin
     ShortEdit.Text := lisLazDocNoDocumentation;
     DescrMemo.Lines.Text := lisLazDocNoDocumentation;
     ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
-    LinkIdEdit.Text := lisLazDocNoDocumentation;
+    LinkIdComboBox.Text := lisLazDocNoDocumentation;
     LinkTextEdit.Text := lisLazDocNoDocumentation;
     LinkListBox.Clear;
+    ExampleEdit.Text := lisLazDocNoDocumentation;
   end;
 
   FChanged := False;
@@ -538,18 +641,66 @@ begin
   ShortEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
-  LinkIdEdit.Enabled := EnabledState;
+  LinkIdComboBox.Enabled := EnabledState;
   LinkTextEdit.Enabled := EnabledState;
   LinkListBox.Enabled := EnabledState;
   AddLinkButton.Enabled := EnabledState;
   DeleteLinkButton.Enabled := EnabledState;
+  ExampleEdit.Enabled := EnabledState;
+  BrowseExampleButton.Enabled := EnabledState;
+end;
+
+function ToUnixLineEnding(s: String): String;
+begin
+  if LineEnding = #10 then
+    Result := s
+  else
+    Result := StringReplace(s, LineEnding, #10, [rfReplaceAll]);
 end;
 
 procedure TLazDocForm.Save;
 var
   n: TDOMNode;
   S: String;
-  child: TDOMNode;
+  NodeWritten: array [1..NODEITEMS] of Boolean;
+  i: Integer;
+
+  procedure CheckAndWriteNode(NodeName: String; NodeText: String;
+    NodeIndex: Integer);
+  var
+    child: TDOMNode;
+  begin
+    {$ifdef dbgLazDoc}
+    DebugLn('TLazDocForm.Save[CheckAndWriteNode]: checking element: ' +
+      NodeName);
+    {$endif}
+
+    if S = NodeName then
+    begin
+      if not Assigned(n.FirstChild) then
+      begin
+        child := doc.CreateTextNode(ToUnixLineEnding(NodeText));
+        n.AppendChild(child);
+      end
+      else
+        n.FirstChild.NodeValue := ToUnixLineEnding(NodeText);
+      NodeWritten[NodeIndex] := True;
+    end;
+  end;
+
+  procedure InsertNodeElement(ElementName: String; ElementText: String);
+  var
+    child: TDOMNode;
+  begin
+    {$ifdef dbgLazDoc}
+    DebugLn('TLazDocForm.Save[InsertNodeElement]: inserting element: ' +
+      ElementName);
+    {$endif}
+
+    child := doc.CreateElement(ElementName);
+    child.AppendChild(doc.CreateTextNode(ToUnixLineEnding(ElementText)));
+    n.AppendChild(child);
+  end;
 
 begin
   //nothing changed, so exit
@@ -561,6 +712,11 @@ begin
   if not Assigned(n) then
     Exit;
 
+  //reset all nodes
+  for i := 1 to NODEITEMS do
+    NodeWritten[i] := False;
+
+  //write all known nodes to XML
   n := n.FirstChild;
   while Assigned(n) do
   begin
@@ -568,44 +724,33 @@ begin
     begin
       S := n.NodeName;
 
-      if S = 'short' then
-        if not Assigned(n.FirstChild) then
-        begin
-          child := doc.CreateTextNode(ShortEdit.Text);
-          n.AppendChild(child);
-        end
-        else
-          n.FirstChild.NodeValue := ShortEdit.Text;
-
-      if S = 'descr' then
-        if not Assigned(n.FirstChild) then
-        begin
-          child := doc.CreateTextNode(StringListToText(DescrMemo.Lines, #10));
-          n.AppendChild(child);
-        end
-        else
-          n.FirstChild.NodeValue := StringListToText(DescrMemo.Lines, #10);
-
-      if S = 'errors' then
-        if not Assigned(n.FirstChild) then
-        begin
-          child := doc.CreateTextNode(StringListToText(ErrorsMemo.Lines, #10));
-          n.AppendChild(child);
-        end
-        else
-          n.FirstChild.NodeValue := StringListToText(ErrorsMemo.Lines, #10);
-
-      if S = 'seealso' then
-        if not Assigned(n.FirstChild) then
-        begin
-          child := doc.CreateTextNode(StringListToText(LinkListBox.Items, #10));
-          n.AppendChild(child);
-        end
-        else
-          n.FirstChild.NodeValue := StringListToText(LinkListBox.Items, #10);
+      CheckAndWriteNode('short', ShortEdit.Text, SHORT);
+      CheckAndWriteNode('descr', DescrMemo.Text, DESCR);
+      CheckAndWriteNode('errors', ErrorsMemo.Text, ERRORS);
+      CheckAndWriteNode('seealso', LinkListBox.Text, SEEALSO);
+      CheckAndWriteNode('example', '<example file="' +
+        ExampleEdit.Text + '"/>', EXAMPLE);
     end;
     n := n.NextSibling;
   end;
+
+  //add new nodes to XML if not already updated
+  n := NodeByName(FCurrentElement);
+  for i := 1 to NODEITEMS do
+    if NodeWritten[i] = False then
+      case i of
+        SHORT:
+          InsertNodeElement('short', ShortEdit.Text);
+        DESCR:
+          InsertNodeElement('descr', DescrMemo.Text);
+        ERRORS:
+          InsertNodeElement('errors', ErrorsMemo.Text);
+        SEEALSO:
+          InsertNodeElement('seealso', LinkListBox.Text);
+        EXAMPLE:
+          InsertNodeElement('example', '<example file="' +
+            ExampleEdit.Text + '"/>');
+      end;
 
   WriteXMLFile(doc, FDocFileName);
 
@@ -617,24 +762,41 @@ begin
   FChanged := True;
 end;
 
+function TLazDocForm.MakeLink: String;
+begin
+  if Trim(LinkTextEdit.Text) = '' then
+    Result := '<link id="' + Trim(LinkIdComboBox.Text) + '"/>'
+  else
+    Result := '<link id="' + Trim(LinkIdComboBox.Text) + '">' +
+      LinkTextEdit.Text + '</link>';
+end;
+
 procedure TLazDocForm.AddLinkButtonClick(Sender: TObject);
 begin
-  if Trim(LinkIdEdit.Text) <> '' then
+  FLinkIndex := -1;
+
+  if Trim(LinkIdComboBox.Text) <> '' then
   begin
-    if Trim(LinkTextEdit.Text) = '' then
-      LinkListBox.Items.Add('<link id="' + Trim(LinkIdEdit.Text) + '"/>')
-    else
-      LinkListBox.Items.Add('<link id="' + Trim(LinkIdEdit.Text) + '">' + LinkTextEdit.Text + '</link>');
+    LinkListBox.Items.Add(MakeLink);
 
     FChanged := True;
   end;
 end;
 
+procedure TLazDocForm.BrowseExampleButtonClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    ExampleEdit.Text := SetDirSeparators(ExtractRelativepath(
+      ExtractFilePath(FDocFileName), OpenDialog.FileName));
+end;
+
 procedure TLazDocForm.DeleteLinkButtonClick(Sender: TObject);
 begin
-  if LinkListBox.ItemIndex >= 0 then
+  if FLinkIndex >= 0 then
   begin
-    LinkListBox.Items.Delete(LinkListBox.ItemIndex);
+    LinkListBox.Items.Delete(FLinkIndex);
+
+    FLinkIndex := -1;
 
     FChanged := True;
   end;

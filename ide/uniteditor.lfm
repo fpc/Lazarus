@@ -1,0 +1,34 @@
+object SourceNoteBook: TSourceNoteBook
+  BorderStyle = bsSizeToolWin
+  Caption = 'SourceNoteBook'
+  ClientHeight = 300
+  ClientWidth = 400
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 533
+  Height = 300
+  Top = 374
+  Width = 400
+  object StatusBar: TStatusBar
+    Panels = <    
+      item
+        Width = 100
+      end    
+      item
+        Width = 150
+      end    
+      item
+        Width = 50
+      end    
+      item
+        Text = 'INS'
+        Width = 50
+      end>
+    SimpleText = 'This is a test'
+    SimplePanel = False
+    Height = 23
+    Top = 277
+    Width = 400
+  end
+end
