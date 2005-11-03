@@ -42,8 +42,9 @@ begin
     if WordWrap then inc(Flags,DT_WordBreak);
     DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
     SelectObject(DC, OldFont);
-    AWidth := R.Right - R.Left;
-    AHeight := R.Bottom - R.Top;
+    // add one to be able to display disabled label
+    AWidth := R.Right - R.Left + 1;
+    AHeight := R.Bottom - R.Top + 1;
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
