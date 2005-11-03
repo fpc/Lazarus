@@ -187,9 +187,9 @@ type
   private
   protected
   public
+{$ifdef OldToolbar}  
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-{$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
     class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
@@ -425,6 +425,8 @@ end;
 
 { TWin32WSToolbar}
 
+{$ifdef OldToolbar}
+
 function TWin32WSToolBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -442,8 +444,6 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
 end;
-
-{$ifdef OldToolbar}
 
 function  TWin32WSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
@@ -584,7 +584,9 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
+{$ifdef OldToolbar}
   RegisterWSComponent(TToolBar, TWin32WSToolBar);
+{$endif}
   RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);
