@@ -1246,19 +1246,19 @@ procedure TGDBMIDebugger.Init;
     
     case StringCase(FTargetCPU, [
       'i386', 'i486', 'i586', 'i686',
-      'ia64', 'powerpc', 'sparc'
+      'ia64', 'x86_64', 'powerpc', 'sparc'
     ], True, False) of
       0..3: begin // ix86
         FTargetRegisters[0] := '$eax';
         FTargetRegisters[1] := '$edx';
         FTargetRegisters[2] := '$ecx';
       end;
-      4: begin // ia64
+      4, 5: begin // ia64, x86_64
         FTargetRegisters[0] := '$rax';
         FTargetRegisters[1] := '$rcx';
         FTargetRegisters[2] := '$rdx';
       end;
-      5: begin // powerpc
+      6: begin // powerpc
         // alltough darwin can start with r2, it seems that all OS start with r3
 //        if UpperCase(FTargetOS) = 'DARWIN'
 //        then begin
@@ -1272,7 +1272,7 @@ procedure TGDBMIDebugger.Init;
           FTargetRegisters[2] := '$r5';
 //        end;
       end;
-      6: begin // sparc
+      7: begin // sparc
         FTargetRegisters[0] := '$g1';
         FTargetRegisters[1] := '$o0';
         FTargetRegisters[2] := '$o1';
