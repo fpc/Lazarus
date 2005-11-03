@@ -2061,6 +2061,10 @@ msgstr ""
 msgid "ElseIf"
 msgstr ""
 
+#: lazarusidestrconsts:lisenablemakros
+msgid "Enable Makros"
+msgstr ""
+
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
 msgstr ""

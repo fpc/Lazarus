@@ -1704,7 +1704,7 @@ msgstr "Viive"
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
@@ -1980,7 +1980,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
-msgstr ""
+msgstr "hollanti"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2048,6 +2048,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablemakros
+msgid "Enable Makros"
 msgstr ""
 
 #: lazarusidestrconsts:lisenclose
@@ -2680,7 +2684,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagegerman
 msgid "German"
-msgstr ""
+msgstr "saksa"
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
@@ -3540,7 +3544,7 @@ msgstr "Hyppää eteenpäin"
 
 #: lazarusidestrconsts:lismenujumpto
 msgid "Jump to"
-msgstr ""
+msgstr "Hyppää"
 
 #: lazarusidestrconsts:lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -3600,7 +3604,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgkeymapping
 msgid "Key Mappings"
-msgstr ""
+msgstr "Näppäimistökartta"
 
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
@@ -3816,7 +3820,7 @@ msgstr "Lisenssi:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Lisenssi: GPL/LGPL%sLazarus on FreePascalin luokkakirjasto joka toimii kuten  Delphi. FreePascal on (L)GPL-lisenssillä oleva kääntäjä joka toimii mm. Linux, Win32, OS/2, Mac OS X käyttöjärjestelmissä. FreePascal on suunniteltu ymmärtämään ja kääntämään Delphi syntaksia, joka on Olio-ohjelmointia.%sLazarus on puuttuva osanen kokonaisuudesta jokasallii kehittää ohjelmia Delphin tavoin monille eri käyttöjärjestelmille. Käyttöliittymästä tulee samanlainen RAD-työkalu kuin Delphistä.%sLazaruksen kasvaessa tarvitsemme lisää kehittäjiä."
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4072,7 +4076,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditormovedown
 msgid "Move Down (or right)"
-msgstr ""
+msgstr "Siirrä alaspäin (tai oikeallepäin)"
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
@@ -4088,7 +4092,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
-msgstr ""
+msgstr "Siirrä ylöspäin (tai vasemmallepäin)"
 
 #: lazarusidestrconsts:lisdsgorderbackone
 msgid "Move component one back"
@@ -5780,7 +5784,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorselectmenu
 msgid "Select Menu:"
-msgstr ""
+msgstr "Valitse muokattava valikko (menu)"
 
 #: lazarusidestrconsts:srkmecselpagebottom
 msgid "Select Page Bottom"

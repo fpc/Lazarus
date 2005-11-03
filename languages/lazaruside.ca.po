@@ -2050,6 +2050,10 @@ msgstr "Else"
 msgid "ElseIf"
 msgstr "ElseIf"
 
+#: lazarusidestrconsts:lisenablemakros
+msgid "Enable Makros"
+msgstr ""
+
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
 msgstr "Tanca"

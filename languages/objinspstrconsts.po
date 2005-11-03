@@ -642,6 +642,10 @@ msgstr ""
 msgid "%d lines, %d chars"
 msgstr ""
 
+#: objinspstrconsts:ois1linedchars
+msgid "1 line, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
 msgstr ""

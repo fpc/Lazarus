@@ -130,6 +130,10 @@ msgstr ""
 msgid "0 lines, 0 chars"
 msgstr ""
 
+#: objinspstrconsts:ois1linedchars
+msgid "1 line, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Действие"
