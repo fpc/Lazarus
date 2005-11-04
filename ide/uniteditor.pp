@@ -1189,7 +1189,7 @@ begin
         TSourceNotebook(FaOwner).AddJumpPointClicked(Self);
     end;
 
-  ecCopy:
+  ecCopy,ecCut:
     begin
       if (not FEditor.SelAvail) then begin
         // nothing selected
