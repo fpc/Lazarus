@@ -84,8 +84,9 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..19] of shortstring =(
-      'linux', 'freebsd', 'openbsd', 'netbsd', 'win32', 'go32v1', 'go32v2',
+  FPCOperatingSystemNames: array[1..20] of shortstring =(
+      'linux', 'freebsd', 'openbsd', 'netbsd', 'win32', 'wince',
+      'go32v1', 'go32v2',
       'beos', 'os2', 'amiga', 'atari', 'sunos', 'palmos', 'qnx', 'watcom',
       'emx', 'darwin', 'wdosx', 'netware'
     );
@@ -95,11 +96,11 @@ const
   FPCOperatingSystemAlternative2Names: array[1..1] of shortstring =(
       'bsd' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..5] of shortstring =(
-      'i386', 'powerpc', 'm68k', 'x86_64', 'sparc'
+  FPCProcessorNames: array[1..6] of shortstring =(
+      'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..25] of string = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..27] of string = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -117,6 +118,7 @@ const
     'i386-netbsd-gtk2',
     'i386-netbsd-qt',
     'i386-win32-win32',
+    'i386-win32-wince',
     'i386-win32-gtk',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
@@ -124,7 +126,8 @@ const
     'powerpc-linux-gtk',
     'powerpc-linux-gtk2',
     'sparc-linux-gtk',
-    'sparc-linux-gtk2'
+    'sparc-linux-gtk2',
+    'arm-wince-wince'
     );
 
 type
@@ -3523,11 +3526,11 @@ function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType, ExtraOptions: string;
   Owner: TObject): TDefineTemplate;
 type
-  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsCarbon);
+  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsWinCE, wsCarbon);
 const
   ds: char = PathDelim;
   LazWidgetSets: array[TLazWidgetSet] of string = (
-    'gtk','gtk2','gnome','win32','carbon');
+    'gtk','gtk2','gnome','win32','wince','carbon');
 
   function D(const Filename: string): string;
   begin
@@ -3919,6 +3922,14 @@ begin
 
   // <LazarusSrcDir>/lcl/interfaces/win32
   // no special
+
+  // <LazarusSrcDir>/lcl/interfaces/wince
+  IntfDirTemplate:=TDefineTemplate.Create('winceIntfDirectory',
+    ctsIntfDirectory,'','wince',da_Directory);
+    // then define carbon1
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('Define wince1',
+      ctsDefineMacroWinCE1,'wince1','',da_Define));
+  SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/lcl/interfaces/carbon
   IntfDirTemplate:=TDefineTemplate.Create('carbonIntfDirectory',
