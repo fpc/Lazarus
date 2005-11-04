@@ -586,6 +586,10 @@ msgstr ""
 msgid "gtk2 interface directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefinemacrowince1
+msgid "Define macro wince1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsgnomeintfdirectory
 msgid "gnome interface directory"
 msgstr ""
