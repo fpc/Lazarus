@@ -427,6 +427,8 @@ type
 { TBoolPropertyEditor
   Default property editor for all boolean properties }
 
+  { TBoolPropertyEditor }
+
   TBoolPropertyEditor = class(TEnumPropertyEditor)
   public
     function OrdValueToVisualValue(OrdValue: longint): string; override;

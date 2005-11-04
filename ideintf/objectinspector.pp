@@ -209,7 +209,7 @@ type
     FFirstChild,
     FLastChild,
     FNextBrother,
-    FParent:TOIPropertyGridRow;
+    FParent: TOIPropertyGridRow;
     FEditor: TPropertyEditor;
     procedure GetLvl;
   public
@@ -256,13 +256,13 @@ type
 
   TOICustomPropertyGrid = class(TCustomControl)
   private
-    FBackgroundColor:TColor;
+    FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
     FReferencesColor: TColor;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TWinControl; // nil or ValueButton
-    FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
+    FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox or ValueCheckBox
     FCurrentEditorLookupRoot: TPersistent;
     FDefaultItemHeight:integer;
     FDragging: boolean;
@@ -326,14 +326,18 @@ type
     procedure DoCallEdit;
     procedure RefreshValueEdit;
     Procedure ValueEditDblClick(Sender : TObject);
-    procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
+    procedure ValueControlMouseDown(Sender: TObject; Button:TMouseButton;
       Shift: TShiftState; X,Y:integer);
-    procedure ValueEditMouseMove(Sender: TObject; Shift: TShiftState;
+    procedure ValueControlMouseMove(Sender: TObject; Shift: TShiftState;
       X,Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
+    procedure ValueCheckBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueCheckBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueCheckBoxExit(Sender: TObject);
+    procedure ValueCheckBoxClick(Sender: TObject);
     procedure ValueComboBoxExit(Sender: TObject);
     procedure ValueComboBoxChange(Sender: TObject);
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -367,9 +371,10 @@ type
     
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
-    ValueEdit:TEdit;
-    ValueComboBox:TComboBox;
-    ValueButton:TButton;
+    ValueEdit: TEdit;
+    ValueComboBox: TComboBox;
+    ValueCheckBox: TCheckBox;
+    ValueButton: TButton;
 
     constructor Create(TheOwner: TComponent); override;
     constructor CreateWithParams(AnOwner: TComponent;
@@ -720,8 +725,8 @@ begin
     Enabled:=false;
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
-    OnMouseDown := @ValueEditMouseDown;
-    OnMouseMove := @ValueEditMouseMove;
+    OnMouseDown := @ValueControlMouseDown;
+    OnMouseMove := @ValueControlMouseMove;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueEditExit;
     OnChange:=@ValueEditChange;
@@ -736,8 +741,8 @@ begin
     Enabled:=false;
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
-    OnMouseDown := @ValueEditMouseDown;
-    OnMouseMove := @ValueEditMouseMove;
+    OnMouseDown := @ValueControlMouseDown;
+    OnMouseMove := @ValueControlMouseMove;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueComboBoxExit;
     //OnChange:=@ValueComboBoxChange; the on change event is called even,
@@ -747,6 +752,21 @@ begin
     OnDropDown:=@ValueComboBoxDropDown;
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnDrawItem:=@ValueComboBoxDrawItem;
+  end;
+
+  ValueCheckBox:=TCheckBox.Create(Self);
+  with ValueCheckBox do begin
+    Name:='ValueCheckBox';
+    Visible:=false;
+    AutoSize:=false;
+    Enabled:=false;
+    SetBounds(0,-30,80,25); // hidden
+    Parent:=Self;
+    OnMouseDown := @ValueControlMouseDown;
+    OnMouseMove := @ValueControlMouseMove;
+    OnExit:=@ValueCheckBoxExit;
+    OnKeyDown:=@ValueCheckBoxKeyDown;
+    OnKeyUp:=@ValueCheckBoxKeyUp;
   end;
 
   ValueButton:=TButton.Create(Self);
@@ -996,10 +1016,8 @@ begin
   //debugln('TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' ',dbgs(FItemIndex));
   if not CanEditRowValue then exit;
 
-  if FCurrentEdit=ValueEdit then
-    NewValue:=ValueEdit.Text
-  else
-    NewValue:=ValueComboBox.Text;
+  NewValue:=GetCurrentEditValue;
+
   CurRow:=Rows[FItemIndex];
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
@@ -1145,6 +1163,37 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.ValueCheckBoxKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  ScrollToActiveItem;
+  HandleStandardKeys(Key,Shift);
+end;
+
+procedure TOICustomPropertyGrid.ValueCheckBoxKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  HandleKeyUp(Key,Shift);
+end;
+
+procedure TOICustomPropertyGrid.ValueCheckBoxExit(Sender: TObject);
+begin
+  SetRowValue;
+end;
+
+procedure TOICustomPropertyGrid.ValueCheckBoxClick(Sender: TObject);
+var
+  CurRow: TOIPropertyGridRow;
+begin
+  if pgsUpdatingEditControl in FStates then exit;
+  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
+  begin
+    CurRow:=Rows[FItemIndex];
+    if paAutoUpdate in CurRow.Editor.GetAttributes then
+      SetRowValue;
+  end;
+end;
+
 procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
 begin
   if pgsUpdatingEditControl in FStates then exit;
@@ -1217,6 +1266,14 @@ begin
       FCurrentButton.Visible:=true;
     end;
     NewValue:=NewRow.Editor.GetVisualValue;
+    {$IFDEF UseOICheckBox}
+    if (NewRow.Editor is TBoolPropertyEditor) then begin
+      FCurrentEdit:=ValueCheckBox;
+      ValueCheckBox.Enabled:=not NewRow.IsReadOnly;
+      ValueCheckBox.Caption:=NewValue;
+      ValueCheckBox.Checked:=(NewValue='True');
+    end else
+    {$ENDIF}
     if paValueList in NewRow.Editor.GetAttributes then begin
       FCurrentEdit:=ValueComboBox;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
@@ -1467,10 +1524,7 @@ begin
   // SetRowValue reads the value from the current edit control and writes it
   // to the property editor
   // -> set the text in the current edit control without changing FLastEditValue
-  if FCurrentEdit=ValueEdit then
-    ValueEdit.Text:=NewValue
-  else if FCurrentEdit=ValueComboBox then
-    ValueComboBox.Text:=NewValue;
+  SetCurrentEditValue(NewValue);
   SetRowValue;
 end;
 
@@ -1863,6 +1917,7 @@ begin
     if FCurrentEdit<>nil then begin
       // resize the edit component
       EditCompRect.Left:=EditCompRect.Left-1;
+      debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
         FCurrentEdit.Invalidate;
@@ -2096,6 +2151,8 @@ begin
     Result:=ValueEdit.Text
   else if FCurrentEdit=ValueComboBox then
     Result:=ValueComboBox.Text
+  else if FCurrentEdit=ValueCheckBox then
+    Result:=ValueCheckBox.Caption
   else
     Result:='';
 end;
@@ -2112,7 +2169,11 @@ begin
   if FCurrentEdit=ValueEdit then
     ValueEdit.Text:=NewValue
   else if FCurrentEdit=ValueComboBox then
-    ValueComboBox.Text:=NewValue;
+    ValueComboBox.Text:=NewValue
+  else if FCurrentEdit=ValueCheckBox then begin
+    ValueCheckBox.Caption:=NewValue;
+    ValueCheckBox.Checked:=NewValue='True';
+  end;
 end;
 
 procedure TOICustomPropertyGrid.SetFavourites(
@@ -2279,7 +2340,7 @@ begin
     FHintTimer.Enabled := not FDragging;
 end;
 
-procedure TOICustomPropertyGrid.ValueEditMouseDown(Sender : TObject;
+procedure TOICustomPropertyGrid.ValueControlMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   //hide the hint window!
@@ -2287,7 +2348,7 @@ begin
   ScrollToActiveItem;
 end;
 
-procedure TOICustomPropertyGrid.ValueEditMouseMove(Sender: TObject;
+procedure TOICustomPropertyGrid.ValueControlMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: integer);
 begin
   // when the cursor is divider change it to default
@@ -2303,7 +2364,7 @@ begin
     FChangeStep:=-$7fffffff;
 end;
 
-PRocedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
+procedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
