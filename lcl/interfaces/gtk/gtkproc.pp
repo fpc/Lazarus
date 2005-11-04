@@ -970,8 +970,7 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-{$ifdef USE_SYNCHRONIZE}
-
+// TThread.Synchronize support
 var
   threadsync_pipein, threadsync_pipeout: cint;
   threadsync_giochannel: pgiochannel;
@@ -1000,14 +999,10 @@ begin
   Result := true;
 end;
 
-{$endif}
-
 procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
-{$ifdef USE_SYNCHRONIZE}
   needInstancePtr: TSynchronizeGlue;
-{$endif}
 begin
 
   FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
@@ -1024,22 +1019,18 @@ begin
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
 
-{$ifdef USE_SYNCHRONIZE}
   { TThread.Synchronize ``glue'' }
   WakeMainThread := @needInstancePtr.PrepareSynchronize;
   assignpipe(threadsync_pipein, threadsync_pipeout);
   threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
   g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
-{$endif}
 end;
 
 procedure DoneGTKProc;
 begin
   DoneKeyboardTables;
 
-{$ifdef USE_SYNCHRONIZE}
   WakeMainThread := nil;
-{$endif}
 end;
 
 {$IFDEF GTK1}
