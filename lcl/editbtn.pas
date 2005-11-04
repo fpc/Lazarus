@@ -307,7 +307,7 @@ type
     procedure SetDate(const Value: TDateTime);
   protected
     procedure DoButtonClick (Sender: TObject); override;
-    procedure Change; override;
+    procedure EditingDone; override;
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -864,17 +864,18 @@ begin
   FreeAndNil(CD);
 end;
 
-procedure TDateEdit.Change;//(Sender:TObject);
+procedure TDateEdit.EditingDone;
 var Datetmp: TDate;
 begin
-  inherited Change;//(Sender);
-  //debugln('TDateEdit.Change Text="',Text,'"');
+  inherited EditingDone;
+  //debugln('TDateEdit.EditingDone Text="',Text,'"');
   try
     Datetmp:=StrToDate(Text);
     // if this worked, then adjust it to current format
     Date:=Datetmp;
   except
-    // invalid date: the user is probably currently editing
+    Text:=DateToStr(Date);
+    // invalid date: keep the old;
   end;
 end;
 
