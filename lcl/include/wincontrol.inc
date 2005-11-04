@@ -711,7 +711,7 @@ function TWinControl.AutoSizeDelayed: boolean;
 begin
   Result:=// no handle means not visible
           (not HandleAllocated)
-          or (not FShowing)
+          or ((not FShowing) and (not (csDesigning in ComponentState)))
           // during handle creation no autosize
           or (wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
