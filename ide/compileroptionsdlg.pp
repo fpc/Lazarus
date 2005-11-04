@@ -75,7 +75,8 @@ type
     edtDebugPath: TEdit;
     DebugPathEditBtn: TPathEditorButton;
 
-    LCLWidgetTypeRadioGroup: TRadioGroup;
+    LCLWidgetTypeGroupBox: TGroupBox;
+    LCLWidgetTypeComboBox: TComboBox;
 
     { Parsing Controls }
     ParsingPage: TPage;
@@ -642,9 +643,9 @@ begin
   edtUnitOutputDir.Text := Options.UnitOutputDirectory;
   edtDebugPath.Text := Options.DebugPath;
 
-  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(Options.LCLWidgetType);
+  i:=LCLWidgetTypeComboBox.Items.IndexOf(Options.LCLWidgetType);
   if i<0 then i:=0;
-  LCLWidgetTypeRadioGroup.ItemIndex:=i;
+  LCLWidgetTypeComboBox.ItemIndex:=i;
 
   // parsing
   if (Options.AssemblerStyle in [1,2,3])  then
@@ -912,11 +913,11 @@ begin
   Options.UnitOutputDirectory := edtUnitOutputDir.Text;
   Options.DebugPath := edtDebugPath.Text;
 
-  i:=LCLWidgetTypeRadioGroup.Itemindex;
+  i:=LCLWidgetTypeComboBox.Itemindex;
   if i<=0 then
     Options.LCLWidgetType:=''
   else
-    Options.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
+    Options.LCLWidgetType:= LCLWidgetTypeComboBox.Items[i];
 
   // parsing;
   Options.AssemblerStyle := grpStyle.ItemIndex;
@@ -2678,22 +2679,32 @@ begin
 
   {------------------------------------------------------------}
 
-  LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
-  with LCLWidgetTypeRadioGroup do begin
-    Name:='LCLWidgetTypeRadioGroup';
+  LCLWidgetTypeGroupBox:=TGroupBox.Create(Self);
+  with LCLWidgetTypeGroupBox do begin
+    Name:='LCLWidgetTypeGroupBox';
     Parent := PathPage;
     Left := grpOtherUnits.Left;
     Top:= y;
     Width:=Self.ClientWidth-28;
     Height:=45;
     Caption:=lisLCLWidgetType+' (various)';
+  end;
+
+  LCLWidgetTypeComboBox:=TComboBox.Create(Self);
+  with LCLWidgetTypeComboBox do begin
+    Name:='LCLWidgetTypeComboBox';
+    Parent := LCLWidgetTypeGroupBox;
+    Left := 0;
+    Top:= 0;
+    Width:=150;
     with Items do begin
+      BeginUpdate;
       Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
       for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
         Items.Add(LCLPlatformNames[LCLInterface]);
       end;
+      EndUpdate;
     end;
-    Columns:=Items.Count;
     ItemIndex:=1;
   end;
 end;

@@ -8,7 +8,7 @@
 main=lcl
 
 [target]
-dirs=gtk gtk2 win32 gnome qt carbon
+dirs=gtk gtk2 win32 wince gnome qt carbon
 
 [default]
 dir=$(LCL_PLATFORM)

@@ -120,5 +120,6 @@ cleanlaz: clean
         $(MAKE) -C interfaces/gtk2 clean
         $(MAKE) -C interfaces/gnome clean
         $(MAKE) -C interfaces/win32 clean
+        $(MAKE) -C interfaces/wince clean
         $(MAKE) -C interfaces/qt clean
 
