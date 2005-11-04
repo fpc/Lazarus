@@ -2106,6 +2106,7 @@ procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
 var AnEnvironmentOptions: TEnvironmentOptions;
   SaveDialog: TSaveDialog;
 begin
+  debugln('TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick A');
   SaveDialog:=TSaveDialog.Create(nil);
   try
     try
@@ -2141,6 +2142,7 @@ procedure TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick(
 var AnEnvironmentOptions: TEnvironmentOptions;
   OpenDialog: TOpenDialog;
 begin
+  debugln('TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick A');
   OpenDialog:=TOpenDialog.Create(nil);
   try
     try
