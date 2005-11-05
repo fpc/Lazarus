@@ -650,12 +650,27 @@ begin
   BrowseExampleButton.Enabled := EnabledState;
 end;
 
-function ToUnixLineEnding(s: String): String;
+function ToUnixLineEnding(const s: String): String;
+var
+  p: Integer;
 begin
-  if LineEnding = #10 then
-    Result := s
-  else
-    Result := StringReplace(s, LineEnding, #10, [rfReplaceAll]);
+  Result:=s;
+  p:=1;
+  while (p<=length(s)) do begin
+    if not (s[p] in [#10,#13]) then begin
+      inc(p);
+    end else begin
+      // line ending
+      if (p<length(s)) and (s[p+1] in [#10,#13]) and (s[p]<>s[p+1]) then begin
+        // double character line ending
+        Result:=copy(Result,1,p-1)+#10+copy(Result,p+2,length(Result));
+      end else if s[p]=#13 then begin
+        // single char line ending #13
+        Result[p]:=#10;
+      end;
+      inc(p);
+    end;
+  end;
 end;
 
 procedure TLazDocForm.Save;

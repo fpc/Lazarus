@@ -4404,6 +4404,45 @@ begin
   //debugln('TMainIDE.DoLoadLFM LFM="',LFMBuf.Source,'"');
 
   ComponentLoadingOk:=true;
+  
+  // find the classname of the LFM, and check for inherited form
+  ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
+  InheritedForm:=CompareText(LFMType,'inherited')=0;
+  if NewClassName='' then begin
+    Result:=MessageDlg(lisLFMFileCorrupt,
+      Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
+      mtError,[mbIgnore,mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  // find the ancestor type in the source
+  NewAncestorName:='';
+  AncestorType:=TForm;
+  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
+                                       NewAncestorName,true)
+  then begin
+    DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+  end;
+  AncestorType:=nil;
+  if NewAncestorName<>'' then begin
+    if CompareText(NewAncestorName,'TDataModule')=0 then begin
+      // use our TDataModule
+      // (some fpc versions have non designable TDataModule)
+      AncestorType:=TDataModule;
+    end else begin
+      APersistentClass:=Classes.GetClass(NewAncestorName);
+      if (APersistentClass<>nil)
+      and (APersistentClass.InheritsFrom(TComponent)) then begin
+        // ancestor type is a registered component class
+        AncestorType:=TComponentClass(APersistentClass);
+      end;
+    end;
+  end;
+  if AncestorType=nil then
+    AncestorType:=TForm;
+  DebugLn('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
+  
+  //
 
   BinLFMStream:=TExtMemoryStream.Create;
   try
@@ -4412,40 +4451,6 @@ begin
       LFMBuf.SaveToStream(TxtLFMStream);
       AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
       TxtLFMStream.Position:=0;
-
-      // find the classname of the LFM, and check for inherited form
-      ReadLFMHeader(TxtLFMStream,NewClassName,LFMType);
-      InheritedForm:=CompareText(LFMType,'inherited')=0;
-      if NewClassName='' then begin
-        Result:=MessageDlg(lisLFMFileCorrupt,
-          Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
-          mtError,[mbIgnore,mbCancel,mbAbort],0);
-        exit;
-      end;
-
-      // find the ancestor type in the source
-      NewAncestorName:='';
-      AncestorType:=TForm;
-      if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
-                                           NewAncestorName,true)
-      then begin
-        DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
-      end;
-      if NewAncestorName<>'' then begin
-        if CompareText(NewAncestorName,'TDataModule')=0 then begin
-          // use our TDataModule
-          // (some fpc versions have non designable TDataModule)
-          AncestorType:=TDataModule;
-        end else begin
-          APersistentClass:=Classes.GetClass(NewAncestorName);
-          if (APersistentClass<>nil)
-          and (APersistentClass.InheritsFrom(TComponent)) then begin
-            // ancestor type is a registered component class
-            AncestorType:=TComponentClass(APersistentClass);
-          end;
-        end;
-      end;
-      DebugLn('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
 
       // convert text to binary format
       try
@@ -4474,6 +4479,8 @@ begin
       if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
       
       if InheritedForm then begin
+        // TODO WORKAROUND: inherited does not yet work completely,
+        // so help programmer by opening the lfm file
         Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
           Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
         Exit;
