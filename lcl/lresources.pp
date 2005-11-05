@@ -1166,7 +1166,7 @@ begin
   while (p<=length(LFMSource))
   and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
     inc(p);
-  LFMType:=copy(LFMSource,1,p);
+  LFMType:=copy(LFMSource,1,p-1);
 
   // find end of line
   while (p<=length(LFMSource)) and (not (LFMSource[p] in [#10,#13])) do inc(p);
