@@ -72,6 +72,7 @@ type
   TLFMObjectNode = class(TLFMTreeNode)
   public
     IsInherited: boolean;
+    ChildPos: Integer;
     Name: string;
     NamePosition: integer;
     TypeName: string;
@@ -576,6 +577,7 @@ begin
   ObjectNode.Name := '';
   ObjectNode.TypeName := Parser.TokenString;
   ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
+  ObjectNode.ChildPos := -1;
   Parser.NextToken;
   if Parser.Token = ':' then begin
     Parser.NextToken;
@@ -585,6 +587,13 @@ begin
     ObjectNode.TypeName := Parser.TokenString;
     ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
     Parser.NextToken;
+    if parser.Token = '[' then begin
+      parser.NextToken;
+      ObjectNode.ChildPos := parser.TokenInt;
+      parser.NextToken;
+      parser.CheckToken(']');
+      parser.NextToken;
+    end;
   end;
 
   // read property list

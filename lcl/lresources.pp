@@ -227,6 +227,8 @@ procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
 function LFMtoLRSfile(const LFMfilename: string): boolean;// true on success
 function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;// true on success
 function FindLFMClassName(LFMStream: TStream):AnsiString;
+procedure ReadLFMHeader(LFMStream: TStream; out LFMClassName: String;
+                        out LFMType: String);
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
@@ -509,7 +511,8 @@ begin
   if EndPos-StartPos>255 then exit;
   SetLength(Result,EndPos-StartPos);
   LFMStream.Position:=StartPos;
-  LFMStream.Read(Result[1],length(Result));
+  if Length(Result) > 0 then
+    LFMStream.Read(Result[1],length(Result));
   LFMStream.Position:=0;
   if (Result='') or (not IsValidIdent(Result)) then
     Result:='';
@@ -1108,6 +1111,39 @@ begin
   FStream.Write(Buf,Count);
 end;
 
+procedure ReadLFMHeader(LFMStream:TStream; out LFMClassName: String;
+  out LFMType: String);
+var
+  c:char;
+  Token: String;
+begin
+  { examples:
+    object Form1: TForm1
+    inherited AboutBox2: TAboutBox2
+
+    -> LFMClassName is the last word of the first line
+    => LFMType is the first word on the line
+  }
+  LFMClassName := '';
+  LFMType := '';
+  Token := '';
+  while (LFMStream.Read(c,1)=1) and (LFMStream.Position<1000)
+  and (not (c in [#10,#13])) do begin
+    if c in ['a'..'z','A'..'Z','0'..'9','_'] then
+      Token := Token + c
+    else begin
+      if LFMType = '' then
+        LFMType := Token;
+      if Token <> '' then
+        LFMClassName := Token;
+      Token := '';
+    end;
+  end;
+  if Token <> '' then
+    LFMClassName := Token;
+  LFMStream.Position:=0;
+end;
+
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 // 0 = ok
 // -1 = error while streaming AForm to binary stream
@@ -1272,7 +1308,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   begin
     len := Input.ReadByte;
     SetLength(Result, len);
-    Input.Read(Result[1], len);
+    if (Len > 0) then
+      Input.Read(Result[1], len);
   end;
 
   function ReadLongString: String;
@@ -1281,7 +1318,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   begin
     len := ReadLRSInteger(Input);
     SetLength(Result, len);
-    Input.Read(Result[1], len);
+    if (Len > 0) then
+      Input.Read(Result[1], len);
   end;
 
   procedure ReadPropList(const indent: String);
@@ -1874,16 +1912,28 @@ var
 
   procedure ProcessObject;
   var
-    IsInherited: Boolean;
+    Flags: Byte;
+    ChildPos: Integer;
     ObjectName, ObjectType: String;
   begin
     if parser.TokenSymbolIs('OBJECT') then
-      IsInherited := False
+      Flags :=0  { IsInherited := False }
     else begin
-      parser.CheckTokenSymbol('INHERITED');
-      IsInherited := True;
+      if parser.TokenSymbolIs('INHERITED') then
+        Flags := 1 { IsInherited := True; }
+      else begin
+        parser.CheckTokenSymbol('INLINE');
+        Flags := 4;
+      end;
     end;
-    if IsInherited then ;
+    if parser.TokenSymbolIs('OBJECT') then
+      Flags :=0 { IsInherited := False }
+    else if parser.TokenSymbolIs('INHERITED') then
+      Flags := 1 { IsInherited := True; }
+    else begin
+      parser.CheckTokenSymbol('INLINE');
+      Flags := 4;
+    end;
     parser.NextToken;
     parser.CheckToken(toSymbol);
     ObjectName := '';
@@ -1895,6 +1945,19 @@ var
       ObjectName := ObjectType;
       ObjectType := parser.TokenString;
       parser.NextToken;
+      if parser.Token = '[' then begin
+        parser.NextToken;
+        ChildPos := parser.TokenInt;
+        parser.NextToken;
+        parser.CheckToken(']');
+        parser.NextToken;
+        Flags := Flags or 2;
+      end;
+    end;
+    if Flags <> 0 then begin
+      Output.WriteByte($f0 or Flags);
+      if (Flags and 2) <> 0 then
+        WriteInteger(ChildPos);
     end;
     WriteShortString(ObjectType);
     WriteShortString(ObjectName);
@@ -2649,7 +2712,8 @@ begin
       begin
         Read(b, 1);
         SetLength(Result, b);
-        Read(Result[1], b);
+        if ( b > 0 ) then
+          Read(Result[1], b);
       end;
     vaNil:
       Result := 'nil';

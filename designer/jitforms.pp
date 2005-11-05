@@ -124,7 +124,7 @@ type
     procedure ReaderReadComponent(Component: TComponent);
     // some useful functions
     function GetItem(Index:integer):TComponent;
-    function GetClassNameFromStream(s:TStream):shortstring;
+    function GetClassNameFromStream(s:TStream; out IsInherited: Boolean):shortstring;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
     procedure InitReading(BinStream: TStream; var Reader: TReader;
                           DestroyDriver: Boolean); virtual;
@@ -593,7 +593,7 @@ begin
         and (FindComponentByClassName(ComponentClassName)<0);
 end;
 
-function TJITComponentList.GetClassNameFromStream(s:TStream):shortstring;
+function TJITComponentList.GetClassNameFromStream(s:TStream; out IsInherited: Boolean):shortstring;
 var Signature:shortstring;
   NameLen:byte;
 begin
@@ -606,9 +606,11 @@ begin
   NameLen:=0;
   s.Read(NameLen,1);
   if (NameLen and $f0) = $f0 then begin
-    { Skip Flag Byte }
+    { Read Flag Byte }
     s.Read(NameLen,1);
-  end;
+    IsInherited := (NameLen and 1) = 1;
+  end else
+    IsInherited := False;
   // read classname
   if NameLen>0 then begin
     SetLength(Result,NameLen);
@@ -643,10 +645,11 @@ var
   Reader:TReader;
   NewClassName: shortstring;
   NewName: string;
-  DestroyDriver: Boolean;
+  DestroyDriver, IsInherited: Boolean;
 begin
   Result:=-1;
-  NewClassName:=GetClassNameFromStream(BinStream);
+  NewClassName:=GetClassNameFromStream(BinStream, IsInherited);
+  { TODO: If IsInherited, read ancestor form stream }
   if NewClassName='' then begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
     exit;

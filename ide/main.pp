@@ -4373,10 +4373,12 @@ var
   AncestorType: TComponentClass;
   DesignerForm: TCustomForm;
   NewClassName: String;
+  LFMType: String;
   NewAncestorName: String;
   APersistentClass: TPersistentClass;
   ACaption, AText: String;
   NewUnitName: String;
+  InheritedForm: Boolean;
 begin
   // check installed packages
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -4411,8 +4413,9 @@ begin
       AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
       TxtLFMStream.Position:=0;
 
-      // find the classname of the LFM
-      NewClassName:=FindLFMClassName(TxtLFMStream);
+      // find the classname of the LFM, and check for inherited form
+      ReadLFMHeader(TxtLFMStream,NewClassName,LFMType);
+      InheritedForm:=CompareText(LFMType,'inherited')=0;
       if NewClassName='' then begin
         Result:=MessageDlg(lisLFMFileCorrupt,
           Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
@@ -4469,6 +4472,12 @@ begin
     end;
     if ComponentLoadingOk then begin
       if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
+      
+      if InheritedForm then begin
+        Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
+          Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
+        Exit;
+      end;
 
       // create JIT component
       NewUnitName:=AnUnitInfo.UnitName;
