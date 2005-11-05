@@ -272,6 +272,7 @@ type
     FItems: TMenuItem;
     FOnChange: TMenuChangeEvent;
     FParent: TComponent;
+    FShortcutHandled: boolean;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetParent(const AValue: TComponent);
     procedure ImageListChange(Sender: TObject);
@@ -299,6 +300,7 @@ type
   public
     property Handle: HMenu read GetHandle;
     property Parent: TComponent read FParent write SetParent;
+    property ShortcutHandled: boolean read FShortcutHandled write FShortcutHandled;
   published
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;

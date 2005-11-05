@@ -211,12 +211,6 @@ begin
   inherited ControlKeyDown(Key, Shift);
 end;
 
-procedure TCustomMemo.WMChar(var Message: TLMChar);
-begin
-  // all normal characters are handled by the memo
-  Message.Result := 1;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomMemo.SetWordWrap
   Params: 

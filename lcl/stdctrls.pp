@@ -672,7 +672,6 @@ type
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure WMChar(var Message: TLMChar); message LM_CHAR;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

@@ -152,9 +152,11 @@ begin
   Result := Item <> nil;
   if Result then
   begin
+    FShortcutHandled := true;
     Item.InitiateActions;
     Item.Click;
   end;
+  Result := FShortcutHandled;
 end;
 
 {------------------------------------------------------------------------------

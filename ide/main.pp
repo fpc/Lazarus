@@ -11976,7 +11976,11 @@ begin
   if (CurFocusControl<>nil) then begin
     CurFocusControl:=GetParentForm(CurFocusControl);
     if (CurFocusControl<>MainIDEBar) and (CurFocusControl<>SourceNotebook) then
+    begin
+      // continue processing shortcut, not handled yet
+      MainIDEBar.mnuMainMenu.ShortcutHandled := false;
       exit;
+    end;
   end;
   DoCommand(EditorCommand);
 end;
