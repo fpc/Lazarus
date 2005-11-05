@@ -121,6 +121,13 @@ function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+
+{$IFDEF Gtk2}
+function GTKWindowStateEventCB(widget: PGtkWidget;
+                               state: PGdkEventWindowState;
+                               data: gpointer): gboolean; cdecl;
+{$ENDIF}
+
 {$IfNdef GTK2}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;

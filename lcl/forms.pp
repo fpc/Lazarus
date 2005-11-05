@@ -376,7 +376,7 @@ type
     FOnHide: TNotifyEvent;
     FOnShortcut: TShortCutEvent;
     FOnShow: TNotifyEvent;
-    FOnWindowStateChanged: TNotifyEvent;
+    FOnWindowStateChange: TNotifyEvent;
     FPixelsPerInch: Longint;
     FPosition: TPosition;
     FRestoredLeft: integer;
@@ -412,7 +412,7 @@ type
     procedure SetShowInTaskbar(Value: Boolean);
     procedure SetVisible(Value: boolean);
     procedure SetWindowFocus;
-    procedure SetWindowState(Value : TWIndowState);
+    procedure SetWindowState(Value : TWindowState);
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMDeactivate(var Message : TLMActivate); message LM_DEACTIVATE;
@@ -534,8 +534,8 @@ type
     property OnResize stored IsForm;
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
-    property OnWindowStateChanged: TNotifyEvent
-                         read fOnWindowStateChanged write fOnWindowStateChanged;
+    property OnWindowStateChange: TNotifyEvent
+                         read fOnWindowStateChange write fOnWindowStateChange;
     property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property RestoredLeft: integer read FRestoredLeft;
@@ -618,6 +618,7 @@ type
     property UseDockManager;
     property Visible;
     property WindowState;
+    property OnWindowStateChange;
   end;
 
   TFormClass = class of TForm;

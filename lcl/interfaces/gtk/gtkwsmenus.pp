@@ -230,6 +230,7 @@ function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
   AMenuItem.RecreateHandle;
+  Result:=true;
 end;
 
 function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;

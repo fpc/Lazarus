@@ -560,7 +560,8 @@ begin
           FWindowState := wsMaximized;
     end;
     if OldState<>FWindowState then begin
-      //if Assigned(OnWindowStateChanged) then OnWindowStateChanged(Self);
+      if Assigned(OnWindowStateChange) then
+        OnWindowStateChange(Self);
     end;
   end;
 
@@ -1118,6 +1119,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.UpdateWindowState;
 Begin
+
 //TODO: Finish UpdateWindowState
   Assert(False, 'Trace:TODO: [TCustomForm.UpdateWindowState]');
 end;

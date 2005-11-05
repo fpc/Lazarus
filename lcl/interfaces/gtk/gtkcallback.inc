@@ -929,6 +929,51 @@ begin
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
 end;
 
+{$IFDEF Gtk2}
+function GTKWindowStateEventCB(widget: PGtkWidget;
+                               state: PGdkEventWindowState;
+                               data: gpointer): gboolean; cdecl;
+var
+  TheForm: TCustomForm;
+  SizeMsg: TLMSize;
+  GtkWidth: LongInt;
+  GtkHeight: LongInt;
+begin
+  Result := CallBackDefaultReturn;
+
+  // if iconified in changed then OnIconify...
+
+  if TObject(Data) is TCustomForm then begin
+    TheForm := TCustomForm(Data);
+    if TheForm.Parent = nil then begin (* toplevel window, just as a sanity check *)
+      if GTK_WIDGET_REALIZED(Widget) then begin
+        // send a WMSize Message (see TCustomForm.WMSize)
+        GtkWidth:=Widget^.Allocation.Width;
+        if GtkWidth<0 then GtkWidth:=0;
+        GtkHeight:=Widget^.Allocation.Height;
+        if GtkHeight<0 then GtkHeight:=0;
+        //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state));
+        if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
+          SizeMsg.SizeType:=SIZEFULLSCREEN
+        else if (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0 then
+          SizeMsg.SizeType:=SIZEICONIC
+        else
+          SizeMsg.SizeType:=SIZENORMAL;
+        with SizeMsg do
+        begin
+          Result := 0;
+          Msg := LM_SIZE;
+          SizeType := SizeType+Size_SourceIsInterface;
+          Width := SmallInt(GtkWidth);
+          Height := SmallInt(GtkHeight);
+        end;
+        DeliverMessage(TheForm, SizeMsg);
+      end;
+    end;
+  end;
+end;
+{$ENDIF}
+
 {-------------------------------------------------------------------------------
   function ControlGetsMouseDownBefore(AControl: TControl): boolean;
 
