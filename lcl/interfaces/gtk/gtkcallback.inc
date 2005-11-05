@@ -953,10 +953,10 @@ begin
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
         //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state));
-        if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
-          SizeMsg.SizeType:=SIZEFULLSCREEN
-        else if (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0 then
+        if (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0 then
           SizeMsg.SizeType:=SIZEICONIC
+        else if (GDK_WINDOW_STATE_MAXIMIZED and state^.new_window_state)>0 then
+          SizeMsg.SizeType:=SIZEFULLSCREEN
         else
           SizeMsg.SizeType:=SIZENORMAL;
         with SizeMsg do
