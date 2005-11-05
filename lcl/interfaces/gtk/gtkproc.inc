@@ -8171,10 +8171,21 @@ begin
 end;
 
 {$IFDEF GTK1}
+{ Compile with UseXinerama defined to use the Xinerama extension to avoid dialog
+  boxes straddling two monitors. This is only required for GTK1, as it is built
+  into GTK2. The Xinerama library is not always available, so the libraries will
+  be dynamically loaded. (A single monitor is assumed if the load fails.) On
+  some systems only a static Xinerama library is available, so define
+  StaticXinerama also. MAC OSX is in this latter category, but it crashed the
+  X server when I tried it on a real two monitor display.
+}
 var
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
 {$IFDEF UseXinerama}
+{$IFDEF StaticXinerama}
+{$LINKLIB Xinerama}
+{$ENDIF}
 { Copy record definition from Xinerama unit.
   Can't use the unit itself, as it forces the executable to
   refer to the libraray }
@@ -8199,19 +8210,24 @@ var
     number: Pcint): PXineramaScreenInfo;cdecl;
 begin
   if not FirstScreenCalled then begin
-    if XQueryExtension(X11Display, 'XINERAMA', @opcode, @firstevent,
+    if XQueryExtension(gdk_display, 'XINERAMA', @opcode, @firstevent,
       @firsterror)
     then begin
-      XineramaLib := LoadLibrary('libXinerama.so');
-      if XineramaLib <> nil then begin
-        Pointer(pXineramaIsActive) :=
-                                GetProcAddress(XineramaLib, 'XineramaIsActive');
-        Pointer(pXineramaQueryScreens) :=
+      XineramaLib := {$IFDEF StaticXinerama} 1 {Flag present} {$ELSE} LoadLibrary('libXinerama.so') {$ENDIF};
+      if XineramaLib <> 0 then begin
+        {$IFDEF StaticXinerama}
+          Pointer(pXineramaIsActive) := @XineramaIsActive;
+          Pointer(pXineramaQueryScreens) := @XineramaQueryScreens;
+        {$ELSE}
+          Pointer(pXineramaIsActive) :=
+                            GetProcAddress(XineramaLib, 'XineramaIsActive');
+          Pointer(pXineramaQueryScreens) :=
                             GetProcAddress(XineramaLib, 'XineramaQueryScreens');
+        {$ENDIF}
         if (pXineramaIsActive <> nil) and (pXineramaQueryScreens <> nil) and
-          pXineramaIsActive(X11Display)
+          pXineramaIsActive(gdk_display)
         then begin
-          XineramaScreenInfo := pXineramaQueryScreens(X11Display, @nMonitors);
+          XineramaScreenInfo := pXineramaQueryScreens(gdk_display, @nMonitors);
           if XineramaScreenInfo <> nil then begin
             if (nMonitors > 0) and (nMonitors < 10) then begin
               FirstScreen.x := XineramaScreenInfo^.width;

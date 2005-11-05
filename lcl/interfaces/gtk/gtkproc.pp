@@ -863,7 +863,8 @@ var
 implementation
 
 
-uses {$IFDEF USE_UTF8BIDI_LCL} utf8bidi, {$ENDIF} dynlibs;
+uses {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
+     {$IFDEF USE_UTF8BIDI_LCL} utf8bidi, {$ENDIF} dynlibs;
 
 const
   VKEY_FLAG_SHIFT    = $01;
