@@ -54,13 +54,23 @@ uses
 
 type
   {$IFDEF SYN_LAZARUS}
+  TCustomSynAutoComplete = class;
+  
   TOnTokenNotFound = procedure(Sender: TObject; AToken: string; 
                            AEditor: TCustomSynEdit; var Index:integer) of object;
+  TOnExecuteCompletion = procedure(ASynAutoComplete: TCustomSynAutoComplete;
+                                   Index: integer) of object;
   {$ENDIF}
 
   { TCustomSynAutoComplete }
 
   TCustomSynAutoComplete = class(TComponent)
+  private
+    {$IFDEF SYN_LAZARUS}
+    fOnTokenNotFound: TOnTokenNotFound;
+    fIndentToTokenStart: boolean;
+    FOnExecuteCompletion: TOnExecuteCompletion;
+    {$ENDIF}
   protected
     fAutoCompleteList: TStrings;
     fCompletions: TStrings;
@@ -71,10 +81,6 @@ type
     fEOTokenChars: string;
     fCaseSensitive: boolean;
     fParsed: boolean;
-    {$IFDEF SYN_LAZARUS}
-    fOnTokenNotFound: TOnTokenNotFound;
-    fIndentToTokenStart: boolean;
-    {$ENDIF}
     procedure CompletionListChanged(Sender: TObject);
     function GetCompletions: TStrings;
     function GetCompletionComments: TStrings;
@@ -120,6 +126,8 @@ type
       read fOnTokenNotFound write fOnTokenNotFound;
     property IndentToTokenStart: boolean
       read fIndentToTokenStart write fIndentToTokenStart;
+    property OnExecuteCompletion: TOnExecuteCompletion read FOnExecuteCompletion
+                                                     write FOnExecuteCompletion;
     {$ENDIF}
   end;
 
@@ -134,6 +142,7 @@ type
     {$IFDEF SYN_LAZARUS}
     property OnTokenNotFound;
     property IndentToTokenStart;
+    property OnExecuteCompletion;
     {$ENDIF}
   end;
 
@@ -290,102 +299,110 @@ begin
     {$ENDIF}
     if i > -1 then begin
       // select token in editor
-      p := AEditor.CaretXY;
-{begin}                                                                         //mh 2000-11-08
-      AEditor.BeginUpdate;
-      try
-        {$IFDEF SYN_LAZARUS}
-        TokenStartX:=p.x;
-        s:=AEditor.Lines[p.y-1];
-        if TokenStartX>length(s) then TokenStartX:=length(s);
-        while (TokenStartX > 1) and (s[TokenStartX-1] > ' ')
-        and (Pos(s[TokenStartX-1], fEOTokenChars) = 0) do
-          Dec(TokenStartX);
-        AEditor.BlockBegin := Point(TokenStartX, p.y);
-        AEditor.BlockEnd := p;
-        // indent the completion string if necessary, determine the caret pos
-        if IndentToTokenStart then begin
-          IndentLen := p.x - Len - 1;
-        end else begin
-          // indent the same as the first line
-          IndentLen:=1;
-          if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
-            s:=AEditor.Lines[p.y-1];
-            while (IndentLen<p.x)
-            and ((IndentLen>length(s)) or (s[IndentLen]<=' ')) do
-              inc(IndentLen);
-          end;
-          dec(IndentLen);
-        end;
-        {$ELSE}
-        AEditor.BlockBegin := Point(p.x - Len, p.y);
-        AEditor.BlockEnd := p;
-        // indent the completion string if necessary, determine the caret pos
-        IndentLen := p.x - Len - 1;
-        {$ENDIF}
-        p := AEditor.BlockBegin;
-        NewCaretPos := FALSE;
-        Temp := TStringList.Create;
+      p := AEditor.LogicalCaretXY;
+{begin}
+      {$IFDEF SYN_LAZARUS}
+      if Assigned(OnExecuteCompletion) then
+        OnExecuteCompletion(Self,i)
+      else begin
+      {$ENDIF}
+        AEditor.BeginUpdate;
         try
-          Temp.Text := fCompletionValues[i];
           {$IFDEF SYN_LAZARUS}
-          s:=fCompletionValues[i];
-          if (s<>'') and (s[length(s)] in [#10,#13]) then
-            Temp.Add('');
-          {$ENDIF}
-
-          // indent lines
-          if (IndentLen > 0) and (Temp.Count > 1) then
-          begin
-            s := StringOfChar(' ', IndentLen);
-            for i := 1 to Temp.Count - 1 do
-              Temp[i] := s + Temp[i];
-          end;
-          // find first '|' and use it as caret position
-          for i := 0 to Temp.Count - 1 do
-          begin
-            s := Temp[i];
-            j := Pos('|', s);
-            if j > 0 then
-            begin
-              Delete(s, j, 1);
-              Temp[i] := s;
-//              if j > 1 then
-//                Dec(j);
-              NewCaretPos := TRUE;
-              Inc(p.y, i);
-              if i = 0 then
-//                Inc(p.x, j)
-                Inc(p.x, j - 1)
-              else
-                p.x := j;
-              break;
+          TokenStartX:=p.x;
+          s:=AEditor.Lines[p.y-1];
+          if TokenStartX>length(s) then TokenStartX:=length(s);
+          while (TokenStartX > 1) and (s[TokenStartX-1] > ' ')
+          and (Pos(s[TokenStartX-1], fEOTokenChars) = 0) do
+            Dec(TokenStartX);
+          AEditor.BlockBegin := Point(TokenStartX, p.y);
+          AEditor.BlockEnd := p;
+          // indent the completion string if necessary, determine the caret pos
+          if IndentToTokenStart then begin
+            IndentLen := p.x - Len - 1;
+          end else begin
+            // indent the same as the first line
+            IndentLen:=1;
+            if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
+              s:=AEditor.Lines[p.y-1];
+              while (IndentLen<p.x)
+              and ((IndentLen>length(s)) or (s[IndentLen]<=' ')) do
+                inc(IndentLen);
             end;
+            dec(IndentLen);
           end;
-          s := Temp.Text;
-          // strip the trailing #13#10 that was appended by the stringlist
-          i := Length(s);
-          {$IFDEF SYN_LAZARUS}
-          if (i>=1) and (s[i] in [#10,#13]) then begin
-            dec(i);
-            if (i>=1) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
+          {$ELSE}
+          AEditor.BlockBegin := Point(p.x - Len, p.y);
+          AEditor.BlockEnd := p;
+          // indent the completion string if necessary, determine the caret pos
+          IndentLen := p.x - Len - 1;
+          {$ENDIF}
+          p := AEditor.BlockBegin;
+          NewCaretPos := FALSE;
+          Temp := TStringList.Create;
+          try
+            Temp.Text := fCompletionValues[i];
+            {$IFDEF SYN_LAZARUS}
+            s:=fCompletionValues[i];
+            if (s<>'') and (s[length(s)] in [#10,#13]) then
+              Temp.Add('');
+            {$ENDIF}
+
+            // indent lines
+            if (IndentLen > 0) and (Temp.Count > 1) then
+            begin
+              s := StringOfChar(' ', IndentLen);
+              for i := 1 to Temp.Count - 1 do
+                Temp[i] := s + Temp[i];
+            end;
+            // find first '|' and use it as caret position
+            for i := 0 to Temp.Count - 1 do
+            begin
+              s := Temp[i];
+              j := Pos('|', s);
+              if j > 0 then
+              begin
+                Delete(s, j, 1);
+                Temp[i] := s;
+  //              if j > 1 then
+  //                Dec(j);
+                NewCaretPos := TRUE;
+                Inc(p.y, i);
+                if i = 0 then
+  //                Inc(p.x, j)
+                  Inc(p.x, j - 1)
+                else
+                  p.x := j;
+                break;
+              end;
+            end;
+            s := Temp.Text;
+            // strip the trailing #13#10 that was appended by the stringlist
+            i := Length(s);
+            {$IFDEF SYN_LAZARUS}
+            if (i>=1) and (s[i] in [#10,#13]) then begin
               dec(i);
-            SetLength(s, i);
+              if (i>=1) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
+                dec(i);
+              SetLength(s, i);
+            end;
+            {$ENDIF}
+          finally
+            Temp.Free;
           end;
+          // replace the selected text and position the caret
+          AEditor.SelText := s;
+          if NewCaretPos then
+            AEditor.CaretXY := p;
+          {$IFDEF SYN_LAZARUS}
+          AEditor.EnsureCursorPosVisible;
           {$ENDIF}
         finally
-          Temp.Free;
+          AEditor.EndUpdate;
         end;
-        // replace the selected text and position the caret
-        AEditor.SelText := s;
-        if NewCaretPos then
-          AEditor.CaretXY := p;
-        {$IFDEF SYN_LAZARUS}
-        AEditor.EnsureCursorPosVisible;
-        {$ENDIF}
-      finally
-        AEditor.EndUpdate;                                                
+      {$IFDEF SYN_LAZARUS}
       end;
+      {$ENDIF}
 {end}                                                                           //mh 2000-11-08
     end;
   end;
@@ -527,8 +544,9 @@ begin
     if sCompl <> '' then                                                        //mg 2000-11-07
       SaveEntry;
   end;
-  //Mattias
+  {$IFDEF SYN_LAZARUS}
   fParsed:=true;
+  {$ENDIF}
 end;
 
 function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): boolean;

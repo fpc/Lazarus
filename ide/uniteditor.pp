@@ -54,7 +54,7 @@ uses
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  EnvironmentOpts, MsgView, SearchResultView, InputHistory,
+  EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf;
@@ -645,15 +645,18 @@ type
     Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
 
     Property CodeTemplateModul: TSynEditAutoComplete
-       read FCodeTemplateModul write FCodeTemplateModul;
+                               read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
+    procedure OnCodeTemplateExecuteCompletion(
+                                       ASynAutoComplete: TCustomSynAutoComplete;
+                                       Index: integer);
     procedure OnWordCompletionGetSource(
-       var Source: TStrings; SourceIndex: integer);
+                                    var Source: TStrings; SourceIndex: integer);
     procedure OnIdentCompletionTimer(Sender: TObject);
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
-                  Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
+                       Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
   published
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -2606,6 +2609,7 @@ begin
         AutoCompleteList.LoadFromFile('lazarus.dci');
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
+    OnExecuteCompletion:=@OnCodeTemplateExecuteCompletion;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
 
@@ -2861,8 +2865,29 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.OnCodeTemplateExecuteCompletion(
+  ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
+var
+  SrcEdit: TSourceEditorInterface;
+  TemplateName: string;
+  TemplateValue: string;
+  TemplateComment: string;
+begin
+  SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
+  if SrcEdit=nil then
+    SrcEdit:=GetActiveEditor;
+  //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
+  
+  TemplateName:=ASynAutoComplete.Completions[Index];
+  TemplateValue:=ASynAutoComplete.CompletionValues[Index];
+  TemplateComment:=ASynAutoComplete.CompletionComments[Index];
+  ExecuteCodeTemplate(SrcEdit,TemplateName,TemplateValue,TemplateComment,
+                      ASynAutoComplete.EndOfTokenChr,
+                      ASynAutoComplete.IndentToTokenStart);
+end;
+
 procedure TSourceNotebook.OnSynCompletionSearchPosition(var APosition:integer);
-// word changed
+// prefix changed -> filter list
 var
   i,x:integer;
   CurStr,s:Ansistring;

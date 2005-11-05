@@ -269,7 +269,8 @@ type
     // comments
     function FindCommentInFront(const StartPos: TCodeXYPosition;
           const CommentText: string; InvokeBuildTree, SearchInParentNode,
-          WithCommentBounds, CaseSensitive, IgnoreSpaces: boolean;
+          WithCommentBounds, CaseSensitive, IgnoreSpaces,
+          CompareOnlyStart: boolean;
           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
   end;
 
@@ -3181,7 +3182,7 @@ end;
 function TStandardCodeTool.FindCommentInFront(const StartPos: TCodeXYPosition;
   const CommentText: string;
   InvokeBuildTree, SearchInParentNode, WithCommentBounds, CaseSensitive,
-  IgnoreSpaces: boolean;
+  IgnoreSpaces, CompareOnlyStart: boolean;
   out CommentStart, CommentEnd: TCodeXYPosition): boolean;
 // searches a comment in front.
 var
@@ -3193,6 +3194,8 @@ var
     Found: LongInt;
     CompareStartPos: LongInt;
     CompareEndPos: LongInt;
+    CompareLen: Integer;
+    CompareCommentLength: Integer;
   begin
     //debugln('CompareComment "',copy(Src,StartPos,EndPos-StartPos),'"');
 
@@ -3216,16 +3219,27 @@ var
         end;
       end;
     end;
-    
     if IgnoreSpaces then begin
-      //debugln('Compare: "',copy(Src,CompareStartPos,CompareEndPos-CompareStartPos),'"',
-      //  ' "',CommentText,'"');
+      while (CompareStartPos<=CompareEndPos)
+      and IsSpaceChar[Src[CompareStartPos]]
+      do
+        inc(CompareStartPos);
+    end;
+
+    CompareCommentLength:=length(CommentText);
+    CompareLen:=CompareEndPos-CompareStartPos;
+    if CompareOnlyStart and (CompareLen>CompareCommentLength) then
+      CompareLen:=CompareCommentLength;
+
+    //debugln('Compare: "',copy(Src,CompareStartPos,CompareEndPos-CompareStartPos),'"',
+    //  ' "',CommentText,'"');
+    if IgnoreSpaces then begin
       Found:=CompareTextIgnoringSpace(
-                          @Src[CompareStartPos],CompareEndPos-CompareStartPos,
+                          @Src[CompareStartPos],CompareLen,
                           @CommentText[1],length(CommentText),
                           CaseSensitive);
     end else begin
-      Found:=CompareText(@Src[CompareStartPos],CompareEndPos-CompareStartPos,
+      Found:=CompareText(@Src[CompareStartPos],CompareLen,
                           @CommentText[1],length(CommentText),
                           CaseSensitive);
     end;

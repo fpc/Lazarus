@@ -497,6 +497,7 @@ type
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
     procedure SetupTransferMacros;
+    procedure SetupCodeMacros;
     procedure SetupControlSelection;
     procedure SetupIDECommands;
     procedure SetupStartProject;
@@ -1012,6 +1013,7 @@ begin
 
   // setup macros
   SetupTransferMacros;
+  SetupCodeMacros;
 
   // setup the code tools
   InitCodeToolBoss;
@@ -1123,6 +1125,7 @@ begin
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
   FreeThenNil(IDEMacros);
+  FreeThenNil(IDECodeMacros);
   FreeThenNil(LazProjectFileDescriptors);
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
@@ -1548,6 +1551,11 @@ begin
 
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
+end;
+
+procedure TMainIDE.SetupCodeMacros;
+begin
+  CreateStandardCodeMacros;
 end;
 
 procedure TMainIDE.SetupControlSelection;

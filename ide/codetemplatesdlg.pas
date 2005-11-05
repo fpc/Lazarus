@@ -32,8 +32,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, SynEdit, SynHighlighterPas, ExtCtrls, SynEditAutoComplete,
-  IDECommands, SrcEditorIntf, InputHistory, LazarusIDEStrConsts, EditorOptions;
+  ClipBrd, StdCtrls, Buttons, ExtCtrls,
+  SynEdit, SynHighlighterPas, SynEditAutoComplete,
+  IDECommands, TextTools, SrcEditorIntf, MacroIntf,
+  InputHistory, LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -86,6 +88,26 @@ type
     SynAutoComplete: TSynEditAutoComplete;
     TemplateIndex: integer;
   end;
+  
+  { TLazCodeMacros }
+
+  TLazCodeMacros = class(TIDECodeMacros)
+  private
+    FItems: TFPList; // list of TIDECodeMacro
+  protected
+    function GetItems(Index: integer): TIDECodeMacro; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property Items[Index: integer]: TIDECodeMacro read GetItems; default;
+    function Count: integer; override;
+    function Add(Macro: TIDECodeMacro): integer; override;
+    function IndexOf(Macro: TIDECodeMacro): Integer; override;
+    function IndexByName(const AName: string): Integer; override;
+    function FindByName(const AName: string): TIDECodeMacro; override;
+    function CreateUniqueName(const AName: string): string; override;
+  end;
 
 function ShowCodeTemplateDialog: TModalResult;
 
@@ -93,6 +115,16 @@ function AddCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
   var Token, Comment: string): TModalResult;
 function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
   Index: integer): TModalResult;
+  
+procedure CreateStandardCodeMacros;
+
+// standard code macros
+function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
 
 implementation
 
@@ -155,6 +187,41 @@ begin
   finally
     CodeTemplateEditForm.Free;
   end;
+end;
+
+function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
+begin
+  Value:=UpperCase(Parameter);
+  Result:=true;
+end;
+                        
+function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
+begin
+  Value:=LowerCase(Parameter);
+  Result:=true;
+end;
+
+function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, ErrorMsg: string): boolean;
+begin
+  Value:=Clipboard.AsText;
+  Result:=true;
+end;
+
+procedure CreateStandardCodeMacros;
+begin
+  IDECodeMacros:=TLazCodeMacros.Create;
+  RegisterCodeMacro('Upper','uppercase string',
+                    'Uppercase string given as parameter',
+                    @CodeMakroUpper,nil);
+  RegisterCodeMacro('Lower','lowercase string',
+                    'Lowercase string given as parameter',
+                    @CodeMakroLower,nil);
+  RegisterCodeMacro('Paste','paste clipboard',
+                    'Paste text from clipboard',
+                    @CodeMakroPaste,nil);
 end;
 
 { TCodeTemplateEditForm }
@@ -545,6 +612,77 @@ begin
   if UseMakrosCheckBox.Checked then
     NewValue:='$(EnableMakros)'+LineEnding+NewValue;
   SynAutoComplete.CompletionValues[i]:=NewValue;
+end;
+
+{ TLazCodeMacros }
+
+function TLazCodeMacros.GetItems(Index: integer): TIDECodeMacro;
+begin
+  Result:=TIDECodeMacro(FItems[Index]);
+end;
+
+constructor TLazCodeMacros.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TLazCodeMacros.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TLazCodeMacros.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+function TLazCodeMacros.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TLazCodeMacros.Add(Macro: TIDECodeMacro): integer;
+begin
+  if FindByName(Macro.Name)<>nil then
+    RaiseGDBException('TLazCodeMacros.Add Name already exists');
+  Result:=FItems.Add(Macro);
+end;
+
+function TLazCodeMacros.IndexOf(Macro: TIDECodeMacro): Integer;
+begin
+  Result:=FItems.IndexOf(Macro);
+end;
+
+function TLazCodeMacros.IndexByName(const AName: string): Integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(Items[Result].Name,AName)<>0) do
+    dec(Result);
+end;
+
+function TLazCodeMacros.FindByName(const AName: string): TIDECodeMacro;
+var
+  i: LongInt;
+begin
+  i:=IndexByName(AName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TLazCodeMacros.CreateUniqueName(const AName: string): string;
+begin
+  Result:=AName;
+  if IndexByName(Result)<0 then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while IndexByName(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
 end;
 
 initialization

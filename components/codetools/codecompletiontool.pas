@@ -1753,7 +1753,7 @@ begin
   Code:=ExtractIdentifier(ClassIdentifierNode.StartPos);
   
   // check if there is already a comment in front
-  if FindCommentInFront(StartPos,Code,false,true,false,false,true,
+  if FindCommentInFront(StartPos,Code,false,true,false,false,true,true,
           CommentStart,CommentEnd)
   then
     // comment already exists
@@ -2026,7 +2026,7 @@ var
     
     Code:=ExtractClassName(CodeCompleteClassNode,false);
     // check if there is already a comment in front
-    if FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,
+    if FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,true,
                           CommentStart,CommentEnd)
     then begin
       // comment already exists
