@@ -37,7 +37,8 @@ type
     ofConvertMacros, // replace macros in filename
     ofUseCache,      // do not update file from disk
     ofMultiOpen,     // set during loading multiple files
-    ofDoNotLoadResource,// do not open form, datamodule, ...
+    ofDoNotLoadResource,// do not open form, datamodule, ... (overriding default)
+    ofDoLoadResource,// do open form, datamodule, ... (overriding default)
     ofAddToProject   // add file to project (if exists)
     );
   TOpenFlags = set of TOpenFlag;

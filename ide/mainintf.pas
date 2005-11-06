@@ -231,6 +231,7 @@ const
      'ofUseCache',
      'ofMultiOpen',
      'ofDoNotLoadResource',
+     'ofDoLoadResource',
      'ofAddToProject'
     );
 

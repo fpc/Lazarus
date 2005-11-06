@@ -393,6 +393,8 @@ type
           const NewUnitName, NewUnitInFile: string): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
+    function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
+          ): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
@@ -2410,11 +2412,26 @@ begin
 end;
 
 function TCodeToolManager.FindUsedUnitFiles(Code: TCodeBuffer;
+  var MainUsesSection: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUsedUnitFiles A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUsedUnitFiles(MainUsesSection);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUsedUnitFiles(Code: TCodeBuffer;
   var MainUsesSection, ImplementationUsesSection: TStrings): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUsedUnits A ',Code.Filename);
+  DebugLn('TCodeToolManager.FindUsedUnitFiles A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2430,7 +2447,7 @@ function TCodeToolManager.FindUsedUnitNames(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindUsedUnits A ',Code.Filename);
+  DebugLn('TCodeToolManager.FindUsedUnitNames A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try

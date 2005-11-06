@@ -107,6 +107,7 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
+    function FindUsedUnitFiles(var MainUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
@@ -757,6 +758,25 @@ begin
   except
     FreeAndNil(MainUsesSection);
     FreeAndNil(ImplementationUsesSection);
+    raise;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindUsedUnitFiles(var MainUsesSection: TStrings
+  ): boolean;
+var
+  MainUsesNode: TCodeTreeNode;
+begin
+  MainUsesSection:=nil;
+  // find the uses sections
+  BuildTree(true);
+  MainUsesNode:=FindMainUsesSection;
+  // create lists
+  try
+    MainUsesSection:=UsesSectionToFilenames(MainUsesNode);
+  except
+    FreeAndNil(MainUsesSection);
     raise;
   end;
   Result:=true;

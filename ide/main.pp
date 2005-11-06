@@ -535,6 +535,10 @@ type
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
+    function DoLoadAncestorComponent(AnUnitInfo: TUnitInfo;
+                               const AncestorName: string;
+                               var AncestorClass: TComponentClass;
+                               Flags: TOpenFlags): TModalResult;
 
     // methods for 'close unit'
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
@@ -4378,13 +4382,11 @@ var
   APersistentClass: TPersistentClass;
   ACaption, AText: String;
   NewUnitName: String;
-  InheritedForm: Boolean;
 begin
   // check installed packages
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.IsPartOfProject),' ');
   if (Flags*[ofProjectLoading,ofMultiOpen]=[]) and AnUnitInfo.IsPartOfProject
   then begin
-    debugln('TMainIDE.DoLoadLFM B ');
     // opening a single form of the project -> check installed packages
     Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1);
     if not (Result in [mrOk,mrIgnore]) then exit;
@@ -4407,7 +4409,6 @@ begin
   
   // find the classname of the LFM, and check for inherited form
   ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
-  InheritedForm:=CompareText(LFMType,'inherited')=0;
   if NewClassName='' then begin
     Result:=MessageDlg(lisLFMFileCorrupt,
       Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
@@ -4438,12 +4439,19 @@ begin
       end;
     end;
   end;
+  
+  if (AncestorType=nil) and (CompareText(LFMType,'inherited')=0) then begin
+    // try loading the ancestor first
+    if DoLoadAncestorComponent(AnUnitInfo,NewAncestorName,AncestorType,Flags)
+      =mrAbort
+    then
+      exit(mrAbort);
+  end;
+
   if AncestorType=nil then
     AncestorType:=TForm;
-  DebugLn('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
+  //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
   
-  //
-
   BinLFMStream:=TExtMemoryStream.Create;
   try
     TxtLFMStream:=TExtMemoryStream.Create;
@@ -4478,14 +4486,6 @@ begin
     if ComponentLoadingOk then begin
       if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
       
-      if InheritedForm then begin
-        // TODO WORKAROUND: inherited does not yet work completely,
-        // so help programmer by opening the lfm file
-        Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
-          Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
-        Exit;
-      end;
-
       // create JIT component
       NewUnitName:=AnUnitInfo.UnitName;
       if NewUnitName='' then
@@ -4507,6 +4507,7 @@ begin
         exit;
       end else begin
         NewComponent:=CInterface.Component;
+        //DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
         AnUnitInfo.Component:=NewComponent;
         CreateDesignerForComponent(NewComponent);
         AnUnitInfo.ComponentName:=NewComponent.Name;
@@ -4532,6 +4533,80 @@ begin
     BinLFMStream.Free;
   end;
   Result:=mrOk;
+end;
+
+function TMainIDE.DoLoadAncestorComponent(AnUnitInfo: TUnitInfo;
+  const AncestorName: string; var AncestorClass: TComponentClass;
+  Flags: TOpenFlags): TModalResult;
+var
+  UsedUnitFilenames: TStrings;
+  i: Integer;
+  LFMFilename: String;
+  LFMCode: TCodeBuffer;
+  LFMClassName: string;
+  LFMType: string;
+  UnitFilename: string;
+  AncestorUnitInfo: TUnitInfo;
+begin
+  Result:=mrCancel;
+  
+  // search ancestor lfm
+  debugln('TMainIDE.DoLoadAncestorComponent ',AnUnitInfo.Filename,' AncestorName=',AncestorName);
+
+  // search used units filenames
+  UsedUnitFilenames:=nil;
+  try
+    if not CodeToolBoss.FindUsedUnitFiles(AnUnitInfo.Source,UsedUnitFilenames)
+    then begin
+      DoJumpToCodeToolBossError;
+      Result:=mrCancel;
+      exit;
+    end;
+    
+    // search for every used unit the .lfm file
+    if (UsedUnitFilenames<>nil) then begin
+      for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+        UnitFilename:=UsedUnitFilenames[i];
+        LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+        if FileExists(LFMFilename) then begin
+          // load the lfm file
+          Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+          if Result<>mrOk then begin
+            debugln('TMainIDE.DoLoadAncestorComponent Failed loading ',LFMFilename);
+            exit;
+          end;
+          // read the LFM classname
+          ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
+          if CompareText(LFMClassName,AncestorName)=0 then begin
+            // ancestor LFM found
+            
+            debugln('TMainIDE.DoLoadAncestorComponent ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+            // TODO: open ancestor hidden
+            // WORKAROUND: just open it
+            // beware: don't close it or you will get strange errors
+            Result:=DoOpenEditorFile(UnitFilename,AnUnitInfo.EditorIndex+1,
+                                     Flags+[ofDoLoadResource,ofRegularFile]);
+            if (Result=mrOk) then begin
+              AncestorUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+              if (AncestorUnitInfo.Component<>nil) then begin
+                AncestorClass:=
+                          TComponentClass(AncestorUnitInfo.Component.ClassType);
+                debugln('TMainIDE.DoLoadAncestorComponent AncestorClass=',AncestorClass.ClassName);
+                Result:=mrOk;
+              end else
+                debugln('TMainIDE.DoLoadAncestorComponent Failed to load ancestor component');
+            end;
+            exit;
+          end;
+        end;
+      end;
+    end;
+
+  finally
+    UsedUnitFilenames.Free;
+  end;
+
+  Result:=mrCancel;
 end;
 
 {-------------------------------------------------------------------------------
@@ -5375,6 +5450,34 @@ var
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
+
+  function OpenResource: TModalResult;
+  begin
+    // read form data
+    if FilenameIsPascalUnit(AFilename) then begin
+      // this could be a unit with a form
+      debugln('TMainIDE.DoOpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
+      if (not (ofDoNotLoadResource in Flags))
+      and ( (ofDoLoadResource in Flags)
+         or ((not Project1.AutoOpenDesignerFormsDisabled)
+             and (EnvironmentOptions.AutoCreateFormsOnOpen
+                  or (NewUnitInfo.Component<>nil))))
+      then begin
+        // -> try to (re)load the lfm file
+        debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
+        Result:=DoLoadLFM(NewUnitInfo,Flags);
+        if Result<>mrOk then exit;
+      end;
+    end else if NewUnitInfo.Component<>nil then begin
+      // this is no pascal source and there is a designer form
+      // This can be the case, when the file is renamed and reverted
+      // -> close form
+      CloseDesignerForm(NewUnitInfo);
+    end;
+    Result:=mrOk;
+  end;
+
+  
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
@@ -5466,7 +5569,10 @@ begin
       if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
         // file already open -> change source notebook page
         SourceNoteBook.Notebook.PageIndex:=NewUnitInfo.EditorIndex;
-        Result:=mrOk;
+        if ofDoLoadResource in Flags then
+          Result:=OpenResource
+        else
+          Result:=mrOk;
         exit;
       end;
     end;
@@ -5550,25 +5656,9 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.DoOpenEditorFile] C');
   {$ENDIF}
-
-  // read form data
-  if FilenameIsPascalUnit(AFilename) then begin
-    // this could be a unit with a form
-    if (not Project1.AutoOpenDesignerFormsDisabled)
-    and (not (ofDoNotLoadResource in Flags))
-    and (EnvironmentOptions.AutoCreateFormsOnOpen
-         or (NewUnitInfo.Component<>nil))
-    then begin
-      // -> try to (re)load the lfm file
-      Result:=DoLoadLFM(NewUnitInfo,Flags);
-      if Result<>mrOk then exit;
-    end;
-  end else if NewUnitInfo.Component<>nil then begin
-    // this is no pascal source and there is a designer form
-    // This can be the case, when the file is renamed and reverted
-    // -> close form
-    CloseDesignerForm(NewUnitInfo);
-  end;
+  
+  Result:=OpenResource;
+  if Result<>mrOk then exit;
 
   Result:=mrOk;
   //writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
