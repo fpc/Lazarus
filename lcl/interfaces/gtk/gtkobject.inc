@@ -5538,7 +5538,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.AssignSelf(Child,Data : Pointer);
 begin
-   gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
+  gtk_Object_Set_Data(Pgtkobject(Child),'Self',Data);
 end;
 
 {------------------------------------------------------------------------------

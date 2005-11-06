@@ -5338,7 +5338,7 @@ begin
   Width:=0;
   Height:=0;
   if LCLMenuItem=nil then exit;
-  if LCLMenuItem.HasBitmap then
+  if LCLMenuItem.HasIcon then
     GetGdkPixmapFromGraphic(LCLMenuItem.Bitmap,IconImg,IconMask,Width,Height);
 end;
 
