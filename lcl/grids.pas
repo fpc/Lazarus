@@ -4285,6 +4285,11 @@ begin
     {$IfDef dbgGrid}DebugLn('DoExit - Ext');{$Endif}
     if not EditorAlwaysShown then
       InvalidateFocused;
+    if FgridState=gsSelecting then begin
+      if SelectActive then
+        FSelectActive := False;
+      FGridState := gsNormal;
+    end;
   end;
   inherited DoExit;
 end;
