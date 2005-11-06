@@ -3325,7 +3325,6 @@ begin
       KeyDownBeforeInterface(CharCode, ShiftState);
       if CharCode = VK_UNKNOWN then Exit;
     end;
-
   end;
 
   Result := False;
@@ -3550,12 +3549,15 @@ begin
     ShiftState := KeyDataToShiftState(KeyData);
 
     if Dragging and (DragObject<>nil) then
+    begin
       DragObject.KeyUp(CharCode, ShiftState);
+      if CharCode = VK_UNKNOWN then exit;
+    end;
     
     if not (csNoStdEvents in ControlStyle)
     then begin
-      KeyUp(CharCode, ShiftState);
-      if CharCode = 0 then Exit;
+      KeyUpBeforeInterface(CharCode, ShiftState);
+      if CharCode = VK_UNKNOWN then Exit;
     end;
 
     // TODO
@@ -4480,7 +4482,7 @@ begin
     {inherited}; // there is nothing to inherit
 end;
 
-procedure TWinControl.CNSysChar(var Message: TLMKeyUp);
+procedure TWinControl.WMSysChar(var Message: TLMKeyUp);
 begin
   if SendDialogChar(Message) then 
     Message.Result := 1

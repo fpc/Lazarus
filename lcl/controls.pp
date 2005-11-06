@@ -1494,6 +1494,7 @@ type
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
     procedure WMSysKeyUp(var Message: TLMKeyUp); message LM_SYSKEYUP;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    procedure WMSysChar(var Message: TLMKeyUp); message LM_SYSCHAR;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
@@ -1503,7 +1504,6 @@ type
     procedure CNKeyUp(var Message: TLMKeyUp); message CN_KEYUP;
     procedure CNSysKeyUp(var Message: TLMKeyUp); message CN_SYSKEYUP;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
-    procedure CNSysChar(var Message: TLMKeyUp); message CN_SYSCHAR;
   protected
     // drag and drop
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
