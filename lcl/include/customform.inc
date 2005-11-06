@@ -1226,7 +1226,8 @@ procedure TCustomForm.SetShowInTaskbar(Value: TShowInTaskbar);
 begin
   if Value = FShowInTaskbar then exit;
   FShowInTaskbar := Value;
-  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
+  if HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
 end;
 
 {------------------------------------------------------------------------------
