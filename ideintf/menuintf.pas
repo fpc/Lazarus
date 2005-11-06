@@ -637,6 +637,7 @@ begin
   FVisible:=true;
   FMenuItemClass:=TMenuItem;
   FSectionIndex:=-1;
+  FImageIndex:=-1;
   {$IFDEF VerboseMenuIntf}
   //debugln('TIDEMenuItem.Create ',dbgsName(Self),' Name="',Name,'"');
   {$ENDIF}

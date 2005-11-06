@@ -284,14 +284,7 @@ procedure TCustomSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolea
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
   begin
-    with Glyph do
-    begin
-      Width := ImageList.Width;
-      Height := ImageList.Height;
-      Canvas.Brush.Color := clMaroon; // whatever
-      Canvas.FillRect(Rect(0,0,Width,Height));
-      ImageList.Draw(Canvas,0,0,Index,true);
-    end;
+    ImageList.GetBitmap(Index, Glyph);
   end;
 
 begin

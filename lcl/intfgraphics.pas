@@ -3389,12 +3389,16 @@ end;
 
 procedure TLazIntfImageMask.SetInternalPixel(x, y: integer; Value: integer);
 begin
-
+  if UsePalette then
+    SetInternalColor(x,y,Palette.Color[Value])
 end;
 
 function TLazIntfImageMask.GetInternalPixel(x, y: integer): integer;
 begin
-  Result:=0;
+  if UsePalette then
+    Result := Palette.IndexOf(GetInternalColor(x,y))
+  else
+    Result:=0;
 end;
 
 constructor TLazIntfImageMask.CreateWithImage(TheImage: TLazIntfImage);

@@ -2366,9 +2366,10 @@ begin
   {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
   begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow GetWindowRawImageDescription failed');
+    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow GetWindowRawImageDescription failed ');
     exit;
   end;
+  //DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow GdkWindow is ... ',RawImageDescriptionAsString(@NewRawImage.Description));
 
   // get intersection
   ARect:=SrcRect;

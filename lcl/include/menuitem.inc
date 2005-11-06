@@ -355,6 +355,8 @@ function TMenuItem.GetBitmap: TBitmap;
 begin
   if FBitmap=nil then
     FBitmap:=TBitmap.Create;
+  if (ImageIndex >= 0) and Assigned(GetImageList) then
+    GetImageList.GetBitmap(ImageIndex, FBitmap);
   FBitmap.Transparent:=True;
   Result:=FBitmap;
 end;
@@ -1079,6 +1081,8 @@ begin
   if FImageIndex = Value then exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
+  if HandleAllocated then RecreateHandle;
+  MenuChanged(False);
   //TODO: TMenuItem.SetImageIndex
 end;
 
