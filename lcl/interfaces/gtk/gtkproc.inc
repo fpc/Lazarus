@@ -1362,6 +1362,13 @@ begin
   ReleaseDC(HDC(DestWidget),DestDC);
 end;
 
+function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
+begin
+  Result:=Image^.bpp;
+  if Result<Image^.Depth then
+    Result:=Result*8;
+end;
+
 function CreateGdkBitmap(Window: PGdkWindow;
   Width, Height: integer): PGdkBitmap;
 var

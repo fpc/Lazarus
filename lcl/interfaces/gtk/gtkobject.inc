@@ -2303,7 +2303,7 @@ begin
   end;
   try
     // the minimum alignment we can detect is bpp
-    // that is no problem since a line consists of n x bpp pixels
+    // that is no problem since a line consists of n x bytesperpixel bytes
     case Image^.bpl of
       1: Desc^.LineEnd:=rileByteBoundary;
       2: Desc^.LineEnd:=rileWordBoundary;
@@ -2412,7 +2412,8 @@ begin
     // consistency checks
     if NewRawImage.Description.Depth<>AnImage^.Depth then
       RaiseGDBException('NewRawImage.Description.Depth<>AnImage^.Depth '+IntToStr(NewRawImage.Description.Depth)+'<>'+IntToStr(AnImage^.Depth));
-    if NewRawImage.Description.BitsPerPixel<>AnImage^.bpp then
+    //debugln('TGtkWidgetSet.GetRawImageFromGdkWindow  NewRawImage.Description.BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' AnImage^.bpp=',dbgs(AnImage^.bpp),' GetPGdkImageBitsPerPixel(AnImage)=',dbgs(GetPGdkImageBitsPerPixel(AnImage)));
+    if NewRawImage.Description.BitsPerPixel<>GetPGdkImageBitsPerPixel(AnImage) then
       RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
 
     NewRawImage.DataSize:=AnImage^.bpl * AnImage^.Height;
@@ -2496,7 +2497,7 @@ begin
   end;
   try
     {$IFDEF VerboseRawImage}
-    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),' theType=',dbgs(AnImage^.thetype),' depth=',dbgs(AnImage^.depth),' BitsPerpixel=',dbgs(AnImage^.bpp));
+    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),' theType=',dbgs(AnImage^.thetype),' depth=',dbgs(AnImage^.depth),' AnImage^.bpp=',dbgs(AnImage^.bpp));
     DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
 
@@ -2507,7 +2508,7 @@ begin
     9..32:  RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// X does not seem to use Word boundaries
     else    RawImage.Description.AlphaLineEnd:=rileQWordBoundary;
     end;}
-    RawImage.Description.AlphaBitsPerPixel:=AnImage^.bpp;
+    RawImage.Description.AlphaBitsPerPixel:=GetPGdkImageBitsPerPixel(AnImage);
 
     // consistency checks
     if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then

@@ -1000,11 +1000,11 @@ begin
         {$IFDEF VerboseRawImage}
         DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
           ' BytesPerLine=',dbgs(GdkImage^.bpl),
-          ' BytesPerPixel=',dbgs(GdkImage^.bpp),
+          ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
           ' ByteOrder=',dbgs(GdkImage^.byte_order),
           '');
         {$ENDIF}
-        if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
+        if (RawImage.Description.BitsPerPixel<>GetPGdkImageBitsPerPixel(GdkImage))
         then begin
           RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
         end;

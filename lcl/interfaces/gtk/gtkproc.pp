@@ -662,6 +662,7 @@ procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
+function GetPGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 {$IfDef Win32}
 Procedure gdk_window_copy_area(Dest: PGDKWindow; GC: PGDKGC;
   DestX, DestY: Longint; SRC: PGDKWindow; XSRC, YSRC, Width, Height: Longint);
