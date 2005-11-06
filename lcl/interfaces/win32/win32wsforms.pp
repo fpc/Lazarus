@@ -92,7 +92,7 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
-    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
@@ -231,7 +231,7 @@ begin
     Height := LongInt(CW_USEDEFAULT);
     SubClassWndProc := nil;
     if ((Application = nil) or (Application.MainForm <> lForm)) 
-        and lForm.ShowInTaskBar then
+        and (lForm.ShowInTaskBar = stAlways) then
       Parent := 0;
   end;
   // create window
@@ -301,7 +301,7 @@ begin
 end;
 
 procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
-  const AValue: Boolean);
+  const AValue: TShowInTaskbar);
 begin
   if not AForm.HandleAllocated then exit;
   if (Application <> nil) and (AForm = Application.MainForm) then

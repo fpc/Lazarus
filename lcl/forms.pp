@@ -345,6 +345,8 @@ type
     fhtCreate
     );
 
+  TShowInTaskbar = (stDefault, stAlways, stNever);
+
   { TCustomForm }
 
   TCustomForm = class(TScrollingWinControl)
@@ -383,7 +385,7 @@ type
     FRestoredTop: integer;
     FRestoredWidth: integer;
     FRestoredHeight: integer;
-    FShowInTaskbar: Boolean;
+    FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
@@ -394,8 +396,6 @@ type
     procedure DoDestroy;
     procedure IconChanged(Sender: TObject);
     function IsKeyPreviewStored: boolean;
-    function IsShowInTaskBarStored: boolean;
-    function GetShowInTaskBarDefault: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
@@ -409,7 +409,7 @@ type
     procedure SetMenu(Value : TMainMenu);
     procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
-    procedure SetShowInTaskbar(Value: Boolean);
+    procedure SetShowInTaskbar(Value: TShowInTaskbar);
     procedure SetVisible(Value: boolean);
     procedure SetWindowFocus;
     procedure SetWindowState(Value : TWindowState);
@@ -542,8 +542,8 @@ type
     property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
-    property ShowInTaskBar: Boolean read FShowInTaskbar write SetShowInTaskBar
-                                    stored IsShowInTaskBarStored;
+    property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
+                                    default stDefault;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
     property Visible write SetVisible stored VisibleIsStored default false;

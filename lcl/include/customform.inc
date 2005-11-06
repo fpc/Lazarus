@@ -203,17 +203,6 @@ begin
   Result:=FKeyPreview=true;
 end;
 
-function TCustomForm.IsShowInTaskBarStored: boolean;
-begin
-  Result := FShowInTaskBar <> GetShowInTaskBarDefault;
-end;
-
-function TCustomForm.GetShowInTaskBarDefault: boolean;
-begin
-  Result := (Application = nil) or (Application.MainForm=nil)
-            or (Application.MainForm = Self);
-end;
-
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
 var
   OldCancelControl: TControl;
@@ -697,9 +686,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoShow;
 begin
-  HandleNeeded;
-  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, FShowInTaskbar);
-
   if Assigned(FOnShow) then FOnShow(Self);
 end;
 
@@ -1236,7 +1222,7 @@ begin
   end;
 end;
 
-procedure TCustomForm.SetShowInTaskbar(Value: Boolean);
+procedure TCustomForm.SetShowInTaskbar(Value: TShowInTaskbar);
 begin
   if Value = FShowInTaskbar then exit;
   FShowInTaskbar := Value;
@@ -1249,7 +1235,7 @@ end;
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
-  FShowInTaskbar := GetShowInTaskBarDefault;
+  FShowInTaskbar := stDefault;
 
   BeginFormUpdate;
   try
@@ -1588,9 +1574,10 @@ var
 begin
   Result := false;
   if Assigned(FOnShortcut) then
+  begin
     FOnShortcut(Message, Result);
-  if Result then
-    exit;
+    if Result then exit;
+  end;
   if Assigned(FMenu) then
   begin
     Result := FMenu.IsShortCut(Message);
