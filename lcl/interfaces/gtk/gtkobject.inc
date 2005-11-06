@@ -5558,7 +5558,9 @@ var FormIconGdiObject: PGDIObject;
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
+  {$IFDEF Gtk1}
   AWindowPrivate: PGdkWindowPrivate;
+  {$ENDIF}
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
