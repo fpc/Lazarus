@@ -132,7 +132,7 @@ msgstr "O regels, 0 letters"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
-msgstr ""
+msgstr "1 regel, %d letters"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -212,11 +212,11 @@ msgstr "Karakters voor sspaties"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "CheckGroup editor"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr ""
+msgstr "CheckListBox editor"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -544,7 +544,7 @@ msgstr "Object Inspector"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
@@ -552,7 +552,7 @@ msgstr "Open"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr ""
+msgstr "Open masker bestand (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -612,7 +612,7 @@ msgstr "Opslaan als"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr ""
+msgstr "Sla Literal Charecters op"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -656,7 +656,7 @@ msgstr "Laat componenten boom zien"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr ""
+msgstr "Laat tips zien"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."

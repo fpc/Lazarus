@@ -32,7 +32,7 @@ msgstr "%s - (nieuw project)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "%s beta"
-msgstr ""
+msgstr "%s beta"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
@@ -64,7 +64,7 @@ msgstr "%s%s%s is geen geldige unit naam."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
-msgstr ""
+msgstr "%s%sKlik op OK als je zeker weet dat je dat wilt doen."
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -352,7 +352,7 @@ msgstr "Springpunt aan geschiedenis toevoegen"
 
 #: lazarusidestrconsts:lislazdocaddlinkbutton
 msgid "Add link"
-msgstr ""
+msgstr "Voeg link toe"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -652,7 +652,7 @@ msgstr "Blok"
 
 #: lazarusidestrconsts:dlgblockindent
 msgid "Block indent"
-msgstr ""
+msgstr "Bolk inspringen"
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -1084,7 +1084,7 @@ msgstr "Code Hulpmiddelen"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding (experimental)"
-msgstr ""
+msgstr "Code inklappen (experimenteel)"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1324,7 +1324,7 @@ msgstr "Configureer geinstalleerde packages"
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
-msgstr ""
+msgstr "Bevestiging voor het bouwen van Lazarus"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1436,11 +1436,11 @@ msgstr "Een gehele Form kopiëren is niet geimplementeerd."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1468,7 +1468,7 @@ msgstr "Creëer definities voor Free Pascal Compiler"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr ""
+msgstr "Creëer definities voor Free Pascal SVN broncode"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -1480,7 +1480,7 @@ msgstr "Creëer FPC macro's en paden voor een fpc project folder"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
-msgstr ""
+msgstr "Creëer MakeFile"
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -1752,7 +1752,7 @@ msgstr "Verwijderen bestand mislukt"
 
 #: lazarusidestrconsts:lislazdocdeletelinkbutton
 msgid "Delete link"
-msgstr ""
+msgstr "Verwijder link"
 
 #: lazarusidestrconsts:liscodetoolsdefsdeletenode
 msgid "Delete node"
@@ -1940,7 +1940,7 @@ msgstr "Bent u zeker om alle wijzigingen aan package %s te verliezen en te herla
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr ""
+msgstr "Wil je Lazarus opnieuw bouwen?"
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -1980,7 +1980,7 @@ msgstr "Sleep bestanden"
 
 #: lazarusidestrconsts:rslanguagedutch
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlands"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2052,7 +2052,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenablemakros
 msgid "Enable Makros"
-msgstr ""
+msgstr "Activeer macros"
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
@@ -2212,7 +2212,7 @@ msgstr "Evalueer/Verander ..."
 
 #: lazarusidestrconsts:lislazdocexampletag
 msgid "Example"
-msgstr ""
+msgstr "Voorbeeld"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -2300,7 +2300,7 @@ msgstr "Destilleer procedure"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr ""
+msgstr "FPC SVN broncode directory"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -2560,7 +2560,7 @@ msgstr "Focus naar Broncode Editor"
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
-msgstr ""
+msgstr "Volg cursor"
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -2684,7 +2684,7 @@ msgstr "Genereer:"
 
 #: lazarusidestrconsts:rslanguagegerman
 msgid "German"
-msgstr ""
+msgstr "Duits"
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
@@ -2812,7 +2812,7 @@ msgstr "Verwerk OnClick-event"
 
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
@@ -3016,7 +3016,7 @@ msgstr "Negeer spaties aan begin van regel"
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
-msgstr ""
+msgstr "Ime Str"
 
 #: lazarusidestrconsts:lisimportlist
 msgid "Import list"
@@ -3032,7 +3032,7 @@ msgstr "Neem op"
 
 #: lazarusidestrconsts:dlgassertcode
 msgid "Include Assertion Code"
-msgstr ""
+msgstr "Gebruik assertie code"
 
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files (-Fi):"
@@ -3172,7 +3172,7 @@ msgstr "Invoegen FP project Template"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr ""
+msgstr "Voeg Free Pascal SVN broncode template in"
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -3224,11 +3224,11 @@ msgstr "Alfabetisch invoegen"
 
 #: lazarusidestrconsts:lislazdochintboldformat
 msgid "Insert bold formatting tag"
-msgstr ""
+msgstr "Voeg \"Vet\" opmaak-tag in"
 
 #: lazarusidestrconsts:lislazdochintinsertcodetag
 msgid "Insert code formatting tag"
-msgstr ""
+msgstr "Voeg \"code\" opmaak-tag in"
 
 #: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
@@ -3252,7 +3252,7 @@ msgstr "Invoegen vanaf de karaktermap"
 
 #: lazarusidestrconsts:lislazdochintitalicformat
 msgid "Insert italic formatting tag"
-msgstr ""
+msgstr "Voeg \"schuin\" opmaak-tag in"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -3264,7 +3264,7 @@ msgstr "Node onder invoegen"
 
 #: lazarusidestrconsts:lislazdochintremarktag
 msgid "Insert remark formatting tag"
-msgstr ""
+msgstr "Voeg opmerking opmaak-tag in"
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -3280,11 +3280,11 @@ msgstr "Invoegen Tekst"
 
 #: lazarusidestrconsts:lislazdochintunderlineformat
 msgid "Insert underline formatting tag"
-msgstr ""
+msgstr "Voeg \"onderstreep\" opmaak-tag in"
 
 #: lazarusidestrconsts:lislazdochintvartag
 msgid "Insert var formatting tag"
-msgstr ""
+msgstr "Voeg var opmaak-tag in"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
@@ -3568,11 +3568,11 @@ msgstr "Springen ('Method Jumping')"
 
 #: lazarusidestrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lazarusidestrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -3580,7 +3580,7 @@ msgstr "Behoud alle Tekst bestanden"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep caret X position"
-msgstr ""
+msgstr "Behoud caret X positie"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -3676,7 +3676,7 @@ msgstr "Laatste (einde broncode)"
 
 #: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
 msgid "Launching application"
-msgstr ""
+msgstr "Applicatie wordt gestart"
 
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -3820,7 +3820,7 @@ msgstr "Licentie:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Licentie: GPL/LGPL%sLazarus zijn de klasse bibliotheken voor Free Pascal die Delphi emuleren. Free Pascal is een compiler onder de (L)GPL licnetie, die draait op Linux, W32, OS/2, 68K en meer. Free Pascal is ontworpen om Delphi syntax, dus OOP, te kunnen compileren.%sLazarus is het missende onderdeel, die het je mogelijk zal maken om Delphi programma's voor alle genoemde platforms te maken. De IDE zal uiteindelijk een \"RAD\" tool zoals Delphi zijn.%sOmdat Lazarus groeit hebben we meer ontwikkelaars nodig. "
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -3852,11 +3852,11 @@ msgstr "Linkstijl"
 
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
-msgstr ""
+msgstr "Linker"
 
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
-msgstr ""
+msgstr "Bezig met linken"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -4384,7 +4384,7 @@ msgstr "Node is niet wijzigbaar"
 
 #: lazarusidestrconsts:srvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Nonconvert"
 
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
@@ -4440,11 +4440,11 @@ msgstr "Numeriek keyboard %d"
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
-msgstr ""
+msgstr "OVR"
 
 #: lazarusidestrconsts:lispckoptsobject
 msgid "Object"
-msgstr ""
+msgstr "Object"
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
@@ -4452,7 +4452,7 @@ msgstr "Object Inspector"
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: lazarusidestrconsts:lisoldancestors
 msgid "Old Ancestors"
@@ -4464,11 +4464,11 @@ msgstr "Oude Klasse"
 
 #: lazarusidestrconsts:lisceoonidle
 msgid "On idle"
-msgstr ""
+msgstr "On idle"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
-msgstr ""
+msgstr "Online help"
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
@@ -4492,7 +4492,7 @@ msgstr "Openen"
 
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
-msgstr ""
+msgstr "Open %s"
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4776,7 +4776,7 @@ msgstr "Parent node kan geen child nodes bevatten."
 
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
-msgstr ""
+msgstr "Bezig met ontleden"
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -4832,7 +4832,7 @@ msgstr "Pauze toets"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
-msgstr ""
+msgstr "Persistent caret"
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -5140,7 +5140,7 @@ msgstr "Leesfout"
 
 #: lazarusidestrconsts:dlgcdtreadprefix
 msgid "Read prefix"
-msgstr ""
+msgstr "Lees voorloop"
 
 #: lazarusidestrconsts:uepreadonly
 msgid "Readonly"
@@ -5740,7 +5740,7 @@ msgstr "Zoek naar: %s"
 
 #: lazarusidestrconsts:lislazdocseealsotag
 msgid "See also"
-msgstr ""
+msgstr "Zie ook"
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
@@ -5940,11 +5940,11 @@ msgstr "Zet %sBouw alles%s"
 
 #: lazarusidestrconsts:srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: lazarusidestrconsts:srkmecshifttab
 msgid "Shift Tab"
-msgstr ""
+msgstr "Shift Tab"
 
 #: lazarusidestrconsts:lislazdocshorttag
 msgid "Short"
@@ -5968,7 +5968,7 @@ msgstr "Toon fouten"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr ""
+msgstr "Laat steunlijnen zien"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
@@ -6128,11 +6128,11 @@ msgstr "Slimme tabs"
 
 #: lazarusidestrconsts:dlgsnapguidelines
 msgid "Snap to Guide Lines"
-msgstr ""
+msgstr "Aan steunlijnen plakken"
 
 #: lazarusidestrconsts:dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr ""
+msgstr "Aan raster plakken"
 
 #: lazarusidestrconsts:srvk_snapshot
 msgid "Snapshot"
@@ -6160,7 +6160,7 @@ msgstr "Broncode Editor"
 
 #: lazarusidestrconsts:srkmcatsrcnotebook
 msgid "Source Notebook commands"
-msgstr ""
+msgstr "Editoropdrachten"
 
 #: lazarusidestrconsts:lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
@@ -6228,7 +6228,7 @@ msgstr "Status"
 
 #: lazarusidestrconsts:dlgstatickeyword
 msgid "Static Keyword in Objects"
-msgstr ""
+msgstr "\"Static\"-sleutelwoord in objecten"
 
 #: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
@@ -6260,11 +6260,11 @@ msgstr "Stop na aantal fouten:"
 
 #: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr ""
+msgstr "Stop huidige debugsessie en het project opnieuw bouwen?"
 
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
-msgstr ""
+msgstr "Stop debugsessie"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -6368,7 +6368,7 @@ msgstr "Tab volgorde..."
 
 #: lazarusidestrconsts:liseotabwidths
 msgid "Tab widths"
-msgstr ""
+msgstr "Tab grootte"
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
@@ -6400,7 +6400,7 @@ msgstr "Doel OS:"
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
-msgstr ""
+msgstr "Doel platform:"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -6416,7 +6416,7 @@ msgstr "Doelbestandsnaam van het projekt"
 
 #: lazarusidestrconsts:dlgtargetproc
 msgid "Target i386"
-msgstr ""
+msgstr "Doel i386"
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -6508,11 +6508,11 @@ msgstr "De FPC broncode directory\"%s\" lijkt niet juist. Normaliter bevat het d
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr ""
+msgstr "De Free Pascal SVN broncode directory."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr ""
+msgstr "De Free Pascal SVN broncode directory. Niet verplicht. Het verbetert het declaraties zoeken en debuggen."
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
@@ -6840,7 +6840,7 @@ msgstr "De naam van de pagina %s%s%s is te lang (max. 100 letters)."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr ""
+msgstr "Het pad naar de free pascal compiler voor dit project. Alleen nodig als je de bron FPC SVN hieronder zet. Wordt gebuikt om automatisch macros te maken."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
@@ -7084,7 +7084,7 @@ msgstr "Top:"
 
 #: lazarusidestrconsts:listops
 msgid "Tops"
-msgstr ""
+msgstr "Tops"
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
@@ -7096,11 +7096,11 @@ msgstr "Leerprogramma"
 
 #: lazarusidestrconsts:dlgenvtype
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: lazarusidestrconsts:lisuidtype
 msgid "Type:"
-msgstr ""
+msgstr "Type:"
 
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
@@ -7108,7 +7108,7 @@ msgstr "HOOFDLETTERS"
 
 #: lazarusidestrconsts:rslanguageukrainian
 msgid "Ukrainian"
-msgstr ""
+msgstr "Oekraiens"
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
@@ -7428,15 +7428,15 @@ msgstr "Commentaar Selectie ongedaan maken"
 
 #: lazarusidestrconsts:liscodetoolsdefsundefine
 msgid "Undefine"
-msgstr ""
+msgstr "Ondefinieer"
 
 #: lazarusidestrconsts:liscodetoolsdefsundefineall
 msgid "Undefine All"
-msgstr ""
+msgstr "Ondefinieer alles"
 
 #: lazarusidestrconsts:liscodetoolsdefsundefinerecurse
 msgid "Undefine Recurse"
-msgstr ""
+msgstr "Ondefinieer recursie"
 
 #: lazarusidestrconsts:dlgedunder
 msgid "Underline"
@@ -7452,7 +7452,7 @@ msgstr "Ongedaan maken na Opslaan"
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
-msgstr ""
+msgstr "Limiet ongedaan maken"
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
@@ -7500,7 +7500,7 @@ msgstr "Unit bestand naam:"
 
 #: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
-msgstr ""
+msgstr "Unit informatie"
 
 #: lazarusidestrconsts:lisa2punitnameinvalid
 msgid "Unit Name Invalid"
@@ -7592,7 +7592,7 @@ msgstr "Naar boven"
 
 #: lazarusidestrconsts:lisceoupdate
 msgid "Update"
-msgstr ""
+msgstr "Update"
 
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
@@ -7612,7 +7612,7 @@ msgstr "Gebruik ANSI strings"
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
-msgstr ""
+msgstr "Gebruik \"uitsluit\" filter"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
@@ -7620,7 +7620,7 @@ msgstr "Gebruik Heaptrc unit"
 
 #: lazarusidestrconsts:lisuseincludefilter
 msgid "Use Include Filter"
-msgstr ""
+msgstr "Gebruik \"bevat\" filter"
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"
@@ -7668,7 +7668,7 @@ msgstr "Door gebruiker gedefinieerde extensie (.pp.xxx)"
 
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
-msgstr ""
+msgstr "Gebruiker voorkeuren"
 
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
@@ -7716,7 +7716,7 @@ msgstr "Verticaal"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Vertikale stapgrootte van raster"
 
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
@@ -7732,7 +7732,7 @@ msgstr "Toon Code Verkenner"
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
-msgstr ""
+msgstr "Toon component palette"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
@@ -7740,7 +7740,7 @@ msgstr "Toon Forms"
 
 #: lazarusidestrconsts:lismenuviewidespeedbuttons
 msgid "View IDE speed buttons"
-msgstr ""
+msgstr "Toon IDE speed buttons"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -7792,7 +7792,7 @@ msgstr "Toon Units"
 
 #: lazarusidestrconsts:srkmecviewanchoreditor
 msgid "View anchor editor"
-msgstr ""
+msgstr "Toon anker editor"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -7804,7 +7804,7 @@ msgstr "Toon Call Stack"
 
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"
-msgstr ""
+msgstr "Toon component palette"
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
@@ -7852,7 +7852,7 @@ msgstr "Toon Watches"
 
 #: lazarusidestrconsts:lishlpoptsviewers
 msgid "Viewers"
-msgstr ""
+msgstr "Viewers"
 
 #: lazarusidestrconsts:lispkgfiletypevirtualunit
 msgid "Virtual Unit"
