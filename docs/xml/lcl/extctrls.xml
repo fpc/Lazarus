@@ -2952,9 +2952,8 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       </element>
       <!-- property Visibility: published -->
       <element name="TImage.Picture">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Picture</short>
+        <descr>Picture: the actual graphical image to be displayed</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TImage.Proportional">
@@ -4016,9 +4015,8 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Caption</short>
+        <descr>Caption: the string which appears as a caption to describe the function of the Check Group</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.ChildSizing">
@@ -4206,9 +4204,8 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Caption</short>
+        <descr>Caption : the caption which will appear on the Bound Label, to identify its function</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Color">
@@ -4643,9 +4640,8 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Text">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Text</short>
+        <descr>Text: the text-string being entered or edited in the Labelled Edit box</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Visible">

@@ -371,8 +371,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TButton">
-        <short>A push button control</short>
-        <descr>TButton is a push button control. An user pushes a button to start an action.</descr>
+        <short>Button</short>
+        <descr>Button: Base type for all Buttons. A push button control. The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TButton.Click">
@@ -560,7 +560,8 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonGlyph">
-        <short>A special class used in buttons with a Glyph (TSpeedButton and TBitBtn)</short>
+        <short>Button Glyph</short>
+        <descr>Button Glyph: The graphics and legend on a button</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TButtonGlyph.FOriginal">
@@ -990,8 +991,8 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TBitBtn">
-        <short>A push button that can show a glyph.</short>
-        <descr>TBitBtn is a push button control which can show a glyph. An user pushes a button to start an action.</descr>
+        <short>Bit Button</short>
+        <descr>Bit Button: a push button control on a toolbar causing a particular action to be executed. It often displays a glyph or small graphic to denote its function.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Action">
@@ -1761,8 +1762,8 @@ If an Action has been assigned to the bitbutton and this action is disabled then
       </element>
       <!-- object Visibility: default -->
       <element name="TSpeedButton">
-        <short>A button control</short>
-        <descr>TSpeedButton is a button control. It can show a glyph and has a state. An user pushes a button to start an action or set a mode. When a user clicks on a SpeedButton focus is not shifted. A SpeedButton never gets focus.</descr>
+        <short>Speed Button</short>
+        <descr>Speed Button:  A button designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">

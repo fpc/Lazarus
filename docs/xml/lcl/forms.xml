@@ -5603,26 +5603,30 @@ Includes useful function MessageBox, a simple dialog</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Message Box</short>
+        <descr>Message Box: a useful function to display a message.<br/>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]<br/>
+
+It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.MessageBox.Result">
-        <short/>
+        <short>Result</short>
+        <descr>Result: integer value returned by the function to signify which box was selected</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Text">
-        <short/>
+        <short>Text</short>
+        <descr>Text: the string that is displayed as a prompt or instruction in the Box;</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Caption">
-        <short/>
+        <short>Caption</short>
+        <descr>Caption: the string label at the top of the message box;</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TApplication.MessageBox.Flags">
-        <short/>
+        <short>Flags</short>
+        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/> MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>ABORT RETRY IGNORE.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Minimize">

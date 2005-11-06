@@ -1032,9 +1032,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>ComboBox Style</short>
+        <descr>ComboBox Style: may be Simple, a Drop-Down or a drop-down list, or some version drawn by the Owner</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csDropDown">

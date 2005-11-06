@@ -1350,7 +1350,7 @@ There are two versions of this function. The first version displays a dialog wit
       <!-- argument Visibility: default -->
       <element name="MessageDlg.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
+        <descr>Buttons indicate which set of button captions have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.HelpCtx">
@@ -1371,8 +1371,8 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
 
     Two versions of this function, ie first 'Caption' argument is optional; if omitted, caption is missing from box
 
-    This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.
-    The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets eg [mbRetry, mbIgnore, mbAbort, mbCancel].
+    This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.<br/>
+    The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
     The HelpCtx argument is not currently implemented and should be set to zero.
     The return value from the Function is the identity of the button pressed, expressed as an integer (see the definitions below, [mrNone..mrAll]).</descr>
       </element>
@@ -1399,7 +1399,7 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
       <!-- argument Visibility: default -->
       <element name="MessageDlg.Buttons">
         <short>Determines the buttons shown on the messagedialog</short>
-        <descr>Buttons indicate which buttons have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
+        <descr>Buttons indicate which set of button captions have to be shown on the dialog. You can choose from predefined sets: mbAbortRetryIgnore, mbOKCancel, mbYesNo, mbYesNoCancel, or you can make your own set.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="MessageDlg.HelpCtx">
@@ -1495,7 +1495,7 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       </element>
       <!-- function Visibility: default -->
       <element name="QuestionDlg">
-        <short>Show a question to the user and get a responce</short>
+        <short>Show a question to the user and get a response</short>
         <descr>QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.</descr>
       </element>
       <!-- function result Visibility: default -->
@@ -1520,8 +1520,8 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.Buttons">
         <short>An array of return values and caption for the buttons on the question dialog.</short>
-        <descr>Buttons is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists of only predefined return values like mrOK and mrCancel, the standard OK and Cancel buttons will be shown.
-The strength of this functions is however that you can fill the array like: [400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake']. Which will create a dialog with three buttons, the captions of the buttons will be the strings given in the array. The return value of the function will be 400, 401 or 402, depending on the fact if the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.</descr>
+        <descr>Buttons is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists of only predefined return values like mrOK and mrCancel, the standard OK and Cancel buttons will be shown.<br/>
+The strength of this functions is however that you can fill the array like: [400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake'],  which will create a dialog with three buttons; the captions of the buttons will be the strings given in the array. <br/>The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="QuestionDlg.HelpCtx">
@@ -1535,7 +1535,7 @@ The strength of this functions is however that you can fill the array like: [400
 
 { Defined in Dialogs.pp }
 
-    The simplest message dialog: takes a simple string as argument, displays it in a stereotyped box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.
+    The simplest message dialog: takes a simple string as argument, displays it in a stereotyped box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.<br/>
     This is a modal procedure call, that is the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.
 
 Example
@@ -1590,7 +1590,7 @@ end.</descr>
 Function InputQuery(const ACaption, APrompt : String; 
                                          var Value : String) : Boolean;
 
-    Two versions of this function which displays a prompt and expects user input of textual data; the first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), while the second omits this property. The text entered by the user is returned in the variable argument 'Value'; the function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). Omitting the MaskInput argument is equivalent to setting it FALSE.</descr>
+    Two versions of this function which displays a prompt and expects user input of textual data;<br/> the first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), <br/> the second omits this property. <br/>The text entered by the user is returned in the variable argument 'Value'; <br/>the function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). <br/>Omitting the MaskInput argument is equivalent to setting it FALSE.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputQuery.Result">
@@ -1618,8 +1618,8 @@ Function InputQuery(const ACaption, APrompt : String;
       <!-- function Visibility: default -->
       <element name="InputQuery">
         <short>Use InputQuery to show a dialog box to get some input from the user</short>
-        <descr>InputQuery works a lot like InputBox, however the result of InputQuery is a Boolean indicating wether the user pressed OK. If the result is false the user pressed Cancel.
-If you want a default value to be returned if the user presses Cancel, use InputBox
+        <descr>InputQuery works a lot like InputBox, however the result of InputQuery is a Boolean indicating whether the user pressed OK. If the result is false the user pressed Cancel.
+If you want a default value to be returned when the user presses Cancel, use InputBox
 There are two versions of this function, the difference between them is the ability to mask the users input.</descr>
       </element>
       <!-- function result Visibility: default -->
@@ -1700,8 +1700,8 @@ Function PasswordBox(const ACaption, APrompt : String) : String;
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
         <short>A function that allows to user to select a directory.</short>
-        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.
-There are two version of this function, the second one having the ability to indicate wether hidden folders should be shown as well.</descr>
+        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
+There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="SelectDirectory.Result">
@@ -1716,18 +1716,18 @@ There are two version of this function, the second one having the ability to ind
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.InitialDirectory">
         <short>The directory the dialog should start in.</short>
-        <descr>The directory the dialog should start in. If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
+        <descr>The directory the dialog should start in. <br/>If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.Directory">
-        <short>A variabel which on exit contains the selected directory.</short>
-        <descr>A variabel which on exit contains the selected directory.</descr>
+        <short>A variable which on exit contains the selected directory.</short>
+        <descr>A variable which on exit contains the selected directory.</descr>
       </element>
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
         <short>A function that allows to user to select a directory.</short>
-        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.
-There are two version of this function, the second one having the ability to indicate wether hidden folders should be shown as well.</descr>
+        <descr>This function wil show a dialog which allows the user to select the required directory when the directory structure is displayed as a tree. <br/>Under Windows the caption from the resulting dialog cannot be set, but the label above the directory tree will have this value.<br/>
+There are two version of this function, the second one having the ability to indicate whether hidden folders should be shown as well.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="SelectDirectory.Result">
@@ -1742,17 +1742,17 @@ There are two version of this function, the second one having the ability to ind
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.InitialDirectory">
         <short>The directory the dialog should start in.</short>
-        <descr>The directory the dialog should start in. If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
+        <descr>The directory the dialog should start in. <br/>If a valid directory is given, the selected directory in the tree will be set to this directory.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.Directory">
-        <short>A variabel which on exit contains the selected directory.</short>
-        <descr>A variabel which on exit contains the selected directory.</descr>
+        <short>A variable which on exit contains the selected directory.</short>
+        <descr>A variable which on exit contains the selected directory.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="SelectDirectory.ShowHidden">
-        <short>A boolean constant indicating wehter hidden folders should be shown too.</short>
-        <descr>A boolean constant indicating wehter hidden folders should be shown too.</descr>
+        <short>A boolean constant indicating whether hidden folders should be shown too.</short>
+        <descr>A boolean constant indicating whether hidden folders should be shown too.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">

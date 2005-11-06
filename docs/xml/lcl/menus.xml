@@ -1,3030 +1,2081 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     Menus
   ====================================================================
 -->
-
-<module name="Menus">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="InterfaceBase">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ActnList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ImgList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLClasses">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="EMenuError">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMenuItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure type Visibility: default -->
-<element name="TMenuChangeEvent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuChangeEvent.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuChangeEvent.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuChangeEvent.Rebuild">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMenuActionLink">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TMenuActionLink.FClient">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.AssignClient">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.AssignClient.AClient">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsAutoCheckLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsAutoCheckLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsCaptionLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsCaptionLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsCheckedLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsCheckedLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsEnabledLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsEnabledLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsHelpContextLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsHelpContextLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsHintLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsHintLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsGroupIndexLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsGroupIndexLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsImageIndexLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsImageIndexLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsShortCutLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsShortCutLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsVisibleLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsVisibleLinked.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuActionLink.IsOnExecuteLinked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuActionLink.IsOnExecuteLinked.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetAutoCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetAutoCheck.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetCaption.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetChecked.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetEnabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetEnabled.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetHelpContext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetHelpContext.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetHint.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetImageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetImageIndex.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetShortCut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetShortCut.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetVisible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetVisible.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuActionLink.SetOnExecute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuActionLink.SetOnExecute.Value">
-<short></short>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="TMenuActionLinkClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMenuItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FActionLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FAutoCheck">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FCaption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FChecked">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FCommand">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FDefault">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FEnabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FBitmap">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FGroupIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FHandle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FHelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FImageChangeLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FOnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FParent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FRadioItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FRightJustify">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FShowAlwaysCheckable">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FSubMenuImages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenuItem.FVisible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.GetBitmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetBitmap.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.GetCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.GetItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.GetItem.Index">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.GetMenuIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetMenuIndex.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.GetParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetParent.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsBitmapStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsBitmapStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsCaptionStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsCaptionStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsCheckedStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsCheckedStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsEnabledStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsEnabledStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsHelpContextStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsHelpContextStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsHintStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsHintStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsImageIndexStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsImageIndexStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsOnClickStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsOnClickStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsShortCutStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsShortCutStored.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TMenuItem.IsVisibleStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsVisibleStored.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetAutoCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetAutoCheck.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetCaption.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetChecked.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetDefault">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetDefault.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetEnabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetEnabled.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetBitmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetBitmap.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetMenuIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetMenuIndex.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetRadioItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetRadioItem.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetRightJustify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetRightJustify.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetShowAlwaysCheckable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetShowAlwaysCheckable.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SetSubMenuImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetSubMenuImages.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.ShortcutChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.ShortcutChanged.OldValue">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.ShortcutChanged.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.SubItemChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SubItemChanged.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SubItemChanged.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SubItemChanged.Rebuild">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.TurnSiblingsOff">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenuItem.DoActionChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.DoActionChange.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.ActionChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.ActionChange.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.ActionChange.CheckDefaults">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.AssignTo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.AssignTo.Dest">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuItem.GetAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetAction.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuItem.GetActionLinkClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetActionLinkClass.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenuItem.GetHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetHandle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.DoClicked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.DoClicked.msg">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.CreateHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.DestroyHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.Notification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Notification.AComponent">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Notification.Operation">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.GetChildren">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.GetChildren.Proc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.GetChildren.Root">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.InitiateActions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.MenuChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.MenuChanged.Rebuild">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetAction.NewAction">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetChildOrder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetChildOrder.Child">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetChildOrder.Order">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetGroupIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetGroupIndex.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetImageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetImageIndex.value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetParentComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetParentComponent.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetShortCut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetShortCut.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.SetVisible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.SetVisible.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.UpdateImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenuItem.ImageListChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.ImageListChange.Sender">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TMenuItem.ActionLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TMenuItem.FCompStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TMenuItem.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TMenuItem.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.GetImageList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetImageList.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.GetParentComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetParentComponent.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.GetParentMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetParentMenu.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.HandleAllocated">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.HandleAllocated.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.HasIcon">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.HasIcon.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.HasParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.HasParent.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.InitiateAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.IndexOf">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IndexOf.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.IndexOf.Item">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.IndexOfCaption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IndexOfCaption.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.IndexOfCaption.ACaption">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.VisibleIndexOf">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.VisibleIndexOf.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.VisibleIndexOf.Item">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.IsCheckItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsCheckItem.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Add">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Add.Item">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.AddSeparator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Click">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Delete.Index">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.HandleNeeded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Insert">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Insert.Index">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Insert.Item">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.RecreateHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Remove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Remove.Item">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.IsInMenuBar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.IsInMenuBar.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenuItem.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.HasBitmap">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.HasBitmap.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.GetIconSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.GetIconSize.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.Count">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.Handle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenuItem.Items.Index">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.MenuIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenuItem.Command">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenuItem.MenuVisibleIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenuItem.MenuVisibleIndex.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Action">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.AutoCheck">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Checked">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Default">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Bitmap">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.GroupIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.RadioItem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.RightJustify">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.ShowAlwaysCheckable">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.SubMenuImages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenuItem.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TFindItemKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TFindItemKind.fkCommand">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TFindItemKind.fkHandle">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TFindItemKind.fkShortCut">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenu.FImageChangeLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenu.FImages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenu.FItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenu.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TMenu.FParent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenu.SetImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.SetImages.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenu.SetParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.SetParent.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TMenu.ImageListChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.ImageListChange.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenu.CreateHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenu.DoChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.DoChange.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.DoChange.Rebuild">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMenu.GetHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenu.GetHandle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenu.GetChildren">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.GetChildren.Proc">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.GetChildren.Root">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenu.MenuChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.MenuChanged.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.MenuChanged.Source">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.MenuChanged.Rebuild">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TMenu.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMenu.UpdateItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: public -->
-<element name="TMenu.FCompStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TMenu.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TMenu.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenu.DestroyHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenu.FindItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenu.FindItem.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.FindItem.AValue">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.FindItem.Kind">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenu.HandleAllocated">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenu.HandleAllocated.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenu.IsRightToLeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenu.IsRightToLeft.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TMenu.HandleNeeded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TMenu.DispatchCommand">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMenu.DispatchCommand.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMenu.DispatchCommand.ACommand">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenu.Handle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TMenu.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenu.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMenu.Images">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TMainMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TMainMenu.ItemChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TMainMenu.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TMainMenu.Create.AOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMainMenu.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TMainMenu.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPopupMenu.FAutoPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPopupMenu.FOnClose">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPopupMenu.FOnPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPopupMenu.FPopupComponent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPopupMenu.FPopupPoint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPopupMenu.DoPopup">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPopupMenu.DoPopup.Sender">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPopupMenu.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPopupMenu.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPopupMenu.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPopupMenu.PopUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPopupMenu.PopUp.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPopupMenu.PopUp.Y">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPopupMenu.PopupComponent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPopupMenu.PopupPoint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPopupMenu.Close">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPopupMenu.DoClose">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPopupMenu.AutoPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPopupMenu.OnPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TPopupMenu.OnClose">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShortCut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShortCut.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShortCut.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShortCut.Shift">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="ShortCutToKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShortCutToKey.ShortCut">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShortCutToKey.Key">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShortCutToKey.Shift">
-<short></short>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="DesignerMenuItemClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="ActivePopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="OnMenuPopupHandler">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- Menus -->
-</package>
+    <module name="Menus">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLIntf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="InterfaceBase">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LMessages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ActnList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ImgList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLClasses">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMenu">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="EMenuError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMenuItem">
+        <short>Menu Item</short>
+        <descr>Menu Item: The base structure of each menu item.<br/>
+This Component does the hard work of processing the Items found in the various types of menus</descr>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TMenuChangeEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuChangeEvent.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuChangeEvent.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuChangeEvent.Rebuild">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMenuActionLink">
+        <short>Menu Action Link</short>
+        <descr>Menu Action Link: defines the link between a selected menu item and its corresponding action</descr>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TMenuActionLink.FClient">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.AssignClient">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.AssignClient.AClient">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsAutoCheckLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsAutoCheckLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsCaptionLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsCaptionLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsCheckedLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsCheckedLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsEnabledLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsEnabledLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsHelpContextLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsHelpContextLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsHintLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsHintLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsGroupIndexLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsGroupIndexLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsImageIndexLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsImageIndexLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsShortCutLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsShortCutLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsVisibleLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsVisibleLinked.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuActionLink.IsOnExecuteLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuActionLink.IsOnExecuteLinked.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetAutoCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetAutoCheck.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetCaption.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetChecked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetChecked.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetEnabled">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetEnabled.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetHelpContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetHelpContext.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetHint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetHint.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetImageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetImageIndex.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetShortCut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetShortCut.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetVisible.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuActionLink.SetOnExecute">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuActionLink.SetOnExecute.Value">
+        <short/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TMenuActionLinkClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMenuItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FActionLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FAutoCheck">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FCaption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FChecked">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FCommand">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FDefault">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FEnabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FBitmap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FGroupIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FHelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FImageChangeLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FItems">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FOnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FParent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FRadioItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FRightJustify">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FShowAlwaysCheckable">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FSubMenuImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenuItem.FVisible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.GetBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetBitmap.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.GetItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetItem.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.GetItem.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.GetMenuIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetMenuIndex.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.GetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetParent.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsBitmapStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsBitmapStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsCaptionStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsCaptionStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsCheckedStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsCheckedStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsEnabledStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsEnabledStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsHelpContextStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsHelpContextStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsHintStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsHintStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsImageIndexStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsImageIndexStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsOnClickStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsOnClickStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsShortCutStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsShortCutStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TMenuItem.IsVisibleStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsVisibleStored.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetAutoCheck">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetAutoCheck.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetCaption.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetChecked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetChecked.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetDefault">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetDefault.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetEnabled">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetEnabled.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetBitmap.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetMenuIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetMenuIndex.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetRadioItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetRadioItem.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetRightJustify">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetRightJustify.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetShowAlwaysCheckable">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetShowAlwaysCheckable.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SetSubMenuImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetSubMenuImages.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.ShortcutChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.ShortcutChanged.OldValue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.ShortcutChanged.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.SubItemChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SubItemChanged.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SubItemChanged.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SubItemChanged.Rebuild">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.TurnSiblingsOff">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenuItem.DoActionChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.DoActionChange.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.ActionChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.ActionChange.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.ActionChange.CheckDefaults">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.AssignTo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.AssignTo.Dest">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuItem.GetAction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetAction.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuItem.GetActionLinkClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetActionLinkClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenuItem.GetHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetHandle.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.DoClicked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.DoClicked.msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.CreateHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.DestroyHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.Notification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Notification.AComponent">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Notification.Operation">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.GetChildren">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.GetChildren.Proc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.GetChildren.Root">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.InitiateActions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.MenuChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.MenuChanged.Rebuild">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetAction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetAction.NewAction">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetChildOrder">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetChildOrder.Child">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetChildOrder.Order">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetGroupIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetGroupIndex.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetImageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetImageIndex.value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetParentComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetParentComponent.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetShortCut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetShortCut.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.SetVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.SetVisible.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.UpdateImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenuItem.ImageListChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.ImageListChange.Sender">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TMenuItem.ActionLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TMenuItem.FCompStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TMenuItem.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TMenuItem.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.GetImageList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetImageList.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.GetParentComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetParentComponent.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.GetParentMenu">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetParentMenu.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.HandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.HandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.HasIcon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.HasIcon.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.HasParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.HasParent.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.InitiateAction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.IndexOf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IndexOf.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.IndexOf.Item">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.IndexOfCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IndexOfCaption.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.IndexOfCaption.ACaption">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.VisibleIndexOf">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.VisibleIndexOf.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.VisibleIndexOf.Item">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.IsCheckItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsCheckItem.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Add.Item">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.AddSeparator">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Click">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Delete.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Insert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Insert.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Insert.Item">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.RecreateHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Remove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Remove.Item">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.IsInMenuBar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.IsInMenuBar.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenuItem.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.HasBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.HasBitmap.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.GetIconSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.GetIconSize.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.Items">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenuItem.Items.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.MenuIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.Parent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenuItem.Command">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenuItem.MenuVisibleIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenuItem.MenuVisibleIndex.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Action">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.AutoCheck">
+        <short>Auto Check</short>
+        <descr>Auto Check: Whether a check mark is automatically added when the item is selected</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Caption">
+        <short>Caption</short>
+        <descr>Caption: The text that appears on the Menu Bar at run-time</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Checked">
+        <short>Checked</short>
+        <descr>Checked: boolean to show whether a check mark appears on the Menu Bar</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Default">
+        <short>Default</short>
+        <descr>Defult: boolean to determine whether this option is the default selection; if so, it usually appears in Bold and is selected by hitting ENTER</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Enabled">
+        <short>Enabled</short>
+        <descr>Enabled: able to be selected. If Not Enabled, usually 'greyed-out'.</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Bitmap">
+        <short>Bit Map</short>
+        <descr>Bit Map: an optional picture beside the MenuItem Caption</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.GroupIndex">
+        <short>Group Index</short>
+        <descr>Group Index: the sequence number in a group of mutually exclusive RadioItem choices</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Hint">
+        <short>Hint</short>
+        <descr>Hint: a pop-up help message that appears when the mouse hovers over an item.</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.RadioItem">
+        <short>Radio Item</short>
+        <descr>Radio Item: boolean to determine whether the item is part of a group of mutually exclusive choices.</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.RightJustify">
+        <short>Right Justify</short>
+        <descr>Right Justify: the position of the Caption in the Menu Panel.  Default (False) is Left Justify</descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.ShowAlwaysCheckable">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.SubMenuImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenuItem.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TFindItemKind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFindItemKind.fkCommand">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFindItemKind.fkHandle">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFindItemKind.fkShortCut">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMenu">
+        <short>Menu</short>
+        <descr>Menu: The base structure for all menus</descr>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenu.FImageChangeLink">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenu.FImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenu.FItems">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenu.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMenu.FParent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenu.SetImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.SetImages.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenu.SetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.SetParent.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMenu.ImageListChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.ImageListChange.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenu.CreateHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenu.DoChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.DoChange.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.DoChange.Rebuild">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TMenu.GetHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenu.GetHandle.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenu.GetChildren">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.GetChildren.Proc">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.GetChildren.Root">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenu.MenuChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.MenuChanged.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.MenuChanged.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.MenuChanged.Rebuild">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TMenu.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMenu.UpdateItems">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TMenu.FCompStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TMenu.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TMenu.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenu.DestroyHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenu.FindItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenu.FindItem.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.FindItem.AValue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.FindItem.Kind">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenu.HandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenu.HandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenu.IsRightToLeft">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenu.IsRightToLeft.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMenu.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TMenu.DispatchCommand">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMenu.DispatchCommand.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMenu.DispatchCommand.ACommand">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenu.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TMenu.Parent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenu.Items">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMenu.Images">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TMainMenu">
+        <short>Main Menu</short>
+        <descr>The Main Menu that appears at the top of most windows; form designers can
+customise by choosing various menu items.<br/>
+Main Menu is a non-visible component : that is, if the icon is selected from the
+Component Pallete and placed on the Form, it will not appear at Run-time.
+Instead, a Menu bar with a structure defined by the Menu Editor will appear.<br/>
+To see the Menu Editor, right-click on the Main Menu icon on your Form. A pop-up
+appears, that invites you to enter items into the Menu bar.<br/>
+An Edit box is displayed, containing a Button labelled New Item1.
+If you right-click on that box, a pop-up menu is displayed that allows you to
+add a new item before or after (along the same level) or create a sub-menu
+with the opportunity to add further items below (or above) the new item
+in a downward column.<br/>
+Any or all of the items that you add can be configured using the Object Inspector.<br/>
+At the least you should give each item a Caption which will appear on the Menu Bar
+(you may also wish to give it a more meaningful name).<br/>
+The caption should indicate the activity to be selected,
+such as "File Open" or "Close", "Run" or "Quit"
+and if you want a particular letter to be associated with
+a shortcut key, that letter should be preceded by an ampersand.
+
+The Menu item at run-time will appear with the shortcut letter underlined<br/>
+
+Each menu item must also be associated with an Action, again defined from the
+Object Inspector. <br/>Select the Events tab in the Object Inspector, click on the
+'OnClick' event and proceed to insert the code into the Source Editor for the actions
+to be associated with that menu choice. <br/>Do the same for all the Menu Items
+you have created.<br/>
+
+For further details of the properties of each Menu Item, see the description
+of TMenuItem; see also the description or TMenuActionLink which defines how
+the action is to be associated with the menu item.</descr>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TMainMenu.ItemChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TMainMenu.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMainMenu.Create.AOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMainMenu.Items">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMainMenu.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPopupMenu">
+        <short>Pop-up Menu</short>
+        <descr>Pop-up Menu: a menu panel that pops up on the desktop when the right mouse button is
+clicked. <br/>Inherits all the properties of TMenu (including the properties of TMenuItem), but has some new properties (procedure PopUp and procedure Close) that define its behaviour when actually invoked.<br/> PopupPoint defines the position of the PopUp menu, usually at the current cursor position.</descr>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPopupMenu.FAutoPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPopupMenu.FOnClose">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPopupMenu.FOnPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPopupMenu.FPopupComponent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPopupMenu.FPopupPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPopupMenu.DoPopup">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPopupMenu.DoPopup.Sender">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPopupMenu.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPopupMenu.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPopupMenu.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPopupMenu.PopUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPopupMenu.PopUp.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPopupMenu.PopUp.Y">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPopupMenu.PopupComponent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPopupMenu.PopupPoint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPopupMenu.Close">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPopupMenu.DoClose">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPopupMenu.AutoPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPopupMenu.OnPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TPopupMenu.OnClose">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ShortCut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="ShortCut.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ShortCut.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ShortCut.Shift">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="ShortCutToKey">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ShortCutToKey.ShortCut">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ShortCutToKey.Key">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="ShortCutToKey.Shift">
+        <short/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DesignerMenuItemClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="ActivePopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="OnMenuPopupHandler">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- Menus -->
+  </package>
 </fpdoc-descriptions>
