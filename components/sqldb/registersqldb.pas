@@ -22,7 +22,11 @@ unit registersqldb;
 interface
 
 uses
-  Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection, mysql4conn, LazarusPackageIntf;
+  Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection, mysql4conn,
+{$IFNDEF fpc2_0_0}
+  odbcconn,
+{$ENDIF}
+  LazarusPackageIntf;
 
 procedure Register;
 
@@ -33,6 +37,10 @@ begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
 			      TIBConnection,
+{$IFNDEF fpc2_0_0}
+                              TODBCConnection,	
+{$ENDIF}
+
 			      TPQConnection,
                               TMySQLConnection]);
 end;
