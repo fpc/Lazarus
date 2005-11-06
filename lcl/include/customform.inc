@@ -210,7 +210,8 @@ end;
 
 function TCustomForm.GetShowInTaskBarDefault: boolean;
 begin
-  Result := (Application = nil) or (Application.MainForm = Self);
+  Result := (Application = nil) or (Application.MainForm=nil)
+            or (Application.MainForm = Self);
 end;
 
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
@@ -696,6 +697,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoShow;
 begin
+  HandleNeeded;
+  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, FShowInTaskbar);
+
   if Assigned(FOnShow) then FOnShow(Self);
 end;
 
@@ -1246,6 +1250,7 @@ constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
   FShowInTaskbar := GetShowInTaskBarDefault;
+
   BeginFormUpdate;
   try
     CreateNew(AOwner, 1);
@@ -1271,6 +1276,7 @@ begin
     EndFormUpdate;
   end;
   //DebugLn('[TCustomForm.Create] END Class=',Classname);
+
 end;
 
 {------------------------------------------------------------------------------

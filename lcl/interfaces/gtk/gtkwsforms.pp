@@ -32,10 +32,10 @@ uses
   {$ELSE}
   Gtk, gdk, Glib,
   {$ENDIF}
-  SysUtils, Classes, Controls, LMessages, InterfaceBase, graphics,
-  Dialogs,Forms, Math, lcltype,
+  SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
+  Graphics, Dialogs,Forms, Math,
   WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
-  gtkint, gtkproc, gtkwscontrols, gtkdef;
+  gtkInt, gtkProc, gtkWSControls, gtkDef;
 
 type
 
@@ -213,17 +213,16 @@ procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: Boolean);
 {$IFDEF GTK1}
 var
-AWindow: PGdkWindowPrivate;
+  AWindow: PGdkWindowPrivate;
 {$ENDIF}
 begin
-  if (AForm.Parent<>nil) or not(AForm.HandleAllocated) then exit;
+  if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
   
   {$IFDEF GTK1}
   AWindow := PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window);
   GDK_WINDOW_SHOW_IN_TASKBAR(AWindow,AValue);
-  {$ENDIF}
-  
-  {$IFDEF HASGTK2_2}
+  {$ELSE}
+  DebugLn('TGtkWSCustomForm.SetShowInTaskbar ',dbgsName(AForm),' ',dbgs(AValue));
   gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not AValue);
   {$ENDIF}
 end;

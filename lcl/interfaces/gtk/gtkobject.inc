@@ -5558,6 +5558,7 @@ var FormIconGdiObject: PGDIObject;
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
+  AWindowPrivate: PGdkWindowPrivate;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -5663,9 +5664,26 @@ begin
       {$IFDEF VerboseTransient}
       DebugLn('TGtkWidgetSet.ShowHide HIDE ',Sender.ClassName);
       {$ENDIF}
-      UntransientWindow(PGtkWindow(SenderWIdget));
+      UntransientWindow(PGtkWindow(SenderWidget));
     end;
   end;
+
+  if GtkWidgetIsA(SenderWidget,GTK_TYPE_WINDOW) then begin
+    // make sure when hiding a window, that at least the main window
+    // is selectable via the window manager
+    if (Application<>nil) and (Application.MainForm<>nil)
+    and (Application.MainForm.HandleAllocated) then begin
+      //DebugLn('TGtkWidgetSet.ShowHide Sender=',DbgSName(Sender),' Application.MainForm=',DbgSName(Application.MainForm));
+      {$IFDEF GTK1}
+      AWindowPrivate := PGdkWindowPrivate(PGtkWidget(Application.MainForm.Handle)^.window);
+      GDK_WINDOW_SHOW_IN_TASKBAR(AWindowPrivate,true);
+      {$ELSE}
+      gtk_window_set_skip_taskbar_hint(
+                              PGtkWindow(Application.MainForm.Handle), false);
+      {$ENDIF}
+    end;
+  end;
+
   //if Sender is TCustomForm then
   //  DebugLn('[TGtkWidgetSet.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;

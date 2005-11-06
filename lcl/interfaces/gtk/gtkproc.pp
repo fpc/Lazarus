@@ -1251,6 +1251,8 @@ var
   _NET_WM_STATE_SKIP_TASKBAR: clong;
 
 begin
+  // GTK1: reshowing does not work, so a modal form will hide the whole application
+
   XDisplay := GDK_WINDOW_XDISPLAY (Window);
   XScreen := XDefaultScreenOfDisplay(xdisplay);
   XRootWindow := XRootWindowOfScreen(xscreen);
@@ -1263,7 +1265,10 @@ begin
   XEvent.window := XWindow;
   XEvent.message_type := _NET_WM_STATE;
   XEvent.format := 32;
-  XEvent.data.l[0] := Ord(not(Show)); // 0=Remove 1=Add 2=Toggle
+  if Show then
+    XEvent.data.l[0] := 1
+  else
+    XEvent.data.l[0] := 0;// 0=Remove 1=Add 2=Toggle
   XEvent.data.l[1] := _NET_WM_STATE_SKIP_TASKBAR;
 
   XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);

@@ -5456,7 +5456,7 @@ var
     // read form data
     if FilenameIsPascalUnit(AFilename) then begin
       // this could be a unit with a form
-      debugln('TMainIDE.DoOpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
+      //debugln('TMainIDE.DoOpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
       if (not (ofDoNotLoadResource in Flags))
       and ( (ofDoLoadResource in Flags)
          or ((not Project1.AutoOpenDesignerFormsDisabled)
@@ -5464,7 +5464,7 @@ var
                   or (NewUnitInfo.Component<>nil))))
       then begin
         // -> try to (re)load the lfm file
-        debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
+        //debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
         Result:=DoLoadLFM(NewUnitInfo,Flags);
         if Result<>mrOk then exit;
       end;
