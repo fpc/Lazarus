@@ -4688,6 +4688,9 @@ begin
   if ASetupProps then
     { TODO: call this in CreateHandle when converted: SetProperties(ALCLObject) };
 
+  if ALCLObject is TCustomForm then
+    TGtkWSCustomForm.SetShowInTaskbar(ALCLObject as TCustomForm, (ALCLObject as TCustomForm).ShowInTaskbar);
+
   if AGTKObject <> nil then begin
     {$IFNDEF NoStyle}
     if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil) then

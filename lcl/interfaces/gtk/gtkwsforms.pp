@@ -88,7 +88,7 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
-    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
@@ -210,20 +210,26 @@ begin
 end;
 
 procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
-  const AValue: Boolean);
-{$IFDEF GTK1}
+  const AValue: TShowInTaskbar);
 var
+{$IFDEF GTK1}
   AWindow: PGdkWindowPrivate;
 {$ENDIF}
+  enable: boolean;
 begin
   if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
   
+  enable := AValue <> stNever;
+  if (Application.MainForm <> nil) and (Application.MainForm <> AForm) 
+      and (AValue = stDefault) then
+    enable := false;
+  
   {$IFDEF GTK1}
   AWindow := PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window);
-  GDK_WINDOW_SHOW_IN_TASKBAR(AWindow,AValue);
+  GDK_WINDOW_SHOW_IN_TASKBAR(AWindow, enable);
   {$ELSE}
-  DebugLn('TGtkWSCustomForm.SetShowInTaskbar ',dbgsName(AForm),' ',dbgs(AValue));
-  gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not AValue);
+  DebugLn('TGtkWSCustomForm.SetShowInTaskbar ',dbgsName(AForm),' ',dbgs(enable));
+  gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not enable);
   {$ENDIF}
 end;
 
