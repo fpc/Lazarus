@@ -1,9 +1,8 @@
 object SourceNoteBook: TSourceNoteBook
-  BorderStyle = bsSizeToolWin
   Caption = 'SourceNoteBook'
   ClientHeight = 300
   ClientWidth = 400
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
   Left = 533
@@ -27,8 +26,8 @@ object SourceNoteBook: TSourceNoteBook
       end>
     SimpleText = 'This is a test'
     SimplePanel = False
-    Height = 23
-    Top = 277
+    Height = 20
+    Top = 280
     Width = 400
   end
 end
