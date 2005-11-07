@@ -322,6 +322,9 @@ function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 function GdkColorToStr(Color: PGDKColor): string;
 function GetWidgetStyleReport(Widget: PGtkWidget): string;
+procedure BeginGDKErrorTrap;
+procedure EndGDKErrorTrap;
+
 
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
@@ -379,6 +382,11 @@ Procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 // caret
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
   var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
+  
+// forms
+procedure SetFormShowInTaskbar(AForm: TCustomForm;
+                                    const AValue: TShowInTaskbar);
+procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
 
 // combobox
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
@@ -751,10 +759,6 @@ function gtk_widget_get_ythickness(Style: PGTKStyle): gint; overload;
 
 function gtk_widget_get_xthickness(Style: PGTKWidget): gint; overload;
 function gtk_widget_get_ythickness(Style: PGTKWidget): gint; overload;
-
-// debugging
-procedure BeginGDKErrorTrap;
-procedure EndGDKErrorTrap;
 
 {$Ifdef GTK1}
   type

@@ -912,6 +912,43 @@ begin
     GTKAPIWidget_HideCaret(PGTKAPIWidget(MainWidget),CaretWasVisible);
 end;
 
+procedure SetFormShowInTaskbar(AForm: TCustomForm;
+  const AValue: TShowInTaskbar);
+var
+  Enable: boolean;
+  Widget: PGtkWidget;
+begin
+  if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
+  Widget:=PGtkWidget(AForm.Handle);
+  if Widget^.Window=nil then begin
+    // widget not yet realized
+    exit;
+  end;
+
+  Enable := AValue <> stNever;
+  if (AValue = stDefault)
+  and (Application<>nil) and (Application.MainForm <> nil)
+  and (Application.MainForm <> AForm) then
+    Enable := false;
+
+  //debugln('SetGtkWindowShowInTaskbar ',DbgSName(AForm),' ',dbgs(Enable));
+  SetGtkWindowShowInTaskbar(PGtkWindow(Widget),Enable);
+end;
+
+procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
+begin
+  {$IFDEF GTK1}
+  if PgtkWidget(AGtkWindow)^.Window=nil then begin
+    // widget not yet realized
+    exit;
+  end;
+  GDK_WINDOW_SHOW_IN_TASKBAR(PGdkWindowPrivate(PGtkWidget(AGtkWindow)^.Window),
+                             Value);
+  {$ELSE}
+  gtk_window_set_skip_taskbar_hint(AGtkWindow, not Value);
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
 

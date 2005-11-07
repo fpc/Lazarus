@@ -211,26 +211,8 @@ end;
 
 procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
-var
-{$IFDEF GTK1}
-  AWindow: PGdkWindowPrivate;
-{$ENDIF}
-  enable: boolean;
 begin
-  if (AForm.Parent<>nil) or not (AForm.HandleAllocated) then exit;
-  
-  enable := AValue <> stNever;
-  if (Application.MainForm <> nil) and (Application.MainForm <> AForm) 
-      and (AValue = stDefault) then
-    enable := false;
-  
-  {$IFDEF GTK1}
-  AWindow := PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window);
-  GDK_WINDOW_SHOW_IN_TASKBAR(AWindow, enable);
-  {$ELSE}
-  DebugLn('TGtkWSCustomForm.SetShowInTaskbar ',dbgsName(AForm),' ',dbgs(enable));
-  gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not enable);
-  {$ENDIF}
+  SetFormShowInTaskbar(AForm,AValue);
 end;
 
 procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

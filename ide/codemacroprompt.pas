@@ -46,6 +46,8 @@ function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
   const TemplateName, TemplateValue, TemplateComment,
   EndOfTokenChr: string;
   IndentToTokenStart: boolean): boolean;
+function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface;
+  var Pattern: string): boolean;
 
 implementation
 
@@ -63,10 +65,28 @@ var
   IndentLen: Integer;
   i: Integer;
   j: LongInt;
+  Pattern: String;
 begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
   AEditor:=SrcEdit.EditorControl as TCustomSynEdit;
+  
+  Pattern:=TemplateValue;
+  if copy(Pattern,1,length(CodeTemplateMakroMagic))=CodeTemplateMakroMagic
+  then begin
+    // macros enabled
+    
+    // remove first line (i.e. macro enabled flag)
+    Pattern:=TemplateValue;
+    i:=length(CodeTemplateMakroMagic);
+    while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
+    if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
+    and (Pattern[i+1]<>Pattern[i]) then
+      inc(i);
+    Pattern:=copy(Pattern,i+1,length(Pattern));
+    
+    if not SubstituteCodeMacros(SrcEdit,Pattern) then exit;
+  end;
   
   AEditor.BeginUpdate;
   try
@@ -103,10 +123,10 @@ begin
     NewCaretPos := False;
     Temp := TStringList.Create;
     try
-      Temp.Text := TemplateValue;
+      Temp.Text := Pattern;
       
       // add empty line at end if wanted
-      s:=TemplateValue;
+      s:=Pattern;
       if (s<>'') and (s[length(s)] in [#10,#13]) then
         Temp.Add('');
 
@@ -155,6 +175,107 @@ begin
     AEditor.EnsureCursorPosVisible;
   finally
     AEditor.EndUpdate;
+  end;
+  Result:=true;
+end;
+
+function SubstituteCodeMacros(SrcEdit: TSourceEditorInterface;
+  var Pattern: string): boolean;
+var
+  p: Integer;
+  len: Integer;
+  MacroStartPos: LongInt;
+  MacroParamStartPos: LongInt;
+  Level: Integer;
+  MacroParamEndPos: LongInt;
+  MacroEndPos: LongInt;
+  
+  function SubstituteCodeMacro: boolean;
+  var
+    MacroName: String;
+    Macro: TIDECodeMacro;
+    NewValue: String;
+    //Parameter: String;
+  begin
+    Result:=false;
+    MacroName:=copy(Pattern,MacroStartPos+1,MacroParamStartPos-MacroStartPos-2);
+    Macro:=IDECodeMacros.FindByName(MacroName);
+    if Macro<>nil then begin
+      // macro found
+      //Parameter:=copy(Pattern,MacroParamStartPos,
+      //                MacroParamEndPos-MacroParamStartPos);
+      // substitute macros in Parameter
+      
+      // TODO
+      
+      if Macro.Interactive then begin
+        // collect interactive macro
+
+        // TODO
+
+      end else begin
+        // normal macro -> substitute
+        // TODO
+
+      end;
+    end else begin
+      // macro unknown
+      NewValue:='UnknownMacro('+MacroName+')';
+    end;
+    Pattern:=copy(Pattern,1,MacroStartPos)+NewValue
+            +copy(Pattern,MacroEndPos,len);
+    len:=length(Pattern);
+    p:=MacroStartPos+length(NewValue);
+    Result:=true;
+  end;
+  
+begin
+  // replace as many macros as possible
+  p:=1;
+  len:=length(Pattern);
+  while p<len do begin
+    if Pattern[p]<>'$' then begin
+      inc(p);
+    end else begin
+      // could be a macro start
+      MacroStartPos:=p;
+      inc(p);
+      if Pattern[p+1]='$' then begin
+        // $$ is a simple $ character
+        System.Delete(Pattern,p,1);
+        len:=length(Pattern);
+      end else if Pattern[p+1] in ['a'..'z','A'..'Z'] then begin
+        // read macro name
+        while (p<len) and (Pattern[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          inc(p);
+        if (p>len) or (p-MacroStartPos=1) or (Pattern[p]<>'(') then begin
+          // missing name or missing round bracket open
+        end else begin
+          // round bracket open found
+          inc(p);
+          MacroParamStartPos:=p;
+          Level:=1;
+          while (p<=len) and (Level>0) do begin
+            case Pattern[p] of
+            '(': inc(Level);
+            ')': dec(Level);
+            end;
+            inc(p);
+          end;
+          if Level=0 then begin
+            // macro parameter end found
+            MacroParamEndPos:=p;
+            inc(p);
+            MacroEndPos:=p;
+            if not SubstituteCodeMacro then exit(false);
+          end else begin
+            // macro parameter end not found
+          end;
+        end;
+      end else begin
+        // a normal $ character
+      end;
+    end;
   end;
   Result:=true;
 end;

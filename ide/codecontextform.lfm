@@ -1,0 +1,12 @@
+object CodeContextFrm: TCodeContextFrm
+  Caption = 'CodeContextFrm'
+  ClientHeight = 300
+  ClientWidth = 400
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+end

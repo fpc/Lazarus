@@ -239,6 +239,10 @@ begin
 
         if TheWinControl is TCustomPage then
           UpdateNotebookPageTab(nil,TheWinControl);
+ 
+        if TheWinControl is TCustomForm then
+          SetFormShowInTaskbar(TCustomForm(TheWinControl),
+                               TCustomForm(TheWinControl).ShowInTaskbar);
       end;
 
     end;

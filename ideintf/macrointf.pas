@@ -102,14 +102,15 @@ type
     property Items[Index: integer]: TIDECodeMacro read GetItems; default;
     function Count: integer; virtual; abstract;
     function Add(Macro: TIDECodeMacro): integer; virtual; abstract;
-    function IndexOf(Macro: TIDECodeMacro): Integer; virtual; abstract;
-    function IndexByName(const AName: string): Integer; virtual; abstract;
     function FindByName(const AName: string): TIDECodeMacro; virtual; abstract;
     function CreateUniqueName(const AName: string): string; virtual; abstract;
   end;
   
 var
   IDECodeMacros: TIDECodeMacros = nil; // set by the IDE
+
+const
+  CodeTemplateMakroMagic = '$(EnableMakros)';
 
 
 function RegisterCodeMacro(const Name: string;

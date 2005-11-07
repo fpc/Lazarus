@@ -103,8 +103,6 @@ type
     property Items[Index: integer]: TIDECodeMacro read GetItems; default;
     function Count: integer; override;
     function Add(Macro: TIDECodeMacro): integer; override;
-    function IndexOf(Macro: TIDECodeMacro): Integer; override;
-    function IndexByName(const AName: string): Integer; override;
     function FindByName(const AName: string): TIDECodeMacro; override;
     function CreateUniqueName(const AName: string): string; override;
   end;
@@ -547,7 +545,7 @@ var
 
   procedure AddLine(const s: string);
   begin
-    if (LineCount=0) and (s='$(EnableMakros)') then
+    if (LineCount=0) and (s=CodeTemplateMakroMagic) then
       EnableMakros:=true
     else
       TemplateSynEdit.Lines.Add(s);
@@ -610,7 +608,7 @@ begin
     end;
   end;
   if UseMakrosCheckBox.Checked then
-    NewValue:='$(EnableMakros)'+LineEnding+NewValue;
+    NewValue:=CodeTemplateMakroMagic+LineEnding+NewValue;
   SynAutoComplete.CompletionValues[i]:=NewValue;
 end;
 
@@ -653,35 +651,25 @@ begin
   Result:=FItems.Add(Macro);
 end;
 
-function TLazCodeMacros.IndexOf(Macro: TIDECodeMacro): Integer;
-begin
-  Result:=FItems.IndexOf(Macro);
-end;
-
-function TLazCodeMacros.IndexByName(const AName: string): Integer;
-begin
-  Result:=Count-1;
-  while (Result>=0) and (CompareText(Items[Result].Name,AName)<>0) do
-    dec(Result);
-end;
-
 function TLazCodeMacros.FindByName(const AName: string): TIDECodeMacro;
 var
   i: LongInt;
 begin
-  i:=IndexByName(AName);
-  if i>=0 then
-    Result:=Items[i]
-  else
-    Result:=nil;
+  i:=Count-1;
+  while (i>=0) do begin
+    Result:=Items[i];
+    if (CompareText(Result.Name,AName)<>0) then exit;
+    dec(i);
+  end;
+  Result:=nil;
 end;
 
 function TLazCodeMacros.CreateUniqueName(const AName: string): string;
 begin
   Result:=AName;
-  if IndexByName(Result)<0 then exit;
+  if FindByName(Result)=nil then exit;
   Result:=CreateFirstIdentifier(Result);
-  while IndexByName(Result)>=0 do
+  while FindByName(Result)<>nil do
     Result:=CreateNextIdentifier(Result);
 end;
 
