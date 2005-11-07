@@ -15,33 +15,36 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   object OkButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
     AnchorSideRight.Control = CancelButton
-    Left = 336
-    Height = 26
-    Top = 418
-    Width = 61
+    Left = 325
+    Height = 29
+    Top = 415
+    Width = 69
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1
-    Left = 403
-    Height = 26
-    Top = 418
-    Width = 85
+    Left = 400
+    Height = 29
+    Top = 415
+    Width = 88
   end
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     PageIndex = 0
     Height = 408
     Width = 500
@@ -53,7 +56,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       Width = 492
       object DisplayGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
+        AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'DisplayGroupBox'
         ClientHeight = 54
@@ -66,18 +69,16 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 480
         object DisplayEdit: TEdit
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           TabOrder = 0
           Text = 'DisplayEdit'
           Left = 6
           Height = 23
-          Top = 36
+          Top = 25
           Width = 464
         end
         object UseDisplayCheckBox: TCheckBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -85,13 +86,15 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Caption = 'UseDisplayCheckBox'
           TabOrder = 1
           Left = 6
-          Height = 24
+          Height = 13
           Top = 6
           Width = 464
         end
       end
       object CmdLineParametersGroupBox: TGroupBox
         Align = alTop
+        AutoSize = True
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'CmdLineParametersGroupBox'
         ClientHeight = 35
@@ -104,6 +107,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 480
         object CmdLineParametersEdit: TEdit
           Align = alTop
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           TabOrder = 0
           Text = 'CmdLineParametersEdit'
@@ -115,6 +119,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object UseLaunchingApplicationGroupBox: TGroupBox
         Align = alTop
+        AutoSize = True
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'UseLaunchingApplicationGroupBox'
         ClientHeight = 52
@@ -127,6 +133,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 480
         object UseLaunchingApplicationCheckBox: TCheckBox
           Align = alTop
+          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
@@ -134,26 +141,27 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Caption = 'UseLaunchingApplicationCheckBox'
           TabOrder = 0
           Left = 6
-          Height = 24
+          Height = 13
           Top = 6
           Width = 464
         end
         object UseLaunchingApplicationComboBox: TComboBox
           Align = alTop
           Anchors = [akTop]
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           MaxLength = 0
           TabOrder = 1
           Text = 'UseLaunchingApplicationComboBox'
           Left = 6
           Height = 21
-          Top = 36
+          Top = 25
           Width = 464
         end
       end
       object HostApplicationGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
+        AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'HostApplicationGroupBox'
         ClientHeight = 35
@@ -166,7 +174,6 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 480
         object HostApplicationBrowseBtn: TButton
           Align = alRight
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 2
           Caption = 'HostApplicationBrowseBtn'
@@ -179,7 +186,6 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object HostApplicationEdit: TEdit
           Align = alClient
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           TabOrder = 1
           Text = 'HostApplicationEdit'
@@ -191,6 +197,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object WorkingDirectoryGroupBox: TGroupBox
         Align = alTop
+        AutoSize = True
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'WorkingDirectoryGroupBox'
         ClientHeight = 35
@@ -203,6 +211,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 480
         object WorkingDirectoryBtn: TButton
           Align = alRight
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 2
           Caption = 'WorkingDirectoryBtn'
@@ -215,6 +224,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object WorkingDirectoryEdit: TEdit
           Align = alClient
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           TabOrder = 1
           Text = 'WorkingDirectoryEdit'
@@ -233,17 +243,19 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       Width = 492
       object IncludeSystemVariablesCheckBox: TCheckBox
         Align = alBottom
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'IncludeSystemVariablesCheckBox'
         Enabled = False
         TabOrder = 0
         Left = 6
-        Height = 24
-        Top = 352
+        Height = 13
+        Top = 363
         Width = 480
       end
       object UserOverridesGroupBox: TGroupBox
         Align = alBottom
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'UserOverridesGroupBox'
         ClientHeight = 143
@@ -252,52 +264,56 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         TabOrder = 1
         Left = 6
         Height = 161
-        Top = 185
+        Top = 196
         Width = 480
         object UserOverridesAddButton: TButton
           Anchors = [akLeft, akBottom]
           AutoSize = True
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 2
           Caption = 'UserOverridesAddButton'
           OnClick = UserOverridesAddButtonClick
           TabOrder = 0
           Left = 6
-          Height = 25
-          Top = 110
-          Width = 62
+          Height = 29
+          Top = 106
+          Width = 141
         end
         object UserOverridesEditButton: TButton
           Anchors = [akLeft, akBottom]
           AutoSize = True
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 2
           Caption = 'UserOverridesEditButton'
           OnClick = UserOverridesEditButtonClick
           TabOrder = 1
           AnchorSideLeft.Control = UserOverridesAddButton
-          Left = 74
-          Height = 25
-          Top = 110
-          Width = 62
+          Left = 153
+          Height = 29
+          Top = 106
+          Width = 140
         end
         object UserOverridesDeleteButton: TButton
           Anchors = [akLeft, akBottom]
           AutoSize = True
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           BorderSpacing.InnerBorder = 2
           Caption = 'UserOverridesDeleteButton'
           OnClick = UserOverridesDeleteButtonClick
           TabOrder = 2
           AnchorSideLeft.Control = UserOverridesEditButton
-          Left = 142
-          Height = 25
-          Top = 110
-          Width = 62
+          Left = 299
+          Height = 29
+          Top = 106
+          Width = 153
         end
         object UserOverridesListView: TListView
           Align = alTop
           Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Columns = <          
             item
@@ -321,18 +337,20 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
       object SystemVariablesGroupBox: TGroupBox
         Align = alClient
+        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'SystemVariablesGroupBox'
-        ClientHeight = 155
+        ClientHeight = 166
         ClientWidth = 476
         ParentColor = True
         TabOrder = 2
         Left = 6
-        Height = 173
+        Height = 184
         Top = 6
         Width = 480
         object SystemVariablesListView: TListView
           Align = alClient
+          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           Columns = <          
             item
@@ -349,7 +367,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           SortType = stText
           ViewStyle = vsReport
           Left = 6
-          Height = 143
+          Height = 154
           Top = 6
           Width = 464
         end

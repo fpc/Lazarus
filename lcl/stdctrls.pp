@@ -162,6 +162,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoSize;
     property BorderSpacing;
     property Caption;
     property ChildSizing;
