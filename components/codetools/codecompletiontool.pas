@@ -2475,7 +2475,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       // read event name (optional)
       GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                  UserEventAtom.StartPos,UserEventAtom.EndPos);
-      MoveCursorToCleanPos(UserEventAtom.StartPos);
+      MoveCursorToAtomPos(UserEventAtom);
       if AtomIsKeyWord then exit;
       ReadPriorAtom;
       // check @ operator (optional)
@@ -2695,13 +2695,13 @@ var CleanCursorPos, Indent, insertPos: integer;
     AMethodAttr: TProcHeadAttributes;
   begin
     Result:=false;
-    
+
     {$IFDEF CTDEBUG}
     DebugLn('  CompleteEventAssignment: CheckEventAssignmentSyntax...');
     {$ENDIF}
     // check assigment syntax
     if not CheckEventAssignmentSyntax(PropertyAtom, AssignmentOperator,
-                          AddrOperatorPos, UserEventAtom, SemicolonPos)
+                                   AddrOperatorPos, UserEventAtom, SemicolonPos)
     then
       exit;
 
@@ -2765,7 +2765,7 @@ begin
   while (CleanCursorPos>1) and (Src[CleanCursorPos] in [#10,#13]) do
     dec(CleanCursorPos);
   // skip space (first try left)
-  while (CleanCursorPos>1) and (Src[CleanCursorPos] in [' ',#9,';']) do
+  while (CleanCursorPos>1) and (Src[CleanCursorPos-1] in [' ',#9,';']) do
     dec(CleanCursorPos);
   if (CleanCursorPos>0) and (CleanCursorPos<SrcLen)
   and (Src[CleanCursorPos] in [#10,#13]) then begin
@@ -2796,7 +2796,7 @@ begin
   {$ENDIF}
   
   // test if forward proc
-  debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
+  //debugln('TCodeCompletionCodeTool.CompleteCode ',CursorNode.DescAsString);
   ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
   if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
     ProcNode:=CursorNode;

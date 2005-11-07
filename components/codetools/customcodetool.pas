@@ -1412,10 +1412,6 @@ begin
 
     else
       begin
-        case c2 of
-        '=': CurPos.Flag:=cafEqual;
-        '.': CurPos.Flag:=cafPoint;
-        end;
         if CurPos.StartPos>1 then begin
           c1:=Src[CurPos.StartPos-1];
           // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
@@ -1428,6 +1424,16 @@ begin
           then begin
             dec(CurPos.StartPos);
             CurPos.Flag:=cafNone;
+          end else begin
+            case c2 of
+            '=': CurPos.Flag:=cafEqual;
+            '.': CurPos.Flag:=cafPoint;
+            end;
+          end;
+        end else begin
+          case c2 of
+          '=': CurPos.Flag:=cafEqual;
+          '.': CurPos.Flag:=cafPoint;
           end;
         end;
       end;

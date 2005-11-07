@@ -118,10 +118,13 @@ procedure CreateStandardCodeMacros;
 
 // standard code macros
 function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 
 implementation
@@ -188,6 +191,7 @@ begin
 end;
 
 function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
   Value:=UpperCase(Parameter);
@@ -195,6 +199,7 @@ begin
 end;
                         
 function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
   Value:=LowerCase(Parameter);
@@ -202,6 +207,7 @@ begin
 end;
 
 function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
   Value:=Clipboard.AsText;

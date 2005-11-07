@@ -210,7 +210,7 @@ const
       end else begin
         // normal macro -> substitute
         NewValue:='';
-        if not Macro.GetValue(MacroValue,nil,NewValue,ErrMsg) then exit;
+        if not Macro.GetValue(MacroValue,nil,SrcEdit,NewValue,ErrMsg) then exit;
         MacroValue:=NewValue;
       end;
     end else begin
