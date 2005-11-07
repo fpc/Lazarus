@@ -344,7 +344,7 @@ begin
   //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
-    InvalidateControl(Visible, False, true);
+    InvalidateControl(IsControlVisible, False, true);
   //DebugLn('TControl.ChangeBounds B ',Name,':',ClassName);
   DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
@@ -659,29 +659,39 @@ end;
 
 function TControl.IsVisible: Boolean;
 begin
-  Result := FVisible and ((Parent = nil) or (Parent.IsVisible));
+  Result := (FVisible
+             or ((csDesigning in ComponentState)
+                  and (not (csNoDesignVisible in ControlStyle))))
+             and ((Parent = nil) or (Parent.IsVisible));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.LMCaptureChanged                                              }
-{------------------------------------------------------------------------------}
+function TControl.IsControlVisible: Boolean;
+begin
+  Result := (FVisible
+             or ((csDesigning in ComponentState)
+                  and (not (csNoDesignVisible in ControlStyle))));
+end;
+
+{------------------------------------------------------------------------------
+       TControl.LMCaptureChanged
+------------------------------------------------------------------------------}
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
   //DebugLn('[LMCaptureChanged for '+Name+':'+Classname+']');
   CaptureChanged;
 End;
 
-{------------------------------------------------------------------------------}
-{       TControl.CMENABLEDCHANGED                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.CMENABLEDCHANGED
+------------------------------------------------------------------------------}
 procedure TControl.CMEnabledChanged(var Message: TLMEssage);
 begin
   Invalidate;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.CMHITTEST                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.CMHITTEST
+------------------------------------------------------------------------------}
 procedure TControl.CMHITTEST(var Message : TCMHitTest);
 begin
   Message.Result := 1;
@@ -1526,7 +1536,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
 Begin
-  InvalidateControl(Visible, csOpaque in ControlStyle);
+  InvalidateControl(IsVisible, csOpaque in ControlStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1945,16 +1955,14 @@ begin
   Result:=AutoSize
           and (not AutoSizing)
           and (not (csDestroying in ComponentState))
-          and (Visible or ((csDesigning in ComponentState)
-                           and (not (csNoDesignVisible in ControlStyle))));
+          and IsControlVisible;
   if AutoSize and not Result then begin
     {$IFDEF VerboseCanAutoSize}
     DbgOut('TControl.AutoSizeCanStart Self='+DbgSName(Self)+' ');
     if not AutoSize then DebugLn('not AutoSize')
     else if AutoSizing then DebugLn('AutoSizing')
     else if csDestroying in ComponentState then DebugLn('csDestroying in ComponentState')
-    else if not (Visible or ((csDesigning in ComponentState)
-                           and (not (csNoDesignVisible in ControlStyle)))) then
+    else if not IsControlVisible then
       DebugLn('Visible=',dbgs(Visible),
               ' csDesigning=',dbgs(csDesigning in ComponentState),
               ' csNoDesignVisible=',dbgs(csNoDesignVisible in ControlStyle))
@@ -1975,7 +1983,7 @@ begin
           // no autosize during loading or destruction
           or ([csLoading,csDestroying]*ComponentState<>[])
           // no autosize for invisible controls
-          or ((not Visible) and (not (csDesigning in ComponentState)))
+          or (not IsControlVisible)
           // if there is no parent, then this control is not visible
           //  (TCustomForm will override this)
           or (NeedParentForAutoSize and (Parent=nil))
@@ -2298,7 +2306,7 @@ var
         Dec(I);
         C := TControl(List[I]);
         with C do
-          if C.Visible and (csOpaque in ControlStyle) then
+          if C.IsControlVisible and (csOpaque in ControlStyle) then
           begin
             IntersectRect(R, Rect, BoundsRect);
             if EqualRect(R, Rect) then Exit;
@@ -2352,9 +2360,7 @@ begin
   if (Parent=nil) or (not Parent.HandleAllocated)
   or (csDestroying in ComponentState) then exit;
 
-  if (Visible or (csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle))
-  then
+  if IsVisible then
     if csOpaque in ControlStyle then
     begin
       {$IFDEF VerboseDsgnPaintMsg}
@@ -2881,14 +2887,13 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetVisible
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetVisible
+
+------------------------------------------------------------------------------}
 procedure TControl.SetVisible(Value : Boolean);
 begin
-  if FVisible <> Value then
-  begin
+  if FVisible <> Value then begin
     VisibleChanging;
     FVisible := Value;
     Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
@@ -2898,10 +2903,10 @@ begin
     ControlState:=ControlState+[csVisibleSetInLoading];
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.SetZOrder
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.SetZOrder
+
+------------------------------------------------------------------------------}
 procedure TControl.SetZOrder(Topmost: Boolean);
 const
   POSITION: array[Boolean] of Integer = (0, MaxInt);

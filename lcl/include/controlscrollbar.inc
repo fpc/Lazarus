@@ -210,7 +210,7 @@ procedure TControlScrollBar.AutoCalcRange;
     for i := 0 to FControl.ControlCount - 1 do
     begin
       c := FControl.Controls[I];
-      if not C.Visible then Continue;
+      if not C.IsControlVisible then Continue;
       if (c.Align <> alLeft) and (c.Align <> alNone) then Continue;
       
       // the left of a control is negative when it is scrolled to the left,
@@ -389,7 +389,7 @@ end;
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
   Result := (FControl <> nil) and FControl.HandleAllocated and
-            (FControl.Visible) and (Self.Visible);
+            (FControl.IsControlVisible) and (Self.Visible);
 end;
 
 function TControlScrollBar.ScrollPos: Integer;

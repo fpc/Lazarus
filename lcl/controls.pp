@@ -1109,6 +1109,7 @@ type
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function IsVisible: Boolean; virtual;
+    function IsControlVisible: Boolean;
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
@@ -2849,10 +2850,7 @@ begin
       exit;
     end;
     
-    if ReferenceControl.Visible
-    or ((csDesigning in ReferenceControl.ComponentState)
-        and not (csNoDesignVisible in ReferenceControl.ControlStyle))
-    then begin
+    if ReferenceControl.IsControlVisible then begin
       // ReferenceControl is visible
       // -> calculate Position
       OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);

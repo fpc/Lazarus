@@ -44,10 +44,10 @@ type
     procedure SetSelection(const NewSelection: TPersistentSelectionList);
   protected
     procedure DoSelectionChanged; override;
-    function GetImageFor(AComponent:TComponent):integer;
-    procedure DropObject(Sender, Source: TObject; X, Y: Integer);
-    procedure AcceptDrop(Sender, Source: TObject; X, Y: Integer;
-                         State: TDragState; var Accept: Boolean);
+    function GetImageFor(AComponent: TComponent):integer;
+    procedure DragDrop(Source: TObject; X,Y: Integer); override;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,7 +137,7 @@ begin
   end;
 end;
 
-procedure TComponentTreeView.DropObject(Sender, Source: TObject; X, Y: Integer);
+procedure TComponentTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
   Node, SelNode:TTreeNode;
   AContainer,AControl:TControl;
@@ -153,51 +153,69 @@ begin
     end;
     RebuildComponentNodes;
   end;
+  inherited DragDrop(Source, X, Y);
 end;
 
-procedure TComponentTreeView.AcceptDrop(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TComponentTreeView.DragOver(Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
 var
   Node:TTreeNode;
   AnObject:TObject;
   AContainer,AControl:TControl;
   AcceptControl, AcceptContainer:Boolean;
 begin
+  //debugln('TComponentTreeView.DragOver START ',dbgs(Accept));
+
   AcceptContainer := False;
+  AcceptControl := True;
+
   Node:=GetNodeAt(X, Y);
   if Assigned(Node) and Assigned(Node.Data) then begin
     AnObject:=TObject(Node.Data);
-    if (AnObject is TWinControl) and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
+    if (AnObject is TWinControl)
+    and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
     begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
     end;
   end;
-  
-  AcceptControl := True;
-  Node := GetFirstMultiSelected;
-  while Assigned(Node) do begin
-    AnObject:=TObject(Node.Data);
-    AcceptControl := AcceptControl and (AnObject is TControl);
-    // Check if one of the parent of the containder is the control itself
-    if AcceptControl and AcceptContainer then begin
-      while Assigned(AContainer) do begin
-        AControl:=TControl(AnObject);
-        AcceptControl := AcceptControl and (AControl <> AContainer);
-        AContainer := AContainer.Parent;
+
+  if AcceptContainer then begin
+    Node := GetFirstMultiSelected;
+    while Assigned(Node) do begin
+      AnObject:=TObject(Node.Data);
+      AcceptControl := AcceptControl and (AnObject is TControl);
+      // Check if one of the parent of the container is the control itself
+      if AcceptControl and AcceptContainer then begin
+        while Assigned(AContainer) do begin
+          AControl:=TControl(AnObject);
+          AcceptControl := AcceptControl and (AControl <> AContainer);
+          AContainer := AContainer.Parent;
+        end;
       end;
+      Node := Node.GetNextMultiSelected;
     end;
-    Node := Node.GetNextMultiSelected;
   end;
 
   Accept := AcceptContainer and AcceptControl;
+  //debugln('TComponentTreeView.DragOver A ',dbgs(Accept));
+  inherited DragOver(Source, X, Y, State, Accept);
+  //debugln('TComponentTreeView.DragOver B ',dbgs(Accept));
+
+  Accept := AcceptContainer and AcceptControl
+            and ((OnDragOver=nil) or Accept);
 end;
 
 function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
 begin
   if Assigned(AComponent) then begin
-    if (AComponent is TControl) and (csAcceptsControls in TControl(AComponent).ControlStyle) then Result := 3
-    else if (AComponent is TControl) then Result := 2
-    else Result := 1;
+    if (AComponent is TControl)
+    and (csAcceptsControls in TControl(AComponent).ControlStyle) then
+      Result := 3
+    else if (AComponent is TControl) then
+      Result := 2
+    else
+      Result := 1;
   end else 
     Result := -1;
 end;
@@ -219,8 +237,6 @@ constructor TComponentTreeView.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
-  OnDragOver := @AcceptDrop;
-  OnDragDrop := @DropObject;
   FComponentList:=TBackupComponentList.Create;
   Options:=Options+[tvoAllowMultiselect,tvoAutoItemHeight,tvoKeepCollapsedNodes];
   FImageList := TImageList.Create(nil);

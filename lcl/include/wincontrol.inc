@@ -1268,9 +1268,7 @@ var
     if (AControl <> nil)
       and (AControl.Align = AAlign)
       and ((AAlign = alNone)
-        or AControl.Visible
-        or ((csDesigning in AControl.ComponentState)
-        and not (csNoDesignVisible in AControl.ControlStyle)))
+        or AControl.IsControlVisible)
     then
       AlignList.Add(AControl);
 
@@ -1281,11 +1279,9 @@ var
 
       if (Control.Align = AAlign)
         and ((AAlign = alNone)
-          or (Control.Visible
+          or Control.IsControlVisible
           or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
-               [csAcceptsControls, csNoDesignVisible]))
-          or ((csDesigning in Control.ComponentState)
-              and not (csNoDesignVisible in Control.ControlStyle))) then
+               [csAcceptsControls, csNoDesignVisible])) then
       begin
         if Control = AControl then Continue;
 
@@ -1317,7 +1313,7 @@ var
     for i:=0 to ControlCount-1 do begin
       Control := Controls[i];
       if (Control.Align=alNone)
-      and Control.Visible
+      and Control.IsControlVisible
       and (Control.Anchors=[akLeft,akTop])
       and (Control.AnchorSide[akLeft].Control=nil)
       and (Control.AnchorSide[akTop].Control=nil)
@@ -1490,7 +1486,7 @@ begin
         // move all childs to left and top of client area
         For I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
-          If AControl.Visible then begin
+          If AControl.IsControlVisible then begin
             AControl.SetBoundsKeepBase(AControl.Left + dx, AControl.Top + dy,
                                        AControl.Width,AControl.Height,true);
           end;
@@ -1574,7 +1570,7 @@ begin
   begin
     Control := Self;
     repeat
-      if not (Control.FVisible and Control.Enabled) then Exit;
+      if not (Control.IsVisible and Control.Enabled) then Exit;
       if Control = Form then break;
       Control := Control.Parent;
     until false;
@@ -2024,7 +2020,7 @@ begin
                             TWinControl(AChild), idx, NewPos, list);
   end
   else begin
-    AChild.InvalidateControl(AChild.Visible, True, True);
+    AChild.InvalidateControl(AChild.IsVisible, True, True);
   end;
 end;
 
@@ -2121,9 +2117,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl UpdateShowing                                                   }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl UpdateShowing
+------------------------------------------------------------------------------}
 procedure TWinControl.UpdateShowing;
 var
   bShow: Boolean;
@@ -2488,10 +2484,7 @@ procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
   function ControlMustBeClipped(AControl: TControl): boolean;
   begin
     with AControl do
-      Result:=(Visible
-               or ((csDesigning in ComponentState)
-                   and not (csNoDesignVisible in ControlStyle)))
-              and (csOpaque in ControlStyle);
+      Result:=IsVisible and (csOpaque in ControlStyle);
   end;
 
 var
@@ -2590,9 +2583,7 @@ begin
       TempControl := TControl(FControls.Items[I]);
       //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
       with TempControl do
-        if (Visible
-        or ((csDesigning in ComponentState)
-            and not (csNoDesignVisible in ControlStyle)))
+        if IsVisible
         and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
         begin
           if csPaintCopy in Self.ControlState then
@@ -2624,10 +2615,7 @@ begin
     for I := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[I]) do
         if FCtl3D and (csFramed in ControlStyle)
-        and (Visible
-        or ((csDesigning in ComponentState)
-            and not (csNoDesignVisible in ControlStyle)))
-        then begin
+        and IsVisible then begin
          //TODO: CreateSolidBrush and FrameRect
          {FrameBrush := CreateSolidBrush(clBtnShadow);
           FrameRect(DC, Rect(Left - 1, Top - 1, Left + Width, Top + Height),
@@ -3132,7 +3120,7 @@ begin
   Form := GetParentForm(Self);
   if Form <> nil then
     Form.FocusControl(Self)
-  else if Visible and HandleAllocated then
+  else if IsVisible and HandleAllocated then
     LCLIntf.SetFocus(Handle);
 end;
 
@@ -3878,9 +3866,8 @@ Begin
     if AWinControl.HandleAllocated then AWinControl.DestroyHandle;
   end else
     if HandleAllocated then
-      AControl.InvalidateControl(AControl.Visible, False, True);
+      AControl.InvalidateControl(AControl.IsVisible, False, True);
   Remove(AControl);
-//  Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(False));
   Realign;
 End;
 
@@ -4743,7 +4730,7 @@ begin
     if FWinControls <> nil then begin
       for i := 0 to FWinControls.Count - 1 do
         with TWinControl(FWinControls.Items[i]) do
-          if Visible then HandleNeeded;
+          if IsControlVisible then HandleNeeded;
     end;
 
     ChildHandlesCreated;
@@ -5294,7 +5281,7 @@ begin
   SpaceAround:=Rect(0,0,0,0);
   For I := 0 to ControlCount - 1 do begin
     AControl:=Controls[I];
-    If AControl.Visible then begin
+    If AControl.IsControlVisible then begin
       AControl.GetPreferredSize(ChildWidth,ChildHeight,false);
       // TODO: aligned controls
       if WithBorderSpace then begin

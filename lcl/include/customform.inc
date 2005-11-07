@@ -312,7 +312,7 @@ Begin
   {$ENDIF}
   if not FActive then
   begin
-    if not (Visible and Enabled) then
+    if not (IsControlVisible and Enabled) then
       RaiseCannotFocus;
     SetWindowFocus;
   end;

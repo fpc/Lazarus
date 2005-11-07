@@ -39,7 +39,8 @@ begin
   FBevelInner := bvNone;
   FBevelWidth := 1;
   FAlignment := taCenter;
-  Color:=clBtnface;// clBackground;
+  FFullRepaint := true;
+  Color:=clBtnFace;// clBackground;
   SetInitialBounds(0,0,170,50);
   ParentColor := True;
 end;
@@ -113,6 +114,8 @@ begin
     TS.SystemFont:=Canvas.Font.IsDefault;
     Canvas.TextRect(ARect,ARect.Left,ARect.Top, Caption, TS);
   end;
+
+  inherited Paint;
 end;
 
 function TCustomPanel.CanTab: Boolean;

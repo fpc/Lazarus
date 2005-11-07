@@ -1917,7 +1917,7 @@ begin
     if FCurrentEdit<>nil then begin
       // resize the edit component
       EditCompRect.Left:=EditCompRect.Left-1;
-      debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
+      //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
         FCurrentEdit.Invalidate;

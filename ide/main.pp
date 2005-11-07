@@ -4383,8 +4383,9 @@ var
   ACaption, AText: String;
   NewUnitName: String;
 begin
+  debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
+
   // check installed packages
-  debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.IsPartOfProject),' ');
   if (Flags*[ofProjectLoading,ofMultiOpen]=[]) and AnUnitInfo.IsPartOfProject
   then begin
     // opening a single form of the project -> check installed packages
