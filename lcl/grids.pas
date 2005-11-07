@@ -4694,6 +4694,7 @@ begin
 
   // Change on Focused cell?
   if (Dcol=FCol)and(DRow=FRow) then begin
+    SelectCell(DCol,DRow);
   end else begin
     Result:=SelectCell(DCol,DRow);
   end;
