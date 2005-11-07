@@ -386,7 +386,6 @@ begin
   CurrentListBox.Items.Add(s);
   LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText]);
   if ACodeBuffer<>nil then begin
-    ListOfCodeBuffer:=nil;
     CodeToolBoss.GetIncludeCodeChain(ACodeBuffer,true,ListOfCodeBuffer);
     if ListOfCodeBuffer<>nil then begin
       for i:=0 to ListOfCodeBuffer.Count-1 do begin
@@ -395,6 +394,7 @@ begin
         s:=CurCode.Filename;
         CurrentListBox.Items.Insert(0,s);
       end;
+      ListOfCodeBuffer.Free;
     end;
     if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
       NewIdentifierPosition.X,NewIdentifierPosition.Y,NewIdentifier) then

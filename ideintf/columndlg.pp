@@ -214,7 +214,8 @@ Begin
      Parent := self;
      Caption := 'OK';
      Left := CaptionLabel.Left;
-     Top := MoveUpButton.Top;      kind := bkOK;
+     Top := MoveUpButton.Top;
+     kind := bkOK;
    end;
 
   btnCancel := TBitbtn.Create(self);
