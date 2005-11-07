@@ -802,6 +802,32 @@ var
   ProcNode: TCodeTreeNode;
 begin
   if Context.Node.Desc in AllPascalStatements then begin
+    // begin..end -> add 'SetLength'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        0,
+        'SetLength',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:='array of type; NewLength: integer';
+    CurrentIdentifierList.Add(NewItem);
+
+    // begin..end -> add 'copy'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        0,
+        'Copy',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:='const s: string; FromPosition, ToPosition: integer';
+    CurrentIdentifierList.Add(NewItem);
+
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
       // method body -> add 'Self'
