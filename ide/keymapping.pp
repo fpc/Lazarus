@@ -2411,6 +2411,7 @@ begin
   AddDefault(C,'Show code context',ecShowCodeContext);
   AddDefault(C,'Extract proc',ecExtractProc);
   AddDefault(C,'Find identifier references',ecFindIdentifierRefs);
+  AddDefault(C,'Rename identifier',ecRenameIdentifier);
   AddDefault(C,'Invert assignment',ecInvertAssignment);
   AddDefault(C,'Syntax check',ecSyntaxCheck);
   AddDefault(C,'Guess unclosed block',ecGuessUnclosedBlock);
