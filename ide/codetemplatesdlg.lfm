@@ -1,4 +1,5 @@
 object CodeTemplateDialog: TCodeTemplateDialog
+  ActiveControl = FilenameEdit
   Caption = 'CodeTemplateDialog'
   ClientHeight = 432
   ClientWidth = 596
@@ -12,7 +13,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Width = 596
   object FilenameGroupBox: TGroupBox
     Align = alTop
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'FilenameGroupBox'
     ClientHeight = 42
@@ -25,7 +25,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Width = 586
     object FilenameEdit: TEdit
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.Right = 5
       TabOrder = 0
       Text = 'FilenameEdit'
@@ -37,7 +36,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object FilenameButton: TButton
       Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.OnChange = nil
       BorderSpacing.InnerBorder = 2
       Caption = '...'
       OnClick = FilenameButtonClick
@@ -53,7 +51,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   object OkButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.OnChange = nil
     BorderSpacing.Right = 14
     BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
@@ -62,60 +59,54 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = CancelButton
     AnchorSideBottom.Side = asrBottom
-    Left = 403
-    Height = 25
-    Top = 397
-    Width = 91
+    Left = 423
+    Height = 26
+    Top = 396
+    Width = 61
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.OnChange = nil
     BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
-    Left = 508
-    Height = 25
-    Top = 397
-    Width = 75
+    Left = 498
+    Height = 26
+    Top = 396
+    Width = 85
   end
   object TemplateGroupBox: TGroupBox
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 5
     Caption = 'TemplateGroupBox'
-    ClientHeight = 306
+    ClientHeight = 305
     ClientWidth = 582
     ParentColor = True
     TabOrder = 3
     AnchorSideBottom.Control = CancelButton
     Left = 5
-    Height = 323
+    Height = 322
     Top = 69
     Width = 586
     object TemplateListBox: TListBox
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.OnChange = nil
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
-      AnchorSideBottom.Control = TemplateSynEdit
-      Height = 156
+      AnchorSideBottom.Control = TemplateSplitter
+      Height = 150
       Width = 408
     end
     object TemplateSynEdit: TSynEdit
       Align = alBottom
-      BorderSpacing.OnChange = nil
       Font.Height = -18
       Font.Name = 'courier'
       Height = 150
       Name = 'TemplateSynEdit'
       TabOrder = 1
       Width = 582
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = ASynPasSyn
       Keystrokes = <      
@@ -442,10 +433,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
-      SelectedColor.OnChange = nil
       Cursor = crIBeam
       Height = 150
-      Top = 156
+      Top = 155
       Width = 582
     end
     object TemplateSplitter: TSplitter
@@ -454,14 +444,14 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Height = 5
       ParentColor = True
       Width = 582
+      ResizeAnchor = akBottom
       Cursor = crVSplit
       Height = 5
-      Top = 151
+      Top = 150
       Width = 582
     end
     object AddButton: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.InnerBorder = 2
       Caption = 'AddButton'
       OnClick = AddButtonClick
@@ -472,7 +462,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object DeleteButton: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.InnerBorder = 2
       Caption = 'DeleteButton'
       OnClick = DeleteButtonClick
@@ -484,7 +473,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object EditButton: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.InnerBorder = 2
       Caption = 'EditButton'
       OnClick = EditButtonClick
@@ -496,13 +484,12 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
     object UseMakrosCheckBox: TCheckBox
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       Caption = 'UseMakrosCheckBox'
       TabOrder = 5
-      Left = 439
-      Height = 23
+      Left = 426
+      Height = 24
       Top = 106
-      Width = 133
+      Width = 146
     end
   end
   object ASynPasSyn: TSynPasSyn
