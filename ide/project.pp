@@ -230,7 +230,7 @@ type
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
-    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
+    property SourceDirectoryReferenced : boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
   end;
@@ -377,9 +377,9 @@ type
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
     FAutoOpenDesignerFormsDisabled: boolean;
-    fBookmarks: TProjectBookmarkList;
+    FBookmarks: TProjectBookmarkList;
     fChanged: boolean;
-    fCompilerOptions: TProjectCompilerOptions;
+    FCompilerOptions: TProjectCompilerOptions;
     FDefineTemplates: TProjectDefineTemplates;
 
     FFirstRemovedDependency: TPkgDependency;
@@ -388,7 +388,7 @@ type
 
     fDestroying: boolean;
     fIconPath: String;
-    fJumpHistory: TProjectJumpHistory;
+    FJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
     fMainUnitID: Integer;
@@ -402,11 +402,11 @@ type
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
     //fProjectType: TProjectType;
-    fPublishOptions: TPublishProjectOptions;
-    fRunParameterOptions: TRunParamsOptions;
+    FPublishOptions: TPublishProjectOptions;
+    FRunParameterOptions: TRunParamsOptions;
     FSourceDirectories: TFileReferenceList;
-    fTargetFileExt: String;
-    fUnitList: TList;  // list of _all_ units (TUnitInfo)
+    FTargetFileExt: String;
+    FUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -565,9 +565,9 @@ type
     property AutoOpenDesignerFormsDisabled: boolean
                                          read FAutoOpenDesignerFormsDisabled
                                          write SetAutoOpenDesignerFormsDisabled;
-    property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
+    property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property CompilerOptions: TProjectCompilerOptions
-                                 read fCompilerOptions write SetCompilerOptions;
+                                 read FCompilerOptions write SetCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
@@ -581,7 +581,7 @@ type
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
-                                           read fJumpHistory write fJumpHistory;
+                                           read FJumpHistory write FJumpHistory;
     property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
@@ -596,10 +596,10 @@ type
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions
-                                     read fPublishOptions write fPublishOptions;
-    property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
+                                     read FPublishOptions write FPublishOptions;
+    property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
-    property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
+    property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits write SetUnits;
@@ -1250,14 +1250,14 @@ begin
 
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
-  fBookmarks := TProjectBookmarkList.Create;
+  FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';
-  fJumpHistory:=TProjectJumpHistory.Create;
-  fJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
-  fJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
+  FJumpHistory:=TProjectJumpHistory.Create;
+  FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
+  FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
   fMainUnitID := -1;
   fModified := false;
   fProjectInfoFile := '';
@@ -1265,11 +1265,11 @@ begin
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
 
   UpdateProjectDirectory;
-  fPublishOptions:=TPublishProjectOptions.Create(Self);
-  fRunParameterOptions:=TRunParamsOptions.Create;
-  fTargetFileExt := GetDefaultExecutableExt;
+  FPublishOptions:=TPublishProjectOptions.Create(Self);
+  FRunParameterOptions:=TRunParamsOptions.Create;
+  FTargetFileExt := GetDefaultExecutableExt;
   Title := '';
-  fUnitList := TList.Create;  // list of TUnitInfo
+  FUnitList := TList.Create;  // list of TUnitInfo
 end;
 
 {------------------------------------------------------------------------------
@@ -1279,12 +1279,13 @@ destructor TProject.Destroy;
 begin
   fDestroying:=true;
   Clear;
-  FreeThenNil(fBookmarks);
-  FreeThenNil(fUnitList);
-  FreeThenNil(fJumpHistory);
-  FreeThenNil(fPublishOptions);
-  FreeThenNil(fRunParameterOptions);
-  FreeThenNil(fCompilerOptions);
+  FreeThenNil(FBookmarks);
+  FreeThenNil(FUnitList);
+  FreeThenNil(FJumpHistory);
+  FreeThenNil(FSourceDirectories);
+  FreeThenNil(FPublishOptions);
+  FreeThenNil(FRunParameterOptions);
+  FreeThenNil(FCompilerOptions);
   FreeThenNil(FDefineTemplates);
 
   inherited Destroy;
@@ -1435,8 +1436,8 @@ begin
 
       if (not (pfSaveOnlyProjectUnits in Flags))
       and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
-        fJumpHistory.DeleteInvalidPositions;
-        fJumpHistory.SaveToXMLConfig(xmlconfig,Path);
+        FJumpHistory.DeleteInvalidPositions;
+        FJumpHistory.SaveToXMLConfig(xmlconfig,Path);
       end;
 
       if Assigned(OnSaveProjectInfo) then
@@ -1635,7 +1636,7 @@ begin
       // load session info
       ActiveEditorIndexAtStart := xmlconfig.GetValue(
          Path+'General/ActiveEditorIndexAtStart/Value', -1);
-      fJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+      FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
 
       if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
 
@@ -1672,7 +1673,7 @@ begin
   //debugln('TProject.AddUnit A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
   BeginUpdate(true);
   NewIndex:=UnitCount;
-  fUnitList.Add(AnUnit);
+  FUnitList.Add(AnUnit);
   AnUnit.Project:=Self;
   AnUnit.OnFileBackup:=@OnUnitFileBackup;
   AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
@@ -1736,7 +1737,7 @@ begin
 
   // delete unitinfo instance
   OldUnitInfo.Free;
-  fUnitList.Delete(Index);
+  FUnitList.Delete(Index);
   EndUpdate;
 end;
 
@@ -1769,24 +1770,24 @@ begin
 
   // delete files
   for i:=0 to UnitCount-1 do Units[i].Free;
-  fUnitList.Clear;
+  FUnitList.Clear;
   
-  fRunParameterOptions.Clear;
+  FRunParameterOptions.Clear;
 
   fActiveEditorIndexAtStart := -1;
   FAutoOpenDesignerFormsDisabled := false;
-  fBookmarks.Clear;
-  fCompilerOptions.Clear;
+  FBookmarks.Clear;
+  FCompilerOptions.Clear;
   FDefineTemplates.Clear;
   fIconPath := '';
-  fJumpHistory.Clear;
+  FJumpHistory.Clear;
   fMainUnitID := -1;
   fModified := false;
   fProjectInfoFile := '';
   FSourceDirectories.Clear;
   UpdateProjectDirectory;
-  fPublishOptions.Clear;
-  fTargetFileExt := GetDefaultExecutableExt;
+  FPublishOptions.Clear;
+  FTargetFileExt := GetDefaultExecutableExt;
   Title := '';
   EndUpdate;
 end;
@@ -1814,7 +1815,7 @@ end;
 
 function TProject.GetUnits(Index:integer):TUnitInfo;
 begin
-  Result:=TUnitInfo(fUnitList[Index]);
+  Result:=TUnitInfo(FUnitList[Index]);
 end;
 
 procedure TProject.SetFlags(const AValue: TProjectFlags);
@@ -1851,8 +1852,8 @@ end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
 begin
-  if AUnitInfo<>TUnitInfo(fUnitList[Index]) then begin
-    fUnitList[Index]:=AUnitInfo;
+  if AUnitInfo<>TUnitInfo(FUnitList[Index]) then begin
+    FUnitList[Index]:=AUnitInfo;
     Modified:=true;
     if AUnitInfo<>nil then AUnitInfo.Project:=Self;
   end;
@@ -1860,7 +1861,7 @@ end;
 
 function TProject.UnitCount:integer;
 begin
-  Result:=fUnitList.Count;
+  Result:=FUnitList.Count;
 end;
 
 function TProject.GetFileCount: integer;
@@ -2271,12 +2272,12 @@ end;
 
 function TProject.GetTargetFilename: string;
 begin
-  Result:=fCompilerOptions.TargetFilename;
+  Result:=FCompilerOptions.TargetFilename;
 end;
 
 procedure TProject.SetTargetFilename(const NewTargetFilename: string);
 begin
-  fCompilerOptions.TargetFilename:=NewTargetFilename;
+  FCompilerOptions.TargetFilename:=NewTargetFilename;
 end;
 
 function TProject.GetMainFilename: String;
@@ -2652,8 +2653,8 @@ end;
 
 procedure TProject.SetCompilerOptions(const AValue: TProjectCompilerOptions);
 begin
-  if fCompilerOptions=AValue then exit;
-  fCompilerOptions:=AValue;
+  if FCompilerOptions=AValue then exit;
+  FCompilerOptions:=AValue;
   inherited SetLazCompilerOptions(AValue);
 end;
 
@@ -2880,7 +2881,7 @@ var
   i: Integer;
   AnUnitInfo: TUnitInfo;
 begin
-  Cnt:=fUnitList.Count;
+  Cnt:=FUnitList.Count;
   for i:=0 to Cnt-1 do begin
     AnUnitInfo:=Units[i];
     AnUnitInfo.FSourceDirectoryReferenced:=false;
