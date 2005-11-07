@@ -3327,7 +3327,6 @@ begin
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
   FConstraints:= TSizeConstraints.Create(Self);
   FBorderSpacing:=TControlBorderSpacing.Create(Self);
-  FBorderSpacing.OnChange:= @DoBorderSpacingChange;
   for Side:=Low(FAnchorSides) to High(FAnchorSides) do
     FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
 

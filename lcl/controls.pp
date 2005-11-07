@@ -2590,7 +2590,7 @@ end;
 procedure TControlBorderSpacing.Change;
 begin
   FControl.DoBorderSpacingChange(Self);
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(OnChange) then OnChange(Self);
 end;
 
 { TControlChildSizing }
