@@ -658,7 +658,7 @@ begin
   i:=Count-1;
   while (i>=0) do begin
     Result:=Items[i];
-    if (CompareText(Result.Name,AName)<>0) then exit;
+    if (CompareText(Result.Name,AName)=0) then exit;
     dec(i);
   end;
   Result:=nil;

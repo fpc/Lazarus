@@ -137,6 +137,7 @@ begin
   Result.LongDescription:=LongDescription;
   Result.OnGetValueProc:=OnGetValueProc;
   Result.OnGetValueMethod:=OnGetValueMethod;
+  IDECodeMacros.Add(Result);
 end;
 
 { TIDEMacros }
