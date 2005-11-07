@@ -1751,6 +1751,7 @@ begin
   RegisterStandardSourceEditorMenuItems;
   RegisterStandardMessagesViewMenuItems;
   RegisterStandardCodeExplorerMenuItems;
+  RegisterStandardCodeTemplatesMenuItems;
 end;
 
 procedure TMainIDE.SetupStandardProjectTypes;

@@ -32,10 +32,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ClipBrd, StdCtrls, Buttons, ExtCtrls,
+  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus,
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
-  IDECommands, TextTools, SrcEditorIntf, MacroIntf,
-  InputHistory, LazarusIDEStrConsts, EditorOptions;
+  IDECommands, TextTools, SrcEditorIntf, MenuIntf,
+  InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
 
 type
 
@@ -56,16 +56,22 @@ type
     FilenameButton: TButton;
     FilenameEdit: TEdit;
     FilenameGroupBox: TGroupBox;
+    MainPopupMenu: TPopupMenu;
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure FilenameButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
+    procedure OnCopyMenuItem(Sender: TObject);
+    procedure OnCutMenuItem(Sender: TObject);
+    procedure OnInsertMacroMenuItem(Sender: TObject);
+    procedure OnPasteMenuItem(Sender: TObject);
     procedure TemplateListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     SynAutoComplete: TSynEditAutoComplete;
     LastTemplate: integer;
+    procedure BuildPopupMenu;
   public
     procedure FillCodeTemplateListBox;
     procedure ShowCurCodeTemplate;
@@ -126,6 +132,17 @@ function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
 function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
+
+const
+  CodeTemplatesMenuRootName = 'CodeTemplates';
+
+var
+  CodeTemplateCopyIDEMenuCommand: TIDEMenuCommand;
+  CodeTemplateCutIDEMenuCommand: TIDEMenuCommand;
+  CodeTemplatePasteIDEMenuCommand: TIDEMenuCommand;
+  CodeTemplateInsertMacroIDEMenuCommand: TIDEMenuCommand;
+
+procedure RegisterStandardCodeTemplatesMenuItems;
 
 implementation
 
@@ -212,6 +229,19 @@ function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
 begin
   Value:=Clipboard.AsText;
   Result:=true;
+end;
+
+procedure RegisterStandardCodeTemplatesMenuItems;
+var
+  Path: string;
+begin
+  CodeTemplatesMenuRoot := RegisterIDEMenuRoot(CodeTemplatesMenuRootName);
+  Path := CodeTemplatesMenuRoot.Name;
+  CodeTemplateCutIDEMenuCommand := RegisterIDEMenuCommand(Path,'Cut','Cut');
+  CodeTemplateCopyIDEMenuCommand := RegisterIDEMenuCommand(Path,'Copy','Copy');
+  CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path,'Paste','Paste');
+  CodeTemplateInsertMacroIDEMenuCommand := RegisterIDEMenuCommand(Path,
+                                                  'InsertMacro','Insert Macro');
 end;
 
 procedure CreateStandardCodeMacros;
@@ -420,6 +450,8 @@ begin
       ItemIndex:=0;
       ShowCurCodeTemplate;
     end;
+    
+  BuildPopupMenu;
 end;
 
 procedure TCodeTemplateDialog.OkButtonClick(Sender: TObject);
@@ -450,6 +482,26 @@ begin
   end;
 
   ModalResult:=mrOk;
+end;
+
+procedure TCodeTemplateDialog.OnCopyMenuItem(Sender: TObject);
+begin
+  TemplateSynEdit.CopyToClipboard;
+end;
+
+procedure TCodeTemplateDialog.OnCutMenuItem(Sender: TObject);
+begin
+  TemplateSynEdit.CutToClipboard;
+end;
+
+procedure TCodeTemplateDialog.OnInsertMacroMenuItem(Sender: TObject);
+begin
+
+end;
+
+procedure TCodeTemplateDialog.OnPasteMenuItem(Sender: TObject);
+begin
+  TemplateSynEdit.PasteFromClipboard;
 end;
 
 procedure TCodeTemplateDialog.AddButtonClick(Sender: TObject);
@@ -528,6 +580,22 @@ procedure TCodeTemplateDialog.TemplateListBoxSelectionChange(Sender: TObject;
 begin
   SaveCurCodeTemplate;
   ShowCurCodeTemplate;
+end;
+
+procedure TCodeTemplateDialog.BuildPopupMenu;
+begin
+  CodeTemplateCopyIDEMenuCommand.OnClick:=@OnCopyMenuItem;
+  CodeTemplateCutIDEMenuCommand.OnClick:=@OnCutMenuItem;
+  CodeTemplatePasteIDEMenuCommand.OnClick:=@OnPasteMenuItem;
+  CodeTemplateInsertMacroIDEMenuCommand.OnClick:=@OnInsertMacroMenuItem;
+
+  // assign the root TMenuItem to the registered menu root.
+  MainPopupMenu:=TPopupMenu.Create(Self);
+  // This will automatically create all registered items
+  CodeTemplatesMenuRoot.MenuItem := MainPopupMenu.Items;
+  //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
+  
+  PopupMenu:=MainPopupMenu;
 end;
 
 procedure TCodeTemplateDialog.FillCodeTemplateListBox;

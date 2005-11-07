@@ -1,0 +1,73 @@
+object CodeMacroSelectDlg: TCodeMacroSelectDlg
+  ActiveControl = MacrosListBox
+  Caption = 'CodeMacroSelectDlg'
+  ClientHeight = 261
+  ClientWidth = 400
+  OnCreate = FormCreate
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 260
+  Left = 318
+  Height = 261
+  Top = 200
+  Width = 400
+  object MacrosGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = 'MacrosGroupBox'
+    ClientHeight = 184
+    ClientWidth = 166
+    ParentColor = True
+    TabOrder = 0
+    Left = 10
+    Height = 201
+    Top = 10
+    Width = 170
+    object MacrosListBox: TListBox
+      Align = alClient
+      TabOrder = 0
+      TopIndex = -1
+      Height = 184
+      Width = 166
+    end
+  end
+  object DescriptionGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'DescriptionGroupBox'
+    ClientHeight = 184
+    ClientWidth = 196
+    ParentColor = True
+    TabOrder = 1
+    Left = 190
+    Height = 201
+    Top = 10
+    Width = 200
+  end
+  object OkButton: TButton
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 10
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OkButton'
+    ModalResult = 1
+    TabOrder = 2
+    AnchorSideTop.Control = CancelButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = CancelButton
+    Left = 234
+    Height = 26
+    Top = 221
+    Width = 61
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 3
+    Left = 305
+    Height = 26
+    Top = 221
+    Width = 85
+  end
+end

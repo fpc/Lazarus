@@ -380,6 +380,8 @@ var
   // CodeExplorer window popupmenu
   CodeExplorerMenuRoot: TIDEMenuSection;
 
+  // Messages window popupmenu
+  CodeTemplatesMenuRoot: TIDEMenuSection;
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;

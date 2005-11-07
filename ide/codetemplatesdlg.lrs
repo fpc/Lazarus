@@ -96,5 +96,5 @@ LazarusResources.Add('TCodeTemplateDialog','FORMDATA',[
   +'s'#0#0#9'TCheckBox'#17'UseMakrosCheckBox'#7'Anchors'#11#5'akTop'#7'akRight'
   +#0#7'Caption'#6#17'UseMakrosCheckBox'#8'TabOrder'#2#5#4'Left'#3#170#1#6'Heig'
   +'ht'#2#24#3'Top'#2'j'#5'Width'#3#146#0#0#0#0#10'TSynPasSyn'#10'ASynPasSyn'#7
-  +'Enabled'#8#4'left'#3#21#1#3'top'#3#216#0#0#0#0
+  +'Enabled'#8#4'left'#3#24#1#3'top'#3#216#0#0#0#0
 ]);

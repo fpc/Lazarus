@@ -494,7 +494,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
   end
   object ASynPasSyn: TSynPasSyn
     Enabled = False
-    left = 277
+    left = 280
     top = 216
   end
 end
