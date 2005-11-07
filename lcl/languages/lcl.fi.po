@@ -260,7 +260,7 @@ msgstr ""
 
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
-msgstr ""
+msgstr "Tiedosto täytyy olla olemassa"
 
 #: lclstrconsts:rsgtkfilter
 msgid "Filter:"
@@ -556,7 +556,7 @@ msgstr ""
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
-msgstr ""
+msgstr "Tiedostoa \"%s\" ei ole olemassa."
 
 #: lclstrconsts:rsfdfilereadonly
 msgid "The file \"%s\" is not writable."
