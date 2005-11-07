@@ -26,7 +26,7 @@ unit ActnList;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds,
+  Classes, SysUtils,
   LCLStrConsts, LCLType, LCLProc, LCLIntf, ImgList, LCLClasses, LMessages;
   
 type

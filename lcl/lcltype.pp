@@ -52,7 +52,7 @@ uses
 {$ifdef win32}
   windows,
 {$endif win32}
-  Classes, SysUtils, FPCAdds;
+  Classes, SysUtils;
 
 type
 {$IFDEF USE_UTF8BIDI_LCL}

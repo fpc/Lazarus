@@ -34,7 +34,7 @@ type
   TMemStreamSeekType = integer;
   TCompareMemSize = integer;
   PHandle = ^THandle;
-  
+
 function StrToWord(const s: string): word;
 
 {$IFDEF VER2_0_0}
@@ -42,8 +42,6 @@ function StrToWord(const s: string): word;
 function ExceptFrameCount: Longint;
 function ExceptFrames: PPointer;
 {$ENDIF}
-
-procedure SwapIntegers(var a, b: integer); inline;
 
 implementation
 
@@ -57,15 +55,6 @@ begin
     Result:=Result*10+ord(s[p])-ord('0');
     inc(p);
   end;
-end;
-
-procedure SwapIntegers(var a, b: integer); inline;
-var
-  h: integer;
-begin
-  h:=a;
-  a:=b;
-  b:=h;
 end;
 
 {$IFDEF VER2_0_0}

@@ -382,8 +382,6 @@ begin
 end;
 
 function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
-var
-  MenuInfo: MENUITEMINFO;
 begin
   Result := ChangeMenuFlag(AMenuItem, MFT_RIGHTJUSTIFY, Justified);
 end;

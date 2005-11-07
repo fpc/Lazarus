@@ -33,7 +33,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, LMessages,
+  Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LMessages,
   GraphType, GraphMath;
 
 type

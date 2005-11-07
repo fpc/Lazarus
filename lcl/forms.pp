@@ -37,7 +37,7 @@ interface
 {$DEFINE HasDefaultValues}
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
   ActnList, ClipBrd, CustApp, LCLClasses, Controls;
 

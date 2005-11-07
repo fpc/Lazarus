@@ -29,7 +29,7 @@ unit LMessages;
 
 interface
 
-uses Classes, SysUtils, FPCAdds, LCLType, GraphType
+uses Classes, SysUtils, LCLType, GraphType
   {$ifdef win32}
   ,messages
   {$endif win32}

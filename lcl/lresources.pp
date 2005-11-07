@@ -495,7 +495,7 @@ function FindLFMClassName(LFMStream:TStream):ansistring;
   -> the classname is the last word of the first line
 }
 var c:char;
-  StartPos, EndPos: TStreamSeekType;
+  StartPos, EndPos: Int64;
 begin
   Result:='';
   StartPos:=-1;
