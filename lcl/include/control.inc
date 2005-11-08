@@ -763,6 +763,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMParentColorChanged(var Message: TLMessage);
 begin
+  if csLoading in ComponentState then exit;
+  
   if FParentColor then
   begin
     Color := FParent.Color;
@@ -2413,6 +2415,10 @@ begin
     ' CW=',cfClientWidthLoaded in FControlFlags,'=',FLoadedClientSize.X,
     ' CH=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
     '');}
+    
+  if ParentColor then
+    Color := Parent.Color;
+    
   UpdateBaseBounds(true,true,true);
 
   // align this control and the brothers
