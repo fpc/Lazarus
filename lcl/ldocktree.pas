@@ -106,10 +106,10 @@ type
   TLazDockPage = class(TCustomPage)
   private
     FDockZone: TDockZone;
-    FPageControl: TLazDockPages;
+    function GetPageControl: TLazDockPages;
   public
     property DockZone: TDockZone read FDockZone;
-    property PageControl: TLazDockPages read FPageControl;
+    property PageControl: TLazDockPages read GetPageControl;
   end;
   
   { TLazDockPages }
@@ -154,6 +154,7 @@ type
     procedure ResetBounds(Force: Boolean); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure SetReplacingControl(Control: TControl); override;
+    procedure ReplaceAnchoredControl(OldControl, NewControl: TControl);
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
   end;
 
@@ -179,7 +180,7 @@ end;
 
 function TLazDockPages.GetNoteBookPage(Index: Integer): TLazDockPage;
 begin
-  Result:=TLazDockPage(inherited ActivePageComponent);
+  Result:=TLazDockPage(inherited Page[Index]);
 end;
 
 procedure TLazDockPages.SetActiveNotebookPageComponent(
@@ -714,6 +715,25 @@ end;
   procedure TAnchoredDockManager.InsertControl(Control: TControl;
     InsertAt: TAlign; DropCtl: TControl);
 
+<<<<<<< .mine
+  Docks Control to or into DropCtl.
+  Control.Parent must be nil.
+
+  If InsertAt in [alLeft,alTop,alRight,alBottom] then Control will be docked to
+  the side of DropCtl.
+  Otherwise it is docked as Page to a TLazDockPages.
+
+  Docking to a side:
+    If DockCtl.Parent=nil then a parent will be created via
+    DropCtl.ManualFloat.
+    Then Control is added as child to DockCtl.Parent.
+    Then a Splitter is added.
+    Then all three are anchored.
+
+  Docking as page:
+    if DropCtl.Parent is not a TLazDockPage then a new TLazDockPages is created
+    and replaces DropCtl and DropCtl is added as page.
+    Then Control is added as page.
 -------------------------------------------------------------------------------}
 procedure TAnchoredDockManager.InsertControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
@@ -729,6 +749,10 @@ var
   NewDropCtlHeight: Integer;
   SplitterWidth: LongInt;
   SplitterHeight: LongInt;
+  DockPages: TLazDockPages;
+  DropCtlPage: TLazDockPage;
+  NewPageIndex: Integer;
+  NewPage: TLazDockPage;
 begin
   if Control.Parent<>nil then
     RaiseGDBException('TAnchoredDockManager.InsertControl Control.Parent<>nil');
@@ -739,7 +763,7 @@ begin
     begin
       // dock Control to a side of DropCtl
       // e.g. alLeft: insert Control to the left of DropCtl
-      
+
       DropCtlAnchor:=MainAlignAnchor[InsertAt];
       ControlAnchor:=OppositeAnchor[DropCtlAnchor];
 
@@ -840,12 +864,46 @@ begin
 
         // position DropCtl
         DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
-        
+
         //debugln('TAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
       finally
         DropCtl.Parent.EnableAlign;
       end;
       //debugln('TAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
+    end;
+    
+  alClient:
+    begin
+      // docking as page
+      DebugLn('TAnchoredDockManager.InsertControl alClient DropCtl=',DbgSName(DropCtl),' Control=',DbgSName(Control));
+
+      if not (DropCtl.Parent is TLazDockPage) then begin
+        // create a new TLazDockPages
+        //DebugLn('TAnchoredDockManager.InsertControl Create TLazDockPages');
+        DockPages:=TLazDockPages.Create(nil);
+        if DropCtl.Parent<>nil then begin
+          // DockCtl is a child control
+          // => replace the anchors to and from DockCtl with the new DockPages
+          ReplaceAnchoredControl(DropCtl,DockPages);
+        end else begin
+          // DockCtl has no parent
+          // => float DockPages
+          DockPages.ManualFloat(DropCtl.BoundsRect);
+        end;
+        // add DockCtl as page to DockPages
+        DockPages.Pages.Add(DropCtl.Caption);
+        DropCtlPage:=DockPages.Page[0];
+        DropCtl.Parent:=DropCtlPage;
+        DropCtl.Align:=alClient;
+      end;
+      // add Control as new page behind the page of DockCtl
+      DropCtlPage:=DropCtl.Parent as TLazDockPage;
+      DockPages:=DropCtlPage.PageControl as TLazDockPages;
+      NewPageIndex:=DropCtlPage.PageIndex+1;
+      DockPages.Pages.Insert(NewPageIndex,Control.Caption);
+      NewPage:=DockPages.Page[NewPageIndex];
+      Control.Parent:=NewPage;
+      Control.Align:=alClient;
     end;
   else
     RaiseGDBException('TAnchoredDockManager.InsertControl TODO');
@@ -886,6 +944,55 @@ end;
 procedure TAnchoredDockManager.SetReplacingControl(Control: TControl);
 begin
   RaiseGDBException('TAnchoredDockManager.SetReplacingControl TODO');
+end;
+
+procedure TAnchoredDockManager.ReplaceAnchoredControl(OldControl,
+  NewControl: TControl);
+var
+  a: TAnchorKind;
+  Side: TAnchorSide;
+  i: Integer;
+  Sibling: TControl;
+begin
+  if OldControl.Parent<>nil then begin
+    NewControl.Parent.DisableAlign;
+    try
+      // put NewControl on the same Parent with the same bounds
+      NewControl.Parent:=nil;
+      NewControl.Align:=alNone;
+      NewControl.BoundsRect:=OldControl.BoundsRect;
+      NewControl.Parent:=OldControl.Parent;
+      // copy all four AnchorSide
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        NewControl.AnchorSide[a].Assign(OldControl.AnchorSide[a]);
+      // bend all Anchors from OldControl to NewControl
+      for i:=0 to OldControl.Parent.ControlCount-1 do begin
+        Sibling:=OldControl.Parent.Controls[i];
+        if (Sibling=NewControl) or (Sibling=OldControl) then continue;
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          Side:=Sibling.AnchorSide[a];
+          if Side.Control=OldControl then begin
+            Side.Control:=NewControl;
+          end;
+        end;
+      end;
+      // remove OldControl from its Parent
+      OldControl.Parent:=nil;
+    finally
+      NewControl.Parent.EnableAlign;
+    end;
+  end else begin
+    NewControl.Parent:=nil;
+    NewControl.Align:=alNone;
+    NewControl.BoundsRect:=OldControl.BoundsRect;
+  end;
+end;
+
+{ TLazDockPage }
+
+function TLazDockPage.GetPageControl: TLazDockPages;
+begin
+  Result:=Parent as TLazDockPages;
 end;
 
 end.
