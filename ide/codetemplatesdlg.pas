@@ -249,6 +249,8 @@ var
   i: Integer;
   Attributes: TProcHeadAttributes;
 begin
+  //debugln('CodeMakroProcedureHead A ',Parameter);
+
   // parse attributes
   Params:=SplitString(Parameter,',');
   try
@@ -293,6 +295,8 @@ begin
         Include(Attributes,phpCommentsToSpace)
       else if CompareText(Param,'WithoutBrackets')=0 then
         Include(Attributes,phpWithoutBrackets)
+      else if CompareText(Param,'WithoutSemicolon')=0 then
+        Include(Attributes,phpWithoutSemicolon)
       else begin
         Result:=false;
         ErrorMsg:='Unknown Option: "'+Param+'"';
@@ -304,6 +308,7 @@ begin
     Params.Free;
   end;
 
+  //debugln('CodeMakroProcedureHead B ');
   if not CodeToolBoss.ExtractProcedureHeader(
     SrcEdit.CodeToolsBuffer as TCodeBuffer,
     SrcEdit.CursorTextXY.X,SrcEdit.CursorTextXY.Y,Attributes,Value) then
@@ -313,6 +318,7 @@ begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
+  //debugln('CodeMakroProcedureHead C Value="',Value,'"');
 
   Result:=true;
 end;
@@ -367,7 +373,8 @@ begin
     +'                      //    e.g ''Do   ;'' normally becomes ''Do;'''#13
     +'                      //    with this option you get ''Do ;'')'#13
     +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13,
-    @CodeMakroPaste,nil);
+    +'WithoutSemicolon,   // skip semicolon at end'#13,
+    @CodeMakroProcedureHead,nil);
 end;
 
 { TCodeTemplateEditForm }

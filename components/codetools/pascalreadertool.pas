@@ -425,7 +425,7 @@ begin
   end;
   // read semicolon
   if CurPos.Flag=cafSemicolon then
-    ExtractNextAtom(true,Attr);
+    ExtractNextAtom(not (phpWithoutSemicolon in Attr),Attr);
   // read specifiers
   if [phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[] then begin
     while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin

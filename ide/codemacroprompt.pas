@@ -197,6 +197,7 @@ const
   begin
     Result:=false;
     Macro:=IDECodeMacros.FindByName(MacroName);
+    debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
     if Macro<>nil then begin
       // macro found
       
@@ -253,6 +254,7 @@ const
             inc(p);
           if (p>len) or (p-MacroStartPos=1) or (Pattern[p]<>'(') then begin
             // missing name or missing round bracket open
+            debugln('SubstituteMacros missing name or missing round bracket open');
           end else begin
             // round bracket open found
             inc(p);
@@ -283,6 +285,7 @@ const
               p:=MacroStartPos+length(MacroValue);
             end else begin
               // macro parameter end not found
+              debugln('SubstituteMacros macro parameter end not found');
             end;
           end;
         end else begin

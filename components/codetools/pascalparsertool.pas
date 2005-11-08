@@ -69,6 +69,7 @@ type
                            //    e.g 'Do   ;' normally becomes 'Do;'
                            //    with this option you get 'Do ;')
     phpWithoutBrackets,    // skip start- and end-bracket of parameter list
+    phpWithoutSemicolon,   // skip semicolon at end
     // search attributes:
     phpIgnoreForwards,     // skip forward procs
     phpIgnoreProcsWithBody,// skip procs with begin..end
@@ -251,6 +252,7 @@ const
       'phpInUpperCase',
       'phpCommentsToSpace',
       'phpWithoutBrackets',
+      'phpWithoutSemicolon',
       // search attributes:
       'phpIgnoreForwards',
       'phpIgnoreProcsWithBody',
@@ -1110,7 +1112,7 @@ begin
               ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
           end;
         until false;
-        // read type
+        // read parameter type
         if CurPos.Flag=cafColon then begin
           if not Extract then
             ReadNextAtom
