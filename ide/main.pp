@@ -124,10 +124,8 @@ type
   TMainIDE = class(TMainIDEBase)
     // event handlers
 
-    //procedure FormShow(Sender: TObject);
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    //procedure FormPaint(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
     procedure OnApplicationActivate(Sender: TObject);
@@ -4509,11 +4507,12 @@ begin
         exit;
       end else begin
         NewComponent:=CInterface.Component;
-        //DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
+        DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
         AnUnitInfo.Component:=NewComponent;
         CreateDesignerForComponent(NewComponent);
         AnUnitInfo.ComponentName:=NewComponent.Name;
         AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
+        DesignerForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
 
         if not (ofProjectLoading in Flags) then begin
           FDisplayState:= dsForm;
@@ -4529,7 +4528,7 @@ begin
       end;
     end;
     {$IFDEF IDE_DEBUG}
-    writeln('[TMainIDE.DoLoadLFM] LFM end');
+    debugln('[TMainIDE.DoLoadLFM] LFM end');
     {$ENDIF}
   finally
     BinLFMStream.Free;
@@ -4635,6 +4634,8 @@ begin
   if (AForm=nil) then exit;
   if FLastFormActivated=AForm then
     FLastFormActivated:=nil;
+  //debugln('TMainIDE.CloseDesignerForm A ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot));
+    
   // unselect components
   for i:=LookupRoot.ComponentCount-1 downto 0 do
     TheControlSelection.Remove(LookupRoot.Components[i]);

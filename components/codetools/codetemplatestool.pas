@@ -40,7 +40,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeTree, CodeAtom, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, SourceChanger,
-  CustomCodeTool, CodeToolsStructs, StdCodeTools;
+  CustomCodeTool, PascalParserTool, CodeToolsStructs, StdCodeTools;
 
 type
   TCodeTemplateSyntax = (
@@ -110,12 +110,16 @@ type
     property Indent: integer read FIndent write SetIndent;
   end;
 
+  { TCodeTemplatesTool }
+
   TCodeTemplatesTool = class(TStandardCodeTool)
   public
     function InsertCodeTemplate(CursorPos,EndPos: TCodeXYPosition;
       TopLine: integer; CodeTemplate: TCodeToolTemplate;
       var NewPos: TCodeXYPosition; var NewTopLine: integer;
       SourceChangeCache: TSourceChangeCache): boolean;
+    function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+      Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
   end;
 
 implementation
@@ -247,6 +251,23 @@ begin
   finally
     NewText.Free;
   end;
+end;
+
+function TCodeTemplatesTool.ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+  Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  ProcHead:='';
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[]);
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,True);
+  while (ANode<>nil) and (ANode.Desc<>ctnProcedure) do
+    ANode:=ANode.Parent;
+  if ANode=nil then exit;
+  ProcHead:=ExtractProcHead(ANode,Attributes);
+  Result:=true;
 end;
 
 { TCodeToolTemplate }

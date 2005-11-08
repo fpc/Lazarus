@@ -39,8 +39,8 @@ type
   { TCodeMacroSelectDlg }
 
   TCodeMacroSelectDlg = class(TForm)
-    DescriptionLabel: TLabel;
     MacrosListBox: TListBox;
+    DescriptionMemo: TMemo;
     OkButton: TButton;
     CancelButton: TButton;
     MacrosGroupBox: TGroupBox;
@@ -108,9 +108,9 @@ begin
     FSelected:=nil;
   end;
   if FSelected<>nil then begin
-    DescriptionLabel.Caption:=FSelected.LongDescription;
+    DescriptionMemo.Text:=FSelected.LongDescription;
   end else begin
-    DescriptionLabel.Caption:=lisCTPleaseSelectAMacro;
+    DescriptionMemo.Text:=lisCTPleaseSelectAMacro;
   end;
 end;
 

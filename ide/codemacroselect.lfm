@@ -5,7 +5,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
   ClientWidth = 560
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 75
+  PixelsPerInch = 112
   HorzScrollBar.Page = 559
   VertScrollBar.Page = 274
   Left = 318
@@ -41,13 +41,13 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Height = 215
     Top = 10
     Width = 360
-    object DescriptionLabel: TLabel
+    object DescriptionMemo: TMemo
       Align = alClient
-      AutoSize = False
-      Caption = 'DescriptionLabel'
-      Color = clNone
-      ParentColor = False
-      WordWrap = True
+      Lines.Strings = (
+        'Memo1'
+      )
+      ReadOnly = True
+      TabOrder = 0
       Height = 198
       Width = 356
     end

@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  AVL_Tree, LFMTrees,
+  AVL_Tree, LFMTrees, PascalParserTool,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
@@ -303,8 +303,8 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
 
     // get code context
-    //function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
-    //      out CodeContext: TCodeContext): boolean;
+    function ExtractProcedureHeader(Code: TCodeBuffer; X,Y: integer;
+          Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
@@ -360,7 +360,7 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
           
-    // extract proc
+    // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
           var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
@@ -1430,6 +1430,29 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindMainDeclaration END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.ExtractProcedureHeader(Code: TCodeBuffer; X,
+  Y: integer; Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ExtractProcedureHeader A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.ExtractProcedureHeader(CursorPos,Attributes,ProcHead);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GatherIdentifiers END ');
   {$ENDIF}
 end;
 

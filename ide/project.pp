@@ -1490,6 +1490,8 @@ var
   OldProjectType: TOldProjectType;
   xmlconfig: TXMLConfig;
   SourceDirectoriesUpdated: Boolean;
+  SubPath: String;
+  NewUnitFilename: String;
 
   procedure LoadCompilerOptions;
   var
@@ -1602,10 +1604,18 @@ begin
       SourceDirectoriesUpdated:=false;
       NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
       for i := 0 to NewUnitCount - 1 do begin
+        SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
+        NewUnitFilename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
+        OnLoadSaveFilename(NewUnitFilename,true);
+        if IndexOfFilename(NewUnitFilename)>=0 then begin
+          // Doppelganger -> inconsistency found, ignore this file
+          debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
+          continue;
+        end;
+
         NewUnitInfo:=TUnitInfo.Create(nil);
         AddFile(NewUnitInfo,false);
-        NewUnitInfo.LoadFromXMLConfig(
-           xmlconfig,Path+'Units/Unit'+IntToStr(i)+'/');
+        NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath);
       end;
       UpdateSourceDirectories;
       SourceDirectoriesUpdated:=true;
