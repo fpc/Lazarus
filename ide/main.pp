@@ -4385,8 +4385,7 @@ begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
   // check installed packages
-  if (Flags*[ofProjectLoading,ofMultiOpen]=[]) and AnUnitInfo.IsPartOfProject
-  then begin
+  if AnUnitInfo.IsPartOfProject then begin
     // opening a single form of the project -> check installed packages
     Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1);
     if not (Result in [mrOk,mrIgnore]) then exit;
@@ -4524,6 +4523,9 @@ begin
           GlobalDesignHook.LookupRoot := NewComponent;
           TheControlSelection.AssignPersistent(NewComponent);
         end;
+        //DesignerForm.HandleNeeded;
+        LCLIntf.ShowWindow(DesignerForm.Handle,SW_SHOWNORMAL);
+
         FLastFormActivated:=DesignerForm;
       end;
     end;

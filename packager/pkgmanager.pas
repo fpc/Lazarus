@@ -2403,7 +2403,6 @@ begin
   Result:=mrOk;
   MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
                                               AProject.FirstRequiredDependency);
-  debugln('');
   if MissingUnits<>nil then begin
     Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
       #13, #13, #13, #13, #13, #13, #13, #13]);

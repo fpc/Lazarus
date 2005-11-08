@@ -710,6 +710,11 @@ begin
   AControlBounds:=Control.BoundsRect;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TAnchoredDockManager.InsertControl(Control: TControl;
+    InsertAt: TAlign; DropCtl: TControl);
+
+-------------------------------------------------------------------------------)
 procedure TAnchoredDockManager.InsertControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 var
