@@ -109,7 +109,7 @@ type
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
-    fOnUnitNameChange: TOnUnitNameChange;
+    FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
     FResourceFilename: string;
     FRunFileIfActive: boolean;
@@ -219,7 +219,7 @@ type
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
     property OnUnitNameChange: TOnUnitNameChange
-                                 read fOnUnitNameChange write fOnUnitNameChange;
+                                 read FOnUnitNameChange write FOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
     property ResourceFileName: string
                                  read FResourceFilename write FResourceFilename;
@@ -881,8 +881,8 @@ var Allowed:boolean;
 begin
   if (fUnitName<>NewUnitName) and (NewUnitName<>'') then begin
     Allowed:=true;
-    if Assigned(fOnUnitNameChange) then
-      fOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
+    if Assigned(FOnUnitNameChange) then
+      FOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
     // (ignore Allowed)
     if (fSource<>nil) then begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
