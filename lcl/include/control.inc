@@ -2897,7 +2897,11 @@ begin
     VisibleChanging;
     FVisible := Value;
     Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
-    RequestAlign;
+    Include(FControlFlags,cfRequestAlignNeeded);
+    if FVisible then
+      AdjustSize;
+    if cfRequestAlignNeeded in FControlFlags then
+      RequestAlign;
   end;
   if (csLoading in ComponentState) then
     ControlState:=ControlState+[csVisibleSetInLoading];
