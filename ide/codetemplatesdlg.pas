@@ -372,7 +372,7 @@ begin
     +'                      //  (default is to skip unnecessary space,'#13
     +'                      //    e.g ''Do   ;'' normally becomes ''Do;'''#13
     +'                      //    with this option you get ''Do ;'')'#13
-    +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13,
+    +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
     +'WithoutSemicolon,   // skip semicolon at end'#13,
     @CodeMakroProcedureHead,nil);
 end;

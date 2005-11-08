@@ -2054,20 +2054,13 @@ procedure TEnvironmentOptionsDialog.FormEditorPageResize(Sender: TObject);
 var
   w: Integer;
 begin
-  w:=(FormEditorPage.ClientWidth-4*5) div 3;
-  RubberbandGroupBox.Width:=w;
-  GuideLinesGroupBox.Width:=w;
+  w:=((FormEditorPage.ClientWidth-3*5)*6) div 10;
+  GridGroupBox.Width:=w;
+  FormEditMiscGroupBox.Width:=GridGroupBox.Width;
 end;
 
 procedure TEnvironmentOptionsDialog.FormResize(Sender: TObject);
-var
-  w: integer;
 begin
-  w := Round(Int((GridGroupBox.Width - 12) / 3));
-
-  RubberBandGroupBox.Width := w;
-  FormEditMiscGroupBox.Width := w;
-  GuideLinesGroupBox.Width := w;
 end;
 
 procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
