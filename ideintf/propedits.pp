@@ -5498,7 +5498,9 @@ begin
       Result:=TPropHookGetObjectName(FHandlers[htGetObject][i])(Instance);
   end else
     if Instance is TComponent then
-      Result:=TComponent(Instance).Name;
+      Result:=TComponent(Instance).Name
+    else if instance is TCollectionItem then 
+      Result:=TCollectionItem(Instance).DisplayName;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData:PTypeData;

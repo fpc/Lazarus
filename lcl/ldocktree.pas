@@ -715,7 +715,6 @@ end;
   procedure TAnchoredDockManager.InsertControl(Control: TControl;
     InsertAt: TAlign; DropCtl: TControl);
 
-<<<<<<< .mine
   Docks Control to or into DropCtl.
   Control.Parent must be nil.
 
