@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  SynEdit, MacroIntf, SrcEditorIntf;
+  SynEdit, MacroIntf, LazIDEIntf, SrcEditorIntf;
 
 type
   TCodeMacroPromptDlg = class(TForm)
@@ -75,6 +75,7 @@ begin
   if copy(Pattern,1,length(CodeTemplateMakroMagic))=CodeTemplateMakroMagic
   then begin
     // macros enabled
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
     
     // remove first line (i.e. macro enabled flag)
     Pattern:=TemplateValue;

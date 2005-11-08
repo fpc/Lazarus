@@ -126,6 +126,9 @@ type
        TryWithoutNumber: boolean): string; virtual; abstract;
        
     function SubstituteMakros(var s: string): boolean; virtual; abstract;
+
+    procedure DoJumpToCodeToolBossError; virtual; abstract;
+    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
 

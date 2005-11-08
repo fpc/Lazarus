@@ -201,8 +201,6 @@ type
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         AddJumpPoint: boolean): TModalResult; virtual; abstract;
-    procedure DoJumpToCodeToolBossError; virtual; abstract;
-    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
 
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;

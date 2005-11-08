@@ -693,6 +693,7 @@ resourcestring
   lisLazDoc = 'LazDoc';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
+  lisCTPleaseSelectAMacro = 'please select a macro';
   lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto save';
@@ -1847,6 +1848,7 @@ resourcestring
   lisTodoListPrintList='Print todo items';
   lisToDoListOptions='ToDo options...';
   lisToDoLDescription = 'Description';
+  lisCTInsertMacro = 'Insert Macro';
   lisToDoLFile = 'File';
   lisToDoLLine = 'Line';
   
@@ -2877,6 +2879,7 @@ resourcestring
   lisLazDocExampleTag = 'Example';
   lisLazDocBrowseExampleButton = 'Browse';
   lisEnableMakros = 'Enable Makros';
+  lisCTSelectCodeMacro = 'Select Code Macro';
   
 implementation
 end.

@@ -31,39 +31,100 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, SrcEditorIntf;
+  Buttons, SrcEditorIntf, IDEWindowIntf,
+  InputHistory , LazarusIDEStrConsts;
 
 type
 
   { TCodeMacroSelectDlg }
 
   TCodeMacroSelectDlg = class(TForm)
+    DescriptionLabel: TLabel;
     MacrosListBox: TListBox;
     OkButton: TButton;
     CancelButton: TButton;
     MacrosGroupBox: TGroupBox;
     DescriptionGroupBox: TGroupBox;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure MacrosListBoxSelectionChange(Sender: TObject; User: boolean);
   private
-    { private declarations }
+    FSelected: TIDECodeMacro;
+    procedure FillMacrosListbox;
   public
-    { public declarations }
-  end; 
+    property Selected: TIDECodeMacro read FSelected;
+  end;
 
-var
-  CodeMacroSelectDlg: TCodeMacroSelectDlg;
+
+function ShowCodeMacroSelectDialog: TIDECodeMacro;
 
 implementation
+
+function ShowCodeMacroSelectDialog: TIDECodeMacro;
+var
+  CodeMacroSelectDlg: TCodeMacroSelectDlg;
+begin
+  CodeMacroSelectDlg:=TCodeMacroSelectDlg.Create(nil);
+  if CodeMacroSelectDlg.ShowModal=mrOk then begin
+    Result:=CodeMacroSelectDlg.Selected;
+  end else begin
+    Result:=nil;
+  end;
+  CodeMacroSelectDlg.Free;
+end;
 
 { TCodeMacroSelectDlg }
 
 procedure TCodeMacroSelectDlg.FormCreate(Sender: TObject);
 begin
-  Caption:='Select Code Macro';
-  MacrosGroupBox.Caption:='Macros';
-  DescriptionGroupBox.Caption:='Description';
-  OkButton.Caption:='Insert Macro';
-  CancelButton.Caption:='Cancel';
+  IDEDialogLayoutList.ApplyLayout(Self,550,250);
+
+  Caption:=lisCTSelectCodeMacro;
+  MacrosGroupBox.Caption:=lisEdtExtToolMacros;
+  DescriptionGroupBox.Caption:=lisToDoLDescription;
+  OkButton.Caption:=lisCTInsertMacro;
+  CancelButton.Caption:=dlgCancel;
+  
+  FillMacrosListbox;
+end;
+
+procedure TCodeMacroSelectDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TCodeMacroSelectDlg.MacrosListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+var
+  i: LongInt;
+  MacroName: string;
+begin
+  i:=MacrosListBox.ItemIndex;
+  if (i>=0) then begin
+    MacroName:=MacrosListBox.Items[i];
+    FSelected:=IDECodeMacros.FindByName(MacroName);
+  end else begin
+    FSelected:=nil;
+  end;
+  if FSelected<>nil then begin
+    DescriptionLabel.Caption:=FSelected.LongDescription;
+  end else begin
+    DescriptionLabel.Caption:=lisCTPleaseSelectAMacro;
+  end;
+end;
+
+procedure TCodeMacroSelectDlg.FillMacrosListbox;
+var
+  i: Integer;
+begin
+  with MacrosListBox.Items do begin
+    BeginUpdate;
+    Clear;
+    for i:=0 to IDECodeMacros.Count-1 do
+      Add(IDECodeMacros[i].Name);
+    EndUpdate;
+  end;
 end;
 
 initialization

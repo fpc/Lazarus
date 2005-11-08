@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus,
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
-  IDECommands, TextTools, SrcEditorIntf, MenuIntf,
+  IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf,
   InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
 
 type
@@ -43,6 +43,7 @@ type
 
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
+    InsertMacroButton: TButton;
     UseMakrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
@@ -61,7 +62,9 @@ type
     procedure DeleteButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure FilenameButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure InsertMacroButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure OnCopyMenuItem(Sender: TObject);
     procedure OnCutMenuItem(Sender: TObject);
@@ -72,6 +75,7 @@ type
     SynAutoComplete: TSynEditAutoComplete;
     LastTemplate: integer;
     procedure BuildPopupMenu;
+    procedure DoInsertMacro;
   public
     procedure FillCodeTemplateListBox;
     procedure ShowCurCodeTemplate;
@@ -130,6 +134,10 @@ function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMakroProcedureHead(const Parameter: string;
+                        InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 
@@ -231,6 +239,14 @@ begin
   Result:=true;
 end;
 
+function CodeMakroProcedureHead(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+begin
+
+  Result:=true;
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -255,6 +271,31 @@ begin
                     @CodeMakroLower,nil);
   RegisterCodeMacro('Paste','paste clipboard',
                     'Paste text from clipboard',
+                    @CodeMakroPaste,nil);
+  RegisterCodeMacro('ProcedureHead','insert procedure head',
+                    'Insert header of current procedure'#13
+                    +'Optional Parameters (comma separated):'#13
+    +'WithStart,          // proc keyword e.g. ''function'', ''class procedure'''#13
+    +'WithoutClassKeyword,// without ''class'' proc keyword'#13
+    +'AddClassName,       // extract/add ClassName.'#13
+    +'WithoutClassName,   // skip classname'#13
+    +'WithoutName,        // skip function name'#13
+    +'WithoutParamList,   // skip param list'#13
+    +'WithVarModifiers,   // extract ''var'', ''out'', ''const'''#13
+    +'WithParameterNames, // extract parameter names'#13
+    +'WithoutParamTypes,  // skip colon, param types and default values'#13
+    +'WithDefaultValues,  // extract default values'#13
+    +'WithResultType,     // extract colon + result type'#13
+    +'WithOfObject,       // extract ''of object'''#13
+    +'WithCallingSpecs,   // extract cdecl; inline;'#13
+    +'WithProcModifiers,  // extract forward; alias; external;'#13
+    +'WithComments,       // extract comments and spaces'#13
+    +'InUpperCase,        // turn to uppercase'#13
+    +'CommentsToSpace,    // replace comments with a single space'#13
+    +'                      //  (default is to skip unnecessary space,'#13
+    +'                      //    e.g ''Do   ;'' normally becomes ''Do;'''#13
+    +'                      //    with this option you get ''Do ;'')'#13
+    +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13,
                     @CodeMakroPaste,nil);
 end;
 
@@ -403,6 +444,8 @@ var
   s: String;
   ColorScheme: String;
 begin
+  IDEDialogLayoutList.ApplyLayout(Self,600,450);
+
   SynAutoComplete:=TSynEditAutoComplete.Create(Self);
   LastTemplate:=-1;
 
@@ -454,6 +497,11 @@ begin
   BuildPopupMenu;
 end;
 
+procedure TCodeTemplateDialog.InsertMacroButtonClick(Sender: TObject);
+begin
+  DoInsertMacro;
+end;
+
 procedure TCodeTemplateDialog.OkButtonClick(Sender: TObject);
 var
   Res: TModalResult;
@@ -496,7 +544,7 @@ end;
 
 procedure TCodeTemplateDialog.OnInsertMacroMenuItem(Sender: TObject);
 begin
-
+  DoInsertMacro;
 end;
 
 procedure TCodeTemplateDialog.OnPasteMenuItem(Sender: TObject);
@@ -575,6 +623,12 @@ begin
   end;
 end;
 
+procedure TCodeTemplateDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TCodeTemplateDialog.TemplateListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
@@ -598,17 +652,31 @@ begin
   PopupMenu:=MainPopupMenu;
 end;
 
-procedure TCodeTemplateDialog.FillCodeTemplateListBox;
-var a:integer;
+procedure TCodeTemplateDialog.DoInsertMacro;
+var
+  Macro: TIDECodeMacro;
 begin
-  with TemplateListBox do begin
-    Items.BeginUpdate;
-    Items.Clear;
+  Macro:=ShowCodeMacroSelectDialog;
+  if Macro<>nil then begin
+    TemplateSynEdit.SelText:='$'+Macro.Name+'()';
+  end;
+end;
+
+procedure TCodeTemplateDialog.FillCodeTemplateListBox;
+var
+  a: integer;
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
     for a:=0 to SynAutoComplete.Completions.Count-1 do begin
-      Items.Add(SynAutoComplete.Completions[a]
+      sl.Add(SynAutoComplete.Completions[a]
           +' - "'+SynAutoComplete.CompletionComments[a]+'"');
     end;
-    Items.EndUpdate;
+    sl.Sort;
+    TemplateListBox.Items.Assign(sl);
+  finally
+    sl.Free;
   end;
 end;
 
@@ -632,9 +700,18 @@ var
 begin
   EnableMakros:=false;
   LineCount:=0;
+  i:=TemplateListBox.ItemIndex;
+  // search template
+  if i>=0 then begin
+    s:=TemplateListBox.Items[i];
+    sp:=Pos(' ',s);
+    if sp>0 then
+      s:=copy(s,1,sp-1);
+    i:=SynAutoComplete.Completions.IndexOf(s);
+  end;
+  
   TemplateSynEdit.Lines.BeginUpdate;
   TemplateSynEdit.Lines.Clear;
-  i:=TemplateListBox.ItemIndex;
   //debugln('TCodeTemplateDialog.ShowCurCodeTemplate A i=',dbgs(i));
   if i>=0 then begin
     LastTemplate:=-1;

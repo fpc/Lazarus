@@ -1,46 +1,56 @@
 object CodeMacroSelectDlg: TCodeMacroSelectDlg
   ActiveControl = MacrosListBox
   Caption = 'CodeMacroSelectDlg'
-  ClientHeight = 261
-  ClientWidth = 400
+  ClientHeight = 275
+  ClientWidth = 560
+  OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 112
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 260
+  PixelsPerInch = 75
+  HorzScrollBar.Page = 559
+  VertScrollBar.Page = 274
   Left = 318
-  Height = 261
+  Height = 275
   Top = 200
-  Width = 400
+  Width = 560
   object MacrosGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'MacrosGroupBox'
-    ClientHeight = 184
+    ClientHeight = 198
     ClientWidth = 166
-    ParentColor = True
     TabOrder = 0
     Left = 10
-    Height = 201
+    Height = 215
     Top = 10
     Width = 170
     object MacrosListBox: TListBox
       Align = alClient
+      OnSelectionChange = MacrosListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
-      Height = 184
+      Height = 198
       Width = 166
     end
   end
   object DescriptionGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'DescriptionGroupBox'
-    ClientHeight = 184
-    ClientWidth = 196
-    ParentColor = True
+    ClientHeight = 198
+    ClientWidth = 356
     TabOrder = 1
     Left = 190
-    Height = 201
+    Height = 215
     Top = 10
-    Width = 200
+    Width = 360
+    object DescriptionLabel: TLabel
+      Align = alClient
+      AutoSize = False
+      Caption = 'DescriptionLabel'
+      Color = clNone
+      ParentColor = False
+      WordWrap = True
+      Height = 198
+      Width = 356
+    end
   end
   object OkButton: TButton
     Anchors = [akTop, akRight]
@@ -53,9 +63,9 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     AnchorSideTop.Control = CancelButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = CancelButton
-    Left = 234
+    Left = 394
     Height = 26
-    Top = 221
+    Top = 235
     Width = 61
   end
   object CancelButton: TButton
@@ -65,9 +75,9 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 3
-    Left = 305
+    Left = 465
     Height = 26
-    Top = 221
+    Top = 235
     Width = 85
   end
 end

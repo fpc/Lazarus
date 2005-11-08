@@ -652,9 +652,9 @@ begin
   // find variable name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     VarNameAtom.StartPos,VarNameAtom.EndPos);
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
   if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
-  MoveCursorToCleanPos(VarNameAtom.StartPos);
-  ReadNextAtom;
+  MoveCursorToAtomPos(VarNameAtom);
   if AtomIsKeyWord then exit;
   
   // find assignment operator
@@ -2473,6 +2473,10 @@ var CleanCursorPos, Indent, insertPos: integer;
         BuildSubTreeForBeginBlock(CursorNode);
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
       // read event name (optional)
+      
+      while (CleanCursorPos<SrcLen)
+      and (Src[CleanCursorPos] in [':','=',' ',#9]) do
+        inc(CleanCursorPos);
       GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                  UserEventAtom.StartPos,UserEventAtom.EndPos);
       MoveCursorToAtomPos(UserEventAtom);
@@ -2765,7 +2769,7 @@ begin
   while (CleanCursorPos>1) and (Src[CleanCursorPos] in [#10,#13]) do
     dec(CleanCursorPos);
   // skip space (first try left)
-  while (CleanCursorPos>1) and (Src[CleanCursorPos-1] in [' ',#9,';']) do
+  while (CleanCursorPos>1) and (Src[CleanCursorPos] in [' ',#9,';']) do
     dec(CleanCursorPos);
   if (CleanCursorPos>0) and (CleanCursorPos<SrcLen)
   and (Src[CleanCursorPos] in [#10,#13]) then begin
