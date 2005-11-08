@@ -18,12 +18,15 @@
 unit registersqldb;
 
 {$mode objfpc}{$H+}
+{$IFNDEF ver2_0_0}{$IFNDEF ver2_0_1}
+  {$DEFINE HASODBCCONNECTION}
+{$ENDIF}{$ENDIF}
 
 interface
 
 uses
   Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection, mysql4conn,
-{$IFNDEF ver2_0_0}
+{$IFDEF HASODBCCONNECTION}
   odbcconn,
 {$ENDIF}
   LazarusPackageIntf;
@@ -37,7 +40,7 @@ begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
 			      TIBConnection,
-{$IFNDEF ver2_0_0}
+{$IFDEF HASODBCCONNECTION}
                               TODBCConnection,	
 {$ENDIF}
 
