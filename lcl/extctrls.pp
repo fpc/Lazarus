@@ -705,6 +705,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
+    property TabOrder;
     property Visible;
   end;
 
@@ -787,6 +788,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
+    property TabOrder;
     property Visible;
   end;
 
