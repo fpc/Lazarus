@@ -1,3 +1,4 @@
+{  $Id$  }
 {
  *****************************************************************************
  *                                                                           *
@@ -1619,7 +1620,6 @@ begin
                                       ErrMsg);
     if Result<>shrSuccess then exit;
 
-    debugln('THelpDatabases.ShowHelpForPascalContexts B Nodes.Count=',dbgs(Nodes.Count));
     // check if at least one node found
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrHelpNotFound;
@@ -1627,6 +1627,7 @@ begin
         [Query.SourcePosition.y, Query.SourcePosition.x, Query.Filename]);
       exit;
     end;
+    debugln('THelpDatabases.ShowHelpForPascalContexts B Nodes.Count=',dbgs(Nodes.Count));
 
     Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
