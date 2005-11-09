@@ -38,13 +38,14 @@ type
   private
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
-    FDirectInput : Boolean;
     FOnButtonClick : TNotifyEvent;
     function GetButtonWidth: Integer;
+    function GetDirectInput: Boolean;
     function GetFlat: Boolean;
     Procedure CheckButtonVisible;
     procedure SetButtonNeedsFocus(const AValue: Boolean);
     procedure SetButtonWidth(const AValue: Integer);
+    procedure SetDirectInput(const AValue: Boolean);
     procedure SetFlat(const AValue: Boolean);
     procedure SetGlyph(Pic: TBitmap);
     function GetGlyph : TBitmap;
@@ -64,7 +65,7 @@ type
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     // New properties.
     Property ButtonWidth : Integer Read GetButtonWidth write SetButtonWidth;
-    property DirectInput : Boolean read FDirectInput write FDirectInput Default True;
+    property DirectInput : Boolean read GetDirectInput write SetDirectInput stored False Default True;
     property Glyph : TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
     property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
@@ -461,7 +462,6 @@ begin
   FButton.Cursor := crArrow;
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   ControlStyle := ControlStyle - [csSetCaption];
-  FDirectInput := True;
 end;
 
 destructor TCustomEditButton.Destroy;
@@ -479,6 +479,11 @@ end;
 function TCustomEditButton.GetButtonWidth: Integer;
 begin
   Result:=FButton.Width;
+end;
+
+function TCustomEditButton.GetDirectInput: Boolean;
+begin
+  Result := not ReadOnly;
 end;
 
 function TCustomEditButton.GetFlat: Boolean;
@@ -508,6 +513,11 @@ end;
 procedure TCustomEditButton.SetButtonWidth(const AValue: Integer);
 begin
   FButton.Width:=AValue;
+end;
+
+procedure TCustomEditButton.SetDirectInput(const AValue: Boolean);
+begin
+  ReadOnly := not AValue;
 end;
 
 procedure TCustomEditButton.SetFlat(const AValue: Boolean);
