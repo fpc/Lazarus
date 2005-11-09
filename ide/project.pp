@@ -113,6 +113,7 @@ type
     FProject: TProject;
     FResourceFilename: string;
     FRunFileIfActive: boolean;
+    FSessionModified: boolean;
     fSource: TCodeBuffer;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
@@ -214,7 +215,8 @@ type
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
-    property Modified: boolean read fModified write fModified;
+    property Modified: boolean read fModified write fModified;// not Session data
+    property SessionModified: boolean read FSessionModified write FSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
@@ -392,7 +394,6 @@ type
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
     fMainUnitID: Integer;
-    fModified: boolean;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
@@ -428,7 +429,6 @@ type
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetTargetFilename(const NewTargetFilename: string);
-    procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
     procedure UpdateSourceDirectories;
@@ -438,11 +438,11 @@ type
     function GetMainFileID: Integer; override;
     procedure SetMainFileID(const AValue: Integer); override;
     function GetFiles(Index: integer): TLazProjectFile; override;
-    procedure SetFiles(Index: integer; const AValue: TLazProjectFile); override;
     procedure SetFlags(const AValue: TProjectFlags); override;
     function GetProjectInfoFile: string; override;
     procedure SetProjectInfoFile(const NewFilename: string); override;
     procedure SetModified(const AValue: boolean); override;
+    procedure SetSessionModified(const AValue: boolean); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -459,10 +459,11 @@ type
     procedure Clear;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
+    procedure UnitModified(AnUnitInfo: TUnitInfo);
 
     // load/save
     function IsVirtual: boolean;
-    function SomethingModified: boolean;
+    function SomethingModified(CheckData, CheckSession: boolean): boolean;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
     function ReadProject(const LPIFilename: string): TModalResult;
@@ -602,10 +603,8 @@ type
     property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
-    property Units[Index: integer]: TUnitInfo read GetUnits write SetUnits;
+    property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
-      //lazdoc
-    property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
   end;
 
 const
@@ -787,6 +786,7 @@ begin
   FIgnoreFileDateOnDiskValid:=false;
   inherited SetIsPartOfProject(false);
   fModified := false;
+  FSessionModified := false;
   FRunFileIfActive:=false;
   fSyntaxHighlighter := lshText;
   fTopLine := -1;
@@ -889,7 +889,7 @@ begin
     end;
     fUnitName:=NewUnitName;
     Modified:=true;
-    if Project<>nil then Project.Modified:=true;
+    if (Project<>nil) then Project.UnitModified(Self);
   end;
 end;
 
@@ -1086,7 +1086,7 @@ begin
   NewSource:=Beautified(
                   Descriptor.CreateSource(Filename,NewUnitName,fComponentName));
   fSource.Source:=NewSource;
-  fModified:=true;
+  Modified:=true;
 end;
 
 function TUnitInfo.GetHasResources:boolean;
@@ -1259,7 +1259,6 @@ begin
   FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
   FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
   fMainUnitID := -1;
-  fModified := false;
   fProjectInfoFile := '';
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
@@ -1446,6 +1445,8 @@ begin
       InvalidateFileStateCache;
       xmlconfig.Flush;
       Modified:=false;
+      SessionModified:=false;
+      
       Result:=mrOk;
     except
       on E: Exception do begin
@@ -1703,7 +1704,7 @@ begin
     end;
   end;
   EndUpdate;
-  Modified:=true;
+  UnitModified(AnUnit);
 end;
 
 {------------------------------------------------------------------------------
@@ -1722,7 +1723,7 @@ begin
   
   BeginUpdate(true);
   OldUnitInfo:=Units[Index];
-  Modified:=true;
+  UnitModified(OldUnitInfo);
 
   if (MainUnitID>=0) then begin
     // remove unit from uses section and from createforms in program file
@@ -1792,7 +1793,8 @@ begin
   fIconPath := '';
   FJumpHistory.Clear;
   fMainUnitID := -1;
-  fModified := false;
+  Modified := false;
+  SessionModified := false;
   fProjectInfoFile := '';
   FSourceDirectories.Clear;
   UpdateProjectDirectory;
@@ -1823,6 +1825,14 @@ begin
   end;
 end;
 
+procedure TProject.UnitModified(AnUnitInfo: TUnitInfo);
+begin
+  if AnUnitInfo.IsPartOfProject then
+    Modified:=true
+  else
+    SessionModified:=true;
+end;
+
 function TProject.GetUnits(Index:integer):TUnitInfo;
 begin
   Result:=TUnitInfo(FUnitList[Index]);
@@ -1848,25 +1858,20 @@ begin
   Result:=Units[Index];
 end;
 
-procedure TProject.SetFiles(Index: integer; const AValue: TLazProjectFile);
-begin
-  Units[Index]:=AValue as TUnitInfo;
-end;
-
 procedure TProject.SetModified(const AValue: boolean);
 begin
   if AValue=Modified then exit;
   inherited SetModified(AValue);
-  if not Modified then PublishOptions.Modified:=false;
+  if not Modified then begin
+    PublishOptions.Modified:=false;
+    CompilerOptions.Modified:=false;
+  end;
 end;
 
-procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
+procedure TProject.SetSessionModified(const AValue: boolean);
 begin
-  if AUnitInfo<>TUnitInfo(FUnitList[Index]) then begin
-    FUnitList[Index]:=AUnitInfo;
-    Modified:=true;
-    if AUnitInfo<>nil then AUnitInfo.Project:=Self;
-  end;
+  if AValue=SessionModified then exit;
+  inherited SetSessionModified(AValue);
 end;
 
 function TProject.UnitCount:integer;
@@ -2162,7 +2167,7 @@ begin
       Bookmarks[i].EditorIndex:=Bookmarks[i].EditorIndex-1;
     dec(i);
   end;
-  Modified:=true;
+  SessionModified:=true;
 end;
 
 procedure TProject.InsertEditorIndex(EditorIndex:integer);
@@ -2189,7 +2194,7 @@ begin
     Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
     dec(i);
   end;
-  Modified:=true;
+  SessionModified:=true;
 end;
 
 procedure TProject.MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
@@ -2232,7 +2237,7 @@ begin
     Bookmarks[i].EditorIndex:=MoveIndex(Bookmarks[i].EditorIndex);
     dec(i);
   end;
-  Modified:=true;
+  SessionModified:=true;
 end;
 
 procedure TProject.AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
@@ -2676,12 +2681,24 @@ begin
   Result:=(i>=0) and (Units[i].EditorIndex>=0);
 end;
 
-function TProject.SomethingModified: boolean;
+function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
 var i: integer;
 begin
-  Result:=Modified or SessionModified;
-  for i:=0 to UnitCount-1 do Result:=Result or Units[i].Modified;
-  Result:=Result or CompilerOptions.Modified;
+  Result:=true;
+  if CheckData then begin
+    if Modified then exit;
+    if CompilerOptions.Modified then exit;
+    for i:=0 to UnitCount-1 do
+      if (Units[i].IsPartOfProject) and Units[i].Modified then exit;
+  end;
+  if CheckSession then begin
+    if SessionModified then exit;
+    for i:=0 to UnitCount-1 do begin
+      if Units[i].SessionModified then exit;
+      if (not Units[i].IsPartOfProject) and Units[i].Modified then exit;
+    end;
+  end;
+  Result:=false;
 end;
 
 procedure TProject.MainSourceFilenameChanged;

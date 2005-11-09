@@ -2880,6 +2880,8 @@ resourcestring
   lisLazDocBrowseExampleButton = 'Browse';
   lisEnableMakros = 'Enable Makros';
   lisCTSelectCodeMacro = 'Select Code Macro';
+  lisPDProgress = 'Progress';
+  lisPDAbort = 'Abort';
   
 implementation
 end.

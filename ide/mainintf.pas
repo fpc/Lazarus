@@ -69,7 +69,7 @@ uses
   ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   LazIDEIntf,
   ComponentReg,
-  TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView,
+  TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView, ProgressDlg,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
 
@@ -208,6 +208,9 @@ type
     function GetPrimaryConfigPath: String; override;
     function GetSecondaryConfigPath: String; override;
     procedure CopySecondaryConfigFile(const AFilename: String); override;
+
+    function ShowProgress(const SomeText: string;
+                          Step, MaxStep: integer): boolean; override;
   end;
 
 var
@@ -377,6 +380,12 @@ end;
 procedure TMainIDEInterface.CopySecondaryConfigFile(const AFilename: String);
 begin
   LazConf.CopySecondaryConfigFile(AFilename);
+end;
+
+function TMainIDEInterface.ShowProgress(const SomeText: string; Step,
+  MaxStep: integer): boolean;
+begin
+  Result:=ProgressDlg.ShowProgress(SomeText,Step,MaxStep);
 end;
 
 { TFileDescPascalUnitWithForm }

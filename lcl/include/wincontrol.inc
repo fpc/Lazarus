@@ -1570,7 +1570,7 @@ begin
   begin
     Control := Self;
     repeat
-      if not (Control.IsVisible and Control.Enabled) then Exit;
+      if not (Control.IsControlVisible and Control.Enabled) then Exit;
       if Control = Form then break;
       Control := Control.Parent;
     until false;

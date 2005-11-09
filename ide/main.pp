@@ -7098,7 +7098,8 @@ end;
 function TMainIDE.SomethingOfProjectIsModified: boolean;
 begin
   Result:=(Project1<>nil)
-      and (Project1.SomethingModified or SourceNotebook.SomethingModified);
+      and (Project1.SomethingModified(true,true)
+           or SourceNotebook.SomethingModified);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;

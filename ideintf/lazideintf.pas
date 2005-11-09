@@ -129,9 +129,11 @@ type
 
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
+    
+    function ShowProgress(const SomeText: string;
+                          Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
   public
     property ActiveProject: TLazProject read GetActiveProject;
-
   end;
   
 var

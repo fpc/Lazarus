@@ -481,12 +481,11 @@ type
 
   { TLazProject - interface class to a Lazarus project }
 
-  { TLazProject }
-
   TLazProject = class(TPersistent)
   private
     FLazCompilerOptions: TLazCompilerOptions;
     fModified: boolean;
+    FProjectSessionFile: string;
     FSessionModified: boolean;
     fTitle: String;
     FSessionStorage: TProjectSessionStorage;
@@ -498,11 +497,11 @@ type
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
-    procedure SetFiles(Index: integer; const AValue: TLazProjectFile); virtual; abstract;
     procedure SetTitle(const AValue: String); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     function GetProjectInfoFile: string; virtual; abstract;
     procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
+    procedure SetProjectSessionFile(const AValue: string); virtual;
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); virtual;
     procedure SetModified(const AValue: boolean); virtual;
     procedure SetSessionModified(const AValue: boolean); virtual;
@@ -520,7 +519,7 @@ type
     function ShortDescription: string;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
-    property Files[Index: integer]: TLazProjectFile read GetFiles write SetFiles;
+    property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read fTitle write SetTitle;
@@ -529,12 +528,17 @@ type
                                                      write SetLazCompilerOptions;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
+    property ProjectSessionFile: string
+                           read FProjectSessionFile write SetProjectSessionFile;
     property SessionStorage: TProjectSessionStorage read FSessionStorage
                                                     write SetSessionStorage;
     property Modified: boolean read fModified
-                       write SetModified; // project data (not units, session)
+                       write SetModified; // project data (not units, session),
+                                          // units have their own Modified
     property SessionModified: boolean read FSessionModified
-                       write SetSessionModified; // project session data (not units, data)
+                       write SetSessionModified;
+                       // project session data (not units, data),
+                       // units have their own SessionModified
     property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
   end;
 
@@ -990,6 +994,13 @@ procedure TLazProject.SetSessionModified(const AValue: boolean);
 begin
   if FSessionModified=AValue then exit;
   FSessionModified:=AValue;
+end;
+
+procedure TLazProject.SetProjectSessionFile(const AValue: string);
+begin
+  if FProjectSessionFile=AValue then exit;
+  FProjectSessionFile:=AValue;
+  SessionModified:=true;
 end;
 
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);

@@ -1150,12 +1150,17 @@ Begin
   begin
     if not
       ((AWinControl = nil)
-      or (AWinControl <> Self) and (GetParentForm(AWinControl) = Self)
-        and ((csLoading in ComponentState) or not (Visible and Enabled)
-          or AWinControl.CanFocus))
-    then
+      or ((AWinControl <> Self)
+          and (GetParentForm(AWinControl) = Self)
+          and ((csLoading in ComponentState)
+               or AWinControl.CanFocus)))
+    then begin
+      {$IFDEF VerboseFocus}
       RaiseGDBException(SCannotFocus);
-      // EInvalidOperation.Create(SCannotFocus);
+      {$ELSE}
+      EInvalidOperation.Create(SCannotFocus);
+      {$ENDIF}
+    end;
     {$IFDEF VerboseFocus}
     DbgOut('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',DbgS(FActive));
     if FActiveControl<>nil then

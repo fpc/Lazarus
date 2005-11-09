@@ -294,7 +294,7 @@ type
     function GetPreviousToken(aEditor: TCustomSynEdit): string;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor destroy; override;
+    destructor Destroy; override;
     procedure Execute(token: string; aEditor: TCustomSynEdit);
     property Editors[i: integer]: TCustomSynEdit read GetEditor;
     procedure AddEditor(aEditor: TCustomSynEdit);
@@ -1423,10 +1423,6 @@ var
   ShortCutShift: TShiftState;
 begin
   ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
-//inserted by shane
-  ShortCutKey := word(' ');
-  ShortCutShift := [ssCtrl];
-//shane
 
   i := fEditors.IndexOf(Sender);
   if i <> -1 then begin
