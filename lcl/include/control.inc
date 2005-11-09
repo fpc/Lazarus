@@ -2412,13 +2412,15 @@ procedure TControl.Loaded;
 begin
   inherited Loaded;
   {DebugLn('TControl.Loaded A ',Name,':',ClassName,
-    ' CW=',cfClientWidthLoaded in FControlFlags,'=',FLoadedClientSize.X,
-    ' CH=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
+    ' CW=',DbgS(cfClientWidthLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.X),
+    ' CH=',DbgS(cfClientHeightLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.Y),
     '');}
     
-  if ParentColor then
+  if ParentColor then begin
     Color := Parent.Color;
-    
+    ParentColor := true;
+  end;
+
   UpdateBaseBounds(true,true,true);
 
   // align this control and the brothers

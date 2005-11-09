@@ -2474,9 +2474,9 @@ begin
   begin
     TWSWinControlClass(WidgetSetClass).SetColor(Self);
     Exclude(FWinControlFlags,wcfColorChanged);
-    NotifyControls(CM_PARENTCOLORCHANGED);
   end else
     Include(FWinControlFlags,wcfColorChanged);
+  NotifyControls(CM_PARENTCOLORCHANGED);
 end;
 
 procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
@@ -4877,6 +4877,7 @@ begin
 
     if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then begin
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
+      NotifyControls(CM_PARENTCOLORCHANGED);
       FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
     end;
   end;
