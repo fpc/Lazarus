@@ -1778,8 +1778,14 @@ procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer
   end;
   procedure FixSelection;
   begin
-    if FRow > FRows.Count - 1 then FRow := FRows.Count - 1;
-    if FCol > FCols.Count - 1 then FCol := FCols.Count - 1;
+    if FRow > FRows.Count - 1 then
+      FRow := FRows.Count - 1
+    else if (FRow < FixedRows) and (FixedRows<FRows.Count) then
+      FRow := FixedRows;
+    if FCol > FCols.Count - 1 then
+      FCol := FCols.Count - 1
+    else if (FCol < FixedCols) and (FixedCols<FCols.Count) then
+      FCol := FixedCols;
     UpdateSelectionRange;
   end;
   procedure FixTopLeft;
@@ -5158,7 +5164,7 @@ end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;
 begin
-  Result:=(goEditing in Options)and(goAlwaysShowEditor in Options);
+  Result:=(goEditing in Options)and(goAlwaysShowEditor in Options)and not FixedGrid;
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
