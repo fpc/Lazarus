@@ -234,6 +234,7 @@ type
     property Layout;
     property Margin;
     property ModalResult;
+    property NumGlyphs;
     property OnChangeBounds;
     property OnClick;
     property OnEnter;
