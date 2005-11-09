@@ -262,6 +262,10 @@ msgstr "Un paquet requis n'a pas été trouvé. Voir le graphique des paquets."
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Un outil a besoin au minimum d'un titre et d'un nom de fichier."
 
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Arrêter la construction"
@@ -3214,6 +3218,10 @@ msgstr "Insérer la notice LGPL"
 msgid "Insert Lazarus Directory Template"
 msgstr "Insérer un modèle répertoire Lazarus"
 
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Mode insertion"
@@ -4978,6 +4986,10 @@ msgstr "Programme%sUn programme FreePascal. Le fichier source du programme est a
 msgid "Programfilename:"
 msgstr "Fichier du programme"
 
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
 msgstr "Projet"
@@ -5773,6 +5785,10 @@ msgstr "Sélectionner"
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
 msgstr "Tout sélectionner"
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -8161,6 +8177,10 @@ msgstr "fichier source principal du paquet"
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
 msgstr "suspendre le programme"
+
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "

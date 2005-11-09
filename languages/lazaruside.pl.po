@@ -261,6 +261,10 @@ msgstr "Nie znalazłem wymaganego pakietu. Spójrz na listę pakietów."
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Poprawny wois narzędzia wymaga przynajmniej nazwy i nazwy pliku."
 
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Przerwij budowanie"
@@ -3213,6 +3217,10 @@ msgstr "Wstaw informację o licencji LGPL"
 msgid "Insert Lazarus Directory Template"
 msgstr "Katalog Lazarus"
 
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Tryb wstawiania"
@@ -4977,6 +4985,10 @@ msgstr ""
 msgid "Programfilename:"
 msgstr "Nazwa pliku programu:"
 
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
 msgstr "Projekt"
@@ -5771,6 +5783,10 @@ msgstr "Zaznacz"
 
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
+msgstr ""
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
 msgstr ""
 
 #: lazarusidestrconsts:lisselectdfmfiles
@@ -8160,6 +8176,10 @@ msgstr "główny plik źródłowy pakietu"
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
 msgstr "przerwij działanie programu"
+
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "

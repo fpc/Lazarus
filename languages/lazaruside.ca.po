@@ -250,6 +250,10 @@ msgstr "No s'ha trobat un paquet necessari. Mireu-vos la gràfica dels paquets"
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Una eina vàlida necessita al menys, títol i nom de fitxer"
 
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Avorta el muntatge"
@@ -3202,6 +3206,10 @@ msgstr "Insereix comentari LGPL"
 msgid "Insert Lazarus Directory Template"
 msgstr "Insereix plantilla del directori Lazarus"
 
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Mode inserir"
@@ -4966,6 +4974,10 @@ msgstr "Programa%sUn programa FreePascal. El Lazarus manté automàticament el fit
 msgid "Programfilename:"
 msgstr "Nom de programa:"
 
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
 msgstr "Projecte"
@@ -5761,6 +5773,10 @@ msgstr "Selecciona"
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
 msgstr "Selecciona-ho tot"
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -8149,6 +8165,10 @@ msgstr "fitxer del codi font principal del paquet"
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
 msgstr "pausa el programa"
+
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "

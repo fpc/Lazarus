@@ -250,6 +250,10 @@ msgstr "Необхідний пакунок не знайдений. Див. д�
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Нормальний інструмент обов'язково має мати заголовок і назву файлу."
 
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Перервати збирання"
@@ -3202,6 +3206,10 @@ msgstr "Вставити примітку про LGPL"
 msgid "Insert Lazarus Directory Template"
 msgstr "Вставити шаблон з теки Lazarus"
 
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Режим вставки"
@@ -4966,6 +4974,10 @@ msgstr "Програма%sПрограма freepascal. Файл програми
 msgid "Programfilename:"
 msgstr "Назва файлу програми:"
 
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
 msgstr "Проект"
@@ -5761,6 +5773,10 @@ msgstr "Виділити"
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
 msgstr "Виділити всі"
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -8149,6 +8165,10 @@ msgstr "головний файл є кодом пакунку"
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
 msgstr "призупинити програму"
+
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
+msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "

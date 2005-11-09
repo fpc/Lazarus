@@ -1870,6 +1870,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
 msgstr ""
@@ -5798,6 +5802,10 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts:listodolfile
 msgid "File"
 msgstr ""
@@ -8640,5 +8648,17 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenablemakros
 msgid "Enable Makros"
+msgstr ""
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
+msgstr ""
+
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
 msgstr ""
 

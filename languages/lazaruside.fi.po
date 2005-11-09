@@ -250,6 +250,10 @@ msgstr ""
 msgid "A valid tool needs at least a title and a filename."
 msgstr ""
 
+#: lazarusidestrconsts:lispdabort
+msgid "Abort"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr ""
@@ -548,7 +552,7 @@ msgstr "Tekijä:"
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
-msgstr ""
+msgstr "Luo myös uusi lomake kun avataan uusi käännösyksikkö"
 
 #: lazarusidestrconsts:liscodetoolsdefsautocreatednodesreadonly
 msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
@@ -1188,7 +1192,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
-msgstr ""
+msgstr "Komentorivin parametrit (ilman ohjelman omaa nimeä)"
 
 #: lazarusidestrconsts:liscommandlineparamsofprogram
 msgid "Command line parameters of program"
@@ -1864,7 +1868,7 @@ msgstr "Työpöytä"
 
 #: lazarusidestrconsts:dlgdesktopfiles
 msgid "Desktop files"
-msgstr ""
+msgstr "Työpöytätiedostot"
 
 #: lazarusidestrconsts:lisaf2pdestinationpackage
 msgid "Destination Package"
@@ -2688,7 +2692,7 @@ msgstr "saksa"
 
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
-msgstr ""
+msgstr "Hae sijainti"
 
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
@@ -3200,6 +3204,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertlazarusdirectorytem
 msgid "Insert Lazarus Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:lisctinsertmacro
+msgid "Insert Macro"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertmode
@@ -3860,7 +3868,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
-msgstr ""
+msgstr "Lue työpöytäasetukset tiedostosta"
 
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
@@ -3952,7 +3960,7 @@ msgstr "Oikea marginaali ja vasen reunus"
 
 #: lazarusidestrconsts:dlgmarkercolor
 msgid "Marker color"
-msgstr ""
+msgstr "Valittujen komponenttien ilmaiseminen"
 
 #: lazarusidestrconsts:lissmatches
 msgid "Matches"
@@ -4966,6 +4974,10 @@ msgstr "Ohjelma%s Freepascal ohjelma. Ohjelmatiedosto hyödyntää lazarusta."
 msgid "Programfilename:"
 msgstr ""
 
+#: lazarusidestrconsts:lispdprogress
+msgid "Progress"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
 msgstr ""
@@ -5428,7 +5440,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrightclickselects
 msgid "Right Click selects"
-msgstr ""
+msgstr "Valinta voidaan tehdä hiiren oikean näppäimellä"
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -5596,7 +5608,7 @@ msgstr "Tallennetaanko muutokset?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
-msgstr ""
+msgstr "Tallenna työpöytäasetukset tiedostoon"
 
 #: lazarusidestrconsts:dlgsaveeditorinfo
 msgid "Save editor info for closed files"
@@ -5760,6 +5772,10 @@ msgstr "Valitse"
 
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
+msgstr ""
+
+#: lazarusidestrconsts:lisctselectcodemacro
+msgid "Select Code Macro"
 msgstr ""
 
 #: lazarusidestrconsts:lisselectdfmfiles
@@ -6028,7 +6044,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowcaps
 msgid "Show component captions"
-msgstr ""
+msgstr "Näytä komponenttien nimet vihjeessä"
 
 #: lazarusidestrconsts:dlgshowconditionals
 msgid "Show conditionals"
@@ -6044,7 +6060,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
-msgstr ""
+msgstr "Näytä editointivihjeet"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -7732,7 +7748,7 @@ msgstr "Näytä koodiselain"
 
 #: lazarusidestrconsts:lismenuviewcomponentpalette
 msgid "View Component Palette"
-msgstr ""
+msgstr "Näytä tai poista komponenttipaletti näkyvistä"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
@@ -8148,6 +8164,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
+msgstr ""
+
+#: lazarusidestrconsts:lisctpleaseselectamacro
+msgid "please select a macro"
 msgstr ""
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
