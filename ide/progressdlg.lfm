@@ -4,7 +4,9 @@ object IDEProgressDialog: TIDEProgressDialog
   ClientHeight = 132
   ClientWidth = 400
   OnCreate = FormCreate
-  PixelsPerInch = 75
+  OnDestroy = FormDestroy
+  PixelsPerInch = 112
+  Position = poDesktopCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 131
   Left = 286
