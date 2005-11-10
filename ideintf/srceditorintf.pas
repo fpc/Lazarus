@@ -20,7 +20,7 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls;
+  Classes, SysUtils, LCLProc, Forms, Controls;
   
 type
   TSrcEditSearchOption = (sesoMatchCase, sesoWholeWord, sesoBackwards,
@@ -216,8 +216,8 @@ var
 begin
   NewName:=IDECodeMacros.CreateUniqueName(Name);
   Result:=TIDECodeMacro.Create(NewName);
-  Result.ShortDescription:=ShortDescription;
-  Result.LongDescription:=LongDescription;
+  Result.ShortDescription:=ConvertLineEndings(ShortDescription);
+  Result.LongDescription:=ConvertLineEndings(LongDescription);
   Result.OnGetValueProc:=OnGetValueProc;
   Result.OnGetValueMethod:=OnGetValueMethod;
   IDECodeMacros.Add(Result);

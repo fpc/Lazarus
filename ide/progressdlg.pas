@@ -60,8 +60,6 @@ type
 
   { TProgressWait }
 
-  { TProgressWait }
-
   TProgressWait = class
   public
     StartTime: TDateTime;

@@ -3272,7 +3272,6 @@ var
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
-  PrevNode: TCodeTreeNode;
   p: LongInt;
   CommentLvl: Integer;
   CommentStartPos: LongInt;
@@ -3286,7 +3285,8 @@ begin
     ' SearchInParentNode='+dbgs(SearchInParentNode),
     ' WithCommentBounds='+dbgs(WithCommentBounds),
     ' CaseSensitive='+dbgs(CaseSensitive),
-    ' IgnoreSpaces='+dbgs(IgnoreSpaces));}
+    ' IgnoreSpaces='+dbgs(IgnoreSpaces),
+    ' CompareOnlyStart='+dbgs(CompareOnlyStart)); }
 
   // parse source and find clean positions
   if InvokeBuildTree then
@@ -3299,21 +3299,31 @@ begin
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
 
-  if SearchInParentNode and (ANode.Parent<>nil) then
-    ANode:=ANode.Parent;
   { find end of last atom in front of node
     for example:
       uses classes;
-      
+
       // Comment
       type
-      
+
     If ANode is the 'type' block, the position after the semicolon is searched
   }
-  PrevNode:=ANode.Prior;
-  if PrevNode<>nil then begin
-    MoveCursorToLastNodeAtom(PrevNode);
+
+  if SearchInParentNode and (ANode.Parent<>nil) then begin
+    // search all siblings in front
+    ANode:=ANode.Parent;
+    MoveCursorToCleanPos(ANode.Parent.StartPos);
+  end else if ANode.Prior<>nil then begin
+    // search between prior sibling and this node
+    //DebugLn('TStandardCodeTool.FindCommentInFront ANode.Prior=',ANode.Prior.DescAsString);
+    MoveCursorToLastNodeAtom(ANode.Prior);
+  end else if ANode.Parent<>nil then begin
+    // search from start of parent node to this node
+    //DebugLn('TStandardCodeTool.FindCommentInFront ANode.Parent=',ANode.Parent.DescAsString);
+    MoveCursorToCleanPos(ANode.Parent.StartPos);
   end else begin
+    // search in this node
+    //DebugLn('TStandardCodeTool.FindCommentInFront Aode=',ANode.DescAsString);
     MoveCursorToCleanPos(ANode.StartPos);
   end;
 
@@ -3386,6 +3396,7 @@ begin
       end;
     end;
     ReadNextAtom;
+    //DebugLn('TStandardCodeTool.FindCommentInFront NextAtom=',GetAtom);
   until (CurPos.EndPos>=CleanCursorPos) or (CurPos.EndPos>=SrcLen);
   
   Result:=(FoundStartPos>=1)

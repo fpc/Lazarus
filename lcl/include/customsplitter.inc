@@ -492,7 +492,7 @@ begin
 
       for i:=0 to AnchoredControlCount-1 do begin
         CurResizeControl:=AnchoredControls[i];
-        debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl));
+        //debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl));
         if (CurResizeControl.AnchorSide[ResizeAnchor].Control=Self)
         or (CurResizeControl.AnchorSide[OppositeAnchor[ResizeAnchor]].Control=Self)
         then begin
@@ -507,7 +507,7 @@ begin
           // calculate how much the CurResizeControl can be enlarged
           CurMaxEnlarge:=Max(0,GetControlConstraintsMaxSize(CurResizeControl)
                          -GetControlSize(CurResizeControl));
-          debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge));
+          //debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge));
 
           // apply to the offset boundaries
           if (CurResizeControl.AnchorSide[akLeft].Control=Self)

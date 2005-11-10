@@ -144,6 +144,9 @@ type
     procedure EndUpdate; override;
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); override;
+    procedure DockControl(Control: TControl; InsertAt: TAlign;
+                          DropCtl: TControl);
+    procedure UndockControl(Control: TControl);
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -712,7 +715,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TAnchoredDockManager.InsertControl(Control: TControl;
+  procedure TAnchoredDockManager.DockControl(Control: TControl;
     InsertAt: TAlign; DropCtl: TControl);
 
   Docks Control to or into DropCtl.
@@ -734,7 +737,7 @@ end;
     and replaces DropCtl and DropCtl is added as page.
     Then Control is added as page.
 -------------------------------------------------------------------------------}
-procedure TAnchoredDockManager.InsertControl(Control: TControl;
+procedure TAnchoredDockManager.DockControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 var
   Splitter: TLazDockSplitter;
@@ -909,6 +912,139 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TAnchoredDockManager.UndockControl(Control: TControl);
+
+  Removes a control from a docking form.
+  It breaks all anchors and cleans up.
+  
+  The created gap will be tried to fill up.
+  It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
+  longer needed.
+-------------------------------------------------------------------------------}
+procedure TAnchoredDockManager.UndockControl(Control: TControl);
+{
+
+  Examples:
+
+  Search Order:
+
+  1. A TLazDockSplitter dividing only two controls:
+
+     Before:
+     |-------------
+     | +--+ | +---
+     | |  | | | B
+     | +--+ | +---
+     |-------------
+
+     The splitter will be deleted and the right control will be anchored to the
+     left.
+
+     After:
+     |-------------
+     | +---
+     | | B
+     | +---
+     |-------------
+
+
+  2. Four spiral splitters:
+  
+     Before:
+              |
+           A  |
+     ---------|
+       | +--+ |  C
+     B | |  | |
+       | +--+ |
+       | ----------
+       |   D
+
+     The left and right splitter will be combined to one.
+     
+     After:
+              |
+           A  |
+       -------|
+              |  C
+            B |
+              |
+              |------
+              |   D
+
+
+  3. No TLazDockSplitter. Control is the only child of a TLazDockPage
+     In this case the page will be deleted.
+     If the TLazDockPages has no childs left, it is recursively undocked.
+  
+  4. No TLazDockSplitter, Control is the only child of a TLazDockForm.
+     The TLazDockForm is deleted and the Control is floated.
+     This normally means: A form will simply be placed on the desktop, other
+     controls will be docked into their DockSite.
+}
+var
+  a: TAnchorKind;
+  AnchorControl: TControl;
+  AnchorSplitter: TLazDockSplitter;
+  i: Integer;
+  Sibling: TControl;
+  OldAnchorControls: array[TAnchorKind] of TControl;
+begin
+  if Control.Parent=nil then begin
+    // already undocked
+    RaiseGDBException('TAnchoredDockManager.UndockControl Control.Parent=nil');
+  end;
+  
+
+  // break anchors
+  Control.Align:=alNone;
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    OldAnchorControls[a]:=Control.AnchorSide[a].Control;
+    Control.AnchorSide[a].Control:=nil;
+  end;
+  Control.Anchors:=[akLeft,akTop];
+
+  // check if their is a splitter, that has a side with only Control anchored
+  // to it.
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    AnchorControl:=OldAnchorControls[a];
+    if AnchorControl is TLazDockSplitter then begin
+      AnchorSplitter:=TLazDockSplitter(AnchorControl);
+      i:=Control.Parent.ControlCount-1;
+      while i>=0 do begin
+        Sibling:=Control.Parent.Controls[i];
+        if (Sibling.AnchorSide[a].Control=AnchorSplitter) then begin
+          // Sibling is anchored with the same side to the splitter
+          // => this splitter is needed, can not be deleted.
+          break;
+        end;
+      end;
+      if i<0 then begin
+        // this splitter is not needed anymore
+        RaiseGDBException('');
+        //DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
+        //                   OldAnchorControls[OppositeAnchor[a]]);
+      end;
+    end;
+  end;
+  
+  // check if there are four spiral splitters around Control
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    AnchorControl:=OldAnchorControls[a];
+    if not (AnchorControl is TLazDockSplitter) then begin
+      RaiseGDBException('TAnchoredDockManager.UndockControl neither');
+    end;
+  end;
+  
+end;
+
+procedure TAnchoredDockManager.InsertControl(Control: TControl;
+  InsertAt: TAlign; DropCtl: TControl);
+begin
+  DockControl(Control, InsertAt, DropCtl);
+end;
+
 procedure TAnchoredDockManager.LoadFromStream(Stream: TStream);
 begin
   RaiseGDBException('TAnchoredDockManager.LoadFromStream TODO');
@@ -927,7 +1063,7 @@ end;
 
 procedure TAnchoredDockManager.RemoveControl(Control: TControl);
 begin
-  RaiseGDBException('TAnchoredDockManager.RemoveControl TODO');
+  UndockControl(Control);
 end;
 
 procedure TAnchoredDockManager.ResetBounds(Force: Boolean);

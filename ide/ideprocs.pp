@@ -179,6 +179,7 @@ function SpecialCharsToSpaces(const s: string): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean = false): string;
 
+
 // environment
 function EnvironmentAsStringList: TStringList;
 procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
