@@ -1238,7 +1238,7 @@ begin
     WordBreak := True;
     SingleLine := False;
     Clipping := True;
-    ShowPrefix := True;
+    ShowPrefix := False;
     Opaque := False;
   end;
 end;

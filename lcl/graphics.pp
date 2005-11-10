@@ -497,7 +497,7 @@ type
     //property XBias: Integer read FXBias write FXBias;
     //property YBias: Integer read FYBias write FYBias;
     property Handle: HFONT read GetHandle write SetHandle;
-    property PixelsPerInch: Integer read FPixelsPerInch;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
     property CanUTF8: boolean read FCanUTF8;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;

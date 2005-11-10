@@ -274,6 +274,8 @@ begin
   TPrinterCanvas(Canvas).BeginDoc;
   //Call the specifique Begindoc
   DoBeginDoc;
+  // Set font resolution
+  Canvas.Font.PixelsPerInch := YDPI;
 end;
 
 //End the current document
