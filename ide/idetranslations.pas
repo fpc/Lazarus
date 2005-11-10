@@ -172,7 +172,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 const
-  Ext = '.%s.mo';
+  Ext = '.%s.po';
 var
   Lang, FallbackLang: String;
   Dir: String;
