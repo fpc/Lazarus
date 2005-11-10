@@ -24,19 +24,14 @@
   Abstract:
     Methods and classes for loading the IDE translations/localizations.
 }
-unit Translations;
+unit IDETranslations;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts,
-  StringHashList, LazConf
-  {$IFDEF linux}{$IFNDEF NoUTF8Translations}
-  ,LazCWString
-  {$ENDIF}{$ENDIF};
-
+  Classes, SysUtils, GetText, Translations, FileUtil, LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
 type
@@ -68,34 +63,6 @@ type
     property Items[Index: integer]: TLazarusTranslation read GetItems; default;
   end;
   
-  { TPOFileItem }
-
-  TPOFileItem = class
-  public
-    Identifier: string;
-    Original: string;
-    Translation: string;
-    constructor Create(const TheIdentifier, TheOriginal, TheTranslated: string);
-  end;
-  
-  { TPOFile }
-
-  TPOFile = class
-  protected
-    FItems: TFPList;// list of TPOFileItem
-    FIdentifierToItem: TStringHashList;
-    FOriginalToItem: TStringHashList;
-  public
-    constructor Create(const AFilename: String);
-    constructor Create(AStream: TStream);
-    destructor Destroy; override;
-    procedure ReadPOText(const s: string);
-    procedure Add(const Identifier, OriginalValue, TranslatedValue: string);
-    function Translate(const Identifier, OriginalValue: String): String;
-  end;
-
-  EPOFileError = class(Exception);
-
 // translate all resource strings
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 
@@ -192,86 +159,6 @@ begin
   SysUtils.FindClose(FileInfo);
 end;
 
-function UTF8ToSystemCharSet(const s: string): string;
-begin
-  Result:=s;
-  {$IFNDEF NoUTF8Translations}
-  Result:=Utf8ToAnsi(Result);
-  {$ENDIF}
-end;
-
-function DoTranslateUnitResourceStrings(const ResUnitName, AFilename: string
-  ): boolean;
-var
-  mo: TMOFile;
-  TableID, StringID, TableCount: Integer;
-  s: String;
-  DefValue: String;
-  po: TPOFile;
-begin
-  Result:=false;
-  //debugln('DoTranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
-  if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
-    exit;
-  try
-    mo := nil;
-    po := nil;
-      
-    if CompareFileExt(AFilename,'.mo')=0 then begin
-      // read .mo file
-      mo := TMOFile.Create(AFilename);
-    end else begin
-      // read .po file
-      po := TPOFile.Create(AFilename)
-    end;
-    try
-      for TableID:=0 to ResourceStringTableCount - 1 do begin
-        TableCount := ResourceStringCount(TableID);
-
-        // check if this table belongs to the ResUnitName
-        if TableCount=0 then continue;
-        s:=GetResourceStringName(TableID,0);
-        if CompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
-        then continue;
-
-        // translate all resource strings of the unit
-        for StringID := 0 to TableCount - 1 do begin
-          DefValue:=GetResourceStringDefaultValue(TableID,StringID);
-          // get UTF8 string
-          if mo<>nil then
-            s := mo.Translate(DefValue,GetResourceStringHash(TableID,StringID))
-          else
-            s := po.Translate(GetResourceStringName(TableID,StringID),DefValue);
-
-          if Length(s) > 0 then begin
-            // convert UTF8 to current local
-            s:=UTF8ToSystemCharSet(s);
-            SetResourceStringValue(TableID,StringID,s);
-          end;
-        end;
-      end;
-    finally
-      mo.Free;
-      po.Free;
-    end;
-    Result:=true;
-  except
-    on e: Exception do;
-  end;
-end;
-
-procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
-  Lang, FallbackLang: string);
-begin
-  if (ResUnitName='') or (BaseFilename='') then exit;
-
-  //debugln('TranslateUnitResourceStrings BaseFilename="',BaseFilename,'"');
-  if (FallbackLang<>'') then
-    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
-  if (Lang<>'') then
-    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
-end;
-
 {-------------------------------------------------------------------------------
   TranslateResourceStrings
 
@@ -285,11 +172,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 const
-  {$IFDEF UseMOTranslations}
   Ext = '.%s.mo';
-  {$ELSE}
-  Ext = '.%s.po';
-  {$ENDIF}
 var
   Lang, FallbackLang: String;
   Dir: String;
@@ -366,136 +249,6 @@ begin
   for i:=0 to FCount-1 do FItems[i].Free;
   FCount:=0;
   ReallocMem(FItems,0);
-end;
-
-{ TPOFile }
-
-constructor TPOFile.Create(const AFilename: String);
-var
-  f: TStream;
-begin
-  f := TFileStream.Create(AFilename, fmOpenRead);
-  try
-    Self.Create(f);
-  finally
-    f.Free;
-  end;
-end;
-
-constructor TPOFile.Create(AStream: TStream);
-var
-  Size: Integer;
-  s: string;
-begin
-  inherited Create;
-  
-  FItems:=TFPList.Create;
-  FIdentifierToItem:=TStringHashList.Create(false);
-  FOriginalToItem:=TStringHashList.Create(true);
-
-  Size:=AStream.Size-AStream.Position;
-  if Size<=0 then exit;
-  SetLength(s,Size);
-  AStream.Read(s[1],Size);
-  ReadPOText(s);
-end;
-
-destructor TPOFile.Destroy;
-var
-  i: Integer;
-begin
-  for i:=0 to FItems.Count-1 do
-    TObject(FItems[i]).Free;
-  FItems.Free;
-  FIdentifierToItem.Free;
-  FOriginalToItem.Free;
-  inherited Destroy;
-end;
-
-procedure TPOFile.ReadPOText(const s: string);
-{ Read a .po file. Structure:
-
-Example
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "                      Do not show splash screen"
-msgstr ""
-
-}
-const
-  sCommentIdentifier: PChar = '#: ';
-  sMsgID: PChar = 'msgid "';
-  sMsgStr: PChar = 'msgstr "';
-var
-  l: Integer;
-  LineLen: Integer;
-  p: PChar;
-  LineStart: PChar;
-  LineEnd: PChar;
-  Identifier: String;
-  MsgID: String;
-  MsgStr: String;
-  TextEnd: PChar;
-begin
-  if s='' then exit;
-  l:=length(s);
-  p:=PChar(s);
-  LineStart:=p;
-  TextEnd:=p+l;
-  while LineStart<TextEnd do begin
-    LineEnd:=LineStart;
-    while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
-    LineLen:=LineEnd-LineStart;
-    if LineLen>0 then begin
-      if CompareMem(LineStart,sCommentIdentifier,3) then begin
-        Identifier:=copy(s,LineStart-p+4,LineLen-3);
-      end else if CompareMem(LineStart,sMsgID,7) then begin
-        MsgID:=copy(s,LineStart-p+8,LineLen-8);
-      end else if CompareMem(LineStart,sMsgStr,8) then begin
-        //MsgStr:=copy(s,LineStart-p+9,LineLen-9);
-        MsgStr:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
-        Add(Identifier,MsgID,MsgStr);
-      end;
-    end;
-    LineStart:=LineEnd+1;
-    while (LineStart<TextEnd) and (LineStart^ in [#10,#13]) do inc(LineStart);
-  end;
-end;
-
-procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue: string
-  );
-var
-  Item: TPOFileItem;
-begin
-  if (TranslatedValue='') then exit;
-  //debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
-  Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
-  FItems.Add(Item);
-  FIdentifierToItem.Add(Identifier,Item);
-  FOriginalToItem.Add(OriginalValue,Item);
-end;
-
-function TPOFile.Translate(const Identifier, OriginalValue: String): String;
-var
-  Item: TPOFileItem;
-begin
-  Item:=TPOFileItem(FIdentifierToItem.Data[Identifier]);
-  if Item=nil then
-    Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
-  if Item<>nil then begin
-    Result:=Item.Translation;
-    if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
-  end else
-    Result:=OriginalValue;
-end;
-
-{ TPOFileItem }
-
-constructor TPOFileItem.Create(const TheIdentifier, TheOriginal,
-  TheTranslated: string);
-begin
-  Identifier:=TheIdentifier;
-  Original:=TheOriginal;
-  Translation:=TheTranslated;
 end;
 
 initialization

@@ -39,7 +39,7 @@ uses
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
   Laz_XMLCfg, ObjectInspector, IDEWindowIntf,
   LazarusIDEStrConsts, LazConf, ExtToolDialog, IDEProcs, IDEOptionDefs,
-  InputHistory, EditorOptions, Translations;
+  InputHistory, EditorOptions, IDETranslations;
 
 const
   EnvOptsVersion: integer = 105;

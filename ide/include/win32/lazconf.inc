@@ -195,29 +195,6 @@ begin
   Result:='win32';
 end;
 
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-var
-  Buffer: array[1..4] of char;
-  Country: string;
-  UserLCID: LCID;
-begin
-  //defaults
-  Lang := '';
-  FallbackLang:='';
-  UserLCID := GetUserDefaultLCID;
-  if GetLocaleInfo(UserLCID, LOCALE_SABBREVLANGNAME, @Buffer, 4)<>0 then
-    FallbackLang := lowercase(copy(Buffer,1,2));
-  if GetLocaleInfo(UserLCID, LOCALE_SABBREVCTRYNAME, @Buffer, 4)<>0 then begin
-    Country := copy(Buffer,1,2);
-
-    // some 2 letter codes are not the first two letters of the 3 letter code
-    // there are probably more, but first let us see if there are translations
-    if (Buffer='PRT') then Country:='PT';
-
-    Lang := FallbackLang+'_'+Country;
-  end;
-end;
-
 procedure GetDefaultBrowser(var Browser, Params: string);
 begin
   Browser:= SearchFileInPath('rundll32.exe','',

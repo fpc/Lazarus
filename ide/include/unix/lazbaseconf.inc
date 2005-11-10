@@ -196,26 +196,6 @@ begin
   Result:='gtk';
 end;
 
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-begin
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  FallbackLang:='';
-
-  if Length(Lang) = 0 then
-  begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-      if Length(Lang) = 0 then
-        exit;   // no language defined via environment variables
-    end;
-  end;
-
-  FallbackLang := Copy(Lang, 1, 2);
-  Lang := Copy(Lang, 1, 5);
-end;
-
 procedure GetDefaultBrowser(var Browser, Params: string);
   function Find(const ShortFilename: string; var Filename: string): boolean;
   begin

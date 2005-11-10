@@ -37,7 +37,7 @@ uses
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, LCLResCache, GraphMath, FileCtrl, LMessages, LResources,
-  FileUtil,
+  FileUtil, Translations,
   // the interface base
   InterfaceBase,
   IntfGraphics,

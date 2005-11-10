@@ -114,9 +114,6 @@ const
   procedure GetDefaultLCLLibPaths(List: TStrings);
   function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
   
-  // returns the user language ID from the OS
-  procedure GetLanguageIDs(var Lang, FallbackLang: string);
-  
   // returrns the default browser
   procedure GetDefaultBrowser(var Browser, Params: string);
 
