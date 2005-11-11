@@ -1533,7 +1533,6 @@ resourcestring
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
   rsLanguageRussianWin  = 'Russian(CP1251)';
-  rsLanguageRussianUTF  = 'Russian(UTF8)';
   rsLanguagePolish      = 'Polish';
   rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
   rsLanguagePolishWin   = 'Polish(CP1250)';
