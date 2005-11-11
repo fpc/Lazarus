@@ -1865,6 +1865,7 @@ begin
   if not Modified then begin
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
+    SessionModified:=false;
   end;
 end;
 

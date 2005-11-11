@@ -138,6 +138,9 @@ type
   private
     FSplitterSize: integer;
     FUpdateCount: integer;
+  protected
+    procedure DeleteSideSplitter(Splitter: TLazDockSplitter; Side: TAnchorKind;
+                                 NewAnchorControl: TControl);
   public
     constructor Create;
     procedure BeginUpdate; override;
@@ -688,6 +691,28 @@ end;
 
 { TAnchoredDockManager }
 
+procedure TAnchoredDockManager.DeleteSideSplitter(Splitter: TLazDockSplitter;
+  Side: TAnchorKind; NewAnchorControl: TControl);
+var
+  SplitterParent: TWinControl;
+  i: Integer;
+  CurControl: TControl;
+begin
+  SplitterParent:=Splitter.Parent;
+  SplitterParent.DisableAlign;
+  try
+    for i:=0 to SplitterParent.ControlCount-1 do begin
+      CurControl:=SplitterParent.Controls[i];
+      if CurControl.AnchorSide[Side].Control=Splitter then begin
+        CurControl.AnchorSide[Side].Control:=NewAnchorControl;
+      end;
+    end;
+    Splitter.Free;
+  finally
+    SplitterParent.EnableAlign;
+  end;
+end;
+
 constructor TAnchoredDockManager.Create;
 begin
   FSplitterSize:=5;
@@ -982,6 +1007,8 @@ procedure TAnchoredDockManager.UndockControl(Control: TControl);
      The TLazDockForm is deleted and the Control is floated.
      This normally means: A form will simply be placed on the desktop, other
      controls will be docked into their DockSite.
+     
+  5. Otherwise: this control was not docked.
 }
 var
   a: TAnchorKind;
@@ -990,51 +1017,77 @@ var
   i: Integer;
   Sibling: TControl;
   OldAnchorControls: array[TAnchorKind] of TControl;
+  IsSpiralSplitter: Boolean;
+  ParentControl: TWinControl;
 begin
   if Control.Parent=nil then begin
     // already undocked
     RaiseGDBException('TAnchoredDockManager.UndockControl Control.Parent=nil');
   end;
   
+  ParentControl:=Control.Parent;
+  ParentControl.DisableAlign;
+  try
+    // break anchors
+    Control.Align:=alNone;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      OldAnchorControls[a]:=Control.AnchorSide[a].Control;
+      Control.AnchorSide[a].Control:=nil;
+    end;
+    Control.Anchors:=[akLeft,akTop];
 
-  // break anchors
-  Control.Align:=alNone;
-  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-    OldAnchorControls[a]:=Control.AnchorSide[a].Control;
-    Control.AnchorSide[a].Control:=nil;
-  end;
-  Control.Anchors:=[akLeft,akTop];
-
-  // check if their is a splitter, that has a side with only Control anchored
-  // to it.
-  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-    AnchorControl:=OldAnchorControls[a];
-    if AnchorControl is TLazDockSplitter then begin
-      AnchorSplitter:=TLazDockSplitter(AnchorControl);
-      i:=Control.Parent.ControlCount-1;
-      while i>=0 do begin
-        Sibling:=Control.Parent.Controls[i];
-        if (Sibling.AnchorSide[a].Control=AnchorSplitter) then begin
-          // Sibling is anchored with the same side to the splitter
-          // => this splitter is needed, can not be deleted.
-          break;
+    // check if their is a splitter, that has a side with only Control anchored
+    // to it.
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      AnchorControl:=OldAnchorControls[a];
+      if AnchorControl is TLazDockSplitter then begin
+        AnchorSplitter:=TLazDockSplitter(AnchorControl);
+        i:=Control.Parent.ControlCount-1;
+        while i>=0 do begin
+          Sibling:=Control.Parent.Controls[i];
+          if (Sibling.AnchorSide[a].Control=AnchorSplitter) then begin
+            // Sibling is anchored with the same side to the splitter
+            // => this splitter is needed, can not be deleted.
+            break;
+          end;
+        end;
+        if i<0 then begin
+          // this splitter is not needed anymore
+          RaiseGDBException('');
+          DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
+                             OldAnchorControls[OppositeAnchor[a]]);
         end;
       end;
-      if i<0 then begin
-        // this splitter is not needed anymore
-        RaiseGDBException('');
-        //DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
-        //                   OldAnchorControls[OppositeAnchor[a]]);
+    end;
+
+    // check if there are four spiral splitters around Control
+    IsSpiralSplitter:=true;
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      AnchorControl:=OldAnchorControls[a];
+      if (AnchorControl=nil)
+      or (not (AnchorControl is TLazDockSplitter)) then begin
+        IsSpiralSplitter:=false;
       end;
     end;
-  end;
-  
-  // check if there are four spiral splitters around Control
-  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-    AnchorControl:=OldAnchorControls[a];
-    if not (AnchorControl is TLazDockSplitter) then begin
-      RaiseGDBException('TAnchoredDockManager.UndockControl neither');
+    if IsSpiralSplitter then begin
+      RaiseGDBException('TODO');
     end;
+
+    // check if Control is the only child of a TLazDockPage
+    if (Control.Parent.ControlCount=1)
+    and (Control.Parent is TLazDockPage) then begin
+      RaiseGDBException('TODO');
+    end;
+    
+    // check if Control is the only child of a TLazDockForm
+    if (Control.Parent.ControlCount=1)
+    and (Control.Parent is TLazDockForm) then begin
+      RaiseGDBException('TODO');
+    end;
+
+  finally
+    if ParentControl<>nil then
+      ParentControl.DisableAlign;
   end;
   
 end;
