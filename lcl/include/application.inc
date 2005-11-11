@@ -247,6 +247,41 @@ end;
 procedure TApplication.ProcessMessages;
 begin
   WidgetSet.AppProcessMessages;
+  DoFreeReleaseComponents;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.Idle
+  Params: Wait: wait till something happens
+  Returns:  Nothing
+
+  Invoked when the application enters the idle state
+ ------------------------------------------------------------------------------}
+procedure TApplication.Idle(Wait: boolean);
+var
+  Done: Boolean;
+begin
+  DoFreeReleaseComponents;
+  MouseIdle(GetControlAtMouse);
+
+  Done := True;
+  if (FIdleLockCount=0) then begin
+    if Assigned(FOnIdle) then FOnIdle(Self, Done);
+    NotifyIdleHandler;
+  end;
+  if Done
+  then begin
+    // wait till something happens
+    if (FIdleLockCount=0) then
+      DoIdleActions;
+    Include(FFlags,AppWaiting);
+    Exclude(FFlags,AppIdleEndSent);
+    if Wait then
+      WidgetSet.AppWaitMessage;
+    if (FIdleLockCount=0) then
+      DoOnIdleEnd;
+    Exclude(FFlags,AppWaiting);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -318,40 +353,6 @@ begin
       ExceptProc:=FOldExceptProc;
       FOldExceptProc:=nil;
     end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TApplication.Idle
-  Params: None
-  Returns:  Nothing
-
-  Invoked when the application enters the idle state
- ------------------------------------------------------------------------------}
-procedure TApplication.Idle;
-var
-  Done: Boolean;
-begin
-  if FIdleLockCount=0 then
-    DoFreeReleaseComponents;
-  MouseIdle(GetControlAtMouse);
-
-  Done := True;
-  if (FIdleLockCount=0) then begin
-    if Assigned(FOnIdle) then FOnIdle(Self, Done);
-    NotifyIdleHandler;
-  end;
-  if Done
-  then begin
-    // wait till something happens
-    if (FIdleLockCount=0) then
-      DoIdleActions;
-    Include(FFlags,AppWaiting);
-    Exclude(FFlags,AppIdleEndSent);
-    WidgetSet.AppWaitMessage;
-    if (FIdleLockCount=0) then
-      DoOnIdleEnd;
-    Exclude(FFlags,AppWaiting);
   end;
 end;
 
@@ -786,6 +787,7 @@ begin
   if FReleaseComponents=nil then exit;
   while FReleaseComponents.Count>0 do begin
     AComponent:=TComponent(FReleaseComponents[0]);
+    //DebugLn('TApplication.DoFreeReleaseComponents ',DbgSName(AComponent));
     FReleaseComponents.Delete(0);
     AComponent.Free;
   end;
@@ -847,7 +849,6 @@ end;
   Params: Sender
   Returns:  Nothing
 
-  Handles all messages first then the Idle
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
 
@@ -896,7 +897,7 @@ end;
 procedure TApplication.HandleMessage;
 begin
   WidgetSet.AppProcessMessages; // process all events
-  if not Terminated then Idle;
+  if not Terminated then Idle(true);
 end;
 
 {------------------------------------------------------------------------------
@@ -955,7 +956,7 @@ begin
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
     if AForm.FormStyle in fsAllStayOnTop then begin
-      DebugLn('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
+      //DebugLn('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
       AForm.Hide;
     end;
   end;
@@ -1536,7 +1537,7 @@ begin
   if AppDoNotReleaseComponents in FFlags then
     raise Exception.Create('TApplication.ReleaseComponent already shut down');
   if FReleaseComponents=nil then
-    FReleaseComponents:=TList.Create;
+    FReleaseComponents:=TFPList.Create;
   if FReleaseComponents.IndexOf(AComponent)<0 then
     FReleaseComponents.Add(AComponent);
 end;

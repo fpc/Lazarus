@@ -899,7 +899,7 @@ type
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
-    FReleaseComponents: TList;
+    FReleaseComponents: TFPList;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     procedure DoOnIdleEnd;
@@ -908,7 +908,6 @@ type
     function GetIconHandle: HICON;
     function GetTitle: string;
     procedure IconChanged(Sender: TObject);
-    procedure Idle;
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
@@ -973,6 +972,7 @@ type
     procedure Minimize;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Procedure ProcessMessages;
+    Procedure Idle(Wait: Boolean);
     procedure Run;
     procedure ShowException(E: Exception); override;
     procedure Terminate; override;

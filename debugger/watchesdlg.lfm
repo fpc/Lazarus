@@ -1,7 +1,12 @@
 object WatchesDlg: TWatchesDlg
+  ActiveControl = lvWatches
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 112
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199

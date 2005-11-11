@@ -96,6 +96,7 @@ var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
   FDSWait, FDS: TFDSet;
+  Step: Integer;
 begin      
   Result := 0;
   Max := 0;
@@ -120,6 +121,7 @@ begin
   end;
 
   // wait for all handles
+  Step:=0;
   repeat
     FDSWait := FDS;
     TimeOut := 10;
@@ -127,6 +129,11 @@ begin
     // R = -1 on error, 0 on timeout, >0 on success and is number of handles
     // FDSWait is changed, and indicates what descriptors have changed
     R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
+    inc(Step);
+    if Step=50 then begin
+      Step:=0;
+      Application.Idle(false);
+    end;
     Application.ProcessMessages;
     if Application.Terminated then Break;
   until R <> 0;

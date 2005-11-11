@@ -38,14 +38,15 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, BaseDebugManager, LCLtype;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  StdCtrls, Buttons, Menus, ComCtrls, LCLType,
+  Debugger, DebuggerDlg, BaseDebugManager;
 
 type
 
-{ TWatchesDlg }
+  { TWatchesDlg }
 
-TWatchesDlg = class(TDebuggerDlg)
+  TWatchesDlg = class(TDebuggerDlg)
     lvWatches: TListView;
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
@@ -57,6 +58,10 @@ TWatchesDlg = class(TDebuggerDlg)
     popDisableAll: TMenuItem;
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
     procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -97,28 +102,25 @@ implementation
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//  Name:='WatchesDlg';
   FWatchesNotification := TIDEWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
   FWatchesNotification.OnRemove := @WatchRemove;
   
-{$IFDEF WIN32}
-  {$NOTE TODO repair TListView column widths and remove this hack}
   lvWatches.Column[0].Width := 100;
   lvWatches.Column[1].Width := 200;
-{$ENDIF WIN32}
 end;
 
 destructor TWatchesDlg.Destroy;
 begin
+  //DebugLn('TWatchesDlg.Destroy ',DbgSName(Self));
   SetWatches(nil);
   FWatchesNotification.OnAdd := nil;
   FWatchesNotification.OnUpdate := nil;
   FWatchesNotification.OnRemove := nil;
   FWatchesNotification.ReleaseReference;
-  inherited;
+  inherited Destroy;
 end;
           
 function TWatchesDlg.GetSelected: TIDEWatch;
@@ -189,6 +191,25 @@ begin
     popPropertiesClick(Sender)
   else
     popAddClick(Sender);
+end;
+
+procedure TWatchesDlg.FormCreate(Sender: TObject);
+begin
+end;
+
+procedure TWatchesDlg.FormDestroy(Sender: TObject);
+begin
+  //DebugLn('TWatchesDlg.FormDestroy ',DbgSName(Self));
+end;
+
+procedure TWatchesDlg.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  //DebugLn('TWatchesDlg.FormCloseQuery ',dbgs(CanClose));
+end;
+
+procedure TWatchesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  //DebugLn('TWatchesDlg.FormClose ',dbgs(ord(CloseAction)));
 end;
 
 procedure TWatchesDlg.lvWatchesKeyDown(Sender: TObject; var Key: Word;

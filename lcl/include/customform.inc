@@ -634,6 +634,7 @@ begin
   i:=FFormHandlers[fhtClose].Count;
   while FFormHandlers[fhtClose].NextDownIndex(i) do
     TCloseEvent(FFormHandlers[fhtClose][i])(Self,CloseAction);
+  //DebugLn('TCustomForm.DoClose ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
 end;
 
 {------------------------------------------------------------------------------
@@ -1343,6 +1344,7 @@ begin
   if fsModal in FFormState then
     ModalResult := mrCancel
   else begin
+    DebugLn('TCustomForm.Close A ',DbgSName(Self));
     if CloseQuery then
     begin
       if FormStyle = fsMDIChild then begin
@@ -1353,8 +1355,10 @@ begin
       end else begin
         CloseAction := caHide;
       end;
+      DebugLn('TCustomForm.Close B ',DbgSName(Self));
       DoClose(CloseAction);
       if CloseAction <> caNone then begin
+        DebugLn('TCustomForm.Close C ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
         if Application.MainForm = Self then Application.Terminate
         else if CloseAction = caHide then Hide
         else if CloseAction = caMinimize then WindowState := wsMinimized
@@ -1839,7 +1843,7 @@ begin
           CloseModal;
           if ModalResult<>0 then break;
         end;
-        Application.Idle;
+        Application.Idle(true);
       until false;
 
       Result := ModalResult;
