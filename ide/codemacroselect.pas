@@ -39,6 +39,8 @@ type
   { TCodeMacroSelectDlg }
 
   TCodeMacroSelectDlg = class(TForm)
+    ParameterEdit: TEdit;
+    ParameterGroupBox: TGroupBox;
     MacrosListBox: TListBox;
     DescriptionMemo: TMemo;
     OkButton: TButton;
@@ -56,19 +58,21 @@ type
   end;
 
 
-function ShowCodeMacroSelectDialog: TIDECodeMacro;
+function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
 
 implementation
 
-function ShowCodeMacroSelectDialog: TIDECodeMacro;
+function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
 var
   CodeMacroSelectDlg: TCodeMacroSelectDlg;
 begin
   CodeMacroSelectDlg:=TCodeMacroSelectDlg.Create(nil);
   if CodeMacroSelectDlg.ShowModal=mrOk then begin
     Result:=CodeMacroSelectDlg.Selected;
+    Parameter:=CodeMacroSelectDlg.ParameterEdit.Text;
   end else begin
     Result:=nil;
+    Parameter:='';
   end;
   CodeMacroSelectDlg.Free;
 end;
@@ -84,6 +88,8 @@ begin
   DescriptionGroupBox.Caption:=lisToDoLDescription;
   OkButton.Caption:=lisCTInsertMacro;
   CancelButton.Caption:=dlgCancel;
+  ParameterGroupBox.Caption:=lisCMParameter;
+  ParameterEdit.Text:='';
   
   FillMacrosListbox;
 end;

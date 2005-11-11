@@ -733,10 +733,11 @@ end;
 procedure TCodeTemplateDialog.DoInsertMacro;
 var
   Macro: TIDECodeMacro;
+  Parameter: string;
 begin
-  Macro:=ShowCodeMacroSelectDialog;
+  Macro:=ShowCodeMacroSelectDialog(Parameter);
   if Macro<>nil then begin
-    TemplateSynEdit.SelText:='$'+Macro.Name+'()';
+    TemplateSynEdit.SelText:='$'+Macro.Name+'('+Parameter+')';
   end;
 end;
 

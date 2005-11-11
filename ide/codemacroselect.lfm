@@ -1,25 +1,25 @@
 object CodeMacroSelectDlg: TCodeMacroSelectDlg
   ActiveControl = MacrosListBox
   Caption = 'CodeMacroSelectDlg'
-  ClientHeight = 275
+  ClientHeight = 319
   ClientWidth = 560
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 112
   HorzScrollBar.Page = 559
-  VertScrollBar.Page = 274
+  VertScrollBar.Page = 318
   Left = 318
-  Height = 275
+  Height = 319
   Top = 200
   Width = 560
   object MacrosGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'MacrosGroupBox'
-    ClientHeight = 198
+    ClientHeight = 193
     ClientWidth = 166
     TabOrder = 0
     Left = 10
-    Height = 215
+    Height = 210
     Top = 10
     Width = 170
     object MacrosListBox: TListBox
@@ -27,18 +27,18 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
       OnSelectionChange = MacrosListBoxSelectionChange
       TabOrder = 0
       TopIndex = -1
-      Height = 198
+      Height = 193
       Width = 166
     end
   end
   object DescriptionGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'DescriptionGroupBox'
-    ClientHeight = 198
+    ClientHeight = 193
     ClientWidth = 356
     TabOrder = 1
     Left = 190
-    Height = 215
+    Height = 210
     Top = 10
     Width = 360
     object DescriptionMemo: TMemo
@@ -48,7 +48,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
       )
       ReadOnly = True
       TabOrder = 0
-      Height = 198
+      Height = 193
       Width = 356
     end
   end
@@ -65,7 +65,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     AnchorSideRight.Control = CancelButton
     Left = 394
     Height = 26
-    Top = 235
+    Top = 284
     Width = 61
   end
   object CancelButton: TButton
@@ -77,7 +77,25 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     TabOrder = 3
     Left = 465
     Height = 26
-    Top = 235
+    Top = 284
     Width = 85
+  end
+  object ParameterGroupBox: TGroupBox
+    Anchors = [akLeft, akBottom]
+    Caption = 'ParameterGroupBox'
+    ClientHeight = 32
+    ClientWidth = 536
+    TabOrder = 4
+    Left = 10
+    Height = 49
+    Top = 225
+    Width = 540
+    object ParameterEdit: TEdit
+      Align = alTop
+      TabOrder = 0
+      Text = 'ParameterEdit'
+      Height = 23
+      Width = 536
+    end
   end
 end
