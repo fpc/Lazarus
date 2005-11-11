@@ -72,6 +72,16 @@ begin
   if LCLList=nil then
     RaiseException('gtkListItemDrawAfterCB LCLList=nil');
   if [csDestroying,csLoading]*LCLList.Owner.ComponentState<>[] then exit;
+  
+  // only owner draw lists are interested in drawing items themselves.
+  //if not (csDesigning in LCLList.Owner.ComponentState) then begin
+    if LclList.Owner is TCustomListbox then
+      if TCustomListbox(LCLList.Owner).Style = lbStandard then
+        exit;
+    if LclList.Owner is TCustomCombobox then
+      if TCustomCombobox(LclList.Owner).Style < csOwnerDrawFixed then
+        exit;
+  //end;
 
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);

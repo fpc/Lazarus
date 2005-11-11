@@ -741,6 +741,7 @@ begin
     Enabled:=false;
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
+    Style := csOwnerDrawFixed;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
     OnDblClick := @ValueEditDblClick;
