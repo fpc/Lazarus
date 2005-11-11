@@ -5809,9 +5809,11 @@ begin
 
   if not UnitDependenciesView.RootValid then begin
     if Project1.MainUnitID>=0 then begin
+      UnitDependenciesView.BeginUpdate;
       UnitDependenciesView.RootFilename:=Project1.MainUnitInfo.Filename;
       UnitDependenciesView.RootShortFilename:=
         ExtractFilename(Project1.MainUnitInfo.Filename);
+      UnitDependenciesView.EndUpdate;
     end;
   end;
 

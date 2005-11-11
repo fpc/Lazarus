@@ -171,10 +171,8 @@ type
     procedure ShowProjectButtonClick(Sender: TObject);
     procedure UnitDependenciesViewClose(Sender: TObject;
       var CloseAction: TCloseAction);
+    procedure UnitHistoryListEditingDone(Sender: TObject);
     procedure UnitDependenciesViewResize(Sender: TObject);
-    procedure UnitHistoryListChange(Sender: TObject);
-    procedure UnitHistoryListKeyUp(Sender: TObject; var Key: Word;
-          Shift: TShiftState);
     procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
           Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
           var PaintImages, DefaultDraw: Boolean);
@@ -185,9 +183,13 @@ type
     procedure UnitTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
           Shift: TShiftState; X, Y: Integer);
   private
+    FCommitUnitHistoryListSelectionNeeded: boolean;
     FOnAccessingSources: TNotifyEvent;
     FOnGetProjectMainFilename: TOnGetProjectMainFilename;
     FOnOpenFile: TOnOpenFile;
+    FRefreshNeeded: boolean;
+    FRebuildTreeNeeded: boolean;
+    FRefreshHistoryListNeeded: boolean;
     FRootCodeBuffer: TCodeBuffer;
     FRootFilename: string;
     FRootNode: TUnitNode;
@@ -199,6 +201,7 @@ type
     procedure RebuildTree;
     procedure SetRootFilename(const AValue: string);
     procedure SetRootShortFilename(const AValue: string);
+    procedure CommitUnitHistoryListSelection;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -216,6 +219,7 @@ type
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property RootFilename: string read FRootFilename write SetRootFilename;
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
+    property RefreshNeeded: boolean read FRefreshNeeded write FRefreshNeeded;
   end;
   
 var
@@ -271,21 +275,11 @@ begin
   DoResize;
 end;
 
-procedure TUnitDependenciesView.UnitHistoryListChange(Sender: TObject);
+procedure TUnitDependenciesView.UnitHistoryListEditingDone(Sender: TObject);
 begin
+  //DebugLn('TUnitDependenciesView.UnitHistoryListEditingDone ',UnitHistoryList.Text,' ',dbgs(UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)));
   if UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)<0 then exit;
-  //RootFilename:=ExpandFilename(UnitHistoryList.Text);
-end;
-
-procedure TUnitDependenciesView.UnitHistoryListKeyUp(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-var
-  NewFilename: string;
-begin
-  if (Key=VK_RETURN) and (Shift=[]) then begin
-    NewFilename:=ExpandFilename(UnitHistoryList.Text);
-    RootFilename:=NewFilename;
-  end;
+  CommitUnitHistoryListSelection;
 end;
 
 procedure TUnitDependenciesView.UnitTreeViewAdvancedCustomDrawItem(
@@ -380,25 +374,36 @@ end;
 
 procedure TUnitDependenciesView.RebuildTree;
 begin
+  if FUpdateCount>0 then begin
+    FRebuildTreeNeeded:=true;
+    exit;
+  end;
+  FRebuildTreeNeeded:=false;
+
   CodeToolBoss.ActivateWriteLock;
   BeginUpdate;
-  
-  ClearTree;
-  if RootFilename='' then exit;
-  FRootNode:=TUnitNode.Create;
-  FRootNode.CodeBuffer:=FRootCodeBuffer;
-  FRootNode.Filename:=RootFilename;
-  FRootNode.ShortFilename:=FRootShortFilename;
-  UnitTreeView.Items.Clear;
-  FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
-  FRootNode.CreateChilds;
-  
-  EndUpdate;
-  CodeToolBoss.DeActivateWriteLock;
+  try
+    ClearTree;
+    if RootFilename='' then exit;
+    FRootNode:=TUnitNode.Create;
+    FRootNode.CodeBuffer:=FRootCodeBuffer;
+    FRootNode.Filename:=RootFilename;
+    //debugln('TUnitDependenciesView.RebuildTree RootFilename=',RootFilename);
+    FRootNode.ShortFilename:=FRootShortFilename;
+    UnitTreeView.Items.Clear;
+    FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
+    FRootNode.CreateChilds;
+
+  finally
+    FRebuildTreeNeeded:=false;
+    EndUpdate;
+    CodeToolBoss.DeActivateWriteLock;
+  end;
 end;
 
 procedure TUnitDependenciesView.SetRootFilename(const AValue: string);
 begin
+  //DebugLn('TUnitDependenciesView.SetRootFilename Old=',FRootFilename,' New',AValue);
   if FRootFilename=AValue then exit;
   FRootFilename:=AValue;
   FRootCodeBuffer:=CodeToolBoss.LoadFile(FRootFilename,false,false);
@@ -414,6 +419,18 @@ begin
   FRootShortFilename:=AValue;
   if FRootNode<>nil then
     FRootNode.ShortFilename:=AValue;
+end;
+
+procedure TUnitDependenciesView.CommitUnitHistoryListSelection;
+begin
+  //DebugLn('TUnitDependenciesView.CommitUnitHistoryListSelection Old=',FRootFilename,' New=',UnitHistoryList.Text,' FUpdateCount=',dbgs(FUpdateCount));
+  if FUpdateCount>0 then begin
+    FCommitUnitHistoryListSelectionNeeded:=true;
+    exit;
+  end;
+  FCommitUnitHistoryListSelectionNeeded:=false;
+  if UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)<0 then exit;
+  RootFilename:=ExpandFilename(UnitHistoryList.Text);
 end;
 
 procedure TUnitDependenciesView.KeyUp(var Key: Word; Shift: TShiftState);
@@ -476,9 +493,7 @@ begin
     Top:=0;
     Width:=Parent.ClientWidth-Left;
     RefreshHistoryList;
-    OnKeyUp:=@UnitHistoryListKeyUp;
-    OnChange:=@UnitHistoryListChange;
-    Visible:=true;
+    OnEditingDone:=@UnitHistoryListEditingDone;
   end;
   
   W:=90; //Used foro simplified the update
@@ -492,7 +507,6 @@ begin
     Width:=W;
     Caption:=dlgUnitDepBrowse;
     OnClick:=@SelectUnitButtonClick;
-    Visible:=true;
   end;
   
   RefreshButton:=TBitBtn.Create(Self);
@@ -506,7 +520,6 @@ begin
     Height:=SelectUnitButton.Height;
     Caption:=dlgUnitDepRefresh;
     OnClick:=@RefreshButtonClick;
-    Visible:=true;
   end;
   
   ShowProjectButton:=TBitBtn.Create(Self);
@@ -520,7 +533,6 @@ begin
     Height:=RefreshButton.Height;
     Caption:=dlgEnvProject;
     OnClick:=@ShowProjectButtonClick;
-    Visible:=true;
   end;
 
   UnitTreeView:=TTreeView.Create(Self);
@@ -537,7 +549,6 @@ begin
     //StateImages:=SrcTypeImageList;
     OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
     OnMouseDown:=@UnitTreeViewMouseDown;
-    Visible:=true;
   end;
   
   OnResize:=@UnitDependenciesViewResize;
@@ -557,37 +568,67 @@ end;
 
 procedure TUnitDependenciesView.EndUpdate;
 begin
+  if FUpdateCount<0 then RaiseGDBException('TUnitDependenciesView.EndUpdate');
   dec(FUpdateCount);
+  if FUpdateCount=0 then begin
+    if FCommitUnitHistoryListSelectionNeeded then
+      CommitUnitHistoryListSelection;
+    if FRefreshNeeded then
+      Refresh;
+    if FRebuildTreeNeeded then
+      RebuildTree;
+    if FRefreshHistoryListNeeded then
+      RefreshHistoryList;
+  end;
 end;
 
 procedure TUnitDependenciesView.Refresh;
 var
   ExpandState: TExpandedUnitNodeState;
 begin
-  if FUpdateCount>0 then exit;
+  if FUpdateCount>0 then begin
+    FRefreshNeeded:=true;
+    exit;
+  end;
+  FRefreshNeeded:=false;
   BeginUpdate;
-  if Assigned(OnAccessingSources) then OnAccessingSources(Self);
-  // save old expanded nodes
-  ExpandState:=TExpandedUnitNodeState.Create;
-  ExpandState.Assign(FRootNode);
-  // clear all child nodes
-  RebuildTree;
-  // restore expanded state
-  ExpandState.AssignTo(FRootNode);
-  ExpandState.Free;
-  EndUpdate;
+  try
+    if Assigned(OnAccessingSources) then OnAccessingSources(Self);
+    // save old expanded nodes
+    ExpandState:=TExpandedUnitNodeState.Create;
+    ExpandState.Assign(FRootNode);
+    // clear all child nodes
+    RebuildTree;
+    // restore expanded state
+    ExpandState.AssignTo(FRootNode);
+    ExpandState.Free;
+  finally
+    FRefreshNeeded:=false;
+    EndUpdate;
+  end;
 end;
 
 procedure TUnitDependenciesView.RefreshHistoryList;
 begin
-  if RootFilename<>'' then
-    if not InputHistories.AddToUnitDependenciesHistory(RootFilename) then
-      exit;
-  UnitHistoryList.Items.Assign(InputHistories.UnitDependenciesHistory);
-  if UnitHistoryList.Items.Count>0 then
-    UnitHistoryList.Text:=UnitHistoryList.Items[0]
-  else
-    UnitHistoryList.Text:=RootFilename;
+  if FUpdateCount>0 then begin
+    FRefreshHistoryListNeeded:=true;
+    exit;
+  end;
+  FRefreshHistoryListNeeded:=false;
+  BeginUpdate;
+  try
+    if RootFilename<>'' then
+      if not InputHistories.AddToUnitDependenciesHistory(RootFilename) then
+        exit;
+    UnitHistoryList.Items.Assign(InputHistories.UnitDependenciesHistory);
+    if UnitHistoryList.Items.Count>0 then
+      UnitHistoryList.Text:=UnitHistoryList.Items[0]
+    else
+      UnitHistoryList.Text:=RootFilename;
+  finally
+    FRefreshHistoryListNeeded:=false;
+    EndUpdate;
+  end;
 end;
 
 { TUnitNode }
