@@ -1246,6 +1246,11 @@ end;
 
 
 procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
+// this is a try to hide windows from the taskbar.
+// Unpleasantly, some windowmangers like metacity also hides form the Alt-Tab
+// cycle.
+// This feature is therefore disabled on default.
+{$IFDEF EnableHideFromTaskBar}
 var
   XDisplay: PDisplay;
   XScreen: PScreen;
@@ -1254,9 +1259,11 @@ var
   XEvent: TXClientMessageEvent;
   _NET_WM_STATE,
   _NET_WM_STATE_SKIP_TASKBAR: clong;
-
+{$ENDIF}
 begin
+  {$IFDEF EnableHideFromTaskBar}
   // GTK1: reshowing does not work, so a modal form will hide the whole application
+  // GTK
 
   XDisplay := GDK_WINDOW_XDISPLAY (Window);
   XScreen := XDefaultScreenOfDisplay(xdisplay);
@@ -1277,6 +1284,7 @@ begin
   XEvent.data.l[1] := _NET_WM_STATE_SKIP_TASKBAR;
 
   XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+  {$ENDIF}
 end;
 
 
