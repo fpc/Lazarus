@@ -142,6 +142,10 @@ type
     procedure DeleteSideSplitter(Splitter: TLazDockSplitter; Side: TAnchorKind;
                                  NewAnchorControl: TControl);
     procedure CombineSpiralSplitterPair(Splitter1, Splitter2: TLazDockSplitter);
+    procedure DeletePage(Page: TLazDockPage);
+    procedure DeletePages(Pages: TLazDockPages);
+    procedure DeleteDockForm(ADockForm: TLazDockForm);
+    function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
   public
     constructor Create;
     procedure BeginUpdate; override;
@@ -716,7 +720,13 @@ end;
 
 procedure TAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
   Splitter2: TLazDockSplitter);
-{  Four spiral splitters:
+{  Anchor all controls anchored to Splitter2 to Splitter1,
+   extend Splitter1,
+   delete Splitter2.
+
+   Example:
+
+   Four spiral splitters:
 
      Before:
               |
@@ -740,8 +750,108 @@ procedure TAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
               |------
               |   D
   }
+  
+  procedure MoveAnchorSide(AControl: TControl; Side: TAnchorKind);
+  begin
+    if AControl.AnchorSide[Side].Control=Splitter2 then
+      AControl.AnchorSide[Side].Control:=Splitter1;
+  end;
+  
+  procedure EnlargeSplitter(Side: TAnchorKind);
+  begin
+    if GetAnchorDepth(Splitter1,Side)<GetAnchorDepth(Splitter2,Side) then
+      Splitter1.AnchorSide[Side].Assign(Splitter2.AnchorSide[Side]);
+  end;
+  
+var
+  LeftRightSplitter: boolean;
+  ParentControl: TWinControl;
+  i: Integer;
+  CurControl: TControl;
 begin
-  RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair TODO');
+  // check splitters have the same Parent
+  ParentControl:=Splitter1.Parent;
+  if (ParentControl=nil) then
+    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Parent=nil');
+  if (ParentControl<>Splitter2.Parent) then
+    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Splitters not siblings');
+  // check splitters have same orientation
+  LeftRightSplitter:=(Splitter1.ResizeAnchor in [akLeft,akRight]);
+  if LeftRightSplitter<>(Splitter2.ResizeAnchor in [akLeft,akRight]) then
+    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: different orientation');
+
+  ParentControl.DisableAlign;
+  try
+    // move incident anchors from Splitter2 to Splitter1
+    for i:=0 to ParentControl.ControlCount-1 do begin
+      CurControl:=ParentControl.Controls[i];
+      if CurControl=Splitter1 then continue;
+      if CurControl=Splitter2 then continue;
+      if LeftRightSplitter then begin
+        MoveAnchorSide(CurControl,akLeft);
+        MoveAnchorSide(CurControl,akRight);
+      end else begin
+        MoveAnchorSide(CurControl,akTop);
+        MoveAnchorSide(CurControl,akBottom);
+      end;
+    end;
+    
+    // enlarge Splitter1
+    if LeftRightSplitter then begin
+      // enlarge Splitter1 to top and bottom
+      EnlargeSplitter(akTop);
+      EnlargeSplitter(akBottom);
+    end else begin
+      // enlarge Splitter1 to left and right
+      EnlargeSplitter(akLeft);
+      EnlargeSplitter(akRight);
+    end;
+    
+    // delete Splitter2
+    Splitter2.Free;
+  finally
+    ParentControl.EnableAlign;
+  end;
+end;
+
+procedure TAnchoredDockManager.DeletePage(Page: TLazDockPage);
+var
+  Pages: TLazDockPages;
+begin
+  Pages:=Page.PageControl;
+  Page.Free;
+  if Pages.PageCount=0 then
+    DeletePages(Pages);
+end;
+
+procedure TAnchoredDockManager.DeletePages(Pages: TLazDockPages);
+begin
+  if Pages.Parent<>nil then
+    UndockControl(Pages);
+  Pages.Free;
+end;
+
+procedure TAnchoredDockManager.DeleteDockForm(ADockForm: TLazDockForm);
+begin
+  if ADockForm.Parent<>nil then
+    UndockControl(ADockForm);
+  ADockForm.Free;
+end;
+
+function TAnchoredDockManager.GetAnchorDepth(AControl: TControl;
+  Side: TAnchorKind): Integer;
+var
+  NewControl: TControl;
+begin
+  Result:=0;
+  while (AControl<>nil) do begin
+    inc(Result);
+    NewControl:=AControl.AnchorSide[Side].Control;
+    if NewControl=nil then break; // loose end
+    if NewControl.Parent<>AControl.Parent then break; // parent end
+    if Result>AControl.Parent.ControlCount then break; // circle
+    AControl:=NewControl;
+  end;
 end;
 
 constructor TAnchoredDockManager.Create;
@@ -1051,6 +1161,18 @@ var
   IsSpiralSplitter: Boolean;
   ParentControl: TWinControl;
   Done: Boolean;
+  
+  procedure DoFinallyForParent;
+  var
+    OldParentControl: TWinControl;
+  begin
+    if ParentControl<>nil then begin
+      OldParentControl:=ParentControl;
+      ParentControl:=nil;
+      OldParentControl.DisableAlign;
+    end;
+  end;
+  
 begin
   if Control.Parent=nil then begin
     // already undocked
@@ -1071,8 +1193,8 @@ begin
     Done:=false;
 
     if not Done then begin
-      // check if their is a splitter, that has a side with only Control anchored
-      // to it.
+      // check if their is a splitter, that has a side with only Control
+      // anchored to it.
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
         AnchorControl:=OldAnchorControls[a];
         if AnchorControl is TLazDockSplitter then begin
@@ -1108,24 +1230,26 @@ begin
       end;
       if IsSpiralSplitter then begin
         CombineSpiralSplitterPair(OldAnchorControls[akLeft] as TLazDockSplitter,
-                                  OldAnchorControls[akRight] as TLazDockSplitter);
+                                OldAnchorControls[akRight] as TLazDockSplitter);
         Done:=true;
       end;
     end;
 
     if not Done then begin
       // check if Control is the only child of a TLazDockPage
-      if (Control.Parent.ControlCount=1)
-      and (Control.Parent is TLazDockPage) then begin
-        RaiseGDBException('TODO');
+      if (ParentControl.ControlCount=1)
+      and (ParentControl is TLazDockPage) then begin
+        DoFinallyForParent;
+        DeletePage(TLazDockPage(Control.Parent));
       end;
     end;
     
     if not Done then begin
       // check if Control is the only child of a TLazDockForm
-      if (Control.Parent.ControlCount=1)
-      and (Control.Parent is TLazDockForm) then begin
-        RaiseGDBException('TODO');
+      if (ParentControl.ControlCount=1)
+      and (ParentControl is TLazDockForm) then begin
+        DoFinallyForParent;
+        DeleteDockForm(TLazDockForm(ParentControl));
       end;
     end;
     
@@ -1134,10 +1258,8 @@ begin
     end;
     
   finally
-    if ParentControl<>nil then
-      ParentControl.DisableAlign;
+    DoFinallyForParent;
   end;
-  
 end;
 
 procedure TAnchoredDockManager.InsertControl(Control: TControl;

@@ -141,6 +141,10 @@ function CodeMakroProcedureHead(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
+function CodeMakroProcedureName(const Parameter: string;
+                        InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -323,6 +327,15 @@ begin
   Result:=true;
 end;
 
+function CodeMakroProcedureName(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+begin
+  Result:=CodeMakroProcedureName(
+                          'WithoutParamList,WithoutBrackets,WithoutSemicolon',
+                          InteractiveValue,SrcEdit,Value,ErrorMsg);
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -375,6 +388,9 @@ begin
     +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
     +'WithoutSemicolon,   // skip semicolon at end'#13,
     @CodeMakroProcedureHead,nil);
+  RegisterCodeMacro('ProcedureName','insert procedure name',
+                    'Insert name of current procedure',
+                    @CodeMakroProcedureHead,nil);
 end;
 
 { TCodeTemplateEditForm }
