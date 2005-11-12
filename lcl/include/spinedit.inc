@@ -24,11 +24,12 @@ begin
   if Value>fMaxValue then Value:=fMaxValue;
   if (not HandleAllocated) then exit;
   if ([csLoading,csDestroying]*ComponentState<>[]) then begin
-    fValueNeedsUpdate:=true;
+    FUpdatePending := true;
     exit;
   end;
   TWSCustomFloatSpinEditClass(WidgetSetClass).UpdateControl(Self);
-  fValueNeedsUpdate:=false;
+  FValueChanged := true;
+  FUpdatePending := false;
 end;
 
 function TCustomFloatSpinEdit.ValueIsStored: boolean;
@@ -37,11 +38,14 @@ begin
 end;
 
 procedure TCustomFloatSpinEdit.TextChanged;
+var
+  lPrevValue: single;
 begin
-  if Value=fLastValueOnChange then exit;
-  fLastValueOnChange:=Value;
-  Modified := True;
-  FValueEmpty:=false;
+  lPrevValue := FValue;
+  FValueChanged := true;
+  if Value = lPrevValue then exit;
+  Modified := true;
+  FValueEmpty := false;
   if HandleAllocated and (not (csLoading in ComponentState)) then Change;
 end;
 
@@ -50,11 +54,6 @@ begin
   if FMaxValue=AValue then exit;
   FMaxValue:=AValue;
   UpdateControl;
-end;
-
-function TCustomFloatSpinEdit.ClimbRateIsStored: boolean;
-begin
-  Result := FClimbRate <> 1;
 end;
 
 function TCustomFloatSpinEdit.GetModified: Boolean;
@@ -137,10 +136,10 @@ begin
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEdit.SetClimbRate(const Num : Single);
+procedure TCustomFloatSpinEdit.SetIncrement(const NewIncrement: single);
 begin
-  if fClimbRate = Num then exit;
-  fClimbRate := Num;
+  if NewIncrement = FIncrement then exit;
+  FIncrement := NewIncrement;
   UpdateControl;
 end;
 
@@ -161,7 +160,7 @@ end;
 procedure TCustomFloatSpinEdit.Loaded;
 begin
   inherited Loaded;
-  if fValueNeedsUpdate then UpdateControl;
+  if FUpdatePending then UpdateControl;
 end;
 
 procedure TCustomFloatSpinEdit.Change;
@@ -176,16 +175,17 @@ Procedure TCustomFloatSpinEdit.SetValue(const num : Single);
 begin
   if FValue = Num then exit;
   FValue := Num;
-  fLastValueOnChange := FValue;
-  fValueNeedsUpdate:=true;
+  FUpdatePending := true;
   UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
 Function TCustomFloatSpinEdit.GetValue: Single;
 begin
-  if HandleAllocated and (not fValueNeedsUpdate) then begin
+  if HandleAllocated and FValueChanged then 
+  begin
     FValue := TWSCustomFloatSpinEditClass(WidgetSetClass).GetValue(Self);
+    FValueChanged := false;
   end;
   Result := fValue;
 end;
@@ -204,12 +204,13 @@ begin
   inherited Create(TheOwner);
   fCompStyle := csSpinEdit;
   
-  fClimbRate := 1;
+  FIncrement := 1;
   fDecimals := 2;
   fValue := 0;
-  fValueNeedsUpdate := true;
   fMinValue := 0;
   fMaxValue := 100;
+  FUpdatePending := true;
+  FValueChanged := true;
 
   SetInitialBounds(0,0,50,20);
   ParentColor := false;
@@ -261,9 +262,9 @@ end;
 
 { TCustomSpinEdit }
 
-function TCustomSpinEdit.GetClimbRate: integer;
+function TCustomSpinEdit.GetIncrement: integer;
 begin
-  Result:=round(FClimbRate);
+  Result:=round(FIncrement);
 end;
 
 function TCustomSpinEdit.GetMaxValue: integer;
@@ -281,10 +282,10 @@ begin
   Result:=round(inherited GetValue);
 end;
 
-procedure TCustomSpinEdit.SetClimbRate(const AValue: integer);
+procedure TCustomSpinEdit.SetIncrement(const AValue: integer);
 begin
-  if ClimbRate=AValue then exit;
-  inherited SetClimbRate(AValue);
+  if Increment = AValue then exit;
+  inherited SetIncrement(AValue);
 end;
 
 procedure TCustomSpinEdit.SetMaxValue(const AValue: integer);

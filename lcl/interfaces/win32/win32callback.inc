@@ -440,10 +440,11 @@ Var
     ScrollbarHandle := HWND(LParam);
     if ScrollbarHandle<>0 then
       lWinControl := GetWindowInfo(ScrollbarHandle)^.WinControl;
-    if lWinControl is TCustomTrackBar 
-    then begin
-      LMessage.Msg := LM_CHANGED;
-      Exit;
+    if lWinControl <> nil then
+    begin
+      if lWinControl is TCustomTrackBar then 
+        LMessage.Msg := LM_CHANGED;
+      exit;
     end;
 
     PLMsg:=@LMScroll;
@@ -585,6 +586,42 @@ Var
   function IsComboEditSelection: boolean;
   begin
     Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
+  end;
+
+  procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
+  var
+    lWindowInfo: PWindowInfo;
+    lNewValue: single;
+  begin
+    lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
+    if lWindowInfo = @DefaultWindowInfo then exit;
+    lNewValue := StrToFloatDef(ASpinEdit.Text, lWindowInfo^.spinValue);
+    if lNewValue <> lWindowInfo^.spinValue then
+    begin
+      lWindowInfo^.spinValue := lNewValue;
+      LMessage.Msg := CM_TEXTCHANGED;
+    end;
+  end;
+
+  procedure HandleSpinEditDeltaPos(AUpDownMsg: PNMUpDown);
+  var
+    lSpinEdit: TCustomFloatSpinEdit;
+    spinHandle: HWND;
+    newValue: single;
+  begin
+    lSpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
+    newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * lSpinEdit.Increment;
+    if (lSpinEdit.MinValue <> 0) or (lSpinEdit.MaxValue <> 0) then
+    begin
+      if newValue > lSpinEdit.MaxValue then
+        newValue := lSpinEdit.MaxValue;
+      if newValue < lSpinEdit.MinValue then
+        newValue := lSpinEdit.MinValue;
+    end;
+    spinHandle := AUpDownMsg^.hdr.hwndFrom;
+    UpdateFloatSpinEditText(spinHandle, NewValue, lSpinEdit.DecimalPlaces);
+    Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
+    WindowInfo^.spinValue := newValue;
   end;
     
 Begin
@@ -749,18 +786,22 @@ Begin
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
           end
-        else if (lWinControl is TCustomEdit) or (lWinControl is TCustomFloatSpinEdit) then
+        else if (lWinControl is TCustomEdit) then
           case Hi(WParam) of
-            EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
+            EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
+          end
+        else if (lWinControl is TCustomFloatSpinEdit) then
+          case Hi(WParam) of
+            EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
           end
         else if (lWinControl is TCustomMemo) then
           case Hi(WParam) of
             // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
-            EN_UPDATE:    LMessage.Msg := CM_TEXTCHANGED;
+            EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
           end
         else if (lWinControl is TCustomListBox) then
           case Hi(WParam) of
-            LBN_SELCHANGE:    LMessage.Msg := LM_SELCHANGE;
+            LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
           end
         else if lWinControl is TCustomCombobox then
           case Hi(WParam) of
@@ -1215,13 +1256,20 @@ Begin
     End;
     WM_NOTIFY:
     Begin
-      if PNMHdr(LParam)^.code=MCN_SELCHANGE then begin
-        LMessage.Msg := LM_CHANGED;
-        WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
-        if WindowInfo^.WinControl<>nil then
-          lWinControl := WindowInfo^.WinControl;
-      end
-      else begin
+      WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+      case PNMHdr(LParam)^.code of
+        MCN_SELCHANGE:
+        begin
+          LMessage.Msg := LM_CHANGED;
+          if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
+            lWinControl := WindowInfo^.WinControl;
+        end;
+        UDN_DELTAPOS:
+        begin
+          if WindowInfo <> nil then
+            HandleSpinEditDeltaPos(PNMUpDown(LParam));
+        end; 
+      else
         PLMsg:=@LMNotify;
         With LMNotify Do
         Begin
@@ -1238,9 +1286,9 @@ Begin
               idFrom := Windows.SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
             end;
           end;
-        End;
+        end;
       end;
-    End;
+    end;
     WM_PAINT:
     Begin
       SendPaintMessage;

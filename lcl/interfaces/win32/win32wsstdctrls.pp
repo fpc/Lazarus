@@ -667,17 +667,11 @@ begin
 end;
 
 function  TWin32WSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
-var
-  Handle: HWND;
-  TextLen: dword;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then
     exit;
-  Handle := AWinControl.Handle;
-  TextLen := GetWindowTextLength(Handle);
-  SetLength(AText, TextLen);
-  GetWindowText(Handle, PChar(AText), TextLen + 1);
+  AText := GetControlText(AWinControl.Handle);
 end;
 
 procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
@@ -815,17 +809,11 @@ begin
 end;
 
 function  TWin32WSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
-var
-  TextLen: dword;
-  Handle: HWND;
 begin
   Result := AWinControl.HandleAllocated;
   if not Result then
     exit;
-  Handle := AWinControl.Handle;
-  TextLen := GetWindowTextLength(Handle);
-  SetLength(AText, TextLen);
-  GetWindowText(Handle, PChar(AText), TextLen + 1);
+  AText := GetControlText(AWinControl.Handle);
 end;
 
 procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);

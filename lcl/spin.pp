@@ -37,19 +37,18 @@ type
 
   TCustomFloatSpinEdit = class(TWinControl)
   private
-    fClimbRate: Single;
-    fDecimals: Integer;
-    fLastValueOnChange: single;
+    FIncrement: single;
+    FDecimals: integer;
     FMaxValue: single;
     FMinValue: single;
     FModified: boolean;
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
-    fValue: Single;
+    FValue: Single;
     FValueEmpty: boolean;
-    fValueNeedsUpdate: boolean;
-    function ClimbRateIsStored: boolean;
+    FUpdatePending: boolean;
+    FValueChanged: boolean;
     function GetModified: Boolean;
     function GetSelLength: integer;
     function GetSelStart: integer;
@@ -70,7 +69,7 @@ type
     procedure SetDecimals(Num: Integer);
     function GetValue: Single;
     procedure SetValue(const Num: Single);
-    procedure SetClimbRate(const Num: Single);
+    procedure SetIncrement(const NewIncrement: single);
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
@@ -91,7 +90,7 @@ type
     property Text;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
-    property ClimbRate: Single read FClimbRate write SetClimbRate default 1;
+    property Increment: Single read FIncrement write SetIncrement default 1;
     property MinValue: single read FMinValue write SetMinValue default 0;
     property MaxValue: single read FMaxValue write SetMaxValue default 100;
     property TabStop default true;
@@ -109,6 +108,7 @@ type
     property Constraints;
     property DecimalPlaces;
     property Enabled;
+    property Increment;
     property MaxValue;
     property MinValue;
     property OnChange;
@@ -137,21 +137,21 @@ type
   
   TCustomSpinEdit = class(TCustomFloatSpinEdit)
   private
-    function GetClimbRate: integer;
+    function GetIncrement: integer;
     function GetMaxValue: integer;
     function GetMinValue: integer;
     function GetValue: integer;
-    procedure SetClimbRate(const AValue: integer);
+    procedure SetIncrement(const AValue: integer);
     procedure SetMaxValue(const AValue: integer);
     procedure SetMinValue(const AValue: integer);
     procedure SetValue(const AValue: integer);
   public
     constructor Create(TheOwner: TComponent); override;
   public
-    property Value: integer read GetValue write SetValue;
-    property MinValue: integer read GetMinValue write SetMinValue;
-    property MaxValue: integer read GetMaxValue write SetMaxValue;
-    property ClimbRate: integer read GetClimbRate write SetClimbRate;
+    property Value: integer read GetValue write SetValue default 0;
+    property MinValue: integer read GetMinValue write SetMinValue default 0;
+    property MaxValue: integer read GetMaxValue write SetMaxValue default 100;
+    property Increment: integer read GetIncrement write SetIncrement default 1;
   end;
   
   
@@ -162,9 +162,10 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-    property ClimbRate;
+    property ClimbRate: integer write SetIncrement stored false; // TODO: remove, deprecated
     property Constraints;
     property Enabled;
+    property Increment;
     property MaxValue;
     property MinValue;
     property OnChange;

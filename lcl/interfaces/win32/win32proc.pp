@@ -54,6 +54,8 @@ Type
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
+    case integer of
+      0: (spinValue: single);
   end;
 
 function WM_To_String(WM_Message: Integer): string;
@@ -96,6 +98,7 @@ procedure EnableApplicationWindows(Window: HWND);
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+function GetControlText(AHandle: HWND): string;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1079,6 +1082,15 @@ begin
   end;
   SelectObject(canvasHandle, oldFontHandle);
   ReleaseDC(winHandle, canvasHandle);
+end;
+
+function GetControlText(AHandle: HWND): string;
+var
+  TextLen: dword;
+begin
+  TextLen := GetWindowTextLength(AHandle);
+  SetLength(Result, TextLen);
+  GetWindowText(AHandle, PChar(Result), TextLen + 1);
 end;
 
 

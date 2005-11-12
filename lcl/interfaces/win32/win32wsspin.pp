@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Spin, Controls, LCLType,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Windows, Win32Int, WinExt,
+  WSSpin, WSLCLClasses, Windows, Win32Int, WinExt, Win32Proc,
   Win32WSStdCtrls, Win32WSControls;
   
 type
@@ -52,6 +52,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class function  GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
     class function  GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
     class procedure SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer); override;
@@ -70,25 +71,43 @@ type
   end;
 
 
+procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: single;
+  const ADecimalPlaces: integer);
+
 implementation
 
+uses
+  SysUtils;
+
 { TWin32WSCustomFloatSpinEdit }
+
+function GetBuddyWindow(AHandle: HWND): HWND;
+begin
+  Result := SendMessage(AHandle, UDM_GETBUDDY, 0, 0)
+end;
 
 procedure UpdateFloatSpinEditControl(const Handle: HWND;
   const AFloatSpinEdit: TCustomFloatSpinEdit);
 var
-  minval, maxval: integer;
+  lWindowInfo: PWindowInfo;
 begin
-  // initialize extremes
-  minval := Trunc(AFloatSpinEdit.MinValue);
-  maxval := Trunc(AFloatSpinEdit.MaxValue);
-  if (minval = 0) and (maxval = 0) then
+  lWindowInfo := GetWindowInfo(Handle);
+  if lWindowInfo <> @DefaultWindowInfo then
   begin
-    minval := low(integer);
-    maxval := high(integer);
+    lWindowInfo^.spinValue := AFloatSpinEdit.Value;
+    UpdateFloatSpinEditText(Handle, AFloatSpinEdit.Value, AFloatSpinEdit.DecimalPlaces);
   end;
-  SendMessage(Handle, UDM_SETRANGE32, minval, maxval);
-  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(AFloatSpinEdit.Value)));
+end;
+
+procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: single;
+  const ADecimalPlaces: integer);
+var
+  editHandle: HWND;
+  newValueText: string;
+begin
+  editHandle := GetBuddyWindow(ASpinHandle);
+  newValueText := FloatToStrF(ANewValue, ffFixed, 20, ADecimalPlaces);
+  Windows.SendMessage(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PChar(newValueText)));
 end;
   
 function TWin32WSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
@@ -102,15 +121,15 @@ begin
   with Params do
   begin
     Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-    Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT),
+    Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
       0, 0,       // size - ignored for buddy
       Parent, 0, HInstance, Buddy,
-      0, 0, 0);
-    UpdateFloatSpinEditControl(Window, TCustomFloatSpinEdit(AWinControl));
+      1000, 0, 500);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, true);
+  UpdateFloatSpinEditControl(Params.Window, TCustomFloatSpinEdit(AWinControl));
   // init buddy
   Params.SubClassWndProc := @WindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
@@ -135,35 +154,40 @@ end;
 function  TWin32WSCustomFloatSpinEdit.GetSelStart(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
-  Result := EditGetSelStart(SendMessage(ACustomFloatSpinEdit.Handle,
-                            UDM_GETBUDDY, 0, 0));
+  Result := EditGetSelStart(GetBuddyWindow(ACustomFloatSpinEdit.Handle));
 end;
 
 function  TWin32WSCustomFloatSpinEdit.GetSelLength(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
-  Result := EditGetSelLength(SendMessage(ACustomFloatSpinEdit.Handle,
-                             UDM_GETBUDDY, 0, 0));
+  Result := EditGetSelLength(GetBuddyWindow(ACustomFloatSpinEdit.Handle));
+end;
+
+function  TWin32WSCustomFloatSpinEdit.GetText(const AWinControl: TWinControl; 
+  var AText: string): boolean;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    exit;
+  AText := GetControlText(GetBuddyWindow(AWinControl.Handle));
 end;
 
 function  TWin32WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
-  Result := SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETPOS32, 0, 0);
+  Result := GetWindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
 end;
 
 procedure TWin32WSCustomFloatSpinEdit.SetSelStart(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
-  EditSetSelStart(SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETBUDDY, 0, 0),
-                  NewStart);
+  EditSetSelStart(GetBuddyWindow(ACustomFloatSpinEdit.Handle), NewStart);
 end;
 
 procedure TWin32WSCustomFloatSpinEdit.SetSelLength(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
-  EditSetSelLength(SendMessage(ACustomFloatSpinEdit.Handle, UDM_GETBUDDY, 0, 0),
-                   NewLength);
+  EditSetSelLength(GetBuddyWindow(ACustomFloatSpinEdit.Handle), NewLength);
 end;
 
 procedure TWin32WSCustomFloatSpinEdit.ShowHide(const AWinControl: TWinControl);
@@ -172,12 +196,11 @@ var
 begin
   // call inherited
   TWin32WSWinControl.ShowHide(AWinControl);
-  Buddy := SendMessage(AWinControl.Handle, UDM_GETBUDDY, 0, 0);
+  Buddy := GetBuddyWindow(AWinControl.Handle);
   if AWinControl.HandleObjectShouldBeVisible then
     ShowWindow(Buddy, SW_SHOW)
   else
     ShowWindow(Buddy, SW_HIDE);
-
 end;
 
 procedure TWin32WSCustomFloatSpinEdit.UpdateControl(
