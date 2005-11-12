@@ -246,6 +246,10 @@ msgstr ""
 msgid "A required packages was not found. See package graph."
 msgstr ""
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr ""
@@ -4774,6 +4778,10 @@ msgstr ""
 msgid "Paragraphs"
 msgstr ""
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr ""
@@ -5509,10 +5517,6 @@ msgstr "venäjä"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "venäjä(CP1251)"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr "venäjä(UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "

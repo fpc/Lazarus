@@ -410,7 +410,7 @@ end;
 
 function TFileDescPascalUnitWithForm.GetLocalizedDescription: string;
 begin
-  Result:='Create a new unit with a LCL form.';
+  Result:=lisNewDlgCreateANewUnitWithALCLForm;
 end;
 
 { TFileDescPascalUnitWithDataModule }
@@ -435,7 +435,7 @@ end;
 
 function TFileDescPascalUnitWithDataModule.GetLocalizedDescription: string;
 begin
-  Result:='Create a new unit with a datamodule.';
+  Result:=lisNewDlgCreateANewUnitWithADataModule;
 end;
 
 { TFileDescText }
@@ -455,7 +455,7 @@ end;
 
 function TFileDescText.GetLocalizedDescription: string;
 begin
-  Result:='Create a new empty text file.';
+  Result:=lisNewDlgCreateANewEmptyTextFile;
 end;
 
 { TFileDescSimplePascalProgram }
@@ -474,9 +474,8 @@ end;
 
 function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
 begin
-  Result:='A simple Pascal Program file.'#13
-    +'This can be used for quick and dirty testing.'#13
-    +'Better create a new project.';
+  Result:=Format(lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi, [#13,
+    #13]);
 end;
 
 function TFileDescSimplePascalProgram.CreateSource(const Filename, SourceName,

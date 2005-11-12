@@ -246,6 +246,10 @@ msgstr "Een Pascal unit dient op .pp of .pas te eindigen."
 msgid "A required packages was not found. See package graph."
 msgstr "Een benodigd package was niet gevonden. Zie de package graph."
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Een geldige Tool heeft tenminste een titel en een bestandsnaam nodig."
@@ -4774,6 +4778,10 @@ msgstr "Palette pagina:"
 msgid "Paragraphs"
 msgstr "Paragrafen"
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Parameters:"
@@ -5509,10 +5517,6 @@ msgstr "Russisch"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "Russisch(CP1251)"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr "Russisch(UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "

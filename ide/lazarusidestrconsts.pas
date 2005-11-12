@@ -1960,6 +1960,9 @@ resourcestring
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
+  lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
+    +'Program file.%sThis can be used for quick and dirty testing.%sBetter '
+    +'create a new project.';
   lisNewDlgCreateANewGraphicalApplication = 'Create a new '
     +'graphical application.%sThe program file is maintained by Lazarus.';
   lisNewDlgCreateANewProgram = 'Create a new '

@@ -256,6 +256,10 @@ msgstr "Una unidad de pascal debe tener la extension .pp o .pas"
 msgid "A required packages was not found. See package graph."
 msgstr "No se encontró un paquete requerido. Mira el gráfico de paquetes."
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Una herramienta válida necesita como mínimo un título y un nombre de fichero."
@@ -4784,6 +4788,10 @@ msgstr "Página de paleta:"
 msgid "Paragraphs"
 msgstr "Párrafos"
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Parámetros:"
@@ -5519,10 +5527,6 @@ msgstr "Ruso"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "Ruso(CP1251)"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr "Ruso(UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "

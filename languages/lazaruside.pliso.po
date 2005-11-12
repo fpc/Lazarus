@@ -257,6 +257,10 @@ msgstr "Modu³ pascala powinien mieæ rozszerzenie .pp lub .pas"
 msgid "A required packages was not found. See package graph."
 msgstr "Nie znalaz³em wymaganego pakietu. Spójrz na listê pakietów."
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Poprawny wois narzêdzia wymaga przynajmniej nazwy i nazwy pliku."
@@ -4785,6 +4789,10 @@ msgstr "Zak³adka palet:"
 msgid "Paragraphs"
 msgstr "Akapity"
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Parametry:"
@@ -5520,10 +5528,6 @@ msgstr "Russian"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "Russian(CP1251)"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr ""
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "

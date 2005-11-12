@@ -1870,6 +1870,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr ""
@@ -4870,10 +4874,6 @@ msgstr ""
 msgid "Russian(CP1251)"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
 msgstr ""
@@ -6128,6 +6128,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
+msgstr ""
+
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication

@@ -257,6 +257,10 @@ msgstr ".pas או .pp יחידת פסקל חייבת להיות עם סיומת 
 msgid "A required packages was not found. See package graph."
 msgstr ".חבילה הכרחית לא נמצאה. הבט בתרשים החבילה"
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr ".כלי תקף צריך לפחות כותרת ושם קובץ"
@@ -4785,6 +4789,10 @@ msgstr ""
 msgid "Paragraphs"
 msgstr ""
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr ""
@@ -5520,10 +5528,6 @@ msgstr "רוסית"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "(CP1251) רוסית"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr ""
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "

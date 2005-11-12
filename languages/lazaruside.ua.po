@@ -246,6 +246,10 @@ msgstr "Модуль паскаля має мати розширення .pp а�
 msgid "A required packages was not found. See package graph."
 msgstr "Необхідний пакунок не знайдений. Див. діаграму пакунків."
 
+#: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
+msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Нормальний інструмент обов'язково має мати заголовок і назву файлу."
@@ -4774,6 +4778,10 @@ msgstr "Сторінка палітри:"
 msgid "Paragraphs"
 msgstr "Абзаци"
 
+#: lazarusidestrconsts:liscmparameter
+msgid "Parameter"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Параметри:"
@@ -5509,10 +5517,6 @@ msgstr "Російська"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "Російська(CP1251)"
-
-#: lazarusidestrconsts:rslanguagerussianutf
-msgid "Russian(UTF8)"
-msgstr "Російська (UTF8)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
