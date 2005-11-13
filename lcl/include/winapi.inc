@@ -344,6 +344,11 @@ begin
   Result := WidgetSet.GetFontLanguageInfo(DC);
 end;
 
+function GetForegroundWindow: HWND;
+begin
+  Result := WidgetSet.GetForegroundWindow;
+end;
+
 function GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := WidgetSet.GetKeyState(nVirtKey);

@@ -104,6 +104,7 @@ function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var Origi
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetFocus: HWND; Override;
+function GetForegroundWindow: HWND; override;
 function GetKeyState(NVirtKey: Integer): SmallInt; Override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; Override;
 function GetParent(Handle: HWND): HWND; Override;

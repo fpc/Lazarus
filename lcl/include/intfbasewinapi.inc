@@ -820,6 +820,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetForegroundWindow: HWND;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := 0;

@@ -1868,6 +1868,7 @@ function TWin32WidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: 
 begin
   Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
 end;
+
 {------------------------------------------------------------------------------
   Method:  GetFocus
   Params:  none
@@ -1879,6 +1880,19 @@ Function TWin32WidgetSet.GetFocus: HWND;
 Begin
   Result := Windows.GetFocus;
 End;
+
+{------------------------------------------------------------------------------
+  Method:  GetForegroundWindow
+  Params:  none
+  Returns: The handle of the foreground window
+
+  The GetForegroundWindow function returns the window that the user is
+  currently working with, session wide.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetForegroundWindow: HWND;
+begin
+  Result := Windows.GetForegroundWindow;
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetKeyState
