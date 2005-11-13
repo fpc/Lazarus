@@ -40,7 +40,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
-  Laz_XMLCfg,
+  Laz_XMLCfg, 
+  { for Get/SetForegroundWindow }
+  LCLType, LCLIntf,   
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf,
   LazConf, DebugOptionsFrm,
@@ -91,6 +93,7 @@ type
     FDebugger: TDebugger;
     FBreakPointGroups: TIDEBreakPointGroups;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
+    FPrevShownWindow: HWND;
 
     // When a source file is not found, the user can choose one
     // here are all choices stored
@@ -1123,13 +1126,22 @@ begin
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun
-    and (MainIDE.ToolStatus=itDebugger)
-    then MainIDE.HideIDE;
+    if EnvironmentOptions.HideIDEOnRun 
+        and (MainIDE.ToolStatus=itDebugger) then 
+      MainIDE.HideIDE;
+    if FPrevShownWindow <> 0 then
+    begin
+      SetForegroundWindow(FPrevShownWindow);
+      FPrevShownWindow := 0;
+    end;
   end
   else begin
-    if (OldState in [dsRun])
-    then MainIDE.UnhideIDE;
+    if (OldState in [dsRun]) then 
+    begin
+      MainIDE.UnhideIDE;
+      FPrevShownWindow := GetForegroundWindow;
+      Application.BringToFront;
+    end;
   end;
   
   // unmark execution line
