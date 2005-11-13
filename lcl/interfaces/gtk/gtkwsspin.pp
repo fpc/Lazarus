@@ -138,7 +138,7 @@ begin
   end;
   gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
   gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
-  AnAdjustment^.step_increment := ACustomFloatSpinEdit.ClimbRate;
+  AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;
 end;
 
 initialization
