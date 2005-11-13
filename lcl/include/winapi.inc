@@ -53,11 +53,6 @@ begin
   Result := WidgetSet.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
 
-Function BringWindowToTop(hWnd : HWND): Boolean;
-begin
-  Result := WidgetSet.BringWindowToTop(hWnd);
-end;
-
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; WParam: WParam; LParam: LParam) : Integer;
 begin
   Result := WidgetSet.CallNextHookEx(hhk, ncode, WParam, LParam);
@@ -738,6 +733,11 @@ begin
 //DebugLn('[winapi.inc SetFocus] A');
   Result := WidgetSet.SetFocus(hWnd);
 //DebugLn('[winapi.inc SetFocus] END');
+end;
+
+function SetForegroundWindow(hWnd: HWND): boolean;
+begin
+  Result := WidgetSet.SetForegroundWindow(hWnd);
 end;
 
 function SetMapMode(DC: HDC; MapMode: Integer): Integer;

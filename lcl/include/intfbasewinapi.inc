@@ -71,11 +71,6 @@ begin
   Result := False;
 end;
 
-Function TWidgetSet.BringWindowToTop(hWnd : HWND): Boolean;
-begin
-  Result := false;
-end;
-
 function TWidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer;
   WParam: WParam; LParam: LParam) : Integer;
 begin
@@ -1320,6 +1315,11 @@ end;
 function TWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
+end;
+
+function TWidgetSet.SetForegroundWindow(hWnd : HWND): Boolean;
+begin
+  Result := false;
 end;
 
 function TWidgetSet.SetMapMode(DC: HDC; MapMode: Integer): Integer;

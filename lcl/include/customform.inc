@@ -788,7 +788,7 @@ begin
   if Parent=nil then begin
     if TopMost and HandleAllocated then begin
       //TODO: call TWSCustomFormClass(Widgetset).SetZORder.
-      BringWindowToTop(Handle);
+      SetForegroundWindow(Handle);
     end;
     exit;
   end;

@@ -118,21 +118,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:  BringWindowToTop
-  Params:  HWnd - The handle of the window
-  Returns: True if succesful
-
-  The BringWindowToTop function brings the specified window to top (highest z-
-  index level).
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.BringWindowToTop(HWnd: HWND): Boolean;
-Begin
-  Assert(False, 'Trace:TWin32WidgetSet.BringWindowToTop - Start');
-  Result := Boolean(Windows.BringWindowToTop(HWnd));
-  Assert(False, 'Trace:TWin32WidgetSet.BringWindowToTop - Exit');
-End;
-
-{------------------------------------------------------------------------------
   Method:  CallDefaultWndHandler
   Params:  Sender - object, that sent the message
            Message - a TLMessage
@@ -2874,6 +2859,21 @@ end;
 Function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
 Begin
   Result := Windows.SetFocus(HWnd);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  SetForegroundWindow
+  Params:  HWnd - The handle of the window
+  Returns: True if succesful
+
+  The SetForegroundWindow function brings the specified window to top 
+    (highest z-index level).
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
+Begin
+  Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Start');
+  Result := Windows.SetForegroundWindow(HWnd);
+  Assert(False, 'Trace:TWin32WidgetSet.SetForegroundWindow - Exit');
 End;
 
 {------------------------------------------------------------------------------

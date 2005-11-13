@@ -179,86 +179,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: BringWindowToTop
-  Params: hWnd:
-  Returns:
-
- ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.BringWindowToTop(hWnd : HWND): Boolean;
-var
-  {$IFDEF VerboseFocus}
-  LCLObject: TControl;
-  {$ENDIF}
-  GdkWindow: PGdkWindow;
-  AForm: TCustomForm;
-  {$IFDEF GTK1}
-  FormWidget: PGtkWidget;
-  FormWindow: PGdkWindowPrivate;
-  WindowDesktop: Integer;
-  {$ENDIF}
-begin
-  {$IFDEF VerboseFocus}
-  DbgOut('TGtkWidgetSet.BringWindowToTop hWnd=',DbgS(hWnd));
-  LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
-  if LCLObject<>nil then
-    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    DebugLn(' LCLObject=nil');
-  {$ENDIF}
-  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
-  if Result then begin
-    GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
-    if GdkWindow<>nil then begin
-      AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
-      if (AForm<>nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
-      begin
-        if Screen.CustomFormZIndex(AForm)<Screen.GetCurrentModalFormZIndex then
-        begin
-          debugln('TGtkWidgetSet.BringWindowToTop Form=',DbgSName(AForm),
-                  ' can not be raised, because ',
-                  DbgSName(Screen.GetCurrentModalForm),
-                  ' is modal and above.');
-          Result:=false;
-          exit;
-        end;
-        Screen.MoveFormToZFront(AForm);
-      end;
-      {$IFDEF DebugGDKTraps}
-      BeginGDKErrorTrap;
-      {$ENDIF}
-      gdk_window_show(GdkWindow);
-      gdk_window_raise(GdkWindow);
-      {$IFDEF DebugGDKTraps}
-      EndGDKErrorTrap;
-      {$ENDIF}
-      {$IFDEF GTK1}
-      FormWidget:=PGtkWidget(AForm.Handle);
-      FormWindow:=PGdkWindowPrivate(FormWidget^.window);
-      if FormWindow<>nil then begin
-        WindowDesktop := GDK_WINDOW_GET_DESKTOP(FormWindow);
-        // this prevents the window from appearing on a different desktop
-        // which could be undesirable.
-
-        // check if the window is on all desktops or is on the current desktop
-        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then
-        begin
-          GDK_WINDOW_ACTIVATE(FormWindow);
-        end
-        else begin
-          // TODO: Figure out how to set the focus on an inactive desktop without
-          //       bringing the window to the current desktop
-        end;
-      end;
-      {$ENDIF}
-{$ifdef gtk2}
-      // this currently will bring the window to the current desktop and focus it
-      gtk_window_present(PGtkWindow(hWnd));
-{$endif gtk2}
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: CallNextHookEx
   Params:  none
   Returns: Nothing
@@ -8518,6 +8438,86 @@ begin
     write(' NewLCLParent=nil');
   DebugLn('');
   {$EndIf}
+end;
+
+{------------------------------------------------------------------------------
+  Function: SetForegroundWindow
+  Params: hWnd:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.SetForegroundWindow(hWnd : HWND): boolean;
+var
+  {$IFDEF VerboseFocus}
+  LCLObject: TControl;
+  {$ENDIF}
+  GdkWindow: PGdkWindow;
+  AForm: TCustomForm;
+  {$IFDEF GTK1}
+  FormWidget: PGtkWidget;
+  FormWindow: PGdkWindowPrivate;
+  WindowDesktop: Integer;
+  {$ENDIF}
+begin
+  {$IFDEF VerboseFocus}
+  DbgOut('TGtkWidgetSet.SetForegroundWindow hWnd=',DbgS(hWnd));
+  LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
+  if LCLObject<>nil then
+    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    DebugLn(' LCLObject=nil');
+  {$ENDIF}
+  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
+  if Result then begin
+    GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
+    if GdkWindow<>nil then begin
+      AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
+      if (AForm<>nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
+      begin
+        if Screen.CustomFormZIndex(AForm)<Screen.GetCurrentModalFormZIndex then
+        begin
+          debugln('TGtkWidgetSet.SetForegroundWindow Form=',DbgSName(AForm),
+                  ' can not be raised, because ',
+                  DbgSName(Screen.GetCurrentModalForm),
+                  ' is modal and above.');
+          Result:=false;
+          exit;
+        end;
+        Screen.MoveFormToZFront(AForm);
+      end;
+      {$IFDEF DebugGDKTraps}
+      BeginGDKErrorTrap;
+      {$ENDIF}
+      gdk_window_show(GdkWindow);
+      gdk_window_raise(GdkWindow);
+      {$IFDEF DebugGDKTraps}
+      EndGDKErrorTrap;
+      {$ENDIF}
+      {$IFDEF GTK1}
+      FormWidget:=PGtkWidget(AForm.Handle);
+      FormWindow:=PGdkWindowPrivate(FormWidget^.window);
+      if FormWindow<>nil then begin
+        WindowDesktop := GDK_WINDOW_GET_DESKTOP(FormWindow);
+        // this prevents the window from appearing on a different desktop
+        // which could be undesirable.
+
+        // check if the window is on all desktops or is on the current desktop
+        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then
+        begin
+          GDK_WINDOW_ACTIVATE(FormWindow);
+        end
+        else begin
+          // TODO: Figure out how to set the focus on an inactive desktop without
+          //       bringing the window to the current desktop
+        end;
+      end;
+      {$ENDIF}
+{$ifdef gtk2}
+      // this currently will bring the window to the current desktop and focus it
+      gtk_window_present(PGtkWindow(hWnd));
+{$endif gtk2}
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------

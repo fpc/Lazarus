@@ -27,7 +27,6 @@ function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
 
 function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
-function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
 function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam: WParam; LParam: LParam): Integer; Override;
@@ -171,6 +170,7 @@ function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
 function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(HWnd: HWND): HWND; Override;
+function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; Override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; Override;
