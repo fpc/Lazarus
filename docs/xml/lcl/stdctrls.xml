@@ -3643,15 +3643,13 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.MaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Max Length</short>
+        <descr>Max Length: maximum length allowed for text string</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Modified">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Modified</short>
+        <descr>Modified: has the text been modified since creation?</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.OnChange">
@@ -3661,9 +3659,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.PasswordChar">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Password Character</short>
+        <descr>Password Character: the character which appears in the Edit box replacing and masking the actual character typed. Typically used in password input, to prevent the typed characters from being seen by passers-by or casual observers (or even malicious observers!)</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.PopupMenu">
@@ -3679,21 +3676,18 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelLength">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Sel Length</short>
+        <descr>Sel Length: the length (in characters) of the text that has been selected for editing</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelStart">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Sel Start</short>
+        <descr>Sel Start: the index of the character from which selection (for editing) begins</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelText">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Sel Text</short>
+        <descr>Sel Text: the text of the actual string that has been selected for editing</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.TabOrder">
@@ -3709,9 +3703,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Text">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Text</short>
+        <descr>Text: the character string contained in the Edit Box</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemoScrollbar">
@@ -3927,10 +3920,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomMemo.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create</short>
+        <descr>Create the Custom memo widget</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.Create.AOwner">
@@ -3938,10 +3929,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomMemo.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Destroy</short>
+        <descr>Destroy the CustomMemo widget when you have finished with it</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMemo.Append">
@@ -3963,9 +3952,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.Lines">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Lines</short>
+        <descr>Lines: an array of strings (representing single lines of characters) which contains the textual material held or being entered in the Memo.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.ScrollBars">
@@ -3975,9 +3963,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.WordWrap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Word Wrap</short>
+        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word nears the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.HorzScrollBar">
@@ -3994,13 +3981,13 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- object Visibility: default -->
       <element name="TEdit">
         <short>Edit Box</short>
-        <descr>Edit Box: for entry or display of a single line of text</descr>
+        <descr>Edit Box: for entry or display of a single line of text.
+<br/>Inherits most of its properties from TCustomEdit</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Action">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Action</short>
+        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. <br/>This should point to a user-defined procedure or function or an item on an action list.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Align">
@@ -4034,9 +4021,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.CharCase">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Char Case</short>
+        <descr>Character Case: the default character case (Upper or Lower case) to be used in the Edit Box. Can, of course, be over-ridden by use of the [shift] key.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.DragMode">
@@ -4197,7 +4183,7 @@ radio buttons will be mutually exclusive within the group.</descr>
       <!-- object Visibility: default -->
       <element name="TMemo">
         <short>Memo Box</short>
-        <descr>Memo box: for entry or display of multiple lines of text</descr>
+        <descr>Memo box: for entry or display of multiple lines of text.<br/>Inherits most of its properties from TCustomMemo</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.Align">
@@ -4237,15 +4223,13 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.Lines">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Lines</short>
+        <descr>Lines: an array of strings (representing single lines of characters) which contains the textual material held or being entered in the Memo.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.MaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Max Length</short>
+        <descr>Max Length: the maximum permitted length for the textual material in the memo</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.OnChange">
@@ -4357,9 +4341,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.WordWrap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Word Wrap</short>
+        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word nears the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomLabel">
@@ -4713,10 +4696,16 @@ or the message may be changed dynamically, eg <br/>
       <!-- object Visibility: default -->
       <element name="TButtonControl">
         <short>Button Control</short>
-        <descr>Button Control:  Base Type for the Button (including Radio Button) and Check Box types ;
+        <descr>Button Control:  Base Type for the Button (including Radio Button) and Check Box types ;<br/>
+
 processes the detection of clicks and changes, and the checked/unchecked state of the component.<br/>
+
+
 A rectangular button, whose shape can be specified,
-and which usually has an informative caption. It is designed to be pressed or selected by the mouse cursor, and usually initiates some activity with the OnClick Event. <br/>Properties can include Checked, Click (mouse clicks on button) and the actions to be taken on a change in a property.</descr>
+and which usually has an informative caption. <br/>
+It is designed to be pressed or selected by the mouse cursor, and usually initiates some activity with the OnClick Event. <br/>
+
+Properties can include [Checked], [Click] (mouse clicks on button) and the actions to be taken on a change in a property.<br/>Typically, clicking on the box will cause the box to be checked (or unchecked if it is already checked) as well as initiating any other action associated with the box.<br/>The programmer is responsible for ensuring that the appropriate actions and changes in checked status are performed.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TButtonControl.FClicksDisabled">
@@ -5053,9 +5042,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Action">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Action</short>
+        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. <br/>This should point to a user-defined procedure or function or an item on an action list.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Align">
@@ -5065,9 +5053,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AllowGrayed">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Allow Grayed</short>
+        <descr>Allow Grayed: a flag to show whether the box is allowed to be Greyed out, <br/>ie it is still visible, but appears faint and cannot be selected or activated with the mouse cursor or keyboard</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Anchors">
@@ -5089,9 +5076,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Caption</short>
+        <descr>Caption: a brief description appearing near the check box, usually stating the function of the box or what action will be taken if it becomes checked.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Checked">
@@ -5131,9 +5117,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Hint</short>
+        <descr>Hint: a short piece of pop-up text that appears if the mouse-cursor hovers over the check box; <br/>it should give further details of the function of the box</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnChange">
@@ -5227,9 +5212,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Show Hint</short>
+        <descr>Show Hint: a flag to show whether or not the hint is to be shown when the mouse cursor hovers over the box.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.State">
