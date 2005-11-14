@@ -1146,10 +1146,10 @@ Type
     property Align;
     property Anchors;
     property BorderSpacing;
-    property ClimbRate;
     property Constraints;
     property DecimalPlaces;
     property Enabled;
+    property Increment;
     property Link;
     property MaxValue;
     property MinValue;
@@ -1205,9 +1205,9 @@ Type
     property Align;
     property Anchors;
     property BorderSpacing;
-    property ClimbRate;
     property Constraints;
     property Enabled;
+    property Increment;
     property Link;
     property MaxValue;
     property MinValue;
@@ -2920,7 +2920,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinValue;
         MaxValue:=TypeData^.MaxValue;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
 
@@ -2929,7 +2929,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinInt64Value;
         MaxValue:=TypeData^.MaxInt64Value;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
       
@@ -2938,7 +2938,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinQWordValue;
         MaxValue:=TypeData^.MaxQWordValue;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
 
@@ -3048,7 +3048,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinValue;
         MaxValue:=TypeData^.MaxValue;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
 
@@ -3057,7 +3057,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinInt64Value;
         MaxValue:=TypeData^.MaxInt64Value;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
 
@@ -3066,7 +3066,7 @@ begin
         TypeData:=GetTypeData(FLink.Editor.GetPropType);
         MinValue:=TypeData^.MinQWordValue;
         MaxValue:=TypeData^.MaxQWordValue;
-        ClimbRate:=1;
+        Increment:=1;
         DecimalPlaces:=0;
       end;
 
