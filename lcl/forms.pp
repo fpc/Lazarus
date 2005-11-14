@@ -387,6 +387,7 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    function GetPixelsPerInch: Longint;
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
     function IsIconStored: Boolean;
@@ -536,7 +537,7 @@ type
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChange: TNotifyEvent
                          read fOnWindowStateChange write fOnWindowStateChange;
-    property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
+    property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property RestoredLeft: integer read FRestoredLeft;
     property RestoredTop: integer read FRestoredTop;

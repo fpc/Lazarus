@@ -1300,15 +1300,10 @@ Begin
   ParentColor := False;
   ParentFont := False;
   Ctl3D := True;
-  //  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FWindowState := wsNormal;
-  //  FDefaultMonitor := dmActiveForm;
   FIcon := TIcon.Create;
-  //  FInCMParentBiDiModeChanged := False;
   FKeyPreview :=  False;
   Color := clBtnFace;
-  //  FPixelsPerInch := Screen.PixelsPerInch;
-  //  FPrintScale := poProportional;
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   EndFormUpdate;
@@ -1448,6 +1443,32 @@ function TCustomForm.IsForm: Boolean;
 begin
   //TODO:
   Result := True;
+end;
+
+function TCustomForm.GetPixelsPerInch: Longint;
+var
+  ParentForm: TCustomForm;
+  DC: HDC;
+begin
+  if FPixelsPerInch=0 then begin
+    if Parent<>nil then begin
+      ParentForm:=GetParentForm(Self);
+      if ParentForm<>nil then begin
+        FPixelsPerInch:=ParentForm.PixelsPerInch;
+      end;
+    end;
+
+    if FPixelsPerInch<=0 then begin
+      if HandleAllocated then begin
+        DC:=GetDC(Handle);
+        FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
+        ReleaseDC(Handle,DC);
+      end else begin
+        FPixelsPerInch:=Screen.PixelsPerInch;
+      end;
+    end;
+  end;
+  Result:=FPixelsPerInch;
 end;
 
 {------------------------------------------------------------------------------
@@ -1611,25 +1632,12 @@ end;
   Creates the interface object.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateWnd;
-var
-  DC: HDC;
-  ParentForm: TCustomForm;
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
 
-  if Parent=nil then begin
-    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
-    DC:=GetDC(Handle);
-    FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
-    ReleaseDC(Handle,DC);
-  end else begin
-    ParentForm:=GetParentForm(Self);
-    if ParentForm<>nil then begin
-      FPixelsPerInch:=ParentForm.PixelsPerInch;
-    end;
-  end;
+  FPixelsPerInch:=0;
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   if FMenu <> nil then
