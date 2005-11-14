@@ -155,8 +155,8 @@ begin
     FShortcutHandled := true;
     Item.InitiateActions;
     Item.Click;
+    Result := FShortcutHandled;
   end;
-  Result := FShortcutHandled;
 end;
 
 {------------------------------------------------------------------------------
