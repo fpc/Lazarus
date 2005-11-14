@@ -1561,7 +1561,7 @@ end;
 constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  IDEDialogLayoutList.ApplyLayout(Self,500,512);
+  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
   Caption:=lisMenuGeneralOptions;
 
   NoteBook.PageIndex:=0;
