@@ -440,10 +440,9 @@ Var
     ScrollbarHandle := HWND(LParam);
     if ScrollbarHandle<>0 then
       lWinControl := GetWindowInfo(ScrollbarHandle)^.WinControl;
-    if lWinControl <> nil then
+    if lWinControl is TCustomTrackBar then 
     begin
-      if lWinControl is TCustomTrackBar then 
-        LMessage.Msg := LM_CHANGED;
+      LMessage.Msg := LM_CHANGED;
       exit;
     end;
 

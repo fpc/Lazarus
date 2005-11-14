@@ -29,11 +29,16 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent); override;
+
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
+
+procedure RemoveEventHandler(AHandle: THandle); override;
+
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

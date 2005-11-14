@@ -29,6 +29,40 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure TWin32WidgetSet.AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+var
+  listlen: dword;
+begin
+  listlen := Length(FWaitHandles);
+  if FWaitHandleCount = listlen then
+  begin
+    inc(listlen, 16);
+    SetLength(FWaitHandles, listlen);
+    SetLength(FWaitHandleCallbacks, listlen);
+  end;
+  FWaitHandles[FWaitHandleCount] := AHandle;
+  FWaitHandleCallbacks[FWaitHandleCount] := AEventHandler;
+  Inc(FWaitHandleCount);
+end;
+
+procedure TWin32WidgetSet.RemoveEventHandler(AHandle: THandle);
+var
+  I: integer;
+begin
+  for I := 0 to FWaitHandleCount - 1 do
+    if FWaitHandles[I] = AHandle then
+    begin
+      // swap with last one
+      if FWaitHandleCount >= 2 then
+      begin
+        FWaitHandles[I] := FWaitHandles[FWaitHandleCount-1];
+        FWaitHandleCallbacks[I] := FWaitHandleCallbacks[FWaitHandleCount-1];
+      end;
+      Dec(FWaitHandleCount);
+      exit;
+    end;
+end;
+
 procedure TWin32WidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 const
     { up, down, left, right }

@@ -122,6 +122,10 @@ Type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
+    FWaitHandleCount: dword;
+    FWaitHandles: array of HANDLE;
+    FWaitHandleCallbacks: array of TNotifyEvent;
+
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
     IsThemeActive: function: LongBool; stdcall;

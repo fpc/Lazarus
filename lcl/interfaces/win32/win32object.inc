@@ -322,10 +322,22 @@ End;
   Passes execution control to Windows
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppWaitMessage;
-Begin
+var
+  done: boolean;
+  retVal: dword;
+begin
   RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
-  Windows.WaitMessage;
+  done := false;
+  repeat
+    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
+      FWaitHandles[0], false, INFINITE, QS_ALLINPUT);
+    if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    begin
+      FWaitHandleCallbacks[retVal-WAIT_OBJECT_0](Self);
+    end else if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
+      done := true;
+  until done;
   Assert(False,'Trace:Leave wait message');
 End;
 
