@@ -26,6 +26,10 @@
 }
 //##apiwiz##sps##   // Do not remove
 
+procedure TWidgetSet.AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+begin
+end;
+
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
@@ -542,6 +546,10 @@ end;
 function TWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
 begin
   Result := false;
+end;
+
+procedure TWidgetSet.RemoveEventHandler(AHandle: THandle);
+begin
 end;
 
 function TWidgetSet.ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;

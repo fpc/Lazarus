@@ -33,6 +33,11 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
+procedure AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+begin
+  WidgetSet.AddEventHandler(AHandle, AEventHandler);
+end;
+
 procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   WidgetSet.AttachMenuToWindow(AMenuObject);
@@ -373,6 +378,11 @@ end;
 function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := WidgetSet.ReleaseDesignerDC(hWnd, DC);
+end;
+
+procedure RemoveEventHandler(AHandle: THandle);
+begin
+  WidgetSet.RemoveEventHandler(AHandle);
 end;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
