@@ -38,7 +38,7 @@ unit PkgOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, LResources,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, LResources,
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
   LazarusIDEStrConsts, BrokenDependenciesDlg, PackageDefs, PackageSystem,
   CompilerOptions;

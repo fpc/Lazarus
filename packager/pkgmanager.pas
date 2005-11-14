@@ -3955,7 +3955,7 @@ begin
   
   // add include path to config directory
   ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
-  AddOption('-Fi'+ConfigDir);
+  AddOption(PrepareCmdLineOption('-Fi'+ConfigDir));
   
   // add target option
   // ToDo

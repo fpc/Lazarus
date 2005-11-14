@@ -355,7 +355,7 @@ begin
                                         ExtraOptions);
       if Result<>mrOk then exit;
       if ExtraOptions<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OPT="'+ExtraOptions+'"';
+        Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
@@ -431,7 +431,10 @@ begin
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
       if (FileExists(MakeIDECfgFilename)) then begin
-        ExtraOptions:='@'+MakeIDECfgFilename;
+        if pos(' ', MakeIDECfgFilename)>0 then
+          ExtraOptions:='@"'+MakeIDECfgFilename+'"'
+        else
+          ExtraOptions:='@'+MakeIDECfgFilename;
         exit;
       end;
     end;
