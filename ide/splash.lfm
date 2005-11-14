@@ -2,17 +2,17 @@ object SplashForm: TSplashForm
   AutoSize = True
   BorderStyle = bsNone
   Caption = 'Lazarus'
-  ClientHeight = 300
-  ClientWidth = 426
+  ClientHeight = 341
+  ClientWidth = 429
   FormStyle = fsStayOnTop
   PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 425
-  VertScrollBar.Page = 299
+  HorzScrollBar.Page = 428
+  VertScrollBar.Page = 340
   Left = 561
-  Height = 300
+  Height = 341
   Top = 370
-  Width = 426
+  Width = 429
   object Image: TImage
     Align = alClient
     AutoSize = True
@@ -9354,8 +9354,8 @@ object SplashForm: TSplashForm
       2D2E2D20622B2D2038202D204F2E4F2E382B227D3B0D0A
     }
     Transparent = True
-    Height = 300
-    Width = 426
+    Height = 341
+    Width = 429
   end
   object Timer: TTimer
     Enabled = False

@@ -2,10 +2,10 @@
 
 LazarusResources.Add('TSplashForm','FORMDATA',[
   'TPF0'#11'TSplashForm'#10'SplashForm'#8'AutoSize'#9#11'BorderStyle'#7#6'bsNon'
-  +'e'#7'Caption'#6#7'Lazarus'#12'ClientHeight'#3','#1#11'ClientWidth'#3#170#1#9
+  +'e'#7'Caption'#6#7'Lazarus'#12'ClientHeight'#3'U'#1#11'ClientWidth'#3#173#1#9
   +'FormStyle'#7#11'fsStayOnTop'#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScre'
-  +'enCenter'#18'HorzScrollBar.Page'#3#169#1#18'VertScrollBar.Page'#3'+'#1#4'Le'
-  +'ft'#3'1'#2#6'Height'#3','#1#3'Top'#3'r'#1#5'Width'#3#170#1#0#6'TImage'#5'Im'
+  +'enCenter'#18'HorzScrollBar.Page'#3#172#1#18'VertScrollBar.Page'#3'T'#1#4'Le'
+  +'ft'#3'1'#2#6'Height'#3'U'#1#3'Top'#3'r'#1#5'Width'#3#173#1#0#6'TImage'#5'Im'
   +'age'#5'Align'#7#8'alClient'#8'AutoSize'#9#12'Picture.Data'#10#215#142#4#0#7
   +'TPixmap'#203#142#4#0'/* XPM */'#13#10'static char * splash_logo_xpm[] = {'
   +#13#10'"429 341 256 2",'#13#10'"  '#9'c None",'#13#10'". '#9'c #110508",'#13
@@ -4072,7 +4072,7 @@ LazarusResources.Add('TSplashForm','FORMDATA',[
   +'.5.<.5.5.` 5.0.0.5.0.0.0.0.0.0.c 0.c ].z+c j.R.c j.j.j.j.j.$+E.$+$+$+C E.C '
   +'E.E.h $+E.E.E.E.E.>.E.h G+>.>.h 7 >.G+7 h >.G+G+7 h >.h h >.h G+>.G+G+G+h -'
   +'+-+7 G+-+-+b+-+-+M.x.-.-+M.-+x.-+M.-.- M.- 8 - 8 - -.M.- 8+-.- b+- 8 - O.O.'
-  +'8+"};'#13#10#11'Transparent'#9#6'Height'#3','#1#5'Width'#3#170#1#0#0#6'TTim'
+  +'8+"};'#13#10#11'Transparent'#9#6'Height'#3'U'#1#5'Width'#3#173#1#0#0#6'TTim'
   +'er'#5'Timer'#7'Enabled'#8#8'Interval'#3#244#1#7'OnTimer'#7#10'TimerTimer'#4
   +'left'#3#221#0#3'top'#2'.'#0#0#0
 ]);
