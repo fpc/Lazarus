@@ -1260,12 +1260,12 @@ Begin
         MCN_SELCHANGE:
         begin
           LMessage.Msg := LM_CHANGED;
-          if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
+          if WindowInfo^.WinControl <> nil then
             lWinControl := WindowInfo^.WinControl;
         end;
         UDN_DELTAPOS:
         begin
-          if WindowInfo <> nil then
+          if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));
         end; 
       else
