@@ -445,6 +445,10 @@ msgstr ""
 msgid "All packages"
 msgstr ""
 
+#: lazarusidestrconsts:lisedtdefsallprojects
+msgid "All projects"
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr ""
@@ -5033,6 +5037,10 @@ msgstr ""
 msgid "Project Options..."
 msgstr ""
 
+#: lazarusidestrconsts:lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectsrcpath
 msgid "Project Src Path"
 msgstr ""
@@ -6826,7 +6834,7 @@ msgid "The package %s%s%s has the auto install flag.%sThis means it will be inst
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package %s%s%s is installed, but no valid package file was found.%sA broken dummy package was created."
+msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
@@ -7046,7 +7054,7 @@ msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
+msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
@@ -8139,6 +8147,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtlower
 msgid "lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectmakrounitpath
+msgid "makro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

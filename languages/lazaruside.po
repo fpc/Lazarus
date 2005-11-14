@@ -166,6 +166,10 @@ msgstr ""
 msgid "Project makro properties"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojectmakrounitpath
+msgid "makro ProjectUnitPath"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr ""
@@ -6442,6 +6446,10 @@ msgstr ""
 msgid "All packages"
 msgstr ""
 
+#: lazarusidestrconsts:lisedtdefsallprojects
+msgid "All projects"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
 msgstr ""
@@ -7123,7 +7131,7 @@ msgid "Register procedure is nil"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
+msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
@@ -7131,7 +7139,7 @@ msgid "Package file not found"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package %s%s%s is installed, but no valid package file was found.%sA broken dummy package was created."
+msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgdefsoutputdirectory
@@ -7144,6 +7152,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgdefsunitpath
 msgid "Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark

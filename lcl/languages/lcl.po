@@ -634,3 +634,7 @@ msgstr ""
 msgid "Scroll"
 msgstr ""
 
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr ""
+

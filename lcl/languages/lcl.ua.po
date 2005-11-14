@@ -202,6 +202,10 @@ msgstr "Видалити"
 msgid "Directory must exist"
 msgstr "Має існувати тека"
 
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr ""
+
 #: lclstrconsts:ifsvk_down
 msgid "Down"
 msgstr "Вниз"

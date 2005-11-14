@@ -434,6 +434,10 @@ msgstr "Все файлы"
 msgid "All packages"
 msgstr "Все пакеты"
 
+#: lazarusidestrconsts:lisedtdefsallprojects
+msgid "All projects"
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr "Разрешить LABEL и GOTO"
@@ -5022,6 +5026,10 @@ msgstr "Параметры проекта"
 msgid "Project Options..."
 msgstr "Параметры проекта..."
 
+#: lazarusidestrconsts:lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectsrcpath
 msgid "Project Src Path"
 msgstr "Путь исходников проекта"
@@ -6815,8 +6823,8 @@ msgid "The package %s%s%s has the auto install flag.%sThis means it will be inst
 msgstr "Пакет %s%s%s имеет метку Автоинсталляция.%sЭто значит, что он автоматически встроится в IDE. Устанавливаемые пакеты%sдолжны быть для разработки."
 
 #: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package %s%s%s is installed, but no valid package file was found.%sA broken dummy package was created."
-msgstr "Пакет %s%s%s установлен, но не было найдено правильного файла пакета.%sБыл создан пустой псевдопакет."
+msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -7035,8 +7043,8 @@ msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.
 msgstr "Это похоже на файл паскаля.%sfpc 1.0.х требует файлы паскаля в нижнем регистре.%sПереименовать?"
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
-msgstr "Этот пакет установлен, но файл lpk не найден.Все компоненты инактивированы. Исправьте."
+msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -8129,6 +8137,10 @@ msgstr "параметры линкера"
 #: lazarusidestrconsts:dlgcdtlower
 msgid "lowercase"
 msgstr "нижний регистр"
+
+#: lazarusidestrconsts:lisprojectmakrounitpath
+msgid "makro ProjectUnitPath"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"

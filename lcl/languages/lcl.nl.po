@@ -202,6 +202,10 @@ msgstr "Verwijder"
 msgid "Directory must exist"
 msgstr "Directory moet bestaan"
 
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr ""
+
 #: lclstrconsts:ifsvk_down
 msgid "Down"
 msgstr "Neer"

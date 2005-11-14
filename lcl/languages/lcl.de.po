@@ -213,6 +213,10 @@ msgstr "Löschen"
 msgid "Directory must exist"
 msgstr "Verzeichnis muß vorhanden sein"
 
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr ""
+
 #: lclstrconsts:ifsvk_down
 msgid "Down"
 msgstr "Runter"

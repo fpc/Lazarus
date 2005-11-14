@@ -213,6 +213,10 @@ msgstr ""
 msgid "Directory must exist"
 msgstr "Katalog musi istnieæ"
 
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr ""
+
 #: lclstrconsts:ifsvk_down
 msgid "Down"
 msgstr ""
