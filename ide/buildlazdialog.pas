@@ -359,8 +359,8 @@ begin
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
-      // don't run svn2revisioninc if no executable is created
-      if blfWithoutLinkingIDE in Flags then
+      // don't run svn2revisioninc when building the IDE for the second time
+      if not (blfWithoutLinkingIDE in Flags) then
         Tool.CmdLineParams:=Tool.CmdLineParams+' USESVN2REVISIONINC=0';
       // run
       Result:=ExternalTools.Run(Tool,Macros);
