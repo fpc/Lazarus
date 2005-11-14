@@ -440,83 +440,83 @@ msgstr ""
 
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
-msgstr ""
+msgstr "Geen geldig grid bestand"
 
 #: lclstrconsts:ifsvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Numlock"
 
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "Nummeriek deel %d"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Open een bestaand bestand"
 
 #: lclstrconsts:rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr ""
+msgstr "Bestand overschrijven?"
 
 #: lclstrconsts:rsfdpathmustexist
 msgid "Path must exist"
-msgstr ""
+msgstr "Het pad moet bestaan"
 
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Pause toets"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
-msgstr ""
+msgstr "Pixmap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr ""
+msgstr "Portable Network Graphic"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"
-msgstr ""
+msgstr "Druk af"
 
 #: lclstrconsts:ifsvk_prior
 msgid "Prior"
-msgstr ""
+msgstr "Vorige"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
-msgstr ""
+msgstr "Property %s bestaat niet"
 
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
-msgstr ""
+msgstr "Resource %s is niet gevonden"
 
 #: lclstrconsts:ifsvk_return
 msgid "Return"
-msgstr ""
+msgstr "Return"
 
 #: lclstrconsts:ifsvk_right
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
-msgstr ""
+msgstr "Bestand opslaan als"
 
 #: lclstrconsts:ifsvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Scroll"
 
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
-msgstr ""
+msgstr "ScrollBar property buiten de grenzen"
 
 #: lclstrconsts:ifsvk_select
 msgid "Select"
-msgstr ""
+msgstr "Selecteer"
 
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
-msgstr ""
+msgstr "Kies directory"
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -524,105 +524,105 @@ msgstr "Kies een datum"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
-msgstr ""
+msgstr "Kies een font"
 
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
-msgstr ""
+msgstr "Kies een kleur"
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: lclstrconsts:ifsvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Snapshot"
 
 #: lclstrconsts:ifsvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Spatiebar"
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
-msgstr ""
+msgstr "Submenu staat niet menu"
 
 #: lclstrconsts:ifsvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr ""
+msgstr "De directory \"%s\" bestaat niet."
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr ""
+msgstr "Het bestand \"%s\" bestaat al. Overschrijven?"
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
-msgstr ""
+msgstr "Het bestand  \"%s\" bestaat niet."
 
 #: lclstrconsts:rsfdfilereadonly
 msgid "The file \"%s\" is not writable."
-msgstr ""
+msgstr "Het bestand \"%s\" kan niet geschreven worden."
 
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr ""
+msgstr "Het pad \"%s\" bestaat niet."
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr ""
+msgstr "Kan het standaard font niet laden"
 
 #: lclstrconsts:ifsvk_unknown
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
-msgstr ""
+msgstr "Onbekende extensie voor plaatje"
 
 #: lclstrconsts:rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr ""
+msgstr "Niet ondersteund bitmap formaat."
 
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr ""
+msgstr "Niet ondersteund klembord formaat: %s"
 
 #: lclstrconsts:ifsvk_up
 msgid "Up"
-msgstr ""
+msgstr "Omhoog"
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
-msgstr ""
+msgstr "Waarschuwing"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
-msgstr ""
+msgstr "Ja op alles"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"
-msgstr ""
+msgstr "application key"
 
 #: lclstrconsts:rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr ""
+msgstr "Ongeldige form objectstream"
 
 #: lclstrconsts:ifsvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "linker windows toets"
 
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
-msgstr ""
+msgstr "permissies gebruiker groep grootte datum tijd"
 
 #: lclstrconsts:ifsvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "rechter windows toets"
 
