@@ -10,9 +10,9 @@ object WatchesDlg: TWatchesDlg
   PixelsPerInch = 112
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
-  Left = 314
+  Left = 321
   Height = 200
-  Top = 438
+  Top = 437
   Width = 500
   object lvWatches: TListView
     Align = alClient

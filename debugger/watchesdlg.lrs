@@ -5,8 +5,8 @@ LazarusResources.Add('TWatchesDlg','FORMDATA',[
   +'ion'#6#10'Watch list'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#7'On'
   +'Close'#7#9'FormClose'#12'OnCloseQuery'#7#14'FormCloseQuery'#8'OnCreate'#7#10
   +'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#13'PixelsPerInch'#2'p'#18'HorzSc'
-  +'rollBar.Page'#3#243#1#18'VertScrollBar.Page'#3#199#0#4'Left'#3':'#1#6'Heigh'
-  +'t'#3#200#0#3'Top'#3#182#1#5'Width'#3#244#1#0#9'TListView'#9'lvWatches'#5'Al'
+  +'rollBar.Page'#3#243#1#18'VertScrollBar.Page'#3#199#0#4'Left'#3'A'#1#6'Heigh'
+  +'t'#3#200#0#3'Top'#3#181#1#5'Width'#3#244#1#0#9'TListView'#9'lvWatches'#5'Al'
   +'ign'#7#8'alClient'#7'Columns'#14#1#7'Caption'#6#10'Expression'#5'Width'#2#10
   +#0#1#7'Caption'#6#5'Value'#5'Width'#2#10#0#0#11'MultiSelect'#9#9'PopupMenu'#7
   +#8'mnuPopup'#9'RowSelect'#9#9'ViewStyle'#7#8'vsReport'#10'OnDblClick'#7#17'l'
