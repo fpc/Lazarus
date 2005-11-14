@@ -37,10 +37,13 @@ unit EvaluateDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, DebuggerDlg, BaseDebugManager;
+  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
+  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager;
 
 type
+
+  { TEvaluateDlg }
+
   TEvaluateDlg = class(TDebuggerDlg)
     cmbExpression: TComboBox;
     cmbNewValue: TComboBox;
@@ -54,7 +57,10 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure FormShow(Sender: TObject);
     procedure cmbExpressionChange(Sender: TObject);
+    procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure tbEvaluateClick(Sender: TObject);
     procedure tbWatchClick(Sender: TObject);
   private
@@ -74,6 +80,21 @@ begin
   tbModify.Enabled := False;
   tbWatch.Enabled := HasExpression;
 //  tbInspect.Enabled := HasExpression;
+end;
+
+procedure TEvaluateDlg.cmbExpressionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and tbEvaluate.Enabled
+  then begin
+    tbEvaluate.Click;
+    Key := 0;
+  end;
+end;
+
+procedure TEvaluateDlg.FormShow(Sender: TObject);
+begin
+  cmbExpression.SetFocus;
 end;
 
 procedure TEvaluateDlg.tbEvaluateClick(Sender: TObject);

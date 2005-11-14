@@ -163,6 +163,7 @@ var
   IconPos: TPoint;
   ImgList: TCustomImageList;
   ImgIndex: integer;
+  TS: TTextStyle;
 begin
   //DebugLn('TToolButton.Paint A ',Name,' FToolBar=',DbgS(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
@@ -245,7 +246,14 @@ begin
 
     // draw text
     if (TextSize.cx>0) then begin
-      Canvas.TextOut(TextPos.X,TextPos.Y,Caption);
+      TS := Canvas.TextStyle;
+      TS.Alignment:= taCenter;
+      TS.Layout:= tlCenter;
+      TS.Opaque:= false;
+      TS.Clipping:= false;
+      TS.SystemFont:=Canvas.Font.IsDefault;
+      TS.ShowPrefix:= true;
+      Canvas.TextRect(PaintRect, TextPos.X, TextPos.Y, Caption, TS);
     end;
 
     // draw separator (at runtime: just space, at designtime: a rectangle)
@@ -730,6 +738,16 @@ begin
   end;
   
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+function TToolButton.DialogChar(var Message: TLMKey): boolean;
+begin
+  if IsAccel(Message.CharCode, Caption) and CanFocus then
+  begin
+    Click;
+    Result := true;
+  end else
+    Result := inherited;
 end;
 
 
