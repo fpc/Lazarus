@@ -2037,7 +2037,7 @@ begin
     if rfNoMI in R.Flags
     then begin
       FileType := GetPart('file type ', '.', R.Values);
-      EntryPoint := GetPart('Entry point: ', LineEnding, R.Values);
+      EntryPoint := GetPart('Entry point: ', '\n', R.Values);
     end
     else begin
       // OS X gdb has mi output here
