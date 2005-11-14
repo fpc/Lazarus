@@ -1555,9 +1555,11 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{  TWinControl CanFocus                                                        }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl CanFocus
+  
+  
+------------------------------------------------------------------------------}
 Function TWinControl.CanFocus : Boolean;
 var
   Control: TWinControl;
@@ -1570,8 +1572,9 @@ begin
   begin
     Control := Self;
     repeat
-      if not (Control.IsControlVisible and Control.Enabled) then Exit;
       if Control = Form then break;
+      // test all except the Form if it is visible and enabled
+      if not (Control.IsControlVisible and Control.Enabled) then Exit;
       Control := Control.Parent;
     until false;
     Result := True;

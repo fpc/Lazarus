@@ -1149,18 +1149,19 @@ Procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 Begin
   if FActiveControl <> AWinControl then
   begin
-    if not
-      ((AWinControl = nil)
-      or ((AWinControl <> Self)
-          and (GetParentForm(AWinControl) = Self)
-          and ((csLoading in ComponentState)
-               or AWinControl.CanFocus)))
-    then begin
-      {$IFDEF VerboseFocus}
-      RaiseGDBException(SCannotFocus);
-      {$ELSE}
-      EInvalidOperation.Create(SCannotFocus);
-      {$ENDIF}
+    if (AWinControl<>nil) then begin
+      if (AWinControl=Self)
+      or (GetParentForm(AWinControl)<>Self)
+      or ((not (csLoading in ComponentState))
+          and (not AWinControl.CanFocus))
+      then begin
+        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',dbgs((AWinControl<>nil) and AWinControl.CanFocus));
+        {$IFDEF VerboseFocus}
+        RaiseGDBException(SCannotFocus);
+        {$ELSE}
+        raise EInvalidOperation.Create(SCannotFocus);
+        {$ENDIF}
+      end;
     end;
     {$IFDEF VerboseFocus}
     DbgOut('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',DbgS(FActive));
@@ -1339,7 +1340,7 @@ begin
   if fsModal in FFormState then
     ModalResult := mrCancel
   else begin
-    DebugLn('TCustomForm.Close A ',DbgSName(Self));
+    //DebugLn('TCustomForm.Close A ',DbgSName(Self));
     if CloseQuery then
     begin
       if FormStyle = fsMDIChild then begin
@@ -1350,10 +1351,10 @@ begin
       end else begin
         CloseAction := caHide;
       end;
-      DebugLn('TCustomForm.Close B ',DbgSName(Self));
+      //DebugLn('TCustomForm.Close B ',DbgSName(Self));
       DoClose(CloseAction);
       if CloseAction <> caNone then begin
-        DebugLn('TCustomForm.Close C ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
+        //DebugLn('TCustomForm.Close C ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
         if Application.MainForm = Self then Application.Terminate
         else if CloseAction = caHide then Hide
         else if CloseAction = caMinimize then WindowState := wsMinimized
