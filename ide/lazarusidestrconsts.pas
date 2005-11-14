@@ -98,6 +98,7 @@ resourcestring
   lisProjectSrcPath = 'Project Src Path';
   lisMakeExe = 'Make Executable';
   lisProjectMakroProperties = 'Project makro properties';
+  lisProjectMakroUnitPath = 'makro ProjectUnitPath';
   lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu
@@ -2085,6 +2086,7 @@ resourcestring
   lisEdtDefProjectIncPath = 'Project IncPath';
   lisEdtDefProjectUnitPath = 'Project UnitPath';
   lisEdtDefAllPackages = 'All packages';
+  lisEdtDefsAllProjects = 'All projects';
   lisEdtDefsetFPCModeToDELPHI = 'set FPC mode to DELPHI';
   lisEdtDefsetFPCModeToTP = 'set FPC mode to TP';
   lisEdtDefsetFPCModeToGPC = 'set FPC mode to GPC';
@@ -2359,17 +2361,18 @@ resourcestring
     +'components are outdated.';
   lisPkgSysRegisterProcedureIsNil = 'Register procedure is nil';
   lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound = 'This package is '
-    +'installed, but the lpk file was not found.All its components are '
+    +'installed, but the lpk file was not found. All its components are '
     +'deactivated. Please fix this.';
   lisPkgSysPackageFileNotFound = 'Package file not found';
   lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound = 'The package %'
-    +'s%s%s is installed, but no valid package file was found.%sA broken '
+    +'s%s%s is installed, but no valid package file (.lpk) was found.%sA broken '
     +'dummy package was created.';
 
   // package defs
   lisPkgDefsOutputDirectory = 'Output directory';
   lisPkgDefsCompiledSrcPathAddition = 'CompiledSrcPath addition';
   lisPkgDefsUnitPath = 'Unit Path';
+  lisProjProjectSourceDirectoryMark = 'Project Source Directory Mark';
   lisPkgDefsSrcDirMark = 'Package Source Directory Mark';
 
   // add active file to package dialog

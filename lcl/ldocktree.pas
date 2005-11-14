@@ -31,7 +31,8 @@ unit LDockTree;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, ExtCtrls;
+  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, ExtCtrls, Menus,
+  LCLStrConsts;
   
 type
   TLazDockPages = class;
@@ -154,7 +155,7 @@ type
                                out AControlBounds: TRect); override;
     procedure DockControl(Control: TControl; InsertAt: TAlign;
                           DropCtl: TControl);
-    procedure UndockControl(Control: TControl);
+    procedure UndockControl(Control: TControl; Float: boolean);
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -167,6 +168,66 @@ type
     procedure SetReplacingControl(Control: TControl); override;
     procedure ReplaceAnchoredControl(OldControl, NewControl: TControl);
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
+  end;
+  
+  
+  TCustomLazControlDocker = class;
+  
+  { TCustomLazDockingManager }
+
+  TCustomLazDockingManager = class(TComponent)
+  private
+    FDockerCount: Integer;
+    FDockers: TFPList;
+    FManager: TAnchoredDockManager;
+    function GetDockers(Index: Integer): TCustomLazControlDocker;
+  protected
+    procedure Remove(Docker: TCustomLazControlDocker);
+    function Add(Docker: TCustomLazControlDocker): Integer;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Manager: TAnchoredDockManager read FManager;
+    property DockerCount: Integer read FDockerCount;
+    property Dockers[Index: Integer]: TCustomLazControlDocker read GetDockers;
+  end;
+  
+  { TLazDockingManager }
+
+  TLazDockingManager = class(TCustomLazDockingManager)
+  published
+  end;
+  
+  { TCustomLazControlDocker - a component to mark a form for the TLazDockingManager }
+
+  TCustomLazControlDocker = class(TComponent)
+    procedure PopupMenuItemClick(Sender: TObject);
+  private
+    FControl: TControl;
+    FExtendPopupMenu: boolean;
+    FManager: TCustomLazDockingManager;
+    FPopupMenuItem: TMenuItem;
+    procedure SetControl(const AValue: TControl);
+    procedure SetExtendPopupMenu(const AValue: boolean);
+    procedure SetManager(const AValue: TCustomLazDockingManager);
+  protected
+    procedure UpdatePopupMenu;
+    procedure Loaded; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property Control: TControl read FControl write SetControl;
+    property Manager: TCustomLazDockingManager read FManager write SetManager;
+    property ExtendPopupMenu: boolean read FExtendPopupMenu write SetExtendPopupMenu;
+    property PopupMenuItem: TMenuItem read FPopupMenuItem;
+  end;
+  
+  { TLazControlDocker }
+
+  TLazControlDocker = class(TCustomLazControlDocker)
+  published
+    property Control;
+    property Manager;
+    property ExtendPopupMenu;
   end;
 
 const
@@ -827,14 +888,14 @@ end;
 procedure TAnchoredDockManager.DeletePages(Pages: TLazDockPages);
 begin
   if Pages.Parent<>nil then
-    UndockControl(Pages);
+    UndockControl(Pages,false);
   Pages.Free;
 end;
 
 procedure TAnchoredDockManager.DeleteDockForm(ADockForm: TLazDockForm);
 begin
   if ADockForm.Parent<>nil then
-    UndockControl(ADockForm);
+    UndockControl(ADockForm,false);
   ADockForm.Free;
 end;
 
@@ -1088,7 +1149,7 @@ end;
   It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
   longer needed.
 -------------------------------------------------------------------------------}
-procedure TAnchoredDockManager.UndockControl(Control: TControl);
+procedure TAnchoredDockManager.UndockControl(Control: TControl; Float: boolean);
 {
 
   Examples:
@@ -1166,6 +1227,11 @@ var
   var
     OldParentControl: TWinControl;
   begin
+    if Float then begin
+      Control.ManualFloat(Control.BoundsRect);
+    end else begin
+      Control.Parent:=nil;
+    end;
     if ParentControl<>nil then begin
       OldParentControl:=ParentControl;
       ParentControl:=nil;
@@ -1286,7 +1352,7 @@ end;
 
 procedure TAnchoredDockManager.RemoveControl(Control: TControl);
 begin
-  UndockControl(Control);
+  UndockControl(Control,false);
 end;
 
 procedure TAnchoredDockManager.ResetBounds(Force: Boolean);
@@ -1351,6 +1417,115 @@ end;
 function TLazDockPage.GetPageControl: TLazDockPages;
 begin
   Result:=Parent as TLazDockPages;
+end;
+
+{ TCustomLazControlDocker }
+
+procedure TCustomLazControlDocker.SetManager(
+  const AValue: TCustomLazDockingManager);
+begin
+  if FManager=AValue then exit;
+  if FManager<>nil then FManager.Remove(Self);
+  FManager:=AValue;
+  if FManager<>nil then FManager.Add(Self);
+end;
+
+procedure TCustomLazControlDocker.UpdatePopupMenu;
+// creates or deletes the PopupMenuItem to the PopupMenu of Control
+begin
+  if [csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if csLoading in ComponentState then exit;
+  
+  if ExtendPopupMenu and (Control.PopupMenu<>nil) then begin
+    if (PopupMenuItem<>nil) and (PopupMenuItem.Parent<>Control.PopupMenu.Items)
+    then begin
+      // PopupMenuItem is in the old PopupMenu -> delete it
+      FreeAndNil(FPopupMenuItem);
+    end;
+    if (PopupMenuItem=nil) then begin
+      // create a new PopupMenuItem
+      FPopupMenuItem:=TMenuItem.Create(Self);
+      PopupMenuItem.Caption:=rsDocking;
+      PopupMenuItem.OnClick:=@PopupMenuItemClick;
+    end;
+    if PopupMenuItem.Parent=nil then begin
+      // add PopupMenuItem to Control.PopupMenu
+      Control.PopupMenu.Items.Add(PopupMenuItem);
+    end;
+  end else begin
+    // delete PopupMenuItem
+    FreeAndNil(FPopupMenuItem);
+  end;
+end;
+
+procedure TCustomLazControlDocker.Loaded;
+begin
+  inherited Loaded;
+  UpdatePopupMenu;
+end;
+
+constructor TCustomLazControlDocker.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  if (not (csLoading in ComponentState))
+  and (TheOwner is TControl) then
+    // use as default
+    Control:=TControl(TheOwner);
+  ExtendPopupMenu:=true;
+end;
+
+procedure TCustomLazControlDocker.PopupMenuItemClick(Sender: TObject);
+begin
+
+end;
+
+procedure TCustomLazControlDocker.SetControl(const AValue: TControl);
+begin
+  if FControl=AValue then exit;
+  FControl:=AValue;
+end;
+
+procedure TCustomLazControlDocker.SetExtendPopupMenu(const AValue: boolean);
+begin
+  if FExtendPopupMenu=AValue then exit;
+  FExtendPopupMenu:=AValue;
+  UpdatePopupMenu;
+end;
+
+{ TCustomLazDockingManager }
+
+procedure TCustomLazDockingManager.Remove(Docker: TCustomLazControlDocker);
+begin
+  FDockers.Remove(Docker);
+end;
+
+function TCustomLazDockingManager.Add(Docker: TCustomLazControlDocker): Integer;
+begin
+  Result:=FDockers.Add(Docker);
+end;
+
+function TCustomLazDockingManager.GetDockers(Index: Integer
+  ): TCustomLazControlDocker;
+begin
+  Result:=TCustomLazControlDocker(FDockers[Index]);
+end;
+
+constructor TCustomLazDockingManager.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FDockers:=TFPList.Create;
+  FManager:=TAnchoredDockManager.Create;
+end;
+
+destructor TCustomLazDockingManager.Destroy;
+var
+  i: Integer;
+begin
+  for i:=FDockers.Count-1 downto 0 do
+    Dockers[i].Manager:=nil;
+  FreeAndNil(FDockers);
+  FreeAndNil(FManager);
+  inherited Destroy;
 end;
 
 end.

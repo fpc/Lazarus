@@ -122,6 +122,7 @@ type
     fUserReadOnly:  Boolean;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
+    fLastDirectoryReferenced: string;
 
     function GetHasResources:boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
@@ -150,6 +151,7 @@ type
     procedure SetFilename(const AValue: string); override;
     procedure SetIsPartOfProject(const AValue: boolean); override;
     procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
+    procedure SetInternalFilename(const NewFilename: string);
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -158,6 +160,7 @@ type
     function IsAutoRevertLocked: boolean;
     function IsMainUnit: boolean;
     function IsVirtual: boolean;
+    function GetDirectory: string;
     function NeedsSaveToDisk: boolean;
     function ReadOnly: boolean;
     function ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
@@ -266,6 +269,14 @@ type
 
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
+    procedure SetCustomOptions(const AValue: string); override;
+    procedure SetIncludeFiles(const AValue: string); override;
+    procedure SetLibraries(const AValue: string); override;
+    procedure SetLinkerOptions(const AValue: string); override;
+    procedure SetObjectPath(const AValue: string); override;
+    procedure SetSrcPath(const AValue: string); override;
+    procedure SetOtherUnitFiles(const AValue: string); override;
+    procedure SetUnitOutputDir(const AValue: string); override;
     procedure UpdateGlobals; virtual;
   public
     constructor Create(const AOwner: TObject); override;
@@ -275,8 +286,10 @@ type
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
     procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
+    procedure InvalidateOptions;
   public
     property OwnerProject: TProject read FOwnerProject;
+    property Project: TProject read FOwnerProject;
     property Globals: TGlobalCompilerOptions read FGlobals;
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
@@ -285,19 +298,35 @@ type
   { TProjectDefineTemplates }
 
   TProjectDefineTemplatesFlag = (
-    ptfFlagsChanged
+    ptfFlagsChanged,
+    ptfIDChanged,
+    ptfSourceDirsChanged,
+    ptfOutputDirChanged,
+    ptfCustomDefinesChanged
     );
   TProjectDefineTemplatesFlags = set of TProjectDefineTemplatesFlag;
 
   TProjectDefineTemplates = class
   private
+    FActive: boolean;
+    FCustomDefines: TDefineTemplate;
     FFlags: TProjectDefineTemplatesFlags;
     FMain: TDefineTemplate;
+    FOutputDir: TDefineTemplate;
+    FOutPutSrcPath: TDefineTemplate;
     FProjectDir: TDefineTemplate;
-    FProject: TProject;
+    FOwnerProject: TProject;
     FUpdateLock: integer;
+    fLastSourceDirectories: TStringList;
+    fLastOutputDirSrcPathIDAsString: string;
+    fLastSourceDirsIDAsString: string;
+    fLastSourceDirStamp: integer;
+    FLastCustomOptions: string;
+    procedure SetActive(const AValue: boolean);
     procedure UpdateMain;
+    procedure UpdateDefinesForOutputDirectory;
     procedure UpdateDefinesForSourceDirectories;
+    procedure UpdateDefinesForCustomDefines;
   public
     constructor Create(OwnerProject: TProject);
     destructor Destroy; override;
@@ -306,11 +335,19 @@ type
     procedure EndUpdate;
     procedure CompilerFlagsChanged;
     procedure AllChanged;
+    procedure ProjectIDChanged;
     procedure SourceDirectoriesChanged;
+    procedure OutputDirectoryChanged;
+    procedure CustomDefinesChanged;
     procedure UpdateGlobalValues;
   public
-    property Owner: TProject read FProject;
+    property Owner: TProject read FOwnerProject;
+    property Project: TProject read FOwnerProject;
     property Main: TDefineTemplate read FMain;
+    property OutputDir: TDefineTemplate read FOutputDir;
+    property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
+    property CustomDefines: TDefineTemplate read FCustomDefines;
+    property Active: boolean read FActive write SetActive;
   end;
 
 
@@ -402,7 +439,6 @@ type
     fPathDelimChanged: boolean;
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
-    //fProjectType: TProjectType;
     FPublishOptions: TPublishProjectOptions;
     FRunParameterOptions: TRunParamsOptions;
     FSourceDirectories: TFileReferenceList;
@@ -460,6 +496,7 @@ type
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     procedure UnitModified(AnUnitInfo: TUnitInfo);
+    function NeedsDefineTemplates: boolean;
 
     // load/save
     function IsVirtual: boolean;
@@ -473,6 +510,8 @@ type
     // title
     function GetDefaultTitle: string;
     function TitleIsDefault: boolean;
+    function IDAsString: string;
+    function IDAsWord: string;
 
     // units
     function UnitCount:integer;
@@ -656,7 +695,7 @@ begin
     exit;
   end;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(fFilename,IsPartOfProject);
+    Result:=fOnFileBackup(Filename,IsPartOfProject);
     if Result=mrAbort then exit;
   end;
   repeat
@@ -685,7 +724,7 @@ begin
     exit;
   end;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(fFilename,false);
+    Result:=fOnFileBackup(Filename,false);
     if Result=mrAbort then exit;
   end;
   repeat
@@ -712,10 +751,10 @@ var
   NewSource: TCodeBuffer;
 begin
   repeat
-    NewSource:=CodeToolBoss.LoadFile(fFilename,true,Revert);
+    NewSource:=CodeToolBoss.LoadFile(Filename,true,Revert);
     if NewSource=nil then begin
       ACaption:=lisCodeToolsDefsReadError;
-      AText:=Format(lisUnableToReadFile2, ['"', fFilename, '"']);
+      AText:=Format(lisUnableToReadFile2, ['"', Filename, '"']);
       Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
          ,MB_ABORTRETRYIGNORE);
       if Result in [mrAbort,mrIgnore] then
@@ -783,7 +822,8 @@ begin
   fFilename := '';
   fFileReadOnly := false;
   fHasResources := false;
-  FIgnoreFileDateOnDiskValid:=false;
+  FIgnoreFileDateOnDiskValid := false;
+  fAutoReferenceSourceDir := true;
   inherited SetIsPartOfProject(false);
   fModified := false;
   FSessionModified := false;
@@ -906,10 +946,29 @@ begin
   end;
 end;
 
+procedure TUnitInfo.SetInternalFilename(const NewFilename: string);
+begin
+  if fFileName=NewFilename then exit;
+  //DebugLn('TUnitInfo.SetInternalFilename Old=',fFileName,' New=',NewFilename);
+  
+  // if directory changed then remove the old directory reference
+  if SourceDirectoryReferenced
+  and (Project<>nil)
+  and (fLastDirectoryReferenced<>GetDirectory) then begin
+    Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
+    FSourceDirectoryReferenced:=false;
+  end;
+  
+  fFileName:=NewFilename;
+  UpdateSourceDirectoryReference;
+end;
+
 function TUnitInfo.GetFileName: string;
 begin
-  if fSource<>nil then Result:=fSource.Filename
-  else Result:=fFileName;
+  if fSource<>nil then
+    Result:=fSource.Filename
+  else
+    Result:=fFileName;
 end;
 
 procedure TUnitInfo.SetFilename(const AValue: string);
@@ -917,7 +976,7 @@ begin
   if fSource<>nil then
     RaiseException('TUnitInfo.SetFilename Source<>nil')
   else
-    fFileName:=AValue;
+    SetInternalFilename(AValue);
 end;
 
 function TUnitInfo.IsVirtual: boolean;
@@ -926,6 +985,18 @@ begin
     Result:=fSource.IsVirtual
   else
     Result:=(fFileName<>ExpandFileName(fFileName));
+end;
+
+function TUnitInfo.GetDirectory: string;
+begin
+  if IsVirtual then begin
+    if Project<>nil then
+      Result:=Project.ProjectDirectory
+    else
+      Result:='';
+  end else  begin
+    Result:=ExtractFilePath(Filename);
+  end;
 end;
 
 function TUnitInfo.IsMainUnit: boolean;
@@ -1018,15 +1089,19 @@ end;
 
 procedure TUnitInfo.UpdateSourceDirectoryReference;
 begin
+  FSourceDirNeedReference:=IsPartOfProject and (FilenameIsPascalUnit(Filename));
   if (not AutoReferenceSourceDir) or (FProject=nil) then exit;
   if FSourceDirNeedReference then begin
     if not SourceDirectoryReferenced then begin
-      //Project.SourceDirectories.AddFilename(FDirectory);
+      fLastDirectoryReferenced:=GetDirectory;
+      Project.SourceDirectories.AddFilename(fLastDirectoryReferenced);
+      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference ADD File="',Filename,' Path="',Project.SourceDirectories.CreateSearchPathFromAllFiles,'"');
       FSourceDirectoryReferenced:=true;
     end;
   end else begin
     if SourceDirectoryReferenced then begin
-      //Project.SourceDirectories.RemoveFilename(FDirectory);
+      Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
+      //DebugLn('TUnitInfo.UpdateSourceDirectoryReference REMOVE File="',Filename,' Path="',Project.SourceDirectories.CreateSearchPathFromAllFiles,'"');
       FSourceDirectoryReferenced:=false;
     end;
   end;
@@ -1057,7 +1132,7 @@ begin
   if (fSource<>nil) then begin
     if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
-    fFileName:=fSource.FileName;
+    SetInternalFilename(fSource.FileName);
     if (fProject<>nil) and (fProject.MainUnitInfo=Self) then
       fProject.MainSourceFilenameChanged;
   end;
@@ -1148,8 +1223,7 @@ procedure TUnitInfo.SetAutoReferenceSourceDir(const AValue: boolean);
 begin
   if FAutoReferenceSourceDir=AValue then exit;
   FAutoReferenceSourceDir:=AValue;
-  if FSourceDirNeedReference then
-    UpdateSourceDirectoryReference;
+  UpdateSourceDirectoryReference;
 end;
 
 procedure TUnitInfo.SetBuildFileIfActive(const AValue: boolean);
@@ -1188,6 +1262,7 @@ begin
   inherited SetIsPartOfProject(AValue);
   UpdateList(uilPartOfProject,IsPartOfProject);
   if IsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
+  UpdateSourceDirectoryReference;
   if Project<>nil then Project.EndUpdate;
 end;
 
@@ -1227,6 +1302,7 @@ begin
     if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
     if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
   end;
+  UpdateSourceDirectoryReference;
 end;
 
 procedure TUnitInfo.SetRunFileIfActive(const AValue: boolean);
@@ -1276,6 +1352,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TProject.Destroy;
 begin
+  FDefineTemplates.Active:=false;
   fDestroying:=true;
   Clear;
   FreeThenNil(FBookmarks);
@@ -1472,6 +1549,16 @@ begin
   Result:=(Title='') or (Title=GetDefaultTitle);
 end;
 
+function TProject.IDAsString: string;
+begin
+  Result:='Project'; // TODO: see TLazPackage
+end;
+
+function TProject.IDAsWord: string;
+begin
+  Result:='Project'; // TODO: see TLazPackage
+end;
+
 {------------------------------------------------------------------------------
   TProject ReadProject
  ------------------------------------------------------------------------------}
@@ -1490,7 +1577,6 @@ var
   Path: String;
   OldProjectType: TOldProjectType;
   xmlconfig: TXMLConfig;
-  SourceDirectoriesUpdated: Boolean;
   SubPath: String;
   NewUnitFilename: String;
 
@@ -1578,7 +1664,6 @@ begin
       exit;
     end;
 
-    SourceDirectoriesUpdated:=true;
     try
       Path:='ProjectOptions/';
       fPathDelimChanged:=
@@ -1602,7 +1687,6 @@ begin
         OldSrcPath := xmlconfig.GetValue(Path+'General/SrcPath/Value','');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-      SourceDirectoriesUpdated:=false;
       NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
       for i := 0 to NewUnitCount - 1 do begin
         SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
@@ -1618,8 +1702,6 @@ begin
         AddFile(NewUnitInfo,false);
         NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath);
       end;
-      UpdateSourceDirectories;
-      SourceDirectoriesUpdated:=true;
 
       //lazdoc
       LazDocPathList.Text := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
@@ -1652,8 +1734,6 @@ begin
       if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
 
     finally
-      if not SourceDirectoriesUpdated then
-        UpdateSourceDirectories;
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
       try
@@ -1808,6 +1888,7 @@ procedure TProject.BeginUpdate(Change: boolean);
 begin
   inc(FUpdateLock);
   FDefineTemplates.BeginUpdate;
+  FSourceDirectories.BeginUpdate;
   if FUpdateLock=1 then begin
     fChanged:=Change;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
@@ -1819,6 +1900,7 @@ procedure TProject.EndUpdate;
 begin
   if FUpdateLock<=0 then RaiseException('TProject.EndUpdate');
   dec(FUpdateLock);
+  FSourceDirectories.EndUpdate;
   FDefineTemplates.EndUpdate;
   if FUpdateLock=0 then begin
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
@@ -1831,6 +1913,11 @@ begin
     Modified:=true
   else
     SessionModified:=true;
+end;
+
+function TProject.NeedsDefineTemplates: boolean;
+begin
+  Result:=not Destroying;
 end;
 
 function TProject.GetUnits(Index:integer):TUnitInfo;
@@ -2675,7 +2762,7 @@ begin
 end;
 
 function TProject.JumpHistoryCheckPosition(
-  APosition:TProjectJumpHistoryPosition): boolean;
+  APosition: TProjectJumpHistoryPosition): boolean;
 var i: integer;
 begin
   i:=IndexOfFilename(APosition.Filename);
@@ -3050,6 +3137,66 @@ begin
   FGlobals.TargetOS:=TargetOS;
 end;
 
+procedure TProjectCompilerOptions.SetCustomOptions(const AValue: string);
+begin
+  if CustomOptions=AValue then exit;
+  InvalidateOptions;
+  inherited SetCustomOptions(AValue);
+  if Project<>nil then
+    Project.DefineTemplates.CustomDefinesChanged;
+end;
+
+procedure TProjectCompilerOptions.SetIncludeFiles(const AValue: string);
+begin
+  if IncludeFiles=AValue then exit;
+  InvalidateOptions;
+  inherited SetIncludeFiles(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetLibraries(const AValue: string);
+begin
+  if Libraries=AValue then exit;
+  InvalidateOptions;
+  inherited SetLibraries(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetLinkerOptions(const AValue: string);
+begin
+  if LinkerOptions=AValue then exit;
+  InvalidateOptions;
+  inherited SetLinkerOptions(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetObjectPath(const AValue: string);
+begin
+  if ObjectPath=AValue then exit;
+  InvalidateOptions;
+  inherited SetObjectPath(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetSrcPath(const AValue: string);
+begin
+  if SrcPath=AValue then exit;
+  InvalidateOptions;
+  inherited SetSrcPath(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetOtherUnitFiles(const AValue: string);
+begin
+  if OtherUnitFiles=AValue then exit;
+  InvalidateOptions;
+  inherited SetOtherUnitFiles(AValue);
+end;
+
+procedure TProjectCompilerOptions.SetUnitOutputDir(const AValue: string);
+begin
+  if UnitOutputDirectory=AValue then exit;
+  InvalidateOptions;
+  inherited SetUnitOutputDir(AValue);
+  if Project<>nil then
+    Project.DefineTemplates.OutputDirectoryChanged;
+end;
+
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -3065,6 +3212,12 @@ begin
   Result := (CompOpts is TProjectCompilerOptions)
         and (FCompileReasons = TProjectCompilerOptions(CompOpts).FCompileReasons)
         and inherited IsEqual(CompOpts);
+end;
+
+procedure TProjectCompilerOptions.InvalidateOptions;
+begin
+  if (Project=nil) then exit;
+  // TODO: propagate change to all dependants projects
 end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;
@@ -3127,15 +3280,207 @@ end;
 
 { TProjectDefineTemplates }
 
+procedure TProjectDefineTemplates.SetActive(const AValue: boolean);
+begin
+  if FActive=AValue then exit;
+  FActive:=AValue;
+  if not FActive then Clear else AllChanged;
+end;
+
+procedure TProjectDefineTemplates.UpdateMain;
+begin
+  //DebugLn('TProjectDefineTemplates.UpdateMain ',Project.IDAsString,' Active=',dbgs(Active));
+  // update the package block define template (the container for all other
+  // define templates of the project)
+  if (FMain=nil) and (not Project.Destroying) then begin
+    // create the main project template
+    FMain:=CreateProjectTemplateWithID(Project.IDAsWord);
+    FMain.SetDefineOwner(Owner,false);
+    FMain.SetFlags([dtfAutoGenerated],[],false);
+  end else
+    FMain.Name:=Project.IDAsWord;
+  // ClearCache is here unnessary, because it is only a block
+end;
+
+procedure TProjectDefineTemplates.UpdateDefinesForOutputDirectory;
+begin
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Project.IDAsString);
+  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+  if FMain=nil then UpdateMain;
+
+  if FOutputDir=nil then begin
+    //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Project.IDAsString,' creating FOutputDir');
+    FOutputDir:=TDefineTemplate.Create(ProjectOutputDirDefTemplName,
+      'Output directoy of project', '', Project.GetOutputDirectory, da_Directory
+        );
+    FOutputDir.SetDefineOwner(Project,false);
+    FOutputDir.SetFlags([dtfAutoGenerated],[],false);
+    FMain.AddChild(FOutputDir);
+  end else begin
+    FOutputDir.Value:=Project.GetOutputDirectory;
+  end;
+
+  if (FOutPutSrcPath=nil)
+  or (fLastOutputDirSrcPathIDAsString<>Project.IDAsString) then begin
+    fLastOutputDirSrcPathIDAsString:=Project.IDAsString;
+    FOutputSrcPath:=TDefineTemplate.Create('CompiledSrcPath',
+      lisPkgDefsCompiledSrcPathAddition, CompiledSrcPathMacroName,
+      '$PkgSrcPath('+fLastOutputDirSrcPathIDAsString+');'
+        +'$('+CompiledSrcPathMacroName+')',
+      da_Define);
+    FOutputSrcPath.SetDefineOwner(Project,false);
+    FOutputSrcPath.SetFlags([dtfAutoGenerated],[],false);
+    CodeToolBoss.DefineTree.ReplaceChild(FOutputDir,FOutputSrcPath,
+      FOutputSrcPath.Name);
+  end;
+end;
+
+procedure TProjectDefineTemplates.UpdateDefinesForSourceDirectories;
+var
+  NewSourceDirs: TStringList;
+  i: Integer;
+  SrcDirDefTempl: TDefineTemplate;
+  UnitPathDefTempl: TDefineTemplate;
+  IncPathDefTempl: TDefineTemplate;
+  IDHasChanged: Boolean;
+  SrcDirMarkDefTempl: TDefineTemplate;
+  SrcPathDefTempl: TDefineTemplate;
+begin
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active));
+  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+
+  // quick check if something has changed
+  IDHasChanged:=fLastSourceDirsIDAsString<>Project.IDAsString;
+  if (fLastSourceDirectories<>nil)
+  and (fLastSourceDirStamp=Project.SourceDirectories.TimeStamp)
+  and (not IDHasChanged) then
+    exit;
+  fLastSourceDirStamp:=Project.SourceDirectories.TimeStamp;
+  fLastSourceDirsIDAsString:=Project.IDAsString;
+
+  NewSourceDirs:=Project.SourceDirectories.CreateFileList;
+  try
+    // real check if something has changed
+    if (fLastSourceDirectories<>nil)
+    and (NewSourceDirs.Count=fLastSourceDirectories.Count)
+    and (not IDHasChanged) then begin
+      i:=NewSourceDirs.Count-1;
+      while (i>=0)
+      and (CompareFilenames(NewSourceDirs[i],fLastSourceDirectories[i])=0) do
+        dec(i);
+      if i<0 then exit;
+    end;
+
+    // clear old define templates
+    if fLastSourceDirectories<>nil then begin
+      for i:=0 to fLastSourceDirectories.Count-1 do begin
+        SrcDirDefTempl:=TDefineTemplate(fLastSourceDirectories.Objects[i]);
+        SrcDirDefTempl.Unbind;
+        SrcDirDefTempl.Free;
+      end;
+      fLastSourceDirectories.Clear;
+    end else
+      fLastSourceDirectories:=TStringList.Create;
+
+    // build source directory define templates
+    fLastSourceDirectories.Assign(NewSourceDirs);
+    if (FMain=nil) and (fLastSourceDirectories.Count>0) then UpdateMain;
+    for i:=0 to fLastSourceDirectories.Count-1 do begin
+      // create directory template
+      SrcDirDefTempl:=TDefineTemplate.Create('Source Directory '+IntToStr(i+1),
+        fLastSourceDirectories[i],'',fLastSourceDirectories[i],da_Directory);
+      fLastSourceDirectories.Objects[i]:=SrcDirDefTempl;
+      // add project source directory marker
+      SrcDirMarkDefTempl:=TDefineTemplate.Create('ProjectSrcDirMark',
+        lisProjProjectSourceDirectoryMark, '#ProjectSrcMark'+Project.IDAsWord,
+          '',
+        da_Define);
+      SrcDirDefTempl.AddChild(SrcDirMarkDefTempl);
+
+      // create unit path template for this directory
+      UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
+        '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Project.IDAsString+')',
+        da_Define);
+      SrcDirDefTempl.AddChild(UnitPathDefTempl);
+
+      // create include path template for this directory
+      IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
+        '#IncPath','$(#IncPath);$ProjectIncPath('+Project.IDAsString+')',
+        da_Define);
+      SrcDirDefTempl.AddChild(IncPathDefTempl);
+
+      // create src path template for this directory
+      SrcPathDefTempl:=TDefineTemplate.Create('SrcPath','Src Path',
+        '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Project.IDAsString+')',
+        da_Define);
+      SrcDirDefTempl.AddChild(SrcPathDefTempl);
+
+      SrcDirDefTempl.SetDefineOwner(Project,false);
+      SrcDirDefTempl.SetFlags([dtfAutoGenerated],[],false);
+      // add directory
+      FMain.AddChild(SrcDirDefTempl);
+    end;
+    CodeToolBoss.DefineTree.ClearCache;
+
+  finally
+    NewSourceDirs.Free;
+  end;
+end;
+
+procedure TProjectDefineTemplates.UpdateDefinesForCustomDefines;
+var
+  OptionsDefTempl: TDefineTemplate;
+  NewCustomOptions: String;
+begin
+  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+
+  // check if something has changed
+  NewCustomOptions:=Project.CompilerOptions.GetCustomOptions;
+  if FLastCustomOptions=NewCustomOptions then exit;
+
+  FLastCustomOptions:=NewCustomOptions;
+  OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                          'Custom Options',FLastCustomOptions,false,Project);
+  if OptionsDefTempl=nil then begin
+    // no custom options -> delete old template
+    if FCustomDefines<>nil then begin
+      FCustomDefines.UnBind;
+      FCustomDefines.Free;
+      FCustomDefines:=nil;
+    end;
+    exit;
+  end;
+
+  // create custom options
+  // The custom options are enclosed by an
+  // IFDEF #ProjectSrcMark<PckId> template.
+  // Each source directory defines this variable, so that the settings can be
+  // activated for each source directory by a simple DEFINE.
+  if (FMain=nil) then UpdateMain;
+  if FCustomDefines=nil then begin
+    FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
+      'Additional defines for project source directories',
+      '#ProjectSrcMark'+Project.IDAsWord,'',
+      da_IfDef);
+    FMain.AddChild(FCustomDefines);
+  end else begin
+    FCustomDefines.Value:='#ProjectSrcMark'+Project.IDAsWord;
+  end;
+  FCustomDefines.ReplaceChild(OptionsDefTempl);
+
+  CodeToolBoss.DefineTree.ClearCache;
+end;
+
 constructor TProjectDefineTemplates.Create(OwnerProject: TProject);
 begin
   inherited Create;
-  FProject:=OwnerProject;
+  FOwnerProject:=OwnerProject;
 end;
 
 destructor TProjectDefineTemplates.Destroy;
 begin
   Clear;
+  fLastSourceDirectories.Free;
   inherited Destroy;
 end;
 
@@ -3161,25 +3506,10 @@ begin
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if ptfFlagsChanged in FFlags then CompilerFlagsChanged;
+    if ptfSourceDirsChanged in FFlags then SourceDirectoriesChanged;
+    if ptfOutputDirChanged in FFlags then OutputDirectoryChanged;
+    if ptfCustomDefinesChanged in FFlags then CustomDefinesChanged;
   end;
-end;
-
-procedure TProjectDefineTemplates.UpdateMain;
-begin
-  // update the package block define template (the container for all other
-  // define templates of the package)
-  if (FMain=nil) and (not Owner.Destroying) then begin
-    // create the main project template
-    FMain:=CreateProjectTemplate(FProjectDir);
-    FMain.SetDefineOwner(Owner,false);
-    FMain.SetFlags([dtfAutoGenerated],[],false);
-  end;
-  // ClearCache is here unnessary, because it is only a block
-end;
-
-procedure TProjectDefineTemplates.UpdateDefinesForSourceDirectories;
-begin
-
 end;
 
 procedure TProjectDefineTemplates.CompilerFlagsChanged;
@@ -3204,9 +3534,50 @@ begin
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
+procedure TProjectDefineTemplates.ProjectIDChanged;
+begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,ptfIDChanged);
+    exit;
+  end;
+  Exclude(FFlags,ptfIDChanged);
+  UpdateMain;
+  UpdateDefinesForOutputDirectory;
+  UpdateDefinesForSourceDirectories;
+  UpdateDefinesForCustomDefines;
+end;
+
 procedure TProjectDefineTemplates.SourceDirectoriesChanged;
 begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,ptfSourceDirsChanged);
+    exit;
+  end;
+  Exclude(FFlags,ptfSourceDirsChanged);
+  UpdateDefinesForSourceDirectories;
+  CodeToolBoss.DefineTree.ClearCache;
+end;
 
+procedure TProjectDefineTemplates.OutputDirectoryChanged;
+begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,ptfOutputDirChanged);
+    exit;
+  end;
+  Exclude(FFlags,ptfOutputDirChanged);
+  UpdateDefinesForOutputDirectory;
+  CodeToolBoss.DefineTree.ClearCache;
+end;
+
+procedure TProjectDefineTemplates.CustomDefinesChanged;
+begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,ptfCustomDefinesChanged);
+    exit;
+  end;
+  Exclude(FFlags,ptfCustomDefinesChanged);
+  UpdateDefinesForCustomDefines;
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 procedure TProjectDefineTemplates.UpdateGlobalValues;

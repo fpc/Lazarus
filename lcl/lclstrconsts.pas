@@ -243,6 +243,7 @@ ResourceString
   ifsVK_NUMPAD     = 'Numpad %d';
   ifsVK_NUMLOCK    = 'Numlock';
   ifsVK_SCROLL     = 'Scroll';
+  rsDocking = 'Docking';
 
 implementation
 

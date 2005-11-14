@@ -785,6 +785,9 @@ type
     function OnMacroPromptFunction(const s:string; var Abort: boolean): string;
     function OnMacroFuncMakeExe(const Filename:string; var Abort: boolean): string;
     function OnMacroFuncProject(const Param: string; var Abort: boolean): string;
+    function OnMacroFuncProjectUnitPath(Data: Pointer): boolean;
+    function OnMacroFuncProjectIncPath(Data: Pointer): boolean;
+    function OnMacroFuncProjectSrcPath(Data: Pointer): boolean;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
@@ -1553,6 +1556,14 @@ begin
 
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
+
+  // projects macro functions
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PROJECTUNITPATH',nil,@OnMacroFuncProjectUnitPath);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PROJECTINCPATH',nil,@OnMacroFuncProjectIncPath);
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PROJECTSRCPATH',nil,@OnMacroFuncProjectSrcPath);
 end;
 
 procedure TMainIDE.SetupCodeMacros;
@@ -4016,7 +4027,7 @@ function TMainIDE.DoRenameUnit(AnUnitInfo: TUnitInfo;
   var ResourceCode: TCodeBuffer): TModalresult;
 var
   NewLFMFilename: String;
-  OldSource: String;
+  OldSourceCode: String;
   NewSource: TCodeBuffer;
   NewFilePath: String;
   NewResFilePath: String;
@@ -4070,9 +4081,9 @@ begin
   end;
 
   // create new source with the new filename
-  OldSource:=AnUnitInfo.Source.Source;
+  OldSourceCode:=AnUnitInfo.Source.Source;
   NewSource:=CodeToolBoss.CreateFile(NewFilename);
-  NewSource.Source:=OldSource;
+  NewSource.Source:=OldSourceCode;
   if NewSource=nil then begin
     Result:=MessageDlg(lisUnableToCreateFile,
       Format(lisCanNotCreateFile, ['"', NewFilename, '"']),
@@ -4953,6 +4964,7 @@ begin
   PkgBoss.OpenProjectDependencies(Project1,true);
 
   Project1.DefineTemplates.AllChanged;
+  Project1.DefineTemplates.Active:=true;
   Result:=mrOk;
 end;
 
@@ -8849,6 +8861,42 @@ begin
     end;
   end else begin
     Result:='';
+  end;
+end;
+
+function TMainIDE.OnMacroFuncProjectUnitPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=false;
+  if Project1<>nil then begin
+    FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false);
+    Result:=true;
+  end;
+end;
+
+function TMainIDE.OnMacroFuncProjectIncPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=false;
+  if Project1<>nil then begin
+    FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false);
+    Result:=true;
+  end;
+end;
+
+function TMainIDE.OnMacroFuncProjectSrcPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=false;
+  if Project1<>nil then begin
+    FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false);
+    Result:=true;
   end;
 end;
 

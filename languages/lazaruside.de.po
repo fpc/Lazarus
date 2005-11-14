@@ -874,11 +874,11 @@ msgstr "Schreibweise ignorieren"
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
-msgstr "Klein/Groﬂ beachten"
+msgstr "Klein/Gross beachten"
 
 #: lazarusidestrconsts:lisfindfilecasesensitive
 msgid "Case sensitive"
-msgstr "Klein/Groﬂ beachten"
+msgstr "Klein/Gross beachten"
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
@@ -2078,7 +2078,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
-msgstr "Einschlieﬂen"
+msgstr "Einschliessen"
 
 #: lazarusidestrconsts:uemencloseselection
 msgid "Enclose Selection"
@@ -2238,7 +2238,7 @@ msgstr "Beispiel"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
-msgstr "Ausschlieﬂender Filter"
+msgstr "Ausschliessender Filter"
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"

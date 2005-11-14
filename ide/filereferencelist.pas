@@ -148,14 +148,18 @@ begin
       CurFileLen:=length(CurFileName);
       if CurFileLen>0 then begin
         // add semicolon
-        FSearchPath[StartPos]:=';';
-        inc(StartPos);
+        if StartPos>1 then begin
+          FSearchPath[StartPos]:=';';
+          inc(StartPos);
+        end;
         // add path
         Move(CurFileName[1],FSearchPath[StartPos],CurFileLen);
         inc(StartPos,CurFileLen);
       end;
       ANode:=FTree.FindSuccessor(ANode);
     end;
+    if StartPos<>length(FSearchPath)+1 then
+      RaiseException('TFileReferenceList.UpdateSearchPath');
   end;
   Include(FFlags,frfSearchPathValid);
 end;
@@ -170,7 +174,7 @@ end;
 
 procedure TFileReferenceList.Invalidate;
 begin
-  if frfSearchPathValid in FFlags then exit;
+  if not (frfSearchPathValid in FFlags) then exit;
   Exclude(FFlags,frfSearchPathValid);
   IncreaseTimeStamp;
   if FUpdateLock>0 then
