@@ -1495,8 +1495,14 @@ begin
     end;
 
     // autosize control to preferred size
-    if (not WidthIsFixed) or (not HeightIsFixed) then
+    if (not WidthIsFixed) or (not HeightIsFixed) then begin
       GetPreferredSize(PreferredWidth,PreferredHeight,false);
+      //if ControlCount>0 then
+      //  DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+    end else begin
+      PreferredWidth:=0;
+      PreferredHeight:=0;
+    end;
     if WidthIsFixed or (PreferredWidth<=0) then
       PreferredWidth:=Constraints.MinMaxWidth(Width);
     if HeightIsFixed or (PreferredHeight<=0) then
@@ -1670,6 +1676,7 @@ begin
         if Assigned(FWinControls.Items[I]) then
           TWinControl(FWinControls.Items[I]).InvalidateClientRectCache(true);
   end;
+  InvalidatePreferredSize;
 end;
 
 {-------------------------------------------------------------------------------
@@ -4373,6 +4380,7 @@ begin
     NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
     If CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
     FBoundsRealized:=NewBoundsRealized;
+    InvalidatePreferredSize;
   end;
 
   SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
@@ -4693,6 +4701,10 @@ begin
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
     Exit;
+  end;
+  
+  if csLoading in ComponentState then begin
+    DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self));
   end;
 
   Include(FWinControlFlags,wcfCreatingHandle);
@@ -5305,6 +5317,7 @@ begin
         Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
         Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
       end;
+      //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
     end;
   end;
   if ChildBounds.Left>ChildBounds.Right then begin

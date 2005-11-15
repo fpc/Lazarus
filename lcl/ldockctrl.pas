@@ -135,8 +135,11 @@ begin
   if [csDestroying,csDesigning]*ComponentState<>[] then exit;
   if csLoading in ComponentState then exit;
 
+  //DebugLn('TCustomLazControlDocker.UpdatePopupMenu ',DbgSName(Control),' Manager=',DbgSName(Manager),' PopupMenu=',dbgs((Control<>nil) and (Control.PopupMenu<>nil)),' ExtendPopupMenu=',dbgs(ExtendPopupMenu));
+
   if ExtendPopupMenu and (Control<>nil) and (Control.PopupMenu<>nil)
   and (Manager<>nil) then begin
+    //DebugLn('TCustomLazControlDocker.UpdatePopupMenu ADDING');
     if (PopupMenuItem<>nil) and (PopupMenuItem.Parent<>Control.PopupMenu.Items)
     then begin
       // PopupMenuItem is in the old PopupMenu -> delete it

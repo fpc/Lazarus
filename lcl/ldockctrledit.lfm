@@ -15,13 +15,13 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'UndockGroupBox'
-    ChildSizing.HorizontalSpacing = 5
-    ChildSizing.VerticalSpacing = 5
-    ClientHeight = 9
+    ChildSizing.LeftRightSpacing = 5
+    ChildSizing.TopBottomSpacing = 5
+    ClientHeight = 30
     ClientWidth = 291
     TabOrder = 0
     Left = 8
-    Height = 26
+    Height = 47
     Top = 8
     Width = 295
     object UndockButton: TButton
@@ -39,8 +39,8 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'DockGroupBox'
-    ChildSizing.HorizontalSpacing = 5
-    ChildSizing.VerticalSpacing = 5
+    ChildSizing.LeftRightSpacing = 5
+    ChildSizing.TopBottomSpacing = 5
     ClientHeight = 180
     ClientWidth = 291
     TabOrder = 1

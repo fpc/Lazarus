@@ -1468,7 +1468,7 @@ type
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    procedure DoAutoSize; Override;
+    procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer); override;
     procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace: boolean); virtual;
