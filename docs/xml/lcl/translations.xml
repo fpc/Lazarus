@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    Translations
+  ====================================================================
+-->
+    <module name="Translations">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GetText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FileUtil">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="StringHashList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPOFileItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TPOFileItem.Identifier">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TPOFileItem.Original">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TPOFileItem.Translation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPOFileItem.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFileItem.Create.TheIdentifier">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFileItem.Create.TheOriginal">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFileItem.Create.TheTranslated">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPOFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TPOFile.FItems">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TPOFile.FIdentifierToItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TPOFile.FOriginalToItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPOFile.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Create.AFilename">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPOFile.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Create.AStream">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TPOFile.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPOFile.ReadPOText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.ReadPOText.s">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TPOFile.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Add.Identifier">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Add.OriginalValue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Add.TranslatedValue">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPOFile.Translate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPOFile.Translate.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Translate.Identifier">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPOFile.Translate.OriginalValue">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="EPOFileError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="TranslateUnitResourceStrings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TranslateUnitResourceStrings.ResUnitName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TranslateUnitResourceStrings.BaseFilename">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TranslateUnitResourceStrings.Lang">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TranslateUnitResourceStrings.FallbackLang">
+        <short/>
+      </element>
+    </module>
+    <!-- Translations -->
+  </package>
+</fpdoc-descriptions>
