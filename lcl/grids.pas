@@ -575,6 +575,7 @@ type
     procedure EditorSetMode(const AValue: Boolean);
     procedure EditorSetValue;
     function  EditorAlwaysShown: Boolean;
+    procedure FixPosition;
     function  GetLeftCol: Integer;
     function  GetColCount: Integer;
     function  GetColWidths(Acol: Integer): Integer;
@@ -1776,41 +1777,6 @@ procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer
     while lst.Count<aCount do Lst.Add(Pointer(-1)); // default width/height
     Lst.Count:=aCount;
   end;
-  procedure FixSelection;
-  begin
-    if FRow > FRows.Count - 1 then
-      FRow := FRows.Count - 1
-    else if (FRow < FixedRows) and (FixedRows<FRows.Count) then
-      FRow := FixedRows;
-    if FCol > FCols.Count - 1 then
-      FCol := FCols.Count - 1
-    else if (FCol < FixedCols) and (FixedCols<FCols.Count) then
-      FCol := FixedCols;
-    UpdateSelectionRange;
-  end;
-  procedure FixTopLeft;
-  var
-    oldTL: TPoint;
-  begin
-    OldTL:=FTopLeft;
-    if IsColumn then begin
-      if OldTL.X+VisibleColCount>FCols.Count then begin
-        OldTL.X := FCols.Count - VisibleColCount;
-        if OldTL.X<FixedCols then
-          OldTL.X := FixedCols;
-      end;
-    end else begin
-      if OldTL.Y+VisibleRowCount>FRows.Count then begin
-        OldTL.Y := FRows.Count - VisiblerowCount;
-        if OldTL.Y<FixedRows then
-          OldTL.Y:=FixedRows;
-      end;
-    end;
-    if not PointIgual(OldTL, FTopleft) then begin
-      fTopLeft := OldTL;
-      topleftChanged;
-    end;
-  end;
 var
   OldCount: integer;
 begin
@@ -1843,9 +1809,7 @@ begin
     end;
     SizeChanged(OldCount, OldValue);
   end;
-  FixTopleft;
-  FixSelection;
-  VisualChange;
+  FixPosition;
 end;
 
 procedure TCustomGrid.SetColCount(Valor: Integer);
@@ -3890,7 +3854,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
       FCols.Delete(Index);
       FGCache.AccumWidth.Delete(Index);
       ColRowDeleted(True, Index);
-      VisualChange;
+      FixPosition;
     end;
   end;
   procedure doDeleteRow;
@@ -3905,7 +3869,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     FRows.Delete(Index);
     FGCache.AccumHeight.Delete(Index);
     ColRowDeleted(False,Index);
-    VisualChange;
+    FixPosition;
   end;
 begin
   if IsColumn then
@@ -5165,6 +5129,45 @@ end;
 function TCustomGrid.EditorAlwaysShown: Boolean;
 begin
   Result:=(goEditing in Options)and(goAlwaysShowEditor in Options)and not FixedGrid;
+end;
+
+procedure TCustomGrid.FixPosition;
+  procedure FixSelection;
+  begin
+    if FRow > FRows.Count - 1 then
+      FRow := FRows.Count - 1
+    else if (FRow < FixedRows) and (FixedRows<FRows.Count) then
+      FRow := FixedRows;
+    if FCol > FCols.Count - 1 then
+      FCol := FCols.Count - 1
+    else if (FCol < FixedCols) and (FixedCols<FCols.Count) then
+      FCol := FixedCols;
+    UpdateSelectionRange;
+  end;
+  procedure FixTopLeft;
+  var
+    oldTL: TPoint;
+  begin
+    OldTL:=FTopLeft;
+    if OldTL.X+VisibleColCount>FCols.Count then begin
+      OldTL.X := FCols.Count - VisibleColCount;
+      if OldTL.X<FixedCols then
+        OldTL.X := FixedCols;
+    end;
+    if OldTL.Y+VisibleRowCount>FRows.Count then begin
+      OldTL.Y := FRows.Count - VisiblerowCount;
+      if OldTL.Y<FixedRows then
+        OldTL.Y:=FixedRows;
+    end;
+    if not PointIgual(OldTL, FTopleft) then begin
+      fTopLeft := OldTL;
+      topleftChanged;
+    end;
+  end;
+begin
+  FixTopleft;
+  FixSelection;
+  VisualChange;
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
