@@ -72,6 +72,7 @@ begin
   FColumns  := 1;
   FColumnLayout := clHorizontalThenVertical;
   SetInitialBounds(0,0,250,200);
+  TabStop := True;
 end;
 
 
@@ -122,6 +123,7 @@ begin
     Temp.OnChange := @Changed;
     Temp.OnEnter :=@ItemEnter;
     Temp.OnExit :=@ItemExit;
+    Temp.OnKeyDown :=@ItemKeyDown;
     Temp.OnResize := @ItemResize;
     include(temp.ControlStyle, csNoDesignSelectable);
     FButtonList.Add(Temp);
@@ -163,6 +165,7 @@ begin
       Temp.Visible := true;
     end;
     FHiddenButton.Checked:=(fItemIndex=-1);
+    DoSetTabStops;
   end;
   //DebugLn('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
   
@@ -192,6 +195,52 @@ begin
   DoPositionButtons;
 end;
 
+procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+
+  procedure MoveSelection(HorzDiff, VertDiff: integer);
+  var
+    Count: integer;
+    StepSize: integer;
+    BlockSize : integer;
+    NewIndex : integer;
+    WrapOffset: integer;
+  begin
+    Count := FButtonList.Count;
+    if FColumnLayout=clHorizontalThenVertical then begin
+      //add a row for better wrapping
+      BlockSize := FColumns * (Rows+1);
+      StepSize := HorzDiff + VertDiff * FColumns;
+      WrapOffSet := VertDiff;
+    end
+    else begin
+      //add a column for better wrapping
+      BlockSize := (FColumns+1) * Rows;
+      StepSize := HorzDiff * Rows + VertDiff;
+      WrapOffSet := HorzDiff;
+    end;
+    NewIndex := ItemIndex + StepSize;
+    if (NewIndex>=Count) or (NewIndex<0) then begin
+      NewIndex := (NewIndex + WrapOffSet + BlockSize) mod BlockSize;
+      // Keep moving in the same direction until in valid range
+      while NewIndex>=Count do
+        NewIndex := (NewIndex + StepSize) mod BlockSize;
+    end;
+    ItemIndex := NewIndex;
+    TRadioButton(FButtonList[ItemIndex]).SetFocus;
+    Key := 0;
+  end;
+begin
+  if Shift=[] then begin
+    case Key of
+      VK_LEFT: MoveSelection(-1,0);
+      VK_RIGHT: MoveSelection(1,0);
+      VK_UP: MoveSelection(0,-1);
+      VK_DOWN: MoveSelection(0,1);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.ItemsChanged
   Params:  sender : object calling this proc. (in fact the FItems instance)
@@ -211,7 +260,7 @@ end;
   Params:  value - no of columns of the radiogroup
   Returns: Nothing
 
-  Set the FColumns property which determines the no columns in
+  Set the FColumns property which determines the number of columns in
   which the radiobuttons should be arranged.
   Range: 1 .. ???
  ------------------------------------------------------------------------------}
@@ -289,6 +338,7 @@ begin
       // this has automatically unset the old button. But they do not recognize
       // it. Update the states.
       CheckItemIndexChanged;
+      DoSetTabStops;
 
       OwnerFormDesignerModified(Self);
     end
@@ -450,6 +500,19 @@ begin
   end;
 end;
 
+procedure TCustomRadioGroup.DoSetTabStops;
+var
+  i: Integer;
+  RadioBtn: TRadioButton;
+begin
+  for i := 0 to FButtonList.Count-1 do begin
+    RadioBtn := TRadioButton(FButtonList[i]);
+    RadioBtn.TabStop := RadioBtn.Checked;
+  end;
+  if (FItemIndex=-1) and (Items.Count>0) then
+    TRadioButton(FButtonList[0]).TabStop := true;
+end;
+
 procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
 begin
   if FAutoFill=AValue then exit;
@@ -478,5 +541,6 @@ begin
   FHiddenButton.Checked;
   for i:=0 to FButtonList.Count-1 do
     if TRadioButton(FButtonList[i]).Checked then FItemIndex:=i;
+  DoSetTabStops;
 end;
 

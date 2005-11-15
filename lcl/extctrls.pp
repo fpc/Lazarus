@@ -641,9 +641,11 @@ type
     procedure Changed(Sender: TObject);
     procedure ItemEnter(Sender: TObject);
     procedure DoPositionButtons;
+    procedure DoSetTabStops;
     procedure SetAutoFill(const AValue: Boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure ItemExit(Sender: TObject);
+    procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemResize(Sender: TObject);
   protected
     procedure UpdateRadioButtonStates; virtual;
@@ -667,6 +669,7 @@ type
     property Columns: integer read FColumns write SetColumns default 1;
     property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property TabStop default True;
   end;
 
 
