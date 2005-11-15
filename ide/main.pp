@@ -9137,14 +9137,17 @@ begin
   //debugln('TMainIDE.DoShowMessagesView');
   WasVisible:=MessagesView.Visible;
   MessagesView.Visible:=true;
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+  if not WasVisible then begin
+    // don't move the messagesview, if it was already visible.
+    ALayout:=EnvironmentOptions.IDEWindowLayoutList.
                                                ItemByEnum(nmiwMessagesViewName);
-  ALayout.Apply;
-  if not WasVisible then
+    ALayout.Apply;
+
     // the sourcenotebook is more interesting than the messages
     // TODO: don't do this when messages content intersect the editor content
     SourceNotebook.ShowOnTop;
-
+  end;
+  
   //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
     MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
