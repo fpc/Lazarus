@@ -113,7 +113,7 @@ begin
   //writeln('CheckFilenameForLCLPaths UnitPath="',UnitPath,'" LCLPath="',LCLPath,'"');
   if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
   begin
-    LCLPath:=LCLPath+'$(TargetCPU)'+PathDelim+'$(TargetOS)';
+    LCLPath:=LCLPath+'$(TargetCPU)-$(TargetOS)';
     Result:=MessageDlg(lisLCLUnitPathMissing,
       Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits, [#13, '"',
         Filename, '"', #13, '"', UnitPath, '"', #13, #13, '"', LCLPath, '"',
