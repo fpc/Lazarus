@@ -31,7 +31,10 @@ cd -
 DescrFiles=''
 for unit in $UnitList; do
   ShortFile=`echo $unit | sed -e 's/\.pp\b//g' -e 's/\.pas\b//g'`
-  DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
+  # no need to document lazcwstring, it will be obsolete after 2.0.2
+  if [ "$ShortFile" != "lazcwstring" ]; then
+    DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
+  fi
 done
 
 # create input file list
