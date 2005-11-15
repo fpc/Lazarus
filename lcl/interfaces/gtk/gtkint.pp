@@ -81,8 +81,8 @@ uses
   {$ENDIF}
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
-  GraphType, GraphMath, Graphics, Menus;
+  LCLProc, LCLIntf, LCLType, gtkDef, GtkProc, DynHashArray, 
+  gtkMsgQueue, GraphType, GraphMath, Graphics, Menus;
 
 
 type
@@ -112,6 +112,8 @@ type
     FStockNullPen: HPEN;
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
+
+    FWaitHandles: PWaitHandleEventHandler;
 
     {$Ifdef GTK2}
     FDefaultFontDesc: PPangoFontDescription;
@@ -338,7 +340,7 @@ uses
 ////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
-  ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
+  ExtCtrls, FileCtrl, LResources, gtkglobals;
 
 const
   GtkNil = nil;

@@ -29,6 +29,48 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition; 
+  data: gpointer): gboolean; cdecl;
+begin
+  TNotifyEvent(data^)(WidgetSet);
+end;
+  
+procedure TGtkWidgetSet.AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+var
+  giochannel: pgiochannel;
+  lEventHandler: PWaitHandleEventHandler;
+begin
+  New(lEventHandler);
+  giochannel := g_io_channel_unix_new(AHandle);
+  lEventHandler^.Handle := AHandle;
+  lEventHandler^.GIOChannel := giochannel;
+  lEventHandler^.OnEvent := AEventHandler;
+  lEventHandler^.GSourceID := g_io_add_watch(giochannel, 
+    G_IO_IN, @waithandle_iocallback, @lEventHandler^.OnEvent);
+  lEventHandler^.NextHandler := FWaitHandles;
+  FWaitHandles := lEventHandler;
+end;
+
+procedure TGtkWidgetSet.RemoveEventHandler(AHandle: THandle);
+var
+  lEventHandler: PWaitHandleEventHandler;
+  lPrevEventHandler: PPWaitHandleEventHandler;
+begin
+  lPrevEventHandler := @FWaitHandles;
+  while lPrevEventHandler^ <> nil do
+  begin
+    lEventHandler := lPrevEventHandler^;
+    if lEventHandler^.Handle = AHandle then
+    begin
+      g_source_remove(lEventHandler^.GSourceID);
+      lPrevEventHandler^ := lEventHandler^.NextHandler;
+      Dispose(lEventHandler);
+      exit;
+    end;
+    lPrevEventHandler := @lEventHandler^.NextHandler;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
     Horizontal: boolean): Integer;

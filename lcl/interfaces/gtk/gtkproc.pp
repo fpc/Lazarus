@@ -57,6 +57,17 @@ uses
   FileUtil, ImgList, GTKGlobals, gtkDef;
 
 
+type
+  PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
+  PWaitHandleEventHandler = ^TWaitHandleEventHandler;
+  TWaitHandleEventHandler = record
+    Handle: THandle;
+    GIOChannel: pgiochannel;
+    GSourceID: guint;
+    OnEvent: TNotifyEvent;
+    NextHandler: PWaitHandleEventHandler;
+  end;
+
 {$IFDEF gtk2}
 const
   gdkdll = gdklib;
