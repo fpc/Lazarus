@@ -3661,7 +3661,6 @@ begin
     FileWithoutPath:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
 
-
     if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
       if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
@@ -4041,6 +4040,7 @@ var
   AmbiguousText: string;
   i: Integer;
   AmbiguousFilename: String;
+  OldUnitPath: String;
 begin
   OldFilename:=AnUnitInfo.Filename;
   OldFilePath:=ExtractFilePath(OldFilename);
@@ -4095,6 +4095,25 @@ begin
   NewFilePath:=ExtractFilePath(NewFilename);
   EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
   SetRecentFilesMenu;
+  
+  // add new path to unit path
+  if AnUnitInfo.IsPartOfProject
+  and (FilenameIsPascalUnit(NewFilename))
+  and (CompareFilenames(NewFilePath,Project1.ProjectDirectory)<>0) then begin
+    OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+    
+    if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then begin
+      //DebugLn('TMainIDE.DoRenameUnit NewFilePath="',NewFilePath,'" OldUnitPath="',OldUnitPath,'"');
+      if MessageDlg(lisExtendUnitPath,
+        Format(lisTheDirectoryIsNotYetInTheUnitPathAddIt, ['"', NewFilePath,
+          '"', #13]),
+        mtConfirmation,[mbYes,mbNo],0)=mrYes then
+      begin
+        Project1.CompilerOptions.OtherUnitFiles:=
+                        Project1.CompilerOptions.OtherUnitFiles+';'+NewFilePath;
+      end;
+    end;
+  end;
 
   // rename Resource file
   if (ResourceCode<>nil) then begin
@@ -4210,6 +4229,31 @@ begin
       end;
     finally
       AmbiguousFiles.Free;
+    end;
+  end;
+
+  // remove old path from unit path
+  if AnUnitInfo.IsPartOfProject
+  and (FilenameIsPascalUnit(OldFilename))
+  and (OldFilePath<>'') then begin
+    //DebugLn('TMainIDE.DoRenameUnit OldFilePath="',OldFilePath,'" SourceDirs="',Project1.SourceDirectories.CreateSearchPathFromAllFiles,'"');
+    if (SearchDirectoryInSearchPath(
+       Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
+    then begin
+      //DebugLn('TMainIDE.DoRenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
+      if (SearchDirectoryInSearchPath(
+                   Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
+      then begin
+        if MessageDlg(lisCleanUpUnitPath,
+            Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt, ['"',
+              OldFilePath, '"', #13]),
+            mtConfirmation,[mbYes,mbNo],0)=mrYes then
+        begin
+          Project1.CompilerOptions.OtherUnitFiles:=
+                      RemoveSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                                        OldUnitPath);
+        end;
+      end;
     end;
   end;
 

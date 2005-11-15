@@ -1,0 +1,162 @@
+object LazDockControlEditorDlg: TLazDockControlEditorDlg
+  ActiveControl = UndockButton
+  Caption = 'LazDockControlEditorDlg'
+  ClientHeight = 315
+  ClientWidth = 310
+  OnCreate = FormCreate
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 309
+  VertScrollBar.Page = 314
+  Left = 286
+  Height = 315
+  Top = 202
+  Width = 310
+  object UndockGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'UndockGroupBox'
+    ChildSizing.HorizontalSpacing = 5
+    ChildSizing.VerticalSpacing = 5
+    ClientHeight = 9
+    ClientWidth = 291
+    TabOrder = 0
+    Left = 8
+    Height = 26
+    Top = 8
+    Width = 295
+    object UndockButton: TButton
+      AutoSize = True
+      BorderSpacing.InnerBorder = 2
+      Caption = 'UndockButton'
+      OnClick = UndockButtonClick
+      TabOrder = 0
+      Left = 6
+      Height = 26
+      Width = 87
+    end
+  end
+  object DockGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'DockGroupBox'
+    ChildSizing.HorizontalSpacing = 5
+    ChildSizing.VerticalSpacing = 5
+    ClientHeight = 180
+    ClientWidth = 291
+    TabOrder = 1
+    Left = 8
+    Height = 197
+    Top = 56
+    Width = 295
+    object DockControlLabel: TLabel
+      BorderSpacing.Around = 2
+      Caption = 'DockControlLabel'
+      Color = clNone
+      ParentColor = False
+      AnchorSideTop.Control = DockControlComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 13
+      Top = 6
+      Width = 101
+    end
+    object DockLeftButton: TButton
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = 'DockLeftButton'
+      OnClick = DockLeftButtonClick
+      TabOrder = 0
+      AnchorSideTop.Control = DockControlComboBox
+      Left = 6
+      Height = 26
+      Top = 30
+      Width = 94
+    end
+    object DockRightButton: TButton
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = 'DockRightButton'
+      OnClick = DockRightButtonClick
+      TabOrder = 1
+      AnchorSideLeft.Control = DockLeftButton
+      AnchorSideLeft.Side = asrTop
+      AnchorSideTop.Control = DockLeftButton
+      Left = 6
+      Height = 26
+      Top = 61
+      Width = 102
+    end
+    object DockTopButton: TButton
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = 'DockTopButton'
+      OnClick = DockTopButtonClick
+      TabOrder = 2
+      AnchorSideLeft.Control = DockLeftButton
+      AnchorSideLeft.Side = asrTop
+      AnchorSideTop.Control = DockRightButton
+      Left = 6
+      Height = 26
+      Top = 92
+      Width = 95
+    end
+    object DockBottomButton: TButton
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = 'DockBottomButton'
+      OnClick = DockBottomButtonClick
+      TabOrder = 3
+      AnchorSideLeft.Control = DockLeftButton
+      AnchorSideLeft.Side = asrTop
+      AnchorSideTop.Control = DockTopButton
+      Left = 6
+      Height = 26
+      Top = 123
+      Width = 111
+    end
+    object DockPageButton: TButton
+      AutoSize = True
+      BorderSpacing.Top = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = 'DockPageButton'
+      OnClick = DockPageButtonClick
+      TabOrder = 4
+      AnchorSideLeft.Control = DockLeftButton
+      AnchorSideLeft.Side = asrTop
+      AnchorSideTop.Control = DockBottomButton
+      Left = 6
+      Height = 26
+      Top = 154
+      Width = 103
+    end
+    object DockControlComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 4
+      MaxLength = 0
+      OnEditingDone = DockControlComboBoxEditingDone
+      TabOrder = 5
+      Text = 'DockControlComboBox'
+      AnchorSideLeft.Control = DockControlLabel
+      Left = 115
+      Height = 25
+      Width = 171
+    end
+  end
+  object CancelButton: TButton
+    Anchors = [akTop]
+    AutoSize = True
+    BorderSpacing.Top = 10
+    BorderSpacing.InnerBorder = 2
+    Caption = 'CancelButton'
+    TabOrder = 2
+    AnchorSideTop.Control = DockGroupBox
+    Left = 112
+    Height = 26
+    Top = 263
+    Width = 85
+  end
+end

@@ -196,6 +196,10 @@ function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
 
+// identifier
+function CreateFirstIdentifier(const Identifier: string): string;
+function CreateNextIdentifier(const Identifier: string): string;
+
 
 // ======================================================================
 // Endian utility functions
@@ -1739,6 +1743,28 @@ begin
   CopyPart;
   SetLength(Result, Dest - PChar(Result));
 end;
+
+function CreateFirstIdentifier(const Identifier: string): string;
+// example: Ident59 becomes Ident1
+var
+  p: Integer;
+begin
+  p:=length(Identifier);
+  while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
+  Result:=copy(Identifier,1,p)+'1';
+end;
+
+function CreateNextIdentifier(const Identifier: string): string;
+// example: Ident59 becomes Ident60
+var
+  p: Integer;
+begin
+  p:=length(Identifier);
+  while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
+  Result:=copy(Identifier,1,p)
+          +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
+end;
+
 
 //==============================================================================
 // Endian utils

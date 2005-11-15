@@ -48,7 +48,7 @@ uses
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
-  PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree,
+  PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,

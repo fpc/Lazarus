@@ -1977,6 +1977,9 @@ resourcestring
   // file checks
   lisUnableToCreateFile = 'Unable to create file';
   lisCanNotCreateFile = 'Can not create file %s%s%s';
+  lisExtendUnitPath = 'Extend unit path?';
+  lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory %s%s%s is not '
+    +'yet in the unit path.%sAdd it?';
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
   lisUnableToWriteFile2 = 'Unable to write file %s%s%s';
@@ -2055,6 +2058,9 @@ resourcestring
   lisExecutionPausedAdress = 'Execution paused%s  Adress: $%s%s  Procedure: %'
     +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
   lisFileNotFound = 'File not found';
+  lisCleanUpUnitPath = 'Clean up unit path?';
+  lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt = 'The directory %s%s%'
+    +'s is no longer needed in the unit path.%sRemove it?';
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
