@@ -430,6 +430,7 @@ type
     FJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
+    FMainProject: boolean;
     fMainUnitID: Integer;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
@@ -464,10 +465,12 @@ type
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
+    procedure SetMainProject(const AValue: boolean);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
     procedure UpdateSourceDirectories;
+    procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
@@ -625,6 +628,7 @@ type
     property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
+    property MainProject: boolean read FMainProject write SetMainProject;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -1876,7 +1880,7 @@ begin
   Modified := false;
   SessionModified := false;
   fProjectInfoFile := '';
-  FSourceDirectories.Clear;
+  ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
   FTargetFileExt := GetDefaultExecutableExt;
@@ -2761,6 +2765,16 @@ begin
   inherited SetLazCompilerOptions(AValue);
 end;
 
+procedure TProject.SetMainProject(const AValue: boolean);
+begin
+  if MainProject=AValue then exit;
+  FMainProject:=AValue;
+  if MainProject then
+    SourceDirectories.AddFilename(VirtualDirectory)
+  else
+    SourceDirectories.RemoveFilename(VirtualDirectory);
+end;
+
 function TProject.JumpHistoryCheckPosition(
   APosition: TProjectJumpHistoryPosition): boolean;
 var i: integer;
@@ -3001,13 +3015,20 @@ begin
     AnUnitInfo:=Units[i];
     AnUnitInfo.FSourceDirectoryReferenced:=false;
   end;
-  fSourceDirectories.Clear;
+  ClearSourceDirectories;
   for i:=0 to Cnt-1 do begin
     AnUnitInfo:=Units[i];
     AnUnitInfo.AutoReferenceSourceDir:=true;
     AnUnitInfo.UpdateSourceDirectoryReference;
   end;
   //DebugLn('TProject.UpdateSourceDirectories B ',UnitCount,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
+end;
+
+procedure TProject.ClearSourceDirectories;
+begin
+  FSourceDirectories.Clear;
+  if MainProject then
+    FSourceDirectories.AddFilename(VirtualDirectory);
 end;
 
 procedure TProject.SourceDirectoriesChanged(Sender: TObject);
@@ -3351,6 +3372,7 @@ begin
 
   // quick check if something has changed
   IDHasChanged:=fLastSourceDirsIDAsString<>Project.IDAsString;
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories A');
   if (fLastSourceDirectories<>nil)
   and (fLastSourceDirStamp=Project.SourceDirectories.TimeStamp)
   and (not IDHasChanged) then
@@ -3359,6 +3381,7 @@ begin
   fLastSourceDirsIDAsString:=Project.IDAsString;
 
   NewSourceDirs:=Project.SourceDirectories.CreateFileList;
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories B "',NewSourceDirs.Text,'"');
   try
     // real check if something has changed
     if (fLastSourceDirectories<>nil)

@@ -41,9 +41,9 @@ type
 
   TCustomLazDockingManager = class(TComponent)
   private
-    FDockerCount: Integer;
     FDockers: TFPList;
     FManager: TAnchoredDockManager;
+    function GetDockerCount: Integer;
     function GetDockers(Index: Integer): TCustomLazControlDocker;
   protected
     procedure Remove(Docker: TCustomLazControlDocker);
@@ -56,7 +56,7 @@ type
     function CreateUniqueName(const AName: string;
                               Ignore: TCustomLazControlDocker): string;
     property Manager: TAnchoredDockManager read FManager;
-    property DockerCount: Integer read FDockerCount;
+    property DockerCount: Integer read GetDockerCount;
     property Dockers[Index: Integer]: TCustomLazControlDocker read GetDockers; default;
   end;
 
@@ -123,6 +123,7 @@ procedure TCustomLazControlDocker.SetManager(
   const AValue: TCustomLazDockingManager);
 begin
   if FManager=AValue then exit;
+  //DebugLn('TCustomLazControlDocker.SetManager Old=',DbgSName(Manager),' New=',DbgSName(AValue));
   if FManager<>nil then FManager.Remove(Self);
   FManager:=AValue;
   if FManager<>nil then FManager.Add(Self);
@@ -180,10 +181,12 @@ begin
     // fill the list of controls this control can dock to
     Dlg.DockControlComboBox.Text:='';
     Dlg.DockControlComboBox.Items.BeginUpdate;
+    //DebugLn('TCustomLazControlDocker.ShowDockingEditor Self=',DockerName,' Manager.DockerCount=',dbgs(Manager.DockerCount));
     try
       Dlg.DockControlComboBox.Items.Clear;
       for i:=0 to Manager.DockerCount-1 do begin
         CurDocker:=Manager.Dockers[i];
+        //DebugLn('TCustomLazControlDocker.ShowDockingEditor Self=',DockerName,' CurDocker=',CurDocker.DockerName);
         if CurDocker=Self then continue;
         if CurDocker.Control=nil then continue;
         Dlg.DockControlComboBox.Items.Add(CurDocker.GetLocalizedName);
@@ -311,6 +314,11 @@ function TCustomLazDockingManager.GetDockers(Index: Integer
   ): TCustomLazControlDocker;
 begin
   Result:=TCustomLazControlDocker(FDockers[Index]);
+end;
+
+function TCustomLazDockingManager.GetDockerCount: Integer;
+begin
+  Result:=FDockers.Count;
 end;
 
 constructor TCustomLazDockingManager.Create(TheOwner: TComponent);

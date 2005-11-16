@@ -2762,7 +2762,7 @@ var
 Begin
   NewProjectDesc:=nil;
   if ChooseNewProject(NewProjectDesc)<>mrOk then exit;
-  debugln('TMainIDE.mnuNewProjectClicked ',dbgsName(NewProjectDesc));
+  //debugln('TMainIDE.mnuNewProjectClicked ',dbgsName(NewProjectDesc));
   DoNewProject(NewProjectDesc);
 end;
 
@@ -4718,6 +4718,7 @@ begin
     FallbackProjectDesc.InitProject(Result);
   end;
 
+  Result.MainProject:=true;
   Result.OnFileBackup:=@DoBackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
@@ -6222,6 +6223,7 @@ Begin
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Project1.DefineTemplates.AllChanged;
+    Project1.DefineTemplates.Active:=true;
   finally
     Project1.EndUpdate;
   end;
@@ -6231,7 +6233,7 @@ Begin
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
 
-  DebugLn('TMainIDE.DoNewProject end ');
+  //DebugLn('TMainIDE.DoNewProject end ');
   Result:=mrOk;
 end;
 

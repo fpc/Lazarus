@@ -8,8 +8,8 @@ LazarusResources.Add('TLazDockControlEditorDlg','FORMDATA',[
   +'Left'#3#30#1#6'Height'#3'H'#1#3'Top'#3#202#0#5'Width'#3'6'#1#0#9'TGroupBox'
   +#14'UndockGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'
   +#9#7'Caption'#6#14'UndockGroupBox'#28'ChildSizing.LeftRightSpacing'#2#5#28'C'
-  +'hildSizing.TopBottomSpacing'#2#5#12'ClientHeight'#2'"'#11'ClientWidth'#3'#'
-  +#1#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2'3'#3'Top'#2#8#5'Width'#3''''#1#0#7
+  +'hildSizing.TopBottomSpacing'#2#5#12'ClientHeight'#2#19#11'ClientWidth'#3'#'
+  +#1#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2'$'#3'Top'#2#8#5'Width'#3''''#1#0#7
   +'TButton'#12'UndockButton'#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#2#7
   +'Caption'#6#12'UndockButton'#7'OnClick'#7#17'UndockButtonClick'#8'TabOrder'#2
   +#0#4'Left'#2#6#6'Height'#2#26#3'Top'#2#5#5'Width'#2'W'#0#0#0#9'TGroupBox'#12
@@ -17,7 +17,7 @@ LazarusResources.Add('TLazDockControlEditorDlg','FORMDATA',[
   +'BorderSpacing.Top'#2#6#7'Caption'#6#12'DockGroupBox'#28'ChildSizing.LeftRig'
   +'htSpacing'#2#5#28'ChildSizing.TopBottomSpacing'#2#5#12'ClientHeight'#3#190#0
   +#11'ClientWidth'#3'#'#1#8'TabOrder'#2#1#21'AnchorSideTop.Control'#7#14'Undoc'
-  +'kGroupBox'#4'Left'#2#8#6'Height'#3#207#0#3'Top'#2'A'#5'Width'#3''''#1#0#6'T'
+  +'kGroupBox'#4'Left'#2#8#6'Height'#3#207#0#3'Top'#2'2'#5'Width'#3''''#1#0#6'T'
   +'Label'#16'DockControlLabel'#20'BorderSpacing.Around'#2#2#7'Caption'#6#16'Do'
   +'ckControlLabel'#5'Color'#7#6'clNone'#11'ParentColor'#8#21'AnchorSideTop.Con'
   +'trol'#7#19'DockControlComboBox'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Lef'
@@ -52,7 +52,7 @@ LazarusResources.Add('TLazDockControlEditorDlg','FORMDATA',[
   +'horSideLeft.Control'#7#16'DockControlLabel'#4'Left'#2's'#6'Height'#2#25#3'T'
   +'op'#2#5#5'Width'#3#171#0#0#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#5
   +'akTop'#0#8'AutoSize'#9#17'BorderSpacing.Top'#2#10#25'BorderSpacing.InnerBor'
-  +'der'#2#2#7'Caption'#6#12'CancelButton'#8'TabOrder'#2#2#21'AnchorSideTop.Con'
-  +'trol'#7#12'DockGroupBox'#4'Left'#2'p'#6'Height'#2#26#3'Top'#3#26#1#5'Width'
-  +#2'U'#0#0#0
+  +'der'#2#2#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#2
+  +#21'AnchorSideTop.Control'#7#12'DockGroupBox'#4'Left'#2'p'#6'Height'#2#26#3
+  +'Top'#3#11#1#5'Width'#2'U'#0#0#0
 ]);

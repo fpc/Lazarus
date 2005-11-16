@@ -17,11 +17,11 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     Caption = 'UndockGroupBox'
     ChildSizing.LeftRightSpacing = 5
     ChildSizing.TopBottomSpacing = 5
-    ClientHeight = 34
+    ClientHeight = 19
     ClientWidth = 291
     TabOrder = 0
     Left = 8
-    Height = 51
+    Height = 36
     Top = 8
     Width = 295
     object UndockButton: TButton
@@ -49,7 +49,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     AnchorSideTop.Control = UndockGroupBox
     Left = 8
     Height = 207
-    Top = 65
+    Top = 50
     Width = 295
     object DockControlLabel: TLabel
       BorderSpacing.Around = 2
@@ -156,11 +156,12 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     BorderSpacing.Top = 10
     BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
+    ModalResult = 2
     TabOrder = 2
     AnchorSideTop.Control = DockGroupBox
     Left = 112
     Height = 26
-    Top = 282
+    Top = 267
     Width = 85
   end
 end
