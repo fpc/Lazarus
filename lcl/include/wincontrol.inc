@@ -1433,7 +1433,52 @@ begin
   end;
 end;
 
-Procedure TWinControl.DoAutoSize;
+{-------------------------------------------------------------------------------
+  procedure TWinControl.DoAutoSize;
+
+  Shrink or enlarge to fit childs.
+-------------------------------------------------------------------------------}
+procedure TWinControl.DoAutoSize;
+
+  function FindChildFixatedSides: TAnchors;
+  // Returns all sides, that has a child control keeping distance to.
+  // These sides should not be moved.
+  var
+    i: Integer;
+    CurControl: TControl;
+    a: TAnchorKind;
+    Side: TAnchorSide;
+  begin
+    Result:=[];
+    for i:=0 to ControlCount-1 do begin
+      CurControl:=Controls[i];
+      if not CurControl.IsControlVisible then continue;
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+        Side:=CurControl.AnchorSide[a];
+        if (a in CurControl.Anchors) and (Side.Control=Self)
+        then begin
+          // CurControl is anchored to its parent = this control
+          if a in [akLeft,akRight] then begin
+            case Side.Side of
+            asrLeft: Include(Result,akLeft);
+            asrCenter: Result:=Result+[akLeft,akRight];
+            asrRight: Include(Result,akRight);
+            end;
+          end else begin
+            case Side.Side of
+            asrTop: Include(Result,akTop);
+            asrCenter: Result:=Result+[akTop,akBottom];
+            asrBottom: Include(Result,akBottom);
+            end;
+          end;
+        end;
+      end;
+      if CurControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then
+        // CurControl is aligned to its parent = this control
+        Result:=Result+AnchorAlign[CurControl.Align];
+    end;
+  end;
+
 var
   I : Integer;
   AControl: TControl;
@@ -1448,6 +1493,7 @@ var
   CurClientRect: TRect;
   dx: Integer;
   dy: Integer;
+  ChildFixedSides: TAnchors;
 begin
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
@@ -1465,6 +1511,8 @@ begin
     // test if resizing is possible
     CurAnchors:=Anchors;
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
+    ChildFixedSides:=FindChildFixatedSides;
+    CurAnchors:=CurAnchors+ChildFixedSides;
     WidthIsFixed:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight])
                  or ((ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
                       or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning));
@@ -1479,10 +1527,14 @@ begin
       CurClientRect:=ClientRect;
       AdjustClientRect(CurClientRect);
 
-      if WidthIsFixed then dx:=0
-                      else dx:=CurClientRect.Left-ChildBounds.Left;
-      if HeightIsFixed then dy:=0
-                       else dy:=CurClientRect.Top-ChildBounds.Top;
+      if (akLeft in ChildFixedSides) then
+        dx:=0
+      else
+        dx:=CurClientRect.Left-ChildBounds.Left;
+      if (akTop in ChildFixedSides) then
+        dy:=0
+      else
+        dy:=CurClientRect.Top-ChildBounds.Top;
 
       if (dx<>0) or (dy<>0) then begin
         // move all childs to left and top of client area

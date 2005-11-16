@@ -1,14 +1,14 @@
 object LazDockControlEditorDlg: TLazDockControlEditorDlg
   ActiveControl = UndockButton
   Caption = 'LazDockControlEditorDlg'
-  ClientHeight = 315
+  ClientHeight = 328
   ClientWidth = 310
   OnCreate = FormCreate
   PixelsPerInch = 112
   HorzScrollBar.Page = 309
-  VertScrollBar.Page = 314
+  VertScrollBar.Page = 327
   Left = 286
-  Height = 315
+  Height = 328
   Top = 202
   Width = 310
   object UndockGroupBox: TGroupBox
@@ -17,11 +17,11 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     Caption = 'UndockGroupBox'
     ChildSizing.LeftRightSpacing = 5
     ChildSizing.TopBottomSpacing = 5
-    ClientHeight = 30
+    ClientHeight = 34
     ClientWidth = 291
     TabOrder = 0
     Left = 8
-    Height = 47
+    Height = 51
     Top = 8
     Width = 295
     object UndockButton: TButton
@@ -32,21 +32,24 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       TabOrder = 0
       Left = 6
       Height = 26
+      Top = 5
       Width = 87
     end
   end
   object DockGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
+    BorderSpacing.Top = 6
     Caption = 'DockGroupBox'
     ChildSizing.LeftRightSpacing = 5
     ChildSizing.TopBottomSpacing = 5
-    ClientHeight = 180
+    ClientHeight = 190
     ClientWidth = 291
     TabOrder = 1
+    AnchorSideTop.Control = UndockGroupBox
     Left = 8
-    Height = 197
-    Top = 56
+    Height = 207
+    Top = 65
     Width = 295
     object DockControlLabel: TLabel
       BorderSpacing.Around = 2
@@ -57,7 +60,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Side = asrCenter
       Left = 10
       Height = 13
-      Top = 6
+      Top = 11
       Width = 101
     end
     object DockLeftButton: TButton
@@ -70,7 +73,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Control = DockControlComboBox
       Left = 6
       Height = 26
-      Top = 30
+      Top = 35
       Width = 94
     end
     object DockRightButton: TButton
@@ -85,7 +88,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Control = DockLeftButton
       Left = 6
       Height = 26
-      Top = 61
+      Top = 66
       Width = 102
     end
     object DockTopButton: TButton
@@ -100,7 +103,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Control = DockRightButton
       Left = 6
       Height = 26
-      Top = 92
+      Top = 97
       Width = 95
     end
     object DockBottomButton: TButton
@@ -115,7 +118,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Control = DockTopButton
       Left = 6
       Height = 26
-      Top = 123
+      Top = 128
       Width = 111
     end
     object DockPageButton: TButton
@@ -130,7 +133,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideTop.Control = DockBottomButton
       Left = 6
       Height = 26
-      Top = 154
+      Top = 159
       Width = 103
     end
     object DockControlComboBox: TComboBox
@@ -143,6 +146,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       AnchorSideLeft.Control = DockControlLabel
       Left = 115
       Height = 25
+      Top = 5
       Width = 171
     end
   end
@@ -156,7 +160,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     AnchorSideTop.Control = DockGroupBox
     Left = 112
     Height = 26
-    Top = 263
+    Top = 282
     Width = 85
   end
 end
