@@ -37,6 +37,7 @@ the Delphi Windows unit. This is only done for compatibility.
 unit LCLIntf;
 
 {$mode objfpc}{$H+}
+{$inline on}
 
 interface
 

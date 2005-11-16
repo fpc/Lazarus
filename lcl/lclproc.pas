@@ -25,6 +25,7 @@
 unit LCLProc;
 
 {$mode objfpc}{$H+}
+{$inline on}
 
 interface
 
