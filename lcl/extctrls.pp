@@ -640,8 +640,8 @@ type
     procedure Clicked(Sender: TObject);
     procedure Changed(Sender: TObject);
     procedure ItemEnter(Sender: TObject);
-    procedure DoPositionButtons;
-    procedure DoSetTabStops;
+    procedure PositionButtons;
+    procedure UpdateTabStops;
     procedure SetAutoFill(const AValue: Boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure ItemExit(Sender: TObject);

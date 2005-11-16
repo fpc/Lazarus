@@ -157,7 +157,7 @@ begin
       FHiddenButton.HandleNeeded;
     end;
     
-    DoPositionButtons;
+    PositionButtons;
 
     for i:=0 to FItems.Count-1 do begin
       Temp := TRadioButton(FButtonList[i]);
@@ -165,7 +165,7 @@ begin
       Temp.Visible := true;
     end;
     FHiddenButton.Checked:=(fItemIndex=-1);
-    DoSetTabStops;
+    UpdateTabStops;
   end;
   //DebugLn('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
   
@@ -192,7 +192,7 @@ end;
 
 procedure TCustomRadioGroup.ItemResize(Sender: TObject);
 begin
-  DoPositionButtons;
+  PositionButtons;
 end;
 
 procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
@@ -208,13 +208,13 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
   begin
     Count := FButtonList.Count;
     if FColumnLayout=clHorizontalThenVertical then begin
-      //add a row for better wrapping
+      //add a row for ease wrapping
       BlockSize := FColumns * (Rows+1);
       StepSize := HorzDiff + VertDiff * FColumns;
       WrapOffSet := VertDiff;
     end
     else begin
-      //add a column for better wrapping
+      //add a column for ease wrapping
       BlockSize := (FColumns+1) * Rows;
       StepSize := HorzDiff * Rows + VertDiff;
       WrapOffSet := HorzDiff;
@@ -271,7 +271,7 @@ begin
        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
     FColumns := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      DoPositionButtons;
+      PositionButtons;
   end;
 end;
 
@@ -338,7 +338,7 @@ begin
       // this has automatically unset the old button. But they do not recognize
       // it. Update the states.
       CheckItemIndexChanged;
-      DoSetTabStops;
+      UpdateTabStops;
 
       OwnerFormDesignerModified(Self);
     end
@@ -367,7 +367,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.Resize;
 begin
-  if HandleAllocated then DoPositionButtons;
+  if HandleAllocated then PositionButtons;
   inherited Resize;
 end;
 
@@ -438,12 +438,12 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.DoPositionButtons
+  Method: TCustomRadioGroup.PositionButtons
   Params: none
 
   Set bounds of radio buttons
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.DoPositionButtons;
+procedure TCustomRadioGroup.PositionButtons;
 var
   i: integer;
   CurButton: TRadioButton;
@@ -500,7 +500,7 @@ begin
   end;
 end;
 
-procedure TCustomRadioGroup.DoSetTabStops;
+procedure TCustomRadioGroup.UpdateTabStops;
 var
   i: Integer;
   RadioBtn: TRadioButton;
@@ -517,14 +517,14 @@ procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
 begin
   if FAutoFill=AValue then exit;
   FAutoFill:=AValue;
-  DoPositionButtons;
+  PositionButtons;
 end;
 
 procedure TCustomRadioGroup.SetColumnLayout(const AValue: TColumnLayout);
 begin
   if FColumnLayout=AValue then exit;
   FColumnLayout:=AValue;
-  DoPositionButtons;
+  PositionButtons;
 end;
 
 {------------------------------------------------------------------------------
@@ -541,6 +541,6 @@ begin
   FHiddenButton.Checked;
   for i:=0 to FButtonList.Count-1 do
     if TRadioButton(FButtonList[i]).Checked then FItemIndex:=i;
-  DoSetTabStops;
+  UpdateTabStops;
 end;
 
