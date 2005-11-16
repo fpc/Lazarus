@@ -124,7 +124,7 @@ Type
 
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
-    FWaitHandleCallbacks: array of TNotifyEvent;
+    FWaitHandleCallbacks: array of TWaitHandleEvent;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;

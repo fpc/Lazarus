@@ -29,7 +29,7 @@
 
 //##apiwiz##sps##   // Do not remove
 
-procedure TWin32WidgetSet.AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+procedure TWin32WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent);
 var
   listlen: dword;
 begin

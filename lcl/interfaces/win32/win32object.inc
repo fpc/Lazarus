@@ -324,7 +324,7 @@ End;
 procedure TWin32WidgetSet.AppWaitMessage;
 var
   done: boolean;
-  retVal: dword;
+  retVal, index: dword;
 begin
   RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
@@ -334,7 +334,8 @@ begin
       FWaitHandles[0], false, INFINITE, QS_ALLINPUT);
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
-      FWaitHandleCallbacks[retVal-WAIT_OBJECT_0](Self);
+      index := retVal-WAIT_OBJECT_0;
+      FWaitHandleCallbacks[index](FWaitHandles[index], 0);
     end else if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
       done := true;
   until done;

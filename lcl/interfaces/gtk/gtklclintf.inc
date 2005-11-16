@@ -31,22 +31,27 @@
 
 function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition; 
   data: gpointer): gboolean; cdecl;
+var
+  lEventHandler: PWaitHandleEventHandler absolute data;
 begin
-  TNotifyEvent(data^)(WidgetSet);
+  lEventHandler^.OnEvent(lEventHandler^.Handle, condition);
+  result := true;
 end;
-  
-procedure TGtkWidgetSet.AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent);
+
+procedure TGtkWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent);
 var
   giochannel: pgiochannel;
   lEventHandler: PWaitHandleEventHandler;
 begin
+  if AEventHandler = nil then exit;
   New(lEventHandler);
   giochannel := g_io_channel_unix_new(AHandle);
   lEventHandler^.Handle := AHandle;
   lEventHandler^.GIOChannel := giochannel;
   lEventHandler^.OnEvent := AEventHandler;
-  lEventHandler^.GSourceID := g_io_add_watch(giochannel, 
-    G_IO_IN, @waithandle_iocallback, @lEventHandler^.OnEvent);
+  lEventHandler^.GSourceID := g_io_add_watch(giochannel,
+    AFlags, @waithandle_iocallback, lEventHandler);
   lEventHandler^.NextHandler := FWaitHandles;
   FWaitHandles := lEventHandler;
 end;

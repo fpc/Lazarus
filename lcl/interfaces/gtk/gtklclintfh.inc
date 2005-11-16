@@ -29,7 +29,7 @@
 }
 
 //##apiwiz##sps##   // Do not remove
-procedure AddEventHandler(AHandle: THandle; AEventHandler: TNotifyEvent); override;
+procedure AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent); override;
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;

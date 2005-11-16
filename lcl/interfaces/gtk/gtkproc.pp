@@ -64,7 +64,7 @@ type
     Handle: THandle;
     GIOChannel: pgiochannel;
     GSourceID: guint;
-    OnEvent: TNotifyEvent;
+    OnEvent: TWaitHandleEvent;
     NextHandler: PWaitHandleEventHandler;
   end;
 
