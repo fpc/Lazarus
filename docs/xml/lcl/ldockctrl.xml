@@ -1,0 +1,453 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    LDockCtrl
+  ====================================================================
+-->
+    <module name="LDockCtrl">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Menus">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LDockCtrlEdit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LDockTree">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomLazControlDocker">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomLazDockingManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazDockingManager.FDockerCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazDockingManager.FDockers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazDockingManager.FManager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomLazDockingManager.GetDockers">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLazDockingManager.GetDockers.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.GetDockers.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLazDockingManager.Remove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.Remove.Docker">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLazDockingManager.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLazDockingManager.Add.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.Add.Docker">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomLazDockingManager.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCustomLazDockingManager.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomLazDockingManager.FindDockerByName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLazDockingManager.FindDockerByName.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.FindDockerByName.ADockerName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.FindDockerByName.Ignore">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomLazDockingManager.CreateUniqueName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLazDockingManager.CreateUniqueName.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.CreateUniqueName.AName">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.CreateUniqueName.Ignore">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazDockingManager.Manager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazDockingManager.DockerCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazDockingManager.Dockers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazDockingManager.Dockers.Index">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazDockingManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomLazControlDocker">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FDockerName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FExtendPopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FLocalizedName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FManager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLazControlDocker.FPopupMenuItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.SetControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.SetControl.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.SetDockerName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.SetDockerName.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.SetExtendPopupMenu">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.SetExtendPopupMenu.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.SetLocalizedName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.SetLocalizedName.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.SetManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.SetManager.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomLazControlDocker.PopupMenuItemClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.PopupMenuItemClick.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLazControlDocker.UpdatePopupMenu">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLazControlDocker.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLazControlDocker.ShowDockingEditor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLazControlDocker.GetLocalizedName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLazControlDocker.GetLocalizedName.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomLazControlDocker.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLazControlDocker.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.Control">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.Manager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.ExtendPopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.PopupMenuItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.LocalizedName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLazControlDocker.DockerName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLazControlDocker">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLazControlDocker.Control">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLazControlDocker.Manager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLazControlDocker.ExtendPopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLazControlDocker.DockerName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- LDockCtrl -->
+  </package>
+</fpdoc-descriptions>
