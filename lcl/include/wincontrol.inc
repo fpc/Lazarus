@@ -1459,6 +1459,8 @@ begin
   end;
 
   AutoSizing := True;
+  DisableAutoSizing;
+  DisableAlign;
   try
     // test if resizing is possible
     CurAnchors:=Anchors;
@@ -1484,6 +1486,7 @@ begin
 
       if (dx<>0) or (dy<>0) then begin
         // move all childs to left and top of client area
+        //DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' ',dbgs(dx),' ',dbgs(dy),' ChildBounds=',dbgs(ChildBounds),' CurClientRect=',dbgs(CurClientRect));
         For I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
           If AControl.IsControlVisible then begin
@@ -1525,6 +1528,8 @@ begin
       SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight,true);
     end;
   finally
+    EnableAlign;
+    EnableAutoSizing;
     AutoSizing := False;
   end;
   Exclude(FControlFlags,cfAutoSizeNeeded);
@@ -5287,11 +5292,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.GetChildBounds(var ChildBounds: TRect;
   WithBorderSpace: boolean);
+  
+  procedure FixateSide(Side: TAnchorKind);
+  begin
+    case Side of
+    akLeft: ChildBounds.Left:=0;
+    akTop: ChildBounds.Top:=0;
+    akRight: ChildBounds.Right:=ClientWidth;
+    akBottom: ChildBounds.Bottom:=ClientHeight;
+    end;
+  end;
+  
 var
   SpaceAround: TRect;
   I: Integer;
   AControl: TControl;
   ChildWidth,ChildHeight: integer;
+  a: TAnchorKind;
 begin
   ChildBounds := Rect(High(Integer),High(Integer),0,0);
   SpaceAround:=Rect(0,0,0,0);
@@ -5299,7 +5316,6 @@ begin
     AControl:=Controls[I];
     If AControl.IsControlVisible then begin
       AControl.GetPreferredSize(ChildWidth,ChildHeight,false);
-      // TODO: aligned controls
       if WithBorderSpace then begin
         AControl.BorderSpacing.GetSpaceAround(SpaceAround);
         if SpaceAround.Left<ChildSizing.LeftRightSpacing then
@@ -5317,6 +5333,27 @@ begin
         Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
         Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
       end;
+
+      if WithBorderSpace then begin
+        // check is a side of AControl is keeping distance to parent's side
+        // For example: if AControl.Align=alLeft, then AControl expands maximal
+        //              to Left, Top and Bottom
+
+        if AControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then begin
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+            if a in AnchorAlign[AControl.Align] then
+              FixateSide(a);
+          end;
+        end;
+
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          if (a in AControl.Anchors)
+          and (AControl.AnchorSide[a].Control=Self) then begin
+            FixateSide(a);
+          end;
+        end;
+      end;
+
       //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
     end;
   end;
