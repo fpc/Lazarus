@@ -430,7 +430,7 @@ type
     CancelButton: TButton;
 
     // general
-    procedure GeneralCheckBoxOnClick(Sender: TObject);
+    procedure GeneralCheckBoxOnClick(Sender: TObject; Index: integer);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject;
@@ -2461,7 +2461,7 @@ end;
 
 // general
 
-procedure TEditorOptionsForm.GeneralCheckBoxOnClick(Sender: TObject);
+procedure TEditorOptionsForm.GeneralCheckBoxOnClick(Sender: TObject; Index: integer);
 var
   a: Integer;
   NewColor: TColor;
