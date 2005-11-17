@@ -866,7 +866,8 @@ begin
       B:=true;
       If Assigned(FOnAcceptDate) then
         FOnAcceptDate(Self,D,B);
-      Text:=DateToStr(FDate);
+      if B then
+        Text:=DateToStr(FDate);
     end;
   except
     raise Exception.Create('Errore in calendar dialog di dateedit');
