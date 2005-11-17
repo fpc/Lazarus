@@ -799,7 +799,7 @@ end;
 function TUnitInfo.CreateUnitName: string;
 begin
   Result:=UnitName;
-  if (Result='') and FilenameIsPascalUnit(Filename) then
+  if (Result='') and FilenameIsPascalSource(Filename) then
     Result:=ExtractFilenameOnly(Filename);
 end;
 
@@ -1093,7 +1093,7 @@ end;
 
 procedure TUnitInfo.UpdateSourceDirectoryReference;
 begin
-  FSourceDirNeedReference:=IsPartOfProject and (FilenameIsPascalUnit(Filename));
+  FSourceDirNeedReference:=IsPartOfProject and (FilenameIsPascalSource(Filename));
   if (not AutoReferenceSourceDir) or (FProject=nil) then exit;
   if FSourceDirNeedReference then begin
     if not SourceDirectoryReferenced then begin

@@ -5009,6 +5009,7 @@ begin
   PkgBoss.OpenProjectDependencies(Project1,true);
 
   Project1.DefineTemplates.AllChanged;
+  //DebugLn('TMainIDE.DoCompleteLoadingProjectInfo ',Project1.IDAsString);
   Project1.DefineTemplates.Active:=true;
   Result:=mrOk;
 end;

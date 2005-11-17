@@ -3121,11 +3121,12 @@ begin
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
-    FloatHost.Visible := true;
     //debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect),' FloatHost=',dbgs(FloatHost<>nil));
-    if FloatHost<>nil then
+    if FloatHost<>nil then  begin
+      // => dock this control into it.
+      FloatHost.Visible := true;
       Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
-    else
+    end else
       Dock(nil,TheScreenRect);
   end;
 end;

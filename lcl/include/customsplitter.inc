@@ -507,7 +507,9 @@ begin
           // calculate how much the CurResizeControl can be enlarged
           CurMaxEnlarge:=Max(0,GetControlConstraintsMaxSize(CurResizeControl)
                          -GetControlSize(CurResizeControl));
-          //debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge));
+          if CurMaxEnlarge=0 then
+            CurMaxEnlarge:=GetParentsClientSize;
+          //debugln('TCustomSplitter.MouseMove ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge),' ',dbgs(GetControlConstraintsMaxSize(CurResizeControl)));
 
           // apply to the offset boundaries
           if (CurResizeControl.AnchorSide[akLeft].Control=Self)

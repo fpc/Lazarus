@@ -198,7 +198,7 @@ begin
 
     // enable Undock button, if Control is docked
     Dlg.UndockGroupBox.Enabled:=(Control.Parent<>nil)
-                                 and (Control.Parent<>Control.HostDockSite);
+                                 and (Control.Parent.ControlCount>1);
     
     if Dlg.ShowModal=mrOk then begin
       // dock or undock

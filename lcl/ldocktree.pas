@@ -705,6 +705,7 @@ var
   i: Integer;
   CurControl: TControl;
 begin
+  DebugLn('TAnchoredDockManager.DeleteSideSplitter Splitter=',DbgSName(Splitter),' Side=',dbgs(ord(Side)),' NewAnchorControl=',DbgSName(NewAnchorControl));
   SplitterParent:=Splitter.Parent;
   SplitterParent.DisableAlign;
   try
@@ -771,6 +772,7 @@ var
   i: Integer;
   CurControl: TControl;
 begin
+  DebugLn('TAnchoredDockManager.CombineSpiralSplitterPair Splitter1=',DbgSName(Splitter1),dbgs(Splitter1.BoundsRect),' Splitter2=',DbgSName(Splitter2),dbgs(Splitter2.BoundsRect));
   // check splitters have the same Parent
   ParentControl:=Splitter1.Parent;
   if (ParentControl=nil) then
@@ -820,6 +822,7 @@ procedure TAnchoredDockManager.DeletePage(Page: TLazDockPage);
 var
   Pages: TLazDockPages;
 begin
+  DebugLn('TAnchoredDockManager.DeletePage Page=',DbgSName(Page));
   Pages:=Page.PageControl;
   Page.Free;
   if Pages.PageCount=0 then
@@ -828,6 +831,7 @@ end;
 
 procedure TAnchoredDockManager.DeletePages(Pages: TLazDockPages);
 begin
+  DebugLn('TAnchoredDockManager.DeletePages Pages=',DbgSName(Pages));
   if Pages.Parent<>nil then
     UndockControl(Pages,false);
   Pages.Free;
@@ -835,6 +839,7 @@ end;
 
 procedure TAnchoredDockManager.DeleteDockForm(ADockForm: TLazDockForm);
 begin
+  DebugLn('TAnchoredDockManager.DeleteDockForm ADockForm=',DbgSName(ADockForm));
   if ADockForm.Parent<>nil then
     UndockControl(ADockForm,false);
   ADockForm.Free;
@@ -923,6 +928,7 @@ var
   DropCtlPage: TLazDockPage;
   NewPageIndex: Integer;
   NewPage: TLazDockPage;
+  NewParent: TLazDockForm;
 begin
   if Control.Parent<>nil then
     RaiseGDBException('TAnchoredDockManager.InsertControl Control.Parent<>nil');
@@ -939,16 +945,25 @@ begin
 
       // make sure, there is a parent HostSite
       if DropCtl.Parent=nil then begin
-        DropCtl.FloatingDockSiteClass:=TLazDockForm;
-        DropCtl.ManualFloat(DropCtl.BoundsRect);
-        if DropCtl.Parent=nil then begin
-          RaiseGDBException('TAnchoredDockManager.InsertControl unable to create HostDockSite for DropCtl');
-        end;
+        // create a TLazDockForm as new parent
+        NewParent:=TLazDockForm.Create(Application);
+        NewParent.BoundsRect:=DropCtl.BoundsRect;
+        DropCtl.Parent:=NewParent;
         // init anchors of DropCtl
         DropCtl.Align:=alNone;
         for a:=Low(TAnchorKind) to High(TAnchorKind) do
           DropCtl.AnchorParallel(a,0,DropCtl.Parent);
         DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
+        NewParent.Visible:=true;
+        //DebugLn('TAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
+      end else begin
+        if (DropCtl.Parent is TLazDockForm) then begin
+          // ok
+        end else if (DropCtl.Parent is TLazDockPage) then begin
+          // ok
+        end else begin
+          RaiseGDBException('TAnchoredDockManager.InsertControl DropCtl has invalid parent');
+        end;
       end;
 
       DropCtl.Parent.DisableAlign;
@@ -1167,9 +1182,14 @@ var
   procedure DoFinallyForParent;
   var
     OldParentControl: TWinControl;
+    NewBounds: TRect;
+    NewOrigin: TPoint;
   begin
     if Float then begin
-      Control.ManualFloat(Control.BoundsRect);
+      NewBounds:=Control.BoundsRect;
+      NewOrigin:=Control.ControlOrigin;
+      OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
+      Control.ManualFloat(NewBounds);
     end else begin
       Control.Parent:=nil;
     end;
@@ -1214,6 +1234,7 @@ begin
               // => this splitter is needed, can not be deleted.
               break;
             end;
+            dec(i);
           end;
           if i<0 then begin
             // this splitter is not needed anymore
