@@ -458,6 +458,7 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 var
   S: String;
   R: TGDBMIExecResult;
+  List: TStringList;
 begin
   Result := False;
   
@@ -472,7 +473,10 @@ begin
   if  (R.State = dsError)
   and (FileName <> '')
   then begin
-    SetState(dsError);
+    List := CreateMIValueList(R);
+    MessageDlg('Debugger', Format('Failed to load file: %s', [List.Values['msg']]), mtError, [mbOK], 0);
+    List.Free;
+    SetState(dsStop);
     Exit;
   end;
   if not (inherited ChangeFileName) then Exit;
@@ -1254,8 +1258,8 @@ procedure TGDBMIDebugger.Init;
         FTargetRegisters[2] := '$ecx';
       end;
       4, 5: begin // ia64, x86_64
-        FTargetRegisters[0] := '$rax';
-        FTargetRegisters[1] := '$rcx';
+        FTargetRegisters[0] := '$rdi';
+        FTargetRegisters[1] := '$rsi';
         FTargetRegisters[2] := '$rdx';
       end;
       6: begin // powerpc
@@ -2037,7 +2041,7 @@ begin
     if rfNoMI in R.Flags
     then begin
       FileType := GetPart('file type ', '.', R.Values);
-      EntryPoint := GetPart('Entry point: ', '\n', R.Values);
+      EntryPoint := GetPart(['Entry point: '], [#10, #13], R.Values);
     end
     else begin
       // OS X gdb has mi output here
