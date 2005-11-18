@@ -6166,6 +6166,14 @@ msgstr ""
 msgid "Can not create file %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."
 msgstr ""
@@ -6368,6 +6376,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilenotfound
 msgid "File not found"
+msgstr ""
+
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself

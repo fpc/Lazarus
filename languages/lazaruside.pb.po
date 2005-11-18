@@ -1050,6 +1050,10 @@ msgstr ""
 msgid "Clean sub directories"
 msgstr ""
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr ""
@@ -2280,6 +2284,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
@@ -6680,6 +6688,14 @@ msgstr ""
 
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
 msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory

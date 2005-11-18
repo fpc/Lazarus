@@ -1060,6 +1060,10 @@ msgstr "Cancella directory"
 msgid "Clean sub directories"
 msgstr "Cancella le sottodirectory"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr "Cancella+build"
@@ -2291,6 +2295,10 @@ msgstr "Nome file espanso del file dell'editor corrente"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Esporta elenco"
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -6691,6 +6699,14 @@ msgstr "La dipendenza %s%s%s non è stata trovata.%sScegliere un pacchetto esiste
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "La directory di destinazione%s%s%s%s non esiste."
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""

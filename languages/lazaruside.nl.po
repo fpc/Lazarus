@@ -1050,6 +1050,10 @@ msgstr "Maak directory schoon"
 msgid "Clean sub directories"
 msgstr "Maak sub directory schoon"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr "Maak schoon + Bouw"
@@ -2281,6 +2285,10 @@ msgstr "Volledige bestandsnaam van huidige editor bestand"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Export lijst"
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -6681,6 +6689,14 @@ msgstr "De afhankelijkheid %s%s%s is niet gevonden.%sKies een bestaand package."
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "De doel directorie%s%s%s%s bestaat niet."
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""

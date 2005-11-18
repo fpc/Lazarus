@@ -248,7 +248,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
 msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr ""
+msgstr "Perus Pascal-ohjelma tiedosto.%sTämä on tarkoitettu lähinnä testaamiseen.%sYleisesti olisi parempi valita jokin uusi projekti kuten esim. sovellus."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -1050,6 +1050,10 @@ msgstr "Ylimääräisten tiedostojen poisto"
 msgid "Clean sub directories"
 msgstr "Poista tiedostot myös alikansioista"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr ""
@@ -1272,7 +1276,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (%s)"
-msgstr ""
+msgstr "FreePascal kääntäjä (%s) löytyy tästä polusta/linkistä"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -1556,7 +1560,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
-msgstr ""
+msgstr "Luonti"
 
 #: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
@@ -2282,6 +2286,10 @@ msgstr ""
 msgid "Export list"
 msgstr ""
 
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
 msgstr ""
@@ -2580,7 +2588,7 @@ msgstr "Kirjaimien väri"
 
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
-msgstr "Lomake editori"
+msgstr "Lomake-editori"
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
@@ -2772,7 +2780,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
-msgstr ""
+msgstr "Valitun komponentin (tai valinta-alueen) ilmaiseminen"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
@@ -3804,7 +3812,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgleftpos
 msgid "Left:"
-msgstr ""
+msgstr "Vasemmalta:"
 
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
@@ -4640,7 +4648,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
-msgstr ""
+msgstr "Muut tiedostot"
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
@@ -5060,7 +5068,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgprojfiles
 msgid "Project files"
-msgstr ""
+msgstr "Projektin tiedostot"
 
 #: lazarusidestrconsts:lisprojectinfofiledetected
 msgid "Project info file detected"
@@ -5484,7 +5492,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrubberbandgroup
 msgid "Rubber band"
-msgstr ""
+msgstr "Alueen reunojen esille tuominen"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
@@ -5768,7 +5776,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
-msgstr ""
+msgstr "Katso \"Kääntäjän viestit \" -ikkunaa"
 
 #: lazarusidestrconsts:srkmecselleft
 msgid "SelLeft"
@@ -5924,7 +5932,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandselectioncolor
 msgid "Selection"
-msgstr ""
+msgstr "Valinta"
 
 #: lazarusidestrconsts:lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
@@ -6682,6 +6690,14 @@ msgstr "Tarvittavaa komponenttipakettia %s%s%s ei löytynyt.%sJos mahdollista ni
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr ""
 
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
+
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
 msgstr ""
@@ -7108,7 +7124,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtoppos
 msgid "Top:"
-msgstr ""
+msgstr "Ylhäältä:"
 
 #: lazarusidestrconsts:listops
 msgid "Tops"
@@ -7376,7 +7392,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
-msgstr ""
+msgstr "Ei pystytä tekemään muutoksia lähdekoodiin."
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"

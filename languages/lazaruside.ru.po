@@ -1050,6 +1050,10 @@ msgstr "Очистить каталог"
 msgid "Clean sub directories"
 msgstr "Очистить подкаталоги"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr "Очистить+Собрать"
@@ -2281,6 +2285,10 @@ msgstr "Полное имя файла в данном редакторе"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Список экспорта"
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -6681,6 +6689,14 @@ msgstr "Зависимость %s%s%s не найдена.%sВыберите с�
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Каталог назначения%s%s%s%s не существует."
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""

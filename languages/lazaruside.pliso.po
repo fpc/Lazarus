@@ -1061,6 +1061,10 @@ msgstr "Czy¶æ katalogi"
 msgid "Clean sub directories"
 msgstr "Czy¶æ podkatalogi"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr "Czy¶æ i buduj"
@@ -2291,6 +2295,10 @@ msgstr "Rozszerzona nazwa bie¿±cego pliku w edytorze"
 
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
@@ -6692,6 +6700,14 @@ msgstr "Nie znalaz³em zale¿no¶ci %s%s%s.%sWybierz istniej±cy pakiet."
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Nie ma katalogu docelowego%s%s%s%s."
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""

@@ -1050,6 +1050,10 @@ msgstr "Neteja el directori"
 msgid "Clean sub directories"
 msgstr "Neteja els subdirectoris"
 
+#: lazarusidestrconsts:liscleanupunitpath
+msgid "Clean up unit path?"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
 msgstr "Neteja i munta"
@@ -2281,6 +2285,10 @@ msgstr "Nom del fitxer estès de l'actual fitxer editor"
 #: lazarusidestrconsts:lisexportlist
 msgid "Export list"
 msgstr "Exporta la llista"
+
+#: lazarusidestrconsts:lisextendunitpath
+msgid "Extend unit path?"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -6681,6 +6689,14 @@ msgstr "No s'ha trobat la dependència %s%s%s.%sSi us plau, escolliu un paquet qu
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "No existeix el directori de destinació%s%s%s%s."
+
+#: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
+msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgstr ""
+
+#: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
+msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
