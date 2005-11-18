@@ -64,7 +64,7 @@ msgstr "%s%s%s є некоректною назвою модуля"
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
-msgstr ""
+msgstr "%s%sКлацніть ОК, ящко Ви впевнені це зробити"
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -1100,7 +1100,7 @@ msgstr "Інструменти коду"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding (experimental)"
-msgstr ""
+msgstr "Згортання коду (експериментальне)"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1484,7 +1484,7 @@ msgstr "Створити означення для компілятора FreePa
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr ""
+msgstr "Створити визначення для текстів програми Free Pascal SVN"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -1956,7 +1956,7 @@ msgstr "Ви дійсно бажаєте забути всі зміни до п�
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr ""
+msgstr "Перебудувати Lazarus?"
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -2228,7 +2228,7 @@ msgstr "Обчислити/Змінити..."
 
 #: lazarusidestrconsts:lislazdocexampletag
 msgid "Example"
-msgstr ""
+msgstr "Приклад"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -2320,7 +2320,7 @@ msgstr "Здобути процедуру"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr ""
+msgstr "Тека програм FPC SVN"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
@@ -3192,7 +3192,7 @@ msgstr "Вставити шаблон проекту FreePascal"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr ""
+msgstr "Вставте шаблон Free Pascal SVN"
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -3604,7 +3604,7 @@ msgstr "Залишати всі текстові файли"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep caret X position"
-msgstr ""
+msgstr "Дотримуйтесь позиції X знаку вставляння"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -3700,7 +3700,7 @@ msgstr "Останній (напр. в кінці коду)"
 
 #: lazarusidestrconsts:lisuselaunchingapplicationgroupbox
 msgid "Launching application"
-msgstr ""
+msgstr "Запуск програми"
 
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -3844,7 +3844,7 @@ msgstr "Ліцензія:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Ліцезія: GPL/LGPL%sLazarus є класом бібліотек для Free Pascal, які емулюють Delphi. Free Pascal є компіляторм (L)GPL, що призначений для роботи в Linux, Win32, OS/2, 68K та інш. Free Pascal розроблений для розуміння і компіляції синтаксису Delphi, який звичайно є OOP.%sLazarus представляє ту відсутню частину мозаїки, яка дозволяє розробляти Delphi-подібні програми для всіх вказаних вище платформ. IDE поступово буде перетворюватись на RAD-інструмент подібний  Delphi.%sПо мірі розвитку Lazarus нам потрібно все більше розробників."
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4960,7 +4960,7 @@ msgstr "Прихований метод"
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%s%sЗауважте:%sПроект залежить від деяких пакунків, які містять модулі з процедурою Register. Процедура Register зазвичай використовується для  встановлення компонентів в IDE. Але наступні модулі залежать від пакунків, які ще не встановлено в IDE. Якщо ви спробуєте відкрити форму в IDE, яка використовує таку компоненту, отримаєте повідомлення про відсутність компонентів і результати завантаження форми не дадуть очікуваного результату.%s%sЦе жодним чином не відіб'ється на проекті, який відкривається чи на його файлах.%s%sЦе тільки означає: Недобре відкривати форми для роботи перед встановленням відсутніх пакунків.%s%s"
+msgstr "Можливо, потрібно встановити деякі пакунки перед тим, як продовжувати.%s%sЗауважте:%sПроект залежить від деяких пакунків, які містять модулі з процедурою Register. Процедура Register зазвичай використовується для  встановлення компонентів в IDE. Але наступні модулі залежать від пакунків, які ще не встановлено в IDE. Якщо Ви спробуєте відкрити форму в IDE, яка використовує таку компоненту, отримаєте повідомлення про відсутність компонентів і результати завантаження форми не дадуть очікуваного результату.%s%sЦе жодним чином не відіб'ється на проекті, який відкривається чи на його файлах.%s%sЦе тільки означає: Недобре відкривати форми для роботи перед встановленням відсутніх пакунків.%s%s"
 
 #: lazarusidestrconsts:lisprocedure
 msgid "Procedure"
@@ -5536,7 +5536,7 @@ msgstr "Російська(CP1251)"
 
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
-msgstr ""
+msgstr "Версія SVN"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -6436,7 +6436,7 @@ msgstr "Для ОС:"
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
-msgstr ""
+msgstr "Платформа"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -6452,7 +6452,7 @@ msgstr "Назва цільового файлу проекту"
 
 #: lazarusidestrconsts:dlgtargetproc
 msgid "Target i386"
-msgstr ""
+msgstr "Платформа i386"
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -6544,11 +6544,11 @@ msgstr "Тека кодів FPC \"%s\" виглядає некоректною. 
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr ""
+msgstr "Тека текстів Free Pascal SVN."
 
 #: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr ""
+msgstr "Тека текстів Free Pascal SVN. Не обов'язково. Це покращить пошук декларацій при налагоджуванні."
 
 #: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
@@ -6884,7 +6884,7 @@ msgstr "Назва пакунку %s%s%s занадто довга (до 100 с�
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr ""
+msgstr "Шлях до компілятора проекту free pascal. Потрібно лише, якщо Ви встановлюєте нижче програму FPC SVN. Використовується для автостворювання макросів."
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
@@ -7152,7 +7152,7 @@ msgstr "ВЕРХНІЙ РЕГІСТР"
 
 #: lazarusidestrconsts:rslanguageukrainian
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"
 
 #: lazarusidestrconsts:lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
