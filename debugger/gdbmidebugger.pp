@@ -102,19 +102,28 @@ type
   TGDBMIDebugger = class(TCmdLineDebugger)
   private
     FCommandQueue: TStringList;
+
+    FBreakErrorBreakID: Integer;
+    FRunErrorBreakID: Integer;
+    FExceptionBreakID: Integer;
+    FPauseWaitState: TGDBMIPauseWaitState;
+    FInExecuteCount: Integer;
+    FDebuggerFlags: TGDBMIDebuggerFlags;
+    
+    // GDB info (move to ?)
+    FGDBVersion: String;
+    FGDBCPU: String;
+    FGDBOS: String;
+
+    // Target info (move to record ?)
     FTargetPID: Integer;
     FTargetFlags: TGDBMITargetFlags;
     FTargetCPU: String;
     FTargetOS: String;
     FTargetRegisters: array[0..2] of String;
-    
-    FBreakErrorBreakID: Integer;
-    FRunErrorBreakID: Integer;
-    FExceptionBreakID: Integer;
-    FVersion: String;
-    FPauseWaitState: TGDBMIPauseWaitState;
-    FInExecuteCount: Integer;
-    FDebuggerFlags: TGDBMIDebuggerFlags;
+    FTargetPtrSize: Byte; // size in bytes
+    FTargetIsBE: Boolean;
+
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
@@ -748,9 +757,10 @@ begin
 
   if dfImplicidTypes in FDebuggerFlags
   then begin
+    S := Format(AExpression, AValues);
     OK :=  ExecuteCommand(
-          '-data-evaluate-expression ^^shortstring(' + AExpression + '+12)^^',
-          AValues, [cfIgnoreError], R);
+          '-data-evaluate-expression ^^shortstring(%s+%d)^^',
+          [S, FTargetPtrSize * 3], [cfIgnoreError], R);
   end
   else begin
     Str(TDbgPtr(GetData(AExpression + '+12', AValues)), S);
@@ -1212,84 +1222,38 @@ procedure TGDBMIDebugger.Init;
     R: TGDBMIExecResult;
     S: String;
   begin
-    FVersion := '';
-    FTargetOS := '';
-    FTargetCPU := '';
+    FGDBVersion := '';
+    FGDBOS := '';
+    FGDBCPU := '';
     
     if not ExecuteCommand('-gdb-version', [], [cfNoMiCommand], R) // No MI since the output is no MI
     then Exit;
     
     S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
-    FTargetCPU := GetPart('', '-', S);
+    FGDBCPU := GetPart('', '-', S);
     GetPart('-', '-', S); // strip vendor
-    FTargetOS := GetPart('-', '-', S);
+    FGDBOS := GetPart('-', '-', S);
 
-    FVersion := GetPart(['('], [')'], R.Values, False, False);
-    if FVersion <> '' then Exit;
+    FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
+    if FGDBVersion <> '' then Exit;
     
-    FVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
-    if FVersion <> '' then Exit;
+    FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
+    if FGDBVersion <> '' then Exit;
   end;
   
   procedure CheckGDBVersion;
   begin
-    if FVersion < '5.3'
+    if FGDBVersion < '5.3'
     then begin
-      DebugLn('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FVersion);
+      DebugLn('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FGDBVersion);
       DebugLn('                    Not all functionality will be supported.');
     end
     else begin
-      DebugLn('[Debugger] Running GDB version: ', FVersion);
+      DebugLn('[Debugger] Running GDB version: ', FGDBVersion);
       Include(FDebuggerFlags, dfImplicidTypes);
     end;
   end;
-  
-  procedure SetRegisters;
-  begin
-//    DebugLn('[Debugger] Target OS: ', FTargetOS);
-    
-    case StringCase(FTargetCPU, [
-      'i386', 'i486', 'i586', 'i686',
-      'ia64', 'x86_64', 'powerpc', 'sparc'
-    ], True, False) of
-      0..3: begin // ix86
-        FTargetRegisters[0] := '$eax';
-        FTargetRegisters[1] := '$edx';
-        FTargetRegisters[2] := '$ecx';
-      end;
-      4, 5: begin // ia64, x86_64
-        FTargetRegisters[0] := '$rdi';
-        FTargetRegisters[1] := '$rsi';
-        FTargetRegisters[2] := '$rdx';
-      end;
-      6: begin // powerpc
-        // alltough darwin can start with r2, it seems that all OS start with r3
-//        if UpperCase(FTargetOS) = 'DARWIN'
-//        then begin
-//          FTargetRegisters[0] := '$r2';
-//          FTargetRegisters[1] := '$r3';
-//          FTargetRegisters[2] := '$r4';
-//        end
-//        else begin
-          FTargetRegisters[0] := '$r3';
-          FTargetRegisters[1] := '$r4';
-          FTargetRegisters[2] := '$r5';
-//        end;
-      end;
-      7: begin // sparc
-        FTargetRegisters[0] := '$g1';
-        FTargetRegisters[1] := '$o0';
-        FTargetRegisters[2] := '$o1';
-      end;
-    else
-      FTargetRegisters[0] := '';
-      FTargetRegisters[1] := '';
-      FTargetRegisters[2] := '';
-      DebugLn('[WARNING] [Debugger] Unknown target CPU: ', FTargetCPU);
-    end;
-    
-  end;
-  
+
 begin
   FPauseWaitState := pwsNone;
   FInExecuteCount := 0;
@@ -1309,7 +1273,6 @@ begin
     
     ParseGDBVersion;
     CheckGDBVersion;
-    SetRegisters;
 
     inherited Init;
   end
@@ -1696,7 +1659,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Result.FuncName := '';
     if tfRTLUsesRegCall in FTargetFlags
     then Result.Address := GetPtrValue(FTargetRegisters[1], [])
-    else Result.Address := GetData('$fp+12', []);
+    else Result.Address := GetData('$fp+%d', [FTargetPtrSize * 3]);
 
     Str(Result.Address, S);
     if ExecuteCommand('info line * pointer(%s)', [S], [cfIgnoreError, cfNoMiCommand], R)
@@ -1715,8 +1678,8 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then  ObjAddr := FTargetRegisters[0]
     else begin
       if dfImplicidTypes in FDebuggerFlags
-      then ObjAddr := '^pointer($fp+8)^'
-      else Str(GetData('$fp+8', []), ObjAddr);
+      then ObjAddr := Format('^pointer($fp+%d)^', [FTargetPtrSize * 2])
+      else Str(GetData('$fp+%d', [FTargetPtrSize * 2]), ObjAddr);
     end;
     
     ExceptionName := GetInstanceClassName(ObjAddr, []);
@@ -1748,8 +1711,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then ErrorNo := GetIntValue(FTargetRegisters[0], [])
-    else ErrorNo := Integer(GetData('$fp+8', []));
-    
+    else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
+    ErrorNo := ErrorNo and $FFFF;
+
     DoException(Format('RunError(%d)', [ErrorNo]), '');
     DoCurrent(GetLocation);
   end;
@@ -1760,7 +1724,8 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then ErrorNo := GetIntValue(FTargetRegisters[0], [])
-    else ErrorNo := Integer(GetData('$fp+8', []));
+    else ErrorNo := Integer(GetData('$fp+%d', [FTargetPtrSize * 2]));
+    ErrorNo := ErrorNo and $FFFF;
 
     DoException(Format('RunError(%d)', [ErrorNo]), '');
     ProcessFrame(GetFrame(1));
@@ -1988,6 +1953,72 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     BkptList.Free;
   end;
 
+  procedure SetTargetInfo(const AFileType: String);
+  begin
+    // assume some defaults
+    FTargetPtrSize := 4;
+    FTargetIsBE := False;
+  
+    case StringCase(AFileType, [
+      'efi-app-ia32', 'elf32-i386',
+      'elf64-x86-64',
+      'mach-o-be'
+    ], True, False) of
+      0..1: FTargetCPU := 'i386';
+      2: FTargetCPU := 'x86_64';
+      3: FTargetCPU := FGDBCPU; //mach-o
+    else
+      // Unknown filetype, use GDB cpu
+      DebugLn('[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
+
+      FTargetCPU := FGDBCPU;
+    end;
+
+    case StringCase(FTargetCPU, [
+      'i386', 'i486', 'i586', 'i686',
+      'ia64', 'x86_64', 'powerpc', 'sparc'
+    ], True, False) of
+      0..3: begin // ix86
+        FTargetRegisters[0] := '$eax';
+        FTargetRegisters[1] := '$edx';
+        FTargetRegisters[2] := '$ecx';
+      end;
+      4, 5: begin // ia64, x86_64
+        FTargetRegisters[0] := '$rdi';
+        FTargetRegisters[1] := '$rsi';
+        FTargetRegisters[2] := '$rdx';
+        FTargetPtrSize := 8;
+      end;
+      6: begin // powerpc
+        FTargetIsBE := True;
+        // alltough darwin can start with r2, it seems that all OS start with r3
+//        if UpperCase(FTargetOS) = 'DARWIN'
+//        then begin
+//          FTargetRegisters[0] := '$r2';
+//          FTargetRegisters[1] := '$r3';
+//          FTargetRegisters[2] := '$r4';
+//        end
+//        else begin
+          FTargetRegisters[0] := '$r3';
+          FTargetRegisters[1] := '$r4';
+          FTargetRegisters[2] := '$r5';
+//        end;
+      end;
+      7: begin // sparc
+        FTargetIsBE := True;
+        FTargetRegisters[0] := '$g1';
+        FTargetRegisters[1] := '$o0';
+        FTargetRegisters[2] := '$o1';
+      end;
+    else
+      FTargetRegisters[0] := '';
+      FTargetRegisters[1] := '';
+      FTargetRegisters[2] := '';
+      DebugLn('[WARNING] [Debugger] Unknown target CPU: ', FTargetCPU);
+    end;
+
+  end;
+  
 var
   R: TGDBMIExecResult;
   S, FileType, EntryPoint: String;
@@ -2034,8 +2065,12 @@ begin
   if FRunErrorBreakID = -1
   then FRunErrorBreakID := InsertBreakPoint('FPC_RUNERROR');
 
-  
+  FTargetCPU := '';
+  FTargetOS := FGDBOS; // try to detect ??
+
   // try to retrieve the filetype and program entry point
+  FileType := '';
+  EntryPoint := '';
   if ExecuteCommand('info file', [cfIgnoreError, cfNoMICommand], R)
   then begin
     if rfNoMI in R.Flags
@@ -2056,8 +2091,8 @@ begin
     DebugLn('[Debugger] File type: ', FileType);
     DebugLn('[Debugger] Entry point: ', EntryPoint);
   end;
-  
-  // TODO: determine register types
+
+  SetTargetInfo(FileType);
   
   if not TempInstalled and (Length(EntryPoint) > 0)
   then begin
