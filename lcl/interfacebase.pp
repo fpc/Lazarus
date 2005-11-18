@@ -38,7 +38,7 @@ uses
 
 type
   TApplicationMainLoop = procedure of object;
-  TWaitHandleEvent = procedure(AHandle: THandle; AFlags: dword) of object;
+  TWaitHandleEvent = procedure(AData: PtrInt; AFlags: dword) of object;
 
   { TWidgetSet }
 

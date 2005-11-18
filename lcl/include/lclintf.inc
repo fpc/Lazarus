@@ -33,9 +33,10 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-procedure AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent);
+procedure AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt = 0);
 begin
-  WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler);
+  WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
 end;
 
 procedure AttachMenuToWindow(AMenuObject: TComponent);

@@ -101,6 +101,11 @@ Type
     dwICC: dword;
   end;
 
+  TWaitHandler = record
+    UserData: PtrInt;
+    OnEvent: TWaitHandleEvent;
+  end;
+
   { Win32 interface-object class }
   TWin32WidgetSet = Class(TWidgetSet)
   Private
@@ -124,7 +129,7 @@ Type
 
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
-    FWaitHandleCallbacks: array of TWaitHandleEvent;
+    FWaitHandlers: array of TWaitHandler;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;

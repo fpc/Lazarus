@@ -29,7 +29,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-procedure TWin32WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent);
+procedure TWin32WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt);
 var
   listlen: dword;
 begin
@@ -38,10 +39,11 @@ begin
   begin
     inc(listlen, 16);
     SetLength(FWaitHandles, listlen);
-    SetLength(FWaitHandleCallbacks, listlen);
+    SetLength(FWaitHandlers, listlen);
   end;
   FWaitHandles[FWaitHandleCount] := AHandle;
-  FWaitHandleCallbacks[FWaitHandleCount] := AEventHandler;
+  FWaitHandlers[FWaitHandleCount].UserData := AData;
+  FWaitHandlers[FWaitHandleCount].OnEvent := AEventHandler;
   Inc(FWaitHandleCount);
 end;
 
@@ -56,7 +58,7 @@ begin
       if FWaitHandleCount >= 2 then
       begin
         FWaitHandles[I] := FWaitHandles[FWaitHandleCount-1];
-        FWaitHandleCallbacks[I] := FWaitHandleCallbacks[FWaitHandleCount-1];
+        FWaitHandlers[I] := FWaitHandlers[FWaitHandleCount-1];
       end;
       Dec(FWaitHandleCount);
       exit;

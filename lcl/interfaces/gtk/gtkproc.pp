@@ -64,6 +64,7 @@ type
     Handle: THandle;
     GIOChannel: pgiochannel;
     GSourceID: guint;
+    UserData: PtrInt;
     OnEvent: TWaitHandleEvent;
     NextHandler: PWaitHandleEventHandler;
   end;

@@ -29,7 +29,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-procedure AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent); override;
+procedure AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt); override;
 
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 

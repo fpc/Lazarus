@@ -335,7 +335,7 @@ begin
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
-      FWaitHandleCallbacks[index](FWaitHandles[index], 0);
+      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
     end else if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
       done := true;
   until done;

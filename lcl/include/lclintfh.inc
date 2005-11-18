@@ -37,7 +37,7 @@
  ******************************************************************************}
 //##apiwiz##sps##    // Do not remove
 
-procedure AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent; AData: PtrInt); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

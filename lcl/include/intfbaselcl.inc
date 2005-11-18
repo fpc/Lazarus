@@ -26,7 +26,8 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-procedure TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent);
+procedure TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt);
 begin
 end;
 

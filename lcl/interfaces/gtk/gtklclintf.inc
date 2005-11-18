@@ -34,12 +34,12 @@ function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition;
 var
   lEventHandler: PWaitHandleEventHandler absolute data;
 begin
-  lEventHandler^.OnEvent(lEventHandler^.Handle, condition);
+  lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
   result := true;
 end;
 
 procedure TGtkWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TWaitHandleEvent);
+  AEventHandler: TWaitHandleEvent; AData: PtrInt);
 var
   giochannel: pgiochannel;
   lEventHandler: PWaitHandleEventHandler;
@@ -48,6 +48,7 @@ begin
   New(lEventHandler);
   giochannel := g_io_channel_unix_new(AHandle);
   lEventHandler^.Handle := AHandle;
+  lEventHandler^.UserData := AData;
   lEventHandler^.GIOChannel := giochannel;
   lEventHandler^.OnEvent := AEventHandler;
   lEventHandler^.GSourceID := g_io_add_watch(giochannel,
