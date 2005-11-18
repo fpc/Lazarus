@@ -86,7 +86,8 @@ begin
           + ' connection. See docs/RemoteDebugging.txt for details. The path'
           + ' must contain the ssh client filename, the hostname with an optional'
           + ' username and the filename of gdb on the remote computer.'
-          + ' For example: "/usr/bin/ssh username@hostname gdb"';
+          + ' For example: "/usr/bin/ssh username@hostname gdb"'
+          + ' or: "/usr/bin/setsid /usr/bin/ssh username@hostname gdb"';
 end;
 
 procedure TSSHGDBMINotePropertyEditor.PropMeasureHeight(const NewValue: ansistring; ACanvas: TCanvas; var AHeight: Integer);
@@ -130,7 +131,7 @@ function TSSHGDBMIDebugger.ParseInitialization: Boolean;
     then ALine := StripLN(ReadLine);
   end;
 var
-  Line: String;
+  Line, ExtraText: String;
 begin
   Result := False;
   
@@ -157,43 +158,33 @@ begin
   end;
 *)
 
-(*
-  while Pos('password:', Line) > 0 do
+  ExtraText := '';
+  while CheckReadLine(Line) do
   begin
-    if not InputQuery('Debugger', 'Enter ' + Line, S)
-    then begin
-      DebugProcess.Terminate(0);
-      Exit;
-    end;
-    // peek the line from here, we might have a prompt
-    Line := ReadLine(True);
-    if Pos('(gdb)', Line) > 0 then Break;
-
-    // something else, read the line
-    Line := ReadLine;
-    if MessageDlg('Debugger',
-      'Response: ' + LineEnding + Line + LineEnding + 'Continue ?',
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes
-    then begin
-      DebugProcess.Terminate(0);
-      Exit;
-    end;
-    // Check again if we got a prompt
-    Line := ReadLine(True);
-    if Pos('(gdb)', Line) > 0 then Break;
-
-    // Next attempt
-    Line := StripLN(ReadLine);
+    // No prompt yet
+    if ExtraText = ''
+    then ExtraText := Line
+    else ExtraText := ExtraText + ' ' + Line;
   end;
-*)
+  
+  if  (ExtraText <> '')
+  and (MessageDlg('Debugger',
+        'Response: ' + LineEnding + ExtraText + LineEnding + 'Continue ?',
+        mtConfirmation, [mbYes, mbNo], 0) <> mrYes)
+  then begin
+//    DebugProcess.Terminate(0);
+    Exit;
+  end;
+
   if Pos('(gdb)', Line) > 0
   then Result := inherited ParseInitialization
   else begin
     // We got an unexpected result
     MessageDlg('Debugger',
-      'Unexpected result:' + LineEnding + Line + LineEnding + 'The debugger wil be terminated.',
+      'Unexpected result:' + LineEnding + Line + LineEnding + 'The debugger will terminate',
       mtInformation, [mbOK], 0);
-    DebugProcess.Terminate(0);
+    Exit;
+//    DebugProcess.Terminate(0);
   end;
 end;
 
