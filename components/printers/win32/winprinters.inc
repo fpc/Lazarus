@@ -64,7 +64,7 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags:=aFlag;
+      Flags:=aFlag or PD_RETURNDC;
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
 
       PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -105,6 +105,10 @@ begin
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
               PDev.DevMode:=DevMode^;
+              ClearDC;
+              fDC := lpp.hDC;
+              if Assigned(Canvas) then Canvas.Handle:=fDC;
+              fLastHandleType:=2;
             finally
               GlobalUnlock(lpp.hDevMode);
               GlobalFree(lpp.hDevMode);
@@ -162,7 +166,7 @@ begin
            PChar(PDev.Port),@PDev.DevMode);
 
     if fDC=0 then
-      fDC:=CreateIC(PChar('winspool'),PChar(PDev.Device),
+      fDC:=CreateIC(PChar('WINSPOOL'),PChar(PDev.Device),
            PChar(PDev.Port),@PDev.DevMode);
 
     if fDC=0 then
@@ -174,22 +178,35 @@ begin
 end;
 
 procedure TWinPrinter.SetDC;
-var PDev : TPrinterDevice;
+var
+PDev : TPrinterDevice;
+Driver : PChar;
+
+
+
+function IsNT : Boolean;
+var
+ OVI: TOsVersionInfo;
+begin
+ OVI.dwOSVersionInfoSize := Sizeof( OVI );
+ GetVersionEx( OVI );
+ Result := (OVI.dwPlatformId = VER_PLATFORM_WIN32_NT);
+end;
+
+
+
 begin
   if (fLastHandleType<>2) and (Printers.Count>0) then
   begin
     ClearDC;
-
+    if IsNt then  Driver := pChar('WINSPOOL')
+    else
+    Driver := nil;
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    fDC:=CreateDC(PChar(PDev.Driver),PChar(PDev.Device),
-            PChar(PDev.Port),@PDev.DevMode);
-
+    fDC:=CreateDC(Driver,PChar(PDev.Device),nil,@PDev.DevMode);
+    if fDC=0 then fDC:=CreateDC(Driver,PChar(PDev.Driver),nil,@PDev.DevMode);
     if fDC=0 then
-      fDC:=CreateDC(PChar('winspool'),PChar(PDev.Device),
-           PChar(PDev.Port),@PDev.DevMode);
-
-    if fDC=0 then
-      raise EPrinter.Create(Format('Invalide printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+      raise EPrinter.Create(Format('Invalid printer (Error: %s DC=%d Driver=%s Device=%s Port=%s)',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=2;
