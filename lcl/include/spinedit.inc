@@ -182,7 +182,8 @@ end;
 {-----------------------------------------------------------------------------}
 Function TCustomFloatSpinEdit.GetValue: Single;
 begin
-  if HandleAllocated and FValueChanged then 
+  if HandleAllocated and FValueChanged 
+    and not (wcfCreatingHandle in FWinControlFlags) then 
   begin
     FValue := TWSCustomFloatSpinEditClass(WidgetSetClass).GetValue(Self);
     FValueChanged := false;
