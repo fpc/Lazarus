@@ -215,22 +215,40 @@ type
   public
   end;
 
-procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
+procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
 
 implementation
 
 uses
   LMessages;
 
+function IsNotebookGroupFocused(const ANotebook: TCustomNotebook): boolean;
+var
+  lNotebookHandle, lWindow: HWND;
+begin
+  result := false;
+  if not ANotebook.HandleAllocated then exit;
+  lNotebookHandle := ANotebook.Handle;
+  lWindow := Windows.GetFocus;
+  while (lWindow <> 0) and (lWindow <> lNotebookHandle) do
+    lWindow := Windows.GetParent(lWindow);
+  if lWindow = 0 then exit;
+  result := true;
+end;
+
 { sets focus to a control on the newly focused tab page }
-procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
+procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
 var
   Page: TCustomPage;
   ControlList: TFPList;
   lWinControl: TWinControl;
   I: integer;
 begin
-  Page := Notebook.CustomPage(NewIndex);
+  { see if currently focused control is within notebook }
+  if not IsNotebookGroupFocused(ANotebook) then exit;
+
+  { focus was/is within notebook, pick a new control to focus }
+  Page := ANotebook.CustomPage(NewIndex);
   ControlList := TFPList.Create;
   try
     Page.GetTabOrderList(ControlList);
@@ -469,30 +487,28 @@ end;
 
 procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 var
-  OldPageIndex: Integer;
-  PageHandle: HWND;
   Handle: HWND;
-  RealIndex: Integer;
+  PageHandle: HWND;
+  OldRealIndex, NewRealIndex: Integer;
 begin
   Handle := ANotebook.Handle;
-  OldPageIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-  RealIndex := GetPageRealIndex(ANotebook,AIndex);
-  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(RealIndex), 0);
+  OldRealIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
+  NewRealIndex := GetPageRealIndex(ANotebook, AIndex);
+  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
   if not (csDestroying in ANotebook.ComponentState) then
   begin
     // create handle if not already done, need to show!
     if (AIndex >= 0) and (AIndex < ANotebook.PageCount) then
     begin
-      NotebookTabChanged(ANotebook, AIndex);
       PageHandle := ANotebook.CustomPage(AIndex).Handle;
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-      // send message
       SendSelChangeMessage(ANotebook, Handle, AIndex);
+      NotebookFocusNewControl(ANotebook, AIndex);
     end;
-    if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
-    and (OldPageIndex < ANotebook.PageCount)
-    and (ANotebook.CustomPage(OldPageIndex).HandleAllocated)
-      then ShowWindow(ANotebook.CustomPage(OldPageIndex).Handle, SW_HIDE);
+    if (OldRealIndex >= 0) and (OldRealIndex <> NewRealIndex)
+        and (OldRealIndex < ANotebook.PageCount)
+        and (ANotebook.CustomPage(OldRealIndex).HandleAllocated) then 
+      ShowWindow(ANotebook.CustomPage(OldRealIndex).Handle, SW_HIDE);
   end;
 end;
 

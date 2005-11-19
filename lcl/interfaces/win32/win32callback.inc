@@ -202,7 +202,7 @@ Var
       Flags := SW_HIDE;
     Windows.ShowWindow(PageHandle, Flags);
     if Showing then
-      NotebookTabChanged(Notebook, PageIndex);
+      NotebookFocusNewControl(Notebook, PageIndex);
   end;
 
   function GetMenuItemObject: TObject;
