@@ -236,6 +236,8 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // TODO: proper icon, for now set default icon
+  SetIcon(TCustomForm(AWinControl), 0);
   Result := Params.Window;
 end;
 
