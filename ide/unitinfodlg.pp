@@ -50,7 +50,7 @@ type
     outpath: TLabel;
     uIncludedBy: TLabel;
     outIncludedBy: TLabel;
-    clearIncludedBy: TBitBtn;
+    clearIncludedBy: TButton;
     PathsGroupBox: TGroupBox;
     UnitPathLabel: TLabel;
     UnitPathEdit: TEdit;
@@ -135,6 +135,8 @@ begin
 
     Width:=500;
     Height:=300;
+    Constraints.MinWidth := 275;
+    Constraints.MinHeight := 290;
     position:=poScreenCenter;
     OnResize:=@UnitInfoDlgResize;
 
@@ -267,15 +269,16 @@ begin
       autosize:=true;
     end;
     
-    clearIncludedBy:=TBitBtn.Create(Self);
+    clearIncludedBy:=TButton.Create(Self);
     with clearIncludedBy do begin
-      Name:='clearIncludedBy';
-      Parent:=Self;
-      Left:=Self.ClientWidth-55;
-      Top:=122;
-      Width:=50;
-      Caption:=lisUIDClear;
-      OnClick:=@clearIncludedByClick;
+      Name       := 'clearIncludedBy';
+      Parent     := Self;
+      Left       := Self.ClientWidth-55;
+      Top        := 122;
+      Width      := 50;
+      Height     := 25;
+      Caption    := lisUIDClear;
+      OnClick    := @clearIncludedByClick;
     end;
     
     PathsGroupBox:=TGroupBox.Create(Self);
@@ -505,7 +508,7 @@ begin
 
   with clearIncludedBy do begin
     Left:=Self.ClientWidth-55;
-    top:=124;
+    top:=122;
   end;
 
   with PathsGroupBox do begin
