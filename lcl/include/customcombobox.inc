@@ -723,8 +723,13 @@ begin
   if I >= 0 then
     ItemIndex := I
   else if (not (csLoading in ComponentState)) then
+  begin
+    {$message warn TCustomComboBox.Editable to be implemented soon!}
+    if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+      raise Exception.Create('Setting .Text on owner drawn TComboBox does not make sense!');
     FItemIndex := -1;
-  inherited;
+    inherited;
+  end;
 end;
 
 {------------------------------------------------------------------------------
