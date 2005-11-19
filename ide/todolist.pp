@@ -340,14 +340,15 @@ begin
   lvTodo:=TListView.Create(Self);
   with lvTodo do
   begin
-    parent:=self;
-    Left := 0;
-    Top := 22;
-    Width := 469;
-    Height := 237;
-    Align := alClient;
-    ViewStyle:=vsReport;
-    lvToDo.OnDblClick:=@actEditGoto;
+    parent      := self;
+    Left        := 0;
+    Top         := 22;
+    Width       := 469;
+    Height      := 237;
+    Align       := alClient;
+    RowSelect   := True;
+    ViewStyle   := vsReport;
+    lvToDo.OnDblClick := @actEditGoto;
     //priority column
     C:=Columns.Add;
     C.Caption := ' !';
