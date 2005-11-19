@@ -220,16 +220,16 @@ type
       AWinControl: TWinControl);virtual;
     procedure UntransientWindow(GtkWindow: PGtkWindow);
     procedure InitializeFileDialog(FileDialog: TFileDialog;
-      var SelWidget: PGtkWidget; Title: PChar);
+      var SelWidget: PGtkWidget; Title: PChar); virtual;
     procedure InitializeFontDialog(FontDialog: TFontDialog;
       var SelWidget: PGtkWidget; Title: PChar);
     procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
     function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget): string;
+      SelWidget: PGtkWidget): string; virtual;
     procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
-      SelWidget: PGtkWidget);
+      SelWidget: PGtkWidget); virtual;
     procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget);
+      SelWidget: PGtkWidget); virtual;
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
@@ -299,6 +299,7 @@ type
   end;
 
 {$I gtklistslh.inc}
+{$I gtkfiledialogutilsh.inc}
 
 var
   GTKWidgetSet: TGTKWidgetSet;
@@ -346,6 +347,7 @@ const
   GtkNil = nil;
 
 {$I gtklistsl.inc}
+{$I gtkfiledialogutils.inc}
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
 {$I gtklclintf.inc}

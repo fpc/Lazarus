@@ -67,6 +67,15 @@ type
       MultiSelect, ExtendedSelect: boolean); override;
     //function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
+
+    procedure InitializeFileDialog(FileDialog: TFileDialog;
+      var SelWidget: PGtkWidget; Title: PChar); override;
+    function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget): string; override;
+    procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget); override;
+    procedure CreatePreviewDialogControl(
+      PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
   public    
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}

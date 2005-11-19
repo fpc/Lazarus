@@ -126,6 +126,69 @@ begin
     Result := False;
 end;
 
+{$IFDEF HasGTK2_6}
+procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint; data: gpointer); cdecl;
+
+  procedure AddFile(List: TStrings; const NewFile: string);
+  var
+    i: Integer;
+  begin
+    for i:=0 to List.Count-1 do
+      if List[i]=NewFile then exit;
+    List.Add(NewFile);
+  end;
+
+var
+  TheDialog: TFileDialog;
+  cFilename: PChar;
+  cFilenames: PGSList;
+  cFilenames1: PGSList;
+  Files: TStringList;
+begin
+  theDialog := TFileDialog(data);
+
+  if arg1 = GTK_RESPONSE_CANCEL then begin  
+    TheDialog.UserChoice := mrCancel;
+    Exit;
+  end;
+
+  if theDialog is TOpenDialog then begin
+    if ofAllowMultiSelect in TOpenDialog(theDialog).Options then begin
+      TheDialog.FileName := '';
+      Files := TStringList(TheDialog.Files);
+      Files.Clear;
+
+      cFilenames := gtk_file_chooser_get_filenames(widget);
+      if Assigned(cFilenames) then begin
+
+        cFilenames1 := cFilenames;
+        while Assigned(cFilenames1) do begin
+          cFilename := PChar(cFilenames1^.data);
+
+          if Assigned(cFilename) then begin
+            AddFile(Files, cFilename);
+            g_free(cFilename);
+          end;
+
+          cFilenames1 := cFilenames1^.next;
+        end;
+        
+        g_slist_free(cFilenames);
+      end;
+    end;
+  end;
+
+  cFilename := gtk_file_chooser_get_filename(widget);
+  if Assigned(cFilename) then begin
+    TheDialog.FileName := cFilename;
+    g_free(cFilename);
+  end;
+
+  //?? StoreCommonDialogSetup(theDialog);
+  theDialog.UserChoice := mrOK;
+end;
+{$ENDIF}
+
 Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
                          WinControl: TWinControl); cdecl;
 var
@@ -1452,6 +1515,198 @@ begin
       Include(DCFlags,dcfTextMetricsValid);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TGtk2WidgetSet.InitializeOpenDialog
+  Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
+  Returns: -
+
+  Adds some functionality to a gtk file selection dialog.
+  - multiselection
+  - range selection
+  - close on escape
+  - file information
+  - history pulldown
+  - filter pulldown
+  - preview control
+
+  requires: gtk+ 2.6
+ ------------------------------------------------------------------------------}
+procedure TGtk2WidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget);
+{$IFDEF HasGTK2_6}
+var
+  FileSelWidget: PGtkFileChooser;
+  HelpButton: PGtkWidget;
+{$ENDIF}
+begin
+{$IFDEF HasGTK2_6}
+  FileSelWidget := GTK_FILE_CHOOSER(SelWidget);
+
+  // Help button
+  if (ofShowHelp in OpenDialog.Options) then begin
+    HelpButton := gtk_dialog_add_button(FileSelWidget, GTK_STOCK_HELP, GTK_RESPONSE_NONE);
+
+    g_signal_connect( gtk_object(HelpButton),
+      'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), OpenDialog);
+  end;
+
+  if ofAllowMultiSelect in OpenDialog.Options then
+    gtk_file_chooser_set_select_multiple(FileSelWidget, True);
+
+  // History List - a frame with an option menu
+  CreateOpenDialogHistory(OpenDialog, SelWidget);
+
+//  // Filter - a frame with an option menu
+  CreateOpenDialogFilter(OpenDialog,SelWidget);
+
+  // Details - a frame with a label
+  if (ofViewDetail in OpenDialog.Options) then begin
+
+    // create the frame around the information
+    FrameWidget:=gtk_frame_new(PChar(rsFileInformation));
+    gtk_box_pack_start(GTK_BOX(FileSelWidget^.main_vbox),
+                       FrameWidget,false,false,0);
+    gtk_widget_show(FrameWidget);
+    // create a HBox, so that the information is left justified
+    HBox:=gtk_hbox_new(false,0);
+    gtk_container_add(GTK_CONTAINER(FrameWidget), HBox);
+    // create the label for the file information
+    FileDetailLabel:=gtk_label_new(PChar(rsDefaultFileInfoValue));
+    gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
+    gtk_widget_show_all(HBox);
+  end else
+    FileDetailLabel:=nil;
+  gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
+                      FileDetailLabel);
+
+  // preview
+  if (OpenDialog is TPreviewFileDialog) then
+    CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog), SelWidget);
+
+  // set initial filename
+  if OpenDialog.Filename<>'' then
+    gtk_file_chooser_set_filename(FileSelWidget, PChar(OpenDialog.Filename));
+
+  //if InitialFilter <> 'none' then
+  //  PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
+{$ELSE}
+  inherited InitializeOpenDialog(OpenDialog,SelWidget);
+{$ENDIF NONO}
+end;
+
+{------------------------------------------------------------------------------
+  Function: TGtk2WidgetSet.InitializeFileDialog
+  Params: FileDialog: TFileDialog; var SelWidget: PGtkWidget
+  Returns: -
+
+  Creates a new TFile/Open/SaveDialog
+  requires: gtk+ 2.6
+ ------------------------------------------------------------------------------}
+procedure TGtk2WidgetSet.InitializeFileDialog(FileDialog: TFileDialog;
+  var SelWidget: PGtkWidget; Title: PChar);
+{$IFDEF HasGTK2_6}
+var
+  Action: TGtkFileChooserAction; 
+  Button1: String;
+{$ENDIF}
+begin
+{$IFDEF HasGTK2_6}
+  Action := GTK_FILE_CHOOSER_ACTION_OPEN;
+  Button1 := GTK_STOCK_OPEN;
+
+  if FileDialog is TSaveDialog then begin
+    Action := GTK_FILE_CHOOSER_ACTION_SAVE;
+    Button1 := GTK_STOCK_CANCEL;
+  end;
+
+  SelWidget := gtk_file_chooser_dialog_new(Title, nil, Action, 
+    PChar(GTK_STOCK_CANCEL), [GTK_RESPONSE_CANCEL, PChar(Button1), GTK_RESPONSE_OK, nil]);
+
+  g_signal_connect(SelWidget, 'response', gtk_signal_func(@Gtk2FileChooserResponseCB), FileDialog);
+
+(*gtk 2.8 
+  if FileDialog is TSaveDialog then begin
+    gtk_file_chooser_set_do_overwrite_confirmation(SelWidget,  
+      ofOverwritePrompt in TOpenDialog(theDialog).Options);
+  end;
+*)
+
+  if FileDialog is TOpenDialog then
+    InitializeOpenDialog(TOpenDialog(FileDialog), SelWidget);
+
+  InitializeCommonDialog(TCommonDialog(FileDialog), SelWidget);
+{$ELSE}
+  inherited InitializeFileDialog(FileDialog,SelWidget,Title);
+{$ENDIF}
+end;
+
+function TGtk2WidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget): string;
+{$IFDEF HasGTK2_6}
+var
+  FilterList: TFPList;
+  i, j: integer;
+  s: String;
+  GtkFilter: PGtkFileFilter;
+{$ENDIF}
+begin
+{$IFDEF HasGTK2_6}
+  ExtractFilterList(OpenDialog.Filter, FilterList, false);
+  if FilterList.Count > 0 then begin
+    j := 1;
+    for i := 0 to FilterList.Count-1 do begin
+      GtkFilter := gtk_file_filter_new();
+
+      gtk_file_filter_add_pattern(GtkFilter, PFileSelFilterEntry(FilterList[i])^.Mask);
+      gtk_file_filter_set_name(GtkFilter, PFileSelFilterEntry(FilterList[i])^.Description);
+
+      gtk_file_chooser_add_filter(SelWidget, GtkFilter);
+
+      if j = OpenDialog.FilterIndex then 
+        gtk_file_chooser_set_filter(SelWidget, GtkFilter);
+
+      Inc(j);
+      GtkFilter := nil;
+    end;
+  end;
+
+  gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
+
+  Result := 'hm'; { Don't use '' as null return as this is used for *.* }
+{$ELSE}
+  Result:=inherited CreateOpenDialogFilter(OpenDialog,SelWidget);
+{$ENDIF}
+end;
+
+procedure TGtk2WidgetSet.CreatePreviewDialogControl(
+  PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget);
+{$IFDEF HasGTK2_6}
+var
+  PreviewWidget: PGtkWidget;
+  AControl: TPreviewFileControl;
+  FileChooser: PGtkFileChooser;
+{$ENDIF}
+begin
+  {$IFDEF HasGTK2_6}
+  AControl := PreviewDialog.PreviewFileControl;
+  if AControl = nil then Exit;
+
+  FileChooser := PGtkFileChooser(SelWidget);
+
+  PreviewWidget := PGtkWidget(AControl.Handle);
+
+  gtk_object_set_data(PGtkObject(PreviewWidget),'LCLPreviewFixed',
+                      PreviewWidget);
+  gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
+
+  gtk_file_chooser_set_preview_widget(FileChooser, PreviewWidget);
+
+  gtk_widget_show(PreviewWidget);
+  {$ELSE}
+  inherited CreatePreviewDialogControl(PreviewDialog,SelWidget);
+  {$ENDIF}
 end;
 
 {$IFDEF ASSERT_IS_ON}
