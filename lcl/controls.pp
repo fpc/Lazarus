@@ -2159,6 +2159,7 @@ var
   IsFocused: Boolean;
 begin
   if csDestroying in AWinControl.ComponentState then Exit;
+  if wcfCreatingHandle in AWinControl.FWinControlFlags then exit;
 
   if not AWinControl.HandleAllocated
   then begin

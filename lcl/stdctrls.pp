@@ -261,7 +261,7 @@ type
     procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
   protected
-    procedure CreateWnd; override;
+    procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
@@ -279,8 +279,7 @@ type
     function GetSelText: string; virtual;
     function GetItemIndex: integer; virtual;
     function GetMaxLength: integer; virtual;
-    procedure InitializeWnd; override;
-    function SelectItem(const AnItem: String): Boolean;
+    function IsReadOnlyStored: boolean;
     procedure SetDropDownCount(const AValue: Integer); virtual;
     procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
@@ -293,6 +292,7 @@ type
     procedure SetStyle(Val: TComboBoxStyle); virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    function SelectItem(const AnItem: String): Boolean;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -327,7 +327,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly default false;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly stored IsReadOnlyStored;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;

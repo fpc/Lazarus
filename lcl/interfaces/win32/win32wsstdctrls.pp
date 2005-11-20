@@ -569,12 +569,21 @@ end;
 { TWin32WSCustomComboBox }
 
 const
-  ComboBoxStyles: array[TComboBoxStyle] of Integer = (
-    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
-    CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
   ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
     CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
+    
+function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
+const
+  ComboBoxStyles: array[TComboBoxStyle] of dword = (
+    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
+    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+  ComboBoxReadOnlyStyles: array[boolean] of dword = (
+    CBS_DROPDOWN, CBS_DROPDOWNLIST);
+begin
+  Result := ComboBoxStyles[AComboBox.Style];
+  if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+    Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
+end;
 
 function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -586,11 +595,11 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or ComboBoxStyles[TCustomComboBox(AWinControl).Style];
+    Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
     If TComboBox(AWinControl).Sorted Then
       Flags:= Flags or CBS_SORT;
     pClassName := 'COMBOBOX';
-    Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
+    Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
   // create window
@@ -641,11 +650,12 @@ end;
 
 procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 var
-  CurrentStyle: Integer;
+  CurrentStyle: dword;
 begin
   CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
-  if (CurrentStyle and ComboBoxStylesMask)=
-    ComboBoxStyles[TCustomComboBox(ACustomComboBox).Style] then exit;
+  if (CurrentStyle and ComboBoxStylesMask) = 
+        CalcComboBoxWinFlags(ACustomComboBox) then
+    exit;
 
   RecreateWnd(ACustomComboBox);
 end;
@@ -716,7 +726,7 @@ var
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
-  if TCustomComboBox(AWinControl).Style = csDropDownList then
+  if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
   else
     Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));

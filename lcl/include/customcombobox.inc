@@ -26,12 +26,11 @@
 
   Create the underlying interface-object.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.CreateWnd;
+procedure TCustomComboBox.InitializeWnd;
 var
   NewStrings: TStrings;
+  ASelStart, ASelLength : integer;
 begin
-  inherited CreateWnd;
-
   // get the interface based item list
   NewStrings:= TWSCustomComboBoxClass(WidgetSetClass).GetItems(Self);
   // then delete internal list
@@ -47,6 +46,13 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+
+  if FSelStart <> FSelLength then begin
+    ASelStart:= FSelStart;
+    ASelLength:= FSelLength;
+    SelStart:= ASelStart;
+    SelLength:= ASelLength;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -90,26 +96,6 @@ begin
   begin
     FCanvas.FillRect(ARect);
     FCanvas.TextOut(ARect.Left + 2, ARect.Top, Items[Index]);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomComboBox.InitializeWnd
-  Params: ---
-  Returns: Nothing
-
-  Initialize window after it has been created.
- ------------------------------------------------------------------------------}
-
-procedure TCustomComboBox.InitializeWnd;
-var ASelStart, ASelLength : integer;
-begin
-  inherited InitializeWnd;
-  if FSelStart <> FSelLength then begin
-    ASelStart:= FSelStart;
-    ASelLength:= FSelLength;
-    SelStart:= ASelStart;
-    SelLength:= ASelLength;
   end;
 end;
 
@@ -359,6 +345,10 @@ procedure TCustomComboBox.SetStyle(Val : TComboBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
+    case FStyle of
+      csDropDown, csSimple: FReadOnly := false;
+      csDropDownList: FReadOnly := true;
+    end;
     if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
       TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, Val);
   end;
@@ -724,9 +714,6 @@ begin
     ItemIndex := I
   else if (not (csLoading in ComponentState)) then
   begin
-    {$message warn TCustomComboBox.Editable to be implemented soon!}
-    if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-      raise Exception.Create('Setting .Text on owner drawn TComboBox does not make sense!');
     FItemIndex := -1;
     inherited;
   end;
@@ -830,9 +817,19 @@ begin
   end;
 end;
 
+function TCustomComboBox.IsReadOnlyStored: boolean;
+begin
+  case FStyle of
+    csSimple, csDropDown, csDropDownList: Result := false;
+  else
+    Result := FReadOnly <> false;
+  end;
+end;
+
 procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
 begin
   if FReadOnly=AValue then exit;
+  if FStyle in [csSimple, csDropDown, csDropDownList] then exit;
   FReadOnly:=AValue;
   if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, AValue);
