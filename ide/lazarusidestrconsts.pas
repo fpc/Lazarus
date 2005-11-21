@@ -796,6 +796,9 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisInstallationFailed = 'Installation failed';
+  lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package %'
+    +'s%s%s failed to compile.%sRemove it from the installation list?';
   lisEnvOptDlgLazarusDirNotFoundMsg = 'Lazarus directory "%s" not found.';
   lisEnvOptDlgInvalidLazarusDir = 'The lazarus directory "%s" does not look correct.'
     +' Normally it contains directories like lcl, debugger, designer, components, ... .';

@@ -65,6 +65,12 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
+  TPkgUninstallFlag = (
+    puifDoNotConfirm,
+    puifDoNotBuildIDE
+    );
+
+  TPkgUninstallFlags = set of TPkgUninstallFlag;
 
   { TPkgManager }
 
@@ -276,7 +282,8 @@ type
     procedure UnloadInstalledPackages;
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
-    function DoUninstallPackage(APackage: TLazPackage): TModalResult;
+    function DoUninstallPackage(APackage: TLazPackage;
+                                Flags: TPkgUninstallFlags): TModalResult;
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
@@ -801,7 +808,7 @@ end;
 function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoUninstallPackage(APackage);
+  Result:=DoUninstallPackage(APackage,[]);
 end;
 
 function TPkgManager.OnPackageEditorOpenPkgFile(Sender: TObject;
@@ -926,7 +933,7 @@ end;
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoUninstallPackage(APackage);
+  Result:=DoUninstallPackage(APackage,[]);
 end;
 
 function TPkgManager.PkgLinksDependencyOwnerGetPkgFilename(
@@ -2908,6 +2915,23 @@ begin
       end;
     finally
       MessagesView.EndBlock;
+
+      if Result<>mrOk then begin
+        if (APackage.AutoInstall<>pitNope) and (APackage.Installed=pitNope) then
+        begin
+          // package was tried to install, but failed
+          // -> ask user if the package should be removed from the installation
+          // list
+          if MessageDlg(lisInstallationFailed,
+            Format(
+              lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati, [
+              '"', APackage.IDAsString, '"', #13]), mtConfirmation,
+            [mbYes,mbIgnore],0)=mrYes then
+          begin
+            DoUninstallPackage(APackage,[puifDoNotConfirm,puifDoNotBuildIDE]);
+          end;
+        end;
+      end;
     end;
 
   finally
@@ -3675,6 +3699,7 @@ begin
     
     // now PkgList contains only the required packages that were added to the
     // list of installation packages
+    // => show the user the list
     if PkgList.Count>0 then begin
       s:='';
       for i:=0 to PkgList.Count-1 do begin
@@ -3740,7 +3765,8 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoUninstallPackage(APackage: TLazPackage): TModalResult;
+function TPkgManager.DoUninstallPackage(APackage: TLazPackage;
+  Flags: TPkgUninstallFlags): TModalResult;
 var
   DependencyPath: TList;
   ParentPackage: TLazPackage;
@@ -3762,10 +3788,12 @@ begin
   end;
 
   // confirm uninstall package
-  Result:=MessageDlg(lisPkgMangUninstallPackage,
-    Format(lisPkgMangUninstallPackage2, [APackage.IDAsString]),
-    mtConfirmation,[mbYes,mbCancel,mbAbort],0);
-  if Result<>mrYes then exit;
+  if not (puifDoNotConfirm in Flags) then begin
+    Result:=MessageDlg(lisPkgMangUninstallPackage,
+      Format(lisPkgMangUninstallPackage2, [APackage.IDAsString]),
+      mtConfirmation,[mbYes,mbCancel,mbAbort],0);
+    if Result<>mrYes then exit;
+  end;
   
   PackageGraph.BeginUpdate(true);
   try
@@ -3793,20 +3821,21 @@ begin
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 
-    // ask user to rebuilt Lazarus now
-    Result:=MessageDlg(lisPkgMangRebuildLazarus,
-      Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
-        APackage.IDAsString, '"', #13, #13, #13]),
-      mtConfirmation,[mbYes,mbNo],0);
-    if Result=mrNo then begin
-      Result:=mrOk;
-      exit;
+    if not (puifDoNotBuildIDE in Flags) then begin
+      // ask user to rebuilt Lazarus now
+      Result:=MessageDlg(lisPkgMangRebuildLazarus,
+        Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
+          APackage.IDAsString, '"', #13, #13, #13]),
+        mtConfirmation,[mbYes,mbNo],0);
+      if Result=mrNo then begin
+        Result:=mrOk;
+        exit;
+      end;
+
+      // rebuild Lazarus
+      Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
+      if Result<>mrOk then exit;
     end;
-
-    // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
-    if Result<>mrOk then exit;
-
   finally
     PackageGraph.EndUpdate;
   end;
