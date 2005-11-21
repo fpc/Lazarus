@@ -318,7 +318,7 @@ type
                           // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
                                 var ACode: Pointer): boolean;
-    function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
+    function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
     // ranges
@@ -1539,19 +1539,19 @@ begin
   {$ENDIF}
 end;
 
-function TLinkScanner.LastErrorsInFrontOfCleanedPos(ACleanedPos: integer
+function TLinkScanner.LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer
   ): boolean;
 begin
   Result:=LastErrorIsValid and (CleanedLen>ACleanedPos);
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TLinkScanner.LastErrorsInFrontOfCleanedPos Result=',dbgs(Result));
+  DebugLn('TLinkScanner.LastErrorIsInFrontOfCleanedPos Result=',dbgs(Result));
   {$ENDIF}
 end;
 
 procedure TLinkScanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer
   );
 begin
-  if LastErrorsInFrontOfCleanedPos(ACleanedPos) then
+  if LastErrorIsInFrontOfCleanedPos(ACleanedPos) then
     RaiseLastError;
 end;
 

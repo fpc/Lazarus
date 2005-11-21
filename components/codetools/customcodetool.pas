@@ -291,10 +291,10 @@ type
     property IgnoreErrorAfter: TCodePosition
       read FIgnoreErrorAfter write SetIgnoreErrorAfter;
     procedure ClearIgnoreErrorAfter;
-    function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+    function IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: boolean;
     function IgnoreErrorAfterValid: boolean;
     function IgnoreErrorAfterCleanedPos: integer;
-    function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
+    function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
@@ -1642,26 +1642,26 @@ begin
   Result:=(DirtySrc<>nil) and (DirtySrc.Code<>nil);
 end;
 
-function TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+function TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: boolean;
 var
   IgnoreErrorAfterCleanPos: integer;
 begin
-  //DebugLn('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',
-  //  ' LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
-  //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition);
+  DebugLn('TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage ',
+    ' LastErrorCheckedForIgnored='+dbgs(LastErrorCheckedForIgnored),
+    ' LastErrorBehindIgnorePosition='+dbgs(LastErrorBehindIgnorePosition));
   if LastErrorCheckedForIgnored then begin
     Result:=LastErrorBehindIgnorePosition;
   end else begin
     if (Scanner<>nil) then begin
       IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
-      //DebugLn('  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,
-      //  ' LastErrorCurPos.EndPos=',LastErrorCurPos.EndPos,
-      //  ' LastErrorPhase>CodeToolPhaseParse=',LastErrorPhase>CodeToolPhaseParse);
+      DebugLn('  IgnoreErrorAfterCleanPos='+dbgs(IgnoreErrorAfterCleanPos)+'"'+copy(Src,IgnoreErrorAfterCleanPos-6,6)+'"',
+        ' LastErrorCurPos.StartPos='+dbgs(LastErrorCurPos.StartPos)+'"'+copy(Src,LastErrorCurPos.StartPos-6,6)+'"',
+        ' LastErrorPhase>CodeToolPhaseParse='+dbgs(LastErrorPhase>CodeToolPhaseParse));
       if IgnoreErrorAfterCleanPos>0 then begin
         // ignore position in scanned code
-        // -> check if last error behind ignore position
+        // -> check if last error is behind ignore position
         if (not LastErrorValid)
-        or (IgnoreErrorAfterCleanPos<=LastErrorCurPos.EndPos) then
+        or (IgnoreErrorAfterCleanPos<LastErrorCurPos.StartPos) then
           Result:=true
         else
           Result:=false;
@@ -1696,14 +1696,14 @@ begin
   {$ENDIF}
 end;
 
-function TCustomCodeTool.LastErrorsInFrontOfCleanedPos(ACleanedPos: integer
+function TCustomCodeTool.LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer
   ): boolean;
 begin
-  if (Scanner<>nil) and Scanner.LastErrorsInFrontOfCleanedPos(ACleanedPos)
+  if (Scanner<>nil) and Scanner.LastErrorIsInFrontOfCleanedPos(ACleanedPos)
   then
     Result:=true
   else if (LastErrorValid)
-  and (LastErrorCurPos.EndPos<=ACleanedPos) then
+  and (LastErrorCurPos.StartPos<ACleanedPos) then
     Result:=true
   else
     Result:=false;
@@ -1721,7 +1721,7 @@ begin
   if Scanner<>nil then Scanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos);
   //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
   if LastErrorValid
-  and (LastErrorCurPos.EndPos<=ACleanedPos) then
+  and (LastErrorCurPos.StartPos<ACleanedPos) then
     RaiseLastError;
   //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos END ');
 end;
@@ -1887,6 +1887,8 @@ var CaretXY: TCodeXYPosition;
 begin
   ErrorPosition.Code:=nil;
   CursorPos:=CurPos.StartPos;
+  //DebugLn('TCustomCodeTool.RaiseExceptionInstance CursorPos=',dbgs(CursorPos),' "',copy(Src,CursorPos-6,6),'"');
+
   // close all open nodes, so that FindDeepestNodeAtPos works in the code
   // already parsed
   Node:=CurNode;
@@ -1988,6 +1990,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
   
   procedure RaiseNoNodeFoundAtCursor;
   begin
+    //DebugLn('RaiseNoNodeFoundAtCursor ',MainFilename);
     SaveRaiseException(ctsNoNodeFoundAtCursor);
   end;
   

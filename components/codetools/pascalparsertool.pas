@@ -454,7 +454,7 @@ begin
     // -> if there was an error, raise it again
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
     and ((not IgnoreErrorAfterValid)
-      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+      or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
     then
       RaiseLastError;
     exit;
@@ -527,7 +527,7 @@ begin
     DebugLn('TPascalParserTool.BuildTree ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
@@ -630,7 +630,7 @@ begin
     DebugLn('TPascalParserTool.BuildSubTreeForClass ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForClass',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
@@ -694,7 +694,7 @@ begin
     DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
@@ -3587,7 +3587,7 @@ begin
     // -> if there was an error, raise it again
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
     and ((not IgnoreErrorAfterValid)
-      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+      or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
     then
       RaiseLastError;
     // check if cursor is in interface
@@ -3715,7 +3715,7 @@ begin
     DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
       raise;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
