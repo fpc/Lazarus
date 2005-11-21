@@ -1,133 +1,155 @@
 object DebuggerOptionsForm: TDebuggerOptionsForm
+  ActiveControl = cmbDebuggerType
   BorderStyle = bsDialog
   Caption = 'Debugger Options'
-  ClientHeight = 442
-  ClientWidth = 480
+  ClientHeight = 447
+  ClientWidth = 491
   OnCreate = DebuggerOptionsFormCREATE
   OnDestroy = DebuggerOptionsFormDESTROY
   PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 479
-  VertScrollBar.Page = 441
+  HorzScrollBar.Page = 490
+  VertScrollBar.Page = 446
   Left = 410
-  Height = 442
+  Height = 447
   Top = 196
-  Width = 480
+  Width = 491
   object nbDebugOptions: TNotebook
     Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 0
     Height = 398
-    Width = 480
+    Width = 491
     object pgGeneral: TPage
       Caption = 'General'
-      ClientWidth = 476
+      ClientWidth = 487
       ClientHeight = 368
       Left = 2
       Height = 368
       Top = 28
-      Width = 476
+      Width = 487
       object gbDebuggerType: TGroupBox
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 2
         Caption = 'Debugger type and path'
-        ClientHeight = 69
-        ClientWidth = 468
-        ParentColor = True
+        ClientHeight = 73
+        ClientWidth = 479
         ParentCtl3D = False
         TabOrder = 0
         Left = 2
-        Height = 86
-        Top = 8
-        Width = 472
+        Height = 90
+        Top = 2
+        Width = 483
         object cmbDebuggerType: TComboBox
+          Anchors = [akTop, akLeft, akRight]
           MaxLength = 0
           OnChange = cmbDebuggerTypeCHANGE
           ParentCtl3D = False
           TabOrder = 0
           Left = 6
-          Height = 25
-          Top = 5
-          Width = 268
+          Height = 22
+          Top = 8
+          Width = 466
         end
         object cmbDebuggerPath: TComboBox
+          Anchors = [akTop, akLeft, akRight]
           MaxLength = 0
           ParentCtl3D = False
           TabOrder = 1
           Left = 6
-          Height = 25
-          Top = 37
-          Width = 428
+          Height = 22
+          Top = 40
+          Width = 441
         end
         object cmdOpenDebuggerPath: TButton
+          Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = cmdOpenDebuggerPathCLICK
           TabOrder = 2
-          Left = 442
+          Left = 449
           Height = 25
           Top = 37
-          Width = 19
+          Width = 23
         end
       end
       object gbAdditionalSearchPath: TGroupBox
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 2
         Caption = 'Additional search path'
-        ClientHeight = 35
-        ClientWidth = 468
-        ParentColor = True
+        ClientHeight = 39
+        ClientWidth = 479
         ParentCtl3D = False
         TabOrder = 1
         Left = 2
-        Height = 52
-        Top = 100
-        Width = 472
+        Height = 56
+        Top = 96
+        Width = 483
         object txtAdditionalPath: TEdit
+          Anchors = [akTop, akLeft, akRight]
           TabOrder = 0
           Left = 6
           Height = 25
           Top = 5
-          Width = 428
+          Width = 439
         end
         object cmdOpenAdditionalPath: TButton
+          Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = cmdOpenAdditionalPathClick
           TabOrder = 1
-          Left = 442
+          Left = 449
           Height = 24
           Top = 5
-          Width = 19
+          Width = 23
         end
       end
       object gbDebuggerSpecific: TGroupBox
+        Align = alClient
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 2
         Caption = 'Debugger specific options (depends on type of debugger)'
-        ClientHeight = 234
-        ClientWidth = 468
-        ParentColor = True
+        ClientHeight = 135
+        ClientWidth = 479
         ParentCtl3D = False
         TabOrder = 2
         Left = 2
-        Height = 251
-        Top = 212
-        Width = 472
+        Height = 152
+        Top = 216
+        Width = 483
         object pnlDebugSpecific: TPanel
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 4
-          ClientHeight = 234
-          ClientWidth = 468
+          ClientHeight = 135
+          ClientWidth = 479
           FullRepaint = False
           TabOrder = 0
           TabStop = True
-          Height = 234
-          Width = 468
+          Height = 135
+          Width = 479
         end
       end
       object gcbDebuggerGeneralOptions: TCheckGroup
+        Align = alTop
+        BorderSpacing.Left = 2
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 2
         Caption = 'Debugger general options'
         Items.Strings = (
           'Show message on stop'
         )
-        ParentColor = True
+        TabOrder = 3
         Left = 2
-        Height = 48
+        Height = 56
         Top = 156
-        Width = 472
+        Width = 483
         Data = {
           0100000002
         }
@@ -135,17 +157,16 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
     object pgEventLog: TPage
       Caption = 'Event Log'
-      ClientWidth = 476
+      ClientWidth = 487
       ClientHeight = 368
       Left = 2
       Height = 368
       Top = 28
-      Width = 476
+      Width = 487
       object gbGeneral: TGroupBox
         Caption = 'General'
         ClientHeight = 132
         ClientWidth = 230
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -157,23 +178,21 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Caption = 'Clear log on run'
           TabOrder = 0
           Left = 4
-          Height = 20
+          Height = 24
           Top = 5
-          Width = 135
+          Width = 118
         end
         object chkLimitLinecount: TCheckBox
           AllowGrayed = True
           Caption = 'Limit linecount to'
           TabOrder = 1
           Left = 4
-          Height = 20
+          Height = 24
           Top = 29
-          Width = 119
+          Width = 121
         end
         object seLimitLinecount: TSpinEdit
-          ClimbRate = 1
           Enabled = False
-          MaxValue = 100
           TabOrder = 2
           Left = 28
           Height = 20
@@ -183,14 +202,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbMessages: TGroupBox
         Caption = 'Messages'
-        ClientHeight = 188
+        ClientHeight = 199
         ClientWidth = 232
         Enabled = False
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 1
         Left = 242
-        Height = 188
+        Height = 199
         Top = 8
         Width = 232
         object chkMessagesBreakpoint: TCheckBox
@@ -198,161 +216,172 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Caption = 'Breakpoint'
           TabOrder = 0
           Left = 4
-          Height = 20
+          Height = 24
           Top = 5
-          Width = 161
+          Width = 86
         end
         object chkMessagesProcess: TCheckBox
           AllowGrayed = True
           Caption = 'Process'
           TabOrder = 1
           Left = 4
-          Height = 20
+          Height = 24
           Top = 29
-          Width = 147
+          Width = 72
         end
         object chkMessagesThread: TCheckBox
           AllowGrayed = True
           Caption = 'Thread'
           TabOrder = 2
           Left = 4
-          Height = 20
+          Height = 24
           Top = 53
-          Width = 141
+          Width = 66
         end
         object chkMessagesModule: TCheckBox
           AllowGrayed = True
           Caption = 'Module'
           TabOrder = 3
           Left = 4
-          Height = 20
+          Height = 24
           Top = 77
-          Width = 144
+          Width = 69
         end
         object chkMessagesOutput: TCheckBox
           AllowGrayed = True
           Caption = 'Output'
           TabOrder = 4
           Left = 4
-          Height = 20
+          Height = 24
           Top = 101
-          Width = 139
+          Width = 64
         end
         object chkMessagesWindow: TCheckBox
           AllowGrayed = True
           Caption = 'Window'
           TabOrder = 5
           Left = 4
-          Height = 20
+          Height = 24
           Top = 125
-          Width = 146
+          Width = 71
         end
         object chkMessagesInterface: TCheckBox
           AllowGrayed = True
           Caption = 'Interface'
           TabOrder = 6
           Left = 4
-          Height = 20
+          Height = 24
           Top = 149
-          Width = 150
+          Width = 75
         end
       end
     end
     object pgExceptions: TPage
       Caption = 'Language Exceptions'
-      ClientWidth = 476
+      ClientWidth = 487
       ClientHeight = 368
       Left = 2
       Height = 368
       Top = 28
-      Width = 476
+      Width = 487
       object bgIgnoreExceptions: TGroupBox
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Ignore these exceptions'
         ClientHeight = 328
-        ClientWidth = 468
-        ParentColor = True
+        ClientWidth = 479
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
         Height = 328
         Top = 8
-        Width = 468
+        Width = 479
         object cmdExceptionRemove: TButton
+          Anchors = [akRight, akBottom]
+          BorderSpacing.InnerBorder = 2
           Caption = 'Remove'
           Enabled = False
           OnClick = cmdExceptionRemoveCLICK
           TabOrder = 0
-          Left = 380
+          Left = 384
           Height = 25
-          Top = 277
-          Width = 75
+          Top = 294
+          Width = 86
         end
         object cmdExceptionAdd: TButton
+          Anchors = [akRight, akBottom]
+          BorderSpacing.InnerBorder = 2
           Caption = 'Add'
           OnClick = cmdExceptionAddCLICK
           TabOrder = 1
-          Left = 300
+          Left = 291
           Height = 25
-          Top = 277
-          Width = 75
+          Top = 294
+          Width = 86
         end
         object clbExceptions: TCheckListBox
+          Anchors = [akTop, akLeft, akRight, akBottom]
           OnClick = clbExceptionsCLICK
           TabOrder = 2
           TopIndex = -1
           Left = 8
-          Height = 264
+          Height = 281
           Top = 5
-          Width = 448
+          Width = 463
         end
       end
       object chkBreakOnException: TCheckBox
         AllowGrayed = True
+        Anchors = [akLeft, akBottom]
         Caption = 'Break on Lazarus Exceptions'
         TabOrder = 1
         Left = 2
-        Height = 20
+        Height = 24
         Top = 340
-        Width = 188
+        Width = 190
       end
     end
     object pgSignals: TPage
       Caption = 'OS Exceptions'
-      ClientWidth = 476
+      ClientWidth = 487
       ClientHeight = 368
       Left = 2
       Height = 368
       Top = 28
-      Width = 476
+      Width = 487
       object gbSignals: TGroupBox
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Signals'
         ClientHeight = 354
-        ClientWidth = 468
-        ParentColor = True
+        ClientWidth = 479
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
         Height = 354
         Top = 8
-        Width = 468
+        Width = 479
         object cmdSignalRemove: TButton
+          Anchors = [akRight, akBottom]
+          BorderSpacing.InnerBorder = 2
           Caption = 'Remove'
           Enabled = False
           TabOrder = 0
-          Left = 381
+          Left = 392
           Height = 25
-          Top = 305
-          Width = 75
+          Top = 322
+          Width = 79
         end
         object cmdSignalAdd: TButton
+          Anchors = [akRight, akBottom]
+          BorderSpacing.InnerBorder = 2
           Caption = 'Add'
           TabOrder = 1
-          Left = 296
+          Left = 307
           Height = 25
-          Top = 305
-          Width = 75
+          Top = 322
+          Width = 79
         end
         object lvSignals: TListView
+          Anchors = [akTop, akLeft, akRight, akBottom]
           Columns = <          
             item
               Caption = 'Name'
@@ -372,30 +401,34 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           PopupMenu = popSignal
           ViewStyle = vsReport
           Left = 8
-          Height = 292
+          Height = 309
           Top = 5
-          Width = 448
+          Width = 463
         end
       end
     end
   end
   object cmdCancel: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
     Left = 400
-    Height = 25
+    Height = 27
     Top = 408
     Width = 75
   end
   object cmdOK: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     Default = True
     OnClick = cmdOKCLICK
     TabOrder = 2
-    Left = 320
-    Height = 25
+    Left = 310
+    Height = 27
     Top = 408
     Width = 75
   end
