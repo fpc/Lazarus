@@ -31,6 +31,8 @@ var
   NewStrings: TStrings;
   ASelStart, ASelLength : integer;
 begin
+  inherited InitializeWnd;
+
   // get the interface based item list
   NewStrings:= TWSCustomComboBoxClass(WidgetSetClass).GetItems(Self);
   // then delete internal list
@@ -731,17 +733,18 @@ begin
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex A ',DbgSName(Self),' Text="',Text,'"');
   if Val=GetItemIndex then exit;
-  if Val>=Items.Count then exit;
+  if (Val>=Items.Count) and (not (csLoading in ComponentState)) then exit;
 
   FItemIndex:= Val;
-  //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
-  //  Text:=FItems[FItemIndex];
-  if HandleAllocated then
-  begin
-    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-  end else begin
-    // remember text, in case one reads text without creating handle
-    Text := FItems.Strings[FItemIndex];
+  if not (csLoading in ComponentState) then begin
+    //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
+    //  Text:=FItems[FItemIndex];
+    if HandleAllocated then begin
+      TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+    end else begin
+      // remember text, in case one reads text without creating handle
+      Text := FItems.Strings[FItemIndex];
+    end;
   end;
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex END ',DbgSName(Self),' Text="',Text,'"');

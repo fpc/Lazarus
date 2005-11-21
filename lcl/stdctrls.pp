@@ -352,8 +352,8 @@ type
     property Enabled;
     property Font;
     property ItemHeight;
+    property ItemIndex;
     property Items;
-    property ItemIndex default -1; // keep after Items
     property ItemWidth;
     property MaxLength;
     property OnChange;

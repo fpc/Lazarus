@@ -80,7 +80,7 @@ uses
 type
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynPasSyn;
-  TCustomSyn     = TSynCustomHighlighter;
+                                                                                                                                                                                                                                                                                                                                                                                        TCustomSyn     = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TCustomSyn;
 
@@ -237,13 +237,13 @@ type
     procedure Save;
 
     procedure GetHighlighterSettings(Syn: TCustomSyn);
-    // read highlight settings from config file
+              // read highlight settings from config file
     procedure SetHighlighterSettings(Syn: TCustomSyn);
-    // write highlight settings to config file
+              // write highlight settings to config file
     procedure GetSynEditSettings(ASynEdit: TSynEdit);
-    // read synedit settings from config file
+              // read synedit settings from config file
     procedure SetSynEditSettings(ASynEdit: TSynEdit);
-    // write synedit settings to file
+              // write synedit settings to file
     procedure GetSynEditSelectedColor(ASynEdit: TSynEdit);
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);

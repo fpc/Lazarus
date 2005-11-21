@@ -55,6 +55,8 @@ type
                       Ignore: TCustomLazControlDocker): TCustomLazControlDocker;
     function CreateUniqueName(const AName: string;
                               Ignore: TCustomLazControlDocker): string;
+    procedure SaveToStream(Stream: TStream);
+  public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
     property Dockers[Index: Integer]: TCustomLazControlDocker read GetDockers; default;
@@ -362,6 +364,11 @@ begin
   Result:=CreateFirstIdentifier(Result);
   while FindDockerByName(Result,Ignore)<>nil do
     Result:=CreateNextIdentifier(Result);
+end;
+
+procedure TCustomLazDockingManager.SaveToStream(Stream: TStream);
+begin
+
 end;
 
 end.
