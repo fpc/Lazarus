@@ -532,7 +532,7 @@ msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr "Er is geen help gevondenvoor regel %d, kolom % van %s."
+msgstr "Er is geen help gevonden voor regel %d, kolom %d van %s."
 
 #: objinspstrconsts:oisobject
 msgid "Object"
