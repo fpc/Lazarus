@@ -2325,6 +2325,8 @@ begin
   SetCount(0);
   FAVLPalette.Free;
   FAVLPalette:=nil;
+  if FCapacity>0 then
+    FreeMem(FAVLNodes);
   inherited Destroy;
 end;
 
