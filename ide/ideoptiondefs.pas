@@ -850,6 +850,7 @@ var
   CurY1: Integer;
   CurY2: LongInt;
   Col2X: Integer;
+  PreviousButton: TRadioButton;
   
   procedure SetLabelAndEdit(var ALabel: TLabel;
     var AnEdit: TEdit;  const ACaption: string; x, y: integer);
@@ -891,6 +892,7 @@ begin
   CurY1:=5;
   CurY2:=CurY1;
   Col2X:=300;
+  PreviousButton:= nil;
   for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
     if APlacement in AnLayout.WindowPlacementsAllowed then
@@ -900,12 +902,16 @@ begin
       with PlacementRadioButtons[APlacement] do
       begin
         Parent:=Self;
-        SetBounds(5,CurY1,Width,Height);
-        inc(CurY1,Height+2);
+        Left := 6;
+        if PreviousButton=nil then
+          Top := 6
+        else
+          AnchorToNeighbour(akTop,6,PreviousButton);
         OnClick:=@RadioButtonClick;
         Caption:=GetRadioBtnCaptions(APlacement);
         Checked:=(APlacement=AnLayout.WindowPlacement);
       end;
+      PreviousButton := PlacementRadioButtons[APlacement];
       
       case APlacement of
       iwpCustomPosition:
