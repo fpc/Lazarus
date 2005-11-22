@@ -847,8 +847,7 @@ end;
 procedure TIDEWindowSetupLayoutComponent.LoadFrom(AnLayout: TIDEWindowLayout);
 var
   APlacement: TIDEWindowPlacement;
-  CurY1: Integer;
-  CurY2: LongInt;
+  CurY: LongInt;
   Col2X: Integer;
   PreviousButton: TRadioButton;
   
@@ -889,8 +888,7 @@ var
   
 begin
   if AnLayout=nil then exit;
-  CurY1:=5;
-  CurY2:=CurY1;
+  CurY:=5;
   Col2X:=300;
   PreviousButton:= nil;
   for APlacement:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
@@ -917,14 +915,14 @@ begin
       iwpCustomPosition:
         begin
           // custom window position
-          SetLabelAndEdit(LeftLabel,LeftEdit,dlgLeftPos,Col2X,CurY2);
+          SetLabelAndEdit(LeftLabel,LeftEdit,dlgLeftPos,Col2X,CurY);
           SetLabelAndEdit(TopLabel,TopEdit,dlgTopPos,
-            LeftEdit.Left+LeftEdit.Width+15,CurY2);
-          inc(CurY2,LeftEdit.Height+3);
-          SetLabelAndEdit(WidthLabel,WidthEdit,dlgWidthPos,LeftLabel.Left,CurY2);
+            LeftEdit.Left+LeftEdit.Width+15,CurY);
+          inc(CurY,LeftEdit.Height+6);
+          SetLabelAndEdit(WidthLabel,WidthEdit,dlgWidthPos,LeftLabel.Left,CurY);
           SetLabelAndEdit(HeightLabel,HeightEdit,DlgHeightPos,
-            WidthEdit.Left+WidthEdit.Width+15,CurY2);
-          inc(CurY2,WidthEdit.Height+3);
+            WidthEdit.Left+WidthEdit.Width+15,CurY);
+          inc(CurY,WidthEdit.Height+6);
           if AnLayout.CustomCoordinatesAreValid then begin
             LeftEdit.Text:=IntToStr(AnLayout.Left);
             TopEdit.Text:=IntToStr(AnLayout.Top);
@@ -949,14 +947,13 @@ begin
     end;
   end;
   
-  inc(CurY1,2);
   if ApplyButton=nil then
     ApplyButton:=TButton.Create(Self);
      
   with ApplyButton do
   begin
     Parent:=Self;
-    SetBounds(Col2X,CurY2,Width,Height);
+    SetBounds(Col2X,CurY,Width,Height);
     OnClick:=@ApplyButtonClick;
     Caption:=dlgButApply;
     AutoSize:=true;
@@ -972,7 +969,7 @@ begin
       OnClick:=@GetWindowPositionButtonClick;
       Caption:=dlgGetPosition;
       AutoSize:=true;
-      AnchorToNeighbour(akLeft,5,ApplyButton);
+      AnchorToNeighbour(akLeft,6,ApplyButton);
       AnchorParallel(akTop,0,ApplyButton);
     end;
   end;
