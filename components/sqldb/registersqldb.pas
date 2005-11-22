@@ -21,11 +21,19 @@ unit registersqldb;
 {$IFNDEF ver2_0_0}{$IFNDEF ver2_0_1}
   {$DEFINE HASODBCCONNECTION}
 {$ENDIF}{$ENDIF}
+{$IFNDEF ver2_0_0}{$IFNDEF ver2_0_1}{$IFNDEF ver2_0_2}{$IFNDEF ver2_0_3}
+  {$DEFINE HASMYSQL50CONNECTION}
+{$ENDIF}{$ENDIF}{$ENDIF}{$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection, mysql4conn,
+  Classes, SysUtils, LResources, sqldb, ibconnection, pqconnection,
+{$IFDEF HASMYSQL50CONNECTION}
+  mysql40conn, mysql41conn, mysql50conn,
+{$ELSE}
+  mysql4conn,
+{$ENDIF}
 {$IFDEF HASODBCCONNECTION}
   odbcconn,
 {$ENDIF}
@@ -43,9 +51,14 @@ begin
 {$IFDEF HASODBCCONNECTION}
                               TODBCConnection,	
 {$ENDIF}
-
-			      TPQConnection,
-                              TMySQLConnection]);
+{$IFDEF HASMYSQL50CONNECTION}
+                              TMySQL40Connection,
+                              TMySQL41Connection,
+                              TMySQL50Connection,
+{$ELSE}
+                              TMySQLConnection,
+{$ENDIF}
+			      TPQConnection]);
 end;
 
 procedure Register;
