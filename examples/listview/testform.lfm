@@ -1,8 +1,9 @@
 object Form1: TForm1
+  ActiveControl = CheckBox3
   Caption = 'Listview test'
   ClientHeight = 299
   ClientWidth = 627
-  PixelsPerInch = 108
+  PixelsPerInch = 96
   HorzScrollBar.Page = 626
   VertScrollBar.Page = 298
   Left = 356
@@ -11,7 +12,6 @@ object Form1: TForm1
   Width = 627
   object Notebook1: TNotebook
     Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
     PageIndex = 0
     Left = 433
     Height = 280
@@ -19,61 +19,49 @@ object Form1: TForm1
     Width = 184
     object Page3: TPage
       Caption = 'LV'
-      ClientWidth = 180
-      ClientHeight = 250
-      Left = 2
-      Height = 250
-      Top = 28
-      Width = 180
+      ClientWidth = 176
+      ClientHeight = 254
+      Height = 254
+      Width = 176
       object Label11: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Scrollbars'
-        ParentColor = True
         Left = 6
-        Height = 17
+        Height = 14
         Top = 60
-        Width = 65
+        Width = 47
       end
       object Label12: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'SortColumn'
-        ParentColor = True
         Left = 6
-        Height = 17
+        Height = 14
         Top = 122
-        Width = 65
+        Width = 56
       end
       object Label13: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'SortType'
-        ParentColor = True
         Left = 6
-        Height = 17
+        Height = 14
         Top = 154
-        Width = 65
+        Width = 45
       end
       object Label14: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'ViewStyle'
-        ParentColor = True
         Left = 6
-        Height = 17
+        Height = 14
         Top = 186
-        Width = 65
+        Width = 47
       end
       object CheckBox3: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'Multiselect'
         OnChange = CheckBox3Change
         OnClick = CheckBox3Click
         TabOrder = 0
         Left = 6
-        Height = 23
+        Height = 13
         Top = 4
-        Width = 90
+        Width = 70
       end
       object ComboBox2: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'ssNone'
           'ssHorizontal'
@@ -90,12 +78,11 @@ object Form1: TForm1
         TabOrder = 1
         Text = 'ssAutoBoth'
         Left = 77
-        Height = 25
+        Height = 21
         Top = 52
         Width = 95
       end
       object Edit11: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit11Change
         TabOrder = 2
         Text = '0'
@@ -105,7 +92,6 @@ object Form1: TForm1
         Width = 80
       end
       object ComboBox3: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'stNone'
           'stData'
@@ -119,12 +105,11 @@ object Form1: TForm1
         TabOrder = 3
         Text = 'stNone'
         Left = 77
-        Height = 25
+        Height = 21
         Top = 146
         Width = 95
       end
       object ComboBox4: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'vsIcon'
           'vsSmallIcon'
@@ -138,79 +123,67 @@ object Form1: TForm1
         TabOrder = 4
         Text = 'vsReport'
         Left = 78
-        Height = 25
+        Height = 21
         Top = 178
         Width = 95
       end
       object CheckBox4: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'RowSelect'
         OnClick = CheckBox4Click
         TabOrder = 5
         Left = 6
-        Height = 23
+        Height = 13
         Top = 28
-        Width = 90
+        Width = 72
       end
       object CheckBox5: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'ShowColumnHeaders'
         Checked = True
         OnClick = CheckBox5Click
         State = cbChecked
         TabOrder = 6
         Left = 6
-        Height = 23
+        Height = 13
         Top = 84
-        Width = 139
+        Width = 122
       end
     end
     object Page1: TPage
       Caption = 'Items'
-      ClientWidth = 180
-      ClientHeight = 250
-      Left = 2
-      Height = 250
-      Top = 28
-      Width = 180
+      ClientWidth = 176
+      ClientHeight = 254
+      Height = 254
+      Width = 176
       object Label6: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Index'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 4
         Width = 65
       end
       object Label7: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'SubIndex'
-        ParentColor = True
         Left = 94
         Height = 17
         Top = 4
         Width = 65
       end
       object Label9: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Text'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 116
         Width = 65
       end
       object Label10: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'ImageIndex'
-        ParentColor = True
         Left = 94
         Height = 17
         Top = 116
         Width = 65
       end
       object Button1: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Insert'
         OnClick = Button1Click
         TabOrder = 0
@@ -220,7 +193,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button2: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Delete'
         OnClick = Button2Click
         TabOrder = 1
@@ -230,7 +203,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button5: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Select'
         OnClick = Button5Click
         TabOrder = 2
@@ -240,7 +213,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button6: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Focus'
         OnClick = Button6Click
         TabOrder = 3
@@ -250,7 +223,6 @@ object Form1: TForm1
         Width = 75
       end
       object Edit1: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit1Change
         TabOrder = 4
         Text = '0'
@@ -260,7 +232,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit4: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit4Change
         TabOrder = 5
         Text = 'Edit4'
@@ -270,7 +241,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit5: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit5Change
         TabOrder = 6
         Text = '0'
@@ -280,7 +250,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit10: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit10Change
         TabOrder = 7
         Text = '-1'
@@ -292,68 +261,54 @@ object Form1: TForm1
     end
     object Page2: TPage
       Caption = 'Columns'
-      ClientWidth = 180
-      ClientHeight = 250
-      Left = 2
-      Height = 250
-      Top = 28
-      Width = 180
+      ClientWidth = 176
+      ClientHeight = 254
+      Height = 254
+      Width = 176
       object Label1: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Caption'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 84
         Width = 65
       end
       object Label2: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Width'
-        ParentColor = True
         Left = 94
         Height = 17
         Top = 84
         Width = 65
       end
       object Label3: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Minwidth'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 132
         Width = 65
       end
       object Label4: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Maxwidth'
-        ParentColor = True
         Left = 94
         Height = 17
         Top = 132
         Width = 65
       end
       object Label5: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Image'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 179
         Width = 65
       end
       object Label8: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Index'
-        ParentColor = True
         Left = 6
         Height = 17
         Top = 4
         Width = 65
       end
       object Button3: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Insert'
         OnClick = Button3Click
         TabOrder = 0
@@ -363,7 +318,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button4: TButton
-        BorderSpacing.OnChange = nil
+        BorderSpacing.InnerBorder = 2
         Caption = 'Delete'
         OnClick = Button4Click
         TabOrder = 1
@@ -373,7 +328,6 @@ object Form1: TForm1
         Width = 75
       end
       object Edit2: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit2Change
         TabOrder = 2
         Text = '0'
@@ -383,7 +337,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit3: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit3Change
         TabOrder = 3
         Text = 'Edit3'
@@ -393,7 +346,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit6: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit6Change
         TabOrder = 4
         Text = '0'
@@ -403,7 +355,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit7: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit7Change
         TabOrder = 7
         Text = '0'
@@ -413,7 +364,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit8: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = Edit8Change
         TabOrder = 9
         Text = '0'
@@ -423,7 +373,6 @@ object Form1: TForm1
         Width = 80
       end
       object CheckBox1: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'Visible'
         OnClick = CheckBox1Click
         TabOrder = 5
@@ -433,7 +382,6 @@ object Form1: TForm1
         Width = 80
       end
       object Edit9: TEdit
-        BorderSpacing.OnChange = nil
         TabOrder = 6
         Text = '-1'
         Left = 6
@@ -442,7 +390,6 @@ object Form1: TForm1
         Width = 80
       end
       object ComboBox1: TComboBox
-        BorderSpacing.OnChange = nil
         Items.Strings = (
           'taLeftJustify'
           'taRightJustify'
@@ -453,12 +400,11 @@ object Form1: TForm1
         ParentCtl3D = False
         TabOrder = 8
         Left = 94
-        Height = 25
+        Height = 21
         Top = 191
         Width = 80
       end
       object CheckBox2: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'Autosize'
         OnClick = CheckBox2Click
         TabOrder = 10
@@ -471,7 +417,6 @@ object Form1: TForm1
   end
   object ListView1: TListView
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     BorderWidth = 2
     Columns = <    
       item

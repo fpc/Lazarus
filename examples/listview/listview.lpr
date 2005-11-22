@@ -3,9 +3,9 @@ program listview;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces,
-  testform,
-  Forms, Unit1;
+  Interfaces, // this includes the LCL widgetset
+  Forms
+  { add your units here }, testform;
 
 begin
   Application.Initialize;

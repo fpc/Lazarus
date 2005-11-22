@@ -737,6 +737,7 @@ examples/lazintfimage/mainunit1.lrs svneol=native#text/pascal
 examples/lazintfimage/mainunit1.pas svneol=native#text/pascal
 examples/listboxtest.lpi svneol=native#text/plain
 examples/listboxtest.pp svneol=native#text/pascal
+examples/listview/listview.lpi svneol=native#text/plain
 examples/listview/listview.lpr svneol=native#text/pascal
 examples/listview/testform.lfm svneol=native#text/plain
 examples/listview/testform.lrs svneol=native#text/pascal

@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="2"/>
+    </General>
+    <LazDoc Paths=""/>
+    <Units Count="4">
+      <Unit0>
+        <CursorPos X="28" Y="11"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="listview.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="listview"/>
+        <UsageCount Value="20"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="17" Y="11"/>
+        <Filename Value="unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <ResourceFilename Value="unit1.lrs"/>
+        <TopLine Value="1"/>
+        <UnitName Value="Unit1"/>
+        <UsageCount Value="20"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="15" Y="88"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="testform.pp"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ResourceFilename Value="testform.lrs"/>
+        <TopLine Value="67"/>
+        <UnitName Value="testform"/>
+        <UsageCount Value="20"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="1" Y="1130"/>
+        <EditorIndex Value="2"/>
+        <Filename Value="C:\lazarus\lcl\include\imglist.inc"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1109"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="testform.pp"/>
+        <Caret Line="88" Column="15" TopLine="67"/>
+      </Position1>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="3">
+      <Item1>
+        <Source Value="C:\lazarus\components\synedit\synedit.pp"/>
+        <Line Value="2767"/>
+      </Item1>
+      <Item2>
+        <Source Value="C:\Datamodeler\contrib\jedimath\Source\JmFit.pas"/>
+        <Line Value="134"/>
+      </Item2>
+      <Item3>
+        <Source Value="C:\Datamodeler\contrib\jedimath\Source\JmFit.pas"/>
+        <Line Value="147"/>
+      </Item3>
+    </BreakPoints>
+    <Watches Count="4">
+      <Item1>
+        <Expression Value="tmp"/>
+      </Item1>
+      <Item2>
+        <Expression Value="Path"/>
+      </Item2>
+      <Item3>
+        <Expression Value="CaseNameRow"/>
+      </Item3>
+      <Item4>
+        <Expression Value="col"/>
+      </Item4>
+    </Watches>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
