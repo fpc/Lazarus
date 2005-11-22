@@ -1202,7 +1202,7 @@ begin
     end;
     lvpMultiSelect: begin
       if AIsSet
-      then gtk_clist_set_selection_mode(ACListWidget, GTK_SELECTION_MULTIPLE)
+      then gtk_clist_set_selection_mode(ACListWidget, GTK_SELECTION_EXTENDED)
       else gtk_clist_set_selection_mode(ACListWidget, GTK_SELECTION_SINGLE);
     end;
     lvpOwnerDraw: begin
