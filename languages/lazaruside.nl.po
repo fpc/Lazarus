@@ -1,4 +1,4 @@
-#: lazarusidestrconsts:srkmcommand1
+ï»¿#: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   commando1 \""
 
@@ -128,7 +128,7 @@ msgstr "%sDe volgende units zullen aan de uses sectie van %s%s:%s%s%s worden toe
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
-msgstr "%sDit package was geïnstalleerd, maar het lpk bestand was niet gevonden"
+msgstr "%sDit package was geÃ¯nstalleerd, maar het lpk bestand was niet gevonden"
 
 #: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
 msgid "%sThis package was automatically created"
@@ -828,7 +828,7 @@ msgstr "Call bij:"
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
-msgstr "Kan top-level component niet kopiëren."
+msgstr "Kan top-level component niet kopiÃ«ren."
 
 #: lazarusidestrconsts:liscannotcreatefile
 msgid "Can not create file %s%s%s"
@@ -1416,23 +1416,23 @@ msgstr "Converteer tabs naar spaties in selectie"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr "Kopiëren"
+msgstr "KopiÃ«ren"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
-msgstr "Kopiëerfout"
+msgstr "KopiÃ«erfout"
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
-msgstr "Kopiëer alle berichten naar klipbord"
+msgstr "KopiÃ«er alle berichten naar klipbord"
 
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
-msgstr "Kopiëerfout"
+msgstr "KopiÃ«erfout"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr "Kopiëer geselecteerde componenten naar klipbord"
+msgstr "KopiÃ«er geselecteerde componenten naar klipbord"
 
 #: lazarusidestrconsts:liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -1440,15 +1440,15 @@ msgstr "Kopieer de geselecteerde boodschap naar het klembord"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
-msgstr "Kopiëer selectie naar klipbord"
+msgstr "KopiÃ«er selectie naar klipbord"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr "Kopiëer woord asl niets geselecteerd"
+msgstr "KopiÃ«er woord asl niets geselecteerd"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
-msgstr "Een gehele Form kopiëren is niet geimplementeerd."
+msgstr "Een gehele Form kopiÃ«ren is niet geimplementeerd."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -1468,35 +1468,35 @@ msgstr "Maak"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
-msgstr "Creëer .po bestanden"
+msgstr "CreÃ«er .po bestanden"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr "Creëer definities voor %s folder"
+msgstr "CreÃ«er definities voor %s folder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
-msgstr "Creëer definities voor %s Project"
+msgstr "CreÃ«er definities voor %s Project"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
-msgstr "Creëer definities voor Free Pascal Compiler"
+msgstr "CreÃ«er definities voor Free Pascal Compiler"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Creëer definities voor Free Pascal SVN broncode"
+msgstr "CreÃ«er definities voor Free Pascal SVN broncode"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
-msgstr "Creëer definities voor Lazarus folder"
+msgstr "CreÃ«er definities voor Lazarus folder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr "Creëer FPC macro's en paden voor een fpc project folder"
+msgstr "CreÃ«er FPC macro's en paden voor een fpc project folder"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
-msgstr "Creëer MakeFile"
+msgstr "CreÃ«er MakeFile"
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"

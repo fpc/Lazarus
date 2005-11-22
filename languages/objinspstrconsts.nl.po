@@ -1,4 +1,4 @@
-#: objinspstrconsts:sccsilcmbimglist
+ï»¿#: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
 msgstr " Plaatjes "
 
@@ -44,7 +44,7 @@ msgstr "&Inhoud"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr "&Copieëer"
+msgstr "&CopieÃ«er"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -128,7 +128,7 @@ msgstr "(geen)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr "O regels, 0 letters"
+msgstr "0 regels, 0 letters"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
@@ -252,11 +252,11 @@ msgstr "Bevestig opschonen alle plaatjes"
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
-msgstr "Copieëer"
+msgstr "CopieÃ«er"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Creëer standaard gebeurtenis"
+msgstr "CreÃ«er standaard gebeurtenis"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
