@@ -715,10 +715,8 @@ begin
   if I >= 0 then
     ItemIndex := I
   else if (not (csLoading in ComponentState)) then
-  begin
     FItemIndex := -1;
-    inherited;
-  end;
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
