@@ -140,7 +140,7 @@ procedure TToolButton.Paint;
   begin
     ArrowRect:=DropDownButtonRect;
     ArrowRect.Left:=DropDownButtonRect.Left+2;
-    ArrowRect.Right:=Max(DropDownButtonRect.Right-2,ArrowRect.Left);
+    ArrowRect.Right:=Max(DropDownButtonRect.Right-3,ArrowRect.Left);
     ArrowRect.Top:=(DropDownButtonRect.Top+DropDownButtonRect.Bottom
                     +ArrowRect.Left-ArrowRect.Right) div 2;
     ArrowRect.Bottom:=ArrowRect.Top-ArrowRect.Left+ArrowRect.Right;
@@ -171,6 +171,9 @@ begin
 
     // calculate button area(s)
     ButtonRect:=PaintRect;
+    FLastButtonDrawFlags:=GetButtonDrawFlags;
+    if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then
+      OffsetRect(ButtonRect, 1, 1);
     if Style=tbsDropDown then begin
       DropDownButtonRect:=ButtonRect;
       DropDownButtonRect.Left:=
@@ -226,7 +229,6 @@ begin
     end;
 
     // draw button
-    FLastButtonDrawFlags:=GetButtonDrawFlags;
     if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
         PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
@@ -247,8 +249,8 @@ begin
     // draw text
     if (TextSize.cx>0) then begin
       TS := Canvas.TextStyle;
-      TS.Alignment:= taCenter;
-      TS.Layout:= tlCenter;
+      TS.Alignment:= taLeftJustify;
+      TS.Layout:= tlTop;
       TS.Opaque:= false;
       TS.Clipping:= false;
       TS.SystemFont:=Canvas.Font.IsDefault;
