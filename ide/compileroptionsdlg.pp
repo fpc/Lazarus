@@ -296,8 +296,8 @@ type
 implementation
 
 const
-  XMARGIN = 5;
-  YMARGIN = 5;
+  XMARGIN = 6;
+  YMARGIN = 6;
 
   WCOLABEL  = 90; // the with of the labels on the Compiler tab
 
@@ -2259,7 +2259,7 @@ var
 begin
   CompilationPage := nbMain.Page[Page];
   y := YMARGIN;
-  w := ClientWidth - 2 * XMARGIN;
+  w := nbMain.ClientWidth - 2 * XMARGIN-4;
   cm := w div 2 - 2 * XMARGIN;
 
   {------------------------------------------------------------}
