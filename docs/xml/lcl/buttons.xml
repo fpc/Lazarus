@@ -309,8 +309,12 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomButton.Create">
-        <short/>
-        <descr/>
+        <short>Creates a new instance of the TCustomButton class</short>
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+
+However, if you create the component by code don´t forget to free it when it is no longer needed.
+
+Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -371,7 +375,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TButton">
-        <short>Button</short>
+        <short>The most basic button component</short>
         <descr>Button: Base type for all Buttons. A push button control. The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.</descr>
       </element>
       <!-- procedure Visibility: public -->
@@ -560,7 +564,7 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonGlyph">
-        <short>Button Glyph</short>
+        <short>A small image that can be attached to buttons</short>
         <descr>Button Glyph: The graphics and legend on a button</descr>
       </element>
       <!-- variable Visibility: private -->
@@ -616,15 +620,29 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TButtonGlyph.Create">
-        <short/>
-        <descr/>
+        <short>Creates a new instance of the TButtonGlyph class</short>
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+
+However, if you create the component by code don´t forget to free it when it is no longer needed.
+
+Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TButtonGlyph.Destroy">
-        <short/>
-        <descr/>
+        <short>Deallocates an object</short>
+        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+
+Take the following precautions when creating your own Destroy method:
+
+* Declare Destroy with the override directive, because it is a virtual method.
+
+* Always call 'inherited Destroy;' as the last thing on the destructor code.
+
+* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+
+* Remember to call Free for all objects created on the constructor.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -937,8 +955,12 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomBitBtn.Create">
-        <short/>
-        <descr/>
+        <short>Creates a new instance of the TCustomBitBtn class</short>
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+
+However, if you create the component by code don´t forget to free it when it is no longer needed.
+
+Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -948,8 +970,18 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomBitBtn.Destroy">
-        <short/>
-        <descr/>
+        <short>Deallocates an object</short>
+        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+
+Take the following precautions when creating your own Destroy method:
+
+* Declare Destroy with the override directive, because it is a virtual method.
+
+* Always call 'inherited Destroy;' as the last thing on the destructor code.
+
+* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+
+* Remember to call Free for all objects created on the constructor.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -991,7 +1023,7 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TBitBtn">
-        <short>Bit Button</short>
+        <short>A Button with a small image attached</short>
         <descr>Bit Button: a push button control on a toolbar causing a particular action to be executed. It often displays a glyph or small graphic to denote its function.</descr>
       </element>
       <!-- property Visibility: published -->
@@ -1677,8 +1709,12 @@ If an Action has been assigned to the bitbutton and this action is disabled then
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomSpeedButton.Create">
-        <short/>
-        <descr/>
+        <short>Creates a new instance of the TCustomSpeedButton class</short>
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+
+However, if you create the component by code don´t forget to free it when it is no longer needed.
+
+Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1688,8 +1724,18 @@ If an Action has been assigned to the bitbutton and this action is disabled then
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomSpeedButton.Destroy">
-        <short/>
-        <descr/>
+        <short>Deallocates an object</short>
+        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+
+Take the following precautions when creating your own Destroy method:
+
+* Declare Destroy with the override directive, because it is a virtual method.
+
+* Always call 'inherited Destroy;' as the last thing on the destructor code.
+
+* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+
+* Remember to call Free for all objects created on the constructor.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1762,8 +1808,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
       </element>
       <!-- object Visibility: default -->
       <element name="TSpeedButton">
-        <short>Speed Button</short>
-        <descr>Speed Button:  A button designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
+        <short>A Button used to represent states (checked or not, etc)</short>
+        <descr>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>
+When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">
