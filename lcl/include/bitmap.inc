@@ -126,7 +126,8 @@ begin
   FPixelFormat := pfDevice;
   FImage := TBitmapImage.Create;
   FImage.Reference;
-  FTransparentColor := clNone;
+  FTransparentColor := clDefault; // for Delphi compatibility. clDefault means:
+                                  // use Left,Bottom pixel as transparent pixel
 end;
 
 destructor TBitMap.Destroy;
@@ -814,7 +815,16 @@ end;
 
 procedure TBitmap.InitFPImageReader(ImgReader: TFPCustomImageReader);
 begin
-
+  if ImgReader is TLazReaderBMP then begin
+    TLazReaderBMP(ImgReader).UseLeftBottomAsTransparent:=
+                                                    TransparentColor=clDefault;
+    if (TransparentColor<>clDefault)
+    and (TransparentColor<>clNone) then
+      TLazReaderBMP(ImgReader).TransparentColor:=
+                                              TColorToFPColor(TransparentColor)
+    else
+      TLazReaderBMP(ImgReader).TransparentColor:=colTransparent;
+  end;
 end;
 
 procedure TBitmap.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);

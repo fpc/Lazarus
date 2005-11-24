@@ -1185,9 +1185,9 @@ type
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read GetMonochrome write SetMonochrome;
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
-    // property ScanLine[Row: Integer]: Pointer; // Use TLazIntfImage for such things
+    // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
-                                      write FTransparentColor default clNone;
+                                      write FTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
   end;

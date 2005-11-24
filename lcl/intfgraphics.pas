@@ -330,6 +330,7 @@ type
   { This is an imroved FPImage writer for bmp images. }
   TLazReaderBMP = class (TFPCustomImageReader)
   Private
+    FUseLeftBottomAsTransparent: Boolean;
     Procedure FreeBufs;      // Free (and nil) buffers.
   protected
     ReadSize: Integer;       // Size (in bytes) of 1 scanline.
@@ -354,6 +355,9 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    property TransparentColor: TFPColor read FTransparentColor write FTransparentColor;
+    property UseLeftBottomAsTransparent: Boolean read FUseLeftBottomAsTransparent
+                                              write FUseLeftBottomAsTransparent;
   end;
 
   { TLazReaderPartIcon }
@@ -3079,10 +3083,10 @@ end;
 
 function TLazReaderBMP.ColorToTrans(const InColor: TFPColor): TFPColor;
 begin
-  if InColor = FTransparentColor then
-    Result := FPImage.colTransparent
+  if (InColor <> FTransparentColor) then
+    Result := InColor
   else
-    Result := InColor;
+    Result := FPImage.colTransparent;
 end;
 
 procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
@@ -3215,15 +3219,17 @@ Var
 
   procedure SaveTransparentColor;
   begin
-    // define transparent color: 1-8 use palette, 15-24 use fixed color
-    case FBitsPerPixel of
-     1 : FPalette[(LineBuf[0] shr 7) and 1] := fpimage.colTransparent;
-     4 : FPalette[(LineBuf[0] shr 4) and $f] := fpimage.colTransparent;
-     8 : FPalette[LineBuf[0]] := fpimage.colTransparent;
-     15: FTransparentColor := Bmp15BitToFPColor(PWord(LineBuf)[0]);
-     16: FTransparentColor := Bmp16BitToFPColor(PWord(LineBuf)[0]); 
-     24: FTransparentColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
-     32: ; // BmpRGBA already does transparency
+    if UseLeftBottomAsTransparent then begin
+      // define transparent color: 1-8 use palette, 15-24 use fixed color
+      case FBitsPerPixel of
+       1 : FPalette[(LineBuf[0] shr 7) and 1] := fpimage.colTransparent;
+       4 : FPalette[(LineBuf[0] shr 4) and $f] := fpimage.colTransparent;
+       8 : FPalette[LineBuf[0]] := fpimage.colTransparent;
+       15: FTransparentColor := Bmp15BitToFPColor(PWord(LineBuf)[0]);
+       16: FTransparentColor := Bmp16BitToFPColor(PWord(LineBuf)[0]);
+       24: FTransparentColor := BmpRGBToFPColor(PColorRGB(LineBuf)[0]);
+       32: ; // BmpRGBA already does transparency
+      end;
     end;
   end;
   
@@ -3358,6 +3364,7 @@ end;
 constructor TLazReaderBMP.Create;
 begin
   inherited Create;
+  FTransparentColor:=colTransparent;
 end;
 
 destructor TLazReaderBMP.Destroy;
