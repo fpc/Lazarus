@@ -1879,6 +1879,7 @@ type
     function InsertBehind(PrevNode: TTreeNode; const S: string): TTreeNode;
     function InsertObjectBehind(PrevNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
+    procedure SortTopLevelNodes(SortProc: TTreeNodeCompare);
     procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;
@@ -2186,6 +2187,7 @@ type
     function AlphaSort: Boolean;
     procedure ConsistencyCheck;
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
+    function DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
     procedure GetInsertMarkAt(X, Y: Integer; var AnInsertMarkNode: TTreeNode;

@@ -100,6 +100,82 @@ begin
   Result:=-1;
 end;
 
+{ procedure for sorting a TTreeNodeArray}
+
+procedure Sort(Nodes: TTreeNodeArray; Count: integer;
+                    SortProc: TTreeNodeCompare);
+// Sorts the nodes using merge sort and updates the sibling links
+var
+  Buffer: TTreeNodeArray;
+  i: Integer;
+
+  procedure MergeNodeArrays(Pos1, Pos2, Pos3: integer);
+  // merge two sorted arrays (result is in Src)
+  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
+  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+  begin
+    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
+    Src1Pos:=Pos2-1;
+    Src2Pos:=Pos3;
+    DestPos:=Pos3;
+    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
+      cmp:=SortProc(Nodes[Src1Pos],Nodes[Src2Pos]);
+      if cmp>0 then begin
+        Buffer[DestPos]:=Nodes[Src1Pos];
+        dec(Src1Pos);
+      end else begin
+        Buffer[DestPos]:=Nodes[Src2Pos];
+        dec(Src2Pos);
+      end;
+      dec(DestPos);
+    end;
+    while Src2Pos>=Pos2 do begin
+      Buffer[DestPos]:=Nodes[Src2Pos];
+      dec(Src2Pos);
+      dec(DestPos);
+    end;
+    for a:=DestPos+1 to Pos3 do
+      Nodes[a]:=Buffer[a];
+  end;
+
+  procedure MergeSort(StartPos, EndPos: integer);
+  // sort Src from Position StartPos to EndPos (both included)
+  var cmp,mid:integer;
+  begin
+    if StartPos>=EndPos then begin
+      // sort one element -> very easy :)
+    end else if StartPos+1=EndPos then begin
+      // sort two elements -> quite easy :)
+      cmp:=SortProc(Nodes[StartPos],Nodes[EndPos]);
+      if cmp>0 then begin
+        Buffer[StartPos]:=Nodes[StartPos];
+        Nodes[StartPos]:=Nodes[EndPos];
+        Nodes[EndPos]:=Buffer[StartPos];
+      end;
+    end else begin
+      // sort more than two elements -> Mergesort
+      mid:=(StartPos+EndPos) shr 1;
+      MergeSort(StartPos,mid);
+      MergeSort(mid+1,EndPos);
+      MergeNodeArrays(StartPos,mid+1,EndPos);
+    end;
+  end;
+
+begin
+  if Count>0 then begin
+    Buffer := GetMem(SizeOf(Pointer)*Count);
+    MergeSort(0,Count-1);
+    FreeMem(Buffer);
+    // update sibling links
+    Nodes[0].FPrevBrother := nil;
+    Nodes[Count-1].FNextBrother := nil;
+    for i:= 1 to Count-1 do begin
+      Nodes[i].FPrevBrother := Nodes[i-1];
+      Nodes[i-1].FNextBrother := Nodes[i];
+    end;
+  end;
+end;
+
 { TTreeNodeExpandedState }
 
 constructor TTreeNodeExpandedState.Create(FirstTreeNode: TTreeNode);
@@ -1382,66 +1458,11 @@ end;
 
 function TTreeNode.CustomSort(SortProc: TTreeNodeCompare): Boolean;
 //var SortCB: TTVSortCB;
-
-  procedure Merge(Src,Buffer: TTreeNodeArray; Pos1, Pos2, Pos3: integer);
-  // merge two sorted arrays (result is in Src)
-  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
-  begin
-    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
-    Src1Pos:=Pos2-1;
-    Src2Pos:=Pos3;
-    DestPos:=Pos3;
-    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
-      cmp:=SortProc(Src[Src1Pos],Src[Src2Pos]);
-      if cmp>0 then begin
-        Buffer[DestPos]:=Src[Src1Pos];
-        dec(Src1Pos);
-      end else begin
-        Buffer[DestPos]:=Src[Src2Pos];
-        dec(Src2Pos);
-      end;
-      dec(DestPos);
-    end;
-    while Src2Pos>=Pos2 do begin
-      Buffer[DestPos]:=Src[Src2Pos];
-      dec(Src2Pos);
-      dec(DestPos);
-    end;
-    for a:=DestPos+1 to Pos3 do
-      Src[a]:=Buffer[a];
-  end;
-
-  procedure MergeSort(Src,Buffer: TTreeNodeArray; StartPos, EndPos: integer);
-  // sort Src from Position StartPos to EndPos (both included)
-  var cmp,mid:integer;
-  begin
-    if StartPos>=EndPos then begin
-      // sort one element -> very easy :)
-    end else if StartPos+1=EndPos then begin
-      // sort two elements -> quite easy :)
-      cmp:=SortProc(Src[StartPos],Src[EndPos]);
-      if cmp>0 then begin
-        Buffer[StartPos]:=Src[StartPos];
-        Src[StartPos]:=Src[EndPos];
-        Src[EndPos]:=Buffer[StartPos];
-      end;
-    end else begin
-      // sort more than two elements -> Mergesort
-      mid:=(StartPos+EndPos) shr 1;
-      MergeSort(Src,Buffer,StartPos,mid);
-      MergeSort(Src,Buffer,mid+1,EndPos);
-      Merge(Src,Buffer,StartPos,mid+1,EndPos);
-    end;
-  end;
-
-var FMergedItems: TTreeNodeArray;
 begin
   if FCount>0 then begin
     if Owner<>nil then Owner.ClearCache;
     if not Assigned(SortProc) then SortProc:=@DefaultTreeViewSort;
-    GetMem(FMergedItems,SizeOf(Pointer)*FCount);
-    MergeSort(FItems,FMergedItems,0,FCount-1);
+    Sort(FItems, FCount, SortProc);
     {
     with SortCB do begin
       if not Assigned(SortProc) then lpfnCompare := @DefaultTreeViewSort
@@ -1812,6 +1833,11 @@ begin
     Result:=InternalAddObject(PrevNode.GetNextSibling,S,Data,taInsert)
   else
     Result:=AddObject(PrevNode,S,Data);
+end;
+
+procedure TTreeNodes.SortTopLevelNodes(SortProc: TTreeNodeCompare);
+begin
+  Sort(FTopLvlItems, FTopLvlCount, SortProc);
 end;
 
 function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;
@@ -2631,29 +2657,17 @@ begin
 end;
 
 function TCustomTreeView.AlphaSort: Boolean;
-var
-  Node: TTreeNode;
 begin
-  if HandleAllocated then begin
-    BeginUpdate;
-    Result := CustomSort(nil);
-    Node := FTreeNodes.GetFirstNode;
-    while Node <> nil do begin
-      if Node.HasChildren then Node.AlphaSort;
-      Node := Node.GetNext;
-    end;
-    EndUpdate;
-  end
-  else
-    Result := False;
+  Result := CustomSort(nil);
 end;
 
 function TCustomTreeView.CustomSort(SortProc: TTreeNodeCompare): Boolean;
 var Node: TTreeNode;
 begin
   Result := False;
-  if HandleAllocated then begin
-    // ToDo: sort root nodes
+  if FTreeNodes.Count>0 then begin
+    if not assigned(SortProc) then SortProc := @DefaultTreeViewSort;
+    FTreeNodes.SortTopLevelNodes(SortProc);
 
     Node := FTreeNodes.GetFirstNode;
     while Node <> nil do begin
@@ -2662,6 +2676,15 @@ begin
     end;
     Items.ClearCache;
   end;
+end;
+
+function TCustomTreeView.DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
+begin
+  if Assigned(OnCompare) then begin
+    Result:=0;
+    OnCompare(Node1.TreeView,Node1, Node2, Result);
+  end else
+    Result := AnsiCompareStr(Node1.Text,Node2.Text);
 end;
 
 procedure TCustomTreeView.SetAutoExpand(Value: Boolean);

@@ -370,8 +370,7 @@ type
   end;
   ShortStr = string[255];
   PShortStr = ^ShortStr;
-  PInteger  = ^Integer;
-  
+
 procedure TListItems.ReadData(Stream: TStream);
   function ReadString: String;
   var
