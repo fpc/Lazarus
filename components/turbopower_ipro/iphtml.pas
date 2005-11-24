@@ -4924,7 +4924,7 @@ begin
         CurToken := IpHtmlTagUnknown;
         i := HtmlTokenList.IndexOf(string(TokenStringBuf));
         if i <> -1 then
-          CurToken := TIpHtmlToken(Integer(HtmlTokenList.Objects[i]));
+          CurToken := TIpHtmlToken(PtrInt(HtmlTokenList.Objects[i]));
 
         {If the token was a single terminated token ( <tok/>
          as opposed to normal a <tok></tok> sequence), we fake
@@ -13272,7 +13272,7 @@ begin
 {$ELSE}
       FControl := THtmlRadioButton.Create(Parent);
 {$ENDIF}
-      FControl.Tag := Integer(OwnerForm);
+      FControl.Tag := PtrInt(OwnerForm);
       FControl.Visible := False;
       FControl.Parent := Parent;
 {$IFDEF VERSION3ONLY}
@@ -15807,7 +15807,7 @@ begin
     FViewer.GetURL := URL;
     FViewer.PostURL := '';
     FViewer.PostData := nil;
-    PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, DWord(Self));
+    PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, PtrInt(Self));
   end else
     OpenRelativeURL(URL);
 end;
@@ -16119,7 +16119,7 @@ begin
   FViewer.GetURL := URL;
   FViewer.PostURL := '';
   FViewer.PostData := nil;
-  PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, DWord(Self));
+  PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, PtrInt(Self));
 end;
 
 procedure TIpHtmlFrame.Post(Sender: TIpHtml; const URL:string;
@@ -16128,7 +16128,7 @@ begin
   FViewer.GetURL := '';
   FViewer.PostURL := URL;
   FViewer.PostData := FormData;                                        {!!.12}
-  PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, DWord(Self));
+  PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, PtrInt(Self));
 end;
 
 function TIpHtmlFrame.HaveSelection: Boolean;

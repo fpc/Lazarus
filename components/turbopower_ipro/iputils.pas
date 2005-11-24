@@ -874,6 +874,7 @@ end;
 
 { Compares two fixed size structures }
 function IpCompStruct(const S1, S2; Size : Cardinal) : Integer;
+{$IFDEF CPUI386}
 asm
   push   edi
   push   esi
@@ -894,9 +895,15 @@ asm
   pop    esi
   pop    edi
 end;
+{$ELSE}
+begin
+  Result := CompareMemRange(@S1, @S2, Size);
+end;
+{$ENDIF}
 
 function IpCharCount(const Buffer; BufSize : DWORD; C : AnsiChar) : DWORD;
   register;
+{$IFDEF CPUI386}
 asm
   push  ebx
   xor   ebx, ebx
@@ -945,6 +952,17 @@ asm
   mov   eax, ebx
   pop   ebx
 end;
+{$ELSE}
+var
+X: Integer;
+begin
+  Result := 0;
+  for X := 0 to Bufsize-1 do begin
+    if PChar(@Buffer)[X] = C then Inc(Result);
+  end;
+end;
+{$ENDIF}
+
 
 function IpMaxInt(A, B : Integer) : Integer;
 begin
