@@ -1,4 +1,4 @@
-﻿#: lclstrconsts:rsmodified
+#: lclstrconsts:rsmodified
 msgid "  modified "
 msgstr " gewijzigd "
 

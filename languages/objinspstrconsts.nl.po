@@ -1,4 +1,4 @@
-﻿#: objinspstrconsts:sccsilcmbimglist
+#: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
 msgstr " Plaatjes "
 

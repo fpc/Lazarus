@@ -1460,13 +1460,13 @@ msgstr "Copia la parola sulla copia nulla"
 msgid "Copying a whole form is not implemented."
 msgstr "La copia di una form intera non è stata implementata."
 
+#: lazarusidestrconsts:lisgplnotice
+msgid "Copyright (C) <year> <name of author> %sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "Copyright (C) <anno> <nome dell'autore>%sQuesto programma è software libero, puoi ridistribuirlo e/o modificarlo nei termini della licenza General Public License GNU come pubblicato dalla Free Software Foundation; sia per mezzo della versione 2 della licenza che (a tua scelta) sotto qualsiasi versione successiva.%sQuesto programma è distribuito nella speranza che sia utile, ma SENZA ALCUNA GARANZIA, senza neanche l'implicita garanzia di COMMERCIABILITÀ o ADATTABILITÀ AD UNO SCOPO PARICOLARE. Vedere la licenza GNU Library General Public License per maggiori dettagli.%sDovresti aver ricevuto una copia della licenza GNU General Public License insieme con questo programma, se non è così scrivi alla Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
-
-#: lazarusidestrconsts:lisgplnotice
-msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -3339,6 +3339,10 @@ msgstr "Installa pacchetto nell'IDE"
 #: lazarusidestrconsts:lisinstallselection
 msgid "Install selection"
 msgstr "Installa selezione"
+
+#: lazarusidestrconsts:lisinstallationfailed
+msgid "Installation failed"
+msgstr ""
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -6843,6 +6847,10 @@ msgstr "Il pacchetto %s è richiesto da %s il quale è marcato per l'installazioen
 #: lazarusidestrconsts:lispkgmangthepackageownsthefileshouldthefileberenamed
 msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
 msgstr "A questo pacchetto %s appartiene il file%s%s%s%s.%sRinomina del file anche nel pacchetto?"
+
+#: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
+msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
