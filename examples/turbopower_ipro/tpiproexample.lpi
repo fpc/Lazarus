@@ -4,46 +4,36 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <Flags>
+        <SaveClosedFiles Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="tpiproexample"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="3" HistoryIndex="2">
-      <Position1>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="2991" Column="1" TopLine="2964"/>
-      </Position1>
-      <Position2>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="8408" Column="1" TopLine="8380"/>
-      </Position2>
-      <Position3>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="4413" Column="13" TopLine="4388"/>
-      </Position3>
-    </JumpHistory>
-    <Units Count="17">
+    <LazDoc Paths=""/>
+    <Units Count="3">
       <Unit0>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="22" Y="6"/>
         <Filename Value="tpiproexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="TPIProExample"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="63"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="17" Y="32"/>
+        <CursorPos X="14" Y="4"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="6"/>
+        <TopLine Value="1"/>
         <UnitName Value="MainUnit"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="63"/>
       </Unit1>
       <Unit2>
         <CursorPos X="1" Y="1"/>
@@ -51,109 +41,8 @@
         <IsPartOfProject Value="True"/>
         <SyntaxHighlighter Value="HTML"/>
         <TopLine Value="1"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="63"/>
       </Unit2>
-      <Unit3>
-        <CursorPos X="28" Y="519"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <TopLine Value="485"/>
-        <UnitName Value="IpUtils"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="1" Y="29"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/fileutil.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FileUtil"/>
-        <UsageCount Value="10"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="6" Y="10300"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Loaded Value="True"/>
-        <TopLine Value="10277"/>
-        <UnitName Value="IpHtml"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="3" Y="434"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <TopLine Value="412"/>
-        <UnitName Value="IpStrms"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="15" Y="820"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/stdctrls.pp"/>
-        <TopLine Value="798"/>
-        <UnitName Value="StdCtrls"/>
-        <UsageCount Value="10"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="3" Y="142"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/customcheckbox.inc"/>
-        <TopLine Value="131"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="42" Y="491"/>
-        <Filename Value="/home/prog/lazarus/lcl/include/picture.inc"/>
-        <TopLine Value="471"/>
-        <UsageCount Value="11"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="27" Y="17571"/>
-        <Filename Value="/home/prog/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <TopLine Value="17548"/>
-        <UnitName Value="IpHtml"/>
-        <UsageCount Value="13"/>
-        <Bookmarks Count="3">
-          <Item0 X="19" Y="17560" ID="0"/>
-          <Item1 X="13" Y="17511" ID="7"/>
-          <Item2 X="19" Y="17445" ID="9"/>
-        </Bookmarks>
-      </Unit10>
-      <Unit11>
-        <CursorPos X="24" Y="884"/>
-        <Filename Value="/home/prog/lazarus/lcl/graphics.pp"/>
-        <TopLine Value="871"/>
-        <UnitName Value="Graphics"/>
-        <UsageCount Value="11"/>
-      </Unit11>
-      <Unit12>
-        <CursorPos X="15" Y="472"/>
-        <Filename Value="/home/prog/lazarus/lcl/dbgrids.pas"/>
-        <TopLine Value="462"/>
-        <UnitName Value="DBGrids"/>
-        <UsageCount Value="10"/>
-      </Unit12>
-      <Unit13>
-        <CursorPos X="10" Y="56"/>
-        <Filename Value="/home/prog/lazarus/lcl/include/lclintfh.inc"/>
-        <TopLine Value="38"/>
-        <UsageCount Value="11"/>
-      </Unit13>
-      <Unit14>
-        <CursorPos X="3" Y="93"/>
-        <Filename Value="/home/prog/lazarus/lcl/include/intfbaselcl.inc"/>
-        <TopLine Value="91"/>
-        <UsageCount Value="11"/>
-      </Unit14>
-      <Unit15>
-        <CursorPos X="44" Y="2787"/>
-        <Filename Value="/home/prog/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <TopLine Value="2752"/>
-        <UnitName Value="IpUtils"/>
-        <UsageCount Value="12"/>
-      </Unit15>
-      <Unit16>
-        <CursorPos X="55" Y="44"/>
-        <Filename Value="/home/prog/lazarus/components/jpeg/lazjpeg.pas"/>
-        <TopLine Value="27"/>
-        <UnitName Value="LazJPEG"/>
-        <UsageCount Value="10"/>
-      </Unit16>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
@@ -177,6 +66,7 @@
         <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPackages>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

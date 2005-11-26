@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   //LazJpeg,
-  IpHtml;
+  IpHtml, ExtCtrls, StdCtrls;
 
 type
   TSimpleIpHtml = class(TIpHtml)
@@ -17,18 +17,19 @@ type
 //  TIpSimpleHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
 //  end;
 
+  { TMainForm }
+
   TMainForm = class(TForm)
     IpHtmlPanel1: TIpHtmlPanel;
     OpenDialog1: TOpenDialog;
-    OpenHTMLFileButton: TButton;
+    OpenHTMLFileButton1: TButton;
+    Panel1: TPanel;
     procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure IpHtmlPanel1HotClick(Sender: TObject);
     procedure MainFormCreate(Sender: TObject);
-    procedure MainFormDestroy(Sender: TObject);
     procedure OpenHTMLFileButtonClick(Sender: TObject);
   public
-    FDefaultImage: TBitmap;
     procedure OpenHTMLFile(const Filename: string);
   end; 
 
@@ -41,16 +42,7 @@ implementation
 
 procedure TMainForm.MainFormCreate(Sender: TObject);
 begin
-
-  FDefaultImage := TBitmap.Create;
-  FDefaultImage.LoadFromFile('imagebroken.xpm');
-
   OpenHTMLFile('index.html');
-end;
-
-procedure TMainForm.MainFormDestroy(Sender: TObject);
-begin
-  FDefaultImage.Free;
 end;
 
 procedure TMainForm.OpenHTMLFileButtonClick(Sender: TObject);
@@ -74,20 +66,22 @@ end;
 
 procedure TMainForm.HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
   var Picture: TPicture);
+var
+  PicCreated: boolean;
 begin
   try
-    if Picture=nil then
-      Picture:=TPicture.Create;
-    Picture.LoadFromFile(URL);
-  except
-    Picture.Assign(FDefaultImage);
-    {
-    on E: Exception do begin
-      MessageDlg('Unable to open image file',
-        'Image file: '+URL+#13
-        +'Error: '+E.Message,mtError,[mbCancel],0);
+    if FileExists(URL) then begin
+      PicCreated := False;
+      if Picture=nil then begin
+        Picture:=TPicture.Create;
+        PicCreated := True;
+      end;
+      Picture.LoadFromFile(URL);
     end;
-    }
+  except
+    if PicCreated then
+      Picture.Free;
+    Picture := nil;
   end;
 end;
 
@@ -117,6 +111,7 @@ end;
 
 initialization
   {$I mainunit.lrs}
+  {$I defaultimage.lrs}
 
 end.
 

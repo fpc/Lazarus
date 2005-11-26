@@ -1,24 +1,16 @@
 object MainForm: TMainForm
+  ActiveControl = OpenHTMLFileButton1
   Caption = 'Example for turbopower internet pro HTML control'
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = MainFormCreate
-  OnDestroy = MainFormDestroy
   PixelsPerInch = 75
   HorzScrollBar.Page = 568
   VertScrollBar.Page = 326
-  Left = 222
+  Left = 105
   Height = 327
-  Top = 163
+  Top = 109
   Width = 569
-  object OpenHTMLFileButton: TButton
-    Align = alTop
-    Caption = 'Open HTML File'
-    OnClick = OpenHTMLFileButtonClick
-    TabOrder = 0
-    Height = 25
-    Width = 569
-  end
   object IpHtmlPanel1: TIpHtmlPanel
     Align = alClient
     FixedTypeface = 'Courier New'
@@ -27,9 +19,27 @@ object MainForm: TMainForm
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
     OnHotClick = IpHtmlPanel1HotClick
-    Height = 302
-    Top = 25
+    Height = 285
+    Top = 42
     Width = 569
+  end
+  object Panel1: TPanel
+    Align = alTop
+    ClientHeight = 42
+    ClientWidth = 569
+    TabOrder = 0
+    Height = 42
+    Width = 569
+    object OpenHTMLFileButton1: TButton
+      BorderSpacing.InnerBorder = 2
+      Caption = 'Open HTML File'
+      OnClick = OpenHTMLFileButtonClick
+      TabOrder = 0
+      Left = 16
+      Height = 26
+      Top = 8
+      Width = 152
+    end
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open existing file'
