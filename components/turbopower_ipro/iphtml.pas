@@ -42,6 +42,7 @@ uses
   {$IFDEF IP_LAZARUS}
   //MemCheck,
   LCLType,
+  LCLPRoc,
   GraphType,
   LCLIntf,
   LResources,
@@ -651,6 +652,9 @@ type
     WordRect2 : TRect;
     Props : TIpHtmlProps;
     Owner : TIpHtmlNode;
+    {$IFDEF IP_LAZARUS}
+    IsSelected: boolean;
+    {$ENDIF}
   end;
   PIpHtmlElement = ^TIpHtmlElement;
 
@@ -1388,6 +1392,9 @@ type
     function GetHint: string; override;
     procedure DimChanged(Sender: TObject);                             {!!.10}
     procedure InvalidateSize; override;
+    {$IFDEF IP_LAZARUS}
+    function GetBorder: Integer;
+    {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1395,7 +1402,11 @@ type
 
   published {public}                                                   {!!.10}
     property Alt : string read FAlt write FAlt;
+    {$IFDEF IP_LAZARUS}
+    property Border : Integer read GetBorder write SetBorder;
+    {$ELSE}
     property Border : Integer read FBorder write SetBorder;
+    {$ENDIF}
     property Height : TIpHtmlPixels{Integer} read FHeight write FHeight; {!!.10}
     property HSpace : Integer read FHSpace write SetHSpace;
     property IsMap : Boolean read FIsMap write FIsMap;
@@ -2110,7 +2121,9 @@ type
     PageHeight : Integer;
     StartPos : Integer;
     FFixedTypeface: string;                                            {!!.10}
-
+    {$IFDEF IP_LAZARUS}
+    FDefaultTypeFace: string;
+    {$ENDIF}
     ParmBuf: PChar;                                                    {!!.12}
     ParmBufSize: Integer;                                              {!!.12}
     procedure ResetCanvasData;
@@ -2295,6 +2308,9 @@ type
     procedure Home;
     function GetPageRect(TargetCanvas: TCanvas; Width, Height : Integer): TRect;
     procedure MouseMove(Pt : TPoint);
+    {$IFDEF IP_LAZARUS}
+    procedure DeselectAllItems(Item: Pointer);
+    {$ENDIF}
     procedure SetSelection(StartPoint, EndPoint: TPoint);
     function HaveSelection: Boolean;
     procedure CopyToClipboard;
@@ -2346,11 +2362,18 @@ type
     {$IFOPT C+}
     procedure CheckImage(Picture: TPicture);
     {$ENDIF}
+    {$IFDEF IP_LAZARUS}
+    function GetSelectionBlocks(out StartSelIndex,EndSelIndex: integer): boolean;
+    {$ENDIF}
+    
   public
     constructor Create;
     destructor Destroy; override;
     property FlagErrors : Boolean read FFlagErrors write FFlagErrors;
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
+    {$IFDEF IP_LAZARUS}
+    property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
+    {$ENDIF}
     property HtmlNode : TIpHtmlNodeHtml read FHtml;
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
@@ -2650,6 +2673,9 @@ type
     FCurElementChange: TNotifyEvent;                                   {!!.10}
     FDocumentOpen: TNotifyEvent;                                       {!!.10}
     FFixedTypeface: string;                                            {!!.10}
+    {$IFDEF IP_LAZARUS}
+    FDefaultTypeFace: string;
+    {$ENDIF}
     FHotURL: string;
     FDataProvider: TIpAbstractHtmlDataProvider;
     URLStack : TStringList;
@@ -2696,6 +2722,9 @@ type
       Node: TIpHtmlNodeControl);
     function GetVersion : string;
     procedure SetVersion(const Value : string);
+    {$IFDEF IP_LAZARUS}
+    procedure SetDefaultTypeFace(const Value: string);
+    {$ENDIF}
   public
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
@@ -2734,6 +2763,10 @@ type
                 read FFlagErrors write FFlagErrors;
     property FixedTypeface: string
                 read FFixedTypeface write FFixedTypeface;              {!!.10}
+    {$IFDEF IP_LAZARUS}
+    property DefaultTypeFace: string
+                read FDefaultTypeFace write SetDefaultTypeFace;
+    {$ENDIF}
     property HotURL : string read FHotURL;
     property LinkColor : TColor
                 read FLinkColor write FLinkColor default clBlue;
@@ -2784,6 +2817,9 @@ type
     property DataProvider;
     property Enabled;                                                  {!!.10}
     property FixedTypeface;                                            {!!.10}
+    {$IFDEF IP_LAZARUS}
+    property DefaultTypeFace;
+    {$ENDIF}
     property FlagErrors;
     property LinkColor;
     property MarginHeight;
@@ -4190,6 +4226,17 @@ begin
     Owner.Target.Brush.Color := clWhite;
     Owner.Target.FillRect(Owner.ClientRect);
   end else begin
+    {$IFDEF IP_LAZARUS}
+    if BackGround = '' then begin
+      if BGColor <> -1 then begin
+        Owner.Target.Brush.Color := BGColor;
+        Owner.Target.FillRect(Owner.ClientRect);
+      end else begin
+        Owner.Target.Brush.Color := clWhite;
+        Owner.Target.FillRect(Owner.ClientRect);
+      end;
+    end;
+    {$ELSE}
     if BackGround = '' then begin
       Owner.Target.Brush.Color := clWhite;
       Owner.Target.FillRect(Owner.ClientRect);
@@ -4198,6 +4245,7 @@ begin
       Owner.Target.Brush.Color := BGColor;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
+    {$ENDIF}
     if Background <> '' then begin
       if BgPicture = nil then
         Owner.DoGetImage(Self, Owner.BuildPath(Background), BgPicture);
@@ -7256,7 +7304,7 @@ end;
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
-writeln('TIpHtml.ParseFrameSet A');
+DebugLn('TIpHtml.ParseFrameSet A');
   FHasFrames := True;
   while CurToken = IpHtmlTagFRAMESET do begin
     CurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
@@ -7439,6 +7487,11 @@ begin
     TmpBitmap.LoadFromResourceName(FindClassHInstance(                      {!!.06}
       TIpHTMLCustomPanel), 'DEFAULTIMAGE');
     DefaultImage.Graphic := TmpBitmap;
+    {$ELSE}
+    if LazarusResources.Find('DEFAULTIMAGE')<>nil then begin
+      TmpBitmap.LoadFromLazarusResource('DEFAULTIMAGE');
+      DefaultImage.Graphic := TmpBitmap;
+    end;
     {$ENDIF}
   finally
     TmpBitmap.Free;
@@ -7682,7 +7735,10 @@ end;
 procedure TIpHtml.SetDefaultProps;
 begin
   {$IFDEF IP_LAZARUS}
-  Defaultprops.FontName := Graphics.DefFontData.Name;
+  if FDefaultTypeFace='' then
+    Defaultprops.FontName := Graphics.DefFontData.Name
+  else
+    Defaultprops.FontName := FDefaultTypeface;
   {$ELSE}
   Defaultprops.FontName := 'Times New Roman';
   {$ENDIF}
@@ -7755,6 +7811,81 @@ begin
   Result := True;
 end;
 
+{$IFDEF IP_LAZARUS}
+function TIpHtml.GetSelectionBlocks(out StartSelIndex,EndSelIndex: integer): boolean;
+var
+  R : TRect;
+  CurBlock: TIpHtmlNodeBlock;
+begin
+  result := false;
+
+  if not AllSelected
+  and ((FStartSel.x < 0) or (FEndSel.x < 0)) then exit;
+  
+
+  if not AllSelected then begin
+    CurBlock := nil;
+    // search blocks that intersect the selection
+    // 1.- find first block that intersect upleft  point of sel. (start from 0)
+    StartSelIndex := 0;
+    while StartSelIndex < RectList.Count do begin
+      CurBlock := PIpHtmlRectListEntry(RectList[StartSelIndex]).Block;
+      {if AllSelected and (CurBlock <> nil) then
+        break;}
+      if PtInRect(CurBlock.PageRect, FStartSel) then begin
+        R := PIpHtmlRectListEntry(RectList[StartSelIndex]).Rect;
+        if R.Bottom = 0 then
+        else
+        if (R.Top > FStartSel.y) and (R.Bottom < FEndSel.y) then
+          // block within selection (vertically)
+          break
+        else
+        if PtInRect(R, FStartSel) or PtInRect(R, FEndSel) then
+          // selection start or ends in this block
+          break
+        else
+        if (R.Bottom < FStartSel.y) then
+        else
+        if (R.Top > FEndSel.Y) then
+        else
+          if (R.Left >= FStartSel.x) and (R.Right <= FEndSel.x) then
+            break;
+      end;
+      inc(StartSelIndex);
+    end;
+    if StartSelIndex >= RectList.Count then exit;
+    // 2.- find first block thta intersect downright point of sel. (start from count-1)
+    EndSelIndex := pred(RectList.Count);
+    while EndSelIndex >= StartSelIndex do begin
+      if PIpHtmlRectListEntry(RectList[EndSelIndex]).Block = CurBlock then begin
+        {if AllSelected then
+          break;}
+        R := PIpHtmlRectListEntry(RectList[EndSelIndex]).Rect;
+        if R.Bottom = 0 then
+        else
+        if (R.Top > FStartSel.y) and (R.Bottom < FEndSel.y) then
+          break
+        else
+        if PtInRect(R, FStartSel) or PtInRect(R, FEndSel) then
+          break
+        else
+        if (R.Bottom < FStartSel.y) then
+        else
+        if (R.Top > FEndSel.Y) then
+        else
+          if (R.Left >= FStartSel.x) and (R.Right <= FEndSel.x) then
+            break;
+      end;
+      dec(EndSelIndex);
+    end;
+  end else begin
+    StartSelIndex := 0;
+    EndSelIndex := RectList.Count - 1;
+  end;
+  result := True;
+end;
+{$ENDIF}
+
 procedure TIpHtml.PaintSelection;
 var
   StartSelIndex, EndSelIndex,
@@ -7822,7 +7953,7 @@ begin
     R := PIpHtmlRectListEntry(RectList[i]).Rect;
     if PageRectToScreen(R, R) then begin
       {$IFDEF IP_LAZARUS}
-      writeln('TIpHtml.PaintSelection  PatBlt not implemented');
+      DebugLn('TIpHtml.PaintSelection  PatBlt not implemented');
       {$ELSE}
       PatBlt(PaintBuffer.Handle, R.Left, R.Top,
         R.Right - R.Left, R.Bottom - R.Top, DSTINVERT);
@@ -7894,7 +8025,9 @@ begin
 
   for i := 0 to pred(ControlList.Count) do
     TIpHtmlNode(ControlList[i]).HideUnmarkedControl;
+  {$IFNDEF IP_LAZARUS}
   PaintSelection;
+  {$ENDIF}
   if UsePaintBuffer then
     TargetCanvas.CopyRect(ClientRect, PaintBuffer, ClientRect)
   else
@@ -8224,6 +8357,9 @@ begin
   Result := ElementPool.NewItm;
   Result.ElementType := EType;
   Result.Owner := Own;
+  {$IFDEF IP_LAZARUS}
+  Result.IsSelected := False;
+  {$ENDIF}
 end;
 
 function TIpHtml.BuildStandardEntry(EType: TElementType): PIpHtmlElement;
@@ -8311,7 +8447,23 @@ begin
   RectList.Clear;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtml.DeselectAllItems(Item: Pointer);
+begin
+  PIpHtmlElement(item)^.IsSelected := False;
+end;
+{$ENDIF}
+
 procedure TIpHtml.SetSelection(StartPoint, EndPoint: TPoint);
+{$IFDEF IP_LAZARUS}
+var
+  StartSelIndex,EndSelindex: Integer;
+  i: integer;
+  r: TRect;
+  Selected: boolean;
+  DeselectAll: boolean;
+  item: PIpHtmlRectListEntry;
+{$ENDIF}
 begin
   AllSelected := False;
   if EndPoint.y > StartPoint.y then begin
@@ -8331,8 +8483,35 @@ begin
     FStartSel := EndPoint;
     FEndSel := StartPoint;
   end;
+  {$IFDEF IP_LAZARUS}
+  if Body <> nil then begin
+    // invalidate only those blocks that need it
+    DeselectAll := (EndPoint.x<0)and(EndPoint.y<0);
+    GetSelectionBlocks(StartSelIndex,EndSelIndex);
+    for i:= 0 to RectList.Count-1 do begin
+      item := PIpHtmlRectListEntry(RectList[i]);
+      // (de)select only text elements
+      if Item.Node.ElementType<>etWord then
+        continue;
+      if DeselectAll then
+        Selected := false
+      else
+        Selected := (StartSelIndex<=i)and(i<=EndSelIndex);
+      // invalidate only changed elements
+      if Item.Node.IsSelected<>Selected then begin
+        Item.Node.IsSelected := Selected;
+        if Body.PageRectToScreen(Item^.Rect, R) then
+          InvalidateRect(R);
+      end;
+    end;
+    // also deselect remaining elements
+    if DeselectAll then
+      ElementPool.EnumerateItems(DeselectAllItems);
+  end;
+  {$ELSE}
   if Body <> nil then
     InvalidateRect(Body.PageRect);
+  {$ENDIF}
 end;
 
 procedure TIpHtml.SelectAll;
@@ -8428,7 +8607,7 @@ end;
 constructor TIpHtmlGifQueueEntry.Create(AGraphic: TGraphic; ARect: TRect);
 begin
   {$IFDEF IP_LAZARUS}
-  writeln('TIpHtmlGifQueueEntry.Create ToDo NOT IMPLEMENTED YET');
+  DebugLn('TIpHtmlGifQueueEntry.Create ToDo NOT IMPLEMENTED YET');
   {$ELSE}
   FGraphic := AGraphic;
   {$ENDIF}
@@ -8799,6 +8978,11 @@ var
   R : TRect;
   P : TPoint;
   L0 : Boolean;
+  {$IFDEF IP_LAZARUS}
+  OldBrushcolor: TColor;
+  OldFontColor: TColor;
+  OldBrushStyle: TBrushStyle;
+  {$ENDIF}
 begin
   L0 := Level0;
   LastProp := nil;
@@ -8837,8 +9021,27 @@ begin
       etWord :
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
+          {$IFDEF IP_LAZARUS}
+          if CurWord.IsSelected  then begin
+            OldBrushColor := Owner.Target.Brush.Color;
+            OldBrushStyle := Owner.Target.Brush.Style;
+            OldFontColor := Owner.Target.Font.Color;
+            Owner.Target.Font.color := clHighlightText;
+            Owner.Target.brush.Style := bsSolid;
+            Owner.Target.brush.color := clHighLight;
+            Owner.PageRectToScreen(curWord.WordRect2, R);
+            Owner.Target.FillRect(R);
+          end else
+          {$ENDIF}
           Owner.Target.Brush.Style := bsClear;
           Owner.Target.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
+          {$IFDEF IP_LAZARUS}
+          if CurWord.IsSelected then begin
+            Owner.Target.Font.Color := OldFontColor;
+            Owner.Target.Brush.Color := OldBrushColor;
+            Owner.Target.Brush.Style := OldBrushStyle;
+          end;
+          {$ENDIF}
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
         end;
       etObject :
@@ -8968,7 +9171,7 @@ var
           SizeOfSpace := Owner.Target.TextExtent(' ');
           {$IFDEF IP_LAZARUS}
           if SizeOfSpace.CX=0 then begin
-            writeln('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',Owner.Target.Font.Name,'" Size=',Owner.Target.Font.Size);
+            DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',Owner.Target.Font.Name,'" Size=',dbgs(Owner.Target.Font.Size));
           end;
           {$ENDIF}
           SizeOfHyphen := Owner.Target.TextExtent('-');
@@ -10286,6 +10489,9 @@ function TIpHtmlNodeOL.GetNumString: string;
   end;
 
 begin
+  {$IFDEF IP_LAZARUS}
+  Result := ''; // stop warning
+  {$ENDIF}
   case Style of
   olArabic :
     str(Counter, Result);
@@ -12545,6 +12751,15 @@ begin
   FHeight.Free;                                                        {!!.10}
 end;
 
+{$IFDEF IP_LAZARUS}
+function TIpHtmlNodeIMG.GetBorder: integer;
+begin
+  if (FPicture<>nil)and(FPicture.Graphic=nil) then
+    result := 1
+  else
+    result := fBorder;
+end;
+{$ENDIF}
 procedure TIpHtmlNodeIMG.Draw;
 var
   R : TRect;
@@ -12556,14 +12771,13 @@ begin
 
   if (FPicture <> nil) and (FPicture.Graphic = nil) then               {!!.15}
     LoadImage;
-
   Owner.AddRect(GrossDrawRect, Element, Block);
   TopLeft := GrossDrawRect.TopLeft;
   R.TopLeft := TopLeft;
   Dim := GetDim(0);
   R.Right := TopLeft.x + Dim.cx;
   R.Bottom := TopLeft.y + Dim.cy;
-
+  
   if Border <> 0 then begin
     if Border = 1 then begin
       ScreenLine(
@@ -12620,6 +12834,13 @@ begin
   InflateRect(R, -HSpace, -VSpace);
 
   if FPicture <> nil then begin
+  {$IFDEF IP_LAZARUS}
+    if FPicture.Graphic=nil then begin
+      if PageRectToScreen(R,R) then
+        Owner.Target.TextRect(R, R.Left, R.Top, GetHint);
+      exit;
+    end;
+  {$ENDIF}
     FPicture.Graphic.Transparent := True;
     NetDrawRect := R;
     if PageRectToScreen(R, R) then begin
@@ -12650,7 +12871,7 @@ begin
           Owner.Target.StretchDraw(R, FPicture.Graphic);
       end;
     end;
-  end;
+  end
 end;
 
 function TIpHtmlNodeIMG.GrossDrawRect : TRect;
@@ -12754,6 +12975,12 @@ begin
       DimKnown := False;
     if not DimKnown then begin
       if (FPicture <> nil) then begin
+        {$IFDEF IP_LAZARUS}
+        if FPicture.Graphic=nil then
+          // todo: needs to return the "text size" of GetHint
+          FSize := SizeRec(100,20)
+        else
+        {$ENDIF}
         if ScaleBitmaps then                                         {!!.10}
           FSize := SizeRec(round(FPicture.Width * Aspect), round(FPicture.Height * Aspect))
         else
@@ -12767,10 +12994,15 @@ begin
             if ScaleBitmaps then                                         {!!.10}
               FSize := SizeRec(round(FPicture.Width * Aspect), round(FPicture.Height * Aspect))
             else
+              {$IFDEF IP_LAZARUS}
+              if FPicture.Graphic=nil then
+                // todo: needs to return the "text size" of GetHint
+                FSize := SizeRec(100,20)
+              else
+              {$ENDIF}
               FSize := SizeRec(FPicture.Width, FPicture.Height);
-          end else begin
+          end else
             FSize := SizeRec(0, 0);
-          end;
         end;
       end;
       if FPicture <> nil then begin
@@ -15020,6 +15252,18 @@ var
   Sc : TPoint;
 begin
   if HtmlPanel.ShowHints and (NewHint <> CurHint) then begin
+    {$IFDEF IP_LAZARUS}
+    if (NewHint<>'') and not HintWindow.Visible then begin
+      Tw := HintWindow.Canvas.TextWidth(NewHint);
+      Th := HintWindow.Canvas.TextHeight(NewHint);
+      Sc := ClientToScreen(Point(HintX,HintY));
+      HintWindow.ActivateHint(Rect(Sc.X - Tw div 2 - 6,
+                                   Sc.Y + 16 - 6,
+                                   Sc.X + Tw div 2 + 6,
+                                   Sc.Y + Th + 16 + 6),
+                              NewHint);
+    end;
+    {$ELSE}
     if (NewHint <> '') and not IsWindowVisible(HintWindow.Handle) then begin
       Tw := HintWindow.Canvas.TextWidth(NewHint);
       Th := HintWindow.Canvas.TextHeight(NewHint);
@@ -15030,6 +15274,7 @@ begin
                                    Sc.Y + Th + 16),
                               NewHint);
     end;
+    {$ENDIF}
     CurHint := NewHint;
     HintShownHere := True;
   end;
@@ -15080,15 +15325,21 @@ begin
     Hint := Hyper.CurElement.Owner.GetHint
   else
     Hint := '';
+  {$IFNDEF IP_LAZARUS}
   if NewSelection then begin
     ClearSelection;
     SelStart := Point(X + ViewLeft, Y + ViewTop);
     NewSelection := False;
     HaveSelection := True;
   end;
+  {$ENDIF}
   inherited;
   if (Hint <> CurHint) and ((abs(HintX - X) > 4) or (abs(HintY - Y) > 4)) then begin
+    {$IFDEF IP_LAZARUS}
+    if HintWindow.Visible then
+    {$ELSE}
     if IsWindowVisible(HintWindow.Handle) then
+    {$ENDIF}
       HideHint;
     HintShownHere := False;
   end;
@@ -15100,7 +15351,11 @@ end;
 
 procedure TIpHtmlInternalPanel.HideHint;
 begin
+  {$IFDEF IP_LAZARUS}
+  HintWindow.Visible := False;
+  {$ELSE}
   HintWindow.ReleaseHandle;
+  {$ENDIF}
 end;
 
 procedure TIpHtmlInternalPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -15109,8 +15364,17 @@ begin
   MouseDownX := X;
   MouseDownY := Y;
   MouseIsDown := True;
+  {$IFDEF IP_LAZARUS}
+  if (Button=mbLeft) and HtmlPanel.AllowTextSelect then begin
+    ClearSelection;
+    SelStart := Point(X + ViewLeft, Y + ViewTop);
+    NewSelection := False;
+    HaveSelection := True;
+  end;
+  {$ELSE}
   NewSelection := HtmlPanel.AllowTextSelect
     {TIpHtmlPanel(Parent).AllowTextSelect} and (Button = mbLeft);
+  {$ENDIF}
   inherited;
 end;
 
@@ -15128,6 +15392,18 @@ begin
 end;
 
 procedure TIpHtmlInternalPanel.Paint;
+  {$IFDEF IP_LAZARUS}
+  procedure DebugBox(R: Trect; cl:TColor; dbg:boolean=false);
+  begin
+    Canvas.Pen.Color := cl;
+    Canvas.Moveto(r.left+(r.right-r.left) div 2, r.top);
+    Canvas.Lineto(r.left+(r.right-r.left) div 2, r.bottom);
+    Canvas.MoveTo(r.Left, r.top+(r.bottom-r.top) div 2);
+    Canvas.LineTo(r.right, r.top+(r.bottom-r.top) div 2);
+    if Dbg then
+      DebugLn(dbgs(R));
+  end;
+  {$ENDIF}
 var
   CR : TRect;
 begin
@@ -15143,13 +15419,17 @@ begin
           Point(0, 0))                                                 {!!.10}
   else
     Canvas.FillRect(CR);
+  {$IFDEF IP_LAZARUS}
+  //DebugBox(CR, clYellow);
+  //Debugbox(Canvas.ClipRect,clLime, true);
+  {$ENDIF}
 end;
 
 {!!.10 new}
 procedure TIpHtmlInternalPanel.BeginPrint;
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
+  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 var
@@ -15195,7 +15475,7 @@ end;
 procedure TIpHtmlInternalPanel.EndPrint;
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
+  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 begin
@@ -15214,7 +15494,7 @@ end;
 procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
+  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 var
@@ -15762,6 +16042,9 @@ begin
   FDataProvider := DataProvider;
   Html := TIpHtml.Create;
   Html.FixedTypeface := Viewer.FixedTypeface;                          {!!.10}
+  {$IFDEF IP_LAZARUS}
+  Html.DefaultTypeFace := Viewer.DefaultTypeFace;
+  {$ENDIF}
   FFlagErrors := FlagErrors;
   FMarginWidth := MarginWidth;
   FMarginheight := MarginHeight;
@@ -15790,8 +16073,11 @@ end;
 procedure TIpHtmlFrame.InvalidateRect(Sender: TIpHtml; const R: TRect);
 begin
   if HyperPanel <> nil then
-    {$IFDEF IP_LAZARUS}LCLIntf.{$ELSE}Windows.{$ENDIF}
-      InvalidateRect(HyperPanel.Handle, @R, False);
+    {$IFDEF IP_LAZARUS}
+    LCLIntf.InvalidateRect(HyperPanel.Handle, @R, False);
+    {$ELSE}
+    Windows.InvalidateRect(HyperPanel.Handle, @R, False);
+    {$ENDIF}
 end;
 
 procedure TIpHtmlFrame.InvalidateSize(Sender: TObject);
@@ -16802,6 +17088,9 @@ begin
   FMarginHeight := 10;
   FAllowTextSelect := True;
   FixedTypeface := 'Courier New';                                      {!!.10}
+  {$IFDEF IP_LAZARUS}
+  DefaultTypeFace := Graphics.DefFontData.Name;
+  {$ENDIF}
   FPrintSettings := TIpHtmlPrintSettings.Create;                       {!!.10}
 end;
 
@@ -17196,6 +17485,18 @@ procedure TIpHtmlCustomPanel.SetVersion(const Value : string);
 begin
   { Intentionally empty }
 end;
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlCustomPanel.SetDefaultTypeFace(const Value: string);
+begin
+  if FDefaultTypeFace<>Value then begin
+    FDefaultTypeFace := Value;
+    if (MasterFrame<>nil)and(MasterFrame.Html<>nil) then begin
+      MasterFrame.Html.DefaultTypeFace := FDefaultTypeFace;
+      invalidate;
+    end;
+  end;
+end;
+{$ENDIF}
 
 { TIpHtmlCustomScanner }
 
