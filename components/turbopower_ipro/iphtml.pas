@@ -17430,10 +17430,10 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil}
-      ReallocMem(InternalIntArr,NewSize * sizeof(Integer));
+      ReallocMem(InternalIntArr,NewSize * sizeof(PtrInt));
       p := pointer(InternalIntArr);
       inc(p, IntArrSize);
-      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(PtrInt), 0);
       IntArrSize := NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
@@ -17496,10 +17496,10 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
-      ReallocMem(InternalRectArr,NewSize * sizeof(integer));
+      ReallocMem(InternalRectArr,NewSize * sizeof(PtrInt));
       P := pointer(InternalRectArr);
       inc(P, IntArrSize);
-      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(PtrInt), 0);
       IntArrSize:=NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
@@ -17554,10 +17554,10 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
-      ReallocMem(InternalRectRectArr,NewSize * sizeof(Integer));
+      ReallocMem(InternalRectRectArr,NewSize * sizeof(PtrInt));
       p := pointer(InternalRectRectArr);
       inc(p, IntArrSize);
-      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(PtrInt), 0);
       IntArrSize:=NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
