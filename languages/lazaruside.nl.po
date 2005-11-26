@@ -128,7 +128,7 @@ msgstr "%sDe volgende units zullen aan de uses sectie van %s%s:%s%s%s worden toe
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
-msgstr "%sDit package was geÃ¯nstalleerd, maar het lpk bestand was niet gevonden"
+msgstr "%sDit package was geïnstalleerd, maar het lpk-bestand was niet gevonden"
 
 #: lazarusidestrconsts:lisoipthispackagewasautomaticallycreated
 msgid "%sThis package was automatically created"
@@ -156,7 +156,7 @@ msgstr "&Bestand"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
-msgstr "&Zoek Declaratie"
+msgstr "&Zoek declaratie"
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -184,7 +184,7 @@ msgstr "&Starten"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
-msgstr "&Start tot Cursor"
+msgstr "&Start tot cursor"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
@@ -192,11 +192,11 @@ msgstr "&Zoeken"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
-msgstr "&Zet Bookmark"
+msgstr "&Zet bladwijzer"
 
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
-msgstr "&Zoek Tekst"
+msgstr "&Zoek tekst"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
@@ -292,11 +292,11 @@ msgstr "%s aan het project toevoegen?"
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr "&Kijk op positie Cursor toevoegen"
+msgstr "&Kijk op positie cursor toevoegen"
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
-msgstr "Bestand Toevoegen"
+msgstr "Bestand toevoegen"
 
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
@@ -388,7 +388,7 @@ msgstr "Voeg toe aan het project"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
-msgstr "Neem unit op in the uses-sectie van package. Units die niet altijd gecompileerd worden, hoeven niet opgenomen te worden."
+msgstr "Neem unit in the uses-sectie van package op. Units die niet altijd gecompileerd worden, hoeven niet opgenomen te worden."
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -608,7 +608,7 @@ msgstr "Automatisch ophogen van versie bij bouwen"
 
 #: lazarusidestrconsts:lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
-msgstr "Automatisch ge�nstalleerde packages"
+msgstr "Automatisch geïnstalleerde packages"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
@@ -828,7 +828,7 @@ msgstr "Aanroepen bij:"
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
-msgstr "Kan top-level component niet kopiÃ«ren."
+msgstr "Kan top-level component niet kopiëren."
 
 #: lazarusidestrconsts:liscannotcreatefile
 msgid "Can not create file %s%s%s"
@@ -1008,7 +1008,7 @@ msgstr "Circulaire verbindingen in package afhankelijkheden"
 
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
-msgstr "Class %s%s%s is geen geregistreerde component Class.%sKan niet plakken."
+msgstr "Class %s%s%s is geen geregistreerde componentklasse.%sKan niet plakken."
 
 #: lazarusidestrconsts:lisoifclassnotfound
 msgid "Class %s%s%s not found."
@@ -1028,7 +1028,7 @@ msgstr "Klassevolgorde"
 
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr "Klassegedeelte toevoegings beleid"
+msgstr "Klassegedeelte toevoegingsbeleid"
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1076,7 +1076,7 @@ msgstr "Sluit Alles"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
-msgstr "Sluit alle editor bestanden"
+msgstr "Sluit alle editorbestanden"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -1108,7 +1108,7 @@ msgstr "Parameters"
 
 #: lazarusidestrconsts:srkmecautocompletion
 msgid "Code template completion"
-msgstr "Broncodesjabloon completering"
+msgstr "Broncodesjablooncompletering"
 
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
@@ -1116,7 +1116,7 @@ msgstr "Broncode templates"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
-msgstr "CodeEplorer opties"
+msgstr "CodeEplorer-opties"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -1148,7 +1148,7 @@ msgstr "CodeTools-opties"
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
-msgstr "Codetools definities editor"
+msgstr "Codetools-definitieseditor"
 
 #: lazarusidestrconsts:srkmeccodetoolsoptions
 msgid "Codetools options"
@@ -1156,7 +1156,7 @@ msgstr "CodeTools-opties"
 
 #: lazarusidestrconsts:lismenucollectpofil
 msgid "Collect .po files"
-msgstr "Verzamel .po bestanden"
+msgstr "Verzamel .po-bestanden"
 
 #: lazarusidestrconsts:liscodetoolsoptscolon
 msgid "Colon"
@@ -1292,7 +1292,7 @@ msgstr "Completeer properties"
 
 #: lazarusidestrconsts:lispkgsyscomponentclassalreadydefined
 msgid "Component Class %s%s%s already defined"
-msgstr "Component Class %s%s%s reeds gedefinieerd"
+msgstr "Componentklasse %s%s%s reeds gedefinieerd"
 
 #: lazarusidestrconsts:liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
@@ -1396,7 +1396,7 @@ msgstr "Converteren"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
-msgstr "Converteer .dfm bestand naar .lfm"
+msgstr "Converteer .dfm-bestand naar .lfm"
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi Project to Lazarus Project"
@@ -1416,23 +1416,23 @@ msgstr "Converteer tabs naar spaties in selectie"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr "KopiÃ«ren"
+msgstr "Kopiëren"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
-msgstr "KopiÃ«erfout"
+msgstr "Kopieerfout"
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
-msgstr "KopiÃ«er alle berichten naar klipbord"
+msgstr "Kopieer alle berichten naar klipbord"
 
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
-msgstr "KopiÃ«erfout"
+msgstr "Kopieerfout"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr "KopiÃ«er geselecteerde componenten naar klipbord"
+msgstr "Kopieer geselecteerde componenten naar klipbord"
 
 #: lazarusidestrconsts:liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -1440,23 +1440,23 @@ msgstr "Kopieer de geselecteerde boodschap naar het klembord"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
-msgstr "KopiÃ«er selectie naar klipbord"
+msgstr "Kopieer selectie naar klembord"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr "KopiÃ«er woord asl niets geselecteerd"
+msgstr "Kopieer woord asl niets geselecteerd"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
-msgstr "Een gehele Form kopiÃ«ren is niet geimplementeerd."
-
-#: lazarusidestrconsts:lisgplnotice
-msgid "Copyright (C) <year> <name of author> %sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "Een geheel formulier kopiëren is niet geimplementeerd."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+
+#: lazarusidestrconsts:lisgplnotice
+msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -1468,35 +1468,35 @@ msgstr "Maak"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
-msgstr "CreÃ«er .po bestanden"
+msgstr "Creëer .po-bestanden"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr "CreÃ«er definities voor %s folder"
+msgstr "Creëer definities voor %s folder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
-msgstr "CreÃ«er definities voor %s Project"
+msgstr "Creëer definities voor %s Project"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
-msgstr "CreÃ«er definities voor Free Pascal Compiler"
+msgstr "Creëer definities voor Free Pascal Compiler"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "CreÃ«er definities voor Free Pascal SVN broncode"
+msgstr "Creëer definities voor Free Pascal SVN broncode"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
-msgstr "CreÃ«er definities voor Lazarus folder"
+msgstr "Creëer definities voor Lazarusfolder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr "CreÃ«er FPC macro's en paden voor een fpc project folder"
+msgstr "Creëer FPC-macro's en paden voor een fpc-projectfolder"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
-msgstr "CreÃ«er MakeFile"
+msgstr "Creëer MakeFile"
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -1508,7 +1508,7 @@ msgstr "Maak een nieuwe cgi applicatie.%sHet bestand wordt door Lazarus bijgehou
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
-msgstr "Maak een nieuw editor bestand.%sKies een type."
+msgstr "Maak een nieuw editor-bestand.%sKies een type."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
@@ -1520,7 +1520,7 @@ msgstr "Maak een nieuwe grafische applicatie.%sHet bestand wordt door Lazarus be
 
 #: lazarusidestrconsts:lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr "Maak een nieuwe Pascal unit."
+msgstr "Maak een nieuwe Pascal-unit."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
@@ -1544,7 +1544,7 @@ msgstr "Maak een nieuw standaard package.%sEen package is een verzameling units 
 
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
-msgstr "Maak een nieuwe unit met een LCL Form."
+msgstr "Maak een nieuwe unit met een LCL-formulier."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
@@ -1612,7 +1612,7 @@ msgstr "Aanpasbaar Programma"
 
 #: lazarusidestrconsts:liscustomprogramafreepascalprogram
 msgid "Custom Program%sA freepascal program."
-msgstr "Aanpasbaar Programma%sEen Freepascal programma."
+msgstr "Aanpasbaar Programma%sEen Freepascalprogramma."
 
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
@@ -1640,7 +1640,7 @@ msgstr "Knip geselecteerde componenten naar klipbord"
 
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
-msgstr "Knip selectie naar klipbord"
+msgstr "Knip selectie naar klembord"
 
 #: lazarusidestrconsts:lishlpoptsdatabases
 msgid "Databases"
@@ -1664,7 +1664,7 @@ msgstr "Debug schermen"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
-msgstr "Debugger opties"
+msgstr "Debuggeropties"
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -1684,7 +1684,7 @@ msgstr "Debugger pad toevoeging (geen):"
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
-msgstr "Debugger type en pad"
+msgstr "Debuggertype en pad"
 
 #: lazarusidestrconsts:dlgcodebugging
 msgid "Debugging:"
@@ -1696,7 +1696,7 @@ msgstr "Standaard"
 
 #: lazarusidestrconsts:dlgdefaulteditorfont
 msgid "Default editor font"
-msgstr "Standaard editor font"
+msgstr "Standaard editorfont"
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
@@ -1736,7 +1736,7 @@ msgstr "Verwijder laatste karakter"
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
-msgstr "Verwijder het oude Package bestand?"
+msgstr "Verwijder het oude package-bestand?"
 
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
@@ -1880,11 +1880,11 @@ msgstr "Bureaublad"
 
 #: lazarusidestrconsts:dlgdesktopfiles
 msgid "Desktop files"
-msgstr "Bureaublad bestanden"
+msgstr "Bureaubladbestanden"
 
 #: lazarusidestrconsts:lisaf2pdestinationpackage
 msgid "Destination Package"
-msgstr "Doel package"
+msgstr "Doelpackage"
 
 #: lazarusidestrconsts:lisdestinationdirectory
 msgid "Destination directory"
@@ -1936,11 +1936,11 @@ msgstr "Toon regelnummers in Run-time Error Backtraces"
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
-msgstr "Maak onderscheid in hoofd en kleine letters. Bijv. A en a"
+msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
-msgstr "Laat splash scherm niet zien"
+msgstr "Laat splashscherm niet zien"
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2560,7 +2560,7 @@ msgstr "Vind procedure methode"
 
 #: lazarusidestrconsts:srkmecfind
 msgid "Find text"
-msgstr "Zoek Tekst"
+msgstr "Zoek tekst"
 
 #: lazarusidestrconsts:dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -2572,7 +2572,7 @@ msgstr "Fins"
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
-msgstr "Repareer .lfm bestand"
+msgstr "Repareer .lfm-bestand"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -3329,10 +3329,6 @@ msgstr "Package in de IDE installeren"
 #: lazarusidestrconsts:lisinstallselection
 msgid "Install selection"
 msgstr "Installeer selectie"
-
-#: lazarusidestrconsts:lisinstallationfailed
-msgid "Installation failed"
-msgstr ""
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -6838,10 +6834,6 @@ msgstr "Het package %s is nodig voor %s, dat geinstalleerd moet worden.%sZie pac
 msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
 msgstr "Het package %s bevat het bestand%s%s%s%s.%sMoet het bestand daar ook hernoemd worden?"
 
-#: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
 msgstr "Het package %s%s%s heeft de \"auto install\" vlag.%sDit betekent dat het in de IDE wordt geinstalleerd. Te installeren packages moeten \"ontwerp\" packages zijn. "
@@ -7040,7 +7032,7 @@ msgstr "Er is een fout opgetreden tijdens het converteren van de binaire stream 
 
 #: lazarusidestrconsts:listherewasanerrorwhilecopyingthecomponentstreamtocli
 msgid "There was an error while copying the component stream to clipboard:%s%s"
-msgstr "Er is een fout opgetreden tijdens het kopieren van de component stream naar het klembord:%s%s"
+msgstr "Er is een fout opgetreden tijdens het kopiëren van de component stream naar het klembord:%s%s"
 
 #: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -7168,7 +7160,7 @@ msgstr "Kan binaire stream niet omzetten naar tekst"
 
 #: lazarusidestrconsts:lisunablecopycomponentstoclipboard
 msgid "Unable copy components to clipboard"
-msgstr "Kan component niet naar het klembord kopieren"
+msgstr "Kan component niet naar het klembord kopiëren"
 
 #: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
@@ -7216,15 +7208,15 @@ msgstr "Kan de tekst form data van bestand %s%s%s%s%sniet wijzigen in een binair
 
 #: lazarusidestrconsts:lisunabletocopyfile
 msgid "Unable to copy file"
-msgstr "Kan het bestand niet kopieren"
+msgstr "Kan het bestand niet kopiëren"
 
 #: lazarusidestrconsts:lisunabletocopyfileto
 msgid "Unable to copy file %s%s%s%sto %s%s%s"
-msgstr "Kan het bestand %s%s%s%s niet kopieren naar %s%s%s"
+msgstr "Kan het bestand %s%s%s%s niet kopiëren naar %s%s%s"
 
 #: lazarusidestrconsts:lisunabletocopyfileto2
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
-msgstr "Kan het bestand %s%s%s%s niet kopieren naar %s%s%s."
+msgstr "Kan het bestand %s%s%s%s niet kopiëren naar %s%s%s."
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
