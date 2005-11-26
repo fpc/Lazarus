@@ -2622,45 +2622,6 @@ begin
   end;
 end;
 
-function GTK26HScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType;
-Value: gdouble;
-  data: gpointer): gboolean; cdecl;
-var
-  Msg: TLMHScroll;
-begin
-  Result := CallBackDefaultReturn;
-  Msg.Msg := LM_HSCROLL;
-  with Msg do begin
-    Pos := Round(Range^.Adjustment^.Value);
-    if Pos < High(SmallPos)
-    then SmallPos := Pos
-    else SmallPos := High(SmallPos);
-    ScrollBar := HWND(Range);
-    ScrollCode := ScrollTypeToSbCode(False, Scroll,
-      gtk_range_get_update_policy(Range));
-  end;
-  DeliverMessage(Data, Msg);
-end;
-
-function GTK26VScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType; Value: gdouble;
-  data: gpointer): gboolean; cdecl;
-var
-  Msg: TLMVScroll;
-begin
-  Result := CallBackDefaultReturn;
-  Msg.Msg := LM_VSCROLL;
-  with Msg do begin
-    Pos := Round(Range^.Adjustment^.Value);
-    if Pos < High(SmallPos)
-    then SmallPos := Pos
-    else SmallPos := High(SmallPos);
-    ScrollBar := HWND(Range);
-    ScrollCode := ScrollTypeToSbCode(True, Scroll,
-      gtk_range_get_update_policy(Range));
-  end;
-  DeliverMessage(Data, Msg);
-end;
-
 function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 var
   Msg: TLMHScroll;

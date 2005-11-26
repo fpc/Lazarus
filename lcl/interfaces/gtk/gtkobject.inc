@@ -3621,54 +3621,33 @@ begin
 
     LM_HSCROLL:
     begin
-      if (gtk_major_version>=2)and(gtk_minor_version>=6) then begin
-        if ALCLObject is TScrollBar then
-          Scroll := PGtkObject(@PgtkhScrollBar(gObject)^.Scrollbar.Range)
-        else begin
-          if ALCLObject is TScrollBox then
-            gObject := gtk_object_get_data(gObject, odnScrollArea);
-          Scroll := PgtkObject(PGtkScrolledWindow(gObject)^.HScrollBar);
-        end;
-        ConnectSenderSignal(Scroll,'change-value', @GTK26HScrollCB);
-      end else begin
-        if ALCLObject is TScrollBar then
-          Adjustment := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-        else if ALCLObject is TScrollBox then begin
-          Scroll := gtk_object_get_data(gObject, odnScrollArea);
-          Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
-            PGTKScrolledWindow(Scroll)));
-        end
-        else
-          Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
-            PGTKScrolledWindow(gObject)));
-        ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
-      end;
+      if ALCLObject is TScrollBar then
+        Adjustment := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+      else if ALCLObject is TScrollBox then begin
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(Scroll)));
+      end
+      else
+        Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(gObject)));
+      ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
     end;
 
     LM_VSCROLL:
     begin
-      if (gtk_major_version>=2)and(gtk_minor_version>=6) then begin
-        if ALCLObject is TScrollBar then
-          Scroll := PGtkObject(@PgtkhScrollBar(gObject)^.Scrollbar.Range)
-        else begin
-          if ALCLObject is TScrollBox then
-            gObject := gtk_object_get_data(gObject, odnScrollArea);
-          Scroll := PGtkObject(PGtkScrolledWindow(gObject)^.VScrollBar);
-        end;
-        connectSenderSignal(Scroll,'change-value', @GTK26VScrollCB);
-      end else begin
-        if ALCLObject is TScrollBar then
-          Adjustment := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-        else if ALCLObject is TScrollBox then begin
-          Scroll := gtk_object_get_data(gObject, odnScrollArea);
-          Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
-            PGTKScrolledWindow(Scroll)));
-        end
-        else
-          Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
-            PGTKScrolledWindow(gObject)));
-        ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
-      end;
+      if ALCLObject is TScrollBar then
+        Adjustment := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+      else if ALCLObject is TScrollBox then begin
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
+          PGTKScrolledWindow(Scroll)));
+      end
+      else
+        Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
+          PGTKScrolledWindow(gObject)));
+      ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
+      ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
     end;
 
     LM_YEARCHANGED :  //calendar
