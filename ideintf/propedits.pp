@@ -2111,7 +2111,8 @@ begin
         if (PropInfo^.PropProcs and 3)=ptStatic then
           AMethod.Code:=PropInfo^.GetProc
         else
-          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+Ptrint(PropInfo^.GetProc))^;
+          AMethod.Code:=PPointer(Pointer(Instance.ClassType)
+                        +Ptrint(PropInfo^.GetProc))^;
         AMethod.Data:=Instance;
         if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
           Result:=TGetMethodProcIndex(AMethod)(PropInfo^.Index)
@@ -3943,7 +3944,7 @@ begin
   begin
     Result := TPersistentSelectionList.Create;
     for I := 0 to PropCount - 1 do
-      Result.Add(TPersistent(PtrInt(GetOrdValueAt(I))));
+      Result.Add(TPersistent(GetObjectValueAt(I)));
   end;
 end;
 
@@ -3956,7 +3957,7 @@ begin
   LInstance := TPersistent(GetObjectValue);
   if PropCount > 1 then
     for I := 1 to PropCount - 1 do
-      if TPersistent(PtrInt(GetOrdValueAt(I))) <> LInstance then
+      if TPersistent(GetObjectValueAt(I)) <> LInstance then
         Exit;
   Result := LInstance<>nil;
 end;
@@ -4047,7 +4048,7 @@ begin
       end;
     end;
   end;
-  SetOrdValue(Ptrint(Component));
+  SetPtrValue(Component);
 end;
 
 { TComponentPropertyEditor }
