@@ -3779,7 +3779,7 @@ begin
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
           {$IFDEF TRANSLATESTRING}
-          //The original idea was make a callback just in IDE
+          //The original idea was to make a callback just in IDE
           //There is a theoretical possibility that in unusual situation
           //we will grub two components simultaneously. How?
           //I don't know, now this is not possible.

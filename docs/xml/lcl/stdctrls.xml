@@ -3991,15 +3991,13 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Align</short>
+        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Anchors</short>
+        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.AutoSize">
@@ -4015,9 +4013,12 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constraints</short>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
+
+If a control is resized the new dimensions are always within the ranges given here. <br/>
+
+You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.CharCase">
@@ -4038,9 +4039,8 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Enabled</short>
+        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.MaxLength">
@@ -4050,75 +4050,63 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Change - Action</short>
+        <descr>On Change - Action to be taken when any of the properties of the control change (especially the textual content).<br/> User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Change Bounds - Action</short>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/> User-defined Procedure.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Click - Action</short>
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Entry - Action</short>
+        <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Exit - Action</short>
+        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Key Down - Action</short>
+        <descr>On Key Down - Action to be taken if a key is down while focus is in this control. Subtly different from On Key Pressed - for example the key might already have been down when focus entered this control, whereas On Key Pressed requires the key to become pressed while focus is in the control. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyPress">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Key Press - Action</short>
+        <descr>On Key Press - Action to be taken if a key becomes pressed while focus is in this control. Subtly different from On Key Down, which simply responds to a key being down, whether or not it was already down when focus was given to this control. On Key Press requires that a key becomes pressed while focus in in this control.<br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Key Up - Action</short>
+        <descr>On Key Up - Action to be taken if a key is up (ie not pressed) while focus is in this control.<br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Down - Action</short>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Move - Action</short>
+        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Up - Action</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.<br/>User -defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Resize - Action</short>
+        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ParentFont">
@@ -4134,27 +4122,23 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.PasswordChar">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Password Character</short>
+        <descr>Password Character - defines which character should appear in the edit box when a password is being typed. <br/>A security feature to prevent casual onlookers fom seeing the password that is being entered. <br/>Most often an asterisk * but could be any user-selected character.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Popup Menu</short>
+        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Read Only</short>
+        <descr>Read Only - a flag that signifies that users can view the contents of this control but are not allowed to modify it.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Show Hint</short>
+        <descr>Show Hint - allows a small box containing helpful text to be displayed while the mouse cursor 'hovers' over the control</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.TabStop">
@@ -4170,15 +4154,13 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Text">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Text</short>
+        <descr>Text - the actual character string that represents the contents of the control. May be edited if ReadOnly property is not set</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Visible</short>
+        <descr>Visible - determines whether or not the control can be seen</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemo">
@@ -4551,9 +4533,8 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Align</short>
+        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Alignment">
@@ -4563,9 +4544,8 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Anchors</short>
+        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.AutoSize">
@@ -4581,9 +4561,8 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Caption</short>
+        <descr>Caption - the text string that represents the contents of the label</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Color">
@@ -4593,9 +4572,14 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constraints</short>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
+
+
+If a control is resized the new dimensions are always within the ranges given here. <br/>
+
+
+You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.FocusControl">
@@ -4617,57 +4601,52 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Change Bounds</short>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/>
+ User-defined Procedure.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Click</short>
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnDblClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Double-click</short>
+        <descr>On Double-click - Action to be taken when the mouse button is double-clicked with the cursor over this control. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Down - Action</short>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>
+User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnMouseEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Entry</short>
+        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnMouseLeave">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Leaving</short>
+        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Movement - Action</short>
+        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves while within the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Up</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. <br/>
+Implies that the mouse button was previously down and has been released. The case where the cursor enters the control but the mouse button has not yet been pressed is covered by OnMouseEnter.<br/>
+User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Resize - Action</short>
+        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ParentFont">
@@ -4683,15 +4662,13 @@ or the message may be changed dynamically, eg <br/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Visible</short>
+        <descr>Visible - determines whether or not the control can be seen</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.WordWrap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Word Wrap</short>
+        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word is near the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonControl">
@@ -5047,9 +5024,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Align</short>
+        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AllowGrayed">
@@ -5058,9 +5034,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Anchors</short>
+        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AutoSize">
@@ -5081,15 +5056,13 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Checked">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Checked</short>
+        <descr>Checked - shows whether or not the box has been checked (ie selected)</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constraints</short>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>If a control is resized the new dimensions are always within the ranges given here. <br/>You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.DragCursor">
@@ -5111,9 +5084,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Enabled</short>
+        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Hint">
@@ -5122,21 +5094,20 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Change</short>
+        <descr>On Change - Action to be taken when any of the properties of the control change.<br/>
+ User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Change Bounds</short>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/>
+ User-defined Procedure.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Click - Action</short>
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnDragDrop">
@@ -5158,39 +5129,36 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Entry - Action</short>
+        <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
+        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. <br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Down - Action</short>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>
+User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Move - Action</short>
+        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. <br/>
+User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Up - Action</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.<br/>
+User -defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Resize - Action</short>
+        <descr>On Resize - Action to be taken when the control is resized. Might include selection of a different font size etc. <br/>
+User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnStartDrag">
@@ -5206,9 +5174,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Popup Menu</short>
+        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.ShowHint">
@@ -5241,9 +5208,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Visible</short>
+        <descr>Visible - determines whether or not the control can be seen</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TToggleBox">
@@ -5924,9 +5890,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Align</short>
+        <descr>Align: Is used to align a Static Text box to a border of a parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Alignment">
@@ -5936,9 +5901,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Anchors</short>
+        <descr>Anchors:  keep the edges of a static text box a defined distance from certain borders of the parent control.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.AutoSize">
@@ -5960,9 +5924,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Caption</short>
+        <descr>Caption: the text that actually appears with the Static Text Box</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Color">
@@ -5972,15 +5935,15 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constraints</short>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
+If a control is resized the new dimensions are always within the ranges given here. <br/>
+You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Enabled</short>
+        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.FocusControl">
@@ -6014,9 +5977,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Popup Menu</short>
+        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.ShowAccelChar">
@@ -6026,9 +5988,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Show Hint</short>
+        <descr>Show Hint - allows a small box containing helpful text to be displayed while the mouse cursor 'hovers' over the control</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.TabOrder">
@@ -6044,51 +6005,43 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Visible</short>
+        <descr>Visible - determines whether or not the control can be seen</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Click - Action</short>
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnDblClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Double-click - Action</short>
+        <descr>On Double-click - Action to be taken when the mouse button is double-clicked while the cursor is over the control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Down - Action</short>
+        <descr>On Mouse Down - Action to be taken when the mouse button is down while the cursor is over this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Movement - Action</short>
+        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves within the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Up - Action</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. <br/>Implies that the mouse button was previously down and has been released. The case where the cursor enters the control but the mouse button has not yet been pressed is covered by OnMouseEnter.<br/>User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnMouseEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Entry - Action</short>
+        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnMouseLeave">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Mouse Leaving - Action</short>
+        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnChangeBounds">
@@ -6098,9 +6051,8 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       </element>
       <!-- property Visibility: published -->
       <element name="TStaticText.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>On Resize - Action</short>
+        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="DefaultButtonControlUseOnChange">
