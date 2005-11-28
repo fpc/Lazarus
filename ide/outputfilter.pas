@@ -509,6 +509,33 @@ var i, j, FilenameEndPos: integer;
       DoAddFilteredLine(s);
   end;
 
+  { For example:
+  Size of Code: 1184256 bytes
+  Size of initialized data: 519168 bytes
+  Size of uninitialized data: 83968 bytes
+  Stack space reserved: 262144 bytes
+  Stack space commited: 4096 bytes
+  }
+  function CheckForExecutableInfo: boolean;
+  var
+    p: Integer;
+  begin
+    Result:=false;
+    p:=1;
+    if not (CheckForString(s,p,'Size of Code: ') or
+            CheckForString(s,p,'Size of initialized data: ') or
+            CheckForString(s,p,'Size of uninitialized data: ') or
+            CheckForString(s,p,'Stack space reserved: ') or
+            CheckForString(s,p,'Stack space commited: ') or // message contains typo
+            CheckForString(s,p,'Stack space committed: ')) then exit;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForString(s,p,' bytes') then exit;
+    Result:=true;
+    if (CompilerOptions<>nil)
+    and (CompilerOptions.ShowAll or CompilerOptions.ShowExecInfo) then
+      DoAddFilteredLine(s);
+  end;
+
 begin
   Result:=false;
   if s='' then exit;
@@ -529,6 +556,9 @@ begin
   if Result then exit;
   // check for '<int> Lines compiled, <int>.<int> sec'
   Result:=CheckForLinesCompiled;
+  if Result then exit;
+  // check for -vx output
+  Result:=CheckForExecutableInfo;
   if Result then exit;
 
   // search for round bracket open

@@ -6090,6 +6090,10 @@ msgstr "Довідки редактора"
 msgid "Show everything"
 msgstr "Показати всі"
 
+#: lazarusidestrconsts:dlgshowexecutableinfo
+msgid "Show executable info (Win32 only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Показати загальні відомості"
@@ -6593,6 +6597,10 @@ msgstr "Максимальна версія менше за мінімальну
 #: lazarusidestrconsts:lisprojaddtheminimumversionisinvalid
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "Мінімальна версія %s%s%s є некоректною.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
+
+#: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
+msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
+msgstr ""
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"

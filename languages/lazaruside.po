@@ -3146,6 +3146,10 @@ msgstr ""
 msgid "Show conditionals"
 msgstr ""
 
+#: lazarusidestrconsts:dlgshowexecutableinfo
+msgid "Show executable info (Win32 only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr ""
@@ -7132,6 +7136,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgsysregistrationerror
 msgid "Registration Error"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
+msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase

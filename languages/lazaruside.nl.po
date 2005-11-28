@@ -1450,13 +1450,13 @@ msgstr "Kopieer woord asl niets geselecteerd"
 msgid "Copying a whole form is not implemented."
 msgstr "Een geheel formulier kopiëren is niet geimplementeerd."
 
+#: lazarusidestrconsts:lisgplnotice
+msgid "Copyright (C) <year> <name of author> %sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
+
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-
-#: lazarusidestrconsts:lisgplnotice
-msgid "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "Copyright (C) <year> <name of author>%sThis source is free software; you can redistribute it and/or modifyit under the terms of the GNU General Public License as published bythe Free Software Foundation; either version 2 of the License, or(at your option) any later version.%sThis code is distributed in the hope that it will be useful, butWITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUGeneral Public License for more details.%sA copy of the GNU General Public License is available on the WorldWide Web at <http://www.gnu.org/copyleft/gpl.html>. You can alsoobtain it by writing to the Free Software Foundation,Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -3329,6 +3329,10 @@ msgstr "Package in de IDE installeren"
 #: lazarusidestrconsts:lisinstallselection
 msgid "Install selection"
 msgstr "Installeer selectie"
+
+#: lazarusidestrconsts:lisinstallationfailed
+msgid "Installation failed"
+msgstr ""
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -6086,6 +6090,10 @@ msgstr "Toon editor hints"
 msgid "Show everything"
 msgstr "Toon alles"
 
+#: lazarusidestrconsts:dlgshowexecutableinfo
+msgid "Show executable info (Win32 only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Toon algemene info"
@@ -6590,6 +6598,10 @@ msgstr "De maximum versie is lager dan de minimum versie"
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "De Minimum Versie %s%s%s is ongeldig.%sGebruik het formaat major.minor.release.build%sBijvoorbeeld: 1.0.20.10"
 
+#: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
+msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
+msgstr ""
+
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr "De testdirectorie is niet gevonden:%s%s%s%s%s(zie omgeving opties)"
@@ -6833,6 +6845,10 @@ msgstr "Het package %s is nodig voor %s, dat geinstalleerd moet worden.%sZie pac
 #: lazarusidestrconsts:lispkgmangthepackageownsthefileshouldthefileberenamed
 msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
 msgstr "Het package %s bevat het bestand%s%s%s%s.%sMoet het bestand daar ook hernoemd worden?"
+
+#: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
+msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."

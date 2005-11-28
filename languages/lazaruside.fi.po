@@ -6090,6 +6090,10 @@ msgstr "Näytä editointivihjeet"
 msgid "Show everything"
 msgstr "Näytä kaikki (hidas)"
 
+#: lazarusidestrconsts:dlgshowexecutableinfo
+msgid "Show executable info (Win32 only)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
 msgstr ""
@@ -6592,6 +6596,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddtheminimumversionisinvalid
 msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
+msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
 msgstr ""
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt

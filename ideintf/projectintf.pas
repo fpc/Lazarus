@@ -127,6 +127,7 @@ type
     fShowDefMacros: Boolean;
     fShowCompProc: Boolean;
     fShowCond: Boolean;
+    fShowExecInfo: Boolean;
     fShowNothing: Boolean;
     fShowSummary: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
@@ -235,6 +236,7 @@ type
     property ShowDefMacros: Boolean read fShowDefMacros write fShowDefMacros;
     property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
     property ShowCond: Boolean read fShowCond write fShowCond;
+    property ShowExecInfo: Boolean read fShowExecInfo write fShowExecInfo;
     property ShowNothing: Boolean read fShowNothing write fShowNothing;
     property ShowSummary: Boolean read FShowSummary write FShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean

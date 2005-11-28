@@ -171,6 +171,7 @@ type
     chkDefinedMacros: TCheckBox;
     chkCompiledProc: TCheckBox;
     chkConditionals: TCheckBox;
+    chkExecutableInfo: TCheckBox;
     chkNothing: TCheckBox;
     chkHintsForUnusedUnitsInMainSrc: TCheckBox;
     chkFPCLogo: TCheckBox;
@@ -743,6 +744,7 @@ begin
   chkDefinedMacros.Checked := Options.ShowDefMacros;
   chkCompiledProc.Checked := Options.ShowCompProc;
   chkConditionals.Checked := Options.ShowCond;
+  chkExecutableInfo.Checked := Options.ShowExecInfo;
   chkNothing.Checked := Options.ShowNothing;
   chkShowSummary.Checked := Options.ShowSummary;
   chkHintsForUnusedUnitsInMainSrc.Checked :=
@@ -1007,6 +1009,7 @@ begin
   Options.ShowDefMacros := chkDefinedMacros.Checked;
   Options.ShowCompProc := chkCompiledProc.Checked;
   Options.ShowCond := chkConditionals.Checked;
+  Options.ShowExecInfo := chkExecutableInfo.Checked;
   Options.ShowNothing := chkNothing.Checked;
   Options.ShowSummary := chkShowSummary.Checked;
   Options.ShowHintsForUnusedUnitsInMainSrc :=
@@ -2053,12 +2056,23 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
+  chkExecutableInfo := TCheckBox.Create(Self);
+  with chkExecutableInfo do
+  begin
+    Parent := grpVerbosity;
+    Caption := dlgShowExecutableInfo+' (-vx)';
+    Top := 132;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
+  end;
+
   chkNothing := TCheckBox.Create(Self);
   with chkNothing do
   begin
     Parent := grpVerbosity;
     Caption := dlgShowNothing+' (-v0)';
-    Top := 132;
+    Top := 153;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
     Width := chkDebugInfo.Width;
@@ -2069,7 +2083,7 @@ begin
   begin
     Parent := grpVerbosity;
     Caption := dlgWriteFPCLogo+' (-l)';
-    Top := 153;
+    Top := 174;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
     Width := chkDebugInfo.Width;

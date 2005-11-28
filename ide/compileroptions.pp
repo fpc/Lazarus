@@ -979,6 +979,7 @@ begin
   ShowDefMacros := XMLConfigFile.GetValue(p+'Verbosity/ShowDefMacros/Value', false);
   ShowCompProc := XMLConfigFile.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := XMLConfigFile.GetValue(p+'Verbosity/ShowCond/Value', false);
+  ShowExecInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
   ShowNothing := XMLConfigFile.GetValue(p+'Verbosity/ShowNothing/Value', false);
   ShowSummary := XMLConfigFile.GetValue(p+'Verbosity/ShowSummary/Value', false);
   ShowHintsForUnusedUnitsInMainSrc := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
@@ -1123,6 +1124,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowDefMacros/Value', ShowDefMacros,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
@@ -1818,7 +1820,6 @@ Processor specific options:
 
   { Verbosity }
   { The following switches will not be needed by the IDE
-      x = Output some executable info (Win32 only)
       r = Rhide/GCC compatibility mode
   }
   tempsw := '';
@@ -1849,6 +1850,8 @@ Processor specific options:
     tempsw := tempsw + 'p';
   if (ShowCond) then
     tempsw := tempsw + 'c';
+  if (ShowExecInfo) then
+    tempsw := tempsw + 'x';
 
   if ShowNothing then
     tempsw := '0';
@@ -2080,6 +2083,7 @@ begin
   fShowDefMacros := false;
   fShowCompProc := false;
   fShowCond := false;
+  fShowExecInfo := false;
   fShowNothing := false;
   fShowSummary := false;
   fShowHintsForUnusedUnitsInMainSrc := false;
@@ -2183,6 +2187,7 @@ begin
   fShowDefMacros := CompOpts.fShowDefMacros;
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
+  fShowCond := CompOpts.fShowExecInfo;
   fShowNothing := CompOpts.fShowNothing;
   fShowSummary := CompOpts.FShowSummary;
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
@@ -2275,6 +2280,7 @@ begin
     and (fShowDefMacros = CompOpts.fShowDefMacros)
     and (fShowCompProc = CompOpts.fShowCompProc)
     and (fShowCond = CompOpts.fShowCond)
+    and (fShowExecInfo = CompOpts.fShowExecInfo)
     and (fShowNothing = CompOpts.fShowNothing)
     and (fShowSummary = CompOpts.fShowSummary)
     and (fShowHintsForUnusedUnitsInMainSrc = CompOpts.fShowHintsForUnusedUnitsInMainSrc)

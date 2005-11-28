@@ -1033,6 +1033,7 @@ resourcestring
   dlgShowDefinedMacros = 'Show defined macros';
   dlgShowCompiledProcedures = 'Show compiled procedures';
   dlgShowConditionals = 'Show conditionals';
+  dlgShowExecutableInfo = 'Show executable info (Win32 only)';
   dlgShowNothing = 'Show nothing (only errors)';
   dlgWriteFPCLogo = 'Write an FPC logo';
   dlgHintsUnused = 'Show Hints for unused units in main source';
@@ -2358,6 +2359,9 @@ resourcestring
   lisPkgSysUnitName = '%s%sUnit Name: %s%s%s';
   lisPkgSysFileName = '%s%sFile Name: %s%s%s';
   lisPkgSysRegistrationError = 'Registration Error';
+  lisPkgSysTheRTLFreePascalComponentLibraryProvidesTheBase =
+      'The RTL - '
+    +'The Run-Time Library is the basis of all Free Pascal programs.';
   lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase =
       'The FCL - '
     +'FreePascal Component Library provides the base classes for object pascal.';
