@@ -400,10 +400,11 @@ begin
         DebugLn('WARNING: suspicious pkg link file found (name): ',CurFilename);
         continue;
       end;
+      NewFilename:='';
       sl:=TStringList.Create;
       try
         sl.LoadFromFile(CurFilename);
-        if sl.Count<0 then begin
+        if sl.Count<=0 then begin
           DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
           continue;
         end;
@@ -414,6 +415,7 @@ begin
         end;
       end;
       sl.Free;
+      if NewFilename='' then continue;
       
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Origin:=ploGlobal;

@@ -6180,7 +6180,6 @@ function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
 var
   ActiveUnitInfo, OldActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit, OldActiveSrcEdit: TSourceEditor;
-  NewSource: TCodeBuffer;
 begin
   GetCurrentUnit(OldActiveSrcEdit,OldActiveUnitInfo);
   Result:=DoOpenEditorFile(AFilename, PageIndex, Flags);
