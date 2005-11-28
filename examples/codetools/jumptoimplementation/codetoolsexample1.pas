@@ -1,0 +1,92 @@
+{ Copyright (C) 2005 Mattias Gaertner
+
+  This source is free software; you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This code is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  A copy of the GNU General Public License is available on the World Wide Web
+  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  MA 02111-1307, USA.
+  
+  Abstract:
+    Demonstrates how to add a new menu item to the IDE:
+    Search -> Jump to Implementation
+}
+unit CodeToolsExample1;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, MenuIntf, LazIDEIntf, SrcEditorIntf, CodeToolManager,
+  CodeTree, CodeCache, CodeAtom, CustomCodeTool, FindDeclarationTool;
+  
+procedure JumpIDEToImplementationKeyword(Sender: TObject);
+
+procedure Register;
+
+implementation
+
+procedure JumpIDEToImplementationKeyword(Sender: TObject);
+var
+  SrcEditor: TSourceEditorInterface;
+  CodeBuffer: TCodeBuffer;
+  CurCodeTool: TCustomCodeTool;
+  Node: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+  NewCodePos: TCodeXYPosition;
+  NewTopLine: Integer;
+begin
+  if Sender=nil then ;
+  // commit editor changes to codetools
+  if not LazarusIDE.BeginCodeTools then exit;
+  
+  // get active source editor
+  SrcEditor:=SourceEditorWindow.ActiveEditor;
+  if SrcEditor=nil then exit;
+  CodeBuffer:=SrcEditor.CodeToolsBuffer as TCodeBuffer;
+  
+  try
+    // init codetool for the source
+    if CodeToolBoss.InitCurCodeTool(CodeBuffer) then begin
+      CurCodeTool:=CodeToolBoss.CurCodeTool;
+      if CurCodeTool is TFindDeclarationTool then begin
+        // search imlementation node
+        Tool:=TFindDeclarationTool(CurCodeTool);
+        Node:=Tool.FindImplementationNode;
+        if Node<>nil then begin
+          // convert text position to editor postion
+          NewTopLine:=0;
+          NewCodePos:=CleanCodeXYPosition;
+          if Tool.CleanPosToCaretAndTopLine(Node.StartPos,
+                                            NewCodePos,NewTopLine)
+          then begin
+            // jump
+            LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename,
+                      Point(NewCodePos.X,NewCodePos.Y),NewTopLine,-1,
+                      [ofRegularFile,ofUseCache]);
+          end;
+        end;
+      end;
+    end;
+  except
+    LazarusIDE.DoJumpToCodeToolBossError;
+  end;
+end;
+
+procedure Register;
+begin
+  RegisterIDEMenuCommand(itmCodeToolSearches,'JumpToImplementation',
+    'Jump to implementation keyword',nil,@JumpIDEToImplementationKeyword);
+end;
+
+end.
+

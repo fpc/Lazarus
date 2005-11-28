@@ -594,6 +594,9 @@ type
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
+    function DoOpenFileAndJumpToPos(const AFilename: string;
+        const CursorPosition: TPoint; TopLine: integer;
+        PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -720,6 +723,7 @@ type
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
+    function BeginCodeTools: boolean; override;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
                            var ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
@@ -6143,6 +6147,7 @@ begin
     Result:=mrOk;
     InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
     if DoOpenEditorFile(FName,-1,[ofAddToRecent])=mrOk then begin
+      // success
     end;
   end;
 end;
@@ -6167,6 +6172,28 @@ begin
     Result:=mrOk;
   end else
     DoJumpToCodeToolBossError;
+end;
+
+function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
+  const CursorPosition: TPoint; TopLine: integer; PageIndex: integer;
+  Flags: TOpenFlags): TModalResult;
+var
+  ActiveUnitInfo, OldActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit, OldActiveSrcEdit: TSourceEditor;
+  NewSource: TCodeBuffer;
+begin
+  GetCurrentUnit(OldActiveSrcEdit,OldActiveUnitInfo);
+  Result:=DoOpenEditorFile(AFilename, PageIndex, Flags);
+  if Result<>mrOk then exit;
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveUnitInfo<>nil then begin
+    DoJumpToCodePos(OldActiveSrcEdit, OldActiveUnitInfo,
+                    ActiveUnitInfo.Source,
+                    CursorPosition.X, CursorPosition.Y, TopLine, true);
+    Result:=mrOk;
+  end else begin
+    Result:=mrCancel;
+  end;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
@@ -10118,6 +10145,14 @@ begin
   ToolStatus:=itCodeTools;
   CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
   CodeToolBoss.Abortable:=true;
+end;
+
+function TMainIDE.BeginCodeTools: boolean;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,[]);
 end;
 
 procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;

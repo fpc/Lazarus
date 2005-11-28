@@ -63,6 +63,7 @@ type
     );
     
 const
+  CleanCodeXYPosition: TCodeXYPosition = (X:0; Y:0; Code:nil);
   AllCommonAtomWords = [cafWord, cafEnd, cafRecord, cafBegin];
   CommonAtomFlagNames: array[TCommonAtomFlag] of shortstring = (
       'None',

@@ -111,13 +111,6 @@ type
           const AFilename: string): string;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
-    procedure ClearError;
-    procedure ClearCurCodeTool;
-    function InitCurCodeTool(Code: TCodeBuffer): boolean;
-    function InitResourceTool: boolean;
-    procedure ClearPositions;
-    function GetCodeToolForSource(Code: TCodeBuffer;
-      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
     procedure SetAbortable(const AValue: boolean);
     procedure SetAddInheritedCodeToOverrideMethod(const AValue: boolean);
     procedure SetCheckFilesOnDisk(NewValue: boolean);
@@ -129,7 +122,6 @@ type
     procedure SetCursorBeyondEOL(NewValue: boolean);
     procedure BeforeApplyingChanges(var Abort: boolean);
     procedure AfterApplyingChanges;
-    function HandleException(AnException: Exception): boolean;
     procedure AdjustErrorTopLine;
     procedure WriteError;
     function OnGetCodeToolForBuffer(Sender: TObject;
@@ -173,11 +165,22 @@ type
     function GetIncludeCodeChain(Code: TCodeBuffer;
                                  RemoveFirstCodesWithoutTool: boolean;
                                  out ListOfCodeBuffer: TFPList): boolean;
-    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
-    
+
+    // initializing single codetools
+    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
+    property CurCodeTool: TEventsCodeTool read FCurCodeTool;
+    procedure ClearCurCodeTool;
+    function InitCurCodeTool(Code: TCodeBuffer): boolean;
+    function InitResourceTool: boolean;
+    procedure ClearPositions;
+    function GetCodeToolForSource(Code: TCodeBuffer;
+      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
+
     // exception handling
+    procedure ClearError;
+    function HandleException(AnException: Exception): boolean;
     procedure SetError(Code: TCodeBuffer; Line, Column: integer;
       const TheMessage: string);
     property CatchExceptions: boolean

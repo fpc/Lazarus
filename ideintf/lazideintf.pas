@@ -22,7 +22,7 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, ProjectIntf;
+  Classes, SysUtils, Forms, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -108,6 +108,9 @@ type
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoOpenFileAndJumpToPos(const AFilename: string;
+        const CursorPosition: TPoint; TopLine: integer;
+        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
 
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; virtual; abstract;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; virtual; abstract;
@@ -122,11 +125,12 @@ type
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
 
     function CreateNewUniqueFilename(const Prefix, Ext: string;
-       NewOwner: TObject; Flags: TSearchIDEFileFlags;
-       TryWithoutNumber: boolean): string; virtual; abstract;
+                          NewOwner: TObject; Flags: TSearchIDEFileFlags;
+                          TryWithoutNumber: boolean): string; virtual; abstract;
        
     function SubstituteMakros(var s: string): boolean; virtual; abstract;
 
+    function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
     
