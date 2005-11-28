@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, MenuIntf, LazIDEIntf, SrcEditorIntf, CodeToolManager,
-  CodeTree, CodeCache, CodeAtom, CustomCodeTool, FindDeclarationTool;
+  CodeTree, CodeCache, CodeAtom, CustomCodeTool;
   
 procedure JumpIDEToImplementationKeyword(Sender: TObject);
 
@@ -41,7 +41,7 @@ var
   CodeBuffer: TCodeBuffer;
   CurCodeTool: TCustomCodeTool;
   Node: TCodeTreeNode;
-  Tool: TFindDeclarationTool;
+  Tool: TCodeTool;
   NewCodePos: TCodeXYPosition;
   NewTopLine: Integer;
 begin
@@ -58,9 +58,9 @@ begin
     // init codetool for the source
     if CodeToolBoss.InitCurCodeTool(CodeBuffer) then begin
       CurCodeTool:=CodeToolBoss.CurCodeTool;
-      if CurCodeTool is TFindDeclarationTool then begin
+      if CurCodeTool is TCodeTool then begin
         // search imlementation node
-        Tool:=TFindDeclarationTool(CurCodeTool);
+        Tool:=TCodeTool(CurCodeTool);
         Node:=Tool.FindImplementationNode;
         if Node<>nil then begin
           // convert text position to editor postion
