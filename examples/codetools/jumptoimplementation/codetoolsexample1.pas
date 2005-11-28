@@ -26,8 +26,8 @@ unit CodeToolsExample1;
 interface
 
 uses
-  Classes, SysUtils, MenuIntf, LazIDEIntf, SrcEditorIntf, CodeToolManager,
-  CodeTree, CodeCache, CodeAtom, CustomCodeTool;
+  Classes, SysUtils, MenuIntf, LazIDEIntf, Controls, SrcEditorIntf,
+  CodeToolManager, CodeTree, CodeCache, CodeAtom, CustomCodeTool;
   
 procedure JumpIDEToImplementationKeyword(Sender: TObject);
 
@@ -44,6 +44,7 @@ var
   Tool: TCodeTool;
   NewCodePos: TCodeXYPosition;
   NewTopLine: Integer;
+  Ok: Boolean;
 begin
   if Sender=nil then ;
   // commit editor changes to codetools
@@ -54,6 +55,7 @@ begin
   if SrcEditor=nil then exit;
   CodeBuffer:=SrcEditor.CodeToolsBuffer as TCodeBuffer;
   
+  Ok:=false;
   try
     // init codetool for the source
     if CodeToolBoss.InitCurCodeTool(CodeBuffer) then begin
@@ -70,16 +72,22 @@ begin
                                             NewCodePos,NewTopLine)
           then begin
             // jump
-            LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename,
+            if LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename,
                       Point(NewCodePos.X,NewCodePos.Y),NewTopLine,-1,
-                      [ofRegularFile,ofUseCache]);
+                      [ofRegularFile,ofUseCache])=mrOk
+            then
+              Ok:=true;
           end;
         end;
       end;
     end;
   except
-    LazarusIDE.DoJumpToCodeToolBossError;
+    on E: Exception do begin
+      CodeToolBoss.HandleException(E);
+    end;
   end;
+  if not Ok then
+    LazarusIDE.DoJumpToCodeToolBossError;
 end;
 
 procedure Register;
