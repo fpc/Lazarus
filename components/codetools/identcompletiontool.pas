@@ -806,7 +806,7 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        0,
+        3,
         'SetLength',
         StatementLevel,
         nil,
@@ -819,13 +819,39 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        0,
+        3,
         'Copy',
         StatementLevel,
         nil,
         nil,
         ctnProcedure);
     NewItem.ParamList:='const s: string; FromPosition, ToPosition: integer';
+    CurrentIdentifierList.Add(NewItem);
+
+    // begin..end -> add 'write'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        3,
+        'Write',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:='various';
+    CurrentIdentifierList.Add(NewItem);
+
+    // begin..end -> add 'writeln'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        3,
+        'WriteLn',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    NewItem.ParamList:='various';
     CurrentIdentifierList.Add(NewItem);
 
     if Context.Tool.NodeIsInAMethod(Context.Node)
