@@ -1060,8 +1060,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
 
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
@@ -1092,8 +1090,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
 
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
@@ -1116,8 +1112,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_MBUTTONDBLCLK:
     Begin
@@ -1130,8 +1124,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_MBUTTONDOWN:
     Begin
@@ -1144,8 +1136,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_MBUTTONUP:
     Begin
@@ -1158,8 +1148,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_MOUSEHOVER:
     Begin
@@ -1320,8 +1308,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_RBUTTONDOWN:
     Begin
@@ -1334,8 +1320,6 @@ Begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_RBUTTONUP:
     Begin
@@ -1350,8 +1334,6 @@ Begin
         Keys := WParam;
         Result := 0;
       End;
-      // Let LCL first process the message
-      WinProcess := false;
     End;
     WM_SETCURSOR:
     begin
@@ -1621,13 +1603,8 @@ Begin
       begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
-        WinProcess:=true;
       end;
-      WM_LBUTTONDBLCLK, WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP,
-        WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP:
-      begin
-        WinProcess:=true;
-      end;
+
       WM_NCDESTROY:
       begin
         // free our own data associated with window
