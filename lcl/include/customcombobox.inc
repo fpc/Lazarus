@@ -842,6 +842,7 @@ end;
 procedure TCustomComboBox.UpdateSorted;
 var
   lText: string;
+  lIndex: integer;
 begin
   if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).Sort(Self, Items, FSorted)
@@ -850,7 +851,9 @@ begin
     // remember text
     lText := Text;
     TStringList(FItems).Sorted := FSorted;
-    ItemIndex := FItems.IndexOf(lText);
+    lIndex := FItems.IndexOf(lText);
+    if lIndex >= 0 then
+      ItemIndex := lIndex;
   end;
 end;
 
