@@ -1140,6 +1140,7 @@ type
     function  GetAlignment: TAlignment;
     function  GetTransparent: boolean;
     procedure SetAlignment(Value: TAlignment);
+    procedure SetColor(NewColor: TColor); override;
     procedure SetFocusControl(Value: TWinControl);
     procedure SetLayout(Value: TTextLayout);
     procedure SetShowAccelChar(Value: Boolean);

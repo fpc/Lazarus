@@ -152,8 +152,7 @@ constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Font.OnChange := @FontChange;
-  ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks,
-                   csReplicatable];
+  ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
   Width := 65;
   Height := 17;
   FShowAccelChar := True;
@@ -164,6 +163,17 @@ end;
 function TCustomLabel.GetTransparent: boolean;
 begin
   Result := Color = clNone;
+end;
+
+procedure TCustomLabel.SetColor(NewColor: TColor);
+begin
+  inherited;
+
+  // if color = clnone then transparent, so not opaque
+  if NewColor = clNone then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
 end;
 
 {------------------------------------------------------------------------------
