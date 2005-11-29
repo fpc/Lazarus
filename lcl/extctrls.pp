@@ -648,6 +648,7 @@ type
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemResize(Sender: TObject);
   protected
+    procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
     procedure SetItem(Value: TStrings);
@@ -660,7 +661,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function CanModify: boolean; virtual;
-    procedure CreateWnd; override;
     function Rows: integer;
   public
     property AutoFill: Boolean read FAutoFill write SetAutoFill;

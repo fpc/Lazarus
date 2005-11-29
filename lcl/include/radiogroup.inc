@@ -92,27 +92,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.CreateWnd
+  Method: TCustomRadioGroup.InitializeWnd
   Params:  none
   Returns: Nothing
 
   Create the visual component of the Radiogroup.
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.CreateWnd;
+procedure TCustomRadioGroup.InitializeWnd;
 var
   i       : integer;
   temp    : TRadioButton;
 begin
   if FCreatingWnd then exit;
   FCreatingWnd := true;
-  //DebugLn('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  //DebugLn('[TCustomRadioGroup.InitializeWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
 
   // destroy radiobuttons, if there are too many
   while FButtonList.Count>FItems.Count do begin
     TRadioButton(FButtonList[FButtonList.Count-1]).Free;
     FButtonList.Delete(FButtonList.Count-1);
   end;
-  //DebugLn('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  //DebugLn('[TCustomRadioGroup.InitializeWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
 
   // create as many TRadioButton as needed
   while (FButtonList.Count<FItems.Count) do begin
@@ -137,12 +137,8 @@ begin
     end;
   end;
     
-  //DebugLn('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  //DebugLn('[TCustomRadioGroup.InitializeWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
   if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
-
-  //DebugLn('[TCustomRadioGroup.CreateWnd] D ',Name,':',ClassName,' ',FItems.Count);
-  inherited CreateWnd;
-  //DebugLn('[TCustomRadioGroup.CreateWnd] E ',Name,':',ClassName,' ',FItems.Count,' ',FButtonList.Count);
 
   if FItems.Count>0 then begin
     for i:=0 to FItems.Count-1 do begin
@@ -167,7 +163,7 @@ begin
     FHiddenButton.Checked:=(fItemIndex=-1);
     UpdateTabStops;
   end;
-  //DebugLn('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  //DebugLn('[TCustomRadioGroup.InitializeWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
   
   FCreatingWnd := false;
 end;
