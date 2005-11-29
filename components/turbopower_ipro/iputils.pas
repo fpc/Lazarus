@@ -86,6 +86,9 @@ const
   CM_IPSMTPEVENT        = IpMsgBase + 21;                              {!!.02}
   CM_IPPOP3EVENT        = IpMsgBase + 22;                              {!!.02}
   CM_IPNNTPEVENT        = IpMsgBase + 23;                              {!!.02}
+  {$IFDEF IP_LAZARUS}
+  CM_IPHOTINVOKE        = IpMsgBase + 24;
+  {$ENDIF}
 
 type
   { Hack for Delphi 3 compatibility -- THandle is defined as Integer }

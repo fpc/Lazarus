@@ -2439,6 +2439,8 @@ type
 
   TIpHtmlCustomPanel = class;
 
+  { TIpHtmlInternalPanel }
+
   TIpHtmlInternalPanel = class(
     {$IFDEF IP_LAZARUS}TCustomControl{$ELSE}TCustomPanel{$ENDIF})
   protected
@@ -2473,6 +2475,7 @@ type
     procedure Paint; override;
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
+    procedure CMIpHotInvoke(var Message: TMessage); message CM_IPHOTINVOKE;
 
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -15386,7 +15389,12 @@ begin
   if (abs(MouseDownX - X) < 4)
   and (abs(MouseDownY - Y) < 4) then
     if (Button = mbLeft) and (Hyper.HotNode <> nil) then
+      {$IFDEF IP_LAZARUS}
+      // needs to do this asynchronously as this might destroy self
+      PostMessage(Handle, CM_IpHotInvoke, 0, PtrInt(Self))
+      {$ELSE}
       DoHotInvoke
+      {$ENDIF}
     else
       DoClick;
 end;
@@ -15726,6 +15734,11 @@ begin
   {$ENDIF}
 end;
 
+procedure TIpHtmlInternalPanel.CMIpHotInvoke(var Message: TMessage);
+begin
+  DoHotInvoke;
+end;
+
 procedure TIpHtmlInternalPanel.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
   Message.Result := 1;
@@ -15999,13 +16012,21 @@ end;
 
 procedure TIpHtmlFocusRect.WMSetFocus(var Message: TWMSetFocus);
 begin
+  {$IFDEF IP_LAZARUS}
+  inherited WMSetFocus(Message);
+  {$ELSE}
   inherited;
+  {$ENDIF}
   Anchor.DoOnFocus;
 end;
 
 procedure TIpHtmlFocusRect.WMKillFocus(var Message: TLMSetFocus);
 begin
+  {$IFDEF IP_LAZARUS}
+  inherited WMKillFocus(Message);
+  {$ELSE}
   inherited;
+  {$ENDIF}
   Anchor.DoOnBlur;
   {HaveFocus := False;}                                                {!!.12}
 end;
