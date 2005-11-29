@@ -421,6 +421,7 @@ var
   I: Integer;
   R: TRect;
   WinHandle: HWND;
+  lPage: TCustomPage;
 begin
   WinHandle := ANotebook.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
@@ -428,7 +429,12 @@ begin
   R.Right := R.Right - R.Left;
   R.Bottom := R.Bottom - R.Top;
   for I := 0 to ANotebook.PageCount - 1 do
-    SetBounds(ANotebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
+  begin
+    lPage := ANotebook.Page[I];
+    // we don't need to resize non-existing pages yet, they will be sized when created
+    if lPage.HandleAllocated then
+      SetBounds(lPage, R.Left, R.Top, R.Right, R.Bottom);
+  end;
 end;
 
 {------------------------------------------------------------------------------
