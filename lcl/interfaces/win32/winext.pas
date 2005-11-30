@@ -145,6 +145,9 @@ Const
 // for calendar control
   MCN_FIRST               = (0-750);          // monthcal
   MCN_SELCHANGE           = (MCN_FIRST + 1);
+
+// for GetRandomRgn
+  SYSRGN                  = 4;
   
 // missing listview macros
 function ListView_GetHeader(hwndLV: HWND): HWND;
@@ -160,11 +163,16 @@ function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
 Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
 { Get information about combo box hwndCombo and place in pcbi }
 Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdCall; External 'user32';
+function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; external 'gdi32';
 
 { Functions allocate and dealocate memory used in ole32 functions
   e.g. BrowseForFolder dialog functions}
 function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
 procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
+// In the way that ScrollWindow is implemented at Windows unit
+// It's not possible to pass a pointer as argument
+// which prevents the use of nil
+function ScrollWindow(hWnd:HWND; XAmount:longint; YAmount:longint;lpRect,lpClipRect:LPRECT):WINBOOL; external 'user32' name 'ScrollWindow';
 
 { Miscellaneous functions }
 { Convert string Str to a PChar }

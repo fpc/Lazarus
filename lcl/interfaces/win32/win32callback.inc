@@ -103,17 +103,43 @@ begin
 end;
 
 type
-  TEraseBkgndCommand = (ecDefault, ecNoMsg);
+  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove);
 const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
 var
   EraseBkgndStack: dword = 0;
 
+{$ifdef MSG_DEBUG}
+function EraseBkgndStackToString: string;
+var
+  I: dword;
+begin
+  SetLength(Result, 8);
+  for I := 0 to 7 do
+    Result[8-I] := char(ord('0') + ((EraseBkgndStack shr (I*2)) and $3));
+end;
+{$endif}
+
 procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
 begin
+{$ifdef MSG_DEBUG}
+  case Command of
+    ecDiscard: DebugLn(MessageStackDepth, 
+      ' *forcing next WM_ERASEBKGND to discard message');
+    ecDiscardNoRemove: DebugLn(MessageStackDepth, 
+      ' *forcing next WM_ERASEBKGND to discard message, no remove');
+  end;
+  DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
+{$endif}
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
+
+var
+  DoubleBufferDC: HDC = 0;
+  DoubleBufferBitmap: HBITMAP = 0;
+  DoubleBufferBitmapWidth: integer = 0;
+  DoubleBufferBitmapHeight: integer = 0;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -233,17 +259,20 @@ Var
 
   procedure SendPaintMessage;
   var
-    DC, MemDC: HDC;
-    MemBitmap, OldBitmap : HBITMAP;
+    DC: HDC;
+    DoubleBufferBitmapOld: HBITMAP;
+    PaintRegion: HRGN; 
     PS : TPaintStruct;
-    MemWidth: Integer;
-    MemHeight: Integer;
     PaintMsg: TLMPaint;
     ORect: TRect;
+    WindowOrg: Windows.POINT;
+    ParentPaintWindow: HWND;
+    WindowWidth, WindowHeight: Integer;
     parLeft, parTop: integer;
     useDoubleBuffer: boolean;
-    parentPaint: boolean;
     isNotebook: boolean;
+    isNativeControl: boolean;
+    lNotebookFound: boolean;
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -257,59 +286,101 @@ Var
     GetClassName(Window, winClassName, 20);
     isNotebook := TWin32WidgetSet(WidgetSet).ThemesActive and
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
-    parentPaint := WindowInfo^.isTabPage or (WindowInfo^.hasTabParent and (WParam <> 0));
+    isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
+    ParentPaintWindow := 0;
+    // if hasTabParent and not isTabPage then background will be drawn in 
+    // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
+    // sent by default paint handler
+    if WindowInfo^.isTabPage or (WindowInfo^.hasTabParent 
+      and (not isNativeControl or (WParam <> 0))) then
+    begin
+      ParentPaintWindow := Window;
+      lNotebookFound := false;
+      while (ParentPaintWindow <> 0) and not lNotebookFound do
+      begin
+        // notebook is parent of window that has istabpage
+        if GetWindowInfo(ParentPaintWindow)^.isTabPage then
+          lNotebookFound := true;
+        ParentPaintWindow := Windows.GetParent(ParentPaintWindow);
+      end;
+    end;
 
     // if painting background of some control for tabpage, don't handle erase background
     // in parent of tabpage
     if WindowInfo^.isTabPage then
-    begin
-{$ifdef MSG_DEBUG}
-      writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to disable message');
-{$endif}
-      PushEraseBkgndCommand(ecNoMsg);
-    end;
-
-    // paint optimizations for controls on a tabpage
-    if WindowInfo^.hasTabParent and (WParam = 0) and not WindowInfo^.isTabPage then
-    begin
-      // if this is a groupbox in a tab, then the next erasebackground is for
-      // drawing the background of the caption, send paint message then
-      // update: tgroupbox does not have csOpaque, so it gets painted
-
-
-      // if need to start paint, paint by calling parent, and we have no
-      // controls, is a native control, use default win32 painting to avoid flicker
-      if (lWinControl.ControlCount = 0)
-          and not CompareMem(@winClassName, @ClsName, High(ClsName)+1) then
-      begin
-        // optimization: no child controls -> default painting
-        exit;
-      end;
-    end;
+      PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and lWinControl.DoubleBuffered;
+    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered 
+      or TWin32WidgetSet(WidgetSet).ThemesActive);
+{$ifdef MSG_DEBUG}      
+    if useDoubleBuffer and (DoubleBufferDC <> 0) then
+    begin
+      DebugLn('ERROR: RECURSIVE PROBLEM! DOUBLEBUFFERED PAINT');
+      useDoubleBuffer := false;
+    end;
+{$endif}
     if useDoubleBuffer then
     begin
-      DC := Windows.GetDC(0);
-      GetWindowSize(Window, MemWidth, MemHeight);
-      MemBitmap := Windows.CreateCompatibleBitmap(DC, MemWidth, MemHeight);
-      Windows.ReleaseDC(0, DC);
-      MemDC := Windows.CreateCompatibleDC(0);
-      OldBitmap := Windows.SelectObject(MemDC, MemBitmap);
-      PaintMsg.DC := MemDC;
+      DoubleBufferDC := Windows.CreateCompatibleDC(0);
+      GetWindowSize(Window, WindowWidth, WindowHeight);
+      if (DoubleBufferBitmapWidth < WindowWidth) or (DoubleBufferBitmapHeight < WindowHeight) then
+      begin
+        DC := Windows.GetDC(0);
+        if DoubleBufferBitmap <> 0 then
+          Windows.DeleteObject(DoubleBufferBitmap);
+        DoubleBufferBitmapWidth := WindowWidth;
+        DoubleBufferBitmapHeight := WindowHeight;
+        DoubleBufferBitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+        Windows.ReleaseDC(0, DC);
+      end;
+      DoubleBufferBitmapOld := Windows.SelectObject(DoubleBufferDC, DoubleBufferBitmap);
+      PaintMsg.DC := DoubleBufferDC;
     end;
+    
+{$ifdef MSG_DEBUG}
+    if useDoubleBuffer then
+      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(DoubleBufferDC, 8))
+    else
+      DebugLn(MessageStackDepth, ' *painting, but not double buffering');
+{$endif}
 
     WinProcess := false;
     try
       if WParam = 0 then
       begin
+        // ignore first erase background on themed control, paint will do everything
+        if TWin32WidgetSet(WidgetSet).ThemesActive then
+          PushEraseBkgndCommand(ecDiscardNoRemove);
         DC := Windows.BeginPaint(Window, @PS);
+        if TWin32WidgetSet(WidgetSet).ThemesActive then
+          EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
+        if useDoubleBuffer then
+        begin
+          PaintRegion := CreateRectRgn(0, 0, 1, 1);
+          if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
+          begin
+            // winnt returns in screen coordinates
+            // win9x returns in window coordinates
+            if Win32Platform = VER_PLATFORM_WIN32_NT then
+            begin
+              WindowOrg.X := 0;
+              WindowOrg.Y := 0;
+              Windows.ClientToScreen(Window, WindowOrg);
+              OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
+            end;
+            SelectClipRgn(DoubleBufferDC, PaintRegion);
+          end;
+          // a copy of the region is selected into the DC, so we
+          // can free our region immediately
+          DeleteObject(PaintRegion);
+        end;
       end else begin
         DC := WParam;
+        PaintRegion := 0;
       end;
-      if parentPaint then
-        GetWin32ControlPos(Window, GetParent(Window), parLeft, parTop);
+      if ParentPaintWindow <> 0 then
+        GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
       if not GetLCLClientBoundsOffset(lWinControl, ORect) then
       begin
         ORect.Left := 0;
@@ -322,11 +393,15 @@ Var
         PaintMsg.DC := DC;
       if not WindowInfo^.hasTabParent and not isNotebook then
         lWinControl.EraseBackground(PaintMsg.DC);
-      if parentPaint then
+      if ParentPaintWindow <> 0 then
       begin
+{$ifdef MSG_DEBUG}
+        DebugLn(MessageStackDepth, ' *painting background by sending paint message to parent window ', 
+          IntToHex(Window, 8));
+{$endif}        
         // tabpage parent and got a dc to draw in, divert paint to parent
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        SendMessage(GetParent(Window), WM_PAINT, PaintMsg.DC, 0);
+        SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
         MoveWindowOrgEx(PaintMsg.DC, parLeft, parTop);
       end;
       if (WParam = 0) or not WindowInfo^.hasTabParent then
@@ -336,20 +411,20 @@ Var
         MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
       end;
       if useDoubleBuffer then
-        Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, DoubleBufferDC, 0, 0, SRCCOPY);
       if WParam = 0 then
         Windows.EndPaint(Window, @PS);
     finally
       if useDoubleBuffer then
       begin
-        SelectObject(MemDC, OldBitmap);
+        SelectObject(DoubleBufferDC, DoubleBufferBitmapOld);
+        DeleteDC(DoubleBufferDC);
+        DoubleBufferDC := 0;
 //        for debugging purposes: copy rendered bitmap to clipboard
 //        Windows.OpenClipboard(0);
 //        Windows.EmptyClipboard;
-//        Windows.SetClipboardData(CF_BITMAP, MemBitmap);
+//        Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
 //        Windows.CloseClipboard;
-        DeleteDC(MemDC);
-        DeleteObject(MemBitmap);
       end;
     end;
   end;
@@ -851,7 +926,7 @@ Begin
           // need to draw transparently, draw background
           GetWin32ControlPos(LParam, Window, P.X, P.Y);
           MoveWindowOrgEx(WParam, -P.X, -P.Y);
-          SendMessage(Window, WM_PAINT, WParam, 0);
+          SendPaintMessage;
           MoveWindowOrgEx(WParam, P.X, P.Y);
           LMessage.Result := GetStockObject(HOLLOW_BRUSH);
           SetBkMode(WParam, TRANSPARENT);
@@ -978,24 +1053,39 @@ Begin
     WM_ERASEBKGND:
     Begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
-      EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
-      if (eraseBkgndCommand <> ecNoMsg) and not WindowInfo^.hasTabParent then
+{$ifdef MSG_DEBUG}      
+      case eraseBkgndCommand of
+        ecDefault: DebugLn(MessageStackDepth, ' *command: default');
+        ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
+      end;
+      DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
+{$endif}      
+      if eraseBkgndCommand <> ecDiscardNoRemove then
+        EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
+      if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
+      begin
+        Result := 0;
+        exit;
+      end;
+      if not WindowInfo^.hasTabParent then
       begin
         if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox 
             and (lWinControl <> nil) then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
           lWinControl.EraseBackground(WParam);
+          LMessage.Result := 1;
         end else begin
           LMessage.Msg := LM_ERASEBKGND;
           LMessage.WParam := WParam;
           LMessage.LParam := LParam;
         end;
       end else begin
-        if WindowInfo^.hasTabParent and ((lWinControl = nil)
-            or not (csOpaque in lWinControl.ControlStyle)) then
+        if (lWinControl = nil) or not (csOpaque in lWinControl.ControlStyle) then
+        begin
           SendPaintMessage;
-        LMessage.Result := 1;
+          LMessage.Result := 1;
+        end;
       end;
       WinProcess := false;
     End;
@@ -1710,7 +1800,8 @@ End;
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
-  writeln(MessageStackDepth, 'WindowProc called for window=', window,' msg=', WM_To_String(msg),' wparam=', wparam, ' lparam=',lparam);
+  DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=', 
+    WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
   MessageStackDepth := MessageStackDepth + ' ';
 
   Result := RealWindowProc(Window, Msg, WParam, LParam);

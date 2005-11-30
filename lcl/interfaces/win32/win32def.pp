@@ -125,10 +125,6 @@ Type
     TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
 
-  // In the way that ScrollWindow is implemented at Windows unit
-  // It's not possible to pass a pointer as argument
-  // which prevents the use of nil
-  function ScrollWindow(hWnd:HWND; XAmount:longint; YAmount:longint;lpRect,lpClipRect:LPRECT):WINBOOL; external 'user32' name 'ScrollWindow';
 var
   // FTimerData contains the currently running timers
   FTimerData : TList;   // list of PWin32Timerinfo
