@@ -2386,8 +2386,13 @@ type
     FAnchor : TIpHtmlNodeA;
     {HaveFocus : Boolean;}                                             {!!.12}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$IFDEF IP_LAZARUS}
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    {$ELSE}
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Message: TLMSetFocus); message WM_KILLFOCUS;
+    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property Anchor : TIpHtmlNodeA read FAnchor write FAnchor;
@@ -16010,26 +16015,33 @@ begin
   end;
 end;
 
-procedure TIpHtmlFocusRect.WMSetFocus(var Message: TWMSetFocus);
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlFocusRect.WMSetFocus(var Message: TLMSetFocus);
 begin
-  {$IFDEF IP_LAZARUS}
   inherited WMSetFocus(Message);
-  {$ELSE}
-  inherited;
-  {$ENDIF}
   Anchor.DoOnFocus;
 end;
 
-procedure TIpHtmlFocusRect.WMKillFocus(var Message: TLMSetFocus);
+procedure TIpHtmlFocusRect.WMKillFocus(var Message: TLMKillFocus);
 begin
-  {$IFDEF IP_LAZARUS}
   inherited WMKillFocus(Message);
-  {$ELSE}
-  inherited;
-  {$ENDIF}
   Anchor.DoOnBlur;
   {HaveFocus := False;}                                                {!!.12}
 end;
+{$ELSE}
+procedure TIpHtmlFocusRect.WMSetFocus(var Message: TWMSetFocus);
+begin
+  inherited;
+  Anchor.DoOnFocus;
+end;
+
+procedure TIpHtmlFocusRect.WMKillFocus(var Message: TWMKillFocus);
+begin
+  inherited;
+  Anchor.DoOnBlur;
+  {HaveFocus := False;}                                                {!!.12}
+end;
+{$ENDIF}
 
 { TIpHtmlFrame }
 
