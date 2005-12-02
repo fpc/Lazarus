@@ -39,8 +39,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil,
-  IDEProcs;
+  Classes, SysUtils, LCLProc, AVL_Tree, FileUtil, IDEProcs;
   
 type
   { TFileReference }
@@ -170,13 +169,14 @@ begin
     inc(FTimeStamp)
   else
     FTimeStamp:=-$7fffffff;
+  //DebugLn('TFileReferenceList.IncreaseTimeStamp ',dbgs(FTimeStamp));
 end;
 
 procedure TFileReferenceList.Invalidate;
 begin
+  IncreaseTimeStamp;
   if not (frfSearchPathValid in FFlags) then exit;
   Exclude(FFlags,frfSearchPathValid);
-  IncreaseTimeStamp;
   if FUpdateLock>0 then
     Include(FFlags,frfChanged)
   else if Assigned(OnChanged) then

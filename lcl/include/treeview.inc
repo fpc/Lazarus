@@ -103,7 +103,7 @@ end;
 { procedure for sorting a TTreeNodeArray}
 
 procedure Sort(Nodes: TTreeNodeArray; Count: integer;
-                    SortProc: TTreeNodeCompare);
+  SortProc: TTreeNodeCompare);
 // Sorts the nodes using merge sort and updates the sibling links
 var
   Buffer: TTreeNodeArray;

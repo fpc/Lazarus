@@ -3681,6 +3681,8 @@ begin
         NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
     end;
   end;
+  
+  // check overwrite existing file
   if (AnUnitInfo.IsVirtual
       or (CompareFilenames(NewFilename,AnUnitInfo.Filename)<>0))
   and FileExists(NewFilename) then begin
@@ -4102,6 +4104,7 @@ begin
   
   // add new path to unit path
   if AnUnitInfo.IsPartOfProject
+  and (not Project1.IsVirtual)
   and (FilenameIsPascalUnit(NewFilename))
   and (CompareFilenames(NewFilePath,Project1.ProjectDirectory)<>0) then begin
     OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);

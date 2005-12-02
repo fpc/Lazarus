@@ -439,6 +439,7 @@ type
     FOnSaveProjectInfo: TOnSaveProjectInfo;
     fPathDelimChanged: boolean;
     fProjectDirectory: string;
+    fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
     FPublishOptions: TPublishProjectOptions;
     FRunParameterOptions: TRunParamsOptions;
@@ -2441,6 +2442,7 @@ begin
   if NewProjectInfoFile='' then exit;
   DoDirSeparators(NewProjectInfoFile);
   if fProjectInfoFile=NewProjectInfoFile then exit;
+  BeginUpdate(true);
   OldProjectInfoFile:=fProjectInfoFile;
   fProjectInfoFile:=NewProjectInfoFile;
   DefaultTitle:=ExtractFileNameOnly(OldProjectInfoFile);
@@ -2449,11 +2451,14 @@ begin
     Title:=DefaultTitle;
   end;
   UpdateProjectDirectory;
+  FDefineTemplates.SourceDirectoriesChanged;
   Modified:=true;
+  EndUpdate;
+  //DebugLn('TProject.SetProjectInfoFile FDefineTemplates.FUpdateLock=',dbgs(FDefineTemplates.FUpdateLock));
 end;
 
 function TProject.OnUnitFileBackup(const Filename:string;
-  IsPartOfProject:boolean):TModalResult;
+  IsPartOfProject: boolean):TModalResult;
 begin
   if Assigned(fOnFileBackup) then
     Result:=fOnFileBackup(Filename,IsPartOfProject)
@@ -2463,7 +2468,7 @@ end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
 var
-  ProjectPath:string;
+  ProjectPath: string;
   FileWasAbsolute: Boolean;
 begin
   if AFileName='' then exit;
@@ -2993,7 +2998,7 @@ function TProject.ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
 begin
   Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
-    if AnsiCompareText(AnUnitName,Result.UnitName)=0 then exit;
+    if CompareText(AnUnitName,Result.UnitName)=0 then exit;
     Result:=Result.fNext[uilPartOfProject];
   end;
 end;
@@ -3002,6 +3007,13 @@ procedure TProject.UpdateProjectDirectory;
 begin
   fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
   CompilerOptions.BaseDirectory:=fProjectDirectory;
+  if fProjectDirectory<>fProjectDirectoryReferenced then begin
+    if fProjectDirectoryReferenced<>'' then
+      FSourceDirectories.RemoveFilename(fProjectDirectoryReferenced);
+    if fProjectDirectory<>'' then
+      FSourceDirectories.AddFilename(fProjectDirectory);
+    fProjectDirectoryReferenced:=fProjectDirectory;
+  end;
 end;
 
 procedure TProject.UpdateSourceDirectories;
@@ -3027,8 +3039,13 @@ end;
 procedure TProject.ClearSourceDirectories;
 begin
   FSourceDirectories.Clear;
+  fProjectDirectoryReferenced:='';
   if MainProject then
     FSourceDirectories.AddFilename(VirtualDirectory);
+  if (fProjectDirectory<>'') then begin
+    FSourceDirectories.AddFilename(fProjectDirectory);
+    fProjectDirectoryReferenced:=fProjectDirectory;
+  end;
 end;
 
 procedure TProject.SourceDirectoriesChanged(Sender: TObject);
@@ -3367,7 +3384,7 @@ var
   SrcDirMarkDefTempl: TDefineTemplate;
   SrcPathDefTempl: TDefineTemplate;
 begin
-  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active));
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
   if (not Project.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
