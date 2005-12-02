@@ -266,8 +266,12 @@ Var
     PaintMsg: TLMPaint;
     ORect: TRect;
     WindowOrg: Windows.POINT;
+{$ifdef DEBUG_DOUBLEBUFFER}  
+    ClipBox: Windows.RECT;
+{$endif}    
     ParentPaintWindow: HWND;
     WindowWidth, WindowHeight: Integer;
+    DCIndex: integer;
     parLeft, parTop: integer;
     useDoubleBuffer: boolean;
     isNotebook: boolean;
@@ -357,6 +361,13 @@ Var
           EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
         if useDoubleBuffer then
         begin
+{$ifdef DEBUG_DOUBLEBUFFER}
+          ORect.Left := 0;
+          ORect.Top := 0;
+          ORect.Right := DoubleBufferBitmapWidth;
+          ORect.Bottom := DoubleBufferBitmapHeight;
+          Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP));
+{$endif}          
           PaintRegion := CreateRectRgn(0, 0, 1, 1);
           if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
           begin
@@ -367,13 +378,19 @@ Var
               WindowOrg.X := 0;
               WindowOrg.Y := 0;
               Windows.ClientToScreen(Window, WindowOrg);
-              OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
+              Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
             end;
-            SelectClipRgn(DoubleBufferDC, PaintRegion);
-          end;
+            Windows.SelectClipRgn(DoubleBufferDC, PaintRegion);
+          end;          
+{$ifdef DEBUG_DOUBLEBUFFER}          
+          Windows.GetClipBox(DoubleBufferDC, ClipBox);          
+          DebugLn('Double buffering in DC ', IntToHex(DoubleBufferDC, 8), ' with clipping rect (',
+            IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';', 
+            IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
+{$endif}            
           // a copy of the region is selected into the DC, so we
           // can free our region immediately
-          DeleteObject(PaintRegion);
+          Windows.DeleteObject(PaintRegion);
         end;
       end else begin
         DC := WParam;
@@ -397,18 +414,26 @@ Var
       begin
 {$ifdef MSG_DEBUG}
         DebugLn(MessageStackDepth, ' *painting background by sending paint message to parent window ', 
-          IntToHex(Window, 8));
+          IntToHex(ParentPaintWindow, 8));
 {$endif}        
         // tabpage parent and got a dc to draw in, divert paint to parent
+        DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
-        MoveWindowOrgEx(PaintMsg.DC, parLeft, parTop);
+        Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
+        Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (WParam = 0) or not WindowInfo^.hasTabParent then
       begin
+        DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
+{$ifdef DEBUG_DOUBLEBUFFER}        
+        Windows.GetClipBox(PaintMsg.DC, ClipBox);
+        DebugLn('LCL Drawing in DC ', IntToHex(PaintMsg.DC, 8), ' with clipping rect (',
+          IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';', 
+          IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
+{$endif}          
         DeliverMessage(lWinControl, PaintMsg);
-        MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
+        Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if useDoubleBuffer then
         Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, DoubleBufferDC, 0, 0, SRCCOPY);
@@ -420,11 +445,16 @@ Var
         SelectObject(DoubleBufferDC, DoubleBufferBitmapOld);
         DeleteDC(DoubleBufferDC);
         DoubleBufferDC := 0;
-//        for debugging purposes: copy rendered bitmap to clipboard
-//        Windows.OpenClipboard(0);
-//        Windows.EmptyClipboard;
-//        Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
-//        Windows.CloseClipboard;
+{$ifdef DEBUG_DOUBLEBUFFER}
+        if CopyBitmapToClipboard then
+        begin
+//          Windows.OpenClipboard(0);
+//          Windows.EmptyClipboard;
+//          Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
+//          Windows.CloseClipboard;
+          CopyBitmapToClipboard := false;
+        end;
+{$endif}        
       end;
     end;
   end;
