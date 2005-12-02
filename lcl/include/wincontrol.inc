@@ -27,7 +27,15 @@
 
 { $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TPanel';
+const CheckPostionClassName = 'TMyPanel';
+const CheckPostionName = 'WhereRadioGroup';
+
+function CheckPosition(AControl: TControl): boolean;
+begin
+  Result:=(CompareText(AControl.ClassName,CheckPostionClassName)=0)
+           or (CompareText(AControl.Name,CheckPostionName)=0);
+end;
+
 {$ENDIF}
 { $DEFINE VerboseMouseBugfix}
 
@@ -879,7 +887,7 @@ var
 
   begin
     {$IFDEF CHECK_POSITION}
-    if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+    if CheckPosition(Control) then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -957,7 +965,7 @@ var
 
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
@@ -1036,7 +1044,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
@@ -1076,7 +1084,7 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
-      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',DbgS(akRight in AnchorAlign[AAlign]),
                 ' akLeft in Control.Anchors=',DbgS(akLeft in Control.Anchors),
                 //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
@@ -1145,7 +1153,7 @@ var
       
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
@@ -1163,7 +1171,7 @@ var
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',DbgSName(Control),
                 ' New=',dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewRight)+','+dbgs(NewBottom));
@@ -1183,7 +1191,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(Control.ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Control) then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',DbgS(Left,Top,Width,Height));
       {$ENDIF}
@@ -1232,7 +1240,7 @@ var
     end;
 
     {$IFDEF CHECK_POSITION}
-    if CompareText(Control.ClassName,CheckPostionClassName)=0 then
+    if CheckPosition(Control) then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
@@ -2162,7 +2170,7 @@ begin
       Width:= FWidth;
       Height:= FHeight;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Self) then
       DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',DbgS(Width),' Height=',DbgS(Height));
       {$ENDIF}
     end;
@@ -2176,7 +2184,7 @@ begin
       XPos:= FLeft;
       YPos:= FTop;
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Self) then
       DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',Dbgs(XPos),' YPos=',Dbgs(YPos));
       {$ENDIF}
     end;
@@ -4843,6 +4851,12 @@ begin
   //The win32 interface depends on it to determine where to send call backs.
   SetProp(Handle,'WinControl',TWinControl(Self));
 
+  {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
+    DebugLn('[TWinControl.InitializeWnd] A ',DbgSName(Self),
+    ' OldRelBounds=',dbgs(FBoundsRealized),
+    ' -> NewBounds=',dbgs(BoundsRect));
+  {$ENDIF}
   DoSendBoundsToInterface;
   TWSWinControlClass(WidgetSetClass).ShowHide(Self);
 
@@ -5225,7 +5239,7 @@ var
 begin
   {$IFDEF CHECK_POSITION}
   //if csDesigning in ComponentState then
-  if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+  if CheckPosition(Self) then
   DebugLn('[TWinControl.SetBounds] START ',Name,':',ClassName,
   ' Old=',DbgS(Left,Top,Width,Height),
   ' -> New=',DbgS(ALeft,ATop,AWidth,AHeight),
@@ -5246,7 +5260,7 @@ begin
     try
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
+      if CheckPosition(Self) then
       DebugLn('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
       ' OldBounds=',Dbgs(Left,Top,Left+Width,Top+Height),
       ' -> New=',Dbgs(ALeft,ATop,ALeft+AWidth,ATop+AHeight));
@@ -5517,9 +5531,10 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  //if CompareText(ClassName,'TStringsPropEditorDlg')=0 then
-  //  DebugLn('TWinControl.DoSendBoundsToInterface A ',DbgSName(Self),' Old=',dbgs(FBoundsRealized),
-  //          ' New=',dbgs(NewBounds));
+  //if CheckPosition(Self) then
+  //  DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
+  //  ' OldRelBounds=',dbgs(FBoundsRealized),
+  //  ' -> NewBounds=',dbgs(NewBounds));
   FBoundsRealized:=NewBounds;
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
 end;
@@ -5536,8 +5551,8 @@ begin
     // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
     //if csDesigning in ComponentState then
-    if AnsiCompareText(ClassName,CheckPostionClassName)=0 then
-    DebugLn('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
+    if CheckPosition(Self) then
+    DebugLn('[TWinControl.RealizeBounds] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
     {$ENDIF}

@@ -103,9 +103,11 @@ var
   i       : integer;
   temp    : TRadioButton;
 begin
-  if FCreatingWnd then exit;
+  if FCreatingWnd then RaiseGDBException('TCustomRadioGroup.InitializeWnd');
   FCreatingWnd := true;
   //DebugLn('[TCustomRadioGroup.InitializeWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  
+  inherited InitializeWnd;
 
   // destroy radiobuttons, if there are too many
   while FButtonList.Count>FItems.Count do begin
