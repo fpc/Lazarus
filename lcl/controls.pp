@@ -2037,6 +2037,7 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 var
   DefaultDockTreeClass: TDockTreeClass;
 
+procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
 procedure SetCaptureControl(Control: TControl);
 function GetCaptureControl: TControl;
 procedure CancelDrag;
@@ -2333,6 +2334,19 @@ begin
   and (CaptureControl <> nil)
   and (CaptureControl.Parent = Result)
   then Result := CaptureControl;
+end;
+
+procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
+var
+  Control: TControl;
+begin
+  Control:=AWinControl;
+  if (AWinControl<>nil) then begin
+    Control:=AWinControl.ControlAtPos(Position,false,true,false);
+    if Control=nil then
+      Control:=AWinControl;
+  end;
+  SetCaptureControl(Control);
 end;
 
 procedure SetCaptureControl(Control: TControl);

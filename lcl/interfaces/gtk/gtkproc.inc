@@ -4474,7 +4474,7 @@ var
   OldMouseCaptureWidget: PGtkWidget;
 begin
   {$IFDEF VerboseMouseCapture}
-  DebugLn('ReleaseMouseCapture ',ord(MouseCaptureType),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+  DebugLn('ReleaseMouseCapture ',dbgs(ord(MouseCaptureType)),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$ENDIF}
   if MouseCaptureType=mctGTK then exit;
   OldMouseCaptureWidget:=MouseCaptureWidget;

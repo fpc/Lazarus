@@ -1132,7 +1132,7 @@ begin
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
-                                         PGtkWidget(AWinControl.Handle));
+                                          PGtkWidget(AWinControl.Handle));
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4,5] then begin
@@ -1241,6 +1241,8 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
 var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
+  EventXY: TPoint;
+  MappedXY: TPoint;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1278,8 +1280,10 @@ begin
 
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
     if Event^.button=1 then begin
-      CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
-      //Result := not CallBackDefaultReturn;
+      EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
+      MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,CaptureWidget);
+      SetCaptureControl(TWinControl(Data),MappedXY);
+      //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end;
   end else begin
     // stop the signal, so that the widget does not auto react

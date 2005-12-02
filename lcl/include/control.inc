@@ -1547,8 +1547,8 @@ end;
 procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
   Shift: TShiftState);
 begin
-  if not (csNoStdEvents in ControlStyle) then
-  Begin
+  //DebugLn('TControl.DoMouseDown ',DbgSName(Self),' ');
+  if not (csNoStdEvents in ControlStyle) then begin
     with Message do
       MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
   end;

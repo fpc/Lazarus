@@ -2500,6 +2500,7 @@ begin
     Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),False,True,False);
   end;
 
+  //DebugLn('TWinControl.IsControlMouseMsg ',DbgSName(Self),' Control=',DbgSName(Control));
   Result := False;
   if Control <> nil then
   begin
