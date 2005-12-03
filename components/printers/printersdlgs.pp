@@ -24,16 +24,33 @@ unit PrintersDlgs;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Printers, osPrinters, LResources;
+  Classes, SysUtils, Dialogs, LResources, Printers, OsPrinters;
 
 type
-  { Type for compatibility with delphi }
 
+  TMeasureUnits = (unMM,unInch);
+  { Type for compatibility with delphi }
+  
+  { TPageSetupDialog }
+  
+  TPageSetupDialog = class(TCustomPrinterSetupDialog)
+  private
+   fMargins : TRect;
+   fUnits : TMeasureUnits;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    function Execute: Boolean; override;
+    property Margins : TRect read fMargins write fMargins;
+    property Units : TMeasureUnits read fUnits;
+  end;
+
+  { TPrinterDialog }
+  
   TPrinterSetupDialog = class(TCustomPrinterSetupDialog)
   public
     function Execute: Boolean; override;
   end;
-  
+
   { TPrintDialog }
 
   TPrintDialog = class(TCustomPrintDialog)
@@ -56,25 +73,28 @@ procedure Register;
 
 implementation
 
+{$IFDEF LINUX}
+{$I ./linux/cupsprndialogs.inc}
+{$ENDIF}
+
+{$IFDEF WIN32}
+{$I win32/winprndialogs.inc}
+{$ENDIF}
+
+constructor TPageSetupDialog.Create(TheOwner: TComponent);
+begin
+ inherited Create(TheOwner);
+ fMargins.Bottom := 0;
+ fMargins.Left := 0;
+ fMargins.Right := 0;
+ fMargins.Top := 0;
+end;
 
 procedure Register;
 begin
-  RegisterComponents('Dialogs',[TPrinterSetupDialog,TPrintDialog]);
+  RegisterComponents('Dialogs',[TPrinterSetupDialog,TPrintDialog,TPageSetupDialog]);
 end;
 
-{ TPrinterSetupDialog }
-
-function TPrinterSetupDialog.Execute: Boolean;
-begin
-  Result:=Printer.PrinterSetup;
-end;
-
-{ TPrinterDialog }
-
-function TPrintDialog.Execute: Boolean;
-begin
-  Result:=Printer.PrintDialog;
-end;
 
 initialization
   {$I printersdlgs.lrs}

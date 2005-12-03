@@ -260,7 +260,7 @@ begin
   begin
     if Assigned(fcupsPrinter) then
     begin
-      Opts:=fcupsPrinter^.options;
+      Opts := fcupsPrinter^.Options;
       for i:=0 to fcupsPrinter^.num_options-1 do
       begin
         Opt:=@Opts[i];
@@ -272,7 +272,7 @@ end;
 
 //Enum all options associed with aKeyWord
 function TCUPSPrinter.EnumPPDChoice(Lst : TStrings;
-  const aKeyWord : string) : Integer;
+  const aKeyWord : string; OptNames: TStrings = nil) : Integer;
 var i         : integer;
     Option    : Pppd_option_t;
     Choice    : Pppd_choice_t;
@@ -300,11 +300,16 @@ begin
               Result:=i;
 
             Lst.Add(Choice^.text);
+            if Assigned(OptNames) then
+              OptNames.Add(Choice^.choice);
           end;
 
           //Not marked choise then the choice is default
-          if (Result<0) and (Lst.Count>0) then
+          if (Result<0) and (Lst.Count>0) then begin
             Result:=Lst.IndexOf(OPtion^.defchoice);
+            if (Result<0)and Assigned(OptNames) then
+              Result := OptNames.IndexOf(Option^.DefChoice);
+          end;
         end;
       end;
     end;
@@ -444,7 +449,7 @@ begin
   TPostscriptPrinterCanvas(Canvas).OutputFileName:=NewOutputFileName;
 end;
 
-//If not aborded, send PostScript file to printer.
+//If not aborted, send PostScript file to printer.
 //After, delete this file.
 procedure TCUPSPrinter.DoEndDoc(aAborded: Boolean);
 begin
@@ -478,8 +483,10 @@ begin
   end;
 
   FreeOptions;
-  if Assigned(fcupsPrinters) and CUPSLibInstalled then
+  if Assigned(fcupsPrinters) and CUPSLibInstalled then begin
     cupsFreeDests(Printers.Count,fcupsPrinters);
+    fCupsPrinter := nil;
+  end;
 end;
 
 procedure TCUPSPrinter.DoEnumPrinters(Lst: TStrings);
@@ -509,6 +516,13 @@ begin
   inherited DoEnumPapers(Lst);
   
   GetEnumAttributeString('media-supported',Lst);
+end;
+
+procedure TCUPSPrinter.DoInitialization;
+begin
+  //printer list has been obtained
+  if Printers.Count > 0 then
+    SelectCurrentPrinterOrDefault;
 end;
 
 function TCUPSPrinter.DoSetPrinter(aName: string): Integer;

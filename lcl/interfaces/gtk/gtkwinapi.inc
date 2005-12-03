@@ -2193,6 +2193,14 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 
   procedure RaiseInvalidGDIObject;
   begin
+    {$ifdef TraceGdiCalls}
+    DebugLn();
+    DebugLn('TraceCall for invalid object: ');
+    DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
+    DebugLn();
+    DebugLn('Exception will follow:');
+    DebugLn();
+    {$endif}
     RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+DbgS(GdiObject));
   end;
 
@@ -7710,6 +7718,12 @@ begin
         else begin
           Result := ERROR;
           DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
+          {$ifdef TraceGdiCalls}
+          DebugLn();
+          DebugLn('TraceCall for invalid object: ');
+          DumpBackTrace(PgdiObject(RGN)^.StackAddrs);
+          DebugLn();
+          {$endif}
         end;
     end;
   end;

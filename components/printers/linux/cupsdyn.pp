@@ -1201,6 +1201,8 @@ begin
     end;
   end;
   
+  //WriteLn('CupsLibHandle=', CupsLibHandle);
+  
   //
   //cups_language.pp
   //

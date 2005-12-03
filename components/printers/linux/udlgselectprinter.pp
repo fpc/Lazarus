@@ -44,10 +44,12 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls,LCLType,
-  Printers, osPrinters,
-  CUPSDyn,libc;
+  Printers, OsPrinters in '../osprinters.pas', CUPSDyn,libc;
 
 type
+
+  { TdlgSelectPrinter }
+
   TdlgSelectPrinter = class(TForm)
     Bevel1: TBEVEL;
     btnProp: TBUTTON;
@@ -58,6 +60,7 @@ type
     cbPrinters: TCOMBOBOX;
     cbCollate: TCHECKBOX;
     cbReverse: TCHECKBOX;
+    cbPrintToFile: TCheckBox;
     edPageSet: TCOMBOBOX;
     cbTasktime: TCOMBOBOX;
     edRange: TEDIT;
@@ -84,6 +87,7 @@ type
     pgAdvance: TPAGE;
     pgCopies: TPAGE;
     Panel1: TPANEL;
+    rbSelection: TRadioButton;
     rbRange: TRADIOBUTTON;
     rbCurrentPage: TRADIOBUTTON;
     rbAllPage: TRADIOBUTTON;
@@ -103,6 +107,7 @@ type
   private
     { private declarations }
     fPropertiesSetting : Boolean;
+    FOptions: TPrintDialogOptions;
     
     function GetPrintRange: TPrintRange;
     procedure RefreshInfos;
@@ -113,6 +118,7 @@ type
     constructor Create(aOwner : TComponent); override;
     
     property PrintRange: TPrintRange read GetPrintRange write SetPrintRange;
+    property Options: TPrintDialogOptions read FOptions write FOptions;
   end; 
 
 var
@@ -196,6 +202,12 @@ var St  : string;
 
 begin
   try
+
+    cbPrintToFile.Visible := (poPrintToFile in FOptions);
+    cbPrintToFile.Enabled := not (poDisablePrintToFile in FOptions);
+    rbSelection.Enabled := (poSelection in FOptions);
+    rbCurrentPage.Enabled := (poPageNums in FOptions);
+
     //State
     St:='';
     StP:='printer';
@@ -239,7 +251,9 @@ begin
     cbCollate.Checked:=True; //For update image
 
     //Range setting
-    edRange.Enabled:=THackCUPSPrinter(Printer).GetAttributeBoolean('page-ranges-supported',False);
+    edRange.Enabled:=
+      (poPageNums in FOptions) and
+      THackCUPSPrinter(Printer).GetAttributeBoolean('page-ranges-supported',False);
     rbRange.Enabled:=edRange.Enabled;
 
     //Job priority
@@ -367,11 +381,12 @@ begin
   if Sender=nil then ;
   NbOpts.PageIndex:=0;
   
-  //Printers
   Printer.Refresh;
   cbPrinters.Items.Assign(Printer.Printers);
+  
   if cbPrinters.Items.Count>0 then
-    cbPrinters.ItemIndex:=0;
+    cbPrinters.ItemIndex:= Printer.PrinterIndex;
+    
   RefreshInfos;
 end;
 

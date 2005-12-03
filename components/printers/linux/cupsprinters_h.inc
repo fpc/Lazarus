@@ -66,6 +66,8 @@ type
     );
   TCUPSPrinterStates = set of TCUPSPrinterState;
 
+  { TCUPSPrinter }
+
   TCUPSPrinter = Class(TPrinter)
   private
      fcupsPrinters: Pcups_dest_t;    //Printers avaible
@@ -99,6 +101,7 @@ type
 
      procedure DoEnumPrinters(Lst : TStrings); override;
      procedure DoEnumPapers(Lst : TStrings); override;
+     procedure DoInitialization; override;
      function DoSetPrinter(aName : string): Integer; override;
      function DoGetCopies : Integer; override;
      procedure DoSetCopies(aValue : Integer); override;
@@ -127,7 +130,8 @@ type
      function GetAttributeInteger(aName : PChar;DefaultValue : Integer) : Integer;
      function GetAttributeString(aName: PChar; const DefaultValue : string): string;
      function GetAttributeBoolean(aName : PChar; DefaultValue : Boolean) : Boolean;
-     function EnumPPDChoice(Lst : TStrings; const aKeyWord : string) : Integer;
+     function EnumPPDChoice(Lst : TStrings; const aKeyWord : string;
+        OptNames: TStrings = nil) : Integer;
 
      procedure cupsAddOption(aName,aValue: string);
      function cupsGetOption(aKeyWord: string): String;

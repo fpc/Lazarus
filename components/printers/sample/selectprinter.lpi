@@ -1,87 +1,59 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <Flags>
+        <SaveClosedFiles Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="selectprinter"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
-    <Units Count="9">
+    <LazDoc Paths=""/>
+    <Units Count="4">
       <Unit0>
+        <CursorPos X="41" Y="12"/>
         <Filename Value="selectprinter.lpr"/>
         <IsPartOfProject Value="True"/>
+        <TopLine Value="1"/>
         <UnitName Value="selectprinter"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="114"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="12" Y="28"/>
+        <CursorPos X="17" Y="24"/>
         <EditorIndex Value="0"/>
         <Filename Value="frmselprinter.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmselprinter.lrs"/>
-        <TopLine Value="1"/>
+        <TopLine Value="20"/>
         <UnitName Value="frmselprinter"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="114"/>
       </Unit1>
       <Unit2>
-        <CursorPos X="15" Y="29"/>
-        <Filename Value="G:\projects\winspl\PrintersDlgs.pp"/>
-        <TopLine Value="1"/>
-        <UnitName Value="PrintersDlgs"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="15" Y="27"/>
+        <Filename Value="C:/lazarus/components/printers/win32/winprndialogs.inc"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="45"/>
+        <UnitName Value="text"/>
+        <UsageCount Value="60"/>
       </Unit2>
       <Unit3>
-        <CursorPos X="87" Y="19"/>
-        <Filename Value="xfrmselprinter.pas"/>
-        <ComponentName Value="Form1"/>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="C:/lazarus/components/printers/linux/cupsprndialogs.inc"/>
+        <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
-        <UnitName Value="frmSelPrinter"/>
-        <UsageCount Value="10"/>
+        <UnitName Value="text"/>
+        <UsageCount Value="60"/>
       </Unit3>
-      <Unit4>
-        <CursorPos X="46" Y="27"/>
-        <Filename Value="\home\olivier\lazarus\components\printers\printersdlgs.pp"/>
-        <TopLine Value="1"/>
-        <UnitName Value="PrintersDlgs"/>
-        <UsageCount Value="10"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="23" Y="48"/>
-        <Filename Value="\home\olivier\lazarus\components\printers\osprinters.pas"/>
-        <TopLine Value="10"/>
-        <UnitName Value="OSPrinters"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="47" Y="669"/>
-        <Filename Value="\home\olivier\lazarus\components\printers\linux\cupsprinters.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="16" Y="57"/>
-        <Filename Value="\home\olivier\lazarus\components\printers\linux\cupsprinters_h.inc"/>
-        <TopLine Value="48"/>
-        <UsageCount Value="10"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="1" Y="1389"/>
-        <Filename Value="\home\olivier\lazarus\components\printers\linux\cupsdyn.pp"/>
-        <TopLine Value="1344"/>
-        <UnitName Value="cupsdyn"/>
-        <UsageCount Value="10"/>
-      </Unit8>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -89,7 +61,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -101,13 +73,19 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="4"/>
-    <PathDelim Value="\"/>
+    <Version Value="5"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <DelphiCompat Value="True"/>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
@@ -121,21 +99,22 @@
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
+    <CompileReasons Run="False"/>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="3">
+    <BreakPoints Count="1">
       <Item1>
-        <Source Value="G:\projects\udf_ib\udf_glob.pas"/>
-        <Line Value="117"/>
+        <Source Value="C:/lazarus/components/printers/win32/winprndialogs.inc"/>
+        <Line Value="20"/>
+      </Item1>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="lpp.nCopies"/>
       </Item1>
       <Item2>
-        <Source Value="G:\projects\udf_ib\udf_glob.pas"/>
-        <Line Value="119"/>
+        <Expression Value="DevMode^.dmCopies"/>
       </Item2>
-      <Item3>
-        <Source Value="G:\projects\udf_ib\TimeFncs.pas"/>
-        <Line Value="185"/>
-      </Item3>
-    </BreakPoints>
+    </Watches>
   </Debugging>
 </CONFIG>

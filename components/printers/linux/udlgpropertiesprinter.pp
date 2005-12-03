@@ -35,9 +35,12 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,Buttons,Printers,osPrinters;
+  StdCtrls,Buttons,Printers, OsPrinters in '../osprinters.pas';
 
 type
+
+  { Tdlgpropertiesprinter }
+
   Tdlgpropertiesprinter = class(TForm)
     btnCancel1: TBUTTON;
     btnOk: TBUTTON;
@@ -72,26 +75,30 @@ type
     rbrev_Landscape: TRADIOBUTTON;
     rbLandscape: TRADIOBUTTON;
     rbPortrait: TRADIOBUTTON;
+    procedure FormDestroy(Sender: TObject);
     procedure rbPortraitCLICK(Sender: TObject);
     procedure cbPaperSizeKEYPRESS(Sender: TObject; var Key: Char);
     procedure dlgpropertiesprinterCREATE(Sender: TObject);
     procedure dlgpropertiesprinterSHOW(Sender: TObject);
   private
     { private declarations }
+    fPaperSizeOptions,FMediaTypeOptions,FInputSlotOptions: TStringList;
+    
     procedure RefreshInfos;
 
-    procedure InitCombo(aCombo : TCombobox; aKeyWord,aDefault : string);
+    procedure InitCombo(aCombo: TCombobox; aKeyWord,aDefault : string; OptList: TStrings);
     
     function number_up_supported: string;
   public
     { public declarations }
     procedure InitProperties;
-  end; 
+  end;
 
 var
   dlgpropertiesprinter: Tdlgpropertiesprinter;
 
 implementation
+
 Type
   THackCUPSPrinter=Class(TCUPSPrinter);
 
@@ -107,7 +114,6 @@ begin
   if Sender=nil then ;
   Key:=#0;
 end;
-
 
 function Tdlgpropertiesprinter.number_up_supported: string;
 Var Lst : TStringList;
@@ -129,10 +135,14 @@ Var Lst : TStringList;
     St  : String;
 begin
   if Sender=nil then ;
+  
+  FPaperSizeOptions := TStringList.Create;
+  FMediaTypeOptions := TStringlist.Create;
+  FInputSlotOptions := TStringList.Create;
 
-  InitCombo(cbPaperSize,'PageSize',Printer.PaperSize.PaperName);
-  InitCombo(cbPaperType,'MediaType','Plain Paper');
-  InitCombo(cbPaperSrc ,'InputSlot','Auto Sheet Feeder');
+  InitCombo(cbPaperSize,'PageSize',Printer.PaperSize.PaperName, FPaperSizeOptions);
+  InitCombo(cbPaperType,'MediaType','Plain Paper',FMediaTypeOptions);
+  InitCombo(cbPaperSrc ,'InputSlot','Auto Sheet Feeder',FInputSlotOptions);
 
   Lst:=TStringList.Create;
   try
@@ -202,6 +212,13 @@ begin
   RefreshInfos;
 end;
 
+procedure Tdlgpropertiesprinter.FormDestroy(Sender: TObject);
+begin
+  FPaperSizeOptions.Free;
+  FMediaTypeOptions.Free;
+  FInputSlotOptions.Free;
+end;
+
 procedure Tdlgpropertiesprinter.RefreshInfos;
 var St  : string;
 begin
@@ -232,15 +249,17 @@ begin
 end;
 
 //Initialization of an combobox with ppd options
-procedure Tdlgpropertiesprinter.InitCombo(aCombo: TCombobox; aKeyWord,aDefault: string);
-Var i : Integer;
+procedure Tdlgpropertiesprinter.InitCombo(aCombo: TCombobox; aKeyWord,aDefault: string; OptList: TStrings);
+Var
+  i : Integer;
 begin
   If Assigned(aCombo) then
   begin
     //Save the default choice or marked choice
-    aCombo.Tag:=THackCUPSPrinter(Printer).EnumPPDChoice(aCombo.Items,aKeyWord);
+    aCombo.Tag:=THackCUPSPrinter(Printer).EnumPPDChoice(aCombo.Items,aKeyWord,OptList);
     aCombo.Enabled:=(aCombo.Items.Count>0);
-    i:=aCombo.Items.IndexOf(aDefault);
+    //i:=aCombo.Items.IndexOf(aDefault);
+    i := OptList.IndexOf(aDefault);
     if i=-1 then i:=aCombo.Tag;
     if i>-1 then
       aCombo.ItemIndex:=i;
@@ -256,15 +275,22 @@ begin
 
   //PageSize
   if (cbPaperSize.Items.Count>0) and (cbPaperSize.ItemIndex<>cbPaperSize.Tag) then
-    THackCUPSPrinter(Printer).cupsAddOption('PageSize',cbPaperSize.Text);
+  begin
+    //THackCUPSPrinter(Printer).cupsAddOption('PageSize',cbPaperSize.Text);
+    THackCUPSPrinter(Printer).cupsAddOption('PageSize',
+      fPaperSizeOptions[cbPaperSize.ItemIndex]);
+  end;
 
   //MediaType
   if (cbPaperType.Items.Count>0) and (cbPaperType.ItemIndex<>cbPaperType.Tag) then
-    THackCUPSPrinter(Printer).cupsAddOption('MediaType',cbPaperType.Text);
+    THackCUPSPrinter(Printer).cupsAddOption('MediaType',
+      fMediaTypeOptions[cbPaperType.ItemIndex]);
 
   //InputSlot
   if (cbPaperSrc.Items.Count>0) and (cbPaperSrc.ItemIndex<>cbPaperSrc.Tag) then
-    THackCUPSPrinter(Printer).cupsAddOption('InputSlot',cbPaperSrc.Text);
+    THackCUPSPrinter(Printer).cupsAddOption('InputSlot',
+      FInputSlotOptions[cbPaperSrc.ItemIndex]);
+      
 
   //Duplex
   if gbDuplex.Enabled then

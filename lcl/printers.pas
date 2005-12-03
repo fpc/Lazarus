@@ -162,6 +162,7 @@ type
      procedure DoEnumPrinters(Lst : TStrings); virtual;
      procedure DoEnumFonts(Lst : TStrings); virtual;
      procedure DoEnumPapers(Lst : TStrings); virtual;
+     procedure DoInitialization; virtual;
      function DoSetPrinter(aName : string): Integer; virtual;
      function DoGetCopies : Integer; virtual;
      procedure DoSetCopies(aValue : Integer); virtual;
@@ -187,9 +188,6 @@ type
      procedure Refresh;
      procedure SetPrinter(aName : String);
 
-     function PrintDialog : Boolean;  virtual; abstract;
-     function PrinterSetup: Boolean; virtual; abstract;
-     
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
      property PaperSize : TPaperSize read GetPaperSize;
      property Orientation: TPrinterOrientation read GetOrientation write SetOrientation;
@@ -305,9 +303,16 @@ end;
 
 //Clear Printers & Fonts list
 procedure TPrinter.Refresh;
+var
+  OldPrinter: string;
 begin
   //Check if Printer not printing otherwise, exception
   CheckPrinting(False);
+
+  if FPrinterIndex>=0 then
+    OldPrinter := fPrinters[FPrinterIndex]
+  else
+    OldPrinter := '';
 
   if Assigned(fPrinters) then
   begin
@@ -320,8 +325,18 @@ begin
     DoResetFontsList;
     FreeAndNil(fFonts);
   end;
-    
+
+  // need to refill printers here otherwise
+  // it wont be filled on getting printers
+  // due to only one initialization
+  GetPrinters;
+  DoEnumPrinters(fPrinters);
+
   fPrinterIndex:=-1;
+
+  // try to locate old selected printer
+  if OldPrinter<>'' then
+    SetPrinter(OldPrinter);
 end;
 
 //Set the current printer
@@ -439,6 +454,7 @@ begin
   if not fPrintersValid then begin
     fPrintersValid:=true;
     DoEnumPrinters(fPrinters);
+    DoInitialization;
   end;
 end;
 
@@ -555,6 +571,13 @@ end;
 procedure TPrinter.DoEnumPapers(Lst: TStrings);
 begin
  //Override this methode
+end;
+
+// This method is called once after the printer list
+// is obtained for the first time.
+procedure TPrinter.DoInitialization;
+begin
+  //Override this method
 end;
 
 

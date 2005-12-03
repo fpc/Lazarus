@@ -1,48 +1,137 @@
 object Form1: TForm1
+  ActiveControl = Button2
   Caption = 'Form1'
-  ClientHeight = 116
+  ClientHeight = 487
   ClientWidth = 339
+  OnCreate = FormCreate
   PixelsPerInch = 75
+  Position = poDesktopCenter
   HorzScrollBar.Page = 338
-  VertScrollBar.Page = 115
-  Left = 245
-  Height = 116
-  Top = 167
+  VertScrollBar.Page = 486
+  Left = 212
+  Height = 487
+  Top = 47
   Width = 339
   object Label1: TLabel
     Caption = 'This sample show how to use the printer dialogs'
     Color = clNone
+    ParentColor = False
     Left = 16
-    Height = 15
-    Top = 32
-    Width = 319
+    Height = 13
+    Top = 8
+    Width = 269
   end
   object Button2: TButton
+    BorderSpacing.InnerBorder = 2
     Caption = 'Execute TPrinterSetupDialog'
     OnClick = Button2Click
     TabOrder = 0
-    Left = 16
-    Height = 25
-    Top = 48
-    Width = 312
+    Left = 8
+    Height = 27
+    Top = 51
+    Width = 320
   end
   object Button1: TButton
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Execute TPrintDialog'
     OnClick = Button1Click
     TabOrder = 1
-    Left = 16
+    Left = 8
+    Height = 27
+    Top = 78
+    Width = 320
+  end
+  object SGrid: TStringGrid
+    AutoFillColumns = True
+    BorderStyle = bsNone
+    ColCount = 2
+    Columns = <    
+      item
+        MinSize = 60
+        MaxSize = 350
+        ReadOnly = True
+        Title.Caption = 'Information'
+        Width = 250
+      end>
+    DefaultColWidth = 70
+    FixedColor = clBtnFace
+    Flat = True
+    GridLineWidth = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+    RowCount = 12
+    ScrollBars = ssAutoBoth
+    VisibleColCount = 1
+    VisibleRowCount = 11
+    Left = 8
+    Height = 288
+    Top = 192
+    Width = 320
+  end
+  object Button3: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Get default printer info'
+    OnClick = Button3Click
+    TabOrder = 2
+    Left = 8
+    Height = 27
+    Top = 105
+    Width = 320
+  end
+  object Button4: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Print test'
+    OnClick = Button4Click
+    TabOrder = 3
+    Left = 256
+    Height = 27
+    Top = 155
+    Width = 69
+  end
+  object Button5: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Update printer state info'
+    OnClick = Button5Click
+    TabOrder = 4
+    Left = 8
     Height = 25
-    Top = 80
-    Width = 312
+    Top = 132
+    Width = 224
+  end
+  object Button6: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Show printer properties'
+    OnClick = Button6Click
+    TabOrder = 5
+    Left = 8
+    Height = 25
+    Top = 157
+    Width = 224
+  end
+  object Button7: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Execute TPageSetupDialog'
+    OnClick = Button7Click
+    TabOrder = 6
+    Left = 8
+    Height = 27
+    Top = 24
+    Width = 320
   end
   object PSD: TPrinterSetupDialog
-    left = 8
-    top = 8
+    left = 176
+    top = 240
   end
   object PD: TPrintDialog
-    Copies = 1
-    left = 8
-    top = 248
+    left = 176
+    top = 272
+  end
+  object PopupMenu1: TPopupMenu
+    left = 216
+    top = 240
+  end
+  object PAGED: TPageSetupDialog
+    Title = 'Ustawienie strony raportu'
+    left = 176
+    top = 304
   end
 end

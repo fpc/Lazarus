@@ -25,11 +25,12 @@
 }
 
 uses
-  Classes, SysUtils,Printers,LCLType,Forms,Windows,dialogs;
+  Classes, SysUtils,Printers,LCLType,{Forms,}Windows;//,dialogs;
 
 Type
   TWinPrinter = class(TPrinter)
   private
+    fDefaultPrinter : String;
     fLastHandleType : Byte; //0=None 1=IC 2=DC
     fDC             : HDC;
     fPrinterHandle  : THandle;
@@ -38,9 +39,9 @@ Type
     procedure SetDC;
     procedure ClearDC;
     
-    function BaseDialogs(aFlag : DWORD):boolean;
 
   protected
+    //function GetDefaultPrinter : String;
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
     procedure DoEndDoc(aAborded : Boolean); override;
@@ -63,17 +64,21 @@ Type
 
     function GetXDPI: Integer; override;
     function GetYDPI: Integer; override;
-    
+    function GetPrinterType: TPrinterType;override;
+    function DoGetPrinterState: TPrinterState;override;
+    function GetCanPrint: Boolean;override;
     function GetHandlePrinter : HDC;
+    procedure SetHandlePrinter(aValue : HDC);
   public
     constructor Create; override;
     destructor Destroy; override;
     
-    function PrintDialog : Boolean; override;
-    function PrinterSetup : Boolean; override;
-    
+
+    //Warning not portable functions here
+    procedure Properties;
     //Warning it is a not potable property
-    property Handle : HDC read GetHandlePrinter;
+    property Handle : HDC read GetHandlePrinter write SetHandlePrinter;
+    
   end;
   
 

@@ -34,16 +34,29 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils,LCLType;
+  Classes, SysUtils,LCLType,Printers;
 
 const
   {$i winutilprnconst.inc}
 
   LibWinSpool = 'winspool.drv';
+  
+const
+     DMORIENT_LANDSCAPE = 2;
+     DMORIENT_PORTRAIT = 1;
+     DM_ORIENTATION = $1;
+     DM_PAPERSIZE = $2;
+     DM_COPIES = $100;
+
+Const
+  Win32Orientations: array [TPrinterOrientation] of Integer = (
+    DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE, DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE);
+
+
 
 type
   PDevNames = ^tagDEVNAMES;
-  tagDEVNAMES = record
+  tagDEVNAMES = packed record
     wDriverOffset: Word;
     wDeviceOffset: Word;
     wOutputOffset: Word;
@@ -51,6 +64,27 @@ type
   end;
 
   TFcntHook = function(Wnd: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
+
+
+  tagPSD= packed record
+    lStructSize : DWORD;
+    hWndOwner   : HWND;
+    hDevMode    : HGLOBAL;
+    hDevNames   : HGLOBAL;
+    Flags       : DWORD;
+    ptPaperSize : TPOINT;
+    rtMinMargin : TRECT;
+    rtMargin    : TRECT;
+    hInstance   : HINST;
+    lCustData   : LPARAM;
+    lpfnPageSetupHook : TFcntHook;
+    lpfnPagePaintHook : TFcntHook;
+    lpPageSetupTemplateName : pChar;
+    hPageSetupTemplate : HGLOBAL;
+  end;
+
+
+
 
   tagPD=packed Record
     lStructSize  : DWORD;
@@ -75,7 +109,7 @@ type
   end;
 
   PDeviceMode = ^TDeviceMode;
-  TDeviceMode = packed Record
+  TDeviceMode =  packed Record
     dmDeviceName      : array[0..31] of AnsiChar;
     dmSpecVersion     : Word;
     dmDriverVersion   : Word;
@@ -111,9 +145,23 @@ type
     dmPanningWidth    : DWORD;
     dmPanningHeight   : DWORD;
   end;
+  
+  
+  Type
+  TPrinterDevice = class
+    Name   : String;
+    Driver : String;
+    Device : String;
+    Port   : String;
+
+    DefaultPaper : Short;
+
+    DevMode: TDeviceMode;
+  end;
+
 
   PPrinterDefaults = ^_PRINTER_DEFAULTS;
-  _PRINTER_DEFAULTS = record
+  _PRINTER_DEFAULTS = packed record
     pDatatype    : PChar;
     pDevMode     : PDeviceMode;
     DesiredAccess: DWord;
@@ -122,14 +170,14 @@ type
   //Size and ImageableArea Specifies the width and height,
   //in thousandths of millimeters, of the form
   PFORM_INFO_1   =^_FORM_INFO_1;
-  _FORM_INFO_1    = Record
+  _FORM_INFO_1    = packed Record
      Flags        : DWORD;
      pName        : PChar;
      Size         : TSize;
      ImageableArea: TRect;
   end;
 
-  TDocInfo = record
+  TDocInfo = packed record
     cbSize      : Integer;
     lpszDocName : PChar;
     lpszOutput  : PChar;
@@ -138,7 +186,7 @@ type
   end;
 
   PPRINTER_INFO_1 = ^_PRINTER_INFO_1;
-  _PRINTER_INFO_1 = Record
+  _PRINTER_INFO_1 = packed Record
      Flags        : DWORD;
      pDescription : PChar;
      pName        : PChar;
@@ -146,7 +194,7 @@ type
   end;
 
   PPRINTER_INFO_2 = ^_PRINTER_INFO_2;
-  _PRINTER_INFO_2 = Record
+  _PRINTER_INFO_2 = packed Record
      pServerName     : PChar;
      pPrinterName    : PChar;
      pShareName      : PChar;
@@ -171,14 +219,14 @@ type
   end;
 
   PPRINTER_INFO_4 = ^_PRINTER_INFO_4;
-  _PRINTER_INFO_4 = Record
+  _PRINTER_INFO_4 = packed Record
      pPrinterName : PChar;
      pServerName  : PChar;
      Attributes   : DWORD;
   end;
 
   PPRINTER_INFO_5 = ^_PRINTER_INFO_5;
-  _PRINTER_INFO_5 = Record
+  _PRINTER_INFO_5 = packed Record
      pPrinterName : PChar;
      pPortName    : PChar;
      Attributes   : DWORD;
@@ -191,9 +239,20 @@ function OpenPrinter(pPrinterName : PChar;           // printer or server name
                  var phPrinter    : THandle;         // printer or server handle
                      pDefaults    : PPrinterDefaults // printer defaults
                      ) : BOOL; stdCall; external LibWinSpool name 'OpenPrinterA';
+                     
+function GetPrinter(hPrinter : THandle;
+    Level : DWORD;
+    pPrinterEnum: Pointer;
+    cbBuf : DWORD;
+    var pcbNeeded
+   ) : BOOL; stdcall; external LibWinSpool name 'GetPrinterA';
 
 function ClosePrinter(hPrinter : THandle  //handle to printer object
                      ) : BOOL;  stdCall; external LibWinSpool name 'ClosePrinter';
+
+function PrinterProperties(hWnd : THandle;
+       hPrinter : THandle) : BOOL; stdcall; external LibWinSpool name 'PrinterProperties';
+
 
 function EnumPrinters(Flags: DWORD;  //Printer objet type
                       Name : PChar;  //Name of printer object
@@ -235,6 +294,7 @@ function DeviceCapabilities(pDevice, pPort: PChar; fwCapability: Word; pOutput: 
 function GetProfileString(lpAppName:PChar; lpKeyName:PChar; lpDefault:PChar; lpReturnedString:PChar; nSize:DWORD):DWORD; stdcall; external 'kernel32' name 'GetProfileStringA';
 
 function PrintDlg(var lppd : tagPD): BOOL; stdcall; external 'comdlg32.dll'  name 'PrintDlgA';
+function PageSetupDlg(var lppd : tagPSD): BOOL; stdcall; external 'comdlg32.dll'  name 'PageSetupDlgA';
 function CommDlgExtendedError: DWORD; stdcall; external 'comdlg32.dll'  name 'CommDlgExtendedError';
 
 function CreateIC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' name 'CreateICA';

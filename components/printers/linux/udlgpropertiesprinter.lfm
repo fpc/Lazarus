@@ -1,8 +1,10 @@
 object dlgpropertiesprinter: Tdlgpropertiesprinter
+  ActiveControl = btnCancel1
   Caption = 'Printer properties'
   ClientHeight = 417
   ClientWidth = 457
   OnCreate = dlgpropertiesprinterCREATE
+  OnDestroy = FormDestroy
   OnShow = dlgpropertiesprinterSHOW
   PixelsPerInch = 75
   HorzScrollBar.Page = 456
@@ -14,7 +16,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
   object Panel1: TPanel
     Align = alBottom
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
     ClientHeight = 41
     ClientWidth = 457
     FullRepaint = False
@@ -25,7 +26,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     Width = 457
     object btnCancel1: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
@@ -37,7 +38,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     end
     object btnOk: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
+      BorderSpacing.InnerBorder = 2
       Caption = 'Ok'
       Default = True
       ModalResult = 1
@@ -50,7 +51,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
   end
   object PagesProperties: TNotebook
     Align = alClient
-    BorderSpacing.OnChange = nil
     PageIndex = 0
     Height = 376
     Width = 457
@@ -62,34 +62,33 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
       Top = 22
       Width = 457
       object labPaperSize: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Paper size'
         Color = clNone
+        ParentColor = False
         Left = 15
-        Height = 17
+        Height = 13
         Top = 19
-        Width = 65
+        Width = 60
       end
       object labPaperType: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Paper type'
         Color = clNone
+        ParentColor = False
         Left = 15
-        Height = 17
+        Height = 13
         Top = 55
-        Width = 65
+        Width = 62
       end
       object labPaperSrc: TLabel
-        BorderSpacing.OnChange = nil
         Caption = 'Paper source'
         Color = clNone
+        ParentColor = False
         Left = 15
-        Height = 17
+        Height = 13
         Top = 92
-        Width = 112
+        Width = 76
       end
       object cbPaperSize: TComboBox
-        BorderSpacing.OnChange = nil
         DropDownCount = 10
         MaxLength = 0
         OnKeyPress = cbPaperSizeKEYPRESS
@@ -102,7 +101,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Width = 309
       end
       object cbPaperType: TComboBox
-        BorderSpacing.OnChange = nil
         MaxLength = 0
         OnKeyPress = cbPaperSizeKEYPRESS
         ParentCtl3D = False
@@ -114,7 +112,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Width = 309
       end
       object cbPaperSrc: TComboBox
-        BorderSpacing.OnChange = nil
         MaxLength = 0
         OnKeyPress = cbPaperSizeKEYPRESS
         ParentCtl3D = False
@@ -126,11 +123,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Width = 309
       end
       object gbOrientation: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Orientation '
         ClientHeight = 102
         ClientWidth = 229
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 6
         Left = 14
@@ -138,7 +133,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 233
         object imgOrientation: TImage
-          BorderSpacing.OnChange = nil
           Transparent = True
           Left = 167
           Height = 48
@@ -147,7 +141,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbPortrait: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Portrait'
           Checked = True
           DragCursor = crDefault
@@ -155,53 +148,48 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           State = cbChecked
           TabOrder = 0
           Left = 7
-          Height = 20
+          Height = 24
           Top = 5
-          Width = 64
+          Width = 63
         end
         object rbLandscape: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Landscape'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 1
           Left = 7
-          Height = 20
+          Height = 24
           Top = 29
-          Width = 87
+          Width = 86
         end
         object rbrev_Landscape: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Reverse landscape'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 2
           Left = 7
-          Height = 20
+          Height = 24
           Top = 53
-          Width = 133
+          Width = 132
         end
         object rbrev_portrait: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Reverse portrait'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 3
           Left = 7
-          Height = 20
+          Height = 24
           Top = 77
-          Width = 113
+          Width = 112
         end
       end
       object gbDuplex: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Duplex printing '
         ClientHeight = 102
         ClientWidth = 181
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 2
         Left = 255
@@ -209,7 +197,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 185
         object imgDuplex: TImage
-          BorderSpacing.OnChange = nil
           Transparent = True
           Left = 126
           Height = 52
@@ -218,7 +205,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexNone: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'None'
           Checked = True
           DragCursor = crDefault
@@ -226,41 +212,37 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           State = cbChecked
           TabOrder = 0
           Left = 14
-          Height = 20
+          Height = 24
           Top = 5
-          Width = 55
+          Width = 54
         end
         object rbDuplexLong: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Long edge'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 1
           Left = 14
-          Height = 20
+          Height = 24
           Top = 29
-          Width = 85
+          Width = 84
         end
         object rbDuplexShort: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = 'Short edge'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 2
           Left = 14
-          Height = 20
+          Height = 24
           Top = 53
-          Width = 86
+          Width = 85
         end
       end
       object gbBanners: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Banners '
         ClientHeight = 79
         ClientWidth = 228
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 3
         Left = 15
@@ -268,25 +250,24 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 247
         Width = 232
         object labBanStart: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'Start'
           Color = clNone
+          ParentColor = False
           Left = 6
-          Height = 17
+          Height = 13
           Top = 9
-          Width = 65
+          Width = 26
         end
         object labBanEnd: TLabel
-          BorderSpacing.OnChange = nil
           Caption = 'End'
           Color = clNone
+          ParentColor = False
           Left = 6
-          Height = 17
+          Height = 13
           Top = 49
-          Width = 65
+          Width = 23
         end
         object cbBanStart: TComboBox
-          BorderSpacing.OnChange = nil
           MaxLength = 0
           OnKeyPress = cbPaperSizeKEYPRESS
           ParentCtl3D = False
@@ -298,7 +279,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Width = 128
         end
         object cbBanEnd: TComboBox
-          BorderSpacing.OnChange = nil
           MaxLength = 0
           OnKeyPress = cbPaperSizeKEYPRESS
           ParentCtl3D = False
@@ -311,11 +291,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
       end
       object gbPagesSheet: TGroupBox
-        BorderSpacing.OnChange = nil
         Caption = ' Pages per sheet '
         ClientHeight = 79
         ClientWidth = 181
-        ParentColor = True
         ParentCtl3D = False
         TabOrder = 5
         Left = 255
@@ -323,7 +301,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 247
         Width = 185
         object imgPageSheet: TImage
-          BorderSpacing.OnChange = nil
           Transparent = True
           Left = 78
           Height = 50
@@ -332,7 +309,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet1: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = '1'
           Checked = True
           DragCursor = crDefault
@@ -340,33 +316,31 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           State = cbChecked
           TabOrder = 0
           Left = 6
-          Height = 20
+          Height = 24
           Top = 5
-          Width = 42
+          Width = 31
         end
         object rbSheet2: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = '2'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 1
           Left = 6
-          Height = 20
+          Height = 24
           Top = 25
-          Width = 42
+          Width = 31
         end
         object rbSheet4: TRadioButton
           AllowGrayed = True
-          BorderSpacing.OnChange = nil
           Caption = '4'
           DragCursor = crDefault
           OnClick = rbPortraitCLICK
           TabOrder = 2
           Left = 6
-          Height = 20
+          Height = 24
           Top = 46
-          Width = 42
+          Width = 31
         end
       end
     end

@@ -1,23 +1,8 @@
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
-Uses WinUtilPrn, InterfaceBase, Win32Int, LCLIntf;
+Uses WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,WinVer;
 
-Const
-  Win32Orientations: array [TPrinterOrientation] of Integer = (
-    DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE, DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE);
-
-Type
-  TPrinterDevice = class
-    Name   : String;
-    Driver : String;
-    Device : String;
-    Port   : String;
-
-    DefaultPaper : Short;
-
-    DevMode: TDeviceMode;
-  end;
 
 { TWinPrinter }
 
@@ -46,94 +31,16 @@ begin
   Result:=fDC;
 end;
 
-function TWinPrinter.BaseDialogs(aFlag : DWORD):boolean;
-var lpp        : tagPD;
-    PDev       : TPrinterDevice;
-    DevMode    : PDeviceMode;
-    DeviceMode : THandle;
 
-    DevNames   : PDevNames;
-    St         : PChar;
+procedure TWinPrinter.SetHandlePrinter(aValue : HDC);
 begin
-  Result:=False;
-  if Printers.Count>0 then
+  if aValue <> fDC then
   begin
-    FillChar(lpp,SizeOf(lpp),0);
-
-    with lpp do
-    begin
-      lStructSize:=SizeOf(lpp);
-      hInstance:=LCLType.HInstance;
-      Flags:=aFlag or PD_RETURNDC;
-      hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
-
-      PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-
-      DeviceMode:=GlobalAlloc(GHND,SizeOf(PDev.DevMode)+1);
-      DevMode:=PDeviceMode(GlobalLock(DeviceMode));
-      try
-        DevMode^:=PDev.DevMode;
-      finally
-        GlobalUnLock(DeviceMode);
-      end;
-
-      hDevMode:=DeviceMode;
-      nCopies:=1;
-      try
-        if PrintDlg(lpp) then
-        begin
-          St:='';
-          //Change Selected printer
-          if lpp.hDevNames<>0 then
-          begin
-            DevNames:=PDevNames(GlobalLock(lpp.hDevNames));
-            try
-              St:=PChar(DevNames)+DevNames^.wDeviceOffset;
-              SetPrinter(St);
-            finally
-              GlobalUnlock(lpp.hDevNames);
-              GlobalFree(lpp.hDevNames);
-            end;
-          end;
-
-          Result:=True;
-
-          if lpp.hDevMode<>0 then
-          begin
-            DevMode:=PDeviceMode(GlobalLock(lpp.hDevMode));
-            try
-              //Set the properties for the selected printer
-              PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-              PDev.DevMode:=DevMode^;
-              ClearDC;
-              fDC := lpp.hDC;
-              if Assigned(Canvas) then Canvas.Handle:=fDC;
-              fLastHandleType:=2;
-            finally
-              GlobalUnlock(lpp.hDevMode);
-              GlobalFree(lpp.hDevMode);
-            end;
-          end;
-        end;
-      finally
-         if DeviceMode<>0 then
-           GlobalFree(DeviceMode);
-
-         if hDevNames<>0 then
-           GlobalFree(hDevNames);
-      end;
-    end;
+   ClearDC;
+   fDC := aValue;
+   if Assigned(Canvas) then Canvas.Handle:=fDC;
+   fLastHandleType:=2;
   end;
-end;
-
-function TWinPrinter.PrinterSetup: Boolean;
-begin
-  Result:=BaseDialogs(PD_PRINTSETUP);
-end;
-
-function TWinPrinter.PrintDialog: Boolean;
-begin
-  Result:=BaseDialogs(PD_COLLATE or PD_USEDEVMODECOPIES);
 end;
 
 function TWinPrinter.GetXDPI: Integer;
@@ -170,7 +77,7 @@ begin
            PChar(PDev.Port),@PDev.DevMode);
 
     if fDC=0 then
-      raise EPrinter.Create(Format('Invalide printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+      raise EPrinter.Create(Format('Invalid printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=1;
@@ -178,38 +85,33 @@ begin
 end;
 
 procedure TWinPrinter.SetDC;
-var
-PDev : TPrinterDevice;
-Driver : PChar;
-
-
-
-function IsNT : Boolean;
-var
- OVI: TOsVersionInfo;
-begin
- OVI.dwOSVersionInfoSize := Sizeof( OVI );
- GetVersionEx( OVI );
- Result := (OVI.dwPlatformId = VER_PLATFORM_WIN32_NT);
-end;
-
-
-
+var PDev : TPrinterDevice;
 begin
   if (fLastHandleType<>2) and (Printers.Count>0) then
   begin
     ClearDC;
-    if IsNt then  Driver := pChar('WINSPOOL')
-    else
-    Driver := nil;
+
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    fDC:=CreateDC(Driver,PChar(PDev.Device),nil,@PDev.DevMode);
-    if fDC=0 then fDC:=CreateDC(Driver,PChar(PDev.Driver),nil,@PDev.DevMode);
+    try
+    fDC:=CreateDC(nil,PChar(PDev.Device),nil,@PDev.DevMode);
+    if fDC=0 then fDC:=CreateDC(PChar('WISPOOL'),PChar(PDev.Device),nil,@PDev.DevMode);
+
+
+    {Workaround (hack) for Lexmark 1020 JetPrinter (Mono)}
+    if fDC=0 then fDC:=CreateDC(nil,PChar(PDev.Driver),nil,@PDev.DevMode);
+    if fDC=0 then fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,@PDev.DevMode);
+
+           
+    except on E:Exception do
+       raise EPrinter.Create(Format('CreateDC exception: %s (LastError : %s,DC=%d Driver=%s Device=%s Port=%s)',[E.Message,SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+    end;
+    
     if fDC=0 then
-      raise EPrinter.Create(Format('Invalid printer (Error: %s DC=%d Driver=%s Device=%s Port=%s)',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+      raise EPrinter.Create(Format('Invalid printer (Error : %s,DC=%d Driver=%s Device=%s Port=%s)',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=2;
+
   end;
 end;
 
@@ -218,9 +120,15 @@ begin
   if Assigned(Canvas) then
     Canvas.Handle:=0;
   if fDC<>0 then
-      DeleteDC(fDC);
+  begin
+    DeleteDC(fDC);
+    fDc := 0;
+  end;
   fLastHandleType:=0;
 end;
+
+
+
 
 procedure TWinPrinter.DoBeginDoc;
 var Inf: TDocInfo;
@@ -230,7 +138,7 @@ begin
   if fPrinterHandle=0 then
     raise EPrinter.Create('Printer handle not defined');
 
-  ClearDC;
+
   SetDC;
   Canvas.Handle:=fDC;
   Canvas.Refresh;
@@ -267,6 +175,35 @@ begin
   AbortDoc(fDC);
 end;
 
+(*
+function TWinPrinter.GetDefaultPrinter : String;
+var
+    PrtCount       : DWORD;
+    Needed         : DWORD;
+    Buffer         : PChar;
+    DefaultPrinter : array[0..79] of Char;
+begin
+  Result:='';
+  Needed:=0;
+  EnumPrinters(PRINTER_ENUM_DEFAULT,nil,5,nil,0,Needed,PrtCount);
+  if Needed>0 then
+  begin
+    GetMem(Buffer,Needed);
+    try
+      if EnumPrinters(PRINTER_ENUM_DEFAULT,nil,5,Buffer,Needed,Needed,PrtCount) then
+        Result := String(PPRINTER_INFO_5(Buffer)^.pPrinterName);
+    finally
+      FreeMem(Buffer);
+    end;
+  end
+  else
+  begin
+    GetProfileString(PChar('windows'),PChar('device'),PChar(''),DefaultPrinter,SizeOf(DefaultPrinter));
+    if pos(',',DefaultPrinter)<>0 then
+       Result:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
+  end;
+end;
+*)
 
 //Enum all defined printers. First printer it's default
 procedure TWinPrinter.DoEnumPrinters(Lst: TStrings);
@@ -306,6 +243,7 @@ begin
     if pos(',',DefaultPrinter)<>0 then
        DefaultPrinter:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
   end;
+
 
   Flags:=PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
   Level:=2;
@@ -376,6 +314,7 @@ procedure TWinPrinter.DoEnumPapers(Lst: TStrings);
 var Buffer   : PChar;
     PaperN   : String;
     PaperC,i : Integer;
+    Count    : Integer;
     PDev     : TPrinterDevice;
     ArPapers : Array[0..255] of Word;
 begin
@@ -391,12 +330,15 @@ begin
     if fPrinterHandle=0 then
       raise EPrinter.Create('Printer handle not defined');
 
-    //Reteive the supported papers
+    //Retreive the supported papers
     PaperC:=0;
-    GetMem(Buffer,64*255);
+    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
+          DC_PAPERNAMES,nil,nil);
+    if Count<=0 then raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERNAMES> error : %d, (%s)',[GetLastError,SysErrorMessage(GetLastError)]);
+    GetMem(Buffer,64*Count);
     try
       PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-          DC_PAPERNAMES,Buffer,@PDev.DevMode);
+          DC_PAPERNAMES,Buffer,nil);
       for i:=0 to PaperC-1 do
       begin
         PaperN:=StrPas(Buffer+i*64);
@@ -406,12 +348,16 @@ begin
       FreeMem(Buffer);
     end;
 
+
     //Retreive the code of papers
+
+
     FillChar(ArPapers,SizeOf(ArPapers),0);
     PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-          DC_PAPERS,@ArPapers,@PDev.DevMode);
-    for i:=0 to PaperC-1 do
-      Lst.Objects[i]:=TObject(Pointer(Integer(ArPapers[i])));
+          DC_PAPERS,@ArPapers,nil);
+    if PaperC<=0 then raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',[GetLastError,SysErrorMessage(GetLastError)]);
+      for i:=0 to PaperC-1 do
+       Lst.Objects[i]:=TObject(Pointer(Integer(ArPapers[i])));
   end;
 
 end;
@@ -441,13 +387,13 @@ begin
 
   if (Printers.Count>0) then
   begin
-    ClearDC;
 
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
     i:=PaperSize.SupportedPapers.IndexOf(aName);
     if i<>-1 then
     begin
+      ClearDC;
       j:=SHORT(Pointer(PaperSize.SupportedPapers.Objects[i]));
       PDev.DevMode.dmPaperSize:=j;
     end;
@@ -468,7 +414,7 @@ begin
     //Retreive the Width and Height of aName paper
     FillChar(ArSizes,SizeOf(ArSizes),0);
     NSize:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
-          DC_PAPERSIZE,@ArSizes,@PDev.DevMode);
+          DC_PAPERSIZE,@ArSizes,nil);
     i:=PaperSize.SupportedPapers.IndexOf(aName);
     if (i>=0) and (i<NSize) and (NSize<>0) then
     begin
@@ -490,13 +436,13 @@ begin
   if i<>-1 then
   begin
     ClearDC;
-
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    PDev:=TPrinterDevice(Printers.Objects[i]);
     if fPrinterHandle<>0 then
       ClosePrinter(fPrinterHandle);
 
-    if OpenPrinter(PChar(PDev.Name),fPrinterHandle,nil) then
-       Result:=i;
+    if not OpenPrinter(PChar(PDev.Name),fPrinterHandle,nil) then
+      raise EPrinter.CreateFmt('OpenPrinter exception : %s',[SysErrorMessage(GetlastError)]);
+     Result:=i;
   end;
 end;
 
@@ -558,6 +504,85 @@ begin
   end;
 end;
 
+function TWinPrinter.GetPrinterType: TPrinterType;
+var
+ Size : Dword;
+ InfoPrt : Pointer;
+begin
+  Result := inherited GetPrinterType;
+  Result:=ptLocal;
+  //On Win9X all printers are local
+  if Win32Platform <> VER_PLATFORM_WIN32_NT then Exit;
+  
+  GetPrinter(fPrinterHandle,4,nil,0,Size);
+  GetMem(InfoPrt,Size);
+  try
+  if not GetPrinter(fPRinterHandle,4,InfoPrt,Size,Size)
+  then
+    raise EPrinter.CreateFmt('GetPrinterType failed : %s',[SysErrorMessage(GetLastError)]);
+  if PPRINTER_INFO_4(InfoPrt)^.Attributes = PRINTER_ATTRIBUTE_NETWORK then
+     Result := ptNetwork;
+  finally
+    FreeMem(InfoPrt);
+  end;
+
+end;
+
+
+function TWinPrinter.DoGetPrinterState: TPrinterState;
+var
+ Size,Status,Jobs : Dword;
+ InfoPrt : Pointer;
+begin
+  Result := inherited DoGetPrinterState;
+  Result:=psNoDefine;
+  GetPrinter(fPrinterHandle,2,nil,0,Size);
+  GetMem(InfoPrt,Size);
+  try
+  if not GetPrinter(fPrinterHandle,2,InfoPrt,Size,Size)
+  then
+    raise EPrinter.CreateFmt('GetPrinterState failed : %s',[SysErrorMessage(GetLastError)]);
+
+  Jobs := PPRINTER_INFO_2(InfoPrt)^.cJobs;
+  Status := PPRINTER_INFO_2(InfoPrt)^.Status;
+  case Status of
+     0 :  Result := psReady;
+     PRINTER_STATUS_PRINTING,
+     PRINTER_STATUS_PROCESSING,
+     PRINTER_STATUS_WARMING_UP,
+     PRINTER_STATUS_WAITING,
+     PRINTER_STATUS_IO_ACTIVE,
+     PRINTER_STATUS_PENDING_DELETION,
+     PRINTER_STATUS_INITIALIZING: Result := psPrinting;
+     PRINTER_STATUS_PAPER_JAM,
+     PRINTER_STATUS_PAPER_OUT,
+     PRINTER_STATUS_PAPER_PROBLEM,
+     PRINTER_STATUS_USER_INTERVENTION,
+     PRINTER_STATUS_NO_TONER,
+     PRINTER_STATUS_ERROR,
+     PRINTER_STATUS_DOOR_OPEN,
+     PRINTER_STATUS_PAGE_PUNT,
+     PRINTER_STATUS_OUT_OF_MEMORY,
+     PRINTER_STATUS_PAUSED : Result := psStopped;
+   end;
+   
+  if (Result = psReady) and (Jobs > 0) then Result := psPrinting;
+  finally
+    FreeMem(InfoPrt);
+  end;
+
+end;
+
+function TWinPrinter.GetCanPrint: Boolean;
+begin
+ Result := inherited GetCanPrint;
+ Result := (DoGetPrinterState <> psStopped);
+end;
+
+procedure TWinPrinter.Properties;
+begin
+ PrinterProperties(TWin32WidgetSet(WidgetSet).AppHandle,fPrinterHandle);
+end;
 
 INITIALIZATION
   Printer:=TWinPrinter.Create;
