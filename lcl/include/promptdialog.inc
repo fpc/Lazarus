@@ -619,6 +619,9 @@ begin
     while i<=High(Buttons) do begin
       if Buttons[i].VType=vtInteger then begin
         // get TModalResult
+        if Buttons[i].VType<>vtInteger then
+          RaiseGDBException('TQuestionDlg.CreateQuestionDlg integer expected at '
+            +IntToStr(i)+' but '+IntToStr(ord(Buttons[i].VType))+' found.');
         CurBtnValue:=Buttons[i].VInteger;
         //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' CurBtnValue=',dbgs(CurBtnValue));
         inc(i);
@@ -636,10 +639,11 @@ begin
           vtWideChar: CurBtnCaption:=Buttons[i].VWideChar;
           vtWidestring: CurBtnCaption:=WideString(Buttons[i].VWideString);
           else
-            dec(i);
+            dec(i); // prevent the following inc(i)
           end;
           inc(i);
         end;
+        //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption);
         if CurBtnCaption='' then begin
           // find default caption
           Case CurBtnValue of
@@ -681,9 +685,9 @@ begin
         with NewButton do begin
           AutoSize:=false;
           ModalResult:=curBtnValue;
-          Caption:=curBtnCaption;
           Layout:=blGlyphLeft;
           Kind:=NewKind;
+          Caption:=curBtnCaption;
           Parent:=Self;
           OnKeyDown:=@ButtonKeyDown;
         end;
