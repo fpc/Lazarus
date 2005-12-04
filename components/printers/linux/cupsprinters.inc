@@ -4,35 +4,6 @@ Implementation for cupsprinter
 
 uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 
-
-function TCUPSPrinter.PrintDialog: Boolean;
-Var Dlg : TdlgSelectPrinter;
-begin
-  Dlg:=TdlgSelectPrinter.Create(nil);
-  try
-    Dlg.btnPreview.Visible:=False;
-    Result:=(Dlg.ShowModal=mrOk);
-  finally
-    Dlg.Free;
-  end;
-end;
-
-function TCUPSPrinter.PrinterSetup: Boolean;
-Var Dlg : Tdlgpropertiesprinter;
-begin
-  //Set default printer
-  SelectCurrentPrinterOrDefault;
-
-  Dlg:=TdlgPropertiesPrinter.Create(nil);
-  try
-    Result:=(Dlg.ShowModal=mrOk);
-    if Result then
-        Dlg.InitProperties;
-  finally
-    Dlg.Free;
-  end;
-end;
-
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
 begin

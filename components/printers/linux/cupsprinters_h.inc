@@ -139,9 +139,6 @@ type
     constructor Create; override;
     destructor Destroy; override;
     
-    function PrintDialog : Boolean;  override;
-    function PrinterSetup: Boolean;  override;
-
     {-------------------------------------------------
         SPECIFIC CUPS METHODS OR PROPERTIES
     --------------------------------------------------}
