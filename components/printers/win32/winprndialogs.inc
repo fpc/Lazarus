@@ -1,5 +1,5 @@
 Uses
- Windows,WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer,Printers,OSPrinters;
+ Windows,WinUtilPrn, InterfaceBase, Win32Int, LCLIntf,LCLType,WinVer;
 
 
 { TPageSetupDialog }
