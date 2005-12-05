@@ -159,6 +159,9 @@ type
  type
 
   { Default cell editor for TStringGrid }
+
+  { TStringCellEditor }
+
   TStringCellEditor=class(TCustomMaskEdit)
   private
     FGrid: TCustomGrid;
@@ -171,6 +174,8 @@ type
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
+  public
+    procedure EditingDone; override;
   end;
 
   TButtonCellEditor = class(TButton)
@@ -198,6 +203,7 @@ type
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
   public
+    procedure EditingDone; override;
     property BorderStyle;
   end;
 
@@ -848,6 +854,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Invalidate; override;
+    procedure EditingDone; override;
 
     { Exposed procs }
     procedure AutoAdjustColumns;
@@ -1244,6 +1251,7 @@ type
     property OnDblClick;
     property OnDrawCell;
     property OnEditButtonClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnGetEditMask;
@@ -4841,6 +4849,12 @@ begin
 end;
 end;
 
+procedure TCustomGrid.EditingDone;
+begin
+  if not FEditorShowing then
+    inherited EditingDone;
+end;
+
 procedure TCustomGrid.EditorGetValue;
 begin
   if not (csDesigning in ComponentState) and (Editor<>nil) and Editor.Visible then begin
@@ -6086,6 +6100,13 @@ begin
   if FGrid<>nil then begin
     FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
   end;
+end;
+
+procedure TStringCellEditor.EditingDone;
+begin
+  inherited EditingDone;
+  if FGrid<>nil then
+    FGrid.EditingDone;
 end;
 
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
@@ -7841,6 +7862,13 @@ procedure TPickListCellEditor.MouseDown(Button: TMouseButton;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   FMouseSelecting:=True;
+end;
+
+procedure TPickListCellEditor.EditingDone;
+begin
+  inherited EditingDone;
+  if FGrid<>nil then
+    FGrid.EditingDone;
 end;
 
 procedure TPickListCellEditor.Change;
