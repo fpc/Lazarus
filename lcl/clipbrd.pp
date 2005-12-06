@@ -344,6 +344,7 @@ var
 begin
   OnLoadGraphicFromClipboardFormat:=@LoadGraphicFromClipboardFormat;
   OnSaveGraphicToClipboardFormat:=@SaveGraphicToClipboardFormat;
+  OnLoadSaveClipBrdGraphicValid:=true;
 
   for AClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     FClipboards[AClipboardType]:=nil;
@@ -351,6 +352,7 @@ end;
 
 procedure InternalFinal;
 begin
+  OnLoadSaveClipBrdGraphicValid:=false;
   FreeAllClipboards;
 end;
 

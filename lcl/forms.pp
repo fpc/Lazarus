@@ -1689,7 +1689,7 @@ initialization
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
-  HintWindowClass:=THintWindow;
+  HintWindowClass:=nil;
   FreeThenNil(Application);
   FreeThenNil(Screen);
 

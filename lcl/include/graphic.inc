@@ -128,7 +128,8 @@ end;
 procedure TGraphic.LoadFromClipboardFormatID(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat);
 begin
-  if Assigned(OnLoadGraphicFromClipboardFormat) then
+  if OnLoadSaveClipBrdGraphicValid
+  and Assigned(OnLoadGraphicFromClipboardFormat) then
     OnLoadGraphicFromClipboardFormat(Self,ClipboardType,FormatID);
 end;
 
@@ -140,7 +141,8 @@ end;
 procedure TGraphic.SaveToClipboardFormatID(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat);
 begin
-  if Assigned(OnSaveGraphicToClipboardFormat) then
+  if OnLoadSaveClipBrdGraphicValid
+  and Assigned(OnSaveGraphicToClipboardFormat) then
     OnSaveGraphicToClipboardFormat(Self,ClipboardType,FormatID);
 end;
 

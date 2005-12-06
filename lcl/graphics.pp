@@ -1324,6 +1324,7 @@ type
               FormatID: TClipboardFormat);
 
 var
+  OnLoadSaveClipBrdGraphicValid: boolean = false;
   OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat=nil;
   OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat=nil;
 
@@ -1845,8 +1846,7 @@ initialization
 
 finalization
   GraphicsFinalized:=true;
-  OnLoadGraphicFromClipboardFormat:=nil;
-  OnSaveGraphicToClipboardFormat:=nil;
+  OnLoadSaveClipBrdGraphicValid:=false;
   FreeAndNil(PicClipboardFormats);
   FreeAndNil(PicFileFormats);
 
