@@ -609,12 +609,12 @@ type
     procedure ReadRowHeights(Reader: TReader);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
-    procedure SetCol(Valor: Integer);
+    procedure SetCol(AValue: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
     procedure SetRawColWidths(ACol: Integer; AValue: Integer);
-    procedure SetColCount(Valor: Integer);
-    procedure SetDefColWidth(Valor: Integer);
-    procedure SetDefRowHeight(Valor: Integer);
+    procedure SetColCount(AValue: Integer);
+    procedure SetDefColWidth(AValue: Integer);
+    procedure SetDefRowHeight(AValue: Integer);
     procedure SetDefaultDrawing(const AValue: Boolean);
     procedure SetEditor(AValue: TWinControl);
     procedure SetFixedCols(const AValue: Integer);
@@ -625,8 +625,8 @@ type
     procedure SetGridLineWidth(const AValue: Integer);
     procedure SetLeftCol(const AValue: Integer);
     procedure SetOptions(const AValue: TGridOptions);
-    procedure SetRow(Valor: Integer);
-    procedure SetRowCount(Valor: Integer);
+    procedure SetRow(AValue: Integer);
+    procedure SetRowCount(AValue: Integer);
     procedure SetRowheights(Arow: Integer; Avalue: Integer);
     procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetSelectActive(const AValue: Boolean);
@@ -1820,35 +1820,35 @@ begin
   FixPosition;
 end;
 
-procedure TCustomGrid.SetColCount(Valor: Integer);
+procedure TCustomGrid.SetColCount(AValue: Integer);
 begin
   if Columns.Enabled then
     raise EGridException.Create('Use Columns property to add/remove columns');
-  InternalSetColCount(Valor);
+  InternalSetColCount(AValue);
 end;
 
-procedure TCustomGrid.SetRowCount(Valor: Integer);
+procedure TCustomGrid.SetRowCount(AValue: Integer);
 var
   OldR: Integer;
 begin
   OldR := FRows.Count;
-  if Valor=OldR then Exit;
-  if Valor<1 then
+  if AValue=OldR then Exit;
+  if AValue<1 then
     clear
   else begin
-    CheckFixedCount(ColCount, Valor, FFixedCols, FFixedRows);
-    CheckCount(ColCount, Valor);
-    AdjustCount(False, OldR, Valor);
+    CheckFixedCount(ColCount, AValue, FFixedCols, FFixedRows);
+    CheckCount(ColCount, AValue);
+    AdjustCount(False, OldR, AValue);
   end;
 end;
 
-procedure TCustomGrid.SetDefColWidth(Valor: Integer);
+procedure TCustomGrid.SetDefColWidth(AValue: Integer);
 var
   i: Integer;
 begin
-  if Valor=fDefColwidth then
+  if AValue=fDefColwidth then
     Exit;
-  FDefColWidth:=Valor;
+  FDefColWidth:=AValue;
   if not AutoFillColumns then begin
     for i:=0 to ColCount-1 do
       FCols[i] := Pointer(-1);
@@ -1856,27 +1856,27 @@ begin
   end;
 end;
 
-procedure TCustomGrid.SetDefRowHeight(Valor: Integer);
+procedure TCustomGrid.SetDefRowHeight(AValue: Integer);
 var
   i: Integer;
 begin
-  if Valor=fDefRowHeight then Exit;
-  FDefRowheight:=Valor;
+  if AValue=fDefRowHeight then Exit;
+  FDefRowheight:=AValue;
   for i:=0 to RowCount-1 do
     FRows[i] := Pointer(-1);
   VisualChange;
 end;
 
-procedure TCustomGrid.SetCol(Valor: Integer);
+procedure TCustomGrid.SetCol(AValue: Integer);
 begin
-  if Valor=FCol then Exit;
-  MoveExtend(False, Valor, FRow);
+  if AValue=FCol then Exit;
+  MoveExtend(False, AValue, FRow);
 end;
 
-procedure TCustomGrid.SetRow(Valor: Integer);
+procedure TCustomGrid.SetRow(AValue: Integer);
 begin
-  if Valor=FRow then Exit;
-  MoveExtend(False, FCol, Valor);
+  if AValue=FRow then Exit;
+  MoveExtend(False, FCol, AValue);
 end;
 
 procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer);
@@ -1967,6 +1967,7 @@ begin
 end;
 
 procedure TCustomGrid.VisualChange;
+{ $DEFINE dbgVisualChange}
 var
   Tw,Th: Integer;
   Dh,DV: Integer;
@@ -2073,7 +2074,10 @@ var
     end;
   end;
 begin
-  if FCols=nil then exit; // not yet initialized or already destroyed
+  //DebugLn('TCustomGrid.VisualChange ',DbgSName(Self));
+  if (FCols=nil) or ([csLoading,csDestroying]*ComponentState<>[])
+  or (not HandleAllocated) then
+    exit; // not yet initialized or already destroyed
 
   if AutoFillColumns then
     InternalAutoFillColumns;
@@ -2088,6 +2092,7 @@ begin
     FGCache.TLRowOff:=0;
   end;
   {$Ifdef DbgVisualChange}
+  DebugLn('TCustomGrid.VisualChange ',DbgSName(Self));
   DbgOut('Width=',dbgs(Width));
   DbgOut(' Height=',dbgs(height));
   DbgOut(' GWidth=',dbgs(TW));
@@ -2372,6 +2377,7 @@ end;
 
 procedure TCustomGrid.Paint;
 begin
+  //DebugLn('TCustomGrid.Paint ',DbgSName(Self),' Row=',dbgs(Row));
   inherited Paint;
   if FUpdateCount=0 then begin
     DrawEdges;
@@ -3058,6 +3064,7 @@ end;
 
 procedure TCustomGrid.CreateWnd;
 begin
+  //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
   VisualChange;
 end;
@@ -4659,7 +4666,6 @@ end;
 function TCustomGrid.TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer
   ): Boolean;
 begin
-
   Result:=False;
 
   if FixedGrid then
@@ -4671,7 +4677,7 @@ begin
   CheckLimits( dCol, dRow );
 
   // Change on Focused cell?
-  if (Dcol=FCol)and(DRow=FRow) then begin
+  if (Dcol=FCol) and (DRow=FRow) then begin
     SelectCell(DCol,DRow);
   end else begin
     Result:=SelectCell(DCol,DRow);

@@ -4744,7 +4744,7 @@ var
   end;}
 
 begin
-  //DebugLn('[TWinControl.CreateWnd] START ',Name,':',Classname);
+  //DebugLn('[TWinControl.CreateWnd] START ',DbgSName(Self));
   if (csDestroying in ComponentState)
   or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
     DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
