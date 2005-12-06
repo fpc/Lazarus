@@ -1087,7 +1087,8 @@ Begin
     if (UState and DFCS_PUSHED) <> 0 then
       Flags := BDR_SUNKENOUTER
     else
-      Flags := BDR_RAISEDINNER;
+      if (UState and DFCS_FLAT) <> 0 then Flags := 0
+      else Flags := BDR_RAISEDINNER;
     Result := Boolean(Windows.DrawEdge(DC, @Rect, Flags, BF_RECT));
   end else begin
     Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));

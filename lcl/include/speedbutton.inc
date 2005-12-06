@@ -268,15 +268,13 @@ begin
   // if flat and not mouse in control and not down, don't draw anything
   if FFlat and not FMouseInControl and not (FState in [bsDown, bsExclusive]) then
   begin
-    Result := 0;
+    Result := DFCS_FLAT;
   end else begin
     Result:=DFCS_BUTTONPUSH;
     if FState in [bsDown, bsExclusive] then 
       inc(Result,DFCS_PUSHED);
     if not Enabled then
       inc(Result,DFCS_INACTIVE);
-    if FFlat then
-      inc(Result,DFCS_FLAT);
   end;
 end;
 
@@ -397,7 +395,7 @@ begin
   end;
   
   // do not draw anything if flat and mouse not in control (simplified)
-  if FLastDrawFlags <> 0 then
+  if (FLastDrawFlags and DFCS_FLAT) = 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       PaintRect, DFC_BUTTON, FLastDrawFlags);
 
