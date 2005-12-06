@@ -2323,11 +2323,15 @@ end;
 function ReadLRSExtended(s: TStream): Extended;
 begin
   Result:=0;
-  {$IFDEF CPUi386}
-  s.Read(Result,10);
-  {$ENDIF}
-  {$IFDEF CPUPowerPC}
-  Result:=ReadLRSEndianLittleExtendedAsDouble(s);
+  {$IFDEF FPC_HAS_TYPE_EXTENDED}
+    s.Read(Result,10);
+    {$IFDEF Endian_BIG}
+    ReverseBytes(@Result,10);
+    {$ENDIF}
+  {$ELSE}
+    {$IFDEF CPUPowerPC}
+      Result:=ReadLRSEndianLittleExtendedAsDouble(s);
+    {$ENDIF}
   {$ENDIF}
 end;
 
@@ -2506,18 +2510,23 @@ end;
 
 procedure WriteLRSExtended(s: TStream; const e: extended);
 begin
-  {$IFDEF CPUi386}
-  s.Write(e,10);
-  {$ENDIF}
-  {$IFDEF CPUPowerPC}
-  if SizeOf(e)=10 then
-    WriteLRS10BytesReversed(s,@e)
-  else if SizeOf(e)=8 then
-    WriteLRSEndianBigDoubleAsEndianLittleExtended(s,@e)
-  else begin
-    debugln('WARNING: WriteLRSExtended not implemented yet for PowerPC');
-    WriteLRSNull(s,10);
-  end;
+  {$IFDEF FPC_HAS_TYPE_EXTENDED}
+    {$IFDEF ENDIAN_BIG}
+      WriteLRS10BytesReversed(s, @e);
+    {$ELSE ENDIAN_LITTLE}
+      s.Write(e,10);
+    {$ENDIF}
+  {$ELSE}
+    {$IFDEF CPUPowerPC}
+    if SizeOf(e)=10 then
+      WriteLRS10BytesReversed(s,@e)
+    else if SizeOf(e)=8 then
+      WriteLRSEndianBigDoubleAsEndianLittleExtended(s,@e)
+    else begin
+      debugln('WARNING: WriteLRSExtended not implemented yet for PowerPC');
+      WriteLRSNull(s,10);
+    end;
+    {$ENDIF}
   {$ENDIF}
 end;
 
