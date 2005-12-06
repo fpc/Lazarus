@@ -37,8 +37,14 @@ uses
   GraphType, GraphMath;
 
 type
+  TChildExitReason = (cerExit, cerSignal);
+  TPipeReason = (prDataAvailable, prBroken, prCanWrite);
+  TPipeReasons = set of TPipeReason;
+
   TApplicationMainLoop = procedure of object;
   TWaitHandleEvent = procedure(AData: PtrInt; AFlags: dword) of object;
+  TChildExitEvent = procedure(AData: PtrInt; AReason: TChildExitReason; AInfo: dword) of object;
+  TPipeEvent = procedure(AData: PtrInt; AReasons: TPipeReasons) of object;
 
   { TWidgetSet }
 

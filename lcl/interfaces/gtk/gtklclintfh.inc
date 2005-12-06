@@ -31,6 +31,10 @@
 //##apiwiz##sps##   // Do not remove
 procedure AddEventHandler(AHandle: THandle; AFlags: dword; 
   AEventHandler: TWaitHandleEvent; AData: PtrInt); override;
+procedure AddPipeEventHandler(AHandle: THandle;
+  AEventHandler: TPipeEvent; AData: PtrInt); override;
+procedure AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt); override;
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
@@ -47,6 +51,8 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 function IntfSendsUTF8KeyPress: boolean; override;
 
 procedure RemoveEventHandler(AHandle: THandle); override;
+procedure RemovePipeEventHandler(AHandle: THandle); override;
+procedure RemoveProcessEventHandler(AHandle: THandle); override;
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

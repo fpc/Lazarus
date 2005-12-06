@@ -129,6 +129,31 @@ begin
 
 end;
 
+{$ifdef UNIX}
+
+// TThread.Synchronize support
+var
+  threadsync_pipein, threadsync_pipeout: cint;
+  threadsync_giochannel: pgiochannel;
+  childsig_pending: boolean;
+
+procedure ChildEventHandler(sig: longint; siginfo: psiginfo; sigcontext: psigcontext); cdecl;
+begin
+  childsig_pending := true;
+  WakeMainThread(nil);
+end;
+
+procedure InstallSignalHandler;
+var
+  child_action: sigactionrec;
+begin
+  child_action.sa_handler := @ChildEventHandler;
+  fpsigemptyset(child_action.sa_mask);
+  child_action.sa_flags := 0;
+  fpsigaction(SIGCHLD, @child_action, nil);
+end;
+
+{$endif}
 
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.Create
@@ -205,6 +230,11 @@ begin
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
+
+  InitSynchronizeSupport;
+{$ifdef UNIX}
+  InstallSignalHandler;
+{$endif}
 
   GTKWidgetSet := Self;
 end;
@@ -481,9 +511,91 @@ begin
   g_log_remove_handler(nil, FLogHandlerID);
 
   GTKWidgetSet := nil;
+  WakeMainThread := nil;
 
   inherited Destroy;
 end;
+
+{$ifdef UNIX}
+
+procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
+begin
+  // wake up GUI thread by send a byte through the threadsync pipe
+  fpwrite(threadsync_pipeout, ' ', 1);
+end;
+
+procedure TGtkWidgetSet.ProcessChildSignal;
+var
+  pid: tpid;
+  reason: TChildExitReason;
+  status: integer;
+  info: dword;
+  handler: PChildSignalEventHandler;
+begin
+  repeat
+    pid := fpwaitpid(-1, status, WNOHANG);
+    if pid <= 0 then break;
+    if wifexited(status) then
+    begin
+      reason := cerExit;
+      info := wexitstatus(status);
+    end else
+    if wifsignaled(status) then
+    begin
+      reason := cerSignal;
+      info := wtermsig(status);
+    end else
+      continue;
+   
+    handler := FChildSignalHandlers;
+    while handler <> nil do
+    begin
+      if handler^.pid = pid then
+      begin
+        handler^.OnEvent(handler^.UserData, reason, info);
+        break;
+      end;
+      handler := handler^.NextHandler;
+    end;
+  until false;
+end;
+
+function threadsync_iocallback(source: PGIOChannel; condition: TGIOCondition; 
+  data: gpointer): gboolean; cdecl;
+var
+  thrashspace: char;
+begin
+  // read the sent byte
+  fpread(threadsync_pipein, thrashspace, 1);
+  Result := true;
+  // one of children signaled ?
+  if childsig_pending then
+  begin
+    childsig_pending := false;
+    TGtkWidgetSet(data).ProcessChildSignal;
+  end;
+  // execute the to-be synchronized method
+  CheckSynchronize;
+end;
+
+procedure TGtkWidgetSet.InitSynchronizeSupport;
+begin
+  { TThread.Synchronize ``glue'' }
+  WakeMainThread := @PrepareSynchronize;
+  assignpipe(threadsync_pipein, threadsync_pipeout);
+  threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
+  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
+end;
+
+{$else}
+
+{$message warn TThread.Synchronize will not work on Gtk/Win32 }
+
+procedure InitSynchronizeSupport;
+begin
+end;
+
+{$endif}
 
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.SetWindowSizeAndPosition

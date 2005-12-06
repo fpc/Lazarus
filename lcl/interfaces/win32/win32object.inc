@@ -314,6 +314,24 @@ Begin
   End;
 End;
 
+procedure TWin32WidgetSet.CheckPipeEvents;
+var
+  lHandler: PPipeEventHandler;
+  lBytesAvail: dword;
+begin
+  lHandler := FWaitPipeHandlers;
+  while lHandler <> nil do
+  begin
+    if PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
+    begin
+      if lBytesAvail <> 0 then
+        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable]);
+    end else
+      lHandler^.OnEvent(lHandler^.UserData, [prBroken]);
+    lHandler := lHandler^.NextHandler;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppWaitMessage
   Params:  None
@@ -325,18 +343,28 @@ procedure TWin32WidgetSet.AppWaitMessage;
 var
   done: boolean;
   retVal, index: dword;
+  timeout: dword;
 begin
   RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
   done := false;
   repeat
+    if FWaitPipeHandlers <> nil then
+      timeout := 100
+    else
+      timeout := INFINITE;
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
-      FWaitHandles[0], false, INFINITE, QS_ALLINPUT);
+      FWaitHandles[0], false, timeout, QS_ALLINPUT);
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
       FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
-    end else if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
+    end else
+    if retVal = WAIT_TIMEOUT then
+    begin
+      CheckPipeEvents;
+    end else 
+    if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
       done := true;
   until done;
   Assert(False,'Trace:Leave wait message');

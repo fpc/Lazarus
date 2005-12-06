@@ -77,7 +77,7 @@ uses
   {$ENDIF}
   // Target OS specific
   {$IFDEF UNIX}
-  x, xlib,
+  x, xlib, ctypes, baseunix, unix,
   {$ENDIF}
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
@@ -114,6 +114,7 @@ type
     FStockWhitePen: HPEN;
 
     FWaitHandles: PWaitHandleEventHandler;
+    FChildSignalHandlers: PChildSignalEventHandler;
 
     {$Ifdef GTK2}
     FDefaultFontDesc: PPangoFontDescription;
@@ -129,6 +130,15 @@ type
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
     procedure PassCmdLineOptions; override;
+   
+{$ifdef UNIX}   
+    procedure InitSynchronizeSupport;
+    procedure ProcessChildSignal;
+    procedure PrepareSynchronize(AObject: TObject);
+{$endif}  
+
+    procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
+    function RemoveEventHandlerData(AHandle: THandle): PtrInt;
 
     // styles
     procedure FreeAllStyles; virtual;

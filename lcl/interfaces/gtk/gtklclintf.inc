@@ -57,11 +57,12 @@ begin
   FWaitHandles := lEventHandler;
 end;
 
-procedure TGtkWidgetSet.RemoveEventHandler(AHandle: THandle);
+function TGtkWidgetSet.RemoveEventHandlerData(AHandle: THandle): PtrInt;
 var
   lEventHandler: PWaitHandleEventHandler;
   lPrevEventHandler: PPWaitHandleEventHandler;
 begin
+  Result := 0;
   lPrevEventHandler := @FWaitHandles;
   while lPrevEventHandler^ <> nil do
   begin
@@ -70,10 +71,96 @@ begin
     begin
       g_source_remove(lEventHandler^.GSourceID);
       lPrevEventHandler^ := lEventHandler^.NextHandler;
+      Result := lEventHandler^.UserData;
       Dispose(lEventHandler);
       exit;
     end;
     lPrevEventHandler := @lEventHandler^.NextHandler;
+  end;
+end;
+
+procedure TGtkWidgetSet.RemoveEventHandler(AHandle: THandle);
+begin
+  RemoveEventHandlerData(AHandle);
+end;
+
+type
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
+    Handle: THandle;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+  end;
+
+procedure TGtkWidgetSet.AddPipeEventHandler(AHandle: THandle; 
+  AEventHandler: TPipeEvent; AData: PtrInt);
+var
+  lPipeEventInfo: PPipeEventInfo;
+begin
+  if AEventHandler = nil then exit;
+  New(lPipeEventInfo);
+  lPipeEventInfo^.Handle := AHandle;
+  lPipeEventInfo^.UserData := AData;
+  lPipeEventInfo^.OnEvent := AEventHandler;
+  AddEventHandler(AHandle, G_IO_IN or G_IO_HUP or G_IO_OUT, 
+    @HandlePipeEvent, PtrInt(lPipeEventInfo));
+end;
+
+procedure TGtkWidgetSet.HandlePipeEvent(AData: PtrInt; AFlags: dword);
+var
+  lPipeEventInfo: PPipeEventInfo absolute AData;
+  lReasons: TPipeReasons;
+begin
+  lReasons := [];
+  if AFlags and G_IO_IN = G_IO_IN then
+    Include(lReasons, prDataAvailable);
+  if AFlags and G_IO_OUT = G_IO_OUT then
+    Include(lReasons, prCanWrite);
+  if AFlags and G_IO_HUP = G_IO_HUP then
+    Include(lReasons, prBroken);
+  
+  lPipeEventInfo^.OnEvent(lPipeEventInfo^.UserData, lReasons);
+end;
+
+procedure TGtkWidgetSet.RemovePipeEventHandler(AHandle: THandle);
+var
+  lPipeEventInfo: PPipeEventInfo;
+begin
+  lPipeEventInfo := PPipeEventInfo(RemoveEventHandlerData(AHandle));
+  if lPipeEventInfo <> nil then
+    Dispose(lPipeEventInfo);
+end;
+
+procedure TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt);
+var  
+  lHandler: PChildSignalEventHandler;
+begin
+  if AEventHandler = nil then exit;
+  New(lHandler);
+  lHandler^.PID := TPid(AHandle);
+  lHandler^.UserData := AData;
+  lHandler^.OnEvent := AEventHandler;
+  lHandler^.NextHandler := FChildSignalHandlers;
+  FChildSignalHandlers := lHandler;
+end;
+
+procedure TGtkWidgetSet.RemoveProcessEventHandler(AHandle: THandle);
+var
+  lHandler: PChildSignalEventHandler;
+  lPrevHandler: PPChildSignalEventHandler;
+begin
+  lPrevHandler := @FChildSignalHandlers;
+  while lPrevHandler^ <> nil do
+  begin
+    lHandler := lPrevHandler^;
+    if lHandler^.PID = TPid(AHandle) then
+    begin
+      lPrevHandler^ := lHandler^.NextHandler;
+      Dispose(lHandler);
+      exit;
+    end;
+    lPrevHandler := @lHandler^.NextHandler;
   end;
 end;
 

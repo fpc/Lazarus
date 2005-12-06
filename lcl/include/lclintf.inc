@@ -39,6 +39,16 @@ begin
   WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
 end;
 
+procedure AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt);
+begin
+  WidgetSet.AddPipeEventHandler(AHandle, AEventHandler, AData);
+end;
+
+procedure AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt);
+begin
+  WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
+end;
+
 procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   WidgetSet.AttachMenuToWindow(AMenuObject);
@@ -384,6 +394,16 @@ end;
 procedure RemoveEventHandler(AHandle: THandle);
 begin
   WidgetSet.RemoveEventHandler(AHandle);
+end;
+
+procedure RemoveProcessEventHandler(AHandle: THandle);
+begin
+  WidgetSet.RemoveProcessEventHandler(AHandle);
+end;
+
+procedure RemovePipeEventHandler(AHandle: THandle);
+begin
+  WidgetSet.RemovePipeEventHandler(AHandle);
 end;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;

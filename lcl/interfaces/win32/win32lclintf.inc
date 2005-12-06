@@ -47,13 +47,15 @@ begin
   Inc(FWaitHandleCount);
 end;
 
-procedure TWin32WidgetSet.RemoveEventHandler(AHandle: THandle);
+function TWin32WidgetSet.RemoveEventHandlerData(AHandle: THandle): PtrInt;
 var
   I: integer;
 begin
+  Result := 0;
   for I := 0 to FWaitHandleCount - 1 do
     if FWaitHandles[I] = AHandle then
     begin
+      Result := FWaitHandlers[I].UserData;
       // swap with last one
       if FWaitHandleCount >= 2 then
       begin
@@ -63,6 +65,84 @@ begin
       Dec(FWaitHandleCount);
       exit;
     end;
+end;
+
+procedure TWin32WidgetSet.RemoveEventHandler(AHandle: THandle);
+begin
+  RemoveEventHandlerData(AHandle);
+end;
+
+procedure TWin32WidgetSet.AddPipeEventHandler(AHandle: THandle; 
+  AEventHandler: TPipeEvent; AData: PtrInt);
+var
+  lHandler: PPipeEventHandler;
+begin
+  if AEventHandler = nil then exit;
+  New(lHandler);
+  lHandler^.Handle := AHandle;
+  lHandler^.UserData := AData;
+  lHandler^.OnEvent := AEventHandler;
+  lHandler^.NextHandler := FWaitPipeHandlers;
+  FWaitPipeHandlers := lHandler;
+end;
+
+procedure TWin32WidgetSet.RemovePipeEventHandler(AHandle: THandle);
+var
+  lPrevHandler: PPPipeEventHandler;
+  lHandler: PPipeEventHandler;
+begin
+  lPrevHandler := @FWaitPipeHandlers;
+  while lPrevHandler^ <> nil do
+  begin
+    lHandler := lPrevHandler^;
+    if lHandler^.Handle = AHandle then
+    begin
+      lPrevHandler^ := lHandler^.NextHandler;
+      Dispose(lHandler);
+      exit;
+    end;
+    lPrevHandler := @lHandler^.NextHandler;
+  end;
+end;
+
+type
+  PProcessEvent = ^TProcessEvent;
+  TProcessEvent = record
+    Handle: THandle;
+    UserData: PtrInt;
+    OnEvent: TChildExitEvent;
+  end;
+
+procedure TWin32WidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt);
+var
+  lProcessEvent: PProcessEvent;
+begin
+  if AEventHandler = nil then exit;
+  New(lProcessEvent);
+  lProcessEvent^.Handle := AHandle;
+  lProcessEvent^.UserData := AData;
+  lProcessEvent^.OnEvent := AEventHandler;
+  AddEventHandler(AHandle, 0, @HandleProcessEvent, PtrInt(lProcessEvent));
+end;
+
+procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
+var
+  lProcessEvent: PProcessEvent absolute AData;
+  exitcode: dword;
+begin
+  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode) then
+    exitcode := 0;
+  lProcessEvent^.OnEvent(lProcessEvent^.UserData, cerExit, exitcode);
+end;
+
+procedure TWin32WidgetSet.RemoveProcessEventHandler(AHandle: THandle);
+var
+  lProcessEvent: PProcessEvent;
+begin
+  lProcessEvent := PProcessEvent(RemoveEventHandlerData(AHandle));
+  if lProcessEvent <> nil then
+    Dispose(lProcessEvent);
 end;
 
 procedure TWin32WidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);

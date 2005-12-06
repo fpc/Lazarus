@@ -31,6 +31,16 @@ procedure TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
 begin
 end;
 
+procedure TWidgetSet.AddProcessEventHandler(AHandle: THandle; 
+  AEventHandler: TChildExitEvent; AData: PtrInt);
+begin
+end;
+
+procedure TWidgetSet.AddPipeEventHandler(AHandle: THandle; 
+  AEventHandler: TPipeEvent; AData: PtrInt);
+begin
+end;
+
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
@@ -550,6 +560,14 @@ begin
 end;
 
 procedure TWidgetSet.RemoveEventHandler(AHandle: THandle);
+begin
+end;
+
+procedure TWidgetSet.RemoveProcessEventHandler(AHandle: THandle);
+begin
+end;
+
+procedure TWidgetSet.RemovePipeEventHandler(AHandle: THandle);
 begin
 end;
 

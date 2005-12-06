@@ -69,6 +69,18 @@ type
     NextHandler: PWaitHandleEventHandler;
   end;
 
+{$ifdef UNIX}
+  PPChildSignalEventHandler = ^PChildSignalEventHandler;
+  PChildSignalEventHandler = ^TChildSignalEventHandler;
+  TChildSignalEventHandler = record
+    PID: TPid;
+    UserData: PtrInt;
+    OnEvent: TChildExitEvent;
+    NextHandler: PChildSignalEventHandler;
+  end;
+    
+{$endif}
+
 {$IFDEF gtk2}
 const
   gdkdll = gdklib;
@@ -991,39 +1003,9 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-// TThread.Synchronize support
-var
-  threadsync_pipein, threadsync_pipeout: cint;
-  threadsync_giochannel: pgiochannel;
-
-type
-  TSynchronizeGlue = class(TObject)
-  public
-    procedure PrepareSynchronize(AObject: TObject);
-  end;
-  
-procedure TSynchronizeGlue.PrepareSynchronize(AObject: TObject);
-begin
-  // wake up GUI thread by send a byte through the threadsync pipe
-  fpwrite(threadsync_pipeout, ' ', 1);
-end;
-
-function threadsync_iocallback(source: PGIOChannel; condition: TGIOCondition; 
-  data: gpointer): gboolean; cdecl;
-var
-  thrashspace: char;
-begin
-  // read the sent byte
-  fpread(threadsync_pipein, thrashspace, 1);
-  // execute the to-be synchronized method
-  CheckSynchronize;
-  Result := true;
-end;
-
 procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
-  needInstancePtr: TSynchronizeGlue;
 begin
 
   FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
@@ -1039,19 +1021,11 @@ begin
 
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
-
-  { TThread.Synchronize ``glue'' }
-  WakeMainThread := @needInstancePtr.PrepareSynchronize;
-  assignpipe(threadsync_pipein, threadsync_pipeout);
-  threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
-  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
 end;
 
 procedure DoneGTKProc;
 begin
   DoneKeyboardTables;
-
-  WakeMainThread := nil;
 end;
 
 {$IFDEF GTK1}

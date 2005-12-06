@@ -106,6 +106,15 @@ Type
     OnEvent: TWaitHandleEvent;
   end;
 
+  PPPipeEventHandler = ^PPipeEventHandler;
+  PPipeEventHandler = ^TPipeEventHandler;
+  TPipeEventHandler = record
+    Handle: THandle;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+    NextHandler: PPipeEventHandler;
+  end;
+
   { Win32 interface-object class }
   TWin32WidgetSet = Class(TWidgetSet)
   Private
@@ -130,6 +139,7 @@ Type
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
+    FWaitPipeHandlers: PPipeEventHandler;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
@@ -144,6 +154,11 @@ Type
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
         Desc: PRawImageDescription);
+
+    { event handler helper functions }
+    procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
+    function  RemoveEventHandlerData(AHandle: THandle): PtrInt;
+    procedure CheckPipeEvents;
 
     Function WinRegister: Boolean;
     Procedure NormalizeIconName(Var IconName: String);
