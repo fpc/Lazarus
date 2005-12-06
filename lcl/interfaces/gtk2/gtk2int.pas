@@ -156,7 +156,7 @@ uses
 // Gtk2WSDialogs,
 // Gtk2WSDirSel,
 // Gtk2WSEditBtn,
-// Gtk2WSExtCtrls,
+ Gtk2WSExtCtrls,
 // Gtk2WSExtDlgs,
 // Gtk2WSFileCtrl,
 // Gtk2WSForms,

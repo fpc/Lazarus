@@ -27,32 +27,31 @@ unit Gtk2WSExtCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  ExtCtrls,
-////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses;
+// libs
+  GLib2, Gtk2, Gdk2, Gdk2pixbuf,
+  // LCL
+  ExtCtrls, Classes, Controls, LCLType,
+  // widgetset
+  WSExtCtrls, WSLCLClasses, WSProc,
+  GtkWSExtCtrls;
 
 type
 
   { TGtk2WSCustomPage }
 
-  TGtk2WSCustomPage = class(TWSCustomPage)
+  {TGtk2WSCustomPage = class(TWSCustomPage)
   private
   protected
   public
-  end;
+  end;}
 
   { TGtk2WSCustomNotebook }
-
-  TGtk2WSCustomNotebook = class(TWSCustomNotebook)
+  
+  TGtk2WSCustomNotebook = class(TGtkWSCustomNotebook)
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
   { TGtk2WSPage }
@@ -161,11 +160,11 @@ type
 
   { TGtk2WSBoundLabel }
 
-  TGtk2WSBoundLabel = class(TWSBoundLabel)
+  {TGtk2WSBoundLabel = class(TWSBoundLabel)
   private
   protected
   public
-  end;
+  end;}
 
   { TGtk2WSCustomLabeledEdit }
 
@@ -202,6 +201,45 @@ type
 
 implementation
 
+uses interfacebase;
+
+type
+  GtkNotebookPressEventProc = function (widget:PGtkWidget; event:PGdkEventButton):gboolean; cdecl;
+  
+var
+  OldNoteBookButtonPress: GtkNotebookPressEventProc = nil;
+
+// this was created as a workaround of a tnotebook eating rightclick of custom controls
+function Notebook_Button_Press(widget:PGtkWidget; event:PGdkEventButton):gboolean; cdecl;
+begin
+  Result := True;
+  if gtk_get_event_widget(PGdkEvent(event)) <> widget then exit;
+  if OldNoteBookButtonPress = nil then exit;
+  Result := OldNoteBookButtonPress(widget, event);
+end;
+
+procedure HookNoteBookClass;
+var
+WidgetClass: PGtkWidgetClass;
+begin
+  WidgetClass := GTK_WIDGET_CLASS(gtk_type_class(gtk_notebook_get_type));
+
+  OldNoteBookButtonPress := GtkNotebookPressEventProc(WidgetClass^.button_press_event);
+  WidgetClass^.button_press_event := @Notebook_Button_Press;
+end;
+
+{ TGtk2WSCustomNotebook }
+
+function TGtk2WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  P: PGtkNoteBook;
+begin
+  if OldNoteBookButtonPress = nil then HookNoteBookClass;
+  P := PGtknotebook(WidgetSet.CreateComponent(AWinControl));
+  Result := HWND(P);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -211,7 +249,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TGtk2WSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook);
 //  RegisterWSComponent(TPage, TGtk2WSPage);
 //  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
 //  RegisterWSComponent(TShape, TGtk2WSShape);
