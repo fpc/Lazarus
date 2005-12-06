@@ -25,7 +25,7 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
-  FPanels := TStatusPanels.Create(Self);
+  FPanels := CreatePanels;
   Color := clBtnFace;
   Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
@@ -175,6 +175,32 @@ begin
   if (PanelParts=[]) then exit;
   UpdateHandleObject(PanelIndex);
 end;
+
+{------------------------------------------------------------------------------
+  function TStatusBar.CreatePanel(): TStatusPanel;
+------------------------------------------------------------------------------}
+function TStatusBar.CreatePanel: TStatusPanel;
+var
+  LClass: TStatusPanelClass;
+begin
+  LClass := GetPanelClass;
+  Result := LClass.Create(Panels);
+end;
+{------------------------------------------------------------------------------
+  function TStatusBar.CreatePanels(): TStatusPanels;
+------------------------------------------------------------------------------}
+function TStatusBar.CreatePanels: TStatusPanels;
+begin
+  Result := TStatusPanels.Create(Self);
+end;
+{------------------------------------------------------------------------------
+  function TStatusBar.GetPanelClass(): TStatusPanelClass;
+------------------------------------------------------------------------------}
+function TStatusBar.GetPanelClass: TStatusPanelClass;
+begin
+  Result := TStatusPanel;
+end;
+
 
 // included by comctrls.pp
 

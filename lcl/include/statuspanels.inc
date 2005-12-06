@@ -19,7 +19,7 @@
 
 constructor TStatusPanels.Create(TheStatusBar: TStatusBar);
 begin
-  inherited Create(TStatusPanel);
+  inherited Create(TheStatusBar.GetPanelClass);
   FStatusBar := TheStatusBar;
 end;
 

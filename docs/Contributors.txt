@@ -66,6 +66,7 @@ Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller
 Stefan Hille
+Sean McIlwain
 Taras Boychuk
 Tom Lisjac
 Tomáš Gregorovič

@@ -61,6 +61,9 @@ type
 
   { TStatusPanel }
 
+  //added.
+  TStatusPanelClass = class of TStatusPanel;
+  
   TStatusPanel = class(TCollectionItem)
   private
     FText: string;
@@ -130,6 +133,12 @@ type
     procedure UpdateHandleObject(PanelIndex: integer); virtual;
     procedure CalculatePreferredSize(
                         var PreferredWidth, PreferredHeight: integer); override;
+
+    //added.
+    function CreatePanel: TStatusPanel; virtual;
+    function CreatePanels: TStatusPanels; virtual;
+    function GetPanelClass: TStatusPanelClass; virtual;
+
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
