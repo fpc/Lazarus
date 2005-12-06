@@ -575,7 +575,8 @@ begin
     TGtkWidgetSet(data).ProcessChildSignal;
   end;
   // execute the to-be synchronized method
-  CheckSynchronize;
+  if IsMultiThread then
+    CheckSynchronize;
 end;
 
 procedure TGtkWidgetSet.InitSynchronizeSupport;
