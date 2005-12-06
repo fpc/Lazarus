@@ -2180,7 +2180,7 @@ end;
 function ConvertLRSExtendedToDouble(p: Pointer): Double;
 type
   Ti386ExtendedReversed = packed record
-    {$IFDEF Endian_BIG}
+    {$IFDEF FPC_BIG_ENDIAN}
     ExponentAndSign: word;
     Mantissa: qword;
     {$ELSE}
@@ -2195,7 +2195,7 @@ var
   Mantissa: qword;
 begin
   System.Move(p^,e,10);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@e,10);
   {$ENDIF}
   // i386 extended
@@ -2210,13 +2210,13 @@ begin
   // i386 extended has leading 1, double has not (shl 1)
   // i386 has 64 bit, double has 52 bit (shr 12)
   {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
-    {$IFDEF ENDIAN_BIG}
+    {$IFDEF FPC_BIG_ENDIAN}
     // accessing Mantissa will couse trouble, copy it first
     System.Move(e.Mantissa, Mantissa, SizeOf(Mantissa));
     Mantissa := (Mantissa shl 1) shr 12;
-    {$ELSE ENDIAN_BIG}
+    {$ELSE FPC_BIG_ENDIAN}
     Mantissa := (e.Mantissa shl 1) shr 12;
-    {$ENDIF ENDIAN_BIG}
+    {$ENDIF FPC_BIG_ENDIAN}
   {$ELSE FPC_REQUIRES_PROPER_ALIGNMENT}
   Mantissa := (e.Mantissa shl 1) shr 12;
   {$ENDIF FPC_REQUIRES_PROPER_ALIGNMENT}
@@ -2270,7 +2270,7 @@ function ReadLRSWord(s: TStream): word;
 begin
   Result:=0;
   s.Read(Result,2);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   Result:=((Result and $ff) shl 8) or (Result shr 8);
   {$ENDIF}
 end;
@@ -2279,7 +2279,7 @@ function ReadLRSInteger(s: TStream): integer;
 begin
   Result:=0;
   s.Read(Result,4);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$ENDIF}
 end;
@@ -2288,7 +2288,7 @@ function ReadLRSCardinal(s: TStream): cardinal;
 begin
   Result:=0;
   s.Read(Result,4);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$ENDIF}
 end;
@@ -2297,7 +2297,7 @@ function ReadLRSInt64(s: TStream): int64;
 begin
   Result:=0;
   s.Read(Result,8);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$ENDIF}
 end;
@@ -2306,7 +2306,7 @@ function ReadLRSSingle(s: TStream): Single;
 begin
   Result:=0;
   s.Read(Result,4);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$ENDIF}
 end;
@@ -2315,7 +2315,7 @@ function ReadLRSDouble(s: TStream): Double;
 begin
   Result:=0;
   s.Read(Result,8);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$ENDIF}
 end;
@@ -2325,12 +2325,14 @@ begin
   Result:=0;
   {$IFDEF FPC_HAS_TYPE_EXTENDED}
     s.Read(Result,10);
-    {$IFDEF Endian_BIG}
+    {$IFDEF FPC_BIG_ENDIAN}
     ReverseBytes(@Result,10);
     {$ENDIF}
   {$ELSE}
-    {$IFDEF CPUPowerPC}
+    {$IFDEF FPC_BIG_ENDIAN}
       Result:=ReadLRSEndianLittleExtendedAsDouble(s);
+    {$ELSE}
+      Debugln('Reading of extended on little endian cpus without 80 bits extended is not yet implemented');
     {$ENDIF}
   {$ENDIF}
 end;
@@ -2339,7 +2341,7 @@ function ReadLRSCurrency(s: TStream): Currency;
 begin
   Result:=0;
   s.Read(Result,8);
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$ENDIF}
 end;
@@ -2352,7 +2354,7 @@ begin
   SetLength(Result,Len);
   if Len>0 then begin
     s.Read(Result[1],Len*2);
-    {$IFDEF Endian_BIG}
+    {$IFDEF FPC_BIG_ENDIAN}
     ReverseByteOrderInWords(PWord(@Result[1]),Len);
     {$ENDIF}
   end;
@@ -2465,7 +2467,7 @@ end;
 
 procedure WriteLRSWord(s: TStream; const w: word);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(w,2);
   {$ELSE}
   WriteLRSReversedWord(s,w);
@@ -2474,7 +2476,7 @@ end;
 
 procedure WriteLRSInteger(s: TStream; const i: integer);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(i,4);
   {$ELSE}
   WriteLRS4BytesReversed(s,@i);
@@ -2483,7 +2485,7 @@ end;
 
 procedure WriteLRSCardinal(s: TStream; const c: cardinal);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(c,4);
   {$ELSE}
   WriteLRS4BytesReversed(s,@c);
@@ -2492,7 +2494,7 @@ end;
 
 procedure WriteLRSSingle(s: TStream; const si: Single);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(si,4);
   {$ELSE}
   WriteLRS4BytesReversed(s,@si);
@@ -2501,7 +2503,7 @@ end;
 
 procedure WriteLRSDouble(s: TStream; const d: Double);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(d,8);
   {$ELSE}
   WriteLRS8BytesReversed(s,@d);
@@ -2511,28 +2513,23 @@ end;
 procedure WriteLRSExtended(s: TStream; const e: extended);
 begin
   {$IFDEF FPC_HAS_TYPE_EXTENDED}
-    {$IFDEF ENDIAN_BIG}
+    {$IFDEF FPC_BIG_ENDIAN}
       WriteLRS10BytesReversed(s, @e);
-    {$ELSE ENDIAN_LITTLE}
+    {$ELSE}
       s.Write(e,10);
     {$ENDIF}
   {$ELSE}
-    {$IFDEF CPUPowerPC}
-    if SizeOf(e)=10 then
-      WriteLRS10BytesReversed(s,@e)
-    else if SizeOf(e)=8 then
+    {$IFDEF FPC_BIG_ENDIAN}
       WriteLRSEndianBigDoubleAsEndianLittleExtended(s,@e)
-    else begin
-      debugln('WARNING: WriteLRSExtended not implemented yet for PowerPC');
-      WriteLRSNull(s,10);
-    end;
+    {$ELSE}
+      debugln('WARNING: WriteLRSExtended not implemented yet for little endian cpu without 80 bits extended');
     {$ENDIF}
   {$ENDIF}
 end;
 
 procedure WriteLRSInt64(s: TStream; const i: int64);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(i,8);
   {$ELSE}
   WriteLRS8BytesReversed(s,@i);
@@ -2541,7 +2538,7 @@ end;
 
 procedure WriteLRSCurrency(s: TStream; const c: Currency);
 begin
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(c,8);
   {$ELSE}
   WriteLRS8BytesReversed(s,@c);
@@ -2554,7 +2551,7 @@ var
 begin
   Size:=length(w);
   if Size=0 then exit;
-  {$IFDEF Endian_Little}
+  {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(w[1], Size * 2);
   {$ELSE}
   WriteLRSReversedWords(s,@w[1],Size);
@@ -2604,7 +2601,7 @@ function TLRSObjectReader.ReadIntegerContent: integer;
 begin
   Result:=0;
   Read(Result,4);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$endif}
 end;
@@ -2710,9 +2707,9 @@ begin
   Result:=0;
   {$ifdef FPC_HAS_TYPE_EXTENDED}
     Read(Result, 10);
-    {$ifdef ENDIAN_BIG}
+    {$ifdef FPC_BIG_ENDIAN}
       ReverseBytes(@Result, 10);
-    {$endif ENDIAN_BIG}
+    {$endif FPC_BIG_ENDIAN}
   {$else FPC_HAS_TYPE_EXTENDED}
     Read(e, 10);
     Result := ConvertLRSExtendedToDouble(@e);
@@ -2723,7 +2720,7 @@ function TLRSObjectReader.ReadSingle: Single;
 begin
   Result:=0;
   Read(Result, 4);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$endif}
 end;
@@ -2732,7 +2729,7 @@ function TLRSObjectReader.ReadCurrency: Currency;
 begin
   Result:=0;
   Read(Result, 8);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$endif}
 end;
@@ -2741,7 +2738,7 @@ function TLRSObjectReader.ReadDate: TDateTime;
 begin
   Result:=0;
   Read(Result, 8);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$endif}
 end;
@@ -2779,7 +2776,7 @@ function TLRSObjectReader.ReadInt16: SmallInt;
 begin
   Result:=0;
   Read(Result, 2);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,2);
   {$endif}
 end;
@@ -2788,7 +2785,7 @@ function TLRSObjectReader.ReadInt32: LongInt;
 begin
   Result:=0;
   Read(Result, 4);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,4);
   {$endif}
 end;
@@ -2797,7 +2794,7 @@ function TLRSObjectReader.ReadInt64: Int64;
 begin
   Result:=0;
   Read(Result, 8);
-  {$ifdef Endian_BIG}
+  {$ifdef FPC_BIG_ENDIAN}
   ReverseBytes(@Result,8);
   {$endif}
 end;
@@ -3015,7 +3012,7 @@ end;
 
 procedure TLRSObjectWriter.WriteIntegerContent(i: integer);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@i,4);
   {$ENDIF}
   Write(i,4);
@@ -3023,7 +3020,7 @@ end;
 
 procedure TLRSObjectWriter.WriteWordContent(w: word);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@w,2);
   {$ENDIF}
   Write(w,2);
@@ -3031,7 +3028,7 @@ end;
 
 procedure TLRSObjectWriter.WriteInt64Content(i: int64);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@i,8);
   {$ENDIF}
   Write(i,8);
@@ -3039,7 +3036,7 @@ end;
 
 procedure TLRSObjectWriter.WriteSingleContent(s: single);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@s,4);
   {$ENDIF}
   Write(s,4);
@@ -3047,19 +3044,19 @@ end;
 
 procedure TLRSObjectWriter.WriteDoubleContent(d: Double);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@d,8);
   {$ENDIF}
   Write(d,8);
 end;
 
 procedure TLRSObjectWriter.WriteExtendedContent(e: Extended);
-{$IFDEF Endian_BIG}
+{$IFDEF FPC_BIG_ENDIAN}
 var
   LRSExtended: array[1..10] of byte;
 {$endif}
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
     if SizeOf(e)=10 then begin
       ReverseBytes(@e,10);
       Write(e,10);
@@ -3073,7 +3070,7 @@ end;
 
 procedure TLRSObjectWriter.WriteCurrencyContent(c: Currency);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   ReverseBytes(@c,8);
   {$ENDIF}
   Write(c,8);
@@ -3081,7 +3078,7 @@ end;
 
 procedure TLRSObjectWriter.WriteWideStringContent(ws: WideString);
 begin
-  {$IFDEF Endian_BIG}
+  {$IFDEF FPC_BIG_ENDIAN}
   WriteWordsReversed(PWord(@ws[1]),length(ws));
   {$ELSE}
   Write(ws[1],length(ws)*2);
