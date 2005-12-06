@@ -469,6 +469,7 @@ initialization
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
 
 finalization
+  InterfaceBase.InputDialogFunction:=nil;
 
 end.
 

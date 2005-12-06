@@ -86,7 +86,7 @@ type
   TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;
 var
-  InputDialogFunction: TInputDialogFunction=nil;
+  InputDialogFunction: TInputDialogFunction = nil;
 
 type
   TPromptDialogFunction = Function(const DialogCaption, DialogMessage : String;
@@ -95,7 +95,7 @@ type
     UseDefaultPos: boolean;
     X, Y : Longint) : Longint;
 var
-  PromptDialogFunction: TPromptDialogFunction;
+  PromptDialogFunction: TPromptDialogFunction = nil;
 
 var
   WidgetSet: TWidgetSet=nil;
@@ -109,9 +109,5 @@ const
 {$I interfacebase.inc}
 {$I intfbasewinapi.inc}
 {$I intfbaselcl.inc}
-
-
-finalization
-  InputDialogFunction:=nil;
 
 end.
