@@ -1456,6 +1456,7 @@ lcl/LAYOUT.txt svneol=native#text/plain
 lcl/actnlist.pas svneol=native#text/pascal
 lcl/alllclunits.pp svneol=native#text/pascal
 lcl/arrow.pp svneol=native#text/pascal
+lcl/asyncprocess.pp svneol=native#text/plain
 lcl/avglvltree.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal
 lcl/calendar.pp svneol=native#text/pascal
