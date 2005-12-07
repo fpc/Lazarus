@@ -25,6 +25,10 @@ unit AsyncProcess;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF Linux}
+  {$DEFINE UseLinuxThreading}
+{$ENDIF}
+
 interface
 
 uses
@@ -74,7 +78,9 @@ begin
     // FIONREAD -> bytes available for reading without blocking
     // FIONSPACE -> bytes available for writing without blocking
     //   does not work on all platforms (not defined on linux e.g.)
-    if fpioctl(Output.Handle, FIONREAD, @Result) = -1 then
+    {$ifdef UseLinuxThreading}
+    if fpioctl(Output.Handle, $4004667f, @Result) = -1 then
+    {$ENDIF}
       Result := 0;
   end;
 end;

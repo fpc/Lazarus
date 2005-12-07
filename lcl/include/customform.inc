@@ -1829,10 +1829,6 @@ begin
   Screen.FFocusedForm := Self;
   Screen.MoveFormToFocusFront(Self);
   Screen.MoveFormToZFront(Self);
-  //SaveCursor := Screen.Cursor;
-  //Screen.Cursor := crDefault;
-  //SaveCount := Screen.FCursorCount;
-  //WindowList := DisableTaskWindows(0);
   ModalResult := 0;
 
   try
@@ -1867,20 +1863,16 @@ begin
       DestroyHandle;
     end;
   finally
-    {if Screen.FCursorCount = SaveCount then
-      Screen.Cursor := SaveCursor
-    else
-      Screen.Cursor := crDefault;
-    EnableTaskWindows(WindowList);}
     if Screen.FSaveFocusedList.Count > 0 then
     begin
       Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
       Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
     end else
       Screen.FFocusedForm := nil;
-    if ActiveWindow <> 0 then SetActiveWindow(ActiveWindow);
-    FocusCount := SaveFocusCount;
     Exclude(FFormState, fsModal);
+    FocusCount := SaveFocusCount;
+    //DebugLn('TCustomForm.ShowModal ',dbgs(ActiveWindow));
+    if ActiveWindow <> 0 then SetActiveWindow(ActiveWindow);
   end;
 end;
 

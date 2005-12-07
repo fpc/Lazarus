@@ -1130,6 +1130,7 @@ Begin
   {$ENDIF}
   if SourceNotebook<>nil then SourceNotebook.Visible:=true;
   FEditor.SetFocus;
+  //DebugLn('TSourceEditor.FocusEditor ',dbgsName(FindOwnerControl(GetFocus)),' ',dbgs(GetFocus));
   {$IFDEF VerboseFocus}
   writeln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
   {$ENDIF}

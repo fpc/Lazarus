@@ -129,7 +129,7 @@ begin
 
 end;
 
-{$ifdef UNIX}
+{$ifdef UseLinuxThreading}
 
 // TThread.Synchronize support
 var
@@ -137,7 +137,8 @@ var
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
 
-procedure ChildEventHandler(sig: longint; siginfo: psiginfo; sigcontext: psigcontext); cdecl;
+procedure ChildEventHandler(sig: longint; siginfo: psiginfo;
+  sigcontext: psigcontext); cdecl;
 begin
   childsig_pending := true;
   WakeMainThread(nil);
@@ -231,8 +232,8 @@ begin
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
 
+{$ifdef UseLinuxThreading}
   InitSynchronizeSupport;
-{$ifdef UNIX}
   InstallSignalHandler;
 {$endif}
 
@@ -516,7 +517,7 @@ begin
   inherited Destroy;
 end;
 
-{$ifdef UNIX}
+{$ifdef UseLinuxThreading}
 
 procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
 begin
