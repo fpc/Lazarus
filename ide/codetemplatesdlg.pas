@@ -650,7 +650,7 @@ procedure TCodeTemplateDialog.AddButtonClick(Sender: TObject);
 var
   Token: String;
   Comment: String;
-  Index: LongInt;
+  Index: PtrInt;
 begin
   SaveCurCodeTemplate;
   Token:='new';
@@ -658,28 +658,34 @@ begin
   if AddCodeTemplate(SynAutoComplete,Token,Comment)=mrOk then begin
     SynAutoComplete.AddCompletion(Token, '', Comment);
     FillCodeTemplateListBox;
-    Index:=SynAutoComplete.Completions.IndexOf(Token);
-    if (Index>=0) and (Index<TemplateListBox.Items.Count) then begin
-      TemplateListBox.ItemIndex:=Index;
-    end;
+    Index := SynAutoComplete.Completions.IndexOf(Token);
+    if Index >= 0
+    then Index := TemplateListBox.Items.IndexOfObject(TObject(Pointer(Index)));
+    if Index >= 0
+    then TemplateListBox.ItemIndex:=Index;
+    
     ShowCurCodeTemplate;
   end;
 end;
 
 procedure TCodeTemplateDialog.DeleteButtonClick(Sender: TObject);
 var
-  i: LongInt;
+  a, idx: LongInt;
 begin
-  i:=TemplateListBox.ItemIndex;
-  if i<0 then exit;
+  idx := TemplateListBox.ItemIndex;
+  if idx < 0 then exit;
+  a := PtrInt(TemplateListBox.Items.Objects[idx]);
+  if a < 0 then exit;
+
   if MessageDlg(dlgDelTemplate
-      +'"'+SynAutoComplete.Completions[i]+' - '
-      +SynAutoComplete.CompletionComments[i]+'"'
-      +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK then begin
-    SynAutoComplete.DeleteCompletion(i);
+      +'"'+SynAutoComplete.Completions[a]+' - '
+      +SynAutoComplete.CompletionComments[a]+'"'
+      +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK
+  then begin
+    SynAutoComplete.DeleteCompletion(a);
     FillCodeTemplateListBox;
-    if (i>=0) and (i<TemplateListBox.Items.Count) then begin
-      TemplateListBox.ItemIndex:=i;
+    if idx < TemplateListBox.Items.Count then begin
+      TemplateListBox.ItemIndex := idx;
     end;
     ShowCurCodeTemplate;
   end;
@@ -687,14 +693,17 @@ end;
 
 procedure TCodeTemplateDialog.EditButtonClick(Sender: TObject);
 var
-  i: LongInt;
+  a, idx: LongInt;
 begin
-  i:=TemplateListBox.ItemIndex;
-  if i<0 then exit;
-  if EditCodeTemplate(SynAutoComplete,i)=mrOk then begin
-    TemplateListBox.Items[i]:=
-       SynAutoComplete.Completions[i]
-       +' - "'+SynAutoComplete.CompletionComments[i]+'"';
+  idx := TemplateListBox.ItemIndex;
+  if idx < 0 then exit;
+  a := PtrInt(TemplateListBox.Items.Objects[idx]);
+  if a < 0 then exit;
+
+  if EditCodeTemplate(SynAutoComplete, a)=mrOk then begin
+    TemplateListBox.Items[idx]:=
+       SynAutoComplete.Completions[a]
+       +' - "'+SynAutoComplete.CompletionComments[a]+'"';
     ShowCurCodeTemplate;
   end;
 end;
@@ -759,14 +768,16 @@ end;
 
 procedure TCodeTemplateDialog.FillCodeTemplateListBox;
 var
-  a: integer;
+  a: PtrInt;
   sl: TStringList;
 begin
   sl:=TStringList.Create;
   try
     for a:=0 to SynAutoComplete.Completions.Count-1 do begin
-      sl.Add(SynAutoComplete.Completions[a]
-          +' - "'+SynAutoComplete.CompletionComments[a]+'"');
+      // Add the index in SynAutoComplete as Object, since both indexes won't
+      // be in sync after sorting
+      sl.AddObject(SynAutoComplete.Completions[a]
+          +' - "'+SynAutoComplete.CompletionComments[a]+'"', TObject(Pointer(a)));
     end;
     sl.Sort;
     TemplateListBox.Items.Assign(sl);
@@ -790,27 +801,25 @@ var
   end;
 
 var
-  i, sp, ep: integer;
+  idx, a, sp, ep: integer;
   s: string;
 begin
   EnableMakros:=false;
-  LineCount:=0;
-  i:=TemplateListBox.ItemIndex;
+  LineCount := 0;
+  idx := TemplateListBox.ItemIndex;
   // search template
-  if i>=0 then begin
-    s:=TemplateListBox.Items[i];
-    sp:=Pos(' ',s);
-    if sp>0 then
-      s:=copy(s,1,sp-1);
-    i:=SynAutoComplete.Completions.IndexOf(s);
-  end;
-  
+  if idx >= 0
+  then a := PtrInt(TemplateListBox.Items.Objects[idx])
+  else a := -1;
+
   TemplateSynEdit.Lines.BeginUpdate;
   TemplateSynEdit.Lines.Clear;
+
   //debugln('TCodeTemplateDialog.ShowCurCodeTemplate A i=',dbgs(i));
-  if i>=0 then begin
-    LastTemplate:=-1;
-    s:=SynAutoComplete.CompletionValues[i];
+  if a >= 0
+  then begin
+    LastTemplate := -1;
+    s:=SynAutoComplete.CompletionValues[a];
     //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
     sp:=1;
     ep:=1;
@@ -826,7 +835,7 @@ begin
     if (ep>sp) or ((s<>'') and (s[length(s)] in [#10,#13])) then
       AddLine(copy(s,sp,ep-sp));
   end;
-  LastTemplate:=i;
+  LastTemplate := a;
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
   UseMakrosCheckBox.Checked:=EnableMakros;
@@ -836,10 +845,10 @@ procedure TCodeTemplateDialog.SaveCurCodeTemplate;
 var
   NewValue: string;
   l: integer;
-  i: LongInt;
+  a: LongInt;
 begin
   if LastTemplate<0 then exit;
-  i:=LastTemplate;
+  a := LastTemplate;
   //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate A i=',dbgs(i));
   NewValue:=TemplateSynEdit.Lines.Text;
   // remove last EOL
@@ -855,7 +864,7 @@ begin
   end;
   if UseMakrosCheckBox.Checked then
     NewValue:=CodeTemplateMakroMagic+LineEnding+NewValue;
-  SynAutoComplete.CompletionValues[i]:=NewValue;
+  SynAutoComplete.CompletionValues[a]:=NewValue;
 end;
 
 { TLazCodeMacros }
