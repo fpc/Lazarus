@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, FileUtil,
+  Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc,
   FileProcs, SynRegExpr, LazConf;
 
 type
@@ -165,7 +165,8 @@ procedure CfgStrToPoint(const s: string; var Point: TPoint;
                         const DefaultPoint: TPoint);
 
 // text conversion
-function TabsToSpaces(const s: string; TabWidth: integer): string;
+function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean
+                      ): string;
 function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
@@ -1429,30 +1430,83 @@ end;
 
   Convert all tabs to TabWidth number of spaces.
 -------------------------------------------------------------------------------}
-function TabsToSpaces(const s: string; TabWidth: integer): string;
-var i, SrcLen, TabCount, SrcPos, DestPos: integer;
-begin
-  SrcLen:=length(s);
-  TabCount:=0;
-  for SrcPos:=1 to SrcLen do
-    if s[SrcPos]=#9 then inc(TabCount);
-  if TabCount=0 then begin
-    Result:=s;
-    exit;
-  end;
-  SetLength(Result,SrcLen+TabCount*(TabWidth-1));
-  DestPos:=1;
-  for SrcPos:=1 to SrcLen do begin
-    if s[SrcPos]<>#9 then begin
-      Result[DestPos]:=s[SrcPos];
-      inc(DestPos);
-    end else begin
-      for i:=1 to TabWidth do begin
-        Result[DestPos]:=' ';
-        inc(DestPos);
+function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean
+  ): string;
+
+  function ConvertTabsToSpaces(const Src: string; var Dest: string): integer;
+  var
+    SrcLen: Integer;
+    SrcPos: Integer;
+    PhysicalX: Integer;
+    CurTabWidth: Integer;
+    i: Integer;
+    CharLen: Integer;
+    DestPos: Integer;
+  begin
+    //DebugLn('ConvertTabsToSpaces ',dbgs(length(Dest)));
+    SrcLen:=length(Src);
+    SrcPos:=1;
+    DestPos:=1;
+    PhysicalX:=1;
+    while (SrcPos<=SrcLen) do begin
+      if (SrcPos and $fffff)=0 then
+        DebugLn('ConvertTabsToSpaces ',dbgs(SrcPos));
+      case Src[SrcPos] of
+      #9:
+        begin
+          CurTabWidth:=TabWidth - ((PhysicalX-1) mod TabWidth);
+          for i:=1 to CurTabWidth do begin
+            if Dest<>'' then
+              Dest[DestPos]:=' ';
+            inc(DestPos);
+          end;
+          inc(PhysicalX,CurTabWidth);
+          inc(SrcPos);
+        end;
+      #10,#13:
+        begin
+          if Dest<>'' then
+            Dest[DestPos]:=Src[SrcPos];
+          inc(SrcPos);
+          inc(DestPos);
+          if (SrcPos<=SrcLen) and (s[SrcPos] in [#10,#13])
+          and (s[SrcPos-1]<>s[SrcPos]) then
+            inc(SrcPos);
+          PhysicalX:=1;
+        end;
+      else
+        begin
+          if Dest<>'' then
+            Dest[DestPos]:=Src[SrcPos];
+          inc(PhysicalX);
+          if UseUTF8 then
+            CharLen:=UTF8CharacterLength(@s[SrcPos])
+          else
+            CharLen:=1;
+          for i:=1 to CharLen do begin
+            if Dest<>'' then
+              Dest[DestPos]:=Src[SrcPos];
+            inc(DestPos);
+            inc(SrcPos);
+          end;
+        end;
       end;
     end;
+    Result:=DestPos-1;
   end;
+  
+var
+  NewLen: LongInt;
+begin
+  Result:='';
+  NewLen:=ConvertTabsToSpaces(s,Result);
+  if NewLen=length(s) then
+    Result:=s
+  else begin
+    SetLength(Result,NewLen);
+    ConvertTabsToSpaces(s,Result);
+  end;
+  //DebugLn('TabsToSpaces ',dbgs(length(Result)));
 end;
 
 {-------------------------------------------------------------------------------

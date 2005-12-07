@@ -1481,7 +1481,8 @@ begin
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   // ToDo: replace step by step to keep bookmarks and breakpoints
-  FEditor.SelText:=TabsToSpaces(EditorComponent.SelText,EditorComponent.TabWidth);
+  FEditor.SelText:=TabsToSpaces(EditorComponent.SelText,
+                                EditorComponent.TabWidth,FEditor.UseUTF8);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.EndUndoBlock;
