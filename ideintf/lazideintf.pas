@@ -67,6 +67,17 @@ type
     );
   TSaveFlags = set of TSaveFlag;
   
+  TProjectBuildFlag = (
+    pbfCleanCompile,  // append -B to the compiler options
+    pbfDoNotCompileDependencies,
+    pbfDoNotCompileProject,
+    pbfCompileDependenciesClean,
+    pbfOnlyIfNeeded,
+    pbfDoNotSaveEditorFiles,
+    pbfCreateMakefile
+    );
+  TProjectBuildFlags = set of TProjectBuildFlag;
+  
   // new filename flags
   TSearchIDEFileFlag = (
     siffDoNotCheckAllPackages, // do not search filename in loaded packages

@@ -2214,9 +2214,13 @@ resourcestring
   lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage = 'There is a FPC unit '
     +'with the same name as a package:%s%s%s%s%s%s';
   lisPkgMangErrorWritingFile = 'Error writing file';
+  lisProjMangUnableToWriteStateFileForProjectError = 'Unable to write state '
+    +'file for project %s%sError: %s';
   lisPkgMangUnableToWriteStateFileOfPackageError = 'Unable to write state '
     +'file %s%s%s%sof package %s.%sError: %s';
   lisPkgMangErrorReadingFile = 'Error reading file';
+  lisProjMangUnableToReadStateFileOfProjectError = 'Unable to read state '
+    +'file %s of project %s%sError: %s';
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file %'
     +'s%s%s%sof package %s.%sError: %s';
   lisPkgMangUnableToCreateDirectory = 'Unable to create directory';

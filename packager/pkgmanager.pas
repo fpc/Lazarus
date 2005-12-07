@@ -276,6 +276,8 @@ type
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoCreatePackageMakefile(APackage: TLazPackage): TModalResult;
+    function DoCheckIfDependenciesNeedCompilation(DependencyOwner: TObject;
+                            StateFileAge: longint): TModalResult; override;
 
     // package installation
     procedure LoadInstalledPackages; override;
@@ -1519,12 +1521,9 @@ begin
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
       try
-        APackage.LastCompilerFilename:=
-          XMLConfig.GetValue('Compiler/Value','');
-        APackage.LastCompilerFileDate:=
-          XMLConfig.GetValue('Compiler/Date',0);
-        APackage.LastCompilerParams:=
-          XMLConfig.GetValue('Params/Value','');
+        APackage.LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
       finally
         XMLConfig.Free;
       end;
@@ -1616,9 +1615,6 @@ var
   StateFileAge: Integer;
   i: Integer;
   CurFile: TPkgFile;
-  Dependency: TPkgDependency;
-  RequiredPackage: TLazPackage;
-  OtherStateFile: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -1637,52 +1633,19 @@ begin
 
   StateFileAge:=FileAge(StateFilename);
 
-  // check all required packages
-  Dependency:=APackage.FirstRequiredDependency;
-  while Dependency<>nil do begin
-    if (Dependency.LoadPackageResult=lprSuccess) then begin
-      RequiredPackage:=Dependency.RequiredPackage;
-      // check compile state file of required package
-      if not RequiredPackage.AutoCreated then begin
-        Result:=DoLoadPackageCompiledState(RequiredPackage,false);
-        if Result<>mrOk then exit;
-        Result:=mrYes;
-        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
-          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',RequiredPackage.IDAsString);
-          exit;
-        end;
-        if StateFileAge<RequiredPackage.StateFileDate then begin
-          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
-            RequiredPackage.IDAsString,' State file is newer than ',
-            'State file ',APackage.IDAsString);
-          exit;
-        end;
-      end;
-      // check output state file of required package
-      if RequiredPackage.OutputStateFile<>'' then begin
-        OtherStateFile:=RequiredPackage.OutputStateFile;
-        MainIDE.MacroList.SubstituteStr(OtherStateFile);
-        if FileExists(OtherStateFile)
-        and (FileAge(OtherStateFile)>StateFileAge) then begin
-          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
-            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
-            ,' is newer than State file ',APackage.IDAsString);
-          Result:=mrYes;
-          exit;
-        end;
-      end;
-    end;
-    Dependency:=Dependency.NextRequiresDependency;
-  end;
-  
-  Result:=mrYes;
-
   // check main source file
   if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
   begin
     DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
+    Result:=mrYes;
     exit;
   end;
+
+  // check all required packages
+  Result:=DoCheckIfDependenciesNeedCompilation(APackage,StateFileAge);
+  if Result<>mrNo then exit;
+
+  Result:=mrYes;
 
   // check compiler and params
   if CompilerFilename<>APackage.LastCompilerFilename then begin
@@ -1726,6 +1689,71 @@ begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
   {$ENDIF}
+  Result:=mrNo;
+end;
+
+function TPkgManager.DoCheckIfDependenciesNeedCompilation(
+  DependencyOwner: TObject; StateFileAge: longint): TModalResult;
+  
+  function GetOwnerID: string;
+  begin
+    if DependencyOwner is TLazPackageID then
+      Result:=TLazPackageID(DependencyOwner).IDAsString
+    else if DependencyOwner is TProject then
+      Result:=TProject(DependencyOwner).IDAsString
+    else
+      Result:=dbgsName(DependencyOwner);
+  end;
+  
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+  OtherStateFile: String;
+begin
+  if DependencyOwner is TLazPackage then
+    Dependency:=TLazPackage(DependencyOwner).FirstRequiredDependency
+  else if DependencyOwner is TProject then
+    Dependency:=TProject(DependencyOwner).FirstRequiredDependency
+  else begin
+    Result:=mrNo;
+    exit;
+  end;
+    
+  while Dependency<>nil do begin
+    if (Dependency.LoadPackageResult=lprSuccess) then begin
+      RequiredPackage:=Dependency.RequiredPackage;
+      // check compile state file of required package
+      if not RequiredPackage.AutoCreated then begin
+        Result:=DoLoadPackageCompiledState(RequiredPackage,false);
+        if Result<>mrOk then exit;
+        Result:=mrYes;
+        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  No state file for ',RequiredPackage.IDAsString);
+          exit;
+        end;
+        if StateFileAge<RequiredPackage.StateFileDate then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+            RequiredPackage.IDAsString,' State file is newer than ',
+            'State file ',GetOwnerID);
+          exit;
+        end;
+      end;
+      // check output state file of required package
+      if RequiredPackage.OutputStateFile<>'' then begin
+        OtherStateFile:=RequiredPackage.OutputStateFile;
+        MainIDE.MacroList.SubstituteStr(OtherStateFile);
+        if FileExists(OtherStateFile)
+        and (FileAge(OtherStateFile)>StateFileAge) then begin
+          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+            RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
+            ,' is newer than State file ',GetOwnerID);
+          Result:=mrYes;
+          exit;
+        end;
+      end;
+    end;
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
   Result:=mrNo;
 end;
 

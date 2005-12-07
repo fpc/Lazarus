@@ -1224,6 +1224,7 @@ function TMainIDEBase.DoCheckAmbiguousSources(const AFilename: string;
 
   function CheckFile(const AmbiguousFilename: string): TModalResult;
   begin
+    Result:=mrOk;
     if not FileExists(AmbiguousFilename) then exit;
     if Compiling then begin
       Result:=AddCompileWarning(AmbiguousFilename);

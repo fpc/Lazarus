@@ -46,6 +46,8 @@ type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
   
+  { TCompiler }
+
   TCompiler = class(TObject)
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
@@ -54,7 +56,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject; BuildAll: boolean;
-      const DefaultFilename: string): TModalResult;
+      const WorkingDir, CompilerFilename, CompilerParams: string): TModalResult;
+    procedure WriteError(const Msg: string);
     property OnCommandLineCreate: TOnCmdLineCreate
       read FOnCmdLineCreate write FOnCmdLineCreate;
     property OutputFilter: TOutputFilter
@@ -83,29 +86,28 @@ begin
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------}
-{  TCompiler Compile                                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TCompiler Compile
+------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject; BuildAll: boolean;
-  const DefaultFilename: string): TModalResult;
+  const WorkingDir, CompilerFilename, CompilerParams: string): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
-  OldCurDir, ProjectDir, ProjectFilename: string;
+  OldCurDir: string;
   TheProcess : TProcess;
 begin
   Result:=mrCancel;
-  if AProject.MainUnitID<0 then exit;
+  DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+
+  // change working directory
   OldCurDir:=GetCurrentDir;
-  if AProject.IsVirtual then
-    ProjectFilename:=DefaultFilename
-  else
-    ProjectFilename:=AProject.MainUnitInfo.Filename;
-  if ProjectFilename='' then exit;
-  ProjectDir:=ExtractFilePath(ProjectFilename);
-  if not SetCurrentDir(ProjectDir) then exit;
+  if not SetCurrentDir(WorkingDir) then begin
+    WriteError('TCompiler.Compile unable to set working directory '+WorkingDir);
+    exit;
+  end;
   try
-    CmdLine := AProject.CompilerOptions.CompilerPath;
+    CmdLine := CompilerFilename;
     
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
@@ -119,23 +121,17 @@ begin
       CheckIfFileIsExecutable(CmdLine);
     except
       on E: Exception do begin
-        if OutputFilter<>nil then
-          OutputFilter.ReadLine(Format(lisCompilerErrorInvalidCompiler, [
-            E.Message]), true);
+        WriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
         if CmdLine='' then begin
-          if OutputFilter<>nil then
-            OutputFilter.ReadLine(lisCompilerHintYouCanSetTheCompilerPath, true
-              );
+          WriteError(lisCompilerHintYouCanSetTheCompilerPath);
         end;
         exit;
       end;
     end;
     if BuildAll then
       CmdLine := CmdLine+' -B';
-    CmdLine := CmdLine
-               + ' '+ AProject.CompilerOptions.MakeOptionsString(
-                                                         ProjectFilename,nil,[])
-               + ' '+ PrepareCmdLineOption(ProjectFilename);
+    if CompilerParams<>'' then
+    CmdLine := CmdLine+' '+CompilerParams;
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -153,7 +149,7 @@ begin
       TheProcess.ShowWindow := swoHide;
       Result:=mrOk;
       try
-        TheProcess.CurrentDirectory:=ProjectDir;
+        TheProcess.CurrentDirectory:=WorkingDir;
         
         if OutputFilter<>nil then begin
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
@@ -173,8 +169,7 @@ begin
       end;
       on e: Exception do begin
         DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
-        if OutputFilter<>nil then
-          OutputFilter.ReadLine(E.Message,true);
+        WriteError(E.Message);
         Result:=mrCancel;
         exit;
       end;
@@ -183,6 +178,13 @@ begin
     SetCurrentDir(OldCurDir);
   end;
   DebugLn('[TCompiler.Compile] end');
+end;
+
+procedure TCompiler.WriteError(const Msg: string);
+begin
+  DebugLn('TCompiler.WriteError ',Msg);
+  if OutputFilter<>nil then
+    OutputFilter.ReadLine(Msg,true);
 end;
 
 

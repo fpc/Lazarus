@@ -56,7 +56,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    Procedure Paint; virtual;
+    procedure Paint; virtual;
     procedure RealizeBounds; override;
     procedure DoOnPaint; virtual;
     procedure SwapBuffers; virtual;

@@ -67,6 +67,8 @@ type
                                  XMLConfig: TXMLConfig) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
                XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
+  TOnProjectGetTestDirectory = procedure(TheProject: TProject;
+                                         out TestDir: string) of object;
                                  
   TUnitInfoList = (
     uilPartOfProject,
@@ -409,6 +411,11 @@ type
   TEndUpdateProjectEvent =
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
     
+  TLazProjectStateFlag = (
+    lpsfStateFileLoaded
+    );
+  TLazProjectStateFlags = set of TLazProjectStateFlag;
+    
   { TProject }
 
   TProject = class(TLazProject)
@@ -428,6 +435,9 @@ type
     fDestroying: boolean;
     fIconPath: String;
     FJumpHistory: TProjectJumpHistory;
+    FLastCompilerFileDate: integer;
+    FLastCompilerFilename: string;
+    FLastCompilerParams: string;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
     FMainProject: boolean;
@@ -435,6 +445,7 @@ type
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
+    FOnGetTestDirectory: TOnProjectGetTestDirectory;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
     fPathDelimChanged: boolean;
@@ -444,6 +455,8 @@ type
     FPublishOptions: TPublishProjectOptions;
     FRunParameterOptions: TRunParamsOptions;
     FSourceDirectories: TFileReferenceList;
+    FStateFileDate: longint;
+    FStateFlags: TLazProjectStateFlags;
     FTargetFileExt: String;
     FUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
@@ -601,6 +614,15 @@ type
     procedure AddSrcPath(const SrcPathAddition: string); override;
     function GetSourceDirs(WithProjectDir, WithoutOutputDir: boolean): string;
     function GetOutputDirectory: string;
+    function GetCompilerFilename: string;
+    function GetStateFilename: string;
+    function GetTestDirectory: string;
+    function GetCompileSourceFilename: string;
+    
+    // state file
+    function LoadStateFile(IgnoreErrors: boolean): TModalResult;
+    function SaveStateFile(const CompilerFilename, CompilerParams: string
+                           ): TModalResult;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -623,9 +645,16 @@ type
                                                   read FFirstRequiredDependency;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
+    property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
                                            read FJumpHistory write FJumpHistory;
+    property LastCompilerFileDate: integer read FLastCompilerFileDate
+                                          write FLastCompilerFileDate;
+    property LastCompilerFilename: string read FLastCompilerFilename
+                                          write FLastCompilerFilename;
+    property LastCompilerParams: string read FLastCompilerParams
+                                        write FLastCompilerParams;
     property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
@@ -637,6 +666,8 @@ type
                                                    write FOnSaveProjectInfo;
     property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
                                                    write FOnLoadProjectInfo;
+    property OnGetTestDirectory: TOnProjectGetTestDirectory
+                             read FOnGetTestDirectory write FOnGetTestDirectory;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
@@ -644,6 +675,7 @@ type
                                      read FPublishOptions write FPublishOptions;
     property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
+    property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
@@ -1881,6 +1913,8 @@ begin
   Modified := false;
   SessionModified := false;
   fProjectInfoFile := '';
+  FStateFileDate:=0;
+  FStateFlags:=[];
   ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
@@ -2728,10 +2762,126 @@ end;
 
 function TProject.GetOutputDirectory: string;
 begin
-  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+  if IsVirtual then
+    Result:=GetTestDirectory
+  else
+    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
 end;
 
-procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
+function TProject.GetCompilerFilename: string;
+begin
+  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
+end;
+
+function TProject.GetStateFilename: string;
+begin
+  Result:=GetOutputDirectory
+          +ChangeFileExt(GetCompileSourceFilename,'.compiled');
+end;
+
+function TProject.GetTestDirectory: string;
+begin
+  if Assigned(OnGetTestDirectory) then
+    OnGetTestDirectory(Self,Result)
+  else
+    Result:=GetCurrentDir;
+end;
+
+function TProject.GetCompileSourceFilename: string;
+begin
+  if MainUnitID<0 then
+    Result:=''
+  else
+    Result:=ExtractFilename(MainUnitInfo.Filename);
+end;
+
+function TProject.LoadStateFile(IgnoreErrors: boolean): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+  CurStateFileAge: Integer;
+begin
+  StateFile:=GetStateFilename;
+  if not FileExists(StateFile) then begin
+    DebugLn('TProject.DoLoadStateFile Statefile not found: ',StateFile);
+    StateFlags:=StateFlags-[lpsfStateFileLoaded];
+    Result:=mrOk;
+    exit;
+  end;
+
+  // read the state file
+  CurStateFileAge:=FileAge(StateFile);
+  if (not (lpsfStateFileLoaded in StateFlags))
+  or (StateFileDate<>CurStateFileAge) then
+  begin
+    StateFlags:=StateFlags-[lpsfStateFileLoaded];
+    try
+      XMLConfig:=TXMLConfig.Create(StateFile);
+      try
+        LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
+      finally
+        XMLConfig.Free;
+      end;
+      StateFileDate:=CurStateFileAge;
+    except
+      on E: Exception do begin
+        if IgnoreErrors then begin
+          Result:=mrOk;
+        end else begin
+          Result:=MessageDlg(lisPkgMangErrorReadingFile,
+            Format(lisProjMangUnableToReadStateFileOfProjectError, [StateFile,
+              IDAsString, #13, E.Message]),
+            mtError,[mbAbort],0);
+        end;
+        exit;
+      end;
+    end;
+    StateFlags:=StateFlags+[lpsfStateFileLoaded];
+  end;
+
+  Result:=mrOk;
+end;
+
+function TProject.SaveStateFile(const CompilerFilename, CompilerParams: string
+  ): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+  CompilerFileDate: Integer;
+begin
+  StateFile:=GetStateFilename;
+  try
+    CompilerFileDate:=FileAge(CompilerFilename);
+    XMLConfig:=TXMLConfig.CreateClean(StateFile);
+    try
+      XMLConfig.SetValue('Compiler/Value',CompilerFilename);
+      XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
+      XMLConfig.SetValue('Params/Value',CompilerParams);
+      InvalidateFileStateCache;
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+    LastCompilerFilename:=CompilerFilename;
+    LastCompilerFileDate:=CompilerFileDate;
+    LastCompilerParams:=CompilerParams;
+    StateFileDate:=FileAge(StateFile);
+    StateFlags:=StateFlags+[lpsfStateFileLoaded];
+  except
+    on E: Exception do begin
+      Result:=MessageDlg(lisPkgMangErrorWritingFile,
+        Format(lisProjMangUnableToWriteStateFileForProjectError, [IDAsString,
+          #13, E.Message]),
+        mtError,[mbAbort,mbCancel],0);
+      exit;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
 var i:integer;

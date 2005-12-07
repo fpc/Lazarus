@@ -548,6 +548,8 @@ type
                                              XMLConfig: TXMLConfig);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
                          XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
+    procedure OnProjectGetTestDirectory(TheProject: TProject;
+                                        out TestDir: string);
 
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -621,11 +623,15 @@ type
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
-    procedure DoWarnAmbiguousFiles;
+    function DoWarnAmbiguousFiles: TModalResult;
     procedure DoUpdateProjectResourceInfo;
     function DoUpdateProjectAutomaticFiles: TModalResult;
     function DoSaveForBuild: TModalResult; override;
-    function DoBuildProject(const AReason: TCompileReason): TModalResult;
+    function DoCheckIfProjectNeedsCompilation(AProject: TProject;
+                                         const CompilerFilename, CompilerParams,
+                                         SrcFilename: string): TModalResult;
+    function DoBuildProject(const AReason: TCompileReason;
+                            Flags: TProjectBuildFlags): TModalResult;
     function DoAbortBuild: TModalResult;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
@@ -2301,10 +2307,11 @@ begin
       and AnUnitInfo.BuildFileIfActive then
         DoBuildFile
       else
-        DoBuildProject(crCompile);
+        DoBuildProject(crCompile,[pbfOnlyIfNeeded]);
     end;
 
-  ecBuildAll:    DoBuildProject(crBuild);
+  ecBuildAll:    DoBuildProject(crBuild,[pbfCleanCompile,
+                                         pbfCompileDependenciesClean]);
   ecAbortBuild:  DoAbortBuild;
 
   ecRun:
@@ -2935,12 +2942,12 @@ end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
-  DoBuildProject(crCompile);
+  DoBuildProject(crCompile,[pbfOnlyIfNeeded]);
 end;
 
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
 Begin
-  DoBuildProject(crBuild);
+  DoBuildProject(crBuild,[pbfCleanCompile,pbfCompileDependenciesClean]);
 end;
 
 Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
@@ -4729,6 +4736,7 @@ begin
   Result.OnFileBackup:=@DoBackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
+  Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
 end;
 
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
@@ -4744,6 +4752,12 @@ begin
   if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags))
   then
     DebugBoss.SaveProjectSpecificInfo(XMLConfig);
+end;
+
+procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;
+  out TestDir: string);
+begin
+  TestDir:=GetTestBuildDir;
 end;
 
 procedure TMainIDE.GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -6843,7 +6857,7 @@ Begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.DoWarnAmbiguousFiles;
+function TMainIDE.DoWarnAmbiguousFiles: TModalResult;
 var
   AnUnitInfo: TUnitInfo;
   i: integer;
@@ -6853,9 +6867,11 @@ begin
     AnUnitInfo:=Project1.Units[i];
     if (AnUnitInfo.IsPartOfProject) and (not AnUnitInfo.IsVirtual) then begin
       DestFilename:=GetTargetUnitFilename(AnUnitInfo);
-      DoCheckAmbiguousSources(DestFilename,true);
+      Result:=DoCheckAmbiguousSources(DestFilename,true);
+      if Result<>mrOk then exit;
     end;
   end;
+  Result:=mrOk;
 end;
 
 procedure TMainIDE.DoUpdateProjectResourceInfo;
@@ -6926,6 +6942,77 @@ begin
   Result:=PkgBoss.DoSaveAllPackages([]);
 end;
 
+function TMainIDE.DoCheckIfProjectNeedsCompilation(AProject: TProject;
+  const CompilerFilename, CompilerParams, SrcFilename: string): TModalResult;
+var
+  StateFilename: String;
+  StateFileAge: LongInt;
+  AnUnitInfo: TUnitInfo;
+begin
+  // check state file
+  StateFilename:=AProject.GetStateFilename;
+  Result:=AProject.LoadStateFile(false);
+  if Result<>mrOk then exit;
+  if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
+    DebugLn('TMainIDE.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
+    Result:=mrYes;
+    exit;
+  end;
+
+  StateFileAge:=FileAge(StateFilename);
+
+  // check main source file
+  if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
+  begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
+    Result:=mrYes;
+    exit;
+  end;
+
+  // check all required packages
+  Result:=PkgBoss.DoCheckIfDependenciesNeedCompilation(AProject,StateFileAge);
+  if Result<>mrNo then exit;
+
+  Result:=mrYes;
+
+  // check compiler and params
+  if CompilerFilename<>AProject.LastCompilerFilename then begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
+    DebugLn('  Old="',AProject.LastCompilerFilename,'"');
+    DebugLn('  Now="',CompilerFilename,'"');
+    exit;
+  end;
+  if not FileExists(CompilerFilename) then begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename not found for ',AProject.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
+    exit;
+  end;
+  if FileAge(CompilerFilename)<>AProject.LastCompilerFileDate then begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
+    exit;
+  end;
+  if CompilerParams<>AProject.LastCompilerParams then begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
+    DebugLn('  Old="',AProject.LastCompilerParams,'"');
+    DebugLn('  Now="',CompilerParams,'"');
+    exit;
+  end;
+
+  // check project files
+  AnUnitInfo:=AProject.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if FileExists(AnUnitInfo.Filename)
+    and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
+      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
+
+  Result:=mrNo;
+end;
+
 function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
 begin
   Result:=mrCancel;
@@ -6978,12 +7065,23 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildProject(const AReason: TCompileReason): TModalResult;
+function TMainIDE.DoBuildProject(const AReason: TCompileReason;
+  Flags: TProjectBuildFlags): TModalResult;
 var
-  DefaultFilename: string;
+  SrcFilename: string;
   ToolBefore: TProjectCompilationTool;
   ToolAfter: TProjectCompilationTool;
+  PkgFlags: TPkgCompileFlags;
+  CompilerFilename: String;
+  WorkingDir: String;
+  CompilerParams: String;
 begin
+  if Project1.MainUnitInfo=nil then begin
+    // this project has not source to compile
+    Result:=mrCancel;
+    exit;
+  end;
+
   Result:=PrepareForCompile;
   if Result<>mrOk then exit;
 
@@ -6995,24 +7093,47 @@ begin
   MessagesView.BeginBlock;
   try
     // compile required packages
-    Result:=PkgBoss.DoCompileProjectDependencies(Project1,
-                                                 [pcfDoNotSaveEditorFiles]);
-    if Result<>mrOk then exit;
+    if not (pbfDoNotCompileDependencies in Flags) then begin
+      PkgFlags:=[pcfDoNotSaveEditorFiles];
+      if pbfCompileDependenciesClean in Flags then
+        Include(PkgFlags,pcfCompileDependenciesClean);
+      Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
+      if Result<>mrOk then exit;
+    end;
     
-    // get main source filename
-    if not Project1.IsVirtual then
-      DefaultFilename:=''
-    else
-      DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
-
     // clear old error lines
     SourceNotebook.ClearErrorLines;
 
     DoArrangeSourceEditorAndMessageView(false);
 
-    // warn ambiguous files
-    DoWarnAmbiguousFiles;
-    
+    // get main source filename
+    if not Project1.IsVirtual then begin
+      WorkingDir:=Project1.ProjectDirectory;
+      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+    end else begin
+      WorkingDir:=GetTestBuildDir;
+      SrcFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
+    end;
+    CompilerFilename:=Project1.GetCompilerFilename;
+    CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
+                    +' '+PrepareCmdLineOption(SrcFilename);
+    //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+
+    // warn for ambiguous files
+    Result:=DoWarnAmbiguousFiles;
+    if Result<>mrOk then exit;
+
+    if (pbfOnlyIfNeeded in Flags) then begin
+      Result:=DoCheckIfProjectNeedsCompilation(Project1,
+                                             CompilerFilename,CompilerParams,
+                                             SrcFilename);
+      if Result=mrNo then begin
+        Result:=mrOk;
+        exit;
+      end;
+      if Result<>mrYes then exit;
+    end;
+
     // execute compilation tool 'Before'
     ToolBefore:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore);
     if (AReason in ToolBefore.CompileReasons) then begin
@@ -7022,7 +7143,8 @@ begin
       if Result<>mrOk then exit;
     end;
 
-    if (AReason in Project1.CompilerOptions.CompileReasons) then begin
+    if (AReason in Project1.CompilerOptions.CompileReasons)
+    and (not (pbfDoNotCompileProject in Flags)) then begin
       try
         // change tool status
         ToolStatus:=itBuilder;
@@ -7031,11 +7153,15 @@ begin
         TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
 
         // compile
-        Result:=TheCompiler.Compile(Project1, AReason = crBuild, DefaultFilename);
+        Result:=TheCompiler.Compile(Project1, pbfCleanCompile in Flags,
+                                    WorkingDir,CompilerFilename,CompilerParams);
         if Result<>mrOk then begin
           DoJumpToCompilerMessage(-1,true);
           exit;
         end;
+        // compilation succeded -> write state file
+        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
+        if Result<>mrOk then exit;
       finally
         ToolStatus:=itNone;
       end;
@@ -7043,7 +7169,7 @@ begin
 
     // execute compilation tool 'After'
     ToolAfter:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteAfter);
-    if  (Result = mrOk) and (AReason in ToolAfter.CompileReasons) then begin
+    if (Result = mrOk) and (AReason in ToolAfter.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
                                        Project1.ProjectDirectory,
                                        lisExecutingCommandAfter);
@@ -7060,6 +7186,7 @@ begin
     
     MessagesView.EndBlock;
   end;
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoAbortBuild: TModalResult;
@@ -7090,7 +7217,7 @@ begin
 
   debugln('TMainIDE.DoInitProjectRun B');
   // Build project first
-  if DoBuildProject(crRun) <> mrOk
+  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk
   then Exit;
 
   // Check project build

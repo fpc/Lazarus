@@ -138,7 +138,9 @@ type
                               Globals: TGlobalCompilerOptions = nil): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
-                      
+    function DoCheckIfDependenciesNeedCompilation(DependencyOwner: TObject;
+                            StateFileAge: longint): TModalResult; virtual; abstract;
+
     // package installation
     procedure LoadInstalledPackages; virtual; abstract;
     function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
