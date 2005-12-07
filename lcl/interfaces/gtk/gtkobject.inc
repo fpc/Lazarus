@@ -585,7 +585,7 @@ begin
   WakeMainThread := @PrepareSynchronize;
   assignpipe(threadsync_pipein, threadsync_pipeout);
   threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
-  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
+  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, Self);
 end;
 
 {$else}
