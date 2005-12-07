@@ -1445,6 +1445,7 @@ var
   BB: TPoint;
   BE: TPoint;
   OrgCaretPos: TPoint;
+  OldTopLine: LongInt;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
     {$IFDEF SYN_LAZARUS}
@@ -1458,6 +1459,7 @@ begin
           BB := BlockBegin;
           BE := BlockEnd;
           OrgCaretPos := CaretXY;
+          OldTopLine := TopLine;
 
           // rescan all lines in range
           fHighlighter.SetRange(
@@ -1466,6 +1468,7 @@ begin
 
           // restore selection
           SetCaretAndSelection(OrgCaretPos, BB, BE);
+          TopLine:=OldTopLine;
         end;
         InvalidateLines(fHighlighterNeedsUpdateStartLine + 1,
                         fHighlighterNeedsUpdateEndLine + 1);
@@ -5937,13 +5940,13 @@ procedure TCustomSynEdit.ListPutted(Index: Integer);
 begin
   {$IFDEF SYN_LAZARUS}
   if PaintLock>0 then begin
-    if (fHighlighterNeedsUpdateStartLine<1)
+    {if (fHighlighterNeedsUpdateStartLine<1)
     or (fHighlighterNeedsUpdateStartLine>Index) then
       fHighlighterNeedsUpdateStartLine:=Index;
     if (fHighlighterNeedsUpdateEndLine<1)
     or (fHighlighterNeedsUpdateEndLine<Index) then
       fHighlighterNeedsUpdateEndLine:=Index;
-    exit;
+    exit;}
   end;
   {$ENDIF}
   if Assigned(fHighlighter) then begin
@@ -5962,7 +5965,7 @@ var
 begin
   if Assigned(fHighlighter) and (Lines.Count > 0) then begin
     {$IFDEF SYN_LAZARUS}
-    ScanFrom(0,Lines.Count-1);
+    ScanFrom(0{,Lines.Count-1});
     {$ELSE}
     fHighlighter.ResetRange;
 {begin}                                                                         //mh 2000-10-10

@@ -10506,6 +10506,7 @@ begin
     BlockBegin:=LogicalCaretXY;
     BlockEnd:=BlockBegin;
     TopLine:=NewTopLine;
+    //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
   SourceNoteBook.ShowOnTop;
