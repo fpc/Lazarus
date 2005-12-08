@@ -1339,6 +1339,16 @@ Begin
   Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
 End;
 
+function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
+  hBr: HBRUSH) : integer;
+var
+  lRect: Windows.RECT;
+begin
+  {$message warn TWin32WidgetSet.FrameRect TODO: optimize ARect copying}
+  lRect := ARect;
+  Result := Windows.FrameRect(DC, lRect, hBr);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetActiveWindow
   Params: none
