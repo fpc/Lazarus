@@ -69,25 +69,29 @@ implementation
 
   { TCarbonWSButton }
 
-function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Button: TCustomButton;
+  //Button: TCustomButton;
   Control: ControlRef;
   CFString: CFStringRef;
   R: Rect;
   Info: PWidgetInfo;
 begin
   Result := 0;
-  Button := AWinControl as TCustomButton;
+  //Button := AWinControl as TCustomButton;
 
   R.Left := AParams.X;
   R.Top := AParams.Y;
   R.Right := AParams.X + AParams.Width;
   R.Bottom := AParams.Y + AParams.Height;
 
-  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
-  if CreatePushButtonControl(WindowRef(AParams.WndParent), R, CFString, Control) = noErr
-  then Result := TLCLIntfHandle(Control);
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption),
+                                        DEFAULT_CFSTRING_ENCODING);
+  if CreatePushButtonControl(WindowRef(AParams.WndParent), R,
+    CFString, Control) = noErr
+  then
+    Result := TLCLIntfHandle(Control);
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 

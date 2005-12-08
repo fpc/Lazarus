@@ -28,17 +28,19 @@
 { TCarbonWidgetSet }
 
 {
-The only drawback to making your own event loop dispatching calls in the main application thread
-is that you won't get the standard application event handler installed. Specifically, the
-RunApplicationEventLoop function installs handlers to do the following:
+The only drawback to making your own event loop dispatching calls in the main
+application thread is that you won't get the standard application event handler
+installed. Specifically, the RunApplicationEventLoop function installs handlers
+to do the following:
 * Allow clicks in the menu bar to begin menu tracking
 * Dispatch Apple events by calling AEProcessAppleEvent
 * Respond to quit Apple events by quitting RunApplicationEventLoop.
 
-One way to work around this limitation is by creating a dummy custom event handler. When you
-are ready to process events, create the dummy event yourself, post it to the queue. and then call
-RunApplicationEventLoop (to install the standard application event handler). The dummy event
-handler can then process the events manually. For an example of using this method, see Technical
+One way to work around this limitation is by creating a dummy custom event
+handler. When you are ready to process events, create the dummy event yourself,
+post it to the queue and then call RunApplicationEventLoop (to install the
+standard application event handler). The dummy event handler can then process
+the events manually. For an example of using this method, see Technical
 Q&A 1061 in Developer Documentation Technical Q&As.
 
 }
@@ -124,7 +126,7 @@ begin
       // Run our event loop until quitNow is set.
       Loop;
     finally
-      RemoveEventHandler(QuitHandler);
+      FPCMacOSAll.RemoveEventHandler(QuitHandler);
     end;
   finally
     DisposeEventHandlerUPP(QuitUPP);
@@ -210,7 +212,7 @@ begin
         ReleaseEvent(DummyEvent);
       end;
     finally
-      RemoveEventHandler(EventLoopHandler);
+      FPCMacOSAll.RemoveEventHandler(EventLoopHandler);
     end;
   finally
     DisposeEventHandlerUPP(EventLoopUPP);

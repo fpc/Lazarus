@@ -52,11 +52,6 @@ begin
     );
 end;
 
-function TCarbonWidgetSet.BringWindowToTop(hWnd: HWND): Boolean;
-begin
-  Result:=inherited BringWindowToTop(hWnd);
-end;
-
 function TCarbonWidgetSet.CallNextHookEx(hHk: HHOOK; ncode: Integer;
   wParam: WParam; lParam: LParam): Integer;
 begin

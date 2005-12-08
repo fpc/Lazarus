@@ -327,24 +327,27 @@ begin
   AText := PChar(Str);
 end;
 
-procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
+  NewCase: TEditCharCase);
 begin
  // TODO
 end;
 
-procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
+  NewMode: TEchoMode);
 begin
  //TODO
 end;
 
-procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
 begin
  //AFAICS this will have to be checked in a callback
 end;
 
-procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
+  NewChar: char);
 var
-  Control: ControlRef;
   NeedsPassword: Boolean;
   IsPassword: Boolean;
   Info: PWidgetInfo;
@@ -362,7 +365,8 @@ begin
 
 end;
 
-procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
+  NewReadOnly: boolean);
 var
   Control: ControlRef;
 begin
