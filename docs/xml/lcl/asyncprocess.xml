@@ -1,6 +1,3 @@
-MakeSkel - FPDoc skeleton XML description file generator
-(c) 2000 - 2003 Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org
-
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <fpdoc-descriptions>
 <package name="lcl">
@@ -184,4 +181,3 @@ MakeSkel - FPDoc skeleton XML description file generator
 </module> <!-- AsyncProcess -->
 </package>
 </fpdoc-descriptions>
-Done.
