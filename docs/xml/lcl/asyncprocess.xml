@@ -1,0 +1,187 @@
+MakeSkel - FPDoc skeleton XML description file generator
+(c) 2000 - 2003 Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    AsyncProcess
+  ====================================================================
+-->
+
+<module name="AsyncProcess">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Process">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TAsyncProcess">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAsyncProcess.FOnReadData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAsyncProcess.FOnTerminate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TAsyncProcess.GetNumBytesAvailable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TAsyncProcess.GetNumBytesAvailable.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TAsyncProcess.HandlePipeInput">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAsyncProcess.HandlePipeInput.AData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAsyncProcess.HandlePipeInput.AReasons">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TAsyncProcess.HandleProcessTermination">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAsyncProcess.HandleProcessTermination.AData">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAsyncProcess.HandleProcessTermination.AReason">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAsyncProcess.HandleProcessTermination.AInfo">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TAsyncProcess.Execute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAsyncProcess.NumBytesAvailable">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAsyncProcess.OnReadData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAsyncProcess.OnTerminate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- AsyncProcess -->
+</package>
+</fpdoc-descriptions>
+Done.

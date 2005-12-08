@@ -521,6 +521,7 @@ docs/xml/find_cvs_fpdoc_files.pl -text svneol=native#application/x-perl
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/asyncprocess.xml svneol=native#text/plain
 docs/xml/lcl/avglvltree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/buttons.xml svneol=native#text/xml
 docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
