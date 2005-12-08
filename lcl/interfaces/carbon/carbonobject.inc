@@ -108,7 +108,8 @@ var
   Dummy: LongWord;
 begin
   // Get our TApplicationMainLoop
-  Result := GetEventParameter(inEvent, MakeFourCC('Loop'), MakeFourCC('TAML'), @Dummy, SizeOf(Loop), @Dummy, @Loop);
+  Result := GetEventParameter(inEvent, MakeFourCC('Loop'), MakeFourCC('TAML'),
+                              @Dummy, SizeOf(Loop), @Dummy, @Loop);
   if Result <> noErr then Exit;
   if not Assigned(Loop) then Exit;
 
@@ -276,6 +277,33 @@ begin
 end;
 
 procedure TCarbonWidgetSet.AppMinimize;
+begin
+
+end;
+
+procedure TCarbonWidgetSet.AppBringToFront;
+begin
+
+end;
+
+function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
+  ): TGraphicsColor;
+begin
+  Result:=clNone;
+end;
+
+procedure TCarbonWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
+  AColor: TGraphicsColor);
+begin
+
+end;
+
+procedure TCarbonWidgetSet.DCRedraw(CanvasHandle: HDC);
+begin
+
+end;
+
+procedure TCarbonWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 
 end;

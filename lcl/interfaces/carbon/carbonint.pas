@@ -49,6 +49,9 @@ uses
 
 
 type
+
+  { TCarbonWidgetSet }
+
   TCarbonWidgetSet = class(TWidgetSet)
   private
     // This variable must be maintained by your thread scheduling
@@ -62,12 +65,19 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AppProcessMessages; override;
-    procedure AppWaitMessage; override;
-    procedure AppRun(const ALoop: TApplicationMainLoop); override;
-    procedure AppTerminate; override;
+
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    procedure AppRun(const ALoop: TApplicationMainLoop); override;
+    procedure AppWaitMessage; override;
+    procedure AppProcessMessages; override;
+    procedure AppTerminate; override;
     procedure AppMinimize; override;
+    procedure AppBringToFront; override;
+
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+    procedure DCRedraw(CanvasHandle: HDC); override;
+    procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
