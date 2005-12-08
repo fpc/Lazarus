@@ -50,10 +50,6 @@ interface
 
 {off $Define Disable_GC_SysColors}
 
-{$IFDEF Linux}
-  {$DEFINE UseLinuxThreading}
-{$ENDIF}
-
 {$IFDEF gtk2}
   {$IFDEF NoGdkPixbufLib}
     {$UNDEF NoGdkPixbufLib}
@@ -135,7 +131,7 @@ type
     procedure FreeStockItems; virtual;
     procedure PassCmdLineOptions; override;
    
-{$ifdef UseLinuxThreading}
+{$ifdef Unix}
     procedure InitSynchronizeSupport;
     procedure ProcessChildSignal;
     procedure PrepareSynchronize(AObject: TObject);

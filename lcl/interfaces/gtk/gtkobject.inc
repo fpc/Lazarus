@@ -129,7 +129,7 @@ begin
 
 end;
 
-{$ifdef UseLinuxThreading}
+{$ifdef Unix}
 
 // TThread.Synchronize support
 var
@@ -237,7 +237,7 @@ begin
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
 
-{$ifdef UseLinuxThreading}
+{$ifdef Unix}
   InitSynchronizeSupport;
   InstallSignalHandler;
 {$endif}
@@ -522,7 +522,7 @@ begin
   inherited Destroy;
 end;
 
-{$ifdef UseLinuxThreading}
+{$ifdef Unix}
 
 procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
 begin
