@@ -259,6 +259,7 @@ function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Quality, PitchAndFamily: Byte; FaceName: PChar): HFONT;
 function CreatePen(Style, Width: Integer; Color: TColorRef): HPEN;
 function CreateRectRgnIndirect(const ARect: TRect): HRGN;
+function CreateSolidBrush(Color: TColorRef): HBRUSH;
 
 function EqualRect(const lprc1, lprc2: TRect): Boolean;
 

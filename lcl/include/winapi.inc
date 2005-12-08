@@ -979,6 +979,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CreateSolidBrush
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function CreateSolidBrush(Color: TColorRef): HBRUSH;
+var
+  LogBrush: TLogBrush;
+begin
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := Color;
+  LogBrush.lbHatch := 0;
+  Result := CreateBrushIndirect(LogBrush);
+end;
+
+{------------------------------------------------------------------------------
   Function: EqualRect
   Params:   Rect to Compare
   Returns:
