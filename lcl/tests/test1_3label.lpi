@@ -9,19 +9,20 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test1_3label"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
+    <LazDoc Paths=""/>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="10" Y="48"/>
+        <CursorPos X="22" Y="361"/>
         <EditorIndex Value="0"/>
         <Filename Value="test1_3label.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="21"/>
+        <TopLine Value="320"/>
         <UnitName Value="test1_3label"/>
         <UsageCount Value="34"/>
       </Unit0>
@@ -45,10 +46,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="4"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk2"/>
-    </SearchPaths>
+    <Version Value="5"/>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

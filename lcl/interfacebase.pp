@@ -54,6 +54,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
     procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
     procedure AppRun(const ALoop: TApplicationMainLoop); virtual;
     procedure AppWaitMessage; virtual; abstract;
@@ -61,10 +62,12 @@ type
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
+
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
     procedure SetDesigning(AComponent: TComponent); virtual; abstract;
+
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
 
     // create and destroy

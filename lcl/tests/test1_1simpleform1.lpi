@@ -9,19 +9,20 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test1_1simpleform1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
+    <LazDoc Paths=""/>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="15" Y="29"/>
+        <CursorPos X="31" Y="232"/>
         <EditorIndex Value="0"/>
         <Filename Value="test1_1simpleform1.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="121"/>
+        <TopLine Value="200"/>
         <UnitName Value="Test1_1SimpleForm1"/>
         <UsageCount Value="33"/>
       </Unit0>
@@ -45,7 +46,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="4"/>
+    <Version Value="5"/>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

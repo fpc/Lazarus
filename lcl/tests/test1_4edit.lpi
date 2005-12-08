@@ -9,19 +9,20 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="2"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test1_4edit"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
+    <LazDoc Paths=""/>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="11" Y="119"/>
+        <CursorPos X="1" Y="378"/>
         <EditorIndex Value="0"/>
         <Filename Value="test1_4edit.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="101"/>
+        <TopLine Value="337"/>
         <UnitName Value="test1_4edit"/>
         <UsageCount Value="39"/>
       </Unit0>
@@ -45,10 +46,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="4"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk2"/>
-    </SearchPaths>
+    <Version Value="5"/>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

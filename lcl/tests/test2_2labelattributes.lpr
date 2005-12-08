@@ -82,7 +82,6 @@ type
     procedure Form1Shortcut(var Msg: TLMKey; var Handled: Boolean);
     procedure Form1Show(Sender: TObject);
     procedure Form1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure Form1WindowStateChanged(Sender: TObject);
     procedure WidthRadioGroupClick(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -361,12 +360,6 @@ begin
   debugln('TForm1.Form1UTF8KeyPress ',DbgSName(Sender),' UTF8Key="',DbgStr(UTF8Key),'"');
 end;
 
-procedure TForm1.Form1WindowStateChanged(Sender: TObject);
-begin
-  debugln('TForm1.Form1WindowStateChanged ',DbgSName(Sender),
-    ' State=',GetEnumName(TypeInfo(TWindowState),ord(WindowState)));
-end;
-
 procedure TForm1.WidthRadioGroupClick(Sender: TObject);
 begin
   debugln('TForm1.WidthRadioGroupClick ',DbgSName(Sender),' WidthRadioGroup.ItemIndex=',dbgs(WidthRadioGroup.ItemIndex));
@@ -405,12 +398,11 @@ begin
   OnShortcut:=@Form1Shortcut;
   OnShow:=@Form1Show;
   OnUTF8KeyPress:=@Form1UTF8KeyPress;
-  OnWindowStateChanged:=@Form1WindowStateChanged;
   inherited Create(TheOwner);
 end;
 
 var
-  Form1: TForm1;
+  Form1: TForm1 = nil;
 begin
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
