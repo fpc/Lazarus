@@ -1442,10 +1442,7 @@ end;
 
 procedure TCustomSynEdit.DecPaintLock;
 var
-  BB: TPoint;
-  BE: TPoint;
-  OrgCaretPos: TPoint;
-  OldTopLine: LongInt;
+  LastLineChanged: LongInt;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
     {$IFDEF SYN_LAZARUS}
@@ -1454,24 +1451,16 @@ begin
       if fHighlighterNeedsUpdateStartLine<=Lines.Count then begin
         if fHighlighterNeedsUpdateEndLine>Lines.Count then
           fHighlighterNeedsUpdateEndLine:=Lines.Count;
+        LastLineChanged:=fHighlighterNeedsUpdateEndLine;
         if Assigned(fHighlighter) then begin
-          // store current selection detail
-          BB := BlockBegin;
-          BE := BlockEnd;
-          OrgCaretPos := CaretXY;
-          OldTopLine := TopLine;
-
           // rescan all lines in range
           fHighlighter.SetRange(
             TSynEditStringList(Lines).Ranges[fHighlighterNeedsUpdateStartLine-1]);
-          ScanFrom(fHighlighterNeedsUpdateStartLine-1,fHighlighterNeedsUpdateEndLine-1);
-
-          // restore selection
-          SetCaretAndSelection(OrgCaretPos, BB, BE);
-          TopLine:=OldTopLine;
+          LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine-1,
+                                    fHighlighterNeedsUpdateEndLine-1);
+          //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
         end;
-        InvalidateLines(fHighlighterNeedsUpdateStartLine + 1,
-                        fHighlighterNeedsUpdateEndLine + 1);
+        InvalidateLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
       end;
       fHighlighterNeedsUpdateStartLine:=0;
       fHighlighterNeedsUpdateEndLine:=0;
@@ -3906,6 +3895,7 @@ var
   ypos : integer;
 begin
   CurLine:=-1;
+  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine));
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -5940,13 +5930,13 @@ procedure TCustomSynEdit.ListPutted(Index: Integer);
 begin
   {$IFDEF SYN_LAZARUS}
   if PaintLock>0 then begin
-    {if (fHighlighterNeedsUpdateStartLine<1)
-    or (fHighlighterNeedsUpdateStartLine>Index) then
-      fHighlighterNeedsUpdateStartLine:=Index;
+    if (fHighlighterNeedsUpdateStartLine<1)
+    or (fHighlighterNeedsUpdateStartLine>Index+1) then
+      fHighlighterNeedsUpdateStartLine:=Index+1;
     if (fHighlighterNeedsUpdateEndLine<1)
-    or (fHighlighterNeedsUpdateEndLine<Index) then
-      fHighlighterNeedsUpdateEndLine:=Index;
-    exit;}
+    or (fHighlighterNeedsUpdateEndLine<Index+1) then
+      fHighlighterNeedsUpdateEndLine:=Index+1;
+    exit;
   end;
   {$ENDIF}
   if Assigned(fHighlighter) then begin

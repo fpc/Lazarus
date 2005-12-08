@@ -986,6 +986,9 @@ procedure TSynEditStringList.PutObject(Index: integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= fCount) then
     ListIndexOutOfBounds(Index);
+  {$IFDEF SYN_LAZARUS}
+  if fList^[Index].fObject = AObject then exit;
+  {$ENDIF}
   BeginUpdate;
   fList^[Index].fObject := AObject;
   EndUpdate;
@@ -995,9 +998,15 @@ procedure TSynEditStringList.PutRange(Index: integer; ARange: TSynEditRange);
 begin
   if (Index < 0) or (Index >= fCount) then
     ListIndexOutOfBounds(Index);
+  {$IFDEF SYN_LAZARUS}
+  // do not call BeginUpdate/EndUpdate. It would call the too generic OnChange
+  // events
+  fList^[Index].fRange := ARange;
+  {$ELSE}
   BeginUpdate;
   fList^[Index].fRange := ARange;
   EndUpdate;
+  {$ENDIF}
 end;
 
 procedure TSynEditStringList.SaveToFile(const FileName: string);
