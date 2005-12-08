@@ -70,6 +70,11 @@ end;
 
 uses BaseUnix, TermIO;
 
+{$ifdef DARWIN}
+const
+  FIONREAD = $4004667;
+{$endif}
+
 function TAsyncProcess.GetNumBytesAvailable: dword;
 begin
   if not (poUsePipes in Options) then
@@ -79,7 +84,7 @@ begin
     // FIONSPACE -> bytes available for writing without blocking
     //   does not work on all platforms (not defined on linux e.g.)
     {$ifdef UseLinuxThreading}
-    if fpioctl(Output.Handle, $4004667f, @Result) = -1 then
+    if fpioctl(Output.Handle, FIONREAD, @Result) = -1 then
     {$ENDIF}
       Result := 0;
   end;
