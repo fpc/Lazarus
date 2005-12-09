@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -109,6 +109,9 @@ end;
 
 procedure TDBMemo.UpdateData(Sender: TObject);
 begin
+  if not FDBMemoLoaded then exit;
+  if FDataLink=nil then exit;
+  if not FDataLink.CanModify then exit;
   FDataLink.Field.AsString:=Text;
 end;
 
