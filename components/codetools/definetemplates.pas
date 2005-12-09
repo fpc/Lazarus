@@ -303,6 +303,7 @@ type
     FMacroVariables: TKeyWordFunctionList;
     FOnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias;
     FOnGetVirtualDirectoryDefines: TOnGetVirtualDirectoryDefines;
+    FOnPrepareTree: TNotifyEvent;
     FOnReadValue: TOnReadValue;
     FVirtualDirCache: TDirectoryDefines;
     function Calculate(DirDef: TDirectoryDefines): boolean;
@@ -317,6 +318,7 @@ type
     function MacroFuncExtractFileName(Data: Pointer): boolean;
     function MacroFuncExtractFileNameOnly(Data: Pointer): boolean;
     procedure DoClearCache;
+    procedure DoPrepareTree;
   public
     property RootTemplate: TDefineTemplate
                            read FFirstDefineTemplate write FFirstDefineTemplate;
@@ -328,6 +330,7 @@ type
     property OnGetVirtualDirectoryDefines: TOnGetVirtualDirectoryDefines
          read FOnGetVirtualDirectoryDefines write FOnGetVirtualDirectoryDefines;
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
+    property OnPrepareTree: TNotifyEvent read FOnPrepareTree write FOnPrepareTree;
     property MacroFunctions: TKeyWordFunctionList read FMacroFunctions;
     property MacroVariables: TKeyWordFunctionList read FMacroVariables;
   public
@@ -1766,6 +1769,7 @@ var
 begin
   //DebugLn('[TDefineTree.GetDirDefinesForDirectory] "',Path,'"');
   if (Path<>'') or (not WithVirtualDir) then begin
+    DoPrepareTree;
     ExpPath:=TrimFilename(Path);
     if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
       ExpPath:=ExpPath+PathDelim;
@@ -1790,6 +1794,7 @@ end;
 
 function TDefineTree.GetDirDefinesForVirtualDirectory: TDirectoryDefines;
 begin
+  DoPrepareTree;
   if FVirtualDirCache=nil then begin
     //DebugLn('################ TDefineTree.GetDirDefinesForVirtualDirectory');
     FVirtualDirCache:=TDirectoryDefines.Create;
@@ -1851,6 +1856,11 @@ begin
     FVirtualDirCache:=nil;
   end;
   IncreaseChangeStep;
+end;
+
+procedure TDefineTree.DoPrepareTree;
+begin
+  if Assigned(OnPrepareTree) then OnPrepareTree(Self);
 end;
 
 procedure TDefineTree.RemoveMarked;

@@ -130,6 +130,7 @@ type
 
     // package graph
     procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
+    procedure RebuildDefineTemplates; virtual; abstract;
 
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;

@@ -120,10 +120,11 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Delete(Index: integer);
-    function Count: integer;
+    function Count: integer; // number of Packages
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function Updating: boolean;
+    procedure RebuildDefineTemplates;
   public
     // searching
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
@@ -259,7 +260,7 @@ type
     property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage
                                               write FOnDeletePackage;
     property OnEndUpdate: TEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
-    property Packages[Index: integer]: TLazPackage read GetPackages; default;
+    property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
                                               write SetRegistrationPackage;
@@ -460,6 +461,14 @@ end;
 function TLazPackageGraph.Updating: boolean;
 begin
   Result:=FUpdateLock>0;
+end;
+
+procedure TLazPackageGraph.RebuildDefineTemplates;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Packages[i].DefineTemplates.AllChanged;
 end;
 
 function TLazPackageGraph.FindLowestPkgNodeByName(const PkgName: string

@@ -390,15 +390,7 @@ begin
   HelpBitBtn.SetBounds(x,y1,ClientWidth-x,h);
   MoreBitBtn.SetBounds(x,y2,ClientWidth-x,h);
 
-  x:=0;
-  y:=y2+h+2;
-  w:=ClientWidth;
-  h:=Max(10,ClientHeight-y-123-StatusBar.Height);
-  FilesTreeView.SetBounds(x,y,w,h);
-  
-  inc(y,h+3);
-  h:=120;
-  FilePropsGroupBox.SetBounds(x,y,w,h);
+  FilePropsGroupBox.Height:=120;
 end;
 
 procedure TPackageEditorForm.PublishClick(Sender: TObject);
@@ -1215,8 +1207,7 @@ begin
                                        PackageEditors.OnImExportCompilerOptions;
   with CompilerOptsDlg do begin
     GetCompilerOptions;
-    Caption:=Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]
-      );
+    Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
     ReadOnly:=LazPackage.ReadOnly;
     ShowModal;
     Free;
@@ -1410,6 +1401,7 @@ begin
     OnSelectionChanged:=@FilesTreeViewSelectionChanged;
     Options:=Options+[tvoRightClickSelect];
     OnDblClick:=@FilesTreeViewDblClick;
+    Anchors:=[akLeft,akRight,akTop,akBottom];
   end;
 
   FilePropsGroupBox:=TGroupBox.Create(Self);
@@ -1418,6 +1410,7 @@ begin
     Parent:=Self;
     Caption:=lisPckEditFileProperties;
     OnResize:=@FilePropsGroupBoxResize;
+    Anchors:=[akLeft,akRight,akBottom];
   end;
 
   CallRegisterProcCheckBox:=TCheckBox.Create(Self);
@@ -1506,6 +1499,16 @@ begin
     Parent:=Self;
     Align:=alBottom;
   end;
+  
+  FilePropsGroupBox.AnchorParallel(akLeft,0,Self);
+  FilePropsGroupBox.AnchorParallel(akRight,0,Self);
+  FilePropsGroupBox.AnchorToNeighbour(akBottom,0,StatusBar);
+  FilePropsGroupBox.Height:=120;
+  
+  FilesTreeView.AnchorToNeighbour(akTop,0,CompileBitBtn);
+  FilesTreeView.AnchorParallel(akLeft,0,Self);
+  FilesTreeView.AnchorParallel(akRight,0,Self);
+  FilesTreeView.AnchorToNeighbour(akBottom,0,FilePropsGroupBox);
 end;
 
 procedure TPackageEditorForm.UpdateAll;

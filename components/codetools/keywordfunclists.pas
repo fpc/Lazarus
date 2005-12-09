@@ -787,7 +787,7 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
-    //Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
+    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     //Add('OUT',{$ifdef FPC}@{$endif}AllwaysTrue); // not in MacPas mode
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);

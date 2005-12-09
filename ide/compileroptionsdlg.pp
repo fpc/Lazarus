@@ -1064,16 +1064,19 @@ begin
   Options.ExecuteAfter.ShowAllMessages:=ExecuteAfterShowAllCheckBox.Checked;
   if Options.ExecuteAfter is TProjectCompilationTool
   then begin
-    TProjectCompilationTool(Options.ExecuteAfter).CompileReasons := MakeCompileReasons(
-      chkExecAfterCompile,
-      chkExecAfterBuild,
-      chkExecAfterRun
-    );
+    TProjectCompilationTool(Options.ExecuteAfter).CompileReasons :=
+      MakeCompileReasons(
+        chkExecAfterCompile,
+        chkExecAfterBuild,
+        chkExecAfterRun
+      );
   end;
 
   // check for change and save
-  if not OldCompOpts.IsEqual(Options)
-  then Options.Modified:=true;
+  if not OldCompOpts.IsEqual(Options) then begin
+    Options.Modified:=true;
+    IncreaseCompilerGraphStamp;
+  end;
   OldCompOpts.Free;
 end;
 

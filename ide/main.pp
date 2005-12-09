@@ -432,6 +432,7 @@ type
     procedure OnCodeToolBossFindDefineProperty(Sender: TObject;
                const PersistentClassName, AncestorClassName, Identifier: string;
                var IsDefined: boolean);
+    procedure CodeToolBossPrepareTree(Sender: TObject);
     function MacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerGraphStampIncreased;
 
@@ -456,6 +457,7 @@ type
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
 
+    FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     function DoResetToolStatus(Interactive: boolean): boolean;
@@ -10054,6 +10056,7 @@ begin
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
     @CodeToolBossGetVirtualDirectoryDefines;
+  CodeToolBoss.DefineTree.OnPrepareTree:=@CodeToolBossPrepareTree;
 
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECT',nil,@MacroFunctionProject);
@@ -10368,6 +10371,18 @@ begin
                                  Identifier,IsDefined);
 end;
 
+procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
+begin
+  if FRebuildingCompilerGraphCodeToolsDefinesNeeded then begin
+    FRebuildingCompilerGraphCodeToolsDefinesNeeded:=false;
+    CodeToolBoss.DefineTree.ClearCache;
+    if Project1<>nil then
+      Project1.DefineTemplates.AllChanged;
+    PkgBoss.RebuildDefineTemplates;
+    //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
+  end;
+end;
+
 function TMainIDE.MacroFunctionProject(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -10392,7 +10407,7 @@ end;
 
 procedure TMainIDE.OnCompilerGraphStampIncreased;
 begin
-  CodeToolBoss.DefineTree.ClearCache;
+  FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
 end;
 
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);

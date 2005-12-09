@@ -233,6 +233,7 @@ type
     function DoShowPackageGraph: TModalResult;
     procedure DoShowPackageGraphPathList(PathList: TList); override;
     function ShowBrokenDependenciesReport(Dependencies: TList): TModalResult;
+    procedure RebuildDefineTemplates; override;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -2745,6 +2746,11 @@ begin
   end;
   
   Result:=MessageDlg(lisMissingPackages, Msg, mtError, [mbOk], 0);
+end;
+
+procedure TPkgManager.RebuildDefineTemplates;
+begin
+  PackageGraph.RebuildDefineTemplates;
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
