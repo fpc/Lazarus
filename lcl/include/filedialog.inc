@@ -132,11 +132,9 @@ begin
     exit;
   end;
   if (ofFileMustExist in Options)
-  and (not FileExists(AFilename)) then begin
+  and (not CheckFileMustExist(AFileName)) then begin
+    // CheckFileMustExists shows message dialog
     Result:=false;
-    MessageDlg(rsfdFileMustExist,
-               Format(rsfdFileNotExist,[AFileName]),mtError,
-               [mbCancel],0);
     exit;
   end;
   if ofNoReadOnlyReturn in Options then begin
@@ -155,6 +153,17 @@ begin
         exit;
     end;
   end;
+end;
+
+function TOpenDialog.CheckFileMustExist(const AFileName: string): boolean;
+begin
+  if not FileExists(AFilename) then begin
+    Result:=false;
+    MessageDlg(rsfdFileMustExist,
+               Format(rsfdFileNotExist,[AFileName]),mtError,
+               [mbCancel],0);
+  end else
+    Result:=true;
 end;
 
 function TOpenDialog.CheckAllFiles: boolean;
@@ -265,17 +274,15 @@ begin
   FTitle:=rsfdSelectDirectory;
 end;
 
-function TSelectDirectoryDialog.CheckFile(var AFilename: string): boolean;
+function TSelectDirectoryDialog.CheckFileMustExist(const AFilename: string): boolean;
 begin
-  if (ofFileMustExist in Options)
-  and (not DirPathExists(AFilename)) then begin
+  if not DirPathExists(AFilename) then begin
     Result:=false;
     MessageDlg(rsfdDirectoryMustExist,
                Format(rsfdDirectoryNotExist,[AFileName]),mtError,
                [mbCancel],0);
-    exit;
-  end;
-  Result:=inherited CheckFile(AFilename);
+  end else
+    Result:=true;
 end;
 
 

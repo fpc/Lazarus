@@ -177,6 +177,7 @@ type
   protected
     procedure DereferenceLinks; virtual;
     function CheckFile(var AFilename: string): boolean; virtual;
+    function CheckFileMustExist(const AFileName: string): boolean; virtual;
     function CheckAllFiles: boolean; virtual;
     function DoExecute: boolean; override;
   public
@@ -203,7 +204,7 @@ type
   
   TSelectDirectoryDialog = class(TOpenDialog)
   protected
-    function CheckFile(var AFilename: string): boolean; override;
+    function CheckFileMustExist(const AFilename: string): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
