@@ -60,8 +60,8 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
-    FormsMoveAutoCreatedFormsDownBtn: TArrow;
     Label2: TLabel;
+
     // Application
     Notebook: TNotebook;
     Page1:    TPage;
@@ -86,6 +86,7 @@ type
     FormsMoveAutoCreatedFormUpBtn: TArrow;
     FormsMoveAutoCreatedFormDownBtn: TArrow;
     FormsAutoCreateNewFormsCheckBox: TCheckBox;
+    FormsMoveAutoCreatedFormsDownBtn: TArrow;
 
     // Misc
     SaveClosedUnitInfoCheckBox: TCheckBox;
@@ -95,6 +96,7 @@ type
     MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
     MainUnitHasTitleStatementCheckBox: TCheckBox;
     RunnableCheckBox: TCheckBox;
+    AlwaysBuildCheckBox: TCheckBox;
 
     //lazdoc settings
     LazDocBrowseButton: TButton;
@@ -225,6 +227,7 @@ begin
   MainUnitHasCreateFormStatementsCheckBox.Caption := lisMainUnitHasApplicationCreateFormStatements;
   MainUnitHasTitleStatementCheckBox.Caption := lisMainUnitHasApplicationTitleStatements;
   RunnableCheckBox.Caption := lisProjectIsRunnable;
+  AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
 end;
 
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
@@ -256,7 +259,8 @@ begin
   MainUnitHasTitleStatementCheckBox.Checked :=
     (pfMainUnitHasTitleStatement in AProject.Flags);
   RunnableCheckBox.Checked := (pfRunnable in AProject.Flags);
-  
+  AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
+
   //lazdoc
   LazDocListBox.Items.Assign(Project.LazDocPathList);
 end;
@@ -298,6 +302,7 @@ begin
     SetProjectFlag(pfMainUnitHasTitleStatement,
       MainUnitHasTitleStatementCheckBox.Checked);
     SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
+    SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
     Project.Flags := NewFlags;
 
     Project.AutoCreateForms := FormsAutoCreateNewFormsCheckBox.Checked;

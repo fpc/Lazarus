@@ -1,4 +1,5 @@
 object ProjectOptionsDialog: TProjectOptionsDialog
+  ActiveControl = TitleEdit
   Caption = 'ProjectOptionsDialog'
   ClientHeight = 375
   ClientWidth = 430
@@ -15,7 +16,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 2
     Height = 338
     Width = 430
     object Page1: TPage
@@ -28,12 +29,10 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Width = 426
       object AppSettingsGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'AppSettingsGroupBox'
         ClientHeight = 56
         ClientWidth = 410
-        ParentColor = True
         TabOrder = 0
         Left = 6
         Height = 73
@@ -41,38 +40,35 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Width = 414
         object TitleLabel: TLabel
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = 'TitleLabel'
           Color = clNone
+          ParentColor = False
           Left = 6
-          Height = 12
+          Height = 13
           Top = 6
           Width = 398
         end
         object TitleEdit: TEdit
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TitleEdit'
           Left = 6
           Height = 23
-          Top = 18
+          Top = 19
           Width = 398
         end
       end
       object OutputSettingsGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
         ClientHeight = 56
         ClientWidth = 410
-        ParentColor = True
         TabOrder = 1
         Left = 6
         Height = 73
@@ -80,27 +76,26 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Width = 414
         object TargetFileLabel: TLabel
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = 'TargetFileLabel'
           Color = clNone
+          ParentColor = False
           Left = 6
-          Height = 12
+          Height = 13
           Top = 6
           Width = 398
         end
         object TargetFileEdit: TEdit
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TargetFileEdit'
           Left = 6
           Height = 23
-          Top = 18
+          Top = 19
           Width = 398
         end
       end
@@ -116,18 +111,20 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       object FormsAutoCreatedLabel: TLabel
         Caption = 'FormsAutoCreatedLabel'
         Color = clNone
+        ParentColor = False
         Left = 36
-        Height = 12
+        Height = 13
         Top = 10
-        Width = 135
+        Width = 136
       end
       object FormsAvailFormsLabel: TLabel
         Caption = 'FormsAvailFormsLabel'
         Color = clNone
+        ParentColor = False
         Left = 252
-        Height = 12
+        Height = 13
         Top = 10
-        Width = 128
+        Width = 129
       end
       object FormsAutoCreatedListBox: TListBox
         MultiSelect = True
@@ -281,38 +278,46 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Top = 196
         Width = 414
       end
+      object AlwaysBuildCheckBox: TCheckBox
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'AlwaysBuildCheckBox'
+        TabOrder = 7
+        Left = 6
+        Height = 23
+        Top = 232
+        Width = 414
+      end
     end
     object Page4: TPage
       Caption = 'Page4'
-      ClientWidth = 430
-      ClientHeight = 338
-      Height = 338
-      Width = 430
+      ClientWidth = 426
+      ClientHeight = 308
+      Left = 2
+      Height = 308
+      Top = 28
+      Width = 426
       object Label2: TLabel
         Align = alTop
-        BorderSpacing.OnChange = nil
         Caption = 'NOTE: only absolute paths are supported now'
         Color = clNone
-        Height = 12
+        ParentColor = False
+        Height = 13
         Top = 222
-        Width = 430
+        Width = 426
       end
       object LazDocPathsGroupBox: TGroupBox
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 210
-        ClientWidth = 418
-        ParentColor = True
+        ClientHeight = 193
+        ClientWidth = 410
         TabOrder = 0
         Left = 6
         Height = 210
         Top = 6
-        Width = 418
+        Width = 414
         object LazDocListBox: TListBox
           Align = alTop
-          BorderSpacing.OnChange = nil
           BorderSpacing.Around = 6
           TabOrder = 0
           TopIndex = -1
@@ -322,7 +327,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 398
         end
         object LazDocAddPathButton: TButton
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -332,7 +337,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 75
         end
         object LazDocDeletePathButton: TButton
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -343,21 +348,20 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         end
         object LazDocPathEdit: TEdit
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.OnChange = nil
           TabOrder = 3
           Text = 'LazDocPathEdit'
           Left = 6
           Height = 23
           Top = 154
-          Width = 362
+          Width = 354
         end
         object LazDocBrowseButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.OnChange = nil
+          BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
-          Left = 373
+          Left = 365
           Height = 23
           Top = 154
           Width = 23
@@ -367,6 +371,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -378,6 +383,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   end
   object OKButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     Default = True
     ModalResult = 1

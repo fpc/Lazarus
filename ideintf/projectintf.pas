@@ -419,7 +419,8 @@ type
     pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
     pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
-    pfRunnable // project can be run
+    pfRunnable, // project can be run
+    pfAlwaysBuild // skip IDE's smart check if comilation is needed and always compile
     );
   TProjectFlags = set of TProjectFlag;
   
@@ -586,7 +587,8 @@ const
       'MainUnitHasUsesSectionForAllUnits',
       'MainUnitHasCreateFormStatements',
       'MainUnitHasTitleStatement',
-      'Runnable'
+      'Runnable',
+      'AlwaysBuild'
     );
     
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (

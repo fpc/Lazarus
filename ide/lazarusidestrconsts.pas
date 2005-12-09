@@ -1104,6 +1104,8 @@ resourcestring
   lisMainUnitHasApplicationTitleStatements = 'Main Unit has Application.Title '
     +'statements';
   lisProjectIsRunnable = 'Project is runnable';
+  lisProjOptsAlwaysBuildEvenIfNothingChanged = 'Always build (even if nothing '
+    +'changed)';
   dlgRunParameters = 'Run parameters';
   dlgRunOLocal = 'Local';
   dlgRunOEnvironment = 'Environment';

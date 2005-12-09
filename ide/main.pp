@@ -7125,7 +7125,9 @@ begin
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then exit;
 
-    if (pbfOnlyIfNeeded in Flags) then begin
+    // check if build is needed
+    if (pbfOnlyIfNeeded in Flags) and (not (pfAlwaysBuild in Project1.Flags))
+    then begin
       Result:=DoCheckIfProjectNeedsCompilation(Project1,
                                              CompilerFilename,CompilerParams,
                                              SrcFilename);
