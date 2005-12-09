@@ -1748,7 +1748,7 @@ begin
     // find breakpoint mark at line
     BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
     if BreakPtMark = nil then
-      DebugBoss.DoCreateBreakPoint(Filename,Line)
+      DebugBoss.DoCreateBreakPoint(Filename,Line,true)
     else
       DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
   end;
@@ -4453,7 +4453,7 @@ begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
   DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,
-                               ASrcEdit.EditorComponent.CaretY);
+                               ASrcEdit.EditorComponent.CaretY,true);
 end;
 
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);

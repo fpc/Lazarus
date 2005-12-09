@@ -2070,6 +2070,11 @@ resourcestring
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
+  lisDbgMangNoDebuggerSpecified = 'No debugger specified';
+  lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo = 'There is no '
+    +'debugger specified.%sSetting breakpoints have no effect until you setup '
+    +'a Debugger in the debugger options dialog in the menu.';
+  lisDbgMangSetTheBreakpointAnyway = 'Set the breakpoint anyway';
   lisLaunchingApplicationInvalid = 'Launching application invalid';
   lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching '
     +'application %s%s%'

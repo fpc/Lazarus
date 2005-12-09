@@ -138,7 +138,7 @@ type
     procedure ClearDebugOutputLog;
 
     function InitDebugger: Boolean; override;
-    
+
     function DoPauseProject: TModalResult; override;
     function DoStepIntoProject: TModalResult; override;
     function DoStepOverProject: TModalResult; override;
@@ -152,8 +152,8 @@ type
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
 
-    function DoCreateBreakPoint(const AFilename: string;
-                                ALine: integer): TModalResult; override;
+    function DoCreateBreakPoint(const AFilename: string; ALine: integer;
+                                WarnIfNoDebugger: boolean): TModalResult; override;
 
     function DoDeleteBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
@@ -1647,6 +1647,7 @@ begin
   then begin
     if FDebugger <> nil
     then FreeDebugger;
+    DebugLn('TDebugManager.InitDebugger debugger class not found');
     Exit;
   end;
   
@@ -1834,8 +1835,21 @@ begin
 end;
 
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
-  ALine: integer): TModalResult;
+  ALine: integer; WarnIfNoDebugger: boolean): TModalResult;
 begin
+  if WarnIfNoDebugger
+  and ((FindDebuggerClass(EnvironmentOptions.DebuggerClass)=nil)
+    or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
+  then begin
+    if QuestionDlg(lisDbgMangNoDebuggerSpecified,
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]
+        ),
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway], 0)
+      <>mrIgnore
+    then
+      exit;
+  end;
+
   FBreakPoints.Add(AFilename, ALine);
   Result := mrOK
 end;

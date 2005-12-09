@@ -96,8 +96,8 @@ type
     function Evaluate(const AExpression: String; var AResult: String
                      ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
     
-    function DoCreateBreakPoint(const AFilename: string; ALine: integer
-                                ): TModalResult; virtual; abstract;
+    function DoCreateBreakPoint(const AFilename: string; ALine: integer;
+                                WarnIfNoDebugger: boolean): TModalResult; virtual; abstract;
     function DoDeleteBreakPoint(const AFilename: string; ALine: integer
                                 ): TModalResult; virtual; abstract;
     function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
