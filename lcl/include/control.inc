@@ -70,6 +70,9 @@ begin
     // if the last mouse down was not followed by a mouse up, simulate a
     // mouse up. This way applications need only to react to mouse up to
     // clean up.
+    DebugLn('TControl.BeginDrag ',DbgSName(Self),' Immediate=',dbgs(Immediate));
+    if Immediate then
+      SetCaptureControl(nil);
     if csLButtonDown in ControlState then begin
       GetCursorPos(p);
       P := ScreenToClient(p);

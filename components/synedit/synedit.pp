@@ -2234,7 +2234,7 @@ begin
   if Button=mbMiddle then begin
     if ssDouble in Shift then Exit;
     PrimarySelText:=PrimarySelection.AsText;
-    debugln('TCustomSynEdit.MouseDown PrimarySelText="',DbgStr(PrimarySelText),'"');
+    //debugln('TCustomSynEdit.MouseDown PrimarySelText="',DbgStr(PrimarySelText),'"');
   end;
   {$ENDIF}
   inherited MouseDown(Button, Shift, X, Y);
@@ -2339,7 +2339,7 @@ begin
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
-      BeginDrag(false);
+      BeginDrag({$IFDEF SYN_LAZARUS}true{$ELSE}false{$ENDIF});
     end;
   end else if (ssLeft in Shift)
   and MouseCapture
