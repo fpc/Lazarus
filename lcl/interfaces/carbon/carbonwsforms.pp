@@ -120,33 +120,39 @@ implementation
   { TCarbonWSCustomForm }
 
 
-function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Window: WindowRef;
+  Window: FPCMacOSAll.WindowRef;
   CFString: CFStringRef;
-  R: Rect;
+  NewBounds: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
+  NewWindowClass: Integer;
 begin
   Result := 0;
 
-  R.Left := AParams.X;
-  R.Top := AParams.Y;
-  R.Right := AParams.X + AParams.Width;
-  R.Bottom := AParams.Y + AParams.Height;
+  NewBounds.Left := AParams.X;
+  NewBounds.Top := AParams.Y;
+  NewBounds.Right := AParams.X + AParams.Width;
+  NewBounds.Bottom := AParams.Y + AParams.Height;
+  
+  DebugLn('TCarbonWSCustomForm.CreateHandle NewBounds=',dbgs(NewBounds),' Title=',AParams.Caption);
 
-  if CreateNewWindow(kDocumentWindowClass,
+  NewWindowClass:=kDocumentWindowClass;
+
+  if CreateNewWindow(NewWindowClass,
                      kWindowCompositingAttribute or
                      kWindowStandardDocumentAttributes or
                      kWindowStandardHandlerAttribute or
                      kWindowLiveResizeAttribute or
-                     // $100 {kWindowMetalAttribute} or
                      kWindowInWindowMenuAttribute,
-                     R, Window
+                     NewBounds, Window
                     ) = noErr
   then Result := TLCLIntfHandle(Window);
   if Result = 0 then Exit;
 
-  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption),
+                                        DEFAULT_CFSTRING_ENCODING);
   SetWindowTitleWithCFString(Window, CFString);
   CFRelease(Pointer(CFString));
 
@@ -165,14 +171,16 @@ begin
   DisposeWindow(WindowRef(AWinControl.Handle));
 end;
 
-procedure TCarbonWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+procedure TCarbonWSCustomForm.SetText(const AWinControl: TWinControl;
+  const AText: String);
 var
   CFString: CFStringRef;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
 
-  CFString := CFStringCreateWithCString(nil, Pointer(PChar(AText)), DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(PChar(AText)),
+                                        DEFAULT_CFSTRING_ENCODING);
   SetWindowTitleWithCFString(WindowRef(AWinControl.Handle), CFString);
   CFRelease(Pointer(CFString));
 end;

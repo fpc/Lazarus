@@ -65,6 +65,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -95,7 +96,7 @@ type
 
 implementation
 
-  { TCarbonWSWinControl }
+{ TCarbonWSWinControl }
 
 function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
@@ -104,35 +105,60 @@ var
   Str: Pointer;
   StrSize: CFIndex; //Integer;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'GetText')
+  if not WSCheckHandleAllocated(AWinControl, 'GetText')
   then Exit;
 
-  Result := CopyControlTitleAsCFString(ControlRef(AWinControl.Handle), CFString) = NoErr;
+  Result := CopyControlTitleAsCFString(ControlRef(AWinControl.Handle),
+                                       CFString) = NoErr;
   if Result = False then Exit;
   
   // Try the quick way first
   Str := CFStringGetCStringPtr(CFString, DEFAULT_CFSTRING_ENCODING);
-  // if that doesn't work this will
-  if Str = nil then begin
-    StrSize := CFStringGetLength(CFString)*SizeOf(WideChar);
-    GetMem(Str,(StrSize));
+  if Str <> nil then begin
+    AText := PChar(Str);
+  end else begin
+    // if that doesn't work this will
+    StrSize := CFStringGetLength(CFString);
+    GetMem(Str,StrSize);
     Result := CFStringGetCString(CFString, Str, StrSize, DEFAULT_CFSTRING_ENCODING);
+    AText := PChar(Str);
+    FreeMem(Str);
   end;
 
   CFRelease(Pointer(CFString));
   if Result = False then Exit;
-  AText := PChar(Str);
-  
 end;
 
-procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
+class procedure TCarbonWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  NewBounds: FPCMacOSAll.Rect;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'GetText') then Exit;
+
+  NewBounds.left:=AWinControl.Left;
+  NewBounds.top:=AWinControl.Top;
+  NewBounds.right:=AWinControl.Left+AWinControl.Width;
+  NewBounds.bottom:=AWinControl.Top+AWinControl.Height;
+  DebugLn('TCarbonWSWinControl.SetBounds ',dbgsName(AWinControl),' NewBounds=',dbgs(NewBounds));
+  if SetWindowBounds(WindowRef(AWinControl.Handle),kWindowStructureRgn,NewBounds)
+  <> NoErr then begin
+    DebugLn('TCarbonWSWinControl.SetBounds ',dbgsName(AWinControl),' failed');
+  end;
+end;
+
+procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl;
+  const AText: String);
 var
   CFString: CFStringRef;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
+  
+  DebugLn('TCarbonWSWinControl.SetText ',dbgsName(AWinControl),' ',AText);
 
-  CFString := CFStringCreateWithCString(nil, Pointer(PChar(AText)), DEFAULT_CFSTRING_ENCODING);
+  CFString := CFStringCreateWithCString(nil, Pointer(PChar(AText)),
+                                        DEFAULT_CFSTRING_ENCODING);
   SetControlTitleWithCFString(ControlRef(AWinControl.Handle), CFString);
   CFRelease(Pointer(CFString));
 end;
@@ -141,6 +167,8 @@ procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
   then Exit;
+  
+  DebugLn('TCarbonWSWinControl.DestroyHandle ',dbgsName(AWinControl));
   DisposeControl(ControlRef(AWinControl.Handle));
 end;
 

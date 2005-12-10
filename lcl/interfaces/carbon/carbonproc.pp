@@ -43,6 +43,8 @@ function DeliverMessage(ATarget: TObject; var AMessage): Integer;
 function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
 procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 
+function Dbgs(const ARect: FPCMacOSAll.Rect): string;
+
 implementation
 
 function CreateWidgetInfo(AWidget: Pointer; AObject: TLCLComponent): PWidgetInfo;
@@ -210,6 +212,12 @@ begin
 
   node.Clear;
   UPPTree.Delete(node);
+end;
+
+function Dbgs(const ARect: FPCMacOSAll.Rect): string;
+begin
+  Result:=IntToStr(ARect.left)+','+IntToStr(ARect.top)
+          +','+IntToStr(ARect.right)+','+IntToStr(ARect.bottom);
 end;
 
 finalization

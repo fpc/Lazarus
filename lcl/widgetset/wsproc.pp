@@ -32,11 +32,13 @@ uses
   SysUtils, Controls;
 
 
-function WSCheckHandleAllocated(const AWincontrol: TWinControl; const AProcName: String): Boolean;
+function WSCheckHandleAllocated(const AWincontrol: TWinControl;
+                                const AProcName: String): Boolean;
   
 implementation                                                  
                                                               
-function WSCheckHandleAllocated(const AWincontrol: TWinControl; const AProcName: String): Boolean;
+function WSCheckHandleAllocated(const AWincontrol: TWinControl;
+  const AProcName: String): Boolean;
 begin
   Result := AWinControl.HandleAllocated; 
   if not Result

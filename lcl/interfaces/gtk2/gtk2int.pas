@@ -121,8 +121,8 @@ type
     property Owner: TWinControl read FOwner;
   end;
 
-{$IfDef GTK2_2}//we need a GTK2_2 FLAG somehow
-Procedure  gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
+{$IfDef GTK2}
+procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
 
 procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;

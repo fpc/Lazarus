@@ -2244,7 +2244,7 @@ begin
   {$ENDIF}
   fLastCaretX := fCaretX;                                                       //mh 2000-10-19
   if Button = mbLeft then begin
-//DebugLn('====================== START CAPTURE ===========================');
+    //DebugLn('TCustomSynEdit.MouseDown ',DbgSName(Self),' START CAPTURE');
     MouseCapture := True;
     //if mousedown occured in selected block then begin drag operation
     Exclude(fStateFlags, sfWaitForDragging);
@@ -2253,7 +2253,7 @@ begin
       and IsPointInSelection({$IFDEF SYN_LAZARUS}LogCaretXY{$ELSE}CaretXY{$ENDIF})
     then
       bStartDrag := TRUE;
-    //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag));
+    //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag),' MouseCapture=',dbgs(MouseCapture));
   end;
   if (Button = mbLeft) and bStartDrag then
     Include(fStateFlags, sfWaitForDragging)
@@ -2331,7 +2331,7 @@ begin
     If Cursor <> crDefault then
       Cursor := crDefault;
 
-  //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture));
+  //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture
   and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))

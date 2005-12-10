@@ -4482,6 +4482,8 @@ begin
   MouseCaptureType:=mctGTK;
   if OldMouseCaptureWidget<>nil then
     gtk_grab_remove(OldMouseCaptureWidget);
+  // tell the LCL
+  SetCaptureControl(nil);
 end;
 
 {------------------------------------------------------------------------------
