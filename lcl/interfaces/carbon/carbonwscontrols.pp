@@ -65,7 +65,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -122,7 +122,7 @@ begin
     GetMem(Str,StrSize);
     Result := CFStringGetCString(CFString, Str, StrSize, DEFAULT_CFSTRING_ENCODING);
     AText := PChar(Str);
-    FreeMem(Str);
+    System.FreeMem(Str);
   end;
 
   CFRelease(Pointer(CFString));
