@@ -773,11 +773,18 @@ Begin
     lWinControl := WindowInfo^.WinControl;
   end;
 
-  if IgnoreNextChar and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
+  if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
-    IgnoreNextChar := false;
-    Result := 1;
-    exit;
+    if IgnoreNextCharWindow = Window then
+    begin
+      IgnoreNextCharWindow := 0;
+{$ifdef MSG_DEBUG}
+      DebugLn(MessageStackDepth, ' *ignoring this character');
+{$endif}
+      Result := 1;
+      exit;
+    end;
+    IgnoreNextCharWindow := 0;
   end;
 
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
@@ -1804,10 +1811,21 @@ Begin
     // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
     if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN))
         and (PLMsg^.Result <> 0) then
-      IgnoreNextChar := true;
+    begin
+{$ifdef MSG_DEBUG}
+      writeln(MessageStackDepth, ' *ignore next character');
+{$endif}    
+      IgnoreNextCharWindow := Window;
+    end;
     // stop ignoring if KEYUP has come by (not all keys generate CHAR)
     if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP)) then
-      IgnoreNextChar := false;
+    begin
+{$ifdef MSG_DEBUG}
+      if IgnoreNextCharWindow <> 0 then
+        writeln(MessageStackDepth, ' *stop ignoring next character');
+{$endif}
+      IgnoreNextCharWindow := 0;
+    end;
   end;
 
   { LMMouseEvent and LMInsertText have no Result field }
