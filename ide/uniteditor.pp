@@ -2291,8 +2291,7 @@ end;
 Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
   TShiftState);
 begin
-  DebugLn('TSourceEditor.EditorKeyDown A ',TComponent(Sender).Name,
-    ':',ClassName,' ',IntToStr(Key));
+  //DebugLn('TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' ',IntToStr(Key));
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
 end;

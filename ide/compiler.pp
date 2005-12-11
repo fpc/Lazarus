@@ -39,8 +39,8 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, CompilerOptions, Project,
-  Process, LazarusIDEStrConsts, IDEProcs, OutputFilter, FileUtil;
+  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, AsyncProcess,
+  LazarusIDEStrConsts, CompilerOptions, Project, IDEProcs, OutputFilter;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -52,16 +52,18 @@ type
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
+    FTheProcess: TProcess;
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject; BuildAll: boolean;
-      const WorkingDir, CompilerFilename, CompilerParams: string): TModalResult;
+                     const WorkingDir, CompilerFilename, CompilerParams: string
+                     ): TModalResult;
     procedure WriteError(const Msg: string);
-    property OnCommandLineCreate: TOnCmdLineCreate
-      read FOnCmdLineCreate write FOnCmdLineCreate;
-    property OutputFilter: TOutputFilter
-      read FOutputFilter write FOutputFilter;
+    property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
+                                                   write FOnCmdLineCreate;
+    property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
+    property TheProcess: TProcess read FTheProcess;
   end;
 
 
@@ -83,6 +85,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCompiler.Destroy;
 begin
+  FreeAndNil(FTheProcess);
   inherited Destroy;
 end;
 
@@ -95,7 +98,6 @@ var
   CmdLine : String;
   Abort : Boolean;
   OldCurDir: string;
-  TheProcess : TProcess;
 begin
   Result:=mrCancel;
   DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
@@ -143,7 +145,13 @@ begin
     DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
-      TheProcess := TProcess.Create(nil);
+      if TheProcess=nil then begin
+        {$IFDEF UseAsyncProcess}
+        FTheProcess := TAsyncProcess.Create(nil);
+        {$ELSE}
+        FTheProcess := TProcess.Create(nil);
+        {$ENDIF}
+      end;
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poStdErrToOutput];
       TheProcess.ShowWindow := swoHide;
@@ -160,7 +168,6 @@ begin
         end;
       finally
         TheProcess.WaitOnExit;
-        TheProcess.Free;
       end;
     except
       on e: EOutputFilterError do begin

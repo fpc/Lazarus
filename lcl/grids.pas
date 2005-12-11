@@ -4228,8 +4228,9 @@ end;
 procedure TCustomGrid.DoEditorHide;
 begin
   Editor.Visible:=False;
-  //Editor.Parent:=nil;
-  LCLIntf.SetFocus(Self.Handle);
+  if HandleAllocated
+  and ([csLoading,csDesigning,csDestroying]*ComponentState=[]) then
+    LCLIntf.SetFocus(Handle);
 end;
 
 procedure TCustomGrid.DoEditorShow;

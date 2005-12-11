@@ -121,7 +121,7 @@ type
     property Owner: TWinControl read FOwner;
   end;
 
-{$IfDef GTK2}
+{$IfDef GTK2_2}
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
 
@@ -140,7 +140,7 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
+// To get as litle as possible circles,
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // Gtk2WSActnList,

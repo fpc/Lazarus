@@ -40,7 +40,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, LCLProc, Controls, Forms, Buttons, StdCtrls,
-  ComCtrls, Dialogs, LResources, Laz_XMLCfg,
+  ComCtrls, Dialogs, LResources, Laz_XMLCfg, AsyncProcess,
   ExtToolEditDlg, Process, IDECommands, KeyMapping, TransferMacros, IDEProcs,
   CompilerOptions, OutputFilter, FileUtil, LazarusIDEStrConsts;
 
@@ -294,7 +294,11 @@ begin
   DebugLn('[TExternalToolList.Run] CmdLine="',CmdLine,'" WorkDir="',WorkingDir,'"');
   try
     CheckIfFileIsExecutable(Filename);
+    {$IFDEF UseAsyncProcess}
+    TheProcess := TAsyncProcess.Create(nil);
+    {$ELSE}
     TheProcess := TProcess.Create(nil);
+    {$ENDIF}
     TheProcess.CommandLine := Filename+' '+Params;
     TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;

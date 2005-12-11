@@ -7428,7 +7428,9 @@ begin
     Result:=mrCancel;
     exit;
   end;
+
   MessagesView.BeginBlock;
+
   try
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
