@@ -7557,6 +7557,8 @@ begin
   if FReadOnly<>nil then Dispose(FReadOnly);
   if FWidth<>nil then Dispose(FWidth);
   if FLayout<>nil then Dispose(FLayout);
+  if FMaxSize<>nil then Dispose(FMaxSize);
+  if FMinSize<>nil then Dispose(FMinSize);
   FreeThenNil(FPickList);
   FreeThenNil(FFont);
   FreeThenNil(FTitle);
