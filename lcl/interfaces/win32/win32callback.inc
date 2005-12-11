@@ -1806,20 +1806,18 @@ Begin
     end;
   end;
 
-  // make sure there is a WindowInfo to store the info
-  if Assigned(WindowInfo) and (WindowInfo <> @DefaultWindowInfo) then begin
-    // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
-    if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN))
-        and (PLMsg^.Result <> 0) then
+  // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
+  if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN)) then
+  begin
+    if (PLMsg^.Result <> 0) then
     begin
 {$ifdef MSG_DEBUG}
       writeln(MessageStackDepth, ' *ignore next character');
-{$endif}    
+{$endif}  
       IgnoreNextCharWindow := Window;
-    end;
-    // stop ignoring if KEYUP has come by (not all keys generate CHAR)
-    if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP)) then
-    begin
+    end else begin
+      // stop ignoring if KEYUP has come by (not all keys generate CHAR)
+      // assume WM_CHAR is always preceded by WM_KEYDOWN
 {$ifdef MSG_DEBUG}
       if IgnoreNextCharWindow <> 0 then
         writeln(MessageStackDepth, ' *stop ignoring next character');
