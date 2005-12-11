@@ -236,7 +236,7 @@ end;
 
 function TOutputFilter.Execute(TheProcess: TProcess): boolean;
 const
-  BufSize = 1000;
+  BufSize = 4096;
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
@@ -277,8 +277,10 @@ begin
 
       Count:=0;
       if (TheAsyncProcess<>nil) then begin
+        // using non blocking TAsyncProcess
         Count:=TheAsyncProcess.NumBytesAvailable;
         if (Count=0) and AsyncProcessTerminated then break;
+        Count:=TheProcess.Output.Read(Buf[1],length(Buf));
       end;
       if (TheAsyncProcess=nil) and (TheProcess.Output<>nil) then begin
         // using a blocking TProcess
@@ -288,9 +290,7 @@ begin
           break;
         end;
       end;
-      {$IFDEF UseAsyncProcess}
-      DebugLn('TOutputFilter.Execute Count=',dbgs(Count));
-      {$ENDIF}
+      //DebugLn('TOutputFilter.Execute Count=',dbgs(Count));
 
       LineStart:=1;
       i:=1;
@@ -311,13 +311,9 @@ begin
       end;
       OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
     until false;
-    {$IFDEF UseAsyncProcess}
-    DebugLn('TOutputFilter.Execute After Loop');
-    {$ENDIF}
+    //DebugLn('TOutputFilter.Execute After Loop');
     TheProcess.WaitOnExit;
-    {$IFDEF UseAsyncProcess}
-    DebugLn('TOutputFilter.Execute TheProcess.ExitStatus=',dbgs(TheProcess.ExitStatus));
-    {$ENDIF}
+    //DebugLn('TOutputFilter.Execute TheProcess.ExitStatus=',dbgs(TheProcess.ExitStatus));
     if TheProcess.ExitStatus=0 then
       ErrorExists:=false;
     if ErrorExists and (ofoExceptionOnError in Options) then
