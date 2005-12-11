@@ -233,14 +233,27 @@ begin
   if Printing then
     Abort;
 
-  Refresh;
-
+ 
   if Assigned(fCanvas) then
     fCanvas.Free;
     
   if Assigned(fPaperSize) then
-    fPaperSize.Free;
-    
+     fPaperSize.Free;
+     
+
+  if Assigned(fPrinters) then
+  begin
+    DoResetPrintersList;
+    FreeAndNil(fPrinters);
+  end;
+
+  if Assigned(fFonts) then
+  begin
+    DoResetFontsList;
+    FreeAndNil(fFonts);
+  end;
+     
+
   inherited Destroy;
 end;
 
