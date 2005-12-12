@@ -45,12 +45,16 @@ begin
   FWaitHandlers[FWaitHandleCount].UserData := AData;
   FWaitHandlers[FWaitHandleCount].OnEvent := AEventHandler;
   Inc(FWaitHandleCount);
+  DebugLn('Waiting for handle: ', IntToHex(AHandle, 8));
 end;
 
 function TWin32WidgetSet.RemoveEventHandlerData(AHandle: THandle): PtrInt;
 var
   I: integer;
 begin
+  DebugLn('Removing handle: ', IntToHex(AHandle, 8));
+  if Length(FWaitHandles) > 0 then
+    DebugLn(' WaitHandleCount=,', IntToStr(FWaitHandleCount), 'WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
   Result := 0;
   for I := 0 to FWaitHandleCount - 1 do
     if FWaitHandles[I] = AHandle then

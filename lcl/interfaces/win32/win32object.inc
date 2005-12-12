@@ -300,18 +300,45 @@ procedure TWin32WidgetSet.AppProcessMessages;
 var
   AMessage: TMsg;
   AccelTable: HACCEL;
+  retVal, index: dword;
 Begin
-  While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
-  Begin
-    AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
-    If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
-    Begin
-      TranslateMessage(@AMessage);
-      DispatchMessage(@AMessage);
-    End;
-    // check for pending to-be synchronized methods
-    CheckSynchronize;
-  End;
+  repeat
+    if Length(FWaitHandles) > 0 then
+      DebugLn('[ProcessMessages] WaitHandleCount=,', IntToStr(FWaitHandleCount), 
+        'WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
+    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
+      FWaitHandles[0], false, 0, QS_ALLINPUT);
+    if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    begin
+      index := retVal-WAIT_OBJECT_0;
+      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
+    end else
+    if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
+    begin
+      while PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+      begin
+        AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
+        if (AccelTable = HACCEL(nil)) 
+          or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
+        begin
+          TranslateMessage(@AMessage);
+          DispatchMessage(@AMessage);
+        end;
+      end;
+    end else
+    if retVal = WAIT_TIMEOUT then
+    begin
+      // check for pending to-be synchronized methods
+      CheckSynchronize;
+      CheckPipeEvents;
+      break;
+    end else
+    if retVal = $FFFFFFFF then
+    begin
+      DebugLn('[TWin32WidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
+      break;
+    end;
+  until false;
 End;
 
 procedure TWin32WidgetSet.CheckPipeEvents;
@@ -341,32 +368,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppWaitMessage;
 var
-  done: boolean;
-  retVal, index: dword;
   timeout: dword;
 begin
   RedrawMenus;
   Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
-  done := false;
-  repeat
-    if FWaitPipeHandlers <> nil then
-      timeout := 100
-    else
-      timeout := INFINITE;
-    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
-      FWaitHandles[0], false, timeout, QS_ALLINPUT);
-    if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
-    begin
-      index := retVal-WAIT_OBJECT_0;
-      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
-    end else
-    if retVal = WAIT_TIMEOUT then
-    begin
-      CheckPipeEvents;
-    end else 
-    if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
-      done := true;
-  until done;
+  if FWaitPipeHandlers <> nil then
+    timeout := 100
+  else
+    timeout := INFINITE;
+  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0], 
+    false, timeout, QS_ALLINPUT);
   Assert(False,'Trace:Leave wait message');
 End;
 

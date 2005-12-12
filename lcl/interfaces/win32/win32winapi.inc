@@ -282,7 +282,13 @@ begin
     begin
       TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
     end;
-    
+
+{$ifdef PassWin32MessagesToLCL}
+  else
+    if TLMessage(Message).Msg >= WM_USER then
+    with TLMessage(Message) do
+      CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+{$endif}
   end;
 end;
 

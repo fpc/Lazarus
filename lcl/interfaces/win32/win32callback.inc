@@ -1592,6 +1592,17 @@ Begin
       // winxp theme changed, recheck whether themes are enabled
       TWin32WidgetSet(WidgetSet).UpdateThemesActive;
     end;
+{$ifdef PassWin32MessagesToLCL}
+  else
+    // pass along user defined messages
+    if Msg >= WM_USER then
+    begin
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      WinProcess := false;
+    end;
+{$endif}    
   End;
 
   If WinProcess Then
