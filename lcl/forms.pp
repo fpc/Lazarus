@@ -801,6 +801,7 @@ type
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
+  TDataEvent = procedure (Data: PtrInt) of object;
 
   //TODO: move to LMessages ?
 
@@ -837,7 +838,7 @@ type
     AppNoExceptionMessages,
     AppActive, // application has focus
     AppDestroying,
-    AppDoNotReleaseComponents
+    AppDoNotCallAsyncQueue
     );
   TApplicationFlags = set of TApplicationFlag;
 
@@ -857,6 +858,13 @@ type
     ahtDeactivate,
     ahtUserInput
     );
+
+  PAsyncCallQueueItem = ^TAsyncCallQueueItem;
+  TAsyncCallQueueItem = record
+    Method: TDataEvent;
+    Data: PtrInt;
+    NextItem: PAsyncCallQueueItem;
+  end;
 
   { TApplication }
 
@@ -900,7 +908,7 @@ type
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
-    FReleaseComponents: TFPList;
+    FAsyncCallQueue: PAsyncCallQueueItem;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
     procedure DoOnIdleEnd;
@@ -945,7 +953,8 @@ type
     procedure UpdateVisible;
     procedure DoIdleActions;
     procedure MenuPopupHandler(Sender: TObject);
-    procedure DoFreeReleaseComponents;
+    procedure ProcessAsyncCallQueue;
+    procedure FreeComponent(Data: PtrInt);
     procedure DoBeforeFinalization;
   public
     constructor Create(AOwner: TComponent); override;
@@ -953,6 +962,7 @@ type
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
+    procedure QueueAsyncCall(AMethod: TDataevent; Data: PtrInt);
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;

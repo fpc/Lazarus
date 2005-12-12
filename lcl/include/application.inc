@@ -124,7 +124,7 @@ begin
 
   ExitProc:=FOldExitProc;
 
-  DoFreeReleaseComponents;
+  ProcessAsyncCallQueue;
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
 
@@ -145,8 +145,8 @@ begin
 
   inherited Destroy;
 
-  Include(FFlags,AppDoNotReleaseComponents);
-  DoFreeReleaseComponents;
+  Include(FFlags,AppDoNotCallAsyncQueue);
+  ProcessAsyncCallQueue;
 
   // restore exception handling
   CaptureExceptions:=false;
@@ -247,7 +247,7 @@ end;
 procedure TApplication.ProcessMessages;
 begin
   WidgetSet.AppProcessMessages;
-  DoFreeReleaseComponents;
+  ProcessAsyncCallQueue;
 end;
 
 {------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ procedure TApplication.Idle(Wait: boolean);
 var
   Done: Boolean;
 begin
-  DoFreeReleaseComponents;
+  ProcessAsyncCallQueue;
   MouseIdle(GetControlAtMouse);
 
   Done := True;
@@ -776,22 +776,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TApplication.DoFreeReleaseComponents
+  Method: TApplication.ProcessAsyncCallQueue
 
-  Free all components that were queued for freeing (ReleaseComponent)
+  Call all methods queued to be called (QueueAsyncCall)
  ------------------------------------------------------------------------------}
-procedure TApplication.DoFreeReleaseComponents;
+procedure TApplication.ProcessAsyncCallQueue;
 var
-  AComponent: TComponent;
+  lItem, lNextItem: PAsyncCallQueueItem;
 begin
-  if FReleaseComponents=nil then exit;
-  while FReleaseComponents.Count>0 do begin
-    AComponent:=TComponent(FReleaseComponents[0]);
-    //DebugLn('TApplication.DoFreeReleaseComponents ',DbgSName(AComponent));
-    FReleaseComponents.Delete(0);
-    AComponent.Free;
+  lItem := FAsyncCallQueue;
+  while lItem <> nil do
+  begin
+    lItem^.Method(lItem^.Data);
+    lNextItem := lItem^.NextItem;
+    Dispose(lItem);
+    lItem := lNextItem;
   end;
-  FreeThenNil(FReleaseComponents);
 end;
 
 procedure TApplication.DoBeforeFinalization;
@@ -1532,14 +1532,27 @@ begin
   {$ENDIF}
 end;
 
+procedure TApplication.QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
+var
+  lItem: PAsyncCallQueueItem;
+begin
+  if AppDoNotCallAsyncQueue in FFlags then
+    raise Exception.Create('TApplication.QueueAsyncCall already shut down');
+  New(lItem);
+  lItem^.Method := AMethod;
+  lItem^.Data := Data;
+  lItem^.NextItem := FAsyncCallQueue;
+  FAsyncCallQueue := lItem;
+end;
+
+procedure TApplication.FreeComponent(Data: PtrInt);
+begin
+  TComponent(Data).Free;
+end;
+
 procedure TApplication.ReleaseComponent(AComponent: TComponent);
 begin
-  if AppDoNotReleaseComponents in FFlags then
-    raise Exception.Create('TApplication.ReleaseComponent already shut down');
-  if FReleaseComponents=nil then
-    FReleaseComponents:=TFPList.Create;
-  if FReleaseComponents.IndexOf(AComponent)<0 then
-    FReleaseComponents.Add(AComponent);
+  QueueAsyncCall(@FreeComponent, PtrInt(AComponent));
 end;
 
 function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;
