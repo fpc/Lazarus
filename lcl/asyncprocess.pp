@@ -33,6 +33,7 @@ uses
 type
   TAsyncProcess = class(TProcess)
   private
+    FHookedPipeHandle: THandle;
     FOnReadData: TNotifyEvent;
     FOnTerminate: TNotifyEvent;
   protected
@@ -66,7 +67,7 @@ end;
 
 uses BaseUnix, TermIO;
 
-{$ifdef DARWIN}
+{$ifdef BSD}
 const
   FIONREAD = $4004667;
 {$endif}
@@ -89,7 +90,10 @@ end;
 procedure TAsyncProcess.HandlePipeInput(AData: PtrInt; AReasons: TPipeReasons);
 begin
   if prBroken in AReasons then
-    RemovePipeEventHandler(Output.Handle);
+  begin
+    RemovePipeEventHandler(FHookedPipeHandle);
+    FHookedPipeHandle := 0;
+  end;
   if prDataAvailable in AReasons then
     if FOnReadData <> nil then
       FOnReadData(Self);
@@ -98,7 +102,11 @@ end;
 procedure TAsyncProcess.HandleProcessTermination(AData: PtrInt; AReason: TChildExitReason; AInfo: dword);
 begin
   RemoveProcessEventHandler(ProcessHandle);
-  RemovePipeEventHandler(Output.Handle);
+  if FHookedPipeHandle <> 0 then
+  begin
+    RemovePipeEventHandler(FHookedPipeHandle);
+    FHookedPipeHandle := 0;
+  end;
   if FOnTerminate <> nil then
     FOnTerminate(Self);
 end;
@@ -108,7 +116,10 @@ begin
   inherited;
 
   if poUsePipes in Options then
-    AddPipeEventHandler(Output.Handle, @HandlePipeInput, 0);
+  begin
+    FHookedPipeHandle := Output.Handle;
+    AddPipeEventHandler(FHookedPipeHandle, @HandlePipeInput, 0);
+  end;
   AddProcessEventHandler(ProcessHandle, @HandleProcessTermination, 0);
 end;
 

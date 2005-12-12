@@ -137,7 +137,7 @@ var
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
 
-{$ifdef DARWIN}
+{$ifdef BSD}
 procedure ChildEventHandler(sig: longint; var siginfo: tsiginfo_t;
   var sigcontext: sigcontextrec); cdecl;
 {$else}
