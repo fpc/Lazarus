@@ -34,14 +34,18 @@ type
   TAsyncProcess = class(TProcess)
   private
     FHookedPipeHandle: THandle;
+    FHookedProcessHandle: THandle;
     FOnReadData: TNotifyEvent;
     FOnTerminate: TNotifyEvent;
   protected
     function GetNumBytesAvailable: dword;
     procedure HandlePipeInput(AData: PtrInt; AReasons: TPipeReasons);
     procedure HandleProcessTermination(AData: PtrInt; AReason: TChildExitReason; AInfo: dword);
+    procedure UnhookPipeHandle;
+    procedure UnhookProcessHandle;
   public
     procedure Execute; override;
+    destructor Destroy; override;
   published
     property NumBytesAvailable: dword read GetNumBytesAvailable;
     property OnReadData: TNotifyEvent read FOnReadData write FOnReadData;
@@ -87,13 +91,35 @@ end;
 
 {$endif}
 
-procedure TAsyncProcess.HandlePipeInput(AData: PtrInt; AReasons: TPipeReasons);
+destructor TAsyncProcess.Destroy;
 begin
-  if prBroken in AReasons then
+  UnhookProcessHandle;
+  UnhookPipeHandle;
+  inherited;
+end;
+
+procedure TAsyncProcess.UnhookProcessHandle;
+begin
+  if FHookedProcessHandle <> 0 then
+  begin
+    RemoveProcessEventHandler(FHookedProcessHandle);
+    FHookedProcessHandle := 0;
+  end;
+end;
+
+procedure TAsyncProcess.UnhookPipeHandle;
+begin
+  if FHookedPipeHandle <> 0 then
   begin
     RemovePipeEventHandler(FHookedPipeHandle);
     FHookedPipeHandle := 0;
   end;
+end;
+
+procedure TAsyncProcess.HandlePipeInput(AData: PtrInt; AReasons: TPipeReasons);
+begin
+  if prBroken in AReasons then
+    UnhookPipeHandle;
   if prDataAvailable in AReasons then
     if FOnReadData <> nil then
       FOnReadData(Self);
@@ -101,12 +127,8 @@ end;
 
 procedure TAsyncProcess.HandleProcessTermination(AData: PtrInt; AReason: TChildExitReason; AInfo: dword);
 begin
-  RemoveProcessEventHandler(ProcessHandle);
-  if FHookedPipeHandle <> 0 then
-  begin
-    RemovePipeEventHandler(FHookedPipeHandle);
-    FHookedPipeHandle := 0;
-  end;
+  UnhookProcessHandle;
+  UnhookPipeHandle;
   if FOnTerminate <> nil then
     FOnTerminate(Self);
 end;
@@ -120,7 +142,8 @@ begin
     FHookedPipeHandle := Output.Handle;
     AddPipeEventHandler(FHookedPipeHandle, @HandlePipeInput, 0);
   end;
-  AddProcessEventHandler(ProcessHandle, @HandleProcessTermination, 0);
+  FHookedProcessHandle := ProcessHandle;
+  AddProcessEventHandler(FHookedProcessHandle, @HandleProcessTermination, 0);
 end;
 
 end.
