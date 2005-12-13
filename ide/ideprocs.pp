@@ -936,6 +936,9 @@ begin
     inc(s);
     repeat
       inc(p);
+      if p>Length(CmdLine) then Break;
+      // check if we have an escape char
+      if (CmdLine[p] = '\') and (CmdLine[p]<>PathDelim) then inc(p);
     until (p>Length(CmdLine)) or (CmdLine[p]=quote);
     // go past last character or quoted string
     l:=p-s;
