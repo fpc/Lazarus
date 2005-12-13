@@ -53,7 +53,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, DBGOutputForm,
-  GDBMIDebugger, SSHGDBMIDebugger;
+  GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger;
 
 
 type
@@ -1633,6 +1633,7 @@ begin
     Exit;
   end;
 
+  //todo: this check depends on the debugger class
   if not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
   then begin
     MessageDlg(lisDebuggerInvalid,
@@ -1645,10 +1646,14 @@ begin
   DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
   if DebuggerClass = nil
   then begin
+    {$IFNDEF DoNotUseProcessDebugger}
+    DebuggerClass := TProcessDebugger;
+    {$ELSE}
     if FDebugger <> nil
     then FreeDebugger;
     DebugLn('TDebugManager.InitDebugger debugger class not found');
     Exit;
+    {$ENDIF}
   end;
   
   if (dmsDebuggerObjectBroken in FManagerStates)
@@ -1715,7 +1720,7 @@ begin
   DebugLn('[TDebugManager.DoInitDebugger] END');
 end;
 
-// still part of main, should go here when dummydebugger is finished
+// still part of main, should go here when processdebugger is finished
 //
 //function TDebugManager.DoRunProject: TModalResult;
 

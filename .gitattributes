@@ -404,6 +404,7 @@ debugger/gdbtypeinfo.pp svneol=native#text/pascal
 debugger/localsdlg.lfm svneol=native#text/plain
 debugger/localsdlg.lrs svneol=native#text/pascal
 debugger/localsdlg.pp svneol=native#text/pascal
+debugger/processdebugger.pp svneol=native#text/plain
 debugger/processlist.pas svneol=native#text/pascal
 debugger/sshgdbmidebugger.pas svneol=native#text/pascal
 debugger/test/debugtest.pp svneol=native#text/pascal

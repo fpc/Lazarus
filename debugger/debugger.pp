@@ -949,6 +949,7 @@ type
     //FExceptions: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
+    FShowConsole: Boolean;
     FSignals: TDBGSignals;
     FState: TDBGState;
     FCallStack: TDBGCallStack;
@@ -1032,6 +1033,7 @@ type
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
+    property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64

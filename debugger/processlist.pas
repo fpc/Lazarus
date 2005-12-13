@@ -35,6 +35,7 @@ type
   TProcessList = class
   private
     FItems: TList; // list of TProcess
+    FFreeing: Boolean; // set wehn freeing stopped processes
     function GetCount: integer;
     function GetItems(Index: integer): TProcess;
   public
@@ -104,21 +105,28 @@ var
   AProcess: TProcess;
   i: Integer;
 begin
-  for i:=FItems.Count-1 downto 0 do begin
-    AProcess:=Items[i];
-    if AProcess.Running then continue;
-    try
+  // waitonexit or free may trigger another idle
+  if FFreeing then Exit;
+  FFreeing := True;
+  try
+    for i:=FItems.Count-1 downto 0 do begin
+      AProcess:=Items[i];
+      if AProcess.Running then continue;
       try
-        AProcess.WaitOnExit;
-        AProcess.Free;
-      finally
-        FItems.Delete(i);
-      end;
-    except
-      on E: Exception do begin
-        DebugLn('Error freeing stopped process: ',E.Message);
+        try
+          AProcess.WaitOnExit;
+          AProcess.Free;
+        finally
+          FItems.Delete(i);
+        end;
+      except
+        on E: Exception do begin
+          DebugLn('Error freeing stopped process: ',E.Message);
+        end;
       end;
     end;
+  finally
+    FFreeing := False;
   end;
 end;
 

@@ -249,7 +249,7 @@ type
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
     procedure CreateWindowLayout(const TheFormID: string);
-    function DebuggerClassIsDefined: boolean;
+    function IsDebuggerClassDefined: boolean;
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
                          read FOnApplyWindowLayout write SetOnApplyWindowLayout;
 
@@ -1458,10 +1458,10 @@ begin
   IDEWindowLayoutList.Add(NewLayout);
 end;
 
-function TEnvironmentOptions.DebuggerClassIsDefined: boolean;
+function TEnvironmentOptions.IsDebuggerClassDefined: boolean;
 begin
-  Result:=(FDebuggerClass='')
-          or (AnsiCompareText(FDebuggerClass,DebuggerName[dtNone])=0);
+  Result := (FDebuggerClass <> '')
+         and  (AnsiCompareText(FDebuggerClass, DebuggerName[dtNone]) <> 0);
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;

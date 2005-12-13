@@ -7235,6 +7235,10 @@ begin
   end;
 
   // Setup debugger
+{$IFNDEF DoNotUseProcessDebugger}
+  if not DebugBoss.InitDebugger
+  then Exit;
+{$ELSE}
   if EnvironmentOptions.DebuggerClass <> ''
   then begin
     if not DebugBoss.InitDebugger
@@ -7268,6 +7272,7 @@ begin
           [#13, '"', ProgramFilename, '"', #13, e.Message]), mterror,[mbok], 0);
     end;
   end;
+{$ENDIF}
 
   Result := mrOK;
   ToolStatus := itDebugger;
@@ -7287,7 +7292,12 @@ begin
 
   Result := mrCancel;
 
-  if not EnvironmentOptions.DebuggerClassIsDefined then begin
+{$IFNDEF DoNotUseProcessDebugger}
+  Result := DebugBoss.RunDebugger;
+//  if Result<>mrOk then exit;
+{$ELSE}
+  if EnvironmentOptions.IsDebuggerClassDefined
+  then begin
     Result := DebugBoss.RunDebugger;
     if Result<>mrOk then exit;
   end else begin
@@ -7313,6 +7323,8 @@ begin
       ToolStatus:=itNone;
     end;
   end;
+{$ENDIF}
+
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
 

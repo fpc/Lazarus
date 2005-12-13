@@ -150,25 +150,29 @@ end;
 procedure TDebuggerOptionsForm.FetchDebuggerClass;
 var
   n: PtrInt;
-  AClass: TDebuggerClass;
+  DbgClass, CurClass: TDebuggerClass;
   S: String;
+  List: TStringList;
 begin
-  with cmbDebuggerType.Items do
+  List := TStringList.Create;
+  List.Sorted := True;
+  {$IFDEF DoNotUseProcessDebugger}
+  List.AddObject('(none)', TObject(-1)); // temporary manual coded
+  {$ENDIF}
+  CurClass := nil;
+  for n := 0 to DebugBoss.DebuggerCount - 1 do
   begin
-    BeginUpdate;
-    Clear;
-    AddObject('(none)', TObject(-1)); // temporary manual coded
-    for n := 0 to DebugBoss.DebuggerCount - 1 do
-    begin
-      AClass := DebugBoss.Debuggers[n];
-      AddObject(AClass.Caption, TObject(n));
-      if  (FCurDebuggerClass = nil)
-      and (CompareText(AClass.ClassName, EnvironmentOptions.DebuggerClass) = 0)
-      then SetDebuggerClass(AClass);
-    end;
-    EndUpdate;
+    DbgClass := DebugBoss.Debuggers[n];
+    List.AddObject(DbgClass.Caption, TObject(n));
+    if  (FCurDebuggerClass = nil)
+    and (CompareText(DbgClass.ClassName, EnvironmentOptions.DebuggerClass) = 0)
+    then CurClass := DbgClass;
   end;
-  
+
+  cmbDebuggerType.Items.Assign(List);
+  FreeAndNil(List);
+
+  SetDebuggerClass(CurClass);
   if FCurDebuggerClass = nil
   then SetComboBoxText(cmbDebuggerType, '(none)')
   else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption);
