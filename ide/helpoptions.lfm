@@ -6,14 +6,15 @@ object HelpOptionsDialog: THelpOptionsDialog
   OnCreate = HelpOptionsDialogCreate
   PixelsPerInch = 90
   Position = poScreenCenter
-  HorzScrollBar.Page = 501
-  VertScrollBar.Page = 301
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 299
   Left = 291
   Height = 300
   Top = 163
   Width = 500
   object OkButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
@@ -24,6 +25,7 @@ object HelpOptionsDialog: THelpOptionsDialog
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     OnClick = CancelButtonClick
     TabOrder = 1
@@ -40,80 +42,76 @@ object HelpOptionsDialog: THelpOptionsDialog
     Width = 500
     object ViewersPage: TPage
       Caption = 'ViewersPage'
-      ClientWidth = 496
-      ClientHeight = 226
-      Left = 2
-      Height = 226
-      Top = 28
-      Width = 496
+      ClientWidth = 492
+      ClientHeight = 230
+      Height = 230
+      Width = 492
+      object ViewersLabel: TLabel
+        Caption = 'ViewersLabel'
+        Color = clNone
+        ParentColor = False
+        Left = 8
+        Height = 14
+        Top = 10
+        Width = 63
+      end
       object ViewersListBox: TListBox
         Anchors = [akTop, akLeft, akBottom]
         ClickOnSelChange = False
         OnSelectionChange = ViewersListBoxSelectionChange
         TabOrder = 0
-        TopIndex = -1
-        Left = 8
-        Height = 180
+        Left = 6
+        Height = 190
         Top = 36
-        Width = 149
-      end
-      object ViewersLabel: TLabel
-        Caption = 'ViewersLabel'
-        Left = 8
-        Height = 23
-        Top = 4
-        Width = 149
+        Width = 152
       end
       object ViewerPropsGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'ViewerPropsGroupBox'
-        ClientHeight = 192
-        ClientWidth = 316
-        ParentColor = True
-        TabOrder = 2
-        Left = 168
-        Height = 209
-        Top = 7
-        Width = 320
+        ClientHeight = 198
+        ClientWidth = 312
+        TabOrder = 1
+        Left = 166
+        Height = 216
+        Top = 10
+        Width = 316
       end
     end
     object DataBasePage: TPage
       Caption = 'DataBasePage'
-      ClientWidth = 496
-      ClientHeight = 226
-      Left = 2
-      Height = 226
-      Top = 28
-      Width = 496
+      ClientWidth = 492
+      ClientHeight = 230
+      Height = 230
+      Width = 492
       object DatabasesLabel: TLabel
         Caption = 'DatabasesLabel'
+        Color = clNone
+        ParentColor = False
         Left = 6
-        Height = 17
+        Height = 14
         Top = 10
-        Width = 65
+        Width = 77
       end
       object DatabasesListBox: TListBox
         Anchors = [akTop, akLeft, akBottom]
         ClickOnSelChange = False
         OnSelectionChange = DatabasesListBoxSelectionChange
-        TabOrder = 1
-        TopIndex = -1
+        TabOrder = 0
         Left = 6
-        Height = 186
+        Height = 190
         Top = 36
         Width = 152
       end
       object DataBasesPropsGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'DataBasesPropsGroupBox'
-        ClientHeight = 200
-        ClientWidth = 319
-        ParentColor = True
-        TabOrder = 2
+        ClientHeight = 198
+        ClientWidth = 315
+        TabOrder = 1
         Left = 166
-        Height = 217
-        Top = 4
-        Width = 323
+        Height = 216
+        Top = 10
+        Width = 319
       end
     end
   end
