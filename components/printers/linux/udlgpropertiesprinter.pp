@@ -214,6 +214,7 @@ end;
 
 procedure Tdlgpropertiesprinter.FormDestroy(Sender: TObject);
 begin
+  if Sender=nil then ;
   FPaperSizeOptions.Free;
   FMediaTypeOptions.Free;
   FInputSlotOptions.Free;

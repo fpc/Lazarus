@@ -455,7 +455,9 @@ type
     FCheckFilesOnDiskNeeded: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
 
+    {$IFDEF DoNotUseProcessDebugger}
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
+    {$ENDIF}
 
     FRebuildingCompilerGraphCodeToolsDefinesNeeded: boolean;
   protected
@@ -5566,8 +5568,8 @@ var
   
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('');
-  writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags));
+  DebugLn('');
+  DebugLn('*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags));
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
@@ -5652,7 +5654,9 @@ begin
         NewUnitInfo.IsPartOfProject:=true;
         Project1.Modified:=true;
       end;
-      if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
+      if (not (ofProjectLoading in Flags)) and (NewUnitInfo.EditorIndex>=0) then
+      begin
+        //DebugLn('TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename);
         // file already open -> change source notebook page
         SourceNoteBook.Notebook.PageIndex:=NewUnitInfo.EditorIndex;
         if ofDoLoadResource in Flags then
@@ -5731,6 +5735,7 @@ begin
   // check readonly
   NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)
                             and (not FileIsWritable(NewUnitInfo.Filename));
+
 
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.DoOpenEditorFile] B');
@@ -7202,7 +7207,10 @@ end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
-  ProgramFilename, WorkingDir: String;
+  ProgramFilename: string;
+  {$IFDEF DoNotUseProcessDebugger}
+  WorkingDir: String;
+  {$ENDIF}
 begin
   if ToolStatus <> itNone
   then begin
