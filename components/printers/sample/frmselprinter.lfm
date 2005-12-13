@@ -4,22 +4,22 @@ object Form1: TForm1
   ClientHeight = 487
   ClientWidth = 339
   OnCreate = FormCreate
-  PixelsPerInch = 75
+  PixelsPerInch = 96
   Position = poDesktopCenter
   HorzScrollBar.Page = 338
   VertScrollBar.Page = 486
-  Left = 212
+  Left = 230
   Height = 487
-  Top = 47
+  Top = 36
   Width = 339
   object Label1: TLabel
     Caption = 'This sample show how to use the printer dialogs'
     Color = clNone
     ParentColor = False
     Left = 16
-    Height = 13
+    Height = 14
     Top = 8
-    Width = 269
+    Width = 226
   end
   object Button2: TButton
     BorderSpacing.InnerBorder = 2
@@ -51,17 +51,17 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Information'
-        Width = 250
+        Width = 230
       end>
-    DefaultColWidth = 70
+    DefaultColWidth = 90
     FixedColor = clBtnFace
     Flat = True
     GridLineWidth = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
-    RowCount = 12
+    RowCount = 15
     ScrollBars = ssAutoBoth
     VisibleColCount = 1
-    VisibleRowCount = 11
+    VisibleRowCount = 14
     Left = 8
     Height = 288
     Top = 192
@@ -118,10 +118,20 @@ object Form1: TForm1
     Width = 320
   end
   object PSD: TPrinterSetupDialog
+    Title = 'Testing dialog title'
     left = 176
     top = 240
   end
   object PD: TPrintDialog
+    Collate = True
+    Copies = 1
+    FromPage = 2
+    MinPage = 2
+    MaxPage = 5
+    Options = [poPrintToFile, poPageNums, poSelection, poWarning, poHelp]
+    PrintToFile = True
+    ToPage = 3
+    Title = 'Testing title'
     left = 176
     top = 272
   end

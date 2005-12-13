@@ -175,6 +175,7 @@ type
      function DoGetPrinterState: TPrinterState; virtual;
      function GetPrinterType : TPrinterType; virtual;
      function GetCanPrint : Boolean; virtual;
+     function GetCanRenderCopies : Boolean; virtual;
      function GetXDPI: Integer; virtual;
      function GetYDPI: Integer; virtual;
   public
@@ -204,7 +205,7 @@ type
      property Title: string read fTitle write fTitle;
      property PrinterType : TPrinterType read GetPrinterType;
      property CanPrint : Boolean read GetCanPrint;
-     
+     property CanRenderCopies : Boolean read GetCanRenderCopies;
      property XDPI : Integer read GetXDPI;
      property YDPI : Integer read GetYDPI;
   end;
@@ -673,6 +674,11 @@ end;
 
 //Return True if selected printer can printing
 function TPrinter.GetCanPrint: Boolean;
+begin
+  Result:=True;
+end;
+
+function TPrinter.GetCanRenderCopies: Boolean;
 begin
   Result:=True;
 end;

@@ -12,6 +12,8 @@ var
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
+    Extra,Size : Integer;
+    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
@@ -26,19 +28,17 @@ begin
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
       rtMargin := fMargins;
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-
-      DeviceMode:=GlobalAlloc(GHND,SizeOf(PDev.DevMode));
+      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
+      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
+      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
+      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
       try
       DevMode:=PDeviceMode(GlobalLock(DeviceMode));
       try
-       //some plotters crash when DEVMODE contains other options set
-       //so only minimal options passed to print dialog
-       StrCopy(DevMode^.dmDeviceName,Pdev.DevMode.dmDeviceName);
-       DevMode^.dmSize := Word(SizeOf(PDev.DevMode));
-       DevMode^.dmOrientation := Pdev.DevMode.dmOrientation;
-       DevMode^.dmFields := DM_ORIENTATION or DM_PAPERSIZE or DM_COPIES;
-       DevMode^.dmPaperSize := Pdev.DevMode.dmPaperSize;
-       DevMode^.dmCopies := Pdev.DevMode.dmCopies;
+       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
+       DevMode^.dmSize := Word(Size);
+       DevMode^.dmDriverExtra := Word(Extra);
+       DevMode^.dmFields := Fields;
       finally
         GlobalUnLock(DeviceMode);
       end;
@@ -72,20 +72,9 @@ begin
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              StrCopy(@PDev.DevMode.dmDeviceName,DevMode^.dmDeviceName);
-              PDev.DevMode.dmOrientation := DevMode^.dmOrientation;
-              PDev.DevMode.dmFields := DevMode^.dmFields;
-              PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize;
-              PDev.DevMode.dmPaperLength := DevMode^.dmPaperLength;
-              PDev.DevMode.dmPaperWidth := DevMode^.dmPaperWidth;
-              PDev.DevMode.dmScale := DevMode^.dmScale;
-              PDev.DevMode.dmCopies := DevMode^.dmCopies;
-              PDev.DevMode.dmPrintQuality := DevMode^.dmPrintQuality;
-              PDev.DevMode.dmColor := DevMode^.dmColor;
-              PDev.DevMode.dmDuplex := DevMode^.dmDuplex;
-              PDev.DevMode.dmYResolution := DevMode^.dmYResolution;
-              PDev.DevMode.dmTTOption := DevMode^.dmTTOption;
+              PDev.DevMode.dmDriverExtra := 0;
               PDev.DefaultPaper := DevMode^.dmPaperSize;
             finally
               GlobalUnlock(lpp.hDevMode);
@@ -110,6 +99,8 @@ var
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
+    Extra,Size : Integer;
+    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
@@ -124,19 +115,17 @@ begin
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
 
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-
-      DeviceMode:=GlobalAlloc(GHND,SizeOf(PDev.DevMode));
+      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
+      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
+      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
+      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
       try
       DevMode:=PDeviceMode(GlobalLock(DeviceMode));
       try
-       //some plotters crash when DEVMODE contains other options set
-       //so only minimal options passed to print dialog
-       StrCopy(DevMode^.dmDeviceName,Pdev.DevMode.dmDeviceName);
-       DevMode^.dmSize := Word(SizeOf(PDev.DevMode));
-       DevMode^.dmOrientation := Pdev.DevMode.dmOrientation;
-       DevMode^.dmFields := DM_ORIENTATION or DM_PAPERSIZE or DM_COPIES;
-       DevMode^.dmPaperSize := Pdev.DevMode.dmPaperSize;
-       DevMode^.dmCopies := Pdev.DevMode.dmCopies;
+       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
+       DevMode^.dmSize := Word(Size);
+       DevMode^.dmDriverExtra := Word(Extra);
+       DevMode^.dmFields := Fields;
       finally
         GlobalUnLock(DeviceMode);
       end;
@@ -166,20 +155,9 @@ begin
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              StrCopy(@PDev.DevMode.dmDeviceName,DevMode^.dmDeviceName);
-              PDev.DevMode.dmOrientation := DevMode^.dmOrientation;
-              PDev.DevMode.dmFields := DevMode^.dmFields;
-              PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize;
-              PDev.DevMode.dmPaperLength := DevMode^.dmPaperLength;
-              PDev.DevMode.dmPaperWidth := DevMode^.dmPaperWidth;
-              PDev.DevMode.dmScale := DevMode^.dmScale;
-              PDev.DevMode.dmCopies := DevMode^.dmCopies;
-              PDev.DevMode.dmPrintQuality := DevMode^.dmPrintQuality;
-              PDev.DevMode.dmColor := DevMode^.dmColor;
-              PDev.DevMode.dmDuplex := DevMode^.dmDuplex;
-              PDev.DevMode.dmYResolution := DevMode^.dmYResolution;
-              PDev.DevMode.dmTTOption := DevMode^.dmTTOption;
+              PDev.DevMode.dmDriverExtra := 0;
               PDev.DefaultPaper := DevMode^.dmPaperSize;
               TWinPrinter(Printer).Handle := hDC;
             finally
@@ -204,11 +182,11 @@ var lpp        : tagPD;
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
-    Old   : Integer;
+    Extra,Size : Integer;
+    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
-  Old := Copies;
   if Printer.Printers.Count>0 then
   begin
     FillChar(lpp,SizeOf(lpp),0);
@@ -216,7 +194,8 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags := PD_COLLATE or PD_USEDEVMODECOPIES or PD_RETURNDC;
+      Flags := PD_RETURNDC;
+      if Collate then Flags := Flags or PD_COLLATE;
       case PrintRange of
        prPageNums : Flags := Flags or PD_PAGENUMS;
        prSelection : Flags := Flags or PD_SELECTION;
@@ -227,23 +206,23 @@ begin
       if not (poPageNums in Options) then Flags := Flags or PD_NOPAGENUMS;
       if not (poSelection in Options) then Flags := Flags or PD_NOSELECTION;
       if (poPrintToFile in Options ) and (poDisablePrintToFile in Options) then Flags := Flags or PD_DISABLEPRINTTOFILE;
-
+      if (poHelp in Options) then Flags := Flags or PD_SHOWHELP;
+      if not (poWarning in Options) then Flags := Flags or PD_NOWARNING;
+      
       hWndOwner:=TWin32WidgetSet(WidgetSet).AppHandle;
 
       PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
-
-      DeviceMode:=GlobalAlloc(GHND,SizeOf(PDev.DevMode));
+      Size := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_SIZE,nil,nil);
+      Extra := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_EXTRA,nil,nil);
+      Fields := DeviceCapabilities(PChar(PDev.Name),PChar(PDev.Port),DC_FIELDS,nil,nil);
+      DeviceMode:=GlobalAlloc(GHND,Size + Extra);
       try
       DevMode:=PDeviceMode(GlobalLock(DeviceMode));
       try
-       //some plotters crash when DEVMODE contains other options set
-       //so only minimal options passed to print dialog
-       DevMode^.dmSize := Word(SizeOf(PDev.DevMode));
-       StrCopy(DevMode^.dmDeviceName,Pdev.DevMode.dmDeviceName);
-       DevMode^.dmOrientation := Pdev.DevMode.dmOrientation;
-       DevMode^.dmFields := DM_ORIENTATION or DM_PAPERSIZE or DM_COPIES;
-       DevMode^.dmPaperSize := Pdev.DevMode.dmPaperSize;
-       DevMode^.dmCopies := Copies;
+       CopyMemory(DevMode,@PDev.DevMode,SizeOf(PDev.DevMode));
+       DevMode^.dmSize := Word(Size);
+       DevMode^.dmDriverExtra := Word(Extra);
+       DevMode^.dmFields := Fields;
       finally
         GlobalUnLock(DeviceMode);
       end;
@@ -279,24 +258,18 @@ begin
             try
               //Set the properties for the selected printer
               PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+              CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
-              StrCopy(@PDev.DevMode.dmDeviceName,DevMode^.dmDeviceName);
-              PDev.DevMode.dmOrientation := DevMode^.dmOrientation;
-              PDev.DevMode.dmFields := DevMode^.dmFields;
-              PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize;
-              PDev.DevMode.dmPaperLength := DevMode^.dmPaperLength;
-              PDev.DevMode.dmPaperWidth := DevMode^.dmPaperWidth;
-              PDev.DevMode.dmScale := DevMode^.dmScale;
-              PDev.DevMode.dmCopies := DevMode^.dmCopies;
-              PDev.DevMode.dmPrintQuality := DevMode^.dmPrintQuality;
-              PDev.DevMode.dmColor := DevMode^.dmColor;
-              PDev.DevMode.dmDuplex := DevMode^.dmDuplex;
-              PDev.DevMode.dmYResolution := DevMode^.dmYResolution;
-              PDev.DevMode.dmTTOption := DevMode^.dmTTOption;
-              PDev.DefaultPaper := DevMode^.dmPaperSize;
-              if DevMode^.dmCopies>1 then Copies := 1
+              PDev.DevMode.dmDriverExtra := 0;
+              if Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(Integer(DevMode^.dmPaperSize))) <> -1
+               then
+                PDev.DefaultPaper := DevMode^.dmPaperSize
+                else
+                  PDev.DefaultPaper := Integer(Printer.PaperSize.SupportedPapers.Objects[0]);
+              if nCopies=1 then Copies := DevMode^.dmCopies
               else
-              Copies := Old;
+              Copies := nCopies;
+              Printer.Copies := Copies;
               TWinPrinter(Printer).Handle := hDC;
             finally
               GlobalUnlock(lpp.hDevMode);
@@ -305,9 +278,11 @@ begin
           
           PrintRange := prAllPages;
           PrintToFile := false;
+          Collate := false;
           if (Flags and PD_SELECTION)>0 then PrintRange := prSelection;
           if (Flags and PD_PAGENUMS)>0 then PrintRange := prPageNums;
           if (Flags and PD_PRINTTOFILE)>0 then PrintToFile := true;
+          if (Flags and PD_COLLATE)>0 then Collate := true;
           FromPage := Integer(nFromPage);
           ToPage := Integer(nToPage);
           MinPage := Integer(nMinPage);

@@ -49,7 +49,7 @@ const
      DM_COPIES = $100;
 
 Const
-  Win32Orientations: array [TPrinterOrientation] of Integer = (
+  Win32Orientations: array [TPrinterOrientation] of SHORT = (
     DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE, DMORIENT_PORTRAIT, DMORIENT_LANDSCAPE);
 
 

@@ -54,8 +54,11 @@ type
     procedure Button7Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    ck : Integer;
     procedure UpdatePrinterInfo;
+    procedure AddInfo(const Desc : String; Const Info : String);
   public
+  
     { public declarations }
   end; 
 
@@ -68,18 +71,14 @@ uses
 
 { TForm1 }
 
+procedure TForm1.AddInfo(const Desc : String; Const Info : String);
+begin
+  SGrid.Cells[0,ck] := Desc;
+  SGrid.Cells[1,ck] := Info;
+  Inc(ck);
+end;
 
 procedure TForm1.UpdatePrinterInfo;
-var
- ck : Integer;
- s : String;
-
-procedure AddInfo(const Desc : String; Const Info : String);
-  begin
-    SGrid.Cells[0,ck] := Desc;
-    SGrid.Cells[1,ck] := Info;
-    Inc(ck);
-  end;
 begin
   try
     ck := 1;
@@ -109,23 +108,10 @@ begin
         psStopped:AddInfo('PrinterState','Stopped');
       end;
       AddInfo('PaperSize',PaperSize.PaperName);
-      with PAGED  do begin
-        if PAGED.Units = unMM then
-        begin
-          s :=' milimeters';
-          s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 100,
-            Margins.Left div 100, Margins.Bottom div 100, Margins.Right div 100,
-            s]);
-        end
-        else
-        begin
-          s :=' inches';
-          s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 1000,
-            Margins.Left div 1000,Margins.Bottom div 1000,Margins.Right div 1000,
-            s]);
-        end;
-        AddInfo('Margins',s);
-      end;
+      if CanRenderCopies then AddInfo('CanRenderCopies','true')
+      else
+      AddInfo('CanRenderCopies','false');
+
       if not CanPrint then
         Application.MessageBox('Selected printer cannot print currently!',
           'Warning',mb_iconexclamation);
@@ -134,7 +120,6 @@ begin
       Application.MessageBox(PChar(e.message),'Error',mb_iconhand);
   end;
 end;
-
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
@@ -157,13 +142,13 @@ begin
     Printer.Canvas.Font.Size := 12;
     Printer.Canvas.TextOut(0,0,'This is test for lazarus printer4lazarus package');
     Printer.EndDoc;
-  except on E:Exception do
-  begin
-    Printer.Abort;
-    Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
+  except
+    on E:Exception do
+    begin
+      Printer.Abort;
+      Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
+    end;
   end;
-end;
-
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -174,15 +159,37 @@ end;
 procedure TForm1.Button6Click(Sender: TObject);
 begin
   {$IFDEF WIN32}
-  TWinPrinter(Printer).Properties;
+  TWinPrinter(Printer).AdvancedProperties;
   {$ELSE}
-  ShowMessage('Printer.Properties is not implemented for this platform');
+  ShowMessage('Printer.AdvancedProperties is not yet implemented for this platform');
   {$ENDIF}
 end;
 
 procedure TForm1.Button7Click(Sender: TObject);
+var
+ s : String;
 begin
-  if PAGED.Execute then UpdatePrinterInfo;
+  if PAGED.Execute then
+  begin
+    UpdatePrinterInfo;
+    with PAGED  do begin
+      if PAGED.Units = unMM then
+      begin
+        s :=' milimeters';
+        s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 100,
+          Margins.Left div 100, Margins.Bottom div 100, Margins.Right div 100,
+          s]);
+      end
+      else
+      begin
+        s :=' inches';
+        s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 1000,
+          Margins.Left div 1000,Margins.Bottom div 1000,Margins.Right div 1000,
+          s]);
+      end;
+      AddInfo('Margins',s);
+    end;
+  end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -194,16 +201,12 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
  s,x : String;
 begin
-  PD.Copies := 4;
-  PD.FromPage := 1;
-  PD.ToPage := 5;
-  PD.MinPage := 1;
-  PD.MaxPage := 5;
-  PD.PrintRange := prAllPages;
-  //PD.Options := [poPageNums,poSelection,poPrintToFile];
   if PD.Execute then
   begin
    UpdatePrinterInfo;
+   if PD.Collate then AddInfo('Collate','true')
+   else
+   AddInfo('Collate','false');
    if PD.PrintRange=prPageNums then x :='Pages range,';
    if PD.PrintRange=prSelection then x :='Selection,';
    if PD.PrintToFile then x := x + ' ,PrintToFile,';

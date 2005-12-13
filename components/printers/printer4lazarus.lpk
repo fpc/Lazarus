@@ -26,7 +26,7 @@
     <License Value="LGPL
 "/>
     <Version Build="2"/>
-    <Files Count="24">
+    <Files Count="26">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -128,6 +128,14 @@
         <Filename Value="win32\winprinters_h.inc"/>
         <Type Value="Include"/>
       </Item24>
+      <Item25>
+        <Filename Value="win32\winprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item25>
+      <Item26>
+        <Filename Value="linux\cupsprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item26>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

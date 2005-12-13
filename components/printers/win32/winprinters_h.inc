@@ -30,7 +30,7 @@ uses
 Type
   TWinPrinter = class(TPrinter)
   private
-    fDefaultPrinter : String;
+    //fDefaultPrinter : String;
     fLastHandleType : Byte; //0=None 1=IC 2=DC
     fDC             : HDC;
     fPrinterHandle  : THandle;
@@ -67,6 +67,7 @@ Type
     function GetPrinterType: TPrinterType;override;
     function DoGetPrinterState: TPrinterState;override;
     function GetCanPrint: Boolean;override;
+    function GetCanRenderCopies : Boolean;override;
     function GetHandlePrinter : HDC;
     procedure SetHandlePrinter(aValue : HDC);
   public
@@ -75,7 +76,7 @@ Type
     
 
     //Warning not portable functions here
-    procedure Properties;
+    procedure AdvancedProperties;
     //Warning it is a not potable property
     property Handle : HDC read GetHandlePrinter write SetHandlePrinter;
     

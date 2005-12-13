@@ -127,9 +127,6 @@ begin
   fLastHandleType:=0;
 end;
 
-
-
-
 procedure TWinPrinter.DoBeginDoc;
 var Inf: TDocInfo;
 begin
@@ -137,7 +134,6 @@ begin
 
   if fPrinterHandle=0 then
     raise EPrinter.Create('Printer handle not defined');
-
 
   SetDC;
   Canvas.Handle:=fDC;
@@ -174,36 +170,6 @@ begin
   inherited DoAbort;
   AbortDoc(fDC);
 end;
-
-(*
-function TWinPrinter.GetDefaultPrinter : String;
-var
-    PrtCount       : DWORD;
-    Needed         : DWORD;
-    Buffer         : PChar;
-    DefaultPrinter : array[0..79] of Char;
-begin
-  Result:='';
-  Needed:=0;
-  EnumPrinters(PRINTER_ENUM_DEFAULT,nil,5,nil,0,Needed,PrtCount);
-  if Needed>0 then
-  begin
-    GetMem(Buffer,Needed);
-    try
-      if EnumPrinters(PRINTER_ENUM_DEFAULT,nil,5,Buffer,Needed,Needed,PrtCount) then
-        Result := String(PPRINTER_INFO_5(Buffer)^.pPrinterName);
-    finally
-      FreeMem(Buffer);
-    end;
-  end
-  else
-  begin
-    GetProfileString(PChar('windows'),PChar('device'),PChar(''),DefaultPrinter,SizeOf(DefaultPrinter));
-    if pos(',',DefaultPrinter)<>0 then
-       Result:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
-  end;
-end;
-*)
 
 //Enum all defined printers. First printer it's default
 procedure TWinPrinter.DoEnumPrinters(Lst: TStrings);
@@ -348,18 +314,14 @@ begin
       FreeMem(Buffer);
     end;
 
-
     //Retreive the code of papers
-
-
     FillChar(ArPapers,SizeOf(ArPapers),0);
     PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
           DC_PAPERS,@ArPapers,nil);
     if PaperC<=0 then raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERS> error : %d, (%s)',[GetLastError,SysErrorMessage(GetLastError)]);
       for i:=0 to PaperC-1 do
-       Lst.Objects[i]:=TObject(Pointer(Integer(ArPapers[i])));
+       Lst.Objects[i]:=TObject(ptrint(ArPapers[i]));
   end;
-
 end;
 
 function TWinPrinter.DoGetDefaultPaperName: string;
@@ -372,7 +334,7 @@ begin
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
-    i:=PaperSize.SupportedPapers.IndexOfObject(TObject(Pointer(Integer(PDev.DefaultPaper))));
+    i:=PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(PDev.DefaultPaper)));
     if i<>-1 then
       Result:=PaperSize.SupportedPapers.Strings[i];
   end;
@@ -394,7 +356,7 @@ begin
     if i<>-1 then
     begin
       ClearDC;
-      j:=SHORT(Pointer(PaperSize.SupportedPapers.Objects[i]));
+      j:=SHORT(ptrint(PaperSize.SupportedPapers.Objects[i]));
       PDev.DevMode.dmPaperSize:=j;
     end;
   end;
@@ -470,7 +432,7 @@ begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
     ClearDC;
-    PDev.DevMode.dmCopies:=aValue;
+    PDev.DevMode.dmCopies:=SHORT(aValue);
   end;
 end;
 
@@ -570,7 +532,6 @@ begin
   finally
     FreeMem(InfoPrt);
   end;
-
 end;
 
 function TWinPrinter.GetCanPrint: Boolean;
@@ -579,12 +540,26 @@ begin
  Result := (DoGetPrinterState <> psStopped);
 end;
 
-procedure TWinPrinter.Properties;
+function TWinPrinter.GetCanRenderCopies: Boolean;
+var
+ pDev : TPrinterDevice;
+  Count : Integer;
+begin
+ Result := inherited GetCanRenderCopies;
+  if (Printers.Count>0) then
+  begin
+    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),DC_COPIES,nil,@PDev.DevMode);
+    Result := (Count > 1);
+ end;
+end;
+
+procedure TWinPrinter.AdvancedProperties;
 begin
  PrinterProperties(TWin32WidgetSet(WidgetSet).AppHandle,fPrinterHandle);
 end;
 
-INITIALIZATION
+initialization
   Printer:=TWinPrinter.Create;
 
 {end.}
