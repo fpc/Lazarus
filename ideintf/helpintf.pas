@@ -1880,7 +1880,14 @@ procedure THelpViewers.Clear;
 var
   i: Integer;
 begin
-  for i:=0 to Count-1 do Items[Count-1].Free;
+  i:=Count-1;
+  while (i>=0) do begin
+    if i<Count then begin
+      Items[i].Free;
+      FItems[i]:=nil;
+    end;
+    dec(i);
+  end;
   FItems.Clear;
 end;
 
