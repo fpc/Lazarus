@@ -4,7 +4,7 @@ object MainForm: TMainForm
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = MainFormCreate
-  PixelsPerInch = 75
+  PixelsPerInch = 96
   HorzScrollBar.Page = 568
   VertScrollBar.Page = 326
   Left = 105
@@ -14,6 +14,7 @@ object MainForm: TMainForm
   object IpHtmlPanel1: TIpHtmlPanel
     Align = alClient
     FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
     PrintSettings.MarginLeft = 0.5
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
@@ -39,6 +40,16 @@ object MainForm: TMainForm
       Height = 26
       Top = 8
       Width = 152
+    end
+    object Button1: TButton
+      BorderSpacing.InnerBorder = 2
+      Caption = 'Preview'
+      OnClick = Button1Click
+      TabOrder = 1
+      Left = 183
+      Height = 25
+      Top = 8
+      Width = 75
     end
   end
   object OpenDialog1: TOpenDialog

@@ -2,11 +2,19 @@ unit MainUnit;
 
 {$mode objfpc}{$H+}
 
+{.$define UsePreview}
+{.$define UseJPEG}
+
 interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  //LazJpeg,
+  {$ifdef UseJPEG}
+  LazJpeg,
+  {$endif}
+  {$ifdef UsePreview}
+  OsPrinters,
+  {$endif}
   IpHtml, ExtCtrls, StdCtrls;
 
 type
@@ -20,10 +28,12 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    Button1: TButton;
     IpHtmlPanel1: TIpHtmlPanel;
     OpenDialog1: TOpenDialog;
     OpenHTMLFileButton1: TButton;
     Panel1: TPanel;
+    procedure Button1Click(Sender: TObject);
     procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure IpHtmlPanel1HotClick(Sender: TObject);
@@ -83,6 +93,18 @@ begin
       Picture.Free;
     Picture := nil;
   end;
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+  {$ifdef UsePreview}
+  IpHtmlPanel1.PrintPreview;
+  {$else}
+  ShowMessage(
+    'In order to use this feature, please read instructions'#13+
+    'contained in the readme file included in this project'#13+
+    'directory');
+  {$endif}
 end;
 
 procedure TMainForm.OpenHTMLFile(const Filename: string);

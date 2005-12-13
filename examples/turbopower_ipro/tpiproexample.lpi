@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -16,15 +16,15 @@
     <LazDoc Paths=""/>
     <Units Count="3">
       <Unit0>
-        <CursorPos X="22" Y="6"/>
+        <CursorPos X="13" Y="6"/>
         <Filename Value="tpiproexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="TPIProExample"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="72"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="14" Y="4"/>
+        <CursorPos X="22" Y="11"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="MainForm"/>
@@ -33,7 +33,7 @@
         <ResourceFilename Value="mainunit.lrs"/>
         <TopLine Value="1"/>
         <UnitName Value="MainUnit"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="72"/>
       </Unit1>
       <Unit2>
         <CursorPos X="1" Y="1"/>
@@ -41,11 +41,12 @@
         <IsPartOfProject Value="True"/>
         <SyntaxHighlighter Value="HTML"/>
         <TopLine Value="1"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="72"/>
       </Unit2>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -53,7 +54,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -66,13 +67,35 @@
         <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPackages>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="5" HistoryIndex="4">
+      <Position1>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="84" Column="30" TopLine="80"/>
+      </Position1>
+      <Position2>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="92" Column="1" TopLine="90"/>
+      </Position2>
+      <Position3>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="9" Column="16" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="1" Column="11" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="mainunit.pas"/>
+        <Caret Line="101" Column="20" TopLine="91"/>
+      </Position5>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <OtherUnitFiles Value="$(LazarusDir)\components\units\$(TargetCPU)\$(TargetOS)\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
