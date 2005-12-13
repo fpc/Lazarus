@@ -2528,6 +2528,7 @@ type
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
+    procedure EraseBackground(DC: HDC); override;
   end;
 
   TIpAbstractHtmlDataProvider = class(TIpBaseComponent)
@@ -2671,6 +2672,8 @@ type
     property MarginBottom: double read FMarginBottom write FMarginBottom;
   end;
 
+  { TIpHtmlCustomPanel }
+
   TIpHtmlCustomPanel = class(TCustomPanel)
   protected
     FFlagErrors: Boolean;
@@ -2737,6 +2740,7 @@ type
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
 
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
@@ -15440,11 +15444,6 @@ end;
 
 {!!.10 new}
 procedure TIpHtmlInternalPanel.BeginPrint;
-{$IFDEF IP_LAZARUS}
-begin
-  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
-end;
-{$ELSE}
 var
   LogPixX, LMarginPix, RMarginPix,
   LogPixY, TMarginPix, BMarginPix,
@@ -15482,15 +15481,9 @@ begin
   end;
   inc(InPrint);
 end;
-{$ENDIF}
 
 {!!.10 new}
 procedure TIpHtmlInternalPanel.EndPrint;
-{$IFDEF IP_LAZARUS}
-begin
-  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
-end;
-{$ELSE}
 begin
   dec(InPrint);
   if InPrint = 0 then begin
@@ -15502,14 +15495,8 @@ begin
     InvalidateSize;
   end;
 end;
-{$ENDIF}
 
 procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
-{$IFDEF IP_LAZARUS}
-begin
-  DebugLn('ToDo: TIpHtmlInternalPanel.BeginPrint');
-end;
-{$ELSE}
 var
   CR : TRect;
 var
@@ -15543,7 +15530,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 {!!.10 new}
 procedure TIpHtmlInternalPanel.PrintPreview;
@@ -15572,6 +15558,11 @@ begin
       EndPrint;
     end;
   end;
+end;
+
+procedure TIpHtmlInternalPanel.EraseBackground(DC: HDC);
+begin
+  //
 end;
 
 function TIpHtmlInternalPanel.GetPrintPageCount: Integer;
@@ -16028,6 +16019,7 @@ begin
   Anchor.DoOnBlur;
   {HaveFocus := False;}                                                {!!.12}
 end;
+
 {$ELSE}
 procedure TIpHtmlFocusRect.WMSetFocus(var Message: TWMSetFocus);
 begin
@@ -16041,8 +16033,8 @@ begin
   Anchor.DoOnBlur;
   {HaveFocus := False;}                                                {!!.12}
 end;
-{$ENDIF}
 
+{$ENDIF}
 { TIpHtmlFrame }
 
 procedure TIpHtmlFrame.InitHtml;
@@ -17138,6 +17130,11 @@ begin
   inherited;
 end;
 
+procedure TIpHtmlCustomPanel.EraseBackground(DC: HDC);
+begin
+  //
+end;
+
 procedure TIpHtmlCustomPanel.OpenURL(const URL: string);
 begin
   InternalOpenURL('', URL);
@@ -17487,6 +17484,14 @@ end;
 
 procedure TIpHtmlCustomPanel.PrintPreview;
 begin
+  {$IFDEF IP_LAZARUS}
+  if not assigned(printer) then begin
+    raise exception.create(
+      'Printer has not been assigned, checkout that package'#13+
+      'Printer4lazarus.lpk has been installed and OSPrinters'#13+
+      'or PrintDialog is in uses clause of main unit');
+  end;
+  {$ENDIF}
   if Assigned(MasterFrame) then
     MasterFrame.HyperPanel.PrintPreview;
 end;

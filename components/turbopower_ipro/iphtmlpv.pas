@@ -40,6 +40,7 @@ uses
   GraphType,
   LCLIntf,
   Buttons,
+  LResources,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -268,10 +269,21 @@ var
   Scale1, Scale2, Scale0: double;
 begin
   FZoom := Value;
+  {$IFDEF IP_LAZARUS}
+  if Printer.PageHeight>0 then
+    Scale1 := Double(ClientHeight)/Printer.PageHeight
+  else
+    Scale1 := Double(ClientHeight)/500;
+  if Printer.PageWidth>0 then
+    Scale2 := Double(ClientWidth)/ Printer.PageWidth
+  else
+    Scale2 := Double(ClientWidth)/ 500;
+  {$ELSE}
   Scale1 := Double(ClientHeight)
-              / {$IFDEF IP_LAZARUS}500{$ELSE}Printer.PageHeight{$ENDIF};
+              / Printer.PageHeight;
   Scale2 := Double(ClientWidth)
-              / {$IFDEF IP_LAZARUS}500{$ELSE}Printer.PageWidth{$ENDIF};
+              / Printer.PageWidth;
+  {$ENDIF}
   if Scale1 < Scale2 then
     Scale0 := Scale1
   else
@@ -285,8 +297,19 @@ procedure TIpHTMLPreview.ResizeCanvas;
 begin
   ScrollBox1.HorzScrollBar.Position := 0;
   ScrollBox1.VertScrollBar.Position := 0;
-  PaperPanel.Width := round({$IFDEF IP_LAZARUS}500{$ELSE}Printer.PageWidth{$ENDIF} * Scale);
-  PaperPanel.Height := round({$IFDEF IP_LAZARUS}500{$ELSE}Printer.PageHeight{$ENDIF} * Scale);
+  {$IFDEF IP_LAZARUS}
+  if Printer.PageHeight>0 then
+    PaperPanel.Height := round(Printer.PageHeight * Scale)
+  else
+    PaperPanel.Height := round(500 * Scale);
+  if Printer.PageWidth>0 then
+    PaperPanel.Width := round(Printer.PageWidth * Scale)
+  else
+    PaperPanel.Width := round(500 * Scale);
+  {$ELSE}
+  PaperPanel.Width := round(Printer.PageWidth * Scale);
+  PaperPanel.Height := round(Printer.PageHeight * Scale);
+  {$ENDIF}
   PaintBox1.Width := round(OwnerPanel.PrintWidth * Scale);
   PaintBox1.Height := round(OwnerPanel.PrintHeight * Scale);
   PaintBox1.Left := round(OwnerPanel.PrintTopLeft.x * Scale);
@@ -310,5 +333,8 @@ procedure TIpHTMLPreview.FormResize(Sender: TObject);
 begin
   SetZoom(Zoom); {force recalc of preview sizes}
 end;
+
+initialization
+  {$I iphtmlpv.lrs}
 
 end.
