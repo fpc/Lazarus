@@ -2480,7 +2480,9 @@ type
     procedure Paint; override;
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
-    procedure CMIpHotInvoke(var Message: TMessage); message CM_IPHOTINVOKE;
+    {$IFDEF IP_LAZARUS}
+    procedure AsyncHotInvoke(data: ptrint);
+    {$ENDIF}
 
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -15399,8 +15401,8 @@ begin
   and (abs(MouseDownY - Y) < 4) then
     if (Button = mbLeft) and (Hyper.HotNode <> nil) then
       {$IFDEF IP_LAZARUS}
-      // needs to do this asynchronously as this might destroy self
-      PostMessage(Handle, CM_IpHotInvoke, 0, PtrInt(Self))
+      // to avoid references to invalid objects do it asynchronously
+      Application.QueueAsyncCall(AsyncHotInvoke, 0)
       {$ELSE}
       DoHotInvoke
       {$ENDIF}
@@ -15730,10 +15732,12 @@ begin
   {$ENDIF}
 end;
 
-procedure TIpHtmlInternalPanel.CMIpHotInvoke(var Message: TMessage);
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlInternalPanel.AsyncHotInvoke(data: ptrint);
 begin
   DoHotInvoke;
 end;
+{$ENDIF}
 
 procedure TIpHtmlInternalPanel.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
