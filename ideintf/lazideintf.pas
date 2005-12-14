@@ -63,7 +63,8 @@ type
     sfSaveAs,
     sfSaveToTestDir,
     sfProjectSaving,
-    sfCheckAmbiguousFiles
+    sfCheckAmbiguousFiles,
+    sfSaveNonProjectFiles
     );
   TSaveFlags = set of TSaveFlag;
   

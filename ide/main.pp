@@ -642,7 +642,7 @@ type
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectIfChanged: TModalResult;
-    function DoSaveProjectToTestDirectory: TModalResult;
+    function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
@@ -6296,6 +6296,7 @@ var
   DestFilename: string;
   SkipSavingMainSource: Boolean;
   AnUnitInfo: TUnitInfo;
+  SaveFileFlags: TSaveFlags;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -6306,11 +6307,12 @@ begin
   SkipSavingMainSource:=false;
 
 
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags,' ProjectInfoFile=',Project1.ProjectInfoFile);
-  {$ENDIF}
+  { $IFDEF IDE_DEBUG}
+  DebugLn('TMainIDE.DoSaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
+  { $ENDIF}
   
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
+  DebugLn('TMainIDE.DoSaveProject AA1');
   
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
@@ -6318,12 +6320,17 @@ begin
     AnUnitInfo:=Project1.Units[i];
     if (AnUnitInfo.Loaded) and (AnUnitInfo.IsVirtual)
     and (Project1.MainUnitID<>i) then begin
-      Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,
-           [sfSaveAs,sfProjectSaving]
-           +[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
+      SaveFileFlags:=[sfSaveAs,sfProjectSaving]
+                     +[sfCheckAmbiguousFiles]*Flags;
+      if sfSaveToTestDir in Flags then begin
+        if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
+          Include(SaveFileFlags,sfSaveToTestDir);
+      end;
+      Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,SaveFileFlags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
+  DebugLn('TMainIDE.DoSaveProject AA2');
 
   if SourceNotebook.Notebook=nil then
     Project1.ActiveEditorIndexAtStart:=-1
@@ -6341,11 +6348,13 @@ begin
 
   if Project1.IsVirtual then Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
+    DebugLn('TMainIDE.DoSaveProject AA3');
     // let user choose a filename
     Result:=DoShowSaveProjectAsDialog;
     if Result<>mrOk then exit;
   end;
-  
+  DebugLn('TMainIDE.DoSaveProject AA4');
+
   // update HasResources information
   DoUpdateProjectResourceInfo;
 
@@ -6392,13 +6401,18 @@ begin
   end;
 
   // save all editor files
-  if (SourceNoteBook.Notebook<>nil) and (not (sfSaveToTestDir in Flags)) then
-  begin
+  if (SourceNoteBook.Notebook<>nil) then begin
     for i:=0 to SourceNoteBook.Notebook.PageCount-1 do begin
       if (Project1.MainUnitID<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
-        Result:=DoSaveEditorFile(i,[sfProjectSaving]
-                                +Flags*[sfSaveToTestDir,sfCheckAmbiguousFiles]);
+        SaveFileFlags:=[sfProjectSaving]
+                       +Flags*[sfCheckAmbiguousFiles];
+        if (sfSaveToTestDir in Flags) then begin
+          AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+          if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
+            Include(SaveFileFlags,sfSaveToTestDir);
+        end;
+        Result:=DoSaveEditorFile(i,SaveFileFlags);
         if Result=mrAbort then exit;
       end;
     end;
@@ -6946,7 +6960,7 @@ begin
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
-    Result:=DoSaveProjectToTestDirectory;
+    Result:=DoSaveProjectToTestDirectory([sfSaveNonProjectFiles]);
   if Result<>mrOk then begin
     {$IFDEF VerboseSaveForBuild}
     DebugLn('TMainIDE.DoSaveForBuild project saving failed');
@@ -7028,7 +7042,7 @@ begin
   Result:=mrNo;
 end;
 
-function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
+function TMainIDE.DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
 begin
   Result:=mrCancel;
   if (EnvironmentOptions.TestBuildDirectory='')
@@ -7047,7 +7061,7 @@ begin
     Result:=DoSaveAll([sfCheckAmbiguousFiles]);
     exit;
   end;
-  Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]);
+  Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]+Flags);
 end;
 
 function TMainIDE.DoShowToDoList: TModalResult;

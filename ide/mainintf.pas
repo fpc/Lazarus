@@ -240,7 +240,8 @@ const
      'sfSaveAs',
      'sfSaveToTestDir',
      'sfProjectSaving',
-     'sfCheckAmbiguousFiles'
+     'sfCheckAmbiguousFiles',
+     'sfSaveNonProjectFiles'
     );
 
 function OpenFlagsToString(Flags: TOpenFlags): string;
