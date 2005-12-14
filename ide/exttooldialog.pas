@@ -365,6 +365,8 @@ begin
     end;
   except
     on e: Exception do begin
+      DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
+      DumpExceptionBackTrace;
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
           ),
