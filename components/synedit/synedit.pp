@@ -5955,7 +5955,7 @@ var
 begin
   if Assigned(fHighlighter) and (Lines.Count > 0) then begin
     {$IFDEF SYN_LAZARUS}
-    ScanFrom(0{,Lines.Count-1});
+    ScanFrom(0,Lines.Count-1);
     {$ELSE}
     fHighlighter.ResetRange;
 {begin}                                                                         //mh 2000-10-10
@@ -7052,6 +7052,12 @@ begin
       Value.FreeNotification(Self);
     end;
     fHighlighter := Value;
+    {$IFDEF SYN_LAZARUS}
+    if fHighlighter<>nil then begin
+      fHighlighter.ResetRange;
+      TSynEditStringList(Lines).ClearRanges(fHighlighter.GetRange);
+    end;
+    {$ENDIF}
     RecalcCharExtent;
     Lines.BeginUpdate;
     try

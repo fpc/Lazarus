@@ -170,6 +170,9 @@ type
     procedure InsertStrings(Index: integer; NewStrings: TStrings);              // DJLP 2000-11-01
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
+    {$IFDEF SYN_LAZARUS}
+    procedure ClearRanges(ARange: TSynEditRange);
+    {$ENDIF}
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;
 {begin}                                                                         //mh 2000-10-19
@@ -1023,6 +1026,16 @@ begin
     Writer.Free;
   end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynEditStringList.ClearRanges(ARange: TSynEditRange);
+var
+  Index: Integer;
+begin
+  for Index:=0 to fCount-1 do
+    fList^[Index].fRange := ARange;
+end;
+{$ENDIF}
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin
