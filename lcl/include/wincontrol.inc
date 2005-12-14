@@ -4820,12 +4820,18 @@ begin
   end;
 
   // size this control
-  AdjustSize;
-  if FControls<>nil then
-    for i:=0 to FControls.Count-1 do
-      TControl(FControls[i]).DoAutoSize;
-  // realign childs
-  ReAlign;
+  DisableAlign;
+  try
+    UpdateShowing;
+    AdjustSize;
+    if FControls<>nil then
+      for i:=0 to FControls.Count-1 do
+        TControl(FControls[i]).DoAutoSize;
+    // realign childs
+    ReAlign;
+  finally
+    EnableAlign;
+  end;
 
   //DebugLn('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
