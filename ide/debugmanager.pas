@@ -1633,16 +1633,6 @@ begin
     Exit;
   end;
 
-  //todo: this check depends on the debugger class
-  if not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
-  then begin
-    MessageDlg(lisDebuggerInvalid,
-      Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-      mtError,[mbOK],0);
-    Exit;
-  end;
-  
   DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
   if DebuggerClass = nil
   then begin
@@ -1656,6 +1646,17 @@ begin
     {$ENDIF}
   end;
   
+  //todo: this check depends on the debugger class
+  if (DebuggerClass <> TProcessDebugger)
+  and not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
+  then begin
+    MessageDlg(lisDebuggerInvalid,
+      Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+      mtError,[mbOK],0);
+    Exit;
+  end;
+
   if (dmsDebuggerObjectBroken in FManagerStates)
   then FreeDebugger;
 
