@@ -2812,6 +2812,9 @@ begin
   end;
   
   // save all open files
+  {$IFDEF VerboseSaveForBuild}
+  DebugLn('TPkgManager.DoCompilePackage  ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  {$ENDIF}
   if not (pcfDoNotSaveEditorFiles in Flags) then begin
     Result:=MainIDE.DoSaveForBuild;
     if Result<>mrOk then exit;

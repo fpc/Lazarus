@@ -6928,6 +6928,9 @@ function TMainIDE.DoSaveForBuild: TModalResult;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
+    {$IFDEF VerboseSaveForBuild}
+    DebugLn('TMainIDE.DoSaveForBuild ToolStatus disallows it');
+    {$ENDIF}
     Result:=mrAbort;
     exit;
   end;
@@ -6936,15 +6939,20 @@ begin
     Exit;
   end;
 
-  // check for a main file to compile
-  if Project1.MainFilename='' then exit;
-
   // save all files
+  {$IFDEF VerboseSaveForBuild}
+  DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
+  {$ENDIF}
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory;
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    {$IFDEF VerboseSaveForBuild}
+    DebugLn('TMainIDE.DoSaveForBuild project saving failed');
+    {$ENDIF}
+    exit;
+  end;
 
   Result:=PkgBoss.DoSaveAllPackages([]);
 end;
