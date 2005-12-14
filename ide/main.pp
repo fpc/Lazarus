@@ -1784,6 +1784,8 @@ begin
 
   // file descriptors
   LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
+  LazProjectFileDescriptors.DefaultPascalFileExt:=
+                        PascalExtension[EnvironmentOptions.PascalFileExtension];
   RegisterProjectFileDescriptor(TFileDescPascalUnit.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithForm.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithDataModule.Create);
@@ -6307,13 +6309,12 @@ begin
   SkipSavingMainSource:=false;
 
 
-  { $IFDEF IDE_DEBUG}
+  {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoSaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
-  { $ENDIF}
+  {$ENDIF}
   
   if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
-  DebugLn('TMainIDE.DoSaveProject AA1');
-  
+
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
   for i:=0 to Project1.UnitCount-1 do begin
@@ -6330,7 +6331,6 @@ begin
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
-  DebugLn('TMainIDE.DoSaveProject AA2');
 
   if SourceNotebook.Notebook=nil then
     Project1.ActiveEditorIndexAtStart:=-1
@@ -6348,12 +6348,10 @@ begin
 
   if Project1.IsVirtual then Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
-    DebugLn('TMainIDE.DoSaveProject AA3');
     // let user choose a filename
     Result:=DoShowSaveProjectAsDialog;
     if Result<>mrOk then exit;
   end;
-  DebugLn('TMainIDE.DoSaveProject AA4');
 
   // update HasResources information
   DoUpdateProjectResourceInfo;

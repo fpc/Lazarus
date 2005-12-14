@@ -1043,6 +1043,7 @@ begin
     raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor already registered');
   // make name unique
   FileDescriptor.Name:=GetUniqueName(FileDescriptor.Name);
+  // override pascal extension with users choice
   DefPasExt:=DefaultPascalFileExt;
   if DefPasExt<>'' then
     FileDescriptor.UpdateDefaultPascalFileExtension(DefPasExt);
