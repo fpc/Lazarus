@@ -2753,7 +2753,7 @@ var
     if SizeChange then begin
       {$IFDEF VerboseStretchCopyArea}
       Depth:=gdk_visual_get_system^.Depth;
-      DebugLn('ScaleAndROP Scaling buffer: ',Width,' x ',Height,' x ',Depth,' CopyingWholeSrc=',CopyingWholeSrc);
+      DebugLn('ScaleAndROP Scaling buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth),' CopyingWholeSrc='+dbgs(CopyingWholeSrc));
       {$ENDIF}
       // Scale the src part to a temporary pixmap with the size of the
       // destination rectangle
@@ -2785,7 +2785,7 @@ var
 
       Depth:=gdk_visual_get_system^.Depth;
       {$IFDEF VerboseStretchCopyArea}
-      DebugLn('ScaleAndROP Creating rop buffer: ',Width,' x ',Height,' x ',Depth);
+      DebugLn('ScaleAndROP Creating rop buffer: '+dbgs(Width),' x '+dbgs(Height),' x '+dbgs(Depth));
       {$ENDIF}
       TempPixmap := gdk_pixmap_new(nil,SrcWidth,SrcHeight,Depth);
       gdk_window_copy_area(TempPixmap, fGC, 0, 0,
@@ -2806,7 +2806,7 @@ var
     if TempPixmap=nil then exit;
     if (ROp=WHITENESS) or (ROp=BLACKNESS) or (ROp=DSTINVERT) then begin
       {$IFDEF VerboseStretchCopyArea}
-      DebugLn('ROPFillBuffer ROp=',ROp);
+      DebugLn('ROPFillBuffer ROp='+dbgs(ROp));
       {$ENDIF}
       with TDeviceContext(DC) do
       begin
@@ -2905,9 +2905,9 @@ var
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable ',
       ' SrcPixmap=',DbgS(SrcPixmap),
-      ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+      ' XSrc='+dbgs(XSrc),' YSrc='+dbgs(YSrc),' SrcWidth='+dbgs(SrcWidth),' SrcHeight='+dbgs(SrcHeight),
       ' MaskPixmap=',DbgS(MaskPixmap),
-      ' XMask=',XMask,' YMask=',YMask,
+      ' XMask='+dbgs(XMask),' YMask='+dbgs(YMask),
       '');
     {$ENDIF}
 
@@ -3057,7 +3057,7 @@ var
 begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   {$IFDEF VerboseStretchCopyArea}
-  DebugLn('StretchCopyArea Start ',Result);
+  DebugLn('StretchCopyArea Start '+dbgs(Result));
   {$ENDIF}
   if not Result then exit;
   if (Width=0) or (Height=0) then exit;
@@ -3083,16 +3083,16 @@ begin
   end;
 
   {$IFDEF VerboseStretchCopyArea}
-  DebugLn('TGtkWidgetSet.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
-    ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+  DebugLn('TGtkWidgetSet.StretchCopyArea BEFORE CLIPPING X='+dbgs(X),' Y='+dbgs(Y),' Width='+dbgs(Width),' Height='+dbgs(Height),
+    ' XSrc='+dbgs(XSrc)+' YSrc='+dbgs(YSrc)+' SrcWidth='+dbgs(SrcWidth)+' SrcHeight='+dbgs(SrcHeight),
     ' SrcDrawable=',DbgS(TDeviceContext(SrcDC).Drawable),
-    ' SrcOrigin=',SrcDCOrigin.X,',',SrcDCOrigin.Y,
-    ' DestDrawable=',DbgS(TDeviceContext(DestDC).Drawable),
-    ' DestOrigin=',DestDCOrigin.X,',',DestDCOrigin.Y,
-    ' Mask=',DbgS(Mask),' XMask=',XMask,' YMask=',YMask,
-    ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
-    ' DestWhole=',DestWholeWidth,',',DestWholeHeight,
-    ' SrcWhole=',SrcWholeWidth,',',SrcWholeHeight,
+    ' SrcOrigin='+dbgs(SrcDCOrigin),
+    ' DestDrawable='+DbgS(TDeviceContext(DestDC).Drawable),
+    ' DestOrigin='+dbgs(DestDCOrigin),
+    ' Mask='+DbgS(Mask)+' XMask='+dbgs(XMask)+' YMask='+dbgs(YMask),
+    ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial),
+    ' DestWhole='+dbgs(DestWholeWidth)+','+dbgs(DestWholeHeight),
+    ' SrcWhole='+dbgs(SrcWholeWidth)+','+dbgs(SrcWholeHeight),
     '');
   {$ENDIF}
 
@@ -3111,7 +3111,7 @@ begin
     NewSrcWidth:=SrcWidth+XSrc;
     NewWidth:=((Width*NewSrcWidth) div SrcWidth);
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('StretchCopyArea Cliping Src to left NewSrcWidth=',NewSrcWidth,' NewWidth=',NewWidth);
+    DebugLn('StretchCopyArea Cliping Src to left NewSrcWidth='+dbgs(NewSrcWidth),' NewWidth='+dbgs(NewWidth));
     {$ENDIF}
     if NewWidth=0 then exit;
     inc(X,Width-NewWidth);
@@ -3125,7 +3125,7 @@ begin
     NewSrcHeight:=SrcHeight+YSrc;
     NewHeight:=((Height*NewSrcHeight) div SrcHeight);
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('StretchCopyArea Cliping Src to top NewSrcHeight=',NewSrcHeight,' NewHeight=',NewHeight);
+    DebugLn('StretchCopyArea Cliping Src to top NewSrcHeight='+dbgs(NewSrcHeight),' NewHeight='+dbgs(NewHeight));
     {$ENDIF}
     if NewHeight=0 then exit;
     inc(Y,Height-NewHeight);
@@ -3139,7 +3139,7 @@ begin
     NewSrcWidth:=SrcWholeWidth-XSrc;
     Width:=((Width*NewSrcWidth) div SrcWidth);
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('StretchCopyArea Cliping Src to right NewSrcWidth=',NewSrcWidth,' NewWidth=',Width);
+    DebugLn('StretchCopyArea Cliping Src to right NewSrcWidth='+dbgs(NewSrcWidth),' NewWidth='+dbgs(Width));
     {$ENDIF}
     if (Width=0) then exit;
     if (X+Width<=0) then exit;
@@ -3151,7 +3151,7 @@ begin
     NewSrcHeight:=SrcWholeHeight-YSrc;
     Height:=((Height*NewSrcHeight) div SrcHeight);
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('StretchCopyArea Cliping Src to bottom NewSrcHeight=',NewSrcHeight,' NewHeight=',Height);
+    DebugLn('StretchCopyArea Cliping Src to bottom NewSrcHeight='+dbgs(NewSrcHeight),' NewHeight='+dbgs(Height));
     {$ENDIF}
     if (Height=0) then exit;
     if (Y+Height<=0) then exit;
@@ -3172,13 +3172,13 @@ begin
   TempMaskPixmap:=nil;
 
   {$IFDEF VerboseStretchCopyArea}
-  write('TGtkWidgetSet.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
-    ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-    ' SrcDrawable=',DbgS(TDeviceContext(SrcDC).Drawable),
-    ' DestDrawable=',DbgS(TDeviceContext(DestDC).Drawable),
-    ' Mask=',DbgS(Mask),' XMask=',XMask,' YMask=',YMask,
-    ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
-    ' CopyingWholeSrc=',CopyingWholeSrc);
+  write('TGtkWidgetSet.StretchCopyArea AFTER CLIPPING X='+dbgs(X)+' Y='+dbgs(Y)+' Width='+dbgs(Width)+' Height='+dbgs(Height),
+    ' XSrc='+dbgs(XSrc),' YSrc='+dbgs(YSrc)+' SrcWidth='+dbgs(SrcWidth)+' SrcHeight='+dbgs(SrcHeight),
+    ' SrcDrawable='+DbgS(TDeviceContext(SrcDC).Drawable),
+    ' DestDrawable='+DbgS(TDeviceContext(DestDC).Drawable),
+    ' Mask='+DbgS(Mask)+' XMask='+dbgs(XMask)+' YMask='+dbgs(YMask),
+    ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial),
+    ' CopyingWholeSrc='+dbgs(CopyingWholeSrc));
   write(' ROp=');
   case ROp of
   SRCCOPY     : DebugLn('SRCCOPY');

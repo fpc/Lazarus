@@ -1149,9 +1149,9 @@ begin
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('MergeClipping START DestinationDC=',DbgS(DestinationDC),
     ' DestinationGC=',DbgS(DestinationGC),
-    ' X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    ' X='+dbgs(X),' Y='+dbgs(Y),' Width='+dbgs(Width),' Height='+dbgs(Height),
     ' ClipMergeMask=',DbgS(ClipMergeMask),
-    ' ClipMergeMaskX=',ClipMergeMaskX,' ClipMergeMaskY=',ClipMergeMaskY);
+    ' ClipMergeMaskX=',dbgs(ClipMergeMaskX),' ClipMergeMaskY=',dbgs(ClipMergeMaskY));
   {$ENDIF}
 
   // activate clipping region of destination
@@ -1246,9 +1246,9 @@ begin
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('ScalePixmap ScaleGC=',DbgS(ScaleGC),
     ' SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
-    ' SrcX=',SrcX,' SrcY=',SrcY,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    ' SrcX='+dbgs(SrcX),' SrcY='+dbgs(SrcY),' SrcWidth='+dbgs(SrcWidth),' SrcHeight='+dbgs(SrcHeight),
     ' NewPixmap=[',GetWindowDebugReport(NewPixmap),']',
-    ' NewWidth=',NewWidth,' NewHeight=',NewHeight);
+    ' NewWidth='+dbgs(NewWidth),' NewHeight='+dbgs(NewHeight));
   {$ENDIF}
   Result := False;
   if SrcPixmap=nil then begin
@@ -1289,7 +1289,7 @@ begin
 
   // Creating PixBuf from pixmap
   {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap Creating PixBuf from pixmap SrcWhole=',SrcWholeWidth,',',SrcWholeHeight);
+  DebugLn('ScalePixmap Creating PixBuf from pixmap SrcWhole='+dbgs(SrcWholeWidth),','+dbgs(SrcWholeHeight));
   {$ENDIF}
   ScaleSRC := gdk_pixbuf_get_from_drawable(nil,SrcPixmap,
     SrcColorMap,0,0,SrcX,SrcY,SrcWidth,SrcHeight);
@@ -1301,10 +1301,10 @@ begin
   // Scaling PixBuf
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('ScalePixmap Scaling PixBuf ',
-    ' Width=',gdk_pixbuf_get_width(ScaleSrc),
-    ' Height=',gdk_pixbuf_get_height(ScaleSrc),
-    ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleSrc),
-    ' RowStride=',gdk_pixbuf_get_rowstride(ScaleSrc),
+    ' Width='+dbgs(gdk_pixbuf_get_width(ScaleSrc)),
+    ' Height='+dbgs(gdk_pixbuf_get_height(ScaleSrc)),
+    ' HasAlpha='+dbgs(gdk_pixbuf_get_has_alpha(ScaleSrc)),
+    ' RowStride='+dbgs(gdk_pixbuf_get_rowstride(ScaleSrc)),
     '');
   {$ENDIF}
   ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,NewWidth,NewHeight,ScaleMethod);
@@ -1318,10 +1318,10 @@ begin
   // Creating pixmap from scaled pixbuf
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('ScalePixmap Creating pixmap from scaled pixbuf',
-    ' Width=',gdk_pixbuf_get_width(ScaleDest),
-    ' Height=',gdk_pixbuf_get_height(ScaleDest),
-    ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleDest),
-    ' RowStride=',gdk_pixbuf_get_rowstride(ScaleDest),
+    ' Width='+dbgs(gdk_pixbuf_get_width(ScaleDest)),
+    ' Height='+dbgs(gdk_pixbuf_get_height(ScaleDest)),
+    ' HasAlpha='+dbgs(gdk_pixbuf_get_has_alpha(ScaleDest)),
+    ' RowStride='+dbgs(gdk_pixbuf_get_rowstride(ScaleDest)),
     '');
   {$ENDIF}
   DummyMask:=nil;
@@ -1338,7 +1338,7 @@ begin
   gdk_window_get_size(PGDKWindow(NewPixmap),@NewWholeWidth,@NewWholeHeight);
   DebugLn('ScalePixmap RESULT NewPixmap=',DbgS(NewPixmap),
     ' DummyMask=',DbgS(DummyMask),
-    ' NewWidth=',NewWholeWidth,' NewHeight=',NewWholeHeight,
+    ' NewWidth='+dbgs(NewWholeWidth),' NewHeight='+dbgs(NewWholeHeight),
     '');
   {$ENDIF}
   if DummyMask<>nil then gdk_pixmap_unref(DummyMask);
