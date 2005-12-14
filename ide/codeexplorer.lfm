@@ -1,4 +1,5 @@
 object CodeExplorerView: TCodeExplorerView
+  ActiveControl = RefreshButton
   Caption = 'CodeExplorerView'
   ClientHeight = 505
   ClientWidth = 206
@@ -15,7 +16,7 @@ object CodeExplorerView: TCodeExplorerView
   Top = 175
   Width = 206
   object RefreshButton: TButton
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Refresh'
     OnClick = RefreshButtonCLICK
     TabOrder = 0
@@ -23,7 +24,7 @@ object CodeExplorerView: TCodeExplorerView
     Width = 96
   end
   object OptionsButton: TButton
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Options'
     OnClick = OptionsButtonClick
     TabOrder = 1
@@ -33,7 +34,8 @@ object CodeExplorerView: TCodeExplorerView
   end
   object CodeTreeview: TTreeView
     Align = alBottom
-    BorderSpacing.OnChange = nil
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 1
     DefaultItemHeight = 16
     HideSelection = False
     Images = Imagelist1
@@ -45,7 +47,22 @@ object CodeExplorerView: TCodeExplorerView
     OnDeletion = CodeTreeviewDELETION
     OnKeyUp = CodeTreeviewKeyUp
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    Height = 480
+    AnchorSideTop.Control = FilterEdit
+    Height = 456
+    Top = 49
+    Width = 206
+  end
+  object FilterEdit: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = FilterEditChange
+    TabOrder = 3
+    Text = 'FilterEdit'
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrTop
+    AnchorSideTop.Control = RefreshButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 23
     Top = 25
     Width = 206
   end

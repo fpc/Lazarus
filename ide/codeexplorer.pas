@@ -37,11 +37,12 @@ uses
   Dialogs, Buttons, ComCtrls, Menus,
   // CodeTools
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
+  KeywordFuncLists,
   // IDE Intf
   IDECommands, MenuIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
-  CodeExplOpts;
+  CodeExplOpts, StdCtrls;
 
 type
   TCodeExplorerView = class;
@@ -60,6 +61,7 @@ type
   { TCodeExplorerView }
 
   TCodeExplorerView = class(TForm)
+    FilterEdit: TEdit;
     Imagelist1: TImageList;
     TreePopupmenu: TPopupMenu;
     RefreshButton: TButton;
@@ -74,6 +76,7 @@ type
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
                                 Shift: TShiftState);
+    procedure FilterEditChange(Sender: TObject);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
@@ -100,11 +103,14 @@ type
     ImgIDClass: Integer;
     ImgIDProc: Integer;
     ImgIDProperty: Integer;
+    FLastFilter: string;
+    function GetFilter: string;
     function GetNodeDescription(ACodeTool: TCodeTool;
                                 CodeNode: TCodeTreeNode): string;
     function GetNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
            ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
+    procedure SetFilter(const AValue: string);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -113,11 +119,15 @@ type
     procedure Refresh;
     procedure JumpToSelection;
     procedure CurrentCodeBufferChanged;
+    procedure FilterChanged;
+    function FilterNode(ANode: TTreeNode; const TheFilter: string): boolean;
+    function FilterFits(const NodeText, TheFilter: string): boolean; virtual;
   public
     property OnGetCodeTree: TOnGetCodeTree read FOnGetCodeTree
                                            write FOnGetCodeTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
     property MainFilename: string read FMainFilename;
+    property Filter: string read GetFilter write SetFilter;
   end;
 
 const
@@ -210,6 +220,7 @@ begin
   
   RefreshButton.Caption:=dlgUnitDepRefresh;
   OptionsButton.Caption:=dlgFROpts;
+  FilterEdit.Text:=lisCEFilter;
   
   ImgIDDefault:=0;
   AddResImg(Imagelist1,'ce_default');
@@ -259,16 +270,11 @@ begin
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);
-var
-  y: Integer;
 begin
   RefreshButton.Width:=ClientWidth div 2;
   with OptionsButton do
     SetBounds(RefreshButton.Width,Top,
               Parent.ClientWidth-RefreshButton.Width,Height);
-  y:=RefreshButton.Top+RefreshButton.Height;
-  with CodeTreeview do
-    SetBounds(0,y,Parent.ClientWidth,Parent.ClientHeight-y);
 end;
 
 procedure TCodeExplorerView.CodeTreeviewDBLCLICK(Sender: TObject);
@@ -288,6 +294,12 @@ procedure TCodeExplorerView.CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
 begin
   if (Key=VK_RETURN) and (Shift=[]) then
     JumpToSelection;
+end;
+
+procedure TCodeExplorerView.FilterEditChange(Sender: TObject);
+begin
+  if Sender=nil then ;
+  FilterChanged;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
@@ -346,6 +358,12 @@ begin
   else
     Result:=CodeNode.DescAsString;
   end;
+end;
+
+function TCodeExplorerView.GetFilter: string;
+begin
+  Result:=FilterEdit.Text;
+  if Result=lisCEFilter then Result:='';
 end;
 
 function TCodeExplorerView.GetNodeImage(CodeNode: TCodeTreeNode): integer;
@@ -454,6 +472,13 @@ begin
   end;
 end;
 
+procedure TCodeExplorerView.SetFilter(const AValue: string);
+begin
+  if Filter=AValue then exit;
+  FilterEdit.Text:=AValue;
+  FilterChanged;
+end;
+
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
@@ -545,6 +570,78 @@ procedure TCodeExplorerView.CurrentCodeBufferChanged;
 begin
   if CodeExplorerOptions.Refresh=cerSwitchEditorPage then
     Refresh;
+end;
+
+procedure TCodeExplorerView.FilterChanged;
+var
+  TheFilter: String;
+  ANode: TTreeNode;
+begin
+  if FUpdateCount>0 then begin
+    Include(FFlags,cevRefreshNeeded);
+    exit;
+  end;
+  TheFilter:=FilterEdit.Text;
+  if FLastFilter=TheFilter then exit;
+  FLastFilter:=TheFilter;
+  CodeTreeview.BeginUpdate;
+  CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
+  ANode:=CodeTreeview.Items.GetFirstNode;
+  while ANode<>nil do begin
+    FilterNode(ANode,TheFilter);
+    ANode:=ANode.GetNextSibling;
+  end;
+  CodeTreeview.EndUpdate;
+end;
+
+function TCodeExplorerView.FilterNode(ANode: TTreeNode; const TheFilter: string
+  ): boolean;
+var
+  ChildNode: TTreeNode;
+  HasVisibleChilds: Boolean;
+begin
+  if ANode=nil then exit;
+  ChildNode:=ANode.GetFirstChild;
+  HasVisibleChilds:=false;
+  while ChildNode<>nil do begin
+    if FilterNode(ChildNode,TheFilter) then
+      HasVisibleChilds:=true;
+    ChildNode:=ChildNode.GetNextSibling;
+  end;
+  ANode.Expanded:=HasVisibleChilds;
+  ANode.Selected:=FilterFits(ANode.Text,TheFilter);
+  Result:=ANode.Expanded or ANode.Selected;
+end;
+
+function TCodeExplorerView.FilterFits(const NodeText, TheFilter: string
+  ): boolean;
+var
+  Src: PChar;
+  PFilter: PChar;
+  c: Char;
+  i: Integer;
+begin
+  if TheFilter='' then begin
+    Result:=true;
+  end else begin
+    Src:=PChar(NodeText);
+    PFilter:=PChar(TheFilter);
+    repeat
+      c:=Src^;
+      if c<>#0 then begin
+        if UpChars[Src^]=UpChars[PFilter^] then begin
+          i:=1;
+          while (UpChars[Src[i]]=UpChars[PFilter[i]]) and (PFilter[i]<>#0) do
+            inc(i);
+          if PFilter[i]=#0 then begin
+            exit(true);
+          end;
+        end;
+      end else
+        exit(false);
+      inc(Src);
+    until false;
+  end;
 end;
 
 initialization

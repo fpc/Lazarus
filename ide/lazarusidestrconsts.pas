@@ -1130,6 +1130,7 @@ resourcestring
   dlgTextToFing = '&Text to Find';
   dlgReplaceWith = '&Replace With';
   dlgFROpts = 'Options';
+  lisCEFilter = '(Filter)';
   dlgCaseSensitive = 'Case Sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
     +'letters e.g. A and a';

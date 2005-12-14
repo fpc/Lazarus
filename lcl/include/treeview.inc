@@ -447,21 +447,8 @@ begin
 end;
 
 function TTreeNode.CompareCount(CompareMe: Integer): Boolean;
-{var
-  ACount: integer;
-  Node: TTreeNode;}
 Begin
   Result:=(CompareMe=Count);
-  {
-  ACount := 0;
-  Result := False;
-  Node := GetFirstChild;
-  while Node <> nil do begin
-    Inc(ACount);
-    Node := Node.GetNextChild(Node);
-    if ACount > CompareMe then Exit;
-  end;
-  if ACount = CompareMe then Result := True;}
 end;
 
 function TTreeNode.DoCanExpand(ExpandIt: Boolean): Boolean;
