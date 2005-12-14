@@ -287,7 +287,7 @@ begin
   else
     if TLMessage(Message).Msg >= WM_USER then
     with TLMessage(Message) do
-      CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
 {$endif}
   end;
 end;
