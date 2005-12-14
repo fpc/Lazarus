@@ -792,6 +792,7 @@ begin
     Dispose(lItem);
     lItem := lNextItem;
   end;
+  FAsyncCallQueue := nil;
 end;
 
 procedure TApplication.DoBeforeFinalization;
