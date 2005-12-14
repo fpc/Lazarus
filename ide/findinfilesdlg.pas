@@ -202,7 +202,8 @@ begin
     
     SelectDirectoryDialog := TSelectDirectoryDialog.Create(Self);
     with SelectDirectoryDialog do
-      Options:= Options + [ofPathMustExist];
+      // the whole selected directory must exist (ofPathMustExist is not enough)
+      Options:= Options + [ofFileMustExist];
 
     FileMaskLabel:=TLabel.Create(Self);
     with FileMaskLabel do begin
