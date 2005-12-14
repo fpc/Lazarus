@@ -436,6 +436,11 @@ begin
       ShowNode:=false;
       ShowChilds:=false;
     end;
+    // don't show class node (the type node is already shown)
+    if (CodeNode.Desc in [ctnClass,ctnClassInterface]) then begin
+      ShowNode:=false;
+      ShowChilds:=true;
+    end;
 
     // don't show keyword nodes
     if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
@@ -512,6 +517,8 @@ begin
   Exclude(FFlags,cevRefreshNeeded);
   
   Include(FFlags,cevRefresing);
+  
+  FilterEdit.Text:=lisCEFilter;
 
   // get the codetool with the updated codetree
   ACodeTool:=nil;
