@@ -1355,11 +1355,18 @@ end;
 function UnionRect(var DestRect: TRect;
   const SrcRect1, SrcRect2: TRect): Boolean;
 begin
-  Result := True;
-  DestRect.Left := Min(SrcRect1.Left, SrcRect2.Left);
-  DestRect.Top := Min(SrcRect1.Top, SrcRect2.Top);
-  DestRect.Right := Max(SrcRect1.Right, SrcRect2.Right);
-  DestRect.Bottom := Max(SrcRect1.Bottom, SrcRect2.Bottom);
+  if IsRectEmpty(SrcRect1) then
+    DestRect := SrcRect2
+  else
+  if IsRectEmpty(SrcRect2) then
+    DestRect := SrcRect1
+  else begin
+    DestRect.Left := Min(SrcRect1.Left, SrcRect2.Left);
+    DestRect.Top := Min(SrcRect1.Top, SrcRect2.Top);
+    DestRect.Right := Max(SrcRect1.Right, SrcRect2.Right);
+    DestRect.Bottom := Max(SrcRect1.Bottom, SrcRect2.Bottom);
+  end;
+  Result := not IsRectEmpty(DestRect);
 end;
 
 //##apiwiz##epi##   // Do not remove
