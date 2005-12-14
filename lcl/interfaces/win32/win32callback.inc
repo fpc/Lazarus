@@ -727,6 +727,32 @@ Var
     Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
     WindowInfo^.spinValue := newValue;
   end;
+  
+  procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
+    procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
+    var
+      IntfWidth, IntfHeight: integer;
+    begin
+      // 0 means no constraint
+      if (AWidth=0) and (AHeight=0) then exit;
+      
+      IntfWidth := AWidth;
+      IntfHeight := AHeight;
+      LCLFormSizeToWin32Size(TCustomForm(lWinControl), IntfWidth, IntfHeight);
+
+      if AWidth>0 then
+        pt.X:= IntfWidth;
+      if AHeight>0 then
+        pt.Y := IntfHeight;
+    end;
+  begin
+    if (lWinControl=nil) or not (lWinControl is TCustomForm) then exit;
+    with lWinControl.Constraints do begin
+      SetWin32SizePoint(MinWidth, MinHeight, MinMaxInfo.ptMinTrackSize);
+      SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxSize);
+      SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
+    end;
+  end;
     
 Begin
   Assert(False, 'Trace:WindowProc - Start');
@@ -1142,6 +1168,10 @@ Begin
       end;
     end;
 }
+    WM_GETMINMAXINFO:
+    begin
+      SetMinMaxInfo(PMINMAXINFO(LParam)^);
+    end;
     WM_KEYDOWN:
     Begin
       NotifyUserInput := True;

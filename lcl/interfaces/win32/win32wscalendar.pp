@@ -85,11 +85,6 @@ begin
   SetBounds(AWinControl, Params.Left, Params.Top, 0, 0);
 end;
 
-const
-  // TODO: needs to move
-  MCM_FIRST             = $1000;
-  MCM_GETMINREQRECT     = MCM_FIRST + 9;
-      
 procedure TWin32WSCustomCalendar.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var

@@ -172,14 +172,6 @@ end;
 
 { TWin32WSCustomForm }
 
-function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
-begin
-  if csDesigning in AForm.ComponentState then
-    Result := bsSizeable
-  else
-    Result := AForm.BorderStyle;
-end;
-
 function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;

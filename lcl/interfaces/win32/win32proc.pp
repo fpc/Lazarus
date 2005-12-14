@@ -27,7 +27,7 @@ unit win32proc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls;
+  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -82,12 +82,15 @@ function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 Procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
+Procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+
 function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
@@ -115,7 +118,7 @@ var
 implementation
 
 uses
-  SysUtils, LCLStrConsts, Menus, Dialogs, StdCtrls, ExtCtrls, Forms,
+  SysUtils, LCLStrConsts, Menus, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}
@@ -858,6 +861,26 @@ Begin
   inc(Top, ORect.Top);
 End;
 
+procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
+{$NOTE Should be moved to WSWin32Forms, if the windowproc is splitted}
+var
+  SizeRect: Windows.RECT;
+  BorderStyle: TFormBorderStyle;
+begin
+  with SizeRect do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := AWidth;
+    Bottom := AHeight;
+  end;
+  BorderStyle := GetDesigningBorderStyle(Form);
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  AWidth := SizeRect.Right - SizeRect.Left;
+  AHeight := SizeRect.Bottom - SizeRect.Top;
+end;
+
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 var
   ORect: TRect;
@@ -920,6 +943,15 @@ begin
   bsToolWindow, bsSizeToolWin:
     Result := WS_EX_TOOLWINDOW;
   end;
+end;
+
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+{$NOTE Belongs in Win32WSForms, but is needed in windowproc}
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
 end;
 
 function GetFileVersion(FileName: string): dword;

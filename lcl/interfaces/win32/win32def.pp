@@ -37,6 +37,7 @@ Const
   MCM_FIRST = $1000;
   MCM_GETCURSEL = MCM_FIRST + 1;
   MCM_SETCURSEL =  MCM_FIRST + 2;
+  MCM_GETMINREQRECT = MCM_FIRST + 9;
 
 Type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
