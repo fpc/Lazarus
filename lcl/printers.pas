@@ -762,16 +762,17 @@ begin
         if Margins=1 then
         begin
           Result.WorkRect.Right:=TmpPaperRect.WorkRect.Bottom;
-          Result.WorkRect.Left:=TmpPaperRect.WorkRect.Top;
-          Result.WorkRect.Bottom:=TmpPaperRect.WorkRect.Left;
-          Result.WorkRect.Top:=TmpPaperRect.WorkRect.Right;
+          Result.WorkRect.Left:=TmpPaperRect.WorkRect.Left;
+          Result.WorkRect.Bottom:=TmpPaperRect.WorkRect.Right;
+          Result.WorkRect.Top:=TmpPaperRect.WorkRect.Top;
         end
         else
         begin
-          Result.WorkRect.Left:=Result.PhysicalRect.Left+TmpPaperRect.WorkRect.Top;
+          // workrect is margins
+          Result.WorkRect.Left:=Result.PhysicalRect.Left+TmpPaperRect.WorkRect.left;
           Result.WorkRect.Right:=Result.PhysicalRect.Right-TmpPaperRect.WorkRect.Bottom;
-          Result.WorkRect.Top:=Result.PhysicalRect.Top+TmpPaperRect.WorkRect.Right;
-          Result.WorkRect.Bottom:=Result.PhysicalRect.Bottom-TmpPaperRect.WorkRect.Left;
+          Result.WorkRect.Top:=Result.PhysicalRect.Top+TmpPaperRect.WorkRect.top;
+          Result.WorkRect.Bottom:=Result.PhysicalRect.Bottom-TmpPaperRect.WorkRect.right;
         end;
       end;
     end
