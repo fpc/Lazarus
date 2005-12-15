@@ -4826,7 +4826,7 @@ begin
     AdjustSize;
     if FControls<>nil then
       for i:=0 to FControls.Count-1 do
-        TControl(FControls[i]).DoAutoSize;
+        TControl(FControls[i]).AdjustSize;
     // realign childs
     ReAlign;
   finally
