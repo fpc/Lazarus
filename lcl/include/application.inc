@@ -782,17 +782,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.ProcessAsyncCallQueue;
 var
-  lItem, lNextItem: PAsyncCallQueueItem;
+  lItem: PAsyncCallQueueItem;
 begin
-  lItem := FAsyncCallQueue;
-  while lItem <> nil do
+  // take care: we may be called from within lItem^.Method
+  while FAsyncCallQueue <> nil do
   begin
+    lItem := FAsyncCallQueue;
+    FAsyncCallQueue := lItem^.NextItem;
     lItem^.Method(lItem^.Data);
-    lNextItem := lItem^.NextItem;
     Dispose(lItem);
-    lItem := lNextItem;
   end;
-  FAsyncCallQueue := nil;
 end;
 
 procedure TApplication.DoBeforeFinalization;
