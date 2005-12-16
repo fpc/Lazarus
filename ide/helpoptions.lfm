@@ -50,7 +50,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         Caption = 'ViewersLabel'
         Color = clNone
         ParentColor = False
-        Left = 8
+        Left = 6
         Height = 14
         Top = 10
         Width = 63
@@ -69,12 +69,12 @@ object HelpOptionsDialog: THelpOptionsDialog
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'ViewerPropsGroupBox'
         ClientHeight = 198
-        ClientWidth = 312
+        ClientWidth = 315
         TabOrder = 1
         Left = 166
         Height = 216
         Top = 10
-        Width = 316
+        Width = 319
       end
     end
     object DataBasePage: TPage
