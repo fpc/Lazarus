@@ -1075,7 +1075,7 @@ begin
   // check for change and save
   if not OldCompOpts.IsEqual(Options) then begin
     Options.Modified:=true;
-    IncreaseCompilerGraphStamp;
+    IncreaseCompilerParseStamp;
   end;
   OldCompOpts.Free;
 end;
@@ -1151,16 +1151,20 @@ begin
       with AncestorOptions.ParsedOpts do begin
         AddChildNode(lisunitPath,
           CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
-          CompilerOpts.BaseDirectory),icoUnitPath);
+                                   CompilerOpts.BaseDirectory),
+          icoUnitPath);
         AddChildNode(lisincludePath,
           CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
-          CompilerOpts.BaseDirectory),icoIncludePath);
+                                   CompilerOpts.BaseDirectory),
+          icoIncludePath);
         AddChildNode(lisobjectPath,
           CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
-          CompilerOpts.BaseDirectory),icoObjectPath);
+                                   CompilerOpts.BaseDirectory),
+          icoObjectPath);
         AddChildNode(lislibraryPath,
           CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
-          CompilerOpts.BaseDirectory),icoLibraryPath);
+                                   CompilerOpts.BaseDirectory),
+          icoLibraryPath);
         AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions),
           icoLinkerOptions);
         AddChildNode(liscustomOptions, GetParsedValue(pcosCustomOptions),

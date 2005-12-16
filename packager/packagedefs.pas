@@ -1137,6 +1137,8 @@ begin
 end;
 
 function GetUsageOptionsList(PackageList: TList): TList;
+// returns a list of TPkgAdditionalCompilerOptions
+// from the list of TLazPackage
 var
   Cnt: Integer;
   i: Integer;
@@ -2151,7 +2153,6 @@ begin
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   Clear;
-  FCompilerOptions.ParsedOpts.InvalidateGraphOnChange:=true;
   FUsageOptions.ParsedOpts.InvalidateGraphOnChange:=true;
 end;
 

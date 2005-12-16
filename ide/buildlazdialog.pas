@@ -109,6 +109,7 @@ type
     FExtraOptions: string;
     FRestartAfterBuild: boolean;
     FConfirmBuild: boolean;
+    FTargetCPU: string;
     FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
@@ -119,6 +120,7 @@ type
     function GetItems(Index: integer): TBuildLazarusItem;
     procedure SetRestartAfterBuild(const AValue: boolean);
     procedure SetConfirmBuild(const AValue: boolean);
+    procedure SetTargetCPU(const AValue: string);
     procedure SetTargetDirectory(const AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetWithStaticPackages(const AValue: boolean);
@@ -149,6 +151,7 @@ type
     property CleanAll: boolean read FCleanAll write FCleanAll;
     property ExtraOptions: string read FExtraOptions write FExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
+    property TargetCPU: string read FTargetCPU write SetTargetCPU;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
     property StaticAutoInstallPackages: TStringList
                                                 read fStaticAutoInstallPackages;
@@ -325,6 +328,9 @@ begin
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
+      // append target CPU
+      if Options.TargetCPU<>'' then
+        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.TargetCPU;
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -359,6 +365,9 @@ begin
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
+      // append target CPU
+      if Options.TargetCPU<>'' then
+        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.TargetCPU;
       // don't run svn2revisioninc when building the IDE for the second time
       if not (blfWithoutLinkingIDE in Flags) then
         Tool.CmdLineParams:=Tool.CmdLineParams+' USESVN2REVISIONINC=0';
@@ -416,6 +425,7 @@ var
   NewTargetFilename: String;
   NewTargetDirectory: String;
   DefaultTargetOS: string;
+  DefaultTargetCPU: string;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -477,14 +487,17 @@ begin
       // => find it automatically
 
       DefaultTargetOS:={$I %FPCTARGETOS%};
-      if (Options.TargetOS<>'')
-      and (CompareText(Options.TargetOS,DefaultTargetOS)<>0) then
+      DefaultTargetCPU:={$I %FPCTARGETCPU%};
+      if ((Options.TargetOS<>'')
+          and (CompareText(Options.TargetOS,DefaultTargetOS)<>0))
+      or ((Options.TargetCPU<>'')
+          and (CompareText(Options.TargetCPU,DefaultTargetCPU)<>0)) then
       begin
         // Case 2. crosscompiling the IDE
-        // create directory <primary config dir>/bin/<TargetOS>
+        // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
         NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
-                            +PathDelim+Options.TargetOS;
-        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' DefaultOS=',DefaultTargetOS);
+                            +PathDelim+Options.TargetCPU+'-'+Options.TargetOS;
+        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' Options.TargetCPU=',Options.TargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
         Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
         if Result<>mrOk then exit;
       end else begin
@@ -1147,6 +1160,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformNames[fLCLPlatform],
                            GetDefaultLCLWidgetType);
@@ -1175,6 +1189,7 @@ begin
   CleanAll:=Source.CleanAll;
   ExtraOptions:=Source.ExtraOptions;
   TargetOS:=Source.TargetOS;
+  TargetCPU:=Source.TargetCPU;
   LCLPlatform:=Source.LCLPlatform;
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
@@ -1242,6 +1257,7 @@ begin
   FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
   FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
+  TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU/Value','');
   fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
                                  GetDefaultLCLWidgetType));
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
@@ -1291,6 +1307,13 @@ begin
   FConfirmBuild:=AValue;
 end;
 
+procedure TBuildLazarusOptions.SetTargetCPU(const AValue: string);
+begin
+  if FTargetCPU=AValue then exit;
+  FTargetCPU:=AValue;
+  FGlobals.TargetCPU:=TargetCPU;
+end;
+
 procedure TBuildLazarusOptions.SetWithStaticPackages(const AValue: boolean);
 begin
   if FWithStaticPackages=AValue then exit;
@@ -1324,6 +1347,7 @@ begin
   FExtraOptions:='';
   FTargetDirectory:=DefaultTargetDirectory;
   TargetOS:='';
+  TargetCPU:='';
   fLCLPlatform:=StrToLCLPlatform(GetDefaultLCLWidgetType);
 
   // auto install packages

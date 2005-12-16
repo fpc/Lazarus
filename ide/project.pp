@@ -3776,15 +3776,20 @@ var
   Changed: Boolean;
 begin
   Changed:=false;
-  Changed:=Changed or CodeToolBoss.SetGlobalValue(
-                           ExternalMacroStart+'LCLWidgetType',
-                           Owner.CompilerOptions.GetEffectiveLCLWidgetType);
+  if CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',
+                                Owner.CompilerOptions.GetEffectiveLCLWidgetType)
+  then begin
+    DebugLn('TProjectDefineTemplates.UpdateGlobalValues '
+    ,' LCLWidgetType="',CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'],'" Effective="',Owner.CompilerOptions.GetEffectiveLCLWidgetType,'" Options="',Owner.CompilerOptions.LCLWidgetType,'"');
+    Changed:=true;
+  end;
   if Owner.IsVirtual then
     NewProjectDir:=VirtualDirectory
   else
     NewProjectDir:=Owner.ProjectDirectory;
-  Changed:=Changed or CodeToolBoss.SetGlobalValue(
-                                   ExternalMacroStart+'ProjPath',NewProjectDir);
+  if CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',NewProjectDir)
+  then
+    Changed:=true;
   if Changed then
     IncreaseCompilerParseStamp;
 end;

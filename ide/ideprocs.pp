@@ -106,6 +106,7 @@ function FileIsTextCached(const AFilename: string): boolean;
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
 function PrepareCmdLineOption(const Option: string): string;
+function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
 
 // find file
 function FindFilesCaseInsensitive(const Directory,
@@ -1712,6 +1713,14 @@ begin
       exit;
     end;
   end;
+end;
+
+function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
+begin
+  Result:=CmdLine;
+  if (Result<>'') and (Result[length(Result)]<>' ') then
+    Result:=Result+' ';
+  Result:=Result+AddParameter;
 end;
 
 {-------------------------------------------------------------------------------

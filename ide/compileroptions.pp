@@ -2450,6 +2450,9 @@ var
 begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     s:=UnparsedValues[Option];
+    //if Option=pcosCustomOptions then begin
+    //  DebugLn('TParsedCompilerOptions.GetParsedValue START ',dbgs(ParsedStamp[Option]),' ',dbgs(CompilerParseStamp),' unparsed="',s,'" old="',ParsedValues[Option],'"');
+    //end;
     // parse locally
     if Assigned(OnLocalSubstitute) then s:=OnLocalSubstitute(s);
     // parse globally
@@ -2486,6 +2489,9 @@ begin
     end;
     ParsedValues[Option]:=s;
     ParsedStamp[Option]:=CompilerParseStamp;
+    //if Option=pcosCustomOptions then begin
+    //  DebugLn('TParsedCompilerOptions.GetParsedValue PARSED ',dbgs(ParsedStamp[Option]),' ',dbgs(CompilerParseStamp),' new="',ParsedValues[Option],'"');
+    //end;
   end;
   Result:=ParsedValues[Option];
 end;

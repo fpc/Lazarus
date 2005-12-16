@@ -572,9 +572,15 @@ type
     procedure OnCopyError(const ErrorData: TCopyErrorData;
         var Handled: boolean; Data: TObject);
 
+    // methods fro building
+    procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string);
   public
     CurDefinesCompilerFilename: String;
     CurDefinesCompilerOptions: String;
+    OverrideTargetOS: string;
+    OverrideTargetCPU: string;
+    OverrideLCLWidgetType: string;
+    
     class procedure ParseCmdLineOptions;
 
     constructor Create(TheOwner: TComponent); override;
@@ -792,6 +798,9 @@ type
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
     function GetProjPublishDir: string;
+    function GetLCLWidgetType(UseCache: boolean): string;
+    function GetTargetCPU(UseCache: boolean): string;
+    function GetTargetOS(UseCache: boolean): string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
                                   var Handled, Abort: boolean);
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
@@ -3010,6 +3019,7 @@ begin
     if frmCompilerOptions.ShowModal=mrOk then begin
       RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
+      IncreaseCompilerParseStamp;
     end;
   finally
     frmCompilerOptions.Free;
@@ -5068,6 +5078,46 @@ begin
         Format(lisUnableToCopyFileTo, ['"', ErrorData.Param1, '"', #13, '"',
           ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
+  end;
+end;
+
+procedure TMainIDE.SetBuildTarget(const TargetOS, TargetCPU,
+  LCLWidgetType: string);
+var
+  OldTargetOS: String;
+  OldTargetCPU: String;
+  OldLCLWidgetType: String;
+  NewTargetOS: String;
+  NewTargetCPU: String;
+  NewLCLWidgetType: String;
+  FPCTargetChanged: Boolean;
+  LCLTargetChanged: Boolean;
+begin
+  OldTargetOS:=GetTargetOS(true);
+  OldTargetCPU:=GetTargetCPU(true);
+  OldLCLWidgetType:=GetLCLWidgetType(true);
+  OverrideTargetOS:=TargetOS;
+  OverrideTargetCPU:=TargetCPU;
+  OverrideLCLWidgetType:=LCLWidgetType;
+  NewTargetOS:=GetTargetOS(false);
+  NewTargetCPU:=GetTargetCPU(false);
+  NewLCLWidgetType:=GetLCLWidgetType(false);
+
+  FPCTargetChanged:=(OldTargetOS<>NewTargetOS)
+                    or (OldTargetCPU<>NewTargetCPU);
+  LCLTargetChanged:=(OldLCLWidgetType<>NewLCLWidgetType);
+  
+  //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
+  //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
+  
+  if LCLTargetChanged then
+    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType']:=
+                                                               NewLCLWidgetType;
+  if FPCTargetChanged then
+    RescanCompilerDefines(true);
+
+  if FPCTargetChanged or LCLTargetChanged then begin
+    IncreaseCompilerParseStamp;
   end;
 end;
 
@@ -7470,8 +7520,11 @@ begin
   end;
 
   MessagesView.BeginBlock;
-
   try
+    SetBuildTarget(MiscellaneousOptions.BuildLazOpts.TargetOS,
+                   MiscellaneousOptions.BuildLazOpts.TargetCPU,
+                   LCLPlatformNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform]);
+  
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
@@ -7529,6 +7582,8 @@ begin
     if Result<>mrOk then exit;
     
   finally
+    SetBuildTarget('','','');
+
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
   end;
@@ -9004,23 +9059,11 @@ begin
   end else if MacroName='lazarusdir' then begin
     s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
-    if Project1<>nil then
-      s:=Project1.CompilerOptions.LCLWidgetType
-    else
-      s:='';
-    if (s='') or (s='default') then s:=GetDefaultLCLWidgetType;
+    s:=GetLCLWidgetType(true);
   end else if MacroName='targetcpu' then begin
-    if Project1<>nil then
-      s:=lowercase(Project1.CompilerOptions.TargetCPU)
-    else
-      s:='';
-    if (s='') or (s='default') then s:=GetDefaultTargetCPU;
+    s:=GetTargetCPU(true);
   end else if MacroName='targetos' then begin
-    if Project1<>nil then
-      s:=lowercase(Project1.CompilerOptions.TargetOS)
-    else
-      s:='';
-    if (s='') or (s='default') then s:=GetDefaultTargetOS;
+    s:=GetTargetOS(true);
   end else if MacroName='fpcsrcdir' then begin
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
@@ -9547,6 +9590,45 @@ begin
   end else begin
     Result:='';
   end;
+end;
+
+function TMainIDE.GetLCLWidgetType(UseCache: boolean): string;
+begin
+  if UseCache and (CodeToolBoss<>nil) then begin
+    Result:=CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
+  end else begin
+    if OverrideLCLWidgetType<>'' then
+      Result:=OverrideLCLWidgetType
+    else if Project1<>nil then
+      Result:=lowercase(Project1.CompilerOptions.LCLWidgetType)
+    else
+      Result:='';
+  end;
+  if (Result='') or (Result='default') then Result:=GetDefaultLCLWidgetType;
+end;
+
+function TMainIDE.GetTargetCPU(UseCache: boolean): string;
+begin
+  if UseCache then ;
+  if OverrideTargetCPU<>'' then
+    Result:=OverrideTargetCPU
+  else if Project1<>nil then
+    Result:=lowercase(Project1.CompilerOptions.TargetCPU)
+  else
+    Result:='';
+  if (Result='') or (Result='default') then Result:=GetDefaultTargetCPU;
+end;
+
+function TMainIDE.GetTargetOS(UseCache: boolean): string;
+begin
+  if UseCache then ;
+  if OverrideTargetOS<>'' then
+    Result:=OverrideTargetOS
+  else if Project1<>nil then
+    Result:=lowercase(Project1.CompilerOptions.TargetOS)
+  else
+    Result:='';
+  if (Result='') or (Result='default') then Result:=GetDefaultTargetOS;
 end;
 
 function TMainIDE.FindUnitFile(const AFilename: string): string;
@@ -10129,8 +10211,8 @@ begin
       EnvironmentOptions.LazarusDirectory;
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:=GetDefaultLCLWidgetType;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
+    Variables[ExternalMacroStart+'LCLWidgetType']:=GetDefaultLCLWidgetType;
   end;
 
   // build DefinePool and Define Tree
@@ -10219,11 +10301,16 @@ var
   TargetOS, TargetProcessor: string;
   UnitLinksValid: boolean;
   i: Integer;
+  CurTargetOS: String;
+  CurTargetCPU: String;
 begin
-  if Project1.CompilerOptions.TargetOS<>'' then
-    CurOptions:='-T'+Project1.CompilerOptions.TargetOS
-  else
-    CurOptions:='';
+  CurOptions:='';
+  CurTargetOS:=GetTargetOS(false);
+  if CurTargetOS<>'' then
+    CurOptions:=AddCmdLineParameter(CurOptions,'-T'+CurTargetOS);
+  CurTargetCPU:=GetTargetCPU(false);
+  if CurTargetCPU<>'' then
+    CurOptions:=AddCmdLineParameter(CurOptions,'-d'+CurTargetCPU);
   {$IFDEF VerboseFPCSrcScan}
   writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
