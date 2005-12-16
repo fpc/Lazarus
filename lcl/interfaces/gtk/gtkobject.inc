@@ -239,7 +239,9 @@ begin
 
 {$ifdef Unix}
   InitSynchronizeSupport;
+{$ifdef UseAsyncProcess}  
   InstallSignalHandler;
+{$endif}
 {$endif}
 
   GTKWidgetSet := Self;
