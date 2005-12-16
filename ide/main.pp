@@ -1268,8 +1268,11 @@ begin
 
   // check project
   if SomethingOfProjectIsModified then begin
-    MsgResult:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-      [Project1.Title]), mtConfirmation, [mbYes, mbNo, mbAbort], 0);
+    MsgResult:=QuestionDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+      [Project1.Title]), mtConfirmation,
+      [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mbAbort,
+       lisDoNotCloseTheIDE],
+      0);
     case MsgResult of
 
     mrYes:
@@ -1635,10 +1638,11 @@ procedure TMainIDE.SetupStartProject;
   
   function AskIfLoadLastFailingProject: boolean;
   begin
-    Result:=MessageDlg('An error occured at last startup while loading '
-      +EnvironmentOptions.LastSavedProjectFile+ '!'#13
-      +#13
-      +'Load this project again?', mtWarning, [mbYes,mbNo],0)=mrYes;
+    Result:=QuestionDlg(lisOpenProject2,
+      Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro, [
+        EnvironmentOptions.LastSavedProjectFile, #13, #13]), mtWarning,
+        [mrYes, lisOpenProjectAgain, mrNo, lisStartWithANewProject], 0)=
+          mrYes;
   end;
 
 var
@@ -2692,8 +2696,9 @@ begin
   itDebugger:
     begin
       if Interactive
-      and (MessageDlg(lisStopDebugging,
-          lisStopTheDebugging, mtConfirmation, [mbYes, mbCancel], 0)<>mrYes)
+      and (QuestionDlg(lisStopDebugging,
+          lisStopTheDebugging, mtConfirmation,
+          [mrYes, lisMenuStop, mrCancel, lisContinue], 0)<>mrYes)
       then exit;
       DebugBoss.DoStopProject;
     end;
@@ -3558,8 +3563,8 @@ begin
     if (ResourceCode=nil) and (not IgnoreSourceErrors) then begin
       MsgTxt:=Format(lisUnableToLoadOldResourceFileTheResourceFileIs, [#13,
         #13, #13, AnUnitInfo.UnitName, #13]);
-      Result:=MessageDlg(lisResourceLoadError, MsgTxt, mtWarning,
-                         [mbIgnore,mbAbort],0);
+      Result:=QuestionDlg(lisResourceLoadError, MsgTxt, mtWarning,
+                         [mrIgnore, lisIgnoreMissingFile, mrAbort], 0);
       if Result=mrAbort then exit;
     end;
 
@@ -3670,10 +3675,12 @@ begin
     end;
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
-      Result:=MessageDlg(lisUnitNameAlreadyExistsCap,
+      Result:=QuestionDlg(lisUnitNameAlreadyExistsCap,
          Format(lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming, ['"',
            NewUnitName, '"', #13, #13, #13]),
-          mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
+          mtConfirmation, [mrIgnore, lisForceRenaming,
+                          mrCancel, lisCancelRenaming,
+                          mrAbort, lisAbortAll], 0);
       if Result=mrIgnore then
         Result:=mrCancel
       else
@@ -3691,9 +3698,10 @@ begin
     if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
       if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
-        Result:=MessageDlg(lisRenameFile,
-           Format(lisThisLooksLikeAPascalFileFpc10XExpectsPascalFiles, [#13, #13]),
-          mtWarning,[mbYes,mbNo],0);
+        Result:=QuestionDlg(lisRenameFile,
+             Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC, [
+               #13, #13]),
+          mtWarning, [mrYes, lisRenameToLowercase, mrNo, lisKeepName], 0);
         if Result=mrYes then
           NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
         Result:=mrOk;
@@ -3711,7 +3719,8 @@ begin
   and FileExists(NewFilename) then begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
-    Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbok,mbCancel],0);
+    Result:=QuestionDlg(ACaption, AText, mtConfirmation,
+      [mrYes, lisOverwriteFileOnDisk, mbCancel], 0);
     if Result=mrCancel then exit;
   end;
 
@@ -3912,9 +3921,11 @@ begin
           if LFMCode=nil then begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
-              Result:=MessageDlg(lisUnableToCreateFile,
+              Result:=QuestionDlg(lisUnableToCreateFile,
                 Format(lisUnableToCreateFile2, ['"', LFMFilename, '"']),
-                mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+                mtWarning, [mrIgnore, lisContinueWithoutLoadingForm,
+                           mrCancel, lisCancelLoadingUnit,
+                           mrAbort, lisAbortAllLoading], 0);
               if Result<>mrIgnore then exit;
             end;
           end;
@@ -5668,9 +5679,10 @@ begin
   and FilenameIsAbsolute(AFilename) and FileExists(AFilename) then begin
     // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
-      if MessageDlg(lisOpenProject,
+      if QuestionDlg(lisOpenProject,
         Format(lisOpenTheProjectAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
-        mtConfirmation,[mbYes,mbNo],0)=mrYes
+        mtConfirmation, [mrYes, lisOpenProject2, mrNo, lisOpenAsTextFile], 0)=
+          mrYes
       then begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
         exit;
@@ -5678,9 +5690,10 @@ begin
     end;
     // check if file is a lazarus package (.lpk)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
-      if MessageDlg(lisOpenPackage,
+      if QuestionDlg(lisOpenPackage,
         Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
-        mtConfirmation,[mbYes,mbNo],0)=mrYes
+        mtConfirmation,
+        [mrYes, lisCompPalOpenPackage, mrNo, lisOpenAsTextFile], 0)=mrYes
       then begin
         Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent]);
         exit;

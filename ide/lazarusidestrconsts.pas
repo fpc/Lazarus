@@ -98,6 +98,12 @@ resourcestring
   lisProjectSrcPath = 'Project Src Path';
   lisMakeExe = 'Make Executable';
   lisProjectMakroProperties = 'Project makro properties';
+  lisOpenProject2 = 'Open project';
+  lisOpenAsTextFile = 'Open as text file';
+  lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
+    +'at last startup while loading %s!%s%sLoad this project again?';
+  lisOpenProjectAgain = 'Open project again';
+  lisStartWithANewProject = 'Start with a new project';
   lisProjectMakroUnitPath = 'makro ProjectUnitPath';
   lisConfigDirectory = 'Lazarus config directory';
 
@@ -122,6 +128,8 @@ resourcestring
   lisPkgEditPublishPackage = 'Publish Package';
   lisMenuOpenRecent = 'Open Recent';
   lisMenuSave = 'Save';
+  lisDiscardChanges = 'Discard changes';
+  lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisMenuSaveAs = 'Save As';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
@@ -238,6 +246,7 @@ resourcestring
   lisMenuStepOver = 'Step over';
   lisMenuRunToCursor = 'Run to cursor';
   lisMenuStop = 'Stop';
+  lisContinue = 'Continue';
   lisMenuResetDebugger = 'Reset debugger';
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
@@ -332,15 +341,20 @@ resourcestring
     +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax '
     +'error.';
   lisResourceLoadError = 'Resource load error';
+  lisIgnoreMissingFile = 'Ignore missing file';
   lisnoname = 'noname';
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s%s%s%s '
     +'does not exist.';
   lisRenameFile = 'Rename file?';
-  lisThisLooksLikeAPascalFileFpc10XExpectsPascalFiles = 'This looks like a '
-    +'pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to '
-    +'lowercase?';
+  lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a '
+    +'pascal file.%sIt is recommended to use lower case filenames, to avoid '
+    +'various problems on some filesystems and different compilers.%sRename '
+    +'it to lowercase?';
+  lisRenameToLowercase = 'Rename to lowercase';
+  lisKeepName = 'Keep name';
   lisOverwriteFile = 'Overwrite file?';
   lisAFileAlreadyExistsReplaceIt = 'A file %s%s%s already exists.%sReplace it?';
+  lisOverwriteFileOnDisk = 'Overwrite file on disk';
   lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files '
     +'in the directory with the same name,%swhich only differ in case:%s%s%'
@@ -356,6 +370,9 @@ resourcestring
     +'resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax '
     +'error.';
   lisUnableToCreateFile2 = 'Unable to create file %s%s%s';
+  lisContinueWithoutLoadingForm = 'Continue without loading form';
+  lisCancelLoadingUnit = 'Cancel loading unit';
+  lisAbortAllLoading = 'Abort all loading';
   lisUnableToTransformBinaryComponentStreamOfTIntoText = 'Unable to transform '
     +'binary component stream of %s:T%s into text.';
   lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file %s%s%s%'
@@ -605,6 +622,9 @@ resourcestring
   lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming = 'The unit %s%s%s '
     +'already exists.%sIgnore will force the renaming,%sCancel will cancel '
     +'the saving of this source and%sAbort will abort the whole saving.';
+  lisForceRenaming = 'Force renaming';
+  lisCancelRenaming = 'Cancel renaming';
+  lisAbortAll = 'Abort all';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
   lisInvalidPascalIdentifierText =
     'The name "%s" is not a valid pascal identifier.';
