@@ -1,0 +1,31 @@
+object Form1: TForm1
+  ActiveControl = Button1
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 610
+  Height = 300
+  Top = 247
+  Width = 400
+  object Button1: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Click to load a chm'
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 36
+    Height = 25
+    Top = 20
+    Width = 284
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    FilterIndex = 0
+    Title = 'Open existing file'
+    left = 28
+    top = 127
+  end
+end
