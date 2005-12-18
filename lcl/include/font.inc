@@ -548,7 +548,12 @@ begin
         try
           CharSet:= TFont(Source).CharSet;
           SetColor(TFont(Source).Color,TFPCanvasHelper(Source).FPColor);
-          Height := TFont(Source).Height;
+          if TFont(Source).PixelsPerInch <> FPixelsPerInch then
+            // use size to convert source height pixels to current resolution
+            Size := TFont(Source).Size
+          else
+            // use height which users could have changed directly
+            Height := TFont(Source).Height;
           Name := TFont(Source).Name;
           Pitch := TFont(Source).Pitch;
           Style := TFont(Source).Style;
