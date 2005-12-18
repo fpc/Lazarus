@@ -250,6 +250,7 @@ begin
       Cancel := true;
       Parent:=Self;
     end;
+    ActiveControl:=TextToFindComboBox;
   end;
   LazFindInFilesDialogResize(nil);
 end;
