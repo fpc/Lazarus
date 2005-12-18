@@ -69,9 +69,9 @@ object HelpForm: THelpForm
   ShowInTaskBar = stAlways
   HorzScrollBar.Page = 757
   VertScrollBar.Page = 508
-  Left = 343
+  Left = 342
   Height = 535
-  Top = 222
+  Top = 208
   Width = 758
   object StatusBar1: TStatusBar
     Panels = <    
@@ -161,10 +161,59 @@ object HelpForm: THelpForm
         Caption = 'Search'
         ClientHeight = 425
         ClientWidth = 210
+        Enabled = False
         Left = 2
         Height = 425
         Top = 28
         Width = 210
+        object Label1: TLabel
+          AutoSize = False
+          Caption = 'Keyword:'
+          Color = clNone
+          ParentColor = False
+          Left = 5
+          Height = 18
+          Top = 11
+          Width = 141
+        end
+        object Label2: TLabel
+          AutoSize = False
+          Caption = 'Search Results:'
+          Color = clNone
+          ParentColor = False
+          Left = 5
+          Height = 24
+          Top = 91
+          Width = 168
+        end
+        object ComboBox1: TComboBox
+          Anchors = [akTop, akLeft, akRight]
+          MaxLength = 0
+          TabOrder = 0
+          Left = 5
+          Height = 25
+          Top = 30
+          Width = 200
+        end
+        object SearchBttn: TButton
+          Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
+          Caption = 'Search'
+          TabOrder = 1
+          Left = 99
+          Height = 25
+          Top = 59
+          Width = 106
+        end
+        object ListBox1: TListBox
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          TabOrder = 2
+          TopIndex = -1
+          Left = 5
+          Height = 304
+          Top = 115
+          Width = 200
+        end
       end
     end
   end
@@ -177,25 +226,6 @@ object HelpForm: THelpForm
     Height = 457
     Top = 32
     Width = 5
-  end
-  object IpHtmlPanel1: TIpHtmlPanel
-    Align = alClient
-    BorderStyle = bsSingle
-    FixedTypeface = 'times'
-    DefaultTypeFace = 'default'
-    PopupMenu = PopupMenu1
-    PrintSettings.MarginLeft = 0.5
-    PrintSettings.MarginTop = 0.5
-    PrintSettings.MarginRight = 0.5
-    PrintSettings.MarginBottom = 0.5
-    ShowHints = False
-    OnDocumentOpen = IpHtmlPanel1DocumentOpen
-    OnHotChange = IpHtmlPanel1HotChange
-    OnHotClick = IpHtmlPanel1HotClick
-    Left = 221
-    Height = 457
-    Top = 32
-    Width = 537
   end
   object Panel1: TPanel
     Align = alTop
@@ -382,6 +412,101 @@ object HelpForm: THelpForm
       Width = 32
     end
   end
+  object RightPanel: TPanel
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 457
+    ClientWidth = 537
+    TabOrder = 2
+    Left = 221
+    Height = 457
+    Top = 32
+    Width = 537
+    object IpHtmlPanel1: TIpHtmlPanel
+      Align = alClient
+      BorderStyle = bsSingle
+      FixedTypeface = 'times'
+      DefaultTypeFace = 'default'
+      PopupMenu = PopupMenu1
+      PrintSettings.MarginLeft = 0.5
+      PrintSettings.MarginTop = 0.5
+      PrintSettings.MarginRight = 0.5
+      PrintSettings.MarginBottom = 0.5
+      ShowHints = False
+      OnDocumentOpen = IpHtmlPanel1DocumentOpen
+      OnHotChange = IpHtmlPanel1HotChange
+      OnHotClick = IpHtmlPanel1HotClick
+      Height = 431
+      Width = 537
+    end
+    object SearchPanel: TPanel
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 26
+      ClientWidth = 537
+      Enabled = False
+      TabOrder = 0
+      Visible = False
+      Height = 26
+      Top = 431
+      Width = 537
+      object SearchLabel: TLabel
+        Align = alLeft
+        Alignment = taCenter
+        AutoSize = False
+        BorderSpacing.Around = 5
+        Caption = 'Find in page'
+        Color = clNone
+        ParentColor = False
+        Left = 5
+        Height = 16
+        Top = 5
+        Width = 97
+      end
+      object SearchEdit: TEdit
+        Align = alLeft
+        OnChange = SearchEditChange
+        OnKeyDown = SearchEditKeyDown
+        TabOrder = 0
+        Left = 107
+        Height = 26
+        Width = 136
+      end
+      object FindNextBttn: TButton
+        Align = alLeft
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = '&Next'
+        OnClick = FindNextBttnClick
+        TabOrder = 1
+        Left = 243
+        Height = 26
+        Width = 35
+      end
+      object FindPrevBttn: TButton
+        Align = alLeft
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = 'P&rev'
+        OnClick = FindPrevBttnClick
+        TabOrder = 2
+        Left = 278
+        Height = 26
+        Width = 36
+      end
+      object SearchHideBttn: TButton
+        Align = alRight
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = '&Hide'
+        OnClick = SearchHideBttnClick
+        TabOrder = 3
+        Left = 501
+        Height = 26
+        Width = 36
+      end
+    end
+  end
   object MainMenu1: TMainMenu
     top = 120
     object FileMenuItem: TMenuItem
@@ -400,6 +525,21 @@ object HelpForm: THelpForm
       object FileMenuExitItem: TMenuItem
         Caption = 'E&xit'
         OnClick = FileMenuExitItemClick
+      end
+    end
+    object SearchMenuItem: TMenuItem
+      Caption = 'Search'
+      object SearchMenuFindInPageItem: TMenuItem
+        Caption = 'Find in page'
+        Enabled = False
+        ShortCut = 16454
+        OnClick = SearchMenuFindInPageItemClick
+      end
+      object SearchMenuNextItem: TMenuItem
+        Caption = 'Find Next'
+        Enabled = False
+        ShortCut = 114
+        OnClick = FindNextBttnClick
       end
     end
     object ViewMenuItem: TMenuItem

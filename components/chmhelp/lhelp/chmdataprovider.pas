@@ -183,21 +183,16 @@ begin
     HelpFile := Copy(HelpFile, 1, Pos('''', HelpFile)-1);
     //DebugLn('HelpFile = ', HelpFile);
   end;
+  if (not Result) and (Pos('#', URL) = 1) then Result := True;
 end;
 
 function TIpChmDataProvider.BuildURL(const OldURL, NewURL: string): string;
 var
 tmp: String;
 X: LongInt;
+RelURL: String = '';
 begin
-  //Result := NewUrl;
-  //DebugLn('OldURl=',OldUrl, ' NewURL=',NewUrl);
-  //DebugLn('Current path = ', fcurrentpath);
   Result:=iputils.BuildURL(Oldurl,NewUrl);
-  //DebugLn('NEWURL=',Result);
-  X := Pos('#', Result);
-  if X > 0 then Result := Copy(Result, 1 ,X-1);
-
   if NewURL[1] <> '/' then
   begin
     if fChm.ObjectExists(Result) > 0 then Tmp := Result
@@ -217,11 +212,6 @@ begin
     Delete(Result, X ,1);
     X := Pos('//', Result);
   end;
-
-   // if not fChmfile.ObjectExists(Result) then Result := TryToLocateObject(Result);
-
-
-
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;

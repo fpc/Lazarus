@@ -60,11 +60,13 @@ type
     fText: TStringList;
     fBranchCount: DWord;
     fStop: PBoolean;
+    fULList: Array of Integer;
     procedure CustomCreateContentTreeItem(Sender: TCustomTreeView;
       var ATreeNode: TTreenode);
     function AddULTree(StartLine, EndLine: Integer; ParentNode: TTreeNode): Boolean;
     function GetULEnd(StartLine: Integer): Integer;
     function GetLIData(StartLine: Integer): TContentNode;
+    procedure FillULIndices;
   public
     constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean);
     procedure DoFill; //inline;
@@ -121,17 +123,19 @@ var
 begin
   Result := True;
   Inc(fBranchCount);
-  for X := StartLine to EndLine do begin
+  X := StartLine-1;
+  while X < EndLine do begin
+    Inc(X);
     if Pos('<LI>', fText.Strings[X]) > 0 then begin
       NodeInfo := GetLIData(X);
       TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
       TreeNode.Url := NodeInfo.Url;
-      Inc(PInteger(@X)^, NodeInfo.LineCount); // >:D
+      Inc(X, NodeInfo.LineCount);
     end;
-    if (X <> StartLine) and (Pos('<UL>', fText.Strings[X]) > 0) then begin
+    if (X <> StartLine) and (fULList[X-1] < fULList[X]) then begin
       ULEnd := GetULEnd(X);
       if not AddULTree(X, ULEnd, TreeNode) then exit(False);
-      Inc(PInteger(@X)^, ULEnd-X); // >:D
+      Inc(X, ULEnd-X);
     end;
   end;
   if fBranchCount mod 200 = 0 then begin
@@ -142,13 +146,10 @@ end;
 
 function TContentsFiller.GetULEnd(StartLine: Integer): Integer;
 var
-ULDepth: Integer = 0;
 X: LongInt;
 begin
-  for X := StartLine to fText.Count-1 do begin
-    if Pos('<UL>', fText.Strings[X]) > 0 then Inc(ULDepth);
-    if Pos('</UL>', fText.Strings[X]) > 0 then Dec(ULDepth);
-    if ULDepth = 0 then begin
+  for X := StartLine+1 to fText.Count-1 do begin
+    if fULList[X] < fULList[StartLine] then begin
       Result := X;
       Exit;
     end;
@@ -189,6 +190,18 @@ begin
   Result.Url := FixURL(Result.Url);
 end;
 
+procedure TContentsFiller.FillULIndices;
+var
+  ULDepth: Integer = 0;
+  X: Integer;
+begin
+  for X := 0 to fText.Count-1 do begin
+    if Pos('<UL>', fText.Strings[X]) > 0 then Inc(ULDepth);
+    if Pos('</UL>', fText.Strings[X]) > 0 then Dec(ULDepth);
+    fULList[X] := ULDepth;
+  end;
+end;
+
 
 constructor TContentsFiller.Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean);
 begin
@@ -212,6 +225,8 @@ begin
   fTreeView.BeginUpdate;
   fTreeView.Items.Clear;
   fText.LoadFromStream(fStream);
+  SetLength(fULList, fText.Count);
+  FillULIndices;
   for X := 0 to fText.Count-1 do begin
     if Pos('<UL>', UpperCase(fText.Strings[X])) > 0 then begin
       if not AddULTree(X, GetULEnd(X), nil) then begin
@@ -224,7 +239,6 @@ begin
   fTreeView.OnCustomCreateItem := OrigEvent;
   fText.Free;
   fTreeView.EndUpdate;
-
 end;
 
 { TIndexFiller }
@@ -304,14 +318,15 @@ procedure TIndexFiller.DoFill;
 var
   X: Integer;
 begin
-  //TMemoryStream(fStream).SaveToFile('/tmp/index.txt');
   fStream.Position := 0;
   fText := TStringList.Create;
   fText.LoadFromStream(fStream);
   fListView.BeginUpdate;
   fListView.Items.Clear;
-  for X := 0 to fText.Count-1 do begin
-    if LineHasLI(X) then Inc(PInteger(@X)^, AddLIObjects(X));
+  X := -1;
+  while X < fText.Count-1 do begin
+    Inc(X);
+    if LineHasLI(X) then Inc(X, AddLIObjects(X));
   end;
   fText.Free;
   fListView.EndUpdate;

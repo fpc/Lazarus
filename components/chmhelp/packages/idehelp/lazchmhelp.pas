@@ -99,9 +99,14 @@ end;
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 begin
-  Result:=shrSuccess;
+  Result:=shrNone;
+  if not FileExists(fHelpServerEXE) then begin
+    ErrMsg := 'The program "' + fHelpServerEXE + '" doesn''t seem to exist!';
+    Exit(shrViewerNotFound);
+  end;
   fHelpConnection.StartHelpServer(fHelpServerName, fHelpServerExe);
   fHelpConnection.OpenURL(fChmFileName, Copy(Node.URL, 1, Pos(':',Node.URL)-1));
+  Result := shrSuccess;
   //WriteLn('LOADING URL = ', Node.URL);
 end;
 

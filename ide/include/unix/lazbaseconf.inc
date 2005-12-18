@@ -197,6 +197,7 @@ begin
 end;
 
 procedure GetDefaultBrowser(var Browser, Params: string);
+
   function Find(const ShortFilename: string; var Filename: string): boolean;
   begin
     Filename:=SearchFileInPath(ShortFilename,'',

@@ -119,7 +119,7 @@ each control that's dropped onto the form
     FDefineProperties: TAVLTree;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
-    FNonControlForms: TAVLTree; // tree of TNonFormDesignerForm sorted for LookupRoot
+    FNonControlForms: TAVLTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
@@ -161,8 +161,8 @@ each control that's dropped onto the form
     function FindJITListByClassName(const AComponentClassName: string
                                     ): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
-    function FindNonControlForm(LookupRoot: TComponent): TNonFormDesignerForm;
-    function CreateNonControlForm(LookupRoot: TComponent): TNonFormDesignerForm;
+    function FindNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
+    function CreateNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
     procedure RenameJITComponent(AComponent: TComponent;
                                  const NewName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
@@ -833,10 +833,10 @@ Begin
         else if JITNonFormList.IsJITNonForm(AComponent) then begin
           // free a non form component and its designer form
           AForm:=GetDesignerForm(AComponent);
-          if not (AForm is TNonFormDesignerForm) then
-            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonFormDesignerForm? '+AComponent.ClassName);
+          if not (AForm is TNonControlDesignerForm) then
+            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
           FNonControlForms.Remove(AForm);
-          TNonFormDesignerForm(AForm).LookupRoot:=nil;
+          TNonControlDesignerForm(AForm).LookupRoot:=nil;
           AForm.Free;
           JITNonFormList.DestroyJITComponent(AComponent);
         end else
@@ -1060,24 +1060,24 @@ begin
 end;
 
 function TCustomFormEditor.FindNonControlForm(LookupRoot: TComponent
-  ): TNonFormDesignerForm;
+  ): TNonControlDesignerForm;
 var
   AVLNode: TAVLTreeNode;
 begin
   AVLNode:=FindNonControlFormNode(LookupRoot);
   if AVLNode<>nil then
-    Result:=TNonFormDesignerForm(AVLNode.Data)
+    Result:=TNonControlDesignerForm(AVLNode.Data)
   else
     Result:=nil;
 end;
 
 function TCustomFormEditor.CreateNonControlForm(LookupRoot: TComponent
-  ): TNonFormDesignerForm;
+  ): TNonControlDesignerForm;
 begin
   if FindNonControlFormNode(LookupRoot)<>nil then
     RaiseException('TCustomFormEditor.CreateNonControlForm exists already');
   if LookupRoot is TComponent then begin
-    Result:=TNonFormDesignerForm.Create(nil);
+    Result:=TNonControlDesignerForm.Create(nil);
     Result.LookupRoot:=LookupRoot;
     FNonControlForms.Add(Result);
   end else
@@ -1098,7 +1098,7 @@ end;
 
 procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
 var
-  ANonControlForm: TNonFormDesignerForm;
+  ANonControlForm: TNonControlDesignerForm;
 begin
   ANonControlForm:=FindNonControlForm(AComponent);
   DebugLn('TCustomFormEditor.UpdateDesignerFormName ',
@@ -1132,7 +1132,7 @@ end;
 procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(
   AComponent: TComponent);
 var
-  NonControlForm: TNonFormDesignerForm;
+  NonControlForm: TNonControlDesignerForm;
 begin
   NonControlForm:=FindNonControlForm(AComponent);
   if NonControlForm<>nil then
@@ -1814,7 +1814,7 @@ var
   i: Integer;
   CurComponent: TComponent;
   P: TPoint;
-  AForm: TNonFormDesignerForm;
+  AForm: TNonControlDesignerForm;
   MinX: Integer;
   MinY: Integer;
   MaxX: Integer;

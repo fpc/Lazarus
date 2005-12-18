@@ -191,7 +191,7 @@ procedure TChmReader.ReadCommonData;
      //Version: DWord;
      EntryType: Word;
      EntryLength: Word;
-     Data: array[0..255] of char;
+     Data: array[0..511] of char;
      fSystem: TMemoryStream;
      Tmp: String;
    begin
@@ -211,24 +211,28 @@ procedure TChmReader.ReadCommonData;
        case EntryType of
          0: // Table of contents
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            fTOCFile := '/'+Data;
          end;
          1: // Index File
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            fIndexFile := '/'+Data;
          end;
          2: // DefaultPage
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            fDefaultPage := '/'+Data;
          end;
          3: // Title of chm
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            fTitle := Data;
@@ -240,6 +244,7 @@ procedure TChmReader.ReadCommonData;
          end;
          6: // chm file name. use this to get the index an toc name
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            if (fIndexFile = '') then begin
@@ -257,6 +262,7 @@ procedure TChmReader.ReadCommonData;
          end;
          16: // Prefered font
          begin
+           if EntryLength > 511 then EntryLength := 511;
            fSystem.Read(Data[0], EntryLength);
            Data[EntryLength] := #0;
            fPreferedFont := Data;
@@ -387,12 +393,13 @@ end;
 
 function TChmReader.ReadPMGLchunkEntryFromStream(Stream: TMemoryStream; var PMGLEntry: TPMGListChunkEntry): Boolean;
 var
-Buf: array [0..1123] of char;
+Buf: array [0..1023] of char;
 NameLength: LongInt;
 begin
   Result := False;
   //Stream.Position := fDirectoryEntriesStartPos + (fDirectoryHeader.ChunkSize * ChunkIndex);
   NameLength := LongInt(GetCompressedInteger(Stream));
+  if NameLength > 1023 then NameLength := 1023;
   Stream.Read(buf, NameLength);
 
   buf[NameLength] := #0;
@@ -447,6 +454,8 @@ var
 X: Integer;
 begin
   Result := 0;
+  X := Pos('#', Name);
+  if X > 2 then Name := Copy(Name, 1, X-1);
   NAme := Lowercase(Name);
   if Name = LowerCase(fCachedEntry.Name) then begin
     Result := fCachedEntry.DecompressedLength;
@@ -548,7 +557,7 @@ var
   Stream: TStream;
   EntryCount: Word;
   X: Integer;
-  WString: array [0..32] of WideChar;
+  WString: array [0..31] of WideChar;
   StrLength: Word;
 begin
   Sections := TStringList.Create;
@@ -560,6 +569,7 @@ begin
   EntryCount := LEtoN(Stream.ReadWord);
   for X := 0 to EntryCount -1 do begin
     StrLength := LEtoN(Stream.ReadWord);
+    if StrLength > 31 then StrLength := 31;
     // are widestrings endian specfic?
     Stream.Read(WString, SizeOf(WideChar)*(StrLength+1)); // the strings are stored null terminated
     Sections.Add(WString);

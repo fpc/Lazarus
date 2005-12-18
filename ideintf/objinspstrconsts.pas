@@ -205,7 +205,7 @@ resourcestring
   // TFileNamePropertyEditor
   oisSelectAFile = 'Select a file';
   oisPropertiesOf = 'Properties of %s';
-  oisAllFiles = 'All files (*.*)|*.*';
+  oisAllFiles = 'All files';
 
   // property editors
   oisSort = 'Sort';

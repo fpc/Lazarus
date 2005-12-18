@@ -31,6 +31,21 @@ type
   { THelpForm }
 
   THelpForm = class(TForm)
+    SearchMenuNextItem: TMenuItem;
+    SearchHideBttn: TButton;
+    FindPrevBttn: TButton;
+    FindNextBttn: TButton;
+    SearchEdit: TEdit;
+    IpHtmlPanel1: TIpHtmlPanel;
+    Label2: TLabel;
+    SearchLabel: TLabel;
+    ListBox1: TListBox;
+    SearchPanel: TPanel;
+    RightPanel: TPanel;
+    SearchMenuFindInPageItem: TMenuItem;
+    SearchMenuItem: TMenuItem;
+    SearchBttn: TButton;
+    ComboBox1: TComboBox;
     ContentsTree: TTreeView;
     FileMenuCloseItem: TMenuItem;
     FileMenuExitItem: TMenuItem;
@@ -39,7 +54,7 @@ type
     FileSeperater: TMenuItem;
     ImageList1: TImageList;
     IndexView: TListView;
-    IpHtmlPanel1: TIpHtmlPanel;
+    Label1: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     ConentsPanel: TPanel;
@@ -67,6 +82,8 @@ type
     procedure FileMenuCloseItemClick(Sender: TObject);
     procedure FileMenuExitItemClick(Sender: TObject);
     procedure FileMenuOpenItemClick(Sender: TObject);
+    procedure FindNextBttnClick(Sender: TObject);
+    procedure FindPrevBttnClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ForwardToolBtnClick(Sender: TObject);
@@ -78,6 +95,11 @@ type
     procedure IpHtmlPanel1HotChange(Sender: TObject);
     procedure IpHtmlPanel1HotClick(Sender: TObject);
     procedure PopupCopyClick(Sender: TObject);
+    procedure SearchEditChange(Sender: TObject);
+    procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SearchHideBttnClick(Sender: TObject);
+    procedure SearchMenuFindInPageItemClick(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure FillTOCTimer(Sender: TObject);
   private
@@ -150,6 +172,20 @@ end;
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then DoOpenChm(OpenDialog1.FileName);
+end;
+
+procedure THelpForm.FindNextBttnClick(Sender: TObject);
+begin
+{ if IpHtmlPanel1.SearchKey = '' then begin
+   SearchMenuFindInPageItemClick(Sender);
+   Exit;
+ end;
+ IpHtmlPanel1.FindNext;}
+end;
+
+procedure THelpForm.FindPrevBttnClick(Sender: TObject);
+begin
+
 end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -225,6 +261,33 @@ begin
   IpHtmlPanel1.CopyToClipboard;
 end;
 
+procedure THelpForm.SearchEditChange(Sender: TObject);
+begin
+  //IpHtmlPanel1.SearchKey := SearchEdit.Text;
+end;
+
+procedure THelpForm.SearchEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = 13 then begin
+    Key := 0;
+    FindNextBttn.Click;
+  end;
+end;
+
+procedure THelpForm.SearchHideBttnClick(Sender: TObject);
+begin
+  SearchPanel.Visible := False;
+  SetFocus;
+end;
+
+procedure THelpForm.SearchMenuFindInPageItemClick(Sender: TObject);
+begin
+  SearchPanel.Visible := True;
+  SearchEdit.SetFocus;
+  SearchEdit.SelectAll;
+end;
+
 procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
 begin
   TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
@@ -249,7 +312,6 @@ begin
     Stream := TMemoryStream(fchm.GetObject(fchm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
-      //Memo1.Lines.LoadFromStream(Stream);
       with TContentsFiller.Create(ContentsTree, Stream, @fStopTimer) do begin
         DoFill;
         Free;

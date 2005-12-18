@@ -40,7 +40,7 @@ uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
   Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps, ColumnDlg,
-  ObjInspStrConsts;
+  FileUtil, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -4805,7 +4805,7 @@ end;
 
 function TFileNamePropertyEditor.GetFilter: String;
 begin
-  Result:=oisAllFiles;
+  Result:=oisAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
 end;
 
 function TFileNamePropertyEditor.GetDialogOptions: TOpenOptions;

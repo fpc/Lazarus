@@ -37,9 +37,9 @@ uses
   
 type
 
-  { TNonFormDesignerForm }
+  { TNonControlDesignerForm }
 
-  TNonFormDesignerForm = class(TForm)
+  TNonControlDesignerForm = class(TForm)
   private
     FFrameWidth: integer;
     FLookupRoot: TComponent;
@@ -70,27 +70,27 @@ implementation
 
 function CompareNonControlForms(Data1, Data2: Pointer): integer;
 var
-  Form1: TNonFormDesignerForm;
-  Form2: TNonFormDesignerForm;
+  Form1: TNonControlDesignerForm;
+  Form2: TNonControlDesignerForm;
 begin
-  Form1:=TNonFormDesignerForm(Data1);
-  Form2:=TNonFormDesignerForm(Data2);
+  Form1:=TNonControlDesignerForm(Data1);
+  Form2:=TNonControlDesignerForm(Data2);
   Result:=PtrInt(Form1.LookupRoot)-PtrInt(Form2.LookupRoot);
 end;
 
 function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
 var
   LookupRoot: TComponent;
-  Form: TNonFormDesignerForm;
+  Form: TNonControlDesignerForm;
 begin
   LookupRoot:=TComponent(Key);
-  Form:=TNonFormDesignerForm(Data);
+  Form:=TNonControlDesignerForm(Data);
   Result:=PtrInt(LookupRoot)-PtrInt(Form.LookupRoot);
 end;
 
-{ TNonFormDesignerForm }
+{ TNonControlDesignerForm }
 
-procedure TNonFormDesignerForm.SetLookupRoot(const AValue: TComponent);
+procedure TNonControlDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
   if FLookupRoot=AValue then exit;
   DoSaveBounds;
@@ -101,26 +101,26 @@ begin
   DoLoadBounds;
 end;
 
-procedure TNonFormDesignerForm.SetFrameWidth(const AValue: integer);
+procedure TNonControlDesignerForm.SetFrameWidth(const AValue: integer);
 begin
   if FFrameWidth=AValue then exit;
   FFrameWidth:=AValue;
   Invalidate;
 end;
 
-constructor TNonFormDesignerForm.Create(TheOwner: TComponent);
+constructor TNonControlDesignerForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FFrameWidth:=1;
   ControlStyle:=ControlStyle-[csAcceptsControls];
 end;
 
-destructor TNonFormDesignerForm.Destroy;
+destructor TNonControlDesignerForm.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TNonFormDesignerForm.Paint;
+procedure TNonControlDesignerForm.Paint;
 var
   ARect: TRect;
 begin
@@ -136,7 +136,7 @@ begin
   end;
 end;
 
-procedure TNonFormDesignerForm.DoLoadBounds;
+procedure TNonControlDesignerForm.DoLoadBounds;
 
   procedure SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
   begin
@@ -148,7 +148,7 @@ procedure TNonFormDesignerForm.DoLoadBounds;
     NewLeft:=Max(0,Min(NewLeft,Screen.Width-NewWidth-50));
     NewTop:=Max(0,Min(NewTop,Screen.Height-NewHeight-50));
 
-    //debugln('TNonFormDesignerForm.DoLoadBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(NewLeft),',',dbgs(NewTop),',',dbgs(NewWidth),',',dbgs(NewHeight));
+    //debugln('TNonControlDesignerForm.DoLoadBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(NewLeft),',',dbgs(NewTop),',',dbgs(NewWidth),',',dbgs(NewHeight));
     SetBounds(NewLeft,NewTop,Max(20,NewWidth),Max(NewHeight,20));
   end;
 
@@ -175,16 +175,16 @@ begin
   end;
 end;
 
-procedure TNonFormDesignerForm.DoSaveBounds;
+procedure TNonControlDesignerForm.DoSaveBounds;
 begin
   if LookupRoot is TDataModule then begin
     with TDataModule(LookupRoot) do begin
       DesignOffset:=Point(Left,Top);
       DesignSize:=Point(Width,Height);
-      //debugln('TNonFormDesignerForm.DoSaveBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y));
+      //debugln('TNonControlDesignerForm.DoSaveBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y));
     end;
   end else if LookupRoot<>nil then begin
-    //debugln('TNonFormDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
+    //debugln('TNonControlDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
     LongRec(LookupRoot.DesignInfo).Lo:=Left;
     LongRec(LookupRoot.DesignInfo).Hi:=Top;
   end;
