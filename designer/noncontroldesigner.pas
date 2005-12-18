@@ -25,7 +25,7 @@
     TNonControlForm is a designer form to design non TControl components like
     TDataModule.
 }
-unit NonControlForms;
+unit NonControlDesigner;
 
 {$mode objfpc}{$H+}
 
@@ -62,13 +62,13 @@ type
   end;
   
   
-function CompareNonControlForms(Data1, Data2: Pointer): integer;
-function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
+function CompareNonControlDesignerForms(Data1, Data2: Pointer): integer;
+function CompareLookupRootAndNonControlDesignerForm(Key, Data: Pointer): integer;
 
 implementation
 
 
-function CompareNonControlForms(Data1, Data2: Pointer): integer;
+function CompareNonControlDesignerForms(Data1, Data2: Pointer): integer;
 var
   Form1: TNonControlDesignerForm;
   Form2: TNonControlDesignerForm;
@@ -78,7 +78,7 @@ begin
   Result:=PtrInt(Form1.LookupRoot)-PtrInt(Form2.LookupRoot);
 end;
 
-function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
+function CompareLookupRootAndNonControlDesignerForm(Key, Data: Pointer): integer;
 var
   LookupRoot: TComponent;
   Form: TNonControlDesignerForm;

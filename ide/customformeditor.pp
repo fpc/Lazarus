@@ -45,8 +45,9 @@ uses
   // components
   PropEdits, ObjectInspector, IDECommands,
   // IDE
-  LazarusIDEStrConsts, JITForms, NonControlForms, FormEditingIntf, ComponentReg,
-  IDEProcs, ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;
+  LazarusIDEStrConsts, JITForms, NonControlDesigner, FormEditingIntf,
+  ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
+  DesignerProcs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -752,7 +753,7 @@ constructor TCustomFormEditor.Create;
 begin
   inherited Create;
   FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
-  FNonControlForms:=TAVLTree.Create(@CompareNonControlForms);
+  FNonControlForms:=TAVLTree.Create(@CompareNonControlDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   
   JITFormList := TJITForms.Create;
@@ -1702,7 +1703,7 @@ function TCustomFormEditor.FindNonControlFormNode(LookupRoot: TComponent
   ): TAVLTreeNode;
 begin
   Result:=FNonControlForms.FindKey(Pointer(LookupRoot),
-                                   @CompareLookupRootAndNonControlForm);
+                                   @CompareLookupRootAndNonControlDesignerForm);
 end;
 
 procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;

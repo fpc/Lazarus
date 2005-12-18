@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
-  NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
+  NonControlDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
