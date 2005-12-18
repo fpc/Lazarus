@@ -2606,8 +2606,10 @@ begin
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
              {$ENDIF}
              Lines.Count);
+  {$IFNDEF SYN_LAZARUS}
   // Now paint everything while the caret is hidden.
   HideCaret;
+  {$ENDIF}
   try
     // First paint the gutter area if it was (partly) invalidated.
     if (rcClip.Left < fGutterWidth) then begin
@@ -2627,10 +2629,9 @@ begin
   finally
     {$IFDEF SYN_LAZARUS}
     EndPaintBuffer(rcClip);
-    {$ENDIF}
-    UpdateCaret;
-    {$IFDEF SYN_LAZARUS}
     Exclude(fStateFlags,sfPainting);
+    {$ELSE}
+    UpdateCaret;
     {$ENDIF}
   end;
 end;
