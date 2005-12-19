@@ -167,8 +167,8 @@ msgid "All"
 msgstr "Todos"
 
 #: objinspstrconsts:oisallfiles
-msgid "All files (*.*)|*.*"
-msgstr "Todos arquivos (*.*)|*.*"
+msgid "All files"
+msgstr ""
 
 #: objinspstrconsts:oisarray
 msgid "Array"

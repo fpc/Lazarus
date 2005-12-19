@@ -210,7 +210,11 @@ msgstr "&Просмотр"
 msgid "&Windows"
 msgstr "&Окна"
 
-#: lazarusidestrconsts:dlgbakdirectory
+#: lazarusidestrconsts:liscefilter
+msgid "(Filter)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectoy)"
 msgstr "(нет подкаталога)"
 
@@ -261,6 +265,14 @@ msgstr ""
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Прервать сборку"
+
+#: lazarusidestrconsts:lisabortall
+msgid "Abort all"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortallloading
+msgid "Abort all loading"
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -462,6 +474,10 @@ msgstr "Кнопка Alt - режим колонок"
 msgid "Alternative Key"
 msgstr "Альтернативная клавиша"
 
+#: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
+msgid "Always build (even if nothing changed)"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
 msgstr "Неясный тип предка"
@@ -501,6 +517,10 @@ msgstr "Найдены разные файлы"
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
 msgstr "Найдены модули с одинаково опознаваемыми именами"
+
+#: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
+msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -845,6 +865,14 @@ msgstr "Могу только поменять класс у TComponents"
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
 msgstr "Отмена"
+
+#: lazarusidestrconsts:liscancelloadingunit
+msgid "Cancel loading unit"
+msgstr ""
+
+#: lazarusidestrconsts:liscancelrenaming
+msgid "Cancel renaming"
+msgstr ""
 
 #: lazarusidestrconsts:lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -1369,6 +1397,14 @@ msgstr "Содержание"
 #: lazarusidestrconsts:lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Справка, зависимая от контекста"
+
+#: lazarusidestrconsts:liscontinue
+msgid "Continue"
+msgstr ""
+
+#: lazarusidestrconsts:liscontinuewithoutloadingform
+msgid "Continue without loading form"
+msgstr ""
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
@@ -1922,6 +1958,10 @@ msgstr "Каталог не найден"
 msgid "Directory options"
 msgstr "Настройки каталогов"
 
+#: lazarusidestrconsts:lisdiscardchanges
+msgid "Discard changes"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
 msgstr "Дисплей"
@@ -1937,6 +1977,10 @@ msgstr "Выдать номера строк в ошибках времени исполнения"
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Различать регистр букв, например, А и а"
+
+#: lazarusidestrconsts:lisdonotclosetheide
+msgid "Do not close the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2582,6 +2626,10 @@ msgstr "Фокус в редактор исходников"
 msgid "Follow cursor"
 msgstr ""
 
+#: lazarusidestrconsts:lisforcerenaming
+msgid "Force renaming"
+msgstr ""
+
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
 msgstr "Цвет текста"
@@ -3021,6 +3069,10 @@ msgstr "Игнорировать изменения на диске"
 #: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Игнорировать добавление/удаление пустых строк"
+
+#: lazarusidestrconsts:lisignoremissingfile
+msgid "Ignore missing file"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -3617,6 +3669,10 @@ msgstr "Хранить нек. переменные в регистрах"
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
 msgstr "Сохранять файлы, соотв. фильтру"
+
+#: lazarusidestrconsts:liskeepname
+msgid "Keep name"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -4382,6 +4438,10 @@ msgstr "Не выбрано кода"
 msgid "No compiler options inherited."
 msgstr "Не унаследовано параметров компилятора."
 
+#: lazarusidestrconsts:lisdbgmangnodebuggerspecified
+msgid "No debugger specified"
+msgstr ""
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "Не найдено ошибок раскладок."
@@ -4558,6 +4618,10 @@ msgstr "Открыть недавнее"
 msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
 
+#: lazarusidestrconsts:lisopenastextfile
+msgid "Open as text file"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
 msgstr "Открыть файл"
@@ -4589,6 +4653,14 @@ msgstr "Открыть файл пакета (.lpk)"
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
 msgstr "Открыть пакет текущего модуля"
+
+#: lazarusidestrconsts:lisopenproject2
+msgid "Open project"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenprojectagain
+msgid "Open project again"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package"
@@ -4677,6 +4749,10 @@ msgstr "Перекрыть системную переменную"
 #: lazarusidestrconsts:srkmecoverwritemode
 msgid "Overwrite Mode"
 msgstr "Режим замены"
+
+#: lazarusidestrconsts:lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
@@ -5370,6 +5446,10 @@ msgstr "Переименовать ID"
 msgid "Rename to"
 msgstr "Переименовать в"
 
+#: lazarusidestrconsts:lisrenametolowercase
+msgid "Rename to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
 msgstr "Заменить"
@@ -5974,6 +6054,10 @@ msgstr "Установить элемент по умолчанию"
 msgid "Set property Variable"
 msgstr "Переменная свойства"
 
+#: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
+msgid "Set the breakpoint anyway"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildsettobuildall
 msgid "Set to %sBuild All%s"
 msgstr "Установить %sСобрать все%s"
@@ -6265,6 +6349,10 @@ msgstr "Стандартное меню Файл"
 #: lazarusidestrconsts:lismenutemplatedescriptionstandardhelpmenu
 msgid "Standard Help Menu"
 msgstr "Стандартное меню Справка"
+
+#: lazarusidestrconsts:lisstartwithanewproject
+msgid "Start with a new project"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -7038,6 +7126,10 @@ msgstr "Уже есть другой пакет с именем %s%s%s.%sКонфликтующий пакет:%s%s%s%sФайл
 msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Среди требуемых пакетов есть несохранённый. См. диаграмму пакетов."
 
+#: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
+msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+msgstr ""
+
 #: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
 msgstr "Произошла ошибка при записи выбранных компонентов %s:%s:%s%s"
@@ -7070,9 +7162,9 @@ msgstr "Это - файл ресурсов, автоматически созданный lazarus"
 msgid "This is the default package. Used only for components without a package. These components are outdated."
 msgstr "Это - пакет по умолчанию. Используется только для компонентов без пакета. Такие компоненты устарели."
 
-#: lazarusidestrconsts:listhislookslikeapascalfilefpc10xexpectspascalfiles
-msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to lowercase?"
-msgstr "Это похоже на файл паскаля.%sfpc 1.0.х требует файлы паскаля в нижнем регистре.%sПереименовать?"
+#: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
+msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -7374,6 +7466,10 @@ msgstr "Не могу прочитать файл %s%s%s."
 msgid "Unable to read package file %s%s%s."
 msgstr "Не могу прочитать файл пакета %s%s%s."
 
+#: lazarusidestrconsts:lisprojmangunabletoreadstatefileofprojecterror
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror
 msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgstr "Не могу прочитать файл состояния %s%s%s%sпакета %s.%sОшибка: %s"
@@ -7469,6 +7565,10 @@ msgstr "Не могу записать пакет %s%s%s%sв файл %s%s%s.%sОшибка: %s"
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgstr "Не могу записать файл состояния %s%s%s%sпакета %s.%sОшибка: %s"
+
+#: lazarusidestrconsts:lisprojmangunabletowritestatefileforprojecterror
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowritetofile2
 msgid "Unable to write to file %s%s%s"

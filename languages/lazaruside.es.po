@@ -220,7 +220,11 @@ msgstr "&Ver"
 msgid "&Windows"
 msgstr "&Ventanas"
 
-#: lazarusidestrconsts:dlgbakdirectory
+#: lazarusidestrconsts:liscefilter
+msgid "(Filter)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectoy)"
 msgstr "(no hay subdirectorio)"
 
@@ -271,6 +275,14 @@ msgstr ""
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
 msgstr "Abortar Construcción"
+
+#: lazarusidestrconsts:lisabortall
+msgid "Abort all"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortallloading
+msgid "Abort all loading"
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -472,6 +484,10 @@ msgstr ""
 msgid "Alternative Key"
 msgstr "Tecla Alternativa"
 
+#: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
+msgid "Always build (even if nothing changed)"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
 msgstr "Tipo del ancestro ambiguo"
@@ -511,6 +527,10 @@ msgstr "Encontrados archivos ambiguos"
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
 msgstr "Encontradas unidades ambiguas"
+
+#: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
+msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -855,6 +875,14 @@ msgstr "Sólo se puede cambiar la clase de TComponents."
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
 msgstr "Cancelar"
+
+#: lazarusidestrconsts:liscancelloadingunit
+msgid "Cancel loading unit"
+msgstr ""
+
+#: lazarusidestrconsts:liscancelrenaming
+msgid "Cancel renaming"
+msgstr ""
 
 #: lazarusidestrconsts:lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -1378,6 +1406,14 @@ msgstr "Contenidos"
 
 #: lazarusidestrconsts:lismenucontexthelp
 msgid "Context sensitive Help"
+msgstr ""
+
+#: lazarusidestrconsts:liscontinue
+msgid "Continue"
+msgstr ""
+
+#: lazarusidestrconsts:liscontinuewithoutloadingform
+msgid "Continue without loading form"
 msgstr ""
 
 #: lazarusidestrconsts:liscontributors
@@ -1932,6 +1968,10 @@ msgstr "Directorio no encontrado"
 msgid "Directory options"
 msgstr "Opciones del directorio"
 
+#: lazarusidestrconsts:lisdiscardchanges
+msgid "Discard changes"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
 msgstr "Visualizar"
@@ -1947,6 +1987,10 @@ msgstr "Visualizar números de líneas en los errores de tiempo de ejecución en
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingue entre mayúsculas y minúsculas, ejemplo A y a"
+
+#: lazarusidestrconsts:lisdonotclosetheide
+msgid "Do not close the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2592,6 +2636,10 @@ msgstr "Establecer foco en editor de código"
 msgid "Follow cursor"
 msgstr ""
 
+#: lazarusidestrconsts:lisforcerenaming
+msgid "Force renaming"
+msgstr ""
+
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
 msgstr "Color de texto"
@@ -3031,6 +3079,10 @@ msgstr "Ignorar cambios de disco"
 #: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Ignorar si se han añadido o eliminado líneas vacías"
+
+#: lazarusidestrconsts:lisignoremissingfile
+msgid "Ignore missing file"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -3627,6 +3679,10 @@ msgstr "Mantener algunas variables en los registros"
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
 msgstr "Mantener archivos según el criterio indicado"
+
+#: lazarusidestrconsts:liskeepname
+msgid "Keep name"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -4392,6 +4448,10 @@ msgstr ""
 msgid "No compiler options inherited."
 msgstr ""
 
+#: lazarusidestrconsts:lisdbgmangnodebuggerspecified
+msgid "No debugger specified"
+msgstr ""
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "No se encontraron errores en accesos rápidos"
@@ -4568,6 +4628,10 @@ msgstr "Abrir Reciente"
 msgid "Open Recent Project"
 msgstr "Abrir proyecto reciente"
 
+#: lazarusidestrconsts:lisopenastextfile
+msgid "Open as text file"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
 msgstr "Abrir archivo"
@@ -4599,6 +4663,14 @@ msgstr "Abrir Archivo de paquete (.lpk)"
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
 msgstr "Abrir paquete de unidad actual"
+
+#: lazarusidestrconsts:lisopenproject2
+msgid "Open project"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenprojectagain
+msgid "Open project again"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package"
@@ -4687,6 +4759,10 @@ msgstr "No hacer caso de variable de sistema"
 #: lazarusidestrconsts:srkmecoverwritemode
 msgid "Overwrite Mode"
 msgstr "Sobreescribir Modo"
+
+#: lazarusidestrconsts:lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
@@ -5380,6 +5456,10 @@ msgstr ""
 msgid "Rename to"
 msgstr ""
 
+#: lazarusidestrconsts:lisrenametolowercase
+msgid "Rename to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
 msgstr "Reemplazar"
@@ -5984,6 +6064,10 @@ msgstr "Seleccionar elemento por defecto"
 msgid "Set property Variable"
 msgstr "Fijar propiedad Variable"
 
+#: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
+msgid "Set the breakpoint anyway"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildsettobuildall
 msgid "Set to %sBuild All%s"
 msgstr "Establecer %s para Construir Todo%s"
@@ -6275,6 +6359,10 @@ msgstr "Menú de Archivo estándar"
 #: lazarusidestrconsts:lismenutemplatedescriptionstandardhelpmenu
 msgid "Standard Help Menu"
 msgstr "Menú de Ayuda estándar"
+
+#: lazarusidestrconsts:lisstartwithanewproject
+msgid "Start with a new project"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -7048,6 +7136,10 @@ msgstr "Ya hay otro paquete con el nombre %s%s%s.%sPaquete en conflicto: %s%s%s%
 msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Hay un paquete sin guardar en los paquetes requeridos. Mire el gráfico de paquete."
 
+#: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
+msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+msgstr ""
+
 #: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
 msgstr ""
@@ -7080,9 +7172,9 @@ msgstr "Este es un archivo de recurso de Lazarus generado automáticamente"
 msgid "This is the default package. Used only for components without a package. These components are outdated."
 msgstr "Este es el paquete por defecto. Usado únicamente para componentes sin paquete. Estos componentes están sin actualizar."
 
-#: lazarusidestrconsts:listhislookslikeapascalfilefpc10xexpectspascalfiles
-msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to lowercase?"
-msgstr "Parece un archivo de pascal.%s fpc 1.0.x espera archivos de pascal en minúscula. %s Renombrarlo a minúsculas"
+#: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
+msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -7384,6 +7476,10 @@ msgstr "No se ha podido leer el archivo %s%s%s."
 msgid "Unable to read package file %s%s%s."
 msgstr "No se ha podido leer el archivo de paquete %s%s%s."
 
+#: lazarusidestrconsts:lisprojmangunabletoreadstatefileofprojecterror
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror
 msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgstr "No se ha podido leer el archivo de estado %s%s%s%s del paquete %s.%s Error: %s"
@@ -7479,6 +7575,10 @@ msgstr "No se ha podido escribir el paquete %s%s%s%s al archivo %s%s%s.%s Error:
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgstr "No se ha podido escribir el archivo de estado %s%s%s%s del paquete %s Error: %s"
+
+#: lazarusidestrconsts:lisprojmangunabletowritestatefileforprojecterror
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowritetofile2
 msgid "Unable to write to file %s%s%s"

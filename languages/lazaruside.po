@@ -166,6 +166,26 @@ msgstr ""
 msgid "Project makro properties"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenproject2
+msgid "Open project"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenastextfile
+msgid "Open as text file"
+msgstr ""
+
+#: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
+msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenprojectagain
+msgid "Open project again"
+msgstr ""
+
+#: lazarusidestrconsts:lisstartwithanewproject
+msgid "Start with a new project"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectmakrounitpath
 msgid "makro ProjectUnitPath"
 msgstr ""
@@ -248,6 +268,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenusave
 msgid "Save"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiscardchanges
+msgid "Discard changes"
+msgstr ""
+
+#: lazarusidestrconsts:lisdonotclosetheide
+msgid "Do not close the IDE"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusaveas
@@ -690,6 +718,10 @@ msgstr ""
 msgid "Stop"
 msgstr ""
 
+#: lazarusidestrconsts:liscontinue
+msgid "Continue"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr ""
@@ -978,6 +1010,10 @@ msgstr ""
 msgid "Resource load error"
 msgstr ""
 
+#: lazarusidestrconsts:lisignoremissingfile
+msgid "Ignore missing file"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
 msgstr ""
@@ -990,8 +1026,16 @@ msgstr ""
 msgid "Rename file?"
 msgstr ""
 
-#: lazarusidestrconsts:listhislookslikeapascalfilefpc10xexpectspascalfiles
-msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to lowercase?"
+#: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
+msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts:lisrenametolowercase
+msgid "Rename to lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:liskeepname
+msgid "Keep name"
 msgstr ""
 
 #: lazarusidestrconsts:lisoverwritefile
@@ -1000,6 +1044,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverwritefileondisk
+msgid "Overwrite file on disk"
 msgstr ""
 
 #: lazarusidestrconsts:lisambiguousfilesfound
@@ -1040,6 +1088,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatefile2
 msgid "Unable to create file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscontinuewithoutloadingform
+msgid "Continue without loading form"
+msgstr ""
+
+#: lazarusidestrconsts:liscancelloadingunit
+msgid "Cancel loading unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortallloading
+msgid "Abort all loading"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
@@ -1702,6 +1762,18 @@ msgstr ""
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr ""
 
+#: lazarusidestrconsts:lisforcerenaming
+msgid "Force renaming"
+msgstr ""
+
+#: lazarusidestrconsts:liscancelrenaming
+msgid "Cancel renaming"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortall
+msgid "Abort all"
+msgstr ""
+
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
 msgstr ""
@@ -1770,7 +1842,7 @@ msgstr ""
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
-#: lazarusidestrconsts:dlgbakdirectory
+#: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectoy)"
 msgstr ""
 
@@ -3378,6 +3450,10 @@ msgstr ""
 msgid "Project is runnable"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
+msgid "Always build (even if nothing changed)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
 msgstr ""
@@ -3468,6 +3544,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"
+msgstr ""
+
+#: lazarusidestrconsts:liscefilter
+msgid "(Filter)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcasesensitive
@@ -6406,6 +6486,18 @@ msgstr ""
 msgid "Run-to failed"
 msgstr ""
 
+#: lazarusidestrconsts:lisdbgmangnodebuggerspecified
+msgid "No debugger specified"
+msgstr ""
+
+#: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
+msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+msgstr ""
+
+#: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
+msgid "Set the breakpoint anyway"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr ""
@@ -6810,12 +6902,20 @@ msgstr ""
 msgid "Error writing file"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojmangunabletowritestatefileforprojecterror
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojmangunabletoreadstatefileofprojecterror
+msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror

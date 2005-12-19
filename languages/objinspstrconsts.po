@@ -631,7 +631,7 @@ msgid "Properties of %s"
 msgstr ""
 
 #: objinspstrconsts:oisallfiles
-msgid "All files (*.*)|*.*"
+msgid "All files"
 msgstr ""
 
 #: objinspstrconsts:oissort
