@@ -2923,7 +2923,7 @@ begin
   //Ensure the project is saved
   if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
   //Ensure the project is compiled, so all rst files are present
-  if DoBuildProject(crBuild)<>mrOk then exit;
+  if DoBuildProject(crBuild,[pbfCleanCompile])<>mrOk then exit;
   for i:=0 to Project1.FileCount-1 do
   begin
     if FileExists(ChangeFileExt(Project1.Files[i].Filename,'.lrt'))
