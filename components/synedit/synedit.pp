@@ -50,6 +50,12 @@ unit SynEdit;
 {$DEFINE DisableDoubleBuf}
 {$ENDIF}
 
+{$IFDEF SYN_LAZARUS}
+  {$IFDEF win32}
+    {$DEFINE DoNotShowHideCaretDuringPaint}
+  {$ENDIF}
+{$ENDIF}
+
 interface
 
 { $DEFINE VerboseKeys}
@@ -2606,8 +2612,8 @@ begin
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
              {$ENDIF}
              Lines.Count);
-  {$IFNDEF SYN_LAZARUS}
   // Now paint everything while the caret is hidden.
+  {$IFNDEF DoNotShowHideCaretDuringPaint}
   HideCaret;
   {$ENDIF}
   try
@@ -2629,9 +2635,12 @@ begin
   finally
     {$IFDEF SYN_LAZARUS}
     EndPaintBuffer(rcClip);
-    Exclude(fStateFlags,sfPainting);
-    {$ELSE}
+    {$ENDIF}
+    {$IFNDEF DoNotShowHideCaretDuringPaint}
     UpdateCaret;
+    {$ENDIF}
+    {$IFDEF SYN_LAZARUS}
+    Exclude(fStateFlags,sfPainting);
     {$ENDIF}
   end;
 end;

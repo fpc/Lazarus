@@ -2778,7 +2778,7 @@ begin
   // -> ask compiler with the -vm -vt switch
   SetLength(Buf,1024);
   try
-    CmdLine:=PPC386Path+' -vm -vt ';
+    CmdLine:=PPC386Path+' -va ';
     if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if PPCOptions<>'' then
