@@ -79,11 +79,12 @@ fi
 if [ $BuildCrossFPC = "yes" ]; then
   Params="$Params buildcrossfpc"
 fi
-if [ ! -z $Params ]; then
+if [ "x$Params" == "x" ]; then
   Params="$Params targets=i386-win32"
   echo "calling update_cross_fpc.sh $Params ..."
   ./update_cross_fpc.sh $Params
 fi
+
 
 #===============================================================================
 # build fpc_crosswin32 rpm

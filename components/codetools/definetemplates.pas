@@ -480,7 +480,7 @@ type
 function DefineActionNameToAction(const s: string): TDefineAction;
 begin
   for Result:=Low(TDefineAction) to High(TDefineAction) do
-    if AnsiCompareText(s,DefineActionNames[Result])=0 then exit;
+    if CompareText(s,DefineActionNames[Result])=0 then exit;
   Result:=da_None;
 end;
 
@@ -501,13 +501,13 @@ var Link1, Link2: TUnitNameLink;
 begin
   Link1:=TUnitNameLink(NodeData1);
   Link2:=TUnitNameLink(NodeData2);
-  Result:=AnsiCompareText(Link1.UnitName,Link2.UnitName);
+  Result:=CompareText(Link1.UnitName,Link2.UnitName);
 end;
 
 function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=AnsiCompareText(String(UnitName),TUnitNameLink(NodeData).UnitName);
+  Result:=CompareText(String(UnitName),TUnitNameLink(NodeData).UnitName);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -1289,7 +1289,7 @@ begin
       // node has a name -> test if already exists
       PosNode:=FirstSibling;
       while (PosNode<>nil)
-      and (AnsiCompareText(PosNode.Name,NewNode.Name)<>0) do
+      and (CompareText(PosNode.Name,NewNode.Name)<>0) do
         PosNode:=PosNode.Next;
       if PosNode<>nil then begin
         // node with same name already exists -> check if it is a copy
@@ -1314,7 +1314,7 @@ begin
         // -> search MergeNameInFront
         PosNode:=LastSibling;
         while (PosNode<>nil)
-        and (AnsiCompareText(PosNode.Name,NewNode.MergeNameInFront)<>0) do
+        and (CompareText(PosNode.Name,NewNode.MergeNameInFront)<>0) do
           PosNode:=PosNode.Prior;
         if PosNode<>nil then begin
           // MergeNameInFront found -> insert behind
@@ -1328,7 +1328,7 @@ begin
           // -> search MergeNameBehind
           PosNode:=FirstSibling;
           while (PosNode<>nil)
-          and (AnsiCompareText(PosNode.Name,NewNode.MergeNameBehind)<>0) do
+          and (CompareText(PosNode.Name,NewNode.MergeNameBehind)<>0) do
             PosNode:=PosNode.Next;
           if PosNode<>nil then begin
             // MergeNameBehind found -> insert in front
@@ -1601,7 +1601,7 @@ function TDefineTemplate.FindByName(const AName: string; WithSubChilds,
   WithNextSiblings: boolean): TDefineTemplate;
 var ANode: TDefineTemplate;
 begin
-  if AnsiCompareText(AName,Name)=0 then begin
+  if CompareText(AName,Name)=0 then begin
     Result:=Self;
   end else begin
     if WithSubChilds and (FirstChild<>nil) then
@@ -2679,7 +2679,7 @@ var
   begin
     Result:=LastDefTempl;
     while (Result<>nil)
-    and (AnsiComparetext(Result.Variable,SymbolName)<>0) do
+    and (Comparetext(Result.Variable,SymbolName)<>0) do
       Result:=Result.Prior;
   end;
 
@@ -2715,7 +2715,7 @@ var
     UpLine:=UpperCaseStr(Line);
     i:=length(ShortTestFile);
     if (length(Line)>i)
-    and (AnsiCompareText(LeftStr(Line,i),ShortTestFile)=0)
+    and (CompareText(LeftStr(Line,i),ShortTestFile)=0)
     and (Line[i+1]='(') then begin
       inc(i);
       while (i<length(Line)) and (Line[i]<>')') do inc(i);
@@ -2766,7 +2766,7 @@ var CmdLine: string;
   SrcOS: string;
   SrcOS2: String;
 begin
-  //DebugLn('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
+  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',PPC386Path,'" PPCOptions="',PPCOptions,'"');
   Result:=nil;
   UnitSearchPath:='';
   TargetOS:='';
@@ -2775,15 +2775,16 @@ begin
   if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
-  // -> ask compiler with the -va switch
+  // -> ask compiler with the -vm -vt switch
   SetLength(Buf,1024);
   try
-    CmdLine:=PPC386Path+' -va ';
+    CmdLine:=PPC386Path+' -vm -vt ';
     if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if PPCOptions<>'' then
       CmdLine:=CmdLine+PPCOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
+    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
     ShortTestFile:=ExtractFileName(TestPascalFile);
 
     TheProcess := TProcess.Create(nil);
@@ -2794,9 +2795,9 @@ begin
       TheProcess.Execute;
       OutputLine:='';
       repeat
-        if TheProcess.Output<>nil then
-          OutLen:=TheProcess.Output.Read(Buf[1],length(Buf))
-        else
+        if (TheProcess.Output<>nil) then begin
+          OutLen:=TheProcess.Output.Read(Buf[1],length(Buf));
+        end else
           OutLen:=0;
         LineStart:=1;
         i:=1;
@@ -2816,8 +2817,10 @@ begin
       until OutLen=0;
       TheProcess.WaitOnExit;
     finally
+      //DebugLn('TDefinePool.CreateFPCTemplate OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
+    //DebugLn('TDefinePool.CreateFPCTemplate First done');
 
     // ask for target operating system -> ask compiler with switch -iTO
     CmdLine:=PPC386Path;
@@ -2831,7 +2834,7 @@ begin
     TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
-      if TheProcess.Output<>nil then
+      if (TheProcess.Output<>nil) then
         OutLen:=TheProcess.Output.Read(Buf[1],length(Buf))
       else
         OutLen:=0;
@@ -2863,6 +2866,7 @@ begin
         inc(i);
       end;
       TheProcess.WaitOnExit;
+      //DebugLn('TDefinePool.CreateFPCTemplate target OS done');
     finally
       TheProcess.Free;
     end;
@@ -2896,6 +2900,7 @@ begin
         inc(i);
       end;
       TheProcess.WaitOnExit;
+      //DebugLn('TDefinePool.CreateFPCTemplate target CPU done');
     finally
       TheProcess.Free;
     end;
@@ -2906,6 +2911,7 @@ begin
         ctsFreePascalCompilerInitialMacros,'','',da_Block);
       Result.AddChild(LastDefTempl.GetFirstSibling);
       Result.SetFlags([dtfAutoGenerated],[],false);
+      //DebugLn('TDefinePool.CreateFPCTemplate FPC defines done');
     end;
   except
     on E: Exception do begin
@@ -2938,7 +2944,7 @@ var
     ANode:=UnitTree.Root;
     while ANode<>nil do begin
       Result:=TUnitNameLink(ANode.Data);
-      cmp:=AnsiCompareText(AnUnitName,Result.UnitName);
+      cmp:=CompareText(AnUnitName,Result.UnitName);
       if cmp<0 then
         ANode:=ANode.Left
       else if cmp>0 then

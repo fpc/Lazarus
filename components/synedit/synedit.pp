@@ -995,7 +995,7 @@ uses
 {$ENDIF}
 {$IFNDEF SYN_LAZARUS}
 // ToDo ShellAPI
-  ShellAPI, SynEditStrConst
+  ShellAPI, SynEditStrConst,
 {$ENDIF}
   Clipbrd;
 

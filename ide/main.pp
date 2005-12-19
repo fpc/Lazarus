@@ -4308,10 +4308,12 @@ var
 begin
   if ofProjectLoading in Flags then begin
     // this is a file, that was loaded last time, but was removed from disk
-    Result:=MessageDlg(lisFileNotFound,
+    Result:=QuestionDlg(lisFileNotFound,
       Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject, ['"',
         AFilename, '"', #13, #13, #13]),
-      mtError, [mbIgnore, mbAbort], 0);
+      mtError, [mrIgnore, lisSkipFileAndContinueLoading,
+                mrAbort, lisAbortLoadingProject],
+      0);
     exit;
   end;
 

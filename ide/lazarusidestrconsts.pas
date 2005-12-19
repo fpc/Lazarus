@@ -378,6 +378,8 @@ resourcestring
   lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file %s%s%s%'
     +'swas not found.%sIgnore will go on loading the project,%sAbort  will '
     +'stop the loading.';
+  lisSkipFileAndContinueLoading = 'Skip file and continue loading';
+  lisAbortLoadingProject = 'Abort loading project';
   lisFileNotFound2 = 'File %s%s%s not found.%s';
   lisFileNotFoundDoYouWantToCreateIt = 'File %s%s%s not found.%sDo you want '
     +'to create it?%s';

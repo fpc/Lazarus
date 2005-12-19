@@ -107,7 +107,7 @@ if [ $InstallAsDefault = "yes" ]; then
     echo "Either prepend it to \$PATH or define another with installbin=<path>"
     exit -1
   fi
-  # check if $InstallBin is in before the system compiler
+  # check if $InstallBin is in PATH before the system compiler
   mkdir -p $InstallBin
   NewCompilerName=$InstallBin/$CompilerName
   if [ ! -f $NewCompilerName ]; then
