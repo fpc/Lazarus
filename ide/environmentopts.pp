@@ -780,7 +780,6 @@ end;
 const
   EnvOptsConfFileName='environmentoptions.xml';
   BakMaxCounterInfiniteTxt = 'infinite';
-  BakNoSubDirTxt = '(none)';
 
 constructor TEnvironmentOptions.Create;
 begin
@@ -1711,7 +1710,7 @@ begin
   with BakProjSubDirComboBox.Items do begin
     BeginUpdate;
     Clear;
-    Add(BakNoSubDirTxt);
+    Add(dlgBakNoSubDirectory);
     Add('backup');
     EndUpdate;
   end;
@@ -1760,7 +1759,7 @@ begin
   with BakOtherSubDirComboBox.Items do begin
     BeginUpdate;
     Clear;
-    Add(dlgBakDirectory);
+    Add(dlgBakNoSubDirectory);
     Add('backup');
     EndUpdate;
   end;
@@ -2276,7 +2275,7 @@ begin
       if SubDirectory<>'' then
         SetComboBoxText(BakProjSubDirComboBox,SubDirectory)
       else
-        SetComboBoxText(BakProjSubDirComboBox,BakNoSubDirTxt);      
+        SetComboBoxText(BakProjSubDirComboBox,dlgBakNoSubDirectory);
     end;
     BakTypeRadioGroupClick(BakProjTypeRadioGroup);
     with BackupInfoOtherFiles do begin
@@ -2296,7 +2295,7 @@ begin
       if SubDirectory<>'' then
         SetComboBoxText(BakOtherSubDirComboBox,SubDirectory)
       else
-        SetComboBoxText(BakOtherSubDirComboBox,BakNoSubDirTxt);      
+        SetComboBoxText(BakOtherSubDirComboBox,dlgBakNoSubDirectory);
     end;
     BakTypeRadioGroupClick(BakOtherTypeRadioGroup);
     
@@ -2417,7 +2416,7 @@ begin
       else
         MaxCounter:=StrToIntDef(BakProjMaxCounterComboBox.Text,1);
       SubDirectory:=BakProjSubDirComboBox.Text;
-      if SubDirectory=BakNoSubDirTxt then
+      if SubDirectory=dlgBakNoSubDirectory then
         SubDirectory:='';
     end;
     with BackupInfoOtherFiles do begin
@@ -2434,7 +2433,7 @@ begin
         MaxCounter:=0
       else
         MaxCounter:=StrToIntDef(BakOtherMaxCounterComboBox.Text,1);
-      if BakOtherSubDirComboBox.Text=BakNoSubDirTxt then
+      if BakOtherSubDirComboBox.Text=dlgBakNoSubDirectory then
         SubDirectory:=''
       else
         SubDirectory:=BakOtherSubDirComboBox.Text;

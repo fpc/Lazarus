@@ -681,7 +681,7 @@ resourcestring
 
 
   // Environment dialog
-  dlgBakDirectory='(no subdirectoy)';
+  dlgBakNoSubDirectory='(no subdirectoy)';
   
   // Search dialog
   dlgSearchCaption = 'Searching...';
