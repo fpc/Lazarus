@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -21,40 +21,39 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="selectprinter"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="152"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="47" Y="102"/>
+        <CursorPos X="38" Y="205"/>
         <EditorIndex Value="0"/>
         <Filename Value="frmselprinter.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmselprinter.lrs"/>
-        <TopLine Value="85"/>
+        <TopLine Value="191"/>
         <UnitName Value="frmselprinter"/>
-        <UsageCount Value="150"/>
+        <UsageCount Value="152"/>
       </Unit1>
       <Unit2>
         <CursorPos X="10" Y="296"/>
-        <Filename Value="C:\lazarus\components\PRINTERS\WIN32\winprndialogs.inc"/>
+        <Filename Value="C:/lazarus/components/PRINTERS/WIN32/winprndialogs.inc"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="text"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="98"/>
       </Unit2>
       <Unit3>
         <CursorPos X="1" Y="1"/>
-        <Filename Value="C:\lazarus\components\PRINTERS\LINUX\cupsprndialogs.inc"/>
+        <Filename Value="C:/lazarus/components/PRINTERS/LINUX/cupsprndialogs.inc"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="text"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="98"/>
       </Unit3>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -62,7 +61,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -74,13 +73,17 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="frmselprinter.pas"/>
+        <Caret Line="224" Column="13" TopLine="191"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <PathDelim Value="\"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -94,7 +97,6 @@
         <IOChecks Value="True"/>
         <RangeChecks Value="True"/>
         <OverflowChecks Value="True"/>
-        <StackChecks Value="True"/>
       </Checks>
       <Generate Value="Faster"/>
     </CodeGeneration>
