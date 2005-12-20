@@ -75,7 +75,7 @@ begin
               CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
               PDev.DevMode.dmDriverExtra := 0;
-              PDev.DefaultPaper := DevMode^.dmPaperSize;
+              PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize;
             finally
               GlobalUnlock(lpp.hDevMode);
            end;
@@ -158,7 +158,7 @@ begin
               CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
               PDev.DevMode.dmDriverExtra := 0;
-              PDev.DefaultPaper := DevMode^.dmPaperSize;
+              PDev.DevMode.dmPaperSize := Devmode^.dmPaperSize;
               TWinPrinter(Printer).Handle := hDC;
             finally
               GlobalUnlock(lpp.hDevMode);
@@ -261,11 +261,11 @@ begin
               CopyMemory(@PDev.DevMode,DevMode,sizeof(Pdev.DevMode));
               PDev.DevMode.dmSize := SizeOf(PDev.DevMode);
               PDev.DevMode.dmDriverExtra := 0;
-              if Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(Integer(DevMode^.dmPaperSize))) <> -1
+              if Printer.PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(DevMode^.dmPaperSize))) <> -1
                then
-                PDev.DefaultPaper := DevMode^.dmPaperSize
-                else
-                  PDev.DefaultPaper := Integer(Printer.PaperSize.SupportedPapers.Objects[0]);
+                PDev.DevMode.dmPaperSize := DevMode^.dmPaperSize
+              else
+                PDev.DevMode.dmPaperSize := PDev.DefaultPaper;
               if nCopies=1 then Copies := DevMode^.dmCopies
               else
               Copies := nCopies;

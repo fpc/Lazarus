@@ -16,24 +16,24 @@
     <LazDoc Paths=""/>
     <Units Count="4">
       <Unit0>
-        <CursorPos X="1" Y="14"/>
+        <CursorPos X="19" Y="15"/>
         <Filename Value="selectprinter.lpr"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="selectprinter"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="150"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="29" Y="32"/>
+        <CursorPos X="47" Y="102"/>
         <EditorIndex Value="0"/>
         <Filename Value="frmselprinter.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmselprinter.lrs"/>
-        <TopLine Value="21"/>
+        <TopLine Value="85"/>
         <UnitName Value="frmselprinter"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="150"/>
       </Unit1>
       <Unit2>
         <CursorPos X="10" Y="296"/>
@@ -41,7 +41,7 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="text"/>
-        <UsageCount Value="86"/>
+        <UsageCount Value="96"/>
       </Unit2>
       <Unit3>
         <CursorPos X="1" Y="1"/>
@@ -49,7 +49,7 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="text"/>
-        <UsageCount Value="86"/>
+        <UsageCount Value="96"/>
       </Unit3>
     </Units>
     <PublishOptions>

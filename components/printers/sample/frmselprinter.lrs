@@ -1,4 +1,4 @@
-{ To jest automatycznie wygenerowany plik zasobów lazarusa }
+{ This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#13'ActiveControl'#7#7'Button2'#7'Caption'#6#5'Form1'

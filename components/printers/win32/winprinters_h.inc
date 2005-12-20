@@ -28,6 +28,9 @@ uses
   Classes, SysUtils,Printers,LCLType,{Forms,}Windows;//,dialogs;
 
 Type
+
+  { TWinPrinter }
+
   TWinPrinter = class(TPrinter)
   private
     //fDefaultPrinter : String;
@@ -51,6 +54,7 @@ Type
     procedure DoResetPrintersList; override;
     
     procedure DoEnumPapers(Lst : TStrings); override;
+    function DoGetPaperName: string; override;
     function DoGetDefaultPaperName: string; override;
     procedure DoSetPaperName(aName : string); override;
     function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; override;

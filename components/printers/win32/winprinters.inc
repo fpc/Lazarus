@@ -324,6 +324,22 @@ begin
   end;
 end;
 
+function TWinPrinter.DoGetPaperName: string;
+var i    : Integer;
+    PDev : TPrinterDevice;
+begin
+  Result:=inherited DoGetPaperName;
+
+  if (Printers.Count>0) then
+  begin
+    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+
+    i:=PaperSize.SupportedPapers.IndexOfObject(TObject(ptrint(PDev.Devmode.dmPaperSize)));
+    if i<>-1 then
+      Result:=PaperSize.SupportedPapers.Strings[i];
+  end;
+end;
+
 function TWinPrinter.DoGetDefaultPaperName: string;
 var i    : Integer;
     PDev : TPrinterDevice;

@@ -85,6 +85,11 @@ begin
     SGrid.Clean;
     with Printer do
     begin
+      if Printers.Count=0 then
+      begin
+        AddInfo('printer', 'no printers are installed');
+        exit;
+      end;
       AddInfo('Printer',Printers[PrinterIndex]);
       case Orientation of
         poPortrait : AddInfo('Orientation','Portrait');
@@ -129,7 +134,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  Printer.PrinterIndex := 0;
+  Printer.PrinterIndex := -1;
   UpdatePrinterInfo;
 end;
 

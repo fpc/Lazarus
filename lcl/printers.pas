@@ -355,8 +355,25 @@ end;
 
 //Set the current printer
 procedure TPrinter.SetPrinter(aName: String);
-var i : Integer;
+var
+  i,oldIndex : Integer;
 begin
+  if aName='*' then begin
+    // select default printer
+    OldIndex := FPrinterIndex;
+    fPrinterIndex := -1; // avoid to remember last printer
+    Refresh;
+    if Printers.count>0 then begin
+      i:= doSetprinter(FPrinters[0]); // now first printer is default
+      if i<>0 then begin
+        // something went wrong, try to restore old printer
+        if OldIndex>=0 then
+          FPrinterIndex := doSetPrinter(FPrinters[OldIndex]);
+        raise EPrinter.Create('Unable to set default printer!');
+      end else
+        FPrinterIndex := i;
+    end;
+  end else
   if (Printers.Count>0) then
   begin
     if (aName<>'') then
@@ -511,16 +528,17 @@ begin
   CheckPrinting(False);
   if Printers.Count>0 then
   begin
-    aName:='*';
     if AValue=-1 then
-      AValue:=0 {Default printer}
+      aName:='*'
     else
-      if AValue<Printers.Count then
-           aName:=Printers.Strings[AValue];
-
+      if (AValue>=0) and (AValue<Printers.Count) then
+        aName:=Printers.Strings[AValue]
+      else
+        raise EPrinter.Create('Printer index out of range !');
     SetPrinter(aName);
   end
-  else raise EPrinter.Create('No printers defined !');
+  else
+    raise EPrinter.Create('No printers defined !');
 end;
 
 //If not Printer selected, Select the default printer
@@ -723,7 +741,8 @@ begin
     if aName<>DefaultPaperName then
       fOwnedPrinter.DoSetPaperName(aName)
   end
-  else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
+  else
+    raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
 end;
 
 //Return an TPaperRect corresponding at an paper name
