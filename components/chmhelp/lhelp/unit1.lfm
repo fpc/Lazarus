@@ -65,7 +65,7 @@ object HelpForm: THelpForm
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 90
-  Position = poDefault
+  Position = poScreenCenter
   ShowInTaskBar = stAlways
   HorzScrollBar.Page = 757
   VertScrollBar.Page = 508
@@ -562,7 +562,7 @@ object HelpForm: THelpForm
   end
   object PopupMenu1: TPopupMenu
     left = 72
-    top = 216
+    top = 224
     object PopupHome: TMenuItem
       Caption = 'Home'
       OnClick = HomeToolBtnClick

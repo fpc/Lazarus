@@ -1,5 +1,25 @@
-{* $Id: lzx.c,v 1.5 2002/10/09 01:16:33 jedwin Exp $ */
-/***************************************************************************
+{ Copyright (C) <2005> <Andrew Haines> chmspecialparser.pas
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Library General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or (at your
+  option) any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License
+  for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+}
+{
+  See the file COPYING.LCL, included in this distribution,
+  for details about the copyright.
+}
+
+{***************************************************************************
  *                     paslzx.pas - LZX decompression routines             *
  *                           -------------------                           *
  *                                                                         *
@@ -7,25 +27,17 @@
  *  source:     modified lzx.c from chmlib 0.37-4                          *
  *  notes:      The lzx.c file was taken from cabextract v0.5, which was,  *
  *              itself, a modified version of the lzx decompression code   *
- *              from unlzx.                                                *
+ *              from unlzx. This file would not be available without the   *
+ *              invaluable help from Micha Nelissen fixing my errors.      *
+ *                                                                         *
+ *              Licensed with permission of Stuart Caie with a modified    *
+ *              LGPL.                                                      *
  *                                                                         *
  *  platforms:  Should work on any platform that FreePascal is available   *
  *              on. However it has been tested on only an amd64(Linux) and *
- *              x86(Linux and Windows).                                    *
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.  Note that an exemption to this   *
- *   license has been granted by Stuart Caie for the purposes of           *
- *   distribution with chmlib.  This does not, to the best of my           *
- *   knowledge, constitute a change in the license of this (the LZX) code  *
- *   in general.                                                           *
- *                                                                         *
+ *              x86(Linux and Windows). Only tested on little endian pc's. *
  ***************************************************************************}
+
 unit paslzx;
 
 {$mode objfpc}{$H+}{$R+}

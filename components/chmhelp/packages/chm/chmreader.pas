@@ -1,22 +1,22 @@
 { Copyright (C) <2005> <Andrew Haines> chmreader.pas
 
-  This source is free software; you can redistribute it and/or modify it under
-  the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Library General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or (at your
+  option) any later version.
 
-  This code is distributed in the hope that it will be useful, but WITHOUT ANY
-  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License
+  for more details.
 
-  A copy of the GNU General Public License is available on the World Wide Web
-  at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
-  to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-  MA 02111-1307, USA.
+  You should have received a copy of the GNU Library General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-{ This license will be changed to a modified LGPL if I get permission to change
-  license of paslzx.pas to the modified LGPL that the FCL uses. - Andrew Haines
+{
+  See the file COPYING.LCL, included in this distribution,
+  for details about the copyright.
 }
 unit chmreader;
 
@@ -92,9 +92,37 @@ type
     property DefaultPage: String read fDefaultPage;
     property IndexFile: String read fIndexFile;
     property TOCFile: String read fTOCFile;
-    property Title: String read fTitle;
+    property Title: String read fTitle write fTitle;
     property PreferedFont: String read fPreferedFont;
     property LocaleID: dword read fLocaleID;
+  end;
+
+  { TChmFileList }
+  TChmFileList = class;
+  TChmFileOpenEvent = procedure(ChmFileList: TChmFileList; Index: Integer) of object;
+  TChmFileList = class(TStringList)
+  protected
+    fLastChm: TChmReader;
+    fUnNotifiedFiles: TList;
+    fOnOpenNewFile: TChmFileOpenEvent;
+    procedure Delete(Index: Integer); override;
+    function GetChm(AIndex: Integer): TChmReader;
+    function GetFileName(AIndex: Integer): String;
+    procedure OpenNewFile(AFileName: String);
+    function CheckOpenFile(AFileName: String): Boolean;
+    function MetaObjectExists(var Name: String): QWord;
+    function MetaGetObject(Name: String): TMemoryStream;
+    procedure SetOnOpenNewFile(AValue: TChmFileOpenEvent);
+  public
+    constructor Create(PrimaryFileName: String);
+    destructor Destroy;
+    function GetObject(Name: String): TMemoryStream;
+    function IsAnOpenFile(AFileName: String): Boolean;
+    function ObjectExists(Name: String; fChm: TChmReader = nil): QWord;
+    //properties
+    property Chm[Index: Integer]: TChmReader read GetChm;
+    property FileName[Index: Integer]: String read GetFileName;
+    property OnOpenNewFile: TChmFileOpenEvent read fOnOpenNewFile write SetOnOpenNewFile;
   end;
   
 //ErrorCodes
@@ -771,6 +799,157 @@ begin
   end;
 end;
 
+
+{ TChmFileList }
+
+procedure TChmFileList.Delete(Index: Integer);
+begin
+  Chm[Index].Free;
+  inherited Delete(Index);
+end;
+
+function TChmFileList.GetChm(AIndex: Integer): TChmReader;
+begin
+  Result := TChmReader(Objects[AIndex]);
+end;
+
+function TChmFileList.GetFileName(AIndex: Integer): String;
+begin
+  Result := Strings[AIndex];
+end;
+
+procedure TChmFileList.OpenNewFile(AFileName: String);
+var
+AStream: TFileStream;
+AChm: TChmReader;
+AIndex: Integer;
+begin
+  if not FileExists(AFileName) then exit;
+  AStream := TFileStream.Create(AFileName, fmOpenRead);
+  AChm := TChmReader.Create(AStream, True);
+  AIndex := AddObject(AFileName, AChm);
+  fLastChm := AChm;
+  if Assigned(fOnOpenNewFile) then fOnOpenNewFile(Self, AIndex)
+  else fUnNotifiedFiles.Add(AChm);
+end;
+
+function TChmFileList.CheckOpenFile(AFileName: String): Boolean;
+var
+  X: Integer;
+  
+begin
+  Result := False;
+  for X := 0 to Count-1 do begin
+    if ExtractFileName(FileName[X]) = AFileName then begin
+      fLastChm := Chm[X];
+      Result := True;
+      Exit;
+    end;
+  end;
+  if not Result then begin
+    AFileName := ExtractFilePath(FileName[0])+AFileName;
+    if FileExists(AFileName) and (ExtractFileExt(AFileName) = '.chm') then OpenNewFile(AFileName);
+    Result := True;
+  end;
+end;
+
+function TChmFileList.MetaObjectExists(var Name: String): QWord;
+var
+  AFileName: String;
+  URL: String;
+  fStart, fEnd: Integer;
+  Found: Boolean;
+begin
+  Found := False;
+  Result := 0;
+  //Known META file link types
+  //       ms-its:name.chm::/topic.htm
+  //mk:@MSITStore:name.chm::/topic.htm
+  if Pos('ms-its:', Name) > 0 then begin
+    fStart := Pos('ms-its:', Name)+Length('ms-its:');
+    fEnd := Pos('::', Name)-fStart;
+    AFileName := Copy(Name, fStart, fEnd);
+    fStart := fEnd+fStart+2;
+    fEnd := Length(Name) - (fStart-1);
+    URL := Copy(Name, fStart, fEnd);
+    Found := True;
+  end
+  else if Pos('mk:@MSITStore:', Name) > 0 then begin
+    fStart := Pos('mk:@MSITStore:', Name)+Length('mk:@MSITStore:');
+    fEnd := Pos('::', Name)-fStart;
+    AFileName := Copy(Name, fStart, fEnd);
+    fStart := fEnd+fStart+2;
+    fEnd := Length(Name) - (fStart-1);
+    URL := Copy(Name, fStart, fEnd);
+    Found := True;
+  end;
+  if not Found then exit;
+  if CheckOpenFile(AFileName) then
+    Result := fLastChm.ObjectExists(URL);
+  if Result > 0 then NAme := Url;
+end;
+
+function TChmFileList.MetaGetObject(Name: String): TMemoryStream;
+begin
+  Result := nil;
+  if MetaObjectExists(Name) > 0 then Result := fLastChm.GetObject(Name);
+end;
+
+constructor TChmFileList.Create(PrimaryFileName: String);
+begin
+  inherited Create;
+  fUnNotifiedFiles := TList.Create;
+  OpenNewFile(PrimaryFileName);
+end;
+
+destructor TChmFileList.Destroy;
+begin
+  fUnNotifiedFiles.Free;
+end;
+
+procedure TChmFileList.SetOnOpenNewFile(AValue: TChmFileOpenEvent);
+var
+  X: Integer;
+begin
+  fOnOpenNewFile := AValue;
+  if AValue = nil then exit;
+  for X := 0 to fUnNotifiedFiles.Count-1 do
+    AValue(Self, X);
+  fUnNotifiedFiles.Clear;
+end;
+
+function TChmFileList.ObjectExists(Name: String; fChm: TChmReader = nil): QWord;
+begin
+  Result := 0;
+  if Count = 0 then exit;
+  if fChm <> nil then fLastChm := fChm;
+  Result := fLastChm.ObjectExists(Name);
+  if Result = 0 then begin
+    Result := Chm[0].ObjectExists(Name);
+    if Result > 0 then fLastChm := Chm[0];
+  end;
+  if Result = 0 then begin
+    Result := MetaObjectExists(Name);
+  end;
+end;
+
+function TChmFileList.GetObject(Name: String): TMemoryStream;
+begin
+  Result := nil;
+  if Count = 0 then exit;
+  Result := fLastChm.GetObject(Name);
+  if Result = nil then Result := MetaGetObject(Name);
+end;
+
+function TChmFileList.IsAnOpenFile(AFileName: String): Boolean;
+var
+  X: Integer;
+begin
+  Result := False;
+  for X := 0 to Count-1 do begin
+    if AFileName = FileName[X] then Exit(True);
+  end;
+end;
 
 end.
 

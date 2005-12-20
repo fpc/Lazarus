@@ -21,7 +21,6 @@
 unit ChmSpecialParser;
 
 {$mode objfpc}{$H+}
-//{$INLINING ON}
 
 interface
 
@@ -69,7 +68,7 @@ type
     procedure FillULIndices;
   public
     constructor Create(ATreeView: TTreeView; AStream: TStream; StopBoolean: PBoolean);
-    procedure DoFill; //inline;
+    procedure DoFill(ParentNode: TTreeNode);
     
 
   end;
@@ -121,16 +120,24 @@ var
   NodeInfo: TContentNode;
   ULEnd: Integer;
 begin
+  // NOTE: this doesn't truly parse the html'ish content here. So things like
+  // entries spread on multiple lines won't work. Patches are welcome :)
   Result := True;
   Inc(fBranchCount);
   X := StartLine-1;
   while X < EndLine do begin
     Inc(X);
     if Pos('<LI>', fText.Strings[X]) > 0 then begin
-      NodeInfo := GetLIData(X);
-      TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
-      TreeNode.Url := NodeInfo.Url;
-      Inc(X, NodeInfo.LineCount);
+      try
+        NodeInfo := GetLIData(X);
+        TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
+        TreeNode.Url := NodeInfo.Url;
+        Inc(X, NodeInfo.LineCount);
+      except
+        // an exception can occur if we have closed the file while the toc is still being read
+        Result := False;
+        Exit;
+      end;
     end;
     if (X <> StartLine) and (fULList[X-1] < fULList[X]) then begin
       ULEnd := GetULEnd(X);
@@ -138,7 +145,7 @@ begin
       Inc(X, ULEnd-X);
     end;
   end;
-  if fBranchCount mod 200 = 0 then begin
+  if fBranchCount mod 400 = 0 then begin
     Application.ProcessMessages;
     if fStop^ = True then Exit(False);
   end;
@@ -211,7 +218,7 @@ begin
   fStop := StopBoolean;
 end;
 
-procedure TContentsFiller.DoFill;
+procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
 var
  OrigEvent: TTVCustomCreateNodeEvent;
  X: Integer;
@@ -220,16 +227,14 @@ begin
   fTreeView.OnCustomCreateItem := @CustomCreateContentTreeItem;
   
   fText := TStringList.Create;
-  //TMemoryStream(fStream).SaveToFile('/tmp/contents.txt');
   fStream.Position := 0;
   fTreeView.BeginUpdate;
-  fTreeView.Items.Clear;
   fText.LoadFromStream(fStream);
   SetLength(fULList, fText.Count);
   FillULIndices;
   for X := 0 to fText.Count-1 do begin
     if Pos('<UL>', UpperCase(fText.Strings[X])) > 0 then begin
-      if not AddULTree(X, GetULEnd(X), nil) then begin
+      if not AddULTree(X, GetULEnd(X), ParentNode) then begin
       //then we have either closed the file or are exiting the program
         fTreeView.Items.Clear;
       end;

@@ -45,7 +45,7 @@ type
 
   TIpChmDataProvider = class(TIpAbstractHtmlDataProvider)
   private
-    fChm: TChmreader;
+    fChm: TChmFileList;
     fCurrentPath: String;
     fOnHelpPopup: THelpPopupEvent;
   protected
@@ -61,9 +61,9 @@ type
     function BuildURL(const OldURL, NewURL: string): string; override;
     function GetDirsParents(ADir: String): TStringList;
   public
-    constructor Create(var AChm: TChmReader);
+    constructor Create(var AChm: TChmFileList);
     destructor Destroy; override;
-    property Chm: TChmReader read fChm write fChm;
+    property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
     property CurrentPath: String read fCurrentPath write fCurrentPath;
   end;
@@ -192,6 +192,10 @@ tmp: String;
 X: LongInt;
 RelURL: String = '';
 begin
+  if fChm.ObjectExists(NewURL) > 0 then begin
+    Result := NewUrl;
+    Exit;
+  end;
   Result:=iputils.BuildURL(Oldurl,NewUrl);
   if NewURL[1] <> '/' then
   begin
@@ -230,7 +234,7 @@ begin
 
 end;
 
-constructor TIpChmDataProvider.Create(var AChm: TChmReader);
+constructor TIpChmDataProvider.Create(var AChm: TChmFileList);
 begin
   inherited Create(nil);
   fChm := AChm;

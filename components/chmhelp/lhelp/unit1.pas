@@ -106,8 +106,7 @@ type
     { private declarations }
     fStopTimer: Boolean;
     fFillingToc: Boolean;
-    fHelpFile: String;
-    fChm: TChmReader;
+    fChms: TChmFileList;
     fHistory: TStringList;
     fHotUrl: String;
     fHistoryIndex: Integer;
@@ -120,14 +119,20 @@ type
     procedure DoOpenChm(AFile: String);
     procedure DoCloseChm;
     procedure DoLoadContext(Context: THelpContext);
-    procedure DoLoadUrl(Url: String);
+    procedure DoLoadUrl(Url: String; AChm: TChmReader = nil);
     procedure DoError(Error: Integer);
+    procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     procedure ReadCommandLineOptions;
     procedure StartServer(ServerName: String);
     procedure StopServer;
   public
     { public declarations }
-  end; 
+  end;
+  
+  TTocTimer = class(TIdleTimer)
+  private
+    fChm: TChmReader;
+  end;
 
 var
   HelpForm: THelpForm;
@@ -150,11 +155,21 @@ end;
 procedure THelpForm.ContentsTreeSelectionChanged(Sender: TObject);
 var
 ATreeNode: TContentTreeNode;
+ARootNode: TTreeNode;
+fChm: TChmReader = nil;
+
 begin
-  if ContentsTree.Selected = nil then Exit;
+  if (ContentsTree.Selected = nil) or not(ContentsTree.Selected is TContentTreeNode) then Exit;
   ATreeNode := TContentTreeNode(ContentsTree.Selected);
+
+  //find the chm associated with this branch
+  ARootNode := ATreeNode.Parent;
+  while ARootNode.Parent <> nil do
+    ARootNode := ARootNode.Parent;
+
+  fChm := TChmReader(ARootNode.Data);
   if ATreeNode.Url <> '' then begin
-    DoLoadUrl(ATreeNode.Url);
+    DoLoadUrl(ATreeNode.Url, fChm);
   end;
 end;
 
@@ -201,7 +216,7 @@ begin
   fContext := -1;
   //Chm := TCHMFile.Create;
   fHistory := TStringList.Create;
-  IpHtmlPanel1.DataProvider := TIpChmDataProvider.Create(fChm);
+  IpHtmlPanel1.DataProvider := TIpChmDataProvider.Create(fChms);
   ReadCommandLineOptions;
   if fServerName <> '' then begin
     StartServer(fServerName);
@@ -218,8 +233,8 @@ end;
 
 procedure THelpForm.HomeToolBtnClick(Sender: TObject);
 begin
-  if (fChm <> nil) and (fChm.DefaultPage <> '') then begin
-    DoLoadUrl(fChm.DefaultPage);
+  if (fChms <> nil) and (fChms.Chm[0].DefaultPage <> '') then begin
+    DoLoadUrl(fChms.Chm[0].DefaultPage);
   end;
 end;
 
@@ -299,6 +314,8 @@ end;
 procedure THelpForm.FillTOCTimer(Sender: TObject);
 var
  Stream: TMemoryStream;
+ fChm: TChmReader;
+ ParentNode: TTreeNode;
 begin
   if fFillingToc = True then begin
     TTimer(Sender).Interval := 40;
@@ -307,18 +324,21 @@ begin
   fFillingToc := True;
   fStopTimer := False;
   ContentsTree.Visible := False;
-  TTimer(Sender).Free;
+  fChm := TTocTimer(Sender).fChm;
+  TTocTimer(Sender).Free;
   if fChm <> nil then begin
-    Stream := TMemoryStream(fchm.GetObject(fchm.TOCFile));
+    Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
+      ParentNode := ContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
       with TContentsFiller.Create(ContentsTree, Stream, @fStopTimer) do begin
-        DoFill;
+        DoFill(ParentNode);
         Free;
       end;
     end;
     Stream.Free;
   end;
+  if ParentNode.Index = 0 then ParentNode.Expanded := True;
   ContentsTree.Visible := True;
   fFillingToc := False;
   fStopTimer := False;
@@ -371,74 +391,46 @@ var
 Stream: TStream;
 Timer: TTimer;
 begin
-  if fHelpFile = AFile then Exit;
+  if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
   DoCloseChm;
   if not FileExists(AFile) or DirectoryExists(AFile) then
   begin
     Exit;
   end;
   try
-    Stream := TFileStream.Create(AFile, fmOpenRead);
-    fChm := TChmReader.Create(Stream, True); // fChm becomes responsible for freeing the stream
-    if Not(fChm.IsValidFile) then begin      // when the second param is true
-      FreeAndNil(fChm);
+    fChms := TChmFileList.Create(AFile);
+    if Not(fChms.Chm[0].IsValidFile) then begin
+      FreeAndNil(fChms);
       DoError(INVALID_FILE_TYPE);
       Exit;
     end;
-    TIpChmDataProvider(IpHtmlPanel1.DataProvider).Chm := fChm;
+    TIpChmDataProvider(IpHtmlPanel1.DataProvider).Chm := fChms;
   except
-    FreeAndNil(fChm);
+    FreeAndNil(fChms);
     DoError(INVALID_FILE_TYPE);
     Exit;
   end;
-  if fChm = nil then Exit;
-  fHelpFile := AFile;
+  if fChms = nil then Exit;
+  fChms.OnOpenNewFile := @NewChmOpened;
   fHistoryIndex := -1;
   fHistory.Clear;
-  
-  // Fill the table of contents. This actually works very well
-  Timer := TIdleTimer.Create(Self);
-  if fChm.ObjectExists(fChm.TOCFile) > 5000 then
-    Timer.Interval := 500
-  else
-    Timer.Interval := 5;
-  Timer.OnTimer := @FillTOCTimer;
-  Timer.Enabled := True;
-  ContentsTree.Visible := False;
 
-  Stream := fchm.GetObject(fchm.IndexFile);
-  if Stream <> nil then begin
-    Stream.position := 0;
-    //Memo2.Lines.LoadFromStream(Stream);
-    with TIndexFiller.Create(IndexView, Stream) do begin;
-      DoFill;
-      Free;
-    end;
-    Stream.Free;
-  end;
-  
-  if fContext > -1 then begin
-    DoLoadContext(fContext);
-    fContext := -1;
-  end
-  else if fChm.DefaultPage <> '' then begin
-    DoLoadUrl(fChm.DefaultPage);
-  end;
+  // Code Here has been moved to the OpenFile handler
+
   FileMenuCloseItem.Enabled := True;
-  if fChm.Title <> '' then Caption := 'LHelp - '+fChm.Title;
+  if fChms.Chm[0].Title <> '' then Caption := 'LHelp - '+fChms.Chm[0].Title;
 end;
 
 procedure THelpForm.DoCloseChm;
 begin
   fStopTimer := True;
-  if fChm<>nil then begin
-    FreeAndNil(fChm);
+  if fChms<>nil then begin
+    FreeAndNil(fChms);
     FileMenuCloseItem.Enabled := False;
     fContext := -1;
   end;
   Caption := 'LHelp';
   IndexView.Clear;
-  fHelpFile := '';
   ContentsTree.Items.Clear;
   IpHtmlPanel1.SetHtml(nil);
   TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPath := '/';
@@ -449,24 +441,65 @@ procedure THelpForm.DoLoadContext(Context: THelpContext);
 var
  Str: String;
 begin
-  if fChm = nil then exit;
-  Str := fChm.GetContextUrl(Context);
+  if fChms = nil then exit;
+  Str := fChms.Chm[0].GetContextUrl(Context);
   if Str <> '' then DoLoadUrl(Str);
 end;
 
-procedure THelpForm.DoLoadUrl(Url: String);
+procedure THelpForm.DoLoadUrl(Url: String; AChm: TChmReader = nil);
 begin
-  if fChm = nil then exit;
-  if fChm.ObjectExists(Url) = 0 then Exit;
+  if (fChms = nil) and (AChm = nil) then exit;
+  if fChms.ObjectExists(Url, AChm) = 0 then Exit;
   IpHtmlPanel1.OpenURL(Url);
   TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
   AddHistory(Url);
+
 end;
 
 procedure THelpForm.DoError(Error: Integer);
 begin
   //what to do with these errors?
   //INVALID_FILE_TYPE;
+end;
+
+procedure THelpForm.NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
+var
+TImer: TTocTimer;
+Stream: TMemoryStream;
+begin
+  if Index = 0 then begin
+    ContentsTree.Items.Clear;
+    if fContext > -1 then begin
+      DoLoadContext(fContext);
+      fContext := -1;
+    end
+    else if ChmFileList.Chm[Index].DefaultPage <> '' then begin
+      DoLoadUrl(ChmFileList.Chm[Index].DefaultPage);
+    end;
+  end;
+  if ChmFileList.Chm[Index].Title = '' then
+    ChmFileList.Chm[Index].Title := ExtractFileName(ChmFileList.FileName[Index]);
+  // Fill the table of contents. This actually works very well
+  Timer := TTocTimer.Create(Self);
+  if ChmFileList.ObjectExists(ChmFileList.Chm[Index].TOCFile) > 25000 then
+    Timer.Interval := 500
+  else
+    Timer.Interval := 5;
+  Timer.OnTimer := @FillTOCTimer;
+  Timer.fChm := ChmFileList.Chm[Index];
+  Timer.Enabled := True;
+  ContentsTree.Visible := False;
+
+  Stream := fchms.GetObject(ChmFileList.Chm[Index].IndexFile);
+  if Stream <> nil then begin
+    Stream.position := 0;
+    with TIndexFiller.Create(IndexView, Stream) do begin;
+      DoFill;
+      Free;
+    end;
+    Stream.Free;
+  end;
+
 end;
 
 procedure THelpForm.ReadCommandLineOptions;
