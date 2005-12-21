@@ -51,7 +51,7 @@ Type
     function GetStoredValues: TStoredValues;
   protected
     function GetDisplayName: string; override;
-    procedure SetDisplayName(const Value: string); override;
+    procedure SetDisplayName(const AValue: string); override;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
@@ -74,11 +74,11 @@ Type
   private
     FStorage: TCustomPropertyStorage;
     function GetValue(const AName: string): TStoredValue;
-    procedure SetValue(const AName: string; StoredValue: TStoredValue);
+    procedure SetValue(const AName: string; AStoredValue: TStoredValue);
     function GetStoredValue(const AName: string): TStoredType;
     procedure SetStoredValue(const AName: string; Value: TStoredType);
     function GetItem(Index: Integer): TStoredValue;
-    procedure SetItem(Index: Integer; StoredValue: TStoredValue);
+    procedure SetItem(Index: Integer; AStoredValue: TStoredValue);
   public
     constructor Create(AOwner: TPersistent);
     function IndexOf(const AName: string): Integer;
@@ -277,13 +277,13 @@ begin
     Result := FName;
 end;
 
-procedure TStoredValue.SetDisplayName(const Value: string);
+procedure TStoredValue.SetDisplayName(const AValue: string);
 begin
-  if (Value <> '') and (AnsiCompareText(Value, FName) <> 0)
+  if (AValue <> '') and (AnsiCompareText(AValue, FName) <> 0)
   and (Collection is TStoredValues)
-  and (TStoredValues(Collection).IndexOf(Value) >= 0) then
+  and (TStoredValues(Collection).IndexOf(AValue) >= 0) then
     raise Exception.Create(SDuplicateString);
-  FName := Value;
+  FName := AValue;
   inherited;
 end;
 
@@ -373,9 +373,9 @@ begin
   Result := TStoredValue(inherited Items[Index]);
 end;
 
-procedure TStoredValues.SetItem(Index: Integer; StoredValue: TStoredValue);
+procedure TStoredValues.SetItem(Index: Integer; AStoredValue: TStoredValue);
 begin
-  inherited SetItem(Index, TCollectionItem(StoredValue));
+  inherited SetItem(Index, TCollectionItem(AStoredValue));
 end;
 
 function TStoredValues.GetStoredValue(const AName: string): TStoredType;
@@ -417,13 +417,13 @@ begin
     Result := Items[I];
 end;
 
-procedure TStoredValues.SetValue(const AName: string; StoredValue: TStoredValue);
+procedure TStoredValues.SetValue(const AName: string; AStoredValue: TStoredValue);
 var
   I: Integer;
 begin
   I := IndexOf(AName);
   if I >= 0 then
-    Items[I].Assign(StoredValue);
+    Items[I].Assign(AStoredValue);
 end;
 
 procedure TStoredValues.SaveValues;

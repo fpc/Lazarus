@@ -658,7 +658,7 @@ type
   published
     property Control: TControl read FControl write SetControl;
     property Side: TAnchorSideReference read FSide write SetSide
-                           stored IsSideStored default TAnchorSideReference(-1);
+                           stored IsSideStored default asrTop;
   end;
 
 

@@ -91,7 +91,7 @@ type
     procedure SkipSetBody;
     function ReadIntegerContent: integer;
   public
-    constructor Create(Stream: TStream; BufSize: Integer); virtual;
+    constructor Create(AStream: TStream; BufSize: Integer); virtual;
     destructor Destroy; override;
 
     function NextValue: TValueType; override;
@@ -203,7 +203,7 @@ type
                           LFMPositions: Boolean): integer;
     procedure SetPosition(const FromPos, ToPos, MappedPos: int64;
                           LFMtoLRSPositions: Boolean);
-    procedure Add(const LFMPos, LRSPos: Int64; Data: Pointer);
+    procedure Add(const LFMPos, LRSPos: Int64; AData: Pointer);
   public
     property LFM[Index: integer]: int64 read GetLFM write SetLFM;
     property LRS[Index: integer]: int64 read GetLRS write SetLRS;
@@ -2606,10 +2606,10 @@ begin
   {$endif}
 end;
 
-constructor TLRSObjectReader.Create(Stream: TStream; BufSize: Integer);
+constructor TLRSObjectReader.Create(AStream: TStream; BufSize: Integer);
 begin
   inherited Create;
-  FStream := Stream;
+  FStream := AStream;
   FBufSize := BufSize;
   GetMem(FBuffer, BufSize);
 end;
@@ -3474,7 +3474,7 @@ begin
       PLRPositionLink(FItems[i])^.LFMPosition:=MappedPos;
 end;
 
-procedure TLRPositionLinks.Add(const LFMPos, LRSPos: Int64; Data: Pointer);
+procedure TLRPositionLinks.Add(const LFMPos, LRSPos: Int64; AData: Pointer);
 var
   Item: PLRPositionLink;
 begin
@@ -3482,7 +3482,7 @@ begin
   Item:=PLRPositionLink(FItems[Count-1]);
   Item^.LFMPosition:=LFMPos;
   Item^.LRSPosition:=LRSPos;
-  Item^.Data:=Data;
+  Item^.Data:=AData;
 end;
 
 initialization
