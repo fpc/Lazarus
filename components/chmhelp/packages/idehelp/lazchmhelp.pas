@@ -71,10 +71,7 @@ var
 fPos: Integer;
 begin
   Result := False;
-  WriteLn('RAWURL=',RawUrl);
 
-  if fPos > 0 then RawUrl := Copy(RawUrl, 1, fPos-1);
-  WriteLn('RAWURL=',RawUrl);
   fPos := Pos(':/', RawUrl);
   if fPos = 0 then exit;
   FileName := Copy(RawUrl, 1, fPos-1);
