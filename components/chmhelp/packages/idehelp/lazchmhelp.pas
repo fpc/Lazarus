@@ -31,13 +31,14 @@ type
 
   TChmHelpViewer = class(THelpViewer)
   private
-    fHelpServerExe: String;
-    fHelpServerName: String;
+    fHelpExe: String;
+    fHelpLabel: String;
     fHelpConnection: TLHelpConnection;
-    fChmFileName: String;
+    fChmsFilePath: String;
   protected
-    procedure SetHelpServerEXE(AValue: String);
-    procedure SetHelpServerName(AValue: String);
+    function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
+    procedure SetHelpEXE(AValue: String);
+    procedure SetHelpLabel(AValue: String);
   public
     constructor Create;
     destructor Destroy; override;
@@ -51,9 +52,9 @@ type
     procedure Save(Storage: TConfigStorage); override;
     function GetLocalizedName: string; override;
   published
-    property HelpServerEXE: String read fHelpServerEXE write SetHelpServerEXE;
-    property HelpServerName: String read fHelpServerName write SetHelpServerName;
-    property ChmFileName: String read fChmFileName write fChmFileName;
+    property HelpEXE: String read fHelpEXE write SetHelpEXE;
+    property HelpLabel: String read fHelpLabel write SetHelpLabel;
+    property HelpFilesPath: String read fChmsFilePath write fChmsFilePath;
 
   end;
   
@@ -63,14 +64,32 @@ implementation
 
 { TChmHelpViewer }
 
-procedure TChmHelpViewer.SetHelpServerEXE(AValue: String);
+
+function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
+  ): Boolean;
+var
+fPos: Integer;
 begin
-  fHelpServerExe := AValue;
+  Result := False;
+  WriteLn('RAWURL=',RawUrl);
+
+  if fPos > 0 then RawUrl := Copy(RawUrl, 1, fPos-1);
+  WriteLn('RAWURL=',RawUrl);
+  fPos := Pos(':/', RawUrl);
+  if fPos = 0 then exit;
+  FileName := Copy(RawUrl, 1, fPos-1);
+  URL := Copy(RawUrl, fPos+2, Length(RawUrl)-(fPos-2));
+  Result := True;
 end;
 
-procedure TChmHelpViewer.SetHelpServerName(AValue: String);
+procedure TChmHelpViewer.SetHelpEXE(AValue: String);
 begin
- fHelpServerName := AValue;
+  fHelpExe := AValue;
+end;
+
+procedure TChmHelpViewer.SetHelpLabel(AValue: String);
+begin
+ fHelpLabel := AValue;
 end;
 
 constructor TChmHelpViewer.Create;
@@ -98,14 +117,22 @@ end;
 
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
+var
+FileName: String;
+Url: String;
 begin
   Result:=shrNone;
-  if not FileExists(fHelpServerEXE) then begin
-    ErrMsg := 'The program "' + fHelpServerEXE + '" doesn''t seem to exist!';
+  if not FileExists(fHelpEXE) then begin
+    ErrMsg := 'The program "' + fHelpEXE + '" doesn''t seem to exist!';
     Exit(shrViewerNotFound);
   end;
-  fHelpConnection.StartHelpServer(fHelpServerName, fHelpServerExe);
-  fHelpConnection.OpenURL(fChmFileName, Copy(Node.URL, 1, Pos(':',Node.URL)-1));
+  if not GetFileNameAndURL(Node.Url, FileName, Url) then begin
+    ErrMsg := 'Couldn''t read the file/URL correctly';
+    Exit(shrDatabaseNotFound);
+  end;
+  FileName := fChmsFilePath+FileName;
+  fHelpConnection.StartHelpServer(fHelpLabel, fHelpExe);
+  fHelpConnection.OpenURL(FileName, Url);
   Result := shrSuccess;
   //WriteLn('LOADING URL = ', Node.URL);
 end;
@@ -116,24 +143,25 @@ var
 begin
   if Source is TChmHelpViewer then begin
     Viewer:=TChmHelpViewer(Source);
-    HelpServerEXE:=Viewer.HelpServerEXE;
-    HelpServerName:=Viewer.HelpServerName;
+    HelpEXE:=Viewer.HelpEXE;
+    HelpLabel:=Viewer.HelpLabel;
+    HelpFilesPath:=Viewer.HelpFilesPath;
   end;
   inherited Assign(Source);
 end;
 
 procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
-  HelpServerEXE:=Storage.GetValue('CHMHelp/Exe','');
-  HelpServerName:=Storage.GetValue('CHMHelp/Name','lazhelp');
-  ChmFileNAme := Storage.GetValue('CHMHelp/ChmFileName','');
+  HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
+  HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp');
+  HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
 
 procedure TChmHelpViewer.Save(Storage: TConfigStorage);
 begin
-  Storage.SetDeleteValue('CHMHelp/Exe',HelpServerEXE,'');
-  Storage.SetDeleteValue('CHMHelp/Name',HelpServerName,'lazhelp');
-  Storage.SetDeleteValue('CHMHelp/ChmFileName',ChmFileName,'');
+  Storage.SetDeleteValue('CHMHelp/Exe',HelpEXE,'');
+  Storage.SetDeleteValue('CHMHelp/Name',HelpLabel,'lazhelp');
+  Storage.SetDeleteValue('CHMHelp/FilesPath',HelpFilesPath,'');
 end;
 
 function TChmHelpViewer.GetLocalizedName: string;
@@ -151,8 +179,8 @@ end;
 
 initialization
   RegisterPropertyEditor(TypeInfo(AnsiString),
-    TCHmHelpViewer,'HelpServerEXE',TFileNamePropertyEditor);
+    TCHmHelpViewer,'HelpEXE',TFileNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString),
-    TCHmHelpViewer,'ChmFileName',TFileNamePropertyEditor);
+    TCHmHelpViewer,'HelpFilesPath',TFileNamePropertyEditor);
 end.
 
