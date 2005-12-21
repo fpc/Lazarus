@@ -32,11 +32,10 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, SourceLog, KeywordFuncLists, FileProcs;
+  Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs;
 
 //----------------------------------------------------------------------------
-{ These functions are used by the codetools
-}
+{ These functions are used by the codetools }
 
 // comments
 function FindNextNonSpace(const ASource: string; StartPos: integer): integer;
@@ -135,6 +134,29 @@ function SplitStringConstant(const StringConstant: string;
     const NewLine: string): string;
 procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
 procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
+
+// files
+type
+
+  { TUnitFileInfo }
+
+  TUnitFileInfo = class
+  private
+    FFilename: string;
+    FUnitName: string;
+  public
+    constructor Create(const TheUnitName, TheFilename: string);
+    property UnitName: string read FUnitName;
+    property Filename: string read FFilename;
+  end;
+
+function GatherUnitFiles(const BaseDir, SearchPath,
+    Extensions: string; KeepDoubles, CaseInsensitive: boolean;
+    var TreeOfUnitFiles: TAVLTree): boolean;
+procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
+function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
+function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
+                                        UnitFileInfo: Pointer): integer;
 
 // other useful stuff
 procedure RaiseCatchableException(const Msg: string);
@@ -3122,6 +3144,206 @@ begin
   until AtomEndPos>=EndPos;
 end;
 
+function GatherUnitFiles(const BaseDir, SearchPath,
+  Extensions: string; KeepDoubles, CaseInsensitive: boolean;
+  var TreeOfUnitFiles: TAVLTree): boolean;
+// BaseDir: base directory, used when SearchPath is relative
+// SearchPath: semicolon separated list of directories
+// Extensions: semicolon separated list of extensions (e.g. 'pas;.pp;ppu')
+// KeepDoubles: false to return only the first match of each unit
+// CaseInsensitive: true to ignore case on comparing extensions
+// TreeOfUnitFiles: tree of TUnitFileInfo
+var
+  SearchedDirectories: TAVLTree; // tree of PAnsiString
+
+  function DirectoryAlreadySearched(const ADirectory: string): boolean;
+  begin
+    Result:=false;
+  end;
+
+  procedure MarkDirectoryAsSearched(const ADirectory: string);
+  var
+    s: String;
+  begin
+    // increase refcount
+    s:=ADirectory;
+    if SearchedDirectories=nil then
+      SearchedDirectories:=TAVLTree.Create(@ComparePAnsiStringFilenames);
+    SearchedDirectories.Add(@s);
+    Pointer(s):=nil;
+  end;
+
+  procedure FreeSearchedDirectories;
+  var
+    ANode: TAVLTreeNode;
+    s: String;
+  begin
+    if SearchedDirectories=nil then exit;
+    s:='';
+    ANode:=SearchedDirectories.FindLowest;
+    while ANode<>nil do begin
+      Pointer(s):=ANode.Data;
+      s:=''; // decrease refcount
+      ANode:=SearchedDirectories.FindSuccessor(ANode);
+    end;
+    if s='' then ;
+    SearchedDirectories.Free;
+  end;
+  
+  function ExtensionFits(const Filename: string): boolean;
+  var
+    ExtStart: Integer;
+    ExtLen: Integer; // length without '.'
+    CurExtStart: Integer;
+    CurExtEnd: LongInt;
+    CompareCaseInsensitive: Boolean;
+    p: Integer;
+  begin
+    CompareCaseInsensitive:=CaseInsensitive;
+    {$IFDEF Win32}
+    CompareCaseInsensitive:=true;
+    {$ENDIF}
+    
+    ExtStart:=length(Filename);
+    while (ExtStart>=1) and (not (Filename[ExtStart] in [PathDelim,'.'])) do
+      dec(ExtStart);
+    if (ExtStart>0) and (Filename[ExtStart]='.') then begin
+      // filename has an extension
+      ExtLen:=length(Filename)-ExtStart;
+      inc(ExtStart);
+      CurExtStart:=1;
+      while (CurExtStart<=length(Extensions)) do begin
+        // skip '.'
+        if Extensions[CurExtStart]='.' then inc(CurExtStart);
+        // read till semicolon
+        CurExtEnd:=CurExtStart;
+        while (CurExtEnd<=length(Extensions)) and (Extensions[CurExtEnd]<>';')
+        do
+          inc(CurExtEnd);
+        if (CurExtEnd>CurExtStart) and (CurExtEnd-CurExtStart=ExtLen) then begin
+          // compare extension
+          p:=ExtLen-1;
+          while (p>=0) do begin
+            if CompareCaseInsensitive then begin
+              if UpChars[Filename[ExtStart+p]]
+              <>UpChars[Extensions[CurExtStart+p]]
+              then
+                break;
+            end else begin
+              if Filename[ExtStart+p]<>Extensions[CurExtStart+p] then
+                break;
+            end;
+            dec(p);
+          end;
+          if p<0 then begin
+            // extension fit
+            Result:=true;
+            exit;
+          end;
+        end;
+        CurExtStart:=CurExtEnd+1;
+      end;
+    end;
+    Result:=false;
+  end;
+  
+  procedure AddFilename(const Filename: string);
+  var
+    AnUnitName: String;
+    NewItem: TUnitFileInfo;
+  begin
+    AnUnitName:=ExtractFileNameOnly(Filename);
+    if (not KeepDoubles) then begin
+      if (TreeOfUnitFiles<>nil)
+      and (TreeOfUnitFiles.FindKey(Pointer(AnUnitName),
+                                   @CompareUnitNameAndUnitFileInfo)<>nil)
+      then begin
+        // an unit with the same name was already found and doubles are not
+        // wanted
+        exit;
+      end;
+    end;
+    // add
+    if TreeOfUnitFiles=nil then
+      TreeOfUnitFiles:=TAVLTree.Create(@CompareUnitFileInfos);
+    NewItem:=TUnitFileInfo.Create(AnUnitName,Filename);
+    TreeOfUnitFiles.Add(NewItem);
+  end;
+  
+  function SearchDirectory(const ADirectory: string): boolean;
+  var
+    FileInfo: TSearchRec;
+  begin
+    Result:=true;
+    if DirectoryAlreadySearched(ADirectory) then exit;
+    MarkDirectoryAsSearched(ADirectory);
+
+    if not DirPathExists(ADirectory) then exit;
+    if SysUtils.FindFirst(ADirectory+FileMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then
+          continue;
+        if ExtensionFits(FileInfo.Name) then begin
+          AddFilename(FileInfo.Name);
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+  end;
+
+var
+  PathStartPos: Integer;
+  PathEndPos: LongInt;
+  CurDir: String;
+begin
+  Result:=false;
+  SearchedDirectories:=nil;
+  try
+    // search all paths in SearchPath
+    PathStartPos:=1;
+    while PathStartPos<=length(SearchPath) do begin
+      PathEndPos:=PathStartPos;
+      while (PathEndPos<=length(SearchPath)) and (SearchPath[PathEndPos]<>';')
+      do
+        inc(PathEndPos);
+      if PathEndPos>PathStartPos then begin
+        CurDir:=AppendPathDelim(TrimFilename(
+                        copy(SearchPath,PathStartPos,PathEndPos-PathStartPos)));
+        if not FilenameIsAbsolute(CurDir) then
+          CurDir:=AppendPathDelim(BaseDir)+CurDir;
+        if not SearchDirectory(AppendPathDelim(CurDir)) then exit;
+      end;
+      PathStartPos:=PathEndPos;
+      while (PathStartPos<=length(SearchPath))
+      and (SearchPath[PathStartPos]=';') do
+        inc(PathStartPos);
+    end;
+    Result:=true;
+  finally
+    FreeSearchedDirectories;
+  end;
+end;
+
+procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
+begin
+  TreeOfUnitFiles.FreeAndClear;
+end;
+
+function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
+begin
+  Result:=SysUtils.CompareText(TUnitFileInfo(Data1).UnitName,
+                               TUnitFileInfo(Data2).UnitName);
+end;
+
+function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
+  UnitFileInfo: Pointer): integer;
+begin
+  Result:=SysUtils.CompareText(PAnsiString(UnitnamePAnsiString)^,
+                               TUnitFileInfo(UnitFileInfo).UnitName);
+end;
+
 procedure RaiseCatchableException(const Msg: string);
 begin
   { Raises an exception.
@@ -3232,6 +3454,14 @@ begin
     Result:=CompareTextIgnoringSpace(Txt1,Len1,Txt2,Len2,CaseSensitive)
   else
     Result:=CompareText(Txt1,Len1,Txt2,Len2,CaseSensitive);
+end;
+
+{ TUnitFileInfo }
+
+constructor TUnitFileInfo.Create(const TheUnitName, TheFilename: string);
+begin
+  FUnitName:=TheUnitName;
+  FFilename:=TheFilename;
 end;
 
 

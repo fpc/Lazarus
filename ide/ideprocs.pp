@@ -120,7 +120,8 @@ function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
-function ShortenSearchPath(const SearchPath, BaseDirectory, ChompDirectory: string): string;
+function ShortenSearchPath(const SearchPath, BaseDirectory,
+                           ChompDirectory: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function GetNextUsedDirectoryInSearchPath(const SearchPath,

@@ -422,7 +422,7 @@ type
     IdentifierTool: TFindDeclarationTool;
     FoundProc: PFoundProc;
   end;
-
+  
   TFindDeclarationParams = class(TObject)
   public
     // input parameters:
@@ -481,7 +481,6 @@ type
   
 const
   AllFindSmartFlags = [fsfIncludeDirective];
-
 
 type
   //----------------------------------------------------------------------------
@@ -659,6 +658,7 @@ type
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
+    procedure GatherUnitAndSrcPath(var UnitPath, SrcPath: string);
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -1503,7 +1503,8 @@ var
   end;
   
   function SearchUnitInUnitLinks(const TheUnitName: string): TCodeBuffer;
-  var UnitLinks, CurFilename: string;
+  var
+    UnitLinks, CurFilename: string;
     UnitLinkStart, UnitLinkEnd, UnitLinkLen: integer;
     pe: TCTPascalExtType;
   begin
@@ -1632,7 +1633,7 @@ begin
     end;
   end else begin
     // normal unit name
-    // first source search in current directory (= where the maincode is)
+    // first search in current directory (= where the maincode is)
     {$IFDEF ShowTriedFiles}
     DebugLn('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
     {$ENDIF}
@@ -1706,8 +1707,7 @@ begin
       // there is a compiled unit, only the source was not found
       RaiseExceptionInstance(
         ECodeToolUnitNotFound.Create(Self,
-          Format(ctsSourceNotFoundUnit, [CompiledResult.Filename]),
-          AnUnitName));
+          Format(ctsSourceNotFoundUnit, [CompiledResult.Filename]),AnUnitName));
     end else begin
       // nothing found
       RaiseExceptionInstance(
@@ -1715,6 +1715,71 @@ begin
           AnUnitName));
     end;
   end;
+end;
+
+procedure TFindDeclarationTool.GatherUnitAndSrcPath(var UnitPath,
+  SrcPath: string);
+var
+  CurDir: String;
+
+  procedure SearchCompiledSrcPaths(const APath: string);
+  var
+    PathStart, PathEnd: integer;
+    ADir: string;
+    CurCompiledSrcPath: string;
+  begin
+    if not Assigned(OnGetSrcPathForCompiledUnit) then begin
+      exit;
+    end;
+
+    PathStart:=1;
+    while PathStart<=length(APath) do begin
+      PathEnd:=PathStart;
+      while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
+      if PathEnd>PathStart then begin
+        // extract and expand current search directory
+        ADir:=copy(APath,PathStart,PathEnd-PathStart);
+        if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
+          ADir:=ADir+PathDelim;
+        if not FilenameIsAbsolute(ADir) then ADir:=CurDir+ADir;
+        // get CompiledSrcPath for current search directory
+        CurCompiledSrcPath:=OnGetSrcPathForCompiledUnit(Self,ADir);
+        if CurCompiledSrcPath<>'' then begin
+          // this directory is an unit output directory
+          SrcPath:=SrcPath+';'+CurCompiledSrcPath;
+        end;
+      end;
+      PathStart:=PathEnd+1;
+    end;
+  end;
+  
+var
+  MainCodeIsVirtual: Boolean;
+begin
+  UnitPath:='';
+  SrcPath:='';
+
+  MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
+  if not MainCodeIsVirtual then begin
+    CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
+  end else begin
+    CurDir:='';
+  end;
+
+  // first search in current directory (= where the maincode is)
+  UnitPath:=CurDir;
+
+  // search source in search path
+  if Assigned(OnGetUnitSourceSearchPath) then begin
+    SrcPath:=SrcPath+';'+OnGetUnitSourceSearchPath(Self);
+  end else begin
+    UnitPath:=UnitPath+';'+Scanner.Values[ExternalMacroStart+'UnitPath'];
+    SrcPath:=SrcPath+';'+Scanner.Values[ExternalMacroStart+'SrcPath'];
+  end;
+
+  // search for compiled unit
+  // -> search in every unit path for a CompiledSrcPath and search there
+  SearchCompiledSrcPaths(UnitPath);
 end;
 
 function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition

@@ -84,6 +84,8 @@ function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 function FindDiskFilename(const Filename: string): string;
 
+function ComparePAnsiStringFilenames(Data1, data2: Pointer): integer;
+
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
 
@@ -362,6 +364,16 @@ begin
     end;
     StartPos:=EndPos+1;
   until StartPos>length(Result);
+end;
+
+function ComparePAnsiStringFilenames(Data1, data2: Pointer): integer;
+var
+  s1: String;
+  s2: String;
+begin
+  s1:=PAnsiString(Data1)^;
+  s2:=PAnsiString(Data1)^;
+  Result:=CompareFilenames(s1,s2);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
