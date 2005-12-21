@@ -65,7 +65,6 @@ type
 
   TStandardCodeTool = class(TIdentCompletionTool)
   private
-    CachedSourceName: string;
     function ReadTilGuessedUnclosedBlock(MinCleanPos: integer;
       ReadOnlyOneBlock: boolean): boolean;
     function ReadForwardTilAnyBracketClose: boolean;
@@ -75,7 +74,6 @@ type
     function Explore(WithStatements: boolean): boolean;
   
     // source name  e.g. 'unit UnitName;'
-    function GetSourceName: string;
     function GetCachedSourceName: string;
     function RenameSource(const NewName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -308,16 +306,6 @@ end;
 
 
 { TStandardCodeTool }
-
-function TStandardCodeTool.GetSourceName: string;
-var NamePos: TAtomPosition;
-begin
-  Result:='';
-  BuildTree(true);
-  if not GetSourceNamePos(NamePos) then exit;
-  CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
-  Result:=CachedSourceName;
-end;
 
 {-------------------------------------------------------------------------------
   function TStandardCodeTool.GetCachedSourceName: string;

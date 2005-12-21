@@ -942,8 +942,48 @@ end;
 
 procedure TIdentCompletionTool.GatherUnitnames(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+var
+  UnitPath, SrcPath: string;
+  BaseDir: String;
+  TreeOfUnitFiles: TAVLTree;
+  ANode: TAVLTreeNode;
+  UnitFileInfo: TUnitFileInfo;
+  NewItem: TIdentifierListItem;
+  UnitExt: String;
+  SrcExt: String;
+  CurSourceName: String;
 begin
-
+  UnitPath:='';
+  SrcPath:='';
+  GatherUnitAndSrcPath(UnitPath,SrcPath);
+  //DebugLn('TIdentCompletionTool.GatherUnitnames UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
+  BaseDir:=ExtractFilePath(MainFilename);
+  TreeOfUnitFiles:=nil;
+  try
+    // search in unitpath
+    UnitExt:='pp;pas;ppu';
+    GatherUnitFiles(BaseDir,UnitPath,UnitExt,false,true,TreeOfUnitFiles);
+    // search in srcpath
+    SrcExt:='pp;pas';
+    GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,TreeOfUnitFiles);
+    // create list
+    CurSourceName:=GetSourceName;
+    ANode:=TreeOfUnitFiles.FindLowest;
+    while ANode<>nil do begin
+      UnitFileInfo:=TUnitFileInfo(ANode.Data);
+      if CompareIdentifiers(PChar(UnitFileInfo.UnitName),PChar(CurSourceName))<>0
+      then begin
+        NewItem:=TIdentifierListItem.Create(
+            icompCompatible,true,0,
+            CurrentIdentifierList.CreateIdentifier(UnitFileInfo.UnitName),
+            0,nil,nil,ctnUnit);
+        CurrentIdentifierList.Add(NewItem);
+      end;
+      ANode:=TreeOfUnitFiles.FindSuccessor(ANode);
+    end;
+  finally
+    FreeTreeOfUnitFiles(TreeOfUnitFiles);
+  end;
 end;
 
 function TIdentCompletionTool.GatherIdentifiers(

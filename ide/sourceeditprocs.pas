@@ -176,6 +176,12 @@ begin
         AColor:=clOlive;
         s:='enum';
       end;
+      
+    ctnUnit:
+      begin
+        AColor:=clBlack;
+        s:='unit';
+      end;
 
     else
       AColor:=clGray;

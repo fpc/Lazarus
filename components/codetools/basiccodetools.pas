@@ -3253,6 +3253,7 @@ var
     NewItem: TUnitFileInfo;
   begin
     AnUnitName:=ExtractFileNameOnly(Filename);
+    //DebugLn('AddFilename AnUnitName="',AnUnitName,'" Filename="',Filename,'"');
     if (not KeepDoubles) then begin
       if (TreeOfUnitFiles<>nil)
       and (TreeOfUnitFiles.FindKey(Pointer(AnUnitName),
@@ -3275,8 +3276,10 @@ var
     FileInfo: TSearchRec;
   begin
     Result:=true;
+    //DebugLn('SearchDirectory ADirectory="',ADirectory,'"');
     if DirectoryAlreadySearched(ADirectory) then exit;
     MarkDirectoryAsSearched(ADirectory);
+    //DebugLn('SearchDirectory searching ...');
 
     if not DirPathExists(ADirectory) then exit;
     if SysUtils.FindFirst(ADirectory+FileMask,faAnyFile,FileInfo)=0 then begin
@@ -3286,7 +3289,7 @@ var
         then
           continue;
         if ExtensionFits(FileInfo.Name) then begin
-          AddFilename(FileInfo.Name);
+          AddFilename(ADirectory+FileInfo.Name);
         end;
       until SysUtils.FindNext(FileInfo)<>0;
     end;
@@ -3329,19 +3332,20 @@ end;
 procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
 begin
   TreeOfUnitFiles.FreeAndClear;
+  TreeOfUnitFiles.Free;
 end;
 
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
 begin
-  Result:=SysUtils.CompareText(TUnitFileInfo(Data1).UnitName,
-                               TUnitFileInfo(Data2).UnitName);
+  Result:=CompareIdentifiers(PChar(TUnitFileInfo(Data1).UnitName),
+                             PChar(TUnitFileInfo(Data2).UnitName));
 end;
 
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
   UnitFileInfo: Pointer): integer;
 begin
-  Result:=SysUtils.CompareText(PAnsiString(UnitnamePAnsiString)^,
-                               TUnitFileInfo(UnitFileInfo).UnitName);
+  Result:=CompareIdentifiers(PChar(UnitnamePAnsiString),
+                             PChar(TUnitFileInfo(UnitFileInfo).UnitName));
 end;
 
 procedure RaiseCatchableException(const Msg: string);

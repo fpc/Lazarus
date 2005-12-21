@@ -46,6 +46,8 @@ type
   { TPascalReaderTool }
 
   TPascalReaderTool = class(TPascalParserTool)
+  protected
+    CachedSourceName: string;
   public
     function FindDeepestExpandedNodeAtPos(CleanCursorPos: integer;
         ExceptionOnNotFound: boolean): TCodeTreeNode;
@@ -140,6 +142,7 @@ type
                                             ): boolean;
 
     // sections
+    function GetSourceName: string;
     function GetSourceType: TCodeTreeNodeDesc;
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function ExtractSourceName: string;
@@ -1424,6 +1427,16 @@ begin
   while (CurPos.StartPos<DefinitionNode.StartPos) do ReadNextAtom;
   UndoReadNextAtom;
   Result:=UpAtomIs('CONST') or UpAtomIs('VAR') or UpAtomIs('OUT');
+end;
+
+function TPascalReaderTool.GetSourceName: string;
+var NamePos: TAtomPosition;
+begin
+  Result:='';
+  BuildTree(true);
+  if not GetSourceNamePos(NamePos) then exit;
+  CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
+  Result:=CachedSourceName;
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode
