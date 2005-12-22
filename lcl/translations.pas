@@ -26,7 +26,7 @@
 }
 unit Translations;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$INLINE ON}
 
 interface
 
