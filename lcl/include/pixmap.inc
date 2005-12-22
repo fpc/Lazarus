@@ -39,8 +39,9 @@ var
   LastChar: Char;
 begin
   Result:=false;
+  //DebugLn('TestStreamIsXPM ');
   OldPosition:=AStream.Position;
-  // skip comments and search 'static char*'
+  // skip comments and search 'static [const] [unsigned] char*'
   Range:=xrCode;
   try
     repeat
@@ -70,9 +71,22 @@ begin
       'c':
         begin
           if Range<>xrStaticKeyWord then exit;
-          // read 'har', the rest of 'char'
-          if not Check('har') then exit;
-          Range:=xrCharKeyWord;
+          if (AStream.Read(c,1)<>1) then exit;
+          if (c='o') then begin
+            // read 'nst', the rest of 'const'
+            if not Check('nst') then exit;
+          end else if (c='h') then begin
+            // read 'ar', the rest of 'char'
+            if not Check('ar') then exit;
+            Range:=xrCharKeyWord;
+          end else
+            exit;
+        end;
+      'u':
+        begin
+          if Range<>xrStaticKeyWord then exit;
+          // read 'nsigned', the rest of 'unsigned'
+          if not Check('nsigned') then exit;
         end;
       '*':
         begin
