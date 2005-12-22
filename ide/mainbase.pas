@@ -86,7 +86,8 @@ type
                              var MenuItem: TIDEMenuCommand;
                              const MenuItemName, MenuItemCaption: String;
                              const bmpName: String = '';
-                             mnuEnabled: Boolean = true);
+                             mnuEnabled: Boolean = true;
+                             mnuChecked: Boolean = false);
     procedure CreateMenuSeparatorSection(ParentSection: TIDEMenuSection;
                              var Section: TIDEMenuSection; const AName: String);
     procedure CreateMenuSubSection(ParentSection: TIDEMenuSection;
@@ -279,10 +280,11 @@ end;
 
 procedure TMainIDEBase.CreateMenuItem(Section: TIDEMenuSection;
   var MenuItem: TIDEMenuCommand; const MenuItemName, MenuItemCaption: String;
-  const bmpName: String; mnuEnabled: Boolean);
+  const bmpName: String; mnuEnabled: Boolean; mnuChecked: Boolean);
 begin
   MenuItem:=RegisterIDEMenuCommand(Section,MenuItemName,MenuItemCaption);
   MenuItem.Enabled:=mnuEnabled;
+  MenuItem.Checked:=mnuChecked;
   if bmpName<>'' then
     MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
 end;
@@ -531,8 +533,8 @@ begin
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
     CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor);
-    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette);
-    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons);
+    CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
+    CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '', true, EnvironmentOptions.IDESpeedButtonsVisible);
     CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'menu_debugger');
     begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'menu_watches');
@@ -630,7 +632,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuEvaluate,'itmRunMenuEvaluate',lisMenuEvaluate, '', False);
     CreateMenuItem(ParentMI,itmRunMenuAddWatch,'itmRunMenuAddWatch',lisMenuAddWatch, '', False);
     CreateMenuSubSection(ParentMI,itmRunMenuAddBreakpoint,'itmRunMenuAddBreakpoint',lisMenuAddBreakpoint, '');
-      CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBPSource,'itmRunMenuAdddBPSource',lisMenuAddBPSource, '', False);
+    CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBPSource,'itmRunMenuAdddBPSource',lisMenuAddBPSource, '', False);
   end;
 end;
 
