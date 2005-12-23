@@ -962,7 +962,7 @@ type
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
-    procedure QueueAsyncCall(AMethod: TDataevent; Data: PtrInt);
+    procedure QueueAsyncCall(AMethod: TDataEvent; Data: PtrInt);
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
