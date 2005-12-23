@@ -50,12 +50,6 @@ unit SynEdit;
 {$DEFINE DisableDoubleBuf}
 {$ENDIF}
 
-{$IFDEF SYN_LAZARUS}
-  {$IFDEF win32}
-    {$DEFINE DoNotShowHideCaretDuringPaint}
-  {$ENDIF}
-{$ENDIF}
-
 interface
 
 { $DEFINE VerboseKeys}
@@ -2613,9 +2607,9 @@ begin
              {$ENDIF}
              Lines.Count);
   // Now paint everything while the caret is hidden.
-  {$IFNDEF DoNotShowHideCaretDuringPaint}
+{$message warn Should not need to hide/update caret while painting!}
+{$message warn Update the caret in all locations where it is moved, instead}
   HideCaret;
-  {$ENDIF}
   try
     // First paint the gutter area if it was (partly) invalidated.
     if (rcClip.Left < fGutterWidth) then begin
@@ -2636,9 +2630,7 @@ begin
     {$IFDEF SYN_LAZARUS}
     EndPaintBuffer(rcClip);
     {$ENDIF}
-    {$IFNDEF DoNotShowHideCaretDuringPaint}
     UpdateCaret;
-    {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     Exclude(fStateFlags,sfPainting);
     {$ENDIF}
