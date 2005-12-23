@@ -707,6 +707,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean;
 Begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[CreateCaret] for window ', IntToHex(Handle, 8));
+{$endif}
   Result := Boolean(Windows.CreateCaret(Handle, Bitmap, Width, Height));
   Assert(False, 'Trace:TODO: [TWin32WidgetSet.CreateCaret] Finish');
 End;
@@ -1069,6 +1072,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.DestroyCaret(Handle: HWND): Boolean;
 Begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[DestroyCaret] for window ', IntToHex(Handle, 8));
+{$endif}
   Assert(False, 'Trace:TODO: [TWin32WidgetSet.DestroyCaret]');
   Result := Boolean(Windows.DestroyCaret);
 End;
@@ -2237,6 +2243,9 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.HideCaret(HWnd: HWND): Boolean;
 Begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[HideCaret] for window ', IntToHex(HWnd, 8));
+{$endif}
   Assert(False, Format('Trace:  [TWin32WidgetSet.HideCaret] HWND: 0x%x', [HWnd]));
   Result := Boolean(Windows.HideCaret(hWnd));
 End;
@@ -2834,6 +2843,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 Begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[SetCaretPos]');
+{$endif}
   Result := Boolean(Windows.SetCaretPos(X, Y));
 End;
 
@@ -2848,22 +2860,10 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetCaretPosEx(Handle: HWND; X, Y: Integer): Boolean;
 Begin
-  Result := ShowCaret(Handle) And SetCaretPos(X, Y);
-End;
-
-{------------------------------------------------------------------------------
-  Method:  SetCaretRespondToFocus
-  Params:  Handle          - Handle of a TWinControl
-           ShowHideOnFocus - true = caret is hidden on focus lost
-  Returns: true on success
-
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean;
-Begin
-  If ShowHideOnFocus Then
-    Result := ShowCaret(Handle)
-  Else
-    Result := HideCaret(Handle)
+{$ifdef DEBUG_CARET}
+  DebugLn('[SetCaretPosEx] for window ', IntToHex(Handle, 8));
+{$endif}
+  Result := Windows.SetCaretPos(X, Y);
 End;
 
 {------------------------------------------------------------------------------
@@ -3090,6 +3090,9 @@ End;
 Function TWin32WidgetSet.ShowCaret(HWnd: HWND): Boolean;
 Begin
 //writeln('[TWin32WidgetSet.ShowCaret] A');
+{$ifdef DEBUG_CARET}
+  DebugLn('[ShowCaret] for window ', IntToHex(HWnd, 8));
+{$endif}
   Assert(False, Format('Trace:> [TWin32WidgetSet.ShowCaret] HWND: 0x%x', [HWnd]));
   Result := Boolean(Windows.ShowCaret(HWnd));
   Assert(False, Format('Trace:< [TWin32WidgetSet.ShowCaret] HWND: 0x%x --> %s', [HWnd, BOOL_TEXT[Result]]));

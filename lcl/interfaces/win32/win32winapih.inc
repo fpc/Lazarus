@@ -169,7 +169,8 @@ function SetBkMode(DC: HDC; BkMode: Integer): Integer; Override;
 function SetCapture(Value: HWND): HWND; Override;
 function SetCaretPos(X, Y: Integer): Boolean; Override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
-function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
+// SetCaretRespondToFocus is a hack for GTK where sometimes focus seems to be lost, but isn't
+//function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(HWnd: HWND): HWND; Override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;

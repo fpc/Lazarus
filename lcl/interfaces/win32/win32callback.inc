@@ -1203,6 +1203,9 @@ Begin
     End;
     WM_KILLFOCUS:
     Begin
+{$ifdef DEBUG_CARET}
+      DebugLn('WM_KILLFOCUS received for window ', IntToHex(Window, 8));
+{$endif}      
       LMessage.Msg := LM_KILLFOCUS;
     End;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
@@ -1498,6 +1501,9 @@ Begin
     end;
     WM_SETFOCUS:
     Begin
+{$ifdef DEBUG_CARET}
+      DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
+{$endif}      
       // handle feature mouse-click, setfocus, mouse-click -> double-click
       if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
       begin
