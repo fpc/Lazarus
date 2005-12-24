@@ -3267,92 +3267,118 @@ end;
 procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 var
   I: Integer;
-  Node: TTreeNode;
+  lNode: TTreeNode;
 begin
   inherited KeyDown(Key, Shift);
 
+  if tvoAllowMultiSelect in FOptions then 
+    lNode := FTreeNodes.FFirstMultiSelected
+  else
+    lNode := Selected;
+    
   case Key of
 
-  VK_Down:
-    if (Selected<>nil) and (Selected.GetNextExpanded<>nil) then begin
-      Selected:=Selected.GetNextExpanded;
+  VK_DOWN:
+  begin
+    if lNode <> nil then 
+      lNode := lNode.GetNextExpanded
+    else
+    if Items.Count > 0 then
+      lNode := FTreeNodes.Items[0];
+    if lNode <> nil then
       Key:=VK_UNKNOWN;
-    end;
+  end;
 
-  VK_Up:
-    if (Selected<>nil) and (Selected.GetPrevExpanded<>nil) then begin
-      Selected:=Selected.GetPrevExpanded;
+  VK_UP:
+  begin
+    if lNode <> nil then
+      lNode := lNode.GetPrevExpanded
+    else
+    if Items.Count > 0 then
+      lNode := Items.GetLastExpandedSubNode;
+    if lNode <> nil then
       Key:=VK_UNKNOWN;
-    end;
+  end;
 
   VK_LEFT:
-    if (Selected<>nil) then
+    if lNode <> nil then
     begin
-      if Selected.Expanded then
-        Selected.Expanded := False
+      if lNode.Expanded then
+        lNode.Expanded := False
       else
-        if (Selected.GetPrevExpanded = Selected.Parent) and
-           (Selected.Parent <> nil) then Selected := Selected.Parent;
+        if lNode.Parent <> nil then 
+          lNode := lNode.Parent
     end;
 
   VK_RIGHT:
-    if (Selected<>nil) then
+    if lNode <> nil then
     begin
-      if Selected.Expanded then
-        Selected := Selected.GetNextExpanded
+      if lNode.Expanded then
+        lNode := lNode.GetNextExpanded
       else
-        Selected.Expanded := True;
+        lNode.Expanded := True;
     end;
     
   VK_ADD:
-    if (Selected<>nil) then Selected.Expanded := True;
+    if lNode <> nil then 
+      lNode.Expanded := True;
     
   VK_SUBTRACT:
-    if (Selected<>nil) then Selected.Expanded := False;
+    if lNode <> nil then 
+      lNode.Expanded := False;
 
   VK_HOME:
     if Items.Count > 0 then
-      Selected := Items[0];
+      lNode := Items[0];
       
   VK_END:
     if Items.Count > 0 then
-      Selected := Items.GetLastExpandedSubNode;
+      lNode := Items.GetLastExpandedSubNode;
       
   VK_PRIOR: // Page Up
-    if (Selected <> nil) then
+    if lNode <> nil then
     begin
       I := Pred(ClientHeight div DefaultItemHeight);
-      Node := Selected;
 
       while (I > 0) do
-        if Node.GetPrevExpanded <> nil then
+        if lNode.GetPrevExpanded <> nil then
         begin
-          Node := Node.GetPrevExpanded;
+          lNode := lNode.GetPrevExpanded;
           Dec(I);
         end
         else Break;
 
-      Selected := Node;
     end;
     
   VK_NEXT: // Page Down
-    if (Selected <> nil) then
+    if lNode <> nil then
     begin
       I := Pred(ClientHeight div DefaultItemHeight);
-      Node := Selected;
 
       while (I > 0) do
-        if Node.GetNextExpanded <> nil then
+        if lNode.GetNextExpanded <> nil then
         begin
-          Node := Node.GetNextExpanded;
+          lNode := lNode.GetNextExpanded;
           Dec(I);
         end
         else Break;
 
-      Selected := Node;
     end;
-    
   end;
+
+  if lNode <> nil then
+    if tvoAllowMultiSelect in FOptions then
+    begin
+      if ([ssCtrl,ssShift] * Shift) <> [] then
+        lNode.MultiSelectGroup
+      else begin
+        LockSelectionChangeEvent;
+        FTreeNodes.ClearMultiSelection;
+        lNode.MultiSelected := true;
+        UnlockSelectionChangeEvent;
+      end;
+    end else
+      Selected := lNode;
 end;
 
 procedure TCustomTreeView.Loaded;
