@@ -820,11 +820,10 @@ end;
 
 function TCustomComboBox.IsReadOnlyStored: boolean;
 begin
-  case FStyle of
-    csSimple, csDropDown, csDropDownList: Result := false;
-  else
+  // these styles imply readonly value
+  Result := not (FStyle in [csSimple, csDropDown, csDropDownList]);
+  if Result then
     Result := FReadOnly <> false;
-  end;
 end;
 
 procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);

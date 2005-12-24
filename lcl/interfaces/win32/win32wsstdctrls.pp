@@ -93,6 +93,7 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     
@@ -718,6 +719,12 @@ begin
   winhandle := ACustomComboBox.Handle;
   SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
+end;
+
+procedure TWin32WSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+begin
+  RecreateWnd(ACustomComboBox);
 end;
 
 procedure TWin32WSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
