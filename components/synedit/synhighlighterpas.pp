@@ -508,7 +508,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'deprecated')=0 then writeln('TSynPasSyn.KeyHash ',Result);
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'specialize')=0 then writeln('TSynPasSyn.KeyHash ',copy(fLine,fToIdent,fStringLen),'=',Result);
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -741,7 +741,10 @@ end;
 
 function TSynPasSyn.Func61: TtkTokenKind;
 begin
-  if KeyComp('Dispid') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Dispid') {$IFDEF SYN_LAZARUS}or KeyComp('Generic'){$ENDIF}then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func63: TtkTokenKind;
@@ -913,7 +916,11 @@ end;
 
 function TSynPasSyn.Func105: TtkTokenKind;
 begin
-  if KeyComp('Procedure') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Procedure') {$IFDEF SYN_LAZARUS}or KeyComp('specialize'){$ENDIF}
+  then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func106: TtkTokenKind;
