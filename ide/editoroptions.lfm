@@ -1,27 +1,27 @@
 object EditorOptionsForm: TEditorOptionsForm
-  ActiveControl = VisibleGutterCheckBox
+  ActiveControl = LanguageComboBox
   Caption = 'EditorOptionsForm'
-  ClientHeight = 519
+  ClientHeight = 531
   ClientWidth = 477
   PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 476
-  VertScrollBar.Page = 518
+  VertScrollBar.Page = 530
   Left = 469
-  Height = 519
+  Height = 531
   Top = 143
   Width = 477
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
-    Height = 479
+    PageIndex = 3
+    Height = 491
     Width = 477
     object Page1: TPage
       Caption = 'Page1'
       ClientWidth = 469
-      ClientHeight = 453
-      Height = 453
+      ClientHeight = 465
+      Height = 465
       Width = 469
       object BlockIndentLabel: TLabel
         Caption = 'BlockIndentLabel'
@@ -116,15 +116,15 @@ object EditorOptionsForm: TEditorOptionsForm
     object Page2: TPage
       Caption = 'Page2'
       ClientWidth = 469
-      ClientHeight = 453
-      Height = 453
+      ClientHeight = 465
+      Height = 465
       Width = 469
       object MarginAndGutterGroupBox: TGroupBox
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'MarginAndGutterGroupBox'
-        ClientHeight = 110
-        ClientWidth = 453
+        ClientHeight = 128
+        ClientWidth = 457
         TabOrder = 0
         Left = 6
         Height = 128
@@ -249,8 +249,8 @@ object EditorOptionsForm: TEditorOptionsForm
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'EditorFontGroupBox'
-        ClientHeight = 118
-        ClientWidth = 453
+        ClientHeight = 136
+        ClientWidth = 457
         TabOrder = 1
         Left = 6
         Height = 136
@@ -702,8 +702,8 @@ object EditorOptionsForm: TEditorOptionsForm
     object Page3: TPage
       Caption = 'Page3'
       ClientWidth = 469
-      ClientHeight = 453
-      Height = 453
+      ClientHeight = 465
+      Height = 465
       Width = 469
       object KeyMappingHelpLabel: TLabel
         Align = alTop
@@ -765,44 +765,44 @@ object EditorOptionsForm: TEditorOptionsForm
     object Page4: TPage
       Caption = 'Page4'
       ClientWidth = 469
-      ClientHeight = 453
-      Height = 453
+      ClientHeight = 465
+      Height = 465
       Width = 469
       object LanguageLabel: TLabel
         Caption = 'LanguageLabel'
         Color = clNone
         ParentColor = False
         Left = 214
-        Height = 12
+        Height = 14
         Top = 12
-        Width = 87
+        Width = 73
       end
       object ColorSchemeLabel: TLabel
         Caption = 'ColorSchemeLabel'
         Color = clNone
         ParentColor = False
         Left = 214
-        Height = 12
+        Height = 14
         Top = 36
-        Width = 106
+        Width = 88
       end
       object FileExtensionsLabel: TLabel
         Caption = 'FileExtensionsLabel'
         Color = clNone
         ParentColor = False
         Left = 214
-        Height = 12
+        Height = 14
         Top = 60
-        Width = 112
+        Width = 94
       end
       object ColorElementLabel: TLabel
         Caption = 'ColorElementLabel'
         Color = clNone
         ParentColor = False
         Left = 4
-        Height = 12
+        Height = 14
         Top = 90
-        Width = 105
+        Width = 89
       end
       object LanguageComboBox: TComboBox
         MaxLength = 0
@@ -1186,14 +1186,14 @@ object EditorOptionsForm: TEditorOptionsForm
         Cursor = crIBeam
         Left = 4
         Height = 102
-        Top = 347
+        Top = 359
         Width = 461
       end
       object ColorElementListBox: TListBox
         OnSelectionChange = ColorElementListBoxSelectionChange
         TabOrder = 4
         Left = 3
-        Height = 230
+        Height = 242
         Top = 108
         Width = 200
       end
@@ -1222,11 +1222,11 @@ object EditorOptionsForm: TEditorOptionsForm
       object TextAttributesGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Attributes'
-        ClientHeight = 166
+        ClientHeight = 178
         ClientWidth = 247
         TabOrder = 7
         Left = 212
-        Height = 184
+        Height = 196
         Top = 154
         Width = 251
         object ForeGroundLabel: TLabel
@@ -1234,51 +1234,61 @@ object EditorOptionsForm: TEditorOptionsForm
           Color = clNone
           ParentColor = False
           Left = 8
-          Height = 12
-          Width = 98
+          Height = 14
+          Width = 83
         end
         object ForegroundColorButton: TColorButton
+          BorderSpacing.Top = 2
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
+          AnchorSideTop.Control = ForeGroundLabel
           Left = 8
           Height = 21
           Top = 16
           Width = 75
         end
         object BackGroundColorButton: TColorButton
+          BorderSpacing.Top = 2
           BorderWidth = 2
           OnColorChanged = ColorButtonColorChanged
+          AnchorSideTop.Control = BackGroundLabel
           Left = 8
           Height = 21
           Top = 58
           Width = 75
         end
         object BackGroundLabel: TLabel
+          BorderSpacing.Top = 28
           Caption = 'BackGroundLabel'
           Color = clNone
           ParentColor = False
+          AnchorSideTop.Control = ForeGroundLabel
           Left = 8
-          Height = 12
+          Height = 14
           Top = 42
-          Width = 100
+          Width = 83
         end
         object ForeGroundUseDefaultCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 2
           Caption = 'ForeGroundUseDefaultCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 0
+          AnchorSideTop.Control = ForeGroundLabel
           Left = 94
-          Height = 24
-          Top = 12
+          Height = 13
+          Top = 16
           Width = 140
         end
         object BackGroundUseDefaultCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 2
           Caption = 'BackGroundUseDefaultCheckBox'
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 1
+          AnchorSideTop.Control = BackGroundLabel
           Left = 94
-          Height = 24
+          Height = 13
           Top = 56
           Width = 140
         end
@@ -1289,8 +1299,8 @@ object EditorOptionsForm: TEditorOptionsForm
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 2
           Left = 6
-          Height = 24
-          Top = 76
+          Height = 13
+          Top = 121
           Width = 235
         end
         object TextItalicCheckBox: TCheckBox
@@ -1300,8 +1310,8 @@ object EditorOptionsForm: TEditorOptionsForm
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 3
           Left = 6
-          Height = 24
-          Top = 106
+          Height = 13
+          Top = 140
           Width = 235
         end
         object TextUnderlineCheckBox: TCheckBox
@@ -1311,8 +1321,8 @@ object EditorOptionsForm: TEditorOptionsForm
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 4
           Left = 6
-          Height = 24
-          Top = 136
+          Height = 13
+          Top = 159
           Width = 235
         end
       end
@@ -1320,15 +1330,15 @@ object EditorOptionsForm: TEditorOptionsForm
     object Page5: TPage
       Caption = 'Page5'
       ClientWidth = 469
-      ClientHeight = 453
-      Height = 453
+      ClientHeight = 465
+      Height = 465
       Width = 469
       object AutomaticFeaturesGroupBox: TGroupBox
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
-        ClientHeight = 423
-        ClientWidth = 453
+        ClientHeight = 441
+        ClientWidth = 457
         TabOrder = 0
         Left = 6
         Height = 441
@@ -1440,7 +1450,7 @@ object EditorOptionsForm: TEditorOptionsForm
     TabOrder = 1
     Left = 392
     Height = 25
-    Top = 483
+    Top = 495
     Width = 75
   end
   object OkButton: TButton
@@ -1451,7 +1461,7 @@ object EditorOptionsForm: TEditorOptionsForm
     TabOrder = 2
     Left = 312
     Height = 25
-    Top = 483
+    Top = 495
     Width = 75
   end
   object ImageList: TImageList
