@@ -1818,7 +1818,7 @@ begin
           NewTool.ReadNextAtom;
           Result:=Result+NewTool.GetAtom;
           IdentAdded:=true;
-          TypeNode:=FindTypeNodeOfDefinition(NewNode);
+          TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
           if TypeNode<>nil then begin
             case TypeNode.Desc of
             ctnIdentifier, ctnClass, ctnClassInterface:
@@ -2840,7 +2840,7 @@ begin
       {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
-        DummyNode:=FindTypeNodeOfDefinition(Result.Node);
+        DummyNode:=Result.Tool.FindTypeNodeOfDefinition(Result.Node);
         if DummyNode=nil then
           // some constants and variants do not have a type
           break;
@@ -3948,7 +3948,7 @@ begin
   ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
   if UpAtomIs('PACKED') then ReadNextAtom;
   ReadNextAtom;
-  ClassIdentNode:=ClassNode.Parent;
+  ClassIdentNode:=ClassNode.GetNodeOfType(ctnTypeDefinition);
   if AtomIsChar('(') then begin
     ReadNextAtom;
     if not AtomIsIdentifier(false) then exit;

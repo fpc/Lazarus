@@ -137,7 +137,7 @@ const
   AllIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =
-     [ctnClass,ctnClassInterface,
+     [ctnClass,ctnClassInterface,ctnGenericType,ctnSpecialize,
       ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,ctnRecordType,
       ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,

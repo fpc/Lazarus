@@ -356,7 +356,7 @@ begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
         Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
-      Params.NewNode:=FindTypeNodeOfDefinition(Params.NewNode);
+      Params.NewNode:=Params.NewCodeTool.FindTypeNodeOfDefinition(Params.NewNode);
       if Params.NewNode.Desc<>ctnProcedureType then begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
         Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
