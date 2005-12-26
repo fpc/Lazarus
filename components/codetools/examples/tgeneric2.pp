@@ -3,7 +3,7 @@ program TGeneric2;
 {$mode objfpc}
 
 type
-   TList = generic(T) class(TObject)
+   TList =generic(T) class(TObject)
      data : T;
      procedure Add(item: T);
    end;

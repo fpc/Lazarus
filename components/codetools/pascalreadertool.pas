@@ -465,6 +465,8 @@ begin
   if ClassNode<>nil then begin
     if ClassNode.Desc=ctnClass then begin
       ClassNode:=ClassNode.Parent;
+      if (ClassNode<>nil) and (ClassNode.Desc=ctnGenericType) then
+        ClassNode:=ClassNode.Parent;
       if ClassNode=nil then begin
         Result:='';
         exit;

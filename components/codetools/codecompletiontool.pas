@@ -225,7 +225,8 @@ begin
   FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
   while (FCompletingStartNode<>nil) and (FCompletingStartNode.FirstChild=nil) do
     FCompletingStartNode:=FCompletingStartNode.NextBrother;
-  if FCompletingStartNode<>nil then FCompletingStartNode:=FCompletingStartNode.FirstChild;
+  if FCompletingStartNode<>nil then
+    FCompletingStartNode:=FCompletingStartNode.FirstChild;
   JumpToProcName:='';
 end;
 
@@ -1747,8 +1748,11 @@ begin
   // find the start of the class (the position in front of the class name)
   ClassNode:=CodeCompleteClassNode;
   if ClassNode=nil then exit;
-  ClassIdentifierNode:=ClassNode.Parent;
-  if ClassIdentifierNode=nil then exit;
+  ClassIdentifierNode:=ClassNode.GetNodeOfType(ctnTypeDefinition);
+  if ClassIdentifierNode=nil then begin
+    DebugLn('TCodeCompletionCodeTool.InsertClassHeaderComment WARNING: class without name');
+    exit;
+  end;
   if not CleanPosToCaret(ClassIdentifierNode.StartPos,StartPos) then exit;
   Code:=ExtractIdentifier(ClassIdentifierNode.StartPos);
   
@@ -1909,10 +1913,7 @@ var
   
   procedure GatherExistingClassProcBodies;
   begin
-    TypeSectionNode:=FCodeCompleteClassNode.Parent;
-    if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
-    and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
-      TypeSectionNode:=TypeSectionNode.Parent;
+    TypeSectionNode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
@@ -2002,7 +2003,7 @@ var
     end else begin
       // class is not in interface section
       // -> insert at the end of the type section
-      ANode:=FCodeCompleteClassNode.Parent; // type definition
+      ANode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeDefinition);
       if ANode=nil then
         RaiseException(ctsClassNodeWithoutParentNode);
       if ANode.Parent.Desc=ctnTypeSection then
@@ -2056,7 +2057,7 @@ begin
     {$ENDIF}
     TheClassName:=ExtractClassName(FCodeCompleteClassNode,false);
 
-    // gather existing class proc definitions
+    // gather existing proc definitions in the class
     ClassProcs:=GatherProcNodes(FCompletingStartNode,
        [phpInUpperCase,phpAddClassName],
        ExtractClassName(FCodeCompleteClassNode,true));
@@ -2326,7 +2327,7 @@ var CleanCursorPos, Indent, insertPos: integer;
                               FindClassNode(CursorNode,CurClassName,true,false);
         if FCodeCompleteClassNode=nil then
           RaiseException('oops, I lost your class');
-        ANode:=FCodeCompleteClassNode.Parent;
+        ANode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeDefinition);
         if ANode=nil then
           RaiseException(ctsClassNodeWithoutParentNode);
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
@@ -2788,9 +2789,7 @@ begin
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
 
   // test if in a class
-  AClassNode:=CursorNode;
-  while (AClassNode<>nil) and (AClassNode.Desc<>ctnClass) do
-    AClassNode:=AClassNode.Parent;
+  AClassNode:=CursorNode.GetNodeOfType(ctnClass);
   if AClassNode<>nil then begin
     CompleteClass;
     exit;
