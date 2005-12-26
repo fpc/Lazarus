@@ -94,6 +94,8 @@ type
     procedure MessageViewClicked(Sender: TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: word;
       Shift: TShiftState);
+    procedure MessageViewDrawItem(Control: TWinControl; Index: Integer;
+       ARect: TRect; State: TOwnerDrawState);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
   private
     FItems: TList; // list of TMessageLine
@@ -159,6 +161,10 @@ procedure RegisterStandardMessagesViewMenuItems;
 
 implementation
 
+uses
+  Graphics,     // used for TColor
+  LCLType;      // used for TOwnerDrawState
+
 const
   SeparatorLine = '---------------------------------------------';
 
@@ -191,6 +197,8 @@ begin
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
+  MessageView.Style       := lbOwnerDrawFixed;
+  MessageView.OnDrawItem  := @MessageViewDrawItem;
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -480,6 +488,38 @@ begin
   ExecuteIDEShortCut(Self, Key, Shift);
 end;
 
+//------------------------------------------------------------------------------
+procedure TMessagesView.MessageViewDrawItem(Control: TWinControl;
+   Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  TheText: string;
+  cl: TColor;
+const
+  cHint         = 'Hint: User defined:';
+  cNote         = 'Note: User defined:';
+  clMsgHint     = clBlue;
+  clMsgNote     = clGreen;
+  cLeftSpacer   = 3;
+begin
+  MessageView.Canvas.FillRect(ARect);
+  TheText := MessageView.Items[Index];
+
+  cl := MessageView.Canvas.Font.Color;   // save original color
+
+  { Only use custom colors if not selected, otherwise it is difficult to read }
+  if not (odSelected in State)
+  then begin
+    if Pos(cNote, TheText) > 0
+    then MessageView.Canvas.Font.Color := clMsgNote
+    else if Pos(cHint, TheText) > 0
+    then  MessageView.Canvas.Font.Color := clMsgHint
+  end;
+
+  MessageView.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
+  MessageView.Canvas.Font.Color := cl;   // restore original color
+end;
+
+//------------------------------------------------------------------------------
 procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
