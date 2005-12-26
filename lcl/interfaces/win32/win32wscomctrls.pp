@@ -403,7 +403,7 @@ begin
          Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
       RecreateWnd(AProgressBar);
 
-    SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
+    SendMessage(Handle, PBM_SETRANGE32, Min, Max);
     SendMessage(Handle, PBM_SETPOS, Position, 0);
 
 { TODO: Implementable?

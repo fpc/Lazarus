@@ -142,6 +142,9 @@ Const
   LVS_EX_SNAPTOGRID       = $00080000;
   LVS_EX_SIMPLESELECT     = $00100000;
   
+// progressbar
+  PBM_SETRANGE32          = 1030;
+
 // for calendar control
   MCN_FIRST               = (0-750);          // monthcal
   MCN_SELCHANGE           = (MCN_FIRST + 1);
