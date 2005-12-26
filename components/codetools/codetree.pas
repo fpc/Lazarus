@@ -110,15 +110,19 @@ const
   ctnPointerType     = 75;
   ctnClassOfType     = 76;
   ctnVariantType     = 77;
+  ctnSpecialize      = 78;
+  ctnSpecializeType  = 79;
+  ctnSpecializeParams= 80;
+  ctnGenericType     = 81;
 
-  ctnBeginBlock      = 80;
-  ctnAsmBlock        = 81;
+  ctnBeginBlock      = 90;
+  ctnAsmBlock        = 91;
 
-  ctnWithVariable    = 90;
-  ctnWithStatement   = 91;
-  ctnOnBlock         = 92;
-  ctnOnIdentifier    = 93;
-  ctnOnStatement     = 94;
+  ctnWithVariable    =100;
+  ctnWithStatement   =101;
+  ctnOnBlock         =102;
+  ctnOnIdentifier    =103;
+  ctnOnStatement     =104;
 
 
   // combined values
@@ -349,6 +353,11 @@ begin
   ctnFileType: Result:='File Type';
   ctnPointerType: Result:='Pointer ^ Type';
   ctnClassOfType: Result:='Class Of Type';
+  ctnVariantType: Result:='Variant Type';
+  ctnSpecialize: Result:='Specialize Type';
+  ctnSpecializeType: Result:='Specialize Typename';
+  ctnSpecializeParams: Result:='Specialize Parameterlist';
+  ctnGenericType: Result:='Generic Type';
 
   ctnWithVariable: Result:='With Variable';
   ctnWithStatement: Result:='With Statement';

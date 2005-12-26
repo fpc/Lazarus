@@ -3,12 +3,12 @@ program TGeneric2;
 {$mode objfpc}
 
 type
-   TList=generic(_T) class(TObject)
-     data : _T;
-     procedure Add(item: _T);
+   TList = generic(T) class(TObject)
+     data : T;
+     procedure Add(item: T);
    end;
 
-procedure TList.Add(item: _T);
+procedure TList.Add(item: T);
 var
   i : integer;
 begin

@@ -138,6 +138,8 @@ type
     function KeyWordFuncClass: boolean;
     function KeyWordFuncClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
+    function KeyWordFuncGeneric: boolean;
+    function KeyWordFuncSpecialize: boolean;
     function KeyWordFuncTypeArray: boolean;
     function KeyWordFuncTypeProc: boolean;
     function KeyWordFuncTypeSet: boolean;
@@ -363,6 +365,8 @@ begin
     Add('INTERFACE',@KeyWordFuncClassInterface);
     Add('DISPINTERFACE',@KeyWordFuncClassInterface);
     Add('PACKED',@KeyWordFuncTypePacked);
+    Add('GENERIC',@KeyWordFuncGeneric);
+    Add('SPECIALIZE',@KeyWordFuncSpecialize);
     Add('ARRAY',@KeyWordFuncTypeArray);
     Add('PROCEDURE',@KeyWordFuncTypeProc);
     Add('FUNCTION',@KeyWordFuncTypeProc);
@@ -2436,6 +2440,7 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 var
   ChildNodeCreated: boolean;
 begin
+  //DebugLn('TPascalParserTool.KeyWordFuncBeginEnd CurNode=',CurNode.DescAsString);
   if (CurNode<>nil)
   and (not (CurNode.Desc in
     [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
@@ -2809,6 +2814,108 @@ begin
         CurPos.EndPos-CurPos.StartPos);
 end;
 
+function TPascalParserTool.KeyWordFuncGeneric: boolean;
+// generic type
+// examples:
+//   type TGenericList = generic(A,B) class end;
+begin
+  if (CurNode.Desc<>ctnTypeDefinition) then
+    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['generic']);
+  CreateChildNode;
+  CurNode.Desc:=ctnGenericType;
+  // read parameter list
+  ReadNextAtom;
+  if CurPos.Flag<>cafRoundBracketOpen then
+    RaiseCharExpectedButAtomFound('(');
+  repeat
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if Curpos.Flag=cafPoint then begin
+      // first identifier was unitname, now read the type
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      CurNode.EndPos:=CurPos.EndPos;
+      ReadNextAtom;
+    end;
+    if CurPos.Flag=cafRoundBracketClose then
+      break
+    else if CurPos.Flag=cafComma then begin
+      // read next identifier
+    end else
+      RaiseCharExpectedButAtomFound(')');
+  until false;
+  ReadNextAtom;
+  // read class, record, object, interface
+  if not GenericTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos) then
+    RaiseStringExpectedButAtomFound('"class"');
+  Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos);
+  // close generic type
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
+end;
+
+function TPascalParserTool.KeyWordFuncSpecialize: boolean;
+// specialize template
+// examples:
+//   type TListOfInteger = specialize TGenericList(integer,string);
+//   type TListOfChar = specialize Classes.TGenericList(integer,objpas.integer);
+begin
+  if (CurNode.Desc<>ctnTypeDefinition) then
+    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['specialize']);
+  CreateChildNode;
+  CurNode.Desc:=ctnSpecialize;
+  // read identifier (the name of the generic)
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  CreateChildNode;
+  CurNode.Desc:=ctnSpecializeType;
+  CurNode.EndPos:=CurPos.EndPos;
+  ReadNextAtom;
+  if Curpos.Flag=cafPoint then begin
+    // first identifier was unitname, now read the type
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    CurNode.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+  end;
+  EndChildNode;
+  // read type list
+  if CurPos.Flag<>cafRoundBracketOpen then
+    RaiseCharExpectedButAtomFound('(');
+  CreateChildNode;
+  CurNode.Desc:=ctnSpecializeParams;
+  // read list of types
+  repeat
+    // read identifier (a parameter of the generic type)
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if Curpos.Flag=cafPoint then begin
+      // first identifier was unitname, now read the type
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end;
+    if CurPos.Flag=cafRoundBracketClose then
+      break
+    else if CurPos.Flag=cafComma then begin
+      // read next parameter
+    end else
+      RaiseCharExpectedButAtomFound(')');
+  until false;
+  // close list
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  // close specialize
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  ReadNextAtom;
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncClass: boolean;
 // class, object
 //   this is a quick parser, which will only create one node for each class
@@ -2819,15 +2926,11 @@ var
   ClassAtomPos: TAtomPosition;
   Level: integer;
 begin
-  if CurNode.Desc<>ctnTypeDefinition then
+  if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
     SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['class']);
   if (LastUpAtomIs(0,'PACKED')) then begin
-    if not LastAtomIs(1,'=') then
-      SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['class']);
     ClassAtomPos:=LastAtoms.GetValueAt(1);
   end else begin
-    if not LastAtomIs(0,'=') then
-      SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['class']);
     ClassAtomPos:=CurPos;
   end;
   // class or 'class of' start found
@@ -2896,9 +2999,7 @@ var
   ChildCreated: boolean;
   IntfAtomPos: TAtomPosition;
 begin
-  if CurNode.Desc<>ctnTypeDefinition then
-    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['interface']);
-  if not LastAtomIs(0,'=') then
+  if not (CurNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
     SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['interface']);
   IntfAtomPos:=CurPos;
   // class interface start found

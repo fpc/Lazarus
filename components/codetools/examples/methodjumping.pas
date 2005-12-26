@@ -24,7 +24,7 @@ program MethodJumping;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache;
+  Classes, SysUtils, CodeToolManager, CodeCache, CustomCodeTool;
   
 var
   ExpandedFilename: String;
@@ -32,11 +32,17 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
+  Tool: TCustomCodeTool;
 begin
   ExpandedFilename:=ExpandFileName('tgeneric2.pp');
   CodeBuf:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-  CodeToolBoss.JumpToMethod(CodeBuf,10,8,NewCode,NewX,NewY,NewTopLine,
-                            RevertableJump);
-  writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,' RevertableJump=',RevertableJump);
+  if CodeToolBoss.JumpToMethod(CodeBuf,10,8,NewCode,NewX,NewY,NewTopLine,
+                            RevertableJump)
+  then
+    writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,' RevertableJump=',RevertableJump)
+  else
+    writeln('Method body not found.');
+  Tool:=CodeToolBoss.FindCodeToolForSource(CodeBuf);
+  Tool.WriteDebugTreeReport;
 end.
 
