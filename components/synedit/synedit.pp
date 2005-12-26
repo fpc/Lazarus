@@ -2994,13 +2994,10 @@ var
   rcLine, rcToken: TRect;
   CurLine: integer; // line index for the loop
   TokenAccu: record
-    // Note: s is not managed as a string, it will only grow!!!
-    // Never use AppendStr or "+", use Len and MaxLen instead and
-    // copy the string chars directly. This is for efficiency.
     Len, MaxLen: integer;
     CharsBefore: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
-    s: string;
+    p: PChar;
     FG, BG: TColor;
     Style: TFontStyles;
   end;
@@ -3017,6 +3014,12 @@ var
   LinkFGCol: TColor;
 
 { local procedures }
+
+  procedure SetTokenAccuLength;
+  begin
+    ReAllocMem(TokenAccu.p,TokenAccu.MaxLen+1);
+    TokenAccu.p[TokenAccu.MaxLen]:=#0;
+  end;
 
   procedure ComputeSelectionInfo;
   var
@@ -3165,7 +3168,7 @@ var
   end;
 
   procedure PaintToken(
-    const Token: string;
+    Token: PChar;
     TokenLen,     // TokenLen is the maximum logical (byte) position for Token
     CharsBefore,  // CharsBefore tells if Token starts at column one or not
     FirstPhysical,// FirstPhysical is the physical (screen without scrolling)
@@ -3193,7 +3196,7 @@ var
       pszText := nil;
       nCharsToPaint := 0;
     end else begin
-      pszText := PChar(@Token[First]);
+      pszText := PChar(@Token[First-1]);
       nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
       ExpandSpecialChars(pszText,nCharsToPaint,FirstPhysical);
     end;
@@ -3276,7 +3279,7 @@ var
           SetDrawingColors(FALSE);
           rcToken.Right := ScreenColumnToXValue(nSelStart);
           with TokenAccu do
-            PaintToken(s,Len,CharsBefore,C1Phys,nC1,SelStartLogical);
+            PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical);
         end;
         // selected part of the token
         SetDrawingColors(TRUE);
@@ -3286,20 +3289,20 @@ var
         C1SelPhys := Max(nSelStart, C1Phys);
         C2SelPhys := Min(nSelEnd, C2Phys);
         rcToken.Right := ScreenColumnToXValue(C2SelPhys);
-        with TokenAccu do PaintToken(s,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel);
+        with TokenAccu do PaintToken(p,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel);
         // second unselected part of the token
         if bU2 then begin
           SetDrawingColors(FALSE);
           rcToken.Right := ScreenColumnToXValue(C2Phys);
           with TokenAccu do
-            PaintToken(s,Len,CharsBefore,nSelEnd,SelEndLogical,nC2);
+            PaintToken(p,Len,CharsBefore,nSelEnd,SelEndLogical,nC2);
         end;
       end else begin
         C1Phys := Max(FirstCol, TokenAccu.PhysicalStartPos);
         C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
         SetDrawingColors(bSel);
         rcToken.Right := ScreenColumnToXValue(C2Phys);
-        with TokenAccu do PaintToken(s, Len, CharsBefore, C1Phys, nC1, nC2);
+        with TokenAccu do PaintToken(p, Len, CharsBefore, C1Phys, nC1, nC2);
       end;
     end;
 
@@ -3409,10 +3412,10 @@ var
     if bCanAppend then begin
       if (TokenAccu.Len + TokenLen > TokenAccu.MaxLen) then begin
         TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
-        SetLength(TokenAccu.s, TokenAccu.MaxLen);
+        SetTokenAccuLength;
       end;
-      for i := 1 to TokenLen do begin
-        TokenAccu.s[TokenAccu.Len + i] := Token[i-1];
+      for i := 0 to TokenLen-1 do begin
+        TokenAccu.p[TokenAccu.Len + i] := Token[i];
       end;
       Inc(TokenAccu.Len, TokenLen);
       TokenAccu.PhysicalEndPos := PhysicalEndPos;
@@ -3420,10 +3423,10 @@ var
       TokenAccu.Len := TokenLen;
       if (TokenAccu.Len > TokenAccu.MaxLen) then begin
         TokenAccu.MaxLen := TokenAccu.Len + 32;
-        SetLength(TokenAccu.s, TokenAccu.MaxLen);
+        SetTokenAccuLength;
       end;
-      for i := 1 to TokenLen do begin
-        TokenAccu.s[i] := Token[i-1];
+      for i := 0 to TokenLen-1 do begin
+        TokenAccu.p[i] := Token[i];
       end;
       TokenAccu.CharsBefore := CharsBefore;
       TokenAccu.PhysicalStartPos := PhysicalStartPos;
@@ -3584,7 +3587,7 @@ var
     // Make sure the token accumulator string doesn't get reassigned to often.
     if Assigned(fHighlighter) then begin
       TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
-      SetLength(TokenAccu.s, TokenAccu.MaxLen);
+      SetTokenAccuLength;
     end;
     // Now loop through all the lines. The indices are valid for Lines.
     CurLine := FirstLine-1;
@@ -3674,22 +3677,22 @@ var
           // paint unselected text in front of selection
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(FirstCol));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelStart));
-          PaintToken(sLine, nTokenLen, 0, FirstCol,
+          PaintToken(PChar(sLine), nTokenLen, 0, FirstCol,
                      FirstColLogical, SelStartLogical-1);
           // paint unselected text behind selection
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelEnd));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(LastCol));
-          PaintToken(sLine, nTokenLen, 0, nSelEnd,
+          PaintToken(PChar(sLine), nTokenLen, 0, nSelEnd,
                      SelEndLogical, LastColLogical);
           // paint selection
           SetDrawingColors(TRUE);
           rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelStart));
           rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelEnd));
-          PaintToken(sLine, nTokenLen, 0, nSelStart,
+          PaintToken(PChar(sLine), nTokenLen, 0, nSelStart,
                      SelStartLogical, SelEndLogical-1);
         end else begin
           SetDrawingColors(bLineSelected);
-          PaintToken(sLine, nTokenLen, 0, FirstCol,
+          PaintToken(PChar(sLine), nTokenLen, 0, FirstCol,
                      FirstColLogical, LastColLogical);
         end;
       end else begin
@@ -3897,6 +3900,7 @@ var
   ypos : integer;
 begin
   CurLine:=-1;
+  FillChar(TokenAccu,SizeOf(TokenAccu),0);
   //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine));
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
@@ -3969,6 +3973,7 @@ begin
   end;
 
   PaintCtrlMouseLinkLine;
+  ReAllocMem(TokenAccu.p,0);
 end;
 {$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
 var
