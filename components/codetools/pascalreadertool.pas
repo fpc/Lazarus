@@ -326,7 +326,7 @@ end;
 function TPascalReaderTool.ExtractProcHead(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 var
-  GrandPaNode: TCodeTreeNode;
+  TypeDefNode: TCodeTreeNode;
   TheClassName, s: string;
   HasClassName, IsProcType: boolean;
   IsProcedure: Boolean;
@@ -344,13 +344,17 @@ begin
     exit;
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
-    GrandPaNode:=ProcNode.Parent;
-    if GrandPaNode=nil then exit;
-    GrandPaNode:=GrandPaNode.Parent;
-    if (GrandPaNode=nil) or (GrandPaNode.Desc<>ctnClass) then exit;
-    GrandPaNode:=GrandPaNode.Parent;
-    if GrandPaNode.Desc<>ctnTypeDefinition then exit;
-    MoveCursorToCleanPos(GrandPaNode.StartPos);
+    TypeDefNode:=ProcNode.Parent;
+    if TypeDefNode=nil then exit;
+    TypeDefNode:=TypeDefNode.Parent;
+    if (TypeDefNode=nil) or (TypeDefNode.Desc<>ctnClass) then exit;
+    TypeDefNode:=TypeDefNode.Parent;
+    if TypeDefNode.Desc=ctnGenericType then begin
+      TypeDefNode:=TypeDefNode.Parent;
+      if TypeDefNode=nil then exit;
+    end;
+    if TypeDefNode.Desc<>ctnTypeDefinition then exit;
+    MoveCursorToCleanPos(TypeDefNode.StartPos);
     ReadNextAtom;
     if not AtomIsIdentifier(false) then exit;
     TheClassName:=GetAtom;
@@ -364,7 +368,6 @@ begin
   if (UpAtomIs('CLASS') or UpAtomIs('STATIC')) then
     ExtractNextAtom((phpWithStart in Attr)
                     and not (phpWithoutClassKeyword in Attr),Attr);
-  IsProcedure:=UpAtomIs('PROCEDURE');
   IsProcedure:=UpAtomIs('PROCEDURE');
   IsFunction:=(not IsProcedure) and UpAtomIs('FUNCTION');
   IsOperator:=(not IsProcedure) and (not IsFunction) and UpAtomIs('OPERATOR');
@@ -1056,6 +1059,8 @@ begin
       if Result<>nil then exit;
     end else if ANode.Desc=ctnTypeDefinition then begin
       CurClassNode:=ANode.FirstChild;
+      if (CurClassNode<>nil) and (CurClassNode.Desc=ctnGenericType) then
+        CurClassNode:=CurClassNode.FirstChild;
       if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
         if (not (IgnoreForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))

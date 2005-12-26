@@ -32,17 +32,17 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
-  Tool: TCustomCodeTool;
+  //Tool: TCustomCodeTool;
 begin
   ExpandedFilename:=ExpandFileName('tgeneric2.pp');
   CodeBuf:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-  if CodeToolBoss.JumpToMethod(CodeBuf,10,8,NewCode,NewX,NewY,NewTopLine,
+  if CodeToolBoss.JumpToMethod(CodeBuf,3,15,NewCode,NewX,NewY,NewTopLine,
                             RevertableJump)
   then
     writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,' RevertableJump=',RevertableJump)
   else
     writeln('Method body not found.');
-  Tool:=CodeToolBoss.FindCodeToolForSource(CodeBuf);
-  Tool.WriteDebugTreeReport;
+  //Tool:=CodeToolBoss.FindCodeToolForSource(CodeBuf);
+  //Tool.WriteDebugTreeReport;
 end.
 

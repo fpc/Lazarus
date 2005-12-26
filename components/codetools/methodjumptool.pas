@@ -271,9 +271,10 @@ const
     ProcNode: TCodeTreeNode;
   begin
     Result:=false;
+    if SearchForProcNode=nil then exit;
     SearchedProcHead:=ExtractProcHead(SearchForProcNode,SearchForProcAttr);
     {$IFDEF CTDEBUG}
-    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',dbgs(ProcNode<>nil),' "',SearchedProcHead,'"');
+    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',SearchedProcHead,'" ',ProcHeadAttributesToStr(SearchForProcAttr));
     {$ENDIF}
     if SearchedProcHead='' then exit;
     ProcNode:=FindProcNode(StartNode,SearchedProcHead,SearchInProcAttr);
@@ -353,10 +354,7 @@ begin
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint E ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
     BuildSubTreeForClass(ClassNode);
-    TypeSectionNode:=ClassNode.Parent;
-    if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
-    and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
-      TypeSectionNode:=TypeSectionNode.Parent;
+    TypeSectionNode:=ClassNode.GetNodeOfType(ctnTypeSection);
     // search the method node under the cursor
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true).
                                                     GetNodeOfType(ctnProcedure);
