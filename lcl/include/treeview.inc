@@ -4265,7 +4265,9 @@ begin
       FDragNode:=CursorNode;
       Include(fStates,tvsWaitForDragging);
     end;
-  end;
+  end else
+  if (ssDouble in Shift) and (Button = mbLeft) then
+    CursorNode.Expanded := not CursorNode.Expanded;
 end;
 
 procedure TCustomTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
