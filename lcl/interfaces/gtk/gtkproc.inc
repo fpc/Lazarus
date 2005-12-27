@@ -1681,6 +1681,17 @@ var
   GC: PGDKGC;
   GDIColor: PGDIColor;
 
+  procedure WarnAllocFailed(const foreground : TGdkColor);
+  begin
+    DebugLn('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
+      ' Foreground=',
+      DbgS(Foreground.red),',',
+      DbgS(Foreground.green),',',
+      DbgS(Foreground.blue),
+      ' GDIColor^.ColorRef=',DbgS(GDIColor^.ColorRef)
+      );
+  end;
+
   Procedure EnsureAsGCValues;
   var
     AllocFG : Boolean;
@@ -1697,13 +1708,7 @@ var
         if not gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,
                                         True,True)
         then begin
-          DebugLn('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
-            ' Foreground=',
-            DbgS(Foreground.red),',',
-            DbgS(Foreground.green),',',
-            DbgS(Foreground.blue),
-            ' GDIColor^.ColorRef=',DbgS(GDIColor^.ColorRef)
-            );
+          WarnAllocFailed(Foreground);
         end;
       gdk_gc_set_foreground(GC, @foreground);
       Case Fill of

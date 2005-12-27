@@ -10503,22 +10503,24 @@ function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
 var
   BytePos, ByteLen: integer;
   ScreenPos: integer;
+  PLine: PChar;
 begin
   ByteLen := Length(Line);
   ScreenPos := StartPhysicalPos;
   BytePos := StartBytePos;
+  PLine := PChar(Line);
   // map utf and tab chars
   while ScreenPos < PhysicalPos do begin
     if (BytePos <= ByteLen) then begin
-      if (Line[BytePos] = #9) then begin
-        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
-        inc(BytePos);
-      end else begin
+      if (PLine[BytePos-1] <> #9) then begin
         inc(ScreenPos);
         if UseUTF8 then
-          inc(BytePos,UTF8CharacterLength(@Line[BytePos]))
+          inc(BytePos,UTF8CharacterLength(@PLine[BytePos-1]))
         else
           inc(BytePos);
+      end else begin
+        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+        inc(BytePos);
       end;
     end else begin
       // beyond end of line
@@ -10526,8 +10528,8 @@ begin
       break;
     end;
   end;
-  if (ScreenPos>PhysicalPos) and (BytePos<=ByteLen-1)
-  and (Line[BytePos-1]=#9) then
+  if (ScreenPos>PhysicalPos) and (BytePos>1) and (BytePos<ByteLen)
+  and (PLine[BytePos-2]=#9) then
     dec(BytePos);
   Result := BytePos;
 end;
