@@ -2489,11 +2489,12 @@ var
   P : TPoint;
   ClientBounds: TRect;
 begin
-  if FindOwnerControl(GetCapture) = Self
+  { CaptureControl = nil means that widgetset has captured input, but it does
+    not know anything about TControl controls }
+  if (FindOwnerControl(GetCapture) = Self) and (CaptureControl <> nil)
   then begin
     Control := nil;
-    if (CaptureControl <> nil)
-    and (CaptureControl.Parent = Self)
+    if (CaptureControl.Parent = Self)
     then Control := CaptureControl;
   end
   else begin
