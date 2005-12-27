@@ -13,22 +13,19 @@
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <LazDoc Paths=""/>
-    <Units Count="77">
+    <Units Count="78">
       <Unit0>
-        <CursorPos X="6" Y="26"/>
+        <CursorPos X="18" Y="46"/>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
+        <TopLine Value="3"/>
         <UnitName Value="lhelp"/>
         <UsageCount Value="201"/>
       </Unit0>
       <Unit1>
         <CursorPos X="49" Y="80"/>
-        <EditorIndex Value="0"/>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="HelpForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
         <ResourceFilename Value="unit1.lrs"/>
         <TopLine Value="59"/>
         <UnitName Value="unit1"/>
@@ -550,6 +547,19 @@
         <UnitName Value="paslzx"/>
         <UsageCount Value="10"/>
       </Unit76>
+      <Unit77>
+        <CursorPos X="1" Y="1"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="lhelpcore.pas"/>
+        <ComponentName Value="HelpForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ResourceFilename Value="lhelpcore.lrs"/>
+        <TopLine Value="1"/>
+        <UnitName Value="lhelpcore"/>
+        <UsageCount Value="20"/>
+      </Unit77>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
@@ -581,12 +591,12 @@
     </RequiredPackages>
     <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="143" Column="13" TopLine="120"/>
+        <Filename Value="lhelpcore.pas"/>
+        <Caret Line="3" Column="5" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="25" Column="71" TopLine="1"/>
+        <Filename Value="lhelpcore.pas"/>
+        <Caret Line="566" Column="4" TopLine="523"/>
       </Position2>
     </JumpHistory>
   </ProjectOptions>

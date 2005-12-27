@@ -22,8 +22,8 @@ program lhelp;
 uses
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, unit1, TurboPowerIPro, chmpopup, lhelpcontrolpkg,
-  chmpkg;
+  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg,
+  chmpkg, lhelpcore;
 var
  X: Integer;
 begin

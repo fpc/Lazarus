@@ -1,4 +1,4 @@
-{ Copyright (C) <2005> <Andrew Haines> unit1.pas consisting of THelpForm
+{ Copyright (C) <2005> <Andrew Haines> lhelpcore.pas
 
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
@@ -15,7 +15,7 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
-unit unit1;
+unit lhelpcore;
 
 {$mode objfpc}{$H+}
 
@@ -563,7 +563,7 @@ begin
 end;
 
 initialization
-  {$I unit1.lrs}
+  {$I lhelpcore.lrs}
 
 end.
 
