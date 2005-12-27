@@ -46,6 +46,7 @@ type
   TIpChmDataProvider = class(TIpAbstractHtmlDataProvider)
   private
     fChm: TChmFileList;
+    fCurrentPage: String;
     fCurrentPath: String;
     fOnHelpPopup: THelpPopupEvent;
   protected
@@ -65,7 +66,9 @@ type
     destructor Destroy; override;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
+    property CurrentPAge: String read fCurrentPage;
     property CurrentPath: String read fCurrentPath write fCurrentPath;
+
   end;
 
 implementation
@@ -88,14 +91,20 @@ end;
 
 function TIpChmDataProvider.DoCheckURL(const URL: string;
   var ContentType: string): Boolean;
-
+var
+X: Integer;
 begin
   //DebugLn('RequestedUrl: ',URL);
   Result := fChm.ObjectExists(Url) > 0;
   if Result then begin
     ContentType := 'text/html';
     fCurrentPath := ExtractFilePath(Url);
+    if Pos('ms-its:', fCurrentPath) > 0 then begin
+      X := Pos('::', fCurrentPath);
+      fCurrentPath := Copy(fCurrentPath, X+2, Length(fCurrentPAth)-(X+1));
+    end;
     Result := True;
+    fCurrentPage := URL;
   end;
 end;
 
@@ -191,12 +200,22 @@ var
 tmp: String;
 X: LongInt;
 RelURL: String = '';
+fOldUrl: String;
 begin
+
+   if Pos('ms-its:', OldURL) > 0 then begin
+    X := Pos('::', OldUrl);
+    fOldUrl := Copy(OldUrl, X+2, Length(OldUrl)-(X+2));
+  end
+  else fOldUrl := OldURL;
+
+  if Length(NewURL) < 1 then Exit(NewURL);
   if fChm.ObjectExists(NewURL) > 0 then begin
     Result := NewUrl;
     Exit;
   end;
-  Result:=iputils.BuildURL(Oldurl,NewUrl);
+  Result:=iputils.BuildURL(fOldurl,NewUrl);
+
   if NewURL[1] <> '/' then
   begin
     if fChm.ObjectExists(Result) > 0 then Tmp := Result
@@ -208,6 +227,9 @@ begin
     end
     else if fChm.ObjectExists(fCurrentPath+NewUrl) > 0 then begin
       Tmp := fCurrentPath+NewURL;
+    end
+    else if fChm.ObjectExists('/'+fCurrentPath+NewUrl) > 0 then begin
+      Tmp := '/'+fCurrentPath+NewURL;
     end;
     Result := Tmp;
   end;
@@ -216,6 +238,7 @@ begin
     Delete(Result, X ,1);
     X := Pos('//', Result);
   end;
+
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;

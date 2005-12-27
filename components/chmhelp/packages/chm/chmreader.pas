@@ -445,7 +445,7 @@ begin
   fFreeStreamOnDestroy := FreeStreamOnDestroy;
   ReadHeader;
   if not IsValidFile then Exit;
-  FillDirectoryEntries(1000); // the default size of the array
+  FillDirectoryEntries(4096); // the default size of the array
   fContextList := TContextList.Create;
   ReadCommonData;
 end;
@@ -566,7 +566,7 @@ begin
        LookupPMGLchunk(EntriesBuffer, X, PMGLChunk);
        while EntriesBuffer.Position < ChunkStart + fDirectoryHeader.ChunkSize - PMGLChunk.UnusedSpace do begin
           if fDirectoryEntriesCount >= DirEntrySize-1 then begin
-            Inc(DirEntrySize, 1000);
+            Inc(DirEntrySize, 1024);
             SetLength(fDirectoryEntries, DirEntrySize);
           end;
           if ReadPMGLchunkEntryFromStream(EntriesBuffer, fDirectoryEntries[fDirectoryEntriesCount])

@@ -104,11 +104,11 @@ type
     procedure FillTOCTimer(Sender: TObject);
   private
     { private declarations }
+    fIsUsingHistory: Boolean;
     fStopTimer: Boolean;
     fFillingToc: Boolean;
     fChms: TChmFileList;
     fHistory: TStringList;
-    fHotUrl: String;
     fHistoryIndex: Integer;
     fServerName: String;
     fServer: TSimpleIPCServer;
@@ -148,6 +148,7 @@ procedure THelpForm.BackToolBtnClick(Sender: TObject);
 begin
   if fHistoryIndex > 0 then begin
     Dec(fHistoryIndex);
+    fIsUsingHistory:=True;
     IpHtmlPanel1.OpenURL(fHistory.Strings[fHistoryIndex]);
   end;
 end;
@@ -214,7 +215,6 @@ end;
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
   fContext := -1;
-  //Chm := TCHMFile.Create;
   fHistory := TStringList.Create;
   IpHtmlPanel1.DataProvider := TIpChmDataProvider.Create(fChms);
   ReadCommandLineOptions;
@@ -227,6 +227,7 @@ procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
 begin
   if fHistoryIndex < fHistory.Count-1 then begin
     Inc(fHistoryIndex);
+    fIsUsingHistory:=True;
     IpHtmlPanel1.OpenURL(fHistory.Strings[fHistoryIndex]);
   end;
 end;
@@ -258,17 +259,19 @@ end;
 procedure THelpForm.IpHtmlPanel1DocumentOpen(Sender: TObject);
 begin
  // StatusBar1.Panels.Items[1] := IpHtmlPanel1.DataProvider.;
+ if fIsUsingHistory = False then
+   AddHistory(TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPage)
+ else fIsUsingHistory := False;
 end;
 
 procedure THelpForm.IpHtmlPanel1HotChange(Sender: TObject);
 begin
   StatusBar1.Panels.Items[0].Text := IpHtmlPanel1.HotURL;
-  fHotUrl := IpHtmlPanel1.HotURL;
 end;
 
 procedure THelpForm.IpHtmlPanel1HotClick(Sender: TObject);
 begin
-  AddHistory(fHotUrl);
+
 end;
 
 procedure THelpForm.PopupCopyClick(Sender: TObject);
@@ -450,6 +453,7 @@ procedure THelpForm.DoLoadUrl(Url: String; AChm: TChmReader = nil);
 begin
   if (fChms = nil) and (AChm = nil) then exit;
   if fChms.ObjectExists(Url, AChm) = 0 then Exit;
+  fIsUsingHistory := True;
   IpHtmlPanel1.OpenURL(Url);
   TIpChmDataProvider(IpHtmlPanel1.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
   AddHistory(Url);
