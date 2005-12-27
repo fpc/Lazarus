@@ -331,6 +331,7 @@ procedure TLazFindInFilesDialog.SetFindText(const NewFindText: string);
 begin
   TextToFindComboBox.Text:= NewFindText;
   TextToFindComboBox.SelectAll;
+  ActiveControl:=TextToFindComboBox;
 end;
 
 function TLazFindInFilesDialog.GetFindText: string;
