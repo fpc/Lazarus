@@ -3167,16 +3167,16 @@ begin
   Result := [];
   if (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<(ClientHeight-ScrollBarWidth))
   then begin
-    inc(Y,FScrolledTop);
     Node:=GetNodeAtY(Y);
     if Node<>nil then begin
       inc(X,FScrolledLeft);
+      Include(Result,htOnItem);
       if X<Node.DisplayExpandSignLeft then
         Include(Result,htOnIndent)
       else if X<Node.DisplayIconLeft then
         Include(Result,htOnButton)
       else if X<Node.DisplayStateIconLeft then
-        Include(Result,htOnItem)
+        Include(Result,htOnIcon)
       else if X<Node.DisplayTextLeft then
         Include(Result,htOnStateIcon)
       else if X<Node.DisplayTextRight then
