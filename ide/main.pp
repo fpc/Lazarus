@@ -2781,7 +2781,20 @@ begin
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
+var
+  newLeft, newTop: integer;
 Begin
+  // it was already visible, but user does not see it, try to move in view
+  if MessagesView.Visible then
+  begin
+    newLeft := MessagesView.Left;
+    newTop := MessagesView.Top;
+    if newLeft + (MessagesView.Width div 2) > Screen.Width then
+      newLeft := 0;
+    if newTop + (MessagesView.Height div 2) > Screen.Height then
+      newTop := Screen.Height - MessagesView.Height - 25;
+    MessagesView.SetBounds(newLeft, newTop, MessagesView.Width, MessagesView.Height);
+  end;
   MessagesView.ShowOnTop;
 End;
 
