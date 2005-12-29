@@ -1188,6 +1188,7 @@ type
     property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
+    property Transparent;
     property Visible;
     property WordWrap;
     property OnClick;
