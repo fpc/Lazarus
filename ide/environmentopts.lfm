@@ -1,5 +1,5 @@
 object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
-  ActiveControl = ShowGridCheckBox
+  ActiveControl = CancelButton
   Caption = 'EnvironmentOptionsDialog'
   ClientHeight = 520
   ClientWidth = 540
@@ -15,7 +15,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 6
     Height = 477
     Width = 540
     object FilesPage: TPage
@@ -88,8 +88,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object LazarusDirGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'LazarusDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 516
+        ClientHeight = 54
+        ClientWidth = 520
         TabOrder = 3
         Left = 4
         Height = 54
@@ -120,8 +120,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object CompilerPathGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'CompilerPathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 516
+        ClientHeight = 54
+        ClientWidth = 520
         TabOrder = 4
         Left = 4
         Height = 54
@@ -152,8 +152,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object FPCSourceDirGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'FPCSourceDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 516
+        ClientHeight = 54
+        ClientWidth = 520
         TabOrder = 5
         Left = 4
         Height = 54
@@ -184,8 +184,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object MakePathGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'MakePathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 516
+        ClientHeight = 54
+        ClientWidth = 520
         TabOrder = 6
         Left = 4
         Height = 54
@@ -216,8 +216,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object TestBuildDirGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'TestBuildDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 516
+        ClientHeight = 54
+        ClientWidth = 520
         TabOrder = 7
         Left = 4
         Height = 54
@@ -255,8 +255,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object LanguageGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'LanguageGroupBox'
-        ClientHeight = 38
-        ClientWidth = 522
+        ClientHeight = 56
+        ClientWidth = 526
         TabOrder = 0
         Left = 4
         Height = 56
@@ -284,8 +284,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object AutoSaveGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'AutoSaveGroupBox'
-        ClientHeight = 118
-        ClientWidth = 522
+        ClientHeight = 136
+        ClientWidth = 526
         TabOrder = 2
         Left = 4
         Height = 136
@@ -342,8 +342,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object DesktopFilesGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'DesktopFilesGroupBox'
-        ClientHeight = 79
-        ClientWidth = 522
+        ClientHeight = 97
+        ClientWidth = 526
         TabOrder = 3
         Left = 4
         Height = 97
@@ -417,8 +417,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object WindowPositionsGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'WindowPositionsGroupBox'
-        ClientHeight = 314
-        ClientWidth = 522
+        ClientHeight = 332
+        ClientWidth = 526
         TabOrder = 2
         Left = 4
         Height = 332
@@ -445,8 +445,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object GridGroupBox: TGroupBox
         BorderSpacing.Around = 6
         Caption = 'GridGroupBox'
-        ClientHeight = 153
-        ClientWidth = 333
+        ClientHeight = 171
+        ClientWidth = 337
         TabOrder = 0
         Left = 6
         Height = 171
@@ -551,8 +551,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 10
         Caption = 'GuideLinesGroupBox'
-        ClientHeight = 237
-        ClientWidth = 168
+        ClientHeight = 255
+        ClientWidth = 172
         TabOrder = 1
         AnchorSideLeft.Control = FormEditMiscGroupBox
         Left = 353
@@ -614,8 +614,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object FormEditMiscGroupBox: TGroupBox
         BorderSpacing.Around = 6
         Caption = 'FormEditMiscGroupBox'
-        ClientHeight = 237
-        ClientWidth = 333
+        ClientHeight = 255
+        ClientWidth = 337
         TabOrder = 2
         AnchorSideRight.Control = FormEditorPage
         AnchorSideRight.Side = asrBottom
@@ -708,8 +708,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 10
         Caption = 'RubberbandGroupBox'
-        ClientHeight = 152
-        ClientWidth = 168
+        ClientHeight = 170
+        ClientWidth = 172
         TabOrder = 3
         AnchorSideLeft.Control = GridGroupBox
         Left = 353
@@ -773,8 +773,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.Top = 5
         BorderSpacing.Right = 5
         Caption = 'ObjectInspectorColorsGroupBox'
-        ClientHeight = 155
-        ClientWidth = 518
+        ClientHeight = 173
+        ClientWidth = 522
         TabOrder = 0
         Left = 5
         Height = 173
@@ -886,8 +886,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object OIMiscGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'OIMiscGroupBox'
-        ClientHeight = 87
-        ClientWidth = 518
+        ClientHeight = 105
+        ClientWidth = 522
         TabOrder = 1
         Left = 5
         Height = 105
@@ -941,8 +941,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object BackupProjectGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'BackupProjectGroupBox'
-        ClientHeight = 183
-        ClientWidth = 522
+        ClientHeight = 201
+        ClientWidth = 526
         TabOrder = 0
         Left = 4
         Height = 201
@@ -1019,8 +1019,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object BackupOtherGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'BackupOtherGroupBox'
-        ClientHeight = 178
-        ClientWidth = 522
+        ClientHeight = 196
+        ClientWidth = 526
         TabOrder = 1
         Left = 4
         Height = 196
@@ -1102,34 +1102,38 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       Height = 451
       Width = 532
       object PascalFileExtRadiogroup: TRadioGroup
-        Anchors = [akTop, akLeft, akRight]
+        Align = alTop
+        Anchors = [akTop, akLeft]
+        BorderSpacing.Around = 6
         Caption = 'PascalFileExtRadiogroup'
         Columns = 2
         TabOrder = 0
-        Left = 4
+        Left = 6
         Height = 47
-        Top = 10
-        Width = 530
+        Top = 6
+        Width = 520
       end
       object CharcaseFileActionRadioGroup: TRadioGroup
-        Anchors = [akTop, akLeft, akRight]
+        Align = alTop
+        BorderSpacing.Around = 6
         Caption = 'CharcaseFileActionRadioGroup'
         Columns = 2
         TabOrder = 1
-        Left = 4
+        Left = 6
         Height = 85
-        Top = 62
-        Width = 530
+        Top = 165
+        Width = 520
       end
       object AmbiguousFileActionRadioGroup: TRadioGroup
-        Anchors = [akTop, akLeft, akRight]
+        Align = alTop
+        BorderSpacing.Around = 6
         Caption = 'AmbiguousFileActionRadioGroup'
         Columns = 2
         TabOrder = 2
-        Left = 3
+        Left = 6
         Height = 100
-        Top = 152
-        Width = 530
+        Top = 59
+        Width = 520
       end
     end
     object LazDocPage: TPage
@@ -1151,8 +1155,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 192
-        ClientWidth = 516
+        ClientHeight = 210
+        ClientWidth = 520
         TabOrder = 0
         Left = 6
         Height = 210
@@ -1242,7 +1246,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Title = 'Select Directory'
     FilterIndex = 0
     Title = 'Select Directory'
-    left = 512
+    left = 488
     top = 8
   end
 end

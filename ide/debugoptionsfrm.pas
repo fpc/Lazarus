@@ -42,6 +42,9 @@ type
   { TDebuggerOptionsForm }
 
   TDebuggerOptionsForm = class (TForm )
+    btnHelp: TBitBtn;
+    cmdOK: TBitBtn;
+    cmdCancel: TBitBtn;
     gcbDebuggerGeneralOptions: TCheckGroup;    
     clbExceptions: TCHECKLISTBOX;
     chkMessagesInterface: TCHECKBOX;
@@ -55,8 +58,6 @@ type
     chkMessagesWindow: TCHECKBOX;
     cmdOpenDebuggerPath: TBUTTON;
     cmdOpenAdditionalPath: TBUTTON;
-    cmdCancel: TBUTTON;
-    cmdOK: TBUTTON;
     cmdExceptionRemove: TBUTTON;
     cmdExceptionAdd: TBUTTON;
     cmdSignalRemove: TBUTTON;
@@ -412,7 +413,6 @@ begin
   FreeAndNil(FExceptionDeleteList);
   FreeAndNil(FPropertyEditorHook);
 end;
-
 
 initialization
   {$I debugoptionsfrm.lrs}

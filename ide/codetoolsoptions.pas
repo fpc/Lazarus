@@ -756,6 +756,7 @@ begin
     IDEDialogLayoutList.ApplyLayout(Self,485,435);
     Caption:=dlgCodeToolsOpts;
     OnResize:=@CodeToolsOptsDlgResize;
+    BorderStyle := bsSizeToolWin;
 
     NoteBook:=TNoteBook.Create(Self);
     with NoteBook do begin
@@ -990,7 +991,7 @@ begin
   with PropertyReadIdentPrefixEdit do begin
     Name:='PropertyReadIdentPrefixEdit';
     Parent:=PropertyCompletionGroupBox;
-    SetBounds(110,PropertyReadIdentPrefixLabel.Top,80,Height);
+    SetBounds(130,PropertyReadIdentPrefixLabel.Top,80,Height);
   end;
 
   PropertyWriteIdentPrefixLabel:=TLabel.Create(Self);
@@ -1308,7 +1309,7 @@ begin
   end;
 
   with PropertyReadIdentPrefixEdit do begin
-    SetBounds(110,PropertyReadIdentPrefixLabel.Top,80,Height);
+    SetBounds(130,PropertyReadIdentPrefixLabel.Top,80,Height);
   end;
 
   with PropertyWriteIdentPrefixLabel do begin
