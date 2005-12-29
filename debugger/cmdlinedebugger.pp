@@ -361,7 +361,8 @@ begin
       end;
     end;
 *)
-  until not DebugProcessRunning; 
+    {$message warning condition should also check end-of-file reached for process output stream}
+  until not DebugProcessRunning and (Length(FOutputBuf) = 0); 
 
   FReading := False;
   if FFlushAfterRead 

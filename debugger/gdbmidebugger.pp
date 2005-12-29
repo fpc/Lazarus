@@ -1057,8 +1057,6 @@ end;
 
 function TGDBMIDebugger.GDBStop: Boolean;
 begin
-  Result := False;
-
   if State = dsError
   then begin
     // We don't know the state of the debugger, 
@@ -1074,7 +1072,7 @@ begin
 
   // not supported yet
   // ExecuteCommand('-exec-abort');
-  ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback, 0);
+  Result := ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback, 0);
 end;
 
 procedure TGDBMIDebugger.GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
@@ -1538,8 +1536,7 @@ begin
   AResult.Values := '';
   AResult.Flags := [];
   AResult.State := dsNone;
-  while DebugProcessRunning do
-  begin
+  repeat
     S := StripLN(ReadLine);
     if S = '' then Continue;
     if S = '(gdb) ' then Break;
@@ -1555,7 +1552,8 @@ begin
     else
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
-  end;
+    {$message warning condition should also check end-of-file reached for process output stream}
+  until not DebugProcessRunning;
 end;
 
 function TGDBMIDebugger.ProcessRunning(var AStoppedParams: String): Boolean;

@@ -1286,9 +1286,9 @@ end;
 
 procedure TDebugger.Done;
 begin
+  SetState(dsNone);
   FEnvironment.Clear;
   FCurEnvironment.Clear;
-  SetState(dsNone);
 end;
 
 procedure TDebugger.DoCurrent(const ALocation: TDBGLocationRec);
@@ -1327,33 +1327,36 @@ var
   Env: TStringList;
 begin
   // Createe local copy
-  Env := TStringList.Create;
-  try
-    Env.Assign(Environment);
+  if FState <> dsNone then
+  begin
+    Env := TStringList.Create;
+    try
+      Env.Assign(Environment);
 
-    // Check for nonexisting and unchanged vars
-    for n := 0 to FCurEnvironment.Count - 1 do
-    begin
-      S := FCurEnvironment[n];
-      idx := Env.IndexOfName(GetPart([], ['='], S, False, False));
-      if idx = -1
-      then ReqCmd(dcEnvironment, [S, False])
-      else begin
-        if Env[idx] = S
-        then Env.Delete(idx);
+      // Check for nonexisting and unchanged vars
+      for n := 0 to FCurEnvironment.Count - 1 do
+      begin
+        S := FCurEnvironment[n];
+        idx := Env.IndexOfName(GetPart([], ['='], S, False, False));
+        if idx = -1
+        then ReqCmd(dcEnvironment, [S, False])
+        else begin
+          if Env[idx] = S
+          then Env.Delete(idx);
+        end;
       end;
+      
+      // Set the remaining
+      for n := 0 to Env.Count - 1 do
+      begin
+        S := Env[n];
+        //Skip functions etc.
+        if Pos('=()', S) <> 0 then Continue;
+        ReqCmd(dcEnvironment, [S, True]);
+      end;
+    finally
+      Env.Free;
     end;
-    
-    // Set the remaining
-    for n := 0 to Env.Count - 1 do
-    begin
-      S := Env[n];
-      //Skip functions etc.
-      if Pos('=()', S) <> 0 then Continue;
-      ReqCmd(dcEnvironment, [S, True]);
-    end;
-  finally
-    Env.Free;
   end;
   FCurEnvironment.Assign(FEnvironment);
 end;
