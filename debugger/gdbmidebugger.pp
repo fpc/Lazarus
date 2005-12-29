@@ -796,6 +796,47 @@ begin
   end;
 end;
 
+function PosSetEx(const ASubStrSet, AString: string; 
+  const Offset: integer): integer;
+begin
+  for Result := Offset to Length(AString) do
+    if Pos(AString[Result], ASubStrSet) > 0 then
+      exit;
+  Result := 0;
+end;
+
+function EscapeGDBCommand(const AInput: string): string;
+var
+  lPiece: string;
+  I, lPos, len: integer;
+begin
+  lPos := 1;
+  Result := '';
+  repeat
+    I := PosSetEx(#9#10#13, AInput, lPos);
+    { copy unmatched characters }
+    if I > 0 then
+      len := I-lPos
+    else
+      len := Length(AInput)+1-lPos;
+    Result := Result + Copy(AInput, lPos, len);
+    { replace a matched character or be done }
+    if I > 0 then
+    begin
+      case AInput[I] of
+        #9:  lPiece := '\t';
+        #10: lPiece := '\n';
+        #13: lPiece := '\r';
+      else
+        lPiece := '';
+      end;
+      Result := Result + lPiece;
+      lPos := I+1;
+    end else
+      exit;
+  until false;
+end;
+
 function TGDBMIDebugger.GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
 var
   S: String;
@@ -804,9 +845,11 @@ begin
 
   if State = dsRun
   then GDBPause(True);
-  if ASet
-  then ExecuteCommand('-gdb-set env %s', [AVariable], [cfIgnoreState, cfExternal])
-  else begin
+  if ASet then 
+  begin
+    S := EscapeGDBCommand(AVariable);
+    ExecuteCommand('-gdb-set env %s', [S], [cfIgnoreState, cfExternal]);
+  end else begin
     S := AVariable;
     ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfNoMiCommand, cfIgnoreState, cfExternal]);
   end;
