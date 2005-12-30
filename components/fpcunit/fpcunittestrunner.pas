@@ -2,12 +2,12 @@
 This source is only used to compile and install the package.
  }
 
-unit FPCUnitTestRunner;
+unit FPCUnitTestRunner; 
 
 interface
 
 uses
-  GuiTestRunner;
+  GuiTestRunner; 
 
 implementation
 
