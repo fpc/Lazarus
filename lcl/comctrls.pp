@@ -965,6 +965,7 @@ type
     property SortType;
     property StateImages;
     property TabStop;
+    property TabOrder;
     property Visible;
     property ViewStyle;
     property OnMouseMove;
