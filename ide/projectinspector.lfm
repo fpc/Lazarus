@@ -1,0 +1,86 @@
+object ProjectInspectorForm: TProjectInspectorForm
+  ActiveControl = OpenBitBtn
+  BorderStyle = bsSizeToolWin
+  Caption = 'ProjectInspectorForm'
+  ClientHeight = 300
+  ClientWidth = 403
+  OnShow = ProjectInspectorFormShow
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 402
+  VertScrollBar.Page = 299
+  Left = 460
+  Height = 300
+  Top = 401
+  Width = 403
+  object OpenBitBtn: TBitBtn
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OpenBitBtn'
+    NumGlyphs = 0
+    OnClick = OpenBitBtnClick
+    TabOrder = 0
+    Height = 29
+    Width = 78
+  end
+  object AddBitBtn: TBitBtn
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = 'AddBitBtn'
+    NumGlyphs = 0
+    OnClick = AddBitBtnClick
+    TabOrder = 1
+    AnchorSideLeft.Control = OpenBitBtn
+    Left = 78
+    Height = 29
+    Width = 71
+  end
+  object RemoveBitBtn: TBitBtn
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = 'RemoveBitBtn'
+    NumGlyphs = 0
+    OnClick = RemoveBitBtnClick
+    TabOrder = 2
+    AnchorSideLeft.Control = AddBitBtn
+    Left = 149
+    Height = 29
+    Width = 92
+  end
+  object OptionsBitBtn: TBitBtn
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OptionsBitBtn'
+    NumGlyphs = 0
+    OnClick = OptionsBitBtnClick
+    TabOrder = 3
+    AnchorSideLeft.Control = RemoveBitBtn
+    Left = 241
+    Height = 29
+    Width = 162
+  end
+  object ItemsTreeView: TTreeView
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultItemHeight = 16
+    Images = ImageList
+    PopupMenu = ItemsPopupMenu
+    RightClickSelect = True
+    TabOrder = 4
+    OnDblClick = ItemsTreeViewDblClick
+    OnSelectionChanged = ItemsTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Height = 269
+    Top = 31
+    Width = 403
+  end
+  object ImageList: TImageList
+    left = 39
+    top = 20
+  end
+  object ItemsPopupMenu: TPopupMenu
+    OnPopup = ItemsPopupMenuPopup
+    left = 40
+    top = 59
+  end
+end

@@ -79,7 +79,6 @@ type
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure OpenBitBtnClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
-    procedure ProjectInspectorFormResize(Sender: TObject);
     procedure ProjectInspectorFormShow(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
@@ -147,16 +146,12 @@ type
   end;
   
 var
-  ProjInspector: TProjectInspectorForm;
+  ProjInspector: TProjectInspectorForm = nil;
 
 
 implementation
 
 { TProjectInspectorForm }
-
-procedure TProjectInspectorForm.ProjectInspectorFormResize(Sender: TObject);
-begin
-end;
 
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
@@ -379,11 +374,7 @@ procedure TProjectInspectorForm.SetupComponents;
   end;
 
 begin
-  ImageList:=TImageList.Create(Self);
   with ImageList do begin
-    Width:=17;
-    Height:=17;
-    Name:='ImageList';
     ImageIndexFiles:=Count;
     AddResImg('pkg_files');
     ImageIndexRequired:=Count;
@@ -404,72 +395,18 @@ begin
     AddResImg('pkg_binary');
   end;
 
-  ItemsPopupMenu:=TPopupMenu.Create(Self);
-  with ItemsPopupMenu do begin
-    OnPopup:=@ItemsPopupMenuPopup;
-  end;
+  OpenBitBtn.Caption:=lisMenuOpen;
+  AddBitBtn.Caption:=lisCodeTemplAdd;
+  RemoveBitBtn.Caption:=lisExtToolRemove;
+  OptionsBitBtn.Caption:=dlgFROpts;
 
-  OpenBitBtn:=TBitBtn.Create(Self);
-  with OpenBitBtn do begin
-    Name:='OpenBitBtn';
-    Parent:=Self;
-    Caption:=lisMenuOpen;
-    OnClick:=@OpenBitBtnClick;
-    AutoSize:=true;
-    SetBounds(0,0,Width,Height);
-  end;
-
-  AddBitBtn:=TBitBtn.Create(Self);
-  with AddBitBtn do begin
-    Name:='AddBitBtn';
-    Parent:=Self;
-    Caption:=lisCodeTemplAdd;
-    OnClick:=@AddBitBtnClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,0,OpenBitBtn);
-    Top:=0;
-  end;
-
-  RemoveBitBtn:=TBitBtn.Create(Self);
-  with RemoveBitBtn do begin
-    Name:='RemoveBitBtn';
-    Parent:=Self;
-    Caption:=lisExtToolRemove;
-    OnClick:=@RemoveBitBtnClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,0,AddBitBtn);
-    Top:=0;
-  end;
-
-  OptionsBitBtn:=TBitBtn.Create(Self);
-  with OptionsBitBtn do begin
-    Name:='OptionsBitBtn';
-    Parent:=Self;
-    Caption:=dlgFROpts;
-    OnClick:=@OptionsBitBtnClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,0,RemoveBitBtn);
-    AnchorParallel(akRight,0,Parent);
-    Top:=0;
-  end;
-
-  ItemsTreeView:=TTreeView.Create(Self);
   with ItemsTreeView do begin
-    Name:='ItemsTreeView';
-    Parent:=Self;
-    Images:=ImageList;
-    Options:=Options+[tvoRightClickSelect];
-    OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
-    OnDblClick:=@ItemsTreeViewDblClick;
     FilesNode:=Items.Add(nil, dlgEnvFiles);
     FilesNode.ImageIndex:=ImageIndexFiles;
     FilesNode.SelectedIndex:=FilesNode.ImageIndex;
     DependenciesNode:=Items.Add(nil, lisPckEditRequiredPackages);
     DependenciesNode.ImageIndex:=ImageIndexRequired;
     DependenciesNode.SelectedIndex:=DependenciesNode.ImageIndex;
-    PopupMenu:=ItemsPopupMenu;
-    Align:=alBottom;
-    AnchorToNeighbour(akTop,0,OptionsBitBtn);
   end;
 end;
 
@@ -702,9 +639,6 @@ begin
   ALayout.Apply;
 
   SetupComponents;
-  OnResize:=@ProjectInspectorFormResize;
-  OnResize(Self);
-  OnShow:=@ProjectInspectorFormShow;
   KeyPreview:=true;
 end;
 
@@ -805,7 +739,7 @@ end;
 
 
 initialization
-  ProjInspector:=nil;
+  {$I projectinspector.lrs}
 
 end.
 
