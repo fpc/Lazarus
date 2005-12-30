@@ -565,6 +565,8 @@ type
   TListItemFlag = (lifDestroying, lifCreated);
   TListItemFlags = set of TListItemFlag;
   
+  { TListItem }
+
   TListItem = class(TPersistent)
   private
     FOwner: TListItems;
@@ -574,6 +576,7 @@ type
     FData: Pointer;
     FImageIndex: Integer;
     FStates: TListItemStates;
+    function GetListView: TCustomListView;
     function GetState(const ALisOrd: Integer): Boolean;
     function GetIndex: Integer;
     function GetSubItemImages(const AIndex: Integer): Integer;
@@ -606,6 +609,7 @@ type
     property Focused: Boolean index Ord(lisFocused) read GetState write SetState;
     property Index: Integer read GetIndex;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ListView: TCustomListView read GetListView;
     property Owner: TListItems read FOwner;
     property Selected: Boolean index Ord(lisSelected) read GetState write SetState;
     property SubItems: TStrings read GetSubItems write SetSubItems;

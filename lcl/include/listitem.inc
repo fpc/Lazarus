@@ -443,6 +443,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   The ListView this ListItem belongs to                                      }
+{------------------------------------------------------------------------------}
+function TListItem.GetListView: TCustomListView;
+begin
+  Result := Owner.Owner;
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem GetSubItemImages                                                 }
 {------------------------------------------------------------------------------}
 function TListItem.GetSubItemImages(const AIndex: Integer): Integer;
