@@ -1,54 +1,51 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TFindRenameIdentifierDialog','FORMDATA',[
-  'TPF0'#27'TFindRenameIdentifierDialog'#26'FindRenameIdentifierDialog'#11'Bord'
-  +'erStyle'#7#13'bsSizeToolWin'#7'Caption'#6#26'FindRenameIdentifierDialog'#12
-  +'ClientHeight'#3#179#1#11'ClientWidth'#3#196#1#7'OnClose'#7#31'FindRenameIde'
-  +'ntifierDialogClose'#8'OnCreate'#7' FindRenameIdentifierDialogCreate'#13'Pix'
-  +'elsPerInch'#2'`'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3
-  +#195#1#18'VertScrollBar.Page'#3#178#1#4'Left'#3'#'#1#6'Height'#3#179#1#3'Top'
-  +#3#163#0#5'Width'#3#196#1#0#9'TGroupBox'#15'CurrentGroupBox'#5'Align'#7#5'al'
-  +'Top'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#22'BorderSpa'
-  +'cing.OnChange'#13#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'CurrentGroup'
-  +'Box'#12'ClientHeight'#2'8'#11'ClientWidth'#3#180#1#11'ParentColor'#9#8'TabO'
-  +'rder'#2#0#4'Left'#2#6#6'Height'#2'J'#3'Top'#2#6#5'Width'#3#184#1#0#8'TListB'
-  +'ox'#14'CurrentListBox'#5'Align'#7#8'alClient'#22'BorderSpacing.OnChange'#13
-  +#20'BorderSpacing.Around'#2#6#16'ClickOnSelChange'#8#8'TabOrder'#2#0#4'Left'
-  +#2#6#6'Height'#2','#3'Top'#2#6#5'Width'#3#168#1#0#0#0#9'TGroupBox'#11'NewGro'
-  +'upBox'#5'Align'#7#5'alTop'#22'BorderSpacing.OnChange'#13#20'BorderSpacing.A'
-  +'round'#2#6#7'Caption'#6#11'NewGroupBox'#12'ClientHeight'#2':'#11'ClientWidt'
-  +'h'#3#180#1#11'ParentColor'#9#8'TabOrder'#2#1#4'Left'#2#6#6'Height'#2'L'#3'T'
-  +'op'#2'V'#5'Width'#3#184#1#0#5'TEdit'#7'NewEdit'#5'Align'#7#5'alTop'#22'Bord'
-  +'erSpacing.OnChange'#13#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'
-  +#6#7'NewEdit'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3#168#1#0#0#9'T'
-  +'CheckBox'#14'RenameCheckBox'#5'Align'#7#5'alTop'#11'AllowGrayed'#9#7'Anchor'
-  +'s'#11#5'akTop'#7'akRight'#0#22'BorderSpacing.OnChange'#13#20'BorderSpacing.'
-  +'Around'#2#6#7'Caption'#6#14'RenameCheckBox'#8'OnChange'#7#20'RenameCheckBox'
-  +'Change'#8'TabOrder'#2#1#11'UseOnChange'#9#4'Left'#2#6#6'Height'#2#13#3'Top'
-  +#2'#'#5'Width'#3#168#1#0#0#0#9'TGroupBox'#13'ScopeGroupBox'#5'Align'#7#5'alT'
-  +'op'#22'BorderSpacing.OnChange'#13#20'BorderSpacing.Around'#2#6#7'Caption'#6
-  +#13'ScopeGroupBox'#12'ClientHeight'#3#206#0#11'ClientWidth'#3#180#1#11'Paren'
-  +'tColor'#9#8'TabOrder'#2#2#4'Left'#2#6#6'Height'#3#224#0#3'Top'#3#168#0#5'Wi'
-  +'dth'#3#184#1#0#9'TCheckBox'#21'ScopeCommentsCheckBox'#5'Align'#7#5'alTop'#11
-  +'AllowGrayed'#9#22'BorderSpacing.OnChange'#13#20'BorderSpacing.Around'#2#6#7
-  +'Caption'#6#21'ScopeCommentsCheckBox'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2
-  +#13#3'Top'#3#184#0#5'Width'#3#168#1#0#0#11'TRadioGroup'#15'ScopeRadioGroup'#5
-  +'Align'#7#5'alTop'#22'BorderSpacing.OnChange'#13#20'BorderSpacing.Around'#2#6
-  +#7'Caption'#6#15'ScopeRadioGroup'#13'Items.Strings'#1#6#15'in current unit'#6
-  +#15'in main project'#6#30'in project/package owning file'#6'!in all open pro'
-  +'jects and packages'#0#11'ParentColor'#9#4'Left'#2#6#6'Height'#2'p'#3'Top'#2
-  +#6#5'Width'#3#168#1#0#0#9'TGroupBox'#18'ExtraFilesGroupBox'#5'Align'#7#5'alT'
-  +'op'#22'BorderSpacing.OnChange'#13#20'BorderSpacing.Around'#2#6#7'Caption'#6
-  +#18'ExtraFilesGroupBox'#12'ClientHeight'#2'$'#11'ClientWidth'#3#164#1#11'Par'
-  +'entColor'#9#8'TabOrder'#2#2#4'Left'#2#6#6'Height'#2'6'#3'Top'#2'|'#5'Width'
-  +#3#168#1#0#5'TEdit'#14'ExtraFilesEdit'#5'Align'#7#5'alTop'#22'BorderSpacing.'
-  +'OnChange'#13#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#14'Extr'
-  +'aFilesEdit'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3#152#1#0#0#0#0#7
-  +'TButton'#18'FindOrRenameButton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#22'B'
-  +'orderSpacing.OnChange'#13#7'Caption'#6#18'FindOrRenameButton'#7'OnClick'#7
-  +#23'FindOrRenameButtonClick'#8'TabOrder'#2#3#4'Left'#2'x'#6'Height'#2#25#3'T'
-  +'op'#3#144#1#5'Width'#3#233#0#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#7
-  +'akRight'#8'akBottom'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6#12'Cancel'
-  +'Button'#11'ModalResult'#2#2#8'TabOrder'#2#4#4'Left'#3'e'#1#6'Height'#2#25#3
-  +'Top'#3#144#1#5'Width'#2'Y'#0#0#0
+  'TPF0'#27'TFindRenameIdentifierDialog'#26'FindRenameIdentifierDialog'#13'Acti'
+  +'veControl'#7#14'CurrentListBox'#11'BorderStyle'#7#13'bsSizeToolWin'#7'Capti'
+  +'on'#6#26'FindRenameIdentifierDialog'#12'ClientHeight'#3#183#1#11'ClientWidt'
+  +'h'#3#196#1#7'OnClose'#7#31'FindRenameIdentifierDialogClose'#8'OnCreate'#7' '
+  +'FindRenameIdentifierDialogCreate'#13'PixelsPerInch'#2'`'#8'Position'#7#14'p'
+  +'oScreenCenter'#18'HorzScrollBar.Page'#3#195#1#18'VertScrollBar.Page'#3#182#1
+  +#4'Left'#3'#'#1#6'Height'#3#183#1#3'Top'#3#163#0#5'Width'#3#196#1#0#9'TGroup'
+  +'Box'#15'CurrentGroupBox'#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'Cu'
+  +'rrentGroupBox'#12'ClientHeight'#2'<'#11'ClientWidth'#3#180#1#8'TabOrder'#2#0
+  +#4'Left'#2#6#6'Height'#2'N'#3'Top'#2#6#5'Width'#3#184#1#0#8'TListBox'#14'Cur'
+  +'rentListBox'#5'Align'#7#8'alClient'#20'BorderSpacing.Around'#2#6#16'ClickOn'
+  +'SelChange'#8#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2'0'#3'Top'#2#6#5'Width'
+  +#3#168#1#0#0#0#9'TGroupBox'#11'NewGroupBox'#5'Align'#7#5'alTop'#20'BorderSpa'
+  +'cing.Around'#2#6#7'Caption'#6#11'NewGroupBox'#12'ClientHeight'#2':'#11'Clie'
+  +'ntWidth'#3#180#1#8'TabOrder'#2#1#4'Left'#2#6#6'Height'#2'L'#3'Top'#2'Z'#5'W'
+  +'idth'#3#184#1#0#5'TEdit'#7'NewEdit'#5'Align'#7#5'alTop'#20'BorderSpacing.Ar'
+  +'ound'#2#6#8'TabOrder'#2#0#4'Text'#6#7'NewEdit'#4'Left'#2#6#6'Height'#2#23#3
+  +'Top'#2#6#5'Width'#3#168#1#0#0#9'TCheckBox'#14'RenameCheckBox'#5'Align'#7#5
+  +'alTop'#11'AllowGrayed'#9#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpaci'
+  +'ng.Around'#2#6#7'Caption'#6#14'RenameCheckBox'#8'OnChange'#7#20'RenameCheck'
+  +'BoxChange'#8'TabOrder'#2#1#11'UseOnChange'#9#4'Left'#2#6#6'Height'#2#13#3'T'
+  +'op'#2'#'#5'Width'#3#168#1#0#0#0#9'TGroupBox'#13'ScopeGroupBox'#5'Align'#7#5
+  +'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#13'ScopeGroupBox'#12'Clien'
+  +'tHeight'#3#206#0#11'ClientWidth'#3#180#1#8'TabOrder'#2#2#4'Left'#2#6#6'Heig'
+  +'ht'#3#224#0#3'Top'#3#172#0#5'Width'#3#184#1#0#9'TCheckBox'#21'ScopeComments'
+  +'CheckBox'#5'Align'#7#5'alTop'#11'AllowGrayed'#9#20'BorderSpacing.Around'#2#6
+  +#7'Caption'#6#21'ScopeCommentsCheckBox'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'
+  +#2#13#3'Top'#3#184#0#5'Width'#3#168#1#0#0#11'TRadioGroup'#15'ScopeRadioGroup'
+  +#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'ScopeRadio'
+  +'Group'#13'Items.Strings'#1#6#15'in current unit'#6#15'in main project'#6#30
+  +'in project/package owning file'#6'!in all open projects and packages'#0#8'T'
+  +'abOrder'#2#1#4'Left'#2#6#6'Height'#2'p'#3'Top'#2#6#5'Width'#3#168#1#0#0#9'T'
+  +'GroupBox'#18'ExtraFilesGroupBox'#5'Align'#7#5'alTop'#20'BorderSpacing.Aroun'
+  +'d'#2#6#7'Caption'#6#18'ExtraFilesGroupBox'#12'ClientHeight'#2'$'#11'ClientW'
+  +'idth'#3#164#1#8'TabOrder'#2#2#4'Left'#2#6#6'Height'#2'6'#3'Top'#2'|'#5'Widt'
+  +'h'#3#168#1#0#5'TEdit'#14'ExtraFilesEdit'#5'Align'#7#5'alTop'#20'BorderSpaci'
+  +'ng.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#14'ExtraFilesEdit'#4'Left'#2#6#6'H'
+  +'eight'#2#23#3'Top'#2#6#5'Width'#3#152#1#0#0#0#0#7'TButton'#18'FindOrRenameB'
+  +'utton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacin'
+  +'g.Right'#2#8#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#18'FindOrRename'
+  +'Button'#7'OnClick'#7#23'FindOrRenameButtonClick'#8'TabOrder'#2#3#23'AnchorS'
+  +'ideRight.Control'#7#12'CancelButton'#4'Left'#3#224#0#6'Height'#2#29#3'Top'#3
+  +#148#1#5'Width'#2'~'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#7'akRight'
+  +#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6
+  +#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#4#4'Left'#3'f'#1#6'Heigh'
+  +'t'#2#29#3'Top'#3#148#1#5'Width'#2'X'#0#0#0
 ]);

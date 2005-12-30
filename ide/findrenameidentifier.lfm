@@ -1,60 +1,55 @@
 object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
+  ActiveControl = CurrentListBox
   BorderStyle = bsSizeToolWin
   Caption = 'FindRenameIdentifierDialog'
-  ClientHeight = 435
+  ClientHeight = 439
   ClientWidth = 452
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
   PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 451
-  VertScrollBar.Page = 434
+  VertScrollBar.Page = 438
   Left = 291
-  Height = 435
+  Height = 439
   Top = 163
   Width = 452
   object CurrentGroupBox: TGroupBox
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 6
     Caption = 'CurrentGroupBox'
-    ClientHeight = 56
+    ClientHeight = 60
     ClientWidth = 436
-    ParentColor = True
     TabOrder = 0
     Left = 6
-    Height = 74
+    Height = 78
     Top = 6
     Width = 440
     object CurrentListBox: TListBox
       Align = alClient
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       ClickOnSelChange = False
       TabOrder = 0
       Left = 6
-      Height = 44
+      Height = 48
       Top = 6
       Width = 424
     end
   end
   object NewGroupBox: TGroupBox
     Align = alTop
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
     ClientHeight = 58
     ClientWidth = 436
-    ParentColor = True
     TabOrder = 1
     Left = 6
     Height = 76
-    Top = 86
+    Top = 90
     Width = 440
     object NewEdit: TEdit
       Align = alTop
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'NewEdit'
@@ -67,7 +62,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Align = alTop
       AllowGrayed = True
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       Caption = 'RenameCheckBox'
       OnChange = RenameCheckBoxChange
@@ -81,21 +75,18 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object ScopeGroupBox: TGroupBox
     Align = alTop
-    BorderSpacing.OnChange = nil
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
     ClientHeight = 206
     ClientWidth = 436
-    ParentColor = True
     TabOrder = 2
     Left = 6
     Height = 224
-    Top = 168
+    Top = 172
     Width = 440
     object ScopeCommentsCheckBox: TCheckBox
       Align = alTop
       AllowGrayed = True
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       Caption = 'ScopeCommentsCheckBox'
       TabOrder = 0
@@ -106,7 +97,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeRadioGroup: TRadioGroup
       Align = alTop
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       Caption = 'ScopeRadioGroup'
       Items.Strings = (
@@ -115,7 +105,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
         'in project/package owning file'
         'in all open projects and packages'
       )
-      ParentColor = True
+      TabOrder = 1
       Left = 6
       Height = 112
       Top = 6
@@ -123,12 +113,10 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ExtraFilesGroupBox: TGroupBox
       Align = alTop
-      BorderSpacing.OnChange = nil
       BorderSpacing.Around = 6
       Caption = 'ExtraFilesGroupBox'
       ClientHeight = 36
       ClientWidth = 420
-      ParentColor = True
       TabOrder = 2
       Left = 6
       Height = 54
@@ -136,7 +124,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Width = 424
       object ExtraFilesEdit: TEdit
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 6
         TabOrder = 0
         Text = 'ExtraFilesEdit'
@@ -149,24 +136,28 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object FindOrRenameButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
+    AutoSize = True
+    BorderSpacing.Right = 8
+    BorderSpacing.InnerBorder = 2
     Caption = 'FindOrRenameButton'
     OnClick = FindOrRenameButtonClick
     TabOrder = 3
-    Left = 120
-    Height = 25
-    Top = 400
-    Width = 233
+    AnchorSideRight.Control = CancelButton
+    Left = 224
+    Height = 29
+    Top = 404
+    Width = 126
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
+    AutoSize = True
+    BorderSpacing.InnerBorder = 2
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 4
-    Left = 357
-    Height = 25
-    Top = 400
-    Width = 89
+    Left = 358
+    Height = 29
+    Top = 404
+    Width = 88
   end
 end
