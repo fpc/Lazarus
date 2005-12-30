@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, LResources, Project,
-  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts;
+  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts, ComCtrls, ExtCtrls;
 
 type
   PDiffItem = ^TDiffItem;
@@ -45,18 +45,18 @@ type
     TxtOnDisk: string;
   end;
 
+  { TDiskDiffsDlg }
+
   TDiskDiffsDlg = class(TForm)
-    MainGroupBox: TGroupBox;
-    FilesListBox: TListBox;
     DiffSynEdit: TSynEdit;
+    FilesListBox: TListBox;
     RevertAllButton: TButton;
     IgnoreDiskChangesButton: TButton;
+    Splitter: TSplitter;
     procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
-    procedure DiskDiffsDlgResize(Sender: TObject);
     procedure FilesListBoxMouseUp(Sender: TOBject; Button: TMouseButton;
           Shift: TShiftState; X, Y: Integer);
-    procedure MainGroupBoxResize(Sender: TObject);
   private
     FUnitList: TList;
     FCachedDiffs: TList; // List of PDiffItem
@@ -71,15 +71,12 @@ type
     destructor Destroy; override;
   end;
   
-
-var DiskDiffsDlg: TDiskDiffsDlg;
-
-
 function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
-
 
 implementation
 
+var
+  DiskDiffsDlg: TDiskDiffsDlg = nil;
 
 function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
 begin
@@ -94,7 +91,6 @@ begin
   DiskDiffsDlg:=nil;
 end;
 
-
 { TDiskDiffsDlg }
 
 procedure TDiskDiffsDlg.DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
@@ -104,35 +100,10 @@ begin
     ModalResult:=mrCancel;
 end;
 
-procedure TDiskDiffsDlg.DiskDiffsDlgResize(Sender: TObject);
-begin
-  with MainGroupBox do begin
-    Width:=Self.ClientWidth-2*Left;
-    Height:=Self.ClientHeight-50-Top;
-  end;
-  
-  with RevertAllButton do begin
-    Top:=Self.ClientHeight-40;
-  end;
-
-  with IgnoreDiskChangesButton do begin
-    Left:=RevertAllButton.Left+RevertAllButton.Width+10;
-    Top:=RevertAllButton.Top;
-  end;
-end;
-
 procedure TDiskDiffsDlg.FilesListBoxMouseUp(Sender: TOBject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ShowDiff;
-end;
-
-procedure TDiskDiffsDlg.MainGroupBoxResize(Sender: TObject);
-begin
-  with DiffSynEdit do begin
-    Width:=MainGroupBox.ClientWidth;
-    Height:=MainGroupBox.ClientHeight-Top;
-  end;
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
@@ -213,75 +184,11 @@ end;
 constructor TDiskDiffsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
-    Position:=poScreenCenter;
-    Width:=600;
-    Height:=300;
-  
-    MainGroupBox:=TGroupBox.Create(Self);
-    with MainGroupBox do begin
-      Name:='MainGroupBox';
-      Parent:=Self;
-      Left:=5;
-      Top:=5;
-      Width:=Self.ClientWidth-2*Left;
-      Height:=Self.ClientHeight-50-Top;
-      Caption:=lisDiskDiffChangedFiles;
-      OnResize:=@MainGroupBoxResize;
-    end;
-    
-    FilesListBox:=TListBox.Create(Self);
-    with FilesListBox do begin
-      Name:='FilesListBox';
-      Parent:=MainGroupBox;
-      Left:=0;
-      Top:=0;
-      Height:=60;
-      Align:=alTop;
-      OnMouseUp:=@FilesListBoxMouseUp;
-    end;
-    
-    DiffSynEdit:=TSynEdit.Create(Self);
-    with DiffSynEdit do begin
-      Name:='DiffSynEdit';
-      Parent:=MainGroupBox;
-      Left:=0;
-      Top:=FilesListBox.Height+2;
-      Width:=MainGroupBox.ClientWidth;
-      Height:=MainGroupBox.ClientHeight-Top;
-      ReadOnly:=true;
-      Gutter.Visible:=false;
-      Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
-    end;
-    
-    RevertAllButton:=TButton.Create(Self);
-    with RevertAllButton do begin
-      Name:='RevertAllButton';
-      Parent:=Self;
-      Left:=50;
-      Top:=Self.ClientHeight-40;
-      AutoSize:=true;
-      Caption:=lisDiskDiffRevertAll;
-      ModalResult:=mrYesToAll;
-      Default:=true;
-    end;
-    
-    IgnoreDiskChangesButton:=TButton.Create(Self);
-    with IgnoreDiskChangesButton do begin
-      Name:='IgnoreDiskChangesButton';
-      Parent:=Self;
-      Left:=RevertAllButton.Left+RevertAllButton.Width+10;
-      Top:=RevertAllButton.Top;
-      AutoSize:=true;
-      AnchorToNeighbour(akLeft,10,RevertAllButton);
-      Caption:=lisDiskDiffIgnoreDiskChanges;
-      ModalResult:=mrIgnore;
-    end;
 
-    OnResize:=@DiskDiffsDlgResize;
-    OnKeyDown:=@DiskDiffsDlgKeyDown;
-  end;
+  Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
+  DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
+  RevertAllButton.Caption:=lisDiskDiffRevertAll;
+  IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
 end;
 
 destructor TDiskDiffsDlg.Destroy;
@@ -292,7 +199,7 @@ begin
 end;
 
 initialization
-  DiskDiffsDlg:=nil;
+  {$I diskdiffsdialog.lrs}
 
 end.
 
