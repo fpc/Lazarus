@@ -73,6 +73,7 @@ end;
 procedure TBitmapCanvas.DeselectHandles;
 begin
   if HandleAllocated then begin
+    FBitmap.FImage.BitmapCanvas := nil;
     if FOldBitmapValid then begin
       SelectObject(FHandle, FOldBitmap);
       FOldBitmap:=0;
