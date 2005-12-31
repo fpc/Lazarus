@@ -43,6 +43,7 @@ procedure CheckIfFileIsSymlink(const AFilename: string);
 function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 function FileIsExecutable(const AFilename: string): boolean;
 function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;

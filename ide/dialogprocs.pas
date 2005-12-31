@@ -131,10 +131,12 @@ function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
   Flags: TLoadBufferFlags): TModalResult;
 var
   ACaption, AText: string;
+  FileReadable: boolean;
 begin
   repeat
+    FileReadable:=true;
     if (lbfCheckIfText in Flags)
-    and FileExists(AFilename) and (not FileIsText(AFilename))
+    and (not FileIsText(AFilename,FileReadable)) and FileReadable
     then begin
       if lbfQuiet in Flags then begin
         Result:=mrCancel;
@@ -147,8 +149,12 @@ begin
       end;
       if Result<>mrOk then break;
     end;
-    ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,lbfUpdateFromDisk in Flags,
-                                       lbfRevert in Flags);
+    if FileReadable then
+      ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,lbfUpdateFromDisk in Flags,
+                                         lbfRevert in Flags)
+    else
+      ACodeBuffer:=nil;
+                                         
     if ACodeBuffer<>nil then begin
       Result:=mrOk;
     end else begin

@@ -6544,6 +6544,7 @@ var Ext,AText,ACaption: string;
   NewBuf: TCodeBuffer;
   LastDesigner: TDesigner;
   AnUnitInfo: TUnitInfo;
+  FileReadable: Boolean;
 begin
   // close the old project
   if SomethingOfProjectIsModified then begin
@@ -6576,7 +6577,7 @@ begin
     Result:=MessageDlg(ACaption, AText, mtError, [mbAbort], 0);
     exit;
   end;
-
+  
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
     // load instead of program file the project info file
@@ -6584,12 +6585,18 @@ begin
     Ext:='.lpi';
   end;
 
-  if (not FileIsText(AFilename)) then begin
+  if (not FileIsText(AFilename,FileReadable)) and FileReadable then begin
     ACaption:=lisFileNotText;
     AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway, ['"', AFilename,
       '"', #13, #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbYes, mbAbort], 0);
     if Result=mrAbort then exit;
+  end;
+  if not FileReadable then begin
+    Result:=QuestionDlg('Unable to read file',
+      'Unable to read file "'+AFilename+'".',
+      mtError,[mrCancel,'Skip file',mrAbort,'Abort all loading'],0);
+    exit;
   end;
 
   if ofAddToRecent in Flags then

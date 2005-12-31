@@ -397,12 +397,22 @@ end;
   function FileIsText(const AFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function FileIsText(const AFilename: string): boolean;
+var
+  FileReadable: Boolean;
+begin
+  Result:=FileIsText(AFilename,FileReadable);
+  if FileReadable then ;
+end;
+
+function FileIsText(const AFilename: string; out FileReadable: boolean
+  ): boolean;
 var fs: TFileStream;
   Buf: string;
   Len, i: integer;
   NewLine: boolean;
 begin
   Result:=false;
+  FileReadable:=true;
   try
     fs:=TFileStream.Create(AFilename,fmOpenRead);
     try
@@ -427,6 +437,9 @@ begin
       fs.Free;
     end;
   except
+    on E: Exception do begin
+      FileReadable:=false;
+    end;
   end;
 end;
 
