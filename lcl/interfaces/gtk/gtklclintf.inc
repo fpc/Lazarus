@@ -294,8 +294,8 @@ begin
 
     if (SizeConstraints.Control=nil) then exit;
 
-    // TScrollBar
     if SizeConstraints.Control is TScrollBar then begin
+      // TScrollBar
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
         MinHeight:=Widget^.requisition.Height;
@@ -307,10 +307,9 @@ begin
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
       exit;
-    end;
-    
-    // TCustomSplitter
-    if SizeConstraints.Control is TCustomSplitter then begin
+    end
+    else if SizeConstraints.Control is TCustomSplitter then begin
+      // TCustomSplitter
       if TCustomSplitter(SizeConstraints.Control).Align in [alTop,alBottom] then
       begin
         Widget:=GetStyleWidget(lgsHorizontalPaned);
@@ -321,6 +320,16 @@ begin
       end;
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
+      exit;
+    end
+    else if SizeConstraints.Control is TCustomMemo then begin
+      // TCustomMemo
+      Widget:=GetStyleWidget(lgsHorizontalScrollbar);
+      MinHeight:=Widget^.requisition.Height+20;
+      Widget:=GetStyleWidget(lgsVerticalScrollbar);
+      MinWidth:=Widget^.requisition.Width+20;
+      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
+                                              MaxWidth,MaxHeight);
       exit;
     end;
 
