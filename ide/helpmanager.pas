@@ -39,7 +39,8 @@ uses
   PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf;
+  OutputFilter, HelpOptions, MainIntf, LazConf, ExtCtrls, LResources,
+  Interfaces;
 
 type
   { TIDEHelpDatabases }
@@ -102,7 +103,24 @@ type
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBasePathObject read FRTLHelpDBPath;
   end;
-  
+
+  { THelpSelectorDialog }
+  THelpSelectorDialog = class(TForm)
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
+    NodesGroupBox: TGroupBox;
+    NodesListBox: TListBox;
+    procedure HelpSelectorDialogClose(Sender: TObject;
+      var CloseAction: TCloseAction);
+  private
+    FNodes: THelpNodeQueryList;
+    procedure SetNodes(const AValue: THelpNodeQueryList);
+    procedure FillNodesListBox;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property Nodes: THelpNodeQueryList read FNodes write SetNodes;
+  end;
+
   { Help Contexts for IDE help }
 const
   lihcStartPage = 'StartPage';
@@ -120,25 +138,6 @@ var
   HelpBoss: TBaseHelpManager;
   
 implementation
-
-{ THelpSelectorDialog }
-
-type
-  THelpSelectorDialog = class(TForm)
-    NodesGroupBox: TGroupBox;
-    NodesListBox: TListBox;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure HelpSelectorDialogClose(Sender: TObject;
-      var CloseAction: TCloseAction);
-  private
-    FNodes: THelpNodeQueryList;
-    procedure SetNodes(const AValue: THelpNodeQueryList);
-    procedure FillNodesListBox;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    property Nodes: THelpNodeQueryList read FNodes write SetNodes;
-  end;
 
 procedure THelpSelectorDialog.HelpSelectorDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -173,52 +172,11 @@ end;
 constructor THelpSelectorDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,200);
-  OnClose:=@HelpSelectorDialogClose;
+  IDEDialogLayoutList.ApplyLayout(Self,500,300);
 
-  NodesGroupBox:=TGroupBox.Create(Self);
-  with NodesGroupBox do begin
-    Name:='NodesGroupBox';
-    Parent:=Self;
-    Left:=5;
-    Top:=5;
-    Width:=Self.ClientWidth-10;
-    Height:=Self.ClientHeight-50;
-    Anchors:=[akLeft,akTop,akRight,akBottom];
-    Caption:=lisSelectAHelpItem;
-  end;
-  
-  NodesListBox:=TListBox.Create(Self);
-  with NodesListBox do begin
-    Name:='NodesListBox';
-    Parent:=NodesGroupBox;
-    Align:=alClient;
-  end;
-  
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Left:=5;
-    Top:=Self.ClientHeight-35;
-    Width:=80;
-    Anchors:=[akLeft,akBottom];
-    Caption:=lisLazBuildOk;
-    ModalResult:=mrOk;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Left:=OkButton.Left+OkButton.Width+10;
-    Top:=Self.ClientHeight-35;
-    Width:=80;
-    Anchors:=[akLeft,akBottom];
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
+  NodesGroupBox.Caption:=lisSelectAHelpItem;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 { TIDEHelpDatabases }
@@ -672,6 +630,9 @@ begin
     ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
   end;
 end;
+
+initialization
+  {$i helpmanager.lrs}
 
 end.
 

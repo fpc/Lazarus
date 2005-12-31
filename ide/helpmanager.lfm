@@ -1,0 +1,67 @@
+object HelpSelectorDialog: THelpSelectorDialog
+  ActiveControl = OKButton
+  Caption = 'HelpSelectorDialog'
+  ClientHeight = 300
+  ClientWidth = 500
+  OnClose = HelpSelectorDialogClose
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 299
+  Left = 328
+  Height = 300
+  Top = 617
+  Width = 500
+  object OKButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 0
+    Left = 419
+    Height = 30
+    Top = 264
+    Width = 75
+  end
+  object CancelButton: TBitBtn
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 1
+    AnchorSideRight.Control = OKButton
+    Left = 336
+    Height = 30
+    Top = 264
+    Width = 77
+  end
+  object NodesGroupBox: TGroupBox
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'NodesGroupBox'
+    ClientHeight = 234
+    ClientWidth = 484
+    TabOrder = 2
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 252
+    Top = 6
+    Width = 488
+    object NodesListBox: TListBox
+      Align = alClient
+      BorderSpacing.Around = 6
+      TabOrder = 0
+      Left = 6
+      Height = 222
+      Top = 6
+      Width = 472
+    end
+  end
+end
