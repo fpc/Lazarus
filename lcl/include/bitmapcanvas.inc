@@ -46,7 +46,7 @@ begin
   FBitmap.HandleNeeded;
   FBitmap.PaletteNeeded;
   if FBitmap.FImage.BitmapCanvas <> nil then
-    TBitmapCanvas(FBitmap.FImage.BitmapCanvas).FreeDC;
+    (FBitmap.FImage.BitmapCanvas as TBitmapCanvas).FreeDC;
   FBitmap.FImage.BitmapCanvas := Self;
   DC := CreateCompatibleDC(0);
 
