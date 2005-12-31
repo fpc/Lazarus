@@ -47,7 +47,7 @@ procedure RegisterUnitSQLdb;
 begin
   RegisterComponents('SQLdb',[TSQLQuery,
                               TSQLTransaction,
-			      TIBConnection,
+                              TIBConnection,
 {$IFDEF HASODBCCONNECTION}
                               TODBCConnection,	
 {$ENDIF}
@@ -58,7 +58,7 @@ begin
 {$ELSE}
                               TMySQLConnection,
 {$ENDIF}
-			      TPQConnection]);
+                              TPQConnection]);
 end;
 
 procedure Register;

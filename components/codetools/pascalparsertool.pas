@@ -3689,14 +3689,16 @@ begin
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
     and ((not IgnoreErrorAfterValid)
       or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
-    then
+    then begin
+      //DebugLn('TPascalParserTool.BuildTreeAndGetCleanPos RaiseLastError ',MainFilename);
       RaiseLastError;
+    end;
     // check if cursor is in interface
     CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
     if (CaretType=0) or (CaretType=-1) then begin
       BuildSubTree(CleanCursorPos);
       if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
-        // cursor position lies in dead code (skipped code between IFDEF/ENDIF)
+        // cursor position is in dead code (skipped code between IFDEF/ENDIF)
         LoadDirtySource(CursorPos);
       end;
       exit;

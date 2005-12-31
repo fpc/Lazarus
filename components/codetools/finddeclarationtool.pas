@@ -708,7 +708,7 @@ procedure AddFindContext(var ListOfPFindContext: TFPList;
   const NewContext: TFindContext);
 function IndexOfFindContext(var ListOfPFindContext: TFPList;
   const AContext: PFindContext): integer;
-procedure FreeListOfPFindContext(ListOfPFindContext: TFPList);
+procedure FreeListOfPFindContext(var ListOfPFindContext: TFPList);
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
 function DbgsFC(const Context: TFindContext): string;
@@ -950,7 +950,7 @@ begin
   end;
 end;
 
-procedure FreeListOfPFindContext(ListOfPFindContext: TFPList);
+procedure FreeListOfPFindContext(var ListOfPFindContext: TFPList);
 var
   CurContext: PFindContext;
   i: Integer;
@@ -961,6 +961,7 @@ begin
     Dispose(CurContext);
   end;
   ListOfPFindContext.Free;
+  ListOfPFindContext:=nil;
 end;
 
 
