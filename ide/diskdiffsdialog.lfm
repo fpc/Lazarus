@@ -1,10 +1,10 @@
 object DiskDiffsDlg: TDiskDiffsDlg
-  ActiveControl = IgnoreDiskChangesButton
+  ActiveControl = RevertAllButton
   Caption = 'DiskDiffsDlg'
   ClientHeight = 300
   ClientWidth = 600
   OnKeyDown = DiskDiffsDlgKeyDown
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 599
   VertScrollBar.Page = 299
@@ -21,10 +21,10 @@ object DiskDiffsDlg: TDiskDiffsDlg
     ModalResult = 5
     TabOrder = 0
     AnchorSideRight.Control = RevertAllButton
-    Left = 342
-    Height = 29
-    Top = 264
-    Width = 148
+    Left = 338
+    Height = 26
+    Top = 267
+    Width = 154
   end
   object RevertAllButton: TButton
     Anchors = [akRight, akBottom]
@@ -34,10 +34,10 @@ object DiskDiffsDlg: TDiskDiffsDlg
     Default = True
     ModalResult = 10
     TabOrder = 1
-    Left = 496
-    Height = 29
-    Top = 264
-    Width = 98
+    Left = 498
+    Height = 26
+    Top = 267
+    Width = 96
   end
   object FilesListBox: TListBox
     Align = alTop
@@ -45,6 +45,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     BorderSpacing.Top = 6
     OnMouseUp = FilesListBoxMouseUp
     TabOrder = 2
+    TopIndex = -1
     Left = 6
     Height = 86
     Top = 6
@@ -63,9 +64,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     TabOrder = 3
     Width = 588
     BookMarkOptions.Xoffset = -18
-    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Keystrokes = <    
       item
@@ -392,7 +391,6 @@ object DiskDiffsDlg: TDiskDiffsDlg
       'DiffSynEdit'
     )
     ReadOnly = True
-    SelectedColor.OnChange = nil
     Cursor = crIBeam
     Left = 6
     Height = 159
