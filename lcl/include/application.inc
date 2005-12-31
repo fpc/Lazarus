@@ -1169,8 +1169,9 @@ begin
   and (Self<>nil) then begin
     DisableIdleHandler;
     try
-      MsgResult:=MessageBox(PChar(Msg+#13#13'Press Ok to ignore.'
-         +#13'Press Cancel to stop the program.'),PChar(GetTitle),
+      MsgResult:=MessageBox(PChar(Format(
+        rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK, [Msg, #13#13, #13]
+        )), PChar(GetTitle),
                             MB_OKCANCEL + MB_ICONERROR);
     finally
       EnableIdleHandler;
@@ -1184,10 +1185,10 @@ begin
     inherited ShowException(E);
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication Terminate                                                 }
-{       Class is terminated and the component engine is shutdown               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Terminate
+       Class is terminated and the component engine is shutdown
+------------------------------------------------------------------------------}
 procedure TApplication.Terminate;
 begin
   inherited Terminate;

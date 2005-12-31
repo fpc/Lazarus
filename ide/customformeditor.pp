@@ -1671,7 +1671,16 @@ begin
         aMsg:=aMsg+#13+'Class "'+JITComponentList.CurUnknownClass+'" not found.';
       end;
   end;
-  Action:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpCtx);
+  if Buttons=[mbIgnore,mbCancel] then begin
+    Action:=QuestionDlg(aCaption,aMsg,DlgType,
+      [mrIgnore,'Continue loading',
+       mrCancel,'Cancel loading this resource',
+       mrAbort,'Stop all loading'],HelpCtx);
+  end else begin
+    Action:=QuestionDlg(aCaption,aMsg,DlgType,
+      [mrCancel,'Cancel loading this resource',
+       mrAbort,'Stop all loading'],HelpCtx);
+  end;
 end;
 
 procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
