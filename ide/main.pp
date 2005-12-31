@@ -1809,6 +1809,7 @@ begin
   LazProjectDescriptors:=TLazProjectDescriptors.Create;
   RegisterProjectDescriptor(TProjectApplicationDescriptor.Create);
   RegisterProjectDescriptor(TProjectProgramDescriptor.Create);
+  RegisterProjectDescriptor(TProjectLibraryDescriptor.Create);
   RegisterProjectDescriptor(TProjectManualProgramDescriptor.Create);
 end;
 

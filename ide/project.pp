@@ -377,6 +377,17 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
+  { TProjectLibraryDescriptor }
+
+  TProjectLibraryDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
   { TProjectManualProgramDescriptor }
 
   TProjectManualProgramDescriptor = class(TProjectDescriptor)
@@ -3980,6 +3991,61 @@ constructor TProjectEmptyProgramDescriptor.Create;
 begin
   inherited Create;
   FAddMainSource:=false;
+end;
+
+{ TProjectLibraryDescriptor }
+
+constructor TProjectLibraryDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameLibrary;
+end;
+
+function TProjectLibraryDescriptor.GetLocalizedName: string;
+begin
+  Result:='Library';
+end;
+
+function TProjectLibraryDescriptor.GetLocalizedDescription: string;
+begin
+  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin, [#13]);
+end;
+
+function TProjectLibraryDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
+var
+  le: String;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  Result:=inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='library Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  Classes'+le
+    +'  { add your units here };'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+end;
+
+function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 end.
