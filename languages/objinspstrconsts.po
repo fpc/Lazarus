@@ -778,3 +778,7 @@ msgstr ""
 msgid "Ok"
 msgstr ""
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+

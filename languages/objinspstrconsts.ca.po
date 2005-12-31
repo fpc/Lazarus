@@ -254,6 +254,10 @@ msgstr "Voleu confirmar la neteja de totes les imatges ?"
 msgid "Copy"
 msgstr "Copia"
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Crea l'esdeveniment predeterminat"

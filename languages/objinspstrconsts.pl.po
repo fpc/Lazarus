@@ -265,6 +265,10 @@ msgstr "Chcesz wyczyścić wszystkie obrazki ?"
 msgid "Copy"
 msgstr ""
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr ""

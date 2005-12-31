@@ -422,6 +422,10 @@ msgstr ""
 msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""
 
+#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr ""

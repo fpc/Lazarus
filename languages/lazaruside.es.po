@@ -225,8 +225,8 @@ msgid "(Filter)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
-msgid "(no subdirectoy)"
-msgstr "(no hay subdirectorio)"
+msgid "(no subdirectory)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -282,6 +282,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortloadingproject
+msgid "Abort loading project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
@@ -3908,6 +3912,10 @@ msgstr ""
 msgid "Library"
 msgstr "Biblioteca"
 
+#: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
+msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
 msgstr "Licencia:"
@@ -6247,6 +6255,10 @@ msgstr ""
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
 msgstr "Saltar llamada de Compilador"
+
+#: lazarusidestrconsts:lisskipfileandcontinueloading
+msgid "Skip file and continue loading"
+msgstr ""
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "Skip loading last project"

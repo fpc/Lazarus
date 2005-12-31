@@ -1110,6 +1110,14 @@ msgstr ""
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr ""
 
+#: lazarusidestrconsts:lisskipfileandcontinueloading
+msgid "Skip file and continue loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortloadingproject
+msgid "Abort loading project"
+msgstr ""
+
 #: lazarusidestrconsts:lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr ""
@@ -1843,7 +1851,7 @@ msgid "Copyright (C) <year> <name of author>%sThis library is free software; you
 msgstr ""
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
-msgid "(no subdirectoy)"
+msgid "(no subdirectory)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
@@ -8604,6 +8612,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscustomprogramafreepascalprogram
 msgid "Custom Program%sA freepascal program."
+msgstr ""
+
+#: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
+msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lisnpselectaprojecttype

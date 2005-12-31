@@ -23,8 +23,8 @@ msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
 msgstr "Файли форм Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst:syns_filtercpp
-msgid "C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp"
-msgstr "Файли C++ (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp"
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr ""
 
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"

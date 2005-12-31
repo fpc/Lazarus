@@ -119,7 +119,7 @@ msgid "string constant"
 msgstr ""
 
 #: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
-msgid "Anonym %s definitions are not allowed"
+msgid "Anonymous %s definitions are not allowed"
 msgstr ""
 
 #: codetoolsstrconsts:ctsendforrecordnotfound

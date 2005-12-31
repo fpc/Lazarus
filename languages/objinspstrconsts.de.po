@@ -265,6 +265,10 @@ msgstr "Alle Bilder löschen?"
 msgid "Copy"
 msgstr "Kopieren"
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Default-Ereignis erzeugen"

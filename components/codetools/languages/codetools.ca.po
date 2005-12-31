@@ -47,8 +47,8 @@ msgid "; expected after \"%s\" property specifier, but %s found"
 msgstr "s'esperava ; després de l'especificador de propietat \"%s\", però s'ha trobat %s"
 
 #: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
-msgid "Anonym %s definitions are not allowed"
-msgstr "No estan permeses les definicions anònimes %s"
+msgid "Anonymous %s definitions are not allowed"
+msgstr ""
 
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"

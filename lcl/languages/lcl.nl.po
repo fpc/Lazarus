@@ -34,6 +34,10 @@ msgstr "%s Index %d valt buiten de grenzen 0-%d"
 msgid "%s is already associated with %s"
 msgstr "%s is al verbonden met %s"
 
+#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+msgstr ""
+
 #: lclstrconsts:rsmball
 msgid "&All"
 msgstr "&Alles"

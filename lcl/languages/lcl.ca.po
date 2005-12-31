@@ -34,6 +34,10 @@ msgstr "%s Índex %d fora de límits 0-%d"
 msgid "%s is already associated with %s"
 msgstr "%s ja està associat amb %s"
 
+#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+msgstr ""
+
 #: lclstrconsts:rsmball
 msgid "&All"
 msgstr "&Tot"

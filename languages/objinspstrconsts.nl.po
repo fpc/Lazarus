@@ -254,6 +254,10 @@ msgstr "Bevestig opschonen alle plaatjes"
 msgid "Copy"
 msgstr "Copieëer"
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Creëer standaard gebeurtenis"

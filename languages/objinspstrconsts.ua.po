@@ -254,6 +254,10 @@ msgstr "Підтверджуєте очистку всіх зображень ?"
 msgid "Copy"
 msgstr "Копіювати"
 
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Створити подію за замовчуванням"

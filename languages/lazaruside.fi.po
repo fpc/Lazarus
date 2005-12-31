@@ -215,7 +215,7 @@ msgid "(Filter)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
-msgid "(no subdirectoy)"
+msgid "(no subdirectory)"
 msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
@@ -272,6 +272,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisabortloadingproject
+msgid "Abort loading project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
@@ -1576,7 +1580,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 msgid "Create a new standard package.%sA package is a collection of units and components."
-msgstr ""
+msgstr "Tee uusi standardi paketti.%sPaketti on kokoelma käännösyksiköitä ja komponentteja. Soveltuu pitkälle ehtineille käyttäjille."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -1700,7 +1704,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
-msgstr ""
+msgstr "Virheenjäljittimen asetukset"
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2308,11 +2312,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexecutionstopped
 msgid "Execution stopped"
-msgstr ""
+msgstr "Ohjelman suoritus on pysäytetty"
 
 #: lazarusidestrconsts:lisexecutionstoppedon
 msgid "Execution stopped%s"
-msgstr ""
+msgstr "Ohjelman suoritus on pysäytetty%s"
 
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
@@ -2332,7 +2336,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
-msgstr ""
+msgstr "Laajennetaanko käännösyksikön tiedostopolkua?"
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -3898,6 +3902,10 @@ msgstr ""
 msgid "Library"
 msgstr ""
 
+#: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
+msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
 msgstr "Lisenssi:"
@@ -4440,7 +4448,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
-msgstr ""
+msgstr "Virheenjäljitintä (debugger) ei ole valittu"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
@@ -6056,7 +6064,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
 msgid "Set the breakpoint anyway"
-msgstr ""
+msgstr "Merkitse tämä kuitenkin keskeyskohdaksi"
 
 #: lazarusidestrconsts:lislazbuildsettobuildall
 msgid "Set to %sBuild All%s"
@@ -6236,6 +6244,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:lisskipfileandcontinueloading
+msgid "Skip file and continue loading"
 msgstr ""
 
 #: lazarusidestrconsts:lisskiploadinglastproject
@@ -6460,11 +6472,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsmbbehind
 msgid "Symbol behind (.pp~)"
-msgstr ""
+msgstr "Varmistustiedoston symboli tiedoston tarkenteen loppuun (.pp~)"
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr ""
+msgstr "Varmistustiedoston symboli tiedoston tarkenteen eteen (.~pp)"
 
 #: lazarusidestrconsts:lispkgsyssynedittheeditorcomponentusedbylazarus
 msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/projects/synedit/"
@@ -6796,7 +6808,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
 msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
-msgstr ""
+msgstr "Kansio %s%s%s ei vielä ole käännösyksikön polussa.%sLisätäänkö se sinne?"
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
@@ -7128,7 +7140,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
-msgstr ""
+msgstr "Kun virheenjäljitintä (debugger) ei ole valittu niin keskeytyskohdalla (breakpoint) ei ole vaikutusta ennenkuin 'Käyttöliittymä'-valikon 'Virheenjäljittimen asetus'-kohtaan on asetettu virheenjäjitin."
 
 #: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
@@ -7820,11 +7832,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedcustomext
 msgid "User defined extension"
-msgstr ""
+msgstr "Käyttäjän määrittämä tiedostontarkennin"
 
 #: lazarusidestrconsts:dlgcustomext
 msgid "User defined extension (.pp.xxx)"
-msgstr ""
+msgstr "Käyttäjän määrittämä tiedostontarkennin (.pp.xxx)"
 
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"

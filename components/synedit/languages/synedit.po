@@ -51,7 +51,7 @@ msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 msgstr ""
 
 #: syneditstrconst:syns_filtercpp
-msgid "C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp"
+msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 msgstr ""
 
 #: syneditstrconst:syns_filterjava
