@@ -118,7 +118,10 @@ each control that's dropped onto the form
     FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspector;
     FDefineProperties: TAVLTree;
+    FStandardDefinePropertiesRegistered: Boolean;
     function GetPropertyEditorHook: TPropertyEditorHook;
+    function FindDefinePropertyNode(const APersistentClassName: string
+                                    ): TAVLTreeNode;
   protected
     FNonControlForms: TAVLTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -212,6 +215,9 @@ each control that's dropped onto the form
     procedure FindDefineProperty(const APersistentClassName,
                                  AncestorClassName, Identifier: string;
                                  var IsDefined: boolean);
+    procedure RegisterDefineProperty(const APersistentClassName,
+                                     Identifier: string);
+    procedure RegisterStandardDefineProperties;
 
     // keys
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
@@ -254,7 +260,8 @@ each control that's dropped onto the form
   end;
   
   
-  { TDefinePropertiesPersistent }
+  { TDefinePropertiesPersistent
+    Wrapper class, to call the protected method 'DefineProperties' }
   
   TDefinePropertiesPersistent = class(TPersistent)
   private
@@ -273,7 +280,6 @@ function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): int
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 procedure RegisterStandardClasses;
-
 
 implementation
 
@@ -312,7 +318,7 @@ end;
 
 procedure RegisterStandardClasses;
 begin
-  RegisterClasses([TStrings]);
+  RegisterClasses([TStringList]);
 end;
 
 { TComponentInterface }
@@ -866,7 +872,7 @@ Begin
   ANode:=FComponentInterfaces.FindLowest;
   while ANode<>nil do begin
     Result := TIComponentInterface(ANode.Data);
-    if AnsiCompareText(TComponentInterface(Result).Component.Name,Name)=0 then
+    if CompareText(TComponentInterface(Result).Component.Name,Name)=0 then
       exit;
     ANode:=FComponentInterfaces.FindSuccessor(ANode);
   end;
@@ -1544,21 +1550,18 @@ var
     if (APersistent=nil) and (CompareText(AClassName,'TForm')=0) then begin
       if not CreateTempPersistent(TForm) then exit;
     end;
-    
+
     Result:=true;
   end;
   
 begin
   //debugln('TCustomFormEditor.GetDefineProperties ',
   //  ' APersistentClassName="',APersistentClassName,'"',
-  //  ' AncestorClassName="',AncestorClassName,'"',
+  // ' AncestorClassName="',AncestorClassName,'"',
   //  ' Identifier="',Identifier,'"');
   IsDefined:=false;
-  if FDefineProperties=nil then
-    FDefineProperties:=
-                   TAVLTree.Create(TListSortCompare(@CompareDefPropCacheItems));
-  ANode:=FDefineProperties.FindKey(PChar(APersistentClassName),
-                    TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
+  RegisterStandardDefineProperties;
+  ANode:=FindDefinePropertyNode(APersistentClassName);
   if ANode=nil then begin
     // cache component class, try to retrieve the define properties
     CacheItem:=TDefinePropertiesCacheItem.Create;
@@ -1575,7 +1578,8 @@ begin
     end;
 
     if APersistent<>nil then begin
-      //debugln('TCustomFormEditor.GetDefineProperties Getting define properties for ',APersistent.ClassName);
+      debugln('TCustomFormEditor.GetDefineProperties Getting define properties for ',APersistent.ClassName);
+
       // try creating a component class and call DefineProperties
       DefinePropertiesReader:=nil;
       DefinePropertiesPersistent:=nil;
@@ -1629,6 +1633,34 @@ begin
   end;
   if CacheItem.DefineProperties<>nil then
     IsDefined:=CacheItem.DefineProperties.IndexOf(Identifier)>=0;
+end;
+
+procedure TCustomFormEditor.RegisterDefineProperty(const APersistentClassName,
+  Identifier: string);
+var
+  ANode: TAVLTreeNode;
+  CacheItem: TDefinePropertiesCacheItem;
+begin
+  //DebugLn('TCustomFormEditor.RegisterDefineProperty ',APersistentClassName,' ',Identifier);
+  ANode:=FindDefinePropertyNode(APersistentClassName);
+  if ANode=nil then begin
+    CacheItem:=TDefinePropertiesCacheItem.Create;
+    CacheItem.PersistentClassname:=APersistentClassName;
+    FDefineProperties.Add(CacheItem);
+  end else begin
+    CacheItem:=TDefinePropertiesCacheItem(ANode.Data);
+  end;
+  if (CacheItem.DefineProperties=nil) then
+    CacheItem.DefineProperties:=TStringList.Create;
+  if (CacheItem.DefineProperties.IndexOf(Identifier)<0) then
+    CacheItem.DefineProperties.Add(Identifier);
+end;
+
+procedure TCustomFormEditor.RegisterStandardDefineProperties;
+begin
+  if FStandardDefinePropertiesRegistered then exit;
+  FStandardDefinePropertiesRegistered:=true;
+  RegisterDefineProperty('TStrings','Strings');
 end;
 
 procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
@@ -1729,6 +1761,16 @@ begin
   Result:=Obj_Inspector.PropertyEditorHook;
 end;
 
+function TCustomFormEditor.FindDefinePropertyNode(
+  const APersistentClassName: string): TAVLTreeNode;
+begin
+  if FDefineProperties=nil then
+    FDefineProperties:=
+                   TAVLTree.Create(TListSortCompare(@CompareDefPropCacheItems));
+  Result:=FDefineProperties.FindKey(PChar(APersistentClassName),
+                    TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
+end;
+
 function TCustomFormEditor.CreateUniqueComponentName(AComponent: TComponent
   ): string;
 begin
@@ -1754,7 +1796,7 @@ begin
       Result:=RightStr(Result,length(Result)-1);
     Result:=Result+IntToStr(i);
     while (j>=0)
-    and (AnsiCompareText(Result,OwnerComponent.Components[j].Name)<>0) do
+    and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
       dec(j);
     if j<0 then exit;
     inc(i);
@@ -1988,7 +2030,7 @@ end;
 
 procedure TDefinePropertiesPersistent.PublicDefineProperties(Filer: TFiler);
 begin
-  debugln('TDefinePropertiesPersistent.PublicDefineProperties A ',ClassName,' ',dbgsName(FTarget));
+  debugln('TDefinePropertiesPersistent.PublicDefineProperties START ',ClassName,' ',dbgsName(FTarget));
   Target.DefineProperties(Filer);
   debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
 end;
