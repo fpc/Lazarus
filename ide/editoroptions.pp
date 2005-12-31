@@ -847,7 +847,7 @@ begin
     TheType := lshCPP;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'c;cc;cpp;h;hpp';
+    FileExtensions := 'c;cc;cpp;h;hpp;hh';
     SampleSource :=
       '/* Comment */'#13 + '#include <stdio.h>'#13 +
       '#include <stdlib.h>'#13 + #13 +

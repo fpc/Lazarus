@@ -22,7 +22,8 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, NewItemIntf;
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, NewItemIntf,
+  ObjInspStrConsts;
   
 const
   FileDescGroupName = 'File';
@@ -858,7 +859,7 @@ end;
 
 function TFileDescPascalUnit.GetLocalizedDescription: string;
 begin
-  Result:='Create a new pascal unit.';
+  Result:=oisCreateANewPascalUnit;
 end;
 
 function TFileDescPascalUnit.GetInterfaceUsesSection: string;

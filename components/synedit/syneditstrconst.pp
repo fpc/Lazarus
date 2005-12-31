@@ -177,7 +177,7 @@ resourcestring
   SYNS_FilterCAClipper          =  'CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc';
   SYNS_FilterCORBAIDL           =  'CORBA IDL files (*.idl)|*.idl';
   SYNS_FilterCPM                =  'CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf';
-  SYNS_FilterCPP                =  'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp';
+  SYNS_FilterCPP                =  'C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh';
   SYNS_FilterJava               =  'Java Files (*.java)|*.java';
   SYNS_FilterPerl               =  'Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi';
   SYNS_FilterAWK                =  'AWK Script (*.awk)|*.awk';

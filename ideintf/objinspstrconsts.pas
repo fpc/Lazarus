@@ -251,6 +251,7 @@ resourcestring
   oisErrorLoadingImage = 'Error loading image';
   oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
   oisOk2 = 'Ok';
+  oisCreateANewPascalUnit = 'Create a new pascal unit.';
 
 implementation
 
