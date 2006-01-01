@@ -3410,11 +3410,13 @@ begin
     +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
     +';'+Dir+'rtl'+DS+'objpas'+DS+'classes'
     +';'+Dir+'rtl'+DS+'inc'+DS
-    +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS;
+    +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS
+    +';'+Dir+'rtl'+DS+SrcOS+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
+  if (SrcOS2<>'') and (SrcOS2<>SrcOS) then
+    s:=s+';'+Dir+'rtl'+DS+SrcOS2+DS;
   s:=s
-    +';'+Dir+'rtl'+DS+SrcOS+DS
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',

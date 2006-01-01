@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="LazOpenGLContext"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)/"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="openglcontext.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="OpenGLContext"/>
+      </Item1>
+      <Item2>
+        <Filename Value="glgtkglxcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLGtkGlxContext"/>
+      </Item2>
+      <Item3>
+        <Filename Value="glcarbonaglcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="GLCarbonAGLContext"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)/lazopengl/"/>
+      <CommandAfter Value="/bin/tar czf $(TestDir)/lazopengl.tgz -C $(TestDir) lazopengl"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
