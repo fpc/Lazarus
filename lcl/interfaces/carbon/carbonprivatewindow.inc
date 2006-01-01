@@ -70,6 +70,7 @@ var
   Msg: TLMMouseMove;
   Info:PWidgetInfo;
 begin
+  debugln('TrackProgress');
   GetGlobalMouse(Pt);
   Window := HIViewGetWindow(AControl);
   GetWindowBounds(Window, kWindowStructureRgn, R);
@@ -359,11 +360,13 @@ var
   TmpSpec: EventTypeSpec;
 begin
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
-  InstallWindowEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateWindow_Close), 
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_Close),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
-  InstallWindowEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateWindow_Closed), 
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_Closed),
     1, @TmpSpec, Pointer(AInfo), nil);
 
   MouseSpec[0].eventClass := kEventClassMouse;
@@ -381,7 +384,8 @@ begin
   MouseSpec[6].eventClass := kEventClassMouse;
   MouseSpec[6].eventKind := kEventMouseWheelMoved;
 
-  InstallWindowEventHandler(AInfo^.Widget, RegisterEventHandler(@CarbonPrivateWindow_MouseProc),
+  InstallWindowEventHandler(AInfo^.Widget,
+    RegisterEventHandler(@CarbonPrivateWindow_MouseProc),
     7, @MouseSpec[0], Pointer(AInfo), nil);
 
 end;

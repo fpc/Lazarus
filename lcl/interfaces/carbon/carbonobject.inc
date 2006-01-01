@@ -172,7 +172,8 @@ begin
 
   // Create a UPP for EventLoopEventHandler and QuitEventHandler
 
-  EventLoopUPP := NewEventHandlerUPP(EventHandlerProcPtr(Pointer(@EventLoopEventHandler)));
+  EventLoopUPP := NewEventHandlerUPP(EventHandlerProcPtr(
+                                     Pointer(@EventLoopEventHandler)));
   //todo: raise exception ??
   if EventLoopUPP = nil then Exit;
 
@@ -194,18 +195,24 @@ begin
     // standard event handlers are installed while our event loop runs.
 
     EventSpec := MakeEventSpec('Laz ', 'Main');
-    if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil, @EventLoopHandler) <> noErr
+    if InstallApplicationEventHandler(EventLoopUPP, 1, @EventSpec, nil,
+                                      @EventLoopHandler) <> noErr
     then Exit;
 
     try
-      if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind, GetCurrentEventTime, kEventAttributeNone, DummyEvent) <> noErr
+      if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
+                     GetCurrentEventTime, kEventAttributeNone,
+                     DummyEvent) <> noErr
       then Exit;
 
       try
-        if SetEventParameter(DummyEvent, MakeFourCC('Loop'), MakeFourCC('TAML'), SizeOf(ALoop), @ALoop) <> noErr
+        if SetEventParameter(DummyEvent, MakeFourCC('Loop'),
+                             MakeFourCC('TAML'), SizeOf(ALoop),
+                             @ALoop) <> noErr
         then Exit;
 
-        if PostEventToQueue(GetMainEventQueue, DummyEvent, kEventPriorityHigh) <> noErr
+        if PostEventToQueue(GetMainEventQueue, DummyEvent,
+                            kEventPriorityHigh) <> noErr
         then Exit;
 
         RunApplicationEventLoop;
@@ -230,7 +237,8 @@ var
 begin
   Target := GetEventDispatcherTarget;
   repeat
-    if ReceiveNextEvent(0, nil, kEventDurationNoWait, True, Event) <> noErr then Break;
+    if ReceiveNextEvent(0, nil, kEventDurationNoWait, True, Event) <> noErr then
+      Break;
     {$IFDEF DebugEventLoop}
     PInteger(@EC)^ := GetEventClass(Event);
     EC[4] := #0;

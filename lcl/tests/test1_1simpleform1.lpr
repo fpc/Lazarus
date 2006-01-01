@@ -251,6 +251,10 @@ begin
   OnShow:=@Form1Show;
   OnUTF8KeyPress:=@Form1UTF8KeyPress;
   inherited Create(TheOwner);
+  
+  Name:='Form1';
+  Caption:='Title Form1';
+  SetBounds(100,90,350,200);
 end;
 
 var

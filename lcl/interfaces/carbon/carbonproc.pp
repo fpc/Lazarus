@@ -57,12 +57,14 @@ begin
 
   if IsValidControlHandle(AWidget)
   then begin
-    SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
+    SetControlProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+                       SizeOf(Result), @Result);
   end
   else begin
     // there is no (cheap) check for windows so assume a window
     // when it is not a control.
-    SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Result), @Result);
+    SetWindowProperty(AWidget, LAZARUS_FOURCC, WIDGETINFO_FOURCC,
+                      SizeOf(Result), @Result);
   end;
 end;
 

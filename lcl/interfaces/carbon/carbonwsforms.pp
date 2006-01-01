@@ -141,7 +141,6 @@ begin
   NewWindowClass:=kDocumentWindowClass;
 
   if CreateNewWindow(NewWindowClass,
-                     kWindowCompositingAttribute or
                      kWindowStandardDocumentAttributes or
                      kWindowStandardHandlerAttribute or
                      kWindowLiveResizeAttribute or
