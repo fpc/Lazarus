@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <LazDoc Paths=""/>
     <Units Count="2">
@@ -25,14 +25,14 @@
         <UsageCount Value="134"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="1" Y="126"/>
+        <CursorPos X="23" Y="110"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="100"/>
+        <TopLine Value="97"/>
         <UnitName Value="MainUnit"/>
         <UsageCount Value="134"/>
       </Unit1>
@@ -51,13 +51,13 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="gdk2x11"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LazOpenGLContext"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazOpenGLContext"/>
+        <PackageName Value="gdk2x11"/>
       </Item3>
     </RequiredPackages>
   </ProjectOptions>

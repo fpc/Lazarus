@@ -579,6 +579,7 @@ begin
   if DirectoryIsWritableCached(AnOutDirectory) then exit;
 
   ForceDirectory(AnOutDirectory);
+  InvalidateFileStateCache;
   if DirectoryIsWritableCached(AnOutDirectory) then exit;
   //debugln('TPkgManager.GetWritablePkgOutputDirectory AnOutDirectory=',AnOutDirectory,' ',dbgs(DirectoryIsWritable(AnOutDirectory)));
   
