@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{off $DEFINE IDE_MEM_CHECK}
+{ $DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -55,6 +55,9 @@ uses
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
+  {$ENDIF}
+  {$IFDEF BigIDE}
+  RunTimeTypeInfoControls,
   {$ENDIF}
   MainBase;
 

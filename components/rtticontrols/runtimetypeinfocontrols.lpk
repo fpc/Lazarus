@@ -13,6 +13,7 @@
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="LCL controls using the FreePascal RTTI to access TPersistent properties.

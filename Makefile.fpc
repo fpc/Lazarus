@@ -35,10 +35,9 @@ else
 LAZARUS_INSTALL_DIR=/usr/share/lazarus
 endif
 
-
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge examples install
+.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg bigide starter tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
 ide: 
@@ -48,6 +47,14 @@ ide:
 idepkg:
         $(MAKE) -C ide idepkg
 
+#-----------------------------------------------------------------------------
+bigide:
+        $(MAKE) -C ide bigide
+
+#-----------------------------------------------------------------------------
+bigidecomponents:
+        $(MAKE) -C components bigidecomponents
+        
 #-----------------------------------------------------------------------------
 starter:
         $(MAKE) -C ide starter

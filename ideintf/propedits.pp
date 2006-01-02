@@ -32,8 +32,6 @@ unit PropEdits;
 
 interface
 
-{$DEFINE NewListPropEdit}
-
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,

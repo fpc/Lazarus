@@ -245,14 +245,14 @@ type
 
   //---------------------------------------------------------------------------
 
-  { TProjectCompilationTool }
-  TProjectCompilationTool = class(TCompilationTool)
+  { TProjectCompilationToolOptions }
+  TProjectCompilationToolOptions = class(TCompilationToolOptions)
   public
     CompileReasons: TCompileReasons;
     DefaultCompileReasons: TCompileReasons;
     procedure Clear; override;
-    function IsEqual(Params: TCompilationTool): boolean; override;
-    procedure Assign(Src: TCompilationTool); override;
+    function IsEqual(Params: TCompilationToolOptions): boolean; override;
+    procedure Assign(Src: TCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
@@ -3259,34 +3259,34 @@ begin
   AnUnitInfo.fPrev[ListType]:=nil;
 end;
 
-{ TProjectCompilationTool }
+{ TProjectCompilationToolOptions }
 
-procedure TProjectCompilationTool.Clear;
+procedure TProjectCompilationToolOptions.Clear;
 begin
   inherited Clear;
   CompileReasons := crAll;
 end;
 
-function TProjectCompilationTool.IsEqual(Params: TCompilationTool): boolean;
+function TProjectCompilationToolOptions.IsEqual(Params: TCompilationToolOptions): boolean;
 begin
-  Result := (Params is TProjectCompilationTool)
-        and (CompileReasons = TProjectCompilationTool(Params).CompileReasons)
+  Result := (Params is TProjectCompilationToolOptions)
+        and (CompileReasons = TProjectCompilationToolOptions(Params).CompileReasons)
         and inherited IsEqual(Params);
 end;
 
-procedure TProjectCompilationTool.Assign(Src: TCompilationTool);
+procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
 begin
   inherited Assign(Src);
-  if Src is TProjectCompilationTool
+  if Src is TProjectCompilationToolOptions
   then begin
-    CompileReasons := TProjectCompilationTool(Src).CompileReasons;
+    CompileReasons := TProjectCompilationToolOptions(Src).CompileReasons;
   end
   else begin
     CompileReasons := crAll;
   end;
 end;
 
-procedure TProjectCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TProjectCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
   inherited LoadFromXMLConfig(XMLConfig, Path, DoSwitchPathDelims);
@@ -3294,7 +3294,7 @@ begin
                                           DefaultCompileReasons);
 end;
 
-procedure TProjectCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TProjectCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   inherited SaveToXMLConfig(XMLConfig, Path);
@@ -3429,12 +3429,12 @@ constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
   FGlobals := TGlobalCompilerOptions.Create;
   FCompileReasons := [crCompile, crBuild, crRun];
-  inherited Create(AOwner, TProjectCompilationTool);
-  with TProjectCompilationTool(ExecuteBefore) do begin
+  inherited Create(AOwner, TProjectCompilationToolOptions);
+  with TProjectCompilationToolOptions(ExecuteBefore) do begin
     DefaultCompileReasons:=crAll;
     CompileReasons:=DefaultCompileReasons;
   end;
-  with TProjectCompilationTool(ExecuteAfter) do begin
+  with TProjectCompilationToolOptions(ExecuteAfter) do begin
     DefaultCompileReasons:=crAll;
     CompileReasons:=DefaultCompileReasons;
   end;

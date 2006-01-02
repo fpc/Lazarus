@@ -185,7 +185,8 @@ type
     procedure SaveAutoInstallDependencies(SetWithStaticPcksFlagForIDE: boolean);
     procedure LoadStaticBasePackages;
     procedure LoadStaticCustomPackages;
-    function LoadInstalledPackage(const PackageName: string): TLazPackage;
+    function LoadInstalledPackage(const PackageName: string;
+                                  AddToAutoInstall: boolean): TLazPackage;
     procedure LoadAutoInstallPackages;
     procedure SortAutoInstallDependencies;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
@@ -2014,26 +2015,37 @@ begin
     end;
     
     // load package
-    APackage:=LoadInstalledPackage(StaticPackage^.Name);
+    APackage:=LoadInstalledPackage(StaticPackage^.Name,
+                                   {$IFDEF BigIDE}True{$ELSE}False{$ENDIF});
     
     // register
     PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
   end;
+  SortAutoInstallDependencies;
   ClearRegisteredPackages;
 end;
 
-function TPkgManager.LoadInstalledPackage(const PackageName: string
-  ): TLazPackage;
+function TPkgManager.LoadInstalledPackage(const PackageName: string;
+  AddToAutoInstall: boolean): TLazPackage;
 var
   NewDependency: TPkgDependency;
+  PackageList: TStringList;
 begin
-  DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
+  //DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
   NewDependency:=TPkgDependency.Create;
   NewDependency.Owner:=Self;
   NewDependency.PackageName:=PackageName;
   PackageGraph.OpenInstalledDependency(NewDependency,pitStatic);
   Result:=NewDependency.RequiredPackage;
-  NewDependency.Free;
+  if AddToAutoInstall and (Result<>nil) then begin
+    NewDependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    PackageList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
+    if PackageList.IndexOf(NewDependency.PackageName)<0 then
+      PackageList.Add(NewDependency.PackageName);
+    NewDependency.RequiredPackage.AutoInstall:=pitStatic;
+  end else begin
+    NewDependency.Free;
+  end;
 end;
 
 procedure TPkgManager.LoadAutoInstallPackages;
@@ -2044,11 +2056,13 @@ var
   Dependency: TPkgDependency;
 begin
   PkgList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
+  
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
     if (PackageName='') or (not IsValidIdent(PackageName)) then continue;
     Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
                                            pdlRequires,PackageName);
+    //DebugLn('TPkgManager.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
     if Dependency<>nil then continue;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
@@ -2836,7 +2850,7 @@ begin
     CompilerFilename:=APackage.GetCompilerFilename;
     CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
                                APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                 +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+                    +' '+CreateRelativePath(SrcFilename,APackage.Directory);
 
     // check if compilation is neccessary
     if (pcfOnlyIfNeeded in Flags) then begin
@@ -2876,9 +2890,13 @@ begin
       end;
       
       // create Makefile
-      if pcfCreateMakefile in Flags then begin
+      if (pcfCreateMakefile in Flags)
+      or (APackage.CompilerOptions.CreateMakefileOnBuild) then begin
         Result:=DoWriteMakefile(APackage);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then begin
+          DebugLn('TPkgManager.DoCompilePackage DoWriteMakefile failed');
+          exit;
+        end;
       end;
 
       // run compilation tool 'Before'

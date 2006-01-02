@@ -669,7 +669,7 @@ type
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
-    function DoExecuteCompilationTool(Tool: TCompilationTool;
+    function DoExecuteCompilationTool(Tool: TCompilationToolOptions;
                                       const WorkingDir, ToolTitle: string
                                       ): TModalResult; override;
     function DoBuildFile: TModalResult;
@@ -7190,8 +7190,8 @@ function TMainIDE.DoBuildProject(const AReason: TCompileReason;
   Flags: TProjectBuildFlags): TModalResult;
 var
   SrcFilename: string;
-  ToolBefore: TProjectCompilationTool;
-  ToolAfter: TProjectCompilationTool;
+  ToolBefore: TProjectCompilationToolOptions;
+  ToolAfter: TProjectCompilationToolOptions;
   PkgFlags: TPkgCompileFlags;
   CompilerFilename: String;
   WorkingDir: String;
@@ -7258,7 +7258,7 @@ begin
     end;
 
     // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore);
+    ToolBefore:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteBefore);
     if (AReason in ToolBefore.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
                                        Project1.ProjectDirectory,
@@ -7291,7 +7291,7 @@ begin
     end;
 
     // execute compilation tool 'After'
-    ToolAfter:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteAfter);
+    ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
     if (Result = mrOk) and (AReason in ToolAfter.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
                                        Project1.ProjectDirectory,
@@ -7635,7 +7635,7 @@ begin
      mnuRestartClicked(nil);
 end;
 
-function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationTool;
+function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationToolOptions;
   const WorkingDir, ToolTitle: string): TModalResult;
 var
   ProgramFilename, Params: string;

@@ -197,34 +197,33 @@ type
     { Compilation }
     CompilationPage: TPage;
 
+    chkCreateMakefile: TCheckBox;
+
+    ExecuteBeforeGroupBox: TGroupBox;
     lblRunIfExecBefore: TLabel;
     chkExecBeforeCompile: TCheckBox;
     chkExecBeforeBuild: TCheckBox;
     chkExecBeforeRun: TCheckBox;
-
-    ExecuteBeforeGroupBox: TGroupBox;
     ExecuteBeforeCommandLabel: TLabel;
     ExecuteBeforeCommandEdit: TEdit;
     ExecuteBeforeScanFPCCheckBox: TCheckBox;
     ExecuteBeforeScanMakeCheckBox: TCheckBox;
     ExecuteBeforeShowAllCheckBox: TCheckBox;
 
+    grpCompiler: TGroupBox;
     lblRunIfCompiler: TLabel;
     chkCompilerCompile: TCheckBox;
     chkCompilerBuild: TCheckBox;
     chkCompilerRun: TCheckBox;
-
-    grpCompiler: TGroupBox;
     edtCompiler: TEdit;
     btnCompiler: TButton;
     lblCompiler: TLabel;
 
+    ExecuteAfterGroupBox: TGroupBox;
     lblRunIfExecAfter: TLabel;
     chkExecAfterCompile: TCheckBox;
     chkExecAfterBuild: TCheckBox;
     chkExecAfterRun: TCheckBox;
-
-    ExecuteAfterGroupBox: TGroupBox;
     ExecuteAfterCommandLabel: TLabel;
     ExecuteAfterCommandEdit: TEdit;
     ExecuteAfterScanFPCCheckBox: TCheckBox;
@@ -484,15 +483,6 @@ begin
   with ExecuteAfterCommandEdit do
     Width := w - Left - XMARGIN;
 
-  with ExecuteAfterScanFPCCheckBox do
-    Width := m - Left;
-
-  with ExecuteAfterScanMakeCheckBox do
-    SetBounds(m, Top, m - XMARGIN, Height);
-
-  with ExecuteAfterShowAllCheckBox do
-    Width := m - Left;
-
   chkExecAfterBuild.Left := (chkExecAfterCompile.Left + m) div 2;
   chkExecAfterRun.Left := m;
 
@@ -507,15 +497,6 @@ begin
 
   with ExecuteBeforeCommandEdit do
     Width := w - Left - XMARGIN;
-
-  with ExecuteBeforeScanFPCCheckBox do
-    Width := m - Left;
-
-  with ExecuteBeforeScanMakeCheckBox do
-    SetBounds(m, Top, m - XMARGIN, Height);
-
-  with ExecuteBeforeShowAllCheckBox do
-    Width := m - Left;
 
   chkExecBeforeBuild.Left := (chkExecBeforeCompile.Left + m) div 2;
   chkExecBeforeRun.Left := m;
@@ -765,13 +746,15 @@ begin
   UpdateInheritedTab;
 
   // compilation
+  chkCreateMakefile.Checked:=Options.CreateMakefileOnBuild;
+  
   ExecuteBeforeCommandEdit.Text:=Options.ExecuteBefore.Command;
   ExecuteBeforeScanFPCCheckBox.Checked:=Options.ExecuteBefore.ScanForFPCMessages;
   ExecuteBeforeScanMakeCheckBox.Checked:=
                                       Options.ExecuteBefore.ScanForMakeMessages;
   ExecuteBeforeShowAllCheckBox.Checked:=Options.ExecuteBefore.ShowAllMessages;
-  if Options.ExecuteBefore is TProjectCompilationTool
-  then with TProjectCompilationTool(Options.ExecuteBefore) do begin
+  if Options.ExecuteBefore is TProjectCompilationToolOptions
+  then with TProjectCompilationToolOptions(Options.ExecuteBefore) do begin
     chkExecBeforeCompile.Checked := crCompile in CompileReasons;
     chkExecBeforeBuild.Checked := crBuild in CompileReasons;
     chkExecBeforeRun.Checked := crRun in CompileReasons;
@@ -821,8 +804,8 @@ begin
   ExecuteAfterScanFPCCheckBox.Checked:=Options.ExecuteAfter.ScanForFPCMessages;
   ExecuteAfterScanMakeCheckBox.Checked:=Options.ExecuteAfter.ScanForMakeMessages;
   ExecuteAfterShowAllCheckBox.Checked:=Options.ExecuteAfter.ShowAllMessages;
-  if Options.ExecuteAfter is TProjectCompilationTool
-  then with TProjectCompilationTool(Options.ExecuteAfter) do begin
+  if Options.ExecuteAfter is TProjectCompilationToolOptions
+  then with TProjectCompilationToolOptions(Options.ExecuteAfter) do begin
     chkExecAfterCompile.Checked := crCompile in CompileReasons;
     chkExecAfterBuild.Checked := crBuild in CompileReasons;
     chkExecAfterRun.Checked := crRun in CompileReasons;
@@ -1026,15 +1009,17 @@ begin
   Options.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
 
   // compilation
+  Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
+  
   Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
   Options.ExecuteBefore.ScanForFPCMessages :=
                                            ExecuteBeforeScanFPCCheckBox.Checked;
   Options.ExecuteBefore.ScanForMakeMessages :=
                                           ExecuteBeforeScanMakeCheckBox.Checked;
   Options.ExecuteBefore.ShowAllMessages:=ExecuteBeforeShowAllCheckBox.Checked;
-  if Options.ExecuteBefore is TProjectCompilationTool
+  if Options.ExecuteBefore is TProjectCompilationToolOptions
   then begin
-    TProjectCompilationTool(Options.ExecuteBefore).CompileReasons :=
+    TProjectCompilationToolOptions(Options.ExecuteBefore).CompileReasons :=
       MakeCompileReasons(
         chkExecBeforeCompile,
         chkExecBeforeBuild,
@@ -1062,9 +1047,9 @@ begin
   Options.ExecuteAfter.ScanForMakeMessages :=
                                            ExecuteAfterScanMakeCheckBox.Checked;
   Options.ExecuteAfter.ShowAllMessages:=ExecuteAfterShowAllCheckBox.Checked;
-  if Options.ExecuteAfter is TProjectCompilationTool
+  if Options.ExecuteAfter is TProjectCompilationToolOptions
   then begin
-    TProjectCompilationTool(Options.ExecuteAfter).CompileReasons :=
+    TProjectCompilationToolOptions(Options.ExecuteAfter).CompileReasons :=
       MakeCompileReasons(
         chkExecAfterCompile,
         chkExecAfterBuild,
@@ -2283,17 +2268,26 @@ begin
   w := nbMain.ClientWidth - 2 * XMARGIN-4;
   cm := w div 2 - 2 * XMARGIN;
 
+  chkCreateMakefile:=TCheckBox.Create(Self);
+  with chkCreateMakefile do begin
+    Name := 'chkCreateMakefile';
+    Caption := 'Create Makefile';
+    SetBounds(XMARGIN, y, Width, Height);
+    Parent := CompilationPage;
+    Inc(y, Height + YMARGIN);
+  end;
+
   {------------------------------------------------------------}
 
   ExecuteBeforeGroupBox:=TGroupBox.Create(Self);
   with ExecuteBeforeGroupBox do
   begin
     Name := 'ExecuteBeforeGroupBox';
-    Parent := CompilationPage;
     SetBounds(XMARGIN, y, w, 125);
     Caption := lisCOExecuteBefore;
     OnResize := @ExecuteBeforeGroupBoxResize;
     Inc(y, Height + YMARGIN);
+    Parent := CompilationPage;
   end;
 
   cy := CreateGroupHead(ExecuteBeforeGroupBox,
@@ -2306,9 +2300,9 @@ begin
   ExecuteBeforeCommandLabel:=TLabel.Create(Self);
   with ExecuteBeforeCommandLabel do begin
     Name:='ExecuteBeforeCommandLabel';
-    Parent:=ExecuteBeforeGroupBox;
     Caption:=lisCOCommand;
     SetBounds(XMARGIN, cy + 2, WCOLABEL, Height);
+    Parent:=ExecuteBeforeGroupBox;
 //    Inc(cy, Height + YMARGIN);
   end;
 

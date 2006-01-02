@@ -1737,4 +1737,7 @@ makefiles: fpc_makefiles $(addsuffix _makefiles,$(TARGET_DIRS))
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
+.phony: bigidecomponents
+bigidecomponents: all
+	$(MAKE) -C rtticontrols
 cleanlaz: clean

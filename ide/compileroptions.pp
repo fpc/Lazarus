@@ -152,26 +152,33 @@ type
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
-  TCompileReason = (crCompile, crBuild, crRun);
+  TCompileReason = (
+    crCompile,  // normal build current project/package
+    crBuild,    // build all
+    crRun       // quick build before run
+    );
   TCompileReasons = set of TCompileReason;
 const
   crAll = [crCompile, crBuild, crRun];
   
 type
-  TCompilationTool = class
+
+  { TCompilationToolOptions }
+
+  TCompilationToolOptions = class
   public
     Command: string;
     ScanForFPCMessages: boolean;
     ScanForMakeMessages: boolean;
     ShowAllMessages: boolean;
     procedure Clear; virtual;
-    function IsEqual(Params: TCompilationTool): boolean; virtual;
-    procedure Assign(Src: TCompilationTool); virtual;
+    function IsEqual(Params: TCompilationToolOptions): boolean; virtual;
+    procedure Assign(Src: TCompilationToolOptions); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
   end;
-  TCompilationToolClass = class of TCompilationTool;
+  TCompilationToolClass = class of TCompilationToolOptions;
 
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
 
@@ -194,8 +201,9 @@ type
 
     // Compilation
     fCompilerPath: String;
-    fExecuteBefore: TCompilationTool;
-    fExecuteAfter: TCompilationTool;
+    fExecuteBefore: TCompilationToolOptions;
+    fExecuteAfter: TCompilationToolOptions;
+    FCreateMakefileOnBuild: boolean;
   protected
     procedure SetBaseDirectory(const AValue: string); override;
     procedure SetCompilerPath(const AValue: String); override;
@@ -279,8 +287,10 @@ type
 
     // compilation
     property CompilerPath: String read fCompilerPath write SetCompilerPath;
-    property ExecuteBefore: TCompilationTool read fExecuteBefore;
-    property ExecuteAfter: TCompilationTool read fExecuteAfter;
+    property ExecuteBefore: TCompilationToolOptions read fExecuteBefore;
+    property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
+    property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
+                                            write FCreateMakefileOnBuild;
   end;
   
   
@@ -651,7 +661,7 @@ end;
 
 constructor TBaseCompilerOptions.Create(const AOwner: TObject);
 begin
-  Create(AOwner, TCompilationTool);
+  Create(AOwner, TCompilationToolOptions);
 end;
 
 {------------------------------------------------------------------------------
@@ -1001,6 +1011,7 @@ begin
 
   ExecuteBefore.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteBefore/',PathDelimChanged);
   ExecuteAfter.LoadFromXMLConfig(XMLConfigFile,p+'ExecuteAfter/',PathDelimChanged);
+  CreateMakefileOnBuild:=XMLConfigFile.GetValue(p+'CreateMakefileOnBuild/Value',false);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1142,6 +1153,8 @@ begin
   XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
   ExecuteBefore.SaveToXMLConfig(XMLConfigFile,p+'ExecuteBefore/');
   ExecuteAfter.SaveToXMLConfig(XMLConfigFile,p+'ExecuteAfter/');
+  XMLConfigFile.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
+                               CreateMakefileOnBuild,false);
 
   // write
   InvalidateFileStateCache;
@@ -2204,6 +2217,7 @@ begin
   CompilerPath := CompOpts.fCompilerPath;
   ExecuteBefore.Assign(CompOpts.ExecuteBefore);
   ExecuteAfter.Assign(CompOpts.ExecuteAfter);
+  CreateMakefileOnBuild:=CompOpts.CreateMakefileOnBuild;
 end;
 
 function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
@@ -2297,6 +2311,7 @@ begin
     and (fCompilerPath = CompOpts.fCompilerPath)
     and ExecuteBefore.IsEqual(CompOpts.ExecuteBefore)
     and ExecuteAfter.IsEqual(CompOpts.ExecuteAfter)
+    and (CreateMakefileOnBuild=CompOpts.CreateMakefileOnBuild)
    ;
 end;
 
@@ -2537,16 +2552,9 @@ begin
       ParsedStamp[Option]:=InvalidParseStamp;
 end;
 
-//{ TCompilerOptions }
+{ TCompilationToolOptions }
 
-//procedure TCompilerOptions.Clear;
-//begin
-//  inherited Clear; // DUH!
-//end;
-
-{ TCompilationTool }
-
-procedure TCompilationTool.Clear;
+procedure TCompilationToolOptions.Clear;
 begin
   Command:='';
   ScanForFPCMessages:=false;
@@ -2554,7 +2562,7 @@ begin
   ShowAllMessages:=false;
 end;
 
-function TCompilationTool.IsEqual(Params: TCompilationTool
+function TCompilationToolOptions.IsEqual(Params: TCompilationToolOptions
   ): boolean;
 begin
   Result:=  (Command=Params.Command)
@@ -2564,7 +2572,7 @@ begin
         ;
 end;
 
-procedure TCompilationTool.Assign(Src: TCompilationTool);
+procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
 begin
   Command:=Src.Command;
   ScanForFPCMessages:=Src.ScanForFPCMessages;
@@ -2572,7 +2580,7 @@ begin
   ShowAllMessages:=Src.ShowAllMessages;
 end;
 
-procedure TCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
   Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
@@ -2582,7 +2590,7 @@ begin
   ShowAllMessages:=XMLConfig.GetValue(Path+'ShowAllMessages/Value',false);
 end;
 
-procedure TCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   XMLConfig.SetDeleteValue(Path+'Command/Value',Command,'');

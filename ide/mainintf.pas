@@ -164,7 +164,7 @@ type
     function PrepareForCompile: TModalResult; virtual; abstract;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
-    function DoExecuteCompilationTool(Tool: TCompilationTool;
+    function DoExecuteCompilationTool(Tool: TCompilationToolOptions;
                                       const WorkingDir, ToolTitle: string
                                       ): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;

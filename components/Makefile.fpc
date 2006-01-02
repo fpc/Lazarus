@@ -18,5 +18,9 @@ files=$(wildcard ./units/*$(OEXT)) \
       $(wildcard ./custom/*$(RSTEXT))
 
 [rules]
+.phony: bigidecomponents
+
+bigidecomponents: all
+        $(MAKE) -C rtticontrols
 
 cleanlaz: clean
