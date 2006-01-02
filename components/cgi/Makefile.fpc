@@ -1,0 +1,27 @@
+#   Makefile.fpc for cgiLaz 0.1.1
+
+[package]
+name=cgilaz
+version=0.1.1
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/gtk2/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+options=-gl
+
+[target]
+units=cgilaz.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/cgilaz$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) cgilaz$(PPUEXT)

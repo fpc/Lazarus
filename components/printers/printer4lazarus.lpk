@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <PathDelim Value="\"/>
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
       <Version Value="5"/>
-      <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="$(LazarusDir)\components\printers\$(TargetOS)\"/>
-        <OtherUnitFiles Value="$(LazarusDir)\components\printers\$(TargetOS)\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <IncludeFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
+        <OtherUnitFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -19,6 +17,7 @@
         <CustomOptions Value="-dUseCache
 "/>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="Printer implementation for Lazarus
@@ -45,95 +44,95 @@
         <Type Value="Text"/>
       </Item4>
       <Item5>
-        <Filename Value="linux\udlgselectprinter.lfm"/>
+        <Filename Value="linux/udlgselectprinter.lfm"/>
         <Type Value="LFM"/>
       </Item5>
       <Item6>
-        <Filename Value="linux\udlgselectprinter.lrs"/>
+        <Filename Value="linux/udlgselectprinter.lrs"/>
         <Type Value="LRS"/>
       </Item6>
       <Item7>
-        <Filename Value="linux\udlgselectprinter.pp"/>
+        <Filename Value="linux/udlgselectprinter.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgSelectPrinter"/>
       </Item7>
       <Item8>
-        <Filename Value="linux\cupsdyn.pp"/>
+        <Filename Value="linux/cupsdyn.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupsdyn"/>
       </Item8>
       <Item9>
-        <Filename Value="linux\cupsprinters.inc"/>
+        <Filename Value="linux/cupsprinters.inc"/>
         <Type Value="Include"/>
       </Item9>
       <Item10>
-        <Filename Value="linux\cupsprinters_h.inc"/>
+        <Filename Value="linux/cupsprinters_h.inc"/>
         <Type Value="Include"/>
       </Item10>
       <Item11>
-        <Filename Value="linux\jobsimglist.lrs"/>
+        <Filename Value="linux/jobsimglist.lrs"/>
         <Type Value="LRS"/>
       </Item11>
       <Item12>
-        <Filename Value="linux\printerprop.lrs"/>
+        <Filename Value="linux/printerprop.lrs"/>
         <Type Value="LRS"/>
       </Item12>
       <Item13>
-        <Filename Value="linux\selectprinter.lrs"/>
+        <Filename Value="linux/selectprinter.lrs"/>
         <Type Value="LRS"/>
       </Item13>
       <Item14>
-        <Filename Value="linux\udlgprintersjobs.lfm"/>
+        <Filename Value="linux/udlgprintersjobs.lfm"/>
         <Type Value="LFM"/>
       </Item14>
       <Item15>
-        <Filename Value="linux\udlgprintersjobs.lrs"/>
+        <Filename Value="linux/udlgprintersjobs.lrs"/>
         <Type Value="LRS"/>
       </Item15>
       <Item16>
-        <Filename Value="linux\udlgprintersjobs.pp"/>
+        <Filename Value="linux/udlgprintersjobs.pp"/>
         <Type Value="Text"/>
         <UnitName Value="udlgPrintersJobs"/>
       </Item16>
       <Item17>
-        <Filename Value="linux\udlgpropertiesprinter.lfm"/>
+        <Filename Value="linux/udlgpropertiesprinter.lfm"/>
         <Type Value="LFM"/>
       </Item17>
       <Item18>
-        <Filename Value="linux\udlgpropertiesprinter.lrs"/>
+        <Filename Value="linux/udlgpropertiesprinter.lrs"/>
         <Type Value="LRS"/>
       </Item18>
       <Item19>
-        <Filename Value="linux\udlgpropertiesprinter.pp"/>
+        <Filename Value="linux/udlgpropertiesprinter.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgPropertiesPrinter"/>
       </Item19>
       <Item20>
-        <Filename Value="linux\udlgselectprinter.lfm"/>
+        <Filename Value="linux/udlgselectprinter.lfm"/>
         <Type Value="LFM"/>
       </Item20>
       <Item21>
-        <Filename Value="linux\udlgselectprinter.lrs"/>
+        <Filename Value="linux/udlgselectprinter.lrs"/>
         <Type Value="LRS"/>
       </Item21>
       <Item22>
-        <Filename Value="win32\winprinters.inc"/>
+        <Filename Value="win32/winprinters.inc"/>
         <Type Value="Include"/>
       </Item22>
       <Item23>
-        <Filename Value="win32\winutilprnconst.inc"/>
+        <Filename Value="win32/winutilprnconst.inc"/>
         <Type Value="Include"/>
       </Item23>
       <Item24>
-        <Filename Value="win32\winprinters_h.inc"/>
+        <Filename Value="win32/winprinters_h.inc"/>
         <Type Value="Include"/>
       </Item24>
       <Item25>
-        <Filename Value="win32\winprndialogs.inc"/>
+        <Filename Value="win32/winprndialogs.inc"/>
         <Type Value="Include"/>
       </Item25>
       <Item26>
-        <Filename Value="linux\cupsprndialogs.inc"/>
+        <Filename Value="linux/cupsprndialogs.inc"/>
         <Type Value="Include"/>
       </Item26>
     </Files>
@@ -148,11 +147,10 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
     </PublishOptions>
   </Package>

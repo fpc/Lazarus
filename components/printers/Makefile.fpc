@@ -1,0 +1,27 @@
+#   Makefile.fpc for Printer4Lazarus 0.0.0.2
+
+[package]
+name=printer4lazarus
+version=0.0.0.2
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/gtk/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+options=-gl
+
+[target]
+units=printer4lazarus.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/printer4lazarus$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) printer4lazarus$(PPUEXT)

@@ -3790,8 +3790,8 @@ begin
   if CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',
                                 Owner.CompilerOptions.GetEffectiveLCLWidgetType)
   then begin
-    DebugLn('TProjectDefineTemplates.UpdateGlobalValues '
-    ,' LCLWidgetType="',CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'],'" Effective="',Owner.CompilerOptions.GetEffectiveLCLWidgetType,'" Options="',Owner.CompilerOptions.LCLWidgetType,'"');
+    //DebugLn('TProjectDefineTemplates.UpdateGlobalValues '
+    //,' LCLWidgetType="',CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'],'" Effective="',Owner.CompilerOptions.GetEffectiveLCLWidgetType,'" Options="',Owner.CompilerOptions.LCLWidgetType,'"');
     Changed:=true;
   end;
   if Owner.IsVirtual then

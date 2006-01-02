@@ -1739,5 +1739,5 @@ include fpcmake.loc
 endif
 .phony: bigidecomponents
 bigidecomponents: all
-	$(MAKE) -C rtticontrols
+	$(MAKE) -C rtticontrols printers cgi
 cleanlaz: clean

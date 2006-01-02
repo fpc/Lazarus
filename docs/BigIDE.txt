@@ -1,0 +1,11 @@
+How to add a package to the big IDE:
+
+Enable the package compiler option 'Create Makefile' and compile the package
+once in the IDE to create the Makefile and Makefile.fpc.
+Add them to svn.
+
+ide/Makefile.fpc          Unitpaths and flags
+components/Makefile.fpc   package directories
+ide/lazarus.pp            package names
+
+Do not forget update the ide/Makefile and components/Makefile.

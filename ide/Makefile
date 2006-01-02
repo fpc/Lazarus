@@ -257,7 +257,10 @@ LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 ifeq ($(OS_TARGET),win32)
 LAZARUS_OPT+= -WG
 endif
-BIG_IDE_OPTIONS=-dBigIDE -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)
+BIG_IDE_OPTIONS=-dBigIDE \
+  -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET)
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
 endif
