@@ -20,8 +20,6 @@
 
   ToDo:
     -TIntegerSet missing -> taking my own
-    -StrToInt64 has a bug. It prints infinitly "something happened"
-       -> taking my own
 
     -many more... see XXX
 }
@@ -445,6 +443,14 @@ type
     function GetEditLimit: Integer; override;
     function GetValue: ansistring; override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TQWordPropertyEditor
+  Default editor for all QWord properties }
+
+  TQWordPropertyEditor = class(TInt64PropertyEditor)
+  public
+    function GetValue: ansistring; override;
   end;
 
 { TFloatPropertyEditor
@@ -1556,34 +1562,10 @@ const
     TPropertyEditor,       // tkWChar
     TBoolPropertyEditor,   // tkBool
     TInt64PropertyEditor,  // tkInt64
-    nil,                   // tkQWord
+    TQWordPropertyEditor,  // tkQWord
     nil,                   // tkDynArray
     nil                    // tkInterfaceRaw
     );
-
-
-// XXX ToDo: These variables/functions have bugs. Thus I provide my own ------
-
-function StrToInt64(const s:ansistring):int64;
-var p:integer;
-  negated:boolean;
-begin
-  p:=1;
-  while (p<=length(s)) and (s[p]=' ') do inc(p);
-  if (p<=length(s)) and (s[p]='-') then begin
-    negated:=true;
-    inc(p);
-    while (p<=length(s)) and (s[p]=' ') do inc(p);
-  end else begin
-    negated:=false;
-  end;
-  Result:=0;
-  while (p<=length(s)) and (s[p]>='0') and (s[p]<='9') do begin
-    Result:=Result*10+ord(s[p])-ord('0');
-    inc(p);
-  end;
-  if negated then Result:=-Result;
-end;
 
 // -----------------------------------------------------------
 
@@ -2833,6 +2815,13 @@ begin
   SetInt64Value(StrToInt64(NewValue));
 end;
 
+
+{ TQWordPropertyEditor }
+
+function TQWordPropertyEditor.GetValue: ansistring;
+begin
+  Result := IntToStr(QWord(GetInt64Value));
+end;
 
 { TFloatPropertyEditor }
 

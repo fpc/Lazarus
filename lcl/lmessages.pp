@@ -369,7 +369,7 @@ type
     Result: LRESULT;
   end;
 
-{$if defined(ver1_0) or not(defined(win32))}
+{$ifndef win32}
   TLMNoParams = record
     Msg: Cardinal;
     Unused: array[0..1] of PtrInt;
