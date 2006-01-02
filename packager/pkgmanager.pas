@@ -1212,10 +1212,12 @@ function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
     Result:=s;
     Replace(Result,'$(TargetCPU)','%(CPU_TARGET)');
     Replace(Result,'$(TargetOS)','%(OS_TARGET)');
+    Replace(Result,'$(LCLWidgetType)','%(LCL_PLATFORM)');
     Result:=APackage.SubstitutePkgMacro(Result);
     Result:=ParseString(APackage.CompilerOptions.ParsedOpts,Result);
     Replace(Result,'%(CPU_TARGET)','$(CPU_TARGET)');
     Replace(Result,'%(OS_TARGET)','$(OS_TARGET)');
+    Replace(Result,'%(LCL_PLATFORM)','$(LCL_PLATFORM)');
   end;
   
   function ConvertLazarusToMakefileSearchPath(const s: string): string;
