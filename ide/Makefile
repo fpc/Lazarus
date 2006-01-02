@@ -3161,6 +3161,7 @@ endif
 idepkg: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 bigide: $(COMPILER_UNITTARGETDIR)
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
 	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
