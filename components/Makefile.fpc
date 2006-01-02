@@ -21,6 +21,8 @@ files=$(wildcard ./units/*$(OEXT)) \
 .phony: bigidecomponents
 
 bigidecomponents: all
-        $(MAKE) -C rtticontrols printers cgi
+        $(MAKE) -C rtticontrols
+        $(MAKE) -C printers
+        $(MAKE) -C cgi
 
 cleanlaz: clean
