@@ -1742,4 +1742,5 @@ bigidecomponents: all
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C printers
 	$(MAKE) -C cgi
+	$(MAKE) -C cgi/ide
 cleanlaz: clean

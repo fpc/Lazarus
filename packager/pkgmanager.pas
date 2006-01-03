@@ -1251,7 +1251,9 @@ begin
   UnitPath:=APackage.CompilerOptions.GetUnitPath(false,false)+';.';
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
   
+  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' abs UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
+  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' rel UnitPath="',UnitPath,'"');
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
 
   e:=LineEnding;
