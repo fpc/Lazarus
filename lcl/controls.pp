@@ -2179,6 +2179,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TImageList]);
+  RegisterNoIcon([TCustomControl,TGraphicControl]);
 end;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
