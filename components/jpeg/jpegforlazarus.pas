@@ -7,7 +7,7 @@ unit JPEGForLazarus;
 interface
 
 uses
-  LazJPEG, LazarusPackageIntf; 
+  lazjpeg, LazarusPackageIntf; 
 
 implementation
 

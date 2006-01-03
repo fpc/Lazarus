@@ -7,13 +7,13 @@ unit GTKOpenGL;
 interface
 
 uses
-  GTKGLAreaControl, nvGL, nvGLX, LazarusPackageIntf; 
+  gtkglareacontrol, nvgl, nvglx, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('GTKGLAreaControl', @GTKGLAreaControl.Register); 
+  RegisterUnit('gtkglareacontrol', @gtkglareacontrol.Register); 
 end; 
 
 initialization

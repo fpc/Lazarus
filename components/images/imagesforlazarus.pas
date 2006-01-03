@@ -1,6 +1,5 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package ImagesForLazarus 1.0.1.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
 unit ImagesForLazarus; 
@@ -8,17 +7,17 @@ unit ImagesForLazarus;
 interface
 
 uses
-  LazPNG, LazPNM, LazJPG, LazBMP, LazTGA, LazXPM, LazarusPackageIntf; 
+  lazpng, lazpnm, lazjpg, lazbmp, laztga, lazxpm, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('LazPNM', @LazPNM.Register); 
-  RegisterUnit('LazJPG', @LazJPG.Register); 
-  RegisterUnit('LazTGA', @LazTGA.Register); 
+  RegisterUnit('lazpnm', @lazpnm.Register); 
+  RegisterUnit('lazjpg', @lazjpg.Register); 
+  RegisterUnit('laztga', @laztga.Register); 
 end; 
 
 initialization
-  RegisterPackage('ImagesForLazarus', @Register)
+  RegisterPackage('ImagesForLazarus', @Register); 
 end.

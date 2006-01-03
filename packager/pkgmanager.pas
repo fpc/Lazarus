@@ -3054,22 +3054,7 @@ begin
     // update unitname
     if FilenameIsPascalUnit(CurFile.Filename)
     and (CurFile.FileType in PkgFileUnitTypes) then begin
-      CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
-      if CodeBuffer<>nil then begin
-        // if the unit is edited, the unitname is probably already cached
-        CurUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
-        // if not then parse it
-        if AnsiCompareText(CurUnitName,CurFile.UnitName)<>0 then
-          CurUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-        // if it makes sense, update unitname
-        if AnsiCompareText(CurUnitName,CurFile.UnitName)=0 then
-          CurFile.UnitName:=CurUnitName;
-      end;
-      CurUnitName:=CurFile.UnitName;
-      // make sure the unitname makes sense
-      CaseInsensitiveUnitName:=ExtractFileNameOnly(CurFile.Filename);
-      if SysUtils.CompareText(CurUnitName,CaseInsensitiveUnitName)<>0 then
-        CurUnitName:=CaseInsensitiveUnitName;
+      CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
         NeedsRegisterProcCall:=CurFile.HasRegisterProc
           and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
