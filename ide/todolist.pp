@@ -67,9 +67,20 @@ type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
                           const LineNumber: integer) of object;
 
-  TfrmToDo = class(TForm)
-    StatusBar:TStatusBar;
-    lvTodo:TListView;
+  { TfrmTodo }
+
+  TfrmTodo = class(TForm)
+    ImageList1: TImageList;
+    lvTodo: TListView;
+    StatusBar: TStatusBar;
+    ToolBar: TToolBar;
+    tbGoto: TToolButton;
+    tbOptions: TToolButton;
+    tbPrint: TToolButton;
+    tbRefresh: TToolButton;
+    procedure tbGotoClick(Sender: TObject);
+    procedure tbRefreshClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
   private
     { private declarations }
     fBuild       : Boolean;
@@ -78,14 +89,8 @@ type
     fRootCBuffer : TCodeBuffer;
     fScannedFile : TStringList;
 
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure SetFileName(const AValue: String);
-    
-    procedure actFileRefresh(Sender : TObject);
-    procedure actEditGoto(Sender : TObject);
-    procedure actFilePrint(Sender : TObject);
-    procedure actOptionsCfg(Sender : TObject);
-    
+
     procedure ParseComment(const aFileName: string; const SComment, EComment: string;
         const TokenString: string; LineNumber: Integer);
     procedure ParseDirective(aDirective : String);
@@ -101,7 +106,7 @@ type
   end;
 
 var
-  frmToDo: TfrmToDo;
+  frmTodo: TfrmTodo;
 
 implementation
 
@@ -109,268 +114,35 @@ uses
   StrUtils,
   FileUtil;
 
-Type
-   PCharArray   = Array[0..16+5] of PChar;
-const
-  //Images of ToolBar
-  cImg_ToDoRefresh : PCharArray=
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   'a c #58a8ff',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '................',
-   '.......######...',
-   '.....##aaa####..',
-   '....##aa###.....',
-   '....#aa#........',
-   '...##aa#........',
-   '...#aa#.........',
-   '...#aa#.........',
-   '...#aa#.........',
-   '.##aaa####......',
-   '..#aaaaa#.......',
-   '...##a##........',
-   '....###.........',
-   '.....#..........');
-   
-  cImg_ToDoGotoLine : PCharArray=
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   'b c #ff0000',
-   'a c #ffffff',
-   ' ',
-   '................',
-   '................',
-   '...#######......',
-   '...#aaaaaa#.....',
-   '...#aaaaaaa#....',
-   '...#aaaaaaaa#...',
-   '...#aaaaaaaa#...',
-   '...#aaaaaaaa#...',
-   '.b.#aaaaaaaa#...',
-   '..bbbbbbbbbbb...',
-   '.b.#aaaaaaaa#...',
-   '...#aaaaaaaa#...',
-   '...#aaaaaaaa#...',
-   '...##########...',
-   '................',
-   '................');
-   
-   cImg_ToDoOptions : PCharArray=
-   ('16 16 5 1',
-    '. c None',
-    'a c #0058c0',
-    '# c #303030',
-    'c c #ff0000',
-    'b c #ffffff',
-    '................',
-    '.##############.',
-    '.#aaaaaaaaaaaa#.',
-    '.##############.',
-    '.#bbbbbbbbbbbb#.',
-    '.#bcbbbccbbbbb#.',
-    '.#bccbccbbbbbb#.',
-    '.#bbcccbbbbbbb#.',
-    '.#bbbcbbbbbbbb#.',
-    '.#bcbbbccbbbbb#.',
-    '.#bccbccbbbbbb#.',
-    '.#bbcccbbbbbbb#.',
-    '.#bbbcbbbbbbbb#.',
-    '.#bbbbbbbbbbbb#.',
-    '.##############.',
-    '................');
-    
-    cImg_ToDoPrint : PCharArray=
-    ('16 16 5 1',
-     '. c None',
-     'e c #00ff00',
-     '# c #303030',
-     'c c #808080',
-     'b c #c3c3c3',
-     'd c #ff0000',
-     'a c #ffffff',
-     '................',
-     '................',
-     '.......#######..',
-     '......#aaaaa#...',
-     '.....#aaaaa#....',
-     '....#aaaaa#####.',
-     '...########bb##.',
-     '..#bbbbbbbbb#c#.',
-     '..##########cc#.',
-     '..#bdbebbb#cc##.',
-     '..############..',
-     '..#bbbbbbbb##...',
-     '...#########....',
-     '................');
+{ TfrmTodo }
 
-
-{ TfrmToDo }
-
-constructor TfrmToDo.Create(AOwner: TComponent);
-var C   : TListColumn;
-    Btn : TSpeedButton;
-    Bar :TPanel;
-    Bmp : TBitMap;
-    
-  procedure AssignResImg(SpdBtn: TSpeedButton; const ResName: string);
-  Var PixM : TBitMap;
-  begin
-    if LazarusResources.Find(ResName)<>nil then
-    begin
-      PixM:=TBitMap.Create;
-      try
-        PixM.LoadFromLazarusResource(ResName);
-        SpdBtn.Glyph.Assign(PixM);
-      finally
-        PixM.Free;
-      end;
-    end;
-  end;
-
+constructor TfrmTodo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fBuild:=False;
   fScannedFile:=TStringList.Create;
-  Left := 456;
-  Top := 116;
-  Width := 477;
-  Height := 307;
+
   Caption := lisTodoListCaption;
-  KeyPreview := True;
-  Position := poScreenCenter;
-  OnKeyDown  :=@FormKeyDown;
 
-  StatusBar:=TStatusBar.Create(Self);
-  with StatusBar do
-  begin
-    parent:=self;
-    Left := 0;
-    Top := 259;
-    Width := 469;
-    Height := 19;
-    SimplePanel := True;
-  end;
+  tbRefresh.Hint  := lisTodolistRefresh;
+  tbGoto.Hint  := listodoListGotoLine;
+  tbPrint.Hint   :=listodoListPrintList;
+  tbOptions.Hint  :=  lisToDoListOptions;
 
-  //Tool bar
-  Bar:=TPanel.Create(Self);
-  with Bar do
-  begin
-    parent:=self;
-    Left := 0;
-    Top := 0;
-    Height := 22;
-    Caption := '';
-    Align:=alTop;
-    ParentShowHint:=False;
-    BevelOuter:=bvNone;
-    BevelInner:=bvNone;
-  end;
-
-  //Button refresh
-  Btn:=TSpeedButton.Create(Bar);
-  btn.Parent:=Bar;
-  Btn.Flat  :=True;
-  Btn.Width :=20;
-  Btn.Height:=20;
-  Btn.Left  :=0;
-  Btn.Top   :=0;
-  Bmp:=TBitMap.Create;
-  Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoRefresh[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph.Assign(Bmp);
-  Bmp.Free;
-  Btn.ShowHint:=True;
-  Btn.Hint  := lisTodolistRefresh;
-  Btn.OnClick:=@actFileRefresh;
-
-  //button Goto
-  Btn:=TSpeedButton.Create(Bar);
-  btn.Parent:=Bar;
-  Btn.Flat  :=True;
-  Btn.Width :=20;
-  Btn.Height:=20;
-  Btn.Left  :=22;
-  Btn.Top   :=0;
-  Btn.ShowHint:=True;
-  Bmp:=TBitMap.Create;
-  Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoGotoLine[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph.Assign(Bmp);
-  Bmp.Free;
-  Btn.Hint  := listodoListGotoLine;
-  Btn.OnClick:=@actEditGoto;
-
-  //button Print
-  Btn:=TSpeedButton.Create(Bar);
-  btn.Parent:=Bar;
-  Btn.Flat  :=True;
-  Btn.Width :=20;
-  Btn.Height:=20;
-  Btn.Left  :=42;
-  Btn.Top   :=0;
-  Btn.ShowHint:=True;
-  Btn.Hint   :=listodoListPrintList;
-  Bmp:=TBitMap.Create;
-  Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoPrint[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph.Assign(Bmp);
-  Bmp.Free;
-  Btn.OnClick:=@actFilePrint;
-
-  //button Options
-  Btn:=TSpeedButton.Create(Bar);
-  btn.Parent:=Bar;
-  Btn.Flat  :=True;
-  Btn.Width :=20;
-  Btn.Height:=20;
-  Btn.Left  :=62;
-  Btn.Top   :=0;
-  Btn.ShowHint:=True;
-  Bmp:=TBitMap.Create;
-  Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoOptions[0], GetSysColor(COLOR_BTNFACE));
-  Btn.Glyph.Assign(Bmp);
-  Bmp.Free;
-  Btn.Hint  :=  lisToDoListOptions;
-  Btn.OnClick:=@actOptionsCfg;
-
-
-  lvTodo:=TListView.Create(Self);
   with lvTodo do
   begin
-    parent      := self;
-    Left        := 0;
-    Top         := 22;
-    Width       := 469;
-    Height      := 237;
-    Align       := alClient;
-    RowSelect   := True;
-    ViewStyle   := vsReport;
-    lvToDo.OnDblClick := @actEditGoto;
-    //priority column
-    C:=Columns.Add;
-    C.Caption := ' !';
-    C.Width   := 15;
-    //Description column
-    C:=Columns.Add;
-    C.Caption := lisToDoLDescription;
-    C.Width   := 250;
-    //File column
-    C:=Columns.Add;
-    C.Caption := lisToDoLFile;
-    C.Width := 150;
-    //Line column
-    C:=Columns.Add;
-    C.Caption := lisToDoLLine;
-    C.Width := 28;
+    Column[0].Caption := ' !';
+    Column[0].Width   := 25;
+    Column[1].Caption := lisToDoLDescription;
+    Column[1].Width   := 250;
+    Column[2].Caption := lisToDoLFile;
+    Column[2].Width := 150;
+    Column[3].Caption := lisToDoLLine;
+    Column[3].Width := 50;
   end;
-
-  ActiveControl := lvTodo;
 end;
 
-destructor TfrmToDo.Destroy;
+destructor TfrmTodo.Destroy;
 begin
   fScannedFile.Free;
 
@@ -378,7 +150,7 @@ begin
 end;
 
 //Load project main file and scan all files for find the syntax todo
-procedure TfrmToDo.actFileRefresh(Sender: TObject);
+procedure TfrmTodo.tbRefreshClick(Sender: TObject);
 var
   UsedInterfaceFilenames,
   UsedImplementationFilenames: TStrings;
@@ -386,7 +158,7 @@ var
   St : String;
 begin
   if fBuild then Exit;
-  
+
   Screen.Cursor:=crHourGlass;
   Try
     fBuild:=True;
@@ -425,21 +197,21 @@ begin
   end;
 end;
 
-procedure TfrmToDo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfrmTodo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
     Close;
 end;
 
 //Initialise then todo project and find them
-procedure TfrmToDo.SetFileName(const AValue: String);
+procedure TfrmTodo.SetFileName(const AValue: String);
 begin
   if fFileName=AValue then exit;
   fFileName:=AValue;
-  actFileRefresh(nil);
+  tbRefreshClick(nil);
 end;
 
-procedure TfrmToDo.actEditGoto(Sender: TObject);
+procedure TfrmTodo.tbGotoClick(Sender: TObject);
 var
   CurFilename: String;
   TheItem: TListItem;
@@ -449,8 +221,6 @@ var
   i: integer;
   Found: boolean;
 begin
-  //showMessage('not implemented');
-  //exit;
   CurFilename:='';
   TheItem:= lvtodo.Selected;
   Found:= false;
@@ -476,8 +246,8 @@ begin
                 CurFileName:= UsedInterFaceFileNames[i];
                 Found:= true;
                 break;
-              end;//end
-            end;//for
+              end;
+            end;
             if not Found then
             begin
               for i:=0 to UsedImplementationFilenames.Count-1 do
@@ -487,32 +257,22 @@ begin
                 begin
                   CurFileName:= UsedImplementationFilenames[i];
                   break;
-                end;//if
-              end;//for
-            end;//if
+                end;
+              end;
+            end;
           finally
             UsedImplementationFilenames.Free;
             UsedInterfaceFilenames.Free;
-          end;//try-finally
-        end;//if
-      end;//if
-    end;//if
+          end;
+        end;
+      end;
+    end;
     if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
-  end;//if
-end;
-
-procedure TfrmToDo.actFilePrint(Sender: TObject);
-begin
-  //showMessage('not implemented');
-end;
-
-procedure TfrmToDo.actOptionsCfg(Sender: TObject);
-begin
-  //showMessage('not implemented');
+  end;
 end;
 
 //Find the {$I filename} directive. If exists, call LoadFile()
-procedure TfrmToDo.ParseDirective(aDirective : String);
+procedure TfrmTodo.ParseDirective(aDirective : String);
 Var N             : Integer;
     ParsingString : string;
 begin
@@ -529,7 +289,7 @@ begin
 end;
 
 //Find in comment the ToDo message
-procedure TfrmToDo.ParseComment(const aFileName: string; const SComment, EComment: string;
+procedure TfrmTodo.ParseComment(const aFileName: string; const SComment, EComment: string;
   const TokenString: string; LineNumber: Integer);
 Var
   N,J           : Integer;
@@ -602,7 +362,7 @@ end;
 //Load an FileName and find {#todox yyyyyy} where
 // x is the priority (0 by default)
 // yyyy it's the message one line only
-procedure TfrmToDo.LoadFile(const aFileName: string);
+procedure TfrmTodo.LoadFile(const aFileName: string);
 var
   Parser   : TmwPasLex;
   EStream  : TMemoryStream;
@@ -656,9 +416,8 @@ begin
   end;
 end;
 
-
 initialization
-  {.$I ufrmtodo.lrs}
+  {$i todolist.lrs}
   
 end.
 

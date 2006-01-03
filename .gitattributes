@@ -1078,6 +1078,8 @@ ide/startlazarus.lpr svneol=native#text/pascal
 ide/startlazarus.rc svneol=native#text/plain
 ide/startlazopts.pas svneol=native#text/pascal
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
+ide/todolist.lfm svneol=native#text/plain
+ide/todolist.lrs svneol=native#text/plain
 ide/todolist.pp svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal
 ide/unitdependencies.lrs svneol=native#text/pascal
@@ -1480,6 +1482,10 @@ images/sourceeditor/bookmark8.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark9.ico -text svneol=unset#image/x-icon
 images/sourceeditor/bookmark9.xpm -text svneol=native#image/x-xpixmap
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
+images/todo_goto.bmp -text
+images/todo_options.bmp -text
+images/todo_print.bmp -text
+images/todo_refresh.bmp -text
 images/unitdependencies/srctype_circle_22x22.xpm -text svneol=native#image/x-xpixmap
 images/unitdependencies/srctype_filenotfound_22x22.xpm -text svneol=native#image/x-xpixmap
 images/unitdependencies/srctype_forbiddencircle_22x22.xpm -text svneol=native#image/x-xpixmap
