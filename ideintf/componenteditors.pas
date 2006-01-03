@@ -782,8 +782,6 @@ Type
     FGrid: TStringGrid;
     FFixedColor: TColor;
     FFixedRows,FFixedCols: Integer;
-    //procedure OnFixedRows(Sender: TObject);
-    //procedure OnFixedCols(Sender: TObject);
     procedure OnPrepareCanvas(Sender: TObject; Col,Row:Integer; aState: TGridDrawState);
   public
     constructor create(AOwner: TComponent); override;
@@ -792,17 +790,7 @@ Type
     property FixedRows: Integer read FFixedRows write FFixedRows;
     property FixedCols: Integer read FFixedCols write FFixedCols;
   end;
-{
-procedure TStringGridEditorDlg.OnFixedRows(Sender: TObject);
-begin
-  FGrid.FixedRows := FGrid.FixedRows + 1 - 2 * (Sender as TComponent).Tag;
-end;
 
-procedure TStringGridEditorDlg.OnFixedCols(Sender: TObject);
-begin
-  FGrid.FixedCols := FGrid.FixedCols + 1 - 2 * (Sender as TComponent).Tag;
-end;
-}
 procedure TStringGridEditorDlg.OnPrepareCanvas(Sender: TObject;
   Col,Row: Integer; aState: TGridDrawState);
 begin
@@ -826,57 +814,30 @@ begin
   FGrid.Options:=Fgrid.Options + [goEditing,goColSizing,goRowSizing];
   FGrid.OnPrepareCanvas := @OnPrepareCanvas;
   FGrid.ExtendedColSizing := True;
-  {
-  With TButton.Create(Self) do begin
-    parent:=self;
-    SetBounds(5, FGrid.Top + Fgrid.Height + 10, 80, 18);
-    Tag:=0;
-    Caption:='+ FixedRows';
-    OnClick:=@OnFixedRows;
-  end;
-  With TButton.Create(Self) do begin
-    parent:=self;
-    SetBounds(5, FGrid.Top + Fgrid.Height + 30, 80, 18);
-    Tag:=1;
-    Caption:='- FixedRows';
-    OnClick:=@OnFixedRows;
-  end;
-  With TButton.Create(Self) do begin
-    parent:=self;
-    SetBounds(90, FGrid.Top + Fgrid.Height + 10, 80, 18);
-    Tag:=0;
-    Caption:='+ FixedCols';
-    OnClick:=@OnFixedCols;
-  end;
-  With TButton.Create(Self) do begin
-    parent:=self;
-    Left:=90;
-    SetBounds(90, FGrid.Top + Fgrid.Height + 30, 80, 18);
-    Tag:=1;
-    Caption:='- FixedCols';
-    OnClick:=@OnFixedCols;
-  end;
-  }
+  FGrid.Anchors := [akLeft,akTop,akRight,akBottom];
+
   //Bnt Ok
   With TBitBtn.Create(self) do
   begin
+    Parent:= self;
     Left  := 240;
     Top   := FGrid.Top + Fgrid.Height + 5;
     Width := 99;
     Kind  := bkOk;
-    Parent:= self;
+    Anchors := [akRight, akBottom];
   end;
 
   //Bnt Cancel
   With TBitBtn.Create(self) do
   begin
+    Parent:= self;
     Left  := 240;
     Top   := FGrid.Top + Fgrid.Height + height + 5;
     Width := 99;
     Kind  := bkCancel;
-    Parent:= self;
+    Anchors := [akRight, akBottom];
   end;
-
+  
   // Save/load buttons
 end;
 
@@ -899,7 +860,6 @@ begin
       
       AssignGrid(Dlg.FGrid, aGrid, true);
       
-      //ShowEditor
       if Dlg.ShowModal=mrOK then
       begin
         //Apply the modifications
@@ -924,8 +884,6 @@ begin
       DstGrid.Clear;
       Dstgrid.ColCount:=srcGrid.ColCount;
       DstGrid.RowCount:=srcGrid.RowCount;
-      //DstGrid.FixedRows:=srcGrid.FixedRows;
-      //Dstgrid.FixedCols:=srcGrid.FixedCols;
     end;
     for i:=0 to srcGrid.RowCount-1 do
       DstGrid.RowHeights[i]:=srcGrid.RowHeights[i];
