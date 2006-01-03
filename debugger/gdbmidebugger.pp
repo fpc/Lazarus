@@ -2139,7 +2139,7 @@ begin
   then begin
     // We could not set our initial break to get info and allow stepping
     // Try it with the program entry point
-    ExecuteCommand('-break-insert -t *%s', [EntryPoint], [cfIgnoreError], R);
+    ExecuteCommand('-break-insert -t *%d', [StrToIntDef(EntryPoint, 0)], [cfIgnoreError], R);
     TempInstalled := R.State <> dsError;
   end;
   
