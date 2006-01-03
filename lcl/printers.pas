@@ -344,7 +344,6 @@ begin
   // it wont be filled on getting printers
   // due to only one initialization
   GetPrinters;
-  DoEnumPrinters(fPrinters);
 
   fPrinterIndex:=-1;
 
@@ -578,6 +577,7 @@ end;
 procedure TPrinter.DoResetPrintersList;
 begin
  //Override this methode
+ fPrintersValid:=false;
 end;
 
 procedure TPrinter.DoResetFontsList;
