@@ -117,6 +117,7 @@ Type
   TDBEdit = class(TCustomMaskEdit)
   private
     FDataLink: TFieldDataLink;
+    FUpdatingRecord: boolean;
 
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -149,6 +150,7 @@ Type
     procedure SetFocus; override;
 
     procedure EditingDone; override;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1082,9 +1084,6 @@ begin
   then
     exit;
 
-  if not Active then
-    FField := nil;
-    
   if not Active then
     FField := nil;
     

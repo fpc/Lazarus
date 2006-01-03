@@ -40,7 +40,8 @@ begin
       EditText := FDataLink.Field.DisplayText;
   end
   else begin
-    EditMask := '';
+    //todo: uncomment this when TField implements EditMask
+    //EditMask := ''
     Text := '';
   end;
 end;
@@ -221,8 +222,19 @@ end;
 procedure TDBEdit.EditingDone;
 begin
   inherited EditingDone;
-  if FDataLink.CanModify then
+  if FDataLink.CanModify and FDatalink.Editing then begin
+    FUpdatingRecord := True;
     FDataLink.UpdateRecord;
+    FUpdatingRecord := False;
+  end;
+end;
+
+procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  if not FUpdatingRecord then
+    inherited WMKillFocus(Message)
+  else
+    FUpdatingRecord := False;
 end;
 
 { Public Methods }
