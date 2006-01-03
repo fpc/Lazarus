@@ -1382,6 +1382,14 @@ Begin
         end;
       end;
     end;
+    {$IFDEF EnableWMDropFiles}
+    WM_DROPFILES:
+      begin
+        LMessage.Msg := LM_DROPFILES;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
+      end;
+    {$ENDIF}
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCACTIVATE:
     begin
