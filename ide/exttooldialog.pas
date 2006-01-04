@@ -303,76 +303,82 @@ begin
   if Params<>'' then
     CmdLine:=CmdLine+' '+Params;
   DebugLn('[TExternalToolList.Run] CmdLine="',CmdLine,'" WorkDir="',WorkingDir,'"');
+  TheProcess:=nil;
   try
-    CheckIfFileIsExecutable(Filename);
-    {$IFDEF UseAsyncProcess}
-    TheProcess := TAsyncProcess.Create(nil);
-    {$ELSE}
-    TheProcess := TProcess.Create(nil);
-    {$ENDIF}
-    TheProcess.CommandLine := Filename+' '+Params;
-    TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
-    TheProcess.ShowWindow := swoHide;
-    TheProcess.CurrentDirectory := WorkingDir;
-    if ExtTool.EnvironmentOverrides.Count>0 then
-      ExtTool.AssignEnvironmentTo(TheProcess.Environment);
-    if (ExtTool.NeedsOutputFilter) and (TheOutputFilter=nil)
-    and Assigned(OnNeedsOutputFilter) then begin
-      Abort:=false;
-      OnNeedsOutputFilter(TheOutputFilter,Abort);
-      if Abort then begin
-        Result:=mrAbort;
-        exit;
-      end;
-    end;
-    if TheOutputFilter<>nil then begin
-      ErrorOccurred:=false;
-      try
-        TheOutputFilter.CompilerOptions:=CompilerOptions;
-        TheOutputFilter.Options:=[ofoExceptionOnError,
-                                  ofoMakeFilenamesAbsolute];
-        if ExtTool.ScanOutputForFPCMessages then
-          TheOutputFilter.Options:=TheOutputFilter.Options
-                                   +[ofoSearchForFPCMessages];
-        if ExtTool.ScanOutputForMakeMessages then
-          TheOutputFilter.Options:=TheOutputFilter.Options
-                                   +[ofoSearchForMakeMessages];
-        if ExtTool.ShowAllOutput then
-          TheOutputFilter.Options:=TheOutputFilter.Options+[ofoShowAll];
-        try
-          Result:=mrCancel;
-          try
-            if TheOutputFilter.Execute(TheProcess) then begin
-              TheOutputFilter.ReadLine('"'+Title+'" completed',true);
-            end;
-            if TheOutputFilter.ErrorExists then begin
-              ErrorOccurred:=true;
-            end;
-          finally
-            TheProcess.WaitOnExit;
-            TheProcess.Free;
-          end;
-          if ErrorOccurred then
-            Result:=mrCancel
-          else if TheOutputFilter.Aborted then
-            Result:=mrAbort
-          else
-            Result:=mrOk;
-        except
-          on e: EOutputFilterError do begin
-            DebugLn('TExternalToolList.Run Exception: ',E.Message);
-            ErrorOccurred:=true;
-          end
-          else
-            raise
+    try
+      CheckIfFileIsExecutable(Filename);
+      {$IFDEF UseAsyncProcess}
+      TheProcess := TAsyncProcess.Create(nil);
+      {$ELSE}
+      TheProcess := TProcess.Create(nil);
+      {$ENDIF}
+      TheProcess.CommandLine := Filename+' '+Params;
+      TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
+      TheProcess.ShowWindow := swoHide;
+      TheProcess.CurrentDirectory := WorkingDir;
+      if ExtTool.EnvironmentOverrides.Count>0 then
+        ExtTool.AssignEnvironmentTo(TheProcess.Environment);
+      if (ExtTool.NeedsOutputFilter) and (TheOutputFilter=nil)
+      and Assigned(OnNeedsOutputFilter) then begin
+        Abort:=false;
+        OnNeedsOutputFilter(TheOutputFilter,Abort);
+        if Abort then begin
+          Result:=mrAbort;
+          exit;
         end;
-      finally
-        if Assigned(OnFreeOutputFilter) then
-          OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
       end;
-    end else begin
-      AddRunningTool(TheProcess,true);
-      Result:=mrOk;
+      if TheOutputFilter<>nil then begin
+        ErrorOccurred:=false;
+        try
+          TheOutputFilter.CompilerOptions:=CompilerOptions;
+          TheOutputFilter.Options:=[ofoExceptionOnError,
+                                    ofoMakeFilenamesAbsolute];
+          if ExtTool.ScanOutputForFPCMessages then
+            TheOutputFilter.Options:=TheOutputFilter.Options
+                                     +[ofoSearchForFPCMessages];
+          if ExtTool.ScanOutputForMakeMessages then
+            TheOutputFilter.Options:=TheOutputFilter.Options
+                                     +[ofoSearchForMakeMessages];
+          if ExtTool.ShowAllOutput then
+            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoShowAll];
+          try
+            Result:=mrCancel;
+            try
+              if TheOutputFilter.Execute(TheProcess) then begin
+                TheOutputFilter.ReadLine('"'+Title+'" completed',true);
+              end;
+              if TheOutputFilter.ErrorExists then begin
+                ErrorOccurred:=true;
+              end;
+            finally
+              TheProcess.WaitOnExit;
+              FreeAndNil(TheProcess);
+            end;
+            if ErrorOccurred then
+              Result:=mrCancel
+            else if TheOutputFilter.Aborted then
+              Result:=mrAbort
+            else
+              Result:=mrOk;
+          except
+            on e: EOutputFilterError do begin
+              DebugLn('TExternalToolList.Run Exception: ',E.Message);
+              ErrorOccurred:=true;
+            end
+            else
+              raise
+          end;
+        finally
+          if Assigned(OnFreeOutputFilter) then
+            OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
+        end;
+      end else begin
+        AddRunningTool(TheProcess,true);
+        TheProcess:=nil;
+        Result:=mrOk;
+      end;
+    finally
+      FreeAndNil(TheProcess);
     end;
   except
     on e: Exception do begin
