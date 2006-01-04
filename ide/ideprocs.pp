@@ -340,9 +340,11 @@ end;
 
 function FindFPCTool(const Executable, CompilerFilename: string): string;
 begin
+  DebugLn('FindFPCTool Executable="',Executable,'" CompilerFilename="',CompilerFilename,'"');
   Result:=FindDefaultExecutablePath(Executable);
   if Result<>'' then exit;
   Result:=AppendPathDelim(ExtractFilePath(CompilerFilename))+Executable;
+  DebugLn('FindFPCTool Try="',Result);
   if FileExists(Result) then exit;
   Result:='';
 end;
