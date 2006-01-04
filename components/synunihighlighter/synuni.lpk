@@ -1,8 +1,27 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package>
+  <Package Version="2">
     <Name Value="SynUni"/>
     <Author Value="Vit (Vitaly Nevzorov nevzorov@yahoo.com); Fantasist (Kirill Burtsev walking_in_the_sky@yahoo.com)"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <IncludeFiles Value="$(LazarusDir)/components/synedit/"/>
+        <UnitOutputDirectory Value="lib/"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Checks>
+          <IOChecks Value="True"/>
+          <RangeChecks Value="True"/>
+          <OverflowChecks Value="True"/>
+          <StackChecks Value="True"/>
+        </Checks>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
     <Description Value="Conversion of the UniHighlighter to FPC/Lazarus
 Source homepage is:
    http://www.delphist.com/UniHighlighter.html
@@ -27,11 +46,20 @@ see http://www.mozilla.org/MPL/"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="4">
       <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item1>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/;$(LazarusDir)/;$(LazarusDir)/components/units/"/>
@@ -41,23 +69,4 @@ see http://www.mozilla.org/MPL/"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
-  <CompilerOptions>
-    <SearchPaths>
-      <IncludeFiles Value="$(LazarusDir)/components/synedit"/>
-      <OtherUnitFiles Value="$(LazarusDir);$(LazarusDir)/components/units;$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)"/>
-      <UnitOutputDirectory Value="lib/"/>
-      <LCLWidgetType Value="gtk"/>
-    </SearchPaths>
-    <CodeGeneration>
-      <Checks>
-        <IOChecks Value="True"/>
-        <RangeChecks Value="True"/>
-        <OverflowChecks Value="True"/>
-        <StackChecks Value="True"/>
-      </Checks>
-    </CodeGeneration>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
-  </CompilerOptions>
 </CONFIG>

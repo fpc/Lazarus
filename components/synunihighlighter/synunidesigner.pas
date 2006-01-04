@@ -64,7 +64,7 @@ uses
   QMenus,
 {$ELSE}
   ////TL Windows,
-  Messages,
+  LMessages,
   Graphics,
   Registry,
   Controls,
@@ -244,7 +244,11 @@ begin
   ////TL added 2 @ prefixes
   f.OnKeyPress:=@FormKeyPress;
 {$WARNING TODO Fix UTF8BIDI issue}
+  {$IFDEF SYN_LAZARUS}
+  f.OnUTF8KeyPress:=nil;
+  {$ELSE}
   f.OnUTF8KeyPress:=@FormUTF8KeyPress;
+  {$ENDIF}
   f.OnKeyDown:=@FormKeyDown;
   f.caption:='Unihighlighter Designer (c) Fantasist, Vit (2002)';
 
@@ -263,7 +267,7 @@ begin
   {$ENDIF}
 
   ImageList:=TImageList.create(F);
-  b:={$IFDEF SYN_LAZARUS}TPixmap{$ELSE}TBitmap{$ENDIF}.create;
+  b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
   {$IFNDEF SYN_LAZARUS}
@@ -274,7 +278,7 @@ begin
   b.canvas.TextOut(1,1,#52);
   ImageList.AddMasked(b, clWhite);
   b.free;
-  b:={$IFDEF SYN_LAZARUS}TPixmap{$ELSE}TBitmap{$ENDIF}.create;
+  b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
   {$IFNDEF SYN_LAZARUS}
@@ -285,7 +289,7 @@ begin
   b.canvas.TextOut(1,1,#52);
   ImageList.AddMasked(b, clWhite);
   b.free;
-  b:={$IFDEF SYN_LAZARUS}TPixmap{$ELSE}TBitmap{$ENDIF}.create;
+  b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
   {$IFNDEF SYN_LAZARUS}

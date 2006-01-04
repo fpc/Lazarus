@@ -1,23 +1,22 @@
 { This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package SynUni 1.0.
-}
+This source is only used to compile and install the package.
+ }
 
 unit SynUni; 
 
 interface
 
 uses
-  SynUniDesigner, SynUniHighlighter, SynUniReg, LazarusPackageIntf; 
+  synunidesigner, synunihighlighter, synunireg, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('SynUniHighlighter', @SynUniHighlighter.Register); 
-  RegisterUnit('SynUniReg', @SynUniReg.Register); 
+  RegisterUnit('synunihighlighter', @synunihighlighter.Register); 
+  RegisterUnit('synunireg', @synunireg.Register); 
 end; 
 
 initialization
-  RegisterPackage('SynUni', @Register)
+  RegisterPackage('SynUni', @Register); 
 end.
