@@ -1,0 +1,120 @@
+object SqliteTableEditorForm: TSqliteTableEditorForm
+  ActiveControl = butAdd
+  Caption = 'Sqlite Table Editor'
+  ClientHeight = 269
+  ClientWidth = 290
+  OnShow = SqliteTableEditorFormShow
+  PixelsPerInch = 83
+  HorzScrollBar.Page = 289
+  VertScrollBar.Page = 268
+  Left = 373
+  Height = 269
+  Top = 244
+  Width = 290
+  object Label1: TLabel
+    Caption = 'Field Name'
+    Color = clNone
+    ParentColor = False
+    Left = 147
+    Height = 13
+    Top = 64
+    Width = 67
+  end
+  object Label2: TLabel
+    Caption = 'Field Type'
+    Color = clNone
+    ParentColor = False
+    Left = 147
+    Height = 13
+    Top = 120
+    Width = 59
+  end
+  object lblFilePath: TLabel
+    Caption = 'lblFilePath'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 13
+    Top = 4
+    Width = 61
+  end
+  object Label3: TLabel
+    Caption = 'Label3'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 13
+    Top = 20
+    Width = 40
+  end
+  object listFields: TListBox
+    OnSelectionChange = listFieldsSelectionChange
+    TabOrder = 6
+    TopIndex = -1
+    Left = 8
+    Height = 192
+    Top = 64
+    Width = 124
+  end
+  object butCreate: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Create Table'
+    OnClick = butOkClick
+    TabOrder = 1
+    TabStop = False
+    Left = 147
+    Height = 25
+    Top = 192
+    Width = 136
+  end
+  object butClose: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Close'
+    OnClick = butCancelClick
+    TabOrder = 2
+    TabStop = False
+    Left = 147
+    Height = 25
+    Top = 232
+    Width = 136
+  end
+  object editFieldName: TEdit
+    OnEditingDone = editFieldNameEditingDone
+    TabOrder = 4
+    Left = 147
+    Height = 23
+    Top = 80
+    Width = 136
+  end
+  object comboFieldType: TComboBox
+    DropDownCount = 12
+    MaxLength = 0
+    OnChange = comboFieldTypeChange
+    Style = csDropDownList
+    TabOrder = 5
+    Left = 147
+    Height = 21
+    Top = 136
+    Width = 136
+  end
+  object butAdd: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Add'
+    OnClick = butAddClick
+    TabOrder = 0
+    Left = 8
+    Height = 25
+    Top = 40
+    Width = 64
+  end
+  object butDelete: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Delete'
+    OnClick = butDeleteClick
+    TabOrder = 3
+    Left = 72
+    Height = 25
+    Top = 40
+    Width = 60
+  end
+end
