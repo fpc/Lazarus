@@ -657,8 +657,7 @@ type
     property Kind: TAnchorKind read FKind;
   published
     property Control: TControl read FControl write SetControl;
-    property Side: TAnchorSideReference read FSide write SetSide
-                           stored IsSideStored default asrTop;
+    property Side: TAnchorSideReference read FSide write SetSide default asrTop;
   end;
 
 
@@ -2808,7 +2807,7 @@ begin
   inherited Create;
   FOwner:=TheOwner;
   FKind:=TheKind;
-  FSide:=DefaultSideForAnchorKind[FKind];
+  FSide:=asrTop;
 end;
 
 destructor TAnchorSide.Destroy;
