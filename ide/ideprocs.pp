@@ -114,6 +114,7 @@ function FindFilesCaseInsensitive(const Directory,
 function FindFirstFileWithExt(const Directory, Ext: string): string;
 function FindShortFileNameOnDisk(const Filename: string): string;
 function CreateNonExistingFilename(const BaseFilename: string): string;
+function FindFPCTool(const Executable, CompilerFilename: string): string;
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -335,6 +336,15 @@ begin
     inc(i);
     Result:=PreFix+IntToStr(i)+PostFix;
   until not FileExists(Result);
+end;
+
+function FindFPCTool(const Executable, CompilerFilename: string): string;
+begin
+  Result:=FindDefaultExecutablePath(Executable);
+  if Result<>'' then exit;
+  Result:=AppendPathDelim(ExtractFilePath(CompilerFilename))+Executable;
+  if FileExists(Result) then exit;
+  Result:='';
 end;
 
 function FilenameIsFormText(const Filename: string): boolean;

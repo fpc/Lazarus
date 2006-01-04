@@ -1299,7 +1299,8 @@ begin
   try
     FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
-    FPCMakeTool.Filename:='fpcmake'+GetDefaultExecutableExt;
+    FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetDefaultExecutableExt,
+                                      EnvironmentOptions.CompilerFilename);
     FPCMakeTool.CmdLineParams:='-TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
                                'FPCDIR='+EnvironmentOptions.FPCSourceDirectory);
