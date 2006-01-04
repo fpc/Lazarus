@@ -3020,7 +3020,6 @@ var
   HeaderSrc: String;
   OutputDir: String;
   OldSrc: String;
-  CaseInsensitiveUnitName: String;
   NeedsRegisterProcCall: boolean;
 begin
   {$IFDEF VerbosePkgCompile}

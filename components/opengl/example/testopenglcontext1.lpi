@@ -11,7 +11,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <LazDoc Paths=""/>
     <Units Count="2">
@@ -21,10 +21,10 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="TestOpenGLContext1"/>
-        <UsageCount Value="134"/>
+        <UsageCount Value="141"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="9" Y="107"/>
+        <CursorPos X="19" Y="109"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="Form1"/>
@@ -33,7 +33,7 @@
         <ResourceFilename Value="mainunit.lrs"/>
         <TopLine Value="97"/>
         <UnitName Value="MainUnit"/>
-        <UsageCount Value="134"/>
+        <UsageCount Value="141"/>
       </Unit1>
     </Units>
     <PublishOptions>

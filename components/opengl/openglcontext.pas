@@ -27,7 +27,7 @@ unit OpenGLContext;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf,
+  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf, LResources,
   Graphics, LMessages, WSLCLClasses, WSControls;
   
 type
@@ -96,6 +96,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoResizeViewport;
     property BorderSpacing;
     property Enabled;
     property OnClick;
@@ -284,17 +285,21 @@ end;
 
 procedure TCustomOpenGLControl.Paint;
 begin
-  if IsVisible and HandleAllocated and MakeCurrent then begin
+  if IsVisible and HandleAllocated then begin
     UpdateFrameTimeDiff;
-    if AutoResizeViewport then
-      LOpenGLViewport(0,0,Width,Height);
+    if ([csDesigning,csDestroying]*ComponentState=[]) then begin
+      if not MakeCurrent then exit;
+      if AutoResizeViewport then
+        LOpenGLViewport(0,0,Width,Height);
+    end;
     DoOnPaint;
   end;
 end;
 
 procedure TCustomOpenGLControl.RealizeBounds;
 begin
-  if IsVisible and HandleAllocated and MakeCurrent then begin
+  if IsVisible and HandleAllocated
+  and ([csDesigning,csDestroying]*ComponentState=[]) and MakeCurrent then begin
     if AutoResizeViewport then
       LOpenGLViewport(0,0,Width,Height);
   end;
@@ -315,6 +320,7 @@ function TCustomOpenGLControl.MakeCurrent(SaveOldToStack: boolean): boolean;
 var
   Allowed: Boolean;
 begin
+  if csDesigning in ComponentState then exit(false);
   if Assigned(FOnMakeCurrent) then begin
     Allowed:=true;
     OnMakeCurrent(Self,Allowed);
@@ -385,6 +391,7 @@ end;
 
 initialization
   RegisterWSComponent(TCustomOpenGLControl,TWSOpenGLControl);
+  {$I openglcontext.lrs}
 
 end.
 
