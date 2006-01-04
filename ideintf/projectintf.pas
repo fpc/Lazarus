@@ -582,7 +582,8 @@ const
                          pfMainUnitHasUsesSectionForAllUnits,
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
-                         pfRunnable];
+                         pfRunnable,
+                         pfAlwaysBuild];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles',
       'SaveOnlyProjectUnits',

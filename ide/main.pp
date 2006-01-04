@@ -7130,6 +7130,18 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
+  
+  // check all open editor files (maybe the user forgot to add them to the project)
+  AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
+  while AnUnitInfo<>nil do begin
+    if (not AnUnitInfo.IsPartOfProject)
+    and FileExists(AnUnitInfo.Filename)
+    and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
+      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+  end;
 
   Result:=mrNo;
 end;
