@@ -65,7 +65,6 @@ type
     procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure Resize;
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
@@ -155,10 +154,9 @@ begin
   end;
   
   UnitInfoDlgResize(nil);
-  Resize;
 end;
 
-procedure TUnitInfoDialog.Resize;
+procedure TUnitInfoDialog.UnitInfoDlgResize(Sender: TObject);
 var MaxLength: integer;
 begin
   MaxLength := UName.Width;
@@ -188,11 +186,6 @@ begin
   ULines.Width := MaxLength;
   UPath.Width := MaxLength;
   UIncludedBy.Width := MaxLength;
-end;
-
-procedure TUnitInfoDialog.UnitInfoDlgResize(Sender: TObject);
-begin
-  Resize;
 end;
 
 procedure TUnitInfoDialog.UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
