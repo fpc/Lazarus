@@ -174,7 +174,11 @@ procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
-    {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
+    // The LCL already delegates the menu shortcuts.
+    // just call a dummy callback
+    'grab-focus'
+    //{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF}
+    );
 end;
 
 procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;

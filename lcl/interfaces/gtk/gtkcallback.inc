@@ -299,8 +299,8 @@ begin
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
     Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
   Mess.Result := 0;
+  //DebugLn('gtkactivateCB ',DbgSName(TObject(Data)));
   DeliverMessage(Data, Mess);
-  //DebugLn('gtkactivateCB ',TWinControl(Data).Name,':',TWinControl(Data).ClassName);
 
   Result := CallBackDefaultReturn;
 end;

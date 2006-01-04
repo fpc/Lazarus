@@ -4942,7 +4942,7 @@ begin
     else begin
       {$IfDef GTK2}
       Assert(GtkWidgetIsA(Widget,GTK_TYPE_WINDOW));
-      gtk_window_add_accel_group(GTK_WINDOW(widget), AnAccelGroup)
+      gtk_window_add_accel_group(GTK_WINDOW(widget), AnAccelGroup);
       {$else}
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
       {$endif}
