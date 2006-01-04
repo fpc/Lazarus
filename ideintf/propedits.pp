@@ -2826,7 +2826,7 @@ end;
 
 procedure TQWordPropertyEditor.SetValue(const NewValue: ansistring);
 begin
-  SetInt64Value(StrToQWord(NewValue));
+  SetInt64Value(Int64(StrToQWord(NewValue)));
 end;
 
 { TFloatPropertyEditor }
