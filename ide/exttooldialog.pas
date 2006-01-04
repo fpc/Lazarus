@@ -273,6 +273,7 @@ function TExternalToolList.Run(ExtTool: TExternalToolOptions;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcess;
   Abort, ErrorOccurred: boolean;
+  NewFilename: String;
 begin
   Result:=mrCancel;
   if ExtTool=nil then exit;
@@ -284,8 +285,18 @@ begin
   if (not Macros.SubstituteStr(Filename)) then exit;
   if (not Macros.SubstituteStr(WorkingDir)) then exit;
   if (not Macros.SubstituteStr(Params)) then exit;
-  if not FilenameIsAbsolute(Filename) then
-    Filename:=FindProgram(Filename,GetCurrentDir,false);
+  if not FilenameIsAbsolute(Filename) then begin
+    NewFilename:=FindProgram(Filename,GetCurrentDir,false);
+    if NewFilename='' then begin
+      Result:=MessageDlg(lisExtToolFailedToRunTool,
+        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+          'Program '+Filename+' not found']
+          ),
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+    Filename:=NewFilename;
+  end;
   WorkingDir:=TrimFilename(WorkingDir);
   Filename:=TrimFilename(Filename);
   CmdLine:=Filename;

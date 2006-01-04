@@ -1299,7 +1299,7 @@ begin
   try
     FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
-    FPCMakeTool.Filename:='fpcmake';
+    FPCMakeTool.Filename:='fpcmake'+GetDefaultExecutableExt;
     FPCMakeTool.CmdLineParams:='-TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
                                'FPCDIR='+EnvironmentOptions.FPCSourceDirectory);
@@ -1312,7 +1312,7 @@ begin
                           MainIDE.MacroList,nil,nil);
     if Result<>mrOk then begin
       Result:=MessageDlg('fpcmake failed',
-        'Calling fpcmake to create Makefile from '
+        'Calling '+FPCMakeTool.Filename+' to create Makefile from '
         +MakefileFPCFilename+' failed.',
         mtError,[mbCancel],0);
       exit;

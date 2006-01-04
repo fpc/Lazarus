@@ -11,7 +11,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <LazDoc Paths=""/>
     <Units Count="2">
@@ -24,7 +24,7 @@
         <UsageCount Value="134"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="45" Y="109"/>
+        <CursorPos X="9" Y="107"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="Form1"/>
