@@ -7258,7 +7258,8 @@ begin
     end;
 
     // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteBefore);
+    ToolBefore:=TProjectCompilationToolOptions(
+                                        Project1.CompilerOptions.ExecuteBefore);
     if (AReason in ToolBefore.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
                                        Project1.ProjectDirectory,

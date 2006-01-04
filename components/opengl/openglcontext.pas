@@ -18,7 +18,7 @@
       - gtk with glx    : fully
       - gtk2 with glx   : todo
       - carbon with agl : todo
-      - windows with ?  : todo
+      - windows with wgl: todo
 }
 unit OpenGLContext;
 

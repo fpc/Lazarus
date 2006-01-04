@@ -1275,6 +1275,8 @@ begin
   Result:=0;
 end;
 {$Else}
+
+{off $DEFINE VerboseFonts}
 var
   GdiObject: PGdiObject;
   FontNameRegistry, Foundry, FamilyName, WeightName,
@@ -1320,8 +1322,7 @@ var
        CharSetRegistry, CharSetCoding
       ]);}
 
-    //DebugLn('  Trying "',S,'"');
-    DebugLn('  Trying Font "',S,'"');
+    //DebugLn('  Trying Font "',S,'"');
     result := LoadFontXLFD(S);
   end;
 
@@ -1335,6 +1336,7 @@ var
     Tail := '-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
            +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing
            +'-'+AverageWidth+'-'+CharSetRegistry+'-'+CharSetCoding;
+    //debugln('LoadFontExCharset Head=',Head,' Tail=',Tail);
     for i:=0 to WeightList.Count-1 do begin
       aSlant := Slant;
       repeat
@@ -1347,6 +1349,7 @@ var
           break;
       until false;
     end;
+    //debugln('LoadFontExCharset END');
   end;
   
   function LoadFontEx: boolean;
@@ -1354,6 +1357,7 @@ var
     j: integer;
   begin
     Result := false;
+    //debugln('LoadFontEx START CharSetRegistry=',CharSetRegistry);
     if CharSetRegistry<>'*' then
       result := LoadFontExCharset
     else
@@ -1367,6 +1371,7 @@ var
         if result then
           break;
       end;
+    //debugln('LoadFontEx END');
   end;
 
   procedure LoadDefaultFont;
@@ -1649,7 +1654,7 @@ begin
     // next checks are fall over
 
     {$IFDEF VerboseFonts}
-    write('CreateFontIndirect->');
+    debugln('TGtkWidgetSet.CreateFontIndirectEx ');
     {$ENDIF}
     {
     if LoadFont then exit;
@@ -1658,11 +1663,23 @@ begin
     WeightName := '*';
     if LoadFont then exit;
     }
-    // try one height lower
+    // try one height smaller
+    {$IFDEF VerboseFonts}
+    debugln('TGtkWidgetSet.CreateFontIndirectEx try one height smaller');
+    {$ENDIF}
     PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
+    // Since we use pixelsize, it isn't allowed to give a value here
+    PointSize := '*';
+
+    // Use the default
+    ResolutionX := '*';
+    ResolutionY := '*';
     if LoadFont then exit;
 
-    // try one height higher
+    // try one height bigger
+    {$IFDEF VerboseFonts}
+    debugln('TGtkWidgetSet.CreateFontIndirectEx try one height bigger');
+    {$ENDIF}
     PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
     if LoadFont then exit;
 
@@ -1670,6 +1687,9 @@ begin
 
     // try instead of mono spaced -> character cell spaced
     if (Spacing='m') then begin
+      {$IFDEF VerboseFonts}
+      debugln('TGtkWidgetSet.CreateFontIndirectEx try instead of mono spaced -> character cell spaced');
+      {$ENDIF}
       Spacing:='c';
       if LoadFont then exit;
     end;
@@ -1686,11 +1706,17 @@ begin
     }
     // try all spacings
     if spacing<>'*' then begin
+      {$IFDEF VerboseFonts}
+      debugln('TGtkWidgetSet.CreateFontIndirectEx try all spacings');
+      {$ENDIF}
       Spacing := '*';
       if LoadFont then exit;
     end;
 
     if charSetCoding<>'*' then begin
+      {$IFDEF VerboseFonts}
+      debugln('TGtkWidgetSet.CreateFontIndirectEx try all charsets');
+      {$ENDIF}
       charsetCoding := '*';
       charSetRegistry:= '*';
       if LoadFont then exit;
@@ -1698,6 +1724,9 @@ begin
 
     if (Foundry<>'*') then begin
       // try all Families
+      {$IFDEF VerboseFonts}
+      debugln('TGtkWidgetSet.CreateFontIndirectEx try all families');
+      {$ENDIF}
       PixelSize := IntToStr(Abs(LogFont.lfHeight));
       FamilyName := '*';
       if LoadFont then exit;

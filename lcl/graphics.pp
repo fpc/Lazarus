@@ -1375,9 +1375,28 @@ const
 (***************************************************************************
  ***************************************************************************)
 
+function DbgS(const Style: TFontStyles): string; overload;
+
 procedure Register;
 
 implementation
+
+function DbgS(const Style: TFontStyles): string;
+
+  procedure Add(const s: string);
+  begin
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+s;
+  end;
+
+begin
+  Result:='';
+  if fsBold in Style then Add('fsBold');
+  if fsItalic in Style then Add('fsItalic');
+  if fsStrikeOut in Style then Add('fsStrikeOut');
+  if fsUnderline in Style then Add('fsUnderline');
+  Result:='['+Result+']';
+end;
 
 procedure Register;
 begin

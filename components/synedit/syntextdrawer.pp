@@ -729,7 +729,8 @@ begin
     {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
-  //debugln('TheFontStock.InternalCreateFont A ',FBaseFontName);
+  //debugln('TheFontStock.InternalCreateFont ------------------------------');
+  //debugln('TheFontStock.InternalCreateFont A ',FBaseFontName,' ',dbgs(AStyle));
   Result := CreateFontIndirectEx(FBaseLF,FBaseFontName);
   {$ELSE}
   Result := CreateFontIndirect(FBaseLF);
@@ -833,7 +834,11 @@ begin
   {$ELSE}
   ASSERT(SizeOf(TFontStyles) = 1);
   {$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  idx := integer(Value);
+  {$ELSE}
   idx := PByte(@Value)^;
+  {$ENDIF}
   ASSERT(idx <= High(TheStockFontPatterns));
 
   UseFontHandles;
@@ -1129,7 +1134,11 @@ procedure TheTextDrawer2.SetStyle(Value: TFontStyles);
 var
   idx: Integer;
 begin
+  {$IFDEF SYN_LAZARUS}
+  idx := integer(Value);
+  {$ELSE}
   idx := PByte(@Value)^;
+  {$ENDIF}
   if FFonts[idx] <> 0 then
   begin
     FCrntFont := FFonts[idx];

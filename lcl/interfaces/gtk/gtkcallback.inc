@@ -1594,6 +1594,7 @@ var
   FileName : string;
   Files: TStringList;
   CurFilename: string;
+  //SelectedFont: PGdkFont;
 
   function CheckOpenedFilename(const AFilename: string): boolean;
   begin
@@ -1709,6 +1710,10 @@ begin
     Assert(False, 'Trace:Pressed OK in FontDialog');
     FontName := gtk_font_selection_dialog_get_font_name(
                                              pgtkfontselectiondialog(FPointer));
+    //debugln('gtkDialogOKclickedCB FontName=',FontName);
+    //SelectedFont:=gdk_font_load(PChar(FontName));
+    //debugln('gtkDialogOKclickedCB ',dbgs(SelectedFont));
+
     // extract basic font attributes from the font name in XLFD format
     ALogFont:=XLFDNameToLogFont(FontName);
     TFontDialog(theDialog).Font.Assign(ALogFont);

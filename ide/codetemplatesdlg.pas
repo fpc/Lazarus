@@ -331,9 +331,10 @@ function CodeMakroProcedureName(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
 begin
-  Result:=CodeMakroProcedureName(
+  Result:=CodeMakroProcedureHead(
                           'WithoutParamList,WithoutBrackets,WithoutSemicolon',
                           InteractiveValue,SrcEdit,Value,ErrorMsg);
+  debugln('CodeMakroProcedureName ',Value);
 end;
 
 procedure RegisterStandardCodeTemplatesMenuItems;
@@ -390,7 +391,7 @@ begin
     @CodeMakroProcedureHead,nil);
   RegisterCodeMacro('ProcedureName','insert procedure name',
                     'Insert name of current procedure',
-                    @CodeMakroProcedureHead,nil);
+                    @CodeMakroProcedureName,nil);
 end;
 
 { TCodeTemplateEditForm }

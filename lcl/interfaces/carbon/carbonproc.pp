@@ -30,7 +30,7 @@ unit CarbonProc;
 interface
 
 uses
-  FPCMacOSAll,
+  FPCMacOSAll, Classes,
   LCLProc, LCLClasses, Controls, LMessages, Forms, Avl_Tree, SysUtils,
   CarbonDef;
 
@@ -43,7 +43,10 @@ function DeliverMessage(ATarget: TObject; var AMessage): Integer;
 function RegisterEventHandler(AHandler: TCarbonWSEventHandlerProc): EventHandlerUPP;
 procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 
-function Dbgs(const ARect: FPCMacOSAll.Rect): string;
+function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
+function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
+
+function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 
 implementation
 
@@ -214,6 +217,22 @@ begin
 
   node.Clear;
   UPPTree.Delete(node);
+end;
+
+function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
+begin
+  Result.left:=Left;
+  Result.top:=Top;
+  Result.right:=Left+Width;
+  Result.bottom:=Top+Height;
+end;
+
+function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
+begin
+  Result.left:=ARect.Left;
+  Result.top:=ARect.Top;
+  Result.right:=ARect.Right;
+  Result.bottom:=ARect.Bottom;
 end;
 
 function Dbgs(const ARect: FPCMacOSAll.Rect): string;

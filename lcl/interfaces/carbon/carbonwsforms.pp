@@ -128,6 +128,8 @@ var
   NewBounds: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
   NewWindowClass: Integer;
+  MinSize: HISize;
+  MaxSize: HISize;
 begin
   Result := 0;
 
@@ -157,6 +159,16 @@ begin
 
   Info := CreateWidgetInfo(Window, AWinControl);
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+  
+  MinSize.width:=AWinControl.Constraints.EffectiveMinWidth;
+  MinSize.height:=AWinControl.Constraints.EffectiveMinHeight;
+  MaxSize.width:=AWinControl.Constraints.EffectiveMaxWidth;
+  MaxSize.height:=AWinControl.Constraints.EffectiveMaxHeight;
+  if MaxSize.width<=0 then
+    MaxSize.width:=10000;
+  if MaxSize.height<=0 then
+    MaxSize.height:=10000;
+  SetWindowResizeLimits(Window,@MinSize,@MaxSize);
 
   // The window was created hidden so show it.
   ShowWindow(Window);

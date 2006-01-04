@@ -75,16 +75,14 @@ var
   //Button: TCustomButton;
   Control: ControlRef;
   CFString: CFStringRef;
-  R: Rect;
+  R: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
 begin
   Result := 0;
   //Button := AWinControl as TCustomButton;
 
-  R.Left := AParams.X;
-  R.Top := AParams.Y;
-  R.Right := AParams.X + AParams.Width;
-  R.Bottom := AParams.Y + AParams.Height;
+  R:=GetCarbonRect(AParams.X,AParams.Y,
+                   AParams.X + AParams.Width,AParams.Y + AParams.Height);
 
   CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption),
                                         DEFAULT_CFSTRING_ENCODING);

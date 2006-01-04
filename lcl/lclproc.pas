@@ -147,24 +147,24 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 
-function DbgS(const c: cardinal): string;
-function DbgS(const i: longint): string;
-function DbgS(const i: int64): string;
-function DbgS(const r: TRect): string;
-function DbgS(const p: TPoint): string;
-function DbgS(const p: pointer): string;
-function DbgS(const e: extended): string;
-function DbgS(const b: boolean): string;
-function DbgSName(const p: TObject): string;
-function DbgSName(const p: TClass): string;
-function DbgStr(const StringWithSpecialChars: string): string;
-function DbgWideStr(const StringWithSpecialChars: widestring): string;
-function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string;
-function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
-function dbgObjMem(AnObject: TObject): string;
+function DbgS(const c: cardinal): string; overload;
+function DbgS(const i: longint): string; overload;
+function DbgS(const i: int64): string; overload;
+function DbgS(const r: TRect): string; overload;
+function DbgS(const p: TPoint): string; overload;
+function DbgS(const p: pointer): string; overload;
+function DbgS(const e: extended): string; overload;
+function DbgS(const b: boolean): string; overload;
+function DbgSName(const p: TObject): string; overload;
+function DbgSName(const p: TClass): string; overload;
+function DbgStr(const StringWithSpecialChars: string): string; overload;
+function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
+function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
+function dbgObjMem(AnObject: TObject): string; overload;
 
-function DbgS(const i1,i2,i3,i4: integer): string;
-function DbgS(const Shift: TShiftState): string;
+function DbgS(const i1,i2,i3,i4: integer): string; overload;
+function DbgS(const Shift: TShiftState): string; overload;
 
 // some string manipulation functions
 function StripLN(const ALine: String): String;
@@ -831,6 +831,7 @@ end;
 procedure InitializeDebugOutput;
 var
   DebugFileName: string;
+  
   function GetDebugFileName: string;
   const
     DebugLogStart = '--debug-log=';
@@ -855,6 +856,7 @@ var
     if (length(result)>0) then
       Result := ExpandFileName(Result);
   end;
+  
 begin
   DebugFileName := GetDebugFileName;
   if (length(DebugFileName)>0) and

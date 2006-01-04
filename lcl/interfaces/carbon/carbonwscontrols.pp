@@ -30,7 +30,7 @@ uses
   // libs
   FPCMacOSAll, CarbonUtils, CarbonExtra, Classes,
   // LCL
-  Controls, LCLType, LMessages, LCLProc,
+  Forms, Controls, LCLType, LMessages, LCLProc,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
@@ -83,6 +83,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSImageList }
@@ -133,17 +134,31 @@ class procedure TCarbonWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   NewBounds: FPCMacOSAll.Rect;
+  //OldBounds: FPCMacOSAll.Rect;
 begin
-  if not WSCheckHandleAllocated(AWinControl, 'GetText') then Exit;
+  if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then Exit;
 
   NewBounds.left:=AWinControl.Left;
   NewBounds.top:=AWinControl.Top;
   NewBounds.right:=AWinControl.Left+AWinControl.Width;
   NewBounds.bottom:=AWinControl.Top+AWinControl.Height;
   DebugLn('TCarbonWSWinControl.SetBounds ',dbgsName(AWinControl),' NewBounds=',dbgs(NewBounds));
-  if SetWindowBounds(WindowRef(AWinControl.Handle),kWindowStructureRgn,NewBounds)
-  <> NoErr then begin
-    DebugLn('TCarbonWSWinControl.SetBounds ',dbgsName(AWinControl),' failed');
+  if AWinControl is TCustomForm then begin
+    if SetWindowBounds(WindowRef(AWinControl.Handle),kWindowStructureRgn,NewBounds)
+    <> NoErr then begin
+      DebugLn('TCarbonWSWinControl.SetBounds ',dbgsName(AWinControl),' failed');
+    end;
+  end else begin
+    //GetControlBounds(ControlRef(AWinControl.Handle),OldBounds);
+    //debugln('TCarbonWSWinControl.SetBounds OldBounds=',dbgs(OldBounds));
+    SetControlBounds(ControlRef(AWinControl.Handle),NewBounds);
+    {if AWinControl.Parent<>nil then begin
+      dec(OldBounds.Left,10);
+      dec(OldBounds.Top,10);
+      inc(OldBounds.right,10);
+      inc(OldBounds.bottom,10);
+      InvalWindowRect(WindowRef(AWinControl.Parent.Handle),OldBounds);
+    end;}
   end;
 end;
 
@@ -198,6 +213,36 @@ begin
   ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
 end;
 
+{ TCarbonWSCustomControl }
+
+function TCarbonWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  //Button: TCustomButton;
+  Control: ControlRef;
+  CFString: CFStringRef;
+  R: FPCMacOSAll.Rect;
+  Info: PWidgetInfo;
+begin
+  Result := 0;
+  //Button := AWinControl as TCustomButton;
+
+  R:=GetCarbonRect(AParams.X,AParams.Y,
+                   AParams.X + AParams.Width,AParams.Y + AParams.Height);
+
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption),
+                                        DEFAULT_CFSTRING_ENCODING);
+  if CreatePushButtonControl(WindowRef(AParams.WndParent), R,
+    CFString, Control) = noErr
+  then
+    Result := TLCLIntfHandle(Control);
+  CFRelease(Pointer(CFString));
+  if Result = 0 then Exit;
+
+  Info := CreateWidgetInfo(Control, AWinControl);
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -210,7 +255,7 @@ initialization
 //  RegisterWSComponent(TControl, TCarbonWSControl);
   RegisterWSComponent(TWinControl, TCarbonWSWinControl, TCarbonPrivateHiView);
 //  RegisterWSComponent(TGraphicControl, TCarbonWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TCarbonWSCustomControl);
+  RegisterWSComponent(TCustomControl, TCarbonWSCustomControl);
 //  RegisterWSComponent(TImageList, TCarbonWSImageList);
 ////////////////////////////////////////////////////
 

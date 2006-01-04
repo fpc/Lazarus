@@ -14,7 +14,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="openglcontext.pas"/>
         <HasRegisterProc Value="True"/>
@@ -30,6 +30,11 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GLCarbonAGLContext"/>
       </Item3>
+      <Item4>
+        <Filename Value="agl.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="agl"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

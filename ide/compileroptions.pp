@@ -1221,6 +1221,8 @@ begin
       OutFilename:=TargetFilename
     else
       OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
+    debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
+
     Result:=AppendPathDelim(UnitOutDir)+OutFilename;
   end;
   Result:=TrimFilename(Result);
