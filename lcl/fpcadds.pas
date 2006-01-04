@@ -22,7 +22,7 @@
 unit FPCAdds;
 
 {$mode objfpc}{$H+}
-{$if defined(VER2_0_0) or defined(VER_2_0_1) or defined(VER_2_0_2)}
+{$if defined(VER2_0_0) or defined(VER2_0_1) or defined(VER2_0_2)}
 {$DEFINE FPC_HAS_NO_STRTOQWORD}
 {$ENDIF}
 
