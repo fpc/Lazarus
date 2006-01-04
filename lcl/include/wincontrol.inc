@@ -4998,7 +4998,6 @@ begin
   if HandleAllocated then begin
     FinalizeWnd;
     TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
-    InvalidatePreferredSize;
     Handle := 0;
   end;
 end;

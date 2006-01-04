@@ -22,9 +22,9 @@
 
 { TCustomForm }
 
-{------------------------------------------------------------------------------}
-{       TCustomForm ClientWndProc                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm ClientWndProc
+------------------------------------------------------------------------------}
 Procedure TCustomForm.ClientWndProc(var Message: TLMessage);
 
   procedure CallDefault;
@@ -283,7 +283,7 @@ end;
 function TCustomForm.GetIconHandle: HICON;
 begin
   //DebugLn('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
-  if (FIcon<>nil) and not Icon.Empty then
+  if (FIcon<>nil) and (not Icon.Empty) then
     Result := FIcon.Handle
   else
     Result := Application.GetIconHandle;
