@@ -22,11 +22,18 @@
 unit FPCAdds;
 
 {$mode objfpc}{$H+}
+{$if defined(VER2_0_0) or defined(VER_2_0_1) or defined(VER_2_0_2)}
+{$DEFINE FPC_HAS_NO_STRTOQWORD}
+{$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils
+{$IFDEF FPC_HAS_NO_STRTOQWORD}
+  ,sysconst
+{$ENDIF}
+  ;
 
 // current TStream calculates in int64, old in longint
 type
@@ -41,6 +48,10 @@ function StrToWord(const s: string): word;
 // These functions were introduced after fpc 2.0.0
 function ExceptFrameCount: Longint;
 function ExceptFrames: PPointer;
+{$ENDIF}
+
+{$IFDEF FPC_HAS_NO_STRTOQWORD}
+function StrToQWord(const s: string): QWord;
 {$ENDIF}
 
 implementation
@@ -116,6 +127,15 @@ begin
   widestringmanager.Ansi2WideMoveProc:=@Win32Ansi2WideMove;
 end;
 {$ENDIF}{$ENDIF}
+
+{$IFDEF FPC_HAS_NO_STRTOQWORD}
+function StrToQWord(const s: string): QWord;
+var Error: word;
+begin
+  Val(S, result, Error);
+  if Error <> 0 then raise EConvertError.createfmt(SInvalidInteger,[S]);
+end;
+{$ENDIF}
 
 {$IFDEF VER2_0_0}{$IFDEF win32}
 initialization

@@ -33,10 +33,12 @@ unit PropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
-  StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
-  Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps, ColumnDlg,
-  FileUtil, ObjInspStrConsts;
+  Classes, TypInfo, SysUtils,
+  FPCAdds, // for StrToQWord in older fpc versions
+  LCLProc, Forms, Controls, GraphType,
+  Graphics, StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf,
+  Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
+  ColumnDlg, FileUtil, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -449,6 +451,7 @@ type
   TQWordPropertyEditor = class(TInt64PropertyEditor)
   public
     function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TFloatPropertyEditor
@@ -2819,6 +2822,11 @@ end;
 function TQWordPropertyEditor.GetValue: ansistring;
 begin
   Result := IntToStr(QWord(GetInt64Value));
+end;
+
+procedure TQWordPropertyEditor.SetValue(const NewValue: ansistring);
+begin
+  SetInt64Value(StrToQWord(NewValue));
 end;
 
 { TFloatPropertyEditor }
