@@ -3544,11 +3544,11 @@ function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType, ExtraOptions: string;
   Owner: TObject): TDefineTemplate;
 type
-  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsWinCE, wsCarbon);
+  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32, wsWinCE, wsCarbon, wsQT);
 const
   ds: char = PathDelim;
   LazWidgetSets: array[TLazWidgetSet] of string = (
-    'gtk','gtk2','gnome','win32','wince','carbon');
+    'gtk','gtk2','gnome','win32','wince','carbon','qt');
 
   function D(const Filename: string): string;
   begin
@@ -3944,7 +3944,7 @@ begin
   // <LazarusSrcDir>/lcl/interfaces/wince
   IntfDirTemplate:=TDefineTemplate.Create('winceIntfDirectory',
     ctsIntfDirectory,'','wince',da_Directory);
-    // then define carbon1
+    // then define wince1
     IntfDirTemplate.AddChild(TDefineTemplate.Create('Define wince1',
       ctsDefineMacroWinCE1,'wince1','',da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
@@ -3955,6 +3955,14 @@ begin
     // then define carbon1
     IntfDirTemplate.AddChild(TDefineTemplate.Create('Define carbon1',
       ctsDefineMacroCarbon1,'carbon1','',da_Define));
+  SubDirTempl.AddChild(IntfDirTemplate);
+
+  // <LazarusSrcDir>/lcl/interfaces/qt
+  IntfDirTemplate:=TDefineTemplate.Create('qtIntfDirectory',
+    ctsIntfDirectory,'','qt',da_Directory);
+    // then define qt1
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('Define qt1',
+      ctsDefineMacroQT1,'qt1','',da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/components

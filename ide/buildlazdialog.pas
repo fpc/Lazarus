@@ -746,8 +746,8 @@ begin
 
   y:=ItemsListBox.Top;
   with LCLInterfaceRadioGroup do begin
-    SetBounds(x,y,w,150);
-    inc(y,Height+60);
+    SetBounds(x,y,w,200);
+    inc(y,Height+10);
   end;
   with WithStaticPackagesCheckBox do begin
     SetBounds(x,y,w,Height);

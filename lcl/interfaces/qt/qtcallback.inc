@@ -43,7 +43,6 @@ end;
 
 procedure QTMousePressedEvent(qwid,button,x,y,state: integer);cdecl;
 var
-  MessI : TLMMouse;
   MessE : TLMMouseEvent;
   Data: pointer;
 
@@ -60,8 +59,8 @@ begin
     end;
    // MessE.WheelDelta := 1;
     //MessE.State := state;
-    MessE.X := TruncToInt(x);
-    MessE.Y := TruncToInt(y);
+    MessE.X := RoundToInt(x);
+    MessE.Y := RoundToInt(y);
 
 
     if MessE.Msg <> LM_NULL then
