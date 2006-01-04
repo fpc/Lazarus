@@ -1,0 +1,238 @@
+object AddToProjectDialog: TAddToProjectDialog
+  ActiveControl = FilesListView
+  BorderStyle = bsSizeToolWin
+  Caption = 'AddToProjectDialog'
+  ClientHeight = 300
+  ClientWidth = 500
+  OnClose = AddToProjectDialogClose
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 299
+  Left = 314
+  Height = 300
+  Top = 610
+  Width = 500
+  object Notebook: TNotebook
+    Align = alClient
+    PageIndex = 2
+    Height = 300
+    Width = 500
+    object AddEditorFilePage: TPage
+      Caption = 'AddEditorFilePage'
+      ClientWidth = 492
+      ClientHeight = 274
+      Height = 274
+      Width = 492
+      object AddFileLabel: TLabel
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'AddFileLabel'
+        Color = clNone
+        ParentColor = False
+        Left = 6
+        Height = 14
+        Top = 6
+        Width = 480
+      end
+      object AddFileListBox: TListBox
+        Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        MultiSelect = True
+        TabOrder = 0
+        Left = 6
+        Height = 205
+        Top = 26
+        Width = 480
+      end
+      object AddFileButton: TButton
+        Anchors = [akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        BorderSpacing.InnerBorder = 2
+        Caption = 'AddFileButton'
+        OnClick = AddFileButtonClick
+        TabOrder = 1
+        AnchorSideRight.Control = CancelAddFileButton
+        Left = 264
+        Height = 29
+        Top = 238
+        Width = 90
+      end
+      object CancelAddFileButton: TButton
+        Anchors = [akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = 'CancelAddFileButton'
+        ModalResult = 2
+        TabOrder = 2
+        Left = 360
+        Height = 29
+        Top = 238
+        Width = 123
+      end
+    end
+    object NewDependPage: TPage
+      Caption = 'NewDependPage'
+      ClientWidth = 492
+      ClientHeight = 274
+      Height = 274
+      Width = 492
+      object DependPkgNameLabel: TLabel
+        Caption = 'DependPkgNameLabel'
+        Color = clNone
+        ParentColor = False
+        Left = 8
+        Height = 14
+        Top = 19
+        Width = 107
+      end
+      object DependMinVersionLabel: TLabel
+        Caption = 'DependMinVersionLabel'
+        Color = clNone
+        ParentColor = False
+        Left = 8
+        Height = 14
+        Top = 47
+        Width = 114
+      end
+      object DependMaxVersionLabel: TLabel
+        Caption = 'DependMaxVersionLabel'
+        Color = clNone
+        ParentColor = False
+        Left = 8
+        Height = 14
+        Top = 76
+        Width = 118
+      end
+      object CancelDependButton: TButton
+        Anchors = [akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = 'CancelDependButton'
+        ModalResult = 2
+        TabOrder = 0
+        Left = 360
+        Height = 29
+        Top = 242
+        Width = 126
+      end
+      object NewDependButton: TButton
+        Anchors = [akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        BorderSpacing.InnerBorder = 2
+        Caption = 'NewDependButton'
+        OnClick = NewDependButtonClick
+        TabOrder = 1
+        AnchorSideRight.Control = CancelDependButton
+        Left = 239
+        Height = 29
+        Top = 242
+        Width = 115
+      end
+      object DependPkgNameComboBox: TComboBox
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 2
+        Text = 'DependPkgNameComboBox'
+        Left = 218
+        Height = 21
+        Top = 16
+        Width = 268
+      end
+      object DependMinVersionEdit: TEdit
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 3
+        Text = 'DependMinVersionEdit'
+        Left = 218
+        Height = 23
+        Top = 42
+        Width = 268
+      end
+      object DependMaxVersionEdit: TEdit
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 4
+        Text = 'DependMaxVersionEdit'
+        Left = 218
+        Height = 23
+        Top = 71
+        Width = 268
+      end
+    end
+    object AddFilesPage: TPage
+      Caption = 'AddFilesPage'
+      ClientWidth = 492
+      ClientHeight = 274
+      Height = 274
+      Width = 492
+      object FilesListView: TListView
+        Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
+        Columns = <>
+        MultiSelect = True
+        ViewStyle = vsReport
+        Left = 6
+        Height = 225
+        Top = 6
+        Width = 480
+      end
+      object FilesBrowseButton: TButton
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.InnerBorder = 2
+        Caption = 'FilesBrowseButton'
+        OnClick = FilesBrowseButtonClick
+        TabOrder = 1
+        Left = 6
+        Height = 29
+        Top = 237
+        Width = 111
+      end
+      object FilesShortenButton: TButton
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 2
+        Caption = 'FilesShortenButton'
+        OnClick = FilesShortenButtonClick
+        TabOrder = 2
+        AnchorSideLeft.Control = FilesBrowseButton
+        Left = 123
+        Height = 29
+        Top = 237
+        Width = 113
+      end
+      object FilesDeleteButton: TButton
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 2
+        Caption = 'FilesDeleteButton'
+        OnClick = FilesDeleteButtonClick
+        TabOrder = 3
+        AnchorSideLeft.Control = FilesShortenButton
+        Left = 242
+        Height = 29
+        Top = 237
+        Width = 107
+      end
+      object FilesAddButton: TButton
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.Left = 6
+        BorderSpacing.InnerBorder = 2
+        Caption = 'FilesAddButton'
+        OnClick = FilesAddButtonClick
+        TabOrder = 4
+        AnchorSideLeft.Control = FilesDeleteButton
+        Left = 355
+        Height = 29
+        Top = 237
+        Width = 95
+      end
+    end
+  end
+end

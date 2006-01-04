@@ -84,11 +84,9 @@ type
     FilesDeleteButton: TButton;
     FilesAddButton: TButton;
     procedure AddFileButtonClick(Sender: TObject);
-    procedure AddFilePageResize(Sender: TObject);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var CloseAction: TCloseAction);
     procedure NewDependButtonClick(Sender: TObject);
-    procedure NewDependPageResize(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
@@ -97,10 +95,10 @@ type
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     function CheckAddingFile(NewFiles: TStringList; var NewFilename: string
       ): TModalResult;
-    procedure SetupAddEditorFilePage;
-    procedure SetupAddRequirementPage;
-    procedure SetupAddFilesPage;
     procedure SetupComponents;
+    procedure SetupAddEditorFilePage(index: integer);
+    procedure SetupAddRequirementPage(index: integer);
+    procedure SetupAddFilesPage(index: integer);
     procedure OnIteratePackages(APackageID: TLazPackageID);
   public
     AddResult: TAddToProjectResult;
@@ -190,31 +188,6 @@ begin
 end;
 
 { TAddToProjectDialog }
-
-procedure TAddToProjectDialog.AddFilePageResize(Sender: TObject);
-var
-  y: Integer;
-  x: Integer;
-  w: Integer;
-begin
-  with AddFileLabel do
-    SetBounds(3,3,Parent.ClientWidth-6,22);
-    
-  y:=AddFileLabel.Top+AddFileLabel.Height+4;
-  with AddFileListBox do
-    SetBounds(0,y,Max(Parent.ClientWidth-90,10),Parent.ClientHeight-y);
-    
-  x:=ClientWidth-80;
-  y:=AddFileListBox.Top+10;
-  w:=70;
-  with AddFileButton do
-    SetBounds(x,y,w,Height);
-  inc(y,AddFileButton.Height+10);
-
-  with CancelAddFileButton do
-    SetBounds(x,y,w,Height);
-end;
-
 procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -295,43 +268,6 @@ begin
     NewFiles.Free;
   end;
   ModalResult:=mrOk;
-end;
-
-procedure TAddToProjectDialog.NewDependPageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-begin
-  x:=5;
-  y:=5;
-
-  with DependPkgNameLabel do
-    SetBounds(x,y+3,110,Height);
-
-  with DependPkgNameComboBox do
-    SetBounds(x+DependPkgNameLabel.Width+5,y,150,Height);
-  inc(y,DependPkgNameComboBox.Height+5);
-
-  with DependMinVersionLabel do
-    SetBounds(x,y+3,170,Height);
-
-  with DependMinVersionEdit do
-    SetBounds(x+DependMinVersionLabel.Width+5,y,100,Height);
-  inc(y,DependMinVersionEdit.Height+5);
-
-  with DependMaxVersionLabel do
-    SetBounds(x,y+3,DependMinVersionLabel.Width,Height);
-
-  with DependMaxVersionEdit do
-    SetBounds(x+DependMaxVersionLabel.Width+5,y,
-              DependMinVersionEdit.Width,Height);
-  inc(y,DependMaxVersionEdit.Height+20);
-
-  with NewDependButton do
-    SetBounds(x,y,80,Height);
-
-  with CancelDependButton do
-    SetBounds(x+NewDependButton.Width+10,y,80,Height);
 end;
 
 procedure TAddToProjectDialog.FilesAddButtonClick(Sender: TObject);
@@ -434,152 +370,48 @@ end;
 
 procedure TAddToProjectDialog.SetupComponents;
 begin
-  NoteBook:=TNoteBook.Create(Self);
-  with NoteBook do begin
-    Name:='NoteBook';
-    Parent:=Self;
-    Pages.Add(lisProjAddEditorFile);
-    AddEditorFilePage:=Page[0];
-    Pages.Add(lisProjAddNewRequirement);
-    NewDependPage:=Page[1];
-    Pages.Add(lisProjAddFiles);
-    AddFilesPage:=Page[2];
-    PageIndex:=0;
-    Align:=alClient;
-  end;
+  NoteBook.PageIndex:=0;
 
-  AddEditorFilePage.OnResize:=@AddFilePageResize;
-  NewDependPage.OnResize:=@NewDependPageResize;
-  
-  SetupAddEditorFilePage;
-  SetupAddRequirementPage;
-  SetupAddFilesPage;
+  SetupAddEditorFilePage(0);
+  SetupAddRequirementPage(1);
+  SetupAddFilesPage(2);
 end;
 
-procedure TAddToProjectDialog.SetupAddRequirementPage;
+procedure TAddToProjectDialog.SetupAddRequirementPage(index: integer);
 begin
-  DependPkgNameLabel:=TLabel.Create(Self);
-  with DependPkgNameLabel do begin
-    Name:='DependPkgNameLabel';
-    Parent:=NewDependPage;
-    Caption:=lisProjAddPackageName;
-  end;
+  Notebook.Page[index].Caption := lisProjAddNewRequirement;
 
-  DependPkgNameComboBox:=TComboBox.Create(Self);
-  with DependPkgNameComboBox do begin
-    Name:='DependPkgNameComboBox';
-    Parent:=NewDependPage;
-    Text:='';
-  end;
+  DependPkgNameLabel.Caption:=lisProjAddPackageName;
+  DependPkgNameComboBox.Text:='';
 
-  DependMinVersionLabel:=TLabel.Create(Self);
-  with DependMinVersionLabel do begin
-    Name:='DependMinVersionLabel';
-    Parent:=NewDependPage;
-    Caption:=lisProjAddMinimumVersionOptional;
-  end;
+  DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
+  DependMinVersionEdit.Text:='';
 
-  DependMinVersionEdit:=TEdit.Create(Self);
-  with DependMinVersionEdit do begin
-    Name:='DependMinVersionEdit';
-    Parent:=NewDependPage;
-    Text:='';
-  end;
+  DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
+  DependMaxVersionEdit.Text:='';
 
-  DependMaxVersionLabel:=TLabel.Create(Self);
-  with DependMaxVersionLabel do begin
-    Name:='DependMaxVersionLabel';
-    Parent:=NewDependPage;
-    Caption:=lisProjAddMaximumVersionOptional;
-  end;
-
-  DependMaxVersionEdit:=TEdit.Create(Self);
-  with DependMaxVersionEdit do begin
-    Name:='DependMaxVersionEdit';
-    Parent:=NewDependPage;
-    Text:='';
-  end;
-
-  NewDependButton:=TButton.Create(Self);
-  with NewDependButton do begin
-    Name:='NewDependButton';
-    Parent:=NewDependPage;
-    Caption:=lisLazBuildOk;
-    OnClick:=@NewDependButtonClick;
-  end;
-
-  CancelDependButton:=TButton.Create(Self);
-  with CancelDependButton do begin
-    Name:='CancelDependButton';
-    Parent:=NewDependPage;
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
+  NewDependButton.Caption:=lisLazBuildOk;
+  CancelDependButton.Caption:=dlgCancel;
 end;
 
-procedure TAddToProjectDialog.SetupAddFilesPage;
+procedure TAddToProjectDialog.SetupAddFilesPage(index: integer);
 var
   CurColumn: TListColumn;
 begin
-  FilesListView:=TListView.Create(Self);
+  Notebook.Page[index].Caption := lisProjAddFiles;
+
   with FilesListView do begin
-    Name:='FilesListView';
-    Parent:=AddFilesPage;
-    MultiSelect:=true;
-    ViewStyle:=vsReport;
     CurColumn:=Columns.Add;
     CurColumn.Width:=200;
     CurColumn.Caption:=lisA2PFilename2;
     CurColumn:=Columns.Add;
     CurColumn.Caption:=dlgEnvType;
-    Align:=alTop;
   end;
 
-  FilesBrowseButton:=TButton.Create(Self);
-  with FilesBrowseButton do begin
-    Name:='FilesBrowseButton';
-    Parent:=AddFilesPage;
-    Caption:=lisPathEditBrowse;
-    AutoSize:=true;
-    Anchors:=[akLeft,akBottom];
-    Left:=5;
-    AnchorParallel(akBottom,5,Parent);
-    OnClick:=@FilesBrowseButtonClick;
-  end;
-  FilesListView.AnchorToNeighbour(akBottom,5,FilesBrowseButton);
-
-  FilesShortenButton:=TButton.Create(Self);
-  with FilesShortenButton do begin
-    Name:='FilesShortenButton';
-    Parent:=AddFilesPage;
-    Caption:=lisA2PSwitchPaths;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesBrowseButton);
-    AnchorVerticalCenterTo(FilesBrowseButton);
-    OnClick:=@FilesShortenButtonClick;
-  end;
-
-  FilesDeleteButton:=TButton.Create(Self);
-  with FilesDeleteButton do begin
-    Name:='FilesDeleteButton';
-    Parent:=AddFilesPage;
-    Caption:=dlgEdDelete;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesShortenButton);
-    AnchorVerticalCenterTo(FilesBrowseButton);
-    OnClick:=@FilesDeleteButtonClick;
-  end;
-
-  FilesAddButton:=TButton.Create(Self);
-  with FilesAddButton do begin
-    Name:='FilesAddButton';
-    Parent:=AddFilesPage;
-    Caption:=lisA2PAddFilesToPackage;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesDeleteButton);
-    AnchorVerticalCenterTo(FilesBrowseButton);
-    OnClick:=@FilesAddButtonClick;
-  end;
+  FilesBrowseButton.Caption:=lisPathEditBrowse;
+  FilesShortenButton.Caption:=lisA2PSwitchPaths;
+  FilesDeleteButton.Caption:=dlgEdDelete;
+  FilesAddButton.Caption:=lisA2PAddFilesToPackage;
 end;
 
 procedure TAddToProjectDialog.OnIteratePackages(APackageID: TLazPackageID);
@@ -588,37 +420,14 @@ begin
     fPackages.Add(APackageID);
 end;
 
-procedure TAddToProjectDialog.SetupAddEditorFilePage;
+procedure TAddToProjectDialog.SetupAddEditorFilePage(index: integer);
 begin
-  AddFileLabel:=TLabel.Create(Self);
-  with AddFileLabel do begin
-    Name:='AddFileLabel';
-    Parent:=AddEditorFilePage;
-    Caption:=lisProjAddAddFileToProject;
-  end;
+  Notebook.Page[index].Caption := lisProjAddEditorFile;
 
-  AddFileListBox:=TListBox.Create(Self);
-  with AddFileListBox do begin
-    Name:='AddFileListBox';
-    Parent:=AddEditorFilePage;
-    MultiSelect:=true;
-  end;
+  AddFileLabel.Caption:=lisProjAddAddFileToProject;
 
-  AddFileButton:=TButton.Create(Self);
-  with AddFileButton do begin
-    Name:='AddFileButton';
-    Parent:=AddEditorFilePage;
-    Caption:=lisLazBuildOk;
-    OnClick:=@AddFileButtonClick;
-  end;
-
-  CancelAddFileButton:=TButton.Create(Self);
-  with CancelAddFileButton do begin
-    Name:='CancelAddFileButton';
-    Parent:=AddEditorFilePage;
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
+  AddFileButton.Caption:=lisLazBuildOk;
+  CancelAddFileButton.Caption:=dlgCancel;
 end;
 
 function TAddToProjectDialog.CheckAddingFile(NewFiles: TStringList;
@@ -683,13 +492,10 @@ end;
 constructor TAddToProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Name:='AddToProjectDialog';
   Caption:=lisProjAddToProject;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
   SetupComponents;
-  OnClose:=@AddToProjectDialogClose;
 end;
 
 destructor TAddToProjectDialog.Destroy;
@@ -753,5 +559,8 @@ begin
   inherited Destroy;
 end;
 
+initialization
+  {$I addtoprojectdlg.lrs}
+  
 end.
 
