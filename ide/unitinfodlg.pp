@@ -34,10 +34,9 @@ type
 
   { TUnitInfoDialog }
 
-  TUnitInfoDialog = class(TFORM)
+  TUnitInfoDialog = class(TForm)
     CodeToolsDefsButton: TButton;
     OkButton: TBitBtn;
-    HelpButton: TBitBtn;
     ClearIncludedBy: TButton;
     UnitPathMemo: TMemo;
     IncludePathMemo: TMemo;
@@ -71,13 +70,12 @@ type
     FFilePath: string;
     function getIncludedBy: string;
   public
-    constructor Create(AOwner:TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
-  const FilePath: string;
-  const IncludedBy: string; var ClearIncludedBy: boolean;
+  const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 
 implementation
@@ -86,8 +84,7 @@ uses LResources;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
-  const FilePath: string;
-  const IncludedBy: string; var ClearIncludedBy: boolean;
+  const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 var Dlg: TUnitInfoDialog;
 begin
@@ -214,4 +211,3 @@ initialization
   {$I unitinfodlg.lrs}
   
 end.
-

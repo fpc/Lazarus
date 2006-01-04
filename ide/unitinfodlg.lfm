@@ -29,22 +29,6 @@ object UnitInfoDialog: TUnitInfoDialog
     Top = 239
     Width = 68
   end
-  object HelpButton: TBitBtn
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
-    Caption = '&Help'
-    Enabled = False
-    Kind = bkHelp
-    NumGlyphs = 0
-    TabOrder = 1
-    AnchorSideRight.Control = OkButton
-    Left = 345
-    Height = 34
-    Top = 239
-    Width = 75
-  end
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -209,6 +193,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         Font.Style = [fsBold]
         ParentColor = False
+        OnResize = UnitInfoDlgResize
         Left = 12
         Height = 14
         Top = 12
@@ -285,7 +270,7 @@ object UnitInfoDialog: TUnitInfoDialog
     BorderSpacing.InnerBorder = 2
     Caption = 'CodeToolsDefsButton'
     OnClick = CodeToolsDefsButtonClick
-    TabOrder = 3
+    TabOrder = 2
     Left = 6
     Height = 29
     Top = 240
