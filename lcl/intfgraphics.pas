@@ -389,6 +389,8 @@ type
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
 procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
                                      StartSize: integer);
+                                     
+function dbgs(const FPColor: TFPColor): string; overload;
 
 implementation
 
@@ -452,6 +454,12 @@ begin
     if NewLength>0 then
       DestStream.Write(Buffer[1],NewLength);
   end;
+end;
+
+function dbgs(const FPColor: TFPColor): string;
+begin
+  Result:='r='+hexStr(FPColor.Red,4)+',g='+hexStr(FPColor.green,4)
+        +',b='+hexStr(FPColor.blue,4)+',a='+hexStr(FPColor.alpha,4);
 end;
 
 procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
@@ -3083,6 +3091,7 @@ end;
 
 function TLazReaderBMP.ColorToTrans(const InColor: TFPColor): TFPColor;
 begin
+  //DebugLn('TLazReaderBMP.ColorToTrans InColor=',dbgs(InColor),' FTransparentColor=',dbgs(FTransparentColor));
   if (InColor <> FTransparentColor) then
     Result := InColor
   else
@@ -3157,15 +3166,15 @@ begin
    1 :
      for Column:=0 to Img.Width-1 do
        if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-         img.colors[Column,Row]:=FPalette[1]
+         img.colors[Column,Row]:=ColorToTrans(FPalette[1])
        else
-         img.colors[Column,Row]:=FPalette[0];
+         img.colors[Column,Row]:=ColorToTrans(FPalette[0]);
    4 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=FPalette[(LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f];
+        img.colors[Column,Row]:=ColorToTrans(FPalette[(LineBuf[Column div 2] shr (((not Column) and 1)*4)) and $0f]);
    8 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=FPalette[LineBuf[Column]];
+        img.colors[Column,Row]:=ColorToTrans(FPalette[LineBuf[Column]]);
    15:
       for Column := 0 to img.Width - 1 do
         Img.colors[Column,Row]:=ColorToTrans(Bmp15BitToFPColor(PWord(LineBuf)[Column]));
@@ -3219,6 +3228,7 @@ Var
 
   procedure SaveTransparentColor;
   begin
+    //DebugLn('SaveTransparentColor ',dbgs(UseLeftBottomAsTransparent),' ',dbgs(FBitsPerPixel));
     if UseLeftBottomAsTransparent then begin
       // define transparent color: 1-8 use palette, 15-24 use fixed color
       case FBitsPerPixel of
@@ -3446,7 +3456,9 @@ begin
 end;
 
 function TLazReaderPartIcon.InternalCheck(Stream: TStream): boolean;
+//var bfh: Array[0..21] of byte;
 begin
+  //Stream.Read(bfh,22); // dummy read of ico file header
   Result:=True; { Assumes stream in the correct place }
 end;
 

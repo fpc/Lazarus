@@ -824,6 +824,7 @@ begin
                                               TColorToFPColor(TransparentColor)
     else
       TLazReaderBMP(ImgReader).TransparentColor:=colTransparent;
+    //DebugLn('TBitmap.InitFPImageReader ',dbgs(TLazReaderBMP(ImgReader).TransparentColor));
   end;
 end;
 
