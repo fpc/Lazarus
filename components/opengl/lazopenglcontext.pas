@@ -7,13 +7,13 @@ unit LazOpenGLContext;
 interface
 
 uses
-  OpenGLContext, LazarusPackageIntf; 
+  openglcontext, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('OpenGLContext', @OpenGLContext.Register); 
+  RegisterUnit('openglcontext', @openglcontext.Register); 
 end; 
 
 initialization
