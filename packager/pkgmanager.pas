@@ -1233,7 +1233,7 @@ function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
     Result:=CreateRelativePath(TrimFilename(
                          ConvertLazarusToMakefileMakros(s)),APackage.Directory);
   end;
-
+  
 var
   s: String;
   e: string;
@@ -1246,14 +1246,16 @@ var
 begin
   Result:=mrCancel;
 
+  APackage.WriteInheritedUnparsedOptions;
+
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
   UnitPath:=APackage.CompilerOptions.GetUnitPath(false,false)+';.';
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
   
-  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' abs UnitPath="',UnitPath,'"');
+  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' original UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
-  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' rel UnitPath="',UnitPath,'"');
+  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
 
   e:=LineEnding;

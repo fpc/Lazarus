@@ -646,6 +646,7 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacro(const s: string): string;
+    procedure WriteInheritedUnparsedOptions;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
     function SearchFile(const ShortFilename: string;
@@ -1936,6 +1937,28 @@ function TLazPackage.SubstitutePkgMacro(const s: string): string;
 begin
   Result:=s;
   FMacros.SubstituteStr(Result);
+end;
+
+procedure TLazPackage.WriteInheritedUnparsedOptions;
+var
+  OptionsList: TList;
+  InheritedUnparsedOptions: TInheritedCompOptsStrings;
+  AddOptions: TAdditionalCompilerOptions;
+  i: Integer;
+begin
+  OptionsList:=nil;
+  CompilerOptions.GetInheritedCompilerOptions(OptionsList);
+  if OptionsList<>nil then begin
+    GatherInheritedOptions(OptionsList,false,InheritedUnparsedOptions);
+    for i:=0 to OptionsList.Count-1 do begin
+      AddOptions:=TAdditionalCompilerOptions(OptionsList[i]);
+      if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
+      DebugLn('TLazPackage.WriteInheritedUnparsedOptions ',
+        (AddOptions.Owner as TLazPackage).IDAsString,
+        ' UnitPath="',AddOptions.GetOption(icoUnitPath),'"');
+    end;
+    OptionsList.Free;
+  end;
 end;
 
 procedure TLazPackage.GetWritableOutputDirectory(var AnOutDir: string);
