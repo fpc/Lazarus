@@ -933,6 +933,7 @@ ide/codemacroselect.pas svneol=native#text/plain
 ide/codetemplatesdlg.lfm svneol=native#text/plain
 ide/codetemplatesdlg.lrs svneol=native#text/plain
 ide/codetemplatesdlg.pas svneol=native#text/pascal
+ide/codetoolsdefines.lfm svneol=native#text/plain
 ide/codetoolsdefines.lrs svneol=native#text/pascal
 ide/codetoolsdefines.pas svneol=native#text/pascal
 ide/codetoolsdefpreview.lfm svneol=native#text/plain

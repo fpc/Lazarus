@@ -56,6 +56,23 @@ type
   { TCodeToolsDefinesEditor }
 
   TCodeToolsDefinesEditor = class(TForm)
+    MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem16: TMenuItem;
+    MenuItem17: TMenuItem;
+    MenuItem18: TMenuItem;
+    MenuItem19: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem23: TMenuItem;
+    MenuItem27: TMenuItem;
+    MenuItem29: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem30: TMenuItem;
+    Page1: TPage;
+    Page2: TPage;
+    Splitter1: TSplitter;
     TheImageList: TImageList;
     MainMenu: TMainMenu;
     
@@ -166,9 +183,6 @@ type
     procedure CodeToolsDefinesEditorKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DefineTreeViewSelectionChanged(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-    procedure SelectedItemGroupBoxResize(Sender: TObject);
-    procedure ValueNoteBookResize(Sender: TObject);
 
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
@@ -281,78 +295,6 @@ procedure TCodeToolsDefinesEditor.DontSaveAndExitMenuItemClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
-end;
-
-procedure TCodeToolsDefinesEditor.SelectedItemGroupBoxResize(Sender: TObject);
-var SelItemMaxX, SelItemMaxY: integer;
-begin
-  SelItemMaxX:=SelectedItemGroupBox.ClientWidth;
-  SelItemMaxY:=SelectedItemGroupBox.ClientHeight;
-  with TypeLabel do begin
-    Left:=5;
-    Top:=3;
-    Width:=SelItemMaxX-2*Left;
-  end;
-  with NameLabel do begin
-    Left:=TypeLabel.Left;
-    Top:=TypeLabel.Top+TypeLabel.Height+7;
-    Width:=70;
-  end;
-  with NameEdit do begin
-    Left:=NameLabel.Left+NameLabel.Width+5;
-    Top:=NameLabel.Top;
-    Width:=SelItemMaxX-Left-5;
-  end;
-  with DescriptionLabel do begin
-    Left:=NameLabel.Left;
-    Top:=NameLabel.Top+NameLabel.Height+7;
-    Width:=70;
-  end;
-  with DescriptionEdit do begin
-    Left:=DescriptionLabel.Left+DescriptionLabel.Width+5;
-    Top:=DescriptionLabel.Top;
-    Width:=SelItemMaxX-Left-5;
-  end;
-  with VariableLabel do begin
-    Left:=DescriptionLabel.Left;
-    Top:=DescriptionLabel.Top+DescriptionLabel.Height+7;
-    Width:=70;
-  end;
-  with VariableEdit do begin
-    Left:=VariableLabel.Left+VariableLabel.Width+5;
-    Top:=VariableLabel.Top;
-    Width:=SelItemMaxX-Left-5;
-  end;
-  with ValueNoteBook do begin
-    Left:=0;
-    Top:=VariableLabel.Top+VariableLabel.Height+8;
-    Width:=SelItemMaxX;
-    Height:=SelItemMaxY-Top;
-  end;
-end;
-
-procedure TCodeToolsDefinesEditor.FormResize(Sender: TObject);
-var MaxX, MaxY, SelGrpBoxTop: integer;
-begin
-  MaxX:=ClientWidth;
-  MaxY:=ClientHeight;
-  SelGrpBoxTop:=MaxY-310;
-
-  // define tree ---------------------------------------------------------------
-  with DefineTreeView do begin
-    Left:=3;
-    Top:=3;
-    Width:=MaxX-2*Left;
-    Height:=SelGrpBoxTop-2*Top;
-  end;
-
-  // selected item -------------------------------------------------------------
-  with SelectedItemGroupBox do begin
-    Left:=DefineTreeView.Left;
-    Top:=SelGrpBoxTop;
-    Width:=MaxX-2*Left;
-    Height:=MaxY-Top-Left;
-  end;
 end;
 
 procedure TCodeToolsDefinesEditor.CodeToolsDefinesEditorKeyDown(
@@ -1045,524 +987,115 @@ begin
   end;
 end;
 
-procedure TCodeToolsDefinesEditor.ValueNoteBookResize(Sender: TObject);
-var
-  ValNoteBookMaxX: integer;
-begin
-  //ValNoteBookMaxX:=ValueNoteBook.ClientWidth-10;//ValueAsTextSynEdit.Parent.ClientWidth;
-  //ValNoteBookMaxY:=ValueNoteBook.ClientHeight-30;//ValueAsTextSynEdit.Parent.ClientHeight;
-  ValNoteBookMaxX:=ValueAsTextSynEdit.Parent.ClientWidth;
-  with ValueAsTextSynEdit do begin
-    Left:=0;
-    Top:=0;
-    Width:=ValNoteBookMaxX;
-  end;
-  with ValueAsFilePathsSynEdit do begin
-    Left:=0;
-    Top:=0;
-    Width:=ValNoteBookMaxX-80;
-  end;
-  with MoveFilePathUpBitBtn do begin
-    Left:=ValNoteBookMaxX-75;
-    Top:=1;
-    Width:=ValNoteBookMaxX-Left-5;
-  end;
-  with MoveFilePathDownBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=MoveFilePathUpBitBtn.Top+MoveFilePathUpBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
-  end;
-  with DeleteFilePathBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=MoveFilePathDownBitBtn.Top+MoveFilePathDownBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
-  end;
-  with InsertFilePathBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=DeleteFilePathBitBtn.Top+DeleteFilePathBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
-  end;
-end;
-
 procedure TCodeToolsDefinesEditor.CreateComponents;
-
-  procedure CreateControl(var AControl: TControl;
-    AControlClass: TControlClass; const AName: string;
-    AParent: TWinControl);
-  begin
-    AControl:=AControlClass.Create(Self);
-    with AControl do begin
-      Name:=AName;
-      Parent:=AParent;
-      Visible:=true;
-    end;
-  end;
-  
-  procedure AddMenuItem(var AMenuItem: TMenuItem; const AName, ACaption: string;
-    AParent: TMenuItem);
-  begin
-    AMenuItem:=TMenuItem.Create(Self);
-    AMenuItem.Name:=AName;
-    AMenuItem.Caption:=ACaption;
-    if AParent=nil then
-      MainMenu.Items.Add(AMenuItem)
-    else
-      AParent.Add(AMenuItem);
-  end;
-  
-  procedure AddResImg(const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    TheImageList.Add(Pixmap,nil)
-  end;
-
-var i: integer;
 begin
-  TheImageList:=TImageList.Create(Self);
-  with TheImageList do begin
-    Width:=22;
-    Height:=22;
-    Name:='TheImageList';
-    AddResImg('define_22x22');
-    AddResImg('definerecurse_22x22');
-    AddResImg('undefine_22x22');
-    AddResImg('undefinerecurse_22x22');
-    AddResImg('undefineall_22x22');
-    AddResImg('block_22x22');
-    AddResImg('directory_22x22');
-    AddResImg('if_22x22');
-    AddResImg('ifdef_22x22');
-    AddResImg('ifndef_22x22');
-    AddResImg('elseif_22x22');
-    AddResImg('else_22x22');
-    AddResImg('ctdefinestate_none_22x22');
-    AddResImg('ctdefinestate_auto_22x22');
-    AddResImg('ctdefinestate_projspec_22x22');
-    AddResImg('ctdefinestate_autoproj_22x22');
-  end;
-
-  // Main Menu -----------------------------------------------------------------
-  MainMenu := TMainMenu.Create(Self);
-  MainMenu.Name:='MainMenu';
-  Menu := MainMenu;
-
   // exit menu
-  AddMenuItem(ExitMenuItem, 'ExitMenuItem', lisCodeToolsDefsExit, nil);
-  AddMenuItem(SaveAndExitMenuItem, 'SaveAndExitMenuItem',
-    lisCodeToolsDefsSaveAndExit,
-              ExitMenuItem);
-  SaveAndExitMenuItem.OnClick:=@SaveAndExitMenuItemClick;
-  ExitMenuItem.Add(CreateSeperator);
-  AddMenuItem(DontSaveAndExitMenuItem,'DontSaveAndExitMenuItem',
-              lisCodeToolsDefsExitWithoutSave, ExitMenuItem);
-  DontSaveAndExitMenuItem.OnClick:=@DontSaveAndExitMenuItemClick;
+  ExitMenuItem.Caption := lisCodeToolsDefsExit;
+  SaveAndExitMenuItem.Caption:=lisCodeToolsDefsSaveAndExit;
+  DontSaveAndExitMenuItem.Caption:=lisCodeToolsDefsExitWithoutSave;
 
   // edit nodes
-  AddMenuItem(EditMenuItem, 'EditMenuItem', lisCodeToolsDefsEdit, nil);
-  AddMenuItem(MoveNodeUpMenuItem, 'MoveNodeUpMenuItem',
-    lisCodeToolsDefsMoveNodeUp,
-              EditMenuItem);
-  MoveNodeUpMenuItem.OnClick:=@MoveNodeUpMenuItemClick;
-  
-  AddMenuItem(MoveNodeDownMenuItem, 'MoveNodeDownMenuItem',
-    lisCodeToolsDefsMoveNodeDown,
-              EditMenuItem);
-  MoveNodeDownMenuItem.OnClick:=@MoveNodeDownMenuItemClick;
-  
-  AddMenuItem(MoveNodeLvlUpMenuItem, 'MoveNodeLvlUpMenuItem',
-    lisCodeToolsDefsMoveNodeOneLevelUp,
-              EditMenuItem);
-  MoveNodeLvlUpMenuItem.OnClick:=@MoveNodeLvlUpMenuItemClick;
-              
-  AddMenuItem(MoveNodeLvlDownMenuItem, 'MoveNodeLvlDownMenuItem',
-    lisCodeToolsDefsMoveNodeOneLevelDown,
-              EditMenuItem);
-  MoveNodeLvlDownMenuItem.OnClick:=@MoveNodeLvlDownMenuItemClick;
-  
-  EditMenuItem.Add(CreateSeperator);
-  
-  AddMenuItem(InsertBehindMenuItem, 'InsertBehindMenuItem',
-    lisCodeToolsDefsInsertNodeBelow,
-              EditMenuItem);
-              
-  AddMenuItem(InsertAsChildMenuItem, 'InsertAsChildMenuItem',
-    lisCodeToolsDefsInsertNodeAsChild,
-              EditMenuItem);
-              
-  EditMenuItem.Add(CreateSeperator);
-  
-  AddMenuItem(DeleteNodeMenuItem, 'DeleteNodeMenuItem',
-    lisCodeToolsDefsDeleteNode,
-              EditMenuItem);
-  DeleteNodeMenuItem.OnClick:=@DeleteNodeMenuItemClick;
-  
-  AddMenuItem(ConvertActionMenuItem, 'ConvertActionMenuItem',
-    lisCodeToolsDefsConvertNode,
-              EditMenuItem);
-
-{  EditMenuItem.Add(CreateSeperator);
-  AddMenuItem(CopyToClipbrdMenuItem,'CopyToClipbrdMenuItem','Copy to clipboard',
-              EditMenuItem);
-  AddMenuItem(PasteFromClipbrdMenuItem,'PasteFromClipbrdMenuItem',
-              'Paste from clipboard',EditMenuItem);}
+  EditMenuItem.Caption := lisCodeToolsDefsEdit;
+  MoveNodeUpMenuItem.Caption:=lisCodeToolsDefsMoveNodeUp;
+  MoveNodeDownMenuItem.Caption := lisCodeToolsDefsMoveNodeDown;
+  MoveNodeLvlUpMenuItem.Caption := lisCodeToolsDefsMoveNodeOneLevelUp;
+  MoveNodeLvlDownMenuItem.Caption := lisCodeToolsDefsMoveNodeOneLevelDown;
+  InsertBehindMenuItem.Caption := lisCodeToolsDefsInsertNodeBelow;
+  InsertAsChildMenuItem.Caption := lisCodeToolsDefsInsertNodeAsChild;
+  DeleteNodeMenuItem.Caption := lisCodeToolsDefsDeleteNode;
+  ConvertActionMenuItem.Caption := lisCodeToolsDefsConvertNode;
 
   // insert node behind submenu
-  AddMenuItem(InsertBehindDefineMenuItem, 'InsertBehindDefineMenuItem',
-    lisCodeToolsDefsDefine,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindDefineRecurseMenuItem,
-              'InsertBehindDefineRecurseMenuItem',
-                lisCodeToolsDefsDefineRecurse,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindUndefineMenuItem,
-              'InsertBehindUndefineMenuItem', lisCodeToolsDefsUndefine,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindUndefineRecurseMenuItem,
-              'InsertBehindUndefineRecurseMenuItem',
-                lisCodeToolsDefsUndefineRecurse,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindUndefineAllMenuItem,
-              'InsertBehindUndefineAllMenuItem', lisCodeToolsDefsUndefineAll,
-              InsertBehindMenuItem);
-  InsertBehindMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertBehindBlockMenuItem, 'InsertBehindBlockMenuItem',
-    lisCodeToolsDefsBlock,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindDirectoryMenuItem,
-              'InsertBehindDirectoryMenuItem',
-                lisCodeToolsDefsInsertBehindDirectory,
-              InsertBehindMenuItem);
-  InsertBehindMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertBehindIfMenuItem, 'InsertBehindIfMenuItem',
-    lisCodeToolsDefsIf,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindIfDefMenuItem, 'InsertBehindIfDefMenuItem',
-    lisCodeToolsDefsIfDef,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindIfNotDefMenuItem, 'InsertBehindIfNotDefMenuItem',
-    lisCodeToolsDefsIfNDef,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindElseIfMenuItem, 'InsertBehindElseIfMenuItem',
-    lisCodeToolsDefsElseIf,
-              InsertBehindMenuItem);
-  AddMenuItem(InsertBehindElseMenuItem, 'InsertBehindElseMenuItem',
-    lisCodeToolsDefsElse,
-              InsertBehindMenuItem);
-  for i:=0 to InsertBehindMenuItem.Count-1 do
-    if InsertBehindMenuItem[i].Caption<>'-' then
-      InsertBehindMenuItem[i].OnClick:=@InsertNodeMenuItemClick;
+  InsertBehindDefineMenuItem.Caption := lisCodeToolsDefsDefine;
+  InsertBehindDefineRecurseMenuItem.Caption := lisCodeToolsDefsDefineRecurse;
+  InsertBehindUndefineMenuItem.Caption := lisCodeToolsDefsUndefine;
+  InsertBehindUndefineRecurseMenuItem.Caption := lisCodeToolsDefsUndefineRecurse;
+  InsertBehindUndefineAllMenuItem.Caption := lisCodeToolsDefsUndefineAll;
+  InsertBehindBlockMenuItem.Caption := lisCodeToolsDefsBlock;
+  InsertBehindDirectoryMenuItem.Caption := lisCodeToolsDefsInsertBehindDirectory;
+  InsertBehindIfMenuItem.Caption := lisCodeToolsDefsIf;
+  InsertBehindIfDefMenuItem.Caption := lisCodeToolsDefsIfDef;
+  InsertBehindIfNotDefMenuItem.Caption := lisCodeToolsDefsIfNDef;
+  InsertBehindElseIfMenuItem.Caption := lisCodeToolsDefsElseIf;
+  InsertBehindElseMenuItem.Caption := lisCodeToolsDefsElse;
 
   // insert node as child submenu
-  AddMenuItem(InsertAsChildDefineMenuItem, 'InsertAsChildDefineMenuItem',
-    lisCodeToolsDefsDefine,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildDefineRecurseMenuItem,
-              'InsertAsChildDefineRecurseMenuItem',
-                lisCodeToolsDefsDefineRecurse,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildUndefineMenuItem,
-              'InsertAsChildUndefineMenuItem', lisCodeToolsDefsUndefine,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildUndefineRecurseMenuItem,
-              'InsertAsChildUndefineRecurseMenuItem',
-                lisCodeToolsDefsUndefineRecurse,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildUndefineAllMenuItem,
-              'InsertAsChildUndefineAllMenuItem', lisCodeToolsDefsUndefineAll,
-              InsertAsChildMenuItem);
-  InsertAsChildMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertAsChildBlockMenuItem, 'InsertAsChildBlockMenuItem',
-    lisCodeToolsDefsBlock,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildDirectoryMenuItem,
-              'InsertAsChildDirectoryMenuItem',
-                lisCodeToolsDefsInsertBehindDirectory,
-              InsertAsChildMenuItem);
-  InsertAsChildMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertAsChildIfMenuItem, 'InsertAsChildIfMenuItem',
-    lisCodeToolsDefsIf,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildIfDefMenuItem, 'InsertAsChildIfDefMenuItem',
-    lisCodeToolsDefsIfDef,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildIfNotDefMenuItem, 'InsertAsChildIfNotDefMenuItem',
-    lisCodeToolsDefsIfNDef,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildElseIfMenuItem, 'InsertAsChildElseIfMenuItem',
-    lisCodeToolsDefsElseIf,
-              InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildElseMenuItem, 'InsertAsChildElseMenuItem',
-    lisCodeToolsDefsElse,
-              InsertAsChildMenuItem);
-  for i:=0 to InsertAsChildMenuItem.Count-1 do
-    if InsertAsChildMenuItem[i].Caption<>'-' then
-      InsertAsChildMenuItem[i].OnClick:=@InsertNodeMenuItemClick;
-      
+  InsertAsChildDefineMenuItem.Caption := lisCodeToolsDefsDefine;
+  InsertAsChildDefineRecurseMenuItem.Caption := lisCodeToolsDefsDefineRecurse;
+  InsertAsChildUndefineMenuItem.Caption := lisCodeToolsDefsUndefine;
+  InsertAsChildUndefineRecurseMenuItem.Caption := lisCodeToolsDefsUndefineRecurse;
+  InsertAsChildUndefineAllMenuItem.Caption := lisCodeToolsDefsUndefineAll;
+  InsertAsChildBlockMenuItem.Caption := lisCodeToolsDefsBlock;
+  InsertAsChildDirectoryMenuItem.Caption := lisCodeToolsDefsInsertBehindDirectory;
+  InsertAsChildIfMenuItem.Caption := lisCodeToolsDefsIf;
+  InsertAsChildIfDefMenuItem.Caption := lisCodeToolsDefsIfDef;
+  InsertAsChildIfNotDefMenuItem.Caption := lisCodeToolsDefsIfNDef;
+  InsertAsChildElseIfMenuItem.Caption := lisCodeToolsDefsElseIf;
+  InsertAsChildElseMenuItem.Caption := lisCodeToolsDefsElse;
+
   // convert node sub menu
-  AddMenuItem(ConvertActionToDefineMenuItem, 'ConvertActionToDefineMenuItem',
-    lisCodeToolsDefsDefine,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToDefineRecurseMenuItem,
-              'ConvertActionToDefineRecurseMenuItem',
-                lisCodeToolsDefsDefineRecurse,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToUndefineMenuItem,
-              'ConvertActionToUndefineMenuItem', lisCodeToolsDefsUndefine,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToUndefineRecurseMenuItem,
-              'ConvertActionToUndefineRecurseMenuItem',
-                lisCodeToolsDefsUndefineRecurse,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToUndefineAllMenuItem,
-              'ConvertActionToUndefineAllMenuItem', lisCodeToolsDefsUndefineAll,
-              ConvertActionMenuItem);
-  ConvertActionMenuItem.Add(CreateSeperator);
-  AddMenuItem(ConvertActionToBlockMenuItem, 'ConvertActionToBlockMenuItem',
-    lisCodeToolsDefsBlock,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToDirectoryMenuItem,
-              'ConvertActionToDirectoryMenuItem',
-                lisCodeToolsDefsInsertBehindDirectory,
-              ConvertActionMenuItem);
-  ConvertActionMenuItem.Add(CreateSeperator);
-  AddMenuItem(ConvertActionToIfMenuItem, 'ConvertActionToIfMenuItem',
-    lisCodeToolsDefsIf,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToIfDefMenuItem, 'ConvertActionToIfDefMenuItem',
-    lisCodeToolsDefsIfDef,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToIfNotDefMenuItem,
-    'ConvertActionToIfNotDefMenuItem', lisCodeToolsDefsIfNDef,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToElseIfMenuItem, 'ConvertActionToElseIfMenuItem',
-    lisCodeToolsDefsElseIf,
-              ConvertActionMenuItem);
-  AddMenuItem(ConvertActionToElseMenuItem, 'ConvertActionToElseMenuItem',
-    lisCodeToolsDefsElse,
-              ConvertActionMenuItem);
-  for i:=0 to ConvertActionMenuItem.Count-1 do
-    if ConvertActionMenuItem[i].Caption<>'-' then
-      ConvertActionMenuItem[i].OnClick:=@ConvertActionMenuItemClick;
+  ConvertActionToDefineMenuItem.Caption := lisCodeToolsDefsDefine;
+  ConvertActionToDefineRecurseMenuItem.Caption := lisCodeToolsDefsDefineRecurse;
+  ConvertActionToUndefineMenuItem.Caption := lisCodeToolsDefsUndefine;
+  ConvertActionToUndefineRecurseMenuItem.Caption := lisCodeToolsDefsUndefineRecurse;
+  ConvertActionToUndefineAllMenuItem.Caption := lisCodeToolsDefsUndefineAll;
+  ConvertActionToBlockMenuItem.Caption := lisCodeToolsDefsBlock;
+  ConvertActionToDirectoryMenuItem.Caption := lisCodeToolsDefsInsertBehindDirectory;
+  ConvertActionToIfMenuItem.Caption := lisCodeToolsDefsIf;
+  ConvertActionToIfDefMenuItem.Caption := lisCodeToolsDefsIfDef;
+  ConvertActionToIfNotDefMenuItem.Caption := lisCodeToolsDefsIfNDef;
+  ConvertActionToElseIfMenuItem.Caption := lisCodeToolsDefsElseIf;
+  ConvertActionToElseMenuItem.Caption := lisCodeToolsDefsElse;
 
   // tools
-  AddMenuItem(ToolsMenuItem, 'ToolsMenuItem', lisCTDefsTools, nil);
-  AddMenuItem(OpenPreviewMenuItem, 'OpenPreviewMenuItem', lisCTDefsOpenPreview,
-              ToolsMenuItem);
-  OpenPreviewMenuItem.OnClick:=@OpenPreviewMenuItemClick;
-              
-  {AddMenuItem(ShowMacroListMenuItem,'ShowMacroListMenuItem','Show Macros',
-              ToolsMenuItem);}
+  ToolsMenuItem.Caption := lisCTDefsTools;
+  OpenPreviewMenuItem.Caption := lisCTDefsOpenPreview;
 
   // templates
-  AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
-              lisCodeToolsDefsInsertTemplate, nil);
+  InsertTemplateMenuItem.Caption := lisCodeToolsDefsInsertTemplate;
 
   // FPC templates
-  AddMenuItem(InsertFPCProjectDefinesTemplateMenuItem,
-              'InsertFPCProjectDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertFreePascalProjectTe,
-              InsertTemplateMenuItem);
-  InsertFPCProjectDefinesTemplateMenuItem.OnClick:=
-              @InsertFPCProjectDefinesTemplateMenuItemClick;
-
-  AddMenuItem(InsertFPCompilerDefinesTemplateMenuItem,
-              'InsertFPCompilerDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertFreePascalCompilerT,
-              InsertTemplateMenuItem);
-  InsertFPCompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertFPCompilerDefinesTemplateMenuItemClick;
-              
-  AddMenuItem(InsertFPCSourceDirTemplateMenuItem,
-              'InsertFPCSourceDirTemplateMenuItem',
-              lisCodeToolsDefsInsertFreePascalSVNSource,
-              InsertTemplateMenuItem);
-  InsertFPCSourceDirTemplateMenuItem.OnClick:=
-              @InsertFPCSourceDirDefinesTemplateMenuItemClick;
+  InsertFPCProjectDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalProjectTe;
+  InsertFPCompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalCompilerT;
+  InsertFPCSourceDirTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalSVNSource;
 
   // lazarus templates
-  InsertTemplateMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertLazarusSourceTemplateMenuItem,
-              'InsertLazarusSourceTemplateMenuItem',
-              lisCodeToolsDefsInsertLazarusDirectoryTem,
-              InsertTemplateMenuItem);
-  InsertLazarusSourceTemplateMenuItem.OnClick:=
-              @InsertLazarusSourceDefinesTemplateMenuItemClick;
+  InsertLazarusSourceTemplateMenuItem.Caption := lisCodeToolsDefsInsertLazarusDirectoryTem;
 
   // Delphi 5 templates
-  InsertTemplateMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertDelphi5CompilerDefinesTemplateMenuItem,
-              'InsertDelphi5CompilerDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi5CompilerTemp,
-              InsertTemplateMenuItem);
-  InsertDelphi5CompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
-  
-  AddMenuItem(InsertDelphi5DirectoryTemplateMenuItem,
-              'InsertDelphi5DirectoryTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi5DirectoryTem,
-              InsertTemplateMenuItem);
-  InsertDelphi5DirectoryTemplateMenuItem.OnClick:=
-              @InsertDelphiDirectoryTemplateMenuItemClick;
-
-  AddMenuItem(InsertDelphi5ProjectTemplateMenuItem,
-              'InsertDelphi5ProjectTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi5ProjectTempl,
-              InsertTemplateMenuItem);
-  InsertDelphi5ProjectTemplateMenuItem.OnClick:=
-              @InsertDelphiProjectTemplateMenuItemClick;
+  InsertDelphi5CompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi5CompilerTemp;
+  InsertDelphi5DirectoryTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi5DirectoryTem;
+  InsertDelphi5ProjectTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi5ProjectTempl;
 
   // Delphi 6 templates
-  InsertTemplateMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertDelphi6CompilerDefinesTemplateMenuItem,
-              'InsertDelphi6CompilerDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi6CompilerTemp,
-              InsertTemplateMenuItem);
-  InsertDelphi6CompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
-
-  AddMenuItem(InsertDelphi6DirectoryTemplateMenuItem,
-              'InsertDelphi6DirectoryTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi6DirectoryTem,
-              InsertTemplateMenuItem);
-  InsertDelphi6DirectoryTemplateMenuItem.OnClick:=
-              @InsertDelphiDirectoryTemplateMenuItemClick;
-
-  AddMenuItem(InsertDelphi6ProjectTemplateMenuItem,
-              'InsertDelphi6ProjectTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi6ProjectTempl,
-              InsertTemplateMenuItem);
-  InsertDelphi6ProjectTemplateMenuItem.OnClick:=
-              @InsertDelphiProjectTemplateMenuItemClick;
+  InsertDelphi6CompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi6CompilerTemp;
+  InsertDelphi6DirectoryTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi6DirectoryTem;
+  InsertDelphi6ProjectTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi6ProjectTempl;
 
   // Delphi 7 templates
-  InsertTemplateMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertDelphi7CompilerDefinesTemplateMenuItem,
-              'InsertDelphi7CompilerDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi7CompilerTemp,
-              InsertTemplateMenuItem);
-  InsertDelphi7CompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
-
-  AddMenuItem(InsertDelphi7DirectoryTemplateMenuItem,
-              'InsertDelphi7DirectoryTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi7DirectoryTem,
-              InsertTemplateMenuItem);
-  InsertDelphi7DirectoryTemplateMenuItem.OnClick:=
-              @InsertDelphiDirectoryTemplateMenuItemClick;
-
-  AddMenuItem(InsertDelphi7ProjectTemplateMenuItem,
-              'InsertDelphi7ProjectTemplateMenuItem',
-              lisCodeToolsDefsInsertDelphi7ProjectTempl,
-              InsertTemplateMenuItem);
-  InsertDelphi7ProjectTemplateMenuItem.OnClick:=
-              @InsertDelphiProjectTemplateMenuItemClick;
+  InsertDelphi7CompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi7CompilerTemp;
+  InsertDelphi7DirectoryTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi7DirectoryTem;
+  InsertDelphi7ProjectTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi7ProjectTempl;
 
   // Kylix 3 templates
-  InsertTemplateMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertKylix3CompilerDefinesTemplateMenuItem,
-              'InsertKylix3CompilerDefinesTemplateMenuItem',
-              lisCodeToolsDefsInsertKylix3CompilerTemp,
-              InsertTemplateMenuItem);
-  InsertKylix3CompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertKylixCompilerDefinesTemplateMenuItemClick;
-
-  AddMenuItem(InsertKylix3DirectoryTemplateMenuItem,
-              'InsertKylix3DirectoryTemplateMenuItem',
-              lisCodeToolsDefsInsertKylix3DirectoryTem,
-              InsertTemplateMenuItem);
-  InsertKylix3DirectoryTemplateMenuItem.OnClick:=
-              @InsertKylixDirectoryTemplateMenuItemClick;
-
-  AddMenuItem(InsertKylix3ProjectTemplateMenuItem,
-              'InsertKylix3ProjectTemplateMenuItem',
-              lisCodeToolsDefsInsertKylix3ProjectTempl,
-              InsertTemplateMenuItem);
-  InsertKylix3ProjectTemplateMenuItem.OnClick:=
-              @InsertKylixProjectTemplateMenuItemClick;
-
-  // define tree----------------------------------------------------------------
-  CreateControl(DefineTreeView,TTreeView,'DefineTreeView',Self);
-  with DefineTreeView do begin
-    DefaultItemHeight:=22;
-    Images:=TheImageList;
-    StateImages:=TheImageList;
-    OnSelectionChanged:=@DefineTreeViewSelectionChanged;
-  end;
+  InsertKylix3CompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertKylix3CompilerTemp;
+  InsertKylix3DirectoryTemplateMenuItem.Caption := lisCodeToolsDefsInsertKylix3DirectoryTem;
+  InsertKylix3ProjectTemplateMenuItem.Caption := lisCodeToolsDefsInsertKylix3ProjectTempl;
 
   // selected item
-  CreateControl(SelectedItemGroupBox,TGroupBox,'SelectedItemGroupBox',Self);
   SelectedItemGroupBox.Caption:=lisCodeToolsDefsSelectedNode;
-  SelectedItemGroupBox.OnResize:=@SelectedItemGroupBoxResize;
-  
-  CreateControl(TypeLabel,TLabel,'TypeLabel',SelectedItemGroupBox);
-  
-  CreateControl(NameLabel,TLabel,'NameLabel',SelectedItemGroupBox);
+
   NameLabel.Caption:=lisCodeToolsDefsName;
-  
-  CreateControl(NameEdit,TEdit,'NameEdit',SelectedItemGroupBox);
-
-  CreateControl(DescriptionLabel,TLabel,'DescriptionLabel',
-                   SelectedItemGroupBox);
   DescriptionLabel.Caption:=lisCodeToolsDefsDescription;
-                   
-  CreateControl(DescriptionEdit,TEdit,'DescriptionEdit',
-                   SelectedItemGroupBox);
-                   
-  CreateControl(VariableLabel,TLabel,'VariableLabel',SelectedItemGroupBox);
   VariableLabel.Caption:=lisCodeToolsDefsVariable;
-  
-  CreateControl(VariableEdit,TEdit,'VariableEdit',SelectedItemGroupBox);
-  
-  CreateControl(ValueNoteBook,TNoteBook,'ValueNoteBook',
-                   SelectedItemGroupBox);
-  with ValueNoteBook do begin
-    if PageCount>0 then
-      Pages[0]:=lisCodeToolsDefsValueAsText
-    else
-      Pages.Add(lisCodeToolsDefsValueAsText);
-    Pages.Add(lisCodeToolsDefsValueAsFilePaths);
-    OnPageChanged:=@ValueNoteBookPageChanged;
-    OnResize:=@ValueNoteBookResize;
-  end;
-                   
-  CreateControl(ValueAsTextSynEdit,TSynEdit,'ValueAsTextSynEdit',
-                   ValueNoteBook.Page[0]);
-  ValueAsTextSynEdit.Options:=[eoBracketHighlight, eoHideRightMargin,
-    eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
-    eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
-  ValueAsTextSynEdit.Gutter.Visible:=false;
-  ValueAsTextSynEdit.Scrollbars:=ssBoth;
-  ValueAsTextSynEdit.Align:=alClient;
 
-  CreateControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
-                   ValueNoteBook.Page[1]);
-  ValueAsFilePathsSynEdit.Options:=ValueAsTextSynEdit.Options;
-  ValueAsFilePathsSynEdit.Gutter.Visible:=false;
-  ValueAsFilePathsSynEdit.Scrollbars:=ssBoth;
-  ValueAsFilePathsSynEdit.Align:=alLeft;
+  ValueNotebook.Page[0].Caption := lisCodeToolsDefsValueAsText;
+  ValueNotebook.Page[1].Caption := lisCodeToolsDefsValueAsFilePaths;
 
-  CreateControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
-                   ValueNoteBook.Page[1]);
   MoveFilePathUpBitBtn.Caption:=dlgUpWord;
-  MoveFilePathUpBitBtn.OnClick:=@MoveFilePathUpBitBtnClick;
-                   
-  CreateControl(MoveFilePathDownBitBtn,TBitBtn,'MoveFilePathDownBitBtn',
-                   ValueNoteBook.Page[1]);
   MoveFilePathDownBitBtn.Caption:=dlgDownWord;
-  MoveFilePathDownBitBtn.OnClick:=@MoveFilePathDownBitBtnClick;
-                   
-  CreateControl(DeleteFilePathBitBtn,TBitBtn,'DeleteFilePathBitBtn',
-                   ValueNoteBook.Page[1]);
   DeleteFilePathBitBtn.Caption:=dlgEdDelete;
-  DeleteFilePathBitBtn.OnClick:=@DeleteFilePathBitBtnClick;
-                   
-  CreateControl(InsertFilePathBitBtn,TBitBtn,'InsertFilePathBitBtn',
-                   ValueNoteBook.Page[1]);
   InsertFilePathBitBtn.Caption:=srVK_INSERT;
-  InsertFilePathBitBtn.OnClick:=@InsertFilePathBitBtnClick;
 end;
 
 function TCodeToolsDefinesEditor.CreateSeperator : TMenuItem;
@@ -1987,20 +1520,15 @@ end;
 constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Position:=poScreenCenter;
+
   IDEDialogLayoutList.ApplyLayout(Self,500,460);
 
-  if LazarusResources.Find(ClassName)=nil then begin
-    Caption:=lisCodeToolsDefsCodeToolsDefinesEditor;
-    OnResize:=@FormResize;
-    OnKeyDown:=@CodeToolsDefinesEditorKeyDown;
-    
-    CreateComponents;
-  end;
+
+  Caption:=lisCodeToolsDefsCodeToolsDefinesEditor;
+
+  CreateComponents;
+
   FDefineTree:=TDefineTree.Create;
-  FormResize(Self);
-  KeyPreview:=true;
-  OnKeyUp:=@CodeToolsDefinesEditorKeyUp;
 end;
 
 destructor TCodeToolsDefinesEditor.Destroy;
@@ -2009,11 +1537,8 @@ begin
   inherited Destroy;
 end;
 
-//==============================================================================
-
 initialization
   {$I codetoolsdefines.lrs}
-
 
 end.
 
