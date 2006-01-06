@@ -276,6 +276,7 @@ begin
     BitmapHandle := 0;
     BitmapInfo.bmWidth := 0;
     BitmapInfo.bmHeight := 0;
+    srcWidth := 0;
   end else begin
     BitmapHandle := BitBtn.Glyph.Handle;
     Windows.GetObject(BitmapHandle, sizeof(BitmapInfo), @BitmapInfo);
@@ -361,41 +362,45 @@ begin
   end;
 
   // create new
-  if (newWidth = 0) and (newHeight = 0) then
-    NewBitmap := 0
-  else
-    NewBitmap := CreateCompatibleBitmap(BitBtnDC, newWidth, newHeight);
   BitmapRect.left := 0;
   BitmapRect.top := 0;
   BitmapRect.right := newWidth;
   BitmapRect.bottom := newHeight;
-  // prepare masked bitmap
-  OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-  MaskDC := CreateCompatibleDC(hdcNewBitmap);
-  if BitBtn.Glyph.MaskHandleAllocated then
+  if (newWidth = 0) or (newHeight = 0) then
   begin
-    // Create a mask DC
-    MaskBmp := CreateCompatibleBitmap(hdcNewBitmap, BitmapInfo.bmWidth, BitmapInfo.bmHeight);
-    OldMaskBmp := SelectObject(MaskDC, MaskBmp);
-    SrcDC := CreateCompatibleDC(hdcNewBitmap);
-    OldSrcBmp := SelectObject(SrcDC, BitmapHandle);
-    FillRect(MaskDC, BitmapRect, BitBtn.Brush.Handle);
-    TWin32WidgetSet(WidgetSet).MaskBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC, 
-      0, 0, BitBtn.Glyph.MaskHandle, 0, 0);
+    NewBitmap := 0;
+    MaskDC := 0;
+    MaskBmp := 0;
   end else begin
-    MaskBmp := BitmapHandle;
-    OldMaskBmp := SelectObject(MaskDC, MaskBmp);
+    NewBitmap := CreateCompatibleBitmap(BitBtnDC, newWidth, newHeight);
+    // prepare masked bitmap
+    OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
+    MaskDC := CreateCompatibleDC(hdcNewBitmap);
+    if BitBtn.Glyph.MaskHandleAllocated then
+    begin
+      // Create a mask DC
+      MaskBmp := CreateCompatibleBitmap(hdcNewBitmap, BitmapInfo.bmWidth, BitmapInfo.bmHeight);
+      OldMaskBmp := SelectObject(MaskDC, MaskBmp);
+      SrcDC := CreateCompatibleDC(hdcNewBitmap);
+      OldSrcBmp := SelectObject(SrcDC, BitmapHandle);
+      FillRect(MaskDC, BitmapRect, BitBtn.Brush.Handle);
+      TWin32WidgetSet(WidgetSet).MaskBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC, 
+        0, 0, BitBtn.Glyph.MaskHandle, 0, 0);
+    end else begin
+      MaskBmp := BitmapHandle;
+      OldMaskBmp := SelectObject(MaskDC, MaskBmp);
+    end;
+    SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
-  SelectObject(hdcNewBitmap, OldBitmapHandle);
     
   // destroy previous bitmap, set new bitmap
   if TWin32WidgetSet(WidgetSet).ThemesActive then
   begin
     // winxp draws BM_SETIMAGE bitmap with old style button!
     // need to use BCM_SETIMAGELIST
-    oldImageList := Windows.SendMessage(BitBtnHandle, BCM_GETIMAGELIST, 0, LPARAM(@ButtonImageList)); 
-    if oldImageList <> 0 then
-      oldImageList := ButtonImageList.himl;
+    if Windows.SendMessage(BitBtnHandle, BCM_GETIMAGELIST, 0, LPARAM(@ButtonImageList)) <> 0 then
+      if ButtonImageList.himl <> 0 then
+        ImageList_Destroy(ButtonImageList.himl);
     if NewBitmap <> 0 then
     begin
       ButtonImageList.himl := ImageList_Create(newWidth, newHeight, ILC_COLORDDB or ILC_MASK, 5, 0);
@@ -414,8 +419,6 @@ begin
       ButtonImageList.himl := 0;
     end;
     Windows.SendMessage(BitBtnHandle, BCM_SETIMAGELIST, 0, LPARAM(@ButtonImageList));
-    if oldImageList <> 0 then
-      ImageList_Destroy(oldImageList);
     if NewBitmap <> 0 then
       DeleteObject(NewBitmap);
   end else begin
@@ -435,8 +438,11 @@ begin
     DeleteDC(SrcDC);
     DeleteObject(MaskBmp);
   end;
-  SelectObject(MaskDC, OldMaskBmp);
-  DeleteDC(MaskDC);
+  if MaskDC <> 0 then
+  begin
+    SelectObject(MaskDC, OldMaskBmp);
+    DeleteDC(MaskDC);
+  end;
 
   BitBtn.Invalidate;
 end;
