@@ -2122,6 +2122,7 @@ packager/basepkgmanager.pas svneol=native#text/pascal
 packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/globallinks/lazcustomform-0.lpl svneol=native#text/plain
 packager/globallinks/lazopenglcontext-0.lpl svneol=native#text/plain
+packager/globallinks/macosfiles-0.lpl svneol=native#text/plain
 packager/globallinks/prettyformat-0.lpl svneol=native#text/plain
 packager/globallinks/projtemplates-0.lpl svneol=native#text/plain
 packager/installpkgsetdlg.lfm svneol=native#text/plain
