@@ -1,0 +1,27 @@
+#   Makefile.fpc for MacOSFiles 0.0
+
+[package]
+name=macosfiles
+version=0.0
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+options=-gl
+
+[target]
+units=macosfiles.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/macosfiles$(PPUEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) macosfiles$(PPUEXT)

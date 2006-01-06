@@ -5,7 +5,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   ClientHeight = 300
   ClientWidth = 403
   OnShow = ProjectInspectorFormShow
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 402
   VertScrollBar.Page = 299
   Left = 460
@@ -19,8 +19,8 @@ object ProjectInspectorForm: TProjectInspectorForm
     NumGlyphs = 0
     OnClick = OpenBitBtnClick
     TabOrder = 0
-    Height = 29
-    Width = 78
+    Height = 26
+    Width = 76
   end
   object AddBitBtn: TBitBtn
     AutoSize = True
@@ -30,9 +30,10 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnClick = AddBitBtnClick
     TabOrder = 1
     AnchorSideLeft.Control = OpenBitBtn
-    Left = 78
-    Height = 29
-    Width = 71
+    AnchorSideLeft.Side = asrBottom
+    Left = 76
+    Height = 26
+    Width = 68
   end
   object RemoveBitBtn: TBitBtn
     AutoSize = True
@@ -42,9 +43,10 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnClick = RemoveBitBtnClick
     TabOrder = 2
     AnchorSideLeft.Control = AddBitBtn
-    Left = 149
-    Height = 29
-    Width = 92
+    AnchorSideLeft.Side = asrBottom
+    Left = 144
+    Height = 26
+    Width = 90
   end
   object OptionsBitBtn: TBitBtn
     Anchors = [akTop, akLeft, akRight]
@@ -55,9 +57,10 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnClick = OptionsBitBtnClick
     TabOrder = 3
     AnchorSideLeft.Control = RemoveBitBtn
-    Left = 241
-    Height = 29
-    Width = 162
+    AnchorSideLeft.Side = asrBottom
+    Left = 234
+    Height = 26
+    Width = 169
   end
   object ItemsTreeView: TTreeView
     Align = alBottom

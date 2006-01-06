@@ -6,7 +6,7 @@ object UnitInfoDialog: TUnitInfoDialog
   ClientWidth = 500
   OnKeyDown = UnitInfoDlgKeyDown
   OnResize = UnitInfoDlgResize
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 282
@@ -24,26 +24,28 @@ object UnitInfoDialog: TUnitInfoDialog
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 0
-    Left = 426
-    Height = 34
-    Top = 239
-    Width = 68
+    Left = 443
+    Height = 28
+    Top = 245
+    Width = 51
   end
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    PageIndex = 0
+    PageIndex = 3
     Left = 6
     Height = 226
     Top = 6
     Width = 488
     object Page1: TPage
       Caption = 'Page1'
-      ClientWidth = 480
-      ClientHeight = 200
-      Height = 200
-      Width = 480
+      ClientWidth = 484
+      ClientHeight = 196
+      Left = 2
+      Height = 196
+      Top = 28
+      Width = 484
       object ULines: TLabel
         Alignment = taRightJustify
         Caption = 'ULines'
@@ -51,9 +53,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 92
-        Width = 38
+        Width = 39
       end
       object OutLines: TLabel
         BorderSpacing.Left = 12
@@ -61,10 +63,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = ULines
-        Left = 62
-        Height = 14
+        AnchorSideLeft.Side = asrBottom
+        Left = 63
+        Height = 13
         Top = 92
-        Width = 43
+        Width = 51
       end
       object OutPath: TLabel
         BorderSpacing.Left = 12
@@ -72,10 +75,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = UPath
-        Left = 59
-        Height = 14
+        AnchorSideLeft.Side = asrBottom
+        Left = 58
+        Height = 13
         Top = 112
-        Width = 41
+        Width = 46
       end
       object UPath: TLabel
         Alignment = taRightJustify
@@ -84,9 +88,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 112
-        Width = 35
+        Width = 34
       end
       object UIncludedBy: TLabel
         Alignment = taRightJustify
@@ -95,7 +99,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 132
         Width = 72
       end
@@ -105,10 +109,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = UIncludedBy
+        AnchorSideLeft.Side = asrBottom
         Left = 96
-        Height = 14
+        Height = 13
         Top = 132
-        Width = 72
+        Width = 84
       end
       object OutSize: TLabel
         BorderSpacing.Left = 12
@@ -116,10 +121,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = USize
-        Left = 56
-        Height = 14
+        AnchorSideLeft.Side = asrBottom
+        Left = 57
+        Height = 13
         Top = 72
-        Width = 38
+        Width = 45
       end
       object USize: TLabel
         Alignment = taRightJustify
@@ -128,9 +134,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 72
-        Width = 32
+        Width = 33
       end
       object UInProject: TLabel
         Alignment = taRightJustify
@@ -139,9 +145,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 52
-        Width = 62
+        Width = 58
       end
       object OutInProject: TLabel
         BorderSpacing.Left = 12
@@ -149,10 +155,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = UInProject
-        Left = 86
-        Height = 14
+        AnchorSideLeft.Side = asrBottom
+        Left = 82
+        Height = 13
         Top = 52
-        Width = 63
+        Width = 70
       end
       object OutType: TLabel
         BorderSpacing.Left = 12
@@ -160,10 +167,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = UType
+        AnchorSideLeft.Side = asrBottom
         Left = 61
-        Height = 14
+        Height = 13
         Top = 32
-        Width = 43
+        Width = 49
       end
       object UType: TLabel
         Alignment = taRightJustify
@@ -172,7 +180,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 14
+        Height = 13
         Top = 32
         Width = 37
       end
@@ -182,10 +190,11 @@ object UnitInfoDialog: TUnitInfoDialog
         Color = clNone
         ParentColor = False
         AnchorSideLeft.Control = UName
+        AnchorSideLeft.Side = asrBottom
         Left = 65
-        Height = 14
+        Height = 13
         Top = 12
-        Width = 46
+        Width = 53
       end
       object UName: TLabel
         Alignment = taRightJustify
@@ -195,7 +204,7 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         OnResize = UnitInfoDlgResize
         Left = 12
-        Height = 14
+        Height = 13
         Top = 12
         Width = 41
       end
@@ -208,60 +217,66 @@ object UnitInfoDialog: TUnitInfoDialog
         TabOrder = 0
         AnchorSideTop.Control = UIncludedBy
         Left = 12
-        Height = 29
-        Top = 164
-        Width = 101
+        Height = 26
+        Top = 150
+        Width = 103
       end
     end
     object Page2: TPage
       Caption = 'Page2'
-      ClientWidth = 480
-      ClientHeight = 200
-      Height = 200
-      Width = 480
+      ClientWidth = 484
+      ClientHeight = 196
+      Left = 2
+      Height = 196
+      Top = 28
+      Width = 484
       object UnitPathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 188
+        Height = 184
         Top = 6
-        Width = 468
+        Width = 472
       end
     end
     object Page3: TPage
       Caption = 'Page3'
-      ClientWidth = 480
-      ClientHeight = 200
-      Height = 200
-      Width = 480
+      ClientWidth = 484
+      ClientHeight = 196
+      Left = 2
+      Height = 196
+      Top = 28
+      Width = 484
       object IncludePathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 204
+        Height = 184
         Top = 6
-        Width = 468
+        Width = 472
       end
     end
     object Page4: TPage
       Caption = 'Page4'
-      ClientWidth = 480
-      ClientHeight = 200
-      Height = 200
-      Width = 480
+      ClientWidth = 484
+      ClientHeight = 196
+      Left = 2
+      Height = 196
+      Top = 28
+      Width = 484
       object SrcPathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 180
+        Height = 184
         Top = 6
-        Width = 468
+        Width = 472
       end
     end
   end
@@ -272,8 +287,8 @@ object UnitInfoDialog: TUnitInfoDialog
     OnClick = CodeToolsDefsButtonClick
     TabOrder = 2
     Left = 6
-    Height = 29
+    Height = 26
     Top = 240
-    Width = 128
+    Width = 130
   end
 end
