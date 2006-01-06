@@ -33,18 +33,20 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-procedure AddEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TWaitHandleEvent; AData: PtrInt = 0);
+function AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt = 0): PEventHandler;
 begin
-  WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
+  Result := WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
 end;
 
-procedure AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt);
+function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; 
+  AData: PtrInt): PPipeEventHandler;
 begin
   WidgetSet.AddPipeEventHandler(AHandle, AEventHandler, AData);
 end;
 
-procedure AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt);
+function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; 
+  AData: PtrInt): PProcessEventHandler;
 begin
   WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
 end;
@@ -391,19 +393,19 @@ begin
   Result := WidgetSet.ReleaseDesignerDC(hWnd, DC);
 end;
 
-procedure RemoveEventHandler(AHandle: THandle);
+procedure RemoveEventHandler(AHandler: PEventHandler);
 begin
-  WidgetSet.RemoveEventHandler(AHandle);
+  WidgetSet.RemoveEventHandler(AHandler);
 end;
 
-procedure RemoveProcessEventHandler(AHandle: THandle);
+procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler);
 begin
-  WidgetSet.RemoveProcessEventHandler(AHandle);
+  WidgetSet.RemoveProcessEventHandler(AHandler);
 end;
 
-procedure RemovePipeEventHandler(AHandle: THandle);
+procedure RemovePipeEventHandler(AHandler: PPipeEventHandler);
 begin
-  WidgetSet.RemovePipeEventHandler(AHandle);
+  WidgetSet.RemovePipeEventHandler(AHandler);
 end;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
@@ -439,6 +441,11 @@ function SetComboMinDropDownSize(Handle: HWND;
 begin
   Result := WidgetSet.SetComboMinDropDownSize(Handle,
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
+end;
+
+procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
+begin
+  WidgetSet.SetEventHandlerFlags(AHandler, NewFlags);
 end;
 
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;

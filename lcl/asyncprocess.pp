@@ -33,8 +33,8 @@ uses
 type
   TAsyncProcess = class(TProcess)
   private
-    FHookedPipeHandle: THandle;
-    FHookedProcessHandle: THandle;
+    FPipeHandler: PPipeEventHandler;
+    FProcessHandler: PProcessEventHandler;
     FOnReadData: TNotifyEvent;
     FOnTerminate: TNotifyEvent;
   protected
@@ -100,19 +100,19 @@ end;
 
 procedure TAsyncProcess.UnhookProcessHandle;
 begin
-  if FHookedProcessHandle <> 0 then
+  if FProcessHandler <> nil then
   begin
-    RemoveProcessEventHandler(FHookedProcessHandle);
-    FHookedProcessHandle := 0;
+    RemoveProcessEventHandler(FProcessHandler);
+    FProcessHandler := nil;
   end;
 end;
 
 procedure TAsyncProcess.UnhookPipeHandle;
 begin
-  if FHookedPipeHandle <> 0 then
+  if FPipeHandler <> nil then
   begin
-    RemovePipeEventHandler(FHookedPipeHandle);
-    FHookedPipeHandle := 0;
+    RemovePipeEventHandler(FPipeHandler);
+    FPipeHandler := nil;
   end;
 end;
 
@@ -138,12 +138,8 @@ begin
   inherited;
 
   if poUsePipes in Options then
-  begin
-    FHookedPipeHandle := Output.Handle;
-    AddPipeEventHandler(FHookedPipeHandle, @HandlePipeInput, 0);
-  end;
-  FHookedProcessHandle := ProcessHandle;
-  AddProcessEventHandler(FHookedProcessHandle, @HandleProcessTermination, 0);
+    FPipeHandler := AddPipeEventHandler(Output.Handle, @HandlePipeInput, 0);
+  FProcessHandler := AddProcessEventHandler(ProcessHandle, @HandleProcessTermination, 0);
 end;
 
 end.

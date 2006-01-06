@@ -26,19 +26,22 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-procedure TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TWaitHandleEvent; AData: PtrInt);
+function TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 begin
+  Result := nil;
 end;
 
-procedure TWidgetSet.AddProcessEventHandler(AHandle: THandle; 
-  AEventHandler: TChildExitEvent; AData: PtrInt);
+function TWidgetSet.AddProcessEventHandler(AHandle: THandle; 
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 begin
+  Result := nil;
 end;
 
-procedure TWidgetSet.AddPipeEventHandler(AHandle: THandle; 
-  AEventHandler: TPipeEvent; AData: PtrInt);
+function TWidgetSet.AddPipeEventHandler(AHandle: THandle; 
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 begin
+  Result := nil;
 end;
 
 procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
@@ -559,15 +562,15 @@ begin
   Result := false;
 end;
 
-procedure TWidgetSet.RemoveEventHandler(AHandle: THandle);
+procedure TWidgetSet.RemoveEventHandler(AHandler: PEventHandler);
 begin
 end;
 
-procedure TWidgetSet.RemoveProcessEventHandler(AHandle: THandle);
+procedure TWidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandler);
 begin
 end;
 
-procedure TWidgetSet.RemovePipeEventHandler(AHandle: THandle);
+procedure TWidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
 begin
 end;
 
@@ -619,6 +622,10 @@ function TWidgetSet.SetComboMinDropDownSize(Handle: HWND;
   MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
 begin
   Result := false;
+end;
+
+procedure TWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
+begin
 end;
 
 function TWidgetSet.StretchMaskBlt(DestDC: HDC;

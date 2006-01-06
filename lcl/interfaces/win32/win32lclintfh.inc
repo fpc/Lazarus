@@ -29,12 +29,12 @@
 
 //##apiwiz##sps##   // Do not remove
 
-procedure AddEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TWaitHandleEvent; AData: PtrInt); override;
-procedure AddPipeEventHandler(AHandle: THandle; 
-  AEventHandler: TPipeEvent; AData: PtrInt); override;
-procedure AddProcessEventHandler(AHandle: THandle;
-  AEventHandler: TChildExitEvent; AData: PtrInt); override;
+function AddEventHandler(AHandle: THandle; AFlags: dword; 
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
+function AddPipeEventHandler(AHandle: THandle; 
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
+function AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
   
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
@@ -42,9 +42,9 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
-procedure RemoveEventHandler(AHandle: THandle); override;
-procedure RemovePipeEventHandler(AHandle: THandle); override;
-procedure RemoveProcessEventHandler(AHandle: THandle); override;
+procedure RemoveEventHandler(AHandler: PEventHandler); override;
+procedure RemovePipeEventHandler(AHandler: PPipeEventHandler); override;
+procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler); override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

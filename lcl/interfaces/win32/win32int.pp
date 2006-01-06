@@ -101,18 +101,20 @@ Type
     dwICC: dword;
   end;
 
-  TWaitHandler = record
-    UserData: PtrInt;
-    OnEvent: TWaitHandleEvent;
-  end;
-
-  PPPipeEventHandler = ^PPipeEventHandler;
-  PPipeEventHandler = ^TPipeEventHandler;
-  TPipeEventHandler = record
+  PPPipeEventInfo = ^PPipeEventInfo;
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
     Handle: THandle;
     UserData: PtrInt;
     OnEvent: TPipeEvent;
-    NextHandler: PPipeEventHandler;
+    Prev: PPipeEventInfo;
+    Next: PPipeEventInfo;
+  end;
+
+  TWaitHandler = record
+    ListIndex: pdword;
+    UserData: PtrInt;
+    OnEvent: TWaitHandleEvent;
   end;
 
   { Win32 interface-object class }
@@ -139,7 +141,7 @@ Type
     FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
-    FWaitPipeHandlers: PPipeEventHandler;
+    FWaitPipeHandlers: PPipeEventInfo;
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
@@ -157,7 +159,6 @@ Type
 
     { event handler helper functions }
     procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
-    function  RemoveEventHandlerData(AHandle: THandle): PtrInt;
     procedure CheckPipeEvents;
 
     Function WinRegister: Boolean;
@@ -265,6 +266,14 @@ Uses
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
+
+  PProcessEvent = ^TProcessEvent;
+  TProcessEvent = record
+    Handle: THandle;
+    Handler: PEventHandler;
+    UserData: PtrInt;
+    OnEvent: TChildExitEvent;
+  end;
 
 var
   MouseDownTime: dword;

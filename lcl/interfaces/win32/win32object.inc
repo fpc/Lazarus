@@ -343,19 +343,19 @@ End;
 
 procedure TWin32WidgetSet.CheckPipeEvents;
 var
-  lHandler: PPipeEventHandler;
+  lHandler: PPipeEventInfo;
   lBytesAvail: dword;
 begin
   lHandler := FWaitPipeHandlers;
   while lHandler <> nil do
   begin
-    if PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
+    if Windows.PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
     begin
       if lBytesAvail <> 0 then
         lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable]);
     end else
       lHandler^.OnEvent(lHandler^.UserData, [prBroken]);
-    lHandler := lHandler^.NextHandler;
+    lHandler := lHandler^.Next;
   end;
 end;
 

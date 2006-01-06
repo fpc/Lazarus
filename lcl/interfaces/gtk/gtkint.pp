@@ -138,7 +138,6 @@ type
 {$endif}  
 
     procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
-    function RemoveEventHandlerData(AHandle: THandle): PtrInt;
 
     // styles
     procedure FreeAllStyles; virtual;

@@ -37,6 +37,10 @@ uses
   GraphType, GraphMath;
 
 type
+  PEventHandler = type Pointer;
+  PProcessEventHandler = type Pointer;
+  PPipeEventHandler = type Pointer;
+
   TChildExitReason = (cerExit, cerSignal);
   TPipeReason = (prDataAvailable, prBroken, prCanWrite);
   TPipeReasons = set of TPipeReason;

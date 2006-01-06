@@ -66,6 +66,7 @@ type
     GSourceID: guint;
     UserData: PtrInt;
     OnEvent: TWaitHandleEvent;
+    PrevHandler: PWaitHandleEventHandler;
     NextHandler: PWaitHandleEventHandler;
   end;
 
@@ -76,6 +77,7 @@ type
     PID: TPid;
     UserData: PtrInt;
     OnEvent: TChildExitEvent;
+    PrevHandler: PChildSignalEventHandler;
     NextHandler: PChildSignalEventHandler;
   end;
     
