@@ -23,6 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
+  WSLCLClasses,
   {$IFDEF LCLGTK2}
   gdk2x, glib2, gdk2, gtk2, Gtk2Int,
   {$ENDIF}
@@ -128,6 +129,7 @@ procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
+                          WSPrivate: TWSPrivateClass;
                           SharedControl: TWinControl; AttrList: PInteger): HWND;
 
 const
@@ -706,11 +708,13 @@ const
     );
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
-  SharedControl: TWinControl; AttrList: PInteger): HWND;
+  WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+  AttrList: PInteger): HWND;
 var
   NewWidget: PGtkWidget;
   SharedArea: PGtkGLArea;
 begin
+  if WSPrivate=nil then ;
   if AttrList=nil then
     AttrList:=@InitAttrList;
   if SharedControl<>nil then begin

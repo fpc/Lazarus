@@ -384,7 +384,7 @@ begin
       AttrList:=OpenGlControl.SharedControl.OpenGLInitAttrList
     else
       AttrList:=OpenGlControl.OpenGLInitAttrList;
-    Result:=LOpenGLCreateContext(OpenGlControl,OpenGlControl.SharedControl,
+    Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,OpenGlControl.SharedControl,
                                  AttrList);
   end;
 end;
