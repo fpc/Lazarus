@@ -81,6 +81,7 @@ end;
 
 destructor TProcessList.Destroy;
 begin
+  FreeStoppedProcesses;
   Clear;
   FItems.Free;
   inherited Destroy;

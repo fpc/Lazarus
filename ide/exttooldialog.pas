@@ -201,9 +201,15 @@ begin
 end;
 
 destructor TExternalToolList.Destroy;
+var
+  i: Integer;
 begin
-  if fRunningTools<>nil then
+  FreeStoppedProcesses;
+  if fRunningTools<>nil then begin
+    for i:=0 to fRunningTools.Count-1 do
+      TProcess(fRunningTools[i]).Free;
     fRunningTools.Free;
+  end;
   inherited Destroy;
 end;
 
