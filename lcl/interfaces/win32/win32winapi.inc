@@ -2658,6 +2658,19 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:   RoundRect
+  Params:   DC, X1, Y1, X2, Y2, RX, RY
+  Returns:  true if succesfull, false otherwise
+
+  Draws a Rectangle with optional rounded corners. RY is the radial height
+  of the corner arcs, RX is the radial width.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean;
+begin
+  Result := Windows.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+end;
+
+{------------------------------------------------------------------------------
   Method:  SaveDC
   Params:  DC - a DC to save
   Returns: 0 if the functions fails otherwise a positive integer identifing

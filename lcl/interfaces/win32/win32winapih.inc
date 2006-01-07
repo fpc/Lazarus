@@ -155,6 +155,7 @@ function ReleaseDC(Window: HWND; DC: HDC): Integer; Override;
 function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; Override;
 function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
+function RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; Override;
 function ScreenToClient(Handle: HWND; Var P: TPoint): Integer; Override;
