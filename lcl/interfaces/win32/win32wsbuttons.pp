@@ -189,7 +189,6 @@ var
   newWidth, newHeight: integer; // dimensions of new combined bitmap
   srcWidth: integer; // width of glyph to use, bitmap may have multiple glyphs
   BitmapRect: Windows.RECT;
-  oldImageList: HIMAGELIST;
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
 

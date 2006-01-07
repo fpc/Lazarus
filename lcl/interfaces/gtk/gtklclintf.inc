@@ -65,6 +65,7 @@ procedure TGtkWidgetSet.RemoveEventHandler(AHandler: PEventHandler);
 var
   lEventHandler: PWaitHandleEventHandler absolute AHandler;
 begin
+  if AHandler = nil then exit;
   g_source_remove(lEventHandler^.GSourceID);
   if lEventHandler^.PrevHandler = nil then
     FWaitHandles := lEventHandler^.NextHandler
@@ -79,6 +80,7 @@ procedure TGtkWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: 
 var
   lEventHandler: PWaitHandleEventHandler absolute AHandler;
 begin
+  if AHandler = nil then exit;
   g_source_remove(lEventHandler^.GSourceID);
   lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
     NewFlags, @waithandle_iocallback, lEventHandler);
@@ -126,6 +128,7 @@ procedure TGtkWidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
 var
   lPipeEventInfo: PPipeEventInfo absolute AHandler;
 begin
+  if AHandler = nil then exit;
   RemoveEventHandler(lPipeEventInfo^.Handler);
   Dispose(lPipeEventInfo);
 end;
@@ -152,6 +155,7 @@ procedure TGtkWidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandler
 var
   lHandler: PChildSignalEventHandler absolute AHandler;
 begin
+  if AHandler = nil then exit;
   if lHandler^.PrevHandler = nil then
     FChildSignalHandlers := lHandler^.NextHandler
   else

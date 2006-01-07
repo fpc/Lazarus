@@ -60,6 +60,7 @@ var
   lListIndex: pdword absolute AHandler;
   I: dword;
 begin
+  if AHandler = nil then exit;
 {$ifdef DEBUG_ASYNCEVENTS}
   DebugLn('Removing handle: ', IntToHex(FWaitHandles[lListIndex^], 8));
   if Length(FWaitHandles) > 0 then
@@ -99,6 +100,7 @@ procedure TWin32WidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
 var
   lHandler: PPipeEventInfo absolute AHandler;
 begin
+  if AHandler = nil then exit;
   if lHandler^.Prev <> nil then
     lHandler^.Prev^.Next := lHandler^.Next
   else
@@ -137,6 +139,7 @@ procedure TWin32WidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandl
 var
   lProcessEvent: PProcessEvent absolute AHandler;
 begin
+  if AHandler = nil then exit;
   RemoveEventHandler(lProcessEvent^.Handler);
   Dispose(lProcessEvent);
 end;
