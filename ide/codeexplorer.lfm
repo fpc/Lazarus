@@ -48,6 +48,7 @@ object CodeExplorerView: TCodeExplorerView
     OnKeyUp = CodeTreeviewKeyUp
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
     Height = 456
     Top = 49
     Width = 206
@@ -58,8 +59,8 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 3
     Text = 'FilterEdit'
     AnchorSideLeft.Control = Owner
-    AnchorSideLeft.Side = asrTop
     AnchorSideTop.Control = RefreshButton
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Height = 23
