@@ -22,13 +22,14 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
   FPCMacOSAll, CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
-  CarbonUtils,
+  WSLCLClasses, CarbonUtils,
   Controls;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
+                          WSPrivate: TWSPrivateClass;
                           SharedControl: TWinControl; AttrList: PInteger): HWND;
 
 const
@@ -81,7 +82,8 @@ begin
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
-  SharedControl: TWinControl; AttrList: PInteger): HWND;
+  WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+  AttrList: PInteger): HWND;
 var
   disp: GDHandle;
   aglPixFmt: TAGLPixelFormat;
@@ -91,7 +93,6 @@ var
   Control: ControlRef;
   R: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
-  WSPrivate: TClass;
   ParentWindow: WindowPtr;
 begin
   if AWinControl.Parent=nil then
@@ -111,7 +112,6 @@ begin
   // create LCL WidgetInfo
   Result:=HWnd(Control);
   Info := CreateWidgetInfo(Control, AWinControl);
-  WSPrivate:=nil;
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 
   // create the AGL context

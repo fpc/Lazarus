@@ -55,7 +55,7 @@ type
 type
   TCarbonWSEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
                                         AEvent: EventRef;
-                                        AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                        AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 
 
 implementation

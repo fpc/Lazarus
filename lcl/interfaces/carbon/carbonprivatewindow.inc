@@ -21,7 +21,7 @@
 
 function CarbonPrivateWindow_Close(ANextHandler: EventHandlerCallRef;
                                    AEvent: EventRef;
-                                   AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                   AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
 begin
@@ -42,7 +42,7 @@ end;
 
 function CarbonPrivateWindow_Closed(ANextHandler: EventHandlerCallRef;
                                     AEvent: EventRef;
-                                    AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                    AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
   PrivateClass: TCarbonPrivateWindowClass;
@@ -60,7 +60,7 @@ end;
 
 //Generic function that handles all types of mouse events
 
-procedure TrackProgress(AControl: ControlRef; APartCode: ControlPartCode); mwpascal;
+procedure TrackProgress(AControl: ControlRef; APartCode: ControlPartCode); {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Modifiers, ButtonState: UInt32;                                   
   MousePoint: HIPoint;
@@ -99,7 +99,7 @@ end;
 
 function CarbonPrivateWindow_ControlTrack(ANextHandler: EventHandlerCallRef;
                                    AEvent: EventRef;
-                                   AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                   AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 const
     MSGKIND: array[1..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP);
 var
@@ -156,7 +156,7 @@ end;
                                    
 function CarbonPrivateWindow_MouseProc(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
-                                AWIndowInfo: PWidgetInfo): OSStatus; mwpascal;
+                                AWIndowInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Control: ControlRef;  // the control we are dealing with
                         // or the rootcontrol if none found          

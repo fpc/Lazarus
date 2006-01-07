@@ -25,7 +25,7 @@
 
 function CarbonPrivateHIView_Dispose(ANextHandler: EventHandlerCallRef;
                                      AEvent: EventRef;
-                                     AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                     AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
   PrivateClass: TCarbonPrivateHiViewClass;
@@ -43,7 +43,7 @@ end;
 
 function CarbonPrivateHIView_Hit(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMessage;
 begin
@@ -55,7 +55,7 @@ end;
 
 function CarbonPrivateHIView_MouseMove(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
-                                AInfo: PWidgetInfo): OSStatus; mwpascal;
+                                AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   WriteLN('MouseMove');
   Result := CallNextEventHandler(ANextHandler, AEvent);
