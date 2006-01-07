@@ -45,7 +45,7 @@ uses
   LCLClasses, AsyncProcess,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
-  Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
+  Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit, ButtonPanel,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
