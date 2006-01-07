@@ -52,7 +52,7 @@ uses
   // IDE Interface
   NewItemIntf, ProjectIntf, PackageIntf, MenuIntf, LazIDEIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, KeyMapping,
+  LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,

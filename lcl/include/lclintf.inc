@@ -42,13 +42,13 @@ end;
 function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; 
   AData: PtrInt): PPipeEventHandler;
 begin
-  WidgetSet.AddPipeEventHandler(AHandle, AEventHandler, AData);
+  Result:=WidgetSet.AddPipeEventHandler(AHandle, AEventHandler, AData);
 end;
 
 function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; 
   AData: PtrInt): PProcessEventHandler;
 begin
-  WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
+  Result:=WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);
 end;
 
 procedure AttachMenuToWindow(AMenuObject: TComponent);

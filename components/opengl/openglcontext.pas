@@ -130,7 +130,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
   end;
-  
+
 procedure Register;
 
 

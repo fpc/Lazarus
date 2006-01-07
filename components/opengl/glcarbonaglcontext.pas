@@ -24,7 +24,7 @@ uses
   FPCMacOSAll, CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
   CarbonUtils,
   Controls;
-  
+
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;

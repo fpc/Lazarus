@@ -26,7 +26,6 @@
   UNDER CONSTRUCTION by Mattias Gaertner
   
   ToDo:
-    - Add
     - Move
     - IndexOf
 }
@@ -527,9 +526,15 @@ begin
 end;
 
 function TTextStrings.Add(const S: string): Integer;
+var
+  e: String;
 begin
-  // TODO
-  Result:=inherited Add(S);
+  Result:=Count;
+  if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
+    e:=LineEnding
+  else
+    e:='';
+  Text:=Text+e+S;
 end;
 
 procedure TTextStrings.AddStrings(TheStrings: TStrings);

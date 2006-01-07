@@ -7,13 +7,13 @@ unit exploreidemenu;
 interface
 
 uses
-  frmExploreMenu, LazarusPackageIntf; 
+  frmexploremenu, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('frmExploreMenu', @frmExploreMenu.Register); 
+  RegisterUnit('frmexploremenu', @frmexploremenu.Register); 
 end; 
 
 initialization

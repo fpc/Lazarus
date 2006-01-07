@@ -1,35 +1,37 @@
 object ExploreIDEMenuForm: TExploreIDEMenuForm
+  ActiveControl = TVIDEMenu
   Caption = 'Lazarus IDE menu'
-  ClientHeight = 341
-  ClientWidth = 474
+  ClientHeight = 336
+  ClientWidth = 468
   OnCreate = FormCreate
-  PixelsPerInch = 90
+  PixelsPerInch = 112
   Position = poDesktopCenter
-  HorzScrollBar.Page = 473
-  VertScrollBar.Page = 340
+  HorzScrollBar.Page = 467
+  VertScrollBar.Page = 335
   Left = 453
-  Height = 341
+  Height = 336
   Top = 450
-  Width = 474
+  Width = 468
   object LTree: TLabel
     Caption = 'Menu Tree'
     Color = clNone
+    ParentColor = False
     Left = 8
-    Height = 12
+    Height = 13
     Top = 10
-    Width = 61
+    Width = 62
   end
   object LPAth: TLabel
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.OnChange = nil
     Caption = 'Path of selected item:'
     Color = clNone
     Layout = tlCenter
+    ParentColor = False
     Left = 8
-    Height = 20
-    Top = 316
-    Width = 368
+    Height = 51
+    Top = 280
+    Width = 362
   end
   object TVIDEMenu: TTreeView
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -37,19 +39,21 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
     TabOrder = 0
     OnChange = TVIDEMenuChange
     Left = 8
-    Height = 272
+    Height = 233
     Top = 32
-    Width = 455
+    Width = 449
   end
   object BCLose: TButton
     Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
     Caption = '&Close'
     Default = True
     ModalResult = 1
     TabOrder = 1
-    Left = 388
+    Left = 382
     Height = 25
-    Top = 314
+    Top = 300
     Width = 75
   end
 end

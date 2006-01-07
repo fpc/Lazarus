@@ -2607,8 +2607,6 @@ begin
              {$ENDIF}
              Lines.Count);
   // Now paint everything while the caret is hidden.
-{$message warn Should not need to hide/update caret while painting!}
-{$message warn Update the caret in all locations where it is moved, instead}
   HideCaret;
   try
     // First paint the gutter area if it was (partly) invalidated.
