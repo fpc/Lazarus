@@ -858,25 +858,33 @@ var
   end;
   
 begin
+  DebugText := nil;
   DebugFileName := GetDebugFileName;
   if (length(DebugFileName)>0) and
     (DirPathExists(ExtractFileDir(DebugFileName))) then begin
-
     new(DebugText);
-    DebugTextAllocated := true;
-    Assign(DebugText^, DebugFileName);
-    if FileExists(DebugFileName) then
-      Append(DebugText^)
-    else
-      Rewrite(DebugText^);
-  end
-  else begin
+    try
+      Assign(DebugText^, DebugFileName);
+      if FileExists(DebugFileName) then
+        Append(DebugText^)
+      else
+        Rewrite(DebugText^);
+    except
+      Freemem(DebugText);
+      DebugText := nil;
+      // Add extra line ending: a dialog will be shown in windows gui application
+      writeln(StdOut, 'Cannot open file: ', DebugFileName+LineEnding);
+    end;
+  end;
+  if DebugText=nil then
+  begin
     if TextRec(Output).Mode=fmClosed then
       DebugText := nil
     else
       DebugText := @Output;
     DebugTextAllocated := false;
-  end;
+  end else
+    DebugTextAllocated := true;
 end;
 
 procedure FinalizeDebugOutput;
