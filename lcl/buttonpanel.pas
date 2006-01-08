@@ -78,8 +78,12 @@ type
   published
   end;
 
+  { TButtonPanel }
+
   TButtonPanel = class(TCustomButtonPanel)
   published
+    property Align;
+    property Anchors;
     property OKButton;
     property HelpButton;
     property CloseButton;
