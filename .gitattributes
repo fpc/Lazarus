@@ -1243,6 +1243,7 @@ images/components/tbitbtn.ico -text svneol=unset#image/x-icon
 images/components/tbitbtn.xpm -text svneol=native#image/x-xpixmap
 images/components/tbutton.ico -text svneol=unset#image/x-icon
 images/components/tbutton.xpm -text svneol=native#image/x-xpixmap
+images/components/tbuttonpanel.xpm svneol=native#text/plain
 images/components/tcalcedit.xpm -text svneol=native#image/x-xpixmap
 images/components/tcalculatordialog.xpm -text svneol=native#image/x-xpixmap
 images/components/tcalendar.ico -text svneol=unset#image/x-icon
