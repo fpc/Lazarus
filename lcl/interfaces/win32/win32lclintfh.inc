@@ -42,9 +42,9 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
-procedure RemoveEventHandler(AHandler: PEventHandler); override;
-procedure RemovePipeEventHandler(AHandler: PPipeEventHandler); override;
-procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler); override;
+procedure RemoveEventHandler(var AHandler: PEventHandler); override;
+procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
+procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

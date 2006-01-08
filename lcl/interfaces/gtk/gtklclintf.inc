@@ -61,7 +61,7 @@ begin
   Result := lEventHandler;
 end;
 
-procedure TGtkWidgetSet.RemoveEventHandler(AHandler: PEventHandler);
+procedure TGtkWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var
   lEventHandler: PWaitHandleEventHandler absolute AHandler;
 begin
@@ -74,6 +74,7 @@ begin
   if lEventHandler^.NextHandler <> nil then
     lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
   Dispose(lEventHandler);
+  AHandler := nil;
 end;
 
 procedure TGtkWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
@@ -124,13 +125,14 @@ begin
   lPipeEventInfo^.OnEvent(lPipeEventInfo^.UserData, lReasons);
 end;
 
-procedure TGtkWidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
+procedure TGtkWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
 var
   lPipeEventInfo: PPipeEventInfo absolute AHandler;
 begin
   if AHandler = nil then exit;
   RemoveEventHandler(lPipeEventInfo^.Handler);
   Dispose(lPipeEventInfo);
+  AHandler := nil;
 end;
 
 function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
@@ -151,7 +153,7 @@ begin
   Result := lHandler;
 end;
 
-procedure TGtkWidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandler);
+procedure TGtkWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 var
   lHandler: PChildSignalEventHandler absolute AHandler;
 begin
@@ -163,6 +165,7 @@ begin
   if lHandler^.NextHandler <> nil then
     lHandler^.NextHandler^.PrevHandler := lHandler^.PrevHandler;
   Dispose(lHandler);
+  AHandler := nil;
 end;
 
 {------------------------------------------------------------------------------

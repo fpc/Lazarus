@@ -101,19 +101,13 @@ end;
 procedure TAsyncProcess.UnhookProcessHandle;
 begin
   if FProcessHandler <> nil then
-  begin
     RemoveProcessEventHandler(FProcessHandler);
-    FProcessHandler := nil;
-  end;
 end;
 
 procedure TAsyncProcess.UnhookPipeHandle;
 begin
   if FPipeHandler <> nil then
-  begin
     RemovePipeEventHandler(FPipeHandler);
-    FPipeHandler := nil;
-  end;
 end;
 
 procedure TAsyncProcess.HandlePipeInput(AData: PtrInt; AReasons: TPipeReasons);

@@ -55,7 +55,7 @@ begin
   Result := lListIndex;
 end;
 
-procedure TWin32WidgetSet.RemoveEventHandler(AHandler: PEventHandler);
+procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var
   lListIndex: pdword absolute AHandler;
   I: dword;
@@ -76,6 +76,7 @@ begin
   end;
   Dec(FWaitHandleCount);
   Dispose(lListIndex);
+  AHandler := nil;
 end;
 
 function TWin32WidgetSet.AddPipeEventHandler(AHandle: THandle; 
@@ -96,7 +97,7 @@ begin
   Result := lHandler;
 end;
 
-procedure TWin32WidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
+procedure TWin32WidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
 var
   lHandler: PPipeEventInfo absolute AHandler;
 begin
@@ -108,6 +109,7 @@ begin
   if lHandler^.Next <> nil then
     lHandler^.Next^.Prev := lHandler^.Prev;
   Dispose(lHandler);
+  AHandler := nil;
 end;
 
 function TWin32WidgetSet.AddProcessEventHandler(AHandle: THandle;
@@ -135,13 +137,14 @@ begin
   lProcessEvent^.OnEvent(lProcessEvent^.UserData, cerExit, exitcode);
 end;
 
-procedure TWin32WidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandler);
+procedure TWin32WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 var
   lProcessEvent: PProcessEvent absolute AHandler;
 begin
   if AHandler = nil then exit;
   RemoveEventHandler(lProcessEvent^.Handler);
   Dispose(lProcessEvent);
+  AHandler := nil;
 end;
 
 procedure TWin32WidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);

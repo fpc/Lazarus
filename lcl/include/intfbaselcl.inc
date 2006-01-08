@@ -562,15 +562,15 @@ begin
   Result := false;
 end;
 
-procedure TWidgetSet.RemoveEventHandler(AHandler: PEventHandler);
+procedure TWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 begin
 end;
 
-procedure TWidgetSet.RemoveProcessEventHandler(AHandler: PProcessEventHandler);
+procedure TWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 begin
 end;
 
-procedure TWidgetSet.RemovePipeEventHandler(AHandler: PPipeEventHandler);
+procedure TWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
 begin
 end;
 

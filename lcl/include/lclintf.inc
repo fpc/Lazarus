@@ -393,17 +393,17 @@ begin
   Result := WidgetSet.ReleaseDesignerDC(hWnd, DC);
 end;
 
-procedure RemoveEventHandler(AHandler: PEventHandler);
+procedure RemoveEventHandler(var AHandler: PEventHandler);
 begin
   WidgetSet.RemoveEventHandler(AHandler);
 end;
 
-procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler);
+procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 begin
   WidgetSet.RemoveProcessEventHandler(AHandler);
 end;
 
-procedure RemovePipeEventHandler(AHandler: PPipeEventHandler);
+procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler);
 begin
   WidgetSet.RemovePipeEventHandler(AHandler);
 end;

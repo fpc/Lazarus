@@ -107,9 +107,9 @@ function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$
 function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,Angle1,Angle2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure RemoveEventHandler(AHandler: PEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure RemovePipeEventHandler(AHandler: PPipeEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure RemoveEventHandler(var AHandler: PEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

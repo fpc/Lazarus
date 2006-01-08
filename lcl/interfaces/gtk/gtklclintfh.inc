@@ -50,9 +50,9 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
-procedure RemoveEventHandler(AHandler: PEventHandler); override;
-procedure RemovePipeEventHandler(AHandler: PPipeEventHandler); override;
-procedure RemoveProcessEventHandler(AHandler: PProcessEventHandler); override;
+procedure RemoveEventHandler(var AHandler: PEventHandler); override;
+procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
+procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
