@@ -1600,7 +1600,7 @@ begin
     Result:=false;
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
-      AComponent:=FForm.Components[i];
+      AComponent:=FLookupRoot.Components[i];
       if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if (CRect.Right=FRealLeft+FRealWidth) then begin
@@ -1644,7 +1644,7 @@ begin
     Result:=false;
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
-      AComponent:=FForm.Components[i];
+      AComponent:=FLookupRoot.Components[i];
       if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Top=FRealTop then begin
@@ -1688,7 +1688,7 @@ begin
     Result:=false;
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
-      AComponent:=FForm.Components[i];
+      AComponent:=FLookupRoot.Components[i];
       if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Bottom=FRealTop+FRealHeight then begin
