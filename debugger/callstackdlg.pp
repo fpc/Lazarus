@@ -37,23 +37,30 @@ interface
 
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Debugger, DebuggerDlg, Menus;
+  ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd;
 
 type
+
+  { TCallStackDlg }
+
   TCallStackDlg = class(TDebuggerDlg)
     lvCallStack: TListView;
+    popCopyAll: TMenuItem;
     N1: TMenuItem;
     popSetAsCurrent: TMenuItem;
     popShow: TMenuItem;
     mnuPopup: TPopupMenu;
     procedure lvCallStackDBLCLICK(Sender: TObject);
+    procedure popCopyAllClick(Sender: TObject);
     procedure popShowClick(Sender: TObject);
   private
     FCallStack: TIDECallStack;
     FCallStackNotification: TIDECallStackNotification;
     procedure CallStackChanged(Sender: TObject);
     procedure SetCallStack(const AValue: TIDECallStack);
+    function GetFunction(const Entry: TCallStackEntry): string;
     procedure JumpToSource;
+    procedure CopyToClipBoard;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -79,9 +86,8 @@ end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 var
-  n, m: Integer;                               
+  n: Integer;
   Item: TListItem;
-  S: String;   
   Entry: TCallStackEntry;
 begin       
   BeginUpdate;
@@ -111,16 +117,7 @@ begin
       Entry := CallStack.Entries[n];
       Item.Caption := Entry.Source;
       Item.SubItems[0] := IntToStr(Entry.Line);
-      S := '';
-      for m := 0 to Entry.ArgumentCount - 1 do
-      begin
-        if S <> ''
-        then S := S + ', ';
-        S := S + Entry.ArgumentValues[m];
-      end;
-      if S <> ''
-      then S := '(' + S + ')';
-      Item.SubItems[1] := Entry.FunctionName + S;
+      Item.SubItems[1] := GetFunction(Entry);
     end;
     
   finally
@@ -159,9 +156,38 @@ begin
   DoJumpToCodePos(Filename,Line,0);
 end;
 
+procedure TCallStackDlg.CopyToClipBoard;
+var
+  n: integer;
+  Entry: TCallStackEntry;
+  EntryList: TStringList;
+begin
+  Clipboard.Clear;
+  
+  if (CallStack=nil) or (CallStack.Count=0) then exit;
+  
+  EntryList:=TStringList.Create;
+  try
+    EntryList.Capacity:=CallStack.Count;
+    for n:= 0 to CallStack.Count-1 do begin
+      Entry:=CallStack.Entries[n];
+      EntryList.Add(format('#%d %s at %s:%d',
+        [n, GetFunction(Entry), Entry.Source, Entry.Line]));
+    end;
+    ClipBoard.AsText := EntryList.Text;
+  finally
+    EntryList.Free;
+  end;
+end;
+
 procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
 begin
   JumpToSource;
+end;
+
+procedure TCallStackDlg.popCopyAllClick(Sender: TObject);
+begin
+  CopyToClipBoard;
 end;
 
 procedure TCallStackDlg.popShowClick(Sender: TObject);
@@ -191,6 +217,23 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;
+var
+  S: String;
+  m: Integer;
+begin
+  S := '';
+  for m := 0 to Entry.ArgumentCount - 1 do
+  begin
+    if S <> '' then
+      S := S + ', ';
+    S := S + Entry.ArgumentValues[m];
+  end;
+  if S <> '' then
+    S := '(' + S + ')';
+  Result := Entry.FunctionName + S;
 end;
 
 initialization

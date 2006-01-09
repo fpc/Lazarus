@@ -1,10 +1,12 @@
 object CallStackDlg: TCallStackDlg
+  ActiveControl = lvCallStack
   Caption = 'CallStack'
   ClientHeight = 200
   ClientWidth = 500
+  PixelsPerInch = 96
   Visible = True
-  HorzScrollBar.Page = 501
-  VertScrollBar.Page = 201
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
   Left = 843
   Height = 200
   Top = 202
@@ -14,21 +16,16 @@ object CallStackDlg: TCallStackDlg
     Columns = <    
       item
         Caption = 'Source'
-        ImageIndex = -1
-        Visible = True
         Width = 150
       end    
       item
         Caption = 'Line'
-        ImageIndex = -1
-        Visible = True
-        Width = 50
       end    
       item
         Caption = 'Function'
-        ImageIndex = -1
-        Visible = True
       end>
+    PopupMenu = mnuPopup
+    TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvCallStackDBLCLICK
     Height = 200
@@ -47,6 +44,11 @@ object CallStackDlg: TCallStackDlg
     end
     object popSetAsCurrent: TMenuItem
       Caption = 'Set as current'
+    end
+    object popCopyAll: TMenuItem
+      Caption = 'Copy all'
+      ShortCut = 16451
+      OnClick = popCopyAllClick
     end
   end
 end
