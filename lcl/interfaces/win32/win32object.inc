@@ -303,9 +303,11 @@ var
   retVal, index: dword;
 Begin
   repeat
+{$ifdef DEBUG_ASYNCEVENTS}  
     if Length(FWaitHandles) > 0 then
-      DebugLn('[ProcessMessages] WaitHandleCount=,', IntToStr(FWaitHandleCount), 
-        'WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
+      DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount), 
+        ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
+{$endif}        
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
       FWaitHandles[0], false, 0, QS_ALLINPUT);
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
