@@ -120,6 +120,17 @@ const
     'pcosCompilerPath',
     'pcosDebugPath'
     );
+    
+  InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
+    TParsedCompilerOptString = (
+      pcosUnitPath,      // icoUnitPath,
+      pcosIncludePath,   // icoIncludePath,
+      pcosObjectPath,    // icoObjectPath,
+      pcosLibraryPath,   // icoLibraryPath,
+      pcosSrcPath,       // icoSrcPath,
+      pcosLinkerOptions, // icoLinkerOptions,
+      pcosCustomOptions  // icoCustomOptions
+      );
 
 type
   TLocalSubstitutionEvent = function(const s: string): string of object;
@@ -141,6 +152,9 @@ type
     function GetParsedValue(Option: TParsedCompilerOptString): string;
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
                                const NewValue: string);
+    function DoParseOption(const OptionText: string;
+                         Option: TParsedCompilerOptString;
+                         UseGetWritableOutputDirectory: boolean): string;
     procedure Clear;
     procedure InvalidateAll;
     procedure InvalidateFiles;
@@ -489,14 +503,14 @@ begin
             icoUnitPath,icoIncludePath,icoSrcPath,icoObjectPath,icoLibraryPath:
               begin
                 if CurOptions<>'' then
-                  CurOptions:=';'+UnparsedOption;
-                CurOptions:=UnparsedOption+';'+CurOptions;
+                  UnparsedOption:=';'+UnparsedOption;
+                CurOptions:=CurOptions+UnparsedOption;
               end;
             icoLinkerOptions,icoCustomOptions:
               begin
                 if CurOptions<>'' then
-                  CurOptions:=' '+UnparsedOption;
-                CurOptions:=UnparsedOption+';'+CurOptions;
+                  UnparsedOption:=' '+UnparsedOption;
+                CurOptions:=CurOptions+UnparsedOption;
               end;
             else
               RaiseException('GatherInheritedOptions');
@@ -1344,7 +1358,7 @@ begin
   else
     Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
   if (not RelativeToBaseDir) then
-    CreateAbsolutePath(Result,BaseDirectory);
+    CreateAbsoluteSearchPath(Result,BaseDirectory);
 end;
 
 function TBaseCompilerOptions.GetParsedPath(Option: TParsedCompilerOptString;
@@ -1362,10 +1376,10 @@ begin
   {$ENDIF}
 
   if (not RelativeToBaseDir) then
-    CreateAbsolutePath(CurrentPath,BaseDirectory);
+    CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetParsedPath CreateAbsoluteSearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
   {$ENDIF}
 
   // inherited path
@@ -1397,10 +1411,10 @@ begin
   {$ENDIF}
 
   if (not RelativeToBaseDir) then
-    CreateAbsolutePath(CurrentPath,BaseDirectory);
+    CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetUnparsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetUnparsedPath CreateAbsoluteSearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
   {$ENDIF}
 
   // inherited path
@@ -2473,7 +2487,6 @@ end;
 function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString
   ): string;
 var
-  BaseDirectory: String;
   s: String;
 begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
@@ -2483,45 +2496,7 @@ begin
     end;
     Parsing[Option]:=true;
     try
-      s:=UnparsedValues[Option];
-      //if Option=pcosCustomOptions then begin
-      //  DebugLn('TParsedCompilerOptions.GetParsedValue START ',dbgs(ParsedStamp[Option]),' ',dbgs(CompilerParseStamp),' unparsed="',s,'" old="',ParsedValues[Option],'"');
-      //end;
-      // parse locally
-      if Assigned(OnLocalSubstitute) then s:=OnLocalSubstitute(s);
-      // parse globally
-      s:=ParseString(Self,s);
-      // improve
-      if Option=pcosBaseDir then
-        // base directory (append path)
-        s:=AppendPathDelim(TrimFilename(s))
-      else if Option in ParsedCompilerFilenames then begin
-        // make filename absolute
-        s:=TrimFilename(s);
-        if (s<>'') and (not FilenameIsAbsolute(s)) then begin
-          BaseDirectory:=GetParsedValue(pcosBaseDir);
-          if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
-        end;
-      end
-      else if Option in ParsedCompilerDirectories then begin
-        // make directory absolute
-        s:=TrimFilename(s);
-        if (s='') or (not FilenameIsAbsolute(s))
-        and (Option<>pcosBaseDir) then begin
-          BaseDirectory:=GetParsedValue(pcosBaseDir);
-          if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
-          if (Option in ParsedCompilerOutDirectories)
-          and Assigned(GetWritableOutputDirectory) then begin
-            GetWritableOutputDirectory(s);
-          end;
-        end;
-        s:=AppendPathDelim(s);
-      end
-      else if Option in ParsedCompilerSearchPaths then begin
-        // make search paths absolute
-        BaseDirectory:=GetParsedValue(pcosBaseDir);
-        s:=TrimSearchPath(s,BaseDirectory);
-      end;
+      s:=DoParseOption(UnparsedValues[Option],Option,true);
       ParsedValues[Option]:=s;
       ParsedStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -2544,6 +2519,53 @@ begin
   else
     ParsedStamp[Option]:=InvalidParseStamp;
   UnparsedValues[Option]:=NewValue;
+end;
+
+function TParsedCompilerOptions.DoParseOption(const OptionText: string;
+  Option: TParsedCompilerOptString; UseGetWritableOutputDirectory: boolean
+  ): string;
+var
+  s: String;
+  BaseDirectory: String;
+begin
+  s:=OptionText;
+  // parse locally
+  if Assigned(OnLocalSubstitute) then s:=OnLocalSubstitute(s);
+  // parse globally
+  s:=ParseString(Self,s);
+  // improve
+  if Option=pcosBaseDir then
+    // base directory (append path)
+    s:=AppendPathDelim(TrimFilename(s))
+  else if Option in ParsedCompilerFilenames then begin
+    // make filename absolute
+    s:=TrimFilename(s);
+    if (s<>'') and (not FilenameIsAbsolute(s)) then begin
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
+    end;
+  end
+  else if Option in ParsedCompilerDirectories then begin
+    // make directory absolute
+    s:=TrimFilename(s);
+    if (s='') or (not FilenameIsAbsolute(s))
+    and (Option<>pcosBaseDir) then begin
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
+      if (Option in ParsedCompilerOutDirectories)
+      and UseGetWritableOutputDirectory
+      and Assigned(GetWritableOutputDirectory) then begin
+        GetWritableOutputDirectory(s);
+      end;
+    end;
+    s:=AppendPathDelim(s);
+  end
+  else if Option in ParsedCompilerSearchPaths then begin
+    // make search paths absolute
+    BaseDirectory:=GetParsedValue(pcosBaseDir);
+    s:=TrimSearchPath(s,BaseDirectory);
+  end;
+  Result:=s;
 end;
 
 procedure TParsedCompilerOptions.Clear;

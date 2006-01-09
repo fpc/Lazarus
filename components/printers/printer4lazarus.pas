@@ -7,13 +7,13 @@ unit Printer4Lazarus;
 interface
 
 uses
-  printersdlgs, osprinters, LazarusPackageIntf; 
+  PrintersDlgs, OSPrinters, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('printersdlgs', @printersdlgs.Register); 
+  RegisterUnit('PrintersDlgs', @PrintersDlgs.Register); 
 end; 
 
 initialization

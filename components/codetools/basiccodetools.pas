@@ -108,9 +108,9 @@ function CountNeededLineEndsToAddBackward(const Src: string;
 
 // comparison
 function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
-    CaseSensitive: boolean): integer;
+    CaseSensitive: boolean): integer; overload;
 function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
-    CaseSensitive, IgnoreSpace: boolean): integer;
+    CaseSensitive, IgnoreSpace: boolean): integer; overload;
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
     CaseSensitive: boolean): integer;
 function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;

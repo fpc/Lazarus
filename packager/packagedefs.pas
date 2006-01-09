@@ -1942,14 +1942,12 @@ end;
 procedure TLazPackage.WriteInheritedUnparsedOptions;
 var
   OptionsList: TList;
-  InheritedUnparsedOptions: TInheritedCompOptsStrings;
   AddOptions: TAdditionalCompilerOptions;
   i: Integer;
 begin
   OptionsList:=nil;
   CompilerOptions.GetInheritedCompilerOptions(OptionsList);
   if OptionsList<>nil then begin
-    GatherInheritedOptions(OptionsList,false,InheritedUnparsedOptions);
     for i:=0 to OptionsList.Count-1 do begin
       AddOptions:=TAdditionalCompilerOptions(OptionsList[i]);
       if (not (AddOptions is TAdditionalCompilerOptions)) then continue;

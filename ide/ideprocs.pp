@@ -88,7 +88,6 @@ function ConvertSpecialFileChars(const Filename: string): string;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
-function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 function ChompEndNumber(const s: string): string;
 
@@ -120,6 +119,7 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function ShortenSearchPath(const SearchPath, BaseDirectory,
                            ChompDirectory: string): string;
@@ -604,7 +604,7 @@ begin
   Result:=Filename;
   if (BaseDirectory='') or (Filename='') then exit;
   // check for different windows file drives
-  if (AnsiCompareText(ExtractFileDrive(Filename),
+  if (CompareText(ExtractFileDrive(Filename),
                      ExtractFileDrive(BaseDirectory))<>0)
   then
     exit;
@@ -705,7 +705,8 @@ begin
   end;
 end;
 
-function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
+  ): string;
 var
   PathLen: Integer;
   EndPos: Integer;

@@ -1195,6 +1195,8 @@ begin
 end;
 
 function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
+var
+  CompilerOptionStrings: TInheritedCompOptsStrings;
 
   procedure Replace(var s: string; const SearchTxt, ReplaceTxt: string);
   var
@@ -1207,17 +1209,28 @@ function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
     until false;
   end;
 
-  function ConvertLazarusToMakefileMakros(const s: string): string;
+  function ConvertLazarusToDummyMakros(const s: string): string;
   begin
     Result:=s;
     Replace(Result,'$(TargetCPU)','%(CPU_TARGET)');
     Replace(Result,'$(TargetOS)','%(OS_TARGET)');
     Replace(Result,'$(LCLWidgetType)','%(LCL_PLATFORM)');
-    Result:=APackage.SubstitutePkgMacro(Result);
-    Result:=ParseString(APackage.CompilerOptions.ParsedOpts,Result);
+  end;
+
+  function ConvertDummyToMakefileMakros(const s: string): string;
+  begin
+    Result:=s;
     Replace(Result,'%(CPU_TARGET)','$(CPU_TARGET)');
     Replace(Result,'%(OS_TARGET)','$(OS_TARGET)');
     Replace(Result,'%(LCL_PLATFORM)','$(LCL_PLATFORM)');
+  end;
+
+  function ConvertLazarusToMakefileMakros(const s: string): string;
+  begin
+    Result:=ConvertLazarusToDummyMakros(s);
+    Result:=APackage.SubstitutePkgMacro(Result);
+    Result:=ParseString(APackage.CompilerOptions.ParsedOpts,Result);
+    Result:=ConvertDummyToMakefileMakros(Result);
   end;
   
   function ConvertLazarusToMakefileSearchPath(const s: string): string;
@@ -1234,6 +1247,111 @@ function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
                          ConvertLazarusToMakefileMakros(s)),APackage.Directory);
   end;
   
+  procedure AddCompilerOptions(ParsedOpts: TParsedCompilerOptions);
+  var
+    o: TInheritedCompilerOption;
+    UnparsedOption: String;
+    ParsedOption: String;
+    CurOptions: String;
+  begin
+    for o:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption)
+    do begin
+      // get values with makros
+      UnparsedOption:=ParsedOpts.UnparsedValues[
+                                            InheritedToParsedCompilerOption[o]];
+      //if o=icoUnitPath then
+      //  DebugLn('GatherCompilerOptions Unparsed Unitpath="',UnparsedOption,'"');
+      // replace package specific makros
+      // TODO
+      if ParsedOpts.OnLocalSubstitute<>nil then
+        UnparsedOption:=ParsedOpts.OnLocalSubstitute(UnparsedOption);
+      //if o=icoUnitPath then
+      //  DebugLn('GatherCompilerOptions Without locals in Unitpath="',UnparsedOption,'"');
+      // save system specific makros for Makefile
+      UnparsedOption:=ConvertLazarusToDummyMakros(UnparsedOption);
+      // replace the remaining Makros and extend paths
+      ParsedOption:=ParsedOpts.DoParseOption(UnparsedOption,
+                                  InheritedToParsedCompilerOption[o],false);
+      // restore system specific makros for Makefile
+      ParsedOption:=ConvertDummyToMakefileMakros(ParsedOption);
+
+      if ParsedOption<>'' then begin
+        CurOptions:=CompilerOptionStrings[o];
+        //if o=icoUnitPath then
+        //  DebugLn('GatherCompilerOptions OldUnitPath="',CurOptions,'" ParsedOption="',ParsedOption,'"');
+        case o of
+        icoUnitPath,icoIncludePath,icoSrcPath,icoObjectPath,icoLibraryPath:
+          begin
+            CurOptions:=TrimSearchPath(CurOptions,'');
+            CurOptions:=MergeSearchPaths(CurOptions,ParsedOption);
+          end;
+        icoLinkerOptions:
+          begin
+            CurOptions:=MergeLinkerOptions(CurOptions,ParsedOption);
+          end;
+        icoCustomOptions:
+          begin
+            CurOptions:=MergeCustomOptions(CurOptions,ParsedOption);
+          end;
+        else
+          RaiseException('GatherInheritedOptions');
+        end;
+        CompilerOptionStrings[o]:=CurOptions;
+        //if o=icoUnitPath then
+        //  DebugLn('GatherCompilerOptions NewUnitPath="',CurOptions,'"');
+      end;
+    end;
+  end;
+
+  procedure GatherInheritedCompilerOptions;
+  var
+    OptionsList: TList;
+    AddOptions: TAdditionalCompilerOptions;
+    i: Integer;
+  begin
+    OptionsList:=nil;
+    APackage.CompilerOptions.GetInheritedCompilerOptions(OptionsList);
+    if OptionsList<>nil then begin
+      //GatherInheritedOptions(OptionsList,false,InheritedOptionStrings);
+      for i:=0 to OptionsList.Count-1 do begin
+        AddOptions:=TAdditionalCompilerOptions(OptionsList[i]);
+        if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
+        //DebugLn('GatherCompilerOptions ',
+        //  (AddOptions.Owner as TLazPackage).IDAsString,
+        //  ' UnitPath="',AddOptions.GetOption(icoUnitPath),'"');
+        AddCompilerOptions(AddOptions.ParsedOpts);
+      end;
+
+      //DebugLn('GatherCompilerOptions Total Inherited UnitPath="',CompilerOptionStrings[icoUnitPath],'"');
+      OptionsList.Free;
+    end;
+  end;
+  
+  procedure GatherCompilerOptions;
+  var
+    o: TInheritedCompilerOption;
+    BaseDir: String;
+  begin
+    GatherInheritedCompilerOptions;
+    
+    AddCompilerOptions(APackage.CompilerOptions.ParsedOpts);
+    
+    BaseDir:=APackage.Directory;
+    for o:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
+    begin
+      case o of
+      icoUnitPath,icoIncludePath,icoSrcPath,icoObjectPath,icoLibraryPath:
+        begin
+          CompilerOptionStrings[o]:=CreateRelativeSearchPath(
+                                         CompilerOptionStrings[o]+';.',BaseDir);
+          Replace(CompilerOptionStrings[o],';',' ');
+        end;
+      end;
+    end;
+
+    //DebugLn('GatherCompilerOptions Total UnitPath="',CompilerOptionStrings[icoUnitPath],'"');
+  end;
+  
 var
   s: String;
   e: string;
@@ -1243,18 +1361,17 @@ var
   UnitOutputPath: String;
   UnitPath: String;
   FPCMakeTool: TExternalToolOptions;
+  CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
 
-  APackage.WriteInheritedUnparsedOptions;
+  GatherCompilerOptions;
 
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
-  UnitPath:=APackage.CompilerOptions.GetUnitPath(false,false)+';.';
+  UnitPath:=CompilerOptionStrings[icoUnitPath];
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
   
-  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' original UnitPath="',UnitPath,'"');
-  UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
   DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
 
@@ -1291,9 +1408,20 @@ begin
 
   MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
   
+  CodeBuffer:=CodeToolBoss.LoadFile(MakefileFPCFilename,true,true);
+  if CodeBuffer=nil then begin
+    CodeBuffer:=CodeToolBoss.CreateFile(MakefileFPCFilename);
+  end;
+  
+  if CodeBuffer.Source=s then begin
+    // Makefile.fpc not changed
+    Result:=mrOk;
+    exit;
+  end;
+  CodeBuffer.Source:=s;
+
   debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
-  Result:=MainIDE.DoSaveStringToFile(MakefileFPCFilename,s,
-                               'Makefile.fpc for package '+APackage.IDAsString);
+  Result:=MainIDE.DoSaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename,false);
   if Result<>mrOk then exit;
   
   // call fpcmake to create the Makefile
@@ -3024,6 +3152,7 @@ var
   OutputDir: String;
   OldSrc: String;
   NeedsRegisterProcCall: boolean;
+  CurSrcUnitName: String;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.DoSavePackageMainSource A');
@@ -3057,6 +3186,28 @@ begin
     if FilenameIsPascalUnit(CurFile.Filename)
     and (CurFile.FileType in PkgFileUnitTypes) then begin
       CurUnitName:=ExtractFileNameOnly(CurFile.Filename);
+      
+      if CurUnitName=lowercase(CurUnitName) then begin
+        // the filename is all lowercase, so we can use the nicer unitname from
+        // the source.
+
+        CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
+        if CodeBuffer<>nil then begin
+          // if the unit is edited, the unitname is probably already cached
+          CurSrcUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
+          // if not then parse it
+          if SysUtils.CompareText(CurSrcUnitName,CurUnitName)<>0 then
+            CurSrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+          // if it makes sense, update unitname
+          if SysUtils.CompareText(CurSrcUnitName,CurFile.UnitName)=0 then
+            CurFile.UnitName:=CurSrcUnitName;
+        end;
+        if SysUtils.CompareText(CurUnitName,CurFile.UnitName)=0 then
+          CurUnitName:=CurFile.UnitName
+        else
+          CurFile.UnitName:=CurUnitName;
+      end;
+
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
         NeedsRegisterProcCall:=CurFile.HasRegisterProc
           and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
