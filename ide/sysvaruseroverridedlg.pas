@@ -40,16 +40,15 @@ uses
   LazarusIDEStrConsts, LResources;
 
 type
+  { TSysVarUserOverrideDialog }
   TSysVarUserOverrideDialog = class(TForm)
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
     VariableLabel: TLabel;
     VariableEdit: TEdit;
     ValueLabel: TLabel;
     ValueEdit: TEdit;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
-    procedure SysVarUserOverrideDialogResize(Sender: TObject);
   private
   public
     constructor Create(TheOwner: TComponent); override;
@@ -57,9 +56,7 @@ type
 
 function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
 
-
 implementation
-
 
 function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
 var SysVarUserOverrideDialog: TSysVarUserOverrideDialog;
@@ -89,115 +86,23 @@ begin
       mtWarning,[mbCancel,mbIgnore],0)=mrCancel
     then exit;
   end;
-  ModalResult:=mrOk;
-end;
-
-procedure TSysVarUserOverrideDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
-procedure TSysVarUserOverrideDialog.SysVarUserOverrideDialogResize(
-  Sender: TObject);
-begin
-  with VariableLabel do begin
-    SetBounds(10,10,150,Height);
-  end;
-
-  with VariableEdit do begin
-    SetBounds(VariableLabel.Left,VariableLabel.Top+VariableLabel.Height+2,
-      Self.ClientWidth-2*VariableLabel.Left,Height);
-  end;
-
-  with ValueLabel do begin
-    SetBounds(VariableEdit.Left,VariableEdit.Top+VariableEdit.Height+10,
-      150,Height);
-  end;
-
-  with ValueEdit do begin
-    SetBounds(ValueLabel.Left,ValueLabel.Top+ValueLabel.Height+2,
-      Self.ClientWidth-2*ValueLabel.Left,Height);
-  end;
-
-  with OkButton do begin
-    SetBounds(Self.ClientWidth-220,Self.ClientHeight-40,100,25);
-  end;
-
-  with CancelButton do begin
-    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,100,25);
-  end;
 end;
 
 constructor TSysVarUserOverrideDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
 
-    Caption:=lisSVUOOverrideSystemVariable;
-    Width:=400;
-    Height:=170;
-    Position:=poScreenCenter;
-    OnResize:=@SysVarUserOverrideDialogResize;
+  Caption:=lisSVUOOverrideSystemVariable;
 
-    VariableLabel:=TLabel.Create(Self);
-    with VariableLabel do begin
-      Name:='VariableLabel';
-      Parent:=Self;
-      SetBounds(10,10,150,Height);
-      Caption:=lisCodeToolsDefsVariable;
-      Visible:=true;
-    end;
-    
-    VariableEdit:=TEdit.Create(Self);
-    with VariableEdit do begin
-      Name:='VariableEdit';
-      Parent:=Self;
-      SetBounds(VariableLabel.Left,VariableLabel.Top+VariableLabel.Height+2,
-        Self.ClientWidth-2*VariableLabel.Left,Height);
-      Visible:=true;
-    end;
+  VariableLabel.Caption:=lisCodeToolsDefsVariable;
+  ValueLabel.Caption:='Value:';
 
-    ValueLabel:=TLabel.Create(Self);
-    with ValueLabel do begin
-      Name:='ValueLabel';
-      Parent:=Self;
-      SetBounds(VariableEdit.Left,VariableEdit.Top+VariableEdit.Height+10,
-        150,Height);
-      Caption:='Value:';
-      Visible:=true;
-    end;
-
-    ValueEdit:=TEdit.Create(Self);
-    with ValueEdit do begin
-      Name:='ValueEdit';
-      Parent:=Self;
-      SetBounds(ValueLabel.Left,ValueLabel.Top+ValueLabel.Height+2,
-        Self.ClientWidth-2*ValueLabel.Left,Height);
-      Visible:=true;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-220,Self.ClientHeight-40,100,25);
-      Caption:=lisSVUOOk;
-      OnClick:=@OkButtonClick;
-      Visible:=true;
-    end;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,100,25);
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Visible:=true;
-    end;
-  end;
-  SysVarUserOverrideDialogResize(nil);
+  OkButton.Caption:=lisSVUOOk;
+  CancelButton.Caption:=dlgCancel;
 end;
+
+initialization
+  {$I sysvaruseroverridedlg.lrs}
 
 end.
 

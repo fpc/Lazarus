@@ -43,7 +43,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 1
     Height = 408
     Width = 500
     object Page1: TPage
@@ -57,8 +57,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'DisplayGroupBox'
-        ClientHeight = 54
-        ClientWidth = 476
+        ClientHeight = 72
+        ClientWidth = 480
         TabOrder = 3
         Left = 6
         Height = 72
@@ -93,8 +93,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'CmdLineParametersGroupBox'
-        ClientHeight = 35
-        ClientWidth = 476
+        ClientHeight = 53
+        ClientWidth = 480
         TabOrder = 0
         Left = 6
         Height = 53
@@ -116,8 +116,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'UseLaunchingApplicationGroupBox'
-        ClientHeight = 52
-        ClientWidth = 476
+        ClientHeight = 70
+        ClientWidth = 480
         TabOrder = 1
         Left = 6
         Height = 70
@@ -154,8 +154,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'HostApplicationGroupBox'
-        ClientHeight = 35
-        ClientWidth = 476
+        ClientHeight = 53
+        ClientWidth = 480
         TabOrder = 2
         Left = 6
         Height = 53
@@ -189,8 +189,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'WorkingDirectoryGroupBox'
-        ClientHeight = 35
-        ClientWidth = 476
+        ClientHeight = 53
+        ClientWidth = 480
         TabOrder = 4
         Left = 6
         Height = 53
@@ -241,8 +241,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'UserOverridesGroupBox'
-        ClientHeight = 161
-        ClientWidth = 480
+        ClientHeight = 143
+        ClientWidth = 476
         TabOrder = 1
         Left = 6
         Height = 161
@@ -258,7 +258,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           TabOrder = 0
           Left = 6
           Height = 29
-          Top = 106
+          Top = 88
           Width = 141
         end
         object UserOverridesEditButton: TButton
@@ -270,9 +270,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           OnClick = UserOverridesEditButtonClick
           TabOrder = 1
           AnchorSideLeft.Control = UserOverridesAddButton
+          AnchorSideLeft.Side = asrBottom
           Left = 153
           Height = 29
-          Top = 106
+          Top = 88
           Width = 140
         end
         object UserOverridesDeleteButton: TButton
@@ -284,9 +285,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           OnClick = UserOverridesDeleteButtonClick
           TabOrder = 2
           AnchorSideLeft.Control = UserOverridesEditButton
+          AnchorSideLeft.Side = asrBottom
           Left = 299
           Height = 29
-          Top = 106
+          Top = 88
           Width = 153
         end
         object UserOverridesListView: TListView
@@ -306,9 +308,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
             end>
           RowSelect = True
           SortType = stText
+          TabOrder = 3
           ViewStyle = vsReport
           Left = 6
-          Height = 96
+          Height = 78
           Top = 6
           Width = 464
         end
@@ -317,8 +320,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'SystemVariablesGroupBox'
-        ClientHeight = 184
-        ClientWidth = 480
+        ClientHeight = 166
+        ClientWidth = 476
         TabOrder = 2
         Left = 6
         Height = 184
@@ -340,6 +343,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
             end>
           RowSelect = True
           SortType = stText
+          TabOrder = 0
           ViewStyle = vsReport
           Left = 6
           Height = 154
