@@ -34,17 +34,16 @@ uses
   LazarusIDEStrConsts;
 
 type
+  { TAlignComponentsDialog }
   TAlignComponentsDialog = class(TForm)
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
     HorizontalRadioGroup: TRadioGroup;
     VerticalRadioGroup: TRadioGroup;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);  override;
   end;
-
 
 function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
   ): TModalResult;
@@ -65,93 +64,57 @@ begin
   end;
 end;
 
-
 { TAlignComponentsDialog }
+procedure TAlignComponentsDialog.FormResize(Sender: TObject);
+begin
+  HorizontalRadioGroup.Width := ClientWidth div 2 - 9;
+  VerticalRadioGroup.Left := HorizontalRadioGroup.Width + 12;
+  VerticalRadioGroup.Width := ClientWidth div 2 - 9;
+end;
 
 constructor TAlignComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if LazarusResources.Find(Classname)=nil then begin
-    SetBounds((Screen.Width-400) div 2,(Screen.Height-280) div 2,410,290);
-    Caption:=lisAlignment;
 
-    HorizontalRadioGroup:=TRadioGroup.Create(Self);
-    with HorizontalRadioGroup do begin
-      Name:='HorizontalRadioGroup';
-      SetBounds(5,5,(Self.ClientWidth div 2)-15,Self.ClientHeight-45);
-      Caption:=lisHorizontal;
-      with Items do begin
-        BeginUpdate;
-        Add(lisNoChange);
-        Add(lisLeftSides);
-        Add(lisCenters);
-        Add(lisRightSides);
-        Add(lisCenterInWindow);
-        Add(lisSpaceEqually);
-        Add(lisLeftSpaceEqually);
-        Add(lisRightSpaceEqually);
-        EndUpdate;
-      end;
-      Parent:=Self;
-    end;
+  Caption:=lisAlignment;
 
-    VerticalRadioGroup:=TRadioGroup.Create(Self);
-    with VerticalRadioGroup do begin
-      Name:='VerticalRadioGroup';
-      SetBounds(HorizontalRadioGroup.Left+HorizontalRadioGroup.Width+5,5,
-                HorizontalRadioGroup.Width,HorizontalRadioGroup.Height);
-      Caption:=lisVertical;
-      with Items do begin
-        BeginUpdate;
-        Add(lisNoChange);
-        Add(lisTops);
-        Add(lisCenters);
-        Add(lisBottoms);
-        Add(lisCenterInWindow);
-        Add(lisSpaceEqually);
-        Add(lisTopSpaceEqually);
-        Add(lisBottomSpaceEqually);
-        EndUpdate;
-      end;
-      Parent:=Self;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Left:=145;
-      Top:=Self.ClientHeight-32;
-      Width:=75;
-      Height:=25;
-      Caption:=dlgButApply;
-      OnClick:=@OkButtonClick;
-      Show;
-    end;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      Left:=235;
-      Top:=OkButton.Top;
-      Width:=75;
-      Height:=25;
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Show;
+  with HorizontalRadioGroup do begin
+    Caption:=lisHorizontal;
+    with Items do begin
+      BeginUpdate;
+      Add(lisNoChange);
+      Add(lisLeftSides);
+      Add(lisCenters);
+      Add(lisRightSides);
+      Add(lisCenterInWindow);
+      Add(lisSpaceEqually);
+      Add(lisLeftSpaceEqually);
+      Add(lisRightSpaceEqually);
+      EndUpdate;
     end;
   end;
+
+  with VerticalRadioGroup do begin
+    Caption:=lisVertical;
+    with Items do begin
+      BeginUpdate;
+      Add(lisNoChange);
+      Add(lisTops);
+      Add(lisCenters);
+      Add(lisBottoms);
+      Add(lisCenterInWindow);
+      Add(lisSpaceEqually);
+      Add(lisTopSpaceEqually);
+      Add(lisBottomSpaceEqually);
+      EndUpdate;
+    end;
+  end;
+
+  OkButton.Caption:=dlgButApply;
+  CancelButton.Caption:=dlgCancel;
 end;
 
-procedure TAlignComponentsDialog.OkButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TAlignComponentsDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
+initialization
+  {$I aligncompsdlg.lrs}
 
 end.

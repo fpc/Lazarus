@@ -1,0 +1,69 @@
+object AlignComponentsDialog: TAlignComponentsDialog
+  ActiveControl = OKButton
+  BorderStyle = bsSizeToolWin
+  Caption = 'AlignComponentsDialog'
+  ClientHeight = 238
+  ClientWidth = 400
+  OnResize = FormResize
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 237
+  Left = 312
+  Height = 238
+  Top = 674
+  Width = 400
+  object HorizontalRadioGroup: TRadioGroup
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'HorizontalRadioGroup'
+    TabOrder = 0
+    Left = 6
+    Height = 190
+    Top = 6
+    Width = 191
+  end
+  object VerticalRadioGroup: TRadioGroup
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'VerticalRadioGroup'
+    TabOrder = 1
+    AnchorSideBottom.Control = OKButton
+    Left = 203
+    Height = 190
+    Top = 6
+    Width = 191
+  end
+  object OKButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 319
+    Height = 30
+    Top = 202
+    Width = 75
+  end
+  object CancelButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 3
+    AnchorSideRight.Control = OKButton
+    Left = 238
+    Height = 30
+    Top = 202
+    Width = 75
+  end
+end
