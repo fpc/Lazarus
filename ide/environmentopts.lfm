@@ -15,7 +15,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 6
+    PageIndex = 7
     Height = 477
     Width = 540
     object FilesPage: TPage
@@ -469,7 +469,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 117
           Height = 14
           Top = 60
-          Width = 198
+          Width = 194
         end
         object GridSizeYLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -479,7 +479,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 117
           Height = 14
           Top = 96
-          Width = 198
+          Width = 194
         end
         object GridColorButton: TColorButton
           BorderWidth = 2
@@ -495,7 +495,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 26
-          Width = 309
+          Width = 305
         end
         object ShowGridCheckBox: TCheckBox
           Caption = 'ShowGridCheckBox'
@@ -555,6 +555,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         ClientWidth = 172
         TabOrder = 1
         AnchorSideLeft.Control = FormEditMiscGroupBox
+        AnchorSideLeft.Side = asrBottom
         Left = 353
         Height = 255
         Top = 187
@@ -581,7 +582,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 57
-          Width = 146
+          Width = 142
         end
         object GuideLineColorRightBottomLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -591,7 +592,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 102
-          Width = 146
+          Width = 142
         end
         object ShowGuideLinesCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -599,7 +600,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TabOrder = 0
           Left = 6
           Height = 13
-          Width = 146
+          Width = 142
         end
         object SnapToGuideLinesCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -608,7 +609,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 19
-          Width = 146
+          Width = 142
         end
       end
       object FormEditMiscGroupBox: TGroupBox
@@ -645,7 +646,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 110
-          Width = 324
+          Width = 320
         end
         object MarkerColorLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -655,7 +656,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 160
-          Width = 324
+          Width = 320
         end
         object ShowComponentCaptionsCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -663,7 +664,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TabOrder = 0
           Left = 6
           Height = 13
-          Width = 324
+          Width = 320
         end
         object ShowEditorHintsCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -672,7 +673,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 25
-          Width = 324
+          Width = 320
         end
         object AutoCreateFormsOnOpenCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -681,7 +682,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 50
-          Width = 324
+          Width = 320
         end
         object RightClickSelectsCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -690,7 +691,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 75
-          Width = 324
+          Width = 320
         end
         object DesignerPaintLazyCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -701,7 +702,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 205
-          Width = 324
+          Width = 320
         end
       end
       object RubberbandGroupBox: TGroupBox
@@ -712,6 +713,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         ClientWidth = 172
         TabOrder = 3
         AnchorSideLeft.Control = GridGroupBox
+        AnchorSideLeft.Side = asrBottom
         Left = 353
         Height = 170
         Top = 6
@@ -738,7 +740,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 3
-          Width = 159
+          Width = 155
         end
         object RubberbandCreateColorLabel: TLabel
           Anchors = [akTop, akLeft, akRight]
@@ -748,7 +750,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 14
           Top = 54
-          Width = 159
+          Width = 155
         end
         object RubberbandSelectsGrandChildsCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -757,7 +759,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 13
           Top = 102
-          Width = 165
+          Width = 161
         end
       end
     end
@@ -1147,16 +1149,16 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Color = clNone
         ParentColor = False
         Left = 8
-        Height = 13
+        Height = 14
         Top = 226
-        Width = 259
+        Width = 223
       end
       object LazDocPathsGroupBox: TGroupBox
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 210
-        ClientWidth = 520
+        ClientHeight = 192
+        ClientWidth = 516
         TabOrder = 0
         Left = 6
         Height = 210
@@ -1178,9 +1180,9 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
           Left = 6
-          Height = 26
+          Height = 29
           Top = 122
-          Width = 136
+          Width = 133
         end
         object LazDocDeletePathButton: TButton
           AutoSize = True
@@ -1190,30 +1192,36 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
           AnchorSideLeft.Control = LazDocAddPathButton
-          Left = 152
-          Height = 26
+          AnchorSideLeft.Side = asrBottom
+          Left = 149
+          Height = 29
           Top = 122
-          Width = 149
+          Width = 145
         end
         object LazDocPathEdit: TEdit
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 6
           TabOrder = 3
           Text = 'LazDocPathEdit'
+          AnchorSideTop.Control = LazDocAddPathButton
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 154
-          Width = 468
+          Top = 157
+          Width = 480
         end
         object LazDocBrowseButton: TButton
-          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 6
           BorderSpacing.InnerBorder = 2
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
-          Left = 479
+          AnchorSideLeft.Control = LazDocPathEdit
+          AnchorSideLeft.Side = asrBottom
+          Left = 492
           Height = 23
-          Top = 154
-          Width = 23
+          Top = 156
+          Width = 19
         end
       end
     end
