@@ -33,12 +33,16 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
                           SharedControl: TWinControl; AttrList: PInteger): HWND;
 
 const
-  DefaultOpenGLContextInitAttrList: array [0..5] of LongInt = (
+  DefaultOpenGLContextInitAttrList: array [0..13] of LongInt = (
     AGL_WINDOW,
     AGL_RGBA,
     AGL_NO_RECOVERY,
     AGL_DOUBLEBUFFER,
     AGL_SINGLE_RENDERER,
+    AGL_RED_SIZE,1,
+    AGL_GREEN_SIZE,1,
+    AGL_BLUE_SIZE,1,
+    AGL_DEPTH_SIZE,1,
     AGL_NONE
     );
     
