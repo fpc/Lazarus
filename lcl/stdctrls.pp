@@ -211,8 +211,12 @@ type
 
 
   { TCustomComboBox }
-  TComboBoxAutoCompleteTextSet = (cbactEnabled, cbactSearchCaseSensitive, cbactSearchAscending);
-  TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextSet;
+  TComboBoxAutoCompleteTextOption = (
+    cbactEnabled,
+    cbactSearchCaseSensitive,
+    cbactSearchAscending
+    );
+  TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
