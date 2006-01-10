@@ -211,6 +211,8 @@ type
 
 
   { TCustomComboBox }
+  TComboBoxAutoCompleteTextSet = (cbactEnabled, cbactSearchCaseSensitive, cbactSearchAscending);
+  TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextSet;
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
@@ -226,6 +228,7 @@ type
 
   TCustomComboBox = class(TWinControl)
   private
+    FAutoCompleteText: TComboBoxAutoCompleteText;
     FAutoDropDown: Boolean;
     FCanvas: TCanvas;
     FDropDownCount: Integer;
@@ -292,6 +295,7 @@ type
     procedure SetStyle(Val: TComboBoxStyle); virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     function SelectItem(const AnItem: String): Boolean;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
@@ -319,7 +323,8 @@ type
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
-
+    property AutoCompleteText: TComboBoxAutoCompleteText
+                           read FAutoCompleteText write FAutoCompleteText;
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
@@ -345,6 +350,7 @@ type
     property Align;
     property Anchors;
     property ArrowKeysTraverseList;
+    property AutoCompleteText;
     property AutoDropDown;
     property BorderSpacing;
     property Ctl3D;

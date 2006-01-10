@@ -430,6 +430,32 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
+procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
+var iSelStart: Integer;
+    sCompleteText: string;
+begin
+ inherited KeyUp(Key, Shift);
+ if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown)) then
+  begin
+   //Only happens with alpha-numeric keys and return key and csDropDown Style
+   if not (IsEditableTextKey(Key) or (Key = VK_RETURN)) then Exit;
+   if (Key = VK_RETURN) then
+    SelectAll else
+    begin
+     iSelStart := SelStart;//Capture original cursor position
+     sCompleteText := GetCompleteText(Text, iSelStart,
+                                      (cbactSearchCaseSensitive in FAutoCompleteText),
+                                      (cbactSearchAscending in FAutoCompleteText), Items);
+     if not (sCompleteText = Text) then
+      begin
+       Text := sCompleteText;
+       SelStart := iSelStart;
+       SelLength := Length(Text);
+      end;//End if not (sCompleteText = Text)
+    end;//End if (Key = VK_RETURN)
+  end;//End if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown))
+end;
+
 {------------------------------------------------------------------------------
   function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
 
@@ -578,6 +604,7 @@ begin
   ArrowKeysTraverseList := True;
   TabStop := true;
   ParentColor := false;
+  FAutoCompleteText := [cbactSearchAscending];
 end;
 
 {------------------------------------------------------------------------------
