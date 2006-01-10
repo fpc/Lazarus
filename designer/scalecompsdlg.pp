@@ -35,18 +35,14 @@ uses
 
 type
   TScaleComponentsDialog = class(TForm)
-    Bevel: TBevel;
     ScaleLabel: TLabel;
     PercentEdit: TEdit;
     PercentLabel: TLabel;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
   public
     constructor Create(AOwner: TComponent);  override;
   end;
-
 
 function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
 
@@ -69,92 +65,17 @@ end;
 constructor TScaleComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if LazarusResources.Find(Classname)=nil then begin
-    SetBounds((Screen.Width-270) div 2,(Screen.Height-110) div 2,260,100);
-    Caption:='Scale';
 
-    Bevel:=TBevel.Create(Self);
-    with Bevel do begin
-      Name:='Bevel';
-      Parent:=Self;
-      Left:=5;
-      Top:=5;
-      Width:=250;
-      Height:=50;
-      Visible:=true;
-    end;
+  Caption:='Scale';
 
-    ScaleLabel:=TLabel.Create(Self);
-    with ScaleLabel do begin
-      Name:='ScaleLabel';
-      Parent:=Self;
-      Left:=12;
-      Top:=15;
-      Width:=90;
-      Height:=25;
-      Caption:=lisScalingFactor;
-      Visible:=true;
-    end;
+  ScaleLabel.Caption:=lisScalingFactor;
+  PercentLabel.Caption:='%';
 
-    PercentEdit:=TEdit.Create(Self);
-    with PercentEdit do begin
-      Name:='PercentEdit';
-      Parent:=Self;
-      Left:=140;
-      Top:=20;
-      Width:=60;
-      Text:='100';
-      Visible:=true;
-    end;
-
-    PercentLabel:=TLabel.Create(Self);
-    with PercentLabel do begin
-      Name:='PercentLabel';
-      Parent:=Self;
-      Left:=PercentEdit.Left+PercentEdit.Width+5;
-      Top:=ScaleLabel.Top;
-      Width:=15;
-      Height:=25;
-      Caption:='%';
-      Visible:=true;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Left:=85;
-      Top:=Bevel.Top+Bevel.Height+10;
-      Width:=75;
-      Height:=25;
-      Caption:=dlgButApply;
-      OnClick:=@OkButtonClick;
-      Visible:=true;
-    end;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      Left:=175;
-      Top:=OkButton.Top;
-      Width:=75;
-      Height:=25;
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Visible:=true;
-    end;
-  end;
+  OkButton.Caption:=dlgButApply;
+  CancelButton.Caption:=dlgCancel;
 end;
 
-procedure TScaleComponentsDialog.OkButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TScaleComponentsDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
+initialization
+  {$I scalecompsdlg.lrs}
 
 end.
