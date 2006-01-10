@@ -7,8 +7,8 @@ Andreas Hausladen
 Andrew Haines
 Andrew Johnson
 Bob Wingard
-Boris Arko
 Boguslaw Brandys
+Boris Arko
 Christian Iversen
 Christopher Kirkpatrick
 Cliff Baeseman
@@ -62,12 +62,13 @@ Rostislav Okulov
 Salvatore Coppola
 Samuel Herzog
 Samuel Liddicott
+Sean McIlwain
 Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller
 Stefan Hille
-Sean McIlwain
 Taras Boychuk
+Tomas Gregorovic
 Tom Lisjac
 Tomáš Gregorovič
 Tony Maro

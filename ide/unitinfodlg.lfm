@@ -6,13 +6,13 @@ object UnitInfoDialog: TUnitInfoDialog
   ClientWidth = 500
   OnKeyDown = UnitInfoDlgKeyDown
   OnResize = UnitInfoDlgResize
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 282
-  Left = 310
+  Left = 349
   Height = 283
-  Top = 665
+  Top = 244
   Width = 500
   object OkButton: TBitBtn
     Anchors = [akRight, akBottom]
@@ -24,10 +24,10 @@ object UnitInfoDialog: TUnitInfoDialog
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 0
-    Left = 443
-    Height = 28
-    Top = 245
-    Width = 51
+    Left = 426
+    Height = 34
+    Top = 239
+    Width = 68
   end
   object Notebook: TNotebook
     Align = alTop
@@ -40,12 +40,10 @@ object UnitInfoDialog: TUnitInfoDialog
     Width = 488
     object Page1: TPage
       Caption = 'Page1'
-      ClientWidth = 484
-      ClientHeight = 196
-      Left = 2
-      Height = 196
-      Top = 28
-      Width = 484
+      ClientWidth = 480
+      ClientHeight = 200
+      Height = 200
+      Width = 480
       object ULines: TLabel
         Alignment = taRightJustify
         Caption = 'ULines'
@@ -53,9 +51,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 92
-        Width = 39
+        Width = 38
       end
       object OutLines: TLabel
         BorderSpacing.Left = 12
@@ -64,10 +62,10 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         AnchorSideLeft.Control = ULines
         AnchorSideLeft.Side = asrBottom
-        Left = 63
-        Height = 13
+        Left = 62
+        Height = 14
         Top = 92
-        Width = 51
+        Width = 43
       end
       object OutPath: TLabel
         BorderSpacing.Left = 12
@@ -76,10 +74,10 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         AnchorSideLeft.Control = UPath
         AnchorSideLeft.Side = asrBottom
-        Left = 58
-        Height = 13
+        Left = 59
+        Height = 14
         Top = 112
-        Width = 46
+        Width = 41
       end
       object UPath: TLabel
         Alignment = taRightJustify
@@ -88,9 +86,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 112
-        Width = 34
+        Width = 35
       end
       object UIncludedBy: TLabel
         Alignment = taRightJustify
@@ -99,7 +97,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 132
         Width = 72
       end
@@ -111,9 +109,9 @@ object UnitInfoDialog: TUnitInfoDialog
         AnchorSideLeft.Control = UIncludedBy
         AnchorSideLeft.Side = asrBottom
         Left = 96
-        Height = 13
+        Height = 14
         Top = 132
-        Width = 84
+        Width = 72
       end
       object OutSize: TLabel
         BorderSpacing.Left = 12
@@ -122,10 +120,10 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         AnchorSideLeft.Control = USize
         AnchorSideLeft.Side = asrBottom
-        Left = 57
-        Height = 13
+        Left = 56
+        Height = 14
         Top = 72
-        Width = 45
+        Width = 38
       end
       object USize: TLabel
         Alignment = taRightJustify
@@ -134,9 +132,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 72
-        Width = 33
+        Width = 32
       end
       object UInProject: TLabel
         Alignment = taRightJustify
@@ -145,9 +143,9 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 52
-        Width = 58
+        Width = 62
       end
       object OutInProject: TLabel
         BorderSpacing.Left = 12
@@ -156,10 +154,10 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         AnchorSideLeft.Control = UInProject
         AnchorSideLeft.Side = asrBottom
-        Left = 82
-        Height = 13
+        Left = 86
+        Height = 14
         Top = 52
-        Width = 70
+        Width = 63
       end
       object OutType: TLabel
         BorderSpacing.Left = 12
@@ -169,9 +167,9 @@ object UnitInfoDialog: TUnitInfoDialog
         AnchorSideLeft.Control = UType
         AnchorSideLeft.Side = asrBottom
         Left = 61
-        Height = 13
+        Height = 14
         Top = 32
-        Width = 49
+        Width = 43
       end
       object UType: TLabel
         Alignment = taRightJustify
@@ -180,7 +178,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Font.Style = [fsBold]
         ParentColor = False
         Left = 12
-        Height = 13
+        Height = 14
         Top = 32
         Width = 37
       end
@@ -192,9 +190,9 @@ object UnitInfoDialog: TUnitInfoDialog
         AnchorSideLeft.Control = UName
         AnchorSideLeft.Side = asrBottom
         Left = 65
-        Height = 13
+        Height = 14
         Top = 12
-        Width = 53
+        Width = 46
       end
       object UName: TLabel
         Alignment = taRightJustify
@@ -204,91 +202,89 @@ object UnitInfoDialog: TUnitInfoDialog
         ParentColor = False
         OnResize = UnitInfoDlgResize
         Left = 12
-        Height = 13
+        Height = 14
         Top = 12
         Width = 41
       end
       object ClearIncludedBy: TButton
         AutoSize = True
-        BorderSpacing.Top = 18
+        BorderSpacing.Top = 20
         BorderSpacing.InnerBorder = 2
         Caption = 'ClearIncludedBy'
         OnClick = clearIncludedByClick
         TabOrder = 0
         AnchorSideTop.Control = UIncludedBy
         Left = 12
-        Height = 26
-        Top = 150
-        Width = 103
+        Height = 29
+        Top = 152
+        Width = 101
       end
     end
     object Page2: TPage
       Caption = 'Page2'
-      ClientWidth = 484
-      ClientHeight = 196
-      Left = 2
-      Height = 196
-      Top = 28
-      Width = 484
+      ClientWidth = 480
+      ClientHeight = 200
+      Height = 200
+      Width = 480
       object UnitPathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 184
+        Height = 188
         Top = 6
-        Width = 472
+        Width = 468
       end
     end
     object Page3: TPage
       Caption = 'Page3'
-      ClientWidth = 484
-      ClientHeight = 196
-      Left = 2
-      Height = 196
-      Top = 28
-      Width = 484
+      ClientWidth = 480
+      ClientHeight = 200
+      Height = 200
+      Width = 480
       object IncludePathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 184
+        Height = 188
         Top = 6
-        Width = 472
+        Width = 468
       end
     end
     object Page4: TPage
       Caption = 'Page4'
-      ClientWidth = 484
-      ClientHeight = 196
-      Left = 2
-      Height = 196
-      Top = 28
-      Width = 484
+      ClientWidth = 480
+      ClientHeight = 200
+      Height = 200
+      Width = 480
       object SrcPathMemo: TMemo
         Align = alClient
         BorderSpacing.Around = 6
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
         Left = 6
-        Height = 184
+        Height = 188
         Top = 6
-        Width = 472
+        Width = 468
       end
     end
   end
   object CodeToolsDefsButton: TButton
+    Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.InnerBorder = 2
     Caption = 'CodeToolsDefsButton'
     OnClick = CodeToolsDefsButtonClick
     TabOrder = 2
     Left = 6
-    Height = 26
-    Top = 240
-    Width = 130
+    Height = 29
+    Top = 239
+    Width = 128
   end
 end
