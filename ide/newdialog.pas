@@ -145,7 +145,6 @@ type
     OkButton:      TButton;
     CancelButton:  TButton;
     ItemsTreeView: TTreeView;
-    procedure FormResize(Sender: TObject);
     procedure ItemsTreeViewClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -242,14 +241,6 @@ begin
   DescriptionLabel.Caption := Desc;
 end;
 
-procedure TNewOtherDialog.FormResize(Sender: TObject);
-begin
-  ItemsTreeView.Height := OkButton.Top - 12;
-  ItemsTreeView.Width  := (Width - 18) div 2;
-  DescriptionGroupBox.Height := OkButton.Top - 12;
-  DescriptionGroupBox.Width := ItemsTreeView.Width;
-end;
-
 procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
   OkButton.Enabled := (ItemsTreeView.Selected <> nil) and
@@ -274,7 +265,6 @@ begin
   SetupComponents;
   FillItemsTree;
   IDEDialogLayoutList.ApplyLayout(Self, 400, 300);
-  OnResize(nil);
 end;
 
 destructor TNewOtherDialog.Destroy;

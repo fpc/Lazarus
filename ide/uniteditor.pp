@@ -380,6 +380,7 @@ type
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     procedure AddBreakpointClicked(Sender: TObject);
+    procedure ToggleBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
@@ -4453,6 +4454,24 @@ begin
   if ASrcEdit=nil then exit;
   DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,
                                ASrcEdit.EditorComponent.CaretY,true);
+end;
+
+procedure TSourceNotebook.ToggleBreakpointClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  Line: LongInt;
+  BreakPtMark: TSourceMark;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  // create or delete breakpoint
+  // find breakpoint mark at line
+  Line:=ASrcEdit.EditorComponent.CaretY;
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit.FEditor,Line);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
+  else
+    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
 end;
 
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);
