@@ -83,12 +83,15 @@ begin
 //    LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
       Item := FListItems[nm^.iItem];
+      if FSelected = Item then
+        InvalidateSelected;
       if Item = nil then Exit; //? nm^.iItem > Items.Count ?
       Exclude(Item.FFlags, lifCreated);
       if not (lifDestroying in Item.FFlags)
       then Item.Delete;
     end;
     LVN_DELETEALLITEMS: begin
+      InvalidateSelected;
       for n := FListItems.Count - 1 downto 0 do
       begin
         Item := FListItems[n];
@@ -117,35 +120,45 @@ begin
     end;
     LVN_ITEMCHANGED: begin
       Item := Items[nm^.iItem];
-      Change(Item, nm^.uChanged);
-      if (nm^.uChanged = LVIF_STATE)
-      then begin
-        // focus
-        if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED)
+      //DebugLn('TCustomListView.CNNotify Count=',dbgs(Items.Count),' nm^.iItem=',dbgs(nm^.iItem),' destroying=',dbgs(lifDestroying in Item.FFlags));
+      if (lifDestroying in Item.FFlags) then begin
+        if Item=FFocused then
+          FFocused:=nil;
+        if Item=FSelected then
+          InvalidateSelected;
+      end else begin
+        Change(Item, nm^.uChanged);
+        if (nm^.uChanged = LVIF_STATE)
         then begin
-          // focus state changed
-          if (nm^.uNewState and LVIS_FOCUSED) = 0
+          // focus
+          if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED)
           then begin
-            if FFocused = Item
-            then FFocused := nil;
-          end
-          else begin
-            FFocused := Item;
+            // focus state changed
+            if (nm^.uNewState and LVIS_FOCUSED) = 0
+            then begin
+              if FFocused = Item
+              then FFocused := nil;
+            end
+            else begin
+              FFocused := Item;
+            end;
           end;
-        end;
-        // select
-        if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
-        then begin
-          // select state changed
-          if (nm^.uNewState and LVIS_SELECTED) = 0
+          // select
+          if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
           then begin
-            if FSelected = Item
-            then FSelected := nil;
-            DoSelectItem(Item, False);
-          end
-          else begin
-            FSelected := Item;
-            DoSelectItem(Item, True);
+            // select state changed
+            if (nm^.uNewState and LVIS_SELECTED) = 0
+            then begin
+              if FSelected = Item then
+                InvalidateSelected;
+              DoSelectItem(Item, False);
+            end
+            else begin
+              FSelected := Item;
+              Include(FFlags,lffSelectedValid);
+              //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
+              DoSelectItem(Item, True);
+            end;
           end;
         end;
       end;
@@ -154,6 +167,12 @@ begin
 //    NM_CLICK:
 //    NM_RCLICK:
   end;
+end;
+
+procedure TCustomListView.InvalidateSelected;
+begin
+  FSelected:=nil;
+  Exclude(FFlags,lffSelectedValid);
 end;
 
 {------------------------------------------------------------------------------}
@@ -231,7 +250,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ItemDeleted(const AItem: TListItem);  //called by TListItems
 begin
-  if FSelected = AItem then FSelected := nil;
+  //DebugLn('TCustomListView.ItemDeleted ',dbgs(AItem),' FSelected=',dbgs(FSelected));
+  if FSelected = AItem then InvalidateSelected;
   if FFocused = AItem then FFocused := nil;
   if csDestroying in Componentstate then Exit;
   DoDeletion(AItem);
@@ -469,11 +489,24 @@ begin
   else Result := 0;
 end;
 
-{------------------------------------------------------------------------------}
-{   TCustomListView GetSelection                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+   TCustomListView GetSelection
+------------------------------------------------------------------------------}
 function TCustomListView.GetSelection: TListItem;
+var
+  i: Integer;
 begin
+  if not (lffSelectedValid in FFlags) then begin
+    FSelected:=nil;
+    for i:=0 to Items.Count-1 do begin
+      if Items[i].Selected then begin
+        FSelected:=Items[i];
+        DebugLn('TCustomListView.GetSelection ',dbgs(FSelected));
+        break;
+      end;
+    end;
+    Include(FFlags,lffSelectedValid);
+  end;
   Result := FSelected;
 end;
 
@@ -571,15 +604,19 @@ begin
   TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, AValue);
 end;
 
-{------------------------------------------------------------------------------}
-{   TCustomListView SetSelection                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+   TCustomListView SetSelection
+------------------------------------------------------------------------------}
 procedure TCustomListView.SetSelection(const AValue: TListItem);
 begin
+  if (AValue<>nil) and (AValue.ListView<>Self) then
+    raise Exception.Create('item does not belong to this listview');
   if FSelected = AValue then Exit;
   FSelected := AValue;
+  DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
   if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
+  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
+                                                  FSelected, lisSelected, True);
 end;
 
 procedure TCustomListView.SetOwnerData(const AValue: Boolean);
@@ -588,7 +625,8 @@ begin
   FOwnerData:=AValue;
 end;
 
-procedure TCustomListView.SetProperty(const ALvpOrd: Integer; const AIsSet: Boolean);
+procedure TCustomListView.SetProperty(const ALvpOrd: Integer;
+  const AIsSet: Boolean);
 var
   AProp: TListViewProperty;
 begin

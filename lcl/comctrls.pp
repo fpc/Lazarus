@@ -775,6 +775,11 @@ type
   
   TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot);
   TListHotTrackStyles = set of TListHotTrackStyle;
+  
+  TListViewFlag = (
+    lffSelectedValid
+    );
+  TListViewFlags = set of TListViewFlag;
 
   { TCustomListView }
 
@@ -784,11 +789,11 @@ type
     FCanvas: TCanvas;
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
-//    FIconOptions: TIconOptions;
     FOwnerData: Boolean;
     FListItems: TListItems;
     FColumns: TListColumns;
     FImages: array[TListViewImageList] of TCustomImageList;
+    FFlags: TListViewFlags;
 
     FViewStyle: TViewStyle;
     FSortType: TSortType;
@@ -810,7 +815,6 @@ type
     FOnInsert: TLVInsertEvent;
     FOnSelectItem: TLVSelectItemEvent;
     FProperties: TListViewProperties;
-//    FWorkAreas: TWorkAreas;
     function GetBoundingRect: TRect;
     function GetColumnFromIndex(AIndex: Integer): TListColumn;
     function GetDropTarget: TListItem;
@@ -831,7 +835,6 @@ type
     procedure SetFocused(const AValue: TListItem);
     procedure SetHotTrackStyles(const AValue: TListHotTrackStyles);
     procedure SetHoverTime(const AValue: Integer);
-//    procedure SetIconOptions(const AValue: TIconOptions);
     procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
     procedure SetItems(const AValue : TListItems);
     procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
@@ -847,6 +850,7 @@ type
     procedure Sort;
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
+    procedure InvalidateSelected;
   protected
     //called by TListItems
     procedure ItemDeleted(const AItem: TListItem);
@@ -875,7 +879,6 @@ type
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
     property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
     property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
-//    property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property Items: TListItems read FListItems write SetItems;
     property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
     property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
@@ -923,7 +926,6 @@ type
     property TopItem: TListItem read GetTopItem;
     property ViewOrigin: TPoint read GetViewOrigin;
     property VisibleRowCount: Integer read GetVisibleRowCount;
-//    property WorkAreas: TWorkAreas read FWorkAreas;
   end;
 
 
@@ -932,7 +934,6 @@ type
   TListView = class(TCustomListView)
   published
     property Align;
-//    property AllocBy;
     property Anchors;
     property BorderSpacing;
 //    property BorderStyle;
@@ -959,7 +960,7 @@ type
 //    property OwnerData;
 //    property OwnerDraw;
     property PopupMenu;
-//    property ReadOnly default False;
+    property ReadOnly;
     property RowSelect;
     property ScrollBars;
     property ShowColumnHeaders;

@@ -163,6 +163,7 @@ var
   idx: Integer;
 begin
   // Don't use IndexOf, it updates the cache, which then will become invalid
+  //DebugLn('TListItems.ItemDestroying ',dbgs(AItem));
   if  (FCacheIndex <> -1)
   and (FCacheItem = AItem)
   then idx := FCacheIndex
@@ -187,9 +188,9 @@ begin
   FItems.Delete(idx);
 end;
 
-{------------------------------------------------------------------------------}
-{   TListItems IndexOf                                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+   TListItems IndexOf
+------------------------------------------------------------------------------}
 function TListItems.IndexOf(const AItem: TListItem): Integer;
 begin
   if  (FCacheIndex <> -1) 
@@ -206,18 +207,18 @@ begin
   FCacheItem := AItem;
 end;
 
-{------------------------------------------------------------------------------}
-{   TListItems Insert                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+   TListItems Insert
+------------------------------------------------------------------------------}
 function TListItems.Insert(const AIndex: Integer): TListItem;
 begin
   Result := TListItem.Create(self);
   InsertItem(Result, AIndex);
 end;
 
-{------------------------------------------------------------------------------}
-{   TListItems InsertItem                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+   TListItems InsertItem
+------------------------------------------------------------------------------}
 procedure TListItems.InsertItem(AItem: TListItem; const AIndex: Integer);
 begin
   FItems.Insert(AIndex, AItem);
