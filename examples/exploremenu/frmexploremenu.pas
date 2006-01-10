@@ -22,16 +22,17 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Buttons, menuintf;
+  StdCtrls, Buttons, menuintf, ExtCtrls;
 
 type
 
   { TExploreIDEMenuForm }
 
   TExploreIDEMenuForm = class(TForm)
-    BCLose: TButton;
-    LPAth: TLabel;
+    BCLose: TBitBtn;
     LTree: TLabel;
+    LPAth: TMemo;
+    Splitter1: TSplitter;
     TVIDEMenu: TTreeView;
     procedure FormCreate(Sender: TObject);
     procedure TVIDEMenuChange(Sender: TObject; Node: TTreeNode);
@@ -105,7 +106,7 @@ begin
   N:=TVIDEMenu.Selected;
   If Assigned(N) and Assigned(N.Data) then
     With TIDEMenuItem(N.Data) do
-      LPath.Caption:=SSelectedPath+GetPath;
+      LPath.Text:=SSelectedPath+GetPath;
 end;
 
 procedure TExploreIDEMenuForm.AddMenuItem(ParentNode : TTreeNode;Item : TIDEMenuItem);

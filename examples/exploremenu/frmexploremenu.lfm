@@ -8,51 +8,69 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
   Position = poDesktopCenter
   HorzScrollBar.Page = 467
   VertScrollBar.Page = 335
-  Left = 453
+  Left = 434
   Height = 336
-  Top = 450
+  Top = 427
   Width = 468
   object LTree: TLabel
+    Align = alTop
+    BorderSpacing.Around = 6
     Caption = 'Menu Tree'
     Color = clNone
     ParentColor = False
-    Left = 8
+    Left = 6
     Height = 13
-    Top = 10
-    Width = 62
-  end
-  object LPAth: TLabel
-    Anchors = [akLeft, akRight, akBottom]
-    AutoSize = False
-    Caption = 'Path of selected item:'
-    Color = clNone
-    Layout = tlCenter
-    ParentColor = False
-    Left = 8
-    Height = 51
-    Top = 280
-    Width = 362
+    Top = 6
+    Width = 456
   end
   object TVIDEMenu: TTreeView
+    Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     DefaultItemHeight = 14
     TabOrder = 0
     OnChange = TVIDEMenuChange
-    Left = 8
-    Height = 233
-    Top = 32
-    Width = 449
+    Height = 228
+    Top = 25
+    Width = 468
   end
-  object BCLose: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Cancel = True
-    Caption = '&Close'
-    Default = True
-    ModalResult = 1
+  object LPAth: TMemo
+    Align = alTop
+    Anchors = [akBottom]
+    BorderSpacing.Bottom = 6
+    Color = clBtnFace
+    Lines.Strings = (
+      'Path of selected item:'
+    )
     TabOrder = 1
-    Left = 382
-    Height = 25
+    AnchorSideBottom.Control = BCLose
+    Height = 36
+    Top = 258
+    Width = 468
+  end
+  object Splitter1: TSplitter
+    Align = alTop
+    Cursor = crVSplit
+    Height = 5
+    Width = 468
+    ResizeAnchor = akTop
+    Cursor = crVSplit
+    Height = 5
+    Top = 253
+    Width = 468
+  end
+  object BCLose: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = '&Close'
+    Kind = bkClose
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 392
+    Height = 30
     Top = 300
     Width = 75
   end
