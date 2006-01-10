@@ -61,6 +61,9 @@ type
 function ShortCutToText(ShortCut: TShortCut): string;
 function TextToShortCut(const ShortCutText: string): TShortCut;
 
+function GetCompleteText(sText: string; iSelStart: Integer; bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
+function IsEditableTextKey(Key: Word): Boolean;
+
 // Hooks used to prevent unit circles
 type
   TSendApplicationMessageFunction =
@@ -405,6 +408,50 @@ begin
       Exit;
     end;
   end;
+end;
+
+function GetCompleteText(sText: string; iSelStart: Integer; bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
+
+ function IsSamePrefix(sCompareText, sPrefix: string; iStart: Integer; var ResultText: string): Boolean;
+ var sTempText: string;
+ begin
+  Result := False;
+  sTempText := LeftStr(sCompareText, iStart);
+  if not bCaseSensitive then sTempText := UpperCase(sTempText);
+  if (sTempText = sPrefix) then
+   begin
+    ResultText := sCompareText;
+    Result := True;
+   end;//End if (sTempText = sPrefix)
+ end;//End function IsSamePrefix
+
+var i: Integer;
+    sPrefixText: string;
+begin
+ Result := sText;//Default to return original text if no identical text are found
+ if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
+ if (iSelStart = 0) then Exit;//Cursor at beginning
+ if (slTextList.Count = 0) then Exit;//No text list to search for idtenticals, Exit.
+ sPrefixText := LeftStr(sText, iSelStart);//Get text from beginning to cursor position.
+ if not bCaseSensitive then sPrefixText := UpperCase(sPrefixText);
+ if bSearchAscending then
+  begin
+   for i:=0 to slTextList.Count-1 do
+    if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+  end else
+  begin
+   for i:=slTextList.Count-1 downto 0 do
+    if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+  end;//End if bSearchAscending
+end;
+
+function IsEditableTextKey(Key: Word): Boolean;
+begin
+ Result := (((Key >= VK_A) and (Key <= VK_Z)) or
+            ((Key = VK_NUMPAD0) and (Key <= VK_DIVIDE)) or
+            ((Key >= 186) and (Key <= 188)) or
+            ((Key >= 190) and (Key <= 192)) or
+            ((Key >= 219) and (Key <= 222)));
 end;
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam
