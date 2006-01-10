@@ -1,4 +1,5 @@
 object CleanDirectoryDialog: TCleanDirectoryDialog
+  ActiveControl = OkButton
   Caption = 'Clean Directory'
   ClientHeight = 345
   ClientWidth = 502
@@ -11,7 +12,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   Top = 212
   Width = 502
   object OkButton: TButton
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Ok'
     OnClick = OkButtonClick
     TabOrder = 0
@@ -21,7 +22,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 97
   end
   object CancelButton: TButton
-    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
@@ -32,11 +33,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   end
   object DirGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     Caption = 'Directory'
     ClientHeight = 62
     ClientWidth = 482
-    ParentColor = True
     ParentCtl3D = False
     TabOrder = 2
     Left = 8
@@ -45,7 +44,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 486
     object DirCombobox: TComboBox
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
+      AutoCompleteText = [cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -57,22 +56,19 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object SubDirsCheckbox: TCheckBox
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
       Caption = 'Clean sub directories'
       TabOrder = 1
       Left = 6
-      Height = 20
+      Height = 13
       Top = 39
       Width = 468
     end
   end
   object RemoveGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     Caption = 'Remove files matching filter:'
     ClientHeight = 67
     ClientWidth = 482
-    ParentColor = True
     ParentCtl3D = False
     TabOrder = 3
     Left = 8
@@ -81,7 +77,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 486
     object RemoveCombobox: TComboBox
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
+      AutoCompleteText = [cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -92,22 +88,19 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Width = 468
     end
     object SimpleSyntaxRemoveCheckbox: TCheckBox
-      BorderSpacing.OnChange = nil
       Caption = 'Simple syntax (e.g. * instead of .*)'
       TabOrder = 1
       Left = 6
-      Height = 20
+      Height = 13
       Top = 37
-      Width = 468
+      Width = 177
     end
   end
   object KeepGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     Caption = 'Keep files matching filter:'
     ClientHeight = 88
     ClientWidth = 482
-    ParentColor = True
     ParentCtl3D = False
     TabOrder = 4
     Left = 8
@@ -116,7 +109,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 486
     object KeepCombobox: TComboBox
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
+      AutoCompleteText = [cbactSearchAscending]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -127,22 +120,20 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Width = 468
     end
     object SimpleSyntaxKeepCheckbox: TCheckBox
-      BorderSpacing.OnChange = nil
       Caption = 'Simple syntax (e.g. * instead of .*)'
       TabOrder = 1
       Left = 6
-      Height = 20
+      Height = 13
       Top = 35
-      Width = 468
+      Width = 177
     end
     object KeepTextFilesCheckbox: TCheckBox
-      BorderSpacing.OnChange = nil
       Caption = 'Keep Text Files'
       TabOrder = 2
       Left = 6
-      Height = 20
+      Height = 13
       Top = 61
-      Width = 468
+      Width = 93
     end
   end
 end

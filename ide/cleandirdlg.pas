@@ -209,6 +209,9 @@ var
   Filename: String;
   Path: String;
 begin
+  AddToRecentList(DirCombobox.Text, DirCombobox.Items, 20);
+  AddToRecentList(RemoveCombobox.Text, RemoveCombobox.Items, 20);
+  AddToRecentList(KeepCombobox.Text, KeepCombobox.Items, 20);
   try
     InvalidateFileStateCache;
     Filename:=GetConfigFilename;
@@ -240,7 +243,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ERROR: unable to write clean directory options from "',
+      DebugLn('ERROR: unable to write clean directory options to "',
         Filename,'": ',E.Message);
     end;
   end;
