@@ -1,0 +1,129 @@
+object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
+  ActiveControl = InfoMemo
+  Caption = 'PkgGraphExplorerDlg'
+  ClientHeight = 413
+  ClientWidth = 462
+  KeyPreview = True
+  OnShow = PkgGraphExplorerShow
+  PixelsPerInch = 112
+  Position = poScreenCenter
+  HorzScrollBar.Page = 461
+  VertScrollBar.Page = 412
+  Left = 369
+  Height = 413
+  Top = 239
+  Width = 462
+  object InfoMemo: TMemo
+    Align = alBottom
+    Lines.Strings = (
+      'InfoMemo'
+    )
+    TabOrder = 0
+    Height = 79
+    Top = 334
+    Width = 462
+  end
+  object VerticalSplitter: TSplitter
+    Align = alBottom
+    Cursor = crVSplit
+    Height = 5
+    Width = 462
+    ResizeAnchor = akBottom
+    Cursor = crVSplit
+    Height = 5
+    Top = 329
+    Width = 462
+  end
+  object PkgListPanel: TPanel
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 329
+    ClientWidth = 229
+    TabOrder = 1
+    Left = 233
+    Height = 329
+    Width = 229
+    object PkgListLabel: TLabel
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'PkgListLabel'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 13
+      Top = 6
+      Width = 217
+    end
+    object PkgListBox: TListBox
+      Align = alClient
+      ClickOnSelChange = False
+      OnClick = PkgListBoxClick
+      OnDblClick = PkgListBoxDblClick
+      TabOrder = 0
+      TopIndex = -1
+      Height = 304
+      Top = 25
+      Width = 229
+    end
+  end
+  object HorizontalSplitter: TSplitter
+    Align = alRight
+    Height = 329
+    Width = 4
+    ResizeAnchor = akRight
+    Cursor = crHSplit
+    Left = 229
+    Height = 329
+    Width = 4
+  end
+  object PkgTreePanel: TPanel
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 329
+    ClientWidth = 229
+    TabOrder = 2
+    Height = 329
+    Width = 229
+    object PkgTreeLabel: TLabel
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'PkgTreeLabel'
+      Color = clNone
+      ParentColor = False
+      Left = 6
+      Height = 13
+      Top = 6
+      Width = 217
+    end
+    object PkgTreeView: TTreeView
+      Align = alClient
+      DefaultItemHeight = 17
+      Images = ImageList
+      PopupMenu = PkgPopupMenu
+      RightClickSelect = True
+      TabOrder = 0
+      OnDblClick = PkgTreeViewDblClick
+      OnExpanding = PkgTreeViewExpanding
+      OnSelectionChanged = PkgTreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Height = 304
+      Top = 25
+      Width = 229
+    end
+  end
+  object ImageList: TImageList
+    Height = 17
+    Width = 17
+    left = 32
+    top = 8
+  end
+  object PkgPopupMenu: TPopupMenu
+    OnPopup = PkgPopupMenuPopup
+    left = 32
+    top = 40
+    object UninstallMenuItem: TMenuItem
+      Caption = 'New Item1'
+      OnClick = UninstallMenuItemClick
+    end
+  end
+end

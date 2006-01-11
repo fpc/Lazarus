@@ -29,7 +29,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TPkgGraphExplorer is the IDE window showing the whole package graph.
+    TPkgGraphExplorerDlg is the IDE window showing the whole package graph.
 }
 unit PkgGraphExplorer;
 
@@ -43,22 +43,27 @@ uses
   AVL_Tree,
   IDECommands,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem, PackageEditor;
+  Project, PackageDefs, PackageSystem, PackageEditor, ExtCtrls;
   
 type
   TOnOpenProject =
     function(Sender: TObject; AProject: TProject): TModalResult of object;
 
-  TPkgGraphExplorer = class(TForm)
+  { TPkgGraphExplorerDlg }
+
+  TPkgGraphExplorerDlg = class(TForm)
     ImageList: TImageList;
     PkgTreeLabel: TLabel;
     PkgTreeView: TTreeView;
+    PkgListPanel: TPanel;
+    PkgTreePanel: TPanel;
     PkgListLabel: TLabel;
     PkgListBox: TListBox;
     InfoMemo: TMemo;
     PkgPopupMenu: TPopupMenu;
+    VerticalSplitter: TSplitter;
+    HorizontalSplitter: TSplitter;
     UninstallMenuItem: TMenuItem;
-    procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
     procedure PkgListBoxDblClick(Sender: TObject);
@@ -115,51 +120,19 @@ type
   end;
   
 var
-  PackageGraphExplorer: TPkgGraphExplorer;
+  PackageGraphExplorer: TPkgGraphExplorerDlg;
 
 implementation
 
 uses Math;
 
-{ TPkgGraphExplorer }
-
-procedure TPkgGraphExplorer.PkgGraphExplorerResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=1;
-  y:=1;
-  w:=((ClientWidth-3*x) div 2);
-  with PkgTreeLabel do
-    SetBounds(x,y,w,Height);
-  inc(x,PkgTreeLabel.Width+PkgTreeLabel.Left);
-  
-  with PkgListLabel do
-    SetBounds(x,y,w,Height);
-  x:=1;
-  inc(y,PkgTreeLabel.Height+3);
-
-  with PkgTreeView do
-    SetBounds(x,y,w,Max(Parent.ClientHeight-y-80,10));
-  inc(x,PkgTreeView.Width+PkgTreeView.Left);
-
-  with PkgListBox do
-    SetBounds(x,y,w,PkgTreeView.Height);
-  x:=1;
-  inc(y,PkgTreeView.Height+1);
-  
-  with InfoMemo do
-    SetBounds(x,y,Parent.ClientWidth-2*x,Max(10,Parent.ClientHeight-y-x));
-end;
-
-procedure TPkgGraphExplorer.PkgGraphExplorerShow(Sender: TObject);
+{ TPkgGraphExplorerDlg }
+procedure TPkgGraphExplorerDlg.PkgGraphExplorerShow(Sender: TObject);
 begin
   UpdateAll;
 end;
 
-procedure TPkgGraphExplorer.PkgListBoxClick(Sender: TObject);
+procedure TPkgGraphExplorerDlg.PkgListBoxClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
@@ -173,7 +146,7 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.PkgListBoxDblClick(Sender: TObject);
+procedure TPkgGraphExplorerDlg.PkgListBoxDblClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
@@ -186,7 +159,7 @@ begin
     OpenDependencyOwner(Dependency.Owner);
 end;
 
-procedure TPkgGraphExplorer.PkgPopupMenuPopup(Sender: TObject);
+procedure TPkgGraphExplorerDlg.PkgPopupMenuPopup(Sender: TObject);
 var
   Pkg: TLazPackage;
   Dependency: TPkgDependency;
@@ -197,7 +170,7 @@ begin
     UninstallMenuItem.Caption:='Uninstall package '+Pkg.IDAsString;
 end;
 
-procedure TPkgGraphExplorer.PkgTreeViewDblClick(Sender: TObject);
+procedure TPkgGraphExplorerDlg.PkgTreeViewDblClick(Sender: TObject);
 var
   Pkg: TLazPackage;
   Dependency: TPkgDependency;
@@ -209,7 +182,7 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.PkgTreeViewExpanding(Sender: TObject;
+procedure TPkgGraphExplorerDlg.PkgTreeViewExpanding(Sender: TObject;
   Node: TTreeNode; var AllowExpansion: Boolean);
 var
   Pkg, ChildPackage: TLazPackage;
@@ -267,13 +240,13 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.PkgTreeViewSelectionChanged(Sender: TObject);
+procedure TPkgGraphExplorerDlg.PkgTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateInfo;
   UpdateList;
 end;
 
-procedure TPkgGraphExplorer.UninstallMenuItemClick(Sender: TObject);
+procedure TPkgGraphExplorerDlg.UninstallMenuItemClick(Sender: TObject);
 var
   Pkg: TLazPackage;
   Dependency: TPkgDependency;
@@ -284,95 +257,30 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.SetupComponents;
+procedure TPkgGraphExplorerDlg.SetupComponents;
 
-  procedure AddResImg(const ResName: string);
+  function AddResImg(const ResName: string): integer;
   var Pixmap: TPixmap;
   begin
     Pixmap:=TPixmap.Create;
     Pixmap.TransparentColor:=clWhite;
     Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil)
+    Result:=ImageList.Add(Pixmap,nil)
   end;
 
 begin
-  ImageList:=TImageList.Create(Self);
-  with ImageList do begin
-    Width:=17;
-    Height:=17;
-    Name:='ImageList';
-    ImgIndexPackage:=Count;
-    AddResImg('pkg_package');
-    ImgIndexInstalledPackage:=Count;
-    AddResImg('pkg_package_install');
-    ImgIndexInstallPackage:=Count;
-    AddResImg('pkg_package_autoinstall');
-    ImgIndexUninstallPackage:=Count;
-    AddResImg('pkg_package_uninstall');
-    ImgIndexCirclePackage:=Count;
-    AddResImg('pkg_package_circle');
-    ImgIndexMissingPackage:=Count;
-    AddResImg('pkg_conflict');
-  end;
+  ImgIndexPackage:=AddResImg('pkg_package');
+  ImgIndexInstalledPackage:=AddResImg('pkg_package_install');
+  ImgIndexInstallPackage:=AddResImg('pkg_package_autoinstall');
+  ImgIndexUninstallPackage:=AddResImg('pkg_package_uninstall');
+  ImgIndexCirclePackage:=AddResImg('pkg_package_circle');
+  ImgIndexMissingPackage:=AddResImg('pkg_conflict');
 
-  // popupmenu
-  PkgPopupMenu:=TPopupMenu.Create(Self);
-  with PkgPopupMenu do begin
-    Name:='PkgPopupMenu';
-    OnPopup:=@PkgPopupMenuPopup;
-  end;
-  
-  UninstallMenuItem:=TMenuItem.Create(Self);
-  with UninstallMenuItem do begin
-    Name:='UninstallMenuItem';
-    OnClick:=@UninstallMenuItemClick;
-  end;
-  PkgPopupMenu.Items.Add(UninstallMenuItem);
-  
-  
-  PkgTreeLabel:=TLabel.Create(Self);
-  with PkgTreeLabel do begin
-    Name:='PkgTreeLabel';
-    Parent:=Self;
-    Caption:=lisPckExplLoadedPackages;
-  end;
-  
-  PkgTreeView:=TTreeView.Create(Self);
-  with PkgTreeView do begin
-    Name:='PkgTreeView';
-    Parent:=Self;
-    Options:=Options+[tvoRightClickSelect];
-    Images:=Self.ImageList;
-    PopupMenu:=PkgPopupMenu;
-    OnExpanding:=@PkgTreeViewExpanding;
-    OnSelectionChanged:=@PkgTreeViewSelectionChanged;
-    OnDblClick:=@PkgTreeViewDblClick;
-  end;
-
-  PkgListLabel:=TLabel.Create(Self);
-  with PkgListLabel do begin
-    Name:='PkgListLabel';
-    Parent:=Self;
-    Caption:=lisPckExplIsRequiredBy;
-  end;
-
-  PkgListBox:=TListBox.Create(Self);
-  with PkgListBox do begin
-    Name:='PkgListBox';
-    Parent:=Self;
-    ClickOnSelChange := False;
-    OnClick:=@PkgListBoxClick;
-    OnDblClick:=@PkgListBoxDblClick;
-  end;
-
-  InfoMemo:=TMemo.Create(Self);
-  with InfoMemo do begin
-    Name:='InfoMemo';
-    Parent:=Self;
-  end;
+  PkgTreeLabel.Caption:=lisPckExplLoadedPackages;
+  PkgListLabel.Caption:=lisPckExplIsRequiredBy;
 end;
 
-function TPkgGraphExplorer.GetPackageImageIndex(Pkg: TLazPackage): integer;
+function TPkgGraphExplorerDlg.GetPackageImageIndex(Pkg: TLazPackage): integer;
 begin
   if Pkg.Installed<>pitNope then begin
     if Pkg.AutoInstall<>pitNope then begin
@@ -389,7 +297,7 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.GetDependency(ANode: TTreeNode;
+procedure TPkgGraphExplorerDlg.GetDependency(ANode: TTreeNode;
   var Pkg: TLazPackage; var Dependency: TPkgDependency);
 // if Dependency<>nil then Pkg is the Parent
 var
@@ -424,7 +332,7 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.GetCurrentIsUsedBy(var Dependency: TPkgDependency);
+procedure TPkgGraphExplorerDlg.GetCurrentIsUsedBy(var Dependency: TPkgDependency);
 var
   TreePkg: TLazPackage;
   TreeDependency: TPkgDependency;
@@ -439,7 +347,7 @@ begin
   end;
 end;
 
-function TPkgGraphExplorer.SearchParentNodeWithText(ANode: TTreeNode;
+function TPkgGraphExplorerDlg.SearchParentNodeWithText(ANode: TTreeNode;
   const NodeText: string): TTreeNode;
 begin
   Result:=ANode;
@@ -449,13 +357,13 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TPkgGraphExplorerDlg.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
 end;
 
-constructor TPkgGraphExplorer.Create(TheOwner: TComponent);
+constructor TPkgGraphExplorerDlg.Create(TheOwner: TComponent);
 var
   ALayout: TIDEWindowLayout;
 begin
@@ -464,42 +372,38 @@ begin
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
   Caption:=lisMenuPackageGraph;
-  KeyPreview:=true;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
   
   SetupComponents;
-  OnResize:=@PkgGraphExplorerResize;
-  OnResize(Self);
-  OnShow:=@PkgGraphExplorerShow;
 end;
 
-destructor TPkgGraphExplorer.Destroy;
+destructor TPkgGraphExplorerDlg.Destroy;
 begin
   FreeAndNil(fSortedPackages);
   inherited Destroy;
 end;
 
-procedure TPkgGraphExplorer.BeginUpdate;
+procedure TPkgGraphExplorerDlg.BeginUpdate;
 begin
   inc(FUpdateLock);
 end;
 
-procedure TPkgGraphExplorer.EndUpdate;
+procedure TPkgGraphExplorerDlg.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TPkgGraphExplorer.EndUpdate');
+  if FUpdateLock<=0 then RaiseException('TPkgGraphExplorerDlg.EndUpdate');
   dec(FUpdateLock);
   if FChangedDuringLock then UpdateAll;
 end;
 
-function TPkgGraphExplorer.IsUpdateLocked: boolean;
+function TPkgGraphExplorerDlg.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
 end;
 
-procedure TPkgGraphExplorer.UpdateAll;
+procedure TPkgGraphExplorerDlg.UpdateAll;
 begin
   if IsUpdateLocked then begin
     FChangedDuringLock:=true;
@@ -512,7 +416,7 @@ begin
   UpdateInfo;
 end;
 
-procedure TPkgGraphExplorer.UpdateTree;
+procedure TPkgGraphExplorerDlg.UpdateTree;
 var
   Cnt: Integer;
   i: Integer;
@@ -562,7 +466,7 @@ begin
   PkgTreeView.EndUpdate;
 end;
 
-procedure TPkgGraphExplorer.UpdateList;
+procedure TPkgGraphExplorerDlg.UpdateList;
 var
   Pkg: TLazPackage;
   Dependency: TPkgDependency;
@@ -587,7 +491,7 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorer.UpdateInfo;
+procedure TPkgGraphExplorerDlg.UpdateInfo;
 var
   Pkg: TLazPackage;
   Dependency: TPkgDependency;
@@ -624,23 +528,23 @@ begin
   InfoMemo.Text:=InfoStr;
 end;
 
-procedure TPkgGraphExplorer.UpdatePackageName(Pkg: TLazPackage;
+procedure TPkgGraphExplorerDlg.UpdatePackageName(Pkg: TLazPackage;
   const OldName: string);
 begin
   UpdateAll;
 end;
 
-procedure TPkgGraphExplorer.UpdatePackageID(Pkg: TLazPackage);
+procedure TPkgGraphExplorerDlg.UpdatePackageID(Pkg: TLazPackage);
 begin
   UpdateAll;
 end;
 
-procedure TPkgGraphExplorer.UpdatePackageAdded(Pkg: TLazPackage);
+procedure TPkgGraphExplorerDlg.UpdatePackageAdded(Pkg: TLazPackage);
 begin
   UpdateAll;
 end;
 
-procedure TPkgGraphExplorer.SelectPackage(Pkg: TLazPackage);
+procedure TPkgGraphExplorerDlg.SelectPackage(Pkg: TLazPackage);
 var
   NewNode: TTreeNode;
 begin
@@ -650,7 +554,7 @@ begin
     PkgTreeView.Selected:=NewNode;
 end;
 
-procedure TPkgGraphExplorer.OpenDependencyOwner(DependencyOwner: TObject);
+procedure TPkgGraphExplorerDlg.OpenDependencyOwner(DependencyOwner: TObject);
 begin
   if DependencyOwner is TLazPackage then begin
     if Assigned(OnOpenPackage) then
@@ -661,7 +565,7 @@ begin
   end;
 end;
 
-function TPkgGraphExplorer.FindMainNodeWithText(const s: string): TTreeNode;
+function TPkgGraphExplorerDlg.FindMainNodeWithText(const s: string): TTreeNode;
 begin
   Result:=nil;
   if PkgTreeView.Items.Count=0 then exit;
@@ -669,7 +573,7 @@ begin
   while (Result<>nil) and (Result.Text<>s) do Result:=Result.GetNextSibling;
 end;
 
-procedure TPkgGraphExplorer.ShowPath(PathList: TList);
+procedure TPkgGraphExplorerDlg.ShowPath(PathList: TList);
 var
   AnObject: TObject;
   CurNode, LastNode: TTreeNode;
@@ -713,6 +617,7 @@ end;
 
 initialization
   PackageGraphExplorer:=nil;
+  {$I pkggraphexplorer.lrs}
 
 end.
 

@@ -2839,7 +2839,7 @@ end;
 function TPkgManager.DoShowPackageGraph: TModalResult;
 begin
   if PackageGraphExplorer=nil then begin
-    PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
+    PackageGraphExplorer:=TPkgGraphExplorerDlg.Create(Application);
     PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
     PackageGraphExplorer.OnOpenProject:=@PackageGraphExplorerOpenProject;
     PackageGraphExplorer.OnUninstallPackage:=@PackageGraphExplorerUninstallPackage;
