@@ -89,6 +89,14 @@ begin
     Application.ShowHint := AValue;
 end;
 
+procedure TApplicationProperties.SetShowMainForm(const AValue: Boolean);
+begin
+  FShowMainForm:=AValue;
+
+  if not (csDesigning in ComponentState) then
+    Application.ShowMainForm := AValue;
+end;
+
 Procedure TApplicationProperties.SetTitle(Const AValue : String);
 begin
   FTitle := AValue;
@@ -178,6 +186,7 @@ begin
     FShowHint := Application.ShowHint;
     FTitle := Application.Title;
   end;
+  FShowMainForm := true;
 
   FOnIdle := nil;
   FOnException := nil;

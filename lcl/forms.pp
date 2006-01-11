@@ -1048,7 +1048,7 @@ type
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property ShowHint: Boolean read FShowHint write SetShowHint;
-    property ShowMainForm: Boolean read FShowMainForm write FShowMainForm;
+    property ShowMainForm: Boolean read FShowMainForm write FShowMainForm default true;
     property Title: String read GetTitle write SetTitle;
   end;
 
@@ -1066,6 +1066,7 @@ type
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
     FShowHint: Boolean;
+    FShowMainForm: Boolean;
     FTitle: String;
 
     FOnException: TExceptionEvent;
@@ -1075,6 +1076,7 @@ type
     FOnHint: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
+    procedure SetShowMainForm(const AValue: Boolean);
   protected
     Procedure SetCaptureExceptions(Const AValue : boolean);
     Procedure SetHelpFile(Const AValue : string);
@@ -1107,6 +1109,7 @@ type
     property HintShortCuts: Boolean read FHintShortCuts write SetHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write SetHintShortPause;
     property ShowHint: Boolean read FShowHint write SetShowHint;
+    property ShowMainForm: Boolean read FShowMainForm write SetShowMainForm default true;
     property Title: String read FTitle write SetTitle;
 
     property OnException: TExceptionEvent read FOnException write SetOnException;
