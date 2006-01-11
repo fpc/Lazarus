@@ -417,6 +417,7 @@ type
     procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
+    procedure InsertCharacter(const C: TUTF8Char);
   private
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
@@ -984,6 +985,7 @@ begin
   if SourceNotebook<>nil then
     SourceNotebook.InitFindDialog;
   //debugln('TSourceEditor.StartFindAndReplace A FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'"');
+  if ReadOnly then Replace := False;
   if Replace then
     FindReplaceDlg.Options :=
       FindReplaceDlg.Options + [ssoReplace, ssoReplaceAll, ssoPrompt]
@@ -1643,17 +1645,15 @@ begin
 end;
 
 procedure TSourceEditor.InsertCharacterFromMap;
-var
-  NewChars: string;
 begin
-  if not ShowCharacterMap(NewChars) then exit;
-  FEditor.SelText:=NewChars;
+  ShowCharacterMap(@SourceNoteBook.InsertCharacter);
 end;
 
 procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
 var
   Txt: string;
 begin
+  if ReadOnly then Exit;
   Txt:=CommentText(LCLProc.BreakString(
            Format(lisGPLNotice,[#13#13,#13#13,#13#13]),
            FEditor.RightEdge-2,0),CommentType);
@@ -1664,6 +1664,7 @@ procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType);
 var
   Txt: string;
 begin
+  if ReadOnly then Exit;
   Txt:=CommentText(LCLProc.BreakString(
            Format(lisLGPLNotice,[#13#13,#13#13,#13#13]),
            FEditor.RightEdge-2,0),CommentType);
@@ -1672,23 +1673,27 @@ end;
 
 procedure TSourceEditor.InsertUsername;
 begin
+  if ReadOnly then Exit;
   FEditor.SelText:=GetCurrentUserName;
 end;
 
 procedure TSourceEditor.InsertDateTime;
 begin
+  if ReadOnly then Exit;
   FEditor.SelText:=DateTimeToStr(now);
 end;
 
 procedure TSourceEditor.InsertChangeLogEntry;
 var s: string;
 begin
+  if ReadOnly then Exit;
   s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentMailAddress;
   FEditor.SelText:=s;
 end;
 
 procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
 begin
+  if ReadOnly then Exit;
   FEditor.SelText:='$'+AKeyWord+'$'+LineEnding;
 end;
 
@@ -2130,6 +2135,7 @@ end;
 procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
   const NewText: string);
 begin
+  if ReadOnly then Exit;
   FEditor.BeginUndoBlock;
   FEditor.BlockBegin:=Point(1,StartLine);
   FEditor.BlockEnd:=Point(length(FEditor.Lines[Endline-1])+1,EndLine);
@@ -4834,6 +4840,18 @@ end;
 procedure TSourceNotebook.ToggleObjectInspClicked(Sender: TObject);
 begin
   if Assigned(FOnToggleObjectInspClicked) then FOnToggleObjectInspClicked(Sender);
+end;
+
+procedure TSourceNotebook.InsertCharacter(const C: TUTF8Char);
+var
+  FActiveEdit: TSourceEditor;
+begin
+  FActiveEdit := GetActiveSE;
+  if FActiveEdit <> nil then
+  begin
+    if FActiveEdit.ReadOnly then Exit;
+    FActiveEdit.EditorComponent.SelText := C;
+  end;
 end;
 
 procedure TSourceNotebook.InitFindDialog;
