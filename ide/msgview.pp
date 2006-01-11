@@ -88,6 +88,7 @@ type
     MessageView:   TListBox;
     MainPopupMenu: TPopupMenu;
     procedure CopyAllMenuItemClick(Sender: TObject);
+    procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
@@ -98,8 +99,8 @@ type
        ARect: TRect; State: TOwnerDrawState);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
   private
-    FItems: TList; // list of TMessageLine
-    FVisibleItems: TList; // list of TMessageLine (visible Items of FItems)
+    FItems: TFPList; // list of TMessageLine
+    FVisibleItems: TFPList; // list of TMessageLine (visible Items of FItems)
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
     function GetDirectory: string;
@@ -151,6 +152,7 @@ var
   MessagesView: TMessagesView;
   MsgCopyIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
+  MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
   MsgHelpIDEMenuCommand: TIDEMenuCommand;
   MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
 
@@ -158,6 +160,8 @@ const
   MessagesMenuRootName = 'Messages';
 
 procedure RegisterStandardMessagesViewMenuItems;
+
+function MessageLinesAsText(ListOfTMessageLine: TFPList): string;
 
 implementation
 
@@ -178,11 +182,44 @@ begin
     lisCopySelectedMessagesToClipboard);
   MsgCopyAllIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy all',
     lisCopyAllMessagesToClipboard);
+  MsgCopyAllAndHiddenIDEMenuCommand := RegisterIDEMenuCommand(Path,
+    'Copy all, including hidden messages',
+    lisCopyAllAndHiddenMessagesToClipboard);
   MsgHelpIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Help',
     srVK_HELP);
   MsgSaveAllToFileIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Copy selected',
     lisSaveAllMessagesToFile);
+end;
+
+function MessageLinesAsText(ListOfTMessageLine: TFPList): string;
+var
+  i: Integer;
+  NewLength: Integer;
+  Line: TMessageLine;
+  p: Integer;
+  e: string;
+  LineEndingLength: Integer;
+begin
+  if (ListOfTMessageLine=nil) or (ListOfTMessageLine.Count=0) then exit('');
+  NewLength:=0;
+  e:=LineEnding;
+  LineEndingLength:=length(e);
+  for i:=0 to ListOfTMessageLine.Count-1 do begin
+    Line:=TMessageLine(ListOfTMessageLine[i]);
+    inc(NewLength,length(Line.Msg)+LineEndingLength);
+  end;
+  SetLength(Result,NewLength);
+  p:=1;
+  for i:=0 to ListOfTMessageLine.Count-1 do begin
+    Line:=TMessageLine(ListOfTMessageLine[i]);
+    if Line.Msg<>'' then begin
+      System.Move(Line.Msg[1],Result[p],length(Line.Msg));
+      inc(p,length(Line.Msg));
+    end;
+    System.Move(e[1],Result[p],LineEndingLength);
+    inc(p,LineEndingLength);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -192,8 +229,8 @@ constructor TMessagesView.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
-  FItems := TList.Create;
-  FVisibleItems := TList.Create;
+  FItems := TFPList.Create;
+  FVisibleItems := TFPList.Create;
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
@@ -208,6 +245,7 @@ begin
   MsgHelpIDEMenuCommand.OnClick    := @HelpMenuItemClick;
   MsgCopyIDEMenuCommand.OnClick    := @CopyMenuItemClick;
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
+  MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
@@ -460,6 +498,11 @@ end;
 procedure TMessagesView.CopyAllMenuItemClick(Sender: TObject);
 begin
   Clipboard.AsText := MessageView.Items.Text;
+end;
+
+procedure TMessagesView.CopyAllAndHiddenMenuItemClick(Sender: TObject);
+begin
+  Clipboard.AsText := MessageLinesAsText(FItems);
 end;
 
 procedure TMessagesView.CopyMenuItemClick(Sender: TObject);

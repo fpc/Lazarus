@@ -210,6 +210,8 @@ resourcestring
   lisMenuViewMessages = 'Messages';
   lisCopySelectedMessagesToClipboard = 'Copy selected messages to clipboard';
   lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
+  lisCopyAllAndHiddenMessagesToClipboard = 'Copy all and hidden messages '
+                                           +'to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
   lisSearchAgain = 'Search again';
