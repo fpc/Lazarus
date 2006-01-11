@@ -4,7 +4,6 @@ object UnitInfoDialog: TUnitInfoDialog
   Caption = 'UnitInfoDialog'
   ClientHeight = 283
   ClientWidth = 500
-  OnKeyDown = UnitInfoDlgKeyDown
   OnResize = UnitInfoDlgResize
   PixelsPerInch = 96
   Position = poScreenCenter
@@ -18,6 +17,7 @@ object UnitInfoDialog: TUnitInfoDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.InnerBorder = 2
+    Cancel = True
     Caption = '&OK'
     Default = True
     Kind = bkOK

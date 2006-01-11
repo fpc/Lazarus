@@ -62,8 +62,6 @@ type
     USize: TLabel;
     UType: TLabel;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
-    procedure UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
   private
@@ -183,13 +181,6 @@ begin
   ULines.Width := MaxLength;
   UPath.Width := MaxLength;
   UIncludedBy.Width := MaxLength;
-end;
-
-procedure TUnitInfoDialog.UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Shift=[]) and (Key=VK_ESCAPE) then
-    ModalResult:=mrCancel;
 end;
 
 procedure TUnitInfoDialog.CodeToolsDefsButtonClick(Sender: TObject);
