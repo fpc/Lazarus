@@ -536,6 +536,7 @@ type
     property ClickOnSelChange;
     property Constraints;
     property ExtendedSelect;
+    property Enabled;
     property Font;
     property IntegralHeight;
     property Items;
