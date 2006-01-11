@@ -3150,9 +3150,10 @@ var
   RegistrationCode: String;
   HeaderSrc: String;
   OutputDir: String;
-  OldSrc: String;
+  OldShortenSrc: String;
   NeedsRegisterProcCall: boolean;
   CurSrcUnitName: String;
+  NewShortenSrc: String;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.DoSavePackageMainSource A');
@@ -3273,10 +3274,15 @@ begin
     DebugLn('TPkgManager.DoSavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
     exit;
   end;
-  OldSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
-  if CompareTextIgnoringSpace(OldSrc,Src,true)=0 then begin
+  OldShortenSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
+  NewShortenSrc:=CleanCodeFromComments(Src,
+                CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuffer.Filename));
+  if CompareTextIgnoringSpace(OldShortenSrc,NewShortenSrc,true)=0 then begin
     Result:=mrOk;
     exit;
+  end;
+  if OldShortenSrc<>NewShortenSrc then begin
+    DebugLn('TPkgManager.DoSavePackageMainSource Src changed ',dbgs(length(OldShortenSrc)),' ',dbgs(length(NewShortenSrc)));
   end;
 
   // save source
