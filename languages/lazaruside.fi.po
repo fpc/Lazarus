@@ -268,7 +268,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisabortall
 msgid "Abort all"
-msgstr ""
+msgstr "Keskeytä kaikki"
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
@@ -480,7 +480,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
-msgstr ""
+msgstr "Aina käännetään kaikki (vaikka mikään ei muuttunutkaan)"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -708,7 +708,7 @@ msgstr "Alareunat"
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
-msgstr ""
+msgstr "Sulkeiden korostaminen"
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -876,7 +876,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscancelrenaming
 msgid "Cancel renaming"
-msgstr ""
+msgstr "Perutaan uudelleen nimeäminen"
 
 #: lazarusidestrconsts:lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -1964,7 +1964,7 @@ msgstr "Kansion lisäasetukset"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
-msgstr ""
+msgstr "Hylkää muutokset"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
@@ -1984,7 +1984,7 @@ msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
-msgstr ""
+msgstr "Ei sittenkään suljeta Lazarusta"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2632,7 +2632,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
-msgstr ""
+msgstr "Kaikesta huolimatta nimetään näin"
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -3076,7 +3076,7 @@ msgstr "Jätä huomiotta tyhjät rivit"
 
 #: lazarusidestrconsts:lisignoremissingfile
 msgid "Ignore missing file"
-msgstr ""
+msgstr "Jätä huomiotta puuttuva tiedosto"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -3900,7 +3900,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptslibrary
 msgid "Library"
-msgstr ""
+msgstr "Aliohjelmakirjasto"
 
 #: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
@@ -4332,7 +4332,7 @@ msgstr "Uuden aliohjelman nimi"
 
 #: lazarusidestrconsts:liscodetoolsdefsname
 msgid "Name:"
-msgstr ""
+msgstr "Nimi:"
 
 #: lazarusidestrconsts:dlgnaming
 msgid "Naming"
@@ -4760,7 +4760,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoverwritefileondisk
 msgid "Overwrite file on disk"
-msgstr ""
+msgstr "Korvaa tällä tiedostolla"
 
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
@@ -7036,7 +7036,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr ""
+msgstr "Käännösyksikön (unit)  %s%s%s nimeä käytetään jo projektissa.%sVoitte kaikesta huolimatta nimetä näin jolloin nimenvaihto tapahtuu,%sMahdollista on myös perua tämä tallennus tai sitten keskeyttää kaikki tallennukset."
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"

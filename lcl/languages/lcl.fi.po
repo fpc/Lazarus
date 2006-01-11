@@ -36,7 +36,7 @@ msgstr ""
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr ""
+msgstr "%s%sPaina 'Ok'-näppäintä jos haluat ohittaa varoituksen ja ottaa riskin tietojen (datan) sekoamisesta.%sPaina 'Peru'-näppäintä poistuaksesi ohjelmasta."
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -136,7 +136,7 @@ msgstr "Hyväksy"
 
 #: lclstrconsts:rsallfiles
 msgid "All files (%s)|%s|%s"
-msgstr ""
+msgstr "Kaikki tiedostot (%s)|%s|%s"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"

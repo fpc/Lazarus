@@ -38,8 +38,6 @@ uses
   SynEdit, SynEditKeyCmds, Laz_XMLCfg,
   LazarusIDEStrConsts, TextTools, IDECommands;
 
-const
-  ecFind                 = ecUserFirst + 1;
 type
   TKeyMapScheme = (
     kmsLazarus,

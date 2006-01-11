@@ -132,7 +132,7 @@ msgstr "Ei rivejä eikä merkkejä"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
-msgstr ""
+msgstr "Yksi (1) rivi, %d merkkiä"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -732,11 +732,11 @@ msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr ""
+msgstr "StringGrid muokkain"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr ""
+msgstr "Avaa StringGrid muokkain"
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
