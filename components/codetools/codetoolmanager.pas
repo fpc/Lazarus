@@ -553,6 +553,24 @@ begin
   Result:=CodeToolBoss.GetOwnerForCodeTreeNode(ANode);
 end;
 
+{$IFDEF VER2_0_0}
+function ExceptFrameCount: Longint;
+begin
+  If RaiseList=Nil then
+    Result:=0
+  else
+    Result:=RaiseList^.Framecount;
+end;
+
+function ExceptFrames: PPointer;
+begin
+  If RaiseList=Nil then
+    Result:=Nil
+  else
+    Result:=RaiseList^.Frames;
+end;
+{$ENDIF}
+
 procedure DumpExceptionBackTrace;
 var
   FrameCount: integer;
