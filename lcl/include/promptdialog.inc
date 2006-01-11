@@ -617,11 +617,11 @@ begin
   try
     i:=Low(Buttons);
     while i<=High(Buttons) do begin
+      if Buttons[i].VType<>vtInteger then
+        RaiseGDBException('TQuestionDlg.CreateQuestionDlg integer expected at '
+          +IntToStr(i)+' but '+IntToStr(ord(Buttons[i].VType))+' found.');
       if Buttons[i].VType=vtInteger then begin
         // get TModalResult
-        if Buttons[i].VType<>vtInteger then
-          RaiseGDBException('TQuestionDlg.CreateQuestionDlg integer expected at '
-            +IntToStr(i)+' but '+IntToStr(ord(Buttons[i].VType))+' found.');
         CurBtnValue:=Buttons[i].VInteger;
         //debugln('TQuestionDlg.CreateQuestionDlg i=',dbgs(i),' CurBtnValue=',dbgs(CurBtnValue));
         inc(i);

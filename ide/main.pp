@@ -1268,10 +1268,10 @@ begin
 
   // check project
   if SomethingOfProjectIsModified then begin
-    MsgResult:=QuestionDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-      [Project1.Title]), mtConfirmation,
-      [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mbAbort,
-       lisDoNotCloseTheIDE],
+    MsgResult:=QuestionDlg(lisProjectChanged,
+      Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
+      [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
+       mrAbort, lisDoNotCloseTheIDE],
       0);
     case MsgResult of
 
