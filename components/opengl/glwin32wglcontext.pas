@@ -100,8 +100,9 @@ const
 
   // WGL_ARB_pbuffer
 type
-   HPBUFFERARB = Integer;
-   TGLenum = uint;
+  HPBUFFERARB = Integer;
+  TGLenum = uint;
+
 const
   WGL_DRAW_TO_PBUFFER_ARB                          = $202D;
   WGL_MAX_PBUFFER_PIXELS_ARB                       = $202E;
@@ -223,12 +224,13 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl; AttrList: PInteger
   ): HWND;
 begin
-
+  InitWGL;
+  
 end;
 
 procedure InitWGL;
 var
-   buffer: string;
+  Buffer: string;
 
   // Checks if the given Extension string is in Buffer.
   function CheckExtension(const extension : String) : Boolean;

@@ -553,6 +553,20 @@ begin
   Result:=CodeToolBoss.GetOwnerForCodeTreeNode(ANode);
 end;
 
+procedure DumpExceptionBackTrace;
+var
+  FrameCount: integer;
+  Frames: PPointer;
+  FrameNumber:Integer;
+begin
+  DebugLn('Codetools  Stack trace:');
+  DebugLn(BackTraceStrFunc(ExceptAddr));
+  FrameCount:=ExceptFrameCount;
+  Frames:=ExceptFrames;
+  for FrameNumber := 0 to FrameCount-1 do
+    DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+end;
+
 
 { TCodeToolManager }
 
@@ -1190,6 +1204,7 @@ begin
     fErrorCode:=nil;
   end else begin
     // unknown exception
+    DumpExceptionBackTrace;
     FErrorMsg:=AnException.ClassName+': '+FErrorMsg;
     if FCurCodeTool<>nil then begin
       fErrorCode:=FCurCodeTool.ErrorPosition.Code;
