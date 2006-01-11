@@ -2419,7 +2419,7 @@ begin
     ' CH=',DbgS(cfClientHeightLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.Y),
     '');}
     
-  if ParentColor then begin
+  if Assigned(Parent) and ParentColor then begin
     Color := Parent.Color;
     ParentColor := true;
   end;
