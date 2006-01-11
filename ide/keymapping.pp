@@ -295,7 +295,7 @@ begin
   ecSelPageBottom: SetResult(VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  ecSelectAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectAll: SetResult(VK_A,[ssCtrl],VK_UNKNOWN,[]);
   ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectWord: SetResult2(VK_K,[SSCtrl],VK_T,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
