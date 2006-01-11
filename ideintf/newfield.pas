@@ -77,7 +77,7 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
-      ADesigner: TComponentEditorDesigner);
+      ADesigner: TComponentEditorDesigner); reintroduce;
     destructor Destroy; override;
   end ;
 

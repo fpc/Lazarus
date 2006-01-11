@@ -422,7 +422,7 @@ type
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
     pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
     pfRunnable, // project can be run
-    pfAlwaysBuild // skip IDE's smart check if comilation is needed and always compile
+    pfAlwaysBuild // skip IDE's smart check if compilation is needed and always compile
     );
   TProjectFlags = set of TProjectFlag;
   
