@@ -153,6 +153,10 @@ implementation
   {$DEFINE UseCarbonAGL}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
+{$IFDEF LCLWin32}
+  {$DEFINE UseWin32WGL}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
 {$IFNDEF OpenGLTargetDefined}
   {$ERROR this target is not yet supported}
 {$ENDIF}
@@ -163,6 +167,9 @@ uses
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;
+{$ENDIF}
+{$IFDEF UseWin32WGL}
+  GLWin32WGLContext;
 {$ENDIF}
 
 var
