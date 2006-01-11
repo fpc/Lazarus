@@ -68,6 +68,27 @@ resourcestring
   oisEnumeration = 'Enumeration';
   oisChar = 'Char';
   
+  // TreeView items editor
+  sccsTrEdtCaption        = 'TreeView Items Editor';
+  sccsTrEdt               = 'Edit TreeView Items...';
+  sccsTrEdtGrpLCaption    = 'Items';
+  sccsTrEdtGrpRCaption    = 'Item Properties';
+  sccsTrEdtNewItem        = 'New Item';
+  sccsTrEdtNewSubItem     = 'New SubItem';
+  sccsTrEdtDelete         = 'Delete';
+  sccsTrEdtLoad           = 'Load';
+  sccsTrEdtSave           = 'Save';
+  sccsTrEdtTextLabel      = 'Text:';
+  sccsTrEdtImageIndexLabel= 'Image Index:';
+  sccsTrEdtSelIndexLabel  = 'Selected Index:';
+  sccsTrEdtStateIndexLabel= 'State Index:';
+  sccsTrEdtOK             = 'OK';
+  sccsTrEdtCancel         = 'Cancel';
+  sccsTrEdtApply          = 'Apply';
+  sccsTrEdtHelp           = 'Help';
+  sccsTrEdtItem           = 'Item';
+  sccsTrEdtOpenDialog     = 'Open';
+  sccsTrEdtSaveDialog     = 'Save';
 
   // ListView items editor
   sccsLvEdtCaption        = 'ListView editor';

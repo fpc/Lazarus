@@ -170,6 +170,10 @@ msgstr "Все"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Масив"
@@ -194,7 +198,7 @@ msgstr "Переглядача %s%s%s не знайдено"
 msgid "C&lear"
 msgstr "О&чистити"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -338,6 +342,10 @@ msgstr "&Вихід"
 msgid "Edit"
 msgstr "Редагувати"
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Редагувати список дій..."
@@ -390,7 +398,7 @@ msgstr "Дійсний"
 msgid "Font Select"
 msgstr "Обрати шрифт"
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr "Допомога"
 
@@ -430,6 +438,10 @@ msgstr "Елемент довідки %s%s%s не має довідкової б
 msgid "Help on help"
 msgstr "Довідка про допомогу"
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Індекс зображення"
@@ -466,6 +478,18 @@ msgstr "Інтерфейс"
 msgid "Invalid property value"
 msgstr "Неправильна величина властивості"
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Мітка"
@@ -477,6 +501,10 @@ msgstr "Останній"
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Редактор ListView"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -522,9 +550,17 @@ msgstr "Новий"
 msgid "New Action"
 msgstr "Нова Дія"
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
 msgstr "Нова Стандартна Дія"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -538,6 +574,10 @@ msgstr "Переглядача HTML не знайдено.%Визначте йо
 msgid "No help found for line %d, column %d of %s."
 msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Об'єкт"
@@ -550,7 +590,7 @@ msgstr "Інспектор об'єктів"
 msgid "Ok"
 msgstr "Гаразд"
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Відкрити"
 
@@ -606,6 +646,10 @@ msgstr "Прибрати з Улюблених"
 msgid "Sample Masks:"
 msgstr "Приклади Масок:"
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "&Зберегти як ..."
@@ -642,6 +686,10 @@ msgstr "Обрати Все"
 msgid "Select a file"
 msgstr "Обрати файл"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr "Встановити"
@@ -674,6 +722,10 @@ msgstr "Впорядкування"
 msgid "Standard Action Classes"
 msgstr "Standard Action Classes"
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr "Рядок"
@@ -698,6 +750,10 @@ msgstr "Піделемент"
 msgid "Test Input"
 msgstr "Тестове Введення"
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr "Довідкова база %s%s%s не змогла знайти файл %s%s%s."
@@ -713,6 +769,10 @@ msgstr "Панель інструментів"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Пошук по змісту"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:oisundo
 msgid "Undo"

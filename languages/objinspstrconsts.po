@@ -162,6 +162,86 @@ msgstr ""
 msgid "Char"
 msgstr ""
 
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr ""
+
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr ""
+
+#: objinspstrconsts:sccstredtdelete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
+
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
+#: objinspstrconsts:sccstredtcancel
+msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts:sccstredthelp
+msgid "Help"
+msgstr ""
+
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtopendialog
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts:sccstredtsavedialog
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr ""

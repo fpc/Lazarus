@@ -25,22 +25,22 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PropEdits, Componenteditors, StdCtrls, ComCtrls;
+  PropEdits, Componenteditors, StdCtrls, ComCtrls, ObjInspStrConsts;
 
 type
 
   { TTreeViewItemsEditorForm }
 
   TTreeViewItemsEditorForm = class(TForm)
-    btnSave: TButton;
-    Button1: TButton;
-    Button2: TButton;
-    btnApply: TButton;
-    Button4: TButton;
+    BtnSave: TButton;
+    BtnOK: TButton;
+    BtnCancel: TButton;
+    BtnApply: TButton;
+    BtnHelp: TButton;
     BtnNewItem: TButton;
-    Button6: TButton;
-    btnDelete: TButton;
-    btnLoad: TButton;
+    BtnNewSubItem: TButton;
+    BtnDelete: TButton;
+    BtnLoad: TButton;
     edtText: TEdit;
     edtIndexImg: TEdit;
     edtIndexSel: TEdit;
@@ -56,15 +56,16 @@ type
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
-    procedure TreeView1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure TreeView1SelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure edtIndexStateEditingDone(Sender: TObject);
   private
-    FTreeView:TTreeView;
-    FModified:boolean;
-    procedure UpdateState;
+    FTreeView: TTreeView;
+    FModified: Boolean;
     procedure LoadFromTree(ATreeView:TTreeView);
     procedure SaveToTree;
   public
@@ -107,21 +108,51 @@ end;
 
 procedure TTreeViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
 var
-  S:string;
+  S: string;
 begin
-  S:='Item_'+IntToStr(TreeView1.Items.Count);
+  S := sccsTrEdtItem + IntToStr(TreeView1.Items.Count);
   if (Sender as TComponent).Tag = 1 then
-    TreeView1.Items.Add(TreeView1.Selected, S)
+    TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S)
   else
-  TreeView1.Items.AddChild(TreeView1.Selected, S);
+    TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S);
+    
+  edtText.SetFocus;
+  edtText.SelectAll;
 end;
 
 procedure TTreeViewItemsEditorForm.Edit1Change(Sender: TObject);
 begin
-  UpdateState;
+  if Assigned(TreeView1.Selected) then
+    TreeView1.Selected.Text := edtText.Text;
 end;
 
-procedure TTreeViewItemsEditorForm.TreeView1Click(Sender: TObject);
+procedure TTreeViewItemsEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption := sccsTrEdtCaption;
+
+  GroupBox1.Caption := sccsTrEdtGrpLCaption;
+  BtnNewItem.Caption := sccsTrEdtNewItem;
+  BtnNewSubItem.Caption := sccsTrEdtNewSubItem;
+  BtnDelete.Caption := sccsTrEdtDelete;
+  BtnLoad.Caption := sccsTrEdtLoad;
+  BtnSave.Caption := sccsTrEdtSave;
+
+  GroupBox2.Caption := sccsTrEdtGrpRCaption;
+  Label1.Caption := sccsTrEdtTextLabel;
+  Label2.Caption := sccsTrEdtImageIndexLabel;
+  Label3.Caption := sccsTrEdtSelIndexLabel;
+  Label4.Caption := sccsTrEdtStateIndexLabel;
+  
+  BtnOK.Caption := sccsTrEdtOK;
+  BtnCancel.Caption := sccsTrEdtCancel;
+  BtnApply.Caption := sccsTrEdtApply;
+  BtnHelp.Caption := sccsTrEdtHelp;
+  
+  OpenDialog1.Title := sccsTrEdtOpenDialog;
+  SaveDialog1.Title := sccsTrEdtSaveDialog;
+end;
+
+procedure TTreeViewItemsEditorForm.TreeView1SelectionChanged(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
   begin
@@ -138,9 +169,22 @@ begin
 end;
 
 procedure TTreeViewItemsEditorForm.btnDeleteClick(Sender: TObject);
+var
+  TempNode: TTreeNode;
 begin
   if Assigned(TreeView1.Selected) then
+  begin
+    TempNode := TreeView1.Selected.GetNextSibling;
+    if TempNode = nil then
+      TempNode := TreeView1.Selected.GetPrevSibling;
+    if TempNode = nil then
+      TempNode := TreeView1.Selected.Parent;
+      
     TreeView1.Items.Delete(TreeView1.Selected);
+    
+    if TempNode <> nil then
+      TreeView1.Selected := TempNode;
+  end;
 end;
 
 procedure TTreeViewItemsEditorForm.btnLoadClick(Sender: TObject);
@@ -155,14 +199,17 @@ begin
     TreeView1.SaveToFile(SaveDialog1.FileName);
 end;
 
-procedure TTreeViewItemsEditorForm.UpdateState;
+procedure TTreeViewItemsEditorForm.edtIndexStateEditingDone(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
   begin
-    TreeView1.Selected.Text:=edtText.Text;
-    TreeView1.Selected.ImageIndex:=StrToIntDef(edtIndexImg.Text, -1);
-    TreeView1.Selected.SelectedIndex:=StrToIntDef(edtIndexSel.Text, -1);
-    TreeView1.Selected.StateIndex:=StrToIntDef(edtIndexState.Text, -1);
+    TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, 0);
+    TreeView1.Selected.SelectedIndex := StrToIntDef(edtIndexSel.Text, 0);
+    TreeView1.Selected.StateIndex := StrToIntDef(edtIndexState.Text, -1);
+    
+    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
+    edtIndexSel.Text := IntToStr(TreeView1.Selected.SelectedIndex);
+    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
   end;
 end;
 
@@ -215,16 +262,16 @@ end;
 
 function TTreeViewItemsProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paDialog,paReadOnly,paRevertable];
+  Result := [paDialog, paReadOnly, paRevertable];
 end;
 
 
 { TTreeViewComponentEditor }
 procedure TTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 var
-  Hook    : TPropertyEditorHook;
+  Hook: TPropertyEditorHook;
 begin
-  If Index=0 then
+  If Index = 0 then
   begin
     GetHook(Hook);
     if EditTreeView(GetComponent as TTreeView) then
@@ -235,14 +282,14 @@ end;
 
 function TTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:='';
-  If Index=0 then
-    Result:='Edit TreeView';
+  Result := '';
+  If Index = 0 then
+    Result := sccsTrEdt;
 end;
 
 function TTreeViewComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
+  Result := 1;
 end;
 
 initialization

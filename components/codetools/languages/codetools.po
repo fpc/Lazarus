@@ -582,6 +582,10 @@ msgstr ""
 msgid "Define macro carbon1"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefinemacroqt1
+msgid "Define macro qt1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr ""

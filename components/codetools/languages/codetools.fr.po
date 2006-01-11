@@ -142,6 +142,10 @@ msgstr ""
 msgid "Define macro gtk2"
 msgstr "Macro gtk2 définie"
 
+#: codetoolsstrconsts:ctsdefinemacroqt1
+msgid "Define macro qt1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefinemacrowince1
 msgid "Define macro wince1"
 msgstr ""

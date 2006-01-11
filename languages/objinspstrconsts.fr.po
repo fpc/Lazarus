@@ -170,6 +170,10 @@ msgstr "Tous"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Tableau"
@@ -194,7 +198,7 @@ msgstr "Navigateur %s%s%s non trouvé."
 msgid "C&lear"
 msgstr "&Effacer"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr ""
 
@@ -338,6 +342,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Editez la liste d'actions..."
@@ -390,7 +398,7 @@ msgstr "Virgule flottante"
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr ""
 
@@ -430,6 +438,10 @@ msgstr ""
 msgid "Help on help"
 msgstr ""
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Index d'image"
@@ -466,6 +478,18 @@ msgstr "Interface"
 msgid "Invalid property value"
 msgstr ""
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Libellé"
@@ -477,6 +501,10 @@ msgstr ""
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Editeur d'élements"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -522,8 +550,16 @@ msgstr "Nouveau"
 msgid "New Action"
 msgstr ""
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
+msgstr ""
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
 msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
@@ -538,6 +574,10 @@ msgstr "Pas trouvé de navigateur HTML.%sVeuillez en définir un dans Aide -> Conf
 msgid "No help found for line %d, column %d of %s."
 msgstr "Pas trouvé d'aide pour la ligne %d, colonne %d de %s."
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objet"
@@ -550,7 +590,7 @@ msgstr "Inspecteur d'objets"
 msgid "Ok"
 msgstr ""
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr ""
 
@@ -606,6 +646,10 @@ msgstr ""
 msgid "Sample Masks:"
 msgstr ""
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr ""
@@ -642,6 +686,10 @@ msgstr ""
 msgid "Select a file"
 msgstr "Choisissez un fichier"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr "Ensemble"
@@ -674,6 +722,10 @@ msgstr "Trier"
 msgid "Standard Action Classes"
 msgstr ""
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr "Chaîne"
@@ -698,6 +750,10 @@ msgstr "Sous-élément"
 msgid "Test Input"
 msgstr ""
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr "la base de données d'aide %s%s%s n'a pas pu trouver le fichier %s%s%s."
@@ -712,6 +768,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
 msgstr ""
 
 #: objinspstrconsts:oisundo

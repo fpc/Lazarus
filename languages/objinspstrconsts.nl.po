@@ -170,6 +170,10 @@ msgstr "Alles"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Array"
@@ -194,7 +198,7 @@ msgstr "Browser %s%s%s niet gevonden."
 msgid "C&lear"
 msgstr "Opsc&honen"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr "Ongedaan maken"
 
@@ -338,6 +342,10 @@ msgstr "A&fsluiten"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Bewerk action list..."
@@ -390,7 +398,7 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Lettertype Selecteren"
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr "Help"
 
@@ -430,6 +438,10 @@ msgstr "Help node %s%s%s heeft geen Help Database"
 msgid "Help on help"
 msgstr "Help bij help"
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Plaatjes Index"
@@ -466,6 +478,18 @@ msgstr "Interface"
 msgid "Invalid property value"
 msgstr "Ongeldige properie waarde"
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Etiket"
@@ -477,6 +501,10 @@ msgstr "Laatste"
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "ListView bewerker"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -522,9 +550,17 @@ msgstr "Nieuw"
 msgid "New Action"
 msgstr "Nieuwe actie"
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
 msgstr "Nieuwe Standaard Actie"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -538,6 +574,10 @@ msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -
 msgid "No help found for line %d, column %d of %s."
 msgstr "Er is geen help gevonden voor regel %d, kolom %d van %s."
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Object"
@@ -550,7 +590,7 @@ msgstr "Object Inspector"
 msgid "Ok"
 msgstr "Ok"
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Open"
 
@@ -606,6 +646,10 @@ msgstr "Verwijder van favorieten"
 msgid "Sample Masks:"
 msgstr "Voorbeeld masker:"
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "Opslaan &Als..."
@@ -642,6 +686,10 @@ msgstr "Alles Selecteren"
 msgid "Select a file"
 msgstr "Selecteer een bestand"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr "Set"
@@ -674,6 +722,10 @@ msgstr "Sorteren"
 msgid "Standard Action Classes"
 msgstr "Standaard Actie Classen"
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr "String"
@@ -698,6 +750,10 @@ msgstr "Sub onderdeel"
 msgid "Test Input"
 msgstr "Test Invoer"
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr "De helpdatabase %s%s%s kon dit bestand niet vinden: %s%s%s."
@@ -713,6 +769,10 @@ msgstr "Gereedschapsbalk"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Onderwerp zoeken"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:oisundo
 msgid "Undo"

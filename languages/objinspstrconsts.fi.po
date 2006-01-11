@@ -170,6 +170,10 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Taulukko"
@@ -194,7 +198,7 @@ msgstr ""
 msgid "C&lear"
 msgstr "Tyhjennä"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr ""
 
@@ -338,6 +342,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr ""
@@ -390,7 +398,7 @@ msgstr ""
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr ""
 
@@ -430,6 +438,10 @@ msgstr ""
 msgid "Help on help"
 msgstr ""
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr ""
@@ -466,6 +478,18 @@ msgstr ""
 msgid "Invalid property value"
 msgstr ""
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr ""
@@ -476,6 +500,10 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
+msgstr ""
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
 msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
@@ -522,8 +550,16 @@ msgstr ""
 msgid "New Action"
 msgstr ""
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
+msgstr ""
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
 msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
@@ -538,6 +574,10 @@ msgstr ""
 msgid "No help found for line %d, column %d of %s."
 msgstr ""
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr ""
@@ -550,7 +590,7 @@ msgstr "Komponenttimuokkain"
 msgid "Ok"
 msgstr ""
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr ""
 
@@ -606,6 +646,10 @@ msgstr "Poista suositummista"
 msgid "Sample Masks:"
 msgstr "Näyte maskeja:"
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr ""
@@ -642,6 +686,10 @@ msgstr ""
 msgid "Select a file"
 msgstr "Valitse tiedosto"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr ""
@@ -674,6 +722,10 @@ msgstr "Lajittele"
 msgid "Standard Action Classes"
 msgstr ""
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr ""
@@ -698,6 +750,10 @@ msgstr ""
 msgid "Test Input"
 msgstr "Maskin testauspaikka"
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr ""
@@ -712,6 +768,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
 msgstr ""
 
 #: objinspstrconsts:oisundo

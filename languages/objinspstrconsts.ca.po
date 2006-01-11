@@ -170,6 +170,10 @@ msgstr "Tot"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Conjunt"
@@ -194,7 +198,7 @@ msgstr "No s'ha trobat el navegador %s%s%s."
 msgid "C&lear"
 msgstr "Ne&teja"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr "Cancel·la"
 
@@ -338,6 +342,10 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Edita la llista d'accions..."
@@ -390,7 +398,7 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Selecciona la font"
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr "Ajuda"
 
@@ -430,6 +438,10 @@ msgstr "El node de l'ajuda %s%s%s no té base de dades de l'ajuda"
 msgid "Help on help"
 msgstr "Ajuda de l'ajuda"
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Índex de les imatges"
@@ -466,6 +478,18 @@ msgstr "Interface"
 msgid "Invalid property value"
 msgstr ""
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Label"
@@ -477,6 +501,10 @@ msgstr "Últim"
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Editor de ListView"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -522,9 +550,17 @@ msgstr "Nou"
 msgid "New Action"
 msgstr "Nova acció"
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
 msgstr "Nova acció normalitzada"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -538,6 +574,10 @@ msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajud
 msgid "No help found for line %d, column %d of %s."
 msgstr "No s'ha trobat ajuda per la línia %d, columna %d de %s."
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objecte"
@@ -550,7 +590,7 @@ msgstr "Inspector dels objectes"
 msgid "Ok"
 msgstr ""
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Obre"
 
@@ -606,6 +646,10 @@ msgstr ""
 msgid "Sample Masks:"
 msgstr ""
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "&Anomena i desa.."
@@ -642,6 +686,10 @@ msgstr "Selecciona-ho tot"
 msgid "Select a file"
 msgstr "Selecciona un fitxer"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr "Fica"
@@ -674,6 +722,10 @@ msgstr "Classifica"
 msgid "Standard Action Classes"
 msgstr "Classes d'acció normalitzades"
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr "Cadena"
@@ -698,6 +750,10 @@ msgstr "Subelement"
 msgid "Test Input"
 msgstr ""
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr "La base de dades de l'ajuda %s%s%s no ha trobat el fitxer %s%s%s."
@@ -713,6 +769,10 @@ msgstr "Barra d'eines"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Cerca el contingut"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:oisundo
 msgid "Undo"

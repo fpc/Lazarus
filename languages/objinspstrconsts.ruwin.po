@@ -170,6 +170,10 @@ msgstr "Все"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:oisarray
 msgid "Array"
 msgstr "Массив"
@@ -194,7 +198,7 @@ msgstr "Обозреватель %s%s%s не найден"
 msgid "C&lear"
 msgstr "Очистить"
 
-#: objinspstrconsts:oistdactdatasetcancel1hint
+#: objinspstrconsts:sccstredtcancel
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -338,6 +342,10 @@ msgstr "Выход"
 msgid "Edit"
 msgstr "Правка"
 
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Правка списка действий..."
@@ -390,7 +398,7 @@ msgstr ""
 msgid "Font Select"
 msgstr "Выбор шрифта"
 
-#: objinspstrconsts:cactionlisteditorhelpcategory
+#: objinspstrconsts:sccstredthelp
 msgid "Help"
 msgstr "Помощь"
 
@@ -430,6 +438,10 @@ msgstr ""
 msgid "Help on help"
 msgstr "Справка осправке"
 
+#: objinspstrconsts:sccstredtimageindexlabel
+msgid "Image Index:"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Индекс картинки"
@@ -466,6 +478,18 @@ msgstr "Интерфейс"
 msgid "Invalid property value"
 msgstr ""
 
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr ""
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Метка"
@@ -477,6 +501,10 @@ msgstr "Последний"
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Редактор ListView"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -522,9 +550,17 @@ msgstr "Новый"
 msgid "New Action"
 msgstr "Новое действие"
 
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
 msgstr "Новое стандартное действие"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -538,6 +574,10 @@ msgstr "HTML броузер не найден. %sПожалуйста определите его в Справка-> Конфигур
 msgid "No help found for line %d, column %d of %s."
 msgstr "Справка не найдена для линии %d, колонки %d %s"
 
+#: objinspstrconsts:sccstredtok
+msgid "OK"
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Объект"
@@ -550,7 +590,7 @@ msgstr "Инспектор объектов"
 msgid "Ok"
 msgstr ""
 
-#: objinspstrconsts:oistdactfileopenhint
+#: objinspstrconsts:sccstredtopendialog
 msgid "Open"
 msgstr "Открыть"
 
@@ -606,6 +646,10 @@ msgstr "Удалить из избранного"
 msgid "Sample Masks:"
 msgstr ""
 
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
 msgstr "Сохранить как..."
@@ -642,6 +686,10 @@ msgstr "Выбрать всё"
 msgid "Select a file"
 msgstr "Выбрать файл"
 
+#: objinspstrconsts:sccstredtselindexlabel
+msgid "Selected Index:"
+msgstr ""
+
 #: objinspstrconsts:oisset
 msgid "Set"
 msgstr "Множество"
@@ -674,6 +722,10 @@ msgstr "Сортировка"
 msgid "Standard Action Classes"
 msgstr "Стандартые классы действий"
 
+#: objinspstrconsts:sccstredtstateindexlabel
+msgid "State Index:"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr "Строка"
@@ -698,6 +750,10 @@ msgstr "Под пункт"
 msgid "Test Input"
 msgstr ""
 
+#: objinspstrconsts:sccstredttextlabel
+msgid "Text:"
+msgstr ""
+
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgstr "Вспомогательная база данных %s%s%s не может найти файл %s%s%s."
@@ -713,6 +769,10 @@ msgstr "Панель инструментов"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Поиск по топикам"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
