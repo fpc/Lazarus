@@ -171,7 +171,7 @@ msgstr "Kann nicht fokussieren"
 
 #: lclstrconsts:rsmbcancel
 msgid "Cancel"
-msgstr "Stop"
+msgstr "Abbrechen"
 
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
