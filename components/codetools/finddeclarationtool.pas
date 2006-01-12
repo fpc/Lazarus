@@ -3976,9 +3976,11 @@ begin
       SearchBaseClass:=
                     not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
     end else begin
-      // if this class is not IInterface, IInterface is ancestor
+      // Delphi has as default interface IInterface
+      // FPC has as interface IUnknown
       SearchBaseClass:=
-                 not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface');
+                (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IInterface'))
+            and (not CompareSrcIdentifier(ClassIdentNode.StartPos,'IUnknown'));
     end;
     if not SearchBaseClass then exit;
   end;
