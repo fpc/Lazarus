@@ -59,9 +59,8 @@ update-desktop-database &> /dev/null ||:
 %files
 %defattr(-,root,root,-)
 %{_libdir}/%{name}
-%{_bindir}/%{name}
+%{_bindir}/*
   %{_datadir}/pixmaps/lazarus.png
-#  %{_datadir}/gnome/apps/Development/lazarus.desktop
   %{_datadir}/applications/lazarus.desktop
 
 %changelog
