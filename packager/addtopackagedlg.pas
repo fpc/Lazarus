@@ -456,10 +456,11 @@ begin
     OnGetIDEFileInfo,Params.UnitFilename) then exit;
     
   // check unitname
-  if AnsiCompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
+  if CompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
     MessageDlg(lisA2PInvalidUnitName,
-      Format(lisA2PTheUnitNameAndFilenameDiffer, ['"', Params.UnitName, '"']),
+      Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
+        Params.UnitName, '"', #13, '"', Params.UnitFilename, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -824,10 +825,12 @@ begin
         if CompareText(CurParams.UnitName,
           ExtractFileNameOnly(CurParams.UnitFilename))<>0
         then begin
-          MessageDlg(lisA2PInvalidUnitName,
-            Format(lisA2PTheUnitNameAndFilenameDiffer, ['"', CurParams.UnitName, '"']),
-            mtError,[mbCancel],0);
-          exit;
+          if MessageDlg(lisA2PInvalidUnitName,
+              Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
+                CurParams.UnitName, '"', #13, '"', CurParams.UnitFilename, '"']),
+            mtError,[mbIgnore,mbCancel],0)<>mrIgnore
+          then
+            exit;
         end;
       end;
       LastParams:=CurParams;
@@ -858,6 +861,12 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
+                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);

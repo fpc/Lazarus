@@ -2475,8 +2475,8 @@ resourcestring
   lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting = 'No package found '
     +'for dependency %s%s%s.%sPlease choose an existing package.';
   lisA2PInvalidUnitName = 'Invalid Unit Name';
-  lisA2PTheUnitNameAndFilenameDiffer = 'The unit name %s%s%s and filename '
-    +'differ.';
+  lisA2PTheUnitNameAndFilenameDiffer = 'The unit name %s%s%s%sand filename %s%'
+    +'s%s differ.';
   lisA2PFileAlreadyInPackage = 'File already in package';
   lisA2PTheFileIsAlreadyInThePackage = 'The file %s%s%s is already in the '
     +'package.';

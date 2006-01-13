@@ -23,6 +23,19 @@
 
   Abstract:
     Methods and classes for loading translations/localizations from po files.
+    
+  Example:
+  
+    procedure TForm1.FormCreate(Sender: TObject);
+    var
+      PODirectory: String;
+    begin
+      PODirectory:='/path/to/lazarus/lcl/languages/';
+      TranslateUnitResourceStrings('LCLStrConsts',PODirectory+'lcl.%s.po',
+                                   'nl','');
+      MessageDlg('Title','Text',mtInformation,[mbOk,mbCancel,mbYes],0);
+    end;
+
 }
 unit Translations;
 
