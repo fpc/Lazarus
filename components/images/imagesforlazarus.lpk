@@ -4,12 +4,11 @@
     <Name Value="ImagesForLazarus"/>
     <Author Value="Mazen NEIFER"/>
     <CompilerOptions>
-      <Version Value="2"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
       </SearchPaths>
       <CodeGeneration>
-        <UnitStyle Value="0"/>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Linking>
