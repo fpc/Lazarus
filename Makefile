@@ -354,6 +354,9 @@ endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
 override TARGET_UNITS+=runtimetypeinfocontrols.pas
 endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override TARGET_UNITS+=runtimetypeinfocontrols.pas
+endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
 endif
@@ -471,6 +474,9 @@ endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
 override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_EXAMPLEDIRS+=examples
 endif
@@ -578,6 +584,9 @@ override TARGET_EXAMPLEDIRS+=examples
 endif
 ifeq ($(FULL_TARGET),arm-wince)
 override TARGET_EXAMPLEDIRS+=examples
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_OPTIONS+=-gl
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
 override COMPILER_OPTIONS+=-gl
@@ -3379,6 +3388,9 @@ override COMPILER_UNITDIR+=$(OS_TARGET)/ ../../packager/units/$(CPU_TARGET)-$(OS
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
 override COMPILER_UNITDIR+=../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_UNITDIR+=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ .
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 TARGET_EXAMPLEDIRS_EXAMPLES=1

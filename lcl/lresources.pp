@@ -3057,13 +3057,13 @@ var
 {$endif}
 begin
   {$IFDEF FPC_BIG_ENDIAN}
-    if SizeOf(e)=10 then begin
+    {$IFDEF FPC_HAS_TYPE_EXTENDED}
       ReverseBytes(@e,10);
       Write(e,10);
-    end else begin
+    {$ELSE}
       ConvertEndianBigDoubleToLRSExtended(@e,@LRSExtended);
       Write(LRSExtended,10);
-    end;
+    {$ENDIF}
   {$ENDIF}
   Write(e,10);
 end;

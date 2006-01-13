@@ -1339,7 +1339,7 @@ begin
   if Keys and MK_LButton <> 0 then Include(Result,ssLeft);
   if Keys and MK_RButton <> 0 then Include(Result,ssRight);
   if Keys and MK_MButton <> 0 then Include(Result,ssMiddle);
-  if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
+  if GetKeyState(VK_MENU) < 0 then Include(Result,ssAlt);
 end;
 
 function KeyDataToShiftState(KeyData: Longint): TShiftState;

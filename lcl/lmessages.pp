@@ -397,7 +397,7 @@ type
 
   TLMKey = record
     Msg: Cardinal;
-    CharCode: Word;
+    CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
     Unused: Word;
 {$ifdef cpu64}
     Unused2 : Longint;
@@ -583,7 +583,7 @@ type
   PLMMouseEvent = ^TLMMouseEvent;
   TLMMouseEvent = record
     Msg : Cardinal;
-    Button : LongInt;
+    Button : LongInt; // as TMouseButton, 1=left, 2=right, 3=middle
     WheelDelta : Longint; { -1 for up, 1 for down }
     State : TShiftState;
     X     : Integer;

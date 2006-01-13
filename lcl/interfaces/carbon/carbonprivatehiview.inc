@@ -23,6 +23,10 @@
 //  MCarbonWSWinControl_Hit_UPP: EventHandlerUPP = nil;
 
 
+{ CarbonPrivateHIView_Dispose
+  Is called when the control is freed by carbon.
+  Frees the widgetinfo.
+   }
 function CarbonPrivateHIView_Dispose(ANextHandler: EventHandlerCallRef;
                                      AEvent: EventRef;
                                      AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -57,7 +61,7 @@ function CarbonPrivateHIView_MouseMove(ANextHandler: EventHandlerCallRef;
                                 AEvent: EventRef;
                                 AInfo: PWidgetInfo): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
-  WriteLN('MouseMove');
+  DebugLn('CarbonPrivateHIView_MouseMove');
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 

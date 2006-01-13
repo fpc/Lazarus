@@ -362,6 +362,8 @@ begin
       if Result<>mrOk then exit;
       if ExtraOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
+      // add -w option to print leaving/entering messages
+      Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;

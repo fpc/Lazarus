@@ -46,6 +46,8 @@ procedure UnRegisterEventHandler(AHandler: TCarbonWSEventHandlerProc);
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 
+
+
 function Dbgs(const ARect: FPCMacOSAll.Rect): string; overload;
 
 implementation

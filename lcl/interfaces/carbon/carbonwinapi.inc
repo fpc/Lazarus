@@ -457,7 +457,23 @@ end;
 
 function TCarbonWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
-  Result:=inherited GetKeyState(nVirtKey);
+  Result:=0;
+  
+  case nVirtKey of
+  VK_MENU:
+    if (GetCurrentKeyModifiers and optionKey)>0 then
+      // the ssAlt/VK_MENU is mapped to optionKey under MacOS
+      Result:=-1;
+  VK_SHIFT:
+    if (GetCurrentKeyModifiers and shiftKey)>0 then
+      Result:=-1;
+  VK_CONTROL:
+    if (GetCurrentKeyModifiers and cmdKey)>0 then
+      // the ssCtrl/VK_CONTROL is mapped to optionKey under MacOS
+      Result:=-1;
+  else
+    debugln('TCarbonWidgetSet.GetKeyState TODO ',dbgs(nVirtkey));
+  end;
 end;
 
 function TCarbonWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer;
