@@ -15,10 +15,10 @@
   Abstract:
     TOpenGLControl is a LCL control with an opengl context.
     It works under the following platforms:
-      - gtk with glx    : fully
+      - gtk with glx    : full
       - gtk2 with glx   : todo
-      - carbon with agl : todo
-      - windows with wgl: todo
+      - carbon with agl : full
+      - windows with wgl: full
 }
 unit OpenGLContext;
 
@@ -130,6 +130,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
   end;
+
+
 
 procedure Register;
 
@@ -391,7 +393,8 @@ begin
       AttrList:=OpenGlControl.SharedControl.OpenGLInitAttrList
     else
       AttrList:=OpenGlControl.OpenGLInitAttrList;
-    Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,OpenGlControl.SharedControl,
+    Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
+                                 OpenGlControl.SharedControl,
                                  AttrList);
   end;
 end;

@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, Windows, LCLProc, LCLType, gl, Forms, Controls,
-  WSLCLClasses;
+  Win32Int, WSLCLClasses, WSControls, Win32WSControls;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
@@ -31,6 +31,25 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
                           SharedControl: TWinControl; AttrList: PInteger): HWND;
 
 procedure InitWGL;
+procedure InitOpenGLContextGLWindowClass;
+
+
+type
+  TWGLControlInfo = record
+    Window: HWND;
+    DC: HDC;
+    PixelFormat: GLUInt;
+    WGLContext: HGLRC;
+  end;
+  PWGLControlInfo = ^TWGLControlInfo;
+
+var
+  WGLControlInfoAtom: ATOM = 0;
+
+function AllocWGLControlInfo(Window: HWND): PWGLControlInfo;
+function DisposeWGLControlInfo(Window: HWND): boolean;
+function GetWGLControlInfo(Window: HWND): PWGLControlInfo;
+
 
 const
   WGL_SAMPLE_BUFFERS_ARB                           = $2041;
@@ -192,6 +211,8 @@ var
 
 var
   WGLInitialized: boolean = false;
+  OpenGLContextWindowClassInitialized: boolean = false;
+  OpenGLContextWindowClass: WNDCLASS;
 
 const
   DefaultOpenGLContextInitAttrList: array [0..0] of LongInt = (
@@ -207,25 +228,80 @@ end;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 begin
-
+  glViewport(Left,Top,Width,Height);
 end;
 
 procedure LOpenGLSwapBuffers(Handle: HWND);
+var
+  Info: PWGLControlInfo;
 begin
-
+  Info:=GetWGLControlInfo(Handle);
+  SwapBuffers(Info^.DC);
 end;
 
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+var
+  Info: PWGLControlInfo;
 begin
-
+  Info:=GetWGLControlInfo(Handle);
+  Result:=wglMakeCurrent(Info^.DC,Info^.WGLContext);
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl; AttrList: PInteger
   ): HWND;
+var
+  Params: TCreateWindowExParams;
+  pfd: PIXELFORMATDESCRIPTOR;
+  Info: PWGLControlInfo;
 begin
   InitWGL;
+  //InitOpenGLContextGLWindowClass;
   
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do begin
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+  
+  // create info
+  Info:=AllocWGLControlInfo(Result);
+
+  // create device context
+  Info^.DC := GetDC(Result);
+  if Info^.DC=0 then
+    raise Exception.Create('LOpenGLCreateContext GetDC failed');
+
+  // get pixelformat
+  FillChar(pfd,SizeOf(pfd),0);
+  with pfd do begin
+    nSize:=sizeOf(pfd);
+    nVersion:=1;
+    dwFlags:=PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER
+              or PFD_TYPE_RGBA;
+    iPixelType:=24; // color depth
+    cDepthBits:=16; // Z-Buffer
+    iLayerType:=PFD_MAIN_PLANE;
+  end;
+  
+  Info^.PixelFormat:=ChoosePixelFormat(Info^.DC,@pfd);
+  if Info^.PixelFormat=0 then
+    raise Exception.Create('LOpenGLCreateContext ChoosePixelFormat failed');
+
+  // set pixel format in device context
+  if not SetPixelFormat(Info^.DC,Info^.PixelFormat,@pfd) then
+    raise Exception.Create('LOpenGLCreateContext SetPixelFormat failed');
+
+  // create WGL context
+  Info^.WGLContext:=wglCreateContext(Info^.DC);
+  if Info^.WGLContext=0 then
+    raise Exception.Create('LOpenGLCreateContext wglCreateContext failed');
 end;
 
 procedure InitWGL;
@@ -235,7 +311,7 @@ var
   // Checks if the given Extension string is in Buffer.
   function CheckExtension(const extension : String) : Boolean;
   begin
-     Result:=(Pos(extension, Buffer)>0);
+    Result:=(Pos(extension, Buffer)>0);
   end;
 
 begin
@@ -277,8 +353,58 @@ begin
     WGL_ARB_pixel_format:=CheckExtension('WGL_ARB_pixel_format');
     WGL_ATI_pixel_format_float:=CheckExtension('WGL_ATI_pixel_format_float');
   except
-  
+    on E: Exception do begin
+      DebugLn('InitWGL ',E.Message);
+    end;
   end;
+end;
+
+procedure InitOpenGLContextGLWindowClass;
+begin
+  if OpenGLContextWindowClassInitialized then exit;
+  OpenGLContextWindowClassInitialized:=true;
+  with OpenGLContextWindowClass do begin
+    style:=CS_HREDRAW or CS_VREDRAW or CS_OWNDC;// Redraw On Move, And Own DC For Window
+    lpfnWndProc  := @WindowProc;                // WndProc Handles Messages
+    cbClsExtra   := 0;                          // No Extra Window Data
+    cbWndExtra   := 0;                          // No Extra Window Data
+    hInstance    := System.HInstance;           // Set The Instance
+    hIcon        := LoadIcon(NULL, IDI_WINLOGO);// Load The Default Icon
+    hCursor      := LoadCursor(NULL, IDC_ARROW);// Load The Arrow Pointer
+    hbrBackground:= NULL;                       // No Background Required For GL
+    lpszMenuName := nil;                       // We Don't Want A Menu
+    lpszClassName:= 'LazOpenGLContext';         // Set The Class Name
+  end;
+  if RegisterClass(@OpenGLContextWindowClass)=0 then
+    raise Exception.Create('registering OpenGLContextWindowClass failed');
+end;
+
+function AllocWGLControlInfo(Window: HWND): PWGLControlInfo;
+begin
+  New(Result);
+  FillChar(Result^, sizeof(Result^), 0);
+  Result^.Window := Window;
+  if WGLControlInfoAtom=0 then
+    WGLControlInfoAtom := Windows.GlobalAddAtom('WGLControlInfo');
+  Windows.SetProp(Window, PChar(dword(WGLControlInfoAtom)), dword(Result));
+end;
+
+function DisposeWGLControlInfo(Window: HWND): boolean;
+var
+  Info: PWGLControlInfo;
+begin
+  Info := PWGLControlInfo(Windows.GetProp(Window,
+                                          PChar(dword(WGLControlInfoAtom))));
+  Result := Windows.RemoveProp(Window, PChar(dword(WGLControlInfoAtom)))<>0;
+  if Result then begin
+    Dispose(Info);
+  end;
+end;
+
+function GetWGLControlInfo(Window: HWND): PWGLControlInfo;
+begin
+  Result:=PWGLControlInfo(Windows.GetProp(Window,
+                                          PChar(dword(WGLControlInfoAtom))));
 end;
 
 end.
