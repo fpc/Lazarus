@@ -3350,7 +3350,7 @@ var
   ShiftState: TShiftState;
   AParent: TWinControl;
 begin
-  //debugln('TWinControl.DoKeyDown ',Name,':',ClassName,' ');
+  //debugln('TWinControl.DoKeyDown ',DbgSName(Self),' ShiftState=',dbgs(KeyDataToShiftState(Message.KeyData)),' CharCode=',dbgs(Message.CharCode));
   Result:=true;
 
   with Message do

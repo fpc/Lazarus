@@ -156,6 +156,7 @@ components/jpeg/lazjpeg.pas svneol=native#text/pascal
 components/jpeg/readme.txt svneol=native#text/plain
 components/macfiles/Makefile svneol=native#text/plain
 components/macfiles/Makefile.fpc svneol=native#text/plain
+components/macfiles/examples/Readme.txt svneol=native#text/plain
 components/macfiles/examples/createmacapplication.lpi svneol=native#text/plain
 components/macfiles/examples/createmacapplication.lpr svneol=native#text/plain
 components/macfiles/macapplicationres.pas svneol=native#text/plain

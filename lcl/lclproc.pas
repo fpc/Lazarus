@@ -168,6 +168,7 @@ function dbgObjMem(AnObject: TObject): string; overload;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgS(const Shift: TShiftState): string; overload;
+function DbgsVKCode(c: word): string;
 
 // some string manipulation functions
 function StripLN(const ALine: String): String;
@@ -189,7 +190,7 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
 function UTF8Length(p: PChar; Count: integer): integer;
-function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
+function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(u: cardinal): string;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
@@ -199,6 +200,13 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
+
+function UTF16CharacterLength(p: PWideChar): integer;
+function UTF16Length(const s: widestring): integer;
+function UTF16Length(p: PWideChar; WordCount: integer): integer;
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+function UnicodeToUTF16(u: cardinal): widestring;
+
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -410,38 +418,41 @@ begin
   end;
 end;
 
-function GetCompleteText(sText: string; iSelStart: Integer; bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
+function GetCompleteText(sText: string; iSelStart: Integer;
+  bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
 
- function IsSamePrefix(sCompareText, sPrefix: string; iStart: Integer; var ResultText: string): Boolean;
- var sTempText: string;
- begin
-  Result := False;
-  sTempText := LeftStr(sCompareText, iStart);
-  if not bCaseSensitive then sTempText := UpperCase(sTempText);
-  if (sTempText = sPrefix) then
-   begin
-    ResultText := sCompareText;
-    Result := True;
-   end;//End if (sTempText = sPrefix)
- end;//End function IsSamePrefix
+  function IsSamePrefix(sCompareText, sPrefix: string; iStart: Integer;
+    var ResultText: string): Boolean;
+  var sTempText: string;
+  begin
+    Result := False;
+    sTempText := LeftStr(sCompareText, iStart);
+    if not bCaseSensitive then sTempText := UpperCase(sTempText);
+    if (sTempText = sPrefix) then
+    begin
+      ResultText := sCompareText;
+      Result := True;
+    end;//End if (sTempText = sPrefix)
+  end;//End function IsSamePrefix
 
 var i: Integer;
     sPrefixText: string;
 begin
- Result := sText;//Default to return original text if no identical text are found
- if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
- if (iSelStart = 0) then Exit;//Cursor at beginning
- if (slTextList.Count = 0) then Exit;//No text list to search for idtenticals, Exit.
- sPrefixText := LeftStr(sText, iSelStart);//Get text from beginning to cursor position.
- if not bCaseSensitive then sPrefixText := UpperCase(sPrefixText);
- if bSearchAscending then
+  Result := sText;//Default to return original text if no identical text are found
+  if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
+  if (iSelStart = 0) then Exit;//Cursor at beginning
+  if (slTextList.Count = 0) then Exit;//No text list to search for idtenticals, Exit.
+  sPrefixText := LeftStr(sText, iSelStart);//Get text from beginning to cursor position.
+  if not bCaseSensitive then
+    sPrefixText := UpperCase(sPrefixText);
+  if bSearchAscending then
   begin
-   for i:=0 to slTextList.Count-1 do
-    if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+    for i:=0 to slTextList.Count-1 do
+      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
   end else
   begin
-   for i:=slTextList.Count-1 downto 0 do
-    if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+    for i:=slTextList.Count-1 downto 0 do
+      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
   end;//End if bSearchAscending
 end;
 
@@ -1329,6 +1340,166 @@ begin
   Result:='['+Result+']';
 end;
 
+function DbgsVKCode(c: word): string;
+begin
+  case c of
+  VK_UNKNOWN: Result:='VK_UNKNOWN';
+  VK_LBUTTON: Result:='VK_LBUTTON';
+  VK_RBUTTON: Result:='VK_RBUTTON';
+  VK_CANCEL: Result:='VK_CANCEL';
+  VK_MBUTTON: Result:='VK_MBUTTON';
+  VK_BACK: Result:='VK_BACK';
+  VK_TAB: Result:='VK_TAB';
+  VK_CLEAR: Result:='VK_CLEAR';
+  VK_RETURN: Result:='VK_RETURN';
+  VK_SHIFT: Result:='VK_SHIFT';
+  VK_CONTROL: Result:='VK_CONTROL';
+  VK_MENU: Result:='VK_MENU';
+  VK_PAUSE: Result:='VK_PAUSE';
+  VK_CAPITAL: Result:='VK_CAPITAL';
+  VK_KANA: Result:='VK_KANA';
+  VK_JUNJA: Result:='VK_JUNJA';
+  VK_FINAL: Result:='VK_FINAL';
+  VK_HANJA: Result:='VK_HANJA';
+  VK_ESCAPE: Result:='VK_ESCAPE';
+  VK_CONVERT: Result:='VK_CONVERT';
+  VK_NONCONVERT: Result:='VK_NONCONVERT';
+  VK_ACCEPT: Result:='VK_ACCEPT';
+  VK_MODECHANGE: Result:='VK_MODECHANGE';
+  VK_SPACE: Result:='VK_SPACE';
+  VK_PRIOR: Result:='VK_PRIOR';
+  VK_NEXT: Result:='VK_NEXT';
+  VK_END: Result:='VK_END';
+  VK_HOME: Result:='VK_HOME';
+  VK_LEFT: Result:='VK_LEFT';
+  VK_UP: Result:='VK_UP';
+  VK_RIGHT: Result:='VK_RIGHT';
+  VK_DOWN: Result:='VK_DOWN';
+  VK_SELECT: Result:='VK_SELECT';
+  VK_PRINT: Result:='VK_PRINT';
+  VK_EXECUTE: Result:='VK_EXECUTE';
+  VK_SNAPSHOT: Result:='VK_SNAPSHOT';
+  VK_INSERT: Result:='VK_INSERT';
+  VK_DELETE: Result:='VK_DELETE';
+  VK_HELP: Result:='VK_HELP';
+
+  VK_0: Result:='VK_0';
+  VK_1: Result:='VK_1';
+  VK_2: Result:='VK_2';
+  VK_3: Result:='VK_3';
+  VK_4: Result:='VK_4';
+  VK_5: Result:='VK_5';
+  VK_6: Result:='VK_6';
+  VK_7: Result:='VK_7';
+  VK_8: Result:='VK_8';
+  VK_9: Result:='VK_9';
+
+  VK_A: Result:='VK_A';
+  VK_B: Result:='VK_B';
+  VK_C: Result:='VK_C';
+  VK_D: Result:='VK_D';
+  VK_E: Result:='VK_E';
+  VK_F: Result:='VK_F';
+  VK_G: Result:='VK_G';
+  VK_H: Result:='VK_H';
+  VK_I: Result:='VK_I';
+  VK_J: Result:='VK_J';
+  VK_K: Result:='VK_K';
+  VK_L: Result:='VK_L';
+  VK_M: Result:='VK_M';
+  VK_N: Result:='VK_N';
+  VK_O: Result:='VK_O';
+  VK_P: Result:='VK_P';
+  VK_Q: Result:='VK_Q';
+  VK_R: Result:='VK_R';
+  VK_S: Result:='VK_S';
+  VK_T: Result:='VK_T';
+  VK_U: Result:='VK_U';
+  VK_V: Result:='VK_V';
+  VK_W: Result:='VK_W';
+  VK_X: Result:='VK_X';
+  VK_Y: Result:='VK_Y';
+  VK_Z: Result:='VK_Z';
+
+  VK_LWIN: Result:='VK_LWIN';
+  VK_RWIN: Result:='VK_RWIN';
+  VK_APPS: Result:='VK_APPS';
+  VK_SLEEP: Result:='VK_SLEEP';
+
+  VK_NUMPAD0: Result:='VK_NUMPAD0';
+  VK_NUMPAD1: Result:='VK_NUMPAD1';
+  VK_NUMPAD2: Result:='VK_NUMPAD2';
+  VK_NUMPAD3: Result:='VK_NUMPAD3';
+  VK_NUMPAD4: Result:='VK_NUMPAD4';
+  VK_NUMPAD5: Result:='VK_NUMPAD5';
+  VK_NUMPAD6: Result:='VK_NUMPAD6';
+  VK_NUMPAD7: Result:='VK_NUMPAD7';
+  VK_NUMPAD8: Result:='VK_NUMPAD8';
+  VK_NUMPAD9: Result:='VK_NUMPAD9';
+  VK_MULTIPLY: Result:='VK_MULTIPLY';
+  VK_ADD: Result:='VK_ADD';
+  VK_SEPARATOR: Result:='VK_SEPARATOR';
+  VK_SUBTRACT: Result:='VK_SUBTRACT';
+  VK_DECIMAL: Result:='VK_DECIMAL';
+  VK_DIVIDE: Result:='VK_DIVIDE';
+  VK_F1: Result:='VK_F1';
+  VK_F2: Result:='VK_F2';
+  VK_F3: Result:='VK_F3';
+  VK_F4: Result:='VK_F4';
+  VK_F5: Result:='VK_F5';
+  VK_F6: Result:='VK_F6';
+  VK_F7: Result:='VK_F7';
+  VK_F8: Result:='VK_F8';
+  VK_F9: Result:='VK_F9';
+  VK_F10: Result:='VK_F10';
+  VK_F11: Result:='VK_F11';
+  VK_F12: Result:='VK_F12';
+  VK_F13: Result:='VK_F13';
+  VK_F14: Result:='VK_F14';
+  VK_F15: Result:='VK_F15';
+  VK_F16: Result:='VK_F16';
+  VK_F17: Result:='VK_F17';
+  VK_F18: Result:='VK_F18';
+  VK_F19: Result:='VK_F19';
+  VK_F20: Result:='VK_F20';
+  VK_F21: Result:='VK_F21';
+  VK_F22: Result:='VK_F22';
+  VK_F23: Result:='VK_F23';
+  VK_F24: Result:='VK_F24';
+
+  VK_NUMLOCK: Result:='VK_NUMLOCK';
+  VK_SCROLL: Result:='VK_SCROLL';
+
+  VK_LSHIFT: Result:='VK_LSHIFT';
+  VK_RSHIFT: Result:='VK_RSHIFT';
+  VK_LCONTROL: Result:='VK_LCONTROL';
+  VK_RCONTROL: Result:='VK_RCONTROL';
+  VK_LMENU: Result:='VK_LMENU';
+  VK_RMENU: Result:='VK_RMENU';
+
+  VK_BROWSER_BACK: Result:='VK_BROWSER_BACK';
+  VK_BROWSER_FORWARD: Result:='VK_BROWSER_FORWARD';
+  VK_BROWSER_REFRESH: Result:='VK_BROWSER_REFRESH';
+  VK_BROWSER_STOP: Result:='VK_BROWSER_STOP';
+  VK_BROWSER_SEARCH: Result:='VK_BROWSER_SEARCH';
+  VK_BROWSER_FAVORITES: Result:='VK_BROWSER_FAVORITES';
+  VK_BROWSER_HOME: Result:='VK_BROWSER_HOME';
+  VK_VOLUME_MUTE: Result:='VK_VOLUME_MUTE';
+  VK_VOLUME_DOWN: Result:='VK_VOLUME_DOWN';
+  VK_VOLUME_UP: Result:='VK_VOLUME_UP';
+  VK_MEDIA_NEXT_TRACK: Result:='VK_MEDIA_NEXT_TRACK';
+  VK_MEDIA_PREV_TRACK: Result:='VK_MEDIA_PREV_TRACK';
+  VK_MEDIA_STOP: Result:='VK_MEDIA_STOP';
+  VK_MEDIA_PLAY_PAUSE: Result:='VK_MEDIA_PLAY_PAUSE';
+  VK_LAUNCH_MAIL: Result:='VK_LAUNCH_MAIL';
+  VK_LAUNCH_MEDIA_SELECT: Result:='VK_LAUNCH_MEDIA_SELECT';
+  VK_LAUNCH_APP1: Result:='VK_LAUNCH_APP1';
+  VK_LAUNCH_APP2: Result:='VK_LAUNCH_APP2';
+  else
+    Result:='VK_('+dbgs(c)+')';
+  end;
+end;
+
 function StripLN(const ALine: String): String;
 var
   idx: Integer;
@@ -1544,7 +1715,7 @@ begin
   end;
 end;
 
-function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
+function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 begin
   if p<>nil then begin
     if ord(p^)<%11000000 then begin
@@ -1800,6 +1971,76 @@ begin
   end;
   CopyPart;
   SetLength(Result, Dest - PChar(Result));
+end;
+
+function UTF16CharacterLength(p: PWideChar): integer;
+// returns length of UTF16 character in number of words
+// The endianess of the machine will be taken.
+begin
+  if p<>nil then begin
+    if ord(p[0])<$D800 then
+      Result:=1
+    else
+      Result:=2;
+  end else begin
+    Result:=0;
+  end;
+end;
+
+function UTF16Length(const s: widestring): integer;
+begin
+  Result:=UTF16Length(PWideChar(s),length(s));
+end;
+
+function UTF16Length(p: PWideChar; WordCount: integer): integer;
+var
+  CharLen: LongInt;
+begin
+  Result:=0;
+  while (WordCount>0) do begin
+    inc(Result);
+    CharLen:=UTF16CharacterLength(p);
+    inc(p,CharLen);
+    dec(WordCount,CharLen);
+  end;
+end;
+
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+var
+  w1: cardinal;
+  w2: Cardinal;
+begin
+  if p<>nil then begin
+    w1:=ord(p[0]);
+    if w1<$D800 then begin
+      // is 1 word character
+      Result:=w1;
+      CharLen:=1;
+    end else begin
+      // could be 2 word character
+      w2:=ord(p[1]);
+      if (w2>=$DC00) then begin
+        // is 2 word character
+        Result:=(w1-$D800) shl 10 + (w2-$DC00);
+        CharLen:=2;
+      end else begin
+        // invalid character
+        Result:=w1;
+        CharLen:=1;
+      end;
+    end;
+  end else begin
+    Result:=0;
+    CharLen:=0;
+  end;
+end;
+
+function UnicodeToUTF16(u: cardinal): widestring;
+begin
+  if u<$D800 then
+    Result:=widechar(u)
+  else
+    Result:=widechar($D800+(u shr 10))+widechar($DC00+(u and $3ff));
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;

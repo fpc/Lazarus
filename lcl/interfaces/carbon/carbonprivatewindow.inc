@@ -40,7 +40,7 @@ begin
   if (cmdKey and Modifiers)>0 then
     inc(Result,MK_Control);
 
-  debugln('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
+  //debugln('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;
 
 function GetCarbonShiftState: TShiftState;
@@ -70,7 +70,7 @@ begin
   if (alphaLock and Modifiers)>0 then
     Include(Result,ssCaps);
 
-  debugln('GetCarbonShiftState Result=',dbgs(Result),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
+  //debugln('GetCarbonShiftState Result=',dbgs(Result),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;
 
 
@@ -125,7 +125,9 @@ var
   Msg: TLMMouseMove;
   Info:PWidgetInfo;
 begin
+  {$IFDEF VerboseMouse}
   debugln('TrackProgress');
+  {$ENDIF}
   GetGlobalMouse(AbsMousePos);
   Window := HIViewGetWindow(AControl);
   GetWindowBounds(Window, kWindowStructureRgn, R);
@@ -169,7 +171,9 @@ var
   R: FPCMacOSAll.Rect;
   Msg: TLMMouseMove;
 begin                                   
+  {$IFDEF VerboseMouse}
   DebugLn('CarbonPrivateWindow_ControlTrack');
+  {$ENDIF}
   GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil, SizeOf(MousePoint), nil, @MousePoint);
   GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP, nil, sizeof(ActionUPP), nil, @OldActionUPP);
   GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil, SizeOf(MouseButton), nil, @MouseButton);
@@ -258,7 +262,9 @@ var
     GetEventParameter(AEvent, kEventParamMouseWheelDelta, typeSInt32, nil,
                       SizeOf(WheelDelta), nil, @WheelDelta);
     Result := WheelDelta;
+    {$IFDEF VerboseMouse}
     debugln('GetMouseWheelDelta WheelDelta=',dbgs(WheelDelta),' ',hexstr(WheelDelta,8));
+    {$ENDIF}
   end;
 
 //
@@ -280,7 +286,9 @@ var
     Msg: ^TLMMouse;
     Spec: EventTypeSpec;
   begin
-    DebugLN('-- mouse down --');
+    {$IFDEF VerboseMouse}
+    DebugLN('HandleMouseDownEvent');
+    {$ENDIF}
     Msg := @AMsg;
 
     ClickCount := GetClickCount;
@@ -314,7 +322,9 @@ var
     MousePoint: TPoint;
     Msg: ^TLMMouse;
   begin
-    DebugLN('-- mouse up --');
+    {$IFDEF VerboseMouse}
+    DebugLN('HandleMouseUpEvent');
+    {$ENDIF}
     // this is not called if NextHandler is called on MouseDown
     // perhaps mousetracking can fix this
     Msg := @AMsg;
@@ -336,7 +346,9 @@ var
     MousePoint: TPoint;
     MSg: ^TLMMouseMove;
   begin
+    {$IFDEF VerboseMouse}
     DebugLN('HandleMouseMovedEvent');
+    {$ENDIF}
     Msg := @AMsg;
     
     MousePoint := GetMousePoint;
@@ -349,7 +361,9 @@ var
 
   procedure HandleMouseDraggedEvent(var AMsg);
   begin
+    {$IFDEF VerboseMouse}
     DebugLN('-- mouse dragged --');
+    {$ENDIF}
     //TODO
   end;
 
@@ -358,7 +372,9 @@ var
     MousePoint: TPoint;
     MSg: ^TLMMouseEvent;
   begin
+    {$IFDEF VerboseMouse}
     DebugLN('HandleMouseWheelEvent');
+    {$ENDIF}
     Msg := @AMsg;
 
     MousePoint := GetMousePoint;
@@ -456,82 +472,292 @@ var
                       SizeOf(KeyChar), nil, @KeyChar);
     Result:=0;
     case KeyCode of
-    0:
+    // Where is the "official" list of Mac key codes?
+
+    // alphabet
+    0: Result:=VK_A;
+    11: Result:=VK_B;
+    8: Result:=VK_C;
+    2: Result:=VK_D;
+    14: Result:=VK_E;
+    3: Result:=VK_F;
+    5: Result:=VK_G;
+    4: Result:=VK_H;
+    34: Result:=VK_I;
+    38: Result:=VK_J;
+    40: Result:=VK_K;
+    37: Result:=VK_L;
+    46: Result:=VK_M;
+    45: Result:=VK_N;
+    31: Result:=VK_O;
+    35: Result:=VK_P;
+    12: Result:=VK_Q;
+    15: Result:=VK_R;
+    1: Result:=VK_S;
+    17: Result:=VK_T;
+    32: Result:=VK_U;
+    9: Result:=VK_V;
+    13: Result:=VK_W;
+    7: Result:=VK_X;
+    16: Result:=VK_Y;
+    6: Result:=VK_Z;
+
+    // Numbers
+    29: Result:=VK_0;
+    18: Result:=VK_1;
+    19: Result:=VK_2;
+    20: Result:=VK_3;
+    21: Result:=VK_4;
+    23: Result:=VK_5;
+    22: Result:=VK_6;
+    26: Result:=VK_7;
+    28: Result:=VK_8;
+    25: Result:=VK_9;
+
+    // Symbols
+    {18: Result:=VK_exclam;
+    19: Result:=VK_at;
+    20: Result:=VK_numbersign;
+    21: Result:=VK_dollar;
+    23: Result:=VK_percent;
+    22: Result:=VK_asciicircum;
+    26: Result:=VK_ampersand;
+    28: Result:=VK_asterisk;
+    25: Result:=VK_parenleft;
+    29: Result:=VK_parenright;
+    27: Result:=VK_minus;
+    27: Result:=VK_underscore;
+    24: Result:=VK_equal;
+    24: Result:=VK_plus;}
+    //10: Result:=VK_grave;
+    //10: Result:=VK_asciitilde;
+    //33: Result:=VK_bracketleft;
+    //33: Result:=VK_braceleft;
+    //30: Result:=VK_bracketright;
+    //30: Result:=VK_braceright;
+    //41: Result:=VK_semicolon;
+    //41: Result:=VK_colon;
+    //39: Result:=VK_apostrophe;
+    //39: Result:=VK_quotedbl;
+    //43: Result:=VK_comma;
+    //43: Result:=VK_less;
+    //47: Result:=VK_period;
+    //47: Result:=VK_greater;
+    //44: Result:=VK_slash;
+    //44: Result:=VK_question;
+    //42: Result:=VK_backslash;
+    //42: Result:=VK_bar;
+
+    // "Special" keys
+    49: Result:=VK_space;
+    36: Result:=VK_Return;
+    117: Result:=VK_Delete;
+    48: Result:=VK_Tab;
+    53: Result:=VK_Escape;
+    //57: Result:=VK_Caps_Lock;
+    71: Result:=VK_NumLock;
+    107: Result:=VK_Scroll;
+    113: Result:=VK_Pause;
+    51: Result:=VK_Back;
+    114: Result:=VK_Insert;
+
+    // Cursor movement
+    126: Result:=VK_Up;
+    125: Result:=VK_Down;
+    123: Result:=VK_Left;
+    124: Result:=VK_Right;
+    116: Result:=VK_PRIOR;
+    121: Result:=VK_NEXT;
+    115: Result:=VK_Home;
+    119: Result:=VK_End;
+
+    // Numeric keypad
+    82: Result:=VK_0;
+    83: Result:=VK_1;
+    84: Result:=VK_2;
+    85: Result:=VK_3;
+    86: Result:=VK_4;
+    87: Result:=VK_5;
+    88: Result:=VK_6;
+    89: Result:=VK_7;
+    91: Result:=VK_8;
+    92: Result:=VK_9;
+    76: Result:=VK_RETURN;
+    65: Result:=VK_Decimal;
+    69: Result:=VK_Add;
+    78: Result:=VK_Subtract;
+    67: Result:=VK_Multiply;
+    75: Result:=VK_Divide;
+
+    // Function keys
+    122: Result:=VK_F1;
+    120: Result:=VK_F2;
+    99: Result:=VK_F3;
+    118: Result:=VK_F4;
+    96: Result:=VK_F5;
+    97: Result:=VK_F6;
+    98: Result:=VK_F7;
+    100: Result:=VK_F8;
+    101: Result:=VK_F9;
+    109: Result:=VK_F10;
+    103: Result:=VK_F11;
+    111: Result:=VK_F12;
+
+    // Modifier keys
+    56: Result:=VK_LShift;
+    //56: Result:=VK_RShift;
+    59: Result:=VK_LControl;
+    //59: Result:=VK_RControl;
+    //58: Result:=VK_Meta_L;
+    //58: Result:=VK_Meta_R;
+    55: Result:=VK_LMenu;
+    //55: Result:=VK_RMenu;
+    else
       case KeyChar of
       'a'..'z': Result:=VK_A+ord(KeyChar)-ord('a');
       'A'..'Z': Result:=VK_A+ord(KeyChar)-ord('A');
       '+': Result:=VK_ADD;
+      '-': Result:=VK_SUBTRACT;
+      ' ': Result:=VK_SPACE;
+      #28: Result:=VK_LEFT;
+      #29: Result:=VK_RIGHT;
+      #30: Result:=VK_UP;
+      #31: Result:=VK_DOWN;
       end;
     end;
 
-    GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
-                      SizeOf(KeyChar), nil, @KeyChar);
     GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
                       6, @TextLen, @Buf[1]);
-    debugln('GetVKKeyCode Result=',dbgs(Result),' KeyCode='+dbgs(KeyCode),' KeyChar='+DbgStr(KeyChar),' TextLen='+dbgs(TextLen),
+    {$IFDEF VerboseKeyboard}
+    debugln('GetVKKeyCode Result=',dbgs(Result),'=',DbgsVKCode(Result),' KeyCode='+dbgs(KeyCode),' KeyChar='+DbgStr(KeyChar),' TextLen='+dbgs(TextLen),
       ' '+dbgs(Buf[1])+','+dbgs(Buf[2])+','+dbgs(Buf[3])+','+dbgs(Buf[4])+','+dbgs(Buf[5])+','+dbgs(Buf[6]));
+    {$ENDIF}
   end;
   
   function GetCharacterCode: word;
   var
     KeyChar: char;
-    Buf: array[1..6] of byte;
-    TextLen: UInt32;
   begin
     KeyChar:=#0;
-    FillChar(Buf,SizeOf(Buf),0);
-
     GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
                       SizeOf(KeyChar), nil, @KeyChar);
-    GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
-                      6, @TextLen, @Buf[1]);
     Result:=ord(KeyChar);
-    debugln('GetCharacterCode Result=',dbgs(Result),' KeyChar='+DbgStr(KeyChar),
-      ' '+dbgs(Buf[1])+','+dbgs(Buf[2])+','+dbgs(Buf[3])+','+dbgs(Buf[4])+','+dbgs(Buf[5])+','+dbgs(Buf[6]));
+    {$IFDEF VerboseKeyboard}
+    debugln('GetCharacterCode Result=',dbgs(Result),' KeyChar='+DbgStr(KeyChar));
+    {$ENDIF}
+  end;
+  
+  function GetUTF8Character: TUTF8Char;
+  var
+    UTF16Buf: array[1..3] of word;
+    TextLen: UInt32;
+    CharLen: integer;
+    u: cardinal;
+  begin
+    // get the character as UTF16
+    GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
+                      6, @TextLen, @UTF16Buf[1]);
+    u:=UTF16CharacterToUnicode(PWideChar(@UTF16Buf[1]),CharLen);
+    if CharLen=0 then ;
+    Result:=UnicodeToUTF8(u);
+    {$IFDEF VerboseKeyboard}
+    debugln('GetUTF8Character Result=',dbgstr(Result),' unicode='+DbgS(u),
+      ' '+hexStr(UTF16Buf[1],4)+','+hexStr(UTF16Buf[2],4)+','+hexStr(UTF16Buf[3],4));
+    debugln('GetUTF8Character "',Result,'"');
+    {$ENDIF}
   end;
 
   procedure HandleRawKeyDownEvent;
   var
     KeyMsg: TLMKeyDown;
     CharMsg: TLMChar;
+    IsSysKey: Boolean;
+    UTF8Character: TUTF8Char;
   begin
+    {$IFDEF VerboseKeyboard}
     DebugLN('HandleRawKeyDownEvent Info^.LCLObject=',DbgSName(Info^.LCLObject));
+    {$ENDIF}
+    IsSysKey:=(GetCurrentKeyModifiers and optionKey)>0;
     
-    // create the LM_KEYDOWN message
+    // create the CN_KEYDOWN message
     FillChar(KeyMsg, SizeOf(KeyMsg), 0);
-    KeyMsg.Msg := LM_KEYDOWN;
+    KeyMsg.Msg := CN_KEYDOWN;
     KeyMsg.KeyData := GetCarbonMsgKeyState;
     KeyMsg.CharCode := GetVKKeyCode;
-    
-    // Msg is set in the Appropriate HandleKeyxxx procedure
-    if DeliverMessage(Info^.LCLObject, KeyMsg) = 0 then begin
-      Result :=  EventNotHandledErr;
-      if KeyMsg.CharCode=0 then
-        exit;
-    end
-    else begin
-      // the LCL does not want the event propagated
-      Result := noErr;
-      exit;
-    end;
 
+    if KeyMsg.CharCode<>0 then begin
+      // Msg is set in the Appropriate HandleKeyxxx procedure
+      if DeliverMessage(Info^.LCLObject, KeyMsg) = 0 then begin
+        Result :=  EventNotHandledErr;
+        if KeyMsg.CharCode=0 then
+          exit;
+      end
+      else begin
+        // the LCL does not want the event propagated
+        Result := noErr;
+        exit;
+      end;
+    end;
+    
+    // send the UTF8 keypress
+    // try to get the UTF8 representation of the key
+    UTF8Character := GetUTF8Character;
+    if UTF8Character<>'' then begin
+      if TWinControl(Info^.LCLObject).IntfUTF8KeyPress(UTF8Character,1,IsSysKey)
+      then begin
+        // the LCL has handled the key
+        Result := noErr;
+        exit;
+      end;
+    end;
 
     // create the LM_CHAR / LM_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
-    if (GetCurrentKeyModifiers and optionKey)>0 then
+    if IsSysKey then
       CharMsg.Msg := LM_SYSCHAR
     else
       CharMsg.Msg := LM_CHAR;
     CharMsg.KeyData := GetCarbonMsgKeyState;
     CharMsg.CharCode := GetCharacterCode;
 
-    // Msg is set in the Appropriate HandleKeyxxx procedure
-    if DeliverMessage(Info^.LCLObject, CharMsg) = 0 then begin
-      Result :=  EventNotHandledErr;
-    end
-    else begin
-      // the LCL does not want the event propagated
-      Result := noErr;
+    if CharMsg.CharCode<>0 then begin
+      // Msg is set in the Appropriate HandleKeyxxx procedure
+      if DeliverMessage(Info^.LCLObject, CharMsg) = 0 then begin
+        Result :=  EventNotHandledErr;
+      end
+      else begin
+        // the LCL does not want the event propagated
+        Result := noErr;
+      end;
+    end;
+  end;
+
+  procedure HandleRawKeyUpEvent;
+  var
+    KeyMsg: TLMKeyUp;
+  begin
+    {$IFDEF VerboseKeyboard}
+    DebugLN('HandleRawKeyUpEvent Info^.LCLObject=',DbgSName(Info^.LCLObject));
+    {$ENDIF}
+
+    // create the CN_KEYUP message
+    FillChar(KeyMsg, SizeOf(KeyMsg), 0);
+    KeyMsg.Msg := CN_KEYUP;
+    KeyMsg.KeyData := GetCarbonMsgKeyState;
+    KeyMsg.CharCode := GetVKKeyCode;
+
+    if KeyMsg.CharCode<>0 then begin
+      // Msg is set in the Appropriate HandleKeyxxx procedure
+      if DeliverMessage(Info^.LCLObject, KeyMsg) = 0 then begin
+        Result :=  EventNotHandledErr;
+        if KeyMsg.CharCode=0 then
+          exit;
+      end
+      else begin
+        // the LCL does not want the event propagated
+        Result := noErr;
+        exit;
+      end;
     end;
   end;
 
@@ -543,6 +769,7 @@ var
   EventKind: UInt32;
   Root: ControlRef;
 begin
+  Result := EventNotHandledErr;
   FillChar(Msg, SizeOf(Msg), 0);
 
   GetRootControl(AWindowInfo^.Widget, Root);
@@ -567,6 +794,8 @@ begin
   EventKind := GetEventKind(AEvent);
   case EventKind of
     kEventRawKeyDown: HandleRawKeyDownEvent;
+    kEventRawKeyRepeat: HandleRawKeyDownEvent;
+    kEventRawKeyUp: HandleRawKeyUpEvent;
   else
     exit(EventNotHandledErr);
   end;
@@ -627,10 +856,14 @@ begin
     
   KeySpecs[0].eventClass := kEventClassKeyboard;
   KeySpecs[0].eventKind := kEventRawKeyDown;
+  KeySpecs[1].eventClass := kEventClassKeyboard;
+  KeySpecs[1].eventKind := kEventRawKeyRepeat;
+  KeySpecs[2].eventClass := kEventClassKeyboard;
+  KeySpecs[2].eventKind := kEventRawKeyUp;
 
   InstallWindowEventHandler(AInfo^.Widget,
     RegisterEventHandler(@CarbonPrivateWindow_KeyboardProc),
-    1, @KeySpecs[0], Pointer(AInfo), nil);
+    3, @KeySpecs[0], Pointer(AInfo), nil);
 end;
 
 procedure TCarbonPrivateWindow.UnregisterEvents;
