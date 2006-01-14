@@ -70,6 +70,7 @@ type
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure UpdateFrameTimeDiff;
     procedure OpenGLAttributesChanged;
+    procedure EraseBackground(DC: HDC); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -133,6 +134,7 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
 
@@ -286,6 +288,12 @@ begin
     RecreateWnd(Self);
 end;
 
+procedure TCustomOpenGLControl.EraseBackground(DC: HDC);
+begin
+  if DC=0 then ;
+  // everything is painted, so erasing the background is not needed
+end;
+
 constructor TCustomOpenGLControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -423,6 +431,12 @@ begin
                                  OpenGlControl.SharedControl,
                                  AttrControl.DoubleBuffered,AttrControl.RGBA);
   end;
+end;
+
+procedure TWSOpenGLControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  LOpenGLDestroyContextInfo(AWinControl);
+  inherited DestroyHandle(AWinControl);
 end;
 
 initialization

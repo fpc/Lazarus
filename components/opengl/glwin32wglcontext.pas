@@ -29,6 +29,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
                     DoubleBuffered, RGBA: boolean): HWND;
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
 procedure InitWGL;
 procedure InitOpenGLContextGLWindowClass;
@@ -305,6 +306,23 @@ begin
   Info^.WGLContext:=wglCreateContext(Info^.DC);
   if Info^.WGLContext=0 then
     raise Exception.Create('LOpenGLCreateContext wglCreateContext failed');
+end;
+
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
+var
+  Info: PWGLControlInfo;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  Info:=GetWGLControlInfo(AWinControl.Handle);
+  if Info=nil then exit;
+  if wglMakeCurrent(Info^.DC,Info^.WGLContext) then begin
+    wglDeleteContext(Info^.WGLContext);
+    Info^.WGLContext:=0;
+  end;
+  if (Info^.DC<>0) then begin
+    ReleaseDC(Info^.Window,Info^.DC);
+  end;
+  DisposeWGLControlInfo(Info^.Window);
 end;
 
 procedure InitWGL;

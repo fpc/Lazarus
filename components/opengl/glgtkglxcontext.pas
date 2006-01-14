@@ -131,6 +131,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean): HWND;
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean): PInteger;
 
@@ -715,6 +716,12 @@ begin
   finally
     FreeMem(AttrList);
   end;
+end;
+
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
+begin
+  if not AWinControl.HandleAllocated then exit;
+  // nothing to do
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean

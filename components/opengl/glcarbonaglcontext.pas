@@ -31,6 +31,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
               WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
               DoubleBuffered, RGBA: boolean): HWND;
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean): PInteger;
 
@@ -138,6 +139,20 @@ begin
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
   CreateAGLControlInfo(Control,AGLContext);
+end;
+
+procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
+var
+  Ref: ControlRef;
+  Info: PAGLControlInfo;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  Ref:=ControlRef(AWinControl.Handle);
+  Info:=GetAGLControlInfo(Ref);
+  if Info=nil then exit;
+  aglDestroyContext(Info^.AGLContext);
+  Info^.AGLContext:=nil;
+  FreeAGLControlInfo(Ref);
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
