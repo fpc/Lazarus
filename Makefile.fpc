@@ -41,23 +41,23 @@ endif
 
 #-----------------------------------------------------------------------------
 ide: 
-        $(MAKE) -C ide ide
+	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
 idepkg:
-        $(MAKE) -C ide idepkg
+	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
 bigide:
-        $(MAKE) -C ide bigide
+	$(MAKE) -C ide bigide
 
 #-----------------------------------------------------------------------------
 bigidecomponents:
-        $(MAKE) -C components bigidecomponents
+	$(MAKE) -C components bigidecomponents
         
 #-----------------------------------------------------------------------------
 starter:
-        $(MAKE) -C ide starter
+	$(MAKE) -C ide starter
 
 #-----------------------------------------------------------------------------
 tools: lcl components
@@ -72,7 +72,7 @@ all: lcl components packager/registration ideintf designer packager ide starter
 
 #-----------------------------------------------------------------------------
 cleanide:
-        $(MAKE) -C ide cleanide
+	$(MAKE) -C ide cleanide
 
 cleanlaz: clean cleanide
         $(MAKE) -C lcl clean
@@ -93,7 +93,7 @@ clean: cleanlaz
 # Many C expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to /usr/share/lazarus and set a link
 install:
-        $(COPYTREE) . $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 
 else
