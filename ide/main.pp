@@ -3046,7 +3046,7 @@ begin
     if frmCompilerOptions.ShowModal=mrOk then begin
       RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
-      IncreaseCompilerParseStamp;
+      IncreaseCompilerGraphStamp;
     end;
   finally
     frmCompilerOptions.Free;

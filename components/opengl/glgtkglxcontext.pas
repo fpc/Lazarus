@@ -129,19 +129,10 @@ procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
-                          WSPrivate: TWSPrivateClass;
-                          SharedControl: TWinControl; AttrList: PInteger): HWND;
-
-const
-  DefaultOpenGLContextInitAttrList: array [0..10] of LongInt = (
-    GDK_GL_RGBA,
-    GDK_GL_RED_SIZE, 1,
-    GDK_GL_GREEN_SIZE, 1,
-    GDK_GL_BLUE_SIZE, 1,
-    GDK_GL_DEPTH_SIZE, 1,
-    GDK_GL_DOUBLEBUFFER,
-    GDK_GL_None
-    );
+             WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+             DoubleBuffered, RGBA: boolean): HWND;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
+  RGBA: boolean): PInteger;
 
 
 implementation
@@ -696,41 +687,68 @@ begin
   Result:=gtk_gl_area_make_current(glarea);
 end;
 
-const
-  InitAttrList: array [1..11] of LongInt = (
-    GDK_GL_RGBA,
-    GDK_GL_RED_SIZE, 1,
-    GDK_GL_GREEN_SIZE, 1,
-    GDK_GL_BLUE_SIZE, 1,
-    GDK_GL_DEPTH_SIZE, 1,
-    GDK_GL_DOUBLEBUFFER,
-    GDK_GL_None
-    );
-
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  AttrList: PInteger): HWND;
+  DoubleBuffered, RGBA: boolean): HWND;
 var
   NewWidget: PGtkWidget;
   SharedArea: PGtkGLArea;
+  AttrList: PInteger;
 begin
   if WSPrivate=nil then ;
-  if AttrList=nil then
-    AttrList:=@InitAttrList;
-  if SharedControl<>nil then begin
-    SharedArea:=PGtkGLArea(SharedControl.Handle);
-    if not GTK_IS_GL_AREA(SharedArea) then
-      RaiseGDBException('LOpenGLCreateContext');
-    NewWidget:=gtk_gl_area_share_new(AttrList,SharedArea);
-  end else begin
-    NewWidget:=gtk_gl_area_new(AttrList);
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
+  try
+    if SharedControl<>nil then begin
+      SharedArea:=PGtkGLArea(SharedControl.Handle);
+      if not GTK_IS_GL_AREA(SharedArea) then
+        RaiseGDBException('LOpenGLCreateContext');
+      NewWidget:=gtk_gl_area_share_new(AttrList,SharedArea);
+    end else begin
+      NewWidget:=gtk_gl_area_new(AttrList);
+    end;
+    Result:=HWND(NewWidget);
+    {$IFDEF LCLGtk}
+    TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
+    {$ELSE}
+    TGTK2WidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
+    {$ENDIF}
+  finally
+    FreeMem(AttrList);
   end;
-  Result:=HWND(NewWidget);
-  {$IFDEF LCLGtk}
-  TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
-  {$ELSE}
-  TGTK2WidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
-  {$ENDIF}
+end;
+
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
+  ): PInteger;
+var
+  p: integer;
+  
+  procedure Add(i: integer);
+  begin
+    if Result<>nil then
+      Result[p]:=i;
+    inc(p);
+  end;
+  
+  procedure CreateList;
+  begin
+    if DoubleBuffered then
+      Add(GDK_GL_DOUBLEBUFFER);
+    if RGBA then
+      Add(GDK_GL_RGBA);
+    Add(GDK_GL_RED_SIZE);  Add(1);
+    Add(GDK_GL_GREEN_SIZE);  Add(1);
+    Add(GDK_GL_BLUE_SIZE);  Add(1);
+    Add(GDK_GL_DEPTH_SIZE);  Add(1);
+    Add(GDK_GL_None);
+  end;
+  
+begin
+  Result:=nil;
+  p:=0;
+  CreateList;
+  GetMem(Result,SizeOf(integer)*p);
+  p:=0;
+  CreateList;
 end;
 
 end.

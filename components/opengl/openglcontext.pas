@@ -52,20 +52,24 @@ type
   private
     FAutoResizeViewport: boolean;
     FCanvas: TCanvas; // only valid at designtime
+    FDoubleBuffered: boolean;
     FFrameDiffTime: integer;
     FOnMakeCurrent: TOpenGlCtrlMakeCurrentEvent;
     FOnPaint: TNotifyEvent;
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
-    FOpenGLInitAttrList: PLongInt;
+    FRGBA: boolean;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
+    procedure SetDoubleBuffered(const AValue: boolean);
+    procedure SetRGBA(const AValue: boolean);
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure UpdateFrameTimeDiff;
+    procedure OpenGLAttributesChanged;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -84,10 +88,10 @@ type
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property SharedControl: TCustomOpenGLControl read FSharedOpenGLControl
                                                  write SetSharedControl;
-    property OpenGLInitAttrList: PLongInt read FOpenGLInitAttrList
-                                          write FOpenGLInitAttrList;
     property AutoResizeViewport: boolean read FAutoResizeViewport
                                          write SetAutoResizeViewport;
+    property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
+    property RGBA: boolean read FRGBA write SetRGBA default true;
   end;
 
   { TOpenGLControl }
@@ -201,6 +205,20 @@ begin
     LOpenGLViewport(0,0,Width,Height);
 end;
 
+procedure TCustomOpenGLControl.SetDoubleBuffered(const AValue: boolean);
+begin
+  if FDoubleBuffered=AValue then exit;
+  FDoubleBuffered:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetRGBA(const AValue: boolean);
+begin
+  if FRGBA=AValue then exit;
+  FRGBA:=AValue;
+  OpenGLAttributesChanged;
+end;
+
 procedure TCustomOpenGLControl.SetSharedControl(
   const AValue: TCustomOpenGLControl);
 begin
@@ -261,10 +279,18 @@ begin
   FLastFrameTime:=FCurrentFrameTime;
 end;
 
+procedure TCustomOpenGLControl.OpenGLAttributesChanged;
+begin
+  if HandleAllocated
+  and ([csLoading,csDesigning,csDestroying]*ComponentState=[]) then
+    RecreateWnd(Self);
+end;
+
 constructor TCustomOpenGLControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FOpenGLInitAttrList:=@DefaultOpenGLContextInitAttrList[0];
+  FDoubleBuffered:=true;
+  FRGBA:=true;
   ControlStyle:=ControlStyle-[csSetCaption];
   if (csDesigning in ComponentState) then begin
     FCanvas := TControlCanvas.Create;
@@ -383,19 +409,19 @@ function TWSOpenGLControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   OpenGlControl: TCustomOpenGLControl;
-  AttrList: PLongint;
+  AttrControl: TCustomOpenGLControl;
 begin
   if csDesigning in AWinControl.ComponentState then
     Result:=inherited CreateHandle(AWinControl,AParams)
   else begin
     OpenGlControl:=AWinControl as TCustomOpenGLControl;
     if OpenGlControl.SharedControl<>nil then
-      AttrList:=OpenGlControl.SharedControl.OpenGLInitAttrList
+      AttrControl:=OpenGlControl.SharedControl
     else
-      AttrList:=OpenGlControl.OpenGLInitAttrList;
+      AttrControl:=OpenGlControl;
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
-                                 AttrList);
+                                 AttrControl.DoubleBuffered,AttrControl.RGBA);
   end;
 end;
 

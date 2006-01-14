@@ -29,8 +29,10 @@ procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
-                          WSPrivate: TWSPrivateClass;
-                          SharedControl: TWinControl; AttrList: PInteger): HWND;
+              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+              DoubleBuffered, RGBA: boolean): HWND;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
+  RGBA: boolean): PInteger;
 
 const
   DefaultOpenGLContextInitAttrList: array [0..14] of LongInt = (
@@ -88,7 +90,7 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  AttrList: PInteger): HWND;
+  DoubleBuffered, RGBA: boolean): HWND;
 var
   disp: GDHandle;
   aglPixFmt: TAGLPixelFormat;
@@ -99,6 +101,7 @@ var
   R: FPCMacOSAll.Rect;
   Info: PWidgetInfo;
   ParentWindow: WindowPtr;
+  AttrList: PInteger;
 begin
   if AWinControl.Parent=nil then
     RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext no parent');
@@ -121,7 +124,9 @@ begin
 
   // create the AGL context
   disp := GetMainDevice ();
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
   aglPixFmt := aglChoosePixelFormat (@disp, 1, AttrList);
+  System.FreeMem(AttrList);
   aglContext := aglCreateContext (aglPixFmt, NIL);
   aglDestroyPixelFormat(aglPixFmt);
 
@@ -133,6 +138,44 @@ begin
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
   CreateAGLControlInfo(Control,AGLContext);
+end;
+
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
+  ): PInteger;
+var
+  p: integer;
+
+  procedure Add(i: integer);
+  begin
+    if Result<>nil then
+      Result[p]:=i;
+    inc(p);
+  end;
+
+  procedure CreateList;
+  begin
+    Add(AGL_WINDOW);
+    if DoubleBuffered then
+      Add(AGL_DOUBLEBUFFER);
+    if RGBA then
+      Add(AGL_RGBA);
+    Add(AGL_NO_RECOVERY);
+    Add(AGL_MAXIMUM_POLICY);
+    Add(AGL_SINGLE_RENDERER);
+    Add(AGL_RED_SIZE); Add(1);
+    Add(AGL_GREEN_SIZE); Add(1);
+    Add(AGL_BLUE_SIZE); Add(1);
+    Add(AGL_DEPTH_SIZE); Add(1);
+    Add(AGL_NONE);
+  end;
+
+begin
+  Result:=nil;
+  p:=0;
+  CreateList;
+  GetMem(Result,SizeOf(integer)*p);
+  p:=0;
+  CreateList;
 end;
 
 function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext

@@ -27,8 +27,8 @@ procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
-                          WSPrivate: TWSPrivateClass;
-                          SharedControl: TWinControl; AttrList: PInteger): HWND;
+                    WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+                    DoubleBuffered, RGBA: boolean): HWND;
 
 procedure InitWGL;
 procedure InitOpenGLContextGLWindowClass;
@@ -248,8 +248,8 @@ begin
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
-  WSPrivate: TWSPrivateClass; SharedControl: TWinControl; AttrList: PInteger
-  ): HWND;
+  WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+  DoubleBuffered, RGBA: boolean): HWND;
 var
   Params: TCreateWindowExParams;
   pfd: PIXELFORMATDESCRIPTOR;
@@ -283,8 +283,11 @@ begin
   with pfd do begin
     nSize:=sizeOf(pfd);
     nVersion:=1;
-    dwFlags:=PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER
-              or PFD_TYPE_RGBA;
+    dwFlags:=PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
+    if DoubleBuffered then
+      dwFlags:=dwFlags or PFD_DOUBLEBUFFER;
+    if RGBA then
+      dwFlags:=dwFlags or PFD_TYPE_RGBA;
     iPixelType:=24; // color depth
     cDepthBits:=16; // Z-Buffer
     iLayerType:=PFD_MAIN_PLANE;
