@@ -1542,7 +1542,7 @@ Begin
         if WParam=0 then
           Flags := SW_HIDE
         else
-          Flags := SW_SHOW;
+          Flags := SW_SHOWNOACTIVATE;
         Windows.ShowWindow(TWin32WidgetSet(WidgetSet).FAppHandle, Flags);
       end;
     End;
