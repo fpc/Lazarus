@@ -16,7 +16,7 @@
     TOpenGLControl is a LCL control with an opengl context.
     It works under the following platforms:
       - gtk with glx    : full
-      - gtk2 with glx   : todo
+      - gtk2 with glx   : started, not yet working
       - carbon with agl : full
       - windows with wgl: full
 }

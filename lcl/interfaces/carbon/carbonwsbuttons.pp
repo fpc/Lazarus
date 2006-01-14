@@ -67,7 +67,7 @@ type
 
 implementation
 
-  { TCarbonWSButton }
+{ TCarbonWSButton }
 
 function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -81,6 +81,7 @@ begin
   Result := 0;
   //Button := AWinControl as TCustomButton;
 
+  // create the button at bounds with title
   R:=GetCarbonRect(AParams.X,AParams.Y,
                    AParams.X + AParams.Width,AParams.Y + AParams.Height);
 
@@ -93,7 +94,10 @@ begin
   CFRelease(Pointer(CFString));
   if Result = 0 then Exit;
 
+  // add the info (our data, like which TWinControl belong to this carbon widget)
   Info := CreateWidgetInfo(Control, AWinControl);
+  
+  // register events (e.g. mouse, focus, keyboard, size, ...)
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 
