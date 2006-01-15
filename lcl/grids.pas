@@ -121,6 +121,9 @@ type
   TCleanOptions = set of TGridZone;
 
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
+  
+  TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive);
+  TGridFlags = set of TGridFlagsOption;
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
@@ -548,6 +551,7 @@ type
     FPrevLine: boolean;
     FPrevValue: Integer;
     FGridBorderStyle: TBorderStyle;
+    FGridFlags: TGridFlags;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -816,6 +820,7 @@ type
     property FocusColor: TColor read FFocusColor write SetFocusColor;
     property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
     property GCache: TGridDataCache read FGCAChe;
+    property GridFlags: TGridFlags read FGridFlags write FGridFlags;
     property GridHeight: Integer read FGCache.GridHeight;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor default clSilver;
     property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
@@ -1184,6 +1189,7 @@ type
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TCleanOptions); overload;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
+      property DefaultTextStyle;
       property EditorMode;
       property ExtendedSelect;
       property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
@@ -3320,7 +3326,7 @@ begin
       FEditor.OnExit:=@EditorExit;
     end;
 
-    {$IfDef EditorDbg}
+    {$IfDef DbgGrid}
     DBGOut('SetEditor-> Editor=',FEditor.Name,' ');
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then DBGOut('EO_AUTOSIZE ');
     if FEditorOptions and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then DBGOut('EO_HOOKKEYDOWN ');
@@ -3919,8 +3925,7 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (csDesigning in componentState) or
-    not (ssLeft in Shift) then
+  if (csDesigning in componentState) or not (ssLeft in Shift) then
     Exit;
 
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
@@ -3941,6 +3946,7 @@ begin
           FSplitter.Y:=X;
         end;
       end;
+      
     gzFixedRows:
       if (goRowSizing in Options)and(Cursor=crVSplit) then begin
         R:=CellRect(0{FTopLeft.X}, FSplitter.y);
@@ -3953,9 +3959,9 @@ begin
         FMoveLast:=Point(-1,-1);
         FSplitter.X:=Y;
       end;
-    gzNormal:
-      if not (csDesigning in componentState) then begin
       
+    gzNormal:
+      begin
         WasFocused := Focused;
         if not WasFocused then
           SetFocus;
@@ -3980,7 +3986,8 @@ begin
             end else begin
               if not SelectActive then begin
                 FPivot:=FSplitter;
-                FSelectActive:=true;
+                Include(GridFlags, gfNeedsSelectActive);
+                // delay select active until mouse reachs another cell
               end;
             end;
           end else if (FSplitter.X=Col) and (FSplitter.Y=Row) then begin
@@ -4013,16 +4020,24 @@ begin
   inherited MouseMove(Shift, X, Y);
 
   case fGridState of
+
     gsSelecting:
-      begin
-        if not FixedGrid and (not (goEditing in Options) or
-          (ExtendedSelect and not EditorAlwaysShown)) then begin
-          P:=MouseToLogcell(Point(X,Y));
-          MoveExtend(False, P.x, P.y);
-        end;
+      if not FixedGrid and (not (goEditing in Options) or
+        (ExtendedSelect and not EditorAlwaysShown)) then begin
+        P:=MouseToLogcell(Point(X,Y));
+        if gfNeedsSelectActive in GridFlags then
+          SelectActive := (P.x<>FPivot.x)or(P.y<>FPivot.y);
+        MoveExtend(False, P.x, P.y);
       end;
-    gsColMoving: if goColMoving in Options then doColMoving(X,Y);
-    gsRowMoving: if goRowMoving in Options then doRowMoving(X,Y);
+      
+    gsColMoving:
+      if goColMoving in Options then
+        doColMoving(X,Y);
+      
+    gsRowMoving:
+      if goRowMoving in Options then
+        doRowMoving(X,Y);
+      
     else
       begin
         if goColSizing in Options then doColSizing(X,Y);
@@ -4041,6 +4056,7 @@ begin
   
   Cur:=MouseToCell(Point(x,y));
   case fGridState of
+  
     gsNormal:
       if not FixedGrid then
         CellClick(cur.x, cur.y);
@@ -4053,6 +4069,7 @@ begin
         end else
           CellClick(cur.x, cur.y);
       end;
+      
     gsColMoving:
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
@@ -4069,6 +4086,7 @@ begin
           if Cur.X=FSplitter.X then
             HeaderClick(True, FSplitter.X);
       end;
+      
     gsRowMoving:
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
@@ -4078,6 +4096,7 @@ begin
         end else
           if Cur.Y=FSplitter.Y then HeaderClick(False, FSplitter.Y);
       end;
+      
     gsColSizing:
       begin
         if FUseXORFeatures then begin
@@ -4089,6 +4108,7 @@ begin
         end;
         HeaderSized( True, FSplitter.X);
       end;
+      
     gsRowSizing:
       begin
         if FUseXORFeatures then begin
@@ -4100,8 +4120,10 @@ begin
         end;
         HeaderSized( False, FSplitter.Y);
       end;
+      
   end;
   fGridState:=gsNormal;
+  Exclude(GridFlags, gfNeedsSelectActive);
   {$IfDef dbgGrid}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
 
@@ -4564,8 +4586,10 @@ begin
   BeforeMoveSelection(DCol,DRow);
 
   InvalidateAll:=False;
+  
   // default range
-  if goRowSelect in Options then FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
+  if goRowSelect in Options then
+    FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
   else begin
     // Just after selectActive=false and Selection Area is more than one cell
     InvalidateAll := not SelectActive and (
@@ -4598,7 +4622,6 @@ begin
         InvalidateCell(DCol, DRow);
       end;
     end;
-
 
   SwapInt(DCol,FCol);
   SwapInt(DRow,FRow);
@@ -5775,7 +5798,7 @@ end;
 
 destructor TCustomGrid.Destroy;
 begin
-  {$Ifdef dbg}DebugLn('TCustomGrid.Destroy');{$Endif}
+  {$Ifdef DbgGrid}DebugLn('TCustomGrid.Destroy');{$Endif}
   FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
   FreeThenNil(FButtonEditor);
@@ -6019,7 +6042,7 @@ end;
 constructor TVirtualGrid.Create;
 begin
   Inherited Create;
-  {$Ifdef dbg}DebugLn('TVirtualGrid.Create');{$Endif}
+  {$Ifdef DbgGrid}DebugLn('TVirtualGrid.Create');{$Endif}
   FCells:=TArray.Create;
   FCells.OnDestroyItem:=@doDestroyItem;
   FCells.OnNewItem:=@doNewItem;
@@ -6035,7 +6058,7 @@ end;
 
 destructor TVirtualGrid.Destroy;
 begin
-  {$Ifdef dbg}DebugLn('TVirtualGrid.Destroy');{$Endif}
+  {$Ifdef DbgGrid}DebugLn('TVirtualGrid.Destroy');{$Endif}
   Clear;
   FreeThenNil(FRows);
   FreeThenNil(FCols);
@@ -6104,10 +6127,12 @@ end;
 
 procedure TStringCellEditor.Change;
 begin
+  {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change INIT text=',Text);{$ENDIF}
   inherited Change;
   if FGrid<>nil then begin
     FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
   end;
+  {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change FIN');{$ENDIF}
 end;
 
 procedure TStringCellEditor.EditingDone;
@@ -6155,8 +6180,9 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
 var
   IntSel: boolean;
 begin
-  {$IfDef dbg}
-  DebugLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
+  {$IfDef dbgGrid}
+  DebugLn('TStringCellEditor.KeyDown INI: Key=', Dbgs(Key),
+    ' SelStart=',Dbgs(SelStart),' SelLenght=',dbgs(SelLength));
   {$Endif}
   inherited KeyDown(Key,Shift);
   case Key of
@@ -6183,8 +6209,9 @@ begin
     else
       doEditorKeyDown;
   end;
-  {$IfDef dbg}
-  DebugLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
+  {$IfDef dbgGrid}
+  DebugLn('TStringCellEditor.KeyDown FIN: Key=', Dbgs(Key),
+    ' SelStart=',Dbgs(SelStart),' SelLenght=',Dbgs(SelLength));
   {$Endif}
 end;
 
@@ -6375,7 +6402,7 @@ end;
 
 destructor TCustomDrawGrid.Destroy;
 begin
-  {$Ifdef dbg}DebugLn('TCustomDrawGrid.Destroy');{$Endif}
+  {$Ifdef DbgGrid}DebugLn('TCustomDrawGrid.Destroy');{$Endif}
   FreeThenNil(FGrid);
   inherited Destroy;
 end;
@@ -6505,7 +6532,8 @@ end;
 procedure TCustomStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
   procedure UpdateCell;
   begin
-    if EditorMode and (aCol=FCol)and(aRow=FRow) then
+    if EditorMode and (aCol=FCol)and(aRow=FRow) and
+      not (gfEditorUpdateLock in GridFlags) then
     begin
       EditorDoSetValue;
     end;
@@ -6868,7 +6896,13 @@ end;
 *)
 procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
-  if Cells[aCol, aRow]<>aValue then Cells[aCol, aRow]:= aValue;
+  Include(GridFlags, gfEditorUpdateLock);
+  try
+    if Cells[aCol, aRow]<>aValue then
+      Cells[aCol, aRow]:= aValue;
+  finally
+    Exclude(GridFlags, gfEditorUpdateLock);
+  end;
   inherited SetEditText(aCol, aRow, aValue);
 end;
 
