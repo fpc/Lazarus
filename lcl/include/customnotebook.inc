@@ -724,10 +724,11 @@ Begin
             //debugln('TCustomNotebook.CNNotify A fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex);
             UpdateAllDesignerFlags;
             if ([csLoading,csDestroying]*ComponentState=[]) then begin
-              if fPageIndexOnLastChange<>fPageIndex then
+              if fPageIndexOnLastChange<>fPageIndex then begin
                 Change;
-              if csDesigning in ComponentState then
-                OwnerFormDesignerModified(Self);
+                if csDesigning in ComponentState then
+                  OwnerFormDesignerModified(Self);
+              end;
             end;
           end;
         end;

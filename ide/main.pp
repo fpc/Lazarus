@@ -10112,6 +10112,9 @@ begin
     if SrcEdit<>nil then begin
       SrcEdit.Modified:=true;
       SourceNotebook.UpdateStatusBar;
+      {$IFDEF VerboseDesignerModified}
+      DumpStack;
+      {$ENDIF}
     end;
   end;
 end;
