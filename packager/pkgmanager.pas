@@ -1197,6 +1197,7 @@ end;
 function TPkgManager.DoWriteMakefile(APackage: TLazPackage): TModalResult;
 var
   CompilerOptionStrings: TInheritedCompOptsStrings;
+  PathDelimNeedsReplace: Boolean;
 
   procedure Replace(var s: string; const SearchTxt, ReplaceTxt: string);
   var
@@ -1239,16 +1240,16 @@ var
                          TrimSearchPath(ConvertLazarusToMakefileMakros(s),''),
                          APackage.Directory);
     Replace(Result,';',' ');
-    if PathDelim<>'/' then
-      Replace(Result,'\','/');
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
   end;
 
   function ConvertLazarusToMakefileDirectory(const s: string): string;
   begin
     Result:=CreateRelativePath(TrimFilename(
                          ConvertLazarusToMakefileMakros(s)),APackage.Directory);
-    if PathDelim<>'/' then
-      Replace(Result,'\','/');
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
   end;
   
   procedure AddCompilerOptions(ParsedOpts: TParsedCompilerOptions);
@@ -1349,6 +1350,8 @@ var
           CompilerOptionStrings[o]:=CreateRelativeSearchPath(
                                          CompilerOptionStrings[o]+';.',BaseDir);
           Replace(CompilerOptionStrings[o],';',' ');
+          if PathDelimNeedsReplace then
+            Replace(CompilerOptionStrings[o],PathDelim,'/');
         end;
       end;
     end;
@@ -1368,6 +1371,7 @@ var
   CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
+  PathDelimNeedsReplace:=PathDelim<>'/';
 
   GatherCompilerOptions;
 
@@ -1375,6 +1379,7 @@ begin
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
   UnitPath:=CompilerOptionStrings[icoUnitPath];
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
+
   
   DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
