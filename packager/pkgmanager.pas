@@ -1239,12 +1239,16 @@ var
                          TrimSearchPath(ConvertLazarusToMakefileMakros(s),''),
                          APackage.Directory);
     Replace(Result,';',' ');
+    if PathDelim<>'/' then
+      Replace(Result,'\','/');
   end;
 
   function ConvertLazarusToMakefileDirectory(const s: string): string;
   begin
     Result:=CreateRelativePath(TrimFilename(
                          ConvertLazarusToMakefileMakros(s)),APackage.Directory);
+    if PathDelim<>'/' then
+      Replace(Result,'\','/');
   end;
   
   procedure AddCompilerOptions(ParsedOpts: TParsedCompilerOptions);
