@@ -440,8 +440,9 @@ begin
         lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
         lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
       end;
+      if BorderStyle=bsSingle then
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := 'LISTBOX';
     Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
                        LBS_NOTIFY);
