@@ -435,7 +435,7 @@ var iSelStart: Integer;
     sCompleteText: string;
 begin
  inherited KeyUp(Key, Shift);
- if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown)) then
+ if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
   begin
    //Only happens with alpha-numeric keys and return key and csDropDown Style
    if not (IsEditableTextKey(Key) or (Key = VK_RETURN)) then Exit;
@@ -443,6 +443,8 @@ begin
     SelectAll else
     begin
      iSelStart := SelStart;//Capture original cursor position
+     //End of line completion
+     if ((iSelStart < Length(Text)) and (cbactEndOfLineComplete in FAutoCompleteText)) then Exit;
      sCompleteText := GetCompleteText(Text, iSelStart,
                                       (cbactSearchCaseSensitive in FAutoCompleteText),
                                       (cbactSearchAscending in FAutoCompleteText), Items);
@@ -454,6 +456,13 @@ begin
       end;//End if not (sCompleteText = Text)
     end;//End if (Key = VK_RETURN)
   end;//End if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown))
+end;
+
+procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
+begin
+ inherited MouseUp(Button, Shift, X, Y);
+ if (Style = csDropDownList) then
+  DroppedDown := not DroppedDown;
 end;
 
 {------------------------------------------------------------------------------
@@ -604,7 +613,7 @@ begin
   ArrowKeysTraverseList := True;
   TabStop := true;
   ParentColor := false;
-  FAutoCompleteText := [cbactSearchAscending];
+  FAutoCompleteText := [cbactEndOfLineComplete, cbactSearchAscending];
 end;
 
 {------------------------------------------------------------------------------

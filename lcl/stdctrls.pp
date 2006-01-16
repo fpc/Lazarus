@@ -212,9 +212,10 @@ type
 
   { TCustomComboBox }
   TComboBoxAutoCompleteTextOption = (
-    cbactEnabled,
-    cbactSearchCaseSensitive,
-    cbactSearchAscending
+    cbactEnabled,//Enable Auto-Completion Feature
+    cbactEndOfLineComplete,//Perform Auto-Complete only when cursor is at end of line
+    cbactSearchCaseSensitive,//Search Text with CaseSensitivity
+    cbactSearchAscending//Search Text from top of the list
     );
   TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;
 
@@ -300,6 +301,7 @@ type
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     function SelectItem(const AnItem: String): Boolean;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
