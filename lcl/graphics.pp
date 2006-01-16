@@ -931,8 +931,8 @@ type
     procedure Changed; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
-    procedure Arc(Left, Top, AWidth, AHeight, angle1, angle2: Integer); virtual;
-    procedure Arc(Left, Top, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor); virtual;
     procedure Chord(x, y, AWidth, AHeight,

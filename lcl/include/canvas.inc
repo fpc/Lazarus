@@ -374,16 +374,30 @@ end;
 
 procedure TCanvas.DoEllipse(const Bounds: TRect);
 var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
+  x1: Integer;
+  y1: Integer;
+  x2: Integer;
+  y2: Integer;
 begin
-  if Bounds.Left<Bounds.Right then x:=Bounds.Left else x:=Bounds.Right;
-  if Bounds.Top<Bounds.Bottom then y:=Bounds.Top else y:=Bounds.Bottom;
-  w:=Abs(Bounds.Right-Bounds.Left);
-  h:=Abs(Bounds.Bottom-Bounds.Top);
-  Arc(x,y,w,h,0,360*16);
+  if Bounds.Left < Bounds.Right then
+  begin
+    x1 := Bounds.Left;
+    x2 := Bounds.Right;
+  end else
+  begin
+    x1 := Bounds.Right;
+    x2 := Bounds.Left;
+  end;
+  if Bounds.Top < Bounds.Bottom then
+  begin
+    y1 := Bounds.Top;
+    y2 := Bounds.Bottom;
+  end else
+  begin
+    y1 := Bounds.Bottom;
+    y2 := Bounds.Top;
+  end;
+  Arc(x1, y1, x2, y2, 0, 360*16);
 end;
 
 procedure TCanvas.DoEllipseFill(const Bounds: TRect);
@@ -507,11 +521,11 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(Left,Top,AWidth,AHeight,angle1,angle2 : Integer);
+procedure TCanvas.Arc(ALeft,ATop,ARight,ABottom,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Arc(FHandle,Left,Top,AWidth,AHeight,angle1,angle2);
+  LCLIntf.Arc(FHandle, ALeft, ATop, ARight - ALeft, ABottom - ATop, angle1, angle2);
   Changed;
 end;
 
@@ -525,11 +539,11 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(Left,Top,AWidth,AHeight,sx,sy,ex,ey : Integer);
+procedure TCanvas.Arc(ALeft,ATop,ARight,ABottom,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialArc(FHandle,Left,Top,AWidth,AHeight,sx,sy,ex,ey);
+  LCLIntf.RadialArc(FHandle, ALeft, ATop, ARight - ALeft, ABottom - ATop, sx, sy, ex, ey);
   Changed;
 end;
 

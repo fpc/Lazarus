@@ -117,7 +117,7 @@ Type
                       Winding: boolean = False); override;
 
     procedure Ellipse(x1, y1, x2, y2: Integer); override;
-    procedure Arc(Left,Top,AWidth,AHeight,angle1,angle2: Integer); override;
+    procedure Arc(Left,Top,Right,Bottom,angle1,angle2: Integer); override;
     procedure RadialPie(Left,Top,AWidth,AHeight,angle1,angle2: Integer); override;
     procedure Chord(x, y, AWidth, AHeight, angle1, angle2: Integer); override;
 
@@ -135,7 +135,7 @@ Type
                         TransparentColor: TColor); override;
 
     //** Methods not implemented
-    procedure Arc(x,y,AWidth,AHeight,SX,SY,EX,EY: Integer); override;
+    procedure Arc(x,y,Right,Bottom,SX,SY,EX,EY: Integer); override;
     procedure Chord(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); override;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); override;
@@ -1564,7 +1564,7 @@ begin
 end;
 
 //Draw an Arc
-procedure TPostscriptPrinterCanvas.Arc(Left,Top,AWidth,AHeight, angle1,
+procedure TPostscriptPrinterCanvas.Arc(Left,Top,Right,Bottom, angle1,
   angle2: Integer);
 var xScale : Real;
     yScale : Real;
@@ -1581,8 +1581,8 @@ begin
   //calculate centre of ellipse
   cx:=Left;
   cy:=Top;
-  rx:=AWidth;
-  ry:=AHeight;
+  rx:=Right-Left;
+  ry:=Bottom-Top;
 
   if Angle2>=0 then
     Ang:='arc'
@@ -1786,7 +1786,7 @@ begin
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Arc(x, y, AWidth, AHeight, SX, SY, EX,
+procedure TPostscriptPrinterCanvas.Arc(x, y, Right,Bottom, SX, SY, EX,
   EY: Integer);
 begin
   //Not implemented
