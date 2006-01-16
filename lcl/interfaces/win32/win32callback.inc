@@ -798,7 +798,9 @@ Begin
   end else begin
     lWinControl := WindowInfo^.WinControl;
   end;
-
+{$ifdef MSG_DEBUG}
+  DebugLn('lWinControl: ',DbgSName(lWinControl));
+{$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then

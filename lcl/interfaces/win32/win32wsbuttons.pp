@@ -60,6 +60,7 @@ type
           var PreferredWidth, PreferredHeight: integer); override;
     class procedure SetBounds(const AWinControl: TWinControl;
           const ALeft, ATop, AWidth, AHeight: integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -512,6 +513,13 @@ begin
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
     DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
+end;
+
+procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  TWin32WSWinControl.SetFont(AWinControl, AFont);
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
 end;
 
 procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
