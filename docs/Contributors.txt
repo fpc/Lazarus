@@ -26,6 +26,7 @@ Florian Koeberle
 Francisco Manuel
 GongYu
 Hans-Joachim Ott
+Hwang Weng Sun
 Ido Kanner
 Jan Foster
 Jason King
