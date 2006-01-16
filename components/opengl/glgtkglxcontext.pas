@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
-  WSLCLClasses,
+  WSLCLClasses, GtkWSControls,
   {$IFDEF LCLGTK2}
   gdk2x, glib2, gdk2, gtk2, Gtk2Int,
   {$ENDIF}
@@ -135,6 +135,8 @@ procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean): PInteger;
 
+type
+  TWidgetSetWSWinControl = TGtkWSWinControl;
 
 implementation
 

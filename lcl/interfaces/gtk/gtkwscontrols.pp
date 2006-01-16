@@ -249,6 +249,7 @@ end;
 
 procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
+  //DebugLn('TGtkWSWinControl.DestroyHandle ',DbgSName(AWinControl));
   TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AWinControl);
 end;
 

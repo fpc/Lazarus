@@ -738,15 +738,32 @@ end;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
+  Info: PWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
+  
+  Info:=GetWidgetInfo(Widget,false);
+  if Info=nil then begin
+    // this widget is already destroyed
+    exit;
+  end;
+  if (Info^.LCLObject<>TObject(Data)) then begin
+    // this LCLObject does not use this widget anymore
+    exit;
+  end;
+  if (TObject(Data) is TWinControl)
+  and ((not TWinControl(Data).HandleAllocated)
+       or (PGtkWidget(TWinControl(Data).Handle)<>Widget))
+  then begin
+    // the TWinControl does not use this widget anymore.
+    exit;
+  end;
 
   EventTrace('destroy', data);
+  //DebugLn('gtkdestroyCB Data="',DbgSName(TObject(Data)),'" LCLObject="',DbgSName(Info^.LCLObject),'" ',GetWidgetDebugReport(Widget));
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_DESTROY;
   DeliverMessage(Data, Mess);
-
-  Result := CallBackDefaultReturn;
 
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well

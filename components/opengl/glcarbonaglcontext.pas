@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
   FPCMacOSAll, CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
-  WSLCLClasses, CarbonUtils,
+  WSLCLClasses, CarbonWSControls, CarbonUtils,
   Controls;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
@@ -34,23 +34,10 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean): PInteger;
-
-const
-  DefaultOpenGLContextInitAttrList: array [0..14] of LongInt = (
-    AGL_WINDOW,
-    AGL_RGBA,
-    AGL_NO_RECOVERY,
-    AGL_MAXIMUM_POLICY,
-    AGL_DOUBLEBUFFER,
-    AGL_SINGLE_RENDERER,
-    AGL_RED_SIZE,1,
-    AGL_GREEN_SIZE,1,
-    AGL_BLUE_SIZE,1,
-    AGL_DEPTH_SIZE,1,
-    AGL_NONE
-    );
-    
+  
 type
+  TWidgetSetWSWinControl = TCarbonWSWinControl;
+
   TAGLControlInfo = record
     Control: ControlRef;
     AGLContext: TAGLContext;

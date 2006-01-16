@@ -3917,8 +3917,8 @@ begin
     gdk_pixmap_unref(Info^.DoubleBuffer);
 
   if (Info^.UserData <> nil) and (Info^.DataOwner) then begin
-     FreeMem(Info^.UserData);
-     Info^.UserData := nil;
+    FreeMem(Info^.UserData);
+    Info^.UserData := nil;
   end;
   gtk_object_set_data(AWidget,'widgetinfo',nil);
 
@@ -3928,10 +3928,37 @@ end;
 {-------------------------------------------------------------------------------
   procedure DestroyWidget(Widget: PGtkWidget);
 
+  - sends LM_DESTROY
+  - frees the WidgetInfo
+  - destroys the widget in the gtk
+  
+  IMPORTANT:
+    The above order must be kept, to avoid callbacks working with danging
+    pointers.
+    
+  Some widgets have a LM_DESTROY set, so if the gtk or some other code
+  destroys those widget, the above is done in gtkdestroyCB.
 -------------------------------------------------------------------------------}
 procedure DestroyWidget(Widget: PGtkWidget);
+var
+  Info: PWidgetInfo;
+  AWinControl: TWinControl;
+  Mess: TLMessage;
 begin
-  FreeWidgetInfo(Widget);
+  Info:=GetWidgetInfo(Widget);
+  if Info<>nil then begin
+    if (Info^.LCLObject is TWinControl) then begin
+      AWinControl:=TWinControl(Info^.LCLObject);
+      if AWinControl.HandleAllocated
+      and (PGtkWidget(AWinControl.Handle)=Widget) then begin
+        // send the LM_DESTROY message before destroying the widget
+        FillChar(Mess,SizeOf(Mess),0);
+        Mess.msg := LM_DESTROY;
+        DeliverMessage(Info^.LCLObject, Mess);
+      end;
+    end;
+    FreeWidgetInfo(Widget);
+  end;
   gtk_widget_destroy(Widget);
 end;
 

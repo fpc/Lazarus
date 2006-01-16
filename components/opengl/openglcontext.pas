@@ -24,12 +24,46 @@ unit OpenGLContext;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF LCLGTK}
+  {$DEFINE UseGtkGLX}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFDEF LCLGnome}
+  {$DEFINE UseGtkGLX}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFDEF LCLGTK2}
+  {$DEFINE UseGtkGLX}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFDEF LCLCarbon}
+  {$DEFINE UseCarbonAGL}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFDEF LCLWin32}
+  {$DEFINE UseWin32WGL}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFNDEF OpenGLTargetDefined}
+  {$ERROR this target is not yet supported}
+{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf, LResources,
-  Graphics, LMessages, WSLCLClasses, WSControls;
-  
+  Graphics, LMessages, WSLCLClasses, WSControls,
+{$IFDEF UseGtkGLX}
+  GLGtkGlxContext;
+{$ENDIF}
+{$IFDEF UseCarbonAGL}
+  GLCarbonAGLContext;
+{$ENDIF}
+{$IFDEF UseWin32WGL}
+  GLWin32WGLContext;
+{$ENDIF}
+
+
 type
   TOpenGlCtrlMakeCurrentEvent = procedure(Sender: TObject;
                                           var Allow: boolean) of object;
@@ -130,7 +164,7 @@ type
 
   { TWSOpenGLControl }
 
-  TWSOpenGLControl = class(TWSWinControl)
+  TWSOpenGLControl = class(TWidgetSetWSWinControl)
   public
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
@@ -143,42 +177,6 @@ procedure Register;
 
 
 implementation
-
-
-{$IFDEF LCLGTK}
-  {$DEFINE UseGtkGLX}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
-{$IFDEF LCLGnome}
-  {$DEFINE UseGtkGLX}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
-{$IFDEF LCLGTK2}
-  {$DEFINE UseGtkGLX}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
-{$IFDEF LCLCarbon}
-  {$DEFINE UseCarbonAGL}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
-{$IFDEF LCLWin32}
-  {$DEFINE UseWin32WGL}
-  {$DEFINE OpenGLTargetDefined}
-{$ENDIF}
-{$IFNDEF OpenGLTargetDefined}
-  {$ERROR this target is not yet supported}
-{$ENDIF}
-
-uses
-{$IFDEF UseGtkGLX}
-  GLGtkGlxContext;
-{$ENDIF}
-{$IFDEF UseCarbonAGL}
-  GLCarbonAGLContext;
-{$ENDIF}
-{$IFDEF UseWin32WGL}
-  GLWin32WGLContext;
-{$ENDIF}
 
 var
   OpenGLControlStack: TList = nil;
