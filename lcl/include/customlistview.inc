@@ -76,6 +76,7 @@ var
   n: Integer;
 begin
   nm := PNMListView(AMessage.NMHdr);
+  if nm^.iItem>=Items.Count then exit;
 
   case AMessage.NMHdr^.code of
 //    HDN_TRACK:
