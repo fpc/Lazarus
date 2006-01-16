@@ -34,7 +34,6 @@ begin
   FCustomFormsZOrdered:=TList.Create;
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
-  FHintFont := TFont.Create;
   FSaveFocusedList := TList.Create;
 end;
 
@@ -427,6 +426,8 @@ end;
 
 Function TScreen.GetHintFont: TFont;
 begin
+  if (FHintFont=nil) then
+    FHintFont := TFont.Create;
   if not WidgetSet.InitHintFont(FHintFont) then
   begin
 //    FHintFont.Name := 'courier';
