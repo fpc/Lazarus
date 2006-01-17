@@ -700,7 +700,7 @@ begin
     inc(y,Height+5);
   end;
   with OptionsLabel do begin
-    SetBounds(x,y+3,80,Height);
+    SetBounds(x,y+3,120,Height);
     inc(x,Width+3);
   end;
   with OptionsEdit do begin
@@ -709,7 +709,7 @@ begin
     inc(y,Height+3);
   end;
   with TargetOSLabel do begin
-    SetBounds(x,y+3,80,Height);
+    SetBounds(x,y+3,120,Height);
     inc(x,Width+3);
   end;
   with TargetOSEdit do begin

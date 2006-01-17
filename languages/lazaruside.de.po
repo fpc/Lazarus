@@ -1386,7 +1386,7 @@ msgstr "Installierte Pakete einrichten"
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm Before ReBuild Lazarus"
-msgstr ""
+msgstr "Bestätigen bevor Lazarus neu erstellt wird"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
