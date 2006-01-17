@@ -1137,7 +1137,6 @@ ide/uniteditor.pp svneol=native#text/pascal
 ide/unitinfodlg.lfm svneol=native#text/plain
 ide/unitinfodlg.lrs svneol=native#text/plain
 ide/unitinfodlg.pp svneol=native#text/pascal
-ide/viewforms1.lrs svneol=native#text/pascal
 ide/viewunit_dlg.lfm svneol=native#text/plain
 ide/viewunit_dlg.lrs svneol=native#text/pascal
 ide/viewunit_dlg.pp svneol=native#text/pascal
