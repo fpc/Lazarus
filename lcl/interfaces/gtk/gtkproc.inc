@@ -6506,15 +6506,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function GdkAtomToStr(const Atom: TGdkAtom): string;
-  
-  Returns the associated string
- ------------------------------------------------------------------------------}
- 
-
-
- 
 procedure SetWidgetColor(aWidget : PGTKwidget; data : gpointer); cdecl;
 begin
   gtk_widget_set_style(aWidget,data);
@@ -6527,24 +6518,25 @@ procedure setWidgetBG(aColor: longint;var aWidget : pGTKWidget);
 var
   WindowStyle: PGtkStyle;
 begin
-   windowStyle:=gtk_widget_get_style(aWidget);
-   windowstyle^.bg[0]:=AllocGDKColor(aColor);
-   SetWidgetColor(aWidget,windowStyle);
+  windowStyle:=gtk_widget_get_style(aWidget);
+  windowstyle^.bg[0]:=AllocGDKColor(aColor);
+  SetWidgetColor(aWidget,windowStyle);
 end;
  
 procedure setWidgetFG(aColor: longint;var aWidget : pGTKWidget);
 var
   WindowStyle: PGtkStyle;
-  xColor:tGDKColor;
-
 begin
-   windowStyle:=gtk_widget_get_style(aWidget);
-   windowstyle^.fg[0]:=AllocGDKColor(aColor);
-   SetWidgetColor(aWidget,windowStyle);
+  windowStyle:=gtk_widget_get_style(aWidget);
+  windowstyle^.fg[0]:=AllocGDKColor(aColor);
+  SetWidgetColor(aWidget,windowStyle);
 end;
 
- 
- 
+{------------------------------------------------------------------------------
+  function GdkAtomToStr(const Atom: TGdkAtom): string;
+
+  Returns the associated string
+ ------------------------------------------------------------------------------}
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 var
   p: Pgchar;
@@ -7559,7 +7551,6 @@ procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
-  NewColor: TGdkColor;
   MainWidget: PGtkWidget;
   FontHandle: HFONT;
   FreeFontName: boolean;

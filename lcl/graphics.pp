@@ -486,6 +486,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Assign(const ALogFont: TLogFont);
+    function IsEqual(AFont: TFont): boolean; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
     function HandleAllocated: boolean;

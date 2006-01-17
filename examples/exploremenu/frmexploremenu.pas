@@ -61,6 +61,7 @@ Resourcestring
 Procedure ShowMenu(Sender : TObject);
 
 begin
+  if Sender=nil then ;
   With TExploreIDEMenuForm.Create(Application) do
     try
       ShowModal;
@@ -72,7 +73,8 @@ end;
 Procedure Register;
 
 begin
-  RegisterIDEMenuCommand(itmSecondaryTools,SExploreIDEMEnu,SExploreIDEMenuCaption,Nil,@ShowMenu,Nil);
+  RegisterIDEMenuCommand(itmSecondaryTools,SExploreIDEMEnu,
+                         SExploreIDEMenuCaption,Nil,@ShowMenu,Nil);
 end;
 
 
@@ -84,6 +86,7 @@ Var
   I : Integer;
 
 begin
+  if Sender=nil then ;
   With TVIDEMenu.Items do
     begin
     BeginUpdate;
@@ -103,13 +106,16 @@ Var
   N : TTreeNode;
 
 begin
+  if Sender=nil then ;
+  if Node=nil then ;
   N:=TVIDEMenu.Selected;
   If Assigned(N) and Assigned(N.Data) then
     With TIDEMenuItem(N.Data) do
       LPath.Text:=SSelectedPath+GetPath;
 end;
 
-procedure TExploreIDEMenuForm.AddMenuItem(ParentNode : TTreeNode;Item : TIDEMenuItem);
+procedure TExploreIDEMenuForm.AddMenuItem(ParentNode : TTreeNode;
+  Item : TIDEMenuItem);
 
 Var
   N : TTreeNode;

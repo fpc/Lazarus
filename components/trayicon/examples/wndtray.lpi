@@ -23,10 +23,10 @@
         <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="wndtray"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="32"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="17" Y="19"/>
+        <CursorPos X="13" Y="19"/>
         <EditorIndex Value="1"/>
         <Filename Value="frmtest.pas"/>
         <ComponentName Value="Form1"/>
@@ -36,7 +36,7 @@
         <ResourceFilename Value="frmtest.lrs"/>
         <TopLine Value="1"/>
         <UnitName Value="frmtest"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="32"/>
       </Unit1>
     </Units>
     <PublishOptions>

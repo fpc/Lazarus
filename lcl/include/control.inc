@@ -2125,6 +2125,7 @@ end;
 
 procedure TControl.SetFont(Value: TFont);
 begin
+  if FFont.IsEqual(Value) then exit;
   FFont.Assign(Value);
   Invalidate;
 end;

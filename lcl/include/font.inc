@@ -611,6 +611,23 @@ begin
   end;
 end;
 
+function TFont.IsEqual(AFont: TFont): boolean;
+begin
+  if (AFont=Self) then exit(true);
+  if (AFont=nil)
+  or (CharSet<>AFont.CharSet)
+  or (Color<>AFont.Color)
+  or (PixelsPerInch<>AFont.PixelsPerInch)
+  or (Size<>AFont.Size)
+  or (Height<>AFont.Height)
+  or (Name<>AFont.Name)
+  or (Pitch<>AFont.Pitch)
+  or (Style<>AFont.Style) then
+    Result:=false
+  else
+    Result:=true;
+end;
+
 procedure TFont.BeginUpdate;
 begin
   inc(FUpdateCount);
