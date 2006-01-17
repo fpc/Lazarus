@@ -4790,7 +4790,6 @@ begin
     Constraints.UpdateInterfaceConstraints;
     InvalidatePreferredSize;
     TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
-    FWinControlFlags := FWinControlFlags - [wcfColorChanged,wcfFontChanged];
 
     //WriteClientRect('A');
     if Parent <> nil then AddControl;

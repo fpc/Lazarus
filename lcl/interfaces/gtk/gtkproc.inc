@@ -6511,6 +6511,40 @@ end;
   
   Returns the associated string
  ------------------------------------------------------------------------------}
+ 
+
+
+ 
+procedure SetWidgetColor(aWidget : PGTKwidget; data : gpointer); cdecl;
+begin
+  gtk_widget_set_style(aWidget,data);
+  if  gtk_is_button(aWidget) or gtk_is_check_button(aWidget) then begin
+    gtk_container_foreach(pGtkContainer(aWidget),@SetWidgetColor,data);
+  end;
+end;
+ 
+procedure setWidgetBG(aColor: longint;var aWidget : pGTKWidget);
+var
+  WindowStyle: PGtkStyle;
+begin
+   windowStyle:=gtk_widget_get_style(aWidget);
+   windowstyle^.bg[0]:=AllocGDKColor(aColor);
+   SetWidgetColor(aWidget,windowStyle);
+end;
+ 
+procedure setWidgetFG(aColor: longint;var aWidget : pGTKWidget);
+var
+  WindowStyle: PGtkStyle;
+  xColor:tGDKColor;
+
+begin
+   windowStyle:=gtk_widget_get_style(aWidget);
+   windowstyle^.fg[0]:=AllocGDKColor(aColor);
+   SetWidgetColor(aWidget,windowStyle);
+end;
+
+ 
+ 
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 var
   p: Pgchar;
@@ -7572,9 +7606,22 @@ begin
   else begin
     Widget := MainWidget;
   end;
+  //  writeln('update ',longint(Widget),'  color ',longint(aWinControl.Color),DbgSName(AWinControl));
 
-  if not GTK_WIDGET_REALIZED(Widget) then exit;
-  //debugln('UpdateWidgetStyleOfControl ',GetWidgetDebugReport(Widget));
+  if (AWinControl.Color<>clNone)  then begin
+    if (csOpaque in AWinControl.ControlStyle)
+    and GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType) then exit;
+
+    if AWinControl.ColorIsStored
+    and ((AWinControl.Color and SYS_COLOR_BASE)=0) then begin
+      DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',dbgs(AWinControl.Color));
+      setWidgetBG(AWinControl.Color,Widget);
+    end;
+  end;
+  if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
+    DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Font.Color=',dbgs(AWinControl.Font.Color));
+    setWidgetFG(AWinControl.Font.Color,Widget);
+  end;
 
   RCStyle:=nil;
   FreeFontName:=false;
@@ -7596,16 +7643,6 @@ begin
       // (this prevents flickering)
       if (csOpaque in AWinControl.ControlStyle)
       and GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType) then exit;
-
-      NewColor:=TColorToTGDKColor(AWinControl.Color);
-
-      CreateRCStyle;
-      RCStyle^.bg[GTK_STATE_NORMAL]:=NewColor;
-
-      // Indicate which colors the GtkRcStyle will affect;
-      // unflagged colors will follow the theme
-      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
-        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
       {for i:=0 to 4 do begin
         RCStyle^.bg[i]:=NewColor;
@@ -7637,30 +7674,6 @@ begin
     end;}
     
     // set font color
-    if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
-      //NewColor:=TColorToTGDKColor(AWinControl.Font.Color);
-      NewColor:=AllocGDKColor(AWinControl.Font.Color);
-      //debugln('UpdateWidgetStyleOfControl New Font Color=',dbgs(NewColor.Pixel),' ',dbgs(NewColor.Red),' ',dbgs(NewColor.Green),' ',dbgs(NewColor.Blue));
-      CreateRCStyle;
-
-      {for i:=0 to 4 do begin
-        RCStyle^.text[i]:=NewColor;
-        RCStyle^.fg[i]:=NewColor;
-        RCStyle^.bg[i]:=NewColor;
-        RCStyle^.base[i]:=NewColor;
-        RCStyle^.color_flags[i]:=
-          RCStyle^.color_flags[i] or 15;
-      end;}
-
-      RCStyle^.text[GTK_STATE_NORMAL]:=NewColor;
-
-      // Indicate which colors the GtkRcStyle will affect;
-      // unflagged colors will follow the theme
-      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
-        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
-
-      //DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',DbgS(AWinControl.Font.Color));
-    end;
 
     // set font (currently only TCustomLabel)
     if GtkWidgetIsA(Widget,gtk_label_get_type)

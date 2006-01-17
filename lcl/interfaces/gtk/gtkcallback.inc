@@ -153,9 +153,6 @@ begin
       end;
     end;
 
-    if (TObject(Data) is TWinControl) then
-      UpdateWidgetStyleOfControl(TWinControl(Data));
-
     if not (csDesigning in TComponent(Data).ComponentState) then
       RealizeAccelerator(TComponent(Data),Widget);
   end;
