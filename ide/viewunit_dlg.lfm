@@ -1,20 +1,22 @@
 object ViewUnitDialog: TViewUnitDialog
+  ActiveControl = Listbox
   Caption = 'View Project Units'
-  ClientHeight = 204
+  ClientHeight = 213
   ClientWidth = 416
   PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 415
-  VertScrollBar.Page = 203
+  VertScrollBar.Page = 212
   Left = 337
-  Height = 204
+  Height = 213
   Top = 295
   Width = 416
   object btnOK: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     OnClick = BTNOKCLICK
-    TabOrder = 0
+    TabOrder = 1
     Left = 312
     Height = 25
     Top = 10
@@ -22,9 +24,10 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object btnCancel: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
     Caption = 'Cancel'
     OnClick = BTNCANCELCLICK
-    TabOrder = 1
+    TabOrder = 2
     Left = 312
     Height = 25
     Top = 45
@@ -33,7 +36,7 @@ object ViewUnitDialog: TViewUnitDialog
   object Edit: TEdit
     Anchors = [akTop, akLeft, akRight]
     Enabled = False
-    TabOrder = 2
+    TabOrder = 3
     Left = 10
     Height = 25
     Top = 10
@@ -43,9 +46,10 @@ object ViewUnitDialog: TViewUnitDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     ClickOnSelChange = False
     OnDblClick = BTNOKCLICK
-    TabOrder = 3
+    OnKeyDown = ListboxKeyDown
+    TabOrder = 0
     Left = 10
-    Height = 147
+    Height = 156
     Top = 45
     Width = 294
   end
@@ -54,9 +58,9 @@ object ViewUnitDialog: TViewUnitDialog
     Caption = 'Multi Select'
     OnClick = MultiselectCheckBoxClick
     TabOrder = 4
-    Left = 315
-    Height = 24
+    Left = 312
+    Height = 13
     Top = 100
-    Width = 90
+    Width = 75
   end
 end

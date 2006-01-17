@@ -59,6 +59,8 @@ type
     MultiSelectCheckBox: TCheckBox;
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
+    procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
     procedure MultiselectCheckBoxClick(Sender :TObject);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -140,6 +142,14 @@ Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
+end;
+
+procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  //ENTER pressed
+  if Key = 13 then
+    btnOKClick(nil);
 end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);
