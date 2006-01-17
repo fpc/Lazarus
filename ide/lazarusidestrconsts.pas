@@ -1101,7 +1101,7 @@ resourcestring
   dlgCOLoadSave = 'Load/Save';
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
-  dlgMulti = 'Multi';
+  dlgMultiSelect = 'Multi Select';
   
   // project options dialog
   dlgProjectOptions = 'Project Options';

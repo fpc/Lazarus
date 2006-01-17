@@ -1462,6 +1462,10 @@ msgstr "Kopiëren"
 msgid "Copy Error"
 msgstr "Kopieerfout"
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Kopieer alle berichten naar klipbord"
@@ -4298,13 +4302,13 @@ msgstr "Breng naar achter"
 msgid "Move to front"
 msgstr "Breng naar voren"
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
-msgstr "Meervoudig"
-
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
 msgstr "Meervoudige regel"
+
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -7054,10 +7058,6 @@ msgstr "De unitnaam %s%s%s bestaat al in het project%smet bestand: %s%s%s."
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "De unitnaam %s%s%s bestaat al in de selectie%smet bestand: %s%s%s."
 
-#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
-msgstr "De unitnaam %s%s%s en de bestandsnaam verschillen."
-
 #: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "De unitnaam %s%s%s correspondeert niet met de bestandsnaam."
@@ -7069,6 +7069,10 @@ msgstr "De unitnaam %s%s%s is geen geldige pascal identifier."
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
 msgstr "De unitnaam %s%s%s is gelijk aan die van een geregistreerd component.%Dit kan tot vreemde foutmeldingen leiden."
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"

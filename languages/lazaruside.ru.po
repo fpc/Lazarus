@@ -1462,6 +1462,10 @@ msgstr "Копировать"
 msgid "Copy Error"
 msgstr "Ошибка копирования"
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Скопировать все сообщения в буфер"
@@ -4298,13 +4302,13 @@ msgstr ""
 msgid "Move to front"
 msgstr ""
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
-msgstr "Мульти"
-
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
 msgstr "Многострочный"
+
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -7054,10 +7058,6 @@ msgstr "Имя модуля %s%s%s уже есть в проекте%sв фай�
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "Имя модуля %s%s%s уже есть в выделении%sв файле: %s%s%s."
 
-#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
-msgstr "Имя модуля %s%s%s и имя файла разные."
-
 #: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "Имя модуля %s%s%s не соответствует имени файла"
@@ -7069,6 +7069,10 @@ msgstr "Имя модуля %s%s%s - недопустимый идентифик
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
 msgstr "Имя модуля совпадает с зарегистрированным компонентом.%sЭто может привести к странным сообщениям об ошибках."
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"

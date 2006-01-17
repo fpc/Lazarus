@@ -1476,6 +1476,10 @@ msgstr "Kopieren"
 msgid "Copy Error"
 msgstr "Kopierfehler"
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Kopiere alle Meldungen die Zwischenablage"
@@ -4312,13 +4316,13 @@ msgstr "Nach hinten bewegen"
 msgid "Move to front"
 msgstr "Nach vorn bewegen"
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
-msgstr "Mehrfach"
-
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
 msgstr "Mehrzeilig"
+
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -7068,10 +7072,6 @@ msgstr "Der Unitname %s%s%s ist bereits im Projekt%s mit der Datei: %s%s%s entha
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "Der Unitname %s%s%s ist bereits der Auswahl%s mit der Datei: %s%s%s enthalten."
 
-#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
-msgstr "Unit-Name %s%s%s und Dateiname unterscheiden sich."
-
 #: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "Der Unitname %s%s%s korrespondiert nicht mit dem Dateinamen."
@@ -7083,6 +7083,10 @@ msgstr "Der Unitname %s%s%s ist kein gültiger Pascal-Bezeichner"
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
 msgstr "Der Unitname %s%s%s ist gleich wie eine registrierte Komponente.%sSeine Verwendung kann zu heftigen Fehlermeldungen führen."
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"

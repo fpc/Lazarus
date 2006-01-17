@@ -1462,6 +1462,10 @@ msgstr "Kopioi"
 msgid "Copy Error"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Kopio kaikki kääntäjän viestit leikepöydälle"
@@ -4298,12 +4302,12 @@ msgstr "Siirrä taainmaksi"
 msgid "Move to front"
 msgstr "Siirrä päällimmäksi"
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
-msgstr "Monivalinta"
-
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
@@ -7054,10 +7058,6 @@ msgstr "Käännösyksikkö (unit) %s%s%s on jo olemassa projektissa%stiedostona:
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr ""
 
-#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
-msgstr ""
-
 #: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr ""
@@ -7068,6 +7068,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+msgstr ""
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage

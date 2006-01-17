@@ -582,6 +582,10 @@ msgstr ""
 msgid "Copy all messages to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lissaveallmessagestofile
 msgid "Save all messages to file"
 msgstr ""
@@ -3378,8 +3382,8 @@ msgstr ""
 msgid "View project units"
 msgstr ""
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
 msgstr ""
 
 #: lazarusidestrconsts:dlgprojectoptions
@@ -7435,7 +7439,7 @@ msgid "Invalid Unit Name"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pfilealreadyinpackage

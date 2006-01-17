@@ -123,12 +123,12 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  btnOK.Caption:='Ok';
+  btnOK.Caption:= lisOkBtn;
   btnOk.Left:=ClientWidth-btnOk.Width-5;
-  btnCancel.Caption:='Cancel';
+  btnCancel.Caption:=dlgCancel;
   btnCancel.Left:=btnOk.Left;
   CancelControl:=btnCancel;
-  MultiSelectCheckBox.Caption:='Multi Select';
+  MultiSelectCheckBox.Caption:=dlgMultiSelect;
   MultiSelectCheckBox.Left:=btnOk.Left;
 end;
 

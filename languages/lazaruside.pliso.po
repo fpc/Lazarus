@@ -1473,6 +1473,10 @@ msgstr "Kopiuj"
 msgid "Copy Error"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
+msgid "Copy all and hidden messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr ""
@@ -4309,13 +4313,13 @@ msgstr ""
 msgid "Move to front"
 msgstr ""
 
-#: lazarusidestrconsts:dlgmulti
-msgid "Multi"
-msgstr "Kilka"
-
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
 msgstr "Wiele wierszy"
+
+#: lazarusidestrconsts:dlgmultiselect
+msgid "Multi Select"
+msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -7065,10 +7069,6 @@ msgstr "Modu³ o nazwie %s%s%s ju¿ istnieje w projekcie%sw pliku: %s%s%s."
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "Nazwa modu³u %s%s%s ju¿ istnieje w zaznaczeniu%sw pliku: %s%s%s."
 
-#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s and filename differ."
-msgstr "Nazwa modu³u %s%s%s ró¿ni siê od nazwy pliku."
-
 #: lazarusidestrconsts:lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "Nazwa modu³u %s%s%s nie odpowiada nazwie pliku."
@@ -7080,6 +7080,10 @@ msgstr "Nazwa modu³u %s%s%s nie jest prawid³owym identyfikatorem pascala."
 #: lazarusidestrconsts:lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
 msgstr "Nazwa modu³u %s%s%s jest taka sama jak nazwa zainstalowanego komponentu.%sU¿ywanie jej mo¿e spowodowaæ dziwne b³êdy."
+
+#: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
+msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
