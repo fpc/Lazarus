@@ -1,4 +1,5 @@
 object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
+  ActiveControl = BtnOK
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'TreeView Items Editor'
   ClientHeight = 261
@@ -61,7 +62,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Caption = 'Items'
     ClientHeight = 195
     ClientWidth = 276
-    ParentColor = True
     TabOrder = 4
     Left = 8
     Height = 213
@@ -126,7 +126,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnSave: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
       BorderSpacing.InnerBorder = 2
       Caption = '&Save'
       OnClick = btnSaveClick
@@ -142,7 +141,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Caption = 'Item Properties'
     ClientHeight = 195
     ClientWidth = 181
-    ParentColor = True
     TabOrder = 5
     Left = 296
     Height = 213
@@ -152,37 +150,41 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Caption = 'Text:'
       Color = clNone
       FocusControl = edtText
+      ParentColor = False
       Left = 8
-      Height = 17
+      Height = 14
       Top = 10
-      Width = 65
+      Width = 27
     end
     object Label2: TLabel
       Caption = 'Image Index:'
       Color = clNone
       FocusControl = edtIndexImg
+      ParentColor = False
       Left = 9
-      Height = 17
+      Height = 14
       Top = 44
-      Width = 65
+      Width = 66
     end
     object Label3: TLabel
       Caption = 'Selected index:'
       Color = clNone
       FocusControl = edtIndexSel
+      ParentColor = False
       Left = 6
-      Height = 17
+      Height = 14
       Top = 78
-      Width = 78
+      Width = 75
     end
     object Label4: TLabel
       Caption = 'State Index:'
       Color = clNone
       FocusControl = edtIndexState
+      ParentColor = False
       Left = 8
-      Height = 17
+      Height = 14
       Top = 110
-      Width = 65
+      Width = 62
     end
     object edtText: TEdit
       OnChange = Edit1Change
@@ -221,14 +223,14 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Title = 'Open'
     FilterIndex = 0
     Title = 'Open'
-    left = 5
-    top = 237
+    left = 176
+    top = 312
   end
   object SaveDialog1: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
     Title = 'Save'
-    left = 5
-    top = 272
+    left = 176
+    top = 347
   end
 end

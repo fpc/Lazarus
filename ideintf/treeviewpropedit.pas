@@ -115,7 +115,9 @@ begin
     TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S)
   else
     TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S);
-    
+
+  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+  
   edtText.SetFocus;
   edtText.SelectAll;
 end;
@@ -184,13 +186,19 @@ begin
     
     if TempNode <> nil then
       TreeView1.Selected := TempNode;
+      
+    GroupBox2.Enabled := TreeView1.Items.Count > 0;
+    TreeView1.SetFocus;
   end;
 end;
 
 procedure TTreeViewItemsEditorForm.btnLoadClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
+  begin
     TreeView1.LoadFromFile(OpenDialog1.FileName);
+    GroupBox2.Enabled := TreeView1.Items.Count > 0;
+  end;
 end;
 
 procedure TTreeViewItemsEditorForm.btnSaveClick(Sender: TObject);
@@ -214,7 +222,18 @@ begin
 end;
 
 procedure TTreeViewItemsEditorForm.LoadFromTree(ATreeView: TTreeView);
-var
+begin
+  FTreeView := ATreeView;
+  if Assigned(ATreeView) then
+  begin
+    TreeView1.Images := ATreeView.Images;
+    TreeView1.StateImages := ATreeView.StateImages;
+    TreeView1.Items.Assign(ATreeView.Items);
+  end;
+  
+  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+end;
+(*var
   S:TMemoryStream;
 begin
   FTreeView:=ATreeView;
@@ -231,10 +250,17 @@ begin
       S.Free;
     end;
   end;
-end;
+end;*)
 
 procedure TTreeViewItemsEditorForm.SaveToTree;
-var
+begin
+  if Assigned(FTreeView) then
+  begin
+    FTreeView.Items.Assign(TreeView1.Items);
+    FModified := True;
+  end;
+end;
+(*var
   S:TMemoryStream;
 begin
   if Assigned(FTreeView) then
@@ -249,7 +275,7 @@ begin
       S.Free;
     end;
   end
-end;
+end;*)
 
 
 { TTreeViewItemsProperty }
@@ -297,5 +323,7 @@ initialization
 
   RegisterPropertyEditor(ClassTypeInfo(TTreeNodes), TTreeView, 'Items', TTreeViewItemsProperty);
   RegisterComponentEditor(TTreeView,TTreeViewComponentEditor);
+  
+  
 end.
 
