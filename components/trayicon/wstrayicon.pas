@@ -1,4 +1,6 @@
 {
+ wstrayicon.pas
+
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
@@ -9,11 +11,15 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+ Authors: Felipe Monteiro de Carvalho and Andrew Haines
+
+ This unit calls the appropriate widgetset code.
 }
-unit WSTrayIcon;
+unit wstrayicon;
 
 {$ifdef FPC}
-  {$mode objfpc}{$H+}
+  {$mode delphi}{$H+}
 {$endif}
 
 interface
@@ -22,7 +28,7 @@ interface
 *  Compatibility code for Delphi for Windows.
 *******************************************************************}
 {$ifndef FPC}
-  {$define Win32}
+  {$define LCLWin32}
 {$endif}
 
 
@@ -33,11 +39,11 @@ uses
 {$ifdef LCLGtk}
   wsgtktrayicon,
 {$endif}
-{$ifdef LCLGtk2}
-  wsgtk2trayicon,
-{$endif}
 {$ifdef LCLGnome}
   wsgtktrayicon,
+{$endif}
+{$ifdef LCLGtk2}
+  wsgtk2trayicon, // not working yet
 {$endif}
   Classes, SysUtils;
 

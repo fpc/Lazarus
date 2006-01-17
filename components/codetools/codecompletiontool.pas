@@ -1762,6 +1762,8 @@ begin
   then
     // comment already exists
     exit;
+  if CommentStart.Code=nil then ;
+  if CommentEnd.Code=nil then ;
 
   // insert comment in front
   InsertPos:=ClassIdentifierNode.StartPos;
@@ -2033,6 +2035,8 @@ var
       // comment already exists
       exit;
     end;
+    if CommentStart.Code=nil then ;
+    if CommentEnd.Code=nil then ;
 
     ClassStartComment:=GetIndentStr(Indent)
                        +'{ '+ExtractClassName(CodeCompleteClassNode,false)+' }';

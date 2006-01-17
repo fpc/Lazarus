@@ -188,7 +188,7 @@ implementation
 
 function TLazDockPages.GetActiveNotebookPageComponent: TLazDockPage;
 begin
-  Result:=TLazDockPage(GetActiveNotebookPageComponent);
+  Result:=TLazDockPage(ActivePageComponent);
 end;
 
 function TLazDockPages.GetNoteBookPage(Index: Integer): TLazDockPage;

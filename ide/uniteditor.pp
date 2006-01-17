@@ -4276,6 +4276,7 @@ var
 begin
   if OnShowCodeContext<>nil then begin
     OnShowCodeContext(JumpToError,Abort);
+    if Abort then ;
   end;
 end;
 

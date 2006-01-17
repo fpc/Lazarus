@@ -1,4 +1,6 @@
 {
+ wswin32trayicon.pas
+
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
@@ -9,8 +11,12 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+ Authors: Felipe Monteiro de Carvalho and Andrew Haines
+
+ Win32 specific code.
 }
-unit WSWin32TrayIcon;
+unit wswin32trayicon;
 
 {$ifdef FPC}
   {$mode delphi}{$H+}

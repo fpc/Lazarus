@@ -219,6 +219,7 @@ const
       // macro unknown
       MacroValue:='UnknownMacro('+MacroName+')';
     end;
+    if ErrMsg='' then ;
     Result:=true;
   end;
   

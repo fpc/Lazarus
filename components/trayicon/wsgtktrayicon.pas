@@ -1,4 +1,6 @@
 {
+ wsgtktrayicon.pas
+
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
@@ -9,8 +11,12 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+ Authors: Felipe Monteiro de Carvalho and Andrew Haines
+
+ Gtk1 and Gnome specific code.
 }
-unit WSGtkTrayIcon;
+unit wsgtktrayicon;
 
 {$ifdef FPC}
   {$mode delphi}{$H+}
@@ -19,8 +25,8 @@ unit WSGtkTrayIcon;
 interface
 
 uses
-  Graphics, Classes, LCLProc, ExtCtrls, SysUtils, StdCtrls, Forms, Controls,
-  Dialogs, Menus, x, xlib, xutil, gtk, gdk;
+  Graphics, Classes, ExtCtrls, SysUtils, StdCtrls, Forms, Controls, Dialogs,
+  Menus, x, xlib, xutil, gtk, gdk;
 
 type
 
@@ -72,7 +78,7 @@ implementation
 // Temp ErrorHandler
 function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
 begin
-  DebugLn('Error: ' + IntToStr(ErrorEv^.error_code));
+  WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
 end;
 
 
@@ -179,7 +185,7 @@ begin
 
   Application.ProcessMessages;
 
-  fDisplay := GDK_WINDOW_XDISPLAY (Pointer(PGtkWidget(GtkForm.Handle)^.window));
+  fDisplay := GDK_WINDOW_XDISPLAY(Pointer(PGtkWidget(GtkForm.Handle)^.window));
   fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
   fScreen := XDefaultScreenOfDisplay(fDisplay); // get the screen
   fScreenID := XScreenNumberOfScreen(fScreen); // and it's number

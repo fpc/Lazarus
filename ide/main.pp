@@ -4700,6 +4700,7 @@ begin
           end;
           // read the LFM classname
           ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
+          if LFMType='' then ;
           if CompareText(LFMClassName,AncestorName)=0 then begin
             // ancestor LFM found
             
@@ -7551,6 +7552,7 @@ begin
     CodeToolBoss.GetFPCVersionForDirectory(
                                EnvironmentOptions.LazarusDirectory,
                                FPCVersion,FPCRelease,FPCPatch);
+    if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
   end;
 
   // save extra options
@@ -7614,6 +7616,7 @@ begin
       CodeToolBoss.GetFPCVersionForDirectory(
                                  EnvironmentOptions.LazarusDirectory,
                                  FPCVersion,FPCRelease,FPCPatch);
+      if FPCPatch=0 then ;
       CompiledUnitExt:=MiscellaneousOptions.BuildLazOpts.CompiledUnitExt(
                          FPCVersion,FPCRelease);
       Result:=DoCheckUnitPathForAmbiguousPascalFiles(
@@ -8380,6 +8383,7 @@ begin
   begin
     DoJumpToCodeToolBossError;
   end;
+  if (ErrorMsg='') or (NewTopLine=0) or (NewX=0) or (NewY=0) or (NewCode=nil) then ;
 end;
 
 //-----------------------------------------------------------------------------

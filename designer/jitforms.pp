@@ -649,6 +649,7 @@ var
 begin
   Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream, IsInherited);
+  if IsInherited then ;
   { TODO: If IsInherited, read ancestor form stream }
   if NewClassName='' then begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);

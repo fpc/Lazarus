@@ -2989,6 +2989,7 @@ begin
   Assert((LoKey >= 0) and (HiKey <= 255)); // perdef
   FreeVK := $92; // first OEM specific VK
   WarningShown := False;
+  FillChar(KeySym,SizeOf(KeySym),0);
   for n := LoKey to HiKey do
   begin
     VKey := $FF;

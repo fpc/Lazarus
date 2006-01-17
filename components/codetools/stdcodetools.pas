@@ -2141,6 +2141,7 @@ begin
   if not AtomIsStringConstant then exit;
   Result:=GetStringConstAsFormatString(StringConstStartPos,EndPos,Title,
                                        FormatStringParams);
+  if FormatStringParams='' then ;
 end;
 
 function TStandardCodeTool.SetApplicationTitleStatement(const NewTitle: string;
@@ -2748,6 +2749,8 @@ var
 begin
   Result:=GetStringConstAsFormatString(StartPos,EndPos,FormatStringConstant,
                        FormatParameters,StartInStringConst,EndInStringConstant);
+  if StartInStringConst then ;
+  if EndInStringConstant then ;
 end;
 
 function TStandardCodeTool.GatherResourceStringSections(

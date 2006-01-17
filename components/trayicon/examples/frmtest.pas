@@ -1,3 +1,19 @@
+{
+ frmtest.dpr
+
+ *****************************************************************************
+ *                                                                           *
+ *  This demonstration program is public domain, witch means no copyright,   *
+ * but also no warranty!                                                      *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
+ Author: Felipe Monteiro de Carvalho
+}
 unit frmtest;
 
 {$ifdef fpc}
@@ -8,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils,
-{$ifdef LCL}
+{$ifdef fpc}
   LResources,
 {$endif}
   Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls;
@@ -20,8 +36,10 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure HandleClick(Sender: TObject);
   private
@@ -34,7 +52,7 @@ type
 var
   Form1: TForm1; 
 
-{$ifndef LCL}
+{$ifndef fpc}
   {$R frmtest.dfm}
 {$endif}
 
@@ -42,9 +60,9 @@ implementation
 
 uses
 {$ifdef win32}
-  Windows,
+ Windows,
 {$endif}
-  TrayIcon;
+ TrayIcon;
 
 { TForm1 }
 
@@ -58,6 +76,23 @@ begin
   SystrayIcon.Hide;
 end;
 
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  MyImage, SecondImage: TIcon;
+begin
+  MyImage := TIcon.Create;
+  SecondImage := TIcon.Create;
+
+  MyImage.LoadFromFile('icon.ico');
+  SecondImage.Height := 22;
+  SecondImage.Width := 22;
+  SecondImage.Canvas.Draw(0, 0, MyImage);
+  Canvas.Draw(0, 0, SecondImage);
+
+  SecondImage.Free;
+  MyImage.Free;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 const
   IDI_ICON1         = 101;
@@ -65,6 +100,9 @@ const
 begin
 {$ifdef win32}
   SystrayIcon.Icon.Handle := LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+  
+//  Loading from a file should also work
+//  SystrayIcon.Icon.LoadFromFile('icon.ico');
 {$else}
   SystrayIcon.Icon.LoadFromFile('icon.ico');
 {$endif}
@@ -73,7 +111,7 @@ begin
   SystrayIcon.ToolTip := 'my tool tip';
 
   SystrayIcon.OnClick := HandleClick;
-  SystrayIcon.OnPaint := DoPaint;
+//  SystrayIcon.OnPaint := DoPaint;
 end;
 
 procedure TForm1.HandleClick(Sender: TObject);
@@ -83,17 +121,17 @@ end;
 
 procedure TForm1.DoPaint(Sender: TObject);
 var
-  MyImage: TPixmap;
+  MyImage: TIcon;
 begin
-  MyImage := TPixmap.Create;
-  MyImage.LoadFromFile('icon.xpm');
+  MyImage := TIcon.Create;
+  MyImage.LoadFromFile('icon.ico');
   SystrayIcon.Canvas.Draw(0, 0, MyImage);
   MyImage.Free;
   WriteLn('Paint');
 end;
 
 initialization
-{$ifdef LCL}
+{$ifdef fpc}
   {$I frmtest.lrs}
 {$endif}
 

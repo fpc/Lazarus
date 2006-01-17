@@ -1117,6 +1117,7 @@ begin
   Result := 0;
   if ExecuteCommand('x/d ' + AExpression, AValues, [cfNoMICommand], R)
   then Val(StripLN(GetPart('\t', '', R.Values)), Result, e);
+  if e=0 then ;
 end;
 
 function TGDBMIDebugger.GetIntValue(const AExpression: String; const AValues: array of const): Integer;
@@ -1125,6 +1126,7 @@ var
 begin
   Result := 0;
   Val(GetStrValue(AExpression, AValues), Result, e);
+  if e=0 then ;
 end;
 
 function TGDBMIDebugger.GetPtrValue(const AExpression: String; const AValues: array of const): TDbgPtr;
@@ -1133,6 +1135,7 @@ var
 begin
   Result := 0;
   Val(GetStrValue(AExpression, AValues), Result, e);
+  if e=0 then ;
 end;
 
 function TGDBMIDebugger.GetStrValue(const AExpression: String; const AValues: array of const): String;
@@ -1681,6 +1684,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
 
     Location.Address := 0;
     Val(Frame.Values['addr'], Location.Address, e);
+    if e=0 then ;
     Location.FuncName := Frame.Values['func'];
     Location.SrcFile := Frame.Values['file'];
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
@@ -2342,6 +2346,7 @@ begin
     then begin
       addr := 0;
       Val(S, addr, e);
+      if e=0 then ;
       if addr = 0
       then Value := ''''''
       else Value := '''' + TGDBMIDebugger(Debugger).GetText(addr) + '''';
@@ -2573,6 +2578,7 @@ begin
   List := CreateMIValueList(S);
   addr := 0;
   Val(List.Values['addr'], addr, e);
+  if e=0 then ;
   Result := TCallStackEntry.Create(
     AIndex, 
     addr,

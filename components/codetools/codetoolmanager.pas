@@ -1273,6 +1273,7 @@ var
   ACodeTool: TCodeTool;
 begin
   Result:=Explore(Code,ACodeTool,true);
+  if ACodeTool=nil then ;
   NewCode:=ErrorCode;
   NewX:=ErrorColumn;
   NewY:=ErrorLine;
