@@ -1162,7 +1162,7 @@ msgstr "Quelltextvorlagen"
 
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
-msgstr ""
+msgstr "CodeExplorer Einstellungen"
 
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
@@ -5318,7 +5318,7 @@ msgstr "Erneuern"
 
 #: lazarusidestrconsts:lisceorefreshautomatically
 msgid "Refresh automatically"
-msgstr ""
+msgstr "Automatische Aktualisierung"
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -8082,7 +8082,7 @@ msgstr "Beim Erzeugen neuer Formulare diese zu den Autogenerierten hinzufügen"
 
 #: lazarusidestrconsts:lisceowhenswitchingfile
 msgid "When switching file in source editor"
-msgstr ""
+msgstr "Beim Umschalten von Dateien im Quelltexteditor"
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
