@@ -276,7 +276,19 @@ end;
 
 procedure TControl.FontChanged(Sender: TObject);
 begin
+  ParentFont := False;
   Invalidate;
+end;
+
+procedure TControl.ParentFontChanged;
+begin
+  if csLoading in ComponentState then exit;
+
+  if FParentFont then
+  begin
+    Font := FParent.Font;
+    FParentFont := true;
+  end;
 end;
 
 procedure TControl.SetAction(Value: TBasicAction);
@@ -2114,6 +2126,7 @@ end;
 procedure TControl.SetFont(Value: TFont);
 begin
   FFont.Assign(Value);
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2419,9 +2432,16 @@ begin
     ' CH=',DbgS(cfClientHeightLoaded in FControlFlags),'=',DbgS(FLoadedClientSize.Y),
     '');}
     
-  if Assigned(Parent) and ParentColor then begin
-    Color := Parent.Color;
-    ParentColor := true;
+  if Assigned(Parent) then begin
+    if ParentColor then begin
+      Color := Parent.Color;
+      ParentColor := true;
+    end;
+
+    if ParentFont then begin
+      Font := Parent.Font;
+      ParentFont := true;
+    end;
   end;
 
   UpdateBaseBounds(true,true,true);
@@ -2762,6 +2782,16 @@ begin
     FParentColor := Value;
     if Assigned(FParent) and not (csReading in ComponentState) then
       Perform(CM_PARENTCOLORCHANGED, 0, 0);
+  end;
+end;
+
+procedure TControl.SetParentFont(Value: Boolean);
+begin
+  if FParentFont <> Value then
+  begin
+    FParentFont := Value;
+    if Assigned(FParent) and not (csReading in ComponentState) then
+      ParentFontChanged;
   end;
 end;
 

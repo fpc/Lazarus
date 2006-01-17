@@ -861,6 +861,7 @@ type
     procedure SetMouseCapture(Value: Boolean);
     procedure SetParentShowHint(Value: Boolean);
     procedure SetParentColor(Value: Boolean);
+    procedure SetParentFont(Value: Boolean);
     procedure SetPopupMenu(Value: TPopupMenu);
     procedure SetShowHint(Value: Boolean);
     procedure SetText(const Value: TCaption); 
@@ -982,6 +983,7 @@ type
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque, IgnoreWinControls: Boolean);
     procedure FontChanged(Sender: TObject); virtual;
+    procedure ParentFontChanged; virtual;
     function GetAction: TBasicAction; virtual;
     function RealGetText: TCaption; virtual;
     procedure RealSetText(const Value: TCaption); virtual;
@@ -1023,8 +1025,8 @@ type
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
-    property ParentFont: Boolean  read FParentFont write FParentFont;
     property ParentColor: Boolean read FParentColor write SetParentColor default true;
+    property ParentFont: Boolean  read FParentFont write SetParentFont;
     property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
     property SessionProperties: string read FSessionProperties write FSessionProperties;
     property Text: TCaption read GetText write SetText;

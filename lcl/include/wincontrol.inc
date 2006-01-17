@@ -2531,12 +2531,17 @@ begin
 end;
 
 procedure TWinControl.FontChanged(Sender: TObject);
+var
+  i: Integer;
 begin
+  ParentFont := False;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FWinControlFlags,wcfFontChanged);
     Invalidate;
+    for i := 0 to ControlCount - 1 do
+      Controls[i].ParentFontChanged;
   end else
     Include(FWinControlFlags,wcfFontChanged);
 end;
@@ -3914,9 +3919,9 @@ begin
   if not (csReadingState in AControl.ControlState) then
   begin
     AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
-    AControl.Perform(CM_PARENTFONTCHANGED, 0, 0);
     AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
     AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
+    AControl.ParentFontChanged;
     if AControl is TWinControl then
     begin
       AControl.Perform(CM_PARENTCTL3DCHANGED, 0, 0);
@@ -4961,6 +4966,7 @@ end;
 procedure TWinControl.Loaded;
 var
   CachedText: string;
+  i: Integer;
 begin
   if HandleAllocated then begin
     // Set cached caption
@@ -4971,6 +4977,8 @@ begin
     if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then begin
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
       NotifyControls(CM_PARENTCOLORCHANGED);
+      for i := 0 to ControlCount - 1 do
+        Controls[i].ParentFontChanged;
       FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
     end;
   end;
