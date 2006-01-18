@@ -2714,6 +2714,10 @@ msgstr ""
 msgid "Code Tools"
 msgstr ""
 
+#: lazarusidestrconsts:lisautomaticfeatures
+msgid "Automatic features"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr ""

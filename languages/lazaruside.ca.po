@@ -626,6 +626,10 @@ msgstr "Creat automàticament"
 msgid "Automatic (or english)"
 msgstr "Automàtic (o Anglès)"
 
+#: lazarusidestrconsts:lisautomaticfeatures
+msgid "Automatic features"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "En muntar, incrementa la versió automàticament"

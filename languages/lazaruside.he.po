@@ -637,6 +637,10 @@ msgstr "נוצר אוטומטית"
 msgid "Automatic (or english)"
 msgstr "(או אנגלית) אוטומטי"
 
+#: lazarusidestrconsts:lisautomaticfeatures
+msgid "Automatic features"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "הגדל מספר גרסה אוטמטית בעת בנייה"

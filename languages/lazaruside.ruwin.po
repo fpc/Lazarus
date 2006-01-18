@@ -626,6 +626,10 @@ msgstr "Создан автоматически"
 msgid "Automatic (or english)"
 msgstr "Автоматически (или английский)"
 
+#: lazarusidestrconsts:lisautomaticfeatures
+msgid "Automatic features"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr "Автоматически увеличить версию при сборке"

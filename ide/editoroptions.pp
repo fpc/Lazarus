@@ -3670,7 +3670,7 @@ procedure TEditorOptionsForm.SetupCodeToolsPage(Page: Integer);
 begin
   MainNoteBook.Page[Page].Caption := dlgCodeToolsTab;
 
-  AutomaticFeaturesGroupBox.Caption := 'Automatic features';
+  AutomaticFeaturesGroupBox.Caption := lisAutomaticFeatures;
 
   with AutoIdentifierCompletionCheckBox do
   begin

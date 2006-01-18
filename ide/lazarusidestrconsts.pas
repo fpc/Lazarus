@@ -920,6 +920,7 @@ resourcestring
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
+  lisAutomaticFeatures = 'Automatic features';
   
   // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';

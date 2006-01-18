@@ -36,7 +36,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s tavua"
 
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
@@ -625,6 +625,10 @@ msgstr ""
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
 msgstr "Oletuskieli (tai englanti)"
+
+#: lazarusidestrconsts:lisautomaticfeatures
+msgid "Automatic features"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -1504,7 +1508,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
-msgstr ""
+msgstr "Lisätään laskijanumero (.pp;1)"
 
 #: lazarusidestrconsts:lisnpcreate
 msgid "Create"
@@ -3596,7 +3600,7 @@ msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
-msgstr ""
+msgstr "Käännä sijoitus päinvastaiseksi"
 
 #: lazarusidestrconsts:srkmecinvertassignment
 msgid "Invert assignment"
@@ -3820,7 +3824,7 @@ msgstr ""
 
 #: lazarusidestrconsts:locwndsrceditor
 msgid "Lazarus Source Editor"
-msgstr ""
+msgstr "Lazarus lähdekoodieditori"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -3936,7 +3940,7 @@ msgstr "Rivit"
 
 #: lazarusidestrconsts:lisuidlines
 msgid "Lines:"
-msgstr ""
+msgstr "Rivejä:"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
@@ -4080,7 +4084,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
-msgstr ""
+msgstr "Suurin laskijanumero"
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -4308,7 +4312,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
-msgstr ""
+msgstr "Monivalinta"
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5296,7 +5300,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
-msgstr ""
+msgstr "Koodin uudelleen muokkaus"
 
 #: lazarusidestrconsts:dlgreferencecolor
 msgid "Reference"
@@ -6244,7 +6248,7 @@ msgstr "Koko"
 
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
-msgstr ""
+msgstr "Koko:"
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
