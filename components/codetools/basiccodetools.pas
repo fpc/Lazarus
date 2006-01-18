@@ -3161,11 +3161,12 @@ function GatherUnitFiles(const BaseDir, SearchPath,
 // CaseInsensitive: true to ignore case on comparing extensions
 // TreeOfUnitFiles: tree of TUnitFileInfo
 var
-  SearchedDirectories: TAVLTree; // tree of PAnsiString
+  SearchedDirectories: TAVLTree; // tree of AnsiString
 
   function DirectoryAlreadySearched(const ADirectory: string): boolean;
   begin
-    Result:=false;
+    Result:=(SearchedDirectories<>nil)
+        and (SearchedDirectories.Find(Pointer(ADirectory))<>nil);
   end;
 
   procedure MarkDirectoryAsSearched(const ADirectory: string);
@@ -3173,11 +3174,12 @@ var
     s: String;
   begin
     // increase refcount
-    s:=ADirectory;
+    //DebugLn('MarkDirectoryAsSearched ',ADirectory);
+    s:=ADirectory;  // increase refcount
     if SearchedDirectories=nil then
-      SearchedDirectories:=TAVLTree.Create(@ComparePAnsiStringFilenames);
-    SearchedDirectories.Add(@s);
-    Pointer(s):=nil;
+      SearchedDirectories:=TAVLTree.Create(@CompareAnsiStringFilenames);
+    SearchedDirectories.Add(Pointer(s));
+    Pointer(s):=nil; // keep refcount
   end;
 
   procedure FreeSearchedDirectories;
@@ -3190,6 +3192,7 @@ var
     ANode:=SearchedDirectories.FindLowest;
     while ANode<>nil do begin
       Pointer(s):=ANode.Data;
+      //DebugLn('FreeSearchedDirectories ',s);
       s:=''; // decrease refcount
       ANode:=SearchedDirectories.FindSuccessor(ANode);
     end;
