@@ -1076,7 +1076,7 @@ begin
           DebugLn('  CompleteLocalVariableAsParameter Procedure does not have so many parameters');
           exit;
         end;
-        TypeNode:=ParameterNode.FirstChild;
+        TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
         if TypeNode=nil then begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');
           exit;
