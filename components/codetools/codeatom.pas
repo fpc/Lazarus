@@ -95,8 +95,9 @@ type
   public
     procedure Add(NewAtom: TAtomPosition);
     procedure UndoLastAdd;
-    function GetValueAt(
-        RelativePos:integer): TAtomPosition;  // 0=current 1=prior current ...
+    function GetValueAt(RelativePos:integer): TAtomPosition;
+          // 0=current 1=prior current ...
+          // for LastAtoms: 0 is the last atom
     function Count: integer;
     property Size: integer read FSize write SetSize;
     procedure Clear;
@@ -154,6 +155,7 @@ var
   
 function DbgsCXY(const p: TCodeXYPosition): string;
 function DbgsCP(const p: TCodePosition): string;
+function dbgs(const a: TAtomPosition): string; overload;
 function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
 
 
@@ -249,6 +251,11 @@ begin
     CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
   end;
   Result:=DbgsCXY(CodeXYPosition);
+end;
+
+function dbgs(const a: TAtomPosition): string;
+begin
+  Result:=CommonAtomFlagNames[a.Flag]+'['+dbgs(a.StartPos)+'-'+dbgs(a.EndPos)+']';
 end;
 
 function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList

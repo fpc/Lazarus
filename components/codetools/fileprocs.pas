@@ -115,16 +115,16 @@ procedure DbgOut(const s1,s2,s3,s4: string);
 procedure DbgOut(const s1,s2,s3,s4,s5: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
 
-function DbgS(const c: char): string;
-function DbgS(const c: cardinal): string;
-function DbgS(const i: integer): string;
-function DbgS(const r: TRect): string;
-function DbgS(const p: TPoint): string;
-function DbgS(const p: pointer): string;
-function DbgS(const e: extended): string;
-function DbgS(const b: boolean): string;
+function DbgS(const c: char): string; overload;
+function DbgS(const c: cardinal): string; overload;
+function DbgS(const i: integer): string; overload;
+function DbgS(const r: TRect): string; overload;
+function DbgS(const p: TPoint): string; overload;
+function DbgS(const p: pointer): string; overload;
+function DbgS(const e: extended): string; overload;
+function DbgS(const b: boolean): string; overload;
 
-function DbgS(const i1,i2,i3,i4: integer): string;
+function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgSName(const p: TObject): string;
 function DbgStr(const StringWithSpecialChars: string): string;
 
