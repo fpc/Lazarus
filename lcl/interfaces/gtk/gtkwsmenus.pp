@@ -83,6 +83,8 @@ type
 
 implementation
 
+uses Controls;
+
 { TGtkWSMenuItem }
 
 procedure TGtkWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -267,17 +269,23 @@ end;
 procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
 APoint: TPoint;
+AProc: Pointer;
 begin
   ReleaseMouseCapture;
   APoint.X := X;
   APoint.Y := Y;
+  
+  if (X = Mouse.CursorPos.X) and (Y = Mouse.CursorPos.Y) then
+    AProc := nil
+  else
+    AProc := @GtkWS_Popup;
   gtk_menu_popup(PgtkMenu(APopupMenu.Handle),
-                 nil,
-                 nil,
-                 TGtkMenuPositionFunc(@GtkWS_Popup),
-                 @APoint,
-                 0,
-                 0);
+                            nil,
+                            nil,
+                            TGtkMenuPositionFunc(AProc),
+                            @APoint,
+                            0,
+                            0);
   {Displays a menu and makes it available for selection. Applications
   can use this function to display context-sensitive menus, and will
   typically supply NULL for the parent_menu_shell, parent_menu_item,
