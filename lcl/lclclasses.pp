@@ -29,7 +29,7 @@ unit LCLClasses;
 interface
 
 uses
-  Classes, WSLCLClasses;
+  Classes, LCLProc, WSLCLClasses;
 
 type
 
@@ -39,7 +39,9 @@ type
   private
     FWidgetSetClass: TWSLCLComponentClass;
   protected
-  public             
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
@@ -47,6 +49,24 @@ type
   end;
 
 implementation                    
+
+constructor TLCLComponent.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  {$IFDEF DebugLCLComponents}
+  //DebugLn('TLCLComponent.Create ',DbgSName(Self));
+  DebugLCLComponents.MarkCreated(Self,DbgSName(Self));
+  {$ENDIF}
+end;
+
+destructor TLCLComponent.Destroy;
+begin
+  {$IFDEF DebugLCLComponents}
+  //DebugLn('TLCLComponent.Destroy ',DbgSName(Self));
+  DebugLCLComponents.MarkDestroyed(Self);
+  {$ENDIF}
+  inherited Destroy;
+end;
 
 procedure TLCLComponent.BeforeDestruction;
 begin

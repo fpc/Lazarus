@@ -3960,6 +3960,9 @@ begin
     end;
     FreeWidgetInfo(Widget);
   end;
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkDestroyed(Widget);
+  {$ENDIF}
   gtk_widget_destroy(Widget);
 end;
 

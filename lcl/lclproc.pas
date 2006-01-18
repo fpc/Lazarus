@@ -30,7 +30,7 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, Math, FPCAdds, FileUtil, LCLStrConsts, LCLType;
+  Classes, SysUtils, Math, FPCAdds, AvgLvlTree, FileUtil, LCLStrConsts, LCLType;
 
 type
   { TMethodList - array of TMethod }
@@ -56,6 +56,53 @@ type
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
+  
+type
+
+  { TDebugLCLItemInfo }
+
+  TDebugLCLItemInfo = class
+  public
+    Item: Pointer;
+    IsDestroyed: boolean;
+    Info: string;
+    CreationStack: string; // stack trace at creationg
+    DestructionStack: string;// stack trace at destruction
+    function AsString: string;
+  end;
+  
+  { TDebugLCLItems }
+
+  TDebugLCLItems = class
+  private
+    FItems: TAvgLvlTree;// tree of TDebugLCLItemInfo
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function FindInfo(p: Pointer; CreateIfNotExists: boolean = false
+                      ): TDebugLCLItemInfo;
+    function IsDestroyed(p: Pointer): boolean;
+    function MarkCreated(p: Pointer; const InfoText: string): TDebugLCLItemInfo;
+    procedure MarkDestroyed(p: Pointer);
+  end;
+  
+  TLineInfoCacheItem = record
+    Addr: Pointer;
+    Info: string;
+  end;
+  PLineInfoCacheItem = ^TLineInfoCacheItem;
+  
+{$IFDEF DebugLCLComponents}
+var
+  DebugLCLComponents: TDebugLCLItems = nil;
+{$ENDIF}
+
+function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
+function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
+
+function CompareLineInfoCacheItems(Data1, Data2: Pointer): integer;
+function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
+
 
 
 function ShortCutToText(ShortCut: TShortCut): string;
@@ -70,10 +117,7 @@ type
     function(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
   TOwnerFormDesignerModifiedProc =
     procedure(AComponent: TComponent);
-//  TSendMessageToInterfaceFunction =
-//    function(LM_Message: Integer; Sender: TObject; data: pointer): integer
-//             of object;
-             
+
 
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction=nil;
@@ -115,6 +159,8 @@ function StrToDouble(const s: string): double;
 procedure RaiseGDBException(const Msg: string);
 procedure DumpExceptionBackTrace;
 procedure DumpStack;
+function GetStackTrace(UseCache: boolean): string;
+function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
 procedure DebugLn(const S: String; Args: array of const);
 procedure DebugLn;
@@ -261,6 +307,7 @@ var
   InterfaceFinalizationHandlers: TFPList;
   DebugTextAllocated: boolean;
   DebugText: ^Text;
+  LineInfoCache: TAvgLvlTree = nil;
 
 
 Function DeleteAmpersands(var Str : String) : Longint;
@@ -338,6 +385,28 @@ begin
     Result := KeyName;
   end;
   }
+end;
+
+function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
+begin
+  Result:=ComparePointers(TDebugLCLItemInfo(Data1).Item,
+                          TDebugLCLItemInfo(Data2).Item);
+end;
+
+function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
+begin
+  Result:=ComparePointers(Item,TDebugLCLItemInfo(DebugItemInfo).Item);
+end;
+
+function CompareLineInfoCacheItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=ComparePointers(PLineInfoCacheItem(Data1)^.Addr,
+                          PLineInfoCacheItem(Data2)^.Addr);
+end;
+
+function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
+begin
+  Result:=ComparePointers(Addr,PLineInfoCacheItem(Item)^.Addr);
 end;
 
 function ShortCutToText(ShortCut: TShortCut): string;
@@ -672,6 +741,49 @@ Begin
     Dump_Stack(DebugText^, get_frame);
 End;
 
+function GetStackTrace(UseCache: boolean): string;
+var
+  bp: Pointer;
+  addr: Pointer;
+  oldbp: Pointer;
+  CurAddress: Shortstring;
+begin
+  Result:='';
+  { retrieve backtrace info }
+  bp:=get_caller_frame(get_frame);
+  while bp<>nil do begin
+    addr:=get_caller_addr(bp);
+    CurAddress:=GetLineInfo(addr,UseCache);
+    //DebugLn('GetStackTrace ',CurAddress);
+    Result:=Result+CurAddress+LineEnding;
+    oldbp:=bp;
+    bp:=get_caller_frame(bp);
+    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+      bp:=nil;
+  end;
+end;
+
+function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
+var
+  ANode: TAvgLvlTreeNode;
+  Item: PLineInfoCacheItem;
+begin
+  if UseCache then begin
+    if LineInfoCache=nil then
+      LineInfoCache:=TAvgLvlTree.Create(@CompareLineInfoCacheItems);
+    ANode:=LineInfoCache.FindKey(Addr,@CompareAddrWithLineInfoCacheItem);
+    if ANode=nil then begin
+      Result:=BackTraceStrFunc(Addr);
+      New(Item);
+      Item^.Addr:=Addr;
+      Item^.Info:=Result;
+      LineInfoCache.Add(Item);
+    end else begin
+      Result:=PLineInfoCacheItem(ANode.Data)^.Info;
+    end;
+  end else
+    Result:=BackTraceStrFunc(Addr);
+end;
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);
 begin
@@ -2365,12 +2477,152 @@ begin
   {$ENDIF}
 end;
 
+procedure FreeLineInfoCache;
+var
+  ANode: TAvgLvlTreeNode;
+  Item: PLineInfoCacheItem;
+begin
+  if LineInfoCache=nil then exit;
+  ANode:=LineInfoCache.FindLowest;
+  while ANode<>nil do begin
+    Item:=PLineInfoCacheItem(ANode.Data);
+    Dispose(Item);
+    ANode:=LineInfoCache.FindSuccessor(ANode);
+  end;
+  LineInfoCache.Free;
+  LineInfoCache:=nil;
+end;
+
+{ TDebugLCLItems }
+
+constructor TDebugLCLItems.Create;
+begin
+  FItems:=TAvgLvlTree.Create(@CompareDebugLCLItemInfos);
+end;
+
+destructor TDebugLCLItems.Destroy;
+begin
+  FItems.FreeAndClear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+function TDebugLCLItems.FindInfo(p: Pointer; CreateIfNotExists: boolean
+  ): TDebugLCLItemInfo;
+var
+  ANode: TAvgLvlTreeNode;
+begin
+  ANode:=FItems.FindKey(p,@CompareItemWithDebugLCLItemInfo);
+  if ANode<>nil then
+    Result:=TDebugLCLItemInfo(ANode.Data)
+  else begin
+    // does not yet exists
+    if CreateIfNotExists then begin
+      Result:=MarkCreated(p,'TDebugLCLItems.FindInfo');
+    end else begin
+      Result:=nil;
+    end;
+  end;
+end;
+
+function TDebugLCLItems.IsDestroyed(p: Pointer): boolean;
+var
+  Info: TDebugLCLItemInfo;
+begin
+  Info:=FindInfo(p);
+  if Info=nil then
+    Result:=false
+  else
+    Result:=Info.IsDestroyed;
+end;
+
+procedure TDebugLCLItems.MarkDestroyed(p: Pointer);
+var
+  Info: TDebugLCLItemInfo;
+
+  procedure RaiseNotCreated;
+  begin
+    DebugLn('TDebugLCLItems.MarkDestroyed not created: p=',dbgs(p));
+    DumpStack;
+    RaiseGDBException('TDebugLCLItems.MarkDestroyed');
+  end;
+
+  procedure RaiseDoubleDestroyed;
+  begin
+    debugLn('TDebugLCLItems.MarkDestroyed Double destroyed:');
+    debugln(Info.AsString);
+    debugln('Now:');
+    DebugLn(GetStackTrace(true));
+    RaiseGDBException('RaiseDoubleDestroyed');
+  end;
+
+begin
+  Info:=FindInfo(p);
+  if Info=nil then
+    RaiseNotCreated;
+  if Info.IsDestroyed then
+    RaiseDoubleDestroyed;
+  Info.IsDestroyed:=true;
+  Info.DestructionStack:=GetStackTrace(true);
+end;
+
+function TDebugLCLItems.MarkCreated(p: Pointer;
+  const InfoText: string): TDebugLCLItemInfo;
+var
+  Info: TDebugLCLItemInfo;
+
+  procedure RaiseDoubleCreated;
+  begin
+    debugLn('TDebugLCLItems.MarkCreated old:');
+    debugln(Info.AsString);
+    debugln(' New=',dbgs(p),' InfoText="',InfoText,'"');
+    DebugLn(GetStackTrace(true));
+    RaiseGDBException('RaiseDoubleCreated');
+  end;
+
+begin
+  Info:=FindInfo(p);
+  if Info=nil then begin
+    Info:=TDebugLCLItemInfo.Create;
+    Info.Item:=p;
+    FItems.Add(Info);
+  end else if not Info.IsDestroyed then begin
+    RaiseDoubleCreated;
+  end;
+  Info.IsDestroyed:=false;
+  Info.Info:=InfoText;
+  Info.CreationStack:=GetStackTrace(true);
+  Info.DestructionStack:='';
+  Result:=Info;
+end;
+
+{ TDebugLCLItemInfo }
+
+function TDebugLCLItemInfo.AsString: string;
+begin
+  Result:='Item='+Dbgs(Item)+LineEnding
+          +'Info="'+DbgStr(Info)+LineEnding
+          +'Creation:'+LineEnding
+          +CreationStack;
+  if IsDestroyed then
+    Result:=Result+'Destroyed:'+LineEnding
+            +DestructionStack
+end;
+
 initialization
   InitializeDebugOutput;
   InterfaceFinalizationHandlers:=TFPList.Create;
+  {$IFDEF DebugLCLComponents}
+  DebugLCLComponents:=TDebugLCLItems.Create;
+  {$ENDIF}
 finalization
   InterfaceFinalizationHandlers.Free;
   InterfaceFinalizationHandlers:=nil;
+  {$IFDEF DebugLCLComponents}
+  DebugLCLComponents.Free;
+  DebugLCLComponents:=nil;
+  {$ENDIF}
+  FreeLineInfoCache;
   FinalizeDebugOutput;
 
 end.

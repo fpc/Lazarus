@@ -8277,7 +8277,8 @@ end;
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
-{off$DEFINE VerboseFocus}
+{off $DEFINE VerboseFocus}
+
   function FindFocusWidget(AWidget: PGtkWidget): PGtkWidget;
   var
     WinWidgetInfo: PWinWidgetInfo;

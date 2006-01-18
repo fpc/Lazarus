@@ -25,7 +25,7 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LMessages, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray;
+  LMessages, LCLProc, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray;
 
 {$I dragicons.inc}
 
@@ -452,6 +452,11 @@ var
   procedure CreateDefaultCharsetEncodings;
   
 
+{$IFDEF DebugLCLComponents}
+var
+  DebugGtkWidgets: TDebugLCLItems = nil;
+{$ENDIF}
+
 implementation
 
 
@@ -467,6 +472,10 @@ begin
   UseTransientForModalWindows:=true;
   UpdatingTransientWindows:=false;
   CurrentSentPaintMessageTarget:=nil;
+  
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets:=TDebugLCLItems.Create;
+  {$ENDIF}
 end;
 
 procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;

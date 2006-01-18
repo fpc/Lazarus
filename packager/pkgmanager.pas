@@ -1381,7 +1381,7 @@ begin
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(false,false);
 
   
-  DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
+  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
 
   e:=LineEnding;
@@ -1422,7 +1422,7 @@ begin
     CodeBuffer:=CodeToolBoss.CreateFile(MakefileFPCFilename);
   end;
   
-  if CodeBuffer.Source=s then begin
+  if CompareTextIgnoringSpace(CodeBuffer.Source,s,false)=0 then begin
     // Makefile.fpc not changed
     Result:=mrOk;
     exit;
@@ -1742,6 +1742,7 @@ begin
   if CleanUp then begin
     CodeToolBoss.GetFPCVersionForDirectory(PkgSrcDir,
                                            FPCVersion,FPCRelease,FPCPatch);
+    if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     for i:=0 to APackage.FileCount-1 do begin
       CurFile:=APackage.Files[i];
