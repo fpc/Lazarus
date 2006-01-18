@@ -30,7 +30,7 @@ uses
   {$IFDEF GTK2}
   Gtk2, Glib2, gdk2,
   {$ELSE}
-  Gtk, gdk, Glib,
+  Gtk, gdk, Glib, X, Xlib,
   {$ENDIF}
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
@@ -83,8 +83,11 @@ type
 
   TGtkWSCustomForm = class(TWSCustomForm)
   private
+    class procedure  SetCallbacks(const AWinControl: TWinControl; const AWidgetInfo: PWidgetInfo); virtual;
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
@@ -178,6 +181,80 @@ begin
 end;
           
 { TGtkWSCustomForm }
+
+{$IFDEF GTK1}
+function GtkWSFormMapEvent(Widget: PGtkWidget; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Message: TLMSize;
+  AForm: TCustomForm;
+begin
+  Result := True;
+  FillChar(Message, 0, SizeOf(Message));
+  AForm := TCustomForm(WidgetInfo^.LCLObject);
+  Message.Width := AForm.Width;
+  Message.Height := AForm.Height;
+  if WidgetInfo^.UserData <> nil then begin
+    if AForm.WindowState = wsMaximized then
+      WidgetSet.ShowWindow(AForm.Handle, SW_MAXIMIZE)
+    else if AForm.WindowState = wsMinimized then
+      WidgetSet.ShowWindow(AForm.Handle, SW_MINIMIZE);
+    WidgetInfo^.UserData := nil;
+  end;
+
+  Message.Msg := LM_SIZE;
+  if GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(Widget^.window)) = True then
+  begin
+    Message.SizeType := SIZEFULLSCREEN or Size_SourceIsInterface;
+  end
+  else
+  begin
+    Message.SizeType := SIZENORMAL or Size_SourceIsInterface;
+  end;
+  
+  DeliverMessage(WidgetInfo^.LCLObject, Message);
+end;
+
+function GtkWSFormUnMapEvent(Widget: PGtkWidget; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Message: TLMSize;
+  AForm: TCustomForm;
+begin
+  Result := True;
+  FillChar(Message, 0, SizeOf(Message));
+  AForm := TCustomForm(WidgetInfo^.LCLObject);
+
+  Message.Msg := LM_SIZE;
+  Message.SizeType := SIZEICONIC or Size_SourceIsInterface;
+  Message.Width := AForm.Width;
+  Message.Height := AForm.Height;
+
+  DeliverMessage(WidgetInfo^.LCLObject, Message);
+end;
+{$ENDIF}
+
+
+class procedure TGtkWSCustomForm.SetCallbacks(const AWinControl: TWinControl;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  {$IFDEF GTK1}
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
+  {$ENDIF}
+end;
+
+function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  AWidgetInfo: PWidgetInfo;
+begin
+  // TODO: Move GtkInt.CreateForm to here. Somewhat complicated though because
+  //       it depends on several other methods from gtkint that are private.
+  Result:=WidgetSet.CreateComponent(AWinControl);
+  AWidgetInfo := GetWidgetInfo(Pointer(Result));
+  if not (csDesigning in AWinControl.ComponentState) then
+    AWidgetInfo^.UserData := Pointer(1);
+  SetCallbacks(AWinControl, AWidgetInfo);
+end;
 
 procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);

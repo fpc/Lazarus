@@ -1151,7 +1151,14 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
       begin
         Result := 0;
         Msg := LM_SIZE;
+        {$IFDEF GTK1}
+        if GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(MainWidget^.window)) then
+          SizeType := SIZEFULLSCREEN or Size_SourceIsInterface
+        else
+          SizeType := SIZENORMAL or Size_SourceIsInterface;
+        {$ELSE}
         SizeType := Size_SourceIsInterface;
+        {$ENDIF}
         Width := SmallInt(GtkWidth);
         Height := SmallInt(GtkHeight);
       end;

@@ -95,6 +95,7 @@ const
   procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
   procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
   procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
+  function GDK_WINDOW_GET_MAXIMIZED(Window: PGdkWindowPrivate): gboolean;
   procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
 {$ENDIF}
   
@@ -1184,6 +1185,8 @@ begin
   XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
 
+
+
 procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
 const
   _NET_WM_STATE_REMOVE    =    0;   // remove/unset property
@@ -1228,6 +1231,48 @@ begin
   XIconifyWindow(XDisplay, XWindow, XScreenNumberOfScreen(XScreen));
 end;
 
+function GDK_WINDOW_GET_MAXIMIZED(Window: PGdkWindowPrivate): gboolean;
+var
+  xdisplay: PDisplay;
+  xwindow: TWindow;
+
+  atomtype: x.TAtom;
+  format: gint;
+  nitems: gulong;
+  bytes_after: gulong;
+  state_array: pguint;
+  _NET_WM_STATE,
+  _NET_WM_STATE_MAXIMIZED_VERT,
+  _NET_WM_STATE_MAXIMIZED_HORZ: x.TAtom;
+  X: Integer;
+begin
+  Result := False;
+  XWindow := GDK_WINDOW_XWINDOW (Window);
+  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  
+  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
+  _NET_WM_STATE_MAXIMIZED_VERT := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_VERT', false);
+  _NET_WM_STATE_MAXIMIZED_HORZ := XInternAtom(xdisplay, '_NET_WM_STATE_MAXIMIZED_HORZ', false);
+
+  XGetWindowProperty (xdisplay, xwindow,
+             _NET_WM_STATE,
+             0, MaxInt, False, XA_ATOM, @atomtype, @format, @nitems,
+             @bytes_after, gpointer(@state_array));
+
+  if (atomtype = XA_ATOM) and (format = 32) and  (nitems > 0) then
+  begin
+    for X := 0 to nitems-1 do begin
+      if
+      (state_array[X] = _NET_WM_STATE_MAXIMIZED_VERT)
+      or
+      (state_array[X] = _NET_WM_STATE_MAXIMIZED_HORZ)
+      then Result := True;
+      
+      if Result then Break;
+    end;
+    XFree (state_array);
+  end;
+end;
 
 procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
 // this is a try to hide windows from the taskbar.
