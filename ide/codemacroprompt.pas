@@ -66,6 +66,7 @@ var
   i: Integer;
   j: LongInt;
   Pattern: String;
+  LineText: String;
 begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
@@ -167,6 +168,16 @@ begin
       end;
     finally
       Temp.Free;
+    end;
+    // delete double end separator (e.g. avoid creating two semicolons 'begin end;;')
+    if (s<>'') and (System.Pos(s[length(s)],EndOfTokenChr)>0)
+    and (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
+    then begin
+      // template ends with an EndOfTokenChr
+      // check if at the end of selection is the same character
+      LineText:=AEditor.Lines[AEditor.BlockEnd.Y-1];
+      if copy(LineText,AEditor.BlockEnd.X,1)=s[length(s)] then
+        System.Delete(s,length(s),1);
     end;
     // replace the selected text and position the caret
     AEditor.SelText := s;
