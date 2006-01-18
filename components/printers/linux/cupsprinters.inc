@@ -438,13 +438,7 @@ begin
 end;
 
 procedure TCUPSPrinter.DoResetPrintersList;
-var
-  PrintersCount: Longint;
 begin
-  PrintersCount := Printers.Count;
-  
-  inherited DoResetPrintersList;
-
   if Assigned(fcupsPPD) then
   begin
     ppdClose(fcupsPPD);
@@ -459,9 +453,11 @@ begin
 
   FreeOptions;
   if Assigned(fcupsPrinters) and CUPSLibInstalled then begin
-    cupsFreeDests(PrintersCount,fcupsPrinters);
+    cupsFreeDests(Printers.Count,fcupsPrinters);
     fCupsPrinter := nil;
   end;
+
+  inherited DoResetPrintersList;
 end;
 
 procedure TCUPSPrinter.DoEnumPrinters(Lst: TStrings);

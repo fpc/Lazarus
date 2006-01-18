@@ -264,8 +264,6 @@ procedure TWinPrinter.DoResetPrintersList;
 var i   : Integer;
     Obj : TObject;
 begin
-  inherited DoResetPrintersList;
-
   if Printers.Count>0 then
   begin
     for i:=0 to Printers.Count-1 do
@@ -275,6 +273,8 @@ begin
       FreeAndNil(Obj);
     end;
   end;
+  
+  inherited DoResetPrintersList;
 end;
 
 procedure TWinPrinter.DoEnumPapers(Lst: TStrings);
