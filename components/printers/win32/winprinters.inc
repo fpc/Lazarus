@@ -90,24 +90,26 @@ begin
   if (fLastHandleType<>2) and (Printers.Count>0) then
   begin
     ClearDC;
-
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     try
-    fDC:=CreateDC(nil,PChar(PDev.Device),nil,@PDev.DevMode);
-    if fDC=0 then fDC:=CreateDC(PChar('WISPOOL'),PChar(PDev.Device),nil,@PDev.DevMode);
 
+    //Device is only 32 chars long, if the Printername or share is longer than 32 chars, this will return 0
+    fDC:=CreateDC(nil,PChar(Printers[PrinterIndex]),nil,@PDev.DevMode);
+    if fDC=0 then
+      fDC:=CreateDC(PChar('WINSPOOL'),PChar(Printers[PrinterIndex]),nil,@PDev.DevMode);
 
     {Workaround (hack) for Lexmark 1020 JetPrinter (Mono)}
-    if fDC=0 then fDC:=CreateDC(nil,PChar(PDev.Driver),nil,@PDev.DevMode);
-    if fDC=0 then fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,@PDev.DevMode);
+    if fDC=0 then
+      fDC:=CreateDC(nil,PChar(PDev.Driver),nil,@PDev.DevMode);
+    if fDC=0 then
+      fDC:=CreateDC(pChar('WINSPOOL'),PChar(PDev.Driver),nil,@PDev.DevMode);
 
-           
     except on E:Exception do
-       raise EPrinter.Create(Format('CreateDC exception: %s (LastError : %s,DC=%d Driver=%s Device=%s Port=%s)',[E.Message,SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+       raise EPrinter.Create(Format('CreateDC exception: %s (LastError : %s,DC=%d Driver="%s" Device="%s" Port="%s")',[E.Message,SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],PDev.Port]));
     end;
     
     if fDC=0 then
-      raise EPrinter.Create(Format('Invalid printer (Error : %s,DC=%d Driver=%s Device=%s Port=%s)',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,PDev.Device,PDev.Port]));
+      raise EPrinter.Create(Format('Invalid printer (Error : %s,DC=%d Driver="%s" Device="%s" Port="%s")',[SysErrorMessage(GetLastError),fDC,Pdev.Driver,Printers[PrinterIndex],PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=2;
@@ -182,7 +184,6 @@ Var Flags          : DWORD;
     i              : Integer;
     DefaultPrinter : array[0..79] of Char;
     PDev           : TPrinterDevice;
-
 begin
   Level:=5; //Compatible with all Win32 versions
   DefaultPrinter:='';
