@@ -23,7 +23,6 @@
       </Item1>
       <Item2>
         <Filename Value="trayicon.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="TrayIcon"/>
       </Item2>
       <Item3>
