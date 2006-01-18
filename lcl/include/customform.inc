@@ -701,6 +701,27 @@ begin
   end;
 end;
 
+procedure TCustomForm.EnsureVisible(AMoveToTop: boolean = true);
+var
+  newLeft, newTop: integer;
+begin
+  newLeft := Left;
+  newTop := Top;
+  if newLeft + (Width div 2) > Screen.Width then
+    newLeft := Screen.Width - Width;
+  if newLeft < 0 then
+    newLeft := 0;
+  if newTop + (Height div 2) + 24 > Screen.Height then
+    newTop := Screen.Height - Height - 24;
+  if newTop < 0 then
+    newTop := 0;
+  SetBounds(newLeft, newTop, Width, Height);
+  if AMoveToTop then 
+    ShowOnTop
+  else
+    Show;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomForm.FormUpdating: boolean;
  ------------------------------------------------------------------------------}

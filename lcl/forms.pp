@@ -478,6 +478,7 @@ type
     procedure Hide;
     procedure Show;
     procedure ShowOnTop;
+    procedure EnsureVisible(AMoveToTop: boolean = true);
     function NeedParentForAutoSize: Boolean; override;
     function WantChildKey(Child : TControl;
                           var Message : TLMessage): Boolean; virtual;
