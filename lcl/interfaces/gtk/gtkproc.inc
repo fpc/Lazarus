@@ -751,6 +751,7 @@ begin
   else begin
     Result:=Result+'FG[N]:='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
     Result:=Result+'BG[N]:='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'Base[N]:='+GdkColorToStr(@AStyle^.base[GTK_STATE_NORMAL])+' ';
     Result:=Result+'BG_Pixmap[N]:='+DbgS(AStyle^.bg_pixmap[GTK_STATE_NORMAL])+' ';
     Result:=Result+'rc_style='+GetRCStyleDebugReport(AStyle^.rc_style);
   end;
@@ -767,6 +768,10 @@ begin
 {$IFDEF GTK1}
     Result:=Result+'font_name="'+AStyle^.font_name+'" ';
     Result:=Result+'fontset_name="'+AStyle^.fontset_name+'" ';
+    Result:=Result+'FG[N]:='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'BG[N]:='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'Base[N]:='+GdkColorToStr(@AStyle^.base[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'flagi:='+intTostr(AStyle^.color_flags[GTK_STATE_NORMAL])+' ';
 {$ELSE GTK1}
     {$WARNING TODO find GTK2 font naming}
 {$ENDIF GTK1}
@@ -796,6 +801,10 @@ begin
       Result:=Result+'D';
     if GTK_WIDGET_CAN_FOCUS(Widget) then
       Result:=Result+'F';
+    if GTK_WIDGET_RC_STYLE(Widget) then
+      Result:=Result+'St';
+    if  GTK_WIDGET_PARENT_SENSITIVE(Widget) then
+       result:=result+'Pr';
   end;
   Result:=Result+']';
 end;
