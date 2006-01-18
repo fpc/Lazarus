@@ -115,6 +115,7 @@ procedure DbgOut(const s1,s2,s3,s4: string);
 procedure DbgOut(const s1,s2,s3,s4,s5: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
 
+function DbgS(const c: char): string;
 function DbgS(const c: cardinal): string;
 function DbgS(const i: integer): string;
 function DbgS(const r: TRect): string;
@@ -1156,6 +1157,15 @@ end;
 procedure DbgOut(const s1, s2, s3, s4, s5, s6: string);
 begin
   DbgOut(s1+s2+s3+s4+s5+s6);
+end;
+
+function DbgS(const c: char): string;
+begin
+  case c of
+  ' '..#126: Result:=c;
+  else
+    Result:='#'+IntToStr(ord(c));
+  end;
 end;
 
 function DbgS(const c: cardinal): string;

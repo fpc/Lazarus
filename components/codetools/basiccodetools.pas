@@ -2109,7 +2109,7 @@ begin
 end;
 
 function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
-    Txt2: PChar; Len2: integer; CaseSensitive: boolean): integer;
+  Txt2: PChar; Len2: integer; CaseSensitive: boolean): integer;
 { Txt1  Txt2  Result
    A     A      0
    A     B      1
@@ -2123,6 +2123,7 @@ begin
   P2:=0;
   InIdentifier:=false;
   while (P1<Len1) and (P2<Len2) do begin
+    //DebugLn('CompareTextIgnoringSpace P1=',dbgs(P1),' P2=',dbgs(P2));
     if (CaseSensitive and (Txt1[P1]=Txt2[P2]))
     or ((not CaseSensitive) and (UpChars[Txt1[P1]]=UpChars[Txt2[P2]])) then
     begin
@@ -2144,6 +2145,12 @@ begin
         repeat
           inc(P1);
         until (P1>=Len1) or (ord(Txt1[P1])>ord(' '));
+        if (ord(Txt2[P2])<=ord(' ')) then begin
+          // ignore/skip spaces in Txt2
+          repeat
+            inc(P2);
+          until (P2>=Len2) or (ord(Txt2[P2])>ord(' '));
+        end;
       end else if (ord(Txt2[P2])<=ord(' ')) then begin
         // ignore/skip spaces in Txt2
         repeat
@@ -3316,7 +3323,7 @@ begin
                         copy(SearchPath,PathStartPos,PathEndPos-PathStartPos)));
         if not FilenameIsAbsolute(CurDir) then
           CurDir:=AppendPathDelim(BaseDir)+CurDir;
-        if not SearchDirectory(AppendPathDelim(CurDir)) then exit;
+        if not SearchDirectory(CurDir) then exit;
       end;
       PathStartPos:=PathEndPos;
       while (PathStartPos<=length(SearchPath))
