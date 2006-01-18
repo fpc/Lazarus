@@ -1,8 +1,8 @@
 {  $Id$  }
 {
  /***************************************************************************
-                            makerestrdlg.pas
-                            ----------------
+                            makeresstrdlg.pas
+                            -----------------
 
 
  ***************************************************************************/
@@ -43,9 +43,12 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   Dialogs, LResources, LazarusIDEStrConsts, IDEWindowIntf, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
-  EditorOptions, InputHistory, MiscOptions;
-  
+  EditorOptions, InputHistory, MiscOptions, ExtCtrls;
+
 type
+
+  { TMakeResStrDialog }
+
   TMakeResStrDialog = class(TForm)
     // source synedit
     StringConstGroupBox: TGroupBox;
@@ -78,19 +81,18 @@ type
     SrcPreviewSynEdit: TSynEdit;
 
     // ok+cancel buttons
-    OkButton: TButton;
-    CancelButton: TButton;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
 
     // highlighter
     SynPasSyn: TSynPasSyn;
     
     procedure CancelButtonClick(Sender: TObject);
-    procedure ConversionGroupBoxResize(Sender: TObject);
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
     procedure IdentifierEditChange(Sender: TObject);
-    procedure MakeResStrDialogResize(Sender: TObject);
+    procedure IdentPrefixLabelResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure ResStrSectionComboBoxChange(Sender: TObject);
     procedure ResStrWithSameValuesComboboxChange(Sender: TObject);
@@ -132,7 +134,6 @@ function ShowMakeResStrDialog(
   var ResStrSectionCode: TCodeBuffer;
   var ResStrSectionXY: TPoint;
   var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
-
 
 implementation
 
@@ -194,91 +195,6 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TMakeResStrDialog.ConversionGroupBoxResize(Sender: TObject);
-begin
-  // identifier prefix
-  with IdentPrefixLabel do begin
-    SetBounds(2,6,150,Height);
-  end;
-
-  with IdentPrefixComboBox do begin
-    SetBounds(IdentPrefixLabel.Left+IdentPrefixLabel.Width+5,
-              IdentPrefixLabel.Top-4,
-              100,Height);
-  end;
-
-  // identifier length
-  with IdentLengthLabel do begin
-    SetBounds(IdentPrefixComboBox.Left+IdentPrefixComboBox.Width+60,
-              IdentPrefixLabel.Top,100,Height);
-  end;
-
-  with IdentLengthComboBox do begin
-    SetBounds(IdentLengthLabel.Left+IdentLengthLabel.Width+5,
-              IdentPrefixComboBox.Top,
-              Min(Parent.ClientWidth-Left-5,50),Height);
-  end;
-
-  // identifier
-  with CustomIdentifierCheckBox do begin
-    SetBounds(IdentPrefixLabel.Left,
-              IdentPrefixComboBox.Top+IdentPrefixComboBox.Height+5,
-              150,Height);
-  end;
-
-  with IdentifierEdit do begin
-    SetBounds(CustomIdentifierCheckBox.Left+CustomIdentifierCheckBox.Width+5,
-              CustomIdentifierCheckBox.Top,
-              Parent.ClientWidth-Left-5,Height);
-  end;
-
-  // resourcestring section
-  with ResStrSectionLabel do begin
-    SetBounds(IdentPrefixLabel.Left,
-              IdentifierEdit.Top+IdentifierEdit.Height+9,
-              150,Height);
-  end;
-
-  with ResStrSectionComboBox do begin
-    SetBounds(ResStrSectionLabel.Left+ResStrSectionLabel.Width+5,
-              IdentifierEdit.Top+IdentifierEdit.Height+5,
-              Parent.ClientWidth-Left-5,Height);
-  end;
-
-  // existing resourcestrings with same value
-  with ResStrWithSameValueLabel do begin
-    SetBounds(ResStrSectionLabel.Left,
-              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+9,
-              150,Height);
-  end;
-
-  with ResStrWithSameValuesCombobox do begin
-    SetBounds(ResStrWithSameValueLabel.Left+ResStrWithSameValueLabel.Width+5,
-              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+5,
-              Parent.ClientWidth-Left-5,Height);
-  end;
-
-  // insert position type
-  with AppendResStrRadioButton do begin
-    SetBounds(IdentPrefixLabel.Left,
-              ResStrWithSameValuesCombobox.Top+ResStrWithSameValuesCombobox.Height+7,
-              Min(Max(50,(Parent.ClientWidth-3*Left) div 3),150),Height);
-  end;
-
-  with InsertAlphabeticallyResStrRadioButton do begin
-    SetBounds(AppendResStrRadioButton.Left+AppendResStrRadioButton.Width+5,
-              AppendResStrRadioButton.Top,
-              AppendResStrRadioButton.Width,Height);
-  end;
-
-  with InsertContextSensitiveRadioButton do begin
-    SetBounds(InsertAlphabeticallyResStrRadioButton.Left
-              +InsertAlphabeticallyResStrRadioButton.Width+5,
-              InsertAlphabeticallyResStrRadioButton.Top,
-              Max(100,Parent.ClientWidth-Left-5),Height);
-  end;
-end;
-
 procedure TMakeResStrDialog.CustomIdentifierCheckBoxClick(Sender: TObject);
 begin
   UpdateIdentifier;
@@ -302,38 +218,19 @@ begin
   UpdateSourcePreview;
 end;
 
-procedure TMakeResStrDialog.MakeResStrDialogResize(Sender: TObject);
+procedure TMakeResStrDialog.IdentPrefixLabelResize(Sender: TObject);
 var
-  NewTop: Integer;
+  w: integer;
 begin
-  // source synedit
-  with StringConstGroupBox do begin
-    SetBounds(2,2,Parent.ClientWidth-2*Left,Parent.ClientHeight div 4);
-  end;
+  w := IdentPrefixLabel.Width;
+  w := Max(w, CustomIdentifierCheckBox.Width);
+  w := Max(w, ResStrSectionLabel.Width);
+  w := Max(w, ResStrWithSameValueLabel.Width);
 
-  // options
-  with ConversionGroupBox do begin
-    SetBounds(StringConstGroupBox.Left,
-              StringConstGroupBox.Top+StringConstGroupBox.Height+5,
-              StringConstGroupBox.Width,170);
-  end;
-
-  // preview
-  with SrcPreviewGroupBox do begin
-    NewTop:=ConversionGroupBox.Top+ConversionGroupBox.Height+5;
-    SetBounds(ConversionGroupBox.Left,NewTop,
-              ConversionGroupBox.Width,Parent.ClientHeight-NewTop-45);
-  end;
-
-  // ok+cancel buttons
-  with OkButton do begin
-    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-32,
-              Width,Height);
-  end;
-
-  with CancelButton do begin
-    SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,Width,Height);
-  end;
+  IdentPrefixLabel.Width := w;
+  CustomIdentifierCheckBox.Width := w;
+  ResStrSectionLabel.Width := w;
+  ResStrWithSameValueLabel.Width := w;
 end;
 
 procedure TMakeResStrDialog.OkButtonClick(Sender: TObject);
@@ -380,183 +277,33 @@ end;
 
 procedure TMakeResStrDialog.SetupComponents;
 begin
-  SynPasSyn:=TSynPasSyn.Create(Self);
-
   // source
-  StringConstGroupBox:=TGroupBox.Create(Self);
-  with StringConstGroupBox do begin
-    Name:='StringConstGroupBox';
-    Parent:=Self;
-    Caption:=lisMakeResStrStringConstantInSource;
-  end;
-  
-  StringConstSynEdit:=TSynEdit.Create(Self);
-  with StringConstSynEdit do begin
-    Name:='StringConstSynEdit';
-    Parent:=StringConstGroupBox;
-    Align:=alClient;
-    Highlighter:=SynPasSyn;
-  end;
-
-  // conversion options
-  ConversionGroupBox:=TGroupBox.Create(Self);
-  with ConversionGroupBox do begin
-    Name:='ConversionGroupBox';
-    Parent:=Self;
-    Caption:=lisMakeResStrConversionOptions;
-    OnResize:=@ConversionGroupBoxResize;
-  end;
-
-  // identifier prefix
-  IdentPrefixLabel:=TLabel.Create(Self);
-  with IdentPrefixLabel do begin
-    Name:='IdentPrefixLabel';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrIdentifierPrefix;
-  end;
-
-  IdentPrefixComboBox:=TComboBox.Create(Self);
-  with IdentPrefixComboBox do begin
-    Name:='IdentPrefixComboBox';
-    Parent:=ConversionGroupBox;
-    OnChange:=@IdentPrefixComboBoxChange;
-  end;
-
-  // identifier length
-  IdentLengthLabel:=TLabel.Create(Self);
-  with IdentLengthLabel do begin
-    Name:='IdentLengthLabel';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrIdentifierLength;
-  end;
-
-  IdentLengthComboBox:=TComboBox.Create(Self);
-  with IdentLengthComboBox do begin
-    Name:='IdentLengthComboBox';
-    Parent:=ConversionGroupBox;
-    OnChange:=@IdentLengthComboBoxChange;
-  end;
-
-  // custom identifier
-  CustomIdentifierCheckBox:=TCheckBox.Create(Self);
-  with CustomIdentifierCheckBox do begin
-    Name:='CustomIdentifierCheckBox';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrCustomIdentifier;
-    Checked:=false;
-    OnClick:=@CustomIdentifierCheckBoxClick;
-  end;
-  
-  IdentifierEdit:=TEdit.Create(Self);
-  with IdentifierEdit do begin
-    Name:='IdentifierEdit';
-    Parent:=ConversionGroupBox;
-    Enabled:=false;
-    OnChange:=@IdentifierEditChange;
-  end;
-  
-  // resourcestring section
-  ResStrSectionLabel:=TLabel.Create(Self);
-  with ResStrSectionLabel do begin
-    Name:='ResStrSectionLabel';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrResourcestringSection;
-  end;
-
-  ResStrSectionComboBox:=TComboBox.Create(Self);
-  with ResStrSectionComboBox do begin
-    Name:='ResStrSectionComboBox';
-    Parent:=ConversionGroupBox;
-    OnChange:=@ResStrSectionComboBoxChange;
-  end;
-
-  // existing resourcestrings with same value
-  ResStrWithSameValueLabel:=TLabel.Create(Self);
-  with ResStrWithSameValueLabel do begin
-    Name:='ResStrWithSameValueLabel';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrStringsWithSameValue;
-  end;
-
-  ResStrWithSameValuesCombobox:=TComboBox.Create(Self);
-  with ResStrWithSameValuesCombobox do begin
-    Name:='ResStrWithSameValuesCombobox';
-    Parent:=ConversionGroupBox;
-    OnChange:=@ResStrWithSameValuesComboboxChange;
-  end;
-
-  // insert position type
-  AppendResStrRadioButton:=TRadioButton.Create(Self);
-  with AppendResStrRadioButton do begin
-    Name:='AppendResStrRadioButton';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrAppendToSection;
-  end;
-
-  InsertAlphabeticallyResStrRadioButton:=TRadioButton.Create(Self);
-  with InsertAlphabeticallyResStrRadioButton do begin
-    Name:='InsertAlphabeticallyResStrRadioButton';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrInsertAlphabetically;
-  end;
-
-  InsertContextSensitiveRadioButton:=TRadioButton.Create(Self);
-  with InsertContextSensitiveRadioButton do begin
-    Name:='InsertContextSensitiveRadioButton';
-    Parent:=ConversionGroupBox;
-    Caption:=lisMakeResStrInsertContexttSensitive;
-  end;
-
-  // converted source preview
-  SrcPreviewGroupBox:=TGroupBox.Create(Self);
-  with SrcPreviewGroupBox do begin
-    Name:='SrcPreviewGroupBox';
-    Parent:=Self;
-    Caption:=lisMakeResStrSourcePreview;
-  end;
-
-  SrcPreviewSynEdit:=TSynEdit.Create(Self);
-  with SrcPreviewSynEdit do begin
-    Name:='SrcPreviewSynEdit';
-    Parent:=SrcPreviewGroupBox;
-    Align:=alClient;
-    Highlighter:=SynPasSyn;
-  end;
+  StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
+  ConversionGroupBox.Caption:=lisMakeResStrConversionOptions;
+  IdentPrefixLabel.Caption:=lisMakeResStrIdentifierPrefix;
+  IdentLengthLabel.Caption:=lisMakeResStrIdentifierLength;
+  CustomIdentifierCheckBox.Caption:=lisMakeResStrCustomIdentifier;
+  ResStrSectionLabel.Caption:=lisMakeResStrResourcestringSection;
+  ResStrWithSameValueLabel.Caption:=lisMakeResStrStringsWithSameValue;
+  AppendResStrRadioButton.Caption:=lisMakeResStrAppendToSection;
+  InsertAlphabeticallyResStrRadioButton.Caption:=lisMakeResStrInsertAlphabetically;
+  InsertContextSensitiveRadioButton.Caption:=lisMakeResStrInsertContexttSensitive;
+  SrcPreviewGroupBox.Caption:=lisMakeResStrSourcePreview;
 
   // ok+cancel buttons
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Caption:=lisLazBuildOk;
-    OnClick:=@OkButtonClick;
-    Default:=true;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Caption:=dlgCancel;
-    OnClick:=@CancelButtonClick;
-    Cancel:=true;
-  end;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(Classname)=nil then begin
-    Name:='MakeResStrDialog';
-    Caption := lisMakeResourceString;
-    Width:=550;
-    Height:=400;
-    Position:=poScreenCenter;
-    OnResize:=@MakeResStrDialogResize;
-    SetupComponents;
-  end;
+
+  Caption := lisMakeResourceString;
+  SetupComponents;
+
   IDEDialogLayoutList.ApplyLayout(Self,550,400);
-  OnResize(nil);
+
   EditorOpts.GetHighlighterSettings(SynPasSyn);
   EditorOpts.GetSynEditSettings(StringConstSynEdit);
   StringConstSynEdit.ReadOnly:=true;
@@ -896,6 +643,8 @@ begin
   MiscellaneousOptions.Save;
 end;
 
+initialization
+  {$i makeresstrdlg.lrs}
 
 end.
 
