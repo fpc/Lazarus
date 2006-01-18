@@ -1999,8 +1999,12 @@ begin
     end;
     //if AnsiCompareText(APackage.IDAsString,'uni_avglvltree')=0 then begin
     debugln('TPkgManager.MacroFunctionPkgSrcPath PkgID=',FuncData^.Param,' ',dbgs(APackage<>nil),' FuncData^.Result="',FuncData^.Result,'"');
-    if APackage<>nil then
-      debugln(APackage.SourceDirectories.CreateFileList.Text);
+    if APackage<>nil then begin
+      with APackage.SourceDirectories.CreateFileList do begin
+        debugln(Text);
+        Free;
+      end;
+    end;
     //end;
   end else begin
     DebugLn('WARNING: TPkgManager.MacroFunctionPkgSrcPath invalid package id: ',FuncData^.Param);
