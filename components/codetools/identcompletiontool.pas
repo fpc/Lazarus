@@ -228,6 +228,7 @@ type
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherUnitnames(CleanPos: integer;
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+    procedure GatherSourceNames(const Context: TFindContext);
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList;
@@ -986,6 +987,44 @@ begin
   end;
 end;
 
+procedure TIdentCompletionTool.GatherSourceNames(const Context: TFindContext);
+
+  procedure Add(const SrcName: string);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompExact,true,0,
+        CurrentIdentifierList.CreateIdentifier(SrcName),
+        0,nil,nil,Context.Node.Desc);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
+var
+  NewSourceName: String;
+  FileSourceName: String;
+begin
+  // add the unitname as in the filename and as in the source
+  FileSourceName:=ExtractFilenameOnly(MainFilename);
+  NewSourceName:=GetSourceName(false);
+  //DebugLn('TIdentCompletionTool.GatherSourceNames FileSourceName=',FileSourceName,' NewSourceName=',NewSourceName);
+  if (FileSourceName<>lowercase(FileSourceName)) then begin
+    // the file is not written lowercase => case is important, ignore source name
+    Add(FileSourceName);
+  end else if (SysUtils.CompareText(NewSourceName,FileSourceName)<>0) then begin
+    // source name is not correct => only use file name
+    Add(FileSourceName);
+  end else if NewSourceName=FileSourceName then begin
+    // both are the same => add only one
+    Add(FileSourceName);
+  end else begin
+    // both are valid, just different in case
+    // the filename is written lowercase
+    // => prefer the source name
+    Add(NewSourceName);
+  end;
+end;
+
 function TIdentCompletionTool.GatherIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
   BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
@@ -1057,6 +1096,8 @@ begin
     GatherContext:=CreateFindContext(Self,CursorNode);
     if CursorNode.Desc=ctnUsesSection then begin
       GatherUnitNames(IdentStartPos,GatherContext,BeautifyCodeOptions);
+    end else if CursorNode.Desc in AllSourceTypes then begin
+      GatherSourceNames(GatherContext);
     end else begin
       ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
       if GatherContext.Node.Desc=ctnWithVariable then
