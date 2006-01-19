@@ -732,9 +732,16 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Clear;
+{$IFDEF DebugLCLComponents}
+var i: integer;
+{$ENDIF}
 begin
   BeginUpdate;
   RemoveAllCallbacks;
+  {$IFDEF DebugLCLComponents}
+  for i:=0 to FCachedCount-1 do
+    DebugGtkWidgets.MarkDestroyed(FCachedItems[i]);
+  {$ENDIF}
   Include(FStates,glsItemCacheNeedsUpdate);
   CheckForInvalidFocus;
   gtk_list_clear_items(FGtkList, 0, Count);

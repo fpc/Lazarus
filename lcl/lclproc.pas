@@ -58,6 +58,7 @@ type
   end;
   
 type
+  TStackTracePointers = array of Pointer;
 
   { TDebugLCLItemInfo }
 
@@ -66,9 +67,10 @@ type
     Item: Pointer;
     IsDestroyed: boolean;
     Info: string;
-    CreationStack: string; // stack trace at creationg
-    DestructionStack: string;// stack trace at destruction
-    function AsString: string;
+    CreationStack: TStackTracePointers; // stack trace at creationg
+    DestructionStack: TStackTracePointers;// stack trace at destruction
+    function AsString(WithStackTraces: boolean): string;
+    destructor Destroy; override;
   end;
   
   { TDebugLCLItems }
@@ -84,6 +86,7 @@ type
     function IsDestroyed(p: Pointer): boolean;
     function MarkCreated(p: Pointer; const InfoText: string): TDebugLCLItemInfo;
     procedure MarkDestroyed(p: Pointer);
+    function GetInfo(p: Pointer; WithStackTraces: boolean): string;
   end;
   
   TLineInfoCacheItem = record
@@ -160,6 +163,9 @@ procedure RaiseGDBException(const Msg: string);
 procedure DumpExceptionBackTrace;
 procedure DumpStack;
 function GetStackTrace(UseCache: boolean): string;
+procedure GetStackTracePointers(var AStack: TStackTracePointers);
+function StackTraceAsString(const AStack: TStackTracePointers;
+                            UseCache: boolean): string;
 function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
 procedure DebugLn(const S: String; Args: array of const);
@@ -760,6 +766,50 @@ begin
     bp:=get_caller_frame(bp);
     if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
       bp:=nil;
+  end;
+end;
+
+procedure GetStackTracePointers(var AStack: TStackTracePointers);
+var
+  Depth: Integer;
+  bp: Pointer;
+  oldbp: Pointer;
+begin
+  // get stack depth
+  Depth:=0;
+  bp:=get_caller_frame(get_frame);
+  while bp<>nil do begin
+    inc(Depth);
+    oldbp:=bp;
+    bp:=get_caller_frame(bp);
+    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+      bp:=nil;
+  end;
+  SetLength(AStack,Depth);
+  if Depth>0 then begin
+    Depth:=0;
+    bp:=get_caller_frame(get_frame);
+    while bp<>nil do begin
+      AStack[Depth]:=get_caller_addr(bp);
+      inc(Depth);
+      oldbp:=bp;
+      bp:=get_caller_frame(bp);
+      if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+        bp:=nil;
+    end;
+  end;
+end;
+
+function StackTraceAsString(const AStack: TStackTracePointers;
+  UseCache: boolean): string;
+var
+  i: Integer;
+  CurAddress: String;
+begin
+  Result:='';
+  for i:=0 to length(AStack)-1 do begin
+    CurAddress:=GetLineInfo(AStack[i],UseCache);
+    Result:=Result+CurAddress+LineEnding;
   end;
 end;
 
@@ -2550,7 +2600,7 @@ var
   procedure RaiseDoubleDestroyed;
   begin
     debugLn('TDebugLCLItems.MarkDestroyed Double destroyed:');
-    debugln(Info.AsString);
+    debugln(Info.AsString(true));
     debugln('Now:');
     DebugLn(GetStackTrace(true));
     RaiseGDBException('RaiseDoubleDestroyed');
@@ -2563,7 +2613,18 @@ begin
   if Info.IsDestroyed then
     RaiseDoubleDestroyed;
   Info.IsDestroyed:=true;
-  Info.DestructionStack:=GetStackTrace(true);
+  GetStackTracePointers(Info.DestructionStack);
+end;
+
+function TDebugLCLItems.GetInfo(p: Pointer; WithStackTraces: boolean): string;
+var
+  Info: TDebugLCLItemInfo;
+begin
+  Info:=FindInfo(p,false);
+  if Info<>nil then
+    Result:=Info.AsString(WithStackTraces)
+  else
+    Result:='';
 end;
 
 function TDebugLCLItems.MarkCreated(p: Pointer;
@@ -2574,7 +2635,7 @@ var
   procedure RaiseDoubleCreated;
   begin
     debugLn('TDebugLCLItems.MarkCreated old:');
-    debugln(Info.AsString);
+    debugln(Info.AsString(true));
     debugln(' New=',dbgs(p),' InfoText="',InfoText,'"');
     DebugLn(GetStackTrace(true));
     RaiseGDBException('RaiseDoubleCreated');
@@ -2591,22 +2652,31 @@ begin
   end;
   Info.IsDestroyed:=false;
   Info.Info:=InfoText;
-  Info.CreationStack:=GetStackTrace(true);
-  Info.DestructionStack:='';
+  GetStackTracePointers(Info.CreationStack);
+  SetLength(Info.DestructionStack,0);
   Result:=Info;
 end;
 
 { TDebugLCLItemInfo }
 
-function TDebugLCLItemInfo.AsString: string;
+function TDebugLCLItemInfo.AsString(WithStackTraces: boolean): string;
 begin
   Result:='Item='+Dbgs(Item)+LineEnding
-          +'Info="'+DbgStr(Info)+LineEnding
-          +'Creation:'+LineEnding
-          +CreationStack;
-  if IsDestroyed then
-    Result:=Result+'Destroyed:'+LineEnding
-            +DestructionStack
+          +'Info="'+DbgStr(Info)+LineEnding;
+  if WithStackTraces then
+    Result:=Result+'Creation:'+LineEnding+StackTraceAsString(CreationStack,true);
+  if IsDestroyed then begin
+    Result:=Result+'Destroyed:'+LineEnding;
+    if WithStackTraces then
+      Result:=Result+StackTraceAsString(DestructionStack,true);
+  end;
+end;
+
+destructor TDebugLCLItemInfo.Destroy;
+begin
+  SetLength(CreationStack,0);
+  SetLength(DestructionStack,0);
+  inherited Destroy;
 end;
 
 initialization

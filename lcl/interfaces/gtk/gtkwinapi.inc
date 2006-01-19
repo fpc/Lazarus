@@ -8284,6 +8284,7 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
     WinWidgetInfo: PWinWidgetInfo;
     ImplWidget: PGtkWidget;
     GList: PGlist;
+    LastFocusWidget: PGtkWidget;
   begin
     // Default to the widget, try to find other
     Result := AWidget;
@@ -8318,11 +8319,15 @@ function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
       if not (selection_mode(PGtkList(ImplWidget)^) in [GTK_SELECTION_SINGLE, GTK_SELECTION_BROWSE])
       and (PGtkList(ImplWidget)^.last_focus_child <> nil)
       then begin
-        Result := PGtkList(ImplWidget)^.last_focus_child;
-        {$IfDef VerboseFocus}
-        DebugLn('  E.1 using last_focus_child');
-        {$EndIf}
-        Exit;
+        LastFocusWidget:=PGtkList(ImplWidget)^.last_focus_child;
+        if g_list_find(PGtkList(ImplWidget)^.selection,LastFocusWidget)<>nil
+        then begin
+          Result := PGtkList(ImplWidget)^.last_focus_child;
+          {$IfDef VerboseFocus}
+          DebugLn('  E.1 using last_focus_child');
+          {$EndIf}
+          Exit;
+        end;
       end;
 
       // If there is a selection, try the first
@@ -8442,6 +8447,7 @@ begin
         {$IfDef VerboseFocus}
         DebugLn('  H SETTING NewFocusWidget=',dbgs(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
         {$EndIf}
+        //DebugLn('TGtkWidgetSet.SetFocus TopLevel[',DebugGtkWidgets.GetInfo(TopLevel,false),'] NewFocusWidget=[',DebugGtkWidgets.GetInfo(NewFocusWidget,false),']');
         gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
         {$IfDef VerboseFocus}
         DebugLn('  I NewTopLevel FocusWidget=',DbgS(PGtkWindow(TopLevel)^.Focus_Widget),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
