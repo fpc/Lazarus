@@ -121,6 +121,9 @@ function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
+function RebaseSearchPath(const SearchPath,
+                          OldBaseDirectory, NewBaseDirectory: string;
+                          SkipPathsStartingWithMakro: boolean): string;
 function ShortenSearchPath(const SearchPath, BaseDirectory,
                            ChompDirectory: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
@@ -426,6 +429,40 @@ begin
     end;
   until false;
   SetLength(Result,ResultStartPos-1);
+end;
+
+function RebaseSearchPath(const SearchPath, OldBaseDirectory,
+  NewBaseDirectory: string; SkipPathsStartingWithMakro: boolean): string;
+// change every relative search path
+var
+  EndPos: Integer;
+  StartPos: Integer;
+  CurPath: String;
+begin
+  Result:=SearchPath;
+  if CompareFilenames(OldBaseDirectory,NewBaseDirectory)=0 then exit;
+  EndPos:=1;
+  repeat
+    StartPos:=EndPos;
+    while (StartPos<=length(Result)) and (Result[StartPos]=';') do
+      inc(StartPos);
+    if StartPos>length(Result) then break;
+    EndPos:=StartPos;
+    while (EndPos<=length(Result)) and (Result[EndPos]<>';') do
+      inc(EndPos);
+    if EndPos>StartPos then begin
+      CurPath:=copy(Result,StartPos,EndPos-StartPos);
+      if (not FilenameIsAbsolute(CurPath))
+      and ((not SkipPathsStartingWithMakro) or (CurPath[1]<>'$'))
+      then begin
+        CurPath:=TrimFilename(AppendPathDelim(OldBaseDirectory)+CurPath);
+        CurPath:=CreateRelativePath(CurPath,NewBaseDirectory);
+        Result:=copy(Result,1,StartPos-1)+CurPath
+                   +copy(Result,EndPos,length(Result));
+        EndPos:=StartPos+length(CurPath);
+      end;
+    end;
+  until false;
 end;
 
 function ShortenSearchPath(const SearchPath, BaseDirectory,

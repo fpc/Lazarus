@@ -5035,6 +5035,26 @@ begin
     // update source notebook page names
     UpdateSourceNames;
   end;
+  
+  // update paths
+  Project1.CompilerOptions.OtherUnitFiles:=
+    RebaseSearchPath(Project1.CompilerOptions.OtherUnitFiles,OldProjectPath,
+                     Project1.ProjectDirectory,true);
+  Project1.CompilerOptions.IncludeFiles:=
+    RebaseSearchPath(Project1.CompilerOptions.IncludeFiles,OldProjectPath,
+                     Project1.ProjectDirectory,true);
+  Project1.CompilerOptions.Libraries:=
+    RebaseSearchPath(Project1.CompilerOptions.Libraries,OldProjectPath,
+                     Project1.ProjectDirectory,true);
+  Project1.CompilerOptions.ObjectPath:=
+    RebaseSearchPath(Project1.CompilerOptions.ObjectPath,OldProjectPath,
+                     Project1.ProjectDirectory,true);
+  Project1.CompilerOptions.SrcPath:=
+    RebaseSearchPath(Project1.CompilerOptions.SrcPath,OldProjectPath,
+                     Project1.ProjectDirectory,true);
+  Project1.CompilerOptions.DebugPath:=
+    RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectPath,
+                     Project1.ProjectDirectory,true);
 
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
