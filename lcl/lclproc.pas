@@ -91,7 +91,7 @@ type
     Info: string;
   end;
   PLineInfoCacheItem = ^TLineInfoCacheItem;
-  
+
 {$IFDEF DebugLCLComponents}
 var
   DebugLCLComponents: TDebugLCLItems = nil;

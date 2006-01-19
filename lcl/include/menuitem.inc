@@ -116,6 +116,7 @@ end;
 procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
+  //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
   if not FVisible then RaiseGDBException('');
   Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
@@ -562,6 +563,7 @@ procedure TMenuItem.DestroyHandle;
 var i: integer;
 begin
   if not HandleAllocated then exit;
+  //DebugLn('TMenuItem.DestroyHandle ',dbgsName(Self),' ',dbgs(Self));
   if assigned (FItems) then begin
     i := FItems.Count-1;
     while i>=0 do begin

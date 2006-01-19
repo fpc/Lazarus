@@ -759,6 +759,9 @@ var
 begin
   UpdateItemCache;
   RemoveItemCallbacks(Index);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkDestroyed(FCachedItems[Index]);
+  {$ENDIF}
   // remove item from cache
   if (Index<FCachedCount-1) then begin
     System.Move(FCachedItems[Index+1],FCachedItems[Index],
@@ -778,14 +781,16 @@ begin
     { Work round gtk bug - crashes if deleting first item in list
       and item has focus and there are remaining items }
     if (Index = 0) and (PGTKContainer(FGtkList)^.focus_child <> nil)
-       and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0) then begin
+       and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0)
+    then begin
       Next := FGtkList^.children^.next;
       if Next <> nil then
-       gtk_widget_grab_focus(Next^.data);
+        gtk_widget_grab_focus(Next^.data);
     end;
     {$ENDIF}
   end;
   gtk_list_clear_items(FGtkList, Index, Index + 1);
+  Include(FStates,glsItemCacheNeedsUpdate);
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
   {$ENDIF}
@@ -871,6 +876,9 @@ begin
     else begin
       li:=gtk_list_item_new_with_label(PChar(S));
     end;
+    {$IFDEF DebugLCLComponents}
+    DebugGtkWidgets.MarkCreated(li,dbgsName(Owner)+' Index='+dbgs(Index)+' Count='+dbgs(Count));
+    {$ENDIF}
     ConnectItemCallbacks(PGtkListItem(li));
     // grow capacity
     UpdateItemCache;

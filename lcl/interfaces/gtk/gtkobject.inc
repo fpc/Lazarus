@@ -5466,6 +5466,9 @@ begin
   end; //end case
   StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(Sender));
+  {$ENDIF}
   Result := THandle(P);
 end;
 

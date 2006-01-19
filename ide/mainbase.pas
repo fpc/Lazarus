@@ -316,7 +316,7 @@ procedure TMainIDEBase.SetupMainMenu;
 begin
   MainIDEBar.mnuMainMenu := TMainMenu.Create(MainIDEBar);
   with MainIDEBar do begin
-    mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',mnuMainMenu.Items);
+    mnuMain:=RegisterIDEMenuRoot('IDEMainMenu',nil);
     CreateMainMenuItem(mnuFile,'File',lisMenuFile);
     CreateMainMenuItem(mnuEdit,'Edit',lisMenuEdit);
     CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);

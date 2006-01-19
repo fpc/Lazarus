@@ -35,7 +35,7 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 { $DEFINE ShowAllProcs}
 
 uses

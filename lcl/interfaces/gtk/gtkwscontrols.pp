@@ -774,7 +774,8 @@ begin
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
 
-function TGtkWSBaseScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+function TGtkWSBaseScrollingWinControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -782,6 +783,10 @@ var
   Allocation: TGTKAllocation;
 begin
   Widget := gtk_scrolled_window_new(nil, nil);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
+  {$ENDIF}
+
   Result := THandle(Widget);
   if Result = 0 then Exit;
 

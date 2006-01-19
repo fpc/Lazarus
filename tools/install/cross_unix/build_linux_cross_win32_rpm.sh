@@ -63,6 +63,7 @@ Targets='i386-win32'
 
 #===============================================================================
 # download and build binutils and fpc
+set -x
 Params=""
 if [ $DownloadBinutils = "yes" ]; then
   Params="$Params downloadbinutils"
@@ -79,7 +80,8 @@ fi
 if [ $BuildCrossFPC = "yes" ]; then
   Params="$Params buildcrossfpc"
 fi
-if [ "x$Params" == "x" ]; then
+
+if [ "x$Params" != "x" ]; then
   Params="$Params targets=i386-win32"
   echo "calling update_cross_fpc.sh $Params ..."
   ./update_cross_fpc.sh $Params

@@ -889,6 +889,7 @@ begin
   Canvas.FillRect(aRect);
   //debugln('TTICustomGrid.DefaultDrawCell A Col=',dbgs(aCol),' Row=',dbgs(aRow));
   MapCell(aCol,aRow,ObjectIndex,PropertyIndex,CellType);
+  if (PropertyIndex=0) then ;
   if CellType in [tgctValue,tgctPropName] then begin
     // fetch a property editor and draw cell
     PropEditor:=nil;
@@ -1147,6 +1148,7 @@ var
 begin
   Result:=nil;
   MapCell(Col,Row,ObjectIndex,PropertyIndex,CellType);
+  if (ObjectIndex=0) or (PropertyIndex=0) then ;
   if CellType=tgctValue then
     Result:=Properties[PropertyIndex];
 end;

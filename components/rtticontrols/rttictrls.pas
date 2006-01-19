@@ -1999,6 +1999,7 @@ var
 begin
   Result:=false;
   if not GetSetTypeData(CompData,TypeData) then exit;
+  if (CompData=nil) or (TypeData=nil) then ;
   i:=GetIndexOfSetElement(AliasName);
   if i>=0 then begin
     Integer(IntegerSet) := Editor.GetOrdValue;
@@ -2015,6 +2016,7 @@ var
   IntegerSet: TIntegerSet;
 begin
   if not GetSetTypeData(CompData,TypeData) then exit;
+  if (CompData=nil) or (TypeData=nil) then ;
   i:=GetIndexOfSetElement(AliasName);
   if i>=0 then begin
     Integer(IntegerSet) := Editor.GetOrdValue;
