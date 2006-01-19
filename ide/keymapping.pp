@@ -345,7 +345,7 @@ begin
   ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFind: SetResult2(VK_Q,[SSCtrl],VK_F,[],VK_F,[SSCtrl],VK_UNKNOWN,[]);
   ecFindNext: SetResult2(VK_F3,[],VK_UNKNOWN,[],VK_L,[SSCtrl],VK_UNKNOWN,[]);
-  ecFindPrevious: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindPrevious: SetResult(VK_F3,[ssShift],VK_UNKNOWN,[]);
   ecFindInFiles: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecReplace: SetResult2(VK_R,[SSCtrl],VK_UNKNOWN,[],  VK_Q,[SSCtrl],VK_A,[]);
   ecIncrementalFind: SetResult(VK_E,[SSCtrl],VK_UNKNOWN,[]);
