@@ -2430,6 +2430,9 @@ begin
   ecToggleObjectInsp:
     mnuViewInspectorClicked(Self);
 
+  ecToggleSearchResults:
+    mnuViewSearchResultsClick(Self);
+
   ecAboutLazarus:
     MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
     

@@ -1151,9 +1151,12 @@ end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-// these are normal commands for synedit, define extra actions here
-// otherwise use ProcessUserCommand
+// these are normal commands for synedit (lower than ecUserFirst),
+// define extra actions here
+// for non synedit keys (bigger than ecUserFirst) use ProcessUserCommand
 begin
+  //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
+
   IdentCompletionTimer.AutoEnabled:=false;
 
   if (FSourceNoteBook<>nil)
@@ -1227,9 +1230,8 @@ var
   Handled: boolean;
   LogCaret: TPoint;
 Begin
-  Handled:=true;
-
   //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
+  Handled:=true;
 
   case Command of
 
@@ -1384,6 +1386,7 @@ end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
+// called after the source editor processed a key
 var Handled: boolean;
 begin
   Handled:=true;
@@ -1392,15 +1395,15 @@ begin
   ecNone: ;
 
   ecUndo:
-      if (FEditor.Modified=false) and (CodeBuffer<>nil) then
-        CodeBuffer.Assign(FEditor.Lines);
+    if (FEditor.Modified=false) and (CodeBuffer<>nil) then
+      CodeBuffer.Assign(FEditor.Lines);
 
   else
     begin
       Handled:=false;
       if FaOwner<>nil then
-        TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data,
-                        Handled);
+        TSourceNotebook(FaOwner).ParentCommandProcessed(Self,Command,aChar,Data,
+                                                        Handled);
     end;
   end;
   if Handled then Command:=ecNone;
