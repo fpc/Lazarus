@@ -1057,7 +1057,7 @@ type
     fEvent: THookedCommandEvent;
     fData: pointer;
     function Equals(AEvent: THookedCommandEvent): boolean;
-  {$IFDEF FPC}
+  {$IFDEF SYN_LAZARUS}
   public
   {$ENDIF}
     constructor Create(AEvent: THookedCommandEvent; AData: pointer);
@@ -9133,14 +9133,14 @@ begin
     else begin
       // move to end of prev line
       dec(NewCaret.Y);
-      s:=Lines[NewCaret.Y];
+      s:=Lines[NewCaret.Y-1];
       PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
-      NewCaret.X:=PhysicalLineLen;
+      NewCaret.X:=PhysicalLineLen+1;
     end;
   end else if not (eoScrollPastEol in fOptions) then begin
     s:=LineText;
     PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,CaretY)).X-1;
-    if NewCaret.X>PhysicalLineLen then begin
+    if NewCaret.X>PhysicalLineLen+1 then begin
       // move to start of next line
       NewCaret.X:=1;
       inc(NewCaret.Y);
