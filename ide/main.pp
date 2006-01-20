@@ -2344,6 +2344,12 @@ begin
       else
         DoRunProject;
     end;
+    
+  ecBuildFile:
+    DoBuildFile;
+    
+  ecRunFile:
+    DoRunFile;
 
   ecJumpToPrevError:
     DoJumpToNextError(true);
