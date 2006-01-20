@@ -2192,11 +2192,11 @@ begin
 
   GetDefaultValuesButton := TButton.Create(Self);
   with GetDefaultValuesButton do Begin
-    Parent:=Self;
+    Parent:=SortButton.Parent;
     Caption:='Get Defaults';
     OnClick:=@GetDefaultValuesButtonClick;
     AutoSize:=true;
-    AnchorToCompanion(akRight,5,SortButton);
+    AnchorToCompanion(akTop, 6, SortButton);
   end;
 end;
 

@@ -131,6 +131,14 @@ resourcestring
 
   //checkgroup editor
   clbCheckGroupEditor = 'CheckGroup Editor';
+  
+  // Collection Editor
+
+  oiColEditAdd = 'Add';
+  oiColEditDelete = 'Delete';
+  oiColEditUp = 'Up';
+  oiColEditDown = 'Down';
+  oiColEditEditing = 'Editing';
 
   // Actions Editor
   cActionListEditorUnknownCategory = '(Unknown)';

@@ -33,7 +33,7 @@ unit PropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils,
+  Classes, TypInfo, SysUtils, LResources,
   FPCAdds, // for StrToQWord in older fpc versions
   LCLProc, Forms, Controls, GraphType,
   Graphics, StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf,
@@ -1367,19 +1367,20 @@ type
 //==============================================================================
 
 { TStringsPropEditorDlg }
-
+  
 type
   TStringsPropEditorDlg = class(TForm)
-    procedure SortButtonClick(Sender: TObject);
-    procedure MemoChanged(Sender: TObject);
-  public
-    Memo: TMemo;
-    OKButton, CancelButton: TBitBtn;
-    SortButton: TButton;
-    Panel: TPanel;
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
     StatusLabel: TLabel;
+    SortButton: TButton;
+    GroupBox1: TGroupBox;
+    Memo: TMemo;
+    procedure FormCreate(Sender: TObject);
+    procedure MemoChange(Sender: TObject);
+    procedure SortButtonClick(Sender: TObject);
+  public
     Editor: TPropertyEditor;
-    constructor Create(TheOwner: TComponent); override;
     procedure AddButtons; virtual;
   end;
 
@@ -3282,26 +3283,31 @@ begin
 end;
 
 
-Type
+type
   { TCollectionPropertyEditor }
   
   TCollectionPropertyEditorForm = class(TForm)
-    procedure ListClick(Sender: TObject);
-    procedure AddClick(Sender: TObject);
-    procedure DeleteClick(Sender: TObject);
+    CollectionListBox: TListBox;
+    ImageList: TImageList;
+    DisableImageList: TImageList;
+    ToolBar1: TToolBar;
+    AddButton: TToolButton;
+    DeleteButton: TToolButton;
+    ToolButton3: TToolButton;
+    MoveUpButton: TToolButton;
+    MoveDownButton: TToolButton;
+    procedure AddButtonClick(Sender: TObject);
+    procedure CollectionListBoxClick(Sender: TObject);
+    procedure DeleteButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
   private
     FCollection: TCollection;
     FOwnerPersistent: TPersistent;
-    FPropertyName: string;
+    FPropertyName: String;
   protected
-    CollectionListBox: TListBox;
-    ButtonPanel: TPanel;
-    AddButton: TSpeedButton;
-    DeleteButton: TSpeedButton;
-    MoveUpButton: TSpeedButton;
-    MoveDownButton: TSpeedButton;
     procedure UpdateCaption;
     procedure UpdateButtons;
     procedure ComponentRenamed(AComponent: TComponent);
@@ -3309,77 +3315,131 @@ Type
     procedure RefreshPropertyValues;
   public
     procedure FillCollectionListBox;
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SelectInObjectInspector(UnselectAll: boolean);
+    procedure SelectInObjectInspector(UnselectAll: Boolean);
     procedure SetCollection(NewCollection: TCollection;
-                    NewOwnerPersistent: TPersistent; const NewPropName: string);
+                    NewOwnerPersistent: TPersistent; const NewPropName: String);
     procedure Modified;
   public
     property Collection: TCollection read FCollection;
     property OwnerPersistent: TPersistent read FOwnerPersistent;
-    property PropertyName: string read FPropertyName;
+    property PropertyName: String read FPropertyName;
   end;
 
 const
   CollectionForm: TCollectionPropertyEditorForm = nil;
 
-procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
+procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
-  UpdateButtons;
-  UpdateCaption;
-  SelectInObjectInspector(false);
+  AddButton.Caption := oiColEditAdd;
+  DeleteButton.Caption := oiColEditDelete;
+  MoveUpButton.Caption := oiColEditUp;
+  MoveDownButton.Caption := oiColEditDown;
 end;
 
-procedure TCollectionPropertyEditorForm.AddClick(Sender: TObject);
+procedure TCollectionPropertyEditorForm.FormDestroy(Sender: TObject);
 begin
-  if Collection=nil then exit;
-  Collection.Add;
+  if GlobalDesignHook <> nil then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
+end;
+
+procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  if Collection = nil then Exit;
+
+  I := CollectionListBox.ItemIndex;
+  if I >= Collection.Count - 1 then Exit;
+
+  Collection.Items[I].Index := I + 1;
+  CollectionListBox.ItemIndex := I + 1;
+
   FillCollectionListBox;
-  if CollectionListBox.Items.Count>0 then
-    CollectionListBox.ItemIndex := CollectionListBox.Items.Count-1;
-  SelectInObjectInspector(false);
+  SelectInObjectInspector(False);
+  Modified;
+end;
+
+procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  if Collection = nil then Exit;
+
+  I := CollectionListBox.ItemIndex;
+  if I < 0 then Exit;
+
+  Collection.Items[I].Index := I - 1;
+  CollectionListBox.ItemIndex := I - 1;
+
+  FillCollectionListBox;
+  SelectInObjectInspector(False);
+  Modified;
+end;
+
+procedure TCollectionPropertyEditorForm.AddButtonClick(Sender: TObject);
+begin
+  if Collection = nil then Exit;
+  Collection.Add;
+
+  FillCollectionListBox;
+  if CollectionListBox.Items.Count > 0 then
+    CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
+  SelectInObjectInspector(False);
+  UpdateButtons;
   UpdateCaption;
   Modified;
 end;
 
-procedure TCollectionPropertyEditorForm.DeleteClick(Sender: TObject);
+procedure TCollectionPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
+begin
+  UpdateButtons;
+  UpdateCaption;
+  SelectInObjectInspector(False);
+end;
+
+procedure TCollectionPropertyEditorForm.DeleteButtonClick(Sender: TObject);
 var
   I : Integer;
   NewItemIndex: Integer;
 begin
-  if Collection=nil then exit;
+  if Collection = nil then Exit;
+
   I := CollectionListBox.ItemIndex;
-  if (i>=0) and (i<Collection.Count) then begin
+  if (I >= 0) and (I < Collection.Count) then
+  begin
     if MessageDlg(oisConfirmDelete,
-      Format(oisDeleteItem, ['"', Collection.Items[i].DisplayName, '"']),
-      mtConfirmation,[mbYes,mbNo],0) = mrYes then
+      Format(oisDeleteItem, ['"', Collection.Items[I].DisplayName, '"']),
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
       // select other item, or unselect
-      NewItemIndex:=i+1;
-      while (NewItemIndex<CollectionListBox.Items.Count)
-      and (CollectionListBox.Selected[NewItemIndex]) do
-        inc(NewItemIndex);
-      if NewItemIndex=CollectionListBox.Items.Count then begin
-        NewItemIndex:=0;
-        while (NewItemIndex<i)
-        and (CollectionListBox.Selected[NewItemIndex]) do
-          inc(NewItemIndex);
-        if NewItemIndex=i then NewItemIndex:=-1;
+      NewItemIndex := I + 1;
+      while (NewItemIndex < CollectionListBox.Items.Count)
+      and (CollectionListBox.Selected[NewItemIndex]) do Inc(NewItemIndex);
+
+      if NewItemIndex = CollectionListBox.Items.Count then
+      begin
+        NewItemIndex := 0;
+        while (NewItemIndex < Pred(I))
+        and not (CollectionListBox.Selected[NewItemIndex]) do Inc(NewItemIndex);
+
+        if NewItemIndex = I then NewItemIndex := -1;
       end;
+
       CollectionListBox.ItemIndex := -1;
-      if NewItemIndex>i then dec(NewItemIndex);
+
+      if NewItemIndex > I then Dec(NewItemIndex);
       //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
       // unselect all items in OI (collections can act strange on delete)
-      SelectInObjectInspector(true);
+      SelectInObjectInspector(True);
       // now delete
-      Collection.Items[i].Free;
+      Collection.Items[I].Free;
       // update listbox after whatever happened
       FillCollectionListBox;
       // set NewItemIndex
-      if NewItemIndex<CollectionListBox.Items.Count then begin
-        CollectionListBox.ItemIndex:=NewItemIndex;
-        SelectInObjectInspector(false);
+      if NewItemIndex < CollectionListBox.Items.Count then
+      begin
+        CollectionListBox.ItemIndex := NewItemIndex;
+        SelectInObjectInspector(False);
       end;
       //debugln('TCollectionPropertyEditorForm.DeleteClick B');
       Modified;
@@ -3389,34 +3449,6 @@ begin
   UpdateCaption;
 end;
 
-procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
-var
-  i: LongInt;
-begin
-  if Collection=nil then exit;
-  i:=CollectionListBox.ItemIndex;
-  if i>=Collection.Count-1 then exit;
-  Collection.Items[i].Index:=i+1;
-  CollectionListBox.ItemIndex:=i+1;
-  FillCollectionListBox;
-  SelectInObjectInspector(false);
-  Modified;
-end;
-
-procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
-var
-  i: LongInt;
-begin
-  if Collection=nil then exit;
-  i:=CollectionListBox.ItemIndex;
-  if i<=0 then exit;
-  Collection.Items[i].Index:=i-1;
-  CollectionListBox.ItemIndex:=i-1;
-  FillCollectionListBox;
-  SelectInObjectInspector(false);
-  Modified;
-end;
-
 procedure TCollectionPropertyEditorForm.UpdateCaption;
 var
   NewCaption: String;
@@ -3424,49 +3456,50 @@ begin
   //I think to match Delphi this should be formatted like
   //"Editing ComponentName.PropertyName[Index]"
   if OwnerPersistent is TComponent then
-    NewCaption:=TComponent(OwnerPersistent).Name
-  else if OwnerPersistent<>nil then
-    NewCaption:=OwnerPersistent.GetNamePath
+    NewCaption := TComponent(OwnerPersistent).Name
   else
-    NewCaption:='';
-  if NewCaption<>'' then NewCaption:=NewCaption+'.';
-  NewCaption:=NewCaption+PropertyName;
-  NewCaption:= 'Editing ' + NewCaption;
-  If CollectionListBox.ItemIndex > -1 then
-    NewCaption:=NewCaption + '[' + IntToStr(CollectionListBox.ItemIndex) + ']';
-  Caption:=NewCaption;
+    if OwnerPersistent <> nil then
+      NewCaption := OwnerPersistent.GetNamePath
+    else
+      NewCaption := '';
+
+  if NewCaption <> '' then NewCaption := NewCaption + '.';
+  NewCaption := oiColEditEditing + ' ' + NewCaption + PropertyName;
+
+  if CollectionListBox.ItemIndex > -1 then
+    NewCaption := NewCaption + '[' + IntToStr(CollectionListBox.ItemIndex) + ']';
+  Caption := NewCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.UpdateButtons;
 var
-  i: LongInt;
+  I: Integer;
 begin
-  i:=CollectionListBox.ItemIndex;
-  AddButton.Enabled:=Collection<>nil;
-  DeleteButton.Enabled:= i > -1;
-  MoveUpButton.Enabled:=i>0;
-  MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
+  I := CollectionListBox.ItemIndex;
+  AddButton.Enabled := Collection <> nil;
+  DeleteButton.Enabled := I > -1;
+  MoveUpButton.Enabled := I > 0;
+  MoveDownButton.Enabled := (I >= 0) and (I < Collection.Count - 1);
 end;
 
-procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent
-  );
+procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent);
 begin
-  if AComponent=OwnerPersistent then
-    UpdateCaption;
+  if AComponent = OwnerPersistent then UpdateCaption;
 end;
 
-procedure TCollectionPropertyEditorForm.PersistentDeleting(
-  APersistent: TPersistent);
+procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 var
   OldCollection: TCollection;
 begin
   //debugln('TCollectionPropertyEditorForm.PersistentDeleting A APersistent=',dbgsName(APersistent),' OwnerPersistent=',dbgsName(OwnerPersistent));
-  if APersistent=OwnerPersistent then begin
-    OldCollection:=Collection;
-    SetCollection(nil,nil,'');
+  if APersistent = OwnerPersistent then
+  begin
+    OldCollection := Collection;
+    SetCollection(nil, nil, '');
     GlobalDesignHook.Unselect(OldCollection);
-    if GlobalDesignHook.LookupRoot=OldCollection then
-      GlobalDesignHook.LookupRoot:=nil;
+    if GlobalDesignHook.LookupRoot = OldCollection then
+      GlobalDesignHook.LookupRoot := nil;
+
     Hide;
   end;
 end;
@@ -3478,159 +3511,90 @@ end;
 
 procedure TCollectionPropertyEditorForm.FillCollectionListBox;
 var
-  I : Longint;
+  I: Integer;
   CurItem: String;
   Cnt: Integer;
 begin
   CollectionListBox.Items.BeginUpdate;
-  if Collection<>nil then
-    Cnt:=Collection.Count
-  else
-    Cnt:=0;
-  // add or replace list items
-  for I:=0 to Cnt - 1 do begin
-    CurItem:=Collection.Items[I].DisplayName;
-    if i>=CollectionListBox.Items.Count then
-      CollectionListBox.Items.Add(CurItem)
-    else
-      CollectionListBox.Items[I]:=CurItem;
-  end;
-  // delete unneeded list items
-  if Cnt>0 then begin
-    while CollectionListBox.Items.Count>Cnt do begin
-      CollectionListBox.Items.Delete(CollectionListBox.Items.Count-1);
+  try
+    if Collection <> nil then Cnt := Collection.Count
+    else Cnt := 0;
+
+    // add or replace list items
+    for I := 0 to Cnt - 1 do
+    begin
+      CurItem := IntToStr(I) + ' - ' + Collection.Items[I].DisplayName;
+      if I >= CollectionListBox.Items.Count then
+        CollectionListBox.Items.Add(CurItem)
+      else
+        CollectionListBox.Items[I] := CurItem;
     end;
-  end else begin
-    CollectionListBox.Items.Clear;
-  end;
-  CollectionListBox.Items.EndUpdate;
 
-  UpdateButtons;
-  UpdateCaption;
+    // delete unneeded list items
+    if Cnt > 0 then
+    begin
+      while CollectionListBox.Items.Count > Cnt do
+      begin
+        CollectionListBox.Items.Delete(CollectionListBox.Items.Count - 1);
+      end;
+    end
+    else
+    begin
+      CollectionListBox.Items.Clear;
+    end;
+  finally
+    CollectionListBox.Items.EndUpdate;
+    UpdateButtons;
+    UpdateCaption;
+  end;
 end;
 
-Constructor TCollectionPropertyEditorForm.Create(TheOwner : TComponent);
+procedure TCollectionPropertyEditorForm.SelectInObjectInspector(UnselectAll: Boolean);
 var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
-begin
-  Inherited Create(TheOwner);
-
-  Position := poDefault;
-
-  Height:= 216;
-  Width:= 220;
-
-  ButtonPanel := TPanel.Create(Self);
-  With ButtonPanel do begin
-    Parent := Self;
-    Align:= alTop;
-    BevelOuter:= bvRaised;
-    BevelInner:= bvLowered;
-    BorderWidth:= 2;
-    Height:= 41;
-  end;
-
-  x:=6;
-  y:=6;
-  w:=43;
-  h:=27;
-  AddButton:= TSpeedButton.Create(Self);
-  With AddButton do begin
-    Parent:= ButtonPanel;
-    Caption:= oiscAdd;
-    OnClick:= @AddClick;
-    SetBounds(x,y,w,h);
-    inc(x,w);
-  end;
-
-  DeleteButton := TSpeedButton.Create(Self);
-  With DeleteButton do begin
-    Parent:= ButtonPanel;
-    Caption:= oiscDelete;
-    OnClick:= @DeleteClick;
-    SetBounds(x,y,w,h);
-    inc(x,w);
-  end;
-
-  MoveUpButton := TSpeedButton.Create(Self);
-  With MoveUpButton do begin
-    Parent:= ButtonPanel;
-    Caption:= 'Up'; // replace this by up arrow
-    OnClick:=@MoveUpButtonClick;
-    SetBounds(x,y,w,h);
-    inc(x,w);
-  end;
-
-  MoveDownButton := TSpeedButton.Create(Self);
-  With MoveDownButton do begin
-    Parent:= ButtonPanel;
-    Caption:= 'Down'; // replace this by down arrow
-    OnClick:=@MoveDownButtonClick;
-    SetBounds(x,y,w,h);
-    inc(x,w);
-  end;
-
-  CollectionListBox := TListBox.Create(Self);
-  With CollectionListBox do begin
-    Parent:= Self;
-    Align:= alClient;
-//  MultiSelect:= true;
-    OnClick:= @ListClick;
-  end;
-end;
-
-destructor TCollectionPropertyEditorForm.Destroy;
-begin
-  if GlobalDesignHook<>nil then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  inherited Destroy;
-end;
-
-procedure TCollectionPropertyEditorForm.SelectInObjectInspector(
-  UnselectAll: boolean);
-var
-  i: Integer;
+  I: Integer;
   NewSelection: TPersistentSelectionList;
 begin
-  if Collection=nil then exit;
+  if Collection = nil then Exit;
   // select in OI
-  NewSelection:=TPersistentSelectionList.Create;
+  NewSelection := TPersistentSelectionList.Create;
   try
-    if not UnselectAll then begin
-      for i:=0 to CollectionListBox.Items.Count-1 do
-        if CollectionListBox.Selected[i] then
-          NewSelection.Add(Collection.Items[i]);
+    if not UnselectAll then
+    begin
+      for I := 0 to CollectionListBox.Items.Count - 1 do
+        if CollectionListBox.Selected[I] then
+          NewSelection.Add(Collection.Items[I]);
     end;
     GlobalDesignHook.SetSelection(NewSelection);
-    GlobalDesignHook.LookupRoot:=GetLookupRootForComponent(OwnerPersistent);
+    GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
   finally
     NewSelection.Free;
   end;
 end;
 
-procedure TCollectionPropertyEditorForm.SetCollection(
-  NewCollection: TCollection; NewOwnerPersistent: TPersistent;
-  const NewPropName: string);
+procedure TCollectionPropertyEditorForm.SetCollection(NewCollection: TCollection;
+  NewOwnerPersistent: TPersistent; const NewPropName: String);
 begin
-  if (FCollection=NewCollection) and (FOwnerPersistent=NewOwnerPersistent)
-  and (FPropertyName=NewPropName) then
-    exit;
-  FCollection:=NewCollection;
-  FOwnerPersistent:=NewOwnerPersistent;
-  FPropertyName:=NewPropName;
+  if (FCollection = NewCollection) and (FOwnerPersistent = NewOwnerPersistent)
+    and (FPropertyName = NewPropName) then Exit;
+
+  FCollection := NewCollection;
+  FOwnerPersistent := NewOwnerPersistent;
+  FPropertyName := NewPropName;
   //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
-  if GlobalDesignHook<>nil then begin
-    if FOwnerPersistent<>nil then begin
+  if GlobalDesignHook <> nil then
+  begin
+    if FOwnerPersistent <> nil then
+    begin
       GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
       GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
       GlobalDesignHook.AddHandlerRefreshPropertyValues(@RefreshPropertyValues);
-    end else begin
+    end
+    else
+    begin
       GlobalDesignHook.RemoveAllHandlersForObject(Self);
     end;
   end;
+
   FillCollectionListBox;
   UpdateCaption;
 end;
@@ -4554,76 +4518,27 @@ end;
 
 { TStringsPropEditorDlg }
 
-constructor TStringsPropEditorDlg.Create(TheOwner : TComponent);
+procedure TStringsPropEditorDlg.FormCreate(Sender: TObject);
 begin
-  inherited Create(TheOwner);
-  Position := poScreenCenter;
-  Width := 400;
-  Height := 250;
   Caption := oisStringsEditorDialog;
+  StatusLabel.Caption := ois0Lines0Chars;
+  SortButton.Caption := oisSort;
 
-  Panel := TPanel.Create(Self);
-  with Panel do begin
-    Parent:=Self;
-    BorderSpacing.Around:=4;
-    BevelInner:=bvLowered;
-    Align:=alTop;
-  end;
-
-  StatusLabel:= TLabel.Create(Self);
-  with StatusLabel do begin
-    Parent:=Panel;
-    Left:=7;
-    Top:=5;
-    Caption:= ois0Lines0Chars;
-  end;
-
-  Memo := TMemo.Create(self);
-  with Memo do begin
-    Parent:= Panel;
-    Align:=alBottom;
-    AnchorToNeighbour(akTop,2,StatusLabel);
-    Memo.OnChange:= @MemoChanged;
-  end;
-  
   AddButtons;
-  
-  Panel.AnchorToNeighbour(akBottom,4,OKButton);
-  
-  CancelControl:=CancelButton;
-  DefaultControl:=OKButton;
 end;
 
-procedure TStringsPropEditorDlg.AddButtons;
+procedure TStringsPropEditorDlg.MemoChange(Sender: TObject);
+var
+  NumChars: Integer;
+  I: Integer;
 begin
-  OKButton := TBitBtn.Create(Self);
-  with OKButton do Begin
-    Parent:=Self;
-    Kind:=bkOK;
-    AutoSize:=true;
-    Anchors:=[akRight,akBottom];
-    AnchorParallel(akRight,4,Parent);
-    AnchorParallel(akBottom,4,Parent);
-  end;
+  NumChars := 0;
+  for I := 0 to Memo.Lines.Count - 1 do Inc(NumChars, Length(Memo.Lines[I]));
 
-  CancelButton := TBitBtn.Create(Self);
-  with CancelButton do Begin
-    Parent:=Self;
-    Kind:=bkCancel;
-    AutoSize:=true;
-    AnchorToCompanion(akRight,5,OKButton);
-  end;
-
-  if Assigned(ShowSortSelectionDialogFunc) then begin
-    SortButton := TButton.Create(Self);
-    with SortButton do Begin
-      Parent:=Self;
-      Caption:=oisSort;
-      OnClick:=@SortButtonClick;
-      AutoSize:=true;
-      AnchorToCompanion(akRight,5,CancelButton);
-    end;
-  end;
+  if Memo.Lines.Count = 1 then
+    StatusLabel.Text := Format(ois1LineDChars, [NumChars])
+  else
+    StatusLabel.Text := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
 end;
 
 procedure TStringsPropEditorDlg.SortButtonClick(Sender: TObject);
@@ -4631,32 +4546,30 @@ var
   OldText, NewSortedText: String;
   SortOnlySelection: Boolean;
 begin
-  if not Assigned(ShowSortSelectionDialogFunc) then begin
-    SortButton.Enabled:=false;
-    exit;
+  if not Assigned(ShowSortSelectionDialogFunc) then
+  begin
+    SortButton.Enabled := False;
+    Exit;
   end;
-  SortOnlySelection:=true;
-  OldText:=Memo.SelText;
-  if OldText='' then begin
-    SortOnlySelection:=false;
-    OldText:=Memo.Lines.Text;
+
+  SortOnlySelection := True;
+  OldText := Memo.SelText;
+  if OldText = '' then
+  begin
+    SortOnlySelection := False;
+    OldText := Memo.Lines.Text;
   end;
-  if ShowSortSelectionDialogFunc(OldText,nil,NewSortedText)<>mrOk then exit;
+
+  if ShowSortSelectionDialogFunc(OldText, nil, NewSortedText) <> mrOk then Exit;
   if SortOnlySelection then
-    Memo.SelText:=NewSortedText
+    Memo.SelText := NewSortedText
   else
-    Memo.Lines.Text:=NewSortedText;
+    Memo.Lines.Text := NewSortedText;
 end;
 
-procedure TStringsPropEditorDlg.MemoChanged(Sender : TObject);
-var
-  NumChars: integer;
+procedure TStringsPropEditorDlg.AddButtons;
 begin
-  NumChars := Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding);
-  if Memo.Lines.Count=1 then
-    StatusLabel.Text:= Format(ois1LineDChars, [NumChars])
-  else
-    StatusLabel.Text:= Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
+  //
 end;
 
 { TStringsPropertyEditor }
@@ -4684,6 +4597,7 @@ begin
   Result:=TStringsPropEditorDlg.Create(Application);
   Result.Editor:=Self;
   Result.Memo.Text:=s.Text;
+  Result.MemoChange(nil); // force call OnChange event
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -6181,6 +6095,9 @@ begin
 end;
 
 initialization
+  {$I stringspropeditdlg.lrs}
+  {$I collectionpropeditform.lrs}
+  
   InitPropEdits;
 
 finalization
