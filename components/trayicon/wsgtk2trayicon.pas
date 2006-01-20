@@ -22,17 +22,19 @@ unit wsgtk2trayicon;
   {$mode delphi}{$H+}
 {$endif}
 
+{$PACKRECORDS C}
+  
 interface
 
 uses
-  Graphics, Classes, ExtCtrls, SysUtils, StdCtrls, Forms, Controls, Dialogs,
-  Menus, x, xlib, xutil, gtk2, gdk2;
+  Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs,
+  Menus, wscommontrayicon, x, xlib, xutil, gtk2, gdk2, gtkproc;
 
 type
 
   { TWidgetTrayIcon }
 
-  TWidgetTrayIcon = class(TObject)
+  TWidgetTrayIcon = class(TCustomWidgetTrayIcon)
     private
       fDisplay: PDisplay;
       fWindow: TWindow;
@@ -44,7 +46,7 @@ type
       fEmbedded: Boolean;
       fMsgCount: Integer;
       procedure SetEmbedded;
-      function Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
+      function Send_Message(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
       procedure SetMinSize(AWidth, AHeight: Integer);
       procedure PaintForm(Sender: TObject);
       procedure CreateForm(id: Integer);
@@ -52,19 +54,10 @@ type
       function GetCanvas: TCanvas;
     protected
     public
-      uID: Cardinal;
-      Icon: TIcon;
-      ShowIcon, ShowToolTip: Boolean;
-      PopUpMenu: TPopUpMenu;
-      ToolTip: string;
-      OnPaint, OnClick, OnDblClick: TNotifyEvent;
-      OnMouseDown, OnMouseUp: TMouseEvent;
-      OnMouseMove: TMouseMoveEvent;
-      constructor Create;
-      destructor Destroy; override;
       function Hide: Boolean;
       function Show: Boolean;
       property Canvas: TCanvas read GetCanvas;
+      procedure InternalUpdate; override;
     published
   end;
 
@@ -75,7 +68,26 @@ const
 
 implementation
 
-// Temp ErrorHandler
+type
+  PX11GdkDrawable = ^TX11GdkDrawable;
+
+  TX11GdkDrawable = record
+    parent_instance: TGdkWindow;
+    wrapper: PGdkDrawable;
+    colormap: PGdkColorMap;
+    xid:x.TWindow;
+  end;
+
+{*******************************************************************
+*  TempX11ErrorHandler ()
+*
+*  DESCRIPTION:    Temp ErrorHandler
+*
+*  PARAMETERS:     ?
+*
+*  RETURNS:        ?
+*
+*******************************************************************}
 function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
 begin
   WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
@@ -85,41 +97,15 @@ end;
 { TWidgetTrayIcon }
 
 {*******************************************************************
-*  TWidgetTrayIcon.Create ()
+*  TWidgetTrayIcon.SetEmbedded ()
 *
-*  DESCRIPTION:    Creates a object from the TWidgetTrayIcon class
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        A pointer to the newly created object
-*
-*******************************************************************}
-constructor TWidgetTrayIcon.Create;
-begin
-  inherited Create;
-
-  Icon := TIcon.Create;
-
-  uID := 3;
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.Destroy ()
-*
-*  DESCRIPTION:    Destroys a object derived from the TWidgetTrayIcon class
+*  DESCRIPTION:
 *
 *  PARAMETERS:     None
 *
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-destructor TWidgetTrayIcon.Destroy;
-begin
-  Icon.Free;
-
-  inherited Destroy;
-end;
-
 procedure TWidgetTrayIcon.SetEmbedded;
 var
   old_error: TXErrorHandler;
@@ -146,7 +132,17 @@ begin
   XSetErrorHandler(old_error);
 end;
 
-function TWidgetTrayIcon.Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
+{*******************************************************************
+*  TWidgetTrayIcon.Send_Message ()
+*
+*  DESCRIPTION:    Sends a message to the X client
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function TWidgetTrayIcon.Send_Message(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
 var
   Ev: TXEvent;
   fmt: Integer;
@@ -165,7 +161,19 @@ begin
   Result := false;//(untrap_errors() = 0);
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.CreateForm ()
+*
+*  DESCRIPTION:
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 procedure TWidgetTrayIcon.CreateForm(id: Integer);
+var
+  Widget: PGtkWidget;
 begin
   GtkForm := TForm.Create(nil);
   fEmbedded := False;
@@ -185,17 +193,40 @@ begin
 
   Application.ProcessMessages;
 
-  fDisplay := (PGdkWindowPrivate(PGtkWidget(GtkForm.Handle)^.window))^.xdisplay;
-  fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
+  fDisplay := GDK_DISPLAY;
+//  SHowMessage(IntToStr(Integer(fDisplay)));
+  Widget := PGtkWidget(GtkForm.Handle);
+  fWindow := PX11GdkDrawable(PGdkWindowObject(Widget^.window)^.impl)^.xid;
+
   fScreen := XDefaultScreenOfDisplay(fDisplay); // get the screen
   fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.RemoveForm ()
+*
+*  DESCRIPTION:
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 procedure TWidgetTrayIcon.RemoveForm(id: Integer);
 begin
   GtkForm.Free;
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.GetCanvas ()
+*
+*  DESCRIPTION:
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 function TWidgetTrayIcon.GetCanvas: TCanvas;
 begin
   Result := GtkForm.Canvas;
@@ -213,7 +244,15 @@ end;
 *******************************************************************}
 function TWidgetTrayIcon.Hide: Boolean;
 begin
+  Result := False;
+
+  if not vVisible then Exit;
+
   RemoveForm(0);
+
+  vVisible := False;
+  
+  Result := True;
 end;
 
 {*******************************************************************
@@ -228,6 +267,10 @@ end;
 *******************************************************************}
 function TWidgetTrayIcon.Show: Boolean;
 begin
+  Result := False;
+
+  if vVisible then Exit;
+  
   CreateForm(0);
 
   SetEmbedded;
@@ -247,8 +290,22 @@ begin
   GtkForm.PopupMenu := Self.PopUpMenu;
 
   fEmbedded := True;
+
+  vVisible := True;
+
+  Result := True;
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.SetMinSize ()
+*
+*  DESCRIPTION:    Attemps to avoid problems on Gnome
+*
+*  PARAMETERS:
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 procedure TWidgetTrayIcon.SetMinSize(AWidth, AHeight: Integer);
 var
   size_hints: TXSizeHints;
@@ -261,11 +318,37 @@ begin
   XSetStandardProperties(fDisplay, fWindow, nil, nil, None, nil, 0, @size_hints);
 end;
 
+{*******************************************************************
+*  TWidgetTrayIcon.PaintForm ()
+*
+*  DESCRIPTION:    Paint method of the Icon Window
+*
+*  PARAMETERS:     Sender of the event
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
 procedure TWidgetTrayIcon.PaintForm(Sender: TObject);
 begin
   if ShowIcon then GtkForm.Canvas.Draw(0, 0, Icon);
 
   if Assigned(OnPaint) then OnPaint(Self);
+end;
+
+{*******************************************************************
+*  TWidgetTrayIcon.InternalUpdate ()
+*
+*  DESCRIPTION:    Makes modifications to the Icon while running
+*                  i.e. without hiding it and showing again
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure TWidgetTrayIcon.InternalUpdate;
+begin
+  if Assigned(GtkForm) then GtkForm.PopupMenu := Self.PopUpMenu;
 end;
 
 end.

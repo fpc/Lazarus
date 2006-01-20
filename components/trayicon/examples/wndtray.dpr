@@ -3,8 +3,8 @@
 
  *****************************************************************************
  *                                                                           *
- *  This demonstration program is public domain, which means no copyright,   *
- *  but also no warranty!                                                    *
+ *  This demonstration program is public domain, witch means no copyright,   *
+ * but also no warranty!                                                      *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
@@ -25,7 +25,7 @@ uses
   Interfaces,
 {$endif}
   Forms,
-  frmtest in 'frmtest.pas', TrayIconLaz;
+  frmtest in 'frmtest.pas';
 
 { add your units here }
 

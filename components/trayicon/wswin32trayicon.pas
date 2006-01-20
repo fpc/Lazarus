@@ -25,31 +25,24 @@ unit wswin32trayicon;
 interface
 
 uses
-  Graphics, Classes, SysUtils, Menus, Forms, Controls;
+  Graphics, Classes, SysUtils, Menus, Forms, Controls, wscommontrayicon;
 
 type
 
   { TWidgetTrayIcon }
 
-  TWidgetTrayIcon = class(TObject)
+  TWidgetTrayIcon = class(TCustomWidgetTrayIcon)
     private
       WindowHandle: Cardinal;
       function GetCanvas: TCanvas;
     protected
     public
-      uID: Cardinal;
-      Icon: TIcon;
-      ShowIcon, ShowToolTip: Boolean;
-      PopUpMenu: TPopUpMenu;
-      ToolTip: array [0..63] of AnsiChar;
-      OnPaint, OnClick, OnDblClick: TNotifyEvent;
-      OnMouseDown, OnMouseUp: TMouseEvent;
-      OnMouseMove: TMouseMoveEvent;
-      constructor Create;
+      constructor Create; override;
       destructor Destroy; override;
       function Hide: Boolean;
       function Show: Boolean;
       property Canvas: TCanvas read GetCanvas;
+      procedure InternalUpdate; override;
     published
   end;
 
@@ -72,11 +65,15 @@ const
 *                  fwKeys = wParam;        // key flags
 *                  xPos = LOWORD(lParam);  // horizontal position of cursor
 *                  yPos = HIWORD(lParam);  // vertical position of cursor
+*                                          //* Those positions seam to be wrong
+*                                          // Use Mouse.CursorPos instead
 *
 *  RETURNS:        A pointer to the newly created object
 *
 *******************************************************************}
 function TrayWndProc(Handle: HWND; iMsg: UINT; WParam_: WPARAM; LParam_:LPARAM):LRESULT; stdcall;
+var
+  pt: TPoint;
 begin
   {*******************************************************************
   *  The separate check on vwsTrayIconCreated is necessary because
@@ -91,7 +88,16 @@ begin
         if Assigned(vwsTrayIcon.OnMouseUp) then vwsTrayIcon.OnMouseUp(Application,
          mbRight, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
         if Assigned(vwsTrayIcon.PopUpMenu) then
-         vwsTrayIcon.PopUpMenu.Popup(LOWORD(lParam_), HIWORD(lParam_));
+        begin
+          pt := Mouse.CursorPos;// Gets cursor position in screen coords
+
+          // Apparently SetForegroundWindow and PostMessage are necessary
+          // because we're invoking the shortcut menu from a notification icon
+          // This is an attempt to prevent from messing with the Z-order
+          SetForegroundWindow(Handle);
+          PostMessage(Handle, WM_NULL, 0, 0);
+          vwsTrayIcon.PopUpMenu.Popup(pt.x, pt.y);
+        end;
       end;
       WM_RBUTTONDOWN: if Assigned(vwsTrayIcon.OnMouseDown) then vwsTrayIcon.OnMouseDown(Application,
        mbRight, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
@@ -127,7 +133,9 @@ end;
 
 function TWidgetTrayIcon.GetCanvas: TCanvas;
 begin
+{$ifdef FPC}
   Result := Icon.Canvas;
+{$endif}
 end;
 
 {*******************************************************************
@@ -146,10 +154,6 @@ var
 begin
   inherited Create;
 
-  Icon := TIcon.Create;
-
-  uID := 3;
-
   ZeroMemory(@Window, SizeOf(TWndClassEx));
   Window.cbSize := SizeOf(TWndClassEx);
   Window.style := CS_OWNDC;
@@ -157,7 +161,7 @@ begin
   Window.cbClsExtra := 0;
   Window.cbWndExtra := 0;
   Window.hInstance := hInstance;
-//  Window.hIcon := Icon.Picture.Icon.Handle;
+//  Window.hIcon := Icon.Handle;
   Window.hCursor := LoadCursor(0, IDC_ARROW);
   Window.hbrBackground := HBRUSH(GetStockObject(NULL_BRUSH));
   Window.lpszMenuName := nil;
@@ -200,8 +204,6 @@ begin
 
   Application.ProcessMessages;
 
-  Icon.Free;
-
   inherited Destroy;
 end;
 
@@ -219,6 +221,8 @@ function TWidgetTrayIcon.Hide: Boolean;
 var
   tnid: TNotifyIconData;
 begin
+  if not vVisible then Exit;
+
   // Fill TNotifyIconData
   tnid.cbSize := SizeOf(TNotifyIconData);
 {$IFNDEF FPC}
@@ -230,6 +234,8 @@ begin
 
   // Remove the icon
   Result := Shell_NotifyIconA(NIM_DELETE, @tnid);
+
+  vVisible := False;
 end;
 
 {*******************************************************************
@@ -245,7 +251,10 @@ end;
 function TWidgetTrayIcon.Show: Boolean;
 var
   tnid: TNotifyIconData;
+  buffer: PChar;
 begin
+  if vVisible then Exit;
+
   // Fill TNotifyIconData
   FillChar(tnid, SizeOf(tnid), 0);
   tnid.cbSize := SizeOf(TNotifyIconData);
@@ -256,13 +265,20 @@ begin
 {$ENDIF}
   tnid.uID := uID;
   tnid.uFlags := NIF_MESSAGE or NIF_ICON;
-  if ShowToolTip then tnid.uFlags := tnid.uFlags or NIF_TIP;
+  if ShowHint then tnid.uFlags := tnid.uFlags or NIF_TIP;
   tnid.uCallbackMessage := WM_USER + uID;
   tnid.hIcon := Icon.Handle;
-  Move(ToolTip, tnid.szTip, SizeOf(tnid.szTip));
+  buffer := PChar(Hint);
+  StrCopy(@tnid.szTip, buffer);
 
   // Create Taskbar icon
   Result := Shell_NotifyIconA(NIM_ADD, @tnid);
+
+  vVisible := True;
+end;
+
+procedure TWidgetTrayIcon.InternalUpdate;
+begin
 end;
 
 end.

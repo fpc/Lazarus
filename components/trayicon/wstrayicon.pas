@@ -43,7 +43,7 @@ uses
   wsgtktrayicon,
 {$endif}
 {$ifdef LCLGtk2}
-  wsgtk2trayicon, // not working yet
+  wsgtk2trayicon,
 {$endif}
   Classes, SysUtils;
 

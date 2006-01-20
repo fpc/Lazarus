@@ -3,8 +3,8 @@
 
  *****************************************************************************
  *                                                                           *
- *  This demonstration program is public domain, which means no copyright,   *
- *  but also no warranty!                                                    *
+ *  This demonstration program is public domain, witch means no copyright,   *
+ * but also no warranty!                                                      *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
@@ -107,8 +107,8 @@ begin
   SystrayIcon.Icon.LoadFromFile('icon.ico');
 {$endif}
 
-  SystrayIcon.ShowToolTip := True;
-  SystrayIcon.ToolTip := 'my tool tip';
+  SystrayIcon.ShowHint := True;
+  SystrayIcon.Hint := 'my tool tip';
 
   SystrayIcon.OnClick := HandleClick;
 //  SystrayIcon.OnPaint := DoPaint;

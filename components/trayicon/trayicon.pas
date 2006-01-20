@@ -15,6 +15,9 @@
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
  This unit contains the SystrayIcon object.
+ 
+ Documentation for the component can be found here:
+ http://wiki.lazarus.freepascal.org/index.php/TrayIcon
 }
 {Version 0.2}
 unit TrayIcon;
@@ -36,13 +39,12 @@ type
     private
       vPopUpMenu: TPopupMenu;
       vIcon: TIcon;
-      vToolTip: string;
-      vVisible, vShowIcon, vShowToolTip: Boolean;
+      vHint: string;
+      vVisible, vShowIcon, vShowHint: Boolean;
       vOnPaint, vOnClick, vOnDblClick: TNotifyEvent;
       vOnMouseDown, vOnMouseUp: TMouseEvent;
       vOnMouseMove: TMouseMoveEvent;
       function GetCanvas: TCanvas;
-      procedure UpdateWS;
       procedure SetVisible(Value: Boolean);
     protected
     public
@@ -50,12 +52,13 @@ type
       destructor Destroy; override;
       function Hide: Boolean;
       function Show: Boolean;
+      procedure UpdateWS;
       property Canvas: TCanvas read GetCanvas;
     published
       property PopUpMenu: TPopupMenu read vPopUpMenu write vPopUpMenu;
       property Icon: TIcon read vIcon write vIcon;
-      property ToolTip: string read vToolTip write vToolTip;
-      property ShowToolTip: Boolean read vShowToolTip write vShowToolTip;
+      property Hint: string read vHint write vHint;
+      property ShowHint: Boolean read vShowHint write vShowHint;
       property ShowIcon: Boolean read vShowIcon write vShowIcon;
       property Visible: Boolean read vVisible write SetVisible;
       property OnClick: TNotifyEvent read vOnClick write vOnClick;
@@ -177,9 +180,9 @@ procedure TTrayIconClass.UpdateWS;
 begin
   vwsTrayIcon.Icon.Assign(vIcon);
   vwsTrayIcon.PopUpMenu := vPopUpMenu;
-  vwsTrayIcon.ShowToolTip := vShowToolTip;
+  vwsTrayIcon.ShowHint := vShowHint;
   vwsTrayIcon.ShowIcon := vShowIcon;
-  StrCopy(PChar(vwsTrayIcon.ToolTip), PChar(vToolTip));
+  vwsTrayIcon.Hint := vHint;
 
   // Update events
   vwsTrayIcon.OnClick := vOnClick;
@@ -188,6 +191,9 @@ begin
   vwsTrayIcon.OnMouseDown := vOnMouseDown;
   vwsTrayIcon.OnMouseUp := vOnMouseUp;
   vwsTrayIcon.OnMouseMove := vOnMouseMove;
+  
+  // Allows the widgetset to update itself internally
+  vwsTrayIcon.InternalUpdate;
 end;
 
 {*******************************************************************
