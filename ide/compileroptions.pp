@@ -131,10 +131,23 @@ const
       pcosLinkerOptions, // icoLinkerOptions,
       pcosCustomOptions  // icoCustomOptions
       );
+      
+  CompilerOptionMacroNormal = 0;
+  CompilerOptionMacroPlatformIndependent = 1;
 
 type
-  TLocalSubstitutionEvent = function(const s: string): string of object;
+  TLocalSubstitutionEvent = function(const s: string;
+                                PlatformIndependent: boolean): string of object;
   TGetWritableOutputDirectory = procedure(var s: string) of object;
+  
+  TCompilerOptionsParseType = (
+    coptUnparsed,  // no macros resolved
+    coptParsed,    // all macros resolved
+    coptParsedPlatformIndependent // all but platform macros resolved
+    );
+    
+  TInheritedCompOptsParseTypesStrings =
+    array[TCompilerOptionsParseType] of TInheritedCompOptsStrings;
 
   { TParsedCompilerOptions }
 
@@ -145,16 +158,23 @@ type
     FOnLocalSubstitute: TLocalSubstitutionEvent;
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
+    // parsed
     ParsedValues: array[TParsedCompilerOptString] of string;
     ParsedStamp: array[TParsedCompilerOptString] of integer;
     Parsing: array[TParsedCompilerOptString] of boolean;
+    // parsed except for platform macros
+    ParsedPIValues: array[TParsedCompilerOptString] of string;
+    ParsedPIStamp: array[TParsedCompilerOptString] of integer;
+    ParsingPI: array[TParsedCompilerOptString] of boolean;
     constructor Create;
     function GetParsedValue(Option: TParsedCompilerOptString): string;
+    function GetParsedPIValue(Option: TParsedCompilerOptString): string;
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
                                const NewValue: string);
     function DoParseOption(const OptionText: string;
-                         Option: TParsedCompilerOptString;
-                         UseGetWritableOutputDirectory: boolean): string;
+                           Option: TParsedCompilerOptString;
+                           UseGetWritableOutputDirectory,
+                           PlatformIndependent: boolean): string;
     procedure Clear;
     procedure InvalidateAll;
     procedure InvalidateFiles;
@@ -169,7 +189,8 @@ type
 
   TParseStringEvent =
     function(Options: TParsedCompilerOptions;
-             const UnparsedValue: string): string of object;
+             const UnparsedValue: string; PlatformIndependent: boolean
+             ): string of object;
 
 
   { TBaseCompilerOptions }
@@ -217,8 +238,7 @@ type
   private
     FBaseDirectory: string;
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
-    fInheritedParsedOptions: TInheritedCompOptsStrings;
-    fInheritedUnparsedOptions: TInheritedCompOptsStrings;
+    fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
     fInheritedOptGraphStamps: integer;
     fLoaded: Boolean;
@@ -279,20 +299,28 @@ type
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
                                 RelativeToBaseDir: boolean;
-                                Parsed: boolean = true): string; virtual;
+                                Parsed: TCompilerOptionsParseType = coptParsed
+                                ): string; virtual;
     function GetDefaultMainSourceFileName: string; virtual;
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean;
-                         Parsed: boolean = true): string;
+                         Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetIncludePath(RelativeToBaseDir: boolean;
-                            Parsed: boolean = true): string;
+                            Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetSrcPath(RelativeToBaseDir: boolean;
-                        Parsed: boolean = true): string;
+                        Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetLibraryPath(RelativeToBaseDir: boolean;
-                            Parsed: boolean = true): string;
+                            Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
-                            Parsed: boolean = true): string;
+                            Parsed: TCompilerOptionsParseType = coptParsed): string;
+    function GetPath(Option: TParsedCompilerOptString;
+                     InheritedOption: TInheritedCompilerOption;
+                     RelativeToBaseDir: boolean;
+                     Parsed: TCompilerOptionsParseType): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
+                           InheritedOption: TInheritedCompilerOption;
+                           RelativeToBaseDir: boolean): string;
+    function GetParsedPIPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
     function GetUnparsedPath(Option: TParsedCompilerOptString;
@@ -396,9 +424,11 @@ var
 procedure IncreaseCompilerParseStamp;
 procedure IncreaseCompilerGraphStamp;
 function ParseString(Options: TParsedCompilerOptions;
-                     const UnparsedValue: string): string;
+                     const UnparsedValue: string;
+                     PlatformIndependent: boolean): string;
                      
-procedure GatherInheritedOptions(AddOptionsList: TList; Parsed: boolean;
+procedure GatherInheritedOptions(AddOptionsList: TList;
+  Parsed: TCompilerOptionsParseType;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 function InheritedOptionsToCompilerParameters(
   var InheritedOptionStrings: TInheritedCompOptsStrings;
@@ -444,12 +474,13 @@ begin
 end;
 
 function ParseString(Options: TParsedCompilerOptions;
-                     const UnparsedValue: string): string;
+  const UnparsedValue: string; PlatformIndependent: boolean): string;
 begin
-  Result:=OnParseString(Options,UnparsedValue);
+  Result:=OnParseString(Options,UnparsedValue,PlatformIndependent);
 end;
 
-procedure GatherInheritedOptions(AddOptionsList: TList; Parsed: boolean;
+procedure GatherInheritedOptions(AddOptionsList: TList;
+  Parsed: TCompilerOptionsParseType;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
 var
   i: Integer;
@@ -463,36 +494,72 @@ begin
       AddOptions:=TAdditionalCompilerOptions(AddOptionsList[i]);
       if (not (AddOptions is TAdditionalCompilerOptions)) then continue;
 
-      if Parsed then begin
-        // unit search path
-        InheritedOptionStrings[icoUnitPath]:=
-          MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
-                       AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
-        // include search path
-        InheritedOptionStrings[icoIncludePath]:=
-          MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
-                       AddOptions.ParsedOpts.GetParsedValue(pcosIncludePath));
-        // src search path
-        InheritedOptionStrings[icoSrcPath]:=
-          MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
-                       AddOptions.ParsedOpts.GetParsedValue(pcosSrcPath));
-        // object search path
-        InheritedOptionStrings[icoObjectPath]:=
-          MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
-                       AddOptions.ParsedOpts.GetParsedValue(pcosObjectPath));
-        // library search path
-        InheritedOptionStrings[icoLibraryPath]:=
-          MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
-                       AddOptions.ParsedOpts.GetParsedValue(pcosLibraryPath));
-        // linker options
-        InheritedOptionStrings[icoLinkerOptions]:=
-          MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
+      case Parsed of
+      coptParsed:
+        begin
+          // unit search path
+          InheritedOptionStrings[icoUnitPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
+                            AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
+          // include search path
+          InheritedOptionStrings[icoIncludePath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
+                         AddOptions.ParsedOpts.GetParsedValue(pcosIncludePath));
+          // src search path
+          InheritedOptionStrings[icoSrcPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
+                             AddOptions.ParsedOpts.GetParsedValue(pcosSrcPath));
+          // object search path
+          InheritedOptionStrings[icoObjectPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
+                          AddOptions.ParsedOpts.GetParsedValue(pcosObjectPath));
+          // library search path
+          InheritedOptionStrings[icoLibraryPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
+                         AddOptions.ParsedOpts.GetParsedValue(pcosLibraryPath));
+          // linker options
+          InheritedOptionStrings[icoLinkerOptions]:=
+            MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
                        AddOptions.ParsedOpts.GetParsedValue(pcosLinkerOptions));
-        // custom options
-        InheritedOptionStrings[icoCustomOptions]:=
-          MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
+          // custom options
+          InheritedOptionStrings[icoCustomOptions]:=
+            MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
                        AddOptions.ParsedOpts.GetParsedValue(pcosCustomOptions));
-      end else begin
+        end;
+
+      coptParsedPlatformIndependent:
+        begin
+          // unit search path
+          InheritedOptionStrings[icoUnitPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
+                          AddOptions.ParsedOpts.GetParsedPIValue(pcosUnitPath));
+          // include search path
+          InheritedOptionStrings[icoIncludePath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
+                       AddOptions.ParsedOpts.GetParsedPIValue(pcosIncludePath));
+          // src search path
+          InheritedOptionStrings[icoSrcPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoSrcPath],
+                           AddOptions.ParsedOpts.GetParsedPIValue(pcosSrcPath));
+          // object search path
+          InheritedOptionStrings[icoObjectPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoObjectPath],
+                        AddOptions.ParsedOpts.GetParsedPIValue(pcosObjectPath));
+          // library search path
+          InheritedOptionStrings[icoLibraryPath]:=
+            MergeSearchPaths(InheritedOptionStrings[icoLibraryPath],
+                       AddOptions.ParsedOpts.GetParsedPIValue(pcosLibraryPath));
+          // linker options
+          InheritedOptionStrings[icoLinkerOptions]:=
+            MergeLinkerOptions(InheritedOptionStrings[icoLinkerOptions],
+                     AddOptions.ParsedOpts.GetParsedPIValue(pcosLinkerOptions));
+          // custom options
+          InheritedOptionStrings[icoCustomOptions]:=
+            MergeCustomOptions(InheritedOptionStrings[icoCustomOptions],
+                     AddOptions.ParsedOpts.GetParsedPIValue(pcosCustomOptions));
+        end;
+
+      coptUnparsed:
         for o:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption)
         do begin
           UnparsedOption:=AddOptions.GetOption(o);
@@ -1197,14 +1264,15 @@ end;
 procedure TBaseCompilerOptions.ClearInheritedOptions;
 var
   i: TInheritedCompilerOption;
+  p: TCompilerOptionsParseType;
 begin
   fInheritedOptParseStamps:=InvalidParseStamp;
   fInheritedOptGraphStamps:=InvalidParseStamp;
-  for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
-  begin
-    fInheritedParsedOptions[i]:='';
-    fInheritedUnparsedOptions[i]:='';
-  end;
+  for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType) do
+    for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
+    begin
+      fInheritedOptions[p][i]:='';
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1271,13 +1339,14 @@ end;
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.GetInheritedOption(
     Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
-    Parsed: boolean = true): string;
+    Parsed: TCompilerOptionsParseType): string;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.GetInheritedOption(
   Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
-  Parsed: boolean): string;
+  Parsed: TCompilerOptionsParseType): string;
 var
   OptionsList: TList;
+  p: TCompilerOptionsParseType;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
   or (fInheritedOptGraphStamps<>CompilerGraphStamp)
@@ -1287,17 +1356,16 @@ begin
     OptionsList:=nil;
     GetInheritedCompilerOptions(OptionsList);
     if OptionsList<>nil then begin
-      GatherInheritedOptions(OptionsList,true,fInheritedParsedOptions);
-      GatherInheritedOptions(OptionsList,false,fInheritedUnparsedOptions);
+      for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType)
+      do begin
+        GatherInheritedOptions(OptionsList,p,fInheritedOptions[p]);
+      end;
       OptionsList.Free;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
     fInheritedOptGraphStamps:=CompilerGraphStamp;
   end;
-  if Parsed then
-    Result:=fInheritedParsedOptions[Option]
-  else
-    Result:=fInheritedUnparsedOptions[Option];
+  Result:=fInheritedOptions[Parsed][Option];
   if RelativeToBaseDir then begin
     if Option in [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath] then
       Result:=CreateRelativeSearchPath(Result,BaseDirectory);
@@ -1315,50 +1383,56 @@ begin
 end;
 
 function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
-  Parsed: boolean): string;
+  Parsed: TCompilerOptionsParseType = coptParsed): string;
 begin
-  if Parsed then
-    Result:=GetParsedPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir)
-  else
-    Result:=GetUnparsedPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir)
+  Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed);
 end;
 
 function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean;
-  Parsed: boolean): string;
+  Parsed: TCompilerOptionsParseType): string;
 begin
-  if Parsed then
-    Result:=GetParsedPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir)
-  else
-    Result:=GetUnparsedPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir);
+  Result:=GetPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir,Parsed);
 end;
 
 function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean;
-  Parsed: boolean): string;
+  Parsed: TCompilerOptionsParseType): string;
 begin
-  if Parsed then
-    Result:=GetParsedPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir)
-  else
-    Result:=GetUnparsedPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir);
+  Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed);
 end;
 
 function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;
-  Parsed: boolean): string;
+  Parsed: TCompilerOptionsParseType): string;
 begin
-  if Parsed then
-    Result:=GetParsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir)
-  else
-    Result:=GetUnparsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir);
+  Result:=GetPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir,Parsed);
 end;
 
 function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;
-  Parsed: boolean = true): string;
+  Parsed: TCompilerOptionsParseType): string;
 begin
-  if Parsed then
-    Result:=ParsedOpts.GetParsedValue(pcosOutputDir)
-  else
-    Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
+  case Parsed of
+  coptUnparsed: Result:=ParsedOpts.UnparsedValues[pcosOutputDir];
+  coptParsed: Result:=ParsedOpts.GetParsedValue(pcosOutputDir);
+  coptParsedPlatformIndependent:
+              Result:=ParsedOpts.GetParsedPIValue(pcosOutputDir);
+  end;
   if (not RelativeToBaseDir) then
     CreateAbsoluteSearchPath(Result,BaseDirectory);
+end;
+
+function TBaseCompilerOptions.GetPath(Option: TParsedCompilerOptString;
+  InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean;
+  Parsed: TCompilerOptionsParseType): string;
+begin
+  case Parsed of
+  coptUnparsed:
+    Result:=GetUnparsedPath(Option,InheritedOption,RelativeToBaseDir);
+  coptParsed:
+    Result:=GetParsedPath(Option,InheritedOption,RelativeToBaseDir);
+  coptParsedPlatformIndependent:
+    Result:=GetParsedPIPath(Option,InheritedOption,RelativeToBaseDir);
+  else
+    RaiseGDBException('');
+  end;
 end;
 
 function TBaseCompilerOptions.GetParsedPath(Option: TParsedCompilerOptString;
@@ -1383,7 +1457,7 @@ begin
   {$ENDIF}
 
   // inherited path
-  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,true);
+  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,coptParsed);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
@@ -1393,6 +1467,42 @@ begin
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' Result="',Result,'"');
+  {$ENDIF}
+end;
+
+function TBaseCompilerOptions.GetParsedPIPath(Option: TParsedCompilerOptString;
+  InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean
+  ): string;
+var
+  CurrentPath: String;
+  InheritedPath: String;
+begin
+  // current path
+  CurrentPath:=ParsedOpts.GetParsedPIValue(Option);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPIPath GetParsedPIValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
+
+  if (not RelativeToBaseDir) then
+    CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPIPath CreateAbsoluteSearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+  {$ENDIF}
+
+  // inherited path
+  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,
+                                    coptParsedPlatformIndependent);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPIPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
+  {$ENDIF}
+
+  Result:=MergeSearchPaths(CurrentPath,InheritedPath);
+  {$IFDEF VerbosePkgUnitPath}
+  if Option=pcosUnitPath then
+    debugln('TBaseCompilerOptions.GetParsedPIPath Total ',dbgsName(Self),' Result="',Result,'"');
   {$ENDIF}
 end;
 
@@ -1418,7 +1528,8 @@ begin
   {$ENDIF}
 
   // inherited path
-  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,false);
+  InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir,
+                                    coptUnparsed);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
     debugln('TBaseCompilerOptions.GetUnparsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
@@ -1439,7 +1550,7 @@ begin
   // custom options
   CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
   // inherited custom options
-  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,true);
+  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,coptParsed);
   // concatenate
   if CurCustomOptions<>'' then
     Result:=CurCustomOptions+' '+InhCustomOptions
@@ -1848,7 +1959,7 @@ Processor specific options:
 
   // inherited Linker options
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true,true);
+    InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true,coptParsed);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
@@ -1941,7 +2052,7 @@ Processor specific options:
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
   // inherited object path
-  InhObjectPath:=GetInheritedOption(icoObjectPath,true,true);
+  InhObjectPath:=GetInheritedOption(icoObjectPath,true,coptParsed);
   if (InhObjectPath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', InhObjectPath);
 
@@ -2496,7 +2607,7 @@ begin
     end;
     Parsing[Option]:=true;
     try
-      s:=DoParseOption(UnparsedValues[Option],Option,true);
+      s:=DoParseOption(UnparsedValues[Option],Option,true,false);
       ParsedValues[Option]:=s;
       ParsedStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -2509,6 +2620,31 @@ begin
   Result:=ParsedValues[Option];
 end;
 
+function TParsedCompilerOptions.GetParsedPIValue(
+  Option: TParsedCompilerOptString): string;
+var
+  s: String;
+begin
+  if ParsedPIStamp[Option]<>CompilerParseStamp then begin
+    if ParsingPI[Option] then begin
+      DebugLn('TParsedCompilerOptions.GetParsedPIValue Circle in Options: ',ParsedCompilerOptStringNames[Option]);
+      exit('');
+    end;
+    ParsingPI[Option]:=true;
+    try
+      s:=DoParseOption(UnparsedValues[Option],Option,false,true);
+      ParsedPIValues[Option]:=s;
+      ParsedPIStamp[Option]:=CompilerParseStamp;
+      //if Option=pcosCustomOptions then begin
+      //  DebugLn('TParsedCompilerOptions.GetParsedValue PARSED ',dbgs(ParsedStamp[Option]),' ',dbgs(CompilerParseStamp),' new="',ParsedValues[Option],'"');
+      //end;
+    finally
+      ParsingPI[Option]:=false;
+    end;
+  end;
+  Result:=ParsedPIValues[Option];
+end;
+
 procedure TParsedCompilerOptions.SetUnparsedValue(
   Option: TParsedCompilerOptString; const NewValue: string);
 begin
@@ -2516,23 +2652,26 @@ begin
   if InvalidateGraphOnChange then IncreaseCompilerGraphStamp;
   if Option=pcosBaseDir then
     InvalidateFiles
-  else
+  else begin
     ParsedStamp[Option]:=InvalidParseStamp;
+    ParsedPIStamp[Option]:=InvalidParseStamp;
+  end;
   UnparsedValues[Option]:=NewValue;
 end;
 
 function TParsedCompilerOptions.DoParseOption(const OptionText: string;
-  Option: TParsedCompilerOptString; UseGetWritableOutputDirectory: boolean
-  ): string;
+  Option: TParsedCompilerOptString; UseGetWritableOutputDirectory,
+  PlatformIndependent: boolean): string;
 var
   s: String;
   BaseDirectory: String;
 begin
   s:=OptionText;
   // parse locally
-  if Assigned(OnLocalSubstitute) then s:=OnLocalSubstitute(s);
+  if Assigned(OnLocalSubstitute) then
+    s:=OnLocalSubstitute(s,PlatformIndependent);
   // parse globally
-  s:=ParseString(Self,s);
+  s:=ParseString(Self,s,PlatformIndependent);
   // improve
   if Option=pcosBaseDir then
     // base directory (append path)
@@ -2541,7 +2680,10 @@ begin
     // make filename absolute
     s:=TrimFilename(s);
     if (s<>'') and (not FilenameIsAbsolute(s)) then begin
-      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if PlatformIndependent then
+        BaseDirectory:=GetParsedPIValue(pcosBaseDir)
+      else
+        BaseDirectory:=GetParsedValue(pcosBaseDir);
       if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
     end;
   end
@@ -2550,7 +2692,10 @@ begin
     s:=TrimFilename(s);
     if (s='') or (not FilenameIsAbsolute(s))
     and (Option<>pcosBaseDir) then begin
-      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if PlatformIndependent then
+        BaseDirectory:=GetParsedPIValue(pcosBaseDir)
+      else
+        BaseDirectory:=GetParsedValue(pcosBaseDir);
       if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
       if (Option in ParsedCompilerOutDirectories)
       and UseGetWritableOutputDirectory
@@ -2562,7 +2707,10 @@ begin
   end
   else if Option in ParsedCompilerSearchPaths then begin
     // make search paths absolute
-    BaseDirectory:=GetParsedValue(pcosBaseDir);
+    if PlatformIndependent then
+      BaseDirectory:=GetParsedPIValue(pcosBaseDir)
+    else
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
     s:=TrimSearchPath(s,BaseDirectory);
   end;
   Result:=s;
@@ -2576,6 +2724,7 @@ begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
   begin
     ParsedValues[Option]:='';
+    ParsedPIValues[Option]:='';
     UnparsedValues[Option]:='';
   end;
 end;
@@ -2585,7 +2734,10 @@ var
   Option: TParsedCompilerOptString;
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
+  begin
     ParsedStamp[Option]:=InvalidParseStamp;
+    ParsedPIStamp[Option]:=InvalidParseStamp;
+  end;
 end;
 
 procedure TParsedCompilerOptions.InvalidateFiles;
@@ -2593,8 +2745,10 @@ var
   Option: TParsedCompilerOptString;
 begin
   for Option:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
-    if (Option in ParsedCompilerFiles) then
+    if (Option in ParsedCompilerFiles) then begin
       ParsedStamp[Option]:=InvalidParseStamp;
+      ParsedPIStamp[Option]:=InvalidParseStamp;
+    end;
 end;
 
 { TCompilationToolOptions }

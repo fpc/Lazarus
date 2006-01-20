@@ -835,7 +835,10 @@ end;
 
 function TSynPasSyn.Func87: TtkTokenKind;
 begin
-  if KeyComp('String') then Result := tkKey else Result := tkIdentifier;
+  {$IFNDEF SYN_LAZARUS}
+  if KeyComp('String') then Result := tkKey else
+  {$ENDIF}
+  Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func88: TtkTokenKind;

@@ -802,12 +802,17 @@ type
     function GetTargetCPU(UseCache: boolean): string;
     function GetTargetOS(UseCache: boolean): string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s: string;
+                                  const Data: PtrInt;
                                   var Handled, Abort: boolean);
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
-                                        const UnparsedValue: string): string;
-    function OnMacroPromptFunction(const s:string; var Abort: boolean): string;
-    function OnMacroFuncMakeExe(const Filename:string; var Abort: boolean): string;
-    function OnMacroFuncProject(const Param: string; var Abort: boolean): string;
+                                        const UnparsedValue: string;
+                                        PlatformIndependent: boolean): string;
+    function OnMacroPromptFunction(const s:string; const Data: PtrInt;
+                                   var Abort: boolean): string;
+    function OnMacroFuncMakeExe(const Filename:string; const Data: PtrInt;
+                                var Abort: boolean): string;
+    function OnMacroFuncProject(const Param: string; const Data: PtrInt;
+                                var Abort: boolean): string;
     function OnMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function OnMacroFuncProjectIncPath(Data: Pointer): boolean;
     function OnMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -9070,7 +9075,7 @@ begin
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
-  var Handled, Abort: boolean);
+  const Data: PtrInt; var Handled, Abort: boolean);
 var MacroName:string;
 begin
   if TheMacro=nil then begin
@@ -9138,11 +9143,20 @@ begin
   end else if MacroName='lazarusdir' then begin
     s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
-    s:=GetLCLWidgetType(true);
+    if Data=CompilerOptionMacroPlatformIndependent then
+      s:='%(LCL_PLATFORM)'
+    else
+      s:=GetLCLWidgetType(true);
   end else if MacroName='targetcpu' then begin
-    s:=GetTargetCPU(true);
+    if Data=CompilerOptionMacroPlatformIndependent then
+      s:='%(CPU_TARGET)'
+    else
+      s:=GetTargetCPU(true);
   end else if MacroName='targetos' then begin
-    s:=GetTargetOS(true);
+    if Data=CompilerOptionMacroPlatformIndependent then
+      s:='%(OS_TARGET)'
+    else
+      s:=GetTargetOS(true);
   end else if MacroName='fpcsrcdir' then begin
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
@@ -9188,22 +9202,25 @@ begin
 end;
 
 function TMainIDE.OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
-  const UnparsedValue: string): string;
+  const UnparsedValue: string; PlatformIndependent: boolean): string;
 begin
   CurrentParsedCompilerOption:=Options;
   Result:=UnparsedValue;
-  MacroList.SubstituteStr(Result);
+  if PlatformIndependent then
+    MacroList.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
+  else
+    MacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
 end;
 
 function TMainIDE.OnMacroPromptFunction(const s:string;
-  var Abort: boolean):string;
+  const Data: PtrInt; var Abort: boolean):string;
 begin
   Result:=s;
   Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
 end;
 
-function TMainIDE.OnMacroFuncMakeExe(const Filename: string; var Abort: boolean
-  ): string;
+function TMainIDE.OnMacroFuncMakeExe(const Filename: string; const Data: PtrInt;
+  var Abort: boolean): string;
 var
   OldExt: String;
   ExeExt: String;
@@ -9216,8 +9233,8 @@ begin
   DebugLn('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
-function TMainIDE.OnMacroFuncProject(const Param: string; var Abort: boolean
-  ): string;
+function TMainIDE.OnMacroFuncProject(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
 begin
   if Project1<>nil then begin
     if CompareText(Param,'SrcPath')=0 then

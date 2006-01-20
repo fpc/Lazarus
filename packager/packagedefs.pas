@@ -529,7 +529,7 @@ type
 
 const
   pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
-    
+  
 type
   TIterateComponentClassesEvent =
     procedure(PkgComponent: TPkgComponent) of object;
@@ -607,7 +607,7 @@ type
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro; var s: string;
-      var Handled, Abort: boolean);
+      const Data: PtrInt; var Handled, Abort: boolean);
     procedure SetUserReadOnly(const AValue: boolean);
     procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
@@ -645,7 +645,8 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
-    function SubstitutePkgMacro(const s: string): string;
+    function SubstitutePkgMacro(const s: string;
+                                PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
@@ -1915,11 +1916,14 @@ end;
 { TLazPackage }
 
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
-  var s: string; var Handled, Abort: boolean);
+  var s: string; const Data: PtrInt; var Handled, Abort: boolean);
 begin
   if CompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
-    s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+    if Data=CompilerOptionMacroNormal then
+      s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
+    else
+      s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
   end
   else if CompareText(s,'PkgDir')=0 then begin
     Handled:=true;
@@ -1933,10 +1937,14 @@ begin
   FUserReadOnly:=AValue;
 end;
 
-function TLazPackage.SubstitutePkgMacro(const s: string): string;
+function TLazPackage.SubstitutePkgMacro(const s: string;
+  PlatformIndependent: boolean): string;
 begin
   Result:=s;
-  FMacros.SubstituteStr(Result);
+  if PlatformIndependent then
+    FMacros.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
+  else
+    FMacros.SubstituteStr(Result,CompilerOptionMacroNormal);
 end;
 
 procedure TLazPackage.WriteInheritedUnparsedOptions;

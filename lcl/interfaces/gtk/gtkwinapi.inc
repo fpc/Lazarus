@@ -8279,6 +8279,7 @@ end;
 function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
 {off $DEFINE VerboseFocus}
 
+
   function FindFocusWidget(AWidget: PGtkWidget): PGtkWidget;
   var
     WinWidgetInfo: PWinWidgetInfo;

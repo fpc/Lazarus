@@ -2,7 +2,7 @@ Package: lazarus
 Version: LAZVERSION
 Section: devel
 Priority: optional
-Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
+Maintainer: Mattias Gaertner <mattias@freepascal.org>
 Architecture: i386
 Depends: fp-compiler (>=FPCVERSION),
   fp-units-base (>=FPCVERSION), fp-units-db (>=FPCVERSION),

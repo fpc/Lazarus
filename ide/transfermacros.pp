@@ -52,9 +52,10 @@ type
   TTransferMacro = class;
 
   TOnSubstitution = procedure(TheMacro: TTransferMacro; var s:string;
-    var Handled, Abort: boolean) of object;
+    const Data: PtrInt; var Handled, Abort: boolean) of object;
 
-  TMacroFunction = function(const s:string; var Abort: boolean):string of object;
+  TMacroFunction = function(const s:string; const Data: PtrInt;
+                            var Abort: boolean):string of object;
   
   TTransferMacroFlag = (
     tmfInteractive
@@ -81,13 +82,13 @@ type
     procedure SetItems(Index: integer; NewMacro: TTransferMacro);
     procedure SetMarkUnhandledMacros(const AValue: boolean);
   protected
-    function MF_Ext(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_Path(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_Name(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_NameOnly(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_MakeDir(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_MakeFile(const Filename:string; var Abort: boolean):string; virtual;
-    function MF_Trim(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_Ext(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_Path(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_Name(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_NameOnly(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_MakeDir(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_MakeFile(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
+    function MF_Trim(const Filename:string; const Data: PtrInt; var Abort: boolean):string; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -99,7 +100,7 @@ type
     procedure Delete(Index: integer);
     procedure Add(NewMacro: TTransferMacro);
     function FindByName(const MacroName: string): TTransferMacro; virtual;
-    function SubstituteStr(var s:string): boolean; virtual;
+    function SubstituteStr(var s: string; const Data: PtrInt = 0): boolean; virtual;
     function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
@@ -221,7 +222,8 @@ begin
   //  debugln('TTransferMacroList.Add A ',NewMacro.Name);
 end;
 
-function TTransferMacroList.SubstituteStr(var s:string): boolean;
+function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt
+  ): boolean;
 var
   MacroStart,MacroEnd: integer;
   MacroName, MacroStr, MacroParam: string;
@@ -285,13 +287,13 @@ begin
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3,
                                   length(MacroStr)-length(MacroName)-3);
-        if not SubstituteStr(MacroParam) then begin
+        if not SubstituteStr(MacroParam,Data) then begin
           Result:=false;
           exit;
         end;
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroParam,Handled,Abort);
+          fOnSubstitution(AMacro,MacroParam,Data,Handled,Abort);
           if Handled then
             MacroStr:=MacroParam
           else if Abort then begin
@@ -299,9 +301,9 @@ begin
             exit;
           end;
         end;
-        if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction)) then
-        begin
-          MacroStr:=AMacro.MacroFunction(MacroParam,Abort);
+        if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction))
+        then begin
+          MacroStr:=AMacro.MacroFunction(MacroParam,Data,Abort);
           if Abort then begin
             Result:=false;
             exit;
@@ -313,7 +315,7 @@ begin
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then begin
-          fOnSubstitution(AMacro,MacroName,Handled,Abort);
+          fOnSubstitution(AMacro,MacroName,Data,Handled,Abort);
           if Handled then
             MacroStr:=MacroName
           else if Abort then begin
@@ -430,25 +432,25 @@ begin
 end;
 
 function TTransferMacroList.MF_Ext(const Filename:string;
-  var Abort: boolean):string;
+  const Data: PtrInt; var Abort: boolean):string;
 begin
   Result:=ExtractFileExt(Filename);
 end;
 
 function TTransferMacroList.MF_Path(const Filename:string; 
- var Abort: boolean):string;
+  const Data: PtrInt; var Abort: boolean):string;
 begin
   Result:=TrimFilename(ExtractFilePath(Filename));
 end;
 
 function TTransferMacroList.MF_Name(const Filename:string; 
-  var Abort: boolean):string;
+  const Data: PtrInt; var Abort: boolean):string;
 begin
   Result:=ExtractFilename(Filename);
 end;
 
 function TTransferMacroList.MF_NameOnly(const Filename:string;
-  var Abort: boolean):string;
+  const Data: PtrInt; var Abort: boolean):string;
 var Ext:string;
 begin
   Result:=ExtractFileName(Filename);
@@ -457,7 +459,7 @@ begin
 end;
 
 function TTransferMacroList.MF_MakeDir(const Filename: string;
-  var Abort: boolean): string;
+  const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:=Filename;
   if (Result<>'') and (Result[length(Result)]<>PathDelim) then
@@ -466,7 +468,7 @@ begin
 end;
 
 function TTransferMacroList.MF_MakeFile(const Filename: string;
-  var Abort: boolean): string;
+  const Data: PtrInt; var Abort: boolean): string;
 var
   ChompLen: integer;
 begin
@@ -480,8 +482,8 @@ begin
   Result:=TrimFilename(Result);
 end;
 
-function TTransferMacroList.MF_Trim(const Filename: string; var Abort: boolean
-  ): string;
+function TTransferMacroList.MF_Trim(const Filename: string; const Data: PtrInt;
+  var Abort: boolean): string;
 begin
   Result:=TrimFilename(Filename);
 end;
