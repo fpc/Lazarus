@@ -5,7 +5,7 @@ name=runtimetypeinfocontrols
 version=0.1
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
 options=-dLCL -dLCLgtk -S2 -gl
 

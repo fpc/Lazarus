@@ -5,7 +5,7 @@ name=printer4lazarus
 version=0.0.0.2
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
 options=-dUseCache  -dLCL -dLCLgtk -S2 -gl
 

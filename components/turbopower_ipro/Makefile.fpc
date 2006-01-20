@@ -5,7 +5,7 @@ name=turbopoweripro
 version=1.0
 
 [compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
 options=-dLCL -dLCLgtk -S2 -gl
 

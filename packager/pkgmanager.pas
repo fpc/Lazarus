@@ -1230,6 +1230,8 @@ var
     Result:=CreateRelativePath(TrimFilename(Result),APackage.Directory);
     if PathDelimNeedsReplace then
       Replace(Result,PathDelim,'/');
+    // trim trailing PathDelim, as windows does not like it
+    Result:=ChompPathDelim(Result);
   end;
   
   function ConvertLazarusOptionsToMakefileOptions(const s: string): string;
