@@ -59,6 +59,7 @@ uses
   {$IFDEF BigIDE}
   RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE, DBFLaz,
   TurboPowerIPro, JPEGForLazarus, FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
+  SQLDBLaz,
   {$ENDIF}
   MainBase;
 

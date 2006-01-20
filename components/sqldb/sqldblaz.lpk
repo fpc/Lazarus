@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <Name Value="Sqldblaz"/>
+    <Name Value="SQLDBLaz"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
-      <Version Value="3"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
-        <LCLWidgetType Value="gtk"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="Lazarus package for the FCL SQLdb components."/>
     <License Value="Modified LGPL"/>
-    <Version Major="1" Minor="0" Release="0"/>
+    <Version Major="1"/>
     <Files Count="5">
       <Item1>
         <Filename Value="registersqldb.pas"/>

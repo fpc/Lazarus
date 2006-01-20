@@ -267,7 +267,8 @@ BIG_IDE_OPTIONS=-dBigIDE \
   -Fu../components/jpeg/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET)
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
 endif

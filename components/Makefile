@@ -1779,4 +1779,5 @@ bigidecomponents: all
 	$(MAKE) -C fpcunit
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates
+	$(MAKE) -C sqldb
 cleanlaz: clean
