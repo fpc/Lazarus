@@ -57,7 +57,8 @@ uses
   {$I staticpackages.inc}
   {$ENDIF}
   {$IFDEF BigIDE}
-  RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE,
+  RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE, DBFLaz,
+  TurboPowerIPro,
   {$ENDIF}
   MainBase;
 

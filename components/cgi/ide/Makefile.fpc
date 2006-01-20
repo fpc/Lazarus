@@ -6,7 +6,7 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
-unitdir=lib/i386-linux/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+unitdir=../lib/$(CPU_TARGET)-$(OS_TARGET)/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
 options=-gl
 
 [target]

@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="units/$(TargetCPU)/$(TargetOS)"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -16,6 +16,7 @@
           <ShowHints Value="False"/>
         </Verbosity>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="Turbopower Internet Pro - Lazarus Package"/>

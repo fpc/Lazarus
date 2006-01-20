@@ -4,15 +4,16 @@
     <Name Value="DBFLaz"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="2"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="DBase (DBF) package for Lazarus"/>

@@ -1,27 +1,28 @@
-#   Makefile.fpc for cgiLaz 0.1.1
+#   Makefile.fpc for TurboPowerIPro 1.0
 
 [package]
-name=cgilaz
-version=0.1.1
+name=turbopoweripro
+version=1.0
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
-options=-gl
+options=-dLCL -dLCLgtk -S2 -gl
 
 [target]
-units=cgilaz.pas
+units=turbopoweripro.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [rules]
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/cgilaz$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweripro$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) cgilaz$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweripro$(PPUEXT)

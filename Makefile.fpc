@@ -37,7 +37,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg bigide starter tools all clean cleanide purge examples install
+.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter tools all clean cleanide purge examples install
 
 #-----------------------------------------------------------------------------
 ide: 
@@ -48,7 +48,10 @@ idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide:
+bigide: lcl packager/registration ideintf designer packager bigidecomponents idebig starter
+
+#-----------------------------------------------------------------------------
+idebig:
 	$(MAKE) -C ide bigide
 
 #-----------------------------------------------------------------------------

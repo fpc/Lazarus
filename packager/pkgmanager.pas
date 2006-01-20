@@ -1232,6 +1232,13 @@ var
       Replace(Result,PathDelim,'/');
   end;
   
+  function ConvertLazarusOptionsToMakefileOptions(const s: string): string;
+  begin
+    Result:=ConvertPIMakrosToMakefileMakros(s);
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
+  end;
+
 var
   s: String;
   e: string;
@@ -1243,6 +1250,7 @@ var
   FPCMakeTool: TExternalToolOptions;
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
+  CustomOptions: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -1253,11 +1261,19 @@ begin
                                                  coptParsedPlatformIndependent);
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
                                                  coptParsedPlatformIndependent);
+  CustomOptions:=APackage.CompilerOptions.GetCustomOptions;
+  if APackage.CompilerOptions.D2Extensions then
+    CustomOptions:=CustomOptions+' -S2';
+  if APackage.CompilerOptions.UseLineInfoUnit then
+    CustomOptions:=CustomOptions+' -gl';
+  // TODO: other options
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
+  CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
+  
 
   e:=LineEnding;
   s:='';
@@ -1270,7 +1286,7 @@ begin
   s:=s+'[compiler]'+e;
   s:=s+'unittargetdir='+UnitOutputPath+e;
   s:=s+'unitdir='+UnitPath+e;
-  s:=s+'options=-gl'+e; // ToDo do the other options
+  s:=s+'options='+CustomOptions+e; // ToDo do the other options
   s:=s+''+e;
   s:=s+'[target]'+e;
   s:=s+'units='+MainSrcFile+e;
@@ -1280,6 +1296,7 @@ begin
   s:=s+'files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \'+e;
   s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \'+e;
   s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \'+e;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \'+e;
   s:=s+'      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))'+e;
   s:=s+''+e;
   s:=s+'[rules]'+e;

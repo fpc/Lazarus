@@ -25,5 +25,7 @@ bigidecomponents: all
         $(MAKE) -C printers
         $(MAKE) -C cgi
         $(MAKE) -C cgi/ide
+        $(MAKE) -C tdbf
+        $(MAKE) -C turbopower_ipro
 
 cleanlaz: clean

@@ -96,7 +96,9 @@ BIG_IDE_OPTIONS=-dBigIDE \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)
 
 #-----------------------------------------------------------------------------
 [rules]

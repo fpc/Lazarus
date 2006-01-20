@@ -1,7 +1,7 @@
-#   Makefile.fpc for cgiLaz 0.1.1
+#   Makefile.fpc for DBFLaz 0.1.1
 
 [package]
-name=cgilaz
+name=dbflaz
 version=0.1.1
 
 [compiler]
@@ -10,7 +10,7 @@ unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET
 options=-gl
 
 [target]
-units=cgilaz.pas
+units=dbflaz.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -22,6 +22,6 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/cgilaz$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/dbflaz$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) cgilaz$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) dbflaz$(PPUEXT)
