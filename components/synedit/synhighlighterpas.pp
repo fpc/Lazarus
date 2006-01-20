@@ -185,13 +185,16 @@ type
     {$endif}
     function Func117: TtkTokenKind;
     function Func126: TtkTokenKind;
+    function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
+    function Func130: TtkTokenKind;
     function Func132: TtkTokenKind;
     function Func133: TtkTokenKind;
     function Func136: TtkTokenKind;
     function Func141: TtkTokenKind;
     function Func143: TtkTokenKind;
     function Func166: TtkTokenKind;
+    function Func167: TtkTokenKind;
     function Func168: TtkTokenKind;
     function Func191: TtkTokenKind;
     function AltFunc: TtkTokenKind;
@@ -408,13 +411,22 @@ begin
   {$endif}
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[126] := @Func126;
+  {$ifdef SYN_LAZARUS}
+  fIdentFuncTable[128] := @Func128;
+  {$endif}
   fIdentFuncTable[129] := @Func129;
+  {$ifdef SYN_LAZARUS}
+  fIdentFuncTable[130] := @Func130;
+  {$endif}
   fIdentFuncTable[132] := @Func132;
   fIdentFuncTable[133] := @Func133;
   fIdentFuncTable[136] := @Func136;
   fIdentFuncTable[141] := @Func141;
   fIdentFuncTable[143] := @Func143;
   fIdentFuncTable[166] := @Func166;
+  {$ifdef SYN_LAZARUS}
+  fIdentFuncTable[167] := @Func167;
+  {$endif}
   fIdentFuncTable[168] := @Func168;
   fIdentFuncTable[191] := @Func191;
   {$ELSE}
@@ -508,7 +520,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'specialize')=0 then writeln('TSynPasSyn.KeyHash ',copy(fLine,fToIdent,fStringLen),'=',Result);
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'widestring')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -835,10 +847,7 @@ end;
 
 function TSynPasSyn.Func87: TtkTokenKind;
 begin
-  {$IFNDEF SYN_LAZARUS}
-  if KeyComp('String') then Result := tkKey else
-  {$ENDIF}
-  Result := tkIdentifier;
+  if KeyComp('String') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func88: TtkTokenKind;
@@ -951,9 +960,19 @@ begin
   end else Result := tkIdentifier;
 end;
 
+function TSynPasSyn.Func128: TtkTokenKind;
+begin
+  if KeyComp('Widestring') then Result := tkKey else Result := tkIdentifier;
+end;
+
 function TSynPasSyn.Func129: TtkTokenKind;
 begin
   if KeyComp('Dispinterface') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func130: TtkTokenKind;
+begin
+  if KeyComp('Ansistring') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func132: TtkTokenKind;
@@ -993,6 +1012,11 @@ function TSynPasSyn.Func166: TtkTokenKind;
 begin
   if KeyComp('Constructor') then Result := tkKey else
     if KeyComp('Implementation') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func167: TtkTokenKind;
+begin
+  if KeyComp('Shortstring') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func168: TtkTokenKind;
