@@ -37,7 +37,7 @@ Var
   Cat : TIDECommandCategory;
   
 begin
-  Key:=IDEShortCut(VK_F,[SSctrl,ssShift],VK_UNKNOWN,[]);
+  Key:=IDEShortCut(VK_P,[SSctrl,ssShift],VK_UNKNOWN,[]);
 {$ifndef USECustomCategory}
   Cat:=IDECommandList.CreateCategory(Nil,
                                     SCatFormatting,
@@ -50,7 +50,7 @@ begin
                                          SDescrPFSelection,
                                          SCmdPFSelection,
                                          Key);
-  Key:=IDEShortCut(VK_F,[SSctrl,ssAlt],VK_UNKNOWN,[]);
+  Key:=IDEShortCut(VK_P,[SSctrl,ssAlt],VK_UNKNOWN,[]);
   CmdFormatFile:=RegisterIDECommand(Cat,
                                     SDescrPFFile,
                                     SCmdPFFile,
