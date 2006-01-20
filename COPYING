@@ -7,7 +7,9 @@ general, each file contains a header, describing the license of the file.
 
 The license directory tree:
 
-<lazarus>/          (mostly GPL2, but with a few files under modified LGPL)
+<lazarus>/
+ |
+ +- ide             (mostly GPL2, but with a few files under modified LGPL)
  |
  +- designer        (mostly GPL2, but with a few files under modified LGPL)
  |
