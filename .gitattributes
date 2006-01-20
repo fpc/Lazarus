@@ -4,6 +4,7 @@ components/README.txt svneol=native#text/plain
 components/cgi/Makefile svneol=native#text/plain
 components/cgi/Makefile.fpc svneol=native#text/plain
 components/cgi/cgilaz.lpk svneol=native#text/pascal
+components/cgi/cgilaz.pas svneol=native#text/plain
 components/cgi/cgimodules.pas svneol=native#text/pascal
 components/cgi/ide/Makefile svneol=native#text/plain
 components/cgi/ide/Makefile.fpc svneol=native#text/plain
