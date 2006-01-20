@@ -58,7 +58,7 @@ uses
   {$ENDIF}
   {$IFDEF BigIDE}
   RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE, DBFLaz,
-  TurboPowerIPro,
+  TurboPowerIPro, LazJPEG, FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
   {$ENDIF}
   MainBase;
 

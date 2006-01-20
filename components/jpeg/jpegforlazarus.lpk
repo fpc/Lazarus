@@ -13,6 +13,7 @@
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="JPEG for Lazarus.

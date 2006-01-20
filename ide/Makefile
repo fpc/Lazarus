@@ -263,7 +263,11 @@ BIG_IDE_OPTIONS=-dBigIDE \
   -Fu../components/cgi/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/jpeg/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET)
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
 endif

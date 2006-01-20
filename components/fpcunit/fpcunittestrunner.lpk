@@ -1,20 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <PathDelim Value="\"/>
     <Name Value="FPCUnitTestRunner"/>
     <Author Value="Vincent Snijders"/>
     <CompilerOptions>
-      <Version Value="2"/>
-      <PathDelim Value="\"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="FPCUnit gui test runner form"/>
@@ -37,7 +36,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

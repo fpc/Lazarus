@@ -1775,4 +1775,8 @@ bigidecomponents: all
 	$(MAKE) -C cgi/ide
 	$(MAKE) -C tdbf
 	$(MAKE) -C turbopower_ipro
+	$(MAKE) -C jpeg
+	$(MAKE) -C fpcunit
+	$(MAKE) -C fpcunit/ide
+	$(MAKE) -C projecttemplates
 cleanlaz: clean
