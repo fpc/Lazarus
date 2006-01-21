@@ -1300,6 +1300,17 @@ begin
   s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \'+e;
   s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \'+e;
   s:=s+'      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))'+e;
+  s:=s+'[prerules]'+e;
+  s:=s+'# LCL Platform'+e;
+  s:=s+'ifndef LCL_PLATFORM'+e;
+  s:=s+'ifeq ($(OS_TARGET),win32)'+e;
+  s:=s+'LCL_PLATFORM=win32'+e;
+  s:=s+'else'+e;
+  s:=s+'LCL_PLATFORM=gtk'+e;
+  s:=s+'endif'+e;
+  s:=s+'endif'+e;
+  s:=s+'export LCL_PLATFORM'+e;
+
   s:=s+''+e;
   s:=s+'[rules]'+e;
   s:=s+'.PHONY: cleartarget all'+e;

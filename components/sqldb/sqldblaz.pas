@@ -2,7 +2,7 @@
 This source is only used to compile and install the package.
  }
 
-unit Sqldblaz; 
+unit SQLDBLaz; 
 
 interface
 
@@ -18,5 +18,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('Sqldblaz', @Register); 
+  RegisterPackage('SQLDBLaz', @Register); 
 end.

@@ -9115,16 +9115,12 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
-var
-  OldOptions: TSynEditorOptions2;
 begin
   if (Value <> fOptions2) then begin
-    OldOptions := fOptions2;
     fOptions2 := Value;
     // Reset column position in case Cursor is past EOL.
     if not (eoScrollPastEol in fOptions) then
       CaretX := CaretX;
-
   end;
 end;
 {$ENDIF}

@@ -231,6 +231,14 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=cgilaz
 override PACKAGE_VERSION=0.1.1
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_UNITS+=cgilaz.pas
 endif
