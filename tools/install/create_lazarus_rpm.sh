@@ -28,9 +28,9 @@ SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
 # download lazarus svn if necessary
 echo "creating lazarus tgz ..."
-if [ ! -f $SrcTGZ ]; then
+#if [ ! -f $SrcTGZ ]; then
   sh create_lazarus_export_tgz.sh $SrcTGZ
-fi
+#fi
 
 # create spec file
 echo "creating lazarus spec file ..."
