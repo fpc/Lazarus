@@ -203,6 +203,7 @@ begin
       FCanvas.Brush.Color:=clWindow;
       FCanvas.Font.Color:=clWindowText;
     end;
+    //DebugLn('TCustomListBox.LMDrawListItem ',DbgSName(Self));
     DrawItem(ItemID, Area, ItemState);
     if odFocused in ItemState then
       {DrawFocusRect(hDC, rcItem)};
@@ -369,6 +370,7 @@ procedure TCustomListBox.DrawItem(Index: Integer; ARect: TRect;
   Flags: Longint;
   Data: String;}
 begin
+  //DebugLn('TCustomListBox.DrawItem ',DbgSName(Self));
   if Assigned(FOnDrawItem) then
     FOnDrawItem(Self, Index, ARect, State)
   else if not (odPainted in State) then

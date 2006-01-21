@@ -739,6 +739,7 @@ var
   IconHeight: Integer;
   CurRect: TRect;
 begin
+  //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem START');
   if LazPackage=nil then exit;
   if (Index<0) or (Index>=FPlugins.Count) then exit;
   CurObject:=FPlugins.Objects[Index];
@@ -757,6 +758,7 @@ begin
       CurRect.Right:=ARect.Left+25;
       FillRect(CurRect);
       CurIcon:=CurComponent.Icon;
+      //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem ',DbgSName(CurIcon),' ',CurComponent.ComponentClass.ClassName);
       if CurIcon<>nil then begin
         IconWidth:=CurIcon.Width;
         IconHeight:=CurIcon.Height;
@@ -1427,54 +1429,56 @@ begin
   AddToUsesPkgSectionCheckBox:=TCheckBox.Create(Self);
   with AddToUsesPkgSectionCheckBox do begin
     Name:='AddToUsesPkgSectionCheckBox';
-    Parent:=FilePropsGroupBox;
     Caption:=lisPkgMangUseUnit;
     UseOnChange:=true;
     OnClick:=@AddToUsesPkgSectionCheckBoxClick;
     Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
     ShowHint:=true;
+    Parent:=FilePropsGroupBox;
   end;
 
   RegisteredPluginsGroupBox:=TGroupBox.Create(Self);
   with RegisteredPluginsGroupBox do begin
     Name:='RegisteredPluginsGroupBox';
-    Parent:=FilePropsGroupBox;
     Caption:=lisPckEditRegisteredPlugins;
+    Parent:=FilePropsGroupBox;
   end;
 
   RegisteredListBox:=TListBox.Create(Self);
   with RegisteredListBox do begin
     Name:='RegisteredListBox';
-    Parent:=RegisteredPluginsGroupBox;
     Align:=alClient;
     ItemHeight:=23;
     OnDrawItem:=@RegisteredListBoxDrawItem;
+    Style:= lbOwnerDrawFixed;
+    Parent:=RegisteredPluginsGroupBox;
+    //DebugLn('TPackageEditorForm.SetupComponents AAAAAAAAAA');
   end;
   
   UseMinVersionCheckBox:=TCheckBox.Create(Self);
   with UseMinVersionCheckBox do begin
     Name:='UseMinVersionCheckBox';
-    Parent:=FilePropsGroupBox;
     Caption:=lisPckEditMinimumVersion;
     UseOnChange:=true;
     OnClick:=@UseMinVersionCheckBoxClick;
+    Parent:=FilePropsGroupBox;
   end;
   
   MinVersionEdit:=TEdit.Create(Self);
   with MinVersionEdit do begin
     Name:='MinVersionEdit';
-    Parent:=FilePropsGroupBox;
     Text:='';
     OnChange:=@MinVersionEditChange;
+    Parent:=FilePropsGroupBox;
   end;
 
   UseMaxVersionCheckBox:=TCheckBox.Create(Self);
   with UseMaxVersionCheckBox do begin
     Name:='UseMaxVersionCheckBox';
-    Parent:=FilePropsGroupBox;
     Caption:=lisPckEditMaximumVersion;
     UseOnChange:=true;
     OnClick:=@UseMaxVersionCheckBoxClick;
+    Parent:=FilePropsGroupBox;
   end;
 
   MaxVersionEdit:=TEdit.Create(Self);

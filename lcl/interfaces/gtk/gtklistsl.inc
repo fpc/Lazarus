@@ -110,9 +110,7 @@ begin
       DC:=GetDC(HWnd(Widget));
       ItemState:=State;
     end;
-    //DebugLn('gtkListItemDrawCB A LCLList=',DbgS(LCLList),' Widget=',DbgS(Widget),' ',DbgS(Data));
-    //DebugLn('gtkListItemDrawCB B ',LCLList.ClassName,' ',DbgS(LCLList.Owner);
-    //DebugLn('gtkListItemDrawCB C ',LCLList.Owner.ClassName);
+    //DebugLn('gtkListItemDrawAfterCB ',DbgSName(LCLList.Owner),' Widget=',DbgS(Widget));
     Result := DeliverMessage(LCLList.Owner, Msg)=0;
     ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
   finally
