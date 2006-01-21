@@ -555,13 +555,14 @@ procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string
     i: Integer;
     LazPackageID: TLazPackageID;
   begin
-    for i:=0 to List.Count-1 do begin
-      LazPackageID:=TLazPackageID(List[i]);
-      if CompareText(LazPackageID.Name,ID.Name)=0 then begin
-        Result:=true;
-        exit;
+    if List<>nil then
+      for i:=0 to List.Count-1 do begin
+        LazPackageID:=TLazPackageID(List[i]);
+        if CompareText(LazPackageID.Name,ID.Name)=0 then begin
+          Result:=true;
+          exit;
+        end;
       end;
-    end;
     Result:=false;
   end;
   
@@ -600,6 +601,8 @@ begin
       // assign new list
       FNewInstalledPackages:=NewList;
       NewList:=nil;
+      UpdateNewInstalledPackages;
+      UpdateButtonStates;
     finally
       XMLConfig.Free;
       LazPackageID.Free;
