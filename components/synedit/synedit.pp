@@ -198,6 +198,13 @@ type
     {$ENDIF}
     );
   TSynEditorOptions = set of TSynEditorOption;
+  
+  {$IFDEF SYN_LAZARUS}
+  TSynEditorOption2 = (
+    eoCaretSkipsSelection      // caret skips selection on VK_LEFT/VK_RIGHT
+  );
+  TSynEditorOptions2 = set of TSynEditorOption2;
+  {$ENDIF}
 
 const
   SYNEDIT_DEFAULT_OPTIONS = [
@@ -214,6 +221,11 @@ const
     eoBracketHighlight
     {$ENDIF}
     ];
+
+  {$IFDEF SYN_LAZARUS}
+  SYNEDIT_DEFAULT_OPTIONS2 = [
+    ];
+  {$ENDIF}
 
 type
 // use scAll to update a statusbar when another TCustomSynEdit got the focus
@@ -419,6 +431,9 @@ type
     fInvalidateRect: TRect;
     fStateFlags: TSynStateFlags;
     fOptions: TSynEditorOptions;
+    {$IFDEF SYN_LAZARUS}
+    fOptions2: TSynEditorOptions2;
+    {$ENDIF}
     fStatusChanges: TSynStatusChanges;
     fLastKey: word;
     fLastShiftState: TShiftState;
@@ -539,6 +554,9 @@ type
     procedure SetMaxUndo(const Value: Integer);
     procedure SetModified(Value: boolean);
     procedure SetOptions(Value: TSynEditorOptions);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetOptions2(const Value: TSynEditorOptions2);
+    {$ENDIF}
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
     procedure SetRightEdge(Value: Integer);
     procedure SetRightEdgeColor(Value: TColor);
@@ -847,6 +865,10 @@ type
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property Options: TSynEditorOptions read fOptions write SetOptions
       default SYNEDIT_DEFAULT_OPTIONS;
+    {$IFDEF SYN_LAZARUS}
+    property Options2: TSynEditorOptions2 read fOptions2 write SetOptions2
+      default SYNEDIT_DEFAULT_OPTIONS2;
+    {$ENDIF}
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
       write SetOverwriteCaret default ctBlock;
     property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
@@ -957,6 +979,9 @@ type
     property MaxLeftChar;
     property MaxUndo;
     property Options;
+    {$IFDEF SYN_LAZARUS}
+    property Options2;
+    {$ENDIF}
     property OverwriteCaret;
     property ReadOnly;
     property RightEdge;
@@ -983,6 +1008,7 @@ type
 
 {$IFDEF SYN_LAZARUS}
 function SynEditClipboardFormat: TClipboardFormat;
+function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
 {$ENDIF}
 
 implementation
@@ -1009,6 +1035,20 @@ begin
   if fSynEditClipboardFormat=0 then
     fSynEditClipboardFormat := ClipboardRegisterFormat(SYNEDIT_CLIPBOARD_FORMAT);
   Result:=fSynEditClipboardFormat;
+end;
+
+function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
+begin
+  if (FirstCaret.Y<SecondCaret.Y) then
+    Result:=1
+  else if (FirstCaret.Y>SecondCaret.Y) then
+    Result:=-1
+  else if (FirstCaret.X<SecondCaret.X) then
+    Result:=1
+  else if (FirstCaret.X>SecondCaret.X) then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
@@ -1412,6 +1452,9 @@ begin
   // find / replace
   fTSearch := TSynEditSearch.Create;
   fOptions := SYNEDIT_DEFAULT_OPTIONS;
+  {$IFDEF SYN_LAZARUS}
+  fOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
+  {$ENDIF}
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
@@ -7382,11 +7425,25 @@ begin
 // horizontal caret movement or selection
       ecLeft, ecSelLeft:
         begin
-          MoveCaretHorz(-1, Command = ecSelLeft);
+          {$IFDEF SYN_LAZARUS}
+          if (eoCaretSkipsSelection in Options2) and (Command=ecLeft)
+          and SelAvail and (CompareCarets(LogicalCaretXY,BlockEnd)=0) then begin
+            DebugLn('TCustomSynEdit.ExecuteCommand ecLeft');
+            CaretXY:=LogicalToPhysicalPos(BlockBegin);
+          end else
+          {$ENDIF}
+            MoveCaretHorz(-1, Command = ecSelLeft);
         end;
       ecRight, ecSelRight:
         begin
-          MoveCaretHorz(1, Command = ecSelRight);
+          {$IFDEF SYN_LAZARUS}
+          if (eoCaretSkipsSelection in Options2) and (Command=ecRight)
+          and SelAvail and (CompareCarets(LogicalCaretXY,BlockBegin)=0) then begin
+            DebugLn('TCustomSynEdit.ExecuteCommand ecRight');
+            CaretXY:=LogicalToPhysicalPos(BlockEnd);
+          end else
+          {$ENDIF}
+            MoveCaretHorz(1, Command = ecSelRight);
         end;
       ecPageLeft, ecSelPageLeft:
         begin
@@ -9055,6 +9112,22 @@ begin
     {$ENDIF}
   end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetOptions2(const Value: TSynEditorOptions2);
+var
+  OldOptions: TSynEditorOptions2;
+begin
+  if (Value <> fOptions2) then begin
+    OldOptions := fOptions2;
+    fOptions2 := Value;
+    // Reset column position in case Cursor is past EOL.
+    if not (eoScrollPastEol in fOptions) then
+      CaretX := CaretX;
+
+  end;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
 begin
