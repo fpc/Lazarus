@@ -7428,7 +7428,6 @@ begin
           {$IFDEF SYN_LAZARUS}
           if (eoCaretSkipsSelection in Options2) and (Command=ecLeft)
           and SelAvail and (CompareCarets(LogicalCaretXY,BlockEnd)=0) then begin
-            DebugLn('TCustomSynEdit.ExecuteCommand ecLeft');
             CaretXY:=LogicalToPhysicalPos(BlockBegin);
           end else
           {$ENDIF}
@@ -7439,7 +7438,6 @@ begin
           {$IFDEF SYN_LAZARUS}
           if (eoCaretSkipsSelection in Options2) and (Command=ecRight)
           and SelAvail and (CompareCarets(LogicalCaretXY,BlockBegin)=0) then begin
-            DebugLn('TCustomSynEdit.ExecuteCommand ecRight');
             CaretXY:=LogicalToPhysicalPos(BlockEnd);
           end else
           {$ENDIF}

@@ -136,6 +136,7 @@ const
 const
   SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint]
                                                   + [eoHalfPageScroll];
+  SynEditDefaultOptions2 = SYNEDIT_DEFAULT_OPTIONS2;
 
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
@@ -193,6 +194,7 @@ type
     fFindTextAtCursor: Boolean;
     fShowTabCloseButtons: Boolean;
     fSynEditOptions: TSynEditorOptions;
+    fSynEditOptions2: TSynEditorOptions2;
     fCtrlMouseLinks: Boolean;
     fUndoAfterSave: Boolean;
     fUseSyntaxHighlight: Boolean;
@@ -269,6 +271,8 @@ type
     // general options
     property SynEditOptions: TSynEditorOptions
       read fSynEditOptions write fSynEditOptions default SynEditDefaultOptions;
+    property SynEditOptions2: TSynEditorOptions2
+      read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
     property CtrlMouseLinks: Boolean
       read fCtrlMouseLinks write fCtrlMouseLinks;
     property ShowTabCloseButtons: Boolean
@@ -350,11 +354,11 @@ type
     ImageList:    TImageList;
 
     // general options
-    Page1: TPage;
-    Page2: TPage;
-    Page3: TPage;
-    Page4: TPage;
-    Page5: TPage;
+    GeneralPage: TPage;
+    DisplayPage: TPage;
+    KeymappingPage: TPage;
+    ColorPage: TPage;
+    CodetoolsPage: TPage;
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     UndoLimitComboBox: TComboBox;
@@ -1220,6 +1224,7 @@ var
   SynEditOpt: TSynEditorOption;
   SynEditOptName: String;
   i: Integer;
+  SynEditOpt2: TSynEditorOption2;
 begin
   try
     // general options
@@ -1271,6 +1276,21 @@ begin
           Include(fSynEditOptions, SynEditOpt)
         else
           Exclude(fSynEditOptions, SynEditOpt);
+    end;
+    for SynEditOpt2 := Low(TSynEditorOption2) to High(TSynEditorOption2) do
+    begin
+      case SynEditOpt2 of
+        eoCaretSkipsSelection:
+          SynEditOptName := 'CaretSkipsSelection';
+        else
+          SynEditOptName := '';
+      end;
+      if SynEditOptName <> '' then
+        if XMLConfig.GetValue('EditorOptions/General/Editor/' + SynEditOptName,
+          SynEditOpt2 in SynEditDefaultOptions2) then
+          Include(fSynEditOptions2, SynEditOpt2)
+        else
+          Exclude(fSynEditOptions2, SynEditOpt2);
     end;
 
     fCtrlMouseLinks :=
@@ -1370,6 +1390,7 @@ var
   SynEditOpt: TSynEditorOption;
   SynEditOptName: String;
   i: Integer;
+  SynEditOpt2: TSynEditorOption2;
 begin
   try
     XMLConfig.SetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -1420,6 +1441,19 @@ begin
       if SynEditOptName <> '' then
         XMLConfig.SetDeleteValue('EditorOptions/General/Editor/' + SynEditOptName,
           SynEditOpt in fSynEditOptions, SynEditOpt in SynEditDefaultOptions);
+    end;
+    // general options
+    for SynEditOpt2 := Low(TSynEditorOption2) to High(TSynEditorOption2) do
+    begin
+      case SynEditOpt2 of
+        eoCaretSkipsSelection:
+          SynEditOptName := 'CaretSkipsSelection';
+        else
+          SynEditOptName := '';
+      end;
+      if SynEditOptName <> '' then
+        XMLConfig.SetDeleteValue('EditorOptions/General/Editor/' + SynEditOptName,
+          SynEditOpt2 in fSynEditOptions2, SynEditOpt2 in SynEditDefaultOptions2);
     end;
 
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/CtrlMouseLinks'
@@ -2273,6 +2307,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
+  ASynEdit.Options2 := fSynEditOptions2;
   ASynEdit.BlockIndent := fBlockIndent;
   ASynEdit.TabWidth := fTabWidth;
 
@@ -2298,6 +2333,7 @@ procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
+  fSynEditOptions2 := ASynEdit.Options2;
   fBlockIndent := ASynEdit.BlockIndent;
   fTabWidth := ASynEdit.TabWidth;
 
@@ -2482,6 +2518,21 @@ var
           PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
   end;
 
+  procedure SetOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
+  var
+    a: Integer;
+    i: LongInt;
+  begin
+    i:=EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
+    if i<0 then exit;
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[a] <> Nil then
+        if EditorOptionsGroupBox.Checked[i] then
+          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
+        else
+          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
+  end;
+
   // GeneralCheckBoxOnClick
 begin
   if FormCreating then
@@ -2507,6 +2558,8 @@ begin
   SetOption(dlgTabsToSpaces, eoTabsToSpaces);
   SetOption(dlgTabIndent, eoTabIndent);
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
+
+  SetOption2(dlgCaretSkipsSelection, eoCaretSkipsSelection);
 
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a] <> Nil then
@@ -3434,33 +3487,43 @@ begin
 
   with EditorOptionsGroupBox do
   begin
+    // selections
     Items.Add(dlgAltSetClMode);
     Items.Add(dlgAutoIdent);
+    // visual effects
     Items.Add(dlgBracHighlight);
+    Items.Add(dlgShowGutterHints);
+    Items.Add(dlgShowScrollHint);
+    Items.Add(dlgUseSyntaxHighlight);
+    Items.Add(dlgUseCodeFolding);
+    // drag&drop
     Items.Add(dlgDragDropEd);
     Items.Add(dlgDropFiles);
+    // caret + scrolling + key navigation
     Items.Add(dlgHalfPageScroll);
     Items.Add(dlgKeepCaretX);
     Items.Add(dlgPersistentCaret);
+    Items.Add(dlgCaretSkipsSelection);
     Items.Add(dlgRightMouseMovesCursor);
     Items.Add(dlgScrollByOneLess);
     Items.Add(dlgScrollPastEndFile);
-    Items.Add(dlgMouseLinks);
-    Items.Add(dlgShowGutterHints);
     Items.Add(dlgScrollPastEndLine);
-    Items.Add(dlgCloseButtonsNotebook);
-    Items.Add(dlgShowScrollHint);
+    Items.Add(dlgHomeKeyJumpsToNearestStart);
+    // tabs
     Items.Add(dlgSmartTabs);
     Items.Add(dlgTabsToSpaces);
     Items.Add(dlgTabIndent);
+    // spaces
     Items.Add(dlgTrimTrailingSpaces);
+    // undo
     Items.Add(dlgUndoAfterSave);
+    // mouse
     Items.Add(dlgDoubleClickLine);
+    Items.Add(dlgMouseLinks);
+    Items.Add(dlgCloseButtonsNotebook);
+    // copying
     Items.Add(dlgFindTextatCursor);
-    Items.Add(dlgUseSyntaxHighlight);
-    Items.Add(dlgUseCodeFolding);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
-    Items.Add(dlgHomeKeyJumpsToNearestStart);
 
     Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in
       EditorOpts.SynEditOptions;
@@ -3505,6 +3568,8 @@ begin
       EditorOpts.CopyWordAtCursorOnCopyNone;
     Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] :=
       eoEnhanceHomeKey in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(dlgCaretSkipsSelection)] :=
+      eoCaretSkipsSelection in EditorOpts.SynEditOptions2;
   end;
 
   with BlockIndentComboBox do

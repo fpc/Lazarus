@@ -856,6 +856,7 @@ resourcestring
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCaretX = 'Keep caret X position';
   dlgPersistentCaret = 'Persistent caret';
+  dlgCaretSkipsSelection = 'Caret skips selection';
   dlgRightMouseMovesCursor = 'Right mouse moves caret';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
