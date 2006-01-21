@@ -28,7 +28,7 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-make all OPT="$MAKEOPTS" USESVN2REVISIONINC=0
+make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 make tools OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2

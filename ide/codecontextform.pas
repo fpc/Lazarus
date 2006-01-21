@@ -36,8 +36,8 @@ unit CodeContextForm;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  CodeCache, CodeToolManager, SynEdit;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  CodeCache, FindDeclarationTool, CodeToolManager, SynEdit;
 
 type
   TCodeContextFrm = class(TForm)
@@ -55,11 +55,20 @@ implementation
 function ShowCodeContext(Code: TCodeBuffer; Editor: TSynEdit): boolean;
 var
   LogCaretXY: TPoint;
+  CodeContexts: TCodeContextInfo;
 begin
   Result:=false;
   LogCaretXY:=Editor.LogicalCaretXY;
-  if not CodeToolBoss.FindCodeContext(Code,LogCaretXY,CodeContext) then
-    exit;
+  CodeContexts:=nil;
+  try
+    if not CodeToolBoss.FindCodeContext(Code,LogCaretXY.X,LogCaretXY.Y,
+      CodeContexts)
+    then
+      exit;
+    DebugLn('ShowCodeContext show ..');
+  finally
+    CodeContexts.Free;
+  end;
 end;
 
 initialization

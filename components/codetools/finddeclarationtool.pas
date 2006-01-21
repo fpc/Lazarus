@@ -483,6 +483,23 @@ const
   AllFindSmartFlags = [fsfIncludeDirective];
 
 type
+
+  { TCodeContextInfo }
+
+  TCodeContextInfo = class
+  private
+    FItems: PFindContext;
+    FCount: integer;
+    function GetItems(Index: integer): TFindContext;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: integer;
+    property Items[Index: integer]: TFindContext read GetItems; default;
+    function Add(const FindContext: TFindContext): integer;
+    procedure Clear;
+  end;
+
   //----------------------------------------------------------------------------
   ECodeToolUnitNotFound = class(ECodeToolFileNotFound)
   end;
@@ -673,6 +690,8 @@ type
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
+    function FindCodeContext(const CursorPos: TCodeXYPosition;
+                             out CodeContexts: TCodeContextInfo): boolean;
 
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -3649,6 +3668,15 @@ begin
       RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
     
   end;
+end;
+
+function TFindDeclarationTool.FindCodeContext(const CursorPos: TCodeXYPosition;
+  out CodeContexts: TCodeContextInfo): boolean;
+begin
+  DebugLn('TFindDeclarationTool.FindCodeContext ');
+  CodeContexts:=nil;
+  
+  Result:=false;
 end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
@@ -7614,6 +7642,43 @@ begin
   Items[0]:=ExprType;
 end;
 
+
+{ TCodeContextInfo }
+
+function TCodeContextInfo.GetItems(Index: integer): TFindContext;
+begin
+  Result:=FItems[Index];
+end;
+
+constructor TCodeContextInfo.Create;
+begin
+
+end;
+
+destructor TCodeContextInfo.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TCodeContextInfo.Count: integer;
+begin
+  Result:=FCount;
+end;
+
+function TCodeContextInfo.Add(const FindContext: TFindContext): integer;
+begin
+  inc(FCount);
+  Result:=Count;
+  ReAllocMem(FItems,SizeOf(TFindContext)*FCount);
+  FItems[FCount-1]:=FindContext;
+end;
+
+procedure TCodeContextInfo.Clear;
+begin
+  FCount:=0;
+  ReAllocMem(FItems,0);
+end;
 
 end.
 

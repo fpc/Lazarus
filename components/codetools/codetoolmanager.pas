@@ -306,6 +306,8 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
 
     // get code context
+    function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
+          out CodeContexts: TCodeContextInfo): boolean;
     function ExtractProcedureHeader(Code: TCodeBuffer; X,Y: integer;
           Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 
@@ -1470,6 +1472,29 @@ begin
   {$ENDIF}
 end;
 
+function TCodeToolManager.FindCodeContext(Code: TCodeBuffer; X, Y: integer; out
+  CodeContexts: TCodeContextInfo): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindCodeContext A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindCodeContext(CursorPos,CodeContexts);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindCodeContext END ');
+  {$ENDIF}
+end;
+
 function TCodeToolManager.ExtractProcedureHeader(Code: TCodeBuffer; X,
   Y: integer; Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 var
@@ -1489,7 +1514,7 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.GatherIdentifiers END ');
+  DebugLn('TCodeToolManager.ExtractProcedureHeader END ');
   {$ENDIF}
 end;
 

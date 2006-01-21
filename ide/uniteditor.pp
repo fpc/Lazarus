@@ -43,7 +43,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  TypInfo, Extctrls, Menus,
+  TypInfo, Extctrls, Menus, CodeContextForm,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
