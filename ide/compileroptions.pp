@@ -328,7 +328,7 @@ type
                              RelativeToBaseDir: boolean): string;
     function ShortenPath(const SearchPath: string;
                                MakeAlwaysRelative: boolean): string;
-    function GetCustomOptions: string;
+    function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetEffectiveLCLWidgetType: string;
   public
     { Properties }
@@ -1542,15 +1542,23 @@ begin
   {$ENDIF}
 end;
 
-function TBaseCompilerOptions.GetCustomOptions: string;
+function TBaseCompilerOptions.GetCustomOptions(Parsed: TCompilerOptionsParseType
+  ): string;
 var
   CurCustomOptions: String;
   InhCustomOptions: String;
 begin
   // custom options
-  CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
+  case Parsed of
+  coptParsed: CurCustomOptions:=ParsedOpts.GetParsedValue(pcosCustomOptions);
+  coptUnparsed: CurCustomOptions:=ParsedOpts.UnparsedValues[pcosCustomOptions];
+  coptParsedPlatformIndependent:
+               CurCustomOptions:=ParsedOpts.GetParsedPIValue(pcosCustomOptions);
+  else
+    RaiseGDBException('');
+  end;
   // inherited custom options
-  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,coptParsed);
+  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,Parsed);
   // concatenate
   if CurCustomOptions<>'' then
     Result:=CurCustomOptions+' '+InhCustomOptions

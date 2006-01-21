@@ -1263,7 +1263,8 @@ begin
                                                  coptParsedPlatformIndependent);
   UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
                                                  coptParsedPlatformIndependent);
-  CustomOptions:=APackage.CompilerOptions.GetCustomOptions;
+  CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
+                                                 coptParsedPlatformIndependent);
   if APackage.CompilerOptions.D2Extensions then
     CustomOptions:=CustomOptions+' -S2';
   if APackage.CompilerOptions.UseLineInfoUnit then
