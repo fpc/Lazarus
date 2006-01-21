@@ -153,10 +153,6 @@ type
            SourceChangeCache: TSourceChangeCache);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
            var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
-    function CheckParameterSyntax(CursorNode: TCodeTreeNode;
-           CleanCursorPos: integer;
-           out VarNameAtom, ProcNameAtom: TAtomPosition;
-           out ParameterIndex: integer): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
                           VariableName, VariableType: string;
                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -685,130 +681,6 @@ begin
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
 
-function TCodeCompletionCodeTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
-  CleanCursorPos: integer;
-  out VarNameAtom, ProcNameAtom: TAtomPosition;
-  out ParameterIndex: integer): boolean;
-// check for Identifier(expr,expr,...,expr,VarName
-//        or Identifier[expr,expr,...,expr,VarName
-// ParameterIndex is 0 based
-
-  procedure RaiseBracketNotOpened;
-  begin
-    if CurPos.Flag=cafRoundBracketClose then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['['])
-    else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['(']);
-  end;
-
-  function CheckIdentifierAndParameterList: boolean; forward;
-
-  function CheckBrackets: boolean;
-  var
-    BracketAtom: TAtomPosition;
-  begin
-    BracketAtom:=CurPos;
-    //DebugLn('CheckBrackets ',GetAtom,' ',dbgs(BracketAtom));
-    repeat
-      ReadNextAtom;
-      if CurPos.Flag=cafWord then begin
-        if CheckIdentifierAndParameterList then exit(true);
-      end;
-      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-        if CheckBrackets then exit(true);
-      end;
-      if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
-        if (BracketAtom.Flag=cafRoundBracketOpen)
-           =(CurPos.Flag=cafRoundBracketClose)
-        then begin
-          // closing bracket found, but the variable was not in them
-          exit(false);
-        end else begin
-          // invalid closing bracket found
-          RaiseBracketNotOpened;
-        end;
-      end;
-    until CurPos.StartPos>=VarNameAtom.StartPos;
-    Result:=false;
-  end;
-
-  function CheckIdentifierAndParameterList: boolean;
-  var
-    BracketAtom: TAtomPosition;
-    CurProcNameAtom: TAtomPosition;
-    CurParameterIndex: Integer;
-  begin
-    Result:=false;
-    CurProcNameAtom:=CurPos;
-    CurParameterIndex:=0;
-    //DebugLn('CheckIdentifierAndParameterList ',GetAtom,' ',dbgs(CurProcNameAtom));
-    ReadNextAtom;
-    if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-      BracketAtom:=CurPos;
-      //DebugLn('CheckIdentifierAndParameterList Bracket=',GetAtom);
-      repeat
-        ReadNextAtom;
-        if CurPos.StartPos=VarNameAtom.StartPos then begin
-          // variable found -> this is an identifier with a parameter list
-          ProcNameAtom:=CurProcNameAtom;
-          ParameterIndex:=CurParameterIndex;
-          if LastAtomIs(0,',')
-          or (LastAtoms.GetValueAt(0).StartPos=BracketAtom.StartPos) then
-          begin
-            Result:=true;
-          end else begin
-            // the parameter is not a simple identifier
-            Result:=false;
-          end;
-          exit;
-        end;
-        if CurPos.Flag=cafWord then begin
-          if CheckIdentifierAndParameterList then exit(true);
-        end;
-        if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-          if CheckBrackets then exit(true);
-        end;
-        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
-          if (BracketAtom.Flag=cafRoundBracketOpen)
-          =(CurPos.Flag=cafRoundBracketClose)
-          then begin
-            // parameter list ended in front of Variable => continue search
-            exit;
-          end else begin
-            // invalid closing bracket found
-            RaiseBracketNotOpened;
-          end;
-        end;
-        // finally after checking the expression: count commas
-        if CurPos.Flag=cafComma then begin
-          inc(CurParameterIndex);
-        end;
-      until CurPos.StartPos>=VarNameAtom.StartPos;
-    end;
-  end;
-  
-begin
-  Result:=false;
-  
-  // find variable name
-  GetIdentStartEndAtPosition(Src,CleanCursorPos,
-    VarNameAtom.StartPos,VarNameAtom.EndPos);
-  if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
-  
-  // read code in front to find ProcName and check the syntax
-  MoveCursorToNodeStart(CursorNode);
-  repeat
-    ReadNextAtom;
-    //DebugLn('TCodeCompletionCodeTool.CheckParameterSyntax ',GetAtom);
-    if CurPos.StartPos>=VarNameAtom.StartPos then exit;
-    if CurPos.Flag=cafWord then begin
-      if CheckIdentifierAndParameterList then exit(true);
-    end;
-  until false;
-
-  Result:=true;
-end;
-
 function TCodeCompletionCodeTool.AddLocalVariable(
   CleanCursorPos: integer; OldTopLine: integer;
   VariableName, VariableType: string;
@@ -991,12 +863,9 @@ var
   VarNameAtom, ProcNameAtom: TAtomPosition;
   ParameterIndex: integer;
   Params: TFindDeclarationParams;
-  ProcNode, FunctionNode: TCodeTreeNode;
-  ProcHeadNode: TCodeTreeNode;
   ParameterNode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
   NewType: String;
-  i: Integer;
 begin
   Result:=false;
 
@@ -1017,6 +886,7 @@ begin
                               VarNameAtom,ProcNameAtom,ParameterIndex)
   then
     exit;
+  if not IsValidIdent(GetAtom(VarNameAtom)) then exit;
 
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteLocalVariableAsParameter VarNameAtom=',GetAtom(VarNameAtom),' ProcNameAtom=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
@@ -1048,34 +918,14 @@ begin
     if not FindIdentifierInContext(Params) then exit;
     NewType:='';
     if Params.NewNode<>nil then begin
-      if Params.NewNode.Desc in [ctnProcedure] then begin
-        ProcNode:=Params.NewNode;
-        //DebugLn('  CompleteLocalVariableAsParameter ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
-        FunctionNode:=nil;
-        Params.NewCodeTool.BuildSubTreeForProcHead(ProcNode,FunctionNode);
-        // find parameter declaration
-        ProcHeadNode:=ProcNode.FirstChild;
-        if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then begin
-          DebugLn('  CompleteLocalVariableAsParameter Procedure has no parameter list');
-          exit;
-        end;
-        ParameterNode:=ProcHeadNode.FirstChild;
-        if (ParameterNode=nil) or (ParameterNode.Desc<>ctnParameterList)
-        then begin
-          DebugLn('  CompleteLocalVariableAsParameter Procedure has no parameter list');
-          exit;
-        end;
-        ParameterNode:=ParameterNode.FirstChild;
-        i:=0;
-        while (i<ParameterIndex) and (ParameterNode<>nil) do begin
-          //DebugLn('  CompleteLocalVariableAsParameter ',ParameterNode.DescAsString);
-          ParameterNode:=ParameterNode.NextBrother;
-          inc(i);
-        end;
-        if ParameterNode=nil then begin
-          DebugLn('  CompleteLocalVariableAsParameter Procedure does not have so many parameters');
-          exit;
-        end;
+      ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
+                                                             ParameterIndex);
+      if (ParameterNode=nil)
+      and (Params.NewNode.Desc in [ctnProperty,ctnProcedure]) then begin
+        DebugLn('  CompleteLocalVariableAsParameter Procedure does not have so many parameters');
+        exit;
+      end;
+      if ParameterNode<>nil then begin
         TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
         if TypeNode=nil then begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');

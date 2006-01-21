@@ -40,6 +40,9 @@ uses
   CodeCache, FindDeclarationTool, CodeToolManager, SynEdit;
 
 type
+
+  { TCodeContextFrm }
+
   TCodeContextFrm = class(TForm)
   private
   public
@@ -65,7 +68,9 @@ begin
       CodeContexts)
     then
       exit;
-    DebugLn('ShowCodeContext show ..');
+    DebugLn('ShowCodeContext show TODO');
+
+    
   finally
     CodeContexts.Free;
   end;

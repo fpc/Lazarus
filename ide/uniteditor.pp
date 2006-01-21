@@ -439,6 +439,7 @@ type
     FOnEditorVisibleChanged: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnInitIdentCompletion: TOnInitIdentCompletion;
+    FOnShowCodeContext: TOnShowCodeContext;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMovingPage: TOnMovingPage;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
@@ -465,7 +466,6 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
-    FOnShowCodeContext: TOnShowCodeContext;
 
     // PopupMenu
     procedure BuildPopupMenu;

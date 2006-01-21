@@ -113,7 +113,8 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg, AboutFrm,
+  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg,
+  CodeContextForm, AboutFrm,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -11120,7 +11121,7 @@ begin
   writeln('[TMainIDE.DoShowCodeContext] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext A');{$ENDIF}
-  Result:=false; //ShowCodeContext(ActiveUnitInfo.Source,ActiveSrcEdit.EditorComponent);
+  Result:=ShowCodeContext(ActiveUnitInfo.Source,ActiveSrcEdit.EditorComponent);
   if not Result then begin
     if JumpToError then
       DoJumpToCodeToolBossError;

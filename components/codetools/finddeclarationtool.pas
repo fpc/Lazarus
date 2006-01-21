@@ -342,6 +342,7 @@ type
     SubDesc: TExpressionTypeDesc;
     Context: TFindContext;
   end;
+  PExpressionType = ^TExpressionType;
   
 const
   CleanExpressionType : TExpressionType =
@@ -488,15 +489,15 @@ type
 
   TCodeContextInfo = class
   private
-    FItems: PFindContext;
+    FItems: PExpressionType;
     FCount: integer;
-    function GetItems(Index: integer): TFindContext;
+    function GetItems(Index: integer): TExpressionType;
   public
     constructor Create;
     destructor Destroy; override;
     function Count: integer;
-    property Items[Index: integer]: TFindContext read GetItems; default;
-    function Add(const FindContext: TFindContext): integer;
+    property Items[Index: integer]: TExpressionType read GetItems; default;
+    function Add(const Context: TExpressionType): integer;
     procedure Clear;
   end;
 
@@ -655,6 +656,11 @@ type
       Params: TFindDeclarationParams): TTypeCompatibility;
     function IsBaseCompatible(const TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
+    function CheckParameterSyntax(CursorNode: TCodeTreeNode;
+      CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition;
+      out ParameterIndex: integer): boolean;
+    function FindNthParameterNode(Node: TCodeTreeNode;
+                                  ParameterIndex: integer): TCodeTreeNode;
   protected
     function OpenCodeToolForUnit(UnitNameAtom, UnitInFileAtom: TAtomPosition;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
@@ -717,6 +723,9 @@ type
   end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
+function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
+  const Context: TFindContext): TExpressionType;
+
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
@@ -902,6 +911,13 @@ begin
   end;
 end;
 
+function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
+  const Context: TFindContext): TExpressionType;
+begin
+  Result.Desc:=Desc;
+  Result.SubDesc:=SubDesc;
+  Result.Context:=Context;
+end;
 
 { TFindContext }
 
@@ -3672,10 +3688,93 @@ end;
 
 function TFindDeclarationTool.FindCodeContext(const CursorPos: TCodeXYPosition;
   out CodeContexts: TCodeContextInfo): boolean;
-begin
-  DebugLn('TFindDeclarationTool.FindCodeContext ');
-  CodeContexts:=nil;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
   
+  procedure AddContext(Tool: TFindDeclarationTool; Node: TCodeTreeNode);
+  begin
+    if CodeContexts=nil then
+      CodeContexts:=TCodeContextInfo.Create;
+    CodeContexts.Add(CreateExpressionType(xtContext,xtNone,
+                                          CreateFindContext(Tool,Node)));
+  end;
+  
+  function CheckContextIsParameter(var Ok: boolean): boolean;
+  // returns true, on error or context is parameter
+  // returns false, if no error and context is not parameter
+  var
+    VarNameAtom, ProcNameAtom: TAtomPosition;
+    ParameterIndex: integer;
+    ParameterNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    //DebugLn('CheckContextIsParameter ');
+    if not CheckParameterSyntax(CursorNode, CleanCursorPos,
+      VarNameAtom, ProcNameAtom, ParameterIndex) then exit;
+    // it is a parameter
+    Result:=true;
+    ok:=true;
+    // find declaration of parameter list
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CheckSrcIdentifier);
+    Params.Flags:=fdfGlobals+[fdfSearchInParentNodes,fdfSearchInAncestors,
+                              fdfFindVariable,fdfIgnoreCurContextNode];
+    //DebugLn('CheckContextIsParameter searching procedure ...');
+    if not FindIdentifierInContext(Params) then exit;
+    if Params.NewNode<>nil then begin
+      //DebugLn('CheckContextIsParameter searching parameter node ...');
+      ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
+                                                             ParameterIndex);
+      if ParameterNode<>nil then begin
+        //DebugLn('CheckContextIsParameter adding parameter node to CodeContexts');
+        AddContext(Params.NewCodeTool,ParameterNode);
+        
+      end;
+      //DebugLn('  CompleteLocalVariableAsParameter Dont know: ',Params.NewNode.DescAsString);
+    end;
+  end;
+  
+begin
+  CodeContexts:=nil;
+  Result:=false;
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    // build code tree
+    {$IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindCodeContext A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
+    {$ENDIF}
+    if DirtySrc<>nil then DirtySrc.Clear;
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos,{$ENDIF}
+                   btLoadDirtySource,btCursorPosOutAllowed]);
+    {$IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindCodeContext C CleanCursorPos=',dbgs(CleanCursorPos));
+    {$ENDIF}
+    // find CodeTreeNode at cursor
+    if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
+      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,
+                                                      true);
+    end else begin
+      CursorNode:=nil;
+    end;
+    
+    if CursorNode<>nil then begin
+      if CheckContextIsParameter(Result) then exit;
+    end;
+    
+    if CodeContexts=nil then begin
+      // create default
+      AddContext(Self,CursorNode);
+    end;
+
+    Result:=true;
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
+  end;
   Result:=false;
 end;
 
@@ -6776,6 +6875,192 @@ begin
   {$ENDIF}
 end;
 
+function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
+  CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition; out
+  ParameterIndex: integer): boolean;
+// check for Identifier(expr,expr,...,expr,VarName
+//        or Identifier[expr,expr,...,expr,VarName
+// ParameterIndex is 0 based
+
+  procedure RaiseBracketNotOpened;
+  begin
+    if CurPos.Flag=cafRoundBracketClose then
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['['])
+    else
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['(']);
+  end;
+
+  function CheckIdentifierAndParameterList: boolean; forward;
+
+  function CheckBrackets: boolean;
+  var
+    BracketAtom: TAtomPosition;
+  begin
+    BracketAtom:=CurPos;
+    //DebugLn('CheckBrackets ',GetAtom,' ',dbgs(BracketAtom));
+    repeat
+      ReadNextAtom;
+      if CurPos.Flag=cafWord then begin
+        if CheckIdentifierAndParameterList then exit(true);
+      end;
+      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+        if CheckBrackets then exit(true);
+      end;
+      if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+        if (BracketAtom.Flag=cafRoundBracketOpen)
+           =(CurPos.Flag=cafRoundBracketClose)
+        then begin
+          // closing bracket found, but the variable was not in them
+          exit(false);
+        end else begin
+          // invalid closing bracket found
+          RaiseBracketNotOpened;
+        end;
+      end;
+    until (CurPos.EndPos>CleanCursorPos) or (CurPos.Flag=cafNone);
+    Result:=false;
+  end;
+
+  function CheckIdentifierAndParameterList: boolean;
+  var
+    BracketAtom: TAtomPosition;
+    CurProcNameAtom: TAtomPosition;
+    CurParameterIndex: Integer;
+    ParameterStart: integer;
+  begin
+    Result:=false;
+    CurProcNameAtom:=CurPos;
+    CurParameterIndex:=0;
+    //DebugLn('CheckIdentifierAndParameterList START ',GetAtom,' ',dbgs(CurProcNameAtom));
+    ReadNextAtom;
+    if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+      BracketAtom:=CurPos;
+      ParameterStart:=CurPos.EndPos;
+      //DebugLn('CheckIdentifierAndParameterList Bracket=',GetAtom);
+      repeat
+        ReadNextAtom;
+        //DebugLn('CheckIdentifierAndParameterList ',GetAtom);
+        if CurPos.EndPos>=CleanCursorPos then begin
+          // parameter found => search parameter expression bounds e.g. ', parameter ,'
+          // important: this function should work, even the code behind
+          // CleanCursorPos is buggy
+          //DebugLn('CheckIdentifierAndParameterList Parameter found, search range ...');
+          ProcNameAtom:=CurProcNameAtom;
+          ParameterIndex:=CurParameterIndex;
+          ParameterAtom.StartPos:=ParameterStart;
+          ParameterAtom.EndPos:=ParameterStart;
+          MoveCursorToCleanPos(ParameterStart);
+          repeat
+            ReadNextAtom;
+            //DebugLn('CheckIdentifierAndParameterList parameter atom ',GetAtom);
+            if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
+              ReadTilBracketClose(false)
+            else
+            if (CurPos.Flag in [cafNone,cafComma,cafSemicolon,cafEnd,
+                cafRoundBracketClose,cafEdgedBracketClose])
+            or ((CurPos.Flag=cafWord)
+                and (LastAtoms.GetValueAt(0).Flag=cafWord)
+                and (not LastUpAtomIs(0,'INHERITED'))) then
+            begin
+              // end of parameter expression found
+              //DebugLn('CheckIdentifierAndParameterList end of parameter found');
+              exit(true);
+            end else begin
+              // atom belongs to the parameter expression
+              if ParameterAtom.StartPos=ParameterStart then
+                ParameterAtom.StartPos:=CurPos.StartPos;
+              ParameterAtom.EndPos:=CurPos.EndPos;
+            end;
+          until false;
+        end;
+        if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
+        and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+          UndoReadNextAtom;
+          if CheckIdentifierAndParameterList then exit(true);
+        end;
+        if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+          if CheckBrackets then exit(true);
+        end;
+        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+          if (BracketAtom.Flag=cafRoundBracketOpen)
+          =(CurPos.Flag=cafRoundBracketClose)
+          then begin
+            // parameter list ended in front of Variable => continue search
+            exit;
+          end else begin
+            // invalid closing bracket found
+            RaiseBracketNotOpened;
+          end;
+        end;
+        // finally after checking the expression: count commas
+        if CurPos.Flag=cafComma then begin
+          ParameterStart:=CurPos.EndPos;
+          inc(CurParameterIndex);
+        end;
+      until (CurPos.EndPos>CleanCursorPos) or (CurPos.Flag=cafNone);
+    end;
+  end;
+
+begin
+  Result:=false;
+  //DebugLn('TFindDeclarationTool.CheckParameterSyntax START');
+
+  // read code in front to find ProcName and check the syntax
+  MoveCursorToNodeStart(CursorNode);
+  repeat
+    ReadNextAtom;
+    //DebugLn('TCodeCompletionCodeTool.CheckParameterSyntax ',GetAtom,' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));
+    if CurPos.EndPos>CleanCursorPos then exit;
+    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
+    and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+      UndoReadNextAtom;
+      if CheckIdentifierAndParameterList then exit(true);
+    end;
+  until false;
+
+  Result:=true;
+end;
+
+function TFindDeclarationTool.FindNthParameterNode(Node: TCodeTreeNode;
+  ParameterIndex: integer): TCodeTreeNode;
+var
+  ProcNode, FunctionNode: TCodeTreeNode;
+  ProcHeadNode: TCodeTreeNode;
+  ParameterNode: TCodeTreeNode;
+  i: Integer;
+begin
+  Result:=nil;
+  if Node=nil then exit;
+  if Node.Desc in [ctnProcedure] then begin
+    ProcNode:=Node;
+    //DebugLn('  FindNthParameterNode ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
+    FunctionNode:=nil;
+    BuildSubTreeForProcHead(ProcNode,FunctionNode);
+    // find procedure head
+    ProcHeadNode:=ProcNode.FirstChild;
+    if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then begin
+      DebugLn('  FindNthParameterNode Procedure has no parameter list');
+      exit;
+    end;
+    // find parameter list
+    ParameterNode:=ProcHeadNode.FirstChild;
+    if (ParameterNode=nil) or (ParameterNode.Desc<>ctnParameterList)
+    then begin
+      DebugLn('  FindNthParameterNode Procedure has no parameter list');
+      exit;
+    end;
+    // find parameter
+    ParameterNode:=ParameterNode.FirstChild;
+    i:=0;
+    while (i<ParameterIndex) and (ParameterNode<>nil) do begin
+      //DebugLn('  FindNthParameterNode ',ParameterNode.DescAsString);
+      ParameterNode:=ParameterNode.NextBrother;
+      inc(i);
+    end;
+    Result:=ParameterNode;
+  end;
+end;
+
 function TFindDeclarationTool.OpenCodeToolForUnit(UnitNameAtom,
   UnitInFileAtom: TAtomPosition;
   ExceptionOnNotFound: boolean): TFindDeclarationTool;
@@ -7645,7 +7930,7 @@ end;
 
 { TCodeContextInfo }
 
-function TCodeContextInfo.GetItems(Index: integer): TFindContext;
+function TCodeContextInfo.GetItems(Index: integer): TExpressionType;
 begin
   Result:=FItems[Index];
 end;
@@ -7666,12 +7951,12 @@ begin
   Result:=FCount;
 end;
 
-function TCodeContextInfo.Add(const FindContext: TFindContext): integer;
+function TCodeContextInfo.Add(const Context: TExpressionType): integer;
 begin
   inc(FCount);
   Result:=Count;
-  ReAllocMem(FItems,SizeOf(TFindContext)*FCount);
-  FItems[FCount-1]:=FindContext;
+  ReAllocMem(FItems,SizeOf(TExpressionType)*FCount);
+  FItems[FCount-1]:=Context;
 end;
 
 procedure TCodeContextInfo.Clear;
