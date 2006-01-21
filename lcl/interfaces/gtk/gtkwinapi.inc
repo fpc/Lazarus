@@ -607,6 +607,7 @@ var TargetEntries: PGtkTargetEntry;
     {$EndIf}
     TargetEntries[Index].Target := StrAlloc(Length(FormatName) + 1);
     StrPCopy(TargetEntries[Index].Target, FormatName);
+    TargetEntries[Index].flags:=0;
     TargetEntries[Index].Info:=Index;
     inc(Index);
   end;

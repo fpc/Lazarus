@@ -2146,6 +2146,7 @@ end;
 procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
   const AnUnitName, AnUnitInFilename: string);
 begin
+  DumpStack;
   // add unit to project main source file
   if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
   and (AProject.MainUnitInfo<>nil) then begin
@@ -2467,6 +2468,8 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  if OnlyTestIfPossible then
+    exit(mrOk);
   // add a dependency for the package to the project
   NewDependency:=APackage.CreateDependencyWithOwner(AProject);
   Result:=AddProjectDependency(AProject,NewDependency);
