@@ -41,9 +41,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileUtil,
-  Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics, TypInfo,
-  Extctrls, Menus,
+  Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
+  FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
+  TypInfo, Extctrls, Menus,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -1257,9 +1257,11 @@ Begin
           dec(i);
         TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
       end;
-      with TCustomSynEdit(Sender) do
-        P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-                ,CaretYPix + LineHeight));
+      with TCustomSynEdit(Sender) do begin
+        P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+        P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+        P := ClientToScreen(p);
+      end;
       aCompletion.Editor:=TCustomSynEdit(Sender);
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
@@ -2042,9 +2044,11 @@ begin
       dec(i);
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
-  with FEditor do
-    P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-            ,CaretYPix + LineHeight));
+  with FEditor do begin
+    P := Point(CaretXPix - length(TextS2)*CharWidth,CaretYPix + LineHeight);
+    P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+    P := ClientToScreen(p);
+  end;
   aCompletion.Editor:=FEditor;
   aCompletion.Execute(TextS2,P.X,P.Y);
 end;
@@ -2869,8 +2873,11 @@ begin
   //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
     CurrentCompletionType:=ctTemplateCompletion;
-    with AnEditor do
-      P := ClientToScreen(Point(CaretXPix,CaretYPix+LineHeight));
+    with AnEditor do begin
+      P := Point(CaretXPix - length(AToken)*CharWidth,CaretYPix + LineHeight);
+      P.X:=Max(0,Min(P.X,ClientWidth-aCompletion.Width));
+      P := ClientToScreen(p);
+    end;
     aCompletion.Editor:=AnEditor;
     aCompletion.Execute(AToken,P.X,P.Y);
   end;
