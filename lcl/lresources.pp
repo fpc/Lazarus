@@ -1759,7 +1759,7 @@ var
   var
     i: Integer;
   begin
-    SetLength(Result,length(s));
+    SetLength(Result,Length(s) div SizeOf(WideChar));
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
@@ -1768,7 +1768,7 @@ var
   var
     i: Integer;
   begin
-    SetLength(Result,length(s));
+    SetLength(Result,Length(s) div SizeOf(WideChar));
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
