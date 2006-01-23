@@ -51,10 +51,15 @@ interface
 uses
   Classes, SysUtils, dynlibs,
   {$ifdef UseLibC}
-  LibC;
+  {$IFDEF darwin}
+  miniCupsLibc
+  {$ELSE}
+  Libc
+  {$ENDIF}
   {$else}
-  baseunix, unix, sockets;
+  baseunix, unix, sockets
   {$endif}
+  ;
 
 {$PACKRECORDS C}
 

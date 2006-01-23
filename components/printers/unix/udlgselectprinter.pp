@@ -3,8 +3,6 @@
                                 ------------
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
- *                                                                           *
  *  See the file COPYING.LCL, included in this distribution,                 *
  *  for details about the copyright.                                         *
  *                                                                           *
@@ -43,8 +41,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls,LCLType,
-  Printers, OsPrinters in '../osprinters.pas', CUPSDyn,libc;
+  Buttons, ExtCtrls, Spin, MaskEdit, ComCtrls, LCLType,
+  Printers, OsPrinters in '../osprinters.pas', CUPSDyn;
 
 type
 
@@ -129,14 +127,21 @@ function LocalToGMTDateTime(aDate : TDateTime) : TDateTime;
 function LapseLocalToGMT : integer;
 
 implementation
-uses udlgpropertiesprinter;
+
+uses
+  {$IFDEF darwin}
+  miniCupsLibc,
+  {$ELSE}
+  Libc,
+  {$ENDIF}
+  uDlgPropertiesPrinter;
 
 Type
-  THackCUPSPrinter=Class(TCUPSPrinter);
+  THackCUPSPrinter = Class(TCUPSPrinter);
   
 {----------- Utile date/time convertion ------------}
 //Return the lapse time in second
-//beetween locatime and gmt time with daylight
+//beetween localtime and gmt time with daylight
 function LapseLocalToGMT : integer;
 var TT : ttime_t;
     LOC: PTm;

@@ -25,7 +25,7 @@
     <License Value="LGPL
 "/>
     <Version Build="2"/>
-    <Files Count="26">
+    <Files Count="27">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -135,6 +135,10 @@
         <Filename Value="unix/cupsprndialogs.inc"/>
         <Type Value="Include"/>
       </Item26>
+      <Item27>
+        <Filename Value="unix/minicupslibc.pas"/>
+        <UnitName Value="minicupslibc"/>
+      </Item27>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

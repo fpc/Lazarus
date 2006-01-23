@@ -43,9 +43,14 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Printers,cupsPrinters,Buttons,ComCtrls,StdCtrls,
   {$IFNDEF DYNLINK}
-  Cups, cups_ipp,Libc
+  Cups, cups_ipp,
   {$ELSE}
-  CUPSDyn,LibC
+  CUPSDyn,
+  {$ENDIF}
+  {$IFDEF darwin}
+  miniCupsLibc,
+  {$ELSE}
+  Libc,
   {$ENDIF}
   ;
 
