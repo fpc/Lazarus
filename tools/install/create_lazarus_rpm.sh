@@ -10,7 +10,7 @@ Day=$(date +%d)
 
 # get installed fpc version
 echo "getting installed fpc version ..."
-FPCRPM=$(rpm -qa | egrep '^fpc-')
+FPCRPM=$(rpm -qa | egrep '^fpc-[0-9]')
 if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
