@@ -3,7 +3,7 @@
 LazarusResources.Add('TViewUnitDialog','FORMDATA',[
   'TPF0'#15'TViewUnitDialog'#14'ViewUnitDialog'#13'ActiveControl'#7#7'Listbox'#7
   +'Caption'#6#18'View Project Units'#12'ClientHeight'#3#213#0#11'ClientWidth'#3
-  +#160#1#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScreenCenter'#18'HorzScroll'
+  +#160#1#13'PixelsPerInch'#2'_'#8'Position'#7#14'poScreenCenter'#18'HorzScroll'
   +'Bar.Page'#3#159#1#18'VertScrollBar.Page'#3#212#0#4'Left'#3'Q'#1#6'Height'#3
   +#213#0#3'Top'#3''''#1#5'Width'#3#160#1#0#7'TButton'#5'btnOK'#7'Anchors'#11#5
   +'akTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#2'OK'#7
@@ -15,9 +15,9 @@ LazarusResources.Add('TViewUnitDialog','FORMDATA',[
   +#7'akRight'#0#7'Enabled'#8#8'TabOrder'#2#3#4'Left'#2#10#6'Height'#2#25#3'Top'
   +#2#10#5'Width'#3'&'#1#0#0#8'TListBox'#7'Listbox'#7'Anchors'#11#5'akTop'#6'ak'
   +'Left'#7'akRight'#8'akBottom'#0#16'ClickOnSelChange'#8#10'OnDblClick'#7#10'B'
-  +'TNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyDown'#8'TabOrder'#2#0#4'Left'#2#10#6
-  +'Height'#3#156#0#3'Top'#2'-'#5'Width'#3'&'#1#0#0#9'TCheckBox'#19'MultiSelect'
-  +'CheckBox'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#12'Multi Select'
-  +#7'OnClick'#7#24'MultiselectCheckBoxClick'#8'TabOrder'#2#4#4'Left'#3'8'#1#6
-  +'Height'#2#13#3'Top'#2'd'#5'Width'#2'K'#0#0#0
+  +'TNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyDown'#8'TabOrder'#2#0#8'TopIndex'#2
+  +#255#4'Left'#2#10#6'Height'#3#156#0#3'Top'#2'-'#5'Width'#3'&'#1#0#0#9'TCheck'
+  +'Box'#19'MultiSelectCheckBox'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'
+  +#6#12'Multi Select'#7'OnClick'#7#24'MultiselectCheckBoxClick'#8'TabOrder'#2#4
+  +#4'Left'#3'8'#1#6'Height'#2#24#3'Top'#2'd'#5'Width'#2']'#0#0#0
 ]);

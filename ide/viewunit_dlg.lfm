@@ -3,7 +3,7 @@ object ViewUnitDialog: TViewUnitDialog
   Caption = 'View Project Units'
   ClientHeight = 213
   ClientWidth = 416
-  PixelsPerInch = 96
+  PixelsPerInch = 95
   Position = poScreenCenter
   HorzScrollBar.Page = 415
   VertScrollBar.Page = 212
@@ -48,6 +48,7 @@ object ViewUnitDialog: TViewUnitDialog
     OnDblClick = BTNOKCLICK
     OnKeyDown = ListboxKeyDown
     TabOrder = 0
+    TopIndex = -1
     Left = 10
     Height = 156
     Top = 45
@@ -59,8 +60,8 @@ object ViewUnitDialog: TViewUnitDialog
     OnClick = MultiselectCheckBoxClick
     TabOrder = 4
     Left = 312
-    Height = 13
+    Height = 24
     Top = 100
-    Width = 75
+    Width = 93
   end
 end

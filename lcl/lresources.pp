@@ -31,6 +31,8 @@ unit LResources;
 
 {$mode objfpc}{$H+}
 
+{ $DEFINE WideStringLenDoubled}
+
 interface
 
 uses
@@ -1759,7 +1761,7 @@ var
   var
     i: Integer;
   begin
-    SetLength(Result,Length(s) div SizeOf(WideChar));
+    SetLength(Result,Length(s){$IFDEF WideStringLenDoubled} div 2{$ENDIF});
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
@@ -1768,7 +1770,7 @@ var
   var
     i: Integer;
   begin
-    SetLength(Result,Length(s) div SizeOf(WideChar));
+    SetLength(Result,Length(s){$IFDEF WideStringLenDoubled} div 2{$ENDIF});
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
