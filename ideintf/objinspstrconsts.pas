@@ -131,6 +131,7 @@ resourcestring
 
   //checkgroup editor
   clbCheckGroupEditor = 'CheckGroup Editor';
+  clbDisable = 'Popup to disable/enable items';
   
   // Collection Editor
 
