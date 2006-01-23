@@ -194,7 +194,7 @@ type
               // 1=CursorPos beyond scanned code
               //-2=X,Y beyond source
     function CleanPosToCodePos(CleanPos: integer;
-        var CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
+        out CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaret(CleanPos: integer;
         var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
@@ -2045,7 +2045,7 @@ begin
 end;
 
 function TCustomCodeTool.CleanPosToCodePos(CleanPos: integer;
-  var CodePos: TCodePosition): boolean;
+  out CodePos: TCodePosition): boolean;
 var
   ACode: pointer;
 begin

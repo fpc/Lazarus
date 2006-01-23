@@ -2146,7 +2146,6 @@ end;
 procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
   const AnUnitName, AnUnitInFilename: string);
 begin
-  DumpStack;
   // add unit to project main source file
   if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
   and (AProject.MainUnitInfo<>nil) then begin

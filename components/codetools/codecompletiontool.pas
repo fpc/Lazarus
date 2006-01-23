@@ -866,6 +866,7 @@ var
   ParameterNode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
   NewType: String;
+  IgnorePos: TCodePosition;
 begin
   Result:=false;
 
@@ -915,7 +916,13 @@ begin
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
     Params.Flags:=fdfGlobals+[fdfSearchInParentNodes,fdfSearchInAncestors,
                               fdfFindVariable,fdfIgnoreCurContextNode];
-    if not FindIdentifierInContext(Params) then exit;
+    CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
+    IgnoreErrorAfter:=IgnorePos;
+    try
+      if not FindDeclarationOfIdentAtCursor(Params) then exit;
+    finally
+      ClearIgnoreErrorAfter;
+    end;
     NewType:='';
     if Params.NewNode<>nil then begin
       ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
@@ -938,7 +945,7 @@ begin
       end;
       //DebugLn('  CompleteLocalVariableAsParameter Dont know: ',Params.NewNode.DescAsString);
     end;
-    
+
     if NewType='' then begin
       exit;
     end;

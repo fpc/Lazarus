@@ -6468,7 +6468,7 @@ begin
   FillChar(Result,SizeOf(TGtkSelectionData),0);
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
-  
+
   TimeID:=1000;
   repeat
     repeat

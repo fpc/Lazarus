@@ -296,6 +296,7 @@ var FormatAtom, FormatTry: Cardinal;
   var a: integer;
      AllID: cardinal;
   begin
+    //DebugLn('IsFormatSupported Format=',dbgs(Format),' SupportedCnt=',dbgs(SupportedCnt));
     if Format=0 then begin
       Result:=false;
       exit;
@@ -307,7 +308,7 @@ var FormatAtom, FormatTry: Cardinal;
       {DebugLn('IsFormatSupported A ',Dbgs(SelData.Selection),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target='+dbgs(SelData.Target),' AllID='+dbgs(AllID),
-      ' SelData.TheType='+dbgs(SelData.TheType),' '+dbgs(gdk_atom_intern('ATOM',0)),
+      ' SelData.TheType='+dbgs(SelData.TheType)+' ATOM='+dbgs(gdk_atom_intern('ATOM',0))+' Name="'+gdk_atom_name(SelData.TheType)+'"',
       ' SelData.Length='+dbgs(SelData.Length),
       ' SelData.Format='+dbgs(SelData.Format)
       );}
@@ -319,6 +320,7 @@ var FormatAtom, FormatTry: Cardinal;
       end;
       SupportedCnt:=SelData.Length div (SelData.Format shr 3);
       SupportedFormats:=PGdkAtom(SelData.Data);
+      //DebugLn('IsFormatSupported SupportedCnt=',dbgs(SupportedCnt));
 
       {a:=SupportedCnt-1;
       while (a>=0) do begin

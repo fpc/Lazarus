@@ -6630,7 +6630,9 @@ function TFindDeclarationTool.CreateParamExprListFromStatement(
 var ExprType: TExpressionType;
   BracketClose: char;
   ExprStartPos, ExprEndPos: integer;
-  
+  CurIgnoreErrorAfterPos: Integer;
+  OldFlags: TFindDeclarationFlags;
+
   procedure RaiseBracketNotFound;
   begin
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[BracketClose,GetAtom]);
@@ -6650,6 +6652,11 @@ begin
     BracketClose:=']'
   else
     BracketClose:=#0;
+  if IgnoreErrorAfterValid then
+    CurIgnoreErrorAfterPos:=IgnoreErrorAfterCleanedPos
+  else
+    CurIgnoreErrorAfterPos:=-1;
+  OldFlags:=Params.Flags;
   if BracketClose<>#0 then begin
     // read parameter list
     ReadNextAtom;
@@ -6670,6 +6677,9 @@ begin
         until false;
         ExprEndPos:=CurPos.StartPos;
         // find expression type
+        if (CurIgnoreErrorAfterPos>=ExprStartPos) then
+          Params.Flags:=Params.Flags-[fdfExceptionOnNotFound];
+        //DebugLn('TFindDeclarationTool.CreateParamExprListFromStatement CurIgnoreErrorAfterPos=',dbgs(CurIgnoreErrorAfterPos),' ExprStartPos=',dbgs(ExprStartPos));
         ExprType:=FindExpressionResultType(Params,ExprStartPos,ExprEndPos);
         // add expression type to list
         Result.Add(ExprType);
@@ -6682,6 +6692,7 @@ begin
       end;
     end;
   end;
+  Params.Flags:=OldFlags;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CreateParamExprListFromStatement] END ',
   'ParamCount=',dbgs(Result.Count),' "',copy(Src,StartPos,40),'"');
