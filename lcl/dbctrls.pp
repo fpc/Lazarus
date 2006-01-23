@@ -135,8 +135,10 @@ Type
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
+    function  IsReadOnly: boolean;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: char); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;

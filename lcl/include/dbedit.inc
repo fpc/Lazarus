@@ -139,6 +139,13 @@ begin
   FDataLink.DataSource := Value;
 end;
 
+function TDBEdit.IsReadOnly: boolean;
+begin
+  result := true;
+  if FDatalink.Active and not Self.ReadOnly then
+    result := (Field=nil) or Field.ReadOnly;
+end;
+
 { Protected Methods}
 procedure TDBEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -148,11 +155,42 @@ begin
     FDataLink.Reset;
     SelectAll;
     Key := VK_UNKNOWN;
-  end else if (Key<>VK_UNKNOWN) then begin
-    //make sure we call edit to ensure the datset is in edit,
-    //this is for where the datasource is in autoedit, so we aren't
-    //read only even though the dataset isn't realy in edit
-    FDataLink.Edit;
+  end else
+  if Key=VK_DELETE then begin
+    if not IsReadOnly then
+      FDatalink.Edit;
+    Key:=VK_UNKNOWN;
+  end;
+end;
+
+procedure TDBEdit.KeyPress(var Key: char);
+  function CanAcceptKey: boolean;
+  var
+    aField: TField;
+  begin
+    result := False;
+    if FDataLink.Active then begin
+      aField := Field;
+      if aField<>nil then begin
+        Result := aField.IsValidChar(Key) and not aField.Calculated and
+          (aField.DataType<>ftAutoInc);
+      end;
+    end;
+  end;
+begin
+  inherited KeyPress(Key);
+  case key of
+    #8: // special keys
+      if not IsReadOnly then
+        FDatalink.Edit
+      else
+        Key:=#0;
+        
+    #32..#255: //standard keys
+      if CanAcceptKey and not IsReadOnly then
+        FDatalink.Edit
+      else
+        Key:=#0;
   end;
 end;
 
