@@ -32,7 +32,7 @@ make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 make tools OPT="$MAKEOPTS"
 # build gtk2 .ppu
 export LCL_PLATFORM=gtk2
-make lcl ideintf packager/registration bigidecomponents
+make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 strip lazarus
 strip startlazarus
