@@ -2,7 +2,7 @@
 #
 # Author: Mattias Gaertner
 #
-# Script to download fpc and create the rpms 'fpc' and 'fpcsrc'.
+# Script to download fpc and create the rpms 'fpc' and 'fpc-src'.
 
 set -x
 set -e
@@ -55,8 +55,8 @@ fi
 
 Date=20$Year$Month$Day
 LazRelease=laz.$Date
-SrcTGZ=fpcsrc-$LazVersion-$LazRelease.tgz
-SrcPatch=fpcsrc-patch
+SrcTGZ=fpc-src-$LazVersion-$LazRelease.tgz
+SrcPatch=fpc-src-patch
 TmpDir=/tmp/fpc$LazVersion
 SpecFile=$TmpDir/fpc/install/fpc.spec
 
@@ -83,15 +83,15 @@ fi
 
 
 echo
-echo building fpcsrc rpm ...
+echo building fpc-src rpm ...
 set -x
 
 # copy src tgz into building directory
 cp $SrcTGZ /usr/src/redhat/SOURCES/
 
 # create spec file
-SpecFile=fpcsrc-$LazVersion-$LazRelease.spec
-cat fpcsrc.spec | \
+SpecFile=fpc-src-$LazVersion-$LazRelease.spec
+cat fpc-src.spec | \
   sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
   > $SpecFile
 

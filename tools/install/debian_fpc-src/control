@@ -1,4 +1,4 @@
-Package: fpcsrc
+Package: fpc-src
 Version: FPCVERSION
 Section: devel
 Priority: optional

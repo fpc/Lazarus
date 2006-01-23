@@ -2,12 +2,12 @@ Installation tools
 ==================
 
 This document describes how to create the various packages for lazarus
-including the required freepascal packages (fpc and fpcsrc).
+including the required freepascal packages (fpc and fpc-src).
 
 --------------------------------------------------------------------------------
 TGZ
 
-Creating the fpcsrc tgz:
+Creating the fpc-src tgz:
 
   There are two ways to do it and so there are two scripts. The first downloads
   the fpc svn and packs it. The second uses an existing fpc svn directory,
@@ -59,7 +59,7 @@ How to create RPM packages as normal user / non root:
   From now all new rpms will be built in ~/rpm/.
 
 
-Creating the fpc and the fpcsrc rpm:
+Creating the fpc and the fpc-src rpm:
 
   There are two versions of the compiler: the old 2.0.x and the new (but not
   yet released) developer version 2.1.x. To build them, you must install fpc
@@ -72,9 +72,9 @@ Creating the fpc and the fpcsrc rpm:
   []$ cd <lazarus_directory>/tools/install
   []$ ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc
 
-  Then build the fpcsrc rpm:
+  Then build the fpc-src rpm:
 
-  []$ ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc
+  []$ ./build_fpc-src_rpm.sh /path/to/your/fpc/sources/fpc
 
   Normally you can find the rpms under /usr/src/redhat/RPMS/i386/
   and /usr/src/redhat/SRPMS/.
@@ -101,7 +101,7 @@ Creating other system specific rpms:
 
 Debian:
 
-Creating the debian fpc and fpcsrc packages:
+Creating the debian fpc and fpc-src packages:
 
   There are two versions of the compiler: the stable 2.0.x and the unstable
   developer version 2.1.x. To build them, you must install fpc first. Install the

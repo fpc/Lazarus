@@ -43,21 +43,21 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 LazVersion=$CompilerVersionStr
 echo " $CompilerVersionStr-$LazRelease"
 
-FPCTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpcsrc-$CompilerVersionStr-$LazRelease.source.tar.gz
+FPCTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-src-$CompilerVersionStr-$LazRelease.source.tar.gz
 CurDir=`pwd`
 
 # pack the directory
 sh create_fpc_tgz_from_local_dir.sh $FPCSourceDir $FPCTGZ
 
 if [ "$PkgType" = "deb" ]; then
-  # build fpcsrc deb
+  # build fpc-src deb
 
-  echo building fpcsrc deb ...
+  echo building fpc-src deb ...
 
-  FPCSrcTmpDir=/tmp/fpcsrc$LazVersion
-  FPCSrcBuildDir=$FPCSrcTmpDir/fpcsrc_build
-  FPCSrcDeb=fpcsrc-$LazVersion-$LazRelease.deb
-  DebianSrcDir=$CurDir/debian_fpcsrc
+  FPCSrcTmpDir=/tmp/fpc-src$LazVersion
+  FPCSrcBuildDir=$FPCSrcTmpDir/fpc-src_build
+  FPCSrcDeb=fpc-src-$LazVersion-$LazRelease.deb
+  DebianSrcDir=$CurDir/debian_fpc-src
 
   echo "Build directory is $FPCSrcBuildDir"
   if [ x$FPCSrcBuildDir = x/ ]; then
@@ -83,13 +83,13 @@ if [ "$PkgType" = "deb" ]; then
 
   # copyright and changelog files
   echo "copying copyright and changelog files"
-  mkdir -p $FPCSrcBuildDir/usr/share/doc/fpcsrc
+  mkdir -p $FPCSrcBuildDir/usr/share/doc/fpc-src
   cat $DebianSrcDir/changelog | \
     sed -e "s/FPCVERSION/$LazVersion-$LazRelease/g" \
-    > $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog
-  cp $DebianSrcDir/{copyright,changelog.Debian} $FPCSrcBuildDir/usr/share/doc/fpcsrc/
-  gzip --best $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog
-  gzip --best $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog.Debian
+    > $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog
+  cp $DebianSrcDir/{copyright,changelog.Debian} $FPCSrcBuildDir/usr/share/doc/fpc-src/
+  gzip --best $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog
+  gzip --best $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog.Debian
 
   # fixing permissions
   echo "fixing permissions ..."
@@ -104,13 +104,13 @@ if [ "$PkgType" = "deb" ]; then
   cd -
 
 else
-  # build fpcsrc rpm
+  # build fpc-src rpm
 
-  echo "building fpcsrc rpm ..."
+  echo "building fpc-src rpm ..."
 
   # create spec file
-  SpecFile=rpm/fpcsrc-$LazVersion-$LazRelease.spec
-  cat fpcsrc.spec | \
+  SpecFile=rpm/fpc-src-$LazVersion-$LazRelease.spec
+  cat fpc-src.spec | \
     sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
     > $SpecFile
     
@@ -123,7 +123,7 @@ else
   # build rpm
   rpmbuild -ba $SpecFile || rpm -ba $SpecFile
 
-  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpcsrc-$LazVersion-$LazRelease.i386.rpm"
+  echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-src-$LazVersion-$LazRelease.i386.rpm"
 fi
 
 # end.

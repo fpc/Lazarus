@@ -1,16 +1,16 @@
-fpcsrc (2.0.3)
+fpc-src (2.0.3)
 
-	  * Bugfixes
+	  * Renamed fpcsrc to fpc-src
 
 	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  01/11/2006
 
-fpcsrc (1.0.10)
+fpc-src (1.0.10)
 
 	  * Bugfixes
 
 	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  07/13/2003
 
-fpcsrc (1.0.7)
+fpc-src (1.0.7)
 
 	  * Started package
 

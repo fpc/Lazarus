@@ -9,7 +9,7 @@ FPCSRC="u"
 echo "Installing freepascal"
 cd $WHERE/fpc
 yes "" | ./install.sh
-echo "Installin freepascal sources"
+echo "Installing freepascal sources"
 cd /
 rm -frv /usr/src/fpc-1.9.6
 rm -frv /usr/src/fpc

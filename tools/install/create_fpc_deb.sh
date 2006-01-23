@@ -36,7 +36,7 @@ fi
 CurDir=`pwd`
 Date=20$Year$Month$Day
 LazRelease=laz.$Date
-SrcTGZ=fpcsrc-$LazVersion-$LazRelease.tgz
+SrcTGZ=fpc-src-$LazVersion-$LazRelease.tgz
 TmpDir=/tmp/fpc$LazVersion
 DebianRulezDir=$TmpDir/fpc/install/debian/
 
@@ -92,12 +92,12 @@ cd -
 
 echo ===================================================
 echo
-echo building fpcsrc deb ...
+echo building fpc-src deb ...
 
-FPCSrcTmpDir=/tmp/fpcsrc$LazVersion
-FPCSrcBuildDir=$FPCSrcTmpDir/fpcsrc_build
-FPCSrcDeb=fpcsrc-$LazVersion-$LazRelease.deb
-DebianSrcDir=$CurDir/debian_fpcsrc
+FPCSrcTmpDir=/tmp/fpc-src$LazVersion
+FPCSrcBuildDir=$FPCSrcTmpDir/fpc-src_build
+FPCSrcDeb=fpc-src-$LazVersion-$LazRelease.deb
+DebianSrcDir=$CurDir/debian_fpc-src
 
 echo "Build directory is $FPCSrcBuildDir"
 if [ x$FPCSrcBuildDir = x/ ]; then
@@ -124,14 +124,14 @@ cat $DebianSrcDir/control | \
 
 # copyright and changelog files
 echo "copying copyright and changelog files"
-mkdir -p $FPCSrcBuildDir/usr/share/doc/fpcsrc
+mkdir -p $FPCSrcBuildDir/usr/share/doc/fpc-src
 cat $DebianSrcDir/changelog | \
   sed -e "s/FPCVERSION/$LazVersion-$LazRelease/g" \
       -e "s/FPCDATE/$Year-$Month-$Day/g" \
-  > $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog
-cp $DebianSrcDir/{copyright,changelog.Debian} $FPCSrcBuildDir/usr/share/doc/fpcsrc/
-gzip --best $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog
-gzip --best $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog.Debian
+  > $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog
+cp $DebianSrcDir/{copyright,changelog.Debian} $FPCSrcBuildDir/usr/share/doc/fpc-src/
+gzip --best $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog
+gzip --best $FPCSrcBuildDir/usr/share/doc/fpc-src/changelog.Debian
 
 # fixing permissions
 echo "fixing permissions ..."

@@ -1,4 +1,4 @@
-Name: fpcsrc
+Name: fpc-src
 Version: LAZVERSION
 Release: LAZRELEASE
 Copyright: LGPL2
@@ -7,7 +7,7 @@ Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.freepascal.org/
-BuildRoot: %{_tmppath}/fpcsrc-build%{version}
+BuildRoot: %{_tmppath}/fpc-src-build%{version}
 
 %define fpcsrcdir %{_datadir}/fpcsrc
 %define destdir %{buildroot}%{fpcsrcdir}/
