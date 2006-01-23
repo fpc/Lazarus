@@ -7,7 +7,7 @@
       <Version Value="5"/>
       <SearchPaths>
         <IncludeFiles Value="$(TargetOS)/"/>
-        <OtherUnitFiles Value="$(TargetOS)/"/>
+        <OtherUnitFiles Value="unix/;win32/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
