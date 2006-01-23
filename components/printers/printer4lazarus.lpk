@@ -137,7 +137,8 @@
       </Item26>
       <Item27>
         <Filename Value="unix/minicupslibc.pas"/>
-        <UnitName Value="minicupslibc"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="MiniCUPSLibc"/>
       </Item27>
     </Files>
     <Type Value="RunAndDesignTime"/>

@@ -49,7 +49,7 @@ interface
 
 
 uses
-  Classes, SysUtils, dynlibs,
+  Classes, SysUtils, LCLProc, dynlibs,
   {$ifdef UseLibC}
   {$IFDEF darwin}
   miniCupsLibc
@@ -946,9 +946,10 @@ Type
 //
 //
 const
-  MaxcupsLibs=1;
+  MaxcupsLibs=2;
   cupsLibs :Array[0..MaxcupsLibs] of string = ('libcups.so',
-                                               'libcups.so.2');
+                                               'libcups.so.2',
+                                               '/usr/lib/libcups.dylib');
 
 const
   CUPS_VERSION = 1.0119;
@@ -1190,6 +1191,7 @@ procedure InitializeCups;
 var i : integer;
 begin
   inc(RefCount);
+  //debugln('InitializeCups RefCount=',dbgs(RefCount));
   if RefCount = 1 then
   begin
     for i:=0 to MaxcupsLibs do
@@ -1201,6 +1203,7 @@ begin
     
     if CupsLibHandle = nilhandle then
     begin
+      debugln('InitializeCups load cups lib failed');
       RefCount := 0;
       raise EInOutError.Create('Can not load cups library');
     end;
@@ -1357,6 +1360,7 @@ begin
   Result:=False;
   if RefCount=0 then begin
     Try
+      //debugln('CUPSLibInstalled A');
       InitializeCups;
     Except
       exit;

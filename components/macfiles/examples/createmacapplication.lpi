@@ -17,7 +17,7 @@
     <LazDoc Paths=""/>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="17" Y="22"/>
+        <CursorPos X="24" Y="24"/>
         <EditorIndex Value="0"/>
         <Filename Value="createmacapplication.lpr"/>
         <IsPartOfProject Value="True"/>
