@@ -5,7 +5,7 @@ program selectprinter;
 uses
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, frmselprinter, SQLDBLaz;
+  { add your units here }, frmselprinter;
 
 begin
   Application.Initialize;
