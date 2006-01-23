@@ -73,8 +73,8 @@ procedure Register;
 
 implementation
 
-{$IFDEF LINUX}
-{$I ./linux/cupsprndialogs.inc}
+{$IFDEF UNIX}
+{$I ./unix/cupsprndialogs.inc}
 {$ENDIF}
 
 {$IFDEF WIN32}

@@ -34,8 +34,8 @@ unit OSPrinters;
 
 interface
 
-{$IFDEF LINUX}
-{$I ./linux/cupsprinters_h.inc}
+{$IFDEF UNIX}
+{$I ./unix/cupsprinters_h.inc}
 {$ENDIF}
 
 {$IFDEF WIN32}
@@ -44,8 +44,8 @@ interface
 
 implementation
 
-{$IFDEF LINUX}
-{$I ./linux/cupsprinters.inc}
+{$IFDEF UNIX}
+{$I ./unix/cupsprinters.inc}
 {$ENDIF}
 
 {$IFDEF WIN32}
