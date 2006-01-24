@@ -48,14 +48,23 @@ type
 
   PAutoSizeBox = ^TAutoSizeBox;
 
-  { TAutoSizeBox }
+  { TAutoSizeBox
+    A TAutoSizeBox is a node in a tree.
+    A TAutoSizeBox can be a cell. Then it is a leaf in the tree and can have a
+    Control.
+    A TAutoSizeBoxcan can be a row or column. Then it has only one Childs array.
+    A TAutoSizeBoxcan can be a table. Then it has both Childs arrays.
+    
+    
+  }
 
   TAutoSizeBox = class
   public
-    Control: TControl;
+    Control: TControl; // the Control of a leaf node
     MinimumSize: array[TAutoSizeBoxOrientation] of integer;
-    MaximumSize: array[TAutoSizeBoxOrientation] of integer;
+    MaximumSize: array[TAutoSizeBoxOrientation] of integer; // 0 means inifinte
     PreferredSize: array[TAutoSizeBoxOrientation] of integer;
+    LeftTop: array[TAutoSizeBoxOrientation] of integer;
     BorderLeftTop: array[TAutoSizeBoxOrientation] of integer;
     BorderRightBottom: array[TAutoSizeBoxOrientation] of integer;
     Parent: array[TAutoSizeBoxOrientation] of TAutoSizeBox;
@@ -69,12 +78,18 @@ type
     procedure SetTableControls(ListOfControls: TFPList;
                                ChildSizing: TControlChildSizing);
     procedure ApplyChildsizingBorders(ChildSizing: TControlChildSizing);
+    procedure InitSums;
     procedure SumLine(Orientation: TAutoSizeBoxOrientation;
-                      InitOrthogonal: boolean);
+                      DoInit: boolean);
     procedure SumTable;
+    procedure ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
     procedure ResizeChilds(ChildSizing: TControlChildSizing;
                            Orientation: TAutoSizeBoxOrientation;
                            TargetSize: integer);
+    procedure ResizeTable(ChildSizing: TControlChildSizing;
+                          TargetWidth, TargetHeight: integer);
+    procedure SetTableControlBounds;
+    procedure WriteDebugReport;
     destructor Destroy; override;
   end;
   
@@ -115,34 +130,51 @@ begin
 end;
 
 procedure TAutoSizeBox.AllocateTable(ColCount, RowCount: Integer);
+{ This creates a ColCount x RowCount number of cells,
+  and a Row of Columns and a Column of Rows.
+  
+  +-++-++-++-+  +----------+
+  | || || || |  |          |
+  | || || || |  +----------+
+  | || || || |  +----------+
+  | || || || |  |          |
+  | || || || |  +----------+
+  | || || || |  +----------+
+  | || || || |  |          |
+  +-++-++-++-+  +----------+
+
+}
 var
   x, y: Integer;
-  ColBox: TAutoSizeBox;
   RowBox: TAutoSizeBox;
+  ColBox: TAutoSizeBox;
   CellBox: TAutoSizeBox;
 begin
   AllocateChildsArray(asboHorizontal,ColCount);
   AllocateChildsArray(asboVertical,RowCount);
+  // create columns
   for x:=0 to ColCount-1 do begin
-    RowBox:=TAutoSizeBox.Create;
-    Childs[asboHorizontal][x]:=RowBox;
-    RowBox.AllocateChildsArray(asboVertical,RowCount);
-    RowBox.Parent[asboHorizontal]:=Self;
-    RowBox.Index[asboHorizontal]:=x;
-    RowBox.Index[asboVertical]:=-1;
-  end;
-  for y:=0 to RowCount-1 do begin
     ColBox:=TAutoSizeBox.Create;
-    Childs[asboVertical][y]:=ColBox;
-    ColBox.AllocateChildsArray(asboHorizontal,ColCount);
-    ColBox.Parent[asboVertical]:=Self;
-    ColBox.Index[asboHorizontal]:=-1;
-    ColBox.Index[asboVertical]:=y;
+    Childs[asboHorizontal][x]:=ColBox;
+    ColBox.AllocateChildsArray(asboVertical,RowCount);
+    ColBox.Parent[asboHorizontal]:=Self;
+    ColBox.Index[asboHorizontal]:=x;
+    ColBox.Index[asboVertical]:=-1;
   end;
+  // create rows
   for y:=0 to RowCount-1 do begin
-    ColBox:=Childs[asboVertical][y];
+    RowBox:=TAutoSizeBox.Create;
+    Childs[asboVertical][y]:=RowBox;
+    RowBox.AllocateChildsArray(asboHorizontal,ColCount);
+    RowBox.Parent[asboVertical]:=Self;
+    RowBox.Index[asboHorizontal]:=-1;
+    RowBox.Index[asboVertical]:=y;
+  end;
+  // create cells
+  for y:=0 to RowCount-1 do begin
+    RowBox:=Childs[asboVertical][y];
     for x:=0 to ColCount-1 do begin
-      RowBox:=Childs[asboHorizontal][x];
+      ColBox:=Childs[asboHorizontal][x];
       CellBox:=TAutoSizeBox.Create;
       RowBox.Childs[asboHorizontal][x]:=CellBox;
       ColBox.Childs[asboVertical][y]:=CellBox;
@@ -162,7 +194,27 @@ var
   Col: LongInt;
   ChildControl: TControl;
   ChildBox: TAutoSizeBox;
+  RowCount: LongInt;
+  ColCount: Integer;
 begin
+  // allocate table
+  case ChildSizing.Layout of
+  cclLeftToRightThenTopToBottom:
+    begin
+      ColCount:=ChildSizing.ControlsPerLine;
+      RowCount:=((ListOfControls.Count-1) div ColCount)+1;
+    end;
+  cclTopToBottomThenLeftToRight:
+    begin
+      RowCount:=ChildSizing.ControlsPerLine;
+      ColCount:=((ListOfControls.Count-1) div RowCount)+1;
+    end;
+  else
+    raise Exception.Create('TAutoSizeBox.SetTableControls TODO');
+  end;
+  AllocateTable(ColCount,RowCount);
+
+  // set controls
   for i:=0 to ListOfControls.Count-1 do begin
     ChildControl:=TControl(ListOfControls[i]);
     case ChildSizing.Layout of
@@ -182,8 +234,6 @@ begin
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
       end;
-    else
-      raise Exception.Create('TAutoSizeBox.SetTableControls TODO');
     end;
   end;
 end;
@@ -202,7 +252,7 @@ begin
   
   // right border
   if (Parent[asboHorizontal]=nil)
-  or (Index[asboHorizontal]=Parent[asboHorizontal].ChildCount[asboHorizontal])
+  or (Index[asboHorizontal]=Parent[asboHorizontal].ChildCount[asboHorizontal]-1)
   then
     MinBorder:=ChildSizing.LeftRightSpacing
   else
@@ -219,7 +269,7 @@ begin
 
   // bottom border
   if (Parent[asboVertical]=nil)
-  or (Index[asboVertical]=Parent[asboVertical].ChildCount[asboVertical])
+  or (Index[asboVertical]=Parent[asboVertical].ChildCount[asboVertical]-1)
   then
     MinBorder:=ChildSizing.TopBottomSpacing
   else
@@ -228,45 +278,63 @@ begin
                                        MinBorder);
 end;
 
+procedure TAutoSizeBox.InitSums;
+
+  procedure Init(o: TAutoSizeBoxOrientation);
+  var
+    FirstChild: TAutoSizeBox;
+  begin
+    if ChildCount[o]>0 then begin
+      FirstChild:=Childs[o][0];
+      MaximumSize[o]:=FirstChild.MaximumSize[o];
+      MinimumSize[o]:=FirstChild.MinimumSize[o];
+      PreferredSize[o]:=FirstChild.PreferredSize[o];
+      BorderLeftTop[o]:=FirstChild.BorderLeftTop[o];
+      BorderRightBottom[o]:=FirstChild.BorderRightBottom[o];
+    end else begin
+      MaximumSize[o]:=0;
+      MinimumSize[o]:=0;
+      PreferredSize[o]:=0;
+      BorderLeftTop[o]:=0;
+      BorderRightBottom[o]:=0;
+    end;
+  end;
+
+begin
+  Init(asboHorizontal);
+  Init(asboVertical);
+end;
+
 procedure TAutoSizeBox.SumLine(Orientation: TAutoSizeBoxOrientation;
-  InitOrthogonal: boolean);
+  DoInit: boolean);
+// total orientated minimum is the sum of all minimums plus borders
+// total orientated maximum is the sum of all maximums plus borders
+// total orientated preferred is the sum of all preferred plus borders
+// total othogonal minimum is the maximum of all minimums
+// total othogonal maximum is the minimum of all maximums
+// total othogonal preferred is the maximum of all preferred
 var
   i: Integer;
   Orthogonal: TAutoSizeBoxOrientation;
-  FirstChild: TAutoSizeBox;
   CurChild: TAutoSizeBox;
   CurBorder: integer;
   LastChild: TAutoSizeBox;
-  
-  procedure Init(o: TAutoSizeBoxOrientation);
-  begin
-    MaximumSize[o]:=FirstChild.MaximumSize[o];
-    MinimumSize[o]:=FirstChild.MinimumSize[o];
-    PreferredSize[o]:=FirstChild.PreferredSize[o];
-    BorderLeftTop[o]:=FirstChild.BorderLeftTop[o];
-    BorderRightBottom[o]:=FirstChild.BorderRightBottom[o];
-  end;
-  
 begin
+  if DoInit then InitSums;
   Orthogonal:=SizeBoxOrthogonal[Orientation];
   if ChildCount[Orientation]>0 then begin
-    FirstChild:=Childs[Orientation][0];
-    Init(Orientation);
-    if InitOrthogonal then Init(Orthogonal);
-
     for i:=0 to ChildCount[Orientation]-1 do begin
       CurChild:=Childs[Orientation][i];
       // add border
       CurBorder:=CurChild.BorderLeftTop[Orientation];
-      if i>0 then begin
+      if i>0 then
         CurBorder:=Max(Childs[Orientation][i-1].BorderRightBottom[Orientation],
                        CurBorder);
-        if MaximumSize[Orientation]>0 then begin
-          inc(MaximumSize[Orientation],CurBorder);
-        end;
-        inc(MinimumSize[Orientation],CurBorder);
-        inc(PreferredSize[Orientation],CurBorder);
+      if MaximumSize[Orientation]>0 then begin
+        inc(MaximumSize[Orientation],CurBorder);
       end;
+      inc(MinimumSize[Orientation],CurBorder);
+      inc(PreferredSize[Orientation],CurBorder);
       // add item size in Orientation
       if MaximumSize[Orientation]>0 then begin
         if CurChild.MaximumSize[Orientation]>0 then
@@ -293,45 +361,47 @@ begin
     // last border
     LastChild:=Childs[Orientation][ChildCount[Orientation]-1];
     BorderRightBottom[Orientation]:=LastChild.BorderRightBottom[Orientation];
-
-  end else begin
-    MaximumSize[Orientation]:=0;
-    MinimumSize[Orientation]:=0;
-    PreferredSize[Orientation]:=0;
-    BorderLeftTop[Orientation]:=0;
-    BorderRightBottom[Orientation]:=0;
-    
-    if InitOrthogonal then begin
-      MaximumSize[Orthogonal]:=0;
-      MinimumSize[Orthogonal]:=0;
-      PreferredSize[Orthogonal]:=0;
-      BorderLeftTop[Orthogonal]:=0;
-      BorderRightBottom[Orthogonal]:=0;
-    end;
   end;
 end;
 
 procedure TAutoSizeBox.SumTable;
 var
   x: Integer;
-  RowBox: TAutoSizeBox;
-  y: Integer;
   ColBox: TAutoSizeBox;
+  y: Integer;
+  RowBox: TAutoSizeBox;
 begin
   // sum items in rows
   for y:=0 to ChildCount[asboVertical]-1 do begin
-    ColBox:=Childs[asboVertical][y];
-    ColBox.SumLine(asboHorizontal,true);
+    RowBox:=Childs[asboVertical][y];
+    RowBox.SumLine(asboHorizontal,true);
   end;
   // sum items in columns
   for x:=0 to ChildCount[asboHorizontal]-1 do begin
-    RowBox:=Childs[asboHorizontal][x];
-    RowBox.SumLine(asboVertical,true);
+    ColBox:=Childs[asboHorizontal][x];
+    ColBox.SumLine(asboVertical,true);
   end;
   // sum rows
   SumLine(asboVertical,true);
   // sum columns
   SumLine(asboHorizontal,false);
+end;
+
+procedure TAutoSizeBox.ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
+var
+  i: Integer;
+  Child: TAutoSizeBox;
+  CurLeftTop: Integer;
+begin
+  CurLeftTop:=0;
+  for i:=0 to ChildCount[Orientation]-1 do begin
+    Child:=Childs[Orientation][i];
+    if i=0 then
+      inc(CurLeftTop,Child.BorderLeftTop[Orientation]);
+    Child.LeftTop[Orientation]:=CurLeftTop;
+    inc(CurLeftTop,Child.PreferredSize[Orientation]);
+    inc(CurLeftTop,Child.BorderRightBottom[Orientation]);
+  end;
 end;
 
 procedure TAutoSizeBox.ResizeChilds(ChildSizing: TControlChildSizing;
@@ -347,6 +417,7 @@ var
   CurSize: LongInt;
 
   function GetChildTotalSize: integer;
+  // computes the total preferred size of all childs of this Orientation
   var
     i: Integer;
     Child: TAutoSizeBox;
@@ -365,6 +436,8 @@ var
   
   procedure GetChildMaxResize(out Factor: TResizeFactor;
     out ResizeableCount: integer);
+  // returns the number of childs/gaps, that can grow (ResizeableCount)
+  // and the maximum factor, by which the childs/gaps can grow (TResizeFactor)
   var
     i: Integer;
     CurScale: Double;
@@ -390,24 +463,7 @@ var
 
         case EnlargeStyle of
 
-        crsScaleChilds:
-          begin
-            if Child.MaximumSize[Orientation]=0 then begin
-              CurScale:=double(TargetSize);
-              CurOffset:=TargetSize;
-            end else begin
-              CurScale:=double(Child.MaximumSize[Orientation])
-                        /Child.PreferredSize[Orientation];
-              CurOffset:=Child.MaximumSize[Orientation]
-                         -Child.PreferredSize[Orientation];
-            end;
-            if (Factor.Offset=0) or (Factor.Scale>CurScale) then begin
-              Factor.Scale:=CurScale;
-              Factor.Offset:=CurOffset;
-            end;
-          end;
-
-        crsHomogenousChildResize:
+        crsScaleChilds, crsHomogenousChildResize:
           begin
             if Child.MaximumSize[Orientation]=0 then begin
               CurScale:=double(TargetSize);
@@ -505,6 +561,8 @@ var
 
   procedure GetChildMinResize(out Factor: TResizeFactor;
     out ResizeableCount: integer);
+  // returns the number of childs/gaps, that can shrink (ResizeableCount)
+  // and the maximum factor, by which the childs/gaps can shrink (TResizeFactor)
   var
     i: Integer;
     CurScale: Double;
@@ -662,8 +720,9 @@ begin
     else
       EnlargeStyle:=ChildSizing.EnlargeVertical;
     while TargetSize>CurSize do begin
+      // shrink childs
       GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount);
-      if ResizeableCount=0 then break;
+      if (ResizeableCount=0) or (MaxResizeFactorPerItem.Offset=0) then break;
       
       CurScale.Scale:=(double(TargetSize)/CurSize);
       if (MaxResizeFactorPerItem.Scale>0)
@@ -671,8 +730,9 @@ begin
         CurScale.Scale:=MaxResizeFactorPerItem.Scale;
         
       CurScale.Offset:=((TargetSize-CurSize-1) div ResizeableCount)+1;
+      // note: the above formula makes sure, that Offset>0
       if (MaxResizeFactorPerItem.Offset>0)
-      and (MaxResizeFactorPerItem.Offset>CurScale.Offset) then
+      and (MaxResizeFactorPerItem.Offset<CurScale.Offset) then
         CurScale.Offset:=MaxResizeFactorPerItem.Offset;
       
       EnlargeChilds(CurScale);
@@ -693,6 +753,7 @@ begin
         CurScale.Scale:=MinResizeFactorPerItem.Scale;
 
       CurScale.Offset:=((CurSize-TargetSize-1) div ResizeableCount)+1;
+      // note: the above formula makes sure, that Offset>0
       if (MinResizeFactorPerItem.Offset>0)
       and (MinResizeFactorPerItem.Offset>CurScale.Offset) then
         CurScale.Offset:=MinResizeFactorPerItem.Offset;
@@ -700,16 +761,103 @@ begin
       ShrinkChilds(CurScale);
     end;
   end;
+  ComputeLeftTops(Orientation);
+end;
+
+procedure TAutoSizeBox.ResizeTable(ChildSizing: TControlChildSizing;
+  TargetWidth, TargetHeight: integer);
+begin
+  // resize rows and columns
+  ResizeChilds(ChildSizing,asboHorizontal,TargetWidth);
+  ResizeChilds(ChildSizing,asboVertical,TargetHeight);
+end;
+
+procedure TAutoSizeBox.SetTableControlBounds;
+var
+  y: Integer;
+  RowBox: TAutoSizeBox;
+  x: Integer;
+  ColBox: TAutoSizeBox;
+  CellBox: TAutoSizeBox;
+  CurControl: TControl;
+  NewBounds: TRect;
+begin
+  for y:=0 to ChildCount[asboVertical]-1 do begin
+    RowBox:=Childs[asboVertical][y];
+    for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
+      CellBox:=RowBox.Childs[asboHorizontal][x];
+      ColBox:=CellBox.Parent[asboVertical];
+      CurControl:=CellBox.Control;
+      NewBounds:=Bounds(ColBox.LeftTop[asboHorizontal],
+                        RowBox.LeftTop[asboVertical],
+                        ColBox.PreferredSize[asboHorizontal],
+                        RowBox.PreferredSize[asboVertical]);
+      DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' NewBounds=',dbgs(NewBounds));
+      CurControl.SetBoundsKeepBase(ColBox.LeftTop[asboHorizontal],
+                                   RowBox.LeftTop[asboVertical],
+                                   ColBox.PreferredSize[asboHorizontal],
+                                   RowBox.PreferredSize[asboVertical]);
+    end;
+  end;
+end;
+
+procedure TAutoSizeBox.WriteDebugReport;
+var
+  y: Integer;
+  RowBox: TAutoSizeBox;
+  x: Integer;
+  CellBox: TAutoSizeBox;
+  ColBox: TAutoSizeBox;
+begin
+  DebugLn('TAutoSizeBox.WriteDebugReport'
+    +' ChildCounts=',dbgs(ChildCount[asboHorizontal]),'x',dbgs(ChildCount[asboVertical]));
+  for y:=0 to ChildCount[asboVertical]-1 do begin
+    RowBox:=Childs[asboVertical][y];
+    DbgOut('  Row='+dbgs(y),
+            ' Min='+dbgs(RowBox.MinimumSize[asboVertical]),
+            ' Max='+dbgs(RowBox.MaximumSize[asboVertical]),
+            ' Pref='+dbgs(RowBox.PreferredSize[asboVertical]),
+            ' #Col='+dbgs(RowBox.ChildCount[asboHorizontal]));
+    for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
+      CellBox:=RowBox.Childs[asboHorizontal][x];
+      DbgOut(' CellControl=',DbgSName(CellBox.Control),
+             ' Min='+dbgs(CellBox.MinimumSize[asboHorizontal])+'x'+dbgs(CellBox.MinimumSize[asboVertical]),
+             ' Max='+dbgs(CellBox.MaximumSize[asboHorizontal])+'x'+dbgs(CellBox.MaximumSize[asboVertical]),
+             ' Pref='+dbgs(CellBox.PreferredSize[asboHorizontal])+'x'+dbgs(CellBox.PreferredSize[asboVertical]),
+             '');
+    end;
+    DebugLn;
+  end;
+  DbgOut(' Columns: ');
+  for x:=0 to ChildCount[asboHorizontal]-1 do begin
+    ColBox:=Childs[asboHorizontal][x];
+    DbgOut(' Col='+dbgs(ColBox.Index[asboHorizontal]),
+           ' Min='+dbgs(ColBox.MinimumSize[asboHorizontal]),
+           ' Max='+dbgs(ColBox.MaximumSize[asboHorizontal]),
+           ' Pref='+dbgs(ColBox.PreferredSize[asboHorizontal]),
+           '');
+  end;
+  DebugLn;
 end;
 
 destructor TAutoSizeBox.Destroy;
+var
+  o: TAutoSizeBoxOrientation;
+  i: Integer;
 begin
-  ReallocMem(Childs[asboHorizontal],0);
-  ReallocMem(Childs[asboVertical],0);
+  // unlink from parent
+  for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
+    if Parent[o]<>nil then
+      Parent[o].Childs[o][Index[o]]:=nil;
+  // free all childs
+  for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
+    for i:=0 to ChildCount[o]-1 do
+      Childs[o][i].Free;
+  // free childs arrays
+  for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
+    ReallocMem(Childs[o],0);
   inherited Destroy;
 end;
-
-
 
 
 {------------------------------------------------------------------------------
