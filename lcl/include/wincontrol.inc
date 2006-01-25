@@ -54,8 +54,6 @@ type
     Control.
     A TAutoSizeBoxcan can be a row or column. Then it has only one Childs array.
     A TAutoSizeBoxcan can be a table. Then it has both Childs arrays.
-    
-    
   }
 
   TAutoSizeBox = class
@@ -71,26 +69,36 @@ type
     Index: array[TAutoSizeBoxOrientation] of Integer; // index in parent or grandparent
     ChildCount: array[TAutoSizeBoxOrientation] of Integer;
     Childs: array[TAutoSizeBoxOrientation] of PAutoSizeBox;
+    
+    // for nodes
+    destructor Destroy; override;
+    procedure Clear;
     procedure SetControl(AControl: TControl);
+    procedure ApplyChildsizingBorders(ChildSizing: TControlChildSizing);
+
+    // for rows and columns
     procedure AllocateChildsArray(Orientation: TAutoSizeBoxOrientation;
                                   NewChildCount: Integer);
-    procedure AllocateTable(ColCount, RowCount: Integer);
-    procedure SetTableControls(ListOfControls: TFPList;
-                               ChildSizing: TControlChildSizing);
-    procedure ApplyChildsizingBorders(ChildSizing: TControlChildSizing);
     procedure InitSums;
     procedure SumLine(Orientation: TAutoSizeBoxOrientation;
                       DoInit: boolean);
-    procedure SumTable;
     procedure ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
     procedure ResizeChilds(ChildSizing: TControlChildSizing;
                            Orientation: TAutoSizeBoxOrientation;
                            TargetSize: integer);
+
+    // for tables
+    procedure AllocateTable(ColCount, RowCount: Integer);
+    procedure SetTableControls(ListOfControls: TFPList;
+                               ChildSizing: TControlChildSizing);
+    procedure SumTable;
     procedure ResizeTable(ChildSizing: TControlChildSizing;
                           TargetWidth, TargetHeight: integer);
-    procedure SetTableControlBounds;
+    function SetTableControlBounds(ChildSizing: TControlChildSizing): boolean;
+    function AlignControlsInTable(ListOfControls: TFPList;
+                                  ChildSizing: TControlChildSizing;
+                                  TargetWidth, TargetHeight: integer): boolean;
     procedure WriteDebugReport;
-    destructor Destroy; override;
   end;
   
 const
@@ -201,12 +209,12 @@ begin
   case ChildSizing.Layout of
   cclLeftToRightThenTopToBottom:
     begin
-      ColCount:=ChildSizing.ControlsPerLine;
+      ColCount:=Max(1,ChildSizing.ControlsPerLine);
       RowCount:=((ListOfControls.Count-1) div ColCount)+1;
     end;
   cclTopToBottomThenLeftToRight:
     begin
-      RowCount:=ChildSizing.ControlsPerLine;
+      RowCount:=Max(1,ChildSizing.ControlsPerLine);
       ColCount:=((ListOfControls.Count-1) div RowCount)+1;
     end;
   else
@@ -449,8 +457,11 @@ var
     ResizeableCount:=0;
     case EnlargeStyle of
     
-    crsScaleChilds,crsHomogenousChildResize:
+    crsAnchorAligning:
+      exit; // no resizing
 
+    crsScaleChilds,crsHomogenousChildResize:
+    
       for i:=0 to ChildCount[Orientation]-1 do begin
         Child:=Childs[Orientation][i];
         if (Child.MaximumSize[Orientation]>0)
@@ -502,10 +513,13 @@ var
     Child: TAutoSizeBox;
     DiffSize: Integer;
     NewSize: LongInt;
+    OldSize: LongInt;
   begin
     for i:=0 to ChildCount[Orientation]-1 do begin
+      if TargetSize=CurSize then break;
+    
       Child:=Childs[Orientation][i];
-      if (Child.MaximumSize[Orientation]>0)
+      if (Child.MaximumSize[Orientation]<0)
       and (Child.PreferredSize[Orientation]>=Child.MaximumSize[Orientation])
       then begin
         // this child can not be further enlarged
@@ -518,10 +532,10 @@ var
         begin
           // scale PreferredSize
           DiffSize:=TargetSize-CurSize;
-          NewSize:=Min(Max(1,round(
-                                Child.PreferredSize[Orientation]*Factor.Scale)),
-                       DiffSize);
-          inc(CurSize,NewSize-Child.PreferredSize[Orientation]);
+          OldSize:=Child.PreferredSize[Orientation];
+          NewSize:=round(double(OldSize)*Factor.Scale);
+          NewSize:=Min(OldSize+DiffSize,Max(OldSize+1,NewSize));
+          inc(CurSize,NewSize-OldSize);
           Child.PreferredSize[Orientation]:=NewSize;
         end;
         
@@ -529,9 +543,9 @@ var
         begin
           // add to PreferredSize
           DiffSize:=TargetSize-CurSize;
-          NewSize:=Min(Child.PreferredSize[Orientation]+Factor.Offset,
-                       DiffSize);
-          inc(CurSize,NewSize-Child.PreferredSize[Orientation]);
+          OldSize:=Child.PreferredSize[Orientation];
+          NewSize:=Min(OldSize+Factor.Offset,OldSize+DiffSize);
+          inc(CurSize,NewSize-OldSize);
           Child.PreferredSize[Orientation]:=NewSize;
         end;
         
@@ -540,16 +554,16 @@ var
           if i=0 then begin
             // add to left/top border
             DiffSize:=TargetSize-CurSize;
-            NewSize:=Min(Child.BorderLeftTop[Orientation]+Factor.Offset,
-                         DiffSize);
-            inc(CurSize,NewSize-Child.BorderLeftTop[Orientation]);
+            OldSize:=Child.BorderLeftTop[Orientation];
+            NewSize:=Min(OldSize+Factor.Offset,OldSize+DiffSize);
+            inc(CurSize,NewSize-OldSize);
             Child.BorderLeftTop[Orientation]:=NewSize;
           end;
           // add to right/bottom border
           DiffSize:=TargetSize-CurSize;
-          NewSize:=Min(Child.BorderRightBottom[Orientation]+Factor.Offset,
-                       DiffSize);
-          inc(CurSize,NewSize-Child.BorderRightBottom[Orientation]);
+          OldSize:=Child.BorderRightBottom[Orientation];
+          NewSize:=Min(OldSize+Factor.Offset,OldSize+DiffSize);
+          inc(CurSize,NewSize-OldSize);
           Child.BorderRightBottom[Orientation]:=NewSize;
           if i<ChildCount[Orientation]-1 then
             Child.BorderLeftTop[Orientation]:=NewSize;
@@ -574,10 +588,14 @@ var
     ResizeableCount:=0;
     case ShrinkStyle of
 
+    crsAnchorAligning:
+      exit; // no resizing
+
     crsScaleChilds,crsHomogenousChildResize:
       for i:=0 to ChildCount[Orientation]-1 do begin
         Child:=Childs[Orientation][i];
         if (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
+        or (Child.PreferredSize[Orientation]<=1)
         then begin
           // this child can not be further shrinked
           continue;
@@ -650,10 +668,12 @@ var
     Child: TAutoSizeBox;
     DiffSize: Integer;
     NewSize: LongInt;
+    OldSize: LongInt;
   begin
     for i:=0 to ChildCount[Orientation]-1 do begin
       Child:=Childs[Orientation][i];
-      if (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
+      if (Child.PreferredSize[Orientation]<=1)
+      or (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
       then begin
         // this child can not be further shrinked
         continue;
@@ -665,10 +685,10 @@ var
         begin
           // scale PreferredSize
           DiffSize:=CurSize-TargetSize;
-          NewSize:=Min(Max(1,round(
-                                Child.PreferredSize[Orientation]*Factor.Scale)),
-                       DiffSize);
-          dec(CurSize,Child.PreferredSize[Orientation]-NewSize);
+          OldSize:=Child.PreferredSize[Orientation];
+          NewSize:=Min(round(OldSize*Factor.Scale),OldSize-1);
+          NewSize:=Max(Max(1,NewSize),OldSize-DiffSize);
+          dec(CurSize,OldSize-NewSize);
           Child.PreferredSize[Orientation]:=NewSize;
         end;
 
@@ -676,9 +696,10 @@ var
         begin
           // add to PreferredSize
           DiffSize:=CurSize-TargetSize;
-          NewSize:=Min(Child.PreferredSize[Orientation]-Factor.Offset,
-                       DiffSize);
-          dec(CurSize,Child.PreferredSize[Orientation]-NewSize);
+          OldSize:=Child.PreferredSize[Orientation];
+          NewSize:=OldSize-Factor.Offset;
+          NewSize:=Max(Max(NewSize,1),OldSize-DiffSize);
+          dec(CurSize,OldSize-NewSize);
           Child.PreferredSize[Orientation]:=NewSize;
         end;
 
@@ -687,16 +708,16 @@ var
           if i=0 then begin
             // add to left/top border
             DiffSize:=CurSize-TargetSize;
-            NewSize:=Min(Max(0,Child.BorderLeftTop[Orientation]-Factor.Offset),
-                         DiffSize);
-            dec(CurSize,Child.BorderLeftTop[Orientation]-NewSize);
+            OldSize:=Child.BorderLeftTop[Orientation];
+            NewSize:=Max(Max(0,OldSize-Factor.Offset),OldSize-DiffSize);
+            dec(CurSize,OldSize-NewSize);
             Child.BorderLeftTop[Orientation]:=NewSize;
           end;
           // add to right/bottom border
           DiffSize:=CurSize-TargetSize;
-          NewSize:=Min(Max(0,Child.BorderRightBottom[Orientation]-Factor.Offset),
-                       DiffSize);
-          dec(CurSize,Child.BorderRightBottom[Orientation]-NewSize);
+          OldSize:=Child.BorderRightBottom[Orientation];
+          NewSize:=Max(Max(0,OldSize-Factor.Offset),OldSize-DiffSize);
+          dec(CurSize,OldSize-NewSize);
           Child.BorderRightBottom[Orientation]:=NewSize;
           if i<ChildCount[Orientation]-1 then
             Child.BorderLeftTop[Orientation]:=NewSize;
@@ -709,8 +730,10 @@ var
 var
   MaxResizeFactorPerItem, MinResizeFactorPerItem, CurScale: TResizeFactor;
   ResizeableCount: integer;
+  i: Integer;
 begin
   CurSize:=GetChildTotalSize;
+  //DebugLn('TAutoSizeBox.ResizeChilds CurSize=',dbgs(CurSize),' TargetSize=',dbgs(TargetSize));
   EnlargeStyle:=crsAnchorAligning;
   ShrinkStyle:=crsAnchorAligning;
   if TargetSize>CurSize then begin
@@ -719,6 +742,7 @@ begin
       EnlargeStyle:=ChildSizing.EnlargeHorizontal
     else
       EnlargeStyle:=ChildSizing.EnlargeVertical;
+    i:=0;
     while TargetSize>CurSize do begin
       // shrink childs
       GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount);
@@ -736,6 +760,8 @@ begin
         CurScale.Offset:=MaxResizeFactorPerItem.Offset;
       
       EnlargeChilds(CurScale);
+      inc(i);
+      if i>1000 then RaiseGDBException('TAutoSizeBox.ResizeChilds consistency error');
     end;
   end else if TargetSize<CurSize then begin
     // shrink
@@ -743,9 +769,10 @@ begin
       ShrinkStyle:=ChildSizing.ShrinkHorizontal
     else
       ShrinkStyle:=ChildSizing.ShrinkVertical;
-    while TargetSize>CurSize do begin
+    i:=0;
+    while TargetSize<CurSize do begin
       GetChildMinResize(MinResizeFactorPerItem,ResizeableCount);
-      if ResizeableCount=0 then break;
+      if (ResizeableCount=0) or (MinResizeFactorPerItem.Offset=0) then break;
 
       CurScale.Scale:=(double(TargetSize)/CurSize);
       if (MinResizeFactorPerItem.Scale>0)
@@ -759,6 +786,8 @@ begin
         CurScale.Offset:=MinResizeFactorPerItem.Offset;
 
       ShrinkChilds(CurScale);
+      inc(i);
+      if i>1000 then RaiseGDBException('TAutoSizeBox.ResizeChilds consistency error');
     end;
   end;
   ComputeLeftTops(Orientation);
@@ -772,7 +801,8 @@ begin
   ResizeChilds(ChildSizing,asboVertical,TargetHeight);
 end;
 
-procedure TAutoSizeBox.SetTableControlBounds;
+function TAutoSizeBox.SetTableControlBounds(ChildSizing: TControlChildSizing
+  ): boolean;
 var
   y: Integer;
   RowBox: TAutoSizeBox;
@@ -781,24 +811,78 @@ var
   CellBox: TAutoSizeBox;
   CurControl: TControl;
   NewBounds: TRect;
+  CellBounds: TRect;
+  OldBounds: TRect;
+  NewWidth: LongInt;
+  NewHeight: LongInt;
 begin
+  Result:=false;
+  //WriteDebugReport;
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
       CellBox:=RowBox.Childs[asboHorizontal][x];
       ColBox:=CellBox.Parent[asboVertical];
       CurControl:=CellBox.Control;
-      NewBounds:=Bounds(ColBox.LeftTop[asboHorizontal],
-                        RowBox.LeftTop[asboVertical],
-                        ColBox.PreferredSize[asboHorizontal],
-                        RowBox.PreferredSize[asboVertical]);
-      DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' NewBounds=',dbgs(NewBounds));
-      CurControl.SetBoundsKeepBase(ColBox.LeftTop[asboHorizontal],
-                                   RowBox.LeftTop[asboVertical],
-                                   ColBox.PreferredSize[asboHorizontal],
-                                   RowBox.PreferredSize[asboVertical]);
+      if CurControl=nil then continue;
+      CellBounds:=Bounds(ColBox.LeftTop[asboHorizontal],
+                         RowBox.LeftTop[asboVertical],
+                         ColBox.PreferredSize[asboHorizontal],
+                         RowBox.PreferredSize[asboVertical]);
+      NewBounds.Left:=CellBounds.Left;
+      NewBounds.Top:=CellBounds.Top;
+      NewWidth:=CellBox.PreferredSize[asboHorizontal];
+      NewHeight:=CellBox.PreferredSize[asboVertical];
+      if (NewWidth<>ColBox.PreferredSize[asboHorizontal]) then begin
+        // column is bigger than preferred width of the control
+        if ChildSizing.EnlargeHorizontal
+        in [crsScaleChilds,crsHomogenousChildResize]
+        then
+          NewWidth:=CellBounds.Right-CellBounds.Left;
+      end else if (NewWidth>ColBox.PreferredSize[asboHorizontal]) then begin
+        // column is smaller than preferred width of the control
+        if ChildSizing.ShrinkHorizontal
+        in [crsScaleChilds,crsHomogenousChildResize]
+        then
+          NewWidth:=CellBounds.Right-CellBounds.Left;
+      end;
+      if (NewHeight<>ColBox.PreferredSize[asboVertical]) then begin
+        // column is bigger than preferred height of the control
+        if ChildSizing.EnlargeVertical
+        in [crsScaleChilds,crsHomogenousChildResize]
+        then
+          NewHeight:=CellBounds.Bottom-CellBounds.Top;
+      end else if (NewHeight>ColBox.PreferredSize[asboVertical]) then begin
+        // column is smaller than preferred height of the control
+        if ChildSizing.ShrinkVertical
+        in [crsScaleChilds,crsHomogenousChildResize]
+        then
+          NewHeight:=CellBounds.Bottom-CellBounds.Top;
+      end;
+
+      NewBounds.Right:=NewBounds.Left+NewWidth;
+      NewBounds.Bottom:=NewBounds.Top+NewHeight;
+      // TODO: align
+      OldBounds:=CurControl.BoundsRect;
+      if not CompareRect(@NewBounds,@OldBounds) then begin
+        //DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' CellBounds=',dbgs(CellBounds),' NewBounds=',dbgs(NewBounds));
+        Result:=true;
+        CurControl.SetBoundsKeepBase(NewBounds.Left,
+                                     NewBounds.Top,
+                                     NewBounds.Right-NewBounds.Left,
+                                     NewBounds.Bottom-NewBounds.Top);
+      end;
     end;
   end;
+end;
+
+function TAutoSizeBox.AlignControlsInTable(ListOfControls: TFPList;
+  ChildSizing: TControlChildSizing; TargetWidth, TargetHeight: integer): boolean;
+begin
+  SetTableControls(ListOfControls,ChildSizing);
+  SumTable;
+  ResizeTable(ChildSizing,TargetWidth,TargetHeight);
+  Result:=SetTableControlBounds(ChildSizing);
 end;
 
 procedure TAutoSizeBox.WriteDebugReport;
@@ -814,9 +898,9 @@ begin
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
     DbgOut('  Row='+dbgs(y),
-            ' Min='+dbgs(RowBox.MinimumSize[asboVertical]),
-            ' Max='+dbgs(RowBox.MaximumSize[asboVertical]),
-            ' Pref='+dbgs(RowBox.PreferredSize[asboVertical]),
+            ' MinY='+dbgs(RowBox.MinimumSize[asboVertical]),
+            ' MaxY='+dbgs(RowBox.MaximumSize[asboVertical]),
+            ' PrefY='+dbgs(RowBox.PreferredSize[asboVertical]),
             ' #Col='+dbgs(RowBox.ChildCount[asboHorizontal]));
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
       CellBox:=RowBox.Childs[asboHorizontal][x];
@@ -843,12 +927,20 @@ end;
 destructor TAutoSizeBox.Destroy;
 var
   o: TAutoSizeBoxOrientation;
-  i: Integer;
 begin
   // unlink from parent
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     if Parent[o]<>nil then
       Parent[o].Childs[o][Index[o]]:=nil;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TAutoSizeBox.Clear;
+var
+  o: TAutoSizeBoxOrientation;
+  i: Integer;
+begin
   // free all childs
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     for i:=0 to ChildCount[o]-1 do
@@ -856,7 +948,6 @@ begin
   // free childs arrays
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     ReallocMem(Childs[o],0);
-  inherited Destroy;
 end;
 
 
@@ -1634,6 +1725,42 @@ procedure TWinControl.DoAutoSize;
         Result:=Result+AnchorAlign[CurControl.Align];
     end;
   end;
+  
+  function WidthAnchored(CurAnchors: TAnchors): boolean;
+  begin
+    Result:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
+  end;
+  
+  function WidthDependsOnChilds: boolean;
+  begin
+    Result:=(ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
+         or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning);
+  end;
+  
+  function WidthDependsOnParent: boolean;
+  begin
+    Result:=(Parent<>nil)
+            and ((Parent.ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
+                 or (Parent.ChildSizing.ShrinkHorizontal<>crsAnchorAligning));
+  end;
+
+  function HeightAnchored(CurAnchors: TAnchors): boolean;
+  begin
+    Result:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);
+  end;
+
+  function HeightDependsOnChilds: boolean;
+  begin
+    Result:=(ChildSizing.EnlargeVertical<>crsAnchorAligning)
+         or (ChildSizing.ShrinkVertical<>crsAnchorAligning);
+  end;
+
+  function HeightDependsOnParent: boolean;
+  begin
+    Result:=(Parent<>nil)
+            and ((Parent.ChildSizing.EnlargeVertical<>crsAnchorAligning)
+                 or (Parent.ChildSizing.ShrinkVertical<>crsAnchorAligning));
+  end;
 
 var
   I : Integer;
@@ -1669,12 +1796,12 @@ begin
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
     ChildFixedSides:=FindChildFixatedSides;
     CurAnchors:=CurAnchors+ChildFixedSides;
-    WidthIsFixed:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight])
-                 or ((ChildSizing.EnlargeHorizontal<>crsAnchorAligning)
-                      or (ChildSizing.ShrinkHorizontal<>crsAnchorAligning));
-    HeightIsFixed:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom])
-                 or ((ChildSizing.EnlargeVertical<>crsAnchorAligning)
-                      or (ChildSizing.ShrinkVertical<>crsAnchorAligning));
+    WidthIsFixed:=WidthAnchored(CurAnchors)
+                 or WidthDependsOnChilds
+                 or WidthDependsOnParent;
+    HeightIsFixed:=HeightAnchored(CurAnchors)
+                 or HeightDependsOnChilds
+                 or HeightDependsOnParent;
 
     // move childs tight to left and top (so no space left and above childs)
     If (ControlCount > 0) then begin
@@ -3966,58 +4093,33 @@ procedure TWinControl.AlignNonAlignedControls(ListOfControls: TFPList;
   Example:
     cclLeftToRightThenTopToBottom
 
-  +-----------------------------------+  Block
-  |+---------------------------------+| /
-  || Control1 | Control2 | Control 3 ||/
+  +-----------------------------------+
+  |+---------------------------------+|
+  || Control1 | Control2 | Control 3 ||
   |+---------------------------------+|
   |+---------------------------------+|
-  || Control4 | Control5 | Control 6 |----Box/Line
+  || Control4 | Control5 | Control 6 ||
   |+---------------------------------+|
   |+---------------------+            |
   || Control7 | Control8 |            |
   |+---------------------+            |
   +-----------------------------------+
-
-  Block is the outer rectangle and contains an array of TBox.
-  Each box contains a list of controls.
 }
 var
-  BoxList: TFPList;
-
-  function CreateNewBox: TAutoSizeBox;
-  begin
-    Result:=TAutoSizeBox.Create;
-    BoxList.Add(Result);
-  end;
-  
-var
-  i: Integer;
   Box: TAutoSizeBox;
-  BigBox: TAutoSizeBox;
 begin
   // check if ChildSizing aligning is enabled
   if (ChildSizing.Layout=cclNone) or (ListOfControls.Count=0) then
     exit;
 
-  debugln('TWinControl.AlignNonAlignedControls ',DbgSName(Self),' ListOfControls.Count=',dbgs(ListOfControls.Count));
+  //debugln('TWinControl.AlignNonAlignedControls ',DbgSName(Self),' ListOfControls.Count=',dbgs(ListOfControls.Count));
   
-  BoxList:=TFPList.Create;
+  Box:=TAutoSizeBox.Create;
   try
-    // allocate a box for every Control
-    for i:=0 to ListOfControls.Count-1 do begin
-      Box:=CreateNewBox;
-      Box.SetControl(TControl(ListOfControls[i]));
-    end;
-
-    // allocate a box for the client area
-    BigBox:=CreateNewBox;
-    
-    // TODO
-    BigBox.AllocateTable(1,1);
-    
+    BoundsModified:=Box.AlignControlsInTable(ListOfControls,ChildSizing,
+                                             ClientWidth,ClientHeight);
   finally
-    for i:=0 to BoxList.Count-1 do TObject(BoxList[i]).Free;
-    BoxList.Free;
+    Box.Free;
   end;
 end;
 
