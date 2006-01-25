@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  AVL_Tree, LFMTrees, PascalParserTool,
+  AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
@@ -142,10 +142,12 @@ type
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
-    
+
     constructor Create;
     destructor Destroy; override;
-
+    
+    procedure Init(Config: TCodeToolsOptions);
+    
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
 
@@ -657,6 +659,50 @@ begin
   {$IFDEF MEM_CHECK}
   CheckHeap('TCodeToolManager.Destroy END');
   {$ENDIF}
+end;
+
+procedure TCodeToolManager.Init(Config: TCodeToolsOptions);
+var
+  FPCUnitPath, TargetOS, TargetProcessor: string;
+  UnitLinkList: String;
+begin
+  // set global values
+  with GlobalValues do begin
+    Variables[ExternalMacroStart+'LazarusSrcDir']:=Config.LazarusSrcDir;
+    Variables[ExternalMacroStart+'FPCSrcDir']:=Config.FPCSrcDir;
+    Variables[ExternalMacroStart+'LCLWidgetType']:=Config.LCLWidgetType;
+    Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
+  end;
+
+  // build DefinePool
+  with DefinePool do begin
+    FPCUnitPath:=Config.FPCUnitPath;
+    TargetOS:=Config.FPCUnitPath;
+    TargetProcessor:=Config.TargetProcessor;
+    Add(CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
+                          Config.TestPascalFile,
+                          FPCUnitPath, TargetOS, TargetProcessor,
+                          nil));
+    Config.FPCUnitPath:=FPCUnitPath;
+    Config.TargetOS:=FPCUnitPath;
+    Config.TargetProcessor:=TargetProcessor;
+    UnitLinkList:=Config.UnitLinkList;
+    Add(CreateFPCSrcTemplate(Config.FPCSrcDir,Config.FPCUnitPath,Config.PPUExt,
+                          Config.TargetOS, Config.TargetProcessor,
+                          Config.UnitLinkListValid,UnitLinkList,
+                          nil));
+    Config.UnitLinkListValid:=true;
+    Config.UnitLinkList:=UnitLinkList;
+    Add(CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)',
+                                 Config.LazarusSrcOptions,nil));
+  end;
+
+  // build define tree
+  DefineTree.Add(DefinePool[0].CreateCopy(false,true,true));
+  DefineTree.Add(DefinePool[1].CreateCopy(false,true,true));
+  DefineTree.Add(DefinePool[2].CreateCopy(false,true,true));
+  DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
+                 '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
 end;
 
 procedure TCodeToolManager.BeginUpdate;

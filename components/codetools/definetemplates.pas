@@ -41,7 +41,7 @@
     some default templates for Lazarus and FPC sources.
     
   ToDo:
-    Error handling for DefinePool
+    Better Error handling of DefinePool
 }
 unit DefineTemplates;
 
@@ -403,7 +403,7 @@ type
     property EnglishErrorMsgFilename: string
         read FEnglishErrorMsgFilename write SetEnglishErrorMsgFilename;
     // FPC templates
-    function CreateFPCTemplate(const PPC386Path, PPCOptions,
+    function CreateFPCTemplate(const CompilerPath, CompilerOptions,
                                TestPascalFile: string;
                                var UnitSearchPath, TargetOS,
                                TargetProcessor: string;
@@ -2658,7 +2658,7 @@ begin
 end;
 
 function TDefinePool.CreateFPCTemplate(
-  const PPC386Path, PPCOptions, TestPascalFile: string;
+  const CompilerPath, CompilerOptions, TestPascalFile: string;
   var UnitSearchPath, TargetOS, TargetProcessor: string;
   Owner: TObject): TDefineTemplate;
 // create symbol definitions for the freepascal compiler
@@ -2766,23 +2766,23 @@ var CmdLine: string;
   SrcOS: string;
   SrcOS2: String;
 begin
-  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',PPC386Path,'" PPCOptions="',PPCOptions,'"');
+  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" PPCOptions="',CompilerOptions,'"');
   Result:=nil;
   UnitSearchPath:='';
   TargetOS:='';
   SrcOS:='';
   TargetProcessor:='';
-  if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
+  if (CompilerPath='') or (not FileIsExecutable(CompilerPath)) then exit;
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
   // -> ask compiler with the -vm -vt switch
   SetLength(Buf,1024);
   try
-    CmdLine:=PPC386Path+' -va ';
+    CmdLine:=CompilerPath+' -va ';
     if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
-    if PPCOptions<>'' then
-      CmdLine:=CmdLine+PPCOptions+' ';
+    if CompilerOptions<>'' then
+      CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
     //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
     ShortTestFile:=ExtractFileName(TestPascalFile);
@@ -2823,9 +2823,9 @@ begin
     //DebugLn('TDefinePool.CreateFPCTemplate First done');
 
     // ask for target operating system -> ask compiler with switch -iTO
-    CmdLine:=PPC386Path;
-    if PPCOptions<>'' then
-      CmdLine:=CmdLine+' '+PPCOptions;
+    CmdLine:=CompilerPath;
+    if CompilerOptions<>'' then
+      CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTO';
 
     TheProcess := TProcess.Create(nil);
@@ -2873,9 +2873,9 @@ begin
     
     // ask for target processor -> ask compiler with switch -iTP
     TheProcess := TProcess.Create(nil);
-    CmdLine:=PPC386Path;
-    if PPCOptions<>'' then
-      CmdLine:=CmdLine+' '+PPCOptions;
+    CmdLine:=CompilerPath;
+    if CompilerOptions<>'' then
+      CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTP';
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
