@@ -22,6 +22,21 @@
 
   Abstract:
     This unit helps to setup and configure the codetools.
+
+  Example:
+    Options:=TCodeToolsOptions.Create;
+    Options.LoadFromFile('config.xml');
+    Options.FPCPath:='/usr/bin/ppc386';
+    Options.FPCSrcDir:='/home/mattias/freepascal/fpc';
+    Options.LazarusSrcDir:='/home/mattias/pascal/wichtig/lazarus';
+    Options.ProjectDir:='/home/mattias/pascal/amat/codetools/scanexamples/';
+    Options.TestPascalFile:=Options.ProjectDir+'empty.pas';
+    CodeToolBoss.Init(Options);
+    Options.SaveToFile('config.xml');
+    Options.Free;
+    
+    .. use CodeToolBoss ..
+    
 }
 unit CodeToolsConfig;
 
