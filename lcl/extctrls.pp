@@ -766,6 +766,7 @@ type
   published
     property Align;
     property Anchors;
+    property AutoFill;
     property BorderSpacing;
     property Caption;
     property ChildSizing;
