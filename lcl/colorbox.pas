@@ -46,6 +46,9 @@ type
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
   published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
     property Color;
     property Ctl3D;
     property DragMode;
