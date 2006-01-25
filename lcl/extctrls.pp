@@ -640,13 +640,13 @@ type
     procedure Clicked(Sender: TObject);
     procedure Changed(Sender: TObject);
     procedure ItemEnter(Sender: TObject);
-    procedure PositionButtons;
     procedure UpdateTabStops;
     procedure SetAutoFill(const AValue: Boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure ItemExit(Sender: TObject);
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemResize(Sender: TObject);
+    procedure UpdateControlsPerLine;
   protected
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
@@ -719,6 +719,7 @@ type
 
   TCustomCheckGroup = class(TCustomGroupBox)
   private
+    FAutoFill: boolean;
     FButtonList: TList; // list of TCheckBox
     FColumnLayout: TColumnLayout;
     FCreatingWnd: boolean;
@@ -729,12 +730,13 @@ type
     function GetCheckEnabled(Index: integer): boolean;
     procedure Clicked(Sender: TObject);
     procedure DoClick(Index: integer);
-    procedure DoPositionButtons;
     procedure ItemsChanged (Sender : TObject);
+    procedure SetAutoFill(const AValue: boolean);
     procedure SetChecked(Index: integer; const AValue: boolean);
     procedure SetCheckEnabled(Index: integer; const AValue: boolean);
     procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure UpdateItems;
+    procedure UpdateControlsPerLine;
   protected
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
@@ -748,6 +750,7 @@ type
     destructor Destroy; override;
     function Rows: integer;
   public
+    property AutoFill: boolean read FAutoFill write SetAutoFill;
     property Items: TStrings read FItems write SetItems;
     property Checked[Index: integer]: boolean read GetChecked write SetChecked;
     property CheckEnabled[Index: integer]: boolean read GetCheckEnabled write SetCheckEnabled;

@@ -496,8 +496,8 @@ var
       
     crsHomogenousSpaceResize:
       if ChildCount[Orientation]>0 then begin
-        CurScale:=double(TargetSize);
-        CurOffset:=TargetSize;
+        Factor.Scale:=double(TargetSize);
+        Factor.Offset:=TargetSize;
         ResizeableCount:=ChildCount[Orientation]+1;
       end;
 

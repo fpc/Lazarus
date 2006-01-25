@@ -71,6 +71,8 @@ begin
   FButtonList := TList.Create;
   FColumns  := 1;
   FColumnLayout := clHorizontalThenVertical;
+  ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+  ChildSizing.ControlsPerLine:=FColumns;
   SetInitialBounds(0,0,250,200);
   TabStop := True;
 end;
@@ -147,7 +149,6 @@ begin
       Temp := TRadioButton(FButtonList[i]);
       Temp.Caption := FItems[i];
       Temp.Parent:=Self;
-      Temp.SetZOrder(false);
     end;
     with FHiddenButton do begin
       FHiddenButton.Visible:=false;
@@ -155,8 +156,6 @@ begin
       FHiddenButton.HandleNeeded;
     end;
     
-    PositionButtons;
-
     for i:=0 to FItems.Count-1 do begin
       Temp := TRadioButton(FButtonList[i]);
       Temp.Checked := (i = FItemIndex);
@@ -190,7 +189,19 @@ end;
 
 procedure TCustomRadioGroup.ItemResize(Sender: TObject);
 begin
-  PositionButtons;
+
+end;
+
+procedure TCustomRadioGroup.UpdateControlsPerLine;
+var
+  NewControlsPerLine: LongInt;
+begin
+  if ChildSizing.Layout=cclLeftToRightThenTopToBottom then
+    NewControlsPerLine:=Max(1,FColumns)
+  else
+    NewControlsPerLine:=((FItems.Count-1) div Max(1,FColumns))+1;
+  ChildSizing.ControlsPerLine:=NewControlsPerLine;
+  //DebugLn('TCustomRadioGroup.UpdateControlsPerLine ',dbgs(ChildSizing.ControlsPerLine),' ',dbgs(NewControlsPerLine),' FColumns=',dbgs(FColumns),' FItems.Count=',dbgs(FItems.Count),' ',dbgs(ChildSizing.Layout=cclLeftToRightThenTopToBottom));
 end;
 
 procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
@@ -207,13 +218,13 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
     Count := FButtonList.Count;
     if FColumnLayout=clHorizontalThenVertical then begin
       //add a row for ease wrapping
-      BlockSize := FColumns * (Rows+1);
-      StepSize := HorzDiff + VertDiff * FColumns;
+      BlockSize := Columns * (Rows+1);
+      StepSize := HorzDiff + VertDiff * Columns;
       WrapOffSet := VertDiff;
     end
     else begin
       //add a column for ease wrapping
-      BlockSize := (FColumns+1) * Rows;
+      BlockSize := (Columns+1) * Rows;
       StepSize := HorzDiff * Rows + VertDiff;
       WrapOffSet := HorzDiff;
     end;
@@ -248,6 +259,7 @@ end;
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
   // TODO: Remove RecreateWnd
+  UpdateControlsPerLine;
   if HandleAllocated and (not (csLoading in ComponentState)) then
     RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
@@ -262,14 +274,13 @@ end;
   which the radiobuttons should be arranged.
   Range: 1 .. ???
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetColumns (value : integer);
+procedure TCustomRadioGroup.SetColumns(value : integer);
 begin
   if Value <> FColumns then begin
     if (Value < 1)
        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
     FColumns := Value;
-    if HandleAllocated and (not (csLoading in ComponentState)) then
-      PositionButtons;
+    UpdateControlsPerLine;
   end;
 end;
 
@@ -285,6 +296,7 @@ begin
   if (Value <> FItems) then
   begin
     FItems.Assign(Value);
+    UpdateControlsPerLine;
     // TODO: Remove RecreateWnd
     if HandleAllocated and (not (csLoading in ComponentState)) then
       RecreateWnd(Self);
@@ -365,7 +377,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.Resize;
 begin
-  if HandleAllocated then PositionButtons;
   inherited Resize;
 end;
 
@@ -435,69 +446,6 @@ Begin
   CheckItemIndexChanged;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.PositionButtons
-  Params: none
-
-  Set bounds of radio buttons
- ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.PositionButtons;
-var
-  i: integer;
-  CurButton: TRadioButton;
-  nextTop: integer;
-  nextLeft: integer;
-  vertDist: integer;
-  horzDist: integer;
-  MaxRows: Integer;
-  UsedColumnCount: integer;
-  UsedRowCount: integer;
-begin
-  if FButtonList.Count=0 then exit;
-  
-  if TRadioButton(FButtonList[0]).AutoSizeDelayed then exit;
-  DisableAutoSizing;
-  try
-    UsedColumnCount:=FColumns;
-    if UsedColumnCount<1 then UsedColumnCount:=1;
-    if AutoFill and (UsedColumnCount>FButtonList.Count) then
-      UsedColumnCount:=FButtonList.Count;
-
-    UsedRowCount:=((FButtonList.Count-1) div UsedColumnCount)+1;
-    
-    // position in rows and columns
-    vertDist := (Height - 20) DIV UsedRowCount;
-    horzDist := (Width - 20) DIV UsedColumnCount;
-    nextTop  := 0;
-    nextLeft := 10;
-    MaxRows := (FButtonList.Count+FColumns-1) div FColumns;
-    i := 0;
-    while i < FButtonList.Count do begin
-      CurButton := TRadioButton(FButtonList[i]);
-      CurButton.SetBounds(nextLeft,nextTop,CurButton.Width,CurButton.Height);
-
-      inc (i);
-      if FColumnLayout=clHorizontalThenVertical then begin
-        if (i mod FColumns) = 0 then begin
-          inc(nextTop, vertDist);
-          nextLeft := 10;
-        end else begin
-          inc(nextLeft, horzDist);
-        end;
-      end else begin
-        if (i mod MaxRows) = 0 then begin
-          inc(nextLeft, horzDist);
-          nextTop := 0;
-        end else begin
-          inc(nextTop, vertDist);
-        end;
-      end;
-    end;
-  finally
-    EnableAutoSizing;
-  end;
-end;
-
 procedure TCustomRadioGroup.UpdateTabStops;
 var
   i: Integer;
@@ -515,14 +463,29 @@ procedure TCustomRadioGroup.SetAutoFill(const AValue: Boolean);
 begin
   if FAutoFill=AValue then exit;
   FAutoFill:=AValue;
-  PositionButtons;
+  DisableAlign;
+  try
+    if FAutoFill then begin
+      ChildSizing.EnlargeHorizontal:=crsHomogenousSpaceResize;
+      ChildSizing.EnlargeVertical:=crsHomogenousSpaceResize;
+    end else begin
+      ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
+      ChildSizing.EnlargeVertical:=crsAnchorAligning;
+    end;
+  finally
+    EnableAlign;
+  end;
 end;
 
 procedure TCustomRadioGroup.SetColumnLayout(const AValue: TColumnLayout);
 begin
   if FColumnLayout=AValue then exit;
   FColumnLayout:=AValue;
-  PositionButtons;
+  if FColumnLayout=clHorizontalThenVertical then
+    ChildSizing.Layout:=cclLeftToRightThenTopToBottom
+  else
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+  UpdateControlsPerLine;
 end;
 
 {------------------------------------------------------------------------------

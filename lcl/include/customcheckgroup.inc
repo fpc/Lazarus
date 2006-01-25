@@ -32,6 +32,8 @@ begin
   FButtonList := TList.Create;
   FColumnLayout := clHorizontalThenVertical;
   FColumns  := 1;
+  ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+  ChildSizing.ControlsPerLine:=FColumns;
   SetInitialBounds(0,0,250,200);
 end;
 
@@ -45,9 +47,28 @@ end;
 procedure TCustomCheckGroup.ItemsChanged(Sender: TObject);
 begin
   UpdateItems;
+  UpdateControlsPerLine;
   // TODO: Remove RecreateWnd
   if HandleAllocated then RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
+end;
+
+procedure TCustomCheckGroup.SetAutoFill(const AValue: boolean);
+begin
+  if FAutoFill=AValue then exit;
+  FAutoFill:=AValue;
+  DisableAlign;
+  try
+    if FAutoFill then begin
+      ChildSizing.EnlargeHorizontal:=crsHomogenousSpaceResize;
+      ChildSizing.EnlargeVertical:=crsHomogenousSpaceResize;
+    end else begin
+      ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
+      ChildSizing.EnlargeVertical:=crsAnchorAligning;
+    end;
+  finally
+    EnableAlign;
+  end;
 end;
 
 procedure TCustomCheckGroup.Clicked(Sender: TObject);
@@ -93,8 +114,18 @@ begin
     CheckBox:=TCheckBox(FButtonList[i]);
     CheckBox.Caption:=FItems[i];
   end;
-  
-  DoPositionButtons;
+end;
+
+procedure TCustomCheckGroup.UpdateControlsPerLine;
+var
+  NewControlsPerLine: LongInt;
+begin
+  if ChildSizing.Layout=cclLeftToRightThenTopToBottom then
+    NewControlsPerLine:=Max(1,FColumns)
+  else
+    NewControlsPerLine:=((FItems.Count-1) div Max(1,FColumns))+1;
+  ChildSizing.ControlsPerLine:=NewControlsPerLine;
+  //DebugLn('TCustomCheckGroup.UpdateControlsPerLine ',dbgs(ChildSizing.Layout=cclLeftToRightThenTopToBottom),' ',dbgs(ChildSizing.ControlsPerLine));
 end;
 
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
@@ -116,7 +147,11 @@ procedure TCustomCheckGroup.SetColumnLayout(const AValue: TColumnLayout);
 begin
   if FColumnLayout=AValue then exit;
   FColumnLayout:=AValue;
-  DoPositionButtons;
+  if FColumnLayout=clHorizontalThenVertical then
+    ChildSizing.Layout:=cclLeftToRightThenTopToBottom
+  else
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+  UpdateControlsPerLine;
 end;
 
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
@@ -124,50 +159,6 @@ begin
   if (Index < -1) or (Index >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
   Result:=TCheckBox(FButtonList[Index]).Checked;
-end;
-
-procedure TCustomCheckGroup.DoPositionButtons;
-var
-  i       : integer;
-  CheckBox: TCheckBox;
-  nextTop : integer;
-  nextLeft: integer;
-  vertDist: integer;
-  horzDist: integer;
-  rbWidth : integer;
-  MaxRows: Integer;
-begin
-  if (FItems<>nil) and (FItems.Count>0) and (FColumns>0) then begin
-    // position in rows and columns
-    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
-    horzDist := (Width - 20) DIV FColumns;
-    nextTop  := 0;
-    nextLeft := 10;
-    rbWidth  := horzDist;
-    MaxRows := (FItems.Count+FColumns-1) div FColumns;
-    i := 0;
-    while i < FItems.Count do begin
-      CheckBox := TCheckBox(FButtonList[i]);
-      CheckBox.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
-
-      inc (i);
-      if FColumnLayout=clHorizontalThenVertical then begin
-        if (i mod FColumns) = 0 then begin
-          inc(nextTop, vertDist);
-          nextLeft := 10;
-        end else begin
-          inc(nextLeft, horzDist);
-        end;
-      end else begin
-        if (i mod MaxRows) = 0 then begin
-          inc(nextLeft, horzDist);
-          nextTop := 0;
-        end else begin
-          inc(nextTop, vertDist);
-        end;
-      end;
-    end;
-  end;
 end;
 
 procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
@@ -200,9 +191,7 @@ begin
     if (Value < 1)
        then raise Exception.Create('TCustomCheckGroup: Columns must be >= 1');
     FColumns := Value;
-    DoPositionButtons;
-    // TODO: Remove RecreateWnd
-    if HandleAllocated then RecreateWnd(self);
+    UpdateControlsPerLine;
   end;
 end;
 
@@ -260,7 +249,6 @@ end;
 
 procedure TCustomCheckGroup.DoOnResize;
 begin
-  DoPositionButtons;
   inherited DoOnResize;
 end;
 
