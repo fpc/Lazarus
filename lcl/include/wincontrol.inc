@@ -1651,6 +1651,7 @@ end;
 procedure TWinControl.DoChildSizingChange(Sender: TObject);
 begin
   //debugln('TWinControl.DoChildSizingChange ',DbgSName(Self));
+  if ControlCount=0 then exit;
   InvalidatePreferredSize;
   ReAlign;
 end;

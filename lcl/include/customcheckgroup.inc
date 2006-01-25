@@ -34,6 +34,8 @@ begin
   FColumns  := 1;
   ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
   ChildSizing.ControlsPerLine:=FColumns;
+  ChildSizing.ShrinkHorizontal:=crsScaleChilds;
+  ChildSizing.ShrinkVertical:=crsScaleChilds;
   SetInitialBounds(0,0,250,200);
 end;
 
