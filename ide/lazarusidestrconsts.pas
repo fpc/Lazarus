@@ -732,6 +732,7 @@ resourcestring
   dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgPalHints = 'Hints for component palette';
+  lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
   lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick = 'Double click on '
     +'messages jumps (otherwise: single click)';

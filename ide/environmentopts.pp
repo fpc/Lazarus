@@ -175,6 +175,7 @@ type
     FObjectInspectorOptions: TOIOptions;
     
     // hints
+    FCheckDiskChangesWithLoading: boolean;
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
     
@@ -312,6 +313,8 @@ type
                                                 write FObjectInspectorOptions;
 
     // hints
+    property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
+                                             write FCheckDiskChangesWithLoading;
     property ShowHintsForComponentPalette: boolean
                                             read FShowHintsForComponentPalette
                                             write FShowHintsForComponentPalette;
@@ -390,7 +393,7 @@ type
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
 
-    //lazdoc
+    // lazdoc
     property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
 
     // language
@@ -451,6 +454,7 @@ type
     LoadDesktopSettingsFromFileButton: TButton;
 
     // hints
+    CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
     
@@ -577,6 +581,7 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
@@ -831,6 +836,7 @@ begin
   FObjectInspectorOptions:=TOIOptions.Create;
   
   // hints
+  FCheckDiskChangesWithLoading:=false;
   FShowHintsForComponentPalette:=true;
   FShowHintsForMainSpeedButtons:=true;
   
@@ -1131,6 +1137,8 @@ begin
     end;
 
     // hints
+    FCheckDiskChangesWithLoading:=XMLConfig.GetValue(
+      Path+'CheckDiskChangesWithLoading/Value',false);
     FShowHintsForComponentPalette:=XMLConfig.GetValue(
       Path+'ShowHintsForComponentPalette/Value',true);
     FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
@@ -1342,6 +1350,8 @@ begin
     end;
 
     // hints
+    XMLConfig.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',
+      FCheckDiskChangesWithLoading,false);
     XMLConfig.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',
       FShowHintsForComponentPalette,true);
     XMLConfig.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',
@@ -1619,6 +1629,7 @@ begin
   LoadDesktopSettingsFromFileButton.Caption:=dlgLoadDFile;
 
   // hints
+  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckChangesOnDiskWithLoading;
   ShowHintsForComponentPaletteCheckBox.Caption:=dlgPalHints;
   ShowHintsForMainSpeedButtonsCheckBox.Caption:=dlgSpBHints;
 
@@ -2080,6 +2091,11 @@ begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
+procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
+begin
+
+end;
+
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   if not CheckValues then exit;
@@ -2206,6 +2222,8 @@ begin
     HideIDEOnRunCheckBox.Checked:=HideIDEOnRun;
 
     // hints
+    CheckDiskChangesWithLoadingCheckBox.Checked:=
+      CheckDiskChangesWithLoading;
     ShowHintsForComponentPaletteCheckBox.Checked:=
       ShowHintsForComponentPalette;
     ShowHintsForMainSpeedButtonsCheckBox.Checked:=
@@ -2354,6 +2372,7 @@ begin
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
 
     // hints
+    CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
     

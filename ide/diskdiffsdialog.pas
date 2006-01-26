@@ -34,7 +34,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, LResources, Project,
-  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts, ComCtrls, ExtCtrls;
+  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts, ComCtrls, ExtCtrls,
+  EnvironmentOpts;
 
 type
   PDiffItem = ^TDiffItem;
@@ -48,6 +49,7 @@ type
   { TDiskDiffsDlg }
 
   TDiskDiffsDlg = class(TForm)
+    CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     DiffSynEdit: TSynEdit;
     FilesListBox: TListBox;
     RevertAllButton: TButton;
@@ -57,6 +59,7 @@ type
           Shift: TShiftState);
     procedure FilesListBoxMouseUp(Sender: TOBject; Button: TMouseButton;
           Shift: TShiftState; X, Y: Integer);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
     FUnitList: TList;
     FCachedDiffs: TList; // List of PDiffItem
@@ -79,11 +82,49 @@ var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
 function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
+
+  procedure CheckWithLoading;
+  var
+    i: Integer;
+    CurUnit: TUnitInfo;
+    fs: TFileStream;
+    KeepUnit: Boolean;
+    s: string;
+  begin
+    for i:=AnUnitList.Count-1 downto 0 do begin
+      CurUnit:=TUnitInfo(AnUnitList[i]);
+      KeepUnit:=true;
+      try
+        fs:=TFileStream.Create(CurUnit.Filename,fmOpenRead);
+        try
+          if fs.Size=CurUnit.Source.SourceLength then begin
+            // size has not changed => load to see difference
+            SetLength(s,fs.Size);
+            fs.Read(s[1],length(s));
+            if s=CurUnit.Source.Source then
+              KeepUnit:=false;
+          end;
+        finally
+          fs.Free;
+        end;
+      except
+        // unable to load
+      end;
+      if not KeepUnit then
+        AnUnitList.Delete(i);
+    end;
+  end;
+  
 begin
-  if DiskDiffsDlg<>nil then begin
+  if (DiskDiffsDlg<>nil) or (AnUnitList=nil) then begin
     Result:=mrIgnore;
     exit;
   end;
+  if EnvironmentOptions.CheckDiskChangesWithLoading then begin
+    CheckWithLoading;
+    if AnUnitList.Count=0 then exit;
+  end;
+
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
   DiskDiffsDlg.UnitList:=AnUnitList;
   Result:=DiskDiffsDlg.ShowModal;
@@ -104,6 +145,13 @@ procedure TDiskDiffsDlg.FilesListBoxMouseUp(Sender: TOBject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ShowDiff;
+end;
+
+procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
+begin
+  EnvironmentOptions.CheckDiskChangesWithLoading:=
+                                    CheckDiskChangesWithLoadingCheckBox.Checked;
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
@@ -189,6 +237,10 @@ begin
   DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
   RevertAllButton.Caption:=lisDiskDiffRevertAll;
   IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
+  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckChangesOnDiskWithLoading;
+  
+  CheckDiskChangesWithLoadingCheckBox.Checked:=
+                                 EnvironmentOptions.CheckDiskChangesWithLoading;
 end;
 
 destructor TDiskDiffsDlg.Destroy;
