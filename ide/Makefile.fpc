@@ -92,7 +92,7 @@ endif
 
 #
 # Options to compile an IDE with a lot of packages
-BIG_IDE_OPTIONS=-dBigIDE \
+BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
