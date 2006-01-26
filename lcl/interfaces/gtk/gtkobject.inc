@@ -1315,6 +1315,56 @@ begin
   else Accelerate(AComponent, ASignalWidget, Ord(AccelKey), 0, ASignal);
 end;
 
+procedure TGtkWidgetSet.SetWidgetColor(const AWidget: PGtkWidget;
+  const FGColor, BGColor: TColor; const Mask: tGtkStateEnum);
+// Changes some colors of the widget style
+// IMPORTANT:
+// SystemColors like clBtnFace depend on the theme and widget class, so they
+// must be read from the theme. But many gtk themes do not provide all colors
+// and instead only provide bitmaps.
+// Since we don't have good fallbacks yet, and many controls use SystemColors
+// for Delphi compatibility: ignore SystemColors.
+var
+  WindowStyle: PGtkStyle;
+  i: integer;
+  xfg,xbg: TGDKColor;
+  ChangeFGColor: Boolean;
+  ChangeBGColor: Boolean;
+begin
+  ChangeFGColor:=((FGColor and SYS_COLOR_BASE)=0) and (FGColor<>clNone);
+  ChangeBGColor:=((BGColor and SYS_COLOR_BASE)=0) and (BGColor<>clNone);
+  if (not ChangeFGColor) and (not ChangeBGColor) then exit;
+
+  if (GTK_WIDGET_REALIZED(AWidget)) then begin
+    WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
+  end  else begin
+    WindowStyle := gtk_style_copy(gtk_rc_get_style (AWidget));
+  end;
+  if (Windowstyle = nil)  then begin
+    Windowstyle := gtk_style_new;
+  end;
+
+  //DebugLn('TGtkWidgetSet.SetWidgetColor ',GetWidgetDebugReport(AWidget),' ',hexstr(FGColor,8),'  ',hexstr(BGColor,8));
+  //RaiseGDBException('');
+  if ChangeFGColor then begin
+    xfg:=AllocGDKColor(colorToRGB(FGColor));
+    for i := 0 to 4 do begin
+      if i in mask then begin
+        windowStyle^.fg[i]:=xfg;
+      end;
+    end;
+  end;
+  if ChangeBGColor then begin
+    xbg:=AllocGDKColor(colorToRGB(BGColor));
+    for i := 0 to 4 do begin
+      if i in mask then begin
+        windowStyle^.bg[i]:=xbg;
+      end;
+    end;
+  end;
+  gtk_widget_set_style(aWidget,windowStyle);
+end;
+
 
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,

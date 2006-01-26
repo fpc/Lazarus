@@ -3954,7 +3954,7 @@ const GTKStrongShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT, GTK_SHADOW_NONE);
 
 var
-  Widget, ClientWidget: PGtkWidget;
+  //Widget, ClientWidget: PGtkWidget;
   i : integer;
   DCOrigin: TPoint;
   TheStyle: PGtkStyle;
@@ -3975,13 +3975,6 @@ begin
       Result:= False;
       exit;
     end;
-    Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
-    ClientWidget:=Widget;
-    if Widget<>nil then begin
-      ClientWidget:=GetFixedWidget(Widget);
-      if ClientWidget=nil then
-        ClientWidget:=Widget;
-    end;
     AWindow:=Drawable;
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     Area.X:=ARect.Left+DCOrigin.X;
@@ -3998,12 +3991,12 @@ begin
     //'');
 
     for i:= 1 to FrameWidth do begin
-      gtk_paint_shadow(TheStyle,
+      gtk_paint_shadow(theStyle,
                        AWindow, GTK_STATE_NORMAL,
                        ShadowType,
                        @Area,
-                       ClientWidget,
-                       'button',
+                       {ClientWidget}nil,
+                       {'button'}nil,
                        ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                        ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
       // inflate the rectangle (! ARect will be returned to the user with this)

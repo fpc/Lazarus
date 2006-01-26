@@ -251,8 +251,15 @@ type
     function gdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
   public
     // for gtk specific components:
-    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar); virtual;
-    procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
+    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String;
+                              const AComponent: TComponent;
+                              const ASignalWidget: PGTKWidget;
+                              const ASignal: PChar); virtual;
+    procedure SetWidgetColor(const AWidget : PGtkWidget;
+                             const FGColor,BGColor : TColor;
+                             const Mask : tGtkStateEnum);
+    procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
@@ -265,7 +272,8 @@ type
     procedure ShowHide(Sender : TObject);virtual;
 
     // control functions for messages, callbacks
-    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
+    procedure HookSignals(const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;

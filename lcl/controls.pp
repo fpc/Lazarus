@@ -1709,6 +1709,7 @@ type
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure PaintWindow(DC: HDC); override;
     procedure FontChanged(Sender: TObject); override;
+    procedure SetColor(Value: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

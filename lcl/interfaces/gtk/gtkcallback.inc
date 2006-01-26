@@ -232,7 +232,6 @@ begin
         TheWinControl.CNPreferredSizeChanged;
         SetCursor(TheWinControl, crDefault);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
-        UpdateWidgetStyleOfControl(TheWinControl);
 
         if TheWinControl is TCustomPage then
           UpdateNotebookPageTab(nil,TheWinControl);

@@ -426,10 +426,18 @@ end;
 
 procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
+  if  ((csOpaque in AWinControl.ControlStyle)
+  and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
+    exit;
+  GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
+                              AWinControl.font.color, AWinControl.color,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
   UpdateWidgetStyleOfControl(AWinControl);
 end;
 
-procedure TGtkWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
+procedure TGtkWSWinControl.SetText(const AWinControl: TWinControl;
+  const AText: string);
 
   procedure SetNotebookPageTabLabel;
   var

@@ -223,6 +223,7 @@ type
     wwiNotOnParentsClientArea
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
+  tGtkStateEnum = set of byte;
 
   // Info needed by the API of a HWND (=Widget) 
   PWidgetInfo = ^TWidgetInfo;

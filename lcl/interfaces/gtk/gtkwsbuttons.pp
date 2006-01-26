@@ -80,6 +80,8 @@ type
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+
   end;
 
   { TGtkWSSpeedButton }
@@ -367,6 +369,25 @@ begin
   //debugln('TGtkWSBitBtn.SetText ',DbgStr(AText));
   GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText, AWinControl,
                                WidgetInfo^.CoreWidget, 'clicked');
+end;
+
+procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);
+var
+  WidgetInfo: PWidgetInfo;
+  BitBtnInfo: PBitBtnWidgetInfo;
+  Widget: PGTKWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  Widget:= PGtkWidget(AWinControl.Handle);
+  WidgetInfo := GetWidgetInfo(Widget);
+  BitBtnInfo := WidgetInfo^.UserData;
+  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,
+     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+
+  if BitBtnInfo^.LabelWidget = nil then Exit;
+  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
+    AWinControl.color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
 procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;

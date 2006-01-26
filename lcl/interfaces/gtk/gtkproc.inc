@@ -6519,31 +6519,6 @@ begin
   end;
 end;
 
-procedure SetWidgetColor(aWidget : PGTKwidget; data : gpointer); cdecl;
-begin
-  gtk_widget_set_style(aWidget,data);
-  if  gtk_is_button(aWidget) or gtk_is_check_button(aWidget) then begin
-    gtk_container_foreach(pGtkContainer(aWidget),@SetWidgetColor,data);
-  end;
-end;
- 
-procedure setWidgetBG(aColor: longint;var aWidget : pGTKWidget);
-var
-  WindowStyle: PGtkStyle;
-begin
-  windowStyle:=gtk_widget_get_style(aWidget);
-  windowstyle^.bg[0]:=AllocGDKColor(aColor);
-  SetWidgetColor(aWidget,windowStyle);
-end;
- 
-procedure setWidgetFG(aColor: longint;var aWidget : pGTKWidget);
-var
-  WindowStyle: PGtkStyle;
-begin
-  windowStyle:=gtk_widget_get_style(aWidget);
-  windowstyle^.fg[0]:=AllocGDKColor(aColor);
-  SetWidgetColor(aWidget,windowStyle);
-end;
 
 {------------------------------------------------------------------------------
   function GdkAtomToStr(const Atom: TGdkAtom): string;
@@ -7610,22 +7585,6 @@ begin
   else begin
     Widget := MainWidget;
   end;
-  //  writeln('update ',longint(Widget),'  color ',longint(aWinControl.Color),DbgSName(AWinControl));
-
-  if (AWinControl.Color<>clNone)  then begin
-    if (csOpaque in AWinControl.ControlStyle)
-    and GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType) then exit;
-
-    if AWinControl.ColorIsStored
-    and ((AWinControl.Color and SYS_COLOR_BASE)=0) then begin
-      DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',dbgs(AWinControl.Color));
-      setWidgetBG(AWinControl.Color,Widget);
-    end;
-  end;
-  if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
-    DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Font.Color=',dbgs(AWinControl.Font.Color));
-    setWidgetFG(AWinControl.Font.Color,Widget);
-  end;
 
   RCStyle:=nil;
   FreeFontName:=false;
@@ -7680,11 +7639,10 @@ begin
     // set font color
 
     // set font (currently only TCustomLabel)
-    if GtkWidgetIsA(Widget,gtk_label_get_type)
+    if (GtkWidgetIsA(Widget,gtk_label_get_type)
     or GtkWidgetIsA(Widget,gtk_editable_get_type)
-    and ((AWinControl.Font.Name<>DefFontData.Name)
-      or (AWinControl.Font.Size<>0)
-      or (AWinControl.Font.Style<>[]))
+    or GtkWidgetIsA(Widget,gtk_check_button_get_type))
+    and (not AWinControl.Font.IsDefault)
     then begin
        // allocate font
        FontHandle:=AWinControl.Font.Handle;
