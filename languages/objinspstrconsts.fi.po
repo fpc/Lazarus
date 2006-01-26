@@ -116,7 +116,7 @@ msgstr "Ylös"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(Kaikki)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
@@ -124,7 +124,7 @@ msgstr ""
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
-msgstr ""
+msgstr "(Ei mikään)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -136,13 +136,13 @@ msgstr "Yksi (1) rivi, %d merkkiä"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Toiminto"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Toimintolistan muokkain"
 
-#: objinspstrconsts:ilesadd
+#: objinspstrconsts:oicoleditadd
 msgid "Add"
 msgstr ""
 
@@ -334,20 +334,28 @@ msgstr ""
 msgid "Do&wn"
 msgstr "Alas"
 
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr ""
+msgstr "Muokkaa TreeView:n valintoja"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
+msgstr "Muokkaa toimintolistaa"
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
 msgstr ""
 
 #: objinspstrconsts:oisenumeration
@@ -448,7 +456,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr ""
+msgstr "Kuvalistan muokkain"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -613,6 +621,10 @@ msgstr ""
 #: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Liitä"
+
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
@@ -780,6 +792,10 @@ msgstr ""
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
+msgstr ""
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
 msgstr ""
 
 #: objinspstrconsts:oisvalue

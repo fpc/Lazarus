@@ -2458,6 +2458,10 @@ msgstr ""
 msgid "Persistent caret"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves caret"
 msgstr ""

@@ -904,6 +904,10 @@ msgstr "Impossibile trovare esecutore di Lazarus:%s%s"
 msgid "Capital"
 msgstr "Maiuscola"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Indifferente alle maiuscole/minuscole"

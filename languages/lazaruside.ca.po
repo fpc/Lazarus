@@ -894,6 +894,10 @@ msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
 msgid "Capital"
 msgstr "Majúscula"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "No distingeixis entre majúscules i minúscules"

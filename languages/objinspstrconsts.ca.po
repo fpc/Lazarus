@@ -142,7 +142,7 @@ msgstr "Acció"
 msgid "Action List Editor"
 msgstr "Editor de la llista d'accions"
 
-#: objinspstrconsts:ilesadd
+#: objinspstrconsts:oicoleditadd
 msgid "Add"
 msgstr ""
 
@@ -334,6 +334,10 @@ msgstr "Diàleg"
 msgid "Do&wn"
 msgstr ""
 
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
 msgstr "Su&rt"
@@ -349,6 +353,10 @@ msgstr ""
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Edita la llista d'accions..."
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
+msgstr ""
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -614,6 +622,10 @@ msgstr "Descipcions del tauler"
 msgid "Paste"
 msgstr "Enganxa"
 
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Envia"
@@ -781,6 +793,10 @@ msgstr "Desfés"
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
 msgstr "Desconegut"
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"

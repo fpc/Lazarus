@@ -894,6 +894,10 @@ msgstr "Kan Lazarus Starter niet vinden:%s%s"
 msgid "Capital"
 msgstr "Kapitaal"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Hoofd/kleine letter ongevoelig"

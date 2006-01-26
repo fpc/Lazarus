@@ -906,6 +906,10 @@ msgstr "Lanceur Lazarus introuvable:%s%s"
 msgid "Capital"
 msgstr "Majuscule"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Insensible à la casse"

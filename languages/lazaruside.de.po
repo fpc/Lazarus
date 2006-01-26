@@ -908,6 +908,10 @@ msgstr "Kann Lazarus-Startprogramm %s%s nicht finden"
 msgid "Capital"
 msgstr "Großbuchstabe"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Schreibweise ignorieren"

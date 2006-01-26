@@ -904,6 +904,10 @@ msgstr ""
 msgid "Capital"
 msgstr "Capital"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Insensible a mayus/mins"

@@ -894,6 +894,10 @@ msgstr "Не можу знайти пускач lazarus:%s%s"
 msgid "Capital"
 msgstr "Заголовний"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Без урахування регістру"

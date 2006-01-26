@@ -142,7 +142,7 @@ msgstr "Actie"
 msgid "Action List Editor"
 msgstr "Action List Bewerker"
 
-#: objinspstrconsts:ilesadd
+#: objinspstrconsts:oicoleditadd
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -334,6 +334,10 @@ msgstr "Dialoog"
 msgid "Do&wn"
 msgstr "&Neer"
 
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
 msgstr "A&fsluiten"
@@ -349,6 +353,10 @@ msgstr ""
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr "Bewerk action list..."
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
+msgstr ""
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -614,6 +622,10 @@ msgstr " Panel Beschrijvingen "
 msgid "Paste"
 msgstr "Plakken"
 
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Bewaren"
@@ -781,6 +793,10 @@ msgstr "Ongedaan maken"
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
 msgstr "Onbekend"
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"

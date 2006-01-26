@@ -370,6 +370,30 @@ msgstr ""
 msgid "CheckGroup Editor"
 msgstr ""
 
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr ""
+
+#: objinspstrconsts:oicoleditadd
+msgid "Add"
+msgstr ""
+
+#: objinspstrconsts:oicoleditdelete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr ""
+
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr ""
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr ""

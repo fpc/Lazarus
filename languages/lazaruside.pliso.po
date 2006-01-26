@@ -905,6 +905,10 @@ msgstr ""
 msgid "Capital"
 msgstr "Kapitaliki"
 
+#: lazarusidestrconsts:dlgcaretskipsselection
+msgid "Caret skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Bez rozró¿niania wielko¶ci liter"

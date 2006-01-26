@@ -153,7 +153,7 @@ msgstr ""
 msgid "Action List Editor"
 msgstr ""
 
-#: objinspstrconsts:ilesadd
+#: objinspstrconsts:oicoleditadd
 msgid "Add"
 msgstr ""
 
@@ -345,6 +345,10 @@ msgstr ""
 msgid "Do&wn"
 msgstr ""
 
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
 msgstr ""
@@ -359,6 +363,10 @@ msgstr ""
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
+msgstr ""
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
 msgstr ""
 
 #: objinspstrconsts:oisenumeration
@@ -625,6 +633,10 @@ msgstr ""
 msgid "Paste"
 msgstr ""
 
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr ""
@@ -792,6 +804,10 @@ msgstr ""
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
 msgstr "Nieznany"
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
