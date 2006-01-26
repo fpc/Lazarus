@@ -2009,7 +2009,8 @@ begin
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
-    and (not Dependency.RequiredPackage.AutoCreated) then begin
+    and (not Dependency.RequiredPackage.AutoCreated)
+    and (not Dependency.RequiredPackage.Missing) then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
         DebugLn('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
@@ -2036,7 +2037,7 @@ begin
     BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
     Dependency:=BasePackage.CreateDependencyWithOwner(Self);
     PackageGraph.OpenDependency(Dependency);
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires)
   end;
   SortAutoInstallDependencies;
 
@@ -2131,7 +2132,8 @@ begin
         mtWarning,[mbOk],0);
       continue;
     end;
-    Dependency.RequiredPackage.AutoInstall:=pitStatic;
+    if not Dependency.RequiredPackage.Missing then
+      Dependency.RequiredPackage.AutoInstall:=pitStatic;
   end;
   SortAutoInstallDependencies;
 end;
@@ -4049,7 +4051,7 @@ begin
   StaticPackagesInc:='';
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
-    if not Dependency.RequiredPackage.AutoCreated then
+    if (not Dependency.RequiredPackage.AutoCreated) then
       StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
     Dependency:=Dependency.NextRequiresDependency;
   end;

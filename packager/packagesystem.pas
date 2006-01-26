@@ -2275,6 +2275,7 @@ begin
       Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
       PackageType:=lptDesignTime;
       Installed:=pitStatic;
+      AutoInstall:=pitNope;
       CompilerOptions.UnitOutputDirectory:='';
 
       // add lazarus registration unit path
@@ -2284,6 +2285,7 @@ begin
       EndUpdate;
     end;
     AddPackage(BrokenPackage);
+    DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
 
     // tell the user
     MessageDlg(lisPkgSysPackageFileNotFound,
