@@ -36,7 +36,7 @@ begin
   ChildSizing.ControlsPerLine:=FColumns;
   ChildSizing.ShrinkHorizontal:=crsScaleChilds;
   ChildSizing.ShrinkVertical:=crsScaleChilds;
-  SetInitialBounds(0,0,250,200);
+  SetInitialBounds(0,0,150,100);
 end;
 
 destructor TCustomCheckGroup.Destroy;

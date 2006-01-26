@@ -750,7 +750,8 @@ type
     function  MoveNextAuto(const Inverse: boolean): boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     procedure MoveSelection; virtual;
-    function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Index,Rest:Integer): boolean;
+    function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer;
+                             var Index,Rest:Integer): boolean;
     procedure Paint; override;
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
@@ -882,7 +883,7 @@ type
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
     function  MouseCoord(X,Y: Integer): TGridCoord;
-    function  MouseToCell(Mouse: TPoint): TPoint; overload;
+    function  MouseToCell(const Mouse: TPoint): TPoint; overload;
     procedure MouseToCell(X,Y: Integer; var ACol,ARow: Longint); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
@@ -1280,7 +1281,8 @@ type
     property OnSelection;
     property OnSelectCell;
     property OnSetEditText;
-    property OnTopleftChanged;
+    property OnShowHint;
+    property OnTopLeftChanged;
 
 {
     property OnContextPopup;
@@ -4481,7 +4483,7 @@ begin
 end;
 
 { Convert a fisical Mouse coordinate into fisical a cell coordinate }
-function TCustomGrid.MouseToCell(Mouse: TPoint): TPoint;
+function TCustomGrid.MouseToCell(const Mouse: TPoint): TPoint;
 begin
   MouseToCell(Mouse.X, Mouse.Y, Result.X, Result.Y);
 end;
