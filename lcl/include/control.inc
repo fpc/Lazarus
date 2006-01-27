@@ -3652,6 +3652,30 @@ begin
   end;
 end;
 
+function TControl.GetBoundsDependingOnParent(WithNormalAnchors: Boolean
+  ): TAnchors;
+var
+  a: TAnchorKind;
+begin
+  Result:=[];
+  if Parent=nil then exit;
+
+  if (Anchors*[akLeft,akRight]=[]) then begin
+    // center horizontally
+    Result:=Result+[akLeft,akRight];
+  end;
+
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    if (a in Anchors) then begin
+      if WithNormalAnchors
+      or (AnchorSide[a].Control=Parent) then begin
+        // side anchored
+        Include(Result,a);
+      end;
+    end;
+  end;
+end;
+
 procedure TControl.DisableAutoSizing;
 begin
   inc(FAutoSizingLockCount);

@@ -101,7 +101,7 @@ type
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
   TAnchorSideReference = (asrTop, asrBottom, asrCenter);
-
+  
 const
   asrLeft = asrTop;
   asrRight = asrBottom;
@@ -1106,6 +1106,7 @@ type
                                Raw: boolean = false); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
+    function GetBoundsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
     procedure DisableAutoSizing;
     procedure EnableAutoSizing;
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,

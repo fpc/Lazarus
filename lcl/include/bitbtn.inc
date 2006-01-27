@@ -77,6 +77,7 @@ end;
 Procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
 Begin
   FButtonGlyph.Glyph := AValue;
+  InvalidatePreferredSize;
   AdjustSize;
 end;
 
@@ -84,6 +85,8 @@ procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
 begin
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);

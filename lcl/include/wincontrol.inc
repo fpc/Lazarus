@@ -5646,53 +5646,44 @@ var
   AControl: TControl;
   ChildWidth,ChildHeight: integer;
   a: TAnchorKind;
+  FixatedAnchors: TAnchors;
 begin
   ChildBounds := Rect(High(Integer),High(Integer),0,0);
   SpaceAround:=Rect(0,0,0,0);
-  For I := 0 to ControlCount - 1 do begin
+  for I := 0 to ControlCount - 1 do begin
     AControl:=Controls[I];
-    If AControl.IsControlVisible then begin
-      AControl.GetPreferredSize(ChildWidth,ChildHeight,false);
-      if WithBorderSpace then begin
-        AControl.BorderSpacing.GetSpaceAround(SpaceAround);
-        if SpaceAround.Left<ChildSizing.LeftRightSpacing then
-          SpaceAround.Left:=ChildSizing.LeftRightSpacing;
-        if SpaceAround.Right<ChildSizing.LeftRightSpacing then
-          SpaceAround.Right:=ChildSizing.LeftRightSpacing;
-        if SpaceAround.Top<ChildSizing.TopBottomSpacing then
-          SpaceAround.Top:=ChildSizing.TopBottomSpacing;
-        if SpaceAround.Bottom<ChildSizing.TopBottomSpacing then
-          SpaceAround.Bottom:=ChildSizing.TopBottomSpacing;
-      end;
-      With ChildBounds do begin
-        Left := Min(AControl.Left-SpaceAround.Left, Left);
-        Top := Min(AControl.Top-SpaceAround.Top, Top);
-        Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
-        Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
-      end;
+    if not AControl.IsControlVisible then continue;
+    
+    FixatedAnchors:=GetBoundsDependingOnParent(false);
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      if a in FixatedAnchors then FixateSide(a);
 
-      if WithBorderSpace then begin
-        // check is a side of AControl is keeping distance to parent's side
-        // For example: if AControl.Align=alLeft, then AControl expands maximal
-        //              to Left, Top and Bottom
-
-        if AControl.Align in [alLeft,alRight,alTop,alBottom,alClient] then begin
-          for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-            if a in AnchorAlign[AControl.Align] then
-              FixateSide(a);
-          end;
-        end;
-
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-          if (a in AControl.Anchors)
-          and (AControl.AnchorSide[a].Control=Self) then begin
-            FixateSide(a);
-          end;
-        end;
-      end;
-
-      //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
+    if AControl.AutoSize then
+      AControl.GetPreferredSize(ChildWidth,ChildHeight,false)
+    else begin
+      ChildWidth:=AControl.Width;
+      ChildHeight:=AControl.Height;
     end;
+
+    if WithBorderSpace then begin
+      AControl.BorderSpacing.GetSpaceAround(SpaceAround);
+      if SpaceAround.Left<ChildSizing.LeftRightSpacing then
+        SpaceAround.Left:=ChildSizing.LeftRightSpacing;
+      if SpaceAround.Right<ChildSizing.LeftRightSpacing then
+        SpaceAround.Right:=ChildSizing.LeftRightSpacing;
+      if SpaceAround.Top<ChildSizing.TopBottomSpacing then
+        SpaceAround.Top:=ChildSizing.TopBottomSpacing;
+      if SpaceAround.Bottom<ChildSizing.TopBottomSpacing then
+        SpaceAround.Bottom:=ChildSizing.TopBottomSpacing;
+    end;
+    with ChildBounds do begin
+      Left := Min(AControl.Left-SpaceAround.Left, Left);
+      Top := Min(AControl.Top-SpaceAround.Top, Top);
+      Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
+      Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
+    end;
+
+    //DebugLn('TWinControl.GetChildBounds ',DbgSName(Self),' ChildBounds=',dbgs(ChildBounds),' ',DbgSName(AControl),'.BoundsRect=',dbgs(AControl.BoundsRect),' SpaceAround=',dbgs(SpaceAround));
   end;
   if ChildBounds.Left>ChildBounds.Right then begin
     ChildBounds.Left:=0;
