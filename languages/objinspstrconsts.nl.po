@@ -168,7 +168,7 @@ msgstr "Alles"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files"
-msgstr ""
+msgstr "Alle bestanden"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
@@ -260,7 +260,7 @@ msgstr "Copieëer"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr ""
+msgstr "Nieuwe pascal unit aanmaken"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"

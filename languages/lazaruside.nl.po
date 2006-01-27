@@ -212,11 +212,11 @@ msgstr "&Vensters"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Filter)"
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
-msgstr ""
+msgstr "(geen subdirectory)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -252,7 +252,7 @@ msgstr "Een benodigd package was niet gevonden. Zie de package graph."
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
 msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr ""
+msgstr "Een simpel pascal programma bestand.%sDeze kan gebruikt worden voor een snelle test.%sHet is beter een nieuw project te maken."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -260,7 +260,7 @@ msgstr "Een geldige Tool heeft tenminste een titel en een bestandsnaam nodig."
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
-msgstr ""
+msgstr "Afbreken"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
@@ -268,15 +268,15 @@ msgstr "Bouwen afbreken"
 
 #: lazarusidestrconsts:lisabortall
 msgid "Abort all"
-msgstr ""
+msgstr "Alles afbreken"
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
-msgstr ""
+msgstr "Het laden afbreken"
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
-msgstr ""
+msgstr "Het laden van het project afbreken"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -452,7 +452,7 @@ msgstr "Alle packages"
 
 #: lazarusidestrconsts:lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "Alle projecten"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -480,7 +480,7 @@ msgstr "Alternatieve toets"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
-msgstr ""
+msgstr "Altijd bouwen (ook als er niks is gewijzigd)"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -524,7 +524,7 @@ msgstr "Dubbelzinnige units gevonden"
 
 #: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
-msgstr ""
+msgstr "Bij het laden van %s is er laatst een fout opgetreden!%s%sDit project opnieuw laden?"
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -552,7 +552,7 @@ msgstr "Toepassen"
 
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
-msgstr "Veranderingen toepassen"
+msgstr "Wijzigingen toepassen"
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
@@ -876,11 +876,11 @@ msgstr "Annuleer"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
-msgstr ""
+msgstr "Laden van de unit annuleren"
 
 #: lazarusidestrconsts:liscancelrenaming
 msgid "Cancel renaming"
-msgstr ""
+msgstr "Hernoemen annuleren"
 
 #: lazarusidestrconsts:lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -928,11 +928,11 @@ msgstr "Middenpunten"
 
 #: lazarusidestrconsts:liscodetemplchange
 msgid "Change"
-msgstr "Verander"
+msgstr "Wijzig"
 
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
-msgstr "Verander Class"
+msgstr "Wijzig Class"
 
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
@@ -940,11 +940,11 @@ msgstr "ChangeLog bericht"
 
 #: lazarusidestrconsts:lisdiskdiffchangedfiles
 msgid "Changed files:"
-msgstr "Veranderde bestanden:"
+msgstr "Gewijzigde bestanden:"
 
 #: lazarusidestrconsts:lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
-msgstr "Veranderen van de package naam of de versie verbreekt afhankelijkheden. Moeten deze afhankelijkheden ook worden gewijzigd?%sKies Ja om alle weergegeven afhankelijkheden te wijzigen.%sKies Negeren om de afhankelijkheden te verbreken."
+msgstr "Wijzigen van de package naam of de versie verbreekt afhankelijkheden. Moeten deze afhankelijkheden ook worden gewijzigd?%sKies Ja om alle weergegeven afhankelijkheden te wijzigen.%sKies Negeren om de afhankelijkheden te verbreken."
 
 #: lazarusidestrconsts:srkmecchar
 msgid "Char"
@@ -1092,7 +1092,7 @@ msgstr "Maak sub directory schoon"
 
 #: lazarusidestrconsts:liscleanupunitpath
 msgid "Clean up unit path?"
-msgstr ""
+msgstr "Unit pad opschonen?"
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -1384,7 +1384,7 @@ msgstr "Bevestiging voor het bouwen van Lazarus"
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
-msgstr "Bevestig veranderingen"
+msgstr "Bevestig wijzigingen"
 
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -1412,11 +1412,11 @@ msgstr "Contextgevoelige help"
 
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
-msgstr ""
+msgstr "Doorgaan"
 
 #: lazarusidestrconsts:liscontinuewithoutloadingform
 msgid "Continue without loading form"
-msgstr ""
+msgstr "Doorgaan zonder het form te laden"
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
@@ -1504,7 +1504,7 @@ msgstr "Een geheel formulier kopiëren is niet geimplementeerd."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "Copyright (C) <year> <name of author> %sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "Copyright (C) <year> <name of author> %sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -1520,35 +1520,35 @@ msgstr "Maak"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
-msgstr "Creëer .po-bestanden"
+msgstr "Maak .po-bestanden"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr "Creëer definities voor %s folder"
+msgstr "Maak definities voor %s folder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
-msgstr "Creëer definities voor %s Project"
+msgstr "Maak definities voor %s Project"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
-msgstr "Creëer definities voor Free Pascal Compiler"
+msgstr "Maak definities voor Free Pascal Compiler"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Creëer definities voor Free Pascal SVN broncode"
+msgstr "Maak definities voor Free Pascal SVN broncode"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
-msgstr "Creëer definities voor Lazarusfolder"
+msgstr "Maak definities voor Lazarusfolder"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr "Creëer FPC-macro's en paden voor een fpc-projectfolder"
+msgstr "Maak FPC-macro's en paden voor een fpc-projectfolder"
 
 #: lazarusidestrconsts:lispckeditcreatemakefile
 msgid "Create Makefile"
-msgstr "Creëer MakeFile"
+msgstr "Maak MakeFile"
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -1768,7 +1768,7 @@ msgstr "Definieer recursief"
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
-msgstr "Delay"
+msgstr "Vertraging"
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
@@ -1940,11 +1940,11 @@ msgstr "Doelpackage"
 
 #: lazarusidestrconsts:lisdestinationdirectory
 msgid "Destination directory"
-msgstr "Doel directorie"
+msgstr "Doeldirectorie"
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
-msgstr "Doel folder %s%s%s is ongeldig.%sKies a.u.b. een geldig pad."
+msgstr "Doelfolder %s%s%s is ongeldig.%sKies a.u.b. een geldig pad."
 
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
@@ -1976,7 +1976,7 @@ msgstr "Folder opties"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
-msgstr ""
+msgstr "Wijzigingen verwerpen"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
@@ -1996,7 +1996,7 @@ msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
-msgstr ""
+msgstr "IDE niet sluiten"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -2012,7 +2012,7 @@ msgstr "Splits een regel niet na :"
 
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
-msgstr "Bent u zeker om alle wijzigingen aan package %s te verliezen en te herladen uit bestand?"
+msgstr "Weet u zeker dat alle wijzigingen in package %s geannuleerd moeten worden en het project opnieuw geladen moet worden?"
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
@@ -2148,7 +2148,7 @@ msgstr "Einde"
 
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
-msgstr "English"
+msgstr "Engels"
 
 #: lazarusidestrconsts:lismacropromptenterdata
 msgid "Enter data"
@@ -2212,7 +2212,7 @@ msgstr "Fout in reguliere expressie"
 
 #: lazarusidestrconsts:liserrorinitializingprogramserrors
 msgid "Error initializing program%s%s%s%s%sError: %s"
-msgstr "Fout initialisering programma %s%s%s%sFout: %s"
+msgstr "Fout tijdens initialiseren van programma%s%s%s%s%sFout: %s"
 
 #: lazarusidestrconsts:liserrormovingcomponent
 msgid "Error moving component"
@@ -2244,7 +2244,7 @@ msgstr "Error bij lezen package lijst uit bestand%s%s%s%s"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
-msgstr "Fout bij lezen project info bestand %s%s%s%s"
+msgstr "Fout bij lezen project info bestand %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -2252,11 +2252,11 @@ msgstr "Fout bij herbenoemen bestand"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
-msgstr "Fout bij het schrijven %s%s%s%s"
+msgstr "Fout bij het schrijven %s%s%s%s%s"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
-msgstr "Fout tijdens het schrijven project info file %s%s%s%s"
+msgstr "Fout tijdens het schrijven project info file %s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
@@ -2284,7 +2284,7 @@ msgstr "Verlaat"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
-msgstr "Evalueer/Verander ..."
+msgstr "Evalueer/Wijzig ..."
 
 #: lazarusidestrconsts:lislazdocexampletag
 msgid "Example"
@@ -2348,7 +2348,7 @@ msgstr "Export lijst"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
-msgstr ""
+msgstr "Unit path uitbreiden?"
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -2412,7 +2412,7 @@ msgstr "Bestand %s%s%s bestaat reeds in het project."
 
 #: lazarusidestrconsts:lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
-msgstr "Bestand %s%s%s is veranderd. Opslaan?"
+msgstr "Bestand %s%s%s is gewijzigd. Opslaan?"
 
 #: lazarusidestrconsts:lisfileisvirtual
 msgid "File %s%s%s is virtual."
@@ -2464,7 +2464,7 @@ msgstr "Bestand is in project"
 
 #: lazarusidestrconsts:lisfileisnotwritable
 msgid "File is not writable"
-msgstr "Bestand is niet schrijfbaar"
+msgstr "Bestand is niet wijzigbaar"
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
@@ -2528,7 +2528,7 @@ msgstr "Bestand in gebruik door project"
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
-msgstr "Bestandsnaam: %s"
+msgstr "Bestandsnaam:  %s"
 
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
@@ -2644,7 +2644,7 @@ msgstr "Volg cursor"
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
-msgstr ""
+msgstr "Hernoemen afdwingen"
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -3080,7 +3080,7 @@ msgstr "Negeer verschillen in regeleinden (bv. #10 = #13#10)"
 
 #: lazarusidestrconsts:lisdiskdiffignorediskchanges
 msgid "Ignore disk changes"
-msgstr "Negeer veranderingen op disk"
+msgstr "Negeer wijzigingen op disk"
 
 #: lazarusidestrconsts:lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
@@ -3088,7 +3088,7 @@ msgstr "Negeer toevoegingen en verwijderingen van lege regels"
 
 #: lazarusidestrconsts:lisignoremissingfile
 msgid "Ignore missing file"
-msgstr ""
+msgstr "Negeer afwezig bestand"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -3292,7 +3292,7 @@ msgstr "Lazarus Directorie Template invoegen"
 
 #: lazarusidestrconsts:lisctinsertmacro
 msgid "Insert Macro"
-msgstr ""
+msgstr "Macro invoegen"
 
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
@@ -3400,7 +3400,7 @@ msgstr "Installeer selectie"
 
 #: lazarusidestrconsts:lisinstallationfailed
 msgid "Installation failed"
-msgstr ""
+msgstr "Installatie mislukt"
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -3688,7 +3688,7 @@ msgstr "Bewaar bestanden die aan het filter voldoen"
 
 #: lazarusidestrconsts:liskeepname
 msgid "Keep name"
-msgstr ""
+msgstr "Houd naam"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -3916,7 +3916,7 @@ msgstr "Bibliotheek"
 
 #: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Library%sEen freepascal bibliotheek (.dll in windows, .so in linux, .so in MaxOSX). De bibliotheek broncode bestand wordt door Lazarus onderhouden."
 
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
@@ -3976,7 +3976,7 @@ msgstr "Geladen Packages:"
 
 #: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
-msgstr "het laden van Package %s zal package %s%s van bestand %s vervangen.%s De oude package is gewijzigd. %s%sHet oude package %s opslaan?"
+msgstr "Het laden van Package %s zal package %s%s van bestand %s vervangen.%s Het oude package is gewijzigd. %s%sHet oude package %s opslaan?"
 
 #: lazarusidestrconsts:dlgrunolocal
 msgid "Local"
@@ -3988,7 +3988,7 @@ msgstr "Lokale Variabelen"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
-msgstr "Verander selectie in kleine letters"
+msgstr "Wijzig selectie in kleine letters"
 
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
@@ -4460,7 +4460,7 @@ msgstr "Geen compiler opties overgenomen."
 
 #: lazarusidestrconsts:lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
-msgstr ""
+msgstr "Geen debugger aangegeven"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
@@ -4640,7 +4640,7 @@ msgstr "Open Recent Project"
 
 #: lazarusidestrconsts:lisopenastextfile
 msgid "Open as text file"
-msgstr ""
+msgstr "Openen als tekstbestand"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -4676,11 +4676,11 @@ msgstr "Open Package van huidige unit"
 
 #: lazarusidestrconsts:lisopenproject2
 msgid "Open project"
-msgstr ""
+msgstr "Project openen"
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
-msgstr ""
+msgstr "Project opnieuw openen"
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package"
@@ -4760,7 +4760,7 @@ msgstr "Overflow"
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
-msgstr "Overrule de ingestelde taal. Bijv. --language=nl. For mogelijke waardes zie de bestanden in the directorie languages"
+msgstr "Overrule de ingestelde taal. Bijv. --language=nl. Voor mogelijke waardes zie de bestanden in the directorie languages"
 
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
@@ -4772,7 +4772,7 @@ msgstr "Overschrijf mode"
 
 #: lazarusidestrconsts:lisoverwritefileondisk
 msgid "Overwrite file on disk"
-msgstr ""
+msgstr "Bestand op disk overschrijven"
 
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
@@ -4892,7 +4892,7 @@ msgstr "Paragrafen"
 
 #: lazarusidestrconsts:liscmparameter
 msgid "Parameter"
-msgstr ""
+msgstr "Parameter"
 
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
@@ -5096,7 +5096,7 @@ msgstr "Programma bestandsnaam:"
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
-msgstr ""
+msgstr "Voortgang"
 
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
@@ -5136,7 +5136,7 @@ msgstr "Project Opties ..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
-msgstr ""
+msgstr "Project broncode directory merk"
 
 #: lazarusidestrconsts:lisprojectsrcpath
 msgid "Project Src Path"
@@ -5156,7 +5156,7 @@ msgstr "Project Unit pad"
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
-msgstr "Project is veranderd"
+msgstr "Project is gewijzigd"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -5468,7 +5468,7 @@ msgstr "Hernoem naar"
 
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
-msgstr ""
+msgstr "Hernoemen in kleine letters"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -5672,7 +5672,7 @@ msgstr "Opslaan als Template"
 
 #: lazarusidestrconsts:lispckeditsavechanges
 msgid "Save Changes?"
-msgstr "Veranderingen Opslaan?"
+msgstr "Wijzigingen Opslaan?"
 
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
@@ -5724,11 +5724,11 @@ msgstr "Opslaan Als"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
-msgstr "Veranderingen aan project %s opslaan?"
+msgstr "Wijzigingen in project %s opslaan?"
 
 #: lazarusidestrconsts:lissavechanges
 msgid "Save changes?"
-msgstr "Veranderingen opslaan?"
+msgstr "Wijzigingen opslaan?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
@@ -5900,7 +5900,7 @@ msgstr "Selecteer Alles"
 
 #: lazarusidestrconsts:lisctselectcodemacro
 msgid "Select Code Macro"
-msgstr ""
+msgstr "Selecteer Code Macro"
 
 #: lazarusidestrconsts:lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -6076,7 +6076,7 @@ msgstr "Geef property variabele een waarde"
 
 #: lazarusidestrconsts:lisdbgmangsetthebreakpointanyway
 msgid "Set the breakpoint anyway"
-msgstr ""
+msgstr "Zet toch een breakpoint"
 
 #: lazarusidestrconsts:lislazbuildsettobuildall
 msgid "Set to %sBuild All%s"
@@ -6196,7 +6196,7 @@ msgstr "Toon alles"
 
 #: lazarusidestrconsts:dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
-msgstr ""
+msgstr "Laat executable info zien (Alleen Win32)"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
@@ -6260,7 +6260,7 @@ msgstr "Sla compiler aanroep over"
 
 #: lazarusidestrconsts:lisskipfileandcontinueloading
 msgid "Skip file and continue loading"
-msgstr ""
+msgstr "Sla bestand over en vervolg het laden"
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "Skip loading last project"
@@ -6376,7 +6376,7 @@ msgstr "Standaard Help Menu"
 
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
-msgstr ""
+msgstr "Met een nieuw project starten"
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -6712,7 +6712,7 @@ msgstr "De Minimum Versie %s%s%s is ongeldig.%sGebruik het formaat major.minor.r
 
 #: lazarusidestrconsts:lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
-msgstr ""
+msgstr "De RTL - De \"Run-Time Library\" is de basis van alle Free Pascal programma's"
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -6816,11 +6816,11 @@ msgstr "De doel directorie%s%s%s%s bestaat niet."
 
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
-msgstr ""
+msgstr "De directory %s%s%s is overbodig in het unit pad.%sDirectory verwijderen?"
 
 #: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
 msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
-msgstr ""
+msgstr "De directory %s%s%s is nog niet in het unit path.%sDirectory toevoegen?"
 
 #: lazarusidestrconsts:dlgthedirectory
 msgid "The directory \""
@@ -6960,7 +6960,7 @@ msgstr "Het package %s bevat het bestand%s%s%s%s.%sMoet het bestand daar ook her
 
 #: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
-msgstr ""
+msgstr "Het package %s%s%s kon niet worden gecompileerd.%Het package verwijderen uit de installatie lijst?"
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -6968,7 +6968,7 @@ msgstr "Het package %s%s%s heeft de \"auto install\" vlag.%sDit betekent dat het
 
 #: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr ""
+msgstr "Het package %s%s%s is geinstalleerd, maar er is geen geldig .lpk bestand gevonden.%sEen dummy package is aangemaakt."
 
 #: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -7152,7 +7152,7 @@ msgstr "Er is een niet opgeslagen package in the benodigde packages. Zie package
 
 #: lazarusidestrconsts:lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
-msgstr ""
+msgstr "Er is geen debugger ingesteld.%Het plaatsen van breakpoints heeft geen effect totdat je een debugger hebt aangegeven in de Debugger Instellingen in het menu."
 
 #: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
@@ -7188,11 +7188,11 @@ msgstr "Dit is het standaard package. Het wordt alleen gebruikt voor componenten
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
-msgstr ""
+msgstr "Dit lijkt op een pascal bestand.%sAangeraden is om alleen kleine letters te gebruiken in de bestandnaam, om problemen te voorkomen.%sHernoemen naar kleine letters?"
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr ""
+msgstr "Het package is geinstalleerd, maar het lpk-bestand niet gevonden. Alle componenten hieruit zijn gedeactiveed. Herstel dit alstublieft."
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -7492,7 +7492,7 @@ msgstr "Kan het package bestand %s%s%s niet lezen."
 
 #: lazarusidestrconsts:lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr ""
+msgstr "Kan het status bestand %s van project %s%s niet lezen. Fout: %s"
 
 #: lazarusidestrconsts:lispkgmangunabletoreadstatefileofpackageerror
 msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
@@ -7592,7 +7592,7 @@ msgstr "Kan het status bestand %s%s%s%s van package %s niet schrijven.%sFout: %s
 
 #: lazarusidestrconsts:lisprojmangunabletowritestatefileforprojecterror
 msgid "Unable to write state file for project %s%sError: %s"
-msgstr ""
+msgstr "Kan het status bestand van project %s%s niet schrijven. Four %s"
 
 #: lazarusidestrconsts:lisunabletowritetofile2
 msgid "Unable to write to file %s%s%s"
@@ -7784,7 +7784,7 @@ msgstr "Update/Herbouwen"
 
 #: lazarusidestrconsts:lismenuuppercaseselection
 msgid "Uppercase selection"
-msgstr "Verander selectie in hoofdletters"
+msgstr "Wijzig selectie in hoofdletters"
 
 #: lazarusidestrconsts:lispckoptsusage
 msgid "Usage"
@@ -8296,7 +8296,7 @@ msgstr "Kleine letters"
 
 #: lazarusidestrconsts:lisprojectmakrounitpath
 msgid "makro ProjectUnitPath"
-msgstr ""
+msgstr "makro ProjectUnitPath"
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"
@@ -8340,7 +8340,7 @@ msgstr "pauzeer programma"
 
 #: lazarusidestrconsts:lisctpleaseselectamacro
 msgid "please select a macro"
-msgstr ""
+msgstr "selecteer een macro"
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "

@@ -36,7 +36,7 @@ msgstr "%s is al verbonden met %s"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr ""
+msgstr "%s%sDruk op Ok om te negeren, hierbij kunnen gegevens verloren gaan.%sDruk op Cancel om het programma te annuleren."
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -112,7 +112,7 @@ msgstr "--lcl-no-transient    Zet geen overdraagbare volgorde voor modale scherm
 
 #: lclstrconsts:rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
-msgstr ""
+msgstr "--name programe       Maakt \"programe\" de naam van het programma. Als deze niet wordt gegeven krijgt het programma de naam uit ParamStr(0)."
 
 #: lclstrconsts:rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
@@ -140,11 +140,11 @@ msgstr "Alle bestanden (%s)|%s|%s"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Backspace"
 
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
-msgstr ""
+msgstr "Bitmaps"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
@@ -184,7 +184,7 @@ msgstr "Bevestiging"
 
 #: lclstrconsts:ifsvk_control
 msgid "Control"
-msgstr ""
+msgstr "Controleer"
 
 #: lclstrconsts:ifsvk_convert
 msgid "Convert"
@@ -208,7 +208,7 @@ msgstr "Directory moet bestaan"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "Docking"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
@@ -436,11 +436,11 @@ msgstr "Nee op alles"
 
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
+msgstr "Geen widgetser object. Controleer of the unit \"interface\" is toegevoegd aan de \"uses\" van het programma."
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Niet converteren"
 
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
