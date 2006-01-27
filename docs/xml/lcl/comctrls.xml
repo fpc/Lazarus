@@ -11,123 +11,83 @@
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Math">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="FPCAdds">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>???</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="AvgLvlTree">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="ImgList">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="ActnList">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Menus">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="ExtCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="ToolWin">
@@ -137,15 +97,11 @@
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="CommCtrl">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
       <element name="Buttons">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="THitTest">
@@ -3221,9 +3177,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawTarget">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawTarget.dtControl">
@@ -3239,9 +3193,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawStage">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set of constants to define the drawing stages.</short>
+        <descr>So far I've only seen cdPrePaint used in this unit.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawStage.cdPrePaint">
@@ -3261,9 +3214,17 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCustomDrawStateFlag">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set to define the DrawState</short>
+        <descr>TCustomDrawStateFlag consists of the following constants:<br/>
+cdsSelected,<br/> 
+cdsGrayed,<br/> 
+cdsDisabled,<br/> 
+cdsChecked,<br/>
+cdsFocused,<br/> 
+cdsDefault,<br/> 
+cdsHot,<br/> 
+cdsMarked,<br/> 
+cdsIndeterminate</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawStateFlag.cdsSelected">
@@ -3303,9 +3264,8 @@
       </element>
       <!-- set type Visibility: default -->
       <element name="TCustomDrawState">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A subset of TCustomDrawStateFlag</short>
+        <descr>TCustomDrawState determines how a item will be drawn.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TListItems">
@@ -3316,10 +3276,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomListView">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A forward declaration</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSortType">
@@ -4705,11 +4662,7 @@
         <descr>TCustomListView is the ancestor for TListView. If you want to define your own ListView class, you should use this class to derive it from.</descr>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomListView.FAllocBy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomListView.FAllocBy"/>
       <!-- variable Visibility: private -->
       <element name="TCustomListView.FCanvas">
         <short/>
@@ -5253,10 +5206,7 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListView.CNNotify">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to handle all kind of messages send to the ListView</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.CNNotify.AMessage">
@@ -5293,10 +5243,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Change">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Internal procedure called when an itme has changed</short>
+        <descr>This is an internal procedure which is called after an item has been changed. This procedure makes sure the OnChange-event is called if the user assigned a method to this event.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Change.AItem">
@@ -5308,10 +5256,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ColClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to trigger the OnColumnClick event.</short>
+        <descr>If a method is assigned to the OnColumnClick event, this procedure executes it.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.ColClick.AColumn">
@@ -5433,21 +5379,17 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.AllocBy">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Protected propety to read and set FAllocBy</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.BorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A property to store the borderstyle of the listview.</short>
+        <descr>This property should be made published in descendants if you want to allow the users to change the borderstyle.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property to define and change the columns of a ListView</short>
+        <descr>Columns is a TCollectionItem and contains all information on the columns of a listview.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
@@ -5607,10 +5549,7 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomListView.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The class method to "create" a Listview.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Create.Aowner">
@@ -5625,41 +5564,30 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListView.BeginUpdate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to be called before changes are made to the ListView</short>
+        <descr>This procedure increases FUpdateCount. After this procedure is called, changes made to the listview will only be drawn after a call to EndUpdate.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListView.EndUpdate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to be called after a call to BeginUpdate.</short>
+        <descr>Call EndUpdate to make sure changes made to the ListView are drawn.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.BoundingRect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A property to publish the rectangle the component occupies.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Canvas">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Read only property to give read access to the canvas.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Checkboxes">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Properties to determine if the ListView shows checkboxes with the items</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Column">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property to read the column information of the listview.</short>
+        <descr>This property can be used to read the information of a column. To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Column.AIndex">
@@ -7156,9 +7084,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="CN_DROPDOWNCLOSED">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Message constant.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonStyle">
@@ -9854,9 +9780,12 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TAddMode">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set to determine the place where a node should be placed in a tree.</short>
+        <descr>This sets consist of three values:<br/>
+taAdd: Adds the node as the last child.<br/>
+taAddFirst: Adds the node as the first child.<br/>
+taInsert: Adds the node in front another node.<br/><br/>
+This set is used in TTreeNode.InternalMove and TTreeNodes.InternalAddObject</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TAddMode.taAddFirst">
@@ -9878,35 +9807,29 @@
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeNodeError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Definition of a error type for errors araising from the code of TTreeView</short>
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeViewError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Definition of a error type for errors araising from the code of TTreeView</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="NodeAttachModeNames">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="AddModeNames">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>An array of strings to store the names for the different TAddModes.</short>
+        <descr>Type
+  TAddMode = (taAddFirst, taAdd, taInsert);
+
+Const
+  AddModeNames: array[TAddMode] of string =
+    ('taAddFirst', 'taAdd', 'taInsert');</descr>
       </element>
       <!-- constant Visibility: default -->
       <element name="LCLStreamID">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVChangingEvent">
@@ -10174,9 +10097,7 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PTreeNodeInfo">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A pointer to TTreeNodeInfo</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TTreeNodeInfo">
@@ -10240,9 +10161,7 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PDelphiNodeInfo">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A pointer to TDelphiNodeInfo</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TDelphiNodeInfo">
@@ -11754,9 +11673,7 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PNodeCache">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Unit used by ComCtrls.</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TNodeCache">
@@ -12707,9 +12624,16 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="DefaultTreeViewOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of TreeViewOptions which are set be default.</short>
+        <descr>These set of options is used to set the options of a TreeView object when first placed on a form. This set consists of the follwoing items:<br/>
+tvoShowRoot,<br/> 
+tvoShowLines,<br/> 
+tvoShowButtons,<br/>
+tvoHideSelection,<br/> 
+tvoToolTips,<br/>
+tvoKeepCollapsedNodes,<br/>
+tvoAutoItemHeight<br/>
+For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTreeViewExpandSignType">
@@ -15605,10 +15529,11 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CompareExpandedNodes">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function to compare the nodetext two nodes.</short>
+        <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
+-1: The nodetext from the first node is lower then the nodetext from the second.<br/>
+0: The nodetext-s from both nodes are equal.<br/>
+1: The nodetext from the first node is higher then the nodetext from the second.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareExpandedNodes.Result">
@@ -15624,10 +15549,11 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CompareTextWithExpandedNode">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function to compare the give text with the nodetextof the given node.</short>
+        <descr>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.<br/>
+-1: The given text is lower then the nodetext from the given node.<br/>
+0: The given text is equal to the nodetext from the given node.<br/>
+1: The given text is higher then the nodetext from the given node.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="CompareTextWithExpandedNode.Result">
@@ -15643,10 +15569,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="InitCommonControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function InitCommonControl</short>
+        <descr>Implemented for Delphi compatibility, always returns true;</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="InitCommonControl.Result">
@@ -15658,10 +15582,8 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="CheckCommonControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure CheckCommonControl.</short>
+        <descr>Implemented for Delphi compatibility. Procedure does not execute any code.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="CheckCommonControl.CC">
@@ -15669,10 +15591,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure used to "register" the components.</short>
       </element>
     </module>
     <!-- ComCtrls -->
