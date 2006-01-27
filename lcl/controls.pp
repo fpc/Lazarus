@@ -542,9 +542,20 @@ type
         For example: A buttons widget returns 75x25 on GetPreferredSize.
         CalculatePreferredSize adds 2 times the InnerBorder to the width and
         height.
+        
+    CellAlignHorizontal, CellAlignVertical: TControlCellAlign;
+        Used for example when the Parents.ChildSizing.Layout defines a table
+        layout.
   }
   
   TSpacingSize = 0..MaxInt;
+  TControlCellAlign = (
+    ccaFill,
+    ccaLeftTop,
+    ccaRightBottom,
+    ccaCenter
+    );
+  TControlCellAligns = set of TControlCellAlign;
 
   { TControlBorderSpacing }
 
@@ -552,6 +563,8 @@ type
   private
     FAround: TSpacingSize;
     FBottom: TSpacingSize;
+    FCellAlignHorizontal: TControlCellAlign;
+    FCellAlignVertical: TControlCellAlign;
     FControl: TControl;
     FInnerBorder: Integer;
     FLeft: TSpacingSize;
@@ -560,6 +573,8 @@ type
     FTop: TSpacingSize;
     procedure SetAround(const AValue: TSpacingSize);
     procedure SetBottom(const AValue: TSpacingSize);
+    procedure SetCellAlignHorizontal(const AValue: TControlCellAlign);
+    procedure SetCellAlignVertical(const AValue: TControlCellAlign);
     procedure SetInnerBorder(const AValue: Integer);
     procedure SetLeft(const AValue: TSpacingSize);
     procedure SetRight(const AValue: TSpacingSize);
@@ -586,6 +601,8 @@ type
     property Bottom: TSpacingSize read FBottom write SetBottom;
     property Around: TSpacingSize read FAround write SetAround;
     property InnerBorder: Integer read FInnerBorder write SetInnerBorder;
+    property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal;
+    property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical;
   end;
   
   
@@ -2501,6 +2518,22 @@ procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);
 begin
   if FBottom=AValue then exit;
   FBottom:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetCellAlignHorizontal(
+  const AValue: TControlCellAlign);
+begin
+  if FCellAlignHorizontal=AValue then exit;
+  FCellAlignHorizontal:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetCellAlignVertical(
+  const AValue: TControlCellAlign);
+begin
+  if FCellAlignVertical=AValue then exit;
+  FCellAlignVertical:=AValue;
   Change;
 end;
 

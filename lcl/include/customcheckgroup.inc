@@ -32,10 +32,13 @@ begin
   FButtonList := TList.Create;
   FColumnLayout := clHorizontalThenVertical;
   FColumns  := 1;
+  FAutoFill := true;
   ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
   ChildSizing.ControlsPerLine:=FColumns;
   ChildSizing.ShrinkHorizontal:=crsScaleChilds;
   ChildSizing.ShrinkVertical:=crsScaleChilds;
+  ChildSizing.EnlargeHorizontal:=crsHomogenousChildResize;
+  ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
   SetInitialBounds(0,0,150,100);
 end;
 
@@ -50,8 +53,6 @@ procedure TCustomCheckGroup.ItemsChanged(Sender: TObject);
 begin
   UpdateItems;
   UpdateControlsPerLine;
-  // TODO: Remove RecreateWnd
-  if HandleAllocated then RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -62,8 +63,8 @@ begin
   DisableAlign;
   try
     if FAutoFill then begin
-      ChildSizing.EnlargeHorizontal:=crsHomogenousSpaceResize;
-      ChildSizing.EnlargeVertical:=crsHomogenousSpaceResize;
+      ChildSizing.EnlargeHorizontal:=crsHomogenousChildResize;
+      ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
     end else begin
       ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
       ChildSizing.EnlargeVertical:=crsAnchorAligning;
@@ -94,27 +95,35 @@ var
   i       : integer;
   CheckBox: TCheckBox;
 begin
-  // destroy checkboxes, if there are too many
-  while FButtonList.Count>FItems.Count do begin
-    TCheckBox(FButtonList[FButtonList.Count-1]).Free;
-    FButtonList.Delete(FButtonList.Count-1);
-  end;
-
-  // create as many TCheckBox as needed
-  while (FButtonList.Count<FItems.Count) do begin
-    CheckBox := TCheckBox.Create (self);
-    with CheckBox do begin
-      Name:='CheckBox'+IntToStr(FButtonList.Count);
-      AutoSize := False;
-      Parent := Self;
-      OnClick :=@Clicked;
-      include(ControlStyle, csNoDesignSelectable);
+  if FUpdatingItems then exit;
+  FUpdatingItems:=true;
+  try
+    // destroy checkboxes, if there are too many
+    while FButtonList.Count>FItems.Count do begin
+      TObject(FButtonList[FButtonList.Count-1]).Free;
+      FButtonList.Delete(FButtonList.Count-1);
     end;
-    FButtonList.Add(CheckBox);
-  end;
-  for i:=0 to FItems.Count-1 do begin
-    CheckBox:=TCheckBox(FButtonList[i]);
-    CheckBox.Caption:=FItems[i];
+
+    // create as many TCheckBox as needed
+    while (FButtonList.Count<FItems.Count) do begin
+      CheckBox := TCheckBox.Create(Self);
+      with CheckBox do begin
+        Name:='CheckBox'+IntToStr(FButtonList.Count);
+        AutoSize := False;
+        BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
+        BorderSpacing.CellAlignVertical:=ccaCenter;
+        Parent := Self;
+        OnClick :=@Self.Clicked;
+        Include(ControlStyle, csNoDesignSelectable);
+      end;
+      FButtonList.Add(CheckBox);
+    end;
+    for i:=0 to FItems.Count-1 do begin
+      CheckBox:=TCheckBox(FButtonList[i]);
+      CheckBox.Caption:=FItems[i];
+    end;
+  finally
+    FUpdatingItems:=false;
   end;
 end;
 
@@ -181,8 +190,7 @@ begin
   begin
     FItems.Assign(Value);
     UpdateItems;
-    // TODO: Remove RecreateWnd
-    if HandleAllocated then RecreateWnd(Self);
+    UpdateControlsPerLine;
   end;
 end;
 

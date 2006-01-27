@@ -61,8 +61,8 @@ object EditorOptionsForm: TEditorOptionsForm
         AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'EditorOptionsGroupBox'
-        ChildSizing.EnlargeHorizontal = crsHomogenousSpaceResize
-        ChildSizing.EnlargeVertical = crsHomogenousSpaceResize
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclTopToBottomThenLeftToRight
@@ -392,6 +392,8 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 2
         Width = 461
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -718,6 +720,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 6
@@ -890,6 +893,8 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         Width = 465
         OnMouseDown = ColorPreviewMouseUp
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1216,6 +1221,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 4

@@ -630,32 +630,34 @@ type
     FColumns: integer;
     FCreatingWnd: boolean;
     FHiddenButton: TRadioButton;
+    fIgnoreClicks: boolean;
     FItemIndex: integer;
     FItems: TStrings;
     FLastClickedItemIndex: integer;
     FOnClick: TNotifyEvent;
     FReading: boolean;
-    fIgnoreClicks: boolean;
-    procedure ItemsChanged(Sender: TObject);
-    procedure Clicked(Sender: TObject);
+    FUpdatingItems: Boolean;
     procedure Changed(Sender: TObject);
+    procedure Clicked(Sender: TObject);
     procedure ItemEnter(Sender: TObject);
-    procedure UpdateTabStops;
-    procedure SetAutoFill(const AValue: Boolean);
-    procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure ItemExit(Sender: TObject);
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemResize(Sender: TObject);
+    procedure ItemsChanged(Sender: TObject);
+    procedure SetAutoFill(const AValue: Boolean);
+    procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure UpdateControlsPerLine;
+    procedure UpdateItems;
+    procedure UpdateTabStops;
   protected
+    procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
-    procedure SetItem(Value: TStrings);
+    procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
     procedure SetItemIndex(Value: integer);
     function GetItemIndex: integer;
-    procedure Resize; override;
     procedure CheckItemIndexChanged; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -665,7 +667,7 @@ type
   public
     property AutoFill: Boolean read FAutoFill write SetAutoFill;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
-    property Items: TStrings read FItems write SetItem;
+    property Items: TStrings read FItems write SetItems;
     property Columns: integer read FColumns write SetColumns default 1;
     property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -726,6 +728,7 @@ type
     FItems: TStrings;
     FColumns: integer;
     FOnItemClick: TCheckGroupClicked;
+    FUpdatingItems: Boolean;
     function GetChecked(Index: integer): boolean;
     function GetCheckEnabled(Index: integer): boolean;
     procedure Clicked(Sender: TObject);

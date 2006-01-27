@@ -19,35 +19,7 @@
   Delphi compatibility:
 
    - the interface is almost like in delphi 5
-   - with the GTK-bindings there must always one button active,
-     ItemIndex= -1 can't be handled
    - FlipChildren procedure is missing
-   
-  TODO:
-    - faster CreateWnd
-
-  Possible improvements:
-       - The current implementation often recreates the group even
-         if it might not be neccessary. This could be solved if with
-         an approach like Marc Weustink suggested:
-
-         "Why not on SetColumn/SetItems/FItems.Onchange create the necessary
-         checkboxes and align them. This way the RadioGroup is just a control
-         with other controls in it. It doesn't matter if the the gtk control is
-         created or not.
-         If not created and you already have added checkboxes, they will be 
-         created when the groupbox is created and will be destroyed when the
-         groupbox is destroyed. This way you internally allways deal with
-         TCheckboxes and you dont have to mess with creating/destroying them.
-         Besides that, you dont have to recreate the control on every change."
-  
-         On the other side this might have the following disadvantages:
-           - requires some work to find out which buttons to add/delete
-           - the TButtonList and the group property of affected buttons
-             have to be updated according to the new order of buttons
-           - works only if the interface library supports reordering of
-             radiobuttons
-
 }
 
 {------------------------------------------------------------------------------
@@ -60,10 +32,10 @@
 constructor TCustomRadioGroup.Create(TheOwner : TComponent);
 begin
   inherited Create (TheOwner);
-  FCreatingWnd := false;
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
   FItems      := TStringList.Create;
+  FAutoFill := true;
   //TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
   FItemIndex  := -1;
@@ -75,6 +47,8 @@ begin
   ChildSizing.ControlsPerLine:=FColumns;
   ChildSizing.ShrinkHorizontal:=crsScaleChilds;
   ChildSizing.ShrinkVertical:=crsScaleChilds;
+  ChildSizing.EnlargeHorizontal:=crsHomogenousChildResize;
+  ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
   SetInitialBounds(0,0,150,100);
   TabStop := True;
 end;
@@ -103,9 +77,6 @@ end;
   Create the visual component of the Radiogroup.
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.InitializeWnd;
-var
-  i       : integer;
-  temp    : TRadioButton;
 begin
   if FCreatingWnd then RaiseGDBException('TCustomRadioGroup.InitializeWnd');
   FCreatingWnd := true;
@@ -113,61 +84,6 @@ begin
   
   inherited InitializeWnd;
 
-  // destroy radiobuttons, if there are too many
-  while FButtonList.Count>FItems.Count do begin
-    TRadioButton(FButtonList[FButtonList.Count-1]).Free;
-    FButtonList.Delete(FButtonList.Count-1);
-  end;
-  //DebugLn('[TCustomRadioGroup.InitializeWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
-
-  // create as many TRadioButton as needed
-  while (FButtonList.Count<FItems.Count) do begin
-    Temp := TRadioButton.Create(Self);
-    Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
-    Temp.AutoSize := True;
-    Temp.OnClick := @Clicked;
-    Temp.OnChange := @Changed;
-    Temp.OnEnter :=@ItemEnter;
-    Temp.OnExit :=@ItemExit;
-    Temp.OnKeyDown :=@ItemKeyDown;
-    Temp.OnResize := @ItemResize;
-    include(temp.ControlStyle, csNoDesignSelectable);
-    FButtonList.Add(Temp);
-  end;
-  if FHiddenButton=nil then begin
-    FHiddenButton:=TRadioButton.Create(nil);
-    with FHiddenButton do begin
-      Name:='HiddenRadioButton';
-      Visible:=false;
-      include(ControlStyle, csNoDesignSelectable);
-    end;
-  end;
-    
-  //DebugLn('[TCustomRadioGroup.InitializeWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
-  if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
-
-  if FItems.Count>0 then begin
-    for i:=0 to FItems.Count-1 do begin
-      Temp := TRadioButton(FButtonList[i]);
-      Temp.Caption := FItems[i];
-      Temp.Parent:=Self;
-    end;
-    with FHiddenButton do begin
-      FHiddenButton.Visible:=false;
-      Parent:=Self;
-      FHiddenButton.HandleNeeded;
-    end;
-    
-    for i:=0 to FItems.Count-1 do begin
-      Temp := TRadioButton(FButtonList[i]);
-      Temp.Checked := (i = FItemIndex);
-      Temp.Visible := true;
-    end;
-    FHiddenButton.Checked:=(fItemIndex=-1);
-    UpdateTabStops;
-  end;
-  //DebugLn('[TCustomRadioGroup.InitializeWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
-  
   FCreatingWnd := false;
 end;
 
@@ -194,6 +110,78 @@ begin
 
 end;
 
+procedure TCustomRadioGroup.UpdateItems;
+var
+  i: integer;
+  ARadioButton: TRadioButton;
+begin
+  if FUpdatingItems then exit;
+  FUpdatingItems:=true;
+  try
+    // destroy radiobuttons, if there are too many
+    while FButtonList.Count>FItems.Count do begin
+      TRadioButton(FButtonList[FButtonList.Count-1]).Free;
+      FButtonList.Delete(FButtonList.Count-1);
+    end;
+
+    // create as many TRadioButton as needed
+    while (FButtonList.Count<FItems.Count) do begin
+      ARadioButton := TRadioButton.Create(Self);
+      with ARadioButton do begin
+        Name:='RadioButton'+IntToStr(FButtonList.Count);
+        AutoSize := False;
+        OnClick := @Self.Clicked;
+        OnChange := @Self.Changed;
+        OnEnter :=@Self.ItemEnter;
+        OnExit :=@Self.ItemExit;
+        OnKeyDown :=@Self.ItemKeyDown;
+        OnResize := @Self.ItemResize;
+        BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
+        BorderSpacing.CellAlignVertical:=ccaCenter;
+        Include(ControlStyle, csNoDesignSelectable);
+      end;
+      FButtonList.Add(ARadioButton);
+    end;
+    if FHiddenButton=nil then begin
+      FHiddenButton:=TRadioButton.Create(nil);
+      with FHiddenButton do begin
+        Name:='HiddenRadioButton';
+        Visible:=false;
+        Include(ControlStyle, csNoDesignSelectable);
+      end;
+    end;
+
+    if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
+
+    if FItems.Count>0 then begin
+      // to reduce overhead do it in several steps
+
+      // assign Caption and then Parent
+      for i:=0 to FItems.Count-1 do begin
+        ARadioButton := TRadioButton(FButtonList[i]);
+        ARadioButton.Caption := FItems[i];
+        ARadioButton.Parent:=Self;
+      end;
+      with FHiddenButton do begin
+        FHiddenButton.Visible:=false;
+        Parent:=Self;
+        FHiddenButton.HandleNeeded;
+      end;
+
+      // the checked and unchecked states can be applied only after all other
+      for i:=0 to FItems.Count-1 do begin
+        ARadioButton := TRadioButton(FButtonList[i]);
+        ARadioButton.Checked := (i = FItemIndex);
+        ARadioButton.Visible := true;
+      end;
+      FHiddenButton.Checked:=(fItemIndex=-1);
+      UpdateTabStops;
+    end;
+  finally
+    FUpdatingItems:=false;
+  end;
+end;
+
 procedure TCustomRadioGroup.UpdateControlsPerLine;
 var
   NewControlsPerLine: LongInt;
@@ -201,9 +189,15 @@ begin
   if ChildSizing.Layout=cclLeftToRightThenTopToBottom then
     NewControlsPerLine:=Max(1,FColumns)
   else
-    NewControlsPerLine:=((FItems.Count-1) div Max(1,FColumns))+1;
+    NewControlsPerLine:=Max(1,Rows);
   ChildSizing.ControlsPerLine:=NewControlsPerLine;
   //DebugLn('TCustomRadioGroup.UpdateControlsPerLine ',dbgs(ChildSizing.ControlsPerLine),' ',dbgs(NewControlsPerLine),' FColumns=',dbgs(FColumns),' FItems.Count=',dbgs(FItems.Count),' ',dbgs(ChildSizing.Layout=cclLeftToRightThenTopToBottom));
+end;
+
+procedure TCustomRadioGroup.Loaded;
+begin
+  inherited Loaded;
+  UpdateItems;
 end;
 
 procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
@@ -241,6 +235,7 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
     TRadioButton(FButtonList[ItemIndex]).SetFocus;
     Key := 0;
   end;
+  
 begin
   if Shift=[] then begin
     case Key of
@@ -260,10 +255,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
-  // TODO: Remove RecreateWnd
+  UpdateItems;
   UpdateControlsPerLine;
-  if HandleAllocated and (not (csLoading in ComponentState)) then
-    RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -287,21 +280,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.SetItem
+  Method: TCustomRadioGroup.SetItems
   Params:  value - Stringlist containing items to be displayed as radiobuttons
   Returns: Nothing
 
   Assign items from a stringlist.
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetItem(Value: TStrings);
+procedure TCustomRadioGroup.SetItems(Value: TStrings);
 begin
   if (Value <> FItems) then
   begin
     FItems.Assign(Value);
+    UpdateItems;
     UpdateControlsPerLine;
-    // TODO: Remove RecreateWnd
-    if HandleAllocated and (not (csLoading in ComponentState)) then
-      RecreateWnd(Self);
   end;
 end;
 
@@ -372,19 +363,9 @@ begin
   Result := FItemIndex;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.Resize
-
-  Reposition buttons on resize
- ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.Resize;
-begin
-  inherited Resize;
-end;
-
 procedure TCustomRadioGroup.CheckItemIndexChanged;
 begin
-  if FCreatingWnd then exit;
+  if FCreatingWnd or FUpdatingItems then exit;
   if [csLoading,csDestroying]*ComponentState<>[] then exit;
   UpdateRadioButtonStates;
   if [csDesigning]*ComponentState<>[] then exit;
@@ -420,8 +401,6 @@ begin
   inherited ReadState(Reader);
   FReading := False;
   if (fItemIndex<-1) or (fItemIndex>=FItems.Count) then fItemIndex:=-1;
-  // TODO: Remove RecreateWnd
-  if HandleAllocated then RecreateWnd(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -468,8 +447,8 @@ begin
   DisableAlign;
   try
     if FAutoFill then begin
-      ChildSizing.EnlargeHorizontal:=crsHomogenousSpaceResize;
-      ChildSizing.EnlargeVertical:=crsHomogenousSpaceResize;
+      ChildSizing.EnlargeHorizontal:=crsHomogenousChildResize;
+      ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
     end else begin
       ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
       ChildSizing.EnlargeVertical:=crsAnchorAligning;

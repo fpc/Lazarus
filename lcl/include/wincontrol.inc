@@ -808,7 +808,7 @@ var
   RowBox: TAutoSizeBox;
   x: Integer;
   ColBox: TAutoSizeBox;
-  CellBox: TAutoSizeBox;
+  ControlBox: TAutoSizeBox;
   CurControl: TControl;
   NewBounds: TRect;
   CellBounds: TRect;
@@ -821,9 +821,9 @@ begin
   for y:=0 to ChildCount[asboVertical]-1 do begin
     RowBox:=Childs[asboVertical][y];
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
-      CellBox:=RowBox.Childs[asboHorizontal][x];
-      ColBox:=CellBox.Parent[asboVertical];
-      CurControl:=CellBox.Control;
+      ControlBox:=RowBox.Childs[asboHorizontal][x];
+      ColBox:=ControlBox.Parent[asboVertical];
+      CurControl:=ControlBox.Control;
       if CurControl=nil then continue;
       CellBounds:=Bounds(ColBox.LeftTop[asboHorizontal],
                          RowBox.LeftTop[asboVertical],
@@ -831,14 +831,18 @@ begin
                          RowBox.PreferredSize[asboVertical]);
       NewBounds.Left:=CellBounds.Left;
       NewBounds.Top:=CellBounds.Top;
-      NewWidth:=CellBox.PreferredSize[asboHorizontal];
-      NewHeight:=CellBox.PreferredSize[asboVertical];
-      if (NewWidth<>ColBox.PreferredSize[asboHorizontal]) then begin
+      NewWidth:=ControlBox.PreferredSize[asboHorizontal];
+      NewHeight:=ControlBox.PreferredSize[asboVertical];
+      if (NewWidth<ColBox.PreferredSize[asboHorizontal]) then begin
         // column is bigger than preferred width of the control
-        if ChildSizing.EnlargeHorizontal
-        in [crsScaleChilds,crsHomogenousChildResize]
-        then
-          NewWidth:=CellBounds.Right-CellBounds.Left;
+        //DebugLn('TAutoSizeBox.SetTableControlBounds ',DbgSName(CurControl),' ',dbgs(ord(CurControl.BorderSpacing.CellAlignHorizontal)));
+        case CurControl.BorderSpacing.CellAlignHorizontal of
+        ccaFill:        NewWidth:=CellBounds.Right-CellBounds.Left;
+        ccaLeftTop:     ;
+        ccaRightBottom: NewBounds.Left:=CellBounds.Right-NewWidth;
+        ccaCenter:      NewBounds.Left:=NewBounds.Left
+                             +(CellBounds.Right-CellBounds.Left-NewWidth) div 2;
+        end;
       end else if (NewWidth>ColBox.PreferredSize[asboHorizontal]) then begin
         // column is smaller than preferred width of the control
         if ChildSizing.ShrinkHorizontal
@@ -846,12 +850,15 @@ begin
         then
           NewWidth:=CellBounds.Right-CellBounds.Left;
       end;
-      if (NewHeight<>ColBox.PreferredSize[asboVertical]) then begin
+      if (NewHeight<ColBox.PreferredSize[asboVertical]) then begin
         // column is bigger than preferred height of the control
-        if ChildSizing.EnlargeVertical
-        in [crsScaleChilds,crsHomogenousChildResize]
-        then
-          NewHeight:=CellBounds.Bottom-CellBounds.Top;
+        case CurControl.BorderSpacing.CellAlignVertical of
+        ccaFill:        NewHeight:=CellBounds.Bottom-CellBounds.Top;
+        ccaLeftTop:     ;
+        ccaRightBottom: NewBounds.Top:=CellBounds.Bottom-NewHeight;
+        ccaCenter:      NewBounds.Top:=NewBounds.Top
+                            +(CellBounds.Bottom-CellBounds.Top-NewHeight) div 2;
+        end;
       end else if (NewHeight>ColBox.PreferredSize[asboVertical]) then begin
         // column is smaller than preferred height of the control
         if ChildSizing.ShrinkVertical
@@ -862,7 +869,6 @@ begin
 
       NewBounds.Right:=NewBounds.Left+NewWidth;
       NewBounds.Bottom:=NewBounds.Top+NewHeight;
-      // TODO: align
       OldBounds:=CurControl.BoundsRect;
       if not CompareRect(@NewBounds,@OldBounds) then begin
         //DebugLn('TAutoSizeBox.SetTableControlBounds Control=',DbgSName(CurControl),' CellBounds=',dbgs(CellBounds),' NewBounds=',dbgs(NewBounds));
@@ -4113,7 +4119,7 @@ begin
   if (ChildSizing.Layout=cclNone) or (ListOfControls.Count=0) then
     exit;
 
-  //debugln('TWinControl.AlignNonAlignedControls ',DbgSName(Self),' ListOfControls.Count=',dbgs(ListOfControls.Count));
+  //debugln('TWinControl.AlignNonAlignedControls ',DbgSName(Self),' ListOfControls.Count=',dbgs(ListOfControls.Count),' ',dbgs(ord(ChildSizing.EnlargeHorizontal)));
   
   Box:=TAutoSizeBox.Create;
   try
