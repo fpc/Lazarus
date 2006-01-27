@@ -1320,7 +1320,7 @@ type
 
   TControlChildSizing = class(TPersistent)
   private
-    FControl: TControl;
+    FControl: TWinControl;
     FControlsPerLine: integer;
     FEnlargeHorizontal: TChildControlResizeStyle;
     FEnlargeVertical: TChildControlResizeStyle;
@@ -1345,12 +1345,12 @@ type
   protected
     procedure Change; dynamic;
   public
-    constructor Create(OwnerControl: TControl);
+    constructor Create(OwnerControl: TWinControl);
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Sizing: TControlChildSizing): boolean;
   public
-    property Control: TControl read FControl;
+    property Control: TWinControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
@@ -2728,7 +2728,7 @@ begin
   Change;
 end;
 
-constructor TControlChildSizing.Create(OwnerControl: TControl);
+constructor TControlChildSizing.Create(OwnerControl: TWinControl);
 begin
   FControl:=OwnerControl;
   inherited Create;
@@ -2784,6 +2784,7 @@ end;
 
 procedure TControlChildSizing.Change;
 begin
+  Control.DoChildSizingChange(Self);
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 

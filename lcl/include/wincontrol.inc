@@ -333,7 +333,8 @@ begin
   if ChildCount[Orientation]>0 then begin
     for i:=0 to ChildCount[Orientation]-1 do begin
       CurChild:=Childs[Orientation][i];
-      // add border
+      
+      // add border in Orientation
       CurBorder:=CurChild.BorderLeftTop[Orientation];
       if i>0 then
         CurBorder:=Max(Childs[Orientation][i-1].BorderRightBottom[Orientation],
@@ -352,6 +353,7 @@ begin
       end;
       inc(MinimumSize[Orientation],CurChild.MinimumSize[Orientation]);
       inc(PreferredSize[Orientation],CurChild.PreferredSize[Orientation]);
+      
       // maximize in Orthogonal
       if MaximumSize[Orthogonal]>0 then begin
         if CurChild.MaximumSize[Orthogonal]>0 then
@@ -364,6 +366,10 @@ begin
                                    CurChild.MinimumSize[Orthogonal]);
       PreferredSize[Orthogonal]:=Max(PreferredSize[Orthogonal],
                                      CurChild.PreferredSize[Orthogonal]);
+      BorderLeftTop[Orthogonal]:=Max(BorderLeftTop[Orthogonal],
+                                     CurChild.BorderLeftTop[Orthogonal]);
+      BorderRightBottom[Orthogonal]:=Max(BorderRightBottom[Orthogonal],
+                                        CurChild.BorderRightBottom[Orthogonal]);
     end;
 
     // last border
