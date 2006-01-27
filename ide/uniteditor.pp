@@ -1278,10 +1278,6 @@ Begin
   ecIncrementalFind:
     if FSourceNoteBook<>nil then FSourceNoteBook.IncrementalFindClicked(Self);
 
-  ecFindInFiles:
-    // ToDo
-    ;
-
   ecReplace:
     StartFindAndReplace(true);
 
