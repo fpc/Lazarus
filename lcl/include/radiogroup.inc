@@ -83,6 +83,9 @@ begin
   //DebugLn('[TCustomRadioGroup.InitializeWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
   
   inherited InitializeWnd;
+  
+  if FHiddenButton<>nil then
+    FHiddenButton.HandleNeeded;
 
   FCreatingWnd := false;
 end;
@@ -165,7 +168,8 @@ begin
       with FHiddenButton do begin
         FHiddenButton.Visible:=false;
         Parent:=Self;
-        FHiddenButton.HandleNeeded;
+        if HandleAllocated then
+          FHiddenButton.HandleNeeded;
       end;
 
       // the checked and unchecked states can be applied only after all other
