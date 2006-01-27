@@ -1334,10 +1334,14 @@ begin
   ChangeFGColor:=((FGColor and SYS_COLOR_BASE)=0) and (FGColor<>clNone);
   ChangeBGColor:=((BGColor and SYS_COLOR_BASE)=0) and (BGColor<>clNone);
   if (not ChangeFGColor) and (not ChangeBGColor) then exit;
+  
+  {$IFDEF DisableWidgetColor}
+  exit;
+  {$ENDIF}
 
   if (GTK_WIDGET_REALIZED(AWidget)) then begin
     WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
-  end  else begin
+  end else begin
     WindowStyle := gtk_style_copy(gtk_rc_get_style (AWidget));
   end;
   if (Windowstyle = nil)  then begin
@@ -1364,7 +1368,6 @@ begin
   end;
   gtk_widget_set_style(aWidget,windowStyle);
 end;
-
 
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,

@@ -416,6 +416,7 @@ var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
 begin
+  if not AWinControl.HandleAllocated then exit;
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
@@ -426,6 +427,7 @@ end;
 
 procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
+  if not AWinControl.HandleAllocated then exit;
   if  ((csOpaque in AWinControl.ControlStyle)
   and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
     exit;
@@ -480,6 +482,7 @@ var
   aLabel, pLabel: pchar;
   AccelKey : integer;
 begin
+  if not AWinControl.HandleAllocated then exit;
   //TODO: create classprocedures for this in the corresponding classes
 
   P := Pointer(AWinControl.Handle);

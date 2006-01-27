@@ -384,7 +384,7 @@ begin
   GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,
      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 
-  if BitBtnInfo^.LabelWidget = nil then Exit;
+  if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
   GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
     AWinControl.color,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
