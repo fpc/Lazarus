@@ -63,7 +63,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ColClick(AColumn: TListColumn);
 begin
-  if Assigned(FOnColumnClick) then FOnColumnClick(Self, AColumn)
+  if Assigned(FOnColumnClick) and ColumnClick then FOnColumnClick(Self, AColumn)
 end;
 
 {------------------------------------------------------------------------------}
