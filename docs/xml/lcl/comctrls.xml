@@ -5393,9 +5393,10 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Boolean property to determine if the OnColumnClick event will be executed.</short>
+        <descr>The ColumnClick property of the ListView determines if the OnColumnClickEvent will be executed. A call of the OnColumnClick event will only be done when a method has been assigned to the OnColumnClick event and this property is set to true.<br/>
+
+By default ColumnClick is set to True.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.DefaultItemHeight">
@@ -5587,11 +5588,12 @@ cdsIndeterminate</descr>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Column">
         <short>Property to read the column information of the listview.</short>
-        <descr>This property can be used to read the information of a column. To add, change or delete a column use the Columns property.</descr>
+        <descr>This property can be used to read the information of a column. The column to retreive the information of, is determined by an index. (AIndex) As with nearly all indexes, this index is 0 based. In column[0] the caption of the listitem is show, in subsequent column the subitems of the listitem are shown.<br/>
+To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Column.AIndex">
-        <short/>
+        <short>Integer to determine the column of the ListView to retreive information on.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
@@ -5930,10 +5932,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomProgressBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The ancestor class for TProgressBar</short>
+        <descr>TCustomProgressBar is the ancestor for TProgressBar. If you want to define your own ProgressBar class, you should use this class to derive it from.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomProgressBar.FMin">
@@ -9815,7 +9815,8 @@ This set is used in TTreeNode.InternalMove and TTreeNodes.InternalAddObject</des
       </element>
       <!-- constant Visibility: default -->
       <element name="NodeAttachModeNames">
-        <short>Unit used by ComCtrls.</short>
+        <short>A array of strings containings names for NodeAttachModes</short>
+        <descr>This is a constant array of string containing names for the modes to attach a node.</descr>
       </element>
       <!-- constant Visibility: default -->
       <element name="AddModeNames">
@@ -9829,7 +9830,7 @@ Const
       </element>
       <!-- constant Visibility: default -->
       <element name="LCLStreamID">
-        <short>Unit used by ComCtrls.</short>
+        <short>A constant</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TTVChangingEvent">
