@@ -957,9 +957,13 @@ begin
   AdjustSize;
 end;
 
-procedure TControl.DoBorderSpacingChange(Sender: TObject);
+procedure TControl.DoBorderSpacingChange(Sender: TObject;
+  InnerSpaceChanged: Boolean);
 begin
-  RequestAlign;
+  if InnerSpaceChanged then
+    AdjustSize
+  else
+    RequestAlign;
 end;
 
 {------------------------------------------------------------------------------

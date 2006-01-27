@@ -581,7 +581,7 @@ type
     procedure SetSpace(Kind: TAnchorKind; const AValue: integer);
     procedure SetTop(const AValue: TSpacingSize);
   protected
-    procedure Change; dynamic;
+    procedure Change(InnerSpaceChanged: Boolean); dynamic;
   public
     constructor Create(OwnerControl: TControl);
     procedure Assign(Source: TPersistent); override;
@@ -900,7 +900,8 @@ type
     procedure SetAutoSize(const Value: Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender: TObject); virtual;
-    procedure DoBorderSpacingChange(Sender: TObject); virtual;
+    procedure DoBorderSpacingChange(Sender: TObject;
+                                    InnerSpaceChanged: Boolean); virtual;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;
@@ -2512,14 +2513,14 @@ procedure TControlBorderSpacing.SetAround(const AValue: TSpacingSize);
 begin
   if FAround=AValue then exit;
   FAround:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);
 begin
   if FBottom=AValue then exit;
   FBottom:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetCellAlignHorizontal(
@@ -2527,7 +2528,7 @@ procedure TControlBorderSpacing.SetCellAlignHorizontal(
 begin
   if FCellAlignHorizontal=AValue then exit;
   FCellAlignHorizontal:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetCellAlignVertical(
@@ -2535,28 +2536,29 @@ procedure TControlBorderSpacing.SetCellAlignVertical(
 begin
   if FCellAlignVertical=AValue then exit;
   FCellAlignVertical:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetInnerBorder(const AValue: Integer);
 begin
   if FInnerBorder=AValue then exit;
   FInnerBorder:=AValue;
-  Change;
+  if Control<>nil then Control.InvalidatePreferredSize;
+  Change(true);
 end;
 
 procedure TControlBorderSpacing.SetLeft(const AValue: TSpacingSize);
 begin
   if FLeft=AValue then exit;
   FLeft:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetRight(const AValue: TSpacingSize);
 begin
   if FRight=AValue then exit;
   FRight:=AValue;
-  Change;
+  Change(false);
 end;
 
 procedure TControlBorderSpacing.SetSpace(Kind: TAnchorKind;
@@ -2574,7 +2576,7 @@ procedure TControlBorderSpacing.SetTop(const AValue: TSpacingSize);
 begin
   if FTop=AValue then exit;
   FTop:=AValue;
-  Change;
+  Change(false);
 end;
 
 constructor TControlBorderSpacing.Create(OwnerControl: TControl);
@@ -2596,8 +2598,11 @@ begin
     FLeft:=SrcSpacing.Left;
     FRight:=SrcSpacing.Right;
     FTop:=SrcSpacing.Top;
-    
-    Change;
+    FInnerBorder:=SrcSpacing.InnerBorder;
+    FCellAlignHorizontal:=SrcSpacing.CellAlignHorizontal;
+    FCellAlignVertical:=SrcSpacing.CellAlignVertical;
+
+    Change(false);
   end else
     inherited Assign(Source);
 end;
@@ -2640,9 +2645,9 @@ begin
   end;
 end;
 
-procedure TControlBorderSpacing.Change;
+procedure TControlBorderSpacing.Change(InnerSpaceChanged: Boolean);
 begin
-  FControl.DoBorderSpacingChange(Self);
+  FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
 end;
 
