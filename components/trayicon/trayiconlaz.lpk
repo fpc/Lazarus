@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
+    <PathDelim Value="\"/>
     <Name Value="TrayIconLaz"/>
     <CompilerOptions>
       <Version Value="5"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -23,6 +25,7 @@
       </Item1>
       <Item2>
         <Filename Value="trayicon.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="TrayIcon"/>
       </Item2>
       <Item3>
@@ -51,10 +54,11 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

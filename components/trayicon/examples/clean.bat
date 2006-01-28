@@ -1,9 +1,0 @@
-del *.o
-del *.or
-del *.dcu
-del *.ppu
-del *.bak
-del *.~pas
-del *.~dpr
-del *.dpr~
-del *.dof

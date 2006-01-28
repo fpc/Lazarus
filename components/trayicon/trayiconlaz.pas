@@ -13,6 +13,7 @@ implementation
 
 procedure Register; 
 begin
+  RegisterUnit('TrayIcon', @TrayIcon.Register); 
 end; 
 
 initialization

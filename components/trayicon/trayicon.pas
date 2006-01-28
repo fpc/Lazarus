@@ -14,7 +14,7 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
- This unit contains the SystrayIcon object.
+ This unit contains the SystrayIcon object and the TTrayIcon visual component.
  
  Documentation for the component can be found here:
  http://wiki.lazarus.freepascal.org/index.php/TrayIcon
@@ -29,64 +29,71 @@ unit TrayIcon;
 interface
 
 uses
-  Classes, SysUtils, WSTrayIcon, Menus, Graphics, Forms, Controls;
+  Classes, SysUtils, WSTrayIcon, Menus, Graphics, Forms, Controls,
+  LResources, Dialogs;
 
 type
 
-  { TTrayIconClass }
+  { TTrayIcon }
 
-  TTrayIconClass = class(TComponent)
-    private
-      vPopUpMenu: TPopupMenu;
-      vIcon: TIcon;
-      vHint: string;
-      vVisible, vShowIcon, vShowHint: Boolean;
-      vOnPaint, vOnClick, vOnDblClick: TNotifyEvent;
-      vOnMouseDown, vOnMouseUp: TMouseEvent;
-      vOnMouseMove: TMouseMoveEvent;
-      function GetCanvas: TCanvas;
-      procedure SetVisible(Value: Boolean);
-    protected
-    public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      function Hide: Boolean;
-      function Show: Boolean;
-      procedure UpdateWS;
-      property Canvas: TCanvas read GetCanvas;
-    published
-      property PopUpMenu: TPopupMenu read vPopUpMenu write vPopUpMenu;
-      property Icon: TIcon read vIcon write vIcon;
-      property Hint: string read vHint write vHint;
-      property ShowHint: Boolean read vShowHint write vShowHint;
-      property ShowIcon: Boolean read vShowIcon write vShowIcon;
-      property Visible: Boolean read vVisible write SetVisible;
-      property OnClick: TNotifyEvent read vOnClick write vOnClick;
-      property OnDblClick: TNotifyEvent read vOnDblClick write vOnDblClick;
-      property OnMouseDown: TMouseEvent read vOnMouseDown write vOnMouseDown;
-      property OnMouseUp: TMouseEvent read vOnMouseUp write vOnMouseUp;
-      property OnMouseMove: TMouseMoveEvent read vOnMouseMove write vOnMouseMove;
-      property OnPaint: TNotifyEvent read vOnPaint write vOnPaint;
+  TTrayIcon = class(TComponent)
+  private
+    { Private declarations }
+    vPopUpMenu: TPopupMenu;
+    vIcon: TIcon;
+    vHint: string;
+    vVisible, vShowIcon, vShowHint: Boolean;
+    vOnPaint, vOnClick, vOnDblClick: TNotifyEvent;
+    vOnMouseDown, vOnMouseUp: TMouseEvent;
+    vOnMouseMove: TMouseMoveEvent;
+    function GetCanvas: TCanvas;
+    procedure SetVisible(Value: Boolean);
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Hide: Boolean;
+    function Show: Boolean;
+    procedure UpdateWS;
+    property Canvas: TCanvas read GetCanvas;
+  published
+    { Published declarations }
+    property PopUpMenu: TPopupMenu read vPopUpMenu write vPopUpMenu;
+    property Icon: TIcon read vIcon write vIcon;
+    property Hint: string read vHint write vHint;
+    property ShowHint: Boolean read vShowHint write vShowHint;
+    property ShowIcon: Boolean read vShowIcon write vShowIcon;
+    property Visible: Boolean read vVisible write SetVisible;
+    property OnClick: TNotifyEvent read vOnClick write vOnClick;
+    property OnDblClick: TNotifyEvent read vOnDblClick write vOnDblClick;
+    property OnMouseDown: TMouseEvent read vOnMouseDown write vOnMouseDown;
+    property OnMouseUp: TMouseEvent read vOnMouseUp write vOnMouseUp;
+    property OnMouseMove: TMouseMoveEvent read vOnMouseMove write vOnMouseMove;
+    property OnPaint: TNotifyEvent read vOnPaint write vOnPaint;
   end;
 
 var
-  SystrayIcon: TTrayIconClass;
-  
+  SystrayIcon: TTrayIcon;
+
+procedure Register;
+
 implementation
 
-{ TTrayIconClass }
+{ TTrayIcon }
 
 {*******************************************************************
-*  TTrayIconClass.Create ()
+*  TTrayIcon.Create ()
 *
-*  DESCRIPTION:    Creates a object from the TAplicativo class
+*  DESCRIPTION:    Creates a object from the TTrayIconClass class
 *
 *  PARAMETERS:     AOwner  - The owner of the component (this may be nil)
 *
 *  RETURNS:        A pointer to the newly created object
 *
 *******************************************************************}
-constructor TTrayIconClass.Create(AOwner: TComponent);
+constructor TTrayIcon.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -96,16 +103,16 @@ begin
 end;
 
 {*******************************************************************
-*  TTrayIconClass.Destroy ()
+*  TTrayIcon.Destroy ()
 *
-*  DESCRIPTION:    Destroys a object derived from the TAplicativo class
+*  DESCRIPTION:    Destroys a object derived from the TTrayIconClass class
 *
 *  PARAMETERS:     None
 *
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-destructor TTrayIconClass.Destroy;
+destructor TTrayIcon.Destroy;
 begin
   vIcon.Free;
 
@@ -113,7 +120,7 @@ begin
 end;
 
 {*******************************************************************
-*  TTrayIconClass.Hide ()
+*  TTrayIcon.Hide ()
 *
 *  DESCRIPTION:    Hides the Icon
 *
@@ -122,7 +129,7 @@ end;
 *  RETURNS:        If successfull
 *
 *******************************************************************}
-function TTrayIconClass.Hide: Boolean;
+function TTrayIcon.Hide: Boolean;
 begin
   vVisible := False;
 
@@ -132,7 +139,7 @@ begin
 end;
 
 {*******************************************************************
-*  TTrayIconClass.Show ()
+*  TTrayIcon.Show ()
 *
 *  DESCRIPTION:    Shows the Icon
 *
@@ -141,7 +148,7 @@ end;
 *  RETURNS:        If successfull
 *
 *******************************************************************}
-function TTrayIconClass.Show: Boolean;
+function TTrayIcon.Show: Boolean;
 begin
   vVisible := True;
 
@@ -151,7 +158,7 @@ begin
 end;
 
 {*******************************************************************
-*  TTrayIconClass.SetVisible ()
+*  TTrayIcon.SetVisible ()
 *
 *  DESCRIPTION:    Setter method of the Visible property
 *
@@ -160,14 +167,14 @@ end;
 *  RETURNS:        If successfull
 *
 *******************************************************************}
-procedure TTrayIconClass.SetVisible(Value: Boolean);
+procedure TTrayIcon.SetVisible(Value: Boolean);
 begin
   if Value then Show
   else Hide;
 end;
 
 {*******************************************************************
-*  TTrayIconClass.UpdateWS ()
+*  TTrayIcon.UpdateWS ()
 *
 *  DESCRIPTION:    Updates the widgetset object
 *
@@ -176,7 +183,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-procedure TTrayIconClass.UpdateWS;
+procedure TTrayIcon.UpdateWS;
 begin
   vwsTrayIcon.Icon.Assign(vIcon);
   vwsTrayIcon.PopUpMenu := vPopUpMenu;
@@ -197,7 +204,7 @@ begin
 end;
 
 {*******************************************************************
-*  TTrayIconClass.GetCanvas ()
+*  TTrayIcon.GetCanvas ()
 *
 *  DESCRIPTION:    Getter method of the Canvas property
 *
@@ -206,14 +213,19 @@ end;
 *  RETURNS:        The canvas of the underlaying Widgetset component
 *
 *******************************************************************}
-function TTrayIconClass.GetCanvas: TCanvas;
+function TTrayIcon.GetCanvas: TCanvas;
 begin
   Result := vwsTrayIcon.Canvas;
 end;
 
+procedure Register;
+begin
+  RegisterComponents('Common Controls',[TTrayIcon]);
+end;
+
 initialization
 
-  SystrayIcon := TTrayIconClass.Create(nil);
+  SystrayIcon := TTrayIcon.Create(nil);
 
 finalization
 
