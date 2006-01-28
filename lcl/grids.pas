@@ -96,7 +96,8 @@ type
     goRelaxedRowSelect,   // User can see focused cell on goRowSelect
     goDblClickAutoSize,   // dblclicking columns borders (on hdrs) resize col.
     goSmoothScroll,       // Switch scrolling mode (pixel scroll is by default)
-    goFixedRowNumbering   // Ya
+    goFixedRowNumbering,  // Ya
+    goScrollKeepVisible   // keeps focused cell visible while scrolling
   );
   TGridOptions = set of TGridOption;
 
@@ -3084,12 +3085,17 @@ end;
 procedure TCustomGrid.TryScrollTo(aCol, aRow: Integer);
 var
   TryTL: TPoint;
+  NewCol,NewRow: Integer;
 begin
   TryTL:=ScrollGrid(False,aCol, aRow);
   if not PointIgual(TryTL, FTopLeft) then begin
+    NewCol := TryTL.X - FTopLeft.X + Col;
+    NewRow := TryTL.Y - FTopLeft.Y + Row;
     FTopLeft:=TryTL;
     //DebugLn('TCustomGrid.TryScrollTo A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
     doTopleftChange(False);
+    if goScrollKeepVisible in Options then
+      MoveNextSelectable(False, NewCol, NewRow);
   end;
 end;
 
