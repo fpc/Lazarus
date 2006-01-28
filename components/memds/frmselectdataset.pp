@@ -159,11 +159,13 @@ end;
 
 procedure TSelectSrcDatasetForm.LBDatasetsClick(Sender: TObject);
 begin
+  if Sender=nil then ;
   BOK.Enabled:=True;
 end;
 
 procedure TSelectSrcDatasetForm.BOKClick(Sender: TObject);
 begin
+  if Sender=nil then ;
   If LBDatasets.ItemIndex=-1 then
     Raise Exception.Create(SErrSelectDataset)
 end;

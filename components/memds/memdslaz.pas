@@ -1,7 +1,6 @@
 { This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package MemDSLaz 1.2.1.
-}
+This source is only used to compile and install the package.
+ }
 
 unit MemDSLaz; 
 
@@ -18,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('MemDSLaz', @Register)
+  RegisterPackage('MemDSLaz', @Register); 
 end.

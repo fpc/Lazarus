@@ -4,16 +4,16 @@
     <Name Value="MemDSLaz"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="2"/>
+      <Version Value="5"/>
       <SearchPaths>
-        <OtherUnitFiles Value="/home/michael/projects/lazarus/ideintf/"/>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="Memory (TMemDataset) dataset package for Lazarus"/>
@@ -46,10 +46,10 @@
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
