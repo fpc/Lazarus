@@ -1511,7 +1511,8 @@ begin
 
   if (Instance is TForm) then begin
     AForm:=TForm(Instance);
-    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash]) then begin
+    if (FMainForm = nil) and not (AForm.FormStyle in [fsMDIChild, fsSplash])
+    then begin
       FMainForm := AForm;
       AForm.HandleNeeded;
     end else begin

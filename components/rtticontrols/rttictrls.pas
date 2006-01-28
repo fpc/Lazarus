@@ -76,7 +76,7 @@ type
   TPropertyLinkOptions = set of TPropertyLinkOption;
 
 Const
-   DefaultLinkOptions = [ploReadOnIdle,ploAutoSave];
+  DefaultLinkOptions = [ploReadOnIdle,ploAutoSave];
    
 Type
   
@@ -101,6 +101,7 @@ Type
     FOnTestEditor: TPropertyEditorFilterFunc;
     FOptions: TPropertyLinkOptions;
     FOwner: TComponent;
+    FPropertyLoaded: boolean;
     FSaveEnabled: boolean;
     FTIElementName: string;
     FTIObject: TPersistent;
@@ -181,6 +182,7 @@ Type
     property Options: TPropertyLinkOptions read FOptions write SetOptions default DefaultLinkOptions;
     property Owner: TComponent read FOwner;
     property SaveEnabled: boolean read FSaveEnabled write FSaveEnabled;
+    property PropertyLoaded: boolean read FPropertyLoaded write FPropertyLoaded;
     property TIObject: TPersistent read FTIObject write SetTIObject;
     property TIPropertyName: string read FTIPropertyName write SetTIPropertyName;
     property TIElementName: string read FTIElementName write SetTIElementName;
@@ -1648,6 +1650,7 @@ begin
   then
     raise Exception('TCustomPropertyLink.SetObjectAndProperty invalid identifier "'+NewPropertyName+'"');
   if (NewPersistent<>TIObject) or (NewPropertyName<>TIPropertyName) then begin
+    FPropertyLoaded:=false;
     if (FTIObject is TComponent) then begin
       AComponent:=TComponent(FTIObject);
       AComponent.RemoveFreeNotification(FLinkNotifier);
@@ -1677,6 +1680,7 @@ var
   OldEditorExisted: Boolean;
 begin
   if (FEditor<>nil) or (FTIObject=nil) or (FTIPropertyName='') then exit;
+  FPropertyLoaded:=false;
   //debugln('TCustomPropertyLink.CreateEditor A ',FTIObject.ClassName+':'+FTIPropertyName);
   OldEditorExisted:=FEditor<>nil;
   CreateHook;
@@ -1775,6 +1779,7 @@ end;
 
 procedure TCustomPropertyLink.SaveToProperty;
 begin
+  if Self=nil then exit;
   if (not SaveEnabled) then exit;
   if (Owner<>nil)
   and ([csDesigning,csDestroying,csLoading]*Owner.ComponentState<>[]) then exit;
@@ -1784,12 +1789,14 @@ end;
 
 procedure TCustomPropertyLink.EditingDone;
 begin
-  If ploAutoSave in Options then
+  if Self=nil then exit;
+  if (ploAutoSave in Options) and PropertyLoaded then
     SaveToProperty;
 end;
 
 procedure TCustomPropertyLink.SetAsText(const NewText: string);
 begin
+  if NewText='333' then DumpStack;
   try
     if (FTIElementName='') then
       FEditor.SetValue(AliasValues.AliasToValue(NewText))
@@ -2058,8 +2065,10 @@ end;
 
 procedure TCustomPropertyLink.LoadFromProperty;
 begin
+  if Self=nil then exit;
   if (Owner<>nil) and (csDestroying in Owner.ComponentState) then exit;
   CreateEditor;
+  FPropertyLoaded:=true;
   if Assigned(OnLoadFromProperty) then OnLoadFromProperty(Self);
 end;
 

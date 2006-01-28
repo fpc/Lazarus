@@ -42,3 +42,9 @@ or you can set ploReadOnIdle in TIEdit.Link.Options:
 Then the RTTI control will call LoadFromProperty everytime the Application gets
 idle.
 
+BEWARE:
+The on idle update will not load the property, if the control is focused.
+You can use this:
+    // update focused control
+    GetPropertyLinkOfComponent(ActiveControl).LoadFromProperty;
+
