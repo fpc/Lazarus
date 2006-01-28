@@ -3485,9 +3485,11 @@ begin
     NewShortFilename:=ExtractFilenameOnly(NewFilename);
     // use as unitname the NewShortFilename, but with the case of the
     // original unitname. e.g. 'unit12.pas' becomes 'Unit12.pas'
-    NewUnitName:=ChompEndNumber(NewUnitName);
-    NewUnitName:=NewUnitName+copy(NewShortFilename,length(NewUnitName)+1,
-                                  length(NewShortFilename));
+    if Descriptor.IsPascalUnit then begin
+      NewUnitName:=ChompEndNumber(NewUnitName);
+      NewUnitName:=NewUnitName+copy(NewShortFilename,length(NewUnitName)+1,
+                                    length(NewShortFilename));
+    end;
   end;
   //debugln('TMainIDE.CreateNewCodeBuffer NewFilename=',NewFilename,' NewUnitName=',NewUnitName);
 

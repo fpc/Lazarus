@@ -813,8 +813,9 @@ begin
       Result:=mrOk;
     end;
   until Result<>mrRetry;
-  if ReadUnitName then 
+  if ReadUnitName then begin
     fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
+  end;
   Result:=mrOk;
 end;
 
@@ -829,15 +830,18 @@ begin
     NewUnitName:=CodeToolBoss.GetSourceName(fSource,false);
   if NewUnitName='' then begin
     // unable to parse the source
-    // use default: the filename
-    NewUnitName:=ExtractFileNameOnly(Filename);
-    if CompareText(NewUnitName,fUnitName)=0 then begin
-      // the last stored unitname has the better case
-      exit;
+    if FilenameIsPascalSource(Filename) then begin
+      // use default: the filename
+      NewUnitName:=ExtractFileNameOnly(Filename);
+      if CompareText(NewUnitName,fUnitName)=0 then begin
+        // the last stored unitname has the better case
+        exit;
+      end;
     end;
   end;
-  if NewUnitName<>'' then
+  if NewUnitName<>'' then begin
     fUnitName:=NewUnitName;
+  end;
 end;
 
 function TUnitInfo.CreateUnitName: string;
@@ -849,8 +853,9 @@ end;
 
 procedure TUnitInfo.ImproveUnitNameCache(const NewUnitName: string);
 begin
-  if (fUnitName='') or (CompareText(fUnitName,NewUnitName)=0) then
+  if (fUnitName='') or (CompareText(fUnitName,NewUnitName)=0) then begin
     fUnitName:=NewUnitName;
+  end;
 end;
 
 {------------------------------------------------------------------------------
