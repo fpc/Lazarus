@@ -552,6 +552,7 @@ var
 begin
   EventTrace('focus', data);
   if (Widget=nil) or (Event=nil) then ;
+  //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -596,6 +597,7 @@ var
 begin
   EventTrace('focus', data);
   if (Widget=nil) or (Event=nil) then ;
+  //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
   write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);

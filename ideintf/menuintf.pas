@@ -221,6 +221,7 @@ type
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
     procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
+    procedure CommandChanged(Sender: TObject);
   public
     property Command: TIDECommand read FCommand write SetCommand;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
@@ -1367,6 +1368,16 @@ end;
 
 { TIDEMenuCommand }
 
+procedure TIDEMenuCommand.CommandChanged(Sender: TObject);
+begin
+  //DebugLn('TIDEMenuCommand.CommandChanged ',Name);
+  if MenuItem<>nil then
+    if FCommand<>nil then
+      MenuItem.ShortCut:=IDEShortCutToMenuShortCut(FCommand.ShortcutA)
+    else
+      MenuItem.ShortCut:=0;
+end;
+
 procedure TIDEMenuCommand.SetAutoCheck(const AValue: boolean);
 begin
   if FAutoCheck=AValue then exit;
@@ -1423,9 +1434,16 @@ end;
 procedure TIDEMenuCommand.SetCommand(const AValue: TIDECommand);
 begin
   if FCommand=AValue then exit;
+  if FCommand<>nil then begin
+    //DebugLn('TIDEMenuCommand.SetCommand OLD ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+    FCommand.OnChange:=nil;
+  end;
   FCommand:=AValue;
-  if MenuItem<>nil then
-    MenuItem.ShortCut:=IDEShortCutToMenuShortCut(AValue.ShortcutA);
+  if FCommand<>nil then begin
+    FCommand.OnChange:=@CommandChanged;
+    //DebugLn('TIDEMenuCommand.SetCommand NEW ',ShortCutToText(FCommand.AsShortCut),' FCommand.Name=',FCommand.Name,' Name=',Name,' FCommand=',dbgs(Pointer(FCommand)));
+  end;
+  CommandChanged(nil);
 end;
 
 procedure TIDEMenuCommand.SetMenuItem(const AValue: TMenuItem);

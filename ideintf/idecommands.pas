@@ -341,9 +341,9 @@ type
   { TIDECommandCategory
     TIDECommandCategory is used to divide the commands in handy packets }
     
-  { TIDECommandCategory }
-
   TIDECommandCategory = class(TList)
+  private
+    procedure SetDescription(const AValue: string);
   protected
     FDescription: string;
     FName: string;
@@ -356,7 +356,7 @@ type
     procedure WriteScopeDebugReport;
   public
     property Name: string read FName;
-    property Description: string read FDescription;
+    property Description: string read FDescription write SetDescription;
     property Parent: TIDECommandCategory read FParent;
     procedure Delete(Index: Integer); virtual;
     property Scope: TIDECommandScope read FScope write SetScope;
@@ -372,6 +372,7 @@ type
     FCommand: word;
     FLocalizedName: string;
     FName: String;
+    FOnChange: TNotifyEvent;
     FShortcutA: TIDEShortCut;
     FShortcutB: TIDEShortCut;
   protected
@@ -380,10 +381,15 @@ type
     procedure SetCategory(const AValue: TIDECommandCategory); virtual;
     procedure SetShortcutA(const AValue: TIDEShortCut); virtual;
     procedure SetShortcutB(const AValue: TIDEShortCut); virtual;
+    procedure Change;
   public
     function AsShortCut: TShortCut; virtual;
     constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
-      TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut);
+              TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut);
+    constructor Create(ACommand: TIDECommand; ACategory: TIDECommandCategory);
+    destructor Destroy; override;
+    procedure Assign(ACommand: TIDECommand);
+    function IsEqual(ACommand: TIDECommand): boolean;
   public
     DefaultShortcutA: TIDEShortCut;
     DefaultShortcutB: TIDEShortCut;
@@ -392,11 +398,12 @@ type
     function GetCategoryAndName: string;
   public
     property Name: String read FName;
-    property Command: word read FCommand;// see the ecXXX constants in ../ide/keymapping.pp
+    property Command: word read FCommand;// see the ecXXX constants above
     property LocalizedName: string read GetLocalizedName write SetLocalizedName;
     property Category: TIDECommandCategory read FCategory write SetCategory;
     property ShortcutA: TIDEShortCut read FShortcutA write SetShortcutA;
     property ShortcutB: TIDEShortCut read FShortcutB write SetShortcutB;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
 
@@ -616,12 +623,21 @@ procedure TIDECommand.SetShortcutA(const AValue: TIDEShortCut);
 begin
   if CompareIDEShortCuts(@FShortcutA,@AValue)=0 then exit;
   FShortcutA:=AValue;
+  //DebugLn('TIDECommand.SetShortcutA ',dbgs(Assigned(OnChange)),' ',Name);
+  Change;
 end;
 
 procedure TIDECommand.SetShortcutB(const AValue: TIDEShortCut);
 begin
   if CompareIDEShortCuts(@FShortcutB,@AValue)=0 then exit;
   FShortcutB:=AValue;
+  //DebugLn('TIDECommand.SetShortcutB ',dbgs(Assigned(OnChange)),' ',Name);
+  Change;
+end;
+
+procedure TIDECommand.Change;
+begin
+  if Assigned(OnChange) then OnChange(Self);
 end;
 
 function TIDECommand.GetLocalizedName: string;
@@ -636,6 +652,8 @@ procedure TIDECommand.SetLocalizedName(const AValue: string);
 begin
   if FLocalizedName=AValue then exit;
   FLocalizedName:=AValue;
+  //DebugLn('TIDECommand.SetLocalizedName ',dbgs(Assigned(OnChange)),' ',Name);
+  Change;
 end;
 
 procedure TIDECommand.SetCategory(const AValue: TIDECommandCategory);
@@ -648,6 +666,8 @@ begin
   fCategory:=AValue;
   if Category<>nil then
     Category.Add(Self);
+  //DebugLn('TIDECommand.SetCategory ',dbgs(Assigned(OnChange)),' ',Name);
+  Change;
 end;
 
 function TIDECommand.AsShortCut: TShortCut;
@@ -675,11 +695,45 @@ constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
 begin
   fCommand:=TheCommand;
   fName:=TheName;
-  ShortcutA:=TheShortcutA;
-  ShortcutB:=TheShortcutB;
+  fShortcutA:=TheShortcutA;
+  fShortcutB:=TheShortcutB;
   DefaultShortcutA:=ShortcutA;
   DefaultShortcutB:=ShortcutB;
   Category:=TheCategory;
+  //DebugLn('TIDECommand.Create Name=',Name,' ',ShortCutToText(AsShortCut),' ',dbgs(Pointer(Self)));
+end;
+
+constructor TIDECommand.Create(ACommand: TIDECommand;
+  ACategory: TIDECommandCategory);
+begin
+  fCommand:=ACommand.Command;
+  fName:=ACommand.Name;
+  FLocalizedName:=ACommand.LocalizedName;
+  fShortcutA:=ACommand.ShortcutA;
+  fShortcutB:=ACommand.ShortcutB;
+  DefaultShortcutA:=ACommand.ShortcutA;
+  DefaultShortcutB:=ACommand.ShortcutB;
+  Category:=ACategory;
+end;
+
+destructor TIDECommand.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TIDECommand.Assign(ACommand: TIDECommand);
+begin
+  if IsEqual(ACommand) then exit;
+  //DebugLn('TIDECommand.Assign ',dbgs(Assigned(OnChange)),' ',Name,' ');
+  FShortcutA:=ACommand.FShortcutA;
+  FShortcutB:=ACommand.FShortcutB;
+  Change;
+end;
+
+function TIDECommand.IsEqual(ACommand: TIDECommand): boolean;
+begin
+  Result:=(CompareIDEShortCuts(@FShortcutA,@ACommand.FShortcutA)=0)
+          and (CompareIDEShortCuts(@FShortcutB,@ACommand.FShortcutB)=0);
 end;
 
 procedure TIDECommand.ClearShortcutA;
@@ -770,6 +824,12 @@ begin
 end;
 
 { TIDECommandCategory }
+
+procedure TIDECommandCategory.SetDescription(const AValue: string);
+begin
+  if FDescription=AValue then exit;
+  FDescription:=AValue;
+end;
 
 procedure TIDECommandCategory.SetScope(const AValue: TIDECommandScope);
 begin

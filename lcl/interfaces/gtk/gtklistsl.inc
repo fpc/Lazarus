@@ -297,11 +297,14 @@ var
   Window: PGtkWindow;
 begin
   { This procedure works round a gtk problem - a deleted item may have the focus
-    according to an enclosing window, but the enclosing window does not notice that
-    the item has gone. }
-  Window := PGtkWindow(gtk_widget_get_ancestor(PGtkWidget(FGtkList),gtk_window_get_type));
+    according to an enclosing window, but the enclosing window does not notice
+    that the item has gone. }
+  Window := PGtkWindow(gtk_widget_get_ancestor(PGtkWidget(FGtkList),
+                                               gtk_window_get_type));
   if (Window <> nil) and (Window^.focus_widget <> nil)
-     and (gtk_widget_get_ancestor(Window^.focus_widget, gtk_list_get_type) = PGtkWidget(FGtkList)) then
+     and (gtk_widget_get_ancestor(Window^.focus_widget, gtk_list_get_type)
+          = PGtkWidget(FGtkList))
+  then
     Window^.focus_widget := nil;
 end;
 
@@ -730,16 +733,16 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Clear;
-{$IFDEF DebugLCLComponents}
-var i: integer;
-{$ENDIF}
+var
+  i: integer;
 begin
   BeginUpdate;
   RemoveAllCallbacks;
-  {$IFDEF DebugLCLComponents}
-  for i:=0 to FCachedCount-1 do
+  for i:=0 to FCachedCount-1 do begin
+    {$IFDEF DebugLCLComponents}
     DebugGtkWidgets.MarkDestroyed(FCachedItems[i]);
-  {$ENDIF}
+    {$ENDIF}
+  end;
   Include(FStates,glsItemCacheNeedsUpdate);
   CheckForInvalidFocus;
   gtk_list_clear_items(FGtkList, 0, Count);

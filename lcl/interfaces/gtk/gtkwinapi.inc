@@ -4868,7 +4868,11 @@ begin
       if gtk_is_window(Window)
       then begin
         Widget := Window^.focus_widget;
-
+        {$IFDEF DebugLCLComponents}
+        if DebugGtkWidgets.IsDestroyed(Widget) then
+          DebugLn('TGtkWidgetSet.GetFocus ',DebugGtkWidgets.GetInfo(Widget,true));
+        {$ENDIF}
+        
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
           Result := HWND(GetMainWidget(Widget));

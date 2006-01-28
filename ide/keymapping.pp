@@ -2645,22 +2645,59 @@ end;
 procedure TKeyCommandRelationList.Assign(List: TKeyCommandRelationList);
 var
   i: Integer;
-  CurCategory: TIDECommandCategory;
-  CurRelation: TKeyCommandRelation;
+  OtherCategory: TIDECommandCategory;
+  OurCategory: TIDECommandCategory;
+  OtherRelation: TKeyCommandRelation;
+  OurRelation: TKeyCommandRelation;
 begin
-  Clear;
-  
-  // copy categories
+  // add/assign categories
   for i:=0 to List.CategoryCount-1 do begin
-    CurCategory:=List.Categories[i];
-    AddCategory(CurCategory.Name,CurCategory.Description,CurCategory.Scope);
+    OtherCategory:=List.Categories[i];
+    OurCategory:=FindCategoryByName(OtherCategory.Name);
+    if OurCategory<>nil then begin
+      // assign
+      OurCategory.Description:=OtherCategory.Description;
+      OurCategory.Scope:=OtherCategory.Scope;
+    end else begin
+      //DebugLn('TKeyCommandRelationList.Assign Add new category: ',OtherCategory.Name);
+      // add
+      AddCategory(OtherCategory.Name,OtherCategory.Description,OtherCategory.Scope);
+    end;
   end;
   
-  // copy keys
+  // add/assign keys
   for i:=0 to List.Count-1 do begin
-    CurRelation:=List.Relations[i];
-    CurCategory:=FindCategoryByName(CurRelation.Category.Name);
-    Add(CurCategory,CurRelation);
+    OtherRelation:=List.Relations[i];
+    OurRelation:=FindCommandByName(OtherRelation.Name);
+    if OurRelation<>nil then begin
+      // assign
+      OurRelation.Assign(OtherRelation);
+    end else begin
+      // add
+      //DebugLn('TKeyCommandRelationList.Assign Add new command: ',OtherRelation.Name);
+      OurCategory:=FindCategoryByName(OtherRelation.Category.Name);
+      OurRelation:=TKeyCommandRelation.Create(OtherRelation,OurCategory);
+      fRelations.Add(OurRelation);
+    end;
+  end;
+
+  // delete unneeded keys
+  for i:=0 to CategoryCount-1 do begin
+    OurCategory:=Categories[i];
+    OtherCategory:=List.FindCategoryByName(OurCategory.Name);
+    if OtherCategory=nil then begin
+      //DebugLn('TKeyCommandRelationList.Assign remove unneeded category: ',OurCategory.Name);
+      OurCategory.Free;
+    end;
+  end;
+
+  // delete unneeded categories
+  for i:=0 to Count-1 do begin
+    OurRelation:=Relations[i];
+    if List.FindCommandByName(OurRelation.Name)=nil then begin
+      //DebugLn('TKeyCommandRelationList.Assign remove unneeded command: ',OurRelation.Name);
+      OurRelation.Free;
+    end;
   end;
 
   // copy ExtToolCount

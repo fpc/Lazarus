@@ -505,6 +505,8 @@ type
     procedure SetupIDECommands;
     procedure SetupStartProject;
     procedure ReOpenIDEWindows;
+    
+    procedure ReloadMenuShortCuts;
 
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
@@ -1768,6 +1770,11 @@ begin
       ;//itmViewCallStack.OnClick(Self);
     end;
   end;
+end;
+
+procedure TMainIDE.ReloadMenuShortCuts;
+begin
+  //LoadMenuShortCuts;
 end;
 
 {------------------------------------------------------------------------------}
@@ -3385,7 +3392,7 @@ Begin
       MacroValueChanged:=false;
       FPCSrcDirChanged:=false;
       FPCCompilerChanged:=
-        OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+                       OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
       ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
       ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
 
@@ -3414,7 +3421,7 @@ Begin
   try
     if EditorOptionsForm.ShowModal=mrOk then begin
       SourceNotebook.ReloadEditorOptions;
-      LoadMenuShortCuts;
+      ReloadMenuShortCuts;
     end;
   finally
     EditorOptionsForm.Free;
