@@ -959,7 +959,8 @@ begin
   fSyntaxHighlighter:=StrToLazSyntaxHighlighter(XMLConfig.GetValue(
        Path+'SyntaxHighlighter/Value',''));
   fTopLine:=XMLConfig.GetValue(Path+'TopLine/Value',-1);
-  UnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+  if FilenameIsPascalSource(Filename) then
+    fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
     UpdateUsageCount(uuIsLoaded,1);
