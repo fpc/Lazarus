@@ -90,9 +90,11 @@ type
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     procedure MessageViewClicked(Sender: TObject);
+    procedure MessageViewExit(Sender: TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: word;
       Shift: TShiftState);
     procedure MessageViewDrawItem(Control: TWinControl; Index: Integer;
@@ -512,6 +514,11 @@ begin
   Clipboard.AsText := MessageView.GetSelectedText;
 end;
 
+procedure TMessagesView.FormDeactivate(Sender: TObject);
+begin
+  FLastSelectedIndex:=-1;
+end;
+
 procedure TMessagesView.HelpMenuItemClick(Sender: TObject);
 begin
   ExecuteIDECommand(Self, ecContextHelp);
@@ -522,6 +529,11 @@ begin
   if EnvironmentOptions.MsgViewDblClickJumps then
     exit;
   DoSelectionChange;
+end;
+
+procedure TMessagesView.MessageViewExit(Sender: TObject);
+begin
+  FLastSelectedIndex:=-1;
 end;
 
 procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: word;

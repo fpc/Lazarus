@@ -321,7 +321,7 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
-    procedure DrawByRows; override;
+    procedure DrawAllRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
@@ -2196,7 +2196,7 @@ begin
   {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection FIN');{$Endif}
 end;
 
-procedure TCustomDbGrid.DrawByRows;
+procedure TCustomDbGrid.DrawAllRows;
 var
   CurActiveRecord: Integer;
 begin
@@ -2204,7 +2204,7 @@ begin
     CurActiveRecord:=FDataLink.ActiveRecord;
   end;
   try
-    inherited DrawByRows;
+    inherited DrawAllRows;
   finally
     if FDataLink.Active then
       FDataLink.ActiveRecord:=CurActiveRecord;

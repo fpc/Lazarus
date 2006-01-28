@@ -1,9 +1,11 @@
 object MessagesView: TMessagesView
+  ActiveControl = MessageView
   BorderStyle = bsSizeToolWin
   Caption = 'MessagesView'
   ClientHeight = 79
   ClientWidth = 722
   KeyPreview = True
+  OnDeactivate = FormDeactivate
   OnKeyDown = MessagesViewKeyDown
   PixelsPerInch = 112
   HorzScrollBar.Page = 721
@@ -15,6 +17,7 @@ object MessagesView: TMessagesView
   object MessageView: TListBox
     Align = alClient
     MultiSelect = True
+    OnExit = MessageViewExit
     PopupMenu = MainPopupMenu
     TabOrder = 0
     TopIndex = -1

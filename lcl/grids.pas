@@ -472,7 +472,7 @@ type
       ClientHeight: Integer;  // Height-HorzScrollbar.Size
       ScrollWidth: Integer;   // ClientWidth-FixedWidth
       ScrollHeight: Integer;  // ClientHeight-FixedHeight
-      VisibleGrid: TRect;     // Visible non fixed rectagle of cells
+      VisibleGrid: TRect;     // Visible non fixed rectangle of cellcoordinates
       MaxClientXY: Tpoint;    // VisibleGrid.BottomRight (pixel) coordinates
       ValidRows: boolean;    // true if there are not fixed columns to show
       ValidCols: boolean;    // true if there are not fixed rows to show
@@ -687,7 +687,7 @@ type
     procedure DoPasteFromClipboard; virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DrawBorder;
-    procedure DrawByRows; virtual;
+    procedure DrawAllRows; virtual;
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
@@ -1711,6 +1711,7 @@ begin
   CheckFixedCount(ColCount, RowCount, FFixedCols, AValue);
   FFixedRows:=AValue;
   fTopLeft.y:=AValue;
+  //DebugLn('TCustomGrid.SetFixedRows ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
   FRow:=AValue;
   UpdateSelectionRange;
   if not (csLoading in ComponentState) then
@@ -1805,6 +1806,7 @@ begin
       if RowCount=0 then begin
         FFixedRows:=0;
         FTopLeft.Y:=0;
+        //DebugLn('TCustomGrid.AdjustCount A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
         AddDel(FRows, 1);
         FGCache.AccumHeight.Count:=1;
       end;
@@ -1816,6 +1818,7 @@ begin
     OldCount:=ColCount;
     if (OldValue=0)and(NewValue>=0) then begin
       FTopleft.Y:=FFixedRows;
+      //DebugLn('TCustomGrid.AdjustCount B ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
       if FCols.Count=0 then begin
         FFixedCols:=0;
         FTopLeft.X:=0;
@@ -2286,7 +2289,6 @@ var
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
 begin
-
   OldTopLeft:=fTopLeft;
 
   while (fTopLeft.x>=0) and
@@ -2300,7 +2302,7 @@ begin
     if Rnew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
     else if RNew.Right  + FGCache.TLColOff > FGCache.ClientWidth then XInc:=1;
     Yinc:=0;
-    if RNew.Top  + FGCAche.TLRowOff < FGcache.FixedHeight then Yinc:=-1
+    if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
     else if RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight then YInc:=1;
 
     with FTopLeft do
@@ -2316,6 +2318,7 @@ begin
     Inc(FTopLeft.x, XInc);
     Inc(FTopLeft.y, YInc);
   end;
+  //DebugLn('TCustomGrid.ScrollToCell A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
 
   Result:=not PointIgual(OldTopleft,FTopLeft);
   if result then doTopleftChange(False)
@@ -2389,7 +2392,7 @@ begin
   inherited Paint;
   if FUpdateCount=0 then begin
     DrawEdges;
-    DrawByRows;
+    DrawAllRows;
     DrawColRowMoving;
     DrawBorder;
   end;
@@ -2604,7 +2607,7 @@ begin
   DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
-procedure TCustomGrid.DrawByRows;
+procedure TCustomGrid.DrawAllRows;
 var
   i: Integer;
 begin
@@ -2880,7 +2883,7 @@ begin
   if FEditor<>nil then
     EditorGetValue;
 
-  TL:=  PtrInt(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCAche.FixedWidth;
+  TL:=  PtrInt(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCache.FixedWidth;
   CTL:= PtrInt(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
 
   case message.ScrollCode of
@@ -2959,7 +2962,7 @@ begin
     EditorGetValue;
 
   TL:=  PtrInt(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
-  CTL:= PtrInt(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
+  CTL:= PtrInt(FGCache.AccumHeight[ FTopLeft.Y ]) - FGCache.FixedHeight;
 
   case message.ScrollCode of
       // Scrolls to start / end of the text
@@ -2983,7 +2986,7 @@ begin
     SB_ENDSCROLL: Exit;
   end;
 
-  if C > Tl then C := TL else
+  if C > TL then C := TL else
   if C < 0 then C := 0;
 
   {$Ifdef dbgScroll}
@@ -3085,6 +3088,7 @@ begin
   TryTL:=ScrollGrid(False,aCol, aRow);
   if not PointIgual(TryTL, FTopLeft) then begin
     FTopLeft:=TryTL;
+    //DebugLn('TCustomGrid.TryScrollTo A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
     doTopleftChange(False);
   end;
 end;
@@ -3221,21 +3225,24 @@ begin
   OldTopLeft := FTopLeft;
   Result:= False;
 
-  with FTopleft do
-  if CheckCols and (X>FixedCols) then begin
-    W := FGCache.ScrollWidth-ColWidths[aCol]-PtrInt(FGCache.AccumWidth[aCol]);
-    while (x>FixedCols)and(W+PtrInt(FGCache.AccumWidth[x])>=ColWidths[x-1]) do
-    begin
-      Dec(x);
+  with FTopleft do begin
+    if CheckCols and (X>FixedCols) then begin
+      W := FGCache.ScrollWidth-ColWidths[aCol]-PtrInt(FGCache.AccumWidth[aCol]);
+      while (x>FixedCols)and(W+PtrInt(FGCache.AccumWidth[x])>=ColWidths[x-1]) do
+      begin
+        Dec(x);
+      end;
     end;
   end;
 
-  with FTopleft do
-  if CheckRows and (Y > FixedRows) then begin
-    W := FGCache.ScrollHeight-RowHeights[aRow]-PtrInt(FGCache.AccumHeight[aRow]);
-    while (y>FixedRows)and(W+PtrInt(FGCache.AccumHeight[y])>=RowHeights[y-1]) do
-    begin
-      Dec(y);
+  with FTopleft do begin
+    if CheckRows and (Y > FixedRows) then begin
+      W := FGCache.ScrollHeight-RowHeights[aRow]-PtrInt(FGCache.AccumHeight[aRow]);
+      while (y>FixedRows)and(W+PtrInt(FGCache.AccumHeight[y])>=RowHeights[y-1]) do
+      begin
+        Dec(y);
+      end;
+      //DebugLn('TCustomGrid.CheckTopLeft A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
     end;
   end;
 
@@ -3641,43 +3648,45 @@ begin
   Offset := Offset - GetBorderWidth;
   if Offset<0 then Exit; // Out of Range;
 
-  with FGCache do
-  if IsCol then begin
-    // begin to count Cols from 0 but ...
-    if Fisical and (Offset>FixedWidth-1) then begin
-      Index := FTopLeft.X;  // In scrolled view, then begin from FtopLeft col
-      if (Index>=0) and (Index<ColCount) then
-        Offset:=Offset-FixedWidth+PtrInt(AccumWidth[Index])+TLColOff;
-      if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
-        Index := ColCount-1;
-        exit;
+  with FGCache do begin
+    if IsCol then begin
+      // begin to count Cols from 0 but ...
+      if Fisical and (Offset>FixedWidth-1) then begin
+        Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
+        if (Index>=0) and (Index<ColCount) then
+          Offset:=Offset-FixedWidth+PtrInt(AccumWidth[Index])+TLColOff;
+        if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
+          Index := ColCount-1;
+          exit;
+        end;
       end;
-    end;
 
-    while Offset>(PtrInt(AccumWidth[Index])+GetColWidths(Index)-1) do
-      Inc(Index);
+      while Offset>(PtrInt(AccumWidth[Index])+GetColWidths(Index)-1) do
+        Inc(Index);
 
-    Rest:=Offset;
-    if Index<>0 then Rest:=Offset-PtrInt(AccumWidth[Index]);
+      Rest:=Offset;
+      if Index<>0 then Rest:=Offset-PtrInt(AccumWidth[Index]);
 
-  end else begin
+    end else begin
 
-    if Fisical and (Offset>FixedHeight-1) then begin
-      Index:=FTopLeft.Y;
-      if (Index>=0) and (Index<RowCount) then
-        Offset:=Offset-FixedHeight+PtrInt(AccumHeight[Index])+TLRowOff;
-      if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
-        Index:=RowCount-1;
-        Exit; // Out of Range
+      //DebugLn('TCustomGrid.OffsetToColRow ',DbgSName(Self),' Fisical=',dbgs(Fisical),' Offset=',dbgs(Offset),' FixedHeight=',dbgs(FixedHeight),' FTopLeft=',dbgs(FTopLeft),' RowCount=',dbgs(RowCount),' TLRowOff=',dbgs(TLRowOff));
+      if Fisical and (Offset>FixedHeight-1) then begin
+        Index:=FTopLeft.Y;
+        if (Index>=0) and (Index<RowCount) then
+          Offset:=Offset-FixedHeight+PtrInt(AccumHeight[Index])+TLRowOff;
+        if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
+          Index:=RowCount-1;
+          Exit; // Out of Range
+        end;
       end;
+
+      while Offset>(PtrInt(AccumHeight[Index])+GetRowHeights(Index)-1) do
+        Inc(Index);
+
+      Rest:=Offset;
+      if Index<>0 then Rest:=Offset-PtrInt(AccumHeight[Index]);
+
     end;
-
-    while Offset>(PtrInt(AccumHeight[Index])+GetRowHeights(Index)-1) do
-      Inc(Index);
-
-    Rest:=Offset;
-    if Index<>0 then Rest:=Offset-PtrInt(AccumHeight[Index]);
-
   end;
   result := True;
 end;
@@ -3888,6 +3897,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     if Index<FixedRows then begin
       Dec(FFixedRows);
       FTopLeft.y := FFixedRows;
+      //DebugLn('TCustomGrid.doDeleteColumn A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
     end;
     FRows.Delete(Index);
     FGCache.AccumHeight.Delete(Index);
@@ -4261,7 +4271,7 @@ procedure TCustomGrid.DoEditorShow;
 begin
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow INIT');{$endif}
   ScrollToCell(FCol,FRow);
-  Editor.parent := nil;
+  Editor.Parent := nil;
   EditorSetValue;
   Editor.Parent:=Self;
   Editor.Visible:=True;
@@ -4312,6 +4322,7 @@ begin
   end else begin
     {$IfDef dbgGrid}DebugLn('DoEnter - Ext');{$Endif}
     if EditorAlwaysShown then begin
+    
       SelectEditor;
       if Feditor<>nil then
         EditorShow(true);
@@ -4490,9 +4501,9 @@ end;
 
 procedure TCustomGrid.MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
 var
-   dummy: Integer;
+  dummy: Integer;
 begin
-  //TODO: Raise Exception if out of range?,
+  // Do not raise Exception if out of range
   OffsetToColRow(True, True, X, ACol, dummy);
   OffsetToColRow(False,True, Y, ARow, dummy);
 end;
@@ -5207,6 +5218,7 @@ procedure TCustomGrid.FixPosition;
     end;
     if not PointIgual(OldTL, FTopleft) then begin
       fTopLeft := OldTL;
+      //DebugLn('TCustomGrid.FixPosition ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
       topleftChanged;
     end;
   end;
