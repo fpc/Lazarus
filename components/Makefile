@@ -1759,6 +1759,7 @@ bigidecomponents: all
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates
 	$(MAKE) -C memds
+	$(MAKE) -C sdf
 ifneq ($(OS_TARGET),darwin)
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
