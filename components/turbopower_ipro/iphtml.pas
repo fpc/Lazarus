@@ -17,7 +17,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is TurboPower Internet Professional
+ * The Original Code is TurbºoPower Internet Professional
  *
  * The Initial Developer of the Original Code is
  * TurboPower Software
@@ -675,6 +675,11 @@ type
     procedure ScreenRect(
       R : TRect;
       const Color : TColor);
+    {$IFDEF IP_LAZARUS}
+    procedure ScreenFrame(
+      R : TRect;
+      Raised: boolean);
+    {$ENDIF}
     procedure ScreenPolygon(
       Points : array of TPoint;
       const Color : TColor);
@@ -2379,6 +2384,10 @@ type
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint);                 {!!.10}
     property TitleNode : TIpHtmlNodeTITLE read FTitleNode;
+    {$IFDEF IP_LAZARUS_DBG}
+    procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
+    procedure DebugAll;
+    {$ENDIF}
   end;
 
   TIpHtmlFocusRect = class(TCustomControl)
@@ -2965,6 +2974,21 @@ var
   Aspect : double;                                                     {!!.02}
 
 {$IFDEF IP_LAZARUS}
+procedure DebugBox(Canvas: TCanvas; R: Trect; cl:TColor; dbg:boolean=false);
+var
+  OldPenColor: TColor;
+begin
+  OldPenColor := Canvas.Pen.Color;
+  Canvas.Pen.Color := cl;
+  Canvas.Moveto(r.left+(r.right-r.left) div 2, r.top);
+  Canvas.Lineto(r.left+(r.right-r.left) div 2, r.bottom);
+  Canvas.MoveTo(r.Left, r.top+(r.bottom-r.top) div 2);
+  Canvas.LineTo(r.right, r.top+(r.bottom-r.top) div 2);
+  if Dbg then
+    DebugLn(dbgs(R));
+  Canvas.Pen.Color := OldPenColor;
+end;
+
 procedure Register;
 begin
   RegisterComponents('IPro', [TIpHtmlPanel]);
@@ -3716,11 +3740,47 @@ procedure TIpHtmlNode.ScreenRect(
       const Color : TColor);
 begin
   if PageRectToScreen(R, R) then begin
+    {$IFDEF IP_LAZARUS}
+    Owner.Target.Brush.Style := bsSolid;
+    {$ENDIF}
     Owner.Target.Brush.Color := Color;
     Owner.Target.FrameRect(R);
   end;
 end;
-
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNode.ScreenFrame(
+      R : TRect;
+      Raised: boolean);
+var
+  SaveWidth: Integer;
+  procedure DoLine(X1,Y1,X2,Y2: Integer; Clr: TColor);
+  begin
+    Owner.Target.Pen.Color := Clr;
+    Owner.Target.Line(X1,Y1,X2,Y2);
+    //Owner.Target.MoveTo(X1, Y1);
+    //Owner.Target.LineTo(X2, Y2);
+  end;
+begin
+  if PageRectToScreen(R, R) then
+  with Owner.Target do begin
+    Brush.Style := bsSolid;
+    SaveWidth := Pen.Width;
+    Pen.Width := 1;
+    if Raised then begin
+      DoLine(R.Left, R.Top, R.Right-1, R.Top, RGB(220,220,220)); // above
+      DoLine(R.Right-1, R.Bottom-1, R.Left, R.Bottom-1, RGB(64,64,64)); // below
+      DoLine(R.Left, R.Top, r.Left, R.Bottom-1, RGB(192,192,192)); // Left
+      DoLine(R.Right-1, R.Bottom-1, R.Right-1, R.Top, RGB(128,128,128)); // Right
+    end else begin
+      DoLine(R.Left, R.Top, R.Right-1, R.Top, RGB(64,64,64)); // above
+      DoLine(R.Right-1, R.Bottom-1, R.Left, R.Bottom-1,RGB(220,220,220) ); // below
+      DoLine(R.Left, R.Top, r.Left, R.Bottom-1, RGB(128,128,128)); // Left
+      DoLine(R.Right-1, R.Bottom-1, R.Right-1, R.Top, RGB(192,192,192)); // Right
+    end;
+    Pen.Color := SaveWidth;
+  end;
+end;
+{$ENDIF}
 procedure TIpHtmlNode.ScreenPolygon(
       Points : array of TPoint;
       const Color : TColor);
@@ -6384,7 +6444,7 @@ begin
       Frame := hfBorder;
       Rules := hrAll;
     end;
-    FCellSpacing := ParseInteger('CELLSPACING', 4);
+    CellSpacing := ParseInteger('CELLSPACING', 2);
     CellPadding := ParseInteger('CELLPADDING', 2);
     ParseBaseProps(Self);
     Summary := FindAttribute('SUMMARY');
@@ -7989,6 +8049,59 @@ begin
       RequestImageNodes(TIpHtmlNodeMulti(Node).ChildNode[i]);
     end;
 end;
+
+{$IFDEF IP_LAZARUS_DBG}
+var
+  CCC: Integer;
+  
+procedure TIpHtml.DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
+var
+  i: Integer;
+begin
+  if Node=UserData then
+    Write('Parent: ');
+  for i:=0 to CCC do Write(' ');
+  Write('Node: ', Node.ClassName);
+  if Node is TIpHtmlNodeText then
+    Write(' ', TIpHtmlNodeText(NodE).ANSIText);
+  WriteLn;
+  if Node=UserData then
+    exit;
+  inc(CCC);
+  Node.EnumChildren(DebugChild, Node);
+  dec(CCC);
+end;
+
+procedure TIpHtml.DebugAll;
+var
+  i: Integer;
+  item: PIpHtmlRectListEntry;
+  Node: TIpHtmlNode;
+begin
+  CCC := 0;
+  Fhtml.EnumChildren(DebugChild, FHtml);
+  {
+  
+  for i:=0 to RectList.Count-1 do begin
+    WriteLn('RectList[',i,']:');
+    Item := PIpHtmlRectListEntry(Rectlist[i]);
+    if Item<>nil then begin
+      WriteLn(' Node=', dbgs(Item.Node));
+      WriteLn('   Owner=', dbgs(Item.Node^.Owner));
+      WriteLn('    Text=', Item.Node^.AnsiWord);
+      Node := Item.Node^.Owner;
+      if Node<>nil then begin
+      WriteLn('     ClassName:', Node.ClassName);
+        if Node is TIpHtmlNodeText then
+          WriteLn('       Text=', TIpHtmlNodeText(Node).ANSIText);
+      end;
+      WriteLn(' Block=', dbgs(Item.Block));
+      WriteLn(' Rect=', dbgs(Item.Rect));
+    end;
+  end;
+  }
+end;
+{$ENDIF}
 
 procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
   UsePaintBuffer: Boolean; const TopLeft: TPoint);                 {!!.10}
@@ -12348,7 +12461,11 @@ begin
                         if not IsRectEmpty(PadRect) then begin
                           R := PadRect;
                           Inflaterect(R, 1, 1);
+                          {$IFDEF IP_LAZARUS}
+                          ScreenFrame(R, False);
+                          {$ELSE}
                           ScreenRect(R, RGB(192,192,192));
+                          {$ENDIF}
                         end;
                       end;
                     end;
@@ -14930,6 +15047,9 @@ begin
   Props.VAlignment := VAlign;
   if NoWrap then
     Props.NoBreak := True;
+  {$IFDEF IP_LAZARUS}
+  //DebugBox(Owner.Target, PadRect, clYellow, True);
+  {$ENDIF}
   if PageRectToScreen(PadRect, R) then begin
     if (BgColor <> -1) then begin
       Props.BgColor := BgColor;
@@ -15411,18 +15531,6 @@ begin
 end;
 
 procedure TIpHtmlInternalPanel.Paint;
-  {$IFDEF IP_LAZARUS}
-  procedure DebugBox(R: Trect; cl:TColor; dbg:boolean=false);
-  begin
-    Canvas.Pen.Color := cl;
-    Canvas.Moveto(r.left+(r.right-r.left) div 2, r.top);
-    Canvas.Lineto(r.left+(r.right-r.left) div 2, r.bottom);
-    Canvas.MoveTo(r.Left, r.top+(r.bottom-r.top) div 2);
-    Canvas.LineTo(r.right, r.top+(r.bottom-r.top) div 2);
-    if Dbg then
-      DebugLn(dbgs(R));
-  end;
-  {$ENDIF}
 var
   CR : TRect;
 begin
