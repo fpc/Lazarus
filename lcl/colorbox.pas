@@ -25,8 +25,8 @@ unit ColorBox;
 interface
 
 uses
-  LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  LResources, SysUtils, LCLProc, LCLType, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
 
 type
   TColorPalette = (cpDefault, cpFull);
@@ -36,7 +36,6 @@ type
     FPalette: TColorPalette;
     function GetSelection: TColor;
     procedure SetSelection(Value: TColor);
-
     procedure SetPalette(Value: TColorPalette);
   protected
     procedure SetStyle(Value: TComboBoxStyle); override;
@@ -214,6 +213,7 @@ begin
   r.bottom := Rect.bottom - 3;
   r.left := Rect.left + 3;
   r.right := r.left + 14;
+  Exclude(State,odPainted);
   with Canvas do begin
     FillRect(Rect);
 
@@ -233,6 +233,7 @@ begin
   r := Rect;
   r.left := r.left + 20;
   
+  //DebugLn('TColorBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------

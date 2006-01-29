@@ -7,7 +7,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   Constraints.MinHeight = 345
   Constraints.MinWidth = 520
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 519
   VertScrollBar.Page = 344
@@ -19,7 +19,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 281
+    ClientHeight = 282
     ClientWidth = 214
     TabOrder = 5
     Left = 296
@@ -33,17 +33,17 @@ object ImageListEditorDlg: TImageListEditorDlg
       Color = clNone
       ParentColor = False
       Left = 110
-      Height = 14
-      Top = 174
-      Width = 92
+      Height = 13
+      Top = 176
+      Width = 104
     end
     object LabelSize: TLabel
       Color = clNone
       ParentColor = False
       Left = 6
-      Height = 26
+      Height = 28
       Top = 6
-      Width = 74
+      Width = 76
     end
     object Preview: TScrollBox
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -53,16 +53,20 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 0
       OnPaint = PreviewPaint
       HorzScrollBar.Page = 196
-      VertScrollBar.Page = 127
+      VertScrollBar.Page = 128
       Left = 6
-      Height = 132
+      Height = 133
       Top = 32
       Width = 201
     end
     object RadioGroup: TRadioGroup
       Anchors = [akLeft, akBottom]
+      AutoFill = True
       BorderSpacing.Around = 6
       Caption = 'Adjustment'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
       ChildSizing.EnlargeVertical = crsHomogenousSpaceResize
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
@@ -80,7 +84,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       TabOrder = 1
       Left = 6
       Height = 105
-      Top = 170
+      Top = 171
       Width = 96
     end
     object ColorBoxTransparent: TColorBox
@@ -206,7 +210,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       OnChange = ColorBoxTransparentClick
       Left = 110
       Height = 24
-      Top = 195
+      Top = 196
       Width = 96
     end
   end
@@ -268,7 +272,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 281
+    ClientHeight = 282
     ClientWidth = 276
     TabOrder = 4
     Left = 6
@@ -290,7 +294,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       OnSelectionChanged = TreeViewSelectionChanged
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRowSelect, tvoToolTips]
       Left = 6
-      Height = 269
+      Height = 270
       Top = 6
       Width = 185
     end
@@ -375,6 +379,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     top = 246
   end
   object OpenDialog: TOpenPictureDialog
+    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
     Title = 'Open existing file'
     Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
