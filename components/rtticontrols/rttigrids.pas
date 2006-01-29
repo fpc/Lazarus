@@ -140,7 +140,8 @@ type
   TTIGridGetObjectCount = procedure(Sender: TTICustomGrid;
                                     ListObject: TObject;
                                     var ObjCount: integer) of object;
-  TTIGridGetObjectName = procedure(TIObject: TPersistent;
+  TTIGridGetObjectName = procedure(Sender: TObject; Index: integer;
+                                   TIObject: TPersistent;
                                    var ObjName: string) of object;
   TTIGridCreateCellEditor = procedure(GridProp: TTIGridProperty;
                                       var NewEditorControl: TControl) of object;
@@ -928,7 +929,7 @@ procedure TTICustomGrid.DrawObjectName(Index: integer; const aRect: TRect;
     Result:='';
     AnObject:=GetTIObject(ObjIndex);
     if Assigned(OnGetObjectName) then begin
-      OnGetObjectName(AnObject,Result);
+      OnGetObjectName(Self,Index,AnObject,Result);
       exit;
     end;
     if AnObject is TComponent then
