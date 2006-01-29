@@ -762,6 +762,7 @@ resourcestring
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
   dlgQShowGrid = 'Show grid';
+  dlgQShowBorderSpacing = 'Show border spacing';
   dlgGridColor = 'Grid color';
   dlgQSnapToGrid = 'Snap to grid';
   dlgGridX = 'Grid size X';

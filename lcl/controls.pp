@@ -465,8 +465,13 @@ type
 
   TConstraintSize = 0..MaxInt;
 
-  TSizeConstraintsOption = (scoAdviceWidthAsMin, scoAdviceWidthAsMax,
-    scoAdviceHeightAsMin, scoAdviceHeightAsMax);
+  TSizeConstraintsOption = (
+    // not yet used
+    scoAdviceWidthAsMin,
+    scoAdviceWidthAsMax,
+    scoAdviceHeightAsMin,
+    scoAdviceHeightAsMax
+    );
   TSizeConstraintsOptions = set of TSizeConstraintsOption;
 
   TSizeConstraints = class(TPersistent)

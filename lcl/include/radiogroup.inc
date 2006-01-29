@@ -86,7 +86,7 @@ begin
   
   inherited InitializeWnd;
   
-  if FHiddenButton<>nil then
+  if (FHiddenButton<>nil) and (FHiddenButton.Parent=Self) then
     FHiddenButton.HandleNeeded;
 
   FCreatingWnd := false;

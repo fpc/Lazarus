@@ -127,7 +127,6 @@ type
 
   TEnvironmentOptions = class
   private
-    FDesignerPaintLazy: boolean;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
@@ -152,6 +151,8 @@ type
     FDebuggerSearchPath: string;
 
     // EnvironmentOptionsDialog editor
+    FDesignerPaintLazy: boolean;
+    FShowBorderSpacing: boolean;
     FShowGrid: boolean;
     FSnapToGrid: boolean;
     FGridSizeX: integer;
@@ -276,6 +277,7 @@ type
                                              write FIDESpeedButtonsVisible;
 
     // EnvironmentOptionsDialog editor
+    property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
     property ShowGrid: boolean read FShowGrid write FShowGrid;
     property SnapToGrid: boolean read FSnapToGrid write FSnapToGrid;
     property GridColor: TColor read FGridColor write FGridColor;
@@ -420,6 +422,7 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
+    Label1: TLabel;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
@@ -471,6 +474,7 @@ type
     // EnvironmentOptionsDialog editor
     GridGroupBox: TGroupBox;
     ShowGridCheckBox: TCheckBox;
+    ShowBorderSpaceCheckBox: TCheckBox;
     GridColorLabel: TLabel;
     GridColorButton: TColorButton;
     SnapToGridCheckBox: TCheckBox;
@@ -813,6 +817,7 @@ begin
 
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
+  FShowBorderSpacing:=false;
   FGridColor:=clBlack;
   FSnapToGrid:=true;
   FGridSizeX:=8;
@@ -1028,6 +1033,8 @@ begin
     // EnvironmentOptionsDialog editor
     FShowGrid:=XMLConfig.GetValue(
        Path+'FormEditor/ShowGrid',true);
+    FShowBorderSpacing:=XMLConfig.GetValue(
+       Path+'FormEditor/ShowBorderSpacing',false);
     FGridColor:=XMLConfig.GetValue(
        Path+'FormEditor/GridColor',FGridColor);
     FSnapToGrid:=XMLConfig.GetValue(
@@ -1270,6 +1277,8 @@ begin
                              FIDESpeedButtonsVisible,true);
 
     // EnvironmentOptionsDialog editor
+    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
+                             FShowBorderSpacing,false);
     XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
     XMLConfig.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
     XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
@@ -1845,6 +1854,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
 
   procedure SetupGridGroupBox;
   begin
+    ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
     ShowGridCheckBox.Caption:=dlgQShowGrid;
     GridColorLabel.Caption:=dlgGridColor;
     SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
@@ -2233,6 +2243,7 @@ begin
     MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
 
     // EnvironmentOptionsDialog editor
+    ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
     ShowGridCheckBox.Checked:=ShowGrid;
     GridColorButton.ButtonColor:=GridColor;
     SnapToGridCheckBox.Checked:=SnapToGrid;
@@ -2380,6 +2391,7 @@ begin
     MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
 
     // EnvironmentOptionsDialog editor
+    ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
     ShowGrid:=ShowGridCheckBox.Checked;
     GridColor:=GridColorButton.ButtonColor;
     SnapToGrid:=SnapToGridCheckBox.Checked;

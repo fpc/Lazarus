@@ -551,7 +551,8 @@ var
   ARect: TRect;
 begin
   GetRect(ARect);
-  InvalidateDesignerRect(AForm.Handle,@ARect);
+  if AForm.HandleAllocated then
+    InvalidateDesignerRect(AForm.Handle,@ARect);
 end;
 
 
@@ -700,7 +701,8 @@ begin
   CompRect.Right:=CompRect.Left+NonVisualCompWidth;
   CompRect.Bottom:=CompRect.Top+NonVisualCompWidth;
   //writeln('TSelectedControl.InvalidateNonVisualComponent A ',CompRect.Left,',',CompRect.Top,',',CompRect.Right,',',CompRect.Bottom);
-  InvalidateDesignerRect(AForm.Handle,@CompRect);
+  if AForm.HandleAllocated then
+    InvalidateDesignerRect(AForm.Handle,@CompRect);
 end;
 
 function TSelectedControl.GetLeft: integer;
@@ -916,8 +918,10 @@ begin
       ' NewRect=',NewRect.Left,',',NewRect.Top,',',NewRect.Right,',',NewRect.Bottom,
       ' ');
   end;}
-  InvalidateDesignerRect(FForm.Handle,@OldRect);
-  InvalidateDesignerRect(FForm.Handle,@NewRect);
+  if FForm.HandleAllocated then begin
+    InvalidateDesignerRect(FForm.Handle,@OldRect);
+    InvalidateDesignerRect(FForm.Handle,@NewRect);
+  end;
 end;
 
 function TControlSelection.GetCacheGuideLines: boolean;
@@ -1026,6 +1030,7 @@ var
   g: TGuideLineType;
   LineRect: TRect;
 begin
+  if (FForm=nil) or (not FForm.HandleAllocated) then exit;
   if (cssGuideLinesPainted in FStates) then begin
     if (FForm<>nil) and CacheGuideLines then
       for g:=Low(TGuideLineType) to High(TGuideLineType) do begin
@@ -2234,7 +2239,7 @@ var
   RightMarker: Integer;
   BottomMarker: Integer;
 begin
-  if (FForm=nil) then exit;
+  if (FForm=nil) or (not FForm.HandleAllocated) then exit;
   i:=IndexOf(AComponent);
   if (i>=0) then begin
     CurItem:=Items[i];
@@ -2417,6 +2422,7 @@ var
   i :integer;
   InvFrame: TRect;
 begin
+  if (FForm=nil) or (not FForm.HandleAllocated) then exit;
   with ARect do begin
     if Right<Left then begin
       i:=Left;

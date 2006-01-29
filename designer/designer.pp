@@ -126,23 +126,25 @@ type
     FHintWIndow : THintWindow;
 
     function GetGridColor: TColor;
-    function GetShowComponentCaptionHints: boolean;
-    function GetShowGrid: boolean;
     function GetGridSizeX: integer;
     function GetGridSizeY: integer;
     function GetIsControl: Boolean;
+    function GetShowBorderSpacing: boolean;
+    function GetShowComponentCaptionHints: boolean;
     function GetShowEditorHints: boolean;
+    function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
     Procedure HintTimer(sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
-    procedure SetShowComponentCaptionHints(const AValue: boolean);
-    procedure SetShowGrid(const AValue: boolean);
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
+    procedure SetShowBorderSpacing(const AValue: boolean);
+    procedure SetShowComponentCaptionHints(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
+    procedure SetShowGrid(const AValue: boolean);
     procedure SetSnapToGrid(const AValue: boolean);
   protected
     MouseDownComponent: TComponent;
@@ -316,6 +318,7 @@ type
                                        read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
+    property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean
                                read GetShowEditorHints write SetShowEditorHints;
     property ShowComponentCaptionHints: boolean
@@ -1000,6 +1003,13 @@ procedure TDesigner.SetGridColor(const AValue: TColor);
 begin
   if GridColor=AValue then exit;
   EnvironmentOptions.GridColor:=AValue;
+  Form.Invalidate;
+end;
+
+procedure TDesigner.SetShowBorderSpacing(const AValue: boolean);
+begin
+  if ShowBorderSpacing=AValue then exit;
+  EnvironmentOptions.ShowBorderSpacing:=AValue;
   Form.Invalidate;
 end;
 
@@ -1899,16 +1909,17 @@ var
   Count: integer;
   x,y, StepX, StepY, MaxX, MaxY: integer;
   i: integer;
+  CurControl: TControl;
 begin
   if (AWinControl=nil)
   or (not (csAcceptsControls in AWinControl.ControlStyle))
-  or (not ShowGrid) then exit;
+  or ((not ShowGrid) and (not ShowBorderSpacing)) then exit;
 
   aDDC.Save;
   try
     // exclude all child control areas
     Count:=AWinControl.ControlCount;
-    for I := 0 to Count - 1 do begin
+    for i := 0 to Count - 1 do begin
       with AWinControl.Controls[I] do begin
         if (Visible or ((csDesigning in ComponentState)
           and not (csNoDesignVisible in ControlStyle)))
@@ -1920,18 +1931,33 @@ begin
     end;
 
     // paint points
-    StepX:=GridSizeX;
-    StepY:=GridSizeY;
-    MaxX:=AWinControl.ClientWidth;
-    MaxY:=AWinControl.ClientHeight;
-    x := 0;
-    while x <= MaxX do begin
-      y := 0;
-      while y <= MaxY do begin
-        aDDC.Canvas.Pixels[x, y] := GridColor;
-        Inc(y, StepY);
+    if ShowGrid then begin
+      StepX:=GridSizeX;
+      StepY:=GridSizeY;
+      MaxX:=AWinControl.ClientWidth;
+      MaxY:=AWinControl.ClientHeight;
+      x := 0;
+      while x <= MaxX do begin
+        y := 0;
+        while y <= MaxY do begin
+          aDDC.Canvas.Pixels[x, y] := GridColor;
+          Inc(y, StepY);
+        end;
+        Inc(x, StepX);
       end;
-      Inc(x, StepX);
+    end;
+    
+    if ShowBorderSpacing then begin
+      aDDC.Canvas.Brush.Color:=clRed;
+      for i:=0 to Count-1 do begin
+        CurControl:=AWinControl.Controls[i];
+        aDDC.Canvas.FrameRect(
+          CurControl.Left-CurControl.BorderSpacing.GetSpace(akLeft),
+          CurControl.Top-CurControl.BorderSpacing.GetSpace(akTop),
+          CurControl.Left+CurControl.Width+CurControl.BorderSpacing.GetSpace(akRight)-1,
+          CurControl.Top+CurControl.Height+CurControl.BorderSpacing.GetSpace(akBottom)-1
+          );
+      end;
     end;
   finally
     aDDC.Restore;
@@ -2042,6 +2068,11 @@ end;
 function TDesigner.GetGridColor: TColor;
 begin
   Result:=EnvironmentOptions.GridColor;
+end;
+
+function TDesigner.GetShowBorderSpacing: boolean;
+begin
+  Result:=EnvironmentOptions.ShowBorderSpacing;
 end;
 
 function TDesigner.GetShowComponentCaptionHints: boolean;

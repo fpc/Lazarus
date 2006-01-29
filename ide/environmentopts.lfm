@@ -16,7 +16,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnChangeBounds = NotebookChangeBounds
-    PageIndex = 1
+    PageIndex = 3
     Height = 477
     Width = 540
     object FilesPage: TPage
@@ -441,8 +441,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object WindowPositionsGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'WindowPositionsGroupBox'
-        ClientHeight = 328
-        ClientWidth = 530
+        ClientHeight = 311
+        ClientWidth = 526
         TabOrder = 2
         Left = 4
         Height = 328
@@ -456,7 +456,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 100
           Top = 6
-          Width = 502
+          Width = 498
         end
       end
     end
@@ -574,6 +574,18 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Height = 21
           Top = 91
           Width = 100
+        end
+        object ShowBorderSpaceCheckBox: TCheckBox
+          BorderSpacing.Left = 10
+          Caption = 'ShowBorderSpaceCheckBox'
+          TabOrder = 4
+          AnchorSideLeft.Control = ShowGridCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = ShowGridCheckBox
+          AnchorSideTop.Side = asrCenter
+          Left = 154
+          Height = 24
+          Width = 188
         end
       end
       object GuideLinesGroupBox: TGroupBox
@@ -1015,7 +1027,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object BakProjTypeRadioGroup: TRadioGroup
           Anchors = [akTop, akLeft, akRight]
+          AutoFill = True
           Caption = 'BakProjTypeRadioGroup'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
@@ -1100,7 +1117,12 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         end
         object BakOtherTypeRadioGroup: TRadioGroup
           Anchors = [akTop, akLeft, akRight]
+          AutoFill = True
           Caption = 'BakOtherTypeRadioGroup'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
@@ -1155,8 +1177,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       object PascalFileExtRadiogroup: TRadioGroup
         Align = alTop
         Anchors = [akTop, akLeft]
+        AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'PascalFileExtRadiogroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
@@ -1170,8 +1197,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       end
       object CharcaseFileActionRadioGroup: TRadioGroup
         Align = alTop
+        AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'CharcaseFileActionRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
@@ -1185,8 +1217,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
       end
       object AmbiguousFileActionRadioGroup: TRadioGroup
         Align = alTop
+        AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'AmbiguousFileActionRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
@@ -1220,8 +1257,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 193
-        ClientWidth = 520
+        ClientHeight = 210
+        ClientWidth = 524
         TabOrder = 0
         Left = 6
         Height = 210
@@ -1235,7 +1272,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 108
           Top = 6
-          Width = 508
+          Width = 512
         end
         object LazDocAddPathButton: TButton
           AutoSize = True
@@ -1272,7 +1309,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Left = 6
           Height = 23
           Top = 154
-          Width = 484
+          Width = 488
         end
         object LazDocBrowseButton: TButton
           BorderSpacing.Left = 6
@@ -1282,7 +1319,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           TabOrder = 4
           AnchorSideLeft.Control = LazDocPathEdit
           AnchorSideLeft.Side = asrBottom
-          Left = 496
+          Left = 500
           Height = 23
           Top = 156
           Width = 19

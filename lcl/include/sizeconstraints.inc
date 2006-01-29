@@ -49,6 +49,13 @@ begin
   GetControlConstraints(Self);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TSizeConstraints.SetInterfaceConstraints(MinW, MinH,
+    MaxW, MaxH: integer);
+
+  Used by the interface to set the interface constraints.
+  Should only be used by custom components, not by applications.
+ ------------------------------------------------------------------------------}
 procedure TSizeConstraints.SetInterfaceConstraints(MinW, MinH,
   MaxW, MaxH: integer);
 begin
