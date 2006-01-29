@@ -13,6 +13,7 @@
  Property editor for TListView objects
 
  Author: Olivier Guilbaud  (golivier@free.fr)
+         Tomas Gregorovic
  
  History
    01/28/2003 OG - Create
@@ -20,6 +21,7 @@
    19/02/2003 OG - Add ObjInspStrConsts unit
    24/02/2003 OG - Replace TListBox with TTreeView
                    Include suItems property
+   22/01/2006 TG - Dialog converted to lfm.
                    
    ToDo :
      Select the first item on show editor ... dont work :o(
@@ -35,49 +37,42 @@ uses
   StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
   ObjInspStrConsts;
 
-Implementation
+type
+  { TListViewItemsEditorForm }
 
-Type
-  {TMenuItemsPropertyEditorDlg}
-  
-  TListViewItemsPropertyEditorDlg = Class(TForm)
-    procedure LeftGroupBoxResize(Sender: TObject);
-    procedure ListViewItemsPropertyEditorDlgResize(Sender: TObject);
-    procedure Panel1Resize(Sender: TObject);
-    procedure RightGroupBoxResize(Sender: TObject);
+  TListViewItemsEditorForm = class(TForm)
+    BtnOK: TBitBtn;
+    BtnCancel: TBitBtn;
+    BtnApply: TBitBtn;
+    BtnHelp: TBitBtn;
+    BtnNewItem: TButton;
+    BtnNewSubItem: TButton;
+    BtnDelete: TButton;
+    edtText: TEdit;
+    edtIndexImg: TEdit;
+    edtIndexState: TEdit;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    LabelCaption: TLabel;
+    LabelImageIndex: TLabel;
+    LabelStateIndex: TLabel;
+    TreeView1: TTreeView;
+    procedure BtnNewItemClick(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure TreeView1SelectionChanged(Sender: TObject);
+    procedure btnApplyClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure edtIndexStateEditingDone(Sender: TObject);
   private
-    edtLabel : TEdit;
-    edtIndex : TEdit;
-    TV       : TTreeView;
-    fBuild   : Boolean;
-    Panel1: TPanel;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
-    LeftGroupBox: TGroupBox;
-    NewButton: TButton;
-    SubButton: TButton;
-    DeleteButton: TButton;
-    RightGroupBox: TGroupBox;
-    CaptionLabel: TLabel;
-    ImgIndexLabel: TLabel;
-
-    Procedure btnAddOnClick(Sender : TObject);
-    Procedure btnDelOnClick(Sender : TObject);
-    procedure btnAddSubOnClick(Sender : TObject);
-    Procedure LBOnClick(Sender: TObject);
-    procedure EdtLabelOnChange(Sender: TObject);
-    procedure EdtIndexOnChange(Sender: TObject);
-    
-    procedure OnDlgShow(Sender: TObject);
-    procedure RefreshEdts;
-
+    FListView: TListView;
+    FModified: Boolean;
   public
-    constructor Create(TheOwner: TComponent); override;
+    procedure LoadFromList(AListView: TListView);
+    procedure SaveToList;
   end;
 
   TListViewComponentEditor = class(TDefaultComponentEditor)
-  protected
-    procedure DoShowEditor;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -92,566 +87,249 @@ Type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
+  
+implementation
 
-//This function find the Designer of aComponent
-function GetDesignerOfComponent(aComponent : TComponent): TComponentEditorDesigner;
+
+function EditListView(AListView: TListView): Boolean;
 var
-  OwnerForm: TCustomForm;
+  ListViewEditorDlg: TListViewItemsEditorForm;
 begin
-  Result:=nil;
-  if (aComponent is TCustomForm) and (TCustomForm(aComponent).Parent=nil) then
-      OwnerForm:=TCustomForm(aComponent)
+  ListViewEditorDlg := TListViewItemsEditorForm.Create(Application);
+  try
+    ListViewEditorDlg.LoadFromList(AListView);
+
+    if ListViewEditorDlg.ShowModal = mrOk then
+      ListViewEditorDlg.SaveToList;
+      
+    Result := ListViewEditorDlg.FModified;
+  finally
+    ListViewEditorDlg.Free;
+  end;
+end;
+
+{ TListViewItemsEditorForm }
+
+procedure TListViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
+var
+  S: String;
+begin
+  S := sccsLvEdtItem + IntToStr(TreeView1.Items.Count);
+  if (Sender as TComponent).Tag = 1 then
+    TreeView1.Selected := TreeView1.Items.Add(nil, S)
   else
   begin
-    OwnerForm:=TCustomForm(aComponent.Owner);
-    if OwnerForm=nil then
-    begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +aComponent.Name+' Owner=nil');
-    end;
+    if TreeView1.Selected.Level = 0 then
+      TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S)
+    else
+      TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S);
+  end;
 
-    if not (OwnerForm is TCustomForm) then
-    begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-          +aComponent.Name+' OwnerForm='+OwnerForm.ClassName);
+  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+
+  edtText.SetFocus;
+  edtText.SelectAll;
+end;
+
+procedure TListViewItemsEditorForm.Edit1Change(Sender: TObject);
+begin
+  if Assigned(TreeView1.Selected) then
+    TreeView1.Selected.Text := edtText.Text;
+end;
+
+procedure TListViewItemsEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption  := sccsLvEdtCaption;
+  
+  GroupBox1.Caption := sccsLvEdtGrpLCaption;
+  GroupBox2.Caption := sccsLvEdtGrpRCaption;
+
+  BtnNewItem.Caption := sccsLvEdtNewItem;
+  BtnNewSubItem.Caption := sccsLvEdtNewSubItem;
+  BtnDelete.Caption := sccsLvEdtDelete;
+  BtnApply.Caption := sccsLvEdtApply;
+  
+  LabelCaption.Caption := sccsLvEdtLabelCaption;
+  LabelImageIndex.Caption := sccsLvEdtLabelImageIndex;
+  LabelStateIndex.Caption := sccsLvEdtLabelStateIndex;
+end;
+
+procedure TListViewItemsEditorForm.TreeView1SelectionChanged(
+  Sender: TObject);
+begin
+  if Assigned(TreeView1.Selected) then
+  begin
+    edtText.Text := TreeView1.Selected.Text;
+    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
+    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
+  end;
+end;
+
+procedure TListViewItemsEditorForm.btnApplyClick(Sender: TObject);
+begin
+  SaveToList;
+end;
+
+procedure TListViewItemsEditorForm.btnDeleteClick(Sender: TObject);
+var
+  TempNode: TTreeNode;
+begin
+  if Assigned(TreeView1.Selected) then
+  begin
+    TempNode := TreeView1.Selected.GetNextSibling;
+    if TempNode = nil then
+      TempNode := TreeView1.Selected.GetPrevSibling;
+    if TempNode = nil then
+      TempNode := TreeView1.Selected.Parent;
+
+    TreeView1.Items.Delete(TreeView1.Selected);
+
+    if TempNode <> nil then
+      TreeView1.Selected := TempNode;
+
+    GroupBox2.Enabled := TreeView1.Items.Count > 0;
+    TreeView1.SetFocus;
+  end;
+end;
+
+procedure TListViewItemsEditorForm.edtIndexStateEditingDone(
+  Sender: TObject);
+begin
+  if Assigned(TreeView1.Selected) then
+  begin
+    TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, 0);
+    TreeView1.Selected.StateIndex := StrToIntDef(edtIndexState.Text, -1);
+
+    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
+    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
+  end;
+end;
+
+procedure TListViewItemsEditorForm.LoadFromList(AListView: TListView);
+var
+  I, J: Integer;
+  Node: TTreeNode;
+begin
+  FListView := AListView;
+  if Assigned(AListView) then
+  begin
+    TreeView1.Images := AListView.SmallImages;
+    TreeView1.StateImages := AListView.StateImages;
+    
+    TreeView1.Items.BeginUpdate;
+    try
+      TreeView1.Items.Clear;
+      
+      for I := 0 to AListView.Items.Count - 1 do
+      begin
+        Node := TreeView1.Items.Add(nil, AListView.Items[I].Caption);
+        with Node do
+        begin
+          ImageIndex := AListView.Items[I].ImageIndex;
+          //StateIndex := AListView.Items[I].StateIndex;
+        end;
+
+        //SubItems
+        for J := 0 to AListView.Items[I].SubItems.Count - 1 do
+        begin
+          with TreeView1.Items.AddChild(Node, AListView.Items[I].SubItems[J]) do
+          begin
+            ImageIndex := AListView.Items[I].SubItemImages[J];
+          end;
+        end;
+      end;
+    finally
+      TreeView1.Items.EndUpdate;
     end;
-    Result:=TComponentEditorDesigner(OwnerForm.Designer);
+  end;
+
+  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+end;
+
+procedure TListViewItemsEditorForm.SaveToList;
+var
+  I, J: Integer;
+  Node: TTreeNode;
+  Item: TListItem;
+begin
+  if Assigned(FListView) then
+  begin
+    FListView.BeginUpdate;
+    try
+      FListView.Items.Clear;
+
+      //Recreate new items or modify
+      for I := 0 to TreeView1.Items.Count - 1 do
+      begin
+        Node := TreeView1.Items.Items[I];
+        if Node.Level = 0 then
+        begin
+          Item := FListView.Items.Add;
+          Item.Caption := Node.Text;
+          Item.ImageIndex := Node.ImageIndex;
+          //Item.StateIndex := Node.StateIndex;
+
+          //SubItems
+          for J := 0 to Node.Count - 1 do
+          begin
+            Item.SubItems.Add(Node.Items[J].Text);
+            Item.SubItemImages[J] := Node.Items[J].ImageIndex;
+          end;
+        end;
+      end;
+    finally
+      FListView.EndUpdate;
+    end;
+        
+    FModified := True;
   end;
 end;
 
 { TListViewItemsPropertyEditor }
 
 procedure TListViewItemsPropertyEditor.Edit;
-Var DI : TComponentEditorDesigner;
-    Ds : TBaseComponentEditor;
-    LV : TCustomListView;
 begin
-  LV:=TListItems(GetObjectValue(TListItems)).Owner;
-  DI:=GetDesignerOfComponent(LV);
-  If Assigned(DI) then
-  begin
-    Ds:=GetComponentEditor(LV,DI);
-    If Assigned(Ds) then
-      Ds.ExecuteVerb(0);
-  end;
+  if EditListView(GetComponent(0) as TListView) then Modified;
 end;
 
 function TListViewItemsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paDialog,paReadOnly,paRevertable];
+  Result := [paDialog, paReadOnly, paRevertable];
 end;
 
 { TListViewComponentEditor }
 
-procedure TListViewComponentEditor.DoShowEditor;
-Var Dlg     : TListViewItemsPropertyEditorDlg;
-    LV      : TListView;
-    C       : TPersistent;
-    i,j     : Integer;
-    Li      : TListItem;
-    Hook    : TPropertyEditorHook;
-    TN,TN2  : TTreeNode;
-begin
-  Dlg:=TListViewItemsPropertyEditorDlg.Create(nil);
-  try
-    C:=GetComponent;
-    if C is TListView then LV:=TListView(C);
-    if C is TListItems then LV:=TListView(TListItems(C).Owner);
-    GetHook(Hook);
-
-    if Assigned(LV) then
-    begin
-      //Initialize the listbox items with ListView items
-      for i:=0 to LV.Items.Count-1 do
-      begin
-        Dlg.fBuild:=True;
-        TN:=Dlg.TV.Items.add(nil,LV.Items.Item[i].Caption);
-        TN.ImageIndex:=LV.Items[i].ImageIndex;
-
-        //sub items
-        for j:=0 to LV.Items.Item[i].SubItems.Count-1 do
-        begin
-          TN2:=Dlg.TV.Items.AddChild(TN,LV.Items.Item[i].SubItems.Strings[j]);
-          TN2.ImageIndex:=LV.Items.Item[i].SubItemImages[j];
-        end;
-      end;
-      
-      //ShowEditor
-      if (Dlg.ShowModal=mrOk) then
-      begin
-        LV.BeginUpdate;
-        try
-          //Clear items
-          LV.Items.Clear;
-      
-          //Recreate new items or modify
-          for i:=0 to Dlg.TV.Items.Count-1 do
-          begin
-            TN:=Dlg.TV.Items.Items[i];
-            If not Assigned(TN.Parent) then
-            begin
-              Li:=LV.Items.Add;
-              Li.Caption:=TN.Text;;
-              Li.ImageIndex:=TN.ImageIndex;
-              
-              //Sub items if exists
-              for j:=0 to TN.Count-1 do
-              begin
-                TN2:=TN.Items[j];
-                Li.SubItems.Add(TN2.Text);
-                Li.SubItemImages[j]:=TN.ImageIndex;
-              end;
-            end;
-          end;
-        finally
-          LV.EndUpdate;
-          if Assigned(Hook) then
-            Hook.Modified(Self);
-        end;
-      end;
-    end;
-  finally
-    Dlg.Free;
-  end;
-end;
-
 procedure TListViewComponentEditor.ExecuteVerb(Index: Integer);
+var
+  Hook: TPropertyEditorHook;
 begin
-  If Index=0 then
-    DoShowEditor;
+  if Index = 0 then
+  begin
+    GetHook(Hook);
+    if EditListView(GetComponent as TListView) then
+      if Assigned(Hook) then Hook.Modified(Self);
+  end;
 end;
 
 function TListViewComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:='';
-  If Index=0 then
-    Result:=sccsLvEdtCaption;
+  Result := '';
+  if Index = 0 then Result := sccsLvEdt;
 end;
 
 function TListViewComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
-end;
-
-{ TListViewItemsPropertyEditorDlg }
-constructor TListViewItemsPropertyEditorDlg.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  OnShow:=@OnDlgShow;
-  
-  fBuild:=False;
-  
-  //Size of window
-  Height:=261;
-  Width :=640;
-  Position := poScreenCenter;
-  Caption  := sccsLvEdtCaption;
-  
-  Panel1:=TPanel.Create(Self);
-  With Panel1 do begin
-    Name:='Panel1';
-    Caption:='';
-    Parent:=Self;
-    Height:=41;
-    Align :=alBottom;
-    OnResize:=@Panel1Resize;
-  end;
-
-  //Btn Ok
-  OkButton:=TBitBtn.Create(Self);
-  With OkButton do begin
-    Name:='OkButton';
-    Parent:=Panel1;
-    Left  :=Parent.ClientWidth-200;
-    Top   :=8;
-    Width :=90;
-    Kind  :=bkOk;
-  end;
-
-  //Button cancel
-  CancelButton:=TBitBtn.Create(Self);
-  With CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Panel1;
-    Left  :=Parent.ClientWidth-100;
-    Top   :=8;
-    Width :=90;
-    Kind  :=bkCancel;
-  end;
-
-  //Left group box
-  LeftGroupBox:=TGroupBox.Create(self);
-  With LeftGroupBox do begin
-    Name:='LeftGroupBox';
-    Parent :=Self;
-    Width  :=329;
-    Top    :=3;
-    Left   :=3;
-    Height :=Parent.ClientHeight-40;
-    Caption:=sccsLvEdtGrpLCaption;
-    OnResize:=@LeftGroupBoxResize;
-  end;
-
-  NewButton:=TButton.Create(Self);
-  with NewButton do begin
-    Name:='NewButton';
-    Parent :=LeftGroupBox;
-    Left   :=192;
-    Width  :=121;
-    Top    :=22;
-    Caption:=sccsLvEdtBtnAdd;
-    OnClick:=@btnAddOnClick;
-  end;
-
-  SubButton:=TButton.Create(self);
-  With SubButton do begin
-    Name:='SubButton';
-    Parent :=LeftGroupBox;
-    Enabled:=False;
-    Left   :=NewButton.Left;
-    Width  :=NewButton.Width;
-    Top    :=NewButton.Top+NewButton.Height+30;
-    Caption:=sccsLvEdtBtnAddSub;
-    OnClick:=@btnAddSubOnClick;
-  end;
-
-  DeleteButton:=TButton.Create(self);
-  With DeleteButton do
-  begin
-    Name:='DeleteButton';
-    Parent :=LeftGroupBox;
-    Left   :=NewButton.Left;
-    Width  :=NewButton.Width;
-    Top    :=SubButton.Top+SubButton.Height+30;
-    Caption:=sccsLvEdtBtnDel;
-    OnClick:=@btnDelOnClick;
-  end;
-
-  TV:=TTreeView.Create(self);
-  With TV do
-  begin
-    Name:='Tv';
-    Parent  :=LeftGroupBox;
-    Top     :=3;
-    Left    :=3;
-    Width   :=NewButton.Left-Left-Left;
-    Height  :=Parent.ClientHeight-Top-Top;
-    
-    //Options of TV
-    RightClickSelect:=True;
-    ReadOnly:=True;
-    ShowButtons:=False;
-    AutoExpand:=True;
-    HideSelection:=False;
-    
-    OnClick :=@LBOnClick;
-  end;
-
-  //Right group box
-  RightGroupBox:=TGroupBox.Create(self);
-  With RightGroupBox do
-  begin
-    Name:='RightGroupBox';
-    Parent :=Self;
-    Width  :=297;
-    Top    :=0;
-    Left   :=339;
-    Height :=217;
-    Caption:=sccsLvEdtGrpRCaption;
-    OnResize:=@RightGroupBoxResize;
-  end;
-
-  CaptionLabel:=TLabel.Create(self);
-  With CaptionLabel do
-  begin
-    Name:='CaptionLabel';
-    Parent :=RightGroupBox;
-    Left   :=16;
-    Top    :=32;
-    Caption:=sccsLvEdtlabCaption;
-  end;
-
-  ImgIndexLabel:=TLabel.Create(self);
-  With ImgIndexLabel do
-  begin
-    Name:='ImgIndexLabel';
-    Parent :=RightGroupBox;
-    Left   :=16;
-    Top    :=72;
-    Width  :=90;
-    Caption:=sccsLvEdtImgIndexCaption;
-  end;
-
-  EdtLabel:= TEdit.Create(self);
-  With EdtLabel do
-  begin
-    Parent:=RightGroupBox;
-    Left  :=134;
-    Text  :='';
-    Width :=155;
-    Top   :=24;
-    
-    OnChange:=@EdtLabelOnChange;
-  end;
-  
-  EdtIndex:= TEdit.Create(self);
-  With EdtIndex do
-  begin
-    Parent:=RightGroupBox;
-    Left  :=134;
-    Text  :='';
-    Width :=43;
-    Top   :=64;
-    
-    OnChange:=@EdtIndexOnChange;
-  end;
-  
-  OnResize:=@ListViewItemsPropertyEditorDlgResize;
-  ListViewItemsPropertyEditorDlgResize(nil);
-end;
-
-//Initialze the TEdit with selected node
-procedure TListViewItemsPropertyEditorDlg.RefreshEdts;
-Var TN : TTreeNode;
-begin
-  TN:=TV.Selected;
-  fbuild:=True;
-  try
-    if Assigned(TN) then
-    begin
-      edtLabel.Text:=TN.Text;
-      edtIndex.Text:=IntToStr(TN.ImageIndex);
-      edtLabel.Enabled:=True;
-      edtIndex.Enabled:=True;
-      SubButton.Enabled  :=True;
-    end
-    else
-    begin
-      EdtLabel.Text:='';
-      EdtIndex.Text:='';
-      SubButton.Enabled:=False;
-      edtLabel.Enabled:=False;
-      edtIndex.Enabled:=False;
-    end;
-  finally
-    fbuild:=false;
-  end;
-end;
-
-procedure TListViewItemsPropertyEditorDlg.LeftGroupBoxResize(Sender: TObject);
-begin
-  NewButton:=TButton.Create(Self);
-  with NewButton do begin
-    Left   :=192;
-    Width  :=121;
-    Top    :=22;
-  end;
-
-  With SubButton do begin
-    Left   :=NewButton.Left;
-    Width  :=NewButton.Width;
-    Top    :=NewButton.Top+NewButton.Height+30;
-  end;
-
-  With DeleteButton do begin
-    Left   :=NewButton.Left;
-    Width  :=NewButton.Width;
-    Top    :=SubButton.Top+SubButton.Height+30;
-  end;
-
-  With TV do
-  begin
-    Top     :=3;
-    Left    :=3;
-    Width   :=NewButton.Left-Left-Left;
-    Height  :=Parent.ClientHeight-Top-Top;
-  end;
-end;
-
-procedure TListViewItemsPropertyEditorDlg.ListViewItemsPropertyEditorDlgResize(
-  Sender: TObject);
-begin
-  With Panel1 do begin
-    Top:=Parent.ClientHeight-41;
-  end;
-
-  With LeftGroupBox do begin
-    Width  :=329;
-    Top    :=0;
-    Left   :=0;
-    Height :=Panel1.Top-Top;
-  end;
-
-  With RightGroupBox do
-  begin
-    Width  :=297;
-    Top    :=0;
-    Left   :=339;
-    Height :=Panel1.Top-Top;
-  end;
-end;
-
-procedure TListViewItemsPropertyEditorDlg.Panel1Resize(Sender: TObject);
-begin
-  With OkButton do begin
-    Left  :=Parent.ClientWidth-200;
-    Top   :=8;
-    Width :=90;
-  end;
-
-  With CancelButton do begin
-    Left  :=Parent.ClientWidth-100;
-    Top   :=8;
-    Width :=90;
-  end;
-end;
-
-procedure TListViewItemsPropertyEditorDlg.RightGroupBoxResize(Sender: TObject);
-begin
-  With CaptionLabel do
-  begin
-    Left   :=16;
-    Top    :=32;
-  end;
-
-  With ImgIndexLabel do
-  begin
-    Left   :=16;
-    Top    :=72;
-    Width  :=90;
-  end;
-
-  With EdtLabel do
-  begin
-    Left  :=134;
-    Text  :='';
-    Width :=155;
-    Top   :=24;
-  end;
-
-  With EdtIndex do
-  begin
-    Left  :=134;
-    Text  :='';
-    Width :=43;
-    Top   :=64;
-  end;
-end;
-
-//Créate new item
-procedure TListViewItemsPropertyEditorDlg.btnAddOnClick(Sender: TObject);
-Var TN : TTreeNode;
-begin
-  fBuild:=True;
-  try
-    TN:=TV.Items.Add(nil,sccsLvEdtBtnAdd);
-    TN.ImageIndex:=-1;
-    TV.Selected:=TN;
-    
-    RefreshEdts;
-  finally
-    fbuild:=False;
-  end;
-  
-  //Select the label editor
-  if EdtLabel.CanFocus then
-  begin
-    EdtLabel.SetFocus;
-    EdtLabel.SelectAll;
-  end;
-end;
-
-//Delete the selected item
-procedure TListViewItemsPropertyEditorDlg.btnDelOnClick(Sender: TObject);
-Var TN,TN2 : TTreeNode;
-begin
-  TN:=TV.Selected;
-  If Assigned(TN) then
-  begin
-    TN2:=TN.GetPrev;
-    TN.Delete;
-    TV.Selected:=TN2;
-    
-    RefreshEdts;
-  end;
-end;
-
-//Add an sub item
-procedure TListViewItemsPropertyEditorDlg.btnAddSubOnClick(Sender: TObject);
-Var TN,TN2 : TTreeNode;
-begin
-  TN:=TV.Selected;
-  If Assigned(TN) then
-  begin
-    If Assigned(TN.Parent) then
-        TN:=TN.Parent;
-
-    TN2:=TV.Items.AddChild(TN,sccsLvEdtBtnAdd);
-    TN2.ImageIndex:=-1;
-    TV.Selected:=TN2;
-
-    RefreshEdts;
-  end;
-
-  //Select the label editor
-  if EdtLabel.CanFocus then
-  begin
-    EdtLabel.SetFocus;
-    EdtLabel.SelectAll;
-  end;
-end;
-
-
-//Modify the TEdit for the Label and Image index
-procedure TListViewItemsPropertyEditorDlg.LBOnClick(Sender: TObject);
-begin
-  RefreshEdts;
-end;
-
-//Refrsh the label list
-procedure TListViewItemsPropertyEditorDlg.EdtLabelOnChange(Sender: TObject);
-Var TN : TTreeNode;
-begin
-  if fBuild then Exit;
-  TN:=TV.Selected;
-  if Assigned(TN) then
-    TN.Text:=edtLabel.Text;
-end;
-
-//Refresh the index list
-procedure TListViewItemsPropertyEditorDlg.EdtIndexOnChange(Sender: TObject);
-Var i,E : Integer;
-    TN  : TTreeNode;
-begin
-  if fBuild then Exit;
-  TN:=TV.Selected;
-  if Assigned(TN) then
-  begin
-    Val(edtIndex.Text,i,E);
-    if E<>0 then i:=-1;
-    TN.ImageIndex:=i;
-  end;
-end;
-
-//Initialize the dialog
-procedure TListViewItemsPropertyEditorDlg.OnDlgShow(Sender: TObject);
-Var TN : TTReeNode;
-begin
-  DebugLn('TListViewItemsPropertyEditorDlg.OnDlgShow ',
-    IntToStr(Panel1.Top),' ',BoolToStr(Panel1.Align=alBottom));
-  TN:=TV.TopItem;
-  If Assigned(TN) then
-  begin
-    TV.Selected:=TN;
-    RefreshEdts;
-  end;
+  Result := 1;
 end;
 
 initialization
+  {$I listviewpropedit.lrs}
+  
   //Register TListViewItemsPropertyEditor
-  RegisterPropertyEditor(ClassTypeInfo(TListItems), TListView,'Items',
+  RegisterPropertyEditor(ClassTypeInfo(TListItems), TListView, 'Items',
     TListViewItemsPropertyEditor);
 
   //Register a component editor for TListView
-  RegisterComponentEditor(TListView,TListViewComponentEditor);
+  RegisterComponentEditor(TListView, TListViewComponentEditor);
+  
 end.

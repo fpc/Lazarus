@@ -10,7 +10,7 @@
  *                                                                           *
  *****************************************************************************
 
-@author(Olivier guilbaud (OG) <golivier@free.fr>)
+@author(Olivier guilbaud (OG) <golivier@free.fr>), Tomas Gregorovic
 @created(24/02/2003)
 @lastmod(25/02/2003)
 
@@ -20,9 +20,10 @@ History
  26-Feb-2003 OG - Update for use assign.
  27-feb-2003 OG - If possible zoom x2 the selected image.
                 - Fix the superposition of images
+ 27-Jan-2006 TG - Form converted to lfm.
  
 Todo :
-  - Rogne and truncate image capability
+  - masks and bitmap transparency
 }
 
 unit ImageListEditor;
@@ -34,54 +35,62 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
   StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
-  ObjInspStrConsts;
+  ColorBox, ExtDlgs, ObjInspStrConsts;
 
-const
-  //See @link  TGraphicPropertyEditorForm.LoadBTNCLICK for explanations
-  FormatsSupported: Array[0..1] of String =('.xpm',
-                                             '.bmp');
+type
+  TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);
 
-Type
+  PGlyphInfo = ^TGlyphInfo;
+  TGlyphInfo = record
+    Bitmap: TBitmap;
+    Adjustment: TGlyphAdjustment;
+    TransparentColor: TColor;
+  end;
+  
   { TImageListEditorDlg }
 
-  Directions = (Up,Down);
-  
-  //Editor dialog
-  TImageListEditorDlg = Class(TForm)
+  TImageListEditorDlg = class(TForm)
+    BtnOK: TBitBtn;
+    BtnCancel: TBitBtn;
+    BtnApply: TBitBtn;
+    BtnHelp: TBitBtn;
+    BtnAdd: TButton;
+    BtnClear: TButton;
+    BtnDelete: TButton;
+    BtnMoveUp: TButton;
+    BtnMoveDown: TButton;
+    BtnSave: TButton;
+    ColorBoxTransparent: TColorBox;
+    GroupBoxL: TGroupBox;
+    GroupBoxR: TGroupBox;
+    ImageList: TImageList;
+    LabelSize: TLabel;
+    LabelTransparent: TLabel;
+    OpenDialog: TOpenPictureDialog;
+    RadioGroup: TRadioGroup;
+    Preview: TScrollBox;
+    SaveDialog: TSavePictureDialog;
+    TreeView: TTreeView;
+    procedure BtnAddClick(Sender: TObject);
+    procedure BtnClearClick(Sender: TObject);
+    procedure BtnDeleteClick(Sender: TObject);
+    procedure BtnMoveUpClick(Sender: TObject);
+    procedure BtnSaveClick(Sender: TObject);
+    procedure ColorBoxTransparentClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure PreviewPaint(Sender: TObject);
+    procedure btnApplyClick(Sender: TObject);
+    procedure TreeViewDeletion(Sender: TObject; Node: TTreeNode);
+    procedure TreeViewSelectionChanged(Sender: TObject);
   private
-    fImg: TImage;
-    fLv : TListView;
-    fImgL: TImageList;
-    fBtnAdd  : TButton;
-    fBtnDel  : TButton;
-    fBtnClear: TButton;
-    fBtnMoveUp   : TButton;
-    fBtnMoveDown : TButton;
-    fDirName : String;
-    FModified: boolean;
-    FmnuLVPopupAdd : TMenuItem;
-    FmnuLVPopupDelete : TMenuItem;
-    FmnuLVPopupClear : TMenuItem;
-    FmnuLVPopupMoveUp : TMenuItem;
-    FmnuLVPopupMoveDown : TMenuItem;
-    
-    procedure OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-    procedure OnClickAdd(Sender: TObject);
-    procedure OnClickDel(Sender: TObject);
-    procedure OnClickClear(Sender: TObject);
-    procedure OnClickMoveUp(Sender: TObject);
-    procedure OnClickMoveDown(Sender: TObject);
-    procedure SetModified(const AValue: boolean);
-    procedure MoveImageIndex(Direction : Directions);
-    procedure AddImageToList(FileName: string);
+    FImageList: TImageList;
+    FModified: Boolean;
+    FPreviewBmp: TBitmap;
   public
-    mnuLVPopup : TPopupMenu;
-    constructor Create(aOwner: TComponent); override;
+    procedure LoadFromImageList(AImageList: TImageList);
+    procedure SaveToImageList;
 
-    //Assign an List images at editor and initialise the
-    //TListView component
-    Procedure AssignImageList(aImgL: TImageList);
-    property Modified: boolean read FModified write SetModified;
+    procedure AddImageToList(FileName: String);
   end;
 
   //Editor call by Lazarus with 1 verbe only
@@ -90,480 +99,397 @@ Type
     procedure DoShowEditor;
   public
     procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
+    function GetVerb(Index: Integer): String; override;
     function GetVerbCount: Integer; override;
   end;
 
-Implementation
+implementation
 
-//If Select item, preview the image
-procedure TImageListEditorDlg.OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-Var Bmp: TBitMap;
+function EditImageList(AImageList: TImageList): Boolean;
+var
+  ImageListEditorDlg: TImageListEditorDlg;
 begin
-  if Assigned(Item) and Selected then
-  begin
-    if (Item.ImageIndex>=0) then
-    begin
-      Bmp:=TBitMap.Create;
-      fImgL.GetBitmap(Item.ImageIndex,Bmp);
-      fImg.Picture.BitMap:=Bmp;
-      Bmp.Free;
+  ImageListEditorDlg := TImageListEditorDlg.Create(Application);
+  try
+    ImageListEditorDlg.LoadFromImageList(AImageList);
 
-      fBtnDel.Enabled:=True;
-      fImg.Visible:=True;
-      fBtnClear.Enabled:=True;
-      fImg.Invalidate;
+    if ImageListEditorDlg.ShowModal = mrOk then
+      ImageListEditorDlg.SaveToImageList;
+
+    Result := ImageListEditorDlg.FModified;
+  finally
+    ImageListEditorDlg.Free;
+  end;
+end;
+
+function CreateGlyph(B: TBitmap; Width, Height: Integer;
+  Adjustment: TGlyphAdjustment; TransparentColor: TColor = clFuchsia): TBitmap;
+begin
+  Result := TBitmap.Create;
+  if (Adjustment = gaNone) then
+  begin
+    Result.Assign(B);
+  end
+  else
+  begin
+    Result.Width := Width;
+    Result.Height := Height;
+    Result.Canvas.Brush.Color := TransparentColor;
+    Result.Canvas.FillRect(Bounds(0, 0, Width, Height));
+
+    case Adjustment of
+    gaStretch: Result.Canvas.StretchDraw(Bounds(0, 0, Width, Height), B);
+    gaCrop: Result.Canvas.Draw(0, 0, B);
+    gaCenter: Result.Canvas.Draw((Width - B.Width) div 2, (Height - B.Height) div 2, B);
     end;
-  end;
-end;
-
-procedure TImageListEditorDlg.AddImageToList(FileName: string);
-var Ext: string;
-    i: integer;
-    Bmp: TBitmap;
-    AListItem: TListItem;
-begin
-  Ext:=ExtractFileExt(FileName);
-  //Check if the file is supported
-  for i:=Low(FormatsSupported) to High(FormatsSupported) do
-  begin
-    if AnsiCompareText(Ext,FormatsSupported[i]) = 0 then
-    begin
-      fImg.Picture.LoadFromFile(FileName);
-      Break;
-    end;
-  end;
-  //If the image is loaded, then add to list
-  if Assigned(fImg.Picture.Graphic) then
-  begin
-    if not fImg.Picture.Graphic.Empty then
-    begin
-      Bmp:=TBitMap.Create;
-      Bmp.LoadFromFile(FileName);
-      Modified:=true;
-      i:=fImgL.Add(Bmp,nil);
-      AListItem:=fLV.Items.Add;
-      AListItem.Caption:=IntToStr(i);
-      AListItem.ImageIndex:=i;
-      fLV.Selected:=AListItem;
-    end;
-  end;
-end;
-
-//Select new image file and add in list
-procedure TImageListEditorDlg.OnClickAdd(Sender: TObject);
-Var OpenDlg: TOpenDialog;
-    i      : Integer;
-begin
- Opendlg := TOpenDialog.Create(Self);
- Try
-   Opendlg.Options:=[ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofAllowMultiSelect];
-   Opendlg.Filter:='All supported files (*.xpm;*.bmp)|*.xpm;*.bmp|'+
-                   'Pixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp';
-   OpenDlg.InitialDir:=fDirName; //last directory
-   
-   If OpenDlg.Execute then
-   begin
-     fDirName:=ExtractFilePath(OpenDlg.FileName); //save the directory
-     for i := 0 to OpenDlg.Files.Count - 1 do
-       AddImageToList(OpenDlg.Files[i]);
-   end;
- finally
-   OpenDlg.Free;
- end;
-end;
-
-//Delete the selected image and refresh screen
-procedure TImageListEditorDlg.OnClickDel(Sender: TObject);
-Var IL : TListItem;
-    i,j: Integer;
-begin
-  If Assigned(fLV.Selected) then
-  begin
-    Modified:=true;
-    fImgL.Delete(fLV.Selected.ImageIndex);
-    IL:=flv.Selected;
-    i:=Il.Index;
-    fLv.Items.Delete(Il.Index);
-    
-    //Select an new item
-    if (fLv.Items.Count<>0) then
-    begin
-      for j:=i to fLv.Items.Count-1 do
-      begin
-        fLv.Items.Item[j].ImageIndex:=fLv.Items.Item[j].ImageIndex-1;
-        fLv.Items.Item[j].Caption:=IntToStr(fLv.Items.Item[j].ImageIndex);
-      end;
-      
-      if i>fLv.Items.Count-1 then
-        Dec(i);
-        
-      Il:=fLv.Items.Item[i];
-      fLv.Selected:=IL;
-    end
-    else
-    begin
-      fBtnDel.Enabled:=False;
-      fImg.Visible:=False;
-      fBtnClear.Enabled:=False;
-    end;
-  end;
-end;
-
-//Delete all images of list  and items for TListView
-procedure TImageListEditorDlg.OnClickClear(Sender: TObject);
-begin
-  if (fImgL.Count>0)
-  and (MessageDlg(sccsILConfirme,mtConfirmation,[mbYes,mbNo],0)=mrYes) then
-  begin
-    Modified:=true;
-    fImgL.Clear;
-    while fLV.Items.Count<>0 do
-      fLV.Items.Delete(0);
-    fBtnDel.Enabled:=False;
-    fBtnClear.Enabled:=False;
-    fImg.Visible:=False;
-  end;
-end;
-
-procedure TImageListEditorDlg.OnClickMoveDown(Sender: TObject);
-begin
-  MoveImageIndex(Down);
-end;
-
-procedure TImageListEditorDlg.OnClickMoveUp(Sender: TObject);
-begin
-  MoveImageIndex(Up);
-end;
   
-procedure TImageListEditorDlg.SetModified(const AValue: boolean);
-begin
-  if FModified=AValue then exit;
-  FModified:=AValue;
+    Result.TransparentColor := TransparentColor;
+    Result.Transparent := True;
+    Result.TransparentMode := tmAuto;
+  end;
 end;
 
 { TImageListEditorDlg }
-constructor TImageListEditorDlg.Create(aOwner: TComponent);
-Var Cmp: TWinControl;
+
+procedure TImageListEditorDlg.FormCreate(Sender: TObject);
 begin
-  inherited Create(aOwner);
-  BorderStyle:=bssingle;
+  Caption := sccsILEdtCaption;
+
+  GroupBoxL.Caption := sccsILEdtGrpLCaption;
+  GroupBoxR.Caption := sccsILEdtGrpRCaption;
+
+  BtnAdd.Caption := sccsILEdtAdd;
+  BtnDelete.Caption := sccsILEdtDelete;
+  BtnApply.Caption := sccsILEdtApply;
+  BtnClear.Caption := sccsILEdtClear;
+  BtnMoveUp.Caption := sccsILEdtMoveUp;
+  BtnMoveDown.Caption := sccsILEdtMoveDown;
+  BtnSave.Caption := sccsILEdtSave;
+
+  LabelTransparent.Caption := sccsILEdtransparentColor;
+
+  RadioGroup.Caption := sccsILEdtAdjustment;
+  RadioGroup.Items[0] := sccsILEdtNone;
+  RadioGroup.Items[1] := sccsILEdtStretch;
+  RadioGroup.Items[2] := sccsILEdtCrop;
+  RadioGroup.Items[3] := sccsILEdtCenter;
   
-  //Temporary list
-  fImgL:=TImageList.Create(self);
-
-  //Default directory
-  fDirName:=ExtractFilePath(ParamStr(0));
-  
-  //Sise of window
-  Height:=331;
-  Width :=579;
-  BorderStyle:=bsSingle;
-  Position :=poScreenCenter;
-  Caption  :=sccsILEdtCaption;
-  
-  //Bnt Ok
-  With TBitBtn.Create(self) do
-  begin
-    Left  :=448;
-    Width :=99;
-    Top   :=16;
-    Kind  :=bkOk;
-    Parent:=self;
-  end;
-
-  //Bnt Cancel
-  With TBitBtn.Create(self) do
-  begin
-    Left  :=448;
-    Width :=99;
-    Top   :=56;
-    Kind  :=bkCancel;
-    Parent:=self;
-  end;
-
-  //Top group box
-  Cmp:=TGroupBox.Create(self);
-  With TgroupBox(Cmp) do
-  begin
-    Width  :=416;
-    Top    :=6;
-    Left   :=8;
-    Height :=130;
-    Parent :=Self;
-    Caption:=sccsILCmbImgSel
-  end;
-
-  //TShape for best view
-  with TShape.Create(self) do
-  begin
-    Parent      :=Cmp;
-    Left        :=11;
-    Width       :=98;
-    Top         :=6;
-    Height      :=98;
-  end;
-
-  //Image for preview a selected image item
-  fImg:=TImage.Create(self);
-  With fImg do
-  begin
-    Parent      :=Cmp;
-    Transparent :=False;
-    Left        :=12;
-    Width       :=97;
-    Top         :=7;
-    Height      :=97;
-  end;
-
-  //bottom group box
-  Cmp:=TGroupBox.Create(self);
-  With TgroupBox(Cmp) do
-  begin
-    Width  :=562;
-    Top    :=144;
-    Left   :=8;
-    Height :=180;
-    Parent :=Self;
-    Caption:=sccsILCmbImgList
-  end;
-
-  fLV :=TListView.Create(self);
-  With fLV do
-  begin
-    Parent :=Cmp;
-    Left   :=3;
-    Width  :=411;
-    Top    :=1;
-    Height :=160;
-    SmallImages:=fImgL;
-    ScrollBars:=sshorizontal;
-    fLV.OnSelectItem:=@OnLVLSelectItem;
-  end;
-
-  fBtnAdd:=TButton.Create(self);
-  With fBtnAdd do
-  begin
-    Parent  :=Cmp;
-    Top     :=1;
-    Width   :=112;
-    Left    :=430;
-    Height  :=25;
-    Caption :=sccsILBtnAdd;
-    OnClick :=@OnClickAdd;
-  end;
-
-  fBtnDel:=TButton.Create(self);
-  With fBtnDel do
-  begin
-    Parent  :=Cmp;
-    Top     :=34;
-    Width   :=112;
-    Left    :=430;
-    Height  :=25;
-    Enabled :=False;
-    Caption :=sccsLvEdtBtnDel; //Same caption
-    OnClick :=@OnClickDel;
-  end;
-
-  fBtnClear:=TButton.Create(self);
-  With fBtnClear do
-  begin
-    Parent  :=Cmp;
-    Top     :=66;
-    Width   :=112;
-    Left    :=430;
-    Height  :=25;
-    Enabled :=False;
-    Caption :=sccsILBtnClear;
-    OnClick :=@OnClickClear;
-  end;
-  
-  fBtnMoveUp:=TButton.Create(self);
-  With fBtnMoveUp do
-  begin
-    Parent  :=Cmp;
-    Top     :=98;
-    Width   :=112;
-    Left    :=430;
-    Height  :=25;
-    //Enabled :=False;
-    Enabled :=True;
-    //Caption :=sccsILBtnClear;
-    Caption := cActionListEditorMoveUpAction;
-    OnClick := @OnClickMoveUp;
-  end;
-
-  fBtnMoveDown:=TButton.Create(self);
-  With fBtnMoveDown do
-  begin
-    Parent  :=Cmp;
-    Top     :=130;
-    Width   :=112;
-    Left    :=430;
-    Height  :=25;
-    //Enabled :=False;
-    Enabled :=True;
-    //Caption :=sccsILBtnClear;
-    Caption := cActionListEditorMoveDownAction;
-    OnClick := @OnClickMoveDown;
-  end;
-
-  FmnuLVPopupAdd := TMenuItem.Create(Self);
-  With FmnuLVPopupAdd do
-  begin
-    Caption := ilesAdd;
-    OnClick := @OnClickAdd;
-  end;
-  
-  FmnuLVPopupDelete := TMenuItem.Create(Self);
-  With FmnuLVPopupDelete do
-  begin
-    Caption := oisDelete;
-    OnClick := @OnClickDel;
-  end;
-
-  FmnuLVPopupClear := TMenuItem.Create(Self);
-  With FmnuLVPopupClear do
-  begin
-    Caption := sccsILBtnClear;
-    OnClick := @OnClickClear;
-  end;
-
-  FmnuLVPopupMoveUp := TMenuItem.Create(Self);
-  With FmnuLVPopupMoveUp do
-  begin
-    Caption := cActionListEditorMoveUpAction;
-    OnClick := @OnClickMoveUp;
-  end;
-
-  FmnuLVPopupMoveDown := TMenuItem.Create(Self);
-  With FmnuLVPopupMoveDown do
-  begin
-    Caption := cActionListEditorMoveDownAction;
-    OnClick := @OnClickMoveDown;
-  end;
-
-  mnuLVPopup := TPopupMenu.Create(Self);
-  With mnuLVPopup do
-  begin
-    Items.Add(FmnuLVPopupAdd);
-    Items.Add(FmnuLVPopupDelete);
-    Items.Add(FmnuLVPopupClear);
-    Items.Add(FmnuLVPopupMoveUp);
-    Items.Add(FmnuLVPopupMoveDown);
-  end;
-
-  fLV.PopupMenu := mnuLVPopup;
+  OpenDialog.Title := sccsILEdtOpenDialog;
+  SaveDialog.Title := sccsILEdtSaveDialog;
 end;
 
-//Assign an List images at editor
-procedure TImageListEditorDlg.AssignImageList(aImgL: TImageList);
-Var IL: TListItem;
-    i : Integer;
+procedure TImageListEditorDlg.BtnAddClick(Sender: TObject);
+var
+  I: Integer;
 begin
-  If Assigned(aImgL) then
+  if OpenDialog.Execute then
   begin
-    //Clear all existing images
-    fImgL.Clear;
-    while fLV.Items.Count<>0 do
-      fLV.Items.Delete(0);
-
-    fImgL.Assign(aImgL);
-
-    for i:=0 to fImgL.Count-1 do
-    begin
-      IL:=fLV.Items.Add;
-      Il.ImageIndex:=i;
-      IL.Caption:=IntToStr(i);
+    TreeView.BeginUpdate;
+    try
+      ImageList.BeginUpdate;
+      try
+        for I := 0 to OpenDialog.Files.Count - 1 do AddImageToList(OpenDialog.Files[I]);
+      finally
+        ImageList.EndUpdate;
+      end;
+    finally
+      TreeView.EndUpdate;
     end;
-    
-    //If possible zoom the selected image
-    if (fImgL.Width<97) and (fImgL.Height<97) then
-    begin
-      fImg.Width  :=fImgL.Width;
-      fImg.Height :=fImgL.Height;
-      fImg.Stretch:=false;// scaling is not yet supported for transparent images
+    TreeView.SetFocus;
+  end;
+end;
 
-      //Center the image
-      fImg.Left:=12+(97-fImg.Width);
-      fImg.Top := 7+(97-fImg.Height);
+procedure TImageListEditorDlg.BtnClearClick(Sender: TObject);
+begin
+  ImageList.Clear;
+  TreeView.Items.Clear;
+end;
+
+procedure TImageListEditorDlg.BtnDeleteClick(Sender: TObject);
+var
+  Node: TTreeNode;
+  I, S: Integer;
+begin
+  if Assigned(TreeView.Selected) then
+  begin
+    Node := TreeView.Selected.GetNext;
+    if Node = nil then Node := TreeView.Selected.GetPrev;
+
+    S := TreeView.Selected.ImageIndex;
+    ImageList.Delete(S);
+    TreeView.BeginUpdate;
+    try
+      TreeView.Selected.Delete;
+      
+      for I := S to TreeView.Items.Count -1 do
+      begin
+        TreeView.Items[I].Text := IntToStr(I);
+        TreeView.Items[I].ImageIndex := I;
+        TreeView.Items[I].SelectedIndex := I;
+      end;
+    finally
+      TreeView.EndUpdate;
+    end;
+    TreeView.Selected := Node;
+  end;
+  TreeView.SetFocus;
+end;
+
+procedure TImageListEditorDlg.BtnMoveUpClick(Sender: TObject);
+var
+  S, D: Integer;
+  P: PGlyphInfo;
+begin
+  if Assigned(TreeView.Selected) and (TreeView.Items.Count > 1) then
+  begin
+    S := TreeView.Selected.ImageIndex;
+    D := (Sender as TControl).Tag;
+    if (S + D >= 0) and (S + D < TreeView.Items.Count) then
+    begin
+      ImageList.Move(S, S + D);
+      
+      P := TreeView.Items[S + D].Data;
+      TreeView.Items[S + D].Data := TreeView.Items[S].Data;
+      TreeView.Items[S].Data := P;
+      
+      TreeView.Selected := TreeView.Items[S + D];
+      TreeView.SetFocus;
+    end;
+  end;
+end;
+
+procedure TImageListEditorDlg.BtnSaveClick(Sender: TObject);
+var
+  Picture: TPicture;
+begin
+  if Assigned(TreeView.Selected) then
+    if SaveDialog.Execute then
+    begin
+      Picture := TPicture.Create;
+      try
+        ImageList.GetBitmap(TreeView.Selected.ImageIndex, Picture.Bitmap);
+        Picture.SaveToFile(SaveDialog.FileName);
+      finally
+        Picture.Free;
+      end;
+    end;
+end;
+
+procedure TImageListEditorDlg.ColorBoxTransparentClick(Sender: TObject);
+var
+  P: PGlyphInfo;
+  T: TBitmap;
+begin
+  if Assigned(TreeView.Selected) then
+  begin
+    if Assigned(TreeView.Selected.Data) then
+    begin
+      P := PGlyphInfo(TreeView.Selected.Data);
+      P^.Adjustment := TGlyphAdjustment(RadioGroup.ItemIndex);
+      P^.TransparentColor := ColorBoxTransparent.Selection;
+      
+      T := CreateGlyph(P^.Bitmap, ImageList.Width, ImageList.Height, P^.Adjustment,
+        P^.TransparentColor);
+      ImageList.BeginUpdate;
+      try
+        ImageList.Delete(TreeView.Selected.ImageIndex);
+        ImageList.Insert(TreeView.Selected.ImageIndex, T, nil);
+      finally
+        ImageList.EndUpdate;
+      end;
+      
+      TreeView.Invalidate;
+      TreeViewSelectionChanged(nil);
+    end
+  end;
+end;
+
+procedure TImageListEditorDlg.PreviewPaint(Sender: TObject);
+begin
+  if Assigned(FPreviewBmp) then
+  begin
+    Preview.Canvas.Draw(0, 0, FPreviewBmp);
+  end;
+end;
+
+procedure TImageListEditorDlg.btnApplyClick(Sender: TObject);
+begin
+  SaveToImageList;
+end;
+
+procedure TImageListEditorDlg.TreeViewDeletion(Sender: TObject; Node: TTreeNode);
+var
+  P: PGlyphInfo;
+begin
+  if Assigned(Node) then
+  begin
+    if Node.Data <> nil then
+    begin
+      P := PGlyphInfo(Node.Data);
+      P^.Bitmap.Free;
+      Dispose(P);
+    end;
+  end;
+end;
+
+procedure TImageListEditorDlg.TreeViewSelectionChanged(Sender: TObject);
+var
+  P: PGlyphInfo;
+begin
+  if Assigned(TreeView.Selected) then
+  begin
+    if Assigned(FPreviewBmp) then FPreviewBmp.Free;
+    FPreviewBmp := TBitmap.Create;
+    ImageList.GetBitmap(TreeView.Selected.ImageIndex, FPreviewBmp);
+
+    if Assigned(TreeView.Selected.Data) then
+    begin
+      P := PGlyphInfo(TreeView.Selected.Data);
+      
+      RadioGroup.Enabled := True;
+      RadioGroup.OnClick := nil;
+      RadioGroup.ItemIndex := Integer(P^.Adjustment);
+      RadioGroup.OnClick := @ColorBoxTransparentClick;
+      
+      ColorBoxTransparent.Enabled := True;
+      ColorBoxTransparent.OnChange := nil;
+      ColorBoxTransparent.Selection := P^.TransparentColor;
+      ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
     end
     else
     begin
-      //Restore the default position
-      fImg.Width  :=97;
-      fImg.Height :=97;
-      fImg.Top    :=7;
-      fImg.Left   :=12;
-      fImg.Stretch:=false;// scaling is not yet supported for transparent images
+      RadioGroup.Enabled := False;
+      RadioGroup.OnClick := nil;
+      RadioGroup.ItemIndex := 0;
+      RadioGroup.OnClick := @ColorBoxTransparentClick;
+
+      ColorBoxTransparent.Enabled := False;
+      ColorBoxTransparent.OnChange := nil;
+      ColorBoxTransparent.Selection := clFuchsia;
+      ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
     end;
     
-    fBtnDel.Enabled:=(fImgL.Count<>0);
-    fBtnClear.Enabled:=(fImgL.Count<>0);
-    fImg.Visible:=(fImgL.Count<>0);
-    //Select the first item
-    if (fImgL.Count<>0) then
-      fLV.Selected:=fLV.Items.Item[0];
+    LabelSize.Caption := Format('%d x %d', [FPreviewBmp.Width, FPreviewBmp.Height]);
 
+    Preview.HorzScrollBar.Range := FPreviewBmp.Width;
+    Preview.VertScrollBar.Range := FPreviewBmp.Height;
+    Preview.Invalidate;
+  end
+  else
+  begin
+    if Assigned(FPreviewBmp) then FreeThenNil(FPreviewBmp);
+    LabelSize.Caption := '';
+    
+    RadioGroup.Enabled := False;
+    RadioGroup.OnClick := nil;
+    RadioGroup.ItemIndex := 0;
+    RadioGroup.OnClick := @ColorBoxTransparentClick;
+
+    ColorBoxTransparent.Enabled := False;
+    ColorBoxTransparent.OnChange := nil;
+    ColorBoxTransparent.Selection := clFuchsia;
+    ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
+      
+    Preview.HorzScrollBar.Range := ImageList.Width;
+    Preview.VertScrollBar.Range := ImageList.Height;
+    Preview.Invalidate;
   end;
 end;
 
-procedure TImageListEditorDlg.MoveImageIndex(Direction : Directions);
+procedure TImageListEditorDlg.LoadFromImageList(AImageList: TImageList);
 var
-  iSelected : Integer;
+  I, C: Integer;
 begin
-  //sanity check
-  if fLv.Selected <> nil then
+  ImageList.Clear;
+  FImageList := AImageList;
+  FModified := False;
+    
+  if Assigned(AImageList) then
   begin
-    if (Direction = Up) and (fLv.Selected.Index > 0 ) then
-    begin
-      iSelected := fLv.Selected.Index;
-      fImgL.Move(iSelected,iSelected-1);
-      fLv.Selected := fLv.Items[iSelected - 1];
-      Modified := True;
-    end else if (Direction = Down) and (fLv.Selected.Index < (fLv.Items.Count-1)) then
-    begin
-      fImgL.Move(fLv.Selected.Index,fLv.Selected.Index+1);
-      fLv.Selected := fLv.Items[fLv.Selected.Index + 1];
-      Modified := True;
+    ImageList.Assign(AImageList);
+
+    C := ImageList.Count;
+
+    TreeView.BeginUpdate;
+    try
+      TreeView.Items.Clear;
+      for I := 0 to Pred(C) do
+      begin
+        with TreeView.Items.Add(nil, IntToStr(I)) do
+        begin
+          ImageIndex := I;
+          SelectedIndex := I;
+          Data := nil;
+        end;
+      end;
+    finally
+      TreeView.EndUpdate;
     end;
+  end;
+end;
+
+procedure TImageListEditorDlg.SaveToImageList;
+begin
+  FImageList.Assign(ImageList);
+  FModified := True;
+end;
+
+procedure TImageListEditorDlg.AddImageToList(FileName: String);
+var
+  I: Integer;
+  Glyph, Bmp: TBitmap;
+  Picture: TPicture;
+  P: PGlyphInfo;
+  Node: TTreeNode;
+begin
+  SaveDialog.InitialDir := ExtractFileDir(FileName);
+  Bmp := nil;
+  
+  Picture := TPicture.Create;
+  try
+    Picture.LoadFromFile(FileName);
+    
+    Bmp := TBitmap.Create;
+    Bmp.Assign(Picture.Bitmap);
+  finally
+    Picture.Free;
+  end;
+
+  if Assigned(Bmp) then
+  begin
+    if not Bmp.Empty then
+    begin
+      Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
+      I := ImageList.Add(Glyph, nil);
+      
+      New(P);
+      P^.Bitmap := Bmp;
+      P^.Adjustment := gaNone;
+      P^.TransparentColor := clFuchsia;
+      
+      Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
+      Node.ImageIndex := I;
+      Node.SelectedIndex := I;
+      TreeView.Selected := Node;
+    end
+    else Bmp.Free;
   end;
 end;
 
 { TImageListComponentEditor }
 
 procedure TImageListComponentEditor.DoShowEditor;
-Var Dlg: TImageListEditorDlg;
-    Hook: TPropertyEditorHook;
-    aImg: TImageList;
+var
+  Hook: TPropertyEditorHook;
+  AImg: TImageList;
 begin
-  Dlg:=TImageListEditorDlg.Create(nil);
-  try
-    If GetComponent is TImageList then
-    begin
-      aImg:=TImageList(GetComponent);
-      GetHook(Hook);
-      Dlg.AssignImageList(aImg);
+  if GetComponent is TImageList then
+  begin
+    AImg := TImageList(GetComponent);
+    GetHook(Hook);
 
-      //ShowEditor
-      if (Dlg.ShowModal=mrOK) and Dlg.Modified then
-      begin
-      
-        //Apply the modifications
-        DebugLn('TImageListComponentEditor.DoShowEditor A %d %d,%d',
-          [aImg.Count,aImg.Width,aImg.Height]);
-        aImg.Assign(Dlg.fImgL);
-        DebugLn('TImageListComponentEditor.DoShowEditor B %d %d,%d',
-          [aImg.Count,aImg.Width,aImg.Height]);
-
-        //not work :o( aImg.AddImages(Dlg.fImgL);
-        if Assigned(Hook) then
-          Hook.Modified(Self);
-      end;
-    end;
-  finally
-    Dlg.Free;
+    if EditImageList(AImg) then
+      if Assigned(Hook) then Hook.Modified(Self);
   end;
   DebugLn('TImageListComponentEditor.DoShowEditor END ');
 end;
@@ -573,17 +499,19 @@ begin
   DoShowEditor;
 end;
 
-function TImageListComponentEditor.GetVerb(Index: Integer): string;
+function TImageListComponentEditor.GetVerb(Index: Integer): String;
 begin
-  Result:=sccsILEdtCaption+' ...';
+  Result := sccsILEdtCaption + '...';
 end;
 
 function TImageListComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
+  Result := 1;
 end;
 
 initialization
+  {$I imagelisteditor.lrs}
+  
   //Register a component editor for TImageList
   RegisterComponentEditor(TImageList,TImageListComponentEditor);
 end.

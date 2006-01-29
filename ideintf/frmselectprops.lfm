@@ -1,10 +1,11 @@
 object SelectPropertiesForm: TSelectPropertiesForm
+  ActiveControl = LBProperties
   Caption = 'Select properties'
   ClientHeight = 462
   ClientWidth = 485
   OnClose = SelectPropertiesFormClose
   OnCreate = SelectPropertiesFormCreate
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poDesktopCenter
   HorzScrollBar.Page = 484
   VertScrollBar.Page = 461
@@ -34,27 +35,25 @@ object SelectPropertiesForm: TSelectPropertiesForm
       Width = 221
       object LProperties: TLabel
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Around = 3
         Caption = '&Properties'
         Color = clNone
         Layout = tlCenter
+        ParentColor = False
         Left = 3
-        Height = 25
+        Height = 14
         Top = 3
         Width = 215
       end
       object LBProperties: TListBox
         Align = alClient
-        BorderSpacing.OnChange = nil
         MultiSelect = True
         OnClick = LBPropertiesClick
         OnDblClick = LBPropertiesDblClick
         Sorted = True
         TabOrder = 0
-        TopIndex = -1
-        Height = 217
-        Top = 31
+        Height = 228
+        Top = 20
         Width = 221
       end
     end
@@ -75,8 +74,9 @@ object SelectPropertiesForm: TSelectPropertiesForm
         Caption = 'Co&mponents'
         Color = clNone
         Layout = tlCenter
+        ParentColor = False
         Left = 3
-        Height = 23
+        Height = 14
         Top = 3
         Width = 194
       end
@@ -85,9 +85,8 @@ object SelectPropertiesForm: TSelectPropertiesForm
         OnSelectionChange = LBComponentsSelectionChange
         Sorted = True
         TabOrder = 0
-        TopIndex = -1
-        Height = 219
-        Top = 29
+        Height = 228
+        Top = 20
         Width = 200
       end
     end
@@ -97,8 +96,8 @@ object SelectPropertiesForm: TSelectPropertiesForm
     Beveled = True
     Cursor = crVSplit
     Height = 8
-    ParentColor = True
     Width = 485
+    ResizeAnchor = akTop
     Cursor = crVSplit
     Height = 8
     Top = 248
@@ -119,16 +118,16 @@ object SelectPropertiesForm: TSelectPropertiesForm
       BorderSpacing.Around = 3
       Caption = '&Selected Properties'
       Color = clNone
+      ParentColor = False
       Left = 10
-      Height = 17
+      Height = 14
       Top = 3
-      Width = 286
+      Width = 101
     end
     object LBSelected: TListBox
       Anchors = [akTop, akLeft, akRight, akBottom]
       MultiSelect = True
       TabOrder = 0
-      TopIndex = -1
       Left = 8
       Height = 177
       Top = 24
@@ -136,6 +135,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BAdd: TButton
       Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
       Caption = '&Add'
       OnClick = BAddClick
       TabOrder = 1
@@ -146,6 +146,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BDelete: TButton
       Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
       Caption = '&Delete'
       OnClick = BDeleteClick
       TabOrder = 2
@@ -156,6 +157,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BClear: TButton
       Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 2
       Caption = 'C&lear'
       OnClick = BClearClick
       TabOrder = 3
@@ -166,6 +168,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BOK: TButton
       Anchors = [akRight, akBottom]
+      BorderSpacing.InnerBorder = 2
       Caption = '&OK'
       Default = True
       ModalResult = 1
@@ -177,6 +180,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BCancel: TButton
       Anchors = [akRight, akBottom]
+      BorderSpacing.InnerBorder = 2
       Cancel = True
       Caption = '&Cancel'
       ModalResult = 2

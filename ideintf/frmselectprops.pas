@@ -144,7 +144,7 @@ procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
 begin
   BAdd.Caption:=ilesAdd;
   BDelete.Caption:=oisDelete;
-  BClear.Caption:=sccsILBtnClear;
+  BClear.Caption:=oisClear;
   BOK.Caption:=oisOk;
   BCancel.Caption:=oiStdActDataSetCancel1Hint;
   LComponents.Caption:=oisComponents;

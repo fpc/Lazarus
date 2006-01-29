@@ -33,10 +33,10 @@ type
 
   TTreeViewItemsEditorForm = class(TForm)
     BtnSave: TButton;
-    BtnOK: TButton;
-    BtnCancel: TButton;
-    BtnApply: TButton;
-    BtnHelp: TButton;
+    BtnOK: TBitBtn;
+    BtnCancel: TBitBtn;
+    BtnApply: TBitBtn;
+    BtnHelp: TBitBtn;
     BtnNewItem: TButton;
     BtnNewSubItem: TButton;
     BtnDelete: TButton;
@@ -47,10 +47,10 @@ type
     edtIndexState: TEdit;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
+    LabelText: TLabel;
+    LabelImageIndex: TLabel;
+    LabelSelectedIndex: TLabel;
+    LabelStateIndex: TLabel;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     TreeView1: TTreeView;
@@ -69,7 +69,6 @@ type
     procedure LoadFromTree(ATreeView:TTreeView);
     procedure SaveToTree;
   public
-    { public declarations }
   end; 
 
 
@@ -108,7 +107,7 @@ end;
 
 procedure TTreeViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
 var
-  S: string;
+  S: String;
 begin
   S := sccsTrEdtItem + IntToStr(TreeView1.Items.Count);
   if (Sender as TComponent).Tag = 1 then
@@ -138,17 +137,13 @@ begin
   BtnDelete.Caption := sccsTrEdtDelete;
   BtnLoad.Caption := sccsTrEdtLoad;
   BtnSave.Caption := sccsTrEdtSave;
+  BtnApply.Caption := sccsTrEdtApply;
 
   GroupBox2.Caption := sccsTrEdtGrpRCaption;
-  Label1.Caption := sccsTrEdtTextLabel;
-  Label2.Caption := sccsTrEdtImageIndexLabel;
-  Label3.Caption := sccsTrEdtSelIndexLabel;
-  Label4.Caption := sccsTrEdtStateIndexLabel;
-  
-  BtnOK.Caption := sccsTrEdtOK;
-  BtnCancel.Caption := sccsTrEdtCancel;
-  BtnApply.Caption := sccsTrEdtApply;
-  BtnHelp.Caption := sccsTrEdtHelp;
+  LabelText.Caption := sccsTrEdtLabelText;
+  LabelImageIndex.Caption := sccsTrEdtLabelImageIndex;
+  LabelSelectedIndex.Caption := sccsTrEdtLabelSelIndex;
+  LabelStateIndex.Caption := sccsTrEdtLabelStateIndex;
   
   OpenDialog1.Title := sccsTrEdtOpenDialog;
   SaveDialog1.Title := sccsTrEdtSaveDialog;
@@ -158,10 +153,10 @@ procedure TTreeViewItemsEditorForm.TreeView1SelectionChanged(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
   begin
-    edtText.Text:=TreeView1.Selected.Text;
-    edtIndexImg.Text:=IntToStr(TreeView1.Selected.ImageIndex);
-    edtIndexSel.Text:=IntToStr(TreeView1.Selected.SelectedIndex);
-    edtIndexState.Text:=IntToStr(TreeView1.Selected.StateIndex);
+    edtText.Text := TreeView1.Selected.Text;
+    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
+    edtIndexSel.Text := IntToStr(TreeView1.Selected.SelectedIndex);
+    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
   end;
 end;
 
@@ -233,24 +228,6 @@ begin
   
   GroupBox2.Enabled := TreeView1.Items.Count > 0;
 end;
-(*var
-  S:TMemoryStream;
-begin
-  FTreeView:=ATreeView;
-  if Assigned(ATreeView) then
-  begin
-    S:=TMemoryStream.Create;
-    try
-      TreeView1.Images:=ATreeView.Images;
-      TreeView1.StateImages:=ATreeView.StateImages;
-      ATreeView.SaveToStream(S);
-      S.Seek(0, soFromBeginning);
-      TreeView1.LoadFromStream(S);
-    finally
-      S.Free;
-    end;
-  end;
-end;*)
 
 procedure TTreeViewItemsEditorForm.SaveToTree;
 begin
@@ -260,23 +237,6 @@ begin
     FModified := True;
   end;
 end;
-(*var
-  S:TMemoryStream;
-begin
-  if Assigned(FTreeView) then
-  begin
-    S:=TMemoryStream.Create;
-    try
-      TreeView1.SaveToStream(S);
-      S.Seek(0, soFromBeginning);
-      FTreeView.LoadFromStream(S);
-      FModified:=true;
-    finally
-      S.Free;
-    end;
-  end
-end;*)
-
 
 { TTreeViewItemsProperty }
 

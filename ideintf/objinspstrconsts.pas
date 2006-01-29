@@ -68,47 +68,58 @@ resourcestring
   oisEnumeration = 'Enumeration';
   oisChar = 'Char';
   
-  // TreeView items editor
-  sccsTrEdtCaption        = 'TreeView Items Editor';
-  sccsTrEdt               = 'Edit TreeView Items...';
-  sccsTrEdtGrpLCaption    = 'Items';
-  sccsTrEdtGrpRCaption    = 'Item Properties';
-  sccsTrEdtNewItem        = 'New Item';
-  sccsTrEdtNewSubItem     = 'New SubItem';
-  sccsTrEdtDelete         = 'Delete';
-  sccsTrEdtLoad           = 'Load';
-  sccsTrEdtSave           = 'Save';
-  sccsTrEdtTextLabel      = 'Text:';
-  sccsTrEdtImageIndexLabel= 'Image Index:';
-  sccsTrEdtSelIndexLabel  = 'Selected Index:';
-  sccsTrEdtStateIndexLabel= 'State Index:';
-  sccsTrEdtOK             = 'OK';
-  sccsTrEdtCancel         = 'Cancel';
-  sccsTrEdtApply          = 'Apply';
-  sccsTrEdtHelp           = 'Help';
-  sccsTrEdtItem           = 'Item';
-  sccsTrEdtOpenDialog     = 'Open';
-  sccsTrEdtSaveDialog     = 'Save';
+  // TreeView Items Editor
+  sccsTrEdtCaption         = 'TreeView Items Editor';
+  sccsTrEdt                = 'Edit TreeView Items...';
+  sccsTrEdtGrpLCaption     = 'Items';
+  sccsTrEdtGrpRCaption     = 'Item Properties';
+  sccsTrEdtNewItem         = 'New Item';
+  sccsTrEdtNewSubItem      = 'New SubItem';
+  sccsTrEdtDelete          = 'Delete';
+  sccsTrEdtApply           = 'Apply';
+  sccsTrEdtLoad            = 'Load';
+  sccsTrEdtSave            = 'Save';
+  sccsTrEdtLabelText       = 'Text:';
+  sccsTrEdtLabelImageIndex = 'Image Index:';
+  sccsTrEdtLabelSelIndex   = 'Selected Index:';
+  sccsTrEdtLabelStateIndex = 'State Index:';
+  sccsTrEdtItem            = 'Item';
+  sccsTrEdtOpenDialog      = 'Open';
+  sccsTrEdtSaveDialog      = 'Save';
 
-  // ListView items editor
-  sccsLvEdtCaption        = 'ListView editor';
-  sccsLvEdtGrpLCaption    = ' Items ';
-  sccsLvEdtGrpRCaption    = ' Item property ';
-  sccsLvEdtlabCaption     = 'Label';
-  sccsLvEdtImgIndexCaption= 'Image index';
-  sccsLvEdtBtnAdd         = 'New';
-  sccsLvEdtBtnDel         = 'Delete';
-  oisCategory = 'Category';
-  oisAction = 'Action';
-  sccsLvEdtBtnAddSub      = 'Sub item';
+  // ListView Items Editor
+  sccsLvEdtCaption         = 'ListView Items Editor';
+  sccsLvEdt                = 'Edit ListView Items...';
+  sccsLvEdtGrpLCaption     = 'Items';
+  sccsLvEdtGrpRCaption     = 'Item Properties';
+  sccsLvEdtNewItem         = 'New Item';
+  sccsLvEdtNewSubItem      = 'New SubItem';
+  sccsLvEdtApply           = 'Apply';
+  sccsLvEdtDelete          = 'Delete';
+  sccsLvEdtLabelCaption    = 'Caption:';
+  sccsLvEdtLabelImageIndex = 'Image Index:';
+  sccsLvEdtLabelStateIndex = 'State Index:';
+  sccsLvEdtItem            = 'Item';
 
   // Image editor strings
-  sccsILEdtCaption = 'Image list editor';
-  sccsILCmbImgSel  = ' Selected image ';
-  sccsILCmbImgList = ' Images ';
-  sccsILBtnAdd     = 'Add ...';
-  sccsILBtnClear   = 'Clear';
-  sccsILConfirme   = 'Confirme clear all images ?';
+  sccsILEdtCaption     = 'ImageList Editor';
+  sccsILEdtGrpLCaption = 'Images';
+  sccsILEdtGrpRCaption = 'Selected Image';
+  sccsILEdtAdd         = 'Add...';
+  sccsILEdtDelete      = 'Delete';
+  sccsILEdtApply       = 'Apply';
+  sccsILEdtClear       = 'Clear';
+  sccsILEdtMoveUp      = 'Move Up';
+  sccsILEdtMoveDown    = 'Move Down';
+  sccsILEdtSave        = 'Save...';
+  sccsILEdtransparentColor = 'Transparent Color:';
+  sccsILEdtAdjustment  = 'Adjustment';
+  sccsILEdtNone        = 'None';
+  sccsILEdtStretch     = 'Stretch';
+  sccsILEdtCrop        = 'Crop';
+  sccsILEdtCenter      = 'Center';
+  sccsILEdtOpenDialog  = 'Add Images';
+  sccsILEdtSaveDialog  = 'Save Image';
 
   // component editors
   cesStringGridEditor = 'StringGrid Editor ...';
@@ -146,6 +157,8 @@ resourcestring
   cActionListEditorAllCategory = '(All)';
   cActionListEditorEditCategory = 'Edit';
   cActionListEditorHelpCategory = 'Help';
+  oisCategory = 'Category';
+  oisAction = 'Action';
   oisMasks = 'Masks...';
   oisSaveLiteralCharacters = 'Save Literal Characters';
   oisInputMask = 'Input Mask:';
