@@ -1273,7 +1273,9 @@ begin
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
-  UnitOutputPath:=ConvertLazarusToMakefileDirectory(UnitOutputPath);
+  // remove path delimeter at the end, or else it will fail on windows
+  UnitOutputPath:=ConvertLazarusToMakefileDirectory(
+                                                ChompPathDelim(UnitOutputPath));
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
   
