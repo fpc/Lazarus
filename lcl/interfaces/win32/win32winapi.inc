@@ -42,10 +42,10 @@ Const
 {------------------------------------------------------------------------------
   Method:  Arc
   Params:  DC - handle to device context
-           X - x-coordinate of bounding rectangle's upper-left corner
-           Y - y-coordinate of bounding rectangle's upper-left corner
-           Width - Width of the rectangle
-           Height - height of the rectangle
+           Left - x-coordinate of bounding rectangle's upper-left corner
+           Top - y-coordinate of bounding rectangle's upper-left corner
+           Right - x-coordinate of bounding rectangle's lower-right corner 
+           Bottom - y-coordinate of bounding rectangle's lower-right corner
            Angle1 - first angle
            Angle2 - second angle
   Returns: Whether the call was successful
@@ -56,17 +56,17 @@ Const
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.Arc(DC: HDC; Left,Top, Width, Height, Angle1, Angle2: Integer): Boolean;
+Function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle1, Angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
 Begin
-  Angles2Coords(Left,Top, Width, Height, Angle1, Angle2, SX, SY, EX, EY);
-  Result := Boolean(Windows.Arc(DC, Left,Top, Left+Width, Top+Height, SX, SY, EX, EY));
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle1, Angle2, SX, SY, EX, EY);
+  Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
   Method:   AngleChord
-  Params:   DC,x,y,width,height,angle1,angle2
+  Params:   DC, x1, y1, x2, y2, angle1, angle2
   Returns:  Nothing
 
   Use AngleChord to draw a filled Chord-shape on the canvas. The angles angle1
@@ -76,13 +76,13 @@ End;
   position.
 
 ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.AngleChord(DC: HDC; X, Y, Width, Height, Angle1,
+Function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, Angle1,
   Angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
 Begin
-  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
-  Result := Boolean(Windows.Chord(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
+  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX, SY, EX, EY);
+  Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -2509,7 +2509,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:   RadialArc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, left, top, right, bottom, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialArc to draw an elliptically curved line with the current Pen. The
@@ -2517,14 +2517,14 @@ End;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32WidgetSet.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TWin32WidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 Begin
-  Result := Boolean(Windows.Arc(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
+  Result := Boolean(Windows.Arc(DC, left, top, right, bottom, sx, sy, ex, ey));
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialChord
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -2532,14 +2532,14 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32WidgetSet.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TWin32WidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 Begin
-  Result := Boolean(Windows.Chord(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
+  Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, sx, sy, ex, ey));
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialPie
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
@@ -2547,9 +2547,9 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32WidgetSet.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TWin32WidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 Begin
-  Result := Boolean(Windows.Pie(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
+  Result := Boolean(Windows.Pie(DC, x1, y1, x2, y2, sx, sy, ex, ey));
 End;
 
 {------------------------------------------------------------------------------
@@ -2878,6 +2878,11 @@ Begin
 {$endif}
   Result := Windows.SetCaretPos(X, Y);
 End;
+
+function TWin32WidgetSet.SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[hCursor]));
+end;
 
 {------------------------------------------------------------------------------
   Function: SetCursorPos

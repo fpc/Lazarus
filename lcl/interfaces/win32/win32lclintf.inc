@@ -203,8 +203,6 @@ begin
 
     FixedHeight := false;
     FixedWidth := false;
-    if SizeConstraints.Control is TCustomComboBox then
-      FixedHeight := true;
     if SizeConstraints.Control is TCustomCalendar then
     begin
       FixedHeight := true;

@@ -936,9 +936,9 @@ type
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor); virtual;
-    procedure Chord(x, y, AWidth, AHeight,
+    procedure Chord(x1, y1, x2, y2,
                     StartAngle16Deg, EndAngle16Deg: Integer); virtual;
-    procedure Chord(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
+    procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual;
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
     Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
@@ -958,9 +958,9 @@ type
     Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo(); // already in fpcanvas
     Procedure LineTo(X1,Y1: Integer); virtual; // already in fpcanvas
     Procedure MoveTo(X1,Y1: Integer); virtual; // already in fpcanvas
-    procedure RadialPie(x,y,AWidth, AHeight,
+    procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;
-    procedure RadialPie(x, y, AWidth, AHeight, sx, sy, ex, ey: Integer); virtual;
+    procedure RadialPie(x1, y1, x2, y2, sx, sy, ex, ey: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;

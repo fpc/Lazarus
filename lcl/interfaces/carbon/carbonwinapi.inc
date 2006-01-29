@@ -28,16 +28,16 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function TCarbonWidgetSet.Arc(DC: HDC; Left,Top, width, height, angle1,
+function TCarbonWidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, angle1,
   angle2: Integer): Boolean;
 begin
-  Result:=inherited Arc(DC, Left,Top, width, height, angle1, angle2);
+  Result:=inherited Arc(DC, Left, Top, Right, Bottom, angle1, angle2);
 end;
 
-function TCarbonWidgetSet.AngleChord(DC: HDC; x, y, width, height, angle1,
+function TCarbonWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
   angle2: Integer): Boolean;
 begin
-  Result:=inherited AngleChord(DC, x, y, width, height, angle1, angle2);
+  Result:=inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
 end;
 
 function TCarbonWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
@@ -708,22 +708,22 @@ begin
   Result:=inherited PostMessage(Handle, Msg, wParam, lParam);
 end;
 
-function TCarbonWidgetSet.RadialArc(DC: HDC; x, y, width, height, sx, sy, ex,
+function TCarbonWidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex,
   ey: Integer): Boolean;
 begin
-  Result:=inherited RadialArc(DC, x, y, width, height, sx, sy, ex, ey);
+  Result:=inherited RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
 end;
 
-function TCarbonWidgetSet.RadialChord(DC: HDC; x, y, width, height, sx, sy, ex,
+function TCarbonWidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex,
   ey: Integer): Boolean;
 begin
-  Result:=inherited RadialChord(DC, x, y, width, height, sx, sy, ex, ey);
+  Result:=inherited RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
-function TCarbonWidgetSet.RadialPie(DC: HDC; x, y, width, height, sx, sy, ex,
+function TCarbonWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex,
   ey: Integer): Boolean;
 begin
-  Result:=inherited RadialPie(DC, x, y, width, height, sx, sy, ex, ey);
+  Result:=inherited RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
 function TCarbonWidgetSet.RealizePalette(DC: HDC): Cardinal;

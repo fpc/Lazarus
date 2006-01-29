@@ -118,6 +118,9 @@ Type
   end;
 
   { Win32 interface-object class }
+
+  { TWin32WidgetSet }
+
   TWin32WidgetSet = Class(TWidgetSet)
   Private
     // The parent of all windows, represents the button of the taskbar

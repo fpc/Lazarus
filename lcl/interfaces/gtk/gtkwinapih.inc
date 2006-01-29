@@ -23,8 +23,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean; override;
-function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+function Arc(DC: HDC; Left, top, right, bottom, angle1, angle2: Integer): Boolean; override;
+function AngleChord(DC: HDC; x1 ,y1, x2, y2, angle1, angle2: Integer): Boolean; override;
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
@@ -157,9 +157,9 @@ function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): bo
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 
-function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
+function RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean; override;
+function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
+function RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;

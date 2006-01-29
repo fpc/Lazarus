@@ -22,8 +22,8 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; Left,Top, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
-function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+function Arc(DC: HDC; Left,Top, Right, Bottom, Angle1, Angle2: Integer): Boolean; Override;
+function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
 
 function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
@@ -144,9 +144,9 @@ function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Bo
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
 function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean; Override;
 
-function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
+function RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean; override;
+function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
+function RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; Override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; Override;
@@ -172,6 +172,7 @@ function SetCaretPos(X, Y: Integer): Boolean; Override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
 // SetCaretRespondToFocus is a hack for GTK where sometimes focus seems to be lost, but isn't
 //function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
+function SetCursor(hCursor: HICON): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(HWnd: HWND): HWND; Override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;

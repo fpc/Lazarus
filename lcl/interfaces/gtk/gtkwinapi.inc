@@ -40,7 +40,7 @@ const
 
 {------------------------------------------------------------------------------
   Method:   Arc
-  Params:   x,y,width,height,angle1,angle2
+  Params:   left, top, right, bottom, angle1, angle2
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen.
@@ -51,7 +51,7 @@ const
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.Arc(DC: HDC;
-  Left,Top,width,height,angle1,angle2 : Integer): Boolean;
+  left, top, right, bottom, angle1, angle2: Integer): Boolean;
 var
   DCOrigin: TPoint;
 begin
@@ -76,7 +76,7 @@ begin
         inc(Left,DCOrigin.X);
         inc(Top,DCOrigin.Y);
         {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
-        gdk_draw_arc(Drawable, GC, 0, Left,Top,Width,Height,
+        gdk_draw_arc(Drawable, GC, 0, left, top, right - left, bottom - top,
                      Angle1 shl 2, Angle2 shl 2);
         {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end else
@@ -87,7 +87,7 @@ end;
 
  {------------------------------------------------------------------------------
   Method:   AngleChord
-  Params:   DC,x,y,width,height,angle1,angle2
+  Params:   DC, x1, y1, x2, y2, angle1, angle2
   Returns:  Nothing
 
   Use AngleChord to draw a filled Chord-shape on the canvas. The angles angle1
@@ -98,7 +98,7 @@ end;
 
 ------------------------------------------------------------------------------}
 function TGtkWidgetSet.AngleChord(DC: HDC;
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
+  x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -110,7 +110,7 @@ begin
       Result := False;
     end
     else
-      Result := Inherited AngleChord(DC, x, y, width, height, angle1, angle2);
+      Result := Inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
   end;
 end;
 
@@ -7031,7 +7031,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   RadialArc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, left, top, right, bottom, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialArc to draw an elliptically curved line with the current Pen. The
@@ -7039,7 +7039,7 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 Begin
   Result := IsValidDC(DC);
   if Result
@@ -7051,13 +7051,13 @@ Begin
       Result := False;
     end
     else
-      Result := Inherited RadialArc(DC, x, y, width, height, sx,sy,ex,ey);
+      Result := Inherited RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
   end;
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialChord
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -7065,7 +7065,7 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -7077,13 +7077,13 @@ begin
       Result := False;
     end
     else
-      Result := Inherited RadialChord(DC, x, y, width, height, sx,sy,ex,ey);
+      Result := Inherited RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
   end;
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialPie
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
@@ -7091,7 +7091,7 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TGtkWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -7103,7 +7103,7 @@ begin
       Result := False;
     end
     else
-      Result := Inherited RadialPie(DC, x, y, width, height, sx,sy,ex,ey);
+      Result := Inherited RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
   end;
 end;
 

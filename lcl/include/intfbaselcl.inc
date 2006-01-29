@@ -512,33 +512,33 @@ begin
 end;
 
 function TWidgetSet.RadialArc(DC: HDC;
-  x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+  left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 var
   A1, A2 : Extended;
 begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := Arc(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
+  Coords2Angles(left, top, right-left, bottom-top, sx, sy, ex, ey, A1, A2);
+  Result := Arc(DC, left, top, right, bottom, RoundToInt(A1), RoundToInt(A2));
 end;
 
 function TWidgetSet.RadialChord(DC: HDC;
-  x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+  x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 var
   A1, A2 : Extended;
 Begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := AngleChord(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
+  Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
+  Result := AngleChord(DC, x1, y1, x2, y2, RoundToInt(A1), RoundToInt(A2));
 End;
 
-function TWidgetSet.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 var
   A1, A2 : Extended;
 begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := RadialPieWithAngles(DC, X, Y, Width, Height,
+  Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
+  Result := RadialPieWithAngles(DC, x1, y1, x2, y2,
                                 RoundToInt(A1), RoundToInt(A2));
 end;
 
-function TWidgetSet.RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
+function TWidgetSet.RadialPieWithAngles(DC: HDC; x1, y1, x2, y2,
   Angle1, Angle2: Integer): Boolean;
 var
   Points : PPoint;
@@ -547,10 +547,10 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  PolyBezierArcPoints(x1, y1, x2 - x1, y2 - y1, Angle1, Angle2, 0, Points, Count);
   Inc(Count,2);
   ReallocMem(Points, Count*SizeOf(TPoint));
-  Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
+  Points[Count - 2] := CenterPoint(Rect(x1, y1, x2, y2));
   Points[Count - 1] := Points[0];
   Polygon(DC, Points, Count, True);
   ReallocMem(Points, 0);

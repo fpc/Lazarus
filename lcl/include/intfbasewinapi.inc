@@ -28,7 +28,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function TWidgetSet.Arc(DC: HDC;
-  Left,Top,width,height,angle1,angle2 : Integer): Boolean;
+  Left, Top, Right, Bottom, angle1, angle2: Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -36,14 +36,14 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(Left,Top,Width,Height,Angle1, Angle2, 0, Points, Count);
+  PolyBezierArcPoints(Left, Top, Right-Left, Bottom-Top, Angle1, Angle2, 0, Points, Count);
   Polygon(DC, Points, Count, False);
   ReallocMem(Points, 0);
   Result := True;
 end;
 
 function TWidgetSet.AngleChord(DC: HDC;
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
+  x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -51,7 +51,7 @@ begin
   Result := False;
   Points := nil;
   Count := 0;
-  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  PolyBezierArcPoints(x1, y1, x2-x1, y2-y1, Angle1, Angle2, 0, Points, Count);
   Inc(Count);
   ReallocMem(Points, Count*SizeOf(TPoint));
   Points[Count - 1] := Points[0];
@@ -1196,10 +1196,10 @@ begin
     Pen := SelectObject(DC, GetStockObject(NULL_PEN));
 
     //debugln('TWidgetSet.RoundRect ',dbgs(Rect(X1,Y1,X2,Y2)),' ',dbgs(Point(RX,RY)));
-    RadialPieWithAngles(DC, X1, Y1, RX, RY, 90*16,90*16);
-    RadialPieWithAngles(DC, X2 - RX, Y1, RX, RY, 0, 90*16);
-    RadialPieWithAngles(DC, X1, Y2 - RY, RX, RY, 180*16,90*16);
-    RadialPieWithAngles(DC, X2 - RX, Y2 - RY, RX, RY, 270*16,90*16);
+    RadialPieWithAngles(DC, X1, Y1, X1 + RX, Y1 + RY, 90*16,90*16);
+    RadialPieWithAngles(DC, X2 - RX, Y1, X2, Y1 + RY, 0, 90*16);
+    RadialPieWithAngles(DC, X1, Y2 - RY, X1 + RX, Y2, 180*16,90*16);
+    RadialPieWithAngles(DC, X2 - RX, Y2 - RY, X2, Y2, 270*16,90*16);
 
     Rectangle(DC, X1 + (RX div 2) - 1, Y1, X2 - (RX div 2) + 1, Y2 + 1);
     Rectangle(DC, X1, Y1 + (RY div 2) - 1, X2 + 1, Y2 - (RY div 2) + 1);
@@ -1208,10 +1208,10 @@ begin
 
     Brush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
-    Arc(DC, X1, Y1, RX, RY, 90*16,90*16);
-    Arc(DC, X2 - RX, Y1, RX, RY, 0, 90*16);
-    Arc(DC, X1, Y2 - RY, RX, RY, 180*16,90*16);
-    Arc(DC, X2 - RX, Y2 - RY, RX, RY, 270*16,90*16);
+    Arc(DC, X1, Y1, X1 + RX, Y1 + RY, 90*16,90*16);
+    Arc(DC, X2 - RX, Y1, X2, Y1 + RY, 0, 90*16);
+    Arc(DC, X1, Y2 - RY, X1 + RX, Y2, 180*16,90*16);
+    Arc(DC, X2 - RX, Y2 - RY, X2, Y2, 270*16,90*16);
 
     RY := RY div 2;
     RX := RX div 2;

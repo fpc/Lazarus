@@ -362,25 +362,25 @@ begin
   Result := WidgetSet.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
 end;
 
-function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
-  Result := WidgetSet.RadialChord(DC, x,y,width,height,sx,sy,ex,ey);
+  Result := WidgetSet.RadialChord(DC, x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
-function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 begin
-  Result := WidgetSet.RadialArc(DC, x,y,width,height,sx,sy,ex,ey);
+  Result := WidgetSet.RadialArc(DC, left, top, right, bottom, sx, sy, ex, ey);
 end;
 
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function RadialPie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
-  Result := WidgetSet.RadialPie(DC, x,y,width,height,sx,sy,ex,ey);
+  Result := WidgetSet.RadialPie(DC, x1, y1, x2, y2, sx, sy, ex, ey);
 end;
 
-function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
+function RadialPieWithAngles(DC: HDC; x1, y1, x2, y2,
   Angle1,Angle2: Integer): Boolean;
 begin
-  Result := WidgetSet.RadialPieWithAngles(DC, X,Y,Width,Height,Angle1,Angle2);
+  Result := WidgetSet.RadialPieWithAngles(DC, x1, y1, x2, y2, Angle1, Angle2);
 end;
 
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;

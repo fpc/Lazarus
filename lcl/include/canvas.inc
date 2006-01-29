@@ -511,7 +511,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   Left,Top,AWidth,AHeight,angle1,angle2
+  Params:   ALeft, ATop, ARight, ABottom, angle1, angle2
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen.
@@ -521,17 +521,17 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(ALeft,ATop,ARight,ABottom,angle1,angle2 : Integer);
+procedure TCanvas.Arc(ALeft, ATop, ARight, ABottom, angle1, angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Arc(FHandle, ALeft, ATop, ARight - ALeft, ABottom - ATop, angle1, angle2);
+  LCLIntf.Arc(FHandle, ALeft, ATop, ARight, ABottom, angle1, angle2);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   DC,Left,Top,AWidth,AHeight,sx,sy,ex,ey
+  Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen. The
@@ -543,13 +543,13 @@ procedure TCanvas.Arc(ALeft,ATop,ARight,ABottom,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialArc(FHandle, ALeft, ATop, ARight - ALeft, ABottom - ATop, sx, sy, ex, ey);
+  LCLIntf.RadialArc(FHandle, ALeft, ATop, ARight, ABottom, sx, sy, ex, ey);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x,y, AWidth, AHeight, StartAngle16Deg, EndAngle16Deg: Integer
+  Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer
   Returns:  Nothing
 
   Use Pie to draw a filled pie-shaped wedge on the canvas.
@@ -560,19 +560,19 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x, y, AWidth, AHeight,
+procedure TCanvas.RadialPie(x1, y1, x2, y2,
   StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPieWithAngles(FHandle,x,y,AWidth,AHeight,
+  LCLIntf.RadialPieWithAngles(FHandle, x1, y1, x2, y2,
                               StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x,y, AWidth, AHeight, sx,sy,ex,ey
+  Params:   x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use Pie to draw a filled Pie-shaped wedge on the canvas. The values sx,sy,
@@ -580,11 +580,11 @@ end;
   the Bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x,y, AWidth, AHeight, sx,sy,ex,ey: Integer);
+procedure TCanvas.RadialPie(x1, y1, x2, y2, sx, sy, ex, ey: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPie(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
+  LCLIntf.RadialPie(FHandle, x1, y1, x2, y2, sx, sy, ex, ey);
   Changed;
 end;
 
@@ -1259,7 +1259,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Chord
-  Params:   x,y, AWidth, AHeight, StartAngle16Deg, EndAngle16Deg
+  Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg
   Returns:  Nothing
 
   Use Chord to draw a filled Chord-shape on the canvas. The angles angle1 and
@@ -1268,18 +1268,18 @@ end;
   values mean clockwise direction. Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x, y, AWidth, AHeight,
+procedure TCanvas.Chord(x1, y1, x2, y2,
   StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.AngleChord(FHandle,x,y,AWidth,AHeight,StartAngle16Deg,EndAngle16Deg);
+  LCLIntf.AngleChord(FHandle, x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Chord
-  Params:   x,y,AWidth, AHeight, sx,sy,ex,ey
+  Params:   x1, y1, x2, y2, sx, sy, ex, ey
   Returns:  Nothing
 
   Use Chord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -1287,11 +1287,11 @@ end;
   the Arc is draw.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x,y,AWidth, AHeight, sx,sy,ex,ey : Integer);
+procedure TCanvas.Chord(x1, y1, x2, y2, sx, sy, ex, ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialChord(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
+  LCLIntf.RadialChord(FHandle, x1, y1, x2, y2, sx, sy, ex, ey);
   Changed;
 end;
 
