@@ -79,6 +79,20 @@ end;
   Create the visual component of the Radiogroup.
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.InitializeWnd;
+
+  procedure RealizeItemIndex;
+  var
+    i: Integer;
+  begin
+    if (FItemIndex <> -1) then
+      TRadioButton(FButtonList[FItemIndex]).Checked := true
+    else
+      FHiddenButton.Checked:=true;
+    for i:=0 to FItems.Count-1 do begin
+      TRadioButton(FButtonList[i]).Checked := fItemIndex = i;
+    end;
+  end;
+
 begin
   if FCreatingWnd then RaiseGDBException('TCustomRadioGroup.InitializeWnd');
   FCreatingWnd := true;
@@ -88,6 +102,7 @@ begin
   
   if (FHiddenButton<>nil) and (FHiddenButton.Parent=Self) then
     FHiddenButton.HandleNeeded;
+  RealizeItemIndex;
 
   FCreatingWnd := false;
 end;
@@ -314,6 +329,7 @@ var
   OldItemIndex: LongInt;
   OldIgnoreClicks: Boolean;
 begin
+  //DebugLn('TCustomRadioGroup.SetItemIndex ',dbgsName(Self),' Old=',dbgs(FItemIndex),' New=',dbgs(Value));
   if Value = FItemIndex then exit;
   if FReading then
     FItemIndex:=Value
@@ -354,6 +370,7 @@ begin
     else
       FItemIndex := Value;
   end;
+  //DebugLn('TCustomRadioGroup.SetItemIndex ',dbgsName(Self),' END Old=',dbgs(FItemIndex),' New=',dbgs(Value));
 end;
 
 {------------------------------------------------------------------------------
