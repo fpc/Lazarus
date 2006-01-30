@@ -42,7 +42,7 @@ uses
 
 Var
   TemplateProjectDescriptor : TTemplateProjectDescriptor;
-  IDETemplates : TProjectTemplates;
+  IDETemplates : TProjectTemplates = nil;
   itmFileNewFromTemplate : TIDEMenuSection;
   MenuList : TObjectList;
 
@@ -348,5 +348,6 @@ end;
 Initialization
   MenuList:=TObjectList.Create;
 Finalization
+  FreeAndNil(IDETemplates);
   FreeAndNil(MenuList);
 end.
