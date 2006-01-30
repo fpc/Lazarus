@@ -427,10 +427,10 @@ type
   TProjectFlags = set of TProjectFlag;
   
   TProjectSessionStorage = (
-     pssInProjectInfo, // save session info in .lpi file
-     pssInProjectDir, // save session info in .lps file in project directory
-     pssInIDEConfig, // save session info in IDE config directory
-     pssNone         // do not save any session info
+    pssInProjectInfo, // save session info in .lpi file
+    pssInProjectDir, // save session info in .lps file in project directory
+    pssInIDEConfig, // save session info in IDE config directory
+    pssNone         // do not save any session info
     );
   TProjectSessionStorages = set of TProjectSessionStorage;
 

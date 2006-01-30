@@ -901,7 +901,7 @@ const
     p: String;
   begin
     p:=ParamStr(ParamIndex);
-    Result:=AnsiCompareText(LeftStr(p,length(Option)),Option)=0;
+    Result:=CompareText(LeftStr(p,length(Option)),Option)=0;
     if Result then
       AValue:=copy(p,length(Option)+1,length(p))
     else
@@ -917,10 +917,10 @@ begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
   if (ParamCount>0)
-  and ((AnsiCompareText(ParamStr(1),'--help')=0)
-    or (AnsiCompareText(ParamStr(1),'-help')=0)
-    or (AnsiCompareText(ParamStr(1),'-?')=0)
-    or (AnsiCompareText(ParamStr(1),'-h')=0)) then
+  and ((CompareText(ParamStr(1),'--help')=0)
+    or (CompareText(ParamStr(1),'-help')=0)
+    or (CompareText(ParamStr(1),'-?')=0)
+    or (CompareText(ParamStr(1),'-h')=0)) then
   begin
     TranslateResourceStrings(ProgramDirectory,'');
     writeln(lislazarusOptionsProjectFilename);
@@ -996,7 +996,7 @@ begin
     SetLazarusDefaultFilename;
     Load(false);
     if Application.HasOption('language') then begin
-      debugln('TMainIDE.LoadGlobalOptions overriding language from command line: ',
+      debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
         Application.GetOptionValue('language'));
       EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
     end;
@@ -1033,6 +1033,8 @@ begin
     SetLazarusDefaultFilename;
     Load;
   end;
+  
+  CreateDir(GetProjectSessionsConfigPath);
 end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);

@@ -36,24 +36,9 @@ unit ProjectOpts;
 interface
 
 uses
-  Arrow,
-  Buttons,
-  Classes,
-  CodeToolManager,
-  Controls,
-  Dialogs,
-  ExtCtrls,
-  Forms,
-  Graphics,
-  IDEOptionDefs,
-  IDEWindowIntf,
-  LazarusIDEStrConsts,
-  LCLIntf,
-  LResources,
-  Project,
-  ProjectIntf,
-  StdCtrls,
-  SysUtils;
+  Arrow, Buttons, LCLProc, Classes, CodeToolManager, Controls, Dialogs,
+  ExtCtrls, Forms, Graphics, IDEOptionDefs, IDEWindowIntf, LazarusIDEStrConsts,
+  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils;
 
 type
 
@@ -62,12 +47,14 @@ type
   TProjectOptionsDialog = class(TForm)
     Label2: TLabel;
 
-    // Application
     Notebook: TNotebook;
-    Page1:    TPage;
-    Page2:    TPage;
-    Page3:    TPage;
-    Page4:    TPage;
+    ApplicationPage:    TPage;
+    FormsPage:    TPage;
+    MiscPage:    TPage;
+    LazDocPage:    TPage;
+    SavePage: TPage;
+
+    // Application
     AppSettingsGroupBox: TGroupBox;
     OutputSettingsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
@@ -89,8 +76,6 @@ type
     FormsMoveAutoCreatedFormsDownBtn: TArrow;
 
     // Misc
-    SaveClosedUnitInfoCheckBox: TCheckBox;
-    SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
     MainUnitIsPascalSourceCheckBox: TCheckBox;
     MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox;
     MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
@@ -105,6 +90,11 @@ type
     LazDocAddPathButton: TButton;
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
+
+    // Session
+    SaveClosedUnitInfoCheckBox: TCheckBox;
+    SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
+    SaveSessionLocationRadioGroup: TRadioGroup;
 
     // buttons at bottom
     OKButton: TButton;
@@ -127,6 +117,7 @@ type
     procedure SetupFormsPage(PageIndex: Integer);
     procedure SetupMiscPage(PageIndex: Integer);
     procedure SetupLazDocPage(PageIndex: Integer);
+    procedure SetupSavePage(PageIndex: Integer);
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: String): Integer;
@@ -144,6 +135,10 @@ type
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 
+function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage): string;
+function LocalizedNameToProjectSessionStorage(
+                                       const s: string): TProjectSessionStorage;
+
 var
   ProjectOptionsDialog: TProjectOptionsDialog;
 
@@ -159,6 +154,27 @@ begin
     finally
       Free;
     end;
+end;
+
+function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage
+  ): string;
+begin
+  case s of
+  pssInProjectInfo: Result:=lisPOSaveInLpiFil;
+  pssInProjectDir:  Result:=lisPOSaveInLpsFileInProjectDirectory;
+  pssInIDEConfig:   Result:=lisPOSaveInIDEConfigDirectory;
+  pssNone:          Result:=lisPODoNotSaveAnySessionInfo;
+  else
+    RaiseGDBException('');
+  end;
+end;
+
+function LocalizedNameToProjectSessionStorage(const s: string
+  ): TProjectSessionStorage;
+begin
+  for Result:=Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
+    if ProjectSessionStorageToLocalizedName(Result)=s then exit;
+  Result:=pssInProjectInfo;
 end;
 
 
@@ -178,6 +194,7 @@ begin
   SetupFormsPage(1);
   SetupMiscPage(2);
   SetupLazDocPage(3);
+  SetupSavePage(4);
 
   ProjectOptionsResize(TheOwner);
 
@@ -207,6 +224,23 @@ begin
   LazDocPathEdit.Clear;
 end;
 
+procedure TProjectOptionsDialog.SetupSavePage(PageIndex: Integer);
+var
+  s: TProjectSessionStorage;
+begin
+  NoteBook.Page[PageIndex].Caption := dlgPOSaveSession;
+
+  SaveClosedUnitInfoCheckBox.Caption := dlgSaveEditorInfo;
+  SaveOnlyProjectUnitInfoCheckBox.Caption := dlgSaveEditorInfoProject;
+  {$IFNDEF EnableProjectSessions}
+  SaveSessionLocationRadioGroup.Enabled:=false;
+  {$ENDIF}
+  SaveSessionLocationRadioGroup.Caption:=lisPOSaveSessionInformationIn;
+  for s:=Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
+    SaveSessionLocationRadioGroup.Items.Add(
+                                       ProjectSessionStorageToLocalizedName(s));
+end;
+
 procedure TProjectOptionsDialog.SetupFormsPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOFroms;
@@ -220,8 +254,6 @@ procedure TProjectOptionsDialog.SetupMiscPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOMisc;
 
-  SaveClosedUnitInfoCheckBox.Caption := dlgSaveEditorInfo;
-  SaveOnlyProjectUnitInfoCheckBox.Caption := dlgSaveEditorInfoProject;
   MainUnitIsPascalSourceCheckBox.Caption := lisMainUnitIsPascalSource;
   MainUnitHasUsesSectionForAllUnitsCheckBox.Caption := lisMainUnitHasUsesSectionContainingAllUnitsOfProject;
   MainUnitHasCreateFormStatementsCheckBox.Caption := lisMainUnitHasApplicationCreateFormStatements;
@@ -249,6 +281,7 @@ begin
   SaveClosedUnitInfoCheckBox.Checked := (pfSaveClosedUnits in AProject.Flags);
   SaveOnlyProjectUnitInfoCheckBox.Checked :=
     (pfSaveOnlyProjectUnits in AProject.Flags);
+  SaveSessionLocationRadioGroup.ItemIndex:=ord(AProject.SessionStorage);
 
   MainUnitIsPascalSourceCheckBox.Checked :=
     (pfMainUnitIsPascalSource in AProject.Flags);
@@ -304,6 +337,11 @@ begin
     SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
     SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);
     Project.Flags := NewFlags;
+    
+    if SaveSessionLocationRadioGroup.ItemIndex>=0 then
+      Project.SessionStorage:=LocalizedNameToProjectSessionStorage(
+                         SaveSessionLocationRadioGroup.Items[
+                                      SaveSessionLocationRadioGroup.ItemIndex]);
 
     Project.AutoCreateForms := FormsAutoCreateNewFormsCheckBox.Checked;
 
@@ -554,7 +592,7 @@ begin
     Height := FormsAutoCreateNewFormsCheckBox.Top - Top - 6;
     Left   := FormsMoveAutoCreatedFormUpBtn.Left +
       FormsMoveAutoCreatedFormUpBtn.Width + 6;
-    Width  := (Page2.Width - Left * 2 - 6) div 2;
+    Width  := (FormsPage.Width - Left * 2 - 6) div 2;
   end;
 
   with FormsAddToAutoCreatedFormsBtn do

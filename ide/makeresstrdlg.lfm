@@ -1,33 +1,33 @@
 object MakeResStrDialog: TMakeResStrDialog
   Left = 439
-  Height = 541
+  Height = 536
   Top = 319
-  Width = 579
-  HorzScrollBar.Page = 578
-  VertScrollBar.Page = 540
+  Width = 578
+  HorzScrollBar.Page = 577
+  VertScrollBar.Page = 535
   ActiveControl = StringConstSynEdit
   Caption = 'MakeResStrDialog'
-  ClientHeight = 541
-  ClientWidth = 579
-  PixelsPerInch = 112
+  ClientHeight = 536
+  ClientWidth = 578
+  PixelsPerInch = 95
   Position = poScreenCenter
   object StringConstGroupBox: TGroupBox
     Left = 6
     Height = 141
     Top = 165
-    Width = 567
+    Width = 566
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'StringConstGroupBox'
     ClientHeight = 124
-    ClientWidth = 563
+    ClientWidth = 562
     TabOrder = 0
     object StringConstSynEdit: TSynEdit
       Name = 'StringConstSynEdit'
       Left = 6
       Height = 112
       Top = 6
-      Width = 551
+      Width = 550
       Align = alClient
       BorderSpacing.Around = 6
       Font.CharSet = ANSI_CHARSET
@@ -38,7 +38,9 @@ object MakeResStrDialog: TMakeResStrDialog
       ParentColor = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
+      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = SynPasSyn
       Keystrokes = <      
@@ -365,19 +367,20 @@ object MakeResStrDialog: TMakeResStrDialog
       Lines.Strings = (
         'StringConstSynEdit'
       )
+      SelectedColor.OnChange = nil
     end
   end
   object ConversionGroupBox: TGroupBox
     Left = 6
     Height = 153
     Top = 6
-    Width = 567
+    Width = 566
     Align = alTop
     BorderSpacing.Around = 6
     BorderSpacing.InnerBorder = 6
     Caption = 'ConversionGroupBox'
     ClientHeight = 136
-    ClientWidth = 563
+    ClientWidth = 562
     TabOrder = 1
     object IdentPrefixLabel: TLabel
       Left = 12
@@ -392,7 +395,7 @@ object MakeResStrDialog: TMakeResStrDialog
     end
     object IdentLengthLabel: TLabel
       AnchorSideRight.Control = IdentLengthComboBox
-      Left = 354
+      Left = 353
       Height = 13
       Top = 8
       Width = 97
@@ -479,7 +482,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Text = 'IdentPrefixComboBox'
     end
     object IdentLengthComboBox: TComboBox
-      Left = 457
+      Left = 456
       Height = 21
       Top = 5
       Width = 100
@@ -511,7 +514,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 190
       Height = 23
       Top = 33
-      Width = 367
+      Width = 366
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -530,7 +533,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 128
       Height = 21
       Top = 62
-      Width = 429
+      Width = 428
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 6
@@ -550,7 +553,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 174
       Height = 21
       Top = 89
-      Width = 383
+      Width = 382
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 6
@@ -563,23 +566,23 @@ object MakeResStrDialog: TMakeResStrDialog
   end
   object SrcPreviewGroupBox: TGroupBox
     Left = 6
-    Height = 182
+    Height = 177
     Top = 312
-    Width = 567
+    Width = 566
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'SrcPreviewGroupBox'
-    ClientHeight = 165
-    ClientWidth = 563
+    ClientHeight = 160
+    ClientWidth = 562
     TabOrder = 2
     OnResize = IdentPrefixLabelResize
     object SrcPreviewSynEdit: TSynEdit
       Name = 'SrcPreviewSynEdit'
       Left = 6
-      Height = 153
+      Height = 148
       Top = 6
-      Width = 551
+      Width = 550
       Align = alClient
       BorderSpacing.Around = 6
       Font.CharSet = ANSI_CHARSET
@@ -590,7 +593,9 @@ object MakeResStrDialog: TMakeResStrDialog
       ParentColor = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
+      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = SynPasSyn
       Keystrokes = <      
@@ -917,12 +922,13 @@ object MakeResStrDialog: TMakeResStrDialog
       Lines.Strings = (
         'SrcPreviewSynEdit'
       )
+      SelectedColor.OnChange = nil
     end
   end
   object OKButton: TBitBtn
-    Left = 522
+    Left = 521
     Height = 28
-    Top = 507
+    Top = 502
     Width = 51
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -937,9 +943,9 @@ object MakeResStrDialog: TMakeResStrDialog
   end
   object CancelButton: TBitBtn
     AnchorSideRight.Control = OKButton
-    Left = 443
+    Left = 442
     Height = 28
-    Top = 507
+    Top = 502
     Width = 73
     Anchors = [akRight, akBottom]
     AutoSize = True

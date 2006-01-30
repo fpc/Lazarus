@@ -494,6 +494,7 @@ type
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
+    procedure UpdateSessionFilename;
     procedure UpdateSourceDirectories;
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
@@ -531,7 +532,7 @@ type
     function SomethingModified(CheckData, CheckSession: boolean): boolean;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
-    function ReadProject(const LPIFilename: string): TModalResult;
+    function ReadProject(const NewProjectInfoFile: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
                           
@@ -1390,6 +1391,7 @@ begin
   FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
   fMainUnitID := -1;
   fProjectInfoFile := '';
+  ProjectSessionFile:='';
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
 
@@ -1426,12 +1428,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string): TModalResult;
-var
-  confPath: String;
-  Path: String;
-  xmlconfig: TXMLConfig;
 
-  procedure SaveFlags;
+  procedure SaveFlags(XMLConfig: TXMLConfig; const Path: string);
   var f: TProjectFlag;
   begin
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
@@ -1440,14 +1438,14 @@ var
     end;
   end;
   
-  procedure UpdateUsageCounts;
+  procedure UpdateUsageCounts(const ConfigFilename: string);
   var
     UnitUsageCount: extended;
     DiffTime: TDateTime;
     i: Integer;
   begin
     UnitUsageCount:=0;
-    if CompareFileNames(confPath,fLastReadLPIFilename)=0 then begin
+    if CompareFileNames(ConfigFilename,fLastReadLPIFilename)=0 then begin
       DiffTime:=Now-fLastReadLPIFileDate;
       if DiffTime>0 then begin
         UnitUsageCount:= DiffTime*24; // one step every hour
@@ -1464,10 +1462,13 @@ var
     end;
   end;
   
-  function UnitMustBeSaved(i: integer): boolean;
+  function UnitMustBeSaved(i: integer; SaveData, SaveSession: boolean): boolean;
   begin
     Result:=false;
-    if not Units[i].IsPartOfProject then begin
+    if Units[i].IsPartOfProject then begin
+      if not SaveData then exit;
+    end else begin
+      if not SaveSession then exit;
       if (pfSaveOnlyProjectUnits in Flags) then exit;
       if (pwfSaveOnlyProjectUnits in ProjectWriteFlags) then exit;
       if (not Units[i].Loaded) then begin
@@ -1479,12 +1480,13 @@ var
     Result:=true;
   end;
   
-  procedure SaveUnits;
+  procedure SaveUnits(XMLConfig: TXMLConfig; const Path: string;
+    SaveData, SaveSession: boolean);
   var i, SaveUnitCount: integer;
   begin
     SaveUnitCount:=0;
     for i:=0 to UnitCount-1 do begin
-      if UnitMustBeSaved(i) then begin
+      if UnitMustBeSaved(i,SaveData,SaveSession) then begin
         Units[i].SaveToXMLConfig(
           xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/');
         inc(SaveUnitCount);
@@ -1493,25 +1495,48 @@ var
     xmlconfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
   end;
 
+  procedure SaveSessionInfo(aConfig: TXMLConfig; const Path: string);
+  begin
+    aConfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value',
+                           ActiveEditorIndexAtStart,-1);
 
+    if (not (pfSaveOnlyProjectUnits in Flags))
+    and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
+      FJumpHistory.DeleteInvalidPositions;
+      FJumpHistory.SaveToXMLConfig(aConfig,Path);
+    end;
+  end;
+
+var
+  CfgFilename: String;
+  Path: String;
+  xmlconfig: TXMLConfig;
+  SaveSessionInfoInLPI: Boolean;
+  CurSessionFilename: String;
 begin
   Result := mrCancel;
 
   if OverrideProjectInfoFile<>'' then
-    confPath := OverrideProjectInfoFile
+    CfgFilename := OverrideProjectInfoFile
   else
-    confPath := ProjectInfoFile;
+    CfgFilename := ProjectInfoFile;
   if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(confPath,true);
+    Result:=fOnFileBackup(CfgFilename,true);
     if Result=mrAbort then exit;
   end;
-  confPath:=SetDirSeparators(confPath);
+  CfgFilename:=SetDirSeparators(CfgFilename);
   
-  UpdateUsageCounts;
+  UpdateUsageCounts(CfgFilename);
 
+  // first save the .lpi file
+  SaveSessionInfoInLPI:=true;
+  if (pwfDoNotSaveSessionInfo in ProjectWriteFlags) then
+    SaveSessionInfoInLPI:=false;
+  if (SessionStorage<>pssInProjectInfo) then
+    SaveSessionInfoInLPI:=false;
   repeat
     try
-      xmlconfig := TXMLConfig.CreateClean(confPath);
+      xmlconfig := TXMLConfig.CreateClean(CfgFilename);
     except
       on E: Exception do begin
         DebugLn('ERROR: ',E.Message);
@@ -1529,7 +1554,7 @@ begin
       Path:='ProjectOptions/';
       xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-      SaveFlags;
+      SaveFlags(XMLConfig,Path);
       xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                                ProjectSessionStorageNames[SessionStorage],
                                ProjectSessionStorageNames[pssInProjectInfo]);
@@ -1545,8 +1570,6 @@ begin
       //lazdoc
       xmlconfig.SetValue(Path+'LazDoc/Paths', LazDocPathList.Text);
 
-      SaveUnits;
-
       // Save the compiler options
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
       
@@ -1560,14 +1583,12 @@ begin
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
         
-      // save session info
-      xmlconfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value',
-                               ActiveEditorIndexAtStart,-1);
+      // save units
+      SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
 
-      if (not (pfSaveOnlyProjectUnits in Flags))
-      and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
-        FJumpHistory.DeleteInvalidPositions;
-        FJumpHistory.SaveToXMLConfig(xmlconfig,Path);
+      // save session info
+      if SaveSessionInfoInLPI then begin
+        SaveSessionInfo(XMLConfig,Path);
       end;
 
       if Assigned(OnSaveProjectInfo) then
@@ -1576,12 +1597,13 @@ begin
       InvalidateFileStateCache;
       xmlconfig.Flush;
       Modified:=false;
-      SessionModified:=false;
+      if SaveSessionInfoInLPI then
+        SessionModified:=false;
       
       Result:=mrOk;
     except
       on E: Exception do begin
-        Result:=MessageDlg('Write error','Unable to write to file "'+confPath+'".',
+        Result:=MessageDlg('Write error','Unable to write to file "'+CfgFilename+'".',
           mtError,[mbRetry,mbAbort],0);
       end;
     end;
@@ -1591,6 +1613,70 @@ begin
     end;
     xmlconfig:=nil;
   until Result<>mrRetry;
+  if Result<>mrOk then exit;
+
+  if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
+  and (SessionStorage in [pssInProjectDir,pssInIDEConfig]) then begin
+    // save session in separate file .lps
+    
+    if OverrideProjectInfoFile<>'' then
+      CurSessionFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
+    else
+      CurSessionFilename := ProjectSessionFile;
+    if ExtractFileNameOnly(CurSessionFilename)='' then begin
+      DebugLn('ERROR: TProject.WriteProject ProjectSessionFile invalid: "',CurSessionFilename,'"');
+      Result:=mrCancel;
+      exit;
+    end;
+    if CompareFilenames(CurSessionFilename,CfgFilename)=0 then
+      exit;
+
+    if Assigned(fOnFileBackup) then begin
+      Result:=fOnFileBackup(CurSessionFilename,true);
+      if Result=mrAbort then exit;
+    end;
+    CurSessionFilename:=SetDirSeparators(CurSessionFilename);
+    repeat
+      try
+        xmlconfig := TXMLConfig.CreateClean(CurSessionFilename);
+      except
+        on E: Exception do begin
+          DebugLn('ERROR: ',E.Message);
+          MessageDlg('Write error',
+            'Unable to write the project session file'#13
+            +'"'+ProjectSessionFile+'".'#13
+            +'Error: '+E.Message
+            ,mtError,[mbOk],0);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+
+      try
+        Path:='ProjectSession/';
+        xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
+        xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+
+        // save all units
+        SaveUnits(XMLConfig,Path,true,true);
+        
+        // save session
+        SaveSessionInfo(XMLConfig,Path);
+
+        Result:=mrOk;
+      except
+        on E: Exception do begin
+          Result:=MessageDlg('Write error','Unable to write to file "'+CurSessionFilename+'".',
+            mtError,[mbRetry,mbAbort],0);
+        end;
+      end;
+      try
+        xmlconfig.Free;
+      except
+      end;
+      xmlconfig:=nil;
+    until Result<>mrRetry;
+  end;
 end;
 
 function TProject.GetDefaultTitle: string;
@@ -1616,7 +1702,7 @@ end;
 {------------------------------------------------------------------------------
   TProject ReadProject
  ------------------------------------------------------------------------------}
-function TProject.ReadProject(const LPIFilename: string): TModalResult;
+function TProject.ReadProject(const NewProjectInfoFile: string): TModalResult;
 type
   TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
 const
@@ -1624,17 +1710,9 @@ const
       'Application', 'Program', 'Custom program'
     );
 var
-  NewUnitInfo: TUnitInfo;
-  NewUnitCount,i: integer;
   FileVersion: Integer;
-  OldSrcPath: String;
-  Path: String;
-  OldProjectType: TOldProjectType;
-  xmlconfig: TXMLConfig;
-  SubPath: String;
-  NewUnitFilename: String;
 
-  procedure LoadCompilerOptions;
+  procedure LoadCompilerOptions(XMLConfig: TXMLConfig; const Path: string);
   var
     CompOptsPath: String;
   begin
@@ -1649,18 +1727,40 @@ var
         CompOptsPath:='CompilerOptions/';
     end;
     CompilerOptions.LoadFromXMLConfig(xmlconfig,CompOptsPath);
-    if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
+    if FileVersion<2 then
+      CompilerOptions.SrcPath:=xmlconfig.GetValue(Path+'General/SrcPath/Value','');
   end;
 
-  procedure LoadFlags;
+  function ReadOldProjectType(XMLConfig: TXMLConfig;
+    const Path: string): TOldProjectType;
+
+    function OldProjectTypeNameToType(const s: string): TOldProjectType;
+    begin
+      for Result:=Low(TOldProjectType) to High(TOldProjectType) do
+        if (CompareText(OldProjectTypeNames[Result],s)=0) then exit;
+      Result:=ptApplication;
+    end;
+
+  begin
+    if FileVersion<=4 then
+      Result := OldProjectTypeNameToType(xmlconfig.GetValue(
+                                          Path+'General/ProjectType/Value', ''))
+    else
+      Result := ptCustomProgram;
+  end;
+
+  procedure LoadFlags(XMLConfig: TXMLConfig; const Path: string);
   
     procedure SetFlag(f: TProjectFlag; Value: boolean);
     begin
       if Value then Include(FFlags,f) else Exclude(FFlags,f);
     end;
   
-  var f: TProjectFlag;
+  var
+    f: TProjectFlag;
+    OldProjectType: TOldProjectType;
   begin
+    OldProjectType:=ReadOldProjectType(XMLConfig,Path);
     FFlags:=[];
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
       SetFlag(f,xmlconfig.GetValue(
@@ -1681,30 +1781,20 @@ var
     end;
   end;
   
-  procedure ReadOldProjectType;
-  
-    function OldProjectTypeNameToType(const s: string): TOldProjectType;
-    begin
-      for Result:=Low(TOldProjectType) to High(TOldProjectType) do
-        if (AnsiCompareText(OldProjectTypeNames[Result],s)=0) then exit;
-      Result:=ptApplication;
-    end;
-
-  begin
-    if FileVersion<=4 then
-      OldProjectType := OldProjectTypeNameToType(xmlconfig.GetValue(
-          Path+'General/ProjectType/Value', ''))
-    else
-      OldProjectType := ptCustomProgram;
-  end;
-
+var
+  NewUnitInfo: TUnitInfo;
+  NewUnitCount,i: integer;
+  Path: String;
+  xmlconfig: TXMLConfig;
+  SubPath: String;
+  NewUnitFilename: String;
 begin
   Result := mrCancel;
   BeginUpdate(true);
   try
     Clear;
 
-    ProjectInfoFile:=LPIFilename;
+    ProjectInfoFile:=NewProjectInfoFile;
     try
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
       xmlconfig := TXMLConfig.Create(ProjectInfoFile);
@@ -1725,11 +1815,13 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
-      ReadOldProjectType;
-      LoadFlags;
+      LoadFlags(XMLConfig,Path);
+      
       SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
                                  ProjectSessionStorageNames[pssInProjectInfo]));
+      UpdateSessionFilename;
+                                 
       MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
@@ -1737,8 +1829,6 @@ begin
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetDefaultExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-      if FileVersion<2 then
-        OldSrcPath := xmlconfig.GetValue(Path+'General/SrcPath/Value','');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
       NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
@@ -1757,12 +1847,12 @@ begin
         NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath);
       end;
 
-      //lazdoc
+      // Lazdoc
       LazDocPathList.Text := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
-      LoadCompilerOptions;
+      LoadCompilerOptions(XMLConfig,Path);
 
       // load the Publish Options
       PublishOptions.LoadFromXMLConfig(xmlconfig,
@@ -1795,6 +1885,41 @@ begin
       except
       end;
       xmlconfig:=nil;
+    end;
+
+    if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
+    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
+    and FileExists(ProjectSessionFile) then begin
+      try
+        xmlconfig := TXMLConfig.Create(ProjectSessionFile);
+        
+        Path:='ProjectOptions/';
+        fPathDelimChanged:=
+          XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+          
+        FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+
+        
+      except
+        MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
+            ,mtError,[mbOk],0);
+        Result:=mrCancel;
+        exit;
+      end;
+
+      try
+        Path:='ProjectOptions/';
+        fPathDelimChanged:=
+          XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+      finally
+        fPathDelimChanged:=false;
+        try
+          xmlconfig.Free;
+        except
+        end;
+        xmlconfig:=nil;
+      end;
+
     end;
   finally
     EndUpdate;
@@ -1930,6 +2055,7 @@ begin
   Modified := false;
   SessionModified := false;
   fProjectInfoFile := '';
+  ProjectSessionFile:='';
   FStateFileDate:=0;
   FStateFlags:=[];
   ClearSourceDirectories;
@@ -2502,6 +2628,7 @@ begin
     Title:=DefaultTitle;
   end;
   UpdateProjectDirectory;
+  UpdateSessionFilename;
   FDefineTemplates.SourceDirectoriesChanged;
   Modified:=true;
   EndUpdate;
@@ -3180,6 +3307,18 @@ begin
     if fProjectDirectory<>'' then
       FSourceDirectories.AddFilename(fProjectDirectory);
     fProjectDirectoryReferenced:=fProjectDirectory;
+  end;
+end;
+
+procedure TProject.UpdateSessionFilename;
+begin
+  case SessionStorage of
+  pssInProjectInfo: ProjectSessionFile:=ProjectInfoFile;
+  pssInProjectDir: ProjectSessionFile:=ChangeFileExt(ProjectInfoFile,'.lps');
+  pssInIDEConfig: ProjectSessionFile:=
+                               AppendPathDelim(GetProjectSessionsConfigPath)
+                               +ExtractFileNameOnly(ProjectInfoFile)+'.lps';
+  pssNone: ProjectSessionFile:='';
   end;
 end;
 

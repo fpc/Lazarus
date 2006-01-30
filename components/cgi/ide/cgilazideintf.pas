@@ -136,8 +136,10 @@ begin
   Result:= mrOK;
 end;
 
-function TCGIApplicationDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
+function TCGIApplicationDescriptor.CreateStartFiles(
+  AProject: TLazProject): TModalResult;
 begin
+  if AProject=nil then ;
   LazarusIDE.DoNewEditorFile(FileDescriptorCGIModule,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
   Result:= mrOK;

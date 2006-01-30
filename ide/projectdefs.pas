@@ -49,7 +49,8 @@ type
     pwfDontSaveClosedUnits,
     pwfSaveOnlyProjectUnits,
     pwfSkipDebuggerSettings,
-    pwfSkipJumpPoints
+    pwfSkipJumpPoints,
+    pwfDoNotSaveSessionInfo
     );
   TProjectWriteFlags = set of TProjectWriteFlag;
 

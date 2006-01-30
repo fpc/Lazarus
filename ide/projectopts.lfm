@@ -1,44 +1,44 @@
 object ProjectOptionsDialog: TProjectOptionsDialog
+  Left = 532
+  Height = 375
+  Top = 281
+  Width = 430
+  HorzScrollBar.Page = 429
+  VertScrollBar.Page = 374
   ActiveControl = TitleEdit
   Caption = 'ProjectOptionsDialog'
   ClientHeight = 375
   ClientWidth = 430
   OnClose = ProjectOptionsClose
   OnResize = ProjectOptionsResize
-  PixelsPerInch = 112
+  PixelsPerInch = 95
   Position = poScreenCenter
-  HorzScrollBar.Page = 429
-  VertScrollBar.Page = 374
-  Left = 532
-  Height = 375
-  Top = 281
-  Width = 430
   object Notebook: TNotebook
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 2
     Height = 338
     Width = 430
-    object Page1: TPage
-      Caption = 'Page1'
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    PageIndex = 4
+    object ApplicationPage: TPage
+      Caption = 'ApplicationPage'
       ClientWidth = 426
       ClientHeight = 308
-      Left = 2
-      Height = 308
-      Top = 28
-      Width = 426
       object AppSettingsGroupBox: TGroupBox
+        Left = 6
+        Height = 73
+        Top = 6
+        Width = 414
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'AppSettingsGroupBox'
         ClientHeight = 56
         ClientWidth = 410
         TabOrder = 0
-        Left = 6
-        Height = 73
-        Top = 6
-        Width = 414
         object TitleLabel: TLabel
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 398
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -46,35 +46,35 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = 'TitleLabel'
           Color = clNone
           ParentColor = False
-          Left = 6
-          Height = 13
-          Top = 6
-          Width = 398
         end
         object TitleEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 19
+          Width = 398
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TitleEdit'
-          Left = 6
-          Height = 23
-          Top = 19
-          Width = 398
         end
       end
       object OutputSettingsGroupBox: TGroupBox
+        Left = 6
+        Height = 73
+        Top = 85
+        Width = 414
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
         ClientHeight = 56
         ClientWidth = 410
         TabOrder = 1
-        Left = 6
-        Height = 73
-        Top = 85
-        Width = 414
         object TargetFileLabel: TLabel
+          Left = 6
+          Height = 13
+          Top = 6
+          Width = 398
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -82,321 +82,345 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = 'TargetFileLabel'
           Color = clNone
           ParentColor = False
-          Left = 6
-          Height = 13
-          Top = 6
-          Width = 398
         end
         object TargetFileEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 19
+          Width = 398
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           TabOrder = 0
           Text = 'TargetFileEdit'
-          Left = 6
-          Height = 23
-          Top = 19
-          Width = 398
         end
       end
     end
-    object Page2: TPage
-      Caption = 'Page2'
+    object FormsPage: TPage
+      Caption = 'FormsPage'
       ClientWidth = 426
       ClientHeight = 308
-      Left = 2
-      Height = 308
-      Top = 28
-      Width = 426
       object FormsAutoCreatedLabel: TLabel
-        Caption = 'FormsAutoCreatedLabel'
-        Color = clNone
-        ParentColor = False
         Left = 36
         Height = 13
         Top = 10
         Width = 136
-      end
-      object FormsAvailFormsLabel: TLabel
-        Caption = 'FormsAvailFormsLabel'
+        Caption = 'FormsAutoCreatedLabel'
         Color = clNone
         ParentColor = False
+      end
+      object FormsAvailFormsLabel: TLabel
         Left = 252
         Height = 13
         Top = 10
         Width = 129
+        Caption = 'FormsAvailFormsLabel'
+        Color = clNone
+        ParentColor = False
       end
       object FormsAutoCreatedListBox: TListBox
-        MultiSelect = True
-        TabOrder = 0
-        TopIndex = -1
         Left = 36
         Height = 242
         Top = 32
         Width = 168
+        MultiSelect = True
+        TabOrder = 0
+        TopIndex = -1
       end
       object FormsAvailFormsListBox: TListBox
-        MultiSelect = True
-        TabOrder = 1
-        TopIndex = -1
         Left = 244
         Height = 242
         Top = 32
         Width = 168
+        MultiSelect = True
+        TabOrder = 1
+        TopIndex = -1
       end
       object FormsMoveAutoCreatedFormUpBtn: TArrow
+        Left = 6
+        Height = 24
+        Top = 32
+        Width = 24
         ArrowType = atUp
         OnClick = FormsMoveAutoCreatedFormUpBtnClick
-        Left = 6
-        Height = 24
-        Top = 32
-        Width = 24
       end
       object FormsMoveAutoCreatedFormsDownBtn: TArrow
-        ArrowType = atDown
-        OnClick = FormsMoveAutoCreatedFormDownBtnClick
         Left = 6
         Height = 24
         Top = 60
         Width = 24
+        ArrowType = atDown
+        OnClick = FormsMoveAutoCreatedFormDownBtnClick
       end
       object FormsRemoveFromAutoCreatedFormsBtn: TArrow
-        ArrowType = atRight
-        OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
         Left = 212
         Height = 24
         Top = 32
         Width = 24
+        ArrowType = atRight
+        OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
       end
       object FormsAddToAutoCreatedFormsBtn: TArrow
-        OnClick = FormsAddToAutoCreatedFormsBtnClick
         Left = 212
         Height = 24
         Top = 60
         Width = 24
+        OnClick = FormsAddToAutoCreatedFormsBtnClick
       end
       object FormsAutoCreateNewFormsCheckBox: TCheckBox
-        Align = alBottom
-        BorderSpacing.Around = 6
-        Caption = 'FormsAutoCreateNewFormsCheckBox'
-        TabOrder = 2
         Left = 6
         Height = 24
         Top = 278
         Width = 414
+        Align = alBottom
+        BorderSpacing.Around = 6
+        Caption = 'FormsAutoCreateNewFormsCheckBox'
+        TabOrder = 2
       end
     end
-    object Page3: TPage
-      Caption = 'Page3'
+    object MiscPage: TPage
+      Caption = 'MiscPage'
       ClientWidth = 426
       ClientHeight = 308
-      Left = 2
-      Height = 308
-      Top = 28
-      Width = 426
+      object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
+        AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 36
+        Width = 414
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
+        TabOrder = 0
+      end
+      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
+        AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 62
+        Width = 414
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
+        TabOrder = 1
+      end
+      object MainUnitIsPascalSourceCheckBox: TCheckBox
+        Left = 6
+        Height = 24
+        Top = 10
+        Width = 414
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitIsPascalSourceCheckBox'
+        TabOrder = 2
+      end
+      object MainUnitHasTitleStatementCheckBox: TCheckBox
+        AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 88
+        Width = 414
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'MainUnitHasTitleStatementCheckBox'
+        TabOrder = 5
+      end
+      object RunnableCheckBox: TCheckBox
+        AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 122
+        Width = 414
+        Align = alTop
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        BorderSpacing.Right = 6
+        Caption = 'RunnableCheckBox'
+        TabOrder = 3
+      end
+      object AlwaysBuildCheckBox: TCheckBox
+        AnchorSideTop.Control = RunnableCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 148
+        Width = 414
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 6
+        Caption = 'AlwaysBuildCheckBox'
+        TabOrder = 4
+      end
+    end
+    object LazDocPage: TPage
+      Caption = 'LazDocPage'
+      ClientWidth = 426
+      ClientHeight = 308
+      object Label2: TLabel
+        Height = 13
+        Top = 222
+        Width = 426
+        Align = alTop
+        Caption = 'NOTE: only absolute paths are supported now'
+        Color = clNone
+        ParentColor = False
+      end
+      object LazDocPathsGroupBox: TGroupBox
+        Left = 6
+        Height = 210
+        Top = 6
+        Width = 414
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'LazDocPathsGroupBox'
+        ClientHeight = 210
+        ClientWidth = 414
+        TabOrder = 0
+        object LazDocListBox: TListBox
+          Left = 6
+          Height = 108
+          Top = 6
+          Width = 402
+          Align = alTop
+          BorderSpacing.Around = 6
+          TabOrder = 0
+          TopIndex = -1
+        end
+        object LazDocAddPathButton: TButton
+          Left = 6
+          Height = 25
+          Top = 122
+          Width = 75
+          BorderSpacing.InnerBorder = 2
+          Caption = 'LazDocAddPathButton'
+          OnClick = LazDocAddPathButtonClick
+          TabOrder = 1
+        end
+        object LazDocDeletePathButton: TButton
+          Left = 90
+          Height = 25
+          Top = 122
+          Width = 75
+          BorderSpacing.InnerBorder = 2
+          Caption = 'LazDocDeletePathButton'
+          OnClick = LazDocDeletePathButtonClick
+          TabOrder = 2
+        end
+        object LazDocPathEdit: TEdit
+          Left = 6
+          Height = 23
+          Top = 154
+          Width = 358
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 3
+          Text = 'LazDocPathEdit'
+        end
+        object LazDocBrowseButton: TButton
+          Left = 369
+          Height = 23
+          Top = 154
+          Width = 23
+          Anchors = [akTop, akRight]
+          BorderSpacing.InnerBorder = 2
+          Caption = '...'
+          OnClick = LazDocBrowseButtonClick
+          TabOrder = 4
+        end
+      end
+    end
+    object SavePage: TPage
+      Caption = 'SavePage'
+      ClientWidth = 426
+      ClientHeight = 308
       object SaveClosedUnitInfoCheckBox: TCheckBox
+        Left = 6
+        Height = 24
+        Top = 6
+        Width = 414
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'SaveClosedUnitInfoCheckBox'
         TabOrder = 0
-        Left = 6
-        Height = 24
-        Top = 6
-        Width = 414
-      end
-      object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
-        TabOrder = 1
-        Left = 6
-        Height = 24
-        Top = 106
-        Width = 414
-      end
-      object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitHasCreateFormStatementsCheckBox'
-        TabOrder = 2
-        Left = 6
-        Height = 24
-        Top = 136
-        Width = 414
-      end
-      object MainUnitIsPascalSourceCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 16
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitIsPascalSourceCheckBox'
-        TabOrder = 3
-        Left = 6
-        Height = 24
-        Top = 76
-        Width = 414
       end
       object SaveOnlyProjectUnitInfoCheckBox: TCheckBox
+        AnchorSideTop.Control = SaveClosedUnitInfoCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 24
+        Top = 32
+        Width = 414
         Align = alTop
         BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
+        BorderSpacing.Top = 2
         BorderSpacing.Right = 6
         Caption = 'SaveOnlyProjectUnitInfoCheckBox'
-        TabOrder = 4
-        Left = 6
-        Height = 24
-        Top = 36
-        Width = 414
+        TabOrder = 1
       end
-      object MainUnitHasTitleStatementCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'MainUnitHasTitleStatementCheckBox'
-        TabOrder = 5
-        Left = 6
-        Height = 24
-        Top = 166
-        Width = 414
-      end
-      object RunnableCheckBox: TCheckBox
-        Align = alTop
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'RunnableCheckBox'
-        TabOrder = 6
-        Left = 6
-        Height = 24
-        Top = 196
-        Width = 414
-      end
-      object AlwaysBuildCheckBox: TCheckBox
-        Anchors = [akTop, akLeft, akRight]
-        Caption = 'AlwaysBuildCheckBox'
-        TabOrder = 7
-        Left = 6
-        Height = 23
-        Top = 232
-        Width = 414
-      end
-    end
-    object Page4: TPage
-      Caption = 'Page4'
-      ClientWidth = 426
-      ClientHeight = 308
-      Left = 2
-      Height = 308
-      Top = 28
-      Width = 426
-      object Label2: TLabel
-        Align = alTop
-        Caption = 'NOTE: only absolute paths are supported now'
-        Color = clNone
-        ParentColor = False
-        Height = 13
-        Top = 222
-        Width = 426
-      end
-      object LazDocPathsGroupBox: TGroupBox
-        Align = alTop
+      object SaveSessionLocationRadioGroup: TRadioGroup
+        AnchorSideTop.Control = SaveOnlyProjectUnitInfoCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 7
+        Height = 117
+        Top = 67
+        Width = 413
+        AutoFill = True
+        BorderSpacing.Top = 5
         BorderSpacing.Around = 6
-        Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 193
-        ClientWidth = 410
-        TabOrder = 0
-        Left = 6
-        Height = 210
-        Top = 6
-        Width = 414
-        object LazDocListBox: TListBox
-          Align = alTop
-          BorderSpacing.Around = 6
-          TabOrder = 0
-          TopIndex = -1
-          Left = 6
-          Height = 108
-          Top = 6
-          Width = 398
-        end
-        object LazDocAddPathButton: TButton
-          BorderSpacing.InnerBorder = 2
-          Caption = 'LazDocAddPathButton'
-          OnClick = LazDocAddPathButtonClick
-          TabOrder = 1
-          Left = 6
-          Height = 25
-          Top = 122
-          Width = 75
-        end
-        object LazDocDeletePathButton: TButton
-          BorderSpacing.InnerBorder = 2
-          Caption = 'LazDocDeletePathButton'
-          OnClick = LazDocDeletePathButtonClick
-          TabOrder = 2
-          Left = 90
-          Height = 25
-          Top = 122
-          Width = 75
-        end
-        object LazDocPathEdit: TEdit
-          Anchors = [akTop, akLeft, akRight]
-          TabOrder = 3
-          Text = 'LazDocPathEdit'
-          Left = 6
-          Height = 23
-          Top = 154
-          Width = 354
-        end
-        object LazDocBrowseButton: TButton
-          Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
-          Caption = '...'
-          OnClick = LazDocBrowseButtonClick
-          TabOrder = 4
-          Left = 365
-          Height = 23
-          Top = 154
-          Width = 23
-        end
+        Caption = 'SaveSessionLocationRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        TabOrder = 2
       end
     end
   end
   object CancelButton: TButton
+    Left = 344
+    Height = 25
+    Top = 344
+    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
-    Left = 344
+  end
+  object OKButton: TButton
+    Left = 256
     Height = 25
     Top = 344
     Width = 75
-  end
-  object OKButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 2
-    Left = 256
-    Height = 25
-    Top = 344
-    Width = 75
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     Title = 'Select Directory'
     FilterIndex = 0
-    Title = 'Select Directory'
     left = 344
     top = 8
   end

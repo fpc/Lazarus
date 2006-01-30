@@ -82,7 +82,8 @@ const
   procedure SetPrimaryConfigPath(const NewValue: String);
   procedure SetSecondaryConfigPath(const NewValue: String);
   procedure CopySecondaryConfigFile(const AFilename: String);
-  
+  function GetProjectSessionsConfigPath: String;
+
   function GetDefaultTestBuildDirectory: string;
   
   function FindDefaultExecutablePath(const Executable: string): string;

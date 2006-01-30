@@ -117,6 +117,11 @@ begin
   end;
 end;
 
+function GetProjectSessionsConfigPath: String;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'projectsessions';
+end;
+
 {---------------------------------------------------------------------------
   function CreateCompilerTestPascalFilename: string;
  ---------------------------------------------------------------------------}

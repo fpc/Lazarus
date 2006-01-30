@@ -1115,6 +1115,7 @@ resourcestring
     +'maintained by lazarus.';
   dlgPOFroms = 'Forms';
   dlgPOMisc = 'Miscellaneous';
+  dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
@@ -2944,6 +2945,12 @@ resourcestring
   lisCTSelectCodeMacro = 'Select Code Macro';
   lisPDProgress = 'Progress';
   lisPDAbort = 'Abort';
+  lisPOSaveInLpiFil = 'Save in .lpi file';
+  lisPOSaveInLpsFileInProjectDirectory = 'Save in .lps file in project '
+    +'directory';
+  lisPOSaveInIDEConfigDirectory = 'Save in IDE config directory';
+  lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
+  lisPOSaveSessionInformationIn = 'Save session information in';
   
 implementation
 end.
