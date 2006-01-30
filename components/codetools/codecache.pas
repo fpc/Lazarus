@@ -64,7 +64,6 @@ type
     procedure SetFilename(Value: string);
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
-    procedure MakeFileDateValid;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -85,6 +84,7 @@ type
     procedure UnlockAutoDiskRevert;
     procedure IncrementRefCount;
     procedure ReleaseRefCount;
+    procedure MakeFileDateValid;
   public
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
     property Filename: string read FFilename write SetFilename;

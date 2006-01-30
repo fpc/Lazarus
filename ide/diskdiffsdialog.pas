@@ -88,12 +88,12 @@ function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
     i: Integer;
     CurUnit: TUnitInfo;
     fs: TFileStream;
-    KeepUnit: Boolean;
+    UnitDidNotChange: Boolean;
     s: string;
   begin
     for i:=AnUnitList.Count-1 downto 0 do begin
       CurUnit:=TUnitInfo(AnUnitList[i]);
-      KeepUnit:=true;
+      UnitDidNotChange:=false;
       try
         fs:=TFileStream.Create(CurUnit.Filename,fmOpenRead);
         try
@@ -102,7 +102,7 @@ function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
             SetLength(s,fs.Size);
             fs.Read(s[1],length(s));
             if s=CurUnit.Source.Source then
-              KeepUnit:=false;
+              UnitDidNotChange:=true;
           end;
         finally
           fs.Free;
@@ -110,8 +110,10 @@ function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
       except
         // unable to load
       end;
-      if not KeepUnit then
+      if UnitDidNotChange then begin
+        if (CurUnit.Source<>nil) then CurUnit.Source.MakeFileDateValid;
         AnUnitList.Delete(i);
+      end;
     end;
   end;
   
