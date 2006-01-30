@@ -47,13 +47,13 @@ begin
   cat:=nil,
 {$endif}
   CmdFormatSelection:=RegisterIDECommand(Cat,
-                                         SDescrPFSelection,
                                          SCmdPFSelection,
+                                         SDescrPFSelection,
                                          Key);
   Key:=IDEShortCut(VK_P,[SSctrl,ssAlt],VK_UNKNOWN,[]);
   CmdFormatFile:=RegisterIDECommand(Cat,
-                                    SDescrPFFile,
                                     SCmdPFFile,
+                                    SDescrPFFile,
                                     Key);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFSelection,
