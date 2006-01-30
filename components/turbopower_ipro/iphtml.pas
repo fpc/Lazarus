@@ -1674,7 +1674,9 @@ type
     BorderRect2 : TRect; {includes caption if any}
     RUH, RUV : Integer; {ruler width hor/vert}
     BL, BR, BT, BB : Integer; {border width, left, right, top, bottom}
+    {$IFNDEF IP_LAZARUS}
     CS2 : Integer; {cell space div 2}
+    {$ENDIF}
     SizeWidth : TIpHtmlPixels; {last computed width of table}
     FMin, FMax : Integer;
     procedure CalcMinMaxColTableWidth(const RenderProps: TIpHtmlProps;
@@ -7809,9 +7811,13 @@ end;
 procedure TIpHtml.SetDefaultProps;
 begin
   {$IFDEF IP_LAZARUS}
-  if FDefaultTypeFace='' then
+  if FDefaultTypeFace='' then begin
+    {$IFDEF WIN32}
+    Defaultprops.FontName := 'Times New Roman';
+    {$ELSE}
     Defaultprops.FontName := Graphics.DefFontData.Name
-  else
+    {$ENDIF}
+  end else
     Defaultprops.FontName := FDefaultTypeface;
   {$ELSE}
   Defaultprops.FontName := 'Times New Roman';
@@ -11597,7 +11603,11 @@ begin
                         begin
                           if Width.LengthValue <= ExpParentWidth then  {!!.10}
                             Min0 := MaxI2(Min0, Width.LengthValue
+                            {$IFDEF IP_LAZARUS}
+                              - 2*CellPadding - CellSpacing - RUH);    {!!.10}
+                            {$ELSE}
                               - 2*CellPadding - 2*CS2 - RUH);          {!!.10}
+                            {$ENDIF}
                           Max0 := Min0;
                         end;
                       end;
@@ -11636,11 +11646,19 @@ begin
 
   TWMin := 0;
   TWMax := 0;
+  {$IFDEF IP_LAZARUS}
+  CellOverhead := BL + CellSpacing + BR;
+  {$ELSE}
   CellOverhead := BL + 2*CS2 + RUH + BR;
+  {$ENDIF}
   for i := 0 to pred(ColCount) do begin
     inc(TWMin, ColTextWidthMin[i]);
     inc(TWMax, ColTextWidthMax[i]);
+    {$IFDEF IP_LAZARUS}
+    inc(CellOverhead, RUH + 2*CellPadding + CellSpacing + RUH);
+    {$ELSE}
     inc(CellOverhead, 2*CellPadding + 2*CS2 + RUH);
+    {$ENDIF}
     RowSp[i] := 0;
   end;
 
@@ -11911,25 +11929,46 @@ var
                         inc(CellRect1.Left,
                           ColStart[CurCol]);
 
+                        {$IFDEF IP_LAZARUS}
+                        inc(CellRect1.Top, CellSpacing + RUV);
+                        {$ELSE}
                         inc(CellRect1.Top, CS2 + RUV);
+                        {$ENDIF}
 
                         CellRect1.Right :=
                           CellRect1.Left
                           + 2*CellPadding
                           + ColTextWidth[CurCol]
+                          {$IFDEF IP_LAZARUS}
+                          ;
+                          {$ELSE}
                           + 2*CS2;
+                          {$ENDIF}
 
                         for k := 1 to ColSpan - 1 do
                           inc(CellRect1.Right,
                             ColTextWidth[CurCol + k] +
                             2*CellPadding +
+                            {$IFDEF IP_LAZARUS}
+                            2*RUH +
+                            CellSpacing);
+                            {$ELSE}
                             2*CS2 + RUH);
-
+                            {$ENDIF}
+                            
+                        {$IFDEF IP_LAZARUS}
+                        // PadRect area of cell excluding rules
+                        // CellRect area of text contained in cell
+                        FPadRect := CellRect1;
+                        inc(CellRect1.Top, CellPadding);
+                        inflateRect(CellRect1, -CellPadding, 0);
+                        {$ELSE}
                         FPadRect := CellRect1;
                         InflateRect(FPadRect, -CS2, 0);
 
                         inc(CellRect1.Top, CellPadding);
                         InflateRect(CellRect1, -(CellPadding + CS2), 0);
+                        {$ENDIF}
 
                         VA := VAlign;
                         if VA = hva3Default then
@@ -12003,7 +12042,11 @@ var
 
                         AL := AL0;
 
+                        {$IFDEF IP_LAZARUS}
+                        HA := maxYY - (TargetRect.Top + CellSpacing + RUV);
+                        {$ELSE}
                         HA := maxYY - TargetRect.Top;
+                        {$ENDIF}
                         HB := PageRect.Bottom - PageRect.Top;
 
                         VA := VAlign;
@@ -12026,22 +12069,38 @@ var
                           inc(CellRect1.Left,
                             ColStart[CurCol]);
 
+                          {$IFDEF IP_LAZARUS}
+                          inc(CellRect1.Top, CellSpacing + RUV + Y0);
+                          {$ELSE}
                           inc(CellRect1.Top, CS2 + RUV + Y0);
 
+                          {$ENDIF}
                           CellRect1.Right :=
                             CellRect1.Left
                             + 2*CellPadding
                             + ColTextWidth[CurCol]
+                            {$IFDEF IP_LAZARUS}
+                            ;
+                            {$ELSE}
                             + 2*CS2;
+                            {$ENDIF}
 
                           for k := 1 to ColSpan - 1 do
                             inc(CellRect1.Right,
                               ColTextWidth[CurCol + k] +
                               2*CellPadding +
+                              {$IFDEF IP_LAZARUS}
+                              2*RUH + CellSpacing);
+                              {$ELSE}
                               2*CS2 + RUH);
+                              {$ENDIF}
 
                           inc(CellRect1.Top, CellPadding);
+                          {$IFDEF IP_LAZARUS}
+                          inflateRect(CellRect1, -CellPadding, 0);
+                          {$ELSE}
                           InflateRect(CellRect1, -(CellPadding + CS2), 0);
+                          {$ENDIF}
 
                           case Align of
                           haDefault : ;
@@ -12094,8 +12153,12 @@ var
                       {dec(RowSp[j]);}                                   {!!.10}
                       RowSp[j] := RowSp[j] - 1;                          {!!.10}    
 
+                  {$IFDEF IP_LAZARUS}
+                  TargetRect.Top := MaxI2(maxYY, TargetRect.Top) + RUV;
+                  {$ELSE}
                   TargetRect.Top := MaxI2(maxYY, TargetRect.Top);
 
+                  {$ENDIF}
                   DeleteFirstSpanRow;
                 end;
             end;
@@ -12217,7 +12280,11 @@ begin
                       case Width.LengthType of
                       hlAbsolute :
                         AdjustCol(ColSpan, Width.LengthValue -
+                        {$IFDEF IP_LAZARUS}
+                          2*CellPadding - CellSpacing - RUH);
+                        {$ELSE}
                           2*CellPadding - 2*CS2 - RUH);
+                        {$ENDIF}
                       hlPercent :
                         AdjustCol(Colspan,
                                   round((FTableWidth - CellOverhead) *
@@ -12332,15 +12399,24 @@ begin
 
   R := BorderRect;
 
+  {$IFDEF IP_LAZARUS}
+  ColStart[0] := BL + CellSpacing + RUH;
+  {$ELSE}
   ColStart[0] := BL + CS2 + RUH;
+  {$ENDIF}
   RowSp[0] := 0;
   for i := 1 to pred(ColCount) do begin
     ColStart[i] :=
       ColStart[i-1]
       + 2*CellPadding
       + ColTextWidth[i-1]
+      {$IFDEF IP_LAZARUS}
+      + CellSpacing
+      + 2*RUH;
+      {$ELSE}
       + 2*CS2
       + RUH;
+      {$ENDIF}
     RowSp[i] := 0;
   end;
 
@@ -12366,7 +12442,11 @@ begin
     RowFixup.Free;
   end;
   
+  {$IFDEF IP_LAZARUS}
+  inc(TargetRect.Top, CellSpacing + RUV + BB);
+  {$ELSE}
   inc(TargetRect.Top, CS2 + RUV + BB);
+  {$ENDIF}
 
   R.Right := R.Left + FTableWidth;
   R.Bottom := TargetRect.Top;
@@ -12601,9 +12681,11 @@ begin
             if c > FColCount then
               FColCount := c;
           end;
+    {$IFNDEF IP_LAZARUS}
     CS2 := CellSpacing div 2;
     if (CellSpacing > 0) and (CS2 = 0) then
       CS2 := 1;
+    {$ENDIF}
     RUH := 0;
     RUV := 0;
     case Rules of
