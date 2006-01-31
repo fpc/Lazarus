@@ -1144,7 +1144,7 @@ begin
   XEvent.format := 32;
   XEvent.data.l[0] := 1; //Message is from program
   XEvent.data.l[1] := CurrentTime;
-  XEvent.data.l[1] := 0; // Applications current active window
+  XEvent.data.l[2] := 0; // Applications current active window
 
   XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
@@ -1180,7 +1180,7 @@ begin
   XEvent.format := 32;
   XEvent.data.l[0] := _NET_WM_STATE_ADD;
   XEvent.data.l[1] := _NET_WM_STATE_MAXIMIZED_HORZ;
-  XEvent.data.l[1] := _NET_WM_STATE_MAXIMIZED_VERT;
+  XEvent.data.l[2] := _NET_WM_STATE_MAXIMIZED_VERT;
 
   XSendEvent(XDisplay, aXRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
