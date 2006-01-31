@@ -47,7 +47,7 @@ uses
   MenuIntf, IDECommands, LazIDEIntf,
   LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
-  Project, IDEProcs, InputHistory, Debugger,
+  ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseDebugManager,
   SourceMarks,
@@ -132,8 +132,10 @@ type
     procedure SetupMainBarShortCuts; override;
     procedure UpdateButtonsAndMenuItems; override;
 
-    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); override;
-    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
+    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                      Merge: boolean); override;
+    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                      Flags: TProjectWriteFlags); override;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
     procedure ClearDebugOutputLog;
 
@@ -1506,12 +1508,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
+  procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                  Merge: boolean);
 
   Called when the main project is loaded from the XMLConfig.
 ------------------------------------------------------------------------------}
-procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
+procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
+  Merge: boolean);
 begin
+  if Merge then begin
+    // keep it simple: just load from the session and don't merge
+  end;
   FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
   FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
@@ -1522,18 +1529,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
+  procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                   Flags: TProjectWriteFlags);
 
   Called when the main project is saved to an XMLConfig.
 ------------------------------------------------------------------------------}
-procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
+procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
+  Flags: TProjectWriteFlags);
 begin
-  FBreakPointGroups.SaveToXMLConfig(XMLConfig,
-                                    'Debugging/'+XMLBreakPointGroupsNode+'/');
-  FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
-                               @Project1.ShortenFilename);
-  FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
-  FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
+  if not (pwfDoNotSaveSessionInfo in Flags) then begin
+    FBreakPointGroups.SaveToXMLConfig(XMLConfig,
+                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
+    FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
+                                 @Project1.ShortenFilename);
+    FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
+    FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
+  end;
 end;
 
 procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);

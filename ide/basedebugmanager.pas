@@ -40,7 +40,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Project, SourceMarks, Debugger,
+  Classes, SysUtils, Forms, Project, SourceMarks, Debugger, ProjectDefs,
   Laz_XMLCfg;
 
 type
@@ -74,8 +74,10 @@ type
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure UpdateButtonsAndMenuItems; virtual; abstract;
 
-    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
-    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
+    procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                      Merge: boolean); virtual; abstract;
+    procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
+                                      Flags: TProjectWriteFlags); virtual; abstract;
 
     function  DebuggerCount: Integer;
 

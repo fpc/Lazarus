@@ -552,7 +552,8 @@ type
     function CreateProjectObject(ProjectDesc,
                              FallbackProjectDesc: TProjectDescriptor): TProject;
     procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
-                                             XMLConfig: TXMLConfig);
+                                             XMLConfig: TXMLConfig;
+                                             Merge: boolean);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
                          XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
     procedure OnProjectGetTestDirectory(TheProject: TProject;
@@ -4813,10 +4814,10 @@ begin
 end;
 
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
-  XMLConfig: TXMLConfig);
+  XMLConfig: TXMLConfig; Merge: boolean);
 begin
   if TheProject=Project1 then
-    DebugBoss.LoadProjectSpecificInfo(XMLConfig);
+    DebugBoss.LoadProjectSpecificInfo(XMLConfig,Merge);
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
@@ -4824,7 +4825,7 @@ procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
 begin
   if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags))
   then
-    DebugBoss.SaveProjectSpecificInfo(XMLConfig);
+    DebugBoss.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
 end;
 
 procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;

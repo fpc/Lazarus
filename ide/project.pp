@@ -63,8 +63,8 @@ type
        const OldUnitName, NewUnitName: string;
        CheckIfAllowed: boolean;
        var Allowed: boolean) of object;
-  TOnLoadProjectInfo = procedure(TheProject: TProject;
-                                 XMLConfig: TXMLConfig) of object;
+  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
+                                 Merge: boolean) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
                XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
@@ -1525,6 +1525,7 @@ var
   xmlconfig: TXMLConfig;
   SaveSessionInfoInLPI: Boolean;
   CurSessionFilename: String;
+  CurFlags: TProjectWriteFlags;
 begin
   Result := mrCancel;
 
@@ -1603,8 +1604,12 @@ begin
         SaveSessionInfo(XMLConfig,Path);
       end;
 
-      if Assigned(OnSaveProjectInfo) then
-        OnSaveProjectInfo(Self,XMLConfig,ProjectWriteFlags);
+      if Assigned(OnSaveProjectInfo) then begin
+        CurFlags:=ProjectWriteFlags;
+        if not SaveSessionInfoInLPI then
+          CurFlags:=CurFlags+[pwfDoNotSaveSessionInfo];
+        OnSaveProjectInfo(Self,XMLConfig,CurFlags);
+      end;
 
       InvalidateFileStateCache;
       xmlconfig.Flush;
@@ -1674,6 +1679,11 @@ begin
         
         // save session
         SaveSessionInfo(XMLConfig,Path);
+
+        if Assigned(OnSaveProjectInfo) then begin
+          CurFlags:=ProjectWriteFlags+[pwfDoNotSaveProjectInfo];
+          OnSaveProjectInfo(Self,XMLConfig,CurFlags);
+        end;
 
         Result:=mrOk;
       except
@@ -1887,8 +1897,9 @@ begin
          Path+'General/ActiveEditorIndexAtStart/Value', -1);
       FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
 
-      if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
-
+      if Assigned(OnLoadProjectInfo) then begin
+        OnLoadProjectInfo(Self,XMLConfig,false);
+      end;
     finally
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
@@ -1899,19 +1910,24 @@ begin
       xmlconfig:=nil;
     end;
 
+    // load session file (if available)
     if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
     and FileExists(ProjectSessionFile) then begin
       try
         xmlconfig := TXMLConfig.Create(ProjectSessionFile);
         
+        
+        
         Path:='ProjectOptions/';
         fPathDelimChanged:=
           XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
           
         FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
-
         
+        if Assigned(OnLoadProjectInfo) then begin
+          OnLoadProjectInfo(Self,XMLConfig,true);
+        end;
       except
         MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
             ,mtError,[mbOk],0);
@@ -1933,6 +1949,7 @@ begin
       end;
 
     end;
+
   finally
     EndUpdate;
   end;
