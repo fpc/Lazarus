@@ -277,6 +277,8 @@ type
   TIDECommand = class;
   TIDECommandCategory = class;
 
+  TNotifyProcedure = procedure(Sender: TObject);
+
   { TIDECommandScope
     A TIDECommandScope defines a set of IDE windows that will share the same
     IDE commands. An IDE command can be valid in several scopes at the same
@@ -373,6 +375,8 @@ type
     FLocalizedName: string;
     FName: String;
     FOnChange: TNotifyEvent;
+    FOnExecute: TNotifyEvent;
+    FOnExecuteProc: TNotifyProcedure;
     FShortcutA: TIDEShortCut;
     FShortcutB: TIDEShortCut;
   protected
@@ -396,6 +400,7 @@ type
     procedure ClearShortcutA;
     procedure ClearShortcutB;
     function GetCategoryAndName: string;
+    function Execute(Sender: TObject): boolean;
   public
     property Name: String read FName;
     property Command: word read FCommand;// see the ecXXX constants above
@@ -404,6 +409,8 @@ type
     property ShortcutA: TIDEShortCut read FShortcutA write SetShortcutA;
     property ShortcutB: TIDEShortCut read FShortcutB write SetShortcutB;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
+    property OnExecuteProc: TNotifyProcedure read FOnExecuteProc write FOnExecuteProc;
   end;
 
 
@@ -438,7 +445,7 @@ type
   TExecuteIDEShortCut =
     procedure(Sender: TObject; var Key: word; Shift: TShiftState;
               IDEWindowClass: TCustomFormClass) of object;
-  TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
+  TExecuteIDECommand = function(Sender: TObject; Command: word): boolean of object;
 
 var
   OnExecuteIDEShortCut: TExecuteIDEShortCut;
@@ -447,7 +454,7 @@ var
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
   IDEWindowClass: TCustomFormClass);
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
-procedure ExecuteIDECommand(Sender: TObject; Command: word);
+function ExecuteIDECommand(Sender: TObject; Command: word): boolean;
 
 function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
 
@@ -509,10 +516,12 @@ begin
   OnExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
 
-procedure ExecuteIDECommand(Sender: TObject; Command: word);
+function ExecuteIDECommand(Sender: TObject; Command: word): boolean;
 begin
   if (OnExecuteIDECommand<>nil) and (Command<>0) then
-    OnExecuteIDECommand(Sender,Command);
+    Result:=OnExecuteIDECommand(Sender,Command)
+  else
+    Result:=false;
 end;
 
 function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
@@ -751,6 +760,19 @@ begin
   Result:='"'+GetLocalizedName+'"';
   if Category<>nil then
     Result:=Result+' in "'+Category.Description+'"';
+end;
+
+function TIDECommand.Execute(Sender: TObject): boolean;
+begin
+  Result:=false;
+  if Assigned(OnExecute) then begin
+    Result:=true;
+    OnExecute(Sender);
+  end;
+  if Assigned(OnExecuteProc) then begin
+    Result:=true;
+    OnExecuteProc(Sender);
+  end;
 end;
 
 { TIDECommandScopes }

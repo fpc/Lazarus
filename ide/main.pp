@@ -293,7 +293,7 @@ type
     procedure OnExecuteIDEShortCut(Sender: TObject;
                        var Key: word; Shift: TShiftState;
                        IDEWindowClass: TCustomFormClass);
-    procedure OnExecuteIDECommand(Sender: TObject; Command: word);
+    function OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
@@ -2304,6 +2304,7 @@ procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
+  IDECmd: TIDECommand;
 begin
   //debugln('TMainIDE.OnProcessIDECommand ',dbgs(Command));
 
@@ -2465,18 +2466,23 @@ begin
 
   else
     Handled:=false;
+    // let the bosses handle it
     DebugBoss.ProcessCommand(Command,Handled);
     if Handled then exit;
     PkgBoss.ProcessCommand(Command,Handled);
+    // custom commands
+    IDECmd:=IDECommandList.FindIDECommand(Command);
+    //DebugLn('TMainIDE.OnProcessIDECommand Command=',dbgs(Command),' ',dbgs(IDECmd));
+    if (IDECmd<>nil) then begin
+      Handled:=IDECmd.Execute(Self);
+    end;
   end;
 end;
 
-procedure TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word);
-var
-  Handled: Boolean;
+function TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
 begin
-  Handled:=false;
-  OnProcessIDECommand(Sender,Command,Handled);
+  Result:=false;
+  OnProcessIDECommand(Sender,Command,Result);
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;

@@ -7317,12 +7317,10 @@ const
 begin
   i := KeyStrokes.FindKeycode2(fLastKey, fLastShiftState, Code, Shift);
   if i >= 0 then begin
-//DebugLn('FindKeyCode2 success');
     Result := KeyStrokes[i].Command
   end else begin
     i := Keystrokes.FindKeycode(Code, Shift);
     if i >= 0 then begin
-//DebugLn('FindKeyCode success');
       Result := Keystrokes[i].Command
     end else
       Result := ecNone;

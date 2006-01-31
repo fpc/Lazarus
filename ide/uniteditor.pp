@@ -1222,6 +1222,7 @@ end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
+// these are the keys above ecUserFirst
 // define all extra keys here, that should not be handled by synedit
 var
   I: Integer;
@@ -5090,7 +5091,8 @@ begin
     ViewJumpHistoryClicked(Self);
 
   else
-    Handled:=false;
+    Handled:=ExecuteIDECommand(Self,Command);
+    DebugLn('TSourceNotebook.ProcessParentCommand Command=',dbgs(Command),' Handled=',dbgs(Handled));
   end;  //case
   if Handled then Command:=ecNone;
   FProcessingCommand:=false;

@@ -39,8 +39,6 @@ type
     function (const NewCaption: string; const NewEnabled: boolean;
               const NewOnClick: TNotifyEvent): TIDEMenuItem of object;
 
-  TNotifyProcedure = procedure(Sender: TObject);
-
   { TIDEMenuItem
     A menu item in one of the IDE's menus.
     This is only the base class for TIDEMenuSection and TIDEMenuCommand }
@@ -66,10 +64,10 @@ type
     FTag: Integer;
     FVisible: Boolean;
     FLastVisibleActive: boolean;
-    procedure MenuItemClick(Sender: TObject);
     procedure MenuItemDestroy(Sender: TObject);
     procedure BitmapChange(Sender: TObject);
   protected
+    procedure MenuItemClick(Sender: TObject); virtual;
     function GetBitmap: TBitmap; virtual;
     function GetCaption: string; virtual;
     function GetHint: String; virtual;
@@ -212,6 +210,7 @@ type
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
   protected
+    procedure MenuItemClick(Sender: TObject); override;
     procedure SetAutoCheck(const AValue: boolean); virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
     procedure SetDefault(const AValue: Boolean); virtual;
@@ -1376,6 +1375,13 @@ begin
       MenuItem.ShortCut:=IDEShortCutToMenuShortCut(FCommand.ShortcutA)
     else
       MenuItem.ShortCut:=0;
+end;
+
+procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
+begin
+  inherited MenuItemClick(Sender);
+  if (Command<>nil) then
+    Command.Execute(Sender);
 end;
 
 procedure TIDEMenuCommand.SetAutoCheck(const AValue: boolean);
