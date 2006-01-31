@@ -19,7 +19,7 @@ unit cgiModules;
 interface
 
 uses
-  Classes, SysUtils, cgiApp, LResources;
+  Classes, SysUtils, cgiApp, LCLProc, LResources;
 
 Type
   TCGIDatamodule = Class(TDataModule)
@@ -71,7 +71,6 @@ ResourceString
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass): Boolean;
 begin
-  writeln('AAA');
   Result:=InitLazResourceComponent(Instance,RootAncestor);
 end;
 
@@ -80,7 +79,7 @@ end;
 procedure TModuledCGIApplication.CreateForm(AClass: TCGIDataModuleClass;
   Var Reference: TCGIDataModule);
 begin
-  writeln('TModuledCGIApplication.CreateForm ',AClass.CLassName);
+  debugln('TModuledCGIApplication.CreateForm ',AClass.CLassName);
   Reference:=AClass.CreateNew(Self,0);
   If FMainModule=Nil then
     FMainModule:=Reference;
