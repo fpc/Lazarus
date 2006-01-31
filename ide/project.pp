@@ -179,7 +179,8 @@ type
     procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              SaveData, SaveSession: boolean);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: extended);
     procedure UpdateSourceDirectoryReference;
@@ -895,36 +896,48 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo SaveToXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  SaveData, SaveSession: boolean);
 var AFilename:string;
 begin
-  XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
-  XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
-  XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
+  // global data
   AFilename:=Filename;
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',AFilename);
-  XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
-                           FBuildFileIfActive,false);
-  XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
-                           FRunFileIfActive,false);
-  XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
-  XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
-  XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
-  XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
-  XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
-  AFilename:=FResourceFilename;
-  if Assigned(fOnLoadSaveFilename) then
-    fOnLoadSaveFilename(AFilename,false);
-  XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
-  XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
-     LazSyntaxHighlighterNames[fSyntaxHighlighter],
-     LazSyntaxHighlighterNames[lshFreePascal]);
-  XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
-  XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
-  XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
-  FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
+
+  // context data (project/session)
+  if (IsPartOfProject and SaveData)
+  or ((not IsPartOfProject) and SaveSession)
+  then begin
+    XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
+                             FBuildFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
+                             FRunFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
+    XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
+    XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+    AFilename:=FResourceFilename;
+    if Assigned(fOnLoadSaveFilename) then
+      fOnLoadSaveFilename(AFilename,false);
+    XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
+    XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
+  end;
+
+  // session data
+  if SaveSession then begin
+    XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
+    XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
+    XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
+    XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
+    XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
+    FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
+    XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
+    XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
+    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
+                             LazSyntaxHighlighterNames[fSyntaxHighlighter],
+                             LazSyntaxHighlighterNames[lshFreePascal]);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1465,9 +1478,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   function UnitMustBeSaved(i: integer; SaveData, SaveSession: boolean): boolean;
   begin
     Result:=false;
-    if Units[i].IsPartOfProject then begin
-      if not SaveData then exit;
-    end else begin
+    if not Units[i].IsPartOfProject then begin
       if not SaveSession then exit;
       if (pfSaveOnlyProjectUnits in Flags) then exit;
       if (pwfSaveOnlyProjectUnits in ProjectWriteFlags) then exit;
@@ -1488,7 +1499,8 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     for i:=0 to UnitCount-1 do begin
       if UnitMustBeSaved(i,SaveData,SaveSession) then begin
         Units[i].SaveToXMLConfig(
-          xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/');
+          xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
+          SaveData,SaveSession);
         inc(SaveUnitCount);
       end;
     end;
