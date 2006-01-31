@@ -958,6 +958,10 @@ msgstr "Таблиця символів"
 msgid "Check LFM file in editor"
 msgstr "Перевірити файл LFM в редакторі"
 
+#: lazarusidestrconsts:lischeckchangesondiskwithloading
+msgid "Check changes on disk with loading"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Перевірити сумісність"
@@ -1996,6 +2000,10 @@ msgstr "Розрізняти регістр букв, наприклад, А і 
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lispodonotsaveanysessioninfo
+msgid "Do not save any session info"
 msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
@@ -5750,6 +5758,18 @@ msgstr "Зберігати відомості тільки про файли п�
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr "Зберегти файл %s%s%sперед закриттям форми %s%s%s?"
 
+#: lazarusidestrconsts:lisposaveinlpifil
+msgid "Save in .lpi file"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
+msgid "Save in .lps file in project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinideconfigdirectory
+msgid "Save in IDE config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Зберегти інформацію про закриті редактором файли"
@@ -5761,6 +5781,10 @@ msgstr "Зберегти пакунок"
 #: lazarusidestrconsts:lispkgmangsavepackage2
 msgid "Save package?"
 msgstr "Зберегти пакунок?"
+
+#: lazarusidestrconsts:lisposavesessioninformationin
+msgid "Save session information in"
+msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6050,6 +6074,10 @@ msgstr "Інструмент вибору"
 msgid "Semicolon"
 msgstr "Крапка з комою"
 
+#: lazarusidestrconsts:dlgposavesession
+msgid "Session"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
 msgstr "Встановити позначку %d"
@@ -6153,6 +6181,10 @@ msgstr "Показати всі повідомлення"
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
 msgstr "Всі проц-и при помилках"
+
+#: lazarusidestrconsts:dlgqshowborderspacing
+msgid "Show border spacing"
+msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"

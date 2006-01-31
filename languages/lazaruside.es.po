@@ -968,6 +968,10 @@ msgstr "Mapa de caracteres"
 msgid "Check LFM file in editor"
 msgstr "Verificar archivo LFM en editor"
 
+#: lazarusidestrconsts:lischeckchangesondiskwithloading
+msgid "Check changes on disk with loading"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Verificar consistencia"
@@ -2006,6 +2010,10 @@ msgstr "Distingue entre mayúsculas y minúsculas, ejemplo A y a"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lispodonotsaveanysessioninfo
+msgid "Do not save any session info"
 msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
@@ -5760,6 +5768,18 @@ msgstr "Guardar información del Editor sólo para archivos del proyecto"
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr "¿Guardar archivo %s%s%s%santes de cerrar formulario %s%s%s?"
 
+#: lazarusidestrconsts:lisposaveinlpifil
+msgid "Save in .lpi file"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
+msgid "Save in .lps file in project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinideconfigdirectory
+msgid "Save in IDE config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr ""
@@ -5771,6 +5791,10 @@ msgstr "Guardar paquete"
 #: lazarusidestrconsts:lispkgmangsavepackage2
 msgid "Save package?"
 msgstr "¿Guardar paquete?"
+
+#: lazarusidestrconsts:lisposavesessioninformationin
+msgid "Save session information in"
+msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6060,6 +6084,10 @@ msgstr "Herramienta de selección"
 msgid "Semicolon"
 msgstr "Punto y coma"
 
+#: lazarusidestrconsts:dlgposavesession
+msgid "Session"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
 msgstr "Establecer Marca %d"
@@ -6163,6 +6191,10 @@ msgstr "Mostrar todos los mensajes"
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
 msgstr "Mostrar todos los procs de error"
+
+#: lazarusidestrconsts:dlgqshowborderspacing
+msgid "Show border spacing"
+msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"

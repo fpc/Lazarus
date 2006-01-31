@@ -9,22 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Bilder"
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr "Eigenschaften des Eintrags"
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr " Einträge "
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr " Ausgewähltes Bild "
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""
@@ -157,9 +141,9 @@ msgstr "Aktionslisteneditor"
 msgid "Add"
 msgstr "&Hinzufügen"
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Hinzufügen ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -172,6 +156,14 @@ msgstr "Seite zufügen"
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Zu Favoriten hinzufügen"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -209,13 +201,21 @@ msgstr "Browser %s%s%s nicht gefunden."
 msgid "C&lear"
 msgstr "&Löschen"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Kategorie"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -237,7 +237,7 @@ msgstr "Editor für Checklistboxen"
 msgid "Class"
 msgstr "Klasse"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Leeren"
 
@@ -261,10 +261,6 @@ msgstr ""
 msgid "Confirm delete"
 msgstr "Löschen bestätigen"
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Alle Bilder löschen?"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Kopieren"
@@ -276,6 +272,10 @@ msgstr ""
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Default-Ereignis erzeugen"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -357,6 +357,10 @@ msgstr "&Beenden"
 msgid "Edit"
 msgstr "Bearbeiten"
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -417,7 +421,7 @@ msgstr "Fließkomma"
 msgid "Font Select"
 msgstr "Schriftauswahl"
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Hilfe"
 
@@ -457,17 +461,17 @@ msgstr "Hilfeknoten %s%s%s besitzt keine Hilfedatenbank"
 msgid "Help on help"
 msgstr "Hilfe zur Hilfe"
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Bildindex"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "ImageList Editor"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -509,17 +513,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Bezeichnung"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Letzter"
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "ListView Editor"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -545,11 +545,11 @@ msgstr "Methode"
 msgid "Modify the Item"
 msgstr "Eintrag ändern"
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Nach unten bewegen"
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Nach oben bewegen"
 
@@ -560,10 +560,6 @@ msgstr "Seite nach links bewegen"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Seite nach rechts bewegen"
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Neu"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -593,8 +589,8 @@ msgstr "Kein HTML-Browser gefunden%s Bitte definieren Sie einen in Hilfe->Hilfe 
 msgid "No help found for line %d, column %d of %s."
 msgstr "Keine Hilfe für Zeile %d, Spalte %d von %s gefunden."
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -681,6 +677,10 @@ msgstr "Sichern &als"
 msgid "Save As"
 msgstr "Sichern als"
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
@@ -688,6 +688,10 @@ msgstr ""
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
 msgstr "Bild speichern"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -709,7 +713,11 @@ msgstr "Alles markieren"
 msgid "Select a file"
 msgstr "Datei auswählen"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -745,8 +753,12 @@ msgstr "Sortieren"
 msgid "Standard Action Classes"
 msgstr "Standard-Action-Klassen"
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -765,15 +777,11 @@ msgstr "Stringgrid-Editor"
 msgid "Strings Editor Dialog"
 msgstr "Zeichenketteneditordialog"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Unterpunkt"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr ""
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -792,6 +800,10 @@ msgstr "Toolbar"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Stichwortsuche"
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr ""
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"

@@ -969,6 +969,10 @@ msgstr "Tablica znaków"
 msgid "Check LFM file in editor"
 msgstr "SprawdŸ plik formularz w edytorze"
 
+#: lazarusidestrconsts:lischeckchangesondiskwithloading
+msgid "Check changes on disk with loading"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "SprawdŸ spójnoœæ"
@@ -2007,6 +2011,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lispodonotsaveanysessioninfo
+msgid "Do not save any session info"
 msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
@@ -5761,6 +5769,18 @@ msgstr "Zapisuj informacjê edytora tylko dla plików projektu"
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:lisposaveinlpifil
+msgid "Save in .lpi file"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
+msgid "Save in .lps file in project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinideconfigdirectory
+msgid "Save in IDE config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr ""
@@ -5771,6 +5791,10 @@ msgstr "Zapisz pakiet"
 
 #: lazarusidestrconsts:lispkgmangsavepackage2
 msgid "Save package?"
+msgstr ""
+
+#: lazarusidestrconsts:lisposavesessioninformationin
+msgid "Save session information in"
 msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
@@ -6061,6 +6085,10 @@ msgstr "Narzêdzie zaznaczania"
 msgid "Semicolon"
 msgstr "Œrednik"
 
+#: lazarusidestrconsts:dlgposavesession
+msgid "Session"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
 msgstr "Ustaw znacznik %d"
@@ -6164,6 +6192,10 @@ msgstr "Poka¿ wszystkie komunikaty"
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
 msgstr "Wszystkie procs przy b³êdzie"
+
+#: lazarusidestrconsts:dlgqshowborderspacing
+msgid "Show border spacing"
+msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"

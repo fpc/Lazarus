@@ -1,19 +1,3 @@
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Imatges "
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr " Propietat de l'element "
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr " Elements "
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr " Imatge seleccionada "
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""
@@ -146,9 +130,9 @@ msgstr "Editor de la llista d'accions"
 msgid "Add"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Afegeix ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -160,6 +144,14 @@ msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
 msgstr ""
 
 #: objinspstrconsts:oisall
@@ -198,13 +190,21 @@ msgstr "No s'ha trobat el navegador %s%s%s."
 msgid "C&lear"
 msgstr "Ne&teja"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Cancel·la"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Categoria"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Class"
 msgstr "Classe"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Neteja"
 
@@ -250,10 +250,6 @@ msgstr ""
 msgid "Confirm delete"
 msgstr "Confirma l'eliminació"
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Voleu confirmar la neteja de totes les imatges ?"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Copia"
@@ -265,6 +261,10 @@ msgstr ""
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Crea l'esdeveniment predeterminat"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -346,6 +346,10 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -406,7 +410,7 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Selecciona la font"
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Ajuda"
 
@@ -446,17 +450,17 @@ msgstr "El node de l'ajuda %s%s%s no té base de dades de l'ajuda"
 msgid "Help on help"
 msgstr "Ajuda de l'ajuda"
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Índex de les imatges"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Editor de la llista de les imatges"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -498,17 +502,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Label"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Últim"
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "Editor de ListView"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -534,11 +534,11 @@ msgstr "Mètode"
 msgid "Modify the Item"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Mou avall"
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Mou amunt"
 
@@ -549,10 +549,6 @@ msgstr ""
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr ""
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Nou"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,8 +578,8 @@ msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajud
 msgid "No help found for line %d, column %d of %s."
 msgstr "No s'ha trobat ajuda per la línia %d, columna %d de %s."
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -670,12 +666,20 @@ msgstr "&Anomena i desa.."
 msgid "Save As"
 msgstr "Anomena i desa"
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -698,7 +702,11 @@ msgstr "Selecciona-ho tot"
 msgid "Select a file"
 msgstr "Selecciona un fitxer"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -734,8 +742,12 @@ msgstr "Classifica"
 msgid "Standard Action Classes"
 msgstr "Classes d'acció normalitzades"
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -754,15 +766,11 @@ msgstr "Editor de la cadena de la graella ..."
 msgid "Strings Editor Dialog"
 msgstr "Diàleg editor de les cadenes"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Subelement"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr ""
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -781,6 +789,10 @@ msgstr "Barra d'eines"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Cerca el contingut"
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr ""
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"

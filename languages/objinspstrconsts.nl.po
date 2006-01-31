@@ -1,19 +1,3 @@
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Plaatjes "
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr " Onderdelen eigenschap "
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr " Onderdelen "
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr " Geselecteerd plaatje "
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d regels, %d letters"
@@ -146,9 +130,9 @@ msgstr "Action List Bewerker"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Toevoegen ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -161,6 +145,14 @@ msgstr "Pagina toevoegen"
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Aan favorieten toevoegen"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -198,13 +190,21 @@ msgstr "Browser %s%s%s niet gevonden."
 msgid "C&lear"
 msgstr "Opsc&honen"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Ongedaan maken"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Categorie"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -226,7 +226,7 @@ msgstr "CheckListBox editor"
 msgid "Class"
 msgstr "Class"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Opschonen"
 
@@ -250,10 +250,6 @@ msgstr "Componenten"
 msgid "Confirm delete"
 msgstr "Bevestigen verwijderen"
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Bevestig opschonen alle plaatjes"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Copieëer"
@@ -265,6 +261,10 @@ msgstr "Nieuwe pascal unit aanmaken"
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Creëer standaard gebeurtenis"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -346,6 +346,10 @@ msgstr "A&fsluiten"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -406,7 +410,7 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Lettertype Selecteren"
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Help"
 
@@ -446,17 +450,17 @@ msgstr "Help node %s%s%s heeft geen Help Database"
 msgid "Help on help"
 msgstr "Help bij help"
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Plaatjes Index"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Image list bewerker"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -498,17 +502,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Etiket"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Laatste"
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "ListView bewerker"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -534,11 +534,11 @@ msgstr "Methode"
 msgid "Modify the Item"
 msgstr "Wijzig het item"
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Ga naar beneden"
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Ga naar boven"
 
@@ -549,10 +549,6 @@ msgstr "Pagina naar links"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Pagina naar rechts"
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Nieuw"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,8 +578,8 @@ msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -
 msgid "No help found for line %d, column %d of %s."
 msgstr "Er is geen help gevonden voor regel %d, kolom %d van %s."
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -670,6 +666,10 @@ msgstr "Opslaan &Als..."
 msgid "Save As"
 msgstr "Opslaan als"
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Sla Literal Charecters op"
@@ -677,6 +677,10 @@ msgstr "Sla Literal Charecters op"
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
 msgstr "Sla plaatje op"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -698,7 +702,11 @@ msgstr "Alles Selecteren"
 msgid "Select a file"
 msgstr "Selecteer een bestand"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -734,8 +742,12 @@ msgstr "Sorteren"
 msgid "Standard Action Classes"
 msgstr "Standaard Actie Classen"
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -754,15 +766,11 @@ msgstr "StringGrid Bewerker ..."
 msgid "Strings Editor Dialog"
 msgstr "Strings Editor Dialoog"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Sub onderdeel"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Test Invoer"
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -781,6 +789,10 @@ msgstr "Gereedschapsbalk"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Onderwerp zoeken"
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr ""
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"

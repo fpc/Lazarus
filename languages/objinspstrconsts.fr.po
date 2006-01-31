@@ -1,19 +1,3 @@
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Images "
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr "Propriété de l'élément"
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr "Eléments"
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr "Image sélectionnée"
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""
@@ -146,9 +130,9 @@ msgstr "Editeur de listes d'actions"
 msgid "Add"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Ajouter ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -160,6 +144,14 @@ msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
 msgstr ""
 
 #: objinspstrconsts:oisall
@@ -198,13 +190,21 @@ msgstr "Navigateur %s%s%s non trouvé."
 msgid "C&lear"
 msgstr "&Effacer"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
 msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Catégorie"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Class"
 msgstr "Classe"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Effacer"
 
@@ -250,10 +250,6 @@ msgstr ""
 msgid "Confirm delete"
 msgstr "Confirmez la suppression"
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Supprimer toutes les images ?"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr ""
@@ -265,6 +261,10 @@ msgstr ""
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Création d'un événement par défaut"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -346,6 +346,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -406,7 +410,7 @@ msgstr "Virgule flottante"
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr ""
 
@@ -446,17 +450,17 @@ msgstr ""
 msgid "Help on help"
 msgstr ""
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Index d'image"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Editeur de liste d'images"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -498,17 +502,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Libellé"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "Editeur d'élements"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -534,11 +534,11 @@ msgstr "Méthode"
 msgid "Modify the Item"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr ""
 
@@ -549,10 +549,6 @@ msgstr ""
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr ""
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Nouveau"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,8 +578,8 @@ msgstr "Pas trouvé de navigateur HTML.%sVeuillez en définir un dans Aide -> Conf
 msgid "No help found for line %d, column %d of %s."
 msgstr "Pas trouvé d'aide pour la ligne %d, colonne %d de %s."
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -670,12 +666,20 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -698,7 +702,11 @@ msgstr ""
 msgid "Select a file"
 msgstr "Choisissez un fichier"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -734,8 +742,12 @@ msgstr "Trier"
 msgid "Standard Action Classes"
 msgstr ""
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -754,15 +766,11 @@ msgstr "Editeur de tableau..."
 msgid "Strings Editor Dialog"
 msgstr "Dialogue d'éditeur de chaînes"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Sous-élément"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr ""
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -780,6 +788,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
 msgstr ""
 
 #: objinspstrconsts:sccstredtcaption

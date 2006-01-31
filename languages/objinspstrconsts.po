@@ -190,6 +190,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr ""
+
 #: objinspstrconsts:sccstredtload
 msgid "Load"
 msgstr ""
@@ -198,36 +202,20 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
-msgstr ""
-
-#: objinspstrconsts:sccstredtok
-msgid "OK"
-msgstr ""
-
-#: objinspstrconsts:sccstredtcancel
-msgid "Cancel"
-msgstr ""
-
-#: objinspstrconsts:sccstredtapply
-msgid "Apply"
-msgstr ""
-
-#: objinspstrconsts:sccstredthelp
-msgid "Help"
 msgstr ""
 
 #: objinspstrconsts:sccstredtitem
@@ -243,67 +231,123 @@ msgid "Save"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
+msgid "ListView Items Editor"
+msgstr ""
+
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
 msgstr ""
 
 #: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
+msgid "Items"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
+msgid "Item Properties"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
+#: objinspstrconsts:sccslvedtnewitem
+msgid "New Item"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
+#: objinspstrconsts:sccslvedtnewsubitem
+msgid "New SubItem"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
+#: objinspstrconsts:sccslvedtapply
+msgid "Apply"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtbtndel
+#: objinspstrconsts:sccslvedtdelete
 msgid "Delete"
 msgstr ""
 
-#: objinspstrconsts:oiscategory
-msgid "Category"
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
 msgstr ""
 
-#: objinspstrconsts:oisaction
-msgid "Action"
+#: objinspstrconsts:sccslvedtlabelimageindex
+msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
+#: objinspstrconsts:sccslvedtlabelstateindex
+msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtitem
+msgid "Item"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
+msgid "ImageList Editor"
 msgstr ""
 
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
 msgstr ""
 
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtdelete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtapply
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr ""
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
 msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor
@@ -408,6 +452,14 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
+msgstr ""
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
 msgstr ""
 
 #: objinspstrconsts:oismasks

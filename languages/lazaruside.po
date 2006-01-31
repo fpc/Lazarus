@@ -2014,6 +2014,10 @@ msgstr ""
 msgid "Hints for component palette"
 msgstr ""
 
+#: lazarusidestrconsts:lischeckchangesondiskwithloading
+msgid "Check changes on disk with loading"
+msgstr ""
+
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr ""
@@ -2124,6 +2128,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
+msgstr ""
+
+#: lazarusidestrconsts:dlgqshowborderspacing
+msgid "Show border spacing"
 msgstr ""
 
 #: lazarusidestrconsts:dlggridcolor
@@ -3412,6 +3420,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpomisc
 msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts:dlgposavesession
+msgid "Session"
 msgstr ""
 
 #: lazarusidestrconsts:dlgapplicationsettings
@@ -8832,5 +8844,25 @@ msgstr ""
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinlpifil
+msgid "Save in .lpi file"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
+msgid "Save in .lps file in project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisposaveinideconfigdirectory
+msgid "Save in IDE config directory"
+msgstr ""
+
+#: lazarusidestrconsts:lispodonotsaveanysessioninfo
+msgid "Do not save any session info"
+msgstr ""
+
+#: lazarusidestrconsts:lisposavesessioninformationin
+msgid "Save session information in"
 msgstr ""
 

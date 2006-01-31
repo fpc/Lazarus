@@ -1,19 +1,3 @@
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Зображення "
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr " Властивості елементу "
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr " Елементи "
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr " Обране зображення "
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d рядків, %d символів"
@@ -146,9 +130,9 @@ msgstr "Редактор списку дій"
 msgid "Add"
 msgstr "Додати"
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Додати..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -161,6 +145,14 @@ msgstr "Нова сторінка"
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Додати до улюблених"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -198,13 +190,21 @@ msgstr "Переглядача %s%s%s не знайдено"
 msgid "C&lear"
 msgstr "О&чистити"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Скасувати"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Категорія"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr ""
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -226,7 +226,7 @@ msgstr "Редактор CheckListBox"
 msgid "Class"
 msgstr "Клас"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Очистити"
 
@@ -250,10 +250,6 @@ msgstr "Компонент"
 msgid "Confirm delete"
 msgstr "Підтвердити видалення"
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Підтверджуєте очистку всіх зображень ?"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Копіювати"
@@ -265,6 +261,10 @@ msgstr ""
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Створити подію за замовчуванням"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -346,6 +346,10 @@ msgstr "&Вихід"
 msgid "Edit"
 msgstr "Редагувати"
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -406,7 +410,7 @@ msgstr "Дійсний"
 msgid "Font Select"
 msgstr "Обрати шрифт"
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Допомога"
 
@@ -446,17 +450,17 @@ msgstr "Елемент довідки %s%s%s не має довідкової б
 msgid "Help on help"
 msgstr "Довідка про допомогу"
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Індекс зображення"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Редактор списку зображень"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -498,17 +502,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Мітка"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Останній"
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "Редактор ListView"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -534,11 +534,11 @@ msgstr "Метод"
 msgid "Modify the Item"
 msgstr "Змінити пункт"
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr "Пересунути Вниз"
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Пересунути Вверх"
 
@@ -549,10 +549,6 @@ msgstr "Пересунути сторінку вліво"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Пересунути сторінку вправо"
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Новий"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,8 +578,8 @@ msgstr "Переглядача HTML не знайдено.%Визначте йо
 msgid "No help found for line %d, column %d of %s."
 msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -670,6 +666,10 @@ msgstr "&Зберегти як ..."
 msgid "Save As"
 msgstr "Зберегти як"
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr "Зберегти Літеральні Символи"
@@ -677,6 +677,10 @@ msgstr "Зберегти Літеральні Символи"
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
 msgstr "Зберегти зображення"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -698,7 +702,11 @@ msgstr "Обрати Все"
 msgid "Select a file"
 msgstr "Обрати файл"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -734,8 +742,12 @@ msgstr "Впорядкування"
 msgid "Standard Action Classes"
 msgstr "Standard Action Classes"
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -754,15 +766,11 @@ msgstr "Редактор StringGrid ..."
 msgid "Strings Editor Dialog"
 msgstr "Редактор рядків"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Піделемент"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестове Введення"
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -781,6 +789,10 @@ msgstr "Панель інструментів"
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
 msgstr "Пошук по змісту"
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr ""
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"

@@ -1,19 +1,3 @@
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr ""
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr ""
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr ""
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr ""
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d riviä, %d merkkiä"
@@ -146,8 +130,8 @@ msgstr "Toimintolistan muokkain"
 msgid "Add"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
 msgstr ""
 
 #: objinspstrconsts:clbadd
@@ -161,6 +145,14 @@ msgstr "Lisää välilehti"
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Lisää suosituimpiin"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -198,12 +190,20 @@ msgstr ""
 msgid "C&lear"
 msgstr "Tyhjennä"
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
 msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
 msgstr ""
 
 #: objinspstrconsts:oischar
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Class"
 msgstr "Luokka"
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Tyhjennä"
 
@@ -250,10 +250,6 @@ msgstr ""
 msgid "Confirm delete"
 msgstr ""
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr ""
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Kopioi"
@@ -265,6 +261,10 @@ msgstr ""
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr "Tee komponentin oletustapahtuma"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -346,6 +346,10 @@ msgstr ""
 msgid "Edit"
 msgstr "Muokkaa"
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Muokkaa TreeView:n valintoja"
@@ -406,7 +410,7 @@ msgstr ""
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr ""
 
@@ -446,17 +450,17 @@ msgstr ""
 msgid "Help on help"
 msgstr ""
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
+#: objinspstrconsts:sccsiledtcaption
+msgid "ImageList Editor"
 msgstr ""
 
-#: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Kuvalistan muokkain"
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -498,16 +502,12 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr ""
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
+msgid "ListView Items Editor"
 msgstr ""
 
 #: objinspstrconsts:sccstredtload
@@ -534,11 +534,11 @@ msgstr "Metodi"
 msgid "Modify the Item"
 msgstr "Muokkaa kohtaa"
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr ""
 
@@ -549,10 +549,6 @@ msgstr "Siirrä välilehteä vasemmalle"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Siirrä välilehteä oikealle"
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,8 +578,8 @@ msgstr ""
 msgid "No help found for line %d, column %d of %s."
 msgstr ""
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -670,6 +666,10 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
@@ -677,6 +677,10 @@ msgstr ""
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
 msgstr "Tallenna kuva"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -698,7 +702,11 @@ msgstr ""
 msgid "Select a file"
 msgstr "Valitse tiedosto"
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -734,8 +742,12 @@ msgstr "Lajittele"
 msgid "Standard Action Classes"
 msgstr ""
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -754,15 +766,11 @@ msgstr "Avaa StringGrid muokkain"
 msgid "Strings Editor Dialog"
 msgstr "Merkkijonojen muokkain"
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Maskin testauspaikka"
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -780,6 +788,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
 msgstr ""
 
 #: objinspstrconsts:sccstredtcaption

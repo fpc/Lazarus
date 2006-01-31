@@ -9,22 +9,6 @@ msgstr ""
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: objinspstrconsts:sccsilcmbimglist
-msgid " Images "
-msgstr " Obrazki "
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid " Item property "
-msgstr " W³aœciwoœæ elementu "
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid " Items "
-msgstr " Elementy "
-
-#: objinspstrconsts:sccsilcmbimgsel
-msgid " Selected image "
-msgstr " Wybrany obrazek "
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr ""
@@ -157,9 +141,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnadd
-msgid "Add ..."
-msgstr "Dodaj ..."
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -171,6 +155,14 @@ msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr ""
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
 msgstr ""
 
 #: objinspstrconsts:oisall
@@ -209,12 +201,20 @@ msgstr ""
 msgid "C&lear"
 msgstr ""
 
-#: objinspstrconsts:sccstredtcancel
+#: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
 msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
 msgstr ""
 
 #: objinspstrconsts:oischar
@@ -237,7 +237,7 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
-#: objinspstrconsts:sccsilbtnclear
+#: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Wyczyœæ"
 
@@ -261,10 +261,6 @@ msgstr ""
 msgid "Confirm delete"
 msgstr ""
 
-#: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr "Chcesz wyczyœciæ wszystkie obrazki ?"
-
 #: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr ""
@@ -275,6 +271,10 @@ msgstr ""
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
@@ -357,6 +357,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr ""
+
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
@@ -417,7 +421,7 @@ msgstr ""
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:sccstredthelp
+#: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr ""
 
@@ -457,17 +461,17 @@ msgstr ""
 msgid "Help on help"
 msgstr ""
 
-#: objinspstrconsts:sccstredtimageindexlabel
+#: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtimgindexcaption
-msgid "Image index"
-msgstr "Indeks obrazka"
-
 #: objinspstrconsts:sccsiledtcaption
-msgid "Image list editor"
-msgstr "Edytor listy obrazków"
+msgid "ImageList Editor"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr ""
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -509,17 +513,13 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtlabcaption
-msgid "Label"
-msgstr "Napis"
-
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption
-msgid "ListView editor"
-msgstr "Edytor ListView"
+msgid "ListView Items Editor"
+msgstr ""
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -545,11 +545,11 @@ msgstr ""
 msgid "Modify the Item"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormovedownaction
+#: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditormoveupaction
+#: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr ""
 
@@ -560,10 +560,6 @@ msgstr ""
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr ""
-
-#: objinspstrconsts:sccslvedtbtnadd
-msgid "New"
-msgstr "Nowy"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -593,8 +589,8 @@ msgstr ""
 msgid "No help found for line %d, column %d of %s."
 msgstr ""
 
-#: objinspstrconsts:sccstredtok
-msgid "OK"
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
 msgstr ""
 
 #: objinspstrconsts:oisobject
@@ -681,12 +677,20 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr ""
+
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
 msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -709,7 +713,11 @@ msgstr ""
 msgid "Select a file"
 msgstr ""
 
-#: objinspstrconsts:sccstredtselindexlabel
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
 msgstr ""
 
@@ -745,8 +753,12 @@ msgstr ""
 msgid "Standard Action Classes"
 msgstr ""
 
-#: objinspstrconsts:sccstredtstateindexlabel
+#: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -765,15 +777,11 @@ msgstr "Edytor StringGrid ..."
 msgid "Strings Editor Dialog"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtbtnaddsub
-msgid "Sub item"
-msgstr "Podelement"
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr ""
 
-#: objinspstrconsts:sccstredttextlabel
+#: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
 
@@ -791,6 +799,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
 msgstr ""
 
 #: objinspstrconsts:sccstredtcaption
