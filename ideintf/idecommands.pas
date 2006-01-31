@@ -389,7 +389,9 @@ type
   public
     function AsShortCut: TShortCut; virtual;
     constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
-              TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut);
+              TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut;
+              const ExecuteMethod: TNotifyEvent;
+              const ExecuteProc: TNotifyProcedure);
     constructor Create(ACommand: TIDECommand; ACategory: TIDECommandCategory);
     destructor Destroy; override;
     procedure Assign(ACommand: TIDECommand);
@@ -426,7 +428,9 @@ type
                             Scope: TIDECommandScope = nil): TIDECommandCategory; virtual; abstract;
     function CreateCommand(Category: TIDECommandCategory;
                            const Name, Description: string;
-                           const TheShortcutA, TheShortcutB: TIDEShortCut
+                           const TheShortcutA, TheShortcutB: TIDEShortCut;
+                           const OnExecuteMethod: TNotifyEvent = nil;
+                           const OnExecuteProc: TNotifyProcedure = nil
                            ): TIDECommand; virtual; abstract;
     function CategoryCount: integer; virtual; abstract;
   public
@@ -473,14 +477,22 @@ function RegisterIDECommandCategory(Parent: TIDECommandCategory;
 
 // register a new IDE command (i.e. a shortcut, IDE function)
 function RegisterIDECommand(Category: TIDECommandCategory;
-  const Name, Description: string): TIDECommand;
+  const Name, Description: string;
+  const OnExecuteMethod: TNotifyEvent = nil;
+  const OnExecuteProc: TNotifyProcedure = nil): TIDECommand;
 function RegisterIDECommand(Category: TIDECommandCategory;
-  const Name, Description: string; Key1: word; Shift1: TShiftState): TIDECommand;
+  const Name, Description: string; Key1: word; Shift1: TShiftState;
+  const OnExecuteMethod: TNotifyEvent = nil;
+  const OnExecuteProc: TNotifyProcedure = nil): TIDECommand;
 function RegisterIDECommand(Category: TIDECommandCategory;
-  const Name, Description: string; const ShortCut1: TIDEShortCut): TIDECommand;
+  const Name, Description: string; const ShortCut1: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent = nil;
+  const OnExecuteProc: TNotifyProcedure = nil): TIDECommand;
 function RegisterIDECommand(Category: TIDECommandCategory;
   const Name, Description: string;
-  const ShortCut1, ShortCut2: TIDEShortCut): TIDECommand;
+  const ShortCut1, ShortCut2: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent = nil;
+  const OnExecuteProc: TNotifyProcedure = nil): TIDECommand;
 
 // register a new IDE command scope (i.e. a set of windows)
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
@@ -593,31 +605,43 @@ begin
 end;
 
 function RegisterIDECommand(Category: TIDECommandCategory;
-  const Name, Description: string): TIDECommand;
+  const Name, Description: string;
+  const OnExecuteMethod: TNotifyEvent = nil;
+  const OnExecuteProc: TNotifyProcedure = nil): TIDECommand;
 begin
-  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(VK_UNKNOWN,[]));
+  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(VK_UNKNOWN,[]),
+                             OnExecuteMethod,OnExecuteProc);
 end;
 
 function RegisterIDECommand(Category: TIDECommandCategory;
   const Name, Description: string;
-  Key1: word; Shift1: TShiftState): TIDECommand;
+  Key1: word; Shift1: TShiftState;
+  const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure): TIDECommand;
 begin
-  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(Key1,Shift1));
+  Result:=RegisterIDECommand(Category,Name,Description,IDEShortCut(Key1,Shift1),
+                             OnExecuteMethod,OnExecuteProc);
 end;
 
 function RegisterIDECommand(Category: TIDECommandCategory;
-  const Name, Description: string;  const ShortCut1: TIDEShortCut): TIDECommand;
+  const Name, Description: string;  const ShortCut1: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure): TIDECommand;
 begin
   Result:=RegisterIDECommand(Category,Name,Description,
-                             ShortCut1,IDEShortCut(VK_UNKNOWN,[]));
+                             ShortCut1,IDEShortCut(VK_UNKNOWN,[]),
+                             OnExecuteMethod,OnExecuteProc);
 end;
 
 function RegisterIDECommand(Category: TIDECommandCategory;
   const Name, Description: string;
-  const ShortCut1, ShortCut2: TIDEShortCut): TIDECommand;
+  const ShortCut1, ShortCut2: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure): TIDECommand;
 begin
   Result:=IDECommandList.CreateCommand(Category,Name,Description,
-                                       ShortCut1,ShortCut2);
+                                       ShortCut1,ShortCut2,OnExecuteMethod,
+                                       OnExecuteProc);
 end;
 
 function RegisterIDECommandScope(const Name: string): TIDECommandScope;
@@ -700,7 +724,9 @@ end;
 
 constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
   const TheName: String; TheCommand: word;
-  const TheShortcutA, TheShortcutB: TIDEShortCut);
+  const TheShortcutA, TheShortcutB: TIDEShortCut;
+  const ExecuteMethod: TNotifyEvent;
+  const ExecuteProc: TNotifyProcedure);
 begin
   fCommand:=TheCommand;
   fName:=TheName;
@@ -709,6 +735,8 @@ begin
   DefaultShortcutA:=ShortcutA;
   DefaultShortcutB:=ShortcutB;
   Category:=TheCategory;
+  FOnExecute:=ExecuteMethod;
+  FOnExecuteProc:=ExecuteProc;
   //DebugLn('TIDECommand.Create Name=',Name,' ',ShortCutToText(AsShortCut),' ',dbgs(Pointer(Self)));
 end;
 

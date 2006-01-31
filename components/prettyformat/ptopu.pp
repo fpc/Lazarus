@@ -388,7 +388,7 @@ Procedure ClassID(Value: Token;
     Functions to create options and set defaults.
   ---------------------------------------------------------------------}
 
-Procedure CreateOptions (Var Option : OptionTable);
+Procedure CreateOptions (Out Option : OptionTable);
 
 Var Sym : KeySymbol;
     T : TTokenScope;

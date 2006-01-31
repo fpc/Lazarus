@@ -86,7 +86,9 @@ type
                          TheScope: TIDECommandScope): integer;
     function Add(Category: TIDECommandCategory; Command: TIDECommand):integer;
     function Add(Category: TIDECommandCategory; const Name: string;
-                 Command: word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
+                 Command: word; const TheKeyA, TheKeyB: TIDEShortCut;
+                 const OnExecuteMethod: TNotifyEvent = nil;
+                 const OnExecuteProc: TNotifyProcedure = nil):integer;
     function AddDefault(Category: TIDECommandCategory; const Name: string;
                         Command: word):integer;
     procedure SetExtToolCount(NewCount: integer);
@@ -121,7 +123,9 @@ type
                             Scope: TIDECommandScope): TIDECommandCategory; override;
     function CreateCommand(Category: TIDECommandCategory;
                            const AName, Description: string;
-                           const TheShortcutA, TheShortcutB: TIDEShortCut
+                           const TheShortcutA, TheShortcutB: TIDEShortCut;
+                           const OnExecuteMethod: TNotifyEvent = nil;
+                           const OnExecuteProc: TNotifyProcedure = nil
                            ): TIDECommand; override;
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
@@ -2377,10 +2381,12 @@ end;
 
 function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
   const Name: string;
-  Command:word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
+  Command:word; const TheKeyA, TheKeyB: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure):integer;
 begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command,
-                         TheKeyA,TheKeyB));
+                         TheKeyA,TheKeyB,OnExecuteMethod,OnExecuteProc));
 end;
 
 function TKeyCommandRelationList.AddDefault(Category: TIDECommandCategory;
@@ -2761,11 +2767,14 @@ end;
 
 function TKeyCommandRelationList.CreateCommand(Category: TIDECommandCategory;
   const AName, Description: string; const TheShortcutA,
-  TheShortcutB: TIDEShortCut): TIDECommand;
+  TheShortcutB: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure): TIDECommand;
 begin
   Result:=Relations[Add(Category as TKeyCommandCategory,
                         CreateUniqueCommandName(AName),
-                        CreateNewCommandID,TheShortcutA,TheShortcutB)];
+                        CreateNewCommandID,TheShortcutA,TheShortcutB,
+                        OnExecuteMethod,OnExecuteProc)];
   Result.LocalizedName:=Description;
 end;
 
@@ -2791,7 +2800,8 @@ function TKeyCommandRelationList.Add(Category: TIDECommandCategory;
   Command: TIDECommand): integer;
 begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Command.Name,
-                         Command.Command,Command.ShortcutA,Command.ShortcutB));
+                         Command.Command,Command.ShortcutA,Command.ShortcutB,
+                         Command.OnExecute,Command.OnExecuteProc));
   Relations[Result].LocalizedName:=Command.LocalizedName;
   //if Command.Command=12000 then
   //  debugln('TKeyCommandRelationList.Add A ',Command.Name,' ',KeyAndShiftStateToEditorKeyString(Command.ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Relations[Result].ShortcutA),' ',dbgs(Command));

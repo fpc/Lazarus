@@ -49,28 +49,28 @@ begin
   CmdFormatSelection:=RegisterIDECommand(Cat,
                                          SCmdPFSelection,
                                          SDescrPFSelection,
-                                         Key);
+                                         Key,nil,@PrettyPrintSelection);
   Key:=IDEShortCut(VK_P,[SSctrl,ssAlt],VK_UNKNOWN,[]);
   CmdFormatFile:=RegisterIDECommand(Cat,
                                     SCmdPFFile,
                                     SDescrPFFile,
-                                    Key);
+                                    Key,nil,@PrettyPrintFile);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFSelection,
                          SDescrPFSelection,
-                         Nil,@PrettyPrintSelection,CmdFormatSelection);
+                         Nil,nil,CmdFormatSelection);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFFile,
                          SDescrPFFile,
-                         Nil,@PrettyPrintFile,CmdFormatFile);
+                         Nil,nil,CmdFormatFile);
   RegisterIDEMenuCommand(itmEditBlockIndentation,
                          SCmdPFSelection,
                          SDescrPFSelection,
-                         Nil,@PrettyPrintSelection,CmdFormatSelection);
+                         Nil,nil,CmdFormatSelection);
   RegisterIDEMenuCommand(itmEditBlockIndentation,
                          SCmdPFFile,
                          SDescrPFFile,
-                         Nil,@PrettyPrintFile,CmdFormatFile);
+                         Nil,nil,CmdFormatFile);
 end;
 
 Procedure PrettyPrintStream(SIn,SOut : TStream);
