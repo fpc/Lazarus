@@ -919,7 +919,10 @@ begin
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);
     IgnoreErrorAfter:=IgnorePos;
     try
-      if not FindDeclarationOfIdentAtCursor(Params) then exit;
+      if not FindIdentifierInContext(Params) then exit;
+      // TODO: fix the bug, that even if fdfExceptionOnNotFound is not set,
+      //       and exeception is raised
+      //if not FindDeclarationOfIdentAtCursor(Params) then exit;
     finally
       ClearIgnoreErrorAfter;
     end;
