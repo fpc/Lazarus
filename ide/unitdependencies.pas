@@ -160,19 +160,20 @@ type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string) of object;
 
   TUnitDependenciesView = class(TForm)
+    CloseButton: TBitBtn;
     SrcTypeImageList: TImageList;
+    ToolBar: TToolBar;
+    RefreshButton: TToolButton;
+    ShowProjectButton: TToolButton;
+    SelectUnitButton: TToolButton;
     UnitHistoryList: TComboBox;
-    SelectUnitButton: TBitBtn;
     UnitTreeView: TTreeView;
-    RefreshButton: TBitBtn;
-    ShowProjectButton: TBitBtn;
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelectUnitButtonClick(Sender: TObject);
     procedure ShowProjectButtonClick(Sender: TObject);
     procedure UnitDependenciesViewClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure UnitHistoryListEditingDone(Sender: TObject);
-    procedure UnitDependenciesViewResize(Sender: TObject);
     procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
           Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
           var PaintImages, DefaultDraw: Boolean);
@@ -196,7 +197,6 @@ type
     FRootShortFilename: string;
     FRootValid: boolean;
     FUpdateCount: integer;
-    procedure DoResize;
     procedure ClearTree;
     procedure RebuildTree;
     procedure SetRootFilename(const AValue: string);
@@ -270,11 +270,6 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
-procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
-begin
-  DoResize;
-end;
-
 procedure TUnitDependenciesView.UnitHistoryListEditingDone(Sender: TObject);
 begin
   //DebugLn('TUnitDependenciesView.UnitHistoryListEditingDone ',UnitHistoryList.Text,' ',dbgs(UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)));
@@ -337,32 +332,6 @@ begin
     if ATreeNode=nil then exit;
     CurNode:=TUnitNode(ATreeNode.Data);
     if Assigned(OnOpenFile) then OnOpenFile(Self,CurNode.Filename);;
-  end;
-end;
-
-procedure TUnitDependenciesView.DoResize;
-begin
-  with UnitHistoryList do begin
-    SetBounds(0,0,Parent.ClientWidth-Left,Height);
-  end;
-
-  with SelectUnitButton do begin
-    SetBounds(0,UnitHistoryList.Top+UnitHistoryList.Height+2,70,Height);
-  end;
-
-  with RefreshButton do begin
-    SetBounds(SelectUnitButton.Left+SelectUnitButton.Width+5,
-              SelectUnitButton.Top,70,SelectUnitButton.Height);
-  end;
-
-  with ShowProjectButton do begin
-    SetBounds(RefreshButton.Left+RefreshButton.Width+5,
-              RefreshButton.Top,70,RefreshButton.Height);
-  end;
-
-  with UnitTreeView do begin
-    SetBounds(0,SelectUnitButton.Top+SelectUnitButton.Height+2,
-              Parent.ClientWidth,Parent.ClientHeight-Top);
   end;
 end;
 
@@ -445,114 +414,18 @@ begin
 end;
 
 constructor TUnitDependenciesView.Create(TheOwner: TComponent);
-
-  procedure AddResImg(ImgList: TImageList; const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    if LazarusResources.Find(ResName)=nil then
-      DebugLn('TUnitDependenciesView.Create: ',
-        ' WARNING: icon not found: "',ResName,'"');
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImgList.Add(Pixmap,nil);
-  end;
-  
-var
-  W: Integer;
 begin
   inherited Create(TheOwner);
 
   Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
   Caption := dlgUnitDepCaption;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  KeyPreview:=true;
 
-  SrcTypeImageList:=TImageList.Create(Self);
-  with SrcTypeImageList do
-  begin
-    Name:='SrcTypeImageList';
-    Width:=22;
-    Height:=22;
-    AddResImg(SrcTypeImageList,'srctype_unknown_22x22');            // 0
-    AddResImg(SrcTypeImageList,'srctype_unit_22x22');               // 1
-    AddResImg(SrcTypeImageList,'srctype_program_22x22');            // 2
-    AddResImg(SrcTypeImageList,'srctype_library_22x22');            // 3
-    AddResImg(SrcTypeImageList,'srctype_package_22x22');            // 4
-    AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');       // 5
-    AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');         // 6
-    AddResImg(SrcTypeImageList,'srctype_forbiddencircle_22x22');    // 7
-    AddResImg(SrcTypeImageList,'srctype_circle_22x22');             // 8
-  end;
+  RefreshHistoryList;
 
-  UnitHistoryList:=TComboBox.Create(Self);
-  with UnitHistoryList do
-  begin
-    Name:='UnitHistoryList';
-    Parent:=Self;
-    Left:=0;
-    Top:=0;
-    Width:=Parent.ClientWidth-Left;
-    RefreshHistoryList;
-    OnEditingDone:=@UnitHistoryListEditingDone;
-  end;
-  
-  W:=90; //Used foro simplified the update
-  SelectUnitButton:=TBitBtn.Create(Self);
-  with SelectUnitButton do
-  begin
-    Name:='SelectUnitButton';
-    Parent:=Self;
-    Left:=0;
-    Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
-    Width:=W;
-    Caption:=dlgUnitDepBrowse;
-    OnClick:=@SelectUnitButtonClick;
-  end;
-  
-  RefreshButton:=TBitBtn.Create(Self);
-  with RefreshButton do
-  begin
-    Name:='RefreshButton';
-    Parent:=Self;
-    Left:=SelectUnitButton.Left+SelectUnitButton.Width+5;
-    Top:=SelectUnitButton.Top;
-    Width:=W;
-    Height:=SelectUnitButton.Height;
-    Caption:=dlgUnitDepRefresh;
-    OnClick:=@RefreshButtonClick;
-  end;
-  
-  ShowProjectButton:=TBitBtn.Create(Self);
-  with ShowProjectButton do
-  begin
-    Name:='ShowProjectButton';
-    Parent:=Self;
-    Left:=RefreshButton.Left+RefreshButton.Width+5;
-    Top:=RefreshButton.Top;
-    Width:=W;
-    Height:=RefreshButton.Height;
-    Caption:=dlgEnvProject;
-    OnClick:=@ShowProjectButtonClick;
-  end;
-
-  UnitTreeView:=TTreeView.Create(Self);
-  with UnitTreeView do begin
-    Name:='UnitTreeView';
-    Parent:=Self;
-    Left:=0;
-    Top:=SelectUnitButton.Top+SelectUnitButton.Height+2;
-    Width:=Parent.ClientWidth;
-    Height:=Parent.ClientHeight-Top;
-    OnExpanding:=@UnitTreeViewExpanding;
-    OnCollapsing:=@UnitTreeViewCollapsing;
-    Images:=SrcTypeImageList;
-    //StateImages:=SrcTypeImageList;
-    OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
-    OnMouseDown:=@UnitTreeViewMouseDown;
-  end;
-  
-  OnResize:=@UnitDependenciesViewResize;
-  OnClose:=@UnitDependenciesViewClose;
+  SelectUnitButton.Caption:=dlgUnitDepBrowse;
+  RefreshButton.Caption:=dlgUnitDepRefresh;
+  ShowProjectButton.Caption:=dlgEnvProject;
 end;
 
 destructor TUnitDependenciesView.Destroy;
