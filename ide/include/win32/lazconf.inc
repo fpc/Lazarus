@@ -21,8 +21,6 @@
  *                                                                         *
  ***************************************************************************
 }
-uses
-  windows;
 
 const
   DefaultFPCSrcDirs: array[1..2] of string = (
