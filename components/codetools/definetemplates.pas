@@ -3278,6 +3278,8 @@ var
   end;
   
   procedure AddProcessorTypeDefine(ParentDefTempl: TDefineTemplate);
+  // some FPC source files expects defines 'i386' instead of 'CPUi386'
+  // define them automatically with IF..THEN constructs
   var
     i: Integer;
     CPUName: String;
@@ -3286,6 +3288,10 @@ var
     // FPC defines CPUxxx defines (e.g. CPUI386, CPUPOWERPC).
     // These defines are created by the compiler depending
     // on xxx defines (i386, powerpc).
+    // Create:
+    //   IF CPUi386 then define i386
+    //   IF CPUpowerpc then define powerpc
+    //   ...
     for i:=Low(FPCProcessorNames) to high(FPCProcessorNames) do begin
       CPUName:=FPCProcessorNames[i];
       IfTemplate:=TDefineTemplate.Create('IFDEF CPU'+CPUName,
@@ -3344,6 +3350,7 @@ var
   FCLDBInterbaseDir: TDefineTemplate;
   InstallerDir: TDefineTemplate;
   RTLWin64Dir: TDefineTemplate;
+  RTLWinCEDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3404,6 +3411,7 @@ begin
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
   MainDir.AddChild(RTLDir);
+
   // rtl include paths
   s:=IncPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS
@@ -3423,6 +3431,7 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+
   // rtl/$(#TargetOS)
   if TargetOS<>'' then begin
     RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
@@ -3439,6 +3448,7 @@ begin
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
   end;
+
   // rtl/win32
   RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
   RTLDir.AddChild(RTLWin32Dir);
@@ -3447,8 +3457,6 @@ begin
       ExternalMacroStart+'IncPath',
       IncPathMacro+';wininc;..'+DS+'win',da_Define));
 
-  AddProcessorTypeDefine(RTLDir);
-  AddSrcOSDefines(RTLDir);
   // rtl/win64
   RTLWin64Dir:=TDefineTemplate.Create('Win64','Win64','','win64',da_Directory);
   RTLDir.AddChild(RTLWin64Dir);
@@ -3457,8 +3465,18 @@ begin
       ExternalMacroStart+'IncPath',
       IncPathMacro+';wininc;..'+DS+'win',da_Define));
 
+  // rtl/wince
+  RTLWinCEDir:=TDefineTemplate.Create('WinCE','WinCE','','wince',da_Directory);
+  RTLDir.AddChild(RTLWinCEDir);
+  RTLWinCEDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+      ExternalMacroStart+'IncPath',
+      IncPathMacro+';wininc;..'+DS+'win',da_Define));
+
+  // add processor and SrcOS alias defines for the RTL
   AddProcessorTypeDefine(RTLDir);
   AddSrcOSDefines(RTLDir);
+
 
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
@@ -3473,6 +3491,7 @@ begin
     +';'+Dir+'fcl'+DS+'classes'+DS
     +';'+Dir+'rtl'+DS+TargetOS+DS
     ,da_DefineRecurse));
+
   // fcl/db
   FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
   FCLDir.AddChild(FCLDBDir);
@@ -3495,6 +3514,7 @@ begin
   UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
      'utils',da_Directory);
   MainDir.AddChild(UtilsDir);
+
   // utils/debugsvr
   DebugSvrDir:=TDefineTemplate.Create('DebugSvr','Debug Server','',
      'debugsvr',da_Directory);
