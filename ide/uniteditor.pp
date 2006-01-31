@@ -5190,7 +5190,9 @@ Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
 begin
   // restart hint timer
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools and Visible;
+  FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
+                         EditorOpts.AutoToolTipExprEval)
+                        and Visible;
 end;
 
 procedure TSourceNotebook.EditorMouseDown(Sender: TObject;

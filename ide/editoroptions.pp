@@ -332,7 +332,7 @@ type
     property AutoToolTipExprEval: Boolean
       read fAutoToolTipExprEval write fAutoToolTipExprEval default True;
     property AutoToolTipSymbTools: Boolean
-      read fAutoToolTipSymbTools write fAutoToolTipSymbTools default False;
+      read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True;
     property AutoDelayInMSec: Integer read fAutoDelayInMSec
       write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName: String
@@ -1368,7 +1368,7 @@ begin
     fAutoToolTipExprEval :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipExprEval', True);
     fAutoToolTipSymbTools :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools', False);
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools', True);
     fAutoDelayInMSec    :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec', 1000);
     fCodeTemplateFileName :=
@@ -1524,7 +1524,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipExprEval'
       , fAutoToolTipExprEval, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
-      , fAutoToolTipSymbTools, False);
+      , fAutoToolTipSymbTools, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDelayInMSec'
       , fAutoDelayInMSec, 1000);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateFileName'

@@ -47,7 +47,7 @@ type
     procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxDblClick(Sender: TObject);
     procedure ListBoxMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+       Button: TMouseButton;  Shift:TShiftState;  X,Y:integer);
   private
     procedure FillHelpLabel;
     procedure SetupComponents;
@@ -157,6 +157,7 @@ begin
     Anchors := [akRight,akBottom];
     OnClick:=@CreateButtonClick;
     Caption:=lisNPCreate;
+    Default:=true;
   end;
 
   CancelButton:=TButton.Create(Self);
@@ -170,6 +171,7 @@ begin
     Anchors := [akRight,akBottom];
     OnClick:=@CancelButtonClick;
     Caption:=dlgCancel;
+    Cancel:=true;
   end;
 end;
 

@@ -14,7 +14,7 @@ object EditorOptionsForm: TEditorOptionsForm
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 4
     Height = 491
     Width = 477
     object GeneralPage: TPage
@@ -61,6 +61,8 @@ object EditorOptionsForm: TEditorOptionsForm
         AutoFill = True
         BorderSpacing.Around = 6
         Caption = 'EditorOptionsGroupBox'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
         ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
         ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
@@ -392,8 +394,6 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 2
         Width = 461
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -720,7 +720,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 6
@@ -893,8 +892,6 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         Width = 465
         OnMouseDown = ColorPreviewMouseUp
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1221,7 +1218,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 4
@@ -1463,7 +1459,6 @@ object EditorOptionsForm: TEditorOptionsForm
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'AutoToolTipSymbToolsCheckBox'
-          Enabled = False
           TabOrder = 3
           Left = 6
           Height = 24
