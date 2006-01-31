@@ -57,11 +57,6 @@ begin
     );
 end;
 
-function TWinCEWidgetSet.BringWindowToTop(hWnd: HWND): Boolean;
-begin
-  Result:=inherited BringWindowToTop(hWnd);
-end;
-
 function TWinCEWidgetSet.CallNextHookEx(hHk: HHOOK; ncode: Integer;
   wParam: WParam; lParam: LParam): Integer;
 begin

@@ -155,6 +155,11 @@ begin
   List.Free;
 end;
 
+function GetProjectSessionsConfigPath: String;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'projectsessions';
+end;
+
 function GetDefaultTargetCPU: string;
 begin
   Result:='undefined';
