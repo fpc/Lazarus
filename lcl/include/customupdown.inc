@@ -241,7 +241,7 @@ begin
   if (not (csDesigning in ComponentState)) and (FAssociate <> nil) 
   then begin
     if Thousands 
-    then FAssociate.Text := FloatToStrF(FPosition, ffNumber, 0, 0)
+    then FAssociate.Text := FloatToStrF(Single(FPosition), ffNumber, 0, 0)
     else FAssociate.Text := IntToStr(FPosition);
   end;
 end;
