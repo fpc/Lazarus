@@ -4328,10 +4328,15 @@ begin
   end else begin
     {$IfDef dbgGrid}DebugLn('DoEnter - Ext');{$Endif}
     if EditorAlwaysShown then begin
-    
-      SelectEditor;
-      if Feditor<>nil then
-        EditorShow(true);
+      // try to show editor only if focused cell is visible area
+      // so a mouse click would use click coords to show up
+      if IsCellVisible(Col,Row) then begin
+        SelectEditor;
+        if Feditor<>nil then
+          EditorShow(true);
+      end else begin
+      {$IfDef dbgGrid}DebugLn('DoEnter - Ext - Cell was not visible');{$Endif}
+      end;
     end else
       InvalidateFocused;
   end;
@@ -4514,17 +4519,14 @@ begin
   OffsetToColRow(False,True, Y, ARow, dummy);
 end;
 
-{ Convert a fisical Mouse coordinate into logical a cell coordinate }
+{ Convert a fisical Mouse coordinate into a logical cell coordinate }
 function TCustomGrid.MouseToLogcell(Mouse: TPoint): TPoint;
 var
   gz: TGridZone;
 begin
   Gz:=MouseToGridZone(Mouse.x, Mouse.y);
   Result:=MouseToCell(Mouse);
-  //if gz=gzNormal then Result:=MouseToCell(Mouse)
-  //else begin
   if gz<>gzNormal then begin
-    //Result:=MouseToCell(Mouse);
     if (gz=gzFixedRows)or(gz=gzFixedCells) then begin
       Result.x:= fTopLeft.x-1;
       if Result.x<FFixedCols then Result.x:=FFixedCols;
@@ -4704,6 +4706,14 @@ begin
     SelOk:=SelectCell(NCol, NRow);
   end;
   Result:=MoveExtend(False, NCol, NRow);
+  
+  // whether or not a movement was valid if goAlwaysShowEditor
+  // is set, editor should pop up if grid is focused
+  if Focused and not EditorMode and EditorAlwaysShown then begin
+    SelectEditor;
+    if Feditor<>nil then
+      EditorShow(true);
+  end;
 end;
 
 function TCustomGrid.TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer
@@ -4953,7 +4963,7 @@ begin
   if (goEditing in Options) and CanEditShow and
      not FEditorShowing and (Editor<>nil) and not Editor.Visible then
   begin
-    {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,']INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
+    {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;
     FEditorShowing:=True;
     doEditorShow;
@@ -5813,6 +5823,7 @@ begin
   FPickListEditor.OnSelect := @PickListItemSelected;
 
   FFastEditing := True;
+  TabStop := True;
 end;
 
 destructor TCustomGrid.Destroy;
