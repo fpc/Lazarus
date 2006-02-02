@@ -97,6 +97,10 @@ end;
 procedure TDBCheckBox.DataChange(Sender: TObject);
 begin
   State:=GetFieldCheckState;
+  // if original state was unchecked and after editing is checked
+  // but if before post, edits are cancelled, FlastcheckedOnChange has a
+  // wrong value it won't detect changes next time, correct here.
+  fLastCheckedOnChange:=Checked;
 end;
 
 procedure TDBCheckBox.UpdateData(Sender: TObject);
@@ -145,6 +149,8 @@ end;
 
 procedure TDBCheckBox.EditingDone;
 begin
+  FDatalink.Edit;
+  FDatalink.Modified;
   FDataLink.UpdateRecord;
   inherited EditingDone;
 end;
