@@ -26,7 +26,7 @@ type
     procedure Rotate(ABitmap: TBitmap; aCanvas : TCanvas; x, y, Angle : integer);
 
   public
-    ABitmap: TBitmap;
+    SampleBitmapABitmap: TBitmap;
   end;
 
 var
@@ -38,23 +38,23 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  FadeIn(ABitmap,120,120);
+  FadeIn(SampleBitmapABitmap,120,120);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  Rotate(ABitmap,Canvas,120,120,StrToIntDef(Edit1.Text,90));
+  Rotate(SampleBitmapABitmap,Canvas,120,120,StrToIntDef(Edit1.Text,90));
 end;
 
 procedure TForm1.Form1Create(Sender: TObject);
 begin
-  ABitmap:=TBitmap.Create;
-  ABitmap.LoadFromFile('../../images/lazarus.xpm');
+  SampleBitmapABitmap:=TBitmap.Create;
+  SampleBitmapABitmap.LoadFromFile('../../images/lazarus.xpm');
 end;
 
 procedure TForm1.Form1Destroy(Sender: TObject);
 begin
-  ABitmap.Free;
+  SampleBitmapABitmap.Free;
 end;
 
 procedure TForm1.FadeIn(ABitmap: TBitmap; x, y: integer);
@@ -197,7 +197,7 @@ begin
       for px:=0 to SrcIntfImg.Width-1 do
       begin
         CurColor:=SrcIntfImg.Colors[px,py];
-        
+
         ToX:=Px; ToY:=py;
         RotatePts(ToX,ToY);
 
