@@ -1114,10 +1114,27 @@ end;
 {       TCustomForm SetFormBorderStyle                                         }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(NewStyle: TFormBorderStyle);
+const
+  DefaultBorderIcons : array[TFormBorderStyle] of TBorderIcons =
+    ([],                                        // bsNone
+     [biSystemMenu, biMinimize],                // bsSingle
+     [biSystemMenu, biMinimize, biMaximize],    // bsSizeable
+     [biSystemMenu],                            // bsDialog
+     [biSystemMenu, biMinimize],                // bsToolWindow
+     [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
+var
+  AdaptBorderIcons: boolean;
 begin
   if FFormBorderStyle = NewStyle then exit;
   //TODO: Finish SETBORDERSTYLE
+  AdaptBorderIcons := not (csLoading in ComponentState) and
+                          (BorderIcons=DefaultBorderIcons[FFormBorderStyle]);
   FFormBorderStyle := NewStyle;
+  
+  // if Form had default border icons before change, it should keep the default
+  if AdaptBorderIcons then
+    BorderIcons := DefaultBorderIcons[FFormBorderStyle];
+    
   Include(FFormState,fsBorderStyleChanged);
   // ToDo: implement it.
   // We can not use inherited SetBorderStyle(NewStyle),
