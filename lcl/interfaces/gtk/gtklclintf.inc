@@ -135,6 +135,7 @@ begin
   AHandler := nil;
 end;
 
+{$ifdef UNIX}
 function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 var  
@@ -167,6 +168,18 @@ begin
   Dispose(lHandler);
   AHandler := nil;
 end;
+{$else}
+{$warning TGtkWidgetSet.RemoveProcessEventHandler and TGtkWidgetSet.AddProcessEventHandler not implemented on this OS}
+//PChildSignalEventHandler is only defined on unix
+function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+begin
+end;
+
+procedure TGtkWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+begin
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;

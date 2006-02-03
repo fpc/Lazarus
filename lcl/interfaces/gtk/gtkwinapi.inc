@@ -3089,7 +3089,12 @@ begin
     {$ifdef VerboseEnumFonts}
     WriteLn('Looking for fonts matching: ', tmp);
     {$endif}
+    {$ifdef UNIX}
     XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
+    {$else}
+    {$warning implement getting XFonts for this OS}
+    N:=0;
+    {$endif}
     try
       for I := 0 to N - 1 do
         if XFonts[I] <> nil then begin
@@ -3119,7 +3124,9 @@ begin
           end;
         end;
     finally
+      {$ifdef UNIX}
       XFreeFontNames(XFonts);
+      {$endif}
     end;
   finally
     Fontlist.Free;
@@ -3441,7 +3448,12 @@ begin
     {$endif}
     for j:=0 to CharSetFilter.Count-1 do begin
       tmp := '-'+FAndF+'-*-*-*-*-*-*-*-*-*-*-'+CharSetFilter[j];
+      {$ifdef UNIX}
       XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
+      {$else}
+      {$warning implement getting XFonts for this OS}
+      N:=0;
+      {$endif}
       try
         {$ifdef VerboseEnumFonts}
         DebugLn('EnumFontFamiliesEx: found ',dbgs(N),' fonts matching: ', tmp);
@@ -3451,7 +3463,9 @@ begin
             if ProcessXFont(i, XFonts[i], FontList) then
               break;
       finally
+        {$ifdef UNIX}
         XFreeFontNames(XFonts);
+        {$endif}
       end;
     end;
   finally

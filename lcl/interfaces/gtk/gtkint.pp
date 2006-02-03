@@ -114,7 +114,11 @@ type
     FStockWhitePen: HPEN;
 
     FWaitHandles: PWaitHandleEventHandler;
+    {$ifdef unix}
     FChildSignalHandlers: PChildSignalEventHandler;
+    {$else}
+    {$warning no declaration of FChildSignalHandlers for this OS}
+    {$endif}
 
     {$Ifdef GTK2}
     FDefaultFontDesc: PPangoFontDescription;
