@@ -57,7 +57,7 @@ type
 function ShowAboutForm: TModalResult;
 
 const
-  LazarusVersionStr= '0.9.12';
+  LazarusVersionStr= '0.9.13';
 var
   LazarusRevisionStr: string;
   
