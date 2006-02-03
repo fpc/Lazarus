@@ -2027,8 +2027,8 @@ begin
   DebugLn('TCodeToolManager.FindResourceDirective A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=X;
-  CursorPos.Y:=Y;
+  CursorPos.X:=StartX;
+  CursorPos.Y:=StartY;
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine);
