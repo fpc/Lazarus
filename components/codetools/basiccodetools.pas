@@ -3341,6 +3341,7 @@ end;
 
 procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
 begin
+  if TreeOfUnitFiles=nil then exit;
   TreeOfUnitFiles.FreeAndClear;
   TreeOfUnitFiles.Free;
 end;

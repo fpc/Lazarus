@@ -544,7 +544,7 @@ type
                        write SetSessionModified;
                        // project session data (not units, data),
                        // units have their own SessionModified
-    property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
+    property LazDocPathList: TStrings read FLazDocPathList;
   end;
 
   TLazProjectClass = class of TLazProject;
