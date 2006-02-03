@@ -7299,8 +7299,10 @@ begin
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then exit;
 
-    // check if build is needed
-    if (pbfOnlyIfNeeded in Flags) and (not (pfAlwaysBuild in Project1.Flags))
+    // check if build is needed (only if we will call the compiler)
+    if  (AReason in Project1.CompilerOptions.CompileReasons)
+    and (pbfOnlyIfNeeded in Flags)
+    and (not (pfAlwaysBuild in Project1.Flags))
     then begin
       Result:=DoCheckIfProjectNeedsCompilation(Project1,
                                              CompilerFilename,CompilerParams,
@@ -7348,7 +7350,8 @@ begin
 
     // execute compilation tool 'After'
     ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
-    if (Result = mrOk) and (AReason in ToolAfter.CompileReasons) then begin
+    // no need to check for mrOk, we are exit if it wasn't
+    if (AReason in ToolAfter.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
                                        Project1.ProjectDirectory,
                                        lisExecutingCommandAfter);
