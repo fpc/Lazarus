@@ -271,7 +271,10 @@ type
     function FindEnclosingIncludeDirective(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-          
+    function FindResourceDirective(Code: TCodeBuffer; StartX, StartY: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
     function ExtractCodeWithoutComments(Code: TCodeBuffer): string;
@@ -2002,6 +2005,33 @@ begin
   try
     Result:=FCurCodeTool.FindEnclosingIncludeDirective(CursorPos,
                                                        NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindResourceDirective(Code: TCodeBuffer; StartX,
+  StartY: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindResourceDirective A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

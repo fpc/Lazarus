@@ -206,6 +206,10 @@ type
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindModeDirective(DoBuildTree: boolean;
           var ACleanPos: integer): boolean;
+    function FindResourceDirective(DoBuildTree: boolean;
+          var ACleanPos: integer): boolean;
+    function FindResourceDirective(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
       
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
@@ -4200,6 +4204,33 @@ begin
   ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'Mode',
     Scanner.NestedComments,ParamPos);
   Result:=(ACleanPos>0) and (ACleanPos<=SrcLen);
+end;
+
+function TStandardCodeTool.FindResourceDirective(DoBuildTree: boolean;
+  var ACleanPos: integer): boolean;
+var
+  ParamPos: Integer;
+begin
+  Result:=false;
+  if DoBuildTree then BuildTree(true);
+  ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'R',
+    Scanner.NestedComments,ParamPos);
+  Result:=(ACleanPos>0) and (ACleanPos<=SrcLen);
+end;
+
+function TStandardCodeTool.FindResourceDirective(
+  const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer): boolean;
+var
+  CleanCursorPos: integer;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  if not FindResourceDirective(false,CleanCursorPos) then begin
+    DebugLn('TStandardCodeTool.FindResourceDirective resource directive not found');
+    exit;
+  end;
+  Result:=CleanPosToCaretAndTopLine(CleanCursorPos,NewPos,NewTopLine);
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

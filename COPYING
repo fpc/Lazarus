@@ -21,7 +21,7 @@ The license directory tree:
  |
  +- examples        (GPL2)
  |
- +- lcl             (modified LGPL, see there)
+ +- lcl             (modified LGPL)
  |
  +- ideintf         (modified LGPL)
  |
