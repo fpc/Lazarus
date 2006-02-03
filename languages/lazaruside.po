@@ -5050,6 +5050,10 @@ msgstr ""
 msgid "Dutch"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""

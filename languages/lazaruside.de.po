@@ -3652,6 +3652,10 @@ msgstr "Kursiv"
 msgid "Item height"
 msgstr "Höhe des Eintrags"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Zurückspringen"

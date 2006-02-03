@@ -118,6 +118,8 @@ begin
     Result:=rsLanguageUkrainian
   else if CompareText(ID,'nl')=0 then
     Result:=rsLanguageDutch
+  else if CompareText(ID,'ja')=0 then
+    Result:=rsLanguageJapanese
   else
     Result:=ID;
 end;

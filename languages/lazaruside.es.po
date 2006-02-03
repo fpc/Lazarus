@@ -3648,6 +3648,10 @@ msgstr "Cursiva"
 msgid "Item height"
 msgstr "Altura de elemento"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Saltar atrás"

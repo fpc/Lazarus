@@ -3648,6 +3648,10 @@ msgstr "Corsivo"
 msgid "Item height"
 msgstr "Altezza dell'oggetto"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Salta indietro"

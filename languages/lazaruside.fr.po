@@ -3650,6 +3650,10 @@ msgstr "Italique"
 msgid "Item height"
 msgstr "Hauteur d'élément"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "En arrière"

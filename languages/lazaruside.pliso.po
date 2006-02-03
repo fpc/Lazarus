@@ -3649,6 +3649,10 @@ msgstr "Pochy³y"
 msgid "Item height"
 msgstr "Wysoko¶æ elementu"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Przeskocz do ty³u"

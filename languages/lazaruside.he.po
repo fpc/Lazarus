@@ -3649,6 +3649,10 @@ msgstr ""
 msgid "Item height"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr ""

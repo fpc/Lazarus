@@ -3638,6 +3638,10 @@ msgstr "Курсив"
 msgid "Item height"
 msgstr "Высота элемента"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Переход назад"

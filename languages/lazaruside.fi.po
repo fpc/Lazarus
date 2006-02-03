@@ -3638,6 +3638,10 @@ msgstr "Kursivoitu"
 msgid "Item height"
 msgstr "Rivin korkeus"
 
+#: lazarusidestrconsts:rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Hyppää takaisin"
