@@ -4273,12 +4273,12 @@ begin
     Indent:=GetLineIndent(Src,ANode.StartPos);
     InsertPos:=ANode.StartPos+length('implementation');
   end else begin
-    ANode:=FindMainUsesSection;
+    ANode:=FindMainBeginEndNode;
     if ANode<>nil then begin
       Indent:=GetLineIndent(Src,ANode.StartPos);
       InsertPos:=ANode.StartPos;
     end else begin
-      ANode:=FindMainBeginEndNode;
+      ANode:=FindMainUsesSection;
       if ANode<>nil then begin
         Indent:=GetLineIndent(Src,ANode.StartPos);
         InsertPos:=ANode.StartPos;

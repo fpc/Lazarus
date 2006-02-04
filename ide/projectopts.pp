@@ -379,7 +379,7 @@ begin
   if (FProject <> Nil) and (FProject.MainUnitID >= 0) then
   begin
     Result := CodeToolBoss.ListAllCreateFormStatements(
-      FProject.MainUnitInfo.Source);
+                                                  FProject.MainUnitInfo.Source);
     if Result <> Nil then
       for i := 0 to Result.Count - 1 do
       begin
@@ -401,7 +401,7 @@ begin
   if (FProject = Nil) or (FProject.MainUnitID < 0) then
     exit;
   CodeToolBoss.GetApplicationTitleStatement(
-    FProject.MainUnitInfo.Source, Result);
+                                          FProject.MainUnitInfo.Source, Result);
 end;
 
 procedure TProjectOptionsDialog.FillAutoCreateFormsListbox;
@@ -641,7 +641,7 @@ begin
       { Just exit if the form list is the same }
       i := OldList.Count - 1;
       while (i >= 0) and
-        (AnsiCompareText(OldList[i], FormsAutoCreatedListBox.Items[i]) = 0) do
+        (CompareText(OldList[i], FormsAutoCreatedListBox.Items[i]) = 0) do
         dec(i);
       if i < 0 then
         Exit;
