@@ -207,9 +207,10 @@ type
     function FindModeDirective(DoBuildTree: boolean;
           var ACleanPos: integer): boolean;
     function FindResourceDirective(DoBuildTree: boolean;
-          var ACleanPos: integer): boolean;
+          var ACleanPos: integer; const Filename: string = ''): boolean;
     function FindResourceDirective(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+          const Filename: string = ''): boolean;
     function AddResourceDirective(const Filename: string;
           SourceChangeCache: TSourceChangeCache): boolean;
 
@@ -4209,26 +4210,48 @@ begin
 end;
 
 function TStandardCodeTool.FindResourceDirective(DoBuildTree: boolean;
-  var ACleanPos: integer): boolean;
+  var ACleanPos: integer; const Filename: string): boolean;
 var
   ParamPos: Integer;
+  FilenameStartPos: Integer;
+  FilenameEndPos: LongInt;
 begin
   Result:=false;
   if DoBuildTree then BuildTree(true);
-  ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'R',
-    Scanner.NestedComments,ParamPos);
-  Result:=(ACleanPos>0) and (ACleanPos<=SrcLen);
+  ACleanPos:=1;
+  repeat
+    ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
+      Scanner.NestedComments,ParamPos);
+    if (ACleanPos<1) or (ACleanPos>SrcLen) then
+      exit(false);
+    if Filename='' then begin
+      // searching any filename -> found
+      exit(true);
+    end;
+    FilenameStartPos:=ACleanPos+length('{$R ');
+    FilenameEndPos:=FilenameStartPos;
+    while (FilenameEndPos<=SrcLen) and (Src[FilenameEndPos]<>'}') do
+      inc(FilenameEndPos);
+    if CompareText(PChar(Filename),length(Filename),
+                   @Src[FilenameStartPos],FilenameEndPos-FilenameStartPos,
+                   true,false)=0
+    then begin
+      // filename found
+      exit(true);
+    end;
+    ACleanPos:=FilenameEndPos+1;
+  until ACleanPos>SrcLen;
 end;
 
 function TStandardCodeTool.FindResourceDirective(
   const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer): boolean;
+  var NewTopLine: integer; const Filename: string): boolean;
 var
   CleanCursorPos: integer;
 begin
   Result:=false;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  if not FindResourceDirective(false,CleanCursorPos) then begin
+  if not FindResourceDirective(false,CleanCursorPos,Filename) then begin
     DebugLn('TStandardCodeTool.FindResourceDirective resource directive not found');
     exit;
   end;

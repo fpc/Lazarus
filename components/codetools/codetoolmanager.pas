@@ -272,8 +272,8 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindResourceDirective(Code: TCodeBuffer; StartX, StartY: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+          const Filename: string = ''): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string
           ): boolean;
 
@@ -2018,8 +2018,9 @@ begin
 end;
 
 function TCodeToolManager.FindResourceDirective(Code: TCodeBuffer; StartX,
-  StartY: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
-  ): boolean;
+  StartY: integer;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+  const Filename: string): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -2033,7 +2034,8 @@ begin
   CursorPos.Y:=StartY;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine,
+                                               Filename);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
