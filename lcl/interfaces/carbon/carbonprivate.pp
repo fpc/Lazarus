@@ -95,6 +95,15 @@ type
     class procedure UnregisterEvents; override;
   end;
   TCarbonPrivateWindowClass = class of TCarbonPrivateWindow;
+  
+  TCarbonPrivateCheckBox = class(TCarbonPrivateHiView)
+  private
+  protected
+  public
+    class procedure RegisterEvents(AInfo: PWidgetInfo); override;
+    class procedure UnregisterEvents; override;
+  end;
+  TCarbonPrivateCheckBoxClass = class of TCarbonPrivateCheckBox;
 
   
 
@@ -102,7 +111,7 @@ implementation
 
 {$I carbonprivatehiview.inc}
 {$I carbonprivatewindow.inc}
-
+{$I carbonprivatecheckbox.inc}
 
 // move to inc
 procedure TCarbonPrivateHandle.RegisterEvents(AInfo: PWidgetInfo); 

@@ -175,6 +175,11 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
   { TCarbonWSCheckBox }
@@ -445,6 +450,81 @@ begin
   //TODO
 end;
 
+{ TCarbonWSCustomCheckBox }
+
+function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  CheckBox:TCheckBox;
+  Control: ControlRef;
+  CFString: CFStringRef;
+  R: Rect;
+  Info: PWidgetInfo;
+begin
+  Result := 0;
+  CheckBox := AWinControl as TCheckBox;
+
+  R.Left := AParams.X;
+  R.Top := AParams.Y;
+  R.Right := AParams.X + AParams.Width;
+  R.Bottom := AParams.Y + AParams.Height;
+
+  CFString := CFStringCreateWithCString(nil, Pointer(AParams.Caption), DEFAULT_CFSTRING_ENCODING);
+  if CreateCheckBoxControl(WindowRef(AParams.WndParent), R, CFString, Ord(CheckBox.Checked), True, Control) = noErr
+  then Result := TLCLIntfHandle(Control);
+  CFRelease(Pointer(CFString));
+  if Result = 0 then Exit;
+
+  Info := CreateWidgetInfo(Control, AWinControl);
+
+  TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
+end;
+
+class function TCarbonWSCustomCheckBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  Control: ControlRef;
+begin
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState')
+  then Exit;
+
+  Control := ControlRef(ACustomCheckBox.Handle);
+
+  case GetControl32BitValue(Control) of
+    kControlCheckBoxCheckedValue   : Result := cbChecked;
+    kControlCheckBoxUncheckedValue : Result := cbUnchecked;
+    kControlCheckBoxMixedValue     : ; // what the heck does this do?
+  end;
+end;
+
+class procedure TCarbonWSCustomCheckBox.SetShortCut(
+  const ACustomCheckBox: TCustomCheckBox; const OldShortCut,
+  NewShortCut: TShortCut);
+begin
+  // TODO
+end;
+
+class procedure TCarbonWSCustomCheckBox.SetState(
+  const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  Control: ControlRef;
+  Value: UInt32;
+begin
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState')
+  then Exit;
+
+  Control := ControlRef(ACustomCheckBox.Handle);
+
+  Value := kControlCheckBoxMixedValue; // give it a default value
+  
+  case NewState of
+    cbChecked  :  Value := kControlCheckBoxCheckedValue;
+    cbUnChecked: Value := kControlCheckBoxUncheckedValue;
+    //cbGrayed   : kControlCheckBoxMixedValue; // what the heck does this do?
+  end;
+  SetControl32BitValue(Control, Value);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -468,7 +548,7 @@ initialization
 //  RegisterWSComponent(TLabel, TCarbonWSLabel);
 //  RegisterWSComponent(TButtonControl, TCarbonWSButtonControl);
 //  RegisterWSComponent(TCustomCheckBox, TCarbonWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
+  RegisterWSComponent(TCheckBox, TCarbonWSCustomCheckBox, TCarbonPrivateCheckBox);
 //  RegisterWSComponent(TCheckBox, TCarbonWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TCarbonWSToggleBox);
 //  RegisterWSComponent(TRadioButton, TCarbonWSRadioButton);
