@@ -5,14 +5,14 @@ SET LAZVERSION=0.9.12
 :: Path to the Inno Setup Compiler
 SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
-:: Path to the fpc sources checked out of cvs
-SET FPCSVNDIR=c:\lazarus\source\fpc\2.0
+:: Path to the fpc sources checked out of svn
+SET FPCSVNDIR=C:\lazarus\source\fpc\fpcbuild-2.0.2\fpcsrc
 
 :: Path to the lazarus sources checked out of cvs
 SET LAZSVNDIR=c:\lazarus\source\lazarus-0.9.12
 
-:: Path to fpc 2.0.0 compiler
-SET RELEASE_PPC=c:\fpc\2.0.0\bin\i386-win32\ppc386.exe
+:: Path to fpc 2.0.2 compiler
+SET RELEASE_PPC=c:\fpc\2.0.2\bin\i386-win32\ppc386.exe
 
 :: Path to the directory containing some third party utilities used by fpc
 :: it will be copied completely to the pp\bin\win32 directory
