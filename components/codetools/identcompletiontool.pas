@@ -53,7 +53,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
   KeywordFuncLists, BasicCodeTools, LinkScanner,
-  AVL_Tree, CodeToolMemManager,
+  AVL_Tree, CodeToolMemManager, DefineTemplates,
   SourceChanger, FindDeclarationTool, PascalParserTool;
   
 
@@ -944,9 +944,41 @@ end;
 procedure TIdentCompletionTool.GatherUnitnames(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
 var
+  TreeOfUnitFiles: TAVLTree;
+
+  procedure GatherUnitsFromUnitLinks;
+  var
+    UnitLinks: string;
+    UnitLinkStart: Integer;
+    UnitLinkEnd: LongInt;
+    UnitLinkLen: Integer;
+    Filename: String;
+  begin
+    UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
+    UnitLinkStart:=1;
+    while UnitLinkStart<=length(UnitLinks) do begin
+      while (UnitLinkStart<=length(UnitLinks))
+      and (UnitLinks[UnitLinkStart] in [#10,#13]) do
+        inc(UnitLinkStart);
+      UnitLinkEnd:=UnitLinkStart;
+      while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
+      do
+        inc(UnitLinkEnd);
+      UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
+      if UnitLinkLen>0 then begin
+        Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
+        AddToTreeOfUnitFiles(TreeOfUnitFiles,Filename,false);
+      end;
+      UnitLinkStart:=UnitLinkEnd+1;
+      while (UnitLinkStart<=length(UnitLinks))
+      and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
+        inc(UnitLinkStart);
+    end;
+  end;
+  
+var
   UnitPath, SrcPath: string;
   BaseDir: String;
-  TreeOfUnitFiles: TAVLTree;
   ANode: TAVLTreeNode;
   UnitFileInfo: TUnitFileInfo;
   NewItem: TIdentifierListItem;
@@ -967,6 +999,8 @@ begin
     // search in srcpath
     SrcExt:='pp;pas';
     GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,TreeOfUnitFiles);
+    // add unitlinks
+    GatherUnitsFromUnitLinks;
     // create list
     CurSourceName:=GetSourceName;
     ANode:=TreeOfUnitFiles.FindLowest;

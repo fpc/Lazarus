@@ -154,6 +154,9 @@ function GatherUnitFiles(const BaseDir, SearchPath,
     Extensions: string; KeepDoubles, CaseInsensitive: boolean;
     var TreeOfUnitFiles: TAVLTree): boolean;
 procedure FreeTreeOfUnitFiles(TreeOfUnitFiles: TAVLTree);
+procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree;
+  const Filename: string;
+  KeepDoubles: boolean);
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
 function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
                                         UnitFileInfo: Pointer): integer;
@@ -3257,30 +3260,6 @@ var
     Result:=false;
   end;
   
-  procedure AddFilename(const Filename: string);
-  var
-    AnUnitName: String;
-    NewItem: TUnitFileInfo;
-  begin
-    AnUnitName:=ExtractFileNameOnly(Filename);
-    //DebugLn('AddFilename AnUnitName="',AnUnitName,'" Filename="',Filename,'"');
-    if (not KeepDoubles) then begin
-      if (TreeOfUnitFiles<>nil)
-      and (TreeOfUnitFiles.FindKey(Pointer(AnUnitName),
-                                   @CompareUnitNameAndUnitFileInfo)<>nil)
-      then begin
-        // an unit with the same name was already found and doubles are not
-        // wanted
-        exit;
-      end;
-    end;
-    // add
-    if TreeOfUnitFiles=nil then
-      TreeOfUnitFiles:=TAVLTree.Create(@CompareUnitFileInfos);
-    NewItem:=TUnitFileInfo.Create(AnUnitName,Filename);
-    TreeOfUnitFiles.Add(NewItem);
-  end;
-  
   function SearchDirectory(const ADirectory: string): boolean;
   var
     FileInfo: TSearchRec;
@@ -3299,7 +3278,8 @@ var
         then
           continue;
         if ExtensionFits(FileInfo.Name) then begin
-          AddFilename(ADirectory+FileInfo.Name);
+          AddToTreeOfUnitFiles(TreeOfUnitFiles,ADirectory+FileInfo.Name,
+                               KeepDoubles);
         end;
       until SysUtils.FindNext(FileInfo)<>0;
     end;
@@ -3344,6 +3324,30 @@ begin
   if TreeOfUnitFiles=nil then exit;
   TreeOfUnitFiles.FreeAndClear;
   TreeOfUnitFiles.Free;
+end;
+
+procedure AddToTreeOfUnitFiles(var TreeOfUnitFiles: TAVLTree;
+  const Filename: string; KeepDoubles: boolean);
+var
+  AnUnitName: String;
+  NewItem: TUnitFileInfo;
+begin
+  AnUnitName:=ExtractFileNameOnly(Filename);
+  if (not KeepDoubles) then begin
+    if (TreeOfUnitFiles<>nil)
+    and (TreeOfUnitFiles.FindKey(Pointer(AnUnitName),
+                                 @CompareUnitNameAndUnitFileInfo)<>nil)
+    then begin
+      // an unit with the same name was already found and doubles are not
+      // wanted
+      exit;
+    end;
+  end;
+  // add
+  if TreeOfUnitFiles=nil then
+    TreeOfUnitFiles:=TAVLTree.Create(@CompareUnitFileInfos);
+  NewItem:=TUnitFileInfo.Create(AnUnitName,Filename);
+  TreeOfUnitFiles.Add(NewItem);
 end;
 
 function CompareUnitFileInfos(Data1, Data2: Pointer): integer;
