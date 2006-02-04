@@ -210,7 +210,9 @@ type
           var ACleanPos: integer): boolean;
     function FindResourceDirective(const CursorPos: TCodeXYPosition;
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-      
+    function AddResourceDirective(const Filename: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -4231,6 +4233,46 @@ begin
     exit;
   end;
   Result:=CleanPosToCaretAndTopLine(CleanCursorPos,NewPos,NewTopLine);
+end;
+
+function TStandardCodeTool.AddResourceDirective(const Filename: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  ANode: TCodeTreeNode;
+  Indent: LongInt;
+  InsertPos: Integer;
+begin
+  Result:=false;
+  BuildTree(true);
+  // find an insert position
+  ANode:=FindImplementationNode;
+  if ANode<>nil then begin
+    Indent:=GetLineIndent(Src,ANode.StartPos);
+    InsertPos:=ANode.StartPos+length('implementation');
+  end else begin
+    ANode:=FindMainUsesSection;
+    if ANode<>nil then begin
+      Indent:=GetLineIndent(Src,ANode.StartPos);
+      InsertPos:=ANode.StartPos;
+    end else begin
+      ANode:=FindMainBeginEndNode;
+      if ANode<>nil then begin
+        Indent:=GetLineIndent(Src,ANode.StartPos);
+        InsertPos:=ANode.StartPos;
+      end else begin
+        Indent:=0;
+        InsertPos:=1;
+      end;
+    end;
+  end;
+
+  // insert directive
+  SourceChangeCache.MainScanner:=Scanner;
+  if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+    GetIndentStr(Indent)+'{$R '+Filename+'}') then exit;
+  if not SourceChangeCache.Apply then exit;
+
+  Result:=true;
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

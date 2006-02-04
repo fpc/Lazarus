@@ -274,6 +274,8 @@ type
     function FindResourceDirective(Code: TCodeBuffer; StartX, StartY: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+    function AddResourceDirective(Code: TCodeBuffer; const Filename: string
+          ): boolean;
 
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
@@ -2037,6 +2039,21 @@ begin
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddResourceDirective(Code: TCodeBuffer;
+  const Filename: string): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.AddResourceDirective A ',Code.Filename,' Filename=',Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
