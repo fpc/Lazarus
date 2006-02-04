@@ -1,0 +1,26 @@
+{%MainUnit carbonprivate.pp}
+{ $Id: $}
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+
+
+procedure TCarbonPrivateCheckBox.RegisterEvents(AInfo: PWidgetInfo);
+begin
+  // do we call inherited(AInfo); here?
+end;
+
+procedure TCarbonPrivateCheckBox.UnRegisterEvents;
+begin
+end;
