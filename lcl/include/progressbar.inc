@@ -236,8 +236,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomProgressBar.StepBy(Delta: Integer);
 begin
-  if FStep < Delta then FPosition := FPosition + (Delta - FStep);
-  if FStep > Delta then FPosition := FPosition - (Delta);
+  FPosition := FPosition + Delta - FStep;
   StepIt;
 end;
 
