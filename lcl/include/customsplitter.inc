@@ -634,16 +634,19 @@ begin
 
     CheckAlignment;
 
-    if (OldResizeAnchor in [akLeft,akRight])=(ResizeAnchor in [akLeft,akRight])
-    then begin
-      // keep width and height
-      SetBounds(Left,Top,OldWidth,OldHeight);
-    end else begin
-      // resize
-      if Align in [alLeft,alRight] then
-        Width:=OldHeight
-      else if Align in [alTop,alBottom] then
-        Height:=OldWidth;
+    // lfm contains correct size already
+    if not (csLoading in ComponentState) then begin
+      if (OldResizeAnchor in [akLeft,akRight])=(ResizeAnchor in [akLeft,akRight])
+      then begin
+        // keep width and height
+        SetBounds(Left,Top,OldWidth,OldHeight);
+      end else begin
+        // resize
+        if Align in [alLeft,alRight] then
+          Width:=OldHeight
+        else if Align in [alTop,alBottom] then
+          Height:=OldWidth;
+      end;
     end;
   finally
     EnableAlign;
