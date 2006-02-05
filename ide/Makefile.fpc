@@ -85,12 +85,6 @@ LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
 #
-# apptype gui
-ifeq ($(OS_TARGET),win32)
-LAZARUS_OPT+= -WG
-endif
-
-#
 # Options to compile an IDE with a lot of packages
 BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
@@ -106,6 +100,13 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
+
+#
+# apptype gui
+ifeq ($(OS_TARGET),win32)
+LAZARUS_OPT+= -WG
+BIG_IDE_OPT+= -WG
+endif
 
 #-----------------------------------------------------------------------------
 [rules]
