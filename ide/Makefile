@@ -270,7 +270,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
 ifeq ($(OS_TARGET),win32)
 LAZARUS_OPT+= -WG
-BIG_IDE_OPT+= -WG
+BIG_IDE_OPTIONS+= -WG
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus

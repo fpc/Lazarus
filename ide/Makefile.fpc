@@ -105,7 +105,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
 # apptype gui
 ifeq ($(OS_TARGET),win32)
 LAZARUS_OPT+= -WG
-BIG_IDE_OPT+= -WG
+BIG_IDE_OPTIONS+= -WG
 endif
 
 #-----------------------------------------------------------------------------
