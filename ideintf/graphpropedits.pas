@@ -364,11 +364,13 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
 var
   vRight,vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
+  vOldPenStyle: TPenStyle;
 begin
   vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
   with ACanvas do begin
     // save off things
+    vOldPenStyle := Pen.Style;
     vOldPenColor := Pen.Color;
     vOldBrushColor := Brush.Color;
 
@@ -385,6 +387,7 @@ begin
          Brush.Color := clWindow;
       end;
     Pen.Color := Brush.Color;
+    Pen.Style := psSolid;
     FillRect(ARect);
     Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
@@ -396,6 +399,7 @@ begin
     // restore the things we twiddled with
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
+    Pen.Style := vOldPenStyle;
   end;
   inherited ListDrawValue(CurValue, Index, ACanvas,
                           Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),

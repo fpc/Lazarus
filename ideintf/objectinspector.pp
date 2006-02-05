@@ -254,11 +254,18 @@ type
     oipgcValue
   );
 
+  TOILayout = (
+   oilHorizontal,
+   oilVertical
+  );
+
   TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
+    FLayout: TOILayout;
     FReferencesColor: TColor;
+    FRowSpacing: integer;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TWinControl; // nil or ValueButton
@@ -300,10 +307,13 @@ type
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetItemIndex(NewIndex:integer);
+    
+    function GetNameRowHeight: Integer; // temp solution untill TFont.height returns its actual value
 
     procedure SetItemsTops;
     procedure AlignEditComponents;
     procedure EndDragSplitter;
+    procedure SetRowSpacing(const AValue: integer);
     procedure SetSplitterX(const NewValue:integer);
     procedure SetTopY(const NewValue:integer);
 
@@ -421,6 +431,7 @@ type
                                             write FExpandedProperties;
     property Indent: integer read FIndent write FIndent default 9;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
+    property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
     property NameFont: TFont read FNameFont write FNameFont;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property PrefferedSplitterX: integer read FPreferredSplitterX
@@ -429,6 +440,7 @@ type
                                                     write SetPropertyEditorHook;
     property RowCount: integer read GetRowCount;
     property Rows[Index: integer]:TOIPropertyGridRow read GetRow;
+    property RowSpacing: integer read FRowSpacing write SetRowSpacing;
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
@@ -685,6 +697,8 @@ constructor TOICustomPropertyGrid.CreateWithParams(AnOwner:TComponent;
   DefItemHeight: integer);
 begin
   inherited Create(AnOwner);
+  FLayout := oilHorizontal;
+
   FSelection:=TPersistentSelectionList.Create;
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
@@ -1313,6 +1327,14 @@ begin
   Invalidate;
 end;
 
+function TOICustomPropertyGrid.GetNameRowHeight: Integer;
+begin
+  Result := Abs(FNameFont.Height);
+  if Result = 0
+  then Result := 16;
+  Inc(Result, 2); // margin
+end;
+
 function TOICustomPropertyGrid.GetRowCount:integer;
 begin
   Result:=FRows.Count;
@@ -1797,6 +1819,13 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.SetRowSpacing(const AValue: integer);
+begin
+  if FRowSpacing = AValue then exit;
+  FRowSpacing := AValue;
+  SetItemsTops;
+end;
+
 procedure TOICustomPropertyGrid.SetSplitterX(const NewValue:integer);
 var AdjustedValue:integer;
 begin
@@ -1896,19 +1925,29 @@ var RRect,EditCompRect,EditBtnRect:TRect;
 
 // AlignEditComponents
 begin
-  if ItemIndex>=0 then begin
-    RRect:=RowRect(ItemIndex);
-    EditCompRect:=RRect;
-    EditCompRect.Top:=EditCompRect.Top-1;
-    EditCompRect.Left:=RRect.Left+SplitterX;
+  if ItemIndex>=0
+  then begin
+    RRect := RowRect(ItemIndex);
+    EditCompRect := RRect;
+
+    if Layout = oilHorizontal
+    then begin
+      EditCompRect.Top := RRect.Top - 1;
+      EditCompRect.Left := RRect.Left + SplitterX;
+    end
+    else begin
+      EditCompRect.Top := RRect.Top + GetNameRowHeight - 1;
+      EditCompRect.Left := RRect.Left + GetTreeIconX(ItemIndex) + Indent;
+    end;
+
     if FCurrentButton<>nil then begin
       // edit dialog button
       with EditBtnRect do begin
-        Top:=RRect.Top;
-        Left:=RRect.Right-20;
-        Bottom:=RRect.Bottom;
-        Right:=RRect.Right;
-        EditCompRect.Right:=Left;
+        Top := EditCompRect.Top + 1;
+        Left := EditCompRect.Right - 20;
+        Bottom := EditCompRect.Bottom;
+        Right := EditCompRect.Right;
+        EditCompRect.Right := Left;
       end;
       if not CompareRectangles(FCurrentButton.BoundsRect,EditBtnRect) then begin
         FCurrentButton.BoundsRect:=EditBtnRect;
@@ -1917,7 +1956,7 @@ begin
     end;
     if FCurrentEdit<>nil then begin
       // resize the edit component
-      EditCompRect.Left:=EditCompRect.Left-1;
+      EditCompRect.Left := EditCompRect.Left - 1;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
@@ -1928,7 +1967,8 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.PaintRow(ARow:integer);
-var ARowRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
+var
+  FullRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
   IconX,IconY:integer;
   CurRow:TOIPropertyGridRow;
   DrawState:TPropEditDrawState;
@@ -1951,69 +1991,58 @@ var ARowRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
 
 // PaintRow
 begin
-  CurRow:=Rows[ARow];
-  ARowRect:=RowRect(ARow);
-  NameRect:=ARowRect;
-  ValueRect:=ARowRect;
-  NameRect.Right:=SplitterX;
-  ValueRect.Left:=SplitterX;
+  CurRow := Rows[ARow];
+  FullRect := RowRect(ARow);
+  NameRect := FullRect;
+  ValueRect := FullRect;
+  Inc(FullRect.Bottom, FRowSpacing);
+
+  if Layout = oilHorizontal
+  then begin
+    NameRect.Right:=SplitterX;
+    ValueRect.Left:=SplitterX;
+  end
+  else begin
+    NameRect.Bottom := NameRect.Top + GetNameRowHeight;
+    ValueRect.Top := NameRect.Bottom;
+  end;
+
   IconX:=GetTreeIconX(ARow);
   IconY:=((NameRect.Bottom-NameRect.Top-9) div 2)+NameRect.Top;
   NameIconRect:=NameRect;
   NameIconRect.Right:=IconX+Indent;
   NameTextRect:=NameRect;
   NameTextRect.Left:=NameIconRect.Right;
+
+  if Layout = oilVertical
+  then ValueRect.Left := NameTextRect.Left;
+
   DrawState:=[];
   if ARow=FItemIndex then Include(DrawState,pedsSelected);
   with Canvas do begin
-    // draw name background
-    if FBackgroundColor<>clNone then begin
-      Brush.Color:=FBackgroundColor;
-      FillRect(NameIconRect);
-      FillRect(NameTextRect);
+    // clear background in one go
+    if FBackgroundColor <> clNone
+    then begin
+      Brush.Color := FBackgroundColor;
+      FillRect(FullRect);
     end;
+
     // draw icon
-    if paSubProperties in CurRow.Editor.GetAttributes then begin
+    if paSubProperties in CurRow.Editor.GetAttributes
+    then begin
       DrawTreeIcon(IconX,IconY,not CurRow.Expanded);
     end;
+
     // draw name
     OldFont:=Font;
     Font:=FNameFont;
     Font.Color := GetPropNameColor(CurRow);
     CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
     Font:=OldFont;
-    // draw frame for name
-    if ARow<>FItemIndex then begin
-      Pen.Style := psDot;
-      Pen.Color:=cl3DShadow;
-      MoveTo(NameRect.Left,NameRect.Bottom-1);
-      LineTo(NameRect.Right-1,NameRect.Bottom-1);
-    end else begin
-      Pen.Color:=cl3DDKShadow;
-      MoveTo(NameRect.Left,NameRect.Top-1);
-      LineTo(NameRect.Right-1,NameRect.Top-1);
-      Pen.Color:=cl3DShadow;
-      MoveTo(NameRect.Left,NameRect.Top);
-      LineTo(NameRect.Right-1,NameRect.Top);
-      Pen.Color:=clWhite;
-      MoveTo(NameRect.Left,NameRect.Bottom-1);
-      LineTo(NameRect.Right-1,NameRect.Bottom-1);
-    end;
 
-    Pen.Color:=clWhite;
-    Pen.Style := psSolid;
-    LineTo(NameRect.Right-1,NameRect.Top-1);
-    Pen.Color:=cl3DShadow;
-    MoveTo(NameRect.Right-2,NameRect.Bottom-1);
-    LineTo(NameRect.Right-2,NameRect.Top-1);
-    Pen.Style := psSolid;
-    // draw value background
-    if FBackgroundColor<>clNone then begin
-      Brush.Color:=FBackgroundColor;
-      FillRect(ValueRect);
-    end;
     // draw value
-    if ARow<>ItemIndex then begin
+    if ARow<>ItemIndex
+    then begin
       OldFont:=Font;
       if CurRow.Editor.IsNotDefaultValue then
         Font:=FValueFont
@@ -2023,18 +2052,72 @@ begin
       Font:=OldFont;
     end;
     CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
-    // draw frame for value
-    Pen.Color:=cl3DShadow;
-    if ARow=FItemIndex then
-      Pen.Style := psSolid
-    else
-      Pen.Style := psDot;
-    MoveTo(ValueRect.Left-1,ValueRect.Bottom-1);
-    LineTo(ValueRect.Right,ValueRect.Bottom-1);
-    Pen.Color:=cl3DLight;
-    MoveTo(ValueRect.Left,ValueRect.Bottom-1);
-    LineTo(ValueRect.Left,ValueRect.Top);
-    Pen.Style := psSolid;
+
+
+    // -----------------
+    // frames
+    // -----------------
+
+    if Layout = oilHorizontal
+    then begin
+      // Divider
+      if ARow = FItemIndex
+      then begin
+        Pen.Style := psSolid;
+        if FBackgroundColor <> clNone
+        then begin
+          Pen.Color := FBackgroundColor;
+          MoveTo(NameRect.Left,NameRect.Top-1);
+          LineTo(ValueRect.Right,NameRect.Top-1)
+        end;
+        //Top
+        Pen.Color:=cl3DShadow;
+        MoveTo(NameRect.Left,NameRect.Top-1);
+        LineTo(ValueRect.Right,NameRect.Top-1);
+        //Bottom
+        Pen.Color:=cl3DHiLight;
+        MoveTo(NameRect.Left,NameRect.Bottom-1);
+        LineTo(ValueRect.Right,NameRect.Bottom-1);
+      end
+      else begin
+        Pen.Style := psDot;
+        Pen.Color:=cl3DShadow;
+        if FRowSpacing <> 0
+        then begin
+          MoveTo(NameRect.Left,NameRect.Top-1);
+          LineTo(ValueRect.Right,NameRect.Top-1);
+        end;
+        MoveTo(NameRect.Left,NameRect.Bottom-1);
+        LineTo(ValueRect.Right,NameRect.Bottom-1);
+      end;
+
+      // Splitter
+      Pen.Style := psSolid;
+      Pen.Color:=cl3DHiLight;
+      MoveTo(NameRect.Right-1,NameRect.Bottom-1);
+      LineTo(NameRect.Right-1,NameRect.Top-1-FRowSpacing);
+      Pen.Color:=cl3DShadow;
+      MoveTo(NameRect.Right-2,NameRect.Bottom-1);
+      LineTo(NameRect.Right-2,NameRect.Top-1-FRowSpacing);
+
+    end
+    else begin
+      Pen.Style := psSolid;
+      Pen.Color := cl3DLight;
+      MoveTo(ValueRect.Left, ValueRect.Bottom - 1);
+      LineTo(ValueRect.Left, NameTextRect.Top);
+      LineTo(ValueRect.Right - 1, NameTextRect.Top);
+      Pen.Color:=cl3DHiLight;
+      LineTo(ValueRect.Right - 1, ValueRect.Bottom - 1);
+      LineTo(ValueRect.Left, ValueRect.Bottom - 1);
+
+      MoveTo(NameTextRect.Left + 1, NametextRect.Bottom);
+      LineTo(NameTextRect.Left + 1, NameTextRect.Top + 1);
+      LineTo(NameTextRect.Right - 2, NameTextRect.Top + 1);
+      Pen.Color:=cl3DLight;
+      LineTo(NameTextRect.Right - 2, NameTextRect.Bottom - 1);
+      LineTo(NameTextRect.Left + 2, NameTextRect.Bottom - 1);
+    end;
   end;
 end;
 
@@ -2126,7 +2209,7 @@ begin
   if FRows.Count>0 then
     Rows[0].Top:=0;
   for a:=1 to FRows.Count-1 do
-    Rows[a].FTop:=Rows[a-1].Bottom;
+    Rows[a].FTop:=Rows[a-1].Bottom + FRowSpacing;
   if FRows.Count>0 then
     scrollmax:=Rows[FRows.Count-1].Bottom-Height
   else
@@ -2576,6 +2659,8 @@ end;
 function TOIPropertyGridRow.GetBottom:integer;
 begin
   Result:=FTop+FHeight;
+  if FTree.Layout = oilVertical
+  then Inc(Result, FTree.GetNameRowHeight);
 end;
 
 function TOIPropertyGridRow.IsReadOnly: boolean;

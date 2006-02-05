@@ -396,9 +396,10 @@ begin
     Name:='PropertyGrid';
     // Use panel for border
     Parent := pnlDebugSpecific;   //gbDebuggerSpecific;
-    Visible:=True;
-    Align:=alClient;
-    SplitterX:=120;
+    Visible := True;
+    Align := alClient;
+    Layout := oilVertical;
+    RowSpacing := 4;
   end;
 
   FetchDebuggerClass;
