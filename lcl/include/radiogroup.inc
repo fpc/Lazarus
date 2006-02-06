@@ -84,9 +84,9 @@ procedure TCustomRadioGroup.InitializeWnd;
   var
     i: Integer;
   begin
-    if (FItemIndex <> -1) then
+    if (FItemIndex <> -1) and (FItemIndex<FButtonList.Count) then
       TRadioButton(FButtonList[FItemIndex]).Checked := true
-    else
+    else if FHiddenButton<>nil then
       FHiddenButton.Checked:=true;
     for i:=0 to FItems.Count-1 do begin
       TRadioButton(FButtonList[i]).Checked := fItemIndex = i;
