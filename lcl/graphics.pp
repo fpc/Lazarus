@@ -1295,7 +1295,7 @@ procedure GetColorValues(Proc: TGetColorStringProc);
 Function Blue(rgb: TColor): BYTE;
 Function Green(rgb: TColor): BYTE;
 Function Red(rgb: TColor): BYTE;
-procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
 function FPColorToTColor(const FPColor: TFPColor): TColor;
 function TColorToFPColor(const c: TColor): TFPColor;
 
@@ -1641,7 +1641,7 @@ begin
   Result := rgb and $000000ff;
 end;
 
-procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
 begin
   Red := rgb and $000000ff;
   Green := (rgb shr 8) and $000000ff;

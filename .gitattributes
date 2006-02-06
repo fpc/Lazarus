@@ -45,6 +45,7 @@ components/chmhelp/packages/idehelp/lazchmhelp.pas svneol=native#text/plain
 components/codetools/allcodetoolunits.pp svneol=native#text/pascal
 components/codetools/basiccodetools.pas svneol=native#text/pascal
 components/codetools/codeatom.pas svneol=native#text/pascal
+components/codetools/codebeautifier.pas svneol=native#text/plain
 components/codetools/codecache.pas svneol=native#text/pascal
 components/codetools/codecompletiontool.pas svneol=native#text/pascal
 components/codetools/codetemplatestool.pas svneol=native#text/pascal

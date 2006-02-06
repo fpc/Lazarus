@@ -175,7 +175,8 @@ type
     procedure DecreaseAutoRevertLock;
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                Merge: boolean);
     procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
@@ -238,7 +239,7 @@ type
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
-    property SourceDirectoryReferenced : boolean read FSourceDirectoryReferenced;
+    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
   end;
@@ -507,6 +508,7 @@ type
     procedure SetFlags(const AValue: TProjectFlags); override;
     function GetProjectInfoFile: string; override;
     procedure SetProjectInfoFile(const NewFilename: string); override;
+    procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
     procedure SetModified(const AValue: boolean); override;
     procedure SetSessionModified(const AValue: boolean); override;
   protected
@@ -910,10 +912,6 @@ begin
   if (IsPartOfProject and SaveData)
   or ((not IsPartOfProject) and SaveSession)
   then begin
-    XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
-                             FBuildFileIfActive,false);
-    XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
-                             FRunFileIfActive,false);
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
     XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
@@ -937,44 +935,57 @@ begin
     XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
                              LazSyntaxHighlighterNames[fSyntaxHighlighter],
                              LazSyntaxHighlighterNames[lshFreePascal]);
+    XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
+                             FBuildFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
+                             FRunFileIfActive,false);
   end;
 end;
 
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  Merge: boolean);
 var AFilename: string;
 begin
+  // project data
+  if not Merge then begin
+  
+    AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+    if Assigned(fOnLoadSaveFilename) then
+      fOnLoadSaveFilename(AFilename,true);
+    fFilename:=AFilename;
+
+    fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
+    if fComponentName='' then
+      fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
+    HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
+    IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
+    AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
+    if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
+      fOnLoadSaveFilename(AFilename,true);
+    FResourceFilename:=AFilename;
+    if (FResourceFilename<>'')
+    and (FResourceFilename[length(FResourceFilename)]=PathDelim) then
+      FResourceFilename:='';
+    if FilenameIsPascalSource(Filename) then
+      fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+  end;
+
+  // session data
   CursorPos.X:=XMLConfig.GetValue(Path+'CursorPos/X',-1);
   CursorPos.Y:=XMLConfig.GetValue(Path+'CursorPos/Y',-1);
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
-  AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
-  if Assigned(fOnLoadSaveFilename) then
-    fOnLoadSaveFilename(AFilename,true);
-  fFilename:=AFilename;
-  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
-                                           false);
-  FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
-  fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
-  if fComponentName='' then
-    fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
-  HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
-  IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
+
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
-  AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
-  if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
-    fOnLoadSaveFilename(AFilename,true);
-  FResourceFilename:=AFilename;
-  if (FResourceFilename<>'')
-  and (FResourceFilename[length(FResourceFilename)]=PathDelim) then
-    FResourceFilename:='';
   fSyntaxHighlighter:=StrToLazSyntaxHighlighter(XMLConfig.GetValue(
        Path+'SyntaxHighlighter/Value',''));
   fTopLine:=XMLConfig.GetValue(Path+'TopLine/Value',-1);
-  if FilenameIsPascalSource(Filename) then
-    fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
+                                         false);
+  FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
     UpdateUsageCount(uuIsLoaded,1);
@@ -1298,7 +1309,7 @@ procedure TUnitInfo.SetBuildFileIfActive(const AValue: boolean);
 begin
   if FBuildFileIfActive=AValue then exit;
   FBuildFileIfActive:=AValue;
-  Modified:=true;
+  SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
@@ -1306,6 +1317,7 @@ begin
   if fEditorIndex=AValue then exit;
   fEditorIndex:=AValue;
   UpdateList(uilWithEditorIndex,fEditorIndex>=0);
+  SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
@@ -1314,6 +1326,7 @@ begin
   fFileReadOnly:=AValue;
   if fSource<>nil then
     fSource.ReadOnly:=ReadOnly;
+  SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetComponent(const AValue: TComponent);
@@ -1377,7 +1390,7 @@ procedure TUnitInfo.SetRunFileIfActive(const AValue: boolean);
 begin
   if FRunFileIfActive=AValue then exit;
   FRunFileIfActive:=AValue;
-  Modified:=true;
+  SessionModified:=true;
 end;
 
 
@@ -1526,6 +1539,7 @@ var
   SaveSessionInfoInLPI: Boolean;
   CurSessionFilename: String;
   CurFlags: TProjectWriteFlags;
+  SessionSaveResult: TModalResult;
 begin
   Result := mrCancel;
 
@@ -1541,11 +1555,23 @@ begin
   
   UpdateUsageCounts(CfgFilename);
 
+  CurSessionFilename := '';
+  if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
+  and (SessionStorage in [pssInProjectDir,pssInIDEConfig]) then begin
+    // save session in separate file .lps
+
+    if OverrideProjectInfoFile<>'' then
+      CurSessionFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
+    else
+      CurSessionFilename := ProjectSessionFile;
+  end;
+
   // first save the .lpi file
-  SaveSessionInfoInLPI:=true;
+  SaveSessionInfoInLPI:=(CurSessionFilename='')
+                        or (CompareFilenames(CurSessionFilename,CfgFilename)=0);
   if (pwfDoNotSaveSessionInfo in ProjectWriteFlags) then
     SaveSessionInfoInLPI:=false;
-  if (SessionStorage<>pssInProjectInfo) then
+  if (SessionStorage=pssNone) then
     SaveSessionInfoInLPI:=false;
   repeat
     try
@@ -1630,29 +1656,21 @@ begin
     end;
     xmlconfig:=nil;
   until Result<>mrRetry;
-  if Result<>mrOk then exit;
 
   if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
-  and (SessionStorage in [pssInProjectDir,pssInIDEConfig]) then begin
+  and (SessionStorage in [pssInProjectDir,pssInIDEConfig])
+  and (CurSessionFilename<>'')
+  and (CompareFilenames(CurSessionFilename,CfgFilename)<>0) then begin
     // save session in separate file .lps
-    
-    if OverrideProjectInfoFile<>'' then
-      CurSessionFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
-    else
-      CurSessionFilename := ProjectSessionFile;
-    if ExtractFileNameOnly(CurSessionFilename)='' then begin
-      DebugLn('ERROR: TProject.WriteProject ProjectSessionFile invalid: "',CurSessionFilename,'"');
-      Result:=mrCancel;
-      exit;
-    end;
-    if CompareFilenames(CurSessionFilename,CfgFilename)=0 then
-      exit;
+
+    //DebugLn('TProject.WriteProject Write Session File="',CurSessionFilename,'"');
 
     if Assigned(fOnFileBackup) then begin
       Result:=fOnFileBackup(CurSessionFilename,true);
       if Result=mrAbort then exit;
     end;
     CurSessionFilename:=SetDirSeparators(CurSessionFilename);
+    SessionSaveResult:=mrCancel;
     repeat
       try
         xmlconfig := TXMLConfig.CreateClean(CurSessionFilename);
@@ -1685,10 +1703,11 @@ begin
           OnSaveProjectInfo(Self,XMLConfig,CurFlags);
         end;
 
-        Result:=mrOk;
+        SessionSaveResult:=mrOk;
       except
         on E: Exception do begin
-          Result:=MessageDlg('Write error','Unable to write to file "'+CurSessionFilename+'".',
+          SessionSaveResult:=MessageDlg('Write error',
+            'Unable to write to file "'+CurSessionFilename+'".',
             mtError,[mbRetry,mbAbort],0);
         end;
       end;
@@ -1697,8 +1716,11 @@ begin
       except
       end;
       xmlconfig:=nil;
-    until Result<>mrRetry;
+    until SessionSaveResult<>mrRetry;
   end;
+  
+  if (Result=mrOk) and (SessionSaveResult<>mrOk) then
+    Result:=SessionSaveResult;
 end;
 
 function TProject.GetDefaultTitle: string;
@@ -1803,13 +1825,60 @@ var
     end;
   end;
   
+  procedure LoadSessionInfo(XMLConfig: TXMLConfig; const Path: string;
+    Merge: boolean);
+  var
+    NewUnitInfo: TUnitInfo;
+    NewUnitCount,i: integer;
+    SubPath: String;
+    NewUnitFilename: String;
+    OldUnitInfo: TUnitInfo;
+    MergeUnitInfo: Boolean;
+  begin
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
+    NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
+    for i := 0 to NewUnitCount - 1 do begin
+      SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
+      NewUnitFilename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
+      OnLoadSaveFilename(NewUnitFilename,true);
+      // load unit and add it
+      OldUnitInfo:=UnitInfoWithFilename(NewUnitFilename);
+      if OldUnitInfo<>nil then begin
+        // unit already exists
+        if Merge then begin
+          NewUnitInfo:=OldUnitInfo;
+          MergeUnitInfo:=true;
+        end else begin
+          // Doppelganger -> inconsistency found, ignore this file
+          debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
+          continue;
+        end;
+      end else begin
+        NewUnitInfo:=TUnitInfo.Create(nil);
+        AddFile(NewUnitInfo,false);
+        MergeUnitInfo:=false;
+      end;
+
+      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo);
+    end;
+
+
+    // load the Run Parameter Options
+    RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
+
+    // load the Publish Options
+    PublishOptions.LoadFromXMLConfig(xmlconfig,
+                                     Path+'PublishOptions/',fPathDelimChanged);
+
+    // load editor info
+    ActiveEditorIndexAtStart := xmlconfig.GetValue(
+       Path+'General/ActiveEditorIndexAtStart/Value', -1);
+    FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+  end;
+  
 var
-  NewUnitInfo: TUnitInfo;
-  NewUnitCount,i: integer;
   Path: String;
   xmlconfig: TXMLConfig;
-  SubPath: String;
-  NewUnitFilename: String;
 begin
   Result := mrCancel;
   BeginUpdate(true);
@@ -1842,8 +1911,8 @@ begin
       SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
                                  ProjectSessionStorageNames[pssInProjectInfo]));
-      UpdateSessionFilename;
-                                 
+      DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+
       MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
@@ -1852,23 +1921,6 @@ begin
          Path+'General/TargetFileExt/Value', GetDefaultExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
 
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-      NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
-      for i := 0 to NewUnitCount - 1 do begin
-        SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
-        NewUnitFilename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
-        OnLoadSaveFilename(NewUnitFilename,true);
-        if IndexOfFilename(NewUnitFilename)>=0 then begin
-          // Doppelganger -> inconsistency found, ignore this file
-          debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
-          continue;
-        end;
-
-        NewUnitInfo:=TUnitInfo.Create(nil);
-        AddFile(NewUnitInfo,false);
-        NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath);
-      end;
-
       // Lazdoc
       LazDocPathList.Text := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
 
@@ -1876,27 +1928,19 @@ begin
       // Load the compiler options
       LoadCompilerOptions(XMLConfig,Path);
 
-      // load the Publish Options
-      PublishOptions.LoadFromXMLConfig(xmlconfig,
-                            Path+'PublishOptions/',fPathDelimChanged);
-
-      // load the Run Parameter Options
-      RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
-
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-            ProjectDirectory;
+                                                               ProjectDirectory;
       CodeToolBoss.DefineTree.ClearCache;
       
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
-        FFirstRequiredDependency,pdlRequires,Self,true);
+                            FFirstRequiredDependency,pdlRequires,Self,true);
 
       // load session info
-      ActiveEditorIndexAtStart := xmlconfig.GetValue(
-         Path+'General/ActiveEditorIndexAtStart/Value', -1);
-      FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+      LoadSessionInfo(XMLConfig,Path,false);
 
+      // call hooks to read their info (e.g. DebugBoss)
       if Assigned(OnLoadProjectInfo) then begin
         OnLoadProjectInfo(Self,XMLConfig,false);
       end;
@@ -1914,17 +1958,20 @@ begin
     if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
     and FileExists(ProjectSessionFile) then begin
+      //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
       try
         xmlconfig := TXMLConfig.Create(ProjectSessionFile);
-        
-        
-        
-        Path:='ProjectOptions/';
+
+        Path:='ProjectSession/';
         fPathDelimChanged:=
           XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
           
-        FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
-        
+        FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
+
+        // load session info
+        LoadSessionInfo(XMLConfig,Path,true);
+
+        // call hooks to read their info (e.g. DebugBoss)
         if Assigned(OnLoadProjectInfo) then begin
           OnLoadProjectInfo(Self,XMLConfig,true);
         end;
@@ -2662,6 +2709,13 @@ begin
   Modified:=true;
   EndUpdate;
   //DebugLn('TProject.SetProjectInfoFile FDefineTemplates.FUpdateLock=',dbgs(FDefineTemplates.FUpdateLock));
+end;
+
+procedure TProject.SetSessionStorage(const AValue: TProjectSessionStorage);
+begin
+  if SessionStorage=AValue then exit;
+  inherited SetSessionStorage(AValue);
+  UpdateSessionFilename;
 end;
 
 function TProject.OnUnitFileBackup(const Filename:string;

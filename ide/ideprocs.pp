@@ -899,26 +899,6 @@ begin
   Result:=FileUtil.CompareFilenames(FileName1,FileName2);
 end;
 
-function FilenameIsAbsolute(Filename: string):boolean;
-begin
-  Result:=FileProcs.FilenameIsAbsolute(Filename);
-end;
-
-function DirPathExists(DirectoryName: string): boolean;
-begin
-  Result:=FileProcs.DirPathExists(DirectoryName);
-end;
-
-function ForceDirectory(DirectoryName: string): boolean;
-begin
-  Result:=FileProcs.ForceDirectory(DirectoryName);
-end;
-
-function AppendPathDelim(const Path: string): string;
-begin
-  Result:=FileProcs.AppendPathDelim(Path);
-end;
-
 function CompareFilenames(const Filename1, Filename2: string;
   ResolveLinks: boolean): integer;
 begin

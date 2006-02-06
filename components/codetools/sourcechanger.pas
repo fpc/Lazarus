@@ -82,6 +82,7 @@ type
     );
   TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
+
   TBeautifyCodeOptions = class
   private
     CurLineLen: integer;

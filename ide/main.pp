@@ -8838,7 +8838,7 @@ begin
   //DebugLn('TMainIDE.DoPublishModule A');
   Result:=mrCancel;
 
-  // to not delete project files
+  // do not delete project files
   DestDir:=TrimFilename(AppendPathDelim(DestDirectory));
   SrcDir:=TrimFilename(AppendPathDelim(SrcDirectory));
   if (DestDir='') then begin

@@ -77,9 +77,22 @@ TYPE
 
   { Formatting options }
   { If you add options, adjust the definition of lastopt }
-  options = (crsupp,crbefore,blinbefore,
-             dindonkey,dindent,spbef,
-             spaft,gobsym,inbytab,inbyindent,crafter,upper,lower,capital);
+  options = (crsupp, // suppress CR before the keyword
+             crbefore, // force CR before keyword
+             blinbefore, // blank line before keyword
+             dindonkey, // de−indent on assiociated keywords
+             dindent, // deindent
+             spbef, // space before
+             spaft, // space after
+             gobsym, // Print symbols which follow a keyword but which do not
+                     //  affect layout. prints until terminators occur.
+             inbytab, // indent by tab.
+             inbyindent, //
+             crafter, // force CR after keyword.
+             upper, // prints keyword all uppercase
+             lower, // prints keyword all lowercase
+             capital // capitalizes keyword: 1st letter uppercase, rest lowercase.
+             );
 
   optionset = SET OF options;
   keysymset = SET OF keysymbol;

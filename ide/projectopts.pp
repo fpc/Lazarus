@@ -232,9 +232,7 @@ begin
 
   SaveClosedUnitInfoCheckBox.Caption := dlgSaveEditorInfo;
   SaveOnlyProjectUnitInfoCheckBox.Caption := dlgSaveEditorInfoProject;
-  {$IFNDEF EnableProjectSessions}
   SaveSessionLocationRadioGroup.Enabled:=false;
-  {$ENDIF}
   SaveSessionLocationRadioGroup.Caption:=lisPOSaveSessionInformationIn;
   for s:=Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
     SaveSessionLocationRadioGroup.Items.Add(
