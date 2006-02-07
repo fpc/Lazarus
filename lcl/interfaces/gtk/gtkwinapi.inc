@@ -8487,6 +8487,7 @@ begin
     // grab the focus to the parent window
     NewTopLevelWidget := gtk_widget_get_toplevel(NewFocusWidget);
     if (Screen<>nil)
+    and (Screen.GetCurrentModalForm<>nil)
     and (GetNearestLCLObject(NewTopLevelWidget)<>Screen.GetCurrentModalForm)
     then begin
       {$IFDEF VerboseFocus}

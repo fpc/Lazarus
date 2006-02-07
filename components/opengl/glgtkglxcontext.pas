@@ -710,6 +710,7 @@ begin
       NewWidget:=gtk_gl_area_new(AttrList);
     end;
     Result:=HWND(NewWidget);
+    PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
     TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget,true);
     {$ELSE}

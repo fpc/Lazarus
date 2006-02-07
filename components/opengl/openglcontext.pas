@@ -77,7 +77,7 @@ type
         OpenGLControl2.SharedControl:=OpenGLControl1;
         OpenGLControl3.SharedControl:=OpenGLControl1;
 
-     After OpenGLControl1.SharingControlCount will be two and
+     After this OpenGLControl1.SharingControlCount will be two and
      OpenGLControl1.SharingControls will contain OpenGLControl2 and
      OpenGLControl3.
     }
