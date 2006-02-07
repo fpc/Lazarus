@@ -133,6 +133,17 @@ var
   ACaption, AText: string;
   FileReadable: boolean;
 begin
+  if [lbfUpdateFromDisk,lbfRevert]*Flags=[] then begin
+    // can use cache
+    ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,false,false);
+    if ACodeBuffer<>nil then begin
+      // file is in cache
+      if (not (lbfCheckIfText in Flags)) or ACodeBuffer.SourceIsText then begin
+        Result:=mrOk;
+        exit;
+      end;
+    end;
+  end;
   repeat
     FileReadable:=true;
     if (lbfCheckIfText in Flags)

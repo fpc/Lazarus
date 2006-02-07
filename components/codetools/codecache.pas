@@ -44,6 +44,8 @@ uses
 type
   TCodeCache = class;
   
+  { TCodeBuffer }
+
   TCodeBuffer = class(TSourceLog)
   private
     FFilename: string;
@@ -85,6 +87,7 @@ type
     procedure IncrementRefCount;
     procedure ReleaseRefCount;
     procedure MakeFileDateValid;
+    function SourceIsText: boolean;
   public
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
     property Filename: string read FFilename write SetFilename;
@@ -851,6 +854,20 @@ begin
   FFileChangeStep:=ChangeStep;
   FLoadDateValid:=true;
   FLoadDate:=FileAge(Filename);
+end;
+
+function TCodeBuffer.SourceIsText: boolean;
+var
+  l: LongInt;
+  i: Integer;
+  s: String;
+begin
+  l:=SourceLength;
+  if l>1024 then l:=1024;
+  s:=Source;
+  for i:=1 to l do
+    if s[i] in [#0..#8,#11..#12,#14..#31] then exit(false);
+  Result:=true;
 end;
 
 function TCodeBuffer.FileDateOnDisk: longint;
