@@ -1,0 +1,16 @@
+{ Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TDockFormX','FORMDATA',[
+  'TPF0'#10'TDockFormX'#9'DockFormX'#13'ActiveControl'#7#7'Button1'#7'Caption'#6
+  +#9'DockFormX'#28'ChildSizing.LeftRightSpacing'#2#1#28'ChildSizing.TopBottomS'
+  +'pacing'#2#1#12'ClientHeight'#2''#11'ClientWidth'#3#224#0#8'OnCreate'#7#10
+  +'FormCreate'#7'OnPaint'#7#9'FormPaint'#13'PixelsPerInch'#2'_'#9'PopupMenu'#7
+  +#10'PopupMenu1'#7'Visible'#9#18'HorzScrollBar.Page'#3#223#0#18'VertScrollBar'
+  +'.Page'#2'~'#4'Left'#3#234#1#6'Height'#2''#3'Top'#3#215#0#5'Width'#3#224#0#0
+  +#7'TButton'#7'Button1'#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#7'Butt'
+  +'on1'#8'TabOrder'#2#0#4'Left'#2#24#6'Height'#2#25#3'Top'#2'0'#5'Width'#2'K'#0
+  +#0#9'TGroupBox'#9'GroupBox1'#5'Align'#7#7'alRight'#7'Caption'#6#9'GroupBox1'
+  +#12'ClientHeight'#2'l'#11'ClientWidth'#2'e'#8'TabOrder'#2#1#4'Left'#2'v'#6'H'
+  +'eight'#2'}'#3'Top'#2#1#5'Width'#2'i'#0#0#10'TPopupMenu'#10'PopupMenu1'#4'le'
+  +'ft'#2'V'#3'top'#2'4'#0#0#0
+]);

@@ -704,8 +704,9 @@ var
   SplitterParent: TWinControl;
   i: Integer;
   CurControl: TControl;
+  NewSideRef: TAnchorSideReference;
 begin
-  DebugLn('TAnchoredDockManager.DeleteSideSplitter Splitter=',DbgSName(Splitter),' Side=',dbgs(ord(Side)),' NewAnchorControl=',DbgSName(NewAnchorControl));
+  //DebugLn('TAnchoredDockManager.DeleteSideSplitter Splitter=',DbgSName(Splitter),' Side=',dbgs(Side),' NewAnchorControl=',DbgSName(NewAnchorControl));
   SplitterParent:=Splitter.Parent;
   SplitterParent.DisableAlign;
   try
@@ -713,6 +714,12 @@ begin
       CurControl:=SplitterParent.Controls[i];
       if CurControl.AnchorSide[Side].Control=Splitter then begin
         CurControl.AnchorSide[Side].Control:=NewAnchorControl;
+        if NewAnchorControl=CurControl.Parent then
+          NewSideRef:=DefaultSideForAnchorKind[OppositeAnchor[Side]]
+        else
+          NewSideRef:=DefaultSideForAnchorKind[Side];
+        CurControl.AnchorSide[Side].Side:=NewSideRef;
+        //DebugLn('TAnchoredDockManager.DeleteSideSplitter Anchor ',DbgSName(CurControl),'(',dbgs(Side),') to ',DbgSName(NewAnchorControl));
       end;
     end;
     Splitter.Free;
@@ -1178,25 +1185,30 @@ var
   IsSpiralSplitter: Boolean;
   ParentControl: TWinControl;
   Done: Boolean;
-  
+
   procedure DoFinallyForParent;
   var
     OldParentControl: TWinControl;
     NewBounds: TRect;
     NewOrigin: TPoint;
   begin
-    if Float then begin
-      NewBounds:=Control.BoundsRect;
-      NewOrigin:=Control.ControlOrigin;
-      OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
-      Control.ManualFloat(NewBounds);
-    end else begin
-      Control.Parent:=nil;
-    end;
-    if ParentControl<>nil then begin
-      OldParentControl:=ParentControl;
-      ParentControl:=nil;
-      OldParentControl.DisableAlign;
+    try
+      if Float then begin
+        NewBounds:=Control.BoundsRect;
+        NewOrigin:=Control.ControlOrigin;
+        OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
+        Control.ManualFloat(NewBounds);
+      end else begin
+        Control.Parent:=nil;
+      end;
+    finally
+      if (ParentControl<>nil) then begin
+        OldParentControl:=ParentControl;
+        ParentControl:=nil;
+        //DebugLn('DoFinallyForParent EnableAlign for ',DbgSName(OldParentControl));
+        OldParentControl.EnableAlign;
+        //OldParentControl.WriteLayoutDebugReport('X  ');
+      end;
     end;
   end;
   
@@ -1220,24 +1232,26 @@ begin
     Done:=false;
 
     if not Done then begin
-      // check if their is a splitter, that has a side with only Control
+      // check if there is a splitter, that has a side with only 'Control'
       // anchored to it.
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
         AnchorControl:=OldAnchorControls[a];
         if AnchorControl is TLazDockSplitter then begin
           AnchorSplitter:=TLazDockSplitter(AnchorControl);
-          i:=Control.Parent.ControlCount-1;
+          i:=ParentControl.ControlCount-1;
           while i>=0 do begin
-            Sibling:=Control.Parent.Controls[i];
+            Sibling:=ParentControl.Controls[i];
             if (Sibling.AnchorSide[a].Control=AnchorSplitter) then begin
               // Sibling is anchored with the same side to the splitter
               // => this splitter is needed, can not be deleted.
+              //DebugLn('TAnchoredDockManager.UndockControl Splitter still needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),') by ',DbgSName(Sibling));
               break;
             end;
             dec(i);
           end;
           if i<0 then begin
             // this splitter is not needed anymore
+            //DebugLn('TAnchoredDockManager.UndockControl Splitter not needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),')');
             DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
                                OldAnchorControls[OppositeAnchor[a]]);
             Done:=true;

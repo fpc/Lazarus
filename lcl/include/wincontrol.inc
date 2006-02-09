@@ -2093,10 +2093,18 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TWinControl.CanTab
-}
-{------------------------------------------------------------------------------}
+procedure TWinControl.WriteLayoutDebugReport(const Prefix: string);
+var
+  i: Integer;
+begin
+  inherited WriteLayoutDebugReport(Prefix);
+  for i:=0 to ControlCount-1 do
+    Controls[i].WriteLayoutDebugReport(Prefix+'  ');
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl.CanTab
+------------------------------------------------------------------------------}
 Function TWinControl.CanTab: Boolean;
 begin
   Result := CanFocus;
@@ -2126,9 +2134,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetChildren                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl GetChildren
+------------------------------------------------------------------------------}
 Procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
 var
   I : Integer;

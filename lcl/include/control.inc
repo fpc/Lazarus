@@ -1313,6 +1313,11 @@ begin
   FControlHandlers[HandlerType].Remove(AMethod);
 end;
 
+procedure TControl.DoCallNotifyHandler(HandlerType: TControlHandlerType);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.DoContextPopup(const MousePos: TPoint;
     var Handled: Boolean);
@@ -2598,6 +2603,31 @@ procedure TControl.UnlockBaseBounds;
 begin
   dec(fBaseBoundsLock);
   if fBaseBoundsLock<0 then RaiseGDBException('TControl.UnlockBaseBounds');
+end;
+
+procedure TControl.WriteLayoutDebugReport(const Prefix: string);
+var
+  a: TAnchorKind;
+  NeedSeparator: Boolean;
+begin
+  DbgOut(Prefix,'TControl.WriteLayoutDebugReport ');
+  DbgOut(DbgSName(Self),' Bounds=',dbgs(BoundsRect));
+  if Align<>alNone then
+    DbgOut(' Align=',AlignNames[Align]);
+  DbgOut(' Anchors=[');
+  NeedSeparator:=false;
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    if a in Anchors then begin
+      if NeedSeparator then DbgOut(',');
+      DbgOut(dbgs(a));
+      if AnchorSide[a].Control<>nil then begin
+        DbgOut('(',DbgSName(AnchorSide[a].Control),')');
+      end;
+      NeedSeparator:=true;
+    end;
+  end;
+  DbgOut(']');
+  DebugLn;
 end;
 
 procedure TControl.UpdateAnchorRules;

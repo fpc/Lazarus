@@ -730,7 +730,8 @@ type
 
   TControlHandlerType = (
     chtOnResize,
-    chtOnChangeBounds
+    chtOnChangeBounds,
+    chtVisibleChanging
     );
 
 {* Note on TControl.Caption
@@ -1033,6 +1034,7 @@ type
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
+    procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
   protected
@@ -1080,13 +1082,13 @@ type
     procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     function ManualDock(NewDockSite: TWinControl;
-      DropControl: TControl = nil;
-      ControlSide: TAlign = alNone;
-      KeepDockSiteSize: Boolean = true): Boolean;
+                        DropControl: TControl = nil;
+                        ControlSide: TAlign = alNone;
+                        KeepDockSiteSize: Boolean = true): Boolean;
     function ManualFloat(TheScreenRect: TRect;
-      KeepDockSiteSize: Boolean = true): Boolean;
+                         KeepDockSiteSize: Boolean = true): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
-      DropControl: TControl; ControlSide: TAlign): Boolean;
+                           DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
   public
     // size
@@ -1121,6 +1123,7 @@ type
     procedure UnlockBaseBounds;
     property BaseBounds: TRect read FBaseBounds;
     property ReadBounds: TRect read FReadBounds;
+    procedure WriteLayoutDebugReport(const Prefix: string); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
@@ -1669,6 +1672,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure DisableAlign;
     procedure EnableAlign;
+    procedure WriteLayoutDebugReport(const Prefix: string); override;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(ParentWindow: HWnd);
@@ -2042,6 +2046,8 @@ const
     );
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
+  AnchorNames: array[TAnchorKind] of string = (
+    'akTop', 'akLeft', 'akRight', 'akBottom');
 
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
@@ -2087,6 +2093,8 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect);
+  
+function DbgS(a: TAnchorKind): string; overload;
 
 // register (called by the package initialization in design mode)
 procedure Register;
@@ -2172,15 +2180,20 @@ begin
                     Space.Right,Space.Bottom);
 end;
 
-{------------------------------------------------------------------------------}
-{ RecreateWnd                                                                  }
-{ This function was originally member of TWincontrol. From a VCL point of view }
-{ that made perfectly sense since the VCL knows when a win32 widget has to be  }
-{ recreated when properties have changed.                                      }
-{ The LCL however doesn't know, the widgetset does. To avoid old VCL behaviour }
-{ and to provide a central function to the widgetset, it is moved here.        }
-{ MWE.                                                                         }
-{------------------------------------------------------------------------------}
+function DbgS(a: TAnchorKind): string;
+begin
+  Result:=AnchorNames[a];
+end;
+
+{------------------------------------------------------------------------------
+ RecreateWnd
+ This function was originally member of TWincontrol. From a VCL point of view
+ that made perfectly sense since the VCL knows when a win32 widget has to be
+ recreated when properties have changed.
+ The LCL however doesn't know, the widgetset does. To avoid old VCL behaviour
+ and to provide a central function to the widgetset, it is moved here.
+ MWE.
+------------------------------------------------------------------------------}
 procedure RecreateWnd(const AWinControl:TWinControl);
 var
   IsFocused: Boolean;
