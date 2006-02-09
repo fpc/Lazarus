@@ -550,35 +550,34 @@ function TCustomSplitter.FindAlignControl: TControl;
 var
   i: Integer;
   CurControl: TControl;
+  BestValue: integer;
+  
+  procedure FindNearerControl(CurValue, Limit: integer);
+  begin
+    if (CurValue<=Limit)
+    and ((Result=nil) or (BestValue>CurValue)) then begin
+      BestValue:=CurValue;
+      Result:=CurControl;
+    end;
+  end;
+  
 begin
   Result := nil;
+  BestValue:=0;
   if (Parent = nil) then Exit;
   if not (Align in [alLeft,alTop,alRight,alBottom]) then exit;
   for i := Parent.ControlCount-1 downto 0 do begin
     CurControl := Parent.Controls[i];
     if (CurControl <> Self)
        and (CurControl.Visible)
-       and (CurControl.Align = Self.Align)
+       and ((CurControl.Align = Self.Align) or (CurControl.Align=alClient))
     then begin
       case Self.Align of
-        alLeft:
-          if (CurControl.Height = Self.Height)
-             and (CurControl.Left+CurControl.Width = Self.Left)
-          then Result := CurControl;
-        alTop:
-          if (CurControl.Width = Self.Width)
-             and (CurControl.Top+CurControl.Height = Self.Top)
-          then Result := CurControl;
-        alRight:
-          if (CurControl.Height = Self.Height)
-             and (CurControl.Left-Self.Width = Self.Left)
-          then Result := CurControl;
-        alBottom:
-          if (CurControl.Width = Self.Width)
-             and (CurControl.Top-Self.Height = Self.Top)
-          then Result := CurControl;
+        alLeft:   FindNearerControl(CurControl.Left+CurControl.Width,Left);
+        alTop:    FindNearerControl(CurControl.Top+CurControl.Height,Top);
+        alRight:  FindNearerControl(-CurControl.Left,-Left-Width);
+        alBottom: FindNearerControl(-CurControl.Top,-Top-Height);
       end;
-      if Assigned(Result) then Break;
     end;
   end;
 end;
