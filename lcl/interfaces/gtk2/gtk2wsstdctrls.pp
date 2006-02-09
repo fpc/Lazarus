@@ -118,6 +118,8 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
   end;
 
   { TGtk2WSCustomMemo }
@@ -562,6 +564,26 @@ end;
 
 {$I gtk2wscustommemo.inc}
 
+{ TGtk2WSCustomEdit }
+
+function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  Entry: PGtkEntry;
+begin
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  Result :=  Min(Entry^.current_pos, Entry^.selection_bound);
+end;
+
+function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  Entry: PGtkEntry;
+begin
+  Entry := PGtkEntry(ACustomEdit.Handle);
+  Result :=  ABS(Entry^.current_pos - Entry^.selection_bound);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -577,7 +599,7 @@ initialization
 //  RegisterWSComponent(TComboBox, TGtk2WSComboBox);
   RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtk2WSListBox);
-//  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
+  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
 //  RegisterWSComponent(TEdit, TGtk2WSEdit);
 //  RegisterWSComponent(TMemo, TGtk2WSMemo);
