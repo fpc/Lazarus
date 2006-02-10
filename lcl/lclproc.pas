@@ -209,7 +209,7 @@ function DbgS(const i: int64): string; overload;
 function DbgS(const r: TRect): string; overload;
 function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
-function DbgS(const e: extended): string; overload;
+function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
 function DbgS(const b: boolean): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
@@ -1352,9 +1352,9 @@ begin
   Result:=HexStr(PtrInt(p),2*sizeof(PtrInt));
 end;
 
-function DbgS(const e: extended): string;
+function DbgS(const e: extended; MaxDecimals: integer): string;
 begin
-  Result:=FloatToStr(e);
+  Result:=copy(FloatToStr(e),1,MaxDecimals);
 end;
 
 function DbgS(const b: boolean): string;

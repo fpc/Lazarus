@@ -1514,7 +1514,7 @@ msgstr "Kopiere die Auswahl in die Zwischenablage"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr "Kopiere Wort wenn nichts ausgewe‰hlt"
+msgstr "Kopiere Wort wenn nichts ausgew√§hlt"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
