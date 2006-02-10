@@ -1185,15 +1185,17 @@ begin
 end;
 
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
-// returns 0 for lines above visible screen (<TopLine)
-// and returns LinesInWindow+1 for lines below visible screen
+// returns -1 for lines above visible screen (<TopLine)
+// 0 for the first line
+// LinesInWindow-1 for the last
+// and returns LinesInWindow for lines below visible screen
 var
   i: LongInt;
 begin
+  if PhysicalRow<TopLine then exit(-1);
   Result:=0;
-  if PhysicalRow<TopLine then exit;
   i:=TopLine;
-  while (Result<=LinesInWindow) and (i<PhysicalRow) do begin
+  while (Result<LinesInWindow) and (i<PhysicalRow) do begin
     if (i>Lines.Count)
     or (not TSynEditStringList(fLines).Folded[i-1]) then
       inc(Result);
