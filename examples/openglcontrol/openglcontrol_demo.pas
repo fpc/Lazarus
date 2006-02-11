@@ -19,7 +19,7 @@
  ***************************************************************************
 
 }
-program GTKGLArea_Demo;
+program OpenGLControl_Demo;
 
 {$MODE objfpc}{$H+}
 

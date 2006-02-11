@@ -29,8 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, NVGL, Unix,
-  GTKGLAreaControl;
+  StdCtrls, Dialogs, GL, OpenGLContext;
 
 type
   TglTexture = class
@@ -42,7 +41,7 @@ type
   
 type
   TExampleForm = class(TForm)
-    GTKGLAreaControl1: TGTKGLAreaControl;
+    OpenGLControl1: TOpenGLControl;
     ExitButton1: TButton;
     LightingButton1: TButton;
     BlendButton1: TButton;
@@ -60,8 +59,8 @@ type
     procedure MoveBackgroundButton1Click(Sender: TObject);
     procedure RotateZButton1Click(Sender: TObject);
     procedure RotateZButton2Click(Sender: TObject);
-    procedure GTKGLAreaControl1Paint(Sender: TObject);
-    procedure GTKGLAreaControl1Resize(Sender: TObject);
+    procedure OpenGLControl1Paint(Sender: TObject);
+    procedure OpenGLControl1Resize(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -251,7 +250,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-800) div 2,(Screen.Height-600) div 2,800,600);
-    Caption:='LCL Example for the gtkglarea component';
+    Caption:='LCL example for the TOpenGLControl';
     
     Application.OnIdle:=@IdleFunc;
     OnResize:=@FormResize;
@@ -266,7 +265,6 @@ begin
       SetBounds(320,10,80,25);
       Caption:='Exit';
       OnClick:=@ExitButton1Click;
-      Visible:=true;
     end;
 
     LightingButton1:=TButton.Create(Self);
@@ -276,7 +274,6 @@ begin
       SetBounds(220,0,80,25);
       Caption:='Lighting';
       OnClick:=@LightingButton1Click;
-      Visible:=true;
     end;
 
     BlendButton1:=TButton.Create(Self);
@@ -286,7 +283,6 @@ begin
       SetBounds(220,0,80,25);
       Caption:='Blending';
       OnClick:=@BlendButton1Click;
-      Visible:=true;
     end;
 
     MoveCubeButton1:=TButton.Create(Self);
@@ -297,7 +293,6 @@ begin
       Caption:='Move Cube';
       Checked:=false;
       OnClick:=@MoveCubeButton1Click;
-      Visible:=true;
     end;
 
     MoveBackgroundButton1:=TButton.Create(Self);
@@ -308,7 +303,6 @@ begin
       Caption:='Move Back';
       Checked:=false;
       OnClick:=@MoveBackgroundButton1Click;
-      Visible:=true;
     end;
     
     RotateZButton1:=TButton.Create(Self);
@@ -319,7 +313,6 @@ begin
       Caption:='P. Respawn';
       Checked:=false;
       OnClick:=@RotateZButton1Click;
-      Visible:=true;
     end;
 
     RotateZButton2:=TButton.Create(Self);
@@ -330,7 +323,6 @@ begin
       Caption:='P. Blending';
       Checked:=false;
       OnClick:=@RotateZButton2Click;
-      Visible:=true;
     end;
 
     HintLabel1:=TLabel.Create(Self);
@@ -339,20 +331,18 @@ begin
       Parent:=Self;
       SetBounds(0,0,280,50);
       Caption:='Demo';
-      Visible:=true;
     end;
     
-    // resize the components first, since the gtkglarea needs some time to setup
+    // resize the components first, because the opengl context needs some time to setup
     FormResize(Self);
 
-    GTKGLAreaControl1:=TGTKGLAreaControl.Create(Self);
-    with GTKGLAreaControl1 do begin
-      Name:='GTKGLAreaControl1';
+    OpenGLControl1:=TOpenGLControl.Create(Self);
+    with OpenGLControl1 do begin
+      Name:='OpenGLControl1';
       Parent:=Self;
       SetBounds(10,90,380,200);
-      OnPaint:=@GTKGLAreaControl1Paint;
-      OnResize:=@GTKGLAreaControl1Resize;
-      Visible:=true;
+      OnPaint:=@OpenGLControl1Paint;
+      OnResize:=@OpenGLControl1Resize;
     end;
 
   end;
@@ -450,7 +440,7 @@ end;
 
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
   Done:=false; // tell lcl to handle messages and return immediatly
 end;
 
@@ -462,25 +452,25 @@ procedure TExampleForm.LightingButton1Click(Sender: TObject);
 begin
   if lighted then glDisable(GL_LIGHTING) else glEnable(GL_LIGHTING);
   lighted:=not lighted;
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
 end;
 
 procedure TExampleForm.BlendButton1Click(Sender: TObject);
 begin
   blended:=not blended;
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
 end;
 
 procedure TExampleForm.MoveCubeButton1Click(Sender: TObject);
 begin
   MoveCube:=not MoveCube;
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
 end;
 
 procedure TExampleForm.MoveBackgroundButton1Click(Sender: TObject);
 begin
   MoveBackground:=not MoveBackground;
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
 end;
 
 procedure TExampleForm.RotateZButton1Click(Sender: TObject);
@@ -491,7 +481,7 @@ end;
 procedure TExampleForm.RotateZButton2Click(Sender: TObject);
 begin
   ParticleBlended:=not ParticleBlended;
-  GTKGLAreaControl1Paint(Self);
+  OpenGLControl1Paint(Self);
 end;
 
 // ---------------------------------------------------------------------------
@@ -500,8 +490,8 @@ end;
 
 procedure TExampleForm.FormResize(Sender: TObject);
 begin
-  if GTKGLAreaControl1<>nil then
-    GTKGLAreaControl1.SetBounds(10, 30, Width-120, Height-40);
+  if OpenGLControl1<>nil then
+    OpenGLControl1.SetBounds(10, 30, Width-120, Height-40);
   ExitButton1.SetBounds(Width-90, 5, 80, 25);
   LightingButton1.SetBounds(Width-90, 180, 80, 25);
   BlendButton1.SetBounds(Width-90, 210, 80, 25);
@@ -517,7 +507,7 @@ begin
   Close;
 end;
 
-procedure TExampleForm.GTKGLAreaControl1Paint(Sender: TObject);
+procedure TExampleForm.OpenGLControl1Paint(Sender: TObject);
 
   procedure myInit;
   begin
@@ -749,7 +739,7 @@ var
   CurTime: TDateTime;
   MSecs: integer;
 begin
-  if GTKGLAreaControl1.MakeCurrent then
+  if OpenGLControl1.MakeCurrent then
   begin
     if not AreaInitialized then begin
       myInit;
@@ -758,7 +748,7 @@ begin
       glLoadIdentity ();               { define the projection }
       glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
       glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
-      glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);
+      glViewport (0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
                                     { define the viewport }
       AreaInitialized:=true;
     end;
@@ -825,15 +815,15 @@ begin
     //glFlush;
     //glFinish;
     // Swap backbuffer to front
-    GTKGLAreaControl1.SwapBuffers;
+    OpenGLControl1.SwapBuffers;
   end;
 end;
 
-procedure TExampleForm.GTKGLAreaControl1Resize(Sender: TObject);
+procedure TExampleForm.OpenGLControl1Resize(Sender: TObject);
 begin
   if (AreaInitialized)
-  and GTKGLAreaControl1.MakeCurrent then
-    glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);
+  and OpenGLControl1.MakeCurrent then
+    glViewport (0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
 end;
 
 
