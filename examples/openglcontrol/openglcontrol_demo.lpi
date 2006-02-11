@@ -48,10 +48,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/gtk/"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
