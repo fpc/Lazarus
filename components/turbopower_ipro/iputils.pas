@@ -2653,7 +2653,7 @@ var
   s: String;
 begin
   DecodeDate(DateTime, Yr, Mo, Dy);
-  s := Format('%g', [Abs(Extended(TimeZoneBias)/60)]);
+  s := Format('%g', [Abs(TimeZoneBias/60)]);
   if Length(s) = 1 then
     s := '0' + s;
   if TimeZoneBias < 0 then s := '-' + s;
