@@ -416,6 +416,7 @@ begin
     s:=Value
   else
     s:=#0;
+  Clear;
   SetBuffer(PredefinedClipboardFormat(pcfText),s[1],length(Value)+1);
   //DebugLn('[TClipboard.SetAsText] END ',ClipboardTypeName[ClipboardType],' "',Value,'"');
 end;
