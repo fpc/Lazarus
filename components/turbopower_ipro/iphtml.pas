@@ -3076,8 +3076,8 @@ var
 begin
   ScreenDC := GetDC(0);
   try
-    Aspect := Double(GetDeviceCaps(PrinterDC, LOGPIXELSX))
-                    / GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    Aspect := GetDeviceCaps(PrinterDC, LOGPIXELSX)
+                / GetDeviceCaps(ScreenDC, LOGPIXELSX);
   finally
     ReleaseDC(0, ScreenDC);
   end;

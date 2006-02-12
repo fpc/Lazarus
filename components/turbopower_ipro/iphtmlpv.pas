@@ -267,17 +267,20 @@ end;
 procedure TIpHTMLPreview.SetZoom(const Value: Integer);
 var
   Scale1, Scale2, Scale0: double;
+  ClientHeightDbl, ClientWidthDbl: double;
 begin
   FZoom := Value;
   {$IFDEF IP_LAZARUS}
+  ClientHeightDbl := ClientHeight;
+  ClientWidthDbl := ClientWidth;
   if Printer.PageHeight>0 then
-    Scale1 := Double(ClientHeight)/Printer.PageHeight
+    Scale1 := ClientHeightDbl/Printer.PageHeight
   else
-    Scale1 := Double(ClientHeight)/500;
+    Scale1 := ClientHeightDbl/500;
   if Printer.PageWidth>0 then
-    Scale2 := Double(ClientWidth)/ Printer.PageWidth
+    Scale2 := ClientWidthDbl/ Printer.PageWidth
   else
-    Scale2 := Double(ClientWidth)/ 500;
+    Scale2 := ClientWidthDbl/ 500;
   {$ELSE}
   Scale1 := Double(ClientHeight)
               / Printer.PageHeight;
