@@ -1304,6 +1304,9 @@ begin
   if (TargetFilename<>'') and FilenameIsAbsolute(TargetFilename) then begin
     // fully specified target filename
     Result:=TargetFilename;
+  end else if ExtractFilePath(TargetFilename)<>'' then begin
+    // TargetFilename is relative to project directory
+    Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+TargetFilename;
   end else begin
     // calculate output directory
     UnitOutDir:=GetUnitOutPath(false);
@@ -1314,7 +1317,7 @@ begin
       OutFilename:=TargetFilename
     else
       OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
-    debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
+    //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
 
     Result:=AppendPathDelim(UnitOutDir)+OutFilename;
   end;
