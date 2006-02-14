@@ -28,6 +28,10 @@ const
     'c:\pp\source'
     );
 
+  DefaultLazarusSrcDirs: array[1..1] of string = (
+    'c:\pp\source'
+    );
+
 var
   PrimaryConfigPath,
   SecondaryConfigPath: string;

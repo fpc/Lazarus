@@ -90,6 +90,7 @@ const
   function FindDefaultCompilerPath: string;
   function FindDefaultMakePath: string;
   function FindDefaultFPCSrcDirectory: string;
+  function FindDefaultLazarusSrcDirectory: string;
   function CheckFPCSourceDir(const ADirectory: string): boolean;
   function CheckLazarusDirectory(const ADirectory: string): boolean;
 
@@ -241,6 +242,17 @@ begin
   Result:='';
 end;
 
+function FindDefaultLazarusSrcDirectory: string;
+var
+  i: integer;
+begin
+  for i:=Low(DefaultLazarusSrcDirs) to High(DefaultLazarusSrcDirs) do begin
+    Result:=DefaultLazarusSrcDirs[i];
+    if CheckLazarusDirectory(Result) then exit;
+  end;
+  Result:='';
+end;
+
 function CheckLazarusDirectory(const ADirectory: string): boolean;
 var
   Dir: String;
@@ -251,6 +263,7 @@ begin
     Result:=DirPathExists(Dir+'lcl')
         and DirPathExists(Dir+'lcl'+PathDelim+'units')
         and DirPathExists(Dir+'components')
+        and DirPathExists(Dir+'ideintf')
         and DirPathExists(Dir+'designer')
         and DirPathExists(Dir+'debugger');
   end;

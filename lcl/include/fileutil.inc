@@ -786,12 +786,18 @@ end;
   function ProgramDirectory: string;
  ------------------------------------------------------------------------------}
 function ProgramDirectory: string;
+var
+  Flags: TSearchFileInPathFlags;
 begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',GetEnvironmentVariable('PATH'),':',
-                             [sffDontSearchInBasePath]);
+    {$IFDEF windows}
+    Flags:=[];
+    {$ELSE}
+    Flags:=[sffDontSearchInBasePath];
+    {$ENDIF}
+    Result:=SearchFileInPath(Result,'',GetEnvironmentVariable('PATH'),':',Flags);
   end;
   // resolve links
   Result:=ReadAllLinks(Result,false);

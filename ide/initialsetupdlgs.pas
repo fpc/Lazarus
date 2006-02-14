@@ -133,8 +133,11 @@ var
   r: integer;
 begin
   CurLazDir:=EnvironmentOptions.LazarusDirectory;
-  if CurLazDir='' then
+  if CurLazDir='' then begin
     CurLazDir:=ProgramDirectory;
+    if not CheckLazarusDirectory(CurLazDir) then
+      CurLazDir:=FindDefaultLazarusSrcDirectory;
+  end;
   if not CheckLazarusDirectory(CurLazDir) then begin
     if not InteractiveSetup then exit;
     if CurLazDir='' then begin

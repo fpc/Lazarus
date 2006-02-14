@@ -71,6 +71,7 @@ type
   TPropertyLinkOption = (
     ploReadOnIdle,
     ploAutoSave
+    //ploDisableOnNil // disable control, if link not connected
     //ToDo: ploReadOnly
     );
   TPropertyLinkOptions = set of TPropertyLinkOption;

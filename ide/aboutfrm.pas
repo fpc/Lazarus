@@ -49,7 +49,7 @@ type
     procedure LoadContributors;
   public
     procedure Paint; override;
-    constructor Create(THeOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -159,8 +159,6 @@ begin
   then Canvas.Copyrect(Bounds(12, 70, Width, Height)
     ,FPixmap.Canvas, Rect(0,0, Width, Height));
 end;
-
-
 
 initialization
   {$I aboutfrm.lrs}

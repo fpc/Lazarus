@@ -42,6 +42,16 @@ const
     '/usr/src/fpc',
     '/vol/src/fpc'
     );
+    
+  DefaultLazarusSrcDirs: array[1..7] of string = (
+    '/usr/share/lazarus',
+    '/usr/local/share/lazarus',
+    '/usr/local/lib/lazarus',
+    '/usr/local/lazarus',
+    '/usr/lib/lazarus',
+    '~/pascal/lazarus',
+    '~/lazarus'
+    );
 
 var
   PrimaryConfigPath,
