@@ -29,7 +29,7 @@ const
     );
 
   DefaultLazarusSrcDirs: array[1..1] of string = (
-    'c:\pp\source'
+    'c:\lazarus'
     );
 
 var
