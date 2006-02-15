@@ -42,7 +42,7 @@ unit LCLIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
+  Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
   LResources;
 
 {$ifdef Trace}

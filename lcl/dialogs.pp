@@ -27,9 +27,9 @@ unit Dialogs;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, InterfaceBase, FileUtil, LCLStrConsts, LCLType,
-  LMessages, LCLProc, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls,
-  LCLClasses;
+  Types, Classes, SysUtils, LCLIntf, InterfaceBase, FileUtil, LCLStrConsts,
+  LCLType, LMessages, LCLProc, Forms, Controls, GraphType, Graphics, Buttons,
+  StdCtrls, LCLClasses;
 
 
 type

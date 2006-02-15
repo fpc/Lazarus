@@ -38,7 +38,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts,
+  Types, Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
   Menus {for ShortCut procedures};
 

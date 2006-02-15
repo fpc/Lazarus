@@ -424,20 +424,20 @@ begin
 end;
 
 function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer;
-  MaxCount, PartialWidths: PInteger; var Size: LCLType.TSize): Boolean;
+  MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
 begin
   Result := WidgetSet.GetTextExtentExPoint(DC,Str,Count,MaxWidth,MaxCount,
                                                  PartialWidths,Size);
 end;
 
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
-  var Size: LCLType.TSize): Boolean;
+  var Size: TSize): Boolean;
 begin
   Result := WidgetSet.GetTextExtentPoint(DC, Str, Count, Size);
 end;
 
 function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer;
-  var Size: LCLType.TSize): Boolean;
+  var Size: TSize): Boolean;
 begin
   Result := WidgetSet.GetTextExtentPoint32(DC, Str, Count, Size);
 end;

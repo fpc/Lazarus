@@ -66,7 +66,7 @@ uses
   LineInfo,
   {$ENDIF}
   // rtl+fcl
-  Classes, SysUtils, FPCAdds,
+  Types, Classes, SysUtils, FPCAdds,
   // interfacebase
   InterfaceBase,
   // gtk

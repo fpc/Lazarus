@@ -41,7 +41,7 @@ unit PostscriptCanvas;
 interface
 
 uses
-  Classes, SysUtils, Math, Graphics, Forms, GraphMath, GraphType,
+  Classes, SysUtils, Math, Types, Graphics, Forms, GraphMath, GraphType,
   FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
   
 Type

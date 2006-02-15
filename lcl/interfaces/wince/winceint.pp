@@ -41,8 +41,8 @@ Interface
   successful compilation.
 }
 Uses
-  Classes, ComCtrls, Controls, Buttons, Dialogs, ExtCtrls, Forms, GraphMath,
-  GraphType, InterfaceBase, LCLIntf, LCLType,
+  Types, Classes, ComCtrls, Controls, Buttons, Dialogs, ExtCtrls, Forms,
+  GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Graphics, Menus;
 
 Type

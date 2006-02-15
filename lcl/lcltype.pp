@@ -944,14 +944,6 @@ type
   PScrollInfo = ^TScrollInfo;
   TScrollInfo = tagScrollinfo;
 
-  PSize = ^TSize;
-  tagSIZE = record
-    cx: Longint;
-    cy: Longint;
-  end;
-  TSize = tagSIZE;
-  SIZE = tagSIZE;
-
 { Palette Structures }
   PPaletteEntry = ^tagPaletteEntry;
   tagPALETTEENTRY = packed record
