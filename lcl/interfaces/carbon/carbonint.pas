@@ -36,7 +36,7 @@ interface
 
 uses
   // rtl+ftl
-  Classes, SysUtils, FPCAdds,
+  Types, Classes, SysUtils, FPCAdds,
   // interfacebase
   InterfaceBase,
   // carbon bindings
