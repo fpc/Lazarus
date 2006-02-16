@@ -585,7 +585,6 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
-    procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
@@ -2099,11 +2098,6 @@ procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
   );
 begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
-end;
-
-procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
-begin
-
 end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
