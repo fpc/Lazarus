@@ -71,7 +71,7 @@ uses
   LineInfo,
   {$ENDIF}
   // rtl+fcl
-  Types, Classes, SysUtils, FPCAdds,
+  Types, Classes, SysUtils, Math, FPCAdds,
   // interfacebase
   InterfaceBase,
   // gtk
@@ -365,7 +365,7 @@ uses
  GtkWSStdCtrls,
 // GtkWSToolwin,
 ////////////////////////////////////////////////////
-  Buttons, StdCtrls, PairSplitter, Math,
+  Buttons, StdCtrls, PairSplitter,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals;
 
