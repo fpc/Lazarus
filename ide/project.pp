@@ -4072,6 +4072,9 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
+    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
+    +'  cthreads,'+le
+    +'  {$ENDIF}{$ENDIF}'+le
     +'  Classes'+le
     +'  { add your units here };'+le
     +le
@@ -4127,6 +4130,9 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
+    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
+    +'  cthreads,'+le
+    +'  {$ENDIF}{$ENDIF}'+le
     +'  Interfaces, // this includes the LCL widgetset'+le
     +'  Forms'+le
     +'  { add your units here };'+le
