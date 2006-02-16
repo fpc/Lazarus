@@ -41,6 +41,7 @@ interface
 uses
   {$IFDEF IP_LAZARUS}
   //MemCheck,
+  Types,
   LCLType,
   LCLPRoc,
   GraphType,
