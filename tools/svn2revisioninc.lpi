@@ -4,95 +4,12 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <LazDoc Paths=""/>
-    <Units Count="11">
-      <Unit0>
-        <CursorPos X="17" Y="32"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="svn2revisioninc.pas"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="24"/>
-        <UnitName Value="Svn2RevisionInc"/>
-        <UsageCount Value="25"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="13" Y="8"/>
-        <Filename Value="C:\lazarus\source\fpc\2.1\fcl\inc\process.pp"/>
-        <TopLine Value="1"/>
-        <UnitName Value="process"/>
-        <UsageCount Value="10"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="1" Y="426"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="updatepofiles.pas"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="UpdatePoFiles"/>
-        <UsageCount Value="13"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="22" Y="41"/>
-        <Filename Value="C:\lazarus\source\lazarus\lcl\fileutil.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FileUtil"/>
-        <UsageCount Value="13"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="3" Y="5335"/>
-        <Filename Value="C:\lazarus\source\lazarus\lcl\grids.pas"/>
-        <TopLine Value="5330"/>
-        <UnitName Value="Grids"/>
-        <UsageCount Value="9"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="33" Y="63"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\rtl\objpas\objpas.pp"/>
-        <TopLine Value="46"/>
-        <UnitName Value="objpas"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="15" Y="95"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\inc\process.pp"/>
-        <TopLine Value="78"/>
-        <UnitName Value="process"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="3" Y="31"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\inc\pipes.pp"/>
-        <TopLine Value="14"/>
-        <UnitName Value="Pipes"/>
-        <UsageCount Value="12"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="3" Y="180"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\win32\process.inc"/>
-        <TopLine Value="166"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="1" Y="1"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\xmlread.pp"/>
-        <TopLine Value="1"/>
-        <UnitName Value="XMLRead"/>
-        <UsageCount Value="10"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="15" Y="204"/>
-        <Filename Value="C:\lazarus\source\fpc\2.0\fcl\xml\dom.pp"/>
-        <TopLine Value="200"/>
-        <UnitName Value="DOM"/>
-        <UsageCount Value="11"/>
-      </Unit10>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -113,7 +30,13 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="svn2revisioninc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Svn2RevisionInc"/>
+      </Unit0>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -132,84 +55,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <BreakPoints Count="15">
-      <Item1>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="151"/>
-      </Item1>
-      <Item2>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="112"/>
-      </Item2>
-      <Item3>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="34"/>
-      </Item3>
-      <Item4>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="162"/>
-      </Item4>
-      <Item5>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="128"/>
-      </Item5>
-      <Item6>
-        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32wsstdctrls.pp"/>
-        <Line Value="881"/>
-      </Item6>
-      <Item7>
-        <Source Value="C:\lazarus\source\fpc\2.1\rtl\objpas\classes\stringl.inc"/>
-        <Line Value="188"/>
-      </Item7>
-      <Item8>
-        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32wsstdctrls.pp"/>
-        <Line Value="914"/>
-      </Item8>
-      <Item9>
-        <Source Value="C:\lazarus\source\fpc\2.1\rtl\objpas\classes\reader.inc"/>
-        <Line Value="770"/>
-      </Item9>
-      <Item10>
-        <Source Value="c:\lazarus\source\lazarus\lcl\interfaces\win32\win32memostrings.inc"/>
-        <Line Value="74"/>
-      </Item10>
-      <Item11>
-        <Source Value="C:\lazarus\source\lazarus\lcl\include\custommemo.inc"/>
-        <Line Value="146"/>
-      </Item11>
-      <Item12>
-        <Source Value="C:\lazarus\source\lazarus\ide\uniteditor.pp"/>
-        <Line Value="1996"/>
-      </Item12>
-      <Item13>
-        <Source Value="C:\lazarus\source\lazarus\lcl\FPCAdds.pas"/>
-        <Line Value="83"/>
-      </Item13>
-      <Item14>
-        <Source Value="C:\lazarus\source\lazarus\lcl\calendar.pp"/>
-        <Line Value="163"/>
-      </Item14>
-      <Item15>
-        <Source Value="C:\lazarus\source\lazarus\lcl\calendar.pp"/>
-        <Line Value="266"/>
-      </Item15>
-    </BreakPoints>
-    <Watches Count="2">
-      <Item1>
-        <Expression Value="FWidgetSetClass"/>
-      </Item1>
-      <Item2>
-        <Expression Value="FWidgetSetClass^"/>
-      </Item2>
-    </Watches>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

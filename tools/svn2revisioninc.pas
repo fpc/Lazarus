@@ -70,7 +70,7 @@ var
     SvnVersionProcess := TProcess.Create(nil);
     try
       with SvnVersionProcess do begin
-        CommandLine := 'svnversion -n '+SourceDirectory;
+        CommandLine := 'svnversion -n "'+SourceDirectory+'"';
         Options := [poUsePipes, poWaitOnExit];
         try
           Execute;
