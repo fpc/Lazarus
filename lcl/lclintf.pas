@@ -81,11 +81,6 @@ function GetTickStep: DWord;
 
 implementation
 
-{$IFNDEF Win32}
-uses
-  Unix;
-{$ENDIF}
-
 var
   FPredefinedClipboardFormats:
     array[TPredefinedClipboardFormat] of TClipboardFormat;

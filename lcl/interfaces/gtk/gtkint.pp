@@ -62,6 +62,11 @@ uses
   // if not, Rect and Point are taken from the windows unit instead of classes.
   Windows,
   {$ENDIF}
+  {$IFDEF UNIX}
+  // use unix units first,
+  // if not, TSize is taken from the unix unit instead of types.
+  ctypes, baseunix, unix,
+  {$ENDIF}
   {$IFDEF TraceGdiCalls}
   LineInfo,
   {$ENDIF}
@@ -77,7 +82,7 @@ uses
   {$ENDIF}
   // Target OS specific
   {$IFDEF UNIX}
-  x, xlib, ctypes, baseunix, unix,
+  x, xlib,
   {$ENDIF}
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
