@@ -71,7 +71,7 @@ uses
   LineInfo,
   {$ENDIF}
   // rtl+fcl
-  Types, Classes, SysUtils, Math, FPCAdds,
+  Types, Classes, SysUtils, FPCAdds,
   // interfacebase
   InterfaceBase,
   // gtk
@@ -84,6 +84,7 @@ uses
   {$IFDEF UNIX}
   x, xlib,
   {$ENDIF}
+  Math, // after gtk to get the correct Float type
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   LCLProc, LCLIntf, LCLType, gtkDef, GtkProc, DynHashArray, 
