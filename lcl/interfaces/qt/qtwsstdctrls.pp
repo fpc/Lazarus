@@ -33,9 +33,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  StdCtrls,
+  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
+  InterfaceBase, qt4,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses;
+  WSStdCtrls, WSLCLClasses, LCLType;
 
 type
 
@@ -101,6 +102,22 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+{    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;}
   end;
 
   { TQtWSCustomMemo }
@@ -109,6 +126,9 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSEdit }
@@ -127,22 +147,6 @@ type
   public
   end;
 
-  { TQtWSCustomLabel }
-
-  TQtWSCustomLabel = class(TWSCustomLabel)
-  private
-  protected
-  public
-  end;
-
-  { TQtWSLabel }
-
-  TQtWSLabel = class(TWSLabel)
-  private
-  protected
-  public
-  end;
-
   { TQtWSButtonControl }
 
   TQtWSButtonControl = class(TWSButtonControl)
@@ -154,14 +158,6 @@ type
   { TQtWSCustomCheckBox }
 
   TQtWSCustomCheckBox = class(TWSCustomCheckBox)
-  private
-  protected
-  public
-  end;
-
-  { TQtWSCheckBox }
-
-  TQtWSCheckBox = class(TWSCheckBox)
   private
   protected
   public
@@ -197,6 +193,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
   { TQtWSStaticText }
@@ -209,6 +208,127 @@ type
 
 
 implementation
+
+{ TQtWSCustomMemo }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: QWidgetH;
+  Str: WideString;
+begin
+  // Creates the widget
+  WriteLn('Calling QTextDocument_create');
+  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
+  Widget := QTextEdit_create(@Str, QWidgetH(AWinControl.Parent.Handle));
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  QWidget_show(Widget);
+
+  Result := THandle(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.DestroyHandle(const AWinControl: TWinControl);
+begin
+  QTextEdit_destroy(QTextEditH(AWinControl.Handle));
+end;
+
+{ TQtWSCustomEdit }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: QWidgetH;
+  Str: WideString;
+begin
+  // Creates the widget
+  WriteLn('Calling QTextDocument_create');
+  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
+  Widget := QTextEdit_create(@Str, QWidgetH(AWinControl.Parent.Handle));
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  QWidget_show(Widget);
+
+  Result := THandle(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
+begin
+  QTextEdit_destroy(QTextEditH(AWinControl.Handle));
+end;
+
+{ TQtWSStaticText }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomStaticText.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+{var
+  Widget: QWidgetH;
+  Str: WideString;}
+begin
+{  // Creates the widget
+  WriteLn('Calling QTextDocument_create');
+  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
+  Widget := QTextEdit_create(@Str, QWidgetH(AWinControl.Parent.Handle));
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  QWidget_show(Widget);
+
+  Result := THandle(Widget);}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomStaticText.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWSCustomStaticText.DestroyHandle(const AWinControl: TWinControl);
+begin
+//  QTextEdit_destroy(QTextEditH(AWinControl.Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomStaticText.SetAlignment
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWSCustomStaticText.SetAlignment(
+  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+end;
 
 initialization
 
@@ -225,8 +345,8 @@ initialization
 //  RegisterWSComponent(TComboBox, TQtWSComboBox);
 //  RegisterWSComponent(TCustomListBox, TQtWSCustomListBox);
 //  RegisterWSComponent(TListBox, TQtWSListBox);
-//  RegisterWSComponent(TCustomEdit, TQtWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TQtWSCustomMemo);
+  RegisterWSComponent(TCustomEdit, TQtWSCustomEdit);
+  RegisterWSComponent(TCustomMemo, TQtWSCustomMemo);
 //  RegisterWSComponent(TEdit, TQtWSEdit);
 //  RegisterWSComponent(TMemo, TQtWSMemo);
 //  RegisterWSComponent(TCustomLabel, TQtWSCustomLabel);

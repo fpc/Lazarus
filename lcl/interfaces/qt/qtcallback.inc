@@ -23,7 +23,7 @@
  ------------------------------------------------------------------------------}
 function DeliverMessage(const Target: Pointer; var Message): Boolean;
 begin
-
+{
   if TObject(Target) is TControl then
   begin
     TControl(Target).WindowProc(TLMessage(Message));
@@ -32,7 +32,7 @@ begin
   begin
     TObject(Target).Dispatch(TLMessage(Message));
   end;
-  Result := TLMessage(Message).Result = 0;
+  Result := TLMessage(Message).Result = 0;}
 end;
 
 
@@ -42,12 +42,12 @@ end;
 {*************************************************************}
 
 procedure QTMousePressedEvent(qwid,button,x,y,state: integer);cdecl;
-var
+{var
   MessE : TLMMouseEvent;
   Data: pointer;
-
+}
 begin
-  Data := GetData(qwid);
+{  Data := GetData(qwid);
 
   EventTrace('Mouse button Press', data);
      MessE.Button := button;
@@ -65,7 +65,7 @@ begin
 
     if MessE.Msg <> LM_NULL then
       DeliverMessage(Data, MessE);
-
+}
 end;
 
 {*

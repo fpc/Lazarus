@@ -35,7 +35,7 @@ uses
 implementation
 
 uses 
-  QTInt, Forms;
+  qtint, Forms;
 
 initialization
 

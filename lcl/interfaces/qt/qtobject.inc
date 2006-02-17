@@ -14,6 +14,34 @@
 }
 //---------------------------------------------------------------
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.Create
+  Params:  None
+  Returns: Nothing
+
+  Contructor for the class.
+ ------------------------------------------------------------------------------}
+constructor TQtWidgetSet.Create;
+begin
+  inherited Create;
+
+  QtWidgetSet := Self;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
+destructor TQtWidgetSet.Destroy;
+begin
+  QtWidgetSet := nil;
+
+  inherited Destroy;
+end;
+
 function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
   ): integer;
 begin
@@ -27,12 +55,13 @@ end;
 
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-  InitializeEngine;
+  App := QApplication_Create(@argc, argv);
+//  InitializeEngine;  ??
 end;
 
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
-
+  QApplication_Exec;
 end;
 
 procedure TQtWidgetSet.AppWaitMessage;
@@ -42,13 +71,13 @@ end;
 
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  MainLoop;
+//  MainLoop;
 end;
 
 procedure TQtWidgetSet.AppTerminate;
 begin
   Assert(False, 'Trace:*******APP TERMINATE CALLED*****');
-  Shutdown;
+//  Shutdown;
 end;
 
 procedure TQtWidgetSet.AppMinimize;
@@ -88,8 +117,16 @@ begin
   Result:=false;
 end;
 
-function TQtWidgetSet.CreateComponent(Sender: TObject): THandle;
+{------------------------------------------------------------------------------
+  Function: TQtWidgetSet.CreateComponent
+  Params:   sender - object for which to create visual representation
+  Returns:  nothing
+
+  Deprecated
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateComponent(Sender : TObject): THandle;
 begin
-  Result:=0;
+  Result := 0;
 end;
+
 //------------------------------------------------------------------------

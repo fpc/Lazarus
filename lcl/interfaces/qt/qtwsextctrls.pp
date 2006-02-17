@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  ExtCtrls,
+  ExtCtrls, qt4, LCLType, Controls,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses;
 
@@ -101,6 +101,8 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TQtWSCustomImage }
@@ -201,6 +203,27 @@ type
 
 
 implementation
+
+{ TQtWSPaintBox }
+
+function TQtWSPaintBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: QWidgetH;
+begin
+  // Creates the widget
+  WriteLn('Calling QWidget_create');
+  Widget := QWidget_create;
+  QWidget_setParent(Widget, QWidgetH(AWinControl.Parent.Handle));
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  QWidget_show(Widget);
+
+  Result := THandle(Widget);
+end;
 
 initialization
 

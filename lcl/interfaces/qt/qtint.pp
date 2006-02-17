@@ -36,7 +36,7 @@ interface
 uses 
   InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes, Controls,
   ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType,
-  qt;
+  qt4, qtprivate;
 
 type
 
@@ -44,10 +44,12 @@ type
 
   TQtWidgetSet = Class(TWidgetSet)
   private
+    App: QApplicationH;
   public
     {$I qtwinapih.inc}
-    {$I qtlclintfh.inc}
+    {.$I qtlclintfh.inc}
   public
+    // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppWaitMessage; override;
@@ -55,7 +57,9 @@ type
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
-
+  public
+    constructor Create;
+    destructor Destroy; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
@@ -64,7 +68,7 @@ type
     function  InitHintFont(HintFont: TObject): Boolean; override;
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override;
+    function CreateComponent(Sender : TObject): THandle; override; // deprecated
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; override;
     function DestroyTimer(TimerHandle: integer): boolean; override;
   end;
@@ -87,6 +91,9 @@ type
 const
    TargetEntrys = 3;
 
+var
+  QtWidgetSet: TQtWidgetSet;
+
 implementation
 
 uses 
@@ -98,12 +105,12 @@ uses
 ////////////////////////////////////////////////////
 // QtWSActnList,
 // QtWSArrow,
-// QtWSButtons,
+ QtWSButtons,
 // QtWSCalendar,
 // QtWSCheckLst,
 // QtWSCListBox,
 // QtWSComCtrls,
-// QtWSControls,
+ QtWSControls,
 // QtWSDbCtrls,
 // QtWSDBGrids,
 // QtWSDialogs,
@@ -112,17 +119,17 @@ uses
 // QtWSExtCtrls,
 // QtWSExtDlgs,
 // QtWSFileCtrl,
-// QtWSForms,
+ QtWSForms,
 // QtWSGrids,
 // QtWSImgList,
 // QtWSMaskEdit,
 // QtWSMenus,
 // QtWSPairSplitter,
 // QtWSSpin,
-// QtWSStdCtrls,
+ QtWSStdCtrls,
 // QtWSToolwin,
 ////////////////////////////////////////////////////
-  Graphics, buttons, Menus, CListBox;
+  Graphics, buttons, Menus;
 
 
 const
@@ -138,7 +145,7 @@ end;
 
 {$I qtobject.inc}
 {$I qtwinapi.inc}
-{$I qtcallback.inc}
+{.$I qtcallback.inc}
 
 
 initialization
