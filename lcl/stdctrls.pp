@@ -359,6 +359,7 @@ type
     property Align;
     property Anchors;
     property ArrowKeysTraverseList;
+    property AutoComplete;
     property AutoCompleteText;
     property AutoDropDown;
     property BorderSpacing;
