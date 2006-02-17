@@ -2148,10 +2148,10 @@ resourcestring
   // external tools
   lisExtToolFailedToRunTool = 'Failed to run tool';
   lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
-  lisExtToolExternalTools = 'External Tools';
+  lisExtToolExternalTools = 'External tools';
   lisExtToolRemove = 'Remove';
-  lisExtToolMoveUp = 'Move Up';
-  lisExtToolMoveDown = 'Move Down';
+  lisExtToolMoveUp = 'Up';
+  lisExtToolMoveDown = 'Down';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
   
@@ -2853,6 +2853,7 @@ resourcestring
   lisA2PAddToPackage = 'Add to package';
   lisA2PFilename2 = 'Filename';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
+  lisHelpSelectorDialog = 'Help selector';
   lisSelectAHelpItem = 'Select a help item:';
   lisErrorMovingComponent = 'Error moving component';
   lisErrorMovingComponent2 = 'Error moving component %s:%s';

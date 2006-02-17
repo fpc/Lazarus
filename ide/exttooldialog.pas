@@ -96,18 +96,21 @@ type
   {
     the dialog to edit all external tools
   }
+
+  { TExternalToolDialog }
+
   TExternalToolDialog = class(TForm)
-    Listbox: TListbox;
-    AddButton: TButton;
-    RemoveButton: TButton;
-    EditButton: TButton;
-    MoveUpButton: TButton;
-    MoveDownButton: TButton;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure ExternalToolDialogResize(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
+    EnabledImageList: TImageList;
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
+    ListBox: TListBox;
+    ToolBar: TToolBar;
+    AddButton: TToolButton;
+    RemoveButton: TToolButton;
+    EditButton: TToolButton;
+    tbSeparator: TToolButton;
+    MoveUpButton: TToolButton;
+    MoveDownButton: TToolButton;
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
@@ -131,13 +134,10 @@ type
            read fTransferMacros write SetTransferMacros;
   end;
   
-
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
 
-
 implementation
-
 
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
@@ -156,9 +156,7 @@ begin
   end;
 end;
 
-
 { TExternalToolList }
-
 function TExternalToolList.GetToolOpts(Index: integer): TExternalToolOptions;
 begin
   Result:=TExternalToolOptions(inherited Items[Index]);
@@ -463,159 +461,28 @@ begin
   end;
 end;
 
-
 { TExternalToolDialog }
-
 constructor TExternalToolDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=400;
-    Height:=400;
-    Position:=poScreenCenter;
-    Caption:=lisExtToolExternalTools;
-    OnResize:=@ExternalToolDialogResize;
 
-    Listbox:=TListbox.Create(Self);
-    with Listbox do begin
-      Name:='Listbox';
-      Parent:=Self;
-      SetBounds(5,5,Self.ClientWidth-120,Self.Clientheight-60);
-      OnClick:=@ListboxClick;
-      Visible:=true; 
-    end;
-    
-    AddButton:=TButton.Create(Self);
-    with AddButton do begin
-      Name:='AddButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100,5,80,25);
-      Caption:=lisCodeTemplAdd;
-      OnClick:=@AddButtonClick;
-      Visible:=true; 
-    end;
-    
-    RemoveButton:=TButton.Create(Self);
-    with RemoveButton do begin
-      Name:='RemoveButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100,AddButton.Top+AddButton.Height+10,80,25);
-      Caption:=lisExtToolRemove;
-      OnClick:=@RemoveButtonClick;
-      Visible:=true; 
-    end;
-    
-    EditButton:=TButton.Create(Self);
-    with EditButton do begin
-      Name:='EditButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100,RemoveButton.Top+RemoveButton.Height+10,
-                   80,25);
-      Caption:=lisCodeToolsDefsEdit;
-      OnClick:=@EditButtonClick;
-      Visible:=true; 
-    end;
-    
-    MoveUpButton:=TButton.Create(Self);
-    with MoveUpButton do begin
-      Name:='MoveUpButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100,EditButton.Top+EditButton.Height+50,
-                   80,25);
-      Caption:=lisExtToolMoveUp;
-      OnClick:=@MoveUpButtonClick;
-      Visible:=true; 
-    end;
-    
-    MoveDownButton:=TButton.Create(Self);
-    with MoveDownButton do begin
-      Name:='MoveDownButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100,MoveUpButton.Top+MoveUpButton.Height+10,
-                   80,25);
-      Caption:=lisExtToolMoveDown;
-      OnClick:=@MoveDownButtonClick;
-      Visible:=true; 
-    end;
-    
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-200, Self.ClientHeight-40,80,25);
-      Caption:=lisLazBuildOk;
-      OnClick:=@OkButtonClick;
-      Default:=true;
-      Visible:=true; 
-    end;
-    
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      SetBounds(Self.ClientWidth-100, Self.ClientHeight-40,80,25);
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Cancel:=true;
-      Visible:=true; 
-    end;
-  end;    
+  Caption:=lisExtToolExternalTools;
+
+  AddButton.Caption:=lisCodeTemplAdd;
+  RemoveButton.Caption:=lisExtToolRemove;
+  EditButton.Caption:=lisCodeToolsDefsEdit;
+  MoveUpButton.Caption:=lisExtToolMoveUp;
+  MoveDownButton.Caption:=lisExtToolMoveDown;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
+
   fExtToolList:=TExternalToolList.Create;
-  ExternalToolDialogResize(nil);
 end;
 
 destructor TExternalToolDialog.Destroy;
 begin
   fExtToolList.Free;
   inherited Destroy;
-end;
-
-procedure TExternalToolDialog.ExternalToolDialogResize(Sender: TObject);
-begin
-  with Listbox do begin
-    SetBounds(5,5,Self.ClientWidth-120,Self.Clientheight-60);
-  end;
-
-  with AddButton do begin
-    SetBounds(Self.ClientWidth-100,5,80,25);
-  end;
-
-  with RemoveButton do begin
-    SetBounds(Self.ClientWidth-100,AddButton.Top+AddButton.Height+10,80,25);
-  end;
-
-  with EditButton do begin
-    SetBounds(Self.ClientWidth-100,RemoveButton.Top+RemoveButton.Height+10,
-                 80,25);
-  end;
-
-  with MoveUpButton do begin
-    SetBounds(Self.ClientWidth-100,EditButton.Top+EditButton.Height+50,
-                 80,25);
-  end;
-
-  with MoveDownButton do begin
-    SetBounds(Self.ClientWidth-100,MoveUpButton.Top+MoveUpButton.Height+10,
-                 80,25);
-  end;
-
-  with OkButton do begin
-    SetBounds(Self.ClientWidth-200, Self.ClientHeight-40,80,25);
-  end;
-
-  with CancelButton do begin
-    SetBounds(Self.ClientWidth-100, Self.ClientHeight-40,80,25);
-  end;
-end;
-
-procedure TExternalToolDialog.OkButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TExternalToolDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
 end;
 
 procedure TExternalToolDialog.SetExtToolList(NewExtToolList: TExternalToolList);
@@ -722,5 +589,8 @@ procedure TExternalToolDialog.ListboxClick(Sender: TObject);
 begin
   EnableButtons;
 end;
+
+initialization
+  {$I exttooldialog.lrs}
 
 end.
