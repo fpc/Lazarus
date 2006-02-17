@@ -161,6 +161,7 @@ type
 
   TUnitDependenciesView = class(TForm)
     CloseButton: TBitBtn;
+    ToolbarImageList: TImageList;
     SrcTypeImageList: TImageList;
     ToolBar: TToolBar;
     RefreshButton: TToolButton;

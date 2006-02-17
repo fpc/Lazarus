@@ -1587,7 +1587,7 @@ resourcestring
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
-  dlgUnitDepBrowse      = 'Browse...';
+  dlgUnitDepBrowse      = 'Open';
   dlgUnitDepRefresh     = 'Refresh';
   
   // Doc Editor
