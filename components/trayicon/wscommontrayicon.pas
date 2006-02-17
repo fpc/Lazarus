@@ -47,6 +47,8 @@ type
       constructor Create;  virtual;
       destructor Destroy; override;
       procedure InternalUpdate; virtual; abstract;
+      function Hide: Boolean; virtual; abstract;
+      function Show: Boolean; virtual; abstract;
     published
   end;
 
@@ -85,10 +87,13 @@ end;
 *******************************************************************}
 destructor TCustomWidgetTrayIcon.Destroy;
 begin
+  Hide;
+
   Icon.Free;
 
   inherited Destroy;
 end;
 
 end.
+
 

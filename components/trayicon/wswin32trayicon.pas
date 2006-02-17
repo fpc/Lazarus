@@ -14,6 +14,8 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
+ Special thanks for: Danny Milosavljevic and the Lazarus Team
+
  Win32 specific code.
 }
 unit wswin32trayicon;
@@ -39,8 +41,8 @@ type
     public
       constructor Create; override;
       destructor Destroy; override;
-      function Hide: Boolean;
-      function Show: Boolean;
+      function Hide: Boolean; override;
+      function Show: Boolean; override;
       property Canvas: TCanvas read GetCanvas;
       procedure InternalUpdate; override;
     published

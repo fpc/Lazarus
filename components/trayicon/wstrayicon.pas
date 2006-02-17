@@ -14,6 +14,8 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
+ Special thanks for: Danny Milosavljevic and the Lazarus Team
+
  This unit calls the appropriate widgetset code.
 }
 unit wstrayicon;
@@ -28,23 +30,33 @@ interface
 *  Compatibility code for Delphi for Windows.
 *******************************************************************}
 {$ifndef FPC}
-  {$define LCLWin32}
+  {$define Win32}
 {$endif}
 
 
 uses
-{$ifdef LCLWin32}
+
+{$ifdef Win32}
+
   wswin32trayicon,
+  
 {$endif}
-{$ifdef LCLGtk}
-  wsgtktrayicon,
+{$ifdef UNIX}
+
+  {$ifdef LCLGtk}
+    wsgtktrayicon,
+  {$endif}
+  
+  {$ifdef LCLGnome}
+    wsgtktrayicon,
+  {$endif}
+  
+  {$ifdef LCLGtk2}
+    wsgtk2trayicon,
+  {$endif}
+  
 {$endif}
-{$ifdef LCLGnome}
-  wsgtktrayicon,
-{$endif}
-{$ifdef LCLGtk2}
-  wsgtk2trayicon,
-{$endif}
+
   Classes, SysUtils;
 
 type
@@ -75,4 +87,5 @@ finalization
   vwsTrayIcon.Free;
 
 end.
+
 

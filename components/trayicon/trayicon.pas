@@ -14,6 +14,8 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
+ Special thanks for: Danny Milosavljevic and the Lazarus Team
+
  This unit contains the SystrayIcon object and the TTrayIcon visual component.
  
  Documentation for the component can be found here:

@@ -14,6 +14,8 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
+ Special thanks for: Danny Milosavljevic and the Lazarus Team
+
  Gtk2 specific code.
 }
 unit wsgtk2trayicon;
@@ -28,7 +30,7 @@ interface
 
 uses
   Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs,
-  Menus, wscommontrayicon, x, xlib, xutil, gtk2, gdk2, gtkproc;
+  Menus, wscommontrayicon, x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef;
 
 type
 
@@ -36,28 +38,20 @@ type
 
   TWidgetTrayIcon = class(TCustomWidgetTrayIcon)
     private
-      fDisplay: PDisplay;
-      fWindow: TWindow;
-      fScreen: PScreen;
-      fScreenID: longint;
-      fTrayParent: TWindow;
       fOwner: TComponent;
-      GtkForm: TForm;
       fEmbedded: Boolean;
       fMsgCount: Integer;
-      procedure SetEmbedded;
-      function Send_Message(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
-      procedure SetMinSize(AWidth, AHeight: Integer);
-      procedure PaintForm(Sender: TObject);
+      Tips: PGtkTooltips;
       procedure CreateForm(id: Integer);
       procedure RemoveForm(id: Integer);
       function GetCanvas: TCanvas;
     protected
     public
-      function Hide: Boolean;
-      function Show: Boolean;
+      function Hide: Boolean; override;
+      function Show: Boolean; override;
       property Canvas: TCanvas read GetCanvas;
       procedure InternalUpdate; override;
+      procedure PaintForm(Sender: TObject);
     published
   end;
 
@@ -68,15 +62,15 @@ const
 
 implementation
 
-type
-  PX11GdkDrawable = ^TX11GdkDrawable;
+uses WSTrayIcon;
 
-  TX11GdkDrawable = record
-    parent_instance: TGdkWindow;
-    wrapper: PGdkDrawable;
-    colormap: PGdkColorMap;
-    xid:x.TWindow;
-  end;
+var
+  fDisplay: PDisplay;
+  fWindow: TWindow;
+  fScreen: PScreen;
+  fScreenID: longint;
+  GtkForm: PGtkWidget;
+  fTrayParent: TWindow;
 
 {*******************************************************************
 *  TempX11ErrorHandler ()
@@ -93,47 +87,8 @@ begin
   WriteLn('Error: ' + IntToStr(ErrorEv^.error_code));
 end;
 
-
-{ TWidgetTrayIcon }
-
 {*******************************************************************
-*  TWidgetTrayIcon.SetEmbedded ()
-*
-*  DESCRIPTION:
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-procedure TWidgetTrayIcon.SetEmbedded;
-var
-  old_error: TXErrorHandler;
-  buf: array [0..32] of char;
-  selection_atom : TAtom;
-begin
-  old_error := XSetErrorHandler(@TempX11ErrorHandler);
-  Sleep(80);
-  xsync(fdisplay,true);
-  buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
-  selection_atom := XInternAtom(fDisplay, buf, false);
-  XGrabServer(fDisplay);
-  fTrayParent := XGetSelectionOwner(fDisplay, selection_atom);
-  if fTrayParent <> None then
-  begin
-    XSelectInput(fDisplay, fTrayParent, StructureNotifyMask);
-  end;
-  XUngrabServer(fDisplay);
-  XFlush(fDisplay);
-
-  if fTrayParent <> None then
-    Send_Message(fTrayParent, SYSTEM_TRAY_REQUEST_DOCK, fWindow, 0, 0);
-
-  XSetErrorHandler(old_error);
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.Send_Message ()
+*  Send_Message ()
 *
 *  DESCRIPTION:    Sends a message to the X client
 *
@@ -142,11 +97,13 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function TWidgetTrayIcon.Send_Message(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
+function SendMessage(window: TWindow; msg: Integer; data1, data2, data3: Integer): boolean;
 var
   Ev: TXEvent;
   fmt: Integer;
 begin
+  FillChar(Ev, SizeOf(TXEvent), $0);
+
   ev.xclient._type := ClientMessage;
   ev.xclient.window := window;
   ev.xclient.message_type := XInternAtom (fDisplay, '_NET_SYSTEM_TRAY_OPCODE', False );
@@ -156,10 +113,184 @@ begin
   ev.xclient.data.l[2] := data1;
   ev.xclient.data.l[3] := data2;
   ev.xclient.data.l[4] := data3;
+
   XSendEvent(fDisplay, fTrayParent, False, NoEventMask, @ev);
   XSync(fDisplay, False);
   Result := false;//(untrap_errors() = 0);
 end;
+
+{*******************************************************************
+*  SetEmbedded ()
+*
+*  DESCRIPTION:    Docks the GtkPlug into the system tray
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure SetEmbedded;
+var
+  old_error: TXErrorHandler;
+  buf: array [0..32] of char;
+  selection_atom : TAtom;
+begin
+  old_error := XSetErrorHandler(@TempX11ErrorHandler);
+
+  xsync(fdisplay,true);
+  buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
+  selection_atom := XInternAtom(fDisplay, buf, false);
+  XGrabServer(fDisplay);
+
+  fTrayParent := XGetSelectionOwner(fDisplay, selection_atom);
+  if fTrayParent <> None then
+  begin
+    XSelectInput(fDisplay, fTrayParent, StructureNotifyMask);
+  end;
+
+  XUngrabServer(fDisplay);
+  XFlush(fDisplay);
+
+  if fTrayParent <> None then
+    SendMessage(fTrayParent, SYSTEM_TRAY_REQUEST_DOCK, fWindow, 0, 0);
+
+  XSetErrorHandler(old_error);
+end;
+
+{*******************************************************************
+*  realize_cb ()
+*
+*  DESCRIPTION:    Callback function for the realize signal
+*                  Sets the systray icon after the widget is realized
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+procedure realize_cb(widget: PGtkWidget; user_data: gpointer); cdecl;
+var
+  gdk_screen: PGdkScreen;
+begin
+  fDisplay := GDK_WINDOW_XDISPLAY(GtkForm^.window);
+  fWindow := GDK_WINDOW_XWINDOW(GtkForm^.window);
+
+{  Doesn´t work
+
+  gdk_screen := gtk_widget_get_screen(GtkForm);
+  fScreen := GDK_SCREEN_XSCREEN(gdk_screen); // get the real screen}
+
+  fScreen := XDefaultScreenOfDisplay(fDisplay);
+  fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
+  
+  SetEmbedded;
+end;
+
+{*******************************************************************
+*  button_release_cb ()
+*
+*  DESCRIPTION:    Callback function for Mouse Click
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function button_release_cb(widget: PGtkWidget; event: PGdkEventButton;
+ user_data: gpointer): gboolean; cdecl;
+begin
+  Result := False;
+  
+  case event^.button of
+    1:
+    begin
+      if Assigned(vwsTrayIcon.OnClick) then vwsTrayIcon.OnClick(vwsTrayIcon);
+      if Assigned(vwsTrayIcon.OnMouseUp) then
+       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbLeft, [], Round(event^.X), Round(event^.Y));
+    end;
+    
+    2: if Assigned(vwsTrayIcon.OnMouseUp) then
+        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+
+    3:
+    begin
+      if Assigned(vwsTrayIcon.OnMouseUp) then
+       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+      if Assigned(vwsTrayIcon.PopUpMenu) then
+       vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+    end;
+  end;
+end;
+
+{*******************************************************************
+*  button_press_cb ()
+*
+*  DESCRIPTION:    Callback function for Mouse Click
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function button_press_cb(widget: PGtkWidget; event: PGdkEventButton;
+ user_data: gpointer): gboolean; cdecl;
+begin
+  Result := False;
+
+  if (event^._type = GDK_2BUTTON_PRESS) and Assigned(vwsTrayIcon.OnDblClick) then
+   vwsTrayIcon.OnDblClick(vwsTrayIcon)
+  else
+  begin
+    case event^.button of
+      1: if Assigned(vwsTrayIcon.OnMouseUp) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbLeft, [], Round(event^.X), Round(event^.Y));
+
+      2: if Assigned(vwsTrayIcon.OnMouseUp) then
+         vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+
+      3: if Assigned(vwsTrayIcon.OnMouseUp) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(event^.X), Round(event^.Y));
+    end;
+  end;
+end;
+
+{*******************************************************************
+*  popup_cb ()
+*
+*  DESCRIPTION:    Callback function for the popup menu
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function popup_cb(widget: PGtkWidget; user_data: gpointer): Boolean; cdecl;
+begin
+  Result := True;
+
+  if Assigned(vwsTrayIcon.PopUpMenu) then
+   vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
+{*******************************************************************
+*  motion_cb ()
+*
+*  DESCRIPTION:    Callback function for the OnMouseMove event
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        Nothing
+*
+*******************************************************************}
+function motion_cb(widget: PGtkWidget; event: PGdkEventMotion; user_data: gpointer): Boolean; cdecl;
+begin
+  Result := False;
+
+  if Assigned(vwsTrayIcon.OnMouseMove) then
+   vwsTrayIcon.OnMouseMove(vwsTrayIcon, [], Round(event^.X), Round(event^.Y));
+end;
+
+{ TWidgetTrayIcon }
 
 {*******************************************************************
 *  TWidgetTrayIcon.CreateForm ()
@@ -173,33 +304,59 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.CreateForm(id: Integer);
 var
-  Widget: PGtkWidget;
+  AImage: PGtkWidget;
+  GDIObject: PgdiObject;
 begin
-  GtkForm := TForm.Create(nil);
+  {*******************************************************************
+  *  Creates the GtkPlug
+  *******************************************************************}
+  
   fEmbedded := False;
-  //fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
-  //SHowMessage(IntToStr(Integer(fWindow)));
-  //GtkForm.Parent := TWinConTrol(fOwner);
-  GtkForm.WindowState := wsMinimized;
-  GtkForm.BorderStyle := bsNone; //without this gnome will make a 1 pixel wide window!
-  //GtkForm.Canvas.AutoRedraw := True; //not working :(
 
-  // needed because some things aparently don't get fully initialized until
-  // visible at least once!  This is Gtk related NOT LCL related.
-  GtkForm.Visible :=True;
-  GtkForm.Width := 22;
-  GtkForm.Height := 22;
-  GtkForm.Visible := False;
+  GtkForm := gtk_plug_new(0);
 
-  Application.ProcessMessages;
+  Tips := gtk_tooltips_new;
 
-  fDisplay := GDK_DISPLAY;
-//  SHowMessage(IntToStr(Integer(fDisplay)));
-  Widget := PGtkWidget(GtkForm.Handle);
-  fWindow := PX11GdkDrawable(PGdkWindowObject(Widget^.window)^.impl)^.xid;
+  g_object_ref(Tips);
+  
+  gtk_object_sink(GTK_OBJECT(Tips));
+  
+  gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(Hint), '');
 
-  fScreen := XDefaultScreenOfDisplay(fDisplay); // get the screen
-  fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
+  {*******************************************************************
+  *  Connects the signals
+  *******************************************************************}
+  
+  gtk_widget_add_events(GtkForm, GDK_ALL_EVENTS_MASK);
+
+  g_signal_connect(GtkForm, 'realize', TGCallback(@realize_cb), nil);
+
+  g_signal_connect(GtkForm, 'popup-menu', TGCallback(@popup_cb), nil);
+
+  g_signal_connect(GtkForm, 'motion-notify-event', TGCallback(@motion_cb), nil);
+
+  g_signal_connect(GtkForm, 'button-press-event', TGCallback(@button_press_cb), nil);
+
+  g_signal_connect(GtkForm, 'button-release-event', TGCallback(@button_release_cb), nil);
+
+  {*******************************************************************
+  *  Draws the icon
+  *******************************************************************}
+
+  GDIObject := PgdiObject(Icon.Handle);
+
+  AImage := gtk_image_new_from_pixmap(GDIObject^.GDIPixmapObject,
+   GDIObject^.GDIBitmapMaskObject);
+
+  gtk_widget_show(AImage);
+
+  gtk_container_add(GTK_CONTAINER(GtkForm), AImage);
+
+  {*******************************************************************
+  *  Now shows the GtkPlug
+  *******************************************************************}
+
+  gtk_widget_show(GtkForm);
 end;
 
 {*******************************************************************
@@ -214,7 +371,13 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.RemoveForm(id: Integer);
 begin
-  GtkForm.Free;
+  gtk_widget_destroy(GtkForm);
+  
+  GtkForm := nil;
+
+  g_object_unref(Tips);
+
+  Tips := nil;
 end;
 
 {*******************************************************************
@@ -229,7 +392,7 @@ end;
 *******************************************************************}
 function TWidgetTrayIcon.GetCanvas: TCanvas;
 begin
-  Result := GtkForm.Canvas;
+  Result := Icon.Canvas;
 end;
 
 {*******************************************************************
@@ -273,49 +436,11 @@ begin
   
   CreateForm(0);
 
-  SetEmbedded;
-
-  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_VISIBLE);
-  GTK_WIDGET_SET_FLAGS(PGtkWidget(GtkForm.Handle),GTK_MAPPED);
-
-  GtkForm.Width := 22; //needed for gnome
-  GtkForm.Height := 22;
-  SetMinSize(Icon.Width, Icon.Height);
-
-  GtkForm.OnMouseDown := Self.OnMouseDown;
-  GtkForm.OnMouseMove := Self.OnMouseMove;
-  GtkForm.OnMouseUp := Self.OnMouseUp;
-  GtkForm.OnClick := Self.OnClick;
-  GtkForm.OnPaint := PaintForm;
-  GtkForm.PopupMenu := Self.PopUpMenu;
-
   fEmbedded := True;
 
   vVisible := True;
 
   Result := True;
-end;
-
-{*******************************************************************
-*  TWidgetTrayIcon.SetMinSize ()
-*
-*  DESCRIPTION:    Attemps to avoid problems on Gnome
-*
-*  PARAMETERS:
-*
-*  RETURNS:        Nothing
-*
-*******************************************************************}
-procedure TWidgetTrayIcon.SetMinSize(AWidth, AHeight: Integer);
-var
-  size_hints: TXSizeHints;
-begin
-  size_hints.flags := PSize or PMinSize or PMaxSize;
-  size_hints.min_width := AWidth;
-  size_hints.max_width := 100;
-  size_hints.min_height := AHeight;
-  size_hints.max_height := 100;
-  XSetStandardProperties(fDisplay, fWindow, nil, nil, None, nil, 0, @size_hints);
 end;
 
 {*******************************************************************
@@ -330,7 +455,7 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.PaintForm(Sender: TObject);
 begin
-  if ShowIcon then GtkForm.Canvas.Draw(0, 0, Icon);
+//  if ShowIcon then GtkForm.Canvas.Draw(0, 0, Icon);
 
   if Assigned(OnPaint) then OnPaint(Self);
 end;
@@ -348,7 +473,7 @@ end;
 *******************************************************************}
 procedure TWidgetTrayIcon.InternalUpdate;
 begin
-  if Assigned(GtkForm) then GtkForm.PopupMenu := Self.PopUpMenu;
+  if Assigned(Tips) then gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(Hint), '');
 end;
 
 end.

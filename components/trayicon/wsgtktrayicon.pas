@@ -14,6 +14,8 @@
 
  Authors: Felipe Monteiro de Carvalho and Andrew Haines
 
+ Special thanks for: Danny Milosavljevic and the Lazarus Team
+
  Gtk1 specific code. Works on gnome also.
 }
 unit wsgtktrayicon;
@@ -52,8 +54,8 @@ type
       function GetCanvas: TCanvas;
     protected
     public
-      function Hide: Boolean;
-      function Show: Boolean;
+      function Hide: Boolean; override;
+      function Show: Boolean; override;
       property Canvas: TCanvas read GetCanvas;
       procedure InternalUpdate; override;
     published
@@ -127,6 +129,8 @@ var
   Ev: TXEvent;
   fmt: Integer;
 begin
+  FillChar(Ev, SizeOf(TXEvent), $0);
+
   ev.xclient._type := ClientMessage;
   ev.xclient.window := window;
   ev.xclient.message_type := XInternAtom (fDisplay, '_NET_SYSTEM_TRAY_OPCODE', False );
@@ -136,6 +140,7 @@ begin
   ev.xclient.data.l[2] := data1;
   ev.xclient.data.l[3] := data2;
   ev.xclient.data.l[4] := data3;
+
   XSendEvent(fDisplay, fTrayParent, False, NoEventMask, @ev);
   XSync(fDisplay, False);
   Result := false;//(untrap_errors() = 0);
@@ -172,7 +177,6 @@ begin
   Application.ProcessMessages;
 
   fDisplay := GDK_WINDOW_XDISPLAY(Pointer(PGtkWidget(GtkForm.Handle)^.window));
-//  SHowMessage(IntToStr(Integer(fDisplay)));
   fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(GtkForm.Handle)^.window));
   fScreen := XDefaultScreenOfDisplay(fDisplay); // get the screen
   fScreenID := XScreenNumberOfScreen(fScreen); // and it's number
@@ -287,11 +291,14 @@ procedure TWidgetTrayIcon.SetMinSize(AWidth, AHeight: Integer);
 var
   size_hints: TXSizeHints;
 begin
+  FillChar(size_hints, SizeOf(TXSizeHints), $0);
+
   size_hints.flags := PSize or PMinSize or PMaxSize;
   size_hints.min_width := AWidth;
   size_hints.max_width := 100;
   size_hints.min_height := AHeight;
   size_hints.max_height := 100;
+
   XSetStandardProperties(fDisplay, fWindow, nil, nil, None, nil, 0, @size_hints);
 end;
 
@@ -329,4 +336,5 @@ begin
 end;
 
 end.
+
 
