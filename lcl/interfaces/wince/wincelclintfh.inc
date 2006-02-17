@@ -27,7 +27,7 @@
 }
 
 //##apiwiz##sps##   // Do not remove
-function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
+{function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
@@ -43,6 +43,6 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 function IntfSendsUTF8KeyPress: boolean; override;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
-
+}
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

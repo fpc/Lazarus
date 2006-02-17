@@ -450,7 +450,7 @@ begin
     if PageIndex = -1 then
       FPageIndex := Index;
 
-  {$ifndef WIN32}
+  {$ifndef WINDOWS}
     // TODO: remove when gtk widgetset fixed to show tabpage tab upon
     //   AddPage, instead of needing TabPage.Visible := true
     APage.Visible := true;

@@ -27,6 +27,12 @@ unit LCLProc;
 {$mode objfpc}{$H+}
 {$inline on}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -2129,7 +2135,7 @@ begin
          // fpc 2.1.1 stores string constants as array of char so maybe this
          // will work for without ifdef (once available in 2.0.x too):
          // move(lineending, dest^, sizeof(LineEnding));
-{$IFDEF win32}
+{$IFDEF WINDOWS}
                begin
                  move(lineending[1], dest^, length(LineEnding));
                  inc(dest^, length(LineEnding)-1);

@@ -25,6 +25,12 @@ unit AsyncProcess;
 
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -54,17 +60,22 @@ type
 
 implementation
 
-{$ifdef WIN32}
+{$ifdef WINDOWS}
 
 uses Windows;
 
 function TAsyncProcess.GetNumBytesAvailable: dword;
 begin
+{$ifdef wince}
+  // Windows CE doesn´t have the API function PeekNamedPipe
+  Result := 0;
+{$else}
   if not (poUsePipes in Options) then
     Result := 0
   else
   if not PeekNamedPipe(Output.Handle, nil, 0, nil, @Result, nil) then
     Result := 0;
+{$endif}
 end;
 
 {$else}

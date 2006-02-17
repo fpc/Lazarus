@@ -32,11 +32,17 @@ localization found.
 }
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
   Classes, SysUtils, LResources, GetText, Controls, typinfo
-  {$IFDEF MSWINDOWS},Windows{$ENDIF};
+  {$IFDEF WINDOWS},Windows{$ENDIF};
 {$IFDEF TRANSLATESTRING}
 type
  TDefaultTranslator=class(TAbstractTranslator)
@@ -54,7 +60,7 @@ uses Menus;
 function FindLocaleFileName:string;
 var LANG,lng:string;
   i: Integer;
-  {$IFDEF Win32}
+  {$IFDEF WINDOWS}
    Buffer:array[1..4]of char;
   {$ENDIF}
 begin
@@ -66,7 +72,7 @@ begin
      (paramstr(i)='-l') or
      (paramstr(i)='--lang') then LANG:=ParamStr(i+1);
  end;
- {$IFDEF Win32}
+ {$IFDEF WINDOWS}
  //Modified code from lazconf.inc
  if LANG='' then
  begin

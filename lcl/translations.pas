@@ -41,6 +41,12 @@ unit Translations;
 
 {$mode objfpc}{$H+}{$INLINE ON}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -91,7 +97,7 @@ implementation
 
 // GetLanguageIDs is part of the fcl in 2.0.1 and later
 {$ifdef ver2_0_0}
-{$ifdef win32}
+{$ifdef WINDOWS}
 uses
   windows;
 procedure GetLanguageIDs(var Lang, FallbackLang: string);

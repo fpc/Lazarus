@@ -43,7 +43,7 @@ Interface
 Uses
   Types, Classes, ComCtrls, Controls, Buttons, Dialogs, ExtCtrls, Forms,
   GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus;
+  LMessages, StdCtrls, SysUtils, Graphics, Menus, Windows;
 
 Type
   { WinCE interface-object class }
@@ -96,7 +96,7 @@ Uses
 // WinCEWSCheckLst,
 // WinCEWSCListBox,
 // WinCEWSComCtrls,
- WinCEWSControls,
+// WinCEWSControls,
 // WinCEWSDbCtrls,
 // WinCEWSDBGrids,
 // WinCEWSDialogs,
@@ -105,7 +105,7 @@ Uses
 // WinCEWSExtCtrls,
 // WinCEWSExtDlgs,
 // WinCEWSFileCtrl,
- WinCEWSForms,
+// WinCEWSForms,
 // WinCEWSGrids,
 // WinCEWSImgList,
 // WinCEWSMaskEdit,

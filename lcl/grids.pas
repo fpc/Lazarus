@@ -35,6 +35,13 @@ The log was moved to end of file, search for: The_Log
 
 {$define UseClipRect}
 {$define LooseCount}
+
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 unit Grids;
 
 {$mode objfpc}{$H+}
@@ -1565,7 +1572,7 @@ end;
 
 function TCustomGrid.InternalNeedBorder: boolean;
 begin
-  {$IFDEF WIN32}
+  {$IFDEF WINDOWS}
   result := FFlat and (FGridBorderStyle = bsSingle);
   {$ELSE}
   result := FGridBorderStyle = bsSingle;
@@ -2184,7 +2191,7 @@ function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
 begin
   Result:=false;
   if HandleAllocated then begin
-    {$IFNDEF WIN32}
+    {$IFNDEF WINDOWS}
     Result:= getScrollbarVisible(handle, Which);
     {$ELSE}
     // Is up to the widgetset to implement GetScrollbarvisible
@@ -3450,7 +3457,7 @@ end;
 
 function TCustomGrid.GetSystemMetricsGapSize(const Index: Integer): Integer;
 begin
-  {$ifdef Win32}
+  {$ifdef WINDOWS}
     result := 0;
   {$else}
     result := 3;
@@ -5245,7 +5252,7 @@ begin
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
-{$ifndef win32}
+{$ifndef WINDOWS}
 var
   msg: TGridMessage;
 {$endif}
@@ -5255,7 +5262,7 @@ begin
     //DebugLn('Posting editor LM_CHAR, ch=',ch, ' ', InttoStr(Ord(ch)));
     if EditorCanProcessKey(ch) and not EditorIsReadOnly then begin
       EditorShow(true);
-      {$ifdef WIN32}
+      {$ifdef WINDOWS}
       // lcl win32 interface does a big mess with the message
       // as we only need the message to be handled by destination
       // then we send it directly to it bypassing the queue.

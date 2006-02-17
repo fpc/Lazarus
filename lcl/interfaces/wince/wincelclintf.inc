@@ -33,7 +33,7 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function TWinCEWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
+{function TWinCEWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
   Horizontal: boolean): boolean;
 begin
   Result:=inherited DrawSplitter(DC, ARect, Horizontal);
@@ -88,6 +88,6 @@ function TWinCEWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
 begin
   Result:=inherited ReplaceBitmapMask(Image, Mask, NewMask);
 end;
-
+}
 //##apiwiz##epi##   // Do not remove
 

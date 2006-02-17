@@ -34,6 +34,13 @@ unit DBGrids;
 
 {$mode objfpc}{$H+}
 {$define EnableIsSeq}
+
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -1267,7 +1274,7 @@ begin
   //ScrollBarPosition(SB_VERT, aPos);
   FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
-  {$ifdef WIN32}
+  {$ifdef WINDOWS}
   ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
   ScrollInfo.ntrackPos := 0;
   {$else}

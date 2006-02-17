@@ -37,7 +37,7 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean; override;
+{function Arc(DC: HDC; Left,Top,width,height,angle1,angle2 : Integer): Boolean; override;
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
@@ -222,7 +222,7 @@ Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 function VkKeyScan(AChar: Char): Short; override;
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
-
+}
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 

@@ -24,6 +24,12 @@ unit DirSel;
 
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -70,7 +76,7 @@ var
 implementation
 
 const
-  {$IFDEF Win32}
+  {$IFDEF WINDOWS}
   FindMask = '*.*';
   {$ELSE}
   FindMask = '*';

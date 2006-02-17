@@ -30,6 +30,12 @@ unit Calendar;
 
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -222,13 +228,13 @@ begin
 end;
 
 procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
-{$IFDEF WIN32}
+{$IFDEF WINDOWS}
 var
   CalendarMinDate,CalendarMaxDate: integer;
 {$ENDIF}
 begin
   if AValue=FDate then exit;
-  {$IFDEF WIN32} // TODO: move this test to the win32 interface?
+  {$IFDEF WINDOWS} // TODO: move this test to the win32 interface?
   CalendarMinDate:=-53787;// 14 sep 1752, start of Gregorian calendar in England
   CalendarMaxDate:=trunc(MaxDateTime);
   if not ((AValue>=CalendarMinDate)and(AValue<=CalendarMaxDate)) then

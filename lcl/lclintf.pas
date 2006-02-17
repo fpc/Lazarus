@@ -39,6 +39,12 @@ unit LCLIntf;
 {$mode objfpc}{$H+}
 {$inline on}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses
@@ -68,8 +74,14 @@ function CharUpper(c: char): char; inline;
 function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
 
 
-{$IFDEF win32}
-function GetTickCount: DWord; stdcall; external 'kernel32.dll' name 'GetTickCount';
+{$IFDEF WINDOWS}
+
+{$IFDEF Win32}
+function GetTickCount:DWORD; stdcall; external 'kernel32.dll' name 'GetTickCount';
+{$ELSE}
+function GetTickCount:DWORD; stdcall; external KernelDLL name 'GetTickCount';
+{$ENDIF}
+
 {$ELSE}
 function GetTickCount: DWord;
 {$ENDIF}
@@ -87,7 +99,7 @@ var
   LowerCaseChars: array[char] of char;
   UpperCaseChars: array[char] of char;
 
-{$IFNDEF Win32}
+{$IFNDEF WINDOWS}
 function GetTickCount: DWord;
 begin
   Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));

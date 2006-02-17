@@ -26,13 +26,22 @@
 
 { TWinCEWidgetSet }
 
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.Create
+  Params:  None
+  Returns: Nothing
+
+  Constructor for the class.
+ ------------------------------------------------------------------------------}
 constructor TWinCEWidgetSet.Create;
 begin
+  Inherited Create;
 
 end;
 
 destructor TWinCEWidgetSet.Destroy;
 begin
+
   inherited Destroy;
 end;
 
@@ -73,9 +82,24 @@ begin
 
 end;
 
-procedure TWinCEWidgetSet.AppProcessMessages;
-begin
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.AppProcessMessages
+  Params:  None
+  Returns: Nothing
 
+  Handle all pending messages
+ ------------------------------------------------------------------------------}
+procedure TWinCEWidgetSet.AppProcessMessages;
+var
+  AMessage: TMsg;
+  AccelTable: HACCEL;
+  retVal, index: dword;
+Begin
+  while Windows.PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+  begin
+    Windows.TranslateMessage(@AMessage);
+    Windows.DispatchMessage(@AMessage);
+  end;
 end;
 
 procedure TWinCEWidgetSet.AppWaitMessage;

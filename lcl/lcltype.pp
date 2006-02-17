@@ -38,6 +38,12 @@ unit LCLType;
 
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 
@@ -49,9 +55,9 @@ uses
 {$IFDEF USE_UTF8BIDI_LCL}
   UTF8BIDI,
 {$ENDIF USE_UTF8BIDI_LCL}
-{$ifdef win32}
+{$ifdef WINDOWS}
   windows,
-{$endif win32}
+{$endif WINDOWS}
   Classes, SysUtils;
 
 type
@@ -76,7 +82,7 @@ type
   TRTLCriticalSection = pointer;
 
 
-{$ifndef win32}
+{$ifndef WINDOWS}
   {$IFDEF CPU64}
   // temp solution for 32bit system.Thandle
   THandle = type PtrInt;
@@ -1461,7 +1467,7 @@ const
   SYS_COLOR_BASE = TColorRef($80000000);
 
 
-{$ifndef win32}
+{$ifndef WINDOWS}
   R2_BLACK        = 0;
   R2_COPYPEN      = 1;
   R2_MASKNOTPEN   = 2;

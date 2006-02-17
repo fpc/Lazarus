@@ -33,7 +33,7 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function TWinCEWidgetSet.Arc(DC: HDC; Left, Top, width, height, angle1,
+{function TWinCEWidgetSet.Arc(DC: HDC; Left, Top, width, height, angle1,
   angle2: Integer): Boolean;
 begin
   Result:=inherited Arc(DC, Left, Top, width, height, angle1, angle2);
@@ -934,6 +934,6 @@ end;
 function TWinCEWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 begin
   Result:=inherited WindowFromPoint(Point);
-end;
+end;}
 
 //##apiwiz##epi##   // Do not remove

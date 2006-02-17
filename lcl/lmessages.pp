@@ -27,12 +27,18 @@ unit LMessages;
 
 {$mode objfpc}{$H+}
 
+// FPC <= 2.0.2 compatibility code
+// WINDOWS define was added after FPC 2.0.2
+{$ifdef win32}
+  {$define WINDOWS}
+{$endif}
+
 interface
 
 uses Classes, SysUtils, LCLType, GraphType
-  {$ifdef win32}
+  {$ifdef WINDOWS}
   ,messages
-  {$endif win32}
+  {$endif WINDOWS}
   ;
 
 const
@@ -369,7 +375,7 @@ type
     Result: LRESULT;
   end;
 
-{$ifndef win32}
+{$ifndef WINDOWS}
   TLMNoParams = record
     Msg: Cardinal;
     Unused: array[0..1] of PtrInt;
