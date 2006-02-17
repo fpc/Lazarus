@@ -488,7 +488,6 @@ type
     property Canvas: TCanvas read FCanvas;
     property ClickOnSelChange: boolean read FClickOnSelChange
                write FClickOnSelChange default true; // true is Delphi behaviour
-    property Color;
     property Constraints;
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;

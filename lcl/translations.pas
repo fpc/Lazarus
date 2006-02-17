@@ -88,60 +88,8 @@ type
 procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string);
 
-// GetLanguageIDs is part of the fcl in 2.0.1 and later
-{$ifdef ver2_0_0}
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-{$endif}
-
 implementation
 
-// GetLanguageIDs is part of the fcl in 2.0.1 and later
-{$ifdef ver2_0_0}
-{$ifdef WINDOWS}
-uses
-  windows;
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-var
-  Buffer: array[1..4] of char;
-  Country: string;
-  UserLCID: LCID;
-begin
-  //defaults
-  Lang := '';
-  FallbackLang:='';
-  UserLCID := GetUserDefaultLCID;
-  if GetLocaleInfo(UserLCID, LOCALE_SABBREVLANGNAME, @Buffer, 4)<>0 then
-    FallbackLang := lowercase(copy(Buffer,1,2));
-  if GetLocaleInfo(UserLCID, LOCALE_SABBREVCTRYNAME, @Buffer, 4)<>0 then begin
-    Country := copy(Buffer,1,2);
-
-    // some 2 letter codes are not the first two letters of the 3 letter code
-    // there are probably more, but first let us see if there are translations
-    if (Buffer='PRT') then Country:='PT';
-
-    Lang := FallbackLang+'_'+Country;
-  end;
-end;
-
-{$else}
-
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-begin
-  lang := GetEnvironmentVariable('LC_ALL');
-  if Length(lang) = 0 then
-  begin
-    lang := GetEnvironmentVariable('LC_MESSAGES');
-    if Length(lang) = 0 then
-    begin
-      lang := GetEnvironmentVariable('LANG');
-      if Length(lang) = 0 then
-        exit;   // no language defined via environment variables
-    end;
-  end;
-  FallbackLang := Copy(lang, 1, 2);
-end;
-{$endif}
-{$endif}
 
 function UTF8ToSystemCharSet(const s: string): string; inline;
 begin

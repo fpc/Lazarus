@@ -2107,7 +2107,7 @@ var
   CharLen: integer;
 
   // Copies from SourceStart to Source to Dest and updates Dest
-  procedure CopyPart; {$IFNDEF VER2_0_0}inline;{$ENDIF}
+  procedure CopyPart; inline;
   var
     CopyLength: SizeInt;
   begin

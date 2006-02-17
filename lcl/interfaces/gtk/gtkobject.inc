@@ -6087,17 +6087,10 @@ begin
           {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
           gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
           case GDIPenStyle of
-            {$If defined(GTK2) and defined(VER2_0_0)}
-            PS_DASH:       SetDashes([#4,#4]);
-            PS_DOT:        SetDashes([#2,#2]);
-            PS_DASHDOT:    SetDashes([#4,#2,#2,#2]);
-            PS_DASHDOTDOT: SetDashes([#4,#2,#2,#2,#2,#2]);
-            {$Else}
             PS_DASH:       SetDashes([4,4]);
             PS_DOT:        SetDashes([2,2]);
             PS_DASHDOT:    SetDashes([4,2,2,2]);
             PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
-            {$EndIf}
             //This is DEADLY!!!
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
