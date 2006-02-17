@@ -25,10 +25,9 @@ unit gdk2x;
 interface
 
 uses
-  Classes, SysUtils, libc, glib2, gdk2, xlib, x, xrender;
+  Classes, SysUtils, Unix, BaseUnix, glib2, gdk2, XLib, X, XRender;
 
 {$ifdef FREEBSD}
-  {$linklib c}
   {$linklib pthread}
 {$endif}
 
@@ -50,24 +49,6 @@ type
 {$UNDEF read_interface_rest}
 
 implementation
-
-{$IFNDEF KYLIX}
-{ There is a bug in the compiler. If an external variable is not used, it will
-  create code, that can't be relocated by the linker.
-  So, use them in this hidden dummy procedure.
-}
-procedure CheckUnusedVariable; [Public];
-begin
-  //_gdk_x11_drawable_class
-  //_gdk_use_xshm
-  //_gdk_nenvent_masks
-  //_gdk_event_mask_table
-  //_gdk_selection_property
-  //_gdk_synchronize
-  
-  //gdk_display
-end;
-{$ENDIF}
 
 {*****************************************************************************
  * macro functions
