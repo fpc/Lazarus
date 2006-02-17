@@ -542,6 +542,11 @@ begin
   Result:=FDroppedDown;
 end;
 
+function TCustomComboBox.GetAutoComplete: boolean;
+begin
+  Result := cbactEnabled in AutoCompleteText;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomComboBox.GetItemWidth: Integer;
 
@@ -551,6 +556,15 @@ end;
 function TCustomComboBox.GetItemWidth: Integer;
 begin
   Result:=FItemWidth;
+end;
+
+procedure TCustomComboBox.SetAutoComplete(const AValue: boolean);
+begin
+  if (cbactEnabled in FAutoCompleteText)=AValue then exit;
+  if AValue then
+    AutoCompleteText := AutoCompleteText + [cbactEnabled]
+  else
+    AutoCompleteText := AutoCompleteText - [cbactEnabled]
 end;
 
 {------------------------------------------------------------------------------

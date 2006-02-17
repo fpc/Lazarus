@@ -256,8 +256,10 @@ type
     FStyle: TComboBoxStyle;
     FArrowKeysTraverseList: Boolean;
     FReturnArrowState: Boolean; //used to return the state of arrow keys from termporary change
+    function GetAutoComplete: boolean;
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
+    procedure SetAutoComplete(const AValue: boolean);
     procedure SetItemWidth(const AValue: Integer);
     procedure SetItems(Value: TStrings);
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
@@ -329,6 +331,7 @@ type
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure SelectAll;
+    property AutoComplete: boolean read GetAutoComplete write SetAutoComplete;
     property AutoCompleteText: TComboBoxAutoCompleteText
                            read FAutoCompleteText write FAutoCompleteText;
     property AutoDropDown: Boolean
