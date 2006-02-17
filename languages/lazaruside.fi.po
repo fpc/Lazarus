@@ -1476,7 +1476,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
 msgid "Copy all and hidden messages to clipboard"
-msgstr ""
+msgstr "Kopio kaikki kääntäjän viestit sisältäen myös piilotetut viestit leikepöydälle"
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -2468,7 +2468,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisinproject
 msgid "File is in Project"
-msgstr ""
+msgstr "Tiedosto on jo projektissa"
 
 #: lazarusidestrconsts:lisfileisnotwritable
 msgid "File is not writable"
@@ -3640,7 +3640,7 @@ msgstr "Rivin korkeus"
 
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
-msgstr ""
+msgstr "japani"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -6452,11 +6452,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr ""
+msgstr "Pysäytetäänkö nykyinen virheenjäljitys ja muodostetaan käännös uudelleen?"
 
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
-msgstr ""
+msgstr "Pysäytetäänkö virheenjäljitys?"
 
 #: lazarusidestrconsts:lisstopthedebugging
 msgid "Stop the debugging?"
@@ -8100,7 +8100,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
-msgstr ""
+msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
