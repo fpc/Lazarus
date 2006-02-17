@@ -99,7 +99,7 @@ function GetTempFilename(const Path, Prefix: string): string;
 
 implementation
 
-{$IFNDEF windows}
+{$IFNDEF mswindows}
 uses
   Unix, BaseUnix;
 {$ENDIF}
