@@ -731,7 +731,8 @@ type
   TControlHandlerType = (
     chtOnResize,
     chtOnChangeBounds,
-    chtVisibleChanging
+    chtOnVisibleChanging,
+    chtOnVisibleChanged
     );
 
 {* Note on TControl.Caption
@@ -1030,6 +1031,7 @@ type
     Function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
     procedure VisibleChanging; dynamic;
+    procedure VisibleChanged; dynamic;
     procedure AddHandler(HandlerType: TControlHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
@@ -1173,6 +1175,12 @@ type
     procedure AddHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent;
                                        AsLast: boolean = false);
     procedure RemoveHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent);
+    procedure AddHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent;
+                                          AsLast: boolean = false);
+    procedure RemoveHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent);
+    procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
+                                         AsLast: boolean = false);
+    procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
   public
     // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;

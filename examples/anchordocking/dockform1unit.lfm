@@ -1,11 +1,12 @@
-object DockForm1: TDockForm1
+object MainForm: TMainForm
   Left = 292
   Height = 300
   Top = 209
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
-  Caption = 'DockForm1'
+  ActiveControl = CreateNewFormButton
+  Caption = 'MainForm'
   ClientHeight = 300
   ClientWidth = 400
   OnCreate = FormCreate
@@ -27,9 +28,5 @@ object DockForm1: TDockForm1
   object MainPopupMenu: TPopupMenu
     left = 142
     top = 141
-    object HideMenuItem: TMenuItem
-      Caption = 'Hide Form'
-      OnClick = HideMenuItemClick
-    end
   end
 end

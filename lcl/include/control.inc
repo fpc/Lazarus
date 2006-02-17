@@ -848,13 +848,9 @@ end;
   Call events
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnResize;
-var
-  i: Integer;
 begin
   if Assigned(FOnResize) then FOnResize(Self);
-  i:=FControlHandlers[chtOnResize].Count;
-  while FControlHandlers[chtOnResize].NextDownIndex(i) do
-    TNotifyEvent(FControlHandlers[chtOnResize][i])(Self);
+  DoCallNotifyHandler(chtOnResize);
 end;
 
 {------------------------------------------------------------------------------
@@ -863,13 +859,9 @@ end;
   Call events
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnChangeBounds;
-var
-  i: Integer;
 begin
   if Assigned(FOnChangeBounds) then FOnChangeBounds(Self);
-  i:=FControlHandlers[chtOnChangeBounds].Count;
-  while FControlHandlers[chtOnChangeBounds].NextDownIndex(i) do
-    TNotifyEvent(FControlHandlers[chtOnChangeBounds][i])(Self);
+  DoCallNotifyHandler(chtOnChangeBounds);
 end;
 
 {------------------------------------------------------------------------------
@@ -1296,7 +1288,12 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.VisibleChanging;
 begin
+  DoCallNotifyHandler(chtOnVisibleChanging);
+end;
 
+procedure TControl.VisibleChanged;
+begin
+  DoCallNotifyHandler(chtOnVisibleChanged);
 end;
 
 procedure TControl.AddHandler(HandlerType: TControlHandlerType;
@@ -1314,8 +1311,12 @@ begin
 end;
 
 procedure TControl.DoCallNotifyHandler(HandlerType: TControlHandlerType);
+var
+  i: Integer;
 begin
-
+  i:=FControlHandlers[HandlerType].Count;
+  while FControlHandlers[HandlerType].NextDownIndex(i) do
+    TNotifyEvent(FControlHandlers[HandlerType][i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -2972,12 +2973,16 @@ begin
   if FVisible <> Value then begin
     VisibleChanging;
     FVisible := Value;
-    Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
-    Include(FControlFlags,cfRequestAlignNeeded);
-    if FVisible then
-      AdjustSize;
-    if cfRequestAlignNeeded in FControlFlags then
-      RequestAlign;
+    try
+      Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
+      Include(FControlFlags,cfRequestAlignNeeded);
+      if FVisible then
+        AdjustSize;
+      if cfRequestAlignNeeded in FControlFlags then
+        RequestAlign;
+    finally
+      VisibleChanged;
+    end;
   end;
   if (csLoading in ComponentState) then
     ControlState:=ControlState+[csVisibleSetInLoading];
@@ -3249,6 +3254,30 @@ procedure TControl.RemoveHandlerOnChangeBounds(
   const OnChangeBoundsEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
+end;
+
+procedure TControl.AddHandlerOnVisibleChanging(
+  const OnVisibleChangingEvent: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent));
+end;
+
+procedure TControl.RemoveHandlerOnVisibleChanging(
+  const OnVisibleChangingEvent: TNotifyEvent);
+begin
+  RemoveHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent));
+end;
+
+procedure TControl.AddHandlerOnVisibleChanged(
+  const OnVisibleChangedEvent: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
+end;
+
+procedure TControl.RemoveHandlerOnVisibleChanged(
+  const OnVisibleChangedEvent: TNotifyEvent);
+begin
+  RemoveHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
 end;
 
 procedure TControl.RemoveAllHandlersOfObject(AnObject: TObject);

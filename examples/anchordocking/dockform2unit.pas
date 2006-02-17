@@ -15,9 +15,11 @@ type
   TDockFormX = class(TForm)
     Button1: TButton;
     GroupBox1: TGroupBox;
+    HideMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure HideMenuItemClick(Sender: TObject);
   private
   public
     Docker: TLazControlDocker;
@@ -43,6 +45,12 @@ procedure TDockFormX.FormPaint(Sender: TObject);
 begin
   if Sender=nil then ;
   PaintBoundaries(Self,clRed);
+end;
+
+procedure TDockFormX.HideMenuItemClick(Sender: TObject);
+begin
+  if Sender=nil then ;
+  Hide;
 end;
 
 procedure TDockFormX.FormCreate(Sender: TObject);

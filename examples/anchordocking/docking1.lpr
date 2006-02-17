@@ -9,7 +9,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TDockForm1, DockForm1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
 

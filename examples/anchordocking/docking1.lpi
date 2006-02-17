@@ -34,7 +34,7 @@
       </Unit0>
       <Unit1>
         <Filename Value="dockform1unit.pas"/>
-        <ComponentName Value="DockForm1"/>
+        <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="dockform1unit.lrs"/>
         <UnitName Value="DockForm1Unit"/>

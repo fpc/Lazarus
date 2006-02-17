@@ -6,21 +6,19 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  DockForm2Unit, Buttons, LDockTree, Menus, LDockCtrl;
+  DockForm2Unit, Buttons, Menus, LDockCtrl;
 
 type
 
-  { TDockForm1 }
+  { TMainForm }
 
-  TDockForm1 = class(TForm)
+  TMainForm = class(TForm)
     CreateNewFormButton: TButton;
     MainPopupMenu: TPopupMenu;
-    HideMenuItem: TMenuItem;
     procedure CreateNewFormButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure HideMenuItemClick(Sender: TObject);
   private
     function CreateNewForm: TCustomForm;
   public
@@ -29,37 +27,32 @@ type
   end;
 
 var
-  DockForm1: TDockForm1;
+  MainForm: TMainForm;
 
 implementation
 
-{ TDockForm1 }
+{ TMainForm }
 
-procedure TDockForm1.FormPaint(Sender: TObject);
+procedure TMainForm.FormPaint(Sender: TObject);
 begin
   if Sender=nil then ;
   PaintBoundaries(Self,clBlue);
 end;
 
-procedure TDockForm1.HideMenuItemClick(Sender: TObject);
-begin
-  Hide;
-end;
-
-function TDockForm1.CreateNewForm: TCustomForm;
+function TMainForm.CreateNewForm: TCustomForm;
 begin
   Result:=TDockFormX.Create(Self);
   TDockFormX(Result).Docker.Manager:=DockingManager;
   TDockFormX(Result).Caption:=TDockFormX(Result).Docker.DockerName;
 end;
 
-procedure TDockForm1.CreateNewFormButtonClick(Sender: TObject);
+procedure TMainForm.CreateNewFormButtonClick(Sender: TObject);
 begin
   if Sender=nil then ;
   CreateNewForm;
 end;
 
-procedure TDockForm1.FormCreate(Sender: TObject);
+procedure TMainForm.FormCreate(Sender: TObject);
 var
   Form2: TCustomForm;
   Form3: TCustomForm;
@@ -76,7 +69,7 @@ begin
   DockingManager.Manager.InsertControl(Form3,alBottom,Self);
 end;
 
-procedure TDockForm1.FormDestroy(Sender: TObject);
+procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   if Sender=nil then ;
   DockingManager.Free;
