@@ -909,17 +909,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
-  
-{ TListColumnsPropertyEditor
-  PropertyEditor editor for the TListColumns properties.
-  Brings up the dialog for entering text. }
-
-  TListColumnsPropertyEditor = class(TClassPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-
 
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
@@ -4634,33 +4623,6 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paAutoUpdate];
 end;
 
-{ TListColumnsPropertyEditor }
-
-procedure TListColumnsPropertyEditor.Edit;
-var
-  ListColumns : TListColumns;
-  ColumnDlg: TColumnDlg;
-begin
-  ColumnDlg:=TColumnDlg.Create(nil);
-  try
-    ListColumns := TListColumns(GetObjectValue);
-    ColumnDlg.Columns.Assign(ListColumns);
-
-    if ColumnDlg.ShowModal = mrOK then begin
-      ListColumns.Assign(ColumnDlg.Columns);
-    end;
-  finally
-    ColumnDlg.Free;
-  end;
-end;
-
-function TListColumnsPropertyEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paRevertable, paReadOnly];
-end;
-
-//==============================================================================
-
 { TCursorPropertyEditor }
 
 function TCursorPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -6049,8 +6011,6 @@ begin
     nil,'',TCursorPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TComponent),nil
     ,'',TComponentPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
-    nil,'',TListColumnsPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TCollection),
     nil,'',TCollectionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),

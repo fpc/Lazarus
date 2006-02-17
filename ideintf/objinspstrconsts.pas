@@ -120,11 +120,20 @@ resourcestring
   sccsILEdtCenter      = 'Center';
   sccsILEdtOpenDialog  = 'Add Images';
   sccsILEdtSaveDialog  = 'Save Image';
+  
+  // StringGrid Editor
+  sccsSGEdt           = 'Edit StringGrid...';
+  sccsSGEdtCaption    = 'StringGrid Editor';
+  sccsSGEdtGrp        = 'String Grid';
+  sccsSGEdtApply      = 'Apply';
+  sccsSGEdtClean      = 'Clean';
+  sccsSGEdtLoad       = 'Load...';
+  sccsSGEdtSave       = 'Save...';
+  sccsSGEdtOpenDialog = 'Open';
+  sccsSGEdtSaveDialog = 'Save';
 
   // component editors
-  cesStringGridEditor = 'StringGrid Editor ...';
-  cesStringGridEditor2 = 'StringGrid Editor';
-  nbcesAddPage = 'Add page';
+  nbcesAddPage  = 'Add page';
   nbcesInsertPage = 'Insert page';
   nbcesDeletePage = 'Delete page';
   nbcesMovePageLeft = 'Move page left';

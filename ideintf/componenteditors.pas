@@ -255,9 +255,6 @@ type
   The default componenteditor for TStringGrid }
 
   TStringGridComponentEditor = class(TDefaultComponentEditor)
-  protected
-    procedure DoShowEditor;
-    procedure AssignGrid(dstGrid, srcGrid: TStringGrid; Full: boolean);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -775,141 +772,174 @@ end;
 
 { TStringGridEditorDlg }
 
-Type
-  TStringGridEditorDlg=Class(TForm)
+type
+  TStringGridEditorDlg = class(TForm)
+    BtnApply: TBitBtn;
+    BtnCancel: TBitBtn;
+    BtnHelp: TBitBtn;
+    BtnOK: TBitBtn;
+    BtnLoad: TButton;
+    BtnSave: TButton;
+    BtnClean: TButton;
+    GroupBox: TGroupBox;
+    OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
+    StringGrid: TStringGrid;
+    procedure BtnApplyClick(Sender: TObject);
+    procedure BtnCleanClick(Sender: TObject);
+    procedure BtnLoadClick(Sender: TObject);
+    procedure BtnSaveClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure StringGridPrepareCanvas(sender: TObject; Col, Row: Integer;
+      aState: TGridDrawState);
   private
-    FGrid: TStringGrid;
-    FFixedColor: TColor;
-    FFixedRows,FFixedCols: Integer;
-    procedure OnPrepareCanvas(Sender: TObject; Col,Row:Integer; aState: TGridDrawState);
+    FModified: Boolean;
+    FStringGrid: TStringGrid;
   public
-    constructor create(AOwner: TComponent); override;
-    property Grid: TStringGrid read FGrid write FGrid;
-    property FixedColor: TColor read FFixedColor write FFixedColor;
-    property FixedRows: Integer read FFixedRows write FFixedRows;
-    property FixedCols: Integer read FFixedCols write FFixedCols;
+    property Modified: Boolean read FModified;
+    procedure LoadFromGrid(AStringGrid: TStringGrid);
+    procedure SaveToGrid;
   end;
 
-procedure TStringGridEditorDlg.OnPrepareCanvas(Sender: TObject;
-  Col,Row: Integer; aState: TGridDrawState);
+function EditStringGrid(AStringGrid: TStringGrid): Boolean;
+var
+  StringGridEditorDlg: TStringGridEditorDlg;
 begin
-  if (Col<FFixedCols) or (Row<FFixedRows) then
-    FGrid.Canvas.Brush.Color := FFixedColor
+  StringGridEditorDlg := TStringGridEditorDlg.Create(Application);
+  try
+    StringGridEditorDlg.LoadFromGrid(AStringGrid);
+    if StringGridEditorDlg.ShowModal = mrOk then
+    begin
+      StringGridEditorDlg.SaveToGrid;
+    end;
+    Result := StringGridEditorDlg.Modified;
+  finally
+    StringGridEditorDlg.Free;
+  end;
 end;
 
-constructor TStringGridEditorDlg.create(AOwner: TComponent);
+procedure AssignGrid(Dest, Src: TStringGrid; Full: Boolean);
+var
+  I, J: Integer;
 begin
-  inherited create(AOwner);
-  BorderStyle:=bsDialog;
-  SetBounds(0,0,350,320);
-  Position :=poScreenCenter;
-  Caption  :=cesStringGridEditor2;
+  Dest.BeginUpdate;
+  try
+    if Full then
+    begin
+      Dest.Clear;
+      Dest.ColCount := Src.ColCount;
+      Dest.RowCount := Src.RowCount;
+    end;
+    
+    for I := 0 to Src.RowCount - 1 do
+      Dest.RowHeights[I] := Src.RowHeights[I];
 
-  FGrid:=TStringGrid.Create(Self);
-  FGrid.Parent:=Self;
-  FGrid.SetBounds(5,5,Width-15, 250);
-  FGrid.FixedCols:=0;
-  FGrid.FixedRows:=0;
-  FGrid.Options:=Fgrid.Options + [goEditing,goColSizing,goRowSizing];
-  FGrid.OnPrepareCanvas := @OnPrepareCanvas;
-  FGrid.ExtendedColSizing := True;
-  FGrid.Anchors := [akLeft,akTop,akRight,akBottom];
+    for I := 0 to Src.ColCount - 1 do
+      Dest.ColWidths[I] := Src.ColWidths[I];
 
-  //Bnt Ok
-  With TBitBtn.Create(self) do
-  begin
-    Parent:= self;
-    Left  := 240;
-    Top   := FGrid.Top + Fgrid.Height + 5;
-    Width := 99;
-    Kind  := bkOk;
-    Anchors := [akRight, akBottom];
+    for I := 0 to Src.ColCount - 1 do
+      for J := 0 to Src.RowCount - 1 do
+        Dest.Cells[I, J] := Src.Cells[I, J];
+  finally
+    Dest.EndUpdate(uoFull);
   end;
+end;
 
-  //Bnt Cancel
-  With TBitBtn.Create(self) do
+{ TStringGridEditorDlg }
+
+procedure TStringGridEditorDlg.StringGridPrepareCanvas(sender: TObject; Col,
+  Row: Integer; aState: TGridDrawState);
+begin
+  if (Col < FStringGrid.FixedCols) or (Row < FStringGrid.FixedRows) then
+    StringGrid.Canvas.Brush.Color := FStringGrid.FixedColor;
+end;
+
+procedure TStringGridEditorDlg.LoadFromGrid(AStringGrid: TStringGrid);
+begin
+  if Assigned(AStringGrid) then
   begin
-    Parent:= self;
-    Left  := 240;
-    Top   := FGrid.Top + Fgrid.Height + height + 5;
-    Width := 99;
-    Kind  := bkCancel;
-    Anchors := [akRight, akBottom];
+    FStringGrid := AStringGrid;
+
+    AssignGrid(StringGrid, AStringGrid, True);
+    FModified := False;
   end;
+end;
+
+procedure TStringGridEditorDlg.SaveToGrid;
+begin
+  if Assigned(FStringGrid) then
+  begin
+    AssignGrid(FStringGrid, StringGrid, False);
+    FModified := True;
+  end;
+end;
+
+procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
+begin
+  Caption := sccsSGEdtCaption;
+
+  GroupBox.Caption := sccsSGEdtGrp;
+  BtnClean.Caption := sccsSGEdtClean;
+  BtnApply.Caption := sccsSGEdtApply;
+  BtnLoad.Caption := sccsSGEdtLoad;
+  BtnSave.Caption := sccsSGEdtSave;
+
+  OpenDialog.Title := sccsSGEdtOpenDialog;
+  SaveDialog.Title := sccsSGEdtSaveDialog;
   
-  // Save/load buttons
+  StringGrid.ExtendedColSizing := True;
+end;
+
+procedure TStringGridEditorDlg.BtnLoadClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+  begin
+    StringGrid.LoadFromFile(OpenDialog.FileName);
+  end;
+end;
+
+procedure TStringGridEditorDlg.BtnCleanClick(Sender: TObject);
+begin
+  StringGrid.Clean;
+end;
+
+procedure TStringGridEditorDlg.BtnApplyClick(Sender: TObject);
+begin
+  SaveToGrid;
+end;
+
+procedure TStringGridEditorDlg.BtnSaveClick(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+  begin
+    StringGrid.SaveToFile(SaveDialog.FileName);
+  end;
 end;
 
 { TStringGridComponentEditor }
 
-procedure TStringGridComponentEditor.DoShowEditor;
-var Dlg : TStringGridEditorDlg;
-    Hook: TPropertyEditorHook;
-    aGrid: TStringGrid;
-begin
-  Dlg:=TStringGridEditorDlg.Create(nil);
-  try
-    if GetComponent is TStringGrid then begin
-      aGrid:=TStringGrid(GetComponent);
-      GetHook(Hook);
-
-      Dlg.FixedRows :=  AGrid.FixedRows;
-      Dlg.FixedCols :=  AGrid.FixedCols;
-      Dlg.FixedColor := AGrid.FixedColor;
-      
-      AssignGrid(Dlg.FGrid, aGrid, true);
-      
-      if Dlg.ShowModal=mrOK then
-      begin
-        //Apply the modifications
-        AssignGrid(aGrid, Dlg.FGrid, false);
-        //not work :o( aImg.AddImages(Dlg.fGrid);
-        Modified;
-      end;
-    end;
-  finally
-    Dlg.Free;
-  end;
-end;
-
-procedure TStringGridComponentEditor.AssignGrid(dstGrid, srcGrid: TStringGrid;
- Full: boolean);
-var
-  i,j: integer;
-begin
-  DstGrid.BeginUpdate;
-  try
-    if Full then begin
-      DstGrid.Clear;
-      Dstgrid.ColCount:=srcGrid.ColCount;
-      DstGrid.RowCount:=srcGrid.RowCount;
-    end;
-    for i:=0 to srcGrid.RowCount-1 do
-      DstGrid.RowHeights[i]:=srcGrid.RowHeights[i];
-    for i:=0 to srcGrid.ColCount-1 do
-      DstGrid.ColWidths[i]:=srcGrid.ColWidths[i];
-    for i:=0 to srcGrid.ColCount-1 do
-      for j:=0 to srcGrid.RowCount-1 do
-        if srcGrid.Cells[i,j]<>dstGrid.Cells[i,j] then
-          dstGrid.Cells[i,j]:=srcGrid.Cells[i,j];
-  finally
-    Dstgrid.EndUpdate(uoFull);
-  end;
-end;
-
 procedure TStringGridComponentEditor.ExecuteVerb(Index: Integer);
+var
+  Hook: TPropertyEditorHook;
 begin
-  doShowEditor;
+  if Index = 0 then
+  begin
+    GetHook(Hook);
+    if EditStringGrid(GetComponent as TStringGrid) then
+      if Assigned(Hook) then
+        Hook.Modified(Self);
+  end;
 end;
 
 function TStringGridComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:=cesStringGridEditor;
+  if Index = 0 then Result := sccsSGEdt
+  else Result := '';
 end;
 
 function TStringGridComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=1;
+  Result := 1;
 end;
 
 { TCheckListBoxEditorDlg }
@@ -1343,6 +1373,7 @@ end;
 initialization
   {$I checklistboxeditordlg.lrs}
   {$I checkgroupeditordlg.lrs}
+  {$I stringgriddlg.lrs}
   
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);

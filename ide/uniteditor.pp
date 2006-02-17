@@ -3979,17 +3979,20 @@ begin
 end;
 
 procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+
   procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
   begin
     AComboBox.Items.Assign(Strings);
     if AComboBox.Items.Count>0 then
       AComboBox.ItemIndex := 0;
   end;
+  
 begin
   if Assigned(ADialog) then
   begin
     with ADialog, InputHistories do
     begin
+      //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
       TextToFindComboBox.Items.Assign(FindHistory);
       if not EditorOpts.FindTextAtCursor then begin
         if TextToFindComboBox.Items.Count>0 then begin

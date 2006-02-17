@@ -21,7 +21,6 @@ interface
 
 uses
   ActionsEditor,
-  ColumnDlg,
   ComponentEditors,
   ComponentReg,
   ComponentTreeView,
