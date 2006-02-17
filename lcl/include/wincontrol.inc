@@ -4339,14 +4339,12 @@ begin
     Result := nil;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetHandle                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl GetHandle
+------------------------------------------------------------------------------}
 function TWinControl.GetHandle: HWND;
 begin
-  if not HandleAllocated then
-    //Assert(False, Format('Trace:[TWinControl.GetHandle] %s(%s)', [ClassNAme, Name]))
-    ;
+  //if not HandleAllocated then DebugLn('TWinControl.GetHandle Creating handle on the fly: ',DbgSName(Self));
   HandleNeeded;
   Result := FHandle;
 end;
@@ -5143,11 +5141,15 @@ begin
   DoSendBoundsToInterface;
   TWSWinControlClass(WidgetSetClass).ShowHide(Self);
 
-  if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[]
-  then begin
+  if wcfColorChanged in FWinControlFlags then begin
     // replace by update style call
     TWSWinControlClass(WidgetSetClass).SetColor(Self);
-    FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
+    FWinControlFlags:=FWinControlFlags-[wcfColorChanged];
+  end;
+  if wcfFontChanged in FWinControlFlags then begin
+    // replace by update style call
+    TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
+    FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
   end;
 
   if not (csDesigning in ComponentState) then
@@ -5245,12 +5247,16 @@ begin
       TWSWinControlClass(WidgetSetClass).SetText(Self, CachedText);
     InvalidatePreferredSize;
 
-    if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then begin
+    if wcfColorChanged in FWinControlFlags then begin
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
+      Exclude(FWinControlFlags,wcfColorChanged);
+    end;
+    if wcfFontChanged in FWinControlFlags then begin
+      TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
       NotifyControls(CM_PARENTCOLORCHANGED);
       for i := 0 to ControlCount - 1 do
         Controls[i].ParentFontChanged;
-      FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
+      FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
     end;
   end;
 

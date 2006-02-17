@@ -62,6 +62,8 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -81,6 +83,7 @@ type
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
 
   end;
 
@@ -200,6 +203,42 @@ begin
   
   GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl, PGtkWidget(BtnWidget), 'clicked');   
 end;
+
+procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
+var
+  Widget: PGTKWidget;
+  LblWidget: PGtkWidget;
+begin
+  Widget:= PGtkWidget(AWinControl.Handle);
+    {$IFDEF GTK2}
+  LblWidget := (PGtkBin(Widget)^.Child);
+  {$ELSE}
+  LblWidget := (pGtkBin(Widget)^.Child);
+  {$ENDIF}
+  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  if LblWidget <> nil then
+    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+
+end;
+procedure TGtkWSButton.SetFont(const AWinControl: TWinControl; const AFont : TFont);
+var
+  Widget: PGTKWidget;
+  LblWidget: PGtkWidget;
+begin
+  Widget:= PGtkWidget(AWinControl.Handle);
+    {$IFDEF GTK2}
+  LblWidget := (PGtkBin(Widget)^.Child);
+  {$ELSE}
+  LblWidget := (pGtkBin(Widget)^.Child);
+  {$ENDIF}
+
+//  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  if LblWidget<>nil then begin
+    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
+end;
+
 
 procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer);
@@ -388,7 +427,38 @@ begin
   GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
     AWinControl.color,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+
+
 end;
+
+procedure TGtkWSBitBtn.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  WidgetInfo: PWidgetInfo;
+  BitBtnInfo: PBitBtnWidgetInfo;
+  Widget: PGTKWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+
+  if  AFont.IsDefault then exit;
+  Widget:= PGtkWidget(AWinControl.Handle);
+  WidgetInfo := GetWidgetInfo(Widget);
+  BitBtnInfo := WidgetInfo^.UserData;
+
+
+//  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, clNone,
+//     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+
+  if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
+  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
+    AWinControl.color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
+
+
+end;
+
+
 
 procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);

@@ -1334,11 +1334,15 @@ begin
   ChangeFGColor:=((FGColor and SYS_COLOR_BASE)=0) and (FGColor<>clNone);
   ChangeBGColor:=((BGColor and SYS_COLOR_BASE)=0) and (BGColor<>clNone);
   if (not ChangeFGColor) and (not ChangeBGColor) then exit;
-  
+
+  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then begin
+    // the GTKAPIWidget is self drawn, so no use to change the widget style.
+    exit;
+  end;
+
   {$IFDEF DisableWidgetColor}
   exit;
   {$ENDIF}
-
   if (GTK_WIDGET_REALIZED(AWidget)) then begin
     WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
   end else begin
@@ -1368,6 +1372,40 @@ begin
   end;
   gtk_widget_set_style(aWidget,windowStyle);
 end;
+
+
+procedure TGtkWidgetSet.SetWidgetFont(const AWidget : PGtkWidget;
+  const AFont: TFont);
+{$IFDEF GTK1}
+var
+  WindowStyle: PGtkStyle;
+  FontGdiObject: PGdiObject;
+
+begin
+  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then begin
+    // the GTKAPIWidget is self drawn, so no use to change the widget style.
+    exit;
+  end;
+
+  if (GTK_WIDGET_REALIZED(AWidget)) then begin
+    WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
+  end else begin
+    WindowStyle := gtk_style_copy(gtk_rc_get_style (AWidget));
+  end;
+  if (Windowstyle = nil)  then begin
+     Windowstyle := gtk_style_new ;
+  end;
+
+  FontGdiObject:=PGdiObject(AFont.Handle);
+  windowstyle^.font:=pointer(FontGdiObject^.GdiFontObject);
+  gtk_widget_set_style(aWidget,windowStyle);
+
+{$ELSE}
+begin
+{$ENDIF}
+end;
+
+
 
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,

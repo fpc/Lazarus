@@ -390,10 +390,20 @@ end;
 
 procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
+var
+  Widget: PGtkWidget;
 begin
-  DebugLn('TGtkWSWinControl.SetFont: implement me!');
-  {$NOTE TGtkWSWinControl.SetFont: implement me!'}
-  // TODO: implement me!
+  if not AWinControl.HandleAllocated then exit;
+  Widget:=pGtkWidget(AWinControl.handle);
+  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then
+    exit;
+
+  if AFont.IsDefault then exit;
+  DebugLn('TGtkWSWinControl.SetFont ',DbgSName(AWinControl));
+  GtkWidgetSet.SetWidgetFont(Widget,Afont);
+  GtkWidgetSet.SetWidgetColor(Widget,AWinControl.font.color, clNone,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
 procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;
@@ -431,10 +441,12 @@ begin
   if  ((csOpaque in AWinControl.ControlStyle)
   and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
     exit;
+  //DebugLn('TGtkWSWinControl.SetColor ',DbgSName(AWinControl));
   GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
                               AWinControl.font.color, AWinControl.color,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+//    GtkWidgetSet.setWidgetFont(pGtkWidget(AWinControl.handle),aWinControl.font);
   UpdateWidgetStyleOfControl(AWinControl);
 end;
 
