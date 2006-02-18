@@ -4055,7 +4055,7 @@ msgid "library path"
 msgstr "trajectòria de les biblioteques"
 
 #: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA freepascal library (.dll under windows, .so under linux, .so under macosx). The library source file is automatically maintained by Lazarus."
+msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptslicense

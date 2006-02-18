@@ -2888,7 +2888,7 @@ resourcestring
     +'lazarus.';
   lisCustomProgramAFreepascalProgram = 'Custom Program%sA freepascal program.';
   lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%sA '
-    +'freepascal library (.dll under windows, .so under linux, .so under '
+    +'freepascal library (.dll under windows, .so under linux, .dylib under '
     +'macosx). The library source file is automatically maintained by Lazarus.';
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
