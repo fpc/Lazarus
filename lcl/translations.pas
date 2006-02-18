@@ -50,10 +50,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, GetText, FileUtil, StringHashList
-  {$IFDEF linux}{$IFNDEF NoUTF8Translations}
-  ,LazCWString
-  {$ENDIF}{$ENDIF};
+  Classes, SysUtils, LCLProc, GetText, FileUtil, StringHashList;
 
 type
   { TPOFileItem }
