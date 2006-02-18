@@ -350,12 +350,40 @@ msgstr ""
 msgid "Save Image"
 msgstr ""
 
-#: objinspstrconsts:cesstringgrideditor
-msgid "StringGrid Editor ..."
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
 msgstr ""
 
-#: objinspstrconsts:cesstringgrideditor2
+#: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtapply
+msgid "Apply"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedtsave
+msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedtopendialog
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtsavedialog
+msgid "Save"
 msgstr ""
 
 #: objinspstrconsts:nbcesaddpage

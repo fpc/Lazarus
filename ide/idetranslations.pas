@@ -102,8 +102,6 @@ begin
     Result:=rsLanguagePolishWin
   else if CompareText(ID,'ru')=0 then
     Result:=rsLanguageRussian
-  else if CompareText(ID,'ruwin')=0 then
-    Result:=rsLanguageRussianWin
   else if CompareText(ID,'es')=0 then
     Result:=rsLanguageSpanish
   else if CompareText(ID,'fi')=0 then

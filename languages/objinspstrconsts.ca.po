@@ -102,13 +102,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Tot)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Desconegut)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Desconegut)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -225,6 +225,10 @@ msgstr ""
 #: objinspstrconsts:oisclass
 msgid "Class"
 msgstr "Classe"
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -346,17 +350,21 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Edita la llista d'accions..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
 msgstr ""
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Edita la llista d'accions..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -418,14 +426,6 @@ msgstr "Ajuda"
 msgid "Help Contents"
 msgstr "Contingut de l'ajuda"
 
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "La base de dades d'ajuda %s%s%s no ha trobat un visor per a la pàgina d'ajuda del tipus %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "No s'ha trobat la base de dades de l'ajuda %s%s%s"
-
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
 msgstr "No s'ha trobat el context de l'ajuda %s en la base de dades %s%s%s."
@@ -433,6 +433,14 @@ msgstr "No s'ha trobat el context de l'ajuda %s en la base de dades %s%s%s."
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
 msgstr "No s'ha trobat el context de l'ajuda %s."
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "La base de dades d'ajuda %s%s%s no ha trobat un visor per a la pàgina d'ajuda del tipus %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "No s'ha trobat la base de dades de l'ajuda %s%s%s"
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -522,6 +530,10 @@ msgstr "Carrega el diàleg de l'imatge"
 msgid "Load picture"
 msgstr ""
 
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr ""
+
 #: objinspstrconsts:oismasks
 msgid "Masks..."
 msgstr ""
@@ -538,10 +550,6 @@ msgstr ""
 msgid "Move Down"
 msgstr "Mou avall"
 
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mou amunt"
-
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr ""
@@ -549,6 +557,10 @@ msgstr ""
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Mou amunt"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -570,13 +582,13 @@ msgstr ""
 msgid "Next"
 msgstr "Següent"
 
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajuda -> Configura Ajuda -> Visors"
-
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
 msgstr "No s'ha trobat ajuda per la línia %d, columna %d de %s."
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajuda -> Configura Ajuda -> Visors"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -694,13 +706,13 @@ msgstr "Selecciona el &color"
 msgid "Select &Font..."
 msgstr "Selecciona la &font"
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Selecciona-ho tot"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Selecciona un fitxer"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Selecciona-ho tot"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -754,13 +766,13 @@ msgstr ""
 msgid "String"
 msgstr "Cadena"
 
-#: objinspstrconsts:cesstringgrideditor2
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
 msgstr "Editor de la cadena de la graella"
-
-#: objinspstrconsts:cesstringgrideditor
-msgid "StringGrid Editor ..."
-msgstr "Editor de la cadena de la graella ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"

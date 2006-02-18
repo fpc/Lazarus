@@ -789,10 +789,6 @@ msgstr "Обзор"
 msgid "Browse for Compiler (%s)"
 msgstr "Обзор (поиск компилятора) (%s)"
 
-#: lazarusidestrconsts:dlgunitdepbrowse
-msgid "Browse..."
-msgstr "Обзор..."
-
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
 msgstr "Сборка"
@@ -2450,8 +2446,8 @@ msgid "External tool %d"
 msgstr "Внешний инструмент %d"
 
 #: lazarusidestrconsts:lisexttoolexternaltools
-msgid "External Tools"
-msgstr "Внешние инструменты"
+msgid "External tools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
@@ -3040,6 +3036,10 @@ msgstr "Справки не найдено"
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Параметры справки"
+
+#: lazarusidestrconsts:lishelpselectordialog
+msgid "Help selector"
+msgstr ""
 
 #: lazarusidestrconsts:lishelpselectorerror
 msgid "Help Selector Error"
@@ -4421,10 +4421,6 @@ msgstr "Зависимость - вниз"
 msgid "Move dependency up"
 msgstr "Зависимость вверх"
 
-#: lazarusidestrconsts:lisexttoolmovedown
-msgid "Move Down"
-msgstr "Сдвинуть вниз"
-
 #: lazarusidestrconsts:lismenueditormovedown
 msgid "Move Down (or right)"
 msgstr ""
@@ -4476,10 +4472,6 @@ msgstr ""
 #: lazarusidestrconsts:fdmordermovetofront
 msgid "Move to front"
 msgstr ""
-
-#: lazarusidestrconsts:lisexttoolmoveup
-msgid "Move Up"
-msgstr "Вверх"
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5876,10 +5868,6 @@ msgstr "Запуск-до не удался"
 #: lazarusidestrconsts:rslanguagerussian
 msgid "Russian"
 msgstr "Русский"
-
-#: lazarusidestrconsts:rslanguagerussianwin
-msgid "Russian(CP1251)"
-msgstr "Русский(CP1251)"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"

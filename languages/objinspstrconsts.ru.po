@@ -237,6 +237,10 @@ msgstr ""
 msgid "Class"
 msgstr "Class"
 
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
 msgstr "Очистить"
@@ -363,6 +367,10 @@ msgstr "Правка списка действий..."
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
 msgstr ""
 
 #: objinspstrconsts:sccstredt
@@ -532,6 +540,10 @@ msgstr "Диалог загрузки изображения"
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
 msgstr "Загрузить картинку"
+
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr ""
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
@@ -765,13 +777,13 @@ msgstr "Растянуть"
 msgid "String"
 msgstr "String"
 
-#: objinspstrconsts:cesstringgrideditor2
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
 msgstr "Редактор StringGrid"
-
-#: objinspstrconsts:cesstringgrideditor
-msgid "StringGrid Editor ..."
-msgstr "Редактор StringGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"

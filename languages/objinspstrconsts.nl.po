@@ -102,13 +102,13 @@ msgstr "&Omhoog"
 msgid "(All)"
 msgstr "(Alles)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Onbekend)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(geen)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Onbekend)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -225,6 +225,10 @@ msgstr "CheckListBox editor"
 #: objinspstrconsts:oisclass
 msgid "Class"
 msgstr "Class"
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -346,17 +350,21 @@ msgstr "A&fsluiten"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Bewerk action list..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
 msgstr ""
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Bewerk action list..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -418,14 +426,6 @@ msgstr "Help"
 msgid "Help Contents"
 msgstr "Inhoud van de Help"
 
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "Help Database %s%s%s heeft geen viewer gevonden voor een helppagina van het type %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "Helpdatabase %s%s%s is niet gevonden."
-
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
 msgstr "Help context %s werd niet gevonden in de Database %s%s%s"
@@ -433,6 +433,14 @@ msgstr "Help context %s werd niet gevonden in de Database %s%s%s"
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
 msgstr "Help context %s werd niet gevonden."
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "Help Database %s%s%s heeft geen viewer gevonden voor een helppagina van het type %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Helpdatabase %s%s%s is niet gevonden."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -522,6 +530,10 @@ msgstr "Laad Plaatjes Dialoog"
 msgid "Load picture"
 msgstr "Laad plaatje"
 
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr ""
+
 #: objinspstrconsts:oismasks
 msgid "Masks..."
 msgstr "Maskers..."
@@ -538,10 +550,6 @@ msgstr "Wijzig het item"
 msgid "Move Down"
 msgstr "Ga naar beneden"
 
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Ga naar boven"
-
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Pagina naar links"
@@ -549,6 +557,10 @@ msgstr "Pagina naar links"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Pagina naar rechts"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Ga naar boven"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -570,13 +582,13 @@ msgstr ""
 msgid "Next"
 msgstr "Volgende"
 
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -> Viewers"
-
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
 msgstr "Er is geen help gevonden voor regel %d, kolom %d van %s."
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -> Viewers"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -694,13 +706,13 @@ msgstr "Selecteer &Kleur..."
 msgid "Select &Font..."
 msgstr "Selecteer &Lettertype..."
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Alles Selecteren"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Selecteer een bestand"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Alles Selecteren"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -754,13 +766,13 @@ msgstr ""
 msgid "String"
 msgstr "String"
 
-#: objinspstrconsts:cesstringgrideditor2
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
 msgstr "StringGrid Bewerker"
-
-#: objinspstrconsts:cesstringgrideditor
-msgid "StringGrid Editor ..."
-msgstr "StringGrid Bewerker ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"

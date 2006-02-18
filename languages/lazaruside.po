@@ -4998,10 +4998,6 @@ msgstr ""
 msgid "Russian"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagerussianwin
-msgid "Russian(CP1251)"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
 msgstr ""
@@ -5059,7 +5055,7 @@ msgid "Unit dependencies"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepbrowse
-msgid "Browse..."
+msgid "Open"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
@@ -6651,7 +6647,7 @@ msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
-msgid "External Tools"
+msgid "External tools"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolremove
@@ -6659,11 +6655,11 @@ msgid "Remove"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolmoveup
-msgid "Move Up"
+msgid "Up"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolmovedown
-msgid "Move Down"
+msgid "Down"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolmaximumtoolsreached
@@ -8512,6 +8508,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpselectordialog
+msgid "Help selector"
 msgstr ""
 
 #: lazarusidestrconsts:lisselectahelpitem

@@ -1495,7 +1495,7 @@ resourcestring
   srkmecunknown                   = 'unknown editor command';
    
   //Key strings
-  //TODO: remove, they are meved to IntfStrConsts
+  //TODO: remove, they are moved to IntfStrConsts
   srVK_UNKNOWN    = 'Unknown';
   srVK_LBUTTON    = 'Mouse Button Left';
   srVK_RBUTTON    = 'Mouse Button Right';
@@ -1570,7 +1570,6 @@ resourcestring
   rsLanguageSpanish     = 'Spanish';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
-  rsLanguageRussianWin  = 'Russian(CP1251)';
   rsLanguagePolish      = 'Polish';
   rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
   rsLanguagePolishWin   = 'Polish(CP1250)';

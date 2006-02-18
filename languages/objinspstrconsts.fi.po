@@ -102,13 +102,13 @@ msgstr "Ylös"
 msgid "(All)"
 msgstr "(Kaikki)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr ""
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(Ei mikään)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -225,6 +225,10 @@ msgstr ""
 #: objinspstrconsts:oisclass
 msgid "Class"
 msgstr "Luokka"
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -346,17 +350,21 @@ msgstr ""
 msgid "Edit"
 msgstr "Muokkaa"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Muokkaa toimintolistaa"
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
+msgstr ""
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
 msgstr ""
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Muokkaa TreeView:n valintoja"
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Muokkaa toimintolistaa"
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -418,20 +426,20 @@ msgstr ""
 msgid "Help Contents"
 msgstr ""
 
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr ""
-
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
 msgstr ""
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
 msgstr ""
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
@@ -522,6 +530,10 @@ msgstr "Tuo kuva"
 msgid "Load picture"
 msgstr "Tuo kuva"
 
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr ""
+
 #: objinspstrconsts:oismasks
 msgid "Masks..."
 msgstr "Tuo maski"
@@ -538,10 +550,6 @@ msgstr "Muokkaa kohtaa"
 msgid "Move Down"
 msgstr ""
 
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr ""
-
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Siirrä välilehteä vasemmalle"
@@ -549,6 +557,10 @@ msgstr "Siirrä välilehteä vasemmalle"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Siirrä välilehteä oikealle"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -570,12 +582,12 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
-
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtnone
@@ -694,13 +706,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr ""
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Valitse tiedosto"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -754,13 +766,13 @@ msgstr ""
 msgid "String"
 msgstr ""
 
-#: objinspstrconsts:cesstringgrideditor2
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr ""
+
+#: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
 msgstr "StringGrid muokkain"
-
-#: objinspstrconsts:cesstringgrideditor
-msgid "StringGrid Editor ..."
-msgstr "Avaa StringGrid muokkain"
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
