@@ -42,7 +42,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLIntf, LCLType, SynEditTextBuffer,
+  LCLProc, LCLIntf, LCLType, SynEditTextBuffer, Messages, LMessages,
   {$ELSE}
   Windows, SynEditTypes, Messages,
   {$ENDIF}
@@ -57,11 +57,35 @@ type
       X, Y: integer
       {$IFDEF SYN_LAZARUS}; Selected: boolean; Index: integer{$ENDIF}
       ): boolean of object;
+  {$IFDEF SYN_LAZARUS}
+  TSynBaseCompletionMeasureItem =
+    function(const AKey: string; ACanvas: TCanvas;
+      Selected: boolean; Index: integer): TPoint of object;
+  {$ENDIF}
   TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
     of object;
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
   TSynBaseCompletionSearchPosition = procedure(var Position :integer) of object;
+  
+  {$IFDEF SYN_LAZARUS}
+  TSynBaseCompletionForm = class;
+  
+  { TSynBaseCompletionHint }
 
+  TSynBaseCompletionHint = class(THintWindow)
+  private
+    FCompletionForm: TSynBaseCompletionForm;
+    FIndex: Integer;
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TSynBaseCompletionForm);
+    function CalcHintRect(MaxWidth: Integer; const AHint: string;
+      AData: Pointer): TRect; override;
+    property Index: Integer read FIndex write FIndex;
+  end;
+  {$ENDIF}
+  
   { TSynBaseCompletionForm }
 
   TSynBaseCompletionForm = class(TForm)
@@ -87,6 +111,7 @@ type
     FOnKeyPrevChar: TNotifyEvent;
     FTextColor: TColor;
     FTextSelectedColor: TColor;
+    FHint: TSynBaseCompletionHint;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     {$ENDIF}
     procedure SetCurrentString(const Value: string);
@@ -103,23 +128,35 @@ type
     procedure SetNbLinesInWindow(const Value: Integer);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    {$IFDEF SYN_LAZARUS}
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    {$ENDIF}
     procedure StringListChange(Sender: TObject);
     {$IFDEF SYN_LAZARUS}
     procedure SetFontHeight(NewFontHeight: integer);
     procedure DoOnResize; override;
+    procedure SetBackgroundColor(const AValue: TColor);
     {$ENDIF}
   private
     Bitmap: TBitmap; // used for drawing
     fCurrentEditor: TComponent;
+    FOnMeasureItem: TSynBaseCompletionMeasureItem;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
+    {$IFDEF SYN_LAZARUS}
+    procedure ShowItemHint(AIndex: Integer);
+    {$ENDIF}
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyDelete: TNotifyEvent read FOnKeyDelete write FOnKeyDelete;
     property OnPaintItem: TSynBaseCompletionPaintItem read FOnPaintItem
       write FOnPaintItem;
+    {$IFDEF SYN_LAZARUS}
+    property OnMeasureItem: TSynBaseCompletionMeasureItem read FOnMeasureItem
+      write FOnMeasureItem;
+    {$ENDIF}
     property OnValidate: TValidateEvent read FOnValidate write FOnValidate;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property ItemList: TStrings read FItemList write SetItemList;
@@ -136,7 +173,7 @@ type
     property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;
     property OnKeyNextChar: TNotifyEvent read FOnKeyNextChar write FOnKeyNextChar;
     property OnKeyPrevChar: TNotifyEvent read FOnKeyPrevChar write FOnKeyPrevChar;
-    property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
       read FTextSelectedColor write FTextSelectedColor;
@@ -154,6 +191,9 @@ type
     RFAnsi: boolean;
     SFAnsi: boolean;
     function GetClSelect: TColor;
+    {$IFDEF SYN_LAZARUS}
+    function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
+    {$ENDIF}
     procedure SetClSelect(const Value: TColor);
     function GetCurrentString: string;
     function GetItemList: TStrings;
@@ -168,6 +208,9 @@ type
     procedure SetNbLinesInWindow(const Value: Integer);
     procedure SetOnCancel(const Value: TNotifyEvent);
     procedure SetOnKeyPress(const Value: TKeyPressEvent);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetOnMeasureItem(const AValue: TSynBaseCompletionMeasureItem);
+    {$ENDIF}
     procedure SetOnPaintItem(const Value: TSynBaseCompletionPaintItem);
     procedure SetPosition(const Value: Integer);
     procedure SetOnValidate(const Value: TValidateEvent);
@@ -208,14 +251,18 @@ type
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
     property OnPaintItem: TSynBaseCompletionPaintItem
       read GetOnPaintItem write SetOnPaintItem;
+    {$IFDEF SYN_LAZARUS}
+    property OnMeasureItem: TSynBaseCompletionMeasureItem read GetOnMeasureItem
+      write SetOnMeasureItem;
+    {$ENDIF}
     property ItemList: TStrings read GetItemList write SetItemList;
     property Position: Integer read GetPosition write SetPosition;
     property NbLinesInWindow: Integer read GetNbLinesInWindow
-      write SetNbLinesInWindow;
+                                      write SetNbLinesInWindow;
     {$IFDEF SYN_LAZARUS}
     property FontHeight: integer read GetFontHeight write SetFontHeight;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
-      read GetOnSearchPosition write SetOnSearchPosition;
+                             read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
                                                write SetOnKeyCompletePrefix;
     property OnKeyNextChar: TNotifyEvent read GetOnKeyNextChar
@@ -351,6 +398,7 @@ begin
   Caption:='Completion';
   Color:=clNone;
   FBackgroundColor:=clWhite;
+  FHint := TSynBaseCompletionHint.Create(Self);
   {$ENDIF}
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson')+2;
@@ -361,13 +409,18 @@ begin
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
   bitmap := TBitmap.Create;
   NbLinesInWindow := 6;
+  {$IFNDEF SYN_LAZARUS}
   ShowHint := True;
+  {$ELSE}
+  ShowHint := False;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.Deactivate;
 begin
   Visible := False;
   {$IFDEF SYN_LAZARUS}
+  FHint.Visible := False;
   if Assigned(OnCancel) then OnCancel(Self);
   if (FCurrentEditor<>nil) and (TCustomSynEdit(fCurrentEditor).HandleAllocated)
   then
@@ -380,8 +433,36 @@ begin
   bitmap.free;
   Scroll.Free;
   FItemList.Free;
+  {$IFDEF SYN_LAZARUS}
+  FHint.Free;
+  {$ENDIF}
   inherited destroy;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynBaseCompletionForm.ShowItemHint(AIndex: Integer);
+var
+  P: TPoint;
+  R: TRect;
+begin
+  if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) then
+  begin
+    FHint.Index := AIndex;
+    if FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil).Right <= ClientWidth then
+    begin
+      FHint.Hide;
+      Exit;
+    end;
+    
+    P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
+    R := FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil);
+    
+    FHint.ActivateHint(Bounds(P.X, P.Y, R.Right, R.Bottom), ItemList[AIndex]);
+    FHint.Invalidate;
+  end
+  else FHint.Hide;
+end;
+{$ENDIF}
 
 procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
   Shift: TShiftState);
@@ -493,6 +574,15 @@ begin
   y := (y - 1) div FFontHeight;
   Position := Scroll.Position + y;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynBaseCompletionForm.MouseMove(Shift: TShiftState; X,Y: Integer);
+begin
+  Y := (Y - 1) div FFontHeight;
+
+  ShowItemHint(Scroll.Position + Y);
+end;
+{$ENDIF}
 
 procedure TSynBaseCompletionForm.Paint;
 var
@@ -699,6 +789,17 @@ begin
     Invalidate;
   end;
 end;
+
+procedure TSynBaseCompletionForm.SetBackgroundColor(const AValue: TColor);
+begin
+  if FBackgroundColor <> AValue then
+  begin
+    FBackgroundColor := AValue;
+    Color := AValue;
+    FHint.Color := AValue;
+  end;
+end;
+
 {$ENDIF}
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
@@ -736,6 +837,7 @@ begin
       Invalidate;
     end;
   end;
+  ShowItemHint(Position);
 end;
 
 procedure TSynBaseCompletionForm.StringListChange(Sender: TObject);
@@ -854,12 +956,14 @@ begin
     CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
   end;
   Form.SetBounds(x,y,Form.Width,Form.Height);
-  Form.Color:=clNone;
   {$ELSE}
   Form.Left:=x;
   Form.Top:=y;
   {$ENDIF}
   Form.Show;
+  {$IFDEF SYN_LAZARUS}
+  Form.Position := Form.Position;
+  {$ENDIF}
 end;
 
 function TSynBaseCompletion.GetCurrentString: string;
@@ -927,6 +1031,14 @@ begin
   form.OnKeyPress := Value;
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TSynBaseCompletion.SetOnMeasureItem(
+  const AValue: TSynBaseCompletionMeasureItem);
+begin
+  Form.OnMeasureItem := AValue;
+end;
+{$ENDIF}
+
 procedure TSynBaseCompletion.SetOnPaintItem(const Value:
   TSynBaseCompletionPaintItem);
 begin
@@ -947,6 +1059,13 @@ function TSynBaseCompletion.GetClSelect: TColor;
 begin
   Result := Form.ClSelect;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TSynBaseCompletion.GetOnMeasureItem: TSynBaseCompletionMeasureItem;
+begin
+  Result := Form.OnMeasureItem;
+end;
+{$ENDIF}
 
 procedure TSynBaseCompletion.SetClSelect(const Value: TColor);
 begin
@@ -1611,6 +1730,62 @@ begin
     List.Free;
   end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+
+{ TSynBaseCompletionHint }
+
+procedure TSynBaseCompletionHint.Paint;
+var
+  R: TRect;
+begin
+  if FCompletionForm.Position = FIndex then
+    Canvas.Brush.Color := FCompletionForm.ClSelect
+  else
+    Canvas.Brush.Color := Color;
+    
+  Canvas.Pen.Width := 1;
+  R := ClientRect;
+  Canvas.FillRect(R);
+  DrawEdge(Canvas.Handle, R, BDR_RAISEDOUTER, BF_RECT);
+  
+  Canvas.Font.Color := FCompletionForm.TextColor;
+  
+  if not Assigned(FCompletionForm.OnPaintItem)
+  or not FCompletionForm.OnPaintItem(Caption, Canvas, 1, 1,
+                                     FCompletionForm.Position = FIndex, FIndex)
+  then begin
+    Canvas.TextOut(2, 2, Caption);
+  end;
+end;
+
+constructor TSynBaseCompletionHint.Create(AOwner: TSynBaseCompletionForm);
+begin
+  inherited Create(AOwner);
+  FCompletionForm := AOwner;
+  Color := AOwner.BackgroundColor;
+  AutoHide := False;
+  Visible := False;
+end;
+
+function TSynBaseCompletionHint.CalcHintRect(MaxWidth: Integer;
+  const AHint: string; AData: Pointer): TRect;
+var
+  P: TPoint;
+begin
+  if Assigned(FCompletionForm.OnMeasureItem) then
+  begin
+    Result.TopLeft := Point(0, 0);
+    P := FCompletionForm.OnMeasureItem(AHint, Canvas,
+                                     FCompletionForm.Position = FIndex, FIndex);
+    Result.Bottom := P.Y + 2;
+    Result.Right := P.X + 4;
+  end
+  else
+    Result := Rect(0, 0, Canvas.TextWidth(AHint) + 4, FCompletionForm.FontHeight);
+end;
+
+{$ENDIF}
 
 end.
 

@@ -46,9 +46,11 @@ type
     icvIdentifier, icvProcWithParams, icvIndexedProp);
 
 // completion form and functions
-procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
+function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
-  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
+  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
+  MeasureOnly: Boolean = False): TPoint;
+
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
 function BreakLinesInText(const s: string; MaxLineLength: integer): string;
@@ -58,9 +60,10 @@ implementation
 var
   SynREEngine: TRegExpr;
 
-procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
+function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
-  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
+  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
+  MeasureOnly: Boolean): TPoint;
 var
   BGRed: Integer;
   BGGreen: Integer;
@@ -105,7 +108,10 @@ var
   begin
     if TokenStart>=1 then begin
       CurToken:=copy(AKey,TokenStart,TokenEnd-TokenStart);
-      ACanvas.TextOut(x+1, y, CurToken);
+      if MeasureOnly then
+        Inc(Result.X, ACanvas.TextWidth(CurToken))
+      else
+        ACanvas.TextOut(x+1, y, CurToken);
       x := x + ACanvas.TextWidth(CurToken);
       //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height),' ',dbgs(ACanvas.TextWidth(CurToken)));
       TokenStart:=0;
@@ -121,11 +127,14 @@ var
   ANode: TCodeTreeNode;
   BackgroundColor: TColor;
 begin
+  Result.X := 0;
+  Result.Y := ACanvas.TextHeight('W');
   if CurrentCompletionType=ctIdentCompletion then begin
     // draw
     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
     if IdentItem=nil then begin
-      ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
+      if not MeasureOnly then
+        ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
       exit;
     end;
     BackgroundColor:=ACanvas.Brush.Color;
@@ -189,14 +198,20 @@ begin
     end;
 
     SetFontColor(AColor);
-    ACanvas.TextOut(x+1,y,s);
+    if MeasureOnly then
+      Inc(Result.X, ACanvas.TextWidth('procedure '))
+    else
+      ACanvas.TextOut(x+1,y,s);
     inc(x,ACanvas.TextWidth('procedure '));
     if x>MaxX then exit;
 
     SetFontColor(clBlack);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=GetIdentifier(IdentItem.Identifier);
-    ACanvas.TextOut(x+1,y,s);
+    if MeasureOnly then
+      Inc(Result.X, ACanvas.TextWidth(s))
+    else
+      ACanvas.TextOut(x+1,y,s);
     inc(x,ACanvas.TextWidth(s));
     if x>MaxX then exit;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
@@ -247,7 +262,10 @@ begin
     end;
     
     SetFontColor(clBlack);
-    ACanvas.TextOut(x+1,y,s);
+    if MeasureOnly then
+      Inc(Result.X, ACanvas.TextWidth(s))
+    else
+      ACanvas.TextOut(x+1,y,s);
 
   end else begin
     // parse AKey for text and style

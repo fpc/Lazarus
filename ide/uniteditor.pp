@@ -494,6 +494,8 @@ type
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
        X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
+    function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
+       ItemSelected: boolean; Index: integer): TPoint;
     procedure OnSynCompletionSearchPosition(var APosition: integer);
     procedure OnSynCompletionCompletePrefix(Sender: TObject);
     procedure OnSynCompletionNextChar(Sender: TObject);
@@ -2666,6 +2668,7 @@ begin
         OnCancel := @ccCancel;
         OnCodeCompletion := @ccComplete;
         OnPaintItem:=@OnSynCompletionPaintItem;
+        OnMeasureItem := @OnSynCompletionMeasureItem;
         OnSearchPosition:=@OnSynCompletionSearchPosition;
         OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
         OnKeyNextChar:=@OnSynCompletionNextChar;
@@ -2828,6 +2831,31 @@ begin
   PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,aCompletion,
                       CurrentCompletionType);
   Result:=true;
+end;
+
+function TSourceNotebook.OnSynCompletionMeasureItem(const AKey: string;
+  ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
+var
+  MaxX: Integer;
+begin
+  with ACanvas do begin
+    if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
+      Font:=aCompletion.Editor.Font
+    else begin
+      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name of XLFD !
+      Font.Name:=EditorOpts.EditorFont;
+    end;
+    Font.Style:=[];
+    if not ItemSelected then
+      Font.Color:=FActiveEditDefaultFGColor
+    else
+      Font.Color:=FActiveEditSelectedFGColor;
+  end;
+  MaxX := Screen.Width;
+  Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,aCompletion,
+                      CurrentCompletionType, True);
+  if CurCompletionControl<>nil then
+    Result.Y:=CurCompletionControl.FontHeight;
 end;
 
 procedure TSourceNotebook.OnWordCompletionGetSource(var Source: TStrings;
