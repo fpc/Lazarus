@@ -27,7 +27,8 @@ unit wswin32trayicon;
 interface
 
 uses
-  Graphics, Classes, SysUtils, Menus, Forms, Controls, wscommontrayicon;
+  Windows, Classes, SysUtils, Graphics, Menus, Forms, Controls,
+  wscommontrayicon;
 
 type
 
@@ -35,7 +36,7 @@ type
 
   TWidgetTrayIcon = class(TCustomWidgetTrayIcon)
     private
-      WindowHandle: Cardinal;
+      WindowHandle: HWND;
       function GetCanvas: TCanvas;
     protected
     public
@@ -50,11 +51,11 @@ type
 
 implementation
 
-uses WSTrayIcon, Windows, ShellAPI, Messages;
+uses WSTrayIcon, ShellAPI, Messages;
 
 const
   szClassName = 'TTrayIconClass';
-  szAppTitle = 'apptytle';
+  szAppTitle = 'apptitle';
 
 {*******************************************************************
 *  TrayWndProc ()

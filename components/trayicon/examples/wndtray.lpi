@@ -1,54 +1,22 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <LazDoc Paths=""/>
-    <Units Count="3">
-      <Unit0>
-        <CursorPos X="15" Y="7"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="wndtray.dpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="wndtray"/>
-        <UsageCount Value="56"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="28" Y="24"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="frmtest.pas"/>
-        <ComponentName Value="Form1"/>
-        <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmtest.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="frmtest"/>
-        <UsageCount Value="56"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="12" Y="12"/>
-        <Filename Value="wscommontrayicon.pas"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="wscommontrayicon"/>
-        <UsageCount Value="23"/>
-      </Unit2>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -56,7 +24,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -64,12 +32,33 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="wndtray.dpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wndtray"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmtest.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmtest.lrs"/>
+        <UnitName Value="frmtest"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="wscommontrayicon.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wscommontrayicon"/>
+      </Unit2>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)/;../"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/;../"/>
+      <OtherUnitFiles Value="$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)\;..\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\;..\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
@@ -78,14 +67,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>
