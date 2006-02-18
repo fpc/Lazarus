@@ -7,7 +7,7 @@ object WatchesDlg: TWatchesDlg
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   Left = 321
@@ -28,6 +28,7 @@ object WatchesDlg: TWatchesDlg
     MultiSelect = True
     PopupMenu = mnuPopup
     RowSelect = True
+    TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
     OnMouseDown = lvWatchesMouseDown

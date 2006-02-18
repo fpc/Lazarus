@@ -294,6 +294,7 @@ end;
 procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 var
   Item: TListItem;
+  Watch: TIDEWatch;
 begin
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil
@@ -301,7 +302,11 @@ begin
     Item := lvWatches.Items.Add;
     Item.Data := AWatch;
     Item.SubItems.Add('');
+    Item.Selected := True;
   end;
+  
+  Watch := GetSelected;
+  if Watch <> nil then Watch.Enabled := True;
 
   UpdateItem(Item, AWatch);
 end;
