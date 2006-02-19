@@ -147,6 +147,7 @@ begin
     Width := TPen(Source).Width;
     SetColor(TPen(Source).Color,TFPCanvasHelper(Source).FPColor);
     Style := TPen(Source).Style;
+    Mode := TPEn(Source).Mode;
   end
   else
     inherited Assign(Source);

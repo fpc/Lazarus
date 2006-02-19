@@ -77,7 +77,8 @@ end;
 
 procedure TShape.StyleChanged(Sender: TObject);
 begin
-  If (Parent <> nil) and Visible and Parent.HandleAllocated
+  If (Parent <> nil) and (Visible or (csDesigning in ComponentState))
+   and Parent.HandleAllocated
   then
     Invalidate;
 end;
