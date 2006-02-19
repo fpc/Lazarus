@@ -305,7 +305,7 @@ type
 { TFileDialogComponentEditor
   The default componenteditor for TFileDialog }
 
-  TFileDialogComponentEditor = class(TComponentEditor)
+  TCommonDialogComponentEditor = class(TComponentEditor)
   private
     procedure TestDialog;
   public
@@ -1319,28 +1319,28 @@ begin
   Result:=TToolBar(GetComponent);
 end;
 
-{ TFileDialogComponentEditor }
+{ TCommonDialogComponentEditor }
 
-procedure TFileDialogComponentEditor.TestDialog;
+procedure TCommonDialogComponentEditor.TestDialog;
 begin
-  with Component as TFileDialog do Execute;
+  with Component as TCommonDialog do Execute;
 end;
 
-function TFileDialogComponentEditor.GetVerbCount: integer;
+function TCommonDialogComponentEditor.GetVerbCount: integer;
 begin
   Result:=1;
 end;
 
-function TFileDialogComponentEditor.GetVerb(Index: integer): string;
+function TCommonDialogComponentEditor.GetVerb(Index: integer): string;
 begin
   case Index of
-    0:Result:='Test dialog...';
+    0:Result:=oisTestDialog;
   else
     Result:=inherited GetVerb(Index);
   end;
 end;
 
-procedure TFileDialogComponentEditor.ExecuteVerb(Index: integer);
+procedure TCommonDialogComponentEditor.ExecuteVerb(Index: integer);
 begin
   case Index of
     0:TestDialog;
@@ -1349,7 +1349,7 @@ begin
   end;
 end;
 
-procedure TFileDialogComponentEditor.Edit;
+procedure TCommonDialogComponentEditor.Edit;
 begin
   TestDialog;
 end;
@@ -1382,7 +1382,7 @@ initialization
   RegisterComponentEditor(TCheckListBox,TCheckListBoxComponentEditor);
   RegisterComponentEditor(TCheckGroup,TCheckGroupComponentEditor);
   RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
-  RegisterComponentEditor(TFileDialog, TFileDialogComponentEditor);
+  RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
 
 finalization
   InternalFinal;

@@ -789,6 +789,10 @@ msgstr "StringGrid Editor"
 msgid "Strings Editor Dialog"
 msgstr "Zeichenketteneditordialog"
 
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
+
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr ""

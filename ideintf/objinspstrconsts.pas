@@ -258,6 +258,9 @@ resourcestring
   oisSelectAFile = 'Select a file';
   oisPropertiesOf = 'Properties of %s';
   oisAllFiles = 'All files';
+  
+  // TCommonDialogComponentEditor
+  oisTestDialog = 'Test dialog...';
 
   // property editors
   oisSort = 'Sort';

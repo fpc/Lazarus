@@ -818,6 +818,10 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
+
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr ""
