@@ -3663,15 +3663,15 @@ begin
     // if this is a project file, start in project directory
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
     and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
+    begin
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
-    // if this is a package file, then start in package directory
-    if (not AnUnitInfo.IsVirtual) then begin
-      PkgDefaultDirectory:=
-        PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
-      if (PkgDefaultDirectory<>'')
-      and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
-        SaveDialog.InitialDir:=PkgDefaultDirectory;
     end;
+    // if this is a package file, then start in package directory
+    PkgDefaultDirectory:=
+      PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
+    if (PkgDefaultDirectory<>'')
+    and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
+      SaveDialog.InitialDir:=PkgDefaultDirectory;
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
     then begin
