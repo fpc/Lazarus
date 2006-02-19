@@ -1392,6 +1392,7 @@ begin
   Result:=0;
   if Self=CompareItem then exit;
   if (Node=CompareItem.Node) then exit;
+  if (Node=nil) or (CompareItem.Node=nil) then exit;
   if (Node.Desc<>ctnProcedure) or (CompareItem.Node.Desc<>ctnProcedure) then
     exit;
   {DbgOut('TIdentifierListItem.CompareParamList ',GetIdentifier(Identifier),'=',GetIdentifier(CompareItem.Identifier));

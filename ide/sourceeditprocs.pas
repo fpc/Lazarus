@@ -249,7 +249,12 @@ begin
       ctnConstDefinition:
         begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
-          s:=' = '+IdentItem.Tool.ExtractNode(ANode,[]);
+          if ANode<>nil then
+            s:=' = '+IdentItem.Tool.ExtractNode(ANode,[])
+          else begin
+            s:=IdentItem.Tool.ExtractCode(IdentItem.Node.StartPos+length(s),
+                                          IdentItem.Node.EndPos,[]);
+          end;
         end;
 
       else
