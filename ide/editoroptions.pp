@@ -1282,6 +1282,8 @@ begin
       case SynEditOpt2 of
         eoCaretSkipsSelection:
           SynEditOptName := 'CaretSkipsSelection';
+        eoAlwaysVisibleCaret:
+          SynEditOptName := 'AlwaysVisibleCaret';
         else
           SynEditOptName := '';
       end;
@@ -1448,6 +1450,8 @@ begin
       case SynEditOpt2 of
         eoCaretSkipsSelection:
           SynEditOptName := 'CaretSkipsSelection';
+        eoAlwaysVisibleCaret:
+          SynEditOptName := 'AlwaysVisibleCaret';
         else
           SynEditOptName := '';
       end;
@@ -2560,6 +2564,7 @@ begin
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
 
   SetOption2(dlgCaretSkipsSelection, eoCaretSkipsSelection);
+  SetOption2(dlgAlwaysVisibleCaret, eoAlwaysVisibleCaret);
 
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a] <> Nil then
@@ -3509,6 +3514,7 @@ begin
     Items.Add(dlgScrollPastEndFile);
     Items.Add(dlgScrollPastEndLine);
     Items.Add(dlgHomeKeyJumpsToNearestStart);
+    Items.Add(dlgAlwaysVisibleCaret);
     // tabs
     Items.Add(dlgSmartTabs);
     Items.Add(dlgTabsToSpaces);
@@ -3570,6 +3576,8 @@ begin
       eoEnhanceHomeKey in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgCaretSkipsSelection)] :=
       eoCaretSkipsSelection in EditorOpts.SynEditOptions2;
+    Checked[Items.IndexOf(dlgAlwaysVisibleCaret)] :=
+      eoAlwaysVisibleCaret in EditorOpts.SynEditOptions2;
   end;
 
   with BlockIndentComboBox do

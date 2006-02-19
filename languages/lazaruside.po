@@ -8870,3 +8870,7 @@ msgstr ""
 msgid "Save session information in"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+

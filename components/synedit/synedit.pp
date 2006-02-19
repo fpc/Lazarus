@@ -201,7 +201,8 @@ type
   
   {$IFDEF SYN_LAZARUS}
   TSynEditorOption2 = (
-    eoCaretSkipsSelection      // caret skips selection on VK_LEFT/VK_RIGHT
+    eoCaretSkipsSelection,     // caret skips selection on VK_LEFT/VK_RIGHT
+    eoAlwaysVisibleCaret       // Move caret to be always visible when scrolling
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
   {$ENDIF}
@@ -757,6 +758,7 @@ type
                                   PhysicalPos: integer): integer;
     function PhysicalToLogicalCol(const Line: string;
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    procedure MoveCaretToVisibleArea;
     function NextTokenPos: TPoint; virtual;
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -5495,6 +5497,18 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.MoveCaretToVisibleArea;
+begin
+  if caretX < fLeftChar then caretX := fLeftChar
+  else if caretX >= fLeftChar + fCharsInWindow then
+    caretX := fLeftChar + fCharsInWindow - 1;
+  if caretY < fTopLine then caretY := fTopLine
+  else if caretY >= fTopLine + fLinesInWindow then
+    caretY := fTopLine + fLinesInWindow - 1;
+end;
+{$ENDIF}
+
 procedure TCustomSynEdit.UpdateCaret;
 var
   CX, CY: Integer;
@@ -5512,6 +5526,10 @@ begin
     Include(fStateFlags, sfCaretChanged)
   else begin
     Exclude(fStateFlags, sfCaretChanged);
+    {$IFDEF SYN_LAZARUS}
+    if eoAlwaysVisibleCaret in fOptions2 then
+      MoveCaretToVisibleArea;
+    {$ENDIF}
     CX := CaretXPix + FCaretOffset.X;
     CY := CaretYPix + FCaretOffset.Y;
     if (CX >= fGutterWidth)

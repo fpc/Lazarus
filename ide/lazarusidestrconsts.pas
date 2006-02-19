@@ -851,6 +851,7 @@ resourcestring
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
   dlgAltSetClMode = 'Alt-Key sets column mode';
+  dlgAlwaysVisibleCaret = 'Always visible caret';
   dlgAutoIdent = 'Auto indent';
   dlgBracHighlight = 'Bracket highlighting';
   dlgDragDropEd = 'Drag Drop editing';
