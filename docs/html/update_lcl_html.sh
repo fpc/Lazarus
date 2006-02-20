@@ -4,7 +4,7 @@
 #
 # Creates the fpdoc HTML output for the LCL
 
-# set -x
+#set -x
 set -e
 
 FPDoc=$1
@@ -12,7 +12,7 @@ if [ -z $FPDoc ]; then
   FPDoc=fpdoc
 fi
 FPDocFooter=$2
-RtlContent=$3
+FPCDocDir=$3
 
 PackageName=lcl
 XMLSrcDir=../xml/lcl/
@@ -31,10 +31,7 @@ cd -
 DescrFiles=''
 for unit in $UnitList; do
   ShortFile=`echo $unit | sed -e 's/\.pp\b//g' -e 's/\.pas\b//g'`
-  # no need to document lazcwstring, it will be obsolete after 2.0.2
-  if [ "$ShortFile" != "lazcwstring" ]; then
-    DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
-  fi
+  DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
 done
 
 # create input file list
@@ -44,12 +41,12 @@ for unit in $UnitList; do
   echo ../${PasSrcDir}$unit -Fi../${PasSrcDir}include >> $CurInputFileList
 done
 
-FPDocParams="--content=lcl.cnt --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=html"
+FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=html"
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
 fi
-if [ -n "$RtlContent" ]; then
-  FPDocParams="$FPDocParams --import=$RtlContent,../rtl/"
+if [ -n "$FPCDocDir" ]; then
+  FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,../rtl/ --import=$FPCDocDir/fcl.xct,../fcl/"
 fi
 
 
