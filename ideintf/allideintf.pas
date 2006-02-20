@@ -41,6 +41,7 @@ uses
   MacroIntf,
   MaskPropEdit,
   MenuIntf,
+  MsgIntf,
   NewItemIntf,
   ObjectInspector,
   ObjInspStrConsts,

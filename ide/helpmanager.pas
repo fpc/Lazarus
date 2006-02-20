@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
-  PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
+  PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, MsgIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, ExtCtrls, LResources,
@@ -591,31 +591,16 @@ end;
 
 procedure THelpManager.ShowHelpForMessage(Line: integer);
 
-  function ParseMessage(MsgItem: TMessageLine): TStringList;
-  var
-    AnOutputFilter: TOutputFilter;
-    CurParts: TOutputLine;
+  function ParseMessage(MsgItem: TIDEMessageLine): TStringList;
   begin
     Result:=TStringList.Create;
     Result.Values['Message']:=MsgItem.Msg;
-    AnOutputFilter:=TOutputFilter.Create;
-    try
-      AnOutputFilter.ReadLine(MsgItem.Msg,false);
-      AnOutputFilter.CurrentDirectory:=MsgItem.Directory;
-      CurParts:=AnOutputFilter.CurrentMessageParts;
-      if CurParts<>nil then
-        debugln('THelpManager.ShowHelpForMessage ',CurParts.Text)
-      else
-        debugln('THelpManager.ShowHelpForMessage no parts');
-      if CurParts<>nil then
-        Result.Assign(CurParts);
-    finally
-      AnOutputFilter.Free;
-    end;
+    if MsgItem.Parts<>nil then
+      Result.Assign(MsgItem.Parts);
   end;
 
 var
-  MsgItem: TMessageLine;
+  MsgItem: TIDEMessageLine;
   MessageParts: TStringList;
 begin
   debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));

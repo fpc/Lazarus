@@ -54,36 +54,14 @@ uses
   LCLProc,
   LResources,
   MenuIntf,
+  MsgIntf,
   Menus,
   StdCtrls,
   SysUtils;
 
 type
-  { TMessageLine }
-  TMessageLine = class
-  private
-    FDirectory: string;
-    FMsg:      string;
-    FOriginalIndex: integer;
-    FParts:    TStrings;
-    FPosition: integer;
-    FVisiblePosition: integer;
-    procedure SetDirectory(const AValue: string);
-    procedure SetMsg(const AValue: string);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    property Msg: string Read FMsg Write SetMsg;
-    property Directory: string Read FDirectory Write SetDirectory;
-    property Position: integer Read FPosition;
-    property VisiblePosition: integer Read FVisiblePosition;
-    property OriginalIndex: integer Read FOriginalIndex;
-    property Parts: TStrings Read FParts Write FParts;
-  end;
-
-  TOnFilterLine = procedure(MsgLine: TMessageLine; var Show: boolean) of object;
-
   { TMessagesView }
+  
   TMessagesView = class(TForm)
     MessageView:   TListBox;
     MainPopupMenu: TPopupMenu;
@@ -92,6 +70,7 @@ type
     procedure CopyMenuItemClick(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
+    procedure MainPopupMenuPopup(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     procedure MessageViewClicked(Sender: TObject);
     procedure MessageViewExit(Sender: TObject);
@@ -100,15 +79,18 @@ type
     procedure MessageViewDrawItem(Control: TWinControl; Index: Integer;
        ARect: TRect; State: TOwnerDrawState);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
+    procedure OnQuickFixClick(Sender: TObject);
   private
-    FItems: TFPList; // list of TMessageLine
-    FVisibleItems: TFPList; // list of TMessageLine (visible Items of FItems)
+    FItems: TFPList; // list of TIDEMessageLine
+    FVisibleItems: TFPList; // list of TIDEMessageLine (visible Items of FItems)
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
+    FQuickFixItems: TFPList; // list of current TIDEMsgQuickFixItem
     function GetDirectory: string;
-    function GetItems(Index: integer): TMessageLine;
+    function GetItems(Index: integer): TIDEMessageLine;
     function GetMessage: string;
-    function GetVisibleItems(Index: integer): TMessageLine;
+    function GetMessageLine: TIDEMessageLine;
+    function GetVisibleItems(Index: integer): TIDEMessageLine;
     procedure SetLastLineIsProgress(const AValue: boolean);
     procedure DoSelectionChange;
   protected
@@ -123,8 +105,9 @@ type
     procedure Add(const Msg, CurDir: string;
                   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
-    procedure AddProgress(const Msg, CurDir: string);
+    procedure AddProgress(const Msg, CurDir: string; OriginalIndex: integer);
     procedure AddSeparator;
+    procedure CollectLineParts(Sender: TObject; SrcLines: TIDEMessageLineList);
     procedure ClearTillLastSeparator;
     procedure ShowTopMessage;
     procedure Clear;
@@ -146,8 +129,8 @@ type
       Write SetSelectedLineIndex;
     property OnSelectionChanged: TNotifyEvent
       Read FOnSelectionChanged Write FOnSelectionChanged;
-    property Items[Index: integer]: TMessageLine Read GetItems;
-    property VisibleItems[Index: integer]: TMessageLine Read GetVisibleItems;
+    property Items[Index: integer]: TIDEMessageLine Read GetItems;
+    property VisibleItems[Index: integer]: TIDEMessageLine Read GetVisibleItems;
   end;
 
 var
@@ -157,13 +140,14 @@ var
   MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
   MsgHelpIDEMenuCommand: TIDEMenuCommand;
   MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
+  MsgQuickFixIDEMenuSection: TIDEMenuSection;
 
 const
   MessagesMenuRootName = 'Messages';
 
 procedure RegisterStandardMessagesViewMenuItems;
 
-function MessageLinesAsText(ListOfTMessageLine: TFPList): string;
+function MessageLinesAsText(ListOfTIDEMessageLine: TFPList): string;
 
 implementation
 
@@ -192,29 +176,30 @@ begin
   MsgSaveAllToFileIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Copy selected',
     lisSaveAllMessagesToFile);
+  MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
 end;
 
-function MessageLinesAsText(ListOfTMessageLine: TFPList): string;
+function MessageLinesAsText(ListOfTIDEMessageLine: TFPList): string;
 var
   i: Integer;
   NewLength: Integer;
-  Line: TMessageLine;
+  Line: TIDEMessageLine;
   p: Integer;
   e: string;
   LineEndingLength: Integer;
 begin
-  if (ListOfTMessageLine=nil) or (ListOfTMessageLine.Count=0) then exit('');
+  if (ListOfTIDEMessageLine=nil) or (ListOfTIDEMessageLine.Count=0) then exit('');
   NewLength:=0;
   e:=LineEnding;
   LineEndingLength:=length(e);
-  for i:=0 to ListOfTMessageLine.Count-1 do begin
-    Line:=TMessageLine(ListOfTMessageLine[i]);
+  for i:=0 to ListOfTIDEMessageLine.Count-1 do begin
+    Line:=TIDEMessageLine(ListOfTIDEMessageLine[i]);
     inc(NewLength,length(Line.Msg)+LineEndingLength);
   end;
   SetLength(Result,NewLength);
   p:=1;
-  for i:=0 to ListOfTMessageLine.Count-1 do begin
-    Line:=TMessageLine(ListOfTMessageLine[i]);
+  for i:=0 to ListOfTIDEMessageLine.Count-1 do begin
+    Line:=TIDEMessageLine(ListOfTIDEMessageLine[i]);
     if Line.Msg<>'' then begin
       System.Move(Line.Msg[1],Result[p],length(Line.Msg));
       inc(p,length(Line.Msg));
@@ -251,6 +236,8 @@ begin
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
+  
+  FQuickFixItems:=TFPList.Create;
 end;
 
 destructor TMessagesView.Destroy;
@@ -258,12 +245,13 @@ begin
   ClearItems;
   FreeThenNil(FItems);
   FreeThenNil(FVisibleItems);
+  FreeThenNil(FQuickFixItems);
   inherited Destroy;
 end;
 
 procedure TMessagesView.DeleteLine(Index: integer);
 var
-  Line: TMessageLine;
+  Line: TIDEMessageLine;
   VisibleIndex: integer;
   i:    integer;
 begin
@@ -280,9 +268,9 @@ begin
   for i := Index to FItems.Count - 1 do
   begin
     Line := Items[i];
-    Dec(Line.FPosition);
+    Line.Position:=Line.Position-1;
     if Line.VisiblePosition > VisibleIndex then
-      Dec(Line.FVisiblePosition);
+      Line.VisiblePosition:=Line.VisiblePosition-1;
   end;
 end;
 
@@ -292,14 +280,15 @@ end;
 procedure TMessagesView.Add(const Msg, CurDir: string;
   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
 var
-  NewMsg: TMessageLine;
+  NewMsg: TIDEMessageLine;
   i:      integer;
 begin
-  NewMsg     := TMessageLine.Create;
+  NewMsg     := TIDEMessageLine.Create;
   NewMsg.Msg := Msg;
   NewMsg.Directory := CurDir;
-  NewMsg.FPosition := FItems.Count;
-  NewMsg.FOriginalIndex := OriginalIndex;
+  NewMsg.Position := FItems.Count;
+  NewMsg.OriginalIndex := OriginalIndex;
+  //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
   FItems.Add(NewMsg);
 
   if VisibleLine then
@@ -308,14 +297,14 @@ begin
     begin
       // replace old progress line
       i := FVisibleItems.Count - 1;
-      VisibleItems[i].FVisiblePosition := -1;
+      VisibleItems[i].VisiblePosition := -1;
       FVisibleItems.Delete(i);
       MessageView.Items[i] := Msg;
     end
-    else
+    else begin
       MessageView.Items.Add(Msg)// add line
-    ;
-    NewMsg.FVisiblePosition := FVisibleItems.Count;
+    end;
+    NewMsg.VisiblePosition := FVisibleItems.Count;
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
     MessageView.TopIndex := MessageView.Items.Count - 1;
@@ -327,14 +316,41 @@ begin
   Add(Msg, CurDir, False, True, OriginalIndex);
 end;
 
-procedure TMessagesView.AddProgress(const Msg, CurDir: string);
+procedure TMessagesView.AddProgress(const Msg, CurDir: string;
+  OriginalIndex: integer);
 begin
-  Add(Msg, CurDir, True, True, -1);
+  Add(Msg, CurDir, True, True, OriginalIndex);
 end;
 
 procedure TMessagesView.AddSeparator;
 begin
   Add(SeparatorLine, '', False, True, -1);
+end;
+
+procedure TMessagesView.CollectLineParts(Sender: TObject;
+  SrcLines: TIDEMessageLineList);
+var
+  i: Integer;
+  SrcLine: TIDEMessageLine;
+  DestLine: TIDEMessageLine;
+begin
+  //DebugLn('TMessagesView.CollectLineParts ',dbgsName(Sender),' ',dbgsName(SrcLines));
+  if Sender=nil then ;
+  if SrcLines=nil then exit;
+  for i:=0 to SrcLines.Count-1 do begin
+    SrcLine:=SrcLines[i];
+    DestLine:=Items[i];
+    if (SrcLine.OriginalIndex=DestLine.OriginalIndex) then begin
+      if SrcLine.Parts<>nil then begin
+        if DestLine.Parts=nil then
+          DestLine.Parts:=TStringList.Create;
+        DestLine.Parts.Assign(SrcLine.Parts);
+      end else if DestLine.Parts<>nil then
+        DestLine.Parts.Clear;
+    end else begin
+      //DebugLn('TMessagesView.CollectLineParts WARNING: ',dbgs(SrcLine.OriginalIndex),'<>',dbgs(DestLine.OriginalIndex));
+    end;
+  end;
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;
@@ -369,7 +385,7 @@ procedure TMessagesView.FilterLines(Filter: TOnFilterLine);
 // recalculate visible lines
 var
   i:    integer;
-  Line: TMessageLine;
+  Line: TIDEMessageLine;
   ShowLine: boolean;
 begin
   // remove temporary lines
@@ -384,11 +400,11 @@ begin
     Filter(Line, ShowLine);
     if ShowLine then
     begin
-      Line.FVisiblePosition := FVisibleItems.Count;
+      Line.VisiblePosition := FVisibleItems.Count;
       FVisibleItems.Add(Line);
     end
     else
-      Line.FVisiblePosition := -1;
+      Line.VisiblePosition := -1;
   end;
   // rebuild MessageView.Items
   MessageView.Items.BeginUpdate;
@@ -485,9 +501,19 @@ begin
     Result := MessageView.Items.Strings[GetSelectedLineIndex];
 end;
 
-function TMessagesView.GetVisibleItems(Index: integer): TMessageLine;
+function TMessagesView.GetMessageLine: TIDEMessageLine;
+var
+  i: LongInt;
 begin
-  Result := TMessageLine(FVisibleItems[Index]);
+  Result:=nil;
+  i:=GetSelectedLineIndex;
+  if (i>=0) and (i<FVisibleItems.Count) then
+    Result:=VisibleItems[i];
+end;
+
+function TMessagesView.GetVisibleItems(Index: integer): TIDEMessageLine;
+begin
+  Result := TIDEMessageLine(FVisibleItems[Index]);
 end;
 
 procedure TMessagesView.MessageViewDblClicked(Sender: TObject);
@@ -522,6 +548,34 @@ end;
 procedure TMessagesView.HelpMenuItemClick(Sender: TObject);
 begin
   ExecuteIDECommand(Self, ecContextHelp);
+end;
+
+procedure TMessagesView.MainPopupMenuPopup(Sender: TObject);
+var
+  i: LongInt;
+  j: Integer;
+  QuickFixItem: TIDEMsgQuickFixItem;
+  Msg: TIDEMessageLine;
+begin
+  MsgQuickFixIDEMenuSection.Clear;
+  Msg:=GetMessageLine;
+  FQuickFixItems.Clear;
+  if Msg<>nil then begin
+    for j:=0 to IDEMsgQuickFixes.Count-1 do begin
+      QuickFixItem:=IDEMsgQuickFixes[j];
+      DebugLn('TMessagesView.MainPopupMenuPopup "',Msg.Msg,'" ',QuickFixItem.Name);
+      if QuickFixItem.IsApplicable(Msg) then begin
+        FQuickFixItems.Add(QuickFixItem);
+      end;
+    end;
+    for i:=0 to FQuickFixItems.Count-1 do begin
+      QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
+      RegisterIDEMenuCommand(MsgQuickFixIDEMenuSection,
+                             QuickFixItem.Name,
+                             QuickFixItem.Caption,
+                             @OnQuickFixClick);
+    end;
+  end;
 end;
 
 procedure TMessagesView.MessageViewClicked(Sender: TObject);
@@ -598,6 +652,21 @@ begin
   end;
 end;
 
+procedure TMessagesView.OnQuickFixClick(Sender: TObject);
+var
+  i: Integer;
+  QuickFixItem: TIDEMsgQuickFixItem;
+  Msg: TIDEMessageLine;
+begin
+  Msg:=GetMessageLine;
+  for i:=0 to FQuickFixItems.Count-1 do begin
+    QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
+    if QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption then begin
+      QuickFixItem.Execute(Msg);
+    end;
+  end;
+end;
+
 function TMessagesView.GetDirectory: string;
 var
   i: integer;
@@ -608,9 +677,9 @@ begin
     Result := VisibleItems[i].Msg;
 end;
 
-function TMessagesView.GetItems(Index: integer): TMessageLine;
+function TMessagesView.GetItems(Index: integer): TIDEMessageLine;
 begin
-  Result := TMessageLine(FItems[Index]);
+  Result := TIDEMessageLine(FItems[Index]);
 end;
 
 function TMessagesView.GetSelectedLineIndex: integer;
@@ -654,34 +723,6 @@ procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
   MessageView.ItemIndex := AValue;
   MessageView.TopIndex  := MessageView.ItemIndex;
-end;
-
-{ TMessageLine }
-
-procedure TMessageLine.SetDirectory(const AValue: string);
-begin
-  if FDirectory = AValue then
-    exit;
-  FDirectory := AValue;
-end;
-
-procedure TMessageLine.SetMsg(const AValue: string);
-begin
-  if FMsg = AValue then
-    exit;
-  FMsg := AValue;
-end;
-
-constructor TMessageLine.Create;
-begin
-  FPosition := -1;
-  FVisiblePosition := -1;
-end;
-
-destructor TMessageLine.Destroy;
-begin
-  FParts.Free;
-  inherited Destroy;
 end;
 
 initialization

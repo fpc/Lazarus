@@ -61,10 +61,10 @@ uses
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
-  IDECommands,
+  IDECommands, MsgIntf,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
-  ComponentReg,
-  TransferMacros, ObjectInspector, PropEdits, OutputFilter, IDEDefs, MsgView,
+  ComponentReg, OutputFilter,
+  TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
   UnitEditor, MainBar, MainIntf;
@@ -115,6 +115,8 @@ type
     
     procedure mnuWindowsItemClick(Sender: TObject); virtual;
     procedure OnMainBarDestroy(Sender: TObject); virtual;
+    
+    procedure ConnectOutputFilter;
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
 
@@ -221,6 +223,13 @@ end;
 procedure TMainIDEBase.OnMainBarDestroy(Sender: TObject);
 begin
   //writeln('TMainIDEBase.OnMainBarDestroy');
+end;
+
+procedure TMainIDEBase.ConnectOutputFilter;
+begin
+  TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
+  TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+  TheOutputFilter.OnEndReading:=@MessagesView.CollectLineParts;
 end;
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);

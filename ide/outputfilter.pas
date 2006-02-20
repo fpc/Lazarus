@@ -28,10 +28,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess;
+  IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess, MsgIntf;
 
 type
-  TOnOutputString = procedure(const Msg, Directory: String) of object;
+  TOnOutputString = procedure(const Msg, Directory: String;
+                              OriginalIndex: integer) of object;
   TOnAddFilteredLine = procedure(const Msg, Directory: String;
                                  OriginalIndex: integer) of object;
   TOnGetIncludePath = function(const Directory: string): string of object;
@@ -48,52 +49,6 @@ type
   TOutputMessageType = (omtNone, omtFPC, omtLinker, omtMake);
 
   TErrorType = (etNone, etHint, etNote, etWarning, etError, etFatal, etPanic);
-  
-  { TOutputLine }
-
-  TOutputLine = class(TStringList)
-  private
-    FDirectory: string;
-  public
-    property Directory: string read FDirectory write FDirectory;
-  end;
-  
-  { TOutputLines
-    A TStringList automatically freeing its Objects.
-    TOutputFilter puts all lines into in instance of TOutputLines and parses
-    each line. If it sees FPC output it adds a TStringList as Object to the line
-    and set various Name=Value pairs.
-
-      Name    | Value
-      --------|-----------------------------------------------------------------
-      Stage    Indicates what part of the build process the message
-               belongs to. Common values are 'FPC', 'Linker' or 'make'
-      Type     For FPC: 'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic',
-               'Compiling', 'Assembling'
-               For make:
-               For Linker:
-      Line     An integer for the linenumber as given by FPC in brackets.
-      Column   An integer for the column as given by FPC in brackets.
-      Message  The message text without other parsed items.
-
-
-    Example:
-      Message written by FPC:
-        unit1.pas(21,3) Warning: unit buttons not used
-
-      Results in
-        Stage=FPC
-        Type=Warning
-        Line=21
-        Column=3
-        Message=unit buttons not used
-  }
-  TOutputLines = class(TStringList)
-  public
-    destructor Destroy; override;
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-  end;
   
   { TFilteredOutputLines
     A TStringList maintaining an original index for each string.
@@ -114,6 +69,9 @@ type
     procedure Exchange(Index1, Index2: Integer); override;
     property OriginalIndices[Index: integer]: integer read GetOriginalIndices write SetOriginalIndices;
   end;
+  
+  TOFOnEndReading = procedure(Sender: TObject; Lines: TIDEMessageLineList)
+                                                                      of object;
 
   { TOutputFilter }
 
@@ -125,8 +83,9 @@ type
     FBufferingOutputLock: integer;
     fCurrentDirectory: string;
     fFilteredOutput: TFilteredOutputLines;
+    FOnEndReading: TOFOnEndReading;
     fOnReadLine: TOnOutputString;
-    fOutput: TOutputLines;
+    fOutput: TIDEMessageLineList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
     fCompilingHistory: TStringList;
@@ -135,14 +94,14 @@ type
     fOnAddFilteredLine: TOnAddFilteredLine;
     fOptions: TOuputFilterOptions;
     FStopExecute: boolean;
-    FLastOutputLine: integer;
+    FLasTOutputLineParts: integer;
     fLastOutputTime: TDateTime;
     fLastSearchedShortIncFilename: string;
     fLastSearchedIncFilename: string;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
-    function GetCurrentMessageParts: TOutputLine;
+    function GetCurrentMessageParts: TStrings;
     function SearchIncludeFile(const ShortIncFilename: string): string;
     procedure SetStopExecute(const AValue: boolean);
     procedure InternalSetCurrentDirectory(const Dir: string);
@@ -171,7 +130,7 @@ type
                                       write fCurrentDirectory;
     property FilteredLines: TFilteredOutputLines read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;
-    property Lines: TOutputLines read fOutput;
+    property Lines: TIDEMessageLineList read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property OnGetIncludePath: TOnGetIncludePath
@@ -182,8 +141,9 @@ type
     property Options: TOuputFilterOptions read fOptions write fOptions;
     property CompilerOptions: TBaseCompilerOptions read FCompilerOptions
                                                write FCompilerOptions;
-    property CurrentMessageParts: TOutputLine read GetCurrentMessageParts;
+    property CurrentMessageParts: TStrings read GetCurrentMessageParts;
     property AsyncProcessTerminated: boolean read FAsyncProcessTerminated;
+    property OnEndReading: TOFOnEndReading read FOnEndReading write FOnEndReading;
   end;
   
   EOutputFilterError = class(Exception)
@@ -203,10 +163,9 @@ implementation
 function ErrorTypeNameToType(const Name:string): TErrorType;
 begin
   for Result:=Succ(etNone) to High(TErrorType) do
-    if AnsiCompareText(ErrorTypeNames[Result],Name)=0 then exit;
+    if CompareText(ErrorTypeNames[Result],Name)=0 then exit;
   Result:=etNone;
 end;
-
 
 { TOutputFilter }
 
@@ -214,7 +173,7 @@ constructor TOutputFilter.Create;
 begin
   inherited Create;
   fFilteredOutput:=TFilteredOutputLines.Create;
-  fOutput:=TOutputLines.Create;
+  fOutput:=TIDEMessageLineList.Create;
   fOptions:=[ofoSearchForFPCMessages,ofoSearchForMakeMessages,
              ofoMakeFilenamesAbsolute];
   Clear;
@@ -225,7 +184,7 @@ begin
   fOutput.Clear;
   FAsyncDataAvailable:=false;
   FAsyncProcessTerminated:=false;
-  FLastOutputLine:=-1;
+  FLasTOutputLineParts:=-1;
   fFilteredOutput.Clear;
   if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
@@ -320,6 +279,7 @@ begin
       raise EOutputFilterError.Create('there was an error');
   finally
     EndBufferingOutput;
+    if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
   end;
 end;
 
@@ -333,7 +293,7 @@ begin
   fOutput.Add(s);
   WriteOutput(false);
   if Assigned(OnReadLine) then
-    OnReadLine(s,fCurrentDirectory);
+    OnReadLine(s,fCurrentDirectory,fOutput.Count-1);
 
   if DontFilterLine then begin
     DoAddFilteredLine(s);
@@ -857,14 +817,14 @@ var i: integer;
 begin
   // read back to 'Linking' message
   i:=fOutput.Count-1;
-  while (i>=0) and (LeftStr(fOutput[i],length('Linking '))<>'Linking ') do
+  while (i>=0) and (LeftStr(fOutput[i].Msg,length('Linking '))<>'Linking ') do
     dec(i);
   inc(i);
   // output skipped messages
   while (i<fOutput.Count) do begin
-    if (fOutput[i]<>'')
+    if (fOutput[i].Msg<>'')
     and ((i<fOutput.Count-1) or (not SkipLastLine)) then
-      DoAddFilteredLine(fOutput[i]);
+      DoAddFilteredLine(fOutput[i].Msg);
     inc(i);
   end;
 end;
@@ -876,29 +836,31 @@ var i: integer;
 begin
   // read back to 'Assembler messages:' message
   i:=fOutput.Count-1;
-  while (i>=0) and (RightStr(fOutput[i],length(AsmStartMsg))<>AsmStartMsg) do
+  while (i>=0) and (RightStr(fOutput[i].Msg,length(AsmStartMsg))<>AsmStartMsg) do
     dec(i);
   if i<0 then exit;
   while (i<fOutput.Count-1) do begin
-    if (fOutput[i]<>'') then
-      DoAddFilteredLine(fOutput[i]);
+    if (fOutput[i].Msg<>'') then
+      DoAddFilteredLine(fOutput[i].Msg);
     inc(i);
   end;
 end;
 
-function TOutputFilter.GetCurrentMessageParts: TOutputLine;
+function TOutputFilter.GetCurrentMessageParts: TStrings;
 var
   Cnt: LongInt;
+  Line: TIDEMessageLine;
 begin
   Result:=nil;
   if (fOutput=nil) then exit;
   Cnt:=fOutput.Count;
   if (Cnt=0) then exit;
-  Result:=TOutputLine(fOutput.Objects[Cnt-1]);
+  Result:=fOutput.Parts[Cnt-1];
   if Result=nil then begin
-    Result:=TOutputLine.Create;
-    Result.Directory:=fCurrentDirectory;
-    fOutput.Objects[Cnt-1]:=Result;
+    Result:=TStringList.Create;
+    Line:=fOutput[Cnt-1];
+    Line.Directory:=fCurrentDirectory;
+    Line.Parts:=Result;
   end;
 end;
 
@@ -1034,6 +996,7 @@ begin
     // check for enter directory
     if copy(s,i,length(EnterDirPattern))=EnterDirPattern then
     begin
+      CurrentMessageParts.Values['Type']:='entering directory';
       inc(i,length(EnterDirPattern));
       if (fCurrentDirectory<>'') then begin
         if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
@@ -1045,6 +1008,7 @@ begin
     // check for leaving directory
     if copy(s,i,length(LeavingDirPattern))=LeavingDirPattern then
     begin
+      CurrentMessageParts.Values['Type']:='leaving directory';
       if (fMakeDirHistory<>nil) and (fMakeDirHistory.Count>0) then begin
         InternalSetCurrentDirectory(fMakeDirHistory[fMakeDirHistory.Count-1]);
         fMakeDirHistory.Delete(fMakeDirHistory.Count-1);
@@ -1063,7 +1027,7 @@ begin
       while (MsgStartPos<=length(s)) and (s[MsgStartPos]=' ') do inc(MsgStartPos);
       MakeMsg:=copy(s,MsgStartPos,length(s)-MsgStartPos+1);
       DoAddFilteredLine(s);
-      if AnsiCompareText(copy(MakeMsg,1,5),'Error')=0 then
+      if CompareText(copy(MakeMsg,1,5),'Error')=0 then
         if (ofoExceptionOnError in Options) then
           raise EOutputFilterError.Create(s);
       exit;
@@ -1071,7 +1035,7 @@ begin
   end
   else begin
     // TODO: under MacOS X and probably BSD too the make does not write
-    // entering and leaving directory
+    // entering and leaving directory without the -w option
   end;
 end;
 
@@ -1087,9 +1051,9 @@ begin
   if ((CurTime-fLastOutputTime)>HalfASecond)
   or Flush or (FBufferingOutputLock<=0) then begin
     s:='';
-    while FLastOutputLine<fOutput.Count-1 do begin
-      inc(FLastOutputLine);
-      s:=s+fOutput[FLastOutputLine]+LineEnding;
+    while FLasTOutputLineParts<fOutput.Count-1 do begin
+      inc(FLasTOutputLineParts);
+      s:=s+fOutput[FLasTOutputLineParts].Msg+LineEnding;
     end;
     if s<>'' then DbgOut(s);
     fLastOutputTime:=CurTime;
@@ -1107,28 +1071,6 @@ begin
   if FBufferingOutputLock<0 then RaiseException('');
   if FBufferingOutputLock=0 then
     WriteOutput(true);
-end;
-
-{ TOutputLines }
-
-destructor TOutputLines.Destroy;
-begin
-  Clear; // To free the associated objects
-  inherited Destroy;
-end;
-
-procedure TOutputLines.Clear;
-var
-  i: Integer;
-begin
-  for i:=0 to Count-1 do Objects[i].Free;
-  inherited Clear;
-end;
-
-procedure TOutputLines.Delete(Index: Integer);
-begin
-  Objects[Index].Free;
-  inherited Delete(Index);
 end;
 
 { TFilteredOutputLines }

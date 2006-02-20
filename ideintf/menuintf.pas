@@ -385,28 +385,28 @@ var
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(Parent: TIDEMenuSection;
-                                const Name: string): TIDEMenuSection;
-function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
+                                const Name: string): TIDEMenuSection; overload;
+function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection; overload;
 function RegisterIDESubMenu(Parent: TIDEMenuSection;
                             const Name, Caption: string;
                             const OnClickMethod: TNotifyEvent = nil;
                             const OnClickProc: TNotifyProcedure = nil
-                            ): TIDEMenuSection;
+                            ): TIDEMenuSection; overload;
 function RegisterIDESubMenu(const Path, Name, Caption: string;
                             const OnClickMethod: TNotifyEvent = nil;
                             const OnClickProc: TNotifyProcedure = nil
-                            ): TIDEMenuSection;
+                            ): TIDEMenuSection; overload;
 function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil
-                                ): TIDEMenuCommand;
+                                ): TIDEMenuCommand; overload;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
                                 const Command: TIDECommand = nil
-                                ): TIDEMenuCommand;
+                                ): TIDEMenuCommand; overload;
 
 implementation
 

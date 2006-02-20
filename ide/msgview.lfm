@@ -25,6 +25,7 @@ object MessagesView: TMessagesView
     Width = 722
   end
   object MainPopupMenu: TPopupMenu
+    OnPopup = MainPopupMenuPopup
     left = 46
     top = 41
   end

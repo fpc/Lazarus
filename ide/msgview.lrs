@@ -9,6 +9,6 @@ LazarusResources.Add('TMessagesView','FORMDATA',[
   +#6'Height'#2'O'#3'Top'#3#6#2#5'Width'#3#210#2#0#8'TListBox'#11'MessageView'#5
   +'Align'#7#8'alClient'#11'MultiSelect'#9#6'OnExit'#7#15'MessageViewExit'#9'Po'
   +'pupMenu'#7#13'MainPopupMenu'#8'TabOrder'#2#0#8'TopIndex'#2#255#6'Height'#2
-  +'O'#5'Width'#3#210#2#0#0#10'TPopupMenu'#13'MainPopupMenu'#4'left'#2'.'#3'top'
-  +#2')'#0#0#0
+  +'O'#5'Width'#3#210#2#0#0#10'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#18'Ma'
+  +'inPopupMenuPopup'#4'left'#2'.'#3'top'#2')'#0#0#0
 ]);

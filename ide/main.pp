@@ -104,7 +104,7 @@ uses
   // source editing
   UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
-  ViewUnit_dlg,
+  MsgQuickFixes, ViewUnit_dlg,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg,
@@ -503,6 +503,7 @@ type
     procedure SetupCodeMacros;
     procedure SetupControlSelection;
     procedure SetupIDECommands;
+    procedure SetupIDEMsgQuickFixItems;
     procedure SetupStartProject;
     procedure ReOpenIDEWindows;
     
@@ -1016,6 +1017,7 @@ begin
 
   EditorOpts:=TEditorOptions.Create;
   SetupIDECommands;
+  SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
 
   EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
@@ -1150,6 +1152,7 @@ begin
   FreeThenNil(Project1);
 
   // free IDE parts
+  FreeStandardIDEQuickFixItems;
   FreeFormEditor;
   FreeAndNil(FindReplaceDlg);
   FreeAndNil(MessagesView);
@@ -1627,6 +1630,11 @@ begin
   IDECmdScopeSrcEditOnly.AddWindowClass(TSourceEditorWindowInterface);
 
   EditorOpts.KeyMap.CreateDefaultMapping;
+end;
+
+procedure TMainIDE.SetupIDEMsgQuickFixItems;
+begin
+  InitStandardIDEQuickFixItems;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -7330,8 +7338,7 @@ begin
         // change tool status
         ToolStatus:=itBuilder;
 
-        TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
-        TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+        ConnectOutputFilter;
 
         // compile
         Result:=TheCompiler.Compile(Project1, pbfCleanCompile in Flags,
@@ -12107,9 +12114,7 @@ begin
   end else begin
     MessagesView.Clear;
     DoArrangeSourceEditorAndMessageView(false);
-
-    TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
-    TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+    ConnectOutputFilter;
   end;
 end;
 
