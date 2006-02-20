@@ -27,9 +27,15 @@
  ***************************************************************************
 }
 
-{Should become unit Unix in the future. For both Linux and FreeBSD}
+{For Darwin specific implementations.
+ General unix implementations are in ../unix/lazbaseconf.inc}
 uses
   BaseUnix, Unix;
+
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.dylib';
+end;
 
 function GetDefaultTargetOS: string;
 begin

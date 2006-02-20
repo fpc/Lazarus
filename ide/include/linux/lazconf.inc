@@ -26,8 +26,15 @@
  *                                                                         *
  ***************************************************************************
 }
+{For Linux specific implementations.
+ General unix implementations are in ../unix/lazbaseconf.inc}
 uses
   Unix, BaseUnix;
+
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.so';
+end;
 
 function GetDefaultTargetOS: string;
 begin

@@ -27,9 +27,15 @@
  ***************************************************************************
 }
 
-{Should become unit Unix in the future. For both Linux and FreeBSD}
+{For NetBSD specific implementations.
+ General unix implementations are in ../unix/lazbaseconf.inc}
 uses
   baseunix, unix;
+
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.so';
+end;
 
 function GetDefaultTargetOS: string;
 begin

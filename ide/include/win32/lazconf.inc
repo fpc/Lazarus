@@ -85,35 +85,6 @@ begin
   SecondaryConfigPath:=NewValue;
 end;
 
-{---------------------------------------------------------------------------
-  CopySecondaryConfigFile procedure
- ---------------------------------------------------------------------------}
-procedure CopySecondaryConfigFile(const AFilename: String);
-var
-  PrimaryFilename, SecondaryFilename: string;
-  SrcFS, DestFS: TFileStream;
-begin
-  PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
-  SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
-  if (not FileExists(PrimaryFilename))
-  and (FileExists(SecondaryFilename)) then begin
-    try
-      SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
-      try
-        DestFS:=TFileStream.Create(PrimaryFilename,fmCreate);
-        try
-          DestFS.CopyFrom(SrcFS,SrcFS.Size);
-        finally
-          DestFS.Free;
-        end;
-      finally
-        SrcFS.Free;
-      end;
-    except
-    end;
-  end;
-end;
-
 function FindDefaultCompilerPath: string;
 begin
   Result:=SearchFileInPath(GetDefaultCompilerFilename,
@@ -150,6 +121,11 @@ end;
 function GetDefaultExecutableExt: string;
 begin
   Result:='.exe';
+end;
+
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.dll';
 end;
 
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;

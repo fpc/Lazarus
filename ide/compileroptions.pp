@@ -1286,10 +1286,6 @@ function TBaseCompilerOptions.CreateTargetFilename(
     Ext: String;
   begin
     if (ExtractFileName(Result)='') or (ExtractFileExt(Result)<>'') then exit;
-    if AnsiCompareText(fTargetOS, 'win32') = 0 then begin
-      Result:=Result+'.exe';
-      exit;
-    end;
     Ext:=GetDefaultExecutableExt;
     if Ext<>'' then begin
       Result:=Result+Ext;
