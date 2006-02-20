@@ -1217,6 +1217,37 @@ begin
   until StartPos>length(Result);
 end;
 
+function FindDiskFileCaseInsensitive(const Filename: string): string;
+var
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  CurDir: String;
+begin
+  Result:='';
+  CurDir:=ExtractFilePath(Filename);
+  if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,
+    FileInfo)=0
+  then begin
+    ShortFilename:=ExtractFilename(Filename);
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+      then
+        continue;
+      if CompareText(FileInfo.Name,ShortFilename)=0 then begin
+        if FileInfo.Name=ShortFilename then begin
+          // fits exactly
+          Result:=Filename;
+          exit;
+        end;
+        // fits case insensitive
+        Result:=CurDir+FileInfo.Name;
+        // search further
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+end;
+
 function GetAllFilesMask: string;
 begin
   {$IFDEF MSWINDOWS}

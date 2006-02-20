@@ -96,6 +96,7 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
 function FindDiskFilename(const Filename: string): string;
+function FindDiskFileCaseInsensitive(const Filename: string): string;
 
 // file actions
 function ReadFileToString(const Filename: string): string;

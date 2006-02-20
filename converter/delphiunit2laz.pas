@@ -44,7 +44,7 @@ uses
   // Components
   SynEdit, CodeCache, CodeToolManager, DefineTemplates,
   // IDE
-  DialogProcs, IDEProcs, LazarusIDEStrConsts;
+  Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
 type
   TDelphi2LazarusDialog = class(TForm)
@@ -74,6 +74,14 @@ function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
 function CreateLPRFileForDPRFile(const DelphiProjectFilename: string;
   AddLRSCode: boolean; var LPRCode: TCodeBuffer): TModalResult;
+function ExtractOptionsFromDPR(DPRCode: TCodeBuffer;
+  AProject: TProject): TModalResult;
+function FindDelphiDOF(const DelphiFilename: string): string;
+function ExtractOptionsFromDOF(const DOFFilename: string;
+  AProject: TProject): TModalResult;
+function FindDelphiCFG(const DelphiFilename: string): string;
+function ExtractOptionsFromCFG(const CFGFilename: string;
+  AProject: TProject): TModalResult;
 
 
 implementation
@@ -366,6 +374,47 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  Result:=mrOk;
+end;
+
+function ExtractOptionsFromDPR(DPRCode: TCodeBuffer; AProject: TProject
+  ): TModalResult;
+begin
+  // TODO remove compiler directives in code and put them into AProject
+  Result:=mrOk;
+end;
+
+function FindDelphiDOF(const DelphiFilename: string): string;
+var
+  Filename: String;
+begin
+  Result:=ChangeFileExt(DelphiFilename,'.dof');
+  Filename:=FindDiskFileCaseInsensitive(Result);
+  if Filename<>'' then
+    Result:=Filename;
+end;
+
+function ExtractOptionsFromDOF(const DOFFilename: string; AProject: TProject
+  ): TModalResult;
+begin
+  // TODO parse .dof file and put options into AProject
+  Result:=mrOk;
+end;
+
+function FindDelphiCFG(const DelphiFilename: string): string;
+var
+  Filename: String;
+begin
+  Result:=ChangeFileExt(DelphiFilename,'.cfg');
+  Filename:=FindDiskFileCaseInsensitive(Result);
+  if Filename<>'' then
+    Result:=Filename;
+end;
+
+function ExtractOptionsFromCFG(const CFGFilename: string; AProject: TProject
+  ): TModalResult;
+begin
+  // TODO parse .cfg file and put options into AProject
   Result:=mrOk;
 end;
 

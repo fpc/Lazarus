@@ -8224,6 +8224,8 @@ var
   i: Integer;
   CurUnitInfo: TUnitInfo;
   MainUnitInfo: TUnitInfo;
+  DOFFilename: String;
+  CFGFilename: String;
 begin
   debugln('TMainIDE.DoConvertDelphiProject DelphiFilename="',DelphiFilename,'"');
   if MessagesView<>nil then MessagesView.Clear;
@@ -8251,7 +8253,6 @@ begin
     if CodeToolBoss.ErrorMessage<>'' then DoJumpToCodeToolBossError;
     exit;
   end;
-
   // close old project
   debugln('TMainIDE.DoConvertDelphiProject closing current project ...');
   If Project1<>nil then begin
@@ -8260,12 +8261,6 @@ begin
       exit;
     end;
   end;
-
-  // TODO: get all compiler options from .dpr
-  // TODO: read .dof file
-  // TODO: read .cfg file
-  // TODO: get all search paths
-  // TODO: get all needed packages
 
   // switch codetools to new project directory
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
@@ -8288,6 +8283,26 @@ begin
     Project1.CompilerOptions.CompilerPath:='$(CompPath)';
     UpdateCaption;
     IncreaseCompilerParseStamp;
+    
+    // TODO: get all compiler options from .dpr
+    Result:=ExtractOptionsFromDPR(LPRCode,Project1);
+    if Result<>mrOk then exit;
+
+    // TODO: read .dof file
+    DOFFilename:=FindDelphiDOF(DelphiFilename);
+    if FileExists(DOFFilename) then begin
+      Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
+      if Result<>mrOk then exit;
+    end;
+
+    // TODO: read .cfg file
+    CFGFilename:=FindDelphiCFG(DelphiFilename);
+    if FileExists(CFGFilename) then begin
+      Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
+      if Result<>mrOk then exit;
+    end;
+
+    // TODO: get all needed packages
 
     // add and load default required packages
     // TODO: add packages
@@ -8331,7 +8346,7 @@ begin
         +NotFoundUnits,mtWarning,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then exit;
     end;
-
+    
     // add all units to the project
     debugln('TMainIDE.DoConvertDelphiProject adding all project units to project ...');
     for i:=0 to FoundInUnits.Count-1 do begin
@@ -8339,7 +8354,11 @@ begin
       TUnitInfo(CurUnitInfo).Filename:=FoundInUnits[i];
       Project1.AddFile(CurUnitInfo,false);
     end;
-    
+    // set search paths to find all project units
+    Project1.CompilerOptions.OtherUnitFiles:=
+                        Project1.SourceDirectories.CreateSearchPathFromAllFiles;
+    DebugLn('TMainIDE.DoConvertDelphiProject UnitPath="',Project1.CompilerOptions.OtherUnitFiles,'"');
+
     // save project
     debugln('TMainIDE.DoConvertDelphiProject Saving new project ...');
     Result:=DoSaveProject([]);

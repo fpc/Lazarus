@@ -3761,6 +3761,7 @@ begin
       d('../ide'
        +';../ideintf'
        +';../components/codetools'
+       +';../components/synedit'
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath
