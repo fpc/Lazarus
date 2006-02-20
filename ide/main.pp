@@ -7643,7 +7643,10 @@ begin
                          '',EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutLinkingIDE]);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Build Lazarus without linking failed.');
+      exit;
+    end;
 
     // then compile the IDE
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
@@ -7655,11 +7658,17 @@ begin
     or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
       // compile auto install static packages
       Result:=PkgBoss.DoCompileAutoInstallPackages([]);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
+        exit;
+      end;
 
       // create uses section addition for lazarus.pp
       Result:=PkgBoss.DoSaveAutoInstallConfig;
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
+        exit;
+      end;
 
       // create inherited compiler options
       PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
@@ -7675,14 +7684,20 @@ begin
                        EnvironmentOptions.LazarusDirectory,
                        InheritedOptionStrings[icoUnitPath],
                        CompiledUnitExt,'IDE');
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Check UnitPath for ambiguous pascal files failed.');
+        exit;
+      end;
     end;
 
     // save extra options
     IDEBuildFlags:=Flags+[blfOnlyIDE];
     Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazOpts,
                                MacroList,PkgOptions,IDEBuildFlags);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
+      exit;
+    end;
 
     // make ide
     SourceNotebook.ClearErrorLines;
