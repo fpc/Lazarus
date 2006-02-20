@@ -42,6 +42,11 @@ begin
   Result:='darwin';
 end;
 
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.dynlib';
+end;
+
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin
   if DirPathExists(Directory) then List.Add(Directory);

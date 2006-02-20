@@ -4258,6 +4258,7 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
+  AProject.LazCompilerOptions.ExecutableType:=cetLibrary;
 
   // create program source
   le:=LineEnding;

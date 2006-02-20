@@ -46,6 +46,11 @@ procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
 end;
 
+function GetDefaultLibraryExt: string;
+begin
+  Result:='.so';
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 

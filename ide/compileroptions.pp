@@ -295,6 +295,7 @@ type
                                Flags: TCompilerCmdLineOptions): String; virtual;
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
+    function GetTargetFileExt: string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); virtual;
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
@@ -1064,6 +1065,9 @@ begin
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
   LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
   Win32GraphicApp := XMLConfigFile.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
+  ExecutableType := CompilationExecutableTypeNameToType(
+                    XMLConfigFile.GetValue(p+'Options/ExecutableType/Value',''));
+  //DebugLn('TBaseCompilerOptions.LoadTheCompilerOptions ',CompilationExecutableTypeNames[ExecutableType]);
 
   { Messages }
   p:=Path+'Other/';
@@ -1210,6 +1214,10 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
   XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
+  XMLConfigFile.SetDeleteValue(p+'Options/ExecutableType/Value',
+                                 CompilationExecutableTypeNames[ExecutableType],
+                                 CompilationExecutableTypeNames[cetProgram]);
+  //DebugLn('TBaseCompilerOptions.SaveCompilerOptions ',CompilationExecutableTypeNames[ExecutableType]);
 
   { Messages }
   p:=Path+'Other/';
@@ -1286,7 +1294,7 @@ function TBaseCompilerOptions.CreateTargetFilename(
     Ext: String;
   begin
     if (ExtractFileName(Result)='') or (ExtractFileExt(Result)<>'') then exit;
-    Ext:=GetDefaultExecutableExt;
+    Ext:=GetTargetFileExt;
     if Ext<>'' then begin
       Result:=Result+Ext;
       exit;
@@ -1319,6 +1327,29 @@ begin
   end;
   Result:=TrimFilename(Result);
   AppendDefaultExt;
+end;
+
+function TBaseCompilerOptions.GetTargetFileExt: string;
+begin
+  case ExecutableType of
+  cetProgram:
+    begin
+      if CompareText(fTargetOS, 'win32') = 0 then
+        Result:='.exe'
+      else
+        Result:=GetDefaultExecutableExt;
+    end;
+  cetLibrary:
+    begin
+      if CompareText(fTargetOS, 'win32') = 0 then
+        Result:='.dll'
+      else
+        Result:=GetDefaultLibraryExt;
+    end;
+  else
+    RaiseGDBException('');
+  end;
+  //DebugLn('TBaseCompilerOptions.GetTargetFileExt ',Result);
 end;
 
 procedure TBaseCompilerOptions.GetInheritedCompilerOptions(
@@ -2225,6 +2256,7 @@ begin
   fPassLinkerOpt := false;
   LinkerOptions := '';
   Win32GraphicApp := false;
+  ExecutableType := cetProgram;
     
   // messages
   fShowErrors := true;
@@ -2329,6 +2361,7 @@ begin
   fPassLinkerOpt := CompOpts.fPassLinkerOpt;
   LinkerOptions := CompOpts.fLinkerOptions;
   Win32GraphicApp := CompOpts.Win32GraphicApp;
+  ExecutableType := CompOpts.ExecutableType;
 
   // Messages
   fShowErrors := CompOpts.fShowErrors;
@@ -2423,6 +2456,7 @@ begin
     and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
     and (fLinkerOptions = CompOpts.fLinkerOptions)
     and (FWin32GraphicApp = CompOpts.FWin32GraphicApp)
+    and (FExecutableType = CompOpts.FExecutableType)
 
     // messages
     and (fShowErrors = CompOpts.fShowErrors)

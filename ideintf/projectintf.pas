@@ -46,7 +46,12 @@ type
     cgcFasterCode,
     cgcSmallerCode
     );
-
+    
+  TCompilationExecutableType = (
+    cetProgram,
+    cetLibrary
+    );
+    
   { TLazCompilerOptions }
 
   TLazCompilerOptions = class(TPersistent)
@@ -113,6 +118,7 @@ type
     fPassLinkerOpt: Boolean;
     fLinkerOptions: String;
     FWin32GraphicApp: boolean;
+    FExecutableType: TCompilationExecutableType;
 
     // Messages:
     fShowErrors: Boolean;
@@ -221,6 +227,8 @@ type
     property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
     property LinkerOptions: String read fLinkerOptions write SetLinkerOptions;
     property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;
+    property ExecutableType: TCompilationExecutableType
+                                     read FExecutableType write FExecutableType;
 
     // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;
@@ -602,9 +610,16 @@ const
     'None'
     );
 
+  CompilationExecutableTypeNames: array[TCompilationExecutableType] of string =(
+    'Program',
+    'Library'
+    );
+
+
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
-
+function CompilationExecutableTypeNameToType(const s: string
+                                             ): TCompilationExecutableType;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
@@ -708,6 +723,14 @@ begin
   for Result:=Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
     if CompareText(s,ProjectSessionStorageNames[Result])=0 then exit;
   Result:=pssInProjectInfo;
+end;
+
+function CompilationExecutableTypeNameToType(const s: string
+  ): TCompilationExecutableType;
+begin
+  for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
+  do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
+  Result:=cetProgram;
 end;
 
 { TProjectFileDescriptor }
