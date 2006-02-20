@@ -71,7 +71,7 @@ var
   
 function REMatches(const TheText, RegExpr: string;
                    const ModifierStr: string = ''): boolean;
-function REVar(Index: Integer): string;
+function REVar(Index: Integer): string; // 1 is the first
 procedure REVarPos(Index: Integer; var MatchStart, MatchLength: integer);
 function REVarCount: Integer;
 function REReplace(const TheText, FindRegExpr, ReplaceRegExpr: string;

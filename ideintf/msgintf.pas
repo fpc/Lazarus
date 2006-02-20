@@ -52,6 +52,7 @@ type
       Creates the following lines in Parts:
         Stage=FPC
         Type=Warning
+        Filename=/path/unit1.pas
         Line=21
         Column=3
         Message=unit buttons not used
@@ -124,6 +125,7 @@ type
     procedure SetRegExpression(const AValue: string);
     procedure SetRegExprModifiers(const AValue: string);
   public
+    constructor Create;
     procedure Execute(const Msg: TIDEMessageLine); virtual;
     function IsApplicable(Line: TIDEMessageLine): boolean; virtual;
   public
@@ -218,6 +220,11 @@ begin
   FRegExprModifiers:=AValue;
 end;
 
+constructor TIDEMsgQuickFixItem.Create;
+begin
+  FRegExprModifiers:='I';
+end;
+
 procedure TIDEMsgQuickFixItem.Execute(const Msg: TIDEMessageLine);
 begin
   if Assigned(OnExecuteMethod) then
@@ -230,6 +237,7 @@ function TIDEMsgQuickFixItem.IsApplicable(Line: TIDEMessageLine): boolean;
 begin
   Result:=false;
   if RegExpression='' then exit;
+  //DebugLn('TIDEMsgQuickFixItem.IsApplicable Line.Msg="',Line.Msg,'" RegExpression="',RegExpression,'"');
   Result:=REMatches(Line.Msg,RegExpression,RegExprModifiers);
 end;
 
@@ -296,7 +304,10 @@ end;
 
 function TIDEMsgQuickFixItems.NewName(const StartValue: string): string;
 begin
+  Result:=StartValue;
+  if IndexOfName(Result)<0 then exit;
   Result:=CreateFirstIdentifier(StartValue);
+  //DebugLn('TIDEMsgQuickFixItems.NewName Result="',Result,'" StartValue="',StartValue,'"');
   while IndexOfName(Result)>=0 do
     Result:=CreateNextIdentifier(Result);
 end;

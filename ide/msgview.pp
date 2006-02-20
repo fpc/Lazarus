@@ -63,7 +63,7 @@ type
   { TMessagesView }
   
   TMessagesView = class(TForm)
-    MessageView:   TListBox;
+    MessageListBox:   TListBox;
     MainPopupMenu: TPopupMenu;
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
@@ -221,8 +221,8 @@ begin
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
-  MessageView.Style       := lbOwnerDrawFixed;
-  MessageView.OnDrawItem  := @MessageViewDrawItem;
+  MessageListBox.Style       := lbOwnerDrawFixed;
+  MessageListBox.OnDrawItem  := @MessageViewDrawItem;
 
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
@@ -260,7 +260,7 @@ begin
   VisibleIndex := Line.VisiblePosition;
   if VisibleIndex >= 0 then
   begin
-    MessageView.Items.Delete(VisibleIndex);
+    MessageListBox.Items.Delete(VisibleIndex);
     FVisibleItems.Delete(VisibleIndex);
   end;
   Line.Free;
@@ -282,14 +282,26 @@ procedure TMessagesView.Add(const Msg, CurDir: string;
 var
   NewMsg: TIDEMessageLine;
   i:      integer;
+  LastItem: TIDEMessageLine;
 begin
-  NewMsg     := TIDEMessageLine.Create;
+  NewMsg:=nil;
+  if ItemCount>0 then begin
+    LastItem:=Items[ItemCount-1];
+    if LastItem.OriginalIndex=OriginalIndex then begin
+      // already added
+      NewMsg:=LastItem;
+    end;
+  end;
+  if NewMsg=nil then begin
+    NewMsg := TIDEMessageLine.Create;
+    FItems.Add(NewMsg);
+  end;
+  
   NewMsg.Msg := Msg;
   NewMsg.Directory := CurDir;
   NewMsg.Position := FItems.Count;
   NewMsg.OriginalIndex := OriginalIndex;
   //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
-  FItems.Add(NewMsg);
 
   if VisibleLine then
   begin
@@ -299,15 +311,15 @@ begin
       i := FVisibleItems.Count - 1;
       VisibleItems[i].VisiblePosition := -1;
       FVisibleItems.Delete(i);
-      MessageView.Items[i] := Msg;
+      MessageListBox.Items[i] := Msg;
     end
     else begin
-      MessageView.Items.Add(Msg)// add line
+      MessageListBox.Items.Add(Msg)// add line
     end;
     NewMsg.VisiblePosition := FVisibleItems.Count;
     FVisibleItems.Add(NewMsg);
     FLastLineIsProgress  := ProgressLine;
-    MessageView.TopIndex := MessageView.Items.Count - 1;
+    MessageListBox.TopIndex := MessageListBox.Items.Count - 1;
   end;
 end;
 
@@ -329,28 +341,56 @@ end;
 
 procedure TMessagesView.CollectLineParts(Sender: TObject;
   SrcLines: TIDEMessageLineList);
+  
+  {function MsgAsString(Msg: TIDEMessageLine): string;
+  begin
+    Result:=Msg.Msg;
+    if Msg.Parts<>nil then
+      Result:=Result+' '+Msg.Parts.Text;
+  end;}
+  
 var
   i: Integer;
   SrcLine: TIDEMessageLine;
   DestLine: TIDEMessageLine;
+  StartOriginalIndex: LongInt;
+  DestIndex: Integer;
 begin
   //DebugLn('TMessagesView.CollectLineParts ',dbgsName(Sender),' ',dbgsName(SrcLines));
   if Sender=nil then ;
-  if SrcLines=nil then exit;
+  if (SrcLines=nil) or (SrcLines.Count=0) then exit;
+  
+  StartOriginalIndex:=SrcLines[0].OriginalIndex;
+  DestIndex:=ItemCount-1;
+  while (DestIndex>=0) and (Items[DestIndex].OriginalIndex<>StartOriginalIndex) do
+    dec(DestIndex);
+  
   for i:=0 to SrcLines.Count-1 do begin
     SrcLine:=SrcLines[i];
-    DestLine:=Items[i];
+    if DestIndex>=FItems.Count then break;
+    DestLine:=Items[DestIndex];
     if (SrcLine.OriginalIndex=DestLine.OriginalIndex) then begin
       if SrcLine.Parts<>nil then begin
         if DestLine.Parts=nil then
           DestLine.Parts:=TStringList.Create;
         DestLine.Parts.Assign(SrcLine.Parts);
+        //DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' Parts=',DestLine.Parts.Text);
       end else if DestLine.Parts<>nil then
         DestLine.Parts.Clear;
     end else begin
-      //DebugLn('TMessagesView.CollectLineParts WARNING: ',dbgs(SrcLine.OriginalIndex),'<>',dbgs(DestLine.OriginalIndex));
+      DebugLn('TMessagesView.CollectLineParts WARNING: ',dbgs(SrcLine.OriginalIndex),'<>',dbgs(DestLine.OriginalIndex),' SrcLine=',SrcLine.Msg);
     end;
+    inc(DestIndex);
   end;
+  
+  {for i:=0 to SrcLines.Count-1 do begin
+    SrcLine:=SrcLines[i];
+    DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' SrcLine=',MsgAsString(SrcLine));
+  end;
+  for i:=0 to ItemCount-1 do begin
+    DestLine:=Items[i];
+    DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' DestLine=',MsgAsString(DestLine));
+  end;}
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;
@@ -372,8 +412,8 @@ end;
 
 procedure TMessagesView.ShowTopMessage;
 begin
-  if MessageView.Items.Count > 0 then
-    MessageView.TopIndex := 0;
+  if MessageListBox.Items.Count > 0 then
+    MessageListBox.TopIndex := 0;
 end;
 
 function TMessagesView.MsgCount: integer;
@@ -406,24 +446,24 @@ begin
     else
       Line.VisiblePosition := -1;
   end;
-  // rebuild MessageView.Items
-  MessageView.Items.BeginUpdate;
+  // rebuild MessageListBox.Items
+  MessageListBox.Items.BeginUpdate;
   for i := 0 to FVisibleItems.Count - 1 do
   begin
     Line := VisibleItems[i];
-    if MessageView.Items.Count > i then
-      MessageView.Items[i] := Line.Msg
+    if MessageListBox.Items.Count > i then
+      MessageListBox.Items[i] := Line.Msg
     else
-      MessageView.Items.Add(Line.Msg);
+      MessageListBox.Items.Add(Line.Msg);
   end;
-  while MessageView.Items.Count > FVisibleItems.Count do
-    MessageView.Items.Delete(MessageView.Items.Count - 1);
-  MessageView.Items.EndUpdate;
+  while MessageListBox.Items.Count > FVisibleItems.Count do
+    MessageListBox.Items.Delete(MessageListBox.Items.Count - 1);
+  MessageListBox.Items.EndUpdate;
 end;
 
 procedure TMessagesView.SaveMessagesToFile(const Filename: string);
 begin
-  SaveStringToFile(Filename, MessageView.Items.Text, []);
+  SaveStringToFile(Filename, MessageListBox.Items.Text, []);
 end;
 
 {------------------------------------------------------------------------------
@@ -435,10 +475,10 @@ begin
     exit;
   FLastLineIsProgress := False;
   ClearItems;
-  if not Assigned(MessageView.OnClick) then
-    MessageView.OnClick := @MessageViewClicked;
-  if not Assigned(MessageView.OnDblClick) then
-    MessageView.OnDblClick := @MessageViewDblClicked;
+  if not Assigned(MessageListBox.OnClick) then
+    MessageListBox.OnClick := @MessageViewClicked;
+  if not Assigned(MessageListBox.OnDblClick) then
+    MessageListBox.OnDblClick := @MessageViewDblClicked;
 end;
 
 procedure TMessagesView.GetVisibleMessageAt(Index: integer;
@@ -447,11 +487,11 @@ begin
   // consistency checks
   if (Index < 0) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
-  if MessageView.Items.Count <= Index then
+  if MessageListBox.Items.Count <= Index then
     RaiseException('TMessagesView.GetVisibleMessageAt');
-  if (FItems = nil) then
+  if (FVisibleItems = nil) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
-  if (FItems.Count <= Index) then
+  if (FVisibleItems.Count <= Index) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
   Msg := VisibleItems[Index].Msg;
   MsgDirectory := VisibleItems[Index].Directory;
@@ -478,7 +518,7 @@ begin
     TObject(FItems[i]).Free;
   FItems.Clear;
   FVisibleItems.Clear;
-  MessageView.Clear;
+  MessageListBox.Clear;
 end;
 
 function TMessagesView.ItemCount: integer;
@@ -497,8 +537,8 @@ end;
 function TMessagesView.GetMessage: string;
 begin
   Result := '';
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-    Result := MessageView.Items.Strings[GetSelectedLineIndex];
+  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
+    Result := MessageListBox.Items.Strings[GetSelectedLineIndex];
 end;
 
 function TMessagesView.GetMessageLine: TIDEMessageLine;
@@ -525,7 +565,7 @@ end;
 
 procedure TMessagesView.CopyAllMenuItemClick(Sender: TObject);
 begin
-  Clipboard.AsText := MessageView.Items.Text;
+  Clipboard.AsText := MessageListBox.Items.Text;
 end;
 
 procedure TMessagesView.CopyAllAndHiddenMenuItemClick(Sender: TObject);
@@ -535,9 +575,9 @@ end;
 
 procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
 begin
-  if MessageView.ItemIndex < 0 then
+  if MessageListBox.ItemIndex < 0 then
     exit;
-  Clipboard.AsText := MessageView.GetSelectedText;
+  Clipboard.AsText := MessageListBox.GetSelectedText;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);
@@ -563,7 +603,7 @@ begin
   if Msg<>nil then begin
     for j:=0 to IDEMsgQuickFixes.Count-1 do begin
       QuickFixItem:=IDEMsgQuickFixes[j];
-      DebugLn('TMessagesView.MainPopupMenuPopup "',Msg.Msg,'" ',QuickFixItem.Name);
+      //DebugLn('TMessagesView.MainPopupMenuPopup "',Msg.Msg,'" ',QuickFixItem.Name);
       if QuickFixItem.IsApplicable(Msg) then begin
         FQuickFixItems.Add(QuickFixItem);
       end;
@@ -610,22 +650,22 @@ const
   clMsgNote     = clGreen;
   cLeftSpacer   = 3;
 begin
-  MessageView.Canvas.FillRect(ARect);
-  TheText := MessageView.Items[Index];
+  MessageListBox.Canvas.FillRect(ARect);
+  TheText := MessageListBox.Items[Index];
 
-  cl := MessageView.Canvas.Font.Color;   // save original color
+  cl := MessageListBox.Canvas.Font.Color;   // save original color
 
   { Only use custom colors if not selected, otherwise it is difficult to read }
   if not (odSelected in State)
   then begin
     if Pos(cNote, TheText) > 0
-    then MessageView.Canvas.Font.Color := clMsgNote
+    then MessageListBox.Canvas.Font.Color := clMsgNote
     else if Pos(cHint, TheText) > 0
-    then  MessageView.Canvas.Font.Color := clMsgHint
+    then  MessageListBox.Canvas.Font.Color := clMsgHint
   end;
 
-  MessageView.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
-  MessageView.Canvas.Font.Color := cl;   // restore original color
+  MessageListBox.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
+  MessageListBox.Canvas.Font.Color := cl;   // restore original color
 end;
 
 //------------------------------------------------------------------------------
@@ -637,7 +677,7 @@ begin
   SaveDialog := TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.Title   := 'Save messages to file (*.txt)';
+    SaveDialog.Title   := lisMVSaveMessagesToFileTxt;
     SaveDialog.Options := SaveDialog.Options + [ofPathMustExist];
     if SaveDialog.Execute then
     begin
@@ -659,6 +699,7 @@ var
   Msg: TIDEMessageLine;
 begin
   Msg:=GetMessageLine;
+  if Msg=nil then exit;
   for i:=0 to FQuickFixItems.Count-1 do begin
     QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
     if QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption then begin
@@ -687,9 +728,9 @@ var
   I: integer;
 begin
   Result := -1;
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-    for i := 0 to MessageView.Items.Count - 1 do
-      if MessageView.Selected[I] then
+  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then
+    for i := 0 to MessageListBox.Items.Count - 1 do
+      if MessageListBox.Selected[I] then
       begin
         Result := I;
         Break;
@@ -701,7 +742,7 @@ begin
   if FLastLineIsProgress = AValue then
     exit;
   if FLastLineIsProgress then
-    MessageView.Items.Delete(MessageView.Items.Count - 1);
+    MessageListBox.Items.Delete(MessageListBox.Items.Count - 1);
   FLastLineIsProgress := AValue;
 end;
 
@@ -709,7 +750,7 @@ procedure TMessagesView.DoSelectionChange;
 var
   NewSelectedIndex: LongInt;
 begin
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then begin
+  if (MessageListBox.Items.Count > 0) and (MessageListBox.SelCount > 0) then begin
     NewSelectedIndex:=GetSelectedLineIndex;
     if NewSelectedIndex<>FLastSelectedIndex then begin
       FLastSelectedIndex:=NewSelectedIndex;
@@ -721,8 +762,8 @@ end;
 
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
-  MessageView.ItemIndex := AValue;
-  MessageView.TopIndex  := MessageView.ItemIndex;
+  MessageListBox.ItemIndex := AValue;
+  MessageListBox.TopIndex  := MessageListBox.ItemIndex;
 end;
 
 initialization

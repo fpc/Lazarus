@@ -2953,6 +2953,7 @@ resourcestring
   lisPOSaveInIDEConfigDirectory = 'Save in IDE config directory';
   lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
   lisPOSaveSessionInformationIn = 'Save session information in';
+  lisMVSaveMessagesToFileTxt = 'Save messages to file (*.txt)';
   
 implementation
 end.

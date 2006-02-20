@@ -328,12 +328,12 @@ var i, j, FilenameEndPos: integer;
   CurFilenameLen: Integer;
   CurCompHistLen: Integer;
   MainSrcFilename: String;
-  NewFilename: String;
   LineNumberStartPos: LongInt;
   ColumnNumberStartPos: LongInt;
   ColumnNumberEndPos: LongInt;
   MessageStartPos: Integer;
   LineNumberEndPos: LongInt;
+  AbsFilename: String;
   
   function CheckForCompilingState: boolean;
   var
@@ -687,12 +687,18 @@ begin
       
       // make filenames absolute if wanted
       Filename:=copy(Msg,1,FilenameEndPos);
+      if FilenameIsAbsolute(Filename) then begin
+        AbsFilename:=Filename;
+      end else begin
+        AbsFilename:=TrimFilename(fCurrentDirectory+Filename);
+        if not FileExists(AbsFilename) then begin
+          AbsFilename:='';
+        end;
+      end;
       if (ofoMakeFilenamesAbsolute in Options) then begin
-        if not FilenameIsAbsolute(Filename) then begin
-          NewFilename:=TrimFilename(fCurrentDirectory+Filename);
-          if FileExists(NewFilename) then
-            Msg:=NewFilename
-                 +copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+        if (AbsFilename<>'') and (AbsFilename<>Filename) then begin
+          Filename:=AbsFilename;
+          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end else begin
         if FileIsInPath(Filename,fCurrentDirectory) then begin
@@ -700,7 +706,11 @@ begin
           Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
-      CurrentMessageParts.Values['Filename']:=Filename;
+      //DebugLn('TOutputFilter.ReadFPCompilerLine AbsFilename=',AbsFilename,' Filename=',Filename,' Dir=',fCurrentDirectory);
+      if AbsFilename<>'' then
+        CurrentMessageParts.Values['Filename']:=AbsFilename
+      else
+        CurrentMessageParts.Values['Filename']:=Filename;
 
       // add line
       if not SkipMessage then
