@@ -2268,8 +2268,11 @@ Begin
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
-  GetLCLClientBoundsOffset(aHandle, ORect);
-  OffsetRect(Rect^, ORect.Left, ORect.Top);
+  if Rect <> nil then
+  begin
+    GetLCLClientBoundsOffset(aHandle, ORect);
+    OffsetRect(Rect^, ORect.Left, ORect.Top);
+  end;
   Result := Boolean(Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags));
 End;
 
