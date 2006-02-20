@@ -221,6 +221,7 @@ ResourceString
   ctsCPUDirectory = 'CPU directory';
   ctsLazarusMainDirectory = 'lazarus main directory';
   ctsDebuggerDirectory = 'Debugger Directory';
+  ctsConverterDirectory = 'Converter Directory';
   ctsIDEDirectory = 'IDE Directory';
   ctsDocEditorDirectory = 'Doc Editor Directory';
   ctsLazarusSources = 'Lazarus Sources';

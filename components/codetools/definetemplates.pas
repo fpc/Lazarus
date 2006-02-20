@@ -3628,6 +3628,7 @@ begin
       d('designer;'
        +'designer/jitform;'
        +'debugger;'
+       +'converter;'
        +'packager;'
        +'packager/registration;'
        +'ideintf;'
@@ -3662,6 +3663,7 @@ begin
        +'../designer;'
        +'../designer/jitform;'
        +'../debugger;'
+       +'../converter;'
        +'../packager;'
        +'../packager/registration;'
        +'../ideintf;'
@@ -3737,6 +3739,22 @@ begin
   // <LazarusSrcDir>/debugger
   DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
     '','debugger',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl, components']),
+    ExternalMacroStart+'SrcPath',
+      d('../ide'
+       +';../ideintf'
+       +';../components/codetools'
+       +';../lcl'
+       +';../lcl/interfaces/'+WidgetType)
+       +';'+SrcPath
+    ,da_DefineRecurse));
+  MainDir.AddChild(DirTempl);
+
+
+  // <LazarusSrcDir>/converter
+  DirTempl:=TDefineTemplate.Create('Converter',ctsDebuggerDirectory,
+    '','converter',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',

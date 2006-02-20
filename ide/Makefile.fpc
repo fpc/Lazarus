@@ -24,6 +24,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../designer ../designer/jitform/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../debugger \
+        ../converter \
         ../packager \
         ../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
         .
@@ -36,6 +37,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard ../designer/*$(OEXT)) $(wildcard ../designer/*$(PPUEXT)) \
       $(wildcard ../debugger/*$(OEXT)) $(wildcard ../debugger/*$(PPUEXT)) \
+      $(wildcard ../converter/*$(OEXT)) $(wildcard ../converter/*$(PPUEXT)) \
       $(wildcard ../packager/*$(OEXT)) $(wildcard ../packager/*$(PPUEXT)) \
       $(wildcard ../*$(OEXT)) $(wildcard ../*$(PPUEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
@@ -169,14 +171,16 @@ cleanide:
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
         -$(DEL) $(wildcard ../*$(OEXT))
         -$(DEL) $(wildcard ../*$(PPUEXT))
-        -$(DEL) $(wildcard ./designer/*$(OEXT))
-        -$(DEL) $(wildcard ./designer/*$(PPUEXT))
-        -$(DEL) $(wildcard ./debugger/*$(OEXT))
-        -$(DEL) $(wildcard ./debugger/*$(PPUEXT))
-        -$(DEL) $(wildcard ./packager/*$(OEXT))
-        -$(DEL) $(wildcard ./packager/*$(PPUEXT))
-        -$(DEL) $(wildcard ./doceditor/*$(OEXT))
-        -$(DEL) $(wildcard ./doceditor/*$(PPUEXT))
+        -$(DEL) $(wildcard ../designer/*$(OEXT))
+        -$(DEL) $(wildcard ../designer/*$(PPUEXT))
+        -$(DEL) $(wildcard ../debugger/*$(OEXT))
+        -$(DEL) $(wildcard ../debugger/*$(PPUEXT))
+        -$(DEL) $(wildcard ../packager/*$(OEXT))
+        -$(DEL) $(wildcard ../packager/*$(PPUEXT))
+        -$(DEL) $(wildcard ../converter/*$(OEXT))
+        -$(DEL) $(wildcard ../converter/*$(PPUEXT))
+        -$(DEL) $(wildcard ../doceditor/*$(OEXT))
+        -$(DEL) $(wildcard ../doceditor/*$(PPUEXT))
 ifeq ($(OS_TARGET), win32)
         -$(DEL) $(wildcard *.res)
         -$(DEL) lazarus.owr
