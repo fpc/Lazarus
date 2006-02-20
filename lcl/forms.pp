@@ -1698,8 +1698,6 @@ initialization
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
   {$ENDIF}
 
-  // keep this comment line, there is parser a bug in fpc 1.0.x
-
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
