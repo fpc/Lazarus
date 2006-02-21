@@ -2318,6 +2318,7 @@ begin
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
+  //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
   ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;

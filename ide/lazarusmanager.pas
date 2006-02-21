@@ -177,7 +177,7 @@ end;
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
 begin
   Result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
-    GetDefaultExecutableExt;
+    GetExecutableExt;
 end;
 
 function TLazarusManager.RenameLazarusExecutables: TModalResult;

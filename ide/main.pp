@@ -7544,7 +7544,7 @@ procedure TMainIDE.DoRestart;
       // TODO: use the target directory, where the new startlazarus is
       StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
-        'startlazarus' + GetDefaultExecutableExt;
+        'startlazarus' + GetExecutableExt;
       if not FileExists(ExeName) then begin
         ShowMessage(format(lisCannotFindLazarusStarter,
           [LineEnding, ExeName]));
@@ -9290,7 +9290,7 @@ var
 begin
   Result:=Filename;
   OldExt:=ExtractFileExt(Filename);
-  ExeExt:=LazConf.GetDefaultExecutableExt;
+  ExeExt:=LazConf.GetExecutableExt(GetTargetOS(true));
   if OldExt<>ExeExt then
     Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
   DebugLn('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);

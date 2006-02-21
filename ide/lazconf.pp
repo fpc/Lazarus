@@ -97,10 +97,10 @@ const
   // create a pascal file, which can be used to test the compiler
   function CreateCompilerTestPascalFilename: string;
 
-  // returns the standard file extension (e.g '.exe')
-  function GetDefaultExecutableExt: string;
-  // returns the standard file extension (e.g '.dll' or '.dylib')
-  function GetDefaultLibraryExt: string;
+  // returns the standard executable extension (e.g '.exe')
+  function GetExecutableExt(TargetOS: string = ''): string;
+  // returns the standard library extension (e.g '.dll' or '.dynlib')
+  function GetLibraryExt(TargetOS: string = ''): string;
 
   // returns the standard file extension for compiled units (e.g '.ppu')
   function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
@@ -190,6 +190,28 @@ end;
 function GetProjectSessionsConfigPath: String;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+'projectsessions';
+end;
+
+function GetExecutableExt(TargetOS: string): string;
+begin
+  if TargetOS='' then
+    TargetOS:=GetDefaultTargetOS;
+  if CompareText(TargetOS, 'win32') = 0 then
+     Result:='.exe'
+  else
+     Result:='';
+end;
+
+function GetLibraryExt(TargetOS: string): string;
+begin
+  if TargetOS='' then
+    TargetOS:=GetDefaultTargetOS;
+  if CompareText(TargetOS, 'win32') = 0 then
+     Result:='.dll'
+  else if CompareText(TargetOS, 'darwin') = 0 then
+     Result:='.dylib'
+  else
+     Result:='';
 end;
 
 function GetDefaultTargetCPU: string;

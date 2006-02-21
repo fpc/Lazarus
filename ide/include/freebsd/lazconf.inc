@@ -32,11 +32,6 @@
 uses
   BaseUnix, Unix;
 
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.so';
-end;
-
 function GetDefaultTargetOS: string;
 begin
   Result:='freebsd';
@@ -44,11 +39,6 @@ end;
 
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
-end;
-
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.so';
 end;
 
 {$I ../unix/lazbaseconf.inc}

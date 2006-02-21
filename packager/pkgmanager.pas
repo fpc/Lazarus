@@ -1348,7 +1348,7 @@ begin
   try
     FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
-    FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetDefaultExecutableExt,
+    FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetExecutableExt,
                                       EnvironmentOptions.CompilerFilename);
     FPCMakeTool.CmdLineParams:='-q -TAll';
     FPCMakeTool.EnvironmentOverrides.Add(

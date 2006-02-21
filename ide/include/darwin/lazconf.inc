@@ -32,19 +32,9 @@
 uses
   BaseUnix, Unix;
 
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.dylib';
-end;
-
 function GetDefaultTargetOS: string;
 begin
   Result:='darwin';
-end;
-
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.dynlib';
 end;
 
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);

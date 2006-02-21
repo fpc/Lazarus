@@ -1333,19 +1333,9 @@ function TBaseCompilerOptions.GetTargetFileExt: string;
 begin
   case ExecutableType of
   cetProgram:
-    begin
-      if CompareText(fTargetOS, 'win32') = 0 then
-        Result:='.exe'
-      else
-        Result:=GetDefaultExecutableExt;
-    end;
+    Result:=GetExecutableExt(fTargetOS);
   cetLibrary:
-    begin
-      if CompareText(fTargetOS, 'win32') = 0 then
-        Result:='.dll'
-      else
-        Result:=GetDefaultLibraryExt;
-    end;
+    Result:=GetLibraryExt(fTargetOS);
   else
     RaiseGDBException('');
   end;

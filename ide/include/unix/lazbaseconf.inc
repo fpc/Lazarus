@@ -128,14 +128,6 @@ begin
   Result:=FindDefaultExecutablePath('make');
 end;
 
-{---------------------------------------------------------------------------
-  function GetDefaultExecutableExt: string;
- ---------------------------------------------------------------------------}
-function GetDefaultExecutableExt: string;
-begin
-  Result:='';
-end;
-
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
   Result:='.ppu';

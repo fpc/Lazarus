@@ -1424,7 +1424,7 @@ begin
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameterOptions:=TRunParamsOptions.Create;
-  FTargetFileExt := GetDefaultExecutableExt;
+  FTargetFileExt := GetExecutableExt;
   Title := '';
   FUnitList := TList.Create;  // list of TUnitInfo
 end;
@@ -1918,7 +1918,7 @@ begin
          Path+'General/AutoCreateForms/Value', true);
       IconPath := xmlconfig.GetValue(Path+'General/IconPath/Value', './');
       TargetFileExt := xmlconfig.GetValue(
-         Path+'General/TargetFileExt/Value', GetDefaultExecutableExt);
+         Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
 
       // Lazdoc
@@ -2137,7 +2137,7 @@ begin
   ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
-  FTargetFileExt := GetDefaultExecutableExt;
+  FTargetFileExt := GetExecutableExt;
   Title := '';
   EndUpdate;
 end;

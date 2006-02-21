@@ -993,7 +993,7 @@ var
   MakeMsg: String;
 begin
   Result:=false;
-  MakeBeginPattern:= 'make' + GetDefaultExecutableExt + '[';
+  MakeBeginPattern:= 'make' + GetExecutableExt + '[';
   i:=length(MakeBeginPattern);
   if copy(s,1,i)=MakeBeginPattern then begin
     Result:=true;

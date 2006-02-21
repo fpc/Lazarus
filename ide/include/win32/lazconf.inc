@@ -115,19 +115,6 @@ begin
   end;
 end;
 
-{---------------------------------------------------------------------------
-  function GetDefaultExecutableExt: string;
- ---------------------------------------------------------------------------}
-function GetDefaultExecutableExt: string;
-begin
-  Result:='.exe';
-end;
-
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.dll';
-end;
-
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
   if (FPCVersion=1) and (FPCRelease=0) then

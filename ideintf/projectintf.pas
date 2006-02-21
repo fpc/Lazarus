@@ -1048,6 +1048,7 @@ end;
 procedure TLazProject.SetTitle(const AValue: String);
 begin
   if fTitle=AValue then exit;
+  Modified:=true;
   fTitle:=AValue;
 end;
 

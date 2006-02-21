@@ -31,11 +31,6 @@
 uses
   Unix, BaseUnix;
 
-function GetDefaultLibraryExt: string;
-begin
-  Result:='.so';
-end;
-
 function GetDefaultTargetOS: string;
 begin
   Result:='linux';

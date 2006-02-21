@@ -525,7 +525,7 @@ begin
             if OSLocksExecutables then begin
               // Case 4. the current executable is locked
               // => use a different output name
-              NewTargetFilename:='lazarus.new'+GetDefaultExecutableExt;
+              NewTargetFilename:='lazarus.new'+GetExecutableExt(Options.TargetOS);
               debugln('CreateBuildLazarusOptions exe locked NewTargetFilename=',NewTargetFilename);
             end else begin
               // Case 5. or else: => just compile to current directory
@@ -547,10 +547,10 @@ begin
 
     if NewTargetFilename<>'' then begin
       // FPC automatically changes the last extension (append or replace)
-      // For example under linux, where executable don't need any extension
+      // For example under linux, where executables don't need any extension
       // fpc removes the last extension of the -o option.
       // Trick fpc:
-      if GetDefaultExecutableExt='' then
+      if GetExecutableExt(Options.TargetOS)='' then
         NewTargetFilename:=NewTargetFilename+'.dummy';
       AppendExtraOption('-o'+NewTargetFilename);
     end;
@@ -895,7 +895,7 @@ begin
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
     DirDialog.Title:='Choose output directory of the IDE executable '
-                    +'(lazarus'+GetDefaultExecutableExt+')';
+                    +'(lazarus'+GetExecutableExt(Options.TargetOS)+')';
     if DirDialog.Execute then begin
       AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
       TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
