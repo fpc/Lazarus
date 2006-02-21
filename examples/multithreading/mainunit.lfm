@@ -1,0 +1,13 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 73
+  ClientWidth = 408
+  OnCreate = FormCreate
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 407
+  VertScrollBar.Page = 72
+  Left = 290
+  Height = 73
+  Top = 163
+  Width = 408
+end
