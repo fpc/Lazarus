@@ -2264,7 +2264,6 @@ Var
   Flags: UINT;
   ORect: TRect;
 Begin
-//  Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
@@ -2273,7 +2272,7 @@ Begin
     GetLCLClientBoundsOffset(aHandle, ORect);
     OffsetRect(Rect^, ORect.Left, ORect.Top);
   end;
-  Result := Boolean(Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags));
+  Result := Boolean(Windows.RedrawWindow(aHandle, Rect, 0, Flags));
 End;
 
 {------------------------------------------------------------------------------
