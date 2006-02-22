@@ -476,14 +476,21 @@ Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   procedure PutOnClipBoard(FormatID: integer);
   var
     DataStream: TStream;
-    DataHandle : Windows.HGLOBAL;
+    Bitmap: TBitmap;
+    DataHandle : THandle;//Windows.HGLOBAL;
     DataPtr: pointer;
   begin
-    if assigned(OnClipBoardRequest) then begin
-      DataStream := TMemoryStream.Create;
-      try
-        OnClipBoardRequest(FormatID, DataStream);
-        DataStream.Position:=0;
+    DataStream := TMemoryStream.Create;
+    try
+      OnClipBoardRequest(FormatID, DataStream);
+      DataStream.Position:=0;
+      if FormatID=CF_BITMAP then begin
+        Bitmap:= TBitmap.Create;
+        Bitmap.LoadFromStream(DataStream);
+        Windows.SetClipboardData(FormatID, Bitmap.Handle);
+        Bitmap.Free;
+      end else
+      begin
         DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, DataStream.Size);
         if (DataHandle=HWND(0)) then begin
           debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(DataStream.Size));
@@ -497,46 +504,9 @@ Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
           Windows.GlobalUnlock(DataHandle);
         end;
         Windows.SetClipboardData(FormatID, DataHandle);
-      finally
-        DataStream.Free;
-      end;
-    end;
-  end;
-
-  procedure PutTextOnClipBoard;
-  var
-    MemStream : TMemoryStream;
-    TextLength : Integer;
-    DataHandle : Windows.HGLOBAL;
-    TextData : PChar;
-  begin
-    MemStream := TMemoryStream.Create();
-    try
-      OnRequestProc(Windows.CF_TEXT, MemStream);
-      MemStream.Position:=0;
-      TextLength := Integer(MemStream.Size);
-      DataHandle := Windows.GlobalAlloc(
-                     Windows.GMEM_MOVEABLE+Windows.GMEM_DDESHARE, TextLength+1);
-      if (DataHandle=HWND(0)) then begin
-        debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' TextLength=',dbgs(TextLength));
-        Result := false;
-        exit;
-      end;
-      TextData := PChar(GlobalLock(DataHandle));
-      try
-        MemStream.Read(TextData[0], TextLength);
-        TextData[TextLength] := #0;
-        {$IFDEF VerboseWin32Clipbrd}
-        debugln('TWin32WidgetSet.ClipboardGetOwnerShip Commit TextLength=',dbgs(TextLength));
-        {$ENDIF}
-        // Put it on the clipboard as CF_TEXT
-        if Windows.SetClipboardData(Windows.CF_TEXT, DataHandle)=0 then
-          debugln('WARNING: TWin32WidgetSet.ClipboardGetOwnerShip.PutTextOnClipBoard SetClipboardData failed');
-      finally
-        GlobalUnlock(DataHandle);
       end;
     finally
-      MemStream.Free;
+      DataStream.Free;
     end;
   end;
 
@@ -613,6 +583,8 @@ Function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClip
 Begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
     Result := Windows.CF_TEXT
+  else if AMimeType=PredefinedClipboardMimeTypes[pcfBitmap] then
+    Result := Windows.CF_BITMAP
   else
     Result := Windows.RegisterClipboardFormat(PChar(AMimeType));
   {$IFDEF VerboseWin32Clipbrd}
