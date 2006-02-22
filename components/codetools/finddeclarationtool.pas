@@ -424,6 +424,8 @@ type
     FoundProc: PFoundProc;
   end;
   
+  { TFindDeclarationParams }
+
   TFindDeclarationParams = class(TObject)
   public
     // input parameters:
@@ -443,6 +445,7 @@ type
     NewTopLine: integer;
     NewFlags: TFoundDeclarationFlags;
     constructor Create;
+    destructor Destroy; override;
     procedure Clear;
     procedure Save(var Input: TFindDeclarationInput);
     procedure Load(var Input: TFindDeclarationInput);
@@ -7699,9 +7702,16 @@ begin
   Clear;
 end;
 
+destructor TFindDeclarationParams.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
 procedure TFindDeclarationParams.Clear;
 begin
   ClearInput;
+  ClearFoundProc;
   ClearResult(false);
   OnTopLvlIdentifierFound:=nil;
 end;
@@ -7787,7 +7797,6 @@ begin
   ContextNode:=nil;
   OnIdentifierFound:=nil;
   IdentifierTool:=nil;
-  ClearFoundProc;
 end;
 
 procedure TFindDeclarationParams.ClearFoundProc;
