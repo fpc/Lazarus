@@ -133,17 +133,22 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Assign(Source: TPersistent);
 Var
+  S: TStrings;
   Counter: Integer;
   AnIndex: Integer;
 Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
   Begin
+    S:= TStrings(Source);
+    QuoteChar:=S.QuoteChar;
+    Delimiter:=S.Delimiter;
+    NameValueSeparator:=S.NameValueSeparator;
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
-      AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
-      PutObject(AnIndex, TStrings(Source).Objects[Counter]);
+      AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S[Counter]))); //Insert
+      PutObject(AnIndex, S.Objects[Counter]);
     end;
   End
   Else
