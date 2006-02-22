@@ -1,93 +1,111 @@
 object TabOrderDialog: TTabOrderDialog
+  ActiveControl = ItemTreeview
+  BorderStyle = bsSizeToolWin
   Caption = 'TabOrderDialog'
   ClientHeight = 387
   ClientWidth = 310
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
   PixelsPerInch = 96
+  Position = poScreenCenter
   HorzScrollBar.Page = 309
   VertScrollBar.Page = 386
   Left = 381
   Height = 387
   Top = 167
   Width = 310
-  object UpSpeedbutton: TSpeedButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    NumGlyphs = 0
-    OnClick = UpSpeedbuttonCLICK
-    ShowHint = True
-    ParentShowHint = False
-    Left = 265
-    Height = 25
-    Hint = 'Move Up'
-    Top = 119
-    Width = 25
-  end
-  object DownSpeedbutton: TSpeedButton
-    Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
-    NumGlyphs = 0
-    OnClick = DownSpeedbuttonCLICK
-    ShowHint = True
-    ParentShowHint = False
-    Left = 265
-    Height = 25
-    Hint = 'Move Down'
-    Top = 165
-    Width = 25
-  end
-  object OkButton: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = 'Ok'
-    Default = True
-    OnClick = OkButtonCLICK
-    TabOrder = 0
-    Left = 120
-    Height = 25
-    Top = 350
-    Width = 75
-  end
-  object CancelButton: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
-    Left = 216
-    Height = 25
-    Top = 350
-    Width = 75
-  end
   object ItemTreeview: TTreeView
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     DefaultItemHeight = 15
     HideSelection = False
     ParentCtl3D = False
     RightClickSelect = True
-    TabOrder = 2
+    TabOrder = 0
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    Left = 9
-    Height = 304
-    Top = 8
-    Width = 238
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = ArrowDown
+    AnchorSideBottom.Control = ShowOldValuesCheckbox
+    Left = 6
+    Height = 316
+    Top = 6
+    Width = 267
   end
   object ShowOldValuesCheckbox: TCheckBox
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
+    BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'
     OnClick = ShowOldValuesCheckboxCLICK
-    TabOrder = 3
-    Left = 9
-    Height = 20
-    Top = 320
-    Width = 171
+    TabOrder = 1
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 13
+    Top = 328
+    Width = 143
   end
-  object Imagelist1: TImageList
-    left = 56
-    top = 260
+  object OkButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = '&OK'
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = OkButtonCLICK
+    TabOrder = 2
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 236
+    Height = 34
+    Top = 347
+    Width = 68
+  end
+  object CancelButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 3
+    AnchorSideRight.Control = OkButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 150
+    Height = 34
+    Top = 347
+    Width = 80
+  end
+  object ArrowUp: TArrow
+    Anchors = [akTop, akRight]
+    ArrowType = atUp
+    BorderSpacing.Around = 6
+    OnClick = UpSpeedbuttonCLICK
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 120
+    Width = 25
+  end
+  object ArrowDown: TArrow
+    Anchors = [akTop, akRight]
+    ArrowType = atDown
+    BorderSpacing.Around = 6
+    OnClick = DownSpeedbuttonCLICK
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 176
+    Width = 25
   end
 end

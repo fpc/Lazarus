@@ -1,3 +1,30 @@
+{
+ /***************************************************************************
+                             taborderdlg.pas
+                             ---------------
+
+ ***************************************************************************/
+
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+}
+
 unit TabOrderDlg;
 
 {$mode objfpc}{$H+}
@@ -6,17 +33,19 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls, StdCtrls;
+  Buttons, ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts;
 
 type
+
+  { TTabOrderDialog }
+
   TTabOrderDialog = class(TForm)
+    ArrowUp: TArrow;
+    ArrowDown: TArrow;
+    CancelButton: TBitBtn;
+    OkButton: TBitBtn;
     ShowOldValuesCheckbox: TCHECKBOX;
-    Imagelist1: TIMAGELIST;
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
     ItemTreeview: TTREEVIEW;
-    UpSpeedbutton: TSPEEDBUTTON;
-    DownSpeedbutton: TSPEEDBUTTON;
     procedure DownSpeedbuttonCLICK(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure ShowOldValuesCheckboxCLICK(Sender: TObject);
@@ -54,13 +83,7 @@ end;
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
-  OkButton.Caption:='Ok';
-  CancelButton.Caption:='Cancel';
-  ShowOldValuesCheckbox.Caption:='Show old tab order';
-  UpSpeedbutton.Glyph:=TPixmap.Create;
-  UpSpeedbutton.Glyph.LoadFromLazarusResource('uparrow');
-  DownSpeedbutton.Glyph:=TPixmap.Create;
-  DownSpeedbutton.Glyph.LoadFromLazarusResource('downarrow');
+  ShowOldValuesCheckbox.Caption:=lisShowOldTabOrder;
 end;
 
 procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
@@ -111,7 +134,7 @@ begin
   if FLookupRoot=AValue then exit;
   FLookupRoot:=AValue;
   if FLookupRoot<>nil then begin
-    Caption:='Tab Order of '+FLookupRoot.Name;
+    Caption:=lisTabOrderOf + ' ' + FLookupRoot.Name;
   end;
   FillTree;
 end;
