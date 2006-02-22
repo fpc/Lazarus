@@ -448,16 +448,16 @@ type
     procedure Load(var Input: TFindDeclarationInput);
     procedure SetResult(const AFindContext: TFindContext);
     procedure SetResult(ANewCodeTool: TFindDeclarationTool;
-      ANewNode: TCodeTreeNode);
+                        ANewNode: TCodeTreeNode);
     procedure SetResult(ANewCodeTool: TFindDeclarationTool;
-      ANewNode: TCodeTreeNode;  ANewCleanPos: integer);
+                        ANewNode: TCodeTreeNode;  ANewCleanPos: integer);
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
-      NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
+                NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
     procedure SetFirstFoundProc(const ProcContext: TFindContext);
     procedure ChangeFoundProc(const ProcContext: TFindContext;
-      ProcCompatibility: TTypeCompatibility;
-      ParamCompatibilityList: TTypeCompatibilityList);
+                              ProcCompatibility: TTypeCompatibility;
+                              ParamCompatibilityList: TTypeCompatibilityList);
     procedure ConvertResultCleanPosToCaretPos;
     procedure ClearResult(CopyCacheFlags: boolean);
     procedure ClearInput;
@@ -6418,9 +6418,8 @@ begin
       ' Check the first found proc for compatibility ...'
       );
       {$ENDIF}
-      FirstParameterNode:=
-        Params.FoundProc^.Context.Tool.GetFirstParameterNode(
-              Params.FoundProc^.Context.Node);
+      FirstParameterNode:=Params.FoundProc^.Context.Tool.GetFirstParameterNode(
+                                                Params.FoundProc^.Context.Node);
       Params.Save(OldInput);
       ParamCompatibility:=
         Params.FoundProc^.Context.Tool.IsParamExprListCompatibleToNodeList(
@@ -6480,7 +6479,7 @@ begin
         // the current proc fits exactly -> stop the search
         Params.ChangeFoundProc(FoundContext,ParamCompatibility,
           CurCompatibilityList);
-        CurCompatibilityList:=nil; // set to nil, so that it will no be freed
+        CurCompatibilityList:=nil; // set to nil, so that it will not be freed
         Params.SetResult(FoundContext.Tool,FoundContext.Node.FirstChild);
         Result:=ifrSuccess;
       end else if ParamCompatibility=tcCompatible then begin
@@ -6493,7 +6492,7 @@ begin
           // the new proc fits better
           Params.ChangeFoundProc(FoundContext,ParamCompatibility,
             CurCompatibilityList);
-          CurCompatibilityList:=nil; // set to nil, so that it will no be freed
+          CurCompatibilityList:=nil; // set to nil, so that it will not be freed
         end;
       end;
     finally
@@ -7797,8 +7796,10 @@ begin
   with FoundProc^ do begin
     if ExprInputList<>nil then
       FreeAndNil(ExprInputList);
-    if ParamCompatibilityList<>nil then
+    if ParamCompatibilityList<>nil then begin
       FreeMem(ParamCompatibilityList);
+      ParamCompatibilityList:=nil;
+    end;
     CacheValid:=false;
   end;
   Dispose(FoundProc);
@@ -7873,9 +7874,11 @@ procedure TFindDeclarationParams.ChangeFoundProc(
 begin
   FoundProc^.Context:=ProcContext;
   FoundProc^.ProcCompatibility:=ProcCompatibility;
-  if FoundProc^.ParamCompatibilityList<>nil then
-    FreeMem(FoundProc^.ParamCompatibilityList);
-  FoundProc^.ParamCompatibilityList:=ParamCompatibilityList;
+  if (FoundProc^.ParamCompatibilityList<>ParamCompatibilityList) then begin
+    if (FoundProc^.ParamCompatibilityList<>nil) then
+      FreeMem(FoundProc^.ParamCompatibilityList);
+    FoundProc^.ParamCompatibilityList:=ParamCompatibilityList;
+  end;
 end;
 
 procedure TFindDeclarationParams.SetResult(
