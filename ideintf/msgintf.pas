@@ -112,8 +112,16 @@ type
 
   { TIDEMsgQuickFixItem }
   
-  TIMQFExecuteMethod = procedure(Sender: TObject; Msg: TIDEMessageLine) of object;
-  TIMQFExecuteProc = procedure(Sender: TObject; Msg: TIDEMessageLine);
+  TIMQuickFixStep = (
+    imqfoMenuItem,      // add menu item in popup menu for this item
+    imqfoImproveMessage // rewrites message
+    );
+  TIMQuickFixSteps = set of TIMQuickFixStep;
+
+  TIMQFExecuteMethod = procedure(Sender: TObject; Step: TIMQuickFixStep;
+                                 Msg: TIDEMessageLine) of object;
+  TIMQFExecuteProc = procedure(Sender: TObject; Step: TIMQuickFixStep;
+                               Msg: TIDEMessageLine);
 
   TIDEMsgQuickFixItem = class(TPersistent)
   private
@@ -123,6 +131,7 @@ type
     FOnExecuteProc: TIMQFExecuteProc;
     FRegExpression: string;
     FRegExprModifiers: string;
+    FSteps: TIMQuickFixSteps;
     function GetCaption: string;
     procedure SetCaption(const AValue: string);
     procedure SetName(const AValue: string);
@@ -130,7 +139,7 @@ type
     procedure SetRegExprModifiers(const AValue: string);
   public
     constructor Create;
-    procedure Execute(const Msg: TIDEMessageLine); virtual;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); virtual;
     function IsApplicable(Line: TIDEMessageLine): boolean; virtual;
   public
     property Name: string read FName write SetName;
@@ -139,6 +148,7 @@ type
     property RegExprModifiers: string read FRegExprModifiers write SetRegExprModifiers;
     property OnExecuteMethod: TIMQFExecuteMethod read FOnExecuteMethod write FOnExecuteMethod;
     property OnExecuteProc: TIMQFExecuteProc read FOnExecuteProc write FOnExecuteProc;
+    property Steps: TIMQuickFixSteps read FSteps write FSteps;
   end;
   
   { TIDEMsgQuickFixItems }
@@ -167,8 +177,9 @@ var
   
 procedure RegisterIDEMsgQuickFix(Item: TIDEMsgQuickFixItem);
 function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;
+  Steps: TIMQuickFixSteps;
   const ExecuteMethod: TIMQFExecuteMethod;
-  const ExecuteProc: TIMQFExecuteProc): TIDEMsgQuickFixItem; overload;
+  const ExecuteProc: TIMQFExecuteProc = nil): TIDEMsgQuickFixItem; overload;
 
 implementation
 
@@ -178,6 +189,7 @@ begin
 end;
 
 function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;
+  Steps: TIMQuickFixSteps;
   const ExecuteMethod: TIMQFExecuteMethod; const ExecuteProc: TIMQFExecuteProc
   ): TIDEMsgQuickFixItem;
 begin
@@ -185,6 +197,7 @@ begin
   Result.Name:=Name;
   Result.Caption:=Caption;
   Result.RegExpression:=RegExpr;
+  Result.Steps:=Steps;
   Result.OnExecuteMethod:=ExecuteMethod;
   Result.OnExecuteProc:=ExecuteProc;
   IDEMsgQuickFixes.Add(Result);
@@ -227,14 +240,16 @@ end;
 constructor TIDEMsgQuickFixItem.Create;
 begin
   FRegExprModifiers:='I';
+  FSteps:=[imqfoMenuItem];
 end;
 
-procedure TIDEMsgQuickFixItem.Execute(const Msg: TIDEMessageLine);
+procedure TIDEMsgQuickFixItem.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
 begin
   if Assigned(OnExecuteMethod) then
-    OnExecuteMethod(Self,Msg);
+    OnExecuteMethod(Self,Step,Msg);
   if Assigned(OnExecuteProc) then
-    OnExecuteProc(Self,Msg);
+    OnExecuteProc(Self,Step,Msg);
 end;
 
 function TIDEMsgQuickFixItem.IsApplicable(Line: TIDEMessageLine): boolean;

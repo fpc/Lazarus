@@ -33,8 +33,21 @@ uses
   Classes, SysUtils, LCLProc, MsgIntf, TextTools, LazarusIDEStrConsts,
   LazIDEIntf, CodeCache, CodeToolManager;
   
-procedure QuickFixParameterNotUsed(Sender: TObject; Msg: TIDEMessageLine);
-procedure QuickFixUnitNotUsed(Sender: TObject; Msg: TIDEMessageLine);
+type
+
+  { TQuickFixUnitNotFoundPosition }
+
+  TQuickFixUnitNotFoundPosition = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
+procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
+                                   Msg: TIDEMessageLine);
+procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
+                              Msg: TIDEMessageLine);
 
 function GetMsgLineFilename(Msg: TIDEMessageLine;
                             out CodeBuf: TCodeBuffer): boolean;
@@ -44,16 +57,19 @@ procedure FreeStandardIDEQuickFixItems;
 
 implementation
 
-procedure QuickFixParameterNotUsed(Sender: TObject; Msg: TIDEMessageLine);
+procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
+  Msg: TIDEMessageLine);
 begin
   DebugLn('QuickFixParameterNotUsed ');
 end;
 
-procedure QuickFixUnitNotUsed(Sender: TObject; Msg: TIDEMessageLine);
+procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
+  Msg: TIDEMessageLine);
 var
   CodeBuf: TCodeBuffer;
   UnneededUnitname: String;
 begin
+  if Step<>imqfoMenuItem then exit;
   if not GetMsgLineFilename(Msg,CodeBuf) then exit;
   
   if not REMatches(Msg.Msg,'Unit "([a-z_0-9]+)" not used','I') then begin
@@ -83,7 +99,7 @@ begin
   end;
 
   Filename:=Msg.Parts.Values['Filename'];
-  DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
+  //DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
   CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
   if CodeBuf=nil then begin
     DebugLn('GetMsgLineFilename Filename "',Filename,'" not found.');
@@ -99,12 +115,60 @@ begin
   //RegisterIDEMsgQuickFix('Parameter xxx not used','Quick fix: Add dummy line',
   //  'Parameter "[a-z_0-9]+" not used',nil,@QuickFixParameterNotUsed);
   RegisterIDEMsgQuickFix('Unit xxx not used in yyy','Quick fix: Remove unit',
-    'Unit "[a-z_0-9]+" not used in [a-z_0-9]+',nil,@QuickFixUnitNotUsed);
+    'Unit "[a-z_0-9]+" not used in [a-z_0-9]+',[imqfoMenuItem],
+    nil,@QuickFixUnitNotUsed);
+  RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
 begin
   FreeThenNil(IDEMsgQuickFixes);
+end;
+
+{ TQuickFixUnitNotFoundPosition }
+
+constructor TQuickFixUnitNotFoundPosition.Create;
+begin
+  Name:='Fatal: Can''t find unit xxx';
+  Steps:=[imqfoImproveMessage];
+end;
+
+function TQuickFixUnitNotFoundPosition.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+begin
+  Result:=(Line.Parts<>nil)
+          and (System.Pos(') Fatal: Can''t find unit ',Line.Msg)>0);
+end;
+
+procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  CodeBuf: TCodeBuffer;
+  MissingUnitname: String;
+  NamePos, InPos: Integer;
+  Line, Col: Integer;
+begin
+  if Step<>imqfoImproveMessage then exit;
+  //DebugLn('QuickFixUnitNotFoundPosition ');
+  if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+
+  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+)','I') then begin
+    DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+    exit;
+  end;
+  MissingUnitname:=REVar(1);
+  LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
+  if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,
+    NamePos,InPos)
+  then begin
+    DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors');
+    exit;
+  end;
+  CodeBuf.AbsoluteToLineCol(NamePos,Line,Col);
+  if (Line>0) and (Col>0) then begin
+    //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
+    Msg.SetSourcePosition('',Line,Col);
+  end;
 end;
 
 end.

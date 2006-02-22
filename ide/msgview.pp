@@ -118,6 +118,7 @@ type
     procedure SetSelectedLineIndex(const AValue: integer);
     function FindNextItem(const Filename: string;
                           FirstLine, LineCount: integer): TAVLTreeNode;
+    procedure UpdateMsgSrcPos(Line: TLazMessageLine);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -142,6 +143,7 @@ type
     procedure SaveMessagesToFile(const Filename: string);
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
+    procedure UpdateMsgLineInListBox(Line: TLazMessageLine);
   public
     property LastLineIsProgress: boolean Read FLastLineIsProgress
       Write SetLastLineIsProgress;
@@ -423,15 +425,28 @@ procedure TMessagesView.CollectLineParts(Sender: TObject;
       Result:=Result+' '+Msg.Parts.Text;
   end;}
   
-  procedure UpdateMsgSrcPos(Line: TLazMessageLine);
+  procedure ImproveMessages(StartIndex: Integer);
+  var
+    i: LongInt;
+    ALine: TLazMessageLine;
+    QuickFixItem: TIDEMsgQuickFixItem;
+    j: Integer;
+    OldMsg: String;
   begin
-    if Line.Node<>nil then begin
-      FSrcPositions.Delete(Line.Node);
-      Line.Node:=nil;
+    for i:=StartIndex to FItems.Count-1 do begin
+      ALine:=Items[i];
+      for j:=0 to IDEMsgQuickFixes.Count-1 do begin
+        QuickFixItem:=IDEMsgQuickFixes[j];
+        if (imqfoImproveMessage in QuickFixItem.Steps)
+        and QuickFixItem.IsApplicable(ALine) then begin
+          OldMsg:=ALine.Msg;
+          QuickFixItem.Execute(ALine,imqfoImproveMessage);
+          UpdateMsgSrcPos(ALine);
+          if OldMsg<>ALine.Msg then
+            UpdateMsgLineInListBox(ALine);
+        end;
+      end;
     end;
-    Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
-    if Line.LineNumber>0 then
-      Line.Node:=FSrcPositions.Add(Line);
   end;
   
 var
@@ -440,16 +455,19 @@ var
   DestLine: TLazMessageLine;
   StartOriginalIndex: LongInt;
   DestIndex: Integer;
+  DestStartIndex: Integer;
 begin
   //DebugLn('TMessagesView.CollectLineParts ',dbgsName(Sender),' ',dbgsName(SrcLines));
   if Sender=nil then ;
   if (SrcLines=nil) or (SrcLines.Count=0) then exit;
   
   StartOriginalIndex:=SrcLines[0].OriginalIndex;
-  DestIndex:=ItemCount-1;
-  while (DestIndex>=0) and (Items[DestIndex].OriginalIndex<>StartOriginalIndex) do
-    dec(DestIndex);
+  DestStartIndex:=ItemCount-1;
+  while (DestStartIndex>=0)
+  and (Items[DestStartIndex].OriginalIndex<>StartOriginalIndex) do
+    dec(DestStartIndex);
   
+  DestIndex:=DestStartIndex;
   for i:=0 to SrcLines.Count-1 do begin
     SrcLine:=SrcLines[i];
     if DestIndex>=FItems.Count then break;
@@ -471,6 +489,9 @@ begin
 
     inc(DestIndex);
   end;
+  
+  ImproveMessages(DestStartIndex);
+  
   
   {for i:=0 to SrcLines.Count-1 do begin
     SrcLine:=SrcLines[i];
@@ -585,13 +606,18 @@ begin
         Line.Parts.Values['Line']:=IntToStr(Line.LineNumber);
       Line.SetSourcePosition('',Line.LineNumber,0);
       //DebugLn('TMessagesView.SrcEditLinesInsertedDeleted ',Line.Msg,' ',dbgs(Line.VisiblePosition));
-      if (Line.VisiblePosition>=0)
-      and (Line.VisiblePosition<MessageListBox.Items.Count) then begin
-        MessageListBox.Items[Line.VisiblePosition]:=Line.Msg;
-      end;
+      UpdateMsgLineInListBox(Line);
     end;
     
     ANode:=FSrcPositions.FindSuccessor(ANode);
+  end;
+end;
+
+procedure TMessagesView.UpdateMsgLineInListBox(Line: TLazMessageLine);
+begin
+  if (Line.VisiblePosition>=0)
+  and (Line.VisiblePosition<MessageListBox.Items.Count) then begin
+    MessageListBox.Items[Line.VisiblePosition]:=Line.Msg;
   end;
 end;
 
@@ -734,7 +760,8 @@ begin
     for j:=0 to IDEMsgQuickFixes.Count-1 do begin
       QuickFixItem:=IDEMsgQuickFixes[j];
       //DebugLn('TMessagesView.MainPopupMenuPopup "',Msg.Msg,'" ',QuickFixItem.Name);
-      if QuickFixItem.IsApplicable(Msg) then begin
+      if (imqfoMenuItem in QuickFixItem.Steps)
+      and QuickFixItem.IsApplicable(Msg) then begin
         FQuickFixItems.Add(QuickFixItem);
       end;
     end;
@@ -832,8 +859,11 @@ begin
   if Msg=nil then exit;
   for i:=0 to FQuickFixItems.Count-1 do begin
     QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
-    if QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption then begin
-      QuickFixItem.Execute(Msg);
+    if (QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption)
+    and (imqfoMenuItem in QuickFixItem.Steps) then begin
+      QuickFixItem.Execute(Msg,imqfoMenuItem);
+      UpdateMsgSrcPos(Msg);
+      UpdateMsgLineInListBox(Msg);
     end;
   end;
 end;
@@ -894,6 +924,17 @@ procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
   MessageListBox.ItemIndex := AValue;
   MessageListBox.TopIndex  := MessageListBox.ItemIndex;
+end;
+
+procedure TMessagesView.UpdateMsgSrcPos(Line: TLazMessageLine);
+begin
+  if Line.Node<>nil then begin
+    FSrcPositions.Delete(Line.Node);
+    Line.Node:=nil;
+  end;
+  Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
+  if Line.LineNumber>0 then
+    Line.Node:=FSrcPositions.Add(Line);
 end;
 
 function TMessagesView.FindNextItem(const Filename: string; FirstLine,
