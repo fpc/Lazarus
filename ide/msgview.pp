@@ -38,6 +38,7 @@ interface
 
 uses
   Classes,
+  AVL_Tree,
   ClipBrd,
   Controls,
   DialogProcs,
@@ -60,6 +61,22 @@ uses
   SysUtils;
 
 type
+
+  { TLazMessageLine }
+
+  TLazMessageLine = class(TIDEMessageLine)
+  private
+    FColumn: integer;
+    FFilename: string;
+    FLineNumber: integer;
+    FNode: TAVLTreeNode;
+  public
+    property Node: TAVLTreeNode read FNode write FNode;
+    property Filename: string read FFilename write FFilename;
+    property LineNumber: integer read FLineNumber write FLineNumber;
+    property Column: integer read FColumn write FColumn;
+  end;
+
   { TMessagesView }
   
   TMessagesView = class(TForm)
@@ -81,16 +98,17 @@ type
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure OnQuickFixClick(Sender: TObject);
   private
-    FItems: TFPList; // list of TIDEMessageLine
-    FVisibleItems: TFPList; // list of TIDEMessageLine (visible Items of FItems)
+    FItems: TFPList; // list of TLazMessageLine
+    FVisibleItems: TFPList; // list of TLazMessageLine (visible Items of FItems)
+    FSrcPositions: TAVLTree;// tree of TLazMessageLine sorted for Filename and LineNumber
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
     FQuickFixItems: TFPList; // list of current TIDEMsgQuickFixItem
     function GetDirectory: string;
-    function GetItems(Index: integer): TIDEMessageLine;
+    function GetItems(Index: integer): TLazMessageLine;
     function GetMessage: string;
-    function GetMessageLine: TIDEMessageLine;
-    function GetVisibleItems(Index: integer): TIDEMessageLine;
+    function GetMessageLine: TLazMessageLine;
+    function GetVisibleItems(Index: integer): TLazMessageLine;
     procedure SetLastLineIsProgress(const AValue: boolean);
     procedure DoSelectionChange;
   protected
@@ -98,6 +116,8 @@ type
     FLastSelectedIndex: integer;
     function GetSelectedLineIndex: integer;
     procedure SetSelectedLineIndex(const AValue: integer);
+    function FindNextItem(const Filename: string;
+                          FirstLine, LineCount: integer): TAVLTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -120,6 +140,8 @@ type
     function MsgCount: integer;
     procedure FilterLines(Filter: TOnFilterLine);
     procedure SaveMessagesToFile(const Filename: string);
+    procedure SrcEditLinesInsertedDeleted(const Filename: string;
+                                          FirstLine, LineCount: Integer);
   public
     property LastLineIsProgress: boolean Read FLastLineIsProgress
       Write SetLastLineIsProgress;
@@ -129,8 +151,8 @@ type
       Write SetSelectedLineIndex;
     property OnSelectionChanged: TNotifyEvent
       Read FOnSelectionChanged Write FOnSelectionChanged;
-    property Items[Index: integer]: TIDEMessageLine Read GetItems;
-    property VisibleItems[Index: integer]: TIDEMessageLine Read GetVisibleItems;
+    property Items[Index: integer]: TLazMessageLine Read GetItems;
+    property VisibleItems[Index: integer]: TLazMessageLine Read GetVisibleItems;
   end;
 
 var
@@ -147,7 +169,7 @@ const
 
 procedure RegisterStandardMessagesViewMenuItems;
 
-function MessageLinesAsText(ListOfTIDEMessageLine: TFPList): string;
+function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
 
 implementation
 
@@ -157,6 +179,47 @@ uses
 
 const
   SeparatorLine = '---------------------------------------------';
+  
+type
+  TMsgSrcPos = record
+    Filename: string;
+    LineNumber: integer;
+  end;
+  PMsgSrcPos = ^TMsgSrcPos;
+
+function CompareMsgSrcPositions(Data1, Data2: Pointer): integer;
+var
+  Pos1: TLazMessageLine;
+  Pos2: TLazMessageLine;
+begin
+  Pos1:=TLazMessageLine(Data1);
+  Pos2:=TLazMessageLine(Data2);
+  Result:=CompareFilenames(Pos1.Filename,Pos2.Filename);
+  if Result<>0 then exit;
+  if Pos1.LineNumber>Pos2.LineNumber then
+    Result:=1
+  else if Pos1.LineNumber<Pos2.LineNumber then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareMsgSrcPosWithMsgSrcPosition(Data1, Data2: Pointer): integer;
+var
+  Pos1: PMsgSrcPos;
+  Pos2: TLazMessageLine;
+begin
+  Pos1:=PMsgSrcPos(Data1);
+  Pos2:=TLazMessageLine(Data2);
+  Result:=CompareFilenames(Pos1^.Filename,Pos2.Filename);
+  if Result<>0 then exit;
+  if Pos1^.LineNumber>Pos2.LineNumber then
+    Result:=1
+  else if Pos1^.LineNumber<Pos2.LineNumber then
+    Result:=-1
+  else
+    Result:=0;
+end;
 
 procedure RegisterStandardMessagesViewMenuItems;
 var
@@ -179,27 +242,27 @@ begin
   MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
 end;
 
-function MessageLinesAsText(ListOfTIDEMessageLine: TFPList): string;
+function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
 var
   i: Integer;
   NewLength: Integer;
-  Line: TIDEMessageLine;
+  Line: TLazMessageLine;
   p: Integer;
   e: string;
   LineEndingLength: Integer;
 begin
-  if (ListOfTIDEMessageLine=nil) or (ListOfTIDEMessageLine.Count=0) then exit('');
+  if (ListOfTLazMessageLine=nil) or (ListOfTLazMessageLine.Count=0) then exit('');
   NewLength:=0;
   e:=LineEnding;
   LineEndingLength:=length(e);
-  for i:=0 to ListOfTIDEMessageLine.Count-1 do begin
-    Line:=TIDEMessageLine(ListOfTIDEMessageLine[i]);
+  for i:=0 to ListOfTLazMessageLine.Count-1 do begin
+    Line:=TLazMessageLine(ListOfTLazMessageLine[i]);
     inc(NewLength,length(Line.Msg)+LineEndingLength);
   end;
   SetLength(Result,NewLength);
   p:=1;
-  for i:=0 to ListOfTIDEMessageLine.Count-1 do begin
-    Line:=TIDEMessageLine(ListOfTIDEMessageLine[i]);
+  for i:=0 to ListOfTLazMessageLine.Count-1 do begin
+    Line:=TLazMessageLine(ListOfTLazMessageLine[i]);
     if Line.Msg<>'' then begin
       System.Move(Line.Msg[1],Result[p],length(Line.Msg));
       inc(p,length(Line.Msg));
@@ -218,6 +281,7 @@ begin
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems := TFPList.Create;
   FVisibleItems := TFPList.Create;
+  FSrcPositions := TAVLTree.Create(@CompareMsgSrcPositions);
   FLastSelectedIndex := -1;
 
   Caption := lisMenuViewMessages;
@@ -243,6 +307,7 @@ end;
 destructor TMessagesView.Destroy;
 begin
   ClearItems;
+  FreeThenNil(FSrcPositions);
   FreeThenNil(FItems);
   FreeThenNil(FVisibleItems);
   FreeThenNil(FQuickFixItems);
@@ -251,11 +316,17 @@ end;
 
 procedure TMessagesView.DeleteLine(Index: integer);
 var
-  Line: TIDEMessageLine;
+  Line: TLazMessageLine;
   VisibleIndex: integer;
-  i:    integer;
+  i: integer;
 begin
   Line := Items[Index];
+
+  // remove line from lists and tree
+  if Line.Node<>nil then begin
+    FSrcPositions.Delete(Line.Node);
+    Line.Node:=nil;
+  end;
   FItems.Delete(Line.Position);
   VisibleIndex := Line.VisiblePosition;
   if VisibleIndex >= 0 then
@@ -263,7 +334,10 @@ begin
     MessageListBox.Items.Delete(VisibleIndex);
     FVisibleItems.Delete(VisibleIndex);
   end;
+  
+  // free Line
   Line.Free;
+  
   // adjust Positions
   for i := Index to FItems.Count - 1 do
   begin
@@ -280,9 +354,9 @@ end;
 procedure TMessagesView.Add(const Msg, CurDir: string;
   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
 var
-  NewMsg: TIDEMessageLine;
+  NewMsg: TLazMessageLine;
   i:      integer;
-  LastItem: TIDEMessageLine;
+  LastItem: TLazMessageLine;
 begin
   NewMsg:=nil;
   if ItemCount>0 then begin
@@ -293,7 +367,7 @@ begin
     end;
   end;
   if NewMsg=nil then begin
-    NewMsg := TIDEMessageLine.Create;
+    NewMsg := TLazMessageLine.Create;
     FItems.Add(NewMsg);
   end;
   
@@ -342,17 +416,28 @@ end;
 procedure TMessagesView.CollectLineParts(Sender: TObject;
   SrcLines: TIDEMessageLineList);
   
-  {function MsgAsString(Msg: TIDEMessageLine): string;
+  {function MsgAsString(Msg: TLazMessageLine): string;
   begin
     Result:=Msg.Msg;
     if Msg.Parts<>nil then
       Result:=Result+' '+Msg.Parts.Text;
   end;}
   
+  procedure UpdateMsgSrcPos(Line: TLazMessageLine);
+  begin
+    if Line.Node<>nil then begin
+      FSrcPositions.Delete(Line.Node);
+      Line.Node:=nil;
+    end;
+    Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
+    if Line.LineNumber>0 then
+      Line.Node:=FSrcPositions.Add(Line);
+  end;
+  
 var
   i: Integer;
   SrcLine: TIDEMessageLine;
-  DestLine: TIDEMessageLine;
+  DestLine: TLazMessageLine;
   StartOriginalIndex: LongInt;
   DestIndex: Integer;
 begin
@@ -369,6 +454,8 @@ begin
     SrcLine:=SrcLines[i];
     if DestIndex>=FItems.Count then break;
     DestLine:=Items[DestIndex];
+    
+    // copy parts
     if (SrcLine.OriginalIndex=DestLine.OriginalIndex) then begin
       if SrcLine.Parts<>nil then begin
         if DestLine.Parts=nil then
@@ -377,9 +464,11 @@ begin
         //DebugLn('TMessagesView.CollectLineParts i=',dbgs(i),' Parts=',DestLine.Parts.Text);
       end else if DestLine.Parts<>nil then
         DestLine.Parts.Clear;
+      UpdateMsgSrcPos(DestLine);
     end else begin
       DebugLn('TMessagesView.CollectLineParts WARNING: ',dbgs(SrcLine.OriginalIndex),'<>',dbgs(DestLine.OriginalIndex),' SrcLine=',SrcLine.Msg);
     end;
+
     inc(DestIndex);
   end;
   
@@ -425,7 +514,7 @@ procedure TMessagesView.FilterLines(Filter: TOnFilterLine);
 // recalculate visible lines
 var
   i:    integer;
-  Line: TIDEMessageLine;
+  Line: TLazMessageLine;
   ShowLine: boolean;
 begin
   // remove temporary lines
@@ -464,6 +553,46 @@ end;
 procedure TMessagesView.SaveMessagesToFile(const Filename: string);
 begin
   SaveStringToFile(Filename, MessageListBox.Items.Text, []);
+end;
+
+procedure TMessagesView.SrcEditLinesInsertedDeleted(const Filename: string;
+  FirstLine, LineCount: Integer);
+var
+  ANode: TAVLTreeNode;
+  Line: TLazMessageLine;
+  OldLineNumber: LongInt;
+begin
+  if LineCount=0 then exit;
+  //DebugLn('TMessagesView.SrcEditLinesInsertedDeleted ',Filename,' First=',dbgs(FirstLine),' Count=',dbgs(LineCount));
+  
+  ANode:=FindNextItem(Filename,FirstLine,LineCount);
+  while ANode<>nil do begin
+    Line:=TLazMessageLine(ANode.Data);
+    if CompareFilenames(Line.Filename,Filename)<>0 then break;
+    //DebugLn('TMessagesView.SrcEditLinesInsertedDeleted ',dbgs(Line.LineNumber),'->',dbgs(Line.LineNumber+LineCount));
+    OldLineNumber:=Line.LineNumber;
+    if (LineCount<0) and (OldLineNumber>=FirstLine)
+    and (OldLineNumber<FirstLine-LineCount) then begin
+      // line deleted
+      Line.LineNumber:=FirstLine;
+    end else begin
+      // line moved
+      inc(Line.LineNumber,LineCount);
+    end;
+    if OldLineNumber<>Line.LineNumber then begin
+      // update line number
+      if Line.Parts<>nil then
+        Line.Parts.Values['Line']:=IntToStr(Line.LineNumber);
+      Line.SetSourcePosition('',Line.LineNumber,0);
+      //DebugLn('TMessagesView.SrcEditLinesInsertedDeleted ',Line.Msg,' ',dbgs(Line.VisiblePosition));
+      if (Line.VisiblePosition>=0)
+      and (Line.VisiblePosition<MessageListBox.Items.Count) then begin
+        MessageListBox.Items[Line.VisiblePosition]:=Line.Msg;
+      end;
+    end;
+    
+    ANode:=FSrcPositions.FindSuccessor(ANode);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -514,6 +643,7 @@ procedure TMessagesView.ClearItems;
 var
   i: integer;
 begin
+  FSrcPositions.Clear;
   for i := 0 to FItems.Count - 1 do
     TObject(FItems[i]).Free;
   FItems.Clear;
@@ -541,7 +671,7 @@ begin
     Result := MessageListBox.Items.Strings[GetSelectedLineIndex];
 end;
 
-function TMessagesView.GetMessageLine: TIDEMessageLine;
+function TMessagesView.GetMessageLine: TLazMessageLine;
 var
   i: LongInt;
 begin
@@ -551,9 +681,9 @@ begin
     Result:=VisibleItems[i];
 end;
 
-function TMessagesView.GetVisibleItems(Index: integer): TIDEMessageLine;
+function TMessagesView.GetVisibleItems(Index: integer): TLazMessageLine;
 begin
-  Result := TIDEMessageLine(FVisibleItems[Index]);
+  Result := TLazMessageLine(FVisibleItems[Index]);
 end;
 
 procedure TMessagesView.MessageViewDblClicked(Sender: TObject);
@@ -595,7 +725,7 @@ var
   i: LongInt;
   j: Integer;
   QuickFixItem: TIDEMsgQuickFixItem;
-  Msg: TIDEMessageLine;
+  Msg: TLazMessageLine;
 begin
   MsgQuickFixIDEMenuSection.Clear;
   Msg:=GetMessageLine;
@@ -696,7 +826,7 @@ procedure TMessagesView.OnQuickFixClick(Sender: TObject);
 var
   i: Integer;
   QuickFixItem: TIDEMsgQuickFixItem;
-  Msg: TIDEMessageLine;
+  Msg: TLazMessageLine;
 begin
   Msg:=GetMessageLine;
   if Msg=nil then exit;
@@ -718,9 +848,9 @@ begin
     Result := VisibleItems[i].Msg;
 end;
 
-function TMessagesView.GetItems(Index: integer): TIDEMessageLine;
+function TMessagesView.GetItems(Index: integer): TLazMessageLine;
 begin
-  Result := TIDEMessageLine(FItems[Index]);
+  Result := TLazMessageLine(FItems[Index]);
 end;
 
 function TMessagesView.GetSelectedLineIndex: integer;
@@ -764,6 +894,41 @@ procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
   MessageListBox.ItemIndex := AValue;
   MessageListBox.TopIndex  := MessageListBox.ItemIndex;
+end;
+
+function TMessagesView.FindNextItem(const Filename: string; FirstLine,
+  LineCount: integer): TAVLTreeNode;
+var
+  MsgSrcPos: TMsgSrcPos;
+  Comp: LongInt;
+begin
+  Result:=FSrcPositions.Root;
+  //DebugLn('TMessagesView.FindNextItem ',dbgs(Result));
+  if Result=nil then exit;
+  MsgSrcPos.Filename:=Filename;
+  MsgSrcPos.LineNumber:=FirstLine;
+  while true do begin
+    Comp:=CompareMsgSrcPosWithMsgSrcPosition(@MsgSrcPos,
+                                             TLazMessageLine(Result.Data));
+    //DebugLn('TMessagesView.FindNextItem Comp=',dbgs(Comp),' ',TLazMessageLine(Result.Data).Filename,' ',dbgs(TLazMessageLine(Result.Data).LineNumber));
+    if Comp=0 then begin
+      Result:=FSrcPositions.FindLeftMostSameKey(Result);
+      exit;
+    end;
+    if Comp<0 then begin
+      if Result.Left<>nil then
+        Result:=Result.Left
+      else
+        exit;
+    end else begin
+      if Result.Right<>nil then
+        Result:=Result.Right
+      else begin
+        Result:=FSrcPositions.FindSuccessor(Result);
+        exit;
+      end;
+    end;
+  end;
 end;
 
 initialization

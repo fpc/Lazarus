@@ -2568,18 +2568,20 @@ begin
   SetLength(Result, XLine - 1);
 end;
 
-procedure TSourceEditor.LinesDeleted(sender: TObject; FirstLine,
+procedure TSourceEditor.LinesDeleted(Sender: TObject; FirstLine,
   Count: Integer);
 begin
-  //notify the notebook that lines were deleted.
-  //marks will use this to update themselves
+  // notify the notebook that lines were deleted.
+  // marks will use this to update themselves
+  MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,-Count);
 end;
 
-procedure TSourceEditor.LinesInserted(sender: TObject; FirstLine,
+procedure TSourceEditor.LinesInserted(Sender: TObject; FirstLine,
   Count: Integer);
 begin
-  //notify the notebook that lines were Inserted.
-  //marks will use this to update themselves
+  // notify the notebook that lines were Inserted.
+  // marks will use this to update themselves
+  MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,Count);
 end;
 
 procedure TSourceEditor.SetVisible(Value: boolean);

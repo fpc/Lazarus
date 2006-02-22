@@ -438,7 +438,7 @@ type
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject;
-      var Key: Word; Shift: TShiftState);
+                                var Key: Word; Shift: TShiftState);
     procedure ColorButtonColorChanged(Sender: TObject);
 
     // display
@@ -449,18 +449,15 @@ type
     // key mapping
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewMouseUp(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
+                      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
     // color
-    procedure ColorElementListBoxSelectionChange(Sender: TObject;
-      User: Boolean);
-    procedure ColorPreviewMouseUp(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
+    procedure ColorElementListBoxSelectionChange(Sender: TObject; User: Boolean);
+    procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
+                                  Shift: TShiftState; X, Y: Integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: Integer;
-      var Special: Boolean; var FG, BG: TColor);
+                                  var Special: Boolean; var FG, BG: TColor);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
@@ -3191,8 +3188,7 @@ var
 begin
   if CurLanguageID >= 0 then
   begin
-    AddAttr := EditorOpts.HighlighterList[
-      CurLanguageID].SampleLineToAddAttr(Line);
+    AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Line);
     if AddAttr <> ahaNone then
     begin
       i := PreviewSyn.AttrCount - 1;

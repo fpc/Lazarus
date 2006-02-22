@@ -74,6 +74,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure GetSourcePosition(out Filename: string;
+                                out LineNumber, Column: integer);
+    procedure SetSourcePosition(const Filename: string;
+                                const LineNumber, Column: integer);
     property Msg: string read FMsg write SetMsg;
     property Directory: string read FDirectory write SetDirectory;
     property Position: integer read FPosition write FPosition; // position in all available messages
@@ -338,6 +342,67 @@ destructor TIDEMessageLine.Destroy;
 begin
   FParts.Free;
   inherited Destroy;
+end;
+
+procedure TIDEMessageLine.GetSourcePosition(out Filename: string; out
+  LineNumber, Column: integer);
+begin
+  if Parts<>nil then begin
+    Filename:=Parts.Values['Filename'];
+    LineNumber:=StrToIntDef(Parts.Values['Line'],0);
+    Column:=StrToIntDef(Parts.Values['Column'],0);
+  end else begin
+    Filename:='';
+    LineNumber:=0;
+    Column:=0;
+  end;
+end;
+
+procedure TIDEMessageLine.SetSourcePosition(const Filename: string;
+  const LineNumber, Column: integer);
+var
+  BracketClosePos: LongInt;
+  s: String;
+  CommaPos: LongInt;
+  BracketOpenPos: LongInt;
+begin
+  if Parts<>nil then begin
+    if FIlename<>'' then
+      Parts.Values['Filename']:=Filename;
+    if LineNumber>0 then
+      Parts.Values['Line']:=IntToStr(LineNumber);
+    if Column>0 then
+      Parts.Values['Column']:=IntToStr(Column);
+  end;
+  BracketOpenPos:=System.Pos('(',Msg);
+  if (BracketOpenPos>0) then begin
+    if (Filename<>'') then begin
+      Msg:=Filename+copy(Msg,BracketOpenPos,length(Msg));
+      BracketOpenPos:=length(Filename)+1;
+    end;
+    CommaPos:=System.Pos(',',Msg);
+    if CommaPos>0 then begin
+      if LineNumber>0 then begin
+        Msg:=copy(Msg,1,BracketOpenPos)+IntToStr(LineNumber)
+             +copy(Msg,CommaPos,length(Msg));
+      end;
+    end else begin
+      if LineNumber>0 then begin
+        s:=IntToStr(LineNumber)+',1';
+        Msg:=copy(Msg,1,BracketOpenPos)+s+copy(Msg,BracketOpenPos+1,length(Msg));
+        CommaPos:=System.Pos(',',Msg);
+      end;
+    end;
+    if CommaPos>0 then begin
+      BracketClosePos:=System.Pos(')',Msg);
+      if BracketClosePos>0 then begin
+        if Column>0 then begin
+          s:=IntToStr(Column);
+          Msg:=copy(Msg,1,CommaPos)+s+copy(Msg,BracketClosePos,length(Msg));
+        end;
+      end;
+    end;
+  end;
 end;
 
 { TIDEMessageLineList }
