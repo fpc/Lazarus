@@ -85,6 +85,7 @@ components/codetools/languages/codetools.ua.po svneol=native#text/plain
 components/codetools/laz_dom.pas svneol=native#text/pascal
 components/codetools/laz_xmlcfg.pas svneol=native#text/pascal
 components/codetools/laz_xmlread.pas svneol=native#text/pascal
+components/codetools/laz_xmlstreaming.pas svneol=native#text/plain
 components/codetools/laz_xmlwrite.pas svneol=native#text/pascal
 components/codetools/lfmtrees.pas svneol=native#text/pascal
 components/codetools/linkscanner.pas svneol=native#text/pascal
