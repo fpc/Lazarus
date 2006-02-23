@@ -481,7 +481,7 @@ end;
 procedure TApplication.SetTitle(const AValue: String);
 begin
   inherited SetTitle(AValue);
-  // ToDo: tell the interface
+  WidgetSet.AppSetTitle(GetTitle);
 end;
 
 {------------------------------------------------------------------------------

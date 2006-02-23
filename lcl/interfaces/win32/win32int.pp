@@ -182,17 +182,21 @@ Type
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
+    Procedure AppTerminate; Override;
+    procedure AppSetTitle(const ATitle: string); override;
+
+    Function  InitHintFont(HintFont: TObject): Boolean; Override;
+    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
-    procedure AppProcessMessages; override;
-    procedure AppWaitMessage; override;
-    Procedure AppTerminate; Override;
-    procedure ShowHide(Sender: TObject);
-    Function  InitHintFont(HintFont: TObject): Boolean; Override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+
     procedure UpdateThemesActive;
+    procedure ShowHide(Sender: TObject);
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;

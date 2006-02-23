@@ -395,6 +395,11 @@ Begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
 End;
 
+procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
+begin
+  Windows.SetWindowText(FAppHandle, PChar(ATitle));
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateTimer
   Params: Interval:

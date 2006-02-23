@@ -42,3 +42,8 @@ begin
   if Assigned(ALoop) then ALoop;
 end;
 
+procedure TWidgetSet.AppSetTitle(const ATitle: string);
+begin
+  Debugln('TWidgetSet.AppSetTitle not implemented by ', ClassName);
+end;
+
