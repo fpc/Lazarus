@@ -66,9 +66,7 @@ type
 {$ELSE USE_UTF8BIDI_LCL}
   TUTF8Char = String[7];
 {$ENDIF USE_UTF8BIDI_LCL}
-  PRect = ^TRect;
   UINT = LongWord;
-  PPoint = ^TPoint;
 
   {PLongInt = ^LongInt;
   PInteger = ^Integer;

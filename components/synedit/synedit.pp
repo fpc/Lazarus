@@ -59,7 +59,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
-  FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
+  Types, FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
 {$ELSE}
   Windows,
 {$ENDIF}

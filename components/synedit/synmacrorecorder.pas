@@ -59,7 +59,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   utf8bidi,
   {$ENDIF}
-  LCLIntf, LCLType,
+  Types, LCLIntf, LCLType,
   {$ELSE}
   Windows, Messages,
   {$ENDIF}

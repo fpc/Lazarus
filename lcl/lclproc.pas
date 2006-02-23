@@ -36,7 +36,8 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, Math, FPCAdds, AvgLvlTree, FileUtil, LCLStrConsts, LCLType;
+  Classes, SysUtils, Math, Types, FPCAdds, AvgLvlTree, FileUtil, LCLStrConsts,
+  LCLType;
 
 type
   { TMethodList - array of TMethod }

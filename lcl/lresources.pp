@@ -36,7 +36,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, TypInfo, LCLProc, LCLStrConsts;
+  Classes, SysUtils, Types, FPCAdds, TypInfo, LCLProc, LCLStrConsts;
 
 type
   { TLResourceList }
@@ -263,6 +263,8 @@ procedure LRSObjectResToText(Input, Output: TStream;
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 procedure FormDataToText(FormStream, TextStream: TStream);
 
+procedure DefineRectProperty(Filer: TFiler; const Name: string;
+                             ARect, DefaultRect: PRect);
 
 procedure ReverseBytes(p: Pointer; Count: integer);
 procedure ReverseByteOrderInWords(p: PWord; Count: integer);
@@ -315,6 +317,80 @@ var
   ByteToStr: array[char] of shortstring;
   ByteToStrValid: boolean=false;
   
+type
+
+  { TDefineRectPropertyClass }
+
+  TDefineRectPropertyClass = class
+  public
+    Value: PRect;
+    DefaultValue: PRect;
+    constructor Create(AValue, ADefaultRect: PRect);
+    procedure ReadData(Reader: TReader);
+    procedure WriteData(Writer: TWriter);
+    function HasData: Boolean;
+  end;
+
+{ TDefineRectPropertyClass }
+
+constructor TDefineRectPropertyClass.Create(AValue, ADefaultRect: PRect);
+begin
+  Value:=AValue;
+  DefaultValue:=ADefaultRect;
+end;
+
+procedure TDefineRectPropertyClass.ReadData(Reader: TReader);
+begin
+  with Reader do begin
+    ReadListBegin;
+    Value^.Left:=ReadInteger;
+    Value^.Top:=ReadInteger;
+    Value^.Right:=ReadInteger;
+    Value^.Bottom:=ReadInteger;
+    ReadListEnd;
+  end;
+end;
+
+procedure TDefineRectPropertyClass.WriteData(Writer: TWriter);
+begin
+  with Writer do begin
+    WriteListBegin;
+    WriteInteger(Value^.Left);
+    WriteInteger(Value^.Top);
+    WriteInteger(Value^.Right);
+    WriteInteger(Value^.Bottom);
+    WriteListEnd;
+  end;
+end;
+
+function TDefineRectPropertyClass.HasData: Boolean;
+begin
+  if DefaultValue<>nil then begin
+    Result:=(DefaultValue^.Left<>Value^.Left)
+         or (DefaultValue^.Top<>Value^.Top)
+         or (DefaultValue^.Right<>Value^.Right)
+         or (DefaultValue^.Bottom<>Value^.Bottom);
+  end else begin
+    Result:=(Value^.Left<>0)
+         or (Value^.Top<>0)
+         or (Value^.Right<>0)
+         or (Value^.Bottom<>0);
+  end;
+end;
+
+procedure DefineRectProperty(Filer: TFiler; const Name: string; ARect,
+  DefaultRect: PRect);
+var
+  PropDef: TDefineRectPropertyClass;
+begin
+  PropDef:=TDefineRectPropertyClass.Create(ARect,DefaultRect);
+  try
+    Filer.DefineProperty(Name,@PropDef.ReadData,@PropDef.WriteData,PropDef.HasData);
+  finally
+    PropDef.Free;
+  end;
+end;
+
 procedure InitByteToStr;
 var
   c: Char;

@@ -27,7 +27,7 @@ unit GtkWSMenus;
 interface
 
 uses
-  Classes, InterfaceBase, LCLProc, LCLType, WSMenus, WSLCLClasses,
+  Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
