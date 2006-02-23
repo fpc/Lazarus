@@ -80,7 +80,8 @@ type
 var LRSTranslator: TAbstractTranslator;
 type
 {$ENDIF}
-   { TLRSObjectReader }
+  { TLRSObjectReader }
+
   TLRSObjectReader = class(TAbstractObjectReader)
   private
     FStream: TStream;
@@ -116,7 +117,7 @@ type
     function ReadSet(EnumType: Pointer): Integer; override;
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
-    function ReadWideString: WideString;override;
+    function ReadWideString: WideString; override;
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
   public
@@ -153,9 +154,13 @@ type
     constructor Create(Stream: TStream; BufSize: Integer); virtual;
     destructor Destroy; override;
 
-    procedure BeginCollection; override;
+    { Begin/End markers. Those ones who don't have an end indicator, use
+      "EndList", after the occurrence named in the comment. Note that this
+      only counts for "EndList" calls on the same level; each BeginXXX call
+      increases the current level. }
+    procedure BeginCollection; override;{ Ends with the next "EndList" }
     procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
-      ChildPos: Integer); override;
+      ChildPos: Integer); override; { Ends after the second "EndList" }
     procedure BeginList; override;
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;

@@ -21,7 +21,7 @@ unit Laz_XMLStreaming;
 
 interface
 
-uses SysUtils, Classes, Laz_DOM;
+uses SysUtils, Classes, TypInfo, Laz_DOM, Laz_XMLWrite;
 
 type
 
@@ -47,9 +47,14 @@ type
     function GetPropertyElement(const TypeName: String): TDOMElement;
   public
     constructor Create(ADoc: TDOMDocument);
-    procedure BeginCollection; override;
+
+    { Begin/End markers. Those ones who don't have an end indicator, use
+      "EndList", after the occurrence named in the comment. Note that this
+      only counts for "EndList" calls on the same level; each BeginXXX call
+      increases the current level. }
+    procedure BeginCollection; override;{ Ends with the next "EndList" }
     procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
-      ChildPos: Integer); override;
+      ChildPos: Integer); override;{ Ends after the second "EndList" }
     procedure BeginList; override;
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
@@ -68,12 +73,77 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+  public
+    property Doc: TDOMDocument read FDoc;
   end;
+  TXMLObjectWriterClass = class of TXMLObjectWriter;
 
+
+  { TXMLObjectReader }
+
+  TXMLObjectReader = class(TAbstractObjectReader)
+  private
+    FDoc: TDOMDocument;
+    FRootEl: TDOMElement;
+  public
+    constructor Create(ADoc: TDOMDocument);
+    destructor Destroy; override;
+
+    { All ReadXXX methods are called _after_ the value type has been read! }
+    function NextValue: TValueType; override;
+    function ReadValue: TValueType; override;
+    procedure BeginRootComponent; override;
+    procedure BeginComponent(var Flags: TFilerFlags; var AChildPos: Integer;
+      var CompClassName, CompName: String); override;
+    function BeginProperty: String; override;
+
+    procedure ReadBinary(const DestData: TMemoryStream); override;
+    function ReadFloat: Extended; override;
+    function ReadSingle: Single; override;
+    function ReadCurrency: Currency; override;
+    function ReadDate: TDateTime; override;
+    function ReadIdent(ValueType: TValueType): String; override;
+    function ReadInt8: ShortInt; override;
+    function ReadInt16: SmallInt; override;
+    function ReadInt32: LongInt; override;
+    function ReadInt64: Int64; override;
+    function ReadSet(EnumType: Pointer): Integer; override;
+    function ReadStr: String; override;
+    function ReadString(StringType: TValueType): String; override;
+    function ReadWideString: WideString; override;
+    procedure SkipComponent(SkipComponentInfos: Boolean); override;
+    procedure SkipValue; override;
+  public
+    property Doc: TDOMDocument read FDoc;
+  end;
+  TXMLObjectReaderClass = class of TXMLObjectReader;
+
+procedure WriteComponentToXMLStream(AComponent: TComponent; AStream: TStream);
 
 
 implementation
 
+procedure WriteComponentToXMLStream(AComponent: TComponent; AStream: TStream);
+var
+  Driver: TXMLObjectWriter;
+  Writer: TWriter;
+  XMLDocument: TXMLDocument;
+begin
+  XMLDocument:=nil;
+  Driver:=nil;
+  Writer:=nil;
+  try
+    XMLDocument:=TXMLDocument.Create;
+    Driver:=TXMLObjectWriter.Create(XMLDocument);
+    Writer:=TWriter.Create(Driver);
+    Writer.WriteDescendent(AComponent,nil);
+    WriteXMLFile(XMLDocument,AStream);
+  finally
+    Writer.Free;
+    Driver.Free;
+    XMLDocument.Free;
+  end;
+end;
 
 procedure TXMLObjectWriter.StackPush;
 var
@@ -130,7 +200,9 @@ end;
 
 procedure TXMLObjectWriter.BeginCollection;
 begin
-  WriteLn('BeginCollection');
+  StackPush;
+  StackEl.Element := FDoc.CreateElement('collection');
+  StackEl.Parent.AppendChild(StackEl.Element);
 end;
 
 procedure TXMLObjectWriter.BeginComponent(Component: TComponent; Flags: TFilerFlags;
@@ -152,7 +224,9 @@ end;
 
 procedure TXMLObjectWriter.BeginList;
 begin
-  WriteLn('BeginList');
+  StackPush;
+  StackEl.Element := FDoc.CreateElement('list');
+  StackEl.Parent.AppendChild(StackEl.Element);
 end;
 
 procedure TXMLObjectWriter.EndList;
@@ -241,8 +315,22 @@ begin
 end;
 
 procedure TXMLObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
+var
+  i: Integer;
+  Mask: LongInt;
 begin
-  writeln('TXMLObjectWriter.WriteSet ',Value);
+  StackPush;
+  StackEl.Element := FDoc.CreateElement('set');
+  StackEl.Parent.AppendChild(StackEl.Element);
+
+  Mask := 1;
+  for i := 0 to 31 do
+  begin
+    if (Value and Mask) <> 0 then
+      GetPropertyElement('enum')['value'] := GetEnumName(PTypeInfo(SetType), i);
+    Mask := Mask shl 1;
+  end;
+  EndList;
 end;
 
 procedure TXMLObjectWriter.WriteString(const Value: String);
@@ -260,5 +348,142 @@ begin
   GetPropertyElement('widestring')['value'] := s;
 end;
 
+
+{ TXMLObjectReader }
+
+constructor TXMLObjectReader.Create(ADoc: TDOMDocument);
+begin
+  inherited Create;
+  FDoc := ADoc;
+  FRootEl := FDoc.CreateElement('fcl-persistent');
+  FDoc.AppendChild(FRootEl);
+end;
+
+destructor TXMLObjectReader.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TXMLObjectReader.NextValue: TValueType;
+begin
+  writeln('TXMLObjectReader.NextValue ');
+  Result:=vaNull;
+end;
+
+function TXMLObjectReader.ReadValue: TValueType;
+begin
+  writeln('TXMLObjectReader.ReadValue ');
+  Result:=vaNull;
+end;
+
+procedure TXMLObjectReader.BeginRootComponent;
+begin
+  writeln('TXMLObjectReader.BeginRootComponent ');
+end;
+
+procedure TXMLObjectReader.BeginComponent(var Flags: TFilerFlags;
+  var AChildPos: Integer; var CompClassName, CompName: String);
+begin
+  writeln('TXMLObjectReader.BeginComponent ');
+end;
+
+function TXMLObjectReader.BeginProperty: String;
+begin
+  writeln('TXMLObjectReader.BeginProperty ');
+  Result:='';
+end;
+
+procedure TXMLObjectReader.ReadBinary(const DestData: TMemoryStream);
+begin
+  writeln('TXMLObjectReader.ReadBinary ');
+end;
+
+function TXMLObjectReader.ReadFloat: Extended;
+begin
+  writeln('TXMLObjectReader.ReadFloat ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadSingle: Single;
+begin
+  writeln('TXMLObjectReader.ReadSingle ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadCurrency: Currency;
+begin
+  writeln('TXMLObjectReader.ReadCurrency ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadDate: TDateTime;
+begin
+  writeln('TXMLObjectReader.ReadDate ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadIdent(ValueType: TValueType): String;
+begin
+  writeln('TXMLObjectReader.ReadIdent ');
+  Result:='';
+end;
+
+function TXMLObjectReader.ReadInt8: ShortInt;
+begin
+  writeln('TXMLObjectReader.ReadInt8 ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadInt16: SmallInt;
+begin
+  writeln('TXMLObjectReader.ReadInt16 ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadInt32: LongInt;
+begin
+  writeln('TXMLObjectReader.ReadInt32 ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadInt64: Int64;
+begin
+  writeln('TXMLObjectReader.ReadInt64 ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadSet(EnumType: Pointer): Integer;
+begin
+  writeln('TXMLObjectReader.ReadSet ');
+  Result:=0;
+end;
+
+function TXMLObjectReader.ReadStr: String;
+begin
+  writeln('TXMLObjectReader.ReadStr ');
+  Result:='';
+end;
+
+function TXMLObjectReader.ReadString(StringType: TValueType): String;
+begin
+  writeln('TXMLObjectReader.ReadString ');
+  Result:='';
+end;
+
+function TXMLObjectReader.ReadWideString: WideString;
+begin
+  writeln('TXMLObjectReader.ReadWideString ');
+  Result:='';
+end;
+
+procedure TXMLObjectReader.SkipComponent(SkipComponentInfos: Boolean);
+begin
+  writeln('TXMLObjectReader.SkipComponent ');
+end;
+
+procedure TXMLObjectReader.SkipValue;
+begin
+  writeln('TXMLObjectReader.SkipValue ');
+end;
 
 end.

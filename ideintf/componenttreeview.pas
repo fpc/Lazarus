@@ -17,8 +17,8 @@
     TComponent. TControls are shown in a hierachic view.
     It supports
       - multi selecting components
-      - ToDo: editing the creation order
-      - ToDo: editing the TControl.Parent hierachy
+      - editing the creation order
+      - editing the TControl.Parent hierachy
     For an usage example, see the object inspector.
 }
 unit ComponentTreeView;
