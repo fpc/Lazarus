@@ -345,10 +345,7 @@ begin
 end;
 
 function TWin32ComboBoxStringList.GetComboHeight: integer;
-var
-  R: TRect;
 begin
-  FEditHeight := SendMessage(FWin32List, CB_GETITEMHEIGHT, -1, 0);
   if Count = 0 then
   begin
     Result := FEditHeight + FItemHeight + 2;

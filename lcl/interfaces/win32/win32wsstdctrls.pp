@@ -632,7 +632,6 @@ var
   StringList: TWin32ComboBoxStringList;
 begin
   WinHandle := AWinControl.Handle;
-  SendMessage(WinHandle, CB_SETITEMHEIGHT, -1, Height-6);
   StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
   if StringList <> nil then
     Height := StringList.ComboHeight;
