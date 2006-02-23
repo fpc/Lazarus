@@ -491,11 +491,12 @@ type
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
-    procedure ccComplete(var Value: ansistring; Shift: TShiftState);
+    procedure ccComplete(var Value: ansistring; KeyChar: TUTF8Char;
+                         Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
-       X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
+                 X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
-       ItemSelected: boolean; Index: integer): TPoint;
+                                 ItemSelected: boolean; Index: integer): TPoint;
     procedure OnSynCompletionSearchPosition(var APosition: integer);
     procedure OnSynCompletionCompletePrefix(Sender: TObject);
     procedure OnSynCompletionNextChar(Sender: TObject);
@@ -506,11 +507,11 @@ type
     procedure InitIdentCompletion(S: TStrings);
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
-       X,Y: Integer);
+                              X,Y: Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
-       Shift: TShiftstate; X,Y: Integer);
+                              Shift: TShiftstate; X,Y: Integer);
     procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
-       Shift: TShiftstate; X,Y: Integer);
+                            Shift: TShiftstate; X,Y: Integer);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //hintwindow stuff
@@ -3092,9 +3093,9 @@ begin
   if CurCompletionControl=nil then exit;
   if (System.Pos(Key,CurCompletionControl.EndOfTokenChr)>0) then begin
     // identifier completed
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
-    CurCompletionControl.TheForm.OnValidate(Sender,[]);
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    CurCompletionControl.TheForm.OnValidate(Sender,Key,[]);
+    debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     Key:=#0;
   end;
 end;
@@ -3106,9 +3107,9 @@ begin
   if (length(UTF8Key)=1)
   and (System.Pos(UTF8Key[1],CurCompletionControl.EndOfTokenChr)>0) then begin
     // identifier completed
-    //debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
-    CurCompletionControl.TheForm.OnValidate(Sender,[]);
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
+    CurCompletionControl.TheForm.OnValidate(Sender,UTF8Key,[]);
+    debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     UTF8Key:='';
   end else begin
     aCompletion.Editor.CommandProcessor(ecChar,UTF8Key,nil);
@@ -3160,7 +3161,8 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
+procedure TSourceNotebook.ccComplete(var Value: ansistring; KeyChar: TUTF8Char;
+  Shift: TShiftState);
 // completion selected -> deactivate completion form
 // Called when user has selected a completion item
 
@@ -3208,7 +3210,8 @@ Begin
         CodeToolBoss.IdentifierHistory.Add(
           CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
         // get value
-        NewValue:=GetIdentCompletionValue(aCompletion,ValueType,CursorToLeft);
+        NewValue:=GetIdentCompletionValue(aCompletion,KeyChar,
+                                          ValueType,CursorToLeft);
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
         Editor:=SrcEdit.EditorComponent;

@@ -62,9 +62,16 @@ type
     function(const AKey: string; ACanvas: TCanvas;
       Selected: boolean; Index: integer): TPoint of object;
   {$ENDIF}
-  TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
-    of object;
-  TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
+  TCodeCompletionEvent = procedure(var Value: string;
+                                   {$IFDEF SYN_LAZARUS}
+                                   KeyChar: TUTF8Char;
+                                   {$ENDIF}
+                                   Shift: TShiftState) of object;
+  TValidateEvent = procedure(Sender: TObject;
+                             {$IFDEF SYN_LAZARUS}
+                             KeyChar: TUTF8Char;
+                             {$ENDIF}
+                             Shift: TShiftState) of object;
   TSynBaseCompletionSearchPosition = procedure(var Position :integer) of object;
   
   {$IFDEF SYN_LAZARUS}
@@ -79,7 +86,7 @@ type
   protected
     procedure Paint; override;
   public
-    constructor Create(AOwner: TSynBaseCompletionForm);
+    constructor Create(AOwner: TComponent); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
       AData: Pointer): TRect; override;
     property Index: Integer read FIndex write FIndex;
@@ -287,10 +294,11 @@ type
     procedure SetEditor(const Value: TCustomSynEdit);
     procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
-    procedure Validate(Sender: TObject; Shift: TShiftState);
     {$IFDEF SYN_LAZARUS}
+    procedure Validate(Sender: TObject; KeyChar: TUTF8Char; Shift: TShiftState);
     procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
     {$ELSE}
+    procedure Validate(Sender: TObject; Shift: TShiftState);
     procedure KeyPress(Sender: TObject; var Key: char);
     {$ENDIF}
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -479,7 +487,8 @@ begin
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
-      if Assigned(OnValidate) then OnValidate(Self, Shift);
+      if Assigned(OnValidate) then
+        OnValidate(Self, {$IFDEF SYN_LAZARUS}'',{$ENDIF} Shift);
     VK_ESCAPE{$IFNDEF SYN_LAZARUS}, VK_SPACE{$ENDIF}:
       if Assigned(OnCancel) then OnCancel(Self);
     // I do not think there is a worst way to do this, but laziness rules :-)
@@ -552,7 +561,7 @@ begin
   else
     {$ifdef SYN_LAZARUS}
     if (ord(key)>=32) and Assigned(OnValidate) then begin
-      OnValidate(Self, []);
+      OnValidate(Self, Key, []);
       Key:=#0;
     end else begin
       if Assigned(OnCancel) then OnCancel(Self);
@@ -714,7 +723,7 @@ begin
     and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then begin
       // non identifier character
       if Assigned(OnValidate) then
-        OnValidate(Self,[]);
+        OnValidate(Self,UTF8Key,[]);
       UTF8Key:='';
     end else if (UTF8Key<>'') then begin
       // identifier character
@@ -942,7 +951,7 @@ begin
     OnExecute(Self);
   {$IFDEF SYN_LAZARUS}
   if (ItemList.Count=1) and Assigned(OnValidate) then begin
-    OnValidate(Form, []);
+    OnValidate(Form, '', []);
     exit;
   end;
   if (ItemList.Count=0) and Assigned(OnCancel) then begin
@@ -1218,7 +1227,9 @@ begin
   end;
 end;
 
-procedure TSynCompletion.Validate(Sender: TObject; Shift: TShiftState);
+procedure TSynCompletion.Validate(Sender: TObject;
+  {$IFDEF SYN_LAZARUS}KeyChar: TUTF8Char;{$ENDIF}
+  Shift: TShiftState);
 var
   F: TSynBaseCompletionForm;
   Value, CurLine: string;
@@ -1262,7 +1273,7 @@ begin
       if Position>=0 then begin
         if Assigned(FOnCodeCompletion) then begin
           Value := ItemList[Position];
-          FOnCodeCompletion(Value, Shift);
+          FOnCodeCompletion(Value,{$IFDEF SYN_LAZARUS}KeyChar{$ENDIF}, Shift);
           SelText := Value;
         end else
           SelText := ItemList[Position];
@@ -1759,11 +1770,11 @@ begin
   end;
 end;
 
-constructor TSynBaseCompletionHint.Create(AOwner: TSynBaseCompletionForm);
+constructor TSynBaseCompletionHint.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCompletionForm := AOwner;
-  Color := AOwner.BackgroundColor;
+  FCompletionForm := AOwner as TSynBaseCompletionForm;
+  Color := FCompletionForm.BackgroundColor;
   AutoHide := False;
   Visible := False;
 end;

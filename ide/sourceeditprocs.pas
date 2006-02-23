@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, BasicCodeTools, CodeTree, CodeToolManager,
-  PascalParserTool, IdentCompletionTool, GraphType, Graphics,
+  LCLType, PascalParserTool, IdentCompletionTool, GraphType, Graphics,
   TextTools, EditorOptions,
   SynEdit, SynRegExpr, SynCompletion, MainIntf;
 
@@ -52,7 +52,8 @@ function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   MeasureOnly: Boolean = False): TPoint;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
-  var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
+  AddChar: TUTF8Char;
+  out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
 function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
 implementation
@@ -311,7 +312,8 @@ begin
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
-  var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
+  AddChar: TUTF8Char;
+  out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
 var
   Index: Integer;
   IdentItem: TIdentifierListItem;
@@ -373,6 +375,9 @@ begin
     Result:=Result+' := ';
     CursorAtEnd:=false;
   end;}
+  
+  if AddChar<>'' then
+    Result:=Result+AddChar;
 
   // add semicolon for statement ends
   if (ilcfContextNeedsEndSemicolon in IdentList.ContextFlags) then begin
