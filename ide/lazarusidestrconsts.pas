@@ -2954,6 +2954,8 @@ resourcestring
   lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
   lisPOSaveSessionInformationIn = 'Save session information in';
   lisMVSaveMessagesToFileTxt = 'Save messages to file (*.txt)';
-  
+  lisShowOldTabOrder = 'Show old tab order';
+  lisTabOrderOf = 'Tab Order of';
+
 implementation
 end.

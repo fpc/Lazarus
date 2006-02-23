@@ -1316,11 +1316,10 @@ begin
     UnitOutDir:=GetUnitOutPath(false);
     if UnitOutDir='' then
       UnitOutDir:=ExtractFilePath(MainSourceFileName);
-    // fpc creates lowercase executables as default
     if TargetFilename<>'' then
       OutFilename:=TargetFilename
     else
-      OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
+      OutFilename:=ExtractFileNameOnly(MainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
 
     Result:=AppendPathDelim(UnitOutDir)+OutFilename;
