@@ -1391,7 +1391,8 @@ begin
                              PascalExtension[fPascalFileExtension],'.pas');
 
     XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
-                             ord(fCharcaseFileAction), ord(ccfaAutoRename));
+                             CharCaseFileActionNames[fCharcaseFileAction],
+                             CharCaseFileActionNames[ccfaAutoRename]);
 
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],
