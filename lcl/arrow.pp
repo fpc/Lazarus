@@ -92,6 +92,7 @@ end;
 constructor TArrow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csDoubleClicks];
   fCompStyle := csArrow;
   fArrowType := atLeft;
   fShadowType := stEtchedIn;
