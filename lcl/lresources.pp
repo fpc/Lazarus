@@ -231,6 +231,10 @@ function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
 function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean): shortstring;
 procedure WriteComponentAsBinaryToStream(AStream: TStream; AComponent: TComponent);
+procedure ReadComponentFromBinaryStream(AStream: TStream;
+                           var RootComponent: TComponent;
+                           OnFindComponentClass: TFindComponentClassEvent;
+                           TheOwner: TComponent = nil);
 
 procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
@@ -366,6 +370,51 @@ begin
     if DestroyDriver then
       Writer.Driver.Free;
     Writer.Free;
+  end;
+end;
+
+procedure ReadComponentFromBinaryStream(AStream: TStream;
+  var RootComponent: TComponent;
+  OnFindComponentClass: TFindComponentClassEvent; TheOwner: TComponent);
+var
+  DestroyDriver: Boolean;
+  Reader: TReader;
+  IsInherited: Boolean;
+  AClassName: String;
+  AClass: TComponentClass;
+begin
+  // get root class
+  AClassName:=GetClassNameFromLRSStream(AStream,IsInherited);
+  AClass:=nil;
+  OnFindComponentClass(nil,AClassName,AClass);
+  if AClass=nil then
+    raise EClassNotFound.CreateFmt('Class "%s" not found', [AClassName]);
+
+  if RootComponent=nil then begin
+    // create root component
+    // first create the new instance and set the variable ...
+    RootComponent:=AClass.NewInstance as TComponent;
+    // then call the constructor
+    RootComponent.Create(TheOwner);
+  end else begin
+    // there is a root component, check if class is compatible
+    if not RootComponent.InheritsFrom(AClass) then begin
+      raise EComponentError.CreateFmt('Cannot assign a %s to a %s.',
+                                      [AClassName,RootComponent.ClassName]);
+    end;
+  end;
+
+  // read the root component
+  DestroyDriver:=false;
+  Reader:=nil;
+  try
+    Reader:=CreateLRSReader(AStream,DestroyDriver);
+    Reader.OnFindComponentClass:=OnFindComponentClass;
+    Reader.ReadRootComponent(RootComponent);
+  finally
+    if DestroyDriver then
+      Reader.Driver.Free;
+    Reader.Free;
   end;
 end;
 
