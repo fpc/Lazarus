@@ -229,6 +229,9 @@ function InitLazResourceComponent(Instance: TComponent;
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
 function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
+function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean): shortstring;
+procedure WriteComponentAsBinaryToStream(AStream: TStream; AComponent: TComponent);
+
 procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
 function LFMtoLRSfile(const LFMfilename: string): boolean;// true on success
@@ -316,6 +319,54 @@ begin
   for c:=Low(char) to High(char) do
     ByteToStr[c]:=IntToStr(ord(c));
   ByteToStrValid:=true;
+end;
+
+function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean
+  ): shortstring;
+var
+  Signature: shortstring;
+  NameLen: byte;
+  OldPosition: Int64;
+begin
+  Result:='';
+  OldPosition:=s.Position;
+  // read signature
+  Signature:='1234';
+  s.Read(Signature[1],length(Signature));
+  if Signature<>'TPF0' then exit;
+  // read classname length
+  NameLen:=0;
+  s.Read(NameLen,1);
+  if (NameLen and $f0) = $f0 then begin
+    { Read Flag Byte }
+    s.Read(NameLen,1);
+    IsInherited := (NameLen and 1) = 1;
+  end else
+    IsInherited := False;
+  // read classname
+  if NameLen>0 then begin
+    SetLength(Result,NameLen);
+    s.Read(Result[1],NameLen);
+  end;
+  s.Position:=OldPosition;
+end;
+
+procedure WriteComponentAsBinaryToStream(AStream: TStream;
+  AComponent: TComponent);
+var
+  Writer: TWriter;
+  DestroyDriver: Boolean;
+begin
+  DestroyDriver:=false;
+  Writer:=nil;
+  try
+    Writer:=CreateLRSWriter(AStream,DestroyDriver);
+    Writer.WriteDescendent(AComponent,nil);
+  finally
+    if DestroyDriver then
+      Writer.Driver.Free;
+    Writer.Free;
+  end;
 end;
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;

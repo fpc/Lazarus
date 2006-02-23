@@ -2169,7 +2169,7 @@ begin
       repeat
         ALastAtomEnd:=CurPos.EndPos;
         ReadNextAtom;
-      until CurPos.EndPos>ALineEnd;
+      until (CurPos.EndPos>ALineEnd) or (CurPos.Flag=cafNone);
     end else begin
       ALineStart:=Srclen+1;
       ALineEnd:=Srclen+1;
