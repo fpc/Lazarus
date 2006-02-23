@@ -150,6 +150,10 @@ msgstr ""
 msgid "constant"
 msgstr ""
 
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
 msgstr ""

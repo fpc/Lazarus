@@ -161,6 +161,10 @@ msgstr "Katalog komponentów"
 msgid "constant"
 msgstr "stała"
 
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
 msgstr ""

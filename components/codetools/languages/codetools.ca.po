@@ -150,6 +150,10 @@ msgstr "Directori dels components"
 msgid "constant"
 msgstr "constant"
 
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
 msgstr "Directori de la CPU"

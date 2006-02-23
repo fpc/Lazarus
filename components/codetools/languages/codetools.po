@@ -658,6 +658,10 @@ msgstr ""
 msgid "Debugger Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsidedirectory
 msgid "IDE Directory"
 msgstr ""

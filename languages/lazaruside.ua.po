@@ -502,6 +502,10 @@ msgstr "Alt-клавіша встан. реж. колонки"
 msgid "Always build (even if nothing changed)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Знайдений двозначний файл налаштування компілятора"
@@ -5966,6 +5970,10 @@ msgstr ""
 msgid "Save info of closed editor files"
 msgstr "Зберегти інформацію про закриті редактором файли"
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Зберегти пакунок"
@@ -6502,6 +6510,10 @@ msgstr "Показати зауваження"
 msgid "Show nothing (only errors)"
 msgstr "Показувати тільки помилки"
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Показати Параметри"
@@ -6817,6 +6829,10 @@ msgstr "ТАБ"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "ТАБ зсуває блоки вправо"
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
+msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."

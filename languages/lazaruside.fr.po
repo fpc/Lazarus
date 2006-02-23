@@ -514,6 +514,10 @@ msgstr "La touche Alt met en mode colonne"
 msgid "Always build (even if nothing changed)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Fichier litigieux de configuration additionnel du compilateur trouvé"
@@ -5978,6 +5982,10 @@ msgstr ""
 msgid "Save info of closed editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Enregistrer le paquet"
@@ -6514,6 +6522,10 @@ msgstr "Afficher les notes"
 msgid "Show nothing (only errors)"
 msgstr "Ne rien afficher (sauf les erreurs)"
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Afficher les options"
@@ -6829,6 +6841,10 @@ msgstr "Tab"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "La touche tabulation indente les blocs"
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
+msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."

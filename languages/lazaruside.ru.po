@@ -513,6 +513,10 @@ msgstr "Кнопка Alt - режим колонок"
 msgid "Always build (even if nothing changed)"
 msgstr "Собирать всегда (даже при отсутствии изменений)"
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Найден дополнительный файл настроек компилятора с тем же именем"
@@ -5977,6 +5981,10 @@ msgstr "Сохранить в кталоге настроек IDE"
 msgid "Save info of closed editor files"
 msgstr "Сохранять информацию о файлах, закрытых в редакторе"
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Сохранить пакет"
@@ -6513,6 +6521,10 @@ msgstr "Показать заметки"
 msgid "Show nothing (only errors)"
 msgstr "Ничего не показывать(только ошибки)"
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Показать опции"
@@ -6828,6 +6840,10 @@ msgstr "ТАБ"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "ТАБ выделяет блоки"
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
+msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."

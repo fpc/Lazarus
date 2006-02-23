@@ -502,6 +502,10 @@ msgstr "Alt-toets stelt kolommodus in"
 msgid "Always build (even if nothing changed)"
 msgstr "Altijd bouwen (ook als er niks is gewijzigd)"
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Dubbelzinnige, extra compiler configuratie bestand"
@@ -5966,6 +5970,10 @@ msgstr ""
 msgid "Save info of closed editor files"
 msgstr "Bewaar info van gesloten editor bestanden"
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Package opslaan"
@@ -6502,6 +6510,10 @@ msgstr "Toon notities"
 msgid "Show nothing (only errors)"
 msgstr "Toon niets (alleen fouten)"
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Toon opties"
@@ -6817,6 +6829,10 @@ msgstr "Tab"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "Tab laat blokken inspringen"
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
+msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."

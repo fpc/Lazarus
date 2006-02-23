@@ -150,6 +150,10 @@ msgstr "Тека компонентів"
 msgid "constant"
 msgstr "константа"
 
+#: codetoolsstrconsts:ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
 msgstr "тека CPU"

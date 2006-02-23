@@ -512,6 +512,10 @@ msgstr ""
 msgid "Always build (even if nothing changed)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Archivo de configuración del compilador adicional ambiguo"
@@ -5976,6 +5980,10 @@ msgstr ""
 msgid "Save info of closed editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Guardar paquete"
@@ -6512,6 +6520,10 @@ msgstr "Mostrar notas"
 msgid "Show nothing (only errors)"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Mostrar Opciones"
@@ -6826,6 +6838,10 @@ msgstr "Tab"
 
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
+msgstr ""
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
 msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder

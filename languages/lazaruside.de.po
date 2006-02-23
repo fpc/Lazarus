@@ -516,6 +516,10 @@ msgstr "ALT-Taste aktiviert Spaltenmodus"
 msgid "Always build (even if nothing changed)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Mehrdeutige zusätzliche Compiler-Konfigurationsdatei"
@@ -5980,6 +5984,10 @@ msgstr ""
 msgid "Save info of closed editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
 msgstr "Paket speichern"
@@ -6516,6 +6524,10 @@ msgstr "Notizen anzeigen"
 msgid "Show nothing (only errors)"
 msgstr "Nichts anzeigen (nur Fehler)"
 
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Einstellungen anzeigen"
@@ -6831,6 +6843,10 @@ msgstr "Tab"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "Tab rückt ganze Blöcke ein"
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
+msgstr ""
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."

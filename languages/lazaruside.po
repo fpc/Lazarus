@@ -2438,6 +2438,10 @@ msgstr ""
 msgid "Alt-Key sets column mode"
 msgstr ""
 
+#: lazarusidestrconsts:dlgalwaysvisiblecaret
+msgid "Always visible caret"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto indent"
 msgstr ""
@@ -8870,7 +8874,15 @@ msgstr ""
 msgid "Save session information in"
 msgstr ""
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
+#: lazarusidestrconsts:lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowoldtaborder
+msgid "Show old tab order"
+msgstr ""
+
+#: lazarusidestrconsts:listaborderof
+msgid "Tab Order of"
 msgstr ""
 
