@@ -42,21 +42,39 @@ begin
   inherited Destroy;
 end;
 
-function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc
-  ): integer;
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Creates a new timer and sets the callback event.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer;
+var
+  QtTimer: TQtTimer;
 begin
-  Result:=0;
+  QtTimer := TQtTimer.Create(Interval, TimerFunc, App);
+  
+  Result := Integer(QtTimer);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destroys a timer.
+ ------------------------------------------------------------------------------}
 function TQtWidgetSet.DestroyTimer(TimerHandle: integer): boolean;
 begin
-  Result:=false;
+  TQtTimer(TimerHandle).Free;
+  
+  Result := True;
 end;
 
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
   App := QApplication_Create(@argc, argv);
-//  InitializeEngine;  ??
 end;
 
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -71,13 +89,19 @@ end;
 
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-//  MainLoop;
+
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.AppTerminate
+  Params:  None
+  Returns: Nothing
+
+  Implements Application.Terminate and MainForm.Close.
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppTerminate;
 begin
-  Assert(False, 'Trace:*******APP TERMINATE CALLED*****');
-//  Shutdown;
+  QApplication_closeAllWindows;
 end;
 
 procedure TQtWidgetSet.AppMinimize;

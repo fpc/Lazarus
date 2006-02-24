@@ -21,7 +21,7 @@
 }
 unit qtprivate;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -32,23 +32,32 @@ type
 
   { TQtWidget }
 
-  TQtWidget = class(QWidgetH)
+  TQtWidget = class(TObject)
   private
   public
     Widget: QWidgetH;
     LCLObject: TWinControl;
   end;
+  
+  { TQtAbstractButton }
+
+  TQtAbstractButton = class(TQtWidget)
+  private
+  public
+    procedure SetText(text: PWideString);
+    procedure Text(retval: PWideString);
+    function isChecked: Boolean;
+    procedure setChecked(p1: Boolean);
+  end;
 
   { TQtButton }
 
-  TQtButton = class(TQtWidget)
+  TQtButton = class(TQtAbstractButton)
   private
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
-    procedure SetText(text: PWideString);
     procedure SlotClicked; cdecl;
-    procedure Text(retval: PWideString);
   end;
 
   { TQtBrush }
@@ -89,7 +98,93 @@ type
     procedure SlotPaint; cdecl;
   end;
 
+  { TQtStaticText }
+
+  TQtStaticText = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    destructor Destroy; override;
+    procedure SetText(text: PWideString);
+    procedure Text(retval: PWideString);
+  end;
+
+  { TQtTimer }
+
+  TQtTimer = class(TQtWidget)
+  private
+    CallbackFunc: TFNTimerProc;
+    Id: Integer;
+    AppObject: QObjectH;
+  public
+    constructor Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH); virtual;
+    destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+  end;
+
+  { TQtCheckBox }
+
+  TQtCheckBox = class(TQtAbstractButton)
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function CheckState: QtCheckState;
+    procedure setCheckState(state: QtCheckState);
+  end;
+
+  { TQtRadioButton }
+
+  TQtRadioButton = class(TQtAbstractButton)
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+  end;
+
 implementation
+
+{ TQtAbstractButton }
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.SetText(text: PWideString);
+begin
+  QAbstractButton_setText(QAbstractButtonH(Widget), text);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.Text
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.Text(retval: PWideString);
+begin
+  QAbstractButton_text(QAbstractButtonH(Widget), retval);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.isChecked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtAbstractButton.isChecked: Boolean;
+begin
+  Result := QAbstractButton_isChecked(QAbstractButtonH(Widget));
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractButton.setChecked
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtAbstractButton.setChecked(p1: Boolean);
+begin
+  QAbstractButton_setChecked(QAbstractButtonH(Widget), p1);
+end;
 
 { TQtButton }
 
@@ -111,7 +206,7 @@ begin
     WriteLn('Calling QPushButton_create');
   {$endif}
   Str := WideString(AWinControl.Caption);
-  Parent := TQtCustomForm(AWinControl.Parent.Handle).Widget;
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
   Widget := QPushButton_create(@Str, Parent);
 
   // Sets it´ s initial properties
@@ -133,16 +228,6 @@ begin
   QPushButton_destroy(QPushButtonH(Widget));
 
   inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtButton.SetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtButton.SetText(text: PWideString);
-begin
-  QAbstractButton_setText(QAbstractButtonH(Widget), text);
 end;
 
 {------------------------------------------------------------------------------
@@ -176,16 +261,6 @@ begin
   end;
 
   CurrentSentPaintMessageTarget:=nil;}
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtButton.Text
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtButton.Text(retval: PWideString);
-begin
-  QAbstractButton_text(QAbstractButtonH(Widget), @retval);
 end;
 
 { TQtDeviceContext }
@@ -337,7 +412,7 @@ function TQtCustomForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; c
 begin
   Result:=False;
   
-  if QEvent_type(Event) = QEventType_Paint then SlotPaint;
+  if QEvent_type(Event) = QEventPaint then SlotPaint;
 end;
 
 {------------------------------------------------------------------------------
@@ -360,6 +435,205 @@ begin
   except
     Application.HandleException(nil);
   end;
+end;
+
+{ TQtStaticText }
+
+{------------------------------------------------------------------------------
+  Function: TQtStaticText.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtStaticText.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+var
+  Str: WideString;
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QLabel_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QLabel_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  Str := WideString(AWinControl.Caption);
+  SetText(@Str);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtStaticText.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtStaticText.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QLabel_destroy');
+  {$endif}
+
+  QLabel_destroy(QLabelH(Widget));
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtStaticText.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtStaticText.SetText(text: PWideString);
+begin
+  QLabel_setText(QLabelH(Widget), text);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtStaticText.Text
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtStaticText.Text(retval: PWideString);
+begin
+  QLabel_text(QLabelH(Widget), retval);
+end;
+
+{ TQtTimer }
+
+constructor TQtTimer.Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH);
+var
+  Method: TMethod;
+  Hook : QObject_hookH;
+begin
+  AppObject := App;
+
+  Id := QObject_startTimer(AppObject, Interval);
+  
+  CallbackFunc := TimerFunc;
+
+  // Callback Event
+
+  Hook := QObject_hook_create(AppObject);
+
+  TEventFilterMethod(Method) := EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+end;
+
+destructor TQtTimer.Destroy;
+begin
+  QObject_killTimer(AppObject, id);
+
+  inherited Destroy;
+end;
+
+function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result:=False;
+
+  if QEvent_type(Event) = QEventTimer then CallbackFunc;
+end;
+
+{ TQtCheckBox }
+
+constructor TQtCheckBox.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+var
+  Str: WideString;
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QCheckBox_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QCheckBox_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  Str := WideString(AWinControl.Caption);
+  SetText(@Str);
+end;
+
+destructor TQtCheckBox.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QCheckBox_destroy');
+  {$endif}
+
+  QCheckBox_destroy(QCheckBoxH(Widget));
+
+  inherited Destroy;
+end;
+
+function TQtCheckBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+
+end;
+
+function TQtCheckBox.CheckState: QtCheckState;
+begin
+  Result := QCheckBox_checkState(QCheckBoxH(Widget));
+end;
+
+procedure TQtCheckBox.setCheckState(state: QtCheckState);
+begin
+  QCheckBox_setCheckState(QCheckBoxH(Widget), state);
+end;
+
+{ TQtRadioButton }
+
+constructor TQtRadioButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+var
+  Str: WideString;
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QRadioButton_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QRadioButton_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+
+  Str := WideString(AWinControl.Caption);
+  SetText(@Str);
+end;
+
+destructor TQtRadioButton.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QRadioButton_destroy');
+  {$endif}
+
+  QRadioButton_destroy(QRadioButtonH(Widget));
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtRadioButton.EventFilter
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+
 end;
 
 end.

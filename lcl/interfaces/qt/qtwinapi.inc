@@ -79,14 +79,14 @@ begin
    ------------------------------------------------------------------------------}
   case RawImage.Description.BitsPerPixel of
    1: if RawImage.Description.BitOrder = riboBitsInOrder then
-       Format := QImageFormat_Format_MonoLSB
-      else Format := QImageFormat_Format_Mono;
-   8: Format := QImageFormat_Format_Indexed8;
+       Format := QImageFormat_MonoLSB
+      else Format := QImageFormat_Mono;
+   8: Format := QImageFormat_Indexed8;
    32:
    begin
      if RawImage.Description.AlphaPrec = 0 then
-      Format := QImageFormat_Format_RGB32
-     else Format := QImageFormat_Format_ARGB32;
+      Format := QImageFormat_RGB32
+     else Format := QImageFormat_ARGB32;
    end;
   else
     Exit;
@@ -98,7 +98,7 @@ begin
   if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true))) then
   begin
     Mask := QImage_create(RawImage.Mask, RawImage.Description.Width,
-     RawImage.Description.Height, QImageFormat_Format_MonoLSB);
+     RawImage.Description.Height, QImageFormat_MonoLSB);
   end;
 end;
 
@@ -375,7 +375,6 @@ begin
   Result := 1;
 end;
 
-
 {------------------------------------------------------------------------------
   Function: SetCursorPos
   Params: X:
@@ -412,7 +411,7 @@ begin
 
     SW_SHOWNORMAL: QWidget_showNormal(Widget);
 
-    SW_MINIMIZE: QWidget_setWindowState(Widget, QtWindowState_WindowMinimized);
+    SW_MINIMIZE: QWidget_setWindowState(Widget, QtWindowMinimized);
 
     SW_SHOWMINIMIZED: QWidget_showMinimized(Widget);
 

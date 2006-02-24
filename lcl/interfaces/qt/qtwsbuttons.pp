@@ -91,7 +91,7 @@ begin
   SetSlots(QtButton);
 
   QWidget_show(QtButton.Widget);
-  
+
   Result := THandle(QtButton);
 end;
 
@@ -103,6 +103,8 @@ end;
 class procedure TQtWSButton.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtButton(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -114,7 +116,7 @@ class function TQtWSButton.GetText(const AWinControl: TWinControl; var AText: St
 var
   Str: WideString;
 begin
-  TQtButton(AWinControl.Handle).Text(@Str);
+  TQtAbstractButton(AWinControl.Handle).Text(@Str);
 
   AText := string(Str);
   
@@ -122,7 +124,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtWSButton.SetCallbacks
+  Function: TQtWSButton.SetSlots
   Params:  None
   Returns: Nothing
   
@@ -153,7 +155,7 @@ var
 begin
   Str := WideString(AText);
 
-  TQtButton(AWinControl.Handle).SetText(@Str);
+  TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
 
 initialization

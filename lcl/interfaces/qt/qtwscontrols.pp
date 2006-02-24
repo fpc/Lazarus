@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  qt4,
+  qt4, qtprivate,
   Controls,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses;
@@ -63,6 +63,9 @@ type
   protected
   public
     class procedure SetSlots(const AWidget: QWidgetH);
+
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
   end;
 
   { TQtWSGraphicControl }
@@ -120,6 +123,34 @@ begin
   GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWSWinControl.SetPos
+  Params:  AWinControl - the calling object
+           ALeft, ATop - Position
+  Returns: Nothing
+
+  Sets the position of a widget
+ ------------------------------------------------------------------------------}
+class procedure TQtWSWinControl.SetPos(const AWinControl: TWinControl;
+  const ALeft, ATop: Integer);
+begin
+  QWidget_move(TQtWidget(AWinControl.Handle).Widget, ALeft, ATop);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetSize
+  Params:  AWinControl     - the calling object
+           AWidth, AHeight - Size
+  Returns: Nothing
+
+  Sets the size of a widget
+ ------------------------------------------------------------------------------}
+class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
+  const AWidth, AHeight: Integer);
+begin
+  QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
 end;
 
 initialization
