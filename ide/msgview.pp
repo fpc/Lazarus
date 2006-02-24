@@ -794,7 +794,6 @@ begin
   ExecuteIDEShortCut(Self, Key, Shift);
 end;
 
-//------------------------------------------------------------------------------
 procedure TMessagesView.MessageViewDrawItem(Control: TWinControl;
    Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -803,8 +802,10 @@ var
 const
   cHint         = 'Hint: User defined:';
   cNote         = 'Note: User defined:';
+  cWarning      = 'Warning: User defined:';
   clMsgHint     = clBlue;
   clMsgNote     = clGreen;
+  clMsgWarning  = clRed;
   cLeftSpacer   = 3;
 begin
   MessageListBox.Canvas.FillRect(ARect);
@@ -815,17 +816,18 @@ begin
   { Only use custom colors if not selected, otherwise it is difficult to read }
   if not (odSelected in State)
   then begin
-    if Pos(cNote, TheText) > 0
-    then MessageListBox.Canvas.Font.Color := clMsgNote
-    else if Pos(cHint, TheText) > 0
-    then  MessageListBox.Canvas.Font.Color := clMsgHint
+    if Pos(cNote, TheText) > 0 then
+      MessageListBox.Canvas.Font.Color := clMsgNote
+    else if Pos(cHint, TheText) > 0 then
+      MessageListBox.Canvas.Font.Color := clMsgHint
+    else if Pos(cWarning, TheText) > 0 then
+      MessageListBox.Canvas.Font.Color := clMsgWarning;
   end;
 
   MessageListBox.Canvas.TextOut(ARect.Left + cLeftSpacer, ARect.Top + 1, TheText);
   MessageListBox.Canvas.Font.Color := cl;   // restore original color
 end;
 
-//------------------------------------------------------------------------------
 procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
