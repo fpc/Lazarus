@@ -48,7 +48,7 @@ Type
     hasTabParent: boolean;    // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
-    isChildEdit: boolean;     // is buddy of combobox, the edit control
+    isChildEdit: boolean;     // is buddy edit of a control
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
     MaxLength: dword;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
