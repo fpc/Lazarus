@@ -174,6 +174,7 @@ type
     chkExecutableInfo: TCheckBox;
     chkNothing: TCheckBox;
     chkHintsForUnusedUnitsInMainSrc: TCheckBox;
+    chkHintsForSenderNotUsed: TCheckBox;
     chkFPCLogo: TCheckBox;
 
     grpErrorCnt: TGroupBox;
@@ -730,6 +731,7 @@ begin
   chkShowSummary.Checked := Options.ShowSummary;
   chkHintsForUnusedUnitsInMainSrc.Checked :=
                                        Options.ShowHintsForUnusedUnitsInMainSrc;
+  chkHintsForSenderNotUsed.Checked := Options.ShowHintsForSenderNotUsed;
 
   chkFPCLogo.Checked := Options.WriteFPCLogo;
 
@@ -997,6 +999,7 @@ begin
   Options.ShowSummary := chkShowSummary.Checked;
   Options.ShowHintsForUnusedUnitsInMainSrc :=
                                         chkHintsForUnusedUnitsInMainSrc.Checked;
+  Options.ShowHintsForSenderNotUsed := chkHintsForSenderNotUsed.Checked;
 
   Options.WriteFPCLogo := chkFPCLogo.Checked;
 
@@ -1880,7 +1883,7 @@ begin
     Parent := MsgPage;
     Top := 10;
     Left := 10;
-    Height := 235;
+    Height := 256;
     Width := Self.ClientWidth-28;
     Caption := dlgVerbosity;
   end;
@@ -2087,6 +2090,17 @@ begin
     Parent := grpVerbosity;
     Caption := dlgHintsUnused+' (none)';
     Top := 195;
+    Left := ChkErrors.Left;
+    Height := ChkErrors.Height;
+    Width := chkDebugInfo.Width*2;
+  end;
+
+  chkHintsForSenderNotUsed := TCheckBox.Create(Self);
+  with chkHintsForSenderNotUsed do
+  begin
+    Parent := grpVerbosity;
+    Caption := dlgHintsParameterSenderNotUsed+' (none)';
+    Top := 216;
     Left := ChkErrors.Left;
     Height := ChkErrors.Height;
     Width := chkDebugInfo.Width*2;

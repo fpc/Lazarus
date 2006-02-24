@@ -118,6 +118,7 @@ type
     destructor Destroy; override;
     function IsHintForUnusedUnit(const OutputLine,
                                  MainSrcFile: string): boolean;
+    function IsHintForParameterSenderNotUsed(const OutputLine: string): boolean;
     function IsParsing: boolean;
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
@@ -606,13 +607,17 @@ begin
                             or CompilerOptions.ShowAll));
           if (not SkipMessage)
           and (CompilerOptions<>nil)
-          and (not CompilerOptions.ShowAll)
-          and (not CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
-          begin
-            MainSrcFilename:=CompilerOptions.GetDefaultMainSourceFileName;
-            if (MainSrcFilename<>'')
-            and (IsHintForUnusedUnit(s,MainSrcFilename)) then
-              SkipMessage:=true;
+          and (not CompilerOptions.ShowAll) then begin
+            if (not CompilerOptions.ShowHintsForSenderNotUsed) and
+              (IsHintForParameterSenderNotUsed(s)) then
+              SkipMessage:=true
+            else if (not CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+            begin
+              MainSrcFilename:=CompilerOptions.GetDefaultMainSourceFileName;
+              if (MainSrcFilename<>'')
+              and (IsHintForUnusedUnit(s,MainSrcFilename)) then
+                SkipMessage:=true;
+            end;
           end;
         end;
 
@@ -809,6 +814,19 @@ begin
   if (pos(') Hint: Unit ',OutputLine)<>0)
   and (pos(' not used in ',OutputLine)<>0) then
     Result:=true;
+end;
+
+function TOutputFilter.IsHintForParameterSenderNotUsed(const OutputLine: string): boolean;
+{ recognizes hints of the form
+
+  Unit1.pas(15,28) Hint: Parameter "Sender" not used
+
+}
+const
+  SenderNotUsed= ') Hint: Parameter "Sender" not used';
+begin
+  Result:=
+    pos(SenderNotUsed, OutputLine)=Length(OutputLine)-Length(SenderNotUsed)+1;
 end;
 
 procedure TOutputFilter.DoAddFilteredLine(const s: string);

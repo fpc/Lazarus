@@ -139,6 +139,7 @@ type
     fShowNothing: Boolean;
     fShowSummary: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
+    fShowHintsForSenderNotUsed: Boolean;
     fWriteFPCLogo: Boolean;
     fStopAfterErrCount: integer;
 
@@ -251,6 +252,8 @@ type
     property ShowSummary: Boolean read FShowSummary write FShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write fShowHintsForUnusedUnitsInMainSrc;
+    property ShowHintsForSenderNotUsed: Boolean
+      read fShowHintsForSenderNotUsed write fShowHintsForSenderNotUsed;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
     property StopAfterErrCount: integer
       read fStopAfterErrCount write fStopAfterErrCount;

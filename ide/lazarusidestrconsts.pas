@@ -1066,6 +1066,7 @@ resourcestring
   dlgShowNothing = 'Show nothing (only errors)';
   dlgWriteFPCLogo = 'Write an FPC logo';
   dlgHintsUnused = 'Show Hints for unused units in main source';
+  dlgHintsParameterSenderNotUsed = 'Show Hints for parameter "Sender" not used';
   dlgConfigFiles = 'Config Files:';
   dlgUseFpcCfg = 'Use standard Compiler Config File (fpc.cfg)';
   dlgUseCustomConfig = 'Use addional Compiler Config File';
