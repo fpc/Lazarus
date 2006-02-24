@@ -102,13 +102,13 @@ msgstr "&Cima"
 msgid "(All)"
 msgstr "(Todos)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr ""
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Desconhecido)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -350,10 +350,6 @@ msgstr "Sai&r"
 msgid "Edit"
 msgstr "Editar"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editar lista de ações..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -365,6 +361,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editar lista de ações..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -426,14 +426,6 @@ msgstr "Ajuda"
 msgid "Help Contents"
 msgstr "Conteúdo da ajuda"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Contexte d'aide %s non trouvé dans la base de données %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Conteúdo da ajuda %s não encontrado."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "A base de dados de ajuda %s%s%s não encontrou uma página de ajuda para o"
@@ -441,6 +433,14 @@ msgstr "A base de dados de ajuda %s%s%s não encontrou uma página de ajuda para o
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Base de données d'aide %s%s%s non trouvée"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Contexte d'aide %s non trouvé dans la base de données %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Conteúdo da ajuda %s não encontrado."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -550,6 +550,10 @@ msgstr "Modificar o item"
 msgid "Move Down"
 msgstr "Mover abaixo"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Mover acima"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Mover página a esquerda"
@@ -557,10 +561,6 @@ msgstr "Mover página a esquerda"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Mover página a direita"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mover acima"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,13 +582,13 @@ msgstr ""
 msgid "Next"
 msgstr "Próximo"
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Não foi encontrado ajuda para a linha %d, coluna %d do %s."
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "Não foi encontrado um navegador HTM padrão.%sPor Favor configure um no menu Ajuda ->"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Não foi encontrado ajuda para a linha %d, coluna %d do %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -706,13 +706,13 @@ msgstr "Selecionar &Cor"
 msgid "Select &Font..."
 msgstr "Selecionar &Fonte"
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Selecione um arquivo"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Selecionar Todos"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Selecione um arquivo"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -778,12 +778,12 @@ msgstr "Editeur de tableau"
 msgid "Strings Editor Dialog"
 msgstr "Dialogo de edição de texto"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
+msgstr ""
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
 msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext

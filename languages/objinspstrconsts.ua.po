@@ -102,13 +102,13 @@ msgstr "&Вверх"
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "ніякий"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Невідомий)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "ніякий"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -350,10 +350,6 @@ msgstr "&Вихід"
 msgid "Edit"
 msgstr "Редагувати"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Редагувати список дій..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -365,6 +361,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Редагувати список дій..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -426,14 +426,6 @@ msgstr "Допомога"
 msgid "Help Contents"
 msgstr "Допомога Зміст"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Контексту довідки %s не знайдено в базі даних %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Контексту довідки %s не знайдено."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Довідкова база %s%s%s не знайшла переглядача для сторінки довідки типу %s"
@@ -441,6 +433,14 @@ msgstr "Довідкова база %s%s%s не знайшла перегляд�
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Довідкова база %s%s%s не знайдена"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Контексту довідки %s не знайдено в базі даних %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Контексту довідки %s не знайдено."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -550,6 +550,10 @@ msgstr "Змінити пункт"
 msgid "Move Down"
 msgstr "Пересунути Вниз"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Пересунути Вверх"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Пересунути сторінку вліво"
@@ -557,10 +561,6 @@ msgstr "Пересунути сторінку вліво"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Пересунути сторінку вправо"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Пересунути Вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -582,13 +582,13 @@ msgstr ""
 msgid "Next"
 msgstr "Наступний"
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "Переглядача HTML не знайдено.%Визначте його в Довідка->Налаштувати довідку->Переглядачі"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -706,13 +706,13 @@ msgstr "&Обрати Колір"
 msgid "Select &Font..."
 msgstr "&Обрати Шрифт"
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Обрати файл"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Обрати Все"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Обрати файл"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -778,13 +778,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Редактор рядків"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестове Введення"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

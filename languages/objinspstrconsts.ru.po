@@ -113,13 +113,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Все)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(нет)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Неизвестно)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(нет)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -361,10 +361,6 @@ msgstr ""
 msgid "Edit"
 msgstr "Редактировать"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Правка списка действий..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -376,6 +372,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -437,14 +437,6 @@ msgstr "Помощь"
 msgid "Help Contents"
 msgstr "Содержание помощи"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Контекст справки %s не найден."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Справочная база %s%s%s не нашла просмотрщика для страницы справки типа %s"
@@ -452,6 +444,14 @@ msgstr "Справочная база %s%s%s не нашла просмотрщ�
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Справочная база %s%s%s не найдена"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Контекст справки %s не найден."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -561,16 +561,16 @@ msgstr ""
 msgid "Move Down"
 msgstr ""
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr ""
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr ""
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -593,13 +593,13 @@ msgstr ""
 msgid "Next"
 msgstr "Следующий"
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Не найдена помощь для строки %d, столбца %d файла %s."
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "Не найдено браузера HTML.%sОпределите его в Справка->Настроить справку->Просмотрщики"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Не найдена помощь для строки %d, столбца %d файла %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -717,13 +717,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Выберите файл"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Выделить всё"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Выберите файл"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -789,13 +789,13 @@ msgstr "Редактор StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Диалог ввода строк"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Тестовый ввод"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"

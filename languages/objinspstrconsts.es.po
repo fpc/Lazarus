@@ -112,13 +112,13 @@ msgstr ""
 msgid "(All)"
 msgstr "(Todo)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr ""
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Desconocido)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -360,10 +360,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editor de lista de acción..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -375,6 +371,10 @@ msgstr ""
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editor de lista de acción..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -436,20 +436,20 @@ msgstr ""
 msgid "Help Contents"
 msgstr ""
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr ""
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr ""
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
 msgstr ""
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
@@ -560,6 +560,10 @@ msgstr ""
 msgid "Move Down"
 msgstr "Mover Abajo"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Mover Arriba"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Mover página a la izquierda"
@@ -567,10 +571,6 @@ msgstr "Mover página a la izquierda"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Mover página a la derecha"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mover Arriba"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -592,12 +592,12 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr ""
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
 msgstr ""
 
 #: objinspstrconsts:sccsiledtnone
@@ -716,13 +716,13 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr ""
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Seleccionar Todo"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -788,12 +788,12 @@ msgstr "Editor de StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Diálogo Editor de Strings"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr ""
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
+msgstr ""
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
 msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
