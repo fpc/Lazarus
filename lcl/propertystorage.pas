@@ -150,20 +150,26 @@ Type
     // Public Read/Write methods
     procedure StorageNeeded(ReadOnly: Boolean);Virtual;
     procedure FreeStorage; Virtual;
-    Function  ReadString(const Ident, Default: string): string;
-    Function  ReadInteger(const Ident: string; Default: Longint): Longint;
+    function  ReadString(const Ident, Default: string): string;
+    function  ReadInteger(const Ident: string; Default: Longint): Longint;
+    procedure ReadRect(const Ident: string; out ARect: TRect;
+                       const Default: TRect);
+    procedure ReadStrings(const Ident: string; const List: TStrings;
+                          const DefaultList: TStrings = nil);
     procedure WriteString(const Ident, Value: string);
     procedure WriteInteger(const Ident: string; Value: Longint);
+    procedure WriteRect(const Ident: string; const Value: TRect);
+    procedure WriteStrings(const Ident: string; const List: TStrings);
     procedure EraseSections;
   public
     property StoredValue[const AName: string]: TStoredType read GetStoredValue write SetStoredValue;
     property Root: TComponent read GetRoot;
     property Active: Boolean read FActive write FActive default True;
     property StoredValues: TStoredValues read FStoredValues write SetStoredValues;
-    property OnSavingProperties : TNotifyEvent read FOnSavingProperties write FOnSavingProperties;
-    property OnSaveProperties : TNotifyEvent read FOnSaveProperties write FOnSaveProperties;
-    property OnRestoringProperties : TNotifyEvent read FOnRestoringProperties  write FOnRestoringProperties;
-    property OnRestoreProperties : TNotifyEvent read FOnRestoreProperties  write FOnRestoreProperties;
+    property OnSavingProperties: TNotifyEvent read FOnSavingProperties write FOnSavingProperties;
+    property OnSaveProperties: TNotifyEvent read FOnSaveProperties write FOnSaveProperties;
+    property OnRestoringProperties: TNotifyEvent read FOnRestoringProperties write FOnRestoringProperties;
+    property OnRestoreProperties: TNotifyEvent read FOnRestoreProperties write FOnRestoreProperties;
   end;
   
 implementation
@@ -685,9 +691,64 @@ begin
   Result := DoReadInteger(RootSection, Ident, Default);
 end;
 
+procedure TCustomPropertyStorage.ReadRect(const Ident: string;
+  out ARect: TRect; const Default: TRect);
+begin
+  ARect.Left:=ReadInteger(Ident+'Left',Default.Left);
+  ARect.Top:=ReadInteger(Ident+'Top',Default.Top);
+  ARect.Right:=ReadInteger(Ident+'Right',Default.Right);
+  ARect.Bottom:=ReadInteger(Ident+'Bottom',Default.Bottom);
+end;
+
+procedure TCustomPropertyStorage.ReadStrings(const Ident: string;
+  const List: TStrings; const DefaultList: TStrings);
+var
+  sl: TStringList;
+  NewCount: LongInt;
+  i: Integer;
+begin
+  if ReadString(Ident+'Count','')='' then begin
+    // use default
+    if DefaultList<>nil then
+      List.Assign(DefaultList)
+    else
+      List.Clear;
+    exit;
+  end;
+  // read list into a temporary list and then use Assign to copy in one step
+  sl:=TStringList.Create;
+  try
+    NewCount:=ReadInteger(Ident+'Count',0);
+    for i:=0 to NewCount-1 do
+      sl.Add(ReadString(Ident+'Item'+IntToStr(i+1),''));
+    List.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TCustomPropertyStorage.WriteInteger(const Ident: string; Value: Longint);
 begin
   DoWriteInteger(RootSection, Ident, Value);
+end;
+
+procedure TCustomPropertyStorage.WriteRect(const Ident: string;
+  const Value: TRect);
+begin
+  WriteInteger(Ident+'Left',Value.Left);
+  WriteInteger(Ident+'Top',Value.Top);
+  WriteInteger(Ident+'Right',Value.Right);
+  WriteInteger(Ident+'Bottom',Value.Bottom);
+end;
+
+procedure TCustomPropertyStorage.WriteStrings(const Ident: string;
+  const List: TStrings);
+var
+  i: Integer;
+begin
+  WriteInteger(Ident+'Count',List.Count);
+  for i:=0 to List.Count-1 do
+    WriteString(Ident+'Item'+IntToStr(i+1),List[i]);
 end;
 
 procedure TCustomPropertyStorage.EraseSections;

@@ -822,7 +822,7 @@ type
       read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
     property LineHeight: integer read fTextHeight;
-    property LinesInWindow: Integer read fLinesInWindow;
+    property LinesInWindow: Integer read fLinesInWindow; // MG: fully visible lines
     property LineText: string read GetLineText write SetLineText;
     property Lines: TStrings read fLines write SetLines;
     property Marks: TSynEditMarkList read fMarkList;
@@ -1177,7 +1177,7 @@ end;
 function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer): integer;
 begin
   Result:=TopLine;
-  if ScreenRow>LinesInWindow then ScreenRow:=LinesInWindow;
+  if ScreenRow>LinesInWindow+1 then ScreenRow:=LinesInWindow+1;
   while ScreenRow>0 do begin
     if (Result>Lines.Count)
     or (not TSynEditStringList(fLines).Folded[Result-1]) then
@@ -1189,8 +1189,9 @@ end;
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // returns -1 for lines above visible screen (<TopLine)
 // 0 for the first line
-// LinesInWindow-1 for the last
-// and returns LinesInWindow for lines below visible screen
+// Max(1,LinesInWindow)-1 for the last
+// and returns LinesInWindow for lines below visible screen including the
+// partially visible line at the bottom
 var
   i: LongInt;
 begin
@@ -2653,6 +2654,7 @@ begin
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
              {$ENDIF}
              Lines.Count);
+  //DebugLn('TCustomSynEdit.Paint LinesInWindow=',dbgs(LinesInWindow),' nL1=',dbgs(nL1),' nL2=',dbgs(nL2));
   // Now paint everything while the caret is hidden.
   HideCaret;
   try
@@ -3268,7 +3270,7 @@ var
         pszText, nCharsToPaint);
     end else begin
       // draw text with background
-      //debugln('PaintToken nX=',nX,' Token=',dbgstr(copy(pszText,1,nCharsToPaint)));
+      //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(pszText,1,nCharsToPaint)),' rcToken=',dbgs(rcToken));
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
         pszText, nCharsToPaint);
     end;
@@ -3998,7 +4000,7 @@ begin
 
   // If there is anything visible below the last line, then fill this as well.
   rcToken := AClip;
-  rcToken.Top := RowToScreenRow(LastLine + 1) * fTextHeight;
+  rcToken.Top := (RowToScreenRow(LastLine)+1) * fTextHeight;
   if (rcToken.Top < rcToken.Bottom) then begin
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
@@ -7293,7 +7295,11 @@ begin
     if CaretY < TopLine then
       TopLine := CaretY
     else if CaretY > TopLine + Max(1, LinesInWindow) - 1 then                   //mh 2000-10-19
+      {$IFDEF SYN_LAZARUS}
+      TopLine := CaretY - (Max(1,LinesInWindow) - 1)
+      {$ELSE}
       TopLine := CaretY - (LinesInWindow - 1)
+      {$ENDIF}
     else
       TopLine := TopLine;                                                       //mh 2000-10-19
   finally
@@ -9178,6 +9184,7 @@ begin
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
     fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
+    //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
     {$ELSE}
     fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
