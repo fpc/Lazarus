@@ -2957,5 +2957,32 @@ resourcestring
   lisShowOldTabOrder = 'Show old tab order';
   lisTabOrderOf = 'Tab Order of';
 
+  lisAnchorEnabledHint = 'Enabled = Include %s in Anchors';
+  lisAroundBorderSpaceHint = 'Borderspace around the control. The other four borderspaces are added to this value.';
+  lisTopBorderSpaceSpinEditHint = 'Top borderspace. This value is added to base borderspace and used for the space above the control.';
+  lisBottomBorderSpaceSpinEditHint = 'Bottom borderspace. This value is added to base borderspace and used for the space below the control.';
+  lisLeftBorderSpaceSpinEditHint = 'Left borderspace. This value is added to base borderspace and used for the space left to the control.';
+  lisRightBorderSpaceSpinEditHint = 'Right borderspace. This value is added to base borderspace and used for the space right to the control.';
+  lisCenterControlVerticallyRelativeToSibling = 'Center control vertically relative to the given sibling';
+  lisCenterControlHorizontallyRelativeToSibling = 'Center control horizontally relative to the given sibling';
+  lisAnchorToTopSideKeepBorderSpace = 'Anchor to top side of sibling, keep border space';
+  lisAnchorToBottomSideKeepBorderSpace = 'Anchor to bottom side of sibling, keep border space';
+  lisAnchorToLeftSideKeepBorderSpace = 'Anchor to left side of sibling, keep border space';
+  lisAnchorToRightSideKeepBorderSpace = 'Anchor to right side of sibling, keep border space';
+  lisTopSiblingComboBoxHint = 'This is the sibling control to which the top side is anchored. Leave empty for parent.';
+  lisBottomSiblingComboBoxHint = 'This is the sibling control to which the bottom side is anchored. Leave empty for parent.';
+  lisRightSiblingComboBoxHint = 'This is the sibling control to which the right side is anchored. Leave empty for parent.';
+  lisLeftSiblingComboBoxHint = 'This is the sibling control to which the left side is anchored. Leave empty for parent.';
+  lisBorderSpace = 'BorderSpace';
+  lisSibling = 'Sibling';
+  lisEnabled = 'Enabled';
+  lisRightAnchoring = 'Right anchoring';
+  lisTopAnchoring = 'Top anchoring';
+  lisLeftGroupBoxCaption = 'Left anchoring';
+  lisBottomGroupBoxCaption = 'Bottom anchoring';
+  lisUnableToSetAnchorSideControl = 'Unable to set AnchorSide Control';
+  lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
+  lisAnchorsOfSelectedControls = 'Anchors of selected controls';
+
 implementation
 end.

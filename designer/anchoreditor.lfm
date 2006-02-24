@@ -1,4 +1,5 @@
 object AnchorDesigner: TAnchorDesigner
+  ActiveControl = LeftBorderSpaceSpinEdit
   Caption = 'AnchorDesigner'
   ClientHeight = 259
   ClientWidth = 520
@@ -6,7 +7,8 @@ object AnchorDesigner: TAnchorDesigner
   OnCreate = AnchorDesignerCreate
   OnDestroy = AnchorDesignerDestroy
   OnShow = AnchorDesignerShow
-  PixelsPerInch = 112
+  PixelsPerInch = 96
+  Position = poScreenCenter
   HorzScrollBar.Page = 519
   VertScrollBar.Page = 258
   Left = 298
@@ -16,28 +18,23 @@ object AnchorDesigner: TAnchorDesigner
   object BorderSpaceGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'BorderSpaceGroupBox'
-    ClientHeight = 87
+    ClientHeight = 86
     ClientWidth = 168
-    ParentColor = True
     TabOrder = 0
     Left = 172
     Height = 104
     Top = 80
     Width = 172
     object LeftBorderSpaceSpinEdit: TSpinEdit
-      ClimbRate = 1
-      MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
       Height = 20
       Top = 30
-      Width = 50
+      Width = 56
     end
     object RightBorderSpaceSpinEdit: TSpinEdit
-      ClimbRate = 1
-      MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False
       ShowHint = True
@@ -45,22 +42,18 @@ object AnchorDesigner: TAnchorDesigner
       Left = 118
       Height = 20
       Top = 30
-      Width = 50
+      Width = 56
     end
     object TopBorderSpaceSpinEdit: TSpinEdit
-      ClimbRate = 1
-      MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
       Left = 58
       Height = 20
-      Width = 50
+      Width = 56
     end
     object BottomBorderSpaceSpinEdit: TSpinEdit
-      ClimbRate = 1
-      MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False
       ShowHint = True
@@ -68,11 +61,9 @@ object AnchorDesigner: TAnchorDesigner
       Left = 58
       Height = 20
       Top = 57
-      Width = 50
+      Width = 56
     end
     object AroundBorderSpaceSpinEdit: TSpinEdit
-      ClimbRate = 1
-      MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False
       ShowHint = True
@@ -80,15 +71,14 @@ object AnchorDesigner: TAnchorDesigner
       Left = 58
       Height = 20
       Top = 30
-      Width = 50
+      Width = 56
     end
   end
   object TopGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'TopGroupBox'
-    ClientHeight = 33
+    ClientHeight = 32
     ClientWidth = 404
-    ParentColor = True
     TabOrder = 1
     Left = 64
     Height = 50
@@ -128,11 +118,12 @@ object AnchorDesigner: TAnchorDesigner
     end
     object TopSiblingLabel: TLabel
       Caption = 'Sibling'
-      ParentColor = True
+      Color = clNone
+      ParentColor = False
       Left = 94
-      Height = 12
+      Height = 14
       Top = 4
-      Width = 38
+      Width = 31
     end
     object TopAnchoredCheckBox: TCheckBox
       Caption = 'Enabled'
@@ -140,11 +131,12 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 0
       UseOnChange = True
       Left = 2
-      Height = 24
-      Width = 70
+      Height = 13
+      Width = 59
     end
     object TopSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -152,16 +144,15 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 1
       Text = 'TopSiblingComboBox'
       Left = 158
-      Height = 25
+      Height = 21
       Width = 129
     end
   end
   object BottomGroupBox: TGroupBox
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'BottomGroupBox'
-    ClientHeight = 33
+    ClientHeight = 32
     ClientWidth = 404
-    ParentColor = True
     TabOrder = 2
     Left = 64
     Height = 50
@@ -202,11 +193,12 @@ object AnchorDesigner: TAnchorDesigner
     end
     object BottomSiblingLabel: TLabel
       Caption = 'Sibling'
-      ParentColor = True
+      Color = clNone
+      ParentColor = False
       Left = 94
-      Height = 12
+      Height = 14
       Top = 8
-      Width = 38
+      Width = 31
     end
     object BottomAnchoredCheckBox: TCheckBox
       Caption = 'Enabled'
@@ -214,11 +206,12 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 0
       UseOnChange = True
       Left = 2
-      Height = 24
-      Width = 70
+      Height = 13
+      Width = 59
     end
     object BottomSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -226,16 +219,15 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 1
       Text = 'BottomSiblingComboBox'
       Left = 158
-      Height = 25
+      Height = 21
       Width = 129
     end
   end
   object RightGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'RightGroupBox'
-    ClientHeight = 112
+    ClientHeight = 111
     ClientWidth = 146
-    ParentColor = True
     TabOrder = 3
     Left = 364
     Height = 129
@@ -276,11 +268,12 @@ object AnchorDesigner: TAnchorDesigner
     end
     object RightSiblingLabel: TLabel
       Caption = 'Sibling'
-      ParentColor = True
+      Color = clNone
+      ParentColor = False
       Left = 2
-      Height = 12
+      Height = 14
       Top = 28
-      Width = 38
+      Width = 31
     end
     object RightAnchoredCheckBox: TCheckBox
       Caption = 'Enabled'
@@ -288,11 +281,12 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 0
       UseOnChange = True
       Left = 2
-      Height = 24
-      Width = 70
+      Height = 13
+      Width = 59
     end
     object RightSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -300,7 +294,7 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 1
       Text = 'RightSiblingComboBox'
       Left = 5
-      Height = 25
+      Height = 21
       Top = 49
       Width = 135
     end
@@ -308,9 +302,8 @@ object AnchorDesigner: TAnchorDesigner
   object LeftGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'LeftGroupBox'
-    ClientHeight = 112
+    ClientHeight = 111
     ClientWidth = 146
-    ParentColor = True
     TabOrder = 4
     Left = 8
     Height = 129
@@ -351,11 +344,12 @@ object AnchorDesigner: TAnchorDesigner
     end
     object LeftSiblingLabel: TLabel
       Caption = 'Sibling'
-      ParentColor = True
+      Color = clNone
+      ParentColor = False
       Left = 2
-      Height = 12
+      Height = 14
       Top = 28
-      Width = 38
+      Width = 31
     end
     object LeftAnchoredCheckBox: TCheckBox
       Caption = 'Enabled'
@@ -363,11 +357,12 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 0
       UseOnChange = True
       Left = 2
-      Height = 24
-      Width = 70
+      Height = 13
+      Width = 59
     end
     object LeftSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -375,7 +370,7 @@ object AnchorDesigner: TAnchorDesigner
       TabOrder = 1
       Text = 'LeftSiblingComboBox'
       Left = 5
-      Height = 25
+      Height = 21
       Top = 49
       Width = 134
     end

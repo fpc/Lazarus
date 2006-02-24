@@ -186,46 +186,50 @@ begin
   KeyPreview:=true;
   FSelection:=TPersistentSelectionList.Create;
 
-  AnchorEnabledHint:='Enabled = Include %s in Anchors';
+  AnchorEnabledHint:=lisAnchorEnabledHint;
 
-  AroundBorderSpaceSpinEdit.Hint:='Borderspace around the control. The other four borderspaces are added to this value.';
-  BorderSpaceGroupBox.Caption:='BorderSpace';
-  BottomAnchoredCheckBox.Caption:='Enabled';
+  AroundBorderSpaceSpinEdit.Hint:=lisAroundBorderSpaceHint;
+  BorderSpaceGroupBox.Caption:=lisBorderSpace;
+
+  BottomAnchoredCheckBox.Caption:=lisEnabled;
   BottomAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akBottom']);
-  BottomBorderSpaceSpinEdit.Hint:='Bottom borderspace. This value is added to base borderspace and used for the space below the control.';
-  BottomGroupBox.Caption:='Bottom anchoring';
-  BottomRefBottomSpeedButton.Hint:='Anchor to bottom side of sibling, keep border space';
-  BottomRefCenterSpeedButton.Hint:='Center control vertically relative to the given sibling';
-  BottomRefTopSpeedButton.Hint:='Anchor to top side of sibling, keep border space';
-  BottomSiblingComboBox.Hint:='This is the sibling control to which the bottom side is anchored. Leave empty for parent.';
-  BottomSiblingLabel.Caption:='Sibling';
-  LeftAnchoredCheckBox.Caption:='Enabled';
+  BottomBorderSpaceSpinEdit.Hint:=lisBottomBorderSpaceSpinEditHint;
+  BottomGroupBox.Caption:=lisBottomGroupBoxCaption;
+  BottomRefBottomSpeedButton.Hint:=lisAnchorToBottomSideKeepBorderSpace;
+  BottomRefCenterSpeedButton.Hint:=lisCenterControlVerticallyRelativeToSibling;
+  BottomRefTopSpeedButton.Hint:=lisAnchorToTopSideKeepBorderSpace;
+  BottomSiblingComboBox.Hint:=lisBottomSiblingComboBoxHint;
+  BottomSiblingLabel.Caption:=lisSibling;
+
+  LeftAnchoredCheckBox.Caption:=lisEnabled;
   LeftAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akLeft']);
-  LeftBorderSpaceSpinEdit.Hint:='Left borderspace. This value is added to base borderspace and used for the space left to the control.';
-  LeftGroupBox.Caption:='Left anchoring';
-  LeftRefCenterSpeedButton.Hint:='Center control horizontally relative to the given sibling';
-  LeftRefLeftSpeedButton.Hint:='Anchor to left side of sibling, keep border space';
-  LeftRefRightSpeedButton.Hint:='Anchor to right side of sibling, keep border space';
-  LeftSiblingComboBox.Hint:='This is the sibling control to which the left side is anchored. Leave empty for parent.';
-  LeftSiblingLabel.Caption:='Sibling';
-  RightAnchoredCheckBox.Caption:='Enabled';
+  LeftBorderSpaceSpinEdit.Hint:=lisLeftBorderSpaceSpinEditHint;
+  LeftGroupBox.Caption:=lisLeftGroupBoxCaption;
+  LeftRefCenterSpeedButton.Hint:=lisCenterControlHorizontallyRelativeToSibling;
+  LeftRefLeftSpeedButton.Hint:=lisAnchorToLeftSideKeepBorderSpace;
+  LeftRefRightSpeedButton.Hint:=lisAnchorToRightSideKeepBorderSpace;
+  LeftSiblingComboBox.Hint:=lisLeftSiblingComboBoxHint;
+  LeftSiblingLabel.Caption:=lisSibling;
+
+  RightAnchoredCheckBox.Caption:=lisEnabled;
   RightAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akRight']);
-  RightBorderSpaceSpinEdit.Hint:='Right borderspace. This value is added to base borderspace and used for the space right to the control.';
-  RightGroupBox.Caption:='Right anchoring';
-  RightRefCenterSpeedButton.Hint:='Center control horizontally relative to the given sibling';
-  RightRefLeftSpeedButton.Hint:='Anchor to left side of sibling, keep border space';
-  RightRefRightSpeedButton.Hint:='Anchor to right side of sibling, keep border space';
-  RightSiblingComboBox.Hint:='This is the sibling control to which the right side is anchored. Leave empty for parent.';
-  RightSiblingLabel.Caption:='Sibling';
-  TopAnchoredCheckBox.Caption:='Enabled';
+  RightBorderSpaceSpinEdit.Hint:=lisRightBorderSpaceSpinEditHint;
+  RightGroupBox.Caption:=lisRightAnchoring;
+  RightRefCenterSpeedButton.Hint:=lisCenterControlHorizontallyRelativeToSibling;
+  RightRefLeftSpeedButton.Hint:=lisAnchorToLeftSideKeepBorderSpace;
+  RightRefRightSpeedButton.Hint:=lisAnchorToRightSideKeepBorderSpace;
+  RightSiblingComboBox.Hint:=lisRightSiblingComboBoxHint;
+  RightSiblingLabel.Caption:=lisSibling;
+
+  TopAnchoredCheckBox.Caption:=lisEnabled;
   TopAnchoredCheckBox.Hint:=Format(AnchorEnabledHint,['akTop']);
-  TopBorderSpaceSpinEdit.Hint:='Top borderspace. This value is added to base borderspace and used for the space above the control.';
-  TopGroupBox.Caption:='Top anchoring';
-  TopRefBottomSpeedButton.Hint:='Anchor to bottom side of sibling, keep border space';
-  TopRefCenterSpeedButton.Hint:='Center control vertically relative to the given sibling';
-  TopRefTopSpeedButton.Hint:='Anchor to top side of sibling, keep border space';
-  TopSiblingComboBox.Hint:='This is the sibling control to which the top side is anchored. Leave empty for parent.';
-  TopSiblingLabel.Caption:='Sibling';
+  TopBorderSpaceSpinEdit.Hint:=lisTopBorderSpaceSpinEditHint;
+  TopGroupBox.Caption:=lisTopAnchoring;
+  TopRefBottomSpeedButton.Hint:=lisAnchorToBottomSideKeepBorderSpace;
+  TopRefCenterSpeedButton.Hint:=lisCenterControlVerticallyRelativeToSibling;
+  TopRefTopSpeedButton.Hint:= lisAnchorToTopSideKeepBorderSpace;
+  TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
+  TopSiblingLabel.Caption:=lisSibling;
 
   LeftRefLeftSpeedButton.Glyph.LoadFromLazarusResource('anchorleftleft');
   LeftRefCenterSpeedButton.Glyph.LoadFromLazarusResource('anchorcenterhorizontal');
@@ -398,9 +402,8 @@ begin
         CurControl.AnchorSide[Kind].Control:=NewSibling;
       except
         on E: Exception do begin
-          MessageDlg('Error',
-            'Unable to set AnchorSide Control'#13
-            +E.Message,mtError,[mbCancel],0);
+          MessageDlg('Error', lisUnableToSetAnchorSideControl+#13 +E.Message,
+            mtError,[mbCancel],0);
         end;
       end;
     end;
@@ -566,14 +569,14 @@ begin
     //debugln('TAnchorDesigner.Refresh B ',dbgs(SelectedControlCount));
 
     if (Values=nil) then begin
-      Caption:='Anchor Editor - no control selected';
+      Caption:=lisAnchorEditorNoControlSelected;
       BorderSpaceGroupBox.Enabled:=false;
       TopGroupBox.Enabled:=false;
       LeftGroupBox.Enabled:=false;
       RightGroupBox.Enabled:=false;
       BottomGroupBox.Enabled:=false;
     end else begin
-      Caption:='Anchors of selected controls';
+      Caption:=lisAnchorsOfSelectedControls;
 
       // all
       BorderSpaceGroupBox.Enabled:=true;
