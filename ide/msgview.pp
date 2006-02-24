@@ -119,6 +119,7 @@ type
     function FindNextItem(const Filename: string;
                           FirstLine, LineCount: integer): TAVLTreeNode;
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
+    procedure ConsistencyCheck;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -348,6 +349,7 @@ begin
     if Line.VisiblePosition > VisibleIndex then
       Line.VisiblePosition:=Line.VisiblePosition-1;
   end;
+  //ConsistencyCheck;
 end;
 
 {------------------------------------------------------------------------------
@@ -375,7 +377,7 @@ begin
   
   NewMsg.Msg := Msg;
   NewMsg.Directory := CurDir;
-  NewMsg.Position := FItems.Count;
+  NewMsg.Position := FItems.Count-1;
   NewMsg.OriginalIndex := OriginalIndex;
   //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
 
@@ -397,6 +399,7 @@ begin
     FLastLineIsProgress  := ProgressLine;
     MessageListBox.TopIndex := MessageListBox.Items.Count - 1;
   end;
+  //ConsistencyCheck;
 end;
 
 procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
@@ -795,7 +798,7 @@ begin
 end;
 
 procedure TMessagesView.MessageViewDrawItem(Control: TWinControl;
-   Index: Integer; ARect: TRect; State: TOwnerDrawState);
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
   TheText: string;
   cl: TColor;
@@ -809,6 +812,7 @@ const
   cLeftSpacer   = 3;
 begin
   MessageListBox.Canvas.FillRect(ARect);
+  //DebugLn('TMessagesView.MessageViewDrawItem Index=',dbgs(Index),' Count=',dbgs(MessageListBox.Items.Count));
   TheText := MessageListBox.Items[Index];
 
   cl := MessageListBox.Canvas.Font.Color;   // save original color
@@ -863,9 +867,18 @@ begin
     QuickFixItem:=TIDEMsgQuickFixItem(FQuickFixItems[i]);
     if (QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption)
     and (imqfoMenuItem in QuickFixItem.Steps) then begin
+      //ConsistencyCheck;
+      DebugLn('TMessagesView.OnQuickFixClick ',Msg.Msg,' ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position),' ',Items[Msg.Position].Msg);
       QuickFixItem.Execute(Msg,imqfoMenuItem);
-      UpdateMsgSrcPos(Msg);
-      UpdateMsgLineInListBox(Msg);
+      if Msg.Msg='' then begin
+        // messages fixed -> delete
+        DebugLn('TMessagesView.OnQuickFixClick ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position));
+        DeleteLine(Msg.Position);
+      end else begin
+        UpdateMsgSrcPos(Msg);
+        UpdateMsgLineInListBox(Msg);
+      end;
+      //ConsistencyCheck;
     end;
   end;
 end;
@@ -937,6 +950,29 @@ begin
   Line.GetSourcePosition(Line.Filename,Line.LineNumber,Line.Column);
   if Line.LineNumber>0 then
     Line.Node:=FSrcPositions.Add(Line);
+end;
+
+procedure TMessagesView.ConsistencyCheck;
+var
+  i: Integer;
+  Line: TLazMessageLine;
+begin
+  if FSrcPositions.ConsistencyCheck<>0 then
+    RaiseGDBException('TMessagesView.ConsistencyCheck FSrcPositions.ConsistencyCheck');
+  for i:=0 to FItems.Count-1 do begin
+    Line:=Items[i];
+    if Line.Position<>i then
+      RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" Position='+dbgs(Line.Position));
+    if (Line.VisiblePosition>=0) and (VisibleItems[Line.VisiblePosition]<>Line) then
+      RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition)+' '+VisibleItems[Line.VisiblePosition].Msg);
+    if (Line.VisiblePosition>=0) and (MessageListBox.Items[Line.VisiblePosition]<>Line.Msg) then
+      RaiseGDBException('TMessagesView.ConsistencyCheck i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition)+' Listbox="'+MessageListBox.Items[Line.VisiblePosition]+'"');
+  end;
+  for i:=0 to FVisibleItems.Count-1 do begin
+    Line:=VisibleItems[i];
+    if (Line.VisiblePosition<>i) then
+      RaiseGDBException('TMessagesView.ConsistencyCheck Visible i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition));
+  end;
 end;
 
 function TMessagesView.FindNextItem(const Filename: string; FirstLine,

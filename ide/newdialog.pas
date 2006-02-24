@@ -142,8 +142,8 @@ type
   TNewOtherDialog = class(TForm)
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
-    OkButton:      TButton;
-    CancelButton:  TButton;
+    OkButton: TButton;
+    CancelButton: TButton;
     ItemsTreeView: TTreeView;
     procedure ItemsTreeViewClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);

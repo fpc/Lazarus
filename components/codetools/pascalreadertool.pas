@@ -344,20 +344,17 @@ begin
     exit;
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
-    TypeDefNode:=ProcNode.Parent;
-    if TypeDefNode=nil then exit;
-    TypeDefNode:=TypeDefNode.Parent;
-    if (TypeDefNode=nil) or (TypeDefNode.Desc<>ctnClass) then exit;
-    TypeDefNode:=TypeDefNode.Parent;
-    if TypeDefNode.Desc=ctnGenericType then begin
-      TypeDefNode:=TypeDefNode.Parent;
-      if TypeDefNode=nil then exit;
+    TheClassName:='';
+    TypeDefNode:=ProcNode.GetNodeOfType(ctnClass);
+    if TypeDefNode<>nil then begin
+      TypeDefNode:=TypeDefNode.GetNodeOfType(ctnTypeDefinition);
+      if TypeDefNode<>nil then begin
+        MoveCursorToCleanPos(TypeDefNode.StartPos);
+        ReadNextAtom;
+        if not AtomIsIdentifier(false) then exit;
+        TheClassName:=GetAtom;
+      end;
     end;
-    if TypeDefNode.Desc<>ctnTypeDefinition then exit;
-    MoveCursorToCleanPos(TypeDefNode.StartPos);
-    ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
-    TheClassName:=GetAtom;
   end;
   InitExtraction;
   // reparse the clean source
@@ -394,7 +391,7 @@ begin
       ExtractNextAtom(not (phpWithoutName in Attr),Attr);
     end else begin
       // read name
-      if not (phpAddClassname in Attr) then begin
+      if (not (phpAddClassname in Attr)) or (TheClassName='') then begin
         ExtractNextAtom(not (phpWithoutName in Attr),Attr);
       end else begin
         // add class name
@@ -540,7 +537,7 @@ var CurProcHead: string;
 begin
   Result:=StartNode;
   while (Result<>nil) do begin
-    //DebugLn('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
+    //DebugLn('TPascalReaderTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
@@ -548,7 +545,7 @@ begin
             and (FindProcBody(Result)<>nil))) then
       begin
         CurProcHead:=ExtractProcHead(Result,Attr);
-        //DebugLn('TPascalParserTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
+        //DebugLn('TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
         if (CurProcHead<>'')
         and (CompareTextIgnoringSpace(CurProcHead,AProcHead,false)=0) then
           exit;
@@ -568,7 +565,7 @@ var
 begin
   Result:=nil;
   // get ctnProcedure
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode A');
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode Start');
   if (ProcNode=nil) then exit;
   if ProcNode.Desc=ctnProcedureHead then begin
     ProcNode:=ProcNode.Parent;
@@ -577,14 +574,14 @@ begin
   if ProcNode.Desc<>ctnProcedure then exit;
   
   // check proc kind
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode B');
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode Check kind');
   ClassNode:=ProcNode.GetNodeOfType(ctnClass);
   if ClassNode<>nil then begin
-    //debugln('TPascalReaderTool.FindCorrespondingProcNode C');
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
     StartNode:=ClassNode.GetNodeOfType(ctnTypeSection)
   end else if NodeIsMethodBody(ProcNode) then begin
-    //debugln('TPascalReaderTool.FindCorrespondingProcNode D');
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode Method');
     // in a method body -> search class
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
@@ -592,16 +589,18 @@ begin
     while (StartNode<>nil)
     and (StartNode.Desc in [ctnClass,ctnClassInterface]+AllClassSections) do
       StartNode:=StartNode.FirstChild;
-    //debugln('TPascalReaderTool.FindCorrespondingProcNode D2 ',StartNode.DescAsString);
-  end else
+  end else begin
+    //DebugLn('TPascalReaderTool.FindCorrespondingProcNode Normal');
     // else: search on same lvl
     StartNode:=FindFirstNodeOnSameLvl(ProcNode);
+  end;
   if StartNode=nil then exit;
 
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode E');
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString);
   ProcHead:=ExtractProcHead(ProcNode,Attr);
   Result:=FindProcNode(StartNode,ProcHead,Attr);
   if Result=ProcNode then begin
+    // found itself -> search further
     StartNode:=FindNextNodeOnSameLvl(Result);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
   end;

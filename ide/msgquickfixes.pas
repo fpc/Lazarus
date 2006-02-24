@@ -84,6 +84,9 @@ begin
   then begin
     LazarusIDE.DoJumpToCodeToolBossError;
   end;
+  
+  // message fixed
+  Msg.Msg:='';
 end;
 
 function GetMsgLineFilename(Msg: TIDEMessageLine; out CodeBuf: TCodeBuffer
