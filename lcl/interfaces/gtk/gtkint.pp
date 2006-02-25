@@ -92,6 +92,9 @@ uses
 
 
 type
+
+  { TGTKWidgetSet }
+
   TGTKWidgetSet = class(TWidgetSet)
   protected
     FKeyStateList_: TFPList; // Keeps track of which keys are pressed
@@ -293,6 +296,7 @@ type
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    procedure AppSetTitle(const ATitle: string); override;
   public
     constructor Create;
     destructor Destroy; override;

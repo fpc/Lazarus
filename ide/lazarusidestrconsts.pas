@@ -2984,6 +2984,34 @@ resourcestring
   lisUnableToSetAnchorSideControl = 'Unable to set AnchorSide Control';
   lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
+  lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
+  lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
+  lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';
+  lisDebugOptionsFrmDebuggerSpecific = 'Debugger specific options (depends on '
+    +'type of debugger)';
+  lisDebugOptionsFrmEventLog = 'Event Log';
+  lisDebugOptionsFrmClearLogOnRun = 'Clear log on run';
+  lisDebugOptionsFrmLimitLinecountTo = 'Limit linecount to';
+  lisDebugOptionsFrmBreakpoint = 'Breakpoint';
+  lisDebugOptionsFrmProcess = 'Process';
+  lisDebugOptionsFrmThread = 'Thread';
+  lisDebugOptionsFrmModule = 'Module';
+  lisDebugOptionsFrmOutput = 'Output';
+  lisDebugOptionsFrmWindow = 'Window';
+  lisDebugOptionsFrmInterface = 'Interface';
+  lisDebugOptionsFrmLanguageExceptions = 'Language Exceptions';
+  lisDebugOptionsFrmIgnoreTheseExceptions = 'Ignore these exceptions';
+  lisDebugOptionsFrmBreakOnLazarusExceptions = 'Break on Lazarus Exceptions';
+  lisDebugOptionsFrmOSExceptions = 'OS Exceptions';
+  lisDebugOptionsFrmSignals = 'Signals';
+  lisDebugOptionsFrmName = 'Name';
+  lisDebugOptionsFrmID = 'ID';
+  lisDebugOptionsFrmHandledBy = 'Handled by';
+  lisDebugOptionsFrmResume = 'Resume';
+  lisDebugOptionsFrmHandledByProgram = 'Handled by Program';
+  lisDebugOptionsFrmHandledByDebugger = 'Handled by Debugger';
+  lisDebugOptionsFrmResumeHandled = 'Resume Handled';
+  lisDebugOptionsFrmResumeUnhandled = 'Resume Unhandled';
 
 implementation
 end.

@@ -3,8 +3,8 @@
                           synchronize - example
                           ---------------------
 
-		   Just a simple example to show & verify functionality
-		   of the lazarus TThread.Synchronize / TProgressBar classes.
+                   Just a simple example to show & verify functionality
+                   of the lazarus TThread.Synchronize / TProgressBar classes.
 
                    Initial Revision  : Sun Aug 15 1999
 
@@ -73,45 +73,45 @@ type
     procedure Execute; override;
   end;
 
-	TForm1 = class(TForm)
-	public
-	  Progre1: TProgressBar;
-	  Progre2: TProgressBar;
-	  Progre3: TProgressBar;
-          Listbox1: TListBox;
-          Listbox2: TListBox;
-          Thread1: TThread1;
-          Thread2: TThread2;
-          ThreadList: TList;
-	  Button1: TButton;
-    	  Button2: TButton;
-	  Button3: TButton;
-	  Button4: TButton;
-	  Button5: TButton;
-       	  Button6: TButton;
-       	  Button7: TButton;
-       	  Button8: TButton;
-       	  Button9: TButton;
-       	  Button10: TButton;
-          mnuFile: TMainMenu;
-          itmFileQuit: TMenuItem;
-          constructor Create(AOwner: TComponent); override;	
-          destructor Destroy; override;
-          procedure LoadMainMenu;
-	  procedure mnuQuitClicked(Sender : TObject);
-	protected
-	  procedure Button1CLick(Sender : TObject);
-	  procedure Button2CLick(Sender : TObject);
-	  procedure Button3CLick(Sender : TObject);
-	  procedure Button4CLick(Sender : TObject);
-	  procedure Button5CLick(Sender : TObject);
-	  procedure Button6CLick(Sender : TObject);
-	  procedure Button7CLick(Sender : TObject);
-	  procedure Button8CLick(Sender : TObject);
-	  procedure Button9CLick(Sender : TObject);
-	  procedure Button10CLick(Sender : TObject);
-          function CloseQuery: boolean; override;
-	end;
+  TForm1 = class(TForm)
+  public
+    Progre1: TProgressBar;
+    Progre2: TProgressBar;
+    Progre3: TProgressBar;
+    Listbox1: TListBox;
+    Listbox2: TListBox;
+    Thread1: TThread1;
+    Thread2: TThread2;
+    ThreadList: TList;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
+    mnuFile: TMainMenu;
+    itmFileQuit: TMenuItem;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadMainMenu;
+    procedure mnuQuitClicked(Sender : TObject);
+  protected
+    procedure Button1CLick(Sender : TObject);
+    procedure Button2CLick(Sender : TObject);
+    procedure Button3CLick(Sender : TObject);
+    procedure Button4CLick(Sender : TObject);
+    procedure Button5CLick(Sender : TObject);
+    procedure Button6CLick(Sender : TObject);
+    procedure Button7CLick(Sender : TObject);
+    procedure Button8CLick(Sender : TObject);
+    procedure Button9CLick(Sender : TObject);
+    procedure Button10CLick(Sender : TObject);
+    function CloseQuery: boolean; override;
+  end;
 
 threadvar
   threadvartest: integer;
@@ -241,7 +241,7 @@ begin
 end;
 
 
-constructor TForm1.Create(AOwner: TComponent);	
+constructor TForm1.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    Caption := 'Thread Synchronize Demo v0.1';
@@ -274,7 +274,7 @@ procedure TForm1.Button1Click(Sender : TObject);
 Begin
    if assigned (progre3) then begin
         progre3.Position := 0;
-   	progre3.Min := progre3.Min - 1
+        progre3.Min := progre3.Min - 1
    end;
 End;
 
@@ -282,15 +282,15 @@ procedure TForm1.Button2Click(Sender : TObject);
 Begin
    if assigned (progre3) then begin
         progre3.Position := 0;
-   	progre3.Min := progre3.Min + 1;
+        progre3.Min := progre3.Min + 1;
    end;
 End;
 
 procedure TForm1.Button3Click(Sender : TObject);
 Begin
    if assigned (progre3) then begin
-	progre3.Position := 0;
-	progre3.Max := progre3.Max +1;
+        progre3.Position := 0;
+        progre3.Max := progre3.Max +1;
    end;
 End;
 
@@ -298,7 +298,7 @@ procedure TForm1.Button4Click(Sender : TObject);
 Begin
    if assigned (progre3) then begin
         progre3.Position := 0;
-	progre3.Max := progre3.Max -1;
+        progre3.Max := progre3.Max -1;
    end;
 End;
 
@@ -315,8 +315,8 @@ procedure TForm1.Button5Click(Sender : TObject);
 Begin
    if assigned (progre1) then begin
         Progre1.Smooth := not Progre1.Smooth;
-	if assigned (Button6) 
-	  then Button6.Visible := Progre1.Smooth;
+        if assigned (Button6)
+          then Button6.Visible := Progre1.Smooth;
    end;
 End;
 
@@ -329,12 +329,12 @@ End;
 
 procedure TForm1.Button7Click(Sender : TObject);
 Begin
-   if assigned (progre1) then 
+   if assigned (progre1) then
    begin
      case Progre1.Orientation of
         pbVertical      : Progre1.Orientation := pbRightToLeft;
         pbRightToLeft   : Progre1.Orientation := pbTopDown;
-	pbTopDown       : Progre1.Orientation := pbHorizontal;
+        pbTopDown       : Progre1.Orientation := pbHorizontal;
         pbHorizontal    : Progre1.Orientation := pbVertical;
      end;
    end;
@@ -342,7 +342,7 @@ end;
 
 procedure TForm1.Button8Click(Sender : TObject);
 begin
-	{ Create the threads }
+        { Create the threads }
         TotalCount := 1000;
         GlobalData := 100;
         threadvartest := 20;
@@ -363,48 +363,48 @@ end;
 procedure TForm1.LoadMainMenu;
 
 begin
-	{ set the height and width }
-	Height := 350;
-	Width := 700;
+        { set the height and width }
+        Height := 350;
+        Width := 700;
 
-	{ Create a progressbar }
-	Progre1 := TProgressBar.Create (Self);
-	with Progre1 do
+        { Create a progressbar }
+        Progre1 := TProgressBar.Create (Self);
+        with Progre1 do
         begin
           Parent := Self;
-	  SetBounds(300, 10, 250, 20);
+          SetBounds(300, 10, 250, 20);
           Min := 0;
           Max := 10;
           Step := 1;
-	  BarShowText := true;
-	  Smooth := True;
-	  Show;
+          BarShowText := true;
+          Smooth := True;
+          Show;
         end;
 
-	Progre2 := TProgressBar.Create (Self);
-	with Progre2 do
+        Progre2 := TProgressBar.Create (Self);
+        with Progre2 do
         begin
           Parent := Self;
-	  SetBounds(300, 35, 250, 20);
+          SetBounds(300, 35, 250, 20);
           Min := 0;
           Max := 10;
           Step := 1;
-	  BarShowText := true;
-	  Smooth := True;
-	  Show;
+          BarShowText := true;
+          Smooth := True;
+          Show;
         end;
 
-	Progre3 := TProgressBar.Create (Self);
-	with Progre3 do
+        Progre3 := TProgressBar.Create (Self);
+        with Progre3 do
         begin
           Parent := Self;
-	  SetBounds(300, 60, 250, 20);
+          SetBounds(300, 60, 250, 20);
           Min := 0;
           Max := 10;
           Step := 1;
-	  BarShowText := true;
-	  Smooth := True;
-	  Show;
+          BarShowText := true;
+          Smooth := True;
+          Show;
         end;
 
         { create listboxes to show thread results }
@@ -423,123 +423,123 @@ begin
         end;
 
 
-	{ Create a few buttons }
-	Button2 := TButton.Create(Self);
-	Button2.Parent := Self; 
-	Button2.Left := 200;
-	Button2.Top := 70;
-	Button2.Width := 80;
-	Button2.Height := 30;
-	Button2.Show;
-	Button2.Caption := 'PMin ++';
-//	Button2.ToolTip := 'Tool Tip';
-//	Button2.ShowToolTip := True;
-	Button2.OnClick := @Button2Click;
+        { Create a few buttons }
+        Button2 := TButton.Create(Self);
+        Button2.Parent := Self;
+        Button2.Left := 200;
+        Button2.Top := 70;
+        Button2.Width := 80;
+        Button2.Height := 30;
+        Button2.Show;
+        Button2.Caption := 'PMin ++';
+//      Button2.ToolTip := 'Tool Tip';
+//      Button2.ShowToolTip := True;
+        Button2.OnClick := @Button2Click;
 
 
-	Button1 := TButton.Create(Self);
-	Button1.Parent := Self; 
-	Button1.Left := 50;
-	Button1.Top := 70;
-	Button1.Width := 80;
-	Button1.Height := 30;
-	Button1.Show;
-	Button1.Caption := 'PMin--';
-	Button1.OnClick := @Button1Click;
+        Button1 := TButton.Create(Self);
+        Button1.Parent := Self;
+        Button1.Left := 50;
+        Button1.Top := 70;
+        Button1.Width := 80;
+        Button1.Height := 30;
+        Button1.Show;
+        Button1.Caption := 'PMin--';
+        Button1.OnClick := @Button1Click;
 
-	{ Create 2 more buttons outside the groupbox }
-	Button3 := TButton.Create(Self);
-	Button3.Parent := Self; 
-	Button3.Left := 50;
-	Button3.Top := 30;
-	Button3.Width := 80;
-	Button3.Height := 30;
-	Button3.Show;
-	Button3.Caption := 'PMax++';
-//	Button3.ToolTip := 'Tool Tip';
-//	Button3.ShowToolTip := True;
-	Button3.OnClick := @Button3Click;
+        { Create 2 more buttons outside the groupbox }
+        Button3 := TButton.Create(Self);
+        Button3.Parent := Self;
+        Button3.Left := 50;
+        Button3.Top := 30;
+        Button3.Width := 80;
+        Button3.Height := 30;
+        Button3.Show;
+        Button3.Caption := 'PMax++';
+//      Button3.ToolTip := 'Tool Tip';
+//      Button3.ShowToolTip := True;
+        Button3.OnClick := @Button3Click;
 
-	Button4 := TButton.Create(Self);
-	Button4.Parent := Self; 
-	Button4.Left := 200;
-	Button4.Top := 30;
-	Button4.Width := 80;
-	Button4.Height := 30;
-	Button4.Show;
-	Button4.Caption := 'PMax--';
-	Button4.OnClick := @Button4Click;
+        Button4 := TButton.Create(Self);
+        Button4.Parent := Self;
+        Button4.Left := 200;
+        Button4.Top := 30;
+        Button4.Width := 80;
+        Button4.Height := 30;
+        Button4.Show;
+        Button4.Caption := 'PMax--';
+        Button4.OnClick := @Button4Click;
 
-	Button10 := TButton.Create(Self);
-	with Button10 do
+        Button10 := TButton.Create(Self);
+        with Button10 do
         begin
-          Parent := Self; 
-	  SetBounds(140, 30, 50, 30);
+          Parent := Self;
+          SetBounds(140, 30, 50, 30);
           Show;
-	  Caption := 'Step It';
-	  OnClick := @Button10Click;
+          Caption := 'Step It';
+          OnClick := @Button10Click;
         end;
 
-	Button5 := TButton.Create(Self);
-	Button5.Parent := Self; 
-	Button5.Left := 500;
-	Button5.Top := 110;
-	Button5.Width := 130;
-	Button5.Height := 30;
-	Button5.Show;
-	Button5.Caption := 'Toggle Smooth';
-	Button5.OnClick := @Button5Click;
+        Button5 := TButton.Create(Self);
+        Button5.Parent := Self;
+        Button5.Left := 500;
+        Button5.Top := 110;
+        Button5.Width := 130;
+        Button5.Height := 30;
+        Button5.Show;
+        Button5.Caption := 'Toggle Smooth';
+        Button5.OnClick := @Button5Click;
 
-	Button6 := TButton.Create(Self);
-	Button6.Parent := Self; 
-	Button6.Left := 500;
-	Button6.Top := 150;
-	Button6.Width := 130;
-	Button6.Height := 30;
-	Button6.Show;
-	Button6.Caption := 'Toggle Text';
-	Button6.OnClick := @Button6Click;
-	Button6.Visible := Progre1.Smooth;
+        Button6 := TButton.Create(Self);
+        Button6.Parent := Self;
+        Button6.Left := 500;
+        Button6.Top := 150;
+        Button6.Width := 130;
+        Button6.Height := 30;
+        Button6.Show;
+        Button6.Caption := 'Toggle Text';
+        Button6.OnClick := @Button6Click;
+        Button6.Visible := Progre1.Smooth;
 
-	Button7 := TButton.Create(Self);
-	Button7.Parent := Self; 
-	Button7.Left := 500;
-	Button7.Top := 190;
-	Button7.Width := 130;
-	Button7.Height := 30;
-	Button7.Show;
-	Button7.Caption := 'Orientation';
-	Button7.OnClick := @Button7Click;
+        Button7 := TButton.Create(Self);
+        Button7.Parent := Self;
+        Button7.Left := 500;
+        Button7.Top := 190;
+        Button7.Width := 130;
+        Button7.Height := 30;
+        Button7.Show;
+        Button7.Caption := 'Orientation';
+        Button7.OnClick := @Button7Click;
 
-	Button8 := TButton.Create(Self);
-	with Button8 do
+        Button8 := TButton.Create(Self);
+        with Button8 do
         begin
-          Parent := Self; 
-	  SetBounds(500, 230, 130, 30);
+          Parent := Self;
+          SetBounds(500, 230, 130, 30);
           Show;
-	  Caption := 'Thread test';
-	  OnClick := @Button8Click;
+          Caption := 'Thread test';
+          OnClick := @Button8Click;
         end;
 
-	Button9 := TButton.Create(Self);
-	with Button9 do
+        Button9 := TButton.Create(Self);
+        with Button9 do
         begin
-          Parent := Self; 
-	  SetBounds(500, 270, 130, 30);
+          Parent := Self;
+          SetBounds(500, 270, 130, 30);
           Show;
-	  Caption := 'Clear listboxes';
-	  OnClick := @Button9Click;
+          Caption := 'Clear listboxes';
+          OnClick := @Button9Click;
         end;
 
-	{ create a menubar }
-	mnuFile := TMainMenu.Create(Self);
+        { create a menubar }
+        mnuFile := TMainMenu.Create(Self);
         mnuFile.Name:='mnuFile';
         Menu := mnuFile;
 
-	itmFileQuit := TMenuItem.Create(Self);
-	itmFileQuit.Caption := 'Quit';
-	itmFileQuit.OnClick := @mnuQuitClicked;
-	mnuFile.Items.Add(itmFileQuit);
+        itmFileQuit := TMenuItem.Create(Self);
+        itmFileQuit.Caption := 'Quit';
+        itmFileQuit.OnClick := @mnuQuitClicked;
+        mnuFile.Items.Add(itmFileQuit);
 
 end;
 

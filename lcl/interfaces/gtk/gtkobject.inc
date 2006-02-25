@@ -1864,6 +1864,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TGTKWidgetSet.AppSetTitle(const ATitle: string);
+-------------------------------------------------------------------------------}
+procedure TGTKWidgetSet.AppSetTitle(const ATitle: string);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.RecreateWnd
   Params:  Sender: TObject - the lcl wincontrol, that is to recreated
   Returns: none

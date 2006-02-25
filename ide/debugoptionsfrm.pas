@@ -368,6 +368,47 @@ procedure TDebuggerOptionsForm.DebuggerOptionsFormCREATE(Sender: TObject);
 var
   n: Integer;
 begin
+  //translations
+  pgGeneral.Caption := lisMenuInsertGeneral;
+  gbDebuggerType.Caption := dlgDebugType;
+  gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;
+  gcbDebuggerGeneralOptions.Caption := lisDebugOptionsFrmDebuggerGeneralOptions;
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowMessageOnStop);
+  gbDebuggerSpecific.Caption := lisDebugOptionsFrmDebuggerSpecific;
+  
+  pgEventLog.Caption := lisDebugOptionsFrmEventLog;
+  gbGeneral.Caption := lisMenuInsertGeneral;
+  chkClearLogOnRun.Caption := lisDebugOptionsFrmClearLogOnRun;
+  chkLimitLinecount.Caption := lisDebugOptionsFrmLimitLinecountTo;
+  gbMessages.Caption := lisMenuViewMessages;
+  chkMessagesBreakpoint.Caption := lisDebugOptionsFrmBreakpoint;
+  chkMessagesProcess.Caption := lisDebugOptionsFrmProcess;
+  chkMessagesThread.Caption := lisDebugOptionsFrmThread;
+  chkMessagesModule.Caption := lisDebugOptionsFrmModule;
+  chkMessagesOutput.Caption := lisDebugOptionsFrmOutput;
+  chkMessagesWindow.Caption := lisDebugOptionsFrmWindow;
+  chkMessagesInterface.Caption := lisDebugOptionsFrmInterface;
+  
+  pgExceptions.Caption := lisDebugOptionsFrmLanguageExceptions;
+  bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
+  cmdExceptionRemove.Caption := lisExtToolRemove;
+  cmdExceptionAdd.Caption := lisCodeTemplAdd;
+  chkBreakOnException.Caption := lisDebugOptionsFrmBreakOnLazarusExceptions;
+  
+  pgSignals.Caption := lisDebugOptionsFrmOSExceptions;
+  gbSignals.Caption := lisDebugOptionsFrmSignals;
+  lvSignals.Column[0].Caption := lisDebugOptionsFrmName;
+  lvSignals.Column[1].Caption := lisDebugOptionsFrmID;
+  lvSignals.Column[2].Caption := lisDebugOptionsFrmHandledBy;
+  lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
+  cmdSignalAdd.Caption := lisCodeTemplAdd;
+  cmdSignalRemove.Caption := lisExtToolRemove;
+
+  mnuHandledByProgram.Caption := lisDebugOptionsFrmHandledByProgram;
+  mnuiHandledByDebugger.Caption := lisDebugOptionsFrmHandledByDebugger;
+  mnuResumeHandled.Caption := lisDebugOptionsFrmResumeHandled;
+  mnuResumeUnhandled.Caption := lisDebugOptionsFrmResumeUnhandled;
+
   FCurDebuggerClass := nil;
   
   FExceptionDeleteList := TStringList.Create;

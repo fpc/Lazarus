@@ -272,6 +272,7 @@ function ConvertLRSExtendedToDouble(p: Pointer): Double;
 procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
                                               LRSExtended: Pointer);
 
+function ReadLRSByte(s: TStream): byte;
 function ReadLRSWord(s: TStream): word;
 function ReadLRSInteger(s: TStream): integer;
 function ReadLRSCardinal(s: TStream): cardinal;
@@ -282,6 +283,8 @@ function ReadLRSExtended(s: TStream): Extended;
 function ReadLRSCurrency(s: TStream): Currency;
 function ReadLRSWideString(s: TStream): WideString;
 function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
+function ReadLRSValueType(s: TStream): TValueType;
+function ReadLRSInt64MB(s: TStream): int64;// multibyte
 
 procedure WriteLRSWord(s: TStream; const w: word);
 procedure WriteLRSInteger(s: TStream; const i: integer);
@@ -292,6 +295,7 @@ procedure WriteLRSExtended(s: TStream; const e: extended);
 procedure WriteLRSInt64(s: TStream; const i: int64);
 procedure WriteLRSCurrency(s: TStream; const c: Currency);
 procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
+procedure WriteLRSInt64MB(s: TStream; const Value: integer);// multibyte
 
 procedure WriteLRSReversedWord(s: TStream; w: word);
 procedure WriteLRS4BytesReversed(s: TStream; p: Pointer);
@@ -2449,6 +2453,12 @@ begin
   end;
 end;
 
+function ReadLRSByte(s: TStream): byte;
+begin
+  Result:=0;
+  s.Read(Result,1);
+end;
+
 function ReadLRSWord(s: TStream): word;
 begin
   Result:=0;
@@ -2549,6 +2559,29 @@ var
 begin
   s.Read(e,10);
   Result:=ConvertLRSExtendedToDouble(@e);
+end;
+
+function ReadLRSValueType(s: TStream): TValueType;
+var
+  b: byte;
+begin
+  s.Read(b,1);
+  Result:=TValueType(b);
+end;
+
+function ReadLRSInt64MB(s: TStream): int64;
+var
+  v: TValueType;
+begin
+  v:=ReadLRSValueType(s);
+  case v of
+  vaInt8: Result:=ReadLRSByte(s);
+  vaInt16: Result:=ReadLRSWord(s);
+  vaInt32: Result:=ReadLRSInteger(s);
+  vaInt64: Result:=ReadLRSInt64(s);
+  else
+    raise EInOutError.Create('ordinal valuetype missing');
+  end;
 end;
 
 procedure WriteLRSReversedWord(s: TStream; w: word);
@@ -2739,6 +2772,39 @@ begin
   {$ELSE}
   WriteLRSReversedWords(s,@w[1],Size);
   {$ENDIF}
+end;
+
+procedure WriteLRSInt64MB(s: TStream; const Value: integer);
+var
+  w: Word;
+  i: Integer;
+  b: Byte;
+begin
+  // Use the smallest possible integer type for the given value:
+  if (Value >= -128) and (Value <= 127) then
+  begin
+    b:=byte(vaInt8);
+    s.Write(b, 1);
+    b:=Byte(Value);
+    s.Write(b, 1);
+  end else if (Value >= -32768) and (Value <= 32767) then
+  begin
+    b:=byte(vaInt16);
+    s.Write(b, 1);
+    w:=Word(Value);
+    WriteLRSWord(s,w);
+  end else if (Value >= -$80000000) and (Value <= $7fffffff) then
+  begin
+    b:=byte(vaInt32);
+    s.Write(b, 1);
+    i:=Integer(Value);
+    WriteLRSInteger(s,i);
+  end else
+  begin
+    b:=byte(vaInt64);
+    s.Write(b, 1);
+    WriteLRSInt64(s,Value);
+  end;
 end;
 
 { TLRSObjectReader }
