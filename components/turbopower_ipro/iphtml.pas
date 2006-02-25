@@ -15976,7 +15976,11 @@ end;
 function TIpHtmlInternalPanel.HtmlPanel: TIpHtmlCustomPanel;
 begin
   Result := TIpHtmlPanel(Parent);
+  {$IFDEF IP_LAZARUS}
+  while not (Result is TIpHtmlPanel) do
+  {$ELSE}
   while (Result.ClassType <> TIpHtmlPanel) do
+  {$ENDIF}
     Result := TIpHtmlPanel(Result.Parent);
 end;
 
