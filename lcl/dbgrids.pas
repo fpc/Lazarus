@@ -450,7 +450,7 @@ type
     //property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property Scrollbars;
+    property Scrollbars default ssBoth;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -1286,7 +1286,14 @@ begin
   ScrollInfo.nMax := aRange;
   ScrollInfo.nPos := aPos;
   ScrollInfo.nPage := aPage;
-  SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
+  // the redraw argument of SetScrollInfo means under gtk
+  // if the scrollbar is visible or not, in windows it
+  // seems to mean if the scrollbar is redrawn or not
+  // to reflect the scrollbar changes made
+  SetScrollInfo(Handle, SB_VERT, ScrollInfo,
+    (ScrollBars in [ssBoth, ssVertical]) or
+    ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPAge))
+  );
   
   FOldPosition := aPos;
   {$ifdef dbgdbgrid}
