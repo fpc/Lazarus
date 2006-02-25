@@ -32,6 +32,7 @@
       - add missing forward proc bodies
       - complete event assignments
       - complete local variables
+      - complete local variables as parameter
       - insert header comment for classes
 
   ToDo:
@@ -39,13 +40,13 @@
       TList:
         property Items[Index: integer]: AType accesstlist;
         -> creates
-          property Items[Index: Type1]: Type2 read GetItems write SetItems;
+          property Items[Index: integer]: Type2 read GetItems write SetItems;
           private FItems: TList;
-          private function GetItems(Index: Type1): Type2;
+          private function GetItems(Index: integer): Type2;
             begin
               Result:=Type2(FItems[Index]);
             end;
-          private procedure SetItems(Index: Type1; const AValue: Type2);
+          private procedure SetItems(Index: integer; const AValue: Type2);
             begin
               FItems[Index]:=Type2;
             end;
@@ -889,9 +890,9 @@ begin
     exit;
   if not IsValidIdent(GetAtom(VarNameAtom)) then exit;
 
-  {$IFDEF CTDEBUG}
+  { $IFDEF CTDEBUG}
   DebugLn('  CompleteLocalVariableAsParameter VarNameAtom=',GetAtom(VarNameAtom),' ProcNameAtom=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
-  {$ENDIF}
+  { $ENDIF}
 
   // search variable
   ActivateGlobalWriteLock;
@@ -908,9 +909,9 @@ begin
       RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
     end;
 
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('  CompleteLocalVariableAsParameter: Find declaration of parameter list ...  Identifier="',GetAtom(ProcNameAtom),'"');
-    {$ENDIF}
+    { $ENDIF}
     // find declaration of parameter list
     Params.ContextNode:=CursorNode;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
@@ -928,6 +929,7 @@ begin
     end;
     NewType:='';
     if Params.NewNode<>nil then begin
+      DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter Proc/PropNode=',Params.NewNode.DescAsString,' ',copy(Params.NewCodeTool.Src,Params.NewNode.StartPos,50));
       ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
                                                              ParameterIndex);
       if (ParameterNode=nil)
@@ -936,6 +938,7 @@ begin
         exit;
       end;
       if ParameterNode<>nil then begin
+        DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
         TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
         if TypeNode=nil then begin
           DebugLn('  CompleteLocalVariableAsParameter Parameter has no type');
@@ -943,6 +946,7 @@ begin
         end;
         NewType:=copy(Params.NewCodeTool.Src,TypeNode.StartPos,
                       TypeNode.EndPos-TypeNode.StartPos);
+        DebugLn('TCodeCompletionCodeTool.CompleteLocalVariableAsParameter NewType=',NewType);
         if NewType='' then
           RaiseException('CompleteLocalVariableAsParameter Internal error: NewType=""');
       end;
@@ -2952,7 +2956,7 @@ begin
   
   // test if undeclared local variable as parameter
   Result:=CompleteLocalVariableAsParameter(CleanCursorPos,OldTopLine,CursorNode,
-                                          NewPos,NewTopLine,SourceChangeCache);
+                                           NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
 
   // test if method body

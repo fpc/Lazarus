@@ -3702,6 +3702,7 @@ var
       CodeContexts:=TCodeContextInfo.Create;
     CodeContexts.Add(CreateExpressionType(xtContext,xtNone,
                                           CreateFindContext(Tool,Node)));
+    //DebugLn('AddContext ',node.DescAsString,' ',copy(Src,Node.StartPos,Node.EndPos-Node.StartPos));
   end;
   
   function CheckContextIsParameter(var Ok: boolean): boolean;
@@ -6914,7 +6915,7 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
     repeat
       ReadNextAtom;
       if CurPos.Flag=cafWord then begin
-        if CheckIdentifierAndParameterList then exit(true);
+        if CheckIdentifierAndParameterList() then exit(true);
       end;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
         if CheckBrackets then exit(true);
@@ -6924,6 +6925,7 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
            =(CurPos.Flag=cafRoundBracketClose)
         then begin
           // closing bracket found, but the variable was not in them
+          //DebugLn('CheckBrackets bracket closed');
           exit(false);
         end else begin
           // invalid closing bracket found
@@ -6988,17 +6990,21 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
         end;
         if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
         and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+          //DebugLn('CheckIdentifierAndParameterList check word+bracket');
           UndoReadNextAtom;
-          if CheckIdentifierAndParameterList then exit(true);
+          if CheckIdentifierAndParameterList() then exit(true);
         end;
         if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+          //DebugLn('CheckIdentifierAndParameterList check bracket open');
           if CheckBrackets then exit(true);
         end;
         if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+          //DebugLn('CheckIdentifierAndParameterList check bracket close');
           if (BracketAtom.Flag=cafRoundBracketOpen)
           =(CurPos.Flag=cafRoundBracketClose)
           then begin
             // parameter list ended in front of Variable => continue search
+            //DebugLn('CheckIdentifierAndParameterList parm list ended in front of cursor');
             exit;
           end else begin
             // invalid closing bracket found
@@ -7010,6 +7016,7 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
           ParameterStart:=CurPos.EndPos;
           inc(CurParameterIndex);
         end;
+        //DebugLn('CheckIdentifierAndParameterList ',GetAtom);
       until (CurPos.EndPos>CleanCursorPos) or (CurPos.Flag=cafNone);
     end;
   end;

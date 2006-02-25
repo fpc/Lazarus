@@ -274,6 +274,7 @@ procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
 
 function ReadLRSByte(s: TStream): byte;
 function ReadLRSWord(s: TStream): word;
+function ReadLRSShortInt(s: TStream): shortint;
 function ReadLRSInteger(s: TStream): integer;
 function ReadLRSCardinal(s: TStream): cardinal;
 function ReadLRSInt64(s: TStream): int64;
@@ -286,6 +287,7 @@ function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
 function ReadLRSValueType(s: TStream): TValueType;
 function ReadLRSInt64MB(s: TStream): int64;// multibyte
 
+procedure WriteLRSShortInt(s: TStream; const i: shortint);
 procedure WriteLRSWord(s: TStream; const w: word);
 procedure WriteLRSInteger(s: TStream; const i: integer);
 procedure WriteLRSCardinal(s: TStream; const c: cardinal);
@@ -2468,6 +2470,16 @@ begin
   {$ENDIF}
 end;
 
+function ReadLRSShortInt(s: TStream): shortint;
+begin
+  Result:=0;
+  {$IFDEF FPC_BIG_ENDIAN}
+  Result:=shortint(ReadLRSWord(s));
+  {$ELSE}
+  s.Read(Result,2);
+  {$ENDIF}
+end;
+
 function ReadLRSInteger(s: TStream): integer;
 begin
   Result:=0;
@@ -2679,6 +2691,15 @@ var
 begin
   ConvertEndianBigDoubleToLRSExtended(EndBigDouble,@e);
   s.Write(e[0],10);
+end;
+
+procedure WriteLRSShortInt(s: TStream; const i: shortint);
+begin
+  {$IFDEF FPC_LITTLE_ENDIAN}
+  s.Write(i,2);
+  {$ELSE}
+  WriteLRSReversedShortInt(s,Word(i));
+  {$ENDIF}
 end;
 
 procedure WriteLRSWord(s: TStream; const w: word);
