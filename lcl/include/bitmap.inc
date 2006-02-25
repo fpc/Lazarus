@@ -519,7 +519,7 @@ procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
   end;
 
 var
-  CacheStream: TStream;
+  WorkStream: TStream;
   StreamType: TBitmapNativeType;
   ReaderClass: TFPCustomImageReaderClass;
   MemStream: TCustomMemoryStream;
@@ -527,24 +527,24 @@ var
   OldPosition: Int64;
 begin
   //debugln('TBitmap.ReadStream Stream=',DbgSName(Stream),' Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
-  CacheStream:=nil;
+  WorkStream:=nil;
   try
     // create mem stream if not already done (to read the image type)
     if (Stream is TCustomMemoryStream) then begin
-      CacheStream:=Stream;
+      WorkStream:=Stream;
     end else if UseSize then begin
-      CacheStream:=TMemoryStream.Create;
-      TMemoryStream(CacheStream).SetSize(Size);
-      CacheStream.CopyFrom(Stream,Size);
-      CacheStream.Position:=0;
+      WorkStream:=TMemoryStream.Create;
+      TMemoryStream(WorkStream).SetSize(Size);
+      WorkStream.CopyFrom(Stream,Size);
+      WorkStream.Position:=0;
     end else begin
       // size is unknown and type is not TMemoryStream
       // ToDo: create cache stream from Stream
-      CacheStream:=Stream;
+      WorkStream:=Stream;
     end;
     // get image type
-    if CacheStream is TCustomMemoryStream then begin
-      MemStream:=TCustomMemoryStream(CacheStream);
+    if WorkStream is TCustomMemoryStream then begin
+      MemStream:=TCustomMemoryStream(WorkStream);
       OldPosition:=MemStream.Position;
       GetSize:=MemStream.Size;
       // workaround for TMemoryStream bug, reading Size sets Position to 0
@@ -563,10 +563,10 @@ begin
     else
       RaiseInvalidBitmapHeader;
     end;
-    ReadStreamWithFPImage(CacheStream,UseSize,Size,ReaderClass);
+    ReadStreamWithFPImage(WorkStream,UseSize,Size,ReaderClass);
   finally
-    if CacheStream<>Stream then
-      CacheStream.Free;
+    if WorkStream<>Stream then
+      WorkStream.Free;
   end;
 end;
 
@@ -704,13 +704,14 @@ begin
   finally
     // set save stream
     FImage.SaveStream:=NewSaveStream;
-    if ReaderClass=TFPReaderBMP then begin
+    if (ReaderClass=TFPReaderBMP) or (ReaderClass=TLazReaderBMP) then begin
       FImage.SaveStreamType:=bnWinBitmap;
       FImage.SaveStreamClass:=TFPWriterBMP;
     end else if ReaderClass=TLazReaderXPM then begin
       FImage.SaveStreamType:=bnXPixmap;
       FImage.SaveStreamClass:=TLazWriterXPM;
     end;
+    //DebugLn('TBitmap.ReadStreamWithFPImage ',DbgSName(FImage.SaveStreamClass),' ',DbgSName(ReaderClass));
     // clean up
     IntfImg.Free;
     ImgReader.Free;

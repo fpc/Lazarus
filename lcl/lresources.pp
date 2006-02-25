@@ -272,9 +272,10 @@ function ConvertLRSExtendedToDouble(p: Pointer): Double;
 procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
                                               LRSExtended: Pointer);
 
-function ReadLRSByte(s: TStream): byte;
-function ReadLRSWord(s: TStream): word;
 function ReadLRSShortInt(s: TStream): shortint;
+function ReadLRSByte(s: TStream): byte;
+function ReadLRSSmallInt(s: TStream): smallint;
+function ReadLRSWord(s: TStream): word;
 function ReadLRSInteger(s: TStream): integer;
 function ReadLRSCardinal(s: TStream): cardinal;
 function ReadLRSInt64(s: TStream): int64;
@@ -287,7 +288,7 @@ function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
 function ReadLRSValueType(s: TStream): TValueType;
 function ReadLRSInt64MB(s: TStream): int64;// multibyte
 
-procedure WriteLRSShortInt(s: TStream; const i: shortint);
+procedure WriteLRSSmallInt(s: TStream; const i: smallint);
 procedure WriteLRSWord(s: TStream; const w: word);
 procedure WriteLRSInteger(s: TStream; const i: integer);
 procedure WriteLRSCardinal(s: TStream; const c: cardinal);
@@ -2455,6 +2456,12 @@ begin
   end;
 end;
 
+function ReadLRSShortInt(s: TStream): shortint;
+begin
+  Result:=0;
+  s.Read(Result,1);
+end;
+
 function ReadLRSByte(s: TStream): byte;
 begin
   Result:=0;
@@ -2470,11 +2477,11 @@ begin
   {$ENDIF}
 end;
 
-function ReadLRSShortInt(s: TStream): shortint;
+function ReadLRSSmallInt(s: TStream): smallint;
 begin
   Result:=0;
   {$IFDEF FPC_BIG_ENDIAN}
-  Result:=shortint(ReadLRSWord(s));
+  Result:=smallint(ReadLRSWord(s));
   {$ELSE}
   s.Read(Result,2);
   {$ENDIF}
@@ -2587,8 +2594,8 @@ var
 begin
   v:=ReadLRSValueType(s);
   case v of
-  vaInt8: Result:=ReadLRSByte(s);
-  vaInt16: Result:=ReadLRSWord(s);
+  vaInt8: Result:=ReadLRSShortInt(s);
+  vaInt16: Result:=ReadLRSSmallInt(s);
   vaInt32: Result:=ReadLRSInteger(s);
   vaInt64: Result:=ReadLRSInt64(s);
   else
@@ -2693,12 +2700,12 @@ begin
   s.Write(e[0],10);
 end;
 
-procedure WriteLRSShortInt(s: TStream; const i: shortint);
+procedure WriteLRSSmallInt(s: TStream; const i: SmallInt);
 begin
   {$IFDEF FPC_LITTLE_ENDIAN}
   s.Write(i,2);
   {$ELSE}
-  WriteLRSReversedShortInt(s,Word(i));
+  WriteLRSReversedWord(s,Word(i));
   {$ENDIF}
 end;
 
@@ -2806,7 +2813,7 @@ begin
   begin
     b:=byte(vaInt8);
     s.Write(b, 1);
-    b:=Byte(Value);
+    b:=byte(Value);
     s.Write(b, 1);
   end else if (Value >= -32768) and (Value <= 32767) then
   begin
@@ -3243,18 +3250,26 @@ var
   CopyNow: LongInt;
   SourceBuf: PChar;
 begin
-  SourceBuf:=@Buffer;
-  while Count > 0 do
-  begin
-    CopyNow := Count;
-    if CopyNow > FBufSize - FBufPos then
-      CopyNow := FBufSize - FBufPos;
-    Move(SourceBuf^, PChar(FBuffer)[FBufPos], CopyNow);
-    Dec(Count, CopyNow);
-    Inc(FBufPos, CopyNow);
-    SourceBuf:=SourceBuf+CopyNow;
-    if FBufPos = FBufSize then
+  if Count<2*FBufSize then begin
+    // write a small amount of data
+    SourceBuf:=@Buffer;
+    while Count > 0 do
+    begin
+      CopyNow := Count;
+      if CopyNow > FBufSize - FBufPos then
+        CopyNow := FBufSize - FBufPos;
+      Move(SourceBuf^, PChar(FBuffer)[FBufPos], CopyNow);
+      Dec(Count, CopyNow);
+      Inc(FBufPos, CopyNow);
+      SourceBuf:=SourceBuf+CopyNow;
+      if FBufPos = FBufSize then
+        FlushBuffer;
+    end;
+  end else begin
+    // write a big amount of data
+    if FBufPos>0 then
       FlushBuffer;
+    FStream.WriteBuffer(Buffer, Count);
   end;
 end;
 
