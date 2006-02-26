@@ -59,6 +59,7 @@ components/codetools/codetree.pas svneol=native#text/pascal
 components/codetools/customcodetool.pas svneol=native#text/pascal
 components/codetools/definetemplates.pas svneol=native#text/pascal
 components/codetools/eventcodetool.pas svneol=native#text/pascal
+components/codetools/examples/methodjumping.lpi svneol=native#text/plain
 components/codetools/examples/methodjumping.pas svneol=native#text/plain
 components/codetools/examples/tgeneric2.pp svneol=native#text/plain
 components/codetools/expreval.pas svneol=native#text/pascal
