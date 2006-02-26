@@ -1156,6 +1156,7 @@ type
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); override;
+    procedure SaveToFile(const Filename: string); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
     function GetDefaultMimeType: string; override;
     class function GetFileExtensions: string; override;
@@ -1198,6 +1199,7 @@ type
 
   TPixmap = class(TBitmap)
   public
+    procedure SaveToFile(const Filename: string); override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;

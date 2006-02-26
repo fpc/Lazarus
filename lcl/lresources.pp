@@ -218,6 +218,31 @@ type
     property Count: integer read FCount write SetCount;
   end;
   
+  
+  { TLazComponentQueue
+    A queue to stream components, used for multithreading or network.
+    The function ConvertComponentAsString writes a component in binary format
+    with a leading size information (using WriteLRSInt64MB).
+    When streaming components over network, they will arrive in chunks.
+    TLazComponentQueue tells you, if a whole component has arrived and is ready
+    for reading. }
+  TLazComponentQueue = class(TComponent)
+  private
+    FOnFindComponentClass: TFindComponentClassEvent;
+  protected
+    FBuffer: string;
+    function ReadComponentSize(out ComponentSize, SizeLength: int64): Boolean; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function Write(const Buffer; Count: Longint): Longint;
+    function HasComponent: Boolean; virtual;
+    function ReadComponent(var AComponent: TComponent; NewOwner: TComponent = nil): Boolean; virtual;
+    function ConvertComponentAsString(AComponent: TComponent): string;
+    property OnFindComponentClass: TFindComponentClassEvent
+                         read FOnFindComponentClass write FOnFindComponentClass;
+  end;
+
 var
   LazarusResources: TLResourceList;
 
@@ -313,6 +338,8 @@ procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
 
+
+procedure Register;
 
 implementation
 
@@ -2681,6 +2708,11 @@ begin
     Result:=0;
 end;
 
+procedure Register;
+begin
+  RegisterComponents('System',[TLazComponentQueue]);
+end;
+
 procedure WriteLRSNull(s: TStream; Count: integer);
 var
   c: char;
@@ -3768,6 +3800,158 @@ begin
   Item^.LFMPosition:=LFMPos;
   Item^.LRSPosition:=LRSPos;
   Item^.Data:=AData;
+end;
+
+{ TLazComponentQueue }
+
+function TLazComponentQueue.ReadComponentSize(out ComponentSize,
+  SizeLength: int64): Boolean;
+// returns true if there are enough bytes to read the ComponentSize
+//   and returns the ComponentSize
+//   and returns the size (SizeLength) needed to store the ComponentSize
+
+  procedure ReadBytes(var p);
+  begin
+    System.Move(FBuffer[2],p,SizeLength);
+    //writeln('ReadBytes ',hexstr(ord(FBuffer[1]),2),' ',hexstr(ord(FBuffer[2]),2),' ',hexstr(ord(FBuffer[3]),2),' ',hexstr(ord(FBuffer[4]),2),' SizeLength=',SizeLength,' ',hexstr(PByte(@p)[0],2),' ',hexstr(PByte(@p)[1],2));
+    {$IFDEF FPC_BIG_ENDIAN}
+    ReverseBytes(@p,SizeLength);
+    {$ENDIF}
+  end;
+
+var
+  v8: ShortInt;
+  v16: SmallInt;
+  v32: Integer;
+  v64: int64;
+  vt: TValueType;
+begin
+  Result:=false;
+  // check if there are enough bytes
+  if (length(FBuffer)<2) then exit;
+  vt:=TValueType(ord(FBuffer[1]));
+  case vt of
+  vaInt8: SizeLength:=1;
+  vaInt16: SizeLength:=2;
+  vaInt32: SizeLength:=4;
+  vaInt64: SizeLength:=8;
+  else exit;
+  end;
+  if length(FBuffer)<=SizeLength then exit;
+  // read the ComponentSize
+  Result:=true;
+  case vt of
+  vaInt8:
+    begin
+      ReadBytes(v8);
+      ComponentSize:=v8;
+    end;
+  vaInt16:
+    begin
+      ReadBytes(v16);
+      ComponentSize:=v16;
+    end;
+  vaInt32:
+    begin
+      ReadBytes(v32);
+      ComponentSize:=v32;
+    end;
+  vaInt64:
+    begin
+      ReadBytes(v64);
+      ComponentSize:=v64;
+    end;
+  end;
+  inc(SizeLength);
+  if ComponentSize<0 then
+    raise EInOutError.Create('Size of data in queue is negative');
+end;
+
+constructor TLazComponentQueue.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+end;
+
+destructor TLazComponentQueue.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TLazComponentQueue.Write(const Buffer; Count: Longint): Longint;
+var
+  s: string;
+begin
+  if Count=0 then exit;
+  SetLength(s,Count);
+  System.Move(Buffer,s[1],length(s));
+  FBuffer:=FBuffer+s;
+  Result:=length(s);
+end;
+
+function TLazComponentQueue.HasComponent: Boolean;
+var
+  ComponentSize, SizeLength: int64;
+begin
+  if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
+  Result:=length(FBuffer)-SizeLength>=ComponentSize;
+end;
+
+function TLazComponentQueue.ReadComponent(var AComponent: TComponent;
+  NewOwner: TComponent): Boolean;
+var
+  ComponentSize, SizeLength: int64;
+  ComponentEndPosition: Integer;
+  AStream: TMemoryStream;
+begin
+  if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
+  if (length(FBuffer)-SizeLength<ComponentSize) then exit(false);
+  ComponentEndPosition:=SizeLength+ComponentSize;
+  //writeln('TLazComponentQueue.ReadComponent ComponentSize=',ComponentSize,' SizeLength=',SizeLength,' ComponentEndPosition=',ComponentEndPosition);
+  //writeln('TLazComponentQueue.ReadComponent ',DbgStr(FBuffer));
+  // a complete component is in the buffer -> copy it to a stream
+  AStream:=TMemoryStream.Create;
+  try
+    AStream.Size:=ComponentSize;
+    AStream.Write(FBuffer[SizeLength+1],ComponentSize);
+    // read the component
+    AStream.Position:=0;
+    ReadComponentFromBinaryStream(AStream,AComponent,
+                                  OnFindComponentClass,NewOwner);
+    // remove the component from the buffer
+    FBuffer:=copy(FBuffer,ComponentEndPosition+1,length(FBuffer));
+  finally
+    AStream.Free;
+  end;
+end;
+
+function TLazComponentQueue.ConvertComponentAsString(AComponent: TComponent
+  ): string;
+var
+  AStream: TMemoryStream;
+  ComponentSize: Int64;
+  LengthSize: Int64;
+begin
+  // write component to stream
+  AStream:=TMemoryStream.Create;
+  try
+    WriteComponentAsBinaryToStream(AStream,AComponent);
+
+    ComponentSize:=AStream.Size;
+    WriteLRSInt64MB(AStream,ComponentSize);
+    LengthSize:=AStream.Size-ComponentSize;
+    //writeln('TLazComponentQueue.ConvertComponentAsString ComponentSize=',ComponentSize,' LengthSize=',LengthSize);
+
+    SetLength(Result,AStream.Size);
+    // write size
+    AStream.Position:=ComponentSize;
+    AStream.Read(Result[1],LengthSize);
+    //writeln('TLazComponentQueue.ConvertComponentAsString ',hexstr(ord(Result[1]),2),' ',hexstr(ord(Result[2]),2),' ',hexstr(ord(Result[3]),2),' ',hexstr(ord(Result[4]),2));
+    // write component
+    AStream.Position:=0;
+    AStream.Read(Result[LengthSize+1],ComponentSize);
+  finally
+    AStream.Free;
+  end;
 end;
 
 initialization

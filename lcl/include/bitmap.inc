@@ -160,8 +160,8 @@ begin
   Include(FInternalState,bmisCreatingCanvas);
   try
     FCanvas := TBitmapCanvas.Create(Self);
-    FCanvas.OnChange := @Changed;
     FCanvas.OnChanging := @Changing;
+    FCanvas.OnChange := @Changed;
   finally
     Exclude(FInternalState,bmisCreatingCanvas);
   end;
@@ -582,6 +582,18 @@ begin
     end;
   end;
   inherited LoadFromMimeStream(Stream, MimeType);
+end;
+
+procedure TBitmap.SaveToFile(const Filename: string);
+begin
+  if (ClassType=TBitmap) and (FImage.SaveStreamType<>bnWinBitmap) then begin
+    // TBitmap should always save in .bmp format
+    // but the current SaveStream is not in .bmp format.
+    // -> Clear the SaveStream.
+    UnshareImage(true);
+    FreeSaveStream;
+  end;
+  inherited SaveToFile(Filename);
 end;
 
 procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
