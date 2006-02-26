@@ -84,7 +84,7 @@ begin
   then begin
     LazarusIDE.DoJumpToCodeToolBossError;
   end;
-  
+
   // message fixed
   Msg.Msg:='';
 end;

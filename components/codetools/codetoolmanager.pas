@@ -300,8 +300,8 @@ type
 
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; var NewCode: TCodeBuffer;
@@ -664,14 +664,14 @@ begin
   // build DefinePool
   with DefinePool do begin
     FPCUnitPath:=Config.FPCUnitPath;
-    TargetOS:=Config.FPCUnitPath;
+    TargetOS:=Config.TargetOS;
     TargetProcessor:=Config.TargetProcessor;
     Add(CreateFPCTemplate(Config.FPCPath, Config.FPCOptions,
                           Config.TestPascalFile,
                           FPCUnitPath, TargetOS, TargetProcessor,
                           nil));
     Config.FPCUnitPath:=FPCUnitPath;
-    Config.TargetOS:=FPCUnitPath;
+    Config.TargetOS:=TargetOS;
     Config.TargetProcessor:=TargetProcessor;
     UnitLinkList:=Config.UnitLinkList;
     Add(CreateFPCSrcTemplate(Config.FPCSrcDir,Config.FPCUnitPath,Config.PPUExt,
@@ -1351,8 +1351,8 @@ begin
 end;
 
 function TCodeToolManager.FindDeclaration(Code: TCodeBuffer; X,Y: integer;
-  var NewCode: TCodeBuffer;
-  var NewX, NewY, NewTopLine: integer): boolean;
+  out NewCode: TCodeBuffer;
+  out NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;

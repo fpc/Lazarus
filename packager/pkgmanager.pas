@@ -3664,10 +3664,10 @@ var
   SrcEdit: TSourceEditor;
 begin
   SrcEdit:=SourceNotebook.GetActiveSE;
-  //debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
-  if SrcEdit<>nil then
-    Result:=SearchFile(SrcEdit.Filename,[],nil)
-  else
+  if SrcEdit<>nil then begin
+    //debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
+    Result:=SearchFile(SrcEdit.Filename,[],nil);
+  end else
     SrcEdit:=nil;
 end;
 
@@ -3717,7 +3717,7 @@ begin
       CurFilename:=AFilename;
       APackage.ShortenFilename(CurFilename,true);
       Result:=APackage.SearchFile(CurFilename,SearchFlags);
-      //debugln('TPkgManager.SearchFile ',APackage.Files[0].Filename);
+      //debugln('TPkgManager.SearchFile Pkg=',APackage.Filename,' CurFilename="',CurFilename,'"');
       if Result<>nil then exit;
     end;
   end;

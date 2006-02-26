@@ -52,6 +52,7 @@ function FileIsText(const AFilename: string): boolean;
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 function FileIsExecutable(const AFilename: string): boolean;
 function FileIsSymlink(const AFilename: string): boolean;
+function FileSize(const Filename: string): int64;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
@@ -69,6 +70,7 @@ const
   PascalFileExt: array[1..3] of string = ('.pas','.pp','.p');
 
 function ExtractFileNameOnly(const AFilename: string): string;
+function ExtractFileNameWithoutExt(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
 function CompareFileExt(const Filename, Ext: string): integer;

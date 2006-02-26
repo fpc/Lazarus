@@ -315,6 +315,21 @@ begin
     SetLength(Result,DestPos-1);
 end;
 
+function ExtractFileNameWithoutExt(const AFilename: string): string;
+var
+  p: Integer;
+begin
+  Result:=AFilename;
+  p:=length(Result);
+  while (p>0) do begin
+    case Result[p] of
+    PathDelim: exit;
+    '.': Result:=copy(Result,p-1,length(Result));
+    else dec(p);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function CompareFileExt(const Filename, Ext: string;
     CaseSensitive: boolean): integer;
@@ -515,6 +530,17 @@ begin
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
   {$ENDIF}
+end;
+
+function FileSize(const Filename: string): int64;
+var
+  FileInfo: TSearchRec;
+begin
+  if SysUtils.FindFirst(Filename,faAnyFile,FileInfo)=0 then begin
+    Result:=FileInfo.Size;
+    SysUtils.FindClose(FileInfo);
+  end else
+    Result:=-1;
 end;
 
 {------------------------------------------------------------------------------

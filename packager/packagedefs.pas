@@ -3040,9 +3040,7 @@ var
   function FilenameFits(TheFilename: string): boolean;
   begin
     if siffIgnoreExtension in SearchFlags then
-      TheFileName:=ExtractFilenameOnly(TheFileName);
-    if FilenameIsAbsolute(TheFileName) then
-      TheFileName:=ExtractFilename(TheFileName);
+      TheFileName:=ExtractFileNameWithoutExt(TheFileName);
     //debugln('TLazPackage.SearchFile A ',SearchedFilename,' ',TheFilename);
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=TheFilename
@@ -3053,12 +3051,12 @@ var
 begin
   SearchedFilename:=ShortFilename;
   if siffIgnoreExtension in SearchFlags then
-    SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
+    SearchedFilename:=ExtractFileNameWithoutExt(SearchedFilename);
 
   // search in files
   for i:=0 to FileCount-1 do begin
     Result:=Files[i];
-    if FilenameFits(Result.Filename) then exit;
+    if FilenameFits(Result.GetShortFilename(true)) then exit;
   end;
   Result:=nil;
 end;
