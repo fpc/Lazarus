@@ -113,12 +113,12 @@ msgstr ""
 msgid "(All)"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr ""
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
 msgstr ""
 
 #: objinspstrconsts:ois0lines0chars
@@ -361,6 +361,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr ""
@@ -371,10 +375,6 @@ msgstr ""
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr ""
-
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
 msgstr ""
 
 #: objinspstrconsts:oicoleditediting
@@ -437,20 +437,20 @@ msgstr ""
 msgid "Help Contents"
 msgstr ""
 
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr ""
-
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
 msgstr ""
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
 msgstr ""
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
@@ -561,16 +561,16 @@ msgstr ""
 msgid "Move Down"
 msgstr ""
 
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr ""
-
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr ""
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
@@ -593,12 +593,12 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
-
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtnone
@@ -717,12 +717,12 @@ msgstr ""
 msgid "Select &Font..."
 msgstr ""
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr ""
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtgrprcaption
@@ -789,12 +789,12 @@ msgstr "Edytor StringGrid"
 msgid "Strings Editor Dialog"
 msgstr ""
 
-#: objinspstrconsts:oistestinput
-msgid "Test Input"
-msgstr ""
-
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
+msgstr ""
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
 msgstr ""
 
 #: objinspstrconsts:sccstredtlabeltext
