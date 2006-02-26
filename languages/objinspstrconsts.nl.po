@@ -132,7 +132,7 @@ msgstr "Toevoegen"
 
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
-msgstr ""
+msgstr "Afbeelding toevoegen"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -148,11 +148,11 @@ msgstr "Aan favorieten toevoegen"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
-msgstr ""
+msgstr "Toevoegen..."
 
 #: objinspstrconsts:sccsiledtadjustment
 msgid "Adjustment"
-msgstr ""
+msgstr "Aanpassing"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -164,7 +164,7 @@ msgstr "Alle bestanden"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
@@ -196,7 +196,7 @@ msgstr "Ongedaan maken"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr ""
+msgstr "Titel:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -204,7 +204,7 @@ msgstr "Categorie"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
-msgstr ""
+msgstr "Midden"
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -268,7 +268,7 @@ msgstr "Creëer standaard gebeurtenis"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Afsnijden"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -340,7 +340,7 @@ msgstr "&Neer"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
-msgstr ""
+msgstr "Neer"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -352,15 +352,15 @@ msgstr "Edit"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr ""
+msgstr "Listview onderdelen bewerken..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
-msgstr ""
+msgstr "StringGrid bewerken..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr ""
+msgstr "Treeview onderdelen bewerken..."
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -368,7 +368,7 @@ msgstr "Bewerk action list..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
-msgstr ""
+msgstr "Bewerken"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -460,15 +460,15 @@ msgstr "Help bij help"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
-msgstr ""
+msgstr "Afbeelding Index:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Afbeeldingenlijst editor"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
-msgstr ""
+msgstr "Afbeeldingen"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -500,15 +500,15 @@ msgstr "Ongeldige properie waarde"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
-msgstr ""
+msgstr "Onderdeel"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr ""
+msgstr "Onderdeel properties"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
-msgstr ""
+msgstr "Onderdelen"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -516,11 +516,11 @@ msgstr "Laatste"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "Listview onderdelen editor"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
-msgstr ""
+msgstr "Laad"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -532,7 +532,7 @@ msgstr "Laad plaatje"
 
 #: objinspstrconsts:sccssgedtload
 msgid "Load..."
-msgstr ""
+msgstr "laad..."
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
@@ -568,7 +568,7 @@ msgstr "Nieuwe actie"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Nieuw onderdeel"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
@@ -576,7 +576,7 @@ msgstr "Nieuwe Standaard Actie"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
-msgstr ""
+msgstr "Nieuw subonderdeel"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -592,7 +592,7 @@ msgstr "Er is geen help gevonden voor regel %d, kolom %d van %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
-msgstr ""
+msgstr "Geen"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -668,7 +668,7 @@ msgstr "Voorbeeld masker:"
 
 #: objinspstrconsts:sccstredtsave
 msgid "Save"
-msgstr ""
+msgstr "Opslaan"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -680,7 +680,7 @@ msgstr "Opslaan als"
 
 #: objinspstrconsts:sccsiledtsavedialog
 msgid "Save Image"
-msgstr ""
+msgstr "Afbeelding opslaan"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
@@ -692,7 +692,7 @@ msgstr "Sla plaatje op"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
-msgstr ""
+msgstr "Opslaan..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -716,11 +716,11 @@ msgstr "Selecteer een bestand"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr ""
+msgstr "Geselecteerde afbeelding"
 
 #: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr ""
+msgstr "Geselecteerde index"
 
 #: objinspstrconsts:oisset
 msgid "Set"
@@ -756,11 +756,11 @@ msgstr "Standaard Actie Classen"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
-msgstr ""
+msgstr "Status index:"
 
 #: objinspstrconsts:sccsiledtstretch
 msgid "Stretch"
-msgstr ""
+msgstr "Uitrekken"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -768,7 +768,7 @@ msgstr "String"
 
 #: objinspstrconsts:sccssgedtgrp
 msgid "String Grid"
-msgstr ""
+msgstr "String Grid"
 
 #: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
@@ -784,11 +784,11 @@ msgstr "Test Invoer"
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
-msgstr ""
+msgstr "Dialoog testen..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
-msgstr ""
+msgstr "Tekst:"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -808,11 +808,11 @@ msgstr "Onderwerp zoeken"
 
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr ""
+msgstr "Tansparantie kleur"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr ""
+msgstr "TreeView Onderdelen editor"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
@@ -824,7 +824,7 @@ msgstr "Onbekend"
 
 #: objinspstrconsts:oicoleditup
 msgid "Up"
-msgstr ""
+msgstr "Omhoog"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"

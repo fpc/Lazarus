@@ -426,6 +426,10 @@ msgstr "Opcions addicionals del compilador heretades dels paquets"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Fitxers addicionals a cercar (p.e. /trajectòria/*.pas;/trajec2/*.pp)"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
+msgid "Additional search path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Ajusta la línia de sobre a causa del comentari de davant"
@@ -533,6 +537,30 @@ msgstr ""
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
 msgstr "Tipus d'avantpassat"
+
+#: lazarusidestrconsts:lisanchoreditornocontrolselected
+msgid "Anchor Editor - no control selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortobottomsidekeepborderspace
+msgid "Anchor to bottom side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortoleftsidekeepborderspace
+msgid "Anchor to left side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortorightsidekeepborderspace
+msgid "Anchor to right side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortotopsidekeepborderspace
+msgid "Anchor to top side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorsofselectedcontrols
+msgid "Anchors of selected controls"
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrappendtosection
 msgid "Append to section"
@@ -706,6 +734,22 @@ msgstr "Negreta"
 msgid "Bookmark"
 msgstr "Marcador"
 
+#: lazarusidestrconsts:lisborderspace
+msgid "BorderSpace"
+msgstr ""
+
+#: lazarusidestrconsts:lisaroundborderspacehint
+msgid "Borderspace around the control. The other four borderspaces are added to this value."
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomgroupboxcaption
+msgid "Bottom anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomborderspacespinedithint
+msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomspaceequally
 msgid "Bottom space equally"
 msgstr "Iguala els espais inferiors"
@@ -730,9 +774,17 @@ msgstr "Interromp la línia i mou el cursor"
 msgid "Break line, leave cursor"
 msgstr "Interromp la línia, deixa el cursor"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakonlazarusexceptions
+msgid "Break on Lazarus Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Punts de ruptura"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakpoint
+msgid "Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -917,6 +969,14 @@ msgstr "Català"
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Centra la línia del cursor"
+
+#: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
+msgid "Center control horizontally relative to the given sibling"
+msgstr ""
+
+#: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
+msgid "Center control vertically relative to the given sibling"
+msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -1105,6 +1165,10 @@ msgstr "Neteja i munta"
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
 msgstr "Neteja"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
+msgid "Clear log on run"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1730,6 +1794,10 @@ msgstr "S'ha produït un error del depurador"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "S'ha produït un error del depurador%sAtenció!! el depurador a entrat en estat d'error%sDeseu el vostre treball ara mateix!!%sPremeu Atura i espereu el millor ..."
 
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggergeneraloptions
+msgid "Debugger general options"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
 msgstr "Depurador invàlid"
@@ -1737,6 +1805,10 @@ msgstr "Depurador invàlid"
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition (none):"
 msgstr "Afegeix la trajectòria addicional del depurador (cap):"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggerspecific
+msgid "Debugger specific options (depends on type of debugger)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
@@ -2138,6 +2210,14 @@ msgstr "ElseIf"
 msgid "Enable Makros"
 msgstr ""
 
+#: lazarusidestrconsts:lisenabled
+msgid "Enabled"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorenabledhint
+msgid "Enabled = Include %s in Anchors"
+msgstr ""
+
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
 msgstr "Tanca"
@@ -2293,6 +2373,10 @@ msgstr "Escapament"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Avalua/Modifica ..."
+
+#: lazarusidestrconsts:lisdebugoptionsfrmeventlog
+msgid "Event Log"
+msgstr ""
 
 #: lazarusidestrconsts:lislazdocexampletag
 msgid "Example"
@@ -2902,6 +2986,18 @@ msgstr "Desplaça mitja pàgina"
 msgid "Handle OnClick Event"
 msgstr "Gestiona esdeveniment OnClick"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledby
+msgid "Handled by"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbydebugger
+msgid "Handled by Debugger"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbyprogram
+msgid "Handled by Program"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
 msgstr "Hanja"
@@ -3018,6 +3114,10 @@ msgstr "Aplicació de l'amfitrió"
 msgid "I told You: Not implemented yet"
 msgstr "Us ho he dit: Encara NO està implementat"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmid
+msgid "ID"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integració IDE"
@@ -3113,6 +3213,10 @@ msgstr "Ignora els espais al final de la línia"
 #: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
 msgid "Ignore spaces at start of line"
 msgstr "Ignora els espais al començament de la línia"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
+msgid "Ignore these exceptions"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -3428,6 +3532,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
 msgid "Installing the package %s will automatically install the packages:"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrminterface
+msgid "Interface"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -3778,6 +3886,10 @@ msgstr "LRS - Lazarus Resource"
 msgid "Language"
 msgstr "Llenguatge"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
+msgid "Language Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:dlglang
 msgid "Language:"
 msgstr "Llenguatge:"
@@ -3894,6 +4006,14 @@ msgstr "Deixa buit per omissió el fitxer .po"
 msgid "Left"
 msgstr "Esquerra"
 
+#: lazarusidestrconsts:lisleftgroupboxcaption
+msgid "Left anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftborderspacespinedithint
+msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
 msgstr "Costats esquerres"
@@ -3941,6 +4061,10 @@ msgstr "llicència:"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
 msgstr "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
+
+#: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
+msgid "Limit linecount to"
+msgstr ""
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4170,6 +4294,10 @@ msgstr "Modificat"
 msgid "Modified: %s"
 msgstr "Modificat: %s"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+msgid "Module"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Més ..."
@@ -4345,6 +4473,10 @@ msgstr "Nota: No s'ha trobat el fitxer de configuració de les eines del codi, s'
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "Nota: S'està carregant el fitxer de les opcions de les eines del codi antic: "
+
+#: lazarusidestrconsts:lisdebugoptionsfrmname
+msgid "Name"
+msgstr ""
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -4554,6 +4686,10 @@ msgstr "Fixació de teclat numèric"
 msgid "Numpad %d"
 msgstr "Teclat numèric %d"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
+msgid "OS Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
 msgstr "OVR"
@@ -4753,6 +4889,10 @@ msgstr "Altres fitxers d'unitats (-Fu) (El delimitador és punt i coma):"
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
 msgstr "Altres fitxers"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmoutput
+msgid "Output"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
@@ -5081,6 +5221,10 @@ msgstr "Política d'inserir procediments"
 #: lazarusidestrconsts:lisprocedurewithinterface
 msgid "Procedure with interface"
 msgstr "Procediment amb interfície"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmprocess
+msgid "Process"
+msgstr ""
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -5554,6 +5698,18 @@ msgstr "Restaura la geometria de la finestra"
 msgid "Restore window size"
 msgstr "Restaura el tamany de la finestra"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
 msgstr "Retorn"
@@ -5577,6 +5733,14 @@ msgstr "Dreta"
 #: lazarusidestrconsts:dlgrightclickselects
 msgid "Right Click selects"
 msgstr "Clic dret selecciona"
+
+#: lazarusidestrconsts:lisrightanchoring
+msgid "Right anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightborderspacespinedithint
+msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -6146,6 +6310,10 @@ msgstr "Mostra les línies de la guia"
 msgid "Show Hints"
 msgstr "Mostra les indicacions"
 
+#: lazarusidestrconsts:dlghintsparametersendernotused
+msgid "Show Hints for parameter \"Sender\" not used"
+msgstr ""
+
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Mostra els suggeriments per les unitats no utilitzades en la font principal"
@@ -6250,6 +6418,10 @@ msgstr ""
 msgid "Show line numbers"
 msgstr "Mostra els números de línia"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
+msgid "Show message on stop"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr "No mostris res (només els errors)"
@@ -6273,6 +6445,14 @@ msgstr "Mostra els fitxers escollits"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Mostra els fitxers utilitzats"
+
+#: lazarusidestrconsts:lissibling
+msgid "Sibling"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmsignals
+msgid "Signals"
+msgstr ""
 
 #: lazarusidestrconsts:lissimplesyntax
 msgid "Simple Syntax"
@@ -7226,6 +7406,22 @@ msgstr "Aquest és un fitxer de recurs de Lazarus generat automàticament"
 msgid "This is the default package. Used only for components without a package. These components are outdated."
 msgstr "Aquest és el paquet predeterminat. S'utilitza només per components sense paquet. Aquests components estan desfasats."
 
+#: lazarusidestrconsts:lisbottomsiblingcomboboxhint
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisleftsiblingcomboboxhint
+msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisrightsiblingcomboboxhint
+msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:listopsiblingcomboboxhint
+msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgstr ""
+
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr ""
@@ -7241,6 +7437,10 @@ msgstr "Aquesta font només s'utilitza per compilar i instal·lar el paquet."
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "No s'ha pogut extraure aquesta declaració.%sSi us plau, seleccioneu codi per extreure'n un nou procediment/mètode."
+
+#: lazarusidestrconsts:lisdebugoptionsfrmthread
+msgid "Thread"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -7289,6 +7489,14 @@ msgstr "Avaluació de l'expressió del rètol indicador de funcions"
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
 msgstr "Eines del símbol del rètol indicador de funcions"
+
+#: lazarusidestrconsts:listopanchoring
+msgid "Top anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:listopborderspacespinedithint
+msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
 
 #: lazarusidestrconsts:listopspaceequally
 msgid "Top space equally"
@@ -7577,6 +7785,10 @@ msgstr "No es pot executar l'eina %s%s%s:%s%s"
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
 msgstr "No es pot desar el fitxer %s%s%s"
+
+#: lazarusidestrconsts:lisunabletosetanchorsidecontrol
+msgid "Unable to set AnchorSide Control"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
@@ -8137,6 +8349,10 @@ msgstr "Només paraules senceres"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ample"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+msgid "Window"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"

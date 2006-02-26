@@ -437,6 +437,10 @@ msgstr ""
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr ""
 
+#: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
+msgid "Additional search path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Wyrównaj górn¹ liniê do komentarza z przodu"
@@ -544,6 +548,30 @@ msgstr ""
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
 msgstr "Typ przodka"
+
+#: lazarusidestrconsts:lisanchoreditornocontrolselected
+msgid "Anchor Editor - no control selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortobottomsidekeepborderspace
+msgid "Anchor to bottom side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortoleftsidekeepborderspace
+msgid "Anchor to left side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortorightsidekeepborderspace
+msgid "Anchor to right side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortotopsidekeepborderspace
+msgid "Anchor to top side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorsofselectedcontrols
+msgid "Anchors of selected controls"
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrappendtosection
 msgid "Append to section"
@@ -717,6 +745,22 @@ msgstr "Pogrubiony"
 msgid "Bookmark"
 msgstr "Zak³adka"
 
+#: lazarusidestrconsts:lisborderspace
+msgid "BorderSpace"
+msgstr ""
+
+#: lazarusidestrconsts:lisaroundborderspacehint
+msgid "Borderspace around the control. The other four borderspaces are added to this value."
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomgroupboxcaption
+msgid "Bottom anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomborderspacespinedithint
+msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomspaceequally
 msgid "Bottom space equally"
 msgstr ""
@@ -741,9 +785,17 @@ msgstr "Zawiñ wiersz i przenieœ kursor"
 msgid "Break line, leave cursor"
 msgstr "Zawiñ wiersz i pozostaw kursor"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakonlazarusexceptions
+msgid "Break on Lazarus Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Pu³apki"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakpoint
+msgid "Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -928,6 +980,14 @@ msgstr "Catalan"
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Wyœrodkuj aktualny wiersz"
+
+#: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
+msgid "Center control horizontally relative to the given sibling"
+msgstr ""
+
+#: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
+msgid "Center control vertically relative to the given sibling"
+msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -1116,6 +1176,10 @@ msgstr "Czyœæ i buduj"
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
 msgstr "Czyœæ"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
+msgid "Clear log on run"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1741,12 +1805,20 @@ msgstr "B³¹d odpluskwiacza"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "B³¹d odpluskwiacza%sOoops, odpluskwiacz wszed³ w stan b³êdu%sZapisz teraz swoj¹ pracê !%sWciœnij zatrzymaj, i miejmy nadziejê ¿e wszystko bêdzie dobrze."
 
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggergeneraloptions
+msgid "Debugger general options"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition (none):"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggerspecific
+msgid "Debugger specific options (depends on type of debugger)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdebugtype
@@ -2149,6 +2221,14 @@ msgstr "ElseIf"
 msgid "Enable Makros"
 msgstr ""
 
+#: lazarusidestrconsts:lisenabled
+msgid "Enabled"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorenabledhint
+msgid "Enabled = Include %s in Anchors"
+msgstr ""
+
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
 msgstr ""
@@ -2303,6 +2383,10 @@ msgstr "Escape"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmeventlog
+msgid "Event Log"
 msgstr ""
 
 #: lazarusidestrconsts:lislazdocexampletag
@@ -2913,6 +2997,18 @@ msgstr ""
 msgid "Handle OnClick Event"
 msgstr ""
 
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledby
+msgid "Handled by"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbydebugger
+msgid "Handled by Debugger"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbyprogram
+msgid "Handled by Program"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
 msgstr "Hanja"
@@ -3029,6 +3125,10 @@ msgstr "G³ówna aplikacja"
 msgid "I told You: Not implemented yet"
 msgstr "Ostrzega³em: Jeszcze nie zaimplementowane"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmid
+msgid "ID"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
 msgstr "Integracja z IDE"
@@ -3124,6 +3224,10 @@ msgstr "Ignoruj spacje na koñcu wiersza"
 #: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
 msgid "Ignore spaces at start of line"
 msgstr "Ignoruj spacje na pocz¹tku wiersza"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
+msgid "Ignore these exceptions"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
@@ -3439,6 +3543,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
 msgid "Installing the package %s will automatically install the packages:"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrminterface
+msgid "Interface"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -3789,6 +3897,10 @@ msgstr "LRS - zasoby Lazarusa"
 msgid "Language"
 msgstr "Jêzyk"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
+msgid "Language Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:dlglang
 msgid "Language:"
 msgstr "Jêzyk:"
@@ -3905,6 +4017,14 @@ msgstr ""
 msgid "Left"
 msgstr "W lewo"
 
+#: lazarusidestrconsts:lisleftgroupboxcaption
+msgid "Left anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftborderspacespinedithint
+msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
 msgstr ""
@@ -3952,6 +4072,10 @@ msgstr "Licencja:"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
 msgstr "Licencja: GPL/LGPL%sLazarus to biblioteki klas do Free Pascala które emuluj¹ Delphi. Free Pascal jest (L)GPL'owym kompilatorem, który dzia³a na Linuksie, Win32, OS/2, 68K i innych. Free Pascal jest zaprojektowany, aby rozumieæ i kompilowaæ zorientowan¹ obiektowo sk³adniê Delphi.%sLazarus jest brakuj¹c¹ czêœci¹ uk³adanki, która pozwala Ci rozwijaæ programy w stylu Delphi na wszystkich wspomnianych platformach. IDE Lazarusa stanie siê narzêdziem RAD takim jak Delphi.%sPoniewa¿ Lazarus rozwija siê, potrzebujemy wiêcej programistów."
+
+#: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
+msgid "Limit linecount to"
+msgstr ""
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4181,6 +4305,10 @@ msgstr "Zmienione"
 msgid "Modified: %s"
 msgstr "Zmieniony: %s"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+msgid "Module"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Wiêcej ..."
@@ -4356,6 +4484,10 @@ msgstr "UWAGA: brak plik konfiguracji codetools - u¿yjê opcji domyœlnych"
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "UWAGA: ³adujê stary plik opcji codetools"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmname
+msgid "Name"
+msgstr ""
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -4565,6 +4697,10 @@ msgstr "NumLock"
 msgid "Numpad %d"
 msgstr "Klaw. numeryczna %d"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
+msgid "OS Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
 msgstr "NAD"
@@ -4764,6 +4900,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
 msgstr "Inne pliki"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmoutput
+msgid "Output"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
@@ -5091,6 +5231,10 @@ msgstr "Zasady wstawiania procedur"
 
 #: lazarusidestrconsts:lisprocedurewithinterface
 msgid "Procedure with interface"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmprocess
+msgid "Process"
 msgstr ""
 
 #: lazarusidestrconsts:lisprogram
@@ -5565,6 +5709,18 @@ msgstr "Przywróæ po³o¿enie okna"
 msgid "Restore window size"
 msgstr "Przywraca rozmiar okna"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
 msgstr "Return"
@@ -5587,6 +5743,14 @@ msgstr "W prawo"
 
 #: lazarusidestrconsts:dlgrightclickselects
 msgid "Right Click selects"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightanchoring
+msgid "Right anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightborderspacespinedithint
+msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
@@ -6157,6 +6321,10 @@ msgstr "Poka¿ do linie naprowadzaj¹ce"
 msgid "Show Hints"
 msgstr "Wskazówki"
 
+#: lazarusidestrconsts:dlghintsparametersendernotused
+msgid "Show Hints for parameter \"Sender\" not used"
+msgstr ""
+
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Pokazuj wskazówki przy nieu¿ywanych modu³ach w g³ównym Ÿródle"
@@ -6261,6 +6429,10 @@ msgstr ""
 msgid "Show line numbers"
 msgstr ""
 
+#: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
+msgid "Show message on stop"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr ""
@@ -6283,6 +6455,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
+msgstr ""
+
+#: lazarusidestrconsts:lissibling
+msgid "Sibling"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmsignals
+msgid "Signals"
 msgstr ""
 
 #: lazarusidestrconsts:lissimplesyntax
@@ -7237,6 +7417,22 @@ msgstr "To jest automatycznie wygenerowany plik zasobów lazarusa"
 msgid "This is the default package. Used only for components without a package. These components are outdated."
 msgstr "To jest domyœlny pakiet, u¿ywany tylko dla komponentów które nie maj¹ pakietu. Te komponenty s¹ ju¿ przedawnione."
 
+#: lazarusidestrconsts:lisbottomsiblingcomboboxhint
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisleftsiblingcomboboxhint
+msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisrightsiblingcomboboxhint
+msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:listopsiblingcomboboxhint
+msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgstr ""
+
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr ""
@@ -7251,6 +7447,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmthread
+msgid "Thread"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
@@ -7300,6 +7500,14 @@ msgstr "Rozwijaj wartoœci w podpowiedziach"
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
 msgstr "Podpowiedzi narzêdzi symbolicznych"
+
+#: lazarusidestrconsts:listopanchoring
+msgid "Top anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:listopborderspacespinedithint
+msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
 
 #: lazarusidestrconsts:listopspaceequally
 msgid "Top space equally"
@@ -7588,6 +7796,10 @@ msgstr "Nie mo¿na uruchomiæ narzêdzia %s%s%s:%s%s"
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
 msgstr "Nie mo¿na zapisaæ pliku %s%s%s"
+
+#: lazarusidestrconsts:lisunabletosetanchorsidecontrol
+msgid "Unable to set AnchorSide Control"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
@@ -8148,6 +8360,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Szerokoœæ:"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+msgid "Window"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"

@@ -426,6 +426,10 @@ msgstr "Additionele compiler opties gelijk aan die van packages"
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr "Additionele bestanden om te zoeken (d.w.z. /pad/*.pas, /pad2/*.pp)"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
+msgid "Additional search path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Bewerk bovenste lijn"
@@ -456,11 +460,11 @@ msgstr "Alle projecten"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
-msgstr "Laat LABEL en GOTO toe"
+msgstr "Sta LABEL en GOTO toe"
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
-msgstr "Laat het zoeken naar meerdere lijnen toe"
+msgstr "Sta het zoeken naar meerdere lijnen toe"
 
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
@@ -484,7 +488,7 @@ msgstr "Altijd bouwen (ook als er niks is gewijzigd)"
 
 #: lazarusidestrconsts:dlgalwaysvisiblecaret
 msgid "Always visible caret"
-msgstr ""
+msgstr "Altijd zichtbaar invoegteken"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -533,6 +537,30 @@ msgstr "Bij het laden van %s is er laatst een fout opgetreden!%s%sDit project op
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
 msgstr "Ancestor Type"
+
+#: lazarusidestrconsts:lisanchoreditornocontrolselected
+msgid "Anchor Editor - no control selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortobottomsidekeepborderspace
+msgid "Anchor to bottom side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortoleftsidekeepborderspace
+msgid "Anchor to left side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortorightsidekeepborderspace
+msgid "Anchor to right side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchortotopsidekeepborderspace
+msgid "Anchor to top side of sibling, keep border space"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorsofselectedcontrols
+msgid "Anchors of selected controls"
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrappendtosection
 msgid "Append to section"
@@ -632,7 +660,7 @@ msgstr "Automatisch (of Engels)"
 
 #: lazarusidestrconsts:lisautomaticfeatures
 msgid "Automatic features"
-msgstr ""
+msgstr "Automatische kenmerken"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -706,6 +734,22 @@ msgstr "Vet"
 msgid "Bookmark"
 msgstr "Bookmark"
 
+#: lazarusidestrconsts:lisborderspace
+msgid "BorderSpace"
+msgstr ""
+
+#: lazarusidestrconsts:lisaroundborderspacehint
+msgid "Borderspace around the control. The other four borderspaces are added to this value."
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomgroupboxcaption
+msgid "Bottom anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomborderspacespinedithint
+msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomspaceequally
 msgid "Bottom space equally"
 msgstr "Bodem gelijk gespaceerd"
@@ -730,9 +774,17 @@ msgstr "Breek lijn, en verplaats cursor"
 msgid "Break line, leave cursor"
 msgstr "Breek lijn, verlaat cursor"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakonlazarusexceptions
+msgid "Break on Lazarus Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Breekpunten"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmbreakpoint
+msgid "Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -896,7 +948,7 @@ msgstr "Kapitaal"
 
 #: lazarusidestrconsts:dlgcaretskipsselection
 msgid "Caret skips selection"
-msgstr ""
+msgstr "Invoegteken slaat selectie over"
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
@@ -917,6 +969,14 @@ msgstr "Catalaans"
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Centreer Cursor line"
+
+#: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
+msgid "Center control horizontally relative to the given sibling"
+msgstr ""
+
+#: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
+msgid "Center control vertically relative to the given sibling"
+msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -960,7 +1020,7 @@ msgstr "Controleer .lfm-bestand in editor"
 
 #: lazarusidestrconsts:lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
-msgstr ""
+msgstr "Controleer wijzigingen op schijf tijdens het laden"
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
@@ -1105,6 +1165,10 @@ msgstr "Maak schoon + Bouw"
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
 msgstr "Leeg"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
+msgid "Clear log on run"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1476,7 +1540,7 @@ msgstr "Kopieerfout"
 
 #: lazarusidestrconsts:liscopyallandhiddenmessagestoclipboard
 msgid "Copy all and hidden messages to clipboard"
-msgstr ""
+msgstr "Kopieer alle (ook verborgen) berichten naar het klembord"
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -1730,6 +1794,10 @@ msgstr "Debuggerfout"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Debugger error%sOeps, de debugger is gecrashed%sSla uw werk op!%sKies Stop, en hoop voor het beste!"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggergeneraloptions
+msgid "Debugger general options"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
 msgstr "Debugger ongeldig"
@@ -1737,6 +1805,10 @@ msgstr "Debugger ongeldig"
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition (none):"
 msgstr "Debugger pad toevoeging (geen):"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmdebuggerspecific
+msgid "Debugger specific options (depends on type of debugger)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
@@ -2004,11 +2076,11 @@ msgstr "IDE niet sluiten"
 
 #: lazarusidestrconsts:lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
-msgstr ""
+msgstr "Geen sessie info opslaan"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
-msgstr "Laat splashscherm niet zien"
+msgstr "Splashscherm niet tonen"
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2137,6 +2209,14 @@ msgstr "ElseIf"
 #: lazarusidestrconsts:lisenablemakros
 msgid "Enable Makros"
 msgstr "Activeer macros"
+
+#: lazarusidestrconsts:lisenabled
+msgid "Enabled"
+msgstr ""
+
+#: lazarusidestrconsts:lisanchorenabledhint
+msgid "Enabled = Include %s in Anchors"
+msgstr ""
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
@@ -2294,6 +2374,10 @@ msgstr "Verlaat"
 msgid "Evaluate/Modify ..."
 msgstr "Evalueer/Wijzig ..."
 
+#: lazarusidestrconsts:lisdebugoptionsfrmeventlog
+msgid "Event Log"
+msgstr ""
+
 #: lazarusidestrconsts:lislazdocexampletag
 msgid "Example"
 msgstr "Voorbeeld"
@@ -2360,11 +2444,11 @@ msgstr "Unit path uitbreiden?"
 
 #: lazarusidestrconsts:srkmecexttool
 msgid "External tool %d"
-msgstr "Externe tool %d"
+msgstr "Extern gereedschap %d"
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External tools"
-msgstr ""
+msgstr "Externe gereedschappen"
 
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
@@ -2902,6 +2986,18 @@ msgstr "Halve pagina scroll"
 msgid "Handle OnClick Event"
 msgstr "Verwerk OnClick-event"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledby
+msgid "Handled by"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbydebugger
+msgid "Handled by Debugger"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmhandledbyprogram
+msgid "Handled by Program"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
 msgstr "Hanja"
@@ -2964,7 +3060,7 @@ msgstr "Help niet gevonden"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
-msgstr ""
+msgstr "Help selecteren"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -3017,6 +3113,10 @@ msgstr "Host applicatie"
 #: lazarusidestrconsts:uenotimplcapagain
 msgid "I told You: Not implemented yet"
 msgstr "Nog niet geimplementeerd (Yoda rant)"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmid
+msgid "ID"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsideintegration
 msgid "IDE Integration"
@@ -3114,6 +3214,10 @@ msgstr "Negeer spaties aan regeleinde"
 msgid "Ignore spaces at start of line"
 msgstr "Negeer spaties aan begin van regel"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmignoretheseexceptions
+msgid "Ignore these exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
 msgstr "Ime Str"
@@ -3168,7 +3272,7 @@ msgstr "Blok Inspringen"
 
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
-msgstr "Laat code Inspringen tot"
+msgstr "Laat code inspringen tot"
 
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
@@ -3430,6 +3534,10 @@ msgstr "De installatie van package %s zal automatisch het volgende package insta
 msgid "Installing the package %s will automatically install the packages:"
 msgstr "De installatie van package %s zal automatisch de volgende package installeren:"
 
+#: lazarusidestrconsts:lisdebugoptionsfrminterface
+msgid "Interface"
+msgstr ""
+
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
 msgstr "Interval in seconden"
@@ -3644,7 +3752,7 @@ msgstr "Item hoogte"
 
 #: lazarusidestrconsts:rslanguagejapanese
 msgid "Japanese"
-msgstr ""
+msgstr "Japans"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -3778,6 +3886,10 @@ msgstr "LRS - Lazarus resource"
 msgid "Language"
 msgstr "Taal"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
+msgid "Language Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:dlglang
 msgid "Language:"
 msgstr "Taal:"
@@ -3894,6 +4006,14 @@ msgstr "Laat leeg voor het standaard .po bestand"
 msgid "Left"
 msgstr "Links"
 
+#: lazarusidestrconsts:lisleftgroupboxcaption
+msgid "Left anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftborderspacespinedithint
+msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
+msgstr ""
+
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
 msgstr "Linker zijden"
@@ -3932,7 +4052,7 @@ msgstr "Bibliotheek"
 
 #: lazarusidestrconsts:lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Biblitheek%sEen freepascal bibliotheek (.dll onder windows, .so onder linux, dylib onder macosx). De broncode bestanden worden bijgehouden door Lazarus."
 
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
@@ -3941,6 +4061,10 @@ msgstr "Licentie:"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
 msgstr "Licentie: GPL/LGPL%sLazarus zijn de klasse bibliotheken voor Free Pascal die Delphi emuleren. Free Pascal is een compiler onder de (L)GPL licnetie, die draait op Linux, W32, OS/2, 68K en meer. Free Pascal is ontworpen om Delphi syntax, dus OOP, te kunnen compileren.%sLazarus is het missende onderdeel, die het je mogelijk zal maken om Delphi programma's voor alle genoemde platforms te maken. De IDE zal uiteindelijk een \"RAD\" tool zoals Delphi zijn.%sOmdat Lazarus groeit hebben we meer ontwikkelaars nodig. "
+
+#: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
+msgid "Limit linecount to"
+msgstr ""
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
@@ -4170,6 +4294,10 @@ msgstr "Gewijzigd"
 msgid "Modified: %s"
 msgstr "Gewijzigd: %s"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+msgid "Module"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Meer ..."
@@ -4324,7 +4452,7 @@ msgstr "Meervoudige regel"
 
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
-msgstr ""
+msgstr "Meervoudige selectie"
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
@@ -4345,6 +4473,10 @@ msgstr "NB: Configuratie bestand voor code tools niet gevonden - de standaard wo
 #: lazarusidestrconsts:liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
 msgstr "NB: Oude configuratie bestand voor code tools wordt geladen: "
+
+#: lazarusidestrconsts:lisdebugoptionsfrmname
+msgid "Name"
+msgstr ""
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -4554,6 +4686,10 @@ msgstr "Num Lock"
 msgid "Numpad %d"
 msgstr "Numeriek keyboard %d"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
+msgid "OS Exceptions"
+msgstr ""
+
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
 msgstr "OVR"
@@ -4612,7 +4748,7 @@ msgstr "Open %s"
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
-msgstr "Laat verschillen zien in editor"
+msgstr "Toon verschillen in editor"
 
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
@@ -4753,6 +4889,10 @@ msgstr "Andere unit bestanden (-Fu)"
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
 msgstr "Andere bestanden"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmoutput
+msgid "Output"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpooutputsettings
 msgid "Output Settings"
@@ -5081,6 +5221,10 @@ msgstr "Wijze van procedures toevoegen"
 #: lazarusidestrconsts:lisprocedurewithinterface
 msgid "Procedure with interface"
 msgstr "Procedure met interface"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmprocess
+msgid "Process"
+msgstr ""
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -5554,6 +5698,18 @@ msgstr "Herstel window plaatsing"
 msgid "Restore window size"
 msgstr "Herstel window afmeting"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_return
 msgid "Return"
 msgstr "Terug"
@@ -5577,6 +5733,14 @@ msgstr "Rechts"
 #: lazarusidestrconsts:dlgrightclickselects
 msgid "Right Click selects"
 msgstr "Rechts klikken selecteert"
+
+#: lazarusidestrconsts:lisrightanchoring
+msgid "Right anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightborderspacespinedithint
+msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -5756,15 +5920,15 @@ msgstr "Bestand %s%s%s%sopslaan voor het sluiten van form %s%s%s?"
 
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
-msgstr ""
+msgstr "Opslaan in .lpi bestand"
 
 #: lazarusidestrconsts:lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
-msgstr ""
+msgstr "Opslaan in .lps bestand in project directorie"
 
 #: lazarusidestrconsts:lisposaveinideconfigdirectory
 msgid "Save in IDE config directory"
-msgstr ""
+msgstr "Opslaan in IDE configuratie directorie"
 
 #: lazarusidestrconsts:lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
@@ -5772,7 +5936,7 @@ msgstr "Bewaar info van gesloten editor bestanden"
 
 #: lazarusidestrconsts:lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
-msgstr ""
+msgstr "Berichten opslaan in bestand (*.txt)"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5784,7 +5948,7 @@ msgstr "Package opslaan?"
 
 #: lazarusidestrconsts:lisposavesessioninformationin
 msgid "Save session information in"
-msgstr ""
+msgstr "Sessie informatie opslaan in"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -6076,7 +6240,7 @@ msgstr "Puntkomma"
 
 #: lazarusidestrconsts:dlgposavesession
 msgid "Session"
-msgstr ""
+msgstr "Sessie"
 
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
@@ -6132,7 +6296,7 @@ msgstr "Toon alles"
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr "Laat waarde van CodeTools zien"
+msgstr "Toon waarde van CodeTools"
 
 #: lazarusidestrconsts:dlgcoshowerr
 msgid "Show Errors"
@@ -6140,11 +6304,15 @@ msgstr "Toon fouten"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Laat steunlijnen zien"
+msgstr "Toon steunlijnen"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
 msgstr "Toon Hints"
+
+#: lazarusidestrconsts:dlghintsparametersendernotused
+msgid "Show Hints for parameter \"Sender\" not used"
+msgstr ""
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
@@ -6184,7 +6352,7 @@ msgstr "Toon alle procs bij een fout"
 
 #: lazarusidestrconsts:dlgqshowborderspacing
 msgid "Show border spacing"
-msgstr ""
+msgstr "Toon ""border spacing"""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -6192,7 +6360,7 @@ msgstr "Toon sluitknoppen in notebook"
 
 #: lazarusidestrconsts:srkmecshowcodecontext
 msgid "Show code context"
-msgstr "Laat code samenhang zien"
+msgstr "Toon code samenhang"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -6228,7 +6396,7 @@ msgstr "Toon alles"
 
 #: lazarusidestrconsts:dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
-msgstr "Laat executable info zien (Alleen Win32)"
+msgstr "Toon executable info (Alleen Win32)"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
@@ -6250,13 +6418,17 @@ msgstr "Toon hints in Object Inspector"
 msgid "Show line numbers"
 msgstr "Toon regelnummers"
 
+#: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
+msgid "Show message on stop"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr "Toon niets (alleen fouten)"
 
 #: lazarusidestrconsts:lisshowoldtaborder
 msgid "Show old tab order"
-msgstr ""
+msgstr "Toon oude tab volgorde"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -6273,6 +6445,14 @@ msgstr "Toon geteste bestanden"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Toon gebruikte bestanden"
+
+#: lazarusidestrconsts:lissibling
+msgid "Sibling"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugoptionsfrmsignals
+msgid "Signals"
+msgstr ""
 
 #: lazarusidestrconsts:lissimplesyntax
 msgid "Simple Syntax"
@@ -6552,7 +6732,7 @@ msgstr "Tab"
 
 #: lazarusidestrconsts:listaborderof
 msgid "Tab Order of"
-msgstr ""
+msgstr "Tab volgorde van"
 
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
@@ -7120,7 +7300,7 @@ msgstr "De unitnaam %s%s%s is gelijk aan die van een geregistreerd component.%Di
 
 #: lazarusidestrconsts:lisa2ptheunitnameandfilenamediffer
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
-msgstr ""
+msgstr "De naam van de unit %s%s%s%sen de bestandsnaam %s%s%s verschillen"
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
@@ -7226,6 +7406,22 @@ msgstr "Dit is een automatisch aangemaakte lazarus broncode bestand"
 msgid "This is the default package. Used only for components without a package. These components are outdated."
 msgstr "Dit is het standaard package. Het wordt alleen gebruikt voor componenten zonder package. Deze zijn verouderd."
 
+#: lazarusidestrconsts:lisbottomsiblingcomboboxhint
+msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisleftsiblingcomboboxhint
+msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:lisrightsiblingcomboboxhint
+msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
+msgstr ""
+
+#: lazarusidestrconsts:listopsiblingcomboboxhint
+msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
+msgstr ""
+
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Dit lijkt op een pascal bestand.%sAangeraden is om alleen kleine letters te gebruiken in de bestandnaam, om problemen te voorkomen.%sHernoemen naar kleine letters?"
@@ -7241,6 +7437,10 @@ msgstr "Deze broncode is alleen gebruikt voor compilatie en installatie."
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Dit statement kan niet worden gedistilleerd.%sSelecteer meer code om een nieuwe procedure te distilleren."
+
+#: lazarusidestrconsts:lisdebugoptionsfrmthread
+msgid "Thread"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -7289,6 +7489,14 @@ msgstr "Tooltip expressie evaluatie"
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
 msgstr "Tooltip symbool Hulpmiddelen"
+
+#: lazarusidestrconsts:listopanchoring
+msgid "Top anchoring"
+msgstr ""
+
+#: lazarusidestrconsts:listopborderspacespinedithint
+msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
+msgstr ""
 
 #: lazarusidestrconsts:listopspaceequally
 msgid "Top space equally"
@@ -7577,6 +7785,10 @@ msgstr "Kan het hulpmiddel %s%s%s:%s%s niet uitvoeren"
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
 msgstr "Kan het bestand %s%s%s niet opslaan"
+
+#: lazarusidestrconsts:lisunabletosetanchorsidecontrol
+msgid "Unable to set AnchorSide Control"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
@@ -7992,7 +8204,7 @@ msgstr "Toon Broncode"
 
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
-msgstr "Laat bron (.lfm) zien"
+msgstr "Toon bron (.lfm)"
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -8137,6 +8349,10 @@ msgstr "Alleen hele woorden"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Breedte:"
+
+#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+msgid "Window"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
