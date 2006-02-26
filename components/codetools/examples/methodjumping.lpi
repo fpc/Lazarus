@@ -31,6 +31,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
+    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
