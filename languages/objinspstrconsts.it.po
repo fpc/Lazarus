@@ -114,13 +114,13 @@ msgstr "Su"
 msgid "(All)"
 msgstr "(tutto)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(nessuno)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(sconosciuto)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(nessuno)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -362,10 +362,6 @@ msgstr "&Uscita"
 msgid "Edit"
 msgstr "Modifica"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Modifica elenco azioni..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Modifica le voci della ListView"
@@ -377,6 +373,10 @@ msgstr "Modifica la StringGrid"
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Modifica gli elementi del TreeView"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Modifica elenco azioni..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -438,14 +438,6 @@ msgstr "Aiuto"
 msgid "Help Contents"
 msgstr "Contenuti dell'aiuto"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Il contesto dell'aiuto %s non è stato trovato nel database %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Il contesto dell'aiuto %s non è stato trovato."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Il database dell'aiuto %s%s%s non ha trovato un visualizzatore per una pagina di tipo %s"
@@ -453,6 +445,14 @@ msgstr "Il database dell'aiuto %s%s%s non ha trovato un visualizzatore per una p
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Il database dell'aiuto %s%s%s non è stato trovato"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Il contesto dell'aiuto %s non è stato trovato nel database %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Il contesto dell'aiuto %s non è stato trovato."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -562,6 +562,10 @@ msgstr "Modifica la voce"
 msgid "Move Down"
 msgstr "Sposta in basso"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Sposta in alto"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Sposta la pagina a sinistra"
@@ -569,10 +573,6 @@ msgstr "Sposta la pagina a sinistra"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Sposta la pagina a destra"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Sposta in alto"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -594,13 +594,13 @@ msgstr "Nuova Sottovoce"
 msgid "Next"
 msgstr "Successiva"
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Nessun aiuto provato per la riga %d, colonna %d di %s."
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "Non è stato trovato nessun navigatore HTML.%sDefinirne uno in Aiuto -> Configurazione aiuto -> Visualizzatori"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Nessun aiuto provato per la riga %d, colonna %d di %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -718,13 +718,13 @@ msgstr "Seleziona &colore..."
 msgid "Select &Font..."
 msgstr "Seleziona &font..."
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Seleziona un file"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Seleziona tutto"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Seleziona un file"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -790,13 +790,13 @@ msgstr "Editor StringGrid"
 msgid "Strings Editor Dialog"
 msgstr "Finestra di dialogo editor delle stringhe"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Prova finestra di dialogo..."
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Prova Input"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Prova finestra di dialogo..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
