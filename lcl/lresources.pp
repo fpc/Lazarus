@@ -219,14 +219,14 @@ type
   end;
   
   
-  { TLazComponentQueue
+  { TCustomLazComponentQueue
     A queue to stream components, used for multithreading or network.
     The function ConvertComponentAsString writes a component in binary format
     with a leading size information (using WriteLRSInt64MB).
     When streaming components over network, they will arrive in chunks.
-    TLazComponentQueue tells you, if a whole component has arrived and is ready
+    TCustomLazComponentQueue tells you, if a whole component has arrived and is ready
     for reading. }
-  TLazComponentQueue = class(TComponent)
+  TCustomLazComponentQueue = class(TComponent)
   private
     FOnFindComponentClass: TFindComponentClassEvent;
   protected
@@ -235,12 +235,23 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Clear;
     function Write(const Buffer; Count: Longint): Longint;
+    function CopyFrom(AStream: TStream; Count: Longint): Longint;
     function HasComponent: Boolean; virtual;
-    function ReadComponent(var AComponent: TComponent; NewOwner: TComponent = nil): Boolean; virtual;
+    function ReadComponent(var AComponent: TComponent;
+                           NewOwner: TComponent = nil): Boolean; virtual;
     function ConvertComponentAsString(AComponent: TComponent): string;
     property OnFindComponentClass: TFindComponentClassEvent
                          read FOnFindComponentClass write FOnFindComponentClass;
+  end;
+  
+  { TLazComponentQueue }
+
+  TLazComponentQueue = class(TCustomLazComponentQueue)
+  published
+    property Name;
+    property OnFindComponentClass;
   end;
 
 var
@@ -3802,9 +3813,9 @@ begin
   Item^.Data:=AData;
 end;
 
-{ TLazComponentQueue }
+{ TCustomLazComponentQueue }
 
-function TLazComponentQueue.ReadComponentSize(out ComponentSize,
+function TCustomLazComponentQueue.ReadComponentSize(out ComponentSize,
   SizeLength: int64): Boolean;
 // returns true if there are enough bytes to read the ComponentSize
 //   and returns the ComponentSize
@@ -3835,7 +3846,8 @@ begin
   vaInt16: SizeLength:=2;
   vaInt32: SizeLength:=4;
   vaInt64: SizeLength:=8;
-  else exit;
+  else
+    raise EInOutError.Create('Invalid size type');
   end;
   if length(FBuffer)<=SizeLength then exit;
   // read the ComponentSize
@@ -3867,17 +3879,22 @@ begin
     raise EInOutError.Create('Size of data in queue is negative');
 end;
 
-constructor TLazComponentQueue.Create(TheOwner: TComponent);
+constructor TCustomLazComponentQueue.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 end;
 
-destructor TLazComponentQueue.Destroy;
+destructor TCustomLazComponentQueue.Destroy;
 begin
   inherited Destroy;
 end;
 
-function TLazComponentQueue.Write(const Buffer; Count: Longint): Longint;
+procedure TCustomLazComponentQueue.Clear;
+begin
+  FBuffer:='';
+end;
+
+function TCustomLazComponentQueue.Write(const Buffer; Count: Longint): Longint;
 var
   s: string;
 begin
@@ -3888,7 +3905,20 @@ begin
   Result:=length(s);
 end;
 
-function TLazComponentQueue.HasComponent: Boolean;
+function TCustomLazComponentQueue.CopyFrom(AStream: TStream; Count: Longint
+  ): Longint;
+var
+  OldBufferLength: Integer;
+begin
+  if Count<=0 then exit;
+  OldBufferLength:=length(FBuffer);
+  SetLength(FBuffer,OldBufferLength+Count);
+  Result:=AStream.Read(FBuffer[OldBufferLength+1],Count);
+  if Result<Count then
+    SetLength(FBuffer,OldBufferLength+Result);
+end;
+
+function TCustomLazComponentQueue.HasComponent: Boolean;
 var
   ComponentSize, SizeLength: int64;
 begin
@@ -3896,7 +3926,7 @@ begin
   Result:=length(FBuffer)-SizeLength>=ComponentSize;
 end;
 
-function TLazComponentQueue.ReadComponent(var AComponent: TComponent;
+function TCustomLazComponentQueue.ReadComponent(var AComponent: TComponent;
   NewOwner: TComponent): Boolean;
 var
   ComponentSize, SizeLength: int64;
@@ -3906,8 +3936,8 @@ begin
   if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
   if (length(FBuffer)-SizeLength<ComponentSize) then exit(false);
   ComponentEndPosition:=SizeLength+ComponentSize;
-  //writeln('TLazComponentQueue.ReadComponent ComponentSize=',ComponentSize,' SizeLength=',SizeLength,' ComponentEndPosition=',ComponentEndPosition);
-  //writeln('TLazComponentQueue.ReadComponent ',DbgStr(FBuffer));
+  //writeln('TCustomLazComponentQueue.ReadComponent ComponentSize=',ComponentSize,' SizeLength=',SizeLength,' ComponentEndPosition=',ComponentEndPosition);
+  //writeln('TCustomLazComponentQueue.ReadComponent ',DbgStr(FBuffer));
   // a complete component is in the buffer -> copy it to a stream
   AStream:=TMemoryStream.Create;
   try
@@ -3924,7 +3954,7 @@ begin
   end;
 end;
 
-function TLazComponentQueue.ConvertComponentAsString(AComponent: TComponent
+function TCustomLazComponentQueue.ConvertComponentAsString(AComponent: TComponent
   ): string;
 var
   AStream: TMemoryStream;
@@ -3939,13 +3969,13 @@ begin
     ComponentSize:=AStream.Size;
     WriteLRSInt64MB(AStream,ComponentSize);
     LengthSize:=AStream.Size-ComponentSize;
-    //writeln('TLazComponentQueue.ConvertComponentAsString ComponentSize=',ComponentSize,' LengthSize=',LengthSize);
+    //writeln('TCustomLazComponentQueue.ConvertComponentAsString ComponentSize=',ComponentSize,' LengthSize=',LengthSize);
 
     SetLength(Result,AStream.Size);
     // write size
     AStream.Position:=ComponentSize;
     AStream.Read(Result[1],LengthSize);
-    //writeln('TLazComponentQueue.ConvertComponentAsString ',hexstr(ord(Result[1]),2),' ',hexstr(ord(Result[2]),2),' ',hexstr(ord(Result[3]),2),' ',hexstr(ord(Result[4]),2));
+    //writeln('TCustomLazComponentQueue.ConvertComponentAsString ',hexstr(ord(Result[1]),2),' ',hexstr(ord(Result[2]),2),' ',hexstr(ord(Result[3]),2),' ',hexstr(ord(Result[4]),2));
     // write component
     AStream.Position:=0;
     AStream.Read(Result[LengthSize+1],ComponentSize);

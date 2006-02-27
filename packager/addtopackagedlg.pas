@@ -87,6 +87,12 @@ type
     NewComponentPage: TPage;
     NewDependPage: TPage;
     NewFilePage: TPage;
+    // new file page
+    NewFileTreeView: TTreeView;
+    NewFileDescriptionGroupBox: TGroupBox;
+    NewFileHelpLabel: TLabel;
+    NewFileOkButton: TButton;
+    NewFileCancelButton: TButton;
     // add unit page
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
@@ -100,12 +106,6 @@ type
     AddUnitUpdateButton: TButton;
     AddUnitButton: TButton;
     CancelAddUnitButton: TButton;
-    // new unit page
-    NewFileTreeView: TTreeView;
-    NewFileDescriptionGroupBox: TGroupBox;
-    NewFileHelpLabel: TLabel;
-    NewFileOkButton: TButton;
-    NewFileCancelButton: TButton;
     // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
@@ -1254,10 +1254,10 @@ begin
   with NoteBook do begin
     Name:='NoteBook';
     Parent:=Self;
-    Pages.Add(lisA2PAddUnit);
-    AddUnitPage:=Page[Pages.Count-1];
     Pages.Add(lisA2PNewFile);
     NewFilePage:=Page[Pages.Count-1];
+    Pages.Add(lisA2PAddUnit);
+    AddUnitPage:=Page[Pages.Count-1];
     Pages.Add(lisA2PNewComponent);
     NewComponentPage:=Page[Pages.Count-1];
     Pages.Add(lisProjAddNewRequirement);
