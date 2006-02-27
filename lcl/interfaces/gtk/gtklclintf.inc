@@ -34,7 +34,7 @@ function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition;
 var
   lEventHandler: PWaitHandleEventHandler absolute data;
 begin
-  writeln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
   lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
   result := true;
 end;
@@ -54,7 +54,7 @@ begin
   lEventHandler^.OnEvent := AEventHandler;
   lEventHandler^.GSourceID := g_io_add_watch(giochannel,
     AFlags, @waithandle_iocallback, lEventHandler);
-  writeln('TGtkWidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
   lEventHandler^.PrevHandler := nil;
   lEventHandler^.NextHandler := FWaitHandles;
   if FWaitHandles <> nil then
@@ -75,7 +75,7 @@ begin
     lEventHandler^.PrevHandler^.NextHandler := lEventHandler^.NextHandler;
   if lEventHandler^.NextHandler <> nil then
     lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
-  writeln('TGtkWidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8));
   Dispose(lEventHandler);
   AHandler := nil;
 end;
@@ -88,7 +88,7 @@ begin
   g_source_remove(lEventHandler^.GSourceID);
   lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
     NewFlags, @waithandle_iocallback, lEventHandler);
-  writeln('TGtkWidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //debugln('TGtkWidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8));
 end;
 
 type
