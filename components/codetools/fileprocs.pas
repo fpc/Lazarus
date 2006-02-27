@@ -473,16 +473,8 @@ begin
 end;
 
 function DirPathExists(DirectoryName: string): boolean;
-var sr: TSearchRec;
 begin
-  if (DirectoryName<>'')
-  and (DirectoryName[length(DirectoryName)]=PathDelim) then
-    DirectoryName:=copy(DirectoryName,1,length(DirectoryName)-1);
-  if FindFirst(DirectoryName,faAnyFile,sr)=0 then
-    Result:=((sr.Attr and faDirectory)>0)
-  else
-    Result:=false;
-  FindClose(sr);
+  Result:=Sysutils.DirectoryExists(ChompPathDelim(DirectoryName));
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
