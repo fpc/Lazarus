@@ -409,7 +409,7 @@ var
 begin
   //This uses TMessageBox class in MessageDialogs.inc
   if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
-    Buttons := [mbREtry, mbCancel]
+    Buttons := [mbRetry, mbCancel]
   else
   if (Flags and MB_YESNO) = MB_YESNO then
     Buttons := [mbYes, mbNo]
@@ -429,17 +429,17 @@ begin
     Buttons := [mbOK];
 
 
-  if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
-    DlgTYpe := mtConfirmation
-  else
   if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
     DlgTYpe := mtInformation
   else
-  if (Flags and MB_ICONERROR) = MB_ICONERROR then
-    DlgTYpe := mtError
-  else
   if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
     DlgTYpe := mtWarning
+  else
+  if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
+    DlgTYpe := mtConfirmation
+  else
+  if (Flags and MB_ICONERROR) = MB_ICONERROR then
+    DlgTYpe := mtError
   else
     DlgTYpe := mtCustom;
 
