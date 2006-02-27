@@ -33,7 +33,7 @@ uses
   // resource strings
   LCLStrConsts,
   // base classes
-  FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree,
+  FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, DynQueue,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, LCLResCache, GraphMath, FileCtrl, LMessages, LResources,

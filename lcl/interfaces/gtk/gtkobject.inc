@@ -1422,8 +1422,15 @@ begin
   if FSStrikeOut in AFont.Style then
     DescOpts := DescOpts + ' strikethrough';
 
-  PangoDescStr := PangoDescStr+DescOpts+' '+intToStr(AFont.Size);
+  PangoDescStr := PangoDescStr+DescOpts+' '+IntToStr(AFont.Size);
+  //DebugLn('TGtkWidgetSet.SetWidgetFont PangoDescStr="',PangoDescStr,'"');
   font_desc:=pango_font_description_from_string(PChar(PangoDescStr));
+  {Style:=gtk_widget_get_style(AWidget);
+  if Style<>nil then begin
+    font_desc:=Style^.font_desc;
+
+  end;}
+
   gtk_widget_modify_font(AWidget,font_desc);
   pango_font_description_free(font_desc);
 {$ENDIF}

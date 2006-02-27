@@ -1,26 +1,21 @@
 {
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 
-  Dynamic array support for
-  TCustomGrid, TDrawGrid and TStringGrid for Lazarus
-  Copyright (C) 2002  Jesus Reyes Aguilar.
-  email: jesusrmx@yahoo.com.mx
+  Author: Jesus Reyes
 
-
-THIS CONTROL IS FREEWARE - USE AS YOU WILL
-If you release sourcecode that uses this control, please credit me
-or leave this header intact.  If you release a compiled application
-that uses this code, please credit me somewhere in a little bitty
-location so I can at least get bragging rights!
-
-This code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-
-RELEASE DATE: 30-NOV-2002
-VERSION: 0.9.0
-
+  Abstract:
+    Dynamic array support for TCustomGrid, TDrawGrid and TStringGrid
 }
 
 unit DynamicArray;

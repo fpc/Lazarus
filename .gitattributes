@@ -1689,6 +1689,7 @@ lcl/dirsel.lrs svneol=native#text/pascal
 lcl/dirsel.pas svneol=native#text/pascal
 lcl/dynamicarray.pas svneol=native#text/pascal
 lcl/dynhasharray.pp svneol=native#text/pascal
+lcl/dynqueue.pas svneol=native#text/plain
 lcl/edbtnimg.lrs svneol=native#text/pascal
 lcl/editbtn.pas svneol=native#text/pascal
 lcl/extctrls.pp svneol=native#text/pascal
