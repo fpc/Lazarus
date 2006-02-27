@@ -324,7 +324,7 @@ begin
   while (p>0) do begin
     case Result[p] of
     PathDelim: exit;
-    '.': Result:=copy(Result,p-1,length(Result));
+    '.': Result:=copy(Result,1, p-1);
     else dec(p);
     end;
   end;
