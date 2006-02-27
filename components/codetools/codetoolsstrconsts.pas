@@ -176,6 +176,7 @@ ResourceString
   ctsSrcPathInitialization = 'SrcPath Initialization';
   ctsUnitPathInitialization = 'UnitPath Initialization';
   ctsNestedCommentsOn = 'Nested Comments On';
+  ctsFPDocSystemOn = 'enable FPDocSystem';
   ctsCompiler = 'Compiler';
   ctsDefineProcessorType = 'Define processor type';
   ctsRuntimeLibrary = 'Runtime library';

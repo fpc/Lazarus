@@ -27,7 +27,7 @@ uses
 type
   TDynamicQueueItem = record
     Size: integer;
-    Data: array[0..0] of integer;
+    Data: array[0..0] of integer;// type is irrelevant, the record is open ended
   end;
   PDynamicQueueItem = ^TDynamicQueueItem;
   ListOfPDynamicQueueItem = ^PDynamicQueueItem;
@@ -266,7 +266,7 @@ begin
     if TransferredCount<=0 then
       exit;
       
-    // transfer succeeded
+    // transfer succeeded (at least partially)
     inc(Result,TransferredCount); // bytes transferred
     dec(Count,TransferredCount);  // less to transfer
     if (not KeepData) then begin
@@ -293,7 +293,7 @@ begin
         end;
       end;
     end;
-    if Count=0 then exit;
+    if (Count=0) or (TransferredCount<CurCount) then exit;
 
     if TransferredCount=CurCount then begin
       // next item

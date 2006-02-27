@@ -155,6 +155,7 @@ type
     SynClass: TCustomSynClass;
     TheType:  TLazSyntaxHighlighter;
     FileExtensions: String; // divided by semicolon, e.g. 'pas;pp;inc'
+    DefaultFileExtensions: string;
     ColorScheme: String;
     SampleSource: String;
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of
@@ -164,6 +165,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function GetDefaultFilextension: String;
+    procedure SetBothFilextensions(const Extensions: string);
     function SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
   end;
 
@@ -750,6 +752,12 @@ begin
     Result := '';
 end;
 
+procedure TEditOptLanguageInfo.SetBothFilextensions(const Extensions: string);
+begin
+  FileExtensions:=Extensions;
+  DefaultFileExtensions:=Extensions;
+end;
+
 { TEditOptLangList }
 
 function TEditOptLangList.GetInfos(Index: Integer): TEditOptLanguageInfo;
@@ -787,7 +795,7 @@ begin
     TheType := lshFreePascal;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'pp;pas;inc;lpr;lrs;dpr;dpk';
+    SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
       '{ Comment }'#13 + '{$R- compiler directive}'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
@@ -822,7 +830,7 @@ begin
     TheType := lshHTML;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'htm;html';
+    SetBothFilextensions('htm;html');
     SampleSource :=
       '<html>'#13 + '<title>Lazarus Sample source for html</title>'#13 +
       '<body bgcolor=#ffffff background="bg.jpg">'#13 +
@@ -848,7 +856,7 @@ begin
     TheType := lshCPP;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'c;cc;cpp;h;hpp;hh';
+    SetBothFilextensions('c;cc;cpp;h;hpp;hh');
     SampleSource :=
       '/* Comment */'#13 + '#include <stdio.h>'#13 +
       '#include <stdlib.h>'#13 + #13 +
@@ -880,7 +888,7 @@ begin
     TheType := lshXML;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'xml;xsd;xsl;xslt;dtd';
+    SetBothFilextensions('xml;xsd;xsl;xslt;dtd');
     SampleSource :=
       '<?xml version="1.0"?>'#13 + '<!DOCTYPE root ['#13 +
       '  ]>'#13 + '<!-- Comment -->'#13 + '<root version="&test;">'#13 +
@@ -906,7 +914,7 @@ begin
     TheType := lshLFM;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'lfm;dfm;xfm';
+    SetBothFilextensions('lfm;dfm;xfm');
     SampleSource :=
       '{ Lazarus Form Definitions }'#13 + 'object TestForm: TTestForm'#13 +
       '  Left = 273'#13 + '  Top = 103'#13 +
@@ -935,7 +943,7 @@ begin
     TheType := lshPerl;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'pl;pm;cgi';
+    SetBothFilextensions('pl;pm;cgi');
     SampleSource :=
       '#!/usr/bin/perl'#13 + '# Perl sample code'#13 +
       ''#13 + '$i = "10";'#13 + 'print "$ENV{PATH}\n";'#13 +
@@ -963,7 +971,7 @@ begin
     TheType := lshJava;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'java';
+    SetBothFilextensions('java');
     SampleSource :=
       '/* Java syntax highlighting */'#13#10 +
       'import java.util.*;'#13#10 + #13#10 +
@@ -998,7 +1006,7 @@ begin
     TheType := lshBash;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'sh';
+    SetBothFilextensions('sh');
     SampleSource :=
       '#!/bin/bash'#13#13 +
       '# Bash syntax highlighting'#13#10 + 'set -x'#13#10 +
@@ -1031,7 +1039,7 @@ begin
     TheType := lshPython;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'py';
+    SetBothFilextensions('py');
     SampleSource :=
       '# Python syntax highlighting'#13#10 +
       'import math'#13#10 + #13#10 +
@@ -1064,7 +1072,7 @@ begin
     TheType := lshPHP;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    FileExtensions := 'php;php3;php4';
+    SetBothFilextensions('php;php3;php4');
     SampleSource :=
       '<?if ( ($HTTP_HOST == "www.lazarus.com") || ($HTTP_HOST == "lazarus.com") ){'#10 + '   HEADER("Location:http://www.lazarus.freepascal.org/\n\n");'#10
       + '};'#10 + '?>'#10 + #10;
@@ -1354,7 +1362,7 @@ begin
       fHighlighterList[i].FileExtensions :=
         XMLConfig.GetValue('EditorOptions/Color/Lang' +
         StrToValidXMLName(fHighlighterList[i].SynClass.GetLanguageName) +
-        '/FileExtensions/Value', fHighlighterList[i].FileExtensions)
+        '/FileExtensions/Value', fHighlighterList[i].DefaultFileExtensions)
       // color attributes are stored in the highlighters
     ;
 
@@ -1511,9 +1519,10 @@ begin
 
     // Color options
     for i := 0 to fHighlighterList.Count - 1 do
-      XMLConfig.SetValue('EditorOptions/Color/Lang' +
+      XMLConfig.SetDeleteValue('EditorOptions/Color/Lang' +
         StrToValidXMLName(fHighlighterList[i].SynClass.GetLanguageName) +
-        '/FileExtensions/Value', fHighlighterList[i].FileExtensions)
+        '/FileExtensions/Value', fHighlighterList[i].FileExtensions,
+        fHighlighterList[i].DefaultFileExtensions)
       // color attributes are stored in the highlighters
     ;
 
