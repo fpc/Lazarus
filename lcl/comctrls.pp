@@ -950,7 +950,7 @@ type
     property Font;
 //    property FullDrag;
 //    property GridLines;
-//    property HideSelection;
+    property HideSelection;
 //    property HotTrack;
 //    property HotTrackStyles;
 //    property HoverTime;

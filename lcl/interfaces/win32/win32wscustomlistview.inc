@@ -695,11 +695,14 @@ begin
   Windows.SetWindowLong(AHandle, GWL_STYLE, NewStyle);
   
   // fix header if needed
-  if NewStyle and LVS_NOSCROLL = 0 then Exit;
+  if (NewStyle and LVS_NOSCROLL)<> 0 then begin
+    if (OldStyle and LVS_NOSCROLL = 0)
+    or (NewStyle and LVS_REPORT <> 0)
+    then PositionHeader(AHandle);
+  end;
   
-  if (OldStyle and LVS_NOSCROLL = 0)
-  or (NewStyle and LVS_REPORT <> 0)
-  then PositionHeader(AHandle);
+  //Invalidate Listview, so that changes are made visible
+  Windows.InvalidateRect(AHandle, nil, true);
 end;
 
 procedure TWin32WSCustomListView.UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
@@ -713,6 +716,8 @@ begin
   if OldStyle = NewStyle then Exit;
   
   ListView_SetExtendedListViewStyle(AHandle, NewStyle);
-end;
 
+ //Invalidate Listview, so that changes are made visible
+  Windows.InvalidateRect(AHandle, nil, true);
+end;
 
