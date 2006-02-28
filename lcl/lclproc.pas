@@ -249,7 +249,7 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 // MG: Should be moved to the RTL
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
-function UTF8Length(p: PChar; Count: integer): integer;
+function UTF8Length(p: PChar; ByteCount: integer): integer;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(u: cardinal): string;
 function UTF8ToDoubleByteString(const s: string): string;
@@ -1886,16 +1886,16 @@ begin
   Result:=UTF8Length(PChar(s),length(s));
 end;
 
-function UTF8Length(p: PChar; Count: integer): integer;
+function UTF8Length(p: PChar; ByteCount: integer): integer;
 var
   CharLen: LongInt;
 begin
   Result:=0;
-  while (Count>0) do begin
+  while (ByteCount>0) do begin
     inc(Result);
     CharLen:=UTF8CharacterLength(p);
     inc(p,CharLen);
-    dec(Count,CharLen);
+    dec(ByteCount,CharLen);
   end;
 end;
 

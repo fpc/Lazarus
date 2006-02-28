@@ -170,6 +170,9 @@ type
   end;
 
   { list of TEditOptLanguageInfo }
+
+  { TEditOptLangList }
+
   TEditOptLangList = class(TList)
   private
     function GetInfos(Index: Integer): TEditOptLanguageInfo;
@@ -182,6 +185,7 @@ type
     function FindByHighlighter(Hilighter: TSynCustomHighlighter): Integer;
     function FindByType(AType: TLazSyntaxHighlighter): Integer;
     function GetDefaultFilextension(AType: TLazSyntaxHighlighter): String;
+    function GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo;
     property Items[Index: Integer]: TEditOptLanguageInfo read GetInfos;
       default;
   end;
@@ -1142,6 +1146,18 @@ begin
     Result := Items[i].GetDefaultFilextension
   else
     Result := '';
+end;
+
+function TEditOptLangList.GetInfoByType(AType: TLazSyntaxHighlighter
+  ): TEditOptLanguageInfo;
+var
+  i: LongInt;
+begin
+  i:=FindByType(AType);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
 end;
 
 { TEditorOptions }

@@ -402,6 +402,7 @@ type
     procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
+    procedure HighlighterClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
@@ -3411,6 +3412,25 @@ begin
     FOnEditorPropertiesClicked(Sender);
 end;
 
+procedure TSourceNotebook.HighlighterClicked(Sender: TObject);
+var
+  IDEMenuItem: TIDEMenuItem;
+  i: LongInt;
+  SrcEdit: TSourceEditor;
+  h: TLazSyntaxHighlighter;
+begin
+  if Sender is TIDEMenuItem then begin
+    IDEMenuItem:=TIDEMenuItem(Sender);
+    i:=IDEMenuItem.SectionIndex;
+    if (i>=ord(Low(TLazSyntaxHighlighter)))
+    and (i<=ord(High(TLazSyntaxHighlighter))) then begin
+      h:=TLazSyntaxHighlighter(i);
+      SrcEdit:=GetActiveSE;
+      SrcEdit.SyntaxHighlighterType:=h;
+    end;
+  end;
+end;
+
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
@@ -3621,10 +3641,29 @@ procedure TSourceNotebook.UpdateHighlightMenuItems;
 var
   h: TLazSyntaxHighlighter;
   i: Integer;
+  CurName: String;
+  CurCaption: String;
+  IDEMenuItem: TIDEMenuItem;
+  SrcEdit: TSourceEditor;
 begin
+  SrcEditMenuSectionHighlighter.ChildsAsSubMenu:=true;
+  SrcEdit:=GetActiveSE;
   i:=0;
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
-
+    CurName:='Highlighter'+IntToStr(i);
+    CurCaption:=LazSyntaxHighlighterNames[h];
+    if SrcEditMenuSectionHighlighter.Count=i then begin
+      // add new item
+      IDEMenuItem:=RegisterIDEMenuCommand(SrcEditMenuSectionHighlighter,
+                             CurName,CurCaption,@HighlighterClicked);
+    end else begin
+      IDEMenuItem:=SrcEditMenuSectionHighlighter[i];
+      IDEMenuItem.Caption:=CurCaption;
+      IDEMenuItem.OnClick:=@HighlighterClicked;
+    end;
+    if IDEMenuItem is TIDEMenuCommand then
+      TIDEMenuCommand(IDEMenuItem).Checked:=(SrcEdit<>nil)
+                                          and (SrcEdit.SyntaxHighlighterType=h);
     inc(i);
   end;
 end;

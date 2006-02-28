@@ -81,10 +81,7 @@ begin
   // Show splashform
   if ShowSplashScreen then begin
     SplashForm := TSplashForm.Create(nil);
-    with SplashForm do begin
-      Show;
-      Paint;
-    end;
+    SplashForm.Show;
     Application.ProcessMessages; // process splash paint message
   end;
 

@@ -4127,7 +4127,6 @@ var
   SrcEdit: TSourceEditor;
   OldFilename: String;
   NewResFilename: String;
-  NewHighlighter: TLazSyntaxHighlighter;
   AmbiguousFiles: TStringList;
   AmbiguousText: string;
   i: Integer;
