@@ -260,6 +260,8 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
+function UTF8Pos(const SearchForText, SearchInText: string): integer;
+function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
 
 function UTF16CharacterLength(p: PWideChar): integer;
 function UTF16Length(const s: widestring): integer;
@@ -2155,6 +2157,38 @@ begin
   end;
   CopyPart;
   SetLength(Result, Dest - PChar(Result));
+end;
+
+function UTF8Pos(const SearchForText, SearchInText: string): integer;
+// returns the character index, where the SearchForText starts in SearchInText
+var
+  p: LongInt;
+begin
+  p:=System.Pos(SearchForText,SearchInText);
+  if p>0 then
+    Result:=UTF8Length(PChar(SearchInText),p-1)+1
+  else
+    Result:=0;
+end;
+
+function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
+// returns substring
+var
+  StartBytePos: PChar;
+  EndBytePos: PChar;
+  MaxBytes: PtrInt;
+begin
+  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
+  if StartBytePos=nil then
+    Result:=''
+  else begin
+    MaxBytes:=PtrInt(PChar(s)+length(s)-StartBytePos);
+    EndBytePos:=UTF8CharStart(StartBytePos,MaxBytes,CharCount);
+    if EndBytePos=nil then
+      Result:=copy(s,StartBytePos-PChar(s)+1,MaxBytes)
+    else
+      Result:=copy(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
+  end;
 end;
 
 function UTF16CharacterLength(p: PWideChar): integer;
