@@ -36,7 +36,7 @@ type
     A queue for arbitrary data. That means first in first out.
 
     Push: put data in the queue
-    Pop:  fetch data from the queue (data is deleted from queue)
+    Pop:  fetch data from the queue (data is removed from queue)
     Top:  read data in the queue (data remains in the queue)
 
     This queue maintains internally a ring queue for pointers to data chunks of
@@ -49,7 +49,7 @@ type
     FTopIndex: integer; // first item in FItems
     FLastIndex: integer; // last item in FItems
     FMaximumBlockSize: integer;
-    FMinimumBlockSize: PtrInt;
+    FMinimumBlockSize: integer;
     FSize: int64;
     FTopItemSpace: integer; // space in top item
     FLastItemSpace: integer; // remaining space in last item
