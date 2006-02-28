@@ -207,34 +207,26 @@ end;
 procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
 var
   Widget: PGTKWidget;
-  LblWidget: PGtkWidget;
 begin
   Widget:= PGtkWidget(AWinControl.Handle);
-    {$IFDEF GTK2}
-  LblWidget := (PGtkBin(Widget)^.Child);
-  {$ELSE}
-  LblWidget := (pGtkBin(Widget)^.Child);
-  {$ENDIF}
-  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-  if LblWidget <> nil then
-    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-
+  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
-procedure TGtkWSButton.SetFont(const AWinControl: TWinControl; const AFont : TFont);
+procedure TGtkWSButton.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
 var
   Widget: PGTKWidget;
   LblWidget: PGtkWidget;
 begin
-  Widget:= PGtkWidget(AWinControl.Handle);
-    {$IFDEF GTK2}
-  LblWidget := (PGtkBin(Widget)^.Child);
-  {$ELSE}
-  LblWidget := (pGtkBin(Widget)^.Child);
-  {$ENDIF}
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
 
-//  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  Widget:= PGtkWidget(AWinControl.Handle);
+  LblWidget := (pGtkBin(Widget)^.Child);
+
   if LblWidget<>nil then begin
-    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
   end;
 end;
@@ -412,23 +404,12 @@ end;
 
 procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);
 var
-  WidgetInfo: PWidgetInfo;
-  BitBtnInfo: PBitBtnWidgetInfo;
   Widget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
   Widget:= PGtkWidget(AWinControl.Handle);
-  WidgetInfo := GetWidgetInfo(Widget);
-  BitBtnInfo := WidgetInfo^.UserData;
-  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, AWinControl.color,
+  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-
-  if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
-  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
-    AWinControl.color,
-    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-
-
 end;
 
 procedure TGtkWSBitBtn.SetFont(const AWinControl: TWinControl;
@@ -439,26 +420,18 @@ var
   Widget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-
-  if  AFont.IsDefault then exit;
+  if AFont.IsDefault then exit;
+  
   Widget:= PGtkWidget(AWinControl.Handle);
   WidgetInfo := GetWidgetInfo(Widget);
   BitBtnInfo := WidgetInfo^.UserData;
 
-
-//  GtkWidgetSet.SetWidgetColor(Widget, AWinControl.font.color, clNone,
-//     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-
   if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
   GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AWinControl.font.color,
-    AWinControl.color,
+    clNone,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
   GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
-
-
 end;
-
-
 
 procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);

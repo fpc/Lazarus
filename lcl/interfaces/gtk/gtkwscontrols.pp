@@ -399,9 +399,9 @@ begin
     exit;
 
   if AFont.IsDefault then exit;
-  DebugLn('TGtkWSWinControl.SetFont ',DbgSName(AWinControl));
+  //DebugLn('TGtkWSWinControl.SetFont ',DbgSName(AWinControl));
   GtkWidgetSet.SetWidgetFont(Widget,Afont);
-  GtkWidgetSet.SetWidgetColor(Widget,AWinControl.font.color, clNone,
+  GtkWidgetSet.SetWidgetColor(Widget,AWinControl.Font.Color,clNone,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;

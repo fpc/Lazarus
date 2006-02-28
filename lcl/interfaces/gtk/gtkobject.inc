@@ -1325,11 +1325,13 @@ procedure TGtkWidgetSet.SetWidgetColor(const AWidget: PGtkWidget;
 // Since we don't have good fallbacks yet, and many controls use SystemColors
 // for Delphi compatibility: ignore SystemColors.
 var
-  WindowStyle: PGtkStyle;
   i: integer;
   xfg,xbg: TGDKColor;
   ChangeFGColor: Boolean;
   ChangeBGColor: Boolean;
+  {$IFDEF Gtk1}
+  WindowStyle: PGtkStyle;
+  {$ENDIF}
 begin
   ChangeFGColor:=((FGColor and SYS_COLOR_BASE)=0) and (FGColor<>clNone);
   ChangeBGColor:=((BGColor and SYS_COLOR_BASE)=0) and (BGColor<>clNone);
@@ -1343,6 +1345,8 @@ begin
   {$IFDEF DisableWidgetColor}
   exit;
   {$ENDIF}
+  
+  {$IFDEF Gtk1}
   if (GTK_WIDGET_REALIZED(AWidget)) then begin
     WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
   end else begin
@@ -1351,26 +1355,38 @@ begin
   if (Windowstyle = nil)  then begin
     Windowstyle := gtk_style_new;
   end;
+  {$ENDIF}
 
   //DebugLn('TGtkWidgetSet.SetWidgetColor ',GetWidgetDebugReport(AWidget),' ',hexstr(FGColor,8),'  ',hexstr(BGColor,8));
   //RaiseGDBException('');
   if ChangeFGColor then begin
     xfg:=AllocGDKColor(colorToRGB(FGColor));
-    for i := 0 to 4 do begin
+    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
       if i in mask then begin
+        {$IFDEF Gtk1}
         windowStyle^.fg[i]:=xfg;
+        {$ELSE}
+        //DebugLn('TGtkWidgetSet.SetWidgetColor ',dbgs(i));
+        gtk_widget_modify_fg(AWidget, i ,@xfg);
+        {$ENDIF}
       end;
     end;
   end;
   if ChangeBGColor then begin
     xbg:=AllocGDKColor(colorToRGB(BGColor));
-    for i := 0 to 4 do begin
+    for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
       if i in mask then begin
+        {$IFDEF Gtk1}
         windowStyle^.bg[i]:=xbg;
+        {$ELSE}
+        gtk_widget_modify_bg(AWidget, i ,@xbg);
+        {$ENDIF}
       end;
     end;
   end;
+  {$IFDEF Gtk1}
   gtk_widget_set_style(aWidget,windowStyle);
+  {$ENDIF}
 end;
 
 
