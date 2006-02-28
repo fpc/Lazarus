@@ -9,14 +9,14 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   Position = poScreenCenter
   HorzScrollBar.Page = 429
   VertScrollBar.Page = 374
-  Left = 532
+  Left = 738
   Height = 375
-  Top = 281
+  Top = 236
   Width = 430
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 4
+    PageIndex = 1
     Height = 338
     Width = 430
     object ApplicationPage: TPage
@@ -104,6 +104,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Caption = 'FormsPage'
       ClientWidth = 426
       ClientHeight = 308
+      OnResize = FormsPageResize
       Left = 2
       Height = 308
       Top = 28
@@ -121,28 +122,39 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Caption = 'FormsAvailFormsLabel'
         Color = clNone
         ParentColor = False
-        Left = 252
+        AnchorSideLeft.Control = FormsAvailFormsListBox
+        Left = 240
         Height = 13
         Top = 10
         Width = 129
       end
       object FormsAutoCreatedListBox: TListBox
+        Anchors = [akTop, akLeft, akBottom]
+        BorderSpacing.Around = 6
         MultiSelect = True
         TabOrder = 0
         TopIndex = -1
+        AnchorSideLeft.Control = FormsMoveAutoCreatedFormUpBtn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
         Left = 36
-        Height = 242
+        Height = 240
         Top = 32
         Width = 168
       end
       object FormsAvailFormsListBox: TListBox
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         MultiSelect = True
         TabOrder = 1
         TopIndex = -1
-        Left = 244
-        Height = 242
+        AnchorSideLeft.Control = FormsAddToAutoCreatedFormsBtn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Control = FormsAutoCreateNewFormsCheckBox
+        Left = 240
+        Height = 240
         Top = 32
-        Width = 168
+        Width = 172
       end
       object FormsMoveAutoCreatedFormUpBtn: TArrow
         ArrowType = atUp
@@ -162,15 +174,19 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       end
       object FormsRemoveFromAutoCreatedFormsBtn: TArrow
         ArrowType = atRight
+        BorderSpacing.Around = 6
         OnClick = FormsRemoveFromAutoCreatedFormsBtnClick
-        Left = 212
+        AnchorSideLeft.Control = FormsAutoCreatedListBox
+        AnchorSideLeft.Side = asrBottom
+        Left = 210
         Height = 24
         Top = 32
         Width = 24
       end
       object FormsAddToAutoCreatedFormsBtn: TArrow
         OnClick = FormsAddToAutoCreatedFormsBtnClick
-        Left = 212
+        AnchorSideLeft.Control = FormsRemoveFromAutoCreatedFormsBtn
+        Left = 210
         Height = 24
         Top = 60
         Width = 24

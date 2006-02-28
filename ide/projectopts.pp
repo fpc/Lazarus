@@ -100,6 +100,7 @@ type
     OKButton: TButton;
     CancelButton: TButton;
 
+    procedure FormsPageResize(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
@@ -358,6 +359,17 @@ begin
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
+procedure TProjectOptionsDialog.FormsPageResize(Sender: TObject);
+begin
+  with FormsAutoCreatedListBox do
+  begin
+    Width  := (FormsPage.Width - Left * 2 - 6) div 2;
+  end;
+
+  with FormsAvailFormsLabel do
+    Left := FormsAvailFormsListBox.Left;
+end;
+
 procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
@@ -584,30 +596,6 @@ end;
 
 procedure TProjectOptionsDialog.ProjectOptionsResize(Sender: TObject);
 begin
-  with FormsAutoCreatedListBox do
-  begin
-    Height := FormsAutoCreateNewFormsCheckBox.Top - Top - 6;
-    Left   := FormsMoveAutoCreatedFormUpBtn.Left +
-      FormsMoveAutoCreatedFormUpBtn.Width + 6;
-    Width  := (FormsPage.Width - Left * 2 - 6) div 2;
-  end;
-
-  with FormsAddToAutoCreatedFormsBtn do
-    Left := FormsAutoCreatedListBox.Left + FormsAutoCreatedListBox.Width + 6;
-
-  with FormsRemoveFromAutoCreatedFormsBtn do
-    Left := FormsAddToAutoCreatedFormsBtn.Left;
-
-  with FormsAvailFormsListBox do
-  begin
-    Height := FormsAutoCreatedListBox.Height;
-    Left   := FormsAddToAutoCreatedFormsBtn.Left +
-      FormsAddToAutoCreatedFormsBtn.Width + 6;
-    Width  := FormsAutoCreatedListBox.Width;
-  end;
-
-  with FormsAvailFormsLabel do
-    Left := FormsAvailFormsListBox.Left;
 end;
 
 procedure TProjectOptionsDialog.SelectOnlyThisAutoCreateForm(Index: Integer);
