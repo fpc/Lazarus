@@ -182,7 +182,7 @@ type
          var Special: boolean; var FG, BG: TColor);
     Function RefreshEditorSettings: Boolean;
     procedure SetSyntaxHighlighterType(
-         ASyntaxHighlighterType: TLazSyntaxHighlighter);
+                                 ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
     procedure OnCodeBufferChanged(Sender: TSourceLog;
@@ -469,6 +469,7 @@ type
 
     // PopupMenu
     procedure BuildPopupMenu;
+    procedure UpdateHighlightMenuItems;
     procedure RemoveUserDefinedMenuItems;
     function AddUserDefinedPopupMenuItem(const NewCaption: string;
                                      const NewEnabled: boolean;
@@ -886,6 +887,7 @@ begin
                                                   uemShowUnitInfo);
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SubPath,
                                         'EditorProperties',uemEditorProperties);
+  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(SubPath,'Highlighter');
 end;
 
 { TSourceEditor }
@@ -1836,7 +1838,6 @@ end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
 begin
-//writeln('[TSourceEditor.SetErrorLine] ',NewLine,',',fErrorLine);
   if fErrorLine=NewLine then exit;
   fErrorLine:=NewLine;
   fErrorColumn:=EditorComponent.CaretX;
@@ -3436,9 +3437,10 @@ begin
   if ASrcEdit=nil then exit;
   EditorComp:=ASrcEdit.EditorComponent;
 
-  // readonly
+  // Readonly, ShowLineNumbers
   SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
   SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
+  UpdateHighlightMenuItems;
 
   // bookmarks
   for BookMarkID:=0 to 9 do begin
@@ -3613,6 +3615,18 @@ begin
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
   SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
+end;
+
+procedure TSourceNotebook.UpdateHighlightMenuItems;
+var
+  h: TLazSyntaxHighlighter;
+  i: Integer;
+begin
+  i:=0;
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
+
+    inc(i);
+  end;
 end;
 
 procedure TSourceNotebook.RemoveUserDefinedMenuItems;

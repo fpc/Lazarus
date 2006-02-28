@@ -3399,9 +3399,9 @@ begin
     ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
   // enable FPDocSystem to find compiler functions like writeln and readln
-  DefTempl:=TDefineTemplate.Create('FPDocSystem',
+  {DefTempl:=TDefineTemplate.Create('FPDocSystem',
     ctsFPDocSystemOn,'FPDocSystem','',da_DefineRecurse);
-  MainDir.AddChild(DefTempl);
+  MainDir.AddChild(DefTempl);}
 
   // compiler
   CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',

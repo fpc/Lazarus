@@ -364,8 +364,10 @@ var
   SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
   // Source Editor: Set Bookmarks Submenu
   SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-  // Source Editor: Flags section
+  // Source Editor: Flags and options section
   SrcEditMenuSectionFlags: TIDEMenuSection;
+    // Source Editor: Highlighter section
+    SrcEditMenuSectionHighlighter: TIDEMenuSection;
   // Source Editor: Debug submenu
   SrcEditSubMenuDebug: TIDEMenuSection;
   // Source Editor: Move Page section

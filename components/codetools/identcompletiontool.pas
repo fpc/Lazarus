@@ -841,7 +841,7 @@ begin
         nil,
         nil,
         ctnProcedure);
-    NewItem.ParamList:='various';
+    NewItem.ParamList:='Args : Arguments';
     CurrentIdentifierList.Add(NewItem);
 
     // begin..end -> add 'writeln'
@@ -854,7 +854,31 @@ begin
         nil,
         nil,
         ctnProcedure);
-    NewItem.ParamList:='various';
+    NewItem.ParamList:='Args : Arguments';
+    CurrentIdentifierList.Add(NewItem);
+
+    // begin..end -> add 'read'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        3,
+        'Read',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
+    CurrentIdentifierList.Add(NewItem);
+
+    // begin..end -> add 'readln'
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        3,
+        'ReadLn',
+        StatementLevel,
+        nil,
+        nil,
+        ctnProcedure);
     CurrentIdentifierList.Add(NewItem);
 
     if Context.Tool.NodeIsInAMethod(Context.Node)

@@ -3653,7 +3653,7 @@ begin
       SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
     else
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
-                         SrcEdit.SyntaxHighlighterType);
+                                                 SrcEdit.SyntaxHighlighterType);
   end;
   AnUnitInfo.ReadUnitNameFromSource(true);
   SaveAsFilename:=AnUnitInfo.UnitName;
@@ -4267,14 +4267,11 @@ begin
 
   // change syntax highlighter
   if not AnUnitInfo.CustomHighlighter then begin
-    NewHighlighter:=
-      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
-    if NewHighlighter<>AnUnitInfo.SyntaxHighlighter then begin
-      AnUnitInfo.SyntaxHighlighter:=NewHighlighter;
-      if SrcEdit<>nil then
-        SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-    end;
+    AnUnitInfo.SyntaxHighlighter:=
+                   ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
   end;
+  if (SrcEdit<>nil) then
+    SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
 
   // save file
   Result:=DoSaveCodeBufferToFile(NewSource,NewSource.Filename,
