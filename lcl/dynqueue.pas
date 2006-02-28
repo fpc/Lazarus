@@ -22,7 +22,7 @@ unit DynQueue;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, LCLProc;
   
 type
   TDynamicQueueItem = record
@@ -65,6 +65,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure ConsistencyCheck;
+    procedure WriteDebugReport(WriteData: Boolean);
     function Push(const Buffer; Count: integer): integer;// add to end of queue
     function Push(AStream: TStream; Count: integer): integer;// add to end of queue
     function Pop(var Buffer; Count: integer): integer; // read from start of queue, remove from queue
@@ -105,7 +106,7 @@ begin
     NewCapacity:=NewCapacity*2;
   NewSize:=NewCapacity*SizeOf(Pointer);
   GetMem(NewItems,NewSize);
-  FillChar(NewItems,NewSize,0);
+  FillChar(NewItems^,NewSize,0);
 
   // copy old items
   DestIndex:=0;
@@ -123,6 +124,7 @@ begin
   FTopIndex:=0;
   FLastIndex:=DestIndex;
   FItems:=NewItems;
+  FItemCapacity:=NewCapacity;
 end;
 
 procedure TDynamicDataQueue.AddItem(ItemSize: integer);
@@ -151,11 +153,12 @@ begin
         NewIndex:=0;
     end;
   end;
-  if (FItems=nil) or (FItems[NewIndex]<>nil) then RaiseInconsistency;
+  if (FItems=nil) then RaiseInconsistency;
+  if (FItems[NewIndex]<>nil) then RaiseInconsistency;
   
   FLastIndex:=NewIndex;
   GetMem(FItems[FLastIndex],SizeOf(TDynamicQueueItem.Size)+ItemSize);
-  FItems[FLastIndex]^.Size:=Size;
+  FItems[FLastIndex]^.Size:=ItemSize;
 end;
 
 function TDynamicDataQueue.CalculateItemSize(ItemSize: integer): integer;
@@ -236,7 +239,7 @@ begin
   Result:=0;
   if Count<=0 then exit;
   ReadIndex:=FTopIndex;
-  
+
   while Count>0 do begin
     if FItems=nil then exit; // no data
     
@@ -259,7 +262,7 @@ begin
 
     // beware: writing to a stream can raise an exception
     if Dest<>nil then begin
-      System.Move(Source^,Dest^,CurCount);
+      System.Move(Source^,Dest[Result],CurCount);
       TransferredCount:=CurCount;
     end else
       TransferredCount:=AStream.Write(Dest^,CurCount);
@@ -381,11 +384,15 @@ procedure TDynamicDataQueue.ConsistencyCheck;
 var
   i: LongInt;
   RealSize: int64;
+  CurSize: LongInt;
 begin
   if Size<0 then Error('');
+  if FMinimumBlockSize>FMaximumBlockSize then Error('');
+  if FMinimumBlockSize<16 then Error('');
   if (FItems=nil) then begin
     if Size<>0 then Error('');
   end else begin
+    if FItemCapacity<=0 then Error('');
     if Size=0 then Error('');
     if FTopIndex<0 then Error('');
     if FLastIndex<0 then Error('');
@@ -398,7 +405,12 @@ begin
     repeat
       if FItems[i]=nil then Error('');
       if FItems[i]^.Size<=0 then Error('');
-      inc(RealSize,FItems[i]^.Size);
+      CurSize:=FItems[i]^.Size;
+      if FTopIndex=i then
+        dec(CurSize,FTopItemSpace);
+      if FLastIndex=i then
+        dec(CurSize,FLastItemSpace);
+      inc(RealSize,CurSize);
       if i=FLastIndex then break;
       inc(i);
       if i=FItemCapacity then i:=0;
@@ -421,6 +433,41 @@ begin
     if FItems[FTopIndex]^.Size<=FTopItemSpace then Error('');
     if (FTopIndex=FLastIndex)
     and (FTopItemSpace>=FItems[FTopIndex]^.Size-FLastItemSpace) then Error('');
+  end;
+end;
+
+procedure TDynamicDataQueue.WriteDebugReport(WriteData: Boolean);
+var
+  i: LongInt;
+  DataCount: LongInt;
+  DataOffset: Integer;
+begin
+  writeln('TDynamicDataQueue.WriteDebugReport FItemCapacity=',FItemCapacity,
+    ' FTopIndex=',FTopIndex,' FTopItemSpace=',FTopItemSpace,
+    ' FLastIndex=',FLastIndex,' FLastItemSpace=',FLastItemSpace,
+    ' Size=',Size,
+    ' MinimumBlockSize=',MinimumBlockSize,
+    ' MaximumBlockSize=',MaximumBlockSize);
+  if FItems<>nil then begin
+    i:=FTopIndex;
+    repeat
+      DataCount:=FItems[i]^.Size;
+      DataOffset:=0;
+      if FTopIndex=i then begin
+        dec(DataCount,FTopItemSpace);
+        inc(DataOffset,FTopItemSpace);
+      end;
+      if i=FLastIndex then
+        dec(DataCount,FLastItemSpace);
+      writeln(i,' Item=',HexStr(Cardinal(FItems[i]),8),' Size=',fItems[i]^.Size,' Start=',DataOffset,' Count=',DataCount);
+      if WriteData then begin
+        writeln(dbgMemRange(PByte(@FItems[i]^.Data)+DataOffset,DataCount));
+      end;
+      
+      if i=FLastIndex then break;
+      inc(i);
+      if i=FItemCapacity then i:=0;
+    until false;
   end;
 end;
 
