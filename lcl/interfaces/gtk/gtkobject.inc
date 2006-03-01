@@ -1363,12 +1363,19 @@ begin
     xfg:=AllocGDKColor(colorToRGB(FGColor));
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
       if i in mask then begin
-        {$IFDEF Gtk1}
-        windowStyle^.fg[i]:=xfg;
-        {$ELSE}
-        //DebugLn('TGtkWidgetSet.SetWidgetColor ',dbgs(i));
-        gtk_widget_modify_fg(AWidget, i ,@xfg);
-        {$ENDIF}
+        if GTK_STYLE_TEXT in mask then begin
+          {$IFDEF Gtk1}
+          windowStyle^.text[i]:=xfg;
+          {$ELSE}
+          gtk_widget_modify_text(AWidget, i ,@xfg);
+          {$ENDIF}
+        end else begin
+          {$IFDEF Gtk1}
+          windowStyle^.fg[i]:=xfg;
+          {$ELSE}
+          gtk_widget_modify_fg(AWidget, i ,@xfg);
+          {$ENDIF}
+        end;
       end;
     end;
   end;
@@ -1376,11 +1383,19 @@ begin
     xbg:=AllocGDKColor(colorToRGB(BGColor));
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do begin
       if i in mask then begin
-        {$IFDEF Gtk1}
-        windowStyle^.bg[i]:=xbg;
-        {$ELSE}
-        gtk_widget_modify_bg(AWidget, i ,@xbg);
-        {$ENDIF}
+        if GTK_STYLE_BASE in mask then begin
+          {$IFDEF Gtk1}
+          windowStyle^.base[i]:=xbg;
+          {$ELSE}
+          gtk_widget_modify_base(AWidget, i ,@xbg);
+          {$ENDIF}
+        end else begin
+          {$IFDEF Gtk1}
+          windowStyle^.bg[i]:=xbg;
+          {$ELSE}
+          gtk_widget_modify_bg(AWidget, i ,@xbg);
+          {$ENDIF}
+        end;
       end;
     end;
   end;

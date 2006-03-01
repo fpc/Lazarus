@@ -374,6 +374,7 @@ var
   TXTStyle : TTextStyle;
   SIndex : Longint;
   TMP : String;
+  //xBevel :  tBevelCut;
 begin
   UpdateState(false);
   if FGlyph=nil then exit;
@@ -388,12 +389,17 @@ begin
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
 
-  if not Transparent then
-  begin
+  {if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
+    if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
+                                            else xBevel := bvRaised;
+    Canvas.Frame3d(PaintRect, 1, xBevel);
+    InflateRect(PaintRect, -1, -1);
+  end;}
+  if not Transparent then begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(PaintRect);
   end;
-  
+
   // do not draw anything if flat and mouse not in control (simplified)
   if (FLastDrawFlags and DFCS_FLAT) = 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
@@ -512,9 +518,7 @@ begin
       Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
-    end
-    else
-      Canvas.Font.Color := clBtnText;
+    end;
     //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
   end;

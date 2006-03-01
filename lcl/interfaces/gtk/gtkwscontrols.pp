@@ -400,10 +400,11 @@ begin
 
   if AFont.IsDefault then exit;
   //DebugLn('TGtkWSWinControl.SetFont ',DbgSName(AWinControl));
-  GtkWidgetSet.SetWidgetFont(Widget,Afont);
+  GtkWidgetSet.SetWidgetFont(Widget,AFont);
   GtkWidgetSet.SetWidgetColor(Widget,AWinControl.Font.Color,clNone,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED
+                               {$IFDEF GTK2},GTK_STYLE_TEXT{$ENDIF}]);
 end;
 
 procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;

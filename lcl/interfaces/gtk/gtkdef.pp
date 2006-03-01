@@ -223,7 +223,8 @@ type
     wwiNotOnParentsClientArea
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
-  tGtkStateEnum = set of byte;
+  tGtkStateEnumRange = 0..31;
+  tGtkStateEnum = set of tGtkStateEnumRange;
 
   // Info needed by the API of a HWND (=Widget) 
   PWidgetInfo = ^TWidgetInfo;
@@ -280,6 +281,11 @@ const
 const
   GdkTrue = {$IFDEF Gtk2}true{$ELSE}1{$ENDIF};
   GdkFalse = {$IFDEF Gtk2}false{$ELSE}0{$ENDIF};
+
+
+  GTK_STYLE_BASE = 20;// see GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE,
+  GTK_STYLE_TEXT = 21;// see tGtkStateEnum, and see TGtkWidgetSet.SetWidgetColor
+
 
 type
   TGdkPixBufBuffer = {$IFDEF Gtk2}Pguchar{$ELSE}PChar{$ENDIF};

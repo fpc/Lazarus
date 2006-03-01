@@ -36,7 +36,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, FPCAdds, TypInfo, LCLProc, LCLStrConsts;
+  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts;
 
 type
   { TLResourceList }
@@ -221,16 +221,16 @@ type
   
   { TCustomLazComponentQueue
     A queue to stream components, used for multithreading or network.
-    The function ConvertComponentAsString writes a component in binary format
+    The function ConvertComponentAsString converts a component to binary format
     with a leading size information (using WriteLRSInt64MB).
     When streaming components over network, they will arrive in chunks.
-    TCustomLazComponentQueue tells you, if a whole component has arrived and is ready
-    for reading. }
+    TCustomLazComponentQueue tells you, if a whole component has arrived and if
+    it has completely arrived. }
   TCustomLazComponentQueue = class(TComponent)
   private
     FOnFindComponentClass: TFindComponentClassEvent;
   protected
-    FBuffer: string;
+    FQueue: TDynamicDataQueue;
     function ReadComponentSize(out ComponentSize, SizeLength: int64): Boolean; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -3822,9 +3822,10 @@ function TCustomLazComponentQueue.ReadComponentSize(out ComponentSize,
 //   and returns the size (SizeLength) needed to store the ComponentSize
 
   procedure ReadBytes(var p);
+  var a: array[1..9] of byte;
   begin
-    System.Move(FBuffer[2],p,SizeLength);
-    //writeln('ReadBytes ',hexstr(ord(FBuffer[1]),2),' ',hexstr(ord(FBuffer[2]),2),' ',hexstr(ord(FBuffer[3]),2),' ',hexstr(ord(FBuffer[4]),2),' SizeLength=',SizeLength,' ',hexstr(PByte(@p)[0],2),' ',hexstr(PByte(@p)[1],2));
+    FQueue.Top(a[1],1+SizeLength);
+    System.Move(a[2],p,SizeLength);
     {$IFDEF FPC_BIG_ENDIAN}
     ReverseBytes(@p,SizeLength);
     {$ENDIF}
@@ -3839,8 +3840,8 @@ var
 begin
   Result:=false;
   // check if there are enough bytes
-  if (length(FBuffer)<2) then exit;
-  vt:=TValueType(ord(FBuffer[1]));
+  if (FQueue.Size<2) then exit;
+  FQueue.Top(vt,1);
   case vt of
   vaInt8: SizeLength:=1;
   vaInt16: SizeLength:=2;
@@ -3849,7 +3850,7 @@ begin
   else
     raise EInOutError.Create('Invalid size type');
   end;
-  if length(FBuffer)<=SizeLength then exit;
+  if FQueue.Size<1+SizeLength then exit; // need more data
   // read the ComponentSize
   Result:=true;
   case vt of
@@ -3882,40 +3883,29 @@ end;
 constructor TCustomLazComponentQueue.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FQueue:=TDynamicDataQueue.Create;
 end;
 
 destructor TCustomLazComponentQueue.Destroy;
 begin
+  FreeAndNil(FQueue);
   inherited Destroy;
 end;
 
 procedure TCustomLazComponentQueue.Clear;
 begin
-  FBuffer:='';
+  FQueue.Clear;
 end;
 
 function TCustomLazComponentQueue.Write(const Buffer; Count: Longint): Longint;
-var
-  s: string;
 begin
-  if Count=0 then exit;
-  SetLength(s,Count);
-  System.Move(Buffer,s[1],length(s));
-  FBuffer:=FBuffer+s;
-  Result:=length(s);
+  Result:=FQueue.Push(Buffer,Count);
 end;
 
 function TCustomLazComponentQueue.CopyFrom(AStream: TStream; Count: Longint
   ): Longint;
-var
-  OldBufferLength: Integer;
 begin
-  if Count<=0 then exit;
-  OldBufferLength:=length(FBuffer);
-  SetLength(FBuffer,OldBufferLength+Count);
-  Result:=AStream.Read(FBuffer[OldBufferLength+1],Count);
-  if Result<Count then
-    SetLength(FBuffer,OldBufferLength+Result);
+  Result:=FQueue.Push(AStream,Count);
 end;
 
 function TCustomLazComponentQueue.HasComponent: Boolean;
@@ -3923,32 +3913,27 @@ var
   ComponentSize, SizeLength: int64;
 begin
   if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
-  Result:=length(FBuffer)-SizeLength>=ComponentSize;
+  Result:=FQueue.Size-SizeLength>=ComponentSize;
 end;
 
 function TCustomLazComponentQueue.ReadComponent(var AComponent: TComponent;
   NewOwner: TComponent): Boolean;
 var
   ComponentSize, SizeLength: int64;
-  ComponentEndPosition: Integer;
   AStream: TMemoryStream;
 begin
   if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
-  if (length(FBuffer)-SizeLength<ComponentSize) then exit(false);
-  ComponentEndPosition:=SizeLength+ComponentSize;
-  //writeln('TCustomLazComponentQueue.ReadComponent ComponentSize=',ComponentSize,' SizeLength=',SizeLength,' ComponentEndPosition=',ComponentEndPosition);
-  //writeln('TCustomLazComponentQueue.ReadComponent ',DbgStr(FBuffer));
+  if (FQueue.Size-SizeLength<ComponentSize) then exit(false);
   // a complete component is in the buffer -> copy it to a stream
   AStream:=TMemoryStream.Create;
   try
-    AStream.Size:=ComponentSize;
-    AStream.Write(FBuffer[SizeLength+1],ComponentSize);
-    // read the component
-    AStream.Position:=0;
+    // copy component to stream
+    AStream.Size:=SizeLength+ComponentSize;
+    FQueue.Pop(AStream,SizeLength+ComponentSize);
+    // create/read the component
+    AStream.Position:=SizeLength;
     ReadComponentFromBinaryStream(AStream,AComponent,
                                   OnFindComponentClass,NewOwner);
-    // remove the component from the buffer
-    FBuffer:=copy(FBuffer,ComponentEndPosition+1,length(FBuffer));
   finally
     AStream.Free;
   end;

@@ -2436,15 +2436,16 @@ var
     aDC:=TDeviceContext(DC);
     DCOrigin:=GetDCOffset(aDC);
 
-    aStyle := GetStyle(lgsButton);
+    aStyle := gtk_widget_get_style(Widget);
+    if aStyle=nil then
+      aStyle := GetStyle(lgsButton);
     If aStyle = nil then
-      aStyle := gtk_widget_get_style(Widget)
-    else begin
-      If State = GTK_STATE_SELECTED then
+       aStyle := GetStyle(lgsGTK_Default);
+
+    If State = GTK_STATE_SELECTED then
         State := GTK_STATE_ACTIVE;
       // MG: You can't assign a style to any window. Why it is needed anyway?
       //aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
-    end;
 
     if aStyle<>nil then begin
       If (Shadow=GTK_SHADOW_NONE) then

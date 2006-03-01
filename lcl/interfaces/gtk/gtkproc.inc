@@ -7540,7 +7540,6 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
   MainWidget: PGtkWidget;
-  FontHandle: HFONT;
   FreeFontName: boolean;
   FreeFontSetName: boolean;
 
@@ -7565,6 +7564,7 @@ var
       RCStyle^.font_name:=g_strdup(PChar(FontDesc.xlfd));
       g_free(RCStyle^.fontset_name);
       RCStyle^.fontset_name:=g_strdup(PChar(FontDesc.xlfd));
+      FreeFontName:=true;
 
       //DebugLn('UpdateWidgetStyleOfControl.SetRCFont ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
     end;
@@ -7644,10 +7644,8 @@ begin
     or GtkWidgetIsA(Widget,gtk_check_button_get_type))
     and (not AWinControl.Font.IsDefault)
     then begin
-       // allocate font
-       FontHandle:=AWinControl.Font.Handle;
-       if FontHandle<>0 then
-         SetRCFont(PGdiObject(FontHandle));
+       // allocate font (just read it)
+       if AWinControl.Font.Handle=0 then ;
     end;
     
   finally

@@ -116,6 +116,7 @@ type
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSListBox }
@@ -145,6 +146,7 @@ type
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSCustomMemo }
@@ -583,6 +585,17 @@ begin
 end;
 {$EndIf}
 
+
+
+procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
+var
+  aWidget,ListWidget : PGTKWidget;
+begin
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  ListWidget:=GetWidgetInfo(AWidget, True)^.CoreWidget;
+  GtkWidgetSet.SetWidgetColor(ListWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+end;
+
 { TGtkWSCustomComboBox }
 
 function  TGtkWSCustomComboBox.GetSelStart(
@@ -790,6 +803,15 @@ procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
   //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
+procedure TGtkWSCustomEdit.SetColor(const AWinControl: TWinControl);
+var
+  aWidget : PGTKWidget;
+begin
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
 end;
 
 { TGtkWSCustomStaticText }
