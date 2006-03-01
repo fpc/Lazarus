@@ -99,7 +99,7 @@ resourcestring
   lisMakeExe = 'Make Executable';
   lisProjectMakroProperties = 'Project makro properties';
   lisOpenProject2 = 'Open project';
-  lisOpenAsTextFile = 'Open as text file';
+  lisOpenAsXmlFile = 'Open as XML file';
   lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
     +'at last startup while loading %s!%s%sLoad this project again?';
   lisOpenProjectAgain = 'Open project again';
@@ -421,11 +421,9 @@ resourcestring
   lisSourceOfPageHasChangedSave = 'Source of page %s%s%s has changed. Save?';
   lisSourceModified = 'Source modified';
   lisOpenProject = 'Open Project?';
-  lisOpenTheProjectAnswerNoToLoadItAsXmlFile = 'Open the project %s?%sAnswer '
-    +'No to load it as xml file.';
+  lisOpenTheProject = 'Open the project %s?';
   lisOpenPackage = 'Open Package?';
-  lisOpenThePackageAnswerNoToLoadItAsXmlFile = 'Open the package %s?%sAnswer '
-    +'No to load it as xml file.';
+  lisOpenThePackage = 'Open the package %s?';
   lisRevertFailed = 'Revert failed';
   lisFileIsVirtual = 'File %s%s%s is virtual.';
   lisUnableToWrite = 'Unable to write %s%s%s%s%s.';
@@ -1576,7 +1574,6 @@ resourcestring
   rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
   rsLanguagePolishWin   = 'Polish(CP1250)';
   rsLanguageItalian     = 'Italian';
-  rsLanguageItalianISO  = 'Italian(ISO 8859-1)';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';
   rsLanguageHebrew      = 'Hebrew';

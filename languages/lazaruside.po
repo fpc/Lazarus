@@ -170,8 +170,8 @@ msgstr ""
 msgid "Open project"
 msgstr ""
 
-#: lazarusidestrconsts:lisopenastextfile
-msgid "Open as text file"
+#: lazarusidestrconsts:lisopenasxmlfile
+msgid "Open as XML file"
 msgstr ""
 
 #: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
@@ -1234,16 +1234,16 @@ msgstr ""
 msgid "Open Project?"
 msgstr ""
 
-#: lazarusidestrconsts:lisopentheprojectanswernotoloaditasxmlfile
-msgid "Open the project %s?%sAnswer No to load it as xml file."
+#: lazarusidestrconsts:lisopentheproject
+msgid "Open the project %s?"
 msgstr ""
 
 #: lazarusidestrconsts:lisopenpackage
 msgid "Open Package?"
 msgstr ""
 
-#: lazarusidestrconsts:lisopenthepackageanswernotoloaditasxmlfile
-msgid "Open the package %s?%sAnswer No to load it as xml file."
+#: lazarusidestrconsts:lisopenthepackage
+msgid "Open the package %s?"
 msgstr ""
 
 #: lazarusidestrconsts:lisrevertfailed
@@ -5020,10 +5020,6 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
-msgstr ""
-
-#: lazarusidestrconsts:rslanguageitalianiso
-msgid "Italian(ISO 8859-1)"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagecatalan
