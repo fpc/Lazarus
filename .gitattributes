@@ -2183,7 +2183,6 @@ lcl/tests/test2_2labelattributes.lpr svneol=native#text/pascal
 lcl/textstrings.pas svneol=native#text/pascal
 lcl/toolwin.pp svneol=native#text/pascal
 lcl/translations.pas svneol=native#text/pascal
-lcl/units/CONTENT.txt svneol=native#text/plain
 lcl/utrace.pp svneol=native#text/pascal
 lcl/widgetset/wsactnlist.pp svneol=native#text/pascal
 lcl/widgetset/wsarrow.pp svneol=native#text/pascal
