@@ -68,6 +68,14 @@ type
     );
   TSaveFlags = set of TSaveFlag;
   
+  // close file flags
+  TCloseFlag = (
+    cfSaveFirst, // check if modified and save
+    cfProjectClosing
+    );
+  TCloseFlags = set of TCloseFlag;
+
+  // build project flags
   TProjectBuildFlag = (
     pbfCleanCompile,  // append -B to the compiler options
     pbfDoNotCompileDependencies,
@@ -116,6 +124,10 @@ type
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
+    function DoCloseEditorFile(PageIndex:integer;
+        Flags: TCloseFlags):TModalResult; virtual; abstract;
+    function DoCloseEditorFile(const Filename: string;
+        Flags: TCloseFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
@@ -148,6 +160,10 @@ type
     
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
+    function DoJumpToCompilerMessage(Index:integer;
+      FocusEditor: boolean): boolean; virtual; abstract;
+    procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
+    procedure DoShowMessagesView; virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
   end;

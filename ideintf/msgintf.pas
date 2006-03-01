@@ -22,7 +22,7 @@ unit MsgIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, TextTools, IDECommands;
+  Classes, SysUtils, Forms, LCLProc, TextTools, IDECommands;
   
 type
 
@@ -172,8 +172,15 @@ type
     property Items[Index: integer]: TIDEMsgQuickFixItem read GetItems; default;
   end;
   
+  TIDEMessagesWindowInterface = class(TForm)
+  public
+    procedure Clear; virtual; abstract;
+    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); virtual; abstract;
+  end;
+  
 var
   IDEMsgQuickFixes: TIDEMsgQuickFixItems; // initialized by the IDE
+  IDEMessagesWindow: TIDEMessagesWindowInterface;// initialized by the IDE
   
 procedure RegisterIDEMsgQuickFix(Item: TIDEMsgQuickFixItem);
 function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;

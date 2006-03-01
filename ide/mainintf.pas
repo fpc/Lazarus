@@ -102,13 +102,6 @@ type
     );
   TRevertFlags = set of TRevertFlag;
 
-  // close file flags
-  TCloseFlag = (
-    cfSaveFirst, // check if modified and save
-    cfProjectClosing
-    );
-  TCloseFlags = set of TCloseFlag;
-
   // codetools flags
   TCodeToolsFlag = (
     ctfSwitchToFormSource, // bring source notebook to front and show source of
@@ -161,6 +154,8 @@ type
     function DoShowProjectInspector: TModalResult; virtual; abstract;
     function DoImExportCompilerOptions(Sender: TObject): TModalResult; virtual; abstract;
 
+    function CreateProjectObject(ProjectDesc,
+                             FallbackProjectDesc: TProjectDescriptor): TProject; virtual; abstract;
     function PrepareForCompile: TModalResult; virtual; abstract;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;

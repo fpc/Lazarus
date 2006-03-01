@@ -79,7 +79,7 @@ type
 
   { TMessagesView }
   
-  TMessagesView = class(TForm)
+  TMessagesView = class(TIDEMessagesWindowInterface)
     MessageListBox:   TListBox;
     MainPopupMenu: TPopupMenu;
     procedure CopyAllMenuItemClick(Sender: TObject);
@@ -126,13 +126,13 @@ type
     procedure DeleteLine(Index: integer);
     procedure Add(const Msg, CurDir: string;
                   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
-    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer);
+    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer); override;
     procedure AddProgress(const Msg, CurDir: string; OriginalIndex: integer);
     procedure AddSeparator;
     procedure CollectLineParts(Sender: TObject; SrcLines: TIDEMessageLineList);
     procedure ClearTillLastSeparator;
     procedure ShowTopMessage;
-    procedure Clear;
+    procedure Clear; override;
     procedure GetVisibleMessageAt(Index: integer; var Msg, MsgDirectory: string);
     procedure BeginBlock;
     procedure EndBlock;
@@ -280,6 +280,7 @@ end;
 ------------------------------------------------------------------------------}
 constructor TMessagesView.Create(TheOwner: TComponent);
 begin
+  IDEMessagesWindow:=Self;
   inherited Create(TheOwner);
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems := TFPList.Create;
@@ -315,6 +316,7 @@ begin
   FreeThenNil(FVisibleItems);
   FreeThenNil(FQuickFixItems);
   inherited Destroy;
+  IDEMessagesWindow:=nil;
 end;
 
 procedure TMessagesView.DeleteLine(Index: integer);
@@ -629,6 +631,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TMessagesView.Clear;
 begin
+  if Self=nil then exit;
   if fBlockCount > 0 then
     exit;
   FLastLineIsProgress := False;
