@@ -670,6 +670,7 @@ docs/xml/lcl/dialogs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dirsel.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynhasharray.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/dynqueue.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf

@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    DynQueue
+  ====================================================================
+-->
+
+<module name="DynQueue">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TDynamicQueueItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynamicQueueItem.Size">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDynamicQueueItem.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PDynamicQueueItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="ListOfPDynamicQueueItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TDynamicDataQueue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FItemCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FTopIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FLastIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FMaximumBlockSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FMinimumBlockSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FTopItemSpace">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDynamicDataQueue.FLastItemSpace">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynamicDataQueue.SetMaximumBlockSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.SetMaximumBlockSize.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynamicDataQueue.SetMinimumBlockSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.SetMinimumBlockSize.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynamicDataQueue.GrowItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TDynamicDataQueue.AddItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.AddItem.ItemSize">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TDynamicDataQueue.CalculateItemSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.CalculateItemSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.CalculateItemSize.ItemSize">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TDynamicDataQueue.PushInternal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.PushInternal.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PushInternal.Source">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PushInternal.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PushInternal.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TDynamicDataQueue.PopTopInternal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.PopTopInternal.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PopTopInternal.Dest">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PopTopInternal.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PopTopInternal.Count">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.PopTopInternal.KeepData">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDynamicDataQueue.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDynamicDataQueue.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynamicDataQueue.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynamicDataQueue.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDynamicDataQueue.WriteDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.WriteDebugReport.WriteData">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Push">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Push.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Push.Buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Push.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Push">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Push.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Push.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Push.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Pop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Pop.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Pop.Buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Pop.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Pop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Pop.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Pop.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Pop.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Top">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Top.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Top.Buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Top.Count">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDynamicDataQueue.Top">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDynamicDataQueue.Top.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Top.AStream">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDynamicDataQueue.Top.Count">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynamicDataQueue.Size">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynamicDataQueue.MinimumBlockSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDynamicDataQueue.MaximumBlockSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+</module> <!-- DynQueue -->
+</package>
+</fpdoc-descriptions>
