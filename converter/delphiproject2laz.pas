@@ -30,6 +30,13 @@
   Abstract:
     Functions to convert delphi projects to lazarus projects.
 
+    Converting a delphi project/unit to lazarus can be a very difficult task,
+    but also contains some monotone and boring work. These functions try to
+    help here.
+    Because any conversion step can fail and can need manual fix before
+    continuing, the functions are written to recognize, what have been done.
+    So, you can call the delphi conversion, abort at any step, fix a few things,
+    and invoke it again, till you have a working lazarus project.
 }
 unit DelphiProject2Laz;
 
@@ -45,7 +52,7 @@ uses
   EditorOptions, ProjectInspector, CompilerOptions,
   BasePkgManager, PkgManager;
 
-function ConvertDelphiToLazarusProject(const DelphiFilename: string
+function ConvertDelphiToLazarusProject(const ProjectFilename: string
   ): TModalResult;
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string
   ): TModalResult;
@@ -53,7 +60,14 @@ function ConvertDelphiToLazarusUnit(const DelphiFilename: string
 
 implementation
 
-function ConvertDelphiToLazarusProject(const DelphiFilename: string): TModalResult;
+function ConvertDelphiToLazarusProject(const ProjectFilename: string
+  ): TModalResult;
+{ Creates or updates a lazarus project (.lpi+.lpr)
+  This function can be invoked on a delphi project .dpr file, or a lazarus
+  project (.lpi/.lpr) file.
+  It will use, whatever it finds and will make it more lazarus-like.
+  It can be aborted and called again.
+}
 var
   DPRCode: TCodeBuffer;
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
@@ -66,16 +80,16 @@ var
   DOFFilename: String;
   CFGFilename: String;
 begin
-  debugln('ConvertDelphiToLazarusProject DelphiFilename="',DelphiFilename,'"');
+  debugln('ConvertDelphiToLazarusProject DelphiFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
   
   // check Delphi project file
-  Result:=CheckDelphiProjectExt(DelphiFilename);
+  Result:=CheckDelphiProjectExt(ProjectFilename);
   if Result<>mrOk then exit;
   
   // close Delphi file in editor
   debugln('ConvertDelphiToLazarusProject closing in editor dpr ...');
-  Result:=LazarusIDE.DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
+  Result:=LazarusIDE.DoCloseEditorFile(ProjectFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   
   // commit source editor changes to codetools
@@ -86,13 +100,13 @@ begin
   
   // load Delphi project file .dpr
   debugln('ConvertDelphiToLazarusProject loading dpr ...');
-  Result:=LoadCodeBuffer(DPRCode,DelphiFilename,
+  Result:=LoadCodeBuffer(DPRCode,ProjectFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
   
   // create .lpr file
   debugln('ConvertDelphiToLazarusProject creating lpr ...');
-  Result:=CreateLPRFileForDPRFile(DelphiFilename,false,LPRCode);
+  Result:=CreateLPRFileForDPRFile(ProjectFilename,false,LPRCode);
   if Result<>mrOk then begin
     if CodeToolBoss.ErrorMessage<>'' then LazarusIDE.DoJumpToCodeToolBossError;
     exit;
@@ -134,14 +148,14 @@ begin
     if Result<>mrOk then exit;
 
     // TODO: read .dof file
-    DOFFilename:=FindDelphiDOF(DelphiFilename);
+    DOFFilename:=FindDelphiDOF(ProjectFilename);
     if FileExists(DOFFilename) then begin
       Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
       if Result<>mrOk then exit;
     end;
 
     // TODO: read .cfg file
-    CFGFilename:=FindDelphiCFG(DelphiFilename);
+    CFGFilename:=FindDelphiCFG(ProjectFilename);
     if FileExists(CFGFilename) then begin
       Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
       if Result<>mrOk then exit;

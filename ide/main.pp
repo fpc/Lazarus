@@ -113,8 +113,8 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg,
-  CodeContextForm, AboutFrm,
+  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, DelphiProject2Laz,
+  CleanDirDlg, CodeContextForm, AboutFrm,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -551,7 +551,7 @@ type
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
-                             FallbackProjectDesc: TProjectDescriptor): TProject;
+                             FallbackProjectDesc: TProjectDescriptor): TProject; override;
     procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
                                              XMLConfig: TXMLConfig;
                                              Merge: boolean);
@@ -603,9 +603,9 @@ type
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
     function DoCloseEditorFile(PageIndex:integer;
-        Flags: TCloseFlags):TModalResult;
+        Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
-        Flags: TCloseFlags): TModalResult;
+        Flags: TCloseFlags): TModalResult; override;
     function DoOpenEditorFile(AFileName: string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
@@ -788,9 +788,9 @@ type
 
     // message view
     function DoJumpToCompilerMessage(Index:integer;
-      FocusEditor: boolean): boolean;
-    procedure DoJumpToNextError(DirectionDown: boolean);
-    procedure DoShowMessagesView;
+      FocusEditor: boolean): boolean; override;
+    procedure DoJumpToNextError(DirectionDown: boolean); override;
+    procedure DoShowMessagesView; override;
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
     
     // methods for debugging, compiling and external tools
@@ -3177,6 +3177,12 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    if InputHistories.LastConvertDelphiUnit<>'' then begin
+      OpenDialog.InitialDir:=
+                       ExtractFilePath(InputHistories.LastConvertDelphiUnit);
+      OpenDialog.Filename:=
+                       ExtractFileName(InputHistories.LastConvertDelphiUnit);
+    end;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       for i := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
@@ -3210,9 +3216,14 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
-    OpenDialog.Options:=OpenDialog.Options;
     OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+dlgAllFiles+' (*.*)|*'
       +'.*';
+    if InputHistories.LastConvertDelphiProject<>'' then begin
+      OpenDialog.InitialDir:=
+                       ExtractFilePath(InputHistories.LastConvertDelphiProject);
+      OpenDialog.Filename:=
+                       ExtractFileName(InputHistories.LastConvertDelphiProject);
+    end;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
@@ -8092,295 +8103,16 @@ end;
 
 function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
   ): TModalResult;
-var
-  DFMFilename: String;
-  LazarusUnitFilename: String;
-  LRSFilename: String;
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  UnitCode, LFMCode: TCodeBuffer;
-  HasDFMFile: boolean;
-  LFMFilename: String;
-  OldOpenEditorsOnCodeToolChange: Boolean;
 begin
-  // check file and directory
-  DebugLn('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
-  Result:=CheckDelphiFileExt(DelphiFilename);
-  if Result<>mrOk then exit;
-  Result:=CheckFileIsWritable(DelphiFilename,[mbAbort]);
-  if Result<>mrOk then exit;
-  Result:=CheckFilenameForLCLPaths(DelphiFilename);
-  if Result<>mrOk then exit;
-  // close Delphi files in editor
-  DebugLn('TMainIDE.DoConvertDelphiUnit Close files in editor .pas/.dfm');
-  Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
-  if Result<>mrOk then exit;
-  DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
-  DebugLn('TMainIDE.DoConvertDelphiUnit DFM file="',DFMFilename,'"');
-  HasDFMFile:=DFMFilename<>'';
-  if HasDFMFile then begin
-    Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
-    if Result<>mrOk then exit;
-  end;
-  // rename files (.pas,.dfm) lowercase
-  // TODO: rename files in project
-  DebugLn('TMainIDE.DoConvertDelphiUnit Rename files');
-  LazarusUnitFilename:='';
-  LFMFilename:='';
-  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
-                       LazarusUnitFilename,LFMFilename);
-  if Result<>mrOk then exit;
-  if LFMFilename='' then LFMFilename:=ChangeFIleExt(LazarusUnitFilename,'.lfm');
-  HasDFMFile:=FileExists(LFMFilename);
-  // convert .dfm file to .lfm file
-  if HasDFMFile then begin
-    DebugLn('TMainIDE.DoConvertDelphiUnit Convert dfm format to lfm "',LFMFilename,'"');
-    Result:=ConvertDFMFileToLFMFile(LFMFilename);
-    if Result<>mrOk then exit;
-  end;
-  // create empty .lrs file
-  DebugLn('TMainIDE.DoConvertDelphiUnit Create empty lrs');
-  if HasDFMFile then begin
-    LRSFilename:=ChangeFileExt(LazarusUnitFilename,'.lrs');
-    DebugLn('TMainIDE.DoConvertDelphiUnit Create ',LRSFilename);
-    Result:=CreateEmptyFile(LRSFilename,[mbAbort,mbRetry]);
-    if Result<>mrOk then exit;
-  end else
-    LRSFilename:='';
-
-  DebugLn('TMainIDE.DoConvertDelphiUnit Convert delphi source');
-  OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
-  FOpenEditorsOnCodeToolChange:=true;
-  try
-    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
-      Result:=mrCancel;
-      exit;
-    end;
-
-    // add {$mode delphi} directive
-    // remove windows unit and add LResources, LCLIntf
-    // remove {$R *.dfm} or {$R *.xfm} directive
-    // add initialization
-    // add {$i unit.lrs} directive
-    // TODO: fix delphi ambiguousities like incomplete proc implementation headers
-    Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
-                                               LRSFilename<>'');
-    if Result<>mrOk then begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-
-    // comment missing units
-    DebugLn('TMainIDE.DoConvertDelphiUnit FixMissingUnits');
-    Result:=FixMissingUnits(LazarusUnitFilename);
-    if Result<>mrOk then begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-    
-    // check the LFM file and the pascal unit
-    DebugLn('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
-    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile);
-    if Result<>mrOk then exit;
-    if HasDFMFile and (LFMCode=nil) then
-      DebugLn('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
-    if (LFMCode<>nil)
-    and (CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true,true)<>mrOk)
-    then begin
-      DoJumpToCompilerMessage(-1,true);
-      exit;
-    end;
-
-    if LFMCode<>nil then begin
-      // save LFM file
-      DebugLn('TMainIDE.DoConvertDelphiUnit Save LFM');
-      Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
-      if Result<>mrOk then exit;
-
-      // convert lfm to lrs
-      DebugLn('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
-      Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
-      if Result<>mrOk then exit;
-    end;
-  finally
-    FOpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
-  end;
-
-  Result:=mrOk;
+  InputHistories.LastConvertDelphiUnit:=DelphiFilename;
+  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename);
 end;
 
 function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
   ): TModalResult;
-var
-  DPRCode: TCodeBuffer;
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
-  NotFoundUnits: String;
-  LPRCode: TCodeBuffer;
-  NewProjectDesc: TProjectEmptyProgramDescriptor;
-  i: Integer;
-  CurUnitInfo: TUnitInfo;
-  MainUnitInfo: TUnitInfo;
-  DOFFilename: String;
-  CFGFilename: String;
 begin
-  debugln('TMainIDE.DoConvertDelphiProject DelphiFilename="',DelphiFilename,'"');
-  if MessagesView<>nil then MessagesView.Clear;
-  // check Delphi project file
-  Result:=CheckDelphiProjectExt(DelphiFilename);
-  if Result<>mrOk then exit;
-  // close Delphi file in editor
-  debugln('TMainIDE.DoConvertDelphiProject closing in editor dpr ...');
-  Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
-  if Result<>mrOk then exit;
-  // commit source editor changes to codetools
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
-    Result:=mrCancel;
-    exit;
-  end;
-  // load Delphi project file .dpr
-  debugln('TMainIDE.DoConvertDelphiProject loading dpr ...');
-  Result:=LoadCodeBuffer(DPRCode,DelphiFilename,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
-  if Result<>mrOk then exit;
-  // create .lpr file
-  debugln('TMainIDE.DoConvertDelphiProject creating lpr ...');
-  Result:=CreateLPRFileForDPRFile(DelphiFilename,false,LPRCode);
-  if Result<>mrOk then begin
-    if CodeToolBoss.ErrorMessage<>'' then DoJumpToCodeToolBossError;
-    exit;
-  end;
-  // close old project
-  debugln('TMainIDE.DoConvertDelphiProject closing current project ...');
-  If Project1<>nil then begin
-    if DoCloseProject=mrAbort then begin
-      Result:=mrAbort;
-      exit;
-    end;
-  end;
-
-  // switch codetools to new project directory
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-    ExpandFilename(ExtractFilePath(LPRCode.Filename));
-
-  // create a new project
-  debugln('TMainIDE.DoConvertDelphiProject creating new project ...');
-  NewProjectDesc:=TProjectEmptyProgramDescriptor.Create;
-  Project1:=CreateProjectObject(NewProjectDesc,ProjectDescriptorApplication);
-  Project1.BeginUpdate(true);
-  try
-    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-    MainUnitInfo:=TUnitInfo.Create(LPRCode);
-    MainUnitInfo.SyntaxHighlighter:=
-              ExtensionToLazSyntaxHighlighter(ExtractFileExt(LPRCode.Filename));
-    MainUnitInfo.IsPartOfProject:=true;
-    Project1.AddFile(MainUnitInfo,false);
-    Project1.MainFileID:=0;
-    Project1.ProjectInfoFile:=ChangeFileExt(LPRCode.Filename,'.lpi');
-    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-    UpdateCaption;
-    IncreaseCompilerParseStamp;
-    
-    // TODO: get all compiler options from .dpr
-    Result:=ExtractOptionsFromDPR(LPRCode,Project1);
-    if Result<>mrOk then exit;
-
-    // TODO: read .dof file
-    DOFFilename:=FindDelphiDOF(DelphiFilename);
-    if FileExists(DOFFilename) then begin
-      Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
-      if Result<>mrOk then exit;
-    end;
-
-    // TODO: read .cfg file
-    CFGFilename:=FindDelphiCFG(DelphiFilename);
-    if FileExists(CFGFilename) then begin
-      Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
-      if Result<>mrOk then exit;
-    end;
-
-    // TODO: get all needed packages
-
-    // add and load default required packages
-    // TODO: add packages
-    // WORKAROUND: add LCL
-    // add lcl pp/pas dirs to source search path
-    Project1.AddSrcPath('$(LazarusDir)/lcl;'
-                 +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
-    Project1.AddPackageDependency('LCL');
-    Project1.LazCompilerOptions.Win32GraphicApp:=true;
-    PkgBoss.AddDefaultDependencies(Project1);
-  finally
-    Project1.EndUpdate;
-    NewProjectDesc.Free;
-  end;
-
-  // show program unit
-  debugln('TMainIDE.DoConvertDelphiProject open lpr in editor ...');
-  Result:=DoOpenEditorFile(LPRCode.Filename,-1,[ofAddToRecent,ofRegularFile]);
-  if Result=mrAbort then exit;
-
-  // find all project files
-  FoundInUnits:=nil;
-  MissingInUnits:=nil;
-  NormalUnits:=nil;
-  try
-    debugln('TMainIDE.DoConvertDelphiProject gathering all project units ...');
-    if not CodeToolBoss.FindDelphiProjectUnits(LPRCode,FoundInUnits,
-                                               MissingInUnits, NormalUnits) then
-    begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-    debugln('TMainIDE.DoConvertDelphiProject FoundInUnits=[',FoundInUnits.Text,']',
-      ' MissingInUnits=[',MissingInUnits.Text,']',
-      ' NormalUnits=[',NormalUnits.Text,']');
-    // warn about missing units
-    if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
-      NotFoundUnits:=MissingInUnits.Text;
-      Result:=MessageDlg('Units not found',
-        'Some units of the delphi project were not found:'#13
-        +NotFoundUnits,mtWarning,[mbIgnore,mbAbort],0);
-      if Result<>mrIgnore then exit;
-    end;
-    
-    // add all units to the project
-    debugln('TMainIDE.DoConvertDelphiProject adding all project units to project ...');
-    for i:=0 to FoundInUnits.Count-1 do begin
-      CurUnitInfo:=TUnitInfo.Create(nil);
-      TUnitInfo(CurUnitInfo).Filename:=FoundInUnits[i];
-      Project1.AddFile(CurUnitInfo,false);
-    end;
-    // set search paths to find all project units
-    Project1.CompilerOptions.OtherUnitFiles:=
-                        Project1.SourceDirectories.CreateSearchPathFromAllFiles;
-    DebugLn('TMainIDE.DoConvertDelphiProject UnitPath="',Project1.CompilerOptions.OtherUnitFiles,'"');
-
-    // save project
-    debugln('TMainIDE.DoConvertDelphiProject Saving new project ...');
-    Result:=DoSaveProject([]);
-    if Result<>mrOk then exit;
-
-    // convert all units
-    i:=0;
-    while i<Project1.UnitCount do begin
-      CurUnitInfo:=Project1.Units[i];
-      if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
-        Result:=DoConvertDelphiUnit(CurUnitInfo.Filename);
-        if Result=mrAbort then exit;
-      end;
-      inc(i);
-    end;
-
-  finally
-    FoundInUnits.Free;
-    MissingInUnits.Free;
-    NormalUnits.Free;
-  end;
-
-  debugln('TMainIDE.DoConvertDelphiProject Done');
-  Result:=mrOk;
+  InputHistories.LastConvertDelphiProject:=DelphiFilename;
+  Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
 end;
 
 {-------------------------------------------------------------------------------

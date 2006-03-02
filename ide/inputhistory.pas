@@ -168,6 +168,8 @@ type
     // Find- and replace-history
     FFindHistory: TStringList;
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
+    FLastConvertDelphiProject: string;
+    FLastConvertDelphiUnit: string;
     FReplaceHistory: TStringList;
     FFindInFilesPathHistory: TStringList;
     FFindInFilesMaskHistory: TStringList;
@@ -245,6 +247,12 @@ type
     property DiffText2: string read FDiffText2 write FDiffText2;
     property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
                                              write FDiffText2OnlySelection;
+
+    // Delphi conversion
+    property LastConvertDelphiProject: string read FLastConvertDelphiProject
+                                              write FLastConvertDelphiProject;
+    property LastConvertDelphiUnit: string read FLastConvertDelphiUnit
+                                           write FLastConvertDelphiUnit;
   end;
 
 const
@@ -338,6 +346,8 @@ begin
   FDiffText2:='';
   FDiffText2OnlySelection:=false;
   FFPCConfigCache.Clear;
+  FLastConvertDelphiProject:='';
+  FLastConvertDelphiUnit:='';
 end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -390,6 +400,10 @@ begin
   FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
   FDiffText2OnlySelection:=
     XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
+    
+  // delphi conversion
+  FLastConvertDelphiProject:=XMLConfig.GetValue(Path+'Conversion/Delphi/Project','');
+  FLastConvertDelphiUnit:=XMLConfig.GetValue(Path+'Conversion/Delphi/Unit','');
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -437,6 +451,11 @@ begin
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
                            FDiffText2OnlySelection,false);
+  // delphi conversion
+  XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Project',
+                           FLastConvertDelphiProject,'');
+  XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Unit',
+                           FLastConvertDelphiUnit,'');
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
