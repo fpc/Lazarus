@@ -237,8 +237,6 @@ var
   DFMFilename: String;
   LazarusUnitFilename: String;
   LRSFilename: String;
-  ActiveSrcEdit: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo;
   UnitCode, LFMCode: TCodeBuffer;
   HasDFMFile: boolean;
   LFMFilename: String;

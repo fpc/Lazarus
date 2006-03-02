@@ -1189,7 +1189,7 @@ end;
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // returns -1 for lines above visible screen (<TopLine)
 // 0 for the first line
-// Max(1,LinesInWindow)-1 for the last
+// Max(0,LinesInWindow-1) for the last fully visible line
 // and returns LinesInWindow for lines below visible screen including the
 // partially visible line at the bottom
 var
@@ -2041,7 +2041,7 @@ begin
           fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
                         {$ELSE}(FirstLine - TopLine){$ENDIF},
           ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF},
-          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(LastLine+1)
+          fTextHeight * {$IFDEF SYN_LAZARUS}(RowToScreenRow(LastLine)+1)
                         {$ELSE}(LastLine - TopLine + 1){$ENDIF});
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
@@ -5417,12 +5417,24 @@ var
     CaretXY := CaretXY;
   end;
 
+var
+  {$IFDEF SYN_LAZARUS}
+  BH: TPoint;
+  {$ENDIF}
 begin
   IncPaintLock;
   Lines.BeginUpdate;
   try
     BB := BlockBegin;
     BE := BlockEnd;
+    {$IFDEF SYN_LAZARUS}
+    // make sure, BB is lower than BE
+    if CompareCarets(BB,BE)<0 then begin
+      BH:=BB;
+      BB:=BE;
+      BE:=BH;
+    end;
+    {$ENDIF}
     if SelAvail then
       DeleteSelection;
     if (Value <> nil) and (Value[0] <> #0) then
