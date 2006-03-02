@@ -1106,6 +1106,7 @@ begin
   winHandle := AWinControl.Handle;
   canvasHandle := GetDC(winHandle);
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
+  DeleteAmpersands(Text);
   Result := Windows.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
   if Result then
   begin

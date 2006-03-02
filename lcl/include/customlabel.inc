@@ -38,7 +38,7 @@ begin
   try
     R := Rect(0,0, Width, Height);
     OldFont:=SelectObject(DC, Font.Handle);
-    Flags:=DT_CalcRect or DT_NoPrefix;
+    Flags:=DT_CalcRect;
     if WordWrap then inc(Flags,DT_WordBreak);
     DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
     SelectObject(DC, OldFont);
