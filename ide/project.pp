@@ -145,6 +145,7 @@ type
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
+    procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
@@ -170,6 +171,7 @@ type
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
     procedure Clear;
+    procedure ClearModifieds;
     procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);
     procedure DecreaseAutoRevertLock;
@@ -223,7 +225,7 @@ type
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;// not Session data
-    property SessionModified: boolean read FSessionModified write FSessionModified;
+    property SessionModified: boolean read FSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
@@ -894,6 +896,12 @@ begin
   Loaded := false;
 end;
 
+procedure TUnitInfo.ClearModifieds;
+begin
+  Modified:=false;
+  SessionModified:=false;
+end;
+
 
 {------------------------------------------------------------------------------
   TUnitInfo SaveToXMLConfig
@@ -1391,6 +1399,12 @@ begin
   if FRunFileIfActive=AValue then exit;
   FRunFileIfActive:=AValue;
   SessionModified:=true;
+end;
+
+procedure TUnitInfo.SetSessionModified(const AValue: boolean);
+begin
+  if FSessionModified=AValue then exit;
+  FSessionModified:=AValue;
 end;
 
 
@@ -2414,6 +2428,7 @@ var NamePos, InPos: integer;
 begin
   Result:=CodeToolBoss.FindUnitInAllUsesSections(MainUnitInfo.Source,
               ShortUnitName,NamePos,InPos);
+  if (NamePos<1) or (InPos<1) then ;
 end;
 
 function TProject.GetResourceFile(AnUnitInfo: TUnitInfo;
@@ -3170,16 +3185,31 @@ var i: integer;
 begin
   Result:=true;
   if CheckData then begin
-    if Modified then exit;
+    if Modified then begin
+      DebugLn('TProject.SomethingModified Modified');
+      exit;
+    end;
     if CompilerOptions.Modified then exit;
     for i:=0 to UnitCount-1 do
-      if (Units[i].IsPartOfProject) and Units[i].Modified then exit;
+      if (Units[i].IsPartOfProject) and Units[i].Modified then begin
+        DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
+        exit;
+      end;
   end;
   if CheckSession then begin
-    if SessionModified then exit;
+    if SessionModified then begin
+      DebugLn('TProject.SomethingModified SessionModified');
+      exit;
+    end;
     for i:=0 to UnitCount-1 do begin
-      if Units[i].SessionModified then exit;
-      if (not Units[i].IsPartOfProject) and Units[i].Modified then exit;
+      if Units[i].SessionModified then begin
+        DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
+        exit;
+      end;
+      if (not Units[i].IsPartOfProject) and Units[i].Modified then begin
+        DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
+        exit;
+      end;
     end;
   end;
   Result:=false;

@@ -506,6 +506,10 @@ var
 begin
   // get root class
   AClassName:=GetClassNameFromLRSStream(AStream,IsInherited);
+  if IsInherited then begin
+    // inherited is not supported by this simple function
+    DebugLn('ReadComponentFromBinaryStream WARNING: "inherited" is not supported by this simple function');
+  end;
   AClass:=nil;
   OnFindComponentClass(nil,AClassName,AClass);
   if AClass=nil then

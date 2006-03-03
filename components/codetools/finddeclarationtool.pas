@@ -3717,6 +3717,7 @@ var
     //DebugLn('CheckContextIsParameter ');
     if not CheckParameterSyntax(CursorNode, CleanCursorPos,
       VarNameAtom, ProcNameAtom, ParameterIndex) then exit;
+    if VarNameAtom.StartPos<1 then exit;
     // it is a parameter
     Result:=true;
     ok:=true;

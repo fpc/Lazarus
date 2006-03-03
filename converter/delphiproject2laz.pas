@@ -45,7 +45,7 @@ unit DelphiProject2Laz;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileUtil,
   ExprEval, CodeCache, CodeToolManager,
   SrcEditorIntf, MsgIntf, MainIntf, LazIDEIntf, ProjectIntf,
   DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
@@ -79,10 +79,22 @@ var
   MainUnitInfo: TUnitInfo;
   DOFFilename: String;
   CFGFilename: String;
+  LPIFilename: String;
 begin
-  debugln('ConvertDelphiToLazarusProject DelphiFilename="',ProjectFilename,'"');
+  debugln('ConvertDelphiToLazarusProject ProjectFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
   
+  LPIFilename:=ChangeFileExt(ProjectFilename,'.lpi');
+  if FileExists(LPIFilename) then begin
+    // there is already a lazarus project -> open it, if not already open
+    if CompareFilenames(Project1.ProjectInfoFile,LPIFilename)<>0 then
+      LazarusIDE.DoOpenProjectFile(LPIFilename,[]);
+  end else begin
+    // create a new lazarus project
+    //Result:=LazarusIDE.DoNewProject(ProjectDescriptorEMPTY);
+    //if Result<>mrOk then exit;
+  end;
+
   // check Delphi project file
   Result:=CheckDelphiProjectExt(ProjectFilename);
   if Result<>mrOk then exit;

@@ -533,6 +533,7 @@ type
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     function ShortDescription: string;
+    procedure ClearModifieds;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
@@ -1074,6 +1075,12 @@ begin
     Result:=Title
   else
     Result:=ExtractFileNameOnly(ProjectInfoFile);
+end;
+
+procedure TLazProject.ClearModifieds;
+begin
+  Modified:=false;
+  SessionModified:=false;
 end;
 
 { TLazProjectFile }

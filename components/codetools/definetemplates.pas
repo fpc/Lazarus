@@ -3766,6 +3766,9 @@ begin
        +';../ideintf'
        +';../components/codetools'
        +';../components/synedit'
+       +';../packager'
+       +';../debugger'
+       +';../designer'
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath

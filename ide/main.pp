@@ -4259,7 +4259,7 @@ begin
 
   // set new codebuffer in unitinfo and sourceeditor
   AnUnitInfo.Source:=NewSource;
-  AnUnitInfo.Modified:=false;
+  AnUnitInfo.ClearModifieds;
   if SrcEdit<>nil then
     SrcEdit.CodeBuffer:=NewSource; // the code is not changed,
                                    // therefore the marks are kept
@@ -5251,7 +5251,7 @@ begin
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     NewSrcEdit.Modified:=false;
-    AnUnitInfo.Modified:=false;
+    AnUnitInfo.ClearModifieds;
   end;
 
   // update editor indices in project
@@ -5586,7 +5586,7 @@ begin
 
   // unset all modified flags
   if not (sfSaveToTestDir in Flags) then begin
-    ActiveUnitInfo.Modified:=false;
+    ActiveUnitInfo.ClearModifieds;
     ActiveSrcEdit.Modified:=false;
     MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
   end;
@@ -6430,7 +6430,7 @@ Begin
 
   // set all modified to false
   for i:=0 to Project1.UnitCount-1 do
-    Project1.Units[i].Modified:=false;
+    Project1.Units[i].ClearModifieds;
   Project1.Modified:=false;
 
   //DebugLn('TMainIDE.DoNewProject end ');
@@ -6539,7 +6539,7 @@ begin
     // clear modified flags
     if not (sfSaveToTestDir in Flags) then begin
       if (Result=mrOk) then begin
-        if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
+        if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
         if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
       end;
     end;
@@ -6776,10 +6776,9 @@ begin
   end;
 
   // set all modified to false
-  for i:=0 to Project1.UnitCount-1 do begin
-    Project1.Units[i].Modified:=false;
-  end;
-  Project1.Modified:=false;
+  for i:=0 to Project1.UnitCount-1 do
+    Project1.Units[i].ClearModifieds;
+  Project1.ClearModifieds;
 
   IncreaseCompilerParseStamp;
   IDEProtocolOpts.LastProjectLoadingCrashed := False;
