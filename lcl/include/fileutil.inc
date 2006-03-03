@@ -39,7 +39,7 @@ end;
  ------------------------------------------------------------------------------}
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:=AnsiCompareText(Filename1, Filename2);
   {$ELSE}
   Result:=AnsiCompareStr(Filename1, Filename2);
@@ -88,7 +88,7 @@ begin
     Result:=0;
     i:=1;
     while (Result=0) and ((i<=Len1) and (i<=Len2)) do begin
-      {$IFDEF MSWINDOWS}
+      {$IFDEF WINDOWS}
       Result:=Ord(LowerCaseTable[Ord(Filename1[i])])
              -Ord(LowerCaseTable[Ord(Filename2[i])]); //!! Must be replaced by ansi characters !!
       {$ELSE}
@@ -107,7 +107,7 @@ end;
  ------------------------------------------------------------------------------}
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   // windows
   Result:=FilenameIsWinAbsolute(TheFilename);
   {$ELSE}
@@ -219,7 +219,7 @@ begin
     // check for double path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
-      {$IFDEF MSWINDOWS}
+      {$IFDEF WINDOWS}
       if (DestPos>2)
       {$ELSE}
       if (DestPos>1)
@@ -258,7 +258,7 @@ begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
             continue;
-          {$IFDEF MSWINDOWS}
+          {$IFDEF WINDOWS}
           end else if (DestPos=3) and (Result[2]=':')
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
             //  3. C:..    -> copy
@@ -462,7 +462,7 @@ end;
   procedure CheckIfFileIsSymlink(const AFilename: string);
  ------------------------------------------------------------------------------}
 procedure CheckIfFileIsSymlink(const AFilename: string);
-{$IFNDEF MSWINDOWS}
+{$IFNDEF WINDOWS}
 var
   AText: string;
 {$ENDIF}
@@ -471,7 +471,7 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   raise Exception.Create('"'+AFilename+'" is not symlink');
   {$ELSE}
   if FpReadLink(AFilename)='' then begin
@@ -501,7 +501,7 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsSymlink(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:=false;
   {$ELSE}
   Result:=(FpReadLink(AFilename)<>'');
@@ -513,7 +513,7 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:=true;
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
@@ -525,7 +525,7 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsWritable(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
@@ -547,7 +547,7 @@ end;
   GetFileDescription
  ------------------------------------------------------------------------------}
 function GetFileDescription(const AFilename: string): string;
-{$IFDEF MSWINDOWS}
+{$IFDEF WINDOWS}
 {$ELSE}
 var
   info: Stat;
@@ -561,7 +561,7 @@ var
 {$ENDIF}
 begin
   Result:='';
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
 
   {$ELSE}
   if not (FpStat(AFilename,info)=0) then exit;
@@ -646,14 +646,14 @@ end;
  ------------------------------------------------------------------------------}
 function ReadAllLinks(const Filename: string;
   ExceptionOnError: boolean): string;
-{$IFNDEF MSWINDOWS}
+{$IFNDEF WINDOWS}
 var
   LinkFilename: string;
   AText: string;
 {$ENDIF}
 begin
   Result:=Filename;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
 
   {$ELSE}
   repeat
@@ -707,7 +707,7 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsExecutable(const AFilename: string): boolean;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:=FileExists(AFilename);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
@@ -718,7 +718,7 @@ end;
   procedure CheckIfFileIsExecutable(const AFilename: string);
  ------------------------------------------------------------------------------}
 procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF MSWINDOWS}
+{$IFNDEF WINDOWS}
 var AText: string;
 {$ENDIF}
 begin
@@ -730,7 +730,7 @@ begin
   if DirPathExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
   end;
-  {$IFNDEF MSWINDOWS}
+  {$IFNDEF WINDOWS}
   if not FileIsExecutable(AFilename) then
   begin
     AText:='"'+AFilename+'"';
@@ -818,7 +818,7 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    {$IFDEF MSWINDOWS}
+    {$IFDEF WINDOWS}
     Flags:=[];
     {$ELSE}
     Flags:=[sffDontSearchInBasePath];
@@ -972,7 +972,7 @@ begin
       else
         begin
           if FilePos>FileLen then break;
-          {$IFDEF MSWINDOWS}
+          {$IFDEF WINDOWS}
           if UpperCaseTable[byte(MaskChar)]
             =UpperCaseTable[byte(TrimmedFile[FilePos])] then
           {$ELSE}
@@ -1184,7 +1184,7 @@ begin
   if not FileExists(Filename) then exit;
   // check every directory and filename
   StartPos:=1;
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   // uppercase Drive letter and skip it
   if ((length(Result)>=2) and (Result[1] in ['A'..'Z','a'..'z'])
   and (Result[2]=':')) then begin
@@ -1276,7 +1276,7 @@ end;
 
 function GetAllFilesMask: string;
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WINDOWS}
   Result:='*.*';
   {$ELSE}
   Result:='*';
