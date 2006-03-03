@@ -791,7 +791,11 @@ begin
 {$ifdef win32}
   { inside stack ? }
   if (ptruint(p)>ptruint(get_frame)) and
+{$ifdef ver2_0}
      (ptruint(p)<Win32StackTop) then
+{$else}
+     (p<StackTop) then
+{$endif}
     goto _exit;
 {$endif win32}
 
