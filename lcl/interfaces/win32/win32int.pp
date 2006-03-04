@@ -269,7 +269,7 @@ Uses
  Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
- Arrow, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
+ Arrow, Calendar, Spin, CheckLst, WinExt, LclProc;
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);

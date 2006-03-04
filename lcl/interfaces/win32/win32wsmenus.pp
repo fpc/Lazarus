@@ -407,7 +407,7 @@ var
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
-  GetWindowInfo(AppHandle)^.PopupMenu := MenuHandle;
+  GetWindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
     X, Y, AppHandle, Nil);
 end;

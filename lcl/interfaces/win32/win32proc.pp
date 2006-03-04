@@ -27,7 +27,7 @@ unit win32proc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms;
+  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -37,7 +37,7 @@ Type
     AccelGroup: HACCEL;
     Accel: HACCEL;
     Overlay: HWND;            // overlay, transparent window on top, used by designer
-    PopupMenu: HMENU;
+    PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
     ParentPanel: HWND;        // if non-zero, winxp groupbox parent window hack
     WinControl: TWinControl;
@@ -118,7 +118,7 @@ var
 implementation
 
 uses
-  SysUtils, LCLStrConsts, Menus, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}

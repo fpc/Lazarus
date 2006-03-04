@@ -234,20 +234,18 @@ Var
   function GetMenuItemObject: TObject;
   var MenuInfo: MENUITEMINFO;
       MainMenuHandle: HMENU;
+      PopupMenu: TPopupMenu;
   begin
     Result:=nil;
     MenuInfo.cbSize:=sizeof(MENUITEMINFO);
     MenuInfo.fMask:=MIIM_DATA;
     {first we have to decide if the command is from a popup menu or from the window main menu}
     //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
-    MainMenuHandle := GetWindowInfo(Window)^.PopupMenu;
-    if MainMenuHandle<>0 then //processing popup menu
+    PopupMenu := WindowInfo^.PopupMenu;
+    if PopupMenu<>nil then //processing popup menu
     begin
-      WindowInfo^.PopupMenu := 0;
-      {GetMenuItemInfo can be FALSE when the 'PopupMenu' property was not
-      removed in the last popup menu processing (no menuitem was selected)}
-      if GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo)
-        then Result := TObject(MenuInfo.dwItemData);
+      WindowInfo^.PopupMenu := nil;
+      Result := PopupMenu.FindItem(Lo(WParam), fkCommand);
     end;
     if Result=nil then //if Result is still nil, process main menu
     begin
@@ -753,7 +751,7 @@ Var
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
-    
+  
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1113,8 +1111,6 @@ Begin
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     End;
-    WM_HSCROLL:
-      HandleScrollMessage(LM_HSCROLL);
     WM_ERASEBKGND:
     Begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
@@ -1154,6 +1150,10 @@ Begin
       end;
       WinProcess := false;
     End;
+    WM_EXITMENULOOP:
+      // is it a popup menu
+      if longbool(WPARAM) and assigned(WindowInfo^.PopupMenu) then
+        WindowInfo^.PopupMenu.Close;
     WM_GETDLGCODE:
     Begin
       LMessage.Result := DLGC_WANTALLKEYS;
@@ -1171,9 +1171,9 @@ Begin
     end;
 }
     WM_GETMINMAXINFO:
-    begin
       SetMinMaxInfo(PMINMAXINFO(LParam)^);
-    end;
+    WM_HSCROLL:
+      HandleScrollMessage(LM_HSCROLL);
     WM_KEYDOWN:
     Begin
       NotifyUserInput := True;
