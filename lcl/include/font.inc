@@ -332,23 +332,23 @@ var l, FaceNameMax, PixelSize, PointSize, Resolution, AverageWidth: integer;
 begin
   FillChar(Result,SizeOf(TLogFont),0);
   ItemEnd:=0;
-  GetNextItem; // read FontNameRegistry
+  GetNextItem; // 1. read FontNameRegistry
   // ToDo
   
-  GetNextItem; // read Foundry
+  GetNextItem; // 2. read Foundry
   // ToDo
 
-  GetNextItem; // read FamilyName
+  GetNextItem; // 3. read FamilyName
   l:=length(Item);
   FaceNameMax:=High(Result.lfFaceName)-Low(Result.lfFaceName); // max without #0
   if l>FaceNameMax then l:=FaceNameMax;
   if l>0 then Move(Item[1],Result.lfFaceName[Low(Result.lfFaceName)],l);
   Result.lfFaceName[Low(Result.lfFaceName)+l]:=#0;
 
-  GetNextItem; // read WeightName
+  GetNextItem; // 4. read WeightName
   Result.lfWeight:=WeightNameToWeightID(Item);
 
-  GetNextItem; // read Slant
+  GetNextItem; // 5. read Slant
   if (AnsiCompareText(Item,'I')=0) or (AnsiCompareText(Item,'RI')=0)
   or (AnsiCompareText(Item,'O')=0) then
     // I = italic, RI = reverse italic, O = oblique
@@ -356,21 +356,21 @@ begin
   else
     Result.lfItalic:=0;
 
-  GetNextItem; // read SetwidthName
+  GetNextItem; // 6. read SetwidthName
   // ToDO: NORMAL, CONDENSED, NARROW, WIDE, EXPANDED
 
-  GetNextItem; // read AddStyleName
+  GetNextItem; // 7. read AddStyleName
   // calculate Style name extentions (=rotation)
   //        API                 XLFD
   // --------------------- --------------
   // Orientation 1/10 deg  1/64 deg
   Result.lfOrientation:=(StrToIntDef(Item,0)*10) div 64;
       
-  GetNextItem; // read PixelSize
+  GetNextItem; // 8. read PixelSize
   PixelSize:=StrToIntDef(Item,0);
-  GetNextItem; // read PointSize
+  GetNextItem; // 9. read PointSize
   PointSize:=StrToIntDef(Item,0) div 10;
-  GetNextItem; // read ResolutionX
+  GetNextItem; // 10. read ResolutionX
   Resolution:=StrToIntDef(Item,0);
   if Resolution<=0 then Resolution:=72;
 
@@ -383,11 +383,11 @@ begin
     Result.lfHeight:=PixelSize;
   end;
 
-  GetNextItem; // read ResolutionY
+  GetNextItem; // 11. read ResolutionY
   Resolution:=StrToIntDef(Item,0);
   if Resolution<=0 then Resolution:=72;
 
-  GetNextItem; // read Spacing
+  GetNextItem; // 12. read Spacing
   {M       Monospaced (fixed pitch)
    P       Proportional spaced (variable pitch)
    C       Character cell.  The glyphs of the font can be thought of as
@@ -400,14 +400,14 @@ begin
   else if AnsiCompareText(Item,'C')=0 then
     Result.lfPitchAndFamily:=VARIABLE_PITCH;
 
-  GetNextItem; // read AverageWidth
+  GetNextItem; // 13. read AverageWidth
   AverageWidth := StrToIntDef(Item,0);
   Result.lfWidth := AverageWidth div 10;
 
-  GetNextItem; // read CharSetRegistry
+  GetNextItem; // 14. read CharSetRegistry
   // ToDo
 
-  GetNextItem; // read CharSetCoding
+  GetNextItem; // 15. read CharSetCoding
   // ToDo
 
 end;

@@ -458,11 +458,12 @@ begin
   end;//End if ((cbactEnabled in FAutoCompleteText) and (Style = csDropDown))
 end;
 
-procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
+procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState;
+  X, Y: Integer);
 begin
- inherited MouseUp(Button, Shift, X, Y);
- if (Style = csDropDownList) then
-  DroppedDown := not DroppedDown;
+  inherited MouseUp(Button, Shift, X, Y);
+  //if (Style = csDropDownList) then
+  //  DroppedDown := not DroppedDown;
 end;
 
 {------------------------------------------------------------------------------
