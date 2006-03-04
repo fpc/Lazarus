@@ -395,15 +395,13 @@ begin
     Canvas.Frame3d(PaintRect, 1, xBevel);
     InflateRect(PaintRect, -1, -1);
   end;}
-  if not Transparent then begin
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(PaintRect);
-  end;
 
   // do not draw anything if flat and mouse not in control (simplified)
-  if (FLastDrawFlags and DFCS_FLAT) = 0 then
+  if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       PaintRect, DFC_BUTTON, FLastDrawFlags);
+     InflateRect(PaintRect, -1, -1);
+  end;
 
   //writeln('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
   //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
@@ -411,6 +409,10 @@ begin
   //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
   //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
   //  '');
+  if not Transparent and (color<>clBtnFace) then begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(PaintRect);
+  end;
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
