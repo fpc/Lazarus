@@ -1088,9 +1088,16 @@ begin
 end;
 
 constructor TLazProjectDescriptors.Create;
+var
+  EmptyProjectDesc: TProjectDescriptor;
 begin
   ProjectDescriptors:=Self;
   FItems:=TList.Create;
+  EmptyProjectDesc:=TProjectDescriptor.Create;
+  EmptyProjectDesc.Name:='Empty';
+  EmptyProjectDesc.VisibleInNewDialog:=false;
+  RegisterDescriptor(EmptyProjectDesc);
+  //DebugLn('TLazProjectDescriptors.Create ',dbgs(EmptyProjectDesc.VisibleInNewDialog));
 end;
 
 destructor TLazProjectDescriptors.Destroy;

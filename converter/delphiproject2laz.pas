@@ -57,6 +57,13 @@ function ConvertDelphiToLazarusProject(const ProjectFilename: string
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string
   ): TModalResult;
 
+function CreateDelphiToLazarusProject(const LPIFilename: string): TModalResult;
+function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
+  const DPRFilename, MainSourceFilename: string;
+  out LPRCode: TCodeBuffer): TModalResult;
+function FindDPRFilename(const StartFilename: string): string;
+function ReadDelphiProjectConfigFiles(AProject: TProject): TModalResult;
+
 
 implementation
 
@@ -69,7 +76,6 @@ function ConvertDelphiToLazarusProject(const ProjectFilename: string
   It can be aborted and called again.
 }
 var
-  DPRCode: TCodeBuffer;
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
   NotFoundUnits: String;
   LPRCode: TCodeBuffer;
@@ -77,122 +83,70 @@ var
   i: Integer;
   CurUnitInfo: TUnitInfo;
   MainUnitInfo: TUnitInfo;
-  DOFFilename: String;
-  CFGFilename: String;
   LPIFilename: String;
+  DPRFilename: String;
+  MainSourceFilename: String;
 begin
   debugln('ConvertDelphiToLazarusProject ProjectFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
-  
-  LPIFilename:=ChangeFileExt(ProjectFilename,'.lpi');
-  if FileExists(LPIFilename) then begin
-    // there is already a lazarus project -> open it, if not already open
-    if CompareFilenames(Project1.ProjectInfoFile,LPIFilename)<>0 then
-      LazarusIDE.DoOpenProjectFile(LPIFilename,[]);
-  end else begin
-    // create a new lazarus project
-    //Result:=LazarusIDE.DoNewProject(ProjectDescriptorEMPTY);
-    //if Result<>mrOk then exit;
-  end;
 
-  // check Delphi project file
-  Result:=CheckDelphiProjectExt(ProjectFilename);
-  if Result<>mrOk then exit;
+  // create/open lazarus project file
+  LPIFilename:=ChangeFileExt(ProjectFilename,'.lpi');
+  Result:=CreateDelphiToLazarusProject(LPIFilename);
+  if Result<>mrOk then begin
+    DebugLn('ConvertDelphiToLazarusProject failed to create/open project LPIFilename="',LPIFilename,'"');
+    exit;
+  end;
   
-  // close Delphi file in editor
-  debugln('ConvertDelphiToLazarusProject closing in editor dpr ...');
-  Result:=LazarusIDE.DoCloseEditorFile(ProjectFilename,[cfSaveFirst]);
+  // create main source file (.lpr) (only copy, no conversion)
+  DPRFilename:=FindDPRFilename(ProjectFilename);
+  DebugLn('ConvertDelphiToLazarusProject DPRFilename="',DPRFilename,'"');
+  MainSourceFilename:=ChangeFileExt(LPIFilename,'.lpr');
+  Result:=CreateDelphiToLazarusMainSourceFile(Project1,DPRFilename,
+                                              MainSourceFilename,LPRCode);
   if Result<>mrOk then exit;
-  
-  // commit source editor changes to codetools
+
+  // read config files (they often contain clues about paths, switches and defines)
+  Result:=ReadDelphiProjectConfigFiles(Project1);
+  if Result<>mrOk then exit;
+
+  // load required packages
+  Project1.AddPackageDependency('LCL');// Nearly all Delphi projects require it
+  PkgBoss.AddDefaultDependencies(Project1);
+
+  // we have now enough information to parse the .dpr file,
+  // but not enough to parse the units
+
+  // init codetools
   if not LazarusIDE.BeginCodeTools then begin
     Result:=mrCancel;
     exit;
   end;
+
+  // fix include filenames
+  if not CodeToolBoss.FixIncludeFilenames(Project1.MainUnitInfo.Source,true)
+  then begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit(mrCancel);
+  end;
+
+  // try to find out as much about search paths as possible before parsing code
+  // TODO: open lpr
+  // TODO: fix include paths
+  // TODO: get all compiler options from .dpr
+  // TODO: find all project files in .dpr
+  // TODO: fix all include filenames
+
+  {$IFDEF NewDelphiProjConverter}
+  exit(mrOk);
+  {$ENDIF}
   
-  // load Delphi project file .dpr
-  debugln('ConvertDelphiToLazarusProject loading dpr ...');
-  Result:=LoadCodeBuffer(DPRCode,ProjectFilename,
-                         [lbfCheckIfText,lbfUpdateFromDisk]);
+  // TODO: get all compiler options from .dpr
+  Result:=ExtractOptionsFromDPR(LPRCode,Project1);
   if Result<>mrOk then exit;
-  
-  // create .lpr file
-  debugln('ConvertDelphiToLazarusProject creating lpr ...');
-  Result:=CreateLPRFileForDPRFile(ProjectFilename,false,LPRCode);
-  if Result<>mrOk then begin
-    if CodeToolBoss.ErrorMessage<>'' then LazarusIDE.DoJumpToCodeToolBossError;
-    exit;
-  end;
-  // close old project
-  debugln('ConvertDelphiToLazarusProject closing current project ...');
-  If Project1<>nil then begin
-    if LazarusIDE.DoCloseProject=mrAbort then begin
-      Result:=mrAbort;
-      exit;
-    end;
-  end;
 
-  // switch codetools to new project directory
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-                              ExpandFilename(ExtractFilePath(LPRCode.Filename));
-
-  // create a new project
-  debugln('ConvertDelphiToLazarusProject creating new project ...');
-  NewProjectDesc:=TProjectEmptyProgramDescriptor.Create;
-  Project1:=MainIDEInterface.CreateProjectObject(NewProjectDesc,
-                                           ProjectDescriptorApplication);
-  Project1.BeginUpdate(true);
-  try
-    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-    MainUnitInfo:=TUnitInfo.Create(LPRCode);
-    MainUnitInfo.SyntaxHighlighter:=
-              ExtensionToLazSyntaxHighlighter(ExtractFileExt(LPRCode.Filename));
-    MainUnitInfo.IsPartOfProject:=true;
-    Project1.AddFile(MainUnitInfo,false);
-    Project1.MainFileID:=0;
-    Project1.ProjectInfoFile:=ChangeFileExt(LPRCode.Filename,'.lpi');
-    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-    MainIDEInterface.UpdateCaption;
-    IncreaseCompilerParseStamp;
-
-    // TODO: get all compiler options from .dpr
-    Result:=ExtractOptionsFromDPR(LPRCode,Project1);
-    if Result<>mrOk then exit;
-
-    // TODO: read .dof file
-    DOFFilename:=FindDelphiDOF(ProjectFilename);
-    if FileExists(DOFFilename) then begin
-      Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
-      if Result<>mrOk then exit;
-    end;
-
-    // TODO: read .cfg file
-    CFGFilename:=FindDelphiCFG(ProjectFilename);
-    if FileExists(CFGFilename) then begin
-      Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
-      if Result<>mrOk then exit;
-    end;
-
-    // TODO: get all needed packages
-
-    // add and load default required packages
-    // TODO: add packages
-    // WORKAROUND: add LCL
-    // add lcl pp/pas dirs to source search path
-    Project1.AddSrcPath('$(LazarusDir)/lcl;'
-                 +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
-    Project1.AddPackageDependency('LCL');
-    Project1.LazCompilerOptions.Win32GraphicApp:=true;
-    PkgBoss.AddDefaultDependencies(Project1);
-  finally
-    Project1.EndUpdate;
-    NewProjectDesc.Free;
-  end;
-
-  // show program unit
-  debugln('ConvertDelphiToLazarusProject open lpr in editor ...');
-  Result:=LazarusIDE.DoOpenEditorFile(LPRCode.Filename,-1,
-                                      [ofAddToRecent,ofRegularFile]);
+  // fix
+  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename);
   if Result=mrAbort then exit;
 
   // find all project files
@@ -215,7 +169,7 @@ begin
     if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
       NotFoundUnits:=MissingInUnits.Text;
       Result:=MessageDlg('Units not found',
-        'Some units of the delphi project were not found:'#13
+        'Some units of the delphi project are missing:'#13
         +NotFoundUnits,mtWarning,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then exit;
     end;
@@ -365,6 +319,96 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function CreateDelphiToLazarusProject(const LPIFilename: string): TModalResult;
+// If .lpi does not exist, create it
+// open new project
+begin
+  DebugLn('CreateDelphiToLazarusProject LPIFilename="',LPIFilename,'"');
+  if FileExists(LPIFilename) then begin
+    // there is already a lazarus project -> open it, if not already open
+    if CompareFilenames(Project1.ProjectInfoFile,LPIFilename)<>0 then begin
+      DebugLn('CreateDelphiToLazarusProject open "',LPIFilename,'"');
+      Result:=LazarusIDE.DoOpenProjectFile(LPIFilename,[]);
+      if Result<>mrOk then exit;
+    end;
+  end else begin
+    // create a new lazarus project
+    Result:=LazarusIDE.DoNewProject(ProjectDescriptorEmptyProject);
+    if Result<>mrOk then begin
+      DebugLn('CreateDelphiToLazarusProject failed to create a new project');
+      exit;
+    end;
+    Project1.ProjectInfoFile:=LPIFilename;
+  end;
+  // save to disk (this makes sure, all editor changes are saved too)
+  DebugLn('CreateDelphiToLazarusProject saving project ...');
+  Result:=LazarusIDE.DoSaveProject([]);
+end;
+
+function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
+  const DPRFilename, MainSourceFilename: string;
+  out LPRCode: TCodeBuffer): TModalResult;
+// if .lpr does not exists, copy the .dpr file to the .lpr
+// adds the .lpr as main unit to the project, if not already done
+var
+  MainUnitInfo: TUnitInfo;
+begin
+  LPRCode:=nil;
+  Result:=CreateLPRFileForDPRFile(DPRFilename,MainSourceFilename,LPRCode);
+  if Result<>mrOk then begin
+    DebugLn('CreateDelphiToLazarusMainSourceFile CreateLPRFileForDPRFile failed DPRFilename="',DPRFilename,'" MainSourceFilename="',MainSourceFilename,'"');
+    exit;
+  end;
+  if AProject.MainUnitInfo=nil then begin
+    // add .lpr file to project as main unit
+    DebugLn('CreateDelphiToLazarusMainSourceFile adding .lpr file to project as main unit ',LPRCode.Filename);
+    MainUnitInfo:=TUnitInfo.Create(LPRCode);
+    MainUnitInfo.SyntaxHighlighter:=
+              ExtensionToLazSyntaxHighlighter(ExtractFileExt(LPRCode.Filename));
+    MainUnitInfo.IsPartOfProject:=true;
+    AProject.AddFile(MainUnitInfo,false);
+    AProject.MainFileID:=0;
+  end else begin
+    // replace main unit in project
+    AProject.MainUnitInfo.Source:=LPRCode;
+  end;
+end;
+
+function FindDPRFilename(const StartFilename: string): string;
+// searches the corresponding .dpr file
+begin
+  if CompareFileExt(StartFilename,'.dpr',false)=0 then
+    Result:=StartFilename
+  else
+    Result:=ChangeFileExt(StartFilename,'.dpr');
+  if not FileExists(Result) then
+    Result:=FindDiskFileCaseInsensitive(StartFilename);
+end;
+
+function ReadDelphiProjectConfigFiles(AProject: TProject): TModalResult;
+var
+  MainSourceFilename: String;
+  DOFFilename: String;
+  CFGFilename: String;
+begin
+  if AProject.MainUnitInfo=nil then exit(mrOk);
+  MainSourceFilename:=AProject.MainUnitInfo.Filename;
+
+  // read .dof file
+  DOFFilename:=FindDelphiDOF(MainSourceFilename);
+  if FileExists(DOFFilename) then begin
+    Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
+    if Result<>mrOk then exit;
+  end;
+
+  // read .cfg file
+  CFGFilename:=FindDelphiCFG(MainSourceFilename);
+  if FileExists(CFGFilename) then begin
+    Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
+    if Result<>mrOk then exit;
+  end;
 end;
 
 end.

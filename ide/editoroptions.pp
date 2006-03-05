@@ -892,7 +892,7 @@ begin
     TheType := lshXML;
     DefaultCommentType := DefaultCommentTypes[TheType];
     SynClass := LazSyntaxHighlighterClasses[TheType];
-    SetBothFilextensions('xml;xsd;xsl;xslt;dtd');
+    SetBothFilextensions('xml;xsd;xsl;xslt;dtd;lpi;lps');
     SampleSource :=
       '<?xml version="1.0"?>'#13 + '<!DOCTYPE root ['#13 +
       '  ]>'#13 + '<!-- Comment -->'#13 + '<root version="&test;">'#13 +

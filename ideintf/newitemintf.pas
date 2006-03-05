@@ -39,6 +39,8 @@ type
   { TNewIDEItemCategory }
 
   TNewIDEItemCategory = class
+  private
+    FVisibleInNewDialog: boolean;
   protected
     FName: string;
     function GetCount: integer; virtual; abstract;
@@ -55,6 +57,7 @@ type
     property Count: integer read GetCount;
     property Items[Index: integer]: TNewIDEItemTemplate read GetItems; default;
     property Name: string read FName;
+    property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
   end;
 
 
@@ -145,9 +148,8 @@ end;
 { TNewIDEItemCategory }
 
 constructor TNewIDEItemCategory.Create(const AName: string);
-//fpc 1.0 doesn't support virtual abstract constructors,
-//so we just make it virtual
 begin
+  FVisibleInNewDialog:=true;
 end;
 
 { TNewIDEItemTemplate }

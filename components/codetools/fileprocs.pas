@@ -53,6 +53,13 @@ const
   {$ifdef win32}
   {$define CaseInsensitiveFilenames}
   {$endif}
+  
+type
+  TCTSearchFileCase = (
+    ctsfcDefault, // e.g. case insensitive on windows
+    ctsfcLoUpCase, // also search for lower and upper case
+    ctsfcAllCase   // search case insensitive
+    );
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
@@ -73,15 +80,18 @@ function FileIsText(const AFilename: string): boolean;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
-function SearchFileInPath(const Filename, BasePath, SearchPath,
-                          Delimiter: string; SearchLoUpCase: boolean): string;
-function FilenameIsMatching(const Mask, Filename: string;
-  MatchExactly: boolean): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
+function SearchFileInDir(const Filename, BaseDirectory: string;
+                         SearchCase: TCTSearchFileCase): string;
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+                      Delimiter: string; SearchCase: TCTSearchFileCase): string;
+function FilenameIsMatching(const Mask, Filename: string;
+                            MatchExactly: boolean): boolean;
 function FindDiskFilename(const Filename: string): string;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
@@ -292,7 +302,7 @@ end;
 
 function FindDiskFilename(const Filename: string): string;
 // Searches for the filename case on disk.
-// The file must exist.
+// if it does not exist, only the found path will be improved
 // For example:
 //   If Filename='file' and there is only a 'File' then 'File' will be returned.
 var
@@ -303,9 +313,9 @@ var
   CurFile: String;
   AliasFile: String;
   Ambiguous: Boolean;
+  FileNotFound: Boolean;
 begin
   Result:=Filename;
-  if not FileExists(Filename) then exit;
   // check every directory and filename
   StartPos:=1;
   {$IFDEF Win32}
@@ -314,9 +324,10 @@ begin
   and (Result[2]=':')) then begin
     StartPos:=3;
     if Result[1] in ['a'..'z'] then
-      Result[1]:=upcase(Result[1]);
+      Result[1]:=UpChars[Result[1]];
   end;
   {$ENDIF}
+  FileNotFound:=false;
   repeat
     // skip PathDelim
     while (StartPos<=length(Result)) and (Result[StartPos]=PathDelim) do
@@ -356,8 +367,10 @@ begin
             end;
           end;
         until SysUtils.FindNext(FileInfo)<>0;
-      end;
+      end else
+        FileNotFound:=true;
       SysUtils.FindClose(FileInfo);
+      if FileNotFound then break;
       if (AliasFile<>'') and (not Ambiguous) then begin
         // better filename found -> replace
         Result:=CurDir+AliasFile+copy(Result,EndPos,length(Result));
@@ -470,6 +483,9 @@ end;
 function GetFilenameOnDisk(const AFilename: string): string;
 begin
   Result:=AFilename;
+  {$IFDEF CaseInsensitiveFilenames}
+  Result:=FindDiskFilename(Result,true);
+  {$ENDIF}
 end;
 
 function DirPathExists(DirectoryName: string): boolean;
@@ -723,6 +739,84 @@ begin
   Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
 end;
 
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
+var
+  FileNameLength: Integer;
+  BaseDirLen: Integer;
+  MinLen: Integer;
+  SamePos: Integer;
+  UpDirCount: Integer;
+  BaseDirPos: Integer;
+  ResultPos: Integer;
+  i: Integer;
+  FileNameRestLen: Integer;
+begin
+  Result:=Filename;
+  if (BaseDirectory='') or (Filename='') then exit;
+  // check for different windows file drives
+  if (CompareText(ExtractFileDrive(Filename),
+                     ExtractFileDrive(BaseDirectory))<>0)
+  then
+    exit;
+
+  FileNameLength:=length(Filename);
+  BaseDirLen:=length(BaseDirectory);
+
+  // skip matching directories
+  MinLen:=FileNameLength;
+  if MinLen>BaseDirLen then MinLen:=BaseDirLen;
+  SamePos:=1;
+  while (SamePos<=MinLen) do begin
+    {$IFDEF win32}
+    if AnsiStrLIComp(@FileName[SamePos],@BaseDirectory[SamePos],1)=0
+    {$ELSE}
+    if FileName[SamePos]=BaseDirectory[SamePos]
+    {$ENDIF}
+    then
+      inc(SamePos)
+    else
+      break;
+  end;
+  if (SamePos>MinLen)
+  and (((SamePos<=BaseDirLen) and (BaseDirectory[SamePos]=PathDelim))
+    or ((SamePos<=FileNameLength) and (Filename[SamePos]=PathDelim))
+    or (BaseDirLen=FileNameLength))
+  then begin
+    // Filename lies in BaseDirectory
+    // or Filename is parent directory of BaseDirectory
+    // or Filename is BaseDirectory
+  end else begin
+    // difference found -> step back to path delimiter
+    repeat
+      dec(SamePos);
+      if (SamePos<1) then exit;
+    until (FileName[SamePos]=PathDelim);
+  end;
+  if (SamePos=1) and (Filename[1]=PathDelim) then exit;
+
+  // calculate needed up directories
+  UpDirCount:=0;
+  BaseDirPos:=SamePos+1;
+  while (BaseDirPos<=BaseDirLen) do begin
+    if BaseDirectory[BaseDirPos]=PathDelim then inc(UpDirCount);
+    inc(BaseDirPos);
+  end;
+  if BaseDirectory[BaseDirLen]<>PathDelim then inc(UpDirCount);
+
+  // create relative filename
+  FileNameRestLen:=FileNameLength-SamePos;
+  SetLength(Result,3*UpDirCount+FileNameRestLen);
+  ResultPos:=1;
+  for i:=1 to UpDirCount do begin
+    Result[ResultPos]:='.';
+    Result[ResultPos+1]:='.';
+    Result[ResultPos+2]:=PathDelim;
+    inc(ResultPos,3);
+  end;
+  if FileNameRestLen>0 then
+    Move(Filename[SamePos+1],Result[ResultPos],FileNameRestLen);
+end;
+
 {------------------------------------------------------------------------------
   function FileIsInPath(const Filename, Path: string): boolean;
  ------------------------------------------------------------------------------}
@@ -759,33 +853,102 @@ begin
     Result:=Path;
 end;
 
+function SearchFileInDir(const Filename, BaseDirectory: string;
+  SearchCase: TCTSearchFileCase): string;
+  
+  procedure RaiseNotImplemented;
+  begin
+    raise Exception.Create('not implemented');
+  end;
+  
+var
+  Base: String;
+  ShortFile: String;
+  FileInfo: TSearchRec;
+begin
+  Base:=AppendPathDelim(BaseDirectory);
+  ShortFile:=Filename;
+  if System.Pos(PathDelim,ShortFile)>0 then begin
+    Base:=Base+ExtractFilePath(ShortFile);
+    ShortFile:=ExtractFilename(ShortFile);
+  end;
+  Base:=TrimFilename(Base);
+  case SearchCase of
+  ctsfcDefault:
+    begin
+      Result:=Base+ShortFile;
+      if not FileExistsCached(Result) then Result:='';
+    end;
+  ctsfcLoUpCase:
+    begin
+      Result:=Base+ShortFile;
+      if not FileExistsCached(Result) then begin
+        Result:=lowercase(Result);
+        if not FileExistsCached(Result) then begin
+          Result:=uppercase(Result);
+          if not FileExistsCached(Result) then Result:='';
+        end;
+      end;
+    end;
+  ctsfcAllCase:
+    begin
+      // search file
+      Result:='';
+      if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
+      begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+          then
+            continue;
+          if CompareText(FileInfo.Name,ShortFile)=0 then begin
+            if FileInfo.Name=ShortFile then begin
+              // file found, with correct name
+              Result:=FileInfo.Name;
+              break;
+            end else begin
+              // alias found, but has not the correct name
+              Result:=FileInfo.Name;
+            end;
+          end;
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;
+      SysUtils.FindClose(FileInfo);
+      if Result<>'' then Result:=Base+Result;
+    end;
+  else
+    RaiseNotImplemented;
+  end;
+end;
+
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string; SearchLoUpCase: boolean): string;
+  Delimiter: string; SearchCase: TCTSearchFileCase): string;
 var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-//debugln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
+  //debugln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
     Result:=Filename;
     exit;
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
-    if FileExists(Filename) then begin
-      Result:=ExpandFilename(Filename);
-      exit;
-    end else begin
-      Result:='';
-      exit;
-    end;
+    if SearchCase=ctsfcDefault then begin
+      if FileExistsCached(Filename) then begin
+        Result:=ExpandFilename(Filename);
+      end else begin
+        Result:='';
+      end;
+    end else
+      Result:=SearchFileInPath(ExtractFilename(Filename),
+        ExtractFilePath(BasePath),'',';',SearchCase);
+    exit;
   end;
   Base:=ExpandFilename(AppendPathDelim(BasePath));
   // search in current directory
-  if FileExists(Base+Filename) then begin
-    Result:=Base+Filename;
-    exit;
-  end;
+  Result:=SearchFileInDir(Filename,Base,SearchCase);
+  if Result<>'' then exit;
   // search in search path
   StartPos:=1;
   l:=length(SearchPath);
@@ -796,14 +959,14 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
-      if FileExists(Result) then exit;
+      CurPath:=ExpandFilename(AppendPathDelim(CurPath));
+      Result:=SearchFileInDir(Filename,CurPath,SearchCase);
+      if Result<>'' then exit;
     end;
     StartPos:=p+1;
   end;
   Result:='';
 end;
-
 
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;

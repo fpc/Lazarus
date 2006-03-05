@@ -250,7 +250,6 @@ type
     function IncludeDirective: boolean;
     function IncludeFile(const AFilename: string): boolean;
     function IncludePathDirective: boolean;
-    function LoadSourceCaseSensitive(const AFilename: string): pointer;
     function SearchIncludeFile(const AFilename: string; var NewCode: Pointer;
       var MissingIncludeFile: TMissingIncludeFile): boolean;
     function ShortSwitchDirective: boolean;
@@ -329,7 +328,8 @@ type
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
 
     // scanning
-    procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
+    procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean;
+                   CheckUpdate: boolean = true; DoScan: boolean = true);
     function UpdateNeeded(OnlyInterfaceNeeded,
                           CheckFilesOnDisk: boolean): boolean;
     procedure SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
@@ -337,6 +337,7 @@ type
     function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
     function IgnoreErrorAfterCleanedPos: integer;
     function IgnoreErrorAfterValid: boolean;
+    function LoadSourceCaseLoUp(const AFilename: string): pointer;
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;
@@ -1025,7 +1026,8 @@ begin
   end;
 end;
 
-procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
+procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean;
+  CheckUpdate: boolean; DoScan: boolean);
 var
   LastTokenType: TLSTokenType;
   cm: TCompilerMode;
@@ -1035,7 +1037,8 @@ var
   CheckForAbort: boolean;
   NewSrcLen: Integer;
 begin
-  if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then begin
+  if CheckUpdate and (not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk)) then
+  begin
     // input is the same as last time -> output is the same
     // -> if there was an error, raise it again
     if LastErrorIsValid
@@ -1110,6 +1113,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan F ',dbgs(SrcLen));
   {$ENDIF}
+  if not DoScan then exit;
   try
     try
       repeat
@@ -2333,7 +2337,7 @@ begin
   Result:=true;
 end;
 
-function TLinkScanner.LoadSourceCaseSensitive(
+function TLinkScanner.LoadSourceCaseLoUp(
   const AFilename: string): pointer;
 var
   Path, FileNameOnly: string;
@@ -2375,7 +2379,7 @@ var PathStart, PathEnd: integer;
       ExpFilename:=APath+AFilename;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
-    NewCode:=LoadSourceCaseSensitive(ExpFilename);
+    NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=NewCode<>nil;
   end;
   
@@ -2399,7 +2403,7 @@ begin
   end;
   // if include filename is absolute then load it directly
   if FilenameIsAbsolute(AFilename) then begin
-    NewCode:=LoadSourceCaseSensitive(AFilename);
+    NewCode:=LoadSourceCaseLoUp(AFilename);
     Result:=(NewCode<>nil);
     if not Result then SetMissingIncludeFile;
     exit;
@@ -2413,7 +2417,7 @@ begin
   if FilenameIsAbsolute(FMainSourceFilename) then begin
     // main source has absolute filename
     ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
-    NewCode:=LoadSourceCaseSensitive(ExpFilename);
+    NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=(NewCode<>nil);
     if Result then exit;
   end else begin

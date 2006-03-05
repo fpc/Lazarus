@@ -886,9 +886,9 @@ begin
   SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
   SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(SubPath,'ShowUnitInfo',
                                                   uemShowUnitInfo);
+  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(SubPath,'Highlighter');
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SubPath,
                                         'EditorProperties',uemEditorProperties);
-  SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(SubPath,'Highlighter');
 end;
 
 { TSourceEditor }

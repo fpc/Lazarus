@@ -276,6 +276,8 @@ type
           const Filename: string = ''): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string
           ): boolean;
+    function FixIncludeFilenames(Code: TCodeBuffer;
+          Recursive: boolean): boolean;
 
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
@@ -2038,6 +2040,80 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FixIncludeFilenames(Code: TCodeBuffer;
+  Recursive: boolean): boolean;
+var
+  FoundIncludeFiles, MissingIncludeFiles: TStrings;
+  i: Integer;
+  AFilename: string;
+  ToFixIncludeFiles: TStringList;
+  FixedIncludeFiles: TStringList;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FixIncludeFilenames A ',Code.Filename,' Recursive=',Recursive);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    FixedIncludeFiles:=nil;
+    ToFixIncludeFiles:=TStringList.Create;
+    try
+      ToFixIncludeFiles.Add(Code.Filename);
+      while ToFixIncludeFiles.Count>0 do begin
+        // get next include file
+        AFilename:=ToFixIncludeFiles[ToFixIncludeFiles.Count-1];
+        ToFixIncludeFiles.Delete(ToFixIncludeFiles.Count-1);
+        Code:=LoadFile(AFilename,false,false);
+        if Code=nil then begin
+          raise ECodeToolError.Create(FCurCodeTool,
+                                      'unable to read file "'+AFilename+'"');
+        end;
+        // fix file
+        FoundIncludeFiles:=nil;
+        MissingIncludeFiles:=nil;
+        try
+          Result:=FCurCodeTool.FixIncludeFilenames(Code,SourceChangeCache,
+                                           FoundIncludeFiles,MissingIncludeFiles);
+          if (MissingIncludeFiles<>nil)
+          and (MissingIncludeFiles.Count>0) then begin
+            DebugLn('TCodeToolManager.FixIncludeFilenames Missing: ',MissingIncludeFiles.Text);
+            Result:=false;
+            exit;
+          end;
+          if not Recursive then begin
+            // check only main file -> stop
+            exit;
+          end;
+          // remember, that the file has been fixed to avoid cycles
+          if FixedIncludeFiles=nil then
+            FixedIncludeFiles:=TStringList.Create;
+          FixedIncludeFiles.Add(Code.Filename);
+          // add new include files to stack
+          if FoundIncludeFiles<>nil then begin
+            for i:=0 to FoundIncludeFiles.Count-1 do begin
+              AFilename:=FoundIncludeFiles[i];
+              if ((FixedIncludeFiles=nil)
+              or (FixedIncludeFiles.IndexOf(AFilename)<0))
+              and (ToFixIncludeFiles.IndexOf(AFilename)<0) then begin
+                ToFixIncludeFiles.Add(AFilename);
+              end;
+            end;
+          end;
+          //DebugLn('TCodeToolManager.FixIncludeFilenames FixedIncludeFiles=',FixedIncludeFiles.Text,' ToFixIncludeFiles=',ToFixIncludeFiles.Text);
+        finally
+          FoundIncludeFiles.Free;
+          MissingIncludeFiles.Free;
+        end;
+      end;
+    finally
+      FixedIncludeFiles.Free;
+      ToFixIncludeFiles.Free;
+    end;
   except
     on e: Exception do Result:=HandleException(e);
   end;

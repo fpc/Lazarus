@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, TypInfo, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
+  ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree, LFMTrees, SourceChanger,
   CustomCodeTool, CodeToolsStructs;
 
@@ -213,6 +213,9 @@ type
           const Filename: string = ''): boolean;
     function AddResourceDirective(const Filename: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function FixIncludeFilenames(Code: TCodeBuffer;
+          SourceChangeCache: TSourceChangeCache;
+          out FoundIncludeFiles, MissingIncludeFiles: TStrings): boolean;
 
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
@@ -4296,6 +4299,140 @@ begin
   if not SourceChangeCache.Apply then exit;
 
   Result:=true;
+end;
+
+function TStandardCodeTool.FixIncludeFilenames(Code: TCodeBuffer;
+  SourceChangeCache: TSourceChangeCache;
+  out FoundIncludeFiles, MissingIncludeFiles: TStrings): boolean;
+var
+  ASource: String;
+  
+  procedure Add(const AFilename: string; Found: boolean);
+  var
+    NewFilename: String;
+  begin
+    if Found then begin
+      if FoundIncludeFiles=nil then
+        FoundIncludeFiles:=TStringList.Create;
+      NewFilename:=TrimFilename(AFilename);
+      if FoundIncludeFiles.IndexOf(NewFilename)<0 then
+        FoundIncludeFiles.Add(NewFilename);
+    end else begin
+      if MissingIncludeFiles=nil then
+        MissingIncludeFiles:=TStringList.Create;
+      MissingIncludeFiles.Add(AFilename);
+    end;
+  end;
+  
+  function SearchIncludeFilename(const AFilename: string): string;
+  var
+    AFilePath: String;
+    BaseDir: String;
+    CurFilename: String;
+    IncludePath: String;
+    PathDivider: String;
+    ACodeBuf: TCodeBuffer;
+  begin
+    Result:=TrimFilename(AFilename);
+    if FilenameIsAbsolute(Result) then begin
+      Result:=FindDiskFilename(Result);
+      Add(Result,FileExistsCached(Result));
+      //DebugLn('SearchIncludeFilename AbsoluteFilename="',Result,'"');
+    end else begin
+      BaseDir:=ExtractFilePath(MainFilename);
+      //DebugLn('SearchIncludeFilename BaseDir="',BaseDir,'"');
+      if FilenameIsAbsolute(BaseDir) then begin
+        // unit has normal path -> not virtual
+        AFilePath:=ExtractFilePath(Result);
+        if AFilePath<>'' then begin
+          // search relative to unit
+          CurFilename:=FindDiskFilename(BaseDir+Result);
+          Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
+          if FileExistsCached(CurFilename) then
+            Add(CurFilename,true)
+          else
+            Add(Result,false);
+          //DebugLn('SearchIncludeFilename relative filename="',CurFilename,'"');
+        end else begin
+          // search in path
+          IncludePath:='';
+          PathDivider:=':;';
+          if (Scanner.Values<>nil) then begin
+            IncludePath:=Scanner.Values.Variables[ExternalMacroStart+'INCPATH'];
+            if Scanner.Values.IsDefined('DELPHI') then
+              PathDivider:=':'
+          end;
+          CurFilename:=SearchFileInPath(Result,BaseDir,IncludePath,PathDivider,
+                                   ctsfcAllCase);
+          if CurFilename<>'' then begin
+            // found
+            Result:=CreateRelativePath(CurFilename,BaseDir);
+            Add(CurFilename,true);
+          end else begin
+            // not found
+            Add(Result,false);
+          end;
+          //DebugLn('SearchIncludeFilename search in include path="',IncludePath,'" Result="',Result,'"');
+        end;
+      end else begin
+        // unit has no path -> virtual unit -> search in virtual files
+        ACodeBuf:=TCodeBuffer(Scanner.LoadSourceCaseLoUp(Result));
+        if ACodeBuf<>nil then begin
+          Result:=ACodeBuf.Filename;
+          Add(Result,true);
+        end else begin
+          Add(Result,false);
+        end;
+      end;
+    end;
+  end;
+
+  procedure FixFilename(StartPos, EndPos: integer);
+  var
+    OldFilename: String;
+    AFilename: String;
+  begin
+    OldFilename:=copy(ASource,StartPos,EndPos-StartPos);
+    //DebugLn('FixFilename ',dbgs(StartPos),' ',dbgs(EndPos),' ',OldFilename);
+    AFilename:=OldFilename;
+    if ExtractFileExt(AFilename)='' then begin
+      // add default extension
+      if (Scanner.CompilerMode=cmDELPHI) then
+        AFilename:=AFilename+'.pas'
+      else
+        AFilename:=AFilename+'.pp';
+    end;
+    AFilename:=SearchIncludeFilename(AFilename);
+    if OldFilename<>AFilename then begin
+      DebugLn('FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
+      ASource:=copy(ASource,1,StartPos-1)+AFilename+copy(ASource,EndPos,length(ASource));
+    end;
+  end;
+  
+var
+  p: Integer;
+  NestedComments: Boolean;
+  FilenameStartPos, FileNameEndPos, CommentStartPos, CommentEndPos: integer;
+begin
+  Result:=false;
+  FoundIncludeFiles:=nil;
+  MissingIncludeFiles:=nil;
+  if (Scanner=nil) or (Scanner.MainCode=nil) then exit;
+  ASource:=Code.Source;
+  Scanner.Scan(false,false,false,false);// init scanner, but do not scan
+  
+  Result:=true;
+  NestedComments:=Scanner.NestedComments;
+  p:=1;
+  repeat
+    p:=BasicCodeTools.FindNextIncludeDirective(ASource,p,NestedComments,
+              FilenameStartPos, FileNameEndPos, CommentStartPos, CommentEndPos);
+    if (p<1) or (p>length(ASource)) then break;
+    if (CommentStartPos=0) and (CommentEndPos=0) then ;
+    FixFilename(FilenameStartPos,FilenameEndPos);
+    p:=FindCommentEnd(ASource,p,NestedComments);
+    //DebugLn('TStandardCodeTool.FixIncludeFilenames ',dbgs(p));
+  until false;
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

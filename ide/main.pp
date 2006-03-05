@@ -559,6 +559,7 @@ type
                          XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
     procedure OnProjectGetTestDirectory(TheProject: TProject;
                                         out TestDir: string);
+    procedure OnProjectChangeInfoFile(TheProject: TProject);
 
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -4830,6 +4831,7 @@ begin
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
+  Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
 end;
 
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
@@ -4851,6 +4853,16 @@ procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;
   out TestDir: string);
 begin
   TestDir:=GetTestBuildDir;
+end;
+
+procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
+begin
+  if TheProject<>Project1 then exit;
+  if TheProject.IsVirtual then
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
+  else
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
+                                Project1.ProjectDirectory)
 end;
 
 procedure TMainIDE.GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -5047,13 +5059,6 @@ begin
   Project1.ProjectInfoFile:=NewFilename;
   EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
   SetRecentProjectFilesMenu;
-
-  // set new project directory
-  if OldProjectPath<>Project1.ProjectDirectory then begin
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-      Project1.ProjectDirectory;
-    CodeToolBoss.DefineTree.ClearCache;
-  end;
 
   // change main source
   if (Project1.MainUnitID>=0) then begin
@@ -6567,6 +6572,7 @@ begin
   DoUpdateProjectAutomaticFiles;
 
   DebugLn('TMainIDE.DoSaveProject End');
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoCloseProject: TModalResult;
@@ -6888,7 +6894,6 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
-    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
     UpdateCaption;
     IncreaseCompilerParseStamp;
 
@@ -10306,7 +10311,8 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,[]);
+  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,
+                        [ctfSourceEditorNotNeeded]);
 end;
 
 procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
@@ -10470,22 +10476,35 @@ function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
-  if (SourceNoteBook.NoteBook=nil)
-  or (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
+  // check global stati
+  if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
     debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
     exit;
   end;
+  if (SourceNoteBook.NoteBook=nil) and (ctfSourceEditorNotNeeded in Flags) then
+    exit;
+    
+  // check source editor
   if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if ADesigner<>nil then
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  if (ctfSourceEditorNotNeeded in Flags)
+  and ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)) then exit;
+  
+  // init codetools
   SaveSourceEditorChangesToCodeCache(-1);
-  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-  CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
-  CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
+  if ActiveSrcEdit<>nil then begin
+    CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+    CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
+    CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
+  end else begin
+    CodeToolBoss.VisibleEditorLines:=25;
+    CodeToolBoss.TabWidth:=EditorOpts.TabWidth;
+    CodeToolBoss.IndentSize:=EditorOpts.BlockIndent;
+  end;
 
   if ctfActivateAbortMode in Flags then
     ActivateCodeToolAbortableMode;

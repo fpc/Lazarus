@@ -91,12 +91,15 @@ end;
 function TNewProjectDialog.GetProjectDescriptor: TProjectDescriptor;
 var
   i: LongInt;
+  s: string;
 begin
+  Result:=ProjectDescriptorApplication;
   i:=ListBox.ItemIndex;
-  if (i>=0) and (i<ProjectDescriptors.Count) then
-    Result:=ProjectDescriptors[i]
-  else
-    Result:=ProjectDescriptorApplication;
+  if (i<0) then exit;
+  s:=ListBox.Items[i];
+  for i:=0 to ProjectDescriptors.Count-1 do
+    if ProjectDescriptors[i].GetLocalizedName=s then
+      exit(ProjectDescriptors[i]);
 end;
 
 procedure TNewProjectDialog.FillHelpLabel;
@@ -124,8 +127,10 @@ begin
     Anchors := [akTop,akLeft,akRight,akBottom];
     with Items do begin
       BeginUpdate;
-      for i:=0 to ProjectDescriptors.Count-1 do
-        Add(ProjectDescriptors[i].GetLocalizedName);
+      for i:=0 to ProjectDescriptors.Count-1 do begin
+        if ProjectDescriptors[i].VisibleInNewDialog then
+          Add(ProjectDescriptors[i].GetLocalizedName);
+      end;
       EndUpdate;
     end;
     ItemIndex:=0;

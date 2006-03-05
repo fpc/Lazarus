@@ -69,6 +69,7 @@ type
                XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
   TOnProjectGetTestDirectory = procedure(TheProject: TProject;
                                          out TestDir: string) of object;
+  TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
                                  
   TUnitInfoList = (
     uilPartOfProject,
@@ -458,6 +459,7 @@ type
     FMainProject: boolean;
     fMainUnitID: Integer;
     FOnBeginUpdate: TNotifyEvent;
+    FOnChangeProjectInfoFile: TOnChangeProjectInfoFile;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
     FOnGetTestDirectory: TOnProjectGetTestDirectory;
@@ -685,6 +687,8 @@ type
                                                    write FOnLoadProjectInfo;
     property OnGetTestDirectory: TOnProjectGetTestDirectory
                              read FOnGetTestDirectory write FOnGetTestDirectory;
+    property OnChangeProjectInfoFile: TOnChangeProjectInfoFile read FOnChangeProjectInfoFile
+                                                 write FOnChangeProjectInfoFile;
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
@@ -2720,6 +2724,8 @@ begin
   end;
   UpdateProjectDirectory;
   UpdateSessionFilename;
+  if Assigned(OnChangeProjectInfoFile) then
+    OnChangeProjectInfoFile(Self);
   FDefineTemplates.SourceDirectoriesChanged;
   Modified:=true;
   EndUpdate;
@@ -4245,8 +4251,9 @@ end;
 function TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
 begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
-                                      [ofProjectLoading,ofRegularFile]);
+  if AProject.MainFile<>nil then
+    Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                                        [ofProjectLoading,ofRegularFile]);
 end;
 
 { TProjectEmptyProgramDescriptor }

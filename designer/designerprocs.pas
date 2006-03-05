@@ -33,7 +33,8 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLIntf, Forms, Controls, LCLType, Graphics;
+  Classes, SysUtils, Types, LCLIntf, Forms, Controls, LCLType, Graphics,
+  FormEditingIntf;
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
@@ -75,7 +76,7 @@ type
   end;
 
 const
-  NonVisualCompIconWidth = 23;
+  NonVisualCompIconWidth = ComponentPaletteBtnWidth-2;
   NonVisualCompBorder = 2;
   NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 

@@ -74,8 +74,8 @@ type
     function LocalizedName: string; override;
     function Description: string; override;
     function IndexOfCategory(const CategoryName: string): integer; override;
-    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory;
-      override;
+    function FindCategoryByName(const CategoryName: string
+                                ): TNewIDEItemCategory; override;
   public
     property Count: integer Read GetCount;
     property Items[Index: integer]: TNewIDEItemTemplate Read GetItems; default;
@@ -210,10 +210,12 @@ begin
   for CategoryID := 0 to NewIDEItems.Count - 1 do
   begin
     Category      := NewIDEItems[CategoryID];
+    if not Category.VisibleInNewDialog then continue;
     NewParentNode := ItemsTreeView.Items.AddObject(nil, Category.Name, Category);
     for TemplateID := 0 to Category.Count - 1 do
     begin
       Template := Category[TemplateID];
+      DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
       if Template.VisibleInNewDialog then
         ItemsTreeView.Items.AddChildObject(NewParentNode, Template.Name,
           Template);
@@ -291,6 +293,7 @@ end;
 
 constructor TNewLazIDEItemCategory.Create(const AName: string);
 begin
+  inherited Create(AName);
   FItems := TList.Create;
   FName  := AName;
   //debugln('TNewLazIDEItemCategory.Create ',Name);

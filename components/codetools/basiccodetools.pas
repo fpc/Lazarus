@@ -47,7 +47,11 @@ function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
     StartPos: integer; const DirectiveName: string;
-    NestedComments: boolean; var ParamPos: integer): integer;
+    NestedComments: boolean; out ParamPos: integer): integer;
+function FindNextIncludeDirective(const ASource: string;
+    StartPos: integer; NestedComments: boolean;
+    out FilenameStartPos, FileNameEndPos,
+    CommentStartPos, CommentEndPos: integer): integer;
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function CleanCodeFromComments(const DirtyCode: string;
@@ -1132,7 +1136,7 @@ end;
 
 function FindNextCompilerDirectiveWithName(const ASource: string;
   StartPos: integer; const DirectiveName: string;
-  NestedComments: boolean; var ParamPos: integer): integer;
+  NestedComments: boolean; out ParamPos: integer): integer;
 var
   Offset: Integer;
   SrcLen: Integer;
@@ -2197,6 +2201,76 @@ begin
   Result:=CompareText(@Find[FindStartPos],Min(length(Find)-FindStartPos+1,Len),
                       @Txt[TxtStartPos],Min(length(Txt)-TxtStartPos+1,Len),
                       CaseSensitive);
+end;
+
+function FindNextIncludeDirective(const ASource: string; StartPos: integer;
+  NestedComments: boolean; out FilenameStartPos, FileNameEndPos,
+  CommentStartPos, CommentEndPos: integer): integer;
+var
+  MaxPos: Integer;
+  Offset: Integer;
+begin
+  Result:=StartPos;
+  MaxPos:=length(ASource);
+  repeat
+    Result:=FindNextCompilerDirective(ASource,Result,NestedComments);
+    if (Result<1) or (Result>MaxPos) then exit;
+    if (ASource[Result]='{') then
+      Offset:=2
+    else if ASource[Result]='(' then
+      Offset:=3
+    else
+      Offset:=-1;
+    if (Offset>0) then begin
+      if (CompareIdentifiers('i',@ASource[Result+Offset])=0)
+      or (CompareIdentifiers('include',@ASource[Result+Offset])=0) then begin
+        CommentEndPos:=FindCommentEnd(ASource,Result,NestedComments);
+        if ASource[Result]='{' then
+          dec(CommentEndPos)
+        else
+          dec(CommentEndPos,2);
+        
+        // skip directive name
+        FilenameStartPos:=Result+Offset;
+        while (FilenameStartPos<=CommentEndPos)
+        and (IsIDChar[ASource[FilenameStartPos]]) do
+          inc(FilenameStartPos);
+        // skip space after name
+        while (FilenameStartPos<=CommentEndPos)
+        and (IsSpaceChar[ASource[FilenameStartPos]]) do
+          inc(FilenameStartPos);
+        // find end of filename
+        FilenameEndPos:=FilenameStartPos;
+        if (FilenameEndPos<=CommentEndPos) and (ASource[FilenameEndPos]='''')
+        then begin
+          // quoted filename
+          inc(FilenameStartPos);
+          while (FilenameEndPos<=CommentEndPos) do begin
+            if (ASource[FilenameEndPos]<>'''') then
+              inc(FilenameEndPos)
+            else begin
+              inc(FilenameEndPos);
+              break;
+            end;
+          end;
+        end else begin
+          // normal filename
+          while (FilenameEndPos<=CommentEndPos)
+          and (not IsSpaceChar[ASource[FilenameEndPos]])
+          and (not (ASource[FilenameEndPos] in ['*','}'])) do
+            inc(FilenameEndPos);
+        end;
+        // skip space behind filename
+        CommentStartPos:=FilenameEndPos;
+        while (CommentStartPos<=CommentEndPos)
+        and (IsSpaceChar[ASource[CommentStartPos]]) do inc(CommentStartPos);
+        // success
+        exit;
+      end;
+    end;
+    // try next comment
+    Result:=FindCommentEnd(ASource,Result,NestedComments);
+  until Result>MaxPos;
 end;
 
 function FindNextIDEDirective(const ASource: string; StartPos: integer;

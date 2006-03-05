@@ -40,7 +40,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileUtil,
+  Dialogs, Buttons, StdCtrls, FileUtil, IniFiles,
   // Components
   SynEdit, CodeCache, CodeToolManager, DefineTemplates,
   // IDE
@@ -72,16 +72,24 @@ function LoadUnitAndLFMFile(const UnitFileName: string;
   var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
-function CreateLPRFileForDPRFile(const DelphiProjectFilename: string;
-  AddLRSCode: boolean; var LPRCode: TCodeBuffer): TModalResult;
+function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
+  out LPRCode: TCodeBuffer): TModalResult;
 function ExtractOptionsFromDPR(DPRCode: TCodeBuffer;
   AProject: TProject): TModalResult;
+
+
 function FindDelphiDOF(const DelphiFilename: string): string;
 function ExtractOptionsFromDOF(const DOFFilename: string;
-  AProject: TProject): TModalResult;
+                               AProject: TProject): TModalResult;
 function FindDelphiCFG(const DelphiFilename: string): string;
 function ExtractOptionsFromCFG(const CFGFilename: string;
-  AProject: TProject): TModalResult;
+                               AProject: TProject): TModalResult;
+
+function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
+                                             AProject: TProject): string;
+function ExpandDelphiFilename(const Filename: string; AProject: TProject): string;
+function ExpandDelphiSearchPath(const SearchPath: string;
+                                AProject: TProject): string;
 
 
 implementation
@@ -356,25 +364,15 @@ begin
   Result:=mrOk;
 end;
 
-function CreateLPRFileForDPRFile(const DelphiProjectFilename: string;
-  AddLRSCode: boolean; var LPRCode: TCodeBuffer): TModalResult;
-var
-  LPRFilename: String;
-  CTResult: Boolean;
+function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
+  out LPRCode: TCodeBuffer): TModalResult;
 begin
-  LPRFilename:=ChangeFileExt(DelphiProjectFilename,'.lpr');
-  Result:=CopyFileWithErrorDialogs(DelphiProjectFilename,LPRFilename,[]);
-  if Result<>mrOk then exit;
+  if not FileExists(LPRFilename) then begin
+    Result:=CopyFileWithErrorDialogs(DPRFilename,LPRFilename,[]);
+    if Result<>mrOk then exit;
+  end;
   Result:=LoadCodeBuffer(LPRCode,LPRFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
-  if Result<>mrOk then exit;
-  CTResult:=CodeToolBoss.ConvertDelphiToLazarusSource(LPRCode,AddLRSCode);
-  debugln('CreateLPRFileForDPRFile: ',LPRCode.Source);
-  if not CTResult then begin
-    Result:=mrCancel;
-    exit;
-  end;
-  Result:=mrOk;
 end;
 
 function ExtractOptionsFromDPR(DPRCode: TCodeBuffer; AProject: TProject
@@ -396,8 +394,112 @@ end;
 
 function ExtractOptionsFromDOF(const DOFFilename: string; AProject: TProject
   ): TModalResult;
+// parse .dof file and put options into AProject
+var
+  IniFile: TIniFile;
+  
+  function ReadDirectory(const Section, Ident: string): string;
+  begin
+    Result:=IniFile.ReadString(Section,Ident,'');
+    DebugLn('.dof ReadDirectory Section=',Section,' Ident=',Ident,' Result="',Result,'"');
+    Result:=ExpandDelphiFilename(Result,AProject);
+  end;
+  
+  function ReadSearchPath(const Section, Ident: string): string;
+  var
+    SearchPath: String;
+  begin
+    SearchPath:=IniFile.ReadString(Section,Ident,'');
+    DebugLn('.dof ReadSearchPath Section=',Section,' Ident=',Ident,' SearchPath="',SearchPath,'"');
+    Result:=ExpandDelphiSearchPath(SearchPath,AProject);
+  end;
+  
+  procedure AddPackageDependency(const DelphiPkgName, DelphiPkgNames,
+    LazarusPkgName: string);
+  begin
+    if DelphiPkgName='' then exit;
+    if System.Pos(';'+lowercase(DelphiPkgName)+';',
+                  ';'+lowercase(DelphiPkgNames)+';')>0 then begin
+      DebugLn('AddPackageDependency adding package dependency ',LazarusPkgName);
+      AProject.AddPackageDependency(LazarusPkgName);
+    end;
+  end;
+
+  procedure ReadDelphiPackages;
+  var
+    DelphiPackages: String;
+    Pkgs: TStringList;
+    i: Integer;
+    Pkg: string;
+  begin
+    DelphiPackages:=IniFile.ReadString('Directories','Packages','');
+    //DebugLn('ReadDelphiPackages DelphiPackages=',DelphiPackages);
+    Pkgs:=SplitString(DelphiPackages,';');
+    if Pkgs=nil then exit;
+    for i:=0 to Pkgs.Count-1 do begin
+      Pkg:=Pkgs[i];
+      DebugLn('ReadDelphiPackages Pkg=',Pkg);
+      AddPackageDependency(Pkg,'rtl,dbrtl','FCL');
+      AddPackageDependency(Pkg,'vcl;vcldb;vcldbx','LCL');
+    end;
+  end;
+
+var
+  OutputDir: String;
+  SearchPath: String;
+  DebugSourceDirs: String;
 begin
-  // TODO parse .dof file and put options into AProject
+  if not FileExists(DOFFilename) then exit(mrOk);
+  try
+    IniFile:=TIniFile.Create(DOFFilename);
+    try
+      // output directory
+      OutputDir:=ReadDirectory('Directories','OutputDir');
+      if (OutputDir<>'') then begin
+        DebugLn('ExtractOptionsFromDOF setting unit output directory to "',OutputDir,'"');
+        AProject.CompilerOptions.UnitOutputDirectory:=OutputDir;
+      end;
+      
+      // search path
+      SearchPath:=ReadSearchPath('Directories','SearchPath');
+      if (SearchPath<>'') then begin
+        DebugLn('ExtractOptionsFromDOF Adding to search paths: "',SearchPath,'"');
+        AProject.CompilerOptions.IncludeFiles:=
+             MergeSearchPaths(AProject.CompilerOptions.IncludeFiles,SearchPath);
+        AProject.CompilerOptions.Libraries:=
+             MergeSearchPaths(AProject.CompilerOptions.Libraries,SearchPath);
+        AProject.CompilerOptions.OtherUnitFiles:=
+             MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,SearchPath);
+        AProject.CompilerOptions.ObjectPath:=
+             MergeSearchPaths(AProject.CompilerOptions.ObjectPath,SearchPath);
+        AProject.CompilerOptions.DebugPath:=
+             MergeSearchPaths(AProject.CompilerOptions.DebugPath,SearchPath);
+      end;
+      
+      // debug source dirs
+      DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
+      if DebugSourceDirs<>'' then begin
+        DebugLn('ExtractOptionsFromDOF Adding to debug paths: "',DebugSourceDirs,'"');
+        AProject.CompilerOptions.DebugPath:=
+           MergeSearchPaths(AProject.CompilerOptions.DebugPath,DebugSourceDirs);
+      end;
+      
+      // packages
+      ReadDelphiPackages;
+      
+      if IniFile.ReadString('Linker','ConsoleApp','')='0' then begin
+        // does not need a windows console
+        DebugLn('ExtractOptionsFromDOF ConsoleApp=0');
+        AProject.LazCompilerOptions.Win32GraphicApp:=true;
+      end;
+    finally
+      IniFile.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('ExtractOptionsFromDOF failed reading "'+DOFFilename+'" '+E.Message);
+    end;
+  end;
   Result:=mrOk;
 end;
 
@@ -413,9 +515,143 @@ end;
 
 function ExtractOptionsFromCFG(const CFGFilename: string; AProject: TProject
   ): TModalResult;
+var
+  sl: TStringList;
+  i: Integer;
+  Line: string;
+  UnitPath: String;
+  IncludePath: String;
 begin
-  // TODO parse .cfg file and put options into AProject
+  if not FileExists(CFGFilename) then exit(mrOk);
+  try
+    sl:=TStringList.Create;
+    try
+      sl.LoadFromFile(CFGFilename);
+      for i:=0 to sl.Count-1 do begin
+        Line:=sl[i];
+        if Line='' then continue;
+        if (Line[1]<>'-') or (length(Line)<2) then continue;
+        if Line[2]='U' then begin
+          UnitPath:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),AProject);
+          if UnitPath<>'' then begin
+            DebugLn('ExtractOptionsFromCFG adding unitpath "',UnitPath,'"');
+            AProject.CompilerOptions.OtherUnitFiles:=
+             MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,UnitPath);
+          end;
+        end else if Line[2]='I' then begin
+          IncludePath:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),AProject);
+          if IncludePath<>'' then begin
+            DebugLn('ExtractOptionsFromCFG adding IncludePath "',IncludePath,'"');
+            AProject.CompilerOptions.IncludeFiles:=
+             MergeSearchPaths(AProject.CompilerOptions.IncludeFiles,IncludePath);
+          end;
+        end;
+      end;
+    finally
+      sl.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('ExtractOptionsFromDOF failed reading "'+CFGFilename+'" '+E.Message);
+    end;
+  end;
   Result:=mrOk;
+end;
+
+function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
+  AProject: TProject): string;
+var
+  ProjectDir: String;
+  ShortProjectDir: String;
+  p: LongInt;
+begin
+  // often projects use paths near to their project directory
+  // For example:
+  //   A project /somewhere/MyProjects/project1.dpr
+  // and a path C:\Delphi\MyProject\folder
+  // can mean, that the relative path is 'folder'
+
+  ProjectDir:=AProject.ProjectDirectory;
+  ShortProjectDir:='\'+ExtractFileName(ChompPathDelim(ProjectDir))+'\';
+  p:=System.Pos(ShortProjectDir,Filename);
+  if (p>0) then begin
+    Result:=copy(Filename,p+length(ShortProjectDir),length(Filename));
+    exit;
+  end;
+
+  // ignore all other absolute paths
+  Result:='';
+end;
+
+function ExpandDelphiFilename(const Filename: string; AProject: TProject
+  ): string;
+var
+  p: LongInt;
+begin
+  Result:=Filename;
+  if Result='' then exit;
+  Result:=TrimFilename(SetDirSeparators(Result));
+
+  // check for $(Delphi) makro
+  p:=System.Pos('$(DELPHI)',Result);
+  if p>0 then begin
+    // Delphi features are provided by FPC and Lazarus
+    // -> ignore
+    Result:='';
+  end;
+
+  // check for other makros
+  p:=System.Pos('$(',Result);
+  if p>0 then begin
+    // path makros are not supported
+    // -> ignore
+    Result:='';
+  end;
+
+  if FilenameIsWinAbsolute(Result) then begin
+    // absolute filenames are not portable
+    Result:=ConvertDelphiAbsoluteToRelativeFile(Result,AProject);
+  end;
+
+  // change PathDelim
+  Result:=TrimFilename(SetDirSeparators(Result));
+end;
+
+function ExpandDelphiSearchPath(const SearchPath: string;
+  AProject: TProject): string;
+var
+  Paths: TStringList;
+  i: Integer;
+  CurPath: String;
+  j: Integer;
+begin
+  Result:='';
+  Paths:=SplitString(SearchPath,';');
+  if Paths=nil then exit;
+  try
+    // expand Delphi paths
+    for i:=0 to Paths.Count-1 do
+      Paths[i]:=ExpandDelphiFilename(Paths[i],AProject);
+    // remove doubles
+    for i:=Paths.Count-1 downto 0 do begin
+      CurPath:=Paths[i];
+      if (CurPath='') then
+        Paths.Delete(i)
+      else begin
+        j:=i-1;
+        while (j>=0) and (CompareText(CurPath,Paths[i])<>0) do dec(j);
+        if j>=0 then
+          Paths.Delete(i);
+      end;
+    end;
+    Result:='';
+    for i:=0 to Paths.Count-1 do begin
+      if i>0 then Result:=Result+';';
+      Result:=Result+Paths[i];
+    end;
+  finally
+    Paths.Free;
+  end;
 end;
 
 initialization

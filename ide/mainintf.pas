@@ -106,7 +106,8 @@ type
   TCodeToolsFlag = (
     ctfSwitchToFormSource, // bring source notebook to front and show source of
                            //   current designed form
-    ctfActivateAbortMode   // activate the CodeToolBoss.Abortable mode
+    ctfActivateAbortMode,  // activate the CodeToolBoss.Abortable mode
+    ctfSourceEditorNotNeeded // do not check, if the source editor has a file open
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
 

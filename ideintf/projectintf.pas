@@ -37,6 +37,7 @@ const
   ProjDescNameProgram = 'Program';
   ProjDescNameLibrary = 'Library';
   ProjDescNameCustomProgram = 'Custom Program';
+  ProjDescNameEmpty = 'Empty';
 
 type
   { TLazCompilerOptions }
@@ -587,6 +588,7 @@ function ProjectDescriptorApplication: TProjectDescriptor;
 function ProjectDescriptorProgram: TProjectDescriptor;
 function ProjectDescriptorLibrary: TProjectDescriptor;
 function ProjectDescriptorCustomProgram: TProjectDescriptor;
+function ProjectDescriptorEmptyProject: TProjectDescriptor;
 
 const
   DefaultProjectFlags = [pfSaveClosedUnits,
@@ -708,6 +710,11 @@ end;
 function ProjectDescriptorCustomProgram: TProjectDescriptor;
 begin
   Result:=ProjectDescriptors.FindByName(ProjDescNameCustomProgram);
+end;
+
+function ProjectDescriptorEmptyProject: TProjectDescriptor;
+begin
+  Result:=ProjectDescriptors.FindByName(ProjDescNameEmpty);
 end;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;

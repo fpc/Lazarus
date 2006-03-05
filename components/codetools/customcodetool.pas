@@ -453,8 +453,8 @@ begin
   if NewScanner=FScanner then exit;
   LastErrorCheckedForIgnored:=false;
   Clear;
-  FScanner:=NewScanner; begin
-  if Scanner<>nil then
+  FScanner:=NewScanner;
+  if Scanner<>nil then begin
     FLastScannerChangeStep:=Scanner.ChangeStep;
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
   end;
