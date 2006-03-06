@@ -167,6 +167,7 @@ begin
     DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors');
     exit;
   end;
+  if InPos=0 then ;
   CodeBuf.AbsoluteToLineCol(NamePos,Line,Col);
   if (Line>0) and (Col>0) then begin
     //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));

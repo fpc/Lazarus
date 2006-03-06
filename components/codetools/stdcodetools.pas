@@ -4208,7 +4208,8 @@ begin
   Result:=false;
   if DoBuildTree then BuildTree(true);
   ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'Mode',
-    Scanner.NestedComments,ParamPos);
+                                               Scanner.NestedComments,ParamPos);
+  if ParamPos=0 then ;
   Result:=(ACleanPos>0) and (ACleanPos<=SrcLen);
 end;
 
@@ -4225,6 +4226,7 @@ begin
   repeat
     ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
       Scanner.NestedComments,ParamPos);
+    if ParamPos=0 then ;
     if (ACleanPos<1) or (ACleanPos>SrcLen) then
       exit(false);
     if Filename='' then begin

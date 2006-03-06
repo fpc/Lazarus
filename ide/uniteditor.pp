@@ -3214,6 +3214,7 @@ Begin
         // get value
         NewValue:=GetIdentCompletionValue(aCompletion,KeyChar,
                                           ValueType,CursorToLeft);
+        if ValueType=icvIdentifier then ;
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
         Editor:=SrcEdit.EditorComponent;

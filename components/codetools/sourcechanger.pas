@@ -541,8 +541,8 @@ begin
     // this is a replace/delete operation (in cleaned code)
     // -> check the whole range for writable buffers
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
-  end
-  else if not IsDirectChange then begin
+  end;
+  if not IsDirectChange then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
       {$IFDEF CTDEBUG}
       DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
