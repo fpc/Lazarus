@@ -11,7 +11,7 @@ uses
   ;
 
 {$I BROKENincfiles.inc}// must be fixed to brokenincfiles.inc
-{$I ../ScanExamples/BROKENincfiles.inc}// must be fixed to ../scanExamples/brokenincfiles.inc
+{$I ../ScanExamples/BROKENincfiles.inc}// must be fixed to ../scanexamples/brokenincfiles.inc
 
 implementation
 

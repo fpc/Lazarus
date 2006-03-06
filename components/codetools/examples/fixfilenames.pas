@@ -77,5 +77,6 @@ begin
   // fix the unitnames in the uses section
   //if not CodeToolBoss.FixUsesSectionsCase(Code) then
   //  raise Exception.Create('unable to fix unit names in '+Filename+' '+CodeToolBoss.ErrorMessage);
+  writeln(Code.Source);
 end.
 

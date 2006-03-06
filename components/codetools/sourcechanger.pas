@@ -532,17 +532,17 @@ begin
     exit;
   end;
 
-  if ToPos>FromPos then begin
-    // this is a replace/delete operation (in cleaned code)
-    // -> check the whole range for writable buffers
-    if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
-  end else if IsDirectChange and (FromDirectPos<ToDirectPos) then begin
+  if IsDirectChange and (FromDirectPos<ToDirectPos) then begin
     // this is a direct replace/delete operation
     // -> check if the DirectCode is writable
     if DirectCode.ReadOnly then
       RaiseCodeReadOnly(DirectCode);
-  end;
-  if not IsDirectChange then begin
+  end else if FromPos<ToPos then begin
+    // this is a replace/delete operation (in cleaned code)
+    // -> check the whole range for writable buffers
+    if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
+  end
+  else if not IsDirectChange then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
       {$IFDEF CTDEBUG}
       DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');

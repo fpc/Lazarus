@@ -4405,7 +4405,7 @@ var
     AFilename:=SearchIncludeFilename(AFilename);
     if OldFilename<>AFilename then begin
       DebugLn('FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
-      ASource:=copy(ASource,1,StartPos-1)+AFilename+copy(ASource,EndPos,length(ASource));
+      SourceChangeCache.ReplaceEx(gtNone,gtNone,0,0,Code,StartPos,EndPos,AFilename);
     end;
   end;
   
@@ -4420,6 +4420,7 @@ begin
   if (Scanner=nil) or (Scanner.MainCode=nil) then exit;
   ASource:=Code.Source;
   Scanner.Scan(false,false,false,false);// init scanner, but do not scan
+  SourceChangeCache.MainScanner:=Scanner;
   
   Result:=true;
   NestedComments:=Scanner.NestedComments;
@@ -4433,6 +4434,7 @@ begin
     p:=FindCommentEnd(ASource,p,NestedComments);
     //DebugLn('TStandardCodeTool.FixIncludeFilenames ',dbgs(p));
   until false;
+  Result:=SourceChangeCache.Apply;
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(
