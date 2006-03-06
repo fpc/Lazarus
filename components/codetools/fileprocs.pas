@@ -64,7 +64,6 @@ type
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;
-function GetFilenameOnDisk(const AFilename: string): string;
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -92,6 +91,7 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 function FilenameIsMatching(const Mask, Filename: string;
                             MatchExactly: boolean): boolean;
+function GetFilenameOnDisk(const AFilename: string): string;
 function FindDiskFilename(const Filename: string): string;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
@@ -484,7 +484,7 @@ function GetFilenameOnDisk(const AFilename: string): string;
 begin
   Result:=AFilename;
   {$IFDEF CaseInsensitiveFilenames}
-  Result:=FindDiskFilename(Result,true);
+  Result:=FindDiskFilename(Result);
   {$ENDIF}
 end;
 
