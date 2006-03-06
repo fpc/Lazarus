@@ -167,11 +167,18 @@ begin
   Result := true;
 end;
 
+function CanCreateRevisionInc: boolean;
+begin
+  Result:=(not FileExists(RevisionIncFileName))
+           or FileIsWritable(RevisionIncFileName);
+end;
+
 begin
   if not ParamsValid then begin
     writeln('Usage: ',ExtractFileName(ParamStr(0)),' sourcedir revision.inc');
     halt(1);
   end;
+  if not CanCreateRevisionInc then exit;
   if FindRevision or not IsValidRevisionInc then
     WriteRevisionInc;
 end.
