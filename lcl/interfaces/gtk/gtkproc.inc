@@ -5663,15 +5663,21 @@ var
         // It would be cool, to know if a window manager with the gnome feature
         // is running, but there is probably no reliable code to do that, so we
         // simply delete all ampersands and don't set the letter shortcut.
-        DeleteAmpersands(s);
+        // DeleteAmpersands(s);
+        // gtk_label_set_text(LabelWidget,PChar(s));
+
+        // Do not use gtk_label_parse_uline as it mangles underscore characters
+        System.Delete(s,ShortCutPos,1);
         gtk_label_set_text(LabelWidget,PChar(s));
-        Accelerate(LCLMenuItem,MenuItemWidget,
-          gtk_label_parse_uline(LabelWidget,PChar(s)),
-          0,{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
+        gtk_label_set_pattern(LabelWidget, PChar(StringOfChar(' ', ShortCutPos-1)+'_'));
+        //Accelerate(LCLMenuItem,MenuItemWidget,
+          //gtk_label_parse_uline(LabelWidget,PChar(s)),
+          //0,{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
       end;
     end
     else begin
       gtk_label_set_text(LabelWidget,PChar(s));
+      gtk_label_set_pattern(LabelWidget, nil);  // Ensure any underlines removed
     end;
   end;
 
