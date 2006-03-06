@@ -1274,6 +1274,8 @@ procedure TGDBMIDebugger.Init;
     then Exit;
     
     S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
+    if Pos('--target=', S) <> 0 then
+      S := GetPart('--target=', '', S);
     FGDBCPU := GetPart('', '-', S);
     GetPart('-', '-', S); // strip vendor
     FGDBOS := GetPart('-', '-', S);
@@ -2021,7 +2023,8 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
 
     case StringCase(FTargetCPU, [
       'i386', 'i486', 'i586', 'i686',
-      'ia64', 'x86_64', 'powerpc', 'sparc'
+      'ia64', 'x86_64', 'powerpc',
+      'sparc', 'arm'
     ], True, False) of
       0..3: begin // ix86
         FTargetRegisters[0] := '$eax';
@@ -2054,6 +2057,11 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
         FTargetRegisters[0] := '$g1';
         FTargetRegisters[1] := '$o0';
         FTargetRegisters[2] := '$o1';
+      end;
+      8: begin // arm
+        FTargetRegisters[0] := '$r0';
+        FTargetRegisters[1] := '$r1';
+        FTargetRegisters[2] := '$r2';
       end;
     else
       FTargetRegisters[0] := '';
