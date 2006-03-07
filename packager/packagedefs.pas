@@ -65,6 +65,8 @@ type
     procedure(FirstDependency: TPkgDependency; var List: TList) of object;
   TGetDependencyOwnerDescription =
     procedure(Dependency: TPkgDependency; var Description: string) of object;
+  TGetDependencyOwnerDirectory =
+    procedure(Dependency: TPkgDependency; var Directory: string) of object;
   TGetWritablePkgOutputDirectory =
     procedure(APackage: TLazPackage; var AnOutDirectory: string) of object;
 
@@ -807,6 +809,7 @@ var
 
   OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent;
   OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription;
+  OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory;
   OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
@@ -855,6 +858,7 @@ function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNod
 function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
 
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
+function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;
 
@@ -1223,6 +1227,12 @@ function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 begin
   Result := '';
   OnGetDependencyOwnerDescription(Dependency,Result);
+end;
+
+function GetDependencyOwnerDirectory(Dependency: TPkgDependency): string;
+begin
+  Result := '';
+  OnGetDependencyOwnerDirectory(Dependency,Result);
 end;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;

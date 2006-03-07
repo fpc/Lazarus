@@ -2219,6 +2219,8 @@ function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
+  CurDir: String;
+  AFilename: String;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     BeginUpdate(false);
@@ -2241,6 +2243,22 @@ begin
           if OpenDependencyWithPackageLink(Dependency,PkgLink) then break;
           PkgLinks.RemoveLink(PkgLink);
         until false;
+        if Dependency.LoadPackageResult=lprNotFound then begin
+          // try in owner directory (some projects put all their packages into
+          //   one directory)
+          CurDir:=GetDependencyOwnerDirectory(Dependency);
+          if (CurDir<>'') then begin
+            AFilename:=FindDiskFileCaseInsensitive(
+                         AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
+            if FileExistsCached(AFilename) then begin
+              PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
+              if (PkgLink<>nil) then begin
+                if not OpenDependencyWithPackageLink(Dependency,PkgLink) then
+                  PkgLinks.RemoveLink(PkgLink);
+              end;
+            end;
+          end;
+        end;
       end else begin
         // there is already a package with this name, but wrong version open
         // -> unable to load this dependency due to conflict

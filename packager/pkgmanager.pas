@@ -149,6 +149,8 @@ type
     procedure OnApplicationIdle(Sender: TObject);
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
                                             var Description: string);
+    procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
+                                          var Directory: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
     procedure OnCheckInstallPackageList(PkgIDList: TList; var Ok: boolean);
@@ -569,6 +571,27 @@ begin
   end else begin
     Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
       );
+  end;
+end;
+
+procedure TPkgManager.GetDependencyOwnerDirectory(Dependency: TPkgDependency;
+  var Directory: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Directory:=TLazPackage(DepOwner).Directory;
+    end else if DepOwner is TProject then begin
+      Directory:=TProject(DepOwner).ProjectDirectory;
+    end else if DepOwner=Self then begin
+      Directory:=EnvironmentOptions.LazarusDirectory;
+    end else begin
+      Directory:=''
+    end;
+  end else begin
+    Directory:=''
   end;
 end;
 
@@ -2170,6 +2193,7 @@ var
 begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
+  OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
   OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
 
   // componentpalette
@@ -2656,7 +2680,7 @@ begin
       APackage.Modified:=false;
 
       // check if package name and file name correspond
-      if (AnsiCompareText(AlternativePkgName,APackage.Name)<>0) then begin
+      if (SysUtils.CompareText(AlternativePkgName,APackage.Name)<>0) then begin
         Result:=MessageDlg(lisPkgMangFilenameDiffersFromPackagename,
           Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage, ['"',
             ExtractFileName(AFilename), '"', '"', APackage.Name, '"', #13, '"',

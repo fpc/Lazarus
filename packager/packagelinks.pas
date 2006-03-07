@@ -149,6 +149,7 @@ type
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
+    function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
     procedure RemoveLink(APackageID: TLazPackageID);
   public
     property Modified: boolean read FModified write SetModified;
@@ -263,7 +264,7 @@ function TPackageLink.MakeSense: boolean;
 begin
   Result:=(Name<>'') and IsValidIdent(Name)
            and PackageFileNameIsValid(Filename)
-           and (AnsiCompareText(Name,ExtractFileNameOnly(Filename))=0);
+           and (CompareText(Name,ExtractFileNameOnly(Filename))=0);
 end;
 
 { TPackageLinks }
@@ -770,6 +771,38 @@ begin
   NewLink:=TPackageLink.Create;
   NewLink.AssignID(APackage);
   NewLink.Filename:=APackage.Filename;
+  if NewLink.MakeSense then begin
+    FUserLinksSortID.Add(NewLink);
+    FUserLinksSortFile.Add(NewLink);
+    Modified:=true;
+  end else begin
+    NewLink.Free;
+    NewLink:=nil;
+  end;
+  EndUpdate;
+  Result:=NewLink;
+end;
+
+function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string
+  ): TPackageLink;
+var
+  OldLink: TPackageLink;
+  NewLink: TPackageLink;
+begin
+  BeginUpdate;
+  // check if link already exists
+  OldLink:=FindLinkWithPkgName(PkgName);
+  if (OldLink<>nil) then begin
+    // link exists
+    if CompareFilenames(OldLink.Filename,PkgFilename)=0 then begin
+      Result:=OldLink;
+      exit;
+    end;
+  end;
+  // add user link
+  NewLink:=TPackageLink.Create;
+  NewLink.Name:=PkgName;
+  NewLink.Filename:=PkgFilename;
   if NewLink.MakeSense then begin
     FUserLinksSortID.Add(NewLink);
     FUserLinksSortFile.Add(NewLink);
