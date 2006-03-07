@@ -68,11 +68,11 @@ uses
   // codetools
   AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
-  // IDE interface
-  AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
-  NewItemIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
   // synedit
   SynEditKeyCmds,
+  // IDE interface
+  AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
+  NewItemIntf, MsgIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
   // protocol
   IDEProtocol,
   // compile
@@ -6597,6 +6597,8 @@ begin
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;
   FreeThenNil(Project1);
+  if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
+  
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject C');{$ENDIF}
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
