@@ -14,7 +14,7 @@ object EditorOptionsForm: TEditorOptionsForm
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 3
+    PageIndex = 1
     Height = 491
     Width = 477
     object GeneralPage: TPage
@@ -165,7 +165,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object RightMarginColorButton: TColorButton
           BorderWidth = 2
-          OnColorChanged = ColorButtonColorChanged
+          OnColorChanged = RightMarginColorButtonColorChanged
           Left = 246
           Height = 21
           Top = 32
@@ -208,7 +208,6 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object VisibleRightMarginCheckBox: TCheckBox
           Caption = 'VisibleRightMarginCheckBox'
-          Enabled = False
           OnClick = GeneralCheckBoxOnClick
           TabOrder = 0
           Left = 6
@@ -394,8 +393,6 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 2
         Width = 461
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -722,7 +719,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 6
@@ -895,8 +891,6 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         Width = 465
         OnMouseDown = ColorPreviewMouseUp
-        BookMarkOptions.OnChange = nil
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1223,7 +1217,6 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
-        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 4

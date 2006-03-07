@@ -451,6 +451,7 @@ type
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure EditorFontButtonClick(Sender: TObject);
+    procedure RightMarginColorButtonColorChanged(Sender: TObject);
 
     // key mapping
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
@@ -2344,7 +2345,10 @@ begin
   ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
   ASynEdit.Gutter.Color := fGutterColor;
   ASynEdit.Gutter.Width := fGutterWidth;
-  ASynEdit.RightEdge := fRightMargin;
+  if fVisibleRightMargin then
+    ASynEdit.RightEdge := fRightMargin
+  else
+    ASynEdit.RightEdge := 0;
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
@@ -2370,7 +2374,10 @@ begin
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
   fGutterColor   := ASynEdit.Gutter.Color;
   fGutterWidth   := ASynEdit.Gutter.Width;
-  fRightMargin   := ASynEdit.RightEdge;
+  fVisibleRightMargin := ASynEdit.RightEdge>0;
+  if fVisibleRightMargin then
+    fRightMargin   := ASynEdit.RightEdge;
+  fRightMarginColor := ASynEdit.RightEdgeColor;
   fEditorFont    := ASynEdit.Font.Name;
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
@@ -2422,7 +2429,10 @@ begin
 
   // Display options
   ASynEdit.Gutter.Visible := False;
-  ASynEdit.RightEdge := fRightMargin;
+  if fVisibleRightMargin then
+    ASynEdit.RightEdge := fRightMargin
+  else
+    ASynEdit.RightEdge := 0;
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight; // set height before Name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
@@ -2602,6 +2612,11 @@ begin
       if (a in [1, 2]) then
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
       PreviewEdits[a].Gutter.ShowLineNumbers := ShowLineNumbersCheckBox.Checked;
+      PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
+      if VisibleRightMarginCheckBox.Checked then
+        PreviewEdits[a].RightEdge:=StrToIntDef(RightMarginComboBox.Text,80)
+      else
+        PreviewEdits[a].RightEdge:=0;
     end;
   if CurHighlightElement <> Nil then
   begin
@@ -2719,13 +2734,6 @@ begin
       if PreviewEdits[a] <> Nil then
       begin
         PreviewEdits[a].Gutter.Color := GutterColorButton.ButtonColor;
-        PreviewEdits[a].Invalidate;
-      end;
-  if Sender = RightMarginColorButton then
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> Nil then
-      begin
-        PreviewEdits[a].RightEdgeColor := RightMarginColorButton.ButtonColor;
         PreviewEdits[a].Invalidate;
       end;
 end;
@@ -2877,12 +2885,15 @@ begin
     else
     if Sender = RightMarginComboBox then
     begin
-      NewVal := StrToIntDef(RightMarginComboBox.Text,
-        PreviewEdits[1].RightEdge);
+      NewVal := StrToIntDef(RightMarginComboBox.Text,PreviewEdits[1].RightEdge);
       SetComboBoxText(RightMarginComboBox, IntToStr(NewVal));
       for a := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[a] <> Nil then
-          PreviewEdits[a].RightEdge := NewVal;
+        if PreviewEdits[a] <> Nil then begin
+          if VisibleRightMarginCheckBox.Checked then
+            PreviewEdits[a].RightEdge := NewVal
+          else
+            PreviewEdits[a].RightEdge := 0;
+        end;
     end
     // color
     else
@@ -3235,6 +3246,16 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TEditorOptionsForm.RightMarginColorButtonColorChanged(Sender: TObject
+  );
+var
+  a: Integer;
+begin
+  for a := Low(PreviewEdits) to High(PreviewEdits) do
+    if PreviewEdits[a] <> Nil then
+      PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
 end;
 
 procedure TEditorOptionsForm.SetAttributeToDefaultButtonClick(Sender: TObject);
@@ -3644,6 +3665,7 @@ begin
 
   RightMarginLabel.Caption := dlgRightMargin;
 
+  VisibleRightMarginCheckBox.Checked:=EditorOpts.VisibleRightMargin;
   with RightMarginComboBox do
     SetComboBoxText(RightMarginComboBox, IntToStr(EditorOpts.RightMargin));
 
