@@ -216,8 +216,10 @@ type
     constructor Create(const AName: string; Count: integer);
     destructor Destroy; override;
     procedure DrawMark(ACanvas: TCanvas; Number, X, Y, LineHeight: integer);
+    {$IFNDEF SYN_LAZARUS}
     procedure DrawMarkTransparent(ACanvas: TCanvas; Number, X, Y,
       LineHeight: integer; TransparentColor: TColor);
+    {$ENDIF}
   end;
   
   
@@ -685,6 +687,7 @@ begin
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 procedure TSynInternalImage.DrawMarkTransparent(ACanvas: TCanvas; Number, X, Y,
   LineHeight: integer; TransparentColor: TColor);
 var
@@ -704,6 +707,7 @@ begin
     ACanvas.BrushCopy(rcDest, InternalImages, rcSrc, TransparentColor);
   end;
 end;
+{$ENDIF}
 
 end.
 

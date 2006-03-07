@@ -131,8 +131,6 @@ Type
     //** Methods not definined on PostScript
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); override;
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); override;
-    Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
-                        TransparentColor: TColor); override;
 
     //** Methods not implemented
     procedure Arc(x,y,Right,Bottom,SX,SY,EX,EY: Integer); override;
@@ -1874,12 +1872,6 @@ end;
 
 procedure TPostscriptPrinterCanvas.CopyRect(const Dest: TRect;
   SrcCanvas: TCanvas; const Source: TRect);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.BrushCopy(Dest: TRect;
-  InternalImages: TBitmap; Src: TRect; TransparentColor: TColor);
 begin
   //Not implemented
 end;

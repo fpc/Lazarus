@@ -21,15 +21,6 @@ const
   csAllValid = [csHandleValid..csBrushValid];
 
 {-----------------------------------------------}
-{--  TCanvas.BrushCopy --}
-{-----------------------------------------------}
-Procedure TCanvas.BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
-  TransparentColor :TColor);
-Begin
-  //TODO:TCANVAS.BRUSHCOPY
-end;
-
-{-----------------------------------------------}
 {--  TCanvas.Draw --}
 {-----------------------------------------------}
 Procedure TCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
