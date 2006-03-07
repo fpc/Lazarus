@@ -2162,6 +2162,8 @@ begin
     {$endif}
     ScrollInfo.nMin := 0;
     ScrollInfo.nMax := ARange;
+    if APage<0 then
+      APage := 0;
     ScrollInfo.nPage := APage;
     SetScrollInfo(Handle, Which, ScrollInfo, True);
   end;
@@ -2308,19 +2310,21 @@ begin
 
     Xinc:=0;
     if Rnew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
-    else if RNew.Right  + FGCache.TLColOff > FGCache.ClientWidth then XInc:=1;
+    else if (RNew.Right  + FGCache.TLColOff > FGCache.ClientWidth)
+            and (RNew.Left + FGCache.TLColOff - GetColWidths(aCol) >= FGCache.FixedWidth) then XInc:=1;
+            // Only scroll left if the left edge of the cell does not become invisible as a result
     Yinc:=0;
     if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
-    else if RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight then YInc:=1;
+    else if (RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight)
+            and (RNew.Top + FGCache.TLRowOff - GetRowHeights(aRow) >= FGCache.FixedHeight) then YInc:=1;
+            // Only scroll up if the top edge of the cell does not become invisible as a result
 
     with FTopLeft do
     if ((XInc=0)and(YInc=0)) or // the cell is already visible
        ((X=aCol)and(Y=aRow)) or // the cell is visible by definition
        ((X+XInc<0)or(Y+Yinc<0)) or // topleft can't be lower 0
        ((X+XInc>=ColCount)) or // leftmost column can't be equal/higher than colcount
-       ((Y+Yinc>=RowCount)) or // topmost column can't be equal/higher than rowcount
-       ((XInc>0)and(X=aCol)and(GetColWidths(aCol)>FGCache.ClientWidth)) or
-       ((YInc>0)and(Y=aRow)and(GetRowHeights(aRow)>FGCache.ClientHeight))
+       ((Y+Yinc>=RowCount)) // topmost column can't be equal/higher than rowcount
     then
       Break;
     Inc(FTopLeft.x, XInc);
