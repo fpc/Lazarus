@@ -2678,6 +2678,48 @@ end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
+  
+  function WarnAboutMissingPackageFiles: TModalResult;
+  var
+    i: Integer;
+    AFile: TPkgFile;
+    AFilename: String;
+  begin
+    Result:=mrOk;
+    for i:=0 to APackage.FileCount-1 do begin
+      AFile:=APackage.Files[i];
+      if AFile.FileType=pftVirtualUnit then continue;
+      AFilename:=AFile.Filename;
+      if System.Pos('$(',AFilename)>0 then begin
+        // filename contains makros -> skip
+      end;
+      if FilenameIsAbsolute(AFilename) then begin
+        if not FileExistsCached(AFilename) then begin
+          if not APackage.IsVirtual then
+            AFilename:=CreateRelativePath(AFilename,APackage.Directory);
+          Result:=QuestionDlg('Package file missing',
+            'The file "'+AFilename+'"'#13
+            +'of package '+APackage.IDAsString+' is missing.',
+            mtWarning,[mrIgnore,mrAbort],0);
+          if Result<>mrAbort then
+            Result:=mrOk;
+          // one warning is enough
+          exit;
+        end;
+      end else begin
+        if not APackage.IsVirtual then begin
+          // an unsaved file
+          Result:=QuestionDlg('Package file not saved',
+            'The file "'+AFilename+'"'#13
+            +'of package '+APackage.IDAsString+' needs to be saved first.',
+            mtWarning,[mrIgnore,'Ignore and save package now',mrAbort],0);
+          if Result<>mrAbort then
+            Result:=mrOk;
+        end;
+      end;
+    end;
+  end;
+  
 var
   XMLConfig: TXMLConfig;
   PkgLink: TPackageLink;
@@ -2707,6 +2749,10 @@ begin
     if (Result=mrNo) then Result:=mrIgnore;
     if Result<>mrYes then exit;
   end;
+  
+  // warn about missing files
+  Result:=WarnAboutMissingPackageFiles;
+  if Result<>mrOk then exit;
 
   // save editor files to codetools
   MainIDE.SaveSourceEditorChangesToCodeCache(-1);
