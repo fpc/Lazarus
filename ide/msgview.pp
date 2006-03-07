@@ -87,6 +87,7 @@ type
     procedure CopyMenuItemClick(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
+    procedure ClearMenuItemClick(Sender: TObject);
     procedure MainPopupMenuPopup(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     procedure MessageViewClicked(Sender: TObject);
@@ -160,6 +161,7 @@ type
 
 var
   MessagesView: TMessagesView;
+  MsgClearIDEMenuCommand: TIDEMenuCommand;
   MsgCopyIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
@@ -230,6 +232,8 @@ var
 begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
   Path := MessagesMenuRoot.Name;
+  MsgClearIDEMenuCommand :=
+    RegisterIDEMenuCommand(Path, 'Clear', srVK_CLEAR);
   MsgCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy selected',
     lisCopySelectedMessagesToClipboard);
   MsgCopyAllIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy all',
@@ -298,6 +302,7 @@ begin
   //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
 
   MsgHelpIDEMenuCommand.OnClick    := @HelpMenuItemClick;
+  MsgClearIDEMenuCommand.OnClick   := @ClearMenuItemClick;
   MsgCopyIDEMenuCommand.OnClick    := @CopyMenuItemClick;
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
   MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
@@ -750,6 +755,11 @@ end;
 procedure TMessagesView.HelpMenuItemClick(Sender: TObject);
 begin
   ExecuteIDECommand(Self, ecContextHelp);
+end;
+
+procedure TMessagesView.ClearMenuItemClick(Sender: TObject);
+begin
+  Clear;
 end;
 
 procedure TMessagesView.MainPopupMenuPopup(Sender: TObject);
