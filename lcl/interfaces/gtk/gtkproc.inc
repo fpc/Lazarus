@@ -8089,7 +8089,9 @@ begin
                  GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
                  GDK_DECOR_MAXIMIZE;
 
-    bsSizeable : Result := GDK_DECOR_ALL;
+    bsSizeable : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_MAXIMIZE
+                 or GDK_DECOR_RESIZEH;
 
     bsDialog : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
                  GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
@@ -8099,7 +8101,12 @@ begin
 
     bsSizeToolWin :Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
                    GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_RESIZEH;
+  else
+    Result :=  GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+               GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
   end;
+  
+  //DebugLn('GetWindowDecorations ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
 {------------------------------------------------------------------------------
@@ -8121,7 +8128,9 @@ begin
     bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
 
-    bsSizeable : Result := GDK_FUNC_ALL;
+    bsSizeable : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
+                GDK_FUNC_RESIZE;
 
     bsDialog : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
                 or GDK_FUNC_MOVE;
@@ -8141,7 +8150,7 @@ begin
   and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
     Result:=Result-GDK_FUNC_RESIZE;
 
-  //debugln('GetWindowFunction A ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)));
+  //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
