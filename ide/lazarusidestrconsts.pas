@@ -2529,6 +2529,8 @@ resourcestring
   lisA2PPalettePage = 'Palette Page:';
   lisA2PUnitFileName2 = 'Unit File Name:';
   lisA2PUnitName = 'Unit Name:';
+  lisA2PShortenOrExpandFilename = 'Shorten or expand filename';
+  lisA2PSaveFileDialog = 'Save file dialog';
   lisA2PFileName = 'File name:';
   
   // broken dependencies dialog

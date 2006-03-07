@@ -727,18 +727,18 @@ end;
 
 procedure TAddToPackageDlg.ComponentUnitFileBrowseButtonClick(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  SaveDialog: TSaveDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.InitialDir:=
-      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.InitialDir:=
+      LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
+    SaveDialog.Title:=lisOpenFile;
+    SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
+    if SaveDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
         LazPackage.ShortenFilename(AFilename,true);
         ComponentUnitFileEdit.Text:=AFilename;
@@ -748,9 +748,9 @@ begin
          mtError,[mbCancel],0);
       end;
     end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
+    InputHistories.StoreFileDialogSettings(SaveDialog);
   finally
-    OpenDialog.Free;
+    SaveDialog.Free;
   end;
 end;
 
@@ -1529,7 +1529,7 @@ begin
     Caption:='...';
     OnClick:=@ComponentUnitFileBrowseButtonClick;
     ShowHint:=true;
-    Hint:='Open file dialog';
+    Hint:=lisA2PSaveFileDialog;
   end;
 
   ComponentUnitFileShortenButton:=TButton.Create(Self);
@@ -1539,7 +1539,7 @@ begin
     Caption:='<>';
     OnClick:=@ComponentUnitFileShortenButtonClick;
     ShowHint:=true;
-    Hint:='Shorten or expand filename';
+    Hint:=lisA2PShortenOrExpandFilename;
   end;
 
   ComponentUnitNameLabel:=TLabel.Create(Self);
