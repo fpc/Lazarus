@@ -8587,8 +8587,8 @@ begin
       end else begin
         CurUnit.IgnoreCurrentFileDateOnDisk;
       end;
-      Result:=mrOk;
     end;
+    Result:=mrOk;
     AnUnitList.Free;
   finally
     FCheckingFilesOnDisk:=false;
