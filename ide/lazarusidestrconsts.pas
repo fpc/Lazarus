@@ -324,12 +324,8 @@ resourcestring
   lisLFMFileNotFound = 'LFM file not found';
   lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN = 'The following '
     +'units were not found:%s%s%s%s1) Either these units are not in the unit '
-    +'path, then you can abort now, fix the unit path and try again.%s2) Or '
-    +'the units came from a case insensitive file system (windows/Delphi) and '
-    +'are now on a case sensitive filesystem (linux, bsd, macosx). In this '
-    +'case you should abort now, rename the units all lowercase and try '
-    +'again.%s3) Or you can ignore the missing units and continue.%s%sShould '
-    +'the missing units be commented out?';
+    +'path, then you can abort now, fix the unit path and try again.%s'
+    +'2) Or you can ignore the missing units and comment them out.';
   lisUnitNotFound = 'Unit not found';
   lisUnitsNotFound2 = 'Units not found';
   lisUnitLFMFile = 'Unit: %s%sLFM file: %s';

@@ -8109,7 +8109,7 @@ function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
   ): TModalResult;
 begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
-  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename);
+  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,false);
 end;
 
 function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
@@ -10481,8 +10481,11 @@ begin
     debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
     exit;
   end;
-  if (SourceNoteBook.NoteBook=nil) and (ctfSourceEditorNotNeeded in Flags) then
+  if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceNoteBook.NoteBook=nil)
+  then begin
+    DebugLn('TMainIDE.BeginCodeTool no editor');
     exit;
+  end;
     
   // check source editor
   if ctfSwitchToFormSource in Flags then
@@ -10491,7 +10494,7 @@ begin
     GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if (ctfSourceEditorNotNeeded in Flags)
+  if (not (ctfSourceEditorNotNeeded in Flags))
   and ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)) then exit;
   
   // init codetools

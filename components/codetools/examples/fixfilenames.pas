@@ -38,6 +38,7 @@ var
   Options: TCodeToolsOptions;
   Code: TCodeBuffer;
   Filename: String;
+  MissingUnits: TStrings;
 begin
   // setup the Options
   Options:=TCodeToolsOptions.Create;
@@ -75,8 +76,12 @@ begin
     raise Exception.Create('unable to fix include filesnames in '+Filename+' '+CodeToolBoss.ErrorMessage);
 
   // fix the unitnames in the uses section
-  //if not CodeToolBoss.FixUsesSectionsCase(Code) then
-  //  raise Exception.Create('unable to fix unit names in '+Filename+' '+CodeToolBoss.ErrorMessage);
+  MissingUnits:=nil;
+  if not CodeToolBoss.FindMissingUnits(Code,MissingUnits,true) then
+    raise Exception.Create('unable to fix unit names in '+Filename+' '+CodeToolBoss.ErrorMessage);
+  if MissingUnits<>nil then
+    writeln('MissingUnits=',MissingUnits.Text);
+  writeln('==================================================================');
   writeln(Code.Source);
 end.
 

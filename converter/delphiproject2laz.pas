@@ -54,8 +54,8 @@ uses
 
 function ConvertDelphiToLazarusProject(const ProjectFilename: string
   ): TModalResult;
-function ConvertDelphiToLazarusUnit(const DelphiFilename: string
-  ): TModalResult;
+function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
+  RenameLowercase: boolean): TModalResult;
 
 function CreateDelphiToLazarusProject(const LPIFilename: string): TModalResult;
 function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
@@ -79,13 +79,12 @@ var
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
   NotFoundUnits: String;
   LPRCode: TCodeBuffer;
-  NewProjectDesc: TProjectEmptyProgramDescriptor;
   i: Integer;
   CurUnitInfo: TUnitInfo;
-  MainUnitInfo: TUnitInfo;
   LPIFilename: String;
   DPRFilename: String;
   MainSourceFilename: String;
+  RenameLowercase: Boolean;
 begin
   debugln('ConvertDelphiToLazarusProject ProjectFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
@@ -108,7 +107,10 @@ begin
 
   // read config files (they often contain clues about paths, switches and defines)
   Result:=ReadDelphiProjectConfigFiles(Project1);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    DebugLn('ConvertDelphiToLazarusProject failed reading Delphi configs');
+    exit;
+  end;
 
   // load required packages
   Project1.AddPackageDependency('LCL');// Nearly all Delphi projects require it
@@ -119,35 +121,27 @@ begin
 
   // init codetools
   if not LazarusIDE.BeginCodeTools then begin
+    DebugLn('ConvertDelphiToLazarusProject failed BeginCodeTools');
     Result:=mrCancel;
     exit;
   end;
 
-  // fix include filenames
-  if not CodeToolBoss.FixIncludeFilenames(Project1.MainUnitInfo.Source,true)
-  then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
-    exit(mrCancel);
+  // fix .lpr
+  RenameLowercase:=false;
+  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,RenameLowercase);
+  if Result=mrAbort then begin
+    DebugLn('ConvertDelphiToLazarusProject failed converting unit ',LPRCode.Filename);
+    exit;
   end;
 
-  // try to find out as much about search paths as possible before parsing code
-  // TODO: open lpr
-  // TODO: fix include paths
-  // TODO: get all compiler options from .dpr
-  // TODO: find all project files in .dpr
-  // TODO: fix all include filenames
-
-  {$IFDEF NewDelphiProjConverter}
-  exit(mrOk);
-  {$ENDIF}
-  
-  // TODO: get all compiler options from .dpr
+  // TODO: get all compiler options from .lpr
   Result:=ExtractOptionsFromDPR(LPRCode,Project1);
   if Result<>mrOk then exit;
 
-  // fix
-  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename);
-  if Result=mrAbort then exit;
+  {$IFDEF NewDelphiProjConverter}
+  DebugLn('ConvertDelphiToLazarusProject DEBUG STOP');
+  exit(mrOk);
+  {$ENDIF}
 
   // find all project files
   FoundInUnits:=nil;
@@ -168,9 +162,9 @@ begin
     // warn about missing units
     if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
       NotFoundUnits:=MissingInUnits.Text;
-      Result:=MessageDlg('Units not found',
+      Result:=QuestionDlg('Units not found',
         'Some units of the delphi project are missing:'#13
-        +NotFoundUnits,mtWarning,[mbIgnore,mbAbort],0);
+        +NotFoundUnits,mtWarning,[mrIgnore,mrAbort],0);
       if Result<>mrIgnore then exit;
     end;
 
@@ -196,7 +190,7 @@ begin
     while i<Project1.UnitCount do begin
       CurUnitInfo:=Project1.Units[i];
       if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
-        Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename);
+        Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,RenameLowercase);
         if Result=mrAbort then exit;
       end;
       inc(i);
@@ -212,7 +206,8 @@ begin
   Result:=mrOk;
 end;
 
-function ConvertDelphiToLazarusUnit(const DelphiFilename: string): TModalResult;
+function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
+  RenameLowercase: boolean): TModalResult;
 var
   DFMFilename: String;
   LazarusUnitFilename: String;
@@ -223,12 +218,9 @@ var
 begin
   // check file and directory
   DebugLn('ConvertDelphiToLazarusUnit A ',DelphiFilename);
-  Result:=CheckDelphiFileExt(DelphiFilename);
-  if Result<>mrOk then exit;
   Result:=CheckFileIsWritable(DelphiFilename,[mbAbort]);
   if Result<>mrOk then exit;
-  Result:=CheckFilenameForLCLPaths(DelphiFilename);
-  if Result<>mrOk then exit;
+
   // close Delphi files in editor
   DebugLn('ConvertDelphiToLazarusUnit Close files in editor .pas/.dfm');
   Result:=LazarusIDE.DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
@@ -240,17 +232,19 @@ begin
     Result:=LazarusIDE.DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
     if Result<>mrOk then exit;
   end;
+
   // rename files (.pas,.dfm) lowercase
   // TODO: rename files in project
   DebugLn('ConvertDelphiToLazarusUnit Rename files');
   LazarusUnitFilename:='';
   LFMFilename:='';
-  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
-                       LazarusUnitFilename,LFMFilename);
+  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,RenameLowercase,
+                                        LazarusUnitFilename,LFMFilename);
   if Result<>mrOk then exit;
-  if LFMFilename='' then LFMFilename:=ChangeFIleExt(LazarusUnitFilename,'.lfm');
+  if LFMFilename='' then LFMFilename:=ChangeFileExt(LazarusUnitFilename,'.lfm');
   HasDFMFile:=FileExists(LFMFilename);
-  // convert .dfm file to .lfm file
+  
+  // convert .dfm file to .lfm file (without context type checking)
   if HasDFMFile then begin
     DebugLn('ConvertDelphiToLazarusUnit Convert dfm format to lfm "',LFMFilename,'"');
     Result:=ConvertDFMFileToLFMFile(LFMFilename);
@@ -272,6 +266,18 @@ begin
     exit;
   end;
 
+  // check LCL path
+  Result:=CheckFilenameForLCLPaths(LazarusUnitFilename);
+  if Result<>mrOk then exit;
+
+  // fix or comment missing units
+  DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
+  Result:=FixMissingUnits(LazarusUnitFilename);
+  if Result<>mrOk then begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+
   // add {$mode delphi} directive
   // remove windows unit and add LResources, LCLIntf
   // remove {$R *.dfm} or {$R *.xfm} directive
@@ -280,14 +286,6 @@ begin
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                              LRSFilename<>'');
-  if Result<>mrOk then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
-    exit;
-  end;
-
-  // comment missing units
-  DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
-  Result:=FixMissingUnits(LazarusUnitFilename);
   if Result<>mrOk then begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit;

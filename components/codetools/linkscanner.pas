@@ -94,6 +94,13 @@ type
     ChangeStep: integer;
     Next: PSourceChangeStep;
   end;
+  
+  TLinkScannerRange = (
+    lsrNone, // undefined
+    lsrInit, // init, but do not scan any code
+    lsrInterface, // scan only interface
+    lsrEnd // scan till 'end.'
+    );
 
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
@@ -146,7 +153,6 @@ type
       ABuffer: Pointer; ABufferPos: integer);
   end;
 
-
   { TLinkScanner }
   
   TLinkScanner = class(TObject)
@@ -173,7 +179,7 @@ type
     FChangeStep: integer;
     FMainSourceFilename: string;
     FMainCode: pointer;
-    FScanTillInterfaceEnd: boolean;
+    FScanTill: TLinkScannerRange;
     FIgnoreMissingIncludeFiles: boolean;
     FNestedComments: boolean;
     FForceUpdateNeeded: boolean;
@@ -188,7 +194,7 @@ type
     procedure AddLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     procedure IncreaseChangeStep;
     procedure SetMainCode(const Value: pointer);
-    procedure SetScanTillInterfaceEnd(const Value: boolean);
+    procedure SetScanTill(const Value: TLinkScannerRange);
     procedure SetIgnoreMissingIncludeFiles(const Value: boolean);
     function TokenIs(const AToken: shortstring): boolean;
     function UpTokenIs(const AToken: shortstring): boolean;
@@ -292,9 +298,8 @@ type
     Code: pointer;   // current code object
     Values: TExpressionEvaluator;
 
-    EndOfInterfaceFound: boolean;
-    EndOfSourceFound: boolean;
-    
+    ScannedRange: TLinkScannerRange;
+
     function MainFilename: string;
 
     // links
@@ -328,9 +333,8 @@ type
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
 
     // scanning
-    procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean;
-                   CheckUpdate: boolean = true; DoScan: boolean = true);
-    function UpdateNeeded(OnlyInterfaceNeeded,
+    procedure Scan(Range: TLinkScannerRange; CheckFilesOnDisk: boolean);
+    function UpdateNeeded(Range: TLinkScannerRange;
                           CheckFilesOnDisk: boolean): boolean;
     procedure SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
     procedure ClearIgnoreErrorAfter;
@@ -382,8 +386,7 @@ type
                                        read FCompilerMode write SetCompilerMode;
     property PascalCompiler: TPascalCompiler
                                      read FPascalCompiler write FPascalCompiler;
-    property ScanTillInterfaceEnd: boolean read FScanTillInterfaceEnd
-                                           write SetScanTillInterfaceEnd;
+    property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
         
     procedure Clear;
     function ConsistencyCheck: integer;
@@ -1026,8 +1029,7 @@ begin
   end;
 end;
 
-procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean;
-  CheckUpdate: boolean; DoScan: boolean);
+procedure TLinkScanner.Scan(Range: TLinkScannerRange; CheckFilesOnDisk: boolean);
 var
   LastTokenType: TLSTokenType;
   cm: TCompilerMode;
@@ -1037,8 +1039,7 @@ var
   CheckForAbort: boolean;
   NewSrcLen: Integer;
 begin
-  if CheckUpdate and (not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk)) then
-  begin
+  if (not UpdateNeeded(Range,CheckFilesOnDisk)) then begin
     // input is the same as last time -> output is the same
     // -> if there was an error, raise it again
     if LastErrorIsValid
@@ -1051,7 +1052,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan A -------- TillInterfaceEnd=',dbgs(TillInterfaceEnd));
   {$ENDIF}
-  ScanTillInterfaceEnd:=TillInterfaceEnd;
+  ScanTill:=Range;
   Clear;
   IncreaseChangeStep;
   {$IFDEF CTDEBUG}
@@ -1066,8 +1067,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan C ',dbgs(SrcLen));
   {$ENDIF}
-  EndOfInterfaceFound:=false;
-  EndOfSourceFound:=false;
+  ScannedRange:=lsrNone;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
   CompilerMode:=cmFPC;
@@ -1113,7 +1113,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan F ',dbgs(SrcLen));
   {$ENDIF}
-  if not DoScan then exit;
+  if ScanTill=lsrInit then exit;
   try
     try
       repeat
@@ -1126,11 +1126,10 @@ begin
         //DebugLn('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
         if (TokenType=lsttEndOfInterface) and (LastTokenType<>lsttEqual) then
         begin
-          EndOfInterfaceFound:=true;
-          if ScanTillInterfaceEnd then break;
+          ScannedRange:=lsrInterface;
+          if ScanTill=lsrInterface then break;
         end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
-          EndOfInterfaceFound:=true;
-          EndOfSourceFound:=true;
+          ScannedRange:=lsrEnd;
           break;
         end else if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then
           break;
@@ -1383,7 +1382,7 @@ begin
 end;
 
 function TLinkScanner.UpdateNeeded(
-  OnlyInterfaceNeeded, CheckFilesOnDisk: boolean): boolean;
+  Range: TLinkScannerRange; CheckFilesOnDisk: boolean): boolean;
 { the clean source must be rebuild if
    1. scanrange changed from only interface to whole source
    2. unit source changed
@@ -1408,8 +1407,8 @@ begin
       // frozen
       if (FLastGlobalWriteLockStep=GlobalWriteLockStep) then begin
         // source and values did not change since last UpdateNeeded check
-        // -> check only if ScanRange has increased
-        if (OnlyInterfaceNeeded=false) and (not EndOfSourceFound) then exit;
+        // -> check only if ScanTill has increased
+        if ord(Range)>ord(ScannedRange) then exit;
         Result:=false;
         exit;
       end else begin
@@ -1423,12 +1422,9 @@ begin
   // check if any input has changed ...
   FForceUpdateNeeded:=true;
   
-  // check if code was ever scanned
-  if LinkCount=0 then exit;
-  
   // check if ScanRange has increased
-  if (OnlyInterfaceNeeded=false) and (ScanTillInterfaceEnd) then exit;
-  
+  if ord(Range)>ord(ScannedRange) then exit;
+
   // check all used files
   if Assigned(FOnGetSource) then begin
     if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
@@ -1959,11 +1955,14 @@ begin
   Clear;
 end;
 
-procedure TLinkScanner.SetScanTillInterfaceEnd(const Value: boolean);
+procedure TLinkScanner.SetScanTill(const Value: TLinkScannerRange);
+var
+  OldScanRange: TLinkScannerRange;
 begin
-  if FScanTillInterfaceEnd=Value then exit;
-  FScanTillInterfaceEnd := Value;
-  if not Value then Clear;
+  if FScanTill=Value then exit;
+  OldScanRange:=FScanTill;
+  FScanTill := Value;
+  if ord(OldScanRange)<ord(FScanTill) then Clear;
 end;
 
 function TLinkScanner.ShortSwitchDirective: boolean;

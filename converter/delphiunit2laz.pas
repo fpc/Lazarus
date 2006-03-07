@@ -43,6 +43,8 @@ uses
   Dialogs, Buttons, StdCtrls, FileUtil, IniFiles,
   // Components
   SynEdit, CodeCache, CodeToolManager, DefineTemplates,
+  // IDEIntf
+  LazIDEIntf, MsgIntf,
   // IDE
   Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
@@ -57,12 +59,13 @@ var
   
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
-function ConvertDelphiToLazarusFilename(const DelphiFilename: string): string;
+function ConvertDelphiToLazarusFilename(const DelphiFilename: string;
+  RenameLowercase: boolean): string;
 function ConvertDFMToLFMFilename(const DFMFilename: string;
   KeepCase: boolean): string;
 function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
-  RenameDFMFile: boolean;
+  RenameDFMFile, RenameLowercase: boolean;
   var LazarusFilename, LFMFilename: string): TModalResult;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
@@ -98,9 +101,9 @@ implementation
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 begin
   if CompareFileExt(Filename,'.pas',false)<>0 then begin
-    Result:=MessageDlg(lisNotADelphiUnit,
+    Result:=QuestionDlg(lisNotADelphiUnit,
       Format(lisTheFileIsNotADelphiUnit, ['"', Filename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mrCancel,'Skip this file',mbAbort,'Abort'],0);
     exit;
   end;
   Result:=mrOk;
@@ -130,20 +133,24 @@ begin
   if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
   begin
     LCLPath:=LCLPath+'$(TargetCPU)-$(TargetOS)';
-    Result:=MessageDlg(lisLCLUnitPathMissing,
+    Result:=QuestionDlg(lisLCLUnitPathMissing,
       Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits, [#13, '"',
         Filename, '"', #13, '"', UnitPath, '"', #13, #13, '"', LCLPath, '"',
         #13, #13, #13]),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mrCancel,'Skip this step',mrAbort,'Abort'],0);
     exit;
   end;
   Result:=mrOk;
 end;
 
-function ConvertDelphiToLazarusFilename(const DelphiFilename: string): string;
+function ConvertDelphiToLazarusFilename(const DelphiFilename: string;
+  RenameLowercase: boolean): string;
 begin
-  Result:=ExtractFilePath(DelphiFilename)
-          +lowercase(ExtractFileName(DelphiFilename));
+  if RenameLowercase then
+    Result:=ExtractFilePath(DelphiFilename)
+            +lowercase(ExtractFileName(DelphiFilename))
+  else
+    Result:=DelphiFilename;
 end;
 
 function ConvertDFMToLFMFilename(const DFMFilename: string;
@@ -173,21 +180,19 @@ begin
 end;
 
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
-  RenameDFMFile: boolean;
+  RenameDFMFile, RenameLowercase: boolean;
   var LazarusFilename, LFMFilename: string): TModalResult;
 var
   DFMFilename: String;
 begin
-  LazarusFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
+  LazarusFilename:=ConvertDelphiToLazarusFilename(DelphiFilename,RenameLowercase);
   LFMFilename:='';
-  //writeln('RenameDelphiUnitToLazarusUnit Unit "',DelphiFilename,'" -> "',LazarusFilename,'"');
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazarusFilename,[mbAbort]);
   if Result<>mrOK then exit;
   if RenameDFMFile then begin
     DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
     if DFMFilename<>'' then begin
-      LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,false);
-      //writeln('RenameDelphiUnitToLazarusUnit Unit "',DFMFilename,'" -> "',LFMFilename,'"');
+      LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,not RenameLowercase);
       Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
       if Result<>mrOK then exit;
     end;
@@ -208,9 +213,9 @@ begin
       DFMStream.LoadFromFile(DFMFilename);
     except
       on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsReadError, Format(
+        Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
           lisUnableToReadFileError, ['"', DFMFilename, '"', #13, E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
+          mtError,[mrIgnore,mrAbort],0);
         exit;
       end;
     end;
@@ -218,16 +223,15 @@ begin
       FormDataToText(DFMStream,LFMStream);
     except
       on E: Exception do begin
-        Result:=MessageDlg(lisFormatError,
+        Result:=QuestionDlg(lisFormatError,
           Format(lisUnableToConvertFileError, ['"', DFMFilename, '"', #13,
             E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
+          mtError,[mrIgnore,mrAbort],0);
         exit;
       end;
     end;
     // converting dfm file, without renaming unit -> keep case
     LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
-    //writeln('ConvertDFMFileToLFMFile LFMFilename="',LFMFilename,'"');
     try
       LFMStream.SaveToFile(LFMFilename);
     except
@@ -270,20 +274,33 @@ var
   MissingUnitsText: String;
   i: Integer;
   Msg: String;
+  CurDir: String;
+  ShortFilename: String;
+  s: string;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
+
+  // fix include filenames
+  DebugLn('FixMissingUnits fixing include directives ...');
+  if not CodeToolBoss.FixIncludeFilenames(LazUnitCode,true)
+  then begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit(mrCancel);
+  end;
+
   MissingUnits:=nil;
   try
     // find missing units
     DebugLn('FixMissingUnits FindMissingUnits');
-    CTResult:=CodeToolBoss.FindMissingUnits(LazUnitCode,MissingUnits);
+    CTResult:=CodeToolBoss.FindMissingUnits(LazUnitCode,MissingUnits,true);
     if not CTResult then begin
       Result:=mrCancel;
       exit;
     end;
     if (MissingUnits=nil) or (MissingUnits.Count=0) then begin
+      // no missing units -> good
       Result:=mrOk;
       exit;
     end;
@@ -295,15 +312,29 @@ begin
       MissingUnitsText:=MissingUnitsText+MissingUnits[i];
     end;
     DebugLn('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
+    
     // ask user if missing units should be commented
     if MissingUnits.Count=1 then
       Msg:=lisUnitNotFound
     else
       Msg:=lisUnitsNotFound2;
-    Result:=MessageDlg(Msg,
+    Msg:=Msg+' '+ExtractFileName(LazUnitCode.Filename);
+    
+    // add error messages, so the user can click on them
+    ShortFilename:=ExtractFileName(LazUnitCode.Filename);
+    CurDir:=ExtractFilePath(LazUnitCode.Filename);
+    for i:=0 to MissingUnits.Count-1 do begin
+      s:=MissingUnits[i];
+      // TODO: add code position
+      IDEMessagesWindow.AddMsg(ShortFilename+'(1,1) Error: unit not found '+s,
+                               CurDir,-1);
+    end;
+
+    // ask user, what to do
+    Result:=QuestionDlg(Msg,
       Format(lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN, [#13,
-        MissingUnitsText, #13, #13, #13, #13, #13, #13]),
-      mtConfirmation,[mbYes,mbAbort],0);
+        MissingUnitsText, #13, #13, #13]),
+      mtConfirmation,[mrYes,'Comment missing units',mrAbort],0);
     if Result<>mrYes then exit;
 
     // comment missing units
@@ -336,9 +367,9 @@ begin
                            [lbfCheckIfText,lbfUpdateFromDisk]);
     if Result<>mrOk then exit;
   end else if LFMMustExist then begin
-    Result:=MessageDlg(lisLFMFileNotFound,
+    Result:=QuestionDlg(lisLFMFileNotFound,
                        Format(lisUnitLFMFile, [UnitFileName, #13, LFMFilename]),
-                       mtError,[mbCancel,mbAbort],0);
+                       mtError,[mrCancel,'Skip this step',mrAbort],0);
   end;
 end;
 
@@ -356,9 +387,9 @@ end;
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
 begin
   if CompareFileExt(Filename,'.dpr',false)<>0 then begin
-    Result:=MessageDlg(lisNotADelphiProject,
+    Result:=QuestionDlg(lisNotADelphiProject,
       Format(lisTheFileIsNotADelphiProjectDpr, ['"', Filename, '"']),
-      mtError,[mbCancel,mbAbort],0);
+      mtError,[mrCancel,'Skipt this step',mbAbort],0);
     exit;
   end;
   Result:=mrOk;
@@ -440,7 +471,7 @@ var
       Pkg:=Pkgs[i];
       DebugLn('ReadDelphiPackages Pkg=',Pkg);
       AddPackageDependency(Pkg,'rtl,dbrtl','FCL');
-      AddPackageDependency(Pkg,'vcl;vcldb;vcldbx','LCL');
+      AProject.AddPackageDependency('LCL');
     end;
   end;
 

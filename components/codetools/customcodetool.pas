@@ -1592,12 +1592,18 @@ end;
 
 procedure TCustomCodeTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
+var
+  LinkScanRange: TLinkScannerRange;
 begin
   // scan
   FLastProgressPos:=0;
   CurrentPhase:=CodeToolPhaseScan;
   try
-    Scanner.Scan(OnlyInterfaceNeeded,CheckFilesOnDisk);
+    if OnlyInterfaceNeeded then
+      LinkScanRange:=lsrInterface
+    else
+      LinkScanRange:=lsrEnd;
+    Scanner.Scan(LinkScanRange,CheckFilesOnDisk);
     // update scanned code
     if FLastScannerChangeStep<>Scanner.ChangeStep then begin
       // code has changed
@@ -2246,6 +2252,8 @@ begin
 end;
 
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
+var
+  LinkScanRange: TLinkScannerRange;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded A ',dbgs(Scanner<>nil),' FForceUpdateNeeded=',dbgs(FForceUpdateNeeded));
@@ -2254,8 +2262,15 @@ begin
     Result:=true;
     exit;
   end;
-  Result:=(FLastScannerChangeStep<>Scanner.ChangeStep)
-           or (Scanner.UpdateNeeded(OnlyInterfaceNeeded, CheckFilesOnDisk));
+  if (FLastScannerChangeStep<>Scanner.ChangeStep) then begin
+    Result:=true;
+  end else begin
+    if OnlyInterfaceNeeded then
+      LinkScanRange:=lsrInterface
+    else
+      LinkScanRange:=lsrEnd;
+    Result:=Scanner.UpdateNeeded(LinkScanRange, CheckFilesOnDisk);
+  end;
   FForceUpdateNeeded:=Result;
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',dbgs(Result));

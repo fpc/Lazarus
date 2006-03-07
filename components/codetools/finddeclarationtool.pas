@@ -684,7 +684,10 @@ type
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
+    function FindUnitCaseInsensitive(var AnUnitName,
+                                     AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, SrcPath: string);
+    function SearchUnitInUnitLinks(const TheUnitName: string): string;
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -1541,75 +1544,14 @@ var
     Result:=nil;
   end;
   
-  function SearchUnitInUnitLinks(const TheUnitName: string): TCodeBuffer;
-  var
-    UnitLinks, CurFilename: string;
-    UnitLinkStart, UnitLinkEnd, UnitLinkLen: integer;
-    pe: TCTPascalExtType;
-  begin
-    Result:=nil;
-    UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
-    {$IFDEF ShowTriedFiles}
-    DebugLn('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',dbgs(length(UnitLinks)));
-    {$ENDIF}
-    UnitLinkStart:=1;
-    while UnitLinkStart<=length(UnitLinks) do begin
-      while (UnitLinkStart<=length(UnitLinks))
-      and (UnitLinks[UnitLinkStart] in [#10,#13]) do
-        inc(UnitLinkStart);
-      UnitLinkEnd:=UnitLinkStart;
-      while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
-      do
-        inc(UnitLinkEnd);
-      UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
-      if UnitLinkLen>0 then begin
-        {$IFDEF ShowTriedFiles}
-        DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
-          dbgs(CompareSubStrings(TheUnitName,UnitLinks,1,UnitLinkStart,UnitLinkLen,false)));
-        {$ENDIF}
-        if (UnitLinkLen=length(TheUnitName))
-        and (CompareText(PChar(TheUnitName),length(TheUnitName),
-          @UnitLinks[UnitLinkStart],UnitLinkLen,false)=0)
-        then begin
-          // unit found -> parse filename
-          UnitLinkStart:=UnitLinkEnd+1;
-          UnitLinkEnd:=UnitLinkStart;
-          while (UnitLinkEnd<=length(UnitLinks))
-          and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
-            inc(UnitLinkEnd);
-          if UnitLinkEnd>UnitLinkStart then begin
-            CurFilename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-            LoadFile(CurFilename,Result);
-            if Result=nil then begin
-              // try also different extensions
-              for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
-                if CompareFileExt(CurFilename,CTPascalExtension[pe],false)<>0
-                then
-                  LoadFile(ChangeFileExt(CurFilename,CTPascalExtension[pe]),
-                           Result);
-                  if Result<>nil then break;
-              end;
-            end;
-            exit;
-          end;
-        end else begin
-          UnitLinkStart:=UnitLinkEnd+1;
-          while (UnitLinkStart<=length(UnitLinks))
-          and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
-            inc(UnitLinkStart);
-        end;
-      end else
-        break;
-    end;
-  end;
-  
-
-var UnitSrcSearchPath: string;
+var
+  UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
   CompiledResult: TCodeBuffer;
   UnitSearchPath: string;
   SrcPathInitialized: boolean;
   WorkingUnitInFilename: String;
+  CurFilename: String;
 
   procedure InitSrcPath;
   begin
@@ -1656,8 +1598,8 @@ begin
 
   // search as the compiler would search
   if AnUnitInFilename<>'' then begin
-    WorkingUnitInFilename:=SetDirSeparators(AnUnitInFilename);
     // uses IN parameter
+    WorkingUnitInFilename:=SetDirSeparators(AnUnitInFilename);
     if FilenameIsAbsolute(WorkingUnitInFilename) then begin
       Result:=TCodeBuffer(Scanner.OnLoadSource(Self,WorkingUnitInFilename,true));
     end else begin
@@ -1665,9 +1607,7 @@ begin
       // -> search file in current directory
       CurDir:=AppendPathDelim(CurDir);
       if not LoadFile(CurDir+WorkingUnitInFilename,Result) then begin
-        // search AnUnitInFilename in searchpath
-        InitSrcPath;
-        Result:=SearchFileInPath(UnitSrcSearchPath,WorkingUnitInFilename);
+        Result:=nil;
       end;
     end;
   end else begin
@@ -1733,7 +1673,9 @@ begin
     
     if Result=nil then begin
       // search in FPC source directory
-      Result:=SearchUnitInUnitLinks(AnUnitName);
+      CurFilename:=SearchUnitInUnitLinks(AnUnitName);
+      if CurFilename<>'' then
+        LoadFile(CurFilename,Result);
     end;
   end;
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
@@ -1754,6 +1696,60 @@ begin
           AnUnitName));
     end;
   end;
+end;
+
+function TFindDeclarationTool.FindUnitCaseInsensitive(var AnUnitName,
+  AnUnitInFilename: string): string;
+var
+  CurDir: String;
+  UnitPath, SrcPath: string;
+  NewUnitName: String;
+begin
+  //DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
+  if AnUnitInFilename<>'' then begin
+    // uses IN parameter
+    AnUnitInFilename:=TrimFilename(SetDirSeparators(AnUnitInFilename));
+    if FilenameIsAbsolute(AnUnitInFilename) then begin
+      Result:=FindDiskFilename(AnUnitInFilename);
+      if FileExists(Result) then
+        AnUnitInFilename:=Result
+      else
+        Result:='';
+    end else begin
+      // file is relative to current unit directory
+      // -> search file in current directory
+      CurDir:=ExtractFilePath(MainFilename);
+      if CurDir<>'' then begin
+        Result:=SearchFileInDir(AnUnitInFilename,CurDir,ctsfcAllCase);
+        if FileExists(Result) then begin
+          AnUnitInFilename:=CreateRelativePath(Result,CurDir);
+        end else begin
+          Result:='';
+        end;
+      end else begin
+        // virtual unit -> TODO
+        Result:='';
+      end;
+    end;
+  end else begin
+    // normal unit name
+    // search in unit, src and compiled src path
+    GatherUnitAndSrcPath(UnitPath,SrcPath);
+    Result:=SearchPascalUnitInPath(AnUnitName,CurDir,UnitPath+';'+SrcPath,';',
+                                   ctsfcAllCase);
+    if Result='' then begin
+      // search in unit links
+      Result:=SearchUnitInUnitLinks(AnUnitName);
+    end;
+    if Result<>'' then begin
+      NewUnitName:=ExtractFileNameOnly(Result);
+      if (NewUnitName<>lowercase(NewUnitName))
+      and (AnUnitName<>NewUnitName) then
+        AnUnitName:=NewUnitName;
+    end;
+    //DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive TODO search unit');
+  end;
+  //DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive RESULT AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename,' Result=',Result);
 end;
 
 procedure TFindDeclarationTool.GatherUnitAndSrcPath(var UnitPath,
@@ -1819,6 +1815,72 @@ begin
   // search for compiled unit
   // -> search in every unit path for a CompiledSrcPath and search there
   SearchCompiledSrcPaths(UnitPath);
+end;
+
+function TFindDeclarationTool.SearchUnitInUnitLinks(const TheUnitName: string
+  ): string;
+var
+  UnitLinks: string;
+  UnitLinkStart, UnitLinkEnd, UnitLinkLen: integer;
+  pe: TCTPascalExtType;
+begin
+  Result:='';
+  UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
+  {$IFDEF ShowTriedFiles}
+  DebugLn('TFindDeclarationTool.SearchUnitInUnitLinks length(UnitLinks)=',dbgs(length(UnitLinks)));
+  {$ENDIF}
+  UnitLinkStart:=1;
+  while UnitLinkStart<=length(UnitLinks) do begin
+    while (UnitLinkStart<=length(UnitLinks))
+    and (UnitLinks[UnitLinkStart] in [#10,#13]) do
+      inc(UnitLinkStart);
+    UnitLinkEnd:=UnitLinkStart;
+    while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
+    do
+      inc(UnitLinkEnd);
+    UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
+    if UnitLinkLen>0 then begin
+      {$IFDEF ShowTriedFiles}
+      DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
+        dbgs(CompareSubStrings(TheUnitName,UnitLinks,1,UnitLinkStart,UnitLinkLen,false)));
+      {$ENDIF}
+      if (UnitLinkLen=length(TheUnitName))
+      and (CompareText(PChar(TheUnitName),length(TheUnitName),
+        @UnitLinks[UnitLinkStart],UnitLinkLen,false)=0)
+      then begin
+        // unit found -> parse filename
+        UnitLinkStart:=UnitLinkEnd+1;
+        UnitLinkEnd:=UnitLinkStart;
+        while (UnitLinkEnd<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
+          inc(UnitLinkEnd);
+        if UnitLinkEnd>UnitLinkStart then begin
+          Result:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
+          if FileExistsCached(Result) then exit;
+          // try also different extensions
+          for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
+            if (CTPascalExtension[pe]<>'')
+            and (CompareFileExt(Result,CTPascalExtension[pe],false)<>0)
+            then begin
+              Result:=ChangeFileExt(Result,CTPascalExtension[pe]);
+              if FileExistsCached(Result) then begin
+                Result:=Result;
+                exit;
+              end;
+            end;
+          end;
+          Result:='';
+          exit;
+        end;
+      end else begin
+        UnitLinkStart:=UnitLinkEnd+1;
+        while (UnitLinkStart<=length(UnitLinks))
+        and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
+          inc(UnitLinkStart);
+      end;
+    end else
+      break;
+  end;
 end;
 
 function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition
@@ -7164,7 +7226,7 @@ begin
       if Result then exit;
       ANode:=FDependsOnCodeTools.FindSuccessor(ANode);
     end;
-    Result:=UpdateNeeded(Scanner.ScanTillInterfaceEnd);
+    Result:=UpdateNeeded(Scanner.ScanTill=lsrInterface);
   finally
     {$IFDEF ShowCacheDependencies}
     DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',

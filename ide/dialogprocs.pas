@@ -81,7 +81,7 @@ function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
 var
   DlgButtons: TMsgDlgButtons;
 begin
-  if CompareFilenames(SrcFilename,DestFilename)=0 then begin
+  if SrcFilename=DestFilename then begin
     Result:=mrOk;
     exit;
   end;

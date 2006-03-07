@@ -95,26 +95,27 @@ type
     function AddUnitToMainUsesSection(const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
-          const UpperUnitName: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+                                const UpperUnitName: string;
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromAllUsesSections(const UpperUnitName: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FixUnitInFilenameCase(
-          SourceChangeCache: TSourceChangeCache): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FixUnitInFilenameCaseInUsesSection(UsesNode: TCodeTreeNode;
-          SourceChangeCache: TSourceChangeCache): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
-          ImplementationUsesSection: TStrings): boolean;
+                               ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
-          ImplementationUsesSection: TStrings): boolean;
+                               ImplementationUsesSection: TStrings): boolean;
     function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
                                     NormalUnits: TStrings): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
-    function FindMissingUnits(var MissingUnits: TStrings): boolean;
+    function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
+                              SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
-          SourceChangeCache: TSourceChangeCache): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -872,7 +873,7 @@ end;
   function TStandardCodeTool.UsesSectionToFilenames(UsesNode: TCodeTreeNode
     ): TStrings;
 
-  Reads the uses section backwards and tries to find each unit file
+  Reads the uses section backwards and tries to find each unit file.
   The associated objects in the list will be the found codebuffers.
   If no codebuffer was found/created then the filename will be the unit name
   plus the 'in' extension.
@@ -934,36 +935,67 @@ begin
   until not AtomIsChar(',');
 end;
 
-function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings
-  ): boolean;
+function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
+  FixCase: boolean; SourceChangeCache: TSourceChangeCache): boolean;
   
   function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
-    UsesSection: TStrings;
-    i: Integer;
+    InAtom, UnitNameAtom: TAtomPosition;
+    OldUnitName: String;
+    OldInFilename: String;
+    AFilename: String;
+    s: String;
+    NewUnitName: String;
+    NewInFilename: String;
+    FromPos: LongInt;
+    ToPos: LongInt;
   begin
-    Result:=true;
-    if UsesNode=nil then exit;
-    UsesSection:=nil;
-    try
-      UsesSection:=UsesSectionToFilenames(UsesNode);
-      if UsesSection=nil then exit;
-      // gather all missing units
-      for i:=0 to UsesSection.Count-1 do begin
-        //debugln('TStandardCodeTool.FindMissingUnits A ',UsesSection[i],' ',dbgs(UsesSection.Objects[i]=nil));
-        if UsesSection.Objects[i]=nil then begin
-          if MissingUnits=nil then MissingUnits:=TStringList.Create;
-          MissingUnits.Add(UsesSection[i]);
+    if UsesNode=nil then exit(true);
+    MoveCursorToUsesEnd(UsesNode);
+    repeat
+      // read prior unit name
+      ReadPriorUsedUnit(UnitNameAtom, InAtom);
+      OldUnitName:=GetAtom(UnitNameAtom);
+      if InAtom.StartPos>0 then
+        OldInFilename:=copy(Src,InAtom.StartPos+1,
+                               InAtom.EndPos-InAtom.StartPos-2)
+      else
+        OldInFilename:='';
+      // find unit file
+      NewUnitName:=OldUnitName;
+      NewInFilename:=OldInFilename;
+      AFilename:=FindUnitCaseInsensitive(NewUnitName,NewInFilename);
+      s:=NewUnitName;
+      if NewInFilename<>'' then
+        s:=s+' in '''+NewInFilename+'''';
+      if AFilename<>'' then begin
+        // unit found
+        if (NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename) then
+        begin
+          // fix case
+          FromPos:=UnitNameAtom.StartPos;
+          if InAtom.StartPos>0 then
+            ToPos:=InAtom.EndPos
+          else
+            ToPos:=UnitNameAtom.EndPos;
+          SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,s);
+          DebugLn('CheckUsesSection fix case UnitName(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
         end;
+      end else begin
+        // unit not found
+        if MissingUnits=nil then MissingUnits:=TStringList.Create;
+        MissingUnits.Add(s);
       end;
-    finally
-      UsesSection.Free;
-    end;
+      // read keyword 'uses' or comma
+      ReadPriorAtom;
+    until not AtomIsChar(',');
+    Result:=true;
   end;
   
 begin
   Result:=false;
   BuildTree(false);
+  SourceChangeCache.MainScanner:=Scanner;
   try
     if not CheckUsesSection(FindMainUsesSection) then exit;
     if not CheckUsesSection(FindImplementationUsesSection) then exit;
@@ -971,7 +1003,7 @@ begin
     FreeAndNil(MissingUnits);
     raise;
   end;
-  Result:=true;
+  Result:=SourceChangeCache.Apply;
 end;
 
 function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
@@ -4394,7 +4426,7 @@ var
     OldFilename: String;
     AFilename: String;
   begin
-    OldFilename:=copy(ASource,StartPos,EndPos-StartPos);
+    OldFilename:=SetDirSeparators(copy(ASource,StartPos,EndPos-StartPos));
     //DebugLn('FixFilename ',dbgs(StartPos),' ',dbgs(EndPos),' ',OldFilename);
     AFilename:=OldFilename;
     if ExtractFileExt(AFilename)='' then begin
@@ -4421,7 +4453,7 @@ begin
   MissingIncludeFiles:=nil;
   if (Scanner=nil) or (Scanner.MainCode=nil) then exit;
   ASource:=Code.Source;
-  Scanner.Scan(false,false,false,false);// init scanner, but do not scan
+  Scanner.Scan(lsrInit,false);
   SourceChangeCache.MainScanner:=Scanner;
   
   Result:=true;
