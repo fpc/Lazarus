@@ -2299,7 +2299,8 @@ resourcestring
     +'file name %s%s%s in%s%s%s%s is not a valid lazarus package name.';
   lisPkgMangFileNotFound = 'File %s%s%s not found.';
   lisPkgMangErrorReadingPackage = 'Error Reading Package';
-  lisPkgMangUnableToReadPackageFile = 'Unable to read package file %s%s%s.';
+  lisPkgUnableToReadPackageFileError = 'Unable to read package file %s%s%s.%'
+    +'sError: %s';
   lisPkgMangFilenameDiffersFromPackagename =
     'Filename differs from Packagename';
   lisPkgMangTheFilenameDoesNotCorrespondToThePackage = 'The filename %s%s%s '

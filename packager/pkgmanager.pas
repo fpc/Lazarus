@@ -2645,8 +2645,8 @@ begin
       except
         on E: Exception do begin
           Result:=MessageDlg(lisPkgMangErrorReadingPackage,
-            Format(lisPkgMangUnableToReadPackageFile, ['"', AFilename,
-              '"']),
+            Format(lisPkgUnableToReadPackageFileError, ['"', AFilename, '"',
+              #13, E.Message]),
             mtError,[mbAbort,mbCancel],0);
           exit;
         end;
