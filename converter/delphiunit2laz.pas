@@ -267,6 +267,34 @@ begin
 end;
 
 function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
+
+  function MissingUnitNameToMessage(CodeBuf: TCodeBuffer;
+    const MissingUnit: string): string;
+  var
+    p: Integer;
+    NamePos, InPos: Integer;
+    Line, Col: Integer;
+    ShortFilename: String;
+    AnUnitName: String;
+  begin
+    ShortFilename:=ExtractFileName(CodeBuf.Filename);
+    AnUnitName:=MissingUnit;
+    // cut 'in' extension
+    p:=System.Pos(' ',AnUnitName);
+    if p>0 then
+      AnUnitName:=copy(AnUnitName,1,p-1);
+    Line:=1;
+    Col:=1;
+    if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,AnUnitName,
+      NamePos,InPos)
+    then begin
+      if InPos=0 then ;
+      CodeBuf.AbsoluteToLineCol(NamePos,Line,Col);
+    end;
+    Result:=ShortFilename+'('+IntToStr(Line)+','+IntToStr(Col)+') Error: '
+            +'Can''t find unit '+AnUnitName;
+  end;
+
 var
   LazUnitCode: TCodeBuffer;
   CTResult: Boolean;
@@ -275,8 +303,6 @@ var
   i: Integer;
   Msg: String;
   CurDir: String;
-  ShortFilename: String;
-  s: string;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
@@ -321,14 +347,12 @@ begin
     Msg:=Msg+' '+ExtractFileName(LazUnitCode.Filename);
     
     // add error messages, so the user can click on them
-    ShortFilename:=ExtractFileName(LazUnitCode.Filename);
     CurDir:=ExtractFilePath(LazUnitCode.Filename);
     for i:=0 to MissingUnits.Count-1 do begin
-      s:=MissingUnits[i];
-      // TODO: add code position
-      IDEMessagesWindow.AddMsg(ShortFilename+'(1,1) Error: unit not found '+s,
-                               CurDir,-1);
+      IDEMessagesWindow.AddMsg(
+               MissingUnitNameToMessage(LazUnitCode,MissingUnits[i]),CurDir,-1);
     end;
+    
 
     // ask user, what to do
     Result:=QuestionDlg(Msg,

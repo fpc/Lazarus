@@ -120,7 +120,6 @@ type
     function FindNextItem(const Filename: string;
                           FirstLine, LineCount: integer): TAVLTreeNode;
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
-    procedure ConsistencyCheck;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -146,6 +145,7 @@ type
     procedure SrcEditLinesInsertedDeleted(const Filename: string;
                                           FirstLine, LineCount: Integer);
     procedure UpdateMsgLineInListBox(Line: TLazMessageLine);
+    procedure ConsistencyCheck;
   public
     property LastLineIsProgress: boolean Read FLastLineIsProgress
       Write SetLastLineIsProgress;
@@ -369,10 +369,12 @@ var
   i:      integer;
   LastItem: TLazMessageLine;
 begin
+  //ConsistencyCheck;
+  //DebugLn('TMessagesView.Add ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageListBox.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine));
   NewMsg:=nil;
   if ItemCount>0 then begin
     LastItem:=Items[ItemCount-1];
-    if LastItem.OriginalIndex=OriginalIndex then begin
+    if (OriginalIndex>=0) and (LastItem.OriginalIndex=OriginalIndex) then begin
       // already added
       NewMsg:=LastItem;
     end;
@@ -399,6 +401,7 @@ begin
       MessageListBox.Items[i] := Msg;
     end
     else begin
+      // add new line
       MessageListBox.Items.Add(Msg)// add line
     end;
     NewMsg.VisiblePosition := FVisibleItems.Count;
@@ -637,9 +640,6 @@ end;
 procedure TMessagesView.Clear;
 begin
   if Self=nil then exit;
-  if fBlockCount > 0 then
-    exit;
-  FLastLineIsProgress := False;
   ClearItems;
   if not Assigned(MessageListBox.OnClick) then
     MessageListBox.OnClick := @MessageViewClicked;
@@ -686,6 +686,7 @@ begin
   FItems.Clear;
   FVisibleItems.Clear;
   MessageListBox.Clear;
+  FLastLineIsProgress:=false;
 end;
 
 function TMessagesView.ItemCount: integer;
@@ -881,11 +882,11 @@ begin
     if (QuickFixItem.Caption=(Sender as TIDEMenuItem).Caption)
     and (imqfoMenuItem in QuickFixItem.Steps) then begin
       //ConsistencyCheck;
-      DebugLn('TMessagesView.OnQuickFixClick ',Msg.Msg,' ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position),' ',Items[Msg.Position].Msg);
+      //DebugLn('TMessagesView.OnQuickFixClick ',Msg.Msg,' ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position),' ',Items[Msg.Position].Msg);
       QuickFixItem.Execute(Msg,imqfoMenuItem);
       if Msg.Msg='' then begin
         // messages fixed -> delete
-        DebugLn('TMessagesView.OnQuickFixClick ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position));
+        //DebugLn('TMessagesView.OnQuickFixClick ',dbgs(Msg.VisiblePosition),' ',dbgs(Msg.Position));
         DeleteLine(Msg.Position);
       end else begin
         UpdateMsgSrcPos(Msg);
@@ -970,6 +971,7 @@ var
   i: Integer;
   Line: TLazMessageLine;
 begin
+  writeln('TMessagesView.ConsistencyCheck ');
   if FSrcPositions.ConsistencyCheck<>0 then
     RaiseGDBException('TMessagesView.ConsistencyCheck FSrcPositions.ConsistencyCheck');
   for i:=0 to FItems.Count-1 do begin
@@ -985,7 +987,11 @@ begin
     Line:=VisibleItems[i];
     if (Line.VisiblePosition<>i) then
       RaiseGDBException('TMessagesView.ConsistencyCheck Visible i='+dbgs(i)+' "'+Line.Msg+'" VisiblePosition='+dbgs(Line.VisiblePosition));
+    if (Line<>Items[Line.Position]) then
+      RaiseGDBException('TMessagesView.ConsistencyCheck Visible i='+dbgs(i)+' "'+Line.Msg+'" Position='+dbgs(Line.Position));
   end;
+  if FLastLineIsProgress and (FVisibleItems.Count=0) then
+    RaiseGDBException('TMessagesView.ConsistencyCheck FLastLineIsProgress and FVisibleItems.Count=0');
 end;
 
 function TMessagesView.FindNextItem(const Filename: string; FirstLine,

@@ -1735,6 +1735,11 @@ begin
     // normal unit name
     // search in unit, src and compiled src path
     GatherUnitAndSrcPath(UnitPath,SrcPath);
+    if SysUtils.CompareText(AnUnitName,'Forms')=0 then begin
+      DebugLn('============================================================== ');
+      DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive ',UnitPath+';'+SrcPath);
+    end;
+    
     Result:=SearchPascalUnitInPath(AnUnitName,CurDir,UnitPath+';'+SrcPath,';',
                                    ctsfcAllCase);
     if Result='' then begin
@@ -1781,6 +1786,7 @@ var
         CurCompiledSrcPath:=OnGetSrcPathForCompiledUnit(Self,ADir);
         if CurCompiledSrcPath<>'' then begin
           // this directory is an unit output directory
+          CurCompiledSrcPath:=CreateAbsoluteSearchPath(CurCompiledSrcPath,ADir);
           SrcPath:=SrcPath+';'+CurCompiledSrcPath;
         end;
       end;

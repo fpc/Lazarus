@@ -103,6 +103,10 @@ function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
 function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
+
+
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
 
@@ -955,6 +959,84 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
+end;
+
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
+  ): string;
+var
+  PathLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  NewCurDir: String;
+  DiffLen: Integer;
+  BaseDir: String;
+begin
+  Result:=SearchPath;
+  if (SearchPath='') or (BaseDirectory='') then exit;
+  BaseDir:=AppendPathDelim(BaseDirectory);
+
+  PathLen:=length(Result);
+  EndPos:=1;
+  while EndPos<=PathLen do begin
+    StartPos:=EndPos;
+    while (Result[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>PathLen then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
+    CurDir:=copy(Result,StartPos,EndPos-StartPos);
+    if not FilenameIsAbsolute(CurDir) then begin
+      NewCurDir:=BaseDir+CurDir;
+      if NewCurDir<>CurDir then begin
+        DiffLen:=length(NewCurDir)-length(CurDir);
+        Result:=copy(Result,1,StartPos-1)+NewCurDir
+                +copy(Result,EndPos,PathLen-EndPos+1);
+        inc(EndPos,DiffLen);
+        inc(PathLen,DiffLen);
+      end;
+    end;
+    StartPos:=EndPos;
+  end;
+end;
+
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
+  ): string;
+var
+  PathLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  NewCurDir: String;
+  DiffLen: Integer;
+begin
+  Result:=SearchPath;
+  if (SearchPath='') or (BaseDirectory='') then exit;
+
+  PathLen:=length(Result);
+  EndPos:=1;
+  while EndPos<=PathLen do begin
+    StartPos:=EndPos;
+    while (Result[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>PathLen then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
+    CurDir:=copy(Result,StartPos,EndPos-StartPos);
+    if FilenameIsAbsolute(CurDir) then begin
+      NewCurDir:=CreateRelativePath(CurDir,BaseDirectory);
+      if NewCurDir<>CurDir then begin
+        DiffLen:=length(NewCurDir)-length(CurDir);
+        Result:=copy(Result,1,StartPos-1)+NewCurDir
+                +copy(Result,EndPos,PathLen-EndPos+1);
+        inc(EndPos,DiffLen);
+        inc(PathLen,DiffLen);
+      end;
+    end;
+    StartPos:=EndPos;
+  end;
 end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;

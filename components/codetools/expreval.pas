@@ -415,7 +415,7 @@ begin
   m:=0;
   while l<=r do begin
     m:=(l+r) shr 1;
-    cmp:=AnsiCompareText(VarName,FNames[m]);
+    cmp:=CompareText(VarName,FNames[m]);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -423,7 +423,7 @@ begin
     else
       break;
   end;
-  if AnsiCompareText(VarName,FNames[m])>0 then inc(m);
+  if CompareText(VarName,FNames[m])>0 then inc(m);
   Result:=m;
 end;
 
@@ -431,7 +431,7 @@ function TExpressionEvaluator.GetVariables(const Name: string): string;
 var i: integer;
 begin
   i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then
+  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then
     Result:=FValues[i]
   else 
     Result:='';
@@ -441,7 +441,7 @@ function TExpressionEvaluator.IsDefined(const Name: string): boolean;
 var i: integer;
 begin
   i:=IndexOfName(Name);
-  Result:=(i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0);
+  Result:=(i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0);
 end;
 
 function TExpressionEvaluator.ReadNextAtom: boolean;
@@ -554,7 +554,7 @@ procedure TExpressionEvaluator.SetVariables(const Name: string;
 var i, j: integer;
 begin
   i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then
+  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then
     // variable already exists -> replace value
     FValues[i]:=Value
   else begin
@@ -575,7 +575,7 @@ procedure TExpressionEvaluator.Undefine(const Name: string);
 var i, j: integer;
 begin
   i:=IndexOfName(Name);
-  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then begin
+  if (i>=0) and (i<FCount) and (CompareText(FNames[i],Name)=0) then begin
     for j:=i to FCount-2 do begin
       FNames[j]:=FNames[j+1];
       FValues[j]:=FValues[j+1];

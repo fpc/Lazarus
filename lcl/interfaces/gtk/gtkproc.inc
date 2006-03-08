@@ -8129,7 +8129,7 @@ begin
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
 
     bsSizeable : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE or
                 GDK_FUNC_RESIZE;
 
     bsDialog : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
@@ -8139,7 +8139,7 @@ begin
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
 
     bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE or
                 GDK_FUNC_RESIZE;
   end;
 

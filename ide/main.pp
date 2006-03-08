@@ -789,7 +789,7 @@ type
 
     // message view
     function DoJumpToCompilerMessage(Index:integer;
-      FocusEditor: boolean): boolean; override;
+                                     FocusEditor: boolean): boolean; override;
     procedure DoJumpToNextError(DirectionDown: boolean); override;
     procedure DoShowMessagesView; override;
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
@@ -9130,6 +9130,7 @@ var MaxMessages: integer;
   NewFilename: String;
 begin
   Result:=false;
+  //DebugLn('TMainIDE.DoJumpToCompilerMessage Index=',dbgs(Index));
   MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
