@@ -306,7 +306,7 @@ var
 begin
   if HandleAllocated then begin
     GetDeviceSize(Handle,p);
-    Result:=p.y;
+    Result:=p.x;
   end else
     Result:=0;
 end;
