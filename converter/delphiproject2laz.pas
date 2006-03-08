@@ -138,11 +138,6 @@ begin
   Result:=ExtractOptionsFromDPR(LPRCode,Project1);
   if Result<>mrOk then exit;
 
-  {$IFDEF NewDelphiProjConverter}
-  DebugLn('ConvertDelphiToLazarusProject DEBUG STOP');
-  exit(mrOk);
-  {$ENDIF}
-
   // find all project files
   FoundInUnits:=nil;
   MissingInUnits:=nil;

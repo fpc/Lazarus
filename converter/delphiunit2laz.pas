@@ -191,10 +191,22 @@ begin
   if Result<>mrOK then exit;
   if RenameDFMFile then begin
     DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
-    if DFMFilename<>'' then begin
+    if (DFMFilename<>'') and (CompareFilenames(DFMFilename,LFMFilename)<>0) then
+    begin
       LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,not RenameLowercase);
-      Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
-      if Result<>mrOK then exit;
+      if FileExists(LFMFilename) then begin
+        if (FileAge(LFMFilename)>=FileAge(DFMFilename)) then begin
+          // .lfm is not older than .dfm -> keep .lfm
+          // beware: it could be the same file
+        end else begin
+          // .lfm is older than .dfm -> remove .lfm
+          DeleteFile(LFMFilename);
+        end;
+      end;
+      if not FileExists(LFMFilename) then begin
+        Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
+        if Result<>mrOK then exit;
+      end;
     end;
   end;
   Result:=mrOk;
