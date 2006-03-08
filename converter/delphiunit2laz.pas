@@ -364,7 +364,6 @@ begin
       IDEMessagesWindow.AddMsg(
                MissingUnitNameToMessage(LazUnitCode,MissingUnits[i]),CurDir,-1);
     end;
-    
 
     // ask user, what to do
     Result:=QuestionDlg(Msg,
@@ -374,7 +373,7 @@ begin
     if Result<>mrYes then exit;
 
     // comment missing units
-    DebugLn('FixMissingUnits CommentUnitsInUsesSections');
+    DebugLn('FixMissingUnits CommentUnitsInUsesSections ',MissingUnits.Text);
     CTResult:=CodeToolBoss.CommentUnitsInUsesSections(LazUnitCode,MissingUnits);
     if not CTResult then begin
       Result:=mrCancel;

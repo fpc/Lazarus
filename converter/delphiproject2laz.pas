@@ -46,9 +46,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileUtil,
-  ExprEval, CodeCache, CodeToolManager,
+  ExprEval, DefineTemplates, CodeCache, CodeToolManager,
   SrcEditorIntf, MsgIntf, MainIntf, LazIDEIntf, ProjectIntf,
-  DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
+  IDEProcs, DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
   EditorOptions, ProjectInspector, CompilerOptions,
   BasePkgManager, PkgManager;
 
@@ -85,6 +85,9 @@ var
   DPRFilename: String;
   MainSourceFilename: String;
   RenameLowercase: Boolean;
+  NewUnitPath: String;
+  CurFilename: string;
+  p: LongInt;
 begin
   debugln('ConvertDelphiToLazarusProject ProjectFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
@@ -162,24 +165,46 @@ begin
         +NotFoundUnits,mtWarning,[mrIgnore,mrAbort],0);
       if Result<>mrIgnore then exit;
     end;
-
+    
+    // clean up project
+    Project1.RemoveNonExistingFiles(false);
+    
     // add all units to the project
     debugln('ConvertDelphiToLazarusProject adding all project units to project ...');
     for i:=0 to FoundInUnits.Count-1 do begin
       CurUnitInfo:=TUnitInfo.Create(nil);
-      TUnitInfo(CurUnitInfo).Filename:=FoundInUnits[i];
+      CurFilename:=FoundInUnits[i];
+      p:=System.Pos(' in ',CurFilename);
+      if p>0 then
+        CurFilename:=copy(CurFilename,p+4,length(CurFilename));
+      if CurFilename='' then continue;
+      if not FilenameIsAbsolute(CurFilename) then
+        CurFilename:=AppendPathDelim(Project1.ProjectDirectory)+CurFilename;
+      if not FileExists(CurFilename) then begin
+        DebugLn('ConvertDelphiToLazarusProject file not found: "',CurFilename,'"');
+        continue;
+      end;
+      TUnitInfo(CurUnitInfo).Filename:=CurFilename;
+      CurUnitInfo.IsPartOfProject:=true;
       Project1.AddFile(CurUnitInfo,false);
     end;
     // set search paths to find all project units
-    Project1.CompilerOptions.OtherUnitFiles:=
-                        Project1.SourceDirectories.CreateSearchPathFromAllFiles;
+    NewUnitPath:=MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                       Project1.SourceDirectories.CreateSearchPathFromAllFiles);
+    NewUnitPath:=RemoveSearchPaths(NewUnitPath,
+                                   '.;'+VirtualDirectory+';'+VirtualTempDir
+                                   +';'+Project1.ProjectDirectory);
+    Project1.CompilerOptions.OtherUnitFiles:=NewUnitPath;
     DebugLn('ConvertDelphiToLazarusProject UnitPath="',Project1.CompilerOptions.OtherUnitFiles,'"');
 
     // save project
-    debugln('ConvertDelphiToLazarusProject Saving new project ...');
+    debugln('ConvertDelphiToLazarusProject Saving project ...');
     Result:=LazarusIDE.DoSaveProject([]);
-    if Result<>mrOk then exit;
-
+    if Result<>mrOk then begin
+      DebugLn('ConvertDelphiToLazarusProject failed saving project');
+      exit;
+    end;
+    
     // convert all units
     i:=0;
     while i<Project1.UnitCount do begin
@@ -187,6 +212,7 @@ begin
       if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
         Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,RenameLowercase);
         if Result=mrAbort then exit;
+        LazarusIDE.DoCloseEditorFile(CurUnitInfo.Filename,[cfSaveFirst]);
       end;
       inc(i);
     end;

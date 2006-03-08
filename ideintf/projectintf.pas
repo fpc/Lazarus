@@ -529,7 +529,7 @@ type
                                ): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
                       AddToProjectUsesClause: boolean); virtual; abstract;
-    procedure RemoveUnit(Index: integer); virtual; abstract;
+    procedure RemoveUnit(Index: integer; RemoveFromUsesSection: boolean = true); virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;

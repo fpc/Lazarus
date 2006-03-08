@@ -86,8 +86,8 @@ begin
     Result:=CompareFilenames(File1,File2);
   end else begin
     Result:=0;
-    i:=1;
-    while (Result=0) and ((i<=Len1) and (i<=Len2)) do begin
+    i:=0;
+    while (Result=0) and ((i<Len1) and (i<Len2)) do begin
       {$IFDEF WINDOWS}
       Result:=Ord(LowerCaseTable[Ord(Filename1[i])])
              -Ord(LowerCaseTable[Ord(Filename2[i])]); //!! Must be replaced by ansi characters !!

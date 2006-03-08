@@ -1072,7 +1072,8 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
       AtomIsIdentifier(true);
       CurUnitName:=GetAtom;
       i:=MissingUnits.Count-1;
-      while (i>=0) and (SysUtils.CompareText(MissingUnits[i],CurUnitName)<>0) do
+      while (i>=0)
+      and (CompareIdentifiers(PChar(MissingUnits[i]),PChar(CurUnitName))<>0) do
         dec(i);
       CommentCurUnit:=i>=0;
       //debugln('CommentUnitsInUsesSection CurUnitName="',CurUnitName,'" CommentCurUnit=',dbgs(CommentCurUnit));

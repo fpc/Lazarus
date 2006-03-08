@@ -131,7 +131,7 @@ function GetNextDirectoryInSearchPath(const SearchPath: string;
 function GetNextUsedDirectoryInSearchPath(const SearchPath,
                           FilterDir: string; var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
-                                     DirStartPos: integer): integer;
+                                     DirStartPos: integer = 1): integer;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
@@ -412,6 +412,7 @@ begin
     EndPos:=StartPos;
     while (EndPos<=OldPathLen) and (SearchPath[EndPos]<>';') do
       inc(EndPos);
+    //DebugLn('RemoveSearchPaths Dir="',copy(SearchPath,StartPos,EndPos-StartPos),'" RemoveSearchPath="',RemoveSearchPath,'"');
     if SearchDirectoryInSearchPath(RemoveSearchPath,SearchPath,StartPos)>0 then
     begin
       // remove path -> skip
@@ -591,6 +592,7 @@ begin
     if DirEndPos=DirStartPos then DirEndPos:=DirStartPos+1;
   end;
   CurDirLen:=DirEndPos-DirStartPos;
+  //DebugLn('SearchDirectoryInSearchPath Dir="',copy(Directory,DirStartPos,CurDirLen),'"');
   PathLen:=length(SearchPath);
   EndPos:=1;
   while EndPos<=PathLen do begin
@@ -611,6 +613,7 @@ begin
       // check if it is the root path '/'
       if CurDirEndPos=StartPos then CurDirEndPos:=StartPos+1;
     end;
+    //DebugLn('SearchDirectoryInSearchPath CurDir="',copy(SearchPath,StartPos,CurDirEndPos-StartPos),'"');
     if CurDirEndPos-StartPos=CurDirLen then begin
       // directories have same length -> compare chars
       if FileUtil.CompareFilenames(@SearchPath[StartPos],CurDirLen,

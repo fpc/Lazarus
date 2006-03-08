@@ -557,7 +557,9 @@ type
     function NewUniqueFilename(const Filename: string): string;
     procedure AddFile(ProjectFile: TLazProjectFile;
                       AddToProjectUsesClause: boolean); override;
-    procedure RemoveUnit(Index: integer); override;
+    procedure RemoveUnit(Index: integer;
+                         RemoveFromUsesSection: boolean = true); override;
+    procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
 
     // search
@@ -2063,7 +2065,7 @@ end;
 {------------------------------------------------------------------------------
   TProject RemoveUnit
  ------------------------------------------------------------------------------}
-procedure TProject.RemoveUnit(Index: integer);
+procedure TProject.RemoveUnit(Index: integer; RemoveFromUsesSection: boolean);
 var
   OldUnitInfo: TUnitInfo;
 begin
@@ -2081,13 +2083,15 @@ begin
   if (MainUnitID>=0) then begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
-      if (OldUnitInfo.UnitName<>'') then begin
-        CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
-          OldUnitInfo.UnitName);
-      end;
-      if (OldUnitInfo.ComponentName<>'') then begin
-        CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
-          OldUnitInfo.ComponentName);
+      if RemoveFromUsesSection then begin
+        if (OldUnitInfo.UnitName<>'') then begin
+          CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
+            OldUnitInfo.UnitName);
+        end;
+        if (OldUnitInfo.ComponentName<>'') then begin
+          CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
+            OldUnitInfo.ComponentName);
+        end;
       end;
     end;
   end;
@@ -2115,6 +2119,24 @@ begin
   AnUnitInfo.SyntaxHighlighter:=
                ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewBuf.Filename));
   Result:=AnUnitInfo;
+end;
+
+procedure TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
+var
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  i:=UnitCount-1;
+  while (i>=0) do begin
+    if i<UnitCount then begin
+      AnUnitInfo:=Units[i];
+      if (not AnUnitInfo.IsVirtual) and (i<>MainUnitID) then begin
+        if not FileExists(AnUnitInfo.Filename) then
+          RemoveUnit(i,RemoveFromUsesSection);
+      end;
+    end;
+    dec(i);
+  end;
 end;
 
 {------------------------------------------------------------------------------
