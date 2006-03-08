@@ -50,7 +50,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, GetText, FileUtil, StringHashList;
+  Classes, SysUtils, LCLProc, GetText, FileUtil, StringHashList{$IFDEF MultiLocale},LConv{$ENDIF};
 
 type
   { TPOFileItem }
@@ -88,12 +88,20 @@ procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
 implementation
 
 
-function UTF8ToSystemCharSet(const s: string): string; inline;
+function UTF8ToSystemCharSet(const s: string): string; {$ifndef MultiLocale} inline;{$endif}
 begin
   {$IFDEF NoUTF8Translations}
   Result:=s;
   {$ELSE}
-  Result:=Utf8ToAnsi(s);
+    {$IFNDEF MultiLocale}
+    Result:=Utf8ToAnsi(s);
+    {$ELSE}
+    try
+    if (LowerCase(GetDefaultCodepage)<>'utf8')
+      and (LowerCase(GetDefaultCodepage)<>'utf-8')then
+      Result:=CPConvert(s,'utf8',LowerCase(GetDefaultCodepage)) else Result:=s;
+    except Result:=s;end;
+    {$ENDIF}
   {$ENDIF}
 end;
 
