@@ -55,7 +55,7 @@ uses
 function ConvertDelphiToLazarusProject(const ProjectFilename: string
   ): TModalResult;
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
-  RenameLowercase: boolean): TModalResult;
+  RenameLowercase, IsSubProc: boolean): TModalResult;
 
 function CreateDelphiToLazarusProject(const LPIFilename: string): TModalResult;
 function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
@@ -63,7 +63,6 @@ function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
   out LPRCode: TCodeBuffer): TModalResult;
 function FindDPRFilename(const StartFilename: string): string;
 function ReadDelphiProjectConfigFiles(AProject: TProject): TModalResult;
-
 
 implementation
 
@@ -131,7 +130,7 @@ begin
 
   // fix .lpr
   RenameLowercase:=false;
-  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,RenameLowercase);
+  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,RenameLowercase,true);
   if Result=mrAbort then begin
     DebugLn('ConvertDelphiToLazarusProject failed converting unit ',LPRCode.Filename);
     exit;
@@ -210,9 +209,20 @@ begin
     while i<Project1.UnitCount do begin
       CurUnitInfo:=Project1.Units[i];
       if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
-        Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,RenameLowercase);
+        Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,
+                                           RenameLowercase,true);
         if Result=mrAbort then exit;
-        LazarusIDE.DoCloseEditorFile(CurUnitInfo.Filename,[cfSaveFirst]);
+        if Result=mrCancel then begin
+          Result:=QuestionDlg('Failed converting unit',
+            'Failed to convert unit'+#13
+            +CurUnitInfo.Filename+#13,
+            mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
+          if Result=mrAbort then exit;
+        end;
+        if LazarusIDE.DoCloseEditorFile(CurUnitInfo.Filename,[cfSaveFirst])
+          =mrAbort
+        then
+          exit;
       end;
       inc(i);
     end;
@@ -228,7 +238,7 @@ begin
 end;
 
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
-  RenameLowercase: boolean): TModalResult;
+  RenameLowercase, IsSubProc: boolean): TModalResult;
 var
   DFMFilename: String;
   LazarusUnitFilename: String;
@@ -293,9 +303,10 @@ begin
 
   // fix or comment missing units
   DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
-  Result:=FixMissingUnits(LazarusUnitFilename);
-  if Result<>mrOk then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
+  Result:=FixMissingUnits(LazarusUnitFilename,IsSubProc);
+  if Result=mrAbort then exit;
+  if (Result<>mrOk) then begin
+    Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
     exit;
   end;
 
@@ -307,10 +318,8 @@ begin
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                              LRSFilename<>'');
-  if Result<>mrOk then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
-    exit;
-  end;
+  if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result<>mrOk,IsSubProc,Result)
+  then exit;
 
   // check the LFM file and the pascal unit
   DebugLn('ConvertDelphiToLazarusUnit Check new .lfm and .pas file');
@@ -322,7 +331,7 @@ begin
   and (CheckLFMBuffer(UnitCode,LFMCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk)
   then begin
     LazarusIDE.DoJumpToCompilerMessage(-1,true);
-    exit;
+    exit(mrAbort);
   end;
 
   if LFMCode<>nil then begin

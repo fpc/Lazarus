@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
-  CodeCache, CodeToolManager, AVL_Tree,
+  CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf,
   IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -71,7 +71,9 @@ function SaveStringToFile(const Filename, Content: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
   LRSFilename: string): TModalResult;
-
+function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
+  Ask: boolean; out NewResult: TModalResult): boolean;
+function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 
 implementation
 
@@ -346,6 +348,33 @@ begin
   finally
     LFMMemStream.Free;
     LRSMemStream.Free;
+  end;
+end;
+
+function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
+  Ask: boolean; out NewResult: TModalResult): boolean;
+begin
+  if Ok then begin
+    NewResult:=mrOk;
+    Result:=true;
+  end else begin
+    NewResult:=JumpToCodetoolErrorAndAskToAbort(Ask);
+    Result:=NewResult<>mrAbort;
+  end;
+end;
+
+function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
+// returns mrCancel or mrAbort
+begin
+  LazarusIDE.DoJumpToCodeToolBossError;
+  if Ask then begin
+    Result:=QuestionDlg('Error',
+      'The codetools found an error:'#13
+      +CodeToolBoss.ErrorMessage+#13,
+      mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
+    if Result=mrIgnore then Result:=mrCancel;
+  end else begin
+    Result:=mrCancel;
   end;
 end;
 

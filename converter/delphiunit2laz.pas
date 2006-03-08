@@ -70,7 +70,8 @@ function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
   AddLRSCode: boolean): TModalResult;
-function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
+function FixMissingUnits(const LazarusUnitFilename: string;
+                         IsSubProc: boolean): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
   var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
@@ -278,7 +279,8 @@ begin
   Result:=mrOk;
 end;
 
-function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
+function FixMissingUnits(const LazarusUnitFilename: string;
+  IsSubProc: boolean): TModalResult;
 
   function MissingUnitNameToMessage(CodeBuf: TCodeBuffer;
     const MissingUnit: string): string;
@@ -324,8 +326,8 @@ begin
   DebugLn('FixMissingUnits fixing include directives ...');
   if not CodeToolBoss.FixIncludeFilenames(LazUnitCode,true)
   then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
-    exit(mrCancel);
+    Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
+    exit;
   end;
 
   MissingUnits:=nil;
@@ -334,7 +336,7 @@ begin
     DebugLn('FixMissingUnits FindMissingUnits');
     CTResult:=CodeToolBoss.FindMissingUnits(LazUnitCode,MissingUnits,true);
     if not CTResult then begin
-      Result:=mrCancel;
+      Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
       exit;
     end;
     if (MissingUnits=nil) or (MissingUnits.Count=0) then begin
@@ -376,7 +378,7 @@ begin
     DebugLn('FixMissingUnits CommentUnitsInUsesSections ',MissingUnits.Text);
     CTResult:=CodeToolBoss.CommentUnitsInUsesSections(LazUnitCode,MissingUnits);
     if not CTResult then begin
-      Result:=mrCancel;
+      Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
       exit;
     end;
 

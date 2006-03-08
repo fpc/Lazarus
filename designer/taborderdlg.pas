@@ -103,8 +103,17 @@ begin
 end;
 
 procedure TTabOrderDialog.ShowOldValuesCheckboxCLICK(Sender: TObject);
+var
+  i: integer;
 begin
-  FillTree;
+  for i := 0 to Pred(ItemTreeView.Items.Count) do
+    if Assigned(ItemTreeView.Items[i].Data) then
+      if ShowOldValuesCheckbox.Checked then
+        ItemTreeView.Items[i].Text :=
+          TWinControl(ItemTreeView.Items[i].Data).Name +
+          '   (' + IntToStr(TWinControl(ItemTreeView.Items[i].Data).TabOrder) + ')'
+      else
+        ItemTreeView.Items[i].Text := TWinControl(ItemTreeView.Items[i].Data).Name;
 end;
 
 procedure TTabOrderDialog.DownSpeedbuttonCLICK(Sender: TObject);
@@ -226,4 +235,3 @@ initialization
   {$I taborderdlg.lrs}
 
 end.
-
