@@ -75,12 +75,8 @@ rsts=lclstrconsts
 packages=fcl
 
 [prerules]
-ifneq ($(OS_TARGET),win32)
+ifeq ($(findstring $(OS_TARGET),win32 wince),)
 NONWIN32=nonwin32
-else
-ifneq ($(findstring 1.0.,$(FPC_VERSION)),)
-NONWIN32=nonwin32
-endif
 endif
 
 [compiler]
