@@ -22,11 +22,11 @@
  *****************************************************************************
 }
 
-Unit WinCEInt;
+unit WinCEInt;
 
 {$mode objfpc}{$H+}
 
-Interface
+interface
 
 {$IFDEF Trace}
 {$ASSERTIONS ON}
@@ -40,22 +40,22 @@ Interface
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
 }
-Uses
+uses
   Types, Classes, ComCtrls, Controls, Buttons, Dialogs, ExtCtrls, Forms,
   GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Graphics, Menus, Windows;
 
-Type
+type
   { WinCE interface-object class }
 
   { TWinCEWidgetSet }
 
-  TWinCEWidgetSet = Class(TWidgetSet)
-  Public
+  TWinCEWidgetSet = class(TWidgetSet)
+  public
     { Constructor of the class }
-    Constructor Create;
+    constructor Create;
     { Destructor of the class }
-    Destructor Destroy; Override;
+    destructor Destroy; override;
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
@@ -66,9 +66,10 @@ Type
     procedure SetDesigning(AComponent: TComponent); override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
-    Procedure AppTerminate; Override;
-    Function  InitHintFont(HintFont: TObject): Boolean; Override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+    Procedure AppTerminate; override;
+    Function  InitHintFont(HintFont: TObject): Boolean; override;
+    Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
+    procedure AppRun(const ALoop: TApplicationMainLoop); override;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
@@ -77,12 +78,28 @@ Type
 
     {$I wincewinapih.inc}
     {$I wincelclintfh.inc}
-  End;
+  end;
 
 
-Implementation
+const
+  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
+  ClsName: array[0..6] of WideChar = ('W','i','n','d','o','w',#0);
+//  EditClsName: array[0..4] of WideChar = 'Edit'#0;
+  ButtonClsName: array[0..6] of WideChar = ('B','U','T','T','O','N',#0);
+//  ComboboxClsName: array[0..8] of WideChar = 'ComboBox'#0;
+//  TabControlClsName: array[0..15] of WideChar = 'SysTabControl32'#0;
 
-Uses
+{ export for widgetset implementation }
+
+function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+
+var
+  WinCEWidgetSet: TWinCEWidgetSet;
+
+implementation
+
+uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -91,7 +108,7 @@ Uses
 ////////////////////////////////////////////////////
 // WinCEWSActnList,
 // WinCEWSArrow,
-// WinCEWSButtons,
+ WinCEWSButtons,
 // WinCEWSCalendar,
 // WinCEWSCheckLst,
 // WinCEWSCListBox,
@@ -105,7 +122,7 @@ Uses
 // WinCEWSExtCtrls,
 // WinCEWSExtDlgs,
 // WinCEWSFileCtrl,
-// WinCEWSForms,
+ WinCEWSForms,
 // WinCEWSGrids,
 // WinCEWSImgList,
 // WinCEWSMaskEdit,
@@ -117,6 +134,7 @@ Uses
 ////////////////////////////////////////////////////
   LCLProc;
 
+{$I wincecallback.inc}
 {$I winceobject.inc}
 {$I wincewinapi.inc}
 {$I wincelclintf.inc}

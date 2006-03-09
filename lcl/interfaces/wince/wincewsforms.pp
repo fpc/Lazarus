@@ -41,64 +41,149 @@ interface
 ////////////////////////////////////////////////////
 uses
 ////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Forms,
+  Windows,
+  SysUtils, Controls, LCLType, Forms,
+  InterfaceBase,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Controls, LCLType, WSForms;
+  WSForms, WSLCLClasses;
 
 type
-  { TWSScrollingWinControl }
 
-  TWSScrollingWinControlClass = class of TWSScrollingWinControl;
-  TWSScrollingWinControl = class(TWSWinControl)
+  { TWinCEWSScrollingWinControl }
+
+  TWinCEWSScrollingWinControl = class(TWSScrollingWinControl)
+  private
+  protected
+  public
   end;
 
-  { TWSScrollBox }
+  { TWinCEWSScrollBox }
 
-  TWSScrollBox = class(TWSScrollingWinControl)
+  TWinCEWSScrollBox = class(TWSScrollBox)
+  private
+  protected
+  public
   end;
 
-  { TWSCustomFrame }
+  { TWinCEWSCustomFrame }
 
-  TWSCustomFrame = class(TWSScrollingWinControl)
+  TWinCEWSCustomFrame = class(TWSCustomFrame)
+  private
+  protected
+  public
   end;
 
-  { TWSFrame }
+  { TWinCEWSFrame }
 
-  TWSFrame = class(TWSCustomFrame)
+  TWinCEWSFrame = class(TWSFrame)
+  private
+  protected
+  public
   end;
 
-  { TWSCustomForm }
+  { TWinCEWSCustomForm }
 
-  TWSCustomForm = class(TWSScrollingWinControl)
-  end;
-  TWSCustomFormClass = class of TWSCustomForm;
+  TWinCEWSCustomForm = class(TWSCustomForm)
+  private
+//    class procedure SetSlots(const QtCustomForm: TQtCustomForm);
+  protected
+  public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+{    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
-  { TWSForm }
-
-  TWSForm = class(TWSCustomForm)
-  end;
-
-  { TWSHintWindow }
-
-  TWSHintWindow = class(TWSCustomForm)
-  end;
-
-  { TWSScreen }
-
-  TWSScreen = class(TWSLCLComponent)
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
+                             const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+                                   const ABorderIcons: TBorderIcons); override;}
   end;
 
-  { TWSApplicationProperties }
+  { TWinCEWSForm }
 
-  TWSApplicationProperties = class(TWSLCLComponent)
+  TWinCEWSForm = class(TWSForm)
+  private
+  protected
+  public
+  end;
+
+  { TWinCEWSHintWindow }
+
+  TWinCEWSHintWindow = class(TWSHintWindow)
+  private
+  protected
+  public
+  end;
+
+  { TWinCEWSScreen }
+
+  TWinCEWSScreen = class(TWSScreen)
+  private
+  protected
+  public
+  end;
+
+  { TWinCEWSApplicationProperties }
+
+  TWinCEWSApplicationProperties = class(TWSApplicationProperties)
+  private
+  protected
+  public
   end;
 
 
 implementation
 
+uses Winceint;
+
+{------------------------------------------------------------------------------
+  Method: TWinCEWSCustomForm.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Creates a Windows CE Form, initializes it according to it´s properties and shows it
+ ------------------------------------------------------------------------------}
+class function TWinCEWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  hwnd: THandle;
+  Str: array[0..255] of WideChar;
+begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWSCustomForm.CreateHandle');
+  {$endif}
+
+  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
+
+  hwnd := CreateWindow(
+    @ClsName,           // Name of the registered class
+    @Str,               // Title of the window
+    WS_OVERLAPPEDWINDOW,// Style of the window
+    CW_USEDEFAULT,      // x-position (at beginning)
+    CW_USEDEFAULT,      // y-position (at beginning)
+    CW_USEDEFAULT,      // window width
+    CW_USEDEFAULT,      // window height
+    0,                  // handle to parent or owner window
+    0,                  // handle to menu
+    System.hInstance,   // handle to application instance
+    nil);               // pointer to window-creation data
+
+  if (hwnd = 0) then WriteLn('CreateWindow failed');
+
+  ShowWindow(hwnd, SW_SHOW);
+  UpdateWindow(hwnd);
+
+  Result := hwnd;
+  {$ifdef VerboseWinCE}
+  WriteLn('Window Handle = ' + IntToStr(Result));
+  {$endif}
+end;
 
 initialization
 
@@ -106,14 +191,14 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TWSCustomFrame);
-//  RegisterWSComponent(TFrame, TWSFrame);
-//  RegisterWSComponent(TCustomForm, TWSCustomForm);
-//  RegisterWSComponent(TForm, TWSForm);
-//  RegisterWSComponent(THintWindow, TWSHintWindow);
-//  RegisterWSComponent(TScreen, TWSScreen);
-//  RegisterWSComponent(TApplicationProperties, TWSApplicationProperties);
+//  RegisterWSComponent(TScrollingWinControl, TWinCEWSScrollingWinControl);
+//  RegisterWSComponent(TScrollBox, TWinCEWSScrollBox);
+//  RegisterWSComponent(TCustomFrame, TWinCEWSCustomFrame);
+//  RegisterWSComponent(TFrame, TWinCEWSFrame);
+  RegisterWSComponent(TCustomForm, TWinCEWSCustomForm);
+//  RegisterWSComponent(TForm, TWinCEWSForm);
+//  RegisterWSComponent(THintWindow, TWinCEWSHintWindow);
+//  RegisterWSComponent(TScreen, TWinCEWSScreen);
+//  RegisterWSComponent(TApplicationProperties, TWinCEWSApplicationProperties);
 ////////////////////////////////////////////////////
 end.

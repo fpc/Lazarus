@@ -37,17 +37,48 @@ constructor TWinCEWidgetSet.Create;
 begin
   Inherited Create;
 
+  WinCEWidgetSet := Self;
 end;
 
 destructor TWinCEWidgetSet.Destroy;
 begin
+  WinCEWidgetSet := nil;
 
   inherited Destroy;
 end;
 
 procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  WindowClass: WndClass;
 begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWidgetSet.AppInit');
+  {$endif}
 
+  FillChar(WindowClass, SizeOf(WindowClass), #0);
+
+  with WindowClass do
+  begin
+    Style := CS_HREDRAW or CS_VREDRAW;
+    LPFnWndProc := @WindowProc;
+    CbClsExtra := 0;
+    CbWndExtra := 0;
+    hInstance := System.HInstance;
+    hIcon := Windows.LoadIcon(System.hInstance, nil);
+    hCursor := LoadCursor(0, IDC_ARROW);
+    hbrBackground := GetSysColorBrush(Color_BtnFace);
+    LPSzMenuName := nil;
+    LPSzClassName := @ClsName;
+  end;
+  if Windows.RegisterClass(@WindowClass) = 0 then WriteLn('Register failed');
+
+  // initialize ScreenInfo
+{  Handle := GetDesktopWindow;
+  DC := Windows.GetDC(Handle);
+  ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
+  ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
+  ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
+  ReleaseDC(Handle, DC);}
 end;
 
 procedure TWinCEWidgetSet.AppMinimize;
@@ -90,12 +121,19 @@ end;
   Handle all pending messages
  ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.AppProcessMessages;
+begin
+
+end;
+
+procedure TWinCEWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   AMessage: TMsg;
-  AccelTable: HACCEL;
-  retVal, index: dword;
-Begin
-  while Windows.PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWidgetSet.AppRun');
+  {$endif}
+
+  while Windows.GetMessage(@AMessage, 0, 0, 0) do
   begin
     Windows.TranslateMessage(@AMessage);
     Windows.DispatchMessage(@AMessage);
