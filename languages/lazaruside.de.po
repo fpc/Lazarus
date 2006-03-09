@@ -7614,7 +7614,7 @@ msgstr "Es ist ein Ring in den benötigten Paketen. Siehe Paketgraphen."
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
-msgstr "Es gibt eine Datei mit dem selben Namen und einer ähnlichen Endung auf dem Datenträger%sVorhandene Datei: %s%Neue Datei: %s%s%sProblematische Datei löschen?"
+msgstr "Es gibt eine Datei mit dem selben Namen und einer ähnlichen Endung auf dem Datenträger%sVorhandene Datei: %s%sNeue Datei: %s%s%sProblematische Datei löschen?"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
