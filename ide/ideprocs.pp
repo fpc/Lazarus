@@ -119,6 +119,7 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
+function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string): string;
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function RebaseSearchPath(const SearchPath,
@@ -638,6 +639,51 @@ function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
   ): string;
 begin
   Result:=FileProcs.CreateRelativeSearchPath(SearchPath,BaseDirectory);
+end;
+
+function RemoveNonExistingPaths(const SearchPath, BaseDirectory: string
+  ): string;
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  CurPath: String;
+  MacroStartPos: LongInt;
+begin
+  Result:=SearchPath;
+  StartPos:=1;
+  while StartPos<=length(Result) do begin
+    EndPos:=StartPos;
+    while (EndPos<=length(Result)) and (Result[EndPos]=';') do inc(EndPos);
+    if EndPos>StartPos then begin
+      // empty paths, e.g. ;;;;
+      // remove
+      Result:=copy(Result,1,StartPos-1)+copy(Result,EndPos,length(Result));
+      EndPos:=StartPos;
+    end;
+    while (EndPos<=length(Result)) and (Result[EndPos]<>';') do inc(EndPos);
+    
+    CurPath:=copy(Result,StartPos,EndPos-StartPos);
+
+    // cut macros
+    MacroStartPos:=System.Pos('$(',CurPath);
+    if MacroStartPos>0 then begin
+      CurPath:=copy(CurPath,1,MacroStartPos-1);
+      if (CurPath<>'') and (CurPath[length(CurPath)]<>PathDelim) then
+        CurPath:=ExtractFilePath(CurPath);
+    end;
+
+    // make path absolute
+    if (CurPath<>'') and (not FilenameIsAbsolute(CurPath)) then
+      CurPath:=AppendPathDelim(BaseDirectory)+CurPath;
+      
+    if (CurPath='') or (not DirectoryExists(CurPath)) then begin
+      // path does not exist -> remove
+      Result:=copy(Result,1,StartPos-1)+copy(Result,EndPos+1,length(Result));
+      EndPos:=StartPos;
+    end else begin
+      StartPos:=EndPos+1;
+    end;
+  end;
 end;
 
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string

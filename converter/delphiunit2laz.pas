@@ -273,6 +273,7 @@ begin
   if Result<>mrOk then exit;
   CTResult:=CodeToolBoss.ConvertDelphiToLazarusSource(LazUnitCode,AddLRSCode);
   if not CTResult then begin
+    DebugLn('ConvertDelphiSourceToLazarusSource Failed');
     Result:=mrCancel;
     exit;
   end;

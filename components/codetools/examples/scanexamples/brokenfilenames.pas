@@ -10,7 +10,7 @@ uses
   biglettersunit, // must be fixed to BigLettersUnit
   biglettersunit in 'biglettersunit.pas',// -> BigLettersUnit.pas
   biglettersunit in '..\ScanExamples\biglettersunit.pas',// -> ../scanexamples/BigLettersUnit
-  NonExistingUnit1, SysUtils, NonExistingUnit2;
+  NonExistingUnit1, NonExistingUnit2, SysUtils, NonExistingUnit3;
 
 {$I BROKENincfiles.inc}// must be fixed to brokenincfiles.inc
 {$I ../ScanExamples/BROKENincfiles.inc}// must be fixed to ../scanexamples/brokenincfiles.inc

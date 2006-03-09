@@ -114,6 +114,24 @@ begin
     exit;
   end;
 
+  // clean up project
+  Project1.RemoveNonExistingFiles(false);
+  Project1.CompilerOptions.OtherUnitFiles:=
+              RemoveNonExistingPaths(Project1.CompilerOptions.OtherUnitFiles,
+                                     Project1.ProjectDirectory);
+  Project1.CompilerOptions.IncludeFiles:=
+              RemoveNonExistingPaths(Project1.CompilerOptions.IncludeFiles,
+                                     Project1.ProjectDirectory);
+  Project1.CompilerOptions.Libraries:=
+              RemoveNonExistingPaths(Project1.CompilerOptions.Libraries,
+                                     Project1.ProjectDirectory);
+  Project1.CompilerOptions.ObjectPath:=
+              RemoveNonExistingPaths(Project1.CompilerOptions.ObjectPath,
+                                     Project1.ProjectDirectory);
+  Project1.CompilerOptions.SrcPath:=
+              RemoveNonExistingPaths(Project1.CompilerOptions.SrcPath,
+                                     Project1.ProjectDirectory);
+
   // load required packages
   Project1.AddPackageDependency('LCL');// Nearly all Delphi projects require it
   PkgBoss.AddDefaultDependencies(Project1);
@@ -165,13 +183,9 @@ begin
       if Result<>mrIgnore then exit;
     end;
     
-    // clean up project
-    Project1.RemoveNonExistingFiles(false);
-    
     // add all units to the project
     debugln('ConvertDelphiToLazarusProject adding all project units to project ...');
     for i:=0 to FoundInUnits.Count-1 do begin
-      CurUnitInfo:=TUnitInfo.Create(nil);
       CurFilename:=FoundInUnits[i];
       p:=System.Pos(' in ',CurFilename);
       if p>0 then
@@ -183,9 +197,15 @@ begin
         DebugLn('ConvertDelphiToLazarusProject file not found: "',CurFilename,'"');
         continue;
       end;
-      TUnitInfo(CurUnitInfo).Filename:=CurFilename;
-      CurUnitInfo.IsPartOfProject:=true;
-      Project1.AddFile(CurUnitInfo,false);
+      CurUnitInfo:=Project1.UnitInfoWithFilename(CurFilename);
+      if CurUnitInfo<>nil then begin
+        CurUnitInfo.IsPartOfProject:=true;
+      end else begin
+        CurUnitInfo:=TUnitInfo.Create(nil);
+        CurUnitInfo.Filename:=CurFilename;
+        CurUnitInfo.IsPartOfProject:=true;
+        Project1.AddFile(CurUnitInfo,false);
+      end;
     end;
     // set search paths to find all project units
     NewUnitPath:=MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
@@ -318,7 +338,7 @@ begin
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                              LRSFilename<>'');
-  if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result<>mrOk,IsSubProc,Result)
+  if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result=mrOk,IsSubProc,Result)
   then exit;
 
   // check the LFM file and the pascal unit
