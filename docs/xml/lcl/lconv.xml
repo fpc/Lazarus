@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LConv
+  ====================================================================
+-->
+
+<module name="LConv">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CPConvert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CPConvert.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CPConvert.s">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CPConvert.from">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CPConvert.toC">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDefaultCodepage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDefaultCodepage.Result">
+<short></short>
+</element>
+</module> <!-- LConv -->
+</package>
+</fpdoc-descriptions>
