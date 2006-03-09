@@ -1051,13 +1051,14 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
   // 3. uses {a, b,} c;    commenting several units not at end
   // 4. uses a{, b, c} ;   commenting units at end
   // 5. {uses a, b, c;}    commenting all units
+  // 6. uses {a,} b{, c};  commenting several units
   var
     i: Integer;
     CurUnitName: String;
     CommentCurUnit: Boolean;
     FirstCommentUnitStart: Integer;
     LastCommaAfterCommentUnitsStart: Integer;
-    FirstNormalUnitEnd: Integer;
+    LastNormalUnitEnd: Integer;
     LastCommentUnitEnd: Integer;
   begin
     Result:=true;
@@ -1065,7 +1066,7 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
     MoveCursorToUsesStart(UsesNode);
     FirstCommentUnitStart:=-1;
     LastCommaAfterCommentUnitsStart:=-1;
-    FirstNormalUnitEnd:=-1;
+    LastNormalUnitEnd:=-1;
     LastCommentUnitEnd:=-1;
     repeat
       // check if unit should be commented
@@ -1084,10 +1085,10 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
         LastCommentUnitEnd:=CurPos.EndPos;
       end else begin
         // unit should be kept
-        if FirstNormalUnitEnd<1 then FirstNormalUnitEnd:=CurPos.EndPos;
+        LastNormalUnitEnd:=CurPos.EndPos;
         if FirstCommentUnitStart>=1 then begin
           // there are some units to be commented
-          // See examples: 1., 2., 3.
+          // See examples: 1., 2., 3. and 6.
           Comment(FirstCommentUnitStart,LastCommaAfterCommentUnitsStart);
           FirstCommentUnitStart:=-1;
           LastCommentUnitEnd:=-1;
@@ -1100,8 +1101,8 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
         ReadNextAtom; // read filename
         if not AtomIsStringConstant then
           RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
-        if (not CommentCurUnit) and (FirstNormalUnitEnd<1) then
-          FirstNormalUnitEnd:=CurPos.EndPos;
+        if (not CommentCurUnit) then
+          LastNormalUnitEnd:=CurPos.EndPos;
         if CommentCurUnit then
           LastCommentUnitEnd:=CurPos.EndPos;
         ReadNextAtom; // read comma or semicolon
@@ -1113,10 +1114,10 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
       if CurPos.Flag<>cafComma then begin
         if CommentCurUnit then begin
           // last unit must be commented
-          if FirstNormalUnitEnd>=1 then begin
+          if LastNormalUnitEnd>=1 then begin
             // there are some units to be kept
             // See example: 4.
-            Comment(FirstNormalUnitEnd,LastCommentUnitEnd);
+            Comment(LastNormalUnitEnd,LastCommentUnitEnd);
           end else begin
             // all units should be commented
             // See example: 5.

@@ -79,8 +79,13 @@ begin
   MissingUnits:=nil;
   if not CodeToolBoss.FindMissingUnits(Code,MissingUnits,true) then
     raise Exception.Create('unable to fix unit names in '+Filename+' '+CodeToolBoss.ErrorMessage);
-  if MissingUnits<>nil then
+
+  if MissingUnits<>nil then begin
     writeln('MissingUnits=',MissingUnits.Text);
+    if not CodeToolBoss.CommentUnitsInUsesSections(Code,MissingUnits) then
+      raise Exception.Create('unable to comment units in uses section in '+Filename+' '+CodeToolBoss.ErrorMessage);
+  end;
+    
   writeln('==================================================================');
   writeln(Code.Source);
 end.
