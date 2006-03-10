@@ -88,6 +88,8 @@ type
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
   end;
 
   { TGtkWSComboBox }
@@ -231,6 +233,8 @@ type
     class procedure SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
+
   end;
 
   { TGtkWSCheckBox }
@@ -715,6 +719,36 @@ begin
   TGtkListStringList(AList).Sorted := IsSorted;
 end;
 
+procedure TGtkWSCustomComboBox.SetColor(const AWinControl: TWinControl);
+var
+  AWidget,EntryWidget : PGTKWidget;
+  ddd : gpointer;
+begin
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  EntryWidget:=PGtkCombo(AWidget)^.entry;
+  GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+end;
+
+procedure TGtkWSCustomComboBox.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  AWidget: PGTKWidget;
+  EntryWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  AWidget:= PGtkWidget(AWinControl.Handle);
+  EntryWidget:=PGtkCombo(AWidget)^.entry;
+
+  if EntryWidget<>nil then begin
+    GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetFont(EntryWidget, AFont);
+  end;
+end;
+
+
 { TGtkWSCustomEdit }
 
 function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -877,6 +911,30 @@ begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
   //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
+
+
+procedure TGtkWSCustomCheckBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  WidgetInfo: PWidgetInfo;
+  Widget: PGTKWidget;
+  LblWidget: PGtkWidget;
+
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit ;
+
+
+  Widget:= PGtkWidget(AWinControl.Handle);
+  LblWidget := (pGtkBin(Widget)^.Child);
+
+  if LblWidget<>nil then begin
+    GtkWidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
+end;
+
 
 { TGtkWSCustomMemo }
 
