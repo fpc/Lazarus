@@ -979,7 +979,7 @@ msgid "LFM file not found"
 msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
-msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
+msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
 msgstr ""
 
 #: lazarusidestrconsts:lisunitnotfound
@@ -7050,8 +7050,8 @@ msgstr ""
 msgid "Error Reading Package"
 msgstr ""
 
-#: lazarusidestrconsts:lispkgmangunabletoreadpackagefile
-msgid "Unable to read package file %s%s%s."
+#: lazarusidestrconsts:lispkgunabletoreadpackagefileerror
+msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
@@ -7612,6 +7612,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2punitname
 msgid "Unit Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pshortenorexpandfilename
+msgid "Shorten or expand filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2psavefiledialog
+msgid "Save file dialog"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pfilename

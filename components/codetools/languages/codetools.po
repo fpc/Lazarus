@@ -478,6 +478,10 @@ msgstr ""
 msgid "Nested Comments On"
 msgstr ""
 
+#: codetoolsstrconsts:ctsfpdocsystemon
+msgid "enable FPDocSystem"
+msgstr ""
+
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
 msgstr ""
