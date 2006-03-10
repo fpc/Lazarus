@@ -26,7 +26,6 @@
    - replace pair splitter with splitter
    - Define Init values
    - Set to init value
-   - add favorites page
 }
 unit ObjectInspector;
 
