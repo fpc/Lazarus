@@ -10228,7 +10228,7 @@ begin
     CurOptions:=AddCmdLineParameter(CurOptions,'-T'+CurTargetOS);
   CurTargetCPU:=GetTargetCPU(false);
   if CurTargetCPU<>'' then
-    CurOptions:=AddCmdLineParameter(CurOptions,'-P'+CurTargetCPU);
+    CurOptions:=AddCmdLineParameter(CurOptions,'-d'+CurTargetCPU);
   {$IFDEF VerboseFPCSrcScan}
   writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,

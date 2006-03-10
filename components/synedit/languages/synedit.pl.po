@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
-"PO-Revision-Date: 2004-02-06 02:27+0100\n"
+"Last-Translator: AlbercikCD\n"
+"PO-Revision-Date: 2006-03-10 16:53+0100\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: polski <pl@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
@@ -35,7 +35,7 @@ msgstr "Formularze Borlanda (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst:syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr ""
+msgstr "Pliki C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst:syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
@@ -83,7 +83,7 @@ msgstr "Pliki Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
+msgstr "Pliki HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -191,7 +191,7 @@ msgstr "Pliki Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst:syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
-msgstr ""
+msgstr "Pliki TeX (*.tex)|*.tex"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"

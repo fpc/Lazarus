@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
-"PO-Revision-Date: 2004-02-06 03:21+0100\n"
+"Last-Translator: AlbercikCD\n"
+"PO-Revision-Date: 2006-03-10 16:44+0100\n"
 "Project-Id-Version: lcl\n"
 "Language-Team: polski <pl@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
@@ -15,7 +15,7 @@ msgstr ""
 
 #: lclstrconsts:rssize
 msgid "  size "
-msgstr ""
+msgstr "  rozmiar "
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: lclstrconsts:rsallfiles
 msgid "All files (%s)|%s|%s"
-msgstr ""
+msgstr "Wszystkie pliki (%s)|%s|%s"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -199,7 +199,7 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Konwertuj"
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -315,11 +315,11 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
-msgstr ""
+msgstr "Historia:"
 
 #: lclstrconsts:ifsvk_home
 msgid "Home"
@@ -419,15 +419,15 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Lewy przycisk myszy"
 
 #: lclstrconsts:ifsvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Środkowy przycisk myszy"
 
 #: lclstrconsts:ifsvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Prawy przycisk myszy"
 
 #: lclstrconsts:ifsvk_next
 msgid "Next"

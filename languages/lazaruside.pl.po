@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
-"PO-Revision-Date: 2004-02-06 09:01+0100\n"
+"Last-Translator: AlbercikCD\n"
+"PO-Revision-Date: 2006-03-10 16:36+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: polski <pl@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -43,7 +43,7 @@ msgstr "%s - (nowy projekt)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "%s beta"
-msgstr ""
+msgstr "%s beta"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
@@ -411,7 +411,7 @@ msgstr "Dodaj do pakietu"
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr ""
+msgstr "Dodaj do projektu"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
@@ -991,7 +991,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
-msgstr ""
+msgstr "Wyśrodkuj w oknie"
 
 #: lazarusidestrconsts:liscenters
 msgid "Centers"
@@ -1051,7 +1051,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefchoosedirectory
 msgid "Choose Directory"
-msgstr ""
+msgstr "Wybierz katalog"
 
 #: lazarusidestrconsts:lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -1211,7 +1211,7 @@ msgstr "Przeglądarka źródeł"
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates"
-msgstr ""
+msgstr "Szablony źródeł"
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1403,7 +1403,7 @@ msgstr "Uzupełnij kod"
 
 #: lazarusidestrconsts:srkmeccompletecode
 msgid "Complete code"
-msgstr ""
+msgstr "Uzupełnij kod"
 
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
@@ -1491,7 +1491,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscontinue
 msgid "Continue"
-msgstr ""
+msgstr "Kontynuuj"
 
 #: lazarusidestrconsts:liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -1499,7 +1499,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
-msgstr ""
+msgstr "Współautorzy"
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
@@ -1963,7 +1963,7 @@ msgstr "Kompatybilność z Delphi"
 
 #: lazarusidestrconsts:lisdelphiproject
 msgid "Delphi project"
-msgstr ""
+msgstr "Projekt Delphi"
 
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
@@ -2475,7 +2475,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemextractproc
 msgid "Extract Procedure"
-msgstr ""
+msgstr "Wyodrębnij procedurę"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
@@ -3235,7 +3235,7 @@ msgstr "Ime Str"
 
 #: lazarusidestrconsts:lisimportlist
 msgid "Import list"
-msgstr ""
+msgstr "Importuj listę"
 
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
@@ -3303,7 +3303,7 @@ msgstr "Insert"
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
-msgstr ""
+msgstr "Wstaw $IFDEF..."
 
 #: lazarusidestrconsts:srkmecinsertcvsauthor
 msgid "Insert CVS keyword Author"
@@ -4827,7 +4827,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenproject2
 msgid "Open project"
-msgstr ""
+msgstr "Otwórz projekt"
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
@@ -5095,7 +5095,7 @@ msgstr "Szablony ścieżek"
 
 #: lazarusidestrconsts:listofpcpath
 msgid "Path:"
-msgstr ""
+msgstr "Ścieżka:"
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
@@ -5235,7 +5235,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
-msgstr ""
+msgstr "Program"
 
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
@@ -5359,7 +5359,7 @@ msgstr "Spytaj o wartość"
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
-msgstr ""
+msgstr "Właściwości:"
 
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"
@@ -5895,7 +5895,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecsaveas
 msgid "Save as"
-msgstr ""
+msgstr "Zapisz jako"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
@@ -6095,7 +6095,7 @@ msgstr "Zaznacz"
 
 #: lazarusidestrconsts:srkmecselectall
 msgid "Select All"
-msgstr ""
+msgstr "Zaznacz wszystko"
 
 #: lazarusidestrconsts:lisctselectcodemacro
 msgid "Select Code Macro"
@@ -6335,7 +6335,7 @@ msgstr "Pokazuj wskazówki przy nieużywanych modułach w głównym źródle"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr ""
+msgstr "Wyświetlaj Numery Wierszy"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -6819,7 +6819,7 @@ msgstr "Plik szablonu"
 
 #: lazarusidestrconsts:lisctdtemplates
 msgid "Templates"
-msgstr ""
+msgstr "Szablony"
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
@@ -8099,7 +8099,7 @@ msgstr "Podświetlaj składnię"
 
 #: lazarusidestrconsts:lispkgmanguseunit
 msgid "Use unit"
-msgstr ""
+msgstr "Użyj modułu"
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
@@ -8207,7 +8207,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisviewprojectunits
 msgid "View Project Units"
-msgstr ""
+msgstr "Pokaż moduły projektu"
 
 #: lazarusidestrconsts:srkmectogglesearchresults
 msgid "View Search Results"
@@ -8295,7 +8295,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunits
 msgid "View units"
-msgstr ""
+msgstr "Pokaż moduły"
 
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
@@ -8435,7 +8435,7 @@ msgstr "\" nie jest zapisywalny"
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
-msgstr ""
+msgstr "przerwij budowanie"
 
 #: lazarusidestrconsts:srkmecaddbreakpoint
 msgid "add break point"
@@ -8463,7 +8463,7 @@ msgstr "buduj wszystkie pliki programu/projektu"
 
 #: lazarusidestrconsts:srkmecbuildfile
 msgid "build file"
-msgstr ""
+msgstr "zbuduj plik"
 
 #: lazarusidestrconsts:srkmecbuild
 msgid "build program/project"
