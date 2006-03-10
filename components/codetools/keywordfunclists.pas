@@ -672,6 +672,7 @@ begin
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FORWARD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);

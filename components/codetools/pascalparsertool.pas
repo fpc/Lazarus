@@ -1380,7 +1380,7 @@ begin
       if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
-      end else if UpAtomIs('EXTERNAL') then begin
+      end else if UpAtomIs('EXTERNAL') or UpAtomIs('PUBLIC') then begin
         HasForwardModifier:=true;
         ReadNextAtom;
         if CurPos.Flag<>cafSemicolon then begin
