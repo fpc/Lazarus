@@ -470,6 +470,7 @@ var
   IDECmdScopeSrcEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnly: TIDECommandScope;
   IDECmdScopeDesignerOnly: TIDECommandScope;
+  IDECmdScopeObjctInspectorOnly: TIDECommandScope;
 
 // register a new IDE command category (i.e. set of commands)
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;
@@ -550,6 +551,7 @@ begin
   IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
   IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
+  IDECmdScopeObjctInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
 end;
 
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;

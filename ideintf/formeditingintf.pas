@@ -22,7 +22,7 @@ unit FormEditingIntf;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, ComponentEditors;
+  Classes, SysUtils, TypInfo, Forms, Controls, ProjectIntf, ComponentEditors;
   
 const
   ComponentPaletteBtnWidth  = 25;
@@ -35,32 +35,32 @@ type
   protected
     FComponent : TComponent;
   public
-    Function GetComponentType    : ShortString; virtual; abstract;
-    Function GetComponentHandle  : LongInt; virtual; abstract;
-    Function GetParent           : TIComponentInterface; virtual; abstract;
-    Function IsTControl          : Boolean; virtual; abstract;
-    Function GetPropCount	   : Integer; virtual; abstract;
-    Function GetPropType(Index : Integer) : TTypeKind; virtual; abstract;
-    // Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
-    Function GetPropName(Index : Integer) : Shortstring; virtual; abstract;
-    Function GetPropTypeByName(Name : ShortString) : TTypeKind; virtual; abstract;
-    // Function GetPropTypebyName(Name : ShortString) : TPropertyType; virtual; abstract;
-    Function GetPropTypeName(Index : Integer) : ShortString; virtual; abstract;
+    function GetComponentType    : ShortString; virtual; abstract;
+    function GetComponentHandle  : LongInt; virtual; abstract;
+    function GetParent           : TIComponentInterface; virtual; abstract;
+    function IsTControl          : Boolean; virtual; abstract;
+    function GetPropCount	   : Integer; virtual; abstract;
+    function GetPropType(Index : Integer) : TTypeKind; virtual; abstract;
+    // function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
+    function GetPropName(Index : Integer) : Shortstring; virtual; abstract;
+    function GetPropTypeByName(Name : ShortString) : TTypeKind; virtual; abstract;
+    // function GetPropTypebyName(Name : ShortString) : TPropertyType; virtual; abstract;
+    function GetPropTypeName(Index : Integer) : ShortString; virtual; abstract;
 
-    Function GetPropValue(Index : Integer; var Value) : Boolean; virtual; abstract;
-    Function GetPropValuebyName(Name: Shortstring; var Value) : Boolean; virtual; abstract;
-    Function SetProp(Index : Integer; const Value) : Boolean; virtual; abstract;
-    Function SetPropbyName(Name : Shortstring; const Value) : Boolean; virtual; abstract;
+    function GetPropValue(Index : Integer; var Value) : Boolean; virtual; abstract;
+    function GetPropValuebyName(Name: Shortstring; var Value) : Boolean; virtual; abstract;
+    function SetProp(Index : Integer; const Value) : Boolean; virtual; abstract;
+    function SetPropbyName(Name : Shortstring; const Value) : Boolean; virtual; abstract;
 
-    Function GetControlCount: Integer; virtual; abstract;
-    Function GetControl(Index : Integer): TIComponentInterface; virtual; abstract;
+    function GetControlCount: Integer; virtual; abstract;
+    function GetControl(Index : Integer): TIComponentInterface; virtual; abstract;
 
-    Function GetComponentCount: Integer; virtual; abstract;
-    Function GetComponent(Index : Integer): TIComponentInterface; virtual; abstract;
+    function GetComponentCount: Integer; virtual; abstract;
+    function GetComponent(Index : Integer): TIComponentInterface; virtual; abstract;
 
-    Function Select: Boolean; virtual; abstract;
-    Function Focus: Boolean; virtual; abstract;
-    Function Delete: Boolean; virtual; abstract;
+    function Select: Boolean; virtual; abstract;
+    function Focus: Boolean; virtual; abstract;
+    function Delete: Boolean; virtual; abstract;
 
     property Component: TComponent read FComponent;
   end;
@@ -70,16 +70,16 @@ type
 
   TIFormInterface = class
   public
-    Function Filename            : AnsiString; virtual; abstract;
-    Function FormModified        : Boolean; virtual; abstract;
-    Function MarkModified        : Boolean; virtual; abstract;
-    Function GetFormComponent    : TIComponentInterface; virtual; abstract;
-    Function FindComponent       : TIComponentInterface; virtual; abstract;
-    Function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
+    function Filename            : AnsiString; virtual; abstract;
+    function FormModified        : Boolean; virtual; abstract;
+    function MarkModified        : Boolean; virtual; abstract;
+    function GetFormComponent    : TIComponentInterface; virtual; abstract;
+    function FindComponent       : TIComponentInterface; virtual; abstract;
+    function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
 
-    Function GetSelCount: Integer; virtual; abstract;
-    Function GetSelComponent(Index : Integer): TIComponentInterface; virtual; abstract;
-    Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
+    function GetSelCount: Integer; virtual; abstract;
+    function GetSelComponent(Index : Integer): TIComponentInterface; virtual; abstract;
+    function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 
@@ -91,23 +91,23 @@ type
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
   public
     // components
-    Function FindComponentByName(const Name: ShortString
+    function FindComponentByName(const Name: ShortString
                                  ): TIComponentInterface; virtual; abstract;
-    Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
+    function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
-    Function GetDefaultComponentParent(TypeClass: TComponentClass
+    function GetDefaultComponentParent(TypeClass: TComponentClass
                                        ): TIComponentInterface; virtual; abstract;
-    Function GetDefaultComponentPosition(TypeClass: TComponentClass;
+    function GetDefaultComponentPosition(TypeClass: TComponentClass;
                                          ParentCI: TIComponentInterface;
                                          var X,Y: integer): boolean; virtual; abstract;
-    Function CreateComponent(ParentCI: TIComponentInterface;
+    function CreateComponent(ParentCI: TIComponentInterface;
                              TypeClass: TComponentClass;
                              X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
-    Function CreateComponentFromStream(BinStream: TStream;
+    function CreateComponentFromStream(BinStream: TStream;
                              AncestorType: TComponentClass;
                              const NewUnitName: ShortString;
                              Interactive: boolean): TIComponentInterface; virtual; abstract;
-    Function CreateChildComponentFromStream(BinStream: TStream;
+    function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;
                                      Root: TComponent;
                                      ParentControl: TWinControl

@@ -691,6 +691,12 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+    function GetDesignerWithProjectFile(AFile: TLazProjectFile;
+                             LoadForm: boolean): TIDesigner; override;
+    function GetFormOfSource(AnUnitInfo: TUnitInfo;
+                             LoadForm: boolean): TCustomForm;
+    function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
+    function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithForm(AForm: TCustomForm;
@@ -733,8 +739,6 @@ type
       var ActiveUnitInfo:TUnitInfo);
     procedure DoSwitchToFormSrc(ADesigner: TDesigner;
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
-    function GetFormOfSource(AnUnitInfo: TUnitInfo;
-      LoadForm: boolean): TCustomForm;
     procedure UpdateCaption; override;
     procedure HideIDE; override;
     procedure HideUnmodifiedDesigners;
@@ -1447,6 +1451,7 @@ begin
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
   ObjectInspector1.BorderStyle:=bsSizeToolWin;
+  IDECmdScopeObjctInspectorOnly.AddWindowClass(TObjectInspector);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
@@ -2324,7 +2329,9 @@ begin
   
   ecContextHelp:
     if Sender=MessagesView then
-      HelpBoss.ShowHelpForMessage(-1);
+      HelpBoss.ShowHelpForMessage(-1)
+    else if Sender is TObjectInspector then
+      HelpBoss.ShowHelpForObjectInspector(Sender);
 
   ecSave:
     if (Sender is TDesigner) then begin
@@ -8248,6 +8255,18 @@ begin
   end;
 end;
 
+function TMainIDE.GetDesignerWithProjectFile(AFile: TLazProjectFile;
+  LoadForm: boolean): TIDesigner;
+var
+  AnUnitInfo: TUnitInfo;
+  AForm: TCustomForm;
+begin
+  AnUnitInfo:=AFile as TUnitInfo;
+  AForm:=GetFormOfSource(AnUnitInfo,LoadForm);
+  if AForm<>nil then
+    Result:=AForm.Designer;
+end;
+
 procedure TMainIDE.GetObjectInspectorUnit(
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 begin
@@ -11955,6 +11974,36 @@ begin
   end;
   if AnUnitInfo.Component<>nil then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+end;
+
+function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent
+  ): TLazProjectFile;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  if AComponent=nil then exit(nil);
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.Component=AComponent then begin
+      Result:=AnUnitInfo;
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+  Result:=nil;
+end;
+
+function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner
+  ): TLazProjectFile;
+var
+  TheDesigner: TDesigner;
+  AComponent: TComponent;
+begin
+  TheDesigner:=ADesigner as TDesigner;
+  AComponent:=TheDesigner.LookupRoot;
+  if AComponent=nil then
+    RaiseException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
+  Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 
 function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;

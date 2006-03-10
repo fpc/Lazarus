@@ -2341,6 +2341,10 @@ begin
   AddDefault(C,'Move component one forward'           ,ecDesignerForwardOne);
   AddDefault(C,'Move component one back'              ,ecDesignerBackOne);
 
+  // object inspector - without menu items in the IDE bar (at least no direct)
+  C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,
+                            IDECmdScopeObjctInspectorOnly)];
+
   // custom keys (for experts, task groups, dynamic menu items, etc)
   C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,nil)];
 end;

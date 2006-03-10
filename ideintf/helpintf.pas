@@ -687,6 +687,7 @@ type
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
     procedure ShowHelpForMessage(Line: integer); virtual; abstract;
+    procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
   end;
 
 

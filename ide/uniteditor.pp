@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, IDEWindowIntf,
+  ProjectIntf, HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, IDEWindowIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -306,6 +306,10 @@ type
     procedure SetLineText(const AValue: string); override;
     function GetLines: TStrings; override;
     procedure SetLines(const AValue: TStrings); override;
+
+    // context
+    function GetProjectFile: TLazProjectFile; override;
+    function GetDesigner(LoadForm: boolean): TIDesigner; override;
 
     // notebook
     procedure Activate;
@@ -2397,6 +2401,22 @@ end;
 procedure TSourceEditor.SetLines(const AValue: TStrings);
 begin
   FEditor.Lines:=AValue;
+end;
+
+function TSourceEditor.GetProjectFile: TLazProjectFile;
+begin
+  Result:=Project1.UnitWithEditorIndex(PageIndex);
+end;
+
+function TSourceEditor.GetDesigner(LoadForm: boolean): TIDesigner;
+var
+  AProjectFile: TLazProjectFile;
+begin
+  AProjectFile:=GetProjectFile;
+  if AProjectFile<>nil then
+    Result:=LazarusIDE.GetDesignerWithProjectFile(AProjectFile,LoadForm)
+  else
+    Result:=nil;
 end;
 
 function TSourceEditor.GetCursorScreenXY: TPoint;

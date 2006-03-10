@@ -182,7 +182,7 @@ begin
   LFMTree:=nil;
   try
     if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                  RootMustBeClassInIntf,ObjectsMustExists)
+                             RootMustBeClassInIntf,ObjectsMustExists)
     then begin
       Result:=mrOk;
       exit;

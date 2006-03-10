@@ -1557,6 +1557,7 @@ resourcestring
   srkmCatEnvMenu        = 'Environment menu commands';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
+  lisKeyCatObjInspector = 'Object Inspector commands';
   lisKeyCatCustom       = 'Custom commands';
 
   // Languages

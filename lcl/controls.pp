@@ -266,7 +266,7 @@ type
 
 
 
-  TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
+  TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift: TShiftState) of Object;
   TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
   TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: TUTF8Char) of Object;
 

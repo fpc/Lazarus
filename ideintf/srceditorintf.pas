@@ -20,7 +20,7 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls;
+  Classes, SysUtils, LCLProc, Forms, Controls, ProjectIntf;
   
 type
   TSrcEditSearchOption = (sesoMatchCase, sesoWholeWord, sesoBackwards,
@@ -94,6 +94,10 @@ type
     // search and replace
     function SearchReplace(const ASearch, AReplace: string;
                            SearchOptions: TSrcEditSearchOptions): integer; virtual; abstract;
+
+    // context
+    function GetProjectFile: TLazProjectFile; virtual; abstract;
+    function GetDesigner(LoadForm: boolean): TIDesigner; virtual; abstract;
   public
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;

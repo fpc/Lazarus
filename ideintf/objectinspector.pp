@@ -263,6 +263,7 @@ type
     FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
     FLayout: TOILayout;
+    FOnOIKeyDown: TKeyEvent;
     FReferencesColor: TColor;
     FRowSpacing: integer;
     FSubPropertiesColor: TColor;
@@ -433,6 +434,7 @@ type
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
     property NameFont: TFont read FNameFont write FNameFont;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property PrefferedSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
@@ -546,7 +548,8 @@ type
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
-    procedure OnGriddKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
@@ -562,6 +565,7 @@ type
   private
     FFavourites: TOIFavouriteProperties;
     FOnAddToFavourites: TNotifyEvent;
+    FOnOIKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavourites: TNotifyEvent;
     FSelection: TPersistentSelectionList;
@@ -646,6 +650,7 @@ type
                                              write FOnAddToFavourites;
     property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
                                                   write FOnRemoveFromFavourites;
+    property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
   end;
 
 const
@@ -1723,8 +1728,8 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word; Shift: TShiftState
-  );
+procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word;
+  Shift: TShiftState);
 var
   Handled: Boolean;
 begin
@@ -1759,7 +1764,9 @@ begin
     SetRowValue;
 
   else
-    Handled:=false;
+    if Assigned(OnOIKeyDown) then
+      OnOIKeyDown(Self,Key,Shift);
+    Handled:=Key=VK_UNKNOWN;
   end;
   if Handled then Key:=VK_UNKNOWN;
 end;
@@ -3366,7 +3373,13 @@ begin
     ComponentTree.Height:=ClientHeight div 4;
 end;
 
-procedure TObjectInspector.OnGriddKeyUp(Sender: TObject; var Key: Word;
+procedure TObjectInspector.OnGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Assigned(OnOIKeyDown) then OnOIKeyDown(Self,Key,Shift);
+end;
+
+procedure TObjectInspector.OnGridKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(OnRemainingKeyUp) then OnRemainingKeyUp(Self,Key,Shift);
@@ -3594,7 +3607,8 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    OnKeyUp:=@OnGriddKeyUp;
+    OnOIKeyDown:=@OnGridKeyDown;
+    OnKeyUp:=@OnGridKeyUp;
   end;
 
   // event grid
@@ -3607,7 +3621,8 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    OnKeyUp:=@OnGriddKeyUp;
+    OnOIKeyDown:=@OnGridKeyDown;
+    OnKeyUp:=@OnGridKeyUp;
   end;
   
   CreateFavouritePage;
@@ -3639,7 +3654,7 @@ begin
         Align:=alClient;
         PopupMenu:=MainPopupMenu;
         OnModified:=@OnGridModified;
-        OnKeyUp:=@OnGriddKeyUp;
+        OnKeyUp:=@OnGridKeyUp;
       end;
       FavouriteGrid.Favourites:=FFavourites;
     end;

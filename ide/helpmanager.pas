@@ -36,7 +36,8 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
-  PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, MsgIntf,
+  PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
+  HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, MsgIntf, LazIDEIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, ExtCtrls, LResources,
@@ -93,6 +94,7 @@ type
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
+    procedure ShowHelpForObjectInspector(Sender: TObject); override;
   public
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
     property FCLHelpDBPath: THelpBasePathObject read FFCLHelpDBPath;
@@ -554,7 +556,7 @@ begin
   ListOfPCodeXYPosition:=nil;
   PascalHelpContextLists:=nil;
   try
-    // get all possible declarations for this identifier
+    // get all possible declarations of this identifier
     if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
       ListOfPCodeXYPosition) then
     begin
@@ -613,6 +615,37 @@ begin
   if MsgItem.Msg<>'' then begin
     MessageParts:=ParseMessage(MsgItem);
     ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
+  end;
+end;
+
+procedure THelpManager.ShowHelpForObjectInspector(Sender: TObject);
+var
+  AnInspector: TObjectInspector;
+  Row: TOIPropertyGridRow;
+  LookupRoot: TPersistent;
+  AFile: TLazProjectFile;
+begin
+  DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
+  if Sender=nil then Sender:=ObjectInspector1;
+  if Sender is TObjectInspector then begin
+    AnInspector:=TObjectInspector(Sender);
+    Row:=AnInspector.GetActivePropertyRow;
+    if Row=nil then begin
+      // TODO: show help about object inspector
+      DebugLn('THelpManager.ShowHelpForObjectInspector TODO: show help about object inspector');
+    end else begin
+      // find unit of LookupRoot
+      if AnInspector.PropertyEditorHook=nil then exit;
+      LookupRoot:=AnInspector.PropertyEditorHook.LookupRoot;
+      if not (LookupRoot is TComponent) then exit;
+      AFile:=LazarusIDE.GetProjectFileWithRootComponent(TComponent(LookupRoot));
+      if AFile=nil then exit;
+      
+      
+      if Row.Editor=nil then exit;
+      if Row.Editor.GetPropInfo=nil then exit;
+      
+    end;
   end;
 end;
 

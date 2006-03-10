@@ -164,6 +164,11 @@ type
       FocusEditor: boolean): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView; virtual; abstract;
+
+    function GetDesignerWithProjectFile(AFile: TLazProjectFile;
+                              LoadForm: boolean): TIDesigner; virtual; abstract;
+    function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; virtual; abstract;
+    function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
   end;

@@ -577,7 +577,7 @@ type
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
-    Function UnitWithComponent(AComponent: TComponent): TUnitInfo;
+    function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;

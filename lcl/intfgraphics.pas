@@ -2170,8 +2170,11 @@ var
           inc(ReadPos);
         end;
         CurEntry:=PXPMPixelToColorEntry(
-                        FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
-        CurColor:=CurEntry^.Color;
+                           FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
+        if CurEntry<>nil then
+          CurColor:=CurEntry^.Color
+        else
+          RaiseXPMReadError('invalid color',ReadPos-FCharsPerPixel);
         {if CurEntry2<>CurEntry then begin
           DebugLn('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
             ' RefPixel=',CurEntry^.Pixel,
