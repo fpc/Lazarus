@@ -52,6 +52,7 @@ QCharH = class(TObject) end;
 QColorH = class(TObject) end;
 QCursorH = class(TObject) end;
 QDataStreamH = class(TObject) end;
+QDirH = class(TObject) end;
 QEventH = class(TObject) end;
   QActionEventH = class(QEventH) end;
   QChildEventH = class(QEventH) end;
@@ -82,6 +83,7 @@ QEventH = class(TObject) end;
   QTimerEventH = class(QEventH) end;
   QWhatsThisClickedEventH = class(QEventH) end;
   QWindowStateChangeEventH = class(QEventH) end;
+QFileIconProviderH = class(TObject) end;
 QFontH = class(TObject) end;
 QFontDatabaseH = class(TObject) end;
 QFontInfoH = class(TObject) end;
@@ -101,6 +103,7 @@ QLayoutItemH = class(TObject) end;
     QBoxLayoutH = class(QLayoutH) end;
       QHBoxLayoutH = class(QBoxLayoutH) end;
       QVBoxLayoutH = class(QBoxLayoutH) end;
+    QGridLayoutH = class(QLayoutH) end;
   QSpacerItemH = class(QLayoutItemH) end;
   QWidgetItemH = class(QLayoutItemH) end;
 QLineH = class(TObject) end;
@@ -133,6 +136,7 @@ QObjectH = class(TObject) end;
   QTextObjectH = class(QObjectH) end;
     QTextFrameH = class(QTextObjectH) end;
   QThreadH = class(QObjectH) end;
+  QTimerH = class(QObjectH) end;
   QTranslatorH = class(QObjectH) end;
   QValidatorH = class(QObjectH) end;
     QDoubleValidatorH = class(QValidatorH) end;
@@ -143,6 +147,7 @@ QObjectH = class(TObject) end;
       QCheckBoxH = class(QAbstractButtonH) end;
       QPushButtonH = class(QAbstractButtonH) end;
       QRadioButtonH = class(QAbstractButtonH) end;
+      QToolButtonH = class(QAbstractButtonH) end;
     QAbstractSliderH = class(QWidgetH) end;
       QScrollBarH = class(QAbstractSliderH) end;
       QSliderH = class(QAbstractSliderH) end;
@@ -152,27 +157,38 @@ QObjectH = class(TObject) end;
     QComboBoxH = class(QWidgetH) end;
     QDesktopWidgetH = class(QWidgetH) end;
     QDialogH = class(QWidgetH) end;
+      QColorDialogH = class(QDialogH) end;
+      QFileDialogH = class(QDialogH) end;
       QFontDialogH = class(QDialogH) end;
       QInputDialogH = class(QDialogH) end;
       QMessageBoxH = class(QDialogH) end;
+      QProgressDialogH = class(QDialogH) end;
     QDockWidgetH = class(QWidgetH) end;
     QFrameH = class(QWidgetH) end;
       QAbstractScrollAreaH = class(QFrameH) end;
         QAbstractItemViewH = class(QAbstractScrollAreaH) end;
+          QHeaderViewH = class(QAbstractItemViewH) end;
           QListViewH = class(QAbstractItemViewH) end;
             QListWidgetH = class(QListViewH) end;
+          QTreeViewH = class(QAbstractItemViewH) end;
+            QTreeWidgetH = class(QTreeViewH) end;
         QTextEditH = class(QAbstractScrollAreaH) end;
           QTextBrowserH = class(QTextEditH) end;
       QLCDNumberH = class(QFrameH) end;
       QLabelH = class(QFrameH) end;
       QSplitterH = class(QFrameH) end;
+      QToolBoxH = class(QFrameH) end;
+    QGroupBoxH = class(QWidgetH) end;
     QLineEditH = class(QWidgetH) end;
     QMainWindowH = class(QWidgetH) end;
     QMenuH = class(QWidgetH) end;
     QMenuBarH = class(QWidgetH) end;
+    QProgressBarH = class(QWidgetH) end;
     QSizeGripH = class(QWidgetH) end;
     QSplitterHandleH = class(QWidgetH) end;
     QStatusBarH = class(QWidgetH) end;
+    QTabBarH = class(QWidgetH) end;
+    QTabWidgetH = class(QWidgetH) end;
     QToolBarH = class(QWidgetH) end;
     QWorkspaceH = class(QWidgetH) end;
 QPaintDeviceH = class(TObject) end;
@@ -189,6 +205,7 @@ QPenH = class(TObject) end;
 QPictureIOH = class(TObject) end;
 QPointH = class(TObject) end;
 QPointFH = class(TObject) end;
+QPrintEngineH = class(TObject) end;
 QRectH = class(TObject) end;
 QRectFH = class(TObject) end;
 QRegExpH = class(TObject) end;
@@ -202,6 +219,8 @@ QTextCursorH = class(TObject) end;
 QTextFormatH = class(TObject) end;
   QTextCharFormatH = class(QTextFormatH) end;
 QTextOptionH = class(TObject) end;
+QToolTipH = class(TObject) end;
+QTreeWidgetItemH = class(TObject) end;
 QUrlH = class(TObject) end;
 QVectorH = class(TObject) end;
   QPolygonH = class(QVectorH) end;
@@ -215,9 +234,12 @@ QTimerEvent_hookH = class(QEvent_hookH) end;
 QChildEvent_hookH = class(QEvent_hookH) end;
 QEventLoop_hookH = class(QObject_hookH) end;
 QCoreApplication_hookH = class(QObject_hookH) end;
+QTimer_hookH = class(QObject_hookH) end;
 QApplication_hookH = class(QCoreApplication_hookH) end;
 QWidget_hookH = class(QObject_hookH) end;
 QAction_hookH = class(QObject_hookH) end;
+QClipboard_hookH = class(QObject_hookH) end;
+QDesktopWidget_hookH = class(QWidget_hookH) end;
 QFrame_hookH = class(QWidget_hookH) end;
 QAbstractScrollArea_hookH = class(QFrame_hookH) end;
 QAbstractSlider_hookH = class(QWidget_hookH) end;
@@ -243,10 +265,22 @@ QCheckBox_hookH = class(QAbstractButton_hookH) end;
 QSlider_hookH = class(QAbstractSlider_hookH) end;
 QTextBrowser_hookH = class(QTextEdit_hookH) end;
 QLabel_hookH = class(QFrame_hookH) end;
+QGroupBox_hookH = class(QWidget_hookH) end;
+QTabWidget_hookH = class(QWidget_hookH) end;
+QTabBar_hookH = class(QWidget_hookH) end;
+QProgressBar_hookH = class(QWidget_hookH) end;
+QStatusBar_hookH = class(QWidget_hookH) end;
+QToolBox_hookH = class(QFrame_hookH) end;
+QToolButton_hookH = class(QAbstractButton_hookH) end;
 QAbstractItemView_hookH = class(QAbstractScrollArea_hookH) end;
 QListView_hookH = class(QAbstractItemView_hookH) end;
 QListWidgetItem_hookH = class(QObject_hookH) end;
 QListWidget_hookH = class(QListView_hookH) end;
+QTreeView_hookH = class(QAbstractItemView_hookH) end;
+QTreeWidgetItem_hookH = class(QObject_hookH) end;
+QTreeWidget_hookH = class(QTreeView_hookH) end;
+QDialog_hookH = class(QWidget_hookH) end;
+QProgressDialog_hookH = class(QDialog_hookH) end;
 QIODevice_hookH = class(QObject_hookH) end;
 
   TPictureIOHandler = procedure(Pic: QPictureIOH) cdecl;
@@ -314,7 +348,7 @@ type
     QtFastTransformation, QtSmoothTransformation );
 
   QtFocusReason = ( // Qt::FocusReason (1)
-    QtMouseFocusReason, QtTabFocusReason, QtBacktabFocusReason, QtActiveWindowFocusReason, QtPopupFocusReason, QtShortcutFocusReason, QtMenuBarFocusReason, QtOtherFocusReason );
+    QtMouseFocusReason, QtTabFocusReason, QtBacktabFocusReason, QtActiveWindowFocusReason, QtPopupFocusReason, QtShortcutFocusReason, QtMenuBarFocusReason, QtOtherFocusReason, QtNoFocusReason );
 
   QtContextMenuPolicy = ( // Qt::ContextMenuPolicy (1)
     QtNoContextMenu, QtDefaultContextMenu, QtActionsContextMenu, QtCustomContextMenu );
@@ -330,6 +364,9 @@ type
 
   QtCheckState = ( // Qt::CheckState (1)
     QtUnchecked, QtPartiallyChecked, QtChecked );
+
+  QtWindowModality = ( // Qt::WindowModality (1)
+    QtNonModal, QtWindowModal, QtApplicationModal );
 
 type
   QtKeyboardModifier = cardinal; // Qt::KeyboardModifier
@@ -372,73 +409,6 @@ const
   QtWindowFullScreen =   $00000004;
   QtWindowActive =   $00000008;
 
-
-type
-  QtWidgetAttribute = (  //Qt::WidgetAttribute (2)
-    QtWA_Disabled = 0,
-    QtWA_UnderMouse = 1,
-    QtWA_MouseTracking = 2,
-    QtWA_ContentsPropagated = 3,
-    QtWA_NoBackground = 4,
-    QtWA_StaticContents = 5,
-    QtWA_LaidOut = 7,
-    QtWA_PaintOnScreen = 8,
-    QtWA_NoSystemBackground = 9,
-    QtWA_UpdatesDisabled = 10,
-    QtWA_Mapped = 11,
-    QtWA_MacNoClickThrough = 12,
-    QtWA_PaintOutsidePaintEvent = 13,
-    QtWA_InputMethodEnabled = 14,
-    QtWA_WState_Visible = 15,
-    QtWA_WState_Hidden = 16,
-    QtWA_ForceDisabled = 32,
-    QtWA_KeyCompression = 33,
-    QtWA_PendingMoveEvent = 34,
-    QtWA_PendingResizeEvent = 35,
-    QtWA_SetPalette = 36,
-    QtWA_SetFont = 37,
-    QtWA_SetCursor = 38,
-    QtWA_NoChildEventsFromChildren = 39,
-    QtWA_WindowModified = 41,
-    QtWA_Resized = 42,
-    QtWA_Moved = 43,
-    QtWA_PendingUpdate = 44,
-    QtWA_InvalidSize = 45,
-    QtWA_MacMetalStyle = 46,
-    QtWA_CustomWhatsThis = 47,
-    QtWA_LayoutOnEntireRect = 48,
-    QtWA_OutsideWSRange = 49,
-    QtWA_GrabbedShortcut = 50,
-    QtWA_TransparentForMouseEvents = 51,
-    QtWA_PaintUnclipped = 52,
-    QtWA_SetWindowIcon = 53,
-    QtWA_NoMouseReplay = 54,
-    QtWA_DeleteOnClose = 55,
-    QtWA_RightToLeft = 56,
-    QtWA_SetLayoutDirection = 57,
-    QtWA_NoChildEventsForParent = 58,
-    QtWA_ForceUpdatesDisabled = 59,
-    QtWA_WState_Created = 60,
-    QtWA_WState_CompressKeys = 61,
-    QtWA_WState_InPaintEvent = 62,
-    QtWA_WState_Reparented = 63,
-    QtWA_WState_ConfigPending = 64,
-    QtWA_WState_Polished = 66,
-    QtWA_WState_DND = 67,
-    QtWA_WState_OwnSizePolicy = 68,
-    QtWA_WState_ExplicitShowHide = 69,
-    QtWA_ShowModal = 70,
-    QtWA_MouseNoMask = 71,
-    QtWA_GroupLeader = 72,
-    QtWA_NoMousePropagation = 73,
-    QtWA_Hover = 74,
-    QtWA_InputMethodTransparent = 75,
-    QtWA_QuitOnClose = 76,
-    QtWA_KeyboardFocusChange = 77,
-    QtWA_AcceptDrops = 78,
-    QtWA_ForceAcceptDrops = 79,
-    QtWA_AttributeCount );
-
 type
   QtImageConversionFlag = cardinal; // Qt::ImageConversionFlag
   QtImageConversionFlags = QtImageConversionFlag; //QFlags<> (3)
@@ -470,6 +440,7 @@ type
     QtDotLine,
     QtDashDotLine,
     QtDashDotDotLine,
+    QtCustomDashLine,
     QtMPenStyle = $0f );
 
   QtPenCapStyle = (  //Qt::PenCapStyle (2)
@@ -547,6 +518,7 @@ type
     QtCheckStateRole = 10,
     QtAccessibleTextRole = 11,
     QtAccessibleDescriptionRole = 12,
+    QtSizeHintRole = 13,
     QtUserRole = 32 );
 
 type
@@ -586,7 +558,8 @@ type
     QInternalPixmap = $02,
     QInternalImage = $03,
     QInternalPrinter = $04,
-    QInternalPicture = $05 );
+    QInternalPicture = $05,
+    QInternalPbuffer = $06 );
 
 type
   QtModifier = cardinal; //  Qt::Modifier (4)
@@ -657,6 +630,79 @@ const
     QtWindowContextHelpButtonHint = 65536 { $10000 };
     QtWindowShadeButtonHint = 131072 { $20000 };
     QtWindowStaysOnTopHint = 262144 { $40000 };
+
+type
+  QtWidgetAttribute = cardinal; //  Qt::WidgetAttribute (4)
+
+const
+    QtWA_Disabled = 0 { $0 };
+    QtWA_UnderMouse = 1 { $1 };
+    QtWA_MouseTracking = 2 { $2 };
+    QtWA_ContentsPropagated = 3 { $3 };
+    QtWA_OpaquePaintEvent = 4 { $4 };
+    QtWA_NoBackground = 4 { $4 };
+    QtWA_StaticContents = 5 { $5 };
+    QtWA_LaidOut = 7 { $7 };
+    QtWA_PaintOnScreen = 8 { $8 };
+    QtWA_NoSystemBackground = 9 { $9 };
+    QtWA_UpdatesDisabled = 10 { $a };
+    QtWA_Mapped = 11 { $b };
+    QtWA_MacNoClickThrough = 12 { $c };
+    QtWA_PaintOutsidePaintEvent = 13 { $d };
+    QtWA_InputMethodEnabled = 14 { $e };
+    QtWA_WState_Visible = 15 { $f };
+    QtWA_WState_Hidden = 16 { $10 };
+    QtWA_ForceDisabled = 32 { $20 };
+    QtWA_KeyCompression = 33 { $21 };
+    QtWA_PendingMoveEvent = 34 { $22 };
+    QtWA_PendingResizeEvent = 35 { $23 };
+    QtWA_SetPalette = 36 { $24 };
+    QtWA_SetFont = 37 { $25 };
+    QtWA_SetCursor = 38 { $26 };
+    QtWA_NoChildEventsFromChildren = 39 { $27 };
+    QtWA_WindowModified = 41 { $29 };
+    QtWA_Resized = 42 { $2a };
+    QtWA_Moved = 43 { $2b };
+    QtWA_PendingUpdate = 44 { $2c };
+    QtWA_InvalidSize = 45 { $2d };
+    QtWA_MacMetalStyle = 46 { $2e };
+    QtWA_CustomWhatsThis = 47 { $2f };
+    QtWA_LayoutOnEntireRect = 48 { $30 };
+    QtWA_OutsideWSRange = 49 { $31 };
+    QtWA_GrabbedShortcut = 50 { $32 };
+    QtWA_TransparentForMouseEvents = 51 { $33 };
+    QtWA_PaintUnclipped = 52 { $34 };
+    QtWA_SetWindowIcon = 53 { $35 };
+    QtWA_NoMouseReplay = 54 { $36 };
+    QtWA_DeleteOnClose = 55 { $37 };
+    QtWA_RightToLeft = 56 { $38 };
+    QtWA_SetLayoutDirection = 57 { $39 };
+    QtWA_NoChildEventsForParent = 58 { $3a };
+    QtWA_ForceUpdatesDisabled = 59 { $3b };
+    QtWA_WState_Created = 60 { $3c };
+    QtWA_WState_CompressKeys = 61 { $3d };
+    QtWA_WState_InPaintEvent = 62 { $3e };
+    QtWA_WState_Reparented = 63 { $3f };
+    QtWA_WState_ConfigPending = 64 { $40 };
+    QtWA_WState_Polished = 66 { $42 };
+    QtWA_WState_DND = 67 { $43 };
+    QtWA_WState_OwnSizePolicy = 68 { $44 };
+    QtWA_WState_ExplicitShowHide = 69 { $45 };
+    QtWA_ShowModal = 70 { $46 };
+    QtWA_MouseNoMask = 71 { $47 };
+    QtWA_GroupLeader = 72 { $48 };
+    QtWA_NoMousePropagation = 73 { $49 };
+    QtWA_Hover = 74 { $4a };
+    QtWA_InputMethodTransparent = 75 { $4b };
+    QtWA_QuitOnClose = 76 { $4c };
+    QtWA_KeyboardFocusChange = 77 { $4d };
+    QtWA_AcceptDrops = 78 { $4e };
+    QtWA_DropSiteRegistered = 79 { $4f };
+    QtWA_ForceAcceptDrops = 79 { $4f };
+    QtWA_WindowPropagation = 80 { $50 };
+    QtWA_NoX11EventCompression = 81 { $51 };
+    QtWA_TintedBackground = 82 { $52 };
+    QtWA_AttributeCount = 83 { $53 };
 
 type
   QtKey = cardinal; //  Qt::Key (4)
@@ -868,6 +914,7 @@ const
     QtKey_ssharp = 223 { $df };
     QtKey_division = 247 { $f7 };
     QtKey_ydiaeresis = 255 { $ff };
+    QtKey_AltGr = 16781571 { $1001103 };
     QtKey_Multi_key = 16781600 { $1001120 };
     QtKey_Codeinput = 16781623 { $1001137 };
     QtKey_SingleCandidate = 16781628 { $100113c };
@@ -961,6 +1008,16 @@ const
     QtKey_LaunchE = 16777392 { $10000b0 };
     QtKey_LaunchF = 16777393 { $10000b1 };
     QtKey_MediaLast = 16842751 { $100ffff };
+    QtKey_Select = 16842752 { $1010000 };
+    QtKey_Yes = 16842753 { $1010001 };
+    QtKey_No = 16842754 { $1010002 };
+    QtKey_Context1 = 17825792 { $1100000 };
+    QtKey_Context2 = 17825793 { $1100001 };
+    QtKey_Context3 = 17825794 { $1100002 };
+    QtKey_Context4 = 17825795 { $1100003 };
+    QtKey_Call = 17825796 { $1100004 };
+    QtKey_Hangup = 17825797 { $1100005 };
+    QtKey_Flip = 17825798 { $1100006 };
     QtKey_unknown = 33554431 { $1ffffff };
 
 type
@@ -1098,6 +1155,7 @@ type
     QEventPolish = 75,
     QEventLayoutRequest = 76,
     QEventUpdateRequest = 77,
+    QEventUpdateLater = 78,
     QEventEmbeddingControl = 79,
     QEventActivateControl = 80,
     QEventDeactivateControl = 81,
@@ -1146,6 +1204,9 @@ type
     QEventHoverMove = 129,
     QEventAccessibilityHelp = 119,
     QEventAccessibilityDescription = 130,
+    QEventAcceptDropsChange = 152,
+    QEventMenubarUpdated = 153,
+    QEventZeroTimerEvent = 154,
     QEventUser = 1000,
     QEventMaxUser = 65535 );
 
@@ -1177,6 +1238,8 @@ const
   QEventLoopExcludeUserInputEvents =   $01;
   QEventLoopExcludeSocketNotifiers =   $02;
   QEventLoopWaitForMoreEvents =   $04;
+  QEventLoopX11ExcludeTimers =   $08;
+  QEventLoopDeferredDeletion =   $10;
 
 function QEventLoop_create(parent: QObjectH = nil): QEventLoopH; cdecl; external QtShareName name QtNamePrefix + 'QEventLoop_create';
 procedure QEventLoop_destroy(handle: QEventLoopH); cdecl; external QtShareName name QtNamePrefix + 'QEventLoop_destroy'; 
@@ -1197,6 +1260,7 @@ function QCoreApplication_create(argc: PInteger; argv: PPAnsiChar): QCoreApplica
 procedure QCoreApplication_destroy(handle: QCoreApplicationH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_destroy'; 
 function QCoreApplication_argc(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_argc';
 function QCoreApplication_argv(): PPAnsiChar; cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_argv';
+procedure QCoreApplication_arguments(retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_arguments';
 procedure QCoreApplication_setOrganizationDomain(orgDomain: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_setOrganizationDomain';
 procedure QCoreApplication_organizationDomain(retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_organizationDomain';
 procedure QCoreApplication_setOrganizationName(orgName: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_setOrganizationName';
@@ -1223,8 +1287,8 @@ procedure QCoreApplication_setLibraryPaths(p1: QStringListH); cdecl; external Qt
 procedure QCoreApplication_libraryPaths(retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_libraryPaths';
 procedure QCoreApplication_addLibraryPath(p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_addLibraryPath';
 procedure QCoreApplication_removeLibraryPath(p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_removeLibraryPath';
-procedure QCoreApplication_installTranslator(p1: QTranslatorH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_installTranslator';
-procedure QCoreApplication_removeTranslator(p1: QTranslatorH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_removeTranslator';
+procedure QCoreApplication_installTranslator(messageFile: QTranslatorH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_installTranslator';
+procedure QCoreApplication_removeTranslator(messageFile: QTranslatorH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_removeTranslator';
 procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar = 0; encoding: QCoreApplicationEncoding = QCoreApplicationDefaultCodec); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_translate';
 procedure QCoreApplication_flush(); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_flush';
 procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_watchUnixSignal';
@@ -1244,6 +1308,24 @@ procedure QTranslator_translate(handle: QTranslatorH; retval: PWideString; conte
 function QTranslator_isEmpty(handle: QTranslatorH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTranslator_isEmpty';
 function QTranslator_load(handle: QTranslatorH; filename: PWideString; directory: PWideString = nil; search_delimiters: PWideString = nil; suffix: PWideString = nil): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QTranslator_load';
 function QTranslator_load(handle: QTranslatorH; data: PByte; len: Integer): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QTranslator_load2';
+
+function QTimer_create(parent: QObjectH = nil): QTimerH; cdecl; external QtShareName name QtNamePrefix + 'QTimer_create';
+procedure QTimer_destroy(handle: QTimerH); cdecl; external QtShareName name QtNamePrefix + 'QTimer_destroy'; 
+function QTimer_isActive(handle: QTimerH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTimer_isActive';
+function QTimer_timerId(handle: QTimerH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTimer_timerId';
+procedure QTimer_setInterval(handle: QTimerH; msec: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTimer_setInterval';
+function QTimer_interval(handle: QTimerH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTimer_interval';
+procedure QTimer_setSingleShot(handle: QTimerH; singleShot: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTimer_setSingleShot';
+function QTimer_isSingleShot(handle: QTimerH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTimer_isSingleShot';
+procedure QTimer_singleShot(msec: Integer; receiver: QObjectH; member: PAnsiChar); cdecl; external QtShareName name QtNamePrefix + 'QTimer_singleShot';
+procedure QTimer_start(handle: QTimerH; msec: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QTimer_start';
+procedure QTimer_start(handle: QTimerH); overload; cdecl; external QtShareName name QtNamePrefix + 'QTimer_start2';
+procedure QTimer_stop(handle: QTimerH); cdecl; external QtShareName name QtNamePrefix + 'QTimer_stop';
+
+
+type
+  QTimer_timeout_Event = procedure () of object cdecl;
+
 
 function QStringList_create(): QStringListH; overload; cdecl; external QtShareName name QtNamePrefix + 'QStringList_create';
 procedure QStringList_destroy(handle: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QStringList_destroy'; 
@@ -1418,7 +1500,7 @@ procedure QApplication_palette(retval: QPaletteH); overload; cdecl; external QtS
 procedure QApplication_palette(retval: QPaletteH; p1: QWidgetH); overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_palette2';
 procedure QApplication_palette(retval: QPaletteH; className: PAnsiChar); overload; cdecl; external QtShareName name QtNamePrefix + 'QApplication_palette3';
 procedure QApplication_setPalette(p1: QPaletteH; className: PAnsiChar = 0); cdecl; external QtShareName name QtNamePrefix + 'QApplication_setPalette';
-procedure QApplication_font(retval: QFontH; p1: QWidgetH = 0); cdecl; external QtShareName name QtNamePrefix + 'QApplication_font';
+procedure QApplication_font(retval: QFontH; p1: QWidgetH = nil); cdecl; external QtShareName name QtNamePrefix + 'QApplication_font';
 procedure QApplication_setFont(p1: QFontH; className: PAnsiChar = 0); cdecl; external QtShareName name QtNamePrefix + 'QApplication_setFont';
 procedure QApplication_fontMetrics(retval: QFontMetricsH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_fontMetrics';
 procedure QApplication_setWindowIcon(icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_setWindowIcon';
@@ -1480,6 +1562,7 @@ procedure QApplication_aboutQt(); cdecl; external QtShareName name QtNamePrefix 
 
 type
   QApplication_lastWindowClosed_Event = procedure () of object cdecl;
+  QApplication_focusChanged_Event = procedure (old: QWidgetH; now: QWidgetH) of object cdecl;
 
 
 type
@@ -1498,7 +1581,7 @@ type
   QPaletteColorRole = cardinal; //  QPalette::ColorRole (4)
 
 const
-    QPaletteForeground = 0 { $0 };
+    QPaletteWindowText = 0 { $0 };
     QPaletteButton = 1 { $1 };
     QPaletteLight = 2 { $2 };
     QPaletteMidlight = 3 { $3 };
@@ -1508,7 +1591,7 @@ const
     QPaletteBrightText = 7 { $7 };
     QPaletteButtonText = 8 { $8 };
     QPaletteBase = 9 { $9 };
-    QPaletteBackground = 10 { $a };
+    QPaletteWindow = 10 { $a };
     QPaletteShadow = 11 { $b };
     QPaletteHighlight = 12 { $c };
     QPaletteHighlightedText = 13 { $d };
@@ -1517,6 +1600,8 @@ const
     QPaletteAlternateBase = 16 { $10 };
     QPaletteNColorRoles = 17 { $11 };
     QPaletteNoRole = 17 { $11 };
+    QPaletteForeground = 0 { $0 };
+    QPaletteBackground = 10 { $a };
 
 
 
@@ -1545,6 +1630,9 @@ type
   QKeySequenceSequenceMatch = ( // QKeySequence::SequenceMatch (1)
     QKeySequenceNoMatch, QKeySequencePartialMatch, QKeySequenceExactMatch );
 
+  QKeySequenceSequenceFormat = ( // QKeySequence::SequenceFormat (1)
+    QKeySequenceNativeText, QKeySequencePortableText );
+
 function QKeySequence_create(): QKeySequenceH; overload; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_create';
 procedure QKeySequence_destroy(handle: QKeySequenceH); cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_destroy'; 
 function QKeySequence_create(key: PWideString): QKeySequenceH; overload; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_create2';
@@ -1552,6 +1640,8 @@ function QKeySequence_create(k1: Integer; k2: Integer = 0; k3: Integer = 0; k4: 
 function QKeySequence_create(ks: QKeySequenceH): QKeySequenceH; overload; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_create4';
 function QKeySequence_count(handle: QKeySequenceH): Cardinal; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_count';
 function QKeySequence_isEmpty(handle: QKeySequenceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_isEmpty';
+procedure QKeySequence_toString(handle: QKeySequenceH; retval: PWideString; format: QKeySequenceSequenceFormat = QKeySequencePortableText); cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_toString';
+procedure QKeySequence_fromString(retval: QKeySequenceH; str: PWideString; format: QKeySequenceSequenceFormat = QKeySequencePortableText); cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_fromString';
 function QKeySequence_matches(handle: QKeySequenceH; seq: QKeySequenceH): QKeySequenceSequenceMatch; cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_matches';
 procedure QKeySequence_mnemonic(retval: QKeySequenceH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QKeySequence_mnemonic';
 
@@ -1565,6 +1655,8 @@ procedure QWidget_setStyle(handle: QWidgetH; p1: QStyleH); cdecl; external QtSha
 function QWidget_isTopLevel(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isTopLevel';
 function QWidget_isWindow(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isWindow';
 function QWidget_isModal(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isModal';
+function QWidget_windowModality(handle: QWidgetH): QtWindowModality; cdecl; external QtShareName name QtNamePrefix + 'QWidget_windowModality';
+procedure QWidget_setWindowModality(handle: QWidgetH; windowModality: QtWindowModality); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setWindowModality';
 function QWidget_isEnabled(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isEnabled';
 function QWidget_isEnabledTo(handle: QWidgetH; p1: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isEnabledTo';
 function QWidget_isEnabledToTLW(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isEnabledToTLW';
@@ -1744,7 +1836,7 @@ procedure QWidget_scroll(handle: QWidgetH; dx: Integer; dy: Integer; p3: PRect);
 function QWidget_focusWidget(handle: QWidgetH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_focusWidget';
 function QWidget_nextInFocusChain(handle: QWidgetH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_nextInFocusChain';
 function QWidget_acceptDrops(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_acceptDrops';
-procedure QWidget_setAcceptDrops(handle: QWidgetH; on: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAcceptDrops';
+procedure QWidget_setAcceptDrops(handle: QWidgetH; _on: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAcceptDrops';
 procedure QWidget_addAction(handle: QWidgetH; action: QActionH); cdecl; external QtShareName name QtNamePrefix + 'QWidget_addAction';
 procedure QWidget_addActions(handle: QWidgetH; actions: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QWidget_addActions';
 procedure QWidget_insertAction(handle: QWidgetH; before: QActionH; action: QActionH); cdecl; external QtShareName name QtNamePrefix + 'QWidget_insertAction';
@@ -1762,13 +1854,15 @@ function QWidget_childAt(handle: QWidgetH; p: PPoint): QWidgetH; overload; cdecl
 function QWidget_x11Info(handle: QWidgetH): QX11InfoH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_x11Info';
 function QWidget_x11PictureHandle(handle: QWidgetH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QWidget_x11PictureHandle';
 function QWidget_handle(handle: QWidgetH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QWidget_handle';
-procedure QWidget_setAttribute(handle: QWidgetH; p1: QtWidgetAttribute; on: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAttribute';
+procedure QWidget_setAttribute(handle: QWidgetH; p1: QtWidgetAttribute; _on: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAttribute';
 function QWidget_testAttribute(handle: QWidgetH; p1: QtWidgetAttribute): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_testAttribute';
 function QWidget_paintEngine(handle: QWidgetH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_paintEngine';
 procedure QWidget_ensurePolished(handle: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QWidget_ensurePolished';
 function QWidget_inputContext(handle: QWidgetH): QInputContextH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_inputContext';
 procedure QWidget_setInputContext(handle: QWidgetH; p1: QInputContextH); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setInputContext';
 function QWidget_isAncestorOf(handle: QWidgetH; child: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isAncestorOf';
+function QWidget_autoFillBackground(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_autoFillBackground';
+procedure QWidget_setAutoFillBackground(handle: QWidgetH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAutoFillBackground';
 function QWidget_to_QPaintDevice(handle: QWidgetH): QPaintDeviceH; cdecl; external QtSharename name QtNamePrefix + 'QWidget_to_QPaintDevice';
 
 type
@@ -1969,7 +2063,7 @@ type
 
 type
   QTabletEventTabletDevice = ( // QTabletEvent::TabletDevice (1)
-    QTabletEventNoDevice, QTabletEventPuck, QTabletEventStylus, QTabletEventAirbrush, QTabletEventFourDMouse, QTabletEventXFreeEraser );
+    QTabletEventNoDevice, QTabletEventPuck, QTabletEventStylus, QTabletEventAirbrush, QTabletEventFourDMouse, QTabletEventXFreeEraser, QTabletEventRotationStylus );
 
   QTabletEventPointerType = ( // QTabletEvent::PointerType (1)
     QTabletEventUnknownPointer, QTabletEventPen, QTabletEventCursor, QTabletEventEraser );
@@ -2163,9 +2257,11 @@ function QShortcutEvent_key(handle: QShortcutEventH): QKeySequenceH; cdecl; exte
 function QShortcutEvent_shortcutId(handle: QShortcutEventH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QShortcutEvent_shortcutId';
 function QShortcutEvent_isAmbiguous(handle: QShortcutEventH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QShortcutEvent_isAmbiguous';
 
-function QWindowStateChangeEvent_create(aOldState: QtWindowStates): QWindowStateChangeEventH; cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_create';
+function QWindowStateChangeEvent_create(aOldState: QtWindowStates): QWindowStateChangeEventH; overload; cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_create';
 procedure QWindowStateChangeEvent_destroy(handle: QWindowStateChangeEventH); cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_destroy'; 
+function QWindowStateChangeEvent_create(aOldState: QtWindowStates; isOverride: Boolean): QWindowStateChangeEventH; overload; cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_create2';
 function QWindowStateChangeEvent_oldState(handle: QWindowStateChangeEventH): QtWindowStates; cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_oldState';
+function QWindowStateChangeEvent_isOverride(handle: QWindowStateChangeEventH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWindowStateChangeEvent_isOverride';
 
 function QCursor_create(): QCursorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_create';
 procedure QCursor_destroy(handle: QCursorH); cdecl; external QtShareName name QtNamePrefix + 'QCursor_destroy'; 
@@ -2185,6 +2281,92 @@ procedure QCursor_setPos(p: PPoint); overload; cdecl; external QtShareName name 
 function QCursor_handle(handle: QCursorH): QtHANDLE; cdecl; external QtShareName name QtNamePrefix + 'QCursor_handle';
 function QCursor_create(cursor: QtHANDLE): QCursorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QCursor_create6';
 function QCursor_x11Screen(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QCursor_x11Screen';
+
+function QGridLayout_create(parent: QWidgetH): QGridLayoutH; overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_create';
+procedure QGridLayout_destroy(handle: QGridLayoutH); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_destroy'; 
+function QGridLayout_create(): QGridLayoutH; overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_create2';
+procedure QGridLayout_sizeHint(handle: QGridLayoutH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_sizeHint';
+procedure QGridLayout_minimumSize(handle: QGridLayoutH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_minimumSize';
+procedure QGridLayout_maximumSize(handle: QGridLayoutH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_maximumSize';
+procedure QGridLayout_setRowStretch(handle: QGridLayoutH; row: Integer; stretch: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setRowStretch';
+procedure QGridLayout_setColumnStretch(handle: QGridLayoutH; column: Integer; stretch: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setColumnStretch';
+function QGridLayout_rowStretch(handle: QGridLayoutH; row: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_rowStretch';
+function QGridLayout_columnStretch(handle: QGridLayoutH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_columnStretch';
+procedure QGridLayout_setRowMinimumHeight(handle: QGridLayoutH; row: Integer; minSize: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setRowMinimumHeight';
+procedure QGridLayout_setColumnMinimumWidth(handle: QGridLayoutH; column: Integer; minSize: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setColumnMinimumWidth';
+function QGridLayout_rowMinimumHeight(handle: QGridLayoutH; row: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_rowMinimumHeight';
+function QGridLayout_columnMinimumWidth(handle: QGridLayoutH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_columnMinimumWidth';
+function QGridLayout_columnCount(handle: QGridLayoutH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_columnCount';
+function QGridLayout_rowCount(handle: QGridLayoutH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_rowCount';
+procedure QGridLayout_cellRect(handle: QGridLayoutH; retval: PRect; row: Integer; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_cellRect';
+function QGridLayout_hasHeightForWidth(handle: QGridLayoutH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_hasHeightForWidth';
+function QGridLayout_heightForWidth(handle: QGridLayoutH; p1: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_heightForWidth';
+function QGridLayout_minimumHeightForWidth(handle: QGridLayoutH; p1: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_minimumHeightForWidth';
+function QGridLayout_expandingDirections(handle: QGridLayoutH): QtOrientations; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_expandingDirections';
+procedure QGridLayout_invalidate(handle: QGridLayoutH); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_invalidate';
+procedure QGridLayout_addWidget(handle: QGridLayoutH; w: QWidgetH); overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addWidget';
+procedure QGridLayout_addWidget(handle: QGridLayoutH; p1: QWidgetH; row: Integer; column: Integer; p4: QtAlignment = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addWidget2';
+procedure QGridLayout_addWidget(handle: QGridLayoutH; p1: QWidgetH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; p6: QtAlignment = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addWidget3';
+procedure QGridLayout_addLayout(handle: QGridLayoutH; p1: QLayoutH; row: Integer; column: Integer; p4: QtAlignment = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addLayout';
+procedure QGridLayout_addLayout(handle: QGridLayoutH; p1: QLayoutH; row: Integer; column: Integer; rowSpan: Integer; columnSpan: Integer; p6: QtAlignment = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addLayout2';
+procedure QGridLayout_setOriginCorner(handle: QGridLayoutH; p1: QtCorner); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setOriginCorner';
+function QGridLayout_originCorner(handle: QGridLayoutH): QtCorner; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_originCorner';
+function QGridLayout_itemAt(handle: QGridLayoutH; p1: Integer): QLayoutItemH; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_itemAt';
+function QGridLayout_takeAt(handle: QGridLayoutH; p1: Integer): QLayoutItemH; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_takeAt';
+function QGridLayout_count(handle: QGridLayoutH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_count';
+procedure QGridLayout_setGeometry(handle: QGridLayoutH; p1: PRect); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setGeometry';
+procedure QGridLayout_addItem(handle: QGridLayoutH; item: QLayoutItemH; row: Integer; column: Integer; rowSpan: Integer = 1; columnSpan: Integer = 1; p6: QtAlignment = 0); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_addItem';
+procedure QGridLayout_setDefaultPositioning(handle: QGridLayoutH; n: Integer; orient: QtOrientation); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_setDefaultPositioning';
+procedure QGridLayout_getItemPosition(handle: QGridLayoutH; idx: Integer; row: PInteger; column: PInteger; rowSpan: PInteger; columnSpan: PInteger); cdecl; external QtShareName name QtNamePrefix + 'QGridLayout_getItemPosition';
+
+
+type
+  QClipboardMode = ( // QClipboard::Mode (1)
+    QClipboardClipboard, QClipboardSelection );
+
+procedure QClipboard_clear(handle: QClipboardH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_clear';
+function QClipboard_supportsSelection(handle: QClipboardH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_supportsSelection';
+function QClipboard_ownsSelection(handle: QClipboardH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_ownsSelection';
+function QClipboard_ownsClipboard(handle: QClipboardH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_ownsClipboard';
+procedure QClipboard_text(handle: QClipboardH; retval: PWideString; mode: QClipboardMode = QClipboardClipboard); overload; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_text';
+procedure QClipboard_text(handle: QClipboardH; retval: PWideString; subtype: PWideString; mode: QClipboardMode = QClipboardClipboard); overload; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_text2';
+procedure QClipboard_setText(handle: QClipboardH; p1: PWideString; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_setText';
+function QClipboard_mimeData(handle: QClipboardH; mode: QClipboardMode = QClipboardClipboard): QMimeDataH; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_mimeData';
+procedure QClipboard_setMimeData(handle: QClipboardH; data: QMimeDataH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_setMimeData';
+procedure QClipboard_image(handle: QClipboardH; retval: QImageH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_image';
+procedure QClipboard_pixmap(handle: QClipboardH; retval: QPixmapH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_pixmap';
+procedure QClipboard_setImage(handle: QClipboardH; p1: QImageH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_setImage';
+procedure QClipboard_setPixmap(handle: QClipboardH; p1: QPixmapH; mode: QClipboardMode = QClipboardClipboard); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_setPixmap';
+
+
+type
+  QClipboard_selectionChanged_Event = procedure () of object cdecl;
+  QClipboard_dataChanged_Event = procedure () of object cdecl;
+
+
+function QDesktopWidget_create(): QDesktopWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_create';
+procedure QDesktopWidget_destroy(handle: QDesktopWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_destroy'; 
+function QDesktopWidget_isVirtualDesktop(handle: QDesktopWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_isVirtualDesktop';
+function QDesktopWidget_numScreens(handle: QDesktopWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_numScreens';
+function QDesktopWidget_primaryScreen(handle: QDesktopWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_primaryScreen';
+function QDesktopWidget_screenNumber(handle: QDesktopWidgetH; widget: QWidgetH = nil): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screenNumber';
+function QDesktopWidget_screenNumber(handle: QDesktopWidgetH; p1: PPoint): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screenNumber2';
+function QDesktopWidget_screen(handle: QDesktopWidgetH; screen: Integer = -1): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screen';
+procedure QDesktopWidget_screenGeometry(handle: QDesktopWidgetH; retval: PRect; screen: Integer = -1); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screenGeometry';
+procedure QDesktopWidget_screenGeometry(handle: QDesktopWidgetH; retval: PRect; widget: QWidgetH); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screenGeometry2';
+procedure QDesktopWidget_screenGeometry(handle: QDesktopWidgetH; retval: PRect; point: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_screenGeometry3';
+procedure QDesktopWidget_availableGeometry(handle: QDesktopWidgetH; retval: PRect; screen: Integer = -1); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_availableGeometry';
+procedure QDesktopWidget_availableGeometry(handle: QDesktopWidgetH; retval: PRect; widget: QWidgetH); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_availableGeometry2';
+procedure QDesktopWidget_availableGeometry(handle: QDesktopWidgetH; retval: PRect; point: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_availableGeometry3';
+
+
+type
+  QDesktopWidget_resized_Event = procedure (p1: Integer) of object cdecl;
+  QDesktopWidget_workAreaResized_Event = procedure (p1: Integer) of object cdecl;
+
+
+procedure QToolTip_showText(pos: PPoint; text: PWideString; w: QWidgetH = nil); cdecl; external QtShareName name QtNamePrefix + 'QToolTip_showText';
+procedure QToolTip_palette(retval: QPaletteH); cdecl; external QtShareName name QtNamePrefix + 'QToolTip_palette';
 
 
 type
@@ -2302,7 +2484,7 @@ procedure QMatrix_inverted(handle: QMatrixH; retval: QMatrixH; invertible: PBool
 
 type
   QGradientType = ( // QGradient::Type (1)
-    QGradientLinearGradient, QGradientRadialGradient, QGradientConicalGradient );
+    QGradientLinearGradient, QGradientRadialGradient, QGradientConicalGradient, QGradientNoGradient );
 
   QGradientSpread = ( // QGradient::Spread (1)
     QGradientPadSpread, QGradientReflectSpread, QGradientRepeatSpread );
@@ -2352,6 +2534,31 @@ procedure QConicalGradient_destroy(handle: QConicalGradientH); cdecl; external Q
 function QConicalGradient_create(cx: Double; cy: Double; startAngle: Double): QConicalGradientH; overload; cdecl; external QtShareName name QtNamePrefix + 'QConicalGradient_create2';
 procedure QConicalGradient_center(handle: QConicalGradientH; retval: QPointFH); cdecl; external QtShareName name QtNamePrefix + 'QConicalGradient_center';
 function QConicalGradient_angle(handle: QConicalGradientH): Double; cdecl; external QtShareName name QtNamePrefix + 'QConicalGradient_angle';
+
+function QPen_create(): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create';
+procedure QPen_destroy(handle: QPenH); cdecl; external QtShareName name QtNamePrefix + 'QPen_destroy'; 
+function QPen_create(p1: QtPenStyle): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create2';
+function QPen_create(color: QColorH): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create3';
+function QPen_create(brush: QBrushH; width: Double; s: QtPenStyle = QtSolidLine; c: QtPenCapStyle = QtSquareCap; j: QtPenJoinStyle = QtBevelJoin): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create4';
+function QPen_create(pen: QPenH): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create5';
+function QPen_style(handle: QPenH): QtPenStyle; cdecl; external QtShareName name QtNamePrefix + 'QPen_style';
+procedure QPen_setStyle(handle: QPenH; p1: QtPenStyle); cdecl; external QtShareName name QtNamePrefix + 'QPen_setStyle';
+function QPen_miterLimit(handle: QPenH): Double; cdecl; external QtShareName name QtNamePrefix + 'QPen_miterLimit';
+procedure QPen_setMiterLimit(handle: QPenH; limit: Double); cdecl; external QtShareName name QtNamePrefix + 'QPen_setMiterLimit';
+function QPen_widthF(handle: QPenH): Double; cdecl; external QtShareName name QtNamePrefix + 'QPen_widthF';
+procedure QPen_setWidthF(handle: QPenH; width: Double); cdecl; external QtShareName name QtNamePrefix + 'QPen_setWidthF';
+function QPen_width(handle: QPenH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPen_width';
+procedure QPen_setWidth(handle: QPenH; width: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPen_setWidth';
+procedure QPen_color(handle: QPenH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QPen_color';
+procedure QPen_setColor(handle: QPenH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QPen_setColor';
+procedure QPen_brush(handle: QPenH; retval: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QPen_brush';
+procedure QPen_setBrush(handle: QPenH; brush: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QPen_setBrush';
+function QPen_isSolid(handle: QPenH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPen_isSolid';
+function QPen_capStyle(handle: QPenH): QtPenCapStyle; cdecl; external QtShareName name QtNamePrefix + 'QPen_capStyle';
+procedure QPen_setCapStyle(handle: QPenH; pcs: QtPenCapStyle); cdecl; external QtShareName name QtNamePrefix + 'QPen_setCapStyle';
+function QPen_joinStyle(handle: QPenH): QtPenJoinStyle; cdecl; external QtShareName name QtNamePrefix + 'QPen_joinStyle';
+procedure QPen_setJoinStyle(handle: QPenH; pcs: QtPenJoinStyle); cdecl; external QtShareName name QtNamePrefix + 'QPen_setJoinStyle';
+function QPen_isDetached(handle: QPenH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPen_isDetached';
 
 function QPolygon_create(): QPolygonH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPolygon_create';
 procedure QPolygon_destroy(handle: QPolygonH); cdecl; external QtShareName name QtNamePrefix + 'QPolygon_destroy'; 
@@ -2553,11 +2760,11 @@ procedure QPainter_fillRect(handle: QPainterH; p1: PRect; p2: QBrushH); overload
 procedure QPainter_eraseRect(handle: QPainterH; p1: QRectFH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_eraseRect';
 procedure QPainter_eraseRect(handle: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_eraseRect2';
 procedure QPainter_eraseRect(handle: QPainterH; p1: PRect); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_eraseRect3';
-procedure QPainter_setRenderHint(handle: QPainterH; hint: QPainterRenderHint; on: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QPainter_setRenderHint';
+procedure QPainter_setRenderHint(handle: QPainterH; hint: QPainterRenderHint; _on: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QPainter_setRenderHint';
 function QPainter_renderHints(handle: QPainterH): QPainterRenderHints; cdecl; external QtShareName name QtNamePrefix + 'QPainter_renderHints';
 function QPainter_paintEngine(handle: QPainterH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPainter_paintEngine';
 procedure QPainter_setRedirected(device: QPaintDeviceH; replacement: QPaintDeviceH; offset: PPoint = nil); cdecl; external QtShareName name QtNamePrefix + 'QPainter_setRedirected';
-function QPainter_redirected(device: QPaintDeviceH; offset: PPoint = nil): QPaintDeviceH; cdecl; external QtShareName name QtNamePrefix + 'QPainter_redirected';
+function QPainter_redirected(device: QPaintDeviceH; offset: PPoint = 0): QPaintDeviceH; cdecl; external QtShareName name QtNamePrefix + 'QPainter_redirected';
 procedure QPainter_restoreRedirected(device: QPaintDeviceH); cdecl; external QtShareName name QtNamePrefix + 'QPainter_restoreRedirected';
 
 
@@ -2599,6 +2806,7 @@ const
   QPaintEngineDirtyClipPath =   $0100;
   QPaintEngineDirtyHints =   $0200;
   QPaintEngineDirtyCompositionMode =   $0400;
+  QPaintEngineDirtyClipEnabled =   $0800;
   QPaintEngineAllDirty =   $ffff;
 
 
@@ -2640,6 +2848,8 @@ procedure QPaintEngine_setPaintDevice(handle: QPaintEngineH; device: QPaintDevic
 function QPaintEngine_paintDevice(handle: QPaintEngineH): QPaintDeviceH; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_paintDevice';
 procedure QPaintEngine_setSystemClip(handle: QPaintEngineH; baseClip: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_setSystemClip';
 procedure QPaintEngine_systemClip(handle: QPaintEngineH; retval: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_systemClip';
+procedure QPaintEngine_setSystemRect(handle: QPaintEngineH; rect: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_setSystemRect';
+procedure QPaintEngine_systemRect(handle: QPaintEngineH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_systemRect';
 procedure QPaintEngine_coordinateOffset(handle: QPaintEngineH; retval: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_coordinateOffset';
 function QPaintEngine_type(handle: QPaintEngineH): QPaintEngineType; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_type';
 procedure QPaintEngine_fix_neg_rect(handle: QPaintEngineH; x: PInteger; y: PInteger; w: PInteger; h: PInteger); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_fix_neg_rect';
@@ -2649,6 +2859,177 @@ procedure QPaintEngine_clearDirty(handle: QPaintEngineH; df: QPaintEngineDirtyFl
 function QPaintEngine_hasFeature(handle: QPaintEngineH; feature: QPaintEnginePaintEngineFeatures): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_hasFeature';
 function QPaintEngine_painter(handle: QPaintEngineH): QPainterH; cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_painter';
 procedure QPaintEngine_syncState(handle: QPaintEngineH); cdecl; external QtShareName name QtNamePrefix + 'QPaintEngine_syncState';
+
+
+type
+  QPaintDevicePaintDeviceMetric = (  //QPaintDevice::PaintDeviceMetric (2)
+    QPaintDevicePdmWidth = 1,
+    QPaintDevicePdmHeight,
+    QPaintDevicePdmWidthMM,
+    QPaintDevicePdmHeightMM,
+    QPaintDevicePdmNumColors,
+    QPaintDevicePdmDepth,
+    QPaintDevicePdmDpiX,
+    QPaintDevicePdmDpiY,
+    QPaintDevicePdmPhysicalDpiX,
+    QPaintDevicePdmPhysicalDpiY );
+
+function QPaintDevice_devType(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_devType';
+function QPaintDevice_paintingActive(handle: QPaintDeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_paintingActive';
+function QPaintDevice_paintEngine(handle: QPaintDeviceH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_paintEngine';
+function QPaintDevice_width(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_width';
+function QPaintDevice_height(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_height';
+function QPaintDevice_widthMM(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_widthMM';
+function QPaintDevice_heightMM(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_heightMM';
+function QPaintDevice_logicalDpiX(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_logicalDpiX';
+function QPaintDevice_logicalDpiY(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_logicalDpiY';
+function QPaintDevice_physicalDpiX(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_physicalDpiX';
+function QPaintDevice_physicalDpiY(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_physicalDpiY';
+function QPaintDevice_numColors(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_numColors';
+function QPaintDevice_depth(handle: QPaintDeviceH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPaintDevice_depth';
+
+
+type
+  QRegionRegionType = ( // QRegion::RegionType (1)
+    QRegionRectangle, QRegionEllipse );
+
+function QRegion_create(): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create';
+procedure QRegion_destroy(handle: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_destroy'; 
+function QRegion_create(x: Integer; y: Integer; w: Integer; h: Integer; t: QRegionRegionType = QRegionRectangle): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create2';
+function QRegion_create(r: PRect; t: QRegionRegionType = QRegionRectangle): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create3';
+function QRegion_create(pa: QPolygonH; fillRule: QtFillRule = QtOddEvenFill): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create4';
+function QRegion_create(region: QRegionH): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create5';
+function QRegion_create(bitmap: QBitmapH): QRegionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_create6';
+function QRegion_isEmpty(handle: QRegionH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QRegion_isEmpty';
+function QRegion_contains(handle: QRegionH; p: PPoint): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_contains';
+function QRegion_contains(handle: QRegionH; r: PRect): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_contains2';
+procedure QRegion_translate(handle: QRegionH; dx: Integer; dy: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_translate';
+procedure QRegion_translate(handle: QRegionH; p: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_translate2';
+procedure QRegion_translated(handle: QRegionH; retval: QRegionH; dx: Integer; dy: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_translated';
+procedure QRegion_translated(handle: QRegionH; retval: QRegionH; p: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QRegion_translated2';
+procedure QRegion_unite(handle: QRegionH; retval: QRegionH; r: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_unite';
+procedure QRegion_intersect(handle: QRegionH; retval: QRegionH; r: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_intersect';
+procedure QRegion_subtract(handle: QRegionH; retval: QRegionH; r: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_subtract';
+procedure QRegion_eor(handle: QRegionH; retval: QRegionH; r: QRegionH); cdecl; external QtShareName name QtNamePrefix + 'QRegion_eor';
+procedure QRegion_boundingRect(handle: QRegionH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QRegion_boundingRect';
+procedure QRegion_setRects(handle: QRegionH; rect: PRect; num: Integer); cdecl; external QtShareName name QtNamePrefix + 'QRegion_setRects';
+function QRegion_handle(handle: QRegionH): Region; cdecl; external QtShareName name QtNamePrefix + 'QRegion_handle';
+
+
+type
+  QPrinterPrinterMode = ( // QPrinter::PrinterMode (1)
+    QPrinterScreenResolution, QPrinterPrinterResolution, QPrinterHighResolution );
+
+  QPrinterOrientation = ( // QPrinter::Orientation (1)
+    QPrinterPortrait, QPrinterLandscape );
+
+  QPrinterPageOrder = ( // QPrinter::PageOrder (1)
+    QPrinterFirstPageFirst, QPrinterLastPageFirst );
+
+  QPrinterColorMode = ( // QPrinter::ColorMode (1)
+    QPrinterGrayScale, QPrinterColor );
+
+  QPrinterPaperSource = ( // QPrinter::PaperSource (1)
+    QPrinterOnlyOne, QPrinterLower, QPrinterMiddle, QPrinterManual, QPrinterEnvelope, QPrinterEnvelopeManual, QPrinterAuto, QPrinterTractor, QPrinterSmallFormat, QPrinterLargeFormat, QPrinterLargeCapacity, 
+    QPrinterCassette, QPrinterFormSource );
+
+  QPrinterPrinterState = ( // QPrinter::PrinterState (1)
+    QPrinterIdle, QPrinterActive, QPrinterAborted, QPrinterError );
+
+  QPrinterOutputFormat = ( // QPrinter::OutputFormat (1)
+    QPrinterNativeFormat, QPrinterPdfFormat );
+
+  QPrinterPrintRange = ( // QPrinter::PrintRange (1)
+    QPrinterAllPages, QPrinterSelection, QPrinterPageRange );
+
+type
+  QPrinterPageSize = cardinal; //  QPrinter::PageSize (4)
+
+const
+    QPrinterA4 = 0 { $0 };
+    QPrinterB5 = 1 { $1 };
+    QPrinterLetter = 2 { $2 };
+    QPrinterLegal = 3 { $3 };
+    QPrinterExecutive = 4 { $4 };
+    QPrinterA0 = 5 { $5 };
+    QPrinterA1 = 6 { $6 };
+    QPrinterA2 = 7 { $7 };
+    QPrinterA3 = 8 { $8 };
+    QPrinterA5 = 9 { $9 };
+    QPrinterA6 = 10 { $a };
+    QPrinterA7 = 11 { $b };
+    QPrinterA8 = 12 { $c };
+    QPrinterA9 = 13 { $d };
+    QPrinterB0 = 14 { $e };
+    QPrinterB1 = 15 { $f };
+    QPrinterB10 = 16 { $10 };
+    QPrinterB2 = 17 { $11 };
+    QPrinterB3 = 18 { $12 };
+    QPrinterB4 = 19 { $13 };
+    QPrinterB6 = 20 { $14 };
+    QPrinterB7 = 21 { $15 };
+    QPrinterB8 = 22 { $16 };
+    QPrinterB9 = 23 { $17 };
+    QPrinterC5E = 24 { $18 };
+    QPrinterComm10E = 25 { $19 };
+    QPrinterDLE = 26 { $1a };
+    QPrinterFolio = 27 { $1b };
+    QPrinterLedger = 28 { $1c };
+    QPrinterTabloid = 29 { $1d };
+    QPrinterCustom = 30 { $1e };
+    QPrinterNPageSize = 30 { $1e };
+
+
+function QPrinter_create(mode: QPrinterPrinterMode = QPrinterScreenResolution): QPrinterH; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_create';
+procedure QPrinter_destroy(handle: QPrinterH); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_destroy'; 
+function QPrinter_devType(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_devType';
+procedure QPrinter_setOutputFormat(handle: QPrinterH; format: QPrinterOutputFormat); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setOutputFormat';
+function QPrinter_outputFormat(handle: QPrinterH): QPrinterOutputFormat; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_outputFormat';
+procedure QPrinter_setPrinterName(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPrinterName';
+procedure QPrinter_printerName(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printerName';
+procedure QPrinter_setOutputFileName(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setOutputFileName';
+procedure QPrinter_outputFileName(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_outputFileName';
+procedure QPrinter_setPrintProgram(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPrintProgram';
+procedure QPrinter_printProgram(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printProgram';
+procedure QPrinter_setDocName(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setDocName';
+procedure QPrinter_docName(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_docName';
+procedure QPrinter_setCreator(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setCreator';
+procedure QPrinter_creator(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_creator';
+procedure QPrinter_setOrientation(handle: QPrinterH; p1: QPrinterOrientation); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setOrientation';
+function QPrinter_orientation(handle: QPrinterH): QPrinterOrientation; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_orientation';
+procedure QPrinter_setPageSize(handle: QPrinterH; p1: QPrinterPageSize); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPageSize';
+function QPrinter_pageSize(handle: QPrinterH): QPrinterPageSize; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_pageSize';
+procedure QPrinter_setPageOrder(handle: QPrinterH; p1: QPrinterPageOrder); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPageOrder';
+function QPrinter_pageOrder(handle: QPrinterH): QPrinterPageOrder; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_pageOrder';
+procedure QPrinter_setResolution(handle: QPrinterH; p1: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setResolution';
+function QPrinter_resolution(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_resolution';
+procedure QPrinter_setColorMode(handle: QPrinterH; p1: QPrinterColorMode); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setColorMode';
+function QPrinter_colorMode(handle: QPrinterH): QPrinterColorMode; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_colorMode';
+procedure QPrinter_setCollateCopies(handle: QPrinterH; collate: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setCollateCopies';
+function QPrinter_collateCopies(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_collateCopies';
+procedure QPrinter_setFullPage(handle: QPrinterH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setFullPage';
+function QPrinter_fullPage(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_fullPage';
+procedure QPrinter_setNumCopies(handle: QPrinterH; p1: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setNumCopies';
+function QPrinter_numCopies(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_numCopies';
+procedure QPrinter_setPaperSource(handle: QPrinterH; p1: QPrinterPaperSource); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPaperSource';
+function QPrinter_paperSource(handle: QPrinterH): QPrinterPaperSource; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_paperSource';
+procedure QPrinter_supportedResolutions(handle: QPrinterH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_supportedResolutions';
+procedure QPrinter_setFontEmbeddingEnabled(handle: QPrinterH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setFontEmbeddingEnabled';
+function QPrinter_fontEmbeddingEnabled(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_fontEmbeddingEnabled';
+procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_paperRect';
+procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_pageRect';
+procedure QPrinter_printerSelectionOption(handle: QPrinterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printerSelectionOption';
+procedure QPrinter_setPrinterSelectionOption(handle: QPrinterH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPrinterSelectionOption';
+function QPrinter_newPage(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_newPage';
+function QPrinter_abort(handle: QPrinterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_abort';
+function QPrinter_printerState(handle: QPrinterH): QPrinterPrinterState; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printerState';
+function QPrinter_paintEngine(handle: QPrinterH): QPaintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_paintEngine';
+function QPrinter_printEngine(handle: QPrinterH): QPrintEngineH; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printEngine';
+procedure QPrinter_setFromTo(handle: QPrinterH; fromPage: Integer; toPage: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setFromTo';
+function QPrinter_fromPage(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_fromPage';
+function QPrinter_toPage(handle: QPrinterH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_toPage';
+procedure QPrinter_setPrintRange(handle: QPrinterH; range: QPrinterPrintRange); cdecl; external QtShareName name QtNamePrefix + 'QPrinter_setPrintRange';
+function QPrinter_printRange(handle: QPrinterH): QPrinterPrintRange; cdecl; external QtShareName name QtNamePrefix + 'QPrinter_printRange';
 
 
 type
@@ -2780,7 +3161,8 @@ procedure QFontDatabase_families(handle: QFontDatabaseH; retval: QStringListH; w
 procedure QFontDatabase_styles(handle: QFontDatabaseH; retval: QStringListH; family: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_styles';
 procedure QFontDatabase_pointSizes(handle: QFontDatabaseH; retval: PIntArray; family: PWideString; style: PWideString = nil); cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_pointSizes';
 procedure QFontDatabase_smoothSizes(handle: QFontDatabaseH; retval: PIntArray; family: PWideString; style: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_smoothSizes';
-procedure QFontDatabase_styleString(handle: QFontDatabaseH; retval: PWideString; font: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_styleString';
+procedure QFontDatabase_styleString(handle: QFontDatabaseH; retval: PWideString; font: QFontH); overload; cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_styleString';
+procedure QFontDatabase_styleString(handle: QFontDatabaseH; retval: PWideString; fontInfo: QFontInfoH); overload; cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_styleString2';
 procedure QFontDatabase_font(handle: QFontDatabaseH; retval: QFontH; family: PWideString; style: PWideString; pointSize: Integer); cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_font';
 function QFontDatabase_isBitmapScalable(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_isBitmapScalable';
 function QFontDatabase_isSmoothlyScalable(handle: QFontDatabaseH; family: PWideString; style: PWideString = nil): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFontDatabase_isSmoothlyScalable';
@@ -2834,6 +3216,7 @@ function QFontMetrics_lineSpacing(handle: QFontMetricsH): Integer; cdecl; extern
 function QFontMetrics_minLeftBearing(handle: QFontMetricsH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_minLeftBearing';
 function QFontMetrics_minRightBearing(handle: QFontMetricsH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_minRightBearing';
 function QFontMetrics_maxWidth(handle: QFontMetricsH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_maxWidth';
+function QFontMetrics_xHeight(handle: QFontMetricsH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_xHeight';
 function QFontMetrics_inFont(handle: QFontMetricsH; p1: PWideChar): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_inFont';
 function QFontMetrics_leftBearing(handle: QFontMetricsH; p1: PWideChar): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_leftBearing';
 function QFontMetrics_rightBearing(handle: QFontMetricsH; p1: PWideChar): Integer; cdecl; external QtShareName name QtNamePrefix + 'QFontMetrics_rightBearing';
@@ -2853,7 +3236,6 @@ function QFontMetrics_lineWidth(handle: QFontMetricsH): Integer; cdecl; external
 function QFontMetricsF_create(p1: QFontH): QFontMetricsFH; overload; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_create';
 procedure QFontMetricsF_destroy(handle: QFontMetricsFH); cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_destroy'; 
 function QFontMetricsF_create(p1: QFontH; pd: QPaintDeviceH): QFontMetricsFH; overload; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_create2';
-function QFontMetricsF_create(p1: QFontMetricsFH): QFontMetricsFH; overload; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_create4';
 function QFontMetricsF_ascent(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_ascent';
 function QFontMetricsF_descent(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_descent';
 function QFontMetricsF_height(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_height';
@@ -2862,6 +3244,7 @@ function QFontMetricsF_lineSpacing(handle: QFontMetricsFH): Double; cdecl; exter
 function QFontMetricsF_minLeftBearing(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_minLeftBearing';
 function QFontMetricsF_minRightBearing(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_minRightBearing';
 function QFontMetricsF_maxWidth(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_maxWidth';
+function QFontMetricsF_xHeight(handle: QFontMetricsFH): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_xHeight';
 function QFontMetricsF_inFont(handle: QFontMetricsFH; p1: PWideChar): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_inFont';
 function QFontMetricsF_leftBearing(handle: QFontMetricsFH; p1: PWideChar): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_leftBearing';
 function QFontMetricsF_rightBearing(handle: QFontMetricsFH; p1: PWideChar): Double; cdecl; external QtShareName name QtNamePrefix + 'QFontMetricsF_rightBearing';
@@ -2950,6 +3333,8 @@ function QTextDocument_pageCount(handle: QTextDocumentH): Integer; cdecl; extern
 function QTextDocument_isModified(handle: QTextDocumentH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_isModified';
 procedure QTextDocument_print(handle: QTextDocumentH; printer: QPrinterH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_print';
 procedure QTextDocument_markContentsDirty(handle: QTextDocumentH; from: Integer; length: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_markContentsDirty';
+procedure QTextDocument_setUseDesignMetrics(handle: QTextDocumentH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_setUseDesignMetrics';
+function QTextDocument_useDesignMetrics(handle: QTextDocumentH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_useDesignMetrics';
 procedure QTextDocument_undo(handle: QTextDocumentH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_undo';
 procedure QTextDocument_redo(handle: QTextDocumentH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_redo';
 procedure QTextDocument_setModified(handle: QTextDocumentH; m: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_setModified';
@@ -2995,7 +3380,7 @@ procedure QPixmap_size(handle: QPixmapH; retval: PSize); cdecl; external QtShare
 procedure QPixmap_rect(handle: QPixmapH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_rect';
 function QPixmap_depth(handle: QPixmapH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_depth';
 function QPixmap_defaultDepth(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_defaultDepth';
-procedure QPixmap_fill(handle: QPixmapH; fillColor: QColorH = Qtwhite); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill';
+procedure QPixmap_fill(handle: QPixmapH; fillColor: QColorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; ofs: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill2';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; xofs: Integer; yofs: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill3';
 procedure QPixmap_mask(handle: QPixmapH; retval: QBitmapH); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_mask';
@@ -3094,7 +3479,8 @@ procedure QImage_trueMatrix(retval: QMatrixH; p1: QMatrixH; w: Integer; h: Integ
 procedure QImage_mirrored(handle: QImageH; retval: QImageH; horizontally: Boolean = False; vertically: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QImage_mirrored';
 procedure QImage_rgbSwapped(handle: QImageH; retval: QImageH); cdecl; external QtShareName name QtNamePrefix + 'QImage_rgbSwapped';
 procedure QImage_invertPixels(handle: QImageH; p1: QImageInvertMode = QImageInvertRgb); cdecl; external QtShareName name QtNamePrefix + 'QImage_invertPixels';
-function QImage_load(handle: QImageH; fileName: PWideString; format: PAnsiChar = 0): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImage_load';
+function QImage_load(handle: QImageH; device: QIODeviceH; format: PAnsiChar): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_load';
+function QImage_load(handle: QImageH; fileName: PWideString; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_load2';
 function QImage_loadFromData(handle: QImageH; buf: PByte; len: Integer; format: PAnsiChar = 0): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_loadFromData';
 function QImage_loadFromData(handle: QImageH; data: QByteArrayH; aformat: PAnsiChar = 0): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_loadFromData2';
 function QImage_save(handle: QImageH; fileName: PWideString; format: PAnsiChar; quality: Integer = -1): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_save';
@@ -3109,10 +3495,12 @@ procedure QImage_setDotsPerMeterX(handle: QImageH; p1: Integer); cdecl; external
 procedure QImage_setDotsPerMeterY(handle: QImageH; p1: Integer); cdecl; external QtShareName name QtNamePrefix + 'QImage_setDotsPerMeterY';
 procedure QImage_offset(handle: QImageH; retval: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QImage_offset';
 procedure QImage_setOffset(handle: QImageH; p1: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QImage_setOffset';
-procedure QImage_textLanguages(handle: QImageH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QImage_textLanguages';
 procedure QImage_textKeys(handle: QImageH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QImage_textKeys';
-procedure QImage_text(handle: QImageH; retval: PWideString; key: PAnsiChar; lang: PAnsiChar = 0); cdecl; external QtShareName name QtNamePrefix + 'QImage_text';
-procedure QImage_setText(handle: QImageH; key: PAnsiChar; lang: PAnsiChar; p3: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImage_setText';
+procedure QImage_text(handle: QImageH; retval: PWideString; key: PWideString = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_text';
+procedure QImage_setText(handle: QImageH; key: PWideString; value: PWideString); overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_setText';
+procedure QImage_text(handle: QImageH; retval: PWideString; key: PAnsiChar; lang: PAnsiChar = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_text2';
+procedure QImage_textLanguages(handle: QImageH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QImage_textLanguages';
+procedure QImage_setText(handle: QImageH; key: PAnsiChar; lang: PAnsiChar; p3: PWideString); overload; cdecl; external QtShareName name QtNamePrefix + 'QImage_setText2';
 
 function QBitmap_create(): QBitmapH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBitmap_create';
 procedure QBitmap_destroy(handle: QBitmapH); cdecl; external QtShareName name QtNamePrefix + 'QBitmap_destroy'; 
@@ -3191,12 +3579,17 @@ function QImageReader_device(handle: QImageReaderH): QIODeviceH; cdecl; external
 procedure QImageReader_setFileName(handle: QImageReaderH; fileName: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setFileName';
 procedure QImageReader_fileName(handle: QImageReaderH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_fileName';
 procedure QImageReader_size(handle: QImageReaderH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_size';
+procedure QImageReader_textKeys(handle: QImageReaderH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_textKeys';
+procedure QImageReader_text(handle: QImageReaderH; retval: PWideString; key: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_text';
 procedure QImageReader_setClipRect(handle: QImageReaderH; rect: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setClipRect';
 procedure QImageReader_clipRect(handle: QImageReaderH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_clipRect';
 procedure QImageReader_setScaledSize(handle: QImageReaderH; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setScaledSize';
 procedure QImageReader_scaledSize(handle: QImageReaderH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_scaledSize';
 procedure QImageReader_setScaledClipRect(handle: QImageReaderH; rect: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setScaledClipRect';
 procedure QImageReader_scaledClipRect(handle: QImageReaderH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_scaledClipRect';
+procedure QImageReader_setBackgroundColor(handle: QImageReaderH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setBackgroundColor';
+procedure QImageReader_backgroundColor(handle: QImageReaderH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_backgroundColor';
+function QImageReader_supportsAnimation(handle: QImageReaderH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageReader_supportsAnimation';
 function QImageReader_canRead(handle: QImageReaderH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageReader_canRead';
 procedure QImageReader_read(handle: QImageReaderH; retval: QImageH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_read';
 function QImageReader_jumpToNextImage(handle: QImageReaderH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageReader_jumpToNextImage';
@@ -3232,6 +3625,7 @@ procedure QImageWriter_setGamma(handle: QImageWriterH; gamma: Single); cdecl; ex
 function QImageWriter_gamma(handle: QImageWriterH): Single; cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_gamma';
 procedure QImageWriter_setDescription(handle: QImageWriterH; description: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_setDescription';
 procedure QImageWriter_description(handle: QImageWriterH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_description';
+procedure QImageWriter_setText(handle: QImageWriterH; key: PWideString; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_setText';
 function QImageWriter_canWrite(handle: QImageWriterH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_canWrite';
 function QImageWriter_write(handle: QImageWriterH; image: QImageH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_write';
 function QImageWriter_error(handle: QImageWriterH): QImageWriterImageWriterError; cdecl; external QtShareName name QtNamePrefix + 'QImageWriter_error';
@@ -3374,8 +3768,8 @@ procedure QMenu_destroy(handle: QMenuH); cdecl; external QtShareName name QtName
 function QMenu_create(title: PWideString; parent: QWidgetH = nil): QMenuH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_create2';
 function QMenu_addAction(handle: QMenuH; text: PWideString): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction';
 function QMenu_addAction(handle: QMenuH; icon: QIconH; text: PWideString): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction2';
-function QMenu_addAction(handle: QMenuH; text: PWideString; receiver: QObjectH; member: PAnsiChar; shortcut: QKeySequenceH = 0): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction3';
-function QMenu_addAction(handle: QMenuH; icon: QIconH; text: PWideString; receiver: QObjectH; member: PAnsiChar; shortcut: QKeySequenceH = 0): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction4';
+function QMenu_addAction(handle: QMenuH; text: PWideString; receiver: QObjectH; member: PAnsiChar; shortcut: QKeySequenceH = nil): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction3';
+function QMenu_addAction(handle: QMenuH; icon: QIconH; text: PWideString; receiver: QObjectH; member: PAnsiChar; shortcut: QKeySequenceH = nil): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addAction4';
 function QMenu_addMenu(handle: QMenuH; menu: QMenuH): QActionH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addMenu';
 function QMenu_addMenu(handle: QMenuH; title: PWideString): QMenuH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addMenu2';
 function QMenu_addMenu(handle: QMenuH; icon: QIconH; title: PWideString): QMenuH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMenu_addMenu3';
@@ -3423,6 +3817,7 @@ function QMenuBar_addSeparator(handle: QMenuBarH): QActionH; cdecl; external QtS
 function QMenuBar_insertMenu(handle: QMenuBarH; before: QActionH; menu: QMenuH): QActionH; cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_insertMenu';
 procedure QMenuBar_clear(handle: QMenuBarH); cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_clear';
 function QMenuBar_activeAction(handle: QMenuBarH): QActionH; cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_activeAction';
+procedure QMenuBar_setActiveAction(handle: QMenuBarH; action: QActionH); cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_setActiveAction';
 procedure QMenuBar_setDefaultUp(handle: QMenuBarH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_setDefaultUp';
 function QMenuBar_isDefaultUp(handle: QMenuBarH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_isDefaultUp';
 procedure QMenuBar_sizeHint(handle: QMenuBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QMenuBar_sizeHint';
@@ -3443,14 +3838,20 @@ function QButtonGroup_create(parent: QObjectH = nil): QButtonGroupH; cdecl; exte
 procedure QButtonGroup_destroy(handle: QButtonGroupH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_destroy'; 
 procedure QButtonGroup_setExclusive(handle: QButtonGroupH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_setExclusive';
 function QButtonGroup_exclusive(handle: QButtonGroupH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_exclusive';
-procedure QButtonGroup_addButton(handle: QButtonGroupH; p1: QAbstractButtonH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_addButton';
+procedure QButtonGroup_addButton(handle: QButtonGroupH; p1: QAbstractButtonH); overload; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_addButton';
+procedure QButtonGroup_addButton(handle: QButtonGroupH; p1: QAbstractButtonH; id: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_addButton2';
 procedure QButtonGroup_removeButton(handle: QButtonGroupH; p1: QAbstractButtonH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_removeButton';
 procedure QButtonGroup_buttons(handle: QButtonGroupH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_buttons';
 function QButtonGroup_checkedButton(handle: QButtonGroupH): QAbstractButtonH; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_checkedButton';
+function QButtonGroup_button(handle: QButtonGroupH; id: Integer): QAbstractButtonH; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_button';
+procedure QButtonGroup_setId(handle: QButtonGroupH; button: QAbstractButtonH; id: Integer); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_setId';
+function QButtonGroup_id(handle: QButtonGroupH; button: QAbstractButtonH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_id';
+function QButtonGroup_checkedId(handle: QButtonGroupH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_checkedId';
 
 
 type
   QButtonGroup_buttonClicked_Event = procedure (p1: QAbstractButtonH) of object cdecl;
+  QButtonGroup_buttonClicked2_Event = procedure (p1: Integer) of object cdecl;
 
 
 procedure QAbstractButton_setText(handle: QAbstractButtonH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QAbstractButton_setText';
@@ -3630,13 +4031,18 @@ procedure QTextEdit_setWordWrapMode(handle: QTextEditH; policy: QTextOptionWrapM
 function QTextEdit_find(handle: QTextEditH; exp: PWideString; options: QTextDocumentFindFlags = 0): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_find';
 procedure QTextEdit_toPlainText(handle: QTextEditH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_toPlainText';
 procedure QTextEdit_toHtml(handle: QTextEditH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_toHtml';
-procedure QTextEdit_append(handle: QTextEditH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_append';
 procedure QTextEdit_ensureCursorVisible(handle: QTextEditH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_ensureCursorVisible';
 function QTextEdit_createStandardContextMenu(handle: QTextEditH): QMenuH; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_createStandardContextMenu';
 procedure QTextEdit_cursorForPosition(handle: QTextEditH; retval: QTextCursorH; pos: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_cursorForPosition';
 procedure QTextEdit_cursorRect(handle: QTextEditH; retval: PRect; cursor: QTextCursorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_cursorRect';
 procedure QTextEdit_cursorRect(handle: QTextEditH; retval: PRect); overload; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_cursorRect2';
 procedure QTextEdit_anchorAt(handle: QTextEditH; retval: PWideString; pos: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_anchorAt';
+function QTextEdit_overwriteMode(handle: QTextEditH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_overwriteMode';
+procedure QTextEdit_setOverwriteMode(handle: QTextEditH; overwrite: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setOverwriteMode';
+function QTextEdit_tabStopWidth(handle: QTextEditH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_tabStopWidth';
+procedure QTextEdit_setTabStopWidth(handle: QTextEditH; width: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setTabStopWidth';
+function QTextEdit_acceptRichText(handle: QTextEditH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_acceptRichText';
+procedure QTextEdit_setAcceptRichText(handle: QTextEditH; accept: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setAcceptRichText';
 procedure QTextEdit_setFontPointSize(handle: QTextEditH; s: Double); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontPointSize';
 procedure QTextEdit_setFontFamily(handle: QTextEditH; fontFamily: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontFamily';
 procedure QTextEdit_setFontWeight(handle: QTextEditH; w: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontWeight';
@@ -3654,6 +4060,7 @@ procedure QTextEdit_clear(handle: QTextEditH); cdecl; external QtShareName name 
 procedure QTextEdit_selectAll(handle: QTextEditH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_selectAll';
 procedure QTextEdit_insertPlainText(handle: QTextEditH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_insertPlainText';
 procedure QTextEdit_insertHtml(handle: QTextEditH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_insertHtml';
+procedure QTextEdit_append(handle: QTextEditH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_append';
 procedure QTextEdit_scrollToAnchor(handle: QTextEditH; name: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_scrollToAnchor';
 procedure QTextEdit_zoomIn(handle: QTextEditH; range: Integer = 1); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_zoomIn';
 procedure QTextEdit_zoomOut(handle: QTextEditH; range: Integer = 1); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_zoomOut';
@@ -3943,6 +4350,7 @@ procedure QWorkspace_background(handle: QWorkspaceH; retval: QBrushH); cdecl; ex
 procedure QWorkspace_setActiveWindow(handle: QWorkspaceH; w: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_setActiveWindow';
 procedure QWorkspace_cascade(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_cascade';
 procedure QWorkspace_tile(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_tile';
+procedure QWorkspace_arrangeIcons(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_arrangeIcons';
 procedure QWorkspace_closeActiveWindow(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_closeActiveWindow';
 procedure QWorkspace_closeAllWindows(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_closeAllWindows';
 procedure QWorkspace_activateNextWindow(handle: QWorkspaceH); cdecl; external QtShareName name QtNamePrefix + 'QWorkspace_activateNextWindow';
@@ -3970,6 +4378,8 @@ procedure QComboBox_setMaxCount(handle: QComboBoxH; max: Integer); cdecl; extern
 function QComboBox_maxCount(handle: QComboBoxH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_maxCount';
 function QComboBox_autoCompletion(handle: QComboBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_autoCompletion';
 procedure QComboBox_setAutoCompletion(handle: QComboBoxH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setAutoCompletion';
+function QComboBox_autoCompletionCaseSensitivity(handle: QComboBoxH): QtCaseSensitivity; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_autoCompletionCaseSensitivity';
+procedure QComboBox_setAutoCompletionCaseSensitivity(handle: QComboBoxH; sensitivity: QtCaseSensitivity); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setAutoCompletionCaseSensitivity';
 function QComboBox_duplicatesEnabled(handle: QComboBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_duplicatesEnabled';
 procedure QComboBox_setDuplicatesEnabled(handle: QComboBoxH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setDuplicatesEnabled';
 procedure QComboBox_setFrame(handle: QComboBoxH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setFrame';
@@ -3998,7 +4408,6 @@ procedure QComboBox_setRootModelIndex(handle: QComboBoxH; index: QModelIndexH); 
 function QComboBox_modelColumn(handle: QComboBoxH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_modelColumn';
 procedure QComboBox_setModelColumn(handle: QComboBoxH; visibleColumn: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setModelColumn';
 function QComboBox_currentIndex(handle: QComboBoxH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_currentIndex';
-procedure QComboBox_setCurrentIndex(handle: QComboBoxH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setCurrentIndex';
 procedure QComboBox_currentText(handle: QComboBoxH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_currentText';
 procedure QComboBox_itemText(handle: QComboBoxH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_itemText';
 procedure QComboBox_itemIcon(handle: QComboBoxH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_itemIcon';
@@ -4017,6 +4426,7 @@ function QComboBox_event(handle: QComboBoxH; event: QEventH): Boolean; cdecl; ex
 procedure QComboBox_clear(handle: QComboBoxH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_clear';
 procedure QComboBox_clearEditText(handle: QComboBoxH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_clearEditText';
 procedure QComboBox_setEditText(handle: QComboBoxH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setEditText';
+procedure QComboBox_setCurrentIndex(handle: QComboBoxH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setCurrentIndex';
 
 
 type
@@ -4025,6 +4435,8 @@ type
   QComboBox_activated2_Event = procedure (p1: PWideString) of object cdecl;
   QComboBox_highlighted_Event = procedure (index: Integer) of object cdecl;
   QComboBox_highlighted2_Event = procedure (p1: PWideString) of object cdecl;
+  QComboBox_currentIndexChanged_Event = procedure (index: Integer) of object cdecl;
+  QComboBox_currentIndexChanged2_Event = procedure (p1: PWideString) of object cdecl;
 
 
 function QCheckBox_create(parent: QWidgetH = nil): QCheckBoxH; overload; cdecl; external QtShareName name QtNamePrefix + 'QCheckBox_create';
@@ -4096,7 +4508,7 @@ function QLabel_textFormat(handle: QLabelH): QtTextFormat; cdecl; external QtSha
 procedure QLabel_setTextFormat(handle: QLabelH; p1: QtTextFormat); cdecl; external QtShareName name QtNamePrefix + 'QLabel_setTextFormat';
 function QLabel_alignment(handle: QLabelH): QtAlignment; cdecl; external QtShareName name QtNamePrefix + 'QLabel_alignment';
 procedure QLabel_setAlignment(handle: QLabelH; p1: QtAlignment); cdecl; external QtShareName name QtNamePrefix + 'QLabel_setAlignment';
-procedure QLabel_setWordWrap(handle: QLabelH; on: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QLabel_setWordWrap';
+procedure QLabel_setWordWrap(handle: QLabelH; _on: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QLabel_setWordWrap';
 function QLabel_wordWrap(handle: QLabelH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QLabel_wordWrap';
 function QLabel_indent(handle: QLabelH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QLabel_indent';
 procedure QLabel_setIndent(handle: QLabelH; p1: Integer); cdecl; external QtShareName name QtNamePrefix + 'QLabel_setIndent';
@@ -4117,10 +4529,224 @@ procedure QLabel_setNum(handle: QLabelH; p1: Integer); overload; cdecl; external
 procedure QLabel_setNum(handle: QLabelH; p1: Double); overload; cdecl; external QtShareName name QtNamePrefix + 'QLabel_setNum2';
 procedure QLabel_clear(handle: QLabelH); cdecl; external QtShareName name QtNamePrefix + 'QLabel_clear';
 
+function QGroupBox_create(parent: QWidgetH = nil): QGroupBoxH; overload; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_create';
+procedure QGroupBox_destroy(handle: QGroupBoxH); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_destroy'; 
+function QGroupBox_create(title: PWideString; parent: QWidgetH = nil): QGroupBoxH; overload; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_create2';
+procedure QGroupBox_title(handle: QGroupBoxH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_title';
+procedure QGroupBox_setTitle(handle: QGroupBoxH; title: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_setTitle';
+function QGroupBox_alignment(handle: QGroupBoxH): QtAlignment; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_alignment';
+procedure QGroupBox_setAlignment(handle: QGroupBoxH; alignment: Integer); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_setAlignment';
+procedure QGroupBox_minimumSizeHint(handle: QGroupBoxH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_minimumSizeHint';
+function QGroupBox_isFlat(handle: QGroupBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_isFlat';
+procedure QGroupBox_setFlat(handle: QGroupBoxH; flat: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_setFlat';
+function QGroupBox_isCheckable(handle: QGroupBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_isCheckable';
+procedure QGroupBox_setCheckable(handle: QGroupBoxH; checkable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_setCheckable';
+function QGroupBox_isChecked(handle: QGroupBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_isChecked';
+procedure QGroupBox_setChecked(handle: QGroupBoxH; checked: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_setChecked';
+
+
+type
+  QGroupBox_toggled_Event = procedure (p1: Boolean) of object cdecl;
+
+
+
+type
+  QTabWidgetTabPosition = ( // QTabWidget::TabPosition (1)
+    QTabWidgetNorth, QTabWidgetSouth, QTabWidgetWest, QTabWidgetEast );
+
+  QTabWidgetTabShape = ( // QTabWidget::TabShape (1)
+    QTabWidgetRounded, QTabWidgetTriangular );
+
+function QTabWidget_create(parent: QWidgetH = nil): QTabWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_create';
+procedure QTabWidget_destroy(handle: QTabWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_destroy'; 
+function QTabWidget_addTab(handle: QTabWidgetH; widget: QWidgetH; p2: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_addTab';
+function QTabWidget_addTab(handle: QTabWidgetH; widget: QWidgetH; icon: QIconH; _label: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_addTab2';
+function QTabWidget_insertTab(handle: QTabWidgetH; index: Integer; widget: QWidgetH; p3: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_insertTab';
+function QTabWidget_insertTab(handle: QTabWidgetH; index: Integer; widget: QWidgetH; icon: QIconH; _label: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_insertTab2';
+procedure QTabWidget_removeTab(handle: QTabWidgetH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_removeTab';
+function QTabWidget_isTabEnabled(handle: QTabWidgetH; index: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_isTabEnabled';
+procedure QTabWidget_setTabEnabled(handle: QTabWidgetH; index: Integer; p2: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabEnabled';
+procedure QTabWidget_tabText(handle: QTabWidgetH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabText';
+procedure QTabWidget_setTabText(handle: QTabWidgetH; index: Integer; p2: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabText';
+procedure QTabWidget_tabIcon(handle: QTabWidgetH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabIcon';
+procedure QTabWidget_setTabIcon(handle: QTabWidgetH; index: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabIcon';
+procedure QTabWidget_setTabToolTip(handle: QTabWidgetH; index: Integer; tip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabToolTip';
+procedure QTabWidget_tabToolTip(handle: QTabWidgetH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabToolTip';
+procedure QTabWidget_setTabWhatsThis(handle: QTabWidgetH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabWhatsThis';
+procedure QTabWidget_tabWhatsThis(handle: QTabWidgetH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabWhatsThis';
+function QTabWidget_currentIndex(handle: QTabWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_currentIndex';
+function QTabWidget_currentWidget(handle: QTabWidgetH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_currentWidget';
+function QTabWidget_widget(handle: QTabWidgetH; index: Integer): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_widget';
+function QTabWidget_indexOf(handle: QTabWidgetH; widget: QWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_indexOf';
+function QTabWidget_count(handle: QTabWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_count';
+function QTabWidget_tabPosition(handle: QTabWidgetH): QTabWidgetTabPosition; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabPosition';
+procedure QTabWidget_setTabPosition(handle: QTabWidgetH; p1: QTabWidgetTabPosition); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabPosition';
+function QTabWidget_tabShape(handle: QTabWidgetH): QTabWidgetTabShape; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_tabShape';
+procedure QTabWidget_setTabShape(handle: QTabWidgetH; s: QTabWidgetTabShape); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setTabShape';
+procedure QTabWidget_sizeHint(handle: QTabWidgetH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_sizeHint';
+procedure QTabWidget_minimumSizeHint(handle: QTabWidgetH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_minimumSizeHint';
+procedure QTabWidget_setCornerWidget(handle: QTabWidgetH; w: QWidgetH; corner: QtCorner = QtTopRightCorner); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setCornerWidget';
+function QTabWidget_cornerWidget(handle: QTabWidgetH; corner: QtCorner = QtTopRightCorner): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_cornerWidget';
+procedure QTabWidget_setCurrentIndex(handle: QTabWidgetH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setCurrentIndex';
+procedure QTabWidget_setCurrentWidget(handle: QTabWidgetH; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_setCurrentWidget';
+
+
+type
+  QTabWidget_currentChanged_Event = procedure (index: Integer) of object cdecl;
+
+
+
+type
+  QTabBarShape = ( // QTabBar::Shape (1)
+    QTabBarRoundedNorth, QTabBarRoundedSouth, QTabBarRoundedWest, QTabBarRoundedEast, QTabBarTriangularNorth, QTabBarTriangularSouth, QTabBarTriangularWest, QTabBarTriangularEast );
+
+function QTabBar_create(parent: QWidgetH = nil): QTabBarH; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_create';
+procedure QTabBar_destroy(handle: QTabBarH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_destroy'; 
+function QTabBar_shape(handle: QTabBarH): QTabBarShape; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_shape';
+procedure QTabBar_setShape(handle: QTabBarH; shape: QTabBarShape); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setShape';
+function QTabBar_addTab(handle: QTabBarH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_addTab';
+function QTabBar_addTab(handle: QTabBarH; icon: QIconH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_addTab2';
+function QTabBar_insertTab(handle: QTabBarH; index: Integer; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_insertTab';
+function QTabBar_insertTab(handle: QTabBarH; index: Integer; icon: QIconH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_insertTab2';
+procedure QTabBar_removeTab(handle: QTabBarH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_removeTab';
+function QTabBar_isTabEnabled(handle: QTabBarH; index: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_isTabEnabled';
+procedure QTabBar_setTabEnabled(handle: QTabBarH; index: Integer; p2: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabEnabled';
+procedure QTabBar_tabText(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabText';
+procedure QTabBar_setTabText(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabText';
+procedure QTabBar_tabTextColor(handle: QTabBarH; retval: QColorH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabTextColor';
+procedure QTabBar_setTabTextColor(handle: QTabBarH; index: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabTextColor';
+procedure QTabBar_tabIcon(handle: QTabBarH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabIcon';
+procedure QTabBar_setTabIcon(handle: QTabBarH; index: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabIcon';
+procedure QTabBar_setTabToolTip(handle: QTabBarH; index: Integer; tip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabToolTip';
+procedure QTabBar_tabToolTip(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabToolTip';
+procedure QTabBar_setTabWhatsThis(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabWhatsThis';
+procedure QTabBar_tabWhatsThis(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabWhatsThis';
+procedure QTabBar_tabRect(handle: QTabBarH; retval: PRect; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabRect';
+function QTabBar_currentIndex(handle: QTabBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_currentIndex';
+function QTabBar_count(handle: QTabBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_count';
+procedure QTabBar_sizeHint(handle: QTabBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_sizeHint';
+procedure QTabBar_minimumSizeHint(handle: QTabBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_minimumSizeHint';
+procedure QTabBar_setDrawBase(handle: QTabBarH; drawTheBase: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setDrawBase';
+function QTabBar_drawBase(handle: QTabBarH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_drawBase';
+procedure QTabBar_iconSize(handle: QTabBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_iconSize';
+procedure QTabBar_setIconSize(handle: QTabBarH; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setIconSize';
+procedure QTabBar_setCurrentIndex(handle: QTabBarH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setCurrentIndex';
+
+
+type
+  QTabBar_currentChanged_Event = procedure (index: Integer) of object cdecl;
+
+
+
+type
+  QProgressBarDirection = ( // QProgressBar::Direction (1)
+    QProgressBarTopToBottom, QProgressBarBottomToTop );
+
+function QProgressBar_create(parent: QWidgetH = nil): QProgressBarH; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_create';
+procedure QProgressBar_destroy(handle: QProgressBarH); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_destroy'; 
+function QProgressBar_minimum(handle: QProgressBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_minimum';
+function QProgressBar_maximum(handle: QProgressBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_maximum';
+procedure QProgressBar_setRange(handle: QProgressBarH; minimum: Integer; maximum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setRange';
+function QProgressBar_value(handle: QProgressBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_value';
+procedure QProgressBar_text(handle: QProgressBarH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_text';
+procedure QProgressBar_setTextVisible(handle: QProgressBarH; visible: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setTextVisible';
+function QProgressBar_isTextVisible(handle: QProgressBarH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_isTextVisible';
+function QProgressBar_alignment(handle: QProgressBarH): QtAlignment; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_alignment';
+procedure QProgressBar_setAlignment(handle: QProgressBarH; alignment: QtAlignment); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setAlignment';
+procedure QProgressBar_sizeHint(handle: QProgressBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_sizeHint';
+procedure QProgressBar_minimumSizeHint(handle: QProgressBarH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_minimumSizeHint';
+function QProgressBar_orientation(handle: QProgressBarH): QtOrientation; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_orientation';
+procedure QProgressBar_setInvertedAppearance(handle: QProgressBarH; invert: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setInvertedAppearance';
+function QProgressBar_invertedAppearance(handle: QProgressBarH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_invertedAppearance';
+procedure QProgressBar_setTextDirection(handle: QProgressBarH; textDirection: QProgressBarDirection); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setTextDirection';
+function QProgressBar_textDirection(handle: QProgressBarH): QProgressBarDirection; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_textDirection';
+procedure QProgressBar_reset(handle: QProgressBarH); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_reset';
+procedure QProgressBar_setMinimum(handle: QProgressBarH; minimum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setMinimum';
+procedure QProgressBar_setMaximum(handle: QProgressBarH; maximum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setMaximum';
+procedure QProgressBar_setValue(handle: QProgressBarH; value: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setValue';
+procedure QProgressBar_setOrientation(handle: QProgressBarH; p1: QtOrientation); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_setOrientation';
+
+
+type
+  QProgressBar_valueChanged_Event = procedure (value: Integer) of object cdecl;
+
+
+function QStatusBar_create(parent: QWidgetH = nil): QStatusBarH; cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_create';
+procedure QStatusBar_destroy(handle: QStatusBarH); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_destroy'; 
+procedure QStatusBar_addWidget(handle: QStatusBarH; widget: QWidgetH; stretch: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_addWidget';
+procedure QStatusBar_addPermanentWidget(handle: QStatusBarH; widget: QWidgetH; stretch: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_addPermanentWidget';
+procedure QStatusBar_removeWidget(handle: QStatusBarH; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_removeWidget';
+procedure QStatusBar_setSizeGripEnabled(handle: QStatusBarH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_setSizeGripEnabled';
+function QStatusBar_isSizeGripEnabled(handle: QStatusBarH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_isSizeGripEnabled';
+procedure QStatusBar_currentMessage(handle: QStatusBarH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_currentMessage';
+procedure QStatusBar_showMessage(handle: QStatusBarH; text: PWideString; timeout: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_showMessage';
+procedure QStatusBar_clearMessage(handle: QStatusBarH); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_clearMessage';
+
+
+type
+  QStatusBar_messageChanged_Event = procedure (text: PWideString) of object cdecl;
+
+
+function QToolBox_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QToolBoxH; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_create';
+procedure QToolBox_destroy(handle: QToolBoxH); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_destroy'; 
+function QToolBox_addItem(handle: QToolBoxH; widget: QWidgetH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_addItem';
+function QToolBox_addItem(handle: QToolBoxH; widget: QWidgetH; icon: QIconH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_addItem2';
+function QToolBox_insertItem(handle: QToolBoxH; index: Integer; widget: QWidgetH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_insertItem';
+function QToolBox_insertItem(handle: QToolBoxH; index: Integer; widget: QWidgetH; icon: QIconH; text: PWideString): Integer; overload; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_insertItem2';
+procedure QToolBox_removeItem(handle: QToolBoxH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_removeItem';
+procedure QToolBox_setItemEnabled(handle: QToolBoxH; index: Integer; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setItemEnabled';
+function QToolBox_isItemEnabled(handle: QToolBoxH; index: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_isItemEnabled';
+procedure QToolBox_setItemText(handle: QToolBoxH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setItemText';
+procedure QToolBox_itemText(handle: QToolBoxH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_itemText';
+procedure QToolBox_setItemIcon(handle: QToolBoxH; index: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setItemIcon';
+procedure QToolBox_itemIcon(handle: QToolBoxH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_itemIcon';
+procedure QToolBox_setItemToolTip(handle: QToolBoxH; index: Integer; toolTip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setItemToolTip';
+procedure QToolBox_itemToolTip(handle: QToolBoxH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_itemToolTip';
+function QToolBox_currentIndex(handle: QToolBoxH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_currentIndex';
+function QToolBox_currentWidget(handle: QToolBoxH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_currentWidget';
+function QToolBox_widget(handle: QToolBoxH; index: Integer): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_widget';
+function QToolBox_indexOf(handle: QToolBoxH; widget: QWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_indexOf';
+function QToolBox_count(handle: QToolBoxH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_count';
+procedure QToolBox_setCurrentIndex(handle: QToolBoxH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setCurrentIndex';
+procedure QToolBox_setCurrentWidget(handle: QToolBoxH; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_setCurrentWidget';
+
+
+type
+  QToolBox_currentChanged_Event = procedure (index: Integer) of object cdecl;
+
+
+
+type
+  QToolButtonToolButtonPopupMode = ( // QToolButton::ToolButtonPopupMode (1)
+    QToolButtonDelayedPopup, QToolButtonMenuButtonPopup, QToolButtonInstantPopup );
+
+function QToolButton_create(parent: QWidgetH = nil): QToolButtonH; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_create';
+procedure QToolButton_destroy(handle: QToolButtonH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_destroy'; 
+procedure QToolButton_sizeHint(handle: QToolButtonH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_sizeHint';
+procedure QToolButton_minimumSizeHint(handle: QToolButtonH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_minimumSizeHint';
+function QToolButton_toolButtonStyle(handle: QToolButtonH): QtToolButtonStyle; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_toolButtonStyle';
+function QToolButton_arrowType(handle: QToolButtonH): QtArrowType; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_arrowType';
+procedure QToolButton_setArrowType(handle: QToolButtonH; _type: QtArrowType); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setArrowType';
+procedure QToolButton_setMenu(handle: QToolButtonH; menu: QMenuH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setMenu';
+function QToolButton_menu(handle: QToolButtonH): QMenuH; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_menu';
+procedure QToolButton_setPopupMode(handle: QToolButtonH; mode: QToolButtonToolButtonPopupMode); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setPopupMode';
+function QToolButton_popupMode(handle: QToolButtonH): QToolButtonToolButtonPopupMode; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_popupMode';
+function QToolButton_defaultAction(handle: QToolButtonH): QActionH; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_defaultAction';
+procedure QToolButton_setAutoRaise(handle: QToolButtonH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setAutoRaise';
+function QToolButton_autoRaise(handle: QToolButtonH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_autoRaise';
+procedure QToolButton_showMenu(handle: QToolButtonH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_showMenu';
+procedure QToolButton_setToolButtonStyle(handle: QToolButtonH; style: QtToolButtonStyle); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setToolButtonStyle';
+procedure QToolButton_setDefaultAction(handle: QToolButtonH; p1: QActionH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_setDefaultAction';
+
+
+type
+  QToolButton_triggered_Event = procedure (p1: QActionH) of object cdecl;
+
+
 
 type
   QAbstractItemViewSelectionMode = ( // QAbstractItemView::SelectionMode (1)
-    QAbstractItemViewNoSelection, QAbstractItemViewSingleSelection, QAbstractItemViewMultiSelection, QAbstractItemViewExtendedSelection );
+    QAbstractItemViewNoSelection, QAbstractItemViewSingleSelection, QAbstractItemViewMultiSelection, QAbstractItemViewExtendedSelection, QAbstractItemViewContiguousSelection );
 
   QAbstractItemViewSelectionBehavior = ( // QAbstractItemView::SelectionBehavior (1)
     QAbstractItemViewSelectItems, QAbstractItemViewSelectRows, QAbstractItemViewSelectColumns );
@@ -4171,12 +4797,14 @@ function QAbstractItemView_textElideMode(handle: QAbstractItemViewH): QtTextElid
 procedure QAbstractItemView_keyboardSearch(handle: QAbstractItemViewH; search: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_keyboardSearch';
 procedure QAbstractItemView_visualRect(handle: QAbstractItemViewH; retval: PRect; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_visualRect';
 procedure QAbstractItemView_scrollTo(handle: QAbstractItemViewH; index: QModelIndexH; hint: QAbstractItemViewScrollHint = QAbstractItemViewEnsureVisible); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_scrollTo';
-procedure QAbstractItemView_indexAt(handle: QAbstractItemViewH; retval: QModelIndexH; p: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_indexAt';
+procedure QAbstractItemView_indexAt(handle: QAbstractItemViewH; retval: QModelIndexH; point: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_indexAt';
 procedure QAbstractItemView_sizeHintForIndex(handle: QAbstractItemViewH; retval: PSize; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_sizeHintForIndex';
 function QAbstractItemView_sizeHintForRow(handle: QAbstractItemViewH; row: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_sizeHintForRow';
 function QAbstractItemView_sizeHintForColumn(handle: QAbstractItemViewH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_sizeHintForColumn';
 procedure QAbstractItemView_openPersistentEditor(handle: QAbstractItemViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_openPersistentEditor';
 procedure QAbstractItemView_closePersistentEditor(handle: QAbstractItemViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_closePersistentEditor';
+procedure QAbstractItemView_setIndexWidget(handle: QAbstractItemViewH; index: QModelIndexH; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_setIndexWidget';
+function QAbstractItemView_indexWidget(handle: QAbstractItemViewH; index: QModelIndexH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_indexWidget';
 procedure QAbstractItemView_reset(handle: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_reset';
 procedure QAbstractItemView_setRootIndex(handle: QAbstractItemViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_setRootIndex';
 procedure QAbstractItemView_doItemsLayout(handle: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_doItemsLayout';
@@ -4184,6 +4812,8 @@ procedure QAbstractItemView_selectAll(handle: QAbstractItemViewH); cdecl; extern
 procedure QAbstractItemView_edit(handle: QAbstractItemViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_edit';
 procedure QAbstractItemView_clearSelection(handle: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_clearSelection';
 procedure QAbstractItemView_setCurrentIndex(handle: QAbstractItemViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_setCurrentIndex';
+procedure QAbstractItemView_scrollToTop(handle: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_scrollToTop';
+procedure QAbstractItemView_scrollToBottom(handle: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_scrollToBottom';
 
 
 type
@@ -4235,6 +4865,8 @@ function QListView_isRowHidden(handle: QListViewH; row: Integer): Boolean; cdecl
 procedure QListView_setRowHidden(handle: QListViewH; row: Integer; hide: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QListView_setRowHidden';
 procedure QListView_setModelColumn(handle: QListViewH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QListView_setModelColumn';
 function QListView_modelColumn(handle: QListViewH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QListView_modelColumn';
+procedure QListView_setUniformItemSizes(handle: QListViewH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QListView_setUniformItemSizes';
+function QListView_uniformItemSizes(handle: QListViewH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QListView_uniformItemSizes';
 procedure QListView_visualRect(handle: QListViewH; retval: PRect; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QListView_visualRect';
 procedure QListView_scrollTo(handle: QListViewH; index: QModelIndexH; hint: QAbstractItemViewScrollHint); cdecl; external QtShareName name QtNamePrefix + 'QListView_scrollTo';
 procedure QListView_indexAt(handle: QListViewH; retval: QModelIndexH; p: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QListView_indexAt';
@@ -4251,6 +4883,8 @@ type
 function QListWidgetItem_create(view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_create';
 procedure QListWidgetItem_destroy(handle: QListWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_destroy'; 
 function QListWidgetItem_create(text: PWideString; view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_create2';
+function QListWidgetItem_create(icon: QIconH; text: PWideString; view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_create3';
+function QListWidgetItem_create(other: QListWidgetItemH): QListWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_create4';
 function QListWidgetItem_clone(handle: QListWidgetItemH): QListWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_clone';
 function QListWidgetItem_listWidget(handle: QListWidgetItemH): QListWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_listWidget';
 function QListWidgetItem_flags(handle: QListWidgetItemH): QtItemFlags; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_flags';
@@ -4275,6 +4909,8 @@ procedure QListWidgetItem_textColor(handle: QListWidgetItemH; retval: QColorH); 
 procedure QListWidgetItem_setTextColor(handle: QListWidgetItemH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setTextColor';
 function QListWidgetItem_checkState(handle: QListWidgetItemH): QtCheckState; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_checkState';
 procedure QListWidgetItem_setCheckState(handle: QListWidgetItemH; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setCheckState';
+procedure QListWidgetItem_sizeHint(handle: QListWidgetItemH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_sizeHint';
+procedure QListWidgetItem_setSizeHint(handle: QListWidgetItemH; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setSizeHint';
 procedure QListWidgetItem_read(handle: QListWidgetItemH; _in: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_read';
 procedure QListWidgetItem_write(handle: QListWidgetItemH; _out: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_write';
 function QListWidgetItem_type(handle: QListWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_type';
@@ -4302,6 +4938,8 @@ procedure QListWidget_sortItems(handle: QListWidgetH; order: QtSortOrder = QtAsc
 procedure QListWidget_editItem(handle: QListWidgetH; item: QListWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_editItem';
 procedure QListWidget_openPersistentEditor(handle: QListWidgetH; item: QListWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_openPersistentEditor';
 procedure QListWidget_closePersistentEditor(handle: QListWidgetH; item: QListWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_closePersistentEditor';
+function QListWidget_itemWidget(handle: QListWidgetH; item: QListWidgetItemH): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QListWidget_itemWidget';
+procedure QListWidget_setItemWidget(handle: QListWidgetH; item: QListWidgetItemH; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_setItemWidget';
 function QListWidget_isItemSelected(handle: QListWidgetH; item: QListWidgetItemH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QListWidget_isItemSelected';
 procedure QListWidget_setItemSelected(handle: QListWidgetH; item: QListWidgetItemH; select: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_setItemSelected';
 procedure QListWidget_selectedItems(handle: QListWidgetH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_selectedItems';
@@ -4323,6 +4961,162 @@ type
   QListWidget_currentTextChanged_Event = procedure (currentText: PWideString) of object cdecl;
   QListWidget_currentRowChanged_Event = procedure (currentRow: Integer) of object cdecl;
   QListWidget_itemSelectionChanged_Event = procedure () of object cdecl;
+
+
+function QTreeView_create(parent: QWidgetH = nil): QTreeViewH; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_create';
+procedure QTreeView_destroy(handle: QTreeViewH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_destroy'; 
+procedure QTreeView_setModel(handle: QTreeViewH; model: QAbstractItemModelH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setModel';
+procedure QTreeView_setRootIndex(handle: QTreeViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setRootIndex';
+procedure QTreeView_setSelectionModel(handle: QTreeViewH; selectionModel: QItemSelectionModelH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setSelectionModel';
+function QTreeView_header(handle: QTreeViewH): QHeaderViewH; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_header';
+procedure QTreeView_setHeader(handle: QTreeViewH; header: QHeaderViewH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setHeader';
+function QTreeView_indentation(handle: QTreeViewH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_indentation';
+procedure QTreeView_setIndentation(handle: QTreeViewH; i: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setIndentation';
+function QTreeView_rootIsDecorated(handle: QTreeViewH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_rootIsDecorated';
+procedure QTreeView_setRootIsDecorated(handle: QTreeViewH; show: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setRootIsDecorated';
+function QTreeView_uniformRowHeights(handle: QTreeViewH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_uniformRowHeights';
+procedure QTreeView_setUniformRowHeights(handle: QTreeViewH; uniform: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setUniformRowHeights';
+function QTreeView_itemsExpandable(handle: QTreeViewH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_itemsExpandable';
+procedure QTreeView_setItemsExpandable(handle: QTreeViewH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setItemsExpandable';
+function QTreeView_columnViewportPosition(handle: QTreeViewH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_columnViewportPosition';
+function QTreeView_columnWidth(handle: QTreeViewH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_columnWidth';
+function QTreeView_columnAt(handle: QTreeViewH; x: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_columnAt';
+function QTreeView_isColumnHidden(handle: QTreeViewH; column: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_isColumnHidden';
+procedure QTreeView_setColumnHidden(handle: QTreeViewH; column: Integer; hide: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setColumnHidden';
+function QTreeView_isRowHidden(handle: QTreeViewH; row: Integer; parent: QModelIndexH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_isRowHidden';
+procedure QTreeView_setRowHidden(handle: QTreeViewH; row: Integer; parent: QModelIndexH; hide: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setRowHidden';
+function QTreeView_isExpanded(handle: QTreeViewH; index: QModelIndexH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_isExpanded';
+procedure QTreeView_setExpanded(handle: QTreeViewH; index: QModelIndexH; expand: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_setExpanded';
+procedure QTreeView_keyboardSearch(handle: QTreeViewH; search: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_keyboardSearch';
+procedure QTreeView_visualRect(handle: QTreeViewH; retval: PRect; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_visualRect';
+procedure QTreeView_scrollTo(handle: QTreeViewH; index: QModelIndexH; hint: QAbstractItemViewScrollHint); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_scrollTo';
+procedure QTreeView_indexAt(handle: QTreeViewH; retval: QModelIndexH; p: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_indexAt';
+procedure QTreeView_indexAbove(handle: QTreeViewH; retval: QModelIndexH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_indexAbove';
+procedure QTreeView_indexBelow(handle: QTreeViewH; retval: QModelIndexH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_indexBelow';
+procedure QTreeView_doItemsLayout(handle: QTreeViewH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_doItemsLayout';
+procedure QTreeView_reset(handle: QTreeViewH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_reset';
+procedure QTreeView_dataChanged(handle: QTreeViewH; topLeft: QModelIndexH; bottomRight: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_dataChanged';
+procedure QTreeView_hideColumn(handle: QTreeViewH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_hideColumn';
+procedure QTreeView_showColumn(handle: QTreeViewH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_showColumn';
+procedure QTreeView_expand(handle: QTreeViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_expand';
+procedure QTreeView_collapse(handle: QTreeViewH; index: QModelIndexH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_collapse';
+procedure QTreeView_resizeColumnToContents(handle: QTreeViewH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_resizeColumnToContents';
+procedure QTreeView_sortByColumn(handle: QTreeViewH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_sortByColumn';
+procedure QTreeView_selectAll(handle: QTreeViewH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_selectAll';
+
+
+type
+  QTreeView_expanded_Event = procedure (index: QModelIndexH) of object cdecl;
+  QTreeView_collapsed_Event = procedure (index: QModelIndexH) of object cdecl;
+
+
+function QTreeWidgetItem_create(_type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create';
+procedure QTreeWidgetItem_destroy(handle: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_destroy'; 
+function QTreeWidgetItem_create(strings: QStringListH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create2';
+function QTreeWidgetItem_create(view: QTreeWidgetH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create3';
+function QTreeWidgetItem_create(view: QTreeWidgetH; strings: QStringListH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create4';
+function QTreeWidgetItem_create(view: QTreeWidgetH; after: QTreeWidgetItemH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create5';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create6';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; strings: QStringListH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create7';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; after: QTreeWidgetItemH; _type: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create8';
+function QTreeWidgetItem_create(other: QTreeWidgetItemH): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_create9';
+function QTreeWidgetItem_clone(handle: QTreeWidgetItemH): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_clone';
+function QTreeWidgetItem_treeWidget(handle: QTreeWidgetItemH): QTreeWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_treeWidget';
+function QTreeWidgetItem_flags(handle: QTreeWidgetItemH): QtItemFlags; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_flags';
+procedure QTreeWidgetItem_setFlags(handle: QTreeWidgetItemH; flags: QtItemFlags); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setFlags';
+procedure QTreeWidgetItem_text(handle: QTreeWidgetItemH; retval: PWideString; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_text';
+procedure QTreeWidgetItem_setText(handle: QTreeWidgetItemH; column: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setText';
+procedure QTreeWidgetItem_icon(handle: QTreeWidgetItemH; retval: QIconH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_icon';
+procedure QTreeWidgetItem_setIcon(handle: QTreeWidgetItemH; column: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setIcon';
+procedure QTreeWidgetItem_statusTip(handle: QTreeWidgetItemH; retval: PWideString; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_statusTip';
+procedure QTreeWidgetItem_setStatusTip(handle: QTreeWidgetItemH; column: Integer; statusTip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setStatusTip';
+procedure QTreeWidgetItem_toolTip(handle: QTreeWidgetItemH; retval: PWideString; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_toolTip';
+procedure QTreeWidgetItem_setToolTip(handle: QTreeWidgetItemH; column: Integer; toolTip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setToolTip';
+procedure QTreeWidgetItem_whatsThis(handle: QTreeWidgetItemH; retval: PWideString; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_whatsThis';
+procedure QTreeWidgetItem_setWhatsThis(handle: QTreeWidgetItemH; column: Integer; whatsThis: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setWhatsThis';
+procedure QTreeWidgetItem_font(handle: QTreeWidgetItemH; retval: QFontH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_font';
+procedure QTreeWidgetItem_setFont(handle: QTreeWidgetItemH; column: Integer; font: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setFont';
+function QTreeWidgetItem_textAlignment(handle: QTreeWidgetItemH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_textAlignment';
+procedure QTreeWidgetItem_setTextAlignment(handle: QTreeWidgetItemH; column: Integer; alignment: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setTextAlignment';
+procedure QTreeWidgetItem_backgroundColor(handle: QTreeWidgetItemH; retval: QColorH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_backgroundColor';
+procedure QTreeWidgetItem_setBackgroundColor(handle: QTreeWidgetItemH; column: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setBackgroundColor';
+procedure QTreeWidgetItem_textColor(handle: QTreeWidgetItemH; retval: QColorH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_textColor';
+procedure QTreeWidgetItem_setTextColor(handle: QTreeWidgetItemH; column: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setTextColor';
+function QTreeWidgetItem_checkState(handle: QTreeWidgetItemH; column: Integer): QtCheckState; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_checkState';
+procedure QTreeWidgetItem_setCheckState(handle: QTreeWidgetItemH; column: Integer; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setCheckState';
+procedure QTreeWidgetItem_sizeHint(handle: QTreeWidgetItemH; retval: PSize; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_sizeHint';
+procedure QTreeWidgetItem_setSizeHint(handle: QTreeWidgetItemH; column: Integer; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setSizeHint';
+procedure QTreeWidgetItem_read(handle: QTreeWidgetItemH; _in: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_read';
+procedure QTreeWidgetItem_write(handle: QTreeWidgetItemH; _out: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_write';
+function QTreeWidgetItem_parent(handle: QTreeWidgetItemH): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_parent';
+function QTreeWidgetItem_child(handle: QTreeWidgetItemH; index: Integer): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_child';
+function QTreeWidgetItem_childCount(handle: QTreeWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_childCount';
+function QTreeWidgetItem_columnCount(handle: QTreeWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_columnCount';
+function QTreeWidgetItem_indexOfChild(handle: QTreeWidgetItemH; child: QTreeWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_indexOfChild';
+procedure QTreeWidgetItem_addChild(handle: QTreeWidgetItemH; child: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_addChild';
+procedure QTreeWidgetItem_insertChild(handle: QTreeWidgetItemH; index: Integer; child: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_insertChild';
+function QTreeWidgetItem_takeChild(handle: QTreeWidgetItemH; index: Integer): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_takeChild';
+procedure QTreeWidgetItem_addChildren(handle: QTreeWidgetItemH; children: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_addChildren';
+procedure QTreeWidgetItem_insertChildren(handle: QTreeWidgetItemH; index: Integer; children: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_insertChildren';
+procedure QTreeWidgetItem_takeChildren(handle: QTreeWidgetItemH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_takeChildren';
+function QTreeWidgetItem_type(handle: QTreeWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_type';
+
+function QTreeWidget_create(parent: QWidgetH = nil): QTreeWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_create';
+procedure QTreeWidget_destroy(handle: QTreeWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_destroy'; 
+function QTreeWidget_columnCount(handle: QTreeWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_columnCount';
+procedure QTreeWidget_setColumnCount(handle: QTreeWidgetH; columns: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setColumnCount';
+function QTreeWidget_topLevelItem(handle: QTreeWidgetH; index: Integer): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_topLevelItem';
+function QTreeWidget_topLevelItemCount(handle: QTreeWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_topLevelItemCount';
+procedure QTreeWidget_insertTopLevelItem(handle: QTreeWidgetH; index: Integer; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_insertTopLevelItem';
+procedure QTreeWidget_addTopLevelItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_addTopLevelItem';
+function QTreeWidget_takeTopLevelItem(handle: QTreeWidgetH; index: Integer): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_takeTopLevelItem';
+function QTreeWidget_indexOfTopLevelItem(handle: QTreeWidgetH; item: QTreeWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_indexOfTopLevelItem';
+procedure QTreeWidget_insertTopLevelItems(handle: QTreeWidgetH; index: Integer; items: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_insertTopLevelItems';
+procedure QTreeWidget_addTopLevelItems(handle: QTreeWidgetH; items: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_addTopLevelItems';
+function QTreeWidget_headerItem(handle: QTreeWidgetH): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_headerItem';
+procedure QTreeWidget_setHeaderItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setHeaderItem';
+procedure QTreeWidget_setHeaderLabels(handle: QTreeWidgetH; labels: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setHeaderLabels';
+function QTreeWidget_currentItem(handle: QTreeWidgetH): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_currentItem';
+function QTreeWidget_currentColumn(handle: QTreeWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_currentColumn';
+procedure QTreeWidget_setCurrentItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setCurrentItem';
+procedure QTreeWidget_setCurrentItem(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setCurrentItem2';
+function QTreeWidget_itemAt(handle: QTreeWidgetH; p: PPoint): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_itemAt';
+function QTreeWidget_itemAt(handle: QTreeWidgetH; x: Integer; y: Integer): QTreeWidgetItemH; overload; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_itemAt2';
+procedure QTreeWidget_visualItemRect(handle: QTreeWidgetH; retval: PRect; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_visualItemRect';
+function QTreeWidget_sortColumn(handle: QTreeWidgetH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_sortColumn';
+procedure QTreeWidget_sortItems(handle: QTreeWidgetH; column: Integer; order: QtSortOrder); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_sortItems';
+procedure QTreeWidget_setSortingEnabled(handle: QTreeWidgetH; enable: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setSortingEnabled';
+function QTreeWidget_isSortingEnabled(handle: QTreeWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_isSortingEnabled';
+procedure QTreeWidget_editItem(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_editItem';
+procedure QTreeWidget_openPersistentEditor(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_openPersistentEditor';
+procedure QTreeWidget_closePersistentEditor(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_closePersistentEditor';
+function QTreeWidget_itemWidget(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer): QWidgetH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_itemWidget';
+procedure QTreeWidget_setItemWidget(handle: QTreeWidgetH; item: QTreeWidgetItemH; column: Integer; widget: QWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setItemWidget';
+function QTreeWidget_isItemSelected(handle: QTreeWidgetH; item: QTreeWidgetItemH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_isItemSelected';
+procedure QTreeWidget_setItemSelected(handle: QTreeWidgetH; item: QTreeWidgetItemH; select: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setItemSelected';
+procedure QTreeWidget_selectedItems(handle: QTreeWidgetH; retval: PIntArray); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_selectedItems';
+procedure QTreeWidget_findItems(handle: QTreeWidgetH; retval: PIntArray; text: PWideString; flags: QtMatchFlags; column: Integer = 0); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_findItems';
+function QTreeWidget_isItemHidden(handle: QTreeWidgetH; item: QTreeWidgetItemH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_isItemHidden';
+procedure QTreeWidget_setItemHidden(handle: QTreeWidgetH; item: QTreeWidgetItemH; hide: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setItemHidden';
+function QTreeWidget_isItemExpanded(handle: QTreeWidgetH; item: QTreeWidgetItemH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_isItemExpanded';
+procedure QTreeWidget_setItemExpanded(handle: QTreeWidgetH; item: QTreeWidgetItemH; expand: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_setItemExpanded';
+procedure QTreeWidget_scrollToItem(handle: QTreeWidgetH; item: QTreeWidgetItemH; hint: QAbstractItemViewScrollHint); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_scrollToItem';
+procedure QTreeWidget_expandItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_expandItem';
+procedure QTreeWidget_collapseItem(handle: QTreeWidgetH; item: QTreeWidgetItemH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_collapseItem';
+procedure QTreeWidget_clear(handle: QTreeWidgetH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_clear';
+
+
+type
+  QTreeWidget_itemPressed_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemClicked_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemDoubleClicked_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemActivated_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemEntered_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemChanged_Event = procedure (item: QTreeWidgetItemH; column: Integer) of object cdecl;
+  QTreeWidget_itemExpanded_Event = procedure (item: QTreeWidgetItemH) of object cdecl;
+  QTreeWidget_itemCollapsed_Event = procedure (item: QTreeWidgetItemH) of object cdecl;
+  QTreeWidget_currentItemChanged_Event = procedure (current: QTreeWidgetItemH; previous: QTreeWidgetItemH) of object cdecl;
+  QTreeWidget_itemSelectionChanged_Event = procedure () of object cdecl;
 
 
 
@@ -4349,6 +5143,13 @@ procedure QDialog_done(handle: QDialogH; p1: Integer); cdecl; external QtShareNa
 procedure QDialog_accept(handle: QDialogH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_accept';
 procedure QDialog_reject(handle: QDialogH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_reject';
 procedure QDialog_showExtension(handle: QDialogH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QDialog_showExtension';
+
+
+type
+  QDialog_finished_Event = procedure (result: Integer) of object cdecl;
+  QDialog_accepted_Event = procedure () of object cdecl;
+  QDialog_rejected_Event = procedure () of object cdecl;
+
 
 procedure QFontDialog_getFont(retval: QFontH; ok: PBoolean; def: QFontH; parent: QWidgetH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QFontDialog_getFont';
 procedure QFontDialog_getFont(retval: QFontH; ok: PBoolean; parent: QWidgetH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QFontDialog_getFont2';
@@ -4409,6 +5210,109 @@ function QInputDialog_getInteger(parent: QWidgetH; title: PWideString; _label: P
 function QInputDialog_getDouble(parent: QWidgetH; title: PWideString; _label: PWideString; value: Double = 0; minValue: Double = -2147483647; maxValue: Double = 2147483647; decimals: Integer = 1; ok: PBoolean = 0; f: QtWindowFlags = 0): Double; cdecl; external QtShareName name QtNamePrefix + 'QInputDialog_getDouble';
 procedure QInputDialog_getItem(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; list: QStringListH; current: Integer = 0; editable: Boolean = True; ok: PBoolean = 0; f: QtWindowFlags = 0); cdecl; external QtShareName name QtNamePrefix + 'QInputDialog_getItem';
 
+procedure QColorDialog_getColor(retval: QColorH; init: QColorH; parent: QWidgetH = nil); cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_getColor';
+function QColorDialog_getRgba(p1: QRgb; ok: PBoolean = 0; parent: QWidgetH = nil): QRgb; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_getRgba';
+function QColorDialog_customCount(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_customCount';
+function QColorDialog_customColor(p1: Integer): QRgb; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_customColor';
+procedure QColorDialog_setCustomColor(p1: Integer; p2: QRgb); cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_setCustomColor';
+procedure QColorDialog_setStandardColor(p1: Integer; p2: QRgb); cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_setStandardColor';
+
+
+type
+  QFileDialogViewMode = ( // QFileDialog::ViewMode (1)
+    QFileDialogDetail, QFileDialogList );
+
+  QFileDialogFileMode = ( // QFileDialog::FileMode (1)
+    QFileDialogAnyFile, QFileDialogExistingFile, QFileDialogDirectory, QFileDialogExistingFiles, QFileDialogDirectoryOnly );
+
+  QFileDialogAcceptMode = ( // QFileDialog::AcceptMode (1)
+    QFileDialogAcceptOpen, QFileDialogAcceptSave );
+
+  QFileDialogDialogLabel = ( // QFileDialog::DialogLabel (1)
+    QFileDialogLookIn, QFileDialogFileName, QFileDialogFileType, QFileDialogAccept, QFileDialogReject );
+
+type
+  QFileDialogOption = cardinal; // QFileDialog::Option
+  QFileDialogOptions = QFileDialogOption; //QFlags<> (3)
+const
+  QFileDialogShowDirsOnly =   $01;
+  QFileDialogDontResolveSymlinks =   $02;
+  QFileDialogDontConfirmOverwrite =   $04;
+  QFileDialogDontUseSheet =   $08;
+  QFileDialogDontUseNativeDialog =   $10;
+
+function QFileDialog_create(parent: QWidgetH; f: QtWindowFlags): QFileDialogH; overload; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_create';
+procedure QFileDialog_destroy(handle: QFileDialogH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_destroy'; 
+function QFileDialog_create(parent: QWidgetH = nil; caption: PWideString = nil; directory: PWideString = nil; filter: PWideString = nil): QFileDialogH; overload; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_create2';
+procedure QFileDialog_setDirectory(handle: QFileDialogH; directory: PWideString); overload; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setDirectory';
+procedure QFileDialog_setDirectory(handle: QFileDialogH; directory: QDirH); overload; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setDirectory2';
+procedure QFileDialog_directory(handle: QFileDialogH; retval: QDirH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_directory';
+procedure QFileDialog_selectFile(handle: QFileDialogH; filename: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_selectFile';
+procedure QFileDialog_selectedFiles(handle: QFileDialogH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_selectedFiles';
+procedure QFileDialog_setFilter(handle: QFileDialogH; filter: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setFilter';
+procedure QFileDialog_setFilters(handle: QFileDialogH; filters: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setFilters';
+procedure QFileDialog_filters(handle: QFileDialogH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_filters';
+procedure QFileDialog_selectFilter(handle: QFileDialogH; filter: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_selectFilter';
+procedure QFileDialog_selectedFilter(handle: QFileDialogH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_selectedFilter';
+procedure QFileDialog_setViewMode(handle: QFileDialogH; mode: QFileDialogViewMode); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setViewMode';
+function QFileDialog_viewMode(handle: QFileDialogH): QFileDialogViewMode; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_viewMode';
+procedure QFileDialog_setFileMode(handle: QFileDialogH; mode: QFileDialogFileMode); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setFileMode';
+function QFileDialog_fileMode(handle: QFileDialogH): QFileDialogFileMode; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_fileMode';
+procedure QFileDialog_setAcceptMode(handle: QFileDialogH; mode: QFileDialogAcceptMode); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setAcceptMode';
+function QFileDialog_acceptMode(handle: QFileDialogH): QFileDialogAcceptMode; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_acceptMode';
+procedure QFileDialog_setReadOnly(handle: QFileDialogH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setReadOnly';
+function QFileDialog_isReadOnly(handle: QFileDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_isReadOnly';
+procedure QFileDialog_setResolveSymlinks(handle: QFileDialogH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setResolveSymlinks';
+function QFileDialog_resolveSymlinks(handle: QFileDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_resolveSymlinks';
+procedure QFileDialog_setConfirmOverwrite(handle: QFileDialogH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setConfirmOverwrite';
+function QFileDialog_confirmOverwrite(handle: QFileDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_confirmOverwrite';
+procedure QFileDialog_setDefaultSuffix(handle: QFileDialogH; suffix: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setDefaultSuffix';
+procedure QFileDialog_defaultSuffix(handle: QFileDialogH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_defaultSuffix';
+procedure QFileDialog_setHistory(handle: QFileDialogH; paths: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setHistory';
+procedure QFileDialog_history(handle: QFileDialogH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_history';
+procedure QFileDialog_setItemDelegate(handle: QFileDialogH; delegate: QAbstractItemDelegateH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setItemDelegate';
+function QFileDialog_itemDelegate(handle: QFileDialogH): QAbstractItemDelegateH; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_itemDelegate';
+procedure QFileDialog_setIconProvider(handle: QFileDialogH; provider: QFileIconProviderH); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setIconProvider';
+function QFileDialog_iconProvider(handle: QFileDialogH): QFileIconProviderH; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_iconProvider';
+procedure QFileDialog_setLabelText(handle: QFileDialogH; _label: QFileDialogDialogLabel; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setLabelText';
+procedure QFileDialog_labelText(handle: QFileDialogH; retval: PWideString; _label: QFileDialogDialogLabel); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_labelText';
+procedure QFileDialog_getOpenFileName(retval: PWideString; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileName';
+procedure QFileDialog_getSaveFileName(retval: PWideString; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getSaveFileName';
+procedure QFileDialog_getExistingDirectory(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; options: QFileDialogOptions = QFileDialogShowDirsOnly); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getExistingDirectory';
+procedure QFileDialog_getOpenFileNames(retval: QStringListH; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileNames';
+
+function QProgressDialog_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QProgressDialogH; overload; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_create';
+procedure QProgressDialog_destroy(handle: QProgressDialogH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_destroy'; 
+function QProgressDialog_create(labelText: PWideString; cancelButtonText: PWideString; minimum: Integer; maximum: Integer; parent: QWidgetH = nil; f: QtWindowFlags = 0): QProgressDialogH; overload; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_create2';
+procedure QProgressDialog_setLabel(handle: QProgressDialogH; _label: QLabelH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setLabel';
+procedure QProgressDialog_setCancelButton(handle: QProgressDialogH; button: QPushButtonH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setCancelButton';
+procedure QProgressDialog_setBar(handle: QProgressDialogH; bar: QProgressBarH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setBar';
+function QProgressDialog_wasCanceled(handle: QProgressDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_wasCanceled';
+function QProgressDialog_minimum(handle: QProgressDialogH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_minimum';
+function QProgressDialog_maximum(handle: QProgressDialogH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_maximum';
+procedure QProgressDialog_setRange(handle: QProgressDialogH; minimum: Integer; maximum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setRange';
+function QProgressDialog_value(handle: QProgressDialogH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_value';
+procedure QProgressDialog_sizeHint(handle: QProgressDialogH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_sizeHint';
+procedure QProgressDialog_labelText(handle: QProgressDialogH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_labelText';
+function QProgressDialog_minimumDuration(handle: QProgressDialogH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_minimumDuration';
+procedure QProgressDialog_setAutoReset(handle: QProgressDialogH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setAutoReset';
+function QProgressDialog_autoReset(handle: QProgressDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_autoReset';
+procedure QProgressDialog_setAutoClose(handle: QProgressDialogH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setAutoClose';
+function QProgressDialog_autoClose(handle: QProgressDialogH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_autoClose';
+procedure QProgressDialog_cancel(handle: QProgressDialogH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_cancel';
+procedure QProgressDialog_reset(handle: QProgressDialogH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_reset';
+procedure QProgressDialog_setMaximum(handle: QProgressDialogH; maximum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setMaximum';
+procedure QProgressDialog_setMinimum(handle: QProgressDialogH; minimum: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setMinimum';
+procedure QProgressDialog_setValue(handle: QProgressDialogH; progress: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setValue';
+procedure QProgressDialog_setLabelText(handle: QProgressDialogH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setLabelText';
+procedure QProgressDialog_setCancelButtonText(handle: QProgressDialogH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setCancelButtonText';
+procedure QProgressDialog_setMinimumDuration(handle: QProgressDialogH; ms: Integer); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_setMinimumDuration';
+
+
+type
+  QProgressDialog_canceled_Event = procedure () of object cdecl;
+
+
 type
   QIODeviceOpenModeFlag = cardinal; //  QIODevice::OpenModeFlag (4)
   QIODeviceOpenMode = QIODeviceOpenModeFlag; // QFlags<>
@@ -4448,6 +5352,8 @@ procedure QIODevice_readLine(handle: QIODeviceH; retval: QByteArrayH; maxlen: qi
 function QIODevice_canReadLine(handle: QIODeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_canReadLine';
 function QIODevice_write(handle: QIODeviceH; data: PAnsiChar; len: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write';
 function QIODevice_write(handle: QIODeviceH; data: QByteArrayH): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write2';
+function QIODevice_peek(handle: QIODeviceH; data: PAnsiChar; maxlen: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek';
+procedure QIODevice_peek(handle: QIODeviceH; retval: QByteArrayH; maxlen: qint64); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek2';
 function QIODevice_waitForReadyRead(handle: QIODeviceH; msecs: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_waitForReadyRead';
 function QIODevice_waitForBytesWritten(handle: QIODeviceH; msecs: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_waitForBytesWritten';
 procedure QIODevice_ungetChar(handle: QIODeviceH; c: char); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_ungetChar';
@@ -4479,9 +5385,14 @@ procedure QCoreApplication_hook_destroy(handle: QCoreApplication_hookH); cdecl; 
 procedure QCoreApplication_hook_hook_aboutToQuit(handle: QCoreApplication_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_hook_hook_aboutToQuit';
 procedure QCoreApplication_hook_hook_unixSignal(handle: QCoreApplication_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QCoreApplication_hook_hook_unixSignal';
 
+function QTimer_hook_create(handle: QObjectH): QTimer_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTimer_hook_create';
+procedure QTimer_hook_destroy(handle: QTimer_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTimer_hook_destroy'; 
+procedure QTimer_hook_hook_timeout(handle: QTimer_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTimer_hook_hook_timeout';
+
 function QApplication_hook_create(handle: QObjectH): QApplication_hookH; cdecl; external QtShareName name QtNamePrefix + 'QApplication_hook_create';
 procedure QApplication_hook_destroy(handle: QApplication_hookH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_hook_destroy'; 
 procedure QApplication_hook_hook_lastWindowClosed(handle: QApplication_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_hook_hook_lastWindowClosed';
+procedure QApplication_hook_hook_focusChanged(handle: QApplication_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QApplication_hook_hook_focusChanged';
 
 function QWidget_hook_create(handle: QObjectH): QWidget_hookH; cdecl; external QtShareName name QtNamePrefix + 'QWidget_hook_create';
 procedure QWidget_hook_destroy(handle: QWidget_hookH); cdecl; external QtShareName name QtNamePrefix + 'QWidget_hook_destroy'; 
@@ -4494,6 +5405,16 @@ procedure QAction_hook_hook_triggered(handle: QAction_hookH; hook: QHookH); cdec
 procedure QAction_hook_hook_triggered2(handle: QAction_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QAction_hook_hook_triggered2';
 procedure QAction_hook_hook_hovered(handle: QAction_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QAction_hook_hook_hovered';
 procedure QAction_hook_hook_toggled(handle: QAction_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QAction_hook_hook_toggled';
+
+function QClipboard_hook_create(handle: QObjectH): QClipboard_hookH; cdecl; external QtShareName name QtNamePrefix + 'QClipboard_hook_create';
+procedure QClipboard_hook_destroy(handle: QClipboard_hookH); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_hook_destroy'; 
+procedure QClipboard_hook_hook_selectionChanged(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_hook_hook_selectionChanged';
+procedure QClipboard_hook_hook_dataChanged(handle: QClipboard_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QClipboard_hook_hook_dataChanged';
+
+function QDesktopWidget_hook_create(handle: QObjectH): QDesktopWidget_hookH; cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_hook_create';
+procedure QDesktopWidget_hook_destroy(handle: QDesktopWidget_hookH); cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_hook_destroy'; 
+procedure QDesktopWidget_hook_hook_resized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_hook_hook_resized';
+procedure QDesktopWidget_hook_hook_workAreaResized(handle: QDesktopWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QDesktopWidget_hook_hook_workAreaResized';
 
 function QFrame_hook_create(handle: QObjectH): QFrame_hookH; cdecl; external QtShareName name QtNamePrefix + 'QFrame_hook_create';
 procedure QFrame_hook_destroy(handle: QFrame_hookH); cdecl; external QtShareName name QtNamePrefix + 'QFrame_hook_destroy'; 
@@ -4527,6 +5448,7 @@ procedure QMenuBar_hook_hook_hovered(handle: QMenuBar_hookH; hook: QHookH); cdec
 function QButtonGroup_hook_create(handle: QObjectH): QButtonGroup_hookH; cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_hook_create';
 procedure QButtonGroup_hook_destroy(handle: QButtonGroup_hookH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_hook_destroy'; 
 procedure QButtonGroup_hook_hook_buttonClicked(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_hook_hook_buttonClicked';
+procedure QButtonGroup_hook_hook_buttonClicked2(handle: QButtonGroup_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QButtonGroup_hook_hook_buttonClicked2';
 
 function QAbstractButton_hook_create(handle: QObjectH): QAbstractButton_hookH; cdecl; external QtShareName name QtNamePrefix + 'QAbstractButton_hook_create';
 procedure QAbstractButton_hook_destroy(handle: QAbstractButton_hookH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractButton_hook_destroy'; 
@@ -4608,6 +5530,8 @@ procedure QComboBox_hook_hook_activated(handle: QComboBox_hookH; hook: QHookH); 
 procedure QComboBox_hook_hook_activated2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hook_hook_activated2';
 procedure QComboBox_hook_hook_highlighted(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hook_hook_highlighted';
 procedure QComboBox_hook_hook_highlighted2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hook_hook_highlighted2';
+procedure QComboBox_hook_hook_currentIndexChanged(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hook_hook_currentIndexChanged';
+procedure QComboBox_hook_hook_currentIndexChanged2(handle: QComboBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hook_hook_currentIndexChanged2';
 
 function QCheckBox_hook_create(handle: QObjectH): QCheckBox_hookH; cdecl; external QtShareName name QtNamePrefix + 'QCheckBox_hook_create';
 procedure QCheckBox_hook_destroy(handle: QCheckBox_hookH); cdecl; external QtShareName name QtNamePrefix + 'QCheckBox_hook_destroy'; 
@@ -4627,6 +5551,34 @@ procedure QTextBrowser_hook_hook_anchorClicked(handle: QTextBrowser_hookH; hook:
 
 function QLabel_hook_create(handle: QObjectH): QLabel_hookH; cdecl; external QtShareName name QtNamePrefix + 'QLabel_hook_create';
 procedure QLabel_hook_destroy(handle: QLabel_hookH); cdecl; external QtShareName name QtNamePrefix + 'QLabel_hook_destroy'; 
+
+function QGroupBox_hook_create(handle: QObjectH): QGroupBox_hookH; cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_hook_create';
+procedure QGroupBox_hook_destroy(handle: QGroupBox_hookH); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_hook_destroy'; 
+procedure QGroupBox_hook_hook_toggled(handle: QGroupBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QGroupBox_hook_hook_toggled';
+
+function QTabWidget_hook_create(handle: QObjectH): QTabWidget_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_hook_create';
+procedure QTabWidget_hook_destroy(handle: QTabWidget_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_hook_destroy'; 
+procedure QTabWidget_hook_hook_currentChanged(handle: QTabWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTabWidget_hook_hook_currentChanged';
+
+function QTabBar_hook_create(handle: QObjectH): QTabBar_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_hook_create';
+procedure QTabBar_hook_destroy(handle: QTabBar_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_hook_destroy'; 
+procedure QTabBar_hook_hook_currentChanged(handle: QTabBar_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_hook_hook_currentChanged';
+
+function QProgressBar_hook_create(handle: QObjectH): QProgressBar_hookH; cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_hook_create';
+procedure QProgressBar_hook_destroy(handle: QProgressBar_hookH); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_hook_destroy'; 
+procedure QProgressBar_hook_hook_valueChanged(handle: QProgressBar_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QProgressBar_hook_hook_valueChanged';
+
+function QStatusBar_hook_create(handle: QObjectH): QStatusBar_hookH; cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_hook_create';
+procedure QStatusBar_hook_destroy(handle: QStatusBar_hookH); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_hook_destroy'; 
+procedure QStatusBar_hook_hook_messageChanged(handle: QStatusBar_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QStatusBar_hook_hook_messageChanged';
+
+function QToolBox_hook_create(handle: QObjectH): QToolBox_hookH; cdecl; external QtShareName name QtNamePrefix + 'QToolBox_hook_create';
+procedure QToolBox_hook_destroy(handle: QToolBox_hookH); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_hook_destroy'; 
+procedure QToolBox_hook_hook_currentChanged(handle: QToolBox_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QToolBox_hook_hook_currentChanged';
+
+function QToolButton_hook_create(handle: QObjectH): QToolButton_hookH; cdecl; external QtShareName name QtNamePrefix + 'QToolButton_hook_create';
+procedure QToolButton_hook_destroy(handle: QToolButton_hookH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_hook_destroy'; 
+procedure QToolButton_hook_hook_triggered(handle: QToolButton_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QToolButton_hook_hook_triggered';
 
 function QAbstractItemView_hook_create(handle: QObjectH): QAbstractItemView_hookH; cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_hook_create';
 procedure QAbstractItemView_hook_destroy(handle: QAbstractItemView_hookH); cdecl; external QtShareName name QtNamePrefix + 'QAbstractItemView_hook_destroy'; 
@@ -4656,6 +5608,37 @@ procedure QListWidget_hook_hook_currentTextChanged(handle: QListWidget_hookH; ho
 procedure QListWidget_hook_hook_currentRowChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_hook_hook_currentRowChanged';
 procedure QListWidget_hook_hook_itemSelectionChanged(handle: QListWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QListWidget_hook_hook_itemSelectionChanged';
 
+function QTreeView_hook_create(handle: QObjectH): QTreeView_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTreeView_hook_create';
+procedure QTreeView_hook_destroy(handle: QTreeView_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_hook_destroy'; 
+procedure QTreeView_hook_hook_expanded(handle: QTreeView_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_hook_hook_expanded';
+procedure QTreeView_hook_hook_collapsed(handle: QTreeView_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeView_hook_hook_collapsed';
+
+function QTreeWidgetItem_hook_create(handle: QObjectH): QTreeWidgetItem_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_hook_create';
+procedure QTreeWidgetItem_hook_destroy(handle: QTreeWidgetItem_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_hook_destroy'; 
+
+function QTreeWidget_hook_create(handle: QObjectH): QTreeWidget_hookH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_create';
+procedure QTreeWidget_hook_destroy(handle: QTreeWidget_hookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_destroy'; 
+procedure QTreeWidget_hook_hook_itemPressed(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemPressed';
+procedure QTreeWidget_hook_hook_itemClicked(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemClicked';
+procedure QTreeWidget_hook_hook_itemDoubleClicked(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemDoubleClicked';
+procedure QTreeWidget_hook_hook_itemActivated(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemActivated';
+procedure QTreeWidget_hook_hook_itemEntered(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemEntered';
+procedure QTreeWidget_hook_hook_itemChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemChanged';
+procedure QTreeWidget_hook_hook_itemExpanded(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemExpanded';
+procedure QTreeWidget_hook_hook_itemCollapsed(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemCollapsed';
+procedure QTreeWidget_hook_hook_currentItemChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_currentItemChanged';
+procedure QTreeWidget_hook_hook_itemSelectionChanged(handle: QTreeWidget_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidget_hook_hook_itemSelectionChanged';
+
+function QDialog_hook_create(handle: QObjectH): QDialog_hookH; cdecl; external QtShareName name QtNamePrefix + 'QDialog_hook_create';
+procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_hook_destroy'; 
+procedure QDialog_hook_hook_finished(handle: QDialog_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_hook_hook_finished';
+procedure QDialog_hook_hook_accepted(handle: QDialog_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_hook_hook_accepted';
+procedure QDialog_hook_hook_rejected(handle: QDialog_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QDialog_hook_hook_rejected';
+
+function QProgressDialog_hook_create(handle: QObjectH): QProgressDialog_hookH; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_hook_create';
+procedure QProgressDialog_hook_destroy(handle: QProgressDialog_hookH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_hook_destroy'; 
+procedure QProgressDialog_hook_hook_canceled(handle: QProgressDialog_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_hook_hook_canceled';
+
 function QIODevice_hook_create(handle: QObjectH): QIODevice_hookH; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_hook_create';
 procedure QIODevice_hook_destroy(handle: QIODevice_hookH); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_hook_destroy'; 
 procedure QIODevice_hook_hook_readyRead(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_hook_hook_readyRead';
@@ -4669,7 +5652,7 @@ procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtShareNa
                        
 
 implementation
-uses SysUtils;
+uses SysUtils,Libc;
 
 
 // AnsiString Helpers
@@ -4765,7 +5748,7 @@ InitializePIntArray(@GetIntsPtr,
                     @GetIntsLength, 
                     @SetIntsLength);
 
-
+fedisableexcept(FE_ALL_EXCEPT);
 end.
 
 

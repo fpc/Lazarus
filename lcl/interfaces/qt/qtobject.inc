@@ -1,3 +1,4 @@
+{%MainUnit qtint.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -72,11 +73,25 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.AppInit
+  Params:  None
+  Returns: Nothing
+
+  Initializes the application
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
   App := QApplication_Create(@argc, argv);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWidgetSet.AppRun
+  Params:  None
+  Returns: Nothing
+
+  Enter the main message loop
+ ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
   QApplication_Exec;

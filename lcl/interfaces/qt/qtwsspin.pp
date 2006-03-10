@@ -27,24 +27,24 @@ unit QtWSSpin;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  Spin,
-////////////////////////////////////////////////////
+  // Bindings
+  qt4, qtprivate,
+  // LCL
+  Spin, SysUtils, Controls, LCLType, Forms,
+  // Widgetset
   WSSpin, WSLCLClasses;
 
 type
 
   { TQtWSCustomFloatSpinEdit }
 
-  TQtWSCustomSpinEdit = class(TWSCustomFloatSpinEdit)
+  TQtWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSFloatSpinEdit }
@@ -58,6 +58,37 @@ type
 
 implementation
 
+{ TQtWSCustomFloatSpinEdit }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomFloatSpinEdit.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  QtSpinBox: TQtSpinBox;
+begin
+  QtSpinBox := TQtSpinBox.Create(AWinControl, AParams);
+
+//  SetSlots(QtSpinBox);
+
+  Result := THandle(QtSpinBox);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomFloatSpinEdit.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtSpinBox(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -66,7 +97,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomFloatSpinEdit, TQtWSCustomFloatSpinEdit);
+  RegisterWSComponent(TCustomFloatSpinEdit, TQtWSCustomFloatSpinEdit);
 //  RegisterWSComponent(TFloatSpinEdit, TQtWSFloatSpinEdit);
 ////////////////////////////////////////////////////
 end.

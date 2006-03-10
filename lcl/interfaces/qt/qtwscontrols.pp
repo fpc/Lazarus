@@ -27,15 +27,11 @@ unit QtWSControls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
+  // Bindings
   qt4, qtprivate,
-  Controls,
-////////////////////////////////////////////////////
+  // LCL
+  Controls, Forms, LCLType,
+  // Widgetset
   WSControls, WSLCLClasses;
 
 type
@@ -63,9 +59,15 @@ type
   protected
   public
     class procedure SetSlots(const AWidget: QWidgetH);
-
-    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
-    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
+  public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+  public
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
 
   { TQtWSGraphicControl }
@@ -104,29 +106,55 @@ implementation
  ------------------------------------------------------------------------------}
 procedure TQtWSWinControl.SetSlots(const AWidget: QWidgetH);
 begin
-//  QAbstractButton_hook_hook_clicked
-
-{  GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_FOCUS, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEMOVE, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_LBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_RBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);}
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWSWinControl.SetPos
+  Method: TQtWSWinControl.CreateHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  QtWidget: TQtWidget;
+begin
+  QtWidget := TQtWidget.Create(AWinControl, AParams);
+
+  SetSlots(QtWidget.Widget);
+
+  Result := THandle(QtWidget);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.DestroyHandle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtWidget(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetBounds
+  Params:  AWinControl - the calling object
+           ALeft, ATop - Position
+           AWidth, AHeight - Size
+  Returns: Nothing
+
+  Sets the position and size of a widget
+ ------------------------------------------------------------------------------}
+procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  QWidget_move(TQtWidget(AWinControl.Handle).Widget, ALeft, ATop);
+  QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetPos
   Params:  AWinControl - the calling object
            ALeft, ATop - Position
   Returns: Nothing
@@ -151,6 +179,32 @@ class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 begin
   QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.ShowHide
+  Params:  AWinControl     - the calling object
+
+  Returns: Nothing
+
+  Shows or hides a widget.
+ ------------------------------------------------------------------------------}
+procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
+begin
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+
+  if AWinControl.HandleObjectShouldBeVisible then
+   QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, True)
+  else QWidget_setVisible(TQtWidget(AWinControl.Handle).Widget, False);
+  
+  {$ifdef VerboseQt}
+    if AWinControl is TForm then WriteLn('Is TForm');
+
+    if AWinControl.Visible then
+     WriteLn('True') else WriteLn('False');
+  {$endif}
 end;
 
 initialization

@@ -27,16 +27,12 @@ unit QtWSForms;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  qt4, SysUtils, Controls, LCLType, Forms,
-  InterfaceBase, qtprivate,
-////////////////////////////////////////////////////
-  WSForms, WSLCLClasses;
+  // Bindings
+  qt4, qtprivate,
+  // LCL
+  SysUtils, Controls, LCLType, Forms,
+  // Widgetset
+  InterfaceBase, WSForms, WSLCLClasses;
 
 type
 
@@ -142,12 +138,9 @@ var
   Method: TMethod;
   Hook : QObject_hookH;
 begin
-  // Inherited Callbacks
-  TQtWSWinControl.SetSlots(QtCustomForm.Widget);
+  // Various Events
 
-  // Various Event
-
-  Hook := QObject_hook_create(QtCustomForm.PaintBox);
+  Hook := QObject_hook_create(QtCustomForm.Widget); // PaintBox
   
   TEventFilterMethod(Method) := QtCustomForm.EventFilter;
   
@@ -159,7 +152,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Creates a Qt From, initializes it according to it´s properties and shows it
+  Creates a Qt Form and initializes it according to it´s properties
  ------------------------------------------------------------------------------}
 class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -170,13 +163,22 @@ begin
 
   SetSlots(QtCustomForm);
 
+  // Required to implement OnPaint event
   QMainWindow_setCentralWidget(QMainWindowH(QtCustomForm.Widget), QtCustomForm.PaintBox);
 
-  QWidget_show(QtCustomForm.Widget);
+  // Accepts keyboard and mouse events
+  QWidget_setFocusPolicy(QtCustomForm.Widget, QtStrongFocus);
 
   Result := THandle(QtCustomForm);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Destroys a Qt Form and releases allocated memory and resources
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtCustomForm(AWinControl.Handle).Free;

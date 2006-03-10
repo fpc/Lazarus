@@ -22,7 +22,7 @@
 }
 unit QtWSStdCtrls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -54,6 +54,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSGroupBox }
@@ -70,6 +73,26 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+  public
+{    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
+    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+{    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+
+    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
+      NewTraverseList: boolean); virtual;
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
+    class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
+{    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;}
+
+    class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+//    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TQtWSComboBox }
@@ -105,6 +128,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+  public
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -129,6 +153,25 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+  public
+//    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
+//    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
+//    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
+//    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); virtual;
+  public
+{    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;}
   end;
 
   { TQtWSEdit }
@@ -195,6 +238,7 @@ type
 
   TQtWSRadioButton = class(TWSRadioButton)
   private
+    class procedure SetSlots(const QtRadioButton: TQtRadioButton);
   protected
   public
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -247,21 +291,11 @@ implementation
 class function TQtWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  Widget: QWidgetH;
-  Str: WideString;
+  QtTextEdit: TQtTextEdit;
 begin
-  // Creates the widget
-  WriteLn('Calling QTextDocument_create');
-  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
-  Widget := QTextEdit_create(@Str, QWidgetH(AWinControl.Parent.Handle));
+  QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
-
-  QWidget_show(Widget);
-
-  Result := THandle(Widget);
+  Result := THandle(QtTextEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -271,7 +305,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.DestroyHandle(const AWinControl: TWinControl);
 begin
-  QTextEdit_destroy(QTextEditH(AWinControl.Handle));
+  TQtTextEdit(AWinControl.Handle).Free;
 end;
 
 { TQtWSCustomEdit }
@@ -284,21 +318,11 @@ end;
 class function TQtWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  Widget: QWidgetH;
-  Str: WideString;
+  QtLineEdit: TQtLineEdit;
 begin
-  // Creates the widget
-  WriteLn('Calling QTextDocument_create');
-  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
-  Widget := QTextEdit_create(@Str, QWidgetH(AWinControl.Parent.Handle));
+  QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
-
-  QWidget_show(Widget);
-
-  Result := THandle(Widget);
+  Result := THandle(QtLineEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -308,7 +332,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
-  QTextEdit_destroy(QTextEditH(AWinControl.Handle));
+  TQtLineEdit(AWinControl.Handle).Free;
 end;
 
 { TQtWSStaticText }
@@ -318,7 +342,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtStaticText: TQtStaticText;
@@ -337,7 +361,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWSCustomStaticText.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSCustomStaticText.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtStaticText(AWinControl.Handle).Free;
 
@@ -349,7 +373,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWSCustomStaticText.SetAlignment(
+class procedure TQtWSCustomStaticText.SetAlignment(
   const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
 end;
@@ -386,7 +410,7 @@ end;
 
 { TQtWSCustomCheckBox }
 
-function TQtWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class function TQtWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   case TQtCheckBox(ACustomCheckBox.Handle).CheckState of
    QtPartiallyChecked: Result := cbGrayed;
@@ -396,13 +420,13 @@ begin
   end;
 end;
 
-procedure TQtWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+class procedure TQtWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
 end;
 
-procedure TQtWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+class procedure TQtWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
   case NewState of
    cbGrayed: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtPartiallyChecked);
@@ -412,7 +436,7 @@ begin
   end;
 end;
 
-function TQtWSCustomCheckBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function TQtWSCustomCheckBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   Str: WideString;
 begin
@@ -423,7 +447,7 @@ begin
   Result := True;
 end;
 
-procedure TQtWSCustomCheckBox.SetText(const AWinControl: TWinControl; const AText: String);
+class procedure TQtWSCustomCheckBox.SetText(const AWinControl: TWinControl; const AText: String);
 var
   Str: WideString;
 begin
@@ -442,6 +466,8 @@ begin
 
   QWidget_show(QtCheckBox.Widget);
 
+  QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
+
   Result := THandle(QtCheckBox);
 end;
 
@@ -454,19 +480,57 @@ end;
 
 { TQtWSRadioButton }
 
-function TQtWSRadioButton.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.SetSlots
+  Params:  None
+  Returns: Nothing
+
+  Initializes the events
+ ------------------------------------------------------------------------------}
+class procedure TQtWSRadioButton.SetSlots(const QtRadioButton: TQtRadioButton);
+var
+  Method: TMethod;
+  Hook : QObject_hookH;
+begin
+  // Various Events
+
+  Hook := QObject_hook_create(QtRadioButton.Widget);
+
+  TEventFilterMethod(Method) := QtRadioButton.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.RetrieveState
+  Params:  None
+  Returns: The state of the control
+ ------------------------------------------------------------------------------}
+class function TQtWSRadioButton.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   if TQtAbstractButton(ACustomCheckBox.Handle).isChecked then Result := cbChecked
   else Result := cbUnchecked;
 end;
 
-procedure TQtWSRadioButton.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.SetShortCut
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSRadioButton.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
 end;
 
-procedure TQtWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.SetState
+  Params:  None
+  Returns: Nothing
+
+  Sets the state of the control
+ ------------------------------------------------------------------------------}
+class procedure TQtWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
   case NewState of
    cbUnchecked: TQtAbstractButton(ACustomCheckBox.Handle).setChecked(False);
@@ -474,7 +538,12 @@ begin
   end;
 end;
 
-function TQtWSRadioButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.GetText
+  Params:  None
+  Returns: The text of the control
+ ------------------------------------------------------------------------------}
+class function TQtWSRadioButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   Str: WideString;
 begin
@@ -485,7 +554,14 @@ begin
   Result := True;
 end;
 
-procedure TQtWSRadioButton.SetText(const AWinControl: TWinControl; const AText: String);
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.SetText
+  Params:  None
+  Returns: Nothing
+
+  Changes the text of the control
+ ------------------------------------------------------------------------------}
+class procedure TQtWSRadioButton.SetText(const AWinControl: TWinControl; const AText: String);
 var
   Str: WideString;
 begin
@@ -494,25 +570,126 @@ begin
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
 
-function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+class function TQtWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtRadioButton: TQtRadioButton;
 begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
 
-//  SetSlots(QtStaticText);
+  SetSlots(QtRadioButton);
 
   QWidget_show(QtRadioButton.Widget);
 
   Result := THandle(QtRadioButton);
 end;
 
-procedure TQtWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
+{------------------------------------------------------------------------------
+  Method: TQtWSRadioButton.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtRadioButton(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
+end;
+
+{ TQtWSCustomGroupBox }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckGroup.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtGroupBox: TQtGroupBox;
+  Str: WideString;
+begin
+  QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
+
+//  SetSlots(QtButtonGroup);
+
+  QWidget_show(QtGroupBox.Widget);
+
+  Result := THandle(QtGroupBox);
+  
+  Str := WideString(AWinControl.Caption);
+  QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckGroup.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomGroupBox.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtGroupBox(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+{ TQtWSCustomComboBox }
+
+class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  QtComboBox: TQtComboBox;
+  Str: WideString;
+begin
+  QtComboBox := TQtComboBox.Create(AWinControl, AParams);
+
+//  SetSlots(QtButtonGroup);
+
+//  QWidget_show(QtGroupBox.Widget);
+
+  Result := THandle(QtComboBox);
+
+//  Str := WideString(AWinControl.Caption);
+end;
+
+class procedure TQtWSCustomComboBox.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtComboBox(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+class function TQtWSCustomComboBox.GetItemIndex(
+  const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
+end;
+
+class procedure TQtWSCustomComboBox.SetItemIndex(
+  const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+  TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
+end;
+
+class function TQtWSCustomComboBox.GetItems(
+  const ACustomComboBox: TCustomComboBox): TStrings;
+begin
+  Result := TStringList.Create;
+  
+  Result.Text := ACustomComboBox.Items.Text;
 end;
 
 initialization
@@ -524,9 +701,9 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TScrollBar, TQtWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TQtWSCustomGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TQtWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TQtWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TQtWSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TQtWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TQtWSComboBox);
 //  RegisterWSComponent(TCustomListBox, TQtWSCustomListBox);
 //  RegisterWSComponent(TListBox, TQtWSListBox);

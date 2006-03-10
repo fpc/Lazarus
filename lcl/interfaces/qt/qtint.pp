@@ -34,8 +34,9 @@ interface
 {$endif}
  
 uses 
-  InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes, Controls,
-  ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType,
+  Types, InterfaceBase, SysUtils, LCLProc, LCLType, LMessages, Classes,
+  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
+  GraphType, Math,
   qt4, qtprivate;
 
 type
@@ -45,9 +46,6 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
-  public
-    {$I qtwinapih.inc}
-    {.$I qtlclintfh.inc}
   public
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
@@ -71,6 +69,9 @@ type
     function CreateComponent(Sender : TObject): THandle; override; // deprecated
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; override;
     function DestroyTimer(TimerHandle: integer): boolean; override;
+  public
+    {$I qtwinapih.inc}
+    {.$I qtlclintfh.inc}
   end;
 
 
@@ -116,7 +117,7 @@ uses
 // QtWSDialogs,
 // QtWSDirSel,
 // QtWSEditBtn,
-// QtWSExtCtrls,
+ QtWSExtCtrls,
 // QtWSExtDlgs,
 // QtWSFileCtrl,
  QtWSForms,
@@ -125,7 +126,7 @@ uses
 // QtWSMaskEdit,
 // QtWSMenus,
 // QtWSPairSplitter,
-// QtWSSpin,
+ QtWSSpin,
  QtWSStdCtrls,
 // QtWSToolwin,
 ////////////////////////////////////////////////////

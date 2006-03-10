@@ -1,4 +1,4 @@
-{%MainUnit gtk2int.pp}
+{%MainUnit qtint.pp}
 { $Id$ }
 {******************************************************************************
   All QT Winapi implementations.
@@ -35,6 +35,8 @@
   Params:
   Returns:
 
+  This function is Called:
+  - Once on every OnPaint event
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 begin
@@ -46,8 +48,10 @@ begin
     Result :=GetDoubleBufferedDC(Handle)
   else}
   
-  PS.hdc := GetDC(Handle);
-  
+  PS.hdc := HDC(TQtDeviceContext.Create(Handle));
+
+  if Handle <> 0 then TQtCustomForm(Handle).Canvas := TQtDeviceContext(Result);
+
   Result := PS.hdc;
 end;
 
@@ -126,6 +130,38 @@ begin
 end;}
 
 {------------------------------------------------------------------------------
+  Method:  DrawText
+  Params:  DC, Str, Count, Rect, Flags
+  Returns: If the string was drawn, or CalcRect run
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
+  var Rect: TRect; Flags: Cardinal): Integer;
+var
+  WideStr: WideString;
+begin
+  WideStr := WideString(Str);
+
+  if DC = 0 then Exit;
+
+  if (Flags and DT_CALCRECT) = DT_CALCRECT then
+  begin
+    Result := 30;
+  end
+  else
+  begin
+    Result := 40;
+  end;
+
+//  else
+//    TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
+//    Result := 30;
+//  end;
+  
+//  if Rect.Right = 40 then raise Exception.create('Error');
+end;
+
+{------------------------------------------------------------------------------
   Function: EndPaint
   Params:
   Returns:
@@ -139,7 +175,33 @@ begin
 
   Result := 1;
 
-  if PS.HDC <> 0 then ReleaseDC(Handle, PS.HDC);
+  if PS.HDC <> 0 then TQtDeviceContext(PS.HDC).Free;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtTextOut
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  WideStr: WideString;
+begin
+  Result := False;
+
+  WideStr := WideString(Str);
+
+  if DC = 0 then Exit;
+
+//  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
+//  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
+
+  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -170,7 +232,7 @@ end;
 Function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetClientBound');
+    WriteLn('WinAPI GetClientBounds');
   {$endif}
 
   QWidget_rect(TQtWidget(handle).Widget, @ARect);
@@ -179,14 +241,47 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetClientRect
+  Params: handle:
+          Result:
+  Returns: true on success
+
+  Returns the client bounds of a control. The client bounds is the rectangle of
+  the inner area of a control, where the child controls are visible. The
+  coordinates are relative to the control's left and top.
+ ------------------------------------------------------------------------------}
+Function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI GetClientRect');
+  {$endif}
+
+  QWidget_rect(TQtWidget(handle).Widget, @ARect);
+
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetCursorPos
+  Params:  lpPoint: The cursorposition
+  Returns: True if succesful
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
+begin
+  QCursor_pos(@lpPoint);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetDC
-  Params:  none
+  Params:  hWnd is any widget.
   Returns: Nothing
 
-  hWnd is any widget.
-  The DC will be created for the client area and without the child areas
-  (they are clipped away). Child areas are all child gdkwindows
-  (e.g. not TControls).
+  This function is Called:
+  - Once on app startup with hWnd = 0
+  - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
@@ -194,7 +289,9 @@ begin
     WriteLn('WinAPI GetDC');
   {$endif}
 
-  Result := HDC(TQtDeviceContext.Create(hWnd));
+  Result := HDC(TQtDeviceContext.Create(0));
+  
+//  if hWnd <> 0 then TQtCustomForm(hWnd).Canvas := TQtDeviceContext(Result);
 end;
 
 
@@ -235,20 +332,6 @@ begin
   Desc^.AlphaLineEnd := rileWordBoundary;
   Desc^.AlphaShift := 0;}
 end;
-
-{------------------------------------------------------------------------------
-  Function: GetCursorPos
-  Params:  lpPoint: The cursorposition
-  Returns: True if succesful
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-begin
-  QCursor_pos(@lpPoint);
-  
-  Result := True;
-end;
-
 
 {------------------------------------------------------------------------------
   Method:  TQtWidgetSet.GetRawImageFromDevice
@@ -421,6 +504,34 @@ begin
     
   end;
 
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TextOut
+  Params: DC:
+          X:
+          Y:
+          Str:
+          Count:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
+var
+  WideStr: WideString;
+begin
+  Result := False;
+
+  WideStr := WideString(Str);
+  
+  if DC = 0 then Exit;
+
+//  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
+//  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
+  
+  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
+  
   Result := True;
 end;
 

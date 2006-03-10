@@ -27,14 +27,11 @@ unit QtWSExtCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  ExtCtrls, qt4, LCLType, Controls,
-////////////////////////////////////////////////////
+  // Bindings
+  qt4, qtprivate,
+  // LCL
+  SysUtils, Controls, LCLType, Forms, ExtCtrls,
+  // Widgetset
   WSExtCtrls, WSLCLClasses;
 
 type
@@ -45,6 +42,11 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+//    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TQtWSCustomNotebook }
@@ -53,6 +55,23 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
+{    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);}
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+{    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
   end;
 
   { TQtWSPage }
@@ -101,8 +120,6 @@ type
   private
   protected
   public
-    class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
   end;
 
   { TQtWSCustomImage }
@@ -161,14 +178,6 @@ type
   public
   end;
 
-  { TQtWSBoundLabel }
-
-  TQtWSBoundLabel = class(TWSBoundLabel)
-  private
-  protected
-  public
-  end;
-
   { TQtWSCustomLabeledEdit }
 
   TQtWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
@@ -191,6 +200,9 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TQtWSPanel }
@@ -204,25 +216,85 @@ type
 
 implementation
 
-{ TQtWSPaintBox }
+{ TQtWSCustomPanel }
 
-function TQtWSPaintBox.CreateHandle(const AWinControl: TWinControl;
+function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  Widget: QWidgetH;
+  QtFrame: TQtFrame;
 begin
-  // Creates the widget
-  WriteLn('Calling QWidget_create');
-  Widget := QWidget_create;
-  QWidget_setParent(Widget, QWidgetH(AWinControl.Parent.Handle));
+  QtFrame := TQtFrame.Create(AWinControl, AParams);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+//  SetSlots(QtButtonGroup);
 
-  QWidget_show(Widget);
+  QtFrame.setFrameShape(QFrameWinPanel);
+  QtFrame.setFrameShadow(QFrameRaised);
 
-  Result := THandle(Widget);
+  Result := THandle(QtFrame);
+end;
+
+procedure TQtWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtFrame(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+{ TQtWSCustomPage }
+
+function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  QtWidget: TQtWidget;
+begin
+  QtWidget := TQtWidget.Create(AWinControl, AParams);
+
+//  SetSlots(QtButtonGroup);
+
+  Result := THandle(QtWidget);
+end;
+
+procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtWidget(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  inherited SetText(AWinControl, AText);
+end;
+
+{ TQtWSCustomNotebook }
+
+function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  QtTabWidget: TQtTabWidget;
+begin
+  QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
+
+//  SetSlots(QtButtonGroup);
+
+  Result := THandle(QtTabWidget);
+end;
+
+class procedure TQtWSCustomNotebook.AddAllNBPages(
+  const ANotebook: TCustomNotebook);
+begin
+
+end;
+
+procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+  const AChild: TCustomPage; const AIndex: integer);
+var
+  Str: WideString;
+begin
+  Str := WideString(AChild.Caption);
+
+  TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtWidget(AChild.Handle).Widget, @Str);
 end;
 
 initialization
@@ -233,8 +305,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomPage, TQtWSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TQtWSCustomNotebook);
+  RegisterWSComponent(TCustomPage, TQtWSCustomPage);
+  RegisterWSComponent(TCustomNotebook, TQtWSCustomNotebook);
 //  RegisterWSComponent(TPage, TQtWSPage);
 //  RegisterWSComponent(TNotebook, TQtWSNotebook);
 //  RegisterWSComponent(TShape, TQtWSShape);
@@ -248,10 +320,9 @@ initialization
 //  RegisterWSComponent(TRadioGroup, TQtWSRadioGroup);
 //  RegisterWSComponent(TCustomCheckGroup, TQtWSCustomCheckGroup);
 //  RegisterWSComponent(TCheckGroup, TQtWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TQtWSBoundLabel);
 //  RegisterWSComponent(TCustomLabeledEdit, TQtWSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TQtWSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TQtWSCustomPanel);
+  RegisterWSComponent(TCustomPanel, TQtWSCustomPanel);
 //  RegisterWSComponent(TPanel, TQtWSPanel);
 ////////////////////////////////////////////////////
 end.

@@ -26,17 +26,32 @@ unit qtprivate;
 interface
 
 uses
-  qt4, Classes, SysUtils, LMessages, Forms, Controls, LCLType;
+  // Bindings
+  qt4,
+  // Free Pascal
+  Classes, SysUtils,
+  // LCL
+  LMessages, Forms, Controls, LCLType, ExtCtrls, StdCtrls;
 
 type
-
   { TQtWidget }
 
   TQtWidget = class(TObject)
   private
+    function QtKeyToLCLKey(key: Integer): Word;
   public
     Widget: QWidgetH;
     LCLObject: TWinControl;
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    destructor Destroy; override;
+  public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
+    procedure SlotShow(vShow: Boolean); cdecl;
+    procedure SlotDestroy; cdecl;
+    procedure SlotFocus(FocusIn: Boolean); cdecl;
+    procedure SlotKey(Event: QEventH); cdecl;
+    procedure SlotMouse(Event: QEventH); cdecl;
   end;
   
   { TQtAbstractButton }
@@ -50,12 +65,12 @@ type
     procedure setChecked(p1: Boolean);
   end;
 
-  { TQtButton }
+  { TQtPushButton }
 
-  TQtButton = class(TQtAbstractButton)
+  TQtPushButton = class(TQtAbstractButton)
   private
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SlotClicked; cdecl;
   end;
@@ -73,15 +88,18 @@ type
 
   { TQtDeviceContext }
 
-  TQtDeviceContext = class(QPainterH)
+  TQtDeviceContext = class(TObject)
   private
   public
     Widget: QPainterH;
     Brush: TQtBrush;
   public
+  public
     constructor Create(WidgetHandle: HWND); virtual;
     destructor Destroy; override;
+  public
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+    procedure drawText(x: Integer; y: Integer; s: PWideString);
   end;
 
   { TQtCustomForm }
@@ -92,9 +110,11 @@ type
     PaintBox : QWidgetH;
     Splitter : QSplitterH;
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    Canvas: TQtDeviceContext;
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SlotPaint; cdecl;
   end;
 
@@ -103,7 +123,7 @@ type
   TQtStaticText = class(TQtWidget)
   private
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     procedure SetText(text: PWideString);
     procedure Text(retval: PWideString);
@@ -119,7 +139,7 @@ type
   public
     constructor Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
   { TQtCheckBox }
@@ -128,7 +148,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
   end;
@@ -137,12 +157,583 @@ type
 
   TQtRadioButton = class(TQtAbstractButton)
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+  end;
+  
+  { TQtGroupBox }
+
+  TQtGroupBox = class(TQtWidget)
+  private
+    VBoxLayout: QVBoxLayoutH;
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  end;
+  
+  { TQtFrame }
+  
+  TQtFrame = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+    procedure setFrameStyle(p1: Integer);
+    procedure setFrameShape(p1: QFrameShape);
+    procedure setFrameShadow(p1: QFrameShadow);
+  end;
+
+  { TQtLineEdit }
+  
+  TQtLineEdit = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  end;
+  
+  { TQtTextEdit }
+  
+  TQtTextEdit = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+  end;
+  
+  { TQtTabWidget }
+  
+  TQtTabWidget = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+    function insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+  end;
+  
+  { TQtComboBox }
+  
+  TQtComboBox = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
+    function currentIndex: Integer;
+    procedure setCurrentIndex(index: Integer);
+  end;
+  
+  { TQtSpinBox }
+  
+  TQtSpinBox = class(TQtWidget)
+  private
+  public
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
   end;
 
 implementation
+
+{ TQtWidget }
+
+constructor TQtWidget.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QWidget_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QWidget_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtWidget.Destroy;
+begin
+  {$ifdef VerboseQt}
+//    WriteLn('Calling QWidget_destroy');
+  {$endif}
+
+//  QWidget_destroy(QWidgetH(Widget));
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.EventFilter
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+
+  WriteLn(Integer(QEvent_type(Event)));
+
+  QEvent_ignore(Event);
+
+  case QEvent_type(Event) of
+   QEventShow: SlotShow(True);
+   QEventHide: SlotShow(False);
+   QEventDestroy: SlotDestroy;
+   QEventFocusIn: SlotFocus(True);
+   QEventFocusOut: SlotFocus(False);
+//   QEventDestroy: SlotDestroy;
+//  WINDOWPOSCHANGED: SlotDestroy;
+   QEventKeyPress: SlotKey(Event);
+   QEventKeyRelease: SlotKey(Event);
+   QEventMouseButtonPress: SlotMouse(Event);
+   QEventMouseButtonRelease: SlotMouse(Event);
+   QEventMouseButtonDblClick: SlotMouse(Event);
+   QEventMouseMove: SlotMouse(Event);
+  end;
+
+{  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MOUSEMOVE, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_LBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_LBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_RBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_RBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);}
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotShow
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotShow(vShow: Boolean); cdecl;
+var
+  Msg: TLMShowWindow;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SHOWWINDOW;
+  Msg.Show := vShow;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotDestroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotDestroy; cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_DESTROY;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotFocus
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotFocus(FocusIn: Boolean); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  if FocusIn then Msg.Msg := LM_SETFOCUS
+  else Msg.Msg := LM_KILLFOCUS;
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotKey
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
+var
+  Msg: TLMKey;
+  SecondMsg: TLMKey;
+begin
+  WriteLn('SlotKey');
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  if QEvent_type(Event) = QEventKeyRelease then Msg.Msg := LM_KEYUP
+  else Msg.Msg := LM_KEYDOWN;
+  
+  {------------------------------------------------------------------------------
+   Translates a Qt4 Key to a LCL VK_ key
+   ------------------------------------------------------------------------------}
+  Msg.CharCode := QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)));
+  
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+
+//LM_KEYDOWN
+//LM_KEYUP
+// LM_CHAR
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotMouse
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
+var
+  Msg: TLMMouse;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.QtKeyToLCLKey
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidget.QtKeyToLCLKey(key: Integer): Word;
+begin
+  case key of
+    QtKey_Escape: Result := VK_ESCAPE;
+    QtKey_Tab: Result := VK_TAB;
+//    QtKey_Backtab = 16777218 { $1000002 }; ????
+//    QtKey_Backspace = 16777219 { $1000003 };
+    QtKey_Return: Result := VK_RETURN;
+    QtKey_Enter: Result := VK_RETURN;
+    QtKey_Insert: Result := VK_RETURN;
+    QtKey_Delete: Result := VK_RETURN;
+    QtKey_Pause: Result := VK_PAUSE;
+    QtKey_Print: Result := VK_PRINT;
+//    QtKey_SysReq = 16777226 { $100000a };
+//    QtKey_Clear = 16777227 { $100000b };
+    QtKey_Home: Result := VK_HOME;
+    QtKey_End: Result := VK_END;
+    QtKey_Left: Result := VK_LEFT;
+    QtKey_Up: Result := VK_UP;
+    QtKey_Right: Result := VK_RIGHT;
+    QtKey_Down: Result := VK_DOWN;
+    QtKey_PageUp: Result := VK_PRIOR;
+    QtKey_PageDown: Result := VK_NEXT;
+    QtKey_Shift: Result := VK_LSHIFT;     // There is also RSHIFT
+    QtKey_Control: Result := VK_LCONTROL; // There is also RCONTROL
+{    QtKey_Meta: Result := VK_META;
+    QtKey_Alt: Result := VK_ALT;
+    QtKey_CapsLock: Result := VK_CAPSLOCK;
+    QtKey_NumLock: Result := VK_NUMLOCK;
+    QtKey_ScrollLock = 16777254  $1000026 ;}
+    QtKey_F1: Result := VK_F1;
+    QtKey_F2: Result := VK_F2;
+    QtKey_F3: Result := VK_F3;
+    QtKey_F4: Result := VK_F4;
+    QtKey_F5: Result := VK_F5;
+    QtKey_F6: Result := VK_F6;
+    QtKey_F7: Result := VK_F7;
+    QtKey_F8: Result := VK_F8;
+    QtKey_F9: Result := VK_F9;
+    QtKey_F10: Result := VK_F10;
+    QtKey_F11: Result := VK_F11;
+    QtKey_F12: Result := VK_F12;
+    QtKey_F13: Result := VK_F13;
+    QtKey_F14: Result := VK_F14;
+    QtKey_F15: Result := VK_F15;
+    QtKey_F16: Result := VK_F16;
+    QtKey_F17: Result := VK_F17;
+    QtKey_F18: Result := VK_F18;
+    QtKey_F19: Result := VK_F19;
+    QtKey_F20: Result := VK_F20;
+    QtKey_F21: Result := VK_F21;
+    QtKey_F22: Result := VK_F22;
+    QtKey_F23: Result := VK_F23;
+    QtKey_F24: Result := VK_F24;
+{    QtKey_F25 = 16777288  $1000048 ;
+    QtKey_F26 = 16777289  $1000049 ;
+    QtKey_F27 = 16777290  $100004a ;
+    QtKey_F28 = 16777291  $100004b ;
+    QtKey_F29 = 16777292  $100004c ;
+    QtKey_F30 = 16777293  $100004d ;
+    QtKey_F31 = 16777294  $100004e ;
+    QtKey_F32 = 16777295  $100004f ;
+    QtKey_F33 = 16777296  $1000050 ;
+    QtKey_F34 = 16777297  $1000051 ;
+    QtKey_F35 = 16777298  $1000052 ;}
+(*    QtKey_Super_L = 16777299 { $1000053 };
+    QtKey_Super_R = 16777300 { $1000054 };
+    QtKey_Menu = 16777301 { $1000055 };
+    QtKey_Hyper_L = 16777302 { $1000056 };
+    QtKey_Hyper_R = 16777303 { $1000057 };
+    QtKey_Help = 16777304 { $1000058 };
+    QtKey_Direction_L = 16777305 { $1000059 };
+    QtKey_Direction_R = 16777312 { $1000060 };
+    QtKey_Space = 32 { $20 };
+    QtKey_Any = 32 { $20 };
+    QtKey_Exclam = 33 { $21 };
+    QtKey_QuoteDbl = 34 { $22 };
+    QtKey_NumberSign = 35 { $23 };
+    QtKey_Dollar = 36 { $24 };
+    QtKey_Percent = 37 { $25 };
+    QtKey_Ampersand = 38 { $26 };
+    QtKey_Apostrophe = 39 { $27 };
+    QtKey_ParenLeft = 40 { $28 };
+    QtKey_ParenRight = 41 { $29 };
+    QtKey_Asterisk = 42 { $2a };
+    QtKey_Plus = 43 { $2b };
+    QtKey_Comma = 44 { $2c };
+    QtKey_Minus = 45 { $2d };
+    QtKey_Period = 46 { $2e };
+    QtKey_Slash = 47 { $2f };*)
+    QtKey_0: Result := VK_0;
+    QtKey_1: Result := VK_1;
+    QtKey_2: Result := VK_2;
+    QtKey_3: Result := VK_3;
+    QtKey_4: Result := VK_4;
+    QtKey_5: Result := VK_5;
+    QtKey_6: Result := VK_6;
+    QtKey_7: Result := VK_7;
+    QtKey_8: Result := VK_8;
+    QtKey_9: Result := VK_9;
+//    QtKey_Colon = 58 { $3a };
+//    QtKey_Semicolon = 59 { $3b };
+//    QtKey_Less = 60 { $3c };
+//    QtKey_Equal = 61 { $3d };
+//    QtKey_Greater = 62 { $3e };
+//    QtKey_Question = 63 { $3f };
+//    QtKey_At = 64 { $40 };
+    QtKey_A: Result := VK_A;
+    QtKey_B: Result := VK_B;
+    QtKey_C: Result := VK_C;
+    QtKey_D: Result := VK_D;
+    QtKey_E: Result := VK_E;
+    QtKey_F: Result := VK_F;
+    QtKey_G: Result := VK_G;
+    QtKey_H: Result := VK_H;
+    QtKey_I: Result := VK_I;
+    QtKey_J: Result := VK_J;
+    QtKey_K: Result := VK_K;
+    QtKey_L: Result := VK_L;
+    QtKey_M: Result := VK_M;
+    QtKey_N: Result := VK_N;
+    QtKey_O: Result := VK_O;
+    QtKey_P: Result := VK_P;
+    QtKey_Q: Result := VK_Q;
+    QtKey_R: Result := VK_R;
+    QtKey_S: Result := VK_S;
+    QtKey_T: Result := VK_T;
+    QtKey_U: Result := VK_U;
+    QtKey_V: Result := VK_V;
+    QtKey_W: Result := VK_W;
+    QtKey_X: Result := VK_X;
+    QtKey_Y: Result := VK_Y;
+    QtKey_Z: Result := VK_Z;
+(*    QtKey_BracketLeft = 91 { $5b };
+    QtKey_Backslash = 92 { $5c };
+    QtKey_BracketRight = 93 { $5d };
+    QtKey_AsciiCircum = 94 { $5e };
+    QtKey_Underscore = 95 { $5f };
+    QtKey_QuoteLeft = 96 { $60 };
+    QtKey_BraceLeft = 123 { $7b };
+    QtKey_Bar = 124 { $7c };
+    QtKey_BraceRight = 125 { $7d };
+    QtKey_AsciiTilde = 126 { $7e };
+    QtKey_nobreakspace = 160 { $a0 };
+    QtKey_exclamdown = 161 { $a1 };
+    QtKey_cent = 162 { $a2 };
+    QtKey_sterling = 163 { $a3 };
+    QtKey_currency = 164 { $a4 };
+    QtKey_yen = 165 { $a5 };
+    QtKey_brokenbar = 166 { $a6 };
+    QtKey_section = 167 { $a7 };
+    QtKey_diaeresis = 168 { $a8 };
+    QtKey_copyright = 169 { $a9 };
+    QtKey_ordfeminine = 170 { $aa };
+    QtKey_guillemotleft = 171 { $ab };
+    QtKey_notsign = 172 { $ac };
+    QtKey_hyphen = 173 { $ad };
+    QtKey_registered = 174 { $ae };
+    QtKey_macron = 175 { $af };
+    QtKey_degree = 176 { $b0 };
+    QtKey_plusminus = 177 { $b1 };
+    QtKey_twosuperior = 178 { $b2 };
+    QtKey_threesuperior = 179 { $b3 };
+    QtKey_acute = 180 { $b4 };
+    QtKey_mu = 181 { $b5 };
+    QtKey_paragraph = 182 { $b6 };
+    QtKey_periodcentered = 183 { $b7 };
+    QtKey_cedilla = 184 { $b8 };
+    QtKey_onesuperior = 185 { $b9 };
+    QtKey_masculine = 186 { $ba };
+    QtKey_guillemotright = 187 { $bb };
+    QtKey_onequarter = 188 { $bc };
+    QtKey_onehalf = 189 { $bd };
+    QtKey_threequarters = 190 { $be };
+    QtKey_questiondown = 191 { $bf };
+    QtKey_Agrave = 192 { $c0 };
+    QtKey_Aacute = 193 { $c1 };
+    QtKey_Acircumflex = 194 { $c2 };
+    QtKey_Atilde = 195 { $c3 };
+    QtKey_Adiaeresis = 196 { $c4 };
+    QtKey_Aring = 197 { $c5 };
+    QtKey_AE = 198 { $c6 };
+    QtKey_Ccedilla = 199 { $c7 };
+    QtKey_Egrave = 200 { $c8 };
+    QtKey_Eacute = 201 { $c9 };
+    QtKey_Ecircumflex = 202 { $ca };
+    QtKey_Ediaeresis = 203 { $cb };
+    QtKey_Igrave = 204 { $cc };
+    QtKey_Iacute = 205 { $cd };
+    QtKey_Icircumflex = 206 { $ce };
+    QtKey_Idiaeresis = 207 { $cf };
+    QtKey_ETH = 208 { $d0 };
+    QtKey_Ntilde = 209 { $d1 };
+    QtKey_Ograve = 210 { $d2 };
+    QtKey_Oacute = 211 { $d3 };
+    QtKey_Ocircumflex = 212 { $d4 };
+    QtKey_Otilde = 213 { $d5 };
+    QtKey_Odiaeresis = 214 { $d6 };
+    QtKey_multiply = 215 { $d7 };
+    QtKey_Ooblique = 216 { $d8 };
+    QtKey_Ugrave = 217 { $d9 };
+    QtKey_Uacute = 218 { $da };
+    QtKey_Ucircumflex = 219 { $db };
+    QtKey_Udiaeresis = 220 { $dc };
+    QtKey_Yacute = 221 { $dd };
+    QtKey_THORN = 222 { $de };
+    QtKey_ssharp = 223 { $df };
+    QtKey_division = 247 { $f7 };
+    QtKey_ydiaeresis = 255 { $ff };
+    QtKey_Multi_key = 16781600 { $1001120 };
+    QtKey_Codeinput = 16781623 { $1001137 };
+    QtKey_SingleCandidate = 16781628 { $100113c };
+    QtKey_MultipleCandidate = 16781629 { $100113d };
+    QtKey_PreviousCandidate = 16781630 { $100113e };
+    QtKey_Mode_switch = 16781694 { $100117e };
+    QtKey_Kanji = 16781601 { $1001121 };
+    QtKey_Muhenkan = 16781602 { $1001122 };
+    QtKey_Henkan = 16781603 { $1001123 };
+    QtKey_Romaji = 16781604 { $1001124 };
+    QtKey_Hiragana = 16781605 { $1001125 };
+    QtKey_Katakana = 16781606 { $1001126 };
+    QtKey_Hiragana_Katakana = 16781607 { $1001127 };
+    QtKey_Zenkaku = 16781608 { $1001128 };
+    QtKey_Hankaku = 16781609 { $1001129 };
+    QtKey_Zenkaku_Hankaku = 16781610 { $100112a };
+    QtKey_Touroku = 16781611 { $100112b };
+    QtKey_Massyo = 16781612 { $100112c };
+    QtKey_Kana_Lock = 16781613 { $100112d };
+    QtKey_Kana_Shift = 16781614 { $100112e };
+    QtKey_Eisu_Shift = 16781615 { $100112f };
+    QtKey_Eisu_toggle = 16781616 { $1001130 };
+    QtKey_Hangul = 16781617 { $1001131 };
+    QtKey_Hangul_Start = 16781618 { $1001132 };
+    QtKey_Hangul_End = 16781619 { $1001133 };
+    QtKey_Hangul_Hanja = 16781620 { $1001134 };
+    QtKey_Hangul_Jamo = 16781621 { $1001135 };
+    QtKey_Hangul_Romaja = 16781622 { $1001136 };
+    QtKey_Hangul_Jeonja = 16781624 { $1001138 };
+    QtKey_Hangul_Banja = 16781625 { $1001139 };
+    QtKey_Hangul_PreHanja = 16781626 { $100113a };
+    QtKey_Hangul_PostHanja = 16781627 { $100113b };
+    QtKey_Hangul_Special = 16781631 { $100113f };
+    QtKey_Dead_Grave = 16781904 { $1001250 };
+    QtKey_Dead_Acute = 16781905 { $1001251 };
+    QtKey_Dead_Circumflex = 16781906 { $1001252 };
+    QtKey_Dead_Tilde = 16781907 { $1001253 };
+    QtKey_Dead_Macron = 16781908 { $1001254 };
+    QtKey_Dead_Breve = 16781909 { $1001255 };
+    QtKey_Dead_Abovedot = 16781910 { $1001256 };
+    QtKey_Dead_Diaeresis = 16781911 { $1001257 };
+    QtKey_Dead_Abovering = 16781912 { $1001258 };
+    QtKey_Dead_Doubleacute = 16781913 { $1001259 };
+    QtKey_Dead_Caron = 16781914 { $100125a };
+    QtKey_Dead_Cedilla = 16781915 { $100125b };
+    QtKey_Dead_Ogonek = 16781916 { $100125c };
+    QtKey_Dead_Iota = 16781917 { $100125d };
+    QtKey_Dead_Voiced_Sound = 16781918 { $100125e };
+    QtKey_Dead_Semivoiced_Sound = 16781919 { $100125f };
+    QtKey_Dead_Belowdot = 16781920 { $1001260 };
+    QtKey_Dead_Hook = 16781921 { $1001261 };
+    QtKey_Dead_Horn = 16781922 { $1001262 };
+    QtKey_Back = 16777313 { $1000061 };
+    QtKey_Forward = 16777314 { $1000062 };
+    QtKey_Stop = 16777315 { $1000063 };
+    QtKey_Refresh = 16777316 { $1000064 };
+    QtKey_VolumeDown = 16777328 { $1000070 };
+    QtKey_VolumeMute = 16777329 { $1000071 };
+    QtKey_VolumeUp = 16777330 { $1000072 };
+    QtKey_BassBoost = 16777331 { $1000073 };
+    QtKey_BassUp = 16777332 { $1000074 };
+    QtKey_BassDown = 16777333 { $1000075 };
+    QtKey_TrebleUp = 16777334 { $1000076 };
+    QtKey_TrebleDown = 16777335 { $1000077 };
+    QtKey_MediaPlay = 16777344 { $1000080 };
+    QtKey_MediaStop = 16777345 { $1000081 };
+    QtKey_MediaPrevious = 16777346 { $1000082 };
+    QtKey_MediaNext = 16777347 { $1000083 };
+    QtKey_MediaRecord = 16777348 { $1000084 };
+    QtKey_HomePage = 16777360 { $1000090 };
+    QtKey_Favorites = 16777361 { $1000091 };
+    QtKey_Search = 16777362 { $1000092 };
+    QtKey_Standby = 16777363 { $1000093 };
+    QtKey_OpenUrl = 16777364 { $1000094 };
+    QtKey_LaunchMail = 16777376 { $10000a0 };
+    QtKey_LaunchMedia = 16777377 { $10000a1 };
+    QtKey_Launch0 = 16777378 { $10000a2 };
+    QtKey_Launch1 = 16777379 { $10000a3 };
+    QtKey_Launch2 = 16777380 { $10000a4 };
+    QtKey_Launch3 = 16777381 { $10000a5 };
+    QtKey_Launch4 = 16777382 { $10000a6 };
+    QtKey_Launch5 = 16777383 { $10000a7 };
+    QtKey_Launch6 = 16777384 { $10000a8 };
+    QtKey_Launch7 = 16777385 { $10000a9 };
+    QtKey_Launch8 = 16777386 { $10000aa };
+    QtKey_Launch9 = 16777387 { $10000ab };
+    QtKey_LaunchA = 16777388 { $10000ac };
+    QtKey_LaunchB = 16777389 { $10000ad };
+    QtKey_LaunchC = 16777390 { $10000ae };
+    QtKey_LaunchD = 16777391 { $10000af };
+    QtKey_LaunchE = 16777392 { $10000b0 };
+    QtKey_LaunchF = 16777393 { $10000b1 };
+    QtKey_MediaLast = 16842751 { $100ffff };
+    QtKey_unknown = 33554431 { $1ffffff };*)
+  else
+    Result := VK_UNKNOWN;
+  end;
+end;
 
 { TQtAbstractButton }
 
@@ -186,14 +777,14 @@ begin
   QAbstractButton_setChecked(QAbstractButtonH(Widget), p1);
 end;
 
-{ TQtButton }
+{ TQtPushButton }
 
 {------------------------------------------------------------------------------
-  Function: TQtButton.Create
+  Function: TQtPushButton.Create
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+constructor TQtPushButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 var
   Str: WideString;
   Parent: QWidgetH;
@@ -215,11 +806,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtButton.Destroy
+  Function: TQtPushButton.Destroy
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-destructor TQtButton.Destroy;
+destructor TQtPushButton.Destroy;
 begin
   {$ifdef VerboseQt}
     WriteLn('Calling QPushButton_destroy');
@@ -231,11 +822,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtButton.SlotClicked
+  Function: TQtPushButton.SlotClicked
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtButton.SlotClicked; cdecl;
+procedure TQtPushButton.SlotClicked; cdecl;
 var
   Msg: TLMessage;
 begin
@@ -320,6 +911,18 @@ begin
   QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawText
+  Params:  None
+  Returns: Nothing
+
+  Draws a Text. Helper function of winapi.TextOut
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
+begin
+  QPainter_drawText(Widget, x, y, s);
+end;
+
 { TQtBrush }
 
 {------------------------------------------------------------------------------
@@ -365,12 +968,11 @@ begin
   // Initializes the properties
   LCLObject := AWinControl;
 
-
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('Calling QMainWindow_Create');
   {$endif}
-  Widget := QMainWindow_Create;
+  Widget := QMainWindow_Create;//(nil, QtWindow);
 
   // Form initial position
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
@@ -410,7 +1012,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtCustomForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  Result:=False;
+  Result := False;
+  
+  // Inherited Callbacks
+  inherited EventFilter(Sender, Event);
   
   if QEvent_type(Event) = QEventPaint then SlotPaint;
 end;
@@ -505,6 +1110,11 @@ end;
 
 { TQtTimer }
 
+{------------------------------------------------------------------------------
+  Function: TQtTimer.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtTimer.Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH);
 var
   Method: TMethod;
@@ -525,6 +1135,11 @@ begin
   QObject_hook_hook_events(Hook, Method);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTimer.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtTimer.Destroy;
 begin
   QObject_killTimer(AppObject, id);
@@ -532,15 +1147,29 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTimer.EventFilter
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result:=False;
 
-  if QEvent_type(Event) = QEventTimer then CallbackFunc;
+  if QEvent_type(Event) = QEventTimer then
+  begin
+    QEvent_accept(Event);
+    CallbackFunc;
+  end;
 end;
 
 { TQtCheckBox }
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtCheckBox.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 var
   Str: WideString;
@@ -553,17 +1182,31 @@ begin
   {$ifdef VerboseQt}
     WriteLn('Calling QCheckBox_create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QCheckBox_create(Parent);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+  if (AWinControl.Parent is TCustomCheckGroup) then
+  begin
+    Widget := QCheckBox_create;
+    QLayout_addWidget(TQtGroupBox(AWinControl.Parent.Handle).VBoxLayout, Widget);
+  end
+  else
+  begin
+    Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+    Widget := QCheckBox_create(Parent);
+
+    // Sets it´ s initial properties
+    QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+     AWinControl.Width, AWinControl.Height);
+  end;
 
   Str := WideString(AWinControl.Caption);
   SetText(@Str);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtCheckBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -575,16 +1218,34 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.EventFilter
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TQtCheckBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  Result := False;
 
+  // Inherited Callbacks
+  inherited EventFilter(Sender, Event);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.CheckState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TQtCheckBox.CheckState: QtCheckState;
 begin
   Result := QCheckBox_checkState(QCheckBoxH(Widget));
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtCheckBox.setCheckState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtCheckBox.setCheckState(state: QtCheckState);
 begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
@@ -592,6 +1253,11 @@ end;
 
 { TQtRadioButton }
 
+{------------------------------------------------------------------------------
+  Function: TQtRadioButton.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtRadioButton.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 var
   Str: WideString;
@@ -604,17 +1270,31 @@ begin
   {$ifdef VerboseQt}
     WriteLn('Calling QRadioButton_create');
   {$endif}
-  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Widget := QRadioButton_create(Parent);
+  
+  if (AWinControl.Parent is TCustomRadioGroup) then
+  begin
+    Widget := QRadioButton_create;
+    QLayout_addWidget(TQtGroupBox(AWinControl.Parent.Handle).VBoxLayout, Widget);
+  end
+  else
+  begin
+    Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+    Widget := QRadioButton_create(Parent);
 
-  // Sets it´ s initial properties
-  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
-   AWinControl.Width, AWinControl.Height);
+    // Sets it´ s initial properties
+    QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+     AWinControl.Width, AWinControl.Height);
+  end;
 
   Str := WideString(AWinControl.Caption);
   SetText(@Str);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtRadioButton.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtRadioButton.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -633,7 +1313,330 @@ end;
  ------------------------------------------------------------------------------}
 function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  Result := False;
+  
+  // Inherited Callbacks
+  inherited EventFilter(Sender, Event);
+end;
 
+{ TQtGroupBox }
+
+{------------------------------------------------------------------------------
+  Function: TQtGroupBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtGroupBox.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  i: Integer;
+  Button: QAbstractButtonH;
+  Str: WideString;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QCheckBox_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QGroupBox_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+   
+  {------------------------------------------------------------------------------
+    Adds buttons if the control is a TCustomRadioGroup
+   ------------------------------------------------------------------------------}
+  if AWinControl is TCustomRadioGroup then
+  begin
+    VBoxLayout := QVBoxLayout_create;
+    
+{    for i := 0 to TCustomRadioGroup(AWinControl).Items.Count - 1 do
+    begin
+      Str := WideString(TCustomRadioGroup(AWinControl).Items.Strings[i]);
+      Button := QRadioButton_create(@Str);
+
+      QLayout_addWidget(VBoxLayout, Button);
+    end;}
+    
+    QWidget_setLayout(Widget, VBoxLayout);
+  end
+  {------------------------------------------------------------------------------
+    Adds buttons if the control is a TCustomCheckGroup
+   ------------------------------------------------------------------------------}
+  else if AWinControl is TCustomCheckGroup then
+  begin
+    VBoxLayout := QVBoxLayout_create;
+
+{    for i := 0 to TCustomCheckGroup(AWinControl).Items.Count - 1 do
+    begin
+      Str := WideString(TCustomCheckGroup(AWinControl).Items.Strings[i]);
+      Button := QCheckBox_create(@Str);
+
+      QLayout_addWidget(VBoxLayout, Button);
+    end;}
+
+    QWidget_setLayout(Widget, VBoxLayout);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtGroupBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+destructor TQtGroupBox.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QCheckBox_destroy');
+  {$endif}
+
+  QCheckBox_destroy(QCheckBoxH(Widget));
+
+  inherited Destroy;
+end;
+
+{ TQtFrame }
+
+constructor TQtFrame.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QFrame_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QFrame_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtFrame.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QFrame_destroy');
+  {$endif}
+
+  QFrame_destroy(QFrameH(Widget));
+
+  inherited Destroy;
+end;
+
+procedure TQtFrame.setFrameStyle(p1: Integer);
+begin
+  QFrame_setFrameStyle(QFrameH(Widget), p1);
+end;
+
+procedure TQtFrame.setFrameShape(p1: QFrameShape);
+begin
+  QFrame_setFrameShape(QFrameH(Widget), p1);
+end;
+
+procedure TQtFrame.setFrameShadow(p1: QFrameShadow);
+begin
+  QFrame_setFrameShadow(QFrameH(Widget), p1);
+end;
+
+{ TQtLineEdit }
+
+constructor TQtLineEdit.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Str: WideString;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QLineEdit_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Str := WideString((AWinControl as TCustomEdit).Text);
+  Widget := QLineEdit_create(@Str, Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtLineEdit.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QLineEdit_destroy');
+  {$endif}
+
+  QLineEdit_destroy(QLineEditH(Widget));
+
+  inherited Destroy;
+end;
+
+{ TQtTextEdit }
+
+constructor TQtTextEdit.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Str: WideString;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QTextEdit_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
+  Widget := QTextEdit_create(@Str, Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtTextEdit.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QTextEdit_destroy');
+  {$endif}
+
+  QTextEdit_destroy(QTextEditH(Widget));
+
+  inherited Destroy;
+end;
+
+{ TQtTabWidget }
+
+constructor TQtTabWidget.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QTabWidget_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QTabWidget_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtTabWidget.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QTabWidget_destroy');
+  {$endif}
+
+  QTabWidget_destroy(QTabWidgetH(Widget));
+
+  inherited Destroy;
+end;
+
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
+begin
+  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
+end;
+
+{ TQtComboBox }
+
+constructor TQtComboBox.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+  Str: WideString;
+  StringList: QStringListH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QComboBox_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QComboBox_create(Parent);
+
+  // Add the items to the combo box
+  Str := WideString((AWinControl as TCustomComboBox).Items.Text);
+  StringList := QStringList_create;
+  QComboBox_addItems(QComboBoxH(Widget), StringList);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtComboBox.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QComboBox_destroy');
+  {$endif}
+
+  QComboBox_destroy(QComboBoxH(Widget));
+
+  inherited Destroy;
+end;
+
+function TQtComboBox.currentIndex: Integer;
+begin
+  Result := QComboBox_currentIndex(QComboBoxH(Widget));
+end;
+
+procedure TQtComboBox.setCurrentIndex(index: Integer);
+begin
+  QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
+end;
+
+{ TQtSpinBox }
+
+constructor TQtSpinBox.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+var
+  Parent: QWidgetH;
+begin
+  // Initializes the properties
+  LCLObject := AWinControl;
+
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('Calling QSpinBox_create');
+  {$endif}
+  Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
+  Widget := QSpinBox_create(Parent);
+
+  // Sets it´ s initial properties
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
+   AWinControl.Width, AWinControl.Height);
+end;
+
+destructor TQtSpinBox.Destroy;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('Calling QSpinBox_destroy');
+  {$endif}
+
+  QSpinBox_destroy(QSpinBoxH(Widget));
+
+  inherited Destroy;
 end;
 
 end.
