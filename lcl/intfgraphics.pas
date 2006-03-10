@@ -1912,7 +1912,7 @@ var
             if (Src[SrcPos]='"') and (Src[SrcPos-1]<>'\') then begin
               // string end found
               Line.EndPos:=SrcPos;
-              //DebugLn('  "',copy(Src,Line.StartPos,SrcPos-Line.StartPos),'"');
+              //DebugLn('  ',copy(Src,Line.StartPos-1,Line.EndPos-Line.StartPos+2));
               inc(SrcPos);
               Result:=true;
               exit;
@@ -2084,7 +2084,7 @@ var
     NewEntry: PXPMPixelToColorEntry;
     i: Integer;
   begin
-    {DebugLn('TLazReaderXPM.InternalRead.AddColor A "',PixelString,'"=',
+    {DebugLn('TLazReaderXPM.InternalRead.AddColor A "',DbgStr(copy(Src,PixelStart,FCharsPerPixel)),'"=',
       DbgS(AColor.Red),',',
       DbgS(AColor.Green),',',
       DbgS(AColor.Blue),',',
@@ -2097,6 +2097,7 @@ var
     for i:=0 to FCharsPerPixel-1 do
       IntArray[i]:=ord(Src[PixelStart+i]);
     FPixelToColorTree.SetNode(IntArray,FCharsPerPixel,NewEntry);
+    //if FPixelToColorTree.FindData(IntArray,FCharsPerPixel)<>NewEntry then RaiseGDBException('');
   end;
 
   procedure ReadPalette(IntArray: PInteger);
@@ -2117,7 +2118,7 @@ var
       inc(ReadPos,FCharsPerPixel);
       // skip spaces
       while IsSpaceChar[Src[ReadPos]] do inc(ReadPos);
-      // read 'c' (sometimes the 'c' is a 's')
+      // read 'c' (sometimes the 'c' is an 's')
       if not (Src[ReadPos] in ['c','s']) then
         RaiseXPMReadError('"c" expected',ReadPos);
       inc(ReadPos);
@@ -2165,6 +2166,7 @@ var
       if Line.EndPos-Line.StartPos<FCharsPerPixel*FWidth then
         RaiseXPMReadError('line too short',ReadPos);
       for x:=0 to FWidth-1 do begin
+        //DebugLn('ReadPixels x=',dbgs(x),' y=',dbgs(y),' color="',DbgStr(copy(Src,ReadPos,FCharsPerPixel)),'"');
         for i:=0 to FCharsPerPixel-1 do begin
           IntArray[i]:=ord(Src[ReadPos]);
           inc(ReadPos);
