@@ -12,7 +12,7 @@ SET FPCSVNDIR=c:\lazarus\source\fpc\2.1
 SET LAZSVNDIR=c:\lazarus\source\lazsource
 
 :: Path to fpc 2.0.0 compiler
-SET RELEASE_PPC=c:\fpc\2.0.0\bin\i386-win32\ppc386.exe
+SET RELEASE_PPC=c:\fpc\2.0.2\bin\i386-win32\ppc386.exe
 
 :: Path to the directory containing some third party utilities used by fpc
 :: it will be copied completely to the pp\bin\win32 directory
