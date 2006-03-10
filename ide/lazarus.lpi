@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -23,7 +23,8 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <CommandLineParams Value="--nsc"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <Units Count="1">
@@ -36,16 +37,22 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <Target>
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/"/>
+      <IncludeFiles Value="include\"/>
+      <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)\"/>
+      <LCLWidgetType Value="gtk2"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Other>
+      <Verbosity>
+        <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
+      </Verbosity>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>

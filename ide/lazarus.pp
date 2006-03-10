@@ -33,6 +33,7 @@
 program Lazarus;
 
 {$mode objfpc}{$H+}
+{$APPTYPE CONSOLE}
 
 {$I ide.inc}
 
