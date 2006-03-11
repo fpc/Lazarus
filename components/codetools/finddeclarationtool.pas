@@ -4013,10 +4013,17 @@ end;
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   IgnoreJumpCentered: boolean): boolean;
+var
+  JumpPos: LongInt;
 begin
   Result:=false;
   if (ANode=nil) or (ANode.StartPos<1) then exit;
-  Result:=JumpToCleanPos(ANode.StartPos,ANode.StartPos,ANode.EndPos,
+  JumpPos:=ANode.StartPos;
+  if ANode.Desc=ctnProperty then begin
+    MoveCursorToPropName(ANode);
+    JumpPos:=CurPos.StartPos;
+  end;
+  Result:=JumpToCleanPos(JumpPos,JumpPos,ANode.EndPos,
                          NewPos,NewTopLine,IgnoreJumpCentered);
 end;
 

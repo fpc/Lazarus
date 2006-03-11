@@ -51,6 +51,7 @@ resourcestring
   oisAddToFavorites = 'Add to Favorites';
   oisRemoveFromFavorites = 'Remove from Favorites';
   oisUndo = 'Undo';
+  oisFinddeclaration = 'Jump to declaration';
   oisCut = 'Cut';
   oisCopy = 'Copy';
   oisPaste = 'Paste';

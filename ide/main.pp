@@ -345,6 +345,7 @@ type
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
+    procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName: ShortString;
                                     TypeData: PTypeData;
@@ -1237,6 +1238,22 @@ begin
   ShowAddRemoveFavouriteDialog(ObjectInspector1,false);
 end;
 
+procedure TMainIDE.OIOnFindDeclarationOfProperty(Sender: TObject);
+var
+  AnInspector: TObjectInspector;
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  NewTopLine: integer;
+begin
+  if not BeginCodeTools then exit;
+  if Sender=nil then Sender:=ObjectInspector1;
+  if Sender is TObjectInspector then begin
+    AnInspector:=TObjectInspector(Sender);
+    if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
+      DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,[]);
+  end;
+end;
+
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
 var ActiveSrcEdit: TSourceEditor;
@@ -1450,6 +1467,8 @@ begin
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
+  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
+  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
   ObjectInspector1.BorderStyle:=bsSizeToolWin;
   IDECmdScopeObjctInspectorOnly.AddWindowClass(TObjectInspector);
 

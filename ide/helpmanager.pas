@@ -624,12 +624,15 @@ var
   Code: TCodeBuffer;
   Caret: TPoint;
   ErrMsg: string;
+  NewTopLine: integer;
 begin
   DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspector then begin
     AnInspector:=TObjectInspector(Sender);
-    if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret) then begin
+    if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
+    begin
+      if NewTopLine=0 then ;
       ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
     end;
   end;

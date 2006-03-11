@@ -538,6 +538,7 @@ type
     AddToFavoritesPopupMenuItem: TMenuItem;
     RemoveFromFavoritesPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
+    FindDeclarationPopupmenuItem: TMenuItem;
     CutPopupmenuItem: TMenuItem;
     CopyPopupmenuItem: TMenuItem;
     PastePopupmenuItem: TMenuItem;
@@ -555,6 +556,7 @@ type
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
+    procedure OnFindDeclarationPopupmenuItemClick(Sender: TObject);
     procedure OnCutPopupmenuItemClick(Sender: TObject);
     procedure OnCopyPopupmenuItemClick(Sender: TObject);
     procedure OnPastePopupmenuItemClick(Sender: TObject);
@@ -566,6 +568,7 @@ type
   private
     FFavourites: TOIFavouriteProperties;
     FOnAddToFavourites: TNotifyEvent;
+    FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavourites: TNotifyEvent;
@@ -652,6 +655,8 @@ type
     property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
                                                   write FOnRemoveFromFavourites;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
+    property OnFindDeclarationOfProperty: TNotifyEvent
+           read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
   end;
 
 const
@@ -3008,6 +3013,9 @@ begin
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
      oisUndo,'Set property value to last valid value',
      @OnUndoPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(FindDeclarationPopupmenuItem,nil,'FindDeclarationPopupmenuItem',
+     oisFinddeclaration,'Jump to declaration of property',
+     @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
      oisCut,'Cut selected item',
@@ -3427,6 +3435,13 @@ begin
   CurRow:=GetActivePropertyRow;
   if CurRow=nil then exit;
   CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
+end;
+
+procedure TObjectInspector.OnFindDeclarationPopupmenuItemClick(Sender: TObject
+  );
+begin
+  if Assigned(OnFindDeclarationOfProperty) then
+    OnFindDeclarationOfProperty(Self);
 end;
 
 procedure TObjectInspector.OnCutPopupmenuItemClick(Sender: TObject);

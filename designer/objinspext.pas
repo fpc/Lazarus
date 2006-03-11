@@ -70,7 +70,8 @@ procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
 function GetOIFavouriteConfigFilename: string;
 
 function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
-  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint): Boolean;
+  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
+  out NewTopLine: integer): Boolean;
 
 implementation
 
@@ -190,13 +191,14 @@ begin
 end;
 
 function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
-  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint): Boolean;
+  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
+  out NewTopLine: integer): Boolean;
 var
   PropPath: String;
   LookupRoot: TPersistent;
   AFile: TLazProjectFile;
   NewCode: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY: integer;
 begin
   Result:=false;
   Code:=nil;
