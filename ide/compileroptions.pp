@@ -2102,7 +2102,7 @@ Processor specific options:
   else
     CurOutputDir:='';
   if CurOutputDir<>'' then
-    switches := switches + ' '+PrepareCmdLineOption('-FE'+CurOutputDir);
+    switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }

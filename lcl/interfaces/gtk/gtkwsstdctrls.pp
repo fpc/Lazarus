@@ -722,7 +722,6 @@ end;
 procedure TGtkWSCustomComboBox.SetColor(const AWinControl: TWinControl);
 var
   AWidget,EntryWidget : PGTKWidget;
-  ddd : gpointer;
 begin
   AWidget:=PGtkWidget(AWinControl.Handle);
   EntryWidget:=PGtkCombo(AWidget)^.entry;
@@ -912,18 +911,14 @@ begin
   //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
-
 procedure TGtkWSCustomCheckBox.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
-  WidgetInfo: PWidgetInfo;
   Widget: PGTKWidget;
   LblWidget: PGtkWidget;
-
 begin
   if not AWinControl.HandleAllocated then exit;
   if AFont.IsDefault then exit ;
-
 
   Widget:= PGtkWidget(AWinControl.Handle);
   LblWidget := (pGtkBin(Widget)^.Child);
