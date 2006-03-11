@@ -84,8 +84,6 @@ type
           var NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const UpperUnitName: string;
           var NamePos, InPos: TAtomPosition): boolean;
-    function FindMainUsesSection: TCodeTreeNode;
-    function FindImplementationUsesSection: TCodeTreeNode;
     function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -411,31 +409,6 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
-end;
-
-function TStandardCodeTool.FindMainUsesSection: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  if Result.Desc=ctnUnit then begin
-    Result:=Result.NextBrother;
-    if Result=nil then exit;
-  end;
-  Result:=Result.FirstChild;
-  if (Result=nil) then exit;
-  if (Result.Desc<>ctnUsesSection) then Result:=nil;
-end;
-
-function TStandardCodeTool.FindImplementationUsesSection: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
-    Result:=Result.NextBrother;
-  if Result=nil then exit;
-  Result:=Result.FirstChild;
-  if (Result=nil) then exit;
-  if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
 function TStandardCodeTool.RenameUsedUnit(const OldUpperUnitName,

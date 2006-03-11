@@ -682,16 +682,29 @@ type
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindDeclarationInInterface(const Identifier: string;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclarationWithMainUsesSection(const Identifier: string;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclarationOfPropertyPath(const PropertyPath: string;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclarationNodeInInterface(const Identifier: string;
+      BuildTheTree: Boolean): TCodeTreeNode;
+
+    function FindMainUsesSection: TCodeTreeNode;
+    function FindImplementationUsesSection: TCodeTreeNode;
+
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
     function FindUnitCaseInsensitive(var AnUnitName,
                                      AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, SrcPath: string);
     function SearchUnitInUnitLinks(const TheUnitName: string): string;
+    
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
+    
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
+      
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
@@ -700,6 +713,7 @@ type
       var ListOfPFindContext: TFPList): boolean;
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+      
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
     function FindCodeContext(const CursorPos: TCodeXYPosition;
@@ -715,17 +729,17 @@ type
     function NodeIsForwardDeclaration(Node: TCodeTreeNode): boolean;
 
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
-      read FInterfaceIdentifierCache;
+                                                 read FInterfaceIdentifierCache;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
-      read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
+               read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
     property OnFindUsedUnit: TOnFindUsedUnit
-      read FOnFindUsedUnit write FOnFindUsedUnit;
+                                     read FOnFindUsedUnit write FOnFindUsedUnit;
     property OnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit
-      read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
+           read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
-      read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
+                     read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
     property AdjustTopLineDueToComment: boolean
-        read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
+               read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
   end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
@@ -1308,6 +1322,123 @@ function TFindDeclarationTool.FindDeclarationInInterface(
   const Identifier: string; var NewPos: TCodeXYPosition; var NewTopLine: integer
   ): boolean;
 var
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  if Identifier='' then exit;
+  Node:=FindDeclarationNodeInInterface(Identifier,true);
+  if Node<>nil then
+    Result:=JumpToNode(Node,NewPos,NewTopLine,false);
+end;
+
+function TFindDeclarationTool.FindDeclarationWithMainUsesSection(
+  const Identifier: string; var NewPos: TCodeXYPosition; var NewTopLine: integer
+  ): boolean;
+var
+  UsesNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+begin
+  Result:=false;
+  if Identifier='' then exit;
+  BuildTree(false);
+  UsesNode:=FindMainUsesSection;
+  if UsesNode=nil then exit;
+
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.Flags:=[fdfExceptionOnNotFound];
+    Params.SetIdentifier(Self,PChar(Identifier),nil);
+    if FindIdentifierInUsesSection(UsesNode,Params) then begin
+      if Params.NewNode=nil then exit;
+      Result:=Params.NewCodeTool.JumpToNode(Params.NewNode,NewPos,
+                                            NewTopLine,false);
+    end;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationOfPropertyPath(
+  const PropertyPath: string; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer): boolean;
+// example: PropertyPath='TForm1.Font.Color'
+var
+  StartPos: Integer;
+
+  function GetNextIdentifier: string;
+  var
+    EndPos: LongInt;
+  begin
+    EndPos:=StartPos;
+    while (EndPos<=length(PropertyPath)) and (IsIdentChar[PropertyPath[EndPos]])
+    do inc(EndPos);
+    if (EndPos<=length(PropertyPath)) and (PropertyPath[EndPos]<>'.') then
+      Result:=''
+    else begin
+      Result:=copy(PropertyPath,StartPos,EndPos-StartPos);
+      StartPos:=EndPos+1;
+    end;
+  end;
+  
+var
+  Params: TFindDeclarationParams;
+  Identifier: String;
+  IsLastProperty: Boolean;
+  Context: TFindContext;
+begin
+  Result:=false;
+  //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  if PropertyPath='' then exit;
+  BuildTree(false);
+
+  // first search the class in the interface
+  StartPos:=1;
+  Identifier:=GetNextIdentifier;
+  if Identifier='' then exit;
+  Context.Tool:=Self;
+  Context.Node:=FindDeclarationNodeInInterface(Identifier,true);
+  if Context.Node=nil then exit;
+  Context.Node:=FindTypeNodeOfDefinition(Context.Node);
+  if Context.Node=nil then exit;
+  Params:=TFindDeclarationParams.Create;
+  try
+    // then search the properties
+    repeat
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
+      if (not (Context.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType]))
+      then
+        exit;
+      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
+      Identifier:=GetNextIdentifier;
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      if Identifier='' then exit;
+      Params.SetIdentifier(Self,PChar(Identifier),nil);
+      Params.ContextNode:=Context.Node;
+      IsLastProperty:=StartPos>length(PropertyPath);
+      if IsLastProperty then
+        Params.Flags:=Params.Flags+[fdfFindVariable]
+      else
+        Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfFunctionResult];
+      if not Context.Tool.FindIdentifierInContext(Params) then exit;
+      Context.Tool:=Params.NewCodeTool;
+      Context.Node:=Params.NewNode;
+      if Context.Node=nil then exit;
+      if IsLastProperty then begin
+        Result:=Context.Tool.JumpToNode(Context.Node,NewPos,NewTopLine,false);
+        break;
+      end else begin
+        Context:=Context.Tool.FindBaseTypeOfNode(Params,Context.Node);
+        if Context.Node=nil then exit;
+      end;
+     until false;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationNodeInInterface(
+  const Identifier: string; BuildTheTree: Boolean): TCodeTreeNode;
+var
   StartNode: TCodeTreeNode;
   SectionNode: TCodeTreeNode;
   Node: TCodeTreeNode;
@@ -1315,10 +1446,14 @@ var
   CurNodeIsForwardDeclaration: Boolean;
   BestNode: TCodeTreeNode;
 begin
-  Result:=false;
+  Result:=nil;
   if Identifier='' then exit;
-  BuildTree(true);
-  StartNode:=FindInterfaceNode;
+  if BuildTheTree then BuildTree(true);
+  if Tree.Root=nil then exit;
+  if Tree.Root.Desc=ctnUnit then
+    StartNode:=FindInterfaceNode
+  else
+    StartNode:=Tree.Root;
   if StartNode=nil then exit;
   SectionNode:=StartNode.FirstChild;
   if SectionNode=nil then exit;
@@ -1342,8 +1477,32 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
-  if BestNode<>nil then
-    Result:=JumpToNode(BestNode,NewPos,NewTopLine,false);
+  Result:=BestNode;
+end;
+
+function TFindDeclarationTool.FindMainUsesSection: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  if Result.Desc=ctnUnit then begin
+    Result:=Result.NextBrother;
+    if Result=nil then exit;
+  end;
+  Result:=Result.FirstChild;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
+end;
+
+function TFindDeclarationTool.FindImplementationUsesSection: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
+    Result:=Result.NextBrother;
+  if Result=nil then exit;
+  Result:=Result.FirstChild;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(

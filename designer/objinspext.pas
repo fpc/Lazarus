@@ -23,9 +23,11 @@ unit ObjInspExt;
 interface
 
 uses
-  Classes, SysUtils, ObjectInspector, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, Dialogs, LCLProc,
-  FileUtil, LazConf, ConfigStorage, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
+  ExtCtrls, Dialogs, Menus,
+  CodeToolManager, CodeCache,
+  LazIDEIntf, ProjectIntf, ObjectInspector, PropEdits,
+  DialogProcs, FileUtil, LazConf, ConfigStorage, LazarusIDEStrConsts;
   
 type
   { TOIAddRemoveFavouriteDlg }
@@ -67,6 +69,9 @@ function LoadOIFavouriteProperties: TOIFavouriteProperties;
 procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
 function GetOIFavouriteConfigFilename: string;
 
+function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
+  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint): Boolean;
+
 implementation
 
 function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
@@ -81,7 +86,7 @@ begin
   // TControl
   Add(TComponent,'Name');
   Add(TControl,'Anchors');
-  Add(TControl,'Caption');
+  Add(TComponent,'Caption');
   Add(TControl,'OnClick');
   // miscellaneous
   Add(TCustomGroupBox,'Align');
@@ -182,6 +187,67 @@ end;
 function GetOIFavouriteConfigFilename: string;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultOIFavouriteConfigFilename;
+end;
+
+function FindDeclarationOfOIProperty(AnInspector: TObjectInspector;
+  Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint): Boolean;
+var
+  PropPath: String;
+  LookupRoot: TPersistent;
+  AFile: TLazProjectFile;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  Result:=false;
+  Code:=nil;
+  Caret:=Point(0,0);
+  if AnInspector=nil then begin
+    DebugLn('FindDeclarationOfOIProperty AnInspector=nil');
+    exit;
+  end;
+  if Row=nil then
+    Row:=AnInspector.GetActivePropertyRow;
+  if Row=nil then begin
+    DebugLn('FindDeclarationOfOIProperty Row=nil');
+    exit;
+  end;
+  // get the unit filename of the LookupRoot
+  if AnInspector.PropertyEditorHook=nil then begin
+    DebugLn('FindDeclarationOfOIProperty AnInspector.PropertyEditorHook=nil');
+    exit;
+  end;
+  LookupRoot:=AnInspector.PropertyEditorHook.LookupRoot;
+  if not (LookupRoot is TComponent) then begin
+    DebugLn('FindDeclarationOfOIProperty not (LookupRoot is TComponent)');
+    exit;
+  end;
+  AFile:=LazarusIDE.GetProjectFileWithRootComponent(TComponent(LookupRoot));
+  if AFile=nil then begin
+    DebugLn('FindDeclarationOfOIProperty AFile=nil');
+    exit;
+  end;
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn('FindDeclarationOfOIProperty not LazarusIDE.BeginCodeTools');
+    exit;
+  end;
+  Code:=nil;
+  if LoadCodeBuffer(Code,AFile.Filename,[])<>mrOk then begin
+    exit;
+  end;
+  // create the property search path
+  PropPath:=LookupRoot.ClassName+'.'+
+            AnInspector.GetActivePropertyGrid.PropertyPath(Row);
+  // find the property declaration
+  if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,PropPath,NewCode,
+    NewX,NewY,NewTopLine) then
+  begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+  Code:=NewCode;
+  Caret:=Point(NewX,NewY);
+  DebugLn('FindDeclarationOfOIProperty SUCCESS ',Code.Filename,' ',dbgs(Caret));
+  Result:=true;
 end;
 
 { TOIAddRemoveFavouriteDlg }

@@ -402,6 +402,7 @@ type
     function GridHeight: integer;
     function MouseToIndex(y: integer; MustExist: boolean):integer;
     function PropertyPath(Index: integer):string;
+    function PropertyPath(Row: TOIPropertyGridRow):string;
     function TopMax: integer;
     procedure BuildPropertyList;
     procedure Clear;
@@ -978,17 +979,25 @@ begin
 end;
 
 function TOICustomPropertyGrid.PropertyPath(Index:integer):string;
-var CurRow:TOIPropertyGridRow;
 begin
   if (Index>=0) and (Index<FRows.Count) then begin
-    CurRow:=Rows[Index];
-    Result:=CurRow.Name;
-    CurRow:=CurRow.Parent;
-    while CurRow<>nil do begin
-      Result:=CurRow.Name+'.'+Result;
-      CurRow:=CurRow.Parent;
-    end;
-  end else Result:='';
+    Result:=PropertyPath(Rows[Index]);
+  end else
+    Result:='';
+end;
+
+function TOICustomPropertyGrid.PropertyPath(Row: TOIPropertyGridRow): string;
+begin
+  if Row=nil then begin
+    Result:='';
+    exit;
+  end;
+  Result:=Row.Name;
+  Row:=Row.Parent;
+  while Row<>nil do begin
+    Result:=Row.Name+'.'+Result;
+    Row:=Row.Parent;
+  end;
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(

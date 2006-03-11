@@ -297,6 +297,7 @@ type
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
     function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
+    function GetUnitName(Index: Integer): string;
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -2032,6 +2033,11 @@ end;
 function TPropertyEditor.GetComponent(Index: Integer): TPersistent;
 begin
   Result:=FPropList^[Index].Instance;
+end;
+
+function TPropertyEditor.GetUnitName(Index: Integer): string;
+begin
+  Result:=GetClassUnitName(GetComponent(Index).ClassType);
 end;
 
 function TPropertyEditor.GetFloatValue:Extended;

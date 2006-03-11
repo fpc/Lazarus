@@ -306,13 +306,20 @@ type
           out NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
-          const Identifier: string; var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          const Identifier: string; out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
+    function FindDeclarationWithMainUsesSection(Code: TCodeBuffer;
+          const Identifier: string;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): Boolean;
     function FindDeclarationAndOverload(Code: TCodeBuffer; X,Y: integer;
           var ListOfPCodeXYPosition: TFPList): boolean;
     function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
+    function FindDeclarationOfPropertyPath(Code: TCodeBuffer;
+          const PropertyPath: string; out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): Boolean;
 
     // get code context
     function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
@@ -419,6 +426,8 @@ type
           var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
     function CommentUnitsInUsesSections(Code: TCodeBuffer;
           MissingUnits: TStrings): boolean;
+    function FindUnit(Code: TCodeBuffer;
+                      var AnUnitName, AnUnitInFilename: string): string;
 
     // resources
     property OnFindDefinePropertyForContext: TOnFindDefinePropertyForContext
@@ -1422,7 +1431,7 @@ begin
 end;
 
 function TCodeToolManager.FindDeclarationInInterface(Code: TCodeBuffer;
-  const Identifier: string; var NewCode: TCodeBuffer; var NewX, NewY,
+  const Identifier: string; out NewCode: TCodeBuffer; out NewX, NewY,
   NewTopLine: integer): boolean;
 var
   NewPos: TCodeXYPosition;
@@ -1438,6 +1447,33 @@ begin
   try
     Result:=FCurCodeTool.FindDeclarationInInterface(Identifier,NewPos,
                                                     NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationInInterface END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationWithMainUsesSection(Code: TCodeBuffer;
+  const Identifier: string; out NewCode: TCodeBuffer;
+  out NewX, NewY, NewTopLine: integer): Boolean;
+var
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationWithMainUsesSection A ',Code.Filename,' Identifier=',Identifier);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindDeclarationWithMainUsesSection(Identifier,NewPos,
+                                                            NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -1479,7 +1515,7 @@ begin
 end;
 
 function TCodeToolManager.FindMainDeclaration(Code: TCodeBuffer; X, Y: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -1504,6 +1540,33 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindMainDeclaration END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationOfPropertyPath(Code: TCodeBuffer;
+  const PropertyPath: string; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer): Boolean;
+var
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationOfPropertyPath A ',Code.Filename,' Path="',PropertyPath,'"');
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindDeclarationOfPropertyPath(PropertyPath,
+                                                       NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationOfPropertyPath END ');
   {$ENDIF}
 end;
 
@@ -1632,6 +1695,7 @@ begin
     DebugLn('TCodeToolManager.FindReferences unable to FindMainDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
   end;
+  if NewTopLine=0 then ;
   if not InitCurCodeTool(TargetCode) then exit;
   CursorPos.X:=NewX;
   CursorPos.Y:=NewY;
@@ -2741,6 +2805,21 @@ begin
                                                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUnit(Code: TCodeBuffer; var AnUnitName,
+  AnUnitInFilename: string): string;
+begin
+  Result:='';
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUnit A ',Code.Filename,' TheUnitName="',TheUnitName,'"');
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUnitCaseInsensitive(AnUnitName,AnUnitInFilename);
+  except
+    on e: Exception do HandleException(e);
   end;
 end;
 

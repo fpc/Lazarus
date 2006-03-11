@@ -39,7 +39,7 @@ uses
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
   HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, MsgIntf, LazIDEIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
+  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, ExtCtrls, LResources,
   Interfaces;
 
@@ -621,30 +621,16 @@ end;
 procedure THelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var
   AnInspector: TObjectInspector;
-  Row: TOIPropertyGridRow;
-  LookupRoot: TPersistent;
-  AFile: TLazProjectFile;
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  ErrMsg: string;
 begin
   DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspector then begin
     AnInspector:=TObjectInspector(Sender);
-    Row:=AnInspector.GetActivePropertyRow;
-    if Row=nil then begin
-      // TODO: show help about object inspector
-      DebugLn('THelpManager.ShowHelpForObjectInspector TODO: show help about object inspector');
-    end else begin
-      // find unit of LookupRoot
-      if AnInspector.PropertyEditorHook=nil then exit;
-      LookupRoot:=AnInspector.PropertyEditorHook.LookupRoot;
-      if not (LookupRoot is TComponent) then exit;
-      AFile:=LazarusIDE.GetProjectFileWithRootComponent(TComponent(LookupRoot));
-      if AFile=nil then exit;
-      
-      
-      if Row.Editor=nil then exit;
-      if Row.Editor.GetPropInfo=nil then exit;
-      
+    if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret) then begin
+      ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
     end;
   end;
 end;
