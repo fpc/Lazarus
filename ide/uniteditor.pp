@@ -3632,7 +3632,7 @@ begin
     SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
                                             .OnClick:=@BookMarkSetClicked;
   end;
-  SrcEditMenuSetFreeBookmark.OnClick:=@BookMarkSetClicked;
+  SrcEditMenuSetFreeBookmark.OnClick:=@BookMarkSetFreeClicked;
   SrcEditMenuNextBookmark.OnClick:=@BookMarkNextClicked;
   SrcEditMenuPrevBookmark.OnClick:=@BookMarkPrevClicked;
 
