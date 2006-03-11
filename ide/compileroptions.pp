@@ -1939,6 +1939,11 @@ Processor specific options:
     switches := switches + ' -T' + Globals.TargetOS
   else if (TargetOS<>'') then
     switches := switches + ' -T' + TargetOS;
+  { Target CPU }
+  if (Globals<>nil) and (Globals.TargetCPU<>'') then
+    switches := switches + ' -P' + Globals.TargetCPU
+  else if (TargetCPU<>'') then
+    switches := switches + ' -P' + TargetCPU;
   { --------------- Linking Tab ------------------- }
   
   { Debugging }

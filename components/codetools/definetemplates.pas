@@ -2784,13 +2784,13 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
-    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
+    DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
     ShortTestFile:=ExtractFileName(TestPascalFile);
 
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
-    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;
+    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoHide;
     try
       TheProcess.Execute;
       OutputLine:='';
@@ -2830,8 +2830,8 @@ begin
 
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
-    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;
+    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoHide;
     try
       TheProcess.Execute;
       if (TheProcess.Output<>nil) then
@@ -2878,8 +2878,8 @@ begin
       CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTP';
     TheProcess.CommandLine := CmdLine;
-    TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;
+    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+    TheProcess.ShowWindow := swoHide;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then

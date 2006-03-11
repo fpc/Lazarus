@@ -1598,7 +1598,7 @@ begin
     Parent := grpTargetPlatform;
     Left := 4;
     AnchorVerticalCenterTo(TargetCPUComboBox);
-    Caption :=dlgTargetCPU+' (-d)';
+    Caption :=dlgTargetCPU+' (-P)';
   end;
 
   Targeti386ProcComboBox:=TComboBox.Create(Self);
