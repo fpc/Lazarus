@@ -256,6 +256,7 @@ begin
             s:=IdentItem.Tool.ExtractCode(IdentItem.Node.StartPos+length(s),
                                           IdentItem.Node.EndPos,[]);
           end;
+          s:=copy(s,1,50);
         end;
 
       else

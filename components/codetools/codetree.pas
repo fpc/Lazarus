@@ -114,6 +114,7 @@ const
   ctnSpecializeType  = 79;
   ctnSpecializeParams= 80;
   ctnGenericType     = 81;
+  ctnConstant        = 82;
 
   ctnBeginBlock      = 90;
   ctnAsmBlock        = 91;
@@ -142,7 +143,7 @@ const
       ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
-      ctnClassOfType,ctnVariantType];
+      ctnClassOfType,ctnVariantType,ctnConstant];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement];
   AllSourceTypes =
@@ -358,6 +359,7 @@ begin
   ctnSpecializeType: Result:='Specialize Typename';
   ctnSpecializeParams: Result:='Specialize Parameterlist';
   ctnGenericType: Result:='Generic Type';
+  ctnConstant: Result:='Constant';
 
   ctnWithVariable: Result:='With Variable';
   ctnWithStatement: Result:='With Statement';

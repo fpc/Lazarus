@@ -2059,6 +2059,7 @@ var
   IdentStartPos, IdentEndPos: integer;
   IdentAdded: boolean;
   ClassStr: String;
+  NodeStr: String;
 begin
   Result:='';
   if FindDeclaration(CursorPos,AllFindSmartFlags,
@@ -2099,16 +2100,23 @@ begin
                 NewTool.ReadNextAtom;
                 Result:=Result+': '+NewTool.GetAtom;
               end;
-              
-            else
-              DebugLn('ToDo: TFindDeclarationTool.FindSmartHint TypeNode=',
-                TypeNode.DescAsString);
+            ctnConstant:
+              begin
+                NodeStr:=' = '+NewTool.ExtractNode(TypeNode,[]);
+                Result:=Result+copy(NodeStr,1,50);
+              end;
             end;
-          end;
-          if NewNode.Desc=ctnConstDefinition then begin
-
-            // ToDo: write value
-
+          end else begin
+            case NewNode.Desc of
+            ctnConstDefinition:
+              begin
+                DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',NewTool.ExtractNode(NewNode,[]),'"');
+                NodeStr:=NewTool.ExtractCode(NewNode.StartPos
+                                   +GetIdentLen(@NewTool.Src[NewNode.StartPos]),
+                                   NewNode.EndPos,[]);
+                Result:=Result+copy(NodeStr,1,50);
+              end;
+            end;
           end;
         end;
         
@@ -2178,7 +2186,7 @@ begin
       end;
     end;
     // filename
-    if Result<>'' then Result:=Result+#13#10;
+    if Result<>'' then Result:=Result+LineEnding;
     Result:=Result+NewPos.Code.Filename;
     // file position
     if NewPos.Y>=1 then begin

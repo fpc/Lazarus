@@ -2619,8 +2619,10 @@ begin
       if (CurPos.Flag<>cafEqual) then
         RaiseCharExpectedButAtomFound('=');
       // read constant
+      ReadNextAtom;
+      CreateChildNode;
+      CurNode.Desc:=ctnConstant;
       repeat
-        ReadNextAtom;
         if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
           ReadTilBracketClose(true);
         if (CurPos.Flag in AllCommonAtomWords)
@@ -2628,7 +2630,13 @@ begin
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and AtomIsKeyWord then
           RaiseStringExpectedButAtomFound('constant');
-      until (CurPos.Flag in [cafSemicolon]);
+        if (CurPos.Flag=cafSemicolon) then break;
+        CurNode.EndPos:=CurPos.EndPos;
+        ReadNextAtom;
+      until (CurPos.StartPos>SrcLen);
+      // close ctnConstant node
+      EndChildNode;
+      // close ctnConstDefinition node
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
