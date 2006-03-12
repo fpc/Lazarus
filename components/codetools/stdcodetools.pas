@@ -4702,7 +4702,7 @@ begin
       dec(CurPos.StartPos,3);
       while true do begin
         if (CurPos.StartPos>=1)
-        and ((Src[CurPos.StartPos+11]='*') and (Src[CurPos.StartPos]='(')) then
+        and ((Src[CurPos.StartPos+1]='*') and (Src[CurPos.StartPos]='(')) then
         begin
           Result:=true;
           exit;

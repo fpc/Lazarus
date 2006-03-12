@@ -460,6 +460,19 @@ function TPascalReaderTool.ExtractClassName(ClassNode: TCodeTreeNode;
 var Len: integer;
 begin
   if ClassNode<>nil then begin
+    if ClassNode.Desc <> ctnClass then
+    begin
+      // find class of node
+      repeat
+        ClassNode := ClassNode.Parent;
+        if (ClassNode = nil) or (ClassNode.Desc in AllCodeSections) then
+        begin
+          Result := '';
+          Exit;
+        end;
+      until ClassNode.Desc = ctnClass;
+    end;
+
     if ClassNode.Desc=ctnClass then begin
       ClassNode:=ClassNode.Parent;
       if (ClassNode<>nil) and (ClassNode.Desc=ctnGenericType) then
@@ -469,6 +482,7 @@ begin
         exit;
       end;
     end;
+    
     Len:=1;
     while (ClassNode.StartPos+Len<=SrcLen)
     and (IsIdentChar[Src[ClassNode.StartPos+Len]]) do

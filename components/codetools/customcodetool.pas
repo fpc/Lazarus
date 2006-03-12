@@ -1459,10 +1459,10 @@ var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   
   procedure RaiseBracketNotFound;
   begin
-    if CloseBracket=cafRoundBracketOpen then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+    if CloseBracket=cafRoundBracketClose then
+      SaveRaiseExceptionFmt(ctsBracketNotFound,[')'])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+      SaveRaiseExceptionFmt(ctsBracketNotFound,[']']);
   end;
   
 begin

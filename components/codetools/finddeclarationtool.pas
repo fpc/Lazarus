@@ -2058,6 +2058,7 @@ var
   AbsCursorPos: integer;
   IdentStartPos, IdentEndPos: integer;
   IdentAdded: boolean;
+  ClassStr: String;
 begin
   Result:='';
   if FindDeclaration(CursorPos,AllFindSmartFlags,
@@ -2080,6 +2081,11 @@ begin
           ctnConstDefinition: Result:=Result+'const ';
           ctnEnumIdentifier: Result:=Result+'enum ';
           end;
+          
+          // add class name
+          ClassStr := NewTool.ExtractClassName(NewNode, False);
+          if ClassStr <> '' then Result := Result + ClassStr + '.';
+          
           NewTool.MoveCursorToNodeStart(NewNode);
           NewTool.ReadNextAtom;
           Result:=Result+NewTool.GetAtom;
@@ -2112,7 +2118,7 @@ begin
           // ToDo: ppu, ppw, dcu files
 
           Result:=Result+NewTool.ExtractProcHead(NewNode,
-            [phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+            [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
              phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
           IdentAdded:=true;
         end;
@@ -2127,6 +2133,13 @@ begin
           NewTool.MoveCursorToNodeStart(IdentNode);
           NewTool.ReadNextAtom;
           Result:=Result+NewTool.GetAtom+' ';
+          
+          if NewNode.Desc = ctnProperty then
+          begin // add class name
+            ClassStr := NewTool.ExtractClassName(NewNode, False);
+            if ClassStr <> '' then Result := Result + ClassStr + '.';
+          end;
+          
           NewTool.ReadNextAtom;
           Result:=Result+NewTool.GetAtom+' ';
           IdentAdded:=true;
@@ -7134,9 +7147,9 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
   procedure RaiseBracketNotOpened;
   begin
     if CurPos.Flag=cafRoundBracketClose then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['['])
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['(']);
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
   end;
 
   function CheckIdentifierAndParameterList: boolean; forward;
