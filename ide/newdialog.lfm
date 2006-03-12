@@ -17,7 +17,6 @@ object NewOtherDialog: TNewOtherDialog
     BorderSpacing.Around = 6
     DefaultItemHeight = 14
     TabOrder = 0
-    OnClick = ItemsTreeViewClick
     OnDblClick = OkButtonClick
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Left = 6

@@ -145,13 +145,13 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     ItemsTreeView: TTreeView;
-    procedure ItemsTreeViewClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
     FNewItem: TNewIDEItemTemplate;
     procedure FillItemsTree;
     procedure SetupComponents;
+    procedure UpdateDescription;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -215,7 +215,7 @@ begin
     for TemplateID := 0 to Category.Count - 1 do
     begin
       Template := Category[TemplateID];
-      DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
+      //DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
       if Template.VisibleInNewDialog then
         ItemsTreeView.Items.AddChildObject(NewParentNode, Template.Name,
           Template);
@@ -225,7 +225,24 @@ begin
   ItemsTreeView.EndUpdate;
 end;
 
-procedure TNewOtherDialog.ItemsTreeViewClick(Sender: TObject);
+procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
+begin
+  OkButton.Enabled := (ItemsTreeView.Selected <> nil) and
+    (TObject(ItemsTreeView.Selected.Data) is TNewIDEItemTemplate);
+  UpdateDescription;
+end;
+
+procedure TNewOtherDialog.SetupComponents;
+begin
+  DescriptionGroupBox.Caption := lisToDoLDescription;
+  DescriptionLabel.Caption := '';
+  OkButton.Caption := lisLazBuildOk;
+  CancelButton.Caption := dlgCancel;
+  DefaultControl := OkButton;
+  CancelControl  := CancelButton;
+end;
+
+procedure TNewOtherDialog.UpdateDescription;
 var
   Desc:  string;
   ANode: TTreeNode;
@@ -241,22 +258,6 @@ begin
   else
     Desc := '';
   DescriptionLabel.Caption := Desc;
-end;
-
-procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
-begin
-  OkButton.Enabled := (ItemsTreeView.Selected <> nil) and
-    (TObject(ItemsTreeView.Selected.Data) is TNewIDEItemTemplate);
-end;
-
-procedure TNewOtherDialog.SetupComponents;
-begin
-  DescriptionGroupBox.Caption := lisToDoLDescription;
-  DescriptionLabel.Caption := '';
-  OkButton.Caption := lisLazBuildOk;
-  CancelButton.Caption := dlgCancel;
-  DefaultControl := OkButton;
-  CancelControl  := CancelButton;
 end;
 
 constructor TNewOtherDialog.Create(TheOwner: TComponent);

@@ -189,7 +189,7 @@ end;
 procedure TCodeToolsOptions.SetProjectDir(const AValue: string);
 begin
   if FProjectDir=AValue then exit;
-  FProjectDir:=AValue;
+  FProjectDir:=AppendPathDelim(AValue);
   Modified:=true;
 end;
 

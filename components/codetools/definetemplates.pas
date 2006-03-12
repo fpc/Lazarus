@@ -463,6 +463,11 @@ function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 
+// functions to quickly setup some defines
+function CreateDefinesInDirectories(const SourcePaths, FlagName: string
+  ): TDefineTemplate;
+
+
 implementation
 
 
@@ -680,6 +685,42 @@ begin
   while (EndPos<=length(Combination)) and (Combination[EndPos]<>'-') do
     inc(EndPos);
   WidgetSet:=copy(Combination,StartPos,EndPos-StartPos);
+end;
+
+function CreateDefinesInDirectories(const SourcePaths, FlagName: string
+  ): TDefineTemplate;
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  CurDirectory: String;
+  DirsTempl: TDefineTemplate;
+  DirTempl: TDefineTemplate;
+  SetFlagTempl: TDefineTemplate;
+begin
+  // create a block template for the directories
+  DirsTempl:=TDefineTemplate.Create(FlagName,
+    'Block of directories to set '+FlagName,
+    '','',da_Block);
+
+  // create a define flag for every directory
+  StartPos:=1;
+  while StartPos<=length(SourcePaths) do begin
+    EndPos:=StartPos;
+    while (EndPos<=length(SourcePaths)) and (SourcePaths[EndPos]<>';') do
+      inc(EndPos);
+    if EndPos>StartPos then begin
+      CurDirectory:=copy(SourcePaths,StartPos,EndPos-StartPos);
+      DirTempl:=TDefineTemplate.Create('FlagDirectory','FlagDirectory',
+        '',CurDirectory,da_Directory);
+      SetFlagTempl:=TDefineTemplate.Create(FlagName,FlagName,
+        FlagName,'1',da_Define);
+      DirTempl.AddChild(SetFlagTempl);
+      DirsTempl.AddChild(DirTempl);
+    end;
+    StartPos:=EndPos+1;
+  end;
+  
+  Result:=DirsTempl;
 end;
 
 { TDefineTemplate }

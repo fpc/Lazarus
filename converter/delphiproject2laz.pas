@@ -116,6 +116,7 @@ begin
 
   // clean up project
   Project1.RemoveNonExistingFiles(false);
+  // TODO: remove doubles in search paths -> this should be done on loading the .lpi
   Project1.CompilerOptions.OtherUnitFiles:=
               RemoveNonExistingPaths(Project1.CompilerOptions.OtherUnitFiles,
                                      Project1.ProjectDirectory);
