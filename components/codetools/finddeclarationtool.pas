@@ -1387,7 +1387,7 @@ var
   Context: TFindContext;
 begin
   Result:=false;
-  //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
   if PropertyPath='' then exit;
   BuildTree(false);
 
@@ -1404,13 +1404,13 @@ begin
   try
     // then search the properties
     repeat
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
+      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
       if (not (Context.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType]))
       then
         exit;
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
       Identifier:=GetNextIdentifier;
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
       if Identifier='' then exit;
       Params.SetIdentifier(Self,PChar(Identifier),nil);
       Params.ContextNode:=Context.Node;

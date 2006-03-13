@@ -199,6 +199,7 @@ var
   AFile: TLazProjectFile;
   NewCode: TCodeBuffer;
   NewX, NewY: integer;
+  APersistent: TPersistent;
 begin
   Result:=false;
   Code:=nil;
@@ -236,9 +237,20 @@ begin
   if LoadCodeBuffer(Code,AFile.Filename,[])<>mrOk then begin
     exit;
   end;
+  if Row.Editor=nil then begin
+    DebugLn('FindDeclarationOfOIProperty Row.Editor=nil');
+    exit;
+  end;
   // create the property search path
-  PropPath:=LookupRoot.ClassName+'.'+
-            AnInspector.GetActivePropertyGrid.PropertyPath(Row);
+  APersistent:=Row.Editor.GetComponent(0);
+  if APersistent=nil then begin
+    DebugLn('FindDeclarationOfOIProperty APersistent=nil');
+    exit;
+  end;
+  PropPath:=AnInspector.GetActivePropertyGrid.PropertyPath(Row);
+  if APersistent is TComponent then
+    PropPath:=TComponent(APersistent).Name+'.'+PropPath;
+  PropPath:=LookupRoot.ClassName+'.'+PropPath;
   // find the property declaration
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,PropPath,NewCode,
     NewX,NewY,NewTopLine) then
