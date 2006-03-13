@@ -2380,7 +2380,7 @@ begin
       and AnUnitInfo.BuildFileIfActive then
         DoBuildFile
       else
-        DoBuildProject(crCompile,[pbfOnlyIfNeeded]);
+        DoBuildProject(crCompile,[]);
     end;
 
   ecBuildAll:    DoBuildProject(crBuild,[pbfCleanCompile,
@@ -3039,7 +3039,7 @@ end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
-  DoBuildProject(crCompile,[pbfOnlyIfNeeded]);
+  DoBuildProject(crCompile,[]);
 end;
 
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
