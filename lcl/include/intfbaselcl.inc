@@ -139,6 +139,12 @@ begin
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
+function TWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
+begin
+  Result:=TextOut(DC,X,Y,Str,Count);
+end;
+
+
 function TWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result:=false;

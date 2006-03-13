@@ -39,6 +39,7 @@ function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 
 function FontCanUTF8(Font: HFont): boolean; override;
 

@@ -2785,13 +2785,6 @@ var
       theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
 
-      If not CalcRect then
-        Case TopOffset of
-          DT_VCENTER :
-            OffsetRect(theRect, 0, (Rect.Bottom - theRect.Bottom) div 2);
-          DT_Bottom :
-            OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
-        end;
     end
     else begin
       // consider line breaks
@@ -2802,16 +2795,16 @@ var
       end;
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
 
-      LineWidth := 0;
 
-      If (Lines <> nil) then begin
+      If (Lines <> nil) and (NumLines>1) then begin
+        LineWidth := 0;
         For J := 0 to NumLines - 1 do begin
           GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
           LineWidth := Max(LineWidth, AP.cX);
         end;
-      end;
-
+      end else LineWidth:=10000;
       LineWidth := Min(MaxLength, LineWidth);
+
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
@@ -2862,7 +2855,7 @@ var
     end;
 
     {Draw line of Text}
-    TextOut(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
+    TextUtf8Out(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
 
     {Draw Prefix}
     If pIndex > 0 then begin
@@ -3694,7 +3687,7 @@ var
     with TDeviceContext(DC) do begin
       if (Dx=nil) then begin
         // no dist array -> write as one block
-        //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine Dx=nil ',dbgs(LineLen),' DCTextMetric.IsDoubleByteChar=',dbgs(DCTextMetric.IsDoubleByteChar));
+        
         gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
       end else begin
@@ -5940,6 +5933,7 @@ begin
     end;
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
+
 end;
 {$EndIf}
 
@@ -9330,6 +9324,9 @@ var
   TempPen : hPen;
   LogP : TLogPen;
   Points : array[0..1] of TSize;
+  
+  lbearing, rbearing, width, ascent,descent: LongInt;
+
 begin
   Result := IsValidDC(DC);
   if Result and (Count>0)
@@ -9357,7 +9354,18 @@ begin
         DebugLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        GetTextExtentPoint(DC, Str, Count, Sz);
+        descent:=0;
+        gdk_text_extents(UseFont, Str, Count,
+                         @lbearing, @rBearing, @width, @ascent, @descent);
+        sz.cx:=width;
+        Sz.cY :={$IFDEF Win32}
+                GDK_String_Height(UseFont, Str)
+                {$ELSE}
+                ascent+descent;
+                {$ENDIF}
+
+
+        
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
         //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
         FillRect(DC,aRect,hBrush(CurrentBrush));

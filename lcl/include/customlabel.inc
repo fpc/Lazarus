@@ -370,12 +370,15 @@ begin
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;
     end;
-    CalcSize(lTextWidth, lTextHeight);
     TextLeft := R.Left;
-    case Layout of
-      tlTop:    TextTop := R.Top;
-      tlCenter: TextTop := (R.Bottom - R.Top - lTextHeight) div 2;
-      tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
+    if layout = tlTop then begin
+      TextTop := R.Top;
+    end else begin
+      CalcSize(lTextWidth, lTextHeight);
+      case Layout of
+        tlCenter: TextTop := (R.Bottom - R.Top - lTextHeight) div 2;
+        tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
+      end;
     end;
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     if not Enabled then begin

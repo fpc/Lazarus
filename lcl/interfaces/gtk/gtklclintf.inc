@@ -259,6 +259,26 @@ begin
     Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
   end;
 end;
+function TGtkWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
+var
+  IsDBCSFont: Boolean;
+  NewCount: Integer;
+begin
+  UpdateDCTextMetric(TDeviceContext(DC));
+  IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+  if IsDBCSFont then begin
+    NewCount:=Count*2;
+    if FExtUTF8OutCacheSize<NewCount then begin
+      ReAllocMem(FExtUTF8OutCache,NewCount);
+      FExtUTF8OutCacheSize:=NewCount;
+    end;
+    NewCount:=UTF8ToDoubleByte(Str,Count,FExtUTF8OutCache)*2;
+    Result:=TextOut(DC,X,Y,FExtUTF8OutCache,NewCount);
+  end else begin
+    Result:=TextOut(DC,X,Y,Str,Count);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
