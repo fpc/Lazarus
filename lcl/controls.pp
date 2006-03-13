@@ -1132,8 +1132,7 @@ type
     procedure EditingDone; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
-    procedure BeginDrag(Immediate: Boolean; Threshold: Integer);
-    procedure BeginDrag(Immediate: Boolean);
+    procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
     procedure BringToFront;
     function ColorIsStored: boolean; virtual;
     function HasParent: Boolean; override;

@@ -86,14 +86,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TControl.BeginDrag(Immediate: Boolean);
-------------------------------------------------------------------------------}
-procedure TControl.BeginDrag(Immediate: Boolean);
-begin
-  BeginDrag(Immediate, -1);
-end;
-
-{------------------------------------------------------------------------------
        TControl.BeginAutoDrag
 ------------------------------------------------------------------------------}
 Procedure TControl.BeginAutoDrag;
