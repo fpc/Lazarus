@@ -275,8 +275,8 @@ begin
     TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
 
   // calculate the width we need to display the buttons
-  MinBtnWidth:=75;
-  MinBtnHeight:=25;
+  MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
+  MinBtnHeight:=Max(15,MinimumDialogButtonHeight);
   reqBtnWidth := 0;
 
   // create the buttons, without positioning
@@ -562,11 +562,9 @@ procedure TQuestionDlg.CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
 var
   TxtSize: TSize;
 begin
-  w:=length(AButton.Caption)*10;
-  h:=25;
   TxtSize:=Canvas.TextExtent(AButton.Caption);
-  w:=TxtSize.cx;
-  h:=TxtSize.cy;
+  w:=Max(TxtSize.cx,MinimumDialogButtonWidth);
+  h:=Max(TxtSize.cy,MinimumDialogButtonHeight);
   if AButton.Kind<>bkCustom then begin
     inc(w,22); // icon
   end;

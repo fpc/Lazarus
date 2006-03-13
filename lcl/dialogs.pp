@@ -342,6 +342,9 @@ type
     property ToPage: Integer read FToPage write FToPage default 0;
   end;
 
+const
+  MinimumDialogButtonWidth: integer = 90;
+  MinimumDialogButtonHeight: integer = 25;
 
 { MessageDlg }
 
