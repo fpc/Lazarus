@@ -113,12 +113,12 @@ var
   Index: integer;
 begin
   Index := ListBox.ItemIndex;
-  if Index = -1
-  then ListBox.Items.Add('Button 1 clicked')
-  else ListBox.Items.Insert(Index,
-                            'Button 1 clicked at '+IntToStr(Index));
-  for Index := 0 to ListBox.Items.Count - 1
-  do ListBox.Items.Objects[Index] := TObject(Index);
+  if Index = -1 then
+    ListBox.Items.Add('Button 1 clicked')
+  else 
+    ListBox.Items.Insert(Index, 'Button 1 clicked at '+IntToStr(Index));
+  for Index := 0 to ListBox.Items.Count - 1 do 
+    ListBox.Items.Objects[Index] := TObject(PtrInt(Index));
 end;
 
 procedure TListBoxTestForm.Button2Click(Sender: TObject);
@@ -137,9 +137,9 @@ end;
 
 procedure TListBoxTestForm.Button4Click(Sender: TObject);
 var
-  X: integer;
+  X: PtrInt;
 begin
-  X := integer(ListBox.Items.Objects[ListBox.ItemIndex]);
+  X := PtrInt(ListBox.Items.Objects[ListBox.ItemIndex]);
   writeln('TListBoxTestForm.Button4Click ',X);
 end;
 
