@@ -1185,7 +1185,7 @@ resourcestring
   lisFRBackwardSearch = 'Backward search';
   dlgUpWord = 'Up';
   dlgDownWord = 'Down';
-  dlgReplaceAll = 'Replace All';
+  dlgReplaceAll = 'Replace &All';
   
   // IDEOptionDefs
   dlgGetPosition = 'Get position';

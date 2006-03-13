@@ -47,7 +47,7 @@ ResourceString
   rsMbIgnore       = '&Ignore';
   rsMbAll          = '&All';
   rsMbNoToAll      = 'No to all';
-  rsMbYesToAll     = 'Yes to all';
+  rsMbYesToAll     = 'Yes to &All';
   rsMbHelp         = '&Help';
   rsMbClose        = '&Close';
 

@@ -991,6 +991,7 @@ end;
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 var ALeft,ATop:integer;
+    bSelectedTextOption: Boolean;
 begin
   if SourceNotebook<>nil then
     SourceNotebook.InitFindDialog;
@@ -1027,17 +1028,29 @@ begin
   GetDialogPosition(FindReplaceDlg.Width,FindReplaceDlg.Height,ALeft,ATop);
   FindReplaceDlg.Left:=ALeft;
   FindReplaceDlg.Top:=ATop;
+  
+  try
+   bSelectedTextOption := (ssoSelectedOnly in FindReplaceDlg.Options);
+   //if there are selected text and more than 1 word, automatically enable selected text option
+   if (EditorComponent.SelAvail and (Pos(' ', EditorComponent.SelText) <> 0)) then
+    FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly];
 
-  if (FindReplaceDlg.ShowModal = mrCancel) then begin
-    exit;
-  end;
-  //debugln('TSourceEditor.StartFindAndReplace B FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'"');
+    if (FindReplaceDlg.ShowModal = mrCancel) then begin
+      exit;
+    end;
+    //debugln('TSourceEditor.StartFindAndReplace B FindReplaceDlg.FindText="',dbgstr(FindReplaceDlg.FindText),'"');
 
-  if Replace then
-    InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText);
-  InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
-  InputHistories.Save;
-  DoFindAndReplace;
+    if Replace then
+      InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText);
+    InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
+    InputHistories.Save;
+    DoFindAndReplace;
+  finally
+   //Restore original find options
+   if bSelectedTextOption then
+    FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly] else
+    FindReplaceDlg.Options := FindReplaceDlg.Options - [ssoSelectedOnly];
+  end;//End try-finally
 end;
 
 {------------------------------F I N D  A G A I N ----------------------------}

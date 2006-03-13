@@ -134,6 +134,7 @@ begin
     SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
     Anchors:= [akLeft, akTop, akRight];
     Text:='';
+    AutoCompleteText := [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending];
     OnKeyDown:=@TextToFindComboBoxKeyDown;
     Parent:=Self;
     TabOrder:=0;
@@ -155,6 +156,7 @@ begin
     SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
     Anchors:= [akLeft, akTop, akRight];
     Text:='';
+    AutoCompleteText := [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending];
     OnKeyDown:=@TextToFindComboBoxKeyDown;
     Parent:=Self;
     TabOrder:=1;
@@ -305,7 +307,7 @@ begin
     Parent:= Self;
     Default:=true;
     SetBounds(Parent.ClientWidth-350,Parent.ClientHeight-32,120,Height);
-    Caption:='Ok';
+    Caption:='O&k';
     OnClick:=@OkButtonClick;
   end;
 
@@ -551,6 +553,9 @@ begin
   if ssoBackwards in NewOptions
     then DirectionRadioGroup.ItemIndex:=1
     else DirectionRadioGroup.ItemIndex:=0;
+  if ssoSelectedOnly in NewOptions then
+   ScopeRadioGroup.ItemIndex := 1 else
+   ScopeRadioGroup.ItemIndex := 0;
   ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
   ReplaceTextComboBox.Enabled:=ReplaceAllButton.Enabled;
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
