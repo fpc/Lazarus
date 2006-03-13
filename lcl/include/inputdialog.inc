@@ -59,9 +59,14 @@ begin
       TabStop := True;
       Visible := True;
       If MaskInput then
-        EchoMode := emPassword
-      else
+      begin 
+        EchoMode := emPassword; 
+        PasswordChar:='*'; 
+      end else 
+      begin 
         EchoMode := emNormal;
+        PasswordChar:=#0; 
+      end; 
       TabOrder := 0;
     end;
     With TBitBtn.Create(Form) do begin

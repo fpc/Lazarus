@@ -1345,6 +1345,7 @@ begin
   if UsesNode=nil then exit;
 
   Params:=TFindDeclarationParams.Create;
+  ActivateGlobalWriteLock;
   try
     Params.Flags:=[fdfExceptionOnNotFound];
     Params.SetIdentifier(Self,PChar(Identifier),nil);
@@ -1355,6 +1356,7 @@ begin
     end;
   finally
     Params.Free;
+    DeactivateGlobalWriteLock;
   end;
 end;
 
@@ -1387,7 +1389,7 @@ var
   Context: TFindContext;
 begin
   Result:=false;
-  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
   if PropertyPath='' then exit;
   BuildTree(false);
 
@@ -1401,16 +1403,17 @@ begin
   Context.Node:=FindTypeNodeOfDefinition(Context.Node);
   if Context.Node=nil then exit;
   Params:=TFindDeclarationParams.Create;
+  ActivateGlobalWriteLock;
   try
     // then search the properties
     repeat
-      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
       if (not (Context.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType]))
       then
         exit;
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
       Identifier:=GetNextIdentifier;
-      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
       if Identifier='' then exit;
       Params.SetIdentifier(Self,PChar(Identifier),nil);
       Params.ContextNode:=Context.Node;
@@ -1433,6 +1436,7 @@ begin
      until false;
   finally
     Params.Free;
+    DeactivateGlobalWriteLock;
   end;
 end;
 
@@ -3459,6 +3463,7 @@ begin
   AddFindContext(ListOfPFindContext,CreateFindContext(Self,ClassNode));
 
   Params:=TFindDeclarationParams.Create;
+  ActivateGlobalWriteLock;
   try
     try
       CurTool:=Self;
@@ -3481,6 +3486,7 @@ begin
       on E: ELinkScannerError do ;
     end;
   finally
+    DeactivateGlobalWriteLock;
     Params.Free;
   end;
 end;
