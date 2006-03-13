@@ -2795,16 +2795,14 @@ var
       end;
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
 
-
-      If (Lines <> nil) and (NumLines>1) then begin
-        LineWidth := 0;
+      LineWidth := 0;
+      If (Lines <> nil) then begin
         For J := 0 to NumLines - 1 do begin
           GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
           LineWidth := Max(LineWidth, AP.cX);
         end;
-      end else LineWidth:=10000;
+      end;
       LineWidth := Min(MaxLength, LineWidth);
-
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
