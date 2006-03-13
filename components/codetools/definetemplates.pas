@@ -2825,7 +2825,7 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
-    DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
+    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
     ShortTestFile:=ExtractFileName(TestPascalFile);
 
     TheProcess := TProcess.Create(nil);

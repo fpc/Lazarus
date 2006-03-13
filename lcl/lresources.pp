@@ -1482,31 +1482,35 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
     i: Integer;
     InString, NewInString: Boolean;
   begin
-    res := '';
-    InString := False;
-    for i := 1 to Length(s) do begin
-      NewInString := InString;
-      case s[i] of
-        #0..#31: begin
-            NewInString := False;
-            NewStr := '#' + IntToStr(Ord(s[i]));
-          end;
-        '''': begin
+    if s<>'' then begin
+      res := '';
+      InString := False;
+      for i := 1 to Length(s) do begin
+        NewInString := InString;
+        case s[i] of
+          #0..#31: begin
+              NewInString := False;
+              NewStr := '#' + IntToStr(Ord(s[i]));
+            end;
+          '''': begin
+              NewInString := True;
+              NewStr:=''''''; // write two ticks, so the reader will read one
+            end;
+          else begin
             NewInString := True;
-            NewStr:='''''';
+            NewStr := s[i];
           end;
-        else begin
-          NewInString := True;
-          NewStr := s[i];
         end;
+        if NewInString <> InString then begin
+          NewStr := '''' + NewStr;
+          InString := NewInString;
+        end;
+        res := res + NewStr;
       end;
-      if NewInString <> InString then begin
-        NewStr := '''' + NewStr;
-        InString := NewInString;
-      end;
-      res := res + NewStr;
+      if InString then res := res + '''';
+    end else begin
+      res:='''''';
     end;
-    if InString then res := res + '''';
     OutStr(res);
   end;
 

@@ -174,14 +174,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomMemo.InitializeWnd;
- ------------------------------------------------------------------------------}
-procedure TCustomMemo.InitializeWnd;
-begin
-  inherited InitializeWnd;
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomMemo.Loaded;
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.Loaded;

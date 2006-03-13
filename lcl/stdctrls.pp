@@ -688,7 +688,6 @@ type
     procedure SetLines(const Value: TStrings);
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
-    procedure InitializeWnd; override;
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
