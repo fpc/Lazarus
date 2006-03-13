@@ -736,6 +736,10 @@ type
     function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
       var Attri: TSynHighlighterAttributes): boolean;
+    function GetHighlighterAttriAtRowColEx(XY: TPoint; var Token: string;
+      var TokenType, Start: Integer;
+      var Attri: TSynHighlighterAttributes): boolean;                           //L505
+
     {$IFDEF SYN_LAZARUS}
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
     function GetLineIndentProposal(Line: integer;
@@ -10244,19 +10248,30 @@ begin
 end;
 {$ENDIF}
 
+                                                                                 //L505 begin
 function TCustomSynEdit.GetHighlighterAttriAtRowCol(XY: TPoint;
   var Token: string; var Attri: TSynHighlighterAttributes): boolean;
 var
+  TmpType, TmpStart: Integer;
+begin
+  Result := GetHighlighterAttriAtRowColEx(XY, Token, TmpType, TmpStart, Attri);
+end;
+
+function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint;
+  var Token: string; var TokenType, Start: Integer;
+  var Attri: TSynHighlighterAttributes): boolean;
+var
   PosX, PosY: integer;
   Line: string;
-  Start: integer;
 begin
-  PosY := XY.Y;
-  if Assigned(Highlighter) and (PosY >= 1) and (PosY <= Lines.Count) then
+  PosY := XY.Y -1;
+  if Assigned(Highlighter) and (PosY >= 0) and (PosY < Lines.Count) then
   begin
-    Line := Lines[PosY - 1];
-//    Highlighter.SetRange(Lines.Objects[PosY - 1]);
-    Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY - 1]);
+    Line := Lines[PosY];
+    if PosY = 0 then
+      Highlighter.ResetRange
+    else
+      Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY - 1]);
     Highlighter.SetLine(Line, PosY);
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then
@@ -10265,6 +10280,7 @@ begin
         Token := Highlighter.GetToken;
         if (PosX >= Start) and (PosX < Start + Length(Token)) then begin
           Attri := Highlighter.GetTokenAttribute;
+          TokenType := Highlighter.GetTokenKind;
           Result := TRUE;
           exit;
         end;
@@ -10275,8 +10291,9 @@ begin
   Attri := nil;
   Result := FALSE;
 end;
-
+                                                                                 //L505 end
 {$IFDEF SYN_LAZARUS}
+
 procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; var StartX,
   EndX: integer);
 // all params are logical (byte) positions
