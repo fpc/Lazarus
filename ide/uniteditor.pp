@@ -1030,10 +1030,11 @@ begin
   FindReplaceDlg.Top:=ATop;
   
   try
-   bSelectedTextOption := (ssoSelectedOnly in FindReplaceDlg.Options);
-   //if there are selected text and more than 1 word, automatically enable selected text option
-   if (EditorComponent.SelAvail and (Pos(' ', EditorComponent.SelText) <> 0)) then
-    FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly];
+    bSelectedTextOption := (ssoSelectedOnly in FindReplaceDlg.Options);
+    //if there are selected text and more than 1 word, automatically enable selected text option
+    if EditorComponent.SelAvail
+    and (EditorComponent.BlockBegin.Y<>EditorComponent.BlockEnd.Y) then
+      FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly];
 
     if (FindReplaceDlg.ShowModal = mrCancel) then begin
       exit;
@@ -1046,10 +1047,11 @@ begin
     InputHistories.Save;
     DoFindAndReplace;
   finally
-   //Restore original find options
-   if bSelectedTextOption then
-    FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly] else
-    FindReplaceDlg.Options := FindReplaceDlg.Options - [ssoSelectedOnly];
+    //Restore original find options
+    if bSelectedTextOption then
+      FindReplaceDlg.Options := FindReplaceDlg.Options + [ssoSelectedOnly]
+    else
+      FindReplaceDlg.Options := FindReplaceDlg.Options - [ssoSelectedOnly];
   end;//End try-finally
 end;
 
@@ -3128,9 +3130,9 @@ begin
   if CurCompletionControl=nil then exit;
   if (System.Pos(Key,CurCompletionControl.EndOfTokenChr)>0) then begin
     // identifier completed
-    debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
     CurCompletionControl.TheForm.OnValidate(Sender,Key,[]);
-    debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     Key:=#0;
   end;
 end;
@@ -3142,9 +3144,9 @@ begin
   if (length(UTF8Key)=1)
   and (System.Pos(UTF8Key[1],CurCompletionControl.EndOfTokenChr)>0) then begin
     // identifier completed
-    debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
+    //debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
     CurCompletionControl.TheForm.OnValidate(Sender,UTF8Key,[]);
-    debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     UTF8Key:='';
   end else begin
     aCompletion.Editor.CommandProcessor(ecChar,UTF8Key,nil);
