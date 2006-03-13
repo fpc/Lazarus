@@ -432,25 +432,33 @@ end;
 
 procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
 var iSelStart: Integer;
-    sCompleteText: string;
+    sCompleteText, sPrefixText, sResultText: string;
 begin
  inherited KeyUp(Key, Shift);
  if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
   begin
    //Only happens with alpha-numeric keys and return key and csDropDown Style
-   if not (IsEditableTextKey(Key) or (Key = VK_RETURN)) then Exit;
+   if not (IsEditableTextKey(Key) or (Key = VK_RETURN) or (ssShift in Shift)) then Exit;
    if (Key = VK_RETURN) then
     SelectAll else
     begin
      iSelStart := SelStart;//Capture original cursor position
      //End of line completion
      if ((iSelStart < Length(Text)) and (cbactEndOfLineComplete in FAutoCompleteText)) then Exit;
+     sPrefixText := LeftStr(Text, iSelStart);
      sCompleteText := GetCompleteText(Text, iSelStart,
                                       (cbactSearchCaseSensitive in FAutoCompleteText),
                                       (cbactSearchAscending in FAutoCompleteText), Items);
      if not (sCompleteText = Text) then
       begin
-       Text := sCompleteText;
+       sResultText := sCompleteText;
+       if ((cbactEndOfLineComplete in FAutoCompleteText) and
+           (cbactRetainPrefixCase in FAutoCompleteText)) then
+        begin//Retain Prefix Character cases
+         Delete(sResultText, 1, iSelStart);
+         Insert(sPrefixText, sResultText, 1);
+        end;//End if ((cbactEndOfLineComplete in FAutoCompleteText) and....
+       Text := sResultText;
        SelStart := iSelStart;
        SelLength := Length(Text);
       end;//End if not (sCompleteText = Text)
@@ -460,10 +468,11 @@ end;
 
 procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
+var R: TRect;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   //if (Style = csDropDownList) then
-  //  DroppedDown := not DroppedDown;
+  // DroppedDown := not DroppedDown;
 end;
 
 {------------------------------------------------------------------------------

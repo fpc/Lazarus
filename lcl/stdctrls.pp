@@ -214,6 +214,7 @@ type
   TComboBoxAutoCompleteTextOption = (
     cbactEnabled,//Enable Auto-Completion Feature
     cbactEndOfLineComplete,//Perform Auto-Complete only when cursor is at end of line
+    cbactRetainPrefixCase,//Retains the case of characters user has typed if is cbactEndOfLineComplete
     cbactSearchCaseSensitive,//Search Text with CaseSensitivity
     cbactSearchAscending//Search Text from top of the list
     );
