@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2006-03-10 16:36+0100\n"
+"PO-Revision-Date: 2006-03-11 22:36+0100\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: polski <pl@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,11 +31,11 @@ msgstr "jest niezgodny z "
 
 #: lazarusidestrconsts:liscompiling
 msgid "%s (compiling ...)"
-msgstr "%s (kompilacja ...)"
+msgstr "%s (kompilacja...)"
 
 #: lazarusidestrconsts:lisdebugging
 msgid "%s (debugging ...)"
-msgstr "%s (odpluskwianie ...)"
+msgstr "%s (odpluskwianie...)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -115,7 +115,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
 msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
-msgstr "%sPakiety są powiązane, tzn. jeden z nich jest używany przez drugi, ablo obydwa są używane przez inny pakiet."
+msgstr "%sPakiety są powiązane, tzn. jeden z nich jest używany przez drugi, albo obydwa są używane przez inny pakiet."
 
 #: lazarusidestrconsts:lisoipdescriptiondescription
 msgid "%sDescription:  %s"
@@ -155,7 +155,7 @@ msgstr "&Zamknij zakładkę"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
-msgstr "&Komponent"
+msgstr "&Komponenty"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
@@ -371,7 +371,7 @@ msgstr "Dodaj plik do projektu:"
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Dodaj pliki"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -451,11 +451,11 @@ msgstr "Wyrównaj"
 
 #: lazarusidestrconsts:lisalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Wyrównanie"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
-msgstr ""
+msgstr "Wszystkie pliki"
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -503,15 +503,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
-msgstr "Niejednoznaczy typ przodka"
+msgstr "Dwuznaczny typ przodka"
 
 #: lazarusidestrconsts:lisa2pambiguousclassname
 msgid "Ambiguous Class Name"
-msgstr "Niejednoznaczna nazwa klasy"
+msgstr "Dwuznaczna nazwa klasy"
 
 #: lazarusidestrconsts:lisa2pambiguousunitname
 msgid "Ambiguous Unit Name"
-msgstr "Niejednoznaczna nazwa modułu"
+msgstr "Dwuznaczna nazwa modułu"
 
 #: lazarusidestrconsts:lisambiguousunitfound
 msgid "Ambiguous Unit found"
@@ -523,11 +523,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr "Przy niejednoznacznej nazwie pliku:"
+msgstr "Przy dwuznacznej nazwie pliku"
 
 #: lazarusidestrconsts:lisambiguousfilefound
 msgid "Ambiguous file found"
-msgstr "Znalazłem niejednoznaczny plik"
+msgstr "Znalazłem dwuznaczny plik"
 
 #: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
 msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
@@ -535,11 +535,11 @@ msgstr "Znalazłem dwuznaczną nazwę pliku: %s%s%s%sTen plik może być pomylon
 
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
-msgstr "Znalazłem nietypowy plik"
+msgstr "Znalazłem dwuznaczny plik"
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
-msgstr "Znaleziono nmoduły o niejednoznacznej nazwie"
+msgstr "Znaleziono moduły o dwuznacznej nazwie"
 
 #: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
@@ -667,7 +667,7 @@ msgstr "Automatycznie utworzony"
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
-msgstr "Automatic (or english)"
+msgstr "automatyczny (lub angielski)"
 
 #: lazarusidestrconsts:lisautomaticfeatures
 msgid "Automatic features"
@@ -703,7 +703,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
-msgstr ""
+msgstr "Tło"
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1135,7 +1135,7 @@ msgstr "Jest już klasa o tej nazwie."
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
-msgstr ""
+msgstr "Klasa nie została znaleziona."
 
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
@@ -1367,7 +1367,7 @@ msgstr "dodatek ŚcieżkaŹródłowaKompilatora"
 
 #: lazarusidestrconsts:liscompiler
 msgid "Compiler"
-msgstr ""
+msgstr "Kompilator"
 
 #: lazarusidestrconsts:dlgcompileroptions
 msgid "Compiler Options"
@@ -1383,7 +1383,7 @@ msgstr "Opcje kompilatora dla projektu: %s"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options..."
-msgstr "Opcje kompilatora"
+msgstr "Opcje kompilatora..."
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1395,7 +1395,7 @@ msgstr "Nazwa pliku kompilatora"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (%s)"
-msgstr ""
+msgstr "Ścieżka kompilatora (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -1687,7 +1687,7 @@ msgstr "Najpierw utwórz projekt!"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
-msgstr ""
+msgstr "Utwórz nowy plik"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -2027,7 +2027,7 @@ msgstr "Pakiet docelowy"
 
 #: lazarusidestrconsts:lisdestinationdirectory
 msgid "Destination directory"
-msgstr ""
+msgstr "Katalog docelowy"
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -2063,7 +2063,7 @@ msgstr "Opcje katalogów"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
-msgstr ""
+msgstr "Porzuć zmiany"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
@@ -2667,7 +2667,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
-msgstr ""
+msgstr "Znajdź następny"
 
 #: lazarusidestrconsts:lisfrifindreferences
 msgid "Find References"
@@ -3099,7 +3099,7 @@ msgstr "Podpowiedzi dla palety komponentów"
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr "Podpowiedzi dla głównych przycisków (otwórz, zapisz, ...)"
+msgstr "Podpowiedzi dla głównych przycisków (otwórz, zapisz...)"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -4191,7 +4191,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
-msgstr ""
+msgstr "Utwórz napis w zasobach"
 
 #: lazarusidestrconsts:lispckoptsmanualcompilationneverautomatically
 msgid "Manual compilation (never automatically)"
@@ -4215,11 +4215,11 @@ msgstr "Maks. długość wiersza:"
 
 #: lazarusidestrconsts:dlgmaxrecentfiles
 msgid "Max recent files"
-msgstr "Liczba niedawno otartych plików"
+msgstr "Liczba niedawno otwartych plików"
 
 #: lazarusidestrconsts:dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr "Liczba niedawno otartych projektów"
+msgstr "Liczba niedawno otwartych projektów"
 
 #: lazarusidestrconsts:lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
@@ -4507,7 +4507,7 @@ msgstr "Nowy"
 
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
-msgstr "Nowy ..."
+msgstr "Nowy..."
 
 #: lazarusidestrconsts:lisnewancestors
 msgid "New Ancestors"
@@ -4543,7 +4543,7 @@ msgstr "Nowy wymóg"
 
 #: lazarusidestrconsts:lismenueditornewtemplatedescription
 msgid "New Template Description..."
-msgstr "[?] Nowy opis szablonu..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
@@ -4679,7 +4679,7 @@ msgstr "Nie teraz"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Informacja: Plikami projektu są wszystkie pliki w jego katalogu"
+msgstr "Informacja: plikami projektu są wszystkie pliki w jego katalogu"
 
 #: lazarusidestrconsts:liscodetoolsoptsnumber
 msgid "Number"
@@ -5167,7 +5167,7 @@ msgstr "Punkt"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
-msgstr ""
+msgstr "polski"
 
 #: lazarusidestrconsts:rslanguagepolishwin
 msgid "Polish(CP1250)"
@@ -5875,7 +5875,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
+msgstr "Zapisz wszystko"
 
 #: lazarusidestrconsts:lissaveallmessagestofile
 msgid "Save all messages to file"
@@ -5903,7 +5903,7 @@ msgstr "Chcesz zapisać zmiany w projekcie %s?"
 
 #: lazarusidestrconsts:lissavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "Chcesz zapisać zmiany?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
@@ -6319,7 +6319,7 @@ msgstr "Błędy"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Pokaż do linie naprowadzające"
+msgstr "Pokaż linie naprowadzające"
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
@@ -6335,7 +6335,7 @@ msgstr "Pokazuj wskazówki przy nieużywanych modułach w głównym źródle"
 
 #: lazarusidestrconsts:uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr "Wyświetlaj Numery Wierszy"
+msgstr "Wyświetlaj numery wierszy"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -6427,11 +6427,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr ""
+msgstr "Pokaż podpowiedzi w Inspektorze Objektów"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr ""
+msgstr "Wyświetlaj numery wierszy"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
@@ -6583,7 +6583,7 @@ msgstr "PRzycisk odstępu"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
-msgstr "Spanish"
+msgstr "hiszpański"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -7071,11 +7071,11 @@ msgstr "Plik %s%s%s już należy do pakietu."
 
 #: lazarusidestrconsts:listhefileisnotadelphiprojectdpr
 msgid "The file %s%s%s is not a Delphi project (.dpr)"
-msgstr ""
+msgstr "Plik %s%s%s nie jest projektem Delphi (.dpr)"
 
 #: lazarusidestrconsts:listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
-msgstr ""
+msgstr "Plik %s%s%s nie jest modułem Delphi."
 
 #: lazarusidestrconsts:lispkgmangthefileisnotalazaruspackage
 msgid "The file %s%s%s is not a lazarus package."
@@ -7979,7 +7979,7 @@ msgstr "Rodzaj modułu:"
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
-msgstr "Zalezności modułów"
+msgstr "Zależności modułów"
 
 #: lazarusidestrconsts:lisa2punitfilename
 msgid "Unit file name:"
@@ -8619,7 +8619,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
-msgstr ""
+msgstr "tylko do odczytu"
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
@@ -8635,7 +8635,7 @@ msgstr "prawy klawisz windows"
 
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
-msgstr ""
+msgstr "uruchom plik"
 
 #: lazarusidestrconsts:srkmecrunparameters
 msgid "run parameters"
