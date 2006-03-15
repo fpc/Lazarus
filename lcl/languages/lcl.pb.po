@@ -1,0 +1,653 @@
+﻿msgid ""
+msgstr ""
+"Last-Translator: Júnior Gonçalves, J. I. <hipernetjr@yahoo.com.br> (Current Version)\n"
+"PO-Revision-Date: 2006-03-10 15:05\n"
+"Project-Id-Version: lcl\n"
+"Language-Team: Portuguese - Brazil (http://lazaruspascal.codigolivre.org.br/portal.php \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr "Nenhum Formulário MDI presente."
+
+#: lclstrconsts:rsmbyes
+msgid "&Yes"
+msgstr "&Sim"
+
+#: lclstrconsts:rsmbno
+msgid "&No"
+msgstr "&Não"
+
+#: lclstrconsts:rsmbok
+msgid "&OK"
+msgstr "&OK"
+
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: lclstrconsts:rsmbabort
+msgid "Abort"
+msgstr "Abortar"
+
+#: lclstrconsts:rsmbretry
+msgid "&Retry"
+msgstr "&Tentar Novamente"
+
+#: lclstrconsts:rsmbignore
+msgid "&Ignore"
+msgstr "&Ignorar"
+
+#: lclstrconsts:rsmball
+msgid "&All"
+msgstr "&Tudo"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "Não para todos"
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to all"
+msgstr "Sim para todos"
+
+#: lclstrconsts:rsmbhelp
+msgid "&Help"
+msgstr "&Ajuda"
+
+#: lclstrconsts:rsmbclose
+msgid "&Close"
+msgstr "&Fechar"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Aviso"
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Erro"
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Informação"
+
+#: lclstrconsts:rsmtconfirmation
+msgid "Confirmation"
+msgstr "Confirmação"
+
+#: lclstrconsts:rsmtcustom
+msgid "Custom"
+msgstr "Personalizado"
+
+#: lclstrconsts:rsfdopenfile
+msgid "Open existing file"
+msgstr "Abrir arquivo existente"
+
+#: lclstrconsts:rsfdoverwritefile
+msgid "Overwrite file ?"
+msgstr "Sobrescrever arquivo ?"
+
+#: lclstrconsts:rsfdfilealreadyexists
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr "O arquivo \"%s\" já existe. Sobrescrever ?"
+
+#: lclstrconsts:rsfdpathmustexist
+msgid "Path must exist"
+msgstr "O Caminho deve existir"
+
+#: lclstrconsts:rsfdpathnoexist
+msgid "The path \"%s\" does not exist."
+msgstr "O caminho \"%s\" não existe."
+
+#: lclstrconsts:rsfdfilemustexist
+msgid "File must exist"
+msgstr "Arquivo deve existir"
+
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr "Diretório deve existir"
+
+#: lclstrconsts:rsfdfilenotexist
+msgid "The file \"%s\" does not exist."
+msgstr "O arquivo \"%s\" não existe."
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr "O diretório \"%s\" não existe"
+
+#: lclstrconsts:rsfdfilereadonlytitle
+msgid "File is not writable"
+msgstr "Arquivo não é gravável"
+
+#: lclstrconsts:rsfdfilereadonly
+msgid "The file \"%s\" is not writable."
+msgstr "O arquivo \"%s\" não é gravável"
+
+#: lclstrconsts:rsfdfilesaveas
+msgid "Save file as"
+msgstr "Salvar arquivo como"
+
+#: lclstrconsts:rsallfiles
+msgid "All files (%s)|%s|%s"
+msgstr "Todos os arquivos (%s)|%s|%s"
+
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr "Selecionar Diretório"
+
+#: lclstrconsts:rsselectcolortitle
+msgid "Select color"
+msgstr "Selecionar Cor"
+
+#: lclstrconsts:rsselectfonttitle
+msgid "Select a font"
+msgstr "Selecionar uma fonte"
+
+#: lclstrconsts:rswarningunremovedpaintmessages
+msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
+msgstr " AVISO: Há %s vínculos não removido de mensagem LM_PAINT/LM_GtkPAINT à esquerda."
+
+#: lclstrconsts:rswarningunreleaseddcsdump
+msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
+msgstr " AVISO: Há %s DCs não liberados, um despejo destalhado a seguir:"
+
+#: lclstrconsts:rswarningunreleasedgdiobjectsdump
+msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
+msgstr " AVISO: Há %s GDIObjects não liberadors, um despejo detalhado a seguir:"
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr " AVISO: Há %s mensagens à esquerda na fila! Eu liberarei-as"
+
+#: lclstrconsts:rswarningunreleasedtimerinfos
+msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
+msgstr " AVISO: Há %s estruturas TimerInfo à esquerda, Eu liberarei-as"
+
+#: lclstrconsts:rsfileinformation
+msgid "File information"
+msgstr "Informação de Arquivo"
+
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
+msgstr "História:"
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "permissões usuário grupo tamanho data hora"
+
+#: lclstrconsts:rsblank
+msgid "Blank"
+msgstr "Em Branco"
+
+#: lclstrconsts:rsunabletoloaddefaultfont
+msgid "Unable to load default font"
+msgstr "Impossível carregar fonte padrão"
+
+#: lclstrconsts:rsfileinfofilenotfound
+msgid "(file not found: \"%s\")"
+msgstr "(arquivo não encontrado: \"%s\""
+
+#: lclstrconsts:rsgtkoptionnotransient
+msgid "--lcl-no-transient    Do not set transient order for modal forms"
+msgstr "--lcl-no-transient    Não ajustar ordenação transiente para formulários modais"
+
+#: lclstrconsts:rsgtkoptionmodule
+msgid "--gtk-module module   Load the specified module at startup."
+msgstr "--gtk-module module   Carregar o módulo especificado na inicialização."
+
+#: lclstrconsts:rsgoptionfatalwarnings
+msgid "--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt the application."
+msgstr "--g-fatar-warnings    Avisos e erros gerador por Gkt+/GDK interromperá a aplicação."
+
+#: lclstrconsts:rsgtkoptiondebug
+msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
+msgstr "--gtk-debug flags     Ativa mensagens Gtk+ trace/debug."
+
+#: lclstrconsts:rsgtkoptionnodebug
+msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
+msgstr "--gtk-no-debug flags  Desativa mensagens Gtk+ trace/debug messages."
+
+#: lclstrconsts:rsgdkoptiondebug
+msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
+msgstr "--gdk-debug flags     Ativa mensagens GDK trace/debug."
+
+#: lclstrconsts:rsgdkoptionnodebug
+msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
+msgstr "--gdk-no-debug flags  Desativa mensagens GDK trace/debug."
+
+#: lclstrconsts:rsgtkoptiondisplay
+msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
+msgstr "--display h:s:d       Conecta para o servidor X especificado, onde \"h\" é o hostname, \"s\" é o número do servidor (normalmente 0), e \"d\" é o número a ser mostrado (tipicamente omitido). Se --display não é especificado, a variável de ambiente DISPLAY é usada."
+
+#: lclstrconsts:rsgtkoptionsync
+msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+msgstr "--sync                Chama XSynchronize (display, True) após a conexão com Xserver for estabilizada. Isto cria fácil depuração de erros do protocolo X, porque X solicita que a armazenação seja desativada e X erros são recebidos imediatamente após o protocolo solicitar que a geração de erros seja processada pelo servidor X."
+
+#: lclstrconsts:rsgtkoptionnoxshm
+msgid "--no-xshm             Disable use of the X Shared Memory Extension."
+msgstr "--no-xshm             Desativa uso da Extensão de Memória X Compartilhada."
+
+#: lclstrconsts:rsgtkoptionname
+msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
+msgstr "--name programe       Ajusta o nome do programa para \"progname\". Se não especificado, nome do programa será ajustado para ParamStr(0)."
+
+#: lclstrconsts:rsgtkoptionclass
+msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
+msgstr "--class classname     Segue convenções Xt, a classe do programa é o nome do programa com o caractere inicial em maiúsculo. Por exemplo, o nome de classe para gimp é \"Gimp\". Se --class é especificada, a classe do programa será ajustada para \"classname\"."
+
+#: lclstrconsts:rswin32warning
+msgid "Warning:"
+msgstr "Aviso:"
+
+#: lclstrconsts:rswin32error
+msgid "Error:"
+msgstr "Erro:"
+
+#: lclstrconsts:sinvalidactionregistration
+msgid "Invalid action registration"
+msgstr "Ação registrada Inválida"
+
+#: lclstrconsts:sinvalidactionunregistration
+msgid "Invalid action unregistration"
+msgstr "Ação não-registrada Inválida"
+
+#: lclstrconsts:sinvalidactionenumeration
+msgid "Invalid action enumeration"
+msgstr "Enumeração de ação inválida"
+
+#: lclstrconsts:sinvalidactioncreation
+msgid "Invalid action creation"
+msgstr "Criação de ação inválida"
+
+#: lclstrconsts:smenunotfound
+msgid "Sub-menu is not in menu"
+msgstr "Sub-menu não é um menu"
+
+#: lclstrconsts:smenuindexerror
+msgid "Menu index out of range"
+msgstr "Indice de Menu fora da faixa"
+
+#: lclstrconsts:smenuitemisnil
+msgid "MenuItem is nil"
+msgstr "MenuItem é nil"
+
+#: lclstrconsts:snotimers
+msgid "No timers available"
+msgstr "Nenhum temporizador disponível"
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Indice de Lista de Imagens Inválido"
+
+#: lclstrconsts:sinvalidimagesize
+msgid "Invalid image size"
+msgstr "Tamanho de imagem inválido"
+
+#: lclstrconsts:sduplicatemenus
+msgid "Duplicate menus"
+msgstr "Menus Duplicados"
+
+#: lclstrconsts:scannotfocus
+msgid "Cannot focus a disabled or invisible window"
+msgstr "Não é possível focar uma janela inativa ou invísivel"
+
+#: lclstrconsts:rslistmustbeempty
+msgid "List must be empty"
+msgstr "Lista deve estar vázia"
+
+#: lclstrconsts:rsinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Valor de propriedade inválido"
+
+#: lclstrconsts:rspropertydoesnotexist
+msgid "Property %s does not exist"
+msgstr "Propriedade %s não existe"
+
+#: lclstrconsts:rsinvalidstreamformat
+msgid "Invalid stream format"
+msgstr "Formato stream Inválido"
+
+#: lclstrconsts:rserrorreadingproperty
+msgid "Error reading %s%s%s: %s"
+msgstr "Erro na leitura %s%s%s: %s"
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "stream de objeto de Formulário inválido"
+
+#: lclstrconsts:rsscrollbaroutofrange
+msgid "ScrollBar property out of range"
+msgstr "Propriedade ScrollBar fora da extensão"
+
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date : %s"
+msgstr "Data Inválida : %s"
+
+#: lclstrconsts:rsinvaliddaterangehint
+msgid "Invalid Date: %s. Must be between %s and %s"
+msgstr "Data Inválida: %s. Deve estar entre %s e %s"
+
+#: lclstrconsts:rserroroccurredinataddressframe
+msgid "Error occurred in %s at %sAddress %s%s Frame %s"
+msgstr "Erro ocorrido em %s no %sEndereço %s%s Quadro %s"
+
+#: lclstrconsts:rsexception
+msgid "Exception"
+msgstr "Excessão"
+
+#: lclstrconsts:rsformstreamingerror
+msgid "Form streaming \"%s\" error: %s"
+msgstr "Form streaming \"%s\" erro: %s"
+
+#: lclstrconsts:rsfixedcolstoobig
+msgid "FixedCols can't be >= ColCount"
+msgstr "FixedCols não pode ser >= ColCount"
+
+#: lclstrconsts:rsfixedrowstoobig
+msgid "FixedRows can't be >= RowCount"
+msgstr "FixedRows não pode ser >= RowCount"
+
+#: lclstrconsts:rsgridfiledoesnotexists
+msgid "Grid file doesn't exists"
+msgstr "Arquivo de grade não existe"
+
+#: lclstrconsts:rsnotavalidgridfile
+msgid "Not a valid grid file"
+msgstr "Não é um arquivo de grade válido"
+
+#: lclstrconsts:rsindexoutofrange
+msgid "Index Out of range Cell[Col=%d Row=%d]"
+msgstr "Indice fora da extensão Celulá[Col=%d Lin=%d]"
+
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "ERRO na LCL:"
+
+#: lclstrconsts:rscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "Erro na criação de gdb catchable:"
+
+#: lclstrconsts:rsacontrolcannothaveitselfasparent
+msgid "A control can't have itself as parent"
+msgstr "Um controle não pode ter ele mesmo como parente"
+
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr "Recurso %s não encontrado"
+
+#: lclstrconsts:rserrorcreatingdevicecontext
+msgid "Error creating device context for %s.%s"
+msgstr "Erro na criação do dispositivo de contexto para %s.%s"
+
+#: lclstrconsts:rsindexoutofbounds
+msgid "%s Index %d out of bounds 0-%d"
+msgstr "%s Indice %s fora do limite 0-%d"
+
+#: lclstrconsts:rsunknownpictureextension
+msgid "Unknown picture extension"
+msgstr "Extensão de Imagem desconhecida"
+
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr "Bitmaps"
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr "Pixmap"
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
+msgstr "Gráfico de Rede Portátil"
+
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr "Ícone"
+
+#: lclstrconsts:rsunsupportedclipboardformat
+msgid "Unsupported clipboard format: %s"
+msgstr "Formato de Aréa de Transferência não suportado: %s"
+
+#: lclstrconsts:rsgroupindexcannotbelessthanprevious
+msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
+msgstr "GroupIndex não pode ser menor que o GroupIndex dos items de menu"
+
+#: lclstrconsts:rsisalreadyassociatedwith
+msgid "%s is already associated with %s"
+msgstr "%s já está associado com %s"
+
+#: lclstrconsts:rscanvasdoesnotallowdrawing
+msgid "Canvas does not allow drawing"
+msgstr "Canvas não permite desenho"
+
+#: lclstrconsts:rsunsupportedbitmapformat
+msgid "Unsupported bitmap format."
+msgstr "Formato de bitmap não suportado."
+
+#: lclstrconsts:rsnowidgetset
+msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "Nenhum objeto widgetset. Por favor verifique se a unit \"interfaces\" foi adicionada a clausula uses do programa."
+
+#: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+msgstr "%s%sPressione Ok para ignorar e correr o risco de corrupção dos dados.%sPressione Cancelar para finalizar o Programa."
+
+#: lclstrconsts:rscannotfocus
+msgid "Can not focus"
+msgstr "Não é possível focar"
+
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr "Indice da Lita excede o limite (%s)"
+
+#: lclstrconsts:rsresourcenotfound
+msgid "Resource %s not found"
+msgstr "Recurso %s não encontrado"
+
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr "Calculadora"
+
+#: lclstrconsts:rserror
+msgid "Error"
+msgstr "Erro"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr "selecionar uma data"
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr "  tamanho  "
+
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr "  modificado  "
+
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Botão Esquerdo do Mouse"
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Botão Direito do Mouse"
+
+#: lclstrconsts:ifsvk_cancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Botão do Meio do Mouse"
+
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr "Backspace"
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
+msgstr "Tab"
+
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr "Limpar"
+
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr "Return"
+
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr "Shift"
+
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr "Control"
+
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr "Menu"
+
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr "Pause"
+
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr "Capital"
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr "Kana"
+
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr "Junja"
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
+msgstr "Final"
+
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr "Hanja"
+
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr "Escape"
+
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr "Converso"
+
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr "Não-converso"
+
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr "Aceitar"
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr "Modo Change"
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr "Espaço"
+
+#: lclstrconsts:ifsvk_prior
+msgid "Prior"
+msgstr "Anterior"
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
+msgstr "Próximo"
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
+msgstr "End"
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr "Home"
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr "Esquerda"
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
+msgstr "Acima"
+
+#: lclstrconsts:ifsvk_right
+msgid "Right"
+msgstr "Direita"
+
+#: lclstrconsts:ifsvk_down
+msgid "Down"
+msgstr "Abaixo"
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
+msgstr "Selecionar"
+
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr "Imprimir"
+
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
+msgstr "Executar"
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr "Snapshot"
+
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr "Inserir"
+
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr "Deletar"
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr "Ajuda"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr "WinKey esquerda"
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr "WinKey direita"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr "tecla da aplicação"
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
+msgstr "Numpad %d"
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr "Numlock"
+
+#: lclstrconsts:ifsvk_scroll
+msgid "Scroll"
+msgstr "Scroll"
+
+#: lclstrconsts:rsdocking
+msgid "Docking"
+msgstr "Docking"
+

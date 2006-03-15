@@ -1,10 +1,10 @@
-msgid ""
+﻿msgid ""
 msgstr ""
-"Last-Translator: J�nior Gon�alves, J. I. <hipernetjr@yahoo.com.br>\n"
-"PO-Revision-Date: 2006-02-20 17:15\n"
-"Project-Id-Version: lazaruside\n"
+"Last-Translator: Júnior Gonçalves, J. I. <hipernetjr@yahoo.com.br> (Current Version)\n"
+"PO-Revision-Date: 2006-03-10 14:55\n"
+"Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Portuguese - Brazil (http://lazaruspascal.codigolivre.org.br/portal.php \n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: objinspstrconsts:oisdlinesdchars
@@ -13,11 +13,11 @@ msgstr "%d linhas, %d caracteres"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: Ja registrado"
+msgstr "%s: Já registrado"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr "%s: Nao registrado"
+msgstr "%s: Não registrado"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -33,7 +33,7 @@ msgstr "&Cancelar"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr "&Conteudo"
+msgstr "&Conteúdo"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
@@ -61,7 +61,7 @@ msgstr "&Inserir"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr "&ultimo"
+msgstr "&Último"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
@@ -69,7 +69,7 @@ msgstr "&Carregar"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr "&Proximo"
+msgstr "&Próximo"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
@@ -97,7 +97,7 @@ msgstr "&Salvar"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr "&Pesquisar Topico"
+msgstr "&Pesquisar Tópico"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
@@ -111,13 +111,13 @@ msgstr "&Acima"
 msgid "(All)"
 msgstr "(Tudo)"
 
-#: objinspstrconsts:cactionlisteditorunknowncategory
-msgid "(Unknown)"
-msgstr "(Desconhecido)"
-
 #: objinspstrconsts:oisnone
 msgid "(none)"
 msgstr "(nenhum)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Desconhecido)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -129,7 +129,7 @@ msgstr "1 linha, %d caracteres"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr "Acao"
+msgstr "Ação"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
@@ -149,7 +149,7 @@ msgstr "Adicionar novo Item"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr "Adicionar pagina"
+msgstr "Adicionar página"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -181,7 +181,7 @@ msgstr "Array"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr "Classes de Acao Disponiveis:"
+msgstr "Classes de Ação Disponíveis:"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -189,11 +189,11 @@ msgstr "Boolean"
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr "Navegador %s%s%s nao e' um executavel."
+msgstr "Navegador %s%s%s não é um executável."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr "Navegador %s%s%s nao encontrado."
+msgstr "Navegador %s%s%s não encontrado."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -205,7 +205,7 @@ msgstr "Cancelar"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr "Titulo:"
+msgstr "Título:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -253,7 +253,7 @@ msgstr "Selecionar Cor"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr "Nome de componente %s%s%s nao e' um identificador valido"
+msgstr "Nome de componente %s%s%s não é um identificador válido"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -261,7 +261,7 @@ msgstr "Componentes"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Confirmar delecao"
+msgstr "Confirmar deleção"
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
@@ -273,11 +273,11 @@ msgstr "Criar uma nova unit pascal."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Criar Evento Padrao"
+msgstr "Criar Evento Padrão"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr "Colecao"
+msgstr "Coleção"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -325,7 +325,7 @@ msgstr "Deletar"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Deletar Acao"
+msgstr "Deletar Ação"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -333,7 +333,7 @@ msgstr "Deletar item %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr "Deletar pagina"
+msgstr "Deletar página"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -341,7 +341,7 @@ msgstr "Deletar o Item %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr "Dialogo"
+msgstr "Diálogo"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
@@ -359,9 +359,13 @@ msgstr "S&air"
 msgid "Edit"
 msgstr "Editar"
 
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editar lista de ações..."
+
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr ""
+msgstr "Editar Items ListView"
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
@@ -371,17 +375,13 @@ msgstr "Editar StringGrid..."
 msgid "Edit TreeView Items..."
 msgstr "Editar Items TreeView..."
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editar lista de acoes..."
-
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
 msgstr "Editando"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr "Enumeracao"
+msgstr "Enumeracão"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
@@ -397,7 +397,7 @@ msgstr "Erro carregando image %s%s%s:%s%s"
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr "Erro na execucao de %s%s%s:%s%s"
+msgstr "Erro na execução de %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -433,35 +433,35 @@ msgstr "Ajuda"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Conteudo da Ajuda"
-
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "Nao foi possive encontar no banco de dados de ajuda %s%s%s um vizualizador para uma pagina de ajuda do tipo %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "Banco de dados de Ajuda %s%s%s nao encontrado"
+msgstr "Conteúdo da Ajuda"
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr "Contexto de ajuda %s nao encontrada no Banco de dados %s%s%s."
+msgstr "Contexto de ajuda %s não encontrada no Banco de dados %s%s%s."
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr "Contexto de Ajuda %s nao encontrado."
+msgstr "Contexto de Ajuda %s não encontrado."
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "Não foi possive encontar no banco de dados de ajuda %s%s%s um vizualizador para uma página de ajuda do tipo %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Banco de dados de Ajuda %s%s%s não encontrado"
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Palavras-Chaves %s%s%s nao encontradas no Banco de dados %s%s%s."
+msgstr "Palavras-Chaves %s%s%s não encontradas no Banco de dados %s%s%s."
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr "Palavra-Chave %s%s%s nao encontrada."
+msgstr "Palavra-Chave %s%s%s não encontrada."
 
 #: objinspstrconsts:oishelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr "Ramifica��o de ajuda %s%s%s n�o tem no Banco de Dados de Ajuda"
+msgstr "Ramificacão de ajuda %s%s%s não tem no Banco de Dados de Ajuda"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
@@ -473,7 +473,7 @@ msgstr "Indice Image:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Editor ImageList"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
@@ -489,7 +489,7 @@ msgstr "Inserir"
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr "Inserir pagina"
+msgstr "Inserir página"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -505,7 +505,7 @@ msgstr "Interfaces"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr "Valor de propriedade Invalido"
+msgstr "Valor de propriedade Inválido"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
@@ -525,7 +525,7 @@ msgstr "ultimo"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "Editor de Items ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -533,7 +533,7 @@ msgstr "Carregar"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr "Dialogo de Carregamento de Imagem"
+msgstr "Diálogo de Carregamento de Imagem"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
@@ -559,21 +559,21 @@ msgstr "Modificar o Item"
 msgid "Move Down"
 msgstr "Mover Abaixo"
 
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr "Mover página a esquerda"
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr "Mover página a direita"
+
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
 msgstr "Mover Acima"
 
-#: objinspstrconsts:nbcesmovepageleft
-msgid "Move page left"
-msgstr "Mover pagina a esquerda"
-
-#: objinspstrconsts:nbcesmovepageright
-msgid "Move page right"
-msgstr "Mover pagina a direita"
-
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr "Nova Acao"
+msgstr "Nova Acão"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
@@ -581,7 +581,7 @@ msgstr "Novo Item"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Nova Acao Padrao"
+msgstr "Nova Acão Padrao"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
@@ -591,13 +591,13 @@ msgstr "Novo Sub-Item"
 msgid "Next"
 msgstr "Proximo"
 
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Nenhum Navegador HTML encontrado.%sPor favor defina um em Ajuda -> Configurar Ajuda ->Vizualizadores"
-
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
 msgstr "Nenhuma ajuda encontrada para linha %d, coluna %d de %s."
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "Nenhum Navegador HTML encontrado.%sPor favor defina um em Ajuda -> Configurar Ajuda ->Vizualizadores"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -625,7 +625,7 @@ msgstr "Abrir arquivo de mascara (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr "Opcoes"
+msgstr "Opcões"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -715,13 +715,13 @@ msgstr "Selecionar &Cor..."
 msgid "Select &Font..."
 msgstr "Selecionar &Fonte..."
 
-#: objinspstrconsts:oistdacteditselectallshorthint
-msgid "Select All"
-msgstr "Selecionar Tudo"
-
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
 msgstr "Selecione um arquivo"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Selecionar Tudo"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -753,7 +753,7 @@ msgstr "Mostrar Dicas"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr "Mostrar pagina ..."
+msgstr "Mostrar página ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -761,7 +761,7 @@ msgstr "Ordenar"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "Classes de Acao Padrao"
+msgstr "Classes de Acão Padrao"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
@@ -785,15 +785,15 @@ msgstr "Editor StrinGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Dialogo do Editor de Strings"
+msgstr "Diálogo do Editor de Strings"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Testar Diálogo..."
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Testar Entrada"
-
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Testar Dialogo..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -846,4 +846,132 @@ msgstr "Variant"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Palavra"
+
+#: objinspstrconsts:sccstredtdelete
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:sccstredtsavedialog
+msgid "Save"
+msgstr "Salvar"
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid "Items"
+msgstr "Items"
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid "Item Properties"
+msgstr "Propriedades de Item"
+
+#: objinspstrconsts:sccslvedtnewitem
+msgid "New Item"
+msgstr "Novo Item"
+
+#: objinspstrconsts:sccslvedtnewsubitem
+msgid "New SubItem"
+msgstr "Movo SubItem"
+
+#: objinspstrconsts:sccslvedtapply
+msgid "Apply"
+msgstr "Aplicar"
+
+#: objinspstrconsts:sccslvedtdelete
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:sccslvedtlabelimageindex
+msgid "Image Index:"
+msgstr "Indice de Imagem:"
+
+#: objinspstrconsts:sccslvedtlabelstateindex
+msgid "State Index:"
+msgstr "Indice State:"
+
+#: objinspstrconsts:sccslvedtitem
+msgid "Item"
+msgstr "Item"
+
+#: objinspstrconsts:sccsiledtdelete
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:sccsiledtapply
+msgid "Apply"
+msgstr "Aplicar"
+
+#: objinspstrconsts:sccssgedtapply
+msgid "Apply"
+msgstr "Aplicar"
+
+#: objinspstrconsts:sccssgedtsave
+msgid "Save..."
+msgstr "Salvar..."
+
+#: objinspstrconsts:sccssgedtopendialog
+msgid "Open"
+msgstr "Abrir"
+
+#: objinspstrconsts:sccssgedtsavedialog
+msgid "Save"
+msgstr "Salvar"
+
+#: objinspstrconsts:oicoleditdelete
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr "Mover Abaixo"
+
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr "Adicionar"
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr "Mover Acima"
+
+#: objinspstrconsts:oistdacteditdeleteheadline
+msgid "&Delete"
+msgstr "&Deletar"
+
+#: objinspstrconsts:oistdactdatasetdeleteheadline
+msgid "&Delete"
+msgstr "&Deletar"
+
+#: objinspstrconsts:oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Recortar"
+
+#: objinspstrconsts:oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Copiar"
+
+#: objinspstrconsts:oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Colar"
+
+#: objinspstrconsts:oistdacteditundoshorthint
+msgid "Undo"
+msgstr "Desfazer"
+
+#: objinspstrconsts:oistdacteditdeleteshorthint
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr "Abrir"
+
+#: objinspstrconsts:oistdactdatasetdeletehint
+msgid "Delete"
+msgstr "Deletar"
+
+#: objinspstrconsts:oistdactdatasetedithint
+msgid "Edit"
+msgstr "Editar"
+
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr "&Cancelar"
 
