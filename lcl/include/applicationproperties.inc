@@ -129,6 +129,25 @@ begin
     Application.OnIdleEnd := AValue;
 end;
 
+
+Procedure TApplicationProperties.SetOnEndSession(Const AValue : TNotifyEvent);
+begin
+  FOnEndSession := AValue;
+
+  If not (csDesigning in ComponentState) then
+    Application.OnEndSession := AValue;
+end;
+
+
+Procedure TApplicationProperties.SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
+begin
+  FOnQueryEndSession := AValue;
+
+  If not (csDesigning in ComponentState) then
+    Application.OnQueryEndSession := AValue;
+end;
+
+
 Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
 begin
   FOnHelp := AValue;
@@ -196,6 +215,8 @@ begin
   FOnHint := nil;
   FOnShowHint := nil;
   FOnUserInput := nil;
+  FOnEndSession := nil;
+  FOnQueryEndSession := nil;
 end;
 
 // included by forms.pp

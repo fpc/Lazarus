@@ -1378,6 +1378,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TApplication.IntfEndSession();
+------------------------------------------------------------------------------}
+
+procedure TApplication.IntfEndSession();
+begin
+  if Assigned(FOnEndSession) then FOnEndSession(Self);
+end;
+
+
+{------------------------------------------------------------------------------
+  procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
+------------------------------------------------------------------------------}
+
+procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
+begin
+  if Assigned(FOnQueryEndSession) then FOnQueryEndSession(Cancel);
+end;
+
+
+
+{------------------------------------------------------------------------------
   procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 ------------------------------------------------------------------------------}
 procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);

@@ -799,6 +799,7 @@ type
 
   { TApplication }
 
+  TQueryEndSessionEvent = procedure (var Cancel : Boolean) of object;
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
@@ -906,6 +907,8 @@ type
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
     FOnIdleEnd: TNotifyEvent;
+    FOnEndSession : TNotifyEvent;
+    FOnQueryEndSession : TQueryEndSessionEvent;
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
@@ -1016,6 +1019,8 @@ type
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
+    procedure IntfQueryEndSession(var Cancel : Boolean);
+    procedure IntfEndSession;
   public
     procedure DoEscapeKey(AControl: TWinControl; var Key: Word;
                           Shift: TShiftState);
@@ -1042,6 +1047,8 @@ type
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
+    property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
+    property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
@@ -1077,6 +1084,8 @@ type
     FOnHint: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
+    FOnEndSession : TNotifyEvent;
+    FOnQueryEndSession : TQueryEndSessionEvent;
     procedure SetShowMainForm(const AValue: Boolean);
   protected
     Procedure SetCaptureExceptions(Const AValue : boolean);
@@ -1093,6 +1102,8 @@ type
     Procedure SetOnException(Const AValue : TExceptionEvent);
     Procedure SetOnIdle(Const AValue : TIdleEvent);
     Procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
+    Procedure SetOnEndSession(Const AValue : TNotifyEvent);
+    Procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
     Procedure SetOnHelp(Const AValue : THelpEvent);
     Procedure SetOnHint(Const AValue : TNotifyEvent);
     Procedure SetOnShowHint(Const AValue : TShowHintEvent);
@@ -1116,6 +1127,8 @@ type
     property OnException: TExceptionEvent read FOnException write SetOnException;
     property OnIdle: TIdleEvent read FOnIdle write SetOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write SetOnIdleEnd;
+    property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
+    property OnQueryEndSession : TQueryEndSessionEvent read FOnQueryEndSession write SetOnQueryEndSession;
     property OnHelp: THelpEvent read FOnHelp write SetOnHelp;
     property OnHint: TNotifyEvent read FOnHint write SetOnHint;
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;
@@ -1225,6 +1238,7 @@ function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
 function IsAccel(VK: word; const Str: string): Boolean;
 procedure NotifyApplicationUserInput(Msg: Cardinal);
+
 
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
