@@ -733,9 +733,9 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <short>A generic class for all Action components</short>
         <descr>TCustomAction is a generic class for all components that represent actions that can be be set on the user interface for buttons and other controls. TCustomAction is the ancestor for TAction. If you want to define your own action class, you should use this class to derive it from.
 
-TActionList, TAction, TActionLink and TContainedAction are used to centralize the implementation of user commands, and can then be linked to the apropriete button, menu or another component. This an Object-Oriented programming strategy to reuse the code, as oposed to the Event-Oriented approach of writing an OnClick event for each component.
+TActionList, TAction, TActionLink and TContainedAction are used to centralize the implementation of user commands, and can then be linked to the appropriate button, menu or another component. This is an Object-Oriented programming strategy to reuse code, as opposed to the Event-Oriented approach of writing an OnClick event for each component.
 
-You can set an action for a component using the Component Inspector.</descr>
+You can assign a action to a component by using the Object Inspector.</descr>
         <seealso>
           <link id="TAction"/>
         </seealso>
