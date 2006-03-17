@@ -569,6 +569,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnSelectionChange;
+    property OnShowHint;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
