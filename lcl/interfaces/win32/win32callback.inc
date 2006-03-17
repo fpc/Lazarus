@@ -1752,7 +1752,7 @@ Begin
          (LParam=0) then
       begin
         LMessage.Msg := LM_NULL; // no need to go through delivermessage
-        CancelEndSession := LMessage.Result<>0;
+        CancelEndSession := LMessage.Result=0;
         Application.IntfQueryEndSession(CancelEndSession);
         if CancelEndSession
           then LMessage.Result := 0
