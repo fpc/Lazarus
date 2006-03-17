@@ -1640,34 +1640,6 @@ Begin
       TWin32WidgetSet(WidgetSet).UpdateThemesActive;
     end;
     
-    WM_ENDSESSION:
-    begin
-      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
-         (WParam>0) and (LParam=0) then
-      begin
-        LMessage.Msg := LM_NULL; // no need to go through delivermessage
-        WinProcess := false;
-        Application.IntfEndSession();
-        LMessage.Result := 0;
-      end;
-    end;
-    
-    WM_QUERYENDSESSION:
-    begin
-      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
-         (LParam=0) then
-      begin
-        LMessage.Msg := LM_NULL; // no need to go through delivermessage
-        WinProcess := false;
-        CancelEndSession := false;
-        Application.IntfQueryEndSession(CancelEndSession);
-        if CancelEndSession
-          then LMessage.Result := 0
-          else LMessage.Result := 1;
-      end;
-    end;
-
-
 {$ifdef PassWin32MessagesToLCL}
   else
     // pass along user defined messages
@@ -1763,6 +1735,31 @@ Begin
       if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
         ClearSiblingRadioButtons(TRadioButton(lWinControl));
     end;
+    WM_ENDSESSION:
+    begin
+      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
+         (WParam>0) and (LParam=0) then
+      begin
+        LMessage.Msg := LM_NULL; // no need to go through delivermessage
+        Application.IntfEndSession();
+        LMessage.Result := 0;
+      end;
+    end;
+
+    WM_QUERYENDSESSION:
+    begin
+      if (Application<>nil) and (TWin32WidgetSet(WidgetSet).AppHandle=Window) and
+         (LParam=0) then
+      begin
+        LMessage.Msg := LM_NULL; // no need to go through delivermessage
+        CancelEndSession := LMessage.Result<>0;
+        Application.IntfQueryEndSession(CancelEndSession);
+        if CancelEndSession
+          then LMessage.Result := 0
+          else LMessage.Result := 1;
+      end;
+    end;
+
   end;
 
   // convert from win32 client to lcl client pos
