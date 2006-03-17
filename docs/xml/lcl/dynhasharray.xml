@@ -394,7 +394,7 @@
       <!-- procedure Visibility: public -->
       <element name="TDynHashArray.Add">
         <short>Adds an item to the set/array.</short>
-        <descr>An example: <code>uses
+        <descr><p>An example:</p><code>uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
  cthreads,
   {$ENDIF}{$ENDIF}
@@ -428,7 +428,7 @@ StrDispose(s);   </code>
       <!-- function Visibility: public -->
       <element name="TDynHashArray.Contains">
         <short>Returns true if the item is in the set.</short>
-        <descr>An example: <code>uses
+        <descr><p>An example:</p><code>uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
  cthreads,
   {$ENDIF}{$ENDIF}
@@ -481,7 +481,8 @@ StrDispose(s);   </code>
       <!-- procedure Visibility: public -->
       <element name="TDynHashArray.Remove">
         <short>Removes an element from the set/hash array</short>
-        <descr>An example:<code>{$mode objfpc}{$H+}
+        <descr><p>An example:</p>
+<code>{$mode objfpc}{$H+}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
@@ -520,7 +521,7 @@ end.
       <!-- procedure Visibility: public -->
       <element name="TDynHashArray.Clear">
         <short>Removes all elements from the set/hash array</short>
-        <descr>An example: <code>uses
+        <descr><p>An example:</p><code>uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
  cthreads,
   {$ENDIF}{$ENDIF}
@@ -568,7 +569,7 @@ StrDispose(s);   </code>
       <!-- property Visibility: public -->
       <element name="TDynHashArray.Count">
         <short>Number of elements stored in the set/array.</short>
-        <descr>An example: <code>uses
+        <descr><p>An example:</p><code>uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
  cthreads,
   {$ENDIF}{$ENDIF}
