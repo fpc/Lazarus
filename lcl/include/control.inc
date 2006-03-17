@@ -1793,7 +1793,7 @@ end;
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
   DoBeforeMouseMessage;
-  //DebugLn('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
+  //DebugLn('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',DbgS(csCaptureMouse in ControlStyle),' csClicked=',DbgS(csClicked in ControlState));
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.WMLButtonUp ',Name,':',ClassName);
@@ -2149,7 +2149,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
 begin
-  if MouseCapture <> Value
+  if (MouseCapture <> Value) or (not Value and (CaptureControl=Self))
   then begin
     {$IFDEF VerboseMouseCapture}
     DebugLn('TControl.SetMouseCapture ',DbgSName(Self),' NewValue=',DbgS(Value));
