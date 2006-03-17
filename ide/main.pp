@@ -2723,18 +2723,10 @@ begin
 end;
 
 procedure TMainIDE.DoViewAnchorEditor;
-var
-  WasVisible: boolean;
 begin
-  if AnchorDesigner=nil then begin
+  if AnchorDesigner=nil then
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
-    WasVisible:=false;
-  end else
-    WasVisible:=AnchorDesigner.Visible;
-
-  AnchorDesigner.Show;
-  if not WasVisible then
-    AnchorDesigner.ShowOnTop;
+  AnchorDesigner.EnsureVisible(true);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
