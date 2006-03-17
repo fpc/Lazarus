@@ -56,7 +56,7 @@ const
   
 type
   TCTSearchFileCase = (
-    ctsfcDefault, // e.g. case insensitive on windows
+    ctsfcDefault,  // e.g. case insensitive on windows
     ctsfcLoUpCase, // also search for lower and upper case
     ctsfcAllCase   // search case insensitive
     );
@@ -76,6 +76,8 @@ function FileIsExecutable(const AFilename: string): boolean;
 function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
+function FilenameIsTrimmed(const TheFilename: string): boolean;
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
@@ -105,7 +107,9 @@ function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
 
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
-
+function MinimizeSearchPath(const SearchPath: string): string;
+function FindPathInSearchPath(APath: PChar; APathLen: integer;
+                              SearchPath: PChar; SearchPathLen: integer): PChar;
 
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
@@ -113,42 +117,6 @@ type
 const
   CTPascalExtension: array[TCTPascalExtType] of string =
     ('', '.pas', '.pp', '.p');
-
-// debugging
-procedure DebugLn;
-procedure DebugLn(const s: string);
-procedure DebugLn(const s1,s2: string);
-procedure DebugLn(const s1,s2,s3: string);
-procedure DebugLn(const s1,s2,s3,s4: string);
-procedure DebugLn(const s1,s2,s3,s4,s5: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
-procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
-
-procedure DbgOut(const s: string);
-procedure DbgOut(const s1,s2: string);
-procedure DbgOut(const s1,s2,s3: string);
-procedure DbgOut(const s1,s2,s3,s4: string);
-procedure DbgOut(const s1,s2,s3,s4,s5: string);
-procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
-
-function DbgS(const c: char): string; overload;
-function DbgS(const c: cardinal): string; overload;
-function DbgS(const i: integer): string; overload;
-function DbgS(const r: TRect): string; overload;
-function DbgS(const p: TPoint): string; overload;
-function DbgS(const p: pointer): string; overload;
-function DbgS(const e: extended): string; overload;
-function DbgS(const b: boolean): string; overload;
-
-function DbgS(const i1,i2,i3,i4: integer): string; overload;
-function DbgSName(const p: TObject): string;
-function DbgStr(const StringWithSpecialChars: string): string;
-
 
 type
   TFileStateCacheItemFlag = (
@@ -187,6 +155,7 @@ type
     FFiles: TAVLTree;
     FTimeStamp: integer;
     FLockCount: integer;
+    FChangeTimeStampHandler: array of TNotifyEvent;
     procedure SetFlag(AFile: TFileStateCacheItem;
                       AFlag: TFileStateCacheItemFlag; NewValue: boolean);
   public
@@ -208,10 +177,12 @@ type
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
                    var AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
     procedure WriteDebugReport;
+    procedure AddChangeTimeStampHandler(const Handler: TNotifyEvent);
+    procedure RemoveChangeTimeStampHandler(const Handler: TNotifyEvent);
   public
     property TimeStamp: integer read FTimeStamp;
   end;
-  
+
 var
   FileStateCache: TFileStateCache;
 
@@ -239,6 +210,68 @@ const
     'fsciExecutable'
     );
 
+// basic utility -> should go to RTL
+function ComparePointers(p1, p2: Pointer): integer;
+procedure MergeSort(List: PPointer; ListLength: PtrInt;
+                    Compare: TListSortCompare);
+
+// debugging
+procedure DebugLn;
+procedure DebugLn(const s: string);
+procedure DebugLn(const s1,s2: string);
+procedure DebugLn(const s1,s2,s3: string);
+procedure DebugLn(const s1,s2,s3,s4: string);
+procedure DebugLn(const s1,s2,s3,s4,s5: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
+
+procedure DbgOut(const s: string);
+procedure DbgOut(const s1,s2: string);
+procedure DbgOut(const s1,s2,s3: string);
+procedure DbgOut(const s1,s2,s3,s4: string);
+procedure DbgOut(const s1,s2,s3,s4,s5: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
+
+function DbgS(const c: char): string; overload;
+function DbgS(const c: cardinal): string; overload;
+function DbgS(const i: integer): string; overload;
+function DbgS(const r: TRect): string; overload;
+function DbgS(const p: TPoint): string; overload;
+function DbgS(const p: pointer): string; overload;
+function DbgS(const e: extended): string; overload;
+function DbgS(const b: boolean): string; overload;
+
+function DbgS(const i1,i2,i3,i4: integer): string; overload;
+function DbgSName(const p: TObject): string;
+function DbgStr(const StringWithSpecialChars: string): string;
+
+function GetTicks: int64;
+
+type
+  TCTStackTracePointers = array of Pointer;
+  TCTLineInfoCacheItem = record
+    Addr: Pointer;
+    Info: string;
+  end;
+  PCTLineInfoCacheItem = ^TCTLineInfoCacheItem;
+
+procedure CTDumpStack;
+function CTGetStackTrace(UseCache: boolean): string;
+procedure CTGetStackTracePointers(var AStack: TCTStackTracePointers);
+function CTStackTraceAsString(const AStack: TCTStackTracePointers;
+                            UseCache: boolean): string;
+function CTGetLineInfo(Addr: Pointer; UseCache: boolean): string;
+function CompareCTLineInfoCacheItems(Data1, Data2: Pointer): integer;
+function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
+
+var
+  FPUpChars: array[char] of char;
+
 implementation
 
 // to get more detailed error messages consider the os
@@ -248,8 +281,9 @@ uses
 {$ENDIF}
 
 var
-  UpChars: array[char] of char;
-
+  LineInfoCache: TAVLTree = nil;
+  LastTick: int64 = 0;
+  
 {-------------------------------------------------------------------------------
   function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 -------------------------------------------------------------------------------}
@@ -335,7 +369,7 @@ begin
   and (Result[2]=':')) then begin
     StartPos:=3;
     if Result[1] in ['a'..'z'] then
-      Result[1]:=UpChars[Result[1]];
+      Result[1]:=FPUpChars[Result[1]];
   end;
   {$ENDIF}
   FileNotFound:=false;
@@ -407,7 +441,7 @@ end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  {$IFDEF WIN32}
+  {$IFDEF CaseInsensitiveFilenames}
   Result:=CompareText(Filename1, Filename2);
   {$ELSE}
   Result:=CompareStr(Filename1, Filename2);
@@ -575,47 +609,55 @@ begin
   end;
 end;
 
+function FilenameIsTrimmed(const TheFilename: string): boolean;
+begin
+  Result:=FilenameIsTrimmed(PChar(TheFilename),length(TheFilename));
+end;
+
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if NameLen<=0 then begin
+    Result:=true;
+    exit;
+  end;
+  // check heading spaces
+  if StartPos[0]=' ' then exit;
+  // check trailing spaces
+  if StartPos[NameLen-1]=' ' then exit;
+  // check ./ at start
+  if (StartPos[0]='.') and (StartPos[1]=PathDelim) then exit;
+  i:=0;
+  while i<NameLen do begin
+    if StartPos[i]<>PathDelim then
+      inc(i)
+    else begin
+      inc(i);
+      if i=NameLen then break;
+      
+      // check for double path delimiter
+      if (StartPos[i]=PathDelim) then exit;
+      
+      if StartPos[i]='.' then begin
+        inc(i);
+        // check /./ or /. at end
+        if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
+        if StartPos[i]='.' then begin
+          inc(i);
+          // check /../ or /.. at end
+          if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
+        end;
+      end;
+    end;
+  end;
+  Result:=true;
+end;
+
 function TrimFilename(const AFilename: string): string;
 // trim double path delims, heading and trailing spaces
 // and special dirs . and ..
-
-  function FilenameIsTrimmed(const TheFilename: string): boolean;
-  var
-    l: Integer;
-    i: Integer;
-  begin
-    Result:=false;
-    if TheFilename='' then begin
-      Result:=true;
-      exit;
-    end;
-    l:=length(TheFilename);
-    // check heading spaces
-    if TheFilename[1]=' ' then exit;
-    // check trailing spaces
-    if TheFilename[l]=' ' then exit;
-    i:=1;
-    while i<=l do begin
-      case TheFilename[i] of
-
-      PathDelim:
-        // check for double path delimiter
-        if (i<l) and (TheFilename[i+1]=PathDelim) then exit;
-
-      '.':
-        if (i=1) or (TheFilename[i-1]=PathDelim) then begin
-          // check for . and .. directories
-          if (i=l) or (TheFilename[i+1]=PathDelim) then exit;
-          if (TheFilename[i+1]='.')
-          and ((i=l-1) or (TheFilename[i+2]=PathDelim)) then exit;
-        end;
-
-      end;
-      inc(i);
-    end;
-    Result:=true;
-  end;
-
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
 begin
@@ -632,7 +674,7 @@ begin
   // skip heading spaces
   while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
 
-  // trim double path delims and special dirs . and ..
+  // trim double path delimiters and special dirs . and ..
   while (SrcPos<=l) do begin
     c:=AFilename[SrcPos];
     // check for double path delims
@@ -778,7 +820,7 @@ begin
   if MinLen>BaseDirLen then MinLen:=BaseDirLen;
   SamePos:=1;
   while (SamePos<=MinLen) do begin
-    {$IFDEF win32}
+    {$IFDEF CaseInsensitiveFilenames}
     if AnsiStrLIComp(@FileName[SamePos],@BaseDirectory[SamePos],1)=0
     {$ELSE}
     if FileName[SamePos]=BaseDirectory[SamePos]
@@ -857,11 +899,14 @@ begin
 end;
 
 function ChompPathDelim(const Path: string): string;
+var
+  Len: Integer;
 begin
-  if (Path<>'') and (Path[length(Path)]=PathDelim) then
-    Result:=LeftStr(Path,length(Path)-1)
-  else
-    Result:=Path;
+  Result:=Path;
+  Len:=length(Result);
+  while (Len>1) and (Result[Len]=PathDelim) do dec(Len);
+  if Len<length(Result) then
+    SetLength(Result,Len);
 end;
 
 function FilenameIsPascalUnit(const Filename: string;
@@ -1039,6 +1084,87 @@ begin
   end;
 end;
 
+function MinimizeSearchPath(const SearchPath: string): string;
+// trim the paths, remove doubles and empty paths
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  NewPath: String;
+begin
+  Result:=SearchPath;
+  StartPos:=1;
+  while StartPos<=length(Result) do begin
+    EndPos:=StartPos;
+    while (EndPos<=length(Result)) and (Result[EndPos]<>';') do
+      inc(EndPos);
+    if StartPos<EndPos then begin
+      // trim path and chomp PathDelim
+      if (Result[EndPos-1]=PathDelim)
+      or (not FilenameIsTrimmed(@Result[StartPos],EndPos-StartPos)) then begin
+        NewPath:=ChompPathDelim(
+                           TrimFilename(copy(Result,StartPos,EndPos-StartPos)));
+        Result:=copy(Result,1,StartPos-1)+NewPath+copy(Result,EndPos,length(Result));
+        EndPos:=StartPos+length(NewPath);
+      end;
+      // check if path already exists
+      if FindPathInSearchPath(@Result[StartPos],EndPos-StartPos,
+                              @Result[1],StartPos-1)<>nil
+      then begin
+        // remove path
+        System.Delete(Result,StartPos,EndPos-StartPos+1);
+      end else begin
+        StartPos:=EndPos+1;
+      end;
+    end else begin
+      // remove empty path
+      System.Delete(Result,StartPos,1);
+    end;
+  end;
+  if (Result<>'') and (Result[length(Result)]=';') then
+    SetLength(Result,length(Result)-1);
+end;
+
+function FindPathInSearchPath(APath: PChar; APathLen: integer;
+  SearchPath: PChar; SearchPathLen: integer): PChar;
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  NextStartPos: LongInt;
+  CmpPos: LongInt;
+begin
+  Result:=nil;
+  if SearchPath=nil then exit;
+  if APath=nil then exit;
+  // ignore trailing PathDelim at end
+  while (APathLen>1) and (APath[APathLen-1]=PathDelim) do dec(APathLen);
+
+  StartPos:=0;
+  while StartPos<SearchPathLen do begin
+    // find current path bounds
+    NextStartPos:=StartPos;
+    while (SearchPath[NextStartPos]<>';') and (NextStartPos<SearchPathLen) do
+      inc(NextStartPos);
+    EndPos:=NextStartPos;
+    // ignore trailing PathDelim at end
+    while (EndPos>StartPos+1) and (SearchPath[EndPos-1]=PathDelim) do
+      dec(EndPos);
+    // compare current path
+    if EndPos-StartPos=APathLen then begin
+      CmpPos:=0;
+      while CmpPos<APathLen do begin
+        if APath[CmpPos]<>SearchPath[StartPos+CmpPos] then
+          break;
+        inc(CmpPos);
+      end;
+      if CmpPos<EndPos then begin
+        Result:=@SearchPath[StartPos];
+        exit;
+      end;
+    end;
+    StartPos:=NextStartPos+1;
+  end;
+end;
+
 function SearchFileInDir(const Filename, BaseDirectory: string;
   SearchCase: TCTSearchFileCase): string;
   
@@ -1205,7 +1331,7 @@ function FilenameIsMatching(const Mask, Filename: string;
   function CharsEqual(c1, c2: char): boolean;
   begin
     {$ifdef CaseInsensitiveFilenames}
-    Result:=(UpChars[c1]=UpChars[c2]);
+    Result:=(FPUpChars[c1]=FPUpChars[c2]);
     {$else}
     Result:=(c1=c2);
     {$endif}
@@ -1375,8 +1501,8 @@ begin
         FileChar:=Filename[FilePos];
         ExtChar:=Ext[ExtPos];
         if not CaseSensitive then begin
-          FileChar:=UpChars[FileChar];
-          ExtChar:=UpChars[ExtChar];
+          FileChar:=FPUpChars[FileChar];
+          ExtChar:=FPUpChars[ExtChar];
         end;
         if FileChar=ExtChar then begin
           inc(FilePos);
@@ -1404,6 +1530,83 @@ begin
         exit;
       end;
     end;
+  end;
+end;
+
+function ComparePointers(p1, p2: Pointer): integer;
+begin
+  if p1>p2 then
+    Result:=1
+  else if p1<p2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+procedure MergeSort(List: PPointer; ListLength: PtrInt;
+  Compare: TListSortCompare);
+var
+  MergeList: PPointer;
+
+  procedure Merge(const Pos1, Pos2, Pos3: PtrInt);
+  // merge two sorted arrays
+  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
+  var Src1Pos,Src2Pos,DestPos,cmp,i:PtrInt;
+  begin
+    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
+    Src1Pos:=Pos2-1;
+    Src2Pos:=Pos3;
+    DestPos:=Pos3;
+    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
+      cmp:=Compare(List[Src1Pos],List[Src2Pos]);
+      if cmp>0 then begin
+        MergeList[DestPos]:=List[Src1Pos];
+        dec(Src1Pos);
+      end else begin
+        MergeList[DestPos]:=List[Src2Pos];
+        dec(Src2Pos);
+      end;
+      dec(DestPos);
+    end;
+    while Src2Pos>=Pos2 do begin
+      MergeList[DestPos]:=List[Src2Pos];
+      dec(Src2Pos);
+      dec(DestPos);
+    end;
+    for i:=DestPos+1 to Pos3 do
+      List[i]:=MergeList[i];
+  end;
+
+  procedure Sort(const Pos1, Pos2: PtrInt);
+  // sort List from Pos1 to Pos2, usig MergeList as temporary buffer
+  var cmp, mid: PtrInt;
+  begin
+    if Pos1>=Pos2 then begin
+      // one element is always sorted -> nothing to do
+    end else if Pos1+1=Pos2 then begin
+      // two elements can be sorted easily
+      cmp:=Compare(List[Pos1],List[Pos2]);
+      if cmp>0 then begin
+        MergeList[Pos1]:=List[Pos1];
+        List[Pos1]:=List[Pos2];
+        List[Pos2]:=MergeList[Pos1];
+      end;
+    end else begin
+      mid:=(Pos1+Pos2) shr 1;
+      Sort(Pos1,mid);
+      Sort(mid+1,Pos2);
+      Merge(Pos1,mid+1,Pos2);
+    end;
+  end;
+
+// sort ascending
+begin
+  if ListLength<=1 then exit;
+  GetMem(MergeList,SizeOf(Pointer)*ListLength);
+  try
+    Sort(0,ListLength-1);
+  finally
+    FreeMem(MergeList);
   end;
 end;
 
@@ -1583,6 +1786,119 @@ begin
   end;
 end;
 
+function GetTicks: int64;
+var
+  CurTick: Int64;
+begin
+  CurTick:=round(Now*86400000);
+  Result:=CurTick-LastTick;
+  LastTick:=CurTick;
+end;
+
+procedure CTDumpStack;
+begin
+  DebugLn(CTGetStackTrace(true));
+end;
+
+function CTGetStackTrace(UseCache: boolean): string;
+var
+  bp: Pointer;
+  addr: Pointer;
+  oldbp: Pointer;
+  CurAddress: Shortstring;
+begin
+  Result:='';
+  { retrieve backtrace info }
+  bp:=get_caller_frame(get_frame);
+  while bp<>nil do begin
+    addr:=get_caller_addr(bp);
+    CurAddress:=CTGetLineInfo(addr,UseCache);
+    //DebugLn('GetStackTrace ',CurAddress);
+    Result:=Result+CurAddress+LineEnding;
+    oldbp:=bp;
+    bp:=get_caller_frame(bp);
+    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+      bp:=nil;
+  end;
+end;
+
+procedure CTGetStackTracePointers(var AStack: TCTStackTracePointers);
+var
+  Depth: Integer;
+  bp: Pointer;
+  oldbp: Pointer;
+begin
+  // get stack depth
+  Depth:=0;
+  bp:=get_caller_frame(get_frame);
+  while bp<>nil do begin
+    inc(Depth);
+    oldbp:=bp;
+    bp:=get_caller_frame(bp);
+    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+      bp:=nil;
+  end;
+  SetLength(AStack,Depth);
+  if Depth>0 then begin
+    Depth:=0;
+    bp:=get_caller_frame(get_frame);
+    while bp<>nil do begin
+      AStack[Depth]:=get_caller_addr(bp);
+      inc(Depth);
+      oldbp:=bp;
+      bp:=get_caller_frame(bp);
+      if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
+        bp:=nil;
+    end;
+  end;
+end;
+
+function CTStackTraceAsString(const AStack: TCTStackTracePointers; UseCache: boolean
+  ): string;
+var
+  i: Integer;
+  CurAddress: String;
+begin
+  Result:='';
+  for i:=0 to length(AStack)-1 do begin
+    CurAddress:=CTGetLineInfo(AStack[i],UseCache);
+    Result:=Result+CurAddress+LineEnding;
+  end;
+end;
+
+function CTGetLineInfo(Addr: Pointer; UseCache: boolean): string;
+var
+  ANode: TAVLTreeNode;
+  Item: PCTLineInfoCacheItem;
+begin
+  if UseCache then begin
+    if LineInfoCache=nil then
+      LineInfoCache:=TAVLTree.Create(@CompareCTLineInfoCacheItems);
+    ANode:=LineInfoCache.FindKey(Addr,@CompareAddrWithCTLineInfoCacheItem);
+    if ANode=nil then begin
+      Result:=BackTraceStrFunc(Addr);
+      New(Item);
+      Item^.Addr:=Addr;
+      Item^.Info:=Result;
+      LineInfoCache.Add(Item);
+    end else begin
+      Result:=PCTLineInfoCacheItem(ANode.Data)^.Info;
+    end;
+  end else
+    Result:=BackTraceStrFunc(Addr);
+end;
+
+function CompareCTLineInfoCacheItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=ComparePointers(PCTLineInfoCacheItem(Data1)^.Addr,
+                          PCTLineInfoCacheItem(Data2)^.Addr);
+end;
+
+function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
+begin
+  Result:=ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
+end;
+
 function FileExistsCached(const Filename: string): boolean;
 begin
   Result:=FileStateCache.FileExistsCached(Filename);
@@ -1642,7 +1958,7 @@ var
 begin
   FileStateCache:=TFileStateCache.Create;
   for c:=Low(char) to High(char) do begin
-    UpChars[c]:=upcase(c);
+    FPUpChars[c]:=upcase(c);
   end;
 end;
 
@@ -1682,6 +1998,7 @@ destructor TFileStateCache.Destroy;
 begin
   FFiles.FreeAndClear;
   FFiles.Free;
+  SetLength(FChangeTimeStampHandler,0);
   inherited Destroy;
 end;
 
@@ -1708,12 +2025,16 @@ begin
 end;
 
 procedure TFileStateCache.IncreaseTimeStamp;
+var
+  i: Integer;
 begin
   if Self<>nil then begin
     if FTimeStamp<maxLongint then
       inc(FTimeStamp)
     else
       FTimeStamp:=-maxLongint;
+    for i:=0 to length(FChangeTimeStampHandler)-1 do
+      FChangeTimeStampHandler[i](Self);
   end;
   //debugln('TFileStateCache.IncreaseTimeStamp FTimeStamp=',dbgs(FTimeStamp));
 end;
@@ -1852,12 +2173,51 @@ begin
   debugln(FFiles.ReportAsString);
 end;
 
+procedure TFileStateCache.AddChangeTimeStampHandler(const Handler: TNotifyEvent
+  );
+begin
+  SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)+1);
+  FChangeTimeStampHandler[length(FChangeTimeStampHandler)-1]:=Handler;
+end;
+
+procedure TFileStateCache.RemoveChangeTimeStampHandler(
+  const Handler: TNotifyEvent);
+var
+  i: Integer;
+begin
+  for i:=length(FChangeTimeStampHandler)-1 downto 0 do begin
+    if Handler=FChangeTimeStampHandler[i] then begin
+      if i<length(FChangeTimeStampHandler)-1 then
+        System.Move(FChangeTimeStampHandler[i+1],FChangeTimeStampHandler[i],
+                    SizeOf(TNotifyEvent)*(length(FChangeTimeStampHandler)-i-1));
+      SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)-1);
+    end;
+  end;
+end;
+
+procedure FreeLineInfoCache;
+var
+  ANode: TAVLTreeNode;
+  Item: PCTLineInfoCacheItem;
+begin
+  if LineInfoCache=nil then exit;
+  ANode:=LineInfoCache.FindLowest;
+  while ANode<>nil do begin
+    Item:=PCTLineInfoCacheItem(ANode.Data);
+    Dispose(Item);
+    ANode:=LineInfoCache.FindSuccessor(ANode);
+  end;
+  LineInfoCache.Free;
+  LineInfoCache:=nil;
+end;
+
 initialization
   InternalInit;
 
 finalization
   FileStateCache.Free;
   FileStateCache:=nil;
+  FreeLineInfoCache;
 
 end.
 

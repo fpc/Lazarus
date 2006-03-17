@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
+  DirectoryCache, AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
@@ -126,6 +126,7 @@ type
     procedure WriteError;
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
+    function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
       out WriteLockStep: integer);
@@ -133,12 +134,15 @@ type
     function OnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
     function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
+    function DirectoryCachePoolGetString(const ADirectory: string;
+                                  const AStringType: TCTDirCacheString): string;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
     SourceCache: TCodeCache; // cache for source (units, include files, ...)
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
+    DirectoryCachePool: TCTDirectoryCachePool;
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
@@ -232,19 +236,26 @@ type
           
     // defines
     function SetGlobalValue(const VariableName, VariableValue: string): boolean;
-    function GetUnitPathForDirectory(const Directory: string): string;
-    function GetIncludePathForDirectory(const Directory: string): string;
-    function GetSrcPathForDirectory(const Directory: string): string;
+    function GetUnitPathForDirectory(const Directory: string;
+                                     UseCache: boolean = true): string;
+    function GetIncludePathForDirectory(const Directory: string;
+                                        UseCache: boolean = true): string;
+    function GetSrcPathForDirectory(const Directory: string;
+                                    UseCache: boolean = true): string;
+    function GetCompleteSrcPathForDirectory(const Directory: string;
+                                            UseCache: boolean = true): string;
     function GetPPUSrcPathForDirectory(const Directory: string): string;
     function GetPPWSrcPathForDirectory(const Directory: string): string;
     function GetDCUSrcPathForDirectory(const Directory: string): string;
-    function GetCompiledSrcPathForDirectory(const Directory: string): string;
+    function GetCompiledSrcPathForDirectory(const Directory: string;
+                                            UseCache: boolean = true): string;
     function GetNestedCommentsFlagForFile(const Filename: string): boolean;
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
     function GetCompiledSrcExtForDirectory(const Directory: string): string;
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
-    function GetUnitLinksForDirectory(const Directory: string): string;
+    function GetUnitLinksForDirectory(const Directory: string;
+                                      UseCache: boolean = false): string;
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
 
@@ -603,6 +614,8 @@ begin
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   GlobalValues:=TExpressionEvaluator.Create;
+  DirectoryCachePool:=TCTDirectoryCachePool.Create;
+  DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
@@ -647,6 +660,7 @@ begin
   DebugLn('[TCodeToolManager.Destroy] E');
   {$ENDIF}
   FreeAndNil(SourceCache);
+  FreeAndNil(DirectoryCachePool);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] F');
   {$ENDIF}
@@ -939,21 +953,73 @@ begin
   DefineTree.ClearCache;
 end;
 
-function TCodeToolManager.GetUnitPathForDirectory(const Directory: string): string;
+function TCodeToolManager.GetUnitPathForDirectory(const Directory: string;
+  UseCache: boolean): string;
 begin
-  Result:=DefineTree.GetUnitPathForDirectory(Directory);
+  if UseCache then
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsUnitPath,true)
+  else
+    Result:=DefineTree.GetUnitPathForDirectory(Directory);
 end;
 
-function TCodeToolManager.GetIncludePathForDirectory(const Directory: string
-  ): string;
+function TCodeToolManager.GetIncludePathForDirectory(const Directory: string;
+  UseCache: boolean): string;
 begin
-  Result:=DefineTree.GetIncludePathForDirectory(Directory);
+  if UseCache then
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsIncludePath,true)
+  else
+    Result:=DefineTree.GetIncludePathForDirectory(Directory);
 end;
 
-function TCodeToolManager.GetSrcPathForDirectory(const Directory: string
-  ): string;
+function TCodeToolManager.GetSrcPathForDirectory(const Directory: string;
+  UseCache: boolean): string;
 begin
-  Result:=DefineTree.GetSrcPathForDirectory(Directory);
+  if UseCache then
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsSrcPath,true)
+  else
+    Result:=DefineTree.GetSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetCompleteSrcPathForDirectory(
+  const Directory: string; UseCache: boolean): string;
+// returns the SrcPath + UnitPath + any CompiledSrcPath
+var
+  CurUnitPath: String;
+  StartPos: Integer;
+  EndPos: LongInt;
+  CurSrcPath: String;
+  CurUnitDir: String;
+  CurCompiledSrcPath: String;
+begin
+  if UseCache then
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsCompleteSrcPath,true)
+  else begin
+    CurUnitPath:='.;'+GetUnitPathForDirectory(Directory);
+    CurSrcPath:=GetSrcPathForDirectory(Directory);
+    // for every unit path, get the CompiledSrcPath
+    StartPos:=1;
+    while StartPos<=length(CurUnitPath) do begin
+      EndPos:=StartPos;
+      while (EndPos<=length(CurUnitPath)) and (CurUnitPath[EndPos]<>';') do
+        inc(EndPos);
+      if EndPos>StartPos then begin
+        CurUnitDir:=TrimFilename(copy(CurUnitPath,StartPos,EndPos-StartPos));
+        if not FilenameIsAbsolute(CurUnitDir) then
+          CurUnitDir:=TrimFilename(AppendPathDelim(Directory)+CurUnitDir);
+        CurCompiledSrcPath:=GetCompiledSrcPathForDirectory(CurUnitDir);
+        if CurCompiledSrcPath<>'' then
+          CurSrcPath:=CurSrcPath+';'+CurCompiledSrcPath;
+      end;
+      StartPos:=EndPos+1;
+    end;
+    // combine unit, src and compiledsrc search path
+    Result:=CurUnitPath+';'+CurSrcPath;
+    // make it absolute, so the user need less string concatenations
+    if FilenameIsAbsolute(Directory) then
+      Result:=CreateAbsoluteSearchPath(Result,Directory);
+    // trim the paths, remove doubles and empty paths
+    Result:=MinimizeSearchPath(Result);
+  end;
 end;
 
 function TCodeToolManager.GetPPUSrcPathForDirectory(const Directory: string
@@ -974,8 +1040,8 @@ begin
   Result:=DefineTree.GetDCUSrcPathForDirectory(Directory);
 end;
 
-function TCodeToolManager.GetCompiledSrcPathForDirectory(const Directory: string
-  ): string;
+function TCodeToolManager.GetCompiledSrcPathForDirectory(
+  const Directory: string; UseCache: boolean): string;
 begin
   Result:=DefineTree.GetCompiledSrcPathForDirectory(Directory);
 end;
@@ -1044,25 +1110,23 @@ end;
 
 function TCodeToolManager.FindUnitInUnitLinks(const Directory, UnitName: string
   ): string;
-var
-  UnitLinks: string;
-  UnitLinkStart, UnitLinkEnd: integer;
 begin
-  Result:='';
-  UnitLinks:=GetUnitLinksForDirectory(Directory);
-  if UnitLinks='' then exit;
-  SearchUnitInUnitLinks(UnitLinks,UnitName,UnitLinkStart,UnitLinkEnd,Result);
+  Result:=DirectoryCachePool.FindUnitInUnitLinks(Directory,UnitName);
 end;
 
-function TCodeToolManager.GetUnitLinksForDirectory(const Directory: string
-  ): string;
+function TCodeToolManager.GetUnitLinksForDirectory(const Directory: string;
+  UseCache: boolean): string;
 var
   Evaluator: TExpressionEvaluator;
 begin
-  Result:='';
-  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
-  if Evaluator=nil then exit;
-  Result:=Evaluator[ExternalMacroStart+'UnitLinks'];
+  if UseCache then begin
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsUnitLinks,true)
+  end else begin
+    Result:='';
+    Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+    if Evaluator=nil then exit;
+    Result:=Evaluator[ExternalMacroStart+'UnitLinks'];
+  end;
 end;
 
 procedure TCodeToolManager.GetFPCVersionForDirectory(const Directory: string;
@@ -2142,7 +2206,7 @@ begin
         MissingIncludeFiles:=nil;
         try
           Result:=FCurCodeTool.FixIncludeFilenames(Code,SourceChangeCache,
-                                           FoundIncludeFiles,MissingIncludeFiles);
+                                         FoundIncludeFiles,MissingIncludeFiles);
           if (MissingIncludeFiles<>nil)
           and (MissingIncludeFiles.Count>0) then begin
             DebugLn('TCodeToolManager.FixIncludeFilenames Missing: ',MissingIncludeFiles.Text);
@@ -3545,6 +3609,7 @@ begin
   Result.JumpCentered:=FJumpCentered;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
   TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+  TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
   TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
   TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
@@ -3576,6 +3641,12 @@ begin
     ,' Code=',Code.Filename);
   {$ENDIF}
   Result:=TFindDeclarationTool(GetCodeToolForSource(Code,GoToMainCode,true));
+end;
+
+function TCodeToolManager.OnGetDirectoryCache(const ADirectory: string
+  ): TCTDirectoryCache;
+begin
+  Result:=DirectoryCachePool.GetCache(ADirectory,true,true);
 end;
 
 procedure TCodeToolManager.ActivateWriteLock;
@@ -3641,6 +3712,19 @@ begin
       exit;
     end;
     AToolNode:=FSourceTools.FindSuccessor(AToolNode);
+  end;
+end;
+
+function TCodeToolManager.DirectoryCachePoolGetString(const ADirectory: string;
+  const AStringType: TCTDirCacheString): string;
+begin
+  case AStringType of
+  ctdcsUnitPath: Result:=GetUnitPathForDirectory(ADirectory,false);
+  ctdcsSrcPath: Result:=GetSrcPathForDirectory(ADirectory,false);
+  ctdcsIncludePath: Result:=GetIncludePathForDirectory(ADirectory,false);
+  ctdcsCompleteSrcPath: Result:=GetCompleteSrcPathForDirectory(ADirectory,false);
+  ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false)
+  else RaiseCatchableException('');
   end;
 end;
 

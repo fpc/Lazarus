@@ -35,7 +35,7 @@ unit CodeToolsStructs;
 interface
 
 uses
-  Classes, SysUtils, CodeCache, CodeAtom;
+  Classes, SysUtils, AVL_Tree, CodeCache, CodeAtom;
   
 type
   TResourcestringInsertPolicy = (
@@ -88,10 +88,62 @@ const
     'public',
     'published'
     );
-    
+
+
+type
+  TStringToStringTreeItem = record
+    Name: string;
+    Value: string;
+  end;
+  PStringToStringTreeItem = ^TStringToStringTreeItem;
+
+  { TStringToStringTree }
+
+  TStringToStringTree = class
+  private
+    FTree: TAVLTree;// tree of TStringToStringTreeItem
+    FCaseSensitive: boolean;
+    function GetStrings(const s: string): string;
+    procedure SetStrings(const s: string; const AValue: string);
+    function FindNode(const s: string): TAVLTreeNode;
+  public
+    constructor Create(TheCaseSensitive: boolean);
+    destructor Destroy; override;
+    procedure Clear;
+    function Contains(const s: string): boolean;
+    function GetString(const Name: string; out Value: string): boolean;
+    property Strings[const s: string]: string read GetStrings write SetStrings; default;
+    property CaseSensitive: boolean read FCaseSensitive;
+  end;
+  
+function CompareStringToStringItems(Data1, Data2: Pointer): integer;
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
+function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
+function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
 
 implementation
 
+function CompareStringToStringItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareStr(PStringToStringTreeItem(Data1)^.Name,
+                     PStringToStringTreeItem(Data2)^.Name);
+end;
+
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareText(PStringToStringTreeItem(Data1)^.Name,
+                      PStringToStringTreeItem(Data2)^.Name);
+end;
+
+function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
+begin
+  Result:=CompareStr(String(Key),PStringToStringTreeItem(Data)^.Name);
+end;
+
+function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
+begin
+  Result:=CompareText(String(Key),PStringToStringTreeItem(Data)^.Name);
+end;
 
 { TCodeXYPositions }
 
@@ -243,6 +295,93 @@ function TCodeXYPositions.CreateCopy: TCodeXYPositions;
 begin
   Result:=TCodeXYPositions.Create;
   Result.Assign(Self);
+end;
+
+{ TStringToStringTree }
+
+function TStringToStringTree.GetStrings(const s: string): string;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=FindNode(s);
+  if Node<>nil then
+    Result:=PStringToStringTreeItem(Node.Data)^.Value
+  else
+    Result:=''
+end;
+
+procedure TStringToStringTree.SetStrings(const s: string; const AValue: string);
+var
+  Node: TAVLTreeNode;
+  NewItem: PStringToStringTreeItem;
+begin
+  Node:=FindNode(s);
+  if Node<>nil then begin
+    PStringToStringTreeItem(Node.Data)^.Value:=AValue;
+  end else begin
+    New(NewItem);
+    NewItem^.Name:=s;
+    NewItem^.Value:=AValue;
+    FTree.Add(NewItem);
+  end;
+end;
+
+function TStringToStringTree.FindNode(const s: string): TAVLTreeNode;
+begin
+  if CaseSensitive then
+    Result:=FTree.FindKey(Pointer(s),@CompareStringAndStringToStringTreeItem)
+  else
+    Result:=FTree.FindKey(Pointer(s),@CompareStringAndStringToStringTreeItemI);
+end;
+
+constructor TStringToStringTree.Create(TheCaseSensitive: boolean);
+begin
+  FCaseSensitive:=TheCaseSensitive;
+  if CaseSensitive then
+    FTree:=TAVLTree.Create(@CompareStringToStringItems)
+  else
+    FTree:=TAVLTree.Create(@CompareStringToStringItemsI);
+end;
+
+destructor TStringToStringTree.Destroy;
+begin
+  Clear;
+  FTree.Free;
+  FTree:=nil;
+  inherited Destroy;
+end;
+
+procedure TStringToStringTree.Clear;
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Node:=FTree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Dispose(Item);
+    Node:=FTree.FindSuccessor(Node);
+  end;
+  FTree.Clear;
+end;
+
+function TStringToStringTree.Contains(const s: string): boolean;
+begin
+  Result:=FindNode(s)<>nil;
+end;
+
+function TStringToStringTree.GetString(const Name: string; out Value: string
+  ): boolean;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then begin
+    Value:=PStringToStringTreeItem(Node.Data)^.Value;
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
 end;
 
 end.

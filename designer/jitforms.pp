@@ -932,7 +932,7 @@ function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
   const NewClassName, NewUnitName: ShortString): TClass;
 // Create a new class (vmt, virtual method table, field table and typeinfo)
 // that descends from ParentClass.
-// The new class will have no new variables, now new methods and no new fields.
+// The new class will have no new variables, no new methods and no new fields.
 var
   NewVMT: Pointer;
   ClassNamePShortString: Pointer;

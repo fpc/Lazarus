@@ -148,7 +148,7 @@ begin
   {$IFNDEF UseGTKDoubleBuf}
   IsDoubleBuffered:=false;
   {$ENDIF}
-  {$ELSE}
+  {$ELSE  below: not GTK1}
   IsDoubleBuffered:=false;
   {$ENDIF}
   if IsDoubleBuffered then

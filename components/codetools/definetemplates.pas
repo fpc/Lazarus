@@ -54,7 +54,7 @@ unit DefineTemplates;
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, ExprEval,
+  Classes, SysUtils, CodeToolsStrConsts, ExprEval, DirectoryCache,
   Laz_XMLCfg, AVL_Tree,
   Process, KeywordFuncLists, FileProcs;
 
@@ -63,11 +63,11 @@ const
 
   // Standard Template Names (do not translate them)
   StdDefTemplFPC            = 'Free Pascal Compiler';
-  StdDefTemplFPCSrc         = 'Free Pascal Sources';
-  StdDefTemplLazarusSources = 'Lazarus Sources';
-  StdDefTemplLazarusSrcDir  = 'Lazarus Source Directory';
-  StdDefTemplLazarusBuildOpts = 'Build options';
-  StdDefTemplLCLProject     = 'LCL Project';
+  StdDefTemplFPCSrc         = 'Free Pascal sources';
+  StdDefTemplLazarusSources = 'Lazarus sources';
+  StdDefTemplLazarusSrcDir  = 'Lazarus source directory';
+  StdDefTemplLazarusBuildOpts = 'Lazarus build options';
+  StdDefTemplLCLProject     = 'LCL project';
 
   // Standard macros
   DefinePathMacroName      = ExternalMacroStart+'DefinePath';
@@ -270,7 +270,6 @@ type
   public
     Path: string;
     Values: TExpressionEvaluator;
-    UnitLinksTree: TAVLTree;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -294,6 +293,7 @@ type
 
   TDefineTree = class
   private
+    FDirectoryCachePool: TCTDirectoryCachePool;
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
     FChangeStep: integer;
@@ -308,6 +308,7 @@ type
     FVirtualDirCache: TDirectoryDefines;
     function Calculate(DirDef: TDirectoryDefines): boolean;
     procedure IncreaseChangeStep;
+    procedure SetDirectoryCachePool(const AValue: TCTDirectoryCachePool);
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
     function GetDirDefinesForDirectory(const Path: string;
@@ -353,8 +354,6 @@ type
     function  GetPPWSrcPathForDirectory(const Directory: string): string;
     function  GetSrcPathForDirectory(const Directory: string): string;
     function  GetUnitPathForDirectory(const Directory: string): string;
-    function  FindUnitInUnitLinks(const AnUnitName, Directory: string;
-                                  WithVirtualDir: boolean): string;
     function  IsEqual(SrcDefineTree: TDefineTree): boolean;
     procedure Add(ADefineTemplate: TDefineTemplate);
     procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
@@ -384,6 +383,7 @@ type
                                   ADefineTemplate: TDefineTemplate);
     procedure ReplaceRootSameNameAddFirst(ADefineTemplate: TDefineTemplate);
     procedure WriteDebugReport;
+    property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool write SetDirectoryCachePool;
   end;
 
   //---------------------------------------------------------------------------
@@ -455,9 +455,6 @@ const
   
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
-function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
-  var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
-function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
@@ -472,7 +469,7 @@ implementation
 
 
 type
-  TUnitNameLink = class
+  TDefTemplUnitNameLink = class
   public
     UnitName: string;
     Filename: string;
@@ -502,17 +499,17 @@ begin
 end;
 
 function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
-var Link1, Link2: TUnitNameLink;
+var Link1, Link2: TDefTemplUnitNameLink;
 begin
-  Link1:=TUnitNameLink(NodeData1);
-  Link2:=TUnitNameLink(NodeData2);
+  Link1:=TDefTemplUnitNameLink(NodeData1);
+  Link2:=TDefTemplUnitNameLink(NodeData2);
   Result:=CompareText(Link1.UnitName,Link2.UnitName);
 end;
 
 function CompareUnitNameWithUnitLinkNode(UnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(UnitName),TUnitNameLink(NodeData).UnitName);
+  Result:=CompareText(String(UnitName),TDefTemplUnitNameLink(NodeData).UnitName);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -521,125 +518,6 @@ begin
   DirDef1:=TDirectoryDefines(NodeData1);
   DirDef2:=TDirectoryDefines(NodeData2);
   Result:=CompareFilenames(DirDef1.Path,DirDef2.Path);
-end;
-
-function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
-  var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
-var
-  UnitLinkLen: integer;
-  pe: TCTPascalExtType;
-  AliasFilename: String;
-begin
-  Result:=false;
-  Filename:='';
-  if TheUnitName='' then exit;
-  {$IFDEF ShowTriedFiles}
-  DebugLn('SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
-  {$ENDIF}
-  if UnitLinkStart<1 then
-    UnitLinkStart:=1;
-  while UnitLinkStart<=length(UnitLinks) do begin
-    while (UnitLinkStart<=length(UnitLinks))
-    and (UnitLinks[UnitLinkStart] in [#10,#13]) do
-      inc(UnitLinkStart);
-    UnitLinkEnd:=UnitLinkStart;
-    while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
-    do
-      inc(UnitLinkEnd);
-    UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
-    if UnitLinkLen>0 then begin
-      {$IFDEF ShowTriedFiles}
-      DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
-        AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
-      {$ENDIF}
-      if (UnitLinkLen=length(TheUnitName))
-      and (AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],
-           UnitLinkLen)=0)
-      then begin
-        // unit found -> parse filename
-        UnitLinkStart:=UnitLinkEnd+1;
-        UnitLinkEnd:=UnitLinkStart;
-        while (UnitLinkEnd<=length(UnitLinks))
-        and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
-          inc(UnitLinkEnd);
-        if UnitLinkEnd>UnitLinkStart then begin
-          Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-          if FileExistsCached(Filename) then begin
-            Result:=true;
-            exit;
-          end;
-          // try also different extensions
-          for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
-            if CompareFileExt(Filename,CTPascalExtension[pe],false)<>0 then
-            begin
-              AliasFilename:=ChangeFileExt(Filename,'.pas');
-              if FileExistsCached(AliasFilename) then begin
-                Filename:=AliasFilename;
-                Result:=true;
-                exit;
-              end;
-            end;
-          end;
-        end;
-        UnitLinkStart:=UnitLinkEnd;
-      end else begin
-        UnitLinkStart:=UnitLinkEnd+1;
-        while (UnitLinkStart<=length(UnitLinks))
-        and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
-          inc(UnitLinkStart);
-      end;
-    end else
-      break;
-  end;
-end;
-
-function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
-var
-  UnitLinksTree: TAVLTree;
-  UnitLinkLen: integer;
-  UnitLinkStart: Integer;
-  UnitLinkEnd: Integer;
-  TheUnitName: String;
-  Filename: String;
-  NewNode: TUnitNameLink;
-begin
-  UnitLinksTree:=TAVLTree.Create(@CompareUnitLinkNodes);
-  UnitLinkStart:=1;
-  while UnitLinkStart<=length(UnitLinks) do begin
-    while (UnitLinkStart<=length(UnitLinks))
-    and (UnitLinks[UnitLinkStart] in [#10,#13]) do
-      inc(UnitLinkStart);
-    UnitLinkEnd:=UnitLinkStart;
-    while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
-    do
-      inc(UnitLinkEnd);
-    UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
-    if UnitLinkLen>0 then begin
-      TheUnitName:=copy(UnitLinks,UnitLinkStart,UnitLinkLen);
-      if IsValidIdent(TheUnitName) then begin
-        UnitLinkStart:=UnitLinkEnd+1;
-        UnitLinkEnd:=UnitLinkStart;
-        while (UnitLinkEnd<=length(UnitLinks))
-        and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
-          inc(UnitLinkEnd);
-        if UnitLinkEnd>UnitLinkStart then begin
-          Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-          NewNode:=TUnitNameLink.Create;
-          NewNode.UnitName:=TheUnitName;
-          NewNode.Filename:=Filename;
-          UnitLinksTree.Add(NewNode);
-        end;
-        UnitLinkStart:=UnitLinkEnd;
-      end else begin
-        UnitLinkStart:=UnitLinkEnd+1;
-        while (UnitLinkStart<=length(UnitLinks))
-        and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
-          inc(UnitLinkStart);
-      end;
-    end else
-      break;
-  end;
-  Result:=UnitLinksTree;
 end;
 
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
@@ -1685,10 +1563,6 @@ end;
 destructor TDirectoryDefines.Destroy;
 begin
   Values.Free;
-  if UnitLinksTree<>nil then begin
-    UnitLinksTree.FreeAndClear;
-    UnitLinksTree.Free;
-  end;
   inherited Destroy;
 end;
 
@@ -1932,32 +1806,6 @@ begin
     Result:=Evaluator.Variables[UnitPathMacroName];
   end else begin
     Result:='';
-  end;
-end;
-
-function TDefineTree.FindUnitInUnitLinks(const AnUnitName, Directory: string;
-  WithVirtualDir: boolean): string;
-var
-  DirDef: TDirectoryDefines;
-  UnitLinks: string;
-  AVLNode: TAVLTreeNode;
-begin
-  Result:='';
-  if AnUnitName='' then exit;
-  DirDef:=GetDirDefinesForDirectory(Directory,WithVirtualDir);
-  if (DirDef=nil) or (DirDef.Values=nil) then exit;
-  if DirDef.UnitLinksTree=nil then begin
-    // create tree
-    UnitLinks:=DirDef.Values[ExternalMacroStart+'UnitLinks'];
-    // cache tree
-    DirDef.UnitLinksTree:=CreateUnitLinksTree(UnitLinks);
-  end;
-  // search in tree
-  if DirDef.UnitLinksTree<>nil then begin
-    AVLNode:=DirDef.UnitLinksTree.FindKey(PChar(AnUnitName),
-                                              @CompareUnitNameWithUnitLinkNode);
-    if AVLNode<>nil then
-      Result:=TUnitNameLink(AVLNode.Data).Filename;
   end;
 end;
 
@@ -2455,6 +2303,14 @@ begin
     inc(FChangeStep)
   else
     FChangeStep:=-$7fffffff;
+  if DirectoryCachePool<>nil then DirectoryCachePool.IncreaseTimeStamp;
+end;
+
+procedure TDefineTree.SetDirectoryCachePool(const AValue: TCTDirectoryCachePool
+  );
+begin
+  if FDirectoryCachePool=AValue then exit;
+  FDirectoryCachePool:=AValue;
 end;
 
 procedure TDefineTree.Add(ADefineTemplate: TDefineTemplate);
@@ -2972,19 +2828,19 @@ var
   Dir, TargetOS, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
   IncPathMacro, SrcPathMacro: string;
   DS: char; // dir separator
-  UnitTree: TAVLTree; // tree of TUnitNameLink
+  UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
   DefaultSrcOS, DefaultSrcOS2: string;
 
   procedure GatherUnits; forward;
 
-  function FindUnitLink(const AnUnitName: string): TUnitNameLink;
+  function FindUnitLink(const AnUnitName: string): TDefTemplUnitNameLink;
   var ANode: TAVLTreeNode;
     cmp: integer;
   begin
     if UnitTree=nil then GatherUnits;
     ANode:=UnitTree.Root;
     while ANode<>nil do begin
-      Result:=TUnitNameLink(ANode.Data);
+      Result:=TDefTemplUnitNameLink(ANode.Data);
       cmp:=CompareText(AnUnitName,Result.UnitName);
       if cmp<0 then
         ANode:=ANode.Left
@@ -3098,7 +2954,7 @@ var
     var
       AFilename, Ext, UnitName, MacroFileName: string;
       FileInfo: TSearchRec;
-      NewUnitLink, OldUnitLink: TUnitNameLink;
+      NewUnitLink, OldUnitLink: TDefTemplUnitNameLink;
       i: integer;
       DefaultMacroCount: integer;
       Priority: Integer;
@@ -3141,7 +2997,7 @@ var
                 MacroFileName:=BuildMacroFileName(AFilename,DefaultMacroCount);
                 if OldUnitLink=nil then begin
                   // first unit with this name
-                  NewUnitLink:=TUnitNameLink.Create;
+                  NewUnitLink:=TDefTemplUnitNameLink.Create;
                   NewUnitLink.UnitName:=UnitName;
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.DefaultMacroCount:=DefaultMacroCount;
@@ -3250,7 +3106,7 @@ var
   
 
   procedure AddFPCSourceLinkForUnit(const AnUnitName: string);
-  var UnitLink: TUnitNameLink;
+  var UnitLink: TDefTemplUnitNameLink;
     s: string;
   begin
     // search

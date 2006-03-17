@@ -955,7 +955,8 @@ end;
 procedure TPkgManager.PackageGraphFindFPCUnit(const UnitName,
   Directory: string; var Filename: string);
 begin
-  Filename:=CodeToolBoss.DefineTree.FindUnitInUnitLinks(UnitName,Directory,true);
+  Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(UnitName,
+                                                                Directory);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;

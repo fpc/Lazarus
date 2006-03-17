@@ -93,12 +93,12 @@ type
     FStart, FLast: integer;
     procedure SetSize(NewSize: integer);
   public
-    procedure Add(NewAtom: TAtomPosition);
-    procedure UndoLastAdd;
-    function GetValueAt(RelativePos:integer): TAtomPosition;
+    procedure Add(NewAtom: TAtomPosition); inline;
+    procedure UndoLastAdd; inline;
+    function GetValueAt(RelativePos:integer): TAtomPosition; inline;
           // 0=current 1=prior current ...
           // for LastAtoms: 0 is the last atom
-    function Count: integer;
+    function Count: integer; inline;
     property Size: integer read FSize write SetSize;
     procedure Clear;
     procedure WriteDebugReport;

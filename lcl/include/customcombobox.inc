@@ -468,7 +468,6 @@ end;
 
 procedure TCustomComboBox.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
-var R: TRect;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   //if (Style = csDropDownList) then

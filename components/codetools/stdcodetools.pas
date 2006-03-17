@@ -806,13 +806,13 @@ begin
   BuildTree(false);
   UsesNode:=FindMainUsesSection;
   if UsesNode=nil then exit;
-  MoveCursorToUsesEnd(UsesNode);
+  MoveCursorToUsesStart(UsesNode);
   FoundInUnits:=TStringList.Create;
   MissingInUnits:=TStringList.Create;
   NormalUnits:=TStringList.Create;
   repeat
     // read prior unit name
-    ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    ReadNextUsedUnit(UnitNameAtom, InAtom);
     AnUnitName:=GetAtom(UnitNameAtom);
     if InAtom.StartPos>0 then begin
       AnUnitInFilename:=copy(Src,InAtom.StartPos+1,
@@ -835,9 +835,14 @@ begin
       NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       NormalUnits.AddObject(AnUnitName,NewCode);
     end;
-    // read keyword 'uses' or comma
-    ReadPriorAtom;
-  until not AtomIsChar(',');
+    if CurPos.Flag=cafComma then begin
+      // read next unit name
+      ReadNextAtom;
+    end else if CurPos.Flag=cafSemicolon then begin
+      break;
+    end else
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+  until false;
   Result:=true;
 end;
 
@@ -923,10 +928,12 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
     ToPos: LongInt;
   begin
     if UsesNode=nil then exit(true);
-    MoveCursorToUsesEnd(UsesNode);
+    if not CheckDirectoryCache then exit(false);
+
+    MoveCursorToUsesStart(UsesNode);
     repeat
-      // read prior unit name
-      ReadPriorUsedUnit(UnitNameAtom, InAtom);
+      // read next unit name
+      ReadNextUsedUnit(UnitNameAtom, InAtom);
       OldUnitName:=GetAtom(UnitNameAtom);
       if InAtom.StartPos>0 then
         OldInFilename:=copy(Src,InAtom.StartPos+1,
@@ -936,7 +943,7 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
       // find unit file
       NewUnitName:=OldUnitName;
       NewInFilename:=OldInFilename;
-      AFilename:=FindUnitCaseInsensitive(NewUnitName,NewInFilename);
+      AFilename:=DirectoryValues.FindUnitSource(NewUnitName,NewInFilename,true);
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
@@ -958,9 +965,14 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
         if MissingUnits=nil then MissingUnits:=TStringList.Create;
         MissingUnits.Add(s);
       end;
-      // read keyword 'uses' or comma
-      ReadPriorAtom;
-    until not AtomIsChar(',');
+      if CurPos.Flag=cafComma then begin
+        // read next unit name
+        ReadNextAtom;
+      end else if CurPos.Flag=cafSemicolon then begin
+        break;
+      end else
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+    until false;
     Result:=true;
   end;
   

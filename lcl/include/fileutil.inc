@@ -538,9 +538,9 @@ var
 begin
   if SysUtils.FindFirst(Filename,faAnyFile,FileInfo)=0 then begin
     Result:=FileInfo.Size;
-    SysUtils.FindClose(FileInfo);
   end else
     Result:=-1;
+  SysUtils.FindClose(FileInfo);
 end;
 
 {------------------------------------------------------------------------------

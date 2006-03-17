@@ -35,7 +35,8 @@ type
                               OriginalIndex: integer) of object;
   TOnAddFilteredLine = procedure(const Msg, Directory: String;
                                  OriginalIndex: integer) of object;
-  TOnGetIncludePath = function(const Directory: string): string of object;
+  TOnGetIncludePath = function(const Directory: string;
+                               UseCache: boolean): string of object;
   
   TOuputFilterOption = (
     ofoShowAll,              // don't filter
@@ -935,7 +936,7 @@ begin
       AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);
       // search with include path of directory
       if Assigned(OnGetIncludePath) then begin
-        IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir),FullDir);
+        IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir,false),FullDir);
         IncludePath:=RemoveSearchPaths(IncludePath,AlreadySearchedIncPaths);
         if IncludePath<>'' then begin
           Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
