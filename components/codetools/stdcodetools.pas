@@ -943,7 +943,8 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
       // find unit file
       NewUnitName:=OldUnitName;
       NewInFilename:=OldInFilename;
-      AFilename:=DirectoryValues.FindUnitSource(NewUnitName,NewInFilename,true);
+      AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
+                                                NewUnitName,NewInFilename,true);
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';

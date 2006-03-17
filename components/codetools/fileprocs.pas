@@ -63,7 +63,7 @@ type
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
+                        CaseSensitive: boolean): integer;
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -97,12 +97,23 @@ function GetFilenameOnDisk(const AFilename: string): string;
 function FindDiskFilename(const Filename: string): string;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
+function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
+   NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean): integer;
 
+// searching .pas, .pp, .p
 function FilenameIsPascalUnit(const Filename: string;
+                              CaseSensitive: boolean = false): boolean;
+function FilenameIsPascalUnit(Filename: PChar; FilenameLen: integer;
                               CaseSensitive: boolean = false): boolean;
 function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
                                SearchCase: TCTSearchFileCase): string;
 function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
+                      Delimiter: string; SearchCase: TCTSearchFileCase): string;
+
+// searching .ppu
+function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
+                               SearchCase: TCTSearchFileCase): string;
+function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -437,6 +448,44 @@ begin
   Result:=CompareFilenames(s1,s2);
   Pointer(s1):=nil;
   Pointer(s2):=nil;
+end;
+
+function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
+  NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean): integer;
+// compare only the filename (without extension and path)
+var
+  EndPos: integer;
+  StartPos: LongInt;
+  p: Integer;
+  l: LongInt;
+  FilenameOnlyLen: Integer;
+begin
+  StartPos:=FilenameLen;
+  while (StartPos>0) and (Filename[StartPos-1]<>PathDelim) do dec(StartPos);
+  EndPos:=FilenameLen;
+  while (EndPos>StartPos) and (Filename[EndPos]<>'.') do dec(EndPos);
+  if (EndPos=StartPos) and (EndPos<FilenameLen) and (Filename[EndPos]<>'.') then
+    EndPos:=FilenameLen;
+  FilenameOnlyLen:=EndPos-StartPos;
+  l:=FilenameOnlyLen;
+  if l>NameOnlyLen then
+    l:=NameOnlyLen;
+  //DebugLn('CompareFilenameOnly NameOnly="',copy(NameOnly,1,NameOnlyLen),'" FilenameOnly="',copy(Filename,StartPos,EndPos-StartPos),'"');
+  p:=0;
+  if CaseSensitive then begin
+    while p<l do begin
+      Result:=ord(Filename[StartPos+p])-ord(NameOnly[p]);
+      if Result<>0 then exit;
+      inc(p);
+    end;
+  end else begin
+    while p<l do begin
+      Result:=ord(FPUpChars[Filename[StartPos+p]])-ord(FPUpChars[NameOnly[p]]);
+      if Result<>0 then exit;
+      inc(p);
+    end;
+  end;
+  Result:=FilenameOnlyLen-NameOnlyLen;
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -922,6 +971,41 @@ begin
   Result:=false;
 end;
 
+function FilenameIsPascalUnit(Filename: PChar; FilenameLen: integer;
+  CaseSensitive: boolean): boolean;
+var
+  StartPos: LongInt;
+  ExtLen: Integer;
+  e: TCTPascalExtType;
+  i: Integer;
+  p: PChar;
+begin
+  StartPos:=FilenameLen-1;
+  while (StartPos>=0) and (Filename[StartPos]<>'.') do dec(StartPos);
+  if StartPos<0 then exit(false);
+  ExtLen:=FilenameLen-StartPos;
+  for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
+    if (CTPascalExtension[e]='') or (length(CTPascalExtension[e])<>ExtLen) then
+      continue;
+    i:=0;
+    p:=PChar(CTPascalExtension[e]);
+    if CaseSensitive then begin
+      while (i<ExtLen) and (p^=Filename[StartPos+i]) do begin
+        inc(i);
+        inc(p);
+      end;
+    end else begin
+      while (i<ExtLen) and (FPUpChars[p^]=FPUpChars[Filename[StartPos+i]]) do
+      begin
+        inc(i);
+        inc(p);
+      end;
+    end;
+    if i=ExtLen then exit(true);
+  end;
+  Result:=false;
+end;
+
 function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
   SearchCase: TCTSearchFileCase): string;
 
@@ -933,7 +1017,9 @@ function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
 var
   Base: String;
   FileInfo: TSearchRec;
-  CurExt: String;
+  LowerCaseUnitname: String;
+  UpperCaseUnitname: String;
+  CurUnitName: String;
 begin
   Base:=AppendPathDelim(BaseDirectory);
   Base:=TrimFilename(Base);
@@ -941,6 +1027,15 @@ begin
   Result:='';
   if SearchCase=ctsfcAllCase then
     Base:=FindDiskFilename(Base);
+
+  if SearchCase in [ctsfcDefault,ctsfcLoUpCase] then begin
+    LowerCaseUnitname:=lowercase(AnUnitName);
+    UpperCaseUnitname:=uppercase(AnUnitName);
+  end else begin
+    LowerCaseUnitname:='';
+    UpperCaseUnitname:='';
+  end;
+
   if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
     repeat
@@ -949,25 +1044,31 @@ begin
       then
         continue;
       if not FilenameIsPascalUnit(FileInfo.Name,false) then continue;
-      CurExt:=ExtractFileExt(FileInfo.Name);
       case SearchCase of
       ctsfcDefault,ctsfcLoUpCase:
-        begin
-          if (AnUnitName+lowercase(CurExt)=FileInfo.Name)
-          or (lowercase(AnUnitName+CurExt)=FileInfo.Name)
-          or (uppercase(AnUnitName+CurExt)=FileInfo.Name)
-          then begin
+        if (CompareFilenameOnly(PChar(FileInfo.Name),length(FileInfo.Name),
+                                PChar(AnUnitName),length(AnUnitName),false)=0)
+        then begin
+          CurUnitName:=ExtractFilePath(FileInfo.Name);
+          if CurUnitName=AnUnitName then begin
             Result:=FileInfo.Name;
-            if AnUnitName+CurExt=FileInfo.Name then break;
+            break;
+          end else if ((LowerCaseUnitname=CurUnitName)
+          or (UpperCaseUnitname=CurUnitName)) then begin
+            Result:=FileInfo.Name;
           end;
         end;
+
       ctsfcAllCase:
-        begin
-          if CompareText(AnUnitName+CurExt,FileInfo.Name)=0 then begin
-            Result:=FileInfo.Name;
-            if AnUnitName+CurExt=FileInfo.Name then break;
-          end;
+        if (CompareFilenameOnly(PChar(FileInfo.Name),length(FileInfo.Name),
+                                PChar(AnUnitName),length(AnUnitName),true)=0)
+        then begin
+          Result:=FileInfo.Name;
+          CurUnitName:=ExtractFilePath(FileInfo.Name);
+          if CurUnitName=AnUnitName then
+            break;
         end;
+
       else
         RaiseNotImplemented;
       end;
@@ -999,6 +1100,94 @@ begin
         CurPath:=Base+CurPath;
       CurPath:=ExpandFilename(AppendPathDelim(CurPath));
       Result:=SearchPascalUnitInDir(AnUnitName,CurPath,SearchCase);
+      if Result<>'' then exit;
+    end;
+    StartPos:=p+1;
+  end;
+  Result:='';
+end;
+
+function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
+  SearchCase: TCTSearchFileCase): string;
+
+  procedure RaiseNotImplemented;
+  begin
+    raise Exception.Create('not implemented');
+  end;
+
+var
+  Base: String;
+  FileInfo: TSearchRec;
+  LowerCaseFilename: string;
+  UpperCaseFilename: string;
+begin
+  Base:=AppendPathDelim(BaseDirectory);
+  Base:=TrimFilename(Base);
+  // search file
+  Result:='';
+  if SearchCase=ctsfcAllCase then
+    Base:=FindDiskFilename(Base);
+  if SearchCase in [ctsfcDefault,ctsfcLoUpCase] then begin
+    LowerCaseFilename:=lowercase(ShortFilename);
+    UpperCaseFilename:=uppercase(ShortFilename);
+  end else begin
+    LowerCaseFilename:='';
+    UpperCaseFilename:='';
+  end;
+  if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
+  begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+      then
+        continue;
+      case SearchCase of
+      ctsfcDefault,ctsfcLoUpCase:
+        if (ShortFilename=FileInfo.Name) then begin
+          Result:=FileInfo.Name;
+          break;
+        end else if (LowerCaseFilename=FileInfo.Name)
+        or (UpperCaseFilename=FileInfo.Name)
+        then
+          Result:=FileInfo.Name;
+
+      ctsfcAllCase:
+        if CompareText(ShortFilename,FileInfo.Name)=0 then begin
+          Result:=FileInfo.Name;
+          if ShortFilename=FileInfo.Name then break;
+        end;
+
+      else
+        RaiseNotImplemented;
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
+  if Result<>'' then Result:=Base+Result;
+end;
+
+function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
+  Delimiter: string; SearchCase: TCTSearchFileCase): string;
+var
+  p, StartPos, l: integer;
+  CurPath, Base: string;
+begin
+  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  // search in current directory
+  Result:=SearchPascalUnitInDir(ShortFilename,Base,SearchCase);
+  if Result<>'' then exit;
+  // search in search path
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
+    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      if not FilenameIsAbsolute(CurPath) then
+        CurPath:=Base+CurPath;
+      CurPath:=ExpandFilename(AppendPathDelim(CurPath));
+      Result:=SearchPascalUnitInDir(ShortFilename,CurPath,SearchCase);
       if Result<>'' then exit;
     end;
     StartPos:=p+1;
@@ -1156,7 +1345,7 @@ begin
           break;
         inc(CmpPos);
       end;
-      if CmpPos<EndPos then begin
+      if CmpPos=APathLen then begin
         Result:=@SearchPath[StartPos];
         exit;
       end;

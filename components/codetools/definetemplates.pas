@@ -54,7 +54,7 @@ unit DefineTemplates;
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, ExprEval, DirectoryCache,
+  Classes, SysUtils, CodeToolsStrConsts, ExprEval, DirectoryCacher,
   Laz_XMLCfg, AVL_Tree,
   Process, KeywordFuncLists, FileProcs;
 

@@ -28,7 +28,7 @@
     the same files.
     
 }
-unit DirectoryCache;
+unit DirectoryCacher;
 
 {$mode objfpc}{$H+}
 
@@ -56,12 +56,23 @@ type
   end;
   
   TCTDirectoryUnitSources = (
-    ctdusUnitNormal,
-    ctdusUnitCaseInsensitive,
-    ctdusInFilenameNormal,
-    ctdusInFilenameCaseInsenstive
+    ctdusUnitNormal, // e.g. unitname -> filename
+    ctdusUnitCaseInsensitive, // unitname case insensitive -> filename
+    ctdusInFilenameNormal, // unit 'in' filename -> filename
+    ctdusInFilenameCaseInsenstive, // unit 'in' filename case insensitive -> filename
+    ctdusUnitFileNormal, // unitname.ext -> filename
+    ctdusUnitFileCaseInsensitive // unitname.ext case insensitive -> filename
     );
 
+const
+  ctdusCaseSensitive = [ctdusUnitNormal,
+                        ctdusInFilenameNormal,
+                        ctdusUnitFileNormal];
+  ctdusCaseInsensitive = [ctdusUnitCaseInsensitive,
+                          ctdusInFilenameCaseInsenstive,
+                          ctdusUnitFileCaseInsensitive];
+
+type
   TCTDirCacheUnitSrcRecord = record
     Files: TStringToStringTree;
     TimeStamp: cardinal;
@@ -73,7 +84,8 @@ type
   public
     TimeStamp: cardinal;
     Names: PChar; // all filenames separated with #0
-    NameCount: integer;
+    NameCount: integer; // number of filenames
+    NamesLength: PtrInt; // length of Names in bytes
     NameStarts: PInteger; // offsets in 'Names'
     destructor Destroy; override;
     procedure Clear;
@@ -99,6 +111,10 @@ type
       const AValue: string);
     procedure ClearUnitLinks;
     procedure UpdateListing;
+    function GetUnitSourceCacheValue(const UnitSrc: TCTDirectoryUnitSources;
+                           const Search: string; var Filename: string): boolean;
+    procedure AddToCache(const UnitSrc: TCTDirectoryUnitSources;
+                         const Search, Filename: string);
   public
     constructor Create(const TheDirectory: string;
                        ThePool: TCTDirectoryCachePool);
@@ -108,8 +124,14 @@ type
     function FindUnitLink(const UnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
-    function FindUnitSource(var UnitName, InFilename: string;
-                            AnyCase: boolean): string;
+    function FindUnitSource(const UnitName: string; AnyCase: boolean): string;
+    function FindUnitSourceInCleanSearchPath(const Unitname,
+                                  SearchPath: string; AnyCase: boolean): string;
+    function FindUnitSourceInCompletePath(var UnitName, InFilename: string;
+                                          AnyCase: boolean): string;
+    function FindCompiledUnitInCompletePath(var ShortFilename: string;
+                                            AnyCase: boolean): string;
+    procedure WriteListing;
   public
     property Directory: string read FDirectory;
     property RefCount: integer read FRefCount;
@@ -122,9 +144,11 @@ type
   TCTDirCacheGetString = function(const ADirectory: string;
                                   const AStringType: TCTDirCacheString
                                   ): string of object;
+  TCTDirCacheFindVirtualFile = function(const Filename: string): string of object;
 
   TCTDirectoryCachePool = class
   private
+    FOnFindVirtualFile: TCTDirCacheFindVirtualFile;
     FOnGetString: TCTDirCacheGetString;
     FTimeStamp: cardinal;
     FDirectories: TAVLTree;
@@ -140,8 +164,15 @@ type
                        UseCache: boolean = true): string;
     procedure IncreaseTimeStamp;
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
+    function FindDiskFilename(const Filename: string): string;
+    function FindUnitInDirectory(const Directory, UnitName: string;
+                                 AnyCase: boolean = false): string;
+    function FindVirtualFile(const Filename: string): string;
+    function FindVirtualUnit(const UnitName: string): string;
     property TimeStamp: cardinal read FTimeStamp;
     property OnGetString: TCTDirCacheGetString read FOnGetString write FOnGetString;
+    property OnFindVirtualFile: TCTDirCacheFindVirtualFile read FOnFindVirtualFile
+                                                   write FOnFindVirtualFile;
   end;
   
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
@@ -377,63 +408,111 @@ begin
     FListing:=TCTDirectoryListing.Create;
   FListing.Clear;
   FListing.TimeStamp:=Pool.TimeStamp;
+  if Directory='' then exit;// virtual directory
 
   // read the directory
   WorkingListing:=nil;
   WorkingListingCapacity:=0;
   WorkingListingCount:=0;
-  if SysUtils.FindFirst(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      then
-        continue;
-      // add file
-      if WorkingListingCount=WorkingListingCapacity then begin
-        // grow WorkingListing
-        if WorkingListingCapacity>0 then
-          NewCapacity:=WorkingListingCapacity*2
-        else
-          NewCapacity:=8;
-        ReAllocMem(WorkingListing,SizeOf(Pointer)*NewCapacity);
-        FillChar(WorkingListing[WorkingListingCount],
-                 SizeOf(Pointer)*(NewCapacity-WorkingListingCapacity),0);
-        WorkingListingCapacity:=NewCapacity;
-      end;
-      WorkingListing[WorkingListingCount]:=FileInfo.Name;
-      inc(WorkingListingCount);
-    until SysUtils.FindNext(FileInfo)<>0;
-  end;
-  SysUtils.FindClose(FileInfo);
-  
-  if WorkingListingCount=0 then exit;
-  
-  // sort the files
-  MergeSort(PPointer(WorkingListing),WorkingListingCount,
-            @ComparePCharFirstCaseInsThenCase);
-  
-  // create listing
-  TotalLen:=0;
-  for i:=0 to WorkingListingCount-1 do
-    inc(TotalLen,length(WorkingListing[i])+1);
-  GetMem(FListing.Names,TotalLen);
-  FListing.NameCount:=WorkingListingCount;
-  p:=0;
-  for i:=0 to WorkingListingCount-1 do begin
-    CurFilenameLen:=length(WorkingListing[i]);
-    if CurFilenameLen>0 then begin
-      System.Move(WorkingListing[i][1],FListing.Names[p],CurFilenameLen);
-      inc(p,CurFilenameLen);
+  try
+    if SysUtils.FindFirst(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then
+          continue;
+        // add file
+        if WorkingListingCount=WorkingListingCapacity then begin
+          // grow WorkingListing
+          if WorkingListingCapacity>0 then
+            NewCapacity:=WorkingListingCapacity*2
+          else
+            NewCapacity:=8;
+          ReAllocMem(WorkingListing,SizeOf(Pointer)*NewCapacity);
+          FillChar(WorkingListing[WorkingListingCount],
+                   SizeOf(Pointer)*(NewCapacity-WorkingListingCapacity),0);
+          WorkingListingCapacity:=NewCapacity;
+        end;
+        WorkingListing[WorkingListingCount]:=FileInfo.Name;
+        inc(WorkingListingCount);
+      until SysUtils.FindNext(FileInfo)<>0;
     end;
-    FListing.Names[p]:=#0;
-    inc(p);
+    SysUtils.FindClose(FileInfo);
+
+    if WorkingListingCount=0 then exit;
+
+    // sort the files
+    MergeSort(PPointer(WorkingListing),WorkingListingCount,
+              @ComparePCharFirstCaseInsThenCase);
+
+    // create listing
+    TotalLen:=0;
+    for i:=0 to WorkingListingCount-1 do
+      inc(TotalLen,length(WorkingListing[i])+1);
+    GetMem(FListing.Names,TotalLen);
+    FListing.NamesLength:=TotalLen;
+    FListing.NameCount:=WorkingListingCount;
+    GetMem(FListing.NameStarts,SizeOf(PChar)*WorkingListingCount);
+    p:=0;
+    for i:=0 to WorkingListingCount-1 do begin
+      CurFilenameLen:=length(WorkingListing[i]);
+      if CurFilenameLen>0 then begin
+        FListing.NameStarts[i]:=p;
+        System.Move(WorkingListing[i][1],FListing.Names[p],CurFilenameLen);
+        inc(p,CurFilenameLen);
+      end;
+      FListing.Names[p]:=#0;
+      inc(p);
+    end;
+  finally
+    for i:=0 to WorkingListingCount-1 do
+      WorkingListing[i]:='';
+    ReAllocMem(WorkingListing,0);
   end;
+end;
+
+function TCTDirectoryCache.GetUnitSourceCacheValue(
+  const UnitSrc: TCTDirectoryUnitSources; const Search: string;
+  var Filename: string): boolean;
+var
+  Files: TStringToStringTree;
+begin
+  Files:=FUnitSources[UnitSrc].Files;
+  if (FUnitSources[UnitSrc].TimeStamp<>Pool.TimeStamp) then begin
+    // cache is invalid -> clear to make it valid
+    if Files<>nil then
+      Files.Clear;
+    FUnitSources[UnitSrc].TimeStamp:=Pool.TimeStamp;
+    Result:=false;
+  end else begin
+    // cache is valid
+    if Files<>nil then begin
+      Result:=Files.GetString(Search,Filename);
+    end else begin
+      Result:=false;
+    end;
+  end;
+end;
+
+procedure TCTDirectoryCache.AddToCache(const UnitSrc: TCTDirectoryUnitSources;
+  const Search, Filename: string);
+var
+  Files: TStringToStringTree;
+begin
+  Files:=FUnitSources[UnitSrc].Files;
+  if Files=nil then begin
+    Files:=TStringToStringTree.Create(UnitSrc in ctdusCaseSensitive);
+    FUnitSources[UnitSrc].Files:=Files;
+  end;
+  Files[Search]:=Filename;
 end;
 
 constructor TCTDirectoryCache.Create(const TheDirectory: string;
   ThePool: TCTDirectoryCachePool);
 begin
   FDirectory:=AppendPathDelim(TrimFilename(TheDirectory));
+  if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
+    raise Exception.Create('directory not absolute');
   FPool:=ThePool;
   FRefCount:=1;
 end;
@@ -515,82 +594,158 @@ var
   cmp: LongInt;
   CurFilename: PChar;
 begin
-  if ShortFilename='' then exit('');
-  UpdateListing;
   Result:='';
-  if (FListing.Names=nil) then exit;
-  l:=0;
-  r:=FListing.NameCount-1;
-  while r>=l do begin
-    m:=(l+r) shr 1;
-    CurFilename:=@FListing.Names[FListing.NameStarts[m]];
-    case FileCase of
-    ctsfcDefault:
-      {$IFDEF CaseInsensitiveFilenames}
-      cmp:=stricomp(PChar(ShortFilename),CurFilename);
-      {$ELSE}
-      cmp:=strcomp(PChar(ShortFilename),CurFilename);
-      {$ENDIF}
-    ctsfcAllCase,ctsfcLoUpCase:
-      cmp:=stricomp(PChar(ShortFilename),CurFilename);
-    else RaiseDontKnow;
+  if ShortFilename='' then exit;
+  if Directory<>'' then begin
+    UpdateListing;
+    if (FListing.Names=nil) then exit;
+    l:=0;
+    r:=FListing.NameCount-1;
+    while r>=l do begin
+      m:=(l+r) shr 1;
+      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+      case FileCase of
+      ctsfcDefault:
+        {$IFDEF CaseInsensitiveFilenames}
+        cmp:=stricomp(PChar(ShortFilename),CurFilename);
+        {$ELSE}
+        cmp:=strcomp(PChar(ShortFilename),CurFilename);
+        {$ENDIF}
+      ctsfcAllCase,ctsfcLoUpCase:
+        cmp:=stricomp(PChar(ShortFilename),CurFilename);
+      else RaiseDontKnow;
+      end;
+      if cmp>0 then
+        l:=m+1
+      else if cmp<0 then
+        r:=m-1
+      else begin
+        Result:=CurFilename;
+        exit;
+      end;
     end;
-    if cmp>0 then
-      l:=m
-    else if cmp<0 then
-      r:=m
-    else begin
-      Result:=CurFilename;
-      exit;
-    end;
+  end else begin
+    // this is a virtual directory
+    Result:=Pool.FindVirtualFile(ShortFilename);
   end;
 end;
 
-function TCTDirectoryCache.FindUnitSource(var UnitName, InFilename: string;
+function TCTDirectoryCache.FindUnitSource(const UnitName: string;
   AnyCase: boolean): string;
 var
-  UnitSrc: TCTDirectoryUnitSources;
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  cmp: LongInt;
+  CurFilename: PChar;
+  CurFilenameLen: LongInt;
+begin
+  Result:='';
+  //DebugLn('TCTDirectoryCache.FindUnitSource UnitName="',Unitname,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  if UnitName='' then exit;
+  if Directory<>'' then begin
+    UpdateListing;
+    if (FListing.Names=nil) then exit;
+    l:=0;
+    r:=FListing.NameCount-1;
+    while r>=l do begin
+      m:=(l+r) shr 1;
+      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+      cmp:=stricomp(PChar(UnitName),CurFilename);
+      if cmp>0 then
+        l:=m+1
+      else if cmp<0 then
+        r:=m-1
+      else
+        break;
+    end;
+    // now all files above m are higher than the Unitname
+    // -> check that m is equal or above
+    if (m>0) and (Cmp>0) then
+      inc(m);
+    // now all files below m are lower than the Unitname
+    // -> now find a filename with correct case and extension
+    while m<FListing.NameCount do begin
+      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+      CurFilenameLen:=strlen(CurFilename);
 
-  function GetUnitSourceCacheValue(const Search: string;
-    var Filename: string): boolean;
-  var
-    Files: TStringToStringTree;
-  begin
-    Files:=FUnitSources[UnitSrc].Files;
-    if (FUnitSources[UnitSrc].TimeStamp<>Pool.TimeStamp) then begin
-      // cache is invalid -> clear to make it valid
-      if Files<>nil then
-        Files.Clear;
-      FUnitSources[UnitSrc].TimeStamp:=Pool.TimeStamp;
-      Result:=false;
-    end else begin
-      // cache is valid
-      if Files<>nil then begin
-        Result:=Files.GetString(Search,Filename);
-      end else begin
-        Result:=false;
+      // check if the filename prefix is the unitname
+      // if not, then all filenames are not compatible as well
+      if CurFilenameLen<length(UnitName) then break;
+      if strlicomp(CurFilename,PChar(Unitname),length(UnitName))<>0 then break;
+
+      // check if the filename fits
+      if (CompareFilenameOnly(CurFilename,CurFilenameLen,
+                             PChar(UnitName),length(UnitName),false)=0)
+      and FilenameIsPascalUnit(CurFilename,CurFilenameLen,false)
+      then begin
+        // the unitname is ok and the extension is ok
+        Result:=CurFilename;
+        if AnyCase then begin
+          exit;
+        end else begin
+          // check case
+          if (Result=lowercase(Result))
+          or (Result=uppercase(Result))
+          or (ExtractFileNameOnly(Result)=UnitName) then
+            exit;
+        end;
       end;
+      inc(m);
     end;
+  end else begin
+    // this is a virtual directory
+    Result:=Pool.FindVirtualUnit(UnitName);
+    if Result<>'' then exit;
   end;
-  
-  procedure AddToCache(const Search, Filename: string);
-  var
-    Files: TStringToStringTree;
-  begin
-    Files:=FUnitSources[UnitSrc].Files;
-    if Files=nil then begin
-      Files:=TStringToStringTree.Create(not AnyCase);
-      FUnitSources[UnitSrc].Files:=Files;
-    end;
-    Files[Search]:=Filename;
-  end;
-  
+  Result:='';
+end;
+
+function TCTDirectoryCache.FindUnitSourceInCleanSearchPath(const Unitname,
+  SearchPath: string; AnyCase: boolean): string;
 var
+  p, StartPos, l: integer;
+  CurPath: string;
+  IsAbsolute: Boolean;
+begin
+  //if (CompareText(Unitname,'UnitDependencies')=0) then
+  //  DebugLn('TCTDirectoryCache.FindUnitSourceInCleanSearchPath UnitName="',Unitname,'" SearchPath="',SearchPath,'"');
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (SearchPath[p]<>';') do inc(p);
+    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      IsAbsolute:=FilenameIsAbsolute(CurPath);
+      if (not IsAbsolute) and (Directory<>'') then begin
+        CurPath:=Directory+CurPath;
+        IsAbsolute:=true;
+      end;
+      //DebugLn('TCTDirectoryCache.FindUnitSourceInCleanSearchPath CurPath="',CurPath,'"');
+      if IsAbsolute then begin
+        CurPath:=AppendPathDelim(CurPath);
+        Result:=Pool.FindUnitInDirectory(CurPath,UnitName,AnyCase);
+      end else if (CurPath='.') and (Directory='') then begin
+        Result:=Pool.FindVirtualUnit(Unitname);
+      end;
+      if Result<>'' then exit;
+    end;
+    StartPos:=p+1;
+  end;
+  Result:='';
+end;
+
+function TCTDirectoryCache.FindUnitSourceInCompletePath(
+  var UnitName, InFilename: string; AnyCase: boolean): string;
+var
+  UnitSrc: TCTDirectoryUnitSources;
   CurDir: String;
   SrcPath: string;
   NewUnitName: String;
-  SearchCase: TCTSearchFileCase;
 begin
+  Result:='';
+  //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath UnitName="',Unitname,'" InFilename="',InFilename,'"');
   if InFilename<>'' then begin
     // uses IN parameter
     InFilename:=TrimFilename(SetDirSeparators(InFilename));
@@ -598,7 +753,7 @@ begin
       UnitSrc:=ctdusInFilenameCaseInsenstive
     else
       UnitSrc:=ctdusInFilenameNormal;
-    if GetUnitSourceCacheValue(InFilename,Result) then begin
+    if GetUnitSourceCacheValue(UnitSrc,InFilename,Result) then begin
       // found in cache
       if Result<>'' then begin
         // unit found
@@ -610,21 +765,22 @@ begin
     end else begin
       // not found in cache -> search
       if FilenameIsAbsolute(InFilename) then begin
+        // absolute filename
         if AnyCase then
-          Result:=FindDiskFilename(InFilename)
+          Result:=Pool.FindDiskFilename(InFilename)
         else
           Result:=InFilename;
         if FileExistsCached(Result) then
-          InFilename:=Result
+          InFilename:=CreateRelativePath(Result,Directory)
         else
           Result:='';
       end else begin
-        // file is relative to current directory
-        // -> search file in current directory
+        // 'in'-filename has no complete path
+        // -> search file relative to current directory
         CurDir:=Directory;
         if CurDir<>'' then begin
           if AnyCase then
-            Result:=SearchFileInDir(InFilename,CurDir,ctsfcAllCase)
+            Result:=Pool.FindDiskFilename(CurDir+InFilename)
           else
             Result:=TrimFilename(CurDir+InFilename);
           if FileExistsCached(Result) then begin
@@ -633,11 +789,12 @@ begin
             Result:='';
           end;
         end else begin
-          // virtual directory -> TODO
-          Result:='';
+          // this is a virtual directory -> search virtual unit
+          InFilename:=Pool.FindVirtualFile(InFilename);
+          Result:=InFilename;
         end;
       end;
-      AddToCache(InFilename,Result);
+      AddToCache(UnitSrc,InFilename,Result);
     end;
   end else begin
     // normal unit name
@@ -646,7 +803,7 @@ begin
       UnitSrc:=ctdusUnitCaseInsensitive
     else
       UnitSrc:=ctdusUnitNormal;
-    if GetUnitSourceCacheValue(UnitName,Result) then begin
+    if GetUnitSourceCacheValue(UnitSrc,UnitName,Result) then begin
       // found in cache
       if Result<>'' then begin
         // unit found
@@ -654,42 +811,89 @@ begin
         // unit not found
       end;
     end else begin
-      // not found in cache -> search
+      // not found in cache -> search in complete source path
 
-      // search in unit, src and compiled src path
       SrcPath:=Strings[ctdcsCompleteSrcPath];
-      if SysUtils.CompareText(UnitName,'Forms')=0 then begin
-        DebugLn('============================================================== ');
-        DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive ',SrcPath);
+
+      // search in search path
+      Result:=FindUnitSourceInCleanSearchPath(UnitName,SrcPath,AnyCase);
+      if Result='' then begin
+        // search in unit links
+        Result:=FindUnitLink(UnitName);
+      end;
+      if Result<>'' then begin
+        NewUnitName:=ExtractFileNameOnly(Result);
+        if (NewUnitName<>lowercase(NewUnitName))
+        and (UnitName<>NewUnitName) then
+          UnitName:=NewUnitName;
       end;
 
-      CurDir:=Directory;
-      if CurDir<>'' then begin
-        // search in search path
-        if AnyCase then
-          SearchCase:=ctsfcAllCase
-        else
-          SearchCase:=ctsfcLoUpCase;
-        Result:=SearchPascalUnitInPath(UnitName,CurDir,SrcPath,';',SearchCase);
-        if Result='' then begin
-          // search in unit links
-          Result:=FindUnitLink(UnitName);
-        end;
-        if Result<>'' then begin
-          NewUnitName:=ExtractFileNameOnly(Result);
-          if (NewUnitName<>lowercase(NewUnitName))
-          and (UnitName<>NewUnitName) then
-            UnitName:=NewUnitName;
-        end;
-      end else begin
-        // virtual directory -> TODO
-        Result:='';
-      end;
-      
-      AddToCache(UnitName,Result);
+      AddToCache(UnitSrc,UnitName,Result);
     end;
   end;
-  //DebugLn('TFindDeclarationTool.FindUnitCaseInsensitive RESULT AnUnitName=',AnUnitName,' InFilename=',InFilename,' Result=',Result);
+  //DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath RESULT UnitName="',UnitName,'" InFilename="',InFilename,'" Result=',Result);
+end;
+
+function TCTDirectoryCache.FindCompiledUnitInCompletePath(
+  var ShortFilename: string; AnyCase: boolean): string;
+var
+  UnitPath: string;
+  NewShortFilename: String;
+  UnitSrc: TCTDirectoryUnitSources;
+  CurDir: String;
+  SearchCase: TCTSearchFileCase;
+begin
+  Result:='';
+  if AnyCase then
+    UnitSrc:=ctdusUnitFileCaseInsensitive
+  else
+    UnitSrc:=ctdusUnitFileNormal;
+  if GetUnitSourceCacheValue(UnitSrc,ShortFilename,Result) then begin
+    // found in cache
+    if Result<>'' then begin
+      // unit found
+    end else begin
+      // unit not found
+    end;
+  end else begin
+    // not found in cache -> search
+
+    // search in unit, src and compiled src path
+    UnitPath:=Strings[ctdcsUnitPath];
+
+    CurDir:=Directory;
+    if CurDir<>'' then begin
+      // search in search path
+      if AnyCase then
+        SearchCase:=ctsfcAllCase
+      else
+        SearchCase:=ctsfcLoUpCase;
+      Result:=SearchPascalFileInPath(ShortFilename,CurDir,UnitPath,';',SearchCase);
+      if Result<>'' then begin
+        NewShortFilename:=ExtractFileName(Result);
+        if (NewShortFilename<>lowercase(NewShortFilename))
+        and (ShortFilename<>NewShortFilename) then
+          ShortFilename:=NewShortFilename;
+      end;
+    end else begin
+      // virtual directory -> TODO
+      Result:='';
+    end;
+
+    AddToCache(UnitSrc,ShortFilename,Result);
+  end;
+end;
+
+procedure TCTDirectoryCache.WriteListing;
+var
+  i: Integer;
+  Filename: PChar;
+begin
+  writeln('TCTDirectoryCache.WriteListing Count=',FListing.NameCount,' TextLen=',FListing.NamesLength);
+  for i:=0 to FListing.NameCount-1 do begin
+    Filename:=@FListing.Names[FListing.NameStarts[i]];
+    writeln(i,' "',Filename,'"');
+  end;
 end;
 
 { TCTDirectoryCachePool }
@@ -783,6 +987,53 @@ begin
   Result:=Cache.FindUnitLink(UnitName);
 end;
 
+function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
+  ): string;
+var
+  ADirectory: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+begin
+  Result:=TrimFilename(Filename);
+  ADirectory:=ExtractFilePath(Result);
+  Cache:=GetCache(ADirectory,true,false);
+  ShortFilename:=ExtractFileName(Result);
+  Result:=Cache.FindFile(ShortFilename,ctsfcAllCase);
+  if Result='' then exit;
+  Result:=Cache.Directory+Result;
+end;
+
+function TCTDirectoryCachePool.FindUnitInDirectory(const Directory,
+  UnitName: string; AnyCase: boolean): string;
+var
+  Cache: TCTDirectoryCache;
+begin
+  Cache:=GetCache(Directory,true,false);
+  Result:=Cache.FindUnitSource(UnitName,AnyCase);
+  if Result='' then exit;
+  Result:=Cache.Directory+Result;
+end;
+
+function TCTDirectoryCachePool.FindVirtualFile(const Filename: string): string;
+begin
+  if Assigned(OnFindVirtualFile) then
+    Result:=OnFindVirtualFile(Filename)
+  else
+    Result:='';
+end;
+
+function TCTDirectoryCachePool.FindVirtualUnit(const UnitName: string): string;
+var
+  e: TCTPascalExtType;
+begin
+  for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
+    if CTPascalExtension[e]='' then continue;
+    Result:=FindVirtualFile(UnitName+CTPascalExtension[e]);
+    if Result<>'' then exit;
+  end;
+  Result:='';
+end;
+
 { TCTDirectoryListing }
 
 destructor TCTDirectoryListing.Destroy;
@@ -796,6 +1047,7 @@ begin
   if NameStarts<>nil then begin
     FreeMem(NameStarts);
     NameStarts:=nil;
+    NamesLength:=0;
     FreeMem(Names);
     Names:=nil;
     NameCount:=0;

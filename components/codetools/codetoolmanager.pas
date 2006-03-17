@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  DirectoryCache, AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
+  DirectoryCacher, AVL_Tree, LFMTrees, PascalParserTool, CodeToolsConfig,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
@@ -64,6 +64,8 @@ type
   TOnFindDefineProperty = procedure(Sender: TObject;
     const PersistentClassName, AncestorClassName, Identifier: string;
     var IsDefined: boolean) of object;
+    
+  ECodeToolManagerError = class(Exception);
 
   { TCodeToolManager }
 
@@ -136,6 +138,7 @@ type
     function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
     function DirectoryCachePoolGetString(const ADirectory: string;
                                   const AStringType: TCTDirCacheString): string;
+    function DirectoryCachePoolFindVirtualFile(const Filename: string): string;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -616,6 +619,7 @@ begin
   GlobalValues:=TExpressionEvaluator.Create;
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
+  DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
@@ -1017,8 +1021,12 @@ begin
     // make it absolute, so the user need less string concatenations
     if FilenameIsAbsolute(Directory) then
       Result:=CreateAbsoluteSearchPath(Result,Directory);
+    if (System.Pos('debugger',Result)>0) and (System.Pos('ide',Directory)>0) then
+      DebugLn('TCodeToolManager.GetCompleteSrcPathForDirectory ABSOLUTE Directory="',Directory,'" Result="',Result,'"');
     // trim the paths, remove doubles and empty paths
     Result:=MinimizeSearchPath(Result);
+    if (System.Pos('debugger',Result)>0) and (System.Pos('ide',Directory)>0) then
+      DebugLn('TCodeToolManager.GetCompleteSrcPathForDirectory END Directory="',Directory,'" Result="',Result,'"');
   end;
 end;
 
@@ -1329,6 +1337,9 @@ begin
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
   end else if (AnException is ESourceChangeCacheError) then begin
     // SourceChangeCache error
+    fErrorCode:=nil;
+  end else if (AnException is ECodeToolManagerError) then begin
+    // CodeToolManager error
     fErrorCode:=nil;
   end else begin
     // unknown exception
@@ -3591,7 +3602,7 @@ begin
     CreateScanner(Code);
     if Code.Scanner=nil then begin
       if ExceptionOnError then
-        raise Exception.CreateFmt(ctsNoScannerFound,[Code.Filename]);
+        raise ECodeToolManagerError.CreateFmt(ctsNoScannerFound,[Code.Filename]);
       exit;
     end;
     Result:=TCodeTool.Create;
@@ -3726,6 +3737,19 @@ begin
   ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false)
   else RaiseCatchableException('');
   end;
+end;
+
+function TCodeToolManager.DirectoryCachePoolFindVirtualFile(
+  const Filename: string): string;
+var
+  Code: TCodeBuffer;
+begin
+  Result:='';
+  if (Filename='') or (System.Pos(PathDelim,Filename)>0) then
+    exit;
+  Code:=FindFile(Filename);
+  if Code<>nil then
+    Result:=Code.Filename;
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
