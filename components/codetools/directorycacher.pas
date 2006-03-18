@@ -570,7 +570,7 @@ begin
     if FileExistsCached(Result) then begin
       exit;
     end;
-    // try also different extensions
+    // try different extensions too
     for pe:=Low(TCTPascalExtType) to High(TCTPascalExtType) do begin
       if CompareFileExt(Result,CTPascalExtension[pe],false)<>0 then
       begin
@@ -648,12 +648,16 @@ var
   CurFilenameLen: LongInt;
 begin
   Result:='';
-  //DebugLn('TCTDirectoryCache.FindUnitSource UnitName="',Unitname,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
+  //  DebugLn('TCTDirectoryCache.FindUnitSource UnitName="',Unitname,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
   if UnitName='' then exit;
   if Directory<>'' then begin
     UpdateListing;
     if (FListing.Names=nil) then exit;
     // binary search the nearest filename
+    //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
+    //  WriteListing;
+    
     l:=0;
     r:=FListing.NameCount-1;
     while r>=l do begin
@@ -669,13 +673,15 @@ begin
     end;
     // now all files above m are higher than the Unitname
     // -> check that m is equal or above
-    if (m>0) and (Cmp>0) then
+    if (Cmp>0) then
       inc(m);
     // now all files below m are lower than the Unitname
     // -> now find a filename with correct case and extension
     while m<FListing.NameCount do begin
       CurFilename:=@FListing.Names[FListing.NameStarts[m]];
       CurFilenameLen:=strlen(CurFilename);
+      //if (CompareText(UnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
+      //  DebugLn('TCTDirectoryCache.FindUnitSource NEXT ',CurFilename);
 
       // check if the filename prefix is the unitname
       // if not, then all filenames are not compatible as well
@@ -701,6 +707,9 @@ begin
       end;
       inc(m);
     end;
+    //if m<FListing.NameCount then
+    //  if (CompareText(UnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
+    //    DebugLn('TCTDirectoryCache.FindUnitSource LAST ',CurFilename);
   end else begin
     // this is a virtual directory
     Result:=Pool.FindVirtualUnit(UnitName);
