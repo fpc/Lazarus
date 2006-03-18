@@ -205,6 +205,7 @@ begin
         end;
       end;
       if not FileExists(LFMFilename) then begin
+        // TODO: update project
         Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
         if Result<>mrOK then exit;
       end;

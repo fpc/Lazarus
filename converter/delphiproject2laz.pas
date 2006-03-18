@@ -45,7 +45,7 @@ unit DelphiProject2Laz;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileUtil,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileProcs, FileUtil,
   ExprEval, DefineTemplates, CodeCache, CodeToolManager,
   SrcEditorIntf, MsgIntf, MainIntf, LazIDEIntf, ProjectIntf,
   IDEProcs, DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
@@ -54,8 +54,20 @@ uses
 
 function ConvertDelphiToLazarusProject(const ProjectFilename: string
   ): TModalResult;
+function FindAllDelphiProjectUnits(AProject: TProject): TModalResult;
+
+type
+  TConvertDelphiToLazarusUnitFlag = (
+    cdtlufRenameLowercase, // rename the unit lowercase
+    cdtlufIsSubProc, // this is part of a big conversion -> add Abort button to all questions
+    cdtlufCheckLFM  // check and fix LFM
+    );
+  TConvertDelphiToLazarusUnitFlags = set of TConvertDelphiToLazarusUnitFlag;
+
+function ConvertAllDelphiProjectUnits(AProject: TProject;
+                         Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
-  RenameLowercase, IsSubProc: boolean): TModalResult;
+  Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
 
 function CreateDelphiToLazarusProject(const LPIFilename: string): TModalResult;
 function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
@@ -63,6 +75,8 @@ function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
   out LPRCode: TCodeBuffer): TModalResult;
 function FindDPRFilename(const StartFilename: string): string;
 function ReadDelphiProjectConfigFiles(AProject: TProject): TModalResult;
+procedure CleanUpProjectSearchPaths(AProject: TProject);
+
 
 implementation
 
@@ -75,18 +89,11 @@ function ConvertDelphiToLazarusProject(const ProjectFilename: string
   It can be aborted and called again.
 }
 var
-  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
-  NotFoundUnits: String;
   LPRCode: TCodeBuffer;
-  i: Integer;
-  CurUnitInfo: TUnitInfo;
   LPIFilename: String;
   DPRFilename: String;
   MainSourceFilename: String;
-  RenameLowercase: Boolean;
-  NewUnitPath: String;
-  CurFilename: string;
-  p: LongInt;
+  ConvertUnitFlags: TConvertDelphiToLazarusUnitFlags;
 begin
   debugln('ConvertDelphiToLazarusProject ProjectFilename="',ProjectFilename,'"');
   IDEMessagesWindow.Clear;
@@ -116,22 +123,7 @@ begin
 
   // clean up project
   Project1.RemoveNonExistingFiles(false);
-  // TODO: remove doubles in search paths -> this should be done on loading the .lpi
-  Project1.CompilerOptions.OtherUnitFiles:=
-              RemoveNonExistingPaths(Project1.CompilerOptions.OtherUnitFiles,
-                                     Project1.ProjectDirectory);
-  Project1.CompilerOptions.IncludeFiles:=
-              RemoveNonExistingPaths(Project1.CompilerOptions.IncludeFiles,
-                                     Project1.ProjectDirectory);
-  Project1.CompilerOptions.Libraries:=
-              RemoveNonExistingPaths(Project1.CompilerOptions.Libraries,
-                                     Project1.ProjectDirectory);
-  Project1.CompilerOptions.ObjectPath:=
-              RemoveNonExistingPaths(Project1.CompilerOptions.ObjectPath,
-                                     Project1.ProjectDirectory);
-  Project1.CompilerOptions.SrcPath:=
-              RemoveNonExistingPaths(Project1.CompilerOptions.SrcPath,
-                                     Project1.ProjectDirectory);
+  CleanUpProjectSearchPaths(Project1);
 
   // load required packages
   Project1.AddPackageDependency('LCL');// Nearly all Delphi projects require it
@@ -148,18 +140,43 @@ begin
   end;
 
   // fix .lpr
-  RenameLowercase:=false;
-  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,RenameLowercase,true);
+  ConvertUnitFlags:=[cdtlufIsSubProc];
+  Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,ConvertUnitFlags);
   if Result=mrAbort then begin
     DebugLn('ConvertDelphiToLazarusProject failed converting unit ',LPRCode.Filename);
     exit;
   end;
 
-  // TODO: get all compiler options from .lpr
+  // get all options from .lpr (the former .dpr)
   Result:=ExtractOptionsFromDPR(LPRCode,Project1);
   if Result<>mrOk then exit;
 
-  // find all project files
+  // find and convert all project files
+  Result:=FindAllDelphiProjectUnits(Project1);
+  if Result<>mrOk then exit;
+
+  // convert all project files
+  Result:=ConvertAllDelphiProjectUnits(Project1,[cdtlufIsSubProc]);
+  if Result<>mrOk then exit;
+
+  debugln('ConvertDelphiToLazarusProject Done');
+  Result:=mrOk;
+end;
+
+function FindAllDelphiProjectUnits(AProject: TProject): TModalResult;
+var
+  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  LPRCode: TCodeBuffer;
+  NotFoundUnits: String;
+  i: Integer;
+  CurUnitInfo: TUnitInfo;
+  NewUnitPath: String;
+  CurFilename: string;
+  p: LongInt;
+  OffendingUnit: TUnitInfo;
+begin
+  LPRCode:=AProject.MainUnitInfo.Source;
+
   FoundInUnits:=nil;
   MissingInUnits:=nil;
   NormalUnits:=nil;
@@ -183,9 +200,10 @@ begin
         +NotFoundUnits,mtWarning,[mrIgnore,mrAbort],0);
       if Result<>mrIgnore then exit;
     end;
-    
+
     // add all units to the project
     debugln('ConvertDelphiToLazarusProject adding all project units to project ...');
+    
     for i:=0 to FoundInUnits.Count-1 do begin
       CurFilename:=FoundInUnits[i];
       p:=System.Pos(' in ',CurFilename);
@@ -194,6 +212,7 @@ begin
       if CurFilename='' then continue;
       if not FilenameIsAbsolute(CurFilename) then
         CurFilename:=AppendPathDelim(Project1.ProjectDirectory)+CurFilename;
+      CurFilename:=TrimFilename(CurFilename);
       if not FileExists(CurFilename) then begin
         DebugLn('ConvertDelphiToLazarusProject file not found: "',CurFilename,'"');
         continue;
@@ -202,6 +221,29 @@ begin
       if CurUnitInfo<>nil then begin
         CurUnitInfo.IsPartOfProject:=true;
       end else begin
+        if FilenameIsPascalUnit(CurFilename) then begin
+          // check unitname
+          OffendingUnit:=Project1.UnitWithUnitname(
+                                              ExtractFileNameOnly(CurFilename));
+          if OffendingUnit<>nil then begin
+            Result:=QuestionDlg('Unitname exists twice',
+              'There are two units with the same unitname:'#13
+              +OffendingUnit.Filename+#13
+              +CurFilename+#13,
+              mtWarning,[mrYes,'Remove first',mrNo,'Remove second',
+                         mrIgnore,'Keep both',mrAbort],0);
+            case Result of
+            mrYes: OffendingUnit.IsPartOfProject:=false;
+            mrNo:  continue;
+            mrIgnore: ;
+            else
+              Result:=mrAbort;
+              exit;
+            end;
+          end;
+        end;
+        
+        // add new unit to project
         CurUnitInfo:=TUnitInfo.Create(nil);
         CurUnitInfo.Filename:=CurFilename;
         CurUnitInfo.IsPartOfProject:=true;
@@ -214,7 +256,8 @@ begin
     NewUnitPath:=RemoveSearchPaths(NewUnitPath,
                                    '.;'+VirtualDirectory+';'+VirtualTempDir
                                    +';'+Project1.ProjectDirectory);
-    Project1.CompilerOptions.OtherUnitFiles:=NewUnitPath;
+    Project1.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
+                 RemoveNonExistingPaths(NewUnitPath,Project1.ProjectDirectory));
     DebugLn('ConvertDelphiToLazarusProject UnitPath="',Project1.CompilerOptions.OtherUnitFiles,'"');
 
     // save project
@@ -224,29 +267,6 @@ begin
       DebugLn('ConvertDelphiToLazarusProject failed saving project');
       exit;
     end;
-    
-    // convert all units
-    i:=0;
-    while i<Project1.UnitCount do begin
-      CurUnitInfo:=Project1.Units[i];
-      if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
-        Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,
-                                           RenameLowercase,true);
-        if Result=mrAbort then exit;
-        if Result=mrCancel then begin
-          Result:=QuestionDlg('Failed converting unit',
-            'Failed to convert unit'+#13
-            +CurUnitInfo.Filename+#13,
-            mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
-          if Result=mrAbort then exit;
-        end;
-        if LazarusIDE.DoCloseEditorFile(CurUnitInfo.Filename,[cfSaveFirst])
-          =mrAbort
-        then
-          exit;
-      end;
-      inc(i);
-    end;
 
   finally
     FoundInUnits.Free;
@@ -254,12 +274,43 @@ begin
     NormalUnits.Free;
   end;
 
-  debugln('ConvertDelphiToLazarusProject Done');
+  Result:=mrOk;
+end;
+
+function ConvertAllDelphiProjectUnits(AProject: TProject;
+  Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
+var
+  i: Integer;
+  CurUnitInfo: TUnitInfo;
+begin
+  // convert all units
+  i:=0;
+  while i<Project1.UnitCount do begin
+    CurUnitInfo:=Project1.Units[i];
+    if CurUnitInfo.IsPartOfProject and not (CurUnitInfo.IsMainUnit) then begin
+      Result:=ConvertDelphiToLazarusUnit(CurUnitInfo.Filename,
+                                         Flags+[cdtlufIsSubProc]);
+      if Result=mrAbort then exit;
+      if Result=mrCancel then begin
+        Result:=QuestionDlg('Failed converting unit',
+          'Failed to convert unit'+#13
+          +CurUnitInfo.Filename+#13,
+          mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
+        if Result=mrAbort then exit;
+      end;
+      if LazarusIDE.DoCloseEditorFile(CurUnitInfo.Filename,[cfSaveFirst])
+        =mrAbort
+      then
+        exit;
+    end;
+    inc(i);
+  end;
+
   Result:=mrOk;
 end;
 
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
-  RenameLowercase, IsSubProc: boolean): TModalResult;
+  Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
 var
   DFMFilename: String;
   LazarusUnitFilename: String;
@@ -290,7 +341,8 @@ begin
   DebugLn('ConvertDelphiToLazarusUnit Rename files');
   LazarusUnitFilename:='';
   LFMFilename:='';
-  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,RenameLowercase,
+  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
+                                        cdtlufRenameLowercase in Flags,
                                         LazarusUnitFilename,LFMFilename);
   if Result<>mrOk then exit;
   if LFMFilename='' then LFMFilename:=ChangeFileExt(LazarusUnitFilename,'.lfm');
@@ -324,10 +376,10 @@ begin
 
   // fix or comment missing units
   DebugLn('ConvertDelphiToLazarusUnit FixMissingUnits');
-  Result:=FixMissingUnits(LazarusUnitFilename,IsSubProc);
+  Result:=FixMissingUnits(LazarusUnitFilename,cdtlufIsSubProc in Flags);
   if Result=mrAbort then exit;
   if (Result<>mrOk) then begin
-    Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
+    Result:=JumpToCodetoolErrorAndAskToAbort(cdtlufIsSubProc in Flags);
     exit;
   end;
 
@@ -339,8 +391,10 @@ begin
   // TODO: fix delphi ambiguousities like incomplete proc implementation headers
   Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
                                              LRSFilename<>'');
-  if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result=mrOk,IsSubProc,Result)
+  if not IfNotOkJumpToCodetoolErrorAndAskToAbort(Result=mrOk,
+                                                cdtlufIsSubProc in Flags,Result)
   then exit;
+
 
   // check the LFM file and the pascal unit
   DebugLn('ConvertDelphiToLazarusUnit Check new .lfm and .pas file');
@@ -458,6 +512,27 @@ begin
     Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
     if Result<>mrOk then exit;
   end;
+end;
+
+procedure CleanUpProjectSearchPaths(AProject: TProject);
+
+  function CleanProjectSearchPath(const SearchPath: string): string;
+  begin
+    Result:=RemoveNonExistingPaths(SearchPath,Project1.ProjectDirectory);
+    Result:=MinimizeSearchPath(Result);
+  end;
+
+begin
+  AProject.CompilerOptions.OtherUnitFiles:=
+              CleanProjectSearchPath(AProject.CompilerOptions.OtherUnitFiles);
+  AProject.CompilerOptions.IncludeFiles:=
+              CleanProjectSearchPath(AProject.CompilerOptions.IncludeFiles);
+  AProject.CompilerOptions.Libraries:=
+              CleanProjectSearchPath(AProject.CompilerOptions.Libraries);
+  AProject.CompilerOptions.ObjectPath:=
+              CleanProjectSearchPath(AProject.CompilerOptions.ObjectPath);
+  AProject.CompilerOptions.SrcPath:=
+              CleanProjectSearchPath(AProject.CompilerOptions.SrcPath);
 end;
 
 end.

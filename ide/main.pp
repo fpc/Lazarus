@@ -8129,7 +8129,7 @@ function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
   ): TModalResult;
 begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
-  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,false,false);
+  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,[]);
 end;
 
 function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
