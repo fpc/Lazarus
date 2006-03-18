@@ -7,158 +7,14 @@
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <AutoCreateForms Value="False"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Documentation Editor"/>
-      <ActiveEditorIndexAtStart Value="6"/>
     </General>
     <LazDoc Paths=""/>
-    <Units Count="13">
-      <Unit0>
-        <CursorPos X="3" Y="9"/>
-        <Filename Value="lazde.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="lazde"/>
-        <UsageCount Value="99"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="15" Y="803"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="frmmain.pp"/>
-        <ComponentName Value="MainForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmmain.lrs"/>
-        <TopLine Value="787"/>
-        <UnitName Value="FrmMain"/>
-        <UsageCount Value="99"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="3"/>
-        <Filename Value="frmoptions.pp"/>
-        <ComponentName Value="OptionsForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmoptions.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="frmOptions"/>
-        <UsageCount Value="96"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="4"/>
-        <Filename Value="frmnewnode.pp"/>
-        <ComponentName Value="NewNodeForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmnewnode.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="frmNewNode"/>
-        <UsageCount Value="93"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="32" Y="27"/>
-        <EditorIndex Value="8"/>
-        <Filename Value="frmmakeskel.pp"/>
-        <ComponentName Value="MakeSkelForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmmakeskel.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FrmMakeSkel"/>
-        <UsageCount Value="70"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="11" Y="16"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="frmlink.pp"/>
-        <ComponentName Value="LinkForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmlink.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FrmLink"/>
-        <UsageCount Value="63"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="1" Y="23"/>
-        <EditorIndex Value="2"/>
-        <Filename Value="frmtable.pp"/>
-        <ComponentName Value="TableForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmtable.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="frmTable"/>
-        <UsageCount Value="63"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="35" Y="26"/>
-        <EditorIndex Value="5"/>
-        <Filename Value="frmabout.pp"/>
-        <ComponentName Value="AboutForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmabout.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FrmAbout"/>
-        <UsageCount Value="54"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="22" Y="251"/>
-        <Filename Value="pkeditor.pp"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="235"/>
-        <UnitName Value="PkEditor"/>
-        <UsageCount Value="48"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="12" Y="521"/>
-        <EditorIndex Value="9"/>
-        <Filename Value="eleditor.pp"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="500"/>
-        <UnitName Value="ElEditor"/>
-        <UsageCount Value="48"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="34" Y="28"/>
-        <Filename Value="fpdeutil.pp"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="FPDEUtil"/>
-        <UsageCount Value="48"/>
-      </Unit10>
-      <Unit11>
-        <CursorPos X="15" Y="71"/>
-        <EditorIndex Value="10"/>
-        <Filename Value="frmexample.pp"/>
-        <ComponentName Value="ExampleForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmexample.lrs"/>
-        <TopLine Value="66"/>
-        <UnitName Value="FrmExample"/>
-        <UsageCount Value="39"/>
-      </Unit11>
-      <Unit12>
-        <CursorPos X="19" Y="568"/>
-        <EditorIndex Value="11"/>
-        <Filename Value="frmbuild.pp"/>
-        <ComponentName Value="BuildForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="frmbuild.lrs"/>
-        <TopLine Value="545"/>
-        <UnitName Value="frmBuild"/>
-        <UsageCount Value="34"/>
-      </Unit12>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
@@ -177,10 +33,96 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="13">
+      <Unit0>
+        <Filename Value="lazde.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazde"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmmain.pp"/>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmain.lrs"/>
+        <UnitName Value="FrmMain"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="frmoptions.pp"/>
+        <ComponentName Value="OptionsForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmoptions.lrs"/>
+        <UnitName Value="frmOptions"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmnewnode.pp"/>
+        <ComponentName Value="NewNodeForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmnewnode.lrs"/>
+        <UnitName Value="frmNewNode"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmmakeskel.pp"/>
+        <ComponentName Value="MakeSkelForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmakeskel.lrs"/>
+        <UnitName Value="FrmMakeSkel"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmlink.pp"/>
+        <ComponentName Value="LinkForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmlink.lrs"/>
+        <UnitName Value="FrmLink"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmtable.pp"/>
+        <ComponentName Value="TableForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmtable.lrs"/>
+        <UnitName Value="frmTable"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmabout.pp"/>
+        <ComponentName Value="AboutForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmabout.lrs"/>
+        <UnitName Value="FrmAbout"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="pkeditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PkEditor"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="eleditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ElEditor"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="fpdeutil.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPDEUtil"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="frmexample.pp"/>
+        <ComponentName Value="ExampleForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmexample.lrs"/>
+        <UnitName Value="FrmExample"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="frmbuild.pp"/>
+        <ComponentName Value="BuildForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmbuild.lrs"/>
+        <UnitName Value="frmBuild"/>
+      </Unit12>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
+      <UnitOutputDirectory Value="units/"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <CodeGeneration>
@@ -197,14 +139,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>
