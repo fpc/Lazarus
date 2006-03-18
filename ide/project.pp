@@ -1618,12 +1618,10 @@ begin
                                ProjectSessionStorageNames[SessionStorage],
                                ProjectSessionStorageNames[pssInProjectInfo]);
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
-      xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value'
-          ,AutoCreateForms,true);
-      xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',
-           IconPath,'');
-      xmlconfig.SetValue(Path+'General/TargetFileExt/Value'
-          ,TargetFileExt);
+      xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
+                               AutoCreateForms,true);
+      xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',IconPath,'');
+      xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
 
       //lazdoc
@@ -2774,6 +2772,19 @@ procedure TProject.OnLoadSaveFilename(var AFilename: string; Load:boolean);
 var
   ProjectPath: string;
   FileWasAbsolute: Boolean;
+  
+  function FileCanBeMadeRelative: boolean;
+  begin
+    Result:=false;
+    if not FileWasAbsolute then exit;
+    {$IFDEF Win32}
+    // check that the file is on the same drive / filesystem
+    if CompareText(ExtractFileDrive(AFilename),ExtractFileDrive(ProjectPath))<>0
+    then exit;
+    {$ENDIF}
+    Result:=true;
+  end;
+  
 begin
   if AFileName='' then exit;
   //debugln('TProject.OnLoadSaveFilename A "',AFilename,'"');
@@ -2799,8 +2810,9 @@ begin
         AFilename:=TrimFilename(ProjectPath+AFilename);
     end else begin
       // try making filename relative to project file
-      if FileWasAbsolute and FileIsInPath(AFilename,ProjectPath) then
+      if FileCanBeMadeRelative then begin
         AFilename:=CreateRelativePath(AFilename,ProjectPath);
+      end;
     end;
   end;
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
