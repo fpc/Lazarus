@@ -365,7 +365,11 @@ begin
     FillChar(TR,SizeOf(TR),0);
     With TR do begin
       Alignment := Self.Alignment;
-      WordBreak := True;
+      if wordWrap then begin
+        WordBreak := True;
+      end else begin
+        SingleLine:=true;
+      end;
       Clipping := True;
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;
