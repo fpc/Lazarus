@@ -955,8 +955,11 @@ end;
 procedure TPkgManager.PackageGraphFindFPCUnit(const UnitName,
   Directory: string; var Filename: string);
 begin
-  Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(UnitName,
-                                                                Directory);
+  if (Directory<>'') and not FilenameIsAbsolute(Directory) then
+    RaiseGDBException(Directory);
+  //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
+  Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory,
+                                                                UnitName);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;

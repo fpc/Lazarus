@@ -1746,6 +1746,8 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
 
 begin
   Result:=false;
+  if (Directory<>'') and not FilenameIsAbsolute(Directory) then
+    RaiseGDBException(Directory);
   File1:=nil;
   ConflictPkg:=nil;
   MarkAllPackagesAsNotVisited;

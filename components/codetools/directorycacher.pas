@@ -509,10 +509,17 @@ end;
 
 constructor TCTDirectoryCache.Create(const TheDirectory: string;
   ThePool: TCTDirectoryCachePool);
+  
+  procedure RaiseDirNotAbsolute;
+  begin
+    raise Exception.Create('directory not absolute "'+FDirectory+'"');
+  end;
+  
 begin
   FDirectory:=AppendPathDelim(TrimFilename(TheDirectory));
+  if FDirectory='.' then FDirectory:='';
   if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
-    raise Exception.Create('directory not absolute');
+    RaiseDirNotAbsolute;
   FPool:=ThePool;
   FRefCount:=1;
 end;
@@ -522,7 +529,7 @@ var
   UnitSrc: TCTDirectoryUnitSources;
 begin
   ClearUnitLinks;
-  Pool.DoRemove(Self);
+  if Pool<>nil then Pool.DoRemove(Self);
   FreeAndNil(FListing);
   for UnitSrc:=Low(TCTDirectoryUnitSources) to High(TCTDirectoryUnitSources) do
     FreeAndNil(FUnitSources[UnitSrc].Files);
@@ -981,9 +988,17 @@ end;
 
 function TCTDirectoryCachePool.FindUnitInUnitLinks(const Directory,
   UnitName: string): string;
+  
+  procedure RaiseDirNotAbsolute;
+  begin
+    raise Exception.Create('TCTDirectoryCachePool.FindUnitInUnitLinks not absolute Directory="'+Directory+'"');
+  end;
+  
 var
   Cache: TCTDirectoryCache;
 begin
+  if (Directory<>'') and not FilenameIsAbsolute(Directory) then
+    RaiseDirNotAbsolute;
   Cache:=GetCache(Directory,true,false);
   Result:=Cache.FindUnitLink(UnitName);
 end;

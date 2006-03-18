@@ -1094,7 +1094,7 @@ resourcestring
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
   lisCOShowAllMessages = 'Show all messages';
-  dlgUnitOutp = 'Unit output directory (-FE):';
+  dlgUnitOutp = 'Unit output directory (-FU):';
   lisCOdefault = 'default (%s)';
   dlgButApply = 'Apply';
   dlgCOShowOptions = 'Show Options';
