@@ -798,6 +798,7 @@ begin
     //  Text:=FItems[FItemIndex];
     if HandleAllocated then begin
       TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+      Select;
     end else begin
       // remember text, in case one reads text without creating handle
       Text := FItems.Strings[FItemIndex];
@@ -851,8 +852,7 @@ end;
 procedure TCustomComboBox.LMSelChange(var TheMessage);
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if Assigned(OnSelect) then
-    OnSelect(Self);
+  Select;
 end;
 
 {------------------------------------------------------------------------------

@@ -225,7 +225,7 @@ begin
   // get itemindex and area
   //ItemIndex:=g_list_index(GtkList^.children,Data);
 
-  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+  if LockOnChange(PGtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
 
   Mess.Msg := LM_SELCHANGE;
   Mess.Result := 0;

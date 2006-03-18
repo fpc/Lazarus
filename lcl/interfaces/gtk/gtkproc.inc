@@ -1009,6 +1009,7 @@ var
   ComboStrings: TStrings;
 begin
   ComboWidget:=PGtkCombo(ComboBox.Handle);
+  LockOnChange(PGtkObject(ComboWidget),+1);
   gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
   if Index>=0 then begin
     ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
@@ -1016,6 +1017,7 @@ begin
     then SetComboBoxText(ComboWidget, PChar(ComboStrings[Index]))
     else SetComboBoxText(ComboWidget, '#error#');
   end;
+  LockOnChange(PGtkObject(ComboWidget),-1);
 end;
 
 procedure SetLabelAlignment(LabelWidget: PGtkLabel;

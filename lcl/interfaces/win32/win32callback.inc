@@ -950,7 +950,7 @@ Begin
               itemindex is updated, so set text manually }
             CBN_SELCHANGE: begin
               UpdateComboBoxText(TCustomComboBox(lWinControl));
-              LMessage.Msg := LM_CHANGED;
+              LMessage.Msg := LM_SELCHANGE;
             end;
             { closeup message is sent before text is actually changed... *sigh*
               itemindex is updated, so set text manually }
