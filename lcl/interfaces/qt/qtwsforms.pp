@@ -72,7 +72,7 @@ type
 
   TQtWSCustomForm = class(TWSCustomForm)
   private
-    class procedure SetSlots(const QtCustomForm: TQtCustomForm);
+    class procedure SetSlots(const QtMainWindow: TQtMainWindow);
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
@@ -133,16 +133,16 @@ uses QtWSControls;
 
   Initializes the events
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetSlots(const QtCustomForm: TQtCustomForm);
+class procedure TQtWSCustomForm.SetSlots(const QtMainWindow: TQtMainWindow);
 var
   Method: TMethod;
   Hook : QObject_hookH;
 begin
   // Various Events
 
-  Hook := QObject_hook_create(QtCustomForm.Widget); // PaintBox
+  Hook := QObject_hook_create(QtMainWindow.Widget); // PaintBox
   
-  TEventFilterMethod(Method) := QtCustomForm.EventFilter;
+  TEventFilterMethod(Method) := QtMainWindow.EventFilter;
   
   QObject_hook_hook_events(Hook, Method);
 end;
@@ -157,19 +157,13 @@ end;
 class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  QtCustomForm: TQtCustomForm;
+  QtMainWindow: TQtMainWindow;
 begin
-  QtCustomForm := TQtCustomForm.Create(AWinControl, AParams);
+  QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
 
-  SetSlots(QtCustomForm);
+  SetSlots(QtMainWindow);
 
-  // Required to implement OnPaint event
-  QMainWindow_setCentralWidget(QMainWindowH(QtCustomForm.Widget), QtCustomForm.PaintBox);
-
-  // Accepts keyboard and mouse events
-  QWidget_setFocusPolicy(QtCustomForm.Widget, QtStrongFocus);
-
-  Result := THandle(QtCustomForm);
+  Result := THandle(QtMainWindow);
 end;
 
 {------------------------------------------------------------------------------
@@ -181,7 +175,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin
-  TQtCustomForm(AWinControl.Handle).Free;
+  TQtMainWindow(AWinControl.Handle).Free;
 end;
 
 initialization

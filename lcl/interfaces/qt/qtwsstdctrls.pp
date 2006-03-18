@@ -265,9 +265,9 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
 
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TQtWSStaticText }
@@ -652,7 +652,6 @@ class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtComboBox: TQtComboBox;
-  Str: WideString;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
 

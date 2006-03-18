@@ -646,6 +646,7 @@ begin
   if Directory<>'' then begin
     UpdateListing;
     if (FListing.Names=nil) then exit;
+    // binary search the nearest filename
     l:=0;
     r:=FListing.NameCount-1;
     while r>=l do begin

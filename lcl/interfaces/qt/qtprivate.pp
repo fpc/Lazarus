@@ -52,6 +52,7 @@ type
     procedure SlotFocus(FocusIn: Boolean); cdecl;
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
+    procedure SlotPaint(Event: QEventH); cdecl;
   end;
   
   { TQtAbstractButton }
@@ -102,20 +103,17 @@ type
     procedure drawText(x: Integer; y: Integer; s: PWideString);
   end;
 
-  { TQtCustomForm }
+  { TQtMainWindow }
 
-  TQtCustomForm = class(TQtWidget)
+  TQtMainWindow = class(TQtWidget)
   private
   public
-    PaintBox : QWidgetH;
     Splitter : QSplitterH;
   public
     Canvas: TQtDeviceContext;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    procedure SlotPaint; cdecl;
   end;
 
   { TQtStaticText }
@@ -137,7 +135,7 @@ type
     Id: Integer;
     AppObject: QObjectH;
   public
-    constructor Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH); virtual;
+    constructor CreateTimer(Interval: integer; const TimerFunc: TFNTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
@@ -146,7 +144,7 @@ type
 
   TQtCheckBox = class(TQtAbstractButton)
   public
-    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual;
+    constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function CheckState: QtCheckState;
@@ -276,7 +274,7 @@ function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl
 begin
   Result := False;
 
-  WriteLn(Integer(QEvent_type(Event)));
+//  WriteLn(Integer(QEvent_type(Event)));
 
   QEvent_ignore(Event);
 
@@ -286,7 +284,6 @@ begin
    QEventDestroy: SlotDestroy;
    QEventFocusIn: SlotFocus(True);
    QEventFocusOut: SlotFocus(False);
-//   QEventDestroy: SlotDestroy;
 //  WINDOWPOSCHANGED: SlotDestroy;
    QEventKeyPress: SlotKey(Event);
    QEventKeyRelease: SlotKey(Event);
@@ -294,6 +291,8 @@ begin
    QEventMouseButtonRelease: SlotMouse(Event);
    QEventMouseButtonDblClick: SlotMouse(Event);
    QEventMouseMove: SlotMouse(Event);
+
+   QEventPaint: SlotPaint(Event);
   end;
 
 {  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
@@ -340,12 +339,12 @@ end;
   Function: TQtWidget.SlotDestroy
   Params:  None
   Returns: Nothing
+  
+  Currently commented because it was raising exception on software exit
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotDestroy; cdecl;
-var
-  Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+{  FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_DESTROY;
 
@@ -353,7 +352,7 @@ begin
     LCLObject.WindowProc(TLMessage(Msg));
   except
     Application.HandleException(nil);
-  end;
+  end;}
 end;
 
 {------------------------------------------------------------------------------
@@ -385,7 +384,6 @@ end;
 procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
 var
   Msg: TLMKey;
-  SecondMsg: TLMKey;
 begin
   WriteLn('SlotKey');
 
@@ -416,10 +414,33 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtWidget.SlotMouse(Event: QEventH); cdecl;
-var
-  Msg: TLMMouse;
 begin
 
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SlotPaint
+  Params:  None
+  Returns: Nothing
+
+  Sends a LM_PAINT message to the LCL. This is for custom painted controls only
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotPaint(Event: QEventH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if (LCLObject is TCustomControl) or (LCLObject is TCustomForm) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+
+    try
+      LCLObject.WindowProc(TLMessage(Msg));
+    except
+      Application.HandleException(nil);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -873,7 +894,7 @@ begin
   if WidgetHandle = 0 then Widget := QPainter_create
   else
   begin
-    Parent := TQtCustomForm(WidgetHandle).PaintBox;
+    Parent := TQtMainWindow(WidgetHandle).Widget;
     Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
   end;
 
@@ -956,90 +977,58 @@ begin
   inherited Destroy;
 end;
 
-{ TQtCustomForm }
+{ TQtMainWindow }
 
 {------------------------------------------------------------------------------
-  Function: TQtCustomForm.Create
+  Function: TQtMainWindow.Create
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtCustomForm.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+constructor TQtMainWindow.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 begin
   // Initializes the properties
   LCLObject := AWinControl;
 
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('Calling QMainWindow_Create');
+    WriteLn('Calling QWidget_Create');
   {$endif}
-  Widget := QMainWindow_Create;//(nil, QtWindow);
+  Widget := QWidget_Create(nil, QtWindow);
 
   // Form initial position
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
-   
-  // Painting helper device
-  PaintBox := QWidget_create;
 
-  QWidget_setParent(PaintBox, Widget);
+{  // Painting helper device
+  Widget := QWidget_create;
 
-  QWidget_setGeometry(PaintBox, AWinControl.Left, AWinControl.Top,
+  QWidget_setParent(Widget, Window);
+
+  QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
+
+  // Required to implement OnPaint event
+  QMainWindow_setCentralWidget(Window, Widget);
+
+  // Accepts keyboard and mouse events
+  QWidget_setFocusPolicy(Window, QtStrongFocus);
+  QWidget_setFocusPolicy(Widget, QtStrongFocus);}
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtCustomForm.Destroy
+  Function: TQtMainWindow.Destroy
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-destructor TQtCustomForm.Destroy;
+destructor TQtMainWindow.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('Calling QMainWindow_destroy');
+    WriteLn('Calling QWidget_destroy');
   {$endif}
 
-  QMainWindow_destroy(QMainWindowH(Widget));
+  QWidget_destroy(Widget);
 
   inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtCustomForm.EventFilter
-  Params:  None
-  Returns: Nothing
-
-  Receives various events from Qt and send the appropriate messages to the LCL
- ------------------------------------------------------------------------------}
-function TQtCustomForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-begin
-  Result := False;
-  
-  // Inherited Callbacks
-  inherited EventFilter(Sender, Event);
-  
-  if QEvent_type(Event) = QEventPaint then SlotPaint;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtCustomForm.SlotPaint
-  Params:  None
-  Returns: Nothing
-
-  Sends a LM_PAINT message to the LCL
- ------------------------------------------------------------------------------}
-procedure TQtCustomForm.SlotPaint; cdecl;
-var
-  Msg: TLMessage;
-begin
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  Msg.Msg := LM_PAINT;
-
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
 end;
 
 { TQtStaticText }
@@ -1111,11 +1100,12 @@ end;
 { TQtTimer }
 
 {------------------------------------------------------------------------------
-  Function: TQtTimer.Create
+  Function: TQtTimer.CreateTimer
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtTimer.Create(Interval: integer; TimerFunc: TFNTimerProc; App: QObjectH);
+constructor TQtTimer.CreateTimer(Interval: integer;
+  const TimerFunc: TFNTimerProc; App: QObjectH);
 var
   Method: TMethod;
   Hook : QObject_hookH;
@@ -1322,7 +1312,7 @@ end;
 { TQtGroupBox }
 
 {------------------------------------------------------------------------------
-  Function: TQtGroupBox.Destroy
+  Function: TQtGroupBox.Create
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
@@ -1330,9 +1320,6 @@ constructor TQtGroupBox.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
   Parent: QWidgetH;
-  i: Integer;
-  Button: QAbstractButtonH;
-  Str: WideString;
 begin
   // Initializes the properties
   LCLObject := AWinControl;
@@ -1402,6 +1389,11 @@ end;
 
 { TQtFrame }
 
+{------------------------------------------------------------------------------
+  Function: TQtFrame.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtFrame.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
@@ -1422,6 +1414,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtFrame.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtFrame.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -1433,16 +1430,31 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtFrame.setFrameStyle
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtFrame.setFrameStyle(p1: Integer);
 begin
   QFrame_setFrameStyle(QFrameH(Widget), p1);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtFrame.setFrameShape
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtFrame.setFrameShape(p1: QFrameShape);
 begin
   QFrame_setFrameShape(QFrameH(Widget), p1);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtFrame.setFrameShadow
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtFrame.setFrameShadow(p1: QFrameShadow);
 begin
   QFrame_setFrameShadow(QFrameH(Widget), p1);
@@ -1450,6 +1462,11 @@ end;
 
 { TQtLineEdit }
 
+{------------------------------------------------------------------------------
+  Function: TQtLineEdit.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtLineEdit.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
@@ -1472,6 +1489,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtLineEdit.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtLineEdit.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -1485,6 +1507,11 @@ end;
 
 { TQtTextEdit }
 
+{------------------------------------------------------------------------------
+  Function: TQtTextEdit.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtTextEdit.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
@@ -1507,6 +1534,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTextEdit.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtTextEdit.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -1520,6 +1552,11 @@ end;
 
 { TQtTabWidget }
 
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtTabWidget.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
@@ -1540,6 +1577,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtTabWidget.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -1551,6 +1593,11 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtTabWidget.insertTab
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: PWideString): Integer;
 begin
   Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, p2);
@@ -1558,13 +1605,26 @@ end;
 
 { TQtComboBox }
 
+{------------------------------------------------------------------------------
+  Function: TQtComboBox.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtComboBox.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
   Parent: QWidgetH;
   Str: WideString;
-  StringList: QStringListH;
+  i: Integer;
+  data: QVariantH;
 begin
+  {------------------------------------------------------------------------------
+    Creates dummy data
+    
+    This data is required, passing nil to QComboBox_addItem will cause a crash
+   ------------------------------------------------------------------------------}
+  data := QVariant_create(10);
+
   // Initializes the properties
   LCLObject := AWinControl;
 
@@ -1576,15 +1636,25 @@ begin
   Widget := QComboBox_create(Parent);
 
   // Add the items to the combo box
-  Str := WideString((AWinControl as TCustomComboBox).Items.Text);
-  StringList := QStringList_create;
-  QComboBox_addItems(QComboBoxH(Widget), StringList);
+  for i := 0 to (AWinControl as TCustomComboBox).Items.Count - 1 do
+  begin
+    Str := WideString((AWinControl as TCustomComboBox).Items.Strings[i]);
+    QComboBox_addItem(QComboBoxH(Widget), @Str, data);
+  end;
 
   // Sets it´ s initial properties
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
+
+  // Clean up
+  QVariant_destroy(data);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtComboBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtComboBox.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -1596,11 +1666,21 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtComboBox.currentIndex
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 function TQtComboBox.currentIndex: Integer;
 begin
   Result := QComboBox_currentIndex(QComboBoxH(Widget));
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtGroupBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TQtComboBox.setCurrentIndex(index: Integer);
 begin
   QComboBox_setCurrentIndex(QComboBoxH(Widget), index);
@@ -1608,6 +1688,11 @@ end;
 
 { TQtSpinBox }
 
+{------------------------------------------------------------------------------
+  Function: TQtSpinBox.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 constructor TQtSpinBox.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 var
@@ -1628,6 +1713,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtSpinBox.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtSpinBox.Destroy;
 begin
   {$ifdef VerboseQt}

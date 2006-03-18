@@ -22,7 +22,7 @@
 }
 unit QtWSControls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -30,9 +30,9 @@ uses
   // Bindings
   qt4, qtprivate,
   // LCL
-  Controls, Forms, LCLType,
+  SysUtils, Controls, LCLType, Forms,
   // Widgetset
-  WSControls, WSLCLClasses;
+  InterfaceBase, WSControls, WSLCLClasses;
 
 type
 
@@ -58,7 +58,7 @@ type
   private
   protected
   public
-    class procedure SetSlots(const AWidget: QWidgetH);
+    class procedure SetSlots(const QtWidget: TQtWidget);
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
@@ -104,8 +104,18 @@ implementation
   
   Initializes the basic events for all controls with handles
  ------------------------------------------------------------------------------}
-procedure TQtWSWinControl.SetSlots(const AWidget: QWidgetH);
+class procedure TQtWSWinControl.SetSlots(const QtWidget: TQtWidget);
+var
+  Method: TMethod;
+  Hook : QObject_hookH;
 begin
+  // Various Events
+
+  Hook := QObject_hook_create(QtWidget.Widget);
+
+  TEventFilterMethod(Method) := QtWidget.EventFilter;
+
+  QObject_hook_hook_events(Hook, Method);
 end;
 
 {------------------------------------------------------------------------------
@@ -113,14 +123,14 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
 begin
   QtWidget := TQtWidget.Create(AWinControl, AParams);
 
-  SetSlots(QtWidget.Widget);
+  SetSlots(QtWidget);
 
   Result := THandle(QtWidget);
 end;
@@ -130,7 +140,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtWidget(AWinControl.Handle).Free;
 
@@ -146,7 +156,7 @@ end;
 
   Sets the position and size of a widget
  ------------------------------------------------------------------------------}
-procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
+class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   QWidget_move(TQtWidget(AWinControl.Handle).Widget, ALeft, ATop);
@@ -189,7 +199,7 @@ end;
 
   Shows or hides a widget.
  ------------------------------------------------------------------------------}
-procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
+class procedure TQtWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   if AWinControl = nil then exit;
 

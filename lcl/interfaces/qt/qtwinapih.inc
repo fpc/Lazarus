@@ -30,7 +30,7 @@
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
-//function CreateCompatibleDC(DC: HDC): HDC;
+function CreateCompatibleDC(DC: HDC): HDC; override;
 
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
@@ -49,8 +49,14 @@ function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect:
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 
+function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
+function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
+  XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 

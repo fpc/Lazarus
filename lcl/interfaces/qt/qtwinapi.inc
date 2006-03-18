@@ -38,7 +38,7 @@
   This function is Called:
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('WinAPI BeginPaint');
@@ -50,7 +50,7 @@ begin
   
   PS.hdc := HDC(TQtDeviceContext.Create(Handle));
 
-  if Handle <> 0 then TQtCustomForm(Handle).Canvas := TQtDeviceContext(Result);
+  if Handle <> 0 then TQtMainWindow(Handle).Canvas := TQtDeviceContext(PS.hdc);
 
   Result := PS.hdc;
 end;
@@ -64,46 +64,19 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-var
-  Image, Mask: QImageH;
-  Format: QImageFormat;
 begin
-  Result:=false;
-  Bitmap:=0;
-  MaskBitmap:=0;
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI CreateBitmapFromRawImage');
+  {$endif}
 
-  if (RawImage.Description.Width=0) or (RawImage.Description.Height=0) then
-   Exit;
+  Result := False;
+  Bitmap := 0;
+  MaskBitmap := 0;
 
-  if RawImage.Description.HasPalette and (RawImage.Description.BitsPerPixel <> 8) then
-   Exit;
+  Bitmap := HBitmap(QImage_create(RawImage.Data, RawImage.Description.Width,
+   RawImage.Description.Height, QImageFormat_ARGB32));
 
-  {------------------------------------------------------------------------------
-    Tryes to fit the image into Qt's classification. If not, it´s not supported by Qt
-   ------------------------------------------------------------------------------}
-  case RawImage.Description.BitsPerPixel of
-   1: if RawImage.Description.BitOrder = riboBitsInOrder then
-       Format := QImageFormat_MonoLSB
-      else Format := QImageFormat_Mono;
-   8: Format := QImageFormat_Indexed8;
-   32:
-   begin
-     if RawImage.Description.AlphaPrec = 0 then
-      Format := QImageFormat_RGB32
-     else Format := QImageFormat_ARGB32;
-   end;
-  else
-    Exit;
-  end;
-
-  Image := QImage_create(RawImage.Data, RawImage.Description.Width,
-   RawImage.Description.Height, Format);
-
-  if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true))) then
-  begin
-    Mask := QImage_create(RawImage.Mask, RawImage.Description.Width,
-     RawImage.Description.Height, QImageFormat_MonoLSB);
-  end;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -113,21 +86,14 @@ end;
 
   Creates a memory device context (DC) compatible with the specified device.
  ------------------------------------------------------------------------------}
-{function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
-var
-  pNewDC: TDeviceContext;
+function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  Result := 0;
-  pNewDC := NewDC;
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI CreateCompatibleDC ( DC: ', IntToStr(DC), ' )');
+  {$endif}
 
-  pNewDC.CurrentFont := CreateDefaultFont;
-  pNewDC.CurrentBrush := CreateDefaultBrush;
-  pNewDC.CurrentPen := CreateDefaultPen;
-
-  Result := HDC(pNewDC);
-
-  Assert(False, Format('trace:  [TQtWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
-end;}
+  Result := GetDC(0);
+end;
 
 {------------------------------------------------------------------------------
   Method:  DrawText
@@ -137,10 +103,10 @@ end;}
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
-var
-  WideStr: WideString;
 begin
-  WideStr := WideString(Str);
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI DrawText');
+  {$endif}
 
   if DC = 0 then Exit;
 
@@ -170,12 +136,17 @@ end;
 function TQtWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI EndPaint');
+    WriteLn('WinAPI EndPaint ( Handle=', IntToStr(Handle), ' PS.HDC=', IntToStr(PS.HDC), ' )');
   {$endif}
 
   Result := 1;
 
-  if PS.HDC <> 0 then TQtDeviceContext(PS.HDC).Free;
+  if (PS.HDC <> 0) then
+   if (TObject(PS.HDC) is TQtDeviceContext) then
+   begin
+     WriteLn('Freeing resources');
+     TQtDeviceContext(PS.HDC).Free;
+   end;
 end;
 
 {------------------------------------------------------------------------------
@@ -190,6 +161,10 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   WideStr: WideString;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI ExtTextOut');
+  {$endif}
+
   Result := False;
 
   WideStr := WideString(Str);
@@ -214,6 +189,10 @@ end;
 function TQtWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI GetBitmapRawImageDescription');
+  {$endif}
+  Result:=false;
 {  Result := Windows.GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
   if Result then
     FillRawImageDescription(BitmapInfo, Desc);}
@@ -286,7 +265,7 @@ end;
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('WinAPI GetDC');
+    WriteLn('WinAPI GetDC ( hWnd: ', IntToStr(hWnd), ' )');
   {$endif}
 
   Result := HDC(TQtDeviceContext.Create(0));
@@ -304,33 +283,28 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
-{  Result := true;
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI GetDeviceRawImageDescription');
+  {$endif}
+  Result := true;
 
   FillChar(Desc^, SizeOf(Desc^), 0);
   Desc^.Format := ricfRGBA;
-  Desc^.HasPalette := (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0;
-  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
+  Desc^.HasPalette := False;
+  Desc^.Depth := 32;
   // Width and Height not relevant
-  Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+  Desc^.PaletteColorCount := 0;
   Desc^.BitOrder := riboReversedBits;
   Desc^.ByteOrder := riboLSBFirst;
   Desc^.LineOrder := riloTopToBottom;
   Desc^.ColorCount := Desc^.PaletteColorCount;
-  if Desc^.HasPalette then
-    Desc^.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES)
-  else
-    Desc^.BitsPerPixel := Desc^.Depth;
+  Desc^.BitsPerPixel := 32;
   Desc^.LineEnd := rileDWordBoundary;
-  FillRawImageDescriptionColors(Desc);
+//  FillRawImageDescriptionColors(Desc);
   Desc^.AlphaPrec := 1;
-  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
-  // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
-  Desc^.AlphaBitOrder := riboReversedBits;
-  Desc^.AlphaByteOrder := riboLSBFirst;
+  Desc^.AlphaSeparate := False;
   // CreateBitmap winapi call wants word-aligned data
-  Desc^.AlphaLineEnd := rileWordBoundary;
-  Desc^.AlphaShift := 0;}
+  Desc^.AlphaShift := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -340,29 +314,34 @@ end;
 
   The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-{var
+function TQtWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
+  var NewRawImage: TRawImage): boolean;
+var
   SrcWidth, SrcHeight: Integer;
-  hMemDC: HDC;
+{  hMemDC: HDC;
   hMemBitmap: HBITMAP;
   hOldObject: HGDIOBJ;}
 begin
-{  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI GetRawImageFromDevice');
+  {$endif}
+  Result:=false;
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
 
   // make bitmap compatible to src device
   SrcWidth := SrcRect.Right - SrcRect.Left;
   SrcHeight := SrcRect.Bottom - SrcRect.Top;
-  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
+{  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
   Result := hMemBitmap <> 0;
-  if not Result then exit;
+  if not Result then exit;}
 
   // make memory device context compatible to device, to select bitmap in for copying
-  hMemDC := Windows.CreateCompatibleDC(SrcDC);
+{  hMemDC := Windows.CreateCompatibleDC(SrcDC);
   Result := hMemDC <> 0;
-  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);
+  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);}
 
   // copy srcdc -> membitmap
-  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
+{  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
         SrcDC, SrcRect.Left, SrcRect.Top, SRCCOPY);
 
   // done copying, deselect bitmap from dc
@@ -384,11 +363,16 @@ end;
 
   The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+function TQtWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
+  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 {var
   BitmapInfo: Windows.TBitmap;
   ARect: TRect;}
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI GetRawImageFromBitmap');
+  {$endif}
+  Result:=false;
 {  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
   Result := Windows.GetObject(SrcBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
   if not Result then exit;
@@ -459,6 +443,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SelectObject
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI SelectObject ( DC=', IntToStr(DC), ' GDIObj=', IntToStr(GDIObj), ' )');
+  {$endif}
+
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
   Function: SetCursorPos
   Params: X:
           Y:
@@ -467,6 +467,10 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI SetCursorPos');
+  {$endif}
+
   QCursor_setPos(X, Y);
   
   Result := True;
@@ -482,6 +486,10 @@ function TQtWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   Widget: QWidgetH;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI ShowWindow');
+  {$endif}
+
   Result := False;
   
   Widget := QWidgetH(hWnd);
@@ -508,6 +516,65 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: StretchBlt
+  Params:  DestDC:                The destination devicecontext
+           X, Y:                  The left/top corner of the destination rectangle
+           Width, Height:         The size of the destination rectangle
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
+           SrcWidth, SrcHeight:   The size of the source rectangle
+           ROp:                   The raster operation to be performed
+  Returns: True if succesful
+
+  The StretchBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified raster operation. If needed it
+  resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
+  destination device context.
+  If SrcDC contains a mask the pixmap will be copied with this transparency.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
+begin
+  Result := StretchMaskBlt(DestDC,X,Y,Width,Height,
+                          SrcDC,XSrc,YSrc,SrcWidth,SrcHeight,
+                          0,0,0,
+                          ROp);
+end;
+
+{------------------------------------------------------------------------------
+  Function: StretchMaskBlt
+  Params:  DestDC:                The destination devicecontext
+           X, Y:                  The left/top corner of the destination rectangle
+           Width, Height:         The size of the destination rectangle
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
+           SrcWidth, SrcHeight:   The size of the source rectangle
+           Mask:                  The handle of a monochrome bitmap
+           XMask, YMask:          The left/top corner of the mask rectangle
+           ROp:                   The raster operation to be performed
+  Returns: True if succesful
+
+  The StretchMaskBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified mask and raster operation. If needed
+  it resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
+  destination device context.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
+  XMask, YMask: Integer; Rop: DWORD): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI StretchMaskBlt ( DestDC=' + IntToStr(DestDC) + ' SrcDC=' +
+     IntToStr(SrcDC) + ' )');
+  {$endif}
+
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: TextOut
   Params: DC:
           X:
@@ -521,6 +588,10 @@ function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Intege
 var
   WideStr: WideString;
 begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI TextOut');
+  {$endif}
+
   Result := False;
 
   WideStr := WideString(Str);

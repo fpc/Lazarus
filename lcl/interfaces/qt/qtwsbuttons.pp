@@ -148,7 +148,7 @@ var
   Method: TMethod;
 begin
   // Inherited Callbacks
-  TQtWSWinControl.SetSlots(QtButton.Widget);
+//  TQtWSWinControl.SetSlots(QtButton);
 
   // OnClick Event
   
@@ -185,7 +185,7 @@ var
   Method: TMethod;
 begin
   // Inherited Callbacks
-  TQtWSWinControl.SetSlots(QtButton.Widget);
+//  TQtWSWinControl.SetSlots(QtButton);
 
   // OnClick Event
 

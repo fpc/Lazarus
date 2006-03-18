@@ -30,7 +30,6 @@ type
   
   QtHandle = integer;
   qreal = double;
-  qint64 = int64;
   qrgb = longword;
   
   TCoreApplicationEventFilter = procedure(Msg:PChar;Res:PLongInt) cdecl;
@@ -46,12 +45,15 @@ const
 
 type
 
+QBitArrayH = class(TObject) end;
 QBrushH = class(TObject) end;
 QByteArrayH = class(TObject) end;
 QCharH = class(TObject) end;
 QColorH = class(TObject) end;
 QCursorH = class(TObject) end;
 QDataStreamH = class(TObject) end;
+QDateH = class(TObject) end;
+QDateTimeH = class(TObject) end;
 QDirH = class(TObject) end;
 QEventH = class(TObject) end;
   QActionEventH = class(QEventH) end;
@@ -98,6 +100,7 @@ QIconEngineH = class(TObject) end;
 QImageReaderH = class(TObject) end;
 QImageWriterH = class(TObject) end;
 QKeySequenceH = class(TObject) end;
+QLatin1StringH = class(TObject) end;
 QLayoutItemH = class(TObject) end;
   QLayoutH = class(QLayoutItemH) end;
     QBoxLayoutH = class(QLayoutH) end;
@@ -111,6 +114,7 @@ QLineFH = class(TObject) end;
 QListH = class(TObject) end;
   QStringListH = class(QListH) end;
 QListWidgetItemH = class(TObject) end;
+QLocaleH = class(TObject) end;
 QMatrixH = class(TObject) end;
 QMimeSourceH = class(TObject) end;
 QModelIndexH = class(TObject) end;
@@ -219,9 +223,11 @@ QTextCursorH = class(TObject) end;
 QTextFormatH = class(TObject) end;
   QTextCharFormatH = class(QTextFormatH) end;
 QTextOptionH = class(TObject) end;
+QTimeH = class(TObject) end;
 QToolTipH = class(TObject) end;
 QTreeWidgetItemH = class(TObject) end;
 QUrlH = class(TObject) end;
+QVariantH = class(TObject) end;
 QVectorH = class(TObject) end;
   QPolygonH = class(QVectorH) end;
   QPolygonFH = class(QVectorH) end;
@@ -1092,6 +1098,8 @@ function QObject_disconnect(sender: QObjectH; signal: PAnsiChar; receiver: QObje
 function QObject_disconnect(handle: QObjectH; receiver: QObjectH; member: PAnsiChar = 0): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QObject_disconnect3';
 procedure QObject_dumpObjectTree(handle: QObjectH); cdecl; external QtShareName name QtNamePrefix + 'QObject_dumpObjectTree';
 procedure QObject_dumpObjectInfo(handle: QObjectH); cdecl; external QtShareName name QtNamePrefix + 'QObject_dumpObjectInfo';
+function QObject_setProperty(handle: QObjectH; name: PAnsiChar; value: QVariantH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QObject_setProperty';
+procedure QObject_property(handle: QObjectH; retval: QVariantH; name: PAnsiChar); cdecl; external QtShareName name QtNamePrefix + 'QObject_property';
 function QObject_registerUserData(): Cardinal; cdecl; external QtShareName name QtNamePrefix + 'QObject_registerUserData';
 function QObject_parent(handle: QObjectH): QObjectH; cdecl; external QtShareName name QtNamePrefix + 'QObject_parent';
 function QObject_inherits(handle: QObjectH; classname: PAnsiChar): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QObject_inherits';
@@ -1326,6 +1334,130 @@ procedure QTimer_stop(handle: QTimerH); cdecl; external QtShareName name QtNameP
 type
   QTimer_timeout_Event = procedure () of object cdecl;
 
+
+
+type
+  QVariantType = (  //QVariant::Type (2)
+    QVariantInvalid = 0,
+    QVariantBool = 1,
+    QVariantInt = 2,
+    QVariantUInt = 3,
+    QVariantLongLong = 4,
+    QVariantULongLong = 5,
+    QVariantDouble = 6,
+    QVariantChar = 7,
+    QVariantMap = 8,
+    QVariantList = 9,
+    QVariantString = 10,
+    QVariantStringList = 11,
+    QVariantByteArray = 12,
+    QVariantBitArray = 13,
+    QVariantDate = 14,
+    QVariantTime = 15,
+    QVariantDateTime = 16,
+    QVariantUrl = 17,
+    QVariantLocale = 18,
+    QVariantRect = 19,
+    QVariantRectF = 20,
+    QVariantSize = 21,
+    QVariantSizeF = 22,
+    QVariantLine = 23,
+    QVariantLineF = 24,
+    QVariantPoint = 25,
+    QVariantPointF = 26,
+    QVariantRegExp = 27,
+    QVariantFont = 64,
+    QVariantPixmap = 65,
+    QVariantBrush = 66,
+    QVariantColor = 67,
+    QVariantPalette = 68,
+    QVariantIcon = 69,
+    QVariantImage = 70,
+    QVariantPolygon = 71,
+    QVariantRegion = 72,
+    QVariantBitmap = 73,
+    QVariantCursor = 74,
+    QVariantSizePolicy = 75,
+    QVariantKeySequence = 76,
+    QVariantPen = 77,
+    QVariantTextLength = 78,
+    QVariantTextFormat = 79,
+    QVariantUserType = 127,
+    QVariantLastType = $ffffffff );
+
+function QVariant_create(): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create';
+procedure QVariant_destroy(handle: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_destroy'; 
+function QVariant_create(_type: QVariantType): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create2';
+function QVariant_create(typeOrUserType: Integer; copy: Pointer): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create3';
+function QVariant_create(other: QVariantH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create4';
+function QVariant_create(s: QDataStreamH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create5';
+function QVariant_create(i: Integer): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create6';
+function QVariant_create(ui: Cardinal): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create7';
+function QVariant_create(ll: int64): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create8';
+function QVariant_create(ull: qword): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create9';
+function QVariant_create(b: Boolean): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create10';
+function QVariant_create(d: Double): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create11';
+function QVariant_create(str: PAnsiChar): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create12';
+function QVariant_create(bytearray: QByteArrayH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create13';
+function QVariant_create(bitarray: QBitArrayH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create14';
+function QVariant_create(_string: PWideString): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create15';
+function QVariant_create(_string: QLatin1StringH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create16';
+function QVariant_create(stringlist: QStringListH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create17';
+function QVariant_create(qchar: PWideChar): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create18';
+function QVariant_create(date: QDateH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create19';
+function QVariant_create(time: QTimeH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create20';
+function QVariant_create(datetime: QDateTimeH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create21';
+function QVariant_create(size: PSize): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create24';
+function QVariant_create(size: QSizeFH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create25';
+function QVariant_create(pt: PPoint): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create26';
+function QVariant_create(pt: QPointFH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create27';
+function QVariant_create(line: QLineH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create28';
+function QVariant_create(line: QLineFH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create29';
+function QVariant_create(rect: PRect): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create30';
+function QVariant_create(rect: QRectFH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create31';
+function QVariant_create(url: QUrlH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create32';
+function QVariant_create(locale: QLocaleH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create33';
+function QVariant_create(regExp: QRegExpH): QVariantH; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_create34';
+function QVariant_type(handle: QVariantH): QVariantType; cdecl; external QtShareName name QtNamePrefix + 'QVariant_type';
+function QVariant_userType(handle: QVariantH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QVariant_userType';
+function QVariant_typeName(handle: QVariantH): PAnsiChar; cdecl; external QtShareName name QtNamePrefix + 'QVariant_typeName';
+function QVariant_canConvert(handle: QVariantH; t: QVariantType): Boolean; overload; cdecl; external QtShareName name QtNamePrefix + 'QVariant_canConvert';
+function QVariant_convert(handle: QVariantH; t: QVariantType): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QVariant_convert';
+function QVariant_isValid(handle: QVariantH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QVariant_isValid';
+function QVariant_isNull(handle: QVariantH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QVariant_isNull';
+procedure QVariant_clear(handle: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_clear';
+procedure QVariant_detach(handle: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_detach';
+function QVariant_isDetached(handle: QVariantH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QVariant_isDetached';
+function QVariant_toInt(handle: QVariantH; ok: PBoolean = 0): Integer; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toInt';
+function QVariant_toUInt(handle: QVariantH; ok: PBoolean = 0): Cardinal; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toUInt';
+function QVariant_toLongLong(handle: QVariantH; ok: PBoolean = 0): int64; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toLongLong';
+function QVariant_toULongLong(handle: QVariantH; ok: PBoolean = 0): qword; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toULongLong';
+function QVariant_toBool(handle: QVariantH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toBool';
+function QVariant_toDouble(handle: QVariantH; ok: PBoolean = 0): Double; cdecl; external QtShareName name QtNamePrefix + 'QVariant_toDouble';
+procedure QVariant_toByteArray(handle: QVariantH; retval: QByteArrayH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toByteArray';
+procedure QVariant_toBitArray(handle: QVariantH; retval: QBitArrayH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toBitArray';
+procedure QVariant_toString(handle: QVariantH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toString';
+procedure QVariant_toStringList(handle: QVariantH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toStringList';
+procedure QVariant_toChar(handle: QVariantH; retval: PWideChar); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toChar';
+procedure QVariant_toDate(handle: QVariantH; retval: QDateH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toDate';
+procedure QVariant_toTime(handle: QVariantH; retval: QTimeH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toTime';
+procedure QVariant_toDateTime(handle: QVariantH; retval: QDateTimeH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toDateTime';
+procedure QVariant_toPoint(handle: QVariantH; retval: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toPoint';
+procedure QVariant_toPointF(handle: QVariantH; retval: QPointFH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toPointF';
+procedure QVariant_toRect(handle: QVariantH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toRect';
+procedure QVariant_toSize(handle: QVariantH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toSize';
+procedure QVariant_toSizeF(handle: QVariantH; retval: QSizeFH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toSizeF';
+procedure QVariant_toLine(handle: QVariantH; retval: QLineH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toLine';
+procedure QVariant_toLineF(handle: QVariantH; retval: QLineFH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toLineF';
+procedure QVariant_toRectF(handle: QVariantH; retval: QRectFH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toRectF';
+procedure QVariant_toUrl(handle: QVariantH; retval: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toUrl';
+procedure QVariant_toLocale(handle: QVariantH; retval: QLocaleH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toLocale';
+procedure QVariant_toRegExp(handle: QVariantH; retval: QRegExpH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_toRegExp';
+procedure QVariant_load(handle: QVariantH; ds: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_load';
+procedure QVariant_save(handle: QVariantH; ds: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QVariant_save';
+function QVariant_typeToName(_type: QVariantType): PAnsiChar; cdecl; external QtShareName name QtNamePrefix + 'QVariant_typeToName';
+function QVariant_nameToType(name: PAnsiChar): QVariantType; cdecl; external QtShareName name QtNamePrefix + 'QVariant_nameToType';
+function QVariant_constData(handle: QVariantH): Pointer; cdecl; external QtShareName name QtNamePrefix + 'QVariant_constData';
 
 function QStringList_create(): QStringListH; overload; cdecl; external QtShareName name QtNamePrefix + 'QStringList_create';
 procedure QStringList_destroy(handle: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QStringList_destroy'; 
@@ -1863,6 +1995,7 @@ procedure QWidget_setInputContext(handle: QWidgetH; p1: QInputContextH); cdecl; 
 function QWidget_isAncestorOf(handle: QWidgetH; child: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_isAncestorOf';
 function QWidget_autoFillBackground(handle: QWidgetH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QWidget_autoFillBackground';
 procedure QWidget_setAutoFillBackground(handle: QWidgetH; enabled: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QWidget_setAutoFillBackground';
+procedure QWidget_inputMethodQuery(handle: QWidgetH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external QtShareName name QtNamePrefix + 'QWidget_inputMethodQuery';
 function QWidget_to_QPaintDevice(handle: QWidgetH): QPaintDeviceH; cdecl; external QtSharename name QtNamePrefix + 'QWidget_to_QPaintDevice';
 
 type
@@ -2037,6 +2170,8 @@ procedure QAction_setFont(handle: QActionH; font: QFontH); cdecl; external QtSha
 procedure QAction_font(handle: QActionH; retval: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QAction_font';
 procedure QAction_setCheckable(handle: QActionH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QAction_setCheckable';
 function QAction_isCheckable(handle: QActionH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QAction_isCheckable';
+procedure QAction_data(handle: QActionH; retval: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QAction_data';
+procedure QAction_setData(handle: QActionH; _var: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QAction_setData';
 function QAction_isChecked(handle: QActionH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QAction_isChecked';
 function QAction_isEnabled(handle: QActionH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QAction_isEnabled';
 function QAction_isVisible(handle: QActionH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QAction_isVisible';
@@ -2112,7 +2247,7 @@ function QWheelEvent_globalY(handle: QWheelEventH): Integer; cdecl; external QtS
 function QWheelEvent_buttons(handle: QWheelEventH): QtMouseButtons; cdecl; external QtShareName name QtNamePrefix + 'QWheelEvent_buttons';
 function QWheelEvent_orientation(handle: QWheelEventH): QtOrientation; cdecl; external QtShareName name QtNamePrefix + 'QWheelEvent_orientation';
 
-function QTabletEvent_create(t: QEventType; pos: PPoint; globalPos: PPoint; hiResGlobalPos: QPointFH; device: Integer; pointerType: Integer; pressure: Double; xTilt: Integer; yTilt: Integer; tangentialPressure: Double; rotation: Double; z: Integer; keyState: QtKeyboardModifiers; uniqueID: qint64): QTabletEventH; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_create';
+function QTabletEvent_create(t: QEventType; pos: PPoint; globalPos: PPoint; hiResGlobalPos: QPointFH; device: Integer; pointerType: Integer; pressure: Double; xTilt: Integer; yTilt: Integer; tangentialPressure: Double; rotation: Double; z: Integer; keyState: QtKeyboardModifiers; uniqueID: int64): QTabletEventH; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_create';
 procedure QTabletEvent_destroy(handle: QTabletEventH); cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_destroy'; 
 function QTabletEvent_pos(handle: QTabletEventH): PPoint; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_pos';
 function QTabletEvent_globalPos(handle: QTabletEventH): PPoint; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_globalPos';
@@ -2125,7 +2260,7 @@ function QTabletEvent_hiResGlobalX(handle: QTabletEventH): Double; cdecl; extern
 function QTabletEvent_hiResGlobalY(handle: QTabletEventH): Double; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_hiResGlobalY';
 function QTabletEvent_device(handle: QTabletEventH): QTabletEventTabletDevice; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_device';
 function QTabletEvent_pointerType(handle: QTabletEventH): QTabletEventPointerType; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_pointerType';
-function QTabletEvent_uniqueId(handle: QTabletEventH): qint64; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_uniqueId';
+function QTabletEvent_uniqueId(handle: QTabletEventH): int64; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_uniqueId';
 function QTabletEvent_pressure(handle: QTabletEventH): Double; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_pressure';
 function QTabletEvent_z(handle: QTabletEventH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_z';
 function QTabletEvent_tangentialPressure(handle: QTabletEventH): Double; cdecl; external QtShareName name QtNamePrefix + 'QTabletEvent_tangentialPressure';
@@ -3332,6 +3467,8 @@ procedure QTextDocument_defaultFont(handle: QTextDocumentH; retval: QFontH); cde
 function QTextDocument_pageCount(handle: QTextDocumentH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_pageCount';
 function QTextDocument_isModified(handle: QTextDocumentH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_isModified';
 procedure QTextDocument_print(handle: QTextDocumentH; printer: QPrinterH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_print';
+procedure QTextDocument_resource(handle: QTextDocumentH; retval: QVariantH; _type: Integer; name: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_resource';
+procedure QTextDocument_addResource(handle: QTextDocumentH; _type: Integer; name: QUrlH; resource: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_addResource';
 procedure QTextDocument_markContentsDirty(handle: QTextDocumentH; from: Integer; length: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_markContentsDirty';
 procedure QTextDocument_setUseDesignMetrics(handle: QTextDocumentH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_setUseDesignMetrics';
 function QTextDocument_useDesignMetrics(handle: QTextDocumentH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextDocument_useDesignMetrics';
@@ -3965,6 +4102,7 @@ procedure QLineEdit_paste(handle: QLineEditH); cdecl; external QtShareName name 
 procedure QLineEdit_deselect(handle: QLineEditH); cdecl; external QtShareName name QtNamePrefix + 'QLineEdit_deselect';
 procedure QLineEdit_insert(handle: QLineEditH; p1: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QLineEdit_insert';
 function QLineEdit_createStandardContextMenu(handle: QLineEditH): QMenuH; cdecl; external QtShareName name QtNamePrefix + 'QLineEdit_createStandardContextMenu';
+procedure QLineEdit_inputMethodQuery(handle: QLineEditH; retval: QVariantH; p1: QtInputMethodQuery); cdecl; external QtShareName name QtNamePrefix + 'QLineEdit_inputMethodQuery';
 function QLineEdit_event(handle: QLineEditH; p1: QEventH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QLineEdit_event';
 
 
@@ -4032,6 +4170,7 @@ function QTextEdit_find(handle: QTextEditH; exp: PWideString; options: QTextDocu
 procedure QTextEdit_toPlainText(handle: QTextEditH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_toPlainText';
 procedure QTextEdit_toHtml(handle: QTextEditH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_toHtml';
 procedure QTextEdit_ensureCursorVisible(handle: QTextEditH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_ensureCursorVisible';
+procedure QTextEdit_loadResource(handle: QTextEditH; retval: QVariantH; _type: Integer; name: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_loadResource';
 function QTextEdit_createStandardContextMenu(handle: QTextEditH): QMenuH; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_createStandardContextMenu';
 procedure QTextEdit_cursorForPosition(handle: QTextEditH; retval: QTextCursorH; pos: PPoint); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_cursorForPosition';
 procedure QTextEdit_cursorRect(handle: QTextEditH; retval: PRect; cursor: QTextCursorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_cursorRect';
@@ -4385,6 +4524,7 @@ procedure QComboBox_setDuplicatesEnabled(handle: QComboBoxH; enable: Boolean); c
 procedure QComboBox_setFrame(handle: QComboBoxH; p1: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setFrame';
 function QComboBox_hasFrame(handle: QComboBoxH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_hasFrame';
 function QComboBox_findText(handle: QComboBoxH; text: PWideString; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_findText';
+function QComboBox_findData(handle: QComboBoxH; data: QVariantH; role: Integer = QtUserRole; flags: QtMatchFlags = QtMatchExactly or QtMatchCaseSensitive): Integer; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_findData';
 function QComboBox_insertPolicy(handle: QComboBoxH): QComboBoxInsertPolicy; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_insertPolicy';
 procedure QComboBox_setInsertPolicy(handle: QComboBoxH; policy: QComboBoxInsertPolicy); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setInsertPolicy';
 function QComboBox_sizeAdjustPolicy(handle: QComboBoxH): QComboBoxSizeAdjustPolicy; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_sizeAdjustPolicy';
@@ -4411,11 +4551,17 @@ function QComboBox_currentIndex(handle: QComboBoxH): Integer; cdecl; external Qt
 procedure QComboBox_currentText(handle: QComboBoxH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_currentText';
 procedure QComboBox_itemText(handle: QComboBoxH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_itemText';
 procedure QComboBox_itemIcon(handle: QComboBoxH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_itemIcon';
+procedure QComboBox_itemData(handle: QComboBoxH; retval: QVariantH; index: Integer; role: Integer = QtUserRole); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_itemData';
+procedure QComboBox_addItem(handle: QComboBoxH; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_addItem';
+procedure QComboBox_addItem(handle: QComboBoxH; icon: QIconH; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_addItem2';
 procedure QComboBox_addItems(handle: QComboBoxH; texts: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_addItems';
+procedure QComboBox_insertItem(handle: QComboBoxH; index: Integer; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_insertItem';
+procedure QComboBox_insertItem(handle: QComboBoxH; index: Integer; icon: QIconH; text: PWideString; userData: QVariantH = nil); overload; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_insertItem2';
 procedure QComboBox_insertItems(handle: QComboBoxH; index: Integer; texts: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_insertItems';
 procedure QComboBox_removeItem(handle: QComboBoxH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_removeItem';
 procedure QComboBox_setItemText(handle: QComboBoxH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setItemText';
 procedure QComboBox_setItemIcon(handle: QComboBoxH; index: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setItemIcon';
+procedure QComboBox_setItemData(handle: QComboBoxH; index: Integer; value: QVariantH; role: Integer = QtUserRole); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setItemData';
 function QComboBox_view(handle: QComboBoxH): QAbstractItemViewH; cdecl; external QtShareName name QtNamePrefix + 'QComboBox_view';
 procedure QComboBox_setView(handle: QComboBoxH; itemView: QAbstractItemViewH); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_setView';
 procedure QComboBox_sizeHint(handle: QComboBoxH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QComboBox_sizeHint';
@@ -4481,6 +4627,7 @@ procedure QTextBrowser_destroy(handle: QTextBrowserH); cdecl; external QtShareNa
 procedure QTextBrowser_source(handle: QTextBrowserH; retval: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_source';
 procedure QTextBrowser_searchPaths(handle: QTextBrowserH; retval: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_searchPaths';
 procedure QTextBrowser_setSearchPaths(handle: QTextBrowserH; paths: QStringListH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_setSearchPaths';
+procedure QTextBrowser_loadResource(handle: QTextBrowserH; retval: QVariantH; _type: Integer; name: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_loadResource';
 procedure QTextBrowser_setSource(handle: QTextBrowserH; name: QUrlH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_setSource';
 procedure QTextBrowser_backward(handle: QTextBrowserH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_backward';
 procedure QTextBrowser_forward(handle: QTextBrowserH); cdecl; external QtShareName name QtNamePrefix + 'QTextBrowser_forward';
@@ -4621,6 +4768,8 @@ procedure QTabBar_setTabToolTip(handle: QTabBarH; index: Integer; tip: PWideStri
 procedure QTabBar_tabToolTip(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabToolTip';
 procedure QTabBar_setTabWhatsThis(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabWhatsThis';
 procedure QTabBar_tabWhatsThis(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabWhatsThis';
+procedure QTabBar_setTabData(handle: QTabBarH; index: Integer; data: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabData';
+procedure QTabBar_tabData(handle: QTabBarH; retval: QVariantH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabData';
 procedure QTabBar_tabRect(handle: QTabBarH; retval: PRect; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabRect';
 function QTabBar_currentIndex(handle: QTabBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_currentIndex';
 function QTabBar_count(handle: QTabBarH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTabBar_count';
@@ -4911,6 +5060,8 @@ function QListWidgetItem_checkState(handle: QListWidgetItemH): QtCheckState; cde
 procedure QListWidgetItem_setCheckState(handle: QListWidgetItemH; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setCheckState';
 procedure QListWidgetItem_sizeHint(handle: QListWidgetItemH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_sizeHint';
 procedure QListWidgetItem_setSizeHint(handle: QListWidgetItemH; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setSizeHint';
+procedure QListWidgetItem_data(handle: QListWidgetItemH; retval: QVariantH; role: Integer); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_data';
+procedure QListWidgetItem_setData(handle: QListWidgetItemH; role: Integer; value: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setData';
 procedure QListWidgetItem_read(handle: QListWidgetItemH; _in: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_read';
 procedure QListWidgetItem_write(handle: QListWidgetItemH; _out: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_write';
 function QListWidgetItem_type(handle: QListWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_type';
@@ -5046,6 +5197,8 @@ function QTreeWidgetItem_checkState(handle: QTreeWidgetItemH; column: Integer): 
 procedure QTreeWidgetItem_setCheckState(handle: QTreeWidgetItemH; column: Integer; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setCheckState';
 procedure QTreeWidgetItem_sizeHint(handle: QTreeWidgetItemH; retval: PSize; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_sizeHint';
 procedure QTreeWidgetItem_setSizeHint(handle: QTreeWidgetItemH; column: Integer; size: PSize); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setSizeHint';
+procedure QTreeWidgetItem_data(handle: QTreeWidgetItemH; retval: QVariantH; column: Integer; role: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_data';
+procedure QTreeWidgetItem_setData(handle: QTreeWidgetItemH; column: Integer; role: Integer; value: QVariantH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setData';
 procedure QTreeWidgetItem_read(handle: QTreeWidgetItemH; _in: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_read';
 procedure QTreeWidgetItem_write(handle: QTreeWidgetItemH; _out: QDataStreamH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_write';
 function QTreeWidgetItem_parent(handle: QTreeWidgetItemH): QTreeWidgetItemH; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_parent';
@@ -5276,10 +5429,10 @@ procedure QFileDialog_setIconProvider(handle: QFileDialogH; provider: QFileIconP
 function QFileDialog_iconProvider(handle: QFileDialogH): QFileIconProviderH; cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_iconProvider';
 procedure QFileDialog_setLabelText(handle: QFileDialogH; _label: QFileDialogDialogLabel; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_setLabelText';
 procedure QFileDialog_labelText(handle: QFileDialogH; retval: PWideString; _label: QFileDialogDialogLabel); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_labelText';
-procedure QFileDialog_getOpenFileName(retval: PWideString; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileName';
-procedure QFileDialog_getSaveFileName(retval: PWideString; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getSaveFileName';
+procedure QFileDialog_getOpenFileName(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; filter: PWideString = nil; selectedFilter: PWideString = nil; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileName';
+procedure QFileDialog_getSaveFileName(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; filter: PWideString = nil; selectedFilter: PWideString = nil; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getSaveFileName';
 procedure QFileDialog_getExistingDirectory(retval: PWideString; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; options: QFileDialogOptions = QFileDialogShowDirsOnly); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getExistingDirectory';
-procedure QFileDialog_getOpenFileNames(retval: QStringListH; parent: QWidgetH; caption: PWideString; dir: PWideString; filter: PWideString; selectedFilter: PWideString; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileNames';
+procedure QFileDialog_getOpenFileNames(retval: QStringListH; parent: QWidgetH = nil; caption: PWideString = nil; dir: PWideString = nil; filter: PWideString = nil; selectedFilter: PWideString = nil; options: QFileDialogOptions = 0); cdecl; external QtShareName name QtNamePrefix + 'QFileDialog_getOpenFileNames';
 
 function QProgressDialog_create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QProgressDialogH; overload; cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_create';
 procedure QProgressDialog_destroy(handle: QProgressDialogH); cdecl; external QtShareName name QtNamePrefix + 'QProgressDialog_destroy'; 
@@ -5337,23 +5490,23 @@ function QIODevice_isWritable(handle: QIODeviceH): Boolean; cdecl; external QtSh
 function QIODevice_isSequential(handle: QIODeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_isSequential';
 function QIODevice_open(handle: QIODeviceH; mode: QIODeviceOpenMode): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_open';
 procedure QIODevice_close(handle: QIODeviceH); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_close';
-function QIODevice_pos(handle: QIODeviceH): qint64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_pos';
-function QIODevice_size(handle: QIODeviceH): qint64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_size';
-function QIODevice_seek(handle: QIODeviceH; pos: qint64): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_seek';
+function QIODevice_pos(handle: QIODeviceH): int64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_pos';
+function QIODevice_size(handle: QIODeviceH): int64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_size';
+function QIODevice_seek(handle: QIODeviceH; pos: int64): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_seek';
 function QIODevice_atEnd(handle: QIODeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_atEnd';
 function QIODevice_reset(handle: QIODeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_reset';
-function QIODevice_bytesAvailable(handle: QIODeviceH): qint64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_bytesAvailable';
-function QIODevice_bytesToWrite(handle: QIODeviceH): qint64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_bytesToWrite';
-function QIODevice_read(handle: QIODeviceH; data: PAnsiChar; maxlen: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_read';
-procedure QIODevice_read(handle: QIODeviceH; retval: QByteArrayH; maxlen: qint64); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_read2';
+function QIODevice_bytesAvailable(handle: QIODeviceH): int64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_bytesAvailable';
+function QIODevice_bytesToWrite(handle: QIODeviceH): int64; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_bytesToWrite';
+function QIODevice_read(handle: QIODeviceH; data: PAnsiChar; maxlen: int64): int64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_read';
+procedure QIODevice_read(handle: QIODeviceH; retval: QByteArrayH; maxlen: int64); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_read2';
 procedure QIODevice_readAll(handle: QIODeviceH; retval: QByteArrayH); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_readAll';
-function QIODevice_readLine(handle: QIODeviceH; data: PAnsiChar; maxlen: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_readLine';
-procedure QIODevice_readLine(handle: QIODeviceH; retval: QByteArrayH; maxlen: qint64 = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_readLine2';
+function QIODevice_readLine(handle: QIODeviceH; data: PAnsiChar; maxlen: int64): int64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_readLine';
+procedure QIODevice_readLine(handle: QIODeviceH; retval: QByteArrayH; maxlen: int64 = 0); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_readLine2';
 function QIODevice_canReadLine(handle: QIODeviceH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_canReadLine';
-function QIODevice_write(handle: QIODeviceH; data: PAnsiChar; len: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write';
-function QIODevice_write(handle: QIODeviceH; data: QByteArrayH): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write2';
-function QIODevice_peek(handle: QIODeviceH; data: PAnsiChar; maxlen: qint64): qint64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek';
-procedure QIODevice_peek(handle: QIODeviceH; retval: QByteArrayH; maxlen: qint64); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek2';
+function QIODevice_write(handle: QIODeviceH; data: PAnsiChar; len: int64): int64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write';
+function QIODevice_write(handle: QIODeviceH; data: QByteArrayH): int64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_write2';
+function QIODevice_peek(handle: QIODeviceH; data: PAnsiChar; maxlen: int64): int64; overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek';
+procedure QIODevice_peek(handle: QIODeviceH; retval: QByteArrayH; maxlen: int64); overload; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_peek2';
 function QIODevice_waitForReadyRead(handle: QIODeviceH; msecs: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_waitForReadyRead';
 function QIODevice_waitForBytesWritten(handle: QIODeviceH; msecs: Integer): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QIODevice_waitForBytesWritten';
 procedure QIODevice_ungetChar(handle: QIODeviceH; c: char); cdecl; external QtShareName name QtNamePrefix + 'QIODevice_ungetChar';
@@ -5364,7 +5517,7 @@ procedure QIODevice_errorString(handle: QIODeviceH; retval: PWideString); cdecl;
 
 type
   QIODevice_readyRead_Event = procedure () of object cdecl;
-  QIODevice_bytesWritten_Event = procedure (bytes: qint64) of object cdecl;
+  QIODevice_bytesWritten_Event = procedure (bytes: int64) of object cdecl;
   QIODevice_aboutToClose_Event = procedure () of object cdecl;
 
 

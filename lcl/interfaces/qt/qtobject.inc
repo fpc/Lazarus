@@ -50,11 +50,12 @@ end;
 
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer;
+function TQtWidgetSet.CreateTimer(Interval: integer;
+  TimerFunc: TFNTimerProc): integer;
 var
   QtTimer: TQtTimer;
 begin
-  QtTimer := TQtTimer.Create(Interval, TimerFunc, App);
+  QtTimer := TQtTimer.CreateTimer(Interval, TimerFunc, App);
   
   Result := Integer(QtTimer);
 end;
