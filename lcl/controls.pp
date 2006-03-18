@@ -59,6 +59,14 @@ const
   mrYesToAll = mrNone + 10;
   mrLast = mrYesToAll;
 
+  // define aliases for Delphi compatibility
+  fsSurface = GraphType.fsSurface;
+  fsBorder = GraphType.fsBorder;
+
+  bvNone = GraphType.bvNone;
+  bvLowered = GraphType.bvLowered;
+  bvRaised = GraphType.bvRaised;
+  bvSpace = GraphType.bvSpace;
 
 type
   TWinControl = class;
