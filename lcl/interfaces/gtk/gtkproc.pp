@@ -530,6 +530,7 @@ procedure SetCursor(AWinControl: TWinControl; ACursor: TCursor);
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
 function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 procedure ReleaseMouseCapture;
+procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 procedure UpdateMouseCaptureControl;
 
 // designing

@@ -265,7 +265,8 @@ begin
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
     ListItem:=FCachedItems[Index];
-    gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex+1, AnObject, -1]);
+    gtk_list_store_set(FGtkListStore, @ListItem,
+                       [FColumnIndex+1, Pointer(AnObject), -1]);
   end;
 end;
 

@@ -365,6 +365,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.Paint;
 var
+  fRect,
   PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
@@ -372,6 +373,7 @@ var
   //BrushStyle : TBrushStyle;
   M, S : integer;
   TXTStyle : TTextStyle;
+  Flags,
   SIndex : Longint;
   TMP : String;
   //xBevel :  tBevelCut;
@@ -424,8 +426,22 @@ begin
 
   if Caption <> '' then begin
     TMP := Caption;
+    TXTStyle := Canvas.TextStyle;
+    TXTStyle.Opaque := False;
+    TXTStyle.Clipping := True;
+    TXTStyle.ShowPrefix := True;
+    TXTStyle.Alignment := taLeftJustify;
+    TXTStyle.Layout := tlTop;
+    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
     SIndex := DeleteAmpersands(TMP);
-    TextSize:= Canvas.TextExtent(TMP);
+    fRect:=PaintRect;
+    Flags:=DT_CalcRect;
+    if not TXTStyle.SingleLine then inc(Flags,DT_WordBreak)
+                else inc(Flags,DT_SingleLine);
+
+    DrawText(canvas.Handle,pChar(TMP),Length(TMP),fRect,flags);
+    TextSize.cy:=fRect.bottom-fRect.top;
+    TextSize.cx:=fRect.right-fRect.left;
     If SIndex > 0 then
       If SIndex <= Length(TMP) then begin
         FShortcut := Ord(TMP[SIndex]);
@@ -503,13 +519,7 @@ begin
 
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if Caption <> '' then begin
-    TXTStyle := Canvas.TextStyle;
-    TXTStyle.Opaque := False;
-    TXTStyle.Clipping := True;
-    TXTStyle.ShowPrefix := True;
-    TXTStyle.Alignment := taLeftJustify;
-    TXTStyle.Layout := tlTop;
-    TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
+
     With PaintRect, OffsetCap do begin
       Left := Left + X;
       Top := Top + Y;

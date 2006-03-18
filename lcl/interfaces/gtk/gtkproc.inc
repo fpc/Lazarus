@@ -992,6 +992,8 @@ var
   ComboStrings: TStrings;
   CurText: String;
 begin
+  if not ComboBox.HandleAllocated then
+    RaiseGDBException('');
   ComboWidget:=PGtkCombo(ComboBox.Handle);
   ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
   CurText:=GetComboBoxText(ComboWidget);
@@ -3446,7 +3448,8 @@ function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
-  DebugLn('DeliverMessage ',DbgS(Target),
+  if TLMessage(AMessage).Msg<>LM_MOUSEMOVE then
+    DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
@@ -4421,6 +4424,9 @@ begin
     DebugLn('UpdateMouseCaptureControl Capture changed from ',
       '[',GetWidgetDebugReport(OldMouseCaptureWidget),']',
       ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),']');
+    if CurMouseCaptureWidget<>nil then
+    DebugLn('parent ',    GetWidgetDebugReport(CurMouseCaptureWidget^.Parent));
+
     {$ENDIF}
 
     // notify the new capture control
@@ -4530,6 +4536,20 @@ begin
   if OldMouseCaptureWidget<>nil then
     gtk_grab_remove(OldMouseCaptureWidget);
   // tell the LCL
+  SetCaptureControl(nil);
+end;
+
+procedure ReleaseCaptureWidget(Widget : PGtkWidget);
+begin
+  if (MouseCaptureWidget=nil) or (Widget=nil) then exit;
+  if (MouseCaptureWidget<>Widget) and (MouseCaptureWidget<>Widget^.parent) then exit;
+
+  {$IFDEF VerboseMouseCapture}
+  DebugLn('ReleaseCaptureControl ',dbgs(ord(MouseCaptureType)),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+  {$ENDIF}
+  gtk_grab_remove(MouseCaptureWidget);
+  MouseCaptureWidget:=nil;
+  MouseCaptureType:=mctGTK;
   SetCaptureControl(nil);
 end;
 

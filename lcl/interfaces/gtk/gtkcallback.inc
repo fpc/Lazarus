@@ -395,7 +395,9 @@ var
 begin
   //DebugLn('gtktoggledCB ',DbgSName(TObject(Data)));
   Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
   EventTrace('toggled', data);
+  {$ENDIF}
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
@@ -415,7 +417,9 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
   EventTrace('DrawAfter', data);
+  {$ENDIF}
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstDrawAfter);
@@ -440,7 +444,9 @@ var
   DesignOnlySignal: boolean;
 begin
   Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
   EventTrace('ExposeAfter', data);
+  {$ENDIF}
   if (Event^.Count > 0) then exit;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
@@ -451,7 +457,7 @@ begin
     DebugLn('gtkExposeAfter',
       ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
-      ' ',Event^.area.x,',',Event^.area.y,',',Event^.area.width,',',Event^.area.height,
+      ' ',dbgs(Event^.area.x),',',dbgs(Event^.area.y),',',dbgs(Event^.area.width),',',dbgs(Event^.area.height),
       '');
     {$ENDIF}
   end;
@@ -470,7 +476,9 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
+  {$IFDEF EventTrace}
   EventTrace('activate after', data);
+  {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
@@ -524,7 +532,9 @@ var
   LCLObject: TControl;
 {$ENDIF}
 begin
+  {$IFDEF EventTrace}
   EventTrace('deactivate after', data);
+  {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^.theIn,
@@ -649,12 +659,10 @@ begin
   {$ENDIF}
 
   UpdateMouseCaptureControl;
-
   //TODO: fill in old focus
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SETFOCUS;
   DeliverMessage(Data,  Mess);
-
   Result:=true;
 end;
 
@@ -666,7 +674,9 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
-  EventTrace('killfocus', data);
+  {$IFDEF EventTrace}
+  EventTrace('killfocusCB', data);
+  {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
@@ -711,7 +721,9 @@ var
 {$ENDIF}
 begin
   if (Widget=nil) or (Event=nil) then ;
-  EventTrace('killfocus', data);
+  {$IFDEF EventTrace}
+  EventTrace('killfocusCBAfter', data);
+  {$ENDIF}
   {$IFDEF VerboseFocus}
   write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -746,8 +758,11 @@ begin
 
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
+  ReleaseCaptureWidget(Widget);
+
   //TODO: fill in new focus
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
+  
   DeliverMessage(Data,  Mess);
 
   Result:=true;
@@ -777,7 +792,9 @@ begin
     exit;
   end;
 
-  EventTrace('destroy', data);
+  {$IFDEF EventTrace}
+  EventTrace('destroyCB', data);
+  {$ENDIF}
   //DebugLn('gtkdestroyCB Data="',DbgSName(TObject(Data)),'" LCLObject="',DbgSName(Info^.LCLObject),'" ',GetWidgetDebugReport(Widget));
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_DESTROY;
@@ -806,7 +823,9 @@ function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
   if (Widget=nil) then ;
+  {$IFDEF EventTrace}
   EventTrace('resize', data);
+  {$ENDIF}
 //   Mess.msg := LM_RESIZE;
 //   TControl(data).WindowProc(TLMessage(Mess));
   Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
@@ -819,7 +838,9 @@ var
 begin
   Result := CallBackDefaultReturn;
   if (Widget=nil) then ;
+  {$IFDEF EventTrace}
   EventTrace('month changed', data);
+  {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_MONTHCHANGED;
   DeliverPostMessage(Data, Mess);
@@ -1301,7 +1322,9 @@ begin
   //if GetFixedWidget(Widget)<>nil then
   //  DebugLn('DDD2 ClientWindow=',DbgS(PGtkWidget(GetFixedWidget(Widget))^.Window));
 
+  {$IFDEF EventTrace}
   EventTrace('Mouse button Press', data);
+  {$ENDIF}
 
   UpdateMouseCaptureControl;
 
@@ -3102,6 +3125,7 @@ begin
   Mess.msg := LM_SelChange;
   DeliverMessage(Data, Mess);
 end;
+
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}

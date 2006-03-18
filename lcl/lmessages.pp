@@ -773,6 +773,22 @@ begin
   // RECEIVED from the interface, here are no defines
   // of messages send to the interface
   //-------------
+  
+  LM_ACTIVATE        : Result:='LM_ACTIVATE';
+  LM_SETFOCUS        : Result:='LM_SETFOCUS';
+  LM_KILLFOCUS       : Result:='LM_KILLFOCUS';
+  LM_SHOWWINDOW      : Result:='LM_SHOWWINDOW';
+  LM_SIZE            : Result:='LM_SIZE';
+  LM_MOVE            : Result:='LM_MOVE';
+
+//  LM_MOUSEFIRST      : Result:='LM_MOUSEFIRST';
+  LM_MOUSEMOVE       : Result:='LM_MOUSEMOVE';
+  LM_LBUTTONDOWN     : Result:='LM_LBUTTONDOWN';
+  LM_LBUTTONUP       : Result:='LM_LBUTTONUP';
+  LM_CAPTURECHANGED  : Result:='LM_CAPTURECHANGED';
+  LM_SELCHANGE       : Result:='LM_SELCHANGE';
+
+
   LM_USER           :Result:='LM_USER';
   //WM_USER           :Result:='';
   LM_DESTROY        :Result:='LM_DESTROY';
