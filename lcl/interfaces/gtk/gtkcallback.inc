@@ -19,7 +19,13 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{$IFDEF RELEASE}
+
 {$DEFINE ASSERT_IS_ON}
+{$ELSE}
+{.$DEFINE EventTrace}
+
+{$ENDIF}
 
 function DeliverPaintMessage(const Target: Pointer; var TheMessage): GBoolean;
 var
@@ -133,7 +139,9 @@ var
 begin
   Result := CallBackDefaultReturn;
 
+  {$IFDEF EventTrace}
   EventTrace('realize', nil);
+  {$ENDIF}
 
   if (Data<>nil) then begin
     if TObject(Data) is TCustomForm then begin
@@ -182,7 +190,9 @@ begin
   Result := CallBackDefaultReturn;
 
   if Data=nil then ;
+  {$IFDEF EventTrace}
   EventTrace('realizeafter', nil);
+  {$ENDIF}
 
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject=nil then begin
@@ -255,7 +265,9 @@ var
 begin
   Result := True;
 
+  {$IFDEF EventTrace}
   EventTrace('show', data);
+  {$ENDIF}
   if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
@@ -270,7 +282,9 @@ var
 begin
   Result := True;
 
+  {$IFDEF EventTrace}
   EventTrace('hide', data);
+  {$ENDIF}
   if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
@@ -283,7 +297,9 @@ var
   Mess: TLMActivate;
 begin
   Result:= True;
+  {$IFDEF EventTrace}
   EventTrace('activate', data);
+  {$ENDIF}
 
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
@@ -307,8 +323,9 @@ var
   LCLMenuItem: TMenuItem;
 begin
   Result := CallBackDefaultReturn;
-
+  {$IFDEF EventTrace}
   EventTrace('toggled', AData);
+  {$ENDIF}
 
   LCLMenuItem := TMenuItem(AData);
   // some sanity checks
@@ -332,8 +349,9 @@ var
 begin
   if ComponentIsDestroyingHandle(TWinControl(Data))
   or (LockOnChange(PgtkObject(Widget),0)>0) then exit;
+  {$IFDEF EventTrace}
   EventTrace('changed', data);
-
+  {$ENDIF}
   Mess.Msg := LM_CHANGED;
   DeliverMessage(Data, Mess);
 
@@ -347,7 +365,9 @@ begin
   Result := CallBackDefaultReturn;
 
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
+  {$IFDEF EventTrace}
   EventTrace('changed_editbox', data);
+  {$ENDIF}
 
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
@@ -3049,7 +3069,9 @@ Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
   Data: Pointer); cdecl;
 begin
   if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
+  {$IFDEF EventTrace}
   EventTrace('style-set', nil);
+  {$ENDIF}
   //ReleaseAllStyles;
 end;
 
@@ -3058,15 +3080,28 @@ function gtkListBoxSelectionChangedAfter(widget: PGtkWidget; data: gPointer
 var
   Mess: TLMessage;
 begin
-  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
   Result := CallBackDefaultReturn;
-
+  {$IFDEF EventTrace}
   EventTrace('gtkListBoxSelectionChangedAfter', data);
+  {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
   DeliverMessage(Data, Mess);
 end;
 
+function gtkListSelectChild(widget: PGtkWidget;child : PGtkWidget; data: gPointer
+  ): GBoolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
+  EventTrace('gtkListBoxSelectionChangedAfter', data);
+  {$ENDIF}
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.msg := LM_SelChange;
+  DeliverMessage(Data, Mess);
+end;
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}

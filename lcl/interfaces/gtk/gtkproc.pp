@@ -280,6 +280,8 @@ procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
 function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
+function gtkListSelectChild(widget: PGtkWidget;child : PGtkWidget;
+                                      data: gPointer): GBoolean; cdecl;
 
 // gtkDragCallback.inc headers
 Function edit_drag_data_received(widget: pgtkWidget;

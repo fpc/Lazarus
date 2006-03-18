@@ -1298,7 +1298,6 @@ var
 begin
   Caption := ACaption;
   LabelFromAmpersands(Caption, Pattern, AccelKey);
-
   gtk_label_set_text(ALabel, PChar(Caption));
 
   {$ifdef gtk1}
@@ -3985,7 +3984,10 @@ begin
       if ALCLObject is TCustomListBox then begin
         ConnectSenderSignalAfter(PgtkObject(gCore),
           'selection_changed', @gtkListBoxSelectionChangedAfter);
-      end;
+      end else   if ALCLObject is TCustomCombobox then
+         ConnectSenderSignal (PGtkObject(
+                   PGtkCombo(gObject)^.list), 'unselect_child', @gtkListSelectChild)
+       else
     end;
 
 (*
@@ -4228,6 +4230,7 @@ begin
       Begin
         SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
         SetCallback(LM_COMMAND, AGTKObject, ALCLObject);
+        SetCallback(LM_SELCHANGE, AGTKObject, ALCLObject);
       End;
 
       csListBox:
@@ -6962,12 +6965,14 @@ var
 
   function FindLineEnd(LineStart: integer): integer;
   var
+    LineStop,
     LineWidth, WordWidth, WordEnd, CharWidth: integer;
   begin
     // first search line break or text break
     Result:=LineStart;
     while not (AText[Result] in [#0,#10,#13]) do inc(Result);
     if Result<=LineStart+1 then exit;
+    lineStop:=Result;
 
     // get current line width in pixel
     LineWidth:=GetLineWidthInPixel(LineStart,Result-LineStart);
@@ -6996,6 +7001,7 @@ var
           CharWidth:=GetLineWidthInPixel(Result,1);
           inc(LineWidth,CharWidth);
           if LineWidth>MaxWidthInPixel then break;
+          if result=lineStop then break;
           inc(Result);
         until false;
         // at least one char

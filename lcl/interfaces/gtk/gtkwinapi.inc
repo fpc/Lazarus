@@ -2779,30 +2779,34 @@ var
 
     MaxLength := theRect.Right - theRect.Left;
 
-    If (Flags and DT_SingleLine) = DT_SingleLine then begin
+    If (Flags and DT_SingleLine) > 0 then begin
       // ignore word and line breaks
       GetTextExtentPoint(DC, Str, Count, AP);
       theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
-
     end
     else begin
       // consider line breaks
-      If (Flags and DT_WordBreak) <> DT_WordBreak then begin
+      If (Flags and DT_WordBreak) = 0 then begin
         // do not break at word boundaries
         GetTextExtentPoint(DC, Str, Count, AP);
         MaxLength := AP.cX;
       end;
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
 
-      LineWidth := 0;
-      If (Lines <> nil) then begin
-        For J := 0 to NumLines - 1 do begin
-          GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
-          LineWidth := Max(LineWidth, AP.cX);
+      if (Flags and DT_CalcRect)<>0 then begin
+        LineWidth := 0;
+        if (Lines <> nil) then begin
+          LineWidth := 0;
+          For J := 0 to NumLines - 1 do begin
+            GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
+            LineWidth := Max(LineWidth, AP.cX);
+          end;
         end;
+        LineWidth := Min(MaxLength, LineWidth);
+      end else begin
+        LineWidth:=MaxLength;
       end;
-      LineWidth := Min(MaxLength, LineWidth);
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;

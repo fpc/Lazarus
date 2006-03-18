@@ -209,6 +209,9 @@ var
   //ItemIndex: LongInt;
   Mess: TLMessage;
 begin
+  {$IFDEF EventTrace}
+  Debugln('gtkListItemSelectAfterCB');
+  {$ENDIF}
   // get context
   GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
@@ -317,6 +320,9 @@ var
   ListItem: PGtkListItem;
 begin
   UpdateItemCache;
+  {$IFDEF EventTrace}
+  Debugln( 'connect ',strings[index]);
+  {$ENDIF}
   ListItem:=FCachedItems[Index];
   ConnectItemCallbacks(ListItem);
 end;
@@ -329,6 +335,9 @@ procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
 var
   ChildWidget: Pointer;
 begin
+  {$IFDEF EventTrace}
+   Debugln('connect itemCallback');
+  {$ENDIF}
   gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
   gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
   //DebugLn('TGtkListStringList.ConnectItemCallbacks Self=',DbgS(Self),
@@ -348,10 +357,6 @@ begin
     g_signal_connect_after(G_OBJECT(ChildWidget), 'toggled',
                            G_CALLBACK(@gtkListItemToggledCB), li);
   end;
-  if FOwner is TCustomComboBox then begin
-    gtk_signal_connect_after(PGtkObject(li), 'select',
-                           TGTKSignalFunc(@gtkListItemSelectAfterCB),li);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -366,6 +371,9 @@ begin
   i := FCachedCount - 1;
   while i >= 0 do
   begin
+    {$IFDEF EventTrace}
+    DebugLn('connect ',strings[i]);
+    {$ENDIF}
     ConnectItemCallbacks(FCachedItems[i]);
     Dec(i);
   end;
@@ -400,11 +408,6 @@ begin
     ChildWidget := PPointer(PGTKBox(PGtkBin(AItem)^.child)^.Children^.Data)^;
     gtk_signal_disconnect_by_func(
       PGtkObject(ChildWidget), TGTKSignalFunc(@gtkListItemToggledCB), AItem);
-  end;
-  if FOwner is TCustomComboBox
-  then begin
-    gtk_signal_disconnect_by_func(
-      PGtkObject(AItem), TGTKSignalFunc(@gtkListItemSelectAfterCB), AItem);
   end;
 end;
 
@@ -886,6 +889,9 @@ begin
     end;
     {$IFDEF DebugLCLComponents}
     DebugGtkWidgets.MarkCreated(li,dbgsName(Owner)+' Index='+dbgs(Index)+' Count='+dbgs(Count));
+    {$ENDIF}
+    {$IFDEF EventTrace}
+    Debugln('insertListItem',s);
     {$ENDIF}
     ConnectItemCallbacks(PGtkListItem(li));
     // grow capacity
