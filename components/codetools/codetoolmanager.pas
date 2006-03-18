@@ -1022,12 +1022,8 @@ begin
     // make it absolute, so the user need less string concatenations
     if FilenameIsAbsolute(Directory) then
       Result:=CreateAbsoluteSearchPath(Result,Directory);
-    if (System.Pos('debugger',Result)>0) and (System.Pos('ide',Directory)>0) then
-      DebugLn('TCodeToolManager.GetCompleteSrcPathForDirectory ABSOLUTE Directory="',Directory,'" Result="',Result,'"');
     // trim the paths, remove doubles and empty paths
     Result:=MinimizeSearchPath(Result);
-    if (System.Pos('debugger',Result)>0) and (System.Pos('ide',Directory)>0) then
-      DebugLn('TCodeToolManager.GetCompleteSrcPathForDirectory END Directory="',Directory,'" Result="',Result,'"');
   end;
 end;
 

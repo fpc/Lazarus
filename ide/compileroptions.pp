@@ -41,7 +41,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc,
+  Classes, SysUtils, FileProcs, FileUtil, LCLProc,
   Laz_XMLCfg, ProjectIntf,
   IDEProcs, LazConf, TransferMacros;
 
@@ -959,6 +959,12 @@ var
     Result:=SwitchPathDelims(Filename,PathDelimChanged);
   end;
   
+  function sp(const SearchPath: string): string;
+  begin
+    Result:=SwitchPathDelims(SearchPath,PathDelimChanged);
+    Result:=MinimizeSearchPath(Result);
+  end;
+
   procedure ReadGenerate;
   var
     i: Integer;
@@ -1004,13 +1010,13 @@ begin
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  IncludeFiles := f(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
-  Libraries := f(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
-  OtherUnitFiles := f(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
-  UnitOutputDirectory := f(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
+  IncludeFiles := sp(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
+  Libraries := sp(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
+  OtherUnitFiles := sp(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
+  UnitOutputDirectory := sp(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', '');
-  ObjectPath := f(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
-  SrcPath := f(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
+  ObjectPath := sp(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
+  SrcPath := sp(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
   { Parsing }
   p:=Path+'Parsing/';
