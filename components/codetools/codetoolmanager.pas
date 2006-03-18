@@ -1010,7 +1010,8 @@ begin
         CurUnitDir:=TrimFilename(copy(CurUnitPath,StartPos,EndPos-StartPos));
         if not FilenameIsAbsolute(CurUnitDir) then
           CurUnitDir:=TrimFilename(AppendPathDelim(Directory)+CurUnitDir);
-        CurCompiledSrcPath:=GetCompiledSrcPathForDirectory(CurUnitDir);
+        CurCompiledSrcPath:=CreateAbsoluteSearchPath(
+                         GetCompiledSrcPathForDirectory(CurUnitDir),CurUnitDir);
         if CurCompiledSrcPath<>'' then
           CurSrcPath:=CurSrcPath+';'+CurCompiledSrcPath;
       end;

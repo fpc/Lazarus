@@ -6103,7 +6103,7 @@ begin
     ClearIncludedByFile,
     TrimSearchPath(CodeToolBoss.GetUnitPathForDirectory(FileDir),FileDir),
     TrimSearchPath(CodeToolBoss.GetIncludePathForDirectory(FileDir),FileDir),
-    TrimSearchPath(CodeToolBoss.GetSrcPathForDirectory(FileDir),FileDir)
+    TrimSearchPath(CodeToolBoss.GetCompleteSrcPathForDirectory(FileDir),FileDir)
     );
   if ClearIncludedByFile then
     ActiveUnitInfo.Source.LastIncludedByFile:='';
