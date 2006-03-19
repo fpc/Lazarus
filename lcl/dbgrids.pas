@@ -1755,15 +1755,13 @@ begin
     VK_DELETE:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
-          if (ssCtrl in Shift) and GridCanModify then begin
-            if not (dgConfirmDelete in Options) or
-              (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
-            then
-              doDelete;
+        if (Key<>0) and (ssCtrl in Shift) and GridCanModify then
+          if not (dgConfirmDelete in Options) or
+            (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
+          then begin
+            doDelete;
+            key := 0;
           end;
-          Key := 0;
-        end;
       end;
 
     VK_DOWN:
@@ -1810,21 +1808,21 @@ begin
             EditorCancelEditing;
             if FDatalink.Active and not FDatalink.Dataset.Modified then
               FDatalink.Modified := False;
+            Key := 0;
           end else
             if FDataLink.Active then
               doCancel;
-          Key:=0;
         end;
       end;
 
     VK_INSERT:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
-          if GridCanModify then
+        if Key<>0 then
+          if GridCanModify then begin
             doInsert;
-          Key:=0;
-        end;
+            Key:=0;
+          end;
       end;
 
     VK_HOME:
@@ -1836,8 +1834,8 @@ begin
               FDataLink.DataSet.First
             else
               MoveNextSelectable(False, FixedCols, Row);
+            Key:=0;
           end;
-          Key:=0;
         end;
       end;
 
@@ -1850,8 +1848,8 @@ begin
               FDatalink.DataSet.Last
             else
               MoveNextSelectable(False, ColCount-1, Row);
+            Key:=0;
           end;
-          Key:=0;
         end;
       end;
 
