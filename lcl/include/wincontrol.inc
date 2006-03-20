@@ -3981,11 +3981,8 @@ Begin
   if csDesigning in ComponentState then
     DebugLn('TWinControl.Repaint A ',Name,':',ClassName);
   {$ENDIF}
-  { TODO: check what to do with LM_PAINT message, neither gtk nor win32
-    interface responded to it }
-  //CNSendMessage(LM_PAINT, Self, nil);
-  // Invalidate;
-  // Update;
+  Invalidate;
+  Update;
 end;
 
 {------------------------------------------------------------------------------}
@@ -5629,7 +5626,7 @@ begin
       ' Cur='+dbgs(Width)+'x'+dbgs(Height)+
       ' Client='+dbgs(OldClientRect.Right)+'x'+dbgs(OldClientRect.Bottom),
       ' Adjusted='+dbgs(OldAdjustedClientRect),
-      ' NewWidth='+dbgs(NewWidth)+' NewHeight=',+dbgs(NewHeight));
+      ' NewWidth='+dbgs(NewWidth)+' NewHeight=',dbgs(NewHeight));
     {$ENDIF}
     PreferredWidth:=Max(PreferredWidth,NewWidth);
     PreferredHeight:=Max(PreferredHeight,NewHeight);
