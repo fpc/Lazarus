@@ -23,9 +23,9 @@
 
   Abstract:
     Methods and classes for loading translations/localizations from po files.
-    
+
   Example:
-  
+
     procedure TForm1.FormCreate(Sender: TObject);
     var
       PODirectory: String;
@@ -62,7 +62,7 @@ type
     Translation: string;
     constructor Create(const TheIdentifier, TheOriginal, TheTranslated: string);
   end;
-  
+
   { TPOFile }
 
   TPOFile = class
@@ -105,12 +105,30 @@ begin
   {$ENDIF}
 end;
 
+
+{$ifndef ver2_0}
+function Translate (Name,Value : AnsiString; Hash : Longint; arg:pointer) : AnsiString;
+var
+  po: TPOFile;
+begin
+  po:=TPOFile(arg);
+  // get UTF8 string
+  result := po.Translate(Name,Value);
+  // convert UTF8 to current local
+  if result<>'' then
+    result:=UTF8ToSystemCharSet(result);
+end;
+{$endif ver2_0}
+
+
 function DoTranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
 var
+{$ifdef ver2_0}
   TableID, StringID, TableCount: Integer;
   s: String;
   DefValue: String;
+{$endif ver2_0}
   po: TPOFile;
 begin
   Result:=false;
@@ -122,6 +140,7 @@ begin
     // read .po file
     po := TPOFile.Create(AFilename);
     try
+{$ifdef ver2_0}
       for TableID:=0 to ResourceStringTableCount - 1 do begin
         TableCount := ResourceStringCount(TableID);
 
@@ -144,6 +163,9 @@ begin
           end;
         end;
       end;
+{$else ver2_0}
+      SetUnitResourceStrings(ResUnitName,@Translate,po);
+{$endif ver2_0}
     finally
       po.Free;
     end;
@@ -188,7 +210,7 @@ var
   s: string;
 begin
   inherited Create;
-  
+
   FItems:=TFPList.Create;
   FIdentifierToItem:=TStringHashList.Create(false);
   FOriginalToItem:=TStringHashList.Create(true);
