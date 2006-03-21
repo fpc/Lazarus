@@ -765,6 +765,7 @@ type
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
+    procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
     function NextTokenPos: TPoint; virtual;
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -5549,6 +5550,11 @@ begin
     fCaretX:=NewX;
     DecPaintLock;
   end;
+end;
+
+procedure TCustomSynEdit.MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
+begin
+  MoveCaretIgnoreEOL(LogicalToPhysicalPos(NewLogCaret));
 end;
 {$ENDIF}
 

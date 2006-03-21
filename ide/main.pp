@@ -10666,7 +10666,7 @@ begin
     NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
   //writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
   with NewSrcEdit.EditorComponent do begin
-    LogicalCaretXY:=Point(NewX,NewY);
+    MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
     BlockBegin:=LogicalCaretXY;
     BlockEnd:=BlockBegin;
     TopLine:=NewTopLine;
