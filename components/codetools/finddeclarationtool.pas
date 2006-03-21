@@ -262,6 +262,7 @@ type
     xtShortInt,    // shortint
     xtByte,        // byte
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
+    xtVariant,     // variant
     xtNil          // nil  = pointer, class, procedure, method, ...
     );
   // Do not use this: TExpressionTypeDescs = set of TExpressionTypeDesc;
@@ -305,6 +306,7 @@ const
     'ShortInt',
     'Byte',
     'CompilerFunc',
+    'Variant',
     'Nil'
   );
 
@@ -892,6 +894,8 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ORD')=0 then
     Result:=xtConstOrdInteger
+  else if CompareIdentifiers(Identifier,'VARIANT')=0 then
+    Result:=xtVariant
   else if IsWordBuiltInFunc.DoIt(Identifier) then
     Result:=xtCompilerFunc
 

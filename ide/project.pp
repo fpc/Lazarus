@@ -3800,8 +3800,6 @@ begin
   end else
     FMain.Name:=Project.IDAsWord;
   // ClearCache is here unnessary, because it is only a block
-  
-  
 end;
 
 procedure TProjectDefineTemplates.UpdateSrcDirIfDef;

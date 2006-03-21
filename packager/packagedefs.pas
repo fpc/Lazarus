@@ -464,11 +464,13 @@ type
     FMain: TDefineTemplate;
     FOutputDir: TDefineTemplate;
     FOutPutSrcPath: TDefineTemplate;
+    FSrcDirectories: TDefineTemplate;
     FUpdateLock: integer;
     procedure SetActive(const AValue: boolean);
     procedure UpdateMain;
-    procedure UpdateDefinesForOutputDirectory;
-    procedure UpdateDefinesForSourceDirectories;
+    procedure UpdateSrcDirIfDef;
+    procedure UpdateOutputDirectory;
+    procedure UpdateSourceDirectories;
     procedure UpdateDefinesForCustomDefines;
   public
     constructor Create(OwnerPackage: TLazPackage);
@@ -484,6 +486,7 @@ type
   public
     property LazPackage: TLazPackage read FLazPackage;
     property Main: TDefineTemplate read FMain;
+    property SrcDirectories: TDefineTemplate read FSrcDirectories;
     property OutputDir: TDefineTemplate read FOutputDir;
     property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
     property CustomDefines: TDefineTemplate read FCustomDefines;
@@ -672,6 +675,7 @@ type
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
+    procedure RemoveNonExistingFiles;
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
@@ -681,6 +685,7 @@ type
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
+    procedure AddPackageDependency(const PkgName: string);
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRemovedDependency(Dependency: TPkgDependency);
@@ -2739,6 +2744,18 @@ begin
   PkgFile.Removed:=false;
 end;
 
+procedure TLazPackage.RemoveNonExistingFiles;
+var
+  i: Integer;
+begin
+  i:=FileCount-1;
+  while i>=0 do begin
+    if i>=FileCount then continue;
+    if not FileExistsCached(Files[i].Filename) then
+      RemoveFile(Files[i]);
+  end;
+end;
+
 function TLazPackage.GetFileDialogInitialDir(const DefaultDirectory: string
   ): string;
 begin
@@ -2883,6 +2900,16 @@ begin
   Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Owner:=Self;
   Modified:=true;
+end;
+
+procedure TLazPackage.AddPackageDependency(const PkgName: string);
+var
+  Dependency: TPkgDependency;
+begin
+  if FindDependencyByName(PkgName)<>nil then exit;
+  Dependency:=TPkgDependency.Create;
+  Dependency.PackageName:=PkgName;
+  AddRequiredDependency(Dependency);
 end;
 
 procedure TLazPackage.RemoveRequiredDependency(Dependency: TPkgDependency);
@@ -3485,6 +3512,7 @@ begin
     FMain:=nil;
     FOutputDir:=nil;
     FOutPutSrcPath:=nil;
+    FSrcDirectories:=nil;
     fLastOutputDirSrcPathIDAsString:='';
     FLastCustomOptions:='';
     FFlags:=FFlags+[pdtIDChanged,pdtOutputDirChanged,pdtSourceDirsChanged,
@@ -3517,8 +3545,8 @@ begin
   end;
   Exclude(FFlags,pdtIDChanged);
   UpdateMain;
-  UpdateDefinesForOutputDirectory;
-  UpdateDefinesForSourceDirectories;
+  UpdateOutputDirectory;
+  UpdateSourceDirectories;
   UpdateDefinesForCustomDefines;
 end;
 
@@ -3529,7 +3557,7 @@ begin
     exit;
   end;
   Exclude(FFlags,pdtSourceDirsChanged);
-  UpdateDefinesForSourceDirectories;
+  UpdateSourceDirectories;
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
@@ -3540,7 +3568,7 @@ begin
     exit;
   end;
   Exclude(FFlags,pdtOutputDirChanged);
-  UpdateDefinesForOutputDirectory;
+  UpdateOutputDirectory;
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
@@ -3577,6 +3605,54 @@ begin
   // ClearCache is here unnessary, because it is only a block
 end;
 
+procedure TLazPackageDefineTemplates.UpdateSrcDirIfDef;
+var
+  NewValue: String;
+  Changed: Boolean;
+  UnitPathDefTempl: TDefineTemplate;
+  IncPathDefTempl: TDefineTemplate;
+begin
+  // create custom options
+  // The custom options are enclosed by an IFDEF #PkgSrcMark<PckId> template.
+  // Each source directory defines this variable, so that the settings can be
+  // activated for each source directory by a simple DEFINE.
+  if (FMain=nil) then UpdateMain;
+  if FSrcDirectories=nil then begin
+    FSrcDirectories:=TDefineTemplate.Create('Source Directories',
+      'Source Directories','','',
+      da_Block);
+    FMain.AddChild(FSrcDirectories);
+  end;
+  if FCustomDefines=nil then begin
+    FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
+      'Additional defines for package source directories',
+      '#PkgSrcMark'+LazPackage.IDAsWord,'',
+      da_IfDef);
+    FMain.AddChild(FCustomDefines);
+
+    // create unit path template for this directory
+    UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
+      '#UnitPath','$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')',
+      da_Define);
+    FCustomDefines.AddChild(UnitPathDefTempl);
+    // create include path template for this directory
+    IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
+      '#IncPath','$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')',
+      da_Define);
+    FCustomDefines.AddChild(IncPathDefTempl);
+
+    Changed:=true;
+  end else begin
+    NewValue:='#PkgSrcMark'+LazPackage.IDAsWord;
+    if NewValue<>FCustomDefines.Value then begin
+      FCustomDefines.Value:=NewValue;
+      Changed:=true;
+    end;
+  end;
+  if Changed then
+    CodeToolBoss.DefineTree.ClearCache;
+end;
+
 procedure TLazPackageDefineTemplates.SetActive(const AValue: boolean);
 begin
   if FActive=AValue then exit;
@@ -3584,7 +3660,7 @@ begin
   if not FActive then Clear else AllChanged;
 end;
 
-procedure TLazPackageDefineTemplates.UpdateDefinesForOutputDirectory;
+procedure TLazPackageDefineTemplates.UpdateOutputDirectory;
 begin
   if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
   if FMain=nil then UpdateMain;
@@ -3615,13 +3691,11 @@ begin
   end;
 end;
 
-procedure TLazPackageDefineTemplates.UpdateDefinesForSourceDirectories;
+procedure TLazPackageDefineTemplates.UpdateSourceDirectories;
 var
   NewSourceDirs: TStringList;
   i: Integer;
   SrcDirDefTempl: TDefineTemplate;
-  UnitPathDefTempl: TDefineTemplate;
-  IncPathDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
   SrcDirMarkDefTempl: TDefineTemplate;
 begin
@@ -3662,7 +3736,8 @@ begin
       
     // build source directory define templates
     fLastSourceDirectories.Assign(NewSourceDirs);
-    if (FMain=nil) and (fLastSourceDirectories.Count>0) then UpdateMain;
+    if (FCustomDefines=nil) and (fLastSourceDirectories.Count>0) then
+      UpdateSrcDirIfDef;
     for i:=0 to fLastSourceDirectories.Count-1 do begin
       // create directory template
       SrcDirDefTempl:=TDefineTemplate.Create('Source Directory '+IntToStr(i+1),
@@ -3672,20 +3747,11 @@ begin
       SrcDirMarkDefTempl:=TDefineTemplate.Create('PkgSrcDirMark',
         lisPkgDefsSrcDirMark,'#PkgSrcMark'+LazPackage.IDAsWord,'',da_Define);
       SrcDirDefTempl.AddChild(SrcDirMarkDefTempl);
-      // create unit path template for this directory
-      UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
-        '#UnitPath','$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')',
-        da_Define);
-      SrcDirDefTempl.AddChild(UnitPathDefTempl);
-      // create include path template for this directory
-      IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
-        '#IncPath','$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')',
-        da_Define);
-      SrcDirDefTempl.AddChild(IncPathDefTempl);
+      
       SrcDirDefTempl.SetDefineOwner(LazPackage,false);
       SrcDirDefTempl.SetFlags([dtfAutoGenerated],[],false);
       // add directory
-      FMain.AddChild(SrcDirDefTempl);
+      FSrcDirectories.AddChild(SrcDirDefTempl);
     end;
     CodeToolBoss.DefineTree.ClearCache;
 
@@ -3718,20 +3784,7 @@ begin
     exit;
   end;
 
-  // create custom options
-  // The custom options are enclosed by an IFDEF #PkgSrcMark<PckId> template.
-  // Each source directory defines this variable, so that the settings can be
-  // activated for each source directory by a simple DEFINE.
-  if (FMain=nil) then UpdateMain;
-  if FCustomDefines=nil then begin
-    FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
-      'Additional defines for package source directories',
-      '#PkgSrcMark'+LazPackage.IDAsWord,'',
-      da_IfDef);
-    FMain.AddChild(FCustomDefines);
-  end else begin
-    FCustomDefines.Value:='#PkgSrcMark'+LazPackage.IDAsWord;
-  end;
+  UpdateSrcDirIfDef;
   FCustomDefines.ReplaceChild(OptionsDefTempl);
 
   CodeToolBoss.DefineTree.ClearCache;

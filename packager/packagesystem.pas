@@ -716,7 +716,7 @@ function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
 begin
   BeginUpdate(true);
   Result:=TLazPackage.Create;
-  Result.Name:=CreateUniquePkgName(lisPkgMangNewPackage, nil);
+  Result.Name:=CreateUniquePkgName(Prefix,nil);
   AddPackage(Result);
   EndUpdate;
 end;

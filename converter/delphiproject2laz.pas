@@ -44,12 +44,17 @@ unit DelphiProject2Laz;
 interface
 
 uses
+  // LCL+FCL
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, FileProcs, FileUtil,
+  // codetools
   ExprEval, DefineTemplates, CodeCache, CodeToolManager, CodeToolsStructs,
   LinkScanner,
+  // IDEIntf
   SrcEditorIntf, MsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
+  // IDE
   IDEProcs, DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
-  EditorOptions, ProjectInspector, CompilerOptions, PackageDefs,
+  EditorOptions, ProjectInspector, CompilerOptions, PackageDefs, PackageSystem,
+  PackageEditor,
   BasePkgManager, PkgManager;
   
 const
@@ -87,13 +92,16 @@ function CreateDelphiToLazarusMainSourceFile(AProject: TProject;
                                   out LPRCode: TCodeBuffer): TModalResult;
 function FindDPRFilename(const StartFilename: string): string;
 function ReadDelphiProjectConfigFiles(AProject: TProject): TModalResult;
-procedure CleanUpProjectSearchPaths(AProject: TProject);
-procedure SetCompilerModeForProjectSrcDirs(AProject: TProject);
-procedure UnsetCompilerModeForProjectSrcDirs(AProject: TProject);
 
 // package parts
 function CreateDelphiToLazarusPackageInstance(const LPKFilename: string;
                                        out APackage: TLazPackage): TModalResult;
+function ReadDelphiPackageConfigFiles(APackage: TLazPackage): TModalResult;
+
+// project/package
+procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
+procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
+procedure UnsetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
 
 
 implementation
@@ -142,7 +150,7 @@ begin
 
   // clean up project
   AProject.RemoveNonExistingFiles(false);
-  CleanUpProjectSearchPaths(AProject);
+  CleanUpCompilerOptionsSearchPaths(AProject.CompilerOptions);
 
   // load required packages
   AProject.AddPackageDependency('LCL');// Nearly all Delphi projects require it
@@ -152,7 +160,7 @@ begin
   // but not enough to parse the units
   
   // set Delphi mode for all project source directories
-  SetCompilerModeForProjectSrcDirs(AProject);
+  SetCompilerModeForDefineTempl(AProject.DefineTemplates.CustomDefines);
   try
 
     // init codetools
@@ -182,7 +190,7 @@ begin
     Result:=ConvertAllDelphiProjectUnits(AProject,[cdtlufIsSubProc,cdtlufCheckLFM]);
     if Result<>mrOk then exit;
   finally
-    UnsetCompilerModeForProjectSrcDirs(AProject);
+    UnsetCompilerModeForDefineTempl(AProject.DefineTemplates.CustomDefines);
   end;
 
   debugln('ConvertDelphiToLazarusProject Done');
@@ -368,11 +376,12 @@ function ConvertDelphiToLazarusPackage(const PackageFilename: string
 var
   APackage: TLazPackage;
   LPKFilename: String;
+  ConvertUnitFlags: TConvertDelphiToLazarusUnitFlags;
 begin
   debugln('ConvertDelphiToLazarusPackage PackageFilename="',PackageFilename,'"');
   IDEMessagesWindow.Clear;
 
-  // create/open lazarus project file
+  // create/open lazarus package file
   LPKFilename:=ChangeFileExt(PackageFilename,'.lpk');
   Result:=CreateDelphiToLazarusPackageInstance(LPKFilename,APackage);
   if Result<>mrOk then begin
@@ -380,6 +389,59 @@ begin
     exit;
   end;
 
+  // read config files (they often contain clues about paths, switches and defines)
+  Result:=ReadDelphiPackageConfigFiles(APackage);
+  if Result<>mrOk then begin
+    DebugLn('ConvertDelphiToLazarusProject failed reading Delphi configs');
+    exit;
+  end;
+
+  // clean up package
+  APackage.RemoveNonExistingFiles;
+  CleanUpCompilerOptionsSearchPaths(APackage.CompilerOptions);
+
+  // load required packages
+  APackage.AddPackageDependency('LCL');// Nearly all Delphi packages require it
+
+  // we have now enough information to parse the .dpk file,
+  // but not enough to parse the units
+
+  // set Delphi mode for all package source directories
+  SetCompilerModeForDefineTempl(APackage.DefineTemplates.CustomDefines);
+  try
+
+    // init codetools
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn('ConvertDelphiToLazarusProject failed BeginCodeTools');
+      Result:=mrCancel;
+      exit;
+    end;
+
+    // fix .lpr
+    ConvertUnitFlags:=[cdtlufIsSubProc,cdtlufDoNotSetDelphiMode];
+    NotImplementedDialog('Converting .dpk and units');
+    //Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,ConvertUnitFlags);
+    //if Result=mrAbort then begin
+      //DebugLn('ConvertDelphiToLazarusProject failed converting unit ',LPRCode.Filename);
+      //exit;
+    //end;
+
+    //// get all options from .lpr (the former .dpk)
+    //Result:=ExtractOptionsFromDPK(LPRCode,AProject);
+    //if Result<>mrOk then exit;
+
+    //// find and convert all project files
+    //Result:=FindAllDelphiProjectUnits(AProject);
+    //if Result<>mrOk then exit;
+
+    //// convert all project files
+    //Result:=ConvertAllDelphiProjectUnits(AProject,[cdtlufIsSubProc,cdtlufCheckLFM]);
+    //if Result<>mrOk then exit;
+  finally
+    UnsetCompilerModeForDefineTempl(APackage.DefineTemplates.CustomDefines);
+  end;
+
+  debugln('ConvertDelphiToLazarusProject Done');
   Result:=mrOk;
 end;
 
@@ -593,43 +655,17 @@ begin
   end;
 end;
 
-procedure CleanUpProjectSearchPaths(AProject: TProject);
-
-  function CleanProjectSearchPath(const SearchPath: string): string;
-  begin
-    Result:=RemoveNonExistingPaths(SearchPath,Project1.ProjectDirectory);
-    Result:=MinimizeSearchPath(Result);
-  end;
-
+procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
 begin
-  AProject.CompilerOptions.OtherUnitFiles:=
-              CleanProjectSearchPath(AProject.CompilerOptions.OtherUnitFiles);
-  AProject.CompilerOptions.IncludeFiles:=
-              CleanProjectSearchPath(AProject.CompilerOptions.IncludeFiles);
-  AProject.CompilerOptions.Libraries:=
-              CleanProjectSearchPath(AProject.CompilerOptions.Libraries);
-  AProject.CompilerOptions.ObjectPath:=
-              CleanProjectSearchPath(AProject.CompilerOptions.ObjectPath);
-  AProject.CompilerOptions.SrcPath:=
-              CleanProjectSearchPath(AProject.CompilerOptions.SrcPath);
-end;
-
-procedure SetCompilerModeForProjectSrcDirs(AProject: TProject);
-begin
-  if AProject.DefineTemplates.CustomDefines.FindChildByName(
-    SettingDelphiModeTemplName)<>nil
-  then exit;
-  AProject.DefineTemplates.CustomDefines.ReplaceChild(
-                  CreateDefinesForFPCMode(SettingDelphiModeTemplName,cmDELPHI));
+  if DefTempl.FindChildByName(SettingDelphiModeTemplName)<>nil then exit;
+  DefTempl.ReplaceChild(CreateDefinesForFPCMode(SettingDelphiModeTemplName,cmDELPHI));
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
-procedure UnsetCompilerModeForProjectSrcDirs(AProject: TProject);
+procedure UnsetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
 begin
-  if AProject.DefineTemplates.CustomDefines.FindChildByName(
-    SettingDelphiModeTemplName)=nil
-  then exit;
-  AProject.DefineTemplates.CustomDefines.DeleteChild(SettingDelphiModeTemplName);
+  if DefTempl.FindChildByName(SettingDelphiModeTemplName)=nil then exit;
+  DefTempl.DeleteChild(SettingDelphiModeTemplName);
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
@@ -637,25 +673,94 @@ function CreateDelphiToLazarusPackageInstance(const LPKFilename: string; out
   APackage: TLazPackage): TModalResult;
 // If .lpk does not exist, create it
 // open new package
+var
+  PkgName: String;
+  CurEditor: TPackageEditorForm;
 begin
   DebugLn('CreateDelphiToLazarusPackageInstance LPKFilename="',LPKFilename,'"');
   APackage:=nil;
   if FileExists(LPKFilename) then begin
     // there is already a lazarus package file
     // open the package editor
+    DebugLn('CreateDelphiToLazarusPackageInstance OPEN ',LPKFilename);
     Result:=PackageEditingInterface.DoOpenPackageFile(LPKFilename,[pofAddToRecent]);
-    // TODO: get package
-    Result:=mrAbort;
-    if Result<>mrOk then exit;
-  end else begin
-    // create a new lazarus package
-    // TODO: get package
-    Result:=mrAbort;
     if Result<>mrOk then exit;
   end;
-  // save to disk (this makes sure, all editor changes are saved too)
-  DebugLn('CreateDelphiToLazarusProject saving project ...');
-  Result:=PackageEditingInterface.DoSaveAllPackages([]);
+  
+  // search package in graph
+  PkgName:=ExtractFileNameOnly(LPKFilename);
+  APackage:=PackageGraph.FindAPackageWithName(PkgName,nil);
+  if APackage<>nil then begin
+    // there is already a package loaded with this name ...
+    if CompareFilenames(APackage.Filename,LPKFilename)<>0 then begin
+      // ... but it is not the package file we want -> stop
+      MessageDlg('Package name exists',
+        'There is already a package with the name "'+PkgName+'"'#13
+        +'Please close this package first.',mtError,[mbAbort],0);
+      PackageEditingInterface.DoOpenPackageFile(APackage.Filename,
+                                                        [pofAddToRecent]);
+      Result:=mrAbort;
+      exit;
+    end else begin
+      Result:=mrOk;
+    end;
+  end else begin
+    // there is not yet a package with this name
+    // -> create a new package with LCL as dependency
+    APackage:=PackageGraph.CreateNewPackage(PkgName);
+    DebugLn('CreateDelphiToLazarusPackageInstance CREATED ',APackage.Name);
+    PackageGraph.AddDependencyToPackage(APackage,
+                   PackageGraph.LCLPackage.CreateDependencyWithOwner(APackage));
+    APackage.Filename:=LPKFilename;
+
+    // open a package editor
+    CurEditor:=PackageEditors.OpenEditor(APackage);
+    CurEditor.Show;
+    
+    // save .lpk file
+    PackageEditors.SavePackage(APackage,false);
+
+    Result:=mrOk;
+  end;
+end;
+
+function ReadDelphiPackageConfigFiles(APackage: TLazPackage): TModalResult;
+var
+  DOFFilename: String;
+  CFGFilename: String;
+begin
+  // read .dof file
+  DOFFilename:=FindDelphiDOF(APackage.Filename);
+  if FileExists(DOFFilename) then begin
+    Result:=ExtractOptionsFromDOF(DOFFilename,APackage);
+    if Result<>mrOk then exit;
+  end;
+
+  // read .cfg file
+  CFGFilename:=FindDelphiCFG(APackage.Filename);
+  if FileExists(CFGFilename) then begin
+    Result:=ExtractOptionsFromCFG(CFGFilename,APackage);
+    if Result<>mrOk then exit;
+  end;
+end;
+
+procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
+var
+  BasePath: String;
+
+  function CleanProjectSearchPath(const SearchPath: string): string;
+  begin
+    Result:=RemoveNonExistingPaths(SearchPath,BasePath);
+    Result:=MinimizeSearchPath(Result);
+  end;
+
+begin
+  BasePath:=Options.BaseDirectory;
+  Options.OtherUnitFiles:=CleanProjectSearchPath(Options.OtherUnitFiles);
+  Options.IncludeFiles:=CleanProjectSearchPath(Options.IncludeFiles);
+  Options.Libraries:=CleanProjectSearchPath(Options.Libraries);
+  Options.ObjectPath:=CleanProjectSearchPath(Options.ObjectPath);
+  Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
 end;
 
 end.

@@ -53,27 +53,28 @@ type
   TLoadBufferFlags = set of TLoadBufferFlag;
 
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
-  ExtraButtons: TMsgDlgButtons): TModalResult;
+                                    ExtraButtons: TMsgDlgButtons): TModalResult;
 function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
-  ExtraButtons: TMsgDlgButtons): TModalResult;
+                                  ExtraButtons: TMsgDlgButtons): TModalResult;
 function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
-  Flags: TLoadBufferFlags): TModalResult;
+                        Flags: TLoadBufferFlags): TModalResult;
 function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
 function CreateEmptyFile(const Filename: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+                         ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckFileIsWritable(const Filename: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+                             ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+                                   ErrorButtons: TMsgDlgButtons): TModalResult;
 function DeleteFileInteractive(const Filename: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+                               ErrorButtons: TMsgDlgButtons): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
-  LRSFilename: string): TModalResult;
+                                        LRSFilename: string): TModalResult;
 function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
-  Ask: boolean; out NewResult: TModalResult): boolean;
+                            Ask: boolean; out NewResult: TModalResult): boolean;
 function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
+procedure NotImplementedDialog(const Feature: string);
 
 implementation
 
@@ -379,6 +380,12 @@ begin
   end else begin
     Result:=mrCancel;
   end;
+end;
+
+procedure NotImplementedDialog(const Feature: string);
+begin
+  MessageDlg('Not implemented','Not implemented yet:'#13
+    +Feature,mtError,[mbCancel],0);
 end;
 
 end.

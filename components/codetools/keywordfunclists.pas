@@ -1268,13 +1268,13 @@ begin
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    // only fpc 1.1
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SMALLINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARIANT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedFPCIdentifier.Add(IsWordBuiltInFunc);
   

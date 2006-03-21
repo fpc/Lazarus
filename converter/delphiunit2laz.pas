@@ -46,7 +46,8 @@ uses
   // IDEIntf
   LazIDEIntf, MsgIntf,
   // IDE
-  Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
+  CompilerOptions,
+  PackageDefs, Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
 type
   TDelphi2LazarusDialog = class(TForm)
@@ -84,10 +85,10 @@ function ExtractOptionsFromDPR(DPRCode: TCodeBuffer;
 
 function FindDelphiDOF(const DelphiFilename: string): string;
 function ExtractOptionsFromDOF(const DOFFilename: string;
-                               AProject: TProject): TModalResult;
+                               AProjPkg: TObject): TModalResult;
 function FindDelphiCFG(const DelphiFilename: string): string;
 function ExtractOptionsFromCFG(const CFGFilename: string;
-                               AProject: TProject): TModalResult;
+                               AProjPkg: TObject): TModalResult;
 
 function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
                                              AProject: TProject): string;
@@ -482,12 +483,15 @@ begin
     Result:=Filename;
 end;
 
-function ExtractOptionsFromDOF(const DOFFilename: string; AProject: TProject
+function ExtractOptionsFromDOF(const DOFFilename: string; AProjPkg: TObject
   ): TModalResult;
 // parse .dof file and put options into AProject
 var
   IniFile: TIniFile;
-  
+  AProject: TProject;
+  APackage: TLazPackage;
+  CompOpts: TBaseCompilerOptions;
+
   function ReadDirectory(const Section, Ident: string): string;
   begin
     Result:=IniFile.ReadString(Section,Ident,'');
@@ -504,6 +508,14 @@ var
     Result:=ExpandDelphiSearchPath(SearchPath,AProject);
   end;
   
+  procedure AddPackageDependency(const LazarusPkgName: string);
+  begin
+    if AProject<>nil then
+      AProject.AddPackageDependency(LazarusPkgName)
+    else if APackage<>nil then
+      APackage.AddPackageDependency(LazarusPkgName);
+  end;
+  
   procedure AddPackageDependency(const DelphiPkgName, DelphiPkgNames,
     LazarusPkgName: string);
   begin
@@ -511,7 +523,7 @@ var
     if System.Pos(';'+lowercase(DelphiPkgName)+';',
                   ';'+lowercase(DelphiPkgNames)+';')>0 then begin
       DebugLn('AddPackageDependency adding package dependency ',LazarusPkgName);
-      AProject.AddPackageDependency(LazarusPkgName);
+      AddPackageDependency(LazarusPkgName);
     end;
   end;
 
@@ -530,8 +542,17 @@ var
       Pkg:=Pkgs[i];
       DebugLn('ReadDelphiPackages Pkg=',Pkg);
       AddPackageDependency(Pkg,'rtl,dbrtl','FCL');
-      AProject.AddPackageDependency('LCL');
+      AddPackageDependency('LCL');
     end;
+  end;
+  
+  procedure AddSearchPath(const SearchPath: string);
+  begin
+    CompOpts.IncludeFiles:=MergeSearchPaths(CompOpts.IncludeFiles,SearchPath);
+    CompOpts.Libraries:=MergeSearchPaths(CompOpts.Libraries,SearchPath);
+    CompOpts.OtherUnitFiles:=MergeSearchPaths(CompOpts.OtherUnitFiles,SearchPath);
+    CompOpts.ObjectPath:=MergeSearchPaths(CompOpts.ObjectPath,SearchPath);
+    CompOpts.DebugPath:=MergeSearchPaths(CompOpts.DebugPath,SearchPath);
   end;
 
 var
@@ -540,47 +561,50 @@ var
   DebugSourceDirs: String;
 begin
   if not FileExists(DOFFilename) then exit(mrOk);
+  if AProjPkg is TProject then begin
+    AProject:=TProject(AProjPkg);
+    CompOpts:=AProject.CompilerOptions;
+  end else if AProjPkg is TLazPackage then begin
+    APackage:=TLazPackage(AProjPkg);
+    CompOpts:=APackage.CompilerOptions;
+  end else
+    RaiseGDBException('invalid AProjPkg');
+  
   try
     IniFile:=TIniFile.Create(DOFFilename);
     try
       // output directory
-      OutputDir:=ReadDirectory('Directories','OutputDir');
-      if (OutputDir<>'') then begin
-        DebugLn('ExtractOptionsFromDOF setting unit output directory to "',OutputDir,'"');
-        AProject.CompilerOptions.UnitOutputDirectory:=OutputDir;
+      if AProject<>nil then begin
+        OutputDir:=ReadDirectory('Directories','OutputDir');
+        if (OutputDir<>'') then begin
+          DebugLn('ExtractOptionsFromDOF setting unit output directory to "',OutputDir,'"');
+          AProject.CompilerOptions.UnitOutputDirectory:=OutputDir;
+        end;
       end;
       
       // search path
       SearchPath:=ReadSearchPath('Directories','SearchPath');
       if (SearchPath<>'') then begin
         DebugLn('ExtractOptionsFromDOF Adding to search paths: "',SearchPath,'"');
-        AProject.CompilerOptions.IncludeFiles:=
-             MergeSearchPaths(AProject.CompilerOptions.IncludeFiles,SearchPath);
-        AProject.CompilerOptions.Libraries:=
-             MergeSearchPaths(AProject.CompilerOptions.Libraries,SearchPath);
-        AProject.CompilerOptions.OtherUnitFiles:=
-             MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,SearchPath);
-        AProject.CompilerOptions.ObjectPath:=
-             MergeSearchPaths(AProject.CompilerOptions.ObjectPath,SearchPath);
-        AProject.CompilerOptions.DebugPath:=
-             MergeSearchPaths(AProject.CompilerOptions.DebugPath,SearchPath);
+        AddSearchPath(SearchPath);
       end;
 
       // debug source dirs
       DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
       if DebugSourceDirs<>'' then begin
         DebugLn('ExtractOptionsFromDOF Adding to debug paths: "',DebugSourceDirs,'"');
-        AProject.CompilerOptions.DebugPath:=
-           MergeSearchPaths(AProject.CompilerOptions.DebugPath,DebugSourceDirs);
+        CompOpts.DebugPath:=MergeSearchPaths(CompOpts.DebugPath,DebugSourceDirs);
       end;
       
       // packages
       ReadDelphiPackages;
-      
-      if IniFile.ReadString('Linker','ConsoleApp','')='0' then begin
-        // does not need a windows console
-        DebugLn('ExtractOptionsFromDOF ConsoleApp=0');
-        AProject.LazCompilerOptions.Win32GraphicApp:=true;
+
+      if AProject<>nil then begin
+        if IniFile.ReadString('Linker','ConsoleApp','')='0' then begin
+          // does not need a windows console
+          DebugLn('ExtractOptionsFromDOF ConsoleApp=0');
+          AProject.LazCompilerOptions.Win32GraphicApp:=true;
+        end;
       end;
     finally
       IniFile.Free;
@@ -603,7 +627,7 @@ begin
     Result:=Filename;
 end;
 
-function ExtractOptionsFromCFG(const CFGFilename: string; AProject: TProject
+function ExtractOptionsFromCFG(const CFGFilename: string; AProjPkg: TObject
   ): TModalResult;
 var
   sl: TStringList;
@@ -611,8 +635,19 @@ var
   Line: string;
   UnitPath: String;
   IncludePath: String;
+  AProject: TProject;
+  CompOpts: TBaseCompilerOptions;
+  APackage: TLazPackage;
 begin
   if not FileExists(CFGFilename) then exit(mrOk);
+  if AProjPkg is TProject then begin
+    AProject:=TProject(AProjPkg);
+    CompOpts:=AProject.CompilerOptions;
+  end else if AProjPkg is TLazPackage then begin
+    APackage:=TLazPackage(AProjPkg);
+    CompOpts:=APackage.CompilerOptions;
+  end else
+    RaiseGDBException('invalid AProjPkg');
   try
     sl:=TStringList.Create;
     try
@@ -625,15 +660,15 @@ begin
           UnitPath:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),AProject);
           if UnitPath<>'' then begin
             DebugLn('ExtractOptionsFromCFG adding unitpath "',UnitPath,'"');
-            AProject.CompilerOptions.OtherUnitFiles:=
-             MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,UnitPath);
+            CompOpts.OtherUnitFiles:=
+                             MergeSearchPaths(CompOpts.OtherUnitFiles,UnitPath);
           end;
         end else if Line[2]='I' then begin
           IncludePath:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),AProject);
           if IncludePath<>'' then begin
             DebugLn('ExtractOptionsFromCFG adding IncludePath "',IncludePath,'"');
-            AProject.CompilerOptions.IncludeFiles:=
-             MergeSearchPaths(AProject.CompilerOptions.IncludeFiles,IncludePath);
+            CompOpts.IncludeFiles:=
+                            MergeSearchPaths(CompOpts.IncludeFiles,IncludePath);
           end;
         end;
       end;
