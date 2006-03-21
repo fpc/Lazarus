@@ -757,12 +757,14 @@ type
                                   LogicalPos: integer): integer;
     function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
                   LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    function PhysicalLineLength(Line: PChar; LineLen: integer): integer;
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
                                   PhysicalPos: integer): integer;
     function PhysicalToLogicalCol(const Line: string;
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
     procedure MoveCaretToVisibleArea;
+    procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
     function NextTokenPos: TPoint; virtual;
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
@@ -4871,8 +4873,9 @@ end;
 
 procedure TCustomSynEdit.SetCaretY(Value: Integer);
 begin
-  if not (eoKeepCaretX in Options) then                                         //mh 2000-11-08
+  if not (eoKeepCaretX in Options) then begin                                        //mh 2000-11-08
     fLastCaretX := fCaretX;
+  end;
   SetCaretXY(Point(fLastCaretX{CaretX}, Value));                                //mh 2000-10-19
 end;
 
@@ -4885,6 +4888,9 @@ procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 // physical position (screen)
 var
   nMaxX: integer;
+  {$IFDEF SYN_LAZARUS}
+  Line: string;
+  {$ENDIF}
 begin
   nMaxX := fMaxLeftChar;
   if Value.Y > Lines.Count then
@@ -4895,8 +4901,14 @@ begin
     if not (eoScrollPastEol in fOptions) then
       nMaxX := 1;
   end else begin
-    if not (eoScrollPastEol in fOptions) then
+    if not (eoScrollPastEol in fOptions) then begin
+      {$IFDEF SYN_LAZARUS}
+      Line:=Lines[Value.Y-1];
+      nMaxX := PhysicalLineLength(PChar(Line),length(Line))+1;
+      {$ELSE}
       nMaxX := Length(Lines[Value.Y - 1]) + 1;                                  //abc 2000-09-30
+      {$ENDIF}
+    end;
   end;
   if Value.X > nMaxX then
     Value.X := nMaxX;
@@ -4925,7 +4937,7 @@ begin
     end;
   end;
   {$IFDEF SYN_LAZARUS}
-  fLastCaretX := CaretX;
+  fLastCaretX:=fCaretX;
   {$ENDIF}
 end;
 
@@ -5524,6 +5536,19 @@ begin
   if caretY < fTopLine then caretY := fTopLine
   else if caretY >= fTopLine + fLinesInWindow then
     caretY := fTopLine + fLinesInWindow - 1;
+end;
+
+procedure TCustomSynEdit.MoveCaretIgnoreEOL(const NewCaret: TPoint);
+var
+  NewX: LongInt;
+begin
+  CaretXY:=NewCaret;
+  NewX:=Max(1,Min(fMaxLeftChar,NewCaret.X));
+  if CaretX<>NewX then begin
+    IncPaintLock;
+    fCaretX:=NewX;
+    DecPaintLock;
+  end;
 end;
 {$ENDIF}
 
@@ -9322,8 +9347,11 @@ procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
 var
   NewCaret: TPoint;
   LogCaret: TPoint;
+  OldCaret: TPoint;
+  SaveLastCaretX: LongInt;
 begin
-  NewCaret:=CaretXY;
+  OldCaret:=CaretXY;
+  NewCaret:=OldCaret;
   with NewCaret do begin
     Inc(Y, DY);
     if DY >= 0 then begin
@@ -9333,6 +9361,9 @@ begin
       if (Y < 1) or (CaretY < Y) then
         Y := 1;
   end;
+  if (OldCaret.Y<>NewCaret.Y) and (fLastCaretX>0) and (eoKeepCaretX in Options)
+  then
+    NewCaret.X:=fLastCaretX;
   // set caret and block begin / end
   LogCaret:=PhysicalToLogicalPos(NewCaret);
   IncPaintLock;
@@ -9342,7 +9373,9 @@ begin
     AquirePrimarySelection;
   end else
     SetBlockBegin(LogCaret);
+  SaveLastCaretX:=fLastCaretX;
   CaretXY:=NewCaret;
+  fLastCaretX:=SaveLastCaretX;
   DecPaintLock;
 end;
 {$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
@@ -9401,7 +9434,7 @@ begin
 {$ENDIF}
   fLastCaretX := SaveLastCaretX;                                                //jr 2002-04-26
 end;
-{$ENDIF}
+{$ENDIF not SYN_LAZARUS}
 
 procedure TCustomSynEdit.MoveCaretAndSelection(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;
@@ -10600,6 +10633,12 @@ begin
   if (BytePos>LogicalPos) and (ScreenPos>StartPhysicalPos) then
     dec(ScreenPos);
   Result := ScreenPos;
+end;
+
+function TCustomSynEdit.PhysicalLineLength(Line: PChar; LineLen: integer
+  ): integer;
+begin
+  Result:=UTF8Length(Line,LineLen);
 end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;

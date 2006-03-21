@@ -92,7 +92,7 @@ begin
   
   AEditor.BeginUpdate;
   try
-    // get caret position in text
+    // get old caret position in text
     p := AEditor.LogicalCaretXY;
 
     // select token in editor
@@ -182,8 +182,8 @@ begin
     // replace the selected text and position the caret
     AEditor.SelText := s;
     // position the caret
-    if NewCaretPos then
-      AEditor.CaretXY := p;
+    if NewCaretPos then 
+      AEditor.MoveCaretIgnoreEOL(p);
     AEditor.EnsureCursorPosVisible;
   finally
     AEditor.EndUpdate;

@@ -735,7 +735,7 @@ begin
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.InitialDir:=
       LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
-    SaveDialog.Title:=lisOpenFile;
+    SaveDialog.Title:=srkmecSaveAs;
     SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
