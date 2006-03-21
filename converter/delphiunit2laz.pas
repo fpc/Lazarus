@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, Buttons, StdCtrls, FileUtil, IniFiles,
   // Components
-  SynEdit, CodeCache, CodeToolManager, DefineTemplates,
+  SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
   // IDEIntf
   LazIDEIntf, MsgIntf,
   // IDE
@@ -319,6 +319,8 @@ var
   i: Integer;
   Msg: String;
   CurDir: String;
+  CodePos: PCodeXYPosition;
+  MissingIncludeFilesCodeXYPos: TFPList;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
@@ -326,10 +328,28 @@ begin
 
   // fix include filenames
   DebugLn('FixMissingUnits fixing include directives ...');
-  if not CodeToolBoss.FixIncludeFilenames(LazUnitCode,true)
-  then begin
-    Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
-    exit;
+  MissingIncludeFilesCodeXYPos:=nil;
+  try
+    if not CodeToolBoss.FixIncludeFilenames(LazUnitCode,true,
+      MissingIncludeFilesCodeXYPos)
+    then begin
+      DebugLn('FixMissingUnits Error="',CodeToolBoss.ErrorMessage,'"');
+      if MissingIncludeFilesCodeXYPos<>nil then begin
+        for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
+          CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
+          Msg:=CodePos^.Code.Filename
+               +'('+IntToStr(CodePos^.y)+','+IntToStr(CodePos^.x)+')'
+               +' missing include file';
+          DebugLn('FixMissingUnits "',Msg,'"');
+          IDEMessagesWindow.AddMsg(Msg,'',-1);
+        end;
+      end;
+      DebugLn('FixMissingUnits 2 Error="',CodeToolBoss.ErrorMessage,'"');
+      Result:=JumpToCodetoolErrorAndAskToAbort(IsSubProc);
+      exit;
+    end;
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
   end;
 
   MissingUnits:=nil;
@@ -545,7 +565,7 @@ begin
         AProject.CompilerOptions.DebugPath:=
              MergeSearchPaths(AProject.CompilerOptions.DebugPath,SearchPath);
       end;
-      
+
       // debug source dirs
       DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
       if DebugSourceDirs<>'' then begin
@@ -642,8 +662,9 @@ begin
   // can mean, that the relative path is 'folder'
 
   ProjectDir:=AProject.ProjectDirectory;
-  ShortProjectDir:='\'+ExtractFileName(ChompPathDelim(ProjectDir))+'\';
+  ShortProjectDir:=PathDelim+ExtractFileName(ChompPathDelim(ProjectDir))+PathDelim;
   p:=System.Pos(ShortProjectDir,Filename);
+  //DebugLn('ConvertDelphiAbsoluteToRelativeFile ShortProjectDir="',ShortProjectDir,'" ',Filename,' ',dbgs(p));
   if (p>0) then begin
     Result:=copy(Filename,p+length(ShortProjectDir),length(Filename));
     exit;
@@ -664,6 +685,7 @@ begin
 
   // check for $(Delphi) makro
   p:=System.Pos('$(DELPHI)',Result);
+  //DebugLn('ExpandDelphiFilename Result="',Result,'" ',dbgs(p));
   if p>0 then begin
     // Delphi features are provided by FPC and Lazarus
     // -> ignore
@@ -696,12 +718,14 @@ var
   j: Integer;
 begin
   Result:='';
+  //DebugLn('ExpandDelphiSearchPath SearchPath="',SearchPath,'"');
   Paths:=SplitString(SearchPath,';');
   if Paths=nil then exit;
   try
     // expand Delphi paths
     for i:=0 to Paths.Count-1 do
       Paths[i]:=ExpandDelphiFilename(Paths[i],AProject);
+    DebugLn(Paths.Text);
     // remove doubles
     for i:=Paths.Count-1 downto 0 do begin
       CurPath:=Paths[i];
@@ -719,6 +743,7 @@ begin
       if i>0 then Result:=Result+';';
       Result:=Result+Paths[i];
     end;
+    //DebugLn('ExpandDelphiSearchPath Result="',Result,'"');
   finally
     Paths.Free;
   end;

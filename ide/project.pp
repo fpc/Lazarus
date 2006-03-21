@@ -316,7 +316,8 @@ type
   TProjectDefineTemplates = class
   private
     FActive: boolean;
-    FCustomDefines: TDefineTemplate;
+    FSrcDirectories: TDefineTemplate;
+    FSrcDirIfDef: TDefineTemplate;
     FFlags: TProjectDefineTemplatesFlags;
     FMain: TDefineTemplate;
     FOutputDir: TDefineTemplate;
@@ -331,8 +332,9 @@ type
     FLastCustomOptions: string;
     procedure SetActive(const AValue: boolean);
     procedure UpdateMain;
+    procedure UpdateSrcDirIfDef;
     procedure UpdateDefinesForOutputDirectory;
-    procedure UpdateDefinesForSourceDirectories;
+    procedure UpdateSourceDirectories;
     procedure UpdateDefinesForCustomDefines;
   public
     constructor Create(OwnerProject: TProject);
@@ -343,17 +345,18 @@ type
     procedure CompilerFlagsChanged;
     procedure AllChanged;
     procedure ProjectIDChanged;
-    procedure SourceDirectoriesChanged;
-    procedure OutputDirectoryChanged;
-    procedure CustomDefinesChanged;
+    procedure SourceDirectoriesChanged;// a source directory was added/deleted
+    procedure CustomDefinesChanged;// the defines of the source dirs changed
+    procedure OutputDirectoryChanged;// the path or the defines of the output dir changed
     procedure UpdateGlobalValues;
   public
     property Owner: TProject read FOwnerProject;
     property Project: TProject read FOwnerProject;
     property Main: TDefineTemplate read FMain;
+    property SrcDirectories: TDefineTemplate read FSrcDirectories;
     property OutputDir: TDefineTemplate read FOutputDir;
     property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
-    property CustomDefines: TDefineTemplate read FCustomDefines;
+    property CustomDefines: TDefineTemplate read FSrcDirIfDef;
     property Active: boolean read FActive write SetActive;
   end;
 
@@ -3797,6 +3800,64 @@ begin
   end else
     FMain.Name:=Project.IDAsWord;
   // ClearCache is here unnessary, because it is only a block
+  
+  
+end;
+
+procedure TProjectDefineTemplates.UpdateSrcDirIfDef;
+var
+  NewValue: String;
+  Changed: Boolean;
+  UnitPathDefTempl: TDefineTemplate;
+  IncPathDefTempl: TDefineTemplate;
+  SrcPathDefTempl: TDefineTemplate;
+begin
+  // The options are enclosed by an
+  // IFDEF #ProjectSrcMark<PckId> template.
+  // Each source directory defines this variable, so that the settings can be
+  // activated for each source directory by a simple DEFINE.
+  if (FMain=nil) then UpdateMain;
+  if FSrcDirectories=nil then begin
+    FSrcDirectories:=TDefineTemplate.Create('Source Directories',
+      'Source Directories','','',
+      da_Block);
+    FMain.AddChild(FSrcDirectories);
+  end;
+  if FSrcDirIfDef=nil then begin
+    FSrcDirIfDef:=TDefineTemplate.Create('Source Directory Additions',
+      'Additional defines for project source directories',
+      '#ProjectSrcMark'+Project.IDAsWord,'',
+      da_IfDef);
+    FMain.AddChild(FSrcDirIfDef);
+    
+    // create unit path template for this directory
+    UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
+      '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Project.IDAsString+')',
+      da_Define);
+    FSrcDirIfDef.AddChild(UnitPathDefTempl);
+
+    // create include path template for this directory
+    IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
+      '#IncPath','$(#IncPath);$ProjectIncPath('+Project.IDAsString+')',
+      da_Define);
+    FSrcDirIfDef.AddChild(IncPathDefTempl);
+
+    // create src path template for this directory
+    SrcPathDefTempl:=TDefineTemplate.Create('SrcPath','Src Path',
+      '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Project.IDAsString+')',
+      da_Define);
+    FSrcDirIfDef.AddChild(SrcPathDefTempl);
+
+    Changed:=true;
+  end else begin
+    NewValue:='#ProjectSrcMark'+Project.IDAsWord;
+    if FSrcDirIfDef.Value<>NewValue then begin
+      FSrcDirIfDef.Value:='#ProjectSrcMark'+Project.IDAsWord;
+      Changed:=true;
+    end;
+  end;
+  if Changed then
+    CodeToolBoss.DefineTree.ClearCache;
 end;
 
 procedure TProjectDefineTemplates.UpdateDefinesForOutputDirectory;
@@ -3832,16 +3893,13 @@ begin
   end;
 end;
 
-procedure TProjectDefineTemplates.UpdateDefinesForSourceDirectories;
+procedure TProjectDefineTemplates.UpdateSourceDirectories;
 var
   NewSourceDirs: TStringList;
   i: Integer;
   SrcDirDefTempl: TDefineTemplate;
-  UnitPathDefTempl: TDefineTemplate;
-  IncPathDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
   SrcDirMarkDefTempl: TDefineTemplate;
-  SrcPathDefTempl: TDefineTemplate;
 begin
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
   if (not Project.NeedsDefineTemplates) or (not Active) then exit;
@@ -3883,7 +3941,8 @@ begin
 
     // build source directory define templates
     fLastSourceDirectories.Assign(NewSourceDirs);
-    if (FMain=nil) and (fLastSourceDirectories.Count>0) then UpdateMain;
+    if (FSrcDirIfDef=nil) and (fLastSourceDirectories.Count>0) then
+      UpdateSrcDirIfDef;
     for i:=0 to fLastSourceDirectories.Count-1 do begin
       // create directory template
       SrcDirDefTempl:=TDefineTemplate.Create('Source Directory '+IntToStr(i+1),
@@ -3896,28 +3955,10 @@ begin
         da_Define);
       SrcDirDefTempl.AddChild(SrcDirMarkDefTempl);
 
-      // create unit path template for this directory
-      UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
-        '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Project.IDAsString+')',
-        da_Define);
-      SrcDirDefTempl.AddChild(UnitPathDefTempl);
-
-      // create include path template for this directory
-      IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
-        '#IncPath','$(#IncPath);$ProjectIncPath('+Project.IDAsString+')',
-        da_Define);
-      SrcDirDefTempl.AddChild(IncPathDefTempl);
-
-      // create src path template for this directory
-      SrcPathDefTempl:=TDefineTemplate.Create('SrcPath','Src Path',
-        '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Project.IDAsString+')',
-        da_Define);
-      SrcDirDefTempl.AddChild(SrcPathDefTempl);
-
       SrcDirDefTempl.SetDefineOwner(Project,false);
       SrcDirDefTempl.SetFlags([dtfAutoGenerated],[],false);
       // add directory
-      FMain.AddChild(SrcDirDefTempl);
+      FSrcDirectories.AddChild(SrcDirDefTempl);
     end;
     CodeToolBoss.DefineTree.ClearCache;
 
@@ -3942,30 +3983,16 @@ begin
                           'Custom Options',FLastCustomOptions,false,Project);
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
-    if FCustomDefines<>nil then begin
-      FCustomDefines.UnBind;
-      FCustomDefines.Free;
-      FCustomDefines:=nil;
+    if FSrcDirIfDef<>nil then begin
+      FSrcDirIfDef.UnBind;
+      FSrcDirIfDef.Free;
+      FSrcDirIfDef:=nil;
     end;
     exit;
   end;
 
-  // create custom options
-  // The custom options are enclosed by an
-  // IFDEF #ProjectSrcMark<PckId> template.
-  // Each source directory defines this variable, so that the settings can be
-  // activated for each source directory by a simple DEFINE.
-  if (FMain=nil) then UpdateMain;
-  if FCustomDefines=nil then begin
-    FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
-      'Additional defines for project source directories',
-      '#ProjectSrcMark'+Project.IDAsWord,'',
-      da_IfDef);
-    FMain.AddChild(FCustomDefines);
-  end else begin
-    FCustomDefines.Value:='#ProjectSrcMark'+Project.IDAsWord;
-  end;
-  FCustomDefines.ReplaceChild(OptionsDefTempl);
+  UpdateSrcDirIfDef;
+  FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
 
   CodeToolBoss.DefineTree.ClearCache;
 end;
@@ -3990,6 +4017,10 @@ begin
       CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
     FProjectDir:=nil;
+    FSrcDirIfDef:=nil;
+    FSrcDirectories:=nil;
+    FOutPutSrcPath:=nil;
+    FOutputDir:=nil;
     FFlags:=FFlags+[ptfFlagsChanged];
   end;
 end;
@@ -4042,7 +4073,7 @@ begin
   Exclude(FFlags,ptfIDChanged);
   UpdateMain;
   UpdateDefinesForOutputDirectory;
-  UpdateDefinesForSourceDirectories;
+  UpdateSourceDirectories;
   UpdateDefinesForCustomDefines;
 end;
 
@@ -4053,7 +4084,7 @@ begin
     exit;
   end;
   Exclude(FFlags,ptfSourceDirsChanged);
-  UpdateDefinesForSourceDirectories;
+  UpdateSourceDirectories;
   CodeToolBoss.DefineTree.ClearCache;
 end;
 

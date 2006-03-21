@@ -71,6 +71,7 @@ type
   // close file flags
   TCloseFlag = (
     cfSaveFirst, // check if modified and save
+    cfQuiet,
     cfProjectClosing
     );
   TCloseFlags = set of TCloseFlag;

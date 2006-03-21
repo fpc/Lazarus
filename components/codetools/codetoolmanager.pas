@@ -291,7 +291,7 @@ type
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string
           ): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
-          Recursive: boolean): boolean;
+          Recursive: boolean; out MissingIncludeFilesCodeXYPos: TFPList): boolean;
 
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
@@ -565,6 +565,10 @@ type
 var CodeToolBoss: TCodeToolManager;
 
 
+function CreateDefinesForFPCMode(const Name: string;
+                                 CompilerMode: TCompilerMode): TDefineTemplate;
+
+
 implementation
 
 
@@ -599,6 +603,23 @@ begin
   Frames:=ExceptFrames;
   for FrameNumber := 0 to FrameCount-1 do
     DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+end;
+
+function CreateDefinesForFPCMode(const Name: string; CompilerMode: TCompilerMode
+  ): TDefineTemplate;
+var
+  cm: TCompilerMode;
+  NewMode: String;
+begin
+  Result:=TDefineTemplate.Create(Name,'set FPC compiler mode',
+                                 '','',da_Block);
+  for cm:=Low(TCompilerMode) to High(TCompilerMode) do begin
+    Result.AddChild(TDefineTemplate.Create(CompilerModeVars[cm],
+      CompilerModeVars[cm],CompilerModeVars[cm],'',da_Undefine));
+  end;
+  NewMode:=CompilerModeVars[CompilerMode];
+  Result.AddChild(TDefineTemplate.Create(NewMode,
+    NewMode,NewMode,'1',da_Define));
 end;
 
 
@@ -2182,9 +2203,22 @@ begin
 end;
 
 function TCodeToolManager.FixIncludeFilenames(Code: TCodeBuffer;
-  Recursive: boolean): boolean;
+  Recursive: boolean; out MissingIncludeFilesCodeXYPos: TFPList): boolean;
+  
+  procedure CreateErrorForMissingIncludeFile;
+  var
+    CodePos: PCodeXYPosition;
+  begin
+    ClearError;
+    CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[0]);
+    fErrorCode:=CodePos^.Code;
+    fErrorLine:=CodePos^.Y;
+    fErrorColumn:=CodePos^.X;
+    FErrorMsg:='missing include file';
+  end;
+  
 var
-  FoundIncludeFiles, MissingIncludeFiles: TStrings;
+  FoundIncludeFiles: TStrings;
   i: Integer;
   AFilename: string;
   ToFixIncludeFiles: TStringList;
@@ -2194,6 +2228,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FixIncludeFilenames A ',Code.Filename,' Recursive=',Recursive);
   {$ENDIF}
+  MissingIncludeFilesCodeXYPos:=nil;
   if not InitCurCodeTool(Code) then exit;
   try
     FixedIncludeFiles:=nil;
@@ -2211,14 +2246,14 @@ begin
         end;
         // fix file
         FoundIncludeFiles:=nil;
-        MissingIncludeFiles:=nil;
         try
           Result:=FCurCodeTool.FixIncludeFilenames(Code,SourceChangeCache,
-                                         FoundIncludeFiles,MissingIncludeFiles);
-          if (MissingIncludeFiles<>nil)
-          and (MissingIncludeFiles.Count>0) then begin
-            DebugLn('TCodeToolManager.FixIncludeFilenames Missing: ',MissingIncludeFiles.Text);
+                                FoundIncludeFiles,MissingIncludeFilesCodeXYPos);
+          if (MissingIncludeFilesCodeXYPos<>nil)
+          and (MissingIncludeFilesCodeXYPos.Count>0) then begin
+            DebugLn('TCodeToolManager.FixIncludeFilenames Missing: ',dbgs(MissingIncludeFilesCodeXYPos.Count));
             Result:=false;
+            CreateErrorForMissingIncludeFile;
             exit;
           end;
           if not Recursive then begin
@@ -2243,7 +2278,6 @@ begin
           //DebugLn('TCodeToolManager.FixIncludeFilenames FixedIncludeFiles=',FixedIncludeFiles.Text,' ToFixIncludeFiles=',ToFixIncludeFiles.Text);
         finally
           FoundIncludeFiles.Free;
-          MissingIncludeFiles.Free;
         end;
       end;
     finally

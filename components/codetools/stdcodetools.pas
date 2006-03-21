@@ -213,7 +213,8 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
           SourceChangeCache: TSourceChangeCache;
-          out FoundIncludeFiles, MissingIncludeFiles: TStrings): boolean;
+          out FoundIncludeFiles: TStrings;
+          var MissingIncludeFilesCodeXYPos: TFPList): boolean;
 
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
@@ -4324,13 +4325,33 @@ end;
 
 function TStandardCodeTool.FixIncludeFilenames(Code: TCodeBuffer;
   SourceChangeCache: TSourceChangeCache;
-  out FoundIncludeFiles, MissingIncludeFiles: TStrings): boolean;
+  out FoundIncludeFiles: TStrings;
+  var MissingIncludeFilesCodeXYPos: TFPList): boolean;
 var
   ASource: String;
   
-  procedure Add(const AFilename: string; Found: boolean);
+  {procedure WriteMissingIncludeFilesCodeXYPos;
+  var
+    CodePos: PCodeXYPosition;
+    i: Integer;
+  begin
+    if MissingIncludeFilesCodeXYPos<>nil then begin
+      for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
+        CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
+        DebugLn('TStandardCodeTool.FixMissingUnits ',dbgs(CodePos));
+        DebugLn('TStandardCodeTool.FixMissingUnits ',CodePos^.Code.Filename);
+        debugln(CodePos^.Code.Filename
+             +'('+IntToStr(CodePos^.y)+','+IntToStr(CodePos^.x)+')'
+             +' missing include file');
+      end;
+    end;
+  end;}
+  
+  procedure Add(FilenameSrcPos: integer; const AFilename: string;
+    Found: boolean);
   var
     NewFilename: String;
+    p: PCodeXYPosition;
   begin
     if Found then begin
       if FoundIncludeFiles=nil then
@@ -4339,13 +4360,19 @@ var
       if FoundIncludeFiles.IndexOf(NewFilename)<0 then
         FoundIncludeFiles.Add(NewFilename);
     end else begin
-      if MissingIncludeFiles=nil then
-        MissingIncludeFiles:=TStringList.Create;
-      MissingIncludeFiles.Add(AFilename);
+      if MissingIncludeFilesCodeXYPos=nil then
+        MissingIncludeFilesCodeXYPos:=TFPList.Create;
+      New(p);
+      p^.Code:=Code;
+      Code.AbsoluteToLineCol(FilenameSrcPos,p^.y,p^.x);
+      MissingIncludeFilesCodeXYPos.Add(p);
+      ///DebugLn('TStandardCodeTool.FixIncludeFilenames.Add "',p^.Code.Filename,'" ',dbgs(p),' X=',dbgs(p^.X),' Y=',dbgs(p^.Y));
+      //WriteMissingIncludeFilesCodeXYPos;
     end;
   end;
   
-  function SearchIncludeFilename(const AFilename: string): string;
+  function SearchIncludeFilename(FilenameSrcPos: integer;
+    const AFilename: string): string;
   var
     AFilePath: String;
     BaseDir: String;
@@ -4357,7 +4384,7 @@ var
     Result:=TrimFilename(AFilename);
     if FilenameIsAbsolute(Result) then begin
       Result:=FindDiskFilename(Result);
-      Add(Result,FileExistsCached(Result));
+      Add(FilenameSrcPos,Result,FileExistsCached(Result));
       //DebugLn('SearchIncludeFilename AbsoluteFilename="',Result,'"');
     end else begin
       BaseDir:=ExtractFilePath(MainFilename);
@@ -4370,9 +4397,9 @@ var
           CurFilename:=FindDiskFilename(BaseDir+Result);
           Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
           if FileExistsCached(CurFilename) then
-            Add(CurFilename,true)
+            Add(FilenameSrcPos,CurFilename,true)
           else
-            Add(Result,false);
+            Add(FilenameSrcPos,Result,false);
           //DebugLn('SearchIncludeFilename relative filename="',CurFilename,'"');
         end else begin
           // search in path
@@ -4388,10 +4415,10 @@ var
           if CurFilename<>'' then begin
             // found
             Result:=CreateRelativePath(CurFilename,BaseDir);
-            Add(CurFilename,true);
+            Add(FilenameSrcPos,CurFilename,true);
           end else begin
             // not found
-            Add(Result,false);
+            Add(FilenameSrcPos,Result,false);
           end;
           //DebugLn('SearchIncludeFilename search in include path="',IncludePath,'" Result="',Result,'"');
         end;
@@ -4400,9 +4427,9 @@ var
         ACodeBuf:=TCodeBuffer(Scanner.LoadSourceCaseLoUp(Result));
         if ACodeBuf<>nil then begin
           Result:=ACodeBuf.Filename;
-          Add(Result,true);
+          Add(FilenameSrcPos,Result,true);
         end else begin
-          Add(Result,false);
+          Add(FilenameSrcPos,Result,false);
         end;
       end;
     end;
@@ -4423,7 +4450,7 @@ var
       else
         AFilename:=AFilename+'.pp';
     end;
-    AFilename:=SearchIncludeFilename(AFilename);
+    AFilename:=SearchIncludeFilename(StartPos,AFilename);
     if OldFilename<>AFilename then begin
       DebugLn('FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,0,0,Code,StartPos,EndPos,AFilename);
@@ -4437,7 +4464,6 @@ var
 begin
   Result:=false;
   FoundIncludeFiles:=nil;
-  MissingIncludeFiles:=nil;
   if (Scanner=nil) or (Scanner.MainCode=nil) then exit;
   ASource:=Code.Source;
   Scanner.Scan(lsrInit,false);
@@ -4455,6 +4481,8 @@ begin
     p:=FindCommentEnd(ASource,p,NestedComments);
     //DebugLn('TStandardCodeTool.FixIncludeFilenames ',dbgs(p));
   until false;
+  //WriteMissingIncludeFilesCodeXYPos;
+
   Result:=SourceChangeCache.Apply;
 end;
 

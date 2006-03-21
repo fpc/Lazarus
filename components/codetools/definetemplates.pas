@@ -462,7 +462,7 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
-  ): TDefineTemplate;
+                                    ): TDefineTemplate;
 
 
 implementation

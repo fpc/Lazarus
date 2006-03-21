@@ -1265,6 +1265,10 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    procedure Intf.Method = ImplementingMethodName;
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
+   
+   Delphi mode:
+   Function TPOSControler.Logout; // missing function type
+
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline

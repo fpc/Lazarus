@@ -365,12 +365,15 @@ end;
 
 function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 // returns mrCancel or mrAbort
+var
+  ErrMsg: String;
 begin
+  ErrMsg:=CodeToolBoss.ErrorMessage;
   LazarusIDE.DoJumpToCodeToolBossError;
   if Ask then begin
     Result:=QuestionDlg('Error',
       'The codetools found an error:'#13
-      +CodeToolBoss.ErrorMessage+#13,
+      +ErrMsg+#13,
       mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
     if Result=mrIgnore then Result:=mrCancel;
   end else begin

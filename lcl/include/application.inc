@@ -1011,6 +1011,7 @@ end;
   control is passed to event processor.
 ------------------------------------------------------------------------------}
 procedure TApplication.RunLoop;
+
   procedure RunMessage;
   begin
     HandleMessage;

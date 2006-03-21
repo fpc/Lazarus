@@ -5644,16 +5644,20 @@ begin
   // if SaveFirst then save the source
   if (cfSaveFirst in Flags) and (not ActiveUnitInfo.ReadOnly)
   and ((ActiveSrcEdit.Modified) or (ActiveUnitInfo.Modified)) then begin
-    if ActiveUnitInfo.Filename<>'' then
-      AText:=Format(lisFileHasChangedSave, ['"', ActiveUnitInfo.Filename, '"'])
-    else if ActiveUnitInfo.UnitName<>'' then
-      AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.Unitname, '"'])
-    else
-      AText:=Format(lisSourceOfPageHasChangedSave, ['"',
-        ActiveSrcEdit.PageName, '"']);
-    ACaption:=lisSourceModified;
-    Result:=Messagedlg(ACaption, AText,
-                       mtConfirmation, [mbYes, mbNo, mbAbort], 0);
+    if not (cfQuiet in Flags) then begin
+      // ask user
+      if ActiveUnitInfo.Filename<>'' then
+        AText:=Format(lisFileHasChangedSave, ['"', ActiveUnitInfo.Filename, '"'])
+      else if ActiveUnitInfo.UnitName<>'' then
+        AText:=Format(lisUnitHasChangedSave, ['"', ActiveUnitInfo.Unitname, '"'])
+      else
+        AText:=Format(lisSourceOfPageHasChangedSave, ['"',
+          ActiveSrcEdit.PageName, '"']);
+      ACaption:=lisSourceModified;
+      Result:=Messagedlg(ACaption, AText,
+                         mtConfirmation, [mbYes, mbNo, mbAbort], 0);
+    end else
+      Result:=mrYes;
     if Result=mrYes then begin
       Result:=DoSaveEditorFile(PageIndex,[sfCheckAmbiguousFiles]);
     end;
@@ -8127,16 +8131,32 @@ end;
 
 function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
   ): TModalResult;
+var
+  OldChange: Boolean;
 begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
-  Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,[]);
+  OldChange:=FOpenEditorsOnCodeToolChange;
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    Result:=DelphiProject2Laz.ConvertDelphiToLazarusUnit(DelphiFilename,[]);
+  finally
+    FOpenEditorsOnCodeToolChange:=OldChange;
+  end;
 end;
 
 function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
   ): TModalResult;
+var
+  OldChange: Boolean;
 begin
   InputHistories.LastConvertDelphiProject:=DelphiFilename;
-  Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
+  OldChange:=FOpenEditorsOnCodeToolChange;
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
+  finally
+    FOpenEditorsOnCodeToolChange:=OldChange;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -10696,10 +10716,10 @@ begin
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
-    SourceNotebook.AddJumpPointClicked(Self);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
     ErrorFilename:=CodeToolBoss.ErrorCode.Filename;
     ErrorTopLine:=CodeToolBoss.ErrorTopLine;
+    SourceNotebook.AddJumpPointClicked(Self);
     OpenFlags:=[ofOnlyIfExists,ofUseCache];
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
