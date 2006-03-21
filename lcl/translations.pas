@@ -50,7 +50,8 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, GetText, FileUtil, StringHashList{$IFDEF MultiLocale},LConv{$ENDIF};
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList
+  {$IFDEF MultiLocale},LConv{$ENDIF};
 
 type
   { TPOFileItem }
@@ -81,15 +82,28 @@ type
 
   EPOFileError = class(Exception);
 
+var
+  SystemCharSetIsUTF8: Boolean = false;
+
+
 // translate resource strings for one unit
 procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string);
+function UTF8ToSystemCharSet(const s: string): string;
+  {$ifndef MultiLocale} inline;{$endif}
+procedure InitTranslation;
+
 
 implementation
+
+var
+  TranslationInitialized: Boolean = false;
 
 
 function UTF8ToSystemCharSet(const s: string): string; {$ifndef MultiLocale} inline;{$endif}
 begin
+  if SystemCharSetIsUTF8 then
+    exit(s);
   {$IFDEF NoUTF8Translations}
   Result:=s;
   {$ELSE}
@@ -105,6 +119,24 @@ begin
   {$ENDIF}
 end;
 
+procedure InitTranslation;
+var
+  Lang: String;
+begin
+  if TranslationInitialized then exit;
+  TranslationInitialized:=true;
+
+  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
+  if Lang = '' then begin
+    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
+    if Lang = '' then begin
+      Lang := SysUtils.GetEnvironmentVariable('LANG');
+    end;
+  end;
+  
+  SystemCharSetIsUTF8:=(System.Pos('UTF8',Lang)>0)
+                        or (System.Pos('UTF-8',Lang)>0)
+end;
 
 {$ifndef ver2_0}
 function Translate (Name,Value : AnsiString; Hash : Longint; arg:pointer) : AnsiString;
@@ -120,7 +152,6 @@ begin
 end;
 {$endif ver2_0}
 
-
 function DoTranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
 var
@@ -132,6 +163,7 @@ var
   po: TPOFile;
 begin
   Result:=false;
+  InitTranslation;
   //debugln('DoTranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
@@ -320,5 +352,9 @@ begin
   Translation:=TheTranslated;
 end;
 
+initialization
+  InitTranslation;
+
 end.
+
 
