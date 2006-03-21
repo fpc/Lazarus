@@ -266,6 +266,7 @@ type
     procedure mnuToolCheckLFMClicked(Sender: TObject);
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
+    procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
@@ -669,6 +670,7 @@ type
     function DoCheckLFMInEditor: TModalResult;
     function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
     function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
+    function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -2043,6 +2045,7 @@ begin
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
+    itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
@@ -3229,8 +3232,6 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  //MessageDlg('ConvertDelphiProject','Under construction',mtInformation,[mbCancel],0); exit;
-
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -3245,9 +3246,45 @@ begin
     end;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
       if FileExists(AFilename) then
         DoConvertDelphiProject(AFilename);
+      UpdateEnvironment;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TMainIDE.mnuToolConvertDelphiPackageClicked(Sender: TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentFilesMenu;
+    SaveEnvironment;
+  end;
+
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisChooseDelphiPackage;
+    OpenDialog.Filter:=lisDelphiProject+' (*.dpk)|*.dpk|'+dlgAllFiles+' (*.*)|*'
+      +'.*';
+    if InputHistories.LastConvertDelphiPackage<>'' then begin
+      OpenDialog.InitialDir:=
+                       ExtractFilePath(InputHistories.LastConvertDelphiPackage);
+      OpenDialog.Filename:=
+                       ExtractFileName(InputHistories.LastConvertDelphiPackage);
+    end;
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
+      if FileExists(AFilename) then
+        DoConvertDelphiPackage(AFilename);
       UpdateEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -8154,6 +8191,21 @@ begin
   FOpenEditorsOnCodeToolChange:=true;
   try
     Result:=DelphiProject2Laz.ConvertDelphiToLazarusProject(DelphiFilename);
+  finally
+    FOpenEditorsOnCodeToolChange:=OldChange;
+  end;
+end;
+
+function TMainIDE.DoConvertDelphiPackage(const DelphiFilename: string
+  ): TModalResult;
+var
+  OldChange: Boolean;
+begin
+  InputHistories.LastConvertDelphiPackage:=DelphiFilename;
+  OldChange:=FOpenEditorsOnCodeToolChange;
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    Result:=DelphiProject2Laz.ConvertDelphiToLazarusPackage(DelphiFilename);
   finally
     FOpenEditorsOnCodeToolChange:=OldChange;
   end;

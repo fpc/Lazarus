@@ -280,6 +280,7 @@ type
         itmToolCheckLFM: TIDEMenuCommand;
         itmToolConvertDelphiUnit: TIDEMenuCommand;
         itmToolConvertDelphiProject: TIDEMenuCommand;
+        itmToolConvertDelphiPackage: TIDEMenuCommand;
         itmToolConvertDFMtoLFM: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
         itmToolBuildLazarus: TIDEMenuCommand;

@@ -48,29 +48,6 @@ uses
   PackageDefs, ComponentReg, CompilerOptions, Project, PackageIntf, MenuIntf;
 
 type
-  TPkgSaveFlag = (
-    psfSaveAs,
-    psfAskBeforeSaving
-    );
-  TPkgSaveFlags = set of TPkgSaveFlag;
-  
-  TPkgOpenFlag = (
-    pofAddToRecent,
-    pofRevert
-    );
-  TPkgOpenFlags = set of TPkgOpenFlag;
-
-  TPkgCompileFlag = (
-    pcfCleanCompile,  // append -B to the compiler options
-    pcfDoNotCompileDependencies,
-    pcfDoNotCompilePackage,
-    pcfCompileDependenciesClean,
-    pcfOnlyIfNeeded,
-    pcfDoNotSaveEditorFiles,
-    pcfCreateMakefile
-    );
-  TPkgCompileFlags = set of TPkgCompileFlag;
-
   { TBasePkgManager }
 
   TBasePkgManager = class(TPackageEditingInterface)
@@ -119,11 +96,8 @@ type
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
-    function DoOpenPackageFile(AFilename: string;
-                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
-    function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;

@@ -280,7 +280,8 @@ resourcestring
   lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
   lisMenuCheckLFM = 'Check LFM file in editor';
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit';
-  lisMenuConvertDelphiProject = 'Convert Delphi Project to Lazarus Project';
+  lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project';
+  lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   
@@ -312,6 +313,7 @@ resourcestring
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
+  lisChooseDelphiPackage = 'Choose Delphi package (*.dpk)';
   lisDelphiProject = 'Delphi project';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';

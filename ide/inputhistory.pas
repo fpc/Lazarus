@@ -168,6 +168,7 @@ type
     // Find- and replace-history
     FFindHistory: TStringList;
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
+    FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
     FReplaceHistory: TStringList;
@@ -251,6 +252,8 @@ type
     // Delphi conversion
     property LastConvertDelphiProject: string read FLastConvertDelphiProject
                                               write FLastConvertDelphiProject;
+    property LastConvertDelphiPackage: string read FLastConvertDelphiPackage
+                                              write FLastConvertDelphiPackage;
     property LastConvertDelphiUnit: string read FLastConvertDelphiUnit
                                            write FLastConvertDelphiUnit;
   end;
@@ -403,6 +406,7 @@ begin
     
   // delphi conversion
   FLastConvertDelphiProject:=XMLConfig.GetValue(Path+'Conversion/Delphi/Project','');
+  FLastConvertDelphiPackage:=XMLConfig.GetValue(Path+'Conversion/Delphi/Package','');
   FLastConvertDelphiUnit:=XMLConfig.GetValue(Path+'Conversion/Delphi/Unit','');
 end;
 
@@ -454,6 +458,8 @@ begin
   // delphi conversion
   XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Project',
                            FLastConvertDelphiProject,'');
+  XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Package',
+                           FLastConvertDelphiPackage,'');
   XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Unit',
                            FLastConvertDelphiUnit,'');
 end;

@@ -404,6 +404,7 @@ begin
   ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UP,[ssAlt],VK_UNKNOWN,[]);
@@ -713,6 +714,7 @@ begin
   ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1335,6 +1337,7 @@ begin
     ecCheckLFM              : Result:= lisMenuCheckLFM;
     ecConvertDelphiUnit     : Result:= lisMenuConvertDelphiUnit;
     ecConvertDelphiProject  : Result:= lisMenuConvertDelphiProject;
+    ecConvertDelphiPackage  : Result:= lisMenuConvertDelphiPackage;
     ecFindDeclaration       : Result:= srkmecFindDeclaration;
     ecFindBlockOtherEnd     : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart        : Result:= srkmecFindBlockStart;
@@ -2313,6 +2316,7 @@ begin
   AddDefault(C,'Convert DFM file to LFM',ecConvertDFM2LFM);
   AddDefault(C,'Convert Delphi unit to Lazarus unit',ecConvertDelphiUnit);
   AddDefault(C,'Convert Delphi project to Lazarus project',ecConvertDelphiProject);
+  AddDefault(C,'Convert Delphi package to Lazarus package',ecConvertDelphiPackage);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];

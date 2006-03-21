@@ -128,13 +128,14 @@ const
   ecCheckLFM             = ecFirstLazarus + 107;
   ecConvertDelphiUnit    = ecFirstLazarus + 108;
   ecConvertDelphiProject = ecFirstLazarus + 109;
-  ecMakeResourceString   = ecFirstLazarus + 110;
-  ecDiff                 = ecFirstLazarus + 111;
-  ecExtractProc          = ecFirstLazarus + 112;
-  ecFindIdentifierRefs   = ecFirstLazarus + 113;
-  ecRenameIdentifier     = ecFirstLazarus + 114;
-  ecInvertAssignment     = ecFirstLazarus + 115;
-  ecShowCodeContext      = ecFirstLazarus + 116;
+  ecConvertDelphiPackage = ecFirstLazarus + 110;
+  ecMakeResourceString   = ecFirstLazarus + 111;
+  ecDiff                 = ecFirstLazarus + 112;
+  ecExtractProc          = ecFirstLazarus + 113;
+  ecFindIdentifierRefs   = ecFirstLazarus + 114;
+  ecRenameIdentifier     = ecFirstLazarus + 115;
+  ecInvertAssignment     = ecFirstLazarus + 116;
+  ecShowCodeContext      = ecFirstLazarus + 117;
 
   // file menu
   ecNew                  = ecFirstLazarus + 201;

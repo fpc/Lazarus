@@ -30,10 +30,37 @@ const
   PkgDescNameStandard = 'Standard Package';
   
 type
+  TPkgSaveFlag = (
+    psfSaveAs,
+    psfAskBeforeSaving
+    );
+  TPkgSaveFlags = set of TPkgSaveFlag;
+
+  TPkgOpenFlag = (
+    pofAddToRecent,
+    pofRevert
+    );
+  TPkgOpenFlags = set of TPkgOpenFlag;
+
+  TPkgCompileFlag = (
+    pcfCleanCompile,  // append -B to the compiler options
+    pcfDoNotCompileDependencies,
+    pcfDoNotCompilePackage,
+    pcfCompileDependenciesClean,
+    pcfOnlyIfNeeded,
+    pcfDoNotSaveEditorFiles,
+    pcfCreateMakefile
+    );
+  TPkgCompileFlags = set of TPkgCompileFlag;
+
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
   public
+    function DoOpenPackageFile(AFilename: string;
+                         Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
+    function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
+
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings): TModalResult; virtual; abstract;
     function GetOwnersOfUnit(const UnitFilename: string): TList; virtual; abstract;
