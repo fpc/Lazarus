@@ -337,9 +337,6 @@ begin
        begin
          if Handle<>0 then begin
            Widget:=nil;
-           if TListBox(ACustomListBox).MultiSelect then
-             Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
-                                  CoreWidget)^.last_focus_child;
            if Widget=nil then begin
              GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
                               CoreWidget)^.selection;

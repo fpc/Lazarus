@@ -3119,7 +3119,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
-  EventTrace('gtkListBoxSelectionChangedAfter', data);
+  EventTrace('gtkListSelectChild', data);
   {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;

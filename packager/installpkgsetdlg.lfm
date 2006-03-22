@@ -7,7 +7,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
   OnResize = InstallPkgSetDialogResize
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   HorzScrollBar.Page = 528
   VertScrollBar.Page = 440
   Left = 319
@@ -18,7 +18,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 274
     ClientWidth = 251
     TabOrder = 0
     Left = 6
@@ -32,8 +32,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MultiSelect = True
       OnSelectionChange = InstallListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
       Left = 6
-      Height = 168
+      Height = 169
       Top = 6
       Width = 239
     end
@@ -46,7 +47,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 1
       Left = 6
       Height = 25
-      Top = 180
+      Top = 181
       Width = 239
     end
     object ImportButton: TButton
@@ -58,7 +59,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 2
       Left = 6
       Height = 25
-      Top = 211
+      Top = 212
       Width = 239
     end
     object ExportButton: TButton
@@ -70,7 +71,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 3
       Left = 6
       Height = 25
-      Top = 242
+      Top = 243
       Width = 239
     end
   end
@@ -78,7 +79,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 273
+    ClientHeight = 274
     ClientWidth = 251
     TabOrder = 1
     Left = 267
@@ -92,8 +93,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MultiSelect = True
       OnSelectionChange = AvailableListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
       Left = 6
-      Height = 230
+      Height = 231
       Top = 6
       Width = 239
     end
@@ -106,7 +108,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 1
       Left = 6
       Height = 25
-      Top = 242
+      Top = 243
       Width = 239
     end
   end
@@ -119,9 +121,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     ModalResult = 2
     TabOrder = 2
     Left = 6
-    Height = 29
-    Top = 402
-    Width = 88
+    Height = 26
+    Top = 405
+    Width = 85
   end
   object SaveAndRebuildButton: TButton
     Anchors = [akBottom]
@@ -130,10 +132,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Caption = 'SaveAndRebuildButton'
     OnClick = InstallButtonClick
     TabOrder = 3
-    Left = 197
-    Height = 29
-    Top = 402
-    Width = 135
+    Left = 195
+    Height = 26
+    Top = 405
+    Width = 139
   end
   object SaveAndExitButton: TButton
     Anchors = [akRight, akBottom]
@@ -142,15 +144,15 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Caption = 'SaveAndExitButton'
     OnClick = SaveAndExitButtonClick
     TabOrder = 4
-    Left = 406
-    Height = 29
-    Top = 402
-    Width = 116
+    Left = 405
+    Height = 26
+    Top = 405
+    Width = 117
   end
   object PkgInfoGroupBox: TGroupBox
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'PkgInfoGroupBox'
-    ClientHeight = 67
+    ClientHeight = 68
     ClientWidth = 511
     TabOrder = 5
     Left = 7
@@ -163,7 +165,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ScrollBars = ssAutoVertical
       TabOrder = 0
       Left = 5
-      Height = 55
+      Height = 56
       Top = 5
       Width = 500
     end

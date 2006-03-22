@@ -507,6 +507,8 @@ var
   PkgID: TLazPackageID;
   Author: String;
   Description: String;
+  PkgLink: TPackageLink;
+  XMLConfig: TXMLConfig;
 begin
   if List = nil then Exit;
   PkgName := '';
@@ -514,8 +516,7 @@ begin
     PkgName := List.Items[List.ItemIndex];
 
   if PkgName = '' then Exit;
-  if Assigned(FSelectedPkg) then
-    if PkgName = FSelectedPkg.IDAsString then Exit;
+  if Assigned(FSelectedPkg) and (PkgName = FSelectedPkg.IDAsString) then Exit;
     
   PkgInfoMemo.Clear;
   PkgID := TLazPackageID.Create;
@@ -523,12 +524,30 @@ begin
     PkgID.StringToID(PkgName);
     FSelectedPkg := PackageGraph.FindPackageWithID(PkgID);
 
+    Author:='';
+    Description:='';
     if FSelectedPkg <> nil then begin
       Author:=FSelectedPkg.Author;
       Description:=FSelectedPkg.Description;
     end else begin
-      // package not loaded -> read valuesform .lpk
-      // TODO
+      // package not loaded -> read values from .lpk
+      PkgLink:=PkgLinks.FindLinkWithPackageID(PkgID);
+      if (PkgLink<>nil) and FileExistsCached(PkgLink.Filename) then begin
+        // load the package file
+        try
+          XMLConfig:=TXMLConfig.Create(PkgLink.Filename);
+          try
+            Author:=XMLConfig.GetValue('Package/Author/Value','');
+            Description:=XMLConfig.GetValue('Package/Description/Value','');
+          finally
+            XMLConfig.Free;
+          end;
+        except
+          on E: Exception do begin
+            DebugLn('TInstallPkgSetDialog.UpdatePackageInfo ERROR: ',E.Message);
+          end;
+        end;
+      end;
     end;
     if Author<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
