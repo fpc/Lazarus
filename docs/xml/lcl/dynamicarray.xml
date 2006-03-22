@@ -190,7 +190,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- destructor Visibility: public -->
       <element name="TArray.Destroy">
