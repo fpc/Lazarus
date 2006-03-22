@@ -62,34 +62,43 @@ function CheckDelphiFileExt(const Filename: string): TModalResult;
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
 function ConvertDelphiToLazarusFilename(const DelphiFilename: string;
   RenameLowercase: boolean): string;
-function ConvertDFMToLFMFilename(const DFMFilename: string;
-  KeepCase: boolean): string;
-function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
   RenameDFMFile, RenameLowercase: boolean;
   var LazarusFilename, LFMFilename: string): TModalResult;
+function FixMissingUnits(const LazarusUnitFilename: string;
+                         IsSubProc: boolean): TModalResult;
+
+// dfm/lfm
+function ConvertDFMToLFMFilename(const DFMFilename: string;
+  KeepCase: boolean): string;
+function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
   AddLRSCode: boolean): TModalResult;
-function FixMissingUnits(const LazarusUnitFilename: string;
-                         IsSubProc: boolean): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
   var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
+
+// projects
 function CheckDelphiProjectExt(const Filename: string): TModalResult;
 function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
   out LPRCode: TCodeBuffer): TModalResult;
-function ExtractOptionsFromDPR(DPRCode: TCodeBuffer;
-  AProject: TProject): TModalResult;
 
+// packages
+function ExtractOptionsFromDPK(const Filename: string;
+                               APackage: TLazPackage): TModalResult;
 
+// projects/packages
 function FindDelphiDOF(const DelphiFilename: string): string;
 function ExtractOptionsFromDOF(const DOFFilename: string;
                                AProjPkg: TObject): TModalResult;
 function FindDelphiCFG(const DelphiFilename: string): string;
 function ExtractOptionsFromCFG(const CFGFilename: string;
                                AProjPkg: TObject): TModalResult;
+function ExtractOptionsFromDelphiSource(const Filename: string;
+                                        AProjPkg: TObject): TModalResult;
 
+// file names / search paths
 function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
                                              AProject: TProject): string;
 function ExpandDelphiFilename(const Filename: string; AProject: TProject): string;
@@ -466,10 +475,17 @@ begin
                          [lbfCheckIfText,lbfUpdateFromDisk]);
 end;
 
-function ExtractOptionsFromDPR(DPRCode: TCodeBuffer; AProject: TProject
+function ExtractOptionsFromDelphiSource(const Filename: string;
+  AProjPkg: TObject): TModalResult;
+begin
+  // TODO remove compiler directives and put them into project/package
+  Result:=mrOk;
+end;
+
+function ExtractOptionsFromDPK(const Filename: string; APackage: TLazPackage
   ): TModalResult;
 begin
-  // TODO remove compiler directives in code and put them into AProject
+  // TODO
   Result:=mrOk;
 end;
 

@@ -50,7 +50,8 @@ uses
   ExprEval, DefineTemplates, CodeCache, CodeToolManager, CodeToolsStructs,
   LinkScanner,
   // IDEIntf
-  SrcEditorIntf, MsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
+  SrcEditorIntf, ComponentReg, MsgIntf, MainIntf, LazIDEIntf, PackageIntf,
+  ProjectIntf,
   // IDE
   IDEProcs, DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,
   EditorOptions, ProjectInspector, CompilerOptions, PackageDefs, PackageSystem,
@@ -79,6 +80,11 @@ function ConvertAllDelphiProjectUnits(AProject: TProject;
 // package
 function ConvertDelphiToLazarusPackage(const PackageFilename: string
                                        ): TModalResult;
+function FindDPKFilename(const LPKFilename: string): string;
+function FindAllDelphiPackageUnits(APackage: TLazPackage): TModalResult;
+function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer): TModalResult;
+function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
+                         Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
 
 // unit
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
@@ -179,7 +185,7 @@ begin
     end;
 
     // get all options from .lpr (the former .dpr)
-    Result:=ExtractOptionsFromDPR(LPRCode,AProject);
+    Result:=ExtractOptionsFromDelphiSource(LPRCode.Filename,AProject);
     if Result<>mrOk then exit;
 
     // find and convert all project files
@@ -215,7 +221,7 @@ begin
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
-    debugln('ConvertDelphiToLazarusProject gathering all project units ...');
+    debugln('FindAllDelphiProjectUnits gathering all project units ...');
     if not CodeToolBoss.FindDelphiProjectUnits(LPRCode,FoundInUnits,
                                                MissingInUnits, NormalUnits) then
     begin
@@ -223,7 +229,7 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    debugln('ConvertDelphiToLazarusProject FoundInUnits=[',FoundInUnits.Text,']',
+    debugln('FindAllDelphiProjectUnits FoundInUnits=[',FoundInUnits.Text,']',
       ' MissingInUnits=[',MissingInUnits.Text,']',
       ' NormalUnits=[',NormalUnits.Text,']');
     // warn about missing units
@@ -237,7 +243,7 @@ begin
 
     try
       // add all units to the project
-      debugln('ConvertDelphiToLazarusProject adding all project units to project ...');
+      debugln('FindAllDelphiProjectUnits adding all project units to project ...');
 
       for i:=0 to FoundInUnits.Count-1 do begin
         CurFilename:=FoundInUnits[i];
@@ -249,7 +255,7 @@ begin
           CurFilename:=AppendPathDelim(AProject.ProjectDirectory)+CurFilename;
         CurFilename:=TrimFilename(CurFilename);
         if not FileExists(CurFilename) then begin
-          DebugLn('ConvertDelphiToLazarusProject file not found: "',CurFilename,'"');
+          DebugLn('FindAllDelphiProjectUnits file not found: "',CurFilename,'"');
           continue;
         end;
         CurUnitInfo:=AProject.UnitInfoWithFilename(CurFilename);
@@ -306,14 +312,14 @@ begin
       // clear caches
       AProject.DefineTemplates.SourceDirectoriesChanged;
       CodeToolBoss.DefineTree.ClearCache;
-      DebugLn('ConvertDelphiToLazarusProject UnitPath="',AProject.CompilerOptions.OtherUnitFiles,'"');
+      DebugLn('FindAllDelphiProjectUnits UnitPath="',AProject.CompilerOptions.OtherUnitFiles,'"');
     end;
 
     // save project
-    debugln('ConvertDelphiToLazarusProject Saving project ...');
+    debugln('FindAllDelphiProjectUnits Saving project ...');
     Result:=LazarusIDE.DoSaveProject([]);
     if Result<>mrOk then begin
-      DebugLn('ConvertDelphiToLazarusProject failed saving project');
+      DebugLn('FindAllDelphiProjectUnits failed saving project');
       exit;
     end;
 
@@ -371,12 +377,18 @@ begin
   end;
 end;
 
+function FindDPKFilename(const LPKFilename: string): string;
+begin
+  Result:=ChangeFileExt(LPKFilename,'.dpk');
+  Result:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(Result);
+end;
+
 function ConvertDelphiToLazarusPackage(const PackageFilename: string
   ): TModalResult;
 var
   APackage: TLazPackage;
   LPKFilename: String;
-  ConvertUnitFlags: TConvertDelphiToLazarusUnitFlags;
+  DPKFilename: String;
 begin
   debugln('ConvertDelphiToLazarusPackage PackageFilename="',PackageFilename,'"');
   IDEMessagesWindow.Clear;
@@ -409,40 +421,217 @@ begin
   // set Delphi mode for all package source directories
   SetCompilerModeForDefineTempl(APackage.DefineTemplates.CustomDefines);
   try
-
     // init codetools
     if not LazarusIDE.BeginCodeTools then begin
-      DebugLn('ConvertDelphiToLazarusProject failed BeginCodeTools');
+      DebugLn('ConvertDelphiToLazarusPackage failed BeginCodeTools');
       Result:=mrCancel;
       exit;
     end;
 
-    // fix .lpr
-    ConvertUnitFlags:=[cdtlufIsSubProc,cdtlufDoNotSetDelphiMode];
-    NotImplementedDialog('Converting .dpk and units');
-    //Result:=ConvertDelphiToLazarusUnit(LPRCode.Filename,ConvertUnitFlags);
-    //if Result=mrAbort then begin
-      //DebugLn('ConvertDelphiToLazarusProject failed converting unit ',LPRCode.Filename);
-      //exit;
-    //end;
+    // get all options from the .dpk
+    DPKFilename:=FindDPKFilename(PackageFilename);
+    if DPKFilename<>'' then begin
+      Result:=ExtractOptionsFromDPK(DPKFilename,APackage);
+      if Result<>mrOk then exit;
+    end;
 
-    //// get all options from .lpr (the former .dpk)
-    //Result:=ExtractOptionsFromDPK(LPRCode,AProject);
-    //if Result<>mrOk then exit;
+    // find and convert all project files
+    Result:=FindAllDelphiPackageUnits(APackage);
+    if Result<>mrOk then exit;
 
-    //// find and convert all project files
-    //Result:=FindAllDelphiProjectUnits(AProject);
-    //if Result<>mrOk then exit;
-
-    //// convert all project files
-    //Result:=ConvertAllDelphiProjectUnits(AProject,[cdtlufIsSubProc,cdtlufCheckLFM]);
-    //if Result<>mrOk then exit;
+    // convert all package files
+    Result:=ConvertAllDelphiPackageUnits(APackage,[cdtlufIsSubProc,cdtlufCheckLFM]);
+    if Result<>mrOk then exit;
   finally
     UnsetCompilerModeForDefineTempl(APackage.DefineTemplates.CustomDefines);
   end;
 
   debugln('ConvertDelphiToLazarusProject Done');
   Result:=mrOk;
+end;
+
+function FindAllDelphiPackageUnits(APackage: TLazPackage): TModalResult;
+var
+  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  DPKCode: TCodeBuffer;
+  NotFoundUnits: String;
+  i: Integer;
+  NewSearchPath: String;
+  CurFilename: string;
+  p: LongInt;
+  OffendingUnit: TPkgFile;
+  PkgFile: TPkgFile;
+begin
+  Result:=LoadDPKFile(APackage,DPKCode);
+  if Result<>mrOk then exit;
+
+  FoundInUnits:=nil;
+  MissingInUnits:=nil;
+  NormalUnits:=nil;
+  try
+    debugln('FindAllDelphiPackageUnits gathering all units ...');
+    NotImplementedDialog('FindAllDelphiPackageUnits: Reading .dpk file');
+    exit(mrAbort);
+    
+    //if not CodeToolBoss.FindDelphiPackageUnits(DPKCode,FoundInUnits,
+                                               //MissingInUnits, NormalUnits) then
+    //begin
+      //LazarusIDE.DoJumpToCodeToolBossError;
+      //Result:=mrCancel;
+      //exit;
+    //end;
+    debugln('FindAllDelphiPackageUnits FoundInUnits=[',FoundInUnits.Text,']',
+      ' MissingInUnits=[',MissingInUnits.Text,']',
+      ' NormalUnits=[',NormalUnits.Text,']');
+    // warn about missing units
+    if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
+      NotFoundUnits:=MissingInUnits.Text;
+      Result:=QuestionDlg('Units not found',
+        'Some units of the delphi package are missing:'#13
+        +NotFoundUnits,mtWarning,[mrIgnore,mrAbort],0);
+      if Result<>mrIgnore then exit;
+    end;
+
+    try
+      // add all units to the package
+      debugln('FindAllDelphiPackageUnits adding all units to package ...');
+
+      for i:=0 to FoundInUnits.Count-1 do begin
+        CurFilename:=FoundInUnits[i];
+        p:=System.Pos(' in ',CurFilename);
+        if p>0 then
+          CurFilename:=copy(CurFilename,p+4,length(CurFilename));
+        if CurFilename='' then continue;
+        if not FilenameIsAbsolute(CurFilename) then
+          CurFilename:=AppendPathDelim(APackage.Directory)+CurFilename;
+        CurFilename:=TrimFilename(CurFilename);
+        if not FileExists(CurFilename) then begin
+          DebugLn('FindAllDelphiPackageUnits file not found: "',CurFilename,'"');
+          continue;
+        end;
+        PkgFile:=APackage.FindPkgFile(CurFilename,false,true,false);
+        if PkgFile=nil then begin
+          if FilenameIsPascalUnit(CurFilename) then begin
+            // check unitname
+            OffendingUnit:=APackage.FindUnit(ExtractFileNameOnly(CurFilename));
+            if OffendingUnit<>nil then begin
+              Result:=QuestionDlg('Unitname exists twice',
+                'There are two units with the same unitname:'#13
+                +OffendingUnit.Filename+#13
+                +CurFilename+#13,
+                mtWarning,[mrNo,'Remove second',mrAbort],0);
+              case Result of
+              mrNo:  continue;
+              mrIgnore: ;
+              else
+                Result:=mrAbort;
+                exit;
+              end;
+            end;
+          end;
+
+          // add new unit to package
+          APackage.AddFile(CurFilename,ExtractFileNameOnly(CurFilename),
+                           pftUnit,[pffAddToPkgUsesSection],cpNormal);
+        end;
+      end;
+
+    finally
+      // set unit paths to find all project units
+      NewSearchPath:=MergeSearchPaths(APackage.CompilerOptions.OtherUnitFiles,
+                       APackage.SourceDirectories.CreateSearchPathFromAllFiles);
+      NewSearchPath:=RemoveSearchPaths(NewSearchPath,
+                                     '.;'+VirtualDirectory+';'+VirtualTempDir
+                                     +';'+APackage.Directory);
+      APackage.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
+               RemoveNonExistingPaths(NewSearchPath,APackage.Directory));
+      // set include path
+      NewSearchPath:=MergeSearchPaths(APackage.CompilerOptions.IncludeFiles,
+                       APackage.SourceDirectories.CreateSearchPathFromAllFiles);
+      NewSearchPath:=RemoveSearchPaths(NewSearchPath,
+                                     '.;'+VirtualDirectory+';'+VirtualTempDir
+                                     +';'+APackage.Directory);
+      APackage.CompilerOptions.IncludeFiles:=MinimizeSearchPath(
+               RemoveNonExistingPaths(NewSearchPath,APackage.Directory));
+      // clear caches
+      APackage.DefineTemplates.SourceDirectoriesChanged;
+      CodeToolBoss.DefineTree.ClearCache;
+      DebugLn('FindAllDelphiPackageUnits UnitPath="',APackage.CompilerOptions.OtherUnitFiles,'"');
+    end;
+
+    // save package
+    debugln('FindAllDelphiPackageUnits Saving package ...');
+    Result:=PackageEditors.SavePackage(APackage,false);
+    if Result<>mrOk then begin
+      DebugLn('FindAllDelphiPackageUnits failed saving package');
+      exit;
+    end;
+
+  finally
+    FoundInUnits.Free;
+    MissingInUnits.Free;
+    NormalUnits.Free;
+  end;
+
+  Result:=mrOk;
+end;
+
+function LoadDPKFile(APackage: TLazPackage; out DPKCode: TCodeBuffer
+  ): TModalResult;
+var
+  DPKFilename: String;
+begin
+  DPKFilename:=FindDPKFilename(APackage.Filename);
+  if not FileExistsCached(DPKFilename) then begin
+    Result:=MessageDlg('File not found',
+      'Delphi package main source (.dpk) file not found for package'#13
+      +APackage.Filename,mtError,[mbAbort],0);
+    exit;
+  end;
+  Result:=LoadCodeBuffer(DPKCode,DPKFilename,[]);
+end;
+
+function ConvertAllDelphiPackageUnits(APackage: TLazPackage;
+  Flags: TConvertDelphiToLazarusUnitFlags): TModalResult;
+
+  function Convert(CurFlags: TConvertDelphiToLazarusUnitFlags): TModalResult;
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+  begin
+    // convert all units
+    i:=0;
+    while i<APackage.FileCount do begin
+      PkgFile:=APackage.Files[i];
+      Result:=ConvertDelphiToLazarusUnit(PkgFile.Filename,
+                                         CurFlags+[cdtlufIsSubProc]);
+      if Result=mrAbort then exit;
+      if Result=mrCancel then begin
+        Result:=QuestionDlg('Failed converting unit',
+          'Failed to convert unit'+#13
+          +PkgFile.Filename+#13,
+          mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
+        if Result=mrAbort then exit;
+      end;
+      if LazarusIDE.DoCloseEditorFile(PkgFile.Filename,
+        [cfSaveFirst,cfQuiet]) = mrAbort
+      then
+        exit;
+      inc(i);
+    end;
+    Result:=mrOk;
+  end;
+
+begin
+  // first convert all units
+  Result:=Convert(Flags-[cdtlufCheckLFM]);
+  if Result<>mrOk then exit;
+  // now the units can be parsed
+  if cdtlufCheckLFM in Flags then begin
+    // fix the .lfm files
+    Result:=Convert(Flags);
+    if Result<>mrOk then exit;
+  end;
 end;
 
 function ConvertDelphiToLazarusUnit(const DelphiFilename: string;
