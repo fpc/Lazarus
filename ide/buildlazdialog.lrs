@@ -1,0 +1,88 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TConfigureBuildLazarusDlg','FORMDATA',[
+  'TPF0'#25'TConfigureBuildLazarusDlg'#24'ConfigureBuildLazarusDlg'#13'ActiveCo'
+  +'ntrol'#7#14'BuildAllButton'#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimi'
+  +'ze'#0#11'BorderStyle'#7#12'bsToolWindow'#7'Caption'#6#24'ConfigureBuildLaza'
+  +'rusDlg'#12'ClientHeight'#3#222#1#11'ClientWidth'#3#223#1#8'OnCreate'#7#10'F'
+  +'ormCreate'#13'PixelsPerInch'#2'p'#8'Position'#7#14'poScreenCenter'#18'HorzS'
+  +'crollBar.Page'#3#222#1#18'VertScrollBar.Page'#3#221#1#4'Left'#3#203#1#6'Hei'
+  +'ght'#3#222#1#3'Top'#3','#1#5'Width'#3#223#1#0#6'TLabel'#12'OptionsLabel'#7
+  +'Caption'#6#8'Options:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2#10#6
+  +'Height'#2#13#3'Top'#3#26#1#5'Width'#2'/'#0#0#6'TLabel'#13'TargetOSLabel'#7
+  +'Caption'#6#10'Target OS:'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2
+  +#10#6'Height'#2#13#3'Top'#3'7'#1#5'Width'#2'='#0#0#6'TLabel'#20'TargetDirect'
+  +'oryLabel'#7'Caption'#6#17'Target Directory:'#5'Color'#7#6'clNone'#11'Parent'
+  +'Color'#8#4'Left'#2#10#6'Height'#2#13#3'Top'#3'U'#1#5'Width'#2'^'#0#0#6'TLab'
+  +'el'#14'TargetCPULabel'#7'Caption'#6#10'Target CPU'#5'Color'#7#6'clNone'#11
+  +'ParentColor'#8#4'Left'#2#10#6'Height'#2#13#3'Top'#3'u'#1#5'Width'#2'A'#0#0#7
+  +'TButton'#14'BuildAllButton'#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6
+  +#18'Set to "Build All"'#7'OnClick'#7#19'BuildAllButtonClick'#8'TabOrder'#2#0
+  +#4'Left'#2#10#6'Height'#2#25#3'Top'#2#12#5'Width'#3#194#0#0#0#9'TCheckBox'#16
+  +'CleanAllCheckBox'#7'Caption'#6#9'Clean All'#8'TabOrder'#2#1#4'Left'#3'='#1#6
+  +'Height'#2#24#3'Top'#2#12#5'Width'#2'O'#0#0#5'TEdit'#11'OptionsEdit'#8'TabOr'
+  +'der'#2#5#4'Left'#3#156#0#6'Height'#2#23#3'Top'#3#26#1#5'Width'#3'6'#1#0#0#5
+  +'TEdit'#12'TargetOSEdit'#8'TabOrder'#2#6#4'Left'#3#156#0#6'Height'#2#23#3'To'
+  +'p'#3'7'#1#5'Width'#3'6'#1#0#0#9'TComboBox'#23'TargetDirectoryComboBox'#16'A'
+  +'utoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#9
+  +'MaxLength'#2#0#8'TabOrder'#2#7#4'Left'#3#156#0#6'Height'#2#25#3'Top'#3'U'#1
+  +#5'Width'#3#30#1#0#0#7'TButton'#21'TargetDirectoryButton'#25'BorderSpacing.I'
+  +'nnerBorder'#2#2#7'Caption'#6#3'...'#7'OnClick'#7#26'TargetDirectoryButtonCl'
+  +'ick'#8'TabOrder'#2#8#4'Left'#3#188#1#6'Height'#2#25#3'Top'#3'U'#1#5'Width'#2
+  +#22#0#0#11'TRadioGroup'#22'LCLInterfaceRadioGroup'#8'AutoFill'#9#7'Caption'#6
+  +#22'LCLInterfaceRadioGroup'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSiz'
+  +'ing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7#24'crsHomogen'
+  +'ousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomogenousChildResi'
+  +'ze'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'ChildSizing.Sh'
+  +'rinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29'cclLeftToRig'
+  +'htThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#8'TabOrder'#2#3#4'Le'
+  +'ft'#3'='#1#6'Height'#3#206#0#3'Top'#2'*'#5'Width'#3#149#0#0#0#9'TCheckBox'
+  +#26'WithStaticPackagesCheckBox'#7'Caption'#6#26'WithStaticPackagesCheckBox'#8
+  +'TabOrder'#2#4#4'Left'#3'='#1#6'Height'#2#24#3'Top'#3#252#0#5'Width'#3#194#0
+  +#0#0#9'TCheckBox'#25'RestartAfterBuildCheckBox'#7'Caption'#6#25'RestartAfter'
+  +'BuildCheckBox'#8'TabOrder'#2#10#4'Left'#2#10#6'Height'#2#24#3'Top'#3#152#1#5
+  +'Width'#3#176#0#0#0#9'TCheckBox'#20'ConfirmBuildCheckBox'#7'Caption'#6#20'Co'
+  +'nfirmBuildCheckBox'#8'TabOrder'#2#11#4'Left'#2#10#6'Height'#2#24#3'Top'#3
+  +#178#1#5'Width'#3#154#0#0#0#7'TButton'#8'OKButton'#25'BorderSpacing.InnerBor'
+  +'der'#2#2#7'Caption'#6#2'OK'#7'OnClick'#7#13'OKButtonClick'#8'TabOrder'#2#12
+  +#4'Left'#3#26#1#6'Height'#2#25#3'Top'#3#177#1#5'Width'#2'K'#0#0#7'TButton'#12
+  +'CancelButton'#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#6'Cancel'#7'On'
+  +'Click'#7#17'CancelButtonClick'#8'TabOrder'#2#13#4'Left'#3#135#1#6'Height'#2
+  +#25#3'Top'#3#177#1#5'Width'#2'K'#0#0#8'TListBox'#12'ItemsListBox'#10'ItemHei'
+  +'ght'#2#25#10'OnDrawItem'#7#20'ItemsListBoxDrawItem'#11'OnMouseDown'#7#21'It'
+  +'emsListBoxMouseDown'#5'Style'#7#16'lbOwnerDrawFixed'#8'TabOrder'#2#2#8'TopI'
+  +'ndex'#2#255#4'Left'#2#10#6'Height'#3#234#0#3'Top'#2'*'#5'Width'#3#28#1#0#0#9
+  +'TComboBox'#17'TargetCPUComboBox'#16'AutoCompleteText'#11#22'cbactEndOfLineC'
+  +'omplete'#20'cbactSearchAscending'#0#9'MaxLength'#2#0#8'TabOrder'#2#9#4'Left'
+  +#3#156#0#6'Height'#2#25#3'Top'#3'u'#1#5'Width'#3#30#1#0#0#10'TImageList'#9'I'
+  +'mageList'#6'Height'#2#20#5'Width'#2#20#4'left'#2#12#3'top'#3#216#0#6'Bitmap'
+  +#10'{'#6#0#0'li'#3#0#0#0#20#0#0#0#20#0#0#0#198#1#0#0'/* XPM */'#10'static ch'
+  +'ar * menu_stepover_xpm[] = {'#10'"16 16 5 1",'#10'" '#9'c None",'#10'".'#9
+  +'c #000000",'#10'"+'#9'c #000083",'#10'"@'#9'c #FFFFFF",'#10'"#'#9'c #838583'
+  +'",'#10'"     .  .       ",'#10'"  .        .    ",'#10'"                ",'
+  +#10'".            .  ",'#10'"                ",'#10'"           .....",'#10
+  +'"            ... ",'#10'"             .  ",'#10'"    +++++++     ",'#10'"  '
+  +'  +@@@@@+#    ",'#10'"    +@@@@@+#    ",'#10'"    +@@@@@+#    ",'#10'"    +'
+  +'@@@@@+#    ",'#10'"    +@@@@@+#    ",'#10'"    +++++++#    ",'#10'"     ###'
+  +'####    "};'#10't'#2#0#0'/* XPM */'#10'static char * thread_xpm[] = {'#10'"'
+  ,'16 16 17 1",'#10'" '#9'c None",'#10'".'#9'c #FF80FF",'#10'"+'#9'c #848400",'
+  +#10'"@'#9'c #848484",'#10'"#'#9'c #C6C6C6",'#10'"$'#9'c #FFFF00",'#10'"%'#9
+  +'c #FFFFFF",'#10'"&'#9'c #FFFFFF",'#10'"*'#9'c #FFFFFF",'#10'"='#9'c #FFFFFF'
+  +'",'#10'"-'#9'c #FFFFFF",'#10'";'#9'c #FFFFFF",'#10'">'#9'c #FFFFFF",'#10'",'
+  +#9'c #FFFFFF",'#10'"'''#9'c #FFFFFF",'#10'")'#9'c #FFFFFF",'#10'"!'#9'c #000'
+  +'000",'#10'"                ",'#10'"                ",'#10'"                '
+  +'",'#10'"     ++++       ",'#10'"   ++!$!+!!     ",'#10'"   +$$$$$+!     ",'
+  +#10'"  ++$+!+$!!!    ",'#10'"  +$$!@!$$+!    ",'#10'"  ++$+!+$!!!    ",'#10
+  +'"  @+$$$$$+!!    ",'#10'"   @+!$!+!!     ",'#10'"    @!!!!       ",'#10'"  '
+  +'              ",'#10'"                ",'#10'"                ",'#10'"     '
+  +'           "};'#10''''#2#0#0'/* XPM */'#10'static char * all_xpm[] = {'#10
+  +'"16 16 12 1",'#10'" '#9'c None",'#10'".'#9'c #5A3900",'#10'"+'#9'c #634A18"'
+  +','#10'"@'#9'c #000000",'#10'"#'#9'c #FFBD4A",'#10'"$'#9'c #FFAD00",'#10'"%'
+  +#9'c #B57300",'#10'"&'#9'c #946300",'#10'"*'#9'c #6B4A00",'#10'"='#9'c #8484'
+  +'84",'#10'"-'#9'c #FFD68C",'#10'";'#9'c #DE9400",'#10'"   ...+         ",'#10
+  +'" ..@#@.@@       ",'#10'" .#$$$$%@       ",'#10'"+.$&@&...+      ",'#10'".#'
+  +'$@..@#@.@@    ",'#10'".%$&.#$$$$%@    ",'#10'"*%$+.$&@&...+   ",'#10'" *%.#'
+  +'$@..@#@.@@ ",'#10'"  *.%$&.#$$$$%@ ",'#10'"   *%$+.$&@&$@@@",'#10'"    *%.#'
+  +'$@=@-;%@",'#10'"     *.%$&@-;@@@",'#10'"      *%$$-;;%@@",'#10'"       *%@;'
+  +'@%@@ ",'#10'"        *@@@@   ",'#10'"                "};'#10#10#0#0#0
+]);

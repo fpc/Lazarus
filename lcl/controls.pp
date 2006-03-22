@@ -1708,7 +1708,7 @@ type
     function  GetTextLen: Integer; override;
     procedure Invalidate; override;
     procedure InsertControl(AControl: TControl);
-    procedure InsertControl(AControl: TControl; Index: integer);
+    procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl);
     procedure Repaint; override;
     Procedure SetFocus; virtual;

@@ -22,7 +22,12 @@
   Author: Mattias Gaertner
 
   Abstract:
-    This unit contains visual components for docking.
+    This unit contains visual components for docking and streaming.
+
+  ToDo:
+    - restoring layout, when a docked control becomes visible
+    - save TLazDockConfigNode to stream
+    - load TLazDockConfigNode from stream
 }
 unit LDockCtrl;
 
@@ -31,12 +36,26 @@ unit LDockCtrl;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Forms, Menus, LCLStrConsts,
-  LDockCtrlEdit, LDockTree;
+  Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, Menus, LCLStrConsts,
+  StringHashList, LDockCtrlEdit, LDockTree;
+
+type
+  TNonDockConfigNames = (
+    ndcnControlName, // '-Name ' + AControl.Name
+    ndcnChildIndex,  // '-ID ' + IntToStr(AControl index in Parent) + AControl.ClassName
+    ndcnParent       // '-Parent' : AControl.Parent
+    );
+
+const
+  NonDockConfigNamePrefixes: array[TNonDockConfigNames] of string = (
+    '-Name ',
+    '-ID ',
+    '-Parent');
 
 type
   TLDConfigNodeType = (
     ldcntControl,
+    ldcntForm,
     ldcntSplitter,
     ldcntPages,
     ldcntPage
@@ -44,7 +63,7 @@ type
 
   { TLazDockConfigNode }
 
-  TLazDockConfigNode = class
+  TLazDockConfigNode = class(TPersistent)
   private
     FBounds: TRect;
     FName: string;
@@ -60,10 +79,13 @@ type
     procedure SetParent(const AValue: TLazDockConfigNode);
     procedure SetSides(Side: TAnchorKind; const AValue: TLazDockConfigNode);
     procedure SetTheType(const AValue: TLDConfigNodeType);
+    procedure DoAdd(ChildNode: TLazDockConfigNode);
+    procedure DoRemove(ChildNode: TLazDockConfigNode);
   public
-    constructor Create(const AName: string);
+    constructor Create(ParentNode: TLazDockConfigNode; const AName: string);
     destructor Destroy; override;
     procedure Clear;
+    function FindByName(const AName: string): TLazDockConfigNode;
   public
     property TheType: TLDConfigNodeType read FTheType write SetTheType;
     property Name: string read FName write SetName;
@@ -71,7 +93,7 @@ type
     property Parent: TLazDockConfigNode read FParent write SetParent;
     property Sides[Side: TAnchorKind]: TLazDockConfigNode read GetSides write SetSides;
     property ChildCount: Integer read GetChildCount;
-    property Childs[Index: integer]: TLazDockConfigNode read GetChilds;
+    property Childs[Index: integer]: TLazDockConfigNode read GetChilds; default;
   end;
 
   TCustomLazControlDocker = class;
@@ -98,6 +120,7 @@ type
                               Ignore: TCustomLazControlDocker): string;
     procedure SaveToStream(Stream: TStream);
     function GetControlConfigName(AControl: TControl): string;
+    procedure WriteDebugReport;
   public
     property Manager: TAnchoredDockManager read FManager;
     property DockerCount: Integer read GetDockerCount;
@@ -110,12 +133,16 @@ type
   published
   end;
 
-  { TCustomLazControlDocker - a component to mark a form for the TLazDockingManager }
+  { TCustomLazControlDocker
+    A component to connect a form to the TLazDockingManager.
+    When the control gets visible TCustomLazControlDocker restores the layout.
+    Before the control gets invisible, TCustomLazControlDocker saves the layout.
+    }
 
   TCustomLazControlDocker = class(TComponent)
   private
-    FConfigRootNode: TLazDockConfigNode;
-    FConfigSelfNode: TLazDockConfigNode;
+    FConfigRootNode: TLazDockConfigNode;// the root node of the config tree
+    FConfigSelfNode: TLazDockConfigNode;// the node of 'Control'
     FControl: TControl;
     FDockerName: string;
     FExtendPopupMenu: boolean;
@@ -131,13 +158,15 @@ type
   protected
     procedure UpdatePopupMenu; virtual;
     procedure Loaded; override;
-    procedure ShowDockingEditor; virtual;
     function GetLocalizedName: string;
     procedure ControlVisibleChanging(Sender: TObject);
     procedure ControlVisibleChanged(Sender: TObject);
-    procedure GetLayoutFromControl;
-    procedure ClearConfigNodes;
   public
+    procedure ShowDockingEditor; virtual;
+    procedure ClearConfigNodes;
+    procedure GetLayoutFromControl;
+    function GetControlName(AControl: TControl): string;
+    procedure WriteConfigTreeDebugReport;
     constructor Create(TheOwner: TComponent); override;
     property Control: TControl read FControl write SetControl;
     property Manager: TCustomLazDockingManager read FManager write SetManager;
@@ -314,7 +343,7 @@ begin
     GetLayoutFromControl;
   end else begin
     // the control will become visible -> dock it to restore the last layout
-    
+    RaiseGDBException('TCustomLazControlDocker.ControlVisibleChanging TODO restore layout');
   end;
 end;
 
@@ -323,21 +352,94 @@ begin
 
 end;
 
+function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
+var
+  i: Integer;
+begin
+  Result:=Manager.GetControlConfigName(AControl);
+  if Result='' then begin
+    if AControl=Control.Parent then
+      Result:=NonDockConfigNamePrefixes[ndcnParent]
+    else if AControl.Name<>'' then
+      Result:=NonDockConfigNamePrefixes[ndcnControlName]+AControl.Name
+    else if AControl.Parent<>nil then begin
+      i:=AControl.Parent.ControlCount-1;
+      while (i>=0) and (AControl.Parent.Controls[i]<>AControl) do dec(i);
+      Result:=NonDockConfigNamePrefixes[ndcnChildIndex]+IntToStr(i)
+                   +AControl.ClassName;
+    end;
+  end;
+end;
+
 procedure TCustomLazControlDocker.GetLayoutFromControl;
 
-  function AddNode(AControl: TControl): TLazDockConfigNode;
+  procedure CopyChildsLayout(ParentNode: TLazDockConfigNode;
+    ParentNodeControl: TWinControl);
+  // saves for each child node the names of the anchor side controls
+  var
+    i: Integer;
+    ChildNode: TLazDockConfigNode;
+    ChildControl: TControl;
+    a: TAnchorKind;
+    ChildNames: TStringHashList;// name to control mapping
+    ChildName: String;
+    CurAnchorControl: TControl;
+    CurAnchorCtrlName: String;
+    CurAnchorNode: TLazDockConfigNode;
+  begin
+    ChildNames:=TStringHashList.Create(false);
+    try
+      // build mapping of name to control
+      ChildNames.Data[ParentNode.Name]:=ParentNodeControl;
+      for i:=0 to ParentNodeControl.ControlCount-1 do begin
+        ChildControl:=ParentNodeControl.Controls[i];
+        ChildName:=GetControlName(ChildControl);
+        if ChildName<>'' then
+          ChildNames.Data[ChildName]:=ChildControl;
+      end;
+      // build mapping control to node
+      
+      // set 'Sides'
+      for i:=0 to ParentNode.ChildCount-1 do begin
+        ChildNode:=ParentNode[i];
+        ChildControl:=TControl(ChildNames.Data[ChildNode.Name]);
+        if ChildControl=nil then continue;
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          CurAnchorControl:=ChildControl.AnchorSide[a].Control;
+          if CurAnchorControl=nil then continue;
+          if CurAnchorControl=ParentNodeControl then
+            CurAnchorNode:=ParentNode
+          else begin
+            CurAnchorCtrlName:=GetControlName(CurAnchorControl);
+            CurAnchorNode:=ParentNode.FindByName(CurAnchorCtrlName);
+            if CurAnchorNode=nil then
+              RaiseGDBException('inconsistency');
+          end;
+          DebugLn('CopyChildsLayout ',DbgSName(CurAnchorControl),' CurAnchorCtrlName="',CurAnchorCtrlName,'"');
+          ChildNode.Sides[a]:=CurAnchorNode;
+        end;
+      end;
+    finally
+      ChildNames.Free;
+    end;
+  end;
+
+  function AddNode(ParentNode: TLazDockConfigNode;
+    AControl: TControl): TLazDockConfigNode;
   var
     i: Integer;
     CurChildControl: TControl;
     NeedChildNodes: boolean;
   begin
-    Result:=TLazDockConfigNode.Create(Manager.GetControlConfigName(AControl));
+    Result:=TLazDockConfigNode.Create(ParentNode,GetControlName(AControl));
     if AControl=Control then
       FConfigSelfNode:=Result;
       
     // The Type
     if AControl is TLazDockSplitter then
       Result.FTheType:=ldcntSplitter
+    else if AControl is TLazDockForm then
+      Result.FTheType:=ldcntForm
     else if AControl is TLazDockPages then
       Result.FTheType:=ldcntPages
     else if AControl is TLazDockPage then
@@ -356,7 +458,7 @@ procedure TCustomLazControlDocker.GetLayoutFromControl;
       if not NeedChildNodes then begin
         for i:=0 to TWinControl(AControl).ControlCount-1 do begin
           CurChildControl:=TWinControl(AControl).Controls[i];
-          if Manager.GetControlConfigName(CurChildControl)<>'' then begin
+          if Manager.FindDockerByControl(CurChildControl,nil)<>nil then begin
             NeedChildNodes:=true;
             break;
           end;
@@ -366,10 +468,12 @@ procedure TCustomLazControlDocker.GetLayoutFromControl;
       if NeedChildNodes then begin
         for i:=0 to TWinControl(AControl).ControlCount-1 do begin
           CurChildControl:=TWinControl(AControl).Controls[i];
-          AddNode(CurChildControl);
+          AddNode(Result,CurChildControl);
+        end;
+        for i:=0 to Result.ChildCount-1 do begin
         end;
       end;
-
+      CopyChildsLayout(Result,TWinControl(AControl));
     end;
   end;
 
@@ -380,8 +484,9 @@ begin
   if (Control=nil) or (Manager=nil) then exit;
   
   RootControl:=Control;
-  while RootControl<>nil do RootControl:=RootControl.Parent;
-  FConfigRootNode:=AddNode(RootControl);
+  while RootControl.Parent<>nil do
+    RootControl:=RootControl.Parent;
+  FConfigRootNode:=AddNode(nil,RootControl);
 end;
 
 procedure TCustomLazControlDocker.ClearConfigNodes;
@@ -389,6 +494,38 @@ begin
   FConfigSelfNode:=nil;
   FConfigRootNode.Free;
   FConfigRootNode:=nil;
+end;
+
+procedure TCustomLazControlDocker.WriteConfigTreeDebugReport;
+
+  procedure WriteNode(const Prefix: string; ANode: TLazDockConfigNode);
+  var
+    a: TAnchorKind;
+    i: Integer;
+    s: string;
+  begin
+    if ANode=nil then exit;
+    DbgOut(Prefix,'Name="'+ANode.Name+'"');
+    DbgOut(' Type=',GetEnumName(TypeInfo(TLDConfigNodeType),ord(ANode.TheType)));
+    DbgOut(' Bounds='+dbgs(ANode.Bounds));
+    DbgOut(' Childs='+dbgs(ANode.ChildCount));
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if ANode.Sides[a]=nil then continue;
+      s:=ANode.Sides[a].Name;
+      if s='' then
+        s:='?';
+      DbgOut(' '+AnchorNames[a]+'="'+s+'"');
+    end;
+    debugln;
+    for i:=0 to ANode.ChildCount-1 do begin
+      WriteNode(Prefix+'  ',ANode[i]);
+    end;
+  end;
+
+begin
+  DebugLn('TCustomLazControlDocker.WriteConfigTreeDebugReport '
+     ,' Root=',dbgs(ConfigRootNode),' SelfNode=',dbgs(ConfigSelfNode));
+  WriteNode('  ',ConfigRootNode);
 end;
 
 constructor TCustomLazControlDocker.Create(TheOwner: TComponent);
@@ -529,7 +666,7 @@ end;
 
 procedure TCustomLazDockingManager.SaveToStream(Stream: TStream);
 begin
-
+  RaiseGDBException('TODO TCustomLazDockingManager.SaveToStream');
 end;
 
 function TCustomLazDockingManager.GetControlConfigName(AControl: TControl
@@ -539,9 +676,21 @@ var
 begin
   Docker:=FindDockerByControl(AControl,nil);
   if Docker<>nil then
-    Result:=Docker.Name
+    Result:=Docker.DockerName
   else
-    Result:=''
+    Result:='';
+end;
+
+procedure TCustomLazDockingManager.WriteDebugReport;
+var
+  i: Integer;
+  ADocker: TCustomLazControlDocker;
+begin
+  DebugLn('TCustomLazDockingManager.WriteDebugReport DockerCount=',dbgs(DockerCount));
+  for i:=0 to DockerCount-1 do begin
+    ADocker:=Dockers[i];
+    DebugLn('  ',dbgs(i),' Name="',ADocker.Name,'" DockerName="',ADocker.DockerName,'"');
+  end;
 end;
 
 { TLazDockConfigNode }
@@ -553,7 +702,10 @@ end;
 
 function TLazDockConfigNode.GetChildCount: Integer;
 begin
-  Result:=FChilds.Count;
+  if FChilds<>nil then
+    Result:=FChilds.Count
+  else
+    Result:=0;
 end;
 
 function TLazDockConfigNode.GetChilds(Index: integer): TLazDockConfigNode;
@@ -576,7 +728,11 @@ end;
 procedure TLazDockConfigNode.SetParent(const AValue: TLazDockConfigNode);
 begin
   if FParent=AValue then exit;
+  if FParent<>nil then
+    FParent.DoRemove(Self);
   FParent:=AValue;
+  if FParent<>nil then
+    FParent.DoAdd(Self);
 end;
 
 procedure TLazDockConfigNode.SetSides(Side: TAnchorKind;
@@ -591,10 +747,22 @@ begin
   FTheType:=AValue;
 end;
 
-constructor TLazDockConfigNode.Create(const AName: string);
+procedure TLazDockConfigNode.DoAdd(ChildNode: TLazDockConfigNode);
+begin
+  if FChilds=nil then FChilds:=TFPList.Create;
+  FChilds.Add(ChildNode);
+end;
+
+procedure TLazDockConfigNode.DoRemove(ChildNode: TLazDockConfigNode);
+begin
+  FChilds.Remove(ChildNode);
+end;
+
+constructor TLazDockConfigNode.Create(ParentNode: TLazDockConfigNode;
+  const AName: string);
 begin
   FName:=AName;
-  FChilds:=TFPList.Create;
+  Parent:=ParentNode;
 end;
 
 destructor TLazDockConfigNode.Destroy;
@@ -609,8 +777,22 @@ procedure TLazDockConfigNode.Clear;
 var
   i: Integer;
 begin
+  if FChilds=nil then exit;
   for i:=ChildCount-1 downto 0 do Childs[i].Free;
   FChilds.Clear;
+end;
+
+function TLazDockConfigNode.FindByName(const AName: string
+  ): TLazDockConfigNode;
+var
+  i: Integer;
+begin
+  if FChilds<>nil then
+    for i:=0 to FChilds.Count-1 do begin
+      Result:=Childs[i];
+      if CompareText(Result.Name,AName)=0 then exit;
+    end;
+  Result:=nil;
 end;
 
 end.

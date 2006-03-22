@@ -82,23 +82,35 @@ type
   
   { TLazDockForm
     The default DockSite for a TLazDockTree
-  
-    If DockZone is a leaf (DockZone.ChildCount=0) then
-      Only child control is DockZone.ChildControl
-    else
-      if DockZone.Orientation in [doHorizontal,doVertical] then
-        Child controls are TLazDockForm and TSplitter
-      else if DockZone.Orientation=doPages then
-        Child control is a TLazDockPages
+    
+    Note: AnchorDocking does not use DockZone.
+
+    if DockZone<>nil then
+      If DockZone is a leaf (DockZone.ChildCount=0) then
+        Only child control is DockZone.ChildControl
+      else
+        if DockZone.Orientation in [doHorizontal,doVertical] then
+          Child controls are TLazDockForm and TSplitter
+        else if DockZone.Orientation=doPages then
+          Child control is a TLazDockPages
   }
 
   TLazDockForm = class(TCustomForm)
   private
     FDockZone: TDockZone;
+    FMainControl: TControl;
     FPageControl: TLazDockPages;
+    procedure SetMainControl(const AValue: TControl);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure InsertControl(AControl: TControl; Index: integer); override;
+    function CloseQuery: boolean; override;
   public
+    procedure UpdateCaption; virtual;
+    function FindMainControlCandidate: TControl;
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read FPageControl;
+    property MainControl: TControl read FMainControl write SetMainControl;
   end;
   
   { TLazDockPage
@@ -1395,6 +1407,130 @@ begin
   Result:=Parent as TLazDockPages;
 end;
 
+{ TLazDockForm }
+
+procedure TLazDockForm.SetMainControl(const AValue: TControl);
+var
+  NewValue: TControl;
+begin
+  if (AValue<>nil) and (not IsParentOf(AValue)) then
+    raise Exception.Create('invalid main control');
+  NewValue:=AValue;
+  if NewValue=nil then
+    NewValue:=FindMainControlCandidate;
+  if FMainControl=NewValue then exit;
+  FMainControl:=NewValue;
+  if FMainControl<>nil then
+    FMainControl.FreeNotification(Self);
+  UpdateCaption;
+end;
+
+procedure TLazDockForm.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if (Operation=opRemove) then begin
+    if AComponent=FMainControl then
+      MainControl:=nil;
+  end;
+  inherited Notification(AComponent, Operation);
+end;
+
+procedure TLazDockForm.InsertControl(AControl: TControl; Index: integer);
+var
+  NewMainConrtrol: TControl;
+begin
+  inherited InsertControl(AControl, Index);
+  if FMainControl=nil then begin
+    NewMainConrtrol:=FindMainControlCandidate;
+    if NewMainConrtrol<>nil then
+      MainControl:=NewMainConrtrol;
+  end;
+end;
+
+function TLazDockForm.CloseQuery: boolean;
+// query all top level forms, if form can close
+
+  function QueryForms(ParentControl: TWinControl): boolean;
+  var
+    i: Integer;
+    AControl: TControl;
+  begin
+    for i:=0 to ParentControl.ControlCount-1 do begin
+      AControl:=ParentControl.Controls[i];
+      if (AControl is TWinControl) then begin
+        if (AControl is TCustomForm) then begin
+          // a top level form: query and do not ask childs
+          if (not TCustomForm(AControl).CloseQuery) then
+            exit(false);
+        end
+        else if not QueryForms(TWinControl(AControl)) then
+          // search childs for forms
+          exit(false);
+      end;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=inherited CloseQuery;
+  if Result then
+    Result:=QueryForms(Self);
+end;
+
+procedure TLazDockForm.UpdateCaption;
+begin
+  if FMainControl<>nil then
+    Caption:=FMainControl.Caption
+  else
+    Caption:='';
+end;
+
+function TLazDockForm.FindMainControlCandidate: TControl;
+var
+  BestLevel: integer;
+
+  procedure FindCandidate(ParentControl: TWinControl; Level: integer);
+  var
+    i: Integer;
+    AControl: TControl;
+    ResultIsForm, ControlIsForm: boolean;
+  begin
+    for i:=0 to ParentControl.ControlCount-1 do begin
+      AControl:=ParentControl.Controls[i];
+      if (AControl.Name<>'')
+      and (not (AControl is TLazDockForm))
+      and (not (AControl is TLazDockSplitter))
+      and (not (AControl is TLazDockPages))
+      and (not (AControl is TLazDockPage))
+      then begin
+        // this is a candidate
+        // prefer forms and top level controls
+        if (Application<>nil) and (Application.MainForm=AControl) then begin
+          // the MainForm is the best control
+          Result:=Application.MainForm;
+          BestLevel:=-1;
+          exit;
+        end;
+        ResultIsForm:=Result is TCustomForm;
+        ControlIsForm:=AControl is TCustomForm;
+        if (Result=nil)
+        or ((not ResultIsForm) and ControlIsForm)
+        or ((ResultIsForm=ControlIsForm) and (Level<BestLevel))
+        then begin
+          BestLevel:=Level;
+          Result:=AControl;
+        end;
+      end;
+      if AControl is TWinControl then
+        FindCandidate(TWinControl(AControl),Level+1);
+    end;
+  end;
+
+begin
+  Result:=nil;
+  BestLevel:=High(Integer);
+  FindCandidate(Self,0);
+end;
 
 end.
 

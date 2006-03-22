@@ -1368,9 +1368,9 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method Close                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm Method Close
+------------------------------------------------------------------------------}
 Procedure TCustomForm.Close;
 var
   CloseAction: TCloseAction;
@@ -1393,7 +1393,9 @@ begin
       DoClose(CloseAction);
       if CloseAction <> caNone then begin
         //DebugLn('TCustomForm.Close C ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
-        if Application.MainForm = Self then Application.Terminate
+        if (Application.MainForm = Self)
+        or (Self.IsParentOf(Application.MainForm)) then
+          Application.Terminate
         else if CloseAction = caHide then Hide
         else if CloseAction = caMinimize then WindowState := wsMinimized
         else Release;

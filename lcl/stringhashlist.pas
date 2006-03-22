@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Thx to Markus Waldenburg.
+  Thanks to Markus Waldenburg.
 
 }
 unit StringHashList;

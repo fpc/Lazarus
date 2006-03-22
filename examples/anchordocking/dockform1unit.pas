@@ -5,7 +5,7 @@ unit DockForm1Unit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   DockForm2Unit, Buttons, Menus, LDockCtrl;
 
 type
@@ -22,7 +22,7 @@ type
   private
     function CreateNewForm: TCustomForm;
   public
-    Docker: TLazControlDocker;
+    DockerForm1: TLazControlDocker;
     DockingManager: TLazDockingManager;
   end;
 
@@ -40,10 +40,15 @@ begin
 end;
 
 function TMainForm.CreateNewForm: TCustomForm;
+var
+  DockForm: TDockFormX;
 begin
-  Result:=TDockFormX.Create(Self);
-  TDockFormX(Result).Docker.Manager:=DockingManager;
-  TDockFormX(Result).Caption:=TDockFormX(Result).Docker.DockerName;
+  DockForm:=TDockFormX.Create(Self);
+  Result:=DockForm;
+  DockForm.Docker.Manager:=DockingManager;
+  DockForm.Name:=DockForm.Docker.DockerName;
+  DockForm.Docker.Name:='Docker'+DockForm.Name;
+  DebugLn('TMainForm.CreateNewForm ',DockForm.Name,' ',DockingManager.FindDockerByControl(DockForm,nil).DockerName,' ',DockingManager.GetControlConfigName(DockForm));
 end;
 
 procedure TMainForm.CreateNewFormButtonClick(Sender: TObject);
@@ -59,14 +64,20 @@ var
 begin
   if Sender=nil then ;
   DockingManager:=TLazDockingManager.Create(Self);
-  Docker:=TLazControlDocker.Create(Self);
-  Docker.Manager:=DockingManager;
+  DockerForm1:=TLazControlDocker.Create(Self);
+  DockerForm1.Name:='DockerForm1';
+  DockerForm1.Manager:=DockingManager;
   
   Form2:=CreateNewForm;
   DockingManager.Manager.InsertControl(Form2,alLeft,Self);
 
   Form3:=CreateNewForm;
   DockingManager.Manager.InsertControl(Form3,alBottom,Self);
+  
+  DockingManager.WriteDebugReport;
+  
+  DockerForm1.GetLayoutFromControl;
+  DockerForm1.WriteConfigTreeDebugReport;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
