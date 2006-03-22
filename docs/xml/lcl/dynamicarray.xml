@@ -222,7 +222,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.DeleteColRow.IsColumn">
@@ -238,7 +238,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.MoveColRow.IsColumn">
@@ -258,7 +258,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.ExchangeColRow.IsColumn">
@@ -277,7 +277,7 @@
         <short>Removes all elements from the array.</short>
         <descr/>
         <errors/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -285,7 +285,7 @@
         <short>Reads/Writes an element from the array.</short>
         <descr/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.Arr.Col">
