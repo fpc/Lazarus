@@ -2531,7 +2531,7 @@ msgstr "Arquivo %s%s%s não encontrado.%s"
 
 #: lazarusidestrconsts:lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
-msgstr "Arquivo %s%s%s%s não encontrado.%sDeseja cria-lo?%s"
+msgstr "Arquivo %s%s%s não encontrado.%sDeseja cria-lo?%s"
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
