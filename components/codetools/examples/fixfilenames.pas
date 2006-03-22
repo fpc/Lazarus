@@ -39,6 +39,8 @@ var
   Code: TCodeBuffer;
   Filename: String;
   MissingUnits: TStrings;
+  ReplaceUnits: TStringList;
+  MissingIncludeFilesCodeXYPos: TFPList;
 begin
   // setup the Options
   Options:=TCodeToolsOptions.Create;
@@ -72,8 +74,20 @@ begin
     raise Exception.Create('unable to read '+Filename);
     
   // fix the filenames in the include directives
-  if not CodeToolBoss.FixIncludeFilenames(Code,true) then
+  MissingIncludeFilesCodeXYPos:=nil;
+  if not CodeToolBoss.FixIncludeFilenames(Code,true,
+                                          MissingIncludeFilesCodeXYPos)
+  then
     raise Exception.Create('unable to fix include filesnames in '+Filename+' '+CodeToolBoss.ErrorMessage);
+  CodeToolBoss.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
+
+  // replace some unit names
+  ReplaceUnits:=TStringList.Create;
+  ReplaceUnits.Add('biglettersunit=SysUtils');
+  ReplaceUnits.Free;
+
+  writeln('==================================================================');
+  writeln(Code.Source);
 
   // fix the unitnames in the uses section
   MissingUnits:=nil;
@@ -84,9 +98,12 @@ begin
     writeln('MissingUnits=',MissingUnits.Text);
     if not CodeToolBoss.CommentUnitsInUsesSections(Code,MissingUnits) then
       raise Exception.Create('unable to comment units in uses section in '+Filename+' '+CodeToolBoss.ErrorMessage);
+    MissingUnits.Free;
   end;
-    
+  
   writeln('==================================================================');
   writeln(Code.Source);
+  
+  Options.Free;
 end.
 

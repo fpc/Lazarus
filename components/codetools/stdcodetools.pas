@@ -1000,36 +1000,39 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
   procedure Comment(CommentStartPos, CommentEndPos: integer);
   var
     i: LongInt;
+    CurStartPos: LongInt;
+    CommentNeeded: Boolean;
+    CurEndPos: LongInt;
   begin
     if CommentStartPos>=CommentEndPos then
       RaiseException('TStandardCodeTool Comment');
   
-    // try curly brackets {}
+    // comment with curly brackets {}
     i:=CommentStartPos;
-    while (i<CommentEndPos) and (Src[i]<>'}') do inc(i);
-    if i=CommentEndPos then begin
-      SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'{');
-      SourceChangeCache.Replace(gtNone,gtNone,CommentEndPos,CommentEndPos,'}');
-      //debugln('Comment {} "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
-      exit;
-    end;
-    // try (*  *)
-    i:=CommentStartPos;
-    while (i<CommentEndPos-1) and ((Src[i]<>'*') or (Src[i+1]<>')')) do inc(i);
-    if i=CommentEndPos-1 then begin
-      SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'(*');
-      SourceChangeCache.Replace(gtNone,gtNone,CommentEndPos,CommentEndPos,'*)');
-      //debugln('Comment (**) "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
-      exit;
-    end;
-    // do it with // comments
-    SourceChangeCache.Replace(gtNone,gtNone,CommentStartPos,CommentStartPos,'//');
-    SourceChangeCache.Replace(gtNone,gtNewLine,CommentEndPos,CommentEndPos,' ');
-    //debugln('Comment // "',copy(Src,CommentStartPos,CommentEndPos-CommentStartPos));
-    for i:=CommentStartPos+1 to CommentEndPos-1 do
-      if (Src[i-1] in [#10,#13]) and (not (Src[i] in [#10,#13])) then begin
-        SourceChangeCache.Replace(gtNone,gtNone,i,i,'//');
+    CurStartPos:=CommentStartPos;
+    CurEndPos:=CurStartPos;
+    CommentNeeded:=false;
+    repeat
+      if (Src[i]='{') or (i>=CommentEndPos) then begin
+        // the area contains a comment -> comment in front
+        if CommentNeeded then begin
+          SourceChangeCache.Replace(gtNone,gtNone,CurStartPos,CurStartPos,'{');
+          SourceChangeCache.Replace(gtNone,gtNone,CurEndPos,CurEndPos,'}');
+          //DebugLn('Comment "',copy(Src,CurStartPos,i-CurStartPos),'"');
+          CommentNeeded:=false;
+        end;
+        if i>=CommentEndPos then break;
+        // skip comment
+        i:=FindCommentEnd(Src,i,Scanner.NestedComments);
+      end else if not IsSpaceChar[Src[i]] then begin
+        if not CommentNeeded then begin
+          CurStartPos:=i;
+          CommentNeeded:=true;
+        end;
+        CurEndPos:=i+1;
       end;
+      inc(i);
+    until false;
   end;
   
   function CommentUnitsInUsesSection(UsesNode: TCodeTreeNode): boolean;
