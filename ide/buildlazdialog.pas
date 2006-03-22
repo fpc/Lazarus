@@ -19,15 +19,16 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
+  Converted to lfm by: Matthijs Willemstein
 
   Abstract:
     Defines the TBuildLazarusOptions which stores the settings for the
     "Build Lazarus" function of the IDE.
     TConfigureBuildLazarusDlg is used to edit TBuildLazarusOptions.
-    
+
     The BuildLazarus function will build the lazarus parts.
 }
-unit BuildLazDialog;
+unit buildlazdialog;
 
 {$mode objfpc}{$H+}
 
@@ -50,7 +51,7 @@ type
     mmCleanBuild
     );
   TMakeModes = set of TMakeMode;
-    
+
   TBuildLazarusFlag = (
     blfWithoutLinkingIDE, // skip linking stage of IDE
     blfOnlyIDE,           // skip all but IDE
@@ -59,7 +60,7 @@ type
     blfUseMakeIDECfg
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
-  
+
   TBuildLazarusItem = class
   private
     FCommands: array[TMakeMode] of string;
@@ -89,10 +90,10 @@ type
     property DefaultMakeMode: TMakeMode read FDefaultMakeMode write SetDefaultMakeMode;
     property Commands[Mode: TMakeMode]: string read GetCommands write SetCommands;
   end;
-  
-  
+
+
   { TBuildLazarusOptions }
-  
+
   TBuildLazarusOptions = class
   private
     FCleanAll: boolean;
@@ -164,52 +165,52 @@ type
     property ConfirmBuild: boolean read FConfirmBuild write SetConfirmBuild;
     property Globals: TGlobalCompilerOptions read FGlobals;
   end;
-  
-  
+
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
-    CleanAllCheckBox: TCheckBox;
     BuildAllButton: TButton;
-    ItemsListBox: TListBox;
-    WithStaticPackagesCheckBox: TCheckBox;
-    RestartAfterBuildCheckBox: TCheckBox;
-    ConfirmBuildCheckBox: TCheckBox;
-    OptionsLabel: TLabel;
-    OptionsEdit: TEdit;
-    LCLInterfaceRadioGroup: TRadioGroup;
-    TargetOSLabel: TLabel;
-    TargetOSEdit: TEdit;
-    TargetDirectoryLabel: TLabel;
-    TargetDirectoryComboBox: TComboBox;
-    TargetDirectoryButton: TButton;
-    OkButton: TButton;
     CancelButton: TButton;
+    CleanAllCheckBox: TCheckBox;
+    ConfirmBuildCheckBox: TCheckBox;
     ImageList: TImageList;
+    ItemsListBox: TListBox;
+    LCLInterfaceRadioGroup: TRadioGroup;
+    OKButton: TButton;
+    OptionsEdit: TEdit;
+    OptionsLabel: TLabel;
+    RestartAfterBuildCheckBox: TCheckBox;
+    TargetCPUComboBox: TComboBox;
+    TargetCPULabel: TLabel;
+    TargetDirectoryButton: TButton;
+    TargetDirectoryComboBox: TComboBox;
+    TargetDirectoryLabel: TLabel;
+    TargetOSEdit: TEdit;
+    TargetOSLabel: TLabel;
+    WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildAllButtonClick(Sender: TObject);
-    procedure ConfigureBuildLazarusDlgResize(Sender: TObject);
-    procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
-                                   ARect: TRect; State: TOwnerDrawState);
-    procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
-                                    Shift: TShiftState; X, Y: Integer);
-    procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
+    procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure OKButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
   private
+    { private declarations }
+    ImageIndexNone: Integer;
+    ImageIndexBuild: Integer;
+    ImageIndexCleanBuild: Integer;
     Options: TBuildLazarusOptions;
-    ImageIndexNone: integer;
-    ImageIndexBuild: integer;
-    ImageIndexCleanBuild: integer;
     function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
-    procedure SetupComponents;
   public
+    { public declarations }
     procedure Load(SourceOptions: TBuildLazarusOptions);
     procedure Save(DestOptions: TBuildLazarusOptions);
-    constructor Create(AnOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
 function ShowConfigureBuildLazarusDlg(
@@ -229,16 +230,12 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
 function GetMakeIDEConfigFilename: string;
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
-
 implementation
 
 const
   DefaultIDEMakeOptionFilename = 'idemake.cfg';
-
   MakeModeNames: array[TMakeMode] of string = (
-      'None', 'Build', 'Clean+Build'
-    );
-
+      'None', 'Build', 'Clean+Build'    );
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
 
 function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
@@ -293,7 +290,7 @@ var
   CurItem: TBuildLazarusItem;
   ExtraOptions: String;
   CurMakeMode: TMakeMode;
-  
+
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -317,7 +314,7 @@ begin
     end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
-    
+
     // clean up
     if Options.CleanAll
     and ([blfDontClean,blfOnlyIDE]*Flags=[]) then begin
@@ -334,7 +331,7 @@ begin
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
-    
+
     // build every item
     for i:=0 to Options.Count-1 do begin
       // build item
@@ -405,7 +402,7 @@ function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
       System.Delete(Result,StartPos,p-StartPos+3);
     end;
   end;
-  
+
   procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
@@ -454,7 +451,7 @@ begin
     if blfWithoutLinkingIDE in Flags then begin
       AppendExtraOption('-Cn');
     end;
-    
+
     // set target filename and target directory:
     // 1. the user has set a target directory
     // 2. For crosscompiling the IDE it needs a different directory
@@ -504,7 +501,7 @@ begin
         if Result<>mrOk then exit;
       end else begin
         // -> normal compile for this platform
-      
+
         // get lazarus directory
         if Macros<>nil then begin
           NewTargetDirectory:='$(LazarusDir)';
@@ -539,7 +536,7 @@ begin
         end;
       end;
     end;
-    
+
     if NewTargetDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,
       // so make sure the directory doesn't end with the path delimeter.
@@ -563,7 +560,7 @@ end;
 function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
-  
+
   function BreakOptions(const OptionString: string): string;
   var
     StartPos: Integer;
@@ -611,7 +608,7 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
       StartPos:=EndPos;
     until StartPos>length(OptionString);
   end;
-  
+
 var
   ExtraOptions: String;
   Filename: String;
@@ -654,117 +651,35 @@ end;
 
 { TConfigureBuildLazarusDlg }
 
-constructor TConfigureBuildLazarusDlg.Create(AnOwner: TComponent);
+procedure TConfigureBuildLazarusDlg.FormCreate(Sender: TObject);
+var
+  LCLInterface: TLCLPlatform;
 begin
-  inherited Create(AnOwner);
-  Options:=TBuildLazarusOptions.Create;
-  Width:=480;
-  Height:=435;
-  Position:=poScreenCenter;
-  Caption:=Format(lisConfigureBuildLazarus, ['"', '"']);
-  OnResize:=@ConfigureBuildLazarusDlgResize;
-
-  SetupComponents;
-  OnResize(nil);
-end;
-
-destructor TConfigureBuildLazarusDlg.Destroy;
-begin
-  Options.Free;
-  inherited Destroy;
-end;
-
-procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
-begin
-  Save(Options);
-  Options.SetBuildAll;
+  Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
+  ImageIndexNone := 0;
+  ImageIndexBuild := 1;
+  ImageIndexCleanBuild := 2;
+  Options := TBuildLazarusOptions.Create;
+  CleanAllCheckBox.Caption := lisLazBuildCleanAll;
+  BuildAllButton.Caption := Format(lisLazBuildSetToBuildAll, ['"', '"']);
+  OptionsLabel.Caption := lisLazBuildOptions;
+  LCLInterfaceRadioGroup.Caption := lisLazBuildLCLInterface;
+  for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do begin
+    LCLInterfaceRadioGroup.Items.Add(LCLPlatformNames[LCLInterface]);
+  end;
+  WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
+  RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
+  ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
+  OKButton.Caption := lisLazBuildOk;
+  CancelButton.Caption := lisLazBuildCancel;
+  TargetOSLabel.Caption := lisLazBuildTargetOS;
+  TargetCPULabel.Caption := lisLazBuildTargetCPU;
+  TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
   Load(Options);
 end;
 
-procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(
-  Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=10;
-  y:=10;
-  with BuildAllButton do begin
-    SetBounds(x,y,200,Height);
-    inc(y,Height+5);
-  end;
-  w:=ClientWidth-150;
-  with ItemsListBox do begin
-    SetBounds(x,y,w,Max(30,Parent.ClientHeight-195));
-    inc(y,Height+5);
-  end;
-  with OptionsLabel do begin
-    SetBounds(x,y+3,120,Height);
-    inc(x,Width+3);
-  end;
-  with OptionsEdit do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
-    x:=OptionsLabel.Left;
-    inc(y,Height+3);
-  end;
-  with TargetOSLabel do begin
-    SetBounds(x,y+3,120,Height);
-    inc(x,Width+3);
-  end;
-  with TargetOSEdit do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
-    x:=OptionsLabel.Left;
-    inc(y,Height+3);
-  end;
-  with TargetDirectoryLabel do begin
-    SetBounds(x,y+3,120,Height);
-    inc(x,Width+3);
-  end;
-  with TargetDirectoryComboBox do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10-25,Height);
-    inc(x,Width+2);
-  end;
-  with TargetDirectoryButton do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
-    x:=TargetDirectoryLabel.Left;
-    inc(y,Height+3);
-  end;
-  with RestartAfterBuildCheckBox do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
-    inc(y,Height+3);
-  end;
-  with ConfirmBuildCheckBox do begin
-    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
-    inc(y,Height+3);
-  end;
-
-  inc(x,w+10);
-  y:=BuildAllButton.Top;
-  w:=ClientWidth-10-x;
-  with CleanAllCheckBox do begin
-    SetBounds(x,y,w,Height);
-  end;
-
-  y:=ItemsListBox.Top;
-  with LCLInterfaceRadioGroup do begin
-    SetBounds(x,y,w,200);
-    inc(y,Height+10);
-  end;
-  with WithStaticPackagesCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+40);
-  end;
-
-  with OkButton do
-    SetBounds(Parent.ClientWidth-180,Parent.ClientHeight-38,80,25);
-  with CancelButton do
-    SetBounds(Parent.ClientWidth-90,OkButton.Top,
-              OkButton.Width,OkButton.Height);
-end;
-
-procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl;
-  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
 var
   ButtonState: integer;
   x: Integer;
@@ -830,8 +745,8 @@ begin
       DestRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-IconHeight) div 2);
       DestRect.Right:=DestRect.Left+IconWidth;
       DestRect.Bottom:=DestRect.Top+IconHeight;
-      StretchMaskBlt(ItemsListBox.Canvas.Handle, 
-        DestRect.Left, DestRect.Top, IconWidth, IconHeight, 
+      StretchMaskBlt(ItemsListBox.Canvas.Handle,
+        DestRect.Left, DestRect.Top, IconWidth, IconHeight,
         CurIcon.Canvas.Handle, 0, 0, IconWidth, IconHeight,
         CurIcon.MaskHandle, 0, 0, SRCCOPY);
     end;
@@ -848,8 +763,8 @@ begin
           MakeModeNames[CurItem.MakeMode]);
 end;
 
-procedure TConfigureBuildLazarusDlg.ItemsListBoxMouseDown(Sender: TOBject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TConfigureBuildLazarusDlg.ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
   NewMakeMode: TMakeMode;
   i: Integer;
@@ -861,8 +776,7 @@ begin
   ItemsListBox.Invalidate;
 end;
 
-procedure TConfigureBuildLazarusDlg.ItemsListBoxShowHint(Sender:TObject;
-  HintInfo: PHintInfo);
+procedure TConfigureBuildLazarusDlg.ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   MakeMode: TMakeMode;
   i: Integer;
@@ -876,14 +790,10 @@ begin
   end;
 end;
 
-procedure TConfigureBuildLazarusDlg.OkButtonClick(Sender: TObject);
+procedure TConfigureBuildLazarusDlg.OKButtonClick(Sender: TObject);
 begin
+  Save(Options);
   ModalResult:=mrOk;
-end;
-
-procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
 end;
 
 procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
@@ -902,6 +812,41 @@ begin
     end;
   finally
     DirDialog.Free;
+  end;
+end;
+
+function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
+  var MakeMode: TMakeMode): boolean;
+var
+  ButtonWidth: Integer;
+  i: integer;
+begin
+  Result:=True;
+  ButtonWidth:=ImageList.Width+4;
+  i:=X div ButtonWidth;
+  case i of
+  0: MakeMode:=mmNone;
+  1: MakeMode:=mmBuild;
+  2: MakeMode:=mmCleanBuild;
+  else Result:=False;
+  end;
+end;
+
+function TConfigureBuildLazarusDlg.MakeModeToInt(MakeMode: TMakeMode): integer;
+begin
+  case MakeMode of
+    mmBuild:      Result:=1;
+    mmCleanBuild: Result:=2;
+  else            Result:=0;
+  end;
+end;
+
+function TConfigureBuildLazarusDlg.IntToMakeMode(i: integer): TMakeMode;
+begin
+  case i of
+    1: Result:=mmBuild;
+    2: Result:=mmCleanBuild;
+  else Result:=mmNone;
   end;
 end;
 
@@ -934,6 +879,7 @@ begin
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
+  TargetCPUComboBox.Text:=Options.TargetCPU;
   
   Invalidate;
 end;
@@ -941,7 +887,7 @@ end;
 procedure TConfigureBuildLazarusDlg.Save(DestOptions: TBuildLazarusOptions);
 begin
   if DestOptions=nil then exit;
-  
+
   Options.CleanAll:=CleanAllCheckBox.Checked;
   Options.ExtraOptions:=OptionsEdit.Text;
   Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
@@ -949,343 +895,113 @@ begin
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.ConfirmBuild:=ConfirmBuildCheckBox.Checked;
   Options.TargetOS:=TargetOSEdit.Text;
+  Options.TargetCPU:=TargetCPUComboBox.Text;
   Options.TargetDirectory:=TargetDirectoryComboBox.Text;
 
   DestOptions.Assign(Options);
 end;
 
-function TConfigureBuildLazarusDlg.MakeModeToInt(MakeMode: TMakeMode): integer;
+procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
 begin
-  case MakeMode of
-    mmBuild:      Result:=1;
-    mmCleanBuild: Result:=2;
-  else            Result:=0;
-  end;
+  ModalResult:=mrCancel;
 end;
 
-function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
-  var MakeMode: TMakeMode): boolean;
+procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
+begin
+  Save(Options);
+  Options.SetBuildAll;
+  Load(Options);
+end;
+
+{ TBuildLazarusItem }
+
+function TBuildLazarusItem.GetCommands(Mode: TMakeMode): string;
+begin
+  Result:=FCommands[Mode];
+end;
+
+procedure TBuildLazarusItem.SetCommands(Mode: TMakeMode; const AValue: string);
+begin
+  FCommands[Mode]:=AValue;
+end;
+
+procedure TBuildLazarusItem.SetDefaultMakeMode(const AValue: TMakeMode);
+begin
+  if FDefaultMakeMode=AValue then exit;
+  FDefaultMakeMode:=AValue;
+end;
+
+procedure TBuildLazarusItem.SetDescription(const AValue: string);
+begin
+  if FDescription=AValue then exit;
+  FDescription:=AValue;
+end;
+
+procedure TBuildLazarusItem.SetDirectory(const AValue: string);
+begin
+  if FDirectory=AValue then exit;
+  FDirectory:=AValue;
+end;
+
+procedure TBuildLazarusItem.SetMakeMode(const AValue: TMakeMode);
+begin
+  if FMakeMode=AValue then exit;
+  FMakeMode:=AValue;
+end;
+
+procedure TBuildLazarusItem.SetName(const AValue: string);
+begin
+  if FName=AValue then exit;
+  FName:=AValue;
+end;
+
+constructor TBuildLazarusItem.Create;
+begin
+  Clear;
+end;
+
+constructor TBuildLazarusItem.Create(const NewName, NewDescription,
+  NewDirectory: string; const NewMakeMode: TMakeMode);
+begin
+  Clear;
+  Name:=NewName;
+  Description:=NewDescription;
+  Directory:=NewDirectory;
+  MakeMode:=NewMakeMode;
+  DefaultMakeMode:=MakeMode;
+end;
+
+destructor TBuildLazarusItem.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TBuildLazarusItem.Clear;
+begin
+  FCommands[mmNone]:='';
+  FCommands[mmBuild]:='all';
+  FCommands[mmCleanBuild]:='clean all';
+  FDirectory:='';
+  FName:='';
+  FMakeMode:=mmNone;
+end;
+
+procedure TBuildLazarusItem.Assign(Source: TBuildLazarusItem);
 var
-  ButtonWidth: Integer;
-  i: integer;
+  mm: TMakeMode;
 begin
-  Result:=True;
-  ButtonWidth:=ImageList.Width+4;
-  i:=X div ButtonWidth;
-  case i of
-  0: MakeMode:=mmNone;
-  1: MakeMode:=mmBuild;
-  2: MakeMode:=mmCleanBuild;
-  else Result:=False;
-  end;
-end;
-
-function TConfigureBuildLazarusDlg.IntToMakeMode(i: integer): TMakeMode;
-begin
-  case i of
-    1: Result:=mmBuild;
-    2: Result:=mmCleanBuild;
-  else Result:=mmNone;
-  end;
-end;
-
-procedure TConfigureBuildLazarusDlg.SetupComponents;
-
-  procedure AddResImg(const ResName: string);
-  var Pixmap: TPixmap;
-  begin
-    Pixmap:=TPixmap.Create;
-    Pixmap.TransparentColor:=clWhite;
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil)
-  end;
-
-var
-  LCLInterface: TLCLPlatform;
-begin
-  ImageList:=TImageList.Create(Self);
-  with ImageList do begin
-    Width:=20;
-    Height:=20;
-    Name:='ImageList';
-    ImageIndexNone:=Count;
-    AddResImg('menu_stepover');
-    ImageIndexBuild:=Count;
-    AddResImg('menu_build');
-    ImageIndexCleanBuild:=Count;
-    AddResImg('menu_buildall');
-  end;
-
-  CleanAllCheckBox:=TCheckBox.Create(Self);
-  with CleanAllCheckBox do begin
-    Parent:=Self;
-    Name:='CleanAllCheckBox';
-    Caption:=lisLazBuildCleanAll;
-  end;
-
-  BuildAllButton:=TButton.Create(Self);
-  with BuildAllButton do begin
-    Name:='BuildAllButton';
-    Parent:=Self;
-    Caption:=Format(lisLazBuildSetToBuildAll, ['"', '"']);
-    OnClick:=@BuildAllButtonClick;
-  end;
-  
-  ItemsListBox:=TListBox.Create(Self);
-  with ItemsListBox do begin
-    Name:='ItemsListBox';
-    Parent:=Self;
-    ShowHint:=True;
-    Style:= lbOwnerDrawFixed;
-    OnMouseDown:=@ItemsListBoxMouseDown;
-    OnDrawItem:=@ItemsListBoxDrawItem;
-    OnShowHint:=@ItemsListBoxShowHint;
-    ItemHeight:=ImageList.Height+6;
-  end;
-
-  OptionsLabel:=TLabel.Create(Self);
-  with OptionsLabel do begin
-    Name:='OptionsLabel';
-    Parent:=Self;
-    Caption:=lisLazBuildOptions;
-  end;
-
-  OptionsEdit:=TEdit.Create(Self);
-  with OptionsEdit do begin
-    Name:='OptionsEdit';
-    Parent:=Self;
-  end;
-
-  TargetOSLabel:=TLabel.Create(Self);
-  with TargetOSLabel do begin
-    Name:='TargetOSLabel';
-    Parent:=Self;
-    Caption:=lisLazBuildTargetOS;
-  end;
-
-  TargetOSEdit:=TEdit.Create(Self);
-  with TargetOSEdit do begin
-    Name:='TargetOSEdit';
-    Parent:=Self;
-  end;
-  
-  TargetDirectoryLabel:=TLabel.Create(Self);
-  with TargetDirectoryLabel do begin
-    Name:='TargetDirectoryLabel';
-    Parent:=Self;
-    Caption:=lisLazBuildTargetDirectory;
-  end;
-
-  TargetDirectoryComboBox:=TComboBox.Create(Self);
-  with TargetDirectoryComboBox do begin
-    Name:='TargetDirectoryComboBox';
-    Parent:=Self;
-    Text:='';
-    with Items do begin
-      Add('(automatic)');
-      Add(SetDirSeparators('$(ConfDir)/bin'));
-    end;
-  end;
-
-  TargetDirectoryButton:=TButton.Create(Self);
-  with TargetDirectoryButton do begin
-    Name:='TargetDirectoryButton';
-    Parent:=Self;
-    Caption:='...';
-    OnClick:=@TargetDirectoryButtonClick;
-  end;
-
-  LCLInterfaceRadioGroup:=TRadioGroup.Create(Self);
-  with LCLInterfaceRadioGroup do begin
-    Name:='LCLInterfaceRadioGroup';
-    Parent:=Self;
-    Caption:=lisLazBuildLCLInterface;
-    for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
-      Items.Add(LCLPlatformNames[LCLInterface]);
-    end;
-  end;
-
-  WithStaticPackagesCheckBox:=TCheckBox.Create(Self);
-  with WithStaticPackagesCheckBox do begin
-    Name:='WithStaticPackagesCheckBox';
-    Parent:=Self;
-    Caption:=lisLazBuildWithStaticPackages;
-  end;
-
-  RestartAfterBuildCheckBox:=TCheckBox.Create(Self);
-  with RestartAfterBuildCheckBox do begin
-    Name:='RestartAfterBuildCheckBox';
-    Parent:=Self;
-    Caption:=lisLazBuildRestartAfterBuild;
-  end;
-
-  ConfirmBuildCheckBox:=TCheckBox.Create(Self);
-  with ConfirmBuildCheckBox do begin
-    Name:='ConfirmBuildCheckBox';
-    Parent:=Self;
-    Caption:=lisLazBuildConfirmBuild;
-  end;
-
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Parent:=Self;
-    Name:='OkButton';
-    Caption:=lisLazBuildOk;
-    OnClick:=@OkButtonClick;
-    Default:=true;
-  end;
-
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Parent:=Self;
-    Name:='CancelButton';
-    Caption:=lisLazBuildCancel;
-    OnClick:=@CancelButtonClick;
-    Cancel:=true;
-  end;
-
+  if (Source=nil) or (Source=Self) then exit;
+  Name:=Source.Name;
+  Description:=Source.Description;
+  Directory:=Source.Directory;
+  MakeMode:=Source.MakeMode;
+  DefaultMakeMode:=Source.DefaultMakeMode;
+  for mm:=Low(TMakeMode) to High(TMakeMode) do
+    Commands[mm]:=Source.Commands[mm];
 end;
 
 { TBuildLazarusOptions }
-
-procedure TBuildLazarusOptions.Save(XMLConfig: TXMLConfig; const Path: string);
-var
-  i: Integer;
-begin
-  for i:=0 to Count-1 do begin
-    XMLConfig.SetDeleteValue(
-      Path+'Build'+Items[i].Name+'/Value',
-      MakeModeNames[Items[i].MakeMode],
-      MakeModeNames[Items[i].DefaultMakeMode]);
-  end;
-
-  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
-  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
-  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
-  XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
-  XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
-                           LCLPlatformNames[fLCLPlatform],
-                           GetDefaultLCLWidgetType);
-  XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
-                           FTargetDirectory,DefaultTargetDirectory);
-  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,
-                           true);
-  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,
-                           true);
-  XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
-                           true);
-
-  // auto install packages
-  SaveStringList(XMLConfig,fStaticAutoInstallPackages,
-                 Path+'StaticAutoInstallPackages/');
-end;
-
-procedure TBuildLazarusOptions.Assign(Source: TBuildLazarusOptions);
-var
-  i: Integer;
-  SrcItem: TBuildLazarusItem;
-  NewItem: TBuildLazarusItem;
-begin
-  if (Source=nil) or (Source=Self) then exit;
-  Clear;
-  CleanAll:=Source.CleanAll;
-  ExtraOptions:=Source.ExtraOptions;
-  TargetOS:=Source.TargetOS;
-  TargetCPU:=Source.TargetCPU;
-  LCLPlatform:=Source.LCLPlatform;
-  TargetDirectory:=Source.TargetDirectory;
-  WithStaticPackages:=Source.WithStaticPackages;
-  RestartAfterBuild:=Source.RestartAfterBuild;
-  ConfirmBuild:=Source.ConfirmBuild;
-  fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
-  for i:=0 to Source.Count-1 do begin
-    SrcItem:=Source.Items[i];
-    NewItem:=TBuildLazarusItem.Create;
-    NewItem.Assign(SrcItem);
-    FItems.Add(NewItem);
-  end;
-  FItemLCL:=FindName('LCL');
-  FItemSynEdit:=FindName('SynEdit');
-  FItemCodeTools:=FindName('CodeTools');
-  FItemPkgReg:=FindName('PkgReg');
-  FItemIDEIntf:=FindName('IDEIntf');
-  FItemJITForm:=FindName('JITForm');
-  FItemIDE:=FindName('IDE');
-  FItemStarter:=FindName('Starter');
-  FItemExamples:=FindName('Examples');
-end;
-
-procedure TBuildLazarusOptions.SetBuildAll;
-var
-  i: Integer;
-begin
-  FCleanAll:=true;
-  for i:=0 to Count-1 do Items[i].MakeMode:=mmBuild;
-end;
-
-function TBuildLazarusOptions.FindName(const Name: string): TBuildLazarusItem;
-var
-  i: Integer;
-begin
-  Result:=nil;
-  for i:=0 to Count-1 do if AnsiCompareText(Name,Items[i].Name)=0 then begin
-    Result:=Items[i];
-    exit;
-  end;
-end;
-
-function TBuildLazarusOptions.CompiledUnitExt(FPCVersion, FPCRelease: integer
-  ): string;
-begin
-  Result:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
-  if (CompareText(TargetOS,'win32')=0)
-  and (FPCVersion=1) and (FPCRelease=0) then
-    Result:='.ppw'
-  else
-    Result:='.ppu';
-end;
-
-procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
-var
-  i: Integer;
-begin
-  Clear;
-  CreateDefaults;
-  for i:=0 to Count-1 do begin
-    Items[i].MakeMode:=StrToMakeMode(XMLConfig.GetValue(
-      Path+'Build'+Items[i].Name+'/Value',
-      MakeModeNames[Items[i].MakeMode]));
-  end;
-  FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
-  FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
-  TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
-  TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU/Value','');
-  fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
-                                 GetDefaultLCLWidgetType));
-  FTargetDirectory:=AppendPathDelim(SetDirSeparators(
-                  XMLConfig.GetValue(Path+'TargetDirectory/Value',
-                                     DefaultTargetDirectory)));
-  FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
-  FConfirmBuild:=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
-  FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
-
-  // auto install packages
-  LoadStringList(XMLConfig,fStaticAutoInstallPackages,
-                 Path+'StaticAutoInstallPackages/');
-end;
-
-procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
-begin
-  if FTargetDirectory=AValue then exit;
-  FTargetDirectory:=AValue;
-end;
-
-procedure TBuildLazarusOptions.SetTargetOS(const AValue: string);
-begin
-  if fTargetOS=AValue then exit;
-  fTargetOS:=AValue;
-  FGlobals.TargetOS:=TargetOS;
-end;
 
 function TBuildLazarusOptions.GetCount: integer;
 begin
@@ -1314,6 +1030,19 @@ begin
   if FTargetCPU=AValue then exit;
   FTargetCPU:=AValue;
   FGlobals.TargetCPU:=TargetCPU;
+end;
+
+procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
+begin
+  if FTargetDirectory=AValue then exit;
+  FTargetDirectory:=AValue;
+end;
+
+procedure TBuildLazarusOptions.SetTargetOS(const AValue: string);
+begin
+  if fTargetOS=AValue then exit;
+  fTargetOS:=AValue;
+  FGlobals.TargetOS:=TargetOS;
 end;
 
 procedure TBuildLazarusOptions.SetWithStaticPackages(const AValue: boolean);
@@ -1429,94 +1158,134 @@ begin
   while (Result>=0) and (Items[Result]<>Item) do dec(Result);
 end;
 
-{ TBuildLazarusItem }
-
-function TBuildLazarusItem.GetCommands(Mode: TMakeMode): string;
-begin
-  Result:=FCommands[Mode];
-end;
-
-procedure TBuildLazarusItem.SetCommands(Mode: TMakeMode; const AValue: string);
-begin
-  FCommands[Mode]:=AValue;
-end;
-
-procedure TBuildLazarusItem.SetDefaultMakeMode(const AValue: TMakeMode);
-begin
-  if FDefaultMakeMode=AValue then exit;
-  FDefaultMakeMode:=AValue;
-end;
-
-procedure TBuildLazarusItem.SetDescription(const AValue: string);
-begin
-  if FDescription=AValue then exit;
-  FDescription:=AValue;
-end;
-
-procedure TBuildLazarusItem.SetDirectory(const AValue: string);
-begin
-  if FDirectory=AValue then exit;
-  FDirectory:=AValue;
-end;
-
-procedure TBuildLazarusItem.SetMakeMode(const AValue: TMakeMode);
-begin
-  if FMakeMode=AValue then exit;
-  FMakeMode:=AValue;
-end;
-
-procedure TBuildLazarusItem.SetName(const AValue: string);
-begin
-  if FName=AValue then exit;
-  FName:=AValue;
-end;
-
-constructor TBuildLazarusItem.Create;
-begin
-  Clear;
-end;
-
-constructor TBuildLazarusItem.Create(const NewName, NewDescription,
-  NewDirectory: string; const NewMakeMode: TMakeMode);
-begin
-  Clear;
-  Name:=NewName;
-  Description:=NewDescription;
-  Directory:=NewDirectory;
-  MakeMode:=NewMakeMode;
-  DefaultMakeMode:=MakeMode;
-end;
-
-destructor TBuildLazarusItem.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TBuildLazarusItem.Clear;
-begin
-  FCommands[mmNone]:='';
-  FCommands[mmBuild]:='all';
-  FCommands[mmCleanBuild]:='clean all';
-  FDirectory:='';
-  FName:='';
-  FMakeMode:=mmNone;
-end;
-
-procedure TBuildLazarusItem.Assign(Source: TBuildLazarusItem);
+procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
 var
-  mm: TMakeMode;
+  i: Integer;
+begin
+  Clear;
+  CreateDefaults;
+  for i:=0 to Count-1 do begin
+    Items[i].MakeMode:=StrToMakeMode(XMLConfig.GetValue(
+      Path+'Build'+Items[i].Name+'/Value',
+      MakeModeNames[Items[i].MakeMode]));
+  end;
+  FCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
+  FExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
+  TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
+  TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU/Value','');
+  fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
+                                 GetDefaultLCLWidgetType));
+  FTargetDirectory:=AppendPathDelim(SetDirSeparators(
+                  XMLConfig.GetValue(Path+'TargetDirectory/Value',
+                                     DefaultTargetDirectory)));
+  FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+  FConfirmBuild:=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+  FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
+
+  // auto install packages
+  LoadStringList(XMLConfig,fStaticAutoInstallPackages,
+                 Path+'StaticAutoInstallPackages/');
+end;
+
+procedure TBuildLazarusOptions.Save(XMLConfig: TXMLConfig; const Path: string);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    XMLConfig.SetDeleteValue(
+      Path+'Build'+Items[i].Name+'/Value',
+      MakeModeNames[Items[i].MakeMode],
+      MakeModeNames[Items[i].DefaultMakeMode]);
+  end;
+
+  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
+  XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
+  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
+  XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
+                           LCLPlatformNames[fLCLPlatform],
+                           GetDefaultLCLWidgetType);
+  XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
+                           FTargetDirectory,DefaultTargetDirectory);
+  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,
+                           true);
+  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,
+                           true);
+  XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
+                           true);
+
+  // auto install packages
+  SaveStringList(XMLConfig,fStaticAutoInstallPackages,
+                 Path+'StaticAutoInstallPackages/');
+end;
+
+procedure TBuildLazarusOptions.Assign(Source: TBuildLazarusOptions);
+var
+  i: Integer;
+  SrcItem: TBuildLazarusItem;
+  NewItem: TBuildLazarusItem;
 begin
   if (Source=nil) or (Source=Self) then exit;
-  Name:=Source.Name;
-  Description:=Source.Description;
-  Directory:=Source.Directory;
-  MakeMode:=Source.MakeMode;
-  DefaultMakeMode:=Source.DefaultMakeMode;
-  for mm:=Low(TMakeMode) to High(TMakeMode) do
-    Commands[mm]:=Source.Commands[mm];
+  Clear;
+  CleanAll:=Source.CleanAll;
+  ExtraOptions:=Source.ExtraOptions;
+  TargetOS:=Source.TargetOS;
+  TargetCPU:=Source.TargetCPU;
+  LCLPlatform:=Source.LCLPlatform;
+  TargetDirectory:=Source.TargetDirectory;
+  WithStaticPackages:=Source.WithStaticPackages;
+  RestartAfterBuild:=Source.RestartAfterBuild;
+  ConfirmBuild:=Source.ConfirmBuild;
+  fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
+  for i:=0 to Source.Count-1 do begin
+    SrcItem:=Source.Items[i];
+    NewItem:=TBuildLazarusItem.Create;
+    NewItem.Assign(SrcItem);
+    FItems.Add(NewItem);
+  end;
+  FItemLCL:=FindName('LCL');
+  FItemSynEdit:=FindName('SynEdit');
+  FItemCodeTools:=FindName('CodeTools');
+  FItemPkgReg:=FindName('PkgReg');
+  FItemIDEIntf:=FindName('IDEIntf');
+  FItemJITForm:=FindName('JITForm');
+  FItemIDE:=FindName('IDE');
+  FItemStarter:=FindName('Starter');
+  FItemExamples:=FindName('Examples');
 end;
 
-end.
+procedure TBuildLazarusOptions.SetBuildAll;
+var
+  i: Integer;
+begin
+  FCleanAll:=true;
+  for i:=0 to Count-1 do Items[i].MakeMode:=mmBuild;
+end;
 
+function TBuildLazarusOptions.FindName(const Name: string): TBuildLazarusItem;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  for i:=0 to Count-1 do if AnsiCompareText(Name,Items[i].Name)=0 then begin
+    Result:=Items[i];
+    exit;
+  end;
+end;
+
+function TBuildLazarusOptions.CompiledUnitExt(FPCVersion, FPCRelease: integer
+  ): string;
+begin
+  Result:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
+  if (CompareText(TargetOS,'win32')=0)
+  and (FPCVersion=1) and (FPCRelease=0) then
+    Result:='.ppw'
+  else
+    Result:='.ppu';
+end;
+
+initialization
+  {$I buildlazdialog.lrs}
+
+end.
 
