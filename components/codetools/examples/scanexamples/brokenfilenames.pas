@@ -7,6 +7,7 @@ interface
 
 uses
   Classes,
+  CustApp,
   biglettersunit, // must be fixed to BigLettersUnit
   biglettersunit in 'biglettersunit.pas',// -> BigLettersUnit.pas
   biglettersunit in '..\ScanExamples\biglettersunit.pas',// -> ../scanexamples/BigLettersUnit

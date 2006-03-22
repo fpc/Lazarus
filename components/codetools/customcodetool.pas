@@ -2350,7 +2350,7 @@ end;
 
 procedure TCustomCodeTool.RaiseIdentExpectedButAtomFound;
 begin
-  SaveRaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
+  SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom])
 end;
 
 procedure TCustomCodeTool.RaiseBracketOpenExpectedButAtomFound;

@@ -4798,7 +4798,7 @@ begin
   end;
   //--------------------------
 
-  // in the new (compatebility) situation setting the handle should not be needed
+  // in the new (compatibility) situation setting the handle should not be needed
   // however lazarus fails to start, so I'm enabling it for now
   if (ALCLObject is TWinControl) then
   begin

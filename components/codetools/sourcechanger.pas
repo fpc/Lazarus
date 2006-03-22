@@ -183,9 +183,9 @@ type
     SrcLen: integer; // same as length(Src)
     procedure DeleteCleanText(CleanFromPos,CleanToPos: integer);
     procedure DeleteDirectText(ACode: TCodeBuffer;
-        DirectFromPos,DirectToPos: integer);
+                               DirectFromPos,DirectToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
-        const InsertText: string);
+                            const InsertText: string);
     procedure SetMainScanner(NewScanner: TLinkScanner);
     function GetBuffersToModify(Index: integer): TCodeBuffer;
     procedure UpdateBuffersToModify;
@@ -198,10 +198,10 @@ type
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
     property MainScannerNeeded: boolean read FMainScannerNeeded;
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
-        const Text: string): boolean;
+                     const Text: string): boolean;
     function ReplaceEx(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
-        DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
-        const Text: string): boolean;
+                   DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
+                   const Text: string): boolean;
     function Apply: boolean;
     function FindEntryInRange(FromPos, ToPos: integer): TSourceChangeCacheEntry;
     function FindEntryAtPos(APos: integer): TSourceChangeCacheEntry;

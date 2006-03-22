@@ -30,7 +30,7 @@ program FixFilenames;
 
 uses
   Classes, SysUtils, DefineTemplates, CodeToolsConfig,
-  CodeToolManager, CodeCache;
+  CodeToolsStructs, CodeToolManager, CodeCache;
 
 const
   ConfigFilename = 'codetools.config';
@@ -39,7 +39,7 @@ var
   Code: TCodeBuffer;
   Filename: String;
   MissingUnits: TStrings;
-  ReplaceUnits: TStringList;
+  ReplaceUnits: TStringToStringTree;
   MissingIncludeFilesCodeXYPos: TFPList;
 begin
   // setup the Options
@@ -82,12 +82,12 @@ begin
   CodeToolBoss.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
 
   // replace some unit names
-  ReplaceUnits:=TStringList.Create;
-  ReplaceUnits.Add('biglettersunit=SysUtils');
+  ReplaceUnits:=TStringToStringTree.Create(false);
+  ReplaceUnits['classes']:='Classes, SysUtils';
+  ReplaceUnits['CustApp']:='';
+  if not CodeToolBoss.ReplaceUsedUnits(Code,ReplaceUnits) then
+    raise Exception.Create('unable to fix unit names in '+Filename+' '+CodeToolBoss.ErrorMessage);
   ReplaceUnits.Free;
-
-  writeln('==================================================================');
-  writeln(Code.Source);
 
   // fix the unitnames in the uses section
   MissingUnits:=nil;

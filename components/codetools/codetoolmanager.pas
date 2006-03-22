@@ -424,6 +424,8 @@ type
           out NamePos, InPos: integer): boolean;
     function RenameUsedUnit(Code: TCodeBuffer;
           const OldUnitName, NewUnitName, NewUnitInFile: string): boolean;
+    function ReplaceUsedUnits(Code: TCodeBuffer;
+          UnitNamePairs: TStringToStringTree): boolean;
     function AddUnitToMainUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
@@ -2778,12 +2780,27 @@ function TCodeToolManager.RenameUsedUnit(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
+  DebugLn('TCodeToolManager.RenameUsedUnit A ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
                   NewUnitInFile,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ReplaceUsedUnits(Code: TCodeBuffer;
+  UnitNamePairs: TStringToStringTree): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ReplaceUsedUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ReplaceUsedUnits(UnitNamePairs,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

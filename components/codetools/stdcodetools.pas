@@ -87,6 +87,8 @@ type
     function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function ReplaceUsedUnits(UnitNamePairs: TStringToStringTree;
+          SourceChangeCache: TSourceChangeCache): boolean;
     function AddUnitToUsesSection(UsesNode: TCodeTreeNode;
           const NewUnitName, NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -102,6 +104,7 @@ type
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
+    function FindUsedUnitNames(var List: TStringToStringTree): boolean;
     function FindUsedUnitFiles(var MainUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
@@ -281,6 +284,8 @@ type
           WithCommentBounds, CaseSensitive, IgnoreSpaces,
           CompareOnlyStart: boolean;
           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
+    function CommentCode(const StartPos, EndPos: integer;
+          SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
   end;
 
 
@@ -442,6 +447,159 @@ begin
   end;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
+end;
+
+function TStandardCodeTool.ReplaceUsedUnits(UnitNamePairs: TStringToStringTree;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  ExistingUnits: TStringToStringTree;
+  
+  procedure CleanNewUnits(const AnUnitName: string; var NewText: string);
+  var
+    StartPos: Integer;
+    EndPos: LongInt;
+    CommaBehind: LongInt;
+    CommaInFront: Integer;
+    NewUnitName: String;
+  begin
+    // remove all units, that already exists
+    StartPos:=1;
+    CommaInFront:=-1;
+    while StartPos<=length(NewText) do begin
+      EndPos:=StartPos;
+      while (EndPos<=length(NewText)) and (IsIdentChar[NewText[EndPos]]) do
+        inc(EndPos);
+      if EndPos<=StartPos then break;
+      NewUnitName:=copy(NewText,StartPos,EndPos-StartPos);
+      // set EndPos to start of next unit
+      CommaBehind:=-1;
+      while (EndPos<=length(NewText)) do begin
+        if NewText[EndPos]='''' then begin
+          inc(EndPos);
+          while (EndPos<=length(NewText)) and (NewText[EndPos]<>'''') do
+            inc(EndPos);
+        end else if NewText[EndPos]=',' then begin
+          CommaBehind:=EndPos;
+          while (EndPos<=length(NewText))
+          and (not IsIdentStartChar[NewText[EndPos]]) do
+            inc(EndPos);
+          break;
+        end;
+        inc(EndPos);
+      end;
+      if (SysUtils.CompareText(AnUnitName,NewUnitName)=0) then begin
+        // this is the old unit or
+        //DebugLn('Replace: keep old unit "',NewUnitName,'"');
+      end else if ExistingUnits.Contains(NewUnitName) then begin
+        // this unit already exists and should not be added
+        //DebugLn('Replace: already exists: "',NewUnitName,'"="',ExistingUnits[NewUnitName],'" CommaInFront=',dbgs(CommaInFront),' CommaBehind=',dbgs(CommaBehind));
+        if CommaBehind>0 then
+          System.Delete(NewText,StartPos,EndPos-StartPos)
+        else if CommaInFront>0 then
+          System.Delete(NewText,CommaInFront,EndPos-CommaInFront)
+        else
+          System.Delete(NewText,StartPos,EndPos-StartPos);
+        EndPos:=StartPos;
+        CommaBehind:=-1;
+      end else begin
+        // this unit does not exist yet
+        //DebugLn('Replace new unit with "',NewUnitName,'"');
+      end;
+      if CommaBehind>0 then
+        CommaInFront:=CommaBehind;
+      StartPos:=EndPos;
+    end;
+  end;
+
+  function Replace(UsesNode: TCodeTreeNode): boolean;
+  var
+    UnitNameAtom: TAtomPosition;
+    InAtom: TAtomPosition;
+    NewText: string;
+    CommaInFront: LongInt;
+    FromPos: LongInt;
+    ToPos: LongInt;
+    CommaBehind: Integer;
+    AnUnitName: String;
+  begin
+    if UsesNode=nil then exit(true);
+    MoveCursorToUsesStart(UsesNode);
+    CommaInFront:=-1;
+    repeat
+      // read next unit name
+      ReadNextUsedUnit(UnitNameAtom, InAtom);
+      if CurPos.Flag=cafComma then
+        CommaBehind:=CurPos.StartPos
+      else
+        CommaBehind:=-1;
+      AnUnitName:=GetAtom(UnitNameAtom);
+      if UnitNamePairs.Contains(AnUnitName) then begin
+        // replace
+        NewText:=UnitNamePairs[AnUnitName];
+        //DebugLn('Replace Unit="',AnUnitName,'" NewText="',NewText,'"');
+        
+        CleanNewUnits(AnUnitName,NewText);
+        
+        if NewText='' then begin
+          // comment unit
+          if CommaInFront>0 then begin
+            // example:  uses a{, b};
+            FromPos:=CommaInFront;
+            ToPos:=UnitNameAtom.EndPos;
+            if InAtom.StartPos>0 then
+              ToPos:=InAtom.EndPos;
+          end else if CommaBehind>0 then begin
+            // example:  uses {a,} b;
+            //           uses {a,} {b};
+            FromPos:=UnitNameAtom.StartPos;
+            ToPos:=CommaBehind+1;
+          end else begin
+            // examples:  uses {b};
+            FromPos:=UnitNameAtom.StartPos;
+            ToPos:=UnitNameAtom.EndPos;
+            if InAtom.StartPos>0 then
+              ToPos:=InAtom.EndPos;
+          end;
+          if not CommentCode(FromPos,ToPos,SourceChangeCache,false) then
+            exit(false);
+        end else begin
+          // replace
+          FromPos:=UnitNameAtom.StartPos;
+          ToPos:=UnitNameAtom.EndPos;
+          if InAtom.StartPos>0 then
+            ToPos:=InAtom.EndPos;
+          if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,NewText)
+          then exit(false);
+        end;
+      end;
+
+      if CurPos.Flag=cafComma then begin
+        // read next unit name
+        CommaInFront:=CurPos.StartPos;
+        ReadNextAtom;
+      end else if CurPos.Flag=cafSemicolon then begin
+        break;
+      end else
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+    until false;
+    Result:=true;
+  end;
+  
+begin
+  Result:=false;
+  BuildTree(false);
+  SourceChangeCache.MainScanner:=Scanner;
+  ExistingUnits:=nil;
+  try
+    // first collect all units
+    if not FindUsedUnitNames(ExistingUnits) then exit;
+    // then change uses sections
+    Replace(FindMainUsesSection);
+    Replace(FindImplementationUsesSection);
+  finally
+    ExistingUnits.Free;
+  end;
+  Result:=SourceChangeCache.Apply;
 end;
 
 function TStandardCodeTool.AddUnitToUsesSection(UsesNode: TCodeTreeNode;
@@ -736,6 +894,46 @@ begin
   Result:=true;
 end;
 
+function TStandardCodeTool.FindUsedUnitNames(var List: TStringToStringTree
+  ): boolean;
+  
+  procedure Collect(UsesNode: TCodeTreeNode; const Tag: string);
+  var
+    UnitNameAtom: TAtomPosition;
+    InAtom: TAtomPosition;
+    OldTag: string;
+    AnUnitName: String;
+  begin
+    if UsesNode=nil then exit;
+    MoveCursorToUsesStart(UsesNode);
+    repeat
+      // read next unit name
+      ReadNextUsedUnit(UnitNameAtom, InAtom);
+      AnUnitName:=GetAtom(UnitNameAtom);
+      // tag unit in list
+      OldTag:=List[AnUnitName];
+      if System.Pos(Tag,OldTag)<1 then
+        List[AnUnitName]:=OldTag+Tag;
+      if CurPos.Flag=cafComma then begin
+        // read next unit name
+        ReadNextAtom;
+      end else if CurPos.Flag=cafSemicolon then begin
+        break;
+      end else
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+    until false;
+    Result:=true;
+  end;
+  
+begin
+  // find the uses sections
+  List:=TStringToStringTree.Create(false);
+  BuildTree(false);
+  Collect(FindMainUsesSection,'Main');
+  Collect(FindMainUsesSection,'Implementation');
+  Result:=true;
+end;
+
 function TStandardCodeTool.FindUsedUnitFiles(var MainUsesSection: TStrings
   ): boolean;
 var
@@ -814,7 +1012,7 @@ begin
   MissingInUnits:=TStringList.Create;
   NormalUnits:=TStringList.Create;
   repeat
-    // read prior unit name
+    // read next unit name
     ReadNextUsedUnit(UnitNameAtom, InAtom);
     AnUnitName:=GetAtom(UnitNameAtom);
     if InAtom.StartPos>0 then begin
@@ -997,44 +1195,11 @@ end;
 function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
   SourceChangeCache: TSourceChangeCache): boolean;
   
-  procedure Comment(CommentStartPos, CommentEndPos: integer);
-  var
-    i: LongInt;
-    CurStartPos: LongInt;
-    CommentNeeded: Boolean;
-    CurEndPos: LongInt;
+  procedure Comment(StartPos, EndPos: integer);
   begin
-    if CommentStartPos>=CommentEndPos then
-      RaiseException('TStandardCodeTool Comment');
-  
-    // comment with curly brackets {}
-    i:=CommentStartPos;
-    CurStartPos:=CommentStartPos;
-    CurEndPos:=CurStartPos;
-    CommentNeeded:=false;
-    repeat
-      if (Src[i]='{') or (i>=CommentEndPos) then begin
-        // the area contains a comment -> comment in front
-        if CommentNeeded then begin
-          SourceChangeCache.Replace(gtNone,gtNone,CurStartPos,CurStartPos,'{');
-          SourceChangeCache.Replace(gtNone,gtNone,CurEndPos,CurEndPos,'}');
-          //DebugLn('Comment "',copy(Src,CurStartPos,i-CurStartPos),'"');
-          CommentNeeded:=false;
-        end;
-        if i>=CommentEndPos then break;
-        // skip comment
-        i:=FindCommentEnd(Src,i,Scanner.NestedComments);
-      end else if not IsSpaceChar[Src[i]] then begin
-        if not CommentNeeded then begin
-          CurStartPos:=i;
-          CommentNeeded:=true;
-        end;
-        CurEndPos:=i+1;
-      end;
-      inc(i);
-    until false;
+    CommentCode(StartPos,EndPos,SourceChangeCache,false);
   end;
-  
+
   function CommentUnitsInUsesSection(UsesNode: TCodeTreeNode): boolean;
   // Examples:
   // 1. uses {a,} b, c;    commenting one unit not at end
@@ -3428,6 +3593,52 @@ begin
   Result:=(FoundStartPos>=1)
           and CleanPosToCaret(FoundStartPos,CommentStart)
           and CleanPosToCaret(FoundEndPos,CommentEnd);
+end;
+
+function TStandardCodeTool.CommentCode(const StartPos, EndPos: integer;
+  SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
+var
+  i: LongInt;
+  CurStartPos: LongInt;
+  CommentNeeded: Boolean;
+  CurEndPos: LongInt;
+begin
+  if StartPos>=EndPos then
+    RaiseException('TStandardCodeTool CommentCode');
+
+  Result:=false;
+  // comment with curly brackets {}
+  i:=StartPos;
+  CurStartPos:=i;
+  CurEndPos:=CurStartPos;
+  CommentNeeded:=false;
+  repeat
+    if (Src[i]='{') or (i>=EndPos) then begin
+      // the area contains a comment -> comment in front
+      if CommentNeeded then begin
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          CurStartPos,CurStartPos,'{') then exit;
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          CurEndPos,CurEndPos,'}') then exit;
+        //DebugLn('Comment "',copy(Src,CurStartPos,i-CurStartPos),'"');
+        CommentNeeded:=false;
+      end;
+      if i>=EndPos then break;
+      // skip comment
+      i:=FindCommentEnd(Src,i,Scanner.NestedComments);
+    end else if not IsSpaceChar[Src[i]] then begin
+      if not CommentNeeded then begin
+        CurStartPos:=i;
+        CommentNeeded:=true;
+      end;
+      CurEndPos:=i+1;
+    end;
+    inc(i);
+  until false;
+  if Apply then
+    Result:=SourceChangeCache.Apply
+  else
+    Result:=true;
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(
