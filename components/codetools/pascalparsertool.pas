@@ -184,6 +184,8 @@ type
     function ReadParamList(ExceptionOnError, Extract: boolean;
         const Attr: TProcHeadAttributes): boolean;
     function ReadUsesSection(ExceptionOnError: boolean): boolean;
+    function ReadRequiresSection(ExceptionOnError: boolean): boolean;
+    function ReadContainsSection(ExceptionOnError: boolean): boolean;
     function ReadSubRange(ExceptionOnError: boolean): boolean;
     function ReadTilBlockEnd(StopOnBlockMiddlePart,
         CreateNodes: boolean): boolean;
@@ -448,6 +450,8 @@ begin
 end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
+var
+  SourceType: TCodeTreeNodeDesc;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -493,6 +497,7 @@ begin
       CurSection:=ctnLibrary
     else
       SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
+    SourceType:=CurSection;
     CreateChildNode;
     CurNode.Desc:=CurSection;
     ReadNextAtom; // read source name
@@ -516,6 +521,12 @@ begin
     ReadNextAtom;
     if UpAtomIs('USES') then
       ReadUsesSection(true);
+    if (SourceType=ctnPackage) then begin
+      if UpAtomIs('REQUIRES') then
+        ReadRequiresSection(true);
+      if UpAtomIs('CONTAINS') then
+        ReadContainsSection(true);
+    end;
     repeat
       //DebugLn('[TPascalParserTool.BuildTree] ALL ',GetAtom);
       if not DoAtom then break;
@@ -1614,6 +1625,70 @@ function TPascalParserTool.ReadUsesSection(
 begin
   CreateChildNode;
   CurNode.Desc:=ctnUsesSection;
+  repeat
+    ReadNextAtom;  // read name
+    if CurPos.Flag=cafSemicolon then break;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      if not AtomIsStringConstant then
+        if ExceptionOnError then
+          RaiseStringExpectedButAtomFound(ctsStringConstant)
+        else exit;
+      ReadNextAtom;
+    end;
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then
+      if ExceptionOnError then
+        RaiseCharExpectedButAtomFound(';')
+      else exit;
+  until (CurPos.StartPos>SrcLen);
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  ReadNextAtom;
+  Result:=true;
+end;
+
+function TPascalParserTool.ReadRequiresSection(ExceptionOnError: boolean
+  ): boolean;
+{ parse requires section
+
+  examples:
+    requires name1, name2, name3;
+
+}
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnRequiresSection;
+  repeat
+    ReadNextAtom;  // read name
+    if CurPos.Flag=cafSemicolon then break;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then
+      if ExceptionOnError then
+        RaiseCharExpectedButAtomFound(';')
+      else exit;
+  until (CurPos.StartPos>SrcLen);
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  ReadNextAtom;
+  Result:=true;
+end;
+
+function TPascalParserTool.ReadContainsSection(ExceptionOnError: boolean
+  ): boolean;
+{ parse contains section
+
+  examples:
+    contains name1, name2 in '', name3;
+
+}
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnContainsSection;
   repeat
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
