@@ -23,7 +23,7 @@ uses
   SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
   SynHighlighterUNIXShellScript, SynHighlighterCss, SynHighlighterPHP,
   SynHighlighterTeX, SynHighlighterHashEntries, SynHighlighterSQL,
-  SynhighlighterPython,
+  SynHighlighterPython, SynHighlighterAny,
   SynEditLazDsgn;
 
 implementation
