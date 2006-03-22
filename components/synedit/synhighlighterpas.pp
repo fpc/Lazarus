@@ -182,6 +182,7 @@ type
     function Func106: TtkTokenKind;
     {$ifdef SYN_LAZARUS}
     function Func108: TtkTokenKind;  // "operator"
+    function Func112: TtkTokenKind;  // "requires"
     {$endif}
     function Func117: TtkTokenKind;
     function Func126: TtkTokenKind;
@@ -408,6 +409,7 @@ begin
   fIdentFuncTable[106] := @Func106;
   {$ifdef SYN_LAZARUS}
   fIdentFuncTable[108] := @Func108; // "operator"
+  fIdentFuncTable[112] := @Func112; // "requires"
   {$endif}
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[126] := @Func126;
@@ -520,7 +522,7 @@ begin
   end else begin
     fStringLen := 0;
   end;
-  //if CompareText(copy(fLine,fToIdent,fStringLen),'widestring')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
+  //if CompareText(copy(fLine,fToIdent,fStringLen),'package')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLine,fToIdent,fStringLen)+'='+dbgs(Result));
 end; { KeyHash }
 {$ELSE}
 function TSynPasSyn.KeyHash(ToHash: PChar): Integer;
@@ -690,7 +692,12 @@ end;
 
 function TSynPasSyn.Func44: TtkTokenKind;
 begin
-  if KeyComp('Set') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Set') then
+    Result := tkKey
+  else if KeyComp('Package') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func45: TtkTokenKind;
@@ -878,7 +885,12 @@ end;
 
 function TSynPasSyn.Func95: TtkTokenKind;
 begin
-  if KeyComp('Absolute') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Absolute') then
+    Result := tkKey
+  else if KeyComp('Contains') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func96: TtkTokenKind;
@@ -944,6 +956,11 @@ end;
 function TSynPasSyn.Func108: TtkTokenKind;
 begin
   if KeyComp('Operator') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func112: TtkTokenKind;
+begin
+  if KeyComp('Requires') then Result := tkKey else Result := tkIdentifier;
 end;
 {$endif}
 
