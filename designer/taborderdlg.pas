@@ -40,17 +40,17 @@ type
   { TTabOrderDialog }
 
   TTabOrderDialog = class(TForm)
-    ArrowUp: TArrow;
-    ArrowDown: TArrow;
+    ArrowUp:      TArrow;
+    ArrowDown:    TArrow;
     CancelButton: TBitBtn;
-    OkButton: TBitBtn;
-    ShowOldValuesCheckbox: TCHECKBOX;
-    ItemTreeview: TTREEVIEW;
+    OkButton:     TBitBtn;
+    ShowOldValuesCheckbox: TCheckBox;
+    ItemTreeview: TTreeView;
     procedure DownSpeedbuttonCLICK(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure ShowOldValuesCheckboxCLICK(Sender: TObject);
     procedure TabOrderDialogCLOSE(Sender: TObject;
-                                  var CloseAction: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure TabOrderDialogCREATE(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
   private
@@ -62,7 +62,7 @@ type
     procedure FillTree;
     procedure ClearTree;
   public
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TComponent Read FLookupRoot Write SetLookupRoot;
   end;
 
 function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
@@ -73,9 +73,9 @@ function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
 var
   TabOrderDialog: TTabOrderDialog;
 begin
-  TabOrderDialog:=TTabOrderDialog.Create(nil);
-  TabOrderDialog.LookupRoot:=LookupRoot;
-  Result:=TabOrderDialog.ShowModal;
+  TabOrderDialog := TTabOrderDialog.Create(nil);
+  TabOrderDialog.LookupRoot := LookupRoot;
+  Result := TabOrderDialog.ShowModal;
   TabOrderDialog.Free;
 end;
 
@@ -177,9 +177,10 @@ begin
   ItemTreeview.BeginUpdate;
   try
     ClearTree;
-    if (FLookupRoot=nil) or (not (FLookupRoot is TWinControl)) then exit;
-    AControl:=TWinControl(FLookupRoot);
-    CreateNodes(AControl,nil);
+    if (FLookupRoot = nil) or (not (FLookupRoot is TWinControl)) then
+      exit;
+    AControl := TWinControl(FLookupRoot);
+    CreateNodes(AControl, nil);
   finally
     ItemTreeview.EndUpdate;
   end;
@@ -193,40 +194,41 @@ end;
 procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl;
   ParentNode: TTreeNode);
 var
-  i: Integer;
+  i:      integer;
   AControl: TControl;
-  CurTab: Integer;
+  CurTab: integer;
   FirstSibling: TTreeNode;
   NodeBehind: TTreeNode;
   NewNode: TTreeNode;
-  NodeText: String;
+  NodeText: string;
   AWinControl: TWinControl;
 begin
   ItemTreeview.BeginUpdate;
-  if ParentNode=nil then
-    FirstSibling:=nil
+  if ParentNode = nil then
+    FirstSibling := nil
   else
-    FirstSibling:=ParentNode.GetFirstChild;
-  for i:=0 to ParentControl.ControlCount-1 do begin
-    AControl:=ParentControl.Controls[i];
-    if not (AControl is TWinControl) then continue;
-    AWinControl:=TWinControl(AControl);
-    CurTab:=AWinControl.TabOrder;
-    NodeBehind:=FirstSibling;
-    while (NodeBehind<>nil) and (TWinControl(NodeBehind.Data).TabOrder<=CurTab)
-    do
-      NodeBehind:=NodeBehind.GetNextSibling;
-    NodeText:=AWinControl.Name;
+    FirstSibling := ParentNode.GetFirstChild;
+  for i := 0 to ParentControl.ControlCount - 1 do
+  begin
+    AControl := ParentControl.Controls[i];
+    if not (AControl is TWinControl) then
+      continue;
+    AWinControl := TWinControl(AControl);
+    CurTab      := AWinControl.TabOrder;
+    NodeBehind  := FirstSibling;
+    while (NodeBehind <> nil) and (TWinControl(NodeBehind.Data).TabOrder <= CurTab) do
+      NodeBehind := NodeBehind.GetNextSibling;
+    NodeText := AWinControl.Name;
     if ShowOldValuesCheckbox.Checked then
-      NodeText:=NodeText+'   ('+IntToStr(AWinControl.TabOrder)+')';
-    if NodeBehind<>nil then
-      NewNode:=ItemTreeview.Items.InsertObject(NodeBehind,NodeText,AControl)
+      NodeText := NodeText + '   (' + IntToStr(AWinControl.TabOrder) + ')';
+    if NodeBehind <> nil then
+      NewNode := ItemTreeview.Items.InsertObject(NodeBehind, NodeText, AControl)
     else
-      NewNode:=ItemTreeview.Items.AddChildObject(ParentNode,NodeText,AControl);
-    if (FirstSibling=nil) or (NewNode.GetPrevSibling=nil) then
-      FirstSibling:=NewNode;
-    CreateNodes(AWinControl,NewNode);
-    NewNode.Expanded:=true;
+      NewNode := ItemTreeview.Items.AddChildObject(ParentNode, NodeText, AControl);
+    if (FirstSibling = nil) or (NewNode.GetPrevSibling = nil) then
+      FirstSibling := NewNode;
+    CreateNodes(AWinControl, NewNode);
+    NewNode.Expanded := True;
   end;
   ItemTreeview.EndUpdate;
 end;
