@@ -640,6 +640,10 @@ end;
 procedure TMessagesView.Clear;
 begin
   if Self=nil then exit;
+  if fBlockCount>0 then begin
+    // keep the old blocks
+    exit;
+  end;
   ClearItems;
   if not Assigned(MessageListBox.OnClick) then
     MessageListBox.OnClick := @MessageViewClicked;
