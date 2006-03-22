@@ -1030,6 +1030,10 @@ msgstr ""
 msgid "Checks:"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
 msgstr ""
@@ -1156,7 +1160,7 @@ msgstr "Poista tiedostot myös alikansioista"
 
 #: lazarusidestrconsts:liscleanupunitpath
 msgid "Clean up unit path?"
-msgstr ""
+msgstr "Poistetaanko käännösyksikön tiedostopolku?"
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -1164,7 +1168,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
-msgstr ""
+msgstr "Tyhjennä"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
@@ -1514,8 +1518,12 @@ msgstr ""
 msgid "Convert DFM file to LFM"
 msgstr "Muunna tiedosto: DFM -> LFM"
 
+#: lazarusidestrconsts:lismenuconvertdelphipackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi Project to Lazarus Project"
+msgid "Convert Delphi project to Lazarus project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
@@ -3764,7 +3772,7 @@ msgstr "Hyppää"
 
 #: lazarusidestrconsts:lismenujumptonextbookmark
 msgid "Jump to next bookmark"
-msgstr ""
+msgstr "Mene seuraavaan kirjainmerkkiin"
 
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
@@ -3772,7 +3780,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenujumptoprevbookmark
 msgid "Jump to previous bookmark"
-msgstr ""
+msgstr "Mene edelliseen kirjainmerkkiin"
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
@@ -4698,6 +4706,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "Komponenttimuokkain"
 
+#: lazarusidestrconsts:liskeycatobjinspector
+msgid "Object Inspector commands"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
@@ -4768,7 +4780,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenproject
 msgid "Open Project?"
-msgstr "Avataanto projekti?"
+msgstr "Avataanko projekti?"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
@@ -4780,7 +4792,7 @@ msgstr "Avaa esillä ollut projekti"
 
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
-msgstr ""
+msgstr "Avataan XML-tiedostona"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -4816,7 +4828,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenproject2
 msgid "Open project"
-msgstr ""
+msgstr "Avaa projekti"
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
@@ -4832,7 +4844,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopentheproject
 msgid "Open the project %s?"
-msgstr ""
+msgstr "Avataanko projekti %s?"
 
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
@@ -5623,7 +5635,7 @@ msgid "Replace"
 msgstr "Etsi ja korvaa"
 
 #: lazarusidestrconsts:dlgreplaceall
-msgid "Replace All"
+msgid "Replace &All"
 msgstr "Korvaa kaikki"
 
 #: lazarusidestrconsts:lispkgmangreplacefile
@@ -7040,7 +7052,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
-msgstr ""
+msgstr "Kansiota %s%s%s ei enään tarvita käännösyksikön tiedostopolussa.%sPoistetaanko se?"
 
 #: lazarusidestrconsts:listhedirectoryisnotyetintheunitpathaddit
 msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
@@ -7991,7 +8003,7 @@ msgid "Unit not found: %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory (-FE):"
+msgid "Unit output directory (-FU):"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
@@ -8016,7 +8028,7 @@ msgstr "Käännösyksiköt eli unitit ..."
 
 #: lazarusidestrconsts:srvk_unknown
 msgid "Unknown"
-msgstr ""
+msgstr "Tuntematon"
 
 #: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"

@@ -1040,6 +1040,10 @@ msgstr "整合性チェック"
 msgid "Checks:"
 msgstr "チェック:"
 
+#: lazarusidestrconsts:lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
 msgstr ""
@@ -1524,9 +1528,13 @@ msgstr ""
 msgid "Convert DFM file to LFM"
 msgstr "DFMファイルをLFMへ変換"
 
+#: lazarusidestrconsts:lismenuconvertdelphipackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi Project to Lazarus Project"
-msgstr "DelphiプロジェクトをLazarusプロジェクトへ変換"
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -4708,6 +4716,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr "オブジェクトインスペクター"
 
+#: lazarusidestrconsts:liskeycatobjinspector
+msgid "Object Inspector commands"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
@@ -5633,8 +5645,8 @@ msgid "Replace"
 msgstr "置換"
 
 #: lazarusidestrconsts:dlgreplaceall
-msgid "Replace All"
-msgstr "すべて置換"
+msgid "Replace &All"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -8001,8 +8013,8 @@ msgid "Unit not found: %s%s%s"
 msgstr "ユニットがみつかりません: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory (-FE):"
-msgstr "ユニット出力ディレクトリ(-FE):"
+msgid "Unit output directory (-FU):"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

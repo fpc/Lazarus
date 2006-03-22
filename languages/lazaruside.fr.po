@@ -1,6 +1,4 @@
-# translation of lazaruside.po to français
-# translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005.
-# beuz_ <lazarus@beuselinck.com>, 2006.
+# translation of lazaruside.po to français translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005. beuz_ <lazarus@beuselinck.com>, 2006.
 msgid ""
 msgstr ""
 "Last-Translator: beuz_ <lazarus@beuselinck.com>\n"
@@ -1044,6 +1042,10 @@ msgstr "Vérifier la cohérence"
 msgid "Checks:"
 msgstr "Contrôles:"
 
+#: lazarusidestrconsts:lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
 msgstr "Choisissez le projet Delphi (*.dpr)"
@@ -1528,9 +1530,13 @@ msgstr "Convertir"
 msgid "Convert DFM file to LFM"
 msgstr "Convertir un fichier DFM en LFM"
 
+#: lazarusidestrconsts:lismenuconvertdelphipackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi Project to Lazarus Project"
-msgstr "Convertir un projet Delphi en projet Lazarus"
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -4712,6 +4718,10 @@ msgstr "Objet"
 msgid "Object Inspector"
 msgstr "Inspecteur d'objets"
 
+#: lazarusidestrconsts:liskeycatobjinspector
+msgid "Object Inspector commands"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "OK"
@@ -5637,8 +5647,8 @@ msgid "Replace"
 msgstr "Remplacer"
 
 #: lazarusidestrconsts:dlgreplaceall
-msgid "Replace All"
-msgstr "Remplacer tout"
+msgid "Replace &All"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -8005,8 +8015,8 @@ msgid "Unit not found: %s%s%s"
 msgstr "Unité introuvable: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory (-FE):"
-msgstr "Répertoire de sortie de l'unité (-FE):"
+msgid "Unit output directory (-FU):"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

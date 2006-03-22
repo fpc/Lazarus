@@ -39,7 +39,7 @@ msgid "No to all"
 msgstr ""
 
 #: lclstrconsts:rsmbyestoall
-msgid "Yes to all"
+msgid "Yes to &All"
 msgstr ""
 
 #: lclstrconsts:rsmbhelp

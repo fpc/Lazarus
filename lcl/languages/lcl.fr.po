@@ -616,8 +616,8 @@ msgid "Warning:"
 msgstr "Attention:"
 
 #: lclstrconsts:rsmbyestoall
-msgid "Yes to all"
-msgstr "Oui pour tout"
+msgid "Yes to &All"
+msgstr ""
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

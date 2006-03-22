@@ -522,6 +522,10 @@ msgstr "Proprietà delle voci"
 msgid "Items"
 msgstr "Voci"
 
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Ultimo"

@@ -1041,6 +1041,10 @@ msgstr ""
 msgid "Checks:"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
 msgstr ""
@@ -1525,8 +1529,12 @@ msgstr ""
 msgid "Convert DFM file to LFM"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconvertdelphipackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi Project to Lazarus Project"
+msgid "Convert Delphi project to Lazarus project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
@@ -4709,6 +4717,10 @@ msgstr ""
 msgid "Object Inspector"
 msgstr ""
 
+#: lazarusidestrconsts:liskeycatobjinspector
+msgid "Object Inspector commands"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
@@ -5634,7 +5646,7 @@ msgid "Replace"
 msgstr ""
 
 #: lazarusidestrconsts:dlgreplaceall
-msgid "Replace All"
+msgid "Replace &All"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
@@ -8002,7 +8014,7 @@ msgid "Unit not found: %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory (-FE):"
+msgid "Unit output directory (-FU):"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile

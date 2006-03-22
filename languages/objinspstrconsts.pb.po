@@ -1,12 +1,3 @@
-﻿msgid ""
-msgstr ""
-"Last-Translator: Júnior Gonçalves, J. I. <hipernetjr@yahoo.com.br> (Current Version)\n"
-"PO-Revision-Date: 2006-03-10 14:55\n"
-"Project-Id-Version: objinspstrconsts\n"
-"Language-Team: Portuguese - Brazil (http://lazaruspascal.codigolivre.org.br/portal.php \n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
 msgstr "%d linhas, %d caracteres"
@@ -111,13 +102,13 @@ msgstr "&Acima"
 msgid "(All)"
 msgstr "(Tudo)"
 
-#: objinspstrconsts:oisnone
-msgid "(none)"
-msgstr "(nenhum)"
-
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Desconhecido)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(nenhum)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -359,10 +350,6 @@ msgstr "S&air"
 msgid "Edit"
 msgstr "Editar"
 
-#: objinspstrconsts:oiseditactionlist
-msgid "Edit action list..."
-msgstr "Editar lista de ações..."
-
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
 msgstr "Editar Items ListView"
@@ -374,6 +361,10 @@ msgstr "Editar StringGrid..."
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
 msgstr "Editar Items TreeView..."
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Editar lista de ações..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
@@ -435,14 +426,6 @@ msgstr "Ajuda"
 msgid "Help Contents"
 msgstr "Conteúdo da Ajuda"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Contexto de ajuda %s não encontrada no Banco de dados %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Contexto de Ajuda %s não encontrado."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Não foi possive encontar no banco de dados de ajuda %s%s%s um vizualizador para uma página de ajuda do tipo %s"
@@ -450,6 +433,14 @@ msgstr "Não foi possive encontar no banco de dados de ajuda %s%s%s um vizualiza
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Banco de dados de Ajuda %s%s%s não encontrado"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Contexto de ajuda %s não encontrada no Banco de dados %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Contexto de Ajuda %s não encontrado."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
@@ -519,6 +510,10 @@ msgstr "Propriedades dos Items"
 msgid "Items"
 msgstr "Items"
 
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "ultimo"
@@ -559,6 +554,10 @@ msgstr "Modificar o Item"
 msgid "Move Down"
 msgstr "Mover Abaixo"
 
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "Mover Acima"
+
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
 msgstr "Mover página a esquerda"
@@ -566,10 +565,6 @@ msgstr "Mover página a esquerda"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Mover página a direita"
-
-#: objinspstrconsts:sccsiledtmoveup
-msgid "Move Up"
-msgstr "Mover Acima"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -591,13 +586,13 @@ msgstr "Novo Sub-Item"
 msgid "Next"
 msgstr "Proximo"
 
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Nenhuma ajuda encontrada para linha %d, coluna %d de %s."
-
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "Nenhum Navegador HTML encontrado.%sPor favor defina um em Ajuda -> Configurar Ajuda ->Vizualizadores"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Nenhuma ajuda encontrada para linha %d, coluna %d de %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -715,13 +710,13 @@ msgstr "Selecionar &Cor..."
 msgid "Select &Font..."
 msgstr "Selecionar &Fonte..."
 
-#: objinspstrconsts:oisselectafile
-msgid "Select a file"
-msgstr "Selecione um arquivo"
-
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
 msgstr "Selecionar Tudo"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Selecione um arquivo"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -787,13 +782,13 @@ msgstr "Editor StrinGrid ..."
 msgid "Strings Editor Dialog"
 msgstr "Diálogo do Editor de Strings"
 
-#: objinspstrconsts:oistestdialog
-msgid "Test dialog..."
-msgstr "Testar Diálogo..."
-
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
 msgstr "Testar Entrada"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "Testar Diálogo..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -846,132 +841,4 @@ msgstr "Variant"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Palavra"
-
-#: objinspstrconsts:sccstredtdelete
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:sccstredtsavedialog
-msgid "Save"
-msgstr "Salvar"
-
-#: objinspstrconsts:sccslvedtgrplcaption
-msgid "Items"
-msgstr "Items"
-
-#: objinspstrconsts:sccslvedtgrprcaption
-msgid "Item Properties"
-msgstr "Propriedades de Item"
-
-#: objinspstrconsts:sccslvedtnewitem
-msgid "New Item"
-msgstr "Novo Item"
-
-#: objinspstrconsts:sccslvedtnewsubitem
-msgid "New SubItem"
-msgstr "Movo SubItem"
-
-#: objinspstrconsts:sccslvedtapply
-msgid "Apply"
-msgstr "Aplicar"
-
-#: objinspstrconsts:sccslvedtdelete
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:sccslvedtlabelimageindex
-msgid "Image Index:"
-msgstr "Indice de Imagem:"
-
-#: objinspstrconsts:sccslvedtlabelstateindex
-msgid "State Index:"
-msgstr "Indice State:"
-
-#: objinspstrconsts:sccslvedtitem
-msgid "Item"
-msgstr "Item"
-
-#: objinspstrconsts:sccsiledtdelete
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:sccsiledtapply
-msgid "Apply"
-msgstr "Aplicar"
-
-#: objinspstrconsts:sccssgedtapply
-msgid "Apply"
-msgstr "Aplicar"
-
-#: objinspstrconsts:sccssgedtsave
-msgid "Save..."
-msgstr "Salvar..."
-
-#: objinspstrconsts:sccssgedtopendialog
-msgid "Open"
-msgstr "Abrir"
-
-#: objinspstrconsts:sccssgedtsavedialog
-msgid "Save"
-msgstr "Salvar"
-
-#: objinspstrconsts:oicoleditdelete
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:cactionlisteditormovedownaction
-msgid "Move Down"
-msgstr "Mover Abaixo"
-
-#: objinspstrconsts:ilesadd
-msgid "Add"
-msgstr "Adicionar"
-
-#: objinspstrconsts:cactionlisteditormoveupaction
-msgid "Move Up"
-msgstr "Mover Acima"
-
-#: objinspstrconsts:oistdacteditdeleteheadline
-msgid "&Delete"
-msgstr "&Deletar"
-
-#: objinspstrconsts:oistdactdatasetdeleteheadline
-msgid "&Delete"
-msgstr "&Deletar"
-
-#: objinspstrconsts:oistdacteditcutshorthint
-msgid "Cut"
-msgstr "Recortar"
-
-#: objinspstrconsts:oistdacteditcopyshorthint
-msgid "Copy"
-msgstr "Copiar"
-
-#: objinspstrconsts:oistdacteditpasteshorthint
-msgid "Paste"
-msgstr "Colar"
-
-#: objinspstrconsts:oistdacteditundoshorthint
-msgid "Undo"
-msgstr "Desfazer"
-
-#: objinspstrconsts:oistdacteditdeleteshorthint
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:oistdactfileopenhint
-msgid "Open"
-msgstr "Abrir"
-
-#: objinspstrconsts:oistdactdatasetdeletehint
-msgid "Delete"
-msgstr "Deletar"
-
-#: objinspstrconsts:oistdactdatasetedithint
-msgid "Edit"
-msgstr "Editar"
-
-#: objinspstrconsts:oiscancel
-msgid "&Cancel"
-msgstr "&Cancelar"
 

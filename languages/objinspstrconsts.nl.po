@@ -510,6 +510,10 @@ msgstr "Onderdeel properties"
 msgid "Items"
 msgstr "Onderdelen"
 
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Laatste"

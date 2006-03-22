@@ -510,6 +510,10 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
 msgstr "Últim"

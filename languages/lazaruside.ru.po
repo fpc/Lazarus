@@ -1041,6 +1041,10 @@ msgstr "Целостность?"
 msgid "Checks:"
 msgstr "Проверка:"
 
+#: lazarusidestrconsts:lischoosedelphipackage
+msgid "Choose Delphi package (*.dpk)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
 msgstr "Выберите проект Delphi (*.dpr)"
@@ -1525,9 +1529,13 @@ msgstr "Преобразовать"
 msgid "Convert DFM file to LFM"
 msgstr "Преобразовать DFM в LFM"
 
+#: lazarusidestrconsts:lismenuconvertdelphipackage
+msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiproject
-msgid "Convert Delphi Project to Lazarus Project"
-msgstr "Преобразовать проект Delphi в проект Lazarus"
+msgid "Convert Delphi project to Lazarus project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
@@ -4709,6 +4717,10 @@ msgstr "Объект"
 msgid "Object Inspector"
 msgstr "Инспектор объектов"
 
+#: lazarusidestrconsts:liskeycatobjinspector
+msgid "Object Inspector commands"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "ОК"
@@ -5634,8 +5646,8 @@ msgid "Replace"
 msgstr "Замена"
 
 #: lazarusidestrconsts:dlgreplaceall
-msgid "Replace All"
-msgstr "Заменить все"
+msgid "Replace &All"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -8002,8 +8014,8 @@ msgid "Unit not found: %s%s%s"
 msgstr "Модуль не найден: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory (-FE):"
-msgstr "Каталог для генерации модулей (-FE):"
+msgid "Unit output directory (-FU):"
+msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"

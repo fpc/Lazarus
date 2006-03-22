@@ -110,6 +110,10 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr ""
+
 #: objinspstrconsts:oiscut
 msgid "Cut"
 msgstr ""

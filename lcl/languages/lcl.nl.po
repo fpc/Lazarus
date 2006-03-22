@@ -607,8 +607,8 @@ msgid "Warning:"
 msgstr "Waarschuwing"
 
 #: lclstrconsts:rsmbyestoall
-msgid "Yes to all"
-msgstr "Ja op alles"
+msgid "Yes to &All"
+msgstr ""
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"
