@@ -325,7 +325,7 @@ Begin
       TargetPos := DragObject.DragPos;
 
     // last DragOver message (make sure, there is at least one)
-    Accepted:=(ActiveDrag <> dopNone) and SendDragOver(dmDragLeave);
+    Accepted:=(ActiveDrag <> dopNone) and SendDragOver(dmDragLeave) and Drop;
 
     // erase global variables (dragging stopped)
     DragControl := nil;
