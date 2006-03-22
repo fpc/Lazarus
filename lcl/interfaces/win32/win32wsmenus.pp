@@ -284,9 +284,7 @@ end;
 
 procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
-  { not assigned when this the menuitem of a TMenu; handle is destroyed above }
-  if Assigned(AMenuItem.Parent) then
-    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+  DestroyMenu(AMenuItem.Handle);
   TriggerFormUpdate(AMenuItem);
 end;
 
