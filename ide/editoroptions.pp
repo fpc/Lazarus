@@ -72,6 +72,7 @@ uses
   SynHighlighterPas,
   SynHighlighterPerl,
   SynHighlighterPHP,
+  SynHighlighterSQL,
   SynHighlighterPython,
   SynHighlighterUNIXShellScript,
   SynHighlighterXML,
@@ -86,7 +87,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP);
+    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
@@ -112,7 +113,7 @@ const
     TCustomSynClass =
     (Nil, Nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
     TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-    TSynPythonSyn, TSynPHPSyn);
+    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn);
 
 
 { Comments }
@@ -130,7 +131,8 @@ const
     comtCPP,   // lshJava
     comtPerl,  // lshBash
     comtPerl,  // lshPython
-    comtHTML   // lshPHP
+    comtHTML,  // lshPHP
+    comtCPP    // lshSQL
     );
 
 const
@@ -543,7 +545,8 @@ const
     'Java',
     'Bash',
     'Python',
-    'PHP'
+    'PHP',
+    'SQL'
     );
 
 var
@@ -580,7 +583,8 @@ const
     lshJava,
     lshBash,
     lshPython,
-    lshPHP
+    lshPHP,
+    lshSQL
     );
 
   DefaultColorScheme      = 'Default';
@@ -1087,6 +1091,36 @@ begin
     begin
       Add('Element=Reserved_word');
       Add('Comment=Comment');
+      Add('Variable=Identifier');
+      Add('Space=Space');
+      Add('Symbol=Symbol');
+      Add('Number=Number');
+      Add('Key=Key');
+      Add('String=String');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for SQL
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshSQL;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('sql');
+    SampleSource :=
+      '-- ansi sql sample source'#10 +
+        'select name , region'#10 +
+        'from cia'#10 +
+        'where area < 2000'#10 +
+        'and gdp > 5000000000'#10 + #10;
+    AddAttrSampleLines[ahaTextBlock] := 4;
+    MappedAttributes := TStringList.Create;
+    with MappedAttributes do
+    begin
+      Add('Comment=Comment');
+      Add('Element=Reserved_word');
       Add('Variable=Identifier');
       Add('Space=Space');
       Add('Symbol=Symbol');
