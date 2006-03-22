@@ -4828,24 +4828,33 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
         <short>Check Box State</short>
-        <descr>Check Box State: a set of constants defining the possible states of a Check Box - <br/>Checked, meaning it has been selected; <br/>Unchecked meaning irt has not been selected or has been deselected; <br/>Grayed meaning it has been rendered inoperative or unable to be selected and appears grey or faintly visible on the Form</descr>
+        <descr>Check Box State: a set of constants defining the possible states of a Check Box - <br/>
+
+Checked, meaning it has been selected; <br/>
+
+Unchecked meaning irt has not been selected or has been deselected; <br/>
+
+Grayed meaning it has been rendered inoperative or unable to be selected and appears grey or faintly visible on the Form</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbUnchecked">
-        <short/>
+        <descr>The check box has no check mark, indicating that the user has not selected the option.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbChecked">
-        <short/>
+        <descr>The check box has a check mark in it, indicating that the user has selected the option.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbGrayed">
-        <short/>
+        <descr>The check box has a check mark in it, but it is grayed.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomCheckBox">
-        <short>Custom Check Box</short>
-        <descr>Custom Check Box: the base class from which the Check Box is derived.</descr>
+        <short>TCustomCheckBox is the ancestor of all check-box components.</short>
+        <descr>Custom Check Box: The base (abstract) class from which the TCheckBox is derived.  Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</descr>
+        <seealso>
+          <link id="TCheckBox"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomCheckBox.FAllowGrayed">
@@ -4976,21 +4985,22 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.AllowGrayed">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines whether the check box can be in a "grayed" state.</short>
+        <descr>If AllowGrayed is set to True, the check box has three possible states: checked, unchecked and grayed. If AllowGrayed is set to False, the check box has only two possible states: checked and unchecked.</descr>
+        <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.State">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Indicates whether the check box is selected, deselected or grayed.</short>
+        <descr>See TCheckBoxState for possible values of State.</descr>
+        <example file="TCustomCheckbox_AllowGrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines if the user can tab to a control.</short>
+        <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
+
+If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.UseOnChange">

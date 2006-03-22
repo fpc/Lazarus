@@ -9841,9 +9841,10 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines if the user can tab to a control.</short>
+        <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
+
+If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
