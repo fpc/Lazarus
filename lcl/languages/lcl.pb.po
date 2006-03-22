@@ -196,7 +196,7 @@ msgstr "Erro na criação de gdb catchable:"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
-msgstr "Personalizado"
+msgstr "Habitual"
 
 #: lclstrconsts:ifsvk_delete
 msgid "Delete"
