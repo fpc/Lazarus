@@ -106,7 +106,8 @@ type
     function FindUsedUnitFiles(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
     function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
-                                    NormalUnits: TStrings): boolean;
+                                    NormalUnits: TStrings;
+                                    UseContainsSection: boolean = false): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
@@ -402,7 +403,7 @@ begin
     if SectionNode.Desc in [ctnProgram, ctnInterface, ctnImplementation] then
     begin
       UsesNode:=SectionNode.FirstChild;
-      if (UsesNode.Desc=ctnUsesSection)
+      if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
       and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
         Result:=true;
         exit;
@@ -781,7 +782,7 @@ end;
   function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
     MissingInUnits, NormalUnits: TStrings): boolean;
 
-  Reads the main uses section backwards and tries to find each unit file having
+  Reads the main uses section and tries to find each unit file having
   an 'in' modifier.
   The associated objects in the list will be the found codebuffers.
   FoundInUnits returns the list of found 'in' unitnames plus TCodeBuffer
@@ -792,7 +793,7 @@ end;
   plus the 'in' extension.
 ------------------------------------------------------------------------------}
 function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
-  MissingInUnits, NormalUnits: TStrings): boolean;
+  MissingInUnits, NormalUnits: TStrings; UseContainsSection: boolean): boolean;
 var
   InAtom, UnitNameAtom: TAtomPosition;
   AnUnitName, AnUnitInFilename: string;
@@ -803,9 +804,10 @@ begin
   FoundInUnits:=nil;
   MissingInUnits:=nil;
   NormalUnits:=nil;
+  DebugLn('TStandardCodeTool.FindDelphiProjectUnits UseContainsSection=',dbgs(UseContainsSection));
   // find the uses sections
   BuildTree(false);
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesSection(UseContainsSection);
   if UsesNode=nil then exit;
   MoveCursorToUsesStart(UsesNode);
   FoundInUnits:=TStringList.Create;
@@ -832,7 +834,7 @@ begin
         FoundInUnits.AddObject(AnUnitName+' in '+AnUnitInFilename,NewCode);
       end;
     end else begin
-      // the non 'in' units are 'Forms' or units added by the user
+      // the units without 'in' are 'Forms' or units added by the user
       NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       NormalUnits.AddObject(AnUnitName,NewCode);
     end;

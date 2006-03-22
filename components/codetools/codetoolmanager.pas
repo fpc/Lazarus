@@ -438,6 +438,8 @@ type
           FixCase: boolean = false): boolean;
     function FindDelphiProjectUnits(Code: TCodeBuffer;
           var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+    function FindDelphiPackageUnits(Code: TCodeBuffer;
+          var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
     function CommentUnitsInUsesSections(Code: TCodeBuffer;
           MissingUnits: TStrings): boolean;
     function FindUnit(Code: TCodeBuffer;
@@ -2893,6 +2895,22 @@ begin
   try
     Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits,
                                                 MissingInUnits, NormalUnits);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindDelphiPackageUnits(Code: TCodeBuffer;
+  var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDelphiPackageUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits,
+                                              MissingInUnits, NormalUnits,true);
   except
     on e: Exception do Result:=HandleException(e);
   end;

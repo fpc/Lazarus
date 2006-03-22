@@ -2753,6 +2753,7 @@ begin
     if i>=FileCount then continue;
     if not FileExistsCached(Files[i].Filename) then
       RemoveFile(Files[i]);
+    dec(i);
   end;
 end;
 

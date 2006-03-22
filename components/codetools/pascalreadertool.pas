@@ -1529,20 +1529,24 @@ end;
 
 procedure TPascalReaderTool.MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
 begin
-  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
+  if (UsesNode=nil)
+  or ((UsesNode.Desc<>ctnUsesSection) and (UsesNode.Desc<>ctnContainsSection))
+  then
     RaiseException('[TPascalParserTool.MoveCursorToUsesStart] '
       +'internal error: invalid UsesNode');
   // search backwards through the uses section
   MoveCursorToCleanPos(UsesNode.StartPos);
   ReadNextAtom;
-  if not UpAtomIs('USES') then
+  if (not UpAtomIs('USES')) and (not UpAtomIs('CONTAINS')) then
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,['uses',GetAtom]);
   ReadNextAtom;
 end;
 
 procedure TPascalReaderTool.MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
 begin
-  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
+  if (UsesNode=nil)
+  or ((UsesNode.Desc<>ctnUsesSection) and (UsesNode.Desc<>ctnContainsSection))
+  then
     RaiseException('[TPascalParserTool.MoveCursorToUsesEnd] '
       +'internal error: invalid UsesNode');
   // search backwards through the uses section

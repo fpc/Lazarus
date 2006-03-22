@@ -2222,7 +2222,8 @@ begin
     else
       Offset:=-1;
     if (Offset>0) then begin
-      if (CompareIdentifiers('i',@ASource[Result+Offset])=0)
+      if ((UpChars[ASource[Result+Offset]]='I')
+           and (ASource[Result+Offset+1]=' '))
       or (CompareIdentifiers('include',@ASource[Result+Offset])=0) then begin
         CommentEndPos:=FindCommentEnd(ASource,Result,NestedComments);
         if ASource[Result]='{' then

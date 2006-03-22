@@ -696,7 +696,7 @@ type
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;
 
-    function FindMainUsesSection: TCodeTreeNode;
+    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
 
     function FindUnitSource(const AnUnitName,
@@ -1496,17 +1496,25 @@ begin
   Result:=BestNode;
 end;
 
-function TFindDeclarationTool.FindMainUsesSection: TCodeTreeNode;
+function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean
+  ): TCodeTreeNode;
 begin
   Result:=Tree.Root;
   if Result=nil then exit;
-  if Result.Desc=ctnUnit then begin
-    Result:=Result.NextBrother;
-    if Result=nil then exit;
+  if UseContainsSection then begin
+    if Result.Desc<>ctnPackage then exit(nil);
+    Result:=Result.FirstChild;
+    while (Result<>nil) and (Result.Desc<>ctnContainsSection) do
+      Result:=Result.NextBrother;
+  end else begin
+    if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+      if Result=nil then exit;
+    end;
+    Result:=Result.FirstChild;
+    if (Result=nil) then exit;
+    if (Result.Desc<>ctnUsesSection) then Result:=nil;
   end;
-  Result:=Result.FirstChild;
-  if (Result=nil) then exit;
-  if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
 function TFindDeclarationTool.FindImplementationUsesSection: TCodeTreeNode;

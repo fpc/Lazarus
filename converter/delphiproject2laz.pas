@@ -470,16 +470,13 @@ begin
   NormalUnits:=nil;
   try
     debugln('FindAllDelphiPackageUnits gathering all units ...');
-    NotImplementedDialog('FindAllDelphiPackageUnits: Reading .dpk file');
-    exit(mrAbort);
-    
-    //if not CodeToolBoss.FindDelphiPackageUnits(DPKCode,FoundInUnits,
-                                               //MissingInUnits, NormalUnits) then
-    //begin
-      //LazarusIDE.DoJumpToCodeToolBossError;
-      //Result:=mrCancel;
-      //exit;
-    //end;
+    if not CodeToolBoss.FindDelphiPackageUnits(DPKCode,FoundInUnits,
+                                               MissingInUnits, NormalUnits) then
+    begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      Result:=mrCancel;
+      exit;
+    end;
     debugln('FindAllDelphiPackageUnits FoundInUnits=[',FoundInUnits.Text,']',
       ' MissingInUnits=[',MissingInUnits.Text,']',
       ' NormalUnits=[',NormalUnits.Text,']');
