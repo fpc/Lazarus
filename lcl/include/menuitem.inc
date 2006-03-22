@@ -37,8 +37,8 @@ procedure TMenuItem.AddSeparator;
 var
   Item: TMenuItem;
 begin
-  Item:=TMenuItem.Create(Self);
-  Item.Caption:='-';
+  Item := TMenuItem.Create(Self);
+  Item.Caption := cLineCaption;
   Add(Item);
 end;
 
@@ -201,6 +201,19 @@ begin
   if FCommand <> 0 then CommandPool[FCommand] := False;
   //debugln('TMenuItem.Destroy B ',dbgsName(Self));
   inherited Destroy;
+end;
+
+
+{ Find the menu item with a Caption of ACaption. Also for compatability with
+  Delphi. }
+function TMenuItem.Find(const ACaption: string): TMenuItem;
+var
+  Idx: Integer;
+begin
+  Result := nil;
+  Idx := IndexOfCaption(ACaption);
+  if Idx <> -1 then
+    Result := Items[Idx];
 end;
 
 {------------------------------------------------------------------------------
@@ -879,6 +892,15 @@ function TMenuItem.IsCheckItem: boolean;
 begin
   Result:=Checked or RadioItem or AutoCheck or ShowAlwaysCheckable;
 end;
+
+
+{ Returns true if the current menu item is a Line (menu seperator). Added for
+  Delphi compatability as well. }
+function TMenuItem.IsLine: Boolean;
+begin
+  Result := FCaption = cLineCaption;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.SetCaption

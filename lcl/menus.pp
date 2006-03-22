@@ -185,6 +185,7 @@ type
     FCompStyle: LongInt;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function Find(const ACaption: string): TMenuItem;
     function GetImageList: TCustomImageList; virtual;
     function GetParentComponent: TComponent; override;
     function GetParentMenu: TMenu; virtual;
@@ -196,6 +197,7 @@ type
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     function VisibleIndexOf(Item: TMenuItem): Integer;
     function IsCheckItem: boolean; virtual;
+    function IsLine: Boolean;
     procedure Add(Item: TMenuItem);
     procedure AddSeparator;
     procedure Click; virtual;
@@ -208,7 +210,6 @@ type
     procedure Clear;
     function HasBitmap: boolean;
     function GetIconSize: TPoint; virtual;
-  public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
@@ -372,6 +373,13 @@ function NewLine: TMenuItem;
 
 
 procedure Register;
+
+
+const
+  cHotkeyPrefix   = '&';
+  cLineCaption    = '-';
+  cDialogSuffix   = '...';
+
 
 implementation
 
