@@ -42,7 +42,7 @@ uses
   StdCtrls, Buttons, FileUtil,
   AVL_Tree, Laz_XMLCfg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
-  PackageDefs, PackageSystem;
+  PackageDefs, PackageSystem, PackageLinks;
 
 type
   TOnCheckInstallPackageList =
@@ -56,6 +56,8 @@ type
     AvailablePkgGroupBox: TGroupBox;
     CancelButton: TButton;
     ExportButton: TButton;
+    PkgInfoMemo: TMemo;
+    PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
     SaveAndRebuildButton: TButton;
     InstallListBox: TListBox;
@@ -79,6 +81,7 @@ type
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
     FRebuildIDE: boolean;
+    FSelectedPkg: TLazPackage;
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     procedure UpdateAvailablePackages;
@@ -88,6 +91,7 @@ type
     procedure ClearNewInstalledPackages;
     function CheckSelection: boolean;
     procedure UpdateButtonStates;
+    procedure UpdatePackageInfo(List: TListBox);
     function NewInstalledPackagesContains(APackageID: TLazPackageID): boolean;
     function IndexOfNewInstalledPackageID(APackageID: TLazPackageID): integer;
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
@@ -142,12 +146,15 @@ begin
   UninstallButton.Caption:=lisUninstallSelection;
   InstallPkgGroupBox.Caption:=lisPackagesToInstallInTheIDE;
   AddToInstallButton.Caption:=lisInstallSelection;
+  PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
   CancelButton.Caption:=dlgCancel;
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TList.Create;
+  
+  PkgInfoMemo.Clear;
 end;
 
 procedure TInstallPkgSetDialog.InstallButtonClick(Sender: TObject);
@@ -161,6 +168,7 @@ procedure TInstallPkgSetDialog.AvailableListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
   UpdateButtonStates;
+  UpdatePackageInfo(AvailableListBox);
 end;
 
 procedure TInstallPkgSetDialog.ExportButtonClick(Sender: TObject);
@@ -281,6 +289,7 @@ procedure TInstallPkgSetDialog.InstallListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
   UpdateButtonStates;
+  UpdatePackageInfo(InstallListBox);
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
@@ -297,8 +306,8 @@ var
 begin
   x := 6;
   w := (ClientWidth - 3 * x) div 2;
-  InstallPkgGroupBox.SetBounds(x, x, w, Height - 48);
-  AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 48);
+  InstallPkgGroupBox.SetBounds(x, x, w, Height - 150);
+  AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 150);
 
   SaveAndRebuildButton.Left := (Width - SaveAndRebuildButton.Width) div 2 ;
 end;
@@ -490,6 +499,45 @@ begin
     ListChanged:=true;
   SaveAndExitButton.Enabled:=ListChanged;
   SaveAndRebuildButton.Enabled:=ListChanged;
+end;
+
+procedure TInstallPkgSetDialog.UpdatePackageInfo(List: TListBox);
+var
+  PkgName: String;
+  PkgID: TLazPackageID;
+  Author: String;
+  Description: String;
+begin
+  if List = nil then Exit;
+  PkgName := '';
+  if List.ItemIndex >= 0 then
+    PkgName := List.Items[List.ItemIndex];
+
+  if PkgName = '' then Exit;
+  if Assigned(FSelectedPkg) then
+    if PkgName = FSelectedPkg.IDAsString then Exit;
+    
+  PkgInfoMemo.Clear;
+  PkgID := TLazPackageID.Create;
+  try
+    PkgID.StringToID(PkgName);
+    FSelectedPkg := PackageGraph.FindPackageWithID(PkgID);
+
+    if FSelectedPkg <> nil then begin
+      Author:=FSelectedPkg.Author;
+      Description:=FSelectedPkg.Description;
+    end else begin
+      // package not loaded -> read valuesform .lpk
+      // TODO
+    end;
+    if Author<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
+    if Description<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
+                            + ': ' + Description);
+  finally
+    PkgId.Free;
+  end;
 end;
 
 function TInstallPkgSetDialog.NewInstalledPackagesContains(

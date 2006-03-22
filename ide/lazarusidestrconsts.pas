@@ -2864,6 +2864,7 @@ resourcestring
   lisUninstallSelection = 'Uninstall selection';
   lisPackagesToInstallInTheIDE = 'Packages to install in the IDE';
   lisInstallSelection = 'Install selection';
+  lisPackageInfo = 'Package Info';
   lisSaveAndRebuildIDE = 'Save and rebuild IDE';
   lisSaveAndExitDialog = 'Save and exit dialog';
   lisAlignment = 'Alignment';
