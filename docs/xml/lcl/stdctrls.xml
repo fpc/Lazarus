@@ -4993,7 +4993,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
       <element name="TCustomCheckBox.State">
         <short>Indicates whether the check box is selected, deselected or grayed.</short>
         <descr>See TCheckBoxState for possible values of State.</descr>
-        <example file="TCustomCheckbox_AllowGrayed.pas"/>
+        <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.TabStop">
