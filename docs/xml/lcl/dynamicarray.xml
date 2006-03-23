@@ -198,7 +198,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- procedure Visibility: public -->
       <element name="TArray.SetLength">
@@ -206,7 +206,7 @@
         <descr/>
         <errors/>
         <seealso/>
-        <example file="dynamicarrtay/tarrayexample.pas" />
+        <example file="dynamicarray/tarrayexample.pas" />
       </element>
       <!-- argument Visibility: default -->
       <element name="TArray.SetLength.Cols">
