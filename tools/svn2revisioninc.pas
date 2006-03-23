@@ -51,6 +51,7 @@ uses
 var
   SourceDirectory,
   RevisionIncFileName: string;
+  RevisionIncDirName: string;
   RevisionStr: string = 'Unknown';
   
 const
@@ -148,8 +149,6 @@ begin
 end;
 
 function ParamsValid: boolean;
-var
-  RevisionIncDirName: string;
 begin
   Result := false;
   if ParamCount<>2 then exit;
@@ -169,8 +168,10 @@ end;
 
 function CanCreateRevisionInc: boolean;
 begin
-  Result:=(not FileExists(RevisionIncFileName))
-           or FileIsWritable(RevisionIncFileName);
+  if (FileExists(RevisionIncFileName)) then
+    Result:= FileIsWritable(RevisionIncFileName)
+  else
+    Result := DirectoryIsWritable(RevisionIncDirName);
 end;
 
 begin
