@@ -28,7 +28,7 @@
 
     The BuildLazarus function will build the lazarus parts.
 }
-unit buildlazdialog;
+unit BuildLazDialog;
 
 {$mode objfpc}{$H+}
 
@@ -39,7 +39,7 @@ uses
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources,  Laz_XMLCfg,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
-  InputHistory, ExtToolDialog, ExtToolEditDlg,
+  IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
   CompilerOptions;
 
 type
@@ -190,6 +190,7 @@ type
     WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildAllButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -675,6 +676,9 @@ begin
   TargetOSLabel.Caption := lisLazBuildTargetOS;
   TargetCPULabel.Caption := lisLazBuildTargetCPU;
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
+
+  IDEDialogLayoutList.ApplyLayout(Self, 500, 476);
+
   Load(Options);
 end;
 
@@ -904,6 +908,12 @@ end;
 procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TConfigureBuildLazarusDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
