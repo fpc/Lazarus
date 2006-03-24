@@ -787,7 +787,7 @@ end;
 
 function TSynAnySyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrUInt(fRange));
 end;
 
 function TSynAnySyn.GetToken: String;
@@ -853,7 +853,7 @@ end;
 
 procedure TSynAnySyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrUInt(Value));
 end;
 
 procedure TSynAnySyn.SetKeyWords(const Value: TStrings);
