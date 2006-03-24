@@ -63,12 +63,14 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object CleanAllCheckBox: TCheckBox
     Caption = 'Clean All'
     TabOrder = 1
+    AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 317
     Height = 24
     Top = 12
     Width = 79
   end
   object OptionsEdit: TEdit
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 5
     Left = 156
     Height = 23
@@ -76,6 +78,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 310
   end
   object TargetOSEdit: TEdit
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 6
     Left = 156
     Height = 23
@@ -83,6 +86,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 310
   end
   object TargetDirectoryComboBox: TComboBox
+    Anchors = [akTop, akLeft, akRight]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     MaxLength = 0
     TabOrder = 7
@@ -92,6 +96,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 286
   end
   object TargetDirectoryButton: TButton
+    Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 2
     Caption = '...'
     OnClick = TargetDirectoryButtonClick
@@ -102,6 +107,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 22
   end
   object LCLInterfaceRadioGroup: TRadioGroup
+    Anchors = [akTop, akRight]
     AutoFill = True
     Caption = 'LCLInterfaceRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -121,6 +127,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   object WithStaticPackagesCheckBox: TCheckBox
     Caption = 'WithStaticPackagesCheckBox'
     TabOrder = 4
+    AnchorSideLeft.Control = LCLInterfaceRadioGroup
     Left = 317
     Height = 24
     Top = 252
@@ -143,8 +150,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 154
   end
   object OKButton: TButton
+    Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 2
     Caption = 'OK'
+    Default = True
     OnClick = OKButtonClick
     TabOrder = 12
     Left = 282
@@ -153,7 +162,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 75
   end
   object CancelButton: TButton
+    Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 2
+    Cancel = True
     Caption = 'Cancel'
     OnClick = CancelButtonClick
     TabOrder = 13
@@ -163,6 +174,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 75
   end
   object ItemsListBox: TListBox
+    Anchors = [akTop, akLeft, akRight]
     ItemHeight = 25
     OnDrawItem = ItemsListBoxDrawItem
     OnMouseDown = ItemsListBoxMouseDown
@@ -172,9 +184,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Left = 10
     Height = 234
     Top = 42
-    Width = 284
+    Width = 294
   end
   object TargetCPUComboBox: TComboBox
+    Anchors = [akTop, akLeft, akRight]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     MaxLength = 0
     TabOrder = 9
