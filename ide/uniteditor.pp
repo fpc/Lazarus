@@ -43,7 +43,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  TypInfo, Extctrls, Menus, CodeContextForm,
+  ClipBrd, TypInfo, Extctrls, Menus, CodeContextForm,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -647,6 +647,7 @@ type
     procedure CutClicked(Sender: TObject);
     procedure CopyClicked(Sender: TObject);
     procedure PasteClicked(Sender: TObject);
+    procedure CopyFilenameClicked(Sender: TObject);
 
     Procedure ToggleBookmark(Value: Integer);
     Procedure SetBookmark(Value: Integer);
@@ -744,19 +745,23 @@ var
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
   SrcEditMenuPaste: TIDEMenuCommand;
-  SrcEditMenuNextBookmark: TIDEMenuCommand;
-  SrcEditMenuPrevBookmark: TIDEMenuCommand;
-  SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
-  SrcEditMenuAddBreakpoint: TIDEMenuCommand;
-  SrcEditMenuRunToCursor: TIDEMenuCommand;
-  SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
-  SrcEditMenuViewCallStack: TIDEMenuCommand;
-  SrcEditMenuCompleteCode: TIDEMenuCommand;
-  SrcEditMenuEncloseSelection: TIDEMenuCommand;
-  SrcEditMenuExtractProc: TIDEMenuCommand;
-  SrcEditMenuInvertAssignment: TIDEMenuCommand;
-  SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
-  SrcEditMenuRenameIdentifier: TIDEMenuCommand;
+  SrcEditMenuCopyFilename: TIDEMenuCommand;
+    // bookmarks
+    SrcEditMenuNextBookmark: TIDEMenuCommand;
+    SrcEditMenuPrevBookmark: TIDEMenuCommand;
+    SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
+    // debugging
+    SrcEditMenuAddBreakpoint: TIDEMenuCommand;
+    SrcEditMenuRunToCursor: TIDEMenuCommand;
+    SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
+    SrcEditMenuViewCallStack: TIDEMenuCommand;
+    // refactoring
+    SrcEditMenuCompleteCode: TIDEMenuCommand;
+    SrcEditMenuEncloseSelection: TIDEMenuCommand;
+    SrcEditMenuExtractProc: TIDEMenuCommand;
+    SrcEditMenuInvertAssignment: TIDEMenuCommand;
+    SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
+    SrcEditMenuRenameIdentifier: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
@@ -813,10 +818,7 @@ begin
   SrcEditMenuCut:=RegisterIDEMenuCommand(SubPath,'Cut',uemCut);
   SrcEditMenuCopy:=RegisterIDEMenuCommand(SubPath,'Copy',uemCopy);
   SrcEditMenuPaste:=RegisterIDEMenuCommand(SubPath,'Paste',uemPaste);
-
-  // register the File Specific dynamic section
-  SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(Path,
-                                                        'File dynamic section');
+  SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(SubPath,'Copy filename',uemCopyFilename);
 
   // register the Marks section
   SrcEditMenuSectionMarks:=RegisterIDEMenuSection(Path,'Marks section');
@@ -844,9 +846,14 @@ begin
     SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(SubSubPath,
                                       'Set a free Bookmark',uemSetFreeBookmark);
 
-    // register the Debug submenu
-    SrcEditSubMenuDebug:=RegisterIDESubMenu(SubPath,'Debug',uemDebugWord);
-    SubSubPath:=SrcEditSubMenuDebug.GetPath;
+  // register the File Specific dynamic section
+  SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(Path,
+                                                        'File dynamic section');
+
+  // register the Debug submenu
+  SrcEditSubMenuDebug:=RegisterIDESubMenu(SubPath,'Debug',uemDebugWord);
+  SubSubPath:=SrcEditSubMenuDebug.GetPath;
+    // register the Debug submenu items
     SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(SubSubPath,'Add Breakpoint',
                                                      uemAddBreakpoint);
     SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(SubSubPath,
@@ -3641,6 +3648,7 @@ begin
   SrcEditMenuCut.OnClick:=@CutClicked;
   SrcEditMenuCopy.OnClick:=@CopyClicked;
   SrcEditMenuPaste.OnClick:=@PasteClicked;
+  SrcEditMenuCopyFilename.OnClick:=@CopyFilenameClicked;
   for i:=0 to 9 do begin
     SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i))
                                            .OnClick:=@BookmarkGotoClicked;
@@ -4544,6 +4552,14 @@ begin
   ActSE := GetActiveSE;
   if ActSE <> nil then
     ActSE.DoEditorExecuteCommand(ecPaste);
+end;
+
+procedure TSourceNotebook.CopyFilenameClicked(Sender: TObject);
+var ActSE: TSourceEditor;
+begin
+  ActSE := GetActiveSE;
+  if ActSE <> nil then
+    Clipboard.AsText:=ActSE.FileName;
 end;
 
 Procedure TSourceNotebook.BookMarkToggle(Value: Integer);

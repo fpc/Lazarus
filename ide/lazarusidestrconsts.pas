@@ -1212,6 +1212,7 @@ resourcestring
   uemCut = 'Cut';
   uemCopy = 'Copy';
   uemPaste = 'Paste';
+  uemCopyFilename = 'Copy filename';
   uemGotoBookmark = '&Goto Bookmark';
   uemSetFreeBookmark = 'Set a free Bookmark';
   uemNextBookmark = 'Goto next Bookmark';
