@@ -32,6 +32,9 @@
  ------------------------------------------------------------------------------}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  LMessage: TLMessage;
+  PLMsg: PLMessage;
 begin
   {$ifdef VerboseWinCE}
 //  WriteLn('WindowProc: Msg = ' + IntToStr(Msg));
@@ -39,6 +42,9 @@ begin
 
   Result := 0;
  
+  LMessage.Result := 0;
+  LMessage.Msg := LM_NULL;
+
   case Msg of
   
     WM_CLOSE:

@@ -2199,6 +2199,7 @@ lcl/interfaces/wince/wincewinapih.inc svneol=native#text/plain
 lcl/interfaces/wince/wincewsbuttons.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewscontrols.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewsforms.pp svneol=native#text/plain
+lcl/interfaces/wince/wincewsstdctrls.pp svneol=native#text/plain
 lcl/intfgraphics.pas svneol=native#text/pascal
 lcl/languages/lcl.ca.po svneol=native#text/plain
 lcl/languages/lcl.de.po svneol=native#text/plain

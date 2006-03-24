@@ -2880,7 +2880,9 @@ end;
 {------------------------------------------------------------------------------
   ClipboardSelectionReceivedHandler
 
-  copy the received selection data record and buffer to
+  This handler is called whenever a clipboard owner sends data. Because the LCL
+  caches all requests, this is typically data from another application.
+  Copy the received selection data record and buffer to
   internal record and buffer (ClipboardSelectionData)
  ------------------------------------------------------------------------------}
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
@@ -2982,12 +2984,14 @@ begin
           FormatID:=SelectionData^.Target;
           if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
+          or ((FormatID=gdk_atom_intern('UTF8_STRING',GdkTrue))
+            and (ClipboardExtraGtkFormats[ClipboardType][gfUTF8_STRING]))
           or ((FormatID=gdk_atom_intern('STRING',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
           or ((FormatID=gdk_atom_intern('TEXT',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
           then
-            FormatID:=gdk_atom_intern('text/plain',GdkFalse);
+            FormatID:=gdk_atom_intern('text/plain',GdkTrue);
 
           {$IFDEF DEBUG_CLIPBOARD}
           DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),'=',GdkAtomToStr(FormatID),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));

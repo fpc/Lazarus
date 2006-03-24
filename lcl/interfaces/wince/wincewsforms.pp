@@ -159,7 +159,7 @@ begin
   WriteLn('TWinCEWSCustomForm.CreateHandle');
   {$endif}
 
-  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
+  MultiByteToWideChar(CP_UTF8, 0, PChar(AWinControl.Caption), -1, @Str, 256);
 
   hwnd := CreateWindow(
     @ClsName,           // Name of the registered class
