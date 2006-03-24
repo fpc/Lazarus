@@ -343,7 +343,7 @@ begin
     GetLayoutFromControl;
   end else begin
     // the control will become visible -> dock it to restore the last layout
-    RaiseGDBException('TCustomLazControlDocker.ControlVisibleChanging TODO restore layout');
+    debugln('TCustomLazControlDocker.ControlVisibleChanging TODO restore layout');
   end;
 end;
 
