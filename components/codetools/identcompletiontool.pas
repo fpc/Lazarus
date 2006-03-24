@@ -785,6 +785,9 @@ end;
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
 // Add predefined identifiers
+const
+  CompilerFuncHistoryIndex = 10;
+  CompilerFuncLevel = 10;
 
   function StatementLevel: integer;
   var
@@ -799,7 +802,7 @@ procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
     end;
     if ANode=nil then Result:=0;
   end;
-
+  
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
@@ -809,9 +812,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'SetLength',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -822,9 +825,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'Copy',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -835,9 +838,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'Write',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -848,9 +851,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'WriteLn',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -861,9 +864,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'Read',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -873,9 +876,9 @@ begin
     NewItem:=TIdentifierListItem.Create(
         icompUnknown,
         false,
-        3,
+        CompilerFuncHistoryIndex,
         'ReadLn',
-        StatementLevel,
+        CompilerFuncLevel,
         nil,
         nil,
         ctnProcedure);
@@ -887,7 +890,7 @@ begin
       NewItem:=TIdentifierListItem.Create(
           icompUnknown,
           true,
-          0,
+          1,
           'Self',
           StatementLevel,
           nil,
@@ -902,7 +905,7 @@ begin
       NewItem:=TIdentifierListItem.Create(
           icompUnknown,
           true,
-          0,
+          1,
           'Result',
           StatementLevel,
           nil,
