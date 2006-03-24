@@ -389,7 +389,7 @@ var
   BracketOpenPos: LongInt;
 begin
   if Parts<>nil then begin
-    if FIlename<>'' then
+    if Filename<>'' then
       Parts.Values['Filename']:=Filename;
     if LineNumber>0 then
       Parts.Values['Line']:=IntToStr(LineNumber);
@@ -403,17 +403,17 @@ begin
       BracketOpenPos:=length(Filename)+1;
     end;
     CommaPos:=System.Pos(',',Msg);
-    if CommaPos>0 then begin
-      if LineNumber>0 then begin
-        Msg:=copy(Msg,1,BracketOpenPos)+IntToStr(LineNumber)
+    if LineNumber>0 then begin
+      if CommaPos>0 then begin
+        s:=IntToStr(LineNumber);
+        Msg:=copy(Msg,1,BracketOpenPos)+s
              +copy(Msg,CommaPos,length(Msg));
+      end else begin
+        s:=IntToStr(LineNumber);
+        Msg:=copy(Msg,1,BracketOpenPos)+s+',1'
+            +copy(Msg,BracketOpenPos+1,length(Msg));
       end;
-    end else begin
-      if LineNumber>0 then begin
-        s:=IntToStr(LineNumber)+',1';
-        Msg:=copy(Msg,1,BracketOpenPos)+s+copy(Msg,BracketOpenPos+1,length(Msg));
-        CommaPos:=System.Pos(',',Msg);
-      end;
+      CommaPos:=BracketOpenPos+length(s)+1;
     end;
     if CommaPos>0 then begin
       BracketClosePos:=System.Pos(')',Msg);
@@ -424,6 +424,8 @@ begin
         end;
       end;
     end;
+  end else begin
+    Msg:=Filename+'('+IntToStr(LineNumber)+','+IntToStr(Column)+')'+Msg;
   end;
 end;
 
