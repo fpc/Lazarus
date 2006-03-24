@@ -4541,16 +4541,12 @@ end;
 
 procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 begin
-  if (MouseCaptureWidget=nil) or (Widget=nil) then exit;
-  if (MouseCaptureWidget<>Widget) and (MouseCaptureWidget<>Widget^.parent) then exit;
-
-  {$IFDEF VerboseMouseCapture}
-  DebugLn('ReleaseCaptureControl ',dbgs(ord(MouseCaptureType)),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
-  {$ENDIF}
-  gtk_grab_remove(MouseCaptureWidget);
-  MouseCaptureWidget:=nil;
-  MouseCaptureType:=mctGTK;
-  SetCaptureControl(nil);
+  if (Widget=nil)
+  or ((MouseCaptureWidget<>Widget) and (MouseCaptureWidget<>Widget^.parent))
+  then
+    exit;
+  DebugLn('ReleaseCaptureWidget ',GetWidgetDebugReport(Widget));
+  ReleaseMouseCapture;
 end;
 
 {------------------------------------------------------------------------------

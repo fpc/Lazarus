@@ -708,6 +708,9 @@ begin
   DebugLn('');
   {$ENDIF}
 
+  // do not release capture widget here, as this will interfere
+  //ReleaseCaptureWidget(Widget);
+
   Result:=true;
 end;
 
@@ -758,7 +761,7 @@ begin
 
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
-  ReleaseCaptureWidget(Widget);
+  // do not release the capture widget here
 
   //TODO: fill in new focus
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
