@@ -588,7 +588,7 @@ type
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
-    
+
     class procedure ParseCmdLineOptions;
 
     constructor Create(TheOwner: TComponent); override;

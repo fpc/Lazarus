@@ -43,7 +43,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  ClipBrd, TypInfo, Extctrls, Menus, CodeContextForm,
+  Translations, ClipBrd, TypInfo, Extctrls, Menus,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -54,6 +54,7 @@ uses
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
+  CodeContextForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
@@ -374,7 +375,11 @@ type
   TOnShowCodeContext = procedure(JumpToError: boolean;
                                  out Abort: boolean) of object;
 
-  TSourceNotebookState = (snIncrementalFind, snIncrementalSearching);
+  TSourceNotebookState = (
+    snIncrementalFind,
+    snIncrementalSearching,
+    snWarnedFont
+    );
   TSourceNotebookStates = set of TSourceNotebookState;
 
   { TSourceNotebook }
@@ -654,6 +659,7 @@ type
     Procedure GotoBookmark(Value: Integer);
 
     Procedure ReloadEditorOptions;
+    procedure CheckFont;
     Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
 
     Property CodeTemplateModul: TSynEditAutoComplete
@@ -4873,6 +4879,7 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
   {$ENDIF}
+  CheckFont;
 end;
 
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
@@ -5285,6 +5292,27 @@ Begin
   end;
   
   IdentCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  
+  Exclude(States,snWarnedFont);
+  CheckFont;
+end;
+
+procedure TSourceNotebook.CheckFont;
+var
+  SrcEdit: TSourceEditor;
+begin
+  if (snWarnedFont in States) then exit;
+  Include(States,snWarnedFont);
+  SrcEdit:=GetActiveSE;
+  if (not SrcEdit.EditorComponent.Font.CanUTF8) and SystemCharSetIsUTF8 then
+  begin
+    MessageDlg('Font without UTF-8',
+      'The current editor font does not support UTF-8,'
+      +' but your system seems to use it.'#13
+      +'That means non ASCII characters will probably be shown incorrect.'#13
+      +'You can select another font in the editor options.',
+      mtWarning,[mbOk],0);
+  end;
 end;
 
 procedure TSourceNotebook.KeyDownBeforeInterface(var Key: Word;
