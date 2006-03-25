@@ -42,7 +42,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLIntf, LCLType, SynEditTextBuffer, Messages, LMessages,
+  Math, LCLProc, LCLIntf, LCLType, SynEditTextBuffer, Messages, LMessages,
   {$ELSE}
   Windows, SynEditTypes, Messages,
   {$ENDIF}
@@ -462,8 +462,11 @@ begin
       Exit;
     end;
     
+    // calculate the position
     P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
-    R := FHint.CalcHintRect(Screen.Width, ItemList[AIndex], nil);
+    // calculate the size
+    R := FHint.CalcHintRect(Screen.Width-10-P.X, ItemList[AIndex], nil);
+    R.Right:=Min(R.Right,Screen.Width-20-P.X);
     
     FHint.ActivateHint(Bounds(P.X, P.Y, R.Right, R.Bottom), ItemList[AIndex]);
     FHint.Invalidate;
@@ -846,7 +849,10 @@ begin
       Invalidate;
     end;
   end;
-  ShowItemHint(Position);
+  {$IFDEF SYN_LAZARUS}
+  if Showing then
+    ShowItemHint(Position);
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.StringListChange(Sender: TObject);

@@ -2898,7 +2898,7 @@ begin
     else
       Font.Color:=FActiveEditSelectedFGColor;
   end;
-  MaxX := Screen.Width;
+  MaxX := Screen.Width-20;
   Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,aCompletion,
                       CurrentCompletionType, True);
   if CurCompletionControl<>nil then
