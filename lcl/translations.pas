@@ -51,6 +51,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList
+  {$IFDEF UNIX}, cwstring{$ENDIF}
   {$IFDEF MultiLocale},LConv{$ENDIF};
 
 type
