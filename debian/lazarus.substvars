@@ -1,0 +1,1 @@
+shlibs:Depends=libc6 (>= 2.3.2.ds1-4), libgdk-pixbuf2 (>= 0.22.0-3), libglib1.2 (>= 1.2.0), libgtk1.2 (>= 1.2.10-4), libx11-6 | xlibs (>> 4.1.0), libxext6 | xlibs (>> 4.1.0), libxi6 | xlibs (>> 4.1.0)

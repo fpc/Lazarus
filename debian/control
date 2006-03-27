@@ -1,0 +1,29 @@
+Source: lazarus
+Section: devel
+Priority: optional
+Maintainer: Carlos Laviola <claviola@debian.org>
+Build-Depends: debhelper (>= 4.0.0),  fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-db (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-utils (= 2.0.2-1), libgdk-pixbuf-dev
+Standards-Version: 3.6.1.1
+
+Package: lazarus
+Architecture: i386 powerpc sparc
+Depends: ${shlibs:Depends}, fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), libgtk1.2-dev, libgdk-pixbuf-dev
+Recommends: fp-units-db (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gnome1 (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1)
+Suggests: fp-utils (= 2.0.2-1)
+Description: Rapid Application Development (RAD) tool for Free Pascal
+  Lazarus are the class libraries for Free Pascal that emulate Delphi.
+  Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
+  and other OS's. Free Pascal is designed to be able to understand and
+  compile programs written with the Delphi syntax, which is object-oriented.
+  Lazarus is the part of the missing puzzle that will allow you to develop
+  Delphi-like programs in all of the above platforms.
+  .
+  Unlike Java's "write once, run anywhere" motto, Lazarus and Free Pascal
+  strive for "write once, compile anywhere". Since the exact same compiler
+  is available on all of the above platforms you don't need to do any recoding
+  to produce identical products for different platforms.
+  .
+  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus Component
+  Library (LCL).
+  .
+  This IDE will eventually reach Delphi's full functionality.
