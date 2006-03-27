@@ -8,13 +8,6 @@
 
 LAZDEBDIR = $(CURDIR)/debian/lazarus
 
-CFLAGS = -Wall -g
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
@@ -69,7 +62,7 @@ install: build
 	install -d $(LAZDEBDIR)/usr/bin
 	
 	install -m 644 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.png
-	install -m 644 $(CURDIR)/gnome.ide.desktop $(LAZDEBDIR)/usr/share/gnome/apps/Development/lazarus.desktop
+	install -m 644 $(CURDIR)/install/gnome.ide.desktop $(LAZDEBDIR)/usr/share/gnome/apps/Development/lazarus.desktop
 	
 # Build architecture-independent files here.
 binary-indep: build install
