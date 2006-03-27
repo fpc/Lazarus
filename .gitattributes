@@ -1706,6 +1706,7 @@ images/uparrow.ico -text svneol=unset#image/x-icon
 images/uparrow.xpm -text svneol=native#image/x-xpixmap
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/debian/install.sh -text svneol=native#application/x-sh
+install/debian/menu svneol=native#text/plain
 languages/lazaruside.ar.po svneol=native#text/plain
 languages/lazaruside.ca.po svneol=native#text/plain
 languages/lazaruside.de.po svneol=native#text/plain

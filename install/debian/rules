@@ -6,8 +6,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-
-
+LAZDEBDIR = $(CURDIR)/debian/lazarus
 
 CFLAGS = -Wall -g
 
@@ -54,10 +53,24 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-
+	
 	# Add here commands to install the package into debian/lazarus.
-	bash $(CURDIR)/debian/install.sh
-
+	
+	# copy lazarus to /usr/share
+	install -d $(LAZDEBDIR)/usr/lib/lazarus
+	install -d $(LAZDEBDIR)/usr/bin
+	
+	-cp -R $(CURDIR)/* $(LAZDEBDIR)/usr/lib/lazarus/
+	-rm -rf $(LAZDEBDIR)/usr/lib/lazarus/debian/
+	
+	# copy icons and menu entries for the GNOME menu
+	install -d $(LAZDEBDIR)/usr/share/pixmaps
+	install -d $(LAZDEBDIR)/usr/share/gnome/apps/Development
+	install -d $(LAZDEBDIR)/usr/bin
+	
+	install -m 644 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.png
+	install -m 644 $(CURDIR)/gnome.ide.desktop $(LAZDEBDIR)/usr/share/gnome/apps/Development/lazarus.desktop
+	
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
@@ -66,27 +79,15 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
+	dh_link usr/lib/lazarus/lazarus usr/bin/lazarus-ide
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_install
-#	dh_installmenu
-#	dh_installdebconf	
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-#	dh_installinit
-#	dh_installcron
-#	dh_installinfo
+	dh_installmenu
 	dh_installman
-	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-#	dh_perl
-#	dh_python
-#	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
