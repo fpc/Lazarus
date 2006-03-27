@@ -613,7 +613,7 @@ begin
   DebugLn('');
   {$ENDIF}
 
-  Result:=true;
+  Result:=CallBackDefaultReturn;
 end;
 
 function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -711,7 +711,7 @@ begin
   // do not release capture widget here, as this will interfere
   //ReleaseCaptureWidget(Widget);
 
-  Result:=true;
+  Result:=CallBackDefaultReturn;
 end;
 
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
