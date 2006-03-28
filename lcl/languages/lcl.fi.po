@@ -280,11 +280,11 @@ msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
-msgstr ""
+msgstr "FixedCols ei voi olla suurempi kuin kaikkien sarakkeiden määrä (ColCount)"
 
 #: lclstrconsts:rsfixedrowstoobig
 msgid "FixedRows can't be >= RowCount"
-msgstr ""
+msgstr "FixedRows ei voi olla suurempi kuin kaikkien rivien määrä (RowCount)"
 
 #: lclstrconsts:rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -320,7 +320,7 @@ msgstr ""
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr ""
+msgstr "Ideksi osoittaa taulukon ulkopuolella olevaa solua [saraketta(col)=%d ja riviä(row)=%d]"
 
 #: lclstrconsts:rsmtinformation
 msgid "Information"
@@ -332,7 +332,7 @@ msgstr ""
 
 #: lclstrconsts:rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr ""
+msgstr "Laiton päivämäärä: %s"
 
 #: lclstrconsts:rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
@@ -608,7 +608,7 @@ msgstr "Varoitus:"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr ""
+msgstr "Kyllä, kaikki"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

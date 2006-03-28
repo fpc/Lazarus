@@ -3778,6 +3778,10 @@ msgstr ""
 msgid "Paste"
 msgstr ""
 
+#: lazarusidestrconsts:uemcopyfilename
+msgid "Copy filename"
+msgstr ""
+
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
 msgstr ""
@@ -3916,6 +3920,18 @@ msgstr ""
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
+msgstr ""
+
+#: lazarusidestrconsts:lisuefontwith
+msgid "Font without UTF-8"
+msgstr ""
+
+#: lazarusidestrconsts:lisuethecurre
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+msgstr ""
+
+#: lazarusidestrconsts:lisuedonotsho
+msgid "Do not show this message again."
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectioncap
@@ -5180,6 +5196,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildtargetcpu
+msgid "Target CPU:"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
@@ -8576,6 +8596,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinstallselection
 msgid "Install selection"
+msgstr ""
+
+#: lazarusidestrconsts:lispackageinfo
+msgid "Package Info"
 msgstr ""
 
 #: lazarusidestrconsts:lissaveandrebuildide

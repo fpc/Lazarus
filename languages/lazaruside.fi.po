@@ -1558,6 +1558,10 @@ msgstr "Kopio kaikki kääntäjän viestit leikepöydälle"
 msgid "Copy error"
 msgstr ""
 
+#: lazarusidestrconsts:uemcopyfilename
+msgid "Copy filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr ""
@@ -2088,6 +2092,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
+msgstr ""
+
+#: lazarusidestrconsts:lisuedonotsho
+msgid "Do not show this message again."
 msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
@@ -2740,6 +2748,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lisuefontwith
+msgid "Font without UTF-8"
 msgstr ""
 
 #: lazarusidestrconsts:lisforcerenaming
@@ -4966,6 +4978,10 @@ msgstr ""
 msgid "Package Graph"
 msgstr ""
 
+#: lazarusidestrconsts:lispackageinfo
+msgid "Package Info"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Komponenttipaketin nimi"
@@ -6774,6 +6790,10 @@ msgstr ""
 msgid "Target CPU"
 msgstr ""
 
+#: lazarusidestrconsts:lislazbuildtargetcpu
+msgid "Target CPU:"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
 msgstr ""
@@ -7028,6 +7048,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisuethecurre
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
 msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits

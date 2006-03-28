@@ -1570,6 +1570,10 @@ msgstr "Copia tutti i messaggi negli appunti"
 msgid "Copy error"
 msgstr "Errore di copia"
 
+#: lazarusidestrconsts:uemcopyfilename
+msgid "Copy filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copia i componenti selezionati negli appunti"
@@ -2101,6 +2105,10 @@ msgstr "Non salvare alcuna informazione di sessione"
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Non mostrare lo splash screen"
+
+#: lazarusidestrconsts:lisuedonotsho
+msgid "Do not show this message again."
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2753,6 +2761,10 @@ msgstr "Imposta il focus sull'editor sorgente"
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
 msgstr "Segui il cursore"
+
+#: lazarusidestrconsts:lisuefontwith
+msgid "Font without UTF-8"
+msgstr ""
 
 #: lazarusidestrconsts:lisforcerenaming
 msgid "Force renaming"
@@ -4978,6 +4990,10 @@ msgstr "Pacchetto %s%s%s non trovato."
 msgid "Package Graph"
 msgstr "Pacchetto grafico"
 
+#: lazarusidestrconsts:lispackageinfo
+msgid "Package Info"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Nome pacchetto"
@@ -6786,6 +6802,10 @@ msgstr "Tabulazioni nella selezione in spazi"
 msgid "Target CPU"
 msgstr "CPU di destinazione"
 
+#: lazarusidestrconsts:lislazbuildtargetcpu
+msgid "Target CPU:"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
 msgstr "Directory di destinazione:"
@@ -7041,6 +7061,10 @@ msgstr "Il nome file del compilatore corrente %s%s%s%snon è un eseguibile valid
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
 msgstr "Il nome file del compilatore corrente %s%s%s%snon è un eseguibile valido.%sControllare Ambiente -> Opzioni di ambiente -> File"
+
+#: lazarusidestrconsts:lisuethecurre
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."

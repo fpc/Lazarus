@@ -1558,6 +1558,10 @@ msgstr "Copia tots els missatges al porta-retalls"
 msgid "Copy error"
 msgstr "S'ha produït un error de còpia"
 
+#: lazarusidestrconsts:uemcopyfilename
+msgid "Copy filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copia els components seleccionats al porta-retalls"
@@ -2088,6 +2092,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
+msgstr ""
+
+#: lazarusidestrconsts:lisuedonotsho
+msgid "Do not show this message again."
 msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
@@ -2740,6 +2748,10 @@ msgstr "Focalitza a editor del codi font"
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lisuefontwith
+msgid "Font without UTF-8"
 msgstr ""
 
 #: lazarusidestrconsts:lisforcerenaming
@@ -4966,6 +4978,10 @@ msgstr "No s'ha trobat el paquet %s%s%s."
 msgid "Package Graph"
 msgstr "Gràfica dels paquets"
 
+#: lazarusidestrconsts:lispackageinfo
+msgid "Package Info"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Nom del paquet"
@@ -6774,6 +6790,10 @@ msgstr "Tabuladors a espais en la selecció"
 msgid "Target CPU"
 msgstr "CPU destinació"
 
+#: lazarusidestrconsts:lislazbuildtargetcpu
+msgid "Target CPU:"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
 msgstr "Directori dest.:"
@@ -7029,6 +7049,10 @@ msgstr "El nom del compilador actual %s%s%s%s no és un executable vàlid.%sEscoll
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
 msgstr "El nom del compilador actual %s%s%s%sno és un executable vàlid.%s Si us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
+
+#: lazarusidestrconsts:lisuethecurre
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."

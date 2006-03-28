@@ -1568,6 +1568,10 @@ msgstr "Copiar todos los mensajes al portapapeles"
 msgid "Copy error"
 msgstr "Copiar error"
 
+#: lazarusidestrconsts:uemcopyfilename
+msgid "Copy filename"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copiar los componentes seleccionados al portapapeles"
@@ -2098,6 +2102,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
+msgstr ""
+
+#: lazarusidestrconsts:lisuedonotsho
+msgid "Do not show this message again."
 msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
@@ -2750,6 +2758,10 @@ msgstr "Establecer foco en editor de código"
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lisuefontwith
+msgid "Font without UTF-8"
 msgstr ""
 
 #: lazarusidestrconsts:lisforcerenaming
@@ -4976,6 +4988,10 @@ msgstr "No se ha encontrado el paquete %s%s%s."
 msgid "Package Graph"
 msgstr "Gráfico de Paquete"
 
+#: lazarusidestrconsts:lispackageinfo
+msgid "Package Info"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Nombre del paquete"
@@ -6784,6 +6800,10 @@ msgstr "Tabulaciones a espacios en selección"
 msgid "Target CPU"
 msgstr "CPU objetivo"
 
+#: lazarusidestrconsts:lislazbuildtargetcpu
+msgid "Target CPU:"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
 msgstr "Directorio objetivo"
@@ -7038,6 +7058,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisuethecurre
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
 msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
