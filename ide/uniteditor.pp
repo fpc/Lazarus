@@ -5300,18 +5300,26 @@ end;
 procedure TSourceNotebook.CheckFont;
 var
   SrcEdit: TSourceEditor;
+  DummyResult: TModalResult;
+  CurFont: TFont;
 begin
   if (snWarnedFont in States) then exit;
   Include(States,snWarnedFont);
   SrcEdit:=GetActiveSE;
-  if (not SrcEdit.EditorComponent.Font.CanUTF8) and SystemCharSetIsUTF8 then
-  begin
-    MessageDlg('Font without UTF-8',
-      'The current editor font does not support UTF-8,'
-      +' but your system seems to use it.'#13
-      +'That means non ASCII characters will probably be shown incorrect.'#13
-      +'You can select another font in the editor options.',
-      mtWarning,[mbOk],0);
+  CurFont:=SrcEdit.EditorComponent.Font;
+  if (not CurFont.CanUTF8) and SystemCharSetIsUTF8
+  and ((EditorOpts.DoNotWarnForFont='')
+       or (EditorOpts.DoNotWarnForFont<>CurFont.Name))
+  then begin
+    DummyResult:=QuestionDlg(lisUEFontWith,
+      Format(lisUETheCurre, [#13, #13]),
+      mtWarning, [mrIgnore, mrYesToAll, lisUEDoNotSho], 0);
+    if DummyResult=mrYesToAll then begin
+      if EditorOpts.DoNotWarnForFont<>CurFont.Name then begin
+        EditorOpts.DoNotWarnForFont:=CurFont.Name;
+        EditorOpts.Save;
+      end;
+    end;
   end;
 end;
 

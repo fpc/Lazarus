@@ -194,7 +194,7 @@ type
 
 
   { Editor Options object used to hold the editor options }
-  TEditorOptions = class(TPersistent)
+TEditorOptions = class(TPersistent)
   private
     xmlconfig: TXMLConfig;
 
@@ -224,6 +224,7 @@ type
     fEditorFont:  String;
     fEditorFontHeight: Integer;
     fExtraLineSpacing: Integer;
+    FDoNotWarnForFont: string;
 
     // Key Mappings options
     fKeyMappingScheme: String;
@@ -322,6 +323,7 @@ type
       read fEditorFontHeight write FEditorFontHeight;
     property ExtraLineSpacing: Integer
       read fExtraLineSpacing write fExtraLineSpacing default 0;
+    property DoNotWarnForFont: string read FDoNotWarnForFont write FDoNotWarnForFont;
 
     // Key Mappings
     property KeyMappingScheme: String
@@ -1400,6 +1402,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
     fExtraLineSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
+    FDoNotWarnForFont :=
+      XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
     // Key Mappings options
     fKeyMappingScheme :=
@@ -1559,9 +1563,11 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
       fEditorFont, 'courier');
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
-      , fEditorFontHeight, 12);
+      ,fEditorFontHeight, 12);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
-      , fExtraLineSpacing, 1);
+      ,fExtraLineSpacing, 1);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/DoNotWarnForFont'
+      ,FDoNotWarnForFont, '');
 
     // Key Mappings options
     XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme', fKeyMappingScheme);
