@@ -7090,7 +7090,7 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TToolButtonStyle">
         <short>Determines the style of the tool buttons.</short>
         <descr>These are the possible values of Style:</descr>
-        <example file="comctrls/TToolButton.pas"/>
+        <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsButton">
@@ -7211,7 +7211,7 @@ To add, change or delete a column use the Columns property.</descr>
         <seealso>
           <link id="TToolButton"/>
         </seealso>
-        <example file="comctrls/TToolButton.pas"/>
+        <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- object Visibility: default -->
       <element name="TToolButton">
@@ -7225,7 +7225,7 @@ To add, change or delete a column use the Columns property.</descr>
           <link id="TButton"/>
           <link id="TSpeedButton"/>
         </seealso>
-        <example file="comctrls/TToolButton.pas"/>
+        <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TToolButton.FAllowAllUp">
@@ -7936,7 +7936,7 @@ To add, change or delete a column use the Columns property.</descr>
         <seealso>
           <link id="TToolButtonStyle"/>
         </seealso>
-        <example file="comctrls/TToolButton.pas"/>
+        <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Visible">
@@ -8666,7 +8666,7 @@ To add, change or delete a column use the Columns property.</descr>
         <seealso>
           <link id="TToolButton.Style"/>
         </seealso>
-        <example file="comctrls/TToolButton.pas"/>
+        <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolBar.Buttons.Index">
