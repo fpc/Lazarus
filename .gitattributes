@@ -688,6 +688,7 @@ docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clistbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/controls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/customtimer.xml svneol=LF#text/xml eol=lf

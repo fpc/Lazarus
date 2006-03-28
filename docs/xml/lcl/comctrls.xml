@@ -7088,29 +7088,29 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines the style of the tool buttons.</short>
+        <descr>These are the possible values of Style:</descr>
+        <example file="comctrls/TToolButton.pas"/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsButton">
-        <short/>
+        <descr>The button appears and functions like a normal button.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsCheck">
-        <short/>
+        <descr>Clicking the button toggles the Down property. Once selected, the button remains selected until clicked again.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsDropDown">
-        <short/>
+        <descr>The button displays a downwards-pointing arrow (suitable for accessing a drop-down menu).</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsSeparator">
-        <short/>
+        <descr>The button appears as an empty space on the toolbar (used to separate other controls).</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TToolButtonStyle.tbsDivider">
-        <short/>
+        <descr>The button appears as a vertical line on the toolbar (used to separate other controls).</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonFlag">
@@ -7198,17 +7198,34 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TToolBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TToolbar manages tool buttons and other controls, arranging them in rows and automatically adjusting their sizes and positions.</short>
+        <descr>
+          <p>TToolbar is a container for tool buttons (TToolButton).  it provides an easy way to arrange and manage visual controls.</p>
+          <p>* All tool buttons on a toolbar maintain a uniform width and height. </p>
+          <p>* Other controls can sit on a toolbar. These controls (which are held in place by invisible tool buttons) maintain a uniform height.</p>
+          <p>* Controls can automatically wrap around and start a new row when they do not fit horizontally on the toolbar.</p>
+          <p>* The Flat property allows the background to show through the toolbar and gives pop-up borders to the tool buttons.</p>
+          <p>* Spaces and dividers (which are in fact specially configured tool buttons) can group controls on the toolbar both visually and functionally.</p>
+          <p>Typically, the tool buttons correspond to items in an application's menu and gives the user more direct access to the application's commands.</p>
+        </descr>
+        <seealso>
+          <link id="TToolButton"/>
+        </seealso>
+        <example file="comctrls/TToolButton.pas"/>
       </element>
       <!-- object Visibility: default -->
       <element name="TToolButton">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TToolButton is a button control in a TToolBar object.</short>
+        <descr>
+          <p>Use TToolButton to implement buttons on a toolbar. While other controls (including TButton and TSpeedButton) can be placed on toolbars, TToolButton utilizes special toolbar features to simplify the configuration of buttons and offers added display options such as pop-up borders and transparency.</p>
+          <p>To place tool buttons on a toolbar at design time, select the toolbar, right-click, and choose New Button.</p>
+        </descr>
+        <seealso>
+          <link id="TToolBar"/>
+          <link id="TButton"/>
+          <link id="TSpeedButton"/>
+        </seealso>
+        <example file="comctrls/TToolButton.pas"/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TToolButton.FAllowAllUp">
@@ -7914,9 +7931,12 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines the style of the tool button.</short>
+        <descr>See TToolButtonStyle for the possible Style values.</descr>
+        <seealso>
+          <link id="TToolButtonStyle"/>
+        </seealso>
+        <example file="comctrls/TToolButton.pas"/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Visible">
@@ -8638,9 +8658,15 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TToolBar.Buttons">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Lists the tool buttons (TToolButton) in the toolbar.</short>
+        <descr>
+          <p>Buttons maintains a list of TToolButton instances. All tool buttons that share a TToolBar parent have the same height and (except for separators and dividers) the same width. Other controls on a toolbar are held in place by invisible separators, which are automatically created and destroyed.</p>
+          <p>To add tool buttons to the toolbar at design time, select the toolbar, right-click, and choose New Button. To create a space (separator) between one button and the next, select New Separator. To create a divider between buttons, add a button and set its Style propery to tbsDivider. Other controls may be added to the toolbar directly from the Component palette. </p>
+        </descr>
+        <seealso>
+          <link id="TToolButton.Style"/>
+        </seealso>
+        <example file="comctrls/TToolButton.pas"/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TToolBar.Buttons.Index">
