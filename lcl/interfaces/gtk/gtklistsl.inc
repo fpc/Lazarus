@@ -19,9 +19,6 @@
  *****************************************************************************
 }
 
-const
-  GtkListItemGtkListTag = 'GtkList';
-  GtkListItemLCLListTag = 'LCLList';
 
 {*************************************************************}
 {                      Default compare functions              }
@@ -394,6 +391,9 @@ procedure TGtkListStringList.RemoveItemCallbacks(AItem: PGtkListItem);
 var
   ChildWidget: Pointer;
 begin
+  {$IFDEF EventTrace}
+   Debugln('connect itemCallback');
+  {$ENDIF}
   gtk_object_set_data(PGtkObject(AItem), GtkListItemLCLListTag, nil);
   gtk_object_set_data(PGtkObject(AItem), GtkListItemGtkListTag, nil);
   {$ifdef GTK2}

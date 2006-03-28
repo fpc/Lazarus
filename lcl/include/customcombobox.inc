@@ -154,7 +154,7 @@ end;
 
   Call handler for "OnChange"-event if one is assigned.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.LMChange(var Msg);
+procedure TCustomComboBox.LMChanged(var Msg);
 begin
   Change;
 end;
@@ -753,7 +753,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
 begin
-  if HandleAllocated then
+  if not (csDestroying in ComponentState){and     not  (csDestroyingHandle in ControlState) } and HandleAllocated then
     FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   Result:=FItemIndex;
 end;

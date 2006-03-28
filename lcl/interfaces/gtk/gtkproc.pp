@@ -57,6 +57,12 @@ uses
   FileUtil, ImgList, GTKGlobals, gtkDef;
 
 
+
+const
+  GtkListItemGtkListTag = 'GtkList';
+  GtkListItemLCLListTag = 'LCLList';
+
+
 type
   PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
   PWaitHandleEventHandler = ^TWaitHandleEventHandler;

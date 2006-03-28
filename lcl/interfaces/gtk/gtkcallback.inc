@@ -580,7 +580,9 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
+  {$IFDEF EventTrace}
   EventTrace('focus', data);
+  {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
@@ -625,7 +627,9 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
+  {$IFDEF EventTrace}
   EventTrace('focus', data);
+  {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
@@ -2536,7 +2540,9 @@ var
 begin
   Result := CallBackDefaultReturn;
   //DebugLn('[gtkFocusInNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
+  {$IFDEF EventTrace}
   EventTrace ('FocusInNotify (alias Enter)', data);
+  {$ENDIF}
 
   if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
@@ -2555,7 +2561,9 @@ var
 begin
   Result := CallBackDefaultReturn;
   //DebugLn('[gtkFocusOutNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
+  {$IFDEF EventTrace}
   EventTrace ('FocusOutNotify (alias Exit)', data);
+  {$ENDIF}
 
   if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
@@ -3112,7 +3120,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
-  EventTrace('gtkListBoxSelectionChangedAfter', data);
+  EventTrace('gtkListSelectionChangedAfter', data);
   {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;

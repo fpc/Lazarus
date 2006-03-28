@@ -995,7 +995,8 @@ begin
   if not ComboBox.HandleAllocated then
     RaiseGDBException('');
   ComboWidget:=PGtkCombo(ComboBox.Handle);
-  ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
+  ComboStrings:=ComboBox.items;
+//  TStrings(gtk_object_get_data(PGtkObject(ComboWidget),GtkListItemLCLListTag));
   CurText:=GetComboBoxText(ComboWidget);
   Result:=ComboStrings.IndexOf(CurText);
 end;
@@ -1014,7 +1015,7 @@ begin
   LockOnChange(PGtkObject(ComboWidget),+1);
   gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
   if Index>=0 then begin
-    ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
+    ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),GtkListItemLCLListTag));
     if Index < ComboStrings.Count
     then SetComboBoxText(ComboWidget, PChar(ComboStrings[Index]))
     else SetComboBoxText(ComboWidget, '#error#');
@@ -2375,7 +2376,9 @@ begin
 
       if (not EventStopped) {and (not BeforeEvent)} and CanSendChar
       then begin
+       {$IFDEF EventTrace}
         EventTrace('char', data);
+        {$ENDIF}
 
         KeyPressesChar:=#0;
         if Event^.Length = 1 then begin
@@ -3448,7 +3451,11 @@ function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
-  if TLMessage(AMessage).Msg<>LM_MOUSEMOVE then
+  if  (TLMessage(AMessage).Msg <>LM_MOUSEMOVE)
+    and (TLMessage(AMessage).Msg <>LM_PAINT)
+    and (TLMessage(AMessage).Msg <>LM_KEYDOWN)
+    and (TLMessage(AMessage).Msg <>LM_KEYUP)
+    and (TLMessage(AMessage).Msg <  CN_KEYDOWN ) then
     DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));

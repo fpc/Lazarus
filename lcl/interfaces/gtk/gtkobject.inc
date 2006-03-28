@@ -4771,7 +4771,7 @@ begin
 
   // Items
   ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
-  gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
+  gtk_object_set_data(PGtkObject(Widget), GtkListItemLCLListTag, ItemList);
   ItemList.Assign(ComboBox.Items);
   ItemList.Sorted:= ComboBox.Sorted;
 
@@ -4782,8 +4782,6 @@ begin
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));
 
-  // Text
-  SetComboBoxText(Widget, PChar(ComboBox.Text));
 end;
 
 

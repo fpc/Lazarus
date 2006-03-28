@@ -76,6 +76,7 @@ type
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
       NewTraverseList: boolean); override;
@@ -614,10 +615,20 @@ begin
   end;
 end;
 
+function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin
+//  DebugLn('TGtkWSCustomComboBox.Gettext ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
+
+  Atext:=GetComboBoxText(PGtkCombo(AWinControl.handle));
+  result:=true;
+end;
+
 function TGtkWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
+var
+  CurText : string;
 begin
-  //DebugLn('TGtkWSCustomComboBox.GetItemIndex ',DbgSName(ACustomComboBox),' ',DebugGtkWidgets.GetInfo(Pointer(ACustomComboBox.Handle),true));
+  //DebugLn('TGtkWSCustomComboBox.GetItemIndex ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
   Result:=GetComboBoxItemIndex(ACustomComboBox);
 end;
 
@@ -708,7 +719,7 @@ function  TGtkWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   Result := TStrings(gtk_object_get_data(PGtkObject(ACustomComboBox.Handle),
-                                         'LCLList'));
+                                         GtkListItemLCLListTag));
 end;
 
 procedure TGtkWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
