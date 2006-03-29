@@ -70,14 +70,16 @@ type
     FLineColorForeGround: TColor;
     FSourceEditor: TObject;
     FSourceMarks: TSourceMarks;
-    fSynEdit: TCustomSynEdit;
+    FSynEdit: TCustomSynEdit;
     procedure SetSourceMarks(const AValue: TSourceMarks);
   protected
     function GetEdit: TCustomSynEdit; override;
     procedure AddHandler(HandlerType: TSourceMarkHandler;
                          const Handler: TMethod);
     procedure DoPositionChanged; virtual;
+    procedure DoLineUpdate; virtual;
     procedure GetSourceEditor; virtual;
+    function  EditorUpdateRequired: Boolean; virtual; // called to check if we need to update the editor if a property is changed
     procedure SetColumn(const Value: Integer); override;
     procedure SetData(const AValue: TObject); virtual;
     procedure SetImage(const Value: Integer); override;
@@ -87,6 +89,7 @@ type
     procedure SetLineColorBackGround(const AValue: TColor); virtual;
     procedure SetLineColorForeGround(const AValue: TColor); virtual;
     procedure SetSourceEditor(const AValue: TObject); virtual;
+    procedure SetVisible(const AValue: boolean); override;
   public
     constructor Create(TheOwner: TCustomSynEdit; TheData: TObject);
     destructor Destroy; override;
@@ -114,7 +117,7 @@ type
     property Data: TObject read FData write SetData;
     property SourceEditor: TObject read FSourceEditor write SetSourceEditor;
     property SourceMarks: TSourceMarks read FSourceMarks write SetSourceMarks;
-    property SynEdit: TCustomSynEdit read fSynEdit;
+    property SynEdit: TCustomSynEdit read FSynEdit;
     property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
     property LineColorAttrib: TAdditionalHilightAttribute read FLineColorAttrib
                                                        write SetLineColorAttrib;
@@ -237,12 +240,14 @@ procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
 begin
   if FLineColorBackGround=AValue then exit;
   FLineColorBackGround:=AValue;
+  DoLineUpdate;
 end;
 
 procedure TSourceMark.SetLineColorForeGround(const AValue: TColor);
 begin
   if FLineColorForeGround=AValue then exit;
   FLineColorForeGround:=AValue;
+  DoLineUpdate;
 end;
 
 procedure TSourceMark.SetLineColorAttrib(
@@ -250,12 +255,14 @@ procedure TSourceMark.SetLineColorAttrib(
 begin
   if FLineColorAttrib=AValue then exit;
   FLineColorAttrib:=AValue;
+  DoLineUpdate;
 end;
 
 procedure TSourceMark.SetIsBreakPoint(const AValue: boolean);
 begin
   if FIsBreakPoint=AValue then exit;
   FIsBreakPoint:=AValue;
+  DoLineUpdate;
 end;
 
 procedure TSourceMark.SetSourceEditor(const AValue: TObject);
@@ -265,6 +272,13 @@ begin
   GetFilename;
 end;
 
+procedure TSourceMark.SetVisible(const AValue: boolean);
+begin
+  if Visible = AValue then Exit;
+  inherited SetVisible(AValue);
+  if EditorUpdateRequired then DoLineUpdate;
+end;
+
 procedure TSourceMark.DoPositionChanged;
 var
   i: Integer;
@@ -272,6 +286,15 @@ begin
   i:=FHandlers[smhPositionChanged].Count;
   while FHandlers[smhPositionChanged].NextDownIndex(i) do
     TNotifyEvent(FHandlers[smhPositionChanged][i])(Self);
+end;
+
+procedure TSourceMark.DoLineUpdate;
+begin
+  if not Visible then Exit;
+  if SynEdit = nil then Exit;
+  if Line <= 0 then Exit;
+  
+  SynEdit.InvalidateLine(Line)
 end;
 
 procedure TSourceMark.SetData(const AValue: TObject);
@@ -286,6 +309,13 @@ begin
     FSourceEditor:=FSourceMarks.GetSourceEditor(Self);
 end;
 
+function TSourceMark.EditorUpdateRequired: Boolean;
+begin
+  Result := (FLineColorAttrib <> ahaNone)
+         or (FLineColorBackGround <> clNone)
+         or (FLineColorForeGround <> clNone);
+end;
+
 procedure TSourceMark.AddHandler(HandlerType: TSourceMarkHandler;
   const Handler: TMethod);
 begin
@@ -297,7 +327,7 @@ end;
 
 function TSourceMark.GetEdit: TCustomSynEdit;
 begin
-  Result:=fSynEdit;
+  Result:=FSynEdit;
 end;
 
 procedure TSourceMark.SetColumn(const Value: Integer);
@@ -322,6 +352,7 @@ begin
   inherited SetLine(Value);
   if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
+  if EditorUpdateRequired then DoLineUpdate;
 end;
 
 constructor TSourceMark.Create(TheOwner: TCustomSynEdit; TheData: TObject);
@@ -534,6 +565,7 @@ function TSourceMarks.Add(ASynEdit: TCustomSynEdit; ALine: integer
   ): TSourceMark;
 begin
   Result:=TSourceMark.Create(ASynEdit,nil);
+  Result.Line := ALine;
   Add(Result);
 end;
 

@@ -250,7 +250,7 @@ type
     procedure SetColumn(const Value: Integer); virtual;
     procedure SetImage(const Value: Integer); virtual;
     procedure SetLine(const Value: Integer); virtual;
-    procedure SetVisible(const Value: boolean);
+    procedure SetVisible(const Value: boolean); {$IFDEF SYN_LAZARUS}virtual;{$ENDIF} //MWE: Laz needs to know when a line gets visible, so the editor color can be updated
     procedure SetInternalImage(const Value: boolean);
     function GetIsBookmark: boolean;
   public
