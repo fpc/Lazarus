@@ -1736,6 +1736,7 @@ images/up.xpm svneol=native#text/plain
 images/uparrow.ico -text svneol=unset#image/x-icon
 images/uparrow.xpm -text svneol=native#image/x-xpixmap
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
+install/lazarus.desktop svneol=native#text/plain
 languages/lazaruside.ar.po svneol=native#text/plain
 languages/lazaruside.ca.po svneol=native#text/plain
 languages/lazaruside.de.po svneol=native#text/plain
