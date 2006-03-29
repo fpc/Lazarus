@@ -4143,7 +4143,12 @@ begin
 
   // childs
   if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
+    g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.Entry));
+    g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.List));
     SetComboBoxText(PGtkCombo(Widget),nil);
+
+    // MWE:
+    // TODO: Check: Why is there widgetinfo on subwidgets ???
     FreeWidgetInfo(PGtkCombo(Widget)^.Entry);
     FreeWidgetInfo(PGtkCombo(Widget)^.Button);
   end;

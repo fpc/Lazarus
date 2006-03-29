@@ -789,21 +789,23 @@ procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex A ',DbgSName(Self),' Text="',Text,'"');
-  if Val=GetItemIndex then exit;
-  if (Val>=Items.Count) and (not (csLoading in ComponentState)) then exit;
+  if Val = GetItemIndex then exit;
+  if Val < -1 then Exit;
+  if (Val >= Items.Count) and (not (csLoading in ComponentState)) then exit;
 
   FItemIndex:= Val;
-  if not (csLoading in ComponentState) then begin
-    //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
-    //  Text:=FItems[FItemIndex];
-    if HandleAllocated then begin
-      TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-      Select;
-    end else begin
-      // remember text, in case one reads text without creating handle
-      Text := FItems.Strings[FItemIndex];
-    end;
+  if csLoading in ComponentState then Exit;
+  
+  if HandleAllocated then begin
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+    Select;
+  end else begin
+    // remember text, in case one reads text without creating handle
+    if Val = -1
+    then Text := ''
+    else Text := FItems.Strings[FItemIndex];
   end;
+
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex END ',DbgSName(Self),' Text="',Text,'"');
 end;
