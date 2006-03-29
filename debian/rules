@@ -61,7 +61,7 @@ install: build
 	install -d $(LAZDEBDIR)/usr/share/gnome/apps/Development
 	install -d $(LAZDEBDIR)/usr/bin
 	
-	convert $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
+	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
 	chmod 644 $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
 	install -m 644 $(CURDIR)/install/gnome.ide.desktop $(LAZDEBDIR)/usr/share/gnome/apps/Development/lazarus.desktop
 	
