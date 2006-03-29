@@ -1,4 +1,3 @@
-set -x
 LAZDEBDIR=$1
 for i in `find -maxdepth 1 -not -name debian -and -not -name '.'`; do
     cp -Rl $i $LAZDEBDIR/usr/share/lazarus
