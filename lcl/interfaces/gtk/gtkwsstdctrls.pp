@@ -625,8 +625,6 @@ end;
 
 function TGtkWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
-var
-  CurText : string;
 begin
   //DebugLn('TGtkWSCustomComboBox.GetItemIndex ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
   Result:=GetComboBoxItemIndex(ACustomComboBox);

@@ -145,6 +145,16 @@ function CodeMakroProcedureName(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
+function CodeMakroDate(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMakroTime(const Parameter: string; InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMakroDateTime(const Parameter: string;
+                        InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -337,6 +347,37 @@ begin
   debugln('CodeMakroProcedureName ',Value);
 end;
 
+function CodeMakroDate(const Parameter: string; InteractiveValue: TPersistent;
+  SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
+begin
+  if Parameter<>'' then
+    Value:=FormatDateTime(Parameter,Now)
+  else
+    Value:=DateToStr(Now);
+  Result:=true;
+end;
+
+function CodeMakroTime(const Parameter: string; InteractiveValue: TPersistent;
+  SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
+begin
+  if Parameter<>'' then
+    Value:=FormatDateTime(Parameter,Now)
+  else
+    Value:=TimeToStr(Now);
+  Result:=true;
+end;
+
+function CodeMakroDateTime(const Parameter: string;
+  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
+  ErrorMsg: string): boolean;
+begin
+  if Parameter<>'' then
+    Value:=FormatDateTime(Parameter,Now)
+  else
+    Value:=DateTimeToStr(Now);
+  Result:=true;
+end;
+
 procedure RegisterStandardCodeTemplatesMenuItems;
 var
   Path: string;
@@ -392,6 +433,15 @@ begin
   RegisterCodeMacro('ProcedureName','insert procedure name',
                     'Insert name of current procedure',
                     @CodeMakroProcedureName,nil);
+  RegisterCodeMacro('Date','insert date',
+                    'Insert date. Optional: format string',
+                    @CodeMakroDate,nil);
+  RegisterCodeMacro('Time','insert time',
+                    'Insert time. Optional: format string',
+                    @CodeMakroTime,nil);
+  RegisterCodeMacro('DateTime','insert date and time',
+                    'Insert date and time. Optional: format string',
+                    @CodeMakroDateTime,nil);
 end;
 
 { TCodeTemplateEditForm }
