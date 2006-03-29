@@ -2,5 +2,5 @@
   	title="Lazarus IDE"\
 	section="Apps/Programming"\
 	hints="Programming,Delphi"\
-	icon="/usr/share/pixmaps/lazarus.png"\
-	command="/usr/bin/lazarus"
+	icon="/usr/share/pixmaps/lazarus.xpm"\
+	command="/usr/bin/lazarus-ide"

@@ -522,6 +522,7 @@ debian/manpage.sgml.ex svneol=native#text/plain
 debian/manpage.xml.ex svneol=native#text/plain
 debian/menu svneol=native#text/plain
 debian/menu.ex svneol=native#text/plain
+debian/move-usr-lib.sh svneol=native#text/plain
 debian/postinst.ex svneol=native#text/plain
 debian/postrm.ex svneol=native#text/plain
 debian/preinst.ex svneol=native#text/plain
