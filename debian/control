@@ -2,7 +2,7 @@ Source: lazarus
 Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
-Build-Depends: debhelper (>= 4.0.0),  fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-db (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-utils (= 2.0.2-1), libgdk-pixbuf-dev
+Build-Depends: debhelper (>= 4.0.0),  fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-db (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-utils (= 2.0.2-1), imagemagick, libgdk-pixbuf-dev
 Standards-Version: 3.6.1.1
 
 Package: lazarus
