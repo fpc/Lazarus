@@ -2730,6 +2730,21 @@ begin
   end;
 end;
 
+procedure TWinControl.SelectFirst;
+var
+  Form : TCustomForm;
+  Control : TWinControl;
+begin
+  Form := GetParentForm(Self);
+  if Form <> nil then begin
+    Control := FindNextControl(nil, true, true, false);
+    if Control = nil then
+      Control := FindNextControl(nil, true, false, false);
+    if Control <> nil then
+      Form.ActiveControl := Control;
+  end;
+end;
+
 procedure TWinControl.FixupTabList;
 var
   Count, I, J: Integer;

@@ -1593,6 +1593,7 @@ type
   protected
     function  FindNextControl(CurrentControl: TWinControl; GoForward,
                               CheckTabStop, CheckParent: Boolean): TWinControl;
+    procedure SelectFirst;
     function  RealGetText: TCaption; override;
     function  GetBorderStyle: TBorderStyle;
     function  GetChildsRect(Scrolled: boolean): TRect; override;
