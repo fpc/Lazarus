@@ -1,5 +1,5 @@
 :: This setting need to change for every build
-SET LAZVERSION=0.9.13
+SET LAZVERSION=0.9.15
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
@@ -11,7 +11,7 @@ SET FPCSVNDIR=c:\lazarus\source\fpc\2.1
 :: Path to the lazarus sources checked out of subversion
 SET LAZSVNDIR=c:\lazarus\source\lazsource
 
-:: Path to fpc 2.0.0 compiler
+:: Path to fpc 2.0.2 compiler
 SET RELEASE_PPC=c:\fpc\2.0.2\bin\i386-win32\ppc386.exe
 
 :: Path to the directory containing some third party utilities used by fpc
