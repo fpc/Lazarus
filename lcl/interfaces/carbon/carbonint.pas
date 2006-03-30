@@ -36,7 +36,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, FPCAdds,
+  Types, Classes, SysUtils, Math, FPCAdds,
   // interfacebase
   InterfaceBase,
   // carbon bindings
@@ -106,12 +106,12 @@ uses
 ////////////////////////////////////////////////////
 // CarbonWSActnList,
 // CarbonWSArrow,
- CarbonWSButtons,
+  CarbonWSButtons,
 // CarbonWSCalendar,
 // CarbonWSCheckLst,
 // CarbonWSCListBox,
 // CarbonWSComCtrls,
- CarbonWSControls,
+  CarbonWSControls,
 // CarbonWSDbCtrls,
 // CarbonWSDBGrids,
 // CarbonWSDialogs,
@@ -120,18 +120,18 @@ uses
 // CarbonWSExtCtrls,
 // CarbonWSExtDlgs,
 // CarbonWSFileCtrl,
- CarbonWSForms,
+  CarbonWSForms,
 // CarbonWSGrids,
 // CarbonWSImgList,
 // CarbonWSMaskEdit,
 // CarbonWSMenus,
 // CarbonWSPairSplitter,
 // CarbonWSSpin,
-CarbonWSStdCtrls,
+  CarbonWSStdCtrls,
 // CarbonWSToolwin,
 ////////////////////////////////////////////////////
   CarbonDef, CarbonProc,
-  Math, Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
+  Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
   Spin, CommCtrl, ExtCtrls, FileCtrl, LResources;
 
 // the implementation of the utility methods
