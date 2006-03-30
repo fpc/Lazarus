@@ -1271,6 +1271,8 @@ resourcestring
   lisThereWasAnErrorWhileCopyingTheComponentStreamToCli = 'There was an error '
     +'while copying the component stream to clipboard:%s%s';
   lisErrorIn = 'Error in %s';
+  lisDesThereIsAlreadyAnotherComponentWithTheName = 'There is already another '
+    +'component with the name %s%s%s.';
   lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component '
     +'editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the '
     +'error:%s%s%s%s';

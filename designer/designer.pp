@@ -1966,7 +1966,28 @@ end;
 
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
-Begin
+  
+  procedure RaiseInvalidName(ConflictComponent: TComponent);
+  begin
+    raise EComponentError.Create(Format(
+      lisDesThereIsAlreadyAnotherComponentWithTheName, ['"',
+      ConflictComponent.Name, '"']));
+  end;
+  
+var
+  i: Integer;
+  CurComponent: TComponent;
+begin
+  // check, if there is already such a component
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    CurComponent:=FLookupRoot.Components[i];
+    //DebugLn('TDesigner.ValidateRename ',CurComponent.Name,' ',NewName);
+    if (CurComponent<>AComponent)
+    and (CompareText(CurComponent.Name,NewName)=0) then begin
+      RaiseInvalidName(CurComponent);
+    end;
+  end;
+
   // check if component is initialized
   if (CurName='') or (NewName='')
   or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
