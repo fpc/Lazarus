@@ -36,7 +36,6 @@ type
     FCount: Integer;
     FFileName: String;
     FXML: TPropStorageXMLConfig;
-    FRootNode: String;
     FRootNodePath: String;
   protected
     Function GetXMLFileName: string; virtual;
@@ -51,7 +50,7 @@ type
     Procedure DoEraseSections(const ARootSection: String);override;
   public
     property FileName: String Read FFileName Write FFileName;
-    property RootNodePath: String Read FRootNode Write FRootNodePath;
+    property RootNodePath: String Read FRootNodePath Write FRootNodePath;
   end;
   
   TXMLPropStorage = class(TCustomXMLPropStorage)
@@ -122,8 +121,8 @@ end;
 
 function TCustomXMLPropStorage.RootSection: String;
 begin
-  If (FRootNode<>'') then
-    Result:=FRootNode
+  If (FRootNodePath<>'') then
+    Result:=FRootNodePath
   else
     Result:=inherited RootSection;
   Result:=FixPath(Result);
