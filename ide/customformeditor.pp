@@ -1837,18 +1837,22 @@ begin
   // find selected component
   if (FSelection = nil) or (FSelection.Count <= 0) then Exit;
   NewParent:=TComponent(FSelection[0]);
+  //Debugln('TCustomFormEditor.GetDefaultComponentParent A:', DbgSName(NewParent));
   if not (NewParent is TComponent) then exit;
   if TypeClass<>nil then begin
-    if TypeClass.InheritsFrom(TControl) then begin
-      // New TypeClass is a TControl => use only a TWinControl as parent
+    if TypeClass.InheritsFrom(TControl) and (NewParent is TControl) then begin
+      // New TypeClass is a TControl and selected component is TControl =>
+      // use only a TWinControl as parent
       while (NewParent<>nil) do begin
         if (NewParent is TWinControl)
         and (csAcceptsControls in TWinControl(NewParent).ControlStyle) then
           break;
         NewParent:=TControl(NewParent).Parent;
+        //Debugln('TCustomFormEditor.GetDefaultComponentParent B:', DbgSName(NewParent));
       end;
     end else begin
-      // New TypeClass is not a TControl => Root component as parent
+      // New TypeClass or selected component is not a TControl =>
+      // use Root component as parent
       Root:=GetLookupRootForComponent(NewParent);
       if Root is TComponent then
         NewParent:=TComponent(Root);
