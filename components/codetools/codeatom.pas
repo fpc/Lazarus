@@ -29,7 +29,7 @@
 }
 unit CodeAtom;
 
-{$ifdef FPC}{$mode objfpc}{$endif}{$H+}
+{$ifdef FPC}{$mode objfpc}{$endif}{$inline on}{$H+}
 
 interface
 
