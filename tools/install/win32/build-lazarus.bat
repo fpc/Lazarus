@@ -6,8 +6,8 @@ SET COMPILER=%BUILDDIR%\pp\bin\i386-win32\ppc386.exe
 %BUILDDRIVE%
 cd %BUILDDIR%
 %MAKEEXE% clean PP=%COMPILER% >> %LOGFILE%
-%MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE%
-%MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% LCL_PLATFORM=gtk2 >> %LOGFILE%
+%MAKEEXE% lcl OPT="-gl -CX -Ur" PP=%COMPILER% >> %LOGFILE%
+%MAKEEXE% lcl OPT="-gl -CX -Ur" PP=%COMPILER% LCL_PLATFORM=gtk2 >> %LOGFILE%
 %MAKEEXE% bigide OPT="-gl -Xs -XX" PP=%COMPILER% >> %LOGFILE%
 %FPCBINDIR%\strip.exe lazarus.exe
 
