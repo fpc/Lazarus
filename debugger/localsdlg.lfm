@@ -1,9 +1,12 @@
 object LocalsDlg: TLocalsDlg
+  ActiveControl = lvLocals
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  HorzScrollBar.Page = 501
-  VertScrollBar.Page = 201
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
   Left = 359
   Height = 200
   Top = 126
@@ -13,16 +16,14 @@ object LocalsDlg: TLocalsDlg
     Columns = <    
       item
         Caption = 'Name'
-        ImageIndex = -1
-        Visible = True
         Width = 150
       end    
       item
         Caption = 'Value'
-        ImageIndex = -1
-        Visible = True
       end>
     MultiSelect = True
+    RowSelect = True
+    TabOrder = 0
     ViewStyle = vsReport
     Height = 200
     Width = 500
