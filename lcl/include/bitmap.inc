@@ -295,6 +295,48 @@ begin
   FPixelFormat:=AValue;
 end;
 
+procedure TBitmap.SetTransparentColor(const AValue: TColor);
+var
+  IntfImage: TLazIntfImage;
+  y: Integer;
+  x: Integer;
+  CurColor: TFPColor;
+  ImgHandle, ImgMaskHandle: HBitmap;
+  r: Byte;
+  g: Byte;
+  b: Byte;
+begin
+  if FTransparentColor=AValue then exit;
+  FTransparentColor:=AValue;
+  if (FTransparentColor and not $ffffff)=0 then begin
+    IntfImage:=nil;
+    try
+      CreateIntfImage(IntfImage);
+      r:=Red(FTransparentColor);
+      g:=Green(FTransparentColor);
+      b:=Blue(FTransparentColor);
+      for y:=0 to IntfImage.Height-1 do begin
+        for x:=0 to IntfImage.Width-1 do begin
+          CurColor:=IntfImage.Colors[x,y];
+          if ((CurColor.red shr 8)=r)
+          and ((CurColor.green shr 8)=g)
+          and ((CurColor.blue shr 8)=b) then begin
+            CurColor.alpha:=alphaTransparent;
+          end else begin
+            CurColor.alpha:=alphaOpaque;
+          end;
+          IntfImage.Colors[x,y]:=CurColor;
+        end;
+      end;
+      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+      Handle:=ImgHandle;
+      MaskHandle:=ImgMaskHandle;
+    finally
+      IntfImage.Free;
+    end;
+  end;
+end;
+
 procedure TBitmap.UpdatePixelFormat;
 begin
   FPixelFormat := FImage.GetPixelFormat;
@@ -984,10 +1026,17 @@ begin
   end;
 end;
 
+procedure TBitmap.CreateIntfImage(var IntfImage: TLazIntfImage);
+begin
+  IntfImage:=nil;
+  IntfImage:=TLazIntfImage.Create(0,0);
+  IntfImage.LoadFromBitmap(Handle,MaskHandle);
+end;
+
 function TBitmap.CreateIntfImage: TLazIntfImage;
 begin
-  Result:=TLazIntfImage.Create(0,0);
-  Result.LoadFromBitmap(Handle,MaskHandle);
+  Result:=nil;
+  CreateIntfImage(Result);
 end;
 
 function TBitmap.GetEmpty: boolean;

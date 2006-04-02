@@ -1109,6 +1109,7 @@ type
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
     procedure SetMonochrome(const AValue: Boolean);
     procedure SetPixelFormat(const AValue: TPixelFormat);
+    procedure SetTransparentColor(const AValue: TColor);
     procedure UpdatePixelFormat;
   protected
     procedure Changed(Sender: TObject); override;
@@ -1178,6 +1179,7 @@ type
                                ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
       SaveStreamType: TBitmapNativeType); virtual;
+    procedure CreateIntfImage(var IntfImage: TLazIntfImage);
     function CreateIntfImage: TLazIntfImage;
     function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
   public
@@ -1189,7 +1191,7 @@ type
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
     // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
-                                      write FTransparentColor default clDefault;
+                                      write SetTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
   end;

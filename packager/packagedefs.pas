@@ -3171,7 +3171,6 @@ var
   res: TLResource;
 begin
   Result:=TBitmap.Create;
-  Result.TransparentColor:=clWhite;
   ResName:=ComponentClass.ClassName;
   res:=LazarusResources.Find(ResName);
   if (res<>nil) and (res.Value<>'')
