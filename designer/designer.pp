@@ -1978,6 +1978,11 @@ var
   i: Integer;
   CurComponent: TComponent;
 begin
+  // check if component is initialized
+  if (CurName='') or (NewName='')
+  or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
+    exit;
+
   // check, if there is already such a component
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     CurComponent:=FLookupRoot.Components[i];
@@ -1988,10 +1993,6 @@ begin
     end;
   end;
 
-  // check if component is initialized
-  if (CurName='') or (NewName='')
-  or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
-    exit;
   // check if component is the LookupRoot
   if AComponent=nil then AComponent:=FLookupRoot;
   // consistency check
