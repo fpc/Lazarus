@@ -1776,6 +1776,7 @@ const
     );
 var
   FileVersion: Integer;
+  NewMainUnitID: LongInt;
 
   procedure LoadCompilerOptions(XMLConfig: TXMLConfig; const Path: string);
   var
@@ -1881,6 +1882,10 @@ var
       end;
 
       NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo);
+      if i=NewMainUnitID then begin
+        MainUnitID:=IndexOf(NewUnitInfo);
+        NewMainUnitID:=-1;
+      end;
     end;
 
 
@@ -1920,6 +1925,7 @@ begin
       exit;
     end;
 
+    NewMainUnitID:=-1;
     try
       Path:='ProjectOptions/';
       fPathDelimChanged:=
@@ -1934,7 +1940,7 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
-      MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
+      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
       IconPath := xmlconfig.GetValue(Path+'General/IconPath/Value', './');
@@ -2231,6 +2237,9 @@ end;
 
 procedure TProject.SetMainUnitID(const AValue: Integer);
 begin
+  if AValue>=UnitCount then
+    RaiseGDBException('');
+    
   if MainUnitID=AValue then exit;
   if (MainUnitID>=0) and (MainUnitID<UnitCount) then
     MainUnitInfo.DecreaseAutoRevertLock;
