@@ -3,8 +3,7 @@ object LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 96
-  Position = poScreenCenter
+  PixelsPerInch = 112
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   Left = 359
