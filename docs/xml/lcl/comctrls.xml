@@ -10240,10 +10240,8 @@ Const
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNode">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TTreeNode is a single item that holds data in TTreeView</short>
+        <descr>A TTreeNode is parst of a TTreeView and is used to store data in. This can be done by using the Caption property or for more complex data the Data property can be used. Each node can have sibling or child items associated with it.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNode.FOwner">
@@ -11540,9 +11538,8 @@ Const
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Data">
-        <short/>
-        <descr/>
-        <seealso/>
+        <descr>Property of type pointer used to store custom data in a node.</descr>
+        <example file="comctrls/ttreenode_data.pas"/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Deleting">
@@ -14987,10 +14984,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeView">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TTreeview is a control that displays a hierarchical list of items</short>
+        <descr>Use a TTreeview to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Align">

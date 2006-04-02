@@ -82,6 +82,7 @@ type
     property Modified: Boolean read FModified;
   published
     property Filename: String read FFilename write SetFilename;
+    property Document: TXMLDocument read doc;
   end;
 
 

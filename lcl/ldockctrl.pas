@@ -87,13 +87,14 @@ type
     procedure Clear;
     function FindByName(const AName: string): TLazDockConfigNode;
   public
-    property TheType: TLDConfigNodeType read FTheType write SetTheType;
-    property Name: string read FName write SetName;
     property Bounds: TRect read FBounds write SetBounds;
     property Parent: TLazDockConfigNode read FParent write SetParent;
     property Sides[Side: TAnchorKind]: TLazDockConfigNode read GetSides write SetSides;
     property ChildCount: Integer read GetChildCount;
     property Childs[Index: integer]: TLazDockConfigNode read GetChilds; default;
+  published
+    property TheType: TLDConfigNodeType read FTheType write SetTheType;
+    property Name: string read FName write SetName;
   end;
 
   TCustomLazControlDocker = class;
