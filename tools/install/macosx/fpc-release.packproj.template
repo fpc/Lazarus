@@ -373,7 +373,7 @@
 														<key>GID</key>
 														<integer>0</integer>
 														<key>Path</key>
-														<string>./bin/ppcppc</string>
+														<string>./bin/PPCARCH</string>
 														<key>Path Type</key>
 														<integer>2</integer>
 														<key>Privileges</key>
