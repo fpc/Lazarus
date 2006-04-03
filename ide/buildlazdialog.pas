@@ -192,6 +192,7 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
@@ -680,6 +681,11 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, 500, 476);
 
   Load(Options);
+end;
+
+procedure TConfigureBuildLazarusDlg.FormDestroy(Sender: TObject);
+begin
+  Options.Free;
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemsListBoxDrawItem(Control: TWinControl; Index: Integer;
