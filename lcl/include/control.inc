@@ -2898,8 +2898,12 @@ end;
 Procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
+  DragObjectDragging : Boolean;
 begin
-  if Dragging and (DragObject<>nil) then begin
+  if DragObject <> nil then
+    DragObjectDragging := true else
+    DragObjectDragging := false;
+  if DragObjectDragging then begin
     P:=ClientToScreen(Point(X,Y));
     DragObject.MouseMove(Shift,P.X,P.Y);
   end;
@@ -2913,8 +2917,12 @@ Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 var
   P: TPoint;
+  DragObjectDragging : Boolean;
 begin
-  if (Button in [mbLeft,mbRight]) and Dragging and (DragObject<>nil) then begin
+  if DragObject <> nil then
+    DragObjectDragging := true else
+    DragObjectDragging := false;
+    if (Button in [mbLeft,mbRight]) and DragObjectDragging then begin
     P:=ClientToScreen(Point(X,Y));
     DragObject.MouseUp(Button,Shift,P.X,P.Y);
   end;
