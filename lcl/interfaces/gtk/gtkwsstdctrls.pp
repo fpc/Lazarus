@@ -174,6 +174,8 @@ type
                                   const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo;
                                 const NewWordWrap: boolean); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
     {$endif}
   end;
 
@@ -1005,6 +1007,39 @@ var
 begin
   ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
   gtk_text_set_editable (GTK_TEXT(ImplWidget), not ACustomEdit.ReadOnly);
+end;
+
+procedure TGtkWSCustomMemo.SetColor(const AWinControl: TWinControl);
+var
+  aWidget : PGTKWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
+  GtkWidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.color,
+    [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+     GTK_STYLE_BASE]);
+end;
+
+procedure TGtkWSCustomMemo.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  AWidget: PGTKWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  AWidget:= PGtkWidget(AWinControl.Handle);
+  AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
+
+  if AWidget<>nil then begin
+//    GtkWidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
+//       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    GtkWidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+        GTK_STYLE_TEXT]);
+    GtkWidgetSet.SetWidgetFont(AWidget, AFont);
+  end;
 end;
 
 procedure TGtkWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;

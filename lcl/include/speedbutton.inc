@@ -46,6 +46,7 @@ begin
   FAllowAllUp:= false;
   FMouseInControl := False;
   FDragging := False;
+  FShowAccelChar:=true;
   FSpacing := 4;
   FMargin := -1;
   FTransparent := true;
@@ -220,6 +221,15 @@ begin
     Invalidate;
   end;
 end;
+
+Procedure TCustomSpeedButton.SetShowAccelChar(Value : Boolean);
+begin
+  If FShowAccelChar <> Value then begin
+    FShowAccelChar := Value;
+    Invalidate;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   procedure TCustomSpeedButton.RealSetText(const Value: TCaption);
@@ -429,7 +439,7 @@ begin
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
     TXTStyle.Clipping := True;
-    TXTStyle.ShowPrefix := True;
+    TXTStyle.ShowPrefix := ShowAccelChar;
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
     TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style

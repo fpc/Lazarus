@@ -284,6 +284,7 @@ type
     FMargin: integer;
     FMouseInControl: Boolean;
     FShortcut: Longint;
+    FShowAccelChar: boolean;
     FSpacing: integer;
     FTransparent: Boolean;
     function GetGlyph: TBitmap;
@@ -291,6 +292,7 @@ type
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLayout(const Value: TButtonLayout);
+    procedure SetShowAccelChar(Value: boolean);
     procedure SetTransparent(const Value: boolean);
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
     procedure MouseEnter; override;
@@ -334,6 +336,7 @@ type
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Spacing: integer read FSpacing write SetSpacing default 4;
+    property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
     property Transparent: Boolean read FTransparent write SetTransparent default true;
   end;
 
