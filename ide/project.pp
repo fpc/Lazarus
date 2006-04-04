@@ -1902,6 +1902,31 @@ var
     FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
   end;
   
+  procedure LoadDefaultSession;
+  var
+    AnUnitInfo: TUnitInfo;
+    BestUnitInfo: TUnitInfo;
+  begin
+    if FirstUnitWithEditorIndex<>nil then exit;
+    
+    AnUnitInfo:=FirstPartOfProject;
+    BestUnitInfo:=nil;
+    while AnUnitInfo<>nil do begin
+      if (BestUnitInfo=nil)
+      or (FilenameIsPascalUnit(AnUnitInfo.Filename)
+           and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
+      then begin
+        BestUnitInfo:=AnUnitInfo;
+      end;
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    end;
+    if BestUnitInfo<>nil then begin
+      BestUnitInfo.EditorIndex:=0;
+      ActiveEditorIndexAtStart:=0;
+      BestUnitInfo.Loaded:=true;
+    end;
+  end;
+  
 var
   Path: String;
   xmlconfig: TXMLConfig;
@@ -1983,45 +2008,48 @@ begin
 
     // load session file (if available)
     if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
-    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
-    and FileExists(ProjectSessionFile) then begin
-      //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
-      try
-        xmlconfig := TXMLConfig.Create(ProjectSessionFile);
-
-        Path:='ProjectSession/';
-        fPathDelimChanged:=
-          XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
-          
-        FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
-
-        // load session info
-        LoadSessionInfo(XMLConfig,Path,true);
-
-        // call hooks to read their info (e.g. DebugBoss)
-        if Assigned(OnLoadProjectInfo) then begin
-          OnLoadProjectInfo(Self,XMLConfig,true);
-        end;
-      except
-        MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
-            ,mtError,[mbOk],0);
-        Result:=mrCancel;
-        exit;
-      end;
-
-      try
-        Path:='ProjectOptions/';
-        fPathDelimChanged:=
-          XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
-      finally
-        fPathDelimChanged:=false;
+    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
+      if FileExists(ProjectSessionFile) then begin
+        //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
         try
-          xmlconfig.Free;
-        except
-        end;
-        xmlconfig:=nil;
-      end;
+          xmlconfig := TXMLConfig.Create(ProjectSessionFile);
 
+          Path:='ProjectSession/';
+          fPathDelimChanged:=
+            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+
+          FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
+
+          // load session info
+          LoadSessionInfo(XMLConfig,Path,true);
+
+          // call hooks to read their info (e.g. DebugBoss)
+          if Assigned(OnLoadProjectInfo) then begin
+            OnLoadProjectInfo(Self,XMLConfig,true);
+          end;
+        except
+          MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
+              ,mtError,[mbOk],0);
+          Result:=mrCancel;
+          exit;
+        end;
+
+        try
+          Path:='ProjectOptions/';
+          fPathDelimChanged:=
+            XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
+        finally
+          fPathDelimChanged:=false;
+          try
+            xmlconfig.Free;
+          except
+          end;
+          xmlconfig:=nil;
+        end;
+      end else begin
+        // there is no .ps file -> create some defaults
+        LoadDefaultSession;
+      end;
     end;
 
   finally
