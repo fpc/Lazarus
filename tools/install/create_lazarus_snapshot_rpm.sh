@@ -27,7 +27,7 @@ fi
 
 Date=`date +%Y%m%d`
 # get fpc snapshot rpm
-FPCRPM=~/rpmbuild/RPMS/i586/fpc-2.1.1-$Date.i586.rpm
+FPCRPM=~/rpmbuild/RPMS/i386/fpc-2.1.1-$Date.i386.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
@@ -80,7 +80,7 @@ cat rpm/lazarus.spec.template | \
 #      -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
 
 # build rpm
-rpmbuild -ba $SpecFile
+rpmbuild --target i386 -ba $SpecFile
 
 rm -rf $TmpFpcDir
 
