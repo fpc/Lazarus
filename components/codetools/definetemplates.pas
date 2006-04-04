@@ -90,8 +90,8 @@ const
       'beos', 'os2', 'amiga', 'atari', 'sunos', 'palmos', 'qnx', 'watcom',
       'emx', 'darwin', 'wdosx', 'netware'
     );
-  FPCOperatingSystemAlternativeNames: array[1..1] of shortstring =(
-      'unix' // see GetDefaultSrcOSForTargetOS
+  FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
+      'unix', 'win' // see GetDefaultSrcOSForTargetOS
     );
   FPCOperatingSystemAlternative2Names: array[1..1] of shortstring =(
       'bsd' // see GetDefaultSrcOS2ForTargetOS
@@ -529,7 +529,13 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   or (CompareText(TargetOS,'darwin')=0)
   then
-    Result:='unix';
+    Result:='unix'
+  else
+  if (CompareText(TargetOS,'win32')=0)
+  or (CompareText(TargetOS,'win64')=0)
+  or (CompareText(TargetOS,'wince')=0)
+  then
+    Result:='win';
 end;
 
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
