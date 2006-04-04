@@ -43,13 +43,13 @@ type
     PProperties: TPanel;
     LProperties: TLabel;
     VSplitter: TSplitter;
+    HSplitter: TSplitter;
     procedure BAddClick(Sender: TObject);
     procedure BClearClick(Sender: TObject);
     procedure BDeleteClick(Sender: TObject);
     procedure LBComponentsSelectionChange(Sender: TObject; User: boolean);
     procedure LBPropertiesClick(Sender: TObject);
     procedure LBPropertiesDblClick(Sender: TObject);
-    procedure PTopResize(Sender: TObject);
     procedure SelectPropertiesFormClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure SelectPropertiesFormCreate(Sender: TObject);
@@ -88,10 +88,8 @@ end;
 
 procedure TSelectPropertiesForm.LBComponentsSelectionChange(Sender: TObject;
   User: boolean);
-  
-Var
+var
   C : TComponent;
-  
 begin
   //debugln('TSelectPropertiesForm.LBComponentsSelectionChange');
   With Sender as TListBox do
@@ -121,17 +119,6 @@ begin
   //writeln('');
   //writeln('TSelectPropertiesForm.LBPropertiesDblClick END ');
   AddSelectedProperties;
-end;
-
-procedure TSelectPropertiesForm.PTopResize(Sender: TObject);
-
-Var
-  W : Integer;
-
-begin
-  W:=(PTop.Width-50) div 2;
-  PProperties.Width:=W;
-  PComponents.Width:=W;
 end;
 
 procedure TSelectPropertiesForm.SelectPropertiesFormClose(Sender: TObject;
@@ -176,11 +163,9 @@ begin
 end;
 
 procedure TSelectPropertiesForm.SetSelectedProps(const AValue: String);
-
-Var
+var
   L : TStringList;
   I : Integer;
-  
 begin
   //debugln('TSelectPropertiesForm.SetSelectedProps');
   L:=TStringList.Create;
@@ -197,11 +182,9 @@ begin
 end;
 
 procedure TSelectPropertiesForm.ShowComponents;
-
-Var
+var
   C : TComponent;
   I : Integer;
-
 begin
   //debugln('TSelectPropertiesForm.ShowComponents');
   With LBComponents.Items do
@@ -225,13 +208,11 @@ begin
 end;
 
 procedure TSelectPropertiesForm.ShowProperties(C : TComponent);
-
-Var
+var
   L : TPropInfoList;
   I : Integer;
   N,S : String;
   P : PPropInfo;
-
 begin
   //debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
   With LBProperties do
@@ -262,11 +243,9 @@ begin
 end;
 
 procedure TSelectPropertiesForm.AddSelectedProperties;
-
-Var
+var
   I : Integer;
   N : String;
-
 begin
   //write('TSelectPropertiesForm.AddSelectedProperties A ');
   //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then write(i);
@@ -294,10 +273,8 @@ begin
 end;
 
 procedure TSelectPropertiesForm.DeleteSelectedProperties;
-
-Var
+var
   I : Integer;
-
 begin
   //debugln('TSelectPropertiesForm.DeleteSelectedProperties');
   With LBSelected do
