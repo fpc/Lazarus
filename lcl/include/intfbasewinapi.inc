@@ -433,7 +433,7 @@ var
   var
     J, wT,hT : Integer;
   begin
-    Rect:=theRect;
+    theRect:=Rect;
     {Initialize text width/height}
     wT := Tm.tmAveCharWidth*StrLen(Str);
     hT := TM.tmHeight;
