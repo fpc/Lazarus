@@ -27,6 +27,10 @@ fi
 
 Date=`date +%Y%m%d`
 # get fpc snapshot rpm
+RPMDIR=$(rpm/get_rpm_source_dir.sh)
+ARCH=`rpm --eval "%{_arch}"`
+LIB=`rpm --eval "%{_lib}"`
+FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.1.1-$Date.$ARCH.rpm
 FPCRPM=~/rpmbuild/RPMS/i386/fpc-2.1.1-$Date.i386.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
@@ -42,11 +46,13 @@ mkdir -p $TmpFPCDir
 cd $TmpFPCDir
 rpm2cpio $FPCRPM | cpio -id 
 FPCVersion=`usr/bin/fpc -iV`
-usr/lib/fpc/$FPCVersion/samplecfg $TmpFPCDir/usr/lib/fpc/$FPCVersion .
+usr/$LIB/fpc/$FPCVersion/samplecfg $TmpFPCDir/usr/$LIB/fpc/$FPCVersion .
 FPCCfg=$TmpFPCDir/fpc.cfg
 export FPCCfg
 FPC=$TmpFPCDir/usr/bin/fpc
 export FPC
+FPCDIR=$TmpFPCDir/usr/$LIB/fpc/$FPCVersion
+export FPCDIR
 cd -
 
 # create a temporary copy of the lazarus sources for packaging
@@ -64,14 +70,14 @@ fi
 
 # create a source tar.gz
 cd $TmpDir/..
-tar -czf ~/rpmbuild/SOURCES/lazarus-$LazVersion-$Date.tar.gz lazarus
+tar -czf $RPMDIR/SOURCES/lazarus-$LazVersion-$Date.tar.gz lazarus
 
 # remove the tempdir
 cd -
 rm -rf $TmpDir
 
 # create spec file
-SpecFile=~/rpmbuild/SPECS/lazarus-$LazVersion-$Date.spec
+SpecFile=$RPMDIR/SPECS/lazarus-$LazVersion-$Date.spec
 cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$Date/g" \
@@ -80,7 +86,7 @@ cat rpm/lazarus.spec.template | \
 #      -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
 
 # build rpm
-rpmbuild --target i386 -ba $SpecFile
+rpmbuild --target $ARCH -ba $SpecFile --nodeps
 
 rm -rf $TmpFpcDir
 

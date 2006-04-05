@@ -68,7 +68,6 @@ rm -rf packages/extra/winunits
 
 if [ -z "$STARTPP" ]; then
   STARTPP=`which %{ppcname}`
-# STARTPP=/usr/local/bin/ppc386
 fi
 NEWPP=`pwd`/compiler/%{ppcname}
 NEWFPDOC=`pwd`/utils/fpdoc/fpdoc

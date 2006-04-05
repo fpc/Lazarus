@@ -44,6 +44,8 @@ if [ ! -d $FPCSrcDir/.svn ]; then
   exit -1
 fi
 
+RPMDIR=$(rpm/get_rpm_source_dir.sh)
+
 #------------------------------------------------------------------------------
 # patching
 #------------------------------------------------------------------------------
@@ -71,14 +73,14 @@ perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile
 
 # create a source tar.gz
 cd $TmpDir/..
-tar -czf ~/rpmbuild/SOURCES/fpc-2.1.1-$LazRelease.source.tar.gz fpc
+tar -czf $RPMDIR/SOURCES/fpc-2.1.1-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir
 cd -
 rm -rf $TmpDir
 
 SpecFileTemplate=rpm/fpc.spec.template
-SpecFile=~/rpmbuild/SPECS/fpc.spec
+SpecFile=$RPMDIR/SPECS/fpc.spec
 
 # change spec file
 cat $SpecFileTemplate | \
@@ -88,5 +90,5 @@ cat $SpecFileTemplate | \
 #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
 #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
 
-rpmbuild -ba $SpecFile
+rpmbuild --target $ARCH -ba $SpecFile --nodeps
 
