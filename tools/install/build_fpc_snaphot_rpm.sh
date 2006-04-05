@@ -45,6 +45,7 @@ if [ ! -d $FPCSrcDir/.svn ]; then
 fi
 
 RPMDIR=$(rpm/get_rpm_source_dir.sh)
+ARCH=`rpm --eval "%{_arch}"`
 
 #------------------------------------------------------------------------------
 # patching
