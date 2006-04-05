@@ -446,8 +446,7 @@ begin
     SIndex := DeleteAmpersands(TMP);
     fRect:=PaintRect;
     Flags:=DT_CalcRect;
-    if not TXTStyle.SingleLine then inc(Flags,DT_WordBreak)
-                else inc(Flags,DT_SingleLine);
+    if not TXTStyle.SingleLine then inc(Flags,DT_WordBreak);
 
     DrawText(canvas.Handle,pChar(TMP),Length(TMP),fRect,flags);
     TextSize.cy:=fRect.bottom-fRect.top;
