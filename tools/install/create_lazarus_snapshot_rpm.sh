@@ -31,7 +31,6 @@ RPMDIR=$(rpm/get_rpm_source_dir.sh)
 ARCH=`rpm --eval "%{_arch}"`
 LIB=`rpm --eval "%{_lib}"`
 FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.1.1-$Date.$ARCH.rpm
-FPCRPM=~/rpmbuild/RPMS/i386/fpc-2.1.1-$Date.i386.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
