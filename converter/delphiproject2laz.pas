@@ -50,7 +50,7 @@ uses
   ExprEval, DefineTemplates, CodeCache, CodeToolManager, CodeToolsStructs,
   LinkScanner,
   // IDEIntf
-  SrcEditorIntf, ComponentReg, MsgIntf, MainIntf, LazIDEIntf, PackageIntf,
+  SrcEditorIntf, ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf,
   ProjectIntf,
   // IDE
   IDEProcs, DelphiUnit2Laz, Project, DialogProcs, CheckLFMDlg,

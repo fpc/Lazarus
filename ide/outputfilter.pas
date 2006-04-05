@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess, MsgIntf;
+  IDEProcs, FileUtil, LclProc, LazConf, AsyncProcess, IDEMsgIntf;
 
 type
   TOnOutputString = procedure(const Msg, Directory: String;

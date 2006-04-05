@@ -43,7 +43,7 @@ unit QuickFixDemo1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, MsgIntf, CodeTree, CodeAtom, BasicCodeTools,
+  Classes, SysUtils, LCLProc, IDEMsgIntf, CodeTree, CodeAtom, BasicCodeTools,
   PascalParserTool, SourceChanger, LazIDEIntf, CodeCache, CodeToolManager,
   Dialogs;
 

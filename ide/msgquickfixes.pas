@@ -30,7 +30,7 @@ unit MsgQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, MsgIntf, TextTools, LazarusIDEStrConsts,
+  Classes, SysUtils, LCLProc, IDEMsgIntf, TextTools, LazarusIDEStrConsts,
   LazIDEIntf, CodeCache, CodeToolManager;
   
 type

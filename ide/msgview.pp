@@ -55,7 +55,7 @@ uses
   LCLProc,
   LResources,
   MenuIntf,
-  MsgIntf,
+  IDEMsgIntf,
   Menus,
   StdCtrls,
   SysUtils;

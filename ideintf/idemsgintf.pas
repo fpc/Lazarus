@@ -15,7 +15,7 @@
   Abstract:
     Interface to the IDE messages (below the source editor).
 }
-unit MsgIntf;
+unit IDEMsgIntf;
 
 {$mode objfpc}{$H+}
 

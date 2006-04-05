@@ -44,7 +44,7 @@ uses
   // Components
   SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
   // IDEIntf
-  LazIDEIntf, MsgIntf,
+  LazIDEIntf, IDEMsgIntf,
   // IDE
   CompilerOptions,
   PackageDefs, Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;

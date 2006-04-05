@@ -61,7 +61,7 @@ uses
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
-  IDECommands, MsgIntf,
+  IDECommands, IDEMsgIntf,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg, OutputFilter,
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,

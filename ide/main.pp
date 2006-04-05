@@ -72,7 +72,7 @@ uses
   SynEditKeyCmds,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
-  NewItemIntf, MsgIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
+  NewItemIntf, IDEMsgIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
   // protocol
   IDEProtocol,
   // compile
