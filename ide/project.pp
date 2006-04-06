@@ -1738,10 +1738,9 @@ begin
       end;
       xmlconfig:=nil;
     until SessionSaveResult<>mrRetry;
+    if (Result=mrOk) and (SessionSaveResult<>mrOk) then
+      Result:=SessionSaveResult;
   end;
-  
-  if (Result=mrOk) and (SessionSaveResult<>mrOk) then
-    Result:=SessionSaveResult;
 end;
 
 function TProject.GetDefaultTitle: string;
