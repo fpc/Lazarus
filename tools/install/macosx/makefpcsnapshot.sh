@@ -46,12 +46,12 @@ FPCARCH=`$COMPILER -iSP`
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
-if [ ! -d /tmp/vsnijders/trash ] ; then
-  mkdir -p /tmp/vsnijders/trash
+if [ ! -d /tmp/`whoami`/trash ] ; then
+  mkdir -p /tmp/`whoami`/trash
 fi
 rm -rf $INSTALLDIR
 if [ -d $INSTALLDIR ]; then
-  mv $INSTALLDIR /tmp/vsnijders/trash/
+  mv $INSTALLDIR /tmp/`whoami`/trash/
 fi
 mkdir -p $INSTALLDIR
 make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR

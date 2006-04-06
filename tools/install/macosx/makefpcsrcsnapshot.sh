@@ -18,13 +18,15 @@ INSTALLDIR=~/tmp/fpcsrc
 DATESTAMP=`date +%Y%m%d`
 PACKPROJ=fpcsrc.packproj
 
+
 # clean installdir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
-if [ ! -d /tmp/fpcfan/trash ] ; then
-  mkdir -p /tmp/fpcfan/trash
+TRASHDIR=/tmp/`whoami`/trash
+if [ ! -d $TRASHDIR ] ; then
+  mkdir -p $TRASHDIR
 fi
 if [ -d $INSTALLDIR ] ; then
-  mv $INSTALLDIR /tmp/fpcfan/trash/fpcsrc-`date +%Y%m%d%H%M%S`
+  mv $INSTALLDIR $TRASHDIR/fpcsrc-`date +%Y%m%d%H%M%S`
 fi
 
 # copy sources
