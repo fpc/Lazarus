@@ -27,7 +27,7 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons,
+  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, FileProcs,
   LazarusIDEStrConsts, CodeToolsDefPreview, CodeToolManager, ExtCtrls;
 
 type
@@ -107,13 +107,13 @@ begin
     OutIncludedBy.Caption:=IncludedBy;
 
     UnitPathMemo.Lines.Delimiter := ';';
-    UnitPathMemo.Lines.DelimitedText := UnitPath;
+    UnitPathMemo.Lines.DelimitedText := MinimizeSearchPath(UnitPath);
 
     IncludePathMemo.Lines.Delimiter := ';';
-    IncludePathMemo.Lines.DelimitedText := IncludePath;
+    IncludePathMemo.Lines.DelimitedText := MinimizeSearchPath(IncludePath);
 
     SrcPathMemo.Lines.Delimiter := ';';
-    SrcPathMemo.Lines.DelimitedText := SrcPath;
+    SrcPathMemo.Lines.DelimitedText := MinimizeSearchPath(SrcPath);
 
     Width := Width + 1;
   end;

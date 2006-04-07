@@ -345,6 +345,9 @@ procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
   EndBigDouble: PByte);
 procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
+function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
+                       ): string;
+
 
 function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
@@ -2694,6 +2697,62 @@ begin
     w:=PWord(P)[i];
     w:=(w shr 8) or ((w and $ff) shl 8);
     s.Write(w,2);
+  end;
+end;
+
+function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
+  ): string;
+var
+  P: Integer;
+  TooSmall, TooLarge: Boolean;
+  DeletePos: LongInt;
+begin
+  Result:='';
+  If (Precision = -1) or (Precision > 15) then Precision := 15;
+
+  TooSmall := (Abs(Value) < 0.00001) and (Value>0.0);
+  if not TooSmall then begin
+    Str(Value:digits:precision, Result);
+    P := Pos('.', Result);
+    TooLarge :=(P > Precision + 1) or (Pos('E', Result)<>0);
+  End;
+
+  if TooSmall or TooLarge then begin
+    // use exponential format
+    Str(Value:Precision + 8, Result);
+    P:=4;
+    while (P>0) and (Digits < P) and (Result[Precision + 5] = '0') do begin
+      if P<>1 then
+        system.Delete(Result, Precision + 5, 1)
+      else
+        system.Delete(Result, Precision + 3, 3);
+      Dec(P);
+    end;
+    if Result[1] = ' ' then
+      System.Delete(Result, 1, 1);
+    // Strip unneeded zeroes.
+    P:=Pos('E',result)-1;
+    If P>=0 then begin
+      { delete superfluous +? }
+      if result[p+2]='+' then
+        system.Delete(Result,P+2,1);
+      DeletePos:=p;
+      while (DeletePos>1) and (Result[DeletePos]='0') do
+        Dec(DeletePos);
+      if (DeletePos>0) and (Result[DeletePos]=DecimalSeparator) Then
+        Dec(DeletePos);
+      if (DeletePos<p) then
+        system.Delete(Result,DeletePos,p-DeletePos);
+    end;
+  end
+  else if (P<>0) then begin
+    // we have a decimalseparator
+    P := Length(Result);
+    While (P>0) and (Result[P] = '0') Do
+      Dec(P);
+    If (P>0) and (Result[P]=DecimalSeparator) Then
+      Dec(P);
+    SetLength(Result, P);
   end;
 end;
 

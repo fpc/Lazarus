@@ -3248,12 +3248,10 @@ var
   DefTempl, MainDir, FCLDir, RTLDir, RTLOSDir, PackagesDir, CompilerDir,
   UtilsDir, DebugSvrDir: TDefineTemplate;
   s: string;
-  RTLWin32Dir: TDefineTemplate;
   FCLDBDir: TDefineTemplate;
   FCLDBInterbaseDir: TDefineTemplate;
   InstallerDir: TDefineTemplate;
-  RTLWin64Dir: TDefineTemplate;
-  RTLWinCEDir: TDefineTemplate;
+  IFTempl: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3327,7 +3325,7 @@ begin
     +';'+Dir+'rtl'+DS+'inc'+DS
     +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS
     +';'+Dir+'rtl'+DS+SrcOS+DS;
-  if (TargetOS<>'') and (TargetOS<>SrcOS) then
+  if (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
   if (SrcOS2<>'') and (SrcOS2<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+SrcOS2+DS;
@@ -3338,47 +3336,33 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+    
+  // rtl: IF SrcOS=win then add include path rtl/win/wininc
+  IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
+    '',SrcOS+'=win',da_If);
+  IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+      ExternalMacroStart+'IncPath',
+      IncPathMacro
+      +';'+FPCSrcDir+'rtl'+DS+'win'+DS+'wininc'
+      +';'+FPCSrcDir+'rtl'+DS+'win',
+      da_DefineRecurse));
+  RTLDir.AddChild(IFTempl);
 
   // rtl/$(#TargetOS)
-  if TargetOS<>'' then begin
-    RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
-                                     TargetOS,da_Directory);
-    s:=IncPathMacro
-      +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
-    RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
-      ExternalMacroStart+'IncPath',s,da_DefineRecurse));
-    s:=SrcPathMacro
-      +';'+Dir+'rtl'+DS+'objpas'+DS;
-    RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
-      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
-      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
-    RTLDir.AddChild(RTLOSDir);
-  end;
-
-  // rtl/win32
-  RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
-  RTLDir.AddChild(RTLWin32Dir);
-  RTLWin32Dir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
-      ExternalMacroStart+'IncPath',
-      IncPathMacro+';wininc;..'+DS+'win',da_Define));
-
-  // rtl/win64
-  RTLWin64Dir:=TDefineTemplate.Create('Win64','Win64','','win64',da_Directory);
-  RTLDir.AddChild(RTLWin64Dir);
-  RTLWin64Dir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
-      ExternalMacroStart+'IncPath',
-      IncPathMacro+';wininc;..'+DS+'win',da_Define));
-
-  // rtl/wince
-  RTLWinCEDir:=TDefineTemplate.Create('WinCE','WinCE','','wince',da_Directory);
-  RTLDir.AddChild(RTLWinCEDir);
-  RTLWinCEDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
-      ExternalMacroStart+'IncPath',
-      IncPathMacro+';wininc;..'+DS+'win',da_Define));
+  RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
+                                   TargetOS,da_Directory);
+  s:=IncPathMacro
+    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
+  RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
+    ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+  s:=SrcPathMacro
+    +';'+Dir+'rtl'+DS+'objpas'+DS;
+  RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
+    Format(ctsAddsDirToSourcePath,[TargetProcessor]),
+    ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
+  RTLDir.AddChild(RTLOSDir);
 
   // add processor and SrcOS alias defines for the RTL
   AddProcessorTypeDefine(RTLDir);

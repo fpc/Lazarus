@@ -4,14 +4,14 @@
     <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <LazDoc Paths=""/>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -26,12 +26,11 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="2">
       <Unit0>
         <Filename Value="streamasxmldemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="StreamAsXMLDemo"/>
-        <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
@@ -39,173 +38,13 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
         <UnitName Value="MainUnit"/>
-        <CursorPos X="42" Y="68"/>
-        <TopLine Value="35"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="../../components/codetools/identcompletiontool.pas"/>
-        <UnitName Value="IdentCompletionTool"/>
-        <CursorPos X="20" Y="229"/>
-        <TopLine Value="208"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../../../freepascal/fpc/fcl/xml/xmlstreaming.pp"/>
-        <UnitName Value="XMLStreaming"/>
-        <CursorPos X="42" Y="46"/>
-        <TopLine Value="14"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="../../lcl/lresources.pp"/>
-        <UnitName Value="LResources"/>
-        <CursorPos X="23" Y="180"/>
-        <TopLine Value="142"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../../components/codetools/laz_xmlcfg.pas"/>
-        <UnitName Value="Laz_XMLCfg"/>
-        <CursorPos X="1" Y="84"/>
-        <TopLine Value="43"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="../../components/codetools/laz_dom.pas"/>
-        <UnitName Value="Laz_DOM"/>
-        <CursorPos X="3" Y="392"/>
-        <TopLine Value="369"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../lcl/ldockctrl.pas"/>
-        <UnitName Value="LDockCtrl"/>
-        <CursorPos X="1" Y="798"/>
-        <TopLine Value="755"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="../../../../freepascal/fpc/rtl/objpas/classes/classesh.inc"/>
-        <CursorPos X="15" Y="1121"/>
-        <TopLine Value="1098"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit8>
     </Units>
-    <JumpHistory Count="23" HistoryIndex="20">
-      <Position1>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="24" Column="19" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="9" Column="7" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="17" Column="43" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="39" Column="5" TopLine="1"/>
-      </Position4>
-      <Position5>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="37" Column="12" TopLine="1"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../lcl/lresources.pp"/>
-        <Caret Line="2380" Column="11" TopLine="2376"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../lcl/lresources.pp"/>
-        <Caret Line="261" Column="31" TopLine="238"/>
-      </Position7>
-      <Position8>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="34" Column="15" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="50" Column="27" TopLine="9"/>
-      </Position9>
-      <Position10>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="20" Column="49" TopLine="2"/>
-      </Position10>
-      <Position11>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="61" Column="1" TopLine="22"/>
-      </Position11>
-      <Position12>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="64" Column="36" TopLine="26"/>
-      </Position12>
-      <Position13>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="60" Column="14" TopLine="31"/>
-      </Position13>
-      <Position14>
-        <Filename Value="../../lcl/ldockctrl.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position14>
-      <Position15>
-        <Filename Value="../../lcl/ldockctrl.pas"/>
-        <Caret Line="799" Column="42" TopLine="756"/>
-      </Position15>
-      <Position16>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="64" Column="3" TopLine="31"/>
-      </Position16>
-      <Position17>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="62" Column="39" TopLine="22"/>
-      </Position17>
-      <Position18>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="64" Column="5" TopLine="31"/>
-      </Position18>
-      <Position19>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="61" Column="19" TopLine="31"/>
-      </Position19>
-      <Position20>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="67" Column="10" TopLine="31"/>
-      </Position20>
-      <Position21>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="49" Column="14" TopLine="9"/>
-      </Position21>
-      <Position22>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="68" Column="15" TopLine="35"/>
-      </Position22>
-      <Position23>
-        <Filename Value="../../../../freepascal/fpc/rtl/objpas/classes/classesh.inc"/>
-        <Caret Line="1121" Column="15" TopLine="1098"/>
-      </Position23>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

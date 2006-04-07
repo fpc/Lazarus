@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  XMLStreaming, DOM, laz_xmlcfg, Buttons;
+  Laz_XMLStreaming, DOM, laz_xmlcfg, Buttons;
 
 type
 
@@ -60,14 +60,18 @@ procedure TStreamAsXMLForm.StreamComponents;
 var
   XMLConfig: TXMLConfig;
   Writer: TWriter;
+  DestroyDriver: boolean;
 begin
   XMLConfig:=TXMLConfig.Create(Filename);
   Writer:=nil;
+  DestroyDriver:=false;
   try
-    Writer:=CreateXMLWriter(XMLConfig.Document);
+    Writer:=CreateXMLWriter(XMLConfig.Document,DestroyDriver);
     Writer.WriteRootComponent(GroupBox1);
     XMLConfig.Flush;
   finally
+    if DestroyDriver then
+      Writer.Driver.Free;
     Writer.Free;
     XMLConfig.Free;
   end;
