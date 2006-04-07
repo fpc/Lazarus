@@ -470,7 +470,9 @@ var
   InitialDir: string;
 begin
   Buffer := CoTaskMemAlloc(MAX_PATH);
-  InitialDir := TSelectDirectoryDialog(ACommonDialog).InitialDir;
+  InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
+  if length(InitialDir)=0 then
+    InitialDir := TSelectDirectoryDialog(ACommonDialog).InitialDir;
   if length(InitialDir)>0 then begin
     // remove the \ at the end.
     if Copy(InitialDir,length(InitialDir),1)=PathDelim then
