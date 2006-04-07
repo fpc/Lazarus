@@ -46,7 +46,7 @@ type
     procedure StackPop;
     function GetPropertyElement(const TypeName: String): TDOMElement;
   public
-    constructor Create(ADoc: TDOMDocument);
+    constructor Create(ADoc: TDOMDocument; const APath: string; Append: Boolean);
 
     { Begin/End markers. Those ones who don't have an end indicator, use
       "EndList", after the occurrence named in the comment. Note that this
@@ -134,7 +134,7 @@ begin
   Writer:=nil;
   try
     XMLDocument:=TXMLDocument.Create;
-    Driver:=TXMLObjectWriter.Create(XMLDocument);
+    Driver:=TXMLObjectWriter.Create(XMLDocument,'fcl-persistent',true);
     Writer:=TWriter.Create(Driver);
     Writer.WriteDescendent(AComponent,nil);
     WriteXMLFile(XMLDocument,AStream);
@@ -190,12 +190,65 @@ begin
     Result := nil;
 end;
 
-constructor TXMLObjectWriter.Create(ADoc: TDOMDocument);
+constructor TXMLObjectWriter.Create(ADoc: TDOMDocument;
+  const APath: string; Append: Boolean);
+var
+  Node: TDOMNode;
+  PathLen: Integer;
+  StartPos: Integer;
+  EndPos: LongInt;
+  NodeName: string;
+  Child: TDOMNode;
+  ParentNode: TDOMNode;
 begin
   inherited Create;
   FDoc := ADoc;
-  FRootEl := FDoc.CreateElement('fcl-persistent');
-  FDoc.AppendChild(FRootEl);
+
+  Node := Doc.DocumentElement;
+  PathLen:=length(APath);
+  StartPos:=1;
+  while True do begin
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
+    if EndPos>StartPos then begin
+      SetLength(NodeName,EndPos-StartPos);
+      Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+      StartPos:=EndPos+1;
+      Child := Node.FindNode(NodeName);
+      if not Assigned(Child) then
+      begin
+        Child := Doc.CreateElement(NodeName);
+        Node.AppendChild(Child);
+      end;
+      Node := Child;
+    end else if EndPos>PathLen then begin
+      break;
+    end else begin
+      StartPos:=EndPos+1;
+    end;
+  end;
+  if Node is TDOMElement then
+    FRootEl:=TDOMElement(Node)
+  else
+    FRootEl:=nil;
+
+  NodeName:='fcl-persistent';
+  ParentNode:=nil;
+  if (not Append) and (FRootEl<>nil) then begin
+    NodeName:=FRootEl.NodeName;
+    ParentNode:=FRootEl.ParentNode;
+    if ParentNode<>nil then
+      ParentNode.RemoveChild(FRootEl)
+    else
+      FRootEl.Free;
+    FRootEl:=nil;
+  end;
+  if FRootEl=nil then
+    FRootEl := FDoc.CreateElement(NodeName);
+  if ParentNode=nil then
+    FDoc.AppendChild(FRootEl)
+  else
+    ParentNode.AppendChild(FRootEl);
 end;
 
 procedure TXMLObjectWriter.BeginCollection;

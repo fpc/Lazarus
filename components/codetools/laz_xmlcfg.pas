@@ -79,7 +79,7 @@ type
                                      const AValue, DefValue: extended);
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
-    property Modified: Boolean read FModified;
+    property Modified: Boolean read FModified write FModified;
   published
     property Filename: String read FFilename write SetFilename;
     property Document: TXMLDocument read doc;
