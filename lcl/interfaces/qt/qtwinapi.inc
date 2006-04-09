@@ -108,7 +108,9 @@ begin
     WriteLn('WinAPI DrawText');
   {$endif}
 
-  if DC = 0 then Exit;
+  Result := 0;
+
+  if not IsValidDC(DC) then Exit;
 
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
@@ -125,6 +127,24 @@ begin
 //  end;
   
 //  if Rect.Right = 40 then raise Exception.create('Error');
+end;
+
+{------------------------------------------------------------------------------
+  Method:   Ellipse
+  Params:   X1, Y1, X2, Y2
+  Returns:  Nothing
+
+  Use Ellipse to draw a filled circle or ellipse.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+begin
+  Result := False;
+
+  if not IsValidDC(DC) then Exit;
+
+  TQtDeviceContext(DC).drawEllipse(x1, y1, X2 - X1, Y2 - Y1);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -167,9 +187,9 @@ begin
 
   Result := False;
 
-  WideStr := WideString(Str);
+  if not IsValidDC(DC) then Exit;
 
-  if DC = 0 then Exit;
+  WideStr := WideString(Str);
 
 //  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
 //  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);
@@ -403,6 +423,368 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetSystemMetrics
+  Params:
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+var
+  P : Pointer;
+begin
+  Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  case nIndex of
+    SM_ARRANGE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
+      end;
+    SM_CLEANBOOT:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT        ');
+      end;
+    SM_CMOUSEBUTTONS:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
+      end;
+    SM_CXBORDER:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
+      end;
+    SM_CYBORDER:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
+      end;
+    SM_CXCURSOR:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXCURSOR         ');
+      end;
+    SM_CYCURSOR:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCURSOR         ');
+      end;
+    SM_CXDOUBLECLK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
+      end;
+    SM_CYDOUBLECLK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
+      end;
+    SM_CXDRAG:
+      begin
+        Result := 2;
+      end;
+    SM_CYDRAG:
+      begin
+        Result := 2;
+      end;
+    SM_CXEDGE:
+      begin
+        Result := 2;
+      end;
+    SM_CYEDGE:
+      begin
+        Result := 2;
+      end;
+    SM_CXFIXEDFRAME:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
+      end;
+    SM_CYFIXEDFRAME:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
+      end;
+    SM_CXFULLSCREEN:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
+      end;
+    SM_CYFULLSCREEN:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
+      end;
+    SM_CXHSCROLL:
+      begin
+{        P:=GetStyleWidget(lgsVerticalScrollbar);
+        Result := GTK_Widget(P)^.requisition.Width;}
+      end;
+    SM_CYHSCROLL:
+      begin
+{        P:=GetStyleWidget(lgsHorizontalScrollbar);
+        Result := GTK_Widget(P)^.requisition.Height;}
+      end;
+    SM_CXHTHUMB:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
+      end;
+    SM_CXICON:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICON           ');
+      end;
+    SM_CYICON:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICON           ');
+      end;
+    SM_CXICONSPACING:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
+      end;
+    SM_CYICONSPACING:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
+      end;
+    SM_CXMAXIMIZED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
+      end;
+    SM_CYMAXIMIZED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
+      end;
+    SM_CXMAXTRACK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
+      end;
+    SM_CYMAXTRACK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
+      end;
+    SM_CXMENUCHECK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
+      end;
+    SM_CYMENUCHECK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
+      end;
+    SM_CXMENUSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
+      end;
+    SM_CYMENUSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
+      end;
+    SM_CXMIN:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
+      end;
+    SM_CYMIN:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
+      end;
+    SM_CXMINIMIZED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
+      end;
+    SM_CYMINIMIZED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
+      end;
+    SM_CXMINSPACING:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
+      end;
+    SM_CYMINSPACING:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
+      end;
+    SM_CXMINTRACK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
+      end;
+    SM_CYMINTRACK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
+      end;
+    SM_CXSCREEN:
+      begin
+        Result := QWidget_width(QApplication_desktop);
+      end;
+    SM_CYSCREEN:
+      begin
+        Result := QWidget_height(QApplication_desktop);
+      end;
+    SM_CXSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
+      end;
+    SM_CYSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
+      end;
+    SM_CXSIZEFRAME:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSIZEFRAME      ');
+      end;
+    SM_CYSIZEFRAME:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSIZEFRAME      ');
+      end;
+    SM_CXSMICON:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMICON         ');
+      end;
+    SM_CYSMICON:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMICON         ');
+      end;
+    SM_CXSMSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
+      end;
+    SM_CYSMSIZE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
+      end;
+    SM_CXVSCROLL:
+      begin
+{        P:=GetStyleWidget(lgsVerticalScrollbar);
+        Result := GTK_Widget(P)^.requisition.Width;}
+      end;
+    SM_CYVSCROLL:
+      begin
+{        P:=GetStyleWidget(lgsHorizontalScrollbar);
+        Result := GTK_Widget(P)^.requisition.Height;}
+      end;
+    SM_CYCAPTION:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYCAPTION        ');
+      end;
+    SM_CYKANJIWINDOW:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
+      end;
+    SM_CYMENU:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
+      end;
+    SM_CYSMCAPTION:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
+      end;
+    SM_CYVTHUMB:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
+      end;
+    SM_DBCSENABLED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
+      end;
+    SM_DEBUG:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
+      end;
+    SM_MENUDROPALIGNMENT:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
+      end;
+    SM_MIDEASTENABLED:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
+      end;
+    SM_MOUSEPRESENT:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
+      end;
+    SM_MOUSEWHEELPRESENT:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
+      end;
+    SM_NETWORK:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
+      end;
+    SM_PENWINDOWS:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
+      end;
+    SM_SECURE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
+      end;
+    SM_SHOWSOUNDS:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
+      end;
+    SM_SLOWMACHINE:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
+      end;
+    SM_SWAPBUTTON:
+      begin
+        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
+      end;
+    else Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: InvalidateRect
+  Params: aHandle:
+          Rect:
+          bErase:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect;
+ bErase : Boolean) : Boolean;
+begin
+  TQtWidget(aHandle).Update;
+end;
+
+{------------------------------------------------------------------------------
+  Function: LineTo
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI LineTo');
+  {$endif}
+
+  Result := False;
+
+  if not IsValidDC(DC) then Exit;
+
+  TQtDeviceContext(DC).drawLine(
+   TQtDeviceContext(DC).PenPos.X,
+   TQtDeviceContext(DC).PenPos.Y,
+   X, Y);
+   
+  MoveToEx(DC, X, Y, nil);
+  
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: MoveToEx
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('WinAPI MoveToEx');
+  {$endif}
+
+  Result := False;
+
+  if not IsValidDC(DC) then Exit;
+
+  if (OldPoint <> nil) then OldPoint^ := TQtDeviceContext(DC).PenPos;
+
+  TQtDeviceContext(DC).PenPos := Point(X, Y);
+  
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: Rectangle
   Params:  DC: HDC; X1, Y1, X2, Y2: Integer
   Returns: Nothing
@@ -417,6 +799,10 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('WinAPI Rectangle');
   {$endif}
+
+  Result := False;
+
+  if not IsValidDC(DC) then Exit;
 
   TQtDeviceContext(DC).drawRect(x1, y1, X2 - X1, Y2 - Y1);
   
@@ -594,9 +980,9 @@ begin
 
   Result := False;
 
+  if not IsValidDC(DC) then Exit;
+
   WideStr := WideString(Str);
-  
-  if DC = 0 then Exit;
 
 //  if TQtDeviceContext(DC).isDrawing then TQtDeviceContext(DC).drawText(X, Y, @WideStr)
 //  else TQtDeviceContext(DC).AddObject(dcTextOut, @WideStr, X, Y);

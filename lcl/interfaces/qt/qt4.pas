@@ -12,6 +12,7 @@ uses Types;
 
 
 const
+{$linklib libqt4intf}
 {$IFDEF MSWINDOWS}
   QtNamePrefix = '_';
   QtShareName = 'libqt4intf.dll';
@@ -20,6 +21,11 @@ const
   QtNamePrefix = '';
   QtShareName = 'libqt4intf.so';
 {$ENDIF}
+{$IFDEF DARWIN}
+  QtNamePrefix = '';
+  QtShareName = 'libqt4intf.dylib';
+{$ENDIF}
+
 
 type
   QHookH = TMethod;
@@ -28,6 +34,14 @@ type
     Data: Word;
   end;
   
+  PQColor = ^TQColor;
+  TQColor = packed record
+    ColorSpec : LongInt;
+    Alpha : word;
+    r,g,b : word; 
+    Pad : word;
+   end;
+ 
   QtHandle = integer;
   qreal = double;
   qrgb = longword;
@@ -44,6 +58,16 @@ const
   NullHook: QHookH = (Code: nil; Data: nil);
 
 type
+
+{$IFDEF DARWIN}
+    EventHandlerRef                     = ^LongInt;
+    EventRef                            = ^LongInt;
+    RgnHandle                           = ^LongInt;
+    MenuHandle                          = ^LongInt;
+    MenuRef                             = MenuHandle;
+    EventHandlerCallRef                 = ^LongInt;
+{$ENDIF}
+
 
 QBitArrayH = class(TObject) end;
 QBrushH = class(TObject) end;
@@ -2515,7 +2539,7 @@ function QColor_create(r: Integer; g: Integer; b: Integer; a: Integer = 255): QC
 function QColor_create(rgb: QRgb): QColorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_create4';
 function QColor_create(name: PWideString): QColorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_create5';
 function QColor_create(name: PAnsiChar): QColorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_create6';
-function QColor_create(color: QColorH): QColorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_create7';
+function QColor_create(color: PQColor): QColorH; overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_create7';
 function QColor_isValid(handle: QColorH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QColor_isValid';
 procedure QColor_name(handle: QColorH; retval: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QColor_name';
 procedure QColor_setNamedColor(handle: QColorH; name: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QColor_setNamedColor';
@@ -2567,20 +2591,20 @@ procedure QColor_getCmyk(handle: QColorH; c: PInteger; m: PInteger; y: PInteger;
 procedure QColor_setCmyk(handle: QColorH; c: Integer; m: Integer; y: Integer; k: Integer; a: Integer = 255); cdecl; external QtShareName name QtNamePrefix + 'QColor_setCmyk';
 procedure QColor_getCmykF(handle: QColorH; c: PDouble; m: PDouble; y: PDouble; k: PDouble; a: PDouble = 0); cdecl; external QtShareName name QtNamePrefix + 'QColor_getCmykF';
 procedure QColor_setCmykF(handle: QColorH; c: Double; m: Double; y: Double; k: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_setCmykF';
-procedure QColor_toRgb(handle: QColorH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QColor_toRgb';
-procedure QColor_toHsv(handle: QColorH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QColor_toHsv';
-procedure QColor_toCmyk(handle: QColorH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QColor_toCmyk';
-procedure QColor_convertTo(handle: QColorH; retval: QColorH; colorSpec: QColorSpec); cdecl; external QtShareName name QtNamePrefix + 'QColor_convertTo';
-procedure QColor_fromRgb(retval: QColorH; rgb: QRgb); overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgb';
-procedure QColor_fromRgba(retval: QColorH; rgba: QRgb); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgba';
-procedure QColor_fromRgb(retval: QColorH; r: Integer; g: Integer; b: Integer; a: Integer = 255); overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgb2';
-procedure QColor_fromRgbF(retval: QColorH; r: Double; g: Double; b: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgbF';
-procedure QColor_fromHsv(retval: QColorH; h: Integer; s: Integer; v: Integer; a: Integer = 255); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromHsv';
-procedure QColor_fromHsvF(retval: QColorH; h: Double; s: Double; v: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromHsvF';
-procedure QColor_fromCmyk(retval: QColorH; c: Integer; m: Integer; y: Integer; k: Integer; a: Integer = 255); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromCmyk';
-procedure QColor_fromCmykF(retval: QColorH; c: Double; m: Double; y: Double; k: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromCmykF';
-procedure QColor_light(handle: QColorH; retval: QColorH; f: Integer = 150); cdecl; external QtShareName name QtNamePrefix + 'QColor_light';
-procedure QColor_dark(handle: QColorH; retval: QColorH; f: Integer = 200); cdecl; external QtShareName name QtNamePrefix + 'QColor_dark';
+procedure QColor_toRgb(handle: QColorH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QColor_toRgb';
+procedure QColor_toHsv(handle: QColorH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QColor_toHsv';
+procedure QColor_toCmyk(handle: QColorH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QColor_toCmyk';
+procedure QColor_convertTo(handle: QColorH; retval: PQColor; colorSpec: QColorSpec); cdecl; external QtShareName name QtNamePrefix + 'QColor_convertTo';
+procedure QColor_fromRgb(retval: PQColor; rgb: QRgb); overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgb';
+procedure QColor_fromRgba(retval: PQColor; rgba: QRgb); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgba';
+procedure QColor_fromRgb(retval: PQColor; r: Integer; g: Integer; b: Integer; a: Integer = 255); overload; cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgb2';
+procedure QColor_fromRgbF(retval: PQColor; r: Double; g: Double; b: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromRgbF';
+procedure QColor_fromHsv(retval: PQColor; h: Integer; s: Integer; v: Integer; a: Integer = 255); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromHsv';
+procedure QColor_fromHsvF(retval: PQColor; h: Double; s: Double; v: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromHsvF';
+procedure QColor_fromCmyk(retval: PQColor; c: Integer; m: Integer; y: Integer; k: Integer; a: Integer = 255); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromCmyk';
+procedure QColor_fromCmykF(retval: PQColor; c: Double; m: Double; y: Double; k: Double; a: Double = 1.0); cdecl; external QtShareName name QtNamePrefix + 'QColor_fromCmykF';
+procedure QColor_light(handle: QColorH; retval: PQColor; f: Integer = 150); cdecl; external QtShareName name QtNamePrefix + 'QColor_light';
+procedure QColor_dark(handle: QColorH; retval: PQColor; f: Integer = 200); cdecl; external QtShareName name QtNamePrefix + 'QColor_dark';
 
 function QMatrix_create(): QMatrixH; overload; cdecl; external QtShareName name QtNamePrefix + 'QMatrix_create';
 procedure QMatrix_destroy(handle: QMatrixH); cdecl; external QtShareName name QtNamePrefix + 'QMatrix_destroy'; 
@@ -2627,9 +2651,9 @@ type
 function QBrush_create(): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create';
 procedure QBrush_destroy(handle: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QBrush_destroy'; 
 function QBrush_create(bs: QtBrushStyle): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create2';
-function QBrush_create(color: QColorH; bs: QtBrushStyle = QtSolidPattern): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create3';
+function QBrush_create(color: PQColor; bs: QtBrushStyle = QtSolidPattern): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create3';
 function QBrush_create(color: QtGlobalColor; bs: QtBrushStyle = QtSolidPattern): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create4';
-function QBrush_create(color: QColorH; pixmap: QPixmapH): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create5';
+function QBrush_create(color: PQColor; pixmap: QPixmapH): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create5';
 function QBrush_create(color: QtGlobalColor; pixmap: QPixmapH): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create6';
 function QBrush_create(pixmap: QPixmapH): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create7';
 function QBrush_create(brush: QBrushH): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_create8';
@@ -2638,8 +2662,8 @@ function QBrush_style(handle: QBrushH): QtBrushStyle; cdecl; external QtShareNam
 procedure QBrush_setStyle(handle: QBrushH; p1: QtBrushStyle); cdecl; external QtShareName name QtNamePrefix + 'QBrush_setStyle';
 procedure QBrush_texture(handle: QBrushH; retval: QPixmapH); cdecl; external QtShareName name QtNamePrefix + 'QBrush_texture';
 procedure QBrush_setTexture(handle: QBrushH; pixmap: QPixmapH); cdecl; external QtShareName name QtNamePrefix + 'QBrush_setTexture';
-function QBrush_color(handle: QBrushH): QColorH; cdecl; external QtShareName name QtNamePrefix + 'QBrush_color';
-procedure QBrush_setColor(handle: QBrushH; color: QColorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_setColor';
+function QBrush_color(handle: QBrushH): PQColor; cdecl; external QtShareName name QtNamePrefix + 'QBrush_color';
+procedure QBrush_setColor(handle: QBrushH; color: PQColor); overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_setColor';
 procedure QBrush_setColor(handle: QBrushH; color: QtGlobalColor); overload; cdecl; external QtShareName name QtNamePrefix + 'QBrush_setColor2';
 function QBrush_gradient(handle: QBrushH): QGradientH; cdecl; external QtShareName name QtNamePrefix + 'QBrush_gradient';
 function QBrush_isOpaque(handle: QBrushH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QBrush_isOpaque';
@@ -2649,7 +2673,7 @@ procedure QGradient_destroy(handle: QGradientH); cdecl; external QtShareName nam
 function QGradient_type(handle: QGradientH): QGradientType; cdecl; external QtShareName name QtNamePrefix + 'QGradient_type';
 procedure QGradient_setSpread(handle: QGradientH; spread: QGradientSpread); cdecl; external QtShareName name QtNamePrefix + 'QGradient_setSpread';
 function QGradient_spread(handle: QGradientH): QGradientSpread; cdecl; external QtShareName name QtNamePrefix + 'QGradient_spread';
-procedure QGradient_setColorAt(handle: QGradientH; pos: Double; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QGradient_setColorAt';
+procedure QGradient_setColorAt(handle: QGradientH; pos: Double; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QGradient_setColorAt';
 
 function QLinearGradient_create(start: QPointFH; finalStop: QPointFH): QLinearGradientH; overload; cdecl; external QtShareName name QtNamePrefix + 'QLinearGradient_create';
 procedure QLinearGradient_destroy(handle: QLinearGradientH); cdecl; external QtShareName name QtNamePrefix + 'QLinearGradient_destroy'; 
@@ -2673,7 +2697,7 @@ function QConicalGradient_angle(handle: QConicalGradientH): Double; cdecl; exter
 function QPen_create(): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create';
 procedure QPen_destroy(handle: QPenH); cdecl; external QtShareName name QtNamePrefix + 'QPen_destroy'; 
 function QPen_create(p1: QtPenStyle): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create2';
-function QPen_create(color: QColorH): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create3';
+function QPen_create(color: PQColor): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create3';
 function QPen_create(brush: QBrushH; width: Double; s: QtPenStyle = QtSolidLine; c: QtPenCapStyle = QtSquareCap; j: QtPenJoinStyle = QtBevelJoin): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create4';
 function QPen_create(pen: QPenH): QPenH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPen_create5';
 function QPen_style(handle: QPenH): QtPenStyle; cdecl; external QtShareName name QtNamePrefix + 'QPen_style';
@@ -2684,8 +2708,8 @@ function QPen_widthF(handle: QPenH): Double; cdecl; external QtShareName name Qt
 procedure QPen_setWidthF(handle: QPenH; width: Double); cdecl; external QtShareName name QtNamePrefix + 'QPen_setWidthF';
 function QPen_width(handle: QPenH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPen_width';
 procedure QPen_setWidth(handle: QPenH; width: Integer); cdecl; external QtShareName name QtNamePrefix + 'QPen_setWidth';
-procedure QPen_color(handle: QPenH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QPen_color';
-procedure QPen_setColor(handle: QPenH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QPen_setColor';
+procedure QPen_color(handle: QPenH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QPen_color';
+procedure QPen_setColor(handle: QPenH; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QPen_setColor';
 procedure QPen_brush(handle: QPenH; retval: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QPen_brush';
 procedure QPen_setBrush(handle: QPenH; brush: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QPen_setBrush';
 function QPen_isSolid(handle: QPenH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPen_isSolid';
@@ -2753,7 +2777,7 @@ function QPainter_font(handle: QPainterH): QFontH; cdecl; external QtShareName n
 procedure QPainter_setFont(handle: QPainterH; f: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QPainter_setFont';
 procedure QPainter_fontMetrics(handle: QPainterH; retval: QFontMetricsH); cdecl; external QtShareName name QtNamePrefix + 'QPainter_fontMetrics';
 procedure QPainter_fontInfo(handle: QPainterH; retval: QFontInfoH); cdecl; external QtShareName name QtNamePrefix + 'QPainter_fontInfo';
-procedure QPainter_setPen(handle: QPainterH; color: QColorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_setPen';
+procedure QPainter_setPen(handle: QPainterH; color: PQColor); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_setPen';
 procedure QPainter_setPen(handle: QPainterH; pen: QPenH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_setPen2';
 procedure QPainter_setPen(handle: QPainterH; style: QtPenStyle); overload; cdecl; external QtShareName name QtNamePrefix + 'QPainter_setPen3';
 function QPainter_pen(handle: QPainterH): QPenH; cdecl; external QtShareName name QtNamePrefix + 'QPainter_pen';
@@ -3517,7 +3541,7 @@ procedure QPixmap_size(handle: QPixmapH; retval: PSize); cdecl; external QtShare
 procedure QPixmap_rect(handle: QPixmapH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_rect';
 function QPixmap_depth(handle: QPixmapH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_depth';
 function QPixmap_defaultDepth(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_defaultDepth';
-procedure QPixmap_fill(handle: QPixmapH; fillColor: QColorH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill';
+procedure QPixmap_fill(handle: QPixmapH; fillColor: PQColor = Qtwhite); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; ofs: PPoint); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill2';
 procedure QPixmap_fill(handle: QPixmapH; widget: QWidgetH; xofs: Integer; yofs: Integer); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_fill3';
 procedure QPixmap_mask(handle: QPixmapH; retval: QBitmapH); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_mask';
@@ -3527,7 +3551,7 @@ procedure QPixmap_setAlphaChannel(handle: QPixmapH; p1: QPixmapH); cdecl; extern
 function QPixmap_hasAlpha(handle: QPixmapH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_hasAlpha';
 function QPixmap_hasAlphaChannel(handle: QPixmapH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_hasAlphaChannel';
 procedure QPixmap_createHeuristicMask(handle: QPixmapH; retval: QBitmapH; clipTight: Boolean = True); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_createHeuristicMask';
-procedure QPixmap_createMaskFromColor(handle: QPixmapH; retval: QBitmapH; maskColor: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_createMaskFromColor';
+procedure QPixmap_createMaskFromColor(handle: QPixmapH; retval: QBitmapH; maskColor: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_createMaskFromColor';
 procedure QPixmap_grabWindow(retval: QPixmapH; p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external QtShareName name QtNamePrefix + 'QPixmap_grabWindow';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QWidgetH; rect: PRect); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_grabWidget';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QWidgetH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); overload; cdecl; external QtShareName name QtNamePrefix + 'QPixmap_grabWidget2';
@@ -3724,8 +3748,8 @@ procedure QImageReader_setScaledSize(handle: QImageReaderH; size: PSize); cdecl;
 procedure QImageReader_scaledSize(handle: QImageReaderH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_scaledSize';
 procedure QImageReader_setScaledClipRect(handle: QImageReaderH; rect: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setScaledClipRect';
 procedure QImageReader_scaledClipRect(handle: QImageReaderH; retval: PRect); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_scaledClipRect';
-procedure QImageReader_setBackgroundColor(handle: QImageReaderH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setBackgroundColor';
-procedure QImageReader_backgroundColor(handle: QImageReaderH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_backgroundColor';
+procedure QImageReader_setBackgroundColor(handle: QImageReaderH; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_setBackgroundColor';
+procedure QImageReader_backgroundColor(handle: QImageReaderH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_backgroundColor';
 function QImageReader_supportsAnimation(handle: QImageReaderH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageReader_supportsAnimation';
 function QImageReader_canRead(handle: QImageReaderH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QImageReader_canRead';
 procedure QImageReader_read(handle: QImageReaderH; retval: QImageH); cdecl; external QtShareName name QtNamePrefix + 'QImageReader_read';
@@ -4146,7 +4170,7 @@ procedure QTextEdit_fontFamily(handle: QTextEditH; retval: PWideString); cdecl; 
 function QTextEdit_fontWeight(handle: QTextEditH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_fontWeight';
 function QTextEdit_fontUnderline(handle: QTextEditH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_fontUnderline';
 function QTextEdit_fontItalic(handle: QTextEditH): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_fontItalic';
-procedure QTextEdit_textColor(handle: QTextEditH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_textColor';
+procedure QTextEdit_textColor(handle: QTextEditH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_textColor';
 procedure QTextEdit_currentFont(handle: QTextEditH; retval: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_currentFont';
 function QTextEdit_alignment(handle: QTextEditH): QtAlignment; cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_alignment';
 procedure QTextEdit_mergeCurrentCharFormat(handle: QTextEditH; modifier: QTextCharFormatH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_mergeCurrentCharFormat';
@@ -4187,7 +4211,7 @@ procedure QTextEdit_setFontFamily(handle: QTextEditH; fontFamily: PWideString); 
 procedure QTextEdit_setFontWeight(handle: QTextEditH; w: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontWeight';
 procedure QTextEdit_setFontUnderline(handle: QTextEditH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontUnderline';
 procedure QTextEdit_setFontItalic(handle: QTextEditH; b: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setFontItalic';
-procedure QTextEdit_setTextColor(handle: QTextEditH; c: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setTextColor';
+procedure QTextEdit_setTextColor(handle: QTextEditH; c: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setTextColor';
 procedure QTextEdit_setCurrentFont(handle: QTextEditH; f: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setCurrentFont';
 procedure QTextEdit_setAlignment(handle: QTextEditH; a: QtAlignment); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setAlignment';
 procedure QTextEdit_setPlainText(handle: QTextEditH; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTextEdit_setPlainText';
@@ -4760,8 +4784,8 @@ function QTabBar_isTabEnabled(handle: QTabBarH; index: Integer): Boolean; cdecl;
 procedure QTabBar_setTabEnabled(handle: QTabBarH; index: Integer; p2: Boolean); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabEnabled';
 procedure QTabBar_tabText(handle: QTabBarH; retval: PWideString; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabText';
 procedure QTabBar_setTabText(handle: QTabBarH; index: Integer; text: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabText';
-procedure QTabBar_tabTextColor(handle: QTabBarH; retval: QColorH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabTextColor';
-procedure QTabBar_setTabTextColor(handle: QTabBarH; index: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabTextColor';
+procedure QTabBar_tabTextColor(handle: QTabBarH; retval: PQColor; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabTextColor';
+procedure QTabBar_setTabTextColor(handle: QTabBarH; index: Integer; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabTextColor';
 procedure QTabBar_tabIcon(handle: QTabBarH; retval: QIconH; index: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_tabIcon';
 procedure QTabBar_setTabIcon(handle: QTabBarH; index: Integer; icon: QIconH); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabIcon';
 procedure QTabBar_setTabToolTip(handle: QTabBarH; index: Integer; tip: PWideString); cdecl; external QtShareName name QtNamePrefix + 'QTabBar_setTabToolTip';
@@ -5052,10 +5076,10 @@ procedure QListWidgetItem_font(handle: QListWidgetItemH; retval: QFontH); cdecl;
 procedure QListWidgetItem_setFont(handle: QListWidgetItemH; font: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setFont';
 function QListWidgetItem_textAlignment(handle: QListWidgetItemH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_textAlignment';
 procedure QListWidgetItem_setTextAlignment(handle: QListWidgetItemH; alignment: Integer); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setTextAlignment';
-procedure QListWidgetItem_backgroundColor(handle: QListWidgetItemH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_backgroundColor';
-procedure QListWidgetItem_setBackgroundColor(handle: QListWidgetItemH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setBackgroundColor';
-procedure QListWidgetItem_textColor(handle: QListWidgetItemH; retval: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_textColor';
-procedure QListWidgetItem_setTextColor(handle: QListWidgetItemH; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setTextColor';
+procedure QListWidgetItem_backgroundColor(handle: QListWidgetItemH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_backgroundColor';
+procedure QListWidgetItem_setBackgroundColor(handle: QListWidgetItemH; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setBackgroundColor';
+procedure QListWidgetItem_textColor(handle: QListWidgetItemH; retval: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_textColor';
+procedure QListWidgetItem_setTextColor(handle: QListWidgetItemH; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setTextColor';
 function QListWidgetItem_checkState(handle: QListWidgetItemH): QtCheckState; cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_checkState';
 procedure QListWidgetItem_setCheckState(handle: QListWidgetItemH; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_setCheckState';
 procedure QListWidgetItem_sizeHint(handle: QListWidgetItemH; retval: PSize); cdecl; external QtShareName name QtNamePrefix + 'QListWidgetItem_sizeHint';
@@ -5189,10 +5213,10 @@ procedure QTreeWidgetItem_font(handle: QTreeWidgetItemH; retval: QFontH; column:
 procedure QTreeWidgetItem_setFont(handle: QTreeWidgetItemH; column: Integer; font: QFontH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setFont';
 function QTreeWidgetItem_textAlignment(handle: QTreeWidgetItemH; column: Integer): Integer; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_textAlignment';
 procedure QTreeWidgetItem_setTextAlignment(handle: QTreeWidgetItemH; column: Integer; alignment: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setTextAlignment';
-procedure QTreeWidgetItem_backgroundColor(handle: QTreeWidgetItemH; retval: QColorH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_backgroundColor';
-procedure QTreeWidgetItem_setBackgroundColor(handle: QTreeWidgetItemH; column: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setBackgroundColor';
-procedure QTreeWidgetItem_textColor(handle: QTreeWidgetItemH; retval: QColorH; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_textColor';
-procedure QTreeWidgetItem_setTextColor(handle: QTreeWidgetItemH; column: Integer; color: QColorH); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setTextColor';
+procedure QTreeWidgetItem_backgroundColor(handle: QTreeWidgetItemH; retval: PQColor; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_backgroundColor';
+procedure QTreeWidgetItem_setBackgroundColor(handle: QTreeWidgetItemH; column: Integer; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setBackgroundColor';
+procedure QTreeWidgetItem_textColor(handle: QTreeWidgetItemH; retval: PQColor; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_textColor';
+procedure QTreeWidgetItem_setTextColor(handle: QTreeWidgetItemH; column: Integer; color: PQColor); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setTextColor';
 function QTreeWidgetItem_checkState(handle: QTreeWidgetItemH; column: Integer): QtCheckState; cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_checkState';
 procedure QTreeWidgetItem_setCheckState(handle: QTreeWidgetItemH; column: Integer; state: QtCheckState); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_setCheckState';
 procedure QTreeWidgetItem_sizeHint(handle: QTreeWidgetItemH; retval: PSize; column: Integer); cdecl; external QtShareName name QtNamePrefix + 'QTreeWidgetItem_sizeHint';
@@ -5363,7 +5387,7 @@ function QInputDialog_getInteger(parent: QWidgetH; title: PWideString; _label: P
 function QInputDialog_getDouble(parent: QWidgetH; title: PWideString; _label: PWideString; value: Double = 0; minValue: Double = -2147483647; maxValue: Double = 2147483647; decimals: Integer = 1; ok: PBoolean = 0; f: QtWindowFlags = 0): Double; cdecl; external QtShareName name QtNamePrefix + 'QInputDialog_getDouble';
 procedure QInputDialog_getItem(retval: PWideString; parent: QWidgetH; title: PWideString; _label: PWideString; list: QStringListH; current: Integer = 0; editable: Boolean = True; ok: PBoolean = 0; f: QtWindowFlags = 0); cdecl; external QtShareName name QtNamePrefix + 'QInputDialog_getItem';
 
-procedure QColorDialog_getColor(retval: QColorH; init: QColorH; parent: QWidgetH = nil); cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_getColor';
+procedure QColorDialog_getColor(retval: PQColor; init: PQColor = Qtwhite; parent: QWidgetH = nil); cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_getColor';
 function QColorDialog_getRgba(p1: QRgb; ok: PBoolean = 0; parent: QWidgetH = nil): QRgb; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_getRgba';
 function QColorDialog_customCount(): Integer; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_customCount';
 function QColorDialog_customColor(p1: Integer): QRgb; cdecl; external QtShareName name QtNamePrefix + 'QColorDialog_customColor';
@@ -5805,7 +5829,7 @@ procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtShareNa
                        
 
 implementation
-uses SysUtils,Libc;
+uses SysUtils,Math;
 
 
 // AnsiString Helpers
@@ -5843,6 +5867,12 @@ begin
   SetString(S, Unicode, Len);
 end;
 {$ENDIF}
+{$IFDEF DARWIN}
+begin
+  SetString(S, Unicode, Len);
+end;
+{$ENDIF}
+
 
 function UnicodeOfPWideString(var S: WideString): PWideChar; cdecl; export;
 const
@@ -5901,7 +5931,7 @@ InitializePIntArray(@GetIntsPtr,
                     @GetIntsLength, 
                     @SetIntsLength);
 
-fedisableexcept(FE_ALL_EXCEPT);
+SetExceptionMask([exDenormalized,exInvalidOp,exOverflow,exPrecision,exUnderflow,exZeroDivide]);
 end.
 
 

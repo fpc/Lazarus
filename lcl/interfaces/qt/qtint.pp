@@ -69,6 +69,9 @@ type
     function CreateComponent(Sender : TObject): THandle; override; // deprecated
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; override;
     function DestroyTimer(TimerHandle: integer): boolean; override;
+
+    // device contexts
+    function IsValidDC(const DC: HDC): Boolean; virtual;
   public
     {$I qtwinapih.inc}
     {.$I qtlclintfh.inc}

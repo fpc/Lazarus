@@ -600,7 +600,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
 begin
-  TQtRadioButton(AWinControl.Handle).Free;
+//  TQtRadioButton(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;

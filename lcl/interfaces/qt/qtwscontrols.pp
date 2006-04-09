@@ -63,6 +63,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure Invalidate(const AWinControl: TWinControl); override;
   public
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -145,6 +146,16 @@ begin
   TQtWidget(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.Invalidate
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+  TQtWidget(AWinControl.Handle).Update;
 end;
 
 {------------------------------------------------------------------------------

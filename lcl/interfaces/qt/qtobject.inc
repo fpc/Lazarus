@@ -169,4 +169,14 @@ begin
   Result := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWidgetSet.IsValidDC
+  Params:   DC     -  handle to a device context (TQtDeviceContext)
+  Returns:  True   -  if the DC is valid
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.IsValidDC(const DC: HDC): Boolean;
+begin
+  Result := (DC <> 0);
+end;
+
 //------------------------------------------------------------------------

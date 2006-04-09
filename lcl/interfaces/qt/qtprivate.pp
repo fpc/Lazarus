@@ -53,6 +53,9 @@ type
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
+  public
+    procedure Update;
+    procedure Repaint;
   end;
   
   { TQtAbstractButton }
@@ -94,13 +97,15 @@ type
   public
     Widget: QPainterH;
     Brush: TQtBrush;
-  public
+    PenPos: TPoint;
   public
     constructor Create(WidgetHandle: HWND); virtual;
     destructor Destroy; override;
   public
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString);
+    procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
+    procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
   end;
 
   { TQtMainWindow }
@@ -441,6 +446,23 @@ begin
       Application.HandleException(nil);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.Update
+  Params:  None
+  Returns: Nothing
+
+  Schedules a paint event for processing when Qt returns to the main event loop
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.Update;
+begin
+  QWidget_update(Widget);
+end;
+
+procedure TQtWidget.Repaint;
+begin
+  QWidget_repaint(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -899,7 +921,7 @@ begin
   end;
 
   // Creates the Brush
-  Brush := TQtBrush.Create;
+//  Brush := TQtBrush.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -909,7 +931,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtDeviceContext.Destroy;
 begin
-  Brush.Free;
+//  Brush.Free;
 
   {$ifdef VerboseQt}
     WriteLn('Calling QPainter_destroy');
@@ -942,6 +964,32 @@ end;
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 begin
   QPainter_drawText(Widget, x, y, s);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawLine
+  Params:  None
+  Returns: Nothing
+
+  Draws a Text. Helper function for winapi.LineTo
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawLine(x1: Integer; y1: Integer; x2: Integer;
+  y2: Integer);
+begin
+  QPainter_drawLine(Widget, x1, y1, x2, y2);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtDeviceContext.drawEllipse
+  Params:  None
+  Returns: Nothing
+
+  Draws a ellipse. Helper function for winapi.Ellipse
+ ------------------------------------------------------------------------------}
+procedure TQtDeviceContext.drawEllipse(x: Integer; y: Integer; w: Integer;
+  h: Integer);
+begin
+  QPainter_drawEllipse(Widget, x, y, w, h);
 end;
 
 { TQtBrush }

@@ -34,6 +34,7 @@ function CreateCompatibleDC(DC: HDC): HDC; override;
 
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
+function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
@@ -45,6 +46,13 @@ function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): bool
 function GetDC(hWnd: HWND): HDC; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function GetSystemMetrics(nIndex: Integer): Integer; override;
+
+function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+
+function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
+
+function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
