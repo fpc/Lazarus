@@ -71,6 +71,8 @@ type
     procedure PkgTreeViewDblClick(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
+    procedure InfoMemoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
     procedure UninstallMenuItemClick(Sender: TObject);
   private
@@ -238,6 +240,13 @@ begin
       ViewNode:=NextViewNode;
     end;
   end;
+end;
+
+procedure TPkgGraphExplorerDlg.InfoMemoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = 27 then
+    Close;
 end;
 
 procedure TPkgGraphExplorerDlg.PkgTreeViewSelectionChanged(Sender: TObject);
