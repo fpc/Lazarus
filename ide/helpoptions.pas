@@ -65,6 +65,8 @@ type
   { THelpOptionsDialog }
 
   THelpOptionsDialog = class(TForm)
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     DataBasePage: TPage;
     DatabasesLabel: TLabel;
     DataBasesPropsGroupBox: TGroupBox;
@@ -73,8 +75,6 @@ type
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
     MainNotebook: TNotebook;
-    OkButton: TButton;
-    CancelButton: TButton;
     ViewersPage: TPage;
     procedure CancelButtonClick(Sender: TObject);
     procedure DatabasesListBoxSelectionChange(Sender: TObject; User: boolean);

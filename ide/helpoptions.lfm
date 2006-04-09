@@ -1,118 +1,162 @@
 object HelpOptionsDialog: THelpOptionsDialog
+  ActiveControl = ViewersListBox
+  BorderIcons = [biSystemMenu]
   Caption = 'HelpOptionsDialog'
   ClientHeight = 300
   ClientWidth = 500
   OnClose = HelpOptionsDialogClose
   OnCreate = HelpOptionsDialogCreate
-  PixelsPerInch = 90
+  PixelsPerInch = 96
   Position = poScreenCenter
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
-  Left = 291
+  AnchorSideBottom.Side = asrBottom
+  Left = 312
   Height = 300
-  Top = 163
+  Top = 358
   Width = 500
-  object OkButton: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Caption = 'OkButton'
-    OnClick = OkButtonClick
-    TabOrder = 0
-    Left = 292
-    Height = 25
-    Top = 264
-    Width = 75
-  end
-  object CancelButton: TButton
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Caption = 'CancelButton'
-    OnClick = CancelButtonClick
-    TabOrder = 1
-    Left = 388
-    Height = 25
-    Top = 264
-    Width = 75
-  end
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akBottom]
-    PageIndex = 1
-    Height = 256
-    Width = 500
+    BorderSpacing.Around = 6
+    PageIndex = 0
+    AnchorSideBottom.Control = OkButton
+    Left = 6
+    Height = 248
+    Top = 6
+    Width = 488
     object ViewersPage: TPage
       Caption = 'ViewersPage'
-      ClientWidth = 492
-      ClientHeight = 230
-      Height = 230
-      Width = 492
+      ClientWidth = 480
+      ClientHeight = 222
+      Height = 222
+      Width = 480
       object ViewersLabel: TLabel
         Caption = 'ViewersLabel'
         Color = clNone
         ParentColor = False
+        AnchorSideTop.Control = ViewerPropsGroupBox
         Left = 6
         Height = 14
-        Top = 10
+        Top = 6
         Width = 63
       end
       object ViewersListBox: TListBox
         Anchors = [akTop, akLeft, akBottom]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         ClickOnSelChange = False
         OnSelectionChange = ViewersListBoxSelectionChange
         TabOrder = 0
+        AnchorSideLeft.Control = ViewersPage
+        AnchorSideTop.Control = ViewersLabel
+        AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 190
-        Top = 36
+        Height = 192
+        Top = 26
         Width = 152
       end
       object ViewerPropsGroupBox: TGroupBox
+        Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'ViewerPropsGroupBox'
-        ClientHeight = 198
-        ClientWidth = 315
+        ClientHeight = 192
+        ClientWidth = 306
         TabOrder = 1
-        Left = 166
-        Height = 216
-        Top = 10
-        Width = 319
+        AnchorSideLeft.Control = ViewersListBox
+        AnchorSideLeft.Side = asrBottom
+        Left = 164
+        Height = 210
+        Top = 6
+        Width = 310
       end
     end
     object DataBasePage: TPage
       Caption = 'DataBasePage'
-      ClientWidth = 492
-      ClientHeight = 230
-      Height = 230
-      Width = 492
+      ClientWidth = 480
+      ClientHeight = 222
+      Height = 222
+      Width = 480
       object DatabasesLabel: TLabel
         Caption = 'DatabasesLabel'
         Color = clNone
         ParentColor = False
+        AnchorSideTop.Control = DataBasesPropsGroupBox
         Left = 6
         Height = 14
-        Top = 10
+        Top = 6
         Width = 77
       end
       object DatabasesListBox: TListBox
         Anchors = [akTop, akLeft, akBottom]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         ClickOnSelChange = False
         OnSelectionChange = DatabasesListBoxSelectionChange
         TabOrder = 0
+        AnchorSideLeft.Control = DataBasePage
+        AnchorSideTop.Control = DatabasesLabel
+        AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 190
-        Top = 36
+        Top = 26
         Width = 152
       end
       object DataBasesPropsGroupBox: TGroupBox
+        Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         Caption = 'DataBasesPropsGroupBox'
-        ClientHeight = 198
-        ClientWidth = 315
+        ClientHeight = 192
+        ClientWidth = 306
         TabOrder = 1
-        Left = 166
-        Height = 216
-        Top = 10
-        Width = 319
+        AnchorSideLeft.Control = DatabasesListBox
+        AnchorSideLeft.Side = asrBottom
+        Left = 164
+        Height = 210
+        Top = 6
+        Width = 310
       end
     end
+  end
+  object OkButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 1
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 432
+    Height = 34
+    Top = 260
+    Width = 62
+  end
+  object CancelButton: TBitBtn
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 2
+    AnchorSideRight.Control = OkButton
+    AnchorSideBottom.Control = OkButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 346
+    Height = 34
+    Top = 260
+    Width = 80
   end
 end
