@@ -177,10 +177,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.Select;
 begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self)
-  else
-    Change;
+  if Assigned(FOnSelect) then  FOnSelect(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -753,7 +750,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
 begin
-  if not (csDestroying in ComponentState){and     not  (csDestroyingHandle in ControlState) } and HandleAllocated then
+  if not (csDestroying in ComponentState) and     not  (csDestroyingHandle in ControlState)  and HandleAllocated then
     FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   Result:=FItemIndex;
 end;
@@ -789,8 +786,8 @@ procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
   //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TCustomComboBox.SetItemIndex A ',DbgSName(Self),' Text="',Text,'"');
-  if Val = GetItemIndex then exit;
   if Val < -1 then Exit;
+  if Val = GetItemIndex then exit;
   if (Val >= Items.Count) and (not (csLoading in ComponentState)) then exit;
 
   FItemIndex:= Val;
@@ -798,7 +795,6 @@ begin
   
   if HandleAllocated then begin
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-    Select;
   end else begin
     // remember text, in case one reads text without creating handle
     if Val = -1

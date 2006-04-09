@@ -1146,6 +1146,7 @@ type
     procedure SetOptimalFill(const AValue: Boolean);
   protected
     function  CanTab: boolean; override;
+    function  HasMultiLine : boolean;
     procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;

@@ -2782,7 +2782,10 @@ var
     If (Flags and DT_SingleLine) > 0 then begin
       // ignore word and line breaks
       GetTextExtentPoint(DC, Str, Count, AP);
-      theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
+      if (Flags and DT_CalcRect)<>0 then
+        theRect.Right := theRect.Left +  AP.cX
+      else
+        theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
     end
     else begin
@@ -2824,6 +2827,34 @@ var
           OffsetRect(theRect, Rect.Right - theRect.Right, 0);
       end;
   end;
+
+  Procedure DrawLineRaw(theLine : PChar; LineLength, TopPos : Longint);
+  var
+    Points : Array[0..1] of TSize;
+    LeftPos : Longint;
+  begin
+    If LeftOffset <> DT_Left then
+      GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
+
+    If TempBrush = -1 then
+      TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
+    Case LeftOffset of
+      DT_Left:
+        LeftPos := theRect.Left;
+      DT_Center:
+        LeftPos := theRect.Left + (theRect.Right - theRect.Left) div 2
+                 - Points[0].cX div 2;
+      DT_Right:
+        LeftPos := theRect.Right - Points[0].cX;
+    end;
+
+    {Draw line of Text}
+    TextUtf8Out(DC, LeftPos, TopPos, theLine, lineLength);
+  end;
+
+
+
+
 
   Procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
   var
@@ -2905,6 +2936,12 @@ begin
       TempPen := -1;
       TempBrush := -1;
       try
+        if (Flags and (DT_SingleLine+DT_CalcRect+Dt_NoPrefix+DT_NOClip))=(DT_SingleLine+Dt_NoPrefix+Dt_NoClip) then begin
+          CopyRect(theRect, Rect);
+          DrawLineRaw(Str, Count, Rect.Top);
+          exit;
+        end;
+
         Count := Min(StrLen(Str), Count);
 
         GetTextMetrics(DC, TM);
@@ -3807,7 +3844,7 @@ begin
     if UseFont<>nil then begin
       LineLen := FindChar(#10,Str,Count);
       UpdateDCTextMetric(TDeviceContext(DC));
-      LineHeight:=GetTextHeight(DCTextMetric);
+      LineHeight:=DCTextMetric.TextMetric.tmHeight;
       if Buffered then begin
         TxtPt.X := 0;
         TxtPt.Y := LineHeight;

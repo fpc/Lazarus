@@ -27,7 +27,7 @@
 }
 
 procedure TCustomLabel.CalcSize(var AWidth, AHeight: integer);
-  { assumes: (Parent <> nil) and Parent.HandleAllocated }
+// assumes: (Parent <> nil) and Parent.HandleAllocated
 var
   R : TRect;
   DC : hDC;
@@ -39,7 +39,11 @@ begin
     R := Rect(0,0, Width, Height);
     OldFont:=SelectObject(DC, Font.Handle);
     Flags:=DT_CalcRect;
-    if WordWrap then inc(Flags,DT_WordBreak);
+    if WordWrap then
+      inc(Flags,DT_WordBreak)
+    else if not HasMultiLine then
+      inc(Flags,DT_SingleLine);
+    
     DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
@@ -48,6 +52,14 @@ begin
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
+end;
+
+function TCustomLabel.HasMultiLine: boolean;
+var
+  s: String;
+begin
+  s:=Caption;
+  result:=(pos(#10,s)>0) or (pos(#13,s)>0);
 end;
 
 Procedure TCustomLabel.DoAutoSize;
@@ -153,8 +165,7 @@ begin
   inherited Create(TheOwner);
   Font.OnChange := @FontChange;
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
-  Width := 65;
-  Height := 17;
+  setInitialBounds(0,0,65,17);
   FShowAccelChar := True;
   Color := clNone;
   AutoSize:=true;
@@ -366,7 +377,7 @@ begin
     With TR do begin
       Alignment := Self.Alignment;
       WordBreak := wordWrap;
-      SingleLine:=false;
+      SingleLine:= not WordWrap and not HasMultiLine;
       Clipping := True;
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;

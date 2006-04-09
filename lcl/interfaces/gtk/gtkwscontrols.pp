@@ -659,8 +659,9 @@ begin
 
   if ModalWindows=nil then ModalWindows:=TFPList.Create;
   ModalWindows.Add(GtkWindow);
-
+  {$IFNDEF gtk_no_set_modal}
   gtk_window_set_modal(GtkWindow, true);
+  {$ENDIF}
   gtk_widget_show(PGtkWidget(GtkWindow));
   {$IFDEF Gtk1}
   GDK_WINDOW_ACTIVATE(PGdkWindowPrivate(PGtkWidget(GtkWindow)^.window));
@@ -671,6 +672,7 @@ begin
   {$ENDIF}
   TGtkWidgetSet(WidgetSet).UpdateTransientWindows;
 end;
+
 
 { TGtkWSBaseScrollingWinControl }
 
