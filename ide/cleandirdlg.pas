@@ -39,6 +39,8 @@ type
   { TCleanDirectoryDialog }
 
   TCleanDirectoryDialog = class(TForm)
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     KeepTextFilesCheckbox: TCHECKBOX;
     SubDirsCheckbox: TCHECKBOX;
     SimpleSyntaxKeepCheckbox: TCHECKBOX;
@@ -49,8 +51,6 @@ type
     DirCombobox: TCOMBOBOX;
     DirGroupbox: TGROUPBOX;
     RemoveGroupbox: TGROUPBOX;
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
     procedure CleanDirectoryDialogCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
