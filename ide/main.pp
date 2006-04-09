@@ -8705,6 +8705,7 @@ var
   Tool: TExternalToolOptions;
   CommandAfter, CmdAfterExe, CmdAfterParams: string;
   CurProject: TProject;
+  TempCmd: String;
 
   procedure ShowErrorForCommandAfter;
   begin
@@ -8752,7 +8753,17 @@ begin
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
     //DebugLn('TMainIDE.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
-    CmdAfterExe:=FindDefaultExecutablePath(CmdAfterExe);
+    // first look in the project directory
+    TempCmd:=CmdAfterExe;
+    if not FilenameIsAbsolute(TempCmd) then
+      TempCmd:=TrimFilename(AppendPathDelim(Project1.ProjectDirectory)+TempCmd);
+    if FileExists(TempCmd) then begin
+      CmdAfterExe:=TempCmd;
+    end else begin
+      TempCmd:=FindDefaultExecutablePath(CmdAfterExe);
+      if TempCmd<>'' then
+        CmdAfterExe:=TempCmd;
+    end;
     if not FileIsExecutableCached(CmdAfterExe) then begin
       MessageDlg(lisCommandAfterInvalid,
         Format(lisTheCommandAfterPublishingIsInvalid, [#13, '"', CmdAfterExe,
