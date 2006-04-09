@@ -1,33 +1,42 @@
 object SearchResultsView: TSearchResultsView
-  CAPTION = 'SearchResultsView'
-  CLIENTHEIGHT = 229
-  CLIENTWIDTH = 799
-  ONCREATE = Form1Create
-  ONDESTROY = SearchResultsViewDestroy
-  HORZSCROLLBAR.PAGE = 800
-  VERTSCROLLBAR.PAGE = 230
-  LEFT = 151
-  HEIGHT = 229
-  TOP = 481
-  WIDTH = 799
-  object ResultsNoteBook: TNOTEBOOK
-    ALIGN = albottom
-    ANCHORS = [aktop, akleft]
-    ONCLOSETABCLICKED = ResultsNoteBookClosetabclicked
-    OPTIONS = [nboshowclosebuttons, nbomultiline]
-    HEIGHT = 189
-    TOP = 40
-    WIDTH = 799
+  ActiveControl = btnSearchAgain
+  Caption = 'SearchResultsView'
+  ClientHeight = 229
+  ClientWidth = 799
+  OnCreate = Form1Create
+  OnDestroy = SearchResultsViewDestroy
+  OnKeyDown = ListBoxKeyDown
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  HorzScrollBar.Page = 798
+  VertScrollBar.Page = 228
+  Left = 267
+  Height = 229
+  Top = 482
+  Width = 799
+  object ResultsNoteBook: TNotebook
+    Align = alBottom
+    Anchors = [akTop, akLeft]
+    OnCloseTabClicked = ResultsNoteBookClosetabclicked
+    Options = [nboShowCloseButtons, nboMultiLine]
+    AnchorSideTop.Control = btnSearchAgain
+    AnchorSideTop.Side = asrBottom
+    Height = 192
+    Top = 37
+    Width = 799
   end
-  object btnSearchAgain: TBUTTON
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Search Again'
-    TABSTOP = True
-    TABORDER = 1
-    ONCLICK = btnSearchAgainClick
-    LEFT = 8
-    HEIGHT = 25
-    TOP = 8
-    WIDTH = 115
+  object btnSearchAgain: TButton
+    BorderSpacing.Around = 6
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Search Again'
+    OnClick = btnSearchAgainClick
+    OnKeyDown = ListBoxKeyDown
+    TabOrder = 1
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 25
+    Top = 6
+    Width = 115
   end
 end

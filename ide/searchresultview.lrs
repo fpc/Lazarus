@@ -1,15 +1,20 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TSearchResultsView','FORMDATA',[
-  'TPF0'#18'TSearchResultsView'#17'SearchResultsView'#7'CAPTION'#6#17'SearchRes'
-  +'ultsView'#12'CLIENTHEIGHT'#3#229#0#11'CLIENTWIDTH'#3#31#3#8'ONCREATE'#7#11
-  +'Form1Create'#9'ONDESTROY'#7#24'SearchResultsViewDestroy'#18'HORZSCROLLBAR.P'
-  +'AGE'#3' '#3#18'VERTSCROLLBAR.PAGE'#3#230#0#4'LEFT'#3#151#0#6'HEIGHT'#3#229#0
-  +#3'TOP'#3#225#1#5'WIDTH'#3#31#3#0#9'TNOTEBOOK'#15'ResultsNoteBook'#5'ALIGN'#7
-  +#8'albottom'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#17'ONCLOSETABCLICKED'#7#30'R'
-  +'esultsNoteBookClosetabclicked'#7'OPTIONS'#11#19'nboshowclosebuttons'#12'nbo'
-  +'multiline'#0#6'HEIGHT'#3#189#0#3'TOP'#2'('#5'WIDTH'#3#31#3#0#0#7'TBUTTON'#14
-  +'btnSearchAgain'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#12'Search A'
-  +'gain'#7'TABSTOP'#9#8'TABORDER'#2#1#7'ONCLICK'#7#19'btnSearchAgainClick'#4'L'
-  +'EFT'#2#8#6'HEIGHT'#2#25#3'TOP'#2#8#5'WIDTH'#2's'#0#0#0
+  'TPF0'#18'TSearchResultsView'#17'SearchResultsView'#13'ActiveControl'#7#14'bt'
+  +'nSearchAgain'#7'Caption'#6#17'SearchResultsView'#12'ClientHeight'#3#229#0#11
+  +'ClientWidth'#3#31#3#8'OnCreate'#7#11'Form1Create'#9'OnDestroy'#7#24'SearchR'
+  +'esultsViewDestroy'#9'OnKeyDown'#7#14'ListBoxKeyDown'#13'PixelsPerInch'#2'`'
+  +#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3#30#3#18'VertScrol'
+  +'lBar.Page'#3#228#0#4'Left'#3#11#1#6'Height'#3#229#0#3'Top'#3#226#1#5'Width'
+  +#3#31#3#0#9'TNotebook'#15'ResultsNoteBook'#5'Align'#7#8'alBottom'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#0#17'OnCloseTabClicked'#7#30'ResultsNoteBookClosetabc'
+  +'licked'#7'Options'#11#19'nboShowCloseButtons'#12'nboMultiLine'#0#21'AnchorS'
+  +'ideTop.Control'#7#14'btnSearchAgain'#18'AnchorSideTop.Side'#7#9'asrBottom'#6
+  +'Height'#3#192#0#3'Top'#2'%'#5'Width'#3#31#3#0#0#7'TButton'#14'btnSearchAgai'
+  +'n'#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBorder'#2#2#7'Caption'
+  +#6#12'Search Again'#7'OnClick'#7#19'btnSearchAgainClick'#9'OnKeyDown'#7#14'L'
+  +'istBoxKeyDown'#8'TabOrder'#2#1#22'AnchorSideLeft.Control'#7#5'Owner'#21'Anc'
+  +'horSideTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'#2#25#3'Top'#2#6#5'Widt'
+  +'h'#2's'#0#0#0
 ]);

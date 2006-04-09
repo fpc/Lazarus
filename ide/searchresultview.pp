@@ -105,9 +105,10 @@ type
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
-    btnSearchAgain: TBUTTON;
-    ResultsNoteBook: TNOTEBOOK;
+    btnSearchAgain: TButton;
+    ResultsNoteBook: TNotebook;
     procedure Form1Create(Sender: TObject);
+    procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookChangebounds(Sender: TObject);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchResultsViewDestroy(Sender: TObject);
@@ -127,9 +128,9 @@ type
     procedure ListBoxDoubleClicked(Sender: TObject);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
-    fOnSelectionChanged: TNotifyEvent;
-    fListBoxFont: TFont;
-    fMouseOverIndex: integer;
+      fOnSelectionChanged: TNotifyEvent;
+      fListBoxFont: TFont;
+      fMouseOverIndex: integer;
   public
     function AddResult(const ResultsName: string;
                        const SearchText: string;
@@ -378,6 +379,13 @@ begin
   end;//for
 end;//PageExists
 
+procedure TSearchResultsView.ListBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = 27 then
+    Close;
+end;
+
 {Add Result will create a tab in the Results view window with an new
  list box or focus an existing listbox and update it's searchoptions.}
 function TSearchResultsView.AddResult(const ResultsName: string;
@@ -405,6 +413,7 @@ begin
       begin
         NewPage:= Pages.Add(ResultsName + SPACE);
         ResultsNoteBook.PageIndex:= NewPage;
+        ResultsNoteBook.Page[ResultsNoteBook.PageIndex].OnKeyDown := @ListBoxKeyDown;
         if NewPage > -1 then
         begin
           NewListBox:= TLazSearchResultLB.Create(Page[NewPage]);
@@ -412,9 +421,11 @@ begin
           begin
             Parent:= Page[NewPage];
             Align:= alClient;
+            BorderSpacing.Around := 6;
             ClickOnSelChange:=false;
             OnClick:= @ListBoxClicked;
             OnDblClick:= @ListBoxDoubleClicked;
+            OnKeyDown := @ListBoxKeyDown;
             Style:= lbOwnerDrawFixed;
             OnDrawItem:= @ListBoxDrawItem;
             OnShowHint:= @LazLBShowHint;
