@@ -104,10 +104,6 @@ begin
     Canvas.Frame3d(ARect, BevelWidth, BevelInner);
     InflateRect(ARect, -1, -1);
   end;
-  if Color<>clBtnFace then begin
-    Canvas.Brush.Color:=Color;
-    Canvas.FillRect(ARect);
-  end;
   if Caption <> '' then begin
     TS := Canvas.TextStyle;
     TS.Alignment:= Alignment;
@@ -119,6 +115,7 @@ begin
   end;
 
   inherited Paint;
+
 end;
 
 function TCustomPanel.CanTab: Boolean;
