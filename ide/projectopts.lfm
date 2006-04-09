@@ -2,42 +2,42 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   ActiveControl = TitleEdit
   Caption = 'ProjectOptionsDialog'
   ClientHeight = 375
-  ClientWidth = 430
+  ClientWidth = 443
   OnClose = ProjectOptionsClose
   OnResize = ProjectOptionsResize
   PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 429
+  HorzScrollBar.Page = 442
   VertScrollBar.Page = 374
   Left = 738
   Height = 375
   Top = 236
-  Width = 430
+  Width = 443
   object Notebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     PageIndex = 1
     Height = 338
-    Width = 430
+    Width = 443
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
-      ClientWidth = 426
+      ClientWidth = 439
       ClientHeight = 308
       Left = 2
       Height = 308
       Top = 28
-      Width = 426
+      Width = 439
       object AppSettingsGroupBox: TGroupBox
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'AppSettingsGroupBox'
         ClientHeight = 56
-        ClientWidth = 410
+        ClientWidth = 423
         TabOrder = 0
         Left = 6
         Height = 73
         Top = 6
-        Width = 414
+        Width = 427
         object TitleLabel: TLabel
           Align = alTop
           BorderSpacing.Left = 6
@@ -49,7 +49,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 13
           Top = 6
-          Width = 398
+          Width = 411
         end
         object TitleEdit: TEdit
           Align = alTop
@@ -60,7 +60,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 23
           Top = 19
-          Width = 398
+          Width = 411
         end
       end
       object OutputSettingsGroupBox: TGroupBox
@@ -68,12 +68,12 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         BorderSpacing.Around = 6
         Caption = 'OutputSettingsGroupBox'
         ClientHeight = 56
-        ClientWidth = 410
+        ClientWidth = 423
         TabOrder = 1
         Left = 6
         Height = 73
         Top = 85
-        Width = 414
+        Width = 427
         object TargetFileLabel: TLabel
           Align = alTop
           BorderSpacing.Left = 6
@@ -85,7 +85,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 13
           Top = 6
-          Width = 398
+          Width = 411
         end
         object TargetFileEdit: TEdit
           Align = alTop
@@ -96,19 +96,19 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 23
           Top = 19
-          Width = 398
+          Width = 411
         end
       end
     end
     object FormsPage: TPage
       Caption = 'FormsPage'
-      ClientWidth = 426
+      ClientWidth = 439
       ClientHeight = 308
       OnResize = FormsPageResize
       Left = 2
       Height = 308
       Top = 28
-      Width = 426
+      Width = 439
       object FormsAutoCreatedLabel: TLabel
         Caption = 'FormsAutoCreatedLabel'
         Color = clNone
@@ -154,7 +154,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 240
         Height = 240
         Top = 32
-        Width = 172
+        Width = 185
       end
       object FormsMoveAutoCreatedFormUpBtn: TArrow
         ArrowType = atUp
@@ -199,17 +199,17 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 278
-        Width = 414
+        Width = 427
       end
     end
     object MiscPage: TPage
       Caption = 'MiscPage'
-      ClientWidth = 426
+      ClientWidth = 439
       ClientHeight = 308
       Left = 2
       Height = 308
       Top = 28
-      Width = 426
+      Width = 439
       object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
         Align = alTop
         BorderSpacing.Left = 6
@@ -222,7 +222,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 36
-        Width = 414
+        Width = 427
       end
       object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
         Align = alTop
@@ -236,7 +236,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 62
-        Width = 414
+        Width = 427
       end
       object MainUnitIsPascalSourceCheckBox: TCheckBox
         Align = alTop
@@ -248,7 +248,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 10
-        Width = 414
+        Width = 427
       end
       object MainUnitHasTitleStatementCheckBox: TCheckBox
         Align = alTop
@@ -262,7 +262,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 88
-        Width = 414
+        Width = 427
       end
       object RunnableCheckBox: TCheckBox
         Align = alTop
@@ -276,7 +276,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 122
-        Width = 414
+        Width = 427
       end
       object AlwaysBuildCheckBox: TCheckBox
         Anchors = [akTop, akLeft, akRight]
@@ -290,17 +290,17 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 148
-        Width = 414
+        Width = 427
       end
     end
     object LazDocPage: TPage
       Caption = 'LazDocPage'
-      ClientWidth = 426
+      ClientWidth = 439
       ClientHeight = 308
       Left = 2
       Height = 308
       Top = 28
-      Width = 426
+      Width = 439
       object Label2: TLabel
         Align = alTop
         Caption = 'NOTE: only absolute paths are supported now'
@@ -308,19 +308,19 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         ParentColor = False
         Height = 13
         Top = 222
-        Width = 426
+        Width = 439
       end
       object LazDocPathsGroupBox: TGroupBox
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
         ClientHeight = 210
-        ClientWidth = 414
+        ClientWidth = 427
         TabOrder = 0
         Left = 6
         Height = 210
         Top = 6
-        Width = 414
+        Width = 427
         object LazDocListBox: TListBox
           Align = alTop
           BorderSpacing.Around = 6
@@ -329,7 +329,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 108
           Top = 6
-          Width = 402
+          Width = 415
         end
         object LazDocAddPathButton: TButton
           BorderSpacing.InnerBorder = 2
@@ -358,7 +358,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Left = 6
           Height = 23
           Top = 154
-          Width = 358
+          Width = 371
         end
         object LazDocBrowseButton: TButton
           Anchors = [akTop, akRight]
@@ -366,7 +366,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
-          Left = 369
+          Left = 382
           Height = 23
           Top = 154
           Width = 23
@@ -375,12 +375,12 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     end
     object SavePage: TPage
       Caption = 'SavePage'
-      ClientWidth = 426
+      ClientWidth = 439
       ClientHeight = 308
       Left = 2
       Height = 308
       Top = 28
-      Width = 426
+      Width = 439
       object SaveClosedUnitInfoCheckBox: TCheckBox
         Align = alTop
         BorderSpacing.Left = 6
@@ -391,7 +391,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 6
-        Width = 414
+        Width = 427
       end
       object SaveOnlyProjectUnitInfoCheckBox: TCheckBox
         Align = alTop
@@ -405,7 +405,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Left = 6
         Height = 24
         Top = 32
-        Width = 414
+        Width = 427
       end
       object SaveSessionLocationRadioGroup: TRadioGroup
         AutoFill = True
@@ -437,7 +437,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
-    Left = 344
+    Left = 357
     Height = 25
     Top = 344
     Width = 75
@@ -449,7 +449,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Default = True
     ModalResult = 1
     TabOrder = 2
-    Left = 256
+    Left = 269
     Height = 25
     Top = 344
     Width = 75

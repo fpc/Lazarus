@@ -74,6 +74,8 @@ type
     procedure AddBitBtnClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
+    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
@@ -156,6 +158,13 @@ implementation
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
   OpenBitBtnClick(Self);
+end;
+
+procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = 27 then
+    Close;
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
@@ -739,6 +748,7 @@ end;
 
 
 initialization
+  {$I projectinspector.lrs}
   {$I projectinspector.lrs}
 
 end.
