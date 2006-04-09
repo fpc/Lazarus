@@ -44,17 +44,16 @@ type
 
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     InsertMacroButton: TButton;
     UseMakrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
-    CancelButton: TButton;
     TemplateListBox: TListBox;
-    TemplateSplitter: TSplitter;
     TemplateSynEdit: TSynEdit;
     ASynPasSyn: TSynPasSyn;
     TemplateGroupBox: TGroupBox;
-    OkButton: TButton;
     FilenameButton: TButton;
     FilenameEdit: TEdit;
     FilenameGroupBox: TGroupBox;
