@@ -6015,7 +6015,8 @@ begin
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
-var UnitList: TList;
+var
+  UnitList: TStringList;
   i: integer;
   MainUnitName, DlgCaption: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
@@ -6024,29 +6025,38 @@ var UnitList: TList;
   AForm: TCustomForm;
 Begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-  UnitList:=TList.Create;
+  UnitList := TStringList.Create;
+  UnitList.Sorted := True;
   try
     for i:=0 to Project1.UnitCount-1 do begin
       if not Project1.Units[i].IsPartOfProject then continue;
       //debugln('TMainIDE.DoViewUnitsAndForms OnlyForms=',dbgs(OnlyForms),' CompName=',Project1.Units[i].ComponentName,' UnitName=',Project1.Units[i].UnitName);
-      if OnlyForms then begin
+      if OnlyForms then
+      begin
         // add all form names of project
-        if Project1.Units[i].ComponentName<>'' then begin
-          UnitList.Add(TViewUnitsEntry.Create(
-            Project1.Units[i].ComponentName,i,Project1.Units[i]=ActiveUnitInfo));
+        if Project1.Units[i].ComponentName<>'' then
+        begin
+          UnitList.AddObject(Project1.Units[i].UnitName, TViewUnitsEntry.Create(
+            Project1.Units[i].ComponentName, i, Project1.Units[i]=ActiveUnitInfo));
         end;
-      end else begin
+      end else
+      begin
         // add all unit names of project
-        if (Project1.Units[i].UnitName<>'') then begin
-          UnitList.Add(TViewUnitsEntry.Create(
-            Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
-        end else if Project1.MainUnitID=i then begin
-          MainUnitInfo:=Project1.MainUnitInfo;
-          if pfMainUnitIsPascalSource in Project1.Flags then begin
-            MainUnitName:=CreateSrcEditPageName('',
+        if (Project1.Units[i].UnitName <> '') then
+        begin
+          UnitList.AddObject(Project1.Units[i].UnitName, TViewUnitsEntry.Create(
+            Project1.Units[i].UnitName, i, Project1.Units[i]=ActiveUnitInfo));
+        end
+        else if Project1.MainUnitID = i then
+        begin
+          MainUnitInfo := Project1.MainUnitInfo;
+          if pfMainUnitIsPascalSource in Project1.Flags then
+          begin
+            MainUnitName := CreateSrcEditPageName('',
               MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
-            if MainUnitName<>'' then begin
-              UnitList.Add(TViewUnitsEntry.Create(
+            if MainUnitName <> '' then
+            begin
+              UnitList.AddObject(MainUnitName, TViewUnitsEntry.Create(
                 MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
             end;
           end;
@@ -6054,18 +6064,21 @@ Begin
       end;
     end;
     if OnlyForms then
-      DlgCaption:=dlgMainViewForms
+      DlgCaption := dlgMainViewForms
     else
-      DlgCaption:=dlgMainViewUnits ;
-    if ShowViewUnitsDlg(UnitList,true,DlgCaption)=mrOk then begin
+      DlgCaption := dlgMainViewUnits ;
+    if ShowViewUnitsDlg(UnitList,true,DlgCaption) = mrOk then
+    begin
+      { This is where we check what the user selected. }
       AnUnitInfo:=nil;
-      for i:=0 to UnitList.Count-1 do begin
-        if TViewUnitsEntry(UnitList[i]).Selected then begin
-          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
-          if AnUnitInfo.EditorIndex>=0 then begin
-            SourceNoteBook.Notebook.PageIndex:=AnUnitInfo.EditorIndex;
+      for i := 0 to UnitList.Count-1 do
+      begin
+        if TViewUnitsEntry(UnitList.Objects[i]).Selected then begin
+          AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
+          if AnUnitInfo.EditorIndex >= 0 then begin
+            SourceNoteBook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
           end else begin
-            if Project1.MainUnitInfo=AnUnitInfo then
+            if Project1.MainUnitInfo = AnUnitInfo then
               Result:=DoOpenMainUnit(false)
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
@@ -6077,14 +6090,15 @@ Begin
               ShowDesignerForm(AForm);
           end;
         end;
-      end;
-      if (AnUnitInfo<>nil) and (not OnlyForms) then begin
+      end;  { for }
+      if (AnUnitInfo<>nil) and (not OnlyForms) then
+      begin
         SourceNotebook.ShowOnTop;
       end;
-    end;
+    end;  { if ShowViewUnitDlg... }
   finally
     for i:=0 to UnitList.Count-1 do
-      TViewUnitsEntry(UnitList[i]).Free;
+      TViewUnitsEntry(UnitList.Objects[i]).Free;
     UnitList.Free;
   end;
   Result:=mrOk;
@@ -7052,47 +7066,59 @@ begin
 end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
-var UnitList: TList;
+var
+  UnitList: TStringList;
   i:integer;
   AName: string;
   AnUnitInfo: TUnitInfo;
 Begin
-  UnitList:=TList.Create;
+  UnitList := TStringList.Create;
+  UnitList.Sorted := True;
+
   try
-    for i:=0 to Project1.UnitCount-1 do begin
+    for i := 0 to Project1.UnitCount-1 do
+    begin
       AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then begin
-        AName:=Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
+      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
+      begin
+        AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
+        UnitList.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
-    if ShowViewUnitsDlg(UnitList, true, lisRemoveFromProject)=mrOk then begin
-      for i:=0 to UnitList.Count-1 do begin
-        if TViewUnitsEntry(UnitList[i]).Selected then begin
-          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
-          AnUnitInfo.IsPartOfProject:=false;
-          if (Project1.MainUnitID>=0)
-          and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-          then begin
-            if (AnUnitInfo.UnitName<>'') then begin
+    if ShowViewUnitsDlg(UnitList, true, lisRemoveFromProject) = mrOk then
+    begin
+      { This is where we check what the user selected. }
+      for i:=0 to UnitList.Count-1 do
+      begin
+        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
+        begin
+          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
+          AnUnitInfo.IsPartOfProject := false;
+          if (Project1.MainUnitID >= 0) and
+             (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then
+          begin
+            if (AnUnitInfo.UnitName <> '') then
+            begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project1.MainUnitInfo.Source,AnUnitInfo.UnitName)
+                Project1.MainUnitInfo.Source, AnUnitInfo.UnitName)
               then
-                Project1.MainUnitInfo.Modified:=true;
+                Project1.MainUnitInfo.Modified := true;
             end;
-            if (AnUnitInfo.ComponentName<>'') then begin
+            if (AnUnitInfo.ComponentName <> '') then
+            begin
               Project1.RemoveCreateFormFromProjectFile(
-                  'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
+                  'T' + AnUnitInfo.ComponentName, AnUnitInfo.ComponentName);
             end;
           end;
         end;
-      end;
-    end;
+      end;  { for }
+    end;  { if ShowViewUnitsDlg.. }
   finally
-    for i:=0 to UnitList.Count-1 do TViewUnitsEntry(UnitList[i]).Free;
+    for i := 0 to UnitList.Count-1 do
+      TViewUnitsEntry(UnitList.Objects[i]).Free;
     UnitList.Free;
   end;
-  Result:=mrOk;
+  Result := mrOk;
 end;
 
 function TMainIDE.DoWarnAmbiguousFiles: TModalResult;

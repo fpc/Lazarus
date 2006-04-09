@@ -4,6 +4,8 @@
                           ViewUnit_dlg.pp
                           ---------------
    TViewUnit is the application dialog for displaying all units in a project.
+   It gets used for the "View Units", "View Forms" and "Remove from Project"
+   menu items.
 
 
    Initial Revision  : Sat Feb 19 17:42 CST 1999
@@ -59,15 +61,14 @@ type
     MultiSelectCheckBox: TCheckBox;
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
-    procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   public
     constructor Create(TheOwner: TComponent); override;
   end;
 
 
-function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean;
+function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
   const Caption: string): TModalResult;
   // Entries is a list of TViewUnitsEntry(s)
 
@@ -75,9 +76,10 @@ function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean;
 implementation
 
 
-function ShowViewUnitsDlg(Entries: TList;
-  MultiSelect: boolean; const Caption: string): TModalResult;
-var ViewUnitDialog: TViewUnitDialog;
+function ShowViewUnitsDlg(Entries: TStringList; MultiSelect: boolean;
+  const Caption: string): TModalResult;
+var
+  ViewUnitDialog: TViewUnitDialog;
   i: integer;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
@@ -90,15 +92,15 @@ begin
       BeginUpdate;
       Clear;
       for i:=0 to Entries.Count-1 do
-        Add(TViewUnitsEntry(Entries[i]).Name);
+        Add(TViewUnitsEntry(Entries.Objects[i]).Name);
       EndUpdate;
     end;
     for i:=0 to Entries.Count-1 do
-      ViewUnitDialog.ListBox.Selected[i]:=TViewUnitsEntry(Entries[i]).Selected;
+      ViewUnitDialog.ListBox.Selected[i]:=TViewUnitsEntry(Entries.Objects[i]).Selected;
     Result:=ViewUnitDialog.ShowModal;
     if Result=mrOk then begin
       for i:=0 to Entries.Count-1 do begin
-        TViewUnitsEntry(Entries[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
+        TViewUnitsEntry(Entries.Objects[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
       end;
     end;
   finally
@@ -123,13 +125,13 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  btnOK.Caption:= lisOkBtn;
-  btnOk.Left:=ClientWidth-btnOk.Width-5;
-  btnCancel.Caption:=dlgCancel;
-  btnCancel.Left:=btnOk.Left;
-  CancelControl:=btnCancel;
-  MultiSelectCheckBox.Caption:=dlgMultiSelect;
-  MultiSelectCheckBox.Left:=btnOk.Left;
+  btnOK.Caption               := lisOkBtn;
+  btnOk.Left                  := ClientWidth-btnOk.Width-5;
+  btnCancel.Caption           := dlgCancel;
+  btnCancel.Left              := btnOk.Left;
+  CancelControl               := btnCancel;
+  MultiSelectCheckBox.Caption := dlgMultiSelect;
+  MultiSelectCheckBox.Left    := btnOk.Left;
 end;
 
 Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
