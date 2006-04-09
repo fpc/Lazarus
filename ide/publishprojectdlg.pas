@@ -47,6 +47,8 @@ type
   { TPublishProjectDialog }
 
   TPublishProjectDialog = class(TForm)
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     DestDirGroupBox: TGroupBox;
     DestDirComboBox: TComboBox;
     BrowseDestDirBitBtn: TBitBtn;
@@ -70,9 +72,7 @@ type
     SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox;
     SaveClosedEditorFilesInfoCheckbox: TCheckBox;
 
-    OkButton: TButton;
     SaveSettingsButton: TButton;
-    CancelButton: TButton;
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
     procedure ExcludeFilterGroupboxRESIZE(Sender: TObject);
