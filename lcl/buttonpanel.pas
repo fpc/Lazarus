@@ -367,6 +367,10 @@ end;
 
 destructor TCustomButtonPanel.Destroy;
 begin
+  FreeAndNil(FCancelGlyph);
+  FreeAndNil(FCloseGlyph);
+  FreeAndNil(FHelpGlyph);
+  FreeAndNil(FOKGlyph);
   inherited Destroy;
 end;
 
