@@ -7089,7 +7089,29 @@ To add, change or delete a column use the Columns property.</descr>
       <!-- enumeration type Visibility: default -->
       <element name="TToolButtonStyle">
         <short>Determines the style of the tool buttons.</short>
-        <descr>These are the possible values of Style:</descr>
+        <descr>
+          <p>These are the possible values of Style:</p>
+          <ul>
+            <li>
+              <b>tbsButton</b>
+ - The button appears and functions like a normal button.</li>
+            <li>
+              <b>tbsCheck</b>
+ - Clicking the button toggles the Down property. Once selected, the button remains selected until clicked again.</li>
+            <li>
+              <b>tbsDivider</b>
+ - The button appears as a vertical line on the toolbar (used to separate other controls).</li>
+            <li>
+              <b>tbsDropDown</b>
+ - The button displays a downwards-pointing arrow (suitable for accessing a drop-down menu).</li>
+            <li>
+              <b>tbsSeparator</b>
+ - The button appears as an empty space on the toolbar (used to separate other controls).</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TToolButton"/>
+        </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- enumeration value Visibility: default -->
