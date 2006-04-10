@@ -1,32 +1,52 @@
 object StreamAsXMLForm: TStreamAsXMLForm
-  Left = 334
-  Height = 434
-  Top = 182
-  Width = 493
-  HorzScrollBar.Page = 492
-  VertScrollBar.Page = 433
+  ActiveControl = Button1
   Caption = 'StreamAsXMLForm'
   ClientHeight = 434
   ClientWidth = 493
   OnCreate = FormCreate
-  PixelsPerInch = 95
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 492
+  VertScrollBar.Page = 433
+  Left = 334
+  Height = 434
+  Top = 182
+  Width = 493
   object GroupBox1: TGroupBox
-    Left = 16
-    Height = 105
-    Top = 16
-    Width = 185
     Caption = 'GroupBox1'
-    ClientHeight = 88
-    ClientWidth = 181
+    ClientHeight = 133
+    ClientWidth = 271
     TabOrder = 0
+    Left = 16
+    Height = 150
+    Top = 16
+    Width = 275
     object Button1: TButton
+      BorderSpacing.InnerBorder = 2
+      Caption = 'Button1'
+      TabOrder = 0
       Left = 33
       Height = 25
       Top = 15
       Width = 75
-      BorderSpacing.InnerBorder = 2
-      Caption = 'Button1'
-      TabOrder = 0
+    end
+    object GroupBox2: TGroupBox
+      Caption = 'GroupBox2'
+      ClientHeight = 80
+      ClientWidth = 128
+      TabOrder = 1
+      Left = 123
+      Height = 97
+      Top = 17
+      Width = 132
+      object Button2: TButton
+        BorderSpacing.InnerBorder = 2
+        Caption = 'Button2'
+        TabOrder = 0
+        Left = 27
+        Height = 25
+        Top = 21
+        Width = 75
+      end
     end
   end
 end

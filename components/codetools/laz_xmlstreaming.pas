@@ -21,7 +21,7 @@ unit Laz_XMLStreaming;
 
 interface
 
-uses SysUtils, Classes, TypInfo, Laz_DOM, Laz_XMLWrite;
+uses SysUtils, Classes, TypInfo, FileProcs, Laz_DOM, Laz_XMLWrite;
 
 type
 
@@ -86,7 +86,7 @@ type
     FDoc: TDOMDocument;
     FRootEl: TDOMElement;
   public
-    constructor Create(ADoc: TDOMDocument);
+    constructor Create(ADoc: TDOMDocument; const APath: string);
     destructor Destroy; override;
 
     { All ReadXXX methods are called _after_ the value type has been read! }
@@ -161,10 +161,12 @@ begin
     StackEl := TXMLObjectWriterStackEl.Create;
     StackEl.Parent := FRootEl;
   end;
+  //DebugLn('TXMLObjectWriter.StackPush ',dbgs(FStack.Count));
 end;
 
 procedure TXMLObjectWriter.StackPop;
 begin
+  //DebugLn('TXMLObjectWriter.StackPop ',dbgs(FStack.Count));
   StackEl.Free;
   if FStack.Count > 0 then
   begin
@@ -178,7 +180,8 @@ begin
   end;
 end;
 
-function TXMLObjectWriter.GetPropertyElement(const TypeName: String): TDOMElement;
+function TXMLObjectWriter.GetPropertyElement(const TypeName: String
+  ): TDOMElement;
 begin
   if not Assigned(StackEl.Element) then
   begin
@@ -253,6 +256,7 @@ end;
 
 procedure TXMLObjectWriter.BeginCollection;
 begin
+  GetPropertyElement('collectionproperty');
   StackPush;
   StackEl.Element := FDoc.CreateElement('collection');
   StackEl.Parent.AppendChild(StackEl.Element);
@@ -260,6 +264,8 @@ end;
 
 procedure TXMLObjectWriter.BeginComponent(Component: TComponent; Flags: TFilerFlags;
   ChildPos: Integer);
+// TWriter expects to push two elements on the stack, which are popped by
+// two EndList calls.
 begin
   StackPush;
   StackEl.Element := FDoc.CreateElement('component');
@@ -286,6 +292,7 @@ procedure TXMLObjectWriter.EndList;
 begin
   if StackEl.ElType = elPropertyList then
   begin
+    // end the property list and start the children list
     if not StackEl.Element.HasChildNodes then
       StackEl.Parent.RemoveChild(StackEl.Element);
     StackPop;
@@ -296,15 +303,18 @@ begin
     StackEl.ElType := elChildrenList;
   end else if StackEl.ElType = elChildrenList then
   begin
+    // end the children list and the component
     if not StackEl.Element.HasChildNodes then
       StackEl.Parent.RemoveChild(StackEl.Element);
-    StackPop;
+    StackPop; // end children
+    StackPop; // end component
   end else
     StackPop;
 end;
 
 procedure TXMLObjectWriter.BeginProperty(const PropName: String);
 begin
+  //DebugLn('TXMLObjectWriter.BeginProperty "',PropName,'"');
   StackPush;
   StackEl.CurName := PropName;
 end;
@@ -371,19 +381,18 @@ procedure TXMLObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
 var
   i: Integer;
   Mask: LongInt;
+  s: String;
 begin
-  StackPush;
-  StackEl.Element := FDoc.CreateElement('set');
-  StackEl.Parent.AppendChild(StackEl.Element);
-
   Mask := 1;
-  for i := 0 to 31 do
-  begin
-    if (Value and Mask) <> 0 then
-      GetPropertyElement('enum')['value'] := GetEnumName(PTypeInfo(SetType), i);
+  s:='';
+  for i := 0 to 31 do begin
+    if (Value and Mask) <> 0 then begin
+      if s<>'' then s:=s+',';
+      s:=s+GetEnumName(PTypeInfo(SetType), i);
+    end;
     Mask := Mask shl 1;
   end;
-  EndList;
+  GetPropertyElement('set')['value'] := s;
 end;
 
 procedure TXMLObjectWriter.WriteString(const Value: String);
@@ -400,12 +409,52 @@ end;
 
 { TXMLObjectReader }
 
-constructor TXMLObjectReader.Create(ADoc: TDOMDocument);
+constructor TXMLObjectReader.Create(ADoc: TDOMDocument; const APath: string);
+var
+  Node: TDOMNode;
+  PathLen: Integer;
+  StartPos: Integer;
+  EndPos: LongInt;
+  NodeName: string;
+  Child: TDOMNode;
+
+  procedure RaiseMissingNode;
+  begin
+    raise Exception.Create('XML node not found '+APath);
+  end;
+  
+  procedure RaiseNotDOMElement;
+  begin
+    raise Exception.Create('invalid XML node '+APath);
+  end;
+
 begin
   inherited Create;
   FDoc := ADoc;
-  FRootEl := FDoc.CreateElement('fcl-persistent');
-  FDoc.AppendChild(FRootEl);
+
+  Node := Doc.DocumentElement;
+  PathLen:=length(APath);
+  StartPos:=1;
+  while True do begin
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
+    if EndPos>StartPos then begin
+      SetLength(NodeName,EndPos-StartPos);
+      Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+      StartPos:=EndPos+1;
+      Child := Node.FindNode(NodeName);
+      if not Assigned(Child) then
+        RaiseMissingNode;
+      Node := Child;
+    end else if EndPos>PathLen then begin
+      break;
+    end else begin
+      StartPos:=EndPos+1;
+    end;
+  end;
+  if not (Node is TDOMElement) then
+    RaiseNotDOMElement;
+  FRootEl:=TDOMElement(Node)
 end;
 
 destructor TXMLObjectReader.Destroy;
