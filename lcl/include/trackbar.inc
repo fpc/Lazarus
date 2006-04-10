@@ -35,9 +35,8 @@
    - what about these private procs
       procedure CNHScroll(var Message: TWMHScroll); message CN_HSCROLL;
       procedure CNVScroll(var Message: TWMVScroll); message CN_VSCROLL;
-   - there are 2 new properties which I've implemented because they're
-     nice addons for the GTK interface
-      * ShowScale
+   - there is a new property which I've implemented because it is a
+     nice addon for the GTK interface
       * ScalePos (left, top, right, bottom)
 
   TODO:
@@ -70,7 +69,6 @@ begin
   FPosition  := 0;
   FPageSize  := 2;
   FOrientation := trHorizontal;
-  FShowScale := false;
   FScalePos  := trTop;
   FScaleDigits := 0;
   FTickMarks:=tmBottomRight;
@@ -213,7 +211,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetTickStyle(Value: TTickStyle);
 begin
-  FTickStyle := Value;
+  if FTickStyle <> Value then
+  begin
+    FTickStyle := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -300,21 +302,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomTrackBar.SetShowScale
-  Params:  value : true = show scaling text
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomTrackBar.SetShowScale(Value: boolean);
-begin
-  if FShowScale <> Value then
-  begin
-    FShowScale := Value;
-    ApplyChanges;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomTrackBar.SetScalePos
   Params:  value : position of the scaling text
   Returns: Nothing
@@ -329,4 +316,3 @@ begin
   end;
 end;
 
-{ -------------------- unimplemented stuff below ------------------------------}

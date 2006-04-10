@@ -352,9 +352,9 @@ begin
       otherwise it's set always to true }
     gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), false);
 
-    if ShowScale then
+    if (TickStyle<>tsNone) then
     begin
-       gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), ShowScale);
+       gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), true);
        case ScalePos of
           trLeft  : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_LEFT);
           trRight : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_RIGHT);

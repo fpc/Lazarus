@@ -1302,7 +1302,6 @@ Type
     property PopupMenu;
     property ScalePos;
     property ShowHint;
-    property ShowScale;
     property TabOrder;
     property TabStop;
     property TickMarks;

@@ -1474,7 +1474,6 @@ type
     FMax: Integer;
     FFrequency: Integer;
     FPosition: Integer;
-    FShowScale : boolean;
     FScalePos : TTrackBarScalePos;
     FScaleDigits : integer;
     FOnChange: TNotifyEvent;
@@ -1487,7 +1486,6 @@ type
     procedure SetParams(APosition, AMin, AMax: Integer);
     procedure SetPosition(Value: Integer);
     procedure SetScalePos(Value: TTrackBarScalePos);
-    procedure SetShowScale(Value: boolean);
     procedure SetTickMarks(Value: TTickMark);
     procedure SetTickStyle(Value: TTickStyle);
     procedure UpdateSelection;
@@ -1509,7 +1507,6 @@ type
     property PageSize: Integer read FPageSize write SetPageSize default 2;
     property Position: Integer read FPosition write SetPosition;
     property ScalePos: TTrackBarScalePos read FScalePos write SetScalePos;
-    property ShowScale: boolean read FShowScale write SetShowScale;
     property TabStop default True;
     property TickMarks: TTickMark read FTickMarks write SetTickMarks default tmBottomRight;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle default tsAuto;
@@ -1559,7 +1556,6 @@ type
     property Position;
     property ScalePos;
     property ShowHint;
-    property ShowScale;
     property TabOrder;
     property TabStop;
     property TickMarks;

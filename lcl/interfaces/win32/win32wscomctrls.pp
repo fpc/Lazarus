@@ -541,7 +541,7 @@ begin
       trHorizontal:
         SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_HORZ);
     end;
-    if ShowScale then
+    if TickStyle<>tsNone then
     begin
       case ScalePos of
         trLeft:

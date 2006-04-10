@@ -123,8 +123,10 @@ End;
 procedure TForm1.Button5Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-        writeln ('Toggling ShowScalePos');
-        Track1.ShowScale := not Track1.ShowScale;
+        writeln ('Toggling showing tickmarks');
+     if Track1.TickStyle = tsNone
+       then Track1.TickStyle = tsAuto
+       else Track1.TickStyle = tsNone;
    end;
 End;
 
