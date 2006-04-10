@@ -68,6 +68,7 @@ begin
   FMin       := 0;
   FPosition  := 0;
   FPageSize  := 2;
+  FFrequency := 1;
   FOrientation := trHorizontal;
   FScalePos  := trTop;
   FScaleDigits := 0;
@@ -200,7 +201,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetFrequency(Value: Integer);
 begin
-  FFrequency := Value;
+  if FFrequency <> Value then
+  begin
+    FFrequency := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -226,7 +231,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetTickMarks(Value: TTickMark);
 begin
-  FTickMarks := Value;
+  if FTickMarks <> Value then
+  begin
+    FTickMarks := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------

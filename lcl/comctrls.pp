@@ -1498,7 +1498,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetTick(Value: Integer);
   published
-    property Frequency: Integer read FFrequency write SetFrequency;
+    property Frequency: Integer read FFrequency write SetFrequency default 1;
     property LineSize: Integer read FLineSize write SetLineSize default 1;
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;

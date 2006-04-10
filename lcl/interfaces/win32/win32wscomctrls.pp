@@ -32,11 +32,11 @@ uses
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
   ImgList, StdCtrls,
-  LCLProc, InterfaceBase, Win32Int,
+  LCLProc, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
   // win32 widgetset
-  Win32WSControls;
+   Win32Int, Win32Proc, Win32WSControls;
 
 type
 
@@ -525,35 +525,29 @@ end;
 procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
+  NewStyle: integer;
+const
+  StyleMask = TBS_AUTOTICKS or TBS_NOTICKS or TBS_VERT or TBS_TOP or TBS_BOTH;
+  TickStyleStyle : array[TTickStyle] of integer =
+    (TBS_NOTICKS, TBS_AUTOTICKS, 0);
+  OrientationStyle : array[TTrackBarOrientation] of integer =
+    (TBS_HORZ, TBS_VERT);
+  TickMarksStyle : array[TTickMark] of integer =
+    (TBS_BOTTOM, TBS_TOP, TBS_BOTH);
 begin
   with ATrackBar do
   begin
     { cache handle }
     wHandle := Handle;
+    NewStyle := TickStyleStyle[TickStyle] or OrientationStyle[Orientation] or
+                TickMarksStyle[TickMarks];
+    UpdateWindowStyle(wHandle, NewStyle, StyleMask);
     Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(true), Max);
     Windows.SendMessage(wHandle, TBM_SETRANGEMIN, Windows.WPARAM(true), Min);
     Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(true), Position);
     Windows.SendMessage(wHandle, TBM_SETLINESIZE, 0, LineSize);
     Windows.SendMessage(wHandle, TBM_SETPAGESIZE, 0, PageSize);
-    case Orientation of
-      trVertical:
-        SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_VERT);
-      trHorizontal:
-        SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_HORZ);
-    end;
-    if TickStyle<>tsNone then
-    begin
-      case ScalePos of
-        trLeft:
-          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_LEFT or TBS_VERT);
-        trRight:
-          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_RIGHT or TBS_VERT);
-        trTop:
-          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_TOP or TBS_HORZ);
-        trBottom:
-          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_BOTTOM or TBS_HORZ);
-      end;
-    end;
+    Windows.SendMessage(wHandle, TBM_SETTICFREQ, Frequency, 0);
   end;
 end;
 
