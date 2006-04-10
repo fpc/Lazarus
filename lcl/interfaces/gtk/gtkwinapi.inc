@@ -3844,7 +3844,7 @@ begin
     if UseFont<>nil then begin
       LineLen := FindChar(#10,Str,Count);
       UpdateDCTextMetric(TDeviceContext(DC));
-      LineHeight:=DCTextMetric.TextMetric.tmHeight;
+      LineHeight:=GetTextHeight(DCTextMetric);
       if Buffered then begin
         TxtPt.X := 0;
         TxtPt.Y := LineHeight;

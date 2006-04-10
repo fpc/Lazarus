@@ -29,6 +29,7 @@ type
     property MyString: string read FMyString write FMyString;
     property MyEnum: TMyEnum read FMyEnum write FMyEnum;
     property MySet: TMySet read FMySet write FMySet;
+    
   end;
 
 

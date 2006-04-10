@@ -392,13 +392,9 @@ begin
 end;
 
 procedure TXMLObjectWriter.WriteWideString(const Value: WideString);
-var
-  s: string;
+// save widestrings as utf8
 begin
-  SetLength(s,length(Value)*2);
-  if s<>'' then
-    System.Move(Value[1],s[1],length(s));
-  GetPropertyElement('widestring')['value'] := s;
+  GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
 
