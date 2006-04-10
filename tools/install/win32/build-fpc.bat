@@ -5,16 +5,10 @@ SET SOURCE_DIR=%FPCSVNDIR%
 SET INSTALL_BASE=%BUILDDIR%\pp
 SET INSTALL_BINDIR=%INSTALL_BASE%\bin\i386-win32
 
-copy %FPCBINDIR%\as.exe %FPCBINDIR%\asw.exe 
-copy %FPCBINDIR%\ld.exe %FPCBINDIR%\ldw.exe 
-
 %SOURCE_DIR:~,2%
 cd %SOURCE_DIR%
 %MAKEEXE% clean PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
 %MAKEEXE% compiler_cycle PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
-
-del %FPCBINDIR%\asw.exe 
-del %FPCBINDIR%\ldw.exe 
 
 set COMPILER=%SOURCE_DIR%/compiler/ppc386
 
