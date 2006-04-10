@@ -46,13 +46,13 @@ type
         TForm1 = class(TFORM)
         public
           Button1: TButton;
-              Button2: TButton;
+          Button2: TButton;
           Button3: TButton;
           Button4: TButton;
           Button5: TButton;
-                 Button6: TButton;
+          Button6: TButton;
           Button7: TButton;
-                 Button8: TButton;
+          Button8: TButton;
           Track1 : TTRackBar;
           Track2 : TTRackBar;
           mnuMain: TMainMenu;
@@ -125,8 +125,8 @@ Begin
    if assigned (Track1) then begin
         writeln ('Toggling showing tickmarks');
      if Track1.TickStyle = tsNone
-       then Track1.TickStyle = tsAuto
-       else Track1.TickStyle = tsNone;
+       then Track1.TickStyle := tsAuto
+       else Track1.TickStyle := tsNone;
    end;
 End;
 
