@@ -1316,7 +1316,7 @@ begin
   if (TargetFilename<>'') and FilenameIsAbsolute(TargetFilename) then begin
     // fully specified target filename
     Result:=TargetFilename;
-  end else if ExtractFilePath(TargetFilename)<>'' then begin
+  end else if TargetFilename<>'' then begin
     // TargetFilename is relative to project directory
     Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+TargetFilename;
   end else begin
