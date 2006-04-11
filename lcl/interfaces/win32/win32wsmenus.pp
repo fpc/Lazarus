@@ -51,10 +51,10 @@ type
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
-    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
+    //class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
-    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
-    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override; 
+    //class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
+    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
   end;
 
   { TWin32WSMenu }
@@ -84,10 +84,423 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
+  
+  function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+  function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+  procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+
 
 implementation
 
 { helper routines }
+
+const SpaceBetweenIcons = 5;
+
+type
+  TCaptionFlags = (cfBold, cfUnderline);
+  TCaptionFlagsSet = set of TCaptionFlags;
+  
+  TMenuItemCaptionToken = class(TObject)
+    token: string;
+    fontDecoration: TCaptionFlagsSet;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+(* TMenuItemCaptionToken *)
+constructor TMenuItemCaptionToken.Create;
+begin
+  inherited Create;
+  token := '';
+  fontDecoration := [];
+end;
+    
+destructor TMenuItemCaptionToken.Destroy;
+begin
+  inherited Destroy;
+end;
+(* End of TMenuItemCaptionToken *)
+
+procedure RemoveUnderline(const aList: Tlist);
+var i: integer;
+    token: TMenuItemCaptionToken;
+begin
+  for i := 0 to aList.Count - 1 do
+  begin
+    token := TMenuItemCaptionToken(aList[i]);
+    token.fontDecoration := token.fontDecoration - [cfUnderline];
+  end;
+end;
+
+procedure MergeTokens(const aList: TList);
+var i: integer;
+    token1, token2: TMenuItemCaptionToken;
+begin
+  i := aList.Count - 1;
+  while i > 0 do
+  begin
+    token1 := TMenuItemCaptionToken(aList[i-1]);
+    token2 := TMenuItemCaptionToken(aList[i]);
+    if (token1.fontDecoration = token2.fontDecoration) then
+    begin
+      token1.token := token1.token + token2.token;
+      token2.Free;
+      aList.Delete(i);
+    end;
+    dec(i);
+  end;
+end;
+
+function ParseMenuItemCaption(const aUnderlinedChar: char; aCaption: string; const aDecoration: TCaptionFlagsSet): TList;
+var position: integer;
+    token: TMenuItemCaptionToken;
+    subcaption: string;
+begin
+  subcaption := '';
+  Result := TList.Create;
+  position := pos(aUnderlinedChar, aCaption);
+  // if aChar is on the last position then there is nothing to underscore, ignore this character
+  //while (position > 0) and (position < length(aCaption)) do
+  while (position > 0) do
+  begin
+    if aCaption[position+1] = aUnderlinedChar then
+    begin
+      // two 'aChar' characters together are replaced by one
+      subCaption := subcaption + copy(aCaption, 1, position);
+    end else begin
+      // before adding new underlined character, all previous underlined characters must be changed to not underlined - it is Delphi like behavior
+      removeUnderline(Result);
+      if (position > 1) or (subcaption <> '') then
+      begin
+        token := TMenuItemCaptionToken.Create;
+        token.token := subcaption + copy(aCaption, 1, position - 1);
+        token.fontDecoration := aDecoration;
+        Result.add(token);
+      end;
+      // next character (if any) must be underlined
+      if position < length(aCaption) then begin
+        token := TMenuItemCaptionToken.Create;
+        token.token := copy(aCaption, position + 1, 1);
+        token.fontDecoration := aDecoration + [cfUnderline];
+        Result.add(token);
+        subcaption := '';
+      end;
+    end;
+    aCaption := copy(aCaption, position + 2, length(aCaption) - position - 1);
+    position := pos(aUnderlinedChar, aCaption);
+  end;
+  token := TMenuItemCaptionToken.Create;
+  token.token := subcaption + aCaption;
+  token.fontDecoration := aDecoration;
+  Result.add(token);
+  mergeTokens(Result);
+end;
+
+procedure DestroyCaptionTokens(aList: TList);
+var i: integer;
+    token: TMenuItemCaptionToken;
+begin
+  for i := 0 to aList.Count - 1 do
+  begin
+    token := TMenuItemCaptionToken(aList[i]);
+    token.Free;
+  end;
+  aList.Free;
+end;
+    
+
+function MenuItemCaptionFromList(const aList: TList): string;
+var i: integer;
+begin
+  Result := '';
+  for i := 0 to aList.Count - 1 do
+    Result := Result + (TMenuItemCaptionToken(aList[i]).token);
+end;
+
+  
+function GetMenuItemFont(const aFlags: TCaptionFlagsSet): HFONT;
+var lf: LOGFONT;
+    underline: byte;
+    bold: long;
+begin
+  GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), @lf);
+  if cfUnderline in aFlags then underline := 1
+  else underline := 0;
+  if cfBold in aFlags then bold := FW_BOLD
+  else bold := FW_NORMAL;
+  Result := CreateFont(lf.lfHeight, lf.lfWidth, 
+    lf.lfEscapement, lf.lfOrientation, bold, 
+    lf.lfItalic, underline, lf.lfStrikeOut, lf.lfCharSet, 
+    lf.lfOutPrecision, lf.lfClipPrecision, lf.lfQuality, 
+    lf.lfPitchAndFamily, lf.lfFaceName);
+end;
+  
+(* Get the menu item caption including shortcut *)
+function CompleteMenuItemCaption(const aMenuItem: TMenuItem): string;
+begin
+  Result := aMenuItem.Caption;
+  if aMenuItem.shortCut <> scNone then
+    Result := Result  + ShortCutToText(aMenuItem.shortCut);
+end;
+  
+(* Get the maximum length of the given string in pixels *)
+function StringLength(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): integer;
+var captionSize: SIZE;
+    oldFont: HFONT;
+    newFont: HFONT;
+begin
+  newFont := getMenuItemFont(aDecoration);
+  oldFont := SelectObject(aHDC, newFont);
+  GetTextExtentPoint32(aHDC, PChar(aCaption), length(aCaption), @captionSize);
+  SelectObject(aHDC, oldFont);
+  DeleteObject(newFont);
+  Result := captionSize.cx;
+end;
+  
+function MenuCaptionLength(const aList: Tlist; const aHDC: HDC): integer;
+var i: integer;
+    token: TMenuItemCaptionToken;
+begin
+  Result := 0;
+  for i := 0 to aList.Count - 1 do
+  begin
+    token := TMenuItemCaptionToken(aList[i]);
+    Result := Result + StringLength(token.token, aHDC, token.fontDecoration);
+  end;
+end;
+  
+(* Get the maximum height of the given string in pixels *)
+function StringHeight(const aCaption: String; const aHDC: HDC; const aDecoration: TCaptionFlagsSet): integer;
+var captionSize: SIZE;
+    oldFont: HFONT;
+    newFont: HFONT;
+begin
+  newFont := getMenuItemFont(aDecoration);
+  oldFont := SelectObject(aHDC, newFont);
+  GetTextExtentPoint32(aHDC, PChar(aCaption), length(aCaption), @captionSize);
+  SelectObject(aHDC, oldFont);
+  DeleteObject(newFont);
+  Result := captionSize.cy;
+end;
+  
+function MenuCaptionHeight(const aList: TList; const aHDC: HDC): integer;
+var i: integer;
+    token: TMenuItemCaptionToken;
+    height: integer;
+begin
+  Result := 0;
+  for i := 0 to aList.Count - 1 do
+  begin
+    token := TMenuItemCaptionToken(aList[i]);
+    height := StringHeight(token.token, aHDC, token.fontDecoration);
+    if height > Result then Result := height;
+  end;
+end;
+  
+function MenuItemLength(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+var captionTokens: TList;
+    decoration: TCaptionFlagsSet;
+begin
+  if aMenuItem.Default then decoration := [cfBold]
+  else decoration := [];
+  captionTokens := parseMenuItemCaption('&', CompleteMenuItemCaption(aMenuItem), decoration);
+  if aMenuItem.IsInMenuBar then Result := MenuCaptionLength(captionTokens, aHDC)
+  else Result := GetSystemMetrics(SM_CXMENUCHECK) + spaceBetweenIcons + MenuCaptionLength(captionTokens, aHDC) + spaceBetweenIcons;
+  if aMenuItem.hasIcon then
+    Result := Result + aMenuItem.bitmap.width + spaceBetweenIcons;
+  if aMenuItem.ShortCut <> scNone then
+    Result := Result + spaceBetweenIcons;
+  destroyCaptionTokens(captionTokens);
+end;
+
+function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+var captionTokens: TList;
+    decoration: TCaptionFlagsSet;
+begin
+  if aMenuItem.Caption = '-' then Result := 10
+  else begin
+    if aMenuItem.Default then decoration := [cfBold]
+    else decoration := [];
+    captionTokens := parseMenuItemCaption('&', aMenuItem.Caption, decoration);
+    Result := MenuCaptionHeight(captionTokens, aHDC);
+    if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result) then
+      Result := aMenuItem.bitmap.height;
+    Result := Result + 2;
+    destroyCaptionTokens(captionTokens);
+  end;
+end;
+
+function MenuIconWidth(AMenuItem: TMenuItem): integer;
+var
+  SiblingMenuItem : TMenuItem;
+  i : integer;
+  RequiredWidth: integer;
+begin
+  Result := GetSystemMetrics(SM_CXMENUCHECK);
+  for i:= 0 to AMenuItem.Parent.Count -1 do begin
+    SiblingMenuItem := AMenuItem.Parent.Items[i];
+    if SiblingMenuItem.HasIcon then begin
+      RequiredWidth := SiblingMenuItem.Bitmap.Width;
+      if RequiredWidth > Result then
+        Result := RequiredWidth;
+    end;
+  end;
+end;
+
+function LeftCaptionPosition(const aMenuItemLength: integer; const anElementLength: integer; const AMenuItem: TMenuItem): integer;
+begin
+  if AMenuItem.IsInMenuBar then Result := (aMenuItemLength - anElementLength) div 2
+  else Result := MenuIconWidth(AMenuItem) + SpaceBetweenIcons;
+end;
+
+function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
+begin
+  Result := (aMenuItemHeight - anElementHeight) div 2;
+end;
+
+function BackgroundColorMenu(const aSelected: boolean): COLORREF;
+begin
+  if aSelected then
+    Result := GetSysColor(COLOR_HIGHLIGHT)
+  else
+    Result := GetSysColor(COLOR_MENU);
+end;
+
+function TextColorMenu(const aSelected: boolean; const anEnabled: boolean): COLORREF;
+begin
+  if anEnabled then
+  begin
+    if aSelected then
+      Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
+    else
+      Result := GetSysColor(COLOR_MENUTEXT);
+  end else
+    Result := GetSysColor(COLOR_GRAYTEXT);
+end;
+
+procedure DrawSeparator(const aHDC: HDC; const aRect: Windows.RECT);
+var separatorRect: Windows.RECT;
+begin
+  separatorRect.left := aRect.left;
+  separatorRect.right := aRect.right;
+  separatorRect.top := aRect.top + (aRect.bottom - aRect.top) div 2 - 1;
+  separatorRect.bottom := separatorRect.top + 2;
+  DrawEdge(aHDC, separatorRect, BDR_SUNKENOUTER, BF_RECT);
+end;
+
+procedure DrawList(const aList: TList; const aHDC: HDC; const aRect: Windows.RECT);
+var i: integer;
+    token: TMenuItemCaptionToken;
+    oldFont: HFONT;
+    newFont: HFONT;
+begin
+  for i := 0 to aList.Count - 1 do
+  begin
+    token := TMenuItemCaptionToken(aList[i]);
+    newFont := getMenuItemFont(token.fontDecoration);
+    oldFont := SelectObject(aHDC, newFont);
+    ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, nil, PChar(token.token), length(token.token), nil);
+    SelectObject(aHDC, oldFont);
+    DeleteObject(newFont);
+  end;
+end;
+
+procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+var checkMarkWidth: integer;
+    checkMarkHeight: integer;
+    hdcMem: HDC;
+    monoBitmap: HBITMAP;
+    oldBitmap: HBITMAP;
+    checkMarkShape: integer;
+    checkMarkRect: Windows.RECT;
+begin
+  hdcMem := CreateCompatibleDC(aHDC);
+  checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
+  checkMarkHeight := GetSystemMetrics(SM_CYMENUCHECK);
+  monoBitmap := CreateBitmap(checkMarkWidth, checkMarkHeight, 1, 1, nil);
+  oldBitmap := SelectObject(hdcMem, monoBitmap);
+  checkMarkRect.left := 0;
+  checkMarkRect.top := 0;
+  checkMarkRect.right := checkMarkWidth;
+  checkMarkRect.bottom := checkMarkHeight;
+  if aMenuItem.RadioItem then checkMarkShape := DFCS_MENUBULLET
+  else checkMarkShape := DFCS_MENUCHECK;
+  DrawFrameControl(hdcMem, @checkMarkRect, DFC_MENU, checkMarkShape);
+  TextColorMenu(aSelected, aMenuItem.Enabled);
+  BackgroundColorMenu(aSelected);
+  BitBlt(aHDC, aRect.left, aRect.top + topPosition(aRect.bottom - aRect.top, checkMarkRect.bottom - checkMarkRect.top), checkMarkWidth, checkMarkHeight, hdcMem, 0, 0, SRCCOPY);
+  SelectObject(hdcMem, oldBitmap);
+  DeleteObject(monoBitmap);
+  DeleteDC(hdcMem);
+end;
+
+procedure DrawMenuItemCaption(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+var crText: COLORREF;
+    crBkgnd: COLORREF;
+    captionTokens: TList;
+    decoration: TCaptionFlagsSet;
+begin
+  if aMenuItem.Default then decoration := [cfBold]
+  else decoration := [];
+  captionTokens := parseMenuItemCaption('&', aMenuItem.Caption, decoration);
+  crText := TextColorMenu(aSelected, aMenuItem.Enabled);
+  crBkgnd := BackgroundColorMenu(aSelected);
+  SetTextColor(aHDC, crText);
+  SetBkColor(aHDC, crBkgnd);
+  SetTextAlign(aHDC, TA_UPDATECP);
+  ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, @aRect, PChar(''), 0, nil);
+  MoveToEx(aHDC, aRect.left + leftCaptionPosition(aRect.right - aRect.left, menuCaptionLength(captionTokens, aHDC), aMenuItem), aRect.top + topPosition(aRect.bottom - aRect.top, menuCaptionHeight(captionTokens, aHDC)), nil);
+  DrawList(captionTokens, aHDC, aRect);
+  destroyCaptionTokens(captionTokens);
+end;
+
+procedure DrawMenuItemShortCut(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+var crText: COLORREF;
+    crBkgnd: COLORREF;
+    shortCutText: String;
+    captionTokens: TList;
+    decoration: TCaptionFlagsSet;
+begin
+  shortCutText := ShortCutToText(aMenuItem.ShortCut);
+  if aMenuItem.Default then decoration := [cfBold]
+  else decoration := [];
+  captionTokens := parseMenuItemCaption('&', shortCutText, decoration);
+  crText := TextColorMenu(aSelected, aMenuItem.Enabled);
+  crBkgnd := BackgroundColorMenu(aSelected);
+  SetTextColor(aHDC, crText);
+  SetBkColor(aHDC, crBkgnd);
+  MoveToEx(aHDC, aRect.right - menuCaptionLength(captionTokens, aHDC) - GetSystemMetrics(SM_CXMENUCHECK), aRect.top + topPosition(aRect.bottom - aRect.top, menuCaptionHeight(captionTokens, aHDC)), nil);
+  DrawList(captionTokens, aHDC, aRect);
+  destroyCaptionTokens(captionTokens);
+end;
+
+procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+var hdcMem: HDC;
+    hbmpOld: HBITMAP;
+begin
+  hdcMem := CreateCompatibleDC(aHDC);
+  hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
+  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, aRect.left, aRect.top + TopPosition(aRect.bottom - aRect.top, aMenuItem.Bitmap.Height), aMenuItem.Bitmap.Width, aMenuItem.Bitmap.Height, hdcMem, 0, 0, aMenuItem.Bitmap.MaskHandle, 0, 0);
+  SelectObject(hdcMem, hbmpOld);
+  DeleteDC(hdcMem);
+end;
+
+procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+begin
+  if aMenuItem.Caption = '-' then
+    DrawSeparator(aHDC, aRect)
+  else begin
+    DrawMenuItemCaption(aMenuItem, aHDC, aRect, aSelected);
+    if aMenuItem.ShortCut <> scNone then
+      DrawMenuItemShortCut(aMenuItem, aHDC, aRect, aSelected);
+    if aMenuItem.Checked then
+      DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
+    if aMenuItem.hasIcon then
+      DrawMenuItemIcon(aMenuItem, aHDC, aRect, aSelected);
+  end;
+end;
+
+
 
 procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
 var
@@ -130,19 +543,20 @@ begin
     if ACaption <> '-' then
     begin
       fType := MFT_STRING;
-      {In Win32 Menu items that are created without a initial caption default to disabled,
-       the next three lines are to counter that.}
-      fMask:=MIIM_STATE;
-      GetMenuItemInfo(AMenuItem.Parent.Handle,
-                      AMenuItem.Command, false, @MenuInfo);
-      if AMenuItem.Enabled then
-        fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
-
-      fMask:=MIIM_TYPE or MIIM_STATE;
+      fMask:=MIIM_TYPE;
       dwTypeData:=LPSTR(ACaption);
       cch := StrLen(dwTypeData);
     end
     else fType := MFT_SEPARATOR;
+  end;
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  with MenuInfo do
+  begin
+    cbsize:=sizeof(MENUITEMINFO);
+    fMask := MIIM_TYPE;
+    fType := MFT_OWNERDRAW;
+    dwTypeData:=LPSTR(ACaption);
+    cch := StrLen(dwTypeData);
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
@@ -153,64 +567,6 @@ var
   MenuInfo: MENUITEMINFO;
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
-
-  function GetCheckBitmap(checked: boolean): HBitmap;
-  {TODO: create "checked" icon}
-  var 
-    hbmpCheck, hbmpTrans, hbmpMask: HBITMAP;
-    rectBitmap: Windows.RECT;
-    hbrTrans: HBRUSH;
-    OldCheckMark, OldOrigBitmap, OldTransBitmap: HBITMAP;
-    hdcNewBitmap, hdcOrigBitmap, hdcTransBitmap: HDC;
-    hdcScreen: HDC;
-    maxWidth, newWidth, bmpWidth: integer;
-    maxHeight, newHeight, bmpHeight: integer;
-  begin
-    maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
-    maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
-    if (maxWidth>=AMenuItem.Bitmap.Width) and (maxHeight>=AMenuItem.Bitmap.Height) then Result:=AMenuItem.Bitmap.Handle
-    else
-    begin
-      bmpWidth := AMenuItem.Bitmap.Width;
-      bmpHeight := AMenuItem.Bitmap.Height;
-      newWidth := min(maxWidth, bmpWidth);
-      newHeight := min(maxHeight, bmpHeight);
-      hdcScreen := GetDC(GetDesktopWindow);
-      hdcOrigBitmap  := CreateCompatibleDC(hdcScreen);
-      hdcNewBitmap   := CreateCompatibleDC(hdcScreen);
-      hdcTransBitmap := CreateCompatibleDC(hdcScreen);
-      hbmpCheck := CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
-      hbmpTrans := CreateCompatibleBitmap(hdcScreen, bmpWidth, bmpHeight);
-      hbmpMask  := AMenuItem.Bitmap.MaskHandle;
-      ReleaseDC(GetDesktopWindow, hdcScreen);
-      hbrTrans := CreateSolidBrush(GetSysColor(COLOR_MENU));
-      OldOrigBitmap  := SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
-      OldCheckmark   := SelectObject(hdcNewBitmap, hbmpCheck);
-      OldTransBitmap := SelectObject(hdcTransBitmap, hbmpTrans);
-      // fill transparent-bitmap with transparent color
-      rectBitmap := RECT(0, 0, bmpWidth, bmpHeight);
-      FillRect(hdcTransBitmap, rectBitmap, hbrTrans);
-      // blit menu icon transparently
-      TWin32WidgetSet(WidgetSet).MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, 
-        bmpHeight, hdcOrigBitmap, 0, 0, hbmpMask, 0, 0);
-      // scale to correct size
-      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, SRCCOPY);
-      // free mem
-      SelectObject(hdcOrigBitmap, OldOrigBitmap);
-      SelectObject(hdcTransBitmap, OldTransBitmap);
-      SelectObject(hdcNewBitmap, OldCheckmark);
-      DeleteDC(hdcOrigBitmap);
-      DeleteDC(hdcTransBitmap);
-      DeleteDC(hdcNewBitmap);
-      DeleteObject(hbmpTrans);
-      DeleteObject(hbrTrans);
-      {TODO: Add hbmpCheck into a list of object they must be deleted}
-      Result := hbmpCheck;
-    end;
-  end;
-
-var
-  newCaption: string;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
 
@@ -229,7 +585,7 @@ begin
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
       SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                      false, MenuInfo);
+                      false, @MenuInfo);
     end;
   end;
 
@@ -240,7 +596,6 @@ begin
     fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
     wID:=AMenuItem.Command; {value may only be 16 bit wide!}
     dwItemData:=PtrInt(AMenuItem);
-    // Note: can't use "and MFT_STRING", because MFT_STRING is zero :-)
     if (AMenuItem.Count > 0) then 
     begin
       fMask := fMask or MIIM_SUBMENU;
@@ -249,27 +604,14 @@ begin
       hSubMenu := 0;
     if AMenuItem.Caption <> '-' then
     begin
-      fType:=MFT_STRING;
-      newCaption:=AMenuItem.Caption;
-      if AMenuItem.ShortCut <> scNone then
-        newCaption:=newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
-      dwTypeData:=LPSTR(newCaption);
-      cch:=Length(newCaption);
+      fType:=MFT_OWNERDRAW;
     end else begin
-      fType:=MFT_SEPARATOR;
-      dwTypeData:=nil;
-      cch:=0;
+      fType:=MFT_OWNERDRAW or MFT_SEPARATOR;
+      fState:=fState or MFS_DISABLED;
     end;
+    dwTypeData := PChar(AMenuItem);
     if AMenuItem.RadioItem then fType := fType or MFT_RADIOCHECK;
     if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
-    if AmenuItem.HasIcon then {adds the menuitem icon}
-    begin
-      fMask:=fMask or MIIM_CHECKMARKS;
-      hbmpUnchecked:=GetCheckBitmap(false);
-      hbmpChecked:=0;
-      {TODO: add support for getting icon from SubmenuImages as it will be
-       implemented in LCL}
-    end;
   end;
   if dword(InsertMenuItem(ParentMenuHandle,
        AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
@@ -291,60 +633,51 @@ begin
 end;
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
-var newCaption: string;
 begin
-  newCaption := ACaption;  
-  if AMenuItem.ShortCut <> scNone then
-    newCaption := newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
-  UpdateCaption(AMenuItem, newCaption);
+  UpdateCaption(AMenuItem, aCaption);
 end;
   
 procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
-var
-  NewCaption: string;
 begin
-  NewCaption := AMenuItem.Caption;
-  if NewShortCut <> scNone then
-    NewCaption := NewCaption + #9 + ShortCutToText(NewShortCut);
-  UpdateCaption(AMenuItem, NewCaption);
+  UpdateCaption(AMenuItem, aMenuItem.Caption);
 end;
 
-function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
-
-  function doCheckMenuItem(aMI: TMenuItem; CF: Integer): boolean;
-  begin
-    Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
-  end;
-
-  procedure InterfaceTurnSiblingsOff(AMenuItem: TMenuItem);
-  var
-    aParent, aSibling: TMenuItem;
-    i: integer;
-  begin
+//function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+//
+//  function doCheckMenuItem(aMI: TMenuItem; CF: Integer): boolean;
+//  begin
+//    Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
+//  end;
+//
+//  procedure InterfaceTurnSiblingsOff(AMenuItem: TMenuItem);
+//  var
+//    aParent, aSibling: TMenuItem;
+//    i: integer;
+//  begin
     // Just check all siblings that are in the same group
     // TMenuItem.TurnSiblingsOff should have modified internal flags
-    aParent := AMenuItem.Parent;
-    if aParent <> nil then
-      for i := 0 to aParent.Count-1 do
-      begin
-        aSibling := aParent.Items[i];
-        if (aSibling <> AMenuItem) and aSibling.RadioItem and (aSibling.GroupIndex=AMenuItem.GroupIndex) then
-          doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
-      end;
-  end;
-var
-  CheckFlag: Integer;
-begin
-  if Checked then CheckFlag := MF_CHECKED
-  else CheckFlag := MF_UNCHECKED;
-  CheckFlag := CheckFlag or MF_BYCOMMAND;
-  if (CheckFlag and MF_CHECKED <> 0) and
-    (AMenuItem.GroupIndex <> 0) and AMenuItem.RadioItem
-  then
-    InterfaceTurnSiblingsOff(aMenuItem);
-  Result := doCheckMenuItem(aMenuItem, CheckFlag);
-end;
+//    aParent := AMenuItem.Parent;
+//    if aParent <> nil then
+//      for i := 0 to aParent.Count-1 do
+//      begin
+//        aSibling := aParent.Items[i];
+//        if (aSibling <> AMenuItem) and aSibling.RadioItem and (aSibling.GroupIndex=AMenuItem.GroupIndex) then
+//          doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
+//      end;
+//  end;
+//var
+//  CheckFlag: Integer;
+//begin
+//  if Checked then CheckFlag := MF_CHECKED
+//  else CheckFlag := MF_UNCHECKED;
+//  CheckFlag := CheckFlag or MF_BYCOMMAND;
+//  if (CheckFlag and MF_CHECKED <> 0) and
+//    (AMenuItem.GroupIndex <> 0) and AMenuItem.RadioItem
+//  then
+//    InterfaceTurnSiblingsOff(aMenuItem);
+//  Result := doCheckMenuItem(aMenuItem, CheckFlag);
+//end;
 
 function TWin32WSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 var
@@ -357,29 +690,29 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-function TWin32WSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
-  const RadioItem: boolean): boolean;
-var
-  AParent, ASibling: TMenuItem;
-  i: integer;
-begin
+//function TWin32WSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+//  const RadioItem: boolean): boolean;
+//var
+//  AParent, ASibling: TMenuItem;
+//  i: integer;
+//begin
   // Change all siblings that are in the same group
-  AParent := AMenuItem.Parent;
-  if AParent <> nil then begin
-    Result := True;
-    for i := 0 to AParent.Count-1 do
-    begin
-      ASibling := AParent.Items[i];
-      if (AMenuItem.GroupIndex<>0) and
-         (ASibling.GroupIndex=AMenuItem.GroupIndex) then begin
-        Result := Result and ChangeMenuFlag(ASibling, MFT_RADIOCHECK, RadioItem);
+//  AParent := AMenuItem.Parent;
+//  if AParent <> nil then begin
+//    Result := True;
+//    for i := 0 to AParent.Count-1 do
+//    begin
+//      ASibling := AParent.Items[i];
+//      if (AMenuItem.GroupIndex<>0) and
+//         (ASibling.GroupIndex=AMenuItem.GroupIndex) then begin
+//        Result := Result and ChangeMenuFlag(ASibling, MFT_RADIOCHECK, RadioItem);
         // make sure siblings have same state as the LCL has set them
-        Result := Result and SetCheck(ASibling, ASibling.Checked);
-      end;
-    end;
-  end
-  else Result := False;
-end;
+//        Result := Result and SetCheck(ASibling, ASibling.Checked);
+//      end;
+//    end;
+//  end
+//  else Result := False;
+//end;
 
 function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
@@ -403,7 +736,8 @@ end;
 
 procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
-  MenuHandle, AppHandle: HWND;
+  MenuHandle: HMENU;
+  AppHandle: HWND;
 begin
   MenuHandle := APopupMenu.Handle;
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;

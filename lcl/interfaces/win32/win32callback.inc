@@ -186,6 +186,8 @@ Function
     LParam: Windows.LParam): LResult; stdcall;
 Var
   LMessage: TLMessage;
+  menuItem: TObject;
+  menuHDC: HDC;
   PLMsg: PLMessage;
   R: TRect;
   P: TPoint;
@@ -212,7 +214,7 @@ Var
   LMNotify: TLMNotify; // used by WM_NOTIFY
   DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
   CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
-  
+
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
     NoteBook: TCustomNotebook;
@@ -1050,6 +1052,15 @@ Begin
     End;
     WM_DRAWITEM:
     Begin
+      if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
+      begin
+        menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
+        if menuItem is TMenuItem then
+        begin
+          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
+        end
+      end;
+      
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
@@ -1614,6 +1625,18 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
+      if WParam = 0 then begin
+        menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
+        if menuItem is TMenuItem then
+        begin
+          menuHDC := GetDC(Window);
+          PMeasureItemStruct(LParam)^.itemWidth := MenuItemLength(TMenuItem(menuItem), menuHDC);
+          PMeasureItemStruct(LParam)^.itemHeight := MenuItemHeight(TMenuItem(menuItem), menuHDC);
+          ReleaseDC(Window, menuHDC);
+          Winprocess := False;
+        end else
+          DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
+      end;
       if LWinControl<>nil then begin
         if LWinControl is TCustomCombobox then begin
           LMessage.Msg := LM_MEASUREITEM;
@@ -1621,9 +1644,7 @@ Begin
           LMessage.WParam := WParam;
           Winprocess := False;
         end else
-        if WParam=0 then begin
-          // todo: it's a menu
-        end else begin
+        if WParam <> 0 then begin
           LWinControl := TWinControl(WParam);
           if LWinControl<>nil then begin
             LMessage.Msg := LM_MEASUREITEM;
@@ -1639,7 +1660,7 @@ Begin
       // winxp theme changed, recheck whether themes are enabled
       TWin32WidgetSet(WidgetSet).UpdateThemesActive;
     end;
-    
+
 {$ifdef PassWin32MessagesToLCL}
   else
     // pass along user defined messages
