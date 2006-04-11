@@ -36,7 +36,7 @@ begin
   //need to override this to make sure the datalink gets notified
   //its been modified, then when post etc, it will call
   //updatedata to update the field data with current value
-  FDatalink.edit;
+  FDatalink.Edit;
   FDataLink.Modified;
 
   inherited Change;
