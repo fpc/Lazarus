@@ -791,6 +791,7 @@ var
   CurCompletionControl: TSynCompletion;
   CurrentCompletionType: TCompletionType;
   IdentCompletionTimer: TIdleTimer;
+  IdentCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion;
 
   GotoDialog: TfrmGoto;
@@ -1249,9 +1250,14 @@ begin
     
   ecChar:
     begin
-      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(IdentCompletionTimer.Interval));
-      if (AChar='.') and EditorOpts.AutoIdentifierCompletion then
+      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(IdentCompletionTimer.Interval), Dbgs(FEditor.CaretXY));
+      if (AChar='.') and EditorOpts.AutoIdentifierCompletion then begin
+        // store caret position to detect caret changes
+        IdentCompletionCaretXY:= FEditor.CaretXY;
+        // add one for the .
+        inc(IdentCompletionCaretXY.x);
         IdentCompletionTimer.AutoEnabled:=true;
+      end;
     end;
 
   end;
@@ -2941,7 +2947,9 @@ begin
   IdentCompletionTimer.Enabled:=false;
   IdentCompletionTimer.AutoEnabled:=false;
   TempEditor:=GetActiveSE;
-  if TempEditor<>nil then TempEditor.StartIdentCompletion(false);
+  if (TempEditor<>nil) and
+     (ComparePoints(TempEditor.EditorComponent.CaretXY,IdentCompletionCaretXY)=0)
+     then TempEditor.StartIdentCompletion(false);
 end;
 
 procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;

@@ -2,7 +2,7 @@ object SourceNoteBook: TSourceNoteBook
   Caption = 'SourceNoteBook'
   ClientHeight = 300
   ClientWidth = 400
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
   Left = 533
@@ -26,8 +26,8 @@ object SourceNoteBook: TSourceNoteBook
       end>
     SimpleText = 'This is a test'
     SimplePanel = False
-    Height = 20
-    Top = 280
+    Height = 23
+    Top = 277
     Width = 400
   end
 end
