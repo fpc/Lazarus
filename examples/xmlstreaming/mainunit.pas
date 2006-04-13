@@ -62,7 +62,8 @@ type
     procedure SetFilename(const AValue: string);
   public
     MyComponent: TMyComponent;
-    procedure StreamComponents;
+    procedure WriteComponents;
+    procedure ReadComponents;
     property Filename: string read FFilename write SetFilename;
   end; 
 
@@ -71,8 +72,13 @@ var
 
 function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;
+function CreateXMLReader(ADoc: TDOMDocument; const Path: string;
+  var DestroyDriver: boolean): TReader;
+  
 procedure WriteComponentToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   AComponent: TComponent);
+procedure ReadComponentFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  var AComponent: TComponent);
 
 implementation
 
@@ -84,6 +90,28 @@ begin
   Driver:=TXMLObjectWriter.Create(ADoc,Path,Append);
   DestroyDriver:=true;
   Result:=TWriter.Create(Driver);
+end;
+
+function CreateXMLReader(ADoc: TDOMDocument; const Path: string;
+  var DestroyDriver: boolean): TReader;
+var
+  p: Pointer;
+  Driver: TAbstractObjectReader;
+  DummyStream: TMemoryStream;
+begin
+  DummyStream:=TMemoryStream.Create;
+  try
+    Result:=TReader.Create(DummyStream,256);
+    DestroyDriver:=false;
+    // hack to set a write protected variable.
+    // DestroyDriver:=true; TReader will free it
+    Driver:=TXMLObjectReader.Create(ADoc,Path);
+    p:=@Result.Driver;
+    Result.Driver.Free;
+    TAbstractObjectReader(p^):=Driver;
+  finally
+    DummyStream:=nil;
+  end;
 end;
 
 procedure WriteComponentToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -106,6 +134,24 @@ begin
   end;
 end;
 
+procedure ReadComponentFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  var AComponent: TComponent);
+var
+  DestroyDriver: Boolean;
+  Reader: TReader;
+begin
+  Reader:=nil;
+  DestroyDriver:=false;
+  try
+    Reader:=CreateXMLReader(XMLConfig.Document,Path,DestroyDriver);
+    AComponent:=Reader.ReadRootComponent(AComponent);
+  finally
+    if DestroyDriver then
+      Reader.Driver.Free;
+    Reader.Free;
+  end;
+end;
+
 { TStreamAsXMLForm }
 
 procedure TStreamAsXMLForm.FormCreate(Sender: TObject);
@@ -123,7 +169,7 @@ begin
     Name:='MySubComponent';
   end;
 
-  StreamComponents;
+  WriteComponents;
 end;
 
 procedure TStreamAsXMLForm.SetFilename(const AValue: string);
@@ -132,12 +178,12 @@ begin
   FFilename:=AValue;
 end;
 
-procedure TStreamAsXMLForm.StreamComponents;
+procedure TStreamAsXMLForm.WriteComponents;
 var
   XMLConfig: TXMLConfig;
   sl: TStringList;
 begin
-  DebugLn('TStreamAsXMLForm.StreamComponents ',Filename);
+  DebugLn('TStreamAsXMLForm.WriteComponents ',Filename);
   XMLConfig:=TXMLConfig.Create(Filename);
   try
     WriteComponentToXMLConfig(XMLConfig,'Component',Self);
@@ -148,6 +194,28 @@ begin
     XMLConfig.Free;
   end;
   
+  sl:=TStringList.Create;
+  sl.LoadFromFile(Filename);
+  DebugLn('TStreamAsXMLForm.WriteComponents ',sl.Text);
+  sl.Free;
+end;
+
+procedure TStreamAsXMLForm.ReadComponents;
+var
+  XMLConfig: TXMLConfig;
+  sl: TStringList;
+  NewComponent: TComponent;
+begin
+  DebugLn('TStreamAsXMLForm.ReadComponents ',Filename);
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    NewComponent:=nil;
+    ReadComponentFromXMLConfig(XMLConfig,'Component',NewComponent);
+    XMLConfig.Flush;
+  finally
+    XMLConfig.Free;
+  end;
+
   sl:=TStringList.Create;
   sl.LoadFromFile(Filename);
   DebugLn('TStreamAsXMLForm.StreamComponents ',sl.Text);

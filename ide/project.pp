@@ -3917,7 +3917,7 @@ begin
     fLastOutputDirSrcPathIDAsString:=Project.IDAsString;
     FOutputSrcPath:=TDefineTemplate.Create('CompiledSrcPath',
       lisPkgDefsCompiledSrcPathAddition, CompiledSrcPathMacroName,
-      '$PkgSrcPath('+fLastOutputDirSrcPathIDAsString+');'
+      '$ProjectSrcPath('+fLastOutputDirSrcPathIDAsString+');'
         +'$('+CompiledSrcPathMacroName+')',
       da_Define);
     FOutputSrcPath.SetDefineOwner(Project,false);
