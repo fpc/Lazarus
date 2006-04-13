@@ -3353,10 +3353,13 @@ begin
   RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                    TargetOS,da_Directory);
   s:=IncPathMacro
-    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
+    +';'+Dir+'rtl'+DS+TargetOS+DS+SrcOS+'inc' // e.g. rtl/win32/wininc/
+    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS
+    ;
   RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
-    ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+    ExternalMacroStart+'IncPath',
+    s,da_DefineRecurse));
   s:=SrcPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS;
   RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
