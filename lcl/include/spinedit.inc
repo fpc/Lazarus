@@ -19,9 +19,9 @@
 {-----------------------------------------------------------------------------}
 procedure TCustomFloatSpinEdit.UpdateControl;
 begin
-  if MaxValue<MinValue then fMaxValue:=MinValue;
-  if Value<fMinValue then Value:=fMinValue;
-  if Value>fMaxValue then Value:=fMaxValue;
+  if MaxValue<MinValue then FMaxValue:=MinValue;
+  if FValue<FMinValue then FValue:=fMinValue;
+  if FValue>FMaxValue then FValue:=fMaxValue;
   if (not HandleAllocated) then exit;
   if ([csLoading,csDestroying]*ComponentState<>[]) then begin
     FUpdatePending := true;
@@ -175,6 +175,8 @@ Procedure TCustomFloatSpinEdit.SetValue(const num : Single);
 begin
   if FValue = Num then exit;
   FValue := Num;
+  // clear FValueChanged to prevent getting the old value from the widget
+  FValueChanged := false;
   FUpdatePending := true;
   UpdateControl;
 end;
