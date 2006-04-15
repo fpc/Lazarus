@@ -313,21 +313,22 @@ begin
   destroyCaptionTokens(captionTokens);
 end;
 
-function MenuItemHeight(const aMenuItem: TMenuItem; const aHDC: HDC): integer;
+function MenuItemHeight(const AMenuItem: TMenuItem; const aHDC: HDC): integer;
 var captionTokens: TList;
     decoration: TCaptionFlagsSet;
 begin
-  if aMenuItem.Caption = '-' then Result := 10
-  else begin
+  Result := 10;
+  if aMenuItem.Caption <> '-' then begin
+    Result := GetSystemMetrics(SM_CYMENU) - 2;
     if aMenuItem.Default then decoration := [cfBold]
     else decoration := [];
     captionTokens := parseMenuItemCaption('&', aMenuItem.Caption, decoration);
-    Result := MenuCaptionHeight(captionTokens, aHDC);
-    if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result) then
-      Result := aMenuItem.bitmap.height;
-    Result := Result + 2;
-    destroyCaptionTokens(captionTokens);
+    Result := Max(MenuCaptionHeight(captionTokens, aHDC) + 2, Result);
+    DestroyCaptionTokens(captionTokens);
+    if aMenuItem.hasIcon then
+      Result := Max(aMenuItem.bitmap.height +3, Result);
   end;
+  DebugLn('MenuItemHeight ', AMenuItem.Caption, ' ', Dbgs(Result));
 end;
 
 function MenuIconWidth(AMenuItem: TMenuItem): integer;
