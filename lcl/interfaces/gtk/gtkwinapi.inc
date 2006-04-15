@@ -308,7 +308,7 @@ var FormatAtom, FormatTry: Cardinal;
       {DebugLn('IsFormatSupported A ',Dbgs(SelData.Selection),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target='+dbgs(SelData.Target),' AllID='+dbgs(AllID),
-      ' SelData.TheType='+dbgs(SelData.TheType)+' ATOM='+dbgs(gdk_atom_intern('ATOM',0))+' Name="'+gdk_atom_name(SelData.TheType)+'"',
+      ' SelData.TheType='+dbgs(SelData.TheType)+' ATOM='+dbgs(gdk_atom_intern('ATOM',0))+' Name="'+GdkAtomToStr(SelData.TheType)+'"',
       ' SelData.Length='+dbgs(SelData.Length),
       ' SelData.Format='+dbgs(SelData.Format)
       );}
@@ -506,11 +506,11 @@ begin
     {$IfDef DEBUG_CLIPBOARD}
     DebugLn('[TGtkWidgetSet.ClipboardGetFormats] Checking TARGETS answer ',
       ' selection: '+dbgs(SelData.Selection)+'='+dbgs(ClipboardTypeAtoms[ClipboardType])+
-                ' "'+gdk_atom_name(SelData.Selection)+'"',
+                ' "'+GdkAtomToStr(SelData.Selection)+'"',
       ' target: '+dbgs(SelData.Target),'=',dbgs(AllID),
-                ' "'+gdk_atom_name(SelData.Target),'"',
+                ' "'+GdkAtomToStr(SelData.Target),'"',
       ' theType: '+dbgs(SelData.TheType)+'='+dbgs(gdk_atom_intern('ATOM',GdkFalse))+
-                ' "'+gdk_atom_name(SelData.theType)+'"',
+                ' "'+GdkAtomToStr(SelData.theType)+'"',
       ' Length='+dbgs(SelData.Length),
       ' Format='+dbgs(SelData.Format),
       ' Data='+Dbgs(SelData.Data),

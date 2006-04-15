@@ -342,7 +342,7 @@ var
   // This widget is typically the main form
   ClipboardWidget: PGtkWidget;
   // each selection has an gtk identifier (an atom)
-  ClipboardTypeAtoms: array[TClipboardType] of cardinal;
+  ClipboardTypeAtoms: array[TClipboardType] of TGdkAtom;
   // each active request will procduce an TClipboardEventData stored in this list
   ClipboardSelectionData: TFPList; // list of PClipboardEventData
   // each selection can have an user defined handler (normally set by the lcl)

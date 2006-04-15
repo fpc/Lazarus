@@ -6426,7 +6426,9 @@ begin
   DebugLn('[WaitForClipboardAnswer] A');
   {$ENDIF}
   if (ValidDateSelection) or (c^.Waiting) or (c^.Stopping) then begin
-    //DebugLn('[WaitForClipboardAnswer] B');
+    {$IFDEF DEBUG_CLIPBOARD}
+    DebugLn('[WaitForClipboardAnswer] ValidDateSelection=',dbgs(ValidDateSelection),' Waiting=',dbgs(c^.Waiting),' Stopping=',dbgs(c^.Stopping));
+    {$ENDIF}
     Result:=(ValidDateSelection);
     exit;
   end;
@@ -6436,7 +6438,9 @@ begin
   Application.ProcessMessages;
   //DebugLn('[WaitForClipboardAnswer] D');
   if (ValidDateSelection) or (c^.Stopping) then begin
-    //DebugLn('[WaitForClipboardAnswer] E  Yeah, Response received');
+    {$IFDEF DEBUG_CLIPBOARD}
+    DebugLn('[WaitForClipboardAnswer] E  Yeah, Response received after processing messages');
+    {$ENDIF}
     Result:=(ValidDateSelection);
     exit;
   end;
@@ -6452,7 +6456,7 @@ begin
       Application.HandleMessage;
       if (ValidDateSelection) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
-        DebugLn('[WaitForClipboardAnswer] E  Yeah, Response received');
+        DebugLn('[WaitForClipboardAnswer] H  Yeah, Response received after waiting with timer');
         {$ENDIF}
         Result:=(ValidDateSelection);
         exit;
@@ -6488,9 +6492,22 @@ end;
  ------------------------------------------------------------------------------}
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
+  
+  function TimeIDExists(TimeID: cardinal): boolean;
+  var
+    i: Integer;
+  begin
+    i:=ClipboardSelectionData.Count-1;
+    while (i>=0) do begin
+      if (PClipboardEventData(ClipboardSelectionData[i])^.TimeID=TimeID) then
+        exit(true);
+      dec(i);
+    end;
+    Result:=false;
+  end;
+  
 var
   TimeID: cardinal;
-  i: integer;
   c: PClipboardEventData;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
@@ -6500,22 +6517,19 @@ begin
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
 
-  TimeID:=1000;
+  TimeID:=0; // = GDK_CURRENT_TIME, better use the current event^.time, but
+             // how to retrieve that value?
   repeat
-    repeat
+    while TimeIDExists(TimeID) do begin
       inc(TimeID);
       if TimeID>1010 then exit;
-      i:=ClipboardSelectionData.Count-1;
-      while (i>=0) 
-      and (PClipboardEventData(ClipboardSelectionData[i])^.TimeID<>TimeID) do
-        dec(i);
-    until (i<0);
+    end;
     New(c);
     c^.TimeID:=TimeID;
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' ',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse
@@ -6562,7 +6576,7 @@ var
 begin
   p:=gdk_atom_name(Atom);
   Result:=p;
-  g_free(p);
+  if p<>nil then g_free(p);
 end;
 
 {-------------------------------------------------------------------------------

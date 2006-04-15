@@ -2910,9 +2910,9 @@ begin
   end;
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
-    ' selection=',dbgs(SelectionData^.selection)+'='+gdk_atom_name(SelectionData^.selection),
-    ' target=',dbgs(SelectionData^.Target)+'='+gdk_atom_name(SelectionData^.Target),
-    ' theType=',dbgs(SelectionData^.theType)+'='+gdk_atom_name(SelectionData^.theType),
+    ' selection=',dbgs(SelectionData^.selection)+'='+GdkAtomToStr(SelectionData^.selection),
+    ' target=',dbgs(SelectionData^.Target)+'='+GdkAtomToStr(SelectionData^.Target),
+    ' theType=',dbgs(SelectionData^.theType)+'='+GdkAtomToStr(SelectionData^.theType),
     ' format=',dbgs(SelectionData^.format),
     ' len=',dbgs(SelectionData^.length)
     );
@@ -2942,9 +2942,9 @@ begin
         GDK_TARGET_STRING, TimeID)<>GdkFalse
       then begin
         DebugLn('[ClipboardSelectionReceivedHandler] D TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
-          ' selection=',dbgs(SelectionData^.selection)+'='+gdk_atom_name(SelectionData^.selection),
-          ' target=',dbgs(SelectionData^.Target)+'='+gdk_atom_name(SelectionData^.Target),
-          ' theType=',dbgs(SelectionData^.theType)+'='+gdk_atom_name(SelectionData^.theType),
+          ' selection=',dbgs(SelectionData^.selection)+'='+GdkAtomToStr(SelectionData^.selection),
+          ' target=',dbgs(SelectionData^.Target)+'='+GdkAtomToStr(SelectionData^.Target),
+          ' theType=',dbgs(SelectionData^.theType)+'='+GdkAtomToStr(SelectionData^.theType),
           ' format=',dbgs(SelectionData^.format),
           ' len=',dbgs(SelectionData^.length)
           );

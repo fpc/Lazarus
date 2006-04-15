@@ -6897,7 +6897,7 @@ var c: TClipboardType;
 begin
   if ClipboardWidget=TargetWidget then exit;
   {$IFDEF DEBUG_CLIPBOARD}
-  DebugLn('[TGtkWidgetSet.SetClipboardWidget] ',dbgs(ClipboardWidget<>nil),' -> ',dbgs(TargetWidget<>nil));
+  DebugLn('[TGtkWidgetSet.SetClipboardWidget] ',dbgs(ClipboardWidget<>nil),' -> ',dbgs(TargetWidget<>nil),' ',GetWidgetDebugReport(TargetWidget));
   {$ENDIF}
   if ClipboardWidget<>nil then begin
     {$IFDEF DEBUG_CLIPBOARD}
@@ -6921,6 +6921,7 @@ begin
     // add all supported targets for all clipboard types
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       if (ClipboardTargetEntries[c]<>nil) then begin
+        //DebugLn('TGtkWidgetSet.SetClipboardWidget ',GdkAtomToStr(ClipboardTypeAtoms[c]),' Entries=',dbgs(ClipboardTargetEntryCnt[c]));
         gtk_selection_add_targets(ClipboardWidget,ClipboardTypeAtoms[c],
                   ClipboardTargetEntries[c],ClipboardTargetEntryCnt[c]);
       end;
