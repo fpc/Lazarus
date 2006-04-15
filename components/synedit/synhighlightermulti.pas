@@ -264,9 +264,9 @@ end;
 
 destructor TSynMultiSyn.Destroy;
 begin
-  fSchemes.Free;
+  FreeAndNil(fSchemes);
   ClearMarkers;
-  fMarkers.Free;
+  FreeAndNil(fMarkers);
   { unhook notification handlers }
   DefaultHighlighter := nil;
   inherited Destroy;
@@ -516,9 +516,10 @@ begin
   then begin
     if DefaultHighlighter = aComp then
       DefaultHighlighter := nil;
-    for cScheme := 0 to Schemes.Count -1 do
-      if Schemes[ cScheme ].Highlighter = aComp then
-        Schemes[ cScheme ].Highlighter := nil;
+    if Schemes<>nil then
+      for cScheme := 0 to Schemes.Count -1 do
+        if Schemes[ cScheme ].Highlighter = aComp then
+          Schemes[ cScheme ].Highlighter := nil;
   end;
 end;
 
