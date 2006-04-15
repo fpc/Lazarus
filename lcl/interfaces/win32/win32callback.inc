@@ -1221,6 +1221,7 @@ Begin
       DebugLn('WM_KILLFOCUS received for window ', IntToHex(Window, 8));
 {$endif}      
       LMessage.Msg := LM_KILLFOCUS;
+      LMessage.WParam := WParam;
     End;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
     WM_LBUTTONDBLCLK:

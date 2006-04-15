@@ -7848,13 +7848,10 @@ begin
   TransMsg('PicklistEditor: ', TheMessage);
   {$Endif}
   if TheMessage.msg=LM_KILLFOCUS then begin
-    // MWE: ???
-    // TODO: why are only the lower bytes of a handle checked ???
-    // In the LCL a Handle has the size of a PtrUInt
-    if (cardinal(TheMessage.WParam) and $FFFF) = cardinal(Handle) then begin
-      // what a weird thing, we are losing the focus
-      // and giving it to ourselves
-      TheMessage.Result := 0; // doesn't allow such thing
+    if HWND(TheMessage.WParam) = HWND(Handle) then begin
+      // lost the focus but it returns to ourselves
+      // eat the message.
+      TheMessage.Result := 0;
       exit;
     end;
   end;
@@ -7960,9 +7957,11 @@ end;
 
 procedure TPickListCellEditor.EditingDone;
 begin
+  {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone INIT');{$ENDIF}
   inherited EditingDone;
   if FGrid<>nil then
     FGrid.EditingDone;
+  {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone DONE');{$ENDIF}
 end;
 
 procedure TPickListCellEditor.Change;
@@ -7988,14 +7987,16 @@ end;
 
 procedure TPickListCellEditor.DropDown;
 begin
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.DropDown INIT'); {$Endif}
   inherited DropDown;
-  //DebugLn('*********** DROPDOWN ********** ');
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.DropDown DONE'); {$Endif}
 end;
 
 procedure TPickListCellEditor.CloseUp;
 begin
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp INIT'); {$Endif}
   inherited CloseUp;
-  //DebugLn('*********** CLOSEUP ********** ');
+  {$ifDef dbgGrid} DebugLn('TPickListCellEditor.CloseUp DONE'); {$Endif}
 end;
 
 procedure TPickListCellEditor.msg_GetValue(var Msg: TGridMessage);
