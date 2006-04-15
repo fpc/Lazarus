@@ -580,8 +580,9 @@ type
     procedure OnCopyError(const ErrorData: TCopyErrorData;
         var Handled: boolean; Data: TObject);
 
-    // methods fro building
+    // methods for building
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string);
+    procedure SetBuildTargetIDE;
   public
     CurDefinesCompilerFilename: String;
     CurDefinesCompilerOptions: String;
@@ -5278,6 +5279,24 @@ begin
   end;
 end;
 
+procedure TMainIDE.SetBuildTargetIDE;
+var
+  NewTargetOS: String;
+  NewTargetCPU: String;
+  NewLCLWidgetSet: String;
+begin
+  NewTargetOS:=MiscellaneousOptions.BuildLazOpts.TargetOS;
+  NewTargetCPU:=MiscellaneousOptions.BuildLazOpts.TargetCPU;
+  NewLCLWidgetSet:=LCLPlatformNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform];
+  if (NewTargetOS='') or (NewTargetOS='default') then
+    NewTargetOS:=GetDefaultTargetOS;
+  if (NewTargetCPU='') or (NewTargetCPU='default') then
+    NewTargetCPU:=GetDefaultTargetCPU;
+  if (NewLCLWidgetSet='') or (NewLCLWidgetSet='default') then
+    NewLCLWidgetSet:=GetDefaultLCLWidgetType;
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet);
+end;
+
 function TMainIDE.DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
   PageIndex: integer; Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
@@ -7732,9 +7751,7 @@ begin
 
   MessagesView.BeginBlock;
   try
-    SetBuildTarget(MiscellaneousOptions.BuildLazOpts.TargetOS,
-                   MiscellaneousOptions.BuildLazOpts.TargetCPU,
-                   LCLPlatformNames[MiscellaneousOptions.BuildLazOpts.LCLPlatform]);
+    SetBuildTargetIDE;
   
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
