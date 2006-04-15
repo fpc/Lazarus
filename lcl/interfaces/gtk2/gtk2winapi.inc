@@ -66,6 +66,7 @@ var
   PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
   CharSetRegistry, CharSetCoding: string;
   FullString : AnsiString;
+  SizeFont   : integer;
 
   procedure LoadDefaultFont;
   begin
@@ -128,22 +129,19 @@ begin
           LoadDefaultFont;
           exit;
         end;
-        FullString := FamilyName;
-        if IsFontNameXLogicalFontDesc(LongFontName) then
-          if Abs(lfHeight)=0 then
-             FullString := FullString + ' 12'
-          else
-            FullString := FullString + ' ' + IntToStr(Abs(lfHeight));
-      end
-      else begin
-        FullString := FamilyName;
-        if IsFontNameXLogicalFontDesc(LongFontName) then
-          if (PointSize = '') or (CompareText(PointSize,'*')=0) then
-            FullString := FullString + ' 12'
-          else
-            FullString := FullString + ' ' + IntToStr(StrToInt(PointSize) div 10);
       end;
-      
+      sizeFont:=0;
+      if IsFontNameXLogicalFontDesc(LongFontName) then
+          if  (PointSize <> '') and  (CompareText(PointSize,'*')<>0) then
+            sizeFont:=StrToInt(PointSize) div 10;
+      if sizeFont = 0 then sizeFont:=abs(lfHeight);
+      if sizeFont = 0 then sizeFont:=12;
+
+
+
+
+      FullString := FamilyName + ' '+ IntToStr(sizeFont );
+
       if FontNameRegistry='' then ;
       if Foundry='' then ;
       if WeightName='' then ;
@@ -160,7 +158,7 @@ begin
 
       GdiObject^.GDIFontObject :=
                           pango_font_description_from_string(PChar(FullString));
-      If lfWeight <> FW_DONTCARE then
+      if lfWeight <> FW_DONTCARE then
         pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
 
       if lfItalic = 0 then
@@ -169,6 +167,8 @@ begin
       else
         pango_font_description_set_style(GdiObject^.GDIFontObject,
                                          PANGO_STYLE_ITALIC);
+      if lfHeight<>0 then
+        pango_font_description_set_size(GdiObject^.GDIFontObject,abs(lfHeight)*PANGO_SCALE);
 
       GdiObject^.StrikeOut := lfStrikeOut <> 0;
       GdiObject^.Underline := lfUnderline <> 0;
@@ -502,13 +502,6 @@ begin
         Attr := pango_attr_strikethrough_new(StrikeOut);
         pango_attr_list_change(AttrList,Attr);
 
-        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
-
-        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
-                                        gushort(GetGValue(RGBColor)) shl 8,
-                                        gushort(GetBValue(RGBColor)) shl 8);
-
-        pango_attr_list_change(AttrList,Attr);
         pango_layout_set_attributes(Layout, AttrList);
 
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
@@ -619,6 +612,7 @@ begin
                                         gushort(GetBValue(RGBColor)) shl 8);
 
         pango_attr_list_change(AttrList,Attr);
+        
         pango_layout_set_attributes(Layout, AttrList);
 
         Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
@@ -640,9 +634,8 @@ begin
         pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
 
         OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
-        FillRect(DC,aRect,hBrush(CurrentBrush));
 
-        gdk_draw_layout_with_colors(drawable, gc, aRect.Left, aRect.Top, Layout, Foreground, nil);
+        gdk_draw_layout_with_colors(drawable, GC, aRect.Left, aRect.Top, Layout, Foreground, nil);
         g_object_unref(Layout);
         Result := True;
         If UnRef then

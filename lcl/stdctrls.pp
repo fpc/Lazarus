@@ -1152,6 +1152,7 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure TextChanged; override;
     procedure Resize; override;
+    procedure FontChanged(Sender: TObject); override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

@@ -54,6 +54,12 @@ begin
   end;
 end;
 
+procedure TCustomLabel.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  AdjustSize;
+end;
+
 function TCustomLabel.HasMultiLine: boolean;
 var
   s: String;
