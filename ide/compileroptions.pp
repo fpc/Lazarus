@@ -257,10 +257,10 @@ type
     procedure SetBaseDirectory(const AValue: string); override;
     procedure SetCompilerPath(const AValue: String); override;
     procedure SetCustomOptions(const AValue: string); override;
-    procedure SetIncludeFiles(const AValue: String); override;
-    procedure SetLibraries(const AValue: String); override;
+    procedure SetIncludePaths(const AValue: String); override;
+    procedure SetLibraryPaths(const AValue: String); override;
     procedure SetLinkerOptions(const AValue: String); override;
-    procedure SetOtherUnitFiles(const AValue: String); override;
+    procedure SetUnitPaths(const AValue: String); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetSrcPath(const AValue: string); override;
@@ -819,17 +819,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TBaseCompilerOptions.SetIncludeFiles(const AValue: String);
+  procedure TBaseCompilerOptions.SetIncludePaths(const AValue: String);
 ------------------------------------------------------------------------------}
-procedure TBaseCompilerOptions.SetIncludeFiles(const AValue: String);
+procedure TBaseCompilerOptions.SetIncludePaths(const AValue: String);
 var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
   if NewValue<>AValue then
-  if fIncludeFiles=NewValue then exit;
-  fIncludeFiles:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosIncludePath,fIncludeFiles);
+  if fIncludePaths=NewValue then exit;
+  fIncludePaths:=NewValue;
+  ParsedOpts.SetUnparsedValue(pcosIncludePath,fIncludePaths);
 end;
 
 procedure TBaseCompilerOptions.SetCompilerPath(const AValue: String);
@@ -901,14 +901,14 @@ begin
   ParsedOpts.SetUnparsedValue(pcosCustomOptions,fCustomOptions);
 end;
 
-procedure TBaseCompilerOptions.SetLibraries(const AValue: String);
+procedure TBaseCompilerOptions.SetLibraryPaths(const AValue: String);
 var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if fLibraries=NewValue then exit;
-  fLibraries:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosLibraryPath,fLibraries);
+  if fLibraryPaths=NewValue then exit;
+  fLibraryPaths:=NewValue;
+  ParsedOpts.SetUnparsedValue(pcosLibraryPath,fLibraryPaths);
 end;
 
 procedure TBaseCompilerOptions.SetLinkerOptions(const AValue: String);
@@ -918,14 +918,14 @@ begin
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,fLinkerOptions);
 end;
 
-procedure TBaseCompilerOptions.SetOtherUnitFiles(const AValue: String);
+procedure TBaseCompilerOptions.SetUnitPaths(const AValue: String);
 var
   NewValue: String;
 begin
   NewValue:=ShortenPath(AValue,false);
-  if fOtherUnitFiles=NewValue then exit;
-  fOtherUnitFiles:=NewValue;
-  ParsedOpts.SetUnparsedValue(pcosUnitPath,fOtherUnitFiles);
+  if fUnitPaths=NewValue then exit;
+  fUnitPaths:=NewValue;
+  ParsedOpts.SetUnparsedValue(pcosUnitPath,fUnitPaths);
 end;
 
 procedure TBaseCompilerOptions.SetUnitOutputDir(const AValue: string);
@@ -1010,7 +1010,7 @@ begin
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  IncludeFiles := sp(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
+  IncludePath := sp(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
   Libraries := sp(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
   OtherUnitFiles := sp(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
   UnitOutputDirectory := sp(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
@@ -1163,7 +1163,7 @@ begin
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
-  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludeFiles,'');
+  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludePath,'');
   XMLConfigFile.SetDeleteValue(p+'Libraries/Value', Libraries,'');
   XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', OtherUnitFiles,'');
   XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
@@ -2207,7 +2207,7 @@ begin
   FModified := false;
 
   // search paths
-  IncludeFiles := '';
+  IncludePath := '';
   Libraries := '';
   OtherUnitFiles := '';
   UnitOutputDirectory := '';
@@ -2311,9 +2311,9 @@ begin
   fLoaded := CompOpts.fLoaded;
 
   // Search Paths
-  IncludeFiles := CompOpts.fIncludeFiles;
-  Libraries := CompOpts.fLibraries;
-  OtherUnitFiles := CompOpts.fOtherUnitFiles;
+  IncludePath := CompOpts.fIncludePaths;
+  Libraries := CompOpts.fLibraryPaths;
+  OtherUnitFiles := CompOpts.fUnitPaths;
   UnitOutputDirectory := CompOpts.fUnitOutputDir;
   fLCLWidgetType := CompOpts.fLCLWidgetType;
   ObjectPath := CompOpts.FObjectPath;
@@ -2406,9 +2406,9 @@ function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
 begin
   Result:=
     // search paths
-        (fIncludeFiles = CompOpts.fIncludeFiles)
-    and (fLibraries = CompOpts.fLibraries)
-    and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
+        (fIncludePaths = CompOpts.fIncludePaths)
+    and (fLibraryPaths = CompOpts.fLibraryPaths)
+    and (fUnitPaths = CompOpts.fUnitPaths)
     and (fUnitOutputDir = CompOpts.fUnitOutputDir)
     and (FObjectPath = CompOpts.FObjectPath)
     and (FSrcPath = CompOpts.FSrcPath)

@@ -302,12 +302,12 @@ begin
       AProject.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,AProject.ProjectDirectory));
       // set include path
-      NewSearchPath:=MergeSearchPaths(AProject.CompilerOptions.IncludeFiles,
+      NewSearchPath:=MergeSearchPaths(AProject.CompilerOptions.IncludePath,
                        AProject.SourceDirectories.CreateSearchPathFromAllFiles);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,
                                      '.;'+VirtualDirectory+';'+VirtualTempDir
                                      +';'+AProject.ProjectDirectory);
-      AProject.CompilerOptions.IncludeFiles:=MinimizeSearchPath(
+      AProject.CompilerOptions.IncludePath:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,AProject.ProjectDirectory));
       // clear caches
       AProject.DefineTemplates.SourceDirectoriesChanged;
@@ -543,12 +543,12 @@ begin
       APackage.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,APackage.Directory));
       // set include path
-      NewSearchPath:=MergeSearchPaths(APackage.CompilerOptions.IncludeFiles,
+      NewSearchPath:=MergeSearchPaths(APackage.CompilerOptions.IncludePath,
                        APackage.SourceDirectories.CreateSearchPathFromAllFiles);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,
                                      '.;'+VirtualDirectory+';'+VirtualTempDir
                                      +';'+APackage.Directory);
-      APackage.CompilerOptions.IncludeFiles:=MinimizeSearchPath(
+      APackage.CompilerOptions.IncludePath:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,APackage.Directory));
       // clear caches
       APackage.DefineTemplates.SourceDirectoriesChanged;
@@ -943,7 +943,7 @@ var
 begin
   BasePath:=Options.BaseDirectory;
   Options.OtherUnitFiles:=CleanProjectSearchPath(Options.OtherUnitFiles);
-  Options.IncludeFiles:=CleanProjectSearchPath(Options.IncludeFiles);
+  Options.IncludePath:=CleanProjectSearchPath(Options.IncludePath);
   Options.Libraries:=CleanProjectSearchPath(Options.Libraries);
   Options.ObjectPath:=CleanProjectSearchPath(Options.ObjectPath);
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);

@@ -354,12 +354,12 @@ type
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetModified(const NewValue: boolean); override;
     procedure SetCustomOptions(const AValue: string); override;
-    procedure SetIncludeFiles(const AValue: string); override;
-    procedure SetLibraries(const AValue: string); override;
+    procedure SetIncludePaths(const AValue: string); override;
+    procedure SetLibraryPaths(const AValue: string); override;
     procedure SetLinkerOptions(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetSrcPath(const AValue: string); override;
-    procedure SetOtherUnitFiles(const AValue: string); override;
+    procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
@@ -3301,18 +3301,18 @@ begin
     LazPackage.DefineTemplates.CustomDefinesChanged;
 end;
 
-procedure TPkgCompilerOptions.SetIncludeFiles(const AValue: string);
+procedure TPkgCompilerOptions.SetIncludePaths(const AValue: string);
 begin
-  if IncludeFiles=AValue then exit;
+  if IncludePath=AValue then exit;
   InvalidateOptions;
-  inherited SetIncludeFiles(AValue);
+  inherited SetIncludePaths(AValue);
 end;
 
-procedure TPkgCompilerOptions.SetLibraries(const AValue: string);
+procedure TPkgCompilerOptions.SetLibraryPaths(const AValue: string);
 begin
   if Libraries=AValue then exit;
   InvalidateOptions;
-  inherited SetLibraries(AValue);
+  inherited SetLibraryPaths(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetLinkerOptions(const AValue: string);
@@ -3336,11 +3336,11 @@ begin
   inherited SetSrcPath(AValue);
 end;
 
-procedure TPkgCompilerOptions.SetOtherUnitFiles(const AValue: string);
+procedure TPkgCompilerOptions.SetUnitPaths(const AValue: string);
 begin
   if OtherUnitFiles=AValue then exit;
   InvalidateOptions;
-  inherited SetOtherUnitFiles(AValue);
+  inherited SetUnitPaths(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetUnitOutputDir(const AValue: string);

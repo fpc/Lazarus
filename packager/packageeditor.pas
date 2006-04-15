@@ -1942,7 +1942,7 @@ begin
     // the unit is in untipath, but the include file not in the incpath
     // -> auto extend the include path
     with LazPackage.CompilerOptions do
-      IncludeFiles:=MergeSearchPaths(IncludeFiles,ShortIncDirectory);
+      IncludePath:=MergeSearchPaths(IncludePath,ShortIncDirectory);
   end;
 end;
 

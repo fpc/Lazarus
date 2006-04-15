@@ -63,9 +63,9 @@ type
     FModified: boolean;
 
     // Paths:
-    fIncludeFiles: String;
-    fLibraries: String;
-    fOtherUnitFiles: String;
+    fIncludePaths: String;
+    fLibraryPaths: String;
+    fUnitPaths: String;
     FObjectPath: string;
     FSrcPath: string;
     fUnitOutputDir: string;
@@ -153,10 +153,10 @@ type
     procedure SetBaseDirectory(const AValue: string); virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
-    procedure SetIncludeFiles(const AValue: String); virtual; abstract;
-    procedure SetLibraries(const AValue: String); virtual; abstract;
+    procedure SetIncludePaths(const AValue: String); virtual; abstract;
+    procedure SetLibraryPaths(const AValue: String); virtual; abstract;
     procedure SetLinkerOptions(const AValue: String); virtual; abstract;
-    procedure SetOtherUnitFiles(const AValue: String); virtual; abstract;
+    procedure SetUnitPaths(const AValue: String); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetObjectPath(const AValue: string); virtual; abstract;
     procedure SetSrcPath(const AValue: string); virtual; abstract;
@@ -173,9 +173,9 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
 
     // search paths:
-    property IncludeFiles: String read fIncludeFiles write SetIncludeFiles;
-    property Libraries: String read fLibraries write SetLibraries;
-    property OtherUnitFiles: String read fOtherUnitFiles write SetOtherUnitFiles;
+    property IncludePath: String read fIncludePaths write SetIncludePaths;
+    property Libraries: String read fLibraryPaths write SetLibraryPaths;
+    property OtherUnitFiles: String read fUnitPaths write SetUnitPaths;
     property ObjectPath: string read FObjectPath write SetObjectPath;
     property SrcPath: string read FSrcPath write SetSrcPath;
     property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;

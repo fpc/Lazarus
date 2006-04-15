@@ -977,7 +977,7 @@ begin
       +'$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
     UsageOptions.CustomOptions:='-dLCL -dLCL$(LCLWidgetType)';
     // add include path
-    CompilerOptions.IncludeFiles:=SetDirSeparators(
+    CompilerOptions.IncludePath:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     AddLCLLinkPaths(UsageOptions);
 

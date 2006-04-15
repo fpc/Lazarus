@@ -5150,8 +5150,8 @@ begin
   Project1.CompilerOptions.OtherUnitFiles:=
     RebaseSearchPath(Project1.CompilerOptions.OtherUnitFiles,OldProjectPath,
                      Project1.ProjectDirectory,true);
-  Project1.CompilerOptions.IncludeFiles:=
-    RebaseSearchPath(Project1.CompilerOptions.IncludeFiles,OldProjectPath,
+  Project1.CompilerOptions.IncludePath:=
+    RebaseSearchPath(Project1.CompilerOptions.IncludePath,OldProjectPath,
                      Project1.ProjectDirectory,true);
   Project1.CompilerOptions.Libraries:=
     RebaseSearchPath(Project1.CompilerOptions.Libraries,OldProjectPath,

@@ -564,7 +564,7 @@ var
   
   procedure AddSearchPath(const SearchPath: string);
   begin
-    CompOpts.IncludeFiles:=MergeSearchPaths(CompOpts.IncludeFiles,SearchPath);
+    CompOpts.IncludePath:=MergeSearchPaths(CompOpts.IncludePath,SearchPath);
     CompOpts.Libraries:=MergeSearchPaths(CompOpts.Libraries,SearchPath);
     CompOpts.OtherUnitFiles:=MergeSearchPaths(CompOpts.OtherUnitFiles,SearchPath);
     CompOpts.ObjectPath:=MergeSearchPaths(CompOpts.ObjectPath,SearchPath);
@@ -683,8 +683,8 @@ begin
           IncludePath:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),AProject);
           if IncludePath<>'' then begin
             DebugLn('ExtractOptionsFromCFG adding IncludePath "',IncludePath,'"');
-            CompOpts.IncludeFiles:=
-                            MergeSearchPaths(CompOpts.IncludeFiles,IncludePath);
+            CompOpts.IncludePath:=
+                             MergeSearchPaths(CompOpts.IncludePath,IncludePath);
           end;
         end;
       end;

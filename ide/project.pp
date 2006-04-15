@@ -277,12 +277,12 @@ type
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetCustomOptions(const AValue: string); override;
-    procedure SetIncludeFiles(const AValue: string); override;
-    procedure SetLibraries(const AValue: string); override;
+    procedure SetIncludePaths(const AValue: string); override;
+    procedure SetLibraryPaths(const AValue: string); override;
     procedure SetLinkerOptions(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetSrcPath(const AValue: string); override;
-    procedure SetOtherUnitFiles(const AValue: string); override;
+    procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure UpdateGlobals; virtual;
   public
@@ -2903,7 +2903,7 @@ procedure TProject.GetVirtualDefines(DefTree: TDefineTree;
 begin
   if (not IsVirtual) then exit;
   ExtendPath(UnitPathMacroName,CompilerOptions.OtherUnitFiles);
-  ExtendPath(IncludePathMacroName,CompilerOptions.IncludeFiles);
+  ExtendPath(IncludePathMacroName,CompilerOptions.IncludePath);
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
@@ -3682,18 +3682,18 @@ begin
     Project.DefineTemplates.CustomDefinesChanged;
 end;
 
-procedure TProjectCompilerOptions.SetIncludeFiles(const AValue: string);
+procedure TProjectCompilerOptions.SetIncludePaths(const AValue: string);
 begin
-  if IncludeFiles=AValue then exit;
+  if IncludePath=AValue then exit;
   InvalidateOptions;
-  inherited SetIncludeFiles(AValue);
+  inherited SetIncludePaths(AValue);
 end;
 
-procedure TProjectCompilerOptions.SetLibraries(const AValue: string);
+procedure TProjectCompilerOptions.SetLibraryPaths(const AValue: string);
 begin
   if Libraries=AValue then exit;
   InvalidateOptions;
-  inherited SetLibraries(AValue);
+  inherited SetLibraryPaths(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetLinkerOptions(const AValue: string);
@@ -3717,11 +3717,11 @@ begin
   inherited SetSrcPath(AValue);
 end;
 
-procedure TProjectCompilerOptions.SetOtherUnitFiles(const AValue: string);
+procedure TProjectCompilerOptions.SetUnitPaths(const AValue: string);
 begin
   if OtherUnitFiles=AValue then exit;
   InvalidateOptions;
-  inherited SetOtherUnitFiles(AValue);
+  inherited SetUnitPaths(AValue);
 end;
 
 procedure TProjectCompilerOptions.SetUnitOutputDir(const AValue: string);
@@ -3753,7 +3753,7 @@ end;
 procedure TProjectCompilerOptions.InvalidateOptions;
 begin
   if (Project=nil) then exit;
-  // TODO: propagate change to all dependants projects
+  // TODO: propagate change to all dependant projects
 end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;

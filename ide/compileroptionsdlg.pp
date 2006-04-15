@@ -619,7 +619,7 @@ begin
 
   // paths
   edtOtherUnits.Text := Options.OtherUnitFiles;
-  edtIncludeFiles.Text := Options.IncludeFiles;
+  edtIncludeFiles.Text := Options.IncludePath;
   edtLibraries.Text := Options.Libraries;
   grpLibraries.Enabled:=EnabledLinkerOpts;
   edtOtherSources.Text := Options.SrcPath;
@@ -893,7 +893,7 @@ begin
   OldCompOpts.Assign(Options);
 
   // paths
-  Options.IncludeFiles := edtIncludeFiles.Text;
+  Options.IncludePath := edtIncludeFiles.Text;
   Options.Libraries := edtLibraries.Text;
   Options.OtherUnitFiles := edtOtherUnits.Text;
   Options.SrcPath := edtOtherSources.Text;
