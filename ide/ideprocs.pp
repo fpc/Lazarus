@@ -675,8 +675,9 @@ begin
     // make path absolute
     if (CurPath<>'') and (not FilenameIsAbsolute(CurPath)) then
       CurPath:=AppendPathDelim(BaseDirectory)+CurPath;
-      
-    if (CurPath='') or (not DirectoryExists(CurPath)) then begin
+
+    if ((CurPath='') and (MacroStartPos<1))
+    or (not DirPathExistsCached(CurPath)) then begin
       // path does not exist -> remove
       Result:=copy(Result,1,StartPos-1)+copy(Result,EndPos+1,length(Result));
       EndPos:=StartPos;

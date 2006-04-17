@@ -6519,6 +6519,8 @@ begin
 
   TimeID:=0; // = GDK_CURRENT_TIME, better use the current event^.time, but
              // how to retrieve that value?
+             // IMPORTANT: To retrieve data from xterm or kde applications
+             //            the time id must be 0 or event^.time
   repeat
     while TimeIDExists(TimeID) do begin
       inc(TimeID);
