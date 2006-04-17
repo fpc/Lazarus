@@ -3008,8 +3008,7 @@ function TControl.HandleObjectShouldBeVisible: boolean;
 begin
   Result:=(Visible
           or ((csDesigning in ComponentState)
-              and not (csNoDesignVisible in ControlStyle)))
-          and not (csLoading in ComponentState);
+              and not (csNoDesignVisible in ControlStyle)));
 end;
 
 {------------------------------------------------------------------------------
