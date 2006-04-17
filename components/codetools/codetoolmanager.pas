@@ -862,14 +862,20 @@ begin
 end;
 
 function TCodeToolManager.GetMainCode(Code: TCodeBuffer): TCodeBuffer;
+var
+  NewFile: TCodeBuffer;
 begin
   // find MainCode (= the start source, e.g. a unit/program/package source)
   Result:=Code;
   if Result=nil then exit;
   // if this is an include file, find the top level source
   while (Result.LastIncludedByFile<>'') do begin
-    Result:=SourceCache.LoadFile(Result.LastIncludedByFile);
-    if Result=nil then exit;
+    NewFile:=SourceCache.LoadFile(Result.LastIncludedByFile);
+    if (NewFile=nil) then begin
+      Result.LastIncludedByFile:='';
+      break;
+    end;
+    Result:=NewFile;
   end;
   if (not FilenameHasSourceExt(Result.Filename)) then begin
     Result:=FindCodeOfMainUnitHint(Result);
@@ -882,6 +888,7 @@ function TCodeToolManager.GetIncludeCodeChain(Code: TCodeBuffer;
   RemoveFirstCodesWithoutTool: boolean; out ListOfCodeBuffer: TFPList): boolean;
 var
   OldCode: TCodeBuffer;
+  NewCode: TCodeBuffer;
 begin
   // find MainCode (= the start source, e.g. a unit/program/package source)
   Result:=false;
@@ -894,8 +901,12 @@ begin
   
   // if this is an include file, find the top level source
   while (Code.LastIncludedByFile<>'') do begin
-    Code:=SourceCache.LoadFile(Code.LastIncludedByFile);
-    if Code=nil then exit;
+    NewCode:=SourceCache.LoadFile(Code.LastIncludedByFile);
+    if NewCode=nil then begin
+      NewCode.LastIncludedByFile:='';
+      break;
+    end;
+    Code:=NewCode;
     ListOfCodeBuffer.Insert(0,Code);
   end;
 
