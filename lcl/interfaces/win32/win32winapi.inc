@@ -2152,10 +2152,12 @@ var
 
     procedure AdjustForBuddySize;
     var
-      BuddyWidth, BuddyHeight: integer;
+      BuddyHandle: HWND;
+      BuddyWP: WINDOWPLACEMENT;
     begin
-      GetWindowSize(Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0), BuddyWidth, BuddyHeight);
-      Inc(Width, BuddyWidth);
+      BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
+      if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP)
+        then Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
     end;
 
 begin
