@@ -34,7 +34,7 @@ uses
 implementation
 
 uses
-  WinCEInt, Forms;
+  Windows,WinCEInt, Forms;
 
 initialization
   WidgetSet := TWinCEWidgetSet.Create;

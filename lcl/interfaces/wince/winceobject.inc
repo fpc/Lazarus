@@ -48,37 +48,50 @@ begin
 end;
 
 procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-var
-  WindowClass: WndClass;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWidgetSet.AppInit');
   {$endif}
 
-  FillChar(WindowClass, SizeOf(WindowClass), #0);
-
-  with WindowClass do
+  if not WinRegister then
   begin
-    Style := CS_HREDRAW or CS_VREDRAW;
-    LPFnWndProc := @WindowProc;
-    CbClsExtra := 0;
-    CbWndExtra := 0;
-    hInstance := System.HInstance;
-    hIcon := Windows.LoadIcon(System.hInstance, nil);
-    hCursor := LoadCursor(0, IDC_ARROW);
-    hbrBackground := GetSysColorBrush(Color_BtnFace);
-    LPSzMenuName := nil;
-    LPSzClassName := @ClsName;
+    WriteLn('TWinCEWidgetSet.AppInit failed.');
+    Exit;
   end;
-  if Windows.RegisterClass(@WindowClass) = 0 then WriteLn('Register failed');
+  
+    //Init stock objects;
+//  LogBrush.lbStyle := BS_NULL;
+  FStockNullBrush := Windows.CreateSolidBrush(0);
+  FStockBlackBrush := Windows.CreateSolidBrush($000000);
+  FStockLtGrayBrush := Windows.CreateSolidBrush($C0C0C0);
+  FStockGrayBrush := Windows.CreateSolidBrush($808080);
+  FStockDkGrayBrush := Windows.CreateSolidBrush($404040);
+  FStockWhiteBrush := Windows.CreateSolidBrush($FFFFFF);
 
-  // initialize ScreenInfo
+
+{  LogBrush.lbStyle := BS_NULL;
+  FStockNullBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := $000000;
+  FStockBlackBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $C0C0C0;
+  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $808080;
+  FStockGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $404040;
+  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $FFFFFF;
+  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+}
+
+ // initialize ScreenInfo
 {  Handle := GetDesktopWindow;
   DC := Windows.GetDC(Handle);
   ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
   ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(Handle, DC);}
+
 end;
 
 procedure TWinCEWidgetSet.AppMinimize;
@@ -88,8 +101,33 @@ end;
 
 procedure TWinCEWidgetSet.AppBringToFront;
 begin
-
+  Windows.SetForegroundWindow(FAppHandle);
 end;
+
+Function TWinCEWidgetSet.WinRegister: Boolean;
+Var
+  WindowClass: Windows.WndClass;
+Begin
+  FillChar(WindowClass, SizeOf(WindowClass), #0);
+
+  with WindowClass do
+  begin
+    LPFnWndProc := @WindowProc;
+    Style := CS_HREDRAW or CS_VREDRAW;
+    CbClsExtra := 0;
+    CbWndExtra := 0;
+    hInstance := System.HInstance;
+    hIcon := Windows.LoadIcon(System.hInstance, nil);
+    if hIcon = 0 then
+      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+    hCursor := LoadCursor(0, IDC_ARROW);
+    hbrBackground := GetSysColorBrush(Color_BtnFace);
+    LPSzMenuName := nil;
+    LPSzClassName := @ClsName;
+  end;
+  Result := Windows.RegisterClass(@WindowClass) <> 0;
+End;
+
 
 procedure TWinCEWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
   AColor: TGraphicsColor);
@@ -175,6 +213,53 @@ function TWinCEWidgetSet.DestroyTimer(TimerHandle: Integer): boolean;
 begin
 
 end;
+
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.ShowHide
+  Params: Sender - The sending object
+  Returns: Nothing
+
+  Shows or hides a control
+ ------------------------------------------------------------------------------}
+Procedure TWinCEWidgetSet.ShowHide(Sender: TObject);
+Var
+  Handle: HWND;
+  ParentPanel: HWND;
+  Flags: dword;
+Begin
+  //If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
+  Handle := ObjectToHWND(Sender);
+//  ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
+//  if ParentPanel <> 0 then
+//    Handle := ParentPanel;
+  If TControl(Sender).HandleObjectShouldBeVisible Then
+  Begin
+    Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
+    if TControl(Sender).FCompStyle = csHintWindow then
+    begin
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
+    end else begin
+      Flags := SW_SHOW;
+      if TControl(Sender) is TCustomForm then
+        case TCustomForm(Sender).WindowState of
+          wsMaximized: Flags := SW_SHOWMAXIMIZED;
+          wsMinimized: Flags := SW_SHOWMINIMIZED;
+        end;
+      Windows.ShowWindow(Handle, Flags);
+      { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
+      { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
+      if Flags = SW_SHOWMAXIMIZED then
+        Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
+    end;
+    If (Sender Is TCustomForm) Then
+      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
+  End
+  Else
+  Begin
+    Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
+    ShowWindow(Handle, SW_HIDE);
+  End;
+End;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}

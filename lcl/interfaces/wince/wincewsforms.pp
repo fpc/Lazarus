@@ -47,7 +47,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Windows,
-  SysUtils, Controls, LCLType, Forms,
+  SysUtils, Controls, LCLType, Forms, winceproc,wincewscontrols ,
   InterfaceBase,
 ////////////////////////////////////////////////////
   WSForms, WSLCLClasses;
@@ -94,6 +94,9 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+          const ABorderIcons: TBorderIcons); override;
+
 {    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
@@ -142,6 +145,37 @@ implementation
 
 uses Winceint;
 
+{ TWin32WSCustomForm }
+
+function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  BorderIcons := AForm.BorderIcons;
+  if biSystemMenu in BorderIcons then
+    Result := Result or WS_SYSMENU;
+  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
+  begin
+    if biMinimize in BorderIcons then
+      Result := Result or WS_MINIMIZEBOX;
+    if biMaximize in BorderIcons then
+      Result := Result or WS_MAXIMIZEBOX;
+  end;
+end;
+
+procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dword);
+var
+  BorderStyle: TFormBorderStyle;
+begin
+  BorderStyle := GetDesigningBorderStyle(AForm);
+  Flags := BorderStyleToWin32Flags(BorderStyle);
+  FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
+  if (AForm.FormStyle in fsAllStayOnTop) then
+    FlagsEx := FlagsEx or WS_EX_TOPMOST;
+  Flags := Flags or CalcBorderIconsFlags(AForm);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinCEWSCustomForm.CreateHandle
   Params:  None
@@ -152,37 +186,44 @@ uses Winceint;
 class function TWinCEWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  hwnd: THandle;
-  Str: array[0..255] of WideChar;
+//  hwnd: THandle;
+//  Str: array[0..255] of WideChar;
+  Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSCustomForm.CreateHandle');
   {$endif}
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    //TODO: Make control respond to user scroll request
+    FlagsEx := 0;
+    pClassName := @ClsName;
+    Flags := WS_OVERLAPPEDWINDOW;
+    SubClassWndProc := nil;
+    Parent := 0;
+    Left:=CW_USEDEFAULT;
+    Top:=CW_USEDEFAULT;
+    Height:=CW_USEDEFAULT;
+    Width:=CW_USEDEFAULT;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
 
-  MultiByteToWideChar(CP_UTF8, 0, PChar(AWinControl.Caption), -1, @Str, 256);
-
-  hwnd := CreateWindow(
-    @ClsName,           // Name of the registered class
-    @Str,               // Title of the window
-    WS_OVERLAPPEDWINDOW,// Style of the window
-    CW_USEDEFAULT,      // x-position (at beginning)
-    CW_USEDEFAULT,      // y-position (at beginning)
-    CW_USEDEFAULT,      // window width
-    CW_USEDEFAULT,      // window height
-    0,                  // handle to parent or owner window
-    0,                  // handle to menu
-    System.hInstance,   // handle to application instance
-    nil);               // pointer to window-creation data
-
-  if (hwnd = 0) then WriteLn('CreateWindow failed');
-
-  ShowWindow(hwnd, SW_SHOW);
-  UpdateWindow(hwnd);
-
-  Result := hwnd;
   {$ifdef VerboseWinCE}
   WriteLn('Window Handle = ' + IntToStr(Result));
   {$endif}
+end;
+
+procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+          const ABorderIcons: TBorderIcons);
+begin
+  UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm),
+    WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
+  SetIcon(AForm, 0);
 end;
 
 initialization

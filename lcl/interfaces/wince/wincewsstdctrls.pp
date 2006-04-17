@@ -30,7 +30,7 @@ uses
   // Libs
   Windows,
   // LCL
-  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms,
+  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc ,
   InterfaceBase,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls;
@@ -196,9 +196,9 @@ type
   private
   protected
   public
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;}
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
   { TWinCEWSStaticText }
@@ -259,8 +259,8 @@ type
   private
   protected
   public
-{    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;}
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
 implementation
@@ -321,19 +321,34 @@ end;
 function TWinCEWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  hwnd: THandle;
-  Str: array[0..255] of WideChar;
+  Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomEdit.CreateHandle');
+  WriteLn('TWinCEWSCustomCheckBox.CreateHandle');
   {$endif}
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);
+    if TCustomCheckBox(AWinControl).AllowGrayed then
+      Flags := Flags Or BS_AUTO3STATE
+    else
+      Flags := Flags Or BS_AUTOCHECKBOX;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
 
+{
   MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
 
   Result := CreateWindow(
     @ButtonClsName,             // Name of the registered class
     @Str,                       // Title of the window
-    BS_CHECKBOX or WS_TABSTOP or WS_CHILD or WS_VISIBLE,  // Style of the window
+    WS_CHILD or WS_VISIBLE or WS_TABSTOP or BS_AUTOCHECKBOX or BS_LEFT,  // Style of the window
     AWinControl.Left,           // x-position (at beginning)
     AWinControl.Top,            // y-position (at beginning)
     AWinControl.Width,          // window width
@@ -345,9 +360,79 @@ begin
 
   if (hwnd = 0) then WriteLn('CreateWindow failed');
 
-  Result := hwnd;
+  Result := hwnd;}
 end;
 
+{ TWinCEWSRadioButton }
+
+function TWinCEWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+  hwnd: THandle;
+  Str: array[0..255] of WideChar;
+
+begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWSRadioButton.CreateHandle');
+  {$endif}
+
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ButtonClsName;
+    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);
+    // BS_AUTORADIOBUTTON may hang the application,
+    // if the radiobuttons are not consecutive controls.//roozbeh:is it so in wince?
+    Flags := Flags or BS_AUTORADIOBUTTON;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+{ TWinCEWSCustomStaticText }
+const
+  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
+
+function CalcStaticTextFlags(const Alignment: TAlignment): dword;
+begin
+  Result := AlignmentToStaticTextFlags[Alignment];
+end;
+
+function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  hwnd: THandle;
+  Str: array[0..255] of WideChar;
+  Params: TCreateWindowExParams;
+begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWSCustomStaticText.CreateHandle');
+  {$endif}
+
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @LabelClsName;
+    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
+    Flags := Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+
+end;
+
+procedure TWinCEWSCustomStaticText.SetAlignment(
+  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+  inherited SetAlignment(ACustomStaticText, NewAlignment);
+end;
 
 initialization
 
@@ -372,8 +457,8 @@ initialization
   RegisterWSComponent(TCustomCheckBox, TWinCEWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWinCEWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TWinCEWSToggleBox);
-//  RegisterWSComponent(TRadioButton, TWinCEWSRadioButton);
+  RegisterWSComponent(TRadioButton, TWinCEWSRadioButton);
 //  RegisterWSComponent(TCustomStaticText, TWinCEWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TWinCEWSStaticText);
+  RegisterWSComponent(TStaticText, TWinCEWSStaticText);
 ////////////////////////////////////////////////////
 end.
