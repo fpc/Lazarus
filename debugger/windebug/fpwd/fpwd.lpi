@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="3"/>
+    </General>
+    <LazDoc Paths=""/>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="18">
+      <Unit0>
+        <Filename Value="fpwd.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fpwd"/>
+        <CursorPos X="3" Y="47"/>
+        <TopLine Value="25"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fpwdcommand.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPWDCommand"/>
+        <CursorPos X="1" Y="7"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\windebugger.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="WinDebugger"/>
+        <CursorPos X="1" Y="34"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="fpwdtype.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPWDType"/>
+        <CursorPos X="2" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="fpwdutil.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPWDUtil"/>
+        <CursorPos X="26" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="25"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="fpwdglobal.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FPWDGlobal"/>
+        <CursorPos X="1" Y="34"/>
+        <TopLine Value="14"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\win32\classes.pp"/>
+        <UnitName Value="Classes"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\win32\windows.pp"/>
+        <UnitName Value="windows"/>
+        <CursorPos X="47" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\lcl\maps.pp"/>
+        <UnitName Value="maps"/>
+        <CursorPos X="57" Y="36"/>
+        <TopLine Value="25"/>
+        <UsageCount Value="11"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\windextra.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="WindExtra"/>
+        <CursorPos X="25" Y="19"/>
+        <TopLine Value="31"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="fpwdbreak.pas"/>
+        <UnitName Value="FPWDBreak"/>
+        <CursorPos X="1" Y="2"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\objpas\types.pp"/>
+        <UnitName Value="types"/>
+        <CursorPos X="1" Y="130"/>
+        <TopLine Value="108"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\win32\wininc\base.inc"/>
+        <CursorPos X="33" Y="80"/>
+        <TopLine Value="62"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\win32\wininc\struct.inc"/>
+        <CursorPos X="1" Y="1629"/>
+        <TopLine Value="1619"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\..\fpc\fpc.2.0.2\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="118"/>
+        <TopLine Value="107"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="fpwdloop.pas"/>
+        <UnitName Value="FPWDLoop"/>
+        <CursorPos X="1" Y="9"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="fpwdpeimage.pas"/>
+        <UnitName Value="FPWDPEImage"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\..\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="57" Y="32"/>
+        <TopLine Value="14"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit17>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="6" Column="32" TopLine="3"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="33" Column="1" TopLine="22"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="21" Column="1" TopLine="11"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\windextra.pp"/>
+        <Caret Line="25" Column="1" TopLine="12"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\windextra.pp"/>
+        <Caret Line="34" Column="1" TopLine="12"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="34" Column="1" TopLine="15"/>
+      </Position6>
+      <Position7>
+        <Filename Value="fpwdglobal.pas"/>
+        <Caret Line="34" Column="1" TopLine="12"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="4" Column="1" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\windebugger.pp"/>
+        <Caret Line="162" Column="1" TopLine="144"/>
+      </Position9>
+      <Position10>
+        <Filename Value="fpwd.lpr"/>
+        <Caret Line="10" Column="1" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="fpwdcommand.pas"/>
+        <Caret Line="560" Column="49" TopLine="549"/>
+      </Position11>
+      <Position12>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="14" Column="15" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="4" Column="1" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="28" Column="28" TopLine="17"/>
+      </Position14>
+      <Position15>
+        <Filename Value="fpwdcommand.pas"/>
+        <Caret Line="13" Column="46" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="fpwdcommand.pas"/>
+        <Caret Line="273" Column="43" TopLine="262"/>
+      </Position16>
+      <Position17>
+        <Filename Value="fpwdglobal.pas"/>
+        <Caret Line="34" Column="1" TopLine="24"/>
+      </Position17>
+      <Position18>
+        <Filename Value="fpwd.lpr"/>
+        <Caret Line="21" Column="1" TopLine="1"/>
+      </Position18>
+      <Position19>
+        <Filename Value="fpwd.lpr"/>
+        <Caret Line="34" Column="1" TopLine="12"/>
+      </Position19>
+      <Position20>
+        <Filename Value="fpwdtype.pas"/>
+        <Caret Line="79" Column="1" TopLine="64"/>
+      </Position20>
+      <Position21>
+        <Filename Value="fpwdtype.pas"/>
+        <Caret Line="34" Column="1" TopLine="12"/>
+      </Position21>
+      <Position22>
+        <Filename Value="fpwdtype.pas"/>
+        <Caret Line="62" Column="1" TopLine="56"/>
+      </Position22>
+      <Position23>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="6" Column="1" TopLine="1"/>
+      </Position23>
+      <Position24>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="32" Column="1" TopLine="12"/>
+      </Position24>
+      <Position25>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="194" Column="1" TopLine="188"/>
+      </Position25>
+      <Position26>
+        <Filename Value="fpwdloop.pas"/>
+        <Caret Line="385" Column="5" TopLine="363"/>
+      </Position26>
+      <Position27>
+        <Filename Value="fpwdpeimage.pas"/>
+        <Caret Line="10" Column="1" TopLine="1"/>
+      </Position27>
+      <Position28>
+        <Filename Value="fpwdpeimage.pas"/>
+        <Caret Line="34" Column="1" TopLine="12"/>
+      </Position28>
+      <Position29>
+        <Filename Value="fpwdcommand.pas"/>
+        <Caret Line="6" Column="1" TopLine="1"/>
+      </Position29>
+      <Position30>
+        <Filename Value="fpwdbreak.pas"/>
+        <Caret Line="2" Column="10" TopLine="1"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\;$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\;c:\fpc\rtl\units\$(TargetCPU)-$(TargetOS)\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="11">
+      <Item1>
+        <Source Value="..\..\..\lcl\interfaces\gtk\gtklistsl.inc"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="358"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\..\..\lcl\interfaces\gtk\gtklistsl.inc"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="324"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\..\gdbmidebugger.pp"/>
+        <Line Value="2039"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\..\..\ideintf\objectinspector.pp"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="1908"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\..\..\ide\msgview.pp"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="506"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\..\..\ide\msgview.pp"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="457"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\..\gdbmidebugger.pp"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="803"/>
+      </Item7>
+      <Item8>
+        <Source Value="..\..\..\lcl\include\customcombobox.inc"/>
+        <Line Value="796"/>
+      </Item8>
+      <Item9>
+        <Source Value="..\..\..\lcl\interfaces\gtk\gtkobject.inc"/>
+        <Line Value="4763"/>
+      </Item9>
+      <Item10>
+        <Source Value="..\..\..\lcl\interfaces\gtk\gtkobject.inc"/>
+        <Line Value="4142"/>
+      </Item10>
+      <Item11>
+        <Source Value="..\..\..\test\maptest.lpr"/>
+        <Line Value="41"/>
+      </Item11>
+    </BreakPoints>
+    <Watches Count="3">
+      <Item1>
+        <Expression Value="Item^"/>
+      </Item1>
+      <Item2>
+        <Expression Value="c"/>
+      </Item2>
+      <Item3>
+        <Expression Value="FCurrent"/>
+      </Item3>
+    </Watches>
+    <Exceptions Count="1">
+      <Item1>
+        <Name Value="ECodeToolError"/>
+      </Item1>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
