@@ -779,6 +779,7 @@ docs/xml/lcl/ldockctrledit.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/ldocktree.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/maps.xml svneol=native#text/plain
 docs/xml/lcl/maskedit.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/menus.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
