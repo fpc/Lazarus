@@ -158,8 +158,14 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtMainWindow: TQtMainWindow;
+var
+  Str: WideString;
 begin
   QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
+
+  Str := WideString(AWinControl.Caption);
+
+  QtMainWindow.SetWindowTitle(@Str);
 
   SetSlots(QtMainWindow);
 

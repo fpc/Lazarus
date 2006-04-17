@@ -65,10 +65,24 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
   public
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
+
+{    class procedure AddControl(const AControl: TControl); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
+                                      const AOldPos, ANewPos: Integer;
+                                      const AChildren: TFPList); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
   end;
 
   { TQtWSGraphicControl }
@@ -159,6 +173,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSWinControl.GetText
+  Params:  AWinControl     - the calling object
+           AText           - The Text
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class function TQtWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  TQtWidget(AWinControl.Handle).WindowTitle(@Str);
+
+  AText := String(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSWinControl.SetBounds
   Params:  AWinControl - the calling object
            ALeft, ATop - Position
@@ -200,6 +232,22 @@ class procedure TQtWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 begin
   QWidget_resize(TQtWidget(AWinControl.Handle).Widget, AWidth, AHeight);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSWinControl.SetText
+  Params:  AWinControl     - the calling object
+           AText           - The Text
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(AText);
+
+  TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
 end;
 
 {------------------------------------------------------------------------------

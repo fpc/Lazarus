@@ -720,6 +720,107 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  GetWindowRect
+  Params:  Handle - handle of window
+           Rect   - record for window coordinates
+  Returns: if the function succeeds, the return value is nonzero; if the
+           function fails, the return value is zero
+
+  Retrieves the dimensions of the bounding rectangle of the specified window.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetWindowRect(Handle: HWND; Var ARect: TRect): Integer;
+begin
+  Result := 0;
+  
+  ARect.Top := QWidget_y(TQtWidget(Handle).Widget);
+  ARect.Left := QWidget_x(TQtWidget(Handle).Widget);
+  ARect.Bottom := QWidget_height(TQtWidget(Handle).Widget) + QWidget_y(TQtWidget(Handle).Widget);
+  ARect.Right := QWidget_width(TQtWidget(Handle).Widget) + QWidget_x(TQtWidget(Handle).Widget);
+
+  Result := -1;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetWindowRelativePosition
+  Params:  Handle : HWND;
+  Returns: true on success
+
+  returns the current widget Left, Top, relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+{var
+  LeftTop:TPoint;
+  R: TRect;
+  ParentHandle: THandle;
+  WindowInfo: PWindowInfo;}
+begin
+  Result := False;
+  
+{  WindowInfo := GetWindowInfo(Handle);
+  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+    Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
+  if not Windows.GetWindowRect(Handle,@R) then exit;
+  LeftTop.X:=R.Left;
+  LeftTop.Y:=R.Top;
+  ParentHandle:=Windows.GetParent(Handle);
+  if ParentHandle<>0 then
+  begin
+    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
+    if not GetLCLClientBoundsOffset(ParentHandle, R) then
+      exit;
+    dec(LeftTop.X, R.Left);
+    dec(LeftTop.Y, R.Top);
+  end;
+  Left:=LeftTop.X;
+  Top:=LeftTop.Y;
+  Result := True;}
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetWindowSize
+  Params:  Handle : hwnd;
+  Returns: true on success
+
+  Returns the current widget Width and Height
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+begin
+  Result := False;
+
+  Height := QWidget_height(TQtWidget(Handle).Widget);
+  Width := QWidget_width(TQtWidget(Handle).Widget);
+
+  Result := True;
+
+  // Here we should convert top level lcl window coordinaties to qt coord
+  // Due to borders and etc
+{  Style := Windows.GetWindowLong(Handle, GWL_STYLE);
+  ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
+  if (Style and WS_THICKFRAME) <> 0 then
+  begin
+    // thick, sizing border
+    // add twice, top+bottom border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+  end else
+  if (Style and WS_BORDER) <> 0 then
+  begin
+    // thin, non-sizing border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
+  end;
+  if (Style and WS_CAPTION) <> 0 then
+    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
+      Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+    else
+      Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+
+  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+    AdjustForBuddySize;}
+end;
+
+{------------------------------------------------------------------------------
   Function: InvalidateRect
   Params: aHandle:
           Rect:
@@ -727,10 +828,11 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect;
- bErase : Boolean) : Boolean;
+function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
   TQtWidget(aHandle).Update;
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -880,7 +982,7 @@ begin
   
   Widget := QWidgetH(hWnd);
 
-//  if QWidgetH = nil then RaiseException('TQtWidgetSet.ShowWindow  hWnd is nil');
+//  if Widget = nil then RaiseException('TQtWidgetSet.ShowWindow  hWnd is nil');
 
   case nCmdShow of
 

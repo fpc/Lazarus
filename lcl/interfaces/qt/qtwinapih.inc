@@ -47,6 +47,9 @@ function GetDC(hWnd: HWND): HDC; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
 function GetSystemMetrics(nIndex: Integer): Integer; override;
+function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
+function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
+function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 

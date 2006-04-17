@@ -53,9 +53,12 @@ type
     procedure SlotKey(Event: QEventH); cdecl;
     procedure SlotMouse(Event: QEventH); cdecl;
     procedure SlotPaint(Event: QEventH); cdecl;
+    procedure SlotResize; cdecl;
   public
     procedure Update;
     procedure Repaint;
+    procedure setWindowTitle(Str: PWideString);
+    procedure WindowTitle(Str: PWideString);
   end;
   
   { TQtAbstractButton }
@@ -119,6 +122,8 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     destructor Destroy; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SlotWindowStateChange; cdecl;
   end;
 
   { TQtStaticText }
@@ -239,8 +244,12 @@ implementation
 
 { TQtWidget }
 
-constructor TQtWidget.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+{------------------------------------------------------------------------------
+  Function: TQtWidget.Create
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 var
   Parent: QWidgetH;
 begin
@@ -259,6 +268,11 @@ begin
    AWinControl.Width, AWinControl.Height);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWidget.Destroy
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 destructor TQtWidget.Destroy;
 begin
   {$ifdef VerboseQt}
@@ -279,7 +293,9 @@ function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl
 begin
   Result := False;
 
+  {$ifdef VerboseQt}
 //  WriteLn(Integer(QEvent_type(Event)));
+  {$endif}
 
   QEvent_ignore(Event);
 
@@ -289,22 +305,18 @@ begin
    QEventDestroy: SlotDestroy;
    QEventFocusIn: SlotFocus(True);
    QEventFocusOut: SlotFocus(False);
-//  WINDOWPOSCHANGED: SlotDestroy;
    QEventKeyPress: SlotKey(Event);
    QEventKeyRelease: SlotKey(Event);
    QEventMouseButtonPress: SlotMouse(Event);
    QEventMouseButtonRelease: SlotMouse(Event);
    QEventMouseButtonDblClick: SlotMouse(Event);
    QEventMouseMove: SlotMouse(Event);
+   QEventResize: SlotResize;
 
    QEventPaint: SlotPaint(Event);
   end;
 
-{  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
+{  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
@@ -390,7 +402,9 @@ procedure TQtWidget.SlotKey(Event: QEventH); cdecl;
 var
   Msg: TLMKey;
 begin
-  WriteLn('SlotKey');
+  {$ifdef VerboseQt}
+    WriteLn('SlotKey');
+  {$endif}
 
   FillChar(Msg, SizeOf(Msg), #0);
 
@@ -449,6 +463,45 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TQtWidget.SlotResize
+  Params:  None
+  Returns: Nothing
+
+  Sends a LM_SIZE message to the LCL.
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SlotResize; cdecl;
+var
+  Msg: TLMSize;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('SlotResize');
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SIZE;
+
+  case QWidget_windowState(Widget) of
+   QtWindowMinimized: Msg.SizeType := SIZEICONIC;
+   QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
+   QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+  else
+   Msg.SizeType := SIZENORMAL;
+  end;
+
+  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+  Msg.Width := QWidget_width(Widget);
+  Msg.Height := QWidget_height(Widget);
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: TQtWidget.Update
   Params:  None
   Returns: Nothing
@@ -460,9 +513,26 @@ begin
   QWidget_update(Widget);
 end;
 
+{------------------------------------------------------------------------------
+  Function: TQtWidget.Repaint
+  Params:  None
+  Returns: Nothing
+
+  Repaints the control imediately
+ ------------------------------------------------------------------------------}
 procedure TQtWidget.Repaint;
 begin
   QWidget_repaint(Widget);
+end;
+
+procedure TQtWidget.setWindowTitle(Str: PWideString);
+begin
+  QWidget_setWindowTitle(Widget, Str);
+end;
+
+procedure TQtWidget.WindowTitle(Str: PWideString);
+begin
+  QWidget_WindowTitle(Widget, Str);
 end;
 
 {------------------------------------------------------------------------------
@@ -1077,6 +1147,61 @@ begin
   QWidget_destroy(Widget);
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtMainWindow.EventFilter
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtMainWindow.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+
+  case QEvent_type(Event) of
+   QEventWindowStateChange: SlotWindowStateChange;
+  else
+   // Inherited Callbacks
+   inherited EventFilter(Sender, Event);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtMainWindow.SlotWindowStateChange
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TQtMainWindow.SlotWindowStateChange; cdecl;
+var
+  Msg: TLMSize;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('SlotWindowStateChange');
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SIZE;
+
+  case QWidget_windowState(Widget) of
+   QtWindowMinimized: Msg.SizeType := SIZEICONIC;
+   QtWindowMaximized: Msg.SizeType := SIZEFULLSCREEN;
+   QtWindowFullScreen: Msg.SizeType := SIZEFULLSCREEN;
+  else
+   Msg.SizeType := SIZENORMAL;
+  end;
+
+  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+  Msg.Width := QWidget_width(Widget);
+  Msg.Height := QWidget_height(Widget);
+
+  try
+    LCLObject.WindowProc(TLMessage(Msg));
+  except
+    Application.HandleException(nil);
+  end;
 end;
 
 { TQtStaticText }
