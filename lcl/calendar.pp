@@ -108,6 +108,7 @@ Type
     property OnChangeBounds;
     property OnClick;
     property OnDayChanged;
+    property OnDblClick;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -148,7 +149,7 @@ begin
   fCompStyle := csCalendar;
   SetInitialBounds(0,0,190,153);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
-  ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
+  ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls];
   Date := FormatDateTime(ShortDateFormat,Now);
 end;
 
