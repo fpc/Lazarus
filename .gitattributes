@@ -2276,6 +2276,7 @@ lcl/ldockctrledit.pas svneol=native#text/plain
 lcl/ldocktree.pas svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
+lcl/maps.pp svneol=native#text/plain
 lcl/maskedit.pp svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/nonwin32/messages.pp svneol=native#text/pascal
