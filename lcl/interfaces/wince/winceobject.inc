@@ -125,6 +125,7 @@ Begin
     LPSzMenuName := nil;
     LPSzClassName := @ClsName;
   end;
+  
   Result := Windows.RegisterClass(@WindowClass) <> 0;
 End;
 
@@ -171,7 +172,7 @@ begin
   WriteLn('TWinCEWidgetSet.AppRun');
   {$endif}
 
-  while Windows.GetMessage(@AMessage, 0, 0, 0) do
+  while Windows.GetMessage(@AMessage, 0, 0, 0) and (not AppTerminated) do
   begin
     Windows.TranslateMessage(@AMessage);
     Windows.DispatchMessage(@AMessage);
@@ -185,7 +186,7 @@ end;
 
 procedure TWinCEWidgetSet.AppTerminate;
 begin
-
+  AppTerminated := True;
 end;
 
 function TWinCEWidgetSet.InitHintFont(HintFont: TObject): Boolean;

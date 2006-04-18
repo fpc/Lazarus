@@ -866,7 +866,8 @@ Begin
       if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and
         (Application.MainForm <> nil) then
       begin
-        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
+        Application.Terminate;
+//        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
       end else begin
         LMessage.Msg := LM_CLOSEQUERY;
       end;

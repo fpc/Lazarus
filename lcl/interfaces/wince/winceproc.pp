@@ -406,107 +406,106 @@ End;
 //it depends heavilly on windowinfos for everything
 //unfortunatly there are not setprop or removeprops exist on wince...so we have to implement something similar!
 type
-PTPropertyListWindows = ^TPropertyListWindows;
-TPropertyListWindows = record
-WindowHWND : HWND;
-WindowInfo : HANDLE;//if you want to make it just like windows this also should be an array!
-NextPropertyListWindows : PTPropertyListWindows;
-end;
+  PTPropertyListWindows = ^TPropertyListWindows;
+  TPropertyListWindows = record
+   WindowHWND : HWND;
+   WindowInfo : HANDLE;//if you want to make it just like windows this also should be an array!
+   NextPropertyListWindows : PTPropertyListWindows;
+  end;
 
 var
-ThePropertyLists : PTPropertyListWindows;
+  ThePropertyLists : PTPropertyListWindows;
 
 function SetProp(hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
 var
-pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
+  pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
 begin
-Result := true;
-if ThePropertyLists = nil then
- begin
-  New(ThePropertyLists);
-  writeln('new called + '+ inttostr(longint(ThePropertyLists)));
-  ThePropertyLists^.WindowInfo := 0;
-  ThePropertyLists^.WindowHWND := 0;
-  ThePropertyLists^.NextPropertyListWindows := nil;
- end;
-pPropertyLists := ThePropertyLists;
-pPrevPropertyLists := nil;
-repeat
-if (pPropertyLists^.WindowHWND = hWnd) or (pPropertyLists^.WindowHWND = 0) then
-   begin
-   pPropertyLists^.WindowInfo := hData;
-   pPropertyLists^.WindowHWND := hWnd;//if it was 0 then make it hwnd
-   break;
-   end;
-pPrevPropertyLists := pPropertyLists;
-pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-until pPropertyLists = nil;
+  Result := true;
+  if ThePropertyLists = nil then
+  begin
+    New(ThePropertyLists);
+    writeln('new called + '+ inttostr(longint(ThePropertyLists)));
+    ThePropertyLists^.WindowInfo := 0;
+    ThePropertyLists^.WindowHWND := 0;
+    ThePropertyLists^.NextPropertyListWindows := nil;
+  end;
+  pPropertyLists := ThePropertyLists;
+  pPrevPropertyLists := nil;
+  repeat
+    if (pPropertyLists^.WindowHWND = hWnd) or (pPropertyLists^.WindowHWND = 0) then
+    begin
+      pPropertyLists^.WindowInfo := hData;
+      pPropertyLists^.WindowHWND := hWnd;//if it was 0 then make it hwnd
+      break;
+    end;
+    pPrevPropertyLists := pPropertyLists;
+    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
+  until pPropertyLists = nil;
 
-if pPropertyLists = nil then//not found in previously created ones
-begin
-New(pPrevPropertyLists^.NextPropertyListWindows);
-pPropertyLists := pPrevPropertyLists^.NextPropertyListWindows;
+  if pPropertyLists = nil then//not found in previously created ones
+  begin
+    New(pPrevPropertyLists^.NextPropertyListWindows);
+    pPropertyLists := pPrevPropertyLists^.NextPropertyListWindows;
 
-pPropertyLists^.NextPropertyListWindows := nil;
-pPropertyLists^.WindowHWND := hWnd;
-pPropertyLists^.WindowInfo := hData;
-end;
-
+    pPropertyLists^.NextPropertyListWindows := nil;
+    pPropertyLists^.WindowHWND := hWnd;
+    pPropertyLists^.WindowInfo := hData;
+  end;
 end;
 
 
 function GetProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
 var
-pPropertyLists : PTPropertyListWindows;
+  pPropertyLists : PTPropertyListWindows;
 begin
-Result := 0;
-pPropertyLists := ThePropertyLists;
-if pPropertyLists = nil then
-begin
-writeln('getprop called with nil list');
-exit;
-end;
-//writeln('getprop ok');
-repeat
-if (pPropertyLists^.WindowHWND = hWnd) then
-   begin
-   result := pPropertyLists^.WindowInfo;
-   break;
-   end;
-pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-until pPropertyLists = nil;
+  Result := 0;
+  pPropertyLists := ThePropertyLists;
+  if pPropertyLists = nil then
+  begin
+    writeln('getprop called with nil list');
+    exit;
+  end;
+  //writeln('getprop ok');
+  repeat
+    if (pPropertyLists^.WindowHWND = hWnd) then
+    begin
+      result := pPropertyLists^.WindowInfo;
+      break;
+    end;
+    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
+  until pPropertyLists = nil;
 end;
 
 
 function RemoveProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
 var
-pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
+  pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
 begin
-exit;
-writeln('remove called');
-Result := 0;
-pPropertyLists := ThePropertyLists;
-pPrevPropertyLists := nil;
-if pPropertyLists = nil then exit;
-repeat
-if (pPropertyLists^.WindowHWND = hWnd) then
-   begin
-   result := pPropertyLists^.WindowInfo;
-   if pPrevPropertyLists <> nil then
+  exit;
+  writeln('remove called');
+  Result := 0;
+  pPropertyLists := ThePropertyLists;
+  pPrevPropertyLists := nil;
+  if pPropertyLists = nil then exit;
+  repeat
+    if (pPropertyLists^.WindowHWND = hWnd) then
     begin
-      pPrevPropertyLists^.NextPropertyListWindows := pPropertyLists^.NextPropertyListWindows;
-      Dispose(pPropertyLists);
-    end
-     else
+      result := pPropertyLists^.WindowInfo;
+      if pPrevPropertyLists <> nil then
+      begin
+        pPrevPropertyLists^.NextPropertyListWindows := pPropertyLists^.NextPropertyListWindows;
+        Dispose(pPropertyLists);
+      end
+      else
       begin//now the list contain nothing
         Dispose(pPropertyLists);
         ThePropertyLists := nil;
       end;
-   break;
-   end;
-pPrevPropertyLists := pPropertyLists;
-pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-until pPropertyLists = nil;
+    break;
+    end;
+    pPrevPropertyLists := pPropertyLists;
+    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
+  until pPropertyLists = nil;
 end;
 
 
@@ -537,8 +536,8 @@ end;
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
   Result := PWindowInfo(GetProp(Window{, PChar(dword(WindowInfoAtom))}));
-  if Result = nil then
-    Result := @DefaultWindowInfo;
+  
+  if Result = nil then Result := @DefaultWindowInfo;
 end;
 
 {-----------------------------------------------------------------------------

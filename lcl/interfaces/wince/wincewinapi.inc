@@ -1965,7 +1965,7 @@ begin
       end;
     end;
 }
-//roozbeh:is this usefull in wince?
+    //roozbeh:is this usefull in wince?
     LM_MOUSEWHEEL:
     begin
       // provide default wheel scrolling functionality
@@ -1977,12 +1977,10 @@ begin
       TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
     end;
 
-{$ifdef PassWin32MessagesToLCL}
   else
     if TLMessage(Message).Msg >= WM_USER then
     with TLMessage(Message) do
       Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
-{$endif}
   end;
 end;
 

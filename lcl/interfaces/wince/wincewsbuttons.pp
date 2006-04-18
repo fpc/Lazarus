@@ -47,7 +47,7 @@ type
 //    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
-//    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
 //                        var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -92,6 +92,7 @@ begin
 
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
+  
   // customization of Params
   with Params do
   begin
@@ -108,30 +109,14 @@ begin
     Height := AWinControl.Height;
     Parent := AWinControl.Parent.Handle;
     MenuHandle := 0;
-    end;
+  end;
+  
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
   
-{  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
+//  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
 
-  Result := CreateWindow(
-    @ButtonClsName,             // Name of the registered class
-    @Str,                       // Title of the window
-    WS_CHILD or WS_VISIBLE,     // Style of the window
-    AWinControl.Left,           // x-position (at beginning)
-    AWinControl.Top,            // y-position (at beginning)
-    AWinControl.Width,          // window width
-    AWinControl.Height,         // window height
-    AWinControl.Parent.Handle,  // handle to parent or owner window
-    0,                          // handle to menu
-    System.hInstance,           // handle to application instance
-    nil); }                      // pointer to window-creation data
-
-//    Result := CreateWindow(Params.pClassName, Params.WindowTitle, WS_CHILD or WS_VISIBLE,
-//          Params.Left, Params.Top, Params.Width, Params.Height, Params.Parent, 0, System.HInstance, Nil);
-
-//  if (Result = 0) then WriteLn('Create Button failed');
   {$ifdef VerboseWinCE}
   WriteLn('End Create Button. Handle = ' + IntToStr(Result) +
    ' Left ' + IntToStr(AWinControl.Left) +
@@ -166,10 +151,10 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-{class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const AText: String);
 begin
 end;
-}
+
 initialization
 
 ////////////////////////////////////////////////////

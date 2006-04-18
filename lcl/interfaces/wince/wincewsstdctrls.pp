@@ -279,7 +279,7 @@ begin
 
   MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
 
-  Result := CreateWindow(
+  hwnd := CreateWindow(
     @EditClsName,               // Name of the registered class
     @Str,                       // Title of the window
     WS_CHILD or WS_VISIBLE,     // Style of the window
@@ -415,6 +415,7 @@ begin
 
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
+  
   // customization of Params
   with Params do
   begin
@@ -422,10 +423,11 @@ begin
     WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
     Flags := Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
   end;
+
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
 
+  Result := Params.Window;
 end;
 
 procedure TWinCEWSCustomStaticText.SetAlignment(

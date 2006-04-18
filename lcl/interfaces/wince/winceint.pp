@@ -105,6 +105,8 @@ type
 
   TWinCEWidgetSet = class(TWidgetSet)
   private
+    AppTerminated: Boolean;
+
     FAppHandle: HWND;//roozbeh:in win32 it was parrent of all..a window on taskbar
 
     FMetrics: TNonClientMetrics;

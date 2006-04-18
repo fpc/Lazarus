@@ -219,8 +219,20 @@ begin
       end else begin
         MenuHandle := HMENU(nil);
       end;
-      Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, System.HInstance, Nil);
+
+      Window := CreateWindowEx(
+       FlagsEx,            // Extra Flags
+       pClassName,         // Name of the registered class
+       WindowTitle,        // Title of the window
+       Flags,              // Style of the window
+       Left,               // x-position (at beginning)
+       Top,                // y-position (at beginning)
+       Width,              // window width
+       Height,             // window height
+       Parent,             // handle to parent or owner window
+       MenuHandle,         // handle to menu
+       System.HInstance,   // handle to application instance
+       nil);               // pointer to window-creation data
 
       if Window = 0 then
       begin
@@ -430,14 +442,14 @@ end;
 
 procedure TWinCEWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 var
-tmpStr : PWideChar;
-Begin
+  tmpStr : PWideChar;
+begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
   tmpStr := CreatePWideCharFromString(AText);
   Windows.SetWindowText(AWinControl.Handle, PWideChar(tmpStr));
   DisposePWideChar(tmpStr);
-End;
+end;
 
 procedure TWinCEWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin

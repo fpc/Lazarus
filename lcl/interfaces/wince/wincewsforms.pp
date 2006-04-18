@@ -145,7 +145,7 @@ implementation
 
 uses Winceint;
 
-{ TWin32WSCustomForm }
+{ TWinCEWSCustomForm }
 
 function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
@@ -195,6 +195,7 @@ begin
   {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
+  
   // customization of Params
   with Params do
   begin
@@ -209,6 +210,7 @@ begin
     Height:=CW_USEDEFAULT;
     Width:=CW_USEDEFAULT;
   end;
+  
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
@@ -219,7 +221,7 @@ begin
 end;
 
 procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
-          const ABorderIcons: TBorderIcons);
+ const ABorderIcons: TBorderIcons);
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm),
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);

@@ -34,7 +34,8 @@ interface
 
 uses
   SysUtils, Types, Classes, Contnrs, FPCAdds,
-  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM, IntfGraphics, FPCanvas,
+  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM,
+  IntfGraphics, FPCanvas,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
   GraphType, GraphMath, InterfaceBase;
