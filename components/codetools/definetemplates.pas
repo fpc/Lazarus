@@ -3766,10 +3766,21 @@ begin
      ExternalMacroStart+'IncPath',
      'include',da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['forms']),
+    ExternalMacroStart+'SrcPath','forms;'+SrcPath,da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['widgetset']),
     ExternalMacroStart+'SrcPath','widgetset;'+SrcPath,da_Define));
   MainDir.AddChild(DirTempl);
   
+  // <LazarusSrcDir>/lcl/forms
+  LCLWidgetSetDir:=TDefineTemplate.Create('Forms',Format(ctsNamedDirectory,['WidgetSet']),
+    '','forms',da_Directory);
+  LCLWidgetSetDir.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['..']),
+    ExternalMacroStart+'SrcPath','..;'+SrcPath,da_Define));
+  DirTempl.AddChild(LCLWidgetSetDir);
+
   // <LazarusSrcDir>/lcl/widgetset
   LCLWidgetSetDir:=TDefineTemplate.Create('WidgetSet',Format(ctsNamedDirectory,['WidgetSet']),
     '','widgetset',da_Directory);
