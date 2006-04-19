@@ -30,7 +30,7 @@ unit WinUtilPrn;
 interface
 
 {$IFNDEF WIN32}
-//This unit it's reserved to Win32
+{$FATAL This unit is reserved to Win32}
 {$ENDIF}
 
 uses
