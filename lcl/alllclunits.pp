@@ -48,6 +48,7 @@ uses
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
+  CalendarPopup,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,

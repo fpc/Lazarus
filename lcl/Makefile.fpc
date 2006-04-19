@@ -82,7 +82,7 @@ endif
 [compiler]
 options=-gl
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=. $(NONWIN32) widgetset
+unitdir=. $(NONWIN32) forms widgetset
 includedir=include
 
 [install]

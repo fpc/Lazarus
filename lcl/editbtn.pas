@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs;
+  ExtDlgs, CalendarPopup;
 
 type
   { TCustomEditButton }
@@ -306,6 +306,7 @@ type
     FDate: TDateTime;
     function IsStoreTitle: boolean;
     procedure SetDate(const Value: TDateTime);
+    procedure CalendarPopupReturnDate(Sender: TObject; Const ADate: TDateTime);
   protected
     procedure DoButtonClick (Sender: TObject); override;
     procedure EditingDone; override;
@@ -844,35 +845,13 @@ begin
 end;
 
 procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
-var CD:TCalendarDialog;
-    B:Boolean;
-    D:TDateTime;
+var
+  PopupOrigin:TPoint;
 begin
   inherited DoButtonClick(Sender);
 
-  CD:=TCalendarDialog.Create(Self);
-  with CD do begin
-    Date:=Self.Date;
-    CancelCaption:=Self.CancelCaption;
-    OKCaption:=Self.OKCaption;
-    DialogTitle:=Self.DialogTitle;
-    DisplaySettings:=Self.CalendarDisplaySettings;
-  end;
-  try
-    if CD.Execute then begin
-      FDate:=CD.Date;
-      Self.Date:=FDate;
-      D:=FDate;
-      B:=true;
-      If Assigned(FOnAcceptDate) then
-        FOnAcceptDate(Self,D,B);
-      if B then
-        Text:=DateToStr(FDate);
-    end;
-  except
-    raise Exception.Create('Errore in calendar dialog di dateedit');
-  end;
-  FreeAndNil(CD);
+  PopupOrigin:=ControlToScreen(Point(0, Height));
+  ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate);
 end;
 
 procedure TDateEdit.EditingDone;
@@ -907,6 +886,26 @@ begin
   if FDate=Value then exit;
   FDate:=Value;
   Text:=DateToStr(FDate);
+end;
+
+procedure TDateEdit.CalendarPopupReturnDate(Sender: TObject;
+  const ADate: TDateTime);
+var
+  B:Boolean;
+  D:TDateTime;
+begin
+  try
+    FDate:=ADate;
+    Self.Date:=FDate;
+    D:=FDate;
+    B:=true;
+    If Assigned(FOnAcceptDate) then
+      FOnAcceptDate(Self,D,B);
+    if B then
+      Text:=DateToStr(FDate);
+  except
+    raise Exception.Create('Errore in calendar dialog di dateedit');
+  end;
 end;
 
 
