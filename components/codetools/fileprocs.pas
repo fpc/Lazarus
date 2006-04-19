@@ -2322,6 +2322,7 @@ begin
     if FFiles.FindKey(PChar(TrimmedFilename),
                       @CompareFilenameWithFileStateCacheItem)=nil
     then begin
+      DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));
       WriteDebugReport;
       raise Exception.Create('');
     end;
