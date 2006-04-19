@@ -2029,6 +2029,8 @@ var
           MacroParam:=MacroVarName;
           MacroStr:='';
           FOnReadValue(Self,MacroParam,MacroStr,Handled);
+          if not Handled then
+            MacroStr:=MacroVarName;
         end;
         if not Handled then begin
           Handled:=ExecuteMacroVariable(MacroStr);

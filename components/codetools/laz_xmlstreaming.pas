@@ -84,10 +84,13 @@ type
   TXMLObjectReader = class(TAbstractObjectReader)
   private
     FDoc: TDOMDocument;
+    FElement: TDOMElement;
     FRootEl: TDOMElement;
   public
     constructor Create(ADoc: TDOMDocument; const APath: string);
     destructor Destroy; override;
+    
+    function GetRootClassName(out IsInherited: Boolean): string;
 
     { All ReadXXX methods are called _after_ the value type has been read! }
     function NextValue: TValueType; override;
@@ -115,6 +118,7 @@ type
     procedure SkipValue; override;
   public
     property Doc: TDOMDocument read FDoc;
+    property Element: TDOMElement read FElement;// current element node
   end;
   TXMLObjectReaderClass = class of TXMLObjectReader;
 
@@ -454,12 +458,33 @@ begin
   end;
   if not (Node is TDOMElement) then
     RaiseNotDOMElement;
-  FRootEl:=TDOMElement(Node)
+  FRootEl:=TDOMElement(Node);
+  FElement:=FRootEl;
 end;
 
 destructor TXMLObjectReader.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TXMLObjectReader.GetRootClassName(out IsInherited: Boolean): string;
+var
+  ComponentNode: TDOMNode;
+  CompElement: TDOMElement;
+begin
+  IsInherited:=false;
+  
+  ComponentNode:=FRootEl.FindNode('component');
+  if ComponentNode=nil then
+    raise Exception.Create('component node not found');
+  if not (ComponentNode is TDOMElement) then
+    raise Exception.Create('component node is not a dom element');
+  CompElement:=TDOMElement(ComponentNode);
+
+  Result:=CompElement['class'];
+  DebugLn('TXMLObjectReader.GetRootClassName RootClassName="',Result,'"');
+  
+  // TODO: IsInherited
 end;
 
 function TXMLObjectReader.NextValue: TValueType;
@@ -475,14 +500,46 @@ begin
 end;
 
 procedure TXMLObjectReader.BeginRootComponent;
+
+  procedure RaiseComponentNodeNotFound;
+  begin
+    raise Exception.Create('component node not found');
+  end;
+  
+var
+  Node: TDOMNode;
 begin
   writeln('TXMLObjectReader.BeginRootComponent ');
+  Node:=FElement.FindNode('component');
+  if Node=nil then
+    RaiseComponentNodeNotFound;
 end;
 
 procedure TXMLObjectReader.BeginComponent(var Flags: TFilerFlags;
   var AChildPos: Integer; var CompClassName, CompName: String);
+var
+  ComponentNode: TDOMNode;
+  PropertiesNode: TDOMNode;
 begin
-  writeln('TXMLObjectReader.BeginComponent ');
+  writeln('TXMLObjectReader.BeginComponent START');
+  
+  ComponentNode:=FElement.FindNode('component');
+  if ComponentNode=nil then
+    raise Exception.Create('component node not found');
+  if not (ComponentNode is TDOMElement) then
+    raise Exception.Create('component node is not a dom element');
+  FElement:=TDOMElement(ComponentNode);
+  
+  CompName:=FElement['name'];
+  CompClassName:=FElement['class'];
+  DebugLn('TXMLObjectReader.BeginComponent CompName="',CompName,'" CompClassName="',CompClassName,'"');
+  
+  PropertiesNode:=FElement.FindNode('properties');
+  if PropertiesNode=nil then
+    raise Exception.Create('properties node not found');
+  if not (PropertiesNode is TDOMElement) then
+    raise Exception.Create('properties node is not a dom element');
+  FElement:=TDOMElement(PropertiesNode);
 end;
 
 function TXMLObjectReader.BeginProperty: String;
