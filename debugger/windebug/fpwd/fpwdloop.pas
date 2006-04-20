@@ -1,4 +1,4 @@
-{ $Id: $ }
+{ $Id $ }
 {
  ---------------------------------------------------------------------------
  fpwdloop.pas  -  FP standalone windows debugger - Debugger main loop
@@ -117,35 +117,32 @@ begin
   else
     Write(' Unknown code: ', AEvent.Exception.ExceptionRecord.ExceptionCode);
   end;
-  case GMode of
-    dm64: Info0 := AEvent.Exception64.ExceptionRecord.ExceptionAddress;
-    dm32: Info0 := Cardinal(AEvent.Exception.ExceptionRecord.ExceptionAddress);
-  else
-    Info0 := 0;
-  end;
+  {$ifdef cpui386}
+  Info0 := Cardinal(AEvent.Exception.ExceptionRecord.ExceptionAddress);
+  {$else}
+  Info0 := AEvent.Exception64.ExceptionRecord.ExceptionAddress;
+  {$endif}
   Write(' at: ', FormatAdress(Info0));
   Write(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
   if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
   then Write('Continuable')
   else Write('Not continuable');
   Write(']');
-  case GMode of
-    dm64: Write(' ParamCount:', AEvent.Exception64.ExceptionRecord.NumberParameters);
-    dm32: Write(' ParamCount:', AEvent.Exception.ExceptionRecord.NumberParameters);
-  end;
+  {$ifdef cpui386}
+  Write(' ParamCount:', AEvent.Exception.ExceptionRecord.NumberParameters);
+  {$else}
+  Write(' ParamCount:', AEvent.Exception64.ExceptionRecord.NumberParameters);
+  {$endif}
 
   case AEvent.Exception.ExceptionRecord.ExceptionCode of
     EXCEPTION_ACCESS_VIOLATION: begin
-      case GMode of
-        dm64: begin
-          Info0 := AEvent.Exception64.ExceptionRecord.ExceptionInformation[0];
-          Info1Str := IntToHex(AEvent.Exception64.ExceptionRecord.ExceptionInformation[1], 16);
-        end;
-        dm32: begin
-          Info0 := AEvent.Exception.ExceptionRecord.ExceptionInformation[0];
-          Info1Str := IntToHex(AEvent.Exception.ExceptionRecord.ExceptionInformation[1], 8);
-        end;
-      end;
+      {$ifdef cpui386}
+      Info0 := AEvent.Exception.ExceptionRecord.ExceptionInformation[0];
+      Info1Str := IntToHex(AEvent.Exception.ExceptionRecord.ExceptionInformation[1], 8);
+      {$else}
+      Info0 := AEvent.Exception64.ExceptionRecord.ExceptionInformation[0];
+      Info1Str := IntToHex(AEvent.Exception64.ExceptionRecord.ExceptionInformation[1], 16);
+      {$endif}
 
       case Info0 of
         0: begin
@@ -160,32 +157,29 @@ begin
   WriteLN;
 
   Write(' Info: ');
-  case GMode of
-    dm64: begin
-      with AEvent.Exception64.ExceptionRecord do
-        for n := Low(ExceptionInformation) to high(ExceptionInformation) do
-        begin
-          Write(IntToHex(ExceptionInformation[n], 16), ' ');
-          if n and 3 = 3
-          then begin
-            WriteLN;
-            Write('       ');
-          end;
-        end;
+  {$ifdef cpui386}
+  with AEvent.Exception.ExceptionRecord do
+    for n := Low(ExceptionInformation) to high(ExceptionInformation) do
+    begin
+      Write(IntToHex(ExceptionInformation[n], 8), ' ');
+      if n and 7 = 7
+      then begin
+        WriteLN;
+        Write('       ');
+      end;
     end;
-    dm32: begin
-      with AEvent.Exception.ExceptionRecord do
-        for n := Low(ExceptionInformation) to high(ExceptionInformation) do
-        begin
-          Write(IntToHex(ExceptionInformation[n], 8), ' ');
-          if n and 7 = 7
-          then begin
-            WriteLN;
-            Write('       ');
-          end;
-        end;
+  {$else}
+  with AEvent.Exception64.ExceptionRecord do
+    for n := Low(ExceptionInformation) to high(ExceptionInformation) do
+    begin
+      Write(IntToHex(ExceptionInformation[n], 16), ' ');
+      if n and 3 = 3
+      then begin
+        WriteLN;
+        Write('       ');
+      end;
     end;
-  end;
+  {$endif}
   WriteLn;
   GState := dsPause;
 end;
@@ -270,56 +264,54 @@ procedure DebugLoop;
 
     if GCurrentThread = nil then Exit;
 
-    case GMode of
-      dm64: begin
-        with GCurrentContext64 do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
-        with GCurrentContext64 do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
-        with GCurrentContext64 do WriteLN(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
-      end;
-      dm32: begin
-        with GCurrentContext do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
-        with GCurrentContext do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
-        with GCurrentContext do WriteLN(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
-        with GCurrentContext do begin
-          Write(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
-          Write(' DR6: 0x', IntToHex(Dr6, 8), ' [');
-          if Dr6 and $0001 <> 0 then Write('B0 ');
-          if Dr6 and $0002 <> 0 then Write('B1 ');
-          if Dr6 and $0004 <> 0 then Write('B2 ');
-          if Dr6 and $0008 <> 0 then Write('B3 ');
-          if Dr6 and $2000 <> 0 then Write('BD ');
-          if Dr6 and $4000 <> 0 then Write('BS ');
-          if Dr6 and $8000 <> 0 then Write('BT ');
-          Write('] DR7: 0x', IntToHex(Dr7, 8), ' [');
-          if Dr7 and $01 <> 0 then Write('L0 ');
-          if Dr7 and $02 <> 0 then Write('G0 ');
-          if Dr7 and $04 <> 0 then Write('L1 ');
-          if Dr7 and $08 <> 0 then Write('G1 ');
-          if Dr7 and $10 <> 0 then Write('L2 ');
-          if Dr7 and $20 <> 0 then Write('G2 ');
-          if Dr7 and $40 <> 0 then Write('L3 ');
-          if Dr7 and $80 <> 0 then Write('G3 ');
-          if Dr7 and $100 <> 0 then Write('LE ');
-          if Dr7 and $200 <> 0 then Write('GE ');
-          if Dr7 and $2000 <> 0 then Write('GD ');
-          f := Dr7 shr 16;
-          for n := 0 to 3 do
-          begin
-            Write('R/W', n,':');
-            case f and 3 of
-              0: Write('ex');
-              1: Write('wo');
-              2: Write('IO');
-              3: Write('rw');
-            end;
-            f := f shr 2;
-            Write(' LEN', n,':', f and 3 + 1, ' ');
-            f := f shr 2;
-          end;
-          WriteLN(']');
+    {$ifdef cpui386}
+    with GCurrentContext do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
+    with GCurrentContext do WriteLN(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    with GCurrentContext do
+    begin
+      Write(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
+      Write(' DR6: 0x', IntToHex(Dr6, 8), ' [');
+      if Dr6 and $0001 <> 0 then Write('B0 ');
+      if Dr6 and $0002 <> 0 then Write('B1 ');
+      if Dr6 and $0004 <> 0 then Write('B2 ');
+      if Dr6 and $0008 <> 0 then Write('B3 ');
+      if Dr6 and $2000 <> 0 then Write('BD ');
+      if Dr6 and $4000 <> 0 then Write('BS ');
+      if Dr6 and $8000 <> 0 then Write('BT ');
+      Write('] DR7: 0x', IntToHex(Dr7, 8), ' [');
+      if Dr7 and $01 <> 0 then Write('L0 ');
+      if Dr7 and $02 <> 0 then Write('G0 ');
+      if Dr7 and $04 <> 0 then Write('L1 ');
+      if Dr7 and $08 <> 0 then Write('G1 ');
+      if Dr7 and $10 <> 0 then Write('L2 ');
+      if Dr7 and $20 <> 0 then Write('G2 ');
+      if Dr7 and $40 <> 0 then Write('L3 ');
+      if Dr7 and $80 <> 0 then Write('G3 ');
+      if Dr7 and $100 <> 0 then Write('LE ');
+      if Dr7 and $200 <> 0 then Write('GE ');
+      if Dr7 and $2000 <> 0 then Write('GD ');
+      f := Dr7 shr 16;
+      for n := 0 to 3 do
+      begin
+        Write('R/W', n,':');
+        case f and 3 of
+          0: Write('ex');
+          1: Write('wo');
+          2: Write('IO');
+          3: Write('rw');
         end;
+        f := f shr 2;
+        Write(' LEN', n,':', f and 3 + 1, ' ');
+        f := f shr 2;
       end;
+      WriteLN(']');
     end;
+    {$else}
+    with GCurrentContext do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
+    with GCurrentContext do WriteLN(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
+    {$endif}
     WriteLN('---');
   end;
 
@@ -356,17 +348,16 @@ begin
       else WriteLN('LOOP: ID:', MDebugEvent.dwTHreadID, ' -> H:', GCurrentThread.Handle);
     end;
 
-    FillChar(GCurrentContext64, SizeOf(GCurrentContext64), $EE);
+    FillChar(GCurrentContext, SizeOf(GCurrentContext), $EE);
 
     if GCurrentThread <> nil
     then begin
       // TODO: move to TDbgThread
-      case GMode of
-        dm64: GCurrentContext64.ContextFlags := CONTEXT_SEGMENTS_AMD64 or CONTEXT_INTEGER_AMD64 or CONTEXT_CONTROL_AMD64;
-        dm32: GCurrentContext.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL {or CONTEXT_DEBUG_REGISTERS};
-      else
-        WriteLN('LOOP: Unknown mode');
-      end;
+      {$ifdef cpui386}
+      GCurrentContext.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL {or CONTEXT_DEBUG_REGISTERS};
+      {$else}
+      GCurrentContext.ContextFlags := CONTEXT_SEGMENTS_AMD64 or CONTEXT_INTEGER_AMD64 or CONTEXT_CONTROL_AMD64;
+      {$endif}
       SetLastError(0);
 //      SuspendTHread(GCurrentThread.Handle);
       if not GetThreadContext(GCurrentThread.Handle, GCurrentContext)

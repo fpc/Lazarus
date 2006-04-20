@@ -449,8 +449,13 @@ begin
 
 
     Context.ContextFlags := CONTEXT_DEBUG_REGISTERS;
+    {$ifdef cpui386}
     Context.Dr0 := Context.Eip;
     Context.Dr7 := (Context.Dr7 and $FFF0FFFF) or $1;
+    {$else}
+    Context.Dr0 := Context.Rip;
+    Context.Dr7 := (Context.Dr7 and $FFFFFFFFFFF0FFFF) or $1;
+    {$endif}
 
 //      Context.EFlags := Context.EFlags or $100;
 
@@ -645,7 +650,11 @@ begin
   end;
 
   Context.ContextFlags := CONTEXT_CONTROL;
+  {$ifdef cpui386}
   Dec(Context.Eip);
+  {$else}
+  Dec(Context.Rip);
+  {$endif}
 
   if not SetThreadContext(Thread.Handle, Context)
   then begin

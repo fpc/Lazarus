@@ -45,9 +45,12 @@ type
 var
   GState: TMWDState;
   GFileName: String;
+  {$ifdef cpui386}
   GMode: TMWDMode = dm32;
-  GCurrentContext64: TContextAMD64;
-  GCurrentContext: TContext absolute GCurrentContext64;
+  {$else}
+  GMode: TMWDMode = dm64;
+  {$endif}
+  GCurrentContext: TContext;
 
   GMainProcess: TDbgProcess = nil;
   GCurrentProcess: TDbgProcess = nil;

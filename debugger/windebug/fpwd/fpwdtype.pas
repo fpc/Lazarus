@@ -1,4 +1,4 @@
-{ $Id: $ }
+{ $Id $ }
 {
  ---------------------------------------------------------------------------
  fpwdtype.pas  -  FP standalone windows debugger - Type definitions
@@ -44,9 +44,9 @@ interface
 uses
   Windows;
 
-type
-  DWORD64 = QWORD;
-  ULONGLONG = QWORD;
+//type
+//  DWORD64 = QWORD;
+//  ULONGLONG = QWORD;
 //  LONGLONG = int64;
   //QWORD = type cardinal;
 

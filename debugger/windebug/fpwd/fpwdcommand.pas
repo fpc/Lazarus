@@ -253,10 +253,12 @@ begin
   idx := 1;
   Count := 1;
   Size := 4;
-  case GMode of
-    dm32: Adress := GCurrentContext.Eip;
-    dm64: Adress := GCurrentContext64.Rip;
-  end;
+  
+  {$ifdef cpui386}
+  Adress := GCurrentContext.Eip;
+  {$else}
+  Adress := GCurrentContext.Rip;
+  {$endif}
 
   if P[idx] <> ''
   then begin
@@ -418,18 +420,15 @@ begin
     Exit;
   end;
 
-  case GMode of
-    dm32: begin
-      Adress := GCurrentContext.Eip;
-      Frame := GCurrentContext.Ebp;
-      Size := 4;
-    end;
-    dm64: begin
-      Adress := GCurrentContext64.Rip;
-      Frame := GCurrentContext64.Rdi;
-      Size := 8;
-    end;
-  end;
+  {$ifdef cpui386}
+  Adress := GCurrentContext.Eip;
+  Frame := GCurrentContext.Ebp;
+  Size := 4;
+  {$else}
+  Adress := GCurrentContext.Rip;
+  Frame := GCurrentContext.Rdi;
+  Size := 8;
+  {$endif}
 
   WriteLN('Callstack:');
   WriteLn(' ', FormatAdress(Adress));
