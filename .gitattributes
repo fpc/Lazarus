@@ -566,7 +566,6 @@ debugger/watchpropertydlg.lfm svneol=native#text/plain
 debugger/watchpropertydlg.lrs svneol=native#text/pascal
 debugger/watchpropertydlg.pp svneol=native#text/pascal
 debugger/windebug/fpwd/README svneol=native#text/plain
-debugger/windebug/fpwd/fpwd.lpi svneol=native#text/plain
 debugger/windebug/fpwd/fpwd.lpr svneol=native#text/pascal
 debugger/windebug/fpwd/fpwdcommand.pas svneol=native#text/pascal
 debugger/windebug/fpwd/fpwdglobal.pas svneol=native#text/pascal
