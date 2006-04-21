@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2005-08-26 16:26+0100\n"
+"PO-Revision-Date: 2006-04-18 17:23+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "%s ist bereits mit %s verbunden"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr ""
+msgstr "%s%sMit Ok wird ignoriert und Dateninkonsistenz riskiert.%sMit Abbrechen wird das Programm abgeschossen."
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -191,7 +191,7 @@ msgstr "Löschen"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
-msgstr "Bestaetigung"
+msgstr "Bestätigung"
 
 #: lclstrconsts:ifsvk_control
 msgid "Control"
@@ -219,7 +219,7 @@ msgstr "Verzeichnis muß vorhanden sein"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "Andocken"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
@@ -303,7 +303,7 @@ msgstr "Form-Streaming \"%s\" Fehler: %s"
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
-msgstr "Grid-Datei ist nicht vorhanden"
+msgstr "Grid-Datei fehlt"
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
@@ -447,7 +447,7 @@ msgstr "Immer Nein"
 
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
+msgstr "Kein Widgetset-Objekt. Bitte überprüfen Sie, ob die Unit \"Interfaces\" in der Uses-Anweisung des Programms enthalten ist."
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -571,7 +571,7 @@ msgstr "Das Verzeichnis \"%s\" gibt es nicht."
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr ""
+msgstr "Die Datei \"%s\" ist bereits vorhanden. Überschreiben?"
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
@@ -595,7 +595,7 @@ msgstr "Unbekannt"
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
-msgstr "Unbekannte Bildendung"
+msgstr "Unbekannte Bilddateiendung"
 
 #: lclstrconsts:rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
@@ -619,7 +619,7 @@ msgstr "Warnung:"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr ""
+msgstr "Alles bestätigen"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

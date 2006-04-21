@@ -7402,6 +7402,10 @@ msgstr "Вже завантажено пакунок%s%s%s %sз файлу %s%s%
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Вже існує модуль, що називається %s%s%s. Ідентифікатори паскаля мають бути унікальними."
 
+#: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
+msgid "There is already another component with the name %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgstr "Вже існує іншій пакунок з назвою %s%s%s.%sКонфліктуючий пакунок:%s%s%s%sФайл: %s%s%s"

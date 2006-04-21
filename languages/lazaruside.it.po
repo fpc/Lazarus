@@ -7414,6 +7414,10 @@ msgstr "Esiste già un pacchetto %s%s%s caricato%sdal file %s%s%s.%sVedere Compo
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "C'è già una unit con il nome %s%s%s. Gli identificativi Pascal devono essere unici."
 
+#: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
+msgid "There is already another component with the name %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgstr "C'è già un altro pacchetto con il nome %s%s%s.%sConflitto con pacchetto. %s%s%s%sFile: %s%s%s"

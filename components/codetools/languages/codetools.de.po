@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2005-08-28 16:23+0100\n"
+"PO-Revision-Date: 2006-04-18 19:43+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
@@ -59,7 +59,7 @@ msgstr "; nach dem Eigeschaftenbeschreiber \"%s\" erwartet aber %s gefunden"
 
 #: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
-msgstr ""
+msgstr "Anonyme %s-Definitionen sind nicht zulässig"
 
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
@@ -91,7 +91,7 @@ msgstr "Komponentenverzeichnis"
 
 #: codetoolsstrconsts:ctsconverterdirectory
 msgid "Converter Directory"
-msgstr ""
+msgstr "Konverterverzeichnis"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -147,11 +147,11 @@ msgstr "Gtk2-Makro angeben"
 
 #: codetoolsstrconsts:ctsdefinemacroqt1
 msgid "Define macro qt1"
-msgstr ""
+msgstr "Definiere Makro qt1"
 
 #: codetoolsstrconsts:ctsdefinemacrowince1
 msgid "Define macro wince1"
-msgstr ""
+msgstr "Definiere Makro wince1"
 
 #: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
@@ -171,7 +171,7 @@ msgstr "Designer-Units"
 
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
-msgstr ""
+msgstr "Doc-Editor-Verzeichnis"
 
 #: codetoolsstrconsts:ctsendofsourcenotfound
 msgid "End of source not found"
@@ -203,7 +203,7 @@ msgstr "Free-Pascal-Quellen, %s"
 
 #: codetoolsstrconsts:ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
+msgstr "IDE-Verzeichnis"
 
 #: codetoolsstrconsts:ctsideintfdirectory
 msgid "IDEIntf Directory"
@@ -215,23 +215,23 @@ msgstr "Bezeichner %s ist bereits definiert"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
 msgid "If LCLWidgetType=gnome2 then"
-msgstr ""
+msgstr "If LCLWidgetType=gnome2 then"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr ""
+msgstr "If LCLWidgetType=gtk2 then"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
-msgstr ""
+msgstr "If TargetOS<>SrcOS"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos2
 msgid "If TargetOS<>SrcOS2"
-msgstr ""
+msgstr "If TargetOS<>SrcOS2"
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
-msgstr ""
+msgstr "If TargetOS<>win32 then"
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
@@ -439,11 +439,11 @@ msgstr "doppelter Bezeichner: %s"
 
 #: codetoolsstrconsts:ctselse
 msgid "else"
-msgstr ""
+msgstr "else"
 
 #: codetoolsstrconsts:ctsfpdocsystemon
 msgid "enable FPDocSystem"
-msgstr ""
+msgstr "Schalte FPDocSystem ein"
 
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
@@ -459,7 +459,7 @@ msgstr "Fehler beim Einfügen eines neuen Klassenteils"
 
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
-msgstr ""
+msgstr "Fehler im Bezeichnerausdruck"
 
 #: codetoolsstrconsts:ctserrorinparamlist
 msgid "error in paramlist"

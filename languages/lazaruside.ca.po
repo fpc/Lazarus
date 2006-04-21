@@ -7402,6 +7402,10 @@ msgstr "Ja hi ha un paquet %s%s%s carregat%s des del fitxer %s%s%s.%sMireu Compo
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr "Ja hi ha una unitat amb el nom %s%s%s. Els identificadors pascal han de ser únics."
 
+#: lazarusidestrconsts:lisdesthereisalreadyanothercomponentwiththename
+msgid "There is already another component with the name %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgstr "Ja hi ha un altre paquet amb el nom %s%s%s.%sPaquet amb conficte: %s%s%s%sFitxer: %s%s%s"
