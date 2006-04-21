@@ -1,4 +1,4 @@
-{ $Id: $ }
+{ $Id$ }
 {
  ---------------------------------------------------------------------------
  fpwd  -  FP standalone windows debugger
@@ -11,7 +11,7 @@
  ---------------------------------------------------------------------------
 
  @created(Mon Apr 10th WET 2006)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
  ***************************************************************************
@@ -44,7 +44,7 @@ uses
   FPWDLoop,
   FPWDPEImage,
   FPWDType,
-  WinDebugger, WindExtra;
+  WinDebugger, WinDExtra;
 
 function CtrlCHandler(CtrlType: Cardinal): BOOL; stdcall;
 begin
@@ -69,11 +69,11 @@ end;
 var
   S, Last: String;
 begin
-  WriteLN('MWDebugger starting...');
+  WriteLN('FPWDebugger starting...');
 
   SetConsoleCtrlHandler(@CtrlCHandler, True);
   repeat
-    Write('MWD>');
+    Write('FPWD>');
     ReadLn(S);
     if S <> ''
     then Last := S;

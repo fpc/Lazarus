@@ -1,4 +1,4 @@
-{ $Id: $ }
+{ $Id$ }
 {
  ---------------------------------------------------------------------------
  fpwdglobal.pas  -  FP standalone windows debugger - Globals
@@ -9,7 +9,7 @@
  ---------------------------------------------------------------------------
 
  @created(Mon Apr 10th WET 2006)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
  ***************************************************************************
@@ -50,7 +50,8 @@ var
   {$else}
   GMode: TMWDMode = dm64;
   {$endif}
-  GCurrentContext: TContext;
+  
+  GCurrentContext: PContext;
 
   GMainProcess: TDbgProcess = nil;
   GCurrentProcess: TDbgProcess = nil;
@@ -68,11 +69,19 @@ begin
 //  then Log('Unknown Process ID %u', [AID]);
 end;
 
+var
+  _UnAligendContext: record
+    C: TContext;
+    dummy: array[1..16] of byte;
+  end;
+
 
 
 initialization
   GState := dsStop;
-  GProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));;
+  GProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
+  
+  PtrUInt(GCurrentContext) := (PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F);
 
 finalization
   FreeAndNil(GProcessMap)

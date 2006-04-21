@@ -10,7 +10,7 @@
  ---------------------------------------------------------------------------
 
  @created(Mon Apr 10th WET 2006)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
  ***************************************************************************
@@ -48,10 +48,9 @@ uses
   FPWDGlobal, FPWDPEImage, FPWDType;
 
 var
-  MDebugEvent: TDebugEvent64;
-  MDebugEvent32: TDebugEvent absolute MDebugEvent;
+  MDebugEvent: TDebugEvent;
 
-procedure HandleCreateProcess(const AEvent: TDebugEvent64);
+procedure HandleCreateProcess(const AEvent: TDebugEvent);
 var
   Proc: TDbgProcess;
   S: String;
@@ -60,7 +59,7 @@ begin
   WriteLN(Format('hProcess: 0x%x', [AEvent.CreateProcessInfo.hProcess]));
   WriteLN(Format('hThread: 0x%x', [AEvent.CreateProcessInfo.hThread]));
   WriteLN('Base adress: ', FormatAdress(AEvent.CreateProcessInfo.lpBaseOfImage));
-  WriteLN('Base adress64: $', IntToHex(PInt64(@AEvent.CreateProcessInfo.lpBaseOfImage)^, 16));
+//  WriteLN('Base adress64: $', IntToHex(PInt64(@AEvent.CreateProcessInfo.lpBaseOfImage)^, 16));
   WriteLN(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
   WriteLN(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
 
@@ -76,12 +75,12 @@ begin
   GProcessMap.Add(AEvent.dwProcessId, Proc);
 end;
 
-procedure HandleCreateThread(const AEvent: TDebugEvent64);
+procedure HandleCreateThread(const AEvent: TDebugEvent);
 begin
   WriteLN(Format('Start adress: 0x%p', [AEvent.CreateThread.lpStartAddress]));
 end;
 
-procedure HandleException(const AEvent: TDebugEvent64);
+procedure HandleException(const AEvent: TDebugEvent);
 var
   N: Integer;
   Info0: QWORD;
@@ -184,7 +183,7 @@ begin
   GState := dsPause;
 end;
 
-procedure HandleExitProcess(const AEvent: TDebugEvent64);
+procedure HandleExitProcess(const AEvent: TDebugEvent);
 var
   Proc: TDbgProcess;
 begin
@@ -197,12 +196,12 @@ begin
   WriteLN('Process stopped with exitcode: ', AEvent.ExitProcess.dwExitCode);
 end;
 
-procedure HandleExitThread(const AEvent: TDebugEvent64);
+procedure HandleExitThread(const AEvent: TDebugEvent);
 begin
   WriteLN('Exitcode: ', AEvent.ExitThread.dwExitCode);
 end;
 
-procedure HandleLoadDll(const AEvent: TDebugEvent64);
+procedure HandleLoadDll(const AEvent: TDebugEvent);
 //var
 //  Proc: TDbgProcess;
 //  Lib: TDbgLibrary;
@@ -218,7 +217,7 @@ begin
 //  end;
 end;
 
-procedure HandleOutputDebug(const AEvent: TDebugEvent64);
+procedure HandleOutputDebug(const AEvent: TDebugEvent);
 var
   Proc: TDbgProcess;
   S: String;
@@ -239,13 +238,13 @@ begin
   WriteLN('[', AEvent.dwProcessId, ':', AEvent.dwThreadId, '] ', S);
 end;
 
-procedure HandleRipEvent(const AEvent: TDebugEvent64);
+procedure HandleRipEvent(const AEvent: TDebugEvent);
 begin
   WriteLN('Error: ', AEvent.RipInfo.dwError);
   WriteLN('Type: ', AEvent.RipInfo.dwType);
 end;
 
-procedure HandleUnloadDll(const AEvent: TDebugEvent64);
+procedure HandleUnloadDll(const AEvent: TDebugEvent);
 begin
   WriteLN('Base adress: ', FormatAdress(AEvent.UnloadDll.lpBaseOfDll));
 end;
@@ -265,10 +264,10 @@ procedure DebugLoop;
     if GCurrentThread = nil then Exit;
 
     {$ifdef cpui386}
-    with GCurrentContext do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
-    with GCurrentContext do WriteLN(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
-    with GCurrentContext do
+    with GCurrentContext^ do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext^ do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
+    with GCurrentContext^ do WriteLN(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    with GCurrentContext^ do
     begin
       Write(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
       Write(' DR6: 0x', IntToHex(Dr6, 8), ' [');
@@ -308,9 +307,9 @@ procedure DebugLoop;
       WriteLN(']');
     end;
     {$else}
-    with GCurrentContext do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
-    with GCurrentContext do WriteLN(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
+    with GCurrentContext^ do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext^ do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
+    with GCurrentContext^ do WriteLN(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
     {$endif}
     WriteLN('---');
   end;
@@ -319,7 +318,7 @@ begin
   repeat
     if (GCurrentProcess <> nil) and (GState = dsPause)
     then begin
-      GCurrentProcess.ContinueDebugEvent(GCurrentThread, MDebugEvent32);
+      GCurrentProcess.ContinueDebugEvent(GCurrentThread, MDebugEvent);
     end;
 
     if GState in [dsStop, dsPause, dsEvent]
@@ -333,7 +332,7 @@ begin
       GState := dsRun;
     end;
 
-    if not WaitForDebugEvent(MDebugEvent32, 10) then Continue;
+    if not WaitForDebugEvent(MDebugEvent, 10) then Continue;
 
     GCurrentProcess := nil;
     GCurrentThread := nil;
@@ -342,7 +341,7 @@ begin
     GState := dsEvent;
     if GCurrentProcess <> nil
     then begin
-      if GCurrentProcess.HandleDebugEvent(MDebugEvent32) then Continue;
+      if GCurrentProcess.HandleDebugEvent(MDebugEvent) then Continue;
       if not GCurrentProcess.GetThread(MDebugEvent.dwTHreadID, GCurrentThread)
       then WriteLN('LOOP: Unable to retrieve current thread')
       else WriteLN('LOOP: ID:', MDebugEvent.dwTHreadID, ' -> H:', GCurrentThread.Handle);
@@ -354,15 +353,15 @@ begin
     then begin
       // TODO: move to TDbgThread
       {$ifdef cpui386}
-      GCurrentContext.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL {or CONTEXT_DEBUG_REGISTERS};
+      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL {or CONTEXT_DEBUG_REGISTERS};
       {$else}
-      GCurrentContext.ContextFlags := CONTEXT_SEGMENTS_AMD64 or CONTEXT_INTEGER_AMD64 or CONTEXT_CONTROL_AMD64;
+      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS_AMD64 or CONTEXT_INTEGER_AMD64 or CONTEXT_CONTROL_AMD64;
       {$endif}
       SetLastError(0);
 //      SuspendTHread(GCurrentThread.Handle);
-      if not GetThreadContext(GCurrentThread.Handle, GCurrentContext)
+      if not GetThreadContext(GCurrentThread.Handle, GCurrentContext^)
       then WriteLN('LOOP: Unable to retrieve thread context')
-      else WriteLN('LOOP context: ', IntToHex(GCurrentContext.ContextFlags, 8), ' error: ', GetLastErrorText);
+      else WriteLN('LOOP context: ', IntToHex(GCurrentContext^.ContextFlags, SizeOf(Pointer) * 2), ' error: ', GetLastErrorText);
 //      ResumeThread(GCurrentThread.Handle);
     end;
 

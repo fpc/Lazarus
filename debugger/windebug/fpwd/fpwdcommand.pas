@@ -1,4 +1,4 @@
-{ $Id: $ }
+{ $Id$ }
 {
  ---------------------------------------------------------------------------
  fpwdcommand.pas  -  FP standalone windows debugger - Command interpreter
@@ -9,7 +9,7 @@
  ---------------------------------------------------------------------------
 
  @created(Mon Apr 10th WET 2006)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
  ***************************************************************************
@@ -255,9 +255,9 @@ begin
   Size := 4;
   
   {$ifdef cpui386}
-  Adress := GCurrentContext.Eip;
+  Adress := GCurrentContext^.Eip;
   {$else}
-  Adress := GCurrentContext.Rip;
+  Adress := GCurrentContext^.Rip;
   {$endif}
 
   if P[idx] <> ''
@@ -421,12 +421,12 @@ begin
   end;
 
   {$ifdef cpui386}
-  Adress := GCurrentContext.Eip;
-  Frame := GCurrentContext.Ebp;
+  Adress := GCurrentContext^.Eip;
+  Frame := GCurrentContext^.Ebp;
   Size := 4;
   {$else}
-  Adress := GCurrentContext.Rip;
-  Frame := GCurrentContext.Rdi;
+  Adress := GCurrentContext^.Rip;
+  Frame := GCurrentContext^.Rdi;
   Size := 8;
   {$endif}
 

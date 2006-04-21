@@ -10,7 +10,7 @@
  ---------------------------------------------------------------------------
 
  @created(Mon Apr 10th WET 2006)
- @lastmod($Date: $)
+ @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.nl>)
 
  ***************************************************************************
@@ -163,6 +163,7 @@ type
   PRIPInfo64 = QWORD;
 *)
 
+(*
   PDebugEvent64 = ^TDebugEvent64;
   _DEBUG_EVENT64 = record
     dwDebugEventCode: DWORD;
@@ -182,7 +183,7 @@ type
   end;
   TDebugEvent64 = _DEBUG_EVENT64;
   DEBUG_EVENT64 = _DEBUG_EVENT64;
-
+*)
 const
   CONTEXT_AMD64 =  $100000;
 
