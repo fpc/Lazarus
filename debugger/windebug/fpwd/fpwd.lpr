@@ -69,7 +69,9 @@ end;
 var
   S, Last: String;
 begin
-  WriteLN('FPWDebugger starting...');
+  Write('FPWDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
+  WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
+  WriteLN('starting....');
 
   SetConsoleCtrlHandler(@CtrlCHandler, True);
   repeat

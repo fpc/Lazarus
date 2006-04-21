@@ -327,6 +327,7 @@ begin
     end;
 
     if not WaitForDebugEvent(MDebugEvent, 10) then Continue;
+
     GCurrentProcess := nil;
     GCurrentThread := nil;
     if not GetProcess(MDebugEvent.dwProcessId, GCurrentPRocess) and (GMainProcess <> nil) then Continue;

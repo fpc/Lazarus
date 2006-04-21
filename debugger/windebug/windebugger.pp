@@ -368,6 +368,7 @@ end;
 function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
   function DoBreak: Boolean;
   begin
+    Result := False;
     if not FBreakMap.GetData(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), FSingleStepBreak) then Exit;
     if FSingleStepBreak = nil then Exit;
 
@@ -378,12 +379,13 @@ function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
   function DoSingleStep: Boolean;
   var
-  _UC: record
-    C: TContext;
-    D: array[1..16] of Byte;
-  end;
-  Context: PContext;
+    _UC: record
+      C: TContext;
+      D: array[1..16] of Byte;
+    end;
+    Context: PContext;
   begin
+    Result := False;
     // check if we are interupting
     Context := AlignPtr(@_UC, $10);
     Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
