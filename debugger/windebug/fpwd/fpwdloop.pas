@@ -1,4 +1,4 @@
-{ $Id $ }
+{ $Id$ }
 {
  ---------------------------------------------------------------------------
  fpwdloop.pas  -  FP standalone windows debugger - Debugger main loop
@@ -59,10 +59,8 @@ begin
   WriteLN(Format('hProcess: 0x%x', [AEvent.CreateProcessInfo.hProcess]));
   WriteLN(Format('hThread: 0x%x', [AEvent.CreateProcessInfo.hThread]));
   WriteLN('Base adress: ', FormatAdress(AEvent.CreateProcessInfo.lpBaseOfImage));
-//  WriteLN('Base adress64: $', IntToHex(PInt64(@AEvent.CreateProcessInfo.lpBaseOfImage)^, 16));
   WriteLN(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
   WriteLN(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
-
 
   if AEvent.CreateProcessInfo.lpBaseOfImage <> nil
   then DumpPEImage(AEvent.CreateProcessInfo.hProcess, TDbgPtr(AEvent.CreateProcessInfo.lpBaseOfImage));
@@ -81,6 +79,8 @@ begin
 end;
 
 procedure HandleException(const AEvent: TDebugEvent);
+const
+  PARAMCOLS = 12 - SizeOf(Pointer);
 var
   N: Integer;
   Info0: QWORD;
@@ -116,39 +116,26 @@ begin
   else
     Write(' Unknown code: ', AEvent.Exception.ExceptionRecord.ExceptionCode);
   end;
-  {$ifdef cpui386}
-  Info0 := Cardinal(AEvent.Exception.ExceptionRecord.ExceptionAddress);
-  {$else}
-  Info0 := AEvent.Exception64.ExceptionRecord.ExceptionAddress;
-  {$endif}
+  Info0 := PtrUInt(AEvent.Exception.ExceptionRecord.ExceptionAddress);
   Write(' at: ', FormatAdress(Info0));
   Write(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
   if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
   then Write('Continuable')
   else Write('Not continuable');
   Write(']');
-  {$ifdef cpui386}
   Write(' ParamCount:', AEvent.Exception.ExceptionRecord.NumberParameters);
-  {$else}
-  Write(' ParamCount:', AEvent.Exception64.ExceptionRecord.NumberParameters);
-  {$endif}
 
   case AEvent.Exception.ExceptionRecord.ExceptionCode of
     EXCEPTION_ACCESS_VIOLATION: begin
-      {$ifdef cpui386}
       Info0 := AEvent.Exception.ExceptionRecord.ExceptionInformation[0];
-      Info1Str := IntToHex(AEvent.Exception.ExceptionRecord.ExceptionInformation[1], 8);
-      {$else}
-      Info0 := AEvent.Exception64.ExceptionRecord.ExceptionInformation[0];
-      Info1Str := IntToHex(AEvent.Exception64.ExceptionRecord.ExceptionInformation[1], 16);
-      {$endif}
+      Info1Str := FormatAdress(AEvent.Exception.ExceptionRecord.ExceptionInformation[1]);
 
       case Info0 of
         0: begin
-          Write(' Read of address: $', Info1Str);
+          Write(' Read of address: ', Info1Str);
         end;
         1: begin
-          Write(' Write of address: $', Info1Str);
+          Write(' Write of address: ', Info1Str);
         end;
       end;
     end;
@@ -156,29 +143,16 @@ begin
   WriteLN;
 
   Write(' Info: ');
-  {$ifdef cpui386}
   with AEvent.Exception.ExceptionRecord do
     for n := Low(ExceptionInformation) to high(ExceptionInformation) do
     begin
-      Write(IntToHex(ExceptionInformation[n], 8), ' ');
-      if n and 7 = 7
+      Write(IntToHex(ExceptionInformation[n], SizeOf(Pointer) * 2), ' ');
+      if n and (PARAMCOLS - 1) = (PARAMCOLS - 1)
       then begin
         WriteLN;
         Write('       ');
       end;
     end;
-  {$else}
-  with AEvent.Exception64.ExceptionRecord do
-    for n := Low(ExceptionInformation) to high(ExceptionInformation) do
-    begin
-      Write(IntToHex(ExceptionInformation[n], 16), ' ');
-      if n and 3 = 3
-      then begin
-        WriteLN;
-        Write('       ');
-      end;
-    end;
-  {$endif}
   WriteLn;
   GState := dsPause;
 end;
@@ -333,7 +307,6 @@ begin
     end;
 
     if not WaitForDebugEvent(MDebugEvent, 10) then Continue;
-
     GCurrentProcess := nil;
     GCurrentThread := nil;
     if not GetProcess(MDebugEvent.dwProcessId, GCurrentPRocess) and (GMainProcess <> nil) then Continue;
@@ -347,7 +320,7 @@ begin
       else WriteLN('LOOP: ID:', MDebugEvent.dwTHreadID, ' -> H:', GCurrentThread.Handle);
     end;
 
-    FillChar(GCurrentContext, SizeOf(GCurrentContext), $EE);
+    FillChar(GCurrentContext^, SizeOf(GCurrentContext^), $EE);
 
     if GCurrentThread <> nil
     then begin

@@ -57,6 +57,7 @@ var
   GCurrentProcess: TDbgProcess = nil;
   GCurrentThread: TDbgThread = nil;
   GProcessMap: TMap;
+  
 
 function GetProcess(const AID: Integer; var AProcess: TDbgProcess): Boolean;
 
@@ -69,6 +70,7 @@ begin
 //  then Log('Unknown Process ID %u', [AID]);
 end;
 
+
 var
   _UnAligendContext: record
     C: TContext;
@@ -76,13 +78,12 @@ var
   end;
 
 
-
 initialization
   GState := dsStop;
   GProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
   
-  PtrUInt(GCurrentContext) := (PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F);
-
+  GCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
+  
 finalization
   FreeAndNil(GProcessMap)
 
