@@ -152,6 +152,7 @@ type
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
 
+
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -218,7 +219,7 @@ uses
 // WinCEWSGrids,
 // WinCEWSImgList,
 // WinCEWSMaskEdit,
-// WinCEWSMenus,
+// WinCEWSMenus,//roozbeh:not yet ready for use!
 // WinCEWSPairSplitter,
 // WinCEWSSpin,
  WinCEWSStdCtrls,

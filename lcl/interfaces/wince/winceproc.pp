@@ -63,6 +63,14 @@ function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
 
+procedure AddToChangedMenus(Window: HWnd);
+
+//roozbeh:this thing belong to windows unit...someone should move them there!
+function GetTextExtentPoint(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
+function GetTextExtentPoint32(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
+function SysAllocStringLen(psz:pointer;len:dword):pointer;
+procedure SysFreeString(bstr:pointer);
+
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
@@ -72,6 +80,8 @@ type
 
 var
   DefaultWindowInfo: TWindowInfo;
+  ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
+
 
 implementation
 
@@ -79,7 +89,17 @@ uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
-//roozbeh:should these be here?why not in windows or...?
+function GetTextExtentPoint(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
+begin
+Windows.GetTextExtentExPoint(dc, Str, Count, 0, nil, nil, @Size);
+end;
+
+function GetTextExtentPoint32(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
+begin
+GetTextExtentPoint(dc, Str, Count, Size);
+end;
+
+
 function SysAllocStringLen(psz:pointer;len:dword):pointer;stdcall;
  external 'oleaut32.dll' name 'SysAllocStringLen';
 
@@ -604,6 +624,36 @@ begin
     FreeAndNil(WindowInfo^.DisabledWindowList);
   end;
 end;
+
+
+{-------------------------------------------------------------------------------
+  procedure AddToChangedMenus(Window: HWnd);
+
+  Adds Window to the list of windows which need to redraw the main menu.
+-------------------------------------------------------------------------------}
+procedure AddToChangedMenus(Window: HWnd);
+begin
+  if ChangedMenus.IndexOf(Pointer(Window)) = -1 then // Window handle is not yet in the list
+    ChangedMenus.Add(Pointer(Window));
+end;
+
+{------------------------------------------------------------------------------
+  Method: RedrawMenus
+  Params:  None
+  Returns: Nothing
+
+  Redraws all changed menus
+ ------------------------------------------------------------------------------}
+{procedure RedrawMenus;
+var
+  I: integer;
+begin
+  for I := 0 to  ChangedMenus.Count - 1 do
+    DrawMenuBar(HWND(ChangedMenus[I]));
+  ChangedMenus.Clear;
+end;}
+
+
 
 initialization
   New(ThePropertyLists);

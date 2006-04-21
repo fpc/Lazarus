@@ -912,6 +912,10 @@ Begin
   Result := Windows.GetTextColor(DC);
 End;
 
+function TWinCEWidgetSet.UpdateWindow(Handle: HWND): Boolean;
+begin
+Result := Windows.UpdateWindow(Handle);
+end;
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context
@@ -923,7 +927,6 @@ End;
 
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
-//function GetTextExtentPoint32W(DC: HDC; Str: LPWSTR; Count: Integer; var Size: TSize): BOOL; external 'KernelDLL' name 'GetTextExtentPoint32W';
 
 Function TWinCEWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
 var
@@ -931,7 +934,6 @@ WideStr : PWideChar;
 Begin
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
   Result := false;
-  //roozbeh:why compiler error...not found?!
   WideStr := CreatePWideCharFromString(String(Str));
   Result := Boolean(Windows.GetTextExtentExPoint(DC, WideStr, Count, 0,nil,nil,@Size));
   DisposePWideChar(WideStr);

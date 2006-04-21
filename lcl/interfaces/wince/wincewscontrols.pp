@@ -169,9 +169,9 @@ begin
     if AWinControl.Parent <> nil then
     begin
       Parent := AWinControl.Parent.Handle;
-    end;
-    //else
-    //  Parent := TWinCEWidgetSet(WidgetSet).AppHandle;
+    end
+    else
+      Parent := TWinCEWidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
     WindowTitle := nil;
@@ -303,7 +303,9 @@ function TWinCEWSWinControl.CreateHandle(const AWinControl: TWinControl;
 var
   Params: TCreateWindowExParams;
 begin
+  {$ifdef VerboseWinCE}
   writeln(' TWinCEWSWinControl.CreateHandle ');
+  {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
   // customization of Params
@@ -322,14 +324,14 @@ procedure TWinCEWSWinControl.AddControl(const AControl: TControl);
 var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
 begin
-(*  {$ifdef OldToolbar}
+  {$ifdef OldToolbar}
   if (AControl.Parent is TToolbar) then
     exit;
   {$endif}
 
   with TWinControl(AControl) do
   begin
-    Assert(False, Format('Trace:[TWin32WSWinControl.AddControl] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
+    Assert(False, Format('Trace:[TWinCEWSWinControl.AddControl] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
     ParentHandle := Parent.Handle;
     ChildHandle := Handle;
   end;
@@ -340,7 +342,7 @@ begin
   ParentPanelHandle := GetWindowInfo(ChildHandle)^.ParentPanel;
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
-  SetParent(ChildHandle, ParentHandle);*)
+  SetParent(ChildHandle, ParentHandle);
 end;
 
 function  TWinCEWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;

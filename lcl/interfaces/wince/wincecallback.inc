@@ -863,14 +863,15 @@ Begin
     End;
     WM_CLOSE:
     Begin
-      if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and
-        (Application.MainForm <> nil) then
+//      if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and
+//        (Application.MainForm <> nil) then
       begin
+        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
         Application.Terminate;
-//        Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
-      end else begin
-        LMessage.Msg := LM_CLOSEQUERY;
       end;
+//      else begin
+//        LMessage.Msg := LM_CLOSEQUERY;
+//      end;
       // default is to destroy window, inhibit
       WinProcess := false;
     End;

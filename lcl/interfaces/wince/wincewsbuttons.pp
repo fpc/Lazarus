@@ -115,8 +115,6 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
   
-//  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
-
   {$ifdef VerboseWinCE}
   WriteLn('End Create Button. Handle = ' + IntToStr(Result) +
    ' Left ' + IntToStr(AWinControl.Left) +
@@ -142,8 +140,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TWinCEWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+tmpStr : PWideChar;
 begin
-  Result := True;
+  tmpstr := SysAllocStringLen(nil,256);
+  Result := Boolean(Windows.GetWindowText(AWinControl.Handle,tmpStr,256));
+  AText := String(tmpStr);
+  SysFreeString(tmpStr);
 end;
 
 {------------------------------------------------------------------------------
@@ -152,7 +155,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+tmpStr : PWideChar;
 begin
+ tmpstr := CreatePWideCharFromString(AText);
+ Windows.SetWindowText(AWinControl.Handle,tmpStr);
+ DisposePWideChar(tmpStr);
 end;
 
 initialization

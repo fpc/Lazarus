@@ -195,8 +195,18 @@ begin
 end;
 
 procedure TWinCEWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
+var
+  AMenu: TMenu;
+  AWinControl: TWinControl;
 begin
-  inherited AttachMenuToWindow(AMenuObject);
+  AMenu := AMenuObject as TMenu;
+  if AMenu is TMainMenu then
+  begin
+    AWinControl := TWinControl(AMenu.Owner);
+//roozbeh this is somehow very difficut to achieve for now!
+//    Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
+    AddToChangedMenus(AWinControl.Handle);
+  end;
 end;
 
 function TWinCEWidgetSet.CreateComponent(Sender: TObject): THandle;

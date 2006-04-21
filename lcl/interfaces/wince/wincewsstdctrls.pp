@@ -405,8 +405,6 @@ end;
 function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  hwnd: THandle;
-  Str: array[0..255] of WideChar;
   Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
@@ -421,7 +419,7 @@ begin
   begin
     pClassName := @LabelClsName;
     WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
-    Flags := Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
+    Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
   end;
 
   // create window
@@ -460,7 +458,7 @@ initialization
 //  RegisterWSComponent(TCheckBox, TWinCEWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TWinCEWSToggleBox);
   RegisterWSComponent(TRadioButton, TWinCEWSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TWinCEWSCustomStaticText);
-  RegisterWSComponent(TStaticText, TWinCEWSStaticText);
+  RegisterWSComponent(TCustomStaticText, TWinCEWSCustomStaticText);
+//  RegisterWSComponent(TStaticText, TWinCEWSStaticText);
 ////////////////////////////////////////////////////
 end.
