@@ -1944,7 +1944,7 @@ var
   begin
     FuncData.Param:=Params;
     FuncData.Result:='';
-    FMacroFunctions.DoDataFunction(@FuncName[1],length(FuncName),@FuncData);
+    FMacroFunctions.DoDataFunction(PChar(FuncName),length(FuncName),@FuncData);
     Result:=FuncData.Result;
   end;
   
@@ -1954,8 +1954,8 @@ var
   begin
     FuncData.Param:=MacroVariable;
     FuncData.Result:='';
-    Result:=FMacroFunctions.DoDataFunction(
-            PChar(MacroVariable),length(MacroVariable),@FuncData);
+    Result:=FMacroVariables.DoDataFunction(
+                          PChar(MacroVariable),length(MacroVariable),@FuncData);
     if Result then
       MacroVariable:=FuncData.Result;
   end;

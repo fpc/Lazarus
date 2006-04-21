@@ -9215,6 +9215,7 @@ begin
   Result:=false;
   if Project1<>nil then begin
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false);
+    //DebugLn('TMainIDE.OnMacroFuncProjectSrcPath "',FuncData^.Result,'"');
     Result:=true;
   end;
 end;
@@ -9239,6 +9240,7 @@ begin
   Result:=false;
   if Project1<>nil then begin
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false);
+    //DebugLn('TMainIDE.OnMacroFuncProjectSrcPath "',FuncData^.Result,'"');
     Result:=true;
   end;
 end;
