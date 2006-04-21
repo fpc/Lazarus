@@ -43,6 +43,7 @@ uses
 function FormatAdress(const P): String;
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
+function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
@@ -98,6 +99,11 @@ begin
   end;
   if Temp <> nil
   then LocalFree(HLOCAL(Temp));
+end;
+
+function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+begin
+  Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
 end;
 
 end.

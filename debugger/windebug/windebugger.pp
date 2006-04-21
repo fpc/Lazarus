@@ -366,56 +366,67 @@ begin
 end;
 
 function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
-var
-  Context: TContext;
+  function DoBreak: Boolean;
+  begin
+    if not FBreakMap.GetData(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), FSingleStepBreak) then Exit;
+    if FSingleStepBreak = nil then Exit;
+
+    Result := True;
+    if not FSingleStepBreak.Hit(ADebugEvent.dwThreadId)
+    then FSingleStepBreak := nil; // no need for a singlestep if we continue
+  end;
+
+  function DoSingleStep: Boolean;
+  var
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
+  begin
+    // check if we are interupting
+    Context := AlignPtr(@_UC, $10);
+    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
+    if GetThreadContext(FInfo.hThread, Context^)
+    then begin
+      if Context^.Dr6 and 1 <> 0
+      then begin
+        // interrupt !
+        // disable break.
+        Context^.Dr7 := Context^.Dr7 and not $1;
+        Context^.Dr0 := 0;
+        if not SetThreadContext(FInfo.hThread, Context^)
+        then begin
+          // Heeellppp!!
+          Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
+        end;
+        // check if we are also singlestepping
+        // if not, then exit, else proceed to next check
+        if Context^.Dr6 and $40 = 0
+        then Exit;
+      end;
+    end
+    else begin
+      // if we cant get the context, we probable weren't able to set it either
+      Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
+    end;
+
+    // check if we are single stepping
+    if FSingleStepBreak = nil then Exit;
+
+    FSingleStepBreak.SetBreak;
+    FSingleStepBreak := nil;
+    Result := FSingleStepSet;
+    FSingleStepSet := False;
+  end;
+  
 begin
   Result := False;
   case ADebugEvent.dwDebugEventCode of
     EXCEPTION_DEBUG_EVENT: begin
       case ADebugEvent.Exception.ExceptionRecord.ExceptionCode of
-        EXCEPTION_BREAKPOINT: begin
-          if not FBreakMap.GetData(TDbgPtr(ADebugEvent.Exception.ExceptionRecord.ExceptionAddress), FSingleStepBreak) then Exit;
-          if FSingleStepBreak = nil then Exit;
-
-          Result := True;
-          if not FSingleStepBreak.Hit(ADebugEvent.dwThreadId)
-          then FSingleStepBreak := nil; // no need for a singlestep if we continue
-        end;
-        EXCEPTION_SINGLE_STEP: begin
-          // check if we are interupting
-          Context.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-          if GetThreadContext(FInfo.hThread, Context)
-          then begin
-            if Context.Dr6 and 1 <> 0
-            then begin
-              // interrupt !
-              // disable break.
-              Context.Dr7 := Context.Dr7 and not $1;
-              Context.Dr0 := 0;
-              if not SetThreadContext(FInfo.hThread, Context)
-              then begin
-                // Heeellppp!!
-                Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
-              end;
-              // check if we are also singlestepping
-              // if not, then exit, else proceed to next check
-              if Context.Dr6 and $40 = 0
-              then Exit;
-            end;
-          end
-          else begin
-            // if we cant get the context, we probable weren't able to set it either
-            Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
-          end;
-
-          // check if we are single stepping
-          if FSingleStepBreak = nil then Exit;
-
-          FSingleStepBreak.SetBreak;
-          FSingleStepBreak := nil;
-          Result := FSingleStepSet;
-          FSingleStepSet := False;
-        end;
+        EXCEPTION_BREAKPOINT:  Result := DoBreak;
+        EXCEPTION_SINGLE_STEP: Result := DoSingleStep;
       end;
     end;
     CREATE_THREAD_DEBUG_EVENT: begin
@@ -435,35 +446,38 @@ end;
 
 procedure TDbgProcess.Interrupt;
 var
-  Context: TContext;
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
   r: DWORD;
 begin
+  Context := AlignPtr(@_UC, $10);
   r := SuspendThread(FInfo.hThread);
   try
-    Context.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
-    if not GetThreadContext(FInfo.hThread, Context)
+    Context^.ContextFlags := CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
+    if not GetThreadContext(FInfo.hThread, Context^)
     then begin
-//        Log('Thread %u: Unable to get context', [FID]);
+      Log('Proces %u interrupt: Unable to get context', [FProcessID]);
       Exit;
     end;
 
-
-    Context.ContextFlags := CONTEXT_DEBUG_REGISTERS;
+    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
     {$ifdef cpui386}
-    Context.Dr0 := Context.Eip;
-    Context.Dr7 := (Context.Dr7 and $FFF0FFFF) or $1;
+    Context^.Dr0 := Context^.Eip;
     {$else}
-    Context.Dr0 := Context.Rip;
-    Context.Dr7 := (Context.Dr7 and $FFFFFFFFFFF0FFFF) or $1;
+    Context^.Dr0 := Context^.Rip;
     {$endif}
+    Context^.Dr7 := (Context^.Dr7 and $FFF0FFFF) or $1;
 
 //      Context.EFlags := Context.EFlags or $100;
 
 
 
-    if not SetThreadContext(FInfo.hThread, Context)
+    if not SetThreadContext(FInfo.hThread, Context^)
     then begin
-//        Log('Thread %u: Unable to set context', [FID]);
+      Log('Proces %u interrupt: Unable to set context', [FProcessID]);
       Exit;
     end;
   finally
@@ -573,19 +587,24 @@ end;
 
 function TDbgThread.SingleStep: Boolean;
 var
-  Context: TContext;
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
 begin
-  Context.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(FHandle, Context)
+  Context := AlignPtr(@_UC, $10);
+  Context^.ContextFlags := CONTEXT_CONTROL;
+  if not GetThreadContext(FHandle, Context^)
   then begin
     Log('Thread %u: Unable to get context', [FID]);
     Exit;
   end;
 
-  Context.ContextFlags := CONTEXT_CONTROL;
-  Context.EFlags := Context.EFlags or $100;
+  Context^.ContextFlags := CONTEXT_CONTROL;
+  Context^.EFlags := Context^.EFlags or $100;
 
-  if not SetThreadContext(FHandle, Context)
+  if not SetThreadContext(FHandle, Context^)
   then begin
     Log('Thread %u: Unable to set context', [FID]);
     Exit;
@@ -633,7 +652,11 @@ end;
 function TDbgBreakpoint.Hit(const AThreadID: Integer): Boolean;
 var
   Thread: TDbgThread;
-  Context: TContext;
+  _UC: record
+    C: TContext;
+    D: array[1..16] of Byte;
+  end;
+  Context: PContext;
 begin
   Result := False;
   if FOrgValue = $CC then Exit; // breakpoint on a hardcoded breakpoint
@@ -641,22 +664,24 @@ begin
   ResetBreak;
 
   if not FProcess.GetThread(AThreadId, Thread) then Exit;
+  
+  Context := AlignPtr(@_UC, $10);
 
-  Context.ContextFlags := CONTEXT_CONTROL;
-  if not GetThreadContext(Thread.Handle, Context)
+  Context^.ContextFlags := CONTEXT_CONTROL;
+  if not GetThreadContext(Thread.Handle, Context^)
   then begin
     Log('Break $s: Unable to get context', [FormatAdress(FLocation)]);
     Exit;
   end;
 
-  Context.ContextFlags := CONTEXT_CONTROL;
+  Context^.ContextFlags := CONTEXT_CONTROL;
   {$ifdef cpui386}
-  Dec(Context.Eip);
+  Dec(Context^.Eip);
   {$else}
-  Dec(Context.Rip);
+  Dec(Context^.Rip);
   {$endif}
 
-  if not SetThreadContext(Thread.Handle, Context)
+  if not SetThreadContext(Thread.Handle, Context^)
   then begin
     Log('Break %s: Unable to set context', [FormatAdress(FLocation)]);
     Exit;

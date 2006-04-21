@@ -240,11 +240,36 @@ procedure DebugLoop;
     {$ifdef cpui386}
     with GCurrentContext^ do WriteLN(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
     with GCurrentContext^ do WriteLN(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
-    with GCurrentContext^ do WriteLN(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    with GCurrentContext^ do Write(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x [', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    {$else}
+    with GCurrentContext^ do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
+    with GCurrentContext^ do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
+    with GCurrentContext^ do Write(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x [', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
+    {$endif}
+    // luckely flag and debug registers are named the same
     with GCurrentContext^ do
     begin
+      if EFlags and (1 shl 0) <> 0 then Write('CF ');
+      if EFlags and (1 shl 2) <> 0 then Write('PF ');
+      if EFlags and (1 shl 4) <> 0 then Write('AF ');
+      if EFlags and (1 shl 6) <> 0 then Write('ZF ');
+      if EFlags and (1 shl 7) <> 0 then Write('SF ');
+      if EFlags and (1 shl 8) <> 0 then Write('TF ');
+      if EFlags and (1 shl 9) <> 0 then Write('IF ');
+      if EFlags and (1 shl 10) <> 0 then Write('DF ');
+      if EFlags and (1 shl 11) <> 0 then Write('OF ');
+      if (EFlags shr 12) and 3 <> 0 then Write('IOPL=', (EFlags shr 12) and 3);
+      if EFlags and (1 shl 14) <> 0 then Write('NT ');
+      if EFlags and (1 shl 16) <> 0 then Write('RF ');
+      if EFlags and (1 shl 17) <> 0 then Write('VM ');
+      if EFlags and (1 shl 18) <> 0 then Write('AC ');
+      if EFlags and (1 shl 19) <> 0 then Write('VIF ');
+      if EFlags and (1 shl 20) <> 0 then Write('VIP ');
+      if EFlags and (1 shl 21) <> 0 then Write('ID ');
+      WriteLn(']');
+
       Write(Format('DR0: 0x%x, DR1: 0x%x, DR2: 0x%x, DR3: 0x%x', [Dr0, Dr1, Dr2, Dr3]));
-      Write(' DR6: 0x', IntToHex(Dr6, 8), ' [');
+      Write(' DR6: 0x', IntToHex(Dr6, SizeOf(Pointer) * 2), ' [');
       if Dr6 and $0001 <> 0 then Write('B0 ');
       if Dr6 and $0002 <> 0 then Write('B1 ');
       if Dr6 and $0004 <> 0 then Write('B2 ');
@@ -252,7 +277,7 @@ procedure DebugLoop;
       if Dr6 and $2000 <> 0 then Write('BD ');
       if Dr6 and $4000 <> 0 then Write('BS ');
       if Dr6 and $8000 <> 0 then Write('BT ');
-      Write('] DR7: 0x', IntToHex(Dr7, 8), ' [');
+      Write('] DR7: 0x', IntToHex(Dr7, SizeOf(Pointer) * 2), ' [');
       if Dr7 and $01 <> 0 then Write('L0 ');
       if Dr7 and $02 <> 0 then Write('G0 ');
       if Dr7 and $04 <> 0 then Write('L1 ');
@@ -280,11 +305,6 @@ procedure DebugLoop;
       end;
       WriteLN(']');
     end;
-    {$else}
-    with GCurrentContext^ do WriteLN(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext^ do WriteLN(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
-    with GCurrentContext^ do WriteLN(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
-    {$endif}
     WriteLN('---');
   end;
 
@@ -316,8 +336,7 @@ begin
     then begin
       if GCurrentProcess.HandleDebugEvent(MDebugEvent) then Continue;
       if not GCurrentProcess.GetThread(MDebugEvent.dwTHreadID, GCurrentThread)
-      then WriteLN('LOOP: Unable to retrieve current thread')
-      else WriteLN('LOOP: ID:', MDebugEvent.dwTHreadID, ' -> H:', GCurrentThread.Handle);
+      then WriteLN('LOOP: Unable to retrieve current thread');
     end;
 
     FillChar(GCurrentContext^, SizeOf(GCurrentContext^), $EE);
@@ -325,17 +344,10 @@ begin
     if GCurrentThread <> nil
     then begin
       // TODO: move to TDbgThread
-      {$ifdef cpui386}
-      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL {or CONTEXT_DEBUG_REGISTERS};
-      {$else}
-      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS_AMD64 or CONTEXT_INTEGER_AMD64 or CONTEXT_CONTROL_AMD64;
-      {$endif}
+      GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
       SetLastError(0);
-//      SuspendTHread(GCurrentThread.Handle);
       if not GetThreadContext(GCurrentThread.Handle, GCurrentContext^)
-      then WriteLN('LOOP: Unable to retrieve thread context')
-      else WriteLN('LOOP context: ', IntToHex(GCurrentContext^.ContextFlags, SizeOf(Pointer) * 2), ' error: ', GetLastErrorText);
-//      ResumeThread(GCurrentThread.Handle);
+      then WriteLN('LOOP: Unable to retrieve thread context');
     end;
 
     case MDebugEvent.dwDebugEventCode of

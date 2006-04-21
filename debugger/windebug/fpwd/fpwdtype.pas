@@ -90,6 +90,7 @@ type
   EXCEPTION_POINTERS64 = _EXCEPTION_POINTERS64;
 *)
 //  PExceptionDebugInfo64 = QWORD;
+(*
   PExceptionDebugInfo64 = ^_EXCEPTION_DEBUG_INFO64;
   _EXCEPTION_DEBUG_INFO64 = record
     ExceptionRecord: TExceptionRecord64;
@@ -97,6 +98,7 @@ type
   end;
   TExceptionDebugInfo64 = _EXCEPTION_DEBUG_INFO64;
   EXCEPTION_DEBUG_INFO64 = _EXCEPTION_DEBUG_INFO64;
+*)
 (*
   PCreateThreadDebugInfo64 = QWORD;
   _CREATE_THREAD_DEBUG_INFO64 = record
@@ -184,7 +186,10 @@ type
   TDebugEvent64 = _DEBUG_EVENT64;
   DEBUG_EVENT64 = _DEBUG_EVENT64;
 *)
+
+{$ifdef __dont_use__}
 const
+
   CONTEXT_AMD64 =  $100000;
 
 // MWE: added _AMD64 postfix to distinguish between i386 and amd64
@@ -416,6 +421,8 @@ type
   CONTEXTAMD64 = _CONTEXTAMD64;
   TContextAMD64 = _CONTEXTAMD64;
   PContextAMD64 = ^TContextAMD64;
+  
+{$endif}
 
 implementation
 
