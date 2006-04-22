@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Laz_XMLStreaming, Laz_DOM, laz_xmlcfg, Buttons;
+  StdCtrls, Laz_XMLStreaming, Laz_DOM, laz_xmlcfg, Buttons, TypInfo;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);
@@ -29,6 +29,7 @@ type
     FMyCollection: TCollection;
     FMyDouble: Double;
     FMyEnum: TMyEnum;
+    FMyInt64: int64;
     FMyInteger: integer;
     FMySet: TMySet;
     FMySingle: Single;
@@ -36,15 +37,17 @@ type
     FMyWideString: widestring;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure WriteDebugReport;
   published
     property MyDouble: Double read FMyDouble write FMyDouble;
     property MySingle: Single read FMySingle write FMySingle;
     property MyWideString: widestring read FMyWideString write FMyWideString;
     property MyInteger: integer read FMyInteger write FMyInteger;
     property MyString: string read FMyString write FMyString;
-    property MyEnum: TMyEnum read FMyEnum write FMyEnum;
+    property MyInt64: int64 read FMyInt64 write FMyInt64;
     property MySet: TMySet read FMySet write FMySet;
     property MyBoolean: Boolean read FMyBoolean write FMyBoolean;
+    property MyEnum: TMyEnum read FMyEnum write FMyEnum;
     property MyCollection: TCollection read FMyCollection write FMyCollection;
   end;
 
@@ -247,6 +250,8 @@ begin
     NewComponent:=nil;
     ReadComponentFromXMLConfig(XMLConfig,'Component',NewComponent,
       @OnFindComponentClass,DestinationGroupBox);
+    if NewComponent is TMyComponent then
+      TMyComponent(NewComponent).WriteDebugReport;
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -282,10 +287,32 @@ begin
   MyWideString:='Some text as widestring';
   MyInteger:=1234;
   MyBoolean:=true;
+  MyInt64:=1234567890987654321;
   MyCollection:=TCollection.Create(TMyCollectionItem);
   TMyCollectionItem(MyCollection.Add).MyString:='First';
   TMyCollectionItem(MyCollection.Add).MyString:='Second';
   TMyCollectionItem(MyCollection.Add).MyString:='Third';
+end;
+
+procedure TMyComponent.WriteDebugReport;
+var
+  i: Integer;
+  Item: TMyCollectionItem;
+begin
+  writeln('TMyComponent.WriteDebugReport ');
+  writeln('  MyDouble=',MyDouble);
+  writeln('  MySingle=',MySingle);
+  writeln('  MyEnum=',GetEnumName(TypeInfo(TMyEnum),ord(MyEnum)));
+  writeln('  MySet=',HexStr(Cardinal(MySet),8));
+  writeln('  MyString=',MyString);
+  writeln('  MyWideString=',MyWideString);
+  writeln('  MyInteger=',MyInteger);
+  writeln('  MyInt64=',MyInt64);
+  writeln('  MyCollection.Count=',MyCollection.Count);
+  for i:=0 to MyCollection.Count-1 do begin
+    Item:=TMyCollectionItem(MyCollection.Items[i]);
+    writeln('    ',i,' MyString=',Item.MyString);
+  end;
 end;
 
 initialization
