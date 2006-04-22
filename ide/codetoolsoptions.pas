@@ -59,6 +59,7 @@ type
     // Define Templates
     FGlobalDefineTemplates: TDefineTemplate;
     FDefinesEditMainSplitterTop: integer;
+    FDefinesPreviewMainSplitterPos: integer;
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -110,7 +111,9 @@ type
     property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
     property DefinesEditMainSplitterTop: integer read FDefinesEditMainSplitterTop
                                               write FDefinesEditMainSplitterTop;
-    
+    property DefinesPreviewMainSplitterPos: integer
+       read FDefinesPreviewMainSplitterPos write FDefinesPreviewMainSplitterPos;
+
     // CodeCreation
     property CompleteProperties: boolean
       read FCompleteProperties write FCompleteProperties;
@@ -416,6 +419,8 @@ begin
     LoadGlobalDefineTemplates;
     FDefinesEditMainSplitterTop:=XMLConfig.GetValue(
       'CodeToolsOptions/DefinesEditMainSplitter/Top',100);
+    FDefinesPreviewMainSplitterPos:=XMLConfig.GetValue(
+      'CodeToolsOptions/DefinesPreviewMainSplitter/Position',100);
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod:=XMLConfig.GetValue(
@@ -504,6 +509,8 @@ begin
     SaveGlobalDefineTemplates;
     XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesEditMainSplitter/Top',
                              FDefinesEditMainSplitterTop,100);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesPreviewMainSplitter/Position',
+                             FDefinesPreviewMainSplitterPos,280);
 
     // CodeCreation
     XMLConfig.SetDeleteValue(
@@ -599,6 +606,7 @@ begin
     if FGlobalDefineTemplates<>nil then
       FGlobalDefineTemplates.SetDefineOwner(Self,true);
     FDefinesEditMainSplitterTop:=CodeToolsOpts.DefinesEditMainSplitterTop;
+    FDefinesPreviewMainSplitterPos:=CodeToolsOpts.DefinesPreviewMainSplitterPos;
 
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
@@ -636,6 +644,7 @@ begin
   // define templates
   ClearGlobalDefineTemplates;
   FDefinesEditMainSplitterTop:=100;
+  FDefinesPreviewMainSplitterPos:=280;
 
   // CodeCreation
   FAddInheritedCodeToOverrideMethod:=true;
@@ -684,6 +693,7 @@ begin
     and (FGlobalDefineTemplates.IsEqual(
                                 CodeToolsOpts.FGlobalDefineTemplates,true,true))
     and (FDefinesEditMainSplitterTop=CodeToolsOpts.fDefinesEditMainSplitterTop)
+    and (FDefinesPreviewMainSplitterPos=CodeToolsOpts.FDefinesPreviewMainSplitterPos)
 
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)

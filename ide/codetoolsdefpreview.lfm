@@ -1,32 +1,32 @@
 object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   Caption = 'CodeToolsDefinesDialog'
-  ClientHeight = 451
-  ClientWidth = 463
+  ClientHeight = 450
+  ClientWidth = 485
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
-  HorzScrollBar.Page = 464
-  VertScrollBar.Page = 452
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 484
+  VertScrollBar.Page = 449
   Left = 423
-  Height = 451
+  Height = 450
   Top = 228
-  Width = 463
+  Width = 485
   object DirectoryGroupbox: TGroupBox
-    Align = altop
+    Align = alTop
     Caption = 'DirectoryGroupbox'
     ClientHeight = 31
-    ClientWidth = 459
-    ParentColor = True
+    ClientWidth = 481
     ParentCtl3D = False
     TabOrder = 0
     OnResize = DirectoryGroupboxRESIZE
     Height = 48
-    Width = 463
+    Width = 485
     object DirectoryCombobox: TComboBox
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
       OnChange = DirectoryComboboxCHANGE
       ParentCtl3D = False
       TabOrder = 0
-      TabStop = True
       Text = 'DirectoryCombobox'
       Left = 6
       Height = 25
@@ -34,10 +34,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Width = 360
     end
     object DirectoryBrowseButton: TButton
+      BorderSpacing.InnerBorder = 2
       Caption = '...'
-      TabStop = True
-      TabOrder = 1
       OnClick = DirectoryBrowseButtonCLICK
+      TabOrder = 1
       Left = 375
       Height = 26
       Top = 1
@@ -45,38 +45,39 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     end
   end
   object ValuesListview: TListView
-    Align = alclient
+    Align = alClient
     Columns = <>
-    ViewStyle = vsreport
+    TabOrder = 1
+    ViewStyle = vsReport
     OnSelectItem = ValuesListviewSELECTITEM
-    Height = 272
+    Height = 271
     Top = 48
-    Width = 463
+    Width = 280
   end
   object ValueGroupbox: TGroupBox
-    Align = albottom
-    Anchors = [akleft, akbottom]
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
     Caption = 'Value'
     ClientHeight = 85
-    ClientWidth = 459
-    ParentColor = True
+    ClientWidth = 481
     ParentCtl3D = False
     TabOrder = 2
     Height = 102
-    Top = 320
-    Width = 463
+    Top = 319
+    Width = 485
     object ValueSynedit: TSynEdit
-      Align = alclient
+      Align = alBottom
       Font.Height = -15
       Font.Name = 'courier'
       Height = 85
       Name = 'ValueSynedit'
+      ParentColor = False
       ParentCtl3D = False
       TabOrder = 0
-      Width = 459
-      BookMarkOptions.OnChange = nil
+      Width = 481
+      BookMarkOptions.Xoffset = -18
       Gutter.Visible = False
-      Gutter.OnChange = nil
+      Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
           Command = 3
@@ -401,23 +402,42 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Lines.Strings = (
         'ValueSynedit'
       )
-      Options = [eoautoindent, eobrackethighlight, eoshowctrlmouselinks, eodragdropediting, eoscrollpasteol, eoshowscrollhint, eosmarttabs, eotabstospaces, eotrimtrailingspaces]
+      Options = [eoAutoIndent, eoDragDropEditing, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoShowCtrlMouseLinks]
       ReadOnly = True
-      SelectedColor.OnChange = nil
-      Cursor = 65532
+      Cursor = crIBeam
       Height = 85
-      Width = 459
+      Width = 481
     end
   end
   object CloseButton: TButton
-    Anchors = [akleft, akbottom]
-    Align = albottom
-    ModalResult = 2
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 2
     Caption = 'CloseButton'
-    TabStop = True
+    ModalResult = 2
     TabOrder = 3
     Height = 29
-    Top = 422
-    Width = 463
+    Top = 421
+    Width = 485
+  end
+  object MainSplitter: TSplitter
+    Align = alRight
+    Height = 271
+    Width = 4
+    ResizeAnchor = akRight
+    Cursor = crHSplit
+    Left = 280
+    Height = 271
+    Top = 48
+    Width = 4
+  end
+  object ParsedTemplatesTreeView: TTreeView
+    Align = alRight
+    DefaultItemHeight = 14
+    TabOrder = 4
+    Left = 285
+    Height = 271
+    Top = 48
+    Width = 200
   end
 end
