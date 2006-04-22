@@ -91,6 +91,7 @@ type
     destructor Destroy; override;
     
     function GetRootClassName(out IsInherited: Boolean): string;
+    function GetNextElement: TDOMElement; virtual;
 
     { All ReadXXX methods are called _after_ the value type has been read! }
     function NextValue: TValueType; override;
@@ -487,16 +488,50 @@ begin
   // TODO: IsInherited
 end;
 
-function TXMLObjectReader.NextValue: TValueType;
+function TXMLObjectReader.GetNextElement: TDOMElement;
+var
+  Node: TDOMNode;
 begin
-  writeln('TXMLObjectReader.NextValue ');
+  Result:=TDOMElement(FElement.FirstChild);
+  if (Result is TDOMElement) then exit;
+  Node:=FElement;
+  while Node<>nil do begin
+    Result:=TDOMElement(Node.NextSibling);
+    if Result is TDOMElement then exit;
+    Node:=Node.ParentNode;
+  end;
+  Result:=nil;
+end;
+
+function TXMLObjectReader.NextValue: TValueType;
+var
+  NextElement: TDOMElement;
+begin
+  writeln('TXMLObjectReader.NextValue START');
   Result:=vaNull;
+  NextElement:=GetNextElement;
+  if NextElement<>nil then begin
+    writeln('TXMLObjectReader.NextValue Value=',NextElement.NodeName);
+    if NextElement.NodeName='extended' then
+      Result:=vaExtended;
+  end;
 end;
 
 function TXMLObjectReader.ReadValue: TValueType;
+var
+  NextElement: TDOMElement;
 begin
-  writeln('TXMLObjectReader.ReadValue ');
+  writeln('TXMLObjectReader.ReadValue START');
   Result:=vaNull;
+  NextElement:=GetNextElement;
+  if NextElement<>nil then begin
+    writeln('TXMLObjectReader.ReadValue Value=',NextElement.NodeName);
+    if NextElement.NodeName='extended' then
+      Result:=vaExtended;
+    if Result<>vaNull then begin
+      FElement:=NextElement;
+    end;
+  end;
 end;
 
 procedure TXMLObjectReader.BeginRootComponent;
@@ -544,8 +579,9 @@ end;
 
 function TXMLObjectReader.BeginProperty: String;
 begin
-  writeln('TXMLObjectReader.BeginProperty ');
-  Result:='';
+  ReadValue;
+  Result:=FElement['name'];
+  writeln('TXMLObjectReader.BeginProperty Result="',Result,'"');
 end;
 
 procedure TXMLObjectReader.ReadBinary(const DestData: TMemoryStream);

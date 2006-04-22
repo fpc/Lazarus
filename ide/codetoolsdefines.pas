@@ -44,12 +44,13 @@ unit CodeToolsDefines;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, StdCtrls, ComCtrls,
-  LCLType, ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs, SynEdit,
+  Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
+  ComCtrls,  LCLType, ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs,
+  SynEdit,
+  CodeToolManager, DefineTemplates,
   IDEWindowIntf,
-  LazarusIDEStrConsts, DefineTemplates, CodeToolManager,
-  CodeToolsOptions, CodeToolsDefPreview, TransferMacros, InputFileDialog,
-  IDEOptionDefs, LazConf, IDEProcs;
+  LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
+  InputFileDialog, IDEOptionDefs, LazConf, IDEProcs;
 
 type
 
@@ -70,9 +71,9 @@ type
     MenuItem29: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem30: TMenuItem;
-    Page1: TPage;
-    Page2: TPage;
-    Splitter1: TSplitter;
+    ValueAsTextPage: TPage;
+    ValueAsPathsPage: TPage;
+    MainSplitter: TSplitter;
     TheImageList: TImageList;
     MainMenu: TMainMenu;
     
@@ -183,6 +184,7 @@ type
     procedure CodeToolsDefinesEditorKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DefineTreeViewSelectionChanged(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
 
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
@@ -285,7 +287,6 @@ end;
 
 procedure TCodeToolsDefinesEditor.SaveAndExitMenuItemClick(Sender: TObject);
 begin
-  IDEDialogLayoutList.SaveLayout(Self);
   SaveSelectedValues;
   FLastSelectedNode:=nil;
   ModalResult:=mrOk;
@@ -293,7 +294,6 @@ end;
 
 procedure TCodeToolsDefinesEditor.DontSaveAndExitMenuItemClick(Sender: TObject);
 begin
-  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 
@@ -314,6 +314,15 @@ procedure TCodeToolsDefinesEditor.DefineTreeViewSelectionChanged(Sender: TObject
   );
 begin
   ShowSelectedValues;
+end;
+
+procedure TCodeToolsDefinesEditor.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if CloseAction=caNone then ;
+  CodeToolsOpts.DefinesEditMainSplitterTop:=MainSplitter.Top;
+  CodeToolsOpts.Save;
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TCodeToolsDefinesEditor.ValueNoteBookPageChanged(Sender: TObject);
@@ -1523,10 +1532,11 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self,500,460);
 
-
   Caption:=lisCodeToolsDefsCodeToolsDefinesEditor;
 
   CreateComponents;
+  MainSplitter.SetSplitterPosition(
+         Max(20,Min(ClientWidth-100,CodeToolsOpts.DefinesEditMainSplitterTop)));
 
   FDefineTree:=TDefineTree.Create;
 end;

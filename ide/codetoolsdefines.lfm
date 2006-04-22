@@ -1,26 +1,23 @@
 object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
-  Left = 381
-  Height = 461
-  Top = 235
-  Width = 500
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 440
   ActiveControl = DefineTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 441
-  ClientWidth = 500
+  ClientHeight = 476
+  ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
+  OnClose = FormClose
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
+  HorzScrollBar.Page = 543
+  VertScrollBar.Page = 475
+  Left = 381
+  Height = 500
+  Top = 235
+  Width = 544
   object DefineTreeView: TTreeView
-    Left = 6
-    Height = 123
-    Top = 6
-    Width = 488
     Align = alTop
     BorderSpacing.Around = 6
     DefaultItemHeight = 22
@@ -28,82 +25,90 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     StateImages = TheImageList
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
+    Left = 6
+    Height = 123
+    Top = 6
+    Width = 532
   end
   object SelectedItemGroupBox: TGroupBox
-    Left = 6
-    Height = 291
-    Top = 144
-    Width = 488
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 273
-    ClientWidth = 484
+    ClientHeight = 309
+    ClientWidth = 528
     TabOrder = 1
+    Left = 6
+    Height = 326
+    Top = 144
+    Width = 532
     object NameLabel: TLabel
-      Left = 10
-      Height = 14
-      Top = 26
-      Width = 53
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
       Color = clNone
       ParentColor = False
-    end
-    object DescriptionLabel: TLabel
       Left = 10
       Height = 14
-      Top = 53
-      Width = 79
+      Top = 26
+      Width = 53
+    end
+    object DescriptionLabel: TLabel
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
       Color = clNone
       ParentColor = False
+      Left = 10
+      Height = 14
+      Top = 53
+      Width = 79
     end
     object TypeLabel: TLabel
-      Left = 6
-      Height = 14
-      Top = 6
-      Width = 472
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'TypeLabel'
       Color = clNone
       ParentColor = False
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 516
     end
     object VariableLabel: TLabel
-      Left = 10
-      Height = 14
-      Top = 78
-      Width = 64
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
       Color = clNone
       ParentColor = False
+      Left = 10
+      Height = 14
+      Top = 78
+      Width = 64
     end
     object ValueNoteBook: TNotebook
-      Left = 6
-      Height = 161
-      Top = 106
-      Width = 472
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       OnPageChanged = ValueNoteBookPageChanged
-      PageIndex = 1
-      object Page1: TPage
-        Caption = 'Page1'
-        ClientWidth = 464
-        ClientHeight = 135
+      PageIndex = 0
+      Left = 6
+      Height = 197
+      Top = 106
+      Width = 516
+      object ValueAsTextPage: TPage
+        Caption = 'ValueAsTextPage'
+        ClientWidth = 512
+        ClientHeight = 167
+        Left = 2
+        Height = 167
+        Top = 28
+        Width = 512
         object ValueAsTextSynEdit: TSynEdit
-          Name = 'ValueAsTextSynEdit'
-          Height = 150
-          Width = 464
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
+          Height = 167
+          Name = 'ValueAsTextSynEdit'
           ParentColor = False
           TabOrder = 0
+          Width = 512
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
           Gutter.CodeFoldingWidth = 14
@@ -432,24 +437,30 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             'ValueAsTextSynEdit'
           )
           Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+          Cursor = crIBeam
+          Height = 167
+          Width = 512
         end
       end
-      object Page2: TPage
-        Caption = 'Page2'
-        ClientWidth = 464
-        ClientHeight = 135
+      object ValueAsPathsPage: TPage
+        Caption = 'ValueAsPathsPage'
+        ClientWidth = 512
+        ClientHeight = 167
+        Left = 2
+        Height = 167
+        Top = 28
+        Width = 512
         object ValueAsFilePathsSynEdit: TSynEdit
-          Name = 'ValueAsFilePathsSynEdit'
-          AnchorSideRight.Control = DeleteFilePathBitBtn
-          Height = 135
-          Width = 376
           Align = alLeft
           BorderSpacing.Right = 6
           Anchors = [akTop, akLeft, akRight, akBottom]
           Font.Height = -16
           Font.Name = 'courier'
+          Height = 167
+          Name = 'ValueAsFilePathsSynEdit'
           ParentColor = False
           TabOrder = 0
+          Width = 424
           BookMarkOptions.Xoffset = -18
           BookMarkOptions.OnChange = nil
           Gutter.Visible = False
@@ -781,94 +792,101 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           )
           Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
           SelectedColor.OnChange = nil
+          AnchorSideRight.Control = DeleteFilePathBitBtn
+          Cursor = crIBeam
+          Height = 167
+          Width = 424
         end
         object MoveFilePathUpBitBtn: TBitBtn
-          Left = 382
-          Height = 30
-          Top = 2
-          Width = 75
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 2
           Caption = 'MoveFilePathUpBitBtn'
           NumGlyphs = 0
           OnClick = MoveFilePathUpBitBtnClick
           TabOrder = 1
+          Left = 430
+          Height = 30
+          Top = 2
+          Width = 75
         end
         object MoveFilePathDownBitBtn: TBitBtn
-          Left = 382
-          Height = 30
-          Top = 34
-          Width = 75
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 2
           Caption = 'MoveFilePathDownBitBtn'
           NumGlyphs = 0
           OnClick = MoveNodeDownMenuItemClick
           TabOrder = 2
+          Left = 430
+          Height = 30
+          Top = 34
+          Width = 75
         end
         object DeleteFilePathBitBtn: TBitBtn
-          Left = 382
-          Height = 30
-          Top = 66
-          Width = 75
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 2
           Caption = 'DeleteFilePathBitBtn'
           NumGlyphs = 0
           OnClick = DeleteFilePathBitBtnClick
           TabOrder = 3
+          Left = 430
+          Height = 30
+          Top = 66
+          Width = 75
         end
         object InsertFilePathBitBtn: TBitBtn
-          Left = 382
-          Height = 30
-          Top = 98
-          Width = 75
           Anchors = [akTop, akRight]
           BorderSpacing.InnerBorder = 2
           Caption = 'InsertFilePathBitBtn'
           NumGlyphs = 0
           OnClick = InsertFilePathBitBtnClick
           TabOrder = 4
+          Left = 430
+          Height = 30
+          Top = 98
+          Width = 75
         end
       end
     end
     object NameEdit: TEdit
-      Left = 128
-      Height = 20
-      Top = 23
-      Width = 350
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 1
       Text = 'NameEdit'
+      Left = 128
+      Height = 20
+      Top = 23
+      Width = 394
     end
     object DescriptionEdit: TEdit
-      Left = 128
-      Height = 21
-      Top = 50
-      Width = 350
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 2
       Text = 'DescriptionEdit'
-    end
-    object VariableEdit: TEdit
       Left = 128
       Height = 21
-      Top = 76
-      Width = 350
+      Top = 50
+      Width = 394
+    end
+    object VariableEdit: TEdit
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 3
       Text = 'VariableEdit'
+      Left = 128
+      Height = 21
+      Top = 76
+      Width = 394
     end
   end
-  object Splitter1: TSplitter
+  object MainSplitter: TSplitter
+    Align = alTop
+    Cursor = crVSplit
+    Height = 3
+    Width = 544
+    ResizeAnchor = akTop
     Cursor = crVSplit
     Height = 3
     Top = 135
-    Width = 500
-    Align = alTop
-    ResizeAnchor = akTop
+    Width = 544
   end
   object TheImageList: TImageList
     Height = 22

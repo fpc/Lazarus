@@ -42,6 +42,9 @@ uses
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
 
 type
+
+  { TCodeToolsOptions }
+
   TCodeToolsOptions = class
   private
     FClassHeaderComments: boolean;
@@ -55,6 +58,7 @@ type
     
     // Define Templates
     FGlobalDefineTemplates: TDefineTemplate;
+    FDefinesEditMainSplitterTop: integer;
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -104,6 +108,8 @@ type
 
     // Define Templates
     property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
+    property DefinesEditMainSplitterTop: integer read FDefinesEditMainSplitterTop
+                                              write FDefinesEditMainSplitterTop;
     
     // CodeCreation
     property CompleteProperties: boolean
@@ -371,6 +377,25 @@ procedure TCodeToolsOptions.Load;
 var
   XMLConfig: TXMLConfig;
   FileVersion: integer;
+  
+  procedure LoadGlobalDefineTemplates;
+  begin
+    // delete old one
+    ClearGlobalDefineTemplates;
+    // create empty one
+    FGlobalDefineTemplates:=TDefineTemplate.Create;
+    FGlobalDefineTemplates.Name:='';
+    // load
+    FGlobalDefineTemplates.LoadFromXMLConfig(XMLConfig,'CodeToolsGlobalDefines/',
+      true,true);
+    // delete if still empty
+    if FGlobalDefineTemplates.Name='' then begin
+      ClearGlobalDefineTemplates;
+    end else begin
+      FGlobalDefineTemplates.SetDefineOwner(Self,true);
+    end;
+  end;
+  
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
@@ -388,20 +413,9 @@ begin
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
       
     // Define templates
-    // delete old one
-    ClearGlobalDefineTemplates;
-    // create empty one
-    FGlobalDefineTemplates:=TDefineTemplate.Create;
-    FGlobalDefineTemplates.Name:='';
-    // load
-    FGlobalDefineTemplates.LoadFromXMLConfig(XMLConfig,'CodeToolsGlobalDefines/',
-      true,true);
-    // delete if still empty
-    if FGlobalDefineTemplates.Name='' then begin
-      ClearGlobalDefineTemplates;
-    end else begin
-      FGlobalDefineTemplates.SetDefineOwner(Self,true);
-    end;
+    LoadGlobalDefineTemplates;
+    FDefinesEditMainSplitterTop:=XMLConfig.GetValue(
+      'CodeToolsOptions/DefinesEditMainSplitter/Top',100);
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod:=XMLConfig.GetValue(
@@ -462,6 +476,14 @@ end;
 procedure TCodeToolsOptions.Save;
 var
   XMLConfig: TXMLConfig;
+  
+  procedure SaveGlobalDefineTemplates;
+  begin
+    if FGlobalDefineTemplates<>nil then
+      FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,
+        'CodeToolsGlobalDefines/',true,false,true,false);
+  end;
+  
 begin
   try
     InvalidateFileStateCache;
@@ -479,9 +501,9 @@ begin
                              FCursorBeyondEOL,true);
 
     // Define templates
-    if FGlobalDefineTemplates<>nil then
-      FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,
-        'CodeToolsGlobalDefines/',true,false,true,false);
+    SaveGlobalDefineTemplates;
+    XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesEditMainSplitter/Top',
+                             FDefinesEditMainSplitterTop,100);
 
     // CodeCreation
     XMLConfig.SetDeleteValue(
@@ -576,6 +598,7 @@ begin
       CodeToolsOpts.FGlobalDefineTemplates.CreateCopy(false,true,true);
     if FGlobalDefineTemplates<>nil then
       FGlobalDefineTemplates.SetDefineOwner(Self,true);
+    FDefinesEditMainSplitterTop:=CodeToolsOpts.DefinesEditMainSplitterTop;
 
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
@@ -612,6 +635,7 @@ begin
   
   // define templates
   ClearGlobalDefineTemplates;
+  FDefinesEditMainSplitterTop:=100;
 
   // CodeCreation
   FAddInheritedCodeToOverrideMethod:=true;
@@ -659,6 +683,7 @@ begin
     // define templates
     and (FGlobalDefineTemplates.IsEqual(
                                 CodeToolsOpts.FGlobalDefineTemplates,true,true))
+    and (FDefinesEditMainSplitterTop=CodeToolsOpts.fDefinesEditMainSplitterTop)
 
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)

@@ -3216,16 +3216,20 @@ var
   begin
     // if TargetOS<>SrcOS
     IfTargetOSIsNotSrcOS:=TDefineTemplate.Create(
-      'IF TargetOS is not SrcOS',
+      'IF TargetOS<>SrcOS',
       ctsIfTargetOSIsNotSrcOS,'',''''+TargetOS+'''<>'''+SrcOS+'''',da_If);
     // rtl/$(#SrcOS)
     RTLSrcOSDir:=TDefineTemplate.Create('SrcOS',SrcOS,'',
       SrcOS,da_Directory);
     IfTargetOSIsNotSrcOS.AddChild(RTLSrcOSDir);
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
+      'include path',
+      ExternalMacroStart+'IncPath',IncPathMacro+';inc',
+      da_Define));
+    RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetProcessor directories',
       ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
-      da_DefineRecurse));
+      da_Define));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
     // if TargetOS<>SrcOS2
@@ -3295,7 +3299,7 @@ begin
     ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
   DefTempl:=TDefineTemplate.Create('Reset UnitPath',
-    ctsSrcPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
+    ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
   // turn Nested comments on
   DefTempl:=TDefineTemplate.Create('Nested Comments',

@@ -417,6 +417,8 @@ type
     procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
     property ResizeControl: TControl read GetResizeControl write SetResizeControl;
     function GetOtherResizeControl: TControl;
+    procedure MoveSplitter(Offset: integer);
+    procedure SetSplitterPosition(NewPosition: integer);
   public
     property Align default alLeft;
     property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;

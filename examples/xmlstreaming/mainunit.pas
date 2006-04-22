@@ -54,8 +54,9 @@ type
   TStreamAsXMLForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    GroupBox1: TGroupBox;
+    SourceGroupBox: TGroupBox;
     GroupBox2: TGroupBox;
+    DestinationGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
   private
     FFilename: string;
@@ -64,6 +65,8 @@ type
     MyComponent: TMyComponent;
     procedure WriteComponents;
     procedure ReadComponents;
+    procedure OnFindComponentClass(Reader: TReader; const AClassName: string;
+                                   var ComponentClass: TComponentClass);
     property Filename: string read FFilename write SetFilename;
   end; 
 
@@ -151,7 +154,7 @@ begin
     Reader:=CreateXMLReader(XMLConfig.Document,Path,DestroyDriver);
 
     // get root class
-    AClassName:=Reader.GetRootClassName(IsInherited);
+    AClassName:=(Reader.Driver as TXMLObjectReader).GetRootClassName(IsInherited);
     if IsInherited then begin
       // inherited is not supported by this simple function
       DebugLn('ReadComponentFromXMLConfig WARNING: "inherited" is not supported by this simple function');
@@ -218,9 +221,9 @@ begin
   DebugLn('TStreamAsXMLForm.WriteComponents ',Filename);
   XMLConfig:=TXMLConfig.Create(Filename);
   try
-    WriteComponentToXMLConfig(XMLConfig,'Component',Self);
-    //WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
-    //WriteComponentToXMLConfig(XMLConfig,'Component',GroupBox1);
+    //WriteComponentToXMLConfig(XMLConfig,'Component',Self);
+    WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
+    //WriteComponentToXMLConfig(XMLConfig,'Component',GroupBox2);
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -242,7 +245,8 @@ begin
   XMLConfig:=TXMLConfig.Create(Filename);
   try
     NewComponent:=nil;
-    ReadComponentFromXMLConfig(XMLConfig,'Component',NewComponent);
+    ReadComponentFromXMLConfig(XMLConfig,'Component',NewComponent,
+      @OnFindComponentClass,DestinationGroupBox);
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -252,6 +256,17 @@ begin
   sl.LoadFromFile(Filename);
   DebugLn('TStreamAsXMLForm.StreamComponents ',sl.Text);
   sl.Free;
+end;
+
+procedure TStreamAsXMLForm.OnFindComponentClass(Reader: TReader;
+  const AClassName: string; var ComponentClass: TComponentClass);
+begin
+  if CompareText(AClassName,'TGroupBox')=0 then
+    ComponentClass:=TGroupBox
+  else if CompareText(AClassName,'TButton')=0 then
+    ComponentClass:=TButton
+  else if CompareText(AClassName,'TMyComponent')=0 then
+    ComponentClass:=TMyComponent;
 end;
 
 { TMyComponent }
