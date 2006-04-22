@@ -60,6 +60,7 @@ type
     FGlobalDefineTemplates: TDefineTemplate;
     FDefinesEditMainSplitterTop: integer;
     FDefinesPreviewMainSplitterPos: integer;
+    FDefinesPreviewTemplSplitterPos: integer;
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -113,6 +114,8 @@ type
                                               write FDefinesEditMainSplitterTop;
     property DefinesPreviewMainSplitterPos: integer
        read FDefinesPreviewMainSplitterPos write FDefinesPreviewMainSplitterPos;
+    property DefinesPreviewTemplSplitterPos: integer
+       read FDefinesPreviewTemplSplitterPos write FDefinesPreviewTemplSplitterPos;
 
     // CodeCreation
     property CompleteProperties: boolean
@@ -420,7 +423,9 @@ begin
     FDefinesEditMainSplitterTop:=XMLConfig.GetValue(
       'CodeToolsOptions/DefinesEditMainSplitter/Top',100);
     FDefinesPreviewMainSplitterPos:=XMLConfig.GetValue(
-      'CodeToolsOptions/DefinesPreviewMainSplitter/Position',100);
+      'CodeToolsOptions/DefinesPreviewMainSplitter/Position',280);
+    FDefinesPreviewTemplSplitterPos:=XMLConfig.GetValue(
+      'CodeToolsOptions/DefinesPreviewTemplSplitter/Position',100);
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod:=XMLConfig.GetValue(
@@ -511,6 +516,8 @@ begin
                              FDefinesEditMainSplitterTop,100);
     XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesPreviewMainSplitter/Position',
                              FDefinesPreviewMainSplitterPos,280);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesPreviewTemplSplitter/Position',
+                             FDefinesPreviewTemplSplitterPos,100);
 
     // CodeCreation
     XMLConfig.SetDeleteValue(
@@ -607,6 +614,7 @@ begin
       FGlobalDefineTemplates.SetDefineOwner(Self,true);
     FDefinesEditMainSplitterTop:=CodeToolsOpts.DefinesEditMainSplitterTop;
     FDefinesPreviewMainSplitterPos:=CodeToolsOpts.DefinesPreviewMainSplitterPos;
+    FDefinesPreviewTemplSplitterPos:=CodeToolsOpts.DefinesPreviewTemplSplitterPos;
 
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
@@ -645,6 +653,7 @@ begin
   ClearGlobalDefineTemplates;
   FDefinesEditMainSplitterTop:=100;
   FDefinesPreviewMainSplitterPos:=280;
+  FDefinesPreviewTemplSplitterPos:=100;
 
   // CodeCreation
   FAddInheritedCodeToOverrideMethod:=true;
@@ -694,6 +703,7 @@ begin
                                 CodeToolsOpts.FGlobalDefineTemplates,true,true))
     and (FDefinesEditMainSplitterTop=CodeToolsOpts.fDefinesEditMainSplitterTop)
     and (FDefinesPreviewMainSplitterPos=CodeToolsOpts.FDefinesPreviewMainSplitterPos)
+    and (FDefinesPreviewTemplSplitterPos=CodeToolsOpts.FDefinesPreviewTemplSplitterPos)
 
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)

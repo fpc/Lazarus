@@ -5,12 +5,22 @@ unit CodeToolsDefPreview;
 interface
 
 uses
-  Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil,
+  Classes, SysUtils, Math,
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
   SynEdit, DefineTemplates, ExprEval,
   LazarusIDEStrConsts, InputHistory, IDEWindowIntf, CodeToolsOptions;
 
 type
+  TCodeToolsDefinesNodeValues = class
+  public
+    Node: TDefineTemplate;
+    ValueParsed: boolean;
+    ParsedValue: string;
+    ExpressionCalculated: boolean;
+    ExpressionResult: string;
+    Execute: boolean;
+  end;
 
   { TCodeToolsDefinesDialog }
 
@@ -19,6 +29,9 @@ type
     DirectoryBrowseButton: TButton;
     DirectoryCombobox: TComboBox;
     DirectoryGroupbox: TGroupBox;
+    TemplatesMemo: TMemo;
+    TemplatesSplitter: TSplitter;
+    TemplatesGroupBox: TGroupBox;
     MainSplitter: TSplitter;
     ParsedTemplatesTreeView: TTreeView;
     ValueSynedit: TSynEdit;
@@ -30,16 +43,24 @@ type
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
     procedure DirectoryGroupboxRESIZE(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ParsedTemplatesTreeViewSelectionChanged(Sender: TObject);
     procedure ValuesListviewSELECTITEM(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
     FDefineTree: TDefineTree;
+    FNodeValues: TAvgLvlTree;
     procedure SetDefineTree(const AValue: TDefineTree);
     procedure UpdateValues;
     procedure UpdateValue;
+    procedure UpdateTemplateValues;
     procedure ClearValues;
     procedure FillTemplateTree;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string);
+    procedure DefineTreeCalculate(Tree: TDefineTree; Node: TDefineTemplate;
+                  ValueParsed: boolean; const ParsedValue: string;
+                  ExpressionCalculated: boolean; const ExpressionResult: string;
+                  Execute: boolean);
   public
     property DefineTree: TDefineTree read FDefineTree write SetDefineTree;
   end;
@@ -54,6 +75,8 @@ procedure AddDefineNodes(ATreeView: TTreeView; ANode: TDefineTemplate;
   AParent: TTreeNode; WithChilds,WithNextSiblings: boolean);
 procedure SetNodeImages(ANode: TTreeNode; WithSubNodes: boolean);
 
+function CompareNodeValues(Data1, Data2: Pointer): Integer;
+function CompareNodeAndNodeValues(Node, NodeValues: Pointer): Integer;
 
 implementation
 
@@ -134,6 +157,18 @@ begin
   end;
 end;
 
+function CompareNodeValues(Data1, Data2: Pointer): Integer;
+begin
+  Result:=ComparePointers(TCodeToolsDefinesNodeValues(Data1).Node,
+                          TCodeToolsDefinesNodeValues(Data2).Node);
+end;
+
+function CompareNodeAndNodeValues(Node, NodeValues: Pointer): Integer;
+begin
+  Result:=ComparePointers(TCodeToolsDefinesNodeValues(Node),
+                          TCodeToolsDefinesNodeValues(NodeValues).Node);
+end;
+
 { TCodeToolsDefinesDialog }
 
 procedure TCodeToolsDefinesDialog.DirectoryGroupboxRESIZE(Sender: TObject);
@@ -145,6 +180,20 @@ begin
   x:=DirectoryCombobox.Width;
   with DirectoryBrowseButton do
     SetBounds(x,0,Parent.ClientWidth-x,DirectoryCombobox.Height);
+end;
+
+procedure TCodeToolsDefinesDialog.FormDestroy(Sender: TObject);
+begin
+  if FNodeValues<>nil then begin
+    FNodeValues.FreeAndClear;
+    FreeAndNil(FNodeValues);
+  end;
+end;
+
+procedure TCodeToolsDefinesDialog.ParsedTemplatesTreeViewSelectionChanged(
+  Sender: TObject);
+begin
+  UpdateTemplateValues;
 end;
 
 procedure TCodeToolsDefinesDialog.ValuesListviewSELECTITEM(Sender: TObject;
@@ -162,12 +211,14 @@ begin
 end;
 
 procedure TCodeToolsDefinesDialog.UpdateValues;
+// let the codetools calculate the defines for the directory
 var
   Dir: String;
   Defines: TExpressionEvaluator;
   i: Integer;
   ListItem: TListItem;
   Value: String;
+  OldOnCalculate: TDefTreeCalculate;
 begin
   Dir:=TrimFilename(DirectoryCombobox.Text);
   if (DefineTree=nil) or (not FilenameIsAbsolute(Dir))
@@ -175,8 +226,20 @@ begin
     ClearValues;
     exit;
   end;
-  //writeln('TCodeToolsDefinesDialog.UpdateValues ',Dir);
-  Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
+
+  // set our debug function, clear codetools cache and calculate the values
+  if FNodeValues<>nil then
+    FNodeValues.FreeAndClear;
+  DefineTree.ClearCache;// make sure the defines are reparsed
+  OldOnCalculate:=DefineTree.OnCalculate;
+  DefineTree.OnCalculate:=@DefineTreeCalculate;
+  try
+    Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
+  finally
+    DefineTree.OnCalculate:=OldOnCalculate;
+  end;
+
+  // fill the ValuesListview
   ValuesListview.BeginUpdate;
   for i:=0 to Defines.Count-1 do begin
     if ValuesListview.Items.Count<=i then
@@ -219,14 +282,51 @@ begin
   end;
 end;
 
+procedure TCodeToolsDefinesDialog.UpdateTemplateValues;
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+  s: string;
+  AVLNode: TAvgLvlTreeNode;
+  NodeValues: TCodeToolsDefinesNodeValues;
+begin
+  SelTreeNode:=ParsedTemplatesTreeView.Selected;
+  if SelTreeNode=nil then begin
+    TemplatesMemo.Text:='No node selected';
+  end else begin
+    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+    s:='Name="'+SelDefNode.Name+'"'+LineEnding;
+    s:=s+'Description="'+SelDefNode.Description+'"'+LineEnding;
+    s:=s+'Action="'+DefineActionNames[SelDefNode.Action]+'"'+LineEnding;
+    s:=s+'Variable="'+SelDefNode.Variable+'"'+LineEnding;
+    s:=s+'Value="'+SelDefNode.Value+'"'+LineEnding;
+
+    if FNodeValues<>nil then begin
+      AVLNode:=FNodeValues.FindKey(SelDefNode,@CompareNodeAndNodeValues);
+      if AVLNode<>nil then begin
+        NodeValues:=TCodeToolsDefinesNodeValues(AVLNode.Data);
+        if NodeValues.ValueParsed then
+          s:=s+'Parsed Value="'+NodeValues.ParsedValue+'"'+LineEnding;
+        if NodeValues.ExpressionCalculated then
+          s:=s+'Expression Result="'+NodeValues.ExpressionResult+'"'+LineEnding;
+        s:=s+'Executed="'+dbgs(NodeValues.Execute)+'"'+LineEnding;
+      end;
+    end;
+    TemplatesMemo.Text:=s;
+  end;
+end;
+
 procedure TCodeToolsDefinesDialog.ClearValues;
 begin
   ValuesListview.Items.Clear;
+  if FNodeValues<>nil then
+    FNodeValues.FreeAndClear;
 end;
 
 procedure TCodeToolsDefinesDialog.FillTemplateTree;
 begin
   RebuildDefineTreeView(ParsedTemplatesTreeView,DefineTree.RootTemplate);
+  UpdateTemplateValues;
 end;
 
 procedure TCodeToolsDefinesDialog.SetComboBox(AComboBox: TComboBox;
@@ -241,6 +341,25 @@ begin
     AComboBox.ItemIndex:=i;
   AComboBox.Text:=NewText;
   //writeln('TCodeToolsDefinesDialog.SetComboBox Text=',AComboBox.Text,' NewText=',NewText);
+end;
+
+procedure TCodeToolsDefinesDialog.DefineTreeCalculate(Tree: TDefineTree;
+  Node: TDefineTemplate; ValueParsed: boolean; const ParsedValue: string;
+  ExpressionCalculated: boolean; const ExpressionResult: string;
+  Execute: boolean);
+var
+  NewNodeValues: TCodeToolsDefinesNodeValues;
+begin
+  NewNodeValues:=TCodeToolsDefinesNodeValues.Create;
+  NewNodeValues.Node:=Node;
+  NewNodeValues.ValueParsed:=ValueParsed;
+  NewNodeValues.ParsedValue:=ParsedValue;
+  NewNodeValues.ExpressionCalculated:=ExpressionCalculated;
+  NewNodeValues.ExpressionResult:=ExpressionResult;
+  NewNodeValues.Execute:=Execute;
+  if FNodeValues=nil then
+    FNodeValues:=TAvgLvlTree.Create(@CompareNodeValues);
+  FNodeValues.Add(NewNodeValues);
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCREATE(Sender: TObject);
@@ -267,16 +386,23 @@ begin
   else
     DirectoryCombobox.Text:='';
     
+  TemplatesGroupBox.Caption:=lisCTDefDefineTemplates;
+    
   MainSplitter.SetSplitterPosition(
          Max(20,Min(ClientWidth-100,CodeToolsOpts.DefinesPreviewMainSplitterPos)));
+  TemplatesSplitter.SetSplitterPosition(
+         Max(20,Min(TemplatesGroupBox.ClientHeight-50,
+                    CodeToolsOpts.DefinesPreviewTemplSplitterPos)));
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true).Assign(
     DirectoryCombobox.Items);
-  CodeToolsOpts.DefinesPreviewMainSplitterPos:=MainSplitter.Left;
+  CodeToolsOpts.DefinesPreviewMainSplitterPos:=MainSplitter.GetSplitterPosition;
+  CodeToolsOpts.DefinesPreviewTemplSplitterPos:=TemplatesSplitter.GetSplitterPosition;
   CodeToolsOpts.Save;
 end;
 

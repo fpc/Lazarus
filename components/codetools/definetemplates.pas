@@ -290,6 +290,11 @@ type
     Result: string;
   end;
   PReadFunctionData = ^TReadFunctionData;
+  
+  TDefTreeCalculate = procedure(Tree: TDefineTree; Node: TDefineTemplate;
+    ValueParsed: boolean; const ParsedValue: string;
+    ExpressionCalculated: boolean; const ExpressionResult: string;
+    Execute: boolean) of object;
 
   TDefineTree = class
   private
@@ -301,6 +306,7 @@ type
     FErrorTemplate: TDefineTemplate;
     FMacroFunctions: TKeyWordFunctionList;
     FMacroVariables: TKeyWordFunctionList;
+    FOnCalculate: TDefTreeCalculate;
     FOnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias;
     FOnGetVirtualDirectoryDefines: TOnGetVirtualDirectoryDefines;
     FOnPrepareTree: TNotifyEvent;
@@ -332,6 +338,7 @@ type
          read FOnGetVirtualDirectoryDefines write FOnGetVirtualDirectoryDefines;
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
     property OnPrepareTree: TNotifyEvent read FOnPrepareTree write FOnPrepareTree;
+    property OnCalculate: TDefTreeCalculate read FOnCalculate write FOnCalculate;
     property MacroFunctions: TKeyWordFunctionList read FMacroFunctions;
     property MacroVariables: TKeyWordFunctionList read FMacroVariables;
   public
@@ -2184,8 +2191,11 @@ var
       // jump to end of else templates
       while (DefTempl.Next<>nil)
       and (DefTempl.Next.Action in [da_Else,da_ElseIf])
-      do
+      do begin
+        if Assigned(OnCalculate) then
+          OnCalculate(Self,DefTempl,false,'',false,'',false);
         DefTempl:=DefTempl.Next;
+      end;
     end;
 
   // procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
@@ -2196,44 +2206,71 @@ var
       case DefTempl.Action of
       da_Block:
         // calculate children
-        CalculateTemplate(DefTempl.FirstChild,CurPath);
+        begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
+          CalculateTemplate(DefTempl.FirstChild,CurPath);
+        end;
 
       da_Define:
         // Define for a single Directory (not SubDirs)
-        if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
-          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
+        begin
+          if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
+            ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
+            DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
+          end else begin
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,false,'',false,'',false);
+          end;
         end;
 
       da_DefineRecurse:
         // Define for current and sub directories
         begin
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,true,TempValue,false,'',true);
           DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
         end;
 
       da_Undefine:
         // Undefine for a single Directory (not SubDirs)
         if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
           DirDef.Values.Undefine(DefTempl.Variable);
+        end else begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',false);
         end;
 
       da_UndefineRecurse:
         // Undefine for current and sub directories
-        DirDef.Values.Undefine(DefTempl.Variable);
+        begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
+          DirDef.Values.Undefine(DefTempl.Variable);
+        end;
 
       da_UndefineAll:
         // Undefine every value for current and sub directories
-        DirDef.Values.Clear;
+        begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
+          DirDef.Values.Clear;
+        end;
 
       da_If, da_ElseIf:
         begin
           // test expression in value
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
           EvalResult:=DirDef.Values.Eval(TempValue);
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,true,TempValue,true,EvalResult,EvalResult='1');
           //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
           if DirDef.Values.ErrorPosition>=0 then begin
-            ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
             FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
             FErrorTemplate:=DefTempl;
           end else if EvalResult='1' then
@@ -2247,32 +2284,50 @@ var
           //  ' Is=',dbgs(DirDef.Values.IsDefined(DefTempl.Variable)),
           //  ' CurPath="',CurPath,'"',
           //  ' Values.Count=',dbgs(DirDef.Values.Count));
-          if DirDef.Values.IsDefined(DefTempl.Variable) then
+          if DirDef.Values.IsDefined(DefTempl.Variable) then begin
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,false,'',false,'',true);
             CalculateIfChilds;
+          end else begin
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,false,'',false,'',false);
+          end;
         end;
 
       da_IfNDef:
         // test if variable is not defined
-        if not DirDef.Values.IsDefined(DefTempl.Variable) then
+        if not DirDef.Values.IsDefined(DefTempl.Variable) then begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
           CalculateIfChilds;
+        end else begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',false);
+        end;
 
       da_Else:
         // execute childs
-        CalculateTemplate(DefTempl.FirstChild,CurPath);
+        begin
+          if Assigned(OnCalculate) then
+            OnCalculate(Self,DefTempl,false,'',false,'',true);
+          CalculateTemplate(DefTempl.FirstChild,CurPath);
+        end;
 
       da_Directory:
         begin
           // template for a sub directory
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          {$ifdef win32}
-          if CurPath='' then
-            SubPath:=TempValue
-          else
-          {$endif}
-            SubPath:=CurPath+PathDelim+TempValue;
+          // CurPath can be ''
+          SubPath:=AppendPathDelim(CurPath)+TempValue;
           // test if ExpandedDirectory is part of SubPath
-          if FilenameIsMatching(SubPath,ExpandedDirectory,false) then
+          if FilenameIsMatching(SubPath,ExpandedDirectory,false) then begin
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,true,SubPath,false,'',true);
             CalculateTemplate(DefTempl.FirstChild,SubPath);
+          end else begin
+            if Assigned(OnCalculate) then
+              OnCalculate(Self,DefTempl,true,SubPath,false,'',false);
+          end;
         end;
       end;
       if ErrorTemplate<>nil then exit;
@@ -3247,9 +3302,6 @@ var
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
   end;
 
-//  function CreateFPCSrcTemplate(const FPCSrcDir,
-//      UnitSearchPath: string;
-//      UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
 var
   DefTempl, MainDir, FCLDir, RTLDir, RTLOSDir, PackagesDir, CompilerDir,
   UtilsDir, DebugSvrDir: TDefineTemplate;
@@ -3265,8 +3317,7 @@ begin
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
-  Dir:=FPCSrcDir;
-  if Dir[length(Dir)]<>DS then Dir:=Dir+DS;
+  Dir:=AppendPathDelim(FPCSrcDir);
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';

@@ -419,6 +419,7 @@ type
     function GetOtherResizeControl: TControl;
     procedure MoveSplitter(Offset: integer);
     procedure SetSplitterPosition(NewPosition: integer);
+    function GetSplitterPosition: integer;
   public
     property Align default alLeft;
     property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;

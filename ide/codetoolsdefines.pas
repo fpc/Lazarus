@@ -1477,7 +1477,7 @@ begin
 
   CreateComponents;
   MainSplitter.SetSplitterPosition(
-         Max(20,Min(ClientWidth-100,CodeToolsOpts.DefinesEditMainSplitterTop)));
+         Max(20,Min(ClientHeight-100,CodeToolsOpts.DefinesEditMainSplitterTop)));
 
   FDefineTree:=TDefineTree.Create;
 end;

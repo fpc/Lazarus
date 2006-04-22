@@ -207,35 +207,24 @@ var
   end;
 
   procedure SetAlignControlSize(NewSize: Integer);
+  var
+    NewBounds: TRect;
   begin
+    NewBounds:=CurResizeControl.BoundsRect;
+    //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' OldBounds=',dbgs(NewBounds),' NewSize=',dbgs(NewSize));
     case ResizeAnchor of
       akLeft:
-        CurResizeControl.Width := NewSize;
+        NewBounds.Right := NewBounds.Left+NewSize;
       akRight:
-        begin
-          Parent.DisableAlign;
-          try
-            CurResizeControl.Left := CurResizeControl.Left
-                                     + (CurResizeControl.Width - NewSize);
-            CurResizeControl.Width := NewSize;
-          finally
-            Parent.EnableAlign;
-          end;
-        end;
+        NewBounds.Left := NewBounds.Right-NewSize;
       akTop:
-        CurResizeControl.Height := NewSize;
+        NewBounds.Bottom := NewBounds.Top+NewSize;
       akBottom:
-        begin
-          Parent.DisableAlign;
-          try
-            CurResizeControl.Top := CurResizeControl.Top
-                                    + (CurResizeControl.Height - NewSize);
-            CurResizeControl.Height := NewSize;
-          finally
-            Parent.EnableAlign;
-          end;
-        end;
+        NewBounds.Top := NewBounds.Bottom-NewSize;
     end;
+    //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' NewBounds=',dbgs(NewBounds));
+    CurResizeControl.BoundsRect:=NewBounds;
+    //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' NowBounds=',dbgs(CurResizeControl.BoundsRect));
   end;
 
   function CalcNewSize(StartSize, EndSize, Offset: Integer): Integer;
@@ -331,6 +320,7 @@ var
   CurMaxShrink: integer;
   CurMaxEnlarge: integer;
 begin
+  //DebugLn('TCustomSplitter.MoveSplitter ',DbgSName(Self),' Offset=',dbgs(Offset));
   if Offset = 0 then Exit;
 
   if Align in [alLeft,alTop,alRight,alBottom] then begin
@@ -384,6 +374,7 @@ begin
       end;
     end;
 
+    //DebugLn('TCustomSplitter.MoveSplitter ',DbgSName(Self),' StartSize=',dbgs(StartSize),' EndSize=',dbgs(EndSize),' Offset=',dbgs(Offset));
     NewSize := CalcNewSize(StartSize, EndSize, Offset);
 
     // OnCanResize event
@@ -447,10 +438,16 @@ end;
 
 procedure TCustomSplitter.SetSplitterPosition(NewPosition: integer);
 begin
+  //DebugLn('TCustomSplitter.SetSplitterPosition ',DbgSName(Self),' NewPosition=',dbgs(NewPosition),' ',dbgs(GetSplitterPosition));
+  MoveSplitter(NewPosition-GetSplitterPosition);
+end;
+
+function TCustomSplitter.GetSplitterPosition: integer;
+begin
   if ResizeAnchor in [akLeft,akRight] then
-    MoveSplitter(NewPosition-Left)
+    Result:=Left
   else
-    MoveSplitter(NewPosition-Top);
+    Result:=Top;
 end;
 
 procedure TCustomSplitter.SetBeveled(const AValue: boolean);

@@ -133,6 +133,7 @@ resourcestring
   lisMenuSaveAs = 'Save As';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
+  lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close all editor files';
   lisMenuCleanDirectory = 'Clean directory';
   lisMenuQuit = 'Quit';
