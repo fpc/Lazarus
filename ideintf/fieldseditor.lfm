@@ -1,26 +1,27 @@
 object DSFieldsEditorFrm: TDSFieldsEditorFrm
   Caption = 'Fields Editor'
   ClientHeight = 288
-  ClientWidth = 180
+  ClientWidth = 215
   OnClose = FieldsEditorFrmClose
   OnDestroy = FieldsEditorFrmDestroy
   PixelsPerInch = 96
-  HorzScrollBar.Page = 179
+  Position = poDefaultPosOnly
+  HorzScrollBar.Page = 214
   VertScrollBar.Page = 287
-  Left = 228
+  Left = 256
   Height = 288
-  Top = 96
-  Width = 180
+  Top = 117
+  Width = 215
   object FieldsListBox: TListBox
     Align = alClient
-    ExtendedSelect = True
+    BorderSpacing.OnChange = nil
     MultiSelect = True
     OnClick = ListBox1Click
     OnKeyDown = FieldsListBoxKeyDown
     PopupMenu = PopupMenu1
     TabOrder = 0
     Height = 288
-    Width = 180
+    Width = 215
   end
   object PopupMenu1: TPopupMenu
     left = 8

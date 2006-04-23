@@ -174,10 +174,13 @@ end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmDestroy(Sender: TObject);
 begin
+  if Assigned(FComponentEditor) then begin
+    if Assigned(LinkDataset) And (Not (csDestroying in LinkDataset.ComponentState)) And (FieldsListBox.SelCount > 0) then
+         GlobalDesignHook.SelectOnlyThis(LinkDataset);
+    FComponentEditor.EditorWindowClose;
+  end;
   if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  if Assigned(FComponentEditor) then
-    FComponentEditor.EditorWindowClose;
   inherited Destroy;
 end;
 
@@ -413,10 +416,6 @@ end;
 
 procedure TFieldsComponentEditor.ExecuteVerb(Index: Integer);
 var ADataset: TDataset;
-    i: Integer;
-    b: boolean;
-    fTop, fLeft, fHeight, fWidth: integer;
-    aForm: TForm;
 begin
   case index of
     0: begin
@@ -424,27 +423,7 @@ begin
       if ADataset = nil
       then raise Exception.Create('TFieldsComponentEditor.Edit LinkDataset=nil');
       if fWindowClosed then begin
-        //close other Fields designer forms
-        // and save window pos.
-        b := False;
-        with Application do
-          for i := 0 to ComponentCount - 1 do
-            if Components[i] is TDSFieldsEditorFrm then begin
-              b := True;
-              aForm := Components[i] as TDSFieldsEditorFrm;
-              fTop := aForm.Top;
-              fLeft := aForm.Left;
-              fHeight := aForm.Height;
-              fWidth := aForm.Width;
-              TDSFieldsEditorFrm(Components[i]).Free;
-            end;
         FFieldsEditorForm := TDSFieldsEditorFrm.Create(Application, ADataset, Designer);
-        if b then begin
-          FFieldsEditorForm.Top := fTop;
-          FFieldsEditorForm.Left := fLeft;
-          FFieldsEditorForm.Height := fHeight;
-          FFieldsEditorForm.Width := fWidth;
-        end;
         fWindowClosed := False;
       end;
       with FFieldsEditorForm do begin
