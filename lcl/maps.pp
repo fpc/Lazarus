@@ -33,7 +33,8 @@ uses
   Classes, SysUtils, AvgLvlTree;
   
 type
-  TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16, itu32, its32);
+  TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,
+                itu32, its32);
 
   PMapItem = ^TMapItem;
 
@@ -216,7 +217,7 @@ begin
     Exit;
   end;
   
-  Item := GetMem(SizeOF(TMapLink) + ID_LENGTH[FIdType] + FDataSize);
+  Item := GetMem(SizeOF(TMapLink) + cardinal(ID_LENGTH[FIdType]) + FDataSize);
   p := @item^.ID;
   Move(AId, p^, ID_LENGTH[FIdType]);
   inc(p, ID_LENGTH[FIdType]);
@@ -533,8 +534,6 @@ procedure TBaseMapIterator.Next;
   begin
     raise EInvalidOperation.Create('Cannot move past end');
   end;
-var
-  Node: TAvgLvlTreeNode;
 begin
   if FInvalid
   then begin
@@ -562,8 +561,6 @@ procedure TBaseMapIterator.Previous;
   begin
     raise EInvalidOperation.Create('Cannot move before start');
   end;
-var
-  Node: TAvgLvlTreeNode;
 begin
   if FBOM then Error;
   FInvalid := False;
