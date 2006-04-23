@@ -192,6 +192,7 @@ procedure TApplication.Notification(AComponent : TComponent;
   Operation : TOperation);
 begin
   if Operation = opRemove then begin
+    FLastMouseControlValid:=false;
     if AComponent=FMouseControl then FMouseControl:=nil;
     if AComponent = MainForm then begin
       FMainForm:= nil;
@@ -215,6 +216,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
+  FLastMouseControlValid:=false;
   if AControl=FMouseControl then FMouseControl:=nil;
   if AControl = MainForm then FMainForm:= nil;
   if Screen.FActiveControl = AControl then Screen.FActiveControl := nil;
@@ -407,12 +409,16 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
-  if (P.X=FLastMousePos.x) and (P.Y=FLastMousePos.Y) then Result:=FLastMouseControl
-  else    Result := FindControlAtPosition(P, True);
+  if FLastMouseControlValid and (P.X=FLastMousePos.x) and (P.Y=FLastMousePos.Y)
+  then
+    Result := FLastMouseControl
+  else
+    Result := FindControlAtPosition(P, True);
   
   if (Result <> nil) and (csDesigning in Result.ComponentState) then
     Result := nil;
   if Result<> nil then begin
+    FLastMouseControlValid:=true;
     FLastMousePos:=p;
     FLastMouseControl:=Result;
   end;
@@ -1222,6 +1228,7 @@ procedure TApplication.NotifyUserInputHandler(Msg: Cardinal);
 var
   i: integer;
 begin
+  FLastMouseControlValid:=false;
   case Msg of
   LM_MOUSEMOVE: DoOnMouseMove;
   else          CancelHint;

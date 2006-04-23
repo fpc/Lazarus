@@ -231,6 +231,7 @@ begin
     else
       AutoCalcHRange;
   end;
+  ControlUpdateScrollBars;
 end;
 
 procedure TControlScrollBar.UpdateScrollBar;
