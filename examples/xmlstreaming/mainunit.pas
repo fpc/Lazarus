@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Laz_XMLStreaming, Laz_DOM, laz_xmlcfg, Buttons, TypInfo;
+  StdCtrls, Laz_XMLStreaming, Laz_DOM, Laz_XMLCfg, Buttons, TypInfo;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);
@@ -87,7 +87,7 @@ function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;
 function CreateXMLReader(ADoc: TDOMDocument; const Path: string;
   var DestroyDriver: boolean): TReader;
-  
+
 procedure WriteComponentToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   AComponent: TComponent);
 procedure ReadComponentFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -188,7 +188,7 @@ begin
                                         [AClassName,RootComponent.ClassName]);
       end;
     end;
-    
+
     Reader.ReadRootComponent(RootComponent);
   finally
     if DestroyDriver then

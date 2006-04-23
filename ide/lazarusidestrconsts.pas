@@ -1297,6 +1297,7 @@ resourcestring
   lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';
   lisViewSourceLfm = 'View Source (.lfm)';
+  fdmSaveFormAsXML = 'Save form as xml';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
   fdmShowOptions='Show Options for form editing';
 

@@ -451,17 +451,17 @@ function TXMLObjectReader.ReadNextValue(Stay: Boolean): TValueType;
     FElementPosition:=0;
     if FElement.NextSibling is TDOMElement then begin
       // go to next component
-      writeln('TXMLObjectReader.ReadNextValue properties: next component');
+      //writeln('TXMLObjectReader.ReadNextValue properties: next component');
       FElement:=TDOMElement(FElement.NextSibling);
       CheckNode('component');
     end else begin
       // end of children list
       if FElement.ParentNode.NodeName='children' then begin
-        writeln('TXMLObjectReader.ReadNextValue end of children list');
+        //writeln('TXMLObjectReader.ReadNextValue end of children list');
         FElement:=FElement.ParentNode as TDOMElement;
         FElementPosition:=1;
       end else begin
-        writeln('TXMLObjectReader.ReadNextValue END reading');
+        //writeln('TXMLObjectReader.ReadNextValue END reading');
         FElement:=nil;
       end;
     end;
@@ -471,10 +471,10 @@ var
   CurValue: String;
   CurInt64: Int64;
 begin
-  writeln('TXMLObjectReader.ReadNextValue Stay=',Stay,' Element=',FElement.NodeName,' Pos=',FElementPosition);
+  //writeln('TXMLObjectReader.ReadNextValue Stay=',Stay,' Element=',FElement.NodeName,' Pos=',FElementPosition);
   
   if FElement.NodeName='component' then begin
-    writeln('TXMLObjectReader.ReadNextValue is start of component');
+    //writeln('TXMLObjectReader.ReadNextValue is start of component');
     Result:=vaString;
     if not Stay then begin
       // here a BeginComponent shoud be called, not ReadValue
@@ -485,12 +485,12 @@ begin
     // FElement is at end of property list or non existing children list
     // 0: end of property list
     // 1: end of non existing children list
-    writeln('TXMLObjectReader.ReadNextValue FElement is at end of property list');
+    //writeln('TXMLObjectReader.ReadNextValue FElement is at end of property list');
     Result:=vaNull;
     if not Stay then begin
       if FElement.NextSibling is TDOMElement then begin
         // leave properties and go to first child component
-        writeln('TXMLObjectReader.ReadNextValue properties: children');
+        //writeln('TXMLObjectReader.ReadNextValue properties: children');
         FElement:=TDOMElement(FElement.NextSibling);
         FElementPosition:=0;
         CheckNode('children');
@@ -510,7 +510,7 @@ begin
   end
   else if FElement.NodeName='children' then begin
     // end of children list
-    writeln('TXMLObjectReader.ReadNextValue End of children list');
+    //writeln('TXMLObjectReader.ReadNextValue End of children list');
     Result:=vaNull;
     if not Stay then begin
       GoToNextComponent;
@@ -524,7 +524,7 @@ begin
     case FElementPosition of
 
     0:begin
-        writeln('TXMLObjectReader.ReadNextValue list: vaList');
+        //writeln('TXMLObjectReader.ReadNextValue list: vaList');
         Result:=vaList;
         if (FElement.FirstChild is TDOMElement) then begin
           // the list has childs
@@ -544,11 +544,11 @@ begin
         Result:=vaNull;
         if not Stay then begin
           if (FElement.NextSibling is TDOMElement) then begin
-            writeln('TXMLObjectReader.ReadNextValue list: end of childs, next list');
+            //writeln('TXMLObjectReader.ReadNextValue list: end of childs, next list');
             FElement:=TDOMElement(FElement.NextSibling);
             FElementPosition:=0;
           end else begin
-            writeln('TXMLObjectReader.ReadNextValue list: end of childs, end of collection');
+            //writeln('TXMLObjectReader.ReadNextValue list: end of childs, end of collection');
             FElement:=FElement.ParentNode as TDOMElement;
             FElementPosition:=0;
           end;
@@ -559,7 +559,7 @@ begin
   end
   else if FElement.NodeName='collection' then begin
     // FElement is at end of collection
-    writeln('TXMLObjectReader.ReadNextValue FElement is at end of collection');
+    //writeln('TXMLObjectReader.ReadNextValue FElement is at end of collection');
     Result:=vaNull;
   end
   else if (FElement.ParentNode.NodeName='properties')
@@ -660,7 +660,7 @@ begin
   end else begin
     RaiseUnknownParentNode(FElement.ParentNode);
   end;
-  writeln('TXMLObjectReader.ReadNextValue Result=',GetEnumName(TypeInfo(TValueType),ord(Result)));
+  //writeln('TXMLObjectReader.ReadNextValue Result=',GetEnumName(TypeInfo(TValueType),ord(Result)));
 end;
 
 constructor TXMLObjectReader.Create(ADoc: TDOMDocument; const APath: string);
@@ -758,7 +758,7 @@ procedure TXMLObjectReader.BeginRootComponent;
 var
   Node: TDOMNode;
 begin
-  writeln('TXMLObjectReader.BeginRootComponent ');
+  //writeln('TXMLObjectReader.BeginRootComponent ');
   Node:=FElement.FindNode('component');
   if Node=nil then
     RaiseComponentNodeNotFound;
@@ -770,7 +770,7 @@ var
   ComponentNode: TDOMNode;
   PropertiesNode: TDOMNode;
 begin
-  writeln('TXMLObjectReader.BeginComponent START');
+  //writeln('TXMLObjectReader.BeginComponent START');
   
   if FElement.NodeName='component' then
     ComponentNode:=FElement
@@ -802,13 +802,13 @@ end;
 function TXMLObjectReader.BeginProperty: String;
 begin
   Result:=FElement['name'];
-  writeln('TXMLObjectReader.BeginProperty Result="',Result,'"');
+  //writeln('TXMLObjectReader.BeginProperty Result="',Result,'"');
   inc(FElementPosition);
 end;
 
 procedure TXMLObjectReader.ReadBinary(const DestData: TMemoryStream);
 begin
-  writeln('TXMLObjectReader.ReadBinary ');
+  //writeln('TXMLObjectReader.ReadBinary ');
 end;
 
 function TXMLObjectReader.ReadFloat: Extended;
@@ -822,7 +822,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadFloat ',Result);
+  //writeln('TXMLObjectReader.ReadFloat ',Result);
 end;
 
 function TXMLObjectReader.ReadSingle: Single;
@@ -836,7 +836,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadSingle ',Result);
+  //writeln('TXMLObjectReader.ReadSingle ',Result);
 end;
 
 function TXMLObjectReader.ReadCurrency: Currency;
@@ -850,7 +850,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadCurrency ',Result);
+  //writeln('TXMLObjectReader.ReadCurrency ',Result);
 end;
 
 function TXMLObjectReader.ReadDate: TDateTime;
@@ -864,14 +864,14 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadDate ',Result);
+  //writeln('TXMLObjectReader.ReadDate ',Result);
 end;
 
 function TXMLObjectReader.ReadIdent(ValueType: TValueType): String;
 begin
   Result:=FElement['value'];
   ReadValue;
-  writeln('TXMLObjectReader.ReadIdent ',Result);
+  //writeln('TXMLObjectReader.ReadIdent ',Result);
 end;
 
 function TXMLObjectReader.ReadInt8: ShortInt;
@@ -885,7 +885,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadInt8 ',Result);
+  //writeln('TXMLObjectReader.ReadInt8 ',Result);
 end;
 
 function TXMLObjectReader.ReadInt16: SmallInt;
@@ -899,7 +899,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadInt16 ',Result);
+  //writeln('TXMLObjectReader.ReadInt16 ',Result);
 end;
 
 function TXMLObjectReader.ReadInt32: LongInt;
@@ -913,7 +913,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadInt32 ',Result);
+  //writeln('TXMLObjectReader.ReadInt32 ',Result);
 end;
 
 function TXMLObjectReader.ReadInt64: Int64;
@@ -927,7 +927,7 @@ begin
   Val(Value, Back, FloatError);
   Result:=Back;
   ReadValue;
-  writeln('TXMLObjectReader.ReadInt64 ',Result);
+  //writeln('TXMLObjectReader.ReadInt64 ',Result);
 end;
 
 function TXMLObjectReader.ReadSet(SetType: Pointer): Integer;
@@ -952,14 +952,14 @@ begin
     StartPos:=EndPos+1;
   end;
   ReadValue;
-  writeln('TXMLObjectReader.ReadSet ',HexStr(Cardinal(Result),8));
+  //writeln('TXMLObjectReader.ReadSet ',HexStr(Cardinal(Result),8));
 end;
 
 function TXMLObjectReader.ReadStr: String;
 begin
   Result:=FElement['value'];
   ReadValue;
-  writeln('TXMLObjectReader.ReadStr "',Result,'"');
+  //writeln('TXMLObjectReader.ReadStr "',Result,'"');
 end;
 
 function TXMLObjectReader.ReadString(StringType: TValueType): String;
@@ -968,7 +968,7 @@ begin
   if (StringType=vaString) and (length(Result)>255) then
     raise Exception.Create('TXMLObjectReader.ReadString invalid StringType');
   ReadValue;
-  writeln('TXMLObjectReader.ReadString "',Result,'"');
+  //writeln('TXMLObjectReader.ReadString "',Result,'"');
 end;
 
 function TXMLObjectReader.ReadWideString: WideString;
@@ -978,7 +978,7 @@ begin
   ValueAsUTF8:=FElement['value'];
   Result:=System.UTF8Decode(ValueAsUTF8);
   ReadValue;
-  writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
+  //writeln('TXMLObjectReader.ReadWideString "',ValueAsUTF8,'"');
 end;
 
 procedure TXMLObjectReader.SkipComponent(SkipComponentInfos: Boolean);
@@ -988,13 +988,13 @@ begin
   NextNode:=FElement.NextSibling;
   if (NextNode=nil) or (NextNode is TDOMElement) then
     FElement:=TDOMElement(NextNode);
-  writeln('TXMLObjectReader.SkipComponent ');
+  //writeln('TXMLObjectReader.SkipComponent ');
 end;
 
 procedure TXMLObjectReader.SkipValue;
 begin
   ReadValue;
-  writeln('TXMLObjectReader.SkipValue ');
+  //writeln('TXMLObjectReader.SkipValue ');
 end;
 
 end.

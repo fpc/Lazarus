@@ -105,6 +105,8 @@ uses
   UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   MsgQuickFixes, ViewUnit_dlg,
+  // converter
+  DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg,
@@ -113,7 +115,7 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, DelphiProject2Laz,
+  ExtractProcDlg, FindRenameIdentifier,
   CleanDirDlg, CodeContextForm, AboutFrm,
   // main ide
   MainBar, MainIntf, MainBase;
@@ -384,6 +386,7 @@ type
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
                                  AComponent: TComponent; const NewName: string);
     procedure OnDesignerViewLFM(Sender: TObject);
+    procedure OnDesignerSaveAsXML(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject);
@@ -2678,6 +2681,7 @@ Begin
     OnShowOptions:=@OnDesignerShowOptions;
     OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
     OnViewLFM:=@OnDesignerViewLFM;
+    OnSaveAsXML:=@OnDesignerSaveAsXML;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -11721,6 +11725,68 @@ begin
   OnDesignerCloseQuery(Sender);
   DoOpenEditorFile(ChangeFileExt(AnUnitInfo.Filename,'.lfm'),
                    AnUnitInfo.EditorIndex+1,[]);
+end;
+
+procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);
+var
+  SaveDialog: TSaveDialog;
+  SaveAsFilename: String;
+  SaveAsFileExt: String;
+  PkgDefaultDirectory: String;
+  Filename: String;
+  XMLConfig: TXMLConfig;
+  ADesigner: TDesigner;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  ADesigner:=TDesigner(Sender);
+  GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
+  debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
+
+  SaveAsFileExt:='.xml';
+  SaveAsFilename:=ChangeFileExt(AnUnitInfo.Filename,SaveAsFileExt);
+  SaveDialog:=TSaveDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
+    SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
+    // if this is a project file, start in project directory
+    if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
+    and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
+    begin
+      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+    end;
+    // if this is a package file, then start in package directory
+    PkgDefaultDirectory:=
+                    PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
+    if (PkgDefaultDirectory<>'')
+    and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
+      SaveDialog.InitialDir:=PkgDefaultDirectory;
+    // show save dialog
+    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
+    then begin
+      // user cancels
+      exit;
+    end;
+    Filename:=ExpandFilename(SaveDialog.Filename);
+  finally
+    InputHistories.StoreFileDialogSettings(SaveDialog);
+    SaveDialog.Free;
+  end;
+
+  try
+    XMLConfig:=TXMLConfig.Create(Filename);
+    try
+      WriteComponentToXMLConfig(XMLConfig,'Component',ADesigner.LookupRoot);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      MessageDlg('Error',E.Message,mtError,[mbCancel],0);
+    end;
+  end;
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;

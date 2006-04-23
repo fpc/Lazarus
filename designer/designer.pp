@@ -100,6 +100,7 @@ type
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRenameComponent: TOnRenameComponent;
+    FOnSaveAsXML: TNotifyEvent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
     FOnUnselectComponentClass: TNotifyEvent;
@@ -120,6 +121,7 @@ type
     FTabOrderMenuItem: TMenuItem;
     FTheFormEditor: TCustomFormEditor;
     fViewLFMMenuItem: TMenuItem;
+    fSaveAsXMLMenuItem: TMenuItem;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -221,6 +223,7 @@ type
     procedure OnShowOptionsMenuItemClick(Sender: TObject);
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
     procedure OnViewLFMMenuClick(Sender: TObject);
+    procedure OnSaveAsXMLMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -317,6 +320,7 @@ type
     property OnShowOptions: TNotifyEvent
                                        read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
+    property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean
@@ -2067,6 +2071,11 @@ begin
   if Assigned(OnViewLFM) then OnViewLFM(Self);
 end;
 
+procedure TDesigner.OnSaveAsXMLMenuClick(Sender: TObject);
+begin
+  if Assigned(OnSaveAsXML) then OnSaveAsXML(Self);
+end;
+
 procedure TDesigner.OnCopyMenuClick(Sender: TObject);
 begin
   CopySelection;
@@ -2671,6 +2680,13 @@ begin
     OnClick:=@OnViewLFMMenuClick;
   end;
   FPopupMenu.Items.Add(fViewLFMMenuItem);
+
+  fSaveAsXMLMenuItem:=TMenuItem.Create(FPopupMenu);
+  with fSaveAsXMLMenuItem do begin
+    Caption:= fdmSaveFormAsXML;
+    OnClick:=@OnSaveAsXMLMenuClick;
+  end;
+  FPopupMenu.Items.Add(fSaveAsXMLMenuItem);
 
   AddSeparator;
   
