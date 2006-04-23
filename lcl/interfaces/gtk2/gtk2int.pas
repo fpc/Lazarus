@@ -134,6 +134,10 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
   {$EndIf}
 {$EndIf}
 
+var
+  GTK2WidgetSet: TGTK2WidgetSet absolute GtkWidgetSet;
+
+
 implementation
   
 uses

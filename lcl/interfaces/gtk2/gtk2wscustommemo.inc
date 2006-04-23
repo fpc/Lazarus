@@ -1,3 +1,5 @@
+{%MainUnit gtk2wsstdctrls.pp}
+
 { Callbacks }
 
 procedure Gtk2WS_MemoChanged( AGtkTextBuffer: PGtkTextBuffer; WidgetInfo: PWidgetInfo); cdecl;
@@ -114,7 +116,6 @@ begin
   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget),
                                      GTK_POLICY_AUTOMATIC,
                                      GTK_POLICY_AUTOMATIC);
-  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget),GTK_SHADOW_IN);
   SetMainWidget(Widget, TempWidget);
   GetWidgetInfo(Widget, True)^.CoreWidget := TempWidget;
 
@@ -137,4 +138,36 @@ begin
   TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
   Result := TGtk2MemoStrings.Create(TextView, ACustomMemo);
 end;
+
+
+procedure TGtk2WSCustomMemo.SetColor(const AWinControl: TWinControl);
+var
+  AWidget : PGTKWidget;
+begin
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  AWidget:=GetWidgetInfo(AWidget, True)^.CoreWidget;
+  Gtk2WidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
+
+end;
+
+procedure TGtk2WSCustomMemo.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  AWidget: PGTKWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  AWidget:= PGtkWidget(AWinControl.Handle);
+  AWidget:= GetWidgetInfo(AWidget, true)^.CoreWidget;
+
+  if AWidget<>nil then begin
+    Gtk2WidgetSet.SetWidgetColor(AWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+        GTK_STYLE_TEXT]);
+    Gtk2WidgetSet.SetWidgetFont(AWidget, AFont);
+  end;
+end;
+
+
 

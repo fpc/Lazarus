@@ -36,7 +36,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, LMessages,
 ////////////////////////////////////////////////////
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  glib2,  gdk2, gtk2, Pango,
   WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef, LCLProc,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
@@ -72,6 +72,7 @@ type
   private
   protected
   public
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
   end;
 
   { TGtk2WSComboBox }
@@ -131,6 +132,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+    class procedure SetColor(const AWinControl: TWinControl);override;
+    class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont);override;
   end;
 
   { TGtk2WSEdit }
@@ -584,6 +587,27 @@ begin
   Result :=  ABS(Entry^.current_pos - Entry^.selection_bound);
 end;
 
+
+
+procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  AWidget: PGTKWidget;
+  EntryWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  AWidget:= PGtkWidget(AWinControl.Handle);
+  EntryWidget:=PGtkCombo(AWidget)^.entry;
+
+  if EntryWidget<>nil then begin
+    Gtk2WidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_TEXT]);
+    Gtk2WidgetSet.SetWidgetFont(EntryWidget, AFont);
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -595,7 +619,7 @@ initialization
 //  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtk2WSComboBox);
   RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtk2WSListBox);
