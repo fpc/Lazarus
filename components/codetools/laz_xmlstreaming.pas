@@ -420,12 +420,12 @@ function TXMLObjectReader.ReadNextValue(Stay: Boolean): TValueType;
 
   procedure RaiseUnknownNode(Node: TDOMNode);
   begin
-    raise EReadError.Create('TXMLObjectReader: unknown node '+Node.NodeName);
+    raise EReadError.Create('TXMLObjectReader: unknown node "'+Node.NodeName+'"');
   end;
 
   procedure RaiseUnknownParentNode(Node: TDOMNode);
   begin
-    raise EReadError.Create('TXMLObjectReader: unknown parent node '+Node.NodeName);
+    raise EReadError.Create('TXMLObjectReader: unknown parent node "'+Node.NodeName+'" Element="'+FElement.NodeName+'"');
   end;
   
   procedure RaiseInvalidElementPosition;
@@ -435,7 +435,36 @@ function TXMLObjectReader.ReadNextValue(Stay: Boolean): TValueType;
   
   procedure RaiseNodeNotFound(const NodeName: string);
   begin
-    raise EReadError.Create('TXMLObjectReader: invalid Node='+FElement.NodeName);
+    raise EReadError.Create('TXMLObjectReader: expected "'+NodeName+'", but found "'+FElement.NodeName+'"');
+  end;
+  
+  procedure CheckNode(const NodeName: string);
+  begin
+    if FElement.NodeName<>NodeName then
+      RaiseNodeNotFound(NodeName);
+  end;
+  
+  procedure GoToNextComponent;
+  begin
+    FElement:=FElement.ParentNode as TDOMElement;
+    CheckNode('component');
+    FElementPosition:=0;
+    if FElement.NextSibling is TDOMElement then begin
+      // go to next component
+      writeln('TXMLObjectReader.ReadNextValue properties: next component');
+      FElement:=TDOMElement(FElement.NextSibling);
+      CheckNode('component');
+    end else begin
+      // end of children list
+      if FElement.ParentNode.NodeName='children' then begin
+        writeln('TXMLObjectReader.ReadNextValue end of children list');
+        FElement:=FElement.ParentNode as TDOMElement;
+        FElementPosition:=1;
+      end else begin
+        writeln('TXMLObjectReader.ReadNextValue END reading');
+        FElement:=nil;
+      end;
+    end;
   end;
 
 var
@@ -443,10 +472,49 @@ var
   CurInt64: Int64;
 begin
   writeln('TXMLObjectReader.ReadNextValue Stay=',Stay,' Element=',FElement.NodeName,' Pos=',FElementPosition);
-  if FElement.NodeName='properties' then begin
-    // FElement is at end of property list
+  
+  if FElement.NodeName='component' then begin
+    writeln('TXMLObjectReader.ReadNextValue is start of component');
+    Result:=vaString;
+    if not Stay then begin
+      // here a BeginComponent shoud be called, not ReadValue
+      RaiseUnknownNode(FElement);
+    end;
+  end
+  else if FElement.NodeName='properties' then begin
+    // FElement is at end of property list or non existing children list
+    // 0: end of property list
+    // 1: end of non existing children list
     writeln('TXMLObjectReader.ReadNextValue FElement is at end of property list');
     Result:=vaNull;
+    if not Stay then begin
+      if FElement.NextSibling is TDOMElement then begin
+        // leave properties and go to first child component
+        writeln('TXMLObjectReader.ReadNextValue properties: children');
+        FElement:=TDOMElement(FElement.NextSibling);
+        FElementPosition:=0;
+        CheckNode('children');
+        if not (FElement.FirstChild is TDOMElement) then
+          RaiseUnknownNode(FElement);
+        FElement:=TDOMElement(FElement.FirstChild);
+      end else begin
+        // there is no children list behind the properties -> simulate it
+        if FElementPosition=0 then begin
+          inc(FElementPosition);
+        end else begin
+          // children has been simulated -> now go to next component
+          GoToNextComponent;
+        end;
+      end;
+    end;
+  end
+  else if FElement.NodeName='children' then begin
+    // end of children list
+    writeln('TXMLObjectReader.ReadNextValue End of children list');
+    Result:=vaNull;
+    if not Stay then begin
+      GoToNextComponent;
+    end;
   end
   else if FElement.NodeName='list' then begin
     // FElement is a list element
@@ -555,13 +623,11 @@ begin
             begin
               // go to node 'collection'
               FElement:=FElement.FirstChild as TDOMElement;
-              if FElement.NodeName<>'collection' then
-                RaiseNodeNotFound('collection');
+              CheckNode('collection');
               FElementPosition:=0;
               // go to node 'list'
               FElement:=FElement.FirstChild as TDOMElement;
-              if FElement.NodeName<>'list' then
-                RaiseNodeNotFound('list');
+              CheckNode('list');
             end;
           end;
         end;
@@ -704,7 +770,10 @@ var
 begin
   writeln('TXMLObjectReader.BeginComponent START');
   
-  ComponentNode:=FElement.FindNode('component');
+  if FElement.NodeName='component' then
+    ComponentNode:=FElement
+  else
+    ComponentNode:=FElement.FindNode('component');
   if ComponentNode=nil then
     raise Exception.Create('component node not found');
   if not (ComponentNode is TDOMElement) then

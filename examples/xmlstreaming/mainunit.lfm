@@ -13,50 +13,41 @@ object StreamAsXMLForm: TStreamAsXMLForm
   Width = 493
   object SourceGroupBox: TGroupBox
     Caption = 'SourceGroupBox'
-    ClientHeight = 133
-    ClientWidth = 271
+    ClientHeight = 173
+    ClientWidth = 465
     TabOrder = 0
     Left = 16
-    Height = 150
+    Height = 190
     Top = 16
-    Width = 275
+    Width = 469
     object Button1: TButton
       BorderSpacing.InnerBorder = 2
       Caption = 'Button1'
       TabOrder = 0
-      Left = 33
+      Left = 12
       Height = 25
-      Top = 15
+      Top = 14
       Width = 75
     end
-    object GroupBox2: TGroupBox
-      Caption = 'GroupBox2'
-      ClientHeight = 80
-      ClientWidth = 128
+    object DemoGroupBox: TGroupBox
+      Caption = 'DemoGroupBox'
+      ClientHeight = 150
+      ClientWidth = 353
       TabOrder = 1
-      Left = 123
-      Height = 97
-      Top = 17
-      Width = 132
-      object Button2: TButton
-        BorderSpacing.InnerBorder = 2
-        Caption = 'Button2'
-        TabOrder = 0
-        Left = 27
-        Height = 25
-        Top = 21
-        Width = 75
-      end
+      Left = 97
+      Height = 167
+      Top = -1
+      Width = 357
     end
   end
   object DestinationGroupBox: TGroupBox
     Caption = 'DestinationGroupBox'
-    ClientHeight = 143
-    ClientWidth = 267
+    ClientHeight = 203
+    ClientWidth = 467
     TabOrder = 1
-    Left = 20
-    Height = 160
+    Left = 16
+    Height = 220
     Top = 210
-    Width = 271
+    Width = 471
   end
 end

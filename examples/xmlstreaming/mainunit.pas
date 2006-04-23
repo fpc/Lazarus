@@ -56,9 +56,8 @@ type
 
   TStreamAsXMLForm = class(TForm)
     Button1: TButton;
-    Button2: TButton;
     SourceGroupBox: TGroupBox;
-    GroupBox2: TGroupBox;
+    DemoGroupBox: TGroupBox;
     DestinationGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
   private
@@ -155,6 +154,7 @@ begin
   DestroyDriver:=false;
   try
     Reader:=CreateXMLReader(XMLConfig.Document,Path,DestroyDriver);
+    Reader.OnFindComponentClass:=OnFindComponentClass;
 
     // get root class
     AClassName:=(Reader.Driver as TXMLObjectReader).GetRootClassName(IsInherited);
@@ -194,6 +194,8 @@ end;
 procedure TStreamAsXMLForm.FormCreate(Sender: TObject);
 var
   MySubComponent: TMyComponent;
+  DemoGroupBox_1: TGroupBox;
+  DemoGroupBox_2: TGroupBox;
 begin
   Filename:='test.xml';
 
@@ -204,6 +206,40 @@ begin
   MySubComponent:=TMyComponent.Create(MyComponent);
   with MySubComponent do begin
     Name:='MySubComponent';
+  end;
+  
+  // create nested controls
+  DemoGroupBox_1:=TGroupBox.Create(DemoGroupBox);
+  with DemoGroupBox_1 do begin
+    Name:='DemoGroupBox_1';
+    Parent:=DemoGroupBox;
+    SetBounds(5,5,150,150);
+    with TButton.Create(DemoGroupBox) do begin
+      Name:='Button1';
+      Parent:=DemoGroupBox_1;
+      SetBounds(10,20,80,30);
+    end;
+    with TButton.Create(DemoGroupBox) do begin
+      Name:='Button2';
+      Parent:=DemoGroupBox_1;
+      SetBounds(10,60,80,20);
+    end;
+  end;
+  DemoGroupBox_2:=TGroupBox.Create(DemoGroupBox);
+  with DemoGroupBox_2 do begin
+    Name:='DemoGroupBox_2';
+    Parent:=DemoGroupBox;
+    SetBounds(155,5,150,150);
+    with TButton.Create(DemoGroupBox) do begin
+      Name:='Button3';
+      Parent:=DemoGroupBox_2;
+      SetBounds(10,20,80,30);
+    end;
+    with TButton.Create(DemoGroupBox) do begin
+      Name:='Button4';
+      Parent:=DemoGroupBox_2;
+      SetBounds(10,60,80,20);
+    end;
   end;
 
   WriteComponents;
@@ -225,8 +261,8 @@ begin
   XMLConfig:=TXMLConfig.Create(Filename);
   try
     //WriteComponentToXMLConfig(XMLConfig,'Component',Self);
-    WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
-    //WriteComponentToXMLConfig(XMLConfig,'Component',GroupBox2);
+    //WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
+    WriteComponentToXMLConfig(XMLConfig,'Component',DemoGroupBox);
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -252,6 +288,8 @@ begin
       @OnFindComponentClass,DestinationGroupBox);
     if NewComponent is TMyComponent then
       TMyComponent(NewComponent).WriteDebugReport;
+    if NewComponent is TControl then
+      TControl(NewComponent).Parent:=DestinationGroupBox;
     XMLConfig.Flush;
   finally
     XMLConfig.Free;
@@ -272,6 +310,7 @@ begin
     ComponentClass:=TButton
   else if CompareText(AClassName,'TMyComponent')=0 then
     ComponentClass:=TMyComponent;
+  DebugLn('TStreamAsXMLForm.OnFindComponentClass ',AClassName,' ',dbgs(ComponentClass));
 end;
 
 { TMyComponent }
