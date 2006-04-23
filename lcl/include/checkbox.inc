@@ -144,7 +144,7 @@ end;
 
 Procedure TCheckbox.WMKeyDown(var Message : TLMKeyDown);
 begin
-  ControlState := ControlState -  [csClicked];
+  Exclude(FControlState, csClicked);
   Case Message.CharCode of
     32:
       begin

@@ -2199,14 +2199,6 @@ var
         Flags := 4;
       end;
     end;
-    if parser.TokenSymbolIs('OBJECT') then
-      Flags :=0 { IsInherited := False }
-    else if parser.TokenSymbolIs('INHERITED') then
-      Flags := 1 { IsInherited := True; }
-    else begin
-      parser.CheckTokenSymbol('INLINE');
-      Flags := 4;
-    end;
     parser.NextToken;
     parser.CheckToken(toSymbol);
     ObjectName := '';

@@ -915,6 +915,8 @@ type
     FAsyncCallQueue: PAsyncCallQueueItem;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
+    FLastMousePos : TPoint;
+    FLastMouseControl : tControl;
     procedure DoOnIdleEnd;
     function GetCurrentHelpFile: string;
     function GetExename: String;

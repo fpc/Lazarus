@@ -407,9 +407,15 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
-  Result := FindControlAtPosition(P, True);
+  if (P.X=FLastMousePos.x) and (P.Y=FLastMousePos.Y) then Result:=FLastMouseControl
+  else    Result := FindControlAtPosition(P, True);
+  
   if (Result <> nil) and (csDesigning in Result.ComponentState) then
     Result := nil;
+  if Result<> nil then begin
+    FLastMousePos:=p;
+    FLastMouseControl:=Result;
+  end;
 end;
 
 procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions

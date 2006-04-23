@@ -230,7 +230,6 @@ begin
       AutoCalcVRange
     else
       AutoCalcHRange;
-    ControlUpdateScrollBars;
   end;
 end;
 
@@ -264,12 +263,13 @@ begin
         SBSize := OtherScrollbar.Size
       else
         SBSize := 0;
-      if Kind=sbVertical then
-        FAutoRange := (FRange - ClientHeight)
-                      *Shortint(FRange >= ClientHeight + SBSize)
-      else
-        FAutoRange := (FRange - ClientWidth)
-                      *Shortint(FRange >= ClientWidth + SBSize);
+      if Kind=sbVertical then begin
+        SBSize:=ClientHeight - SBSize;
+      end else begin
+        SBSize:=ClientWidth - SBSize;
+      end;
+      if (fRange>SBSize) and (SBSize>0) then   FAutoRange := (FRange - SBSize)
+                                        else   FAutoRange := 0;
       ScrollInfo.nMax := FRange;
 
       // visible

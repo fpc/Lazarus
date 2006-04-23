@@ -1805,7 +1805,7 @@ begin
   if csClicked in ControlState then
   begin
     Exclude(FControlState, csClicked);
-    //DebugLn('TControl.WMLButtonUp B ',ClientRect.Left,',',ClientRect.Top,',',ClientRect.Right,',',ClientRect.Bottom,' ',Message.Pos.X,',',Message.Pos.Y);
+    //DebugLn('TControl.WMLButtonUp B ',dbgs(ClientRect.Left),',',dbgs(ClientRect.Top),',',dbgs(ClientRect.Right),',',dbgs(ClientRect.Bottom),' ',dbgs(Message.Pos.X),',',dbgs(Message.Pos.Y));
     if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
     then begin
       //DebugLn('TControl.WMLButtonUp C');

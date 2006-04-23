@@ -2797,6 +2797,7 @@ end;
 function TWinControl.IsControlMouseMsg(var TheMessage: TLMMouse) : Boolean;
 var
   Control : TControl;
+  ScrolledOffset,
   P : TPoint;
   ClientBounds: TRect;
 begin
@@ -2817,8 +2818,10 @@ begin
   if Control <> nil then
   begin
     // map mouse coordinates to control
-    P.X := TheMessage.XPos - Control.Left;
-    P.Y := TheMessage.YPos - Control.Top;
+    ScrolledOffset:=GetClientScrollOffset;
+
+    P.X := TheMessage.XPos - Control.Left + ScrolledOffset.X;
+    P.Y := TheMessage.YPos - Control.Top + ScrolledOffset.Y;
     if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
     begin
       // map coordinates to client area of control
@@ -2950,7 +2953,7 @@ var
   P: TPoint;
   {$ENDIF}
 begin
-//DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
+  //DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
