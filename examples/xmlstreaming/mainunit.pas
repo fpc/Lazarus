@@ -50,6 +50,13 @@ type
     property MyEnum: TMyEnum read FMyEnum write FMyEnum;
     property MyCollection: TCollection read FMyCollection write FMyCollection;
   end;
+  
+  { TMyGroupBox }
+
+  TMyGroupBox = class(TGroupBox)
+  published
+    procedure AnEvent(Sender: TObject);
+  end;
 
 
   { TStreamAsXMLForm }
@@ -57,7 +64,6 @@ type
   TStreamAsXMLForm = class(TForm)
     Button1: TButton;
     SourceGroupBox: TGroupBox;
-    DemoGroupBox: TGroupBox;
     DestinationGroupBox: TGroupBox;
     procedure FormCreate(Sender: TObject);
   private
@@ -65,6 +71,8 @@ type
     procedure SetFilename(const AValue: string);
   public
     MyComponent: TMyComponent;
+    DemoGroupBox: TMyGroupBox;
+
     procedure WriteComponents;
     procedure ReadComponents;
     procedure OnFindComponentClass(Reader: TReader; const AClassName: string;
@@ -208,6 +216,14 @@ begin
     Name:='MySubComponent';
   end;
   
+  DemoGroupBox:=TMyGroupBox.Create(Self);
+  with DemoGroupBox do begin
+    Name:='DemoGroupBox';
+    SetBounds(100,2,320,180);
+    Parent:=SourceGroupBox;
+    OnClick:=@DemoGroupBox.AnEvent;
+  end;
+  
   // create nested controls
   DemoGroupBox_1:=TGroupBox.Create(DemoGroupBox);
   with DemoGroupBox_1 do begin
@@ -309,7 +325,9 @@ begin
   else if CompareText(AClassName,'TButton')=0 then
     ComponentClass:=TButton
   else if CompareText(AClassName,'TMyComponent')=0 then
-    ComponentClass:=TMyComponent;
+    ComponentClass:=TMyComponent
+  else if CompareText(AClassName,'TMyGroupBox')=0 then
+    ComponentClass:=TMyGroupBox;
   DebugLn('TStreamAsXMLForm.OnFindComponentClass ',AClassName,' ',dbgs(ComponentClass));
 end;
 
@@ -352,6 +370,13 @@ begin
     Item:=TMyCollectionItem(MyCollection.Items[i]);
     writeln('    ',i,' MyString=',Item.MyString);
   end;
+end;
+
+{ TMyGroupBox }
+
+procedure TMyGroupBox.AnEvent(Sender: TObject);
+begin
+
 end;
 
 initialization

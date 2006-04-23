@@ -694,6 +694,7 @@ type
     property Constraints;
     property Ctl3D;
     property Enabled;
+    property Font;
     property ItemIndex;
     property Items;
     property OnChangeBounds;
@@ -708,6 +709,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentFont;
     property ParentColor;
     property ParentCtl3D;
     property ParentShowHint;
@@ -782,6 +784,7 @@ type
     property Constraints;
     property Ctl3D;
     property Enabled;
+    property Font;
     property Items;
     property OnChangeBounds;
     property OnClick;
@@ -796,6 +799,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentFont;
     property ParentColor;
     property ParentCtl3D;
     property ParentShowHint;

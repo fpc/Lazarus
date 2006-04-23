@@ -10,10 +10,7 @@ LazarusResources.Add('TStreamAsXMLForm','FORMDATA',[
   +'TabOrder'#2#0#4'Left'#2#16#6'Height'#3#190#0#3'Top'#2#16#5'Width'#3#213#1#0
   +#7'TButton'#7'Button1'#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#7'Butt'
   +'on1'#8'TabOrder'#2#0#4'Left'#2#12#6'Height'#2#25#3'Top'#2#14#5'Width'#2'K'#0
-  +#0#9'TGroupBox'#12'DemoGroupBox'#7'Caption'#6#12'DemoGroupBox'#12'ClientHeig'
-  +'ht'#3#150#0#11'ClientWidth'#3'a'#1#8'TabOrder'#2#1#4'Left'#2'a'#6'Height'#3
-  +#167#0#3'Top'#2#255#5'Width'#3'e'#1#0#0#0#9'TGroupBox'#19'DestinationGroupBo'
-  +'x'#7'Caption'#6#19'DestinationGroupBox'#12'ClientHeight'#3#203#0#11'ClientW'
-  +'idth'#3#211#1#8'TabOrder'#2#1#4'Left'#2#16#6'Height'#3#220#0#3'Top'#3#210#0
-  +#5'Width'#3#215#1#0#0#0
+  +#0#0#9'TGroupBox'#19'DestinationGroupBox'#7'Caption'#6#19'DestinationGroupBo'
+  +'x'#12'ClientHeight'#3#203#0#11'ClientWidth'#3#211#1#8'TabOrder'#2#1#4'Left'
+  +#2#16#6'Height'#3#220#0#3'Top'#3#210#0#5'Width'#3#215#1#0#0#0
 ]);

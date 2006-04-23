@@ -29,16 +29,6 @@ object StreamAsXMLForm: TStreamAsXMLForm
       Top = 14
       Width = 75
     end
-    object DemoGroupBox: TGroupBox
-      Caption = 'DemoGroupBox'
-      ClientHeight = 150
-      ClientWidth = 353
-      TabOrder = 1
-      Left = 97
-      Height = 167
-      Top = -1
-      Width = 357
-    end
   end
   object DestinationGroupBox: TGroupBox
     Caption = 'DestinationGroupBox'

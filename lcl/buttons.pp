@@ -132,6 +132,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;

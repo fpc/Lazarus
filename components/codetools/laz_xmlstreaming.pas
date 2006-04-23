@@ -381,7 +381,7 @@ end;
 
 procedure TXMLObjectWriter.WriteMethodName(const Name: String);
 begin
-  GetPropertyElement('method-name')['value'] := Name;
+  GetPropertyElement('method')['value'] := Name;
 end;
 
 procedure TXMLObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
@@ -605,7 +605,9 @@ begin
             Result:=vaTrue
           else
             Result:=vaFalse;
-        end else if FElement.NodeName='set' then
+        end else if FElement.NodeName='method' then
+          Result:=vaIdent
+        else if FElement.NodeName='set' then
           Result:=vaSet
         else if FElement.NodeName='extended' then
           Result:=vaExtended
