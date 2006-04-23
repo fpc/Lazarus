@@ -78,6 +78,9 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+
 {    class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
@@ -182,6 +185,40 @@ end;
 class procedure TQtWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtMainWindow(AWinControl.Handle).Free;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.GetText
+  Params:  AWinControl     - the calling object
+           AText           - The Text
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  TQtWidget(AWinControl.Handle).WindowTitle(@Str);
+
+  AText := String(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.SetText
+  Params:  AWinControl     - the calling object
+           AText           - The Text
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomForm.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  Str: WideString;
+begin
+  Str := WideString(AText);
+
+  TQtWidget(AWinControl.Handle).SetWindowTitle(@Str);
 end;
 
 initialization
