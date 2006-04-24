@@ -108,7 +108,7 @@ begin
 
   // register messages
   AddFPCMessageHelpItem('Can''t find unit',
-                        'FPC_message:_Can%27t_find_unit',': Can''t find unit ');
+                        'FPC_message:_Can_not_find_unit',': Can''t find unit ');
 end;
 
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
