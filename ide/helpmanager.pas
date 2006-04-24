@@ -34,6 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
+  ExtCtrls, LResources,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
@@ -41,8 +42,7 @@ uses
   LazIDEIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf, ExtCtrls, LResources,
-  Interfaces;
+  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages;
 
 type
   { TIDEHelpDatabases }
@@ -364,6 +364,7 @@ begin
   CreateRTLHelpDB;
   CreateFCLHelpDB;
   CreateLCLHelpDB;
+  CreateFPCMessagesHelpDB;
 end;
 
 procedure THelpManager.RegisterDefaultIDEHelpViewers;
@@ -405,6 +406,7 @@ begin
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
   FreeThenNil(FLCLHelpDBPath);
+  FreeThenNil(FPCMessagesHelpDB);
   HelpBoss:=nil;
   inherited Destroy;
 end;

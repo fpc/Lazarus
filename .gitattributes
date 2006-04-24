@@ -1128,6 +1128,7 @@ ide/formeditor.pp svneol=native#text/pascal
 ide/frmsearch.lfm svneol=native#text/plain
 ide/frmsearch.lrs svneol=native#text/pascal
 ide/frmsearch.pas svneol=native#text/pascal
+ide/helpfpcmessages.pas svneol=native#text/plain
 ide/helpmanager.lfm svneol=native#text/plain
 ide/helpmanager.lrs svneol=native#text/plain
 ide/helpmanager.pas svneol=native#text/pascal
