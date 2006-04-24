@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
-  HelpIntf, HelpHTML;
+  ConfigStorage, HelpIntf, HelpHTML;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
@@ -50,9 +50,11 @@ type
 
   TFPCMessagesHelpDatabase = class(THTMLHelpDatabase)
   private
+    FFPCTranslationFile: string;
     FDefaultNode: THelpNode;
     FFoundComment: string;
     FLastMessage: string;
+    procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
   public
@@ -64,9 +66,14 @@ type
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
                       QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
+    procedure Load(Storage: TConfigStorage); override;
+    procedure Save(Storage: TConfigStorage); override;
     property DefaultNode: THelpNode read FDefaultNode;
     property LastMessage: string read FLastMessage write SetLastMessage;
     property FoundComment: string read FFoundComment write SetFoundComment;
+  published
+    property FPCTranslationFile: string read FFPCTranslationFile
+                                        write SetFPCTranslationFile;
   end;
 
 var
@@ -266,6 +273,12 @@ begin
   FFoundComment:=AValue;
 end;
 
+procedure TFPCMessagesHelpDatabase.SetFPCTranslationFile(const AValue: string);
+begin
+  if FFPCTranslationFile=AValue then exit;
+  FFPCTranslationFile:=AValue;
+end;
+
 procedure TFPCMessagesHelpDatabase.SetLastMessage(const AValue: string);
 begin
   if FLastMessage=AValue then exit;
@@ -301,9 +314,13 @@ begin
   IDEMacros.SubstituteMacros(Filename);
   //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage Filename="',Filename,'"');
   if (Filename<>'') then begin
-    // TODO: use the same language as the compiler
     Filename:=AppendPathDelim(Filename)
-              +SetDirSeparators('compiler/msg/errore.msg');
+              +SetDirSeparators('compiler/msg/');
+    // TODO: use the same language as the compiler
+    if FPCTranslationFile<>'' then
+      Filename:=Filename+FPCTranslationFile
+    else
+      Filename:=Filename+'errore.msg';
     if FileExists(Filename) then begin
       FoundComment:=FindFPCMessageComment(Filename,AMessage);
       if FoundComment<>'' then begin
@@ -329,6 +346,18 @@ begin
   end else begin
     Result:=inherited ShowHelp(Query, BaseNode, NewNode, QueryItem, ErrMsg);
   end;
+end;
+
+procedure TFPCMessagesHelpDatabase.Load(Storage: TConfigStorage);
+begin
+  inherited Load(Storage);
+  FPCTranslationFile:=Storage.GetValue('FPCTranslationFile/Value','');
+end;
+
+procedure TFPCMessagesHelpDatabase.Save(Storage: TConfigStorage);
+begin
+  inherited Save(Storage);
+  Storage.SetDeleteValue('FPCTranslationFile/Value',FPCTranslationFile,'');
 end;
 
 end.
