@@ -37,37 +37,298 @@ unit HelpFPCMessages;
 interface
 
 uses
-  Classes, SysUtils, HelpIntf, HelpHTML;
+  Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
+  HelpIntf, HelpHTML;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
+  lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/index.php/';
+
+type
+
+  { TFPCMessagesHelpDatabase }
+
+  TFPCMessagesHelpDatabase = class(THTMLHelpDatabase)
+  private
+    FDefaultNode: THelpNode;
+    FFoundComment: string;
+    FLastMessage: string;
+    procedure SetFoundComment(const AValue: string);
+    procedure SetLastMessage(const AValue: string);
+  public
+    constructor Create(TheID: THelpDatabaseID); override;
+    destructor Destroy; override;
+    function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
+                                var ListOfNodes: THelpNodeQueryList;
+                                var ErrMsg: string): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+                      QueryItem: THelpQueryItem;
+                      var ErrMsg: string): TShowHelpResult; override;
+    property DefaultNode: THelpNode read FDefaultNode;
+    property LastMessage: string read FLastMessage write SetLastMessage;
+    property FoundComment: string read FFoundComment write SetFoundComment;
+  end;
 
 var
   FPCMessagesHelpDB: THelpDatabase;
   
 procedure CreateFPCMessagesHelpDB;
+function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
+                               ): THelpDBIRegExprMessage;
+
+function FindFPCMessageComment(const CommentFile, Msg: string): string;
+procedure ParseFPCMessagesFile(Lines: TStrings;
+  const SearchMessage: string; var FoundComment: string);
 
 implementation
 
 procedure CreateFPCMessagesHelpDB;
 var
-  HTMLHelp: THTMLHelpDatabase;
+  FPCHelp: TFPCMessagesHelpDatabase;
   StartNode: THelpNode;
 begin
   FPCMessagesHelpDB:=HelpDatabases.CreateHelpDatabase(lihcFPCMessages,
-                                                      THTMLHelpDatabase,true);
-  HTMLHelp:=FPCMessagesHelpDB as THTMLHelpDatabase;
-
-  HTMLHelp.BasePathObject:=
-    THelpBasePathObject.Create('http://wiki.lazarus.freepascal.org/index.php/');
+                                                 TFPCMessagesHelpDatabase,true);
+  FPCHelp:=FPCMessagesHelpDB as TFPCMessagesHelpDatabase;
+  FPCHelp.DefaultBaseURL:=lihFPCMessagesURL;
 
   // HTML nodes
-  StartNode:=THelpNode.CreateURLID(HTMLHelp,'FreePascal Compiler messages',
+  StartNode:=THelpNode.CreateURLID(FPCHelp,'FreePascal Compiler messages',
           'file://Build_messages#FreePascal_Compiler_messages',lihcFPCMessages);
-  HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
-  HTMLHelp.RegisterItemWithNode(StartNode);
-  
-  
+  FPCHelp.TOCNode:=THelpNode.Create(FPCHelp,StartNode);// once as TOC
+  FPCHelp.RegisterItemWithNode(StartNode);// and once as normal page
+
+  // register messages
+  AddFPCMessageHelpItem('Can''t find unit',
+                        'FPC_message:_Can%27t_find_unit',': Can''t find unit ');
+end;
+
+function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
+  ): THelpDBIRegExprMessage;
+begin
+  Result:=THelpDBIRegExprMessage.Create(
+    THelpNode.CreateURL(FPCMessagesHelpDB,Title,'file://'+URL),
+    RegularExpression,'I');
+  FPCMessagesHelpDB.RegisterItem(Result);
+end;
+
+function FindFPCMessageComment(const CommentFile, Msg: string): string;
+var
+  sl: TStringList;
+begin
+  Result:='';
+  sl:=TStringList.Create;
+  try
+    sl.LoadFromFile(CommentFile);
+    ParseFPCMessagesFile(sl,Msg,Result);
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure ParseFPCMessagesFile(Lines: TStrings;
+  const SearchMessage: string; var FoundComment: string);
+var
+  i: integer;
+  Line: string;
+
+  procedure Error(const ErrMsg: string);
+  begin
+    raise Exception.Create('Line='+IntToStr(i+1)+': '+ErrMsg+' in "'+Line+'"');
+  end;
+
+  function CompareTextWithSearchMessage(const Command: string;
+    TypeStart, TxtStart: integer): boolean;
+  var
+    RegularExpression: String;
+    p: Integer;
+  begin
+    Result:=false;
+    RegularExpression:=copy(Command,TxtStart,length(Command));
+    // replace all $d variables with (.*)
+    p:=length(RegularExpression);
+    while (p>0) do begin
+      if (RegularExpression[p]='$') then begin
+        if (p<length(RegularExpression))
+        and (RegularExpression[p+1] in ['1'..'9']) then begin
+          RegularExpression:=copy(RegularExpression,1,p-1)+'(.*)'
+                           +copy(RegularExpression,p+2,length(RegularExpression));
+        end else begin
+          RegularExpression:=copy(RegularExpression,1,p-1)+'\'
+                           +copy(RegularExpression,p,length(RegularExpression));
+        end;
+      end;
+      dec(p);
+    end;
+    case Command[TypeStart] of
+    'F': RegularExpression:='Fatal: '+RegularExpression;
+    'E': RegularExpression:='Error: '+RegularExpression;
+    'N': RegularExpression:='Note: '+RegularExpression;
+    'I': RegularExpression:='Info: '+RegularExpression;
+    'H': RegularExpression:='Hint: '+RegularExpression;
+    end;
+
+    try
+      Result:=REMatches(SearchMessage,RegularExpression);
+    except
+      on E: Exception do begin
+        WriteLn('CompareTextWithSearchMessage RegExpr Error ',E.Message,' RegularExpression="'+RegularExpression+'"');
+        exit;
+      end;
+    end;
+    // debugging:
+    //if System.Pos('is assigned but never used',Command)>0 then WriteLn('CompareTextWithSearchMessage "',RegularExpression,'" Result=',Result);
+  end;
+
+var
+  EqualPos: LongInt;
+  Comment: String;
+  BracketLevel: Integer;
+  Command: String;
+  x: Integer;
+  PartStart: Integer;
+  TypeStart: LongInt;
+  TxtStart: LongInt;
+begin
+  FoundComment:='';
+  Comment:='';
+  Command:='';
+  BracketLevel:=0;
+  for i:=0 to Lines.Count-1 do begin
+    Line:=Lines[i];
+    if (Trim(Line)='') or (Line[1]='#') then continue;
+
+    // example:
+    // general_t_compilername=01000_T_Compiler: $1
+    // % When the \var{-vt} switch is used, this line tells you what compiler
+    // % is used.
+    if Line[1]='%' then begin
+      if BracketLevel>0 then
+        Error('unclosed bracket in lines before');
+      Comment:=Comment+copy(Line,2,length(Line));
+    end else begin
+      if BracketLevel=0 then begin
+        // end old message
+        if Command<>'' then begin
+          if CompareByte(Command[1],'option_',7)=0 then begin
+            // option
+          end else begin
+            EqualPos:=System.Pos('=',Command);
+            if EqualPos<1 then Error('missing =');
+            PartStart:=EqualPos+1;
+            TypeStart:=PartStart;
+            while (TypeStart<=length(Command)) and (Command[TypeStart]<>'_') do
+              inc(TypeStart);
+            if TypeStart=PartStart then Error('missing message type');
+            inc(TypeStart);
+            TxtStart:=TypeStart;
+            while (TxtStart<=length(Command)) and (Command[TxtStart]<>'_') do
+              inc(TxtStart);
+            if TxtStart=TypeStart then Error('missing message text');
+            inc(TxtStart);
+            if SearchMessage<>'' then begin
+              if CompareTextWithSearchMessage(Command,TypeStart,TxtStart) then
+              begin
+                FoundComment:=Trim(Comment);
+                exit;
+              end;
+            end;
+          end;
+        end;
+
+        // start a new message
+        Comment:='';
+        Command:=Line;
+      end else begin
+        // continue command
+        Command:=Command+Line;
+      end;
+      // update BracketLevel
+      for x:=1 to length(Line) do begin
+        case Line[x] of
+        '[': inc(BracketLevel);
+        ']':
+          if BracketLevel>0 then
+            dec(BracketLevel)
+          else
+            Error('closing a bracket, which was not opened.');
+        end;
+      end;
+    end;
+  end;
+end;
+
+{ TFPCMessagesHelpDatabase }
+
+procedure TFPCMessagesHelpDatabase.SetFoundComment(const AValue: string);
+begin
+  if FFoundComment=AValue then exit;
+  FFoundComment:=AValue;
+end;
+
+procedure TFPCMessagesHelpDatabase.SetLastMessage(const AValue: string);
+begin
+  if FLastMessage=AValue then exit;
+  FLastMessage:=AValue;
+end;
+
+constructor TFPCMessagesHelpDatabase.Create(TheID: THelpDatabaseID);
+begin
+  inherited Create(TheID);
+  FDefaultNode:=THelpNode.CreateURL(Self,'FPC messages: Appendix',
+     'http://lazarus-ccr.sourceforge.net/fpcdoc/user/userap3.html#x81-168000C');
+end;
+
+destructor TFPCMessagesHelpDatabase.Destroy;
+begin
+  FreeAndNil(FDefaultNode);
+  inherited Destroy;
+end;
+
+function TFPCMessagesHelpDatabase.GetNodesForMessage(const AMessage: string;
+  MessageParts: TStrings; var ListOfNodes: THelpNodeQueryList;
+  var ErrMsg: string): TShowHelpResult;
+var
+  Filename: String;
+begin
+  Result:=inherited GetNodesForMessage(AMessage, MessageParts, ListOfNodes,
+                                       ErrMsg);
+  if (ListOfNodes<>nil) and (ListOfNodes.Count>0) then exit;
+
+  // no node found -> add default node
+  LastMessage:=AMessage;
+  Filename:='$(FPCSrcDir)';
+  IDEMacros.SubstituteMacros(Filename);
+  //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage Filename="',Filename,'"');
+  if (Filename<>'') then begin
+    // TODO: use the same language as the compiler
+    Filename:=AppendPathDelim(Filename)
+              +SetDirSeparators('compiler/msg/errore.msg');
+    if FileExists(Filename) then begin
+      FoundComment:=FindFPCMessageComment(Filename,AMessage);
+      if FoundComment<>'' then begin
+        Result:=shrSuccess;
+        CreateNodeQueryListAndAdd(DefaultNode,nil,ListOfNodes,true);
+        //DebugLn('TFPCMessagesHelpDatabase.GetNodesForMessage ',FoundComment);
+      end;
+    end;
+  end;
+end;
+
+function TFPCMessagesHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+begin
+  if NewNode=DefaultNode then begin
+    if FoundComment<>'' then begin
+      Result:=shrSuccess;
+      MessageDlg('Help',FoundComment,mtInformation,[mbOk],0);
+    end else begin
+      Result:=shrHelpNotFound;
+    end;
+  end else begin
+    Result:=inherited ShowHelp(Query, BaseNode, NewNode, QueryItem, ErrMsg);
+  end;
 end;
 
 end.

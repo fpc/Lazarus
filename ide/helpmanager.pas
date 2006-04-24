@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  ExtCtrls, LResources,
+  ExtCtrls, LResources, FileUtil,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
@@ -243,6 +243,7 @@ begin
     Result:=TLazPackage(BasePathObject).Directory;
   if Result<>'' then
     IDEMacros.SubstituteMacros(Result);
+  Result:=AppendPathDelim(Result);
 end;
 
 function TIDEHelpDatabases.ShowHelpForSourcePosition(
@@ -286,8 +287,8 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     // HTML nodes for the IDE
     StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
                                      'file://docs/index.html',lihcStartPage);
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
-    HTMLHelp.RegisterItemWithNode(StartNode);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);// once as TOC
+    HTMLHelp.RegisterItemWithNode(StartNode);// and once as normal page
   end;
   
   procedure CreateRTLHelpDB;
@@ -307,9 +308,9 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'RTL - Free Pascal Run Time Library Units',
                    'file://index.html');
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/rtl',
-                                            '*.pp;*.pas',true);
+                                   '*.pp;*.pas',true);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -330,9 +331,9 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
-                                            '*.pp;*.pas',true);
+                                   '*.pp;*.pas',true);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -353,9 +354,9 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'LCL - Lazarus Component Library Units',
                    'file://index.html');
-    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
-                                            '*.pp;*.pas',false);
+                                  '*.pp;*.pas',false);// and once as normal page
     HTMLHelp.RegisterItem(DirItem);
   end;
 

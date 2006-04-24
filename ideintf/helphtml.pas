@@ -45,7 +45,7 @@ type
     function GetEffectiveBaseURL: string;
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
-    property DefaultBaseURL: string read FDefaultBaseURL write SetDefaultBaseURL;
+    property DefaultBaseURL: string read FDefaultBaseURL write SetDefaultBaseURL;// used, if BaseURL is empty
   published
     property BaseURL: string read FBaseURL write SetBaseURL stored IsBaseURLStored;
   end;
@@ -53,7 +53,7 @@ type
   
   { THTMLBrowserHelpViewer }
   
-  //TOnFindDefaultBrowser = procedure(var DefaultBrowser: string) of object;
+  TOnFindDefaultBrowser = procedure(var DefaultBrowser, Params: string) of object;
 
   THTMLBrowserHelpViewer = class(THelpViewer)
   private
@@ -88,10 +88,10 @@ procedure THTMLHelpDatabase.SetBaseURL(const AValue: string);
 begin
   if FBaseURL=AValue then exit;
   //debugln('THTMLHelpDatabase.SetBaseURL ',dbgsName(Self),' ',AValue);
-  if AValue<>'' then
-    FBaseURL:=AValue
+  if AValue=DefaultBaseURL then
+    FBaseURL:=''
   else
-    FBaseURL:=DefaultBaseURL;
+    FBaseURL:=AValue;
 end;
 
 procedure THTMLHelpDatabase.SetDefaultBaseURL(const AValue: string);
@@ -131,16 +131,20 @@ begin
 
   // make URL absolute
   SplitURL(URL,URLType,URLPath,URLParams);
-  debugln('THTMLHelpDatabase.ShowHelp A NewNode.URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+  debugln('THTMLHelpDatabase.ShowURL A NewNode.URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
 
   if URLType='file' then begin
     if not URLFilenameIsAbsolute(URLPath) then begin
       EffBaseURL:=GetEffectiveBaseURL;
-      SplitURL(EffBaseURL,BaseURLType,BaseURLPath,BaseURLParams);
-      if (BaseURLType='file') and (BaseURLPath<>'') then
-        URLPath:=BaseURLPath+URLPath;
+      //DebugLn('THTMLHelpDatabase.ShowURL file relative, making absolute ... EffBaseURL="',EffBaseURL,'"');
+      if EffBaseURL<>'' then begin
+        SplitURL(EffBaseURL,BaseURLType,BaseURLPath,BaseURLParams);
+        if (BaseURLPath<>'') then
+          URLPath:=BaseURLPath+URLPath;
+        URLType:=BaseURLType;
+      end;
     end;
-    if (not FileExists(URLPath)) then begin
+    if (URLType='file') and (not FileExists(URLPath)) then begin
       Result:=shrContextNotFound;
       ErrMsg:=Format(oisHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
         '"', '"', URLPath, '"']);
@@ -148,7 +152,7 @@ begin
     end;
   end;
   FullURL:=CombineURL(URLType,URLPath,URLParams);
-  debugln('THTMLHelpDatabase.ShowHelp B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+  debugln('THTMLHelpDatabase.ShowURL B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
 
   // call viewer
   Node:=nil;
@@ -179,12 +183,17 @@ begin
   Result:='';
   if BaseURL<>'' then begin
     Result:=BaseURL;
-    if (HelpDatabases<>nil) then
+    if (IDEMacros<>nil) then
       IDEMacros.SubstituteMacros(Result);
-    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL BaseURL="',Result,'"');
+    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using BaseURL="',Result,'"');
   end else if (BasePathObject<>nil) and (Databases<>nil) then begin
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
-    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL BasePathObject="',Result,'"');
+    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using BasePathObject="',Result,'"');
+  end else if DefaultBaseURL<>'' then begin
+    Result:=DefaultBaseURL;
+    if (IDEMacros<>nil) then
+      IDEMacros.SubstituteMacros(Result);
+    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using DefaultBaseURL="',Result,'"');
   end;
   if (Result<>'') and (Result[length(Result)]<>'/') then
     Result:=Result+'/';

@@ -659,7 +659,8 @@ type
   end;
   
   
-  { THelpBasePathObject }
+  { THelpBasePathObject
+    Simple class to store a base file path for help databases. }
   
   THelpBasePathObject = class(TPersistent)
   private
@@ -672,8 +673,19 @@ type
     property BasePath: string read FBasePath write SetBasePath;
   end;
   
-  TOnFindDefaultBrowser = procedure(var DefaultBrowser, Params: string) of object;
-  
+  { THelpBaseURLObject
+    Simple class to store a base URL path for help databases. }
+
+  THelpBaseURLObject = class(TPersistent)
+  private
+    FBaseURL: string;
+  protected
+    procedure SetBaseURL(const AValue: string);
+  public
+    constructor Create;
+    constructor Create(const TheBaseURL: string);
+    property BaseURL: string read FBaseURL write SetBaseURL;
+  end;
 
   { TBaseHelpManager }
 
@@ -746,9 +758,16 @@ function URLFilenameIsAbsolute(const Filename: string): boolean;
 function FindURLPathStart(const URL: string): integer;
 function FindURLPathEnd(const URL: string): integer;
 function ChompURLParams(const URL: string): string;
+function ExtractURLPath(const URL: string): string;
 function ExtractURLDirectory(const URL: string): string;
 function TrimUrl(const URL: string): string;
+function IsFileURL(const URL: string): boolean;
 
+procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
+  OnlyIfNotExists: boolean);
+procedure CreateNodeQueryListAndAdd(const ANode: THelpNode;
+  const QueryItem: THelpQueryItem;
+  var List: THelpNodeQueryList; OnlyIfNotExists: boolean);
 
 implementation
 
@@ -911,12 +930,7 @@ end;
 
 function URLFilenameIsAbsolute(const Filename: string): boolean;
 begin
-  {$warnings off}
-  if PathDelim='/' then
-    Result:=FilenameIsAbsolute(Filename)
-  else
-    Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
-  {$warnings on}
+  Result:=FilenameIsUnixAbsolute(Filename);
 end;
 
 function FindURLPathStart(const URL: string): integer;
@@ -973,6 +987,20 @@ var
 begin
   SplitURL(URL,URLType,URLPath,URLParams);
   Result:=CombineURL(URLType,TrimFilename(URLPath),URLParams);
+end;
+
+function IsFileURL(const URL: string): boolean;
+begin
+  Result:=(length(URL)>=7)
+          and (CompareByte(URL[1],'file://',7)=0);
+end;
+
+function ExtractURLPath(const URL: string): string;
+var
+  URLType, URLPath, URLParams: string;
+begin
+  SplitURL(URL,URLType,URLPath,URLParams);
+  Result:=URLPath;
 end;
 
 procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
@@ -1463,15 +1491,36 @@ end;
 function THelpDatabases.GetBaseURLForBasePathObject(BasePathObject: TObject
   ): string;
 begin
-  Result:=GetBaseDirectoryForBasePathObject(BasePathObject);
-  if Result='' then exit;
-  Result:=FilenameToURL(Result);
+  // this method will be overriden by the IDE
+  // provide some useful defaults:
+  if (BasePathObject is THelpBaseURLObject) then
+    Result:=THelpBaseURLObject(BasePathObject).BaseURL
+  else begin
+    // otherwise fetch a filename
+    Result:=GetBaseDirectoryForBasePathObject(BasePathObject);
+    if Result='' then exit;
+    Result:=FilenameToURL(Result);
+  end;
+  Result:=AppendPathDelim(Result);
 end;
 
-function THelpDatabases.GetBaseDirectoryForBasePathObject(BasePathObject: TObject
-  ): string;
+function THelpDatabases.GetBaseDirectoryForBasePathObject(
+  BasePathObject: TObject): string;
+// returns the base file directory of the BasePathObject
 begin
-  Result:='';
+  if (BasePathObject is THelpBaseURLObject) then begin
+    Result:=THelpBaseURLObject(BasePathObject).BaseURL;
+    if Result='' then exit;
+    if not IsFileURL(Result) then begin
+      Result:='';
+      exit;
+    end;
+    Result:=ExtractURLPath(Result);
+  end else if (BasePathObject is THelpBasePathObject) then
+    Result:=THelpBasePathObject(BasePathObject).BasePath
+  else
+    Result:='';
+  Result:=AppendPathDelim(Result);
 end;
 
 function THelpDatabases.ShowHelpForNodes(Query: THelpQuery;
@@ -2537,6 +2586,24 @@ end;
 function THelpQueryItem.IsEqual(QueryItem: THelpQueryItem): boolean;
 begin
   Result:=AsString=QueryItem.AsString;
+end;
+
+{ THelpBaseURLObject }
+
+procedure THelpBaseURLObject.SetBaseURL(const AValue: string);
+begin
+  if FBaseURL=AValue then exit;
+  FBaseURL:=AValue;
+end;
+
+constructor THelpBaseURLObject.Create;
+begin
+
+end;
+
+constructor THelpBaseURLObject.Create(const TheBaseURL: string);
+begin
+  BaseURL:=TheBaseURL;
 end;
 
 initialization
