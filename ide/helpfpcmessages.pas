@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
-  ConfigStorage, HelpIntf, HelpHTML;
+  LazarusIDEStrConsts, ConfigStorage, HelpIntf, HelpHTML;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
@@ -83,7 +83,8 @@ procedure CreateFPCMessagesHelpDB;
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
                                ): THelpDBIRegExprMessage;
 
-function FindFPCMessageComment(const CommentFile, Msg: string): string;
+function FindFPCMessageComment(const CommentFile, Msg: string;
+  ExtractText: boolean): string;
 procedure ParseFPCMessagesFile(Lines: TStrings;
   const SearchMessage: string; var FoundComment: string);
 
@@ -119,15 +120,48 @@ begin
   FPCMessagesHelpDB.RegisterItem(Result);
 end;
 
-function FindFPCMessageComment(const CommentFile, Msg: string): string;
+function FindFPCMessageComment(const CommentFile, Msg: string;
+  ExtractText: boolean): string;
 var
   sl: TStringList;
+  p: Integer;
+  TagStart: LongInt;
+  Level: Integer;
 begin
   Result:='';
   sl:=TStringList.Create;
   try
     sl.LoadFromFile(CommentFile);
     ParseFPCMessagesFile(sl,Msg,Result);
+    if ExtractText and (Result<>'') then begin
+      p:=1;
+      while (p<length(Result)) do begin
+        case Result[p] of
+        '\':
+          begin
+            TagStart:=p;
+            inc(p);
+            if (p<=length(Result)) and (Result[p]='\') then begin
+              inc(p);
+            end else begin
+              // remove tag
+              while (p<=length(Result)) and (Result[p] in ['a'..'z','A'..'Z'])
+              do
+                inc(p);
+              Result:=copy(Result,1,TagStart-1)+copy(Result,p,length(Result));
+              p:=TagStart;
+            end;
+          end;
+        '{','}':
+          begin
+            // remove brackets
+            Result:=copy(Result,1,p-1)+copy(Result,p+1,length(Result));
+          end;
+        else
+          inc(p);
+        end;
+      end;
+    end;
   finally
     sl.Free;
   end;
@@ -322,7 +356,7 @@ begin
     else
       Filename:=Filename+'errore.msg';
     if FileExists(Filename) then begin
-      FoundComment:=FindFPCMessageComment(Filename,AMessage);
+      FoundComment:=FindFPCMessageComment(Filename,AMessage,true);
       if FoundComment<>'' then begin
         Result:=shrSuccess;
         CreateNodeQueryListAndAdd(DefaultNode,nil,ListOfNodes,true);
@@ -339,7 +373,8 @@ begin
   if NewNode=DefaultNode then begin
     if FoundComment<>'' then begin
       Result:=shrSuccess;
-      MessageDlg('Help',FoundComment,mtInformation,[mbOk],0);
+      MessageDlg(lisHFMHelpForFreePascalCompilerMessage, FoundComment,
+                 mtInformation,[mbOk],0);
     end else begin
       Result:=shrHelpNotFound;
     end;

@@ -3023,6 +3023,8 @@ resourcestring
   lisDebugOptionsFrmHandledByDebugger = 'Handled by Debugger';
   lisDebugOptionsFrmResumeHandled = 'Resume Handled';
   lisDebugOptionsFrmResumeUnhandled = 'Resume Unhandled';
+  lisHFMHelpForFreePascalCompilerMessage = 'Help for FreePascal Compiler '
+    +'message';
 
 implementation
 end.
