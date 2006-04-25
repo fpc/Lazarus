@@ -449,7 +449,8 @@ end;
 function THelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
-  procedure FindHelpForFPCKeyWord(const KeyWord: string);
+  function ShowHelpForFPCKeyWord(const KeyWord: string): TShowHelpResult;
+  // true: help found
   var
     RefFilename: String;
     i: Integer;
@@ -459,6 +460,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     FileEndPos: LongInt;
     HTMLFilename: String;
   begin
+    Result:=shrHelpNotFound;
     if Keyword='' then exit;
     RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
     if (RefFilename='') then exit;
@@ -482,7 +484,9 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
           HTMLFilename:=copy(Line,FileStartPos,FileEndPos-FileStartPos);
           HTMLFilename:=AppendPathDelim(HelpOpts.FPCDocsHTMLDirectory)+'ref'
                         +PathDelim+HTMLFilename;
-
+          Result:=ShowHelpFileOrError(HTMLFilename,
+                              'FPC help for keyword "'+KeyWord+'"',
+                              'text/html');
           break;
         end;
       end;
@@ -491,19 +495,21 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     end;
   end;
   
-  procedure CollectKeyWords(CodeBuffer: TCodeBuffer);
+  function CollectKeyWords(CodeBuffer: TCodeBuffer): TShowHelpResult;
+  // true: help found
   var
     p: Integer;
     IdentStart, IdentEnd: integer;
     KeyWord: String;
   begin
+    Result:=shrHelpNotFound;
     p:=0;
     CodeBuffer.LineColToPosition(CodePos.Y,CodePos.X,p);
     if p<1 then exit;
     GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
     if IdentEnd<=IdentStart then exit;
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
-    FindHelpForFPCKeyWord(KeyWord);
+    Result:=ShowHelpForFPCKeyWord(KeyWord);
   end;
 
   function ConvertCodePosToPascalHelpContext(ACodePos: PCodeXYPosition
@@ -656,7 +662,8 @@ begin
   if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText]) then
     exit;
     
-  CollectKeyWords(CodeBuffer);
+  Result:=CollectKeyWords(CodeBuffer);
+  if Result=shrSuccess then exit;
   CollectDeclarations(CodeBuffer);
 end;
 

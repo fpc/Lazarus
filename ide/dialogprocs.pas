@@ -211,18 +211,14 @@ begin
   if sl=nil then
     sl:=TStringList.Create;
   try
-    try
-      sl.LoadFromFile(Filename);
-      Result:=mrOk;
-    except
-      on E: Exception do begin
-        MessageDlg('Error','Error loading '+ListTitle+' from'#13
-        +Filename+#13#13
-          +E.Message,mtError,[mbOk],0);
-      end;
+    sl.LoadFromFile(Filename);
+    Result:=mrOk;
+  except
+    on E: Exception do begin
+      MessageDlg('Error','Error loading '+ListTitle+' from'#13
+      +Filename+#13#13
+        +E.Message,mtError,[mbOk],0);
     end;
-  finally
-    sl.Free;
   end;
 end;
 

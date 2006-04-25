@@ -557,6 +557,8 @@ type
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual; abstract;
     function GetBaseURLForBasePathObject(BasePathObject: TObject): string; virtual;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; virtual;
+    function FindViewer(const MimeType: string; var ErrMsg: string;
+                        var Viewer: THelpViewer): TShowHelpResult; virtual;
   public
     // show help for ...
     function ShowHelpForNodes(Query: THelpQuery; Nodes: THelpNodeQueryList;
@@ -575,6 +577,8 @@ type
                                     var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForClass(Query: THelpQueryClass;
                               var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelp(const Filename, Title, MimeType: string;
+                      var ErrMsg: string): TShowHelpResult; virtual;
     // search registered items in all databases
     function GetNodesForKeyword(const HelpKeyword: string;
                                 var ListOfNodes: THelpNodeQueryList;
@@ -749,6 +753,12 @@ function ShowHelpForMessageLine(const MessageLine: string;
   MessageParts: TStrings; var ErrMsg: string): TShowHelpResult;
 function ShowHelpOrErrorForMessageLine(const MessageLine: string;
   MessageParts: TStrings): TShowHelpResult;
+  
+// view help
+function ShowHelpFile(const Filename, Title, MimeType: string;
+  var ErrMsg: string): TShowHelpResult;
+function ShowHelpFileOrError(const Filename, Title, MimeType: string
+  ): TShowHelpResult;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -872,6 +882,22 @@ var
 begin
   ErrMsg:='';
   Result:=ShowHelpForMessageLine(MessageLine,MessageParts,ErrMsg);
+  HelpDatabases.ShowError(Result,ErrMsg);
+end;
+
+function ShowHelpFile(const Filename, Title, MimeType: string;
+  var ErrMsg: string): TShowHelpResult;
+begin
+  Result:=HelpDatabases.ShowHelp(Filename,Title,MimeType,ErrMsg);
+end;
+
+function ShowHelpFileOrError(const Filename, Title, MimeType: string
+  ): TShowHelpResult;
+var
+  ErrMsg: String;
+begin
+  ErrMsg:='';
+  Result:=ShowHelpFile(Filename,Title,MimeType,ErrMsg);
   HelpDatabases.ShowError(Result,ErrMsg);
 end;
 
@@ -1523,6 +1549,26 @@ begin
   Result:=AppendPathDelim(Result);
 end;
 
+function THelpDatabases.FindViewer(const MimeType: string; var ErrMsg: string;
+  var Viewer: THelpViewer): TShowHelpResult;
+var
+  Viewers: TList;
+begin
+  Viewer:=nil;
+  Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
+  try
+    if (Viewers=nil) or (Viewers.Count=0) then begin
+      ErrMsg:='Did not find a viewer for help type "'+MimeType+'"';
+      Result:=shrViewerNotFound;
+    end else begin
+      Viewer:=THelpViewer(Viewers[0]);
+      Result:=shrSuccess;
+    end;
+  finally
+    Viewers.Free;
+  end;
+end;
+
 function THelpDatabases.ShowHelpForNodes(Query: THelpQuery;
   Nodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
 var
@@ -1748,6 +1794,27 @@ begin
     Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
     Nodes.Free;
+  end;
+end;
+
+function THelpDatabases.ShowHelp(const Filename, Title, MimeType: string;
+  var ErrMsg: string): TShowHelpResult;
+var
+  Viewer: THelpViewer;
+  Node: THelpNode;
+begin
+  ErrMsg:='';
+  // get a viewer for this file
+  Result:=FindViewer(MimeType,ErrMsg,Viewer);
+  if Result<>shrSuccess then exit;
+
+  // call viewer
+  Node:=nil;
+  try
+    Node:=THelpNode.CreateURL(nil,Title,FilenameToURL(Filename));
+    Result:=Viewer.ShowNode(Node,ErrMsg);
+  finally
+    Node.Free;
   end;
 end;
 
