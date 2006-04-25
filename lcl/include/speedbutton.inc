@@ -411,18 +411,16 @@ begin
   end;}
 
   // do not draw anything if flat and mouse not in control (simplified)
-  if transparent then begin
+  if Transparent then begin
     if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
       if MouseInControl then begin
 //      Canvas.GetUpdatedHandle([csBrushValid,csPenValid]);
        if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
                                                else xBevel := bvRaised;
-        canvas.Frame3D(PaintRect,1,xBevel);
+        Canvas.Frame3D(PaintRect,1,xBevel);
       end;
       InflateRect(PaintRect, -1, -1);
     end;
-    
-
   end else begin
     if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
@@ -499,9 +497,9 @@ begin
       TotalSize.cx:= GlyphWidth + S + TextSize.cx;
       TotalSize.cy:= GlyphHeight + S + TextSize.cy;
       if Layout in [blGlyphLeft, blGlyphRight] then
-        M:= (ClientSize.cx - TotalSize.cx + 1) div 2
+        M:= (ClientSize.cx - TotalSize.cx) div 2
       else
-        M:= (ClientSize.cy - TotalSize.cy + 1) div 2
+        M:= (ClientSize.cy - TotalSize.cy) div 2;
     end;
   end else begin
     if S = -1 then begin
@@ -510,34 +508,34 @@ begin
       if Layout in [blGlyphLeft, blGlyphRight] then
         S:= (TotalSize.cx - TextSize.cx) div 2
       else
-      	S:= (TotalSize.cy - TextSize.cy) div 2;
+        S:= (TotalSize.cy - TextSize.cy) div 2;
     end;
-    M:= Margin
+    M:= Margin;
   end;
 
   case Layout of
     blGlyphLeft : begin
       Offset.X:= M;
-      Offset.Y:= (ClientSize.cy - GlyphHeight + 1) div 2;
+      Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
       OffsetCap.X:= Offset.X + GlyphWidth + S;
       OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
     end;
     blGlyphRight : begin
       Offset.X:= ClientSize.cx - M - GlyphWidth;
-      Offset.Y:= (ClientSize.cy - GlyphHeight + 1) div 2;
+      Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
       OffsetCap.X:= Offset.X - S - TextSize.cx;
       OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
     end;
     blGlyphTop : begin
-      Offset.X:= (ClientSize.cx - GlyphWidth + 1) div 2;
+      Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
       Offset.Y:= M;
-      OffsetCap.X:= (ClientSize.cx - TextSize.cx + 1) div 2;
+      OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
       OffsetCap.Y:= Offset.Y + GlyphHeight + S;
     end;
     blGlyphBottom : begin
-      Offset.X:= (ClientSize.cx - GlyphWidth + 1) div 2;
+      Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
       Offset.Y:= ClientSize.cy - M - GlyphHeight;
-      OffsetCap.X:= (ClientSize.cx - TextSize.cx + 1) div 2;
+      OffsetCap.X:= (ClientSize.cx - TextSize.cx) div 2;
       OffsetCap.Y:= Offset.Y - S - TextSize.cy;
     end;
   end;
