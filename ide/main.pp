@@ -73,6 +73,7 @@ uses
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
   NewItemIntf, IDEMsgIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
+  IDEDialogs,
   // protocol
   IDEProtocol,
   // compile
@@ -297,6 +298,7 @@ type
                        var Key: word; Shift: TShiftState;
                        IDEWindowClass: TCustomFormClass);
     function OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
+    function OnSelectDirectory(const Title, InitialDir: string): string;
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
@@ -445,7 +447,7 @@ type
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender: TObject);
 
-    //SearchResultsView events
+    // SearchResultsView events
     procedure SearchResultsViewSelectionChanged(sender: TObject);
 
     // External Tools events
@@ -497,6 +499,7 @@ type
     procedure LoadMenuShortCuts; override;
     procedure ConnectMainBarEvents;
     procedure SetupSpeedButtons;
+    procedure SetupDialogs;
     procedure SetupComponentNoteBook;
     procedure SetupHints;
     procedure SetupOutputFilter;
@@ -1085,6 +1088,7 @@ begin
   SetupStandardIDEMenuItems;
   SetupMainMenu;
   SetupSpeedButtons;
+  SetupDialogs;
   SetupComponentNoteBook;
   ConnectMainBarEvents;
   
@@ -1416,6 +1420,11 @@ begin
   MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(OwningComponent);
   MainIDEBar.OpenFilePopupMenu.Name:='OpenFilePopupMenu';
   MainIDEBar.OpenFilePopupMenu.AutoPopup := False;
+end;
+
+procedure TMainIDE.SetupDialogs;
+begin
+  LazIDESelectDirectory:=@OnSelectDirectory;
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -2526,6 +2535,30 @@ function TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
 begin
   Result:=false;
   OnProcessIDECommand(Sender,Command,Result);
+end;
+
+function TMainIDE.OnSelectDirectory(const Title, InitialDir: string
+  ): string;
+var
+  Dialog: TSelectDirectoryDialog;
+  DummyResult: Boolean;
+begin
+  Result:='';
+  Dialog:=TSelectDirectoryDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(Dialog);
+    Dialog.Title:=Title;
+    Dialog.Options:=Dialog.Options+[ofFileMustExist];
+    if InitialDir<>'' then
+      Dialog.InitialDir:=InitialDir;
+    DummyResult:=Dialog.Execute;
+    InputHistories.StoreFileDialogSettings(Dialog);
+    if DummyResult and DirPathExists(Dialog.Filename) then begin
+      Result:=Dialog.Filename;
+    end;
+  finally
+    Dialog.Free;
+  end;
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;

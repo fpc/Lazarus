@@ -34,6 +34,7 @@ uses
   HelpHTML,
   HelpIntf,
   IDECommands,
+  IDEDialogs,
   IDEMsgIntf,
   IDEWindowIntf,
   ImageListEditor,

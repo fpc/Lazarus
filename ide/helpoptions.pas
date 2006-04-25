@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  ObjectInspector, HelpIntf, IDEWindowIntf, Laz_XMLCfg,
+  ObjectInspector, HelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
 
 type
@@ -70,12 +70,16 @@ type
   { THelpOptionsDialog }
 
   THelpOptionsDialog = class(TForm)
+    FPCDocHTMLBrowseButton: TButton;
+    FPCDocHTMLEdit: TEdit;
+    FPCDocHTMLLabel: TLabel;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     DataBasePage: TPage;
     DatabasesLabel: TLabel;
     DataBasesPropsGroupBox: TGroupBox;
     DatabasesListBox: TListBox;
+    GeneralPage: TPage;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
@@ -83,6 +87,7 @@ type
     ViewersPage: TPage;
     procedure CancelButtonClick(Sender: TObject);
     procedure DatabasesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FPCDocHTMLBrowseButtonClick(Sender: TObject);
     procedure HelpOptionsDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure HelpOptionsDialogCreate(Sender: TObject);
@@ -92,6 +97,7 @@ type
   public
     ViewersPropertiesGrid: TCustomPropertiesGrid;
     DatabasesPropertiesGrid: TCustomPropertiesGrid;
+    procedure FillGeneralPage;
     procedure FillViewersList;
     procedure FillViewerPropGrid;
     procedure FillDatabasesList;
@@ -131,6 +137,8 @@ begin
   Caption:=lisHlpOptsHelpOptions;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  GeneralPage.Caption:=lisMenuInsertGeneral;
+  FPCDocHTMLLabel.Caption:=lisHOFPCDocHTMLPath;
   ViewersPage.Caption:=lisHlpOptsViewers;
   ViewerPropsGroupBox.Caption:=lisHlpOptsProperties;
   ViewersLabel.Caption:=lisHlpOptsViewers;
@@ -152,6 +160,7 @@ begin
     Align:=alClient;
   end;
 
+  FillGeneralPage;
   FillViewersList;
   FillViewerPropGrid;
   FillDatabasesList;
@@ -160,6 +169,7 @@ end;
 
 procedure THelpOptionsDialog.OkButtonClick(Sender: TObject);
 begin
+  HelpOpts.FPCDocsHTMLDirectory:=FPCDocHTMLEdit.Text;
   ModalResult:=mrOk;
 end;
 
@@ -167,6 +177,11 @@ procedure THelpOptionsDialog.ViewersListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
   FillViewerPropGrid;
+end;
+
+procedure THelpOptionsDialog.FillGeneralPage;
+begin
+  FPCDocHTMLEdit.Text:=HelpOpts.FPCDocsHTMLDirectory;
 end;
 
 procedure THelpOptionsDialog.FillViewersList;
@@ -257,6 +272,15 @@ procedure THelpOptionsDialog.DatabasesListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
   FillDatabasesPropGrid;
+end;
+
+procedure THelpOptionsDialog.FPCDocHTMLBrowseButtonClick(Sender: TObject);
+var
+  NewFilename: String;
+begin
+  NewFilename:=LazSelectDirectory('FPC Doc HTML directory','');
+  if NewFilename='' then exit;
+  FPCDocHTMLEdit.Text:=NewFilename;
 end;
 
 { THelpOptions }

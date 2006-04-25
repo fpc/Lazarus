@@ -126,7 +126,6 @@ var
   sl: TStringList;
   p: Integer;
   TagStart: LongInt;
-  Level: Integer;
 begin
   Result:='';
   sl:=TStringList.Create;

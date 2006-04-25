@@ -452,9 +452,12 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
   procedure FindHelpForFPCKeyWord(const KeyWord: string);
   var
     RefFilename: String;
-    sl: TStringList;
     i: Integer;
     List: TStrings;
+    Line: string;
+    FileStartPos: Integer;
+    FileEndPos: LongInt;
+    HTMLFilename: String;
   begin
     if Keyword='' then exit;
     RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
@@ -466,7 +469,22 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
       if LoadStringListFromFile(RefFilename,'FPC keyword list',List)<>mrOk then
         exit;
       for i:=0 to List.Count-1 do begin
+        // example: integer=refsu5.html#keyword:integer
+        Line:=List[i];
+        if (length(Line)>length(KeyWord))
+        and (Line[length(KeyWord)+1]='=')
+        and (SysUtils.CompareText(KeyWord,copy(Line,1,length(KeyWord)))=0) then
+        begin
+          FileStartPos:=length(KeyWord)+2;
+          FileEndPos:=FileStartPos;
+          while (FileEndPos<=length(Line)) and (Line[FileEndPos]<>'#') do
+            inc(FileEndPos);
+          HTMLFilename:=copy(Line,FileStartPos,FileEndPos-FileStartPos);
+          HTMLFilename:=AppendPathDelim(HelpOpts.FPCDocsHTMLDirectory)+'ref'
+                        +PathDelim+HTMLFilename;
 
+          break;
+        end;
       end;
     finally
       List.Free;

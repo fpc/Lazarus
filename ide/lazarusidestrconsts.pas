@@ -2845,6 +2845,7 @@ resourcestring
   // Help Options
   lisHlpOptsHelpOptions = 'Help Options';
   lisHlpOptsViewers = 'Viewers';
+  lisHOFPCDocHTMLPath = 'FPC Doc HTML Path';
   lisHlpOptsProperties = 'Properties:';
   lisHlpOptsDatabases = 'Databases';
 
