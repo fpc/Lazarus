@@ -1289,6 +1289,7 @@ ideintf/helpfpdoc.pas svneol=native#text/pascal
 ideintf/helphtml.pas svneol=native#text/pascal
 ideintf/helpintf.pas svneol=native#text/pascal
 ideintf/idecommands.pas svneol=native#text/pascal
+ideintf/idedialogs.pas svneol=native#text/plain
 ideintf/idemsgintf.pas svneol=native#text/plain
 ideintf/idewindowintf.pas svneol=native#text/plain
 ideintf/imagelisteditor.lfm svneol=native#text/plain
