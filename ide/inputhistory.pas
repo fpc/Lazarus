@@ -153,7 +153,9 @@ type
     fifSearchProject, // search in all project files
     fifSearchOpen,    // search in all open files in editor
     fifSearchDirectories,// search in directories
-    fifIncludeSubDirs
+    fifIncludeSubDirs,
+    fifReplace,  // replace and ask user before each replace
+    fifReplaceAll // replace without asking user
     );
   TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
   
@@ -267,7 +269,9 @@ const
     'SearchProject',
     'SearchOpen',
     'SearchDirectories',
-    'IncludeSubDirs'
+    'IncludeSubDirs',
+    'Replace',
+    'ReplaceAll'
     );
 
 var

@@ -32,8 +32,8 @@ interface
 
 uses
   // LCL
-  Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
+  Classes, SysUtils, LCLProc, LResources, LCLType, LCLIntf, Forms, Controls,
+  Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
   // synedit, codetools
   SynRegExpr, SourceLog, KeywordFuncLists,
   // ide
@@ -57,26 +57,26 @@ type
     procedure SearchFormDESTROY(Sender: TObject);
     procedure btnAbortCLICK(Sender: TObject);
   private
-    { Private declarations }
-    fSearchFor: String;
-    fWholeWord: Boolean;
-    fCaseSensitive: Boolean;
-    fRegExp: Boolean;
-    fTheDirectory: string;
-    fmask: string;
-    frecursive: boolean;
-    fParsedMasks: TStringList; //Holds the parsed masks.
-    fMatches: longint;
     fAbort: boolean;
-    fAbortString: string;
     fAborting: boolean;
-    fSearchProject: boolean;
-    fSearchOpen: boolean;
-    fSearchFileList: TStringList;
-    fSearchFiles: boolean;
+    fAbortString: string;
+    fCaseSensitive: Boolean;
+    fmask: string;
+    fMatches: longint;
+    fPad: string;
+    fParsedMasks: TStringList; //Holds the parsed masks.
+    frecursive: boolean;
+    fRegExp: Boolean;
+    FReplaceText: string;
     fResultsList: TStrings;
     fResultsWindow: integer;
-    fPad: string;
+    fSearchFileList: TStringList;
+    fSearchFiles: boolean;
+    fSearchFor: String;
+    fSearchOpen: boolean;
+    fSearchProject: boolean;
+    fTheDirectory: string;
+    fWholeWord: Boolean;
     procedure SearchFile(TheFileName: string);
     procedure DoFindInFiles(TheFileName: string);
     procedure DoFindInSearchList;
@@ -90,6 +90,7 @@ type
     Procedure DoSearch;
     property SearchDirectory: string read fTheDirectory write fTheDirectory;
     property SearchText: string read fSearchFor write fSearchFor;
+    property ReplaceText: string read FReplaceText write FReplaceText;
     property SearchOptions: TLazFindInFileSearchOptions read GetOptions
                                                         write SetOptions;
     property SearchFileList: TStringList read fSearchFileList
@@ -189,7 +190,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     WhiteSpaceChars = [' ',#10,#13,#9];
 
   function SearchInLine(const SearchStr: string; SrcLog: TSourceLog;
-    LineNumber: integer; WholeWords: boolean;
+    LineNumber: integer; WholeWords: boolean; StartInLine: integer;
     var MatchStartInLine: integer): boolean;
   // search SearchStr in SrcLog line
   // returns MatchStartInLine=1 for start of line
@@ -212,7 +213,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     Src:=SrcLog.Source;
     SearchLen:=length(SearchStr);
     LineStartPos:=@Src[LineRange.StartPos];
-    StartPos:=LineStartPos;
+    StartPos:=LineStartPos+StartInLine-1;
     EndPos:=@Src[LineRange.EndPos-SearchLen+1];
     FirstChar:=SearchStr[1];
     while (StartPos<EndPos) do begin
@@ -261,22 +262,36 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     dec(APosition,StartPos-1);
     Result:=copy(Line,StartPos,EndPos-StartPos);
   end;
+  
+  procedure DoReplaceLine;
+  begin
+
+  end;
 
 {Start SearchFile ============================================================}
 var
   ThisFile: TSourceLog;   //The original File being searched
   UpperFile: TSourceLog;  //The working File being searched
-  Lines:      integer;    //Loop Counter
+  Line:      integer;    //Loop Counter
   Match:      integer;    //Position of match in line.
   TempSearch: string;     //Temp Storage for the search string.
   MatchLen: integer;
   CurLine: String;
   RE: TRegExpr;
   Found: Boolean;
+  TrimmedMatch: LongInt;
+  LastMatchStart: LongInt;
+  LastMatchEnd: Integer;
+  WorkLine: String;
+  TrimmedCurLine: String;
+  Replace: boolean;
+  SearchAllHitsInLine: boolean;
 begin
   ThisFile:=nil;
   UpperFile:=nil;
   RE:=nil;
+  Replace:=[fifReplace,fifReplaceAll]*SearchOptions<>[];
+  SearchAllHitsInLine:=Replace;
   fResultsList.BeginUpdate;
   try
     MatchLen:= Length(fSearchFor);
@@ -304,31 +319,56 @@ begin
 
     //writeln('TheFileName=',TheFileName,' len=',ThisFile.SourceLength,' Cnt=',ThisFile.LineCount,' TempSearch=',TempSearch);
     Application.ProcessMessages;
-    for Lines:= 0 to ThisFile.LineCount -1 do
+    CurLine:='';
+    for Line:= 0 to ThisFile.LineCount -1 do
     begin
-      if (Lines and $ff)=$ff then
+      if (Line and $fff)=0 then
         Application.ProcessMessages;
-      Found:=false;
-      if fRegExp then begin
-        // search every line for regular expression
-        CurLine:=ThisFile.GetLine(Lines);
-        if RE.Exec(CurLine) then begin
-          Found:=true;
-          Match:= RE.MatchPos[0];
-          MatchLen:= Re.MatchLen[0];
+      Match:=1;
+      MatchLen:=0;
+      repeat
+        LastMatchStart:=Match;
+        LastMatchEnd:=Match+MatchLen;
+        
+        // search
+        Found:=false;
+        if fRegExp then begin
+          // search every line for regular expression
+          if LastMatchStart=LastMatchEnd then begin
+            CurLine:=ThisFile.GetLine(Line);
+            WorkLine:=CurLine;
+          end else begin
+            WorkLine:=copy(CurLine,LastMatchEnd,length(CurLine));
+          end;
+          if RE.Exec(WorkLine) then begin
+            Found:=true;
+            Match:= RE.MatchPos[0]+LastMatchEnd-1;
+            MatchLen:= Re.MatchLen[0];
+          end;
+        end else begin
+          Found:=SearchInLine(TempSearch,UpperFile,Line,
+                              fWholeWord,LastMatchEnd,Match);
+          if Found then begin
+            CurLine:=ThisFile.GetLine(Line);
+            MatchLen:=length(TempSearch);
+          end;
         end;
-      end else begin
-        Found:=SearchInLine(TempSearch,UpperFile,Lines,fWholeWord,Match);
-        if Found then
-          CurLine:=ThisFile.GetLine(Lines);
-      end;
-      if Found then begin
-        CurLine:=TrimLineAndMatch(CurLine,Match);
-        SearchResultsView.AddMatch(fResultsWindow,
-                                   TheFileName,Point(Match,lines+1),
-                                   CurLine, Match, MatchLen);
-        UpdateMatches;
-      end;
+        
+        // add found place
+        if Found then begin
+          DebugLn('TSearchForm.SearchFile CurLine="',CurLine,'" Found=',dbgs(Found),' Match=',dbgs(Match),' MatchLen=',dbgs(MatchLen),' Line=',dbgs(Line));
+          if Replace then begin
+            DoReplaceLine;
+          end;
+          TrimmedMatch:=Match;
+          TrimmedCurLine:=TrimLineAndMatch(CurLine,TrimmedMatch);
+          SearchResultsView.AddMatch(fResultsWindow,
+                                     TheFileName,Point(Match,Line+1),
+                                     TrimmedCurLine, TrimmedMatch, MatchLen);
+          UpdateMatches;
+        end else
+          break;
+      until (not SearchAllHitsInLine) or (MatchLen<1);
       
       // check abort
       if fAbort and not fAborting then

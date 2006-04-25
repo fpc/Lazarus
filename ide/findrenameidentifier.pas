@@ -195,11 +195,12 @@ begin
     CodeToolBoss.GetIdentifierAt(DeclarationCode,
       DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
     // create a search result page
-    SearchPageIndex:=SearchResultsView.AddResult(
+    SearchPageIndex:=SearchResultsView.AddSearch(
       'References of '+Identifier,
       Identifier,
+      '',
       ExtractFilePath(DeclarationCode.Filename),
-      '*.pas;*.pp;*.inc',
+      '*.pas;*.pp;*.p;*.inc',
       [fifWholeWord,fifSearchDirectories]);
     if SearchPageIndex<0 then exit;
 

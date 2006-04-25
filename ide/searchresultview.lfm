@@ -6,7 +6,7 @@ object SearchResultsView: TSearchResultsView
   OnCreate = Form1Create
   OnDestroy = SearchResultsViewDestroy
   OnKeyDown = ListBoxKeyDown
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 798
   VertScrollBar.Page = 228

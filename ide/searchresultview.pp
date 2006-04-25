@@ -67,12 +67,14 @@ type
 
   TLazSearch = Class(TObject)
   private
+    FReplaceText: string;
     fSearchString: string;
     fSearchOptions: TLazFindInFileSearchOptions;
     fSearchDirectory: string;
     fSearchMask: string;
   public
     property SearchString: string read fSearchString write fSearchString;
+    property ReplaceText: string read FReplaceText write FReplaceText;
     property SearchOptions: TLazFindInFileSearchOptions read fSearchOptions
                                                         write fSearchOptions;
     property SearchDirectory: string read fSearchDirectory
@@ -109,7 +111,6 @@ type
     ResultsNoteBook: TNotebook;
     procedure Form1Create(Sender: TObject);
     procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ResultsNoteBookChangebounds(Sender: TObject);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchResultsViewDestroy(Sender: TObject);
     procedure btnSearchAgainClick(Sender: TObject);
@@ -121,6 +122,7 @@ type
     Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
+    FMaxItems: integer;
     function PageExists(const APageName: string): boolean;
     function GetPageIndex(const APageName: string): integer;
     function GetListBox(APageIndex: integer): TLazSearchResultLB;
@@ -131,9 +133,11 @@ type
       fOnSelectionChanged: TNotifyEvent;
       fListBoxFont: TFont;
       fMouseOverIndex: integer;
+      procedure SetMaxItems(const AValue: integer);
   public
-    function AddResult(const ResultsName: string;
+    function AddSearch(const ResultsName: string;
                        const SearchText: string;
+                       const ReplaceText: string;
                        const ADirectory: string;
                        const AMask: string;
                        const TheOptions: TLazFindInFileSearchOptions): integer;
@@ -152,6 +156,7 @@ type
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
+    property MaxItems: integer read FMaxItems write SetMaxItems;
   end; 
 
 var
@@ -168,12 +173,14 @@ procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   ALayout: TIDEWindowLayout;
 begin
+  FMaxItems:=10;
+  
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
 
   Caption:=lisMenuViewSearchResults;
   btnSearchAgain.Caption:=lisSearchAgain;
-    
+
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
                                           ItemByEnum(nmiwSearchResultsViewName);
@@ -187,11 +194,6 @@ begin
   ShowHint:= True;
   fMouseOverIndex:= -1;
 end;//Create
-
-procedure TSearchResultsView.ResultsNoteBookChangebounds(Sender: TObject);
-begin
-
-end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
 if the Item length is longer than the Listbox client width.}
@@ -237,6 +239,11 @@ begin
   CurrentLB:= GetListBox(AIndex);
   if Assigned(CurrentLB) then
   begin
+    if CurrentLB.UpdateState then begin
+      if CurrentLB.UpdateItems.Count>=MaxItems then exit;
+    end else begin
+      if CurrentLB.Items.Count>=MaxItems then exit;
+    end;
     SearchPos:= TLazSearchMatchPos.Create;
     SearchPos.MatchStart:= MatchStart;
     SearchPos.MatchLen:= MatchLen;
@@ -329,6 +336,12 @@ begin
   end;//if
 end;//GetItems
 
+procedure TSearchResultsView.SetMaxItems(const AValue: integer);
+begin
+  if FMaxItems=AValue then exit;
+  FMaxItems:=AValue;
+end;
+
 procedure TSearchResultsView.ResultsNoteBookCloseTabclicked(Sender: TObject);
 begin
   if (Sender is TPage) then
@@ -388,8 +401,9 @@ end;
 
 {Add Result will create a tab in the Results view window with an new
  list box or focus an existing listbox and update it's searchoptions.}
-function TSearchResultsView.AddResult(const ResultsName: string;
+function TSearchResultsView.AddSearch(const ResultsName: string;
   const SearchText: string;
+  const ReplaceText: string;
   const ADirectory: string;
   const AMask: string;
   const TheOptions: TLazFindInFileSearchOptions): integer;
@@ -397,6 +411,7 @@ var
   NewListBox: TLazSearchResultLB;
   NewPage: LongInt;
   i: integer;
+  SearchObj: TLazSearch;
 begin
   result:= -1;
   if Assigned(ResultsNoteBook) then
@@ -439,14 +454,15 @@ begin
         end;//if
       end;//else
     end;//with
-    with NewListBox.SearchObject do
-    begin
-      SearchString:= SearchText;
-      SearchDirectory:= ADirectory;
-      SearchMask:= AMask;
-      SearchOptions:= TheOptions;
-    end;//with
-    result:= ResultsNoteBook.PageIndex;
+    SearchObj:=NewListBox.SearchObject;
+    if SearchObj<>nil then begin
+      SearchObj.SearchString:= SearchText;
+      SearchObj.ReplaceText := ReplaceText;
+      SearchObj.SearchDirectory:= ADirectory;
+      SearchObj.SearchMask:= AMask;
+      SearchObj.SearchOptions:= TheOptions;
+    end;
+    Result:= ResultsNoteBook.PageIndex;
   end;//if
 end;//AddResult
 

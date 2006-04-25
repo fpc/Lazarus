@@ -31,6 +31,8 @@ type
   { TLazFindInFilesDialog }
 
   TLazFindInFilesDialog = class(TForm)
+    ReplaceCheckBox: TCheckBox;
+    ReplaceTextComboBox: TComboBox;
     IncludeSubDirsCheckBox: TCheckBox;
     FileMaskComboBox: TComboBox;
     DirectoryBrowse: TBitBtn;
@@ -47,18 +49,23 @@ type
     WhereRadioGroup: TRadioGroup;
     procedure DirectoryBrowseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ReplaceCheckBoxChange(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
-    procedure SetOptions(NewOptions: TLazFindInFileSearchOptions);
-    function GetOptions: TLazFindInFileSearchOptions;
-    function GetSynOptions: TSynSearchOptions;
-    procedure SetSynOptions(NewOptions: TSynSearchOptions);
   private
     function GetFindText: string;
+    function GetOptions: TLazFindInFileSearchOptions;
+    function GetReplaceText: string;
+    function GetSynOptions: TSynSearchOptions;
     procedure SetFindText(const NewFindText: string);
+    procedure SetOptions(NewOptions: TLazFindInFileSearchOptions);
+    procedure SetReplaceText(const AValue: string);
+    procedure SetSynOptions(NewOptions: TSynSearchOptions);
+    procedure UpdateReplaceCheck;
   public
     property Options: TLazFindInFileSearchOptions read GetOptions
                                                   write SetOptions;
     property FindText: string read GetFindText write SetFindText;
+    property ReplaceText: string read GetReplaceText write SetReplaceText;
     property SynSearchOptions: TSynSearchOptions read GetSynOptions
                                                  write SetSynOptions;
   end;
@@ -83,6 +90,11 @@ begin
   Result := TextToFindComboBox.Text;
 end;
 
+function TLazFindInFilesDialog.GetReplaceText: string;
+begin
+  Result:=ReplaceTextComboBox.Text;
+end;
+
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
   DirectoryOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = 2)
@@ -100,6 +112,7 @@ begin
   Caption := srkmecFindInFiles;
 
   TextToFindLabel.Caption := lisFindFileTextToFind;
+  ReplaceCheckBox.Caption := lisMenuReplace;
 
   OptionsCheckGroupBox.Caption := dlgFROpts;
   OptionsCheckGroupBox.Items[0] := lisFindFileCaseSensitive;
@@ -119,6 +132,13 @@ begin
 
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
+  
+  UpdateReplaceCheck;
+end;
+
+procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);
+begin
+  UpdateReplaceCheck;
 end;
 
 procedure TLazFindInFilesDialog.SetOptions(NewOptions: TLazFindInFileSearchOptions);
@@ -128,10 +148,13 @@ begin
   OptionsCheckGroupBox.Checked[2] := fifRegExpr in NewOptions;
   DirectoryOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
+  ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
   
   if fifSearchProject in NewOptions then WhereRadioGroup.ItemIndex := 0;
   if fifSearchOpen in NewOptions then WhereRadioGroup.ItemIndex := 1;
   if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex := 2;
+
+  UpdateReplaceCheck;
 end;
 
 function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
@@ -141,6 +164,7 @@ begin
   if OptionsCheckGroupBox.Checked[1] then Include(Result, fifWholeWord);
   if OptionsCheckGroupBox.Checked[2] then Include(Result, fifRegExpr);
   if IncludeSubDirsCheckBox.Checked then Include(Result, fifIncludeSubDirs);
+  if ReplaceCheckBox.Checked then Include(Result, fifReplace);
 
   case WhereRadioGroup.ItemIndex of
     0: Include(Result, fifSearchProject);
@@ -155,14 +179,32 @@ begin
   if OptionsCheckGroupBox.Checked[0] then Include(Result, ssoMatchCase);
   if OptionsCheckGroupBox.Checked[1] then Include(Result, ssoWholeWord);
   if OptionsCheckGroupBox.Checked[2] then Include(Result, ssoRegExpr);
+  if ReplaceCheckBox.Checked then Include(Result, ssoReplace);
 end;//GetSynOptions
+
+procedure TLazFindInFilesDialog.SetReplaceText(const AValue: string);
+begin
+  ReplaceTextComboBox.Text := AValue;
+end;
 
 procedure TLazFindInFilesDialog.SetSynOptions(NewOptions: TSynSearchOptions);
 begin
   OptionsCheckGroupBox.Checked[0] := ssoMatchCase in NewOptions;
   OptionsCheckGroupBox.Checked[1] := ssoWholeWord in NewOptions;
   OptionsCheckGroupBox.Checked[2] := ssoRegExpr in NewOptions;
+  ReplaceCheckBox.Checked := ([ssoReplace,ssoReplaceAll]*NewOptions <> []);
+
+  UpdateReplaceCheck;
 end;//SetSynOptions
+
+procedure TLazFindInFilesDialog.UpdateReplaceCheck;
+begin
+  ReplaceTextComboBox.Enabled:=ReplaceCheckBox.Checked;
+  if ReplaceCheckBox.Checked then
+    OKButton.Caption:=lisMenuReplace
+  else
+    OKButton.Caption:=lisMenuFind;
+end;
 
 initialization
   {$I findinfilesdlg.lrs}

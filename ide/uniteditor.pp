@@ -4138,6 +4138,7 @@ begin
     begin
       //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
       TextToFindComboBox.Items.Assign(FindHistory);
+      ReplaceTextComboBox.Items.Assign(ReplaceHistory);
       if not EditorOpts.FindTextAtCursor then begin
         if TextToFindComboBox.Items.Count>0 then begin
           //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
@@ -4214,11 +4215,12 @@ var
   ListIndex: integer;
 begin
   ShowSearchResultsView;
-  ListIndex:=SearchResultsView.AddResult(lisSearchFor+ASearchForm.SearchText,
-                                          ASearchForm.SearchText,
-                                          ASearchForm.SearchDirectory,
-                                          ASearchForm.SearchMask,
-                                          ASearchForm.SearchOptions);
+  ListIndex:=SearchResultsView.AddSearch(lisSearchFor+ASearchForm.SearchText,
+                                         ASearchForm.SearchText,
+                                         ASearchForm.ReplaceText,
+                                         ASearchForm.SearchDirectory,
+                                         ASearchForm.SearchMask,
+                                         ASearchForm.SearchOptions);
 
   try
     SearchResultsView.BeginUpdate(ListIndex);
@@ -4275,6 +4277,7 @@ begin
   begin
     SearchOptions:= ADialog.Options;
     SearchText:= ADialog.FindText;
+    ReplaceText:= ADialog.ReplaceText;
     SearchMask:= ADialog.FileMaskComboBox.Text;
     SearchDirectory:= ADialog.DirectoryComboBox.Text;
   end;//with
@@ -4321,9 +4324,9 @@ begin
     if FindInFilesDialog.FindText <>'' then
     begin
       case FindInFilesDialog.WhereRadioGroup.ItemIndex of
-        Integer(0): FIFSearchProject(AProject, FindInFilesDialog);
-        integer(1): FIFSearchOpenFiles(FindInFilesDialog);
-        integer(2): FIFSearchDir(FindInFilesDialog);
+        0: FIFSearchProject(AProject, FindInFilesDialog);
+        1: FIFSearchOpenFiles(FindInFilesDialog);
+        2: FIFSearchDir(FindInFilesDialog);
       end;
     end;
   end;
