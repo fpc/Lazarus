@@ -226,6 +226,7 @@ type
     property BorderSpacing;
     property Cancel;
     property Caption;
+    property Color;
     property Constraints;
     property Default;
     property Enabled;
@@ -353,6 +354,7 @@ type
     property BorderSpacing;
     property Constraints;
     property Caption;
+    property Color;
     property Down;
     property Enabled;
     property Flat;

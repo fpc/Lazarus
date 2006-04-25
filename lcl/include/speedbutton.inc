@@ -284,7 +284,9 @@ begin
     if FState in [bsDown, bsExclusive] then 
       inc(Result,DFCS_PUSHED);
     if not Enabled then
-      inc(Result,DFCS_INACTIVE);
+      inc(Result,DFCS_INACTIVE)
+    else if fMouseInControl then inc(Result,DFCS_CHECKED);
+      
   end;
 end;
 
@@ -386,7 +388,7 @@ var
   Flags,
   SIndex : Longint;
   TMP : String;
-  //xBevel :  tBevelCut;
+  xBevel :  tBevelCut;
 begin
   UpdateState(false);
   if FGlyph=nil then exit;
@@ -409,10 +411,24 @@ begin
   end;}
 
   // do not draw anything if flat and mouse not in control (simplified)
-  if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
-    DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-      PaintRect, DFC_BUTTON, FLastDrawFlags);
-     InflateRect(PaintRect, -1, -1);
+  if transparent then begin
+    if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
+      if MouseInControl then begin
+//      Canvas.GetUpdatedHandle([csBrushValid,csPenValid]);
+       if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
+                                               else xBevel := bvRaised;
+        canvas.Frame3D(PaintRect,1,xBevel);
+      end;
+      InflateRect(PaintRect, -1, -1);
+    end;
+    
+
+  end else begin
+    if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
+      DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+        PaintRect, DFC_BUTTON, FLastDrawFlags);
+       InflateRect(PaintRect, -1, -1);
+    end;
   end;
 
   //writeln('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
@@ -540,7 +556,7 @@ begin
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
     end;
-    //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
+    //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom,caption);
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
   end;
 

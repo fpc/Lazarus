@@ -232,6 +232,7 @@ begin
     if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FLastButtonDrawFlags and DFCS_FLAT = 0) then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
         PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
+      InflateRect(PaintRect, -1, -1);
     end;
 
     // draw dropdown button
