@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   ExtCtrls, LResources, FileUtil,
-  CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
+  BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
   HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
@@ -449,6 +449,45 @@ end;
 function THelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
+  procedure FindHelpForFPCKeyWord(const KeyWord: string);
+  var
+    RefFilename: String;
+    sl: TStringList;
+    i: Integer;
+    List: TStrings;
+  begin
+    if Keyword='' then exit;
+    RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
+    if (RefFilename='') then exit;
+    RefFilename:=AppendPathDelim(RefFilename)+'ref.kwd';
+    if not FileExists(RefFilename) then exit;
+    List:=nil;
+    try
+      if LoadStringListFromFile(RefFilename,'FPC keyword list',List)<>mrOk then
+        exit;
+      for i:=0 to List.Count-1 do begin
+
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+  
+  procedure CollectKeyWords(CodeBuffer: TCodeBuffer);
+  var
+    p: Integer;
+    IdentStart, IdentEnd: integer;
+    KeyWord: String;
+  begin
+    p:=0;
+    CodeBuffer.LineColToPosition(CodePos.Y,CodePos.X,p);
+    if p<1 then exit;
+    GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
+    if IdentEnd<=IdentStart then exit;
+    KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
+    FindHelpForFPCKeyWord(KeyWord);
+  end;
+
   function ConvertCodePosToPascalHelpContext(ACodePos: PCodeXYPosition
     ): TPascalHelpContextList;
     
@@ -539,14 +578,55 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     end;
     AddContextsBackwards(TCodeTool(Tool),Node);
   end;
-  
+
+  procedure CollectDeclarations(CodeBuffer: TCodeBuffer);
+  var
+    NewList: TPascalHelpContextList;
+    PascalHelpContextLists: TList;
+    ListOfPCodeXYPosition: TFPList;
+    CurCodePos: PCodeXYPosition;
+    i: Integer;
+  begin
+    ListOfPCodeXYPosition:=nil;
+    PascalHelpContextLists:=nil;
+    try
+      // get all possible declarations of this identifier
+      if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
+        ListOfPCodeXYPosition) then
+      begin
+        debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
+        // convert the source positions in pascal help context list
+        if ListOfPCodeXYPosition=nil then exit;
+        for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+          CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+          debugln('THelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));
+          NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
+          if NewList<>nil then begin
+            if PascalHelpContextLists=nil then
+              PascalHelpContextLists:=TList.Create;
+            PascalHelpContextLists.Add(NewList);
+          end;
+        end;
+        if PascalHelpContextLists=nil then exit;
+
+        // invoke help system
+        debugln('THelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
+        Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
+      end else begin
+        MainIDEInterface.DoJumpToCodeToolBossError;
+      end;
+    finally
+      FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      if PascalHelpContextLists<>nil then begin
+        for i:=0 to PascalHelpContextLists.Count-1 do
+          TObject(PascalHelpContextLists[i]).Free;
+        PascalHelpContextLists.Free;
+      end;
+    end;
+  end;
+
 var
   CodeBuffer: TCodeBuffer;
-  i: Integer;
-  CurCodePos: PCodeXYPosition;
-  ListOfPCodeXYPosition: TFPList;
-  PascalHelpContextLists: TList;
-  NewList: TPascalHelpContextList;
 begin
   debugln('THelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
   Result:=shrHelpNotFound;
@@ -557,42 +637,9 @@ begin
   // get code buffer for Filename
   if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText]) then
     exit;
-  ListOfPCodeXYPosition:=nil;
-  PascalHelpContextLists:=nil;
-  try
-    // get all possible declarations of this identifier
-    if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
-      ListOfPCodeXYPosition) then
-    begin
-      debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
-      // convert the source positions in pascal help context list
-      if ListOfPCodeXYPosition=nil then exit;
-      for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-        CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-        debugln('THelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));
-        NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
-        if NewList<>nil then begin
-          if PascalHelpContextLists=nil then
-            PascalHelpContextLists:=TList.Create;
-          PascalHelpContextLists.Add(NewList);
-        end;
-      end;
-      if PascalHelpContextLists=nil then exit;
-
-      // invoke help system
-      debugln('THelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
-      Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
-    end else begin
-      MainIDEInterface.DoJumpToCodeToolBossError;
-    end;
-  finally
-    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    if PascalHelpContextLists<>nil then begin
-      for i:=0 to PascalHelpContextLists.Count-1 do
-        TObject(PascalHelpContextLists[i]).Free;
-      PascalHelpContextLists.Free;
-    end;
-  end;
+    
+  CollectKeyWords(CodeBuffer);
+  CollectDeclarations(CodeBuffer);
 end;
 
 procedure THelpManager.ShowHelpForMessage(Line: integer);

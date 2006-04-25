@@ -46,6 +46,8 @@ type
   THelpOptions = class
   private
     FFilename: string;
+    FFPCDocsHTMLDirectory: string;
+    procedure SetFPCDocsHTMLDirectory(const AValue: string);
     procedure SetFilename(const AValue: string);
   public
     constructor Create;
@@ -59,6 +61,9 @@ type
     function CreateCopy: THelpOptions;
   public
     property Filename: string read FFilename write SetFilename;
+  published
+    property FPCDocsHTMLDirectory: string read FFPCDocsHTMLDirectory
+                                          write SetFPCDocsHTMLDirectory;
   end;
   
   
@@ -262,6 +267,12 @@ begin
   FFilename:=AValue;
 end;
 
+procedure THelpOptions.SetFPCDocsHTMLDirectory(const AValue: string);
+begin
+  if FFPCDocsHTMLDirectory=AValue then exit;
+  FFPCDocsHTMLDirectory:=AValue;
+end;
+
 constructor THelpOptions.Create;
 begin
   Clear;
@@ -289,6 +300,7 @@ begin
       FileVersion:=XMLConfig.GetValue('HelpOptions/Version/Value',0);
       if (FileVersion<>0) and (FileVersion<HelpOptionsVersion) then
         DebugLn('Note: Loading old Help options file', FFileName);
+      FPCDocsHTMLDirectory:=XMLConfig.GetValue('HelpOptions/FPCDocs/HTML/Directory','');
         
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
@@ -328,6 +340,8 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(FFileName);
     try
       XMLConfig.SetValue('HelpOptions/Version/Value',HelpOptionsVersion);
+      XMLConfig.SetDeleteValue('HelpOptions/FPCDocs/HTML/Directory',
+                               FPCDocsHTMLDirectory,'');
 
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');

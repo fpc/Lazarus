@@ -59,6 +59,8 @@ function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
 function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
                         Flags: TLoadBufferFlags): TModalResult;
 function SaveCodeBuffer(var ACodeBuffer: TCodeBuffer): TModalResult;
+function LoadStringListFromFile(const Filename, ListTitle: string;
+                                var sl: TStrings): TModalResult;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckFileIsWritable(const Filename: string;
@@ -200,6 +202,28 @@ begin
         mtError,[mbAbort,mbRetry,mbIgnore],0);
     end;
   until Result<>mrRetry;
+end;
+
+function LoadStringListFromFile(const Filename, ListTitle: string;
+  var sl: TStrings): TModalResult;
+begin
+  Result:=mrCancel;
+  if sl=nil then
+    sl:=TStringList.Create;
+  try
+    try
+      sl.LoadFromFile(Filename);
+      Result:=mrOk;
+    except
+      on E: Exception do begin
+        MessageDlg('Error','Error loading '+ListTitle+' from'#13
+        +Filename+#13#13
+          +E.Message,mtError,[mbOk],0);
+      end;
+    end;
+  finally
+    sl.Free;
+  end;
 end;
 
 function CreateEmptyFile(const Filename: string; ErrorButtons: TMsgDlgButtons
