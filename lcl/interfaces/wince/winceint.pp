@@ -168,6 +168,8 @@ type
     property ThemesActive: boolean read FThemesActive;//just for not removing all those refrences
   end;
 
+ {$I wincelistslh.inc}
+
 
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
@@ -239,13 +241,14 @@ var
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use ye
 
-
+{$I wincelistsl.inc}
 {$I wincecallback.inc}
 {$I winceobject.inc}
 {$I wincewinapi.inc}
 {$I wincelclintf.inc}
 
 initialization
+
   Assert(False, 'Trace:WinCEint.pp - Initialization');
 
 finalization

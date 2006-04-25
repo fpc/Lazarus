@@ -48,6 +48,9 @@ begin
 end;
 
 procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  Handle: HWND;
+  DC: HDC;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWidgetSet.AppInit');
@@ -84,13 +87,28 @@ begin
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
 }
 
+
+  // Create parent of all windows, `button on taskbar'
+//does this work on wince?!
+  FAppHandle := CreateWindow(@ClsName, CreatePWideCharFromString(Application.Title), WS_POPUP or
+    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  AllocWindowInfo(FAppHandle);
+
+  // set nice main icon
+  SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
+    Windows.LoadIcon(MainInstance, 'MAINICON'));
+  // remove useless menuitems from sysmenu
+
  // initialize ScreenInfo
-{  Handle := GetDesktopWindow;
+  Handle := GetDesktopWindow;
   DC := Windows.GetDC(Handle);
   ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
   ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
-  ReleaseDC(Handle, DC);}
+  ReleaseDC(Handle, DC);
 
 end;
 

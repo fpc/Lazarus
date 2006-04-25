@@ -63,7 +63,7 @@ Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 //function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 //function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
-//function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
+function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
@@ -92,7 +92,7 @@ function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;}
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
-{function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;}
+function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 //function Frame(DC: HDC; const ARect: TRect): Integer; override;
@@ -155,31 +155,31 @@ function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
-{
-Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
+
+//Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
-function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
+{function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
 function PairSplitterGetInterfaceInfo: Boolean; override;
 function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
-function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;
+function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;}
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
-function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
+//function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
-function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;}
+function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 
 {function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
-function RealizePalette(DC: HDC): Cardinal; override;
+function RealizePalette(DC: HDC): Cardinal; override;}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
-function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
+{function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 Function ReleaseCapture : Boolean; override;}
 function ReleaseDC(Window: HWND; DC: HDC): Integer; override;
 //function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
@@ -203,14 +203,14 @@ function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
-Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;}
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;}
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 {Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; override;
-//function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 {function ShowCaret(hWnd: HWND): Boolean; override;

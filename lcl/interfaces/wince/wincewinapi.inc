@@ -203,9 +203,9 @@ end;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
   Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 End;
 
 {function TWinCEWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean
@@ -221,18 +221,23 @@ begin
     AlwaysCreateMask);
 end;}
 
-{Function TWinCEWidgetSet.CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH;
+Function TWinCEWidgetSet.CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH;
 Var
   LB: Windows.LogBrush;
 Begin
   LB.lbStyle := LogBrush.lbStyle;
   LB.lbColor := Windows.COLORREF(ColorToRGB(LogBrush.lbColor));
   LB.lbHatch := LogBrush.lbHatch;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
-//  Result := Windows.CreateBrushIndirect(LB);
-  Result := Windows.CreatesBrushIndirect(LB);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
-End;}
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
+  Result := 0;
+  if lb.lbStyle = BS_SOLID then
+  Result := Windows.CreateSolidBrush(LB.lbColor);
+  if lb.lbStyle= BS_NULL then
+  Result := Windows.GetStockObject(NULL_BRUSH);
+  if lb.lbStyle = BS_DIBPATTERNPT then
+  Result := CreateDIBPatternBrushPt(pointer(lb.lbHatch), lb.lbColor);
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+End;
 
 {------------------------------------------------------------------------------
   Method:  CreateCaret
@@ -332,7 +337,7 @@ Var
 Begin
   LP := LogPen;
   Lp.lopnColor := Windows.COLORREF(ColorToRGB(Lp.lopnColor));
-  Assert(False, 'Trace:[TWin32WidgetSet.CreatePenIndirect]');
+  Assert(False, 'Trace:[TWinCEWidgetSet.CreatePenIndirect]');
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 End;
 
@@ -425,11 +430,7 @@ begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
   WideStr := CreatePWideCharFromString(String(str));
- dc:=getdc(0);
- SetTextColor(dc,GetSysColor(COLOR_WINDOWTEXT));
- rect.Left:=10;rect.top:=10;rect.Right:=90;rect.bottom:=90;
-
-  Result := Windows.DrawText(DC, 'salam', -1, @Rect, DT_LEFT or DT_TOP or DT_WORDBREAK );
+  Result := Windows.DrawText(DC, WideStr, Count, @Rect, Flags);
   DisposePWideChar(WideStr);
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -508,18 +509,18 @@ Function TWinCEWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Re
 var
 pWideStr : PWideChar;
 Begin
-  Assert(False, Format('trace:> [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   pWideStr := CreatePWideCharFromString(string(Str));
   Result := Boolean(Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
   DisposePWideChar(pWideStr);
-  Assert(False, Format('trace:< [TWin32WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 End;
 
-{function TWinCEWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
+function TWinCEWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
   ): Integer;
 begin
   Result:=inherited ExtSelectClipRGN(dc, rgn, Mode);
-end;}
+end;
 
 {------------------------------------------------------------------------------
   Method:  FillRect
@@ -713,13 +714,13 @@ Function TWinCEWidgetSet.GetDC(HWnd: HWND): HDC;
 var
   ORect: TRect;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
   if (Result<>0) and (HWnd<>0)
   and GetLCLClientBoundsOffset(HWnd, ORect) then begin
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
   end;
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.GetDC] Got 0x%x', [Result]));
 End;
 
 
@@ -861,7 +862,7 @@ end;}
 Function TWinCEWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 Begin
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  Assert(False, 'Trace:TODO: [TWin32WidgetSet.GetScrollInfo]');
+  Assert(False, 'Trace:TODO: [TWinCEWidgetSet.GetScrollInfo]');
   Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, @ScrollInfo));
 End;
 
@@ -874,9 +875,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.GetStockObject(Value: Integer): LongInt;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GetStockObject] %d ', [Value]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.GetStockObject] %d ', [Value]));
   Result := Windows.GetStockObject(Value);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.GetStockObject] %d --> 0x%x', [Value, Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -890,7 +891,7 @@ Function TWinCEWidgetSet.GetSysColor(NIndex: Integer): DWORD;
 Begin
   if NIndex = COLOR_FORM then
     NIndex := COLOR_BTNFACE;
-  Result := Windows.GetSysColor(nIndex);
+  Result := Windows.GetSysColor(nIndex or $40000000);
 End;
 
 {------------------------------------------------------------------------------
@@ -955,27 +956,27 @@ tmw: TTextMetricW;
 Begin
   Assert(False, Format('Trace:> TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
   Result := Boolean(Windows.GetTextMetrics(DC, @TMw));
-    TM.tmHeight:= TMW.tmHeight;
-    TM.tmAscent:= TMW.tmAscent;
-    TM.tmDescent:= TMW.tmDescent;
-    TM.tmInternalLeading:= TMW.tmInternalLeading;
-    TM.tmExternalLeading:= TMW.tmExternalLeading;
-    TM.tmAveCharWidth:= TMW.tmAveCharWidth;
-    TM.tmMaxCharWidth:= TMW.tmMaxCharWidth;
-    TM.tmWeight:= TMW.tmWeight;
-    TM.tmOverhang:= TMW.tmOverhang;
-    TM.tmDigitizedAspectX:= TMW.tmDigitizedAspectX;
-    TM.tmDigitizedAspectY:= TMW.tmDigitizedAspectY;
-    TM.tmFirstChar:= TMW.tmFirstChar;
-    TM.tmLastChar:= TMW.tmLastChar;
-    TM.tmDefaultChar:= TMW.tmDefaultChar;
-    TM.tmBreakChar:= TMW.tmBreakChar;
-    TM.tmItalic:= TMW.tmItalic;
-    TM.tmUnderlined:= TMW.tmUnderlined;
-    TM.tmStruckOut:= TMW.tmStruckOut;
-    TM.tmPitchAndFamily:= TMW.tmPitchAndFamily;
-    TM.tmCharSet:= TMW.tmCharSet;
-    Assert(False, Format('Trace:< TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
+  TM.tmHeight:= TMW.tmHeight;
+  TM.tmAscent:= TMW.tmAscent;
+  TM.tmDescent:= TMW.tmDescent;
+  TM.tmInternalLeading:= TMW.tmInternalLeading;
+  TM.tmExternalLeading:= TMW.tmExternalLeading;
+  TM.tmAveCharWidth:= TMW.tmAveCharWidth;
+  TM.tmMaxCharWidth:= TMW.tmMaxCharWidth;
+  TM.tmWeight:= TMW.tmWeight;
+  TM.tmOverhang:= TMW.tmOverhang;
+  TM.tmDigitizedAspectX:= TMW.tmDigitizedAspectX;
+  TM.tmDigitizedAspectY:= TMW.tmDigitizedAspectY;
+  TM.tmFirstChar:= TMW.tmFirstChar;
+  TM.tmLastChar:= TMW.tmLastChar;
+  TM.tmDefaultChar:= TMW.tmDefaultChar;
+  TM.tmBreakChar:= TMW.tmBreakChar;
+  TM.tmItalic:= TMW.tmItalic;
+  TM.tmUnderlined:= TMW.tmUnderlined;
+  TM.tmStruckOut:= TMW.tmStruckOut;
+  TM.tmPitchAndFamily:= TMW.tmPitchAndFamily;
+  TM.tmCharSet:= TMW.tmCharSet;
+  Assert(False, Format('Trace:< TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1004,7 +1005,7 @@ End;
   specified device context.
  ------------------------------------------------------------------------------}
 {
-//not in wince?
+//roozbeh:not in wince?//not even getviewportorgex?!
 Function TWinCEWidgetSet.GetWindowOrgEx(DC: HDC; P: PPoint): Integer;
 Begin
   Result := Integer(Windows.GetWindowOrgEx(DC, LPPoint(P)));
@@ -1105,7 +1106,7 @@ begin
     end;}
   WindowInfo := GetWindowInfo(Handle);
 
-  //debugln('TWin32WidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
+  //debugln('TWinCEWidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
 
   // convert top level lcl window coordinaties to win32 coord
   Style := Windows.GetWindowLong(Handle, GWL_STYLE);
@@ -1228,26 +1229,72 @@ procedure TWinCEWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection
   );
 begin
   inherited LeaveCriticalSection(CritSection);
-end;
+end;}
 
-function TWinCEWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
-begin
-  Result:=inherited LineTo(DC, X, Y);
-end;
+{------------------------------------------------------------------------------
+  Method:  LineTo
+  Params:  DC - device context handle
+           X  - x-coordinate of line's ending point
+           Y  - y-coordinate of line's ending point
+  Returns: if the function succeeds
 
-function TWinCEWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
-  uType: Cardinal): integer;
-begin
-  Result:=inherited MessageBox(hWnd, lpText, lpCaption, uType);
-end;
+  Draws a line from the current position up to, but not including, the specified point.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+Begin
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Result := Boolean(Windows.LineTo(DC, X, Y));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+End;
 
-function TWinCEWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint
-  ): Boolean;
-begin
-  Result:=inherited MoveToEx(DC, X, Y, OldPoint);
-end;
+{------------------------------------------------------------------------------
+  Method:  MessageBox
+  Params:  HWnd      - The handle of parent window
+           LPText    - text in message box
+           LPCaption - title of message box
+           UType     - style of message box
+  Returns: 0 if not successful (out of memory), otherwise one of the defined
+           values:
+             IDABORT
+             IDCANCEL
+             IDIGNORE
+             IDNO
+             IDOK
+             IDRETRY
+             IDYES
 
-function TWinCEWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+ The MessageBox function displays a modal dialog, with text and caption defined,
+ and includes buttons.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer;
+var
+LPWCaption,LPWText : PWideChar;
+Begin
+  LPWCaption := CreatePWideCharFromString(String(LPCaption));
+  LPWText := CreatePWideCharFromString(String(LPText));
+  Result := Windows.MessageBox(HWnd, LPWText, LPWCaption, UType);
+  DisposePWideChar(LPWCaption);
+  DisposePWideChar(LPWText);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  MoveToEx
+  Params:  DC       - handle of device context
+           X        - x-coordinate of new current position
+           Y        - x-coordinate of new current position
+           OldPoint - address of old current position
+  Returns: If the function succeeds.
+
+  Updates the current position to the specified point.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+Begin
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Result := Boolean(Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint)));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+End;
+
+{function TWinCEWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
   Result:=inherited MoveWindowOrgEx(DC, dX, dY);
 end;
@@ -1275,30 +1322,78 @@ begin
   Result:=inherited PairSplitterSetPosition(SplitterHandle, NewPosition);
 end;
 
-function TWinCEWidgetSet.PeekMessage(var lpMsg: TMsg; Handle: HWND;
-  wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
-begin
-  Result:=inherited PeekMessage(lpMsg, Handle, wMsgFilterMin, wMsgFilterMax,
-    wRemoveMsg);
-end;
 
 function TWinCEWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin
   Result:=inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
-end;
-
-function TWinCEWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
-  Winding: boolean): boolean;
-begin
-  Result:=inherited Polygon(DC, Points, NumPts, Winding);
-end;
-
-function TWinCEWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
-  ): boolean;
-begin
-  Result:=inherited Polyline(DC, Points, NumPts);
 end;}
+
+{------------------------------------------------------------------------------
+  Method:  PeekMessage
+  Params:  LPMsg         - Where it should put the message
+           Handle        - Handle of the window (thread)
+           WMsgFilterMin - Lowest MSG to grab
+           WMsgFilterMax - Highest MSG to grab
+           WRemoveMsg    - Should message be pulled out of the queue
+  Returns: Boolean if an event was there
+
+  Checks a thread message queue for a message.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
+Begin
+  Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
+End;
+
+{------------------------------------------------------------------------------
+  Method:  Polygon
+  Params:  DC - handle to device context
+           Points - pointer to polygon's vertices
+           NumPts - count of polygon's vertices
+           Winding
+  Returns: If the function succeeds
+
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
+  value of Brush.
+  The Points parameter is an array of points that give the vertices of the
+  polygon.
+  Winding determines how the polygon is filled.
+  When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
+  Polygon uses the even-odd (alternative) fill algorithm.
+  NumPts indicates the number of points to use.
+  The first point is always connected to the last point.
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
+  specifying the first point a second time at the end.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean;
+var
+  PFMode : Longint;
+Begin
+  Assert(False, Format('Trace:TWinCEWidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
+//  If Winding then
+//    PFMode := SetPolyFillMode(DC, Windows.WINDING)
+//  else
+//    PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
+  Result := Boolean(Windows.Polygon(DC, LPPOINT(Points), NumPts));
+//  SetPolyFillMode(DC, PFMode);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  Polyline
+  Params:  DC - handle of device context
+           Points - address of array containing endpoints
+           NumPts - number of points in the array
+  Returns: If the function succeeds
+
+  Draws a series of line segments by connecting the points in the specified
+  array.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean;
+Begin
+  Result := Boolean(Windows.Polyline(DC, LPPOINT(Points), NumPts));
+End;
 
 {------------------------------------------------------------------------------
   Method:  PostMessage
@@ -1337,19 +1432,33 @@ end;
 function TWinCEWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
   Result:=inherited RealizePalette(DC);
-end;
+end;}
 
-function TWinCEWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+{------------------------------------------------------------------------------
+  Method:  Rectangle
+  Params:  DC - handle of device context
+           X1 - x-coordinate of bounding rectangle's upper-left corner
+           Y1 - y-coordinate of bounding rectangle's upper-left corner
+           X2 - x-coordinate of bounding rectangle's lower-right corner
+           Y2 - y-coordinate of bounding rectangle's lower-right corner
+  Returns: If the function succeeds
+
+  The Rectangle function draws a rectangle. The rectangle is outlined by using
+  the current pen and filled by using the current brush.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+Begin
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2+1, Y2+1));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+End;
+
+function TWinCEWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result:=inherited Rectangle(DC, X1, Y1, X2, Y2);
+  Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
 end;
 
-function TWinCEWidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
-begin
-  Result:=inherited RectVisible(dc, ARect);
-end;
-
-function TWinCEWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
+{function TWinCEWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
   ): Boolean;
 begin
   Result:=inherited RegroupMenuItem(hndMenu, GroupIndex);
@@ -1370,9 +1479,9 @@ end;}
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(Window, DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
 End;
 
 {
@@ -1392,9 +1501,9 @@ end;}
 -------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := Boolean(Windows.RestoreDC(DC, SavedDC));
-//  Assert(False, Format('Trace:< [TWin32WidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+//  Assert(False, Format('Trace:< [TWinCEWidgetSet.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1423,9 +1532,9 @@ end;
 -------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.SaveDC(DC: HDC): Integer;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SaveDC]  0x%x', [Integer(DC)]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.SaveDC]  0x%x', [Integer(DC)]));
   Result := Windows.SaveDC(DC);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 End;
 
 
@@ -1496,9 +1605,9 @@ end;
 Function TWinCEWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 Begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SelectObject] DC: 0x%x', [DC]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.SelectObject] DC: 0x%x', [DC]));
   Result := Windows.SelectObject(DC, GDIObj);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 End;
 
 {function TWinCEWidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE;
@@ -1547,9 +1656,9 @@ end;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := Windows.SetBkColor(DC, Windows.COLORREF(ColorToRGB(Color)));
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1608,18 +1717,33 @@ function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
   ): Boolean;
 begin
   Result:=inherited SetProp(Handle, Str, Data);
-end;
+end;}
 
 function TWinCEWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
 begin
-  Result:=inherited SetROP2(DC, Mode);
+  result := Windows.SetROP2(DC, Mode);
 end;
 
-function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
-  ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
-begin
-  Result:=inherited SetScrollInfo(Handle, SBStyle, ScrollInfo, bRedraw);
-end;}
+{------------------------------------------------------------------------------
+  Method:  SetScrollInfo
+  Params:  Handle     - handle of window with scroll bar
+           SBStyle    - scroll bar flag
+           ScrollInfo - record with scroll parameters
+           BRedraw    - is the scroll bar is redrawn?
+  Returns: The old position value
+
+  Sets the parameters of a scroll bar.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
+Begin
+//  Assert(False, 'Trace:[TWin32WidgetSet.SetScrollInfo]');
+  //With ScrollInfo Do
+   // Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
+  Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
+  With ScrollInfo Do
+    Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
+End;
 
 {------------------------------------------------------------------------------
   Method:  SetSysColors
@@ -1668,22 +1792,29 @@ End;
 Function TWinCEWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 Begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
   Result := Windows.SetWindowLong(Handle, Idx, NewLong);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
 End;
 
-{function TWinCEWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
-  NewLong: PtrInt): PtrInt;
-begin
-  Result:=inherited SetWindowLong(Handle, Idx, NewLong);
-end;
+{------------------------------------------------------------------------------
+  Method:  SetWindowOrgEx
+  Params:  DC    - handle of device context
+           NewX  - new x-coordinate of window origin
+           NewY  - new y-coordinate of window origin
+           Point - record receiving original origin
+  Returns: Whether the call was successful
 
-function TWinCEWidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
+  Sets the window origin of the device context by using the specified coordinates.
+ ------------------------------------------------------------------------------}
+//roozbeh:does this always work?it is heavily used in labels and some other drawing controls!
+Function TWinCEWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
-begin
-  Result:=inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
-end;}
+Begin
+  Result := Boolean(SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
+//  Result:=inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
+End;
+
 {------------------------------------------------------------------------------
   Method:  SetWindowPos
   Params: HWnd            - handle of window

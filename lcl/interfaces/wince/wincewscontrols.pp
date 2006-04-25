@@ -195,11 +195,11 @@ begin
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     {$IFDEF VerboseSizeMsg}
-    writeln('TWin32WidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
+    writeln('TWinCEWidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
 
-    //Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
-    //Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
+    //Assert(False, Format('Trace:TWinCEWidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
+    //Assert(False, Format('Trace:TWinCEWidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
   end;
 end;
 
@@ -278,7 +278,7 @@ procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
 var
   lhFont: HFONT;
 begin
-{  with Params do
+  with Params do
     if Buddy <> HWND(Nil) then
     begin
       BuddyWindowInfo := AllocWindowInfo(Buddy);
@@ -292,7 +292,7 @@ begin
       Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
     end
     else
-      BuddyWindowInfo := nil;}
+      BuddyWindowInfo := nil;
 end;
 
 
@@ -395,7 +395,6 @@ begin
 
     if AfterWnd = 0 then Exit; // nothing to do
   end;
-
   Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
     SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
     SWP_NOSIZE or SWP_NOSENDCHANGING);
@@ -416,20 +415,20 @@ var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
   suppressMove: boolean;
 begin
-(*  IntfLeft := ALeft; IntfTop := ATop;
+  IntfLeft := ALeft; IntfTop := ATop;
   IntfWidth := AWidth; IntfHeight := AHeight;
   LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
   {$IFDEF VerboseSizeMsg}
-  writeln('TWin32WSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
+  writeln('TWinCEWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
     ' LCL=',ALeft,',',ATop,',',AWidth,',',AHeight,
     ' Win32=',IntfLeft,',',IntfTop,',',IntfWidth,',',IntfHeight,
     '');
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-  if not suppressMove then
-    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
-  LCLControlSizeNeedsUpdate(AWinControl, false);*)
+//  if not suppressMove then
+//    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+  LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
 procedure TWinCEWSWinControl.SetColor(const AWinControl: TWinControl);
@@ -489,7 +488,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TWSDragImageList);
-  RegisterWSComponent(TControl, TWinCEWSControl);
+//  RegisterWSComponent(TControl, TWinCEWSControl);
   RegisterWSComponent(TWinControl, TWinCEWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TWSCustomControl);

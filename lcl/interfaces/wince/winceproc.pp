@@ -38,6 +38,7 @@ uses
   end;
 
 function CreatePWideCharFromString(inString : string): PWideChar;
+function WideStringToString(inWideString : WideString) : String;
 procedure DisposePWideChar(inPWideChar : PWideChar);
 Function ObjectToHWND(Const AObject: TObject): HWND;
 
@@ -45,6 +46,10 @@ function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
 
+//roozbeh:these are simply copy-pasted from win32...i bet most of them can be changed
+//or not that much neccessary on wince!
+function LCLControlSizeNeedsUpdate(Sender: TWinControl;SendSizeMsgOnDiff: boolean): boolean;
+Procedure LCLBoundsToWin32Bounds(Sender: TObject;var Left, Top, Width, Height: Integer);
 procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
@@ -63,11 +68,15 @@ function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
 
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+function GetControlText(AHandle: HWND): string;
+
 procedure AddToChangedMenus(Window: HWnd);
 
 //roozbeh:this thing belong to windows unit...someone should move them there!
 function GetTextExtentPoint(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
 function GetTextExtentPoint32(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
+//becouse wince is only unicode,it allocs in unicode!
 function SysAllocStringLen(psz:pointer;len:dword):pointer;
 procedure SysFreeString(bstr:pointer);
 
@@ -109,13 +118,31 @@ procedure SysFreeString(bstr:pointer);stdcall;
 function SysReAllocStringLen(var bstr:pointer;psz: pointer;
   len:dword): Integer; stdcall;external 'oleaut32.dll' name 'SysReAllocStringLen';
 
+//better name for this?!
 function CreatePWideCharFromString(inString : string): PWideChar;
 var
 tmpWideChar : PWideChar;
 begin
-    tmpWideChar := SysAllocStringLen(nil,Length(inString));
+    tmpWideChar := SysAllocStringLen(nil,Length(inString));//it automatically reserves +1 to string!
     MultiByteToWideChar(CP_ACP, 0, PChar(inString), -1, tmpWideChar, Length(inString));
     Result := tmpWideChar;
+end;
+
+//well this is diffrent from normal string(widestring) or other rtl functions becouse it uses windows local codepage
+//better name for this?!
+function WideStringToString(inWideString : WideString) : String;
+var
+tmpStr : PChar;
+//test : string;
+inStrLen: integer;
+begin
+//  test := string(inWideString);
+  inStrLen := Length(inWideString);
+  tmpStr := StrAlloc(inStrLen+1);
+  WideCharToMultiByte(CP_ACP, 0, PWideChar(inWideString), -1, tmpStr, inStrLen,nil,nil);
+  char((tmpStr+inStrLen)^) := #0;
+  Result := string(tmpStr);
+  StrDispose(tmpStr);
 end;
 
 procedure DisposePWideChar(inPWideChar: PWideChar);
@@ -124,6 +151,24 @@ begin
 end;
 
 
+function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
+var
+  OwnerObject: TObject;
+begin
+  OwnerObject := GetWindowInfo(Handle)^.WinControl;
+  Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
+end;
+
+Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+  var Left, Top, Width, Height: Integer);
+var
+  ORect: TRect;
+Begin
+  if (Sender=nil) or (not (Sender is TWinControl)) then exit;
+  if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
+  inc(Left, ORect.Left);
+  inc(Top, ORect.Top);
+End;
 
 {-------------------------------------------------------------------------------
   function GetLCLClientOriginOffset(Sender: TObject;
@@ -194,13 +239,6 @@ Begin
   Result:=true;
 end;
 
-function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
-var
-  OwnerObject: TObject;
-begin
-  OwnerObject := GetWindowInfo(Handle)^.WinControl;
-  Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
-end;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
@@ -211,6 +249,45 @@ begin
   Left := winRect.Left - parRect.Left;
   Top := winRect.Top - parRect.Top;
 end;
+
+
+{-------------------------------------------------------------------------------
+  function LCLBoundsNeedsUpdate(Sender: TWinControl;
+    SendSizeMsgOnDiff: boolean): boolean;
+
+  Returns true if LCL bounds and win32 bounds differ for the control.
+-------------------------------------------------------------------------------}
+function LCLControlSizeNeedsUpdate(Sender: TWinControl;
+  SendSizeMsgOnDiff: boolean): boolean;
+var
+  Window:HWND;
+  LMessage: TLMSize;
+  IntfWidth, IntfHeight: integer;
+begin
+  Result:=false;
+  Window:= Sender.Handle;
+  LCLIntf.GetWindowSize(Window, IntfWidth, IntfHeight);
+  if (Sender.Width = IntfWidth)
+  and (Sender.Height = IntfHeight)
+  and (not Sender.ClientRectNeedsInterfaceUpdate) then
+    exit;
+  Result:=true;
+  if SendSizeMsgOnDiff then begin
+    //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
+    Sender.InvalidateClientRectCache(true);
+    // send message directly to LCL, some controls not subclassed -> message
+    // never reaches LCL
+    with LMessage do
+    begin
+      Msg := LM_SIZE;
+      SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+      Width := IntfWidth;
+      Height := IntfHeight;
+    end;
+    DeliverMessage(Sender, LMessage);
+  end;
+end;
+
 
 {
   Updates the window style of the window indicated by Handle.
@@ -485,7 +562,6 @@ begin
     writeln('getprop called with nil list');
     exit;
   end;
-  //writeln('getprop ok');
   repeat
     if (pPropertyLists^.WindowHWND = hWnd) then
     begin
@@ -623,6 +699,44 @@ begin
       EnableWindow(HWND(WindowInfo^.DisabledWindowList.Items[I]), true);
     FreeAndNil(WindowInfo^.DisabledWindowList);
   end;
+end;
+
+
+function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
+var
+  textSize: Windows.SIZE;
+  winHandle: HWND;
+  canvasHandle: HDC;
+  oldFontHandle: HFONT;
+  tmpText : PWideChar;
+begin
+  winHandle := AWinControl.Handle;
+  canvasHandle := GetDC(winHandle);
+  oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
+  DeleteAmpersands(Text);
+  tmpText := CreatePWideCharFromString(Text);
+  Result := GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), textSize);
+  DisposePWideChar(tmpText);
+  if Result then
+  begin
+    Width := textSize.cx;
+    Height := textSize.cy;
+  end;
+  SelectObject(canvasHandle, oldFontHandle);
+  ReleaseDC(winHandle, canvasHandle);
+end;
+
+
+function GetControlText(AHandle: HWND): string;
+var
+  TextLen: dword;
+  tmpWideStr : PWideChar;
+begin
+  TextLen := GetWindowTextLength(AHandle);
+  tmpWideStr := SysAllocStringLen(nil,TextLen + 1);
+  GetWindowText(AHandle, PWideChar(tmpWideStr), TextLen + 1);
+  Result := WideStringToString(widestring(tmpWideStr));
+  DisposePWideChar(tmpWideStr);
 end;
 
 
