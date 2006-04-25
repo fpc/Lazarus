@@ -1239,22 +1239,11 @@ end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);
-var
-  CurName: String;
-  i: Integer;
 begin
 //  writeln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
   if jclAutoRenameComponents in FFlags then begin
-    while (NewName<>'') and (NewName[length(NewName)] in ['0'..'9']) do
-      System.Delete(NewName,length(NewName),1);
-    if NewName='' then
-      NewName:=Component.ClassName;
-    i:=0;
-    repeat
-      inc(i);
-      CurName:=NewName+IntToStr(i);
-    until FCurReadJITComponent.FindComponent(CurName)=nil;
-    NewName:=CurName;
+    while FCurReadJITComponent.FindComponent(NewName)<>nil do
+      NewName:=CreateNextIdentifier(NewName);
   end;
 end;
 
