@@ -305,7 +305,7 @@ begin
   BytesRead := Count * Size;
   if not GMainProcess.ReadData(Adress, BytesRead, buf)
   then begin
-    WriteLN('Could not read memory at: ', FormatAdress(Adress));
+    WriteLN('Could not read memory at: ', FormatAddress(Adress));
     Exit;
   end;
 
@@ -313,7 +313,7 @@ begin
   while BytesRead >= size do
   begin
     if e and ((32 div Size) - 1) = 0
-    then Write('[', FormatAdress(Adress), '] ');
+    then Write('[', FormatAddress(Adress), '] ');
 
     for idx := Size - 1 downto 0 do Write(IntToHex(buf[e * size + idx], 2));
 
@@ -406,7 +406,7 @@ end;
 
 procedure HandleShowCallStack(AParams: String);
 var
-  Adress, Frame, LastFrame: QWord;
+  Address, Frame, LastFrame: QWord;
   Size, Count: integer;
 begin
   if (GMainProcess = nil) or (GCurrentProcess = nil)
@@ -421,23 +421,23 @@ begin
   end;
 
   {$ifdef cpui386}
-  Adress := GCurrentContext^.Eip;
+  Address := GCurrentContext^.Eip;
   Frame := GCurrentContext^.Ebp;
   Size := 4;
   {$else}
-  Adress := GCurrentContext^.Rip;
+  Address := GCurrentContext^.Rip;
   Frame := GCurrentContext^.Rdi;
   Size := 8;
   {$endif}
 
   WriteLN('Callstack:');
-  WriteLn(' ', FormatAdress(Adress));
+  WriteLn(' ', FormatAddress(Address));
   LastFrame := 0;
   Count := 25;
   while (Frame <> 0) and (Frame > LastFrame) do
   begin
-    if not GCurrentProcess.ReadData(Frame + Size, Size, Adress) or (Adress = 0) then Break;
-    WriteLn(' ', FormatAdress(Adress));
+    if not GCurrentProcess.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
+    WriteLn(' ', FormatAddress(Address));
     Dec(count);
     if Count <= 0 then Exit;
     if not GCurrentProcess.ReadData(Frame, Size, Frame) then Break;

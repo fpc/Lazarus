@@ -37,7 +37,7 @@ unit FPWDLoop;
 interface
 
 uses
-  Windows, SysUtils, WinDebugger, WinDExtra;
+  Windows, SysUtils, WinDebugger, WinDExtra, WinDisas;
 
 procedure DebugLoop;
 
@@ -58,7 +58,7 @@ begin
   WriteLN(Format('hFile: 0x%x', [AEvent.CreateProcessInfo.hFile]));
   WriteLN(Format('hProcess: 0x%x', [AEvent.CreateProcessInfo.hProcess]));
   WriteLN(Format('hThread: 0x%x', [AEvent.CreateProcessInfo.hThread]));
-  WriteLN('Base adress: ', FormatAdress(AEvent.CreateProcessInfo.lpBaseOfImage));
+  WriteLN('Base adress: ', FormatAddress(AEvent.CreateProcessInfo.lpBaseOfImage));
   WriteLN(Format('Debugsize: %d', [AEvent.CreateProcessInfo.nDebugInfoSize]));
   WriteLN(Format('Debugoffset: %d', [AEvent.CreateProcessInfo.dwDebugInfoFileOffset]));
 
@@ -117,7 +117,7 @@ begin
     Write(' Unknown code: ', AEvent.Exception.ExceptionRecord.ExceptionCode);
   end;
   Info0 := PtrUInt(AEvent.Exception.ExceptionRecord.ExceptionAddress);
-  Write(' at: ', FormatAdress(Info0));
+  Write(' at: ', FormatAddress(Info0));
   Write(' Flags:', Format('%x', [AEvent.Exception.ExceptionRecord.ExceptionFlags]), ' [');
   if AEvent.Exception.ExceptionRecord.ExceptionFlags = 0
   then Write('Continuable')
@@ -128,7 +128,7 @@ begin
   case AEvent.Exception.ExceptionRecord.ExceptionCode of
     EXCEPTION_ACCESS_VIOLATION: begin
       Info0 := AEvent.Exception.ExceptionRecord.ExceptionInformation[0];
-      Info1Str := FormatAdress(AEvent.Exception.ExceptionRecord.ExceptionInformation[1]);
+      Info1Str := FormatAddress(AEvent.Exception.ExceptionRecord.ExceptionInformation[1]);
 
       case Info0 of
         0: begin
@@ -180,7 +180,7 @@ procedure HandleLoadDll(const AEvent: TDebugEvent);
 //  Proc: TDbgProcess;
 //  Lib: TDbgLibrary;
 begin
-  WriteLN('Base adress: ', FormatAdress(AEvent.LoadDll.lpBaseOfDll));
+  WriteLN('Base adress: ', FormatAddress(AEvent.LoadDll.lpBaseOfDll));
 
 
 //  if GetProcess(AEvent.dwProcessId, Proc)
@@ -220,7 +220,7 @@ end;
 
 procedure HandleUnloadDll(const AEvent: TDebugEvent);
 begin
-  WriteLN('Base adress: ', FormatAdress(AEvent.UnloadDll.lpBaseOfDll));
+  WriteLN('Base adress: ', FormatAddress(AEvent.UnloadDll.lpBaseOfDll));
 end;
 
 procedure DebugLoop;
@@ -307,6 +307,24 @@ procedure DebugLoop;
     end;
     WriteLN('---');
   end;
+  
+  procedure ShowDisas;
+  var
+    a: PtrUInt;
+    Code, CodeBytes: String;
+  begin
+    WriteLN('===');
+    {$ifdef cpui386}
+      a := GCurrentContext^.EIP;
+      Write('  [', FormatAddress(a), ']');
+      Disassemble(GCurrentProcess.Handle, False, a, CodeBytes, Code);
+    {$else}
+      a := GCurrentContext^.RIP;
+      Write('  [', FormatAddress(a), ']');
+      Disassemble(GCurrentProcess.Handle, True, a, CodeBytes, Code);
+    {$endif}
+    WriteLN(' ', CodeBytes, '    ', Code);
+  end;
 
 begin
   repeat
@@ -390,6 +408,9 @@ begin
       end;
     end;
   until (GState in [dsStop, dsPause, dsQuit]);
+
+  if GState = dsPause
+  then ShowDisas
 end;
 
 end.

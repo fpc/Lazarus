@@ -575,6 +575,7 @@ debugger/windebug/fpwd/fpwdpeimage.pas svneol=native#text/pascal
 debugger/windebug/fpwd/fpwdtype.pas svneol=native#text/pascal
 debugger/windebug/windebugger.pp svneol=native#text/pascal
 debugger/windebug/windextra.pp svneol=native#text/pascal
+debugger/windebug/windisas.pp svneol=native#text/plain
 designer/abstractcompiler.pp svneol=native#text/pascal
 designer/abstracteditor.pp svneol=native#text/pascal
 designer/abstractfilesystem.pp svneol=native#text/pascal

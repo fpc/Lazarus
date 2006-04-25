@@ -39,11 +39,17 @@ interface
 
 uses
   Windows;
+  
+type
+  TDbgPtr = PtrUInt;
 
-function FormatAdress(const P): String;
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
+
+function FormatAddress(const P): String;
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+procedure Log(const AText: String; const AParams: array of const); overload;
+procedure Log(const AText: String); overload;
 
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall;
@@ -59,7 +65,7 @@ uses
 //function Wow64GetThreadContext(hThread: THandle; var lpContext: TContext): BOOL; stdcall; external 'kernel32';
 
 
-function FormatAdress(const P): String;
+function FormatAddress(const P): String;
 begin
   case GMode of
     dm32: Result := '$' + IntToHex(DWord(p), 8);
@@ -105,6 +111,17 @@ function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 begin
   Result := Pointer(((PtrUInt(Src) + Alignment - 1) and not PtrUInt(Alignment - 1)));
 end;
+
+procedure Log(const AText: String; const AParams: array of const); overload;
+begin
+  WriteLN(Format(AText, AParams));
+end;
+
+procedure Log(const AText: String); overload;
+begin
+  WriteLN(AText);
+end;
+
 
 end.
 

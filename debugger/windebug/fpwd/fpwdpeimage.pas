@@ -41,7 +41,7 @@ interface
 {$ENDIF}
 
 uses
-  Windows, SysUtils, FPWDGLobal, WinDebugger;
+  Windows, SysUtils, FPWDGLobal, WinDExtra;
 
 const
   IMAGE_FILE_MACHINE_IA64 = $0200;   { Intel IPF }

@@ -39,7 +39,6 @@ uses
   Windows, Classes, Maps, WindExtra;
 
 type
-  TDbgPtr = PtrUInt;
   TDbgProcess = class;
 
   TDbgThread = class(TObject)
@@ -169,17 +168,6 @@ implementation
 uses
   SysUtils;
 
-
-procedure Log(const AText: String; const AParams: array of const); overload;
-begin
-  WriteLN(Format(AText, AParams));
-end;
-
-procedure Log(const AText: String); overload;
-begin
-  WriteLN(AText);
-end;
-
 procedure LogLastError;
 begin
   WriteLN('ERROR: ', GetLastErrorText);
@@ -275,7 +263,7 @@ end;
 
 function TDbgProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 begin
-  Result := TDbgLibrary.Create(Self, FormatAdress(AInfo.lpBaseOfDll), AInfo);
+  Result := TDbgLibrary.Create(Self, FormatAddress(AInfo.lpBaseOfDll), AInfo);
   FLibMap.Add(TDbgPtr(AInfo.lpBaseOfDll), Result);
 end;
 
@@ -672,7 +660,7 @@ begin
   Context^.ContextFlags := CONTEXT_CONTROL;
   if not GetThreadContext(Thread.Handle, Context^)
   then begin
-    Log('Break $s: Unable to get context', [FormatAdress(FLocation)]);
+    Log('Break $s: Unable to get context', [FormatAddress(FLocation)]);
     Exit;
   end;
 
@@ -685,7 +673,7 @@ begin
 
   if not SetThreadContext(Thread.Handle, Context^)
   then begin
-    Log('Break %s: Unable to set context', [FormatAdress(FLocation)]);
+    Log('Break %s: Unable to set context', [FormatAddress(FLocation)]);
     Exit;
   end;
   Result := True;
