@@ -36,6 +36,8 @@ uses
   Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileUtil,
   // synedit, codetools
   SynRegExpr, SourceLog, KeywordFuncLists,
+  // IDEIntf
+  LazIDEIntf, SrcEditorIntf,
   // ide
   LazarusIDEStrConsts, InputHistory, FindInFilesDlg, SearchResultView;
 
@@ -65,7 +67,7 @@ type
     fMatches: longint;
     fPad: string;
     fParsedMasks: TStringList; //Holds the parsed masks.
-    frecursive: boolean;
+    fRecursive: boolean;
     fRegExp: Boolean;
     FReplaceText: string;
     fResultsList: TStrings;
@@ -77,6 +79,8 @@ type
     fSearchProject: boolean;
     fTheDirectory: string;
     fWholeWord: Boolean;
+    fReplace: boolean;
+    fReplaceAll: boolean;
     procedure SearchFile(TheFileName: string);
     procedure DoFindInFiles(TheFileName: string);
     procedure DoFindInSearchList;
@@ -99,7 +103,7 @@ type
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
     property ResultsWindow: integer read fResultsWindow write fResultsWindow;
-  end; 
+  end;
 
 var
   SearchForm: TSearchForm;
@@ -110,7 +114,7 @@ implementation
 
 procedure TSearchForm.btnAbortCLICK(Sender: TObject);
 begin
-   fAbort:= true;
+  fAbort:= true;
 end;
 
 procedure TSearchForm.SearchFormCREATE(Sender: TObject);
@@ -123,6 +127,8 @@ begin
   Caption:=dlgSearchCaption;
 
   fWholeWord:= false;
+  fReplace:=false;
+  fReplaceAll:=false;
   fCaseSensitive:= false;
   fRecursive:= True;
   fAbort:= false;
@@ -144,6 +150,8 @@ end;
 procedure TSearchForm.SetOptions(TheOptions: TLazFindInFileSearchOptions);
 begin
   fWholeWord:= (fifWholeWord in TheOptions);
+  fReplace:=(fifReplace in TheOptions);
+  fReplaceAll:=(fifReplaceAll in TheOptions);
   fCaseSensitive:= (fifMatchCase in TheOptions);
   fRegExp := (fifRegExpr in TheOptions);
   frecursive:= (fifIncludeSubDirs in TheOptions);
@@ -157,7 +165,10 @@ begin
   Result:=[];
   if fWholeWord then include(Result,fifWholeWord);
   if fCaseSensitive then include(Result,fifMatchCase);
+  if fReplace then include(Result,fifReplace);
+  if fReplaceAll then include(Result,fifReplaceAll);
   if fRegExp then include(Result,fifRegExpr);
+  if fRecursive then include(Result,fifIncludeSubDirs);
   if fRecursive then include(Result,fifIncludeSubDirs);
   if fSearchProject then include(Result, fifSearchProject);
   if fSearchOpen then include(Result,fifSearchOpen);
@@ -263,11 +274,6 @@ procedure TSearchForm.SearchFile(TheFileName: string);
     Result:=copy(Line,StartPos,EndPos-StartPos);
   end;
   
-  procedure DoReplaceLine;
-  begin
-
-  end;
-
 {Start SearchFile ============================================================}
 var
   ThisFile: TSourceLog;   //The original File being searched
@@ -284,14 +290,50 @@ var
   LastMatchEnd: Integer;
   WorkLine: String;
   TrimmedCurLine: String;
-  Replace: boolean;
   SearchAllHitsInLine: boolean;
+  PromptOnReplace: boolean;
+
+  procedure DoReplaceLine;
+  var
+    ASearch: String;
+    AReplace: String;
+    Action: TSrcEditReplaceAction;
+  begin
+    // ask the user
+    if PromptOnReplace then begin
+      // open the place in the source editor
+      if LazarusIDE.DoOpenFileAndJumpToPos(TheFileName,Point(Match,Line),-1,-1,
+                  [ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
+      <>mrOk then
+      begin
+        fAbort:=true;
+        exit;
+      end;
+      ASearch:=copy(CurLine,Match,MatchLen);
+      AReplace:=ReplaceText;
+      SourceEditorWindow.ActiveEditor.AskReplace(Self,ASearch,AReplace,
+                                                 Line,Match,Action);
+      case Action of
+      seraSkip: exit;
+      seraReplace: ;
+      seraReplaceAll: PromptOnReplace:=false;
+      else
+        fAbort:=true;
+        exit;
+      end;
+    end;
+    // TODO: create change text
+  end;
+
 begin
+  if fAbort then exit;
+  
   ThisFile:=nil;
   UpperFile:=nil;
   RE:=nil;
-  Replace:=[fifReplace,fifReplaceAll]*SearchOptions<>[];
-  SearchAllHitsInLine:=Replace;
+  PromptOnReplace:=fReplace;
+  SearchAllHitsInLine:=fReplace;
+
   fResultsList.BeginUpdate;
   try
     MatchLen:= Length(fSearchFor);
@@ -356,10 +398,9 @@ begin
         
         // add found place
         if Found then begin
-          DebugLn('TSearchForm.SearchFile CurLine="',CurLine,'" Found=',dbgs(Found),' Match=',dbgs(Match),' MatchLen=',dbgs(MatchLen),' Line=',dbgs(Line));
-          if Replace then begin
+          //DebugLn('TSearchForm.SearchFile CurLine="',CurLine,'" Found=',dbgs(Found),' Match=',dbgs(Match),' MatchLen=',dbgs(MatchLen),' Line=',dbgs(Line));
+          if fReplace then
             DoReplaceLine;
-          end;
           TrimmedMatch:=Match;
           TrimmedCurLine:=TrimLineAndMatch(CurLine,TrimmedMatch);
           SearchResultsView.AddMatch(fResultsWindow,
@@ -368,7 +409,7 @@ begin
           UpdateMatches;
         end else
           break;
-      until (not SearchAllHitsInLine) or (MatchLen<1);
+      until fAbort or (not SearchAllHitsInLine) or (MatchLen<1);
       
       // check abort
       if fAbort and not fAborting then

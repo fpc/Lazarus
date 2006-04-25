@@ -133,6 +133,10 @@ begin
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
   
+  {$IFDEF EnableMultiReplace}
+  ReplaceCheckBox.Enabled:=true;
+  {$ENDIF}
+  
   UpdateReplaceCheck;
 end;
 

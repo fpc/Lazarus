@@ -216,6 +216,8 @@ type
 
     // dialogs
     procedure StartFindAndReplace(Replace:boolean);
+    procedure AskReplace(Sender: TObject; const ASearch, AReplace:
+       string; Line, Column: integer; var Action: TSrcEditReplaceAction); override;
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
     function DoFindAndReplace: Integer;
@@ -1067,6 +1069,23 @@ begin
     else
       FindReplaceDlg.Options := FindReplaceDlg.Options - [ssoSelectedOnly];
   end;//End try-finally
+end;
+
+procedure TSourceEditor.AskReplace(Sender: TObject; const ASearch,
+  AReplace: string; Line, Column: integer; var Action: TSrcEditReplaceAction);
+var
+  SynAction: TSynReplaceAction;
+begin
+  SynAction:=raCancel;
+  OnReplace(Sender, ASearch, AReplace, Line, Column, SynAction);
+  case SynAction of
+  raSkip: Action:=seraSkip;
+  raReplaceAll: Action:=seraReplaceAll;
+  raReplace: Action:=seraReplace;
+  raCancel: Action:=seraCancel;
+  else
+    RaiseGDBException('TSourceEditor.AskReplace: inconsistency');
+  end;
 end;
 
 {------------------------------F I N D  A G A I N ----------------------------}

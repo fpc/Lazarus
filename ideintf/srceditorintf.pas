@@ -28,6 +28,7 @@ type
     sesoRegExpr, sesoRegExprMultiLine);
   TSrcEditSearchOptions = set of TSrcEditSearchOption;
 
+  TSrcEditReplaceAction = (seraCancel, seraSkip, seraReplace, seraReplaceAll);
 
   { TSourceEditorInterface }
 
@@ -68,6 +69,9 @@ type
     procedure SelectText(const StartPos, EndPos: TPoint); virtual; abstract;
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string); virtual; abstract;
     procedure ReplaceText(const StartPos, EndPos: TPoint; const NewText: string);
+    procedure AskReplace(Sender: TObject; const ASearch, AReplace: string;
+                        Line, Column: integer;
+                        var Action: TSrcEditReplaceAction); virtual; abstract;
     procedure CopyToClipboard; virtual; abstract;
     procedure CutToClipboard; virtual; abstract;
 

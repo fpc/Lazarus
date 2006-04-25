@@ -173,7 +173,7 @@ procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   ALayout: TIDEWindowLayout;
 begin
-  FMaxItems:=10;
+  FMaxItems:=500;
   
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
