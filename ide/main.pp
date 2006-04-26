@@ -626,7 +626,7 @@ type
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
-    function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
+    function DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     procedure DoViewUnitDependencies;
@@ -3006,7 +3006,7 @@ end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
-  DoOpenMainUnit(false);
+  DoOpenMainUnit([]);
 end;
 
 procedure TMainIDE.mnuViewProjectTodosClicked(Sender: TObject);
@@ -4512,7 +4512,7 @@ begin
   Handled:=false;
   Ext:=lowercase(ExtractFileExt(AFilename));
 
-  if ([ofProjectLoading,ofRegularFile]*Flags<>[]) and (ToolStatus=itNone)
+  if ([ofProjectLoading,ofRegularFile]*Flags=[]) and (ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
     Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -5876,7 +5876,7 @@ begin
   and (CompareFilenames(Project1.MainFilename,AFilename,
        not (ofVirtualFile in Flags))=0)
   then begin
-    Result:=DoOpenMainUnit(ofProjectLoading in Flags);
+    Result:=DoOpenMainUnit(Flags);
     exit;
   end;
 
@@ -6025,9 +6025,8 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile END');{$ENDIF}
 end;
 
-function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
+function TMainIDE.DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
 var MainUnitInfo: TUnitInfo;
-  OpenFlags: TOpenFlags;
 begin
   {$IFDEF IDE_VERBOSE}
   debugln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',BoolToStr(ProjectLoading),' MainUnitID=',IntToStr(Project1.MainUnitID));
@@ -6037,7 +6036,8 @@ begin
   MainUnitInfo:=Project1.MainUnitInfo;
 
   // check if main unit is already open in source editor
-  if (MainUnitInfo.EditorIndex>=0) and (not ProjectLoading) then begin
+  if (MainUnitInfo.EditorIndex>=0) and (not (ofProjectLoading in Flags)) then
+  begin
     // already loaded -> switch to source editor
     SourceNotebook.Notebook.PageIndex:=MainUnitInfo.EditorIndex;
     Result:=mrOk;
@@ -6045,9 +6045,7 @@ begin
   end;
 
   // open file in source notebook
-  OpenFlags:=[];
-  if ProjectLoading then Include(OpenFlags,ofProjectLoading);
-  Result:=DoOpenFileInSourceEditor(MainUnitInfo,-1,OpenFlags);
+  Result:=DoOpenFileInSourceEditor(MainUnitInfo,-1,Flags);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -6135,7 +6133,7 @@ Begin
             SourceNoteBook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
           end else begin
             if Project1.MainUnitInfo = AnUnitInfo then
-              Result:=DoOpenMainUnit(false)
+              Result:=DoOpenMainUnit([])
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;

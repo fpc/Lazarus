@@ -527,7 +527,7 @@ type
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
-    //hintwindow stuff
+    // hintwindow stuff
     FHintWindow: THintWindow;
     FHintTimer: TTimer;
     procedure HintTimer(Sender: TObject);
@@ -553,6 +553,7 @@ type
     function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
     function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
 
+    function GetItems(Index: integer): TSourceEditorInterface; override;
     function GetEditors(Index:integer): TSourceEditor;
 
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); override;
@@ -572,6 +573,7 @@ type
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
+    function Count: integer; override;
     function Empty: boolean;
 
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
@@ -3648,6 +3650,11 @@ begin
   Result:=TSourceEditor(ASourceEditor).Filename;
 end;
 
+function TSourceNotebook.GetItems(Index: integer): TSourceEditorInterface;
+begin
+  Result:=TSourceEditorInterface(FSourceEditorList[Index]);
+end;
+
 function TSourceNotebook.OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit
   ): TObject;
 begin
@@ -4967,6 +4974,11 @@ begin
 end;
 
 function TSourceNotebook.EditorCount:integer;
+begin
+  Result:=FSourceEditorList.Count;
+end;
+
+function TSourceNotebook.Count: integer;
 begin
   Result:=FSourceEditorList.Count;
 end;

@@ -67,6 +67,7 @@ type
     fMatches: longint;
     fPad: string;
     fParsedMasks: TStringList; //Holds the parsed masks.
+    FPromptOnReplace: boolean;
     fRecursive: boolean;
     fRegExp: Boolean;
     FReplaceText: string;
@@ -103,6 +104,7 @@ type
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
     property ResultsWindow: integer read fResultsWindow write fResultsWindow;
+    property PromptOnReplace: boolean read FPromptOnReplace write FPromptOnReplace;
   end;
 
 var
@@ -177,6 +179,7 @@ end;//GetOptions
 
 procedure TSearchForm.DoSearch;
 begin
+  PromptOnReplace:=true;
   lblSearchText.Caption:= fSearchFor;
   fMatches:= 0;
   ParseMask;
@@ -191,7 +194,7 @@ begin
   end;//if
   if Assigned(fResultsList) and (fResultsList.Count = 0) then
     fResultsList.Add(lisFileNotFound);
-  Self.Close;
+  Close;
 end;//DoSearch
 
 procedure TSearchForm.SearchFile(TheFileName: string);
@@ -276,79 +279,211 @@ procedure TSearchForm.SearchFile(TheFileName: string);
   
 {Start SearchFile ============================================================}
 var
-  ThisFile: TSourceLog;   //The original File being searched
-  UpperFile: TSourceLog;  //The working File being searched
-  Line:      integer;    //Loop Counter
-  Match:      integer;    //Position of match in line.
-  TempSearch: string;     //Temp Storage for the search string.
-  MatchLen: integer;
+  OriginalFile: TSourceLog;  // The original File being searched
+  CaseFile: TSourceLog;  // The working File being searched
+  Line:      integer;    // Loop Counter
+  Match:      integer;   // Position of match in line.
   CurLine: String;
+  TempSearch: string;    // Temp Storage for the search string.
+  MatchLen: integer;
   RE: TRegExpr;
-  Found: Boolean;
-  TrimmedMatch: LongInt;
-  LastMatchStart: LongInt;
-  LastMatchEnd: Integer;
-  WorkLine: String;
-  TrimmedCurLine: String;
   SearchAllHitsInLine: boolean;
-  PromptOnReplace: boolean;
 
+  SrcEditValid: Boolean;// true if SrcEdit is valid
+  SrcEdit: TSourceEditorInterface;
+  PaintLockEnabled: Boolean;
+
+  ReplacedText: PChar;
+  ReplacedTextCapacity: integer;
+  ReplacedTextLength: integer;
+  ReplacedTextOriginalPos: integer;// 1-based
+
+  function FileIsOpenInSourceEditor: boolean;
+  begin
+    if not SrcEditValid then
+      SrcEdit:=SourceEditorWindow.SourceEditorIntfWithFilename(TheFileName);
+    SrcEditValid:=true;
+    Result:=SrcEdit<>nil;
+  end;
+  
+  procedure GrowNewText(NewLength: integer);
+  var
+    NewCapacity: Integer;
+  begin
+    if NewLength<=ReplacedTextCapacity then exit;
+    // grow
+    // first double
+    NewCapacity:=ReplacedTextCapacity*2;
+    if NewLength>NewCapacity then begin
+      // double is not enough, use the original size as minimum
+      if NewCapacity<1 then
+        NewCapacity:=OriginalFile.SourceLength+1000;
+      if NewLength>NewCapacity then begin
+        // still not enough -> grow to new length
+        NewCapacity:=NewLength;
+      end;
+    end;
+    ReplacedTextCapacity:=NewCapacity;
+    ReAllocMem(ReplacedText,ReplacedTextCapacity);
+  end;
+  
+  procedure EnablePaintLock;
+  begin
+    if (not PaintLockEnabled) and FileIsOpenInSourceEditor then begin
+      PaintLockEnabled:=true;
+      SrcEdit.BeginUpdate;
+    end;
+  end;
+  
+  procedure DisablePaintLock;
+  begin
+    if PaintLockEnabled then
+      SrcEdit.EndUpdate;
+    PaintLockEnabled:=false;
+  end;
+  
+  procedure EndLocks;
+  begin
+    DisablePaintLock;
+    SrcEditValid:=false;
+  end;
+  
   procedure DoReplaceLine;
   var
     ASearch: String;
     AReplace: String;
     Action: TSrcEditReplaceAction;
+    OriginalTextPos: integer; // 1-based
+    GapLength: Integer;
+    NewLength: Integer;
   begin
+    // create replacement
+    AReplace:=ReplaceText;
+    if fRegExp then
+      AReplace:=RE.Substitute(AReplace);
+
     // ask the user
     if PromptOnReplace then begin
       // open the place in the source editor
-      if LazarusIDE.DoOpenFileAndJumpToPos(TheFileName,Point(Match,Line),-1,-1,
-                  [ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
+      EndLocks;
+      if LazarusIDE.DoOpenFileAndJumpToPos(TheFileName,Point(Match,Line+1),
+             -1,-1,[ofUseCache,ofDoNotLoadResource,ofVirtualFile,ofRegularFile])
       <>mrOk then
       begin
         fAbort:=true;
         exit;
       end;
       ASearch:=copy(CurLine,Match,MatchLen);
-      AReplace:=ReplaceText;
-      if fRegExp then
-        AReplace:=RE.Substitute(AReplace);
-      SourceEditorWindow.ActiveEditor.AskReplace(Self,ASearch,AReplace,
-                                                 Line,Match,Action);
+      // select found text
+      if not FileIsOpenInSourceEditor then
+        RaiseGDBException('inconsistency');
+      SrcEdit.SelectText(Line+1,Match,Line+1,Match+MatchLen);
+      SrcEdit.AskReplace(Self,ASearch,AReplace,Line,Match,Action);
       case Action of
-      seraSkip: exit;
-      seraReplace: ;
-      seraReplaceAll: PromptOnReplace:=false;
+        seraSkip: exit;
+        seraReplace: ;
+        seraReplaceAll: PromptOnReplace:=false;
       else
         fAbort:=true;
         exit;
       end;
     end;
-    
-    // TODO: create change text
-    
+
+    if FileIsOpenInSourceEditor then begin
+      // change text in source editor
+      EnablePaintLock;
+      SrcEdit.SelectText(Line+1,Match,Line+1,Match+MatchLen);
+      SrcEdit.Selection:=AReplace;
+    end else begin
+      // change text in memory/disk
+      OriginalFile.LineColToPosition(Line+1,Match,OriginalTextPos);
+      GapLength:=OriginalTextPos-ReplacedTextOriginalPos;
+      NewLength:=ReplacedTextLength+GapLength+length(AReplace);
+      GrowNewText(NewLength);
+      //writeln('DoReplaceLine Line=',Line,' Match=',Match,' OriginalTextPos=',OriginalTextPos,' ReplacedTextOriginalPos=',ReplacedTextOriginalPos,' GapLength=',GapLength,' NewLength=',NewLength,' "',AReplace,'" ReplacedTextCapacity=',ReplacedTextCapacity);
+      // copy the text between the last and this replacement
+      if GapLength>0 then begin
+        System.Move(OriginalFile.Source[ReplacedTextOriginalPos],
+                    ReplacedText[ReplacedTextLength],GapLength);
+        inc(ReplacedTextLength,GapLength);
+      end;
+      // copy the replacement
+      if AReplace<>'' then begin
+        System.Move(AReplace[1],ReplacedText[ReplacedTextLength],length(AReplace));
+        inc(ReplacedTextLength,length(AReplace));
+      end;
+      // save original position behind found position
+      OriginalFile.LineColToPosition(Line+1,Match+MatchLen,ReplacedTextOriginalPos);
+    end;
+  end;
+  
+  procedure CommitChanges;
+  var
+    GapLength: Integer;
+    NewLength: Integer;
+    NewText: string;
+    CurResult: TModalResult;
+  begin
+    EndLocks;
+    if ReplacedText<>nil then begin
+      if not fAbort then begin
+        GapLength:=OriginalFile.SourceLength-ReplacedTextOriginalPos;
+        NewLength:=ReplacedTextLength+GapLength;
+        GrowNewText(NewLength);
+        // copy the text between the last and this replacement
+        if GapLength>0 then begin
+          System.Move(OriginalFile.Source[ReplacedTextOriginalPos],
+                      ReplacedText[ReplacedTextLength],GapLength);
+          inc(ReplacedTextLength,GapLength);
+        end;
+        SetLength(NewText,ReplacedTextLength);
+        if NewText<>'' then
+          System.Move(ReplacedText[0],NewText[1],length(NewText));
+        OriginalFile.Source:=NewText;
+        if not OriginalFile.SaveToFile(TheFileName) then begin
+          CurResult:=MessageDlg('Write error',
+                                'Error writing file "'+TheFileName+'"',
+                                mtError,[mbCancel,mbAbort],0);
+          if CurResult=mrAbort then fAbort:=true;
+        end;
+      end;
+      FreeMem(ReplacedText);
+    end;
   end;
 
+var
+  WorkLine: String;
+  TrimmedCurLine: String;
+  TrimmedMatch: LongInt;
+  LastMatchStart: LongInt;
+  LastMatchEnd: Integer;
+  Found: Boolean;
 begin
   if fAbort then exit;
   
-  ThisFile:=nil;
-  UpperFile:=nil;
+  OriginalFile:=nil;
+  CaseFile:=nil;
   RE:=nil;
-  PromptOnReplace:=fReplace;
   SearchAllHitsInLine:=fReplace;
+  SrcEdit:=nil;
+  SrcEditValid:=false;
+  PaintLockEnabled:=false;
+  ReplacedText:=nil;
+  ReplacedTextCapacity:=0;
+  ReplacedTextLength:=0;
+  ReplacedTextOriginalPos:=1;
 
   fResultsList.BeginUpdate;
   try
     MatchLen:= Length(fSearchFor);
     TempSearch:= fSearchFor;
 
-    ThisFile:= TSourceLog.Create('');
-    ThisFile.LoadFromFile(TheFileName);
+    OriginalFile:= TSourceLog.Create('');
+    OriginalFile.LoadFromFile(TheFileName);
     if fCaseSensitive then begin
-      UpperFile:=ThisFile;
+      CaseFile:=OriginalFile;
     end else begin
-      UpperFile:=TSourceLog.Create(UpperCaseStr(ThisFile.Source));
+      CaseFile:=TSourceLog.Create(UpperCaseStr(OriginalFile.Source));
       TempSearch:=UpperCaseStr(TempSearch);
     end;
 
@@ -363,13 +498,15 @@ begin
       end;
     end;
 
-    //writeln('TheFileName=',TheFileName,' len=',ThisFile.SourceLength,' Cnt=',ThisFile.LineCount,' TempSearch=',TempSearch);
+    //writeln('TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch);
     Application.ProcessMessages;
     CurLine:='';
-    for Line:= 0 to ThisFile.LineCount -1 do
+    for Line:= 0 to OriginalFile.LineCount -1 do
     begin
-      if (Line and $fff)=0 then
+      if (Line and $fff)=0 then begin
+        EndLocks;
         Application.ProcessMessages;
+      end;
       Match:=1;
       MatchLen:=0;
       repeat
@@ -381,7 +518,7 @@ begin
         if fRegExp then begin
           // search every line for regular expression
           if LastMatchStart=LastMatchEnd then begin
-            CurLine:=ThisFile.GetLine(Line);
+            CurLine:=OriginalFile.GetLine(Line);
             WorkLine:=CurLine;
           end else begin
             WorkLine:=copy(CurLine,LastMatchEnd,length(CurLine));
@@ -392,10 +529,10 @@ begin
             MatchLen:= Re.MatchLen[0];
           end;
         end else begin
-          Found:=SearchInLine(TempSearch,UpperFile,Line,
+          Found:=SearchInLine(TempSearch,CaseFile,Line,
                               fWholeWord,LastMatchEnd,Match);
           if Found then begin
-            CurLine:=ThisFile.GetLine(Line);
+            CurLine:=OriginalFile.GetLine(Line);
             MatchLen:=length(TempSearch);
           end;
         end;
@@ -403,14 +540,16 @@ begin
         // add found place
         if Found then begin
           //DebugLn('TSearchForm.SearchFile CurLine="',CurLine,'" Found=',dbgs(Found),' Match=',dbgs(Match),' MatchLen=',dbgs(MatchLen),' Line=',dbgs(Line));
-          if fReplace then
-            DoReplaceLine;
-          TrimmedMatch:=Match;
-          TrimmedCurLine:=TrimLineAndMatch(CurLine,TrimmedMatch);
-          SearchResultsView.AddMatch(fResultsWindow,
-                                     TheFileName,Point(Match,Line+1),
-                                     TrimmedCurLine, TrimmedMatch, MatchLen);
-          UpdateMatches;
+          if fReplace then begin
+            DoReplaceLine
+          end else begin
+            TrimmedMatch:=Match;
+            TrimmedCurLine:=TrimLineAndMatch(CurLine,TrimmedMatch);
+            SearchResultsView.AddMatch(fResultsWindow,
+                                       TheFileName,Point(Match,Line+1),
+                                       TrimmedCurLine, TrimmedMatch, MatchLen);
+            UpdateMatches;
+          end;
         end else
           break;
       until fAbort or (not SearchAllHitsInLine) or (MatchLen<1);
@@ -429,10 +568,11 @@ begin
       
     end;//for
   finally
-    if ThisFile=UpperFile then
-      UpperFile:=nil;
-    FreeAndNil(ThisFile);
-    FreeAndNil(UpperFile);
+    CommitChanges;
+    if OriginalFile=CaseFile then
+      CaseFile:=nil;
+    FreeAndNil(OriginalFile);
+    FreeAndNil(CaseFile);
     FreeAndNil(RE);
     fResultsList.EndUpdate;
   end;

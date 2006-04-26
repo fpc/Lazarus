@@ -20,7 +20,7 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, ProjectIntf;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, ProjectIntf;
   
 type
   TSrcEditSearchOption = (sesoMatchCase, sesoWholeWord, sesoBackwards,
@@ -124,11 +124,17 @@ type
 
   TSourceEditorWindowInterface = class(TForm)
   protected
+    function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
+  protected
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
+    function SourceEditorIntfWithFilename(
+                                const Filename: string): TSourceEditorInterface;
     property ActiveEditor: TSourceEditorInterface read GetActiveEditor
                                                   write SetActiveEditor;
+    function Count: integer; virtual; abstract;
+    property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
   end;
   
   
@@ -276,6 +282,20 @@ begin
     Result:=OnGetValueMethod(Parameter,InteractiveValue,SrcEdit,Value,ErrorMsg)
   else
     Result:=true;
+end;
+
+{ TSourceEditorWindowInterface }
+
+function TSourceEditorWindowInterface.SourceEditorIntfWithFilename(
+  const Filename: string): TSourceEditorInterface;
+var
+  i: Integer;
+begin
+  for i:=Count-1 downto 0 do begin
+    Result:=Items[i];
+    if CompareFilenames(Result.Filename,Filename)=0 then exit;
+  end;
+  Result:=nil;
 end;
 
 end.
