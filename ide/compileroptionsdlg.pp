@@ -370,41 +370,45 @@ begin
 
   Page:=0;
 
-  { Search Paths Tab }
-  SetupSearchPathsTab(Page);
-  inc(Page);
+  DisableAlign;
+  try
+    { Search Paths Tab }
+    SetupSearchPathsTab(Page);
+    inc(Page);
 
-  { Parsing Tab }
-  SetupParsingTab(Page);
-  inc(Page);
+    { Parsing Tab }
+    SetupParsingTab(Page);
+    inc(Page);
 
-  { Code Generation Tab }
-  SetupCodeGenerationTab(Page);
-  inc(Page);
+    { Code Generation Tab }
+    SetupCodeGenerationTab(Page);
+    inc(Page);
 
-  { Linking Tab }
-  SetupLinkingTab(Page);
-  inc(Page);
+    { Linking Tab }
+    SetupLinkingTab(Page);
+    inc(Page);
 
-  { Messages Tab }
-  SetupMessagesTab(Page);
-  inc(Page);
+    { Messages Tab }
+    SetupMessagesTab(Page);
+    inc(Page);
 
-  { Other Tab }
-  SetupOtherTab(Page);
-  inc(Page);
+    { Other Tab }
+    SetupOtherTab(Page);
+    inc(Page);
 
-  { Inherited Tab }
-  SetupInheritedTab(Page);
-  inc(Page);
+    { Inherited Tab }
+    SetupInheritedTab(Page);
+    inc(Page);
 
-  { Compilation Tab }
-  SetupCompilationTab(Page);
-  inc(Page);
+    { Compilation Tab }
+    SetupCompilationTab(Page);
+    inc(Page);
 
-  { Bottom Buttons }
-  SetupButtonBar;
-
+    { Bottom Buttons }
+    SetupButtonBar;
+  finally
+    EnableAlign;
+  end;
 
   //TODO: MWE: Are these still needed ?
   // can't we just use a Doxxx portected method ?
@@ -1365,12 +1369,10 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupCodeGenerationTab                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions SetupCodeGenerationTab
+------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
-var
-  w: Integer;
 begin
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
@@ -1384,6 +1386,7 @@ begin
     Height := 80;
     Width := 150;
     Caption := dlgCOUnitStyle;
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
   end;
 
   chkSmartLinkUnit := TCheckBox.Create(Self);
@@ -1391,9 +1394,6 @@ begin
   begin
     Parent := grpSmartLinkUnit;
     Caption := dlgCOSmartLinkable + ' (-CX)';
-    Top := 5;
-    Left := 5;
-    Width := Parent.ClientWidth-13;
   end;
 
   {------------------------------------------------------------}
@@ -1406,6 +1406,8 @@ begin
     Height := 80;
     Width := 210;
     Caption := dlgCOChecks;
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+    ChildSizing.ControlsPerLine:=2;
   end;
 
   chkChecksIO := TCheckBox.Create(Self);
@@ -1413,9 +1415,6 @@ begin
   begin
     Parent := grpChecks;
     Caption := 'I/O (-Ci)';
-    Top := 2;
-    Left := 2;
-    Width := 100;
   end;
 
   chkChecksRange := TCheckBox.Create(Self);
@@ -1423,9 +1422,6 @@ begin
   begin
     Parent := grpChecks;
     Caption := dlgCORange+' (-Cr)';
-    Top := 2;
-    Left := 102;
-    Width := 100;
   end;
 
   chkChecksOverflow := TCheckBox.Create(Self);
@@ -1433,9 +1429,6 @@ begin
   begin
     Parent := grpChecks;
     Caption := dlgCOOverflow+' (-Co)';
-    Top := 27;
-    Left := 2;
-    Width := 100;
   end;
 
   chkChecksStack := TCheckBox.Create(Self);
@@ -1443,9 +1436,6 @@ begin
   begin
     Parent := grpChecks;
     Caption := dlgCOStack+' (-Ct)';
-    Top := 27;
-    Left := 102;
-    Width := 100;
   end;
 
   {------------------------------------------------------------}
@@ -1459,6 +1449,7 @@ begin
     Height := 55;
     Width := 100;
     Caption := dlgHeapSize +' (-Ch):';
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
   end;
 
   edtHeapSize := TEdit.Create(grpHeapSize);
@@ -1466,10 +1457,7 @@ begin
   begin
     Parent := grpHeapSize;
     Caption := dlgHeapSize;
-    Top := 8;
-    Left := 5;
-    Height := 23;
-    Width := 65;
+    BorderSpacing.Around:=3;
     Text := '';
   end;
 
@@ -1484,15 +1472,13 @@ begin
     Height := 100;
     Width := 150;
     Caption := dlgCOGenerate;
+    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
   end;
 
   radGenNormal := TRadioButton.Create(grpGenerate);
   with radGenNormal do
   begin
     Parent := grpGenerate;
-    Top := 5;
-    Left := 5;
-    Width := 140;
     Caption := dlgCONormal+' (none)';
   end;
 
@@ -1500,9 +1486,6 @@ begin
   with radGenFaster do
   begin
     Parent := grpGenerate;
-    Top := 28;
-    Left := 5;
-    Width := 140;
     Caption := dlgCOFast+' (-OG)';
   end;
 
@@ -1510,9 +1493,6 @@ begin
   with radGenSmaller do
   begin
     Parent := grpGenerate;
-    Top := 51;
-    Left := 5;
-    Width := 140;
     Caption := dlgCOSmaller+' (-Og)';
   end;
 
@@ -1635,17 +1615,15 @@ begin
     Height := 150;
     Width := 360;
     Caption := dlgOptimiz;
+    ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+    AutoSize:=true;
   end;
 
-  w:=(grpOptimizations.Width-10);
   radOptLevelNone := TRadioButton.Create(grpOptimizations);
   with radOptLevelNone do
   begin
     Parent := grpOptimizations;
     Caption :=  dlgLevelNoneOpt+' (none)';
-    Top := 5;
-    Left := 5;
-    Width := w;
   end;
 
   radOptLevel1 := TRadioButton.Create(grpOptimizations);
@@ -1653,9 +1631,6 @@ begin
   begin
     Parent := grpOptimizations;
     Caption :=  dlgLevel1Opt+' (-O1)';
-    Top := 26;
-    Left := 5;
-    Width := w;
   end;
 
   radOptLevel2 := TRadioButton.Create(grpOptimizations);
@@ -1663,9 +1638,6 @@ begin
   begin
     Parent := grpOptimizations;
     Caption := dlgLevel2Opt+' (-O2)';
-    Top := 47;
-    Left := 5;
-    Width := w;
   end;
 
   radOptLevel3 := TRadioButton.Create(grpOptimizations);
@@ -1673,9 +1645,6 @@ begin
   begin
     Parent := grpOptimizations;
     Caption := dlgLevel3Opt+' (-O3)';
-    Top := 68;
-    Left := 5;
-    Width := w;
   end;
 
   chkOptVarsInReg := TCheckBox.Create(Self);
@@ -1683,9 +1652,6 @@ begin
   begin
     Parent := grpOptimizations;
     Caption := dlgCOKeepVarsReg+' (-Or)';
-    Top := 89;
-    Left := 5;
-    Width := w;
   end;
 
   chkOptUncertain := TCheckBox.Create(Self);
@@ -1693,9 +1659,6 @@ begin
   begin
     Parent := grpOptimizations;
     Caption := dlgUncertOpt+' (-Ou)';
-    Top := 110;
-    Left := 5;
-    Width := w;
   end;
 end;
 {------------------------------------------------------------------------------

@@ -311,6 +311,8 @@ var
       end;
       ASearch:=copy(CurLine,Match,MatchLen);
       AReplace:=ReplaceText;
+      if fRegExp then
+        AReplace:=RE.Substitute(AReplace);
       SourceEditorWindow.ActiveEditor.AskReplace(Self,ASearch,AReplace,
                                                  Line,Match,Action);
       case Action of
@@ -322,7 +324,9 @@ var
         exit;
       end;
     end;
+    
     // TODO: create change text
+    
   end;
 
 begin

@@ -749,6 +749,7 @@ var
     Add(GDK_GL_GREEN_SIZE);  Add(1);
     Add(GDK_GL_BLUE_SIZE);  Add(1);
     Add(GDK_GL_DEPTH_SIZE);  Add(1);
+    Add(GDK_GL_STENCIL_SIZE); Add(1);
     Add(GDK_GL_None);
   end;
   
