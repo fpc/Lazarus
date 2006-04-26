@@ -400,6 +400,7 @@ end;
 
 destructor THelpManager.Destroy;
 begin
+  FPCMessagesHelpDB:=nil;
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
   FreeThenNil(HelpOpts);
@@ -407,7 +408,6 @@ begin
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
   FreeThenNil(FLCLHelpDBPath);
-  FreeThenNil(FPCMessagesHelpDB);
   HelpBoss:=nil;
   inherited Destroy;
 end;
