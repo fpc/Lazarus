@@ -1,6 +1,6 @@
 object CodeExplorerDlg: TCodeExplorerDlg
   ActiveControl = UpdatePage
-  BorderStyle = bsToolWindow
+  BorderStyle = bsSizeToolWin
   Caption = 'CodeExplorerDlg'
   ClientHeight = 300
   ClientWidth = 400
