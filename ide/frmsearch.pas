@@ -284,6 +284,8 @@ var
   Line:      integer;    // Loop Counter
   Match:      integer;   // Position of match in line.
   CurLine: String;
+  CurLineReplaceOffset: integer; // e.g. if in the current line 'ABC'
+                         // was replaced by 'a', then CurLineReplaceOffset is -2
   TempSearch: string;    // Temp Storage for the search string.
   MatchLen: integer;
   RE: TRegExpr;
@@ -392,8 +394,11 @@ var
     if FileIsOpenInSourceEditor then begin
       // change text in source editor
       EnablePaintLock;
-      SrcEdit.SelectText(Line+1,Match,Line+1,Match+MatchLen);
+      SrcEdit.SelectText(Line+1,Match+CurLineReplaceOffset,
+                         Line+1,Match+CurLineReplaceOffset+MatchLen);
       SrcEdit.Selection:=AReplace;
+      // adjust CurLine and MatchLen for next search
+      DebugLn('DoReplaceLine CurLine="',CurLine,'" Match=',dbgs(Match),' MatchLen=',dbgs(MatchLen));
     end else begin
       // change text in memory/disk
       OriginalFile.LineColToPosition(Line+1,Match,OriginalTextPos);
@@ -415,6 +420,8 @@ var
       // save original position behind found position
       OriginalFile.LineColToPosition(Line+1,Match+MatchLen,ReplacedTextOriginalPos);
     end;
+    // adjust replace offset
+    inc(CurLineReplaceOffset,length(AReplace)-MatchLen);
   end;
   
   procedure CommitChanges;
@@ -478,8 +485,15 @@ begin
     MatchLen:= Length(fSearchFor);
     TempSearch:= fSearchFor;
 
-    OriginalFile:= TSourceLog.Create('');
-    OriginalFile.LoadFromFile(TheFileName);
+    // load text (do not use CodeToolBoss cache system to save memory)
+    if FileIsOpenInSourceEditor then begin
+      OriginalFile:=TSourceLog.Create(SrcEdit.GetText(false));
+    end else begin
+      OriginalFile:=TSourceLog.Create('');
+      OriginalFile.LoadFromFile(TheFileName);
+    end;
+    
+    // convert case
     if fCaseSensitive then begin
       CaseFile:=OriginalFile;
     end else begin
@@ -509,6 +523,7 @@ begin
       end;
       Match:=1;
       MatchLen:=0;
+      CurLineReplaceOffset:=0;
       repeat
         LastMatchStart:=Match;
         LastMatchEnd:=Match+MatchLen;
@@ -532,7 +547,8 @@ begin
           Found:=SearchInLine(TempSearch,CaseFile,Line,
                               fWholeWord,LastMatchEnd,Match);
           if Found then begin
-            CurLine:=OriginalFile.GetLine(Line);
+            if (LastMatchStart=LastMatchEnd) then
+              CurLine:=OriginalFile.GetLine(Line);
             MatchLen:=length(TempSearch);
           end;
         end;

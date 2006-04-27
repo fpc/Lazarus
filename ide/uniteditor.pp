@@ -4343,6 +4343,10 @@ begin
 
   FindInFilesDialog.FindText:= FindText;
   IDEDialogLayoutList.ApplyLayout(FindInFilesDialog,320,430);
+  // disable replace. Find in files is often called,
+  // but almost never to replace with the same parameters
+  FindInFilesDialog.Options:=
+                           FindInFilesDialog.Options-[fifReplace,fifReplaceAll];
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     SaveFindInFilesHistory(FindInFilesDialog);
