@@ -619,6 +619,16 @@ var
     AddOperand('Ma');
   end;
 
+  procedure GetMb;
+  begin
+    AddOperand('Ma');
+  end;
+
+  procedure GetMd_q;
+  begin
+    AddOperand('Md/q');
+  end;
+
   procedure GetMdq;
   begin
     AddOperand('Mdq');
@@ -634,6 +644,16 @@ var
     AddOperand('Mq');
   end;
 
+  procedure GetMs;
+  begin
+    AddOperand('Ms');
+  end;
+
+  procedure GetMw_Rv;
+  begin
+    AddOperand('Mw/Rv');
+  end;
+
   // there is no much difference in displaying Ob or Ov, both read form mem
   procedure GetOb;
   begin
@@ -645,11 +665,21 @@ var
     AddOperand('%s', OPERAND_BYTES[OperandSize32], [hvfIncludeHexchar], True)
   end;
 
+  procedure GetPd_q;
+  begin
+    AddOperand('Pd/q');
+  end;
+
   procedure GetPq;
   begin
     AddOperand('Pq');
   end;
 
+  procedure GetPRq;
+  begin
+    AddOperand('PRq');
+  end;
+  
   procedure GetQd;
   begin
     AddOperand('Qd');
@@ -670,6 +700,11 @@ var
     GetModReg(regSegment, False);
   end;
 
+  procedure GetVd_q;
+  begin
+    AddOperand('Vd/q');
+  end;
+
   procedure GetVdq;
   begin
     AddOperand('Vdq');
@@ -677,12 +712,12 @@ var
 
   procedure GetVdq_sd;
   begin
-    AddOperand('Vdq_sd');
+    AddOperand('Vdq/sd');
   end;
 
   procedure GetVdq_ss;
   begin
-    AddOperand('Vdq_ss');
+    AddOperand('Vdq/ss');
   end;
 
   procedure GetVpd;
@@ -695,6 +730,11 @@ var
     AddOperand('Vps');
   end;
 
+  procedure GetVq;
+  begin
+    AddOperand('Vq');
+  end;
+
   procedure GetVsd;
   begin
     AddOperand('Vsd');
@@ -705,6 +745,11 @@ var
     AddOperand('Vss');
   end;
 
+  procedure GetVRdq;
+  begin
+    AddOperand('VRdq');
+  end;
+
   procedure GetVRpd;
   begin
     AddOperand('VRpd');
@@ -713,6 +758,11 @@ var
   procedure GetVRps;
   begin
     AddOperand('VRps');
+  end;
+
+  procedure GetVRq;
+  begin
+    AddOperand('VRq');
   end;
 
   procedure GetWdq;
@@ -934,34 +984,13 @@ var
 
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: begin
-        GetEv;
-        Opcode := CheckLock('inc');
-      end;
-      1: begin
-        GetEv;
-        Opcode := CheckLock('dec');
-      end;
-      2: begin
-        Opcode := 'call';
-        GetEv;
-      end;
-      3: begin
-        Opcode := 'call';
-        GetMp;
-      end;
-      4: begin
-        Opcode := 'jmp';
-        GetEv;
-      end;
-      5: begin
-        Opcode := 'jmp';
-        GetMp;
-      end;
-      6: begin
-        Opcode := 'push';
-        GetEv;
-      end;
+      0: begin GetEv; Opcode := CheckLock('inc'); end;
+      1: begin GetEv; Opcode := CheckLock('dec'); end;
+      2: begin GetEv; Opcode := 'call';           end;
+      3: begin GetMp; Opcode := 'call';           end;
+      4: begin GetEv; Opcode := 'jmp';            end;
+      5: begin GetMp; Opcode := 'jmp';            end;
+      6: begin GetEv; Opcode := 'push';           end;
     else
       Opcode := '**group5**';
       Exit;
@@ -979,11 +1008,26 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
+    case Index of
+      0: begin GetMw_Rv; Opcode := 'sldt'; end;
+      1: begin GetMw_Rv; Opcode := 'str';  end;
+      2: begin GetEw;    Opcode := 'lldt'; end;
+      3: begin GetEw;    Opcode := 'ltr';  end;
+      4: begin GetEw;    Opcode := 'verr'; end;
+      5: begin GetEw;    Opcode := 'verw'; end;
+    else
+      Opcode := '**group6**';
+      Exit;
+    end;
   end;
 
   procedure DoGroup7;
+  const
+    RM3: array [0..7] of String = ('vmrun', 'vmmcall', 'vmload', 'vmsave', 'stgi', 'clgi', 'skinit', 'invlpga');
   var
+    Mode: Byte;
     Index: Byte;
+    RM: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $01
@@ -991,7 +1035,43 @@ var
       Opcode := '!group7!';
       Exit;
     end;
+    Mode :=  (Code[ModRMIdx] shr 6) and 3;
     Index := (Code[ModRMIdx] shr 3) and 7;
+    RM :=    (Code[ModRMIdx]      ) and 7;
+    case Index of
+      0: begin GetMs; Opcode := 'sgdt'; end;
+      1: begin GetMs; Opcode := 'sidt';  end;
+      2: begin GetMs; Opcode := 'lgdt'; end;
+      3: begin
+        if Mode = 3
+        then begin
+          Opcode := RM3[RM];
+        end
+        else begin
+          GetMs; Opcode := 'lidt';
+        end;
+      end;
+      4: begin GetMw_Rv; Opcode := 'smsw'; end;
+      //5 : invalid
+      6: begin GetEw;    Opcode := 'lmsw'; end;
+      7: begin
+        if Mode = 3
+        then begin
+          case RM of
+            0: Opcode := 'swapgs';
+            1: Opcode := 'rdtscp';
+          else
+            Opcode := '**group7**';
+          end;
+        end
+        else begin
+          GetMb; Opcode := 'invlpg';
+        end;
+      end;
+    else
+      Opcode := '**group7**';
+      Exit;
+    end;
   end;
   
   procedure DoGroup8;
@@ -1005,6 +1085,18 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
+    if Index < 4
+    then begin
+      Opcode := '**group8**';
+      Exit;
+    end;
+    GetEv; GetIb;
+    case Index of
+      4: Opcode := 'bt';
+      5: Opcode := CheckLock('bts');
+      6: Opcode := CheckLock('btr');
+      7: Opcode := CheckLock('btc');
+    end;
   end;
 
   procedure DoGroup9;
@@ -1018,11 +1110,15 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
+    if Index = 1
+    then begin
+      Opcode := 'cmpxchg8b';
+      GetMq;
+    end
+    else Opcode := '**group9**';
   end;
 
   procedure DoGroup10;
-  var
-    Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $B9
@@ -1030,7 +1126,8 @@ var
       Opcode := '!group10!';
       Exit;
     end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
+    // whole goup is invalid
+    Opcode := '**group10**';
   end;
 
   procedure DoGroup11;
@@ -1180,11 +1277,29 @@ var
     end;
   
   const
-    OPR60: array[0..$F] of String = (
+    OPR_6x: array[0..$F] of String = (
       'punpcklbw', 'punpcklwd', 'punpcklqd', 'packsswb',
       'pcmpgtb', 'pcmpgtw', 'pcmpgtd', 'packuswb',
       'punpkhbw', 'punpkhwd', 'punpkhdq', 'packssdw',
-      'punpcklqdq', 'punpckhqdq', '', 'movq'
+      'punpcklqdq', 'punpckhqdq', '', ''
+    );
+    OPR_Dx: array[0..$F] of String = (
+      '', 'psrlw', 'psrld', 'psrlq',
+      'paddq', 'pmullw', '', '',
+      'psubusb', 'psubusw', 'pminub', 'pand',
+      'paddusb', 'paddusw', 'pmaxub', 'pandn'
+    );
+    OPR_Ex: array[0..$F] of String = (
+      'pavgb', 'psraw', 'psrad', 'pavgw',
+      'pmulhuw', 'pmulhw', '', '',
+      'psubsb', 'psubsw', 'pminsw', 'por',
+      'paddsb', 'paddsw', 'pmaxsw', 'pxor'
+    );
+    OPR_Fx: array[0..$F] of String = (
+      '', 'psllw', 'pslld', 'psllq',
+      'pmuludq', 'pmaddwd', 'psadbw', '',
+      'psubb', 'psubw', 'psubd', 'psubq',
+      'paddb', 'paddw', 'paddd', ''
     );
   var
     idx: Integer;
@@ -1205,6 +1320,7 @@ var
         Opcode := 'lsl';
         GetGv; GetEw;
       end;
+      // $04: invalid
       $05: begin
         Opcode := 'syscall';
       end;
@@ -1220,9 +1336,11 @@ var
       $09: begin
         Opcode := 'wbinvd';
       end;
+      // $0A: invalid
       $0B: begin
         Opcode := 'ud2';
       end;
+      // $0C: invalid
       $0D: begin
         DoGroupP;
       end;
@@ -1326,7 +1444,7 @@ var
         Opcode := 'mov';
         GetDd_q; GetRd_q;
       end;
-      //$24..$27: invalid
+      // $24..$27: invalid
       $28: begin
         case DecodePrefix('movaps', '', 'movapd', '') of
           0: begin GetVps; GetWps; end;
@@ -1400,7 +1518,7 @@ var
       $35: begin
         Opcode := '**sysexit**';
       end;
-      //$36..$3F: invalid
+      // $36..$3F: invalid
       //---
       $40..$4F: begin
         Opcode := 'cmov' + StdCond(Code[CodeIdx]);
@@ -1487,9 +1605,9 @@ var
       end;
       // $5C..$5F: see $51
       //---
-      $60..$6D, $6F: begin
+      $60..$6D: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR60[idx], '', OPR60[idx], '');
+        idx := DecodePrefix(OPR_6x[idx], '', OPR_6x[idx], '');
 
         if (idx = 0) and (Code[CodeIdx] in [$6C, $6D])
         then begin
@@ -1499,7 +1617,10 @@ var
 
         case Idx of
           0: begin GetPq;  GetQd; end;
-          2: begin GetVdq; GetWq; end;
+          2: begin
+            GetVdq;
+            if Code[CodeIdx] = $6B then GetWdq else GetWq;
+          end;
         end;
       end;
       $6E: begin
@@ -1508,7 +1629,87 @@ var
           2: begin GetVdq; GetEd_q; end;
         end;
       end;
+      $6F: begin
+        case DecodePrefix('movq', 'movdqu', 'movdqa', '') of
+          0: begin GetPq;  GetQq;  end;
+          1: begin GetVdq; GetWdq; end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
       //---
+      $70: begin
+        case DecodePrefix('pshufw', 'pshufhw', 'pshufd', 'pshuflw') of
+          0: begin GetPq;  GetQq;  GetIb; end;
+          1: begin GetVq;  GetWq;  GetIb; end;
+          2: begin GetVdq; GetWdq; GetIb; end;
+          3: begin GetVq;  GetWq;  GetIb; end;
+        end;
+      end;
+      $71: begin
+        if Flags * [preRep, preRepNE] = []
+        then DoGroup12
+        else Opcode := INVALID;
+      end;
+      $72: begin
+        if Flags * [preRep, preRepNE] = []
+        then DoGroup13
+        else Opcode := INVALID;
+      end;
+      $73: begin
+        if Flags * [preRep, preRepNE] = []
+        then DoGroup14
+        else Opcode := INVALID;
+      end;
+      $74: begin
+        case DecodePrefix('pcmpeqb', '', 'pcmpeqb', '') of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $75: begin
+        case DecodePrefix('pcmpeqw', '', 'pcmpeqw', '') of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $76: begin
+        case DecodePrefix('pcmpeqd', '', 'pcmpeqd', '') of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $77: begin
+        if Flags * [preRep, preRepNE, preOpr] = []
+        then Opcode := 'emms'
+        else Opcode := INVALID;
+      end;
+      // $78..$7B: invalid
+      $7C: begin
+        case DecodePrefix('', '', 'haddpd', 'haddps') of
+          2: begin GetVpd; GetWpd; end;
+          3: begin GetVps; GetWps; end;
+        end;
+      end;
+      $7D: begin
+        case DecodePrefix('', '', 'hsubpd', 'hsubps') of
+          2: begin GetVpd; GetWpd; end;
+          3: begin GetVps; GetWps; end;
+        end;
+      end;
+      $7E: begin
+        case DecodePrefix('movd', 'movq', 'movd', '') of
+          0: begin GetEd_q; GetPd_q; end;
+          1: begin GetVq;   GetWq;   end;
+          2: begin GetEd_q; GetVd_q; end;
+        end;
+      end;
+      $7F: begin
+        case DecodePrefix('movq', 'movdqu', 'movdqa', '') of
+          0: begin GetQq;  GetPq;  end;
+          1: begin GetWdq; GetVdq; end;
+          2: begin GetWdq; GetVdq; end;
+        end;
+      end;
       //---
       $80..$8F: begin
         Opcode := 'j' + StdCond(Code[CodeIdx]);
@@ -1544,7 +1745,7 @@ var
         GetEv; GetGv;
         AddOperand('cl');
       end;
-      //$A6..$A7: invalid
+      // $A6..$A7: invalid
       $A8: begin
         Opcode := 'push';
         AddOperand('gs');
@@ -1585,6 +1786,57 @@ var
         GetEv; GetGv;
         Opcode := CheckLock('cmpxchg');
       end;
+      $B2: begin
+        Opcode := 'lss';
+        GetGz; GetMp;
+      end;
+      $B3: begin
+        Opcode := 'btr';
+        GetEv; GetGv;
+      end;
+      $B4: begin
+        Opcode := 'lfs';
+        GetGz; GetMp;
+      end;
+      $B5: begin
+        Opcode := 'lgs';
+        GetGz; GetMp;
+      end;
+      $B6: begin
+        Opcode := 'movzx';
+        GetGv; GetEb;
+      end;
+      $B7: begin
+        Opcode := 'movzx';
+        GetGv; GetEw;
+      end;
+      // $B8: invalid
+      $B9: begin
+        DoGroup10;
+      end;
+      $BA: begin
+        DoGroup8;
+      end;
+      $BB: begin
+        Opcode := 'btc';
+        GetEv; GetGv;
+      end;
+      $BC: begin
+        Opcode := 'bsf';
+        GetGv; GetEv;
+      end;
+      $BD: begin
+        Opcode := 'bsr';
+        GetGv; GetEv;
+      end;
+      $BE: begin
+        Opcode := 'movsx';
+        GetGv; GetEb;
+      end;
+      $BF: begin
+        Opcode := 'movsx';
+        GetGv; GetEw;
+      end;
       //---
       $C0: begin
         GetEb; GetGb;
@@ -1594,6 +1846,40 @@ var
         GetEv; GetGv;
         Opcode := CheckLock('xadd');
       end;
+      $C2: begin
+        case DecodePrefix('cmpps', 'cmpss', 'cmppd', 'cmpsd') of
+          0: begin GetVps; GetWps; GetIb end;
+          1: begin GetVss; GetWss; GetIb end;
+          2: begin GetVpd; GetWpd; GetIb end;
+          3: begin GetVsd; GetWsd; GetIb end;
+        end;
+      end;
+      $C3: begin
+        if Flags * [preRep, preRepNE, preOpr] = []
+        then begin
+          Opcode := 'movnti';
+          GetMd_q; GetGd_q;
+        end
+        else Opcode := INVALID;
+      end;
+      $C4: begin
+        case DecodePrefix('pinsrw', '', 'pinsrw', '') of
+          0: begin GetPq;  GetEw; GetIb end;
+          2: begin GetVdq; GetEw; GetIb end;
+        end;
+      end;
+      $C5: begin
+        case DecodePrefix('pextrw', '', 'pextrw', '') of
+          0: begin GetGd; GetPRq;  GetIb end;
+          2: begin GetGd; GetVRdq; GetIb end;
+        end;
+      end;
+      $C6: begin
+        case DecodePrefix('shufps', '', 'shufpd', '') of
+          0: begin GetVps; GetWps; GetIb end;
+          2: begin GetVpd; GetWpd; GetIb end;
+        end;
+      end;
       $C7: begin
         DoGroup9;
       end;
@@ -1601,9 +1887,87 @@ var
         Opcode := 'bswp';
         AddOperand(StdReg(Code[CodeIdx]));
       end;
+      //---
+      $D0: begin
+        case DecodePrefix('', '', 'addsubpd', 'addsubps') of
+          2: begin GetVpd; GetWpd; end;
+          3: begin GetVps; GetWps; end;
+        end;
+      end;
+      $D1..$D5, $D8..$DF: begin
+        idx := Code[CodeIdx] and $F;
+        idx := DecodePrefix(OPR_Dx[idx], '', OPR_Dx[idx], '');
+
+        case Idx of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $D6: begin
+        case DecodePrefix('', 'movq2dq', 'movq', 'movdq2q') of
+          1: begin GetVdq; GetPRq; end;
+          2: begin GetWq;  GetVq;  end;
+          3: begin GetPq;  GetVRq; end;
+        end;
+      end;
+      $D7: begin
+        case DecodePrefix('pmovmskb', '', 'pmovmskb', '') of
+          0: begin GetGd; GetPRq;  end;
+          2: begin GetGd; GetVRdq; end;
+        end;
+      end;
+      // $D8..$DF: see $D1
+      //---
+      $E0..$E5, $E8..$EF: begin
+        idx := Code[CodeIdx] and $F;
+        idx := DecodePrefix(OPR_Ex[idx], '', OPR_Ex[idx], '');
+
+        case Idx of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $E6: begin
+        case DecodePrefix('', 'cvtdq2pd', 'cvttpd2dq', 'cvtpd2dq') of
+          1: begin GetVpd; GetWq;  end;
+          2: begin GetVq;  GetWpd; end;
+          3: begin GetVq;  GetWpd; end;
+        end;
+      end;
+      $E7: begin
+        case DecodePrefix('movntq', '', 'movntdqu', '') of
+          0: begin GetMq;  GetPq;  end;
+          2: begin GetMdq; GetVdq; end;
+        end;
+      end;
+      // $E8..$EF: see $E0
+      $F0: begin
+        if preRepNE in Flags
+        then begin
+          Opcode := 'lddqu';
+          GetVpd; GetMdq;
+        end
+        else Opcode := INVALID;
+      end;
+      $F1..$F6, $F8..$FE: begin
+        idx := Code[CodeIdx] and $F;
+        idx := DecodePrefix(OPR_Fx[idx], '', OPR_Fx[idx], '');
+
+        case Idx of
+          0: begin GetPq;  GetQq;  end;
+          2: begin GetVdq; GetWdq; end;
+        end;
+      end;
+      $F7: begin
+        case DecodePrefix('maskmovq', '', 'maskmovdqu', '') of
+          0: begin GetPq;  GetPRq;  end;
+          2: begin GetVdq; GetVRdq; end;
+        end;
+      end;
+      // $F8..$FE: see $F1
+      // $FF: invalid
     else
       Opcode := INVALID;
-      Opcode := '!!2byte:' + HexValue(Code[CodeIdx], 1, []);
     end;
   end;
 
@@ -1835,10 +2199,8 @@ var
           GetStdOperands(Code[CodeIdx]);
         end;
         $8C: begin
-          // Intel specifies Ew
-          // AMD specifies Mw/Rv (which is IMO the same as Ew)
           Opcode := 'mov';
-          GetEw; GetSw;
+          GetMw_Rv; GetSw;
         end;
         $8D: begin
           Opcode := 'lea';
