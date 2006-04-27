@@ -41,6 +41,13 @@ uses
 {                   
   The function Disassemble decodes the instruction at the given address.
   After decoding, the address increased to the next instruction.
+  The following chars are used to indicate problems with instruction
+  sequenses:
+  ** invalid opcode
+  -- reserved opcode
+  () ignored opcode
+  ?? unspecified
+  !! internal error, a group got called for an opcode which wasn't decoded there
 }  
 
 
@@ -50,7 +57,7 @@ function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var Address:
 implementation
 
 type
-  TFlag = (flagRex, flagSib, flagModRM, rexB, rexX, rexR, rexW, preOpr, preAdr);
+  TFlag = (flagRex, flagSib, flagModRM, rexB, rexX, rexR, rexW, preOpr, preAdr, preLock, preRep{N}, preRepNE);
   TFlags = set of TFlag;
   
   TOperandSize = (os8, os16, os32, os64);
@@ -124,15 +131,15 @@ var
   end;
   OperIdx: Byte;
   ModRMIdx: Byte;
+  Opcode: String;
   Segment: String;
-  Prefix: String;
   Flags: TFlags;
 
   function Check32(const Opcode: String): String;
   begin
     // only valid in 32-bit mode
     if A64Bit
-    then Result := '*' + Opcode + '*'
+    then Result := '**' + Opcode + '**'
     else Result := Opcode;
   end;
 
@@ -141,7 +148,7 @@ var
     // only valid in 64-bit mode
     if A64Bit
     then Result := Opcode
-    else Result := '*' + Opcode + '*';
+    else Result := '**' + Opcode + '**';
   end;
 
   function Ignore64(const Opcode: String): String;
@@ -152,8 +159,56 @@ var
     else Result := Opcode;
   end;
   
-  //===================
+  function CheckLock(const AOpcode: String): String;
+    function CheckMem: boolean;
+    var
+      n: Byte;
+    begin
+      Result := True;
+      for n := 1 to OperIdx do
+        if Operand[n].IsMemory then Exit;
+      Result := False;
+    end;
+  begin
+    if (preLock in Flags) and CheckMem
+    then begin
+      Exclude(Flags, preLock);
+      Result := 'lock: ' + AOpcode;
+      Exit;
+    end;
+    Result := AOpcode;
+  end;
+
+  function CheckRepeat(const AOpcode: String): String;
+  begin
+    if preRep in Flags
+    then begin
+      Exclude(Flags, preRep);
+      Result := 'rep: ' + AOpcode;
+      Exit;
+    end;
+    Result := AOpcode;
+  end;
   
+  function CheckRepeatX(const AOpcode: String): String;
+  begin
+    if preRep in Flags
+    then begin
+      Exclude(Flags, preRep);
+      Result := 'repe: ' + AOpcode;
+      Exit;
+    end;
+    if preRepNE in Flags
+    then begin
+      Exclude(Flags, preRepNE);
+      Result := 'repe: ' + AOpcode;
+      Exit;
+    end;
+    Result := AOpcode;
+  end;
+  
+  //===================
+
   procedure AddOperand(const AValue: String; ASize: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AIsMemory: Boolean = False);
   begin
     Inc(OperIdx);
@@ -214,6 +269,13 @@ var
   function SizeReg32(const AReg: String): String;
   begin
     Result := SizeReg32(AReg, OperandSize32);
+  end;
+
+  function StdCond(AIndex: Byte): String;
+  const
+    COND: array[0..$F] of String = ('o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle');
+  begin
+    Result := COND[AIndex and $F];
   end;
 
   function StdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean): String;
@@ -426,6 +488,16 @@ var
     AddOperand('Ap');
   end;
   
+  procedure GetCd_q;
+  begin
+    GetModReg(regControl, rexR in Flags);
+  end;
+
+  procedure GetDd_q;
+  begin
+    GetModReg(regDebug, rexR in Flags);
+  end;
+  
   procedure GetEb;
   begin
     GetModRM(True, True, os8);
@@ -436,6 +508,13 @@ var
     GetModRM(True, True, os32);
   end;
 
+  procedure GetEd_q;
+  begin
+    if flagRex in Flags
+    then GetModRM(True, True, os64)
+    else GetModRM(True, True, os32);
+  end;
+  
   procedure GetEv;
   begin
     GetModRM(True, True, OperandSize32);
@@ -459,6 +538,18 @@ var
   procedure GetGb;
   begin
     GetModReg(reg8, rexR in Flags);
+  end;
+
+  procedure GetGd;
+  begin
+    GetModReg(reg32, rexR in Flags);
+  end;
+
+  procedure GetGd_q;
+  begin
+    if flagRex in Flags
+    then GetModReg(reg64, rexR in Flags)
+    else GetModReg(reg32, rexR in Flags);
   end;
 
   procedure GetGv;
@@ -503,21 +594,6 @@ var
     AddOperand('%s', b, [hvfIncludeHexchar]);
   end;
   
-  procedure GetM;
-  begin
-    GetModRM(False, True, os8 {dont care} );
-  end;
-  
-  procedure GetMa;
-  begin
-    AddOperand('Ma');
-  end;
-
-  procedure GetMp;
-  begin
-    AddOperand('Mp');
-  end;
-  
   procedure GetJb;
   begin
     AddOperand('%s', 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
@@ -533,6 +609,31 @@ var
     AddOperand('%s', b, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
   end;
   
+  procedure GetM;
+  begin
+    GetModRM(False, True, os8 {dont care} );
+  end;
+
+  procedure GetMa;
+  begin
+    AddOperand('Ma');
+  end;
+
+  procedure GetMdq;
+  begin
+    AddOperand('Mdq');
+  end;
+
+  procedure GetMp;
+  begin
+    AddOperand('Mp');
+  end;
+
+  procedure GetMq;
+  begin
+    AddOperand('Mq');
+  end;
+
   // there is no much difference in displaying Ob or Ov, both read form mem
   procedure GetOb;
   begin
@@ -544,9 +645,104 @@ var
     AddOperand('%s', OPERAND_BYTES[OperandSize32], [hvfIncludeHexchar], True)
   end;
 
+  procedure GetPq;
+  begin
+    AddOperand('Pq');
+  end;
+
+  procedure GetQd;
+  begin
+    AddOperand('Qd');
+  end;
+  
+  procedure GetQq;
+  begin
+    AddOperand('Qq');
+  end;
+
+  procedure GetRd_q;
+  begin
+    GetModRM(True, False, OperandSize32);
+  end;
+  
   procedure GetSw;
   begin
     GetModReg(regSegment, False);
+  end;
+
+  procedure GetVdq;
+  begin
+    AddOperand('Vdq');
+  end;
+
+  procedure GetVdq_sd;
+  begin
+    AddOperand('Vdq_sd');
+  end;
+
+  procedure GetVdq_ss;
+  begin
+    AddOperand('Vdq_ss');
+  end;
+
+  procedure GetVpd;
+  begin
+    AddOperand('Vsd');
+  end;
+
+  procedure GetVps;
+  begin
+    AddOperand('Vps');
+  end;
+
+  procedure GetVsd;
+  begin
+    AddOperand('Vsd');
+  end;
+
+  procedure GetVss;
+  begin
+    AddOperand('Vss');
+  end;
+
+  procedure GetVRpd;
+  begin
+    AddOperand('VRpd');
+  end;
+
+  procedure GetVRps;
+  begin
+    AddOperand('VRps');
+  end;
+
+  procedure GetWdq;
+  begin
+    AddOperand('Wdq');
+  end;
+  
+  procedure GetWpd;
+  begin
+    AddOperand('Wpd');
+  end;
+
+  procedure GetWps;
+  begin
+    AddOperand('Wps');
+  end;
+
+  procedure GetWq;
+  begin
+    AddOperand('Wq');
+  end;
+
+  procedure GetWsd;
+  begin
+    AddOperand('Wsd');
+  end;
+
+  procedure GetWss;
+  begin
+    AddOperand('Wss');
   end;
 
   procedure GetXb;
@@ -594,60 +790,66 @@ var
       AddOperand('!!');
     end;
   end;
-
+  
   //===================
 
-  function DoCondJump: String;
-  const
-    JUMP: array[0..$F] of String = ('jo', 'jno', 'jb', 'jnb', 'jz', 'jnz', 'jbe', 'jnbe', 'js', 'jns', 'jp', 'jnp', 'jl', 'jnl', 'jle', 'jnle');
+  procedure DoX87;
   begin
-    Result := JUMP[Code[CodeIdx] and $F];
-    GetJb;
+    Opcode := 'x87';
   end;
   
-  function DoX87: String;
+  procedure Do3DNow;
   begin
-    Result := 'x87';
+    Opcode := 'Do3DNow';
   end;
   
   // Group
   
-  function DoGroup1: String;
+  procedure DoGroup1;
   const
-    OPCODE: array[0..7] of String = ('add', 'or', 'adc', 'sbb', 'and', 'sub', 'xor', 'cmp');
+    OPC: array[0..7] of String = ('add', 'or', 'adc', 'sbb', 'and', 'sub', 'xor', 'cmp');
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     Index := (Code[ModRMIdx] shr 3) and 7;
-    Result := OPCODE[Index];
+
+    // group 1a
+    if Code[CodeIdx] = $8F
+    then begin
+      if Index = 0
+      then begin
+        Opcode := 'pop';
+        GetEv;
+      end
+      else Opcode := '**group1a**';
+      Exit;
+    end;
+
+    // Group 1
+    Opcode := OPC[Index];
     case Code[CodeIdx] of
       $80: begin GetEb; GetIb; end;
       $81: begin GetEv; GetIz; end;
-      $82: begin GetEb; GetIb; Result := Check32(Result); end;
+      $82: begin GetEb; GetIb; Opcode := Check32(Opcode); end;
       $83: begin GetEv; GetIb; end;
-      $8F: begin
-        if Index = 0
-        then begin
-          Result := 'pop';
-          GetEv
-        end
-        else Result := '*group1*';
-      end;
     else
-      Result := '!group1!';
+      Opcode := '!group1!';
+      Exit;
     end;
+    if (Index <> 7)
+    then  Opcode := CheckLock(Opcode);
   end;
   
-  function DoGroup2: String;
+  procedure DoGroup2;
   const
-    OPCODE: array[0..7] of String = ('rol', 'ror', 'rcl', 'rcr', 'shl', 'shr', 'sal', 'sar');
+    OPC: array[0..7] of String = ('rol', 'ror', 'rcl', 'rcr', 'shl', 'shr', 'sal', 'sar');
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     Index := (Code[ModRMIdx] shr 3) and 7;
-    Result := OPCODE[Index];
+    Opcode := OPC[Index];
     case Code[CodeIdx] of
       $C0: begin GetEb; GetIb; end;
       $C1: begin GetEv; GetIb; end;
@@ -656,19 +858,19 @@ var
       $D2: begin GetEb; AddOperand('cl'); end;
       $D3: begin GetEv; AddOperand('cl'); end;
     else
-      Result := '!group2!';
+      Opcode := '!group2!';
     end;
   end;
   
-  function DoGroup3: String;
+  procedure DoGroup3;
   const
-    OPCODE: array[0..7] of String = ('test', 'test', 'not', 'neg', 'mul', 'imul', 'div', 'idiv');
+    OPC: array[0..7] of String = ('test', 'test', 'not', 'neg', 'mul', 'imul', 'div', 'idiv');
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     Index := (Code[ModRMIdx] shr 3) and 7;
-    Result := OPCODE[Index];
+    Opcode := OPC[Index];
     case Code[CodeIdx] of
       $F6: begin
         if (Index = 0) or (Index = 1)
@@ -689,80 +891,149 @@ var
         end;
       end;
     else
-      Result := '!group3!';
+      Opcode := '!group3!';
+      Exit;
     end;
+    if (Index = 2) or (Index = 3)
+    then Opcode := CheckLock(Opcode);
   end;
   
-  function DoGroup4: String;
+  procedure DoGroup4;
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $FE
     then begin
-      Result := '!group4!';
+      Opcode := '!group4!';
       Exit;
     end;
     
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
-      0: Result := 'inc';
-      1: Result := 'dec';
+      0: Opcode := 'inc';
+      1: Opcode := 'dec';
     else
-      Result := '*group4*';
+      Opcode := '**group4**';
       Exit;
     end;
     GetEb;
+    Opcode := CheckLock(Opcode);
   end;
   
-  function DoGroup5: String;
+  procedure DoGroup5;
   var
     Index: Byte;
   begin
     Include(Flags, flagModRM);
     if Code[CodeIdx] <> $FF
     then begin
-      Result := '!group5!';
+      Opcode := '!group5!';
       Exit;
     end;
 
     Index := (Code[ModRMIdx] shr 3) and 7;
     case Index of
       0: begin
-        Result := 'inc';
         GetEv;
+        Opcode := CheckLock('inc');
       end;
       1: begin
-        Result := 'dec';
         GetEv;
+        Opcode := CheckLock('dec');
       end;
       2: begin
-        Result := 'call';
+        Opcode := 'call';
         GetEv;
       end;
       3: begin
-        Result := 'call';
+        Opcode := 'call';
         GetMp;
       end;
       4: begin
-        Result := 'jmp';
+        Opcode := 'jmp';
         GetEv;
       end;
       5: begin
-        Result := 'jmp';
+        Opcode := 'jmp';
         GetMp;
       end;
       6: begin
-        Result := 'push';
+        Opcode := 'push';
         GetEv;
       end;
     else
-      Result := '*group5*';
+      Opcode := '**group5**';
       Exit;
     end;
   end;
 
-  function DoGroup11: String;
+  procedure DoGroup6;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $00
+    then begin
+      Opcode := '!group6!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup7;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $01
+    then begin
+      Opcode := '!group7!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+  
+  procedure DoGroup8;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $BA
+    then begin
+      Opcode := '!group8!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup9;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $C7
+    then begin
+      Opcode := '!group9!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup10;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $B9
+    then begin
+      Opcode := '!group10!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup11;
   var
     Index: Byte;
   begin
@@ -770,7 +1041,7 @@ var
     Index := (Code[ModRMIdx] shr 3) and 7;
     if Index <> 0
     then begin
-      Result := '*group5*';
+      Opcode := '**group11**';
       Exit;
     end;
     
@@ -778,25 +1049,1189 @@ var
       $C6: begin GetEb; GetIb; end;
       $C7: begin GetEv; GetIz; end;
     else
-      Result := '!group5!';
+      Opcode := '!group5!';
       Exit;
     end;
-    Result := 'mov';
+    Opcode := 'mov';
+  end;
+  
+  procedure DoGroup12;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $71
+    then begin
+      Opcode := '!group12!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup13;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $72
+    then begin
+      Opcode := '!group13!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup14;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $73
+    then begin
+      Opcode := '!group14!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup15;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $AE
+    then begin
+      Opcode := '!group15!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroup16;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $18
+    then begin
+      Opcode := '!group16!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+  end;
+
+  procedure DoGroupP;
+  var
+    Index: Byte;
+  begin
+    Include(Flags, flagModRM);
+    if Code[CodeIdx] <> $0D
+    then begin
+      Opcode := '!groupp!';
+      Exit;
+    end;
+    Index := (Code[ModRMIdx] shr 3) and 7;
+    case Index of
+      0: Opcode := 'prefetch exclusive';
+      1,3: Opcode := 'prefetch modified';
+    else
+      Opcode := '--prefetch--'
+    end;
   end;
   
   //---
   
-  function Do2ByteOpcode: String;
+  procedure Do2ByteOpcode;
+  const
+    INVALID = '**2byte**';
+
+    function DecodePrefix(const AOpcode, AOpcodeRep, AOpcodeOpr, AOpcodeRepNE: string): Integer;
+    var
+      S: String;
+    begin
+      if preRep in Flags
+      then begin
+        S := AOpcodeRep;
+        Exclude(Flags, preRep);
+        Result := 1;
+      end
+      else if preOpr in Flags
+      then begin
+        S := AOpcodeOpr;
+        Exclude(Flags, preOpr);
+        Result := 2;
+      end
+      else if preRepNE in Flags
+      then begin
+        S := AOpcodeRepNE;
+        Exclude(Flags, preRepNE);
+        Result := 3;
+      end
+      else begin
+        S := AOpcode;
+        Result := 0;
+      end;
+      if S = ''
+      then begin
+        Opcode := INVALID;
+        Result := -1;
+      end
+      else Opcode := S;
+    end;
+  
+  const
+    OPR60: array[0..$F] of String = (
+      'punpcklbw', 'punpcklwd', 'punpcklqd', 'packsswb',
+      'pcmpgtb', 'pcmpgtw', 'pcmpgtd', 'packuswb',
+      'punpkhbw', 'punpkhwd', 'punpkhdq', 'packssdw',
+      'punpcklqdq', 'punpckhqdq', '', 'movq'
+    );
+  var
+    idx: Integer;
   begin
-    Result := '2byte';
+    Inc(CodeIdx);
+    case Code[CodeIdx] of
+      $00: begin
+        DoGroup6;
+      end;
+      $01: begin
+        DoGroup7;
+      end;
+      $02: begin
+        Opcode := 'lar';
+        GetGv; GetEw;
+      end;
+      $03: begin
+        Opcode := 'lsl';
+        GetGv; GetEw;
+      end;
+      $05: begin
+        Opcode := 'syscall';
+      end;
+      $06: begin
+        Opcode := 'clts';
+      end;
+      $07: begin
+        Opcode := 'sysret';
+      end;
+      $08: begin
+        Opcode := 'invd';
+      end;
+      $09: begin
+        Opcode := 'wbinvd';
+      end;
+      $0B: begin
+        Opcode := 'ud2';
+      end;
+      $0D: begin
+        DoGroupP;
+      end;
+      $0E: begin
+        Opcode := 'femms';
+      end;
+      $0F: begin
+        Do3DNow;
+      end;
+      //---
+      $10: begin
+        case DecodePrefix('movups', 'movss', 'movupd', 'movsd') of
+          0: begin GetVps;    GetWps; end;
+          1: begin GetVdq_ss; GetWss; end;
+          2: begin GetVpd;    GetWpd; end;
+          3: begin GetVdq_sd; GetWsd; end;
+        end;
+      end;
+      $11: begin
+        case DecodePrefix('movups', 'movss', 'movupd', 'movsd') of
+          0: begin GetWps; GetVps; end;
+          1: begin GetWss; GetVss; end;
+          2: begin GetWpd; GetVpd; end;
+          3: begin GetWsd; GetVsd; end;
+        end;
+      end;
+      $12: begin
+        case DecodePrefix('movhlps', 'movsldup', 'movlpd', 'movddup') of
+          0: begin
+            // Opcode differs on type found
+            // it is specified as Mq or VRq
+            // So when getting Wq, we get both and know the type
+            GetVps; GetWq;
+            if Operand[2].IsMemory
+            then Opcode := 'movlps';
+          end;
+          1: begin GetVps; GetWps; end;
+          2: begin GetVsd; GetMq;  end;
+          3: begin GetVpd; GetWsd; end;
+        end;
+      end;
+      $13: begin
+        case DecodePrefix('movlps', '', 'movlpd', '') of
+          0: begin GetMq; GetVps; end;
+          2: begin GetMq; GetVsd; end;
+        end;
+      end;
+      $14: begin
+        case DecodePrefix('unpcklps', '', 'unpcklpd', '') of
+          0: begin GetVps; GetWq; end;
+          2: begin GetVpd; GetWq; end;
+        end;
+      end;
+      $15: begin
+        case DecodePrefix('unpckhps', '', 'unpckhpd', '') of
+          0: begin GetVps; GetWq; end;
+          2: begin GetVpd; GetWq; end;
+        end;
+      end;
+      $16: begin
+        case DecodePrefix('movlhps', 'movshdup', 'movhpd', '') of
+          0: begin
+            // Opcode differs on type found
+            // it is specified as Mq or VRq
+            // So when getting Wq, we get both and know the type
+            GetVps; GetWq;
+            if Operand[2].IsMemory
+            then Opcode := 'movhps';
+          end;
+          1: begin GetVps; GetWps; end;
+          2: begin GetVsd; GetMq; end;
+        end;
+      end;
+      $17: begin
+        case DecodePrefix('movhps', '', 'movhpd', '') of
+          0: begin GetMq; GetVps; end;
+          2: begin GetMq; GetVsd; end;
+        end;
+      end;
+      $18: begin
+        DoGroup16;
+      end;
+      $19..$1F: begin
+        Include(Flags, flagModRM);
+        Opcode := 'nop';
+      end;
+      //---
+      $20: begin
+        Opcode := 'mov';
+        GetRd_q; GetCd_q;
+      end;
+      $21: begin
+        Opcode := 'mov';
+        GetRd_q; GetDd_q;
+      end;
+      $22: begin
+        Opcode := 'mov';
+        GetCd_q; GetRd_q;
+      end;
+      $23: begin
+        Opcode := 'mov';
+        GetDd_q; GetRd_q;
+      end;
+      //$24..$27: invalid
+      $28: begin
+        case DecodePrefix('movaps', '', 'movapd', '') of
+          0: begin GetVps; GetWps; end;
+          2: begin GetVpd; GetWpd; end;
+        end;
+      end;
+      $29: begin
+        case DecodePrefix('movaps', '', 'movapd', '') of
+          0: begin GetWps; GetVps; end;
+          2: begin GetWpd; GetVpd; end;
+        end;
+      end;
+      $2A: begin
+        case DecodePrefix('cvtpi2ps', 'cvtsi2ss', 'cvtpi2pd', 'cvtsi2sd') of
+          0: begin GetVps; GetQq;   end;
+          1: begin GetVss; GetEd_q; end;
+          2: begin GetVpd; GetQq;   end;
+          3: begin GetVsd; GetEd_q; end;
+        end;
+      end;
+      $2B: begin
+        case DecodePrefix('movntps', '', 'movntpd', '') of
+          0: begin GetMdq; GetVps; end;
+          2: begin GetMdq; GetVpd; end;
+        end;
+      end;
+      $2C: begin
+        case DecodePrefix('cvttps2pi', 'cvttss2pi', 'cvttpd2pi', 'cvttsd2pi') of
+          0: begin GetPq;   GetWps; end;
+          1: begin GetGd_q; GetWss; end;
+          2: begin GetPq;   GetWpd; end;
+          3: begin GetGd_q; GetWsd; end;
+        end;
+      end;
+      $2D: begin
+        case DecodePrefix('cvtps2pi', 'cvtss2pi', 'cvtpd2pi', 'cvtsd2pi') of
+          0: begin GetPq;   GetWps; end;
+          1: begin GetGd_q; GetWss; end;
+          2: begin GetPq;   GetWpd; end;
+          3: begin GetGd_q; GetWsd; end;
+        end;
+      end;
+      $2E: begin
+        case DecodePrefix('ucomiss', '', 'ucomissd', '') of
+          0: begin GetVss; GetWss; end;
+          2: begin GetVsd; GetWsd; end;
+        end;
+      end;
+      $2F: begin
+        case DecodePrefix('comiss', '', 'comissd', '') of
+          0: begin GetVss; GetWss; end;
+          2: begin GetVsd; GetWsd; end;
+        end;
+      end;
+      //---
+      $30: begin
+        Opcode := 'wrmsr';
+      end;
+      $31: begin
+        Opcode := 'rdtsc';
+      end;
+      $32: begin
+        Opcode := 'rdmsr';
+      end;
+      $33: begin
+        Opcode := 'rdpmc';
+      end;
+      $34: begin
+        Opcode := '**sysenter**';
+      end;
+      $35: begin
+        Opcode := '**sysexit**';
+      end;
+      //$36..$3F: invalid
+      //---
+      $40..$4F: begin
+        Opcode := 'cmov' + StdCond(Code[CodeIdx]);
+        GetGv; GetEv;
+      end;
+      //---
+      $50: begin
+        case DecodePrefix('movmskps', '', 'movmskpd', '') of
+          0: begin GetGd; GetVRps; end;
+          2: begin GetGd; GetVRpd; end;
+        end;
+      end;
+      $51, $58..$59, $5C..$5F: begin
+        case Code[CodeIdx] of
+          $51: Idx := DecodePrefix('sqrtps', 'sqrtss', 'sqrtpd', 'sqrtsd');
+          $58: Idx := DecodePrefix('addps', 'addss', 'addpd', 'addsd');
+          $59: Idx := DecodePrefix('mulps', 'mulss', 'mulpd', 'mulsd');
+          $5C: Idx := DecodePrefix('subps', 'subss', 'subpd', 'subsd');
+          $5D: Idx := DecodePrefix('minps', 'minss', 'minpd', 'minsd');
+          $5E: Idx := DecodePrefix('divps', 'divss', 'divpd', 'divsd');
+          $5F: Idx := DecodePrefix('maxps', 'maxss', 'maxpd', 'maxsd');
+        else
+          Idx := -1;
+        end;
+
+        case Idx of
+          0: begin GetVps; GetWps; end;
+          1: begin GetVss; GetWss; end;
+          2: begin GetVpd; GetWpd; end;
+          3: begin GetVsd; GetWsd; end;
+        end;
+      end;
+      $52: begin
+        case DecodePrefix('rsqrtps', 'rsqrtss', '', '') of
+          0: begin GetVps; GetWps; end;
+          1: begin GetVss; GetWss; end;
+        end;
+      end;
+      $53: begin
+        case DecodePrefix('rcpps', 'rcpss', '', '') of
+          0: begin GetVps; GetWps; end;
+          1: begin GetVss; GetWss; end;
+        end;
+      end;
+      $54: begin
+        case DecodePrefix('andps', '', 'andpd', '') of
+          0: begin GetVps; GetWps; end;
+          2: begin GetVpd; GetWpd; end;
+        end;
+      end;
+      $55: begin
+        case DecodePrefix('andnps', '', 'andnpd', '') of
+          0: begin GetVps; GetWps; end;
+          2: begin GetVpd; GetWpd; end;
+        end;
+      end;
+      $56: begin
+        case DecodePrefix('orps', '', 'orpd', '') of
+          0: begin GetVps; GetWps; end;
+          2: begin GetVpd; GetWpd; end;
+        end;
+      end;
+      $57: begin
+        case DecodePrefix('xorps', '', 'xorpd', '') of
+          0: begin GetVps; GetWps; end;
+          2: begin GetVpd; GetWpd; end;
+        end;
+      end;
+      // $58..$59: see $51
+      $5A: begin
+        case DecodePrefix('cvtps2pd', 'cvtss2sd', 'cvtpd2ps', 'cvtsd2ss') of
+          0: begin GetVpd; GetWps; end;
+          1: begin GetVsd; GetWss; end;
+          2: begin GetVps; GetWpd; end;
+          3: begin GetVss; GetWsd; end;
+        end;
+      end;
+      $5B: begin
+        case DecodePrefix('cvtdq2ps', 'cvttps2dq', 'cvtps2dq', '') of
+          0: begin GetVps; GetWdq; end;
+          1: begin GetVdq; GetWps; end;
+          2: begin GetVdq; GetWps; end;
+        end;
+      end;
+      // $5C..$5F: see $51
+      //---
+      $60..$6D, $6F: begin
+        idx := Code[CodeIdx] and $F;
+        idx := DecodePrefix(OPR60[idx], '', OPR60[idx], '');
+
+        if (idx = 0) and (Code[CodeIdx] in [$6C, $6D])
+        then begin
+          Opcode := INVALID;
+          Exit;
+        end;
+
+        case Idx of
+          0: begin GetPq;  GetQd; end;
+          2: begin GetVdq; GetWq; end;
+        end;
+      end;
+      $6E: begin
+        case DecodePrefix('movd', '', 'movd', '') of
+          0: begin GetPq;  GetEd_q; end;
+          2: begin GetVdq; GetEd_q; end;
+        end;
+      end;
+      //---
+      //---
+      $80..$8F: begin
+        Opcode := 'j' + StdCond(Code[CodeIdx]);
+        GetJz;
+      end;
+      //---
+      $90..$9F: begin
+        Opcode := 'set' + StdCond(Code[CodeIdx]);
+        GetEb;
+      end;
+      //---
+      $A0: begin
+        Opcode := 'push';
+        AddOperand('fs');
+      end;
+      $A1: begin
+        Opcode := 'pop';
+        AddOperand('fs');
+      end;
+      $A2: begin
+        Opcode := 'cpuid';
+      end;
+      $A3: begin
+        Opcode := 'bt';
+        GetEv; GetGv;
+      end;
+      $A4: begin
+        Opcode := 'shld';
+        GetEv; GetGv; GetIb;
+      end;
+      $A5: begin
+        Opcode := 'shld';
+        GetEv; GetGv;
+        AddOperand('cl');
+      end;
+      //$A6..$A7: invalid
+      $A8: begin
+        Opcode := 'push';
+        AddOperand('gs');
+      end;
+      $A9: begin
+        Opcode := 'pop';
+        AddOperand('gs');
+      end;
+      $AA: begin
+        Opcode := 'rsm';
+      end;
+      $AB: begin
+        Opcode := 'bts';
+        GetEv; GetGv;
+      end;
+      $AC: begin
+        Opcode := 'shrd';
+        GetEv; GetGv; GetIb;
+      end;
+      $AD: begin
+        Opcode := 'shld';
+        GetEv; GetGv;
+        AddOperand('cl');
+      end;
+      $AE: begin
+        DoGroup15;
+      end;
+      $AF: begin
+        Opcode := 'imul';
+        GetGv; GetEv;
+      end;
+      //---
+      $B0: begin
+        GetEb; GetGb;
+        Opcode := CheckLock('cmpxchg');
+      end;
+      $B1: begin
+        GetEv; GetGv;
+        Opcode := CheckLock('cmpxchg');
+      end;
+      //---
+      $C0: begin
+        GetEb; GetGb;
+        Opcode := CheckLock('xadd');
+      end;
+      $C1: begin
+        GetEv; GetGv;
+        Opcode := CheckLock('xadd');
+      end;
+      $C7: begin
+        DoGroup9;
+      end;
+      $C8..$CF: begin
+        Opcode := 'bswp';
+        AddOperand(StdReg(Code[CodeIdx]));
+      end;
+    else
+      Opcode := INVALID;
+      Opcode := '!!2byte:' + HexValue(Code[CodeIdx], 1, []);
+    end;
   end;
 
+  procedure DoDisassemble;
+  begin
+    repeat
+      ModRMIdx := CodeIdx + 1;
+      case Code[CodeIdx] of
+        $00..$05: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('add');
+        end;
+        $06: begin
+          Opcode := Check32('push');
+          AddOperand('es');
+        end;
+        $07: begin
+          Opcode := Check32('pop');
+          AddOperand('es');
+        end;
+        $08..$0D: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('or');
+        end;
+        $0E: begin
+          Opcode := Check32('push');
+          AddOperand('cs');
+        end;
+        $0F: begin
+          Do2ByteOpcode;
+        end;
+        //---
+        $10..$15: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('adc');
+        end;
+        $16: begin
+          Opcode := Check32('push');
+          AddOperand('ss');
+        end;
+        $17: begin
+          Opcode := Check32('pop');
+          AddOperand('ss');
+        end;
+        $18..$1D: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('sbb');
+        end;
+        $1E: begin
+          Opcode := Check32('push');
+          AddOperand('ds');
+        end;
+        $1F: begin
+          Opcode := Check32('pop');
+          AddOperand('ds');
+        end;
+        //---
+        $20..$25: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('and');
+        end;
+        $26: begin
+          Segment := Segment + Ignore64('es:');
+        end;
+        $27: begin
+          Opcode := Check32('daa');
+        end;
+        $28..$2D: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('sub');
+        end;
+        $2E: begin
+          Segment := Segment + Ignore64('cs:');
+        end;
+        $2F: begin
+          Opcode := Check32('das');
+        end;
+        //---
+        $30..$35: begin
+          GetStdOperands(Code[CodeIdx]);
+          Opcode := CheckLock('xor');
+        end;
+        $36: begin
+          Segment := Segment + Ignore64('ss:');
+        end;
+        $37: begin
+          Opcode := Check32('aaa');
+        end;
+        $38..$3D: begin
+          Opcode := 'cmp';
+          GetStdOperands(Code[CodeIdx]);
+        end;
+        $3E: begin
+          Segment := Segment + Ignore64('ds:');
+        end;
+        $3F: begin
+          Opcode := Check32('aas');
+        end;
+        //---
+        $40..$4F: begin
+          if A64Bit
+          then begin
+            if (Code[CodeIdx] and 1) <> 0 then Include(Flags, rexB);
+            if (Code[CodeIdx] and 2) <> 0 then Include(Flags, rexX);
+            if (Code[CodeIdx] and 4) <> 0 then Include(Flags, rexR);
+            if (Code[CodeIdx] and 8) <> 0 then Include(Flags, rexW);
+            Include(Flags, flagRex);
+          end
+          else begin
+            AddOperand(StdReg(Code[CodeIdx]));
+            if Code[CodeIdx] <= $47
+            then Opcode := CheckLock('inc')
+            else Opcode := CheckLock('dec');
+          end;
+        end;
+        //---
+        $50..$57: begin
+          Opcode := 'push';
+          AddOperand(StdReg(Code[CodeIdx]));
+        end;
+        $58..$5F: begin
+          Opcode := 'pop';
+          AddOperand(StdReg(Code[CodeIdx]));
+        end;
+        //---
+        $60: begin
+          if OperandSize32 = os16
+          then Opcode := Check32('pusha')
+          else Opcode := Check32('pushad');
+        end;
+        $61: begin
+          if OperandSize32 = os16
+          then Opcode := Check32('popa')
+          else Opcode := Check32('popad');
+        end;
+        $62: begin
+          Opcode := Check32('bound');
+          GetGv; GetMa;
+        end;
+        $63: begin
+          if A64Bit
+          then begin
+            Opcode := ('movsxd');
+            GetGv; GetEd;
+          end
+          else begin
+            Opcode := Check32('arpl');
+            GetEw; GetGw;
+          end;
+        end;
+        $64: begin
+          Segment := Segment + 'fs:';
+        end;
+        $65: begin
+          Segment := Segment + 'gs:';
+        end;
+        $66: begin
+          Include(FLags, preOpr);
+        end;
+        $67: begin
+          Include(FLags, preAdr);
+        end;
+        $68: begin
+          Opcode := 'push';
+          GetIz;
+        end;
+        $69: begin
+          Opcode := 'imul';
+          GetGv; GetEv; GetIz;
+        end;
+        $6A: begin
+          Opcode := 'push';
+          GetIb;
+        end;
+        $6B: begin
+          Opcode := 'imul';
+          GetGv; GetEv; GetIb;
+        end;
+        $6C: begin
+          Opcode := CheckRepeat('insb');
+          GetYb;
+          AddOperand('dx');
+        end;
+        $6D: begin
+          if OperandSize32 = os16
+          then Opcode := CheckRepeat('insw')
+          else Opcode := CheckRepeat('insd');
+          GetYz;
+          AddOperand('dx');
+        end;
+        $6E: begin
+          Opcode := CheckRepeat('outsb');
+          AddOperand('dx');
+          GetXb;
+        end;
+        $6F: begin
+          if OperandSize32 = os16
+          then Opcode := CheckRepeat('outsw')
+          else Opcode := CheckRepeat('outsd');
+          AddOperand('dx');
+          GetXz;
+        end;
+        $70..$7F: begin
+          Opcode := 'j' + StdCond(Code[CodeIdx]);
+          GetJb;
+        end;
+        //---
+        $80..$83: begin
+          DoGroup1;
+        end;
+        $84: begin
+          Opcode := 'test';
+          GetEb; GetGb;
+        end;
+        $85: begin
+          Opcode := 'test';
+          GetEv; GetGv;
+        end;
+        $86: begin
+          GetEb; GetGb;
+          Opcode := CheckLock('xchg');
+        end;
+        $87: begin
+          GetEv; GetGv;
+          Opcode := CheckLock('xchg');
+        end;
+        $88..$8B: begin
+          Opcode := 'mov';
+          GetStdOperands(Code[CodeIdx]);
+        end;
+        $8C: begin
+          // Intel specifies Ew
+          // AMD specifies Mw/Rv (which is IMO the same as Ew)
+          Opcode := 'mov';
+          GetEw; GetSw;
+        end;
+        $8D: begin
+          Opcode := 'lea';
+          GetGv; GetM;
+        end;
+        $8E: begin
+          Opcode := 'mov';
+          GetSw; GetEw;
+        end;
+        $8F: begin
+          DoGroup1;
+        end;
+        //---
+        $90..$97: begin
+          if (Code[CodeIdx] = $90) and not (rexR in Flags)
+          then Opcode := 'nop'
+          else begin
+            Opcode := 'xchg';
+            AddOperand(StdReg(Code[CodeIdx]));
+            AddOperand(SizeReg32('ax'));
+          end;
+        end;
+        $98: begin
+          case OperandSize32 of
+            os64: Opcode := 'cdqe';
+            os32: Opcode := 'cwde';
+          else
+            Opcode := 'cbw';
+          end;
+        end;
+        $99: begin
+          case OperandSize32 of
+            os64: Opcode := 'cqo';
+            os32: Opcode := 'cqd';
+          else
+            Opcode := 'cwd';
+          end;
+        end;
+        $9A: begin
+          Opcode := Check32('call');
+          GetAp;
+        end;
+        $9B: begin
+          Opcode := 'wait/fwait';
+        end;
+        $9C: begin
+          case OperandSize32 of
+            os64: Opcode := 'pushfq';
+            os32: Opcode := 'pushfd';
+          else
+            Opcode := 'pushf';
+          end;
+          GetFv;
+        end;
+        $9D: begin
+          case OperandSize32 of
+            os64: Opcode := 'popfq';
+            os32: Opcode := 'popfd';
+          else
+            Opcode := 'popf';
+          end;
+          GetFv;
+        end;
+        $9E: begin
+          Opcode := 'sahf';
+        end;
+        $9F: begin
+          Opcode := 'lahf';
+        end;
+        //---
+        $A0: begin
+          Opcode := 'mov';
+          AddOperand('al');
+          GetOb;
+        end;
+        $A1: begin
+          Opcode := 'mov';
+          AddOperand(SizeReg32('ax'));
+          GetOv;
+        end;
+        $A2: begin
+          Opcode := 'mov';
+          GetOb;
+          AddOperand('al');
+        end;
+        $A3: begin
+          Opcode := 'mov';
+          GetOb;
+          AddOperand(SizeReg32('ax'));
+        end;
+        $A4: begin
+          Opcode := CheckRepeat('movsb');
+          GetYb; GetXb;
+        end;
+        $A5: begin
+          case OperandSize32 of
+            os64: Opcode := CheckRepeat('movsq');
+            os32: Opcode := CheckRepeat('movsd');
+          else
+            Opcode := CheckRepeat('movsw');
+          end;
+          GetYv;
+          GetXv;
+        end;
+        $A6: begin
+          Opcode := CheckRepeatX('cmpsb');
+          GetXb; GetYb;
+        end;
+        $A7: begin
+          case OperandSize32 of
+            os64: Opcode := CheckRepeatX('cmpsq');
+            os32: Opcode := CheckRepeatX('cmpsd');
+          else
+            Opcode := CheckRepeatX('cmpsw');
+          end;
+          GetYv; GetXv;
+        end;
+        $A8: begin
+          Opcode := 'test';
+          AddOperand('al');
+          GetIb;
+        end;
+        $A9: begin
+          Opcode := 'test';
+          AddOperand(SizeReg32('ax'));
+          GetIv;
+        end;
+        $AA: begin
+          Opcode := CheckRepeat('stosb');
+          GetYb;
+          AddOperand('al');
+        end;
+        $AB: begin
+          case OperandSize32 of
+            os64: Opcode := CheckRepeat('stosq');
+            os32: Opcode := CheckRepeat('stosd');
+          else
+            Opcode := CheckRepeat('stosw');
+          end;
+          GetYv;
+          AddOperand(SizeReg32('ax'));
+        end;
+        $AC: begin
+          Opcode := CheckRepeat('lodsb');
+          AddOperand('al');
+          GetXb;
+        end;
+        $AD: begin
+          case OperandSize32 of
+            os64: Opcode := CheckRepeat('lodsq');
+            os32: Opcode := CheckRepeat('lodsd');
+          else
+            Opcode := CheckRepeat('lodsw');
+          end;
+          AddOperand(SizeReg32('ax'));
+          GetXv;
+        end;
+        $AE: begin
+          Opcode := CheckRepeatX('scasb');
+          AddOperand('al');
+          GetYb;
+        end;
+        $AF: begin
+          case OperandSize32 of
+            os64: Opcode := CheckRepeatX('scasq');
+            os32: Opcode := CheckRepeatX('scasd');
+          else
+            Opcode := CheckRepeatX('scasw');
+          end;
+          AddOperand(SizeReg32('ax'));
+          GetYv;
+        end;
+        //---
+        $B0..$B7: begin
+          Opcode := 'mov';
+          AddOperand(StdReg(Code[CodeIdx], reg8, rexR in Flags));
+          GetIb;
+        end;
+        $B8..$BF: begin
+          Opcode := 'mov';
+          AddOperand(StdReg(Code[CodeIdx]));
+          GetIv;
+        end;
+        //---
+        $C0..$C1: begin
+          DoGroup2;
+        end;
+        $C2: begin
+          Opcode := 'ret';
+          GetIw;
+        end;
+        $C3: begin
+          Opcode := 'ret';
+        end;
+        $C4: begin
+          Opcode := 'les';
+          GetGz; GetMp;
+        end;
+        $C5: begin
+          Opcode := 'lds';
+          GetGz; GetMp;
+        end;
+        $C6..$C7: begin
+          DoGroup11;
+        end;
+        $C8: begin
+          Opcode := 'enter';
+          GetIw; GetIb;
+        end;
+        $C9: begin
+          Opcode := 'leave';
+        end;
+        $CA: begin
+          Opcode := 'retf';
+          GetIw;
+        end;
+        $CB: begin
+          Opcode := 'retf';
+        end;
+        $CC: begin
+          Opcode := 'int3';
+        end;
+        $CD: begin
+          Opcode := 'int';
+          GetIb;
+        end;
+        $CE: begin
+          Opcode := Check32('int0');
+        end;
+        $CF: begin
+          case OperandSize32 of
+            os64: Opcode := 'iretq';
+            os32: Opcode := 'iretd';
+          else
+            Opcode := 'iret';
+          end;
+        end;
+        //---
+        $D0..$D3: begin
+          DoGroup2;
+        end;
+        $D4: begin
+          Opcode := Check32('aam');
+        end;
+        $D5: begin
+          Opcode := Check32('aad');
+        end;
+        $D6: begin
+          Opcode := Check32('salc');
+        end;
+        $D7: begin
+          Opcode := 'xlat';
+        end;
+        $D8..$DF: begin
+          DoX87;
+        end;
+        //---
+        $E0: begin
+          Opcode := 'loopne';
+          GetJb;
+        end;
+        $E1: begin
+          Opcode := 'loope';
+          GetJb;
+        end;
+        $E2: begin
+          Opcode := 'loop';
+          GetJb;
+        end;
+        $E3: begin
+          Opcode := 'jrcxz';
+          GetJb;
+        end;
+        $E4: begin
+          Opcode := 'in';
+          AddOperand('al');
+          GetIb;
+        end;
+        $E5: begin
+          Opcode := 'in';
+          AddOperand(SizeReg32('ax'));
+          GetIb;
+        end;
+        $E6: begin
+          Opcode := 'out';
+          GetIb;
+          AddOperand('al');
+        end;
+        $E7: begin
+          Opcode := 'out';
+          GetIb;
+          AddOperand(SizeReg32('ax'));
+        end;
+        $E8: begin
+          Opcode := 'call';
+          GetJz;
+        end;
+        $E9: begin
+          Opcode := 'jmp';
+          GetJz;
+        end;
+        $EA: begin
+          Opcode := Check32('jmp');
+          GetAp;
+        end;
+        $EB: begin
+          Opcode := 'jmp';
+          GetJb;
+        end;
+        $EC: begin
+          Opcode := 'in';
+          AddOperand('al');
+          AddOperand('dx');
+        end;
+        $ED: begin
+          Opcode := 'in';
+          AddOperand(SizeReg32('ax'));
+          AddOperand('dx');
+        end;
+        $EE: begin
+          Opcode := 'out';
+          AddOperand('dx');
+          AddOperand('al');
+        end;
+        $EF: begin
+          Opcode := 'out';
+          AddOperand('dx');
+          AddOperand(SizeReg32('ax'));
+        end;
+        $F0: begin
+          Include(Flags, preLock);
+        end;
+        $F1: begin
+          Opcode := 'int1';
+        end;
+        $F2: begin
+          Include(Flags, preRepNE);
+        end;
+        $F3: begin
+          Include(Flags, preRep);
+        end;
+        $F4: begin
+          Opcode := 'hlt';
+        end;
+        $F5: begin
+          Opcode := 'cmc';
+        end;
+        $F6..$F7: begin
+          DoGroup3;
+        end;
+        $F8: begin
+          Opcode := 'clc';
+        end;
+        $F9: begin
+          Opcode := 'stc';
+        end;
+        $FA: begin
+          Opcode := 'cli';
+        end;
+        $FB: begin
+          Opcode := 'sti';
+        end;
+        $FC: begin
+          Opcode := 'cld';
+        end;
+        $FD: begin
+          Opcode := 'std';
+        end;
+        $FE: begin
+          DoGroup4;
+        end;
+        $FF: begin
+          DoGroup5;
+        end;
+      else
+        Opcode := HexValue(Code[CodeIdx], 1, []);
+      end;
 
+      Inc(CodeIdx);
+      if CodeIdx > High(Code)
+      then begin
+        Log('Disassemble: instruction longer than %d bytes', [SizeOf(Code)]);
+        Exit;
+      end;
+    until Opcode <> '';
+  end;
+  
 var
   BytesRead: Cardinal;
-  Opcode, S, Soper: String;
+  S, Soper: String;
   n: Integer;
-begin 
+  HasMem: Boolean;
+begin
   if not ReadProcessMemory(AProcess, Pointer(Address), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
   then begin
     Log('Disassemble: Failed to read memory at %s, got %u bytes', [FormatAddress(Address), BytesRead]);
@@ -807,633 +2242,17 @@ begin
   end;
 
   Segment := '';
-  Prefix := '';
   Opcode := '';
   Flags := [];
   CodeIdx := 0;
   OperIdx := 0;
+  DoDisassemble;
 
-  repeat
-    ModRMIdx := CodeIdx + 1;
-    case Code[CodeIdx] of
-      $00..$05: begin
-        Opcode := 'add';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $06: begin            
-        Opcode := Check32('push');
-        AddOperand('es');
-      end;
-      $07: begin            
-        Opcode := Check32('pop');
-        AddOperand('es');
-      end;
-      $08..$0D: begin
-        Opcode := 'or';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $0E: begin
-        Opcode := Check32('push');
-        AddOperand('cs');
-      end;
-      $0F: begin
-        Opcode := Do2ByteOpcode;
-      end;
-      //---
-      $10..$15: begin
-        Opcode := 'adc';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $16: begin            
-        Opcode := Check32('push');
-        AddOperand('ss');
-      end;
-      $17: begin            
-        Opcode := Check32('pop');
-        AddOperand('ss');
-      end;
-      $18..$1D: begin
-        Opcode := 'sbb';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $1E: begin
-        Opcode := Check32('push');
-        AddOperand('ds');
-      end;
-      $1F: begin            
-        Opcode := Check32('pop');
-        AddOperand('ds');
-      end;
-      //---
-      $20..$25: begin
-        Opcode := 'and';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $26: begin            
-        Segment := Segment + Ignore64('es:');
-      end;
-      $27: begin            
-        Opcode := Check32('daa');
-      end;
-      $28..$2D: begin
-        Opcode := 'sub';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $2E: begin
-        Segment := Segment + Ignore64('cs:');
-      end;
-      $2F: begin            
-        Opcode := Check32('das');
-      end;
-      //---
-      $30..$35: begin
-        Opcode := 'xor';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $36: begin            
-        Segment := Segment + Ignore64('ss:');
-      end;
-      $37: begin            
-        Opcode := Check32('aaa');
-      end;
-      $38..$3D: begin
-        Opcode := 'cmp';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $3E: begin
-        Segment := Segment + Ignore64('ds:');
-      end;
-      $3F: begin            
-        Opcode := Check32('aas');
-      end;
-      //---
-      $40..$4F: begin
-        if A64Bit
-        then begin
-          if (Code[CodeIdx] and 1) <> 0 then Include(Flags, rexB);
-          if (Code[CodeIdx] and 2) <> 0 then Include(Flags, rexX);
-          if (Code[CodeIdx] and 4) <> 0 then Include(Flags, rexR);
-          if (Code[CodeIdx] and 8) <> 0 then Include(Flags, rexW);
-          Include(Flags, flagRex);
-        end
-        else begin
-          if Code[CodeIdx] <= $47
-          then Opcode := 'inc'
-          else Opcode := 'dec';
-          AddOperand(StdReg(Code[CodeIdx]));
-        end;
-      end;
-      //---
-      $50..$57: begin
-        Opcode := 'push';
-        AddOperand(StdReg(Code[CodeIdx]));
-      end;  
-      $58..$5F: begin
-        Opcode := 'pop';
-        AddOperand(StdReg(Code[CodeIdx]));
-      end;
-      //---           
-      $60: begin
-        if OperandSize32 = os16
-        then Opcode := Check32('pusha')
-        else Opcode := Check32('pushad');
-      end;
-      $61: begin
-        if OperandSize32 = os16
-        then Opcode := Check32('popa')
-        else Opcode := Check32('popad');
-      end;
-      $62: begin           
-        Opcode := Check32('bound');
-        GetGv; GetMa;
-      end;
-      $63: begin           
-        if A64Bit
-        then begin
-          Opcode := ('movsxd');
-          GetGv; GetEd;
-        end
-        else begin
-          Opcode := Check32('arpl');
-          GetEw; GetGw;
-        end;
-      end;
-      $64: begin
-        Segment := Segment + 'fs:';
-      end;
-      $65: begin
-        Segment := Segment + 'gs:';
-      end;
-      $66: begin
-        Include(FLags, preOpr);
-      end;
-      $67: begin       
-        Include(FLags, preAdr);
-      end;
-      $68: begin       
-        Opcode := 'push';
-        GetIz;
-      end;
-      $69: begin       
-        Opcode := 'imul';
-        GetGv; GetEv; GetIz;
-      end;
-      $6A: begin       
-        Opcode := 'push';
-        GetIb;
-      end;
-      $6B: begin       
-        Opcode := 'imul';
-        GetGv; GetEv; GetIb;
-      end;
-      $6C: begin       
-        Opcode := 'insb';
-        GetYb;
-        AddOperand('dx');
-      end;
-      $6D: begin       
-        if OperandSize32 = os16
-        then Opcode := 'insw'
-        else Opcode := 'insd';
-        GetYz;
-        AddOperand('dx');
-      end;
-      $6E: begin       
-        Opcode := 'outsb';
-        AddOperand('dx');
-        GetXb;
-      end;
-      $6F: begin       
-        if OperandSize32 = os16
-        then Opcode := 'outsw'
-        else Opcode := 'outsd';
-        AddOperand('dx');
-        GetXz;
-      end;
-      $70..$7F: begin
-        Opcode := DoCondJump;
-      end;
-      //---
-      $80..$83: begin
-        Opcode := DoGroup1;
-      end;
-      $84: begin
-        Opcode := 'test';
-        GetEb; GetGb;
-      end;
-      $85: begin
-        Opcode := 'test';
-        GetEv; GetGv;
-      end;
-      $86: begin
-        Opcode := 'xchg';
-        GetEb; GetGb;
-      end;
-      $87: begin
-        Opcode := 'xchg';
-        GetEv; GetGv;
-      end;
-      $88..$8B: begin
-        Opcode := 'mov';
-        GetStdOperands(Code[CodeIdx]);
-      end;
-      $8C: begin
-        // Intel specifies Ew
-        // AMD specifies Mw/Rv (which is IMO the same as Ew)
-        Opcode := 'mov';
-        GetEw; GetSw;
-      end;
-      $8D: begin
-        Opcode := 'lea';
-        GetGv; GetM;
-      end;
-      $8E: begin
-        Opcode := 'mov';
-        GetSw; GetEw;
-      end;
-      $8F: begin
-        Opcode := DoGroup1;
-      end;
-      //---
-      $90..$97: begin
-        if (Code[CodeIdx] = $90) and not (rexR in Flags)
-        then Opcode := 'nop'
-        else begin
-          Opcode := 'xchg';
-          AddOperand(StdReg(Code[CodeIdx]));
-          AddOperand(SizeReg32('ax'));
-        end;
-      end;
-      $98: begin
-        case OperandSize32 of
-          os64: Opcode := 'cdqe';
-          os32: Opcode := 'cwde';
-        else
-          Opcode := 'cbw';
-        end;
-      end;
-      $99: begin
-        case OperandSize32 of
-          os64: Opcode := 'cqo';
-          os32: Opcode := 'cqd';
-        else
-          Opcode := 'cwd';
-        end;
-      end;
-      $9A: begin
-        Opcode := Check32('call');
-        GetAp;
-      end;
-      $9B: begin
-        Opcode := 'wait/fwait';
-      end;
-      $9C: begin
-        case OperandSize32 of
-          os64: Opcode := 'pushfq';
-          os32: Opcode := 'pushfd';
-        else
-          Opcode := 'pushf';
-        end;
-        GetFv;
-      end;
-      $9D: begin
-        case OperandSize32 of
-          os64: Opcode := 'popfq';
-          os32: Opcode := 'popfd';
-        else
-          Opcode := 'popf';
-        end;
-        GetFv;
-      end;
-      $9E: begin
-        Opcode := 'sahf';
-      end;
-      $9F: begin
-        Opcode := 'lahf';
-      end;
-      //---
-      $A0: begin
-        Opcode := 'mov';
-        AddOperand('al');
-        GetOb;
-      end;
-      $A1: begin
-        Opcode := 'mov';
-        AddOperand(SizeReg32('ax'));
-        GetOv;
-      end;
-      $A2: begin
-        Opcode := 'mov';
-        GetOb;
-        AddOperand('al');
-      end;
-      $A3: begin
-        Opcode := 'mov';
-        GetOb;
-        AddOperand(SizeReg32('ax'));
-      end;
-      $A4: begin
-        Opcode := 'movsb';
-        GetYb; GetXb;
-      end;
-      $A5: begin
-        case OperandSize32 of
-          os64: Opcode := 'movsq';
-          os32: Opcode := 'movsd';
-        else
-          Opcode := 'movsw';
-        end;
-        GetYv;
-        GetXv;
-      end;
-      $A6: begin
-        Opcode := 'cmpsb';
-        GetXb; GetYb;
-      end;
-      $A7: begin
-        case OperandSize32 of
-          os64: Opcode := 'cmpsq';
-          os32: Opcode := 'cmpsd';
-        else
-          Opcode := 'cmpsw';
-        end;
-        GetYv; GetXv;
-      end;
-      $A8: begin
-        Opcode := 'test';
-        AddOperand('al');
-        GetIb;
-      end;
-      $A9: begin
-        Opcode := 'test';
-        AddOperand(SizeReg32('ax'));
-        GetIv;
-      end;
-      $AA: begin
-        Opcode := 'stosb';
-        GetYb;
-        AddOperand('al');
-      end;
-      $AB: begin
-        case OperandSize32 of
-          os64: Opcode := 'stosq';
-          os32: Opcode := 'stosd';
-        else
-          Opcode := 'stosw';
-        end;
-        GetYv;
-        AddOperand(SizeReg32('ax'));
-      end;
-      $AC: begin
-        Opcode := 'lodsb';
-        AddOperand('al');
-        GetXb;
-      end;
-      $AD: begin
-        case OperandSize32 of
-          os64: Opcode := 'lodsq';
-          os32: Opcode := 'lodsd';
-        else
-          Opcode := 'lodsw';
-        end;
-        AddOperand(SizeReg32('ax'));
-        GetXv;
-      end;
-      $AE: begin
-        Opcode := 'scasb';
-        AddOperand('al');
-        GetYb;
-      end;
-      $AF: begin
-        case OperandSize32 of
-          os64: Opcode := 'scasq';
-          os32: Opcode := 'scasd';
-        else
-          Opcode := 'scasw';
-        end;
-        AddOperand(SizeReg32('ax'));
-        GetYv;
-      end;
-      //---
-      $B0..$B7: begin
-        Opcode := 'mov';
-        AddOperand(StdReg(Code[CodeIdx], reg8, rexR in Flags));
-        GetIb;
-      end;
-      $B8..$BF: begin
-        Opcode := 'mov';
-        AddOperand(StdReg(Code[CodeIdx]));
-        GetIv;
-      end;
-      //---
-      $C0..$C1: begin
-        Opcode := DoGroup2;
-      end;
-      $C2: begin
-        Opcode := 'ret';
-        GetIw;
-      end;
-      $C3: begin
-        Opcode := 'ret';
-      end;
-      $C4: begin
-        Opcode := 'les';
-        GetGz; GetMp;
-      end;
-      $C5: begin
-        Opcode := 'lds';
-        GetGz; GetMp;
-      end;
-      $C6..$C7: begin
-        Opcode := DoGroup11;
-      end;
-      $C8: begin
-        Opcode := 'enter';
-        GetIw; GetIb;
-      end;
-      $C9: begin
-        Opcode := 'leave';
-      end;
-      $CA: begin
-        Opcode := 'retf';
-        GetIw;
-      end;
-      $CB: begin
-        Opcode := 'retf';
-      end;
-      $CC: begin
-        Opcode := 'int3';
-      end;
-      $CD: begin
-        Opcode := 'int';
-        GetIb;
-      end;
-      $CE: begin
-        Opcode := Check32('int0');
-      end;
-      $CF: begin
-        case OperandSize32 of
-          os64: Opcode := 'iretq';
-          os32: Opcode := 'iretd';
-        else
-          Opcode := 'iret';
-        end;
-      end;
-      //---
-      $D0..$D3: begin
-        Opcode := DoGroup2;
-      end;
-      $D4: begin
-        Opcode := Check32('aam');
-      end;
-      $D5: begin
-        Opcode := Check32('aad');
-      end;
-      $D6: begin
-        Opcode := Check32('salc');
-      end;
-      $D7: begin
-        Opcode := 'xlat';
-      end;
-      $D8..$DF: begin
-        Opcode := DoX87;
-      end;
-      //---
-      $E0: begin
-        Opcode := 'loopne';
-        GetJb;
-      end;
-      $E1: begin
-        Opcode := 'loope';
-        GetJb;
-      end;
-      $E2: begin
-        Opcode := 'loop';
-        GetJb;
-      end;
-      $E3: begin
-        Opcode := 'jrcxz';
-        GetJb;
-      end;
-      $E4: begin
-        Opcode := 'in';
-        AddOperand('al');
-        GetIb;
-      end;
-      $E5: begin
-        Opcode := 'in';
-        AddOperand(SizeReg32('ax'));
-        GetIb;
-      end;
-      $E6: begin
-        Opcode := 'out';
-        GetIb;
-        AddOperand('al');
-      end;
-      $E7: begin
-        Opcode := 'out';
-        GetIb;
-        AddOperand(SizeReg32('ax'));
-      end;
-      $E8: begin
-        Opcode := 'call';
-        GetJz;
-      end;
-      $E9: begin
-        Opcode := 'jmp';
-        GetJz;
-      end;
-      $EA: begin
-        Opcode := Check32('jmp');
-        GetAp;
-      end;
-      $EB: begin
-        Opcode := 'jmp';
-        GetJb;
-      end;
-      $EC: begin
-        Opcode := 'in';
-        AddOperand('al');
-        AddOperand('dx');
-      end;
-      $ED: begin
-        Opcode := 'in';
-        AddOperand(SizeReg32('ax'));
-        AddOperand('dx');
-      end;
-      $EE: begin
-        Opcode := 'out';
-        AddOperand('dx');
-        AddOperand('al');
-      end;
-      $EF: begin
-        Opcode := 'out';
-        AddOperand('dx');
-        AddOperand(SizeReg32('ax'));
-      end;
-      $F0: begin
-        Prefix := Prefix + 'lock:'
-      end;
-      $F1: begin
-        Opcode := 'int1';
-      end;
-      $F2: begin
-        Prefix := Prefix + 'repne:'
-      end;
-      $F3: begin
-        Prefix := Prefix + 'rep:'
-      end;
-      $F4: begin
-        Opcode := 'hlt';
-      end;
-      $F5: begin
-        Opcode := 'cmc';
-      end;
-      $F6..$F7: begin
-        Opcode := DoGroup3;
-      end;
-      $F8: begin
-        Opcode := 'clc';
-      end;
-      $F9: begin
-        Opcode := 'stc';
-      end;
-      $FA: begin
-        Opcode := 'cli';
-      end;
-      $FB: begin
-        Opcode := 'sti';
-      end;
-      $FC: begin
-        Opcode := 'cld';
-      end;
-      $FD: begin
-        Opcode := 'std';
-      end;
-      $FE: begin
-        Opcode := DoGroup4;
-      end;
-      $FF: begin
-        Opcode := DoGroup5;
-      end;
-    else
-      Opcode := HexValue(Code[0], 1, []);
-      Inc(Address);
-      Exit;
-    end;   
-
-    Inc(CodeIdx);
-    if CodeIdx > High(Code)
-    then begin
-      Log('Disassemble: instruction longer than %d bytes', [SizeOf(Code)]);
-      Exit;
-    end;
-  until Opcode <> '';
-  
   if flagModRM in Flags then Inc(CodeIdx);
   if flagSib in Flags then Inc(CodeIdx);
 
   Soper := '';
+  HasMem := False;
   for n := 1 to OperIdx do
   begin
     if Operand[n].Size = 0
@@ -1442,11 +2261,20 @@ begin
 
     if Soper <> '' then Soper := Soper + ',';
     if Operand[n].IsMemory
-    then Soper := Soper + Segment + '[' + S + ']'
+    then begin
+      Soper := Soper + Segment + '[' + S + ']';
+      HasMem := True;
+    end
     else Soper := Soper + S;
     Inc(CodeIdx, Operand[n].Size);
   end;
-  ACode := Prefix + Opcode + ' ' + Soper;
+  S := '';
+  if preLock in Flags then S := S + '**lock:**';
+  if preRep in Flags then S := S + '?rep:?';
+  if preRepNE in Flags then S := S + '?repne:?';
+  S := S + Opcode;
+  if not HasMem and (Segment <> '') then S := S + ' ?' + Segment + '?';
+  ACode := S + ' ' + Soper;
 
   // memory
   S := '';
