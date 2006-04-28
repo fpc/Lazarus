@@ -297,6 +297,7 @@ resourcestring
   lisMenuOnlineHelp = 'Online Help';
   lisMenuConfigureHelp = 'Configure Help';
   lisMenuContextHelp = 'Context sensitive Help';
+  lisMenuEditContextHelp = 'Edit context sensitive Help';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';

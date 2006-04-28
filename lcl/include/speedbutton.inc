@@ -414,10 +414,11 @@ begin
   if Transparent then begin
     if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
       if MouseInControl then begin
-//      Canvas.GetUpdatedHandle([csBrushValid,csPenValid]);
        if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
                                                else xBevel := bvRaised;
         Canvas.Frame3D(PaintRect,1,xBevel);
+      end else if (FLastDrawFlags and DFCS_PUSHED) <>0 then begin
+        Canvas.Frame3D(PaintRect,1,bvLowered);
       end;
       InflateRect(PaintRect, -1, -1);
     end;

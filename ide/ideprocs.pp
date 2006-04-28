@@ -136,11 +136,11 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+                         const Path: string);
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+                         const Path: string);
 function AddToRecentList(const s: string; RecentList: TStrings;
-  Max: integer): boolean;
+                         Max: integer): boolean;
 procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
                    var ARect:TRect);
@@ -155,13 +155,14 @@ procedure LoadPoint(XMLConfig: TXMLConfig; const Path:string;
 procedure SavePoint(XMLConfig: TXMLConfig; const Path:string;
                     const APoint, DefaultPoint:TPoint);
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+                         const Path: string);
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+                         const Path: string);
+procedure MakeXMLName(var Name: string);
   
 
 function FindProgram(const Programname, BaseDirectory: string;
-  WithBaseDirectory: boolean): string;
+                     WithBaseDirectory: boolean): string;
 
 const DateAsCfgStrFormat='YYYYMMDD';
 
@@ -773,6 +774,21 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',List.Count,0);
   for i:=0 to List.Count-1 do
     XMLConfig.SetDeleteValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i],'');
+end;
+
+procedure MakeXMLName(var Name: string);
+var
+  i: Integer;
+begin
+  i:=1;
+  while i<=length(Name) do begin
+    if (Name[i] in ['a'..'z','A'..'Z','_'])
+    or (i>1) and (Name[i] in ['0'..'9']) then begin
+      inc(i);
+    end else begin
+      System.Delete(Name,i,1);
+    end;
+  end;
 end;
 
 procedure LoadRect(XMLConfig: TXMLConfig; const Path: string;

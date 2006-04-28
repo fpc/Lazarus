@@ -83,7 +83,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector,
   // help manager
-  HelpManager,
+  IDEContextHelpEdit, HelpManager,
   // designer
   ComponentPalette, ComponentReg, ObjInspExt,
   Designer, FormEditor, CustomFormEditor,
@@ -133,6 +133,8 @@ type
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
     procedure OnApplicationActivate(Sender: TObject);
+    procedure OnApplicationKeyDown(Sender: TObject;
+                                   var Key: Word; Shift: TShiftState);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 
     // file menu
@@ -1126,11 +1128,12 @@ end;
 
 procedure TMainIDE.StartIDE;
 begin
-  // set OnIdle handlers
-  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
-  Application.AddOnIdleHandler(@OnApplicationIdle,true);
-  Application.AddOnActivateHandler(@OnApplicationActivate,true);
-  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm,true);
+  // set Application handlers
+  Application.AddOnUserInputHandler(@OnApplicationUserInput);
+  Application.AddOnIdleHandler(@OnApplicationIdle);
+  Application.AddOnActivateHandler(@OnApplicationActivate);
+  Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
+  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
 
   // Now load a project
@@ -1159,9 +1162,8 @@ begin
   end;
 
   // disconnect handlers
-  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
-  Application.RemoveOnIdleHandler(@OnApplicationIdle);
-  Screen.RemoveHandlerRemoveForm(@OnScreenRemoveForm);
+  Application.RemoveAllHandlersOfObject(Self);
+  Screen.RemoveAllHandlersOfObject(Self);
   IDECommands.OnExecuteIDECommand:=nil;
 
   // free project, if it is still there
@@ -2568,6 +2570,7 @@ var
   Command: Word;
   Handled: Boolean;
 begin
+  if Key=VK_UNKNOWN then exit;
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,IDEWindowClass);
   if (Command = ecNone) then exit;
   Handled := false;
@@ -12037,6 +12040,19 @@ end;
 procedure TMainIDE.OnApplicationActivate(Sender: TObject);
 begin
   DoCheckFilesOnDisk;
+end;
+
+procedure TMainIDE.OnApplicationKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Command: Word;
+begin
+  //DebugLn('TMainIDE.OnApplicationKeyDown ',dbgs(Key),' ',dbgs(Shift));
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
+  if Command=ecEditContextHelp then begin
+    Key:=VK_UNKNOWN;
+    ShowContextHelpEditor(Sender);
+  end;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);

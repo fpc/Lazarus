@@ -259,6 +259,7 @@ const
   ecOnlineHelp           = ecFirstLazarus + 901;
   ecConfigureHelp        = ecFirstLazarus + 902;
   ecContextHelp          = ecFirstLazarus + 903;
+  ecEditContextHelp      = ecFirstLazarus + 904;
 
   // designer
   ecDesignerCopy         = ecFirstLazarus + 1000;

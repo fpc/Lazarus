@@ -529,6 +529,7 @@ begin
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
+  ecEditContextHelp: SetResult(VK_F1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
@@ -838,7 +839,8 @@ begin
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_F1,[],VK_UNKNOWN,[]);
+  ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditContextHelp: SetResult(VK_F1,[ssCtrl,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
@@ -1407,6 +1409,7 @@ begin
     ecOnlineHelp            : Result:= lisMenuOnlineHelp;
     ecConfigureHelp         : Result:= lisMenuConfigureHelp;
     ecContextHelp           : Result:= lisMenuContextHelp;
+    ecEditContextHelp       : Result:= lisMenuEditContextHelp;
 
     // desginer
     ecDesignerCopy          : Result:= lisDsgCopyComponents;
@@ -2333,6 +2336,7 @@ begin
   AddDefault(C,'Online Help',ecOnlineHelp);
   AddDefault(C,'Configure Help',ecConfigureHelp);
   AddDefault(C,'Context sensitive help',ecContextHelp);
+  AddDefault(C,'Edit context sensitive help',ecEditContextHelp);
 
   // designer  - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];

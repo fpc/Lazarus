@@ -5059,8 +5059,9 @@ begin
     Exit;
   end;
   
-  if csLoading in ComponentState then begin
-    DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self));
+  if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
+    DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
+    //DumpStack;
   end;
 
   Include(FWinControlFlags,wcfCreatingHandle);

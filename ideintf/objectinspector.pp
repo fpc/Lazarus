@@ -1747,6 +1747,7 @@ procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word;
 var
   Handled: Boolean;
 begin
+  //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
   Handled:=true;
   case Key of
   
@@ -1782,6 +1783,7 @@ begin
       OnOIKeyDown(Self,Key,Shift);
     Handled:=Key=VK_UNKNOWN;
   end;
+  //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key,' Handled=',Handled);
   if Handled then Key:=VK_UNKNOWN;
 end;
 
