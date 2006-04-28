@@ -1235,9 +1235,11 @@ begin
               and (CurPos.Flag=cafWord)
               and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
           then
-            if CurrentIdentifierList.StartBracketLvl=0 then
-              CurrentIdentifierList.ContextFlags:=
-                CurrentIdentifierList.ContextFlags+[ilcfContextNeedsEndSemicolon];
+            if CurrentIdentifierList.StartBracketLvl=0 then begin
+              // TODO: improve heuristic to add semicolon
+              //CurrentIdentifierList.ContextFlags:=
+              //  CurrentIdentifierList.ContextFlags+[ilcfContextNeedsEndSemicolon];
+            end;
         end;
       end;
       // context in front of
