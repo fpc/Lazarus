@@ -2590,7 +2590,7 @@ begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
   DoFindDeclarationAtCaret(
-    ActiveSrcEdit.EditorComponent.PixelsToRowColumn(Point(X,Y)));
+    ActiveSrcEdit.EditorComponent.PixelsToLogicalPos(Point(X,Y)));
 end;
 
 procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
