@@ -2550,7 +2550,7 @@ begin
   // Palette
   Desc^.HasPalette:=(not IsGdkBitmap)
     and (Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
-                              GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR]);
+                             GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR]);
   // Depth
   if IsGdkBitmap then
     Desc^.Depth:=1
@@ -2792,12 +2792,7 @@ begin
     {$ENDIF}
 
     // See also GetWindowRawImageDescription
-    RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// gdk_image_get uses rileDWordBoundary
-    {case AnImage^.Depth of
-    0..8:   RawImage.Description.AlphaLineEnd:=rileByteBoundary;
-    9..32:  RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// X does not seem to use Word boundaries
-    else    RawImage.Description.AlphaLineEnd:=rileQWordBoundary;
-    end;}
+    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_image_get uses rileByteBoundary
     RawImage.Description.AlphaBitsPerPixel:=GetPGdkImageBitsPerPixel(AnImage);
 
     // consistency checks
