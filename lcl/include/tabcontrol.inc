@@ -601,6 +601,17 @@ begin
   Result:=TTabControlStrings(FTabs).GetHitTestInfoAt(X,Y);
 end;
 
+function TCustomTabControl.IndexOfTabWithCaption(const TabCaption: string
+  ): Integer;
+begin
+  Result:=0;
+  while Result<Tabs.Count do begin
+    if CompareText(Tabs[Result],TabCaption)=0 then exit;
+    inc(Result);
+  end;
+  Result:=-1;
+end;
+
 function TCustomTabControl.TabRect(Index: Integer): TRect;
 begin
   Result:=TTabControlStrings(FTabs).TabRect(Index);

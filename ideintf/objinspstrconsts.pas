@@ -141,6 +141,11 @@ resourcestring
   nbcesMovePageRight = 'Move page right';
   nbcesShowPage = 'Show page ...';
   oisCreateDefaultEvent = 'Create default event';
+  tccesAddTab  = 'Add tab';
+  tccesInsertTab = 'Insert tab';
+  tccesDeleteTab = 'Delete tab';
+  tccesMoveTabLeft = 'Move tab left';
+  tccesMoveTabRight = 'Move tab right';
 
   //checklistbox editor
   clbCheckListBoxEditor = 'CheckListBox Editor';

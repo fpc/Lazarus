@@ -1352,8 +1352,10 @@ begin
     end;
   end else begin
     // stop the signal, so that the widget does not auto react
-    if (not (TControl(Data) is TCustomNoteBook))
-    or (event^.Button<>1) then begin
+    if (event^.Button<>1)
+    or ((not (TControl(Data) is TCustomNoteBook))
+    and (not (TControl(Data) is TCustomTabControl)))
+    then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
       Result := not CallBackDefaultReturn;
     end;
@@ -1518,7 +1520,9 @@ begin
     end;
   end else begin
     // stop the signal, so that the widget does not auto react
-    if not (TControl(Data) is TCustomNoteBook) then
+    if (not (TControl(Data) is TCustomNoteBook))
+    and (not (TControl(Data) is TCustomTabControl))
+    then
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
     Result := not CallBackDefaultReturn;
   end;

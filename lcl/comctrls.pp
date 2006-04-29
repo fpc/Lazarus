@@ -232,7 +232,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
-                                GoForward, CheckTabVisible: Boolean): TTabSheet;
+                          GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);
     procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean);
     property ActivePageIndex: Integer read GetActivePageIndex
@@ -462,22 +462,23 @@ type
                                      write SetScrollOpposite default False;
     property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property TabHeight: Smallint read GetTabHeight write SetTabHeight default 0;
-    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition
                                        default tpTop;
-    property Tabs: TStrings read FTabs write SetTabs;
     property TabWidth: Smallint read GetTabWidth write SetTabWidth default 0;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function IndexOfTabAt(X, Y: Integer): Integer;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
+    function IndexOfTabWithCaption(const TabCaption: string): Integer;
     function TabRect(Index: Integer): TRect;
     function RowCount: Integer;
     procedure ScrollTabs(Delta: Integer);
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: boolean;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
+    property Tabs: TStrings read FTabs write SetTabs;
   public
     property TabStop default True;
   end;
