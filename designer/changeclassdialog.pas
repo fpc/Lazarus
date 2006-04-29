@@ -115,6 +115,7 @@ var
   LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree;
   UnitInfo: TUnitInfo;
+  OldParents: TStrings; // Name=OldParent pairs
 
   procedure ShowAbortMessage(const Msg: string);
   begin
@@ -129,6 +130,13 @@ var
     Result:=false;
     // select only this persistent
     GlobalDesignHook.SelectOnlyThis(APersistent);
+    if (APersistent is TControl)
+    and (TControl(APersistent).Parent<>nil) then begin
+      if OldParents=nil then
+        OldParents:=TStringList.Create;
+      OldParents.Values[TControl(APersistent).Name]:=
+                                              TControl(APersistent).Parent.Name;
+    end;
 
     // stream selection
     ComponentStream:=TMemoryStream.Create;
@@ -215,6 +223,10 @@ var
   function InsertStreamedSelection: boolean;
   var
     MemStream: TMemoryStream;
+    LFMType, LFMComponentName, LFMClassName: string;
+    AComponent: TComponent;
+    NewParent: TWinControl;
+    NewParentName: string;
   begin
     Result:=false;
     if LFMBuffer.SourceLength=0 then exit;
@@ -225,7 +237,21 @@ var
       debugln('ChangePersistentClass-After--------------------------------------------');
       LFMBuffer.SaveToStream(MemStream);
       MemStream.Position:=0;
-      Result:=FormEditingHook.InsertFromStream(MemStream,nil,[cpsfReplace]);
+      NewParent:=nil;
+      if OldParents<>nil then begin
+        ReadLFMHeader(MemStream,LFMType,LFMComponentName,LFMClassName);
+        MemStream.Position:=0;
+        if LFMComponentName<>'' then begin
+          NewParentName:=OldParents.Values[LFMComponentName];
+          if NewParentName<>'' then begin
+            AComponent:=GlobalDesignHook.GetComponent(NewParentName);
+            if AComponent is TWinControl then
+              NewParent:=TWinControl(AComponent);
+          end;
+        end;
+      end;
+      Result:=FormEditingHook.InsertFromStream(MemStream,NewParent,
+                                               [cpsfReplace]);
       if not Result then
         ShowAbortMessage(lisReplacingSelectionFailed);
     finally
@@ -248,6 +274,7 @@ begin
   end;
   ComponentStream:=nil;
   LFMTree:=nil;
+  OldParents:=nil;
   try
     if not StreamSelection then exit;
     if not ParseLFMStream then exit;
@@ -257,6 +284,7 @@ begin
   finally
     ComponentStream.Free;
     LFMTree.Free;
+    OldParents.Free;
   end;
   Result:=mrOk;
 end;

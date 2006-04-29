@@ -7670,7 +7670,6 @@ begin
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
-          debugln('ecDeleteLastChar A');
           if SelAvail then
             SetSelectedTextEmpty
           else begin

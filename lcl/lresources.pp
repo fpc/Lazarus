@@ -266,6 +266,9 @@ function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
 function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
 function GetClassNameFromLRSStream(s: TStream; out IsInherited: Boolean): shortstring;
+procedure GetComponentInfoFromLRSStream(s: TStream;
+                                  out ComponentName, ComponentClassName: string;
+                                  out IsInherited: Boolean);
 procedure WriteComponentAsBinaryToStream(AStream: TStream; AComponent: TComponent);
 procedure ReadComponentFromBinaryStream(AStream: TStream;
                            var RootComponent: TComponent;
@@ -277,9 +280,9 @@ procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
 function LFMtoLRSfile(const LFMfilename: string): boolean;// true on success
 function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;// true on success
 function FindLFMClassName(LFMStream: TStream):AnsiString;
-procedure ReadLFMHeader(LFMStream: TStream; out LFMClassName: String;
-                        out LFMType: String);
-procedure ReadLFMHeader(LFMSource: string; out LFMClassName: String;
+procedure ReadLFMHeader(LFMStream: TStream;
+                        out LFMType, LFMComponentName, LFMClassName: String);
+procedure ReadLFMHeader(const LFMSource: string; out LFMClassName: String;
                         out LFMType: String);
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
@@ -466,7 +469,7 @@ begin
   NameLen:=0;
   s.Read(NameLen,1);
   if (NameLen and $f0) = $f0 then begin
-    { Read Flag Byte }
+    // Read Flag Byte
     s.Read(NameLen,1);
     IsInherited := (NameLen and 1) = 1;
   end else
@@ -475,6 +478,45 @@ begin
   if NameLen>0 then begin
     SetLength(Result,NameLen);
     s.Read(Result[1],NameLen);
+  end;
+  s.Position:=OldPosition;
+end;
+
+procedure GetComponentInfoFromLRSStream(s: TStream; out ComponentName,
+  ComponentClassName: string; out IsInherited: Boolean);
+var
+  Signature: shortstring;
+  NameLen: byte;
+  OldPosition: Int64;
+begin
+  ComponentName:='';
+  ComponentClassName:='';
+  OldPosition:=s.Position;
+  // read signature
+  Signature:='1234';
+  s.Read(Signature[1],length(Signature));
+  if Signature<>'TPF0' then exit;
+  // read classname length
+  NameLen:=0;
+  s.Read(NameLen,1);
+  if (NameLen and $f0) = $f0 then begin
+    // Read Flag Byte
+    s.Read(NameLen,1);
+    IsInherited := (NameLen and 1) = 1;
+  end else
+    IsInherited := False;
+  // read classname
+  if NameLen>0 then begin
+    SetLength(ComponentClassName,NameLen);
+    s.Read(ComponentClassName[1],NameLen);
+  end;
+  // read component name length
+  NameLen:=0;
+  s.Read(NameLen,1);
+  // read componentname
+  if NameLen>0 then begin
+    SetLength(ComponentName,NameLen);
+    s.Read(ComponentName[1],NameLen);
   end;
   s.Position:=OldPosition;
 end;
@@ -1348,8 +1390,8 @@ begin
   FStream.Write(Buf,Count);
 end;
 
-procedure ReadLFMHeader(LFMStream:TStream; out LFMClassName: String;
-  out LFMType: String);
+procedure ReadLFMHeader(LFMStream: TStream;
+  out LFMType, LFMComponentName, LFMClassName: String);
 var
   c:char;
   Token: String;
@@ -1357,31 +1399,31 @@ begin
   { examples:
     object Form1: TForm1
     inherited AboutBox2: TAboutBox2
-
-    - LFMClassName is the last word of the first line
-    - LFMType is the first word on the line
   }
+  LFMComponentName:='';
   LFMClassName := '';
   LFMType := '';
   Token := '';
-  while (LFMStream.Read(c,1)=1) and (LFMStream.Position<1000)
-  and (not (c in [#10,#13])) do begin
+  while (LFMStream.Read(c,1)=1) and (LFMStream.Position<1000) do begin
     if c in ['a'..'z','A'..'Z','0'..'9','_'] then
       Token := Token + c
     else begin
-      if LFMType = '' then
-        LFMType := Token;
-      if Token <> '' then
-        LFMClassName := Token;
-      Token := '';
+      if Token<>'' then begin
+        if LFMType = '' then
+          LFMType := Token
+        else if LFMComponentName='' then
+          LFMComponentName:=Token
+        else if LFMClassName = '' then
+          LFMClassName := Token;
+        Token := '';
+      end;
+      if c in [#10,#13] then break;
     end;
   end;
-  if Token <> '' then
-    LFMClassName := Token;
   LFMStream.Position:=0;
 end;
 
-procedure ReadLFMHeader(LFMSource: string; out LFMClassName: String;
+procedure ReadLFMHeader(const LFMSource: string; out LFMClassName: String;
   out LFMType: String);
 var
   p: Integer;
