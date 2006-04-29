@@ -61,104 +61,56 @@ function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 var
   GdiObject: PGdiObject;
-  FontNameRegistry, Foundry, FamilyName, WeightName,
-  Slant, SetwidthName, AddStyleName, PixelSize,
-  PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
-  CharSetRegistry, CharSetCoding: string;
-  FullString : AnsiString;
-  SizeFont   : integer;
+  FullString: String;
+  aFamily,aStyle: String;
+  aSize: Integer;
 
   procedure LoadDefaultFont;
   begin
     DisposeGDIObject(GdiObject);
     GdiObject:=CreateDefaultFont;
   end;
-
+  
 begin
-  Result := 0;
-  GDIObject := NewGDIObject(gdiFont);
-  Try
-    // set default values
-    FontNameRegistry := '*';
-    Foundry := '*';
-    FamilyName := '*';
-    WeightName := '*';
-    Slant := '*';
-    SetwidthName := '*';
-    AddStyleName := '*';
-    PixelSize := '*';
-    PointSize := '*';
-    ResolutionX := '*';
-    ResolutionY := '*';
-    Spacing := '*';
-    AverageWidth := '*';
-    CharSetRegistry := '*';
-    CharSetCoding := '*';
-
-    // check if LongFontName is in XLFD format
-    if IsFontNameXLogicalFontDesc(LongFontName) then begin
-      FontNameRegistry := ExtractXLFDItem(LongFontName,0);
-      Foundry          := ExtractXLFDItem(LongFontName,1);
-      FamilyName       := ExtractXLFDItem(LongFontName,2);
-      WeightName       := ExtractXLFDItem(LongFontName,3);
-      Slant            := ExtractXLFDItem(LongFontName,4);
-      SetwidthName     := ExtractXLFDItem(LongFontName,5);
-      AddStyleName     := ExtractXLFDItem(LongFontName,6);
-      PixelSize        := ExtractXLFDItem(LongFontName,7);
-      PointSize        := ExtractXLFDItem(LongFontName,8);
-      ResolutionX      := ExtractXLFDItem(LongFontName,9);
-      ResolutionY      := ExtractXLFDItem(LongFontName,10);
-      Spacing          := ExtractXLFDItem(LongFontName,11);
-      AverageWidth     := ExtractXLFDItem(LongFontName,12);
-      CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
-      CharSetCoding    := ExtractXLFDItem(LongFontName,14);
-    end else
-      if (LongFontName <> '') {and (Screen.Fonts.IndexOf(LongFontName) > 0) }then
-        FamilyName := LongFontName;
-
+  result := 0;
+  GdiObject := NewGdiObject(gdiFont);
+  try
     with LogFont do begin
       if lfFaceName[0] = #0
       then begin
         Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
         Exit;
       end;
-
-      if (FamilyName = '') or (CompareText(FamilyName,'*')=0) then begin
-        FamilyName := StrPas(lfFaceName);
-        if CompareText(FamilyName,'default')=0 then begin
-          LoadDefaultFont;
-          exit;
-        end;
+      
+      if CompareText(lfFacename,'default')=0 then begin
+        LoadDefaultFont;
+        Result := HFONT(GdiObject);
+        exit;
       end;
-      sizeFont:=0;
-      if IsFontNameXLogicalFontDesc(LongFontName) then
-          if  (PointSize <> '') and  (CompareText(PointSize,'*')<>0) then
-            sizeFont:=StrToInt(PointSize) div 10;
-      if sizeFont = 0 then sizeFont:=abs(lfHeight);
-      if sizeFont = 0 then sizeFont:=12;
-
-
-
-
-      FullString := FamilyName + ' '+ IntToStr(sizeFont );
-
-      if FontNameRegistry='' then ;
-      if Foundry='' then ;
-      if WeightName='' then ;
-      if Slant='' then ;
-      if SetwidthName='' then ;
-      if AddStyleName='' then ;
-      if PixelSize='' then ;
-      if ResolutionX='' then ;
-      if ResolutionY='' then ;
-      if Spacing='' then ;
-      if AverageWidth='' then ;
-      if CharSetCoding='' then ;
-      if CharSetRegistry='' then ;
-
+      
+      FontNameToPangoFontDescStr(LongFontname, aFamily, aStyle, aSize);
+      
+      // if font specified size, prefer this instead of 'posibly' inacurate lfHeight
+      // note that lfHeight may actually have a most acurate value but there is no
+      // way to know this at this point.
+      
+      // setting the size, this could be done in two ways
+      // method 1: fontdesc using fontname like "helvetica 12"
+      // method 2: fontdesc using fontname like "helvetica" and later modify size
+      
+      // to obtain consistent font sizes method 2 should be used
+      // for method 1 converting lfheight to fontsize can lead to rounding errors
+      //   for example, font size=12, lfheight=-12 (75dpi), at 75 dpi aSize=11
+      //   so we would get a font "helvetica 11" instead of "helvetica 12"
+      // size information, and later modify font size
+      
+      // using method 2
+      FullString := AFamily + ' ' + aStyle;
+      
       GdiObject^.GDIFontObject :=
-                          pango_font_description_from_string(PChar(FullString));
-      if lfWeight <> FW_DONTCARE then
+        pango_font_description_from_string(PChar(FullString));
+
+      If lfWeight <> FW_DONTCARE then
         pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
 
       if lfItalic = 0 then
@@ -167,13 +119,22 @@ begin
       else
         pango_font_description_set_style(GdiObject^.GDIFontObject,
                                          PANGO_STYLE_ITALIC);
-      if lfHeight<>0 then
-        pango_font_description_set_size(GdiObject^.GDIFontObject,abs(lfHeight)*PANGO_SCALE);
+                                         
+      if aSize=0 then begin
+        // a size is not specified, try to calculate one based on lfHeight
+        // and use this value not in the font name but set this value appart
+        // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
+        // which would be great with the given lfheight value, but older gtk2 version
+        // doesn't have this funtion
+        aSize:= (abs(lfheight) * 72) div ScreenInfo.PixelsPerInchX;
+        if aSize=0 then
+          aSize := 12;
+      end;
+      pango_font_description_set_size( GdiObject^.GDIFontObject, aSize*PANGO_SCALE);
 
       GdiObject^.StrikeOut := lfStrikeOut <> 0;
       GdiObject^.Underline := lfUnderline <> 0;
 
-      Result := HFONT(GdiObject);
     end;
   finally
     if GdiObject^.GDIFontObject = nil
@@ -186,6 +147,7 @@ begin
     end;
   end;
 end;
+
 
 {------------------------------------------------------------------------------
   Function: EndPaint
