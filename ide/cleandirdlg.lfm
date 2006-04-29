@@ -143,6 +143,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
+    OnClick = OkButtonClick
     TabOrder = 3
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
