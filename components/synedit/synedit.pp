@@ -168,7 +168,7 @@ type
     eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
     eoDropFiles,               //TODO Allows the editor accept file drops
     eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
-    eoGroupUndo,               //TODO When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
+    eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
     eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
     eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
@@ -7472,6 +7472,7 @@ var
   LogCaretXY: TPoint;
   LogCaret: TPoint;
   LogSpacePos: integer;
+  LastUndoItem:TSynEditUndoItem;
   {$ENDIF}
 
 {begin}                                                                         //mh 2000-10-30
@@ -7669,7 +7670,7 @@ begin
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
-          //debugln('ecDeleteLastChar A');
+          debugln('ecDeleteLastChar A');
           if SelAvail then
             SetSelectedTextEmpty
           else begin
@@ -7776,16 +7777,35 @@ begin
                 TrimmedSetLine(CaretY - 1, Temp);
               end;
             end;
+            
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
-              //debugln('ecDeleteLastChar AddChange CaretXY=',dbgs(CaretXY),
-              //  ' LogCaret=',dbgs(LogCaret),' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
-              fUndoList.AddChange(crSilentDelete,
-                {$IFDEF SYN_LAZARUS}
-                PhysicalToLogicalPos(CaretXY), LogCaret,
-                {$ELSE}
-                CaretXY, Caret,
-                {$ENDIF}
-                Helper, smNormal);
+              {$IFDEF SYN_LAZARUS}
+              if eoGroupUndo in Options then begin
+                LastUndoItem := fUndoList.PeekItem;
+                if (LastUndoItem <> nil)
+                  and (LastUndoItem.fChangeReason = crSilentDelete)
+                  and (LastUndoItem.fChangeStartPos.Y = LastUndoItem.fChangeEndPos.Y)
+                  and (PhysicalToLogicalPos(CaretXY).Y = LogCaret.Y)
+                  and (LastUndoItem.fChangeStartPos.X = LogCaret.X)
+                then begin // Share the undo item with the delete char action before
+                  LastUndoItem.fChangeStartPos.X := PhysicalToLogicalPos(CaretXY).X;
+                  LastUndoItem.fChangeStr := Helper +  LastUndoItem.fChangeStr;
+                end
+                else
+                begin
+                  fUndoList.AddChange(crSilentDelete,
+                  PhysicalToLogicalPos(CaretXY), LogCaret,
+                  Helper, smNormal);
+                end;
+              end else begin
+                //debugln('ecDeleteLastChar AddChange CaretXY=',dbgs(CaretXY),
+                //  ' LogCaret=',dbgs(LogCaret),' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
+                fUndoList.AddChange(crSilentDelete, CaretXY, Caret,
+                  Helper, smNormal);
+              end;
+              {$ELSE}
+              fUndoList.AddChange(crSilentDelete,CaretXY,Caret,Helper,smNormal);
+              {$ENDIF}
             end;
           end;
         end;

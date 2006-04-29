@@ -194,6 +194,9 @@ type
 
 
   { Editor Options object used to hold the editor options }
+
+{ TEditorOptions }
+
 TEditorOptions = class(TPersistent)
   private
     xmlconfig: TXMLConfig;
@@ -246,6 +249,7 @@ TEditorOptions = class(TPersistent)
     destructor Destroy; override;
     procedure Load;
     procedure Save;
+    function GetSynEditOptionName(SynOption: TSynEditorOption): string;
 
     procedure GetHighlighterSettings(Syn: TCustomSyn);
               // read highlight settings from config file
@@ -1288,46 +1292,7 @@ begin
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
-      case SynEditOpt of
-        eoAltSetsColumnMode:
-          SynEditOptName := 'AltSetsColumnMode';
-        eoAutoIndent:
-          SynEditOptName := 'AutoIndent';
-        eoBracketHighlight:
-          SynEditOptName := 'BracketHighlight';
-        eoDoubleClickSelectsLine:
-          SynEditOptName := 'DoubleClickSelectsLine';
-        eoDragDropEditing:
-          SynEditOptName := 'DragDropEditing';
-        eoDropFiles:
-          SynEditOptName := 'DropFiles';
-        eoEnhanceHomeKey:
-          SynEditOptName := 'EnhanceHomeKey';
-        eoHalfPageScroll:
-          SynEditOptName := 'HalfPageScroll';
-        eoKeepCaretX:
-          SynEditOptName := 'KeepCaretX';
-        eoPersistentCaret:
-          SynEditOptName := 'PersistentCaret';
-        eoScrollByOneLess:
-          SynEditOptName := 'ScrollByOneLess';
-        eoScrollPastEof:
-          SynEditOptName := 'ScrollPastEof';
-        eoScrollPastEol:
-          SynEditOptName := 'ScrollPastEol';
-        eoShowScrollHint:
-          SynEditOptName := 'ShowScrollHint';
-        eoSmartTabs:
-          SynEditOptName := 'SmartTabs';
-        eoTabsToSpaces:
-          SynEditOptName := 'TabsToSpaces';
-        eoTabIndent:
-          SynEditOptName := 'TabIndent';
-        eoTrimTrailingSpaces:
-          SynEditOptName := 'TrimTrailingSpaces';
-        else
-          SynEditOptName := '';
-      end;
+      SynEditOptName := GetSynEditOptionName(SynEditOpt);
       if SynEditOptName <> '' then
         if XMLConfig.GetValue('EditorOptions/General/Editor/' + SynEditOptName,
           SynEditOpt in SynEditDefaultOptions) then
@@ -1460,46 +1425,7 @@ begin
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
-      case SynEditOpt of
-        eoAltSetsColumnMode:
-          SynEditOptName := 'AltSetsColumnMode';
-        eoAutoIndent:
-          SynEditOptName := 'AutoIndent';
-        eoBracketHighlight:
-          SynEditOptName := 'BracketHighlight';
-        eoDoubleClickSelectsLine:
-          SynEditOptName := 'DoubleClickSelectsLine';
-        eoDragDropEditing:
-          SynEditOptName := 'DragDropEditing';
-        eoDropFiles:
-          SynEditOptName := 'DropFiles';
-        eoEnhanceHomeKey:
-          SynEditOptName := 'EnhanceHomeKey';
-        eoHalfPageScroll:
-          SynEditOptName := 'HalfPageScroll';
-        eoKeepCaretX:
-          SynEditOptName := 'KeepCaretX';
-        eoPersistentCaret:
-          SynEditOptName := 'PersistentCaret';
-        eoScrollByOneLess:
-          SynEditOptName := 'ScrollByOneLess';
-        eoScrollPastEof:
-          SynEditOptName := 'ScrollPastEof';
-        eoScrollPastEol:
-          SynEditOptName := 'ScrollPastEol';
-        eoShowScrollHint:
-          SynEditOptName := 'ShowScrollHint';
-        eoSmartTabs:
-          SynEditOptName := 'SmartTabs';
-        eoTabsToSpaces:
-          SynEditOptName := 'TabsToSpaces';
-        eoTabIndent:
-          SynEditOptName := 'TabIndent';
-        eoTrimTrailingSpaces:
-          SynEditOptName := 'TrimTrailingSpaces';
-        else
-          SynEditOptName := '';
-      end;
+      SynEditOptName := GetSynEditOptionName(SynEditOpt);
       if SynEditOptName <> '' then
         XMLConfig.SetDeleteValue('EditorOptions/General/Editor/' + SynEditOptName,
           SynEditOpt in fSynEditOptions, SynEditOpt in SynEditDefaultOptions);
@@ -1606,6 +1532,53 @@ begin
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Save] ERROR: ', e.Message);
+  end;
+end;
+
+function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption
+  ): string;
+begin
+  case SynOption of
+    eoAltSetsColumnMode:
+      Result := 'AltSetsColumnMode';
+    eoAutoIndent:
+      Result := 'AutoIndent';
+    eoBracketHighlight:
+      Result := 'BracketHighlight';
+    eoDoubleClickSelectsLine:
+      Result := 'DoubleClickSelectsLine';
+    eoDragDropEditing:
+      Result := 'DragDropEditing';
+    eoDropFiles:
+      Result := 'DropFiles';
+    eoEnhanceHomeKey:
+      Result := 'EnhanceHomeKey';
+    eoGroupUndo:
+      Result := 'GroupUndo';
+    eoHalfPageScroll:
+      Result := 'HalfPageScroll';
+    eoKeepCaretX:
+      Result := 'KeepCaretX';
+    eoPersistentCaret:
+      Result := 'PersistentCaret';
+    eoScrollByOneLess:
+      Result := 'ScrollByOneLess';
+    eoScrollPastEof:
+      Result := 'ScrollPastEof';
+    eoScrollPastEol:
+      Result := 'ScrollPastEol';
+    eoShowScrollHint:
+      Result := 'ShowScrollHint';
+    eoSmartTabs:
+      Result := 'SmartTabs';
+    eoTabsToSpaces:
+      Result := 'TabsToSpaces';
+    eoTabIndent:
+      Result := 'TabIndent';
+    eoTrimTrailingSpaces:
+      Result := 'TrimTrailingSpaces';
+    else
+      Result := '';
   end;
 end;
 
@@ -2621,6 +2594,7 @@ begin
   SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
   SetOption(dlgDragDropEd, eoDragDropEditing);
   SetOption(dlgDropFiles, eoDropFiles);
+  SetOption(dlgGroupUndo, eoGroupUndo);
   SetOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
   SetOption(dlgHalfPageScroll, eoHalfPageScroll);
   SetOption(dlgKeepCaretX, eoKeepCaretX);
@@ -3606,6 +3580,7 @@ begin
     Items.Add(dlgTrimTrailingSpaces);
     // undo
     Items.Add(dlgUndoAfterSave);
+    Items.Add(dlgGroupUndo);
     // mouse
     Items.Add(dlgDoubleClickLine);
     Items.Add(dlgMouseLinks);
@@ -3615,52 +3590,53 @@ begin
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
 
     Checked[Items.IndexOf(dlgAltSetClMode)] := eoAltSetsColumnMode in
-      EditorOpts.SynEditOptions;
+                                                      EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgAutoIdent)]    := eoAutoIndent in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgBracHighlight)] :=
-      eoBracketHighlight in EditorOpts.SynEditOptions;
+                                eoBracketHighlight in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgDragDropEd)]   :=
-      eoDragDropEditing in EditorOpts.SynEditOptions;
+                                 eoDragDropEditing in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgDropFiles)]    := eoDropFiles in EditorOpts.SynEditOptions;
     //TODO CheckEnabledByName[dlgDropFiles] := False;
+    Checked[Items.IndexOf(dlgGroupUndo)] := eoGroupUndo in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgHalfPageScroll)] :=
-      eoHalfPageScroll in EditorOpts.SynEditOptions;
+                                  eoHalfPageScroll in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgKeepCaretX)]   := eoKeepCaretX in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgPersistentCaret)] :=
-      eoPersistentCaret in EditorOpts.SynEditOptions;
+                                 eoPersistentCaret in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgRightMouseMovesCursor)] :=
-      eoRightMouseMovesCursor in EditorOpts.SynEditOptions;
+                           eoRightMouseMovesCursor in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgScrollByOneLess)] :=
-      eoScrollByOneLess in EditorOpts.SynEditOptions;
+                                 eoScrollByOneLess in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgScrollPastEndFile)] :=
-      eoScrollPastEoF in EditorOpts.SynEditOptions;
+                                   eoScrollPastEoF in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgMouseLinks)]   := EditorOpts.CtrlMouseLinks;
     Checked[Items.IndexOf(dlgShowGutterHints)] := EditorOpts.ShowGutterHints;
     Checked[Items.IndexOf(dlgScrollPastEndLine)] :=
-      eoScrollPastEoL in EditorOpts.SynEditOptions;
+                                   eoScrollPastEoL in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := EditorOpts.ShowTabCloseButtons;
     Checked[Items.IndexOf(dlgShowScrollHint)] :=
-      eoShowScrollHint in EditorOpts.SynEditOptions;
+                                  eoShowScrollHint in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)]    := eoSmartTabs in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
-      eoTabsToSpaces in EditorOpts.SynEditOptions;
+                                    eoTabsToSpaces in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTabIndent)]    := eoTabIndent in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTrimTrailingSpaces)] :=
-      eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
+                              eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgUndoAfterSave)] := EditorOpts.UndoAfterSave;
     Checked[Items.IndexOf(dlgDoubleClickLine)] :=
-      eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
+                          eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgFindTextatCursor)] := EditorOpts.FindTextAtCursor;
     Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := EditorOpts.UseSyntaxHighlight;
     Checked[Items.IndexOf(dlgUseCodeFolding)] := EditorOpts.UseCodeFolding;
     Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] :=
-      EditorOpts.CopyWordAtCursorOnCopyNone;
+                                          EditorOpts.CopyWordAtCursorOnCopyNone;
     Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] :=
-      eoEnhanceHomeKey in EditorOpts.SynEditOptions;
+                                  eoEnhanceHomeKey in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgCaretSkipsSelection)] :=
-      eoCaretSkipsSelection in EditorOpts.SynEditOptions2;
+                            eoCaretSkipsSelection in EditorOpts.SynEditOptions2;
     Checked[Items.IndexOf(dlgAlwaysVisibleCaret)] :=
-      eoAlwaysVisibleCaret in EditorOpts.SynEditOptions2;
+                             eoAlwaysVisibleCaret in EditorOpts.SynEditOptions2;
   end;
 
   with BlockIndentComboBox do

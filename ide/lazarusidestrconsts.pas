@@ -854,6 +854,7 @@ resourcestring
   dlgBracHighlight = 'Bracket highlighting';
   dlgDragDropEd = 'Drag Drop editing';
   dlgDropFiles = 'Drop files';
+  dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCaretX = 'Keep caret X position';
   dlgPersistentCaret = 'Persistent caret';
