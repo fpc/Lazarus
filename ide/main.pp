@@ -348,7 +348,7 @@ type
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
-    procedure OIRemainingKeyUp(Sender: TObject; var Key: Word;
+    procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
@@ -1234,7 +1234,7 @@ begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
 end;
 
-procedure TMainIDE.OIRemainingKeyUp(Sender: TObject; var Key: Word;
+procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   OnExecuteIDEShortCut(Sender,Key,Shift,nil);
@@ -1479,7 +1479,7 @@ begin
   ObjectInspector1 := TObjectInspector.Create(OwningComponent);
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
-  ObjectInspector1.OnRemainingKeyUp:=@OIRemainingKeyUp;
+  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
   ObjectInspector1.ShowFavouritePage:=true;
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
@@ -2531,6 +2531,8 @@ begin
       Handled:=IDECmd.Execute(Self);
     end;
   end;
+  
+  //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
 end;
 
 function TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
@@ -12052,6 +12054,9 @@ begin
   if Command=ecEditContextHelp then begin
     Key:=VK_UNKNOWN;
     ShowContextHelpEditor(Sender);
+  end else if Command=ecContextHelp then begin
+    Key:=VK_UNKNOWN;
+    ShowContextHelpForIDE(Sender);
   end;
 end;
 

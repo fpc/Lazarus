@@ -668,6 +668,7 @@ docs/DesignGuidelines.txt svneol=native#text/plain
 docs/ExtendingTheIDE.txt svneol=native#text/plain
 docs/FAQ svneol=native#text/plain
 docs/ForDelphians.txt svneol=native#text/plain
+docs/IDEWindowHelpTree.xml svneol=native#text/plain
 docs/INSTALL svneol=native#text/plain
 docs/LCLMessages.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf

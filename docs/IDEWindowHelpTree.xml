@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="1">
+  <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True" ChildCount="1">
+    <Node1 Name="PairSplitter1" Path="PairSplitter1" ChildCount="1">
+      <Node1 Name="PairSplitter1Side2" Path="PairSplitter1Side2" ChildCount="1">
+        <Node1 Name="NoteBook" Path="NoteBook" ChildCount="1">
+          <Node1 Name="EventPage" Path="EventPage" ChildCount="1">
+            <Node1 Name="EventGrid" Path="EventGrid" ChildCount="1">
+              <Node1 Name="ValueEdit" Path="ValueEdit" HasHelp="True"/>
+            </Node1>
+          </Node1>
+        </Node1>
+      </Node1>
+    </Node1>
+  </Node1>
+</CONFIG>

@@ -772,6 +772,7 @@ type
                          AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveHandlerActiveFormChanged(
                             OnActiveFormChanged: TScreenActiveFormChangedEvent);
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;

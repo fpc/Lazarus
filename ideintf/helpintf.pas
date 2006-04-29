@@ -577,7 +577,9 @@ type
                                     var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForClass(Query: THelpQueryClass;
                               var ErrMsg: string): TShowHelpResult; virtual;
-    function ShowHelp(const Filename, Title, MimeType: string;
+    function ShowHelpFile(const Filename, Title, MimeType: string;
+                      var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelp(const URL, Title, MimeType: string;
                       var ErrMsg: string): TShowHelpResult; virtual;
     // search registered items in all databases
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -759,6 +761,10 @@ function ShowHelpFile(const Filename, Title, MimeType: string;
   var ErrMsg: string): TShowHelpResult;
 function ShowHelpFileOrError(const Filename, Title, MimeType: string
   ): TShowHelpResult;
+function ShowHelp(const URL, Title, MimeType: string;
+  var ErrMsg: string): TShowHelpResult;
+function ShowHelpOrError(const URL, Title, MimeType: string
+  ): TShowHelpResult;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -888,7 +894,7 @@ end;
 function ShowHelpFile(const Filename, Title, MimeType: string;
   var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpDatabases.ShowHelp(Filename,Title,MimeType,ErrMsg);
+  Result:=HelpDatabases.ShowHelpFile(Filename,Title,MimeType,ErrMsg);
 end;
 
 function ShowHelpFileOrError(const Filename, Title, MimeType: string
@@ -898,6 +904,21 @@ var
 begin
   ErrMsg:='';
   Result:=ShowHelpFile(Filename,Title,MimeType,ErrMsg);
+  HelpDatabases.ShowError(Result,ErrMsg);
+end;
+
+function ShowHelp(const URL, Title, MimeType: string; var ErrMsg: string
+  ): TShowHelpResult;
+begin
+  Result:=HelpDatabases.ShowHelp(URL,Title,MimeType,ErrMsg);
+end;
+
+function ShowHelpOrError(const URL, Title, MimeType: string): TShowHelpResult;
+var
+  ErrMsg: String;
+begin
+  ErrMsg:='';
+  Result:=ShowHelp(URL,Title,MimeType,ErrMsg);
   HelpDatabases.ShowError(Result,ErrMsg);
 end;
 
@@ -1797,7 +1818,13 @@ begin
   end;
 end;
 
-function THelpDatabases.ShowHelp(const Filename, Title, MimeType: string;
+function THelpDatabases.ShowHelpFile(const Filename, Title, MimeType: string;
+  var ErrMsg: string): TShowHelpResult;
+begin
+  Result:=ShowHelp(FilenameToURL(Filename),Title,MimeType,ErrMsg);
+end;
+
+function THelpDatabases.ShowHelp(const URL, Title, MimeType: string;
   var ErrMsg: string): TShowHelpResult;
 var
   Viewer: THelpViewer;
@@ -1811,7 +1838,7 @@ begin
   // call viewer
   Node:=nil;
   try
-    Node:=THelpNode.CreateURL(nil,Title,FilenameToURL(Filename));
+    Node:=THelpNode.CreateURL(nil,Title,URL);
     Result:=Viewer.ShowNode(Node,ErrMsg);
   finally
     Node.Free;

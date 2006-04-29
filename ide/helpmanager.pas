@@ -42,7 +42,8 @@ uses
   LazIDEIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages;
+  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages,
+  IDEContextHelpEdit;
 
 type
   { TIDEHelpDatabases }
@@ -706,10 +707,15 @@ begin
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspector then begin
     AnInspector:=TObjectInspector(Sender);
-    if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
-    begin
-      if NewTopLine=0 then ;
-      ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
+    if AnInspector.GetActivePropertyRow<>nil then begin
+      if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
+      begin
+        if NewTopLine=0 then ;
+        ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
+      end;
+    end else begin
+      DebugLn('THelpManager.ShowHelpForObjectInspector show default help for OI');
+      ShowContextHelpForIDE(AnInspector);
     end;
   end;
 end;

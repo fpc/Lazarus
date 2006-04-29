@@ -570,6 +570,7 @@ type
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
+    FOnRemainingKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavourites: TNotifyEvent;
     FSelection: TPersistentSelectionList;
@@ -639,6 +640,8 @@ type
                                          write SetOnShowOptions;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
                                          write FOnRemainingKeyUp;
+    property OnRemainingKeyDown: TKeyEvent read FOnRemainingKeyDown
+                                         write FOnRemainingKeyDown;
     property ShowComponentTree: boolean read FShowComponentTree
                                         write SetShowComponentTree;
     property ComponentTreeHeight: integer read FComponentTreeHeight
@@ -3396,6 +3399,8 @@ procedure TObjectInspector.OnGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(OnOIKeyDown) then OnOIKeyDown(Self,Key,Shift);
+  if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
+    OnRemainingKeyDown(Self,Key,Shift);
 end;
 
 procedure TObjectInspector.OnGridKeyUp(Sender: TObject; var Key: Word;
@@ -3705,6 +3710,8 @@ begin
     if Key=VK_UNKNOWN then exit;
   end;
   inherited KeyDown(Key, Shift);
+  if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
+    OnRemainingKeyDown(Self,Key,Shift);
 end;
 
 procedure TObjectInspector.KeyUp(var Key: Word; Shift: TShiftState);

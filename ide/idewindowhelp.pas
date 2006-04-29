@@ -30,8 +30,8 @@ unit IDEWindowHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Dialogs, HelpIntf, ConfigStorage,
-  EnvironmentOpts;
+  Classes, SysUtils, LCLProc, Controls, FileUtil, Dialogs, HelpIntf,
+  ConfigStorage, EnvironmentOpts, Laz_XMLCfg, IDEOptionDefs;
   
 type
 
@@ -54,10 +54,15 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Source: TIWHelpNode);
     function AddChild(const ChildName: string = '';
                       const ChildPath: string = ''): TIWHelpNode;
     procedure Load(Config: TConfigStorage; const CfgPath: string);
     procedure Save(Config: TConfigStorage; const CfgPath: string);
+    function FindByName(const ChildName: string): TIWHelpNode;
+    procedure DeleteLeavesWithoutHelp;
+    function GetFullPath: string;
+  public
     property HasHelp: Boolean read FHasHelp write SetHasHelp;
     property Name: string read FName write SetName;
     property Path: string read FPath write SetPath;
@@ -74,8 +79,18 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Source: TIWHelpTree);
     procedure Load(Config: TConfigStorage; const Path: string);
     procedure Save(Config: TConfigStorage; const Path: string);
+    function ControlHasValidNamePath(AControl: TControl): Boolean;
+    function FindNodeForControl(AControl: TControl;
+                               CreateIfNotExists: Boolean = false): TIWHelpNode;
+    procedure WriteDebugReport;
+    procedure DeleteLeavesWithoutHelp;
+    procedure InvokeHelp(AControl: TControl);
+    function CreateURL(AControl: TControl): string;
+  public
     property Root: TIWHelpNode read FRoot;
   end;
   
@@ -106,7 +121,7 @@ begin
     IDEWindowHelpNodes:=TIWHelpTree.Create;
   Filename:=GetIDEWindowHelpFilename;
   try
-    Config:=GetIDEConfigStorage(Filename,true);
+    Config:=TXMLOptionsStorage.Create(Filename,true);
     if Config=nil then exit;
     try
       IDEWindowHelpNodes.Load(Config,'');
@@ -129,7 +144,7 @@ begin
   if IDEWindowHelpNodes=nil then exit;
   Filename:=GetIDEWindowHelpFilename;
   try
-    Config:=GetIDEConfigStorage(Filename,false);
+    Config:=TXMLOptionsStorage.Create(Filename,false);
     if Config=nil then exit;
     try
       IDEWindowHelpNodes.Save(Config,'');
@@ -208,6 +223,24 @@ begin
       CurChild.FParent:=nil;
       CurChild.Free;
     end;
+    FreeAndNil(FItems);
+  end;
+end;
+
+procedure TIWHelpNode.Assign(Source: TIWHelpNode);
+var
+  i: Integer;
+  SrcNode: TIWHelpNode;
+  NewNode: TIWHelpNode;
+begin
+  Clear;
+  Name:=Source.Name;
+  Path:=Source.Path;
+  HasHelp:=Source.HasHelp;
+  for i:=0 to Source.Count-1 do begin
+    SrcNode:=Source[i];
+    NewNode:=AddChild;
+    NewNode.Assign(SrcNode);
   end;
 end;
 
@@ -228,11 +261,14 @@ var
   NewChildCount: LongInt;
   i: Integer;
   NewChild: TIWHelpNode;
+  NewName: String;
 begin
   Clear;
-  Name:=Config.GetValue(CfgPath+'Name','');
+  NewName:=Config.GetValue(CfgPath+'Name','');
+  if NewName='' then exit;
+  Name:=NewName;
   Path:=Config.GetValue(CfgPath+'Path','');
-  HasHelp:=Config.GetValue(CfgPath+'HasHelp',true);
+  HasHelp:=Config.GetValue(CfgPath+'HasHelp',false);
   NewChildCount:=Config.GetValue(CfgPath+'ChildCount',0);
   for i:=0 to NewChildCount-1 do begin
     NewChild:=AddChild('');
@@ -246,28 +282,79 @@ var
 begin
   Config.SetDeleteValue(CfgPath+'Name',Name,'');
   Config.SetDeleteValue(CfgPath+'Path',Path,'');
-  Config.SetDeleteValue(CfgPath+'HasHelp',HasHelp,true);
+  Config.SetDeleteValue(CfgPath+'HasHelp',HasHelp,false);
   Config.SetDeleteValue(CfgPath+'ChildCount',Count,0);
   for i:=0 to Count-1 do
     Childs[i].Save(Config,CfgPath+'Node'+IntToStr(i+1)+'/');
+end;
+
+function TIWHelpNode.FindByName(const ChildName: string): TIWHelpNode;
+var
+  i: Integer;
+begin
+  for i := 0 to Count-1 do begin
+    Result:=Childs[i];
+    if CompareText(Result.Name,ChildName)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
+procedure TIWHelpNode.DeleteLeavesWithoutHelp;
+var
+  CurChild: TIWHelpNode;
+  i: Integer;
+begin
+  for i:=Count-1 downto 0 do begin
+    CurChild:=Childs[i];
+    CurChild.DeleteLeavesWithoutHelp;
+    if (CurChild.Count=0) and (not CurChild.HasHelp) then
+      CurChild.Free;
+  end;
+end;
+
+function TIWHelpNode.GetFullPath: string;
+var
+  Node: TIWHelpNode;
+begin
+  Result:=Path;
+  Node:=Parent;
+  while Node<>nil do begin
+    Result:=Node.Path+Result;
+    Node:=Node.Parent;
+  end;
 end;
 
 { TIWHelpTree }
 
 constructor TIWHelpTree.Create;
 begin
-  FRoot:=TIWHelpNode.Create;
-  FRoot.Name:='IDE windows and dialogs';
-  FRoot.Path:='IDEWindowsAndDialogs';
+  Clear;
 end;
 
 destructor TIWHelpTree.Destroy;
 begin
+  Clear;
+  FreeAndNil(FRoot);
   inherited Destroy;
+end;
+
+procedure TIWHelpTree.Clear;
+begin
+  FreeAndNil(FRoot);
+  FRoot:=TIWHelpNode.Create;
+  Root.Name:='IDE windows and dialogs';
+  Root.Path:='IDE_Window:_';
+end;
+
+procedure TIWHelpTree.Assign(Source: TIWHelpTree);
+begin
+  Clear;
+  Root.Assign(Source.Root);
 end;
 
 procedure TIWHelpTree.Load(Config: TConfigStorage; const Path: string);
 begin
+  Clear;
   FRoot.Load(Config,Path);
 end;
 
@@ -275,6 +362,118 @@ procedure TIWHelpTree.Save(Config: TConfigStorage; const Path: string);
 begin
   FRoot.Save(Config,Path);
 end;
+
+function TIWHelpTree.ControlHasValidNamePath(AControl: TControl): Boolean;
+begin
+  if (AControl=nil) then exit(false);
+  if AControl.Name='' then exit(false);
+  if AControl.Parent=nil then begin
+    Result:=true;
+  end else begin
+    Result:=ControlHasValidNamePath(AControl.Parent);
+  end;
+end;
+
+function TIWHelpTree.FindNodeForControl(AControl: TControl;
+  CreateIfNotExists: Boolean): TIWHelpNode;
+
+  function Find(TheControl: TControl): TIWHelpNode;
+  var
+    NextParent: TWinControl;
+    ParentHelpNode: TIWHelpNode;
+    CurName: String;
+  begin
+    //DebugLn('TIWHelpTree.FindNodeForControl.Find ',dbgsName(TheControl));
+    NextParent:=TheControl.Parent;
+    if NextParent=nil then begin
+      CurName:=TheControl.ClassName;
+      ParentHelpNode:=Root;
+    end else begin
+      CurName:=TheControl.Name;
+      if CurName='' then exit;
+      ParentHelpNode:=Find(NextParent);
+      if ParentHelpNode=nil then exit;
+    end;
+    Result:=ParentHelpNode.FindByName(CurName);
+    if (Result=nil) and CreateIfNotExists then begin
+      Result:=ParentHelpNode.AddChild(CurName,CurName);
+      //DebugLn('Find Create: ParentHelpNode=',ParentHelpNode.Name,' Result=',Result.Name);
+    end;
+  end;
+
+begin
+  Result:=Find(AControl);
+end;
+
+procedure TIWHelpTree.WriteDebugReport;
+
+  procedure WriteNode(const Prefix: string; Node: TIWHelpNode);
+  var
+    i: Integer;
+  begin
+    if Node=nil then exit;
+    DebugLn(Prefix,'Name="',Node.Name,'" Path="',Node.Path,'" HashHelp=',dbgs(Node.HasHelp));
+    for i:=0 to Node.Count-1 do
+      WriteNode(Prefix+'  ',Node[i]);
+  end;
+
+begin
+  DebugLn('TIWHelpTree.WriteDebugReport =====================================');
+  WriteNode('',Root);
+end;
+
+procedure TIWHelpTree.DeleteLeavesWithoutHelp;
+begin
+  Root.DeleteLeavesWithoutHelp;
+end;
+
+procedure TIWHelpTree.InvokeHelp(AControl: TControl);
+var
+  URL: String;
+begin
+  URL:=CreateURL(AControl);
+  if URL='' then exit;
+  ShowHelpOrError(URL,'Help for '+dbgsName(AControl),'text/html');
+end;
+
+function TIWHelpTree.CreateURL(AControl: TControl): string;
+var
+  HelpNode: TIWHelpNode;
+
+  function Find(TheControl: TControl): TIWHelpNode;
+  var
+    NextParent: TWinControl;
+    ParentHelpNode: TIWHelpNode;
+    CurName: String;
+  begin
+    NextParent:=TheControl.Parent;
+    if NextParent=nil then begin
+      CurName:=TheControl.ClassName;
+      ParentHelpNode:=Root;
+    end else begin
+      CurName:=TheControl.Name;
+      if CurName='' then exit;
+      ParentHelpNode:=Find(NextParent);
+      if ParentHelpNode=nil then exit;
+    end;
+    Result:=ParentHelpNode.FindByName(CurName);
+    if (Result<>nil) and Result.HasHelp then
+      HelpNode:=Result;
+  end;
+
+begin
+  HelpNode:=nil;
+  // search a help for this control
+  Find(AControl);
+  if HelpNode=nil then begin
+    Result:='';
+  end else begin
+    Result:='http://wiki.lazarus.freepascal.org/index.php/'+HelpNode.GetFullPath;
+  end;
+end;
+
+finalization
+  FreeAndNil(IDEWindowHelpNodes);
 
 end.
 

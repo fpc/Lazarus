@@ -2564,6 +2564,8 @@ end;
 
 destructor TCustomTreeView.Destroy;
 begin
+  LockSelectionChangeEvent; // prevent change event during destroying
+  
   Images:=nil;
   FreeThenNil(FTreeNodes);
   FreeThenNil(FSaveItems);
@@ -3501,14 +3503,10 @@ end;
 
 function TCustomTreeView.GetSelection: TTreeNode;
 begin
-  if HandleAllocated then
-  begin
-    if RightClickSelect and Assigned(FRClickNode) then
-      Result := FRClickNode
-    else
-      Result := FSelectedNode;
-  end
-  else Result := nil;
+  if RightClickSelect and Assigned(FRClickNode) then
+    Result := FRClickNode
+  else
+    Result := FSelectedNode;
 end;
 
 procedure TCustomTreeView.SetSelection(Value: TTreeNode);

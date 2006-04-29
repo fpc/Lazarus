@@ -5222,6 +5222,7 @@ begin
     FOnProcessUserCommand(Self,Command,Handled);
     if Handled or (Command=ecNone) then begin
       FProcessingCommand:=false;
+      Command:=ecNone;
       exit;
     end;
   end;

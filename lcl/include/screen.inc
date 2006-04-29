@@ -214,6 +214,15 @@ begin
   RemoveHandler(snActiveFormChanged,TMethod(OnActiveFormChanged));
 end;
 
+procedure TScreen.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TScreenNotification;
+begin
+  for HandlerType:=Low(TScreenNotification) to High(TScreenNotification) do
+    FScreenHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+  inherited RemoveAllHandlersOfObject(AnObject);
+end;
+
 function EnumFontsNoDups(
   var LogFont: TEnumLogFontEx;
   var Metric: TNewTextMetricEx;
