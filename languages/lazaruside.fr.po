@@ -1866,6 +1866,10 @@ msgstr "Définir"
 msgid "Define Recurse"
 msgstr "Définir de manière récursive"
 
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
 msgstr "Délai"
@@ -2194,6 +2198,10 @@ msgstr "Editer les outils"
 msgid "Edit code template"
 msgstr "Editer les modèles de code"
 
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "Editer les touches de commandes"
@@ -2497,6 +2505,10 @@ msgstr "Extraire procédure"
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
 msgstr "Extraire procédure"
+
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2986,6 +2998,10 @@ msgstr "Taille de grille X"
 msgid "Grid size Y"
 msgstr "Taille de grille Y"
 
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
 msgstr "Identifier les $IFDEF mal placés"
@@ -3081,6 +3097,10 @@ msgstr "Erreur du visualiseur d'aide"
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
 msgstr "Visualiseur d'aide introuvable"
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -5956,6 +5976,10 @@ msgstr "Enregistrer le fichier %s%s%s%savant de fermer la fiche %s%s%s ?"
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
 msgstr ""
 
 #: lazarusidestrconsts:lisposaveinlpifil

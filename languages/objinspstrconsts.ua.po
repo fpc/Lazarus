@@ -142,6 +142,10 @@ msgstr "Додати новий пункт"
 msgid "Add page"
 msgstr "Нова сторінка"
 
+#: objinspstrconsts:tccesaddtab
+msgid "Add tab"
+msgstr ""
+
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Додати до улюблених"
@@ -326,6 +330,10 @@ msgstr "Видалити елемент %s%s%s?"
 msgid "Delete page"
 msgstr "Видалити сторінку"
 
+#: objinspstrconsts:tccesdeletetab
+msgid "Delete tab"
+msgstr ""
+
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Видалити елемент %d \"%s\"?"
@@ -482,6 +490,10 @@ msgstr "Вставити"
 msgid "Insert page"
 msgstr "Вставити сторінку"
 
+#: objinspstrconsts:tccesinserttab
+msgid "Insert tab"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr "Int64"
@@ -565,6 +577,14 @@ msgstr "Пересунути сторінку вліво"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Пересунути сторінку вправо"
+
+#: objinspstrconsts:tccesmovetableft
+msgid "Move tab left"
+msgstr ""
+
+#: objinspstrconsts:tccesmovetabright
+msgid "Move tab right"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"

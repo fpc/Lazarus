@@ -290,6 +290,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr ""
@@ -892,6 +896,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucontexthelp
 msgid "Context sensitive Help"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2464,6 +2472,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
+msgstr ""
+
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
 msgstr ""
 
 #: lazarusidestrconsts:dlghalfpagescroll
@@ -4060,6 +4072,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
 msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptoguidelinesoption
@@ -8502,6 +8518,10 @@ msgstr ""
 msgid "Viewers"
 msgstr ""
 
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
+msgstr ""
+
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
 msgstr ""
@@ -9144,5 +9164,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
+msgstr ""
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
 msgstr ""
 

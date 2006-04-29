@@ -1864,6 +1864,10 @@ msgstr "定義"
 msgid "Define Recurse"
 msgstr ""
 
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
 msgstr ""
@@ -2192,6 +2196,10 @@ msgstr ""
 msgid "Edit code template"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr ""
@@ -2495,6 +2503,10 @@ msgstr "プロシジャーを展開"
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
 msgstr "プロシジャーを展開"
+
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2984,6 +2996,10 @@ msgstr "グリッドサイズ X"
 msgid "Grid size Y"
 msgstr "グリッドサイズ X"
 
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
 msgstr "$IFDEFの位置を検査"
@@ -3079,6 +3095,10 @@ msgstr "ヘルプビューワーエラー"
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
 msgstr "ヘルプビューワがみつかりません"
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -5954,6 +5974,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
 msgstr ""
 
 #: lazarusidestrconsts:lisposaveinlpifil

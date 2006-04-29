@@ -1854,6 +1854,10 @@ msgstr "Визначення"
 msgid "Define Recurse"
 msgstr "Визначає рекурсивно"
 
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
 msgstr "Затримка"
@@ -2182,6 +2186,10 @@ msgstr "Інструмент правки"
 msgid "Edit code template"
 msgstr "Редагувати шаблони коду"
 
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "Редагувати клавіші для команди"
@@ -2485,6 +2493,10 @@ msgstr "Здобути процедуру"
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
 msgstr "Здобути процедуру"
+
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2974,6 +2986,10 @@ msgstr "Розмір X сітки"
 msgid "Grid size Y"
 msgstr "Розмір Y сітки"
 
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
 msgstr "Передбачити відсутність $IFDEF"
@@ -3069,6 +3085,10 @@ msgstr "Помилка перегляду довідки"
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
 msgstr "Не знайдений проглядач довідки"
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -5944,6 +5964,10 @@ msgstr "Зберегти файл %s%s%sперед закриттям форми
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
 msgstr ""
 
 #: lazarusidestrconsts:lisposaveinlpifil

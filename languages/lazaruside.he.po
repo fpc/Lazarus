@@ -1865,6 +1865,10 @@ msgstr ""
 msgid "Define Recurse"
 msgstr ""
 
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
+msgstr ""
+
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
 msgstr ""
@@ -2193,6 +2197,10 @@ msgstr ""
 msgid "Edit code template"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr ""
@@ -2495,6 +2503,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
@@ -2985,6 +2997,10 @@ msgstr ""
 msgid "Grid size Y"
 msgstr ""
 
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
 msgstr ""
@@ -3079,6 +3095,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
@@ -5955,6 +5975,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2psavefiledialog
 msgid "Save file dialog"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
 msgstr ""
 
 #: lazarusidestrconsts:lisposaveinlpifil

@@ -418,6 +418,26 @@ msgstr ""
 msgid "Create default event"
 msgstr ""
 
+#: objinspstrconsts:tccesaddtab
+msgid "Add tab"
+msgstr ""
+
+#: objinspstrconsts:tccesinserttab
+msgid "Insert tab"
+msgstr ""
+
+#: objinspstrconsts:tccesdeletetab
+msgid "Delete tab"
+msgstr ""
+
+#: objinspstrconsts:tccesmovetableft
+msgid "Move tab left"
+msgstr ""
+
+#: objinspstrconsts:tccesmovetabright
+msgid "Move tab right"
+msgstr ""
+
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
 msgstr ""

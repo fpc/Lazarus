@@ -1560,7 +1560,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
-msgstr ""
+msgstr "Kopio tiedostonnimi leikepöydälle"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -1784,7 +1784,7 @@ msgstr "Olla peräisin"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
-msgstr ""
+msgstr "Virheenjäljitys"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
@@ -1852,6 +1852,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefinerecurse
 msgid "Define Recurse"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefdefinetemplates
+msgid "Define templates"
 msgstr ""
 
 #: lazarusidestrconsts:dlgeddelay
@@ -2182,6 +2186,10 @@ msgstr ""
 msgid "Edit code template"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditcontexthelp
+msgid "Edit context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr ""
@@ -2485,6 +2493,10 @@ msgstr "Tee valitusta lohkosta aliohjelma"
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
 msgstr "Tee valitusta lohkosta aliohjelma"
+
+#: lazarusidestrconsts:lishofpcdochtmlpath
+msgid "FPC Doc HTML Path"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2974,6 +2986,10 @@ msgstr "Apupisteiden väli X"
 msgid "Grid size Y"
 msgstr "Apupisteiden väli Y"
 
+#: lazarusidestrconsts:dlggroupundo
+msgid "Group Undo"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
 msgstr ""
@@ -3068,6 +3084,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
+msgid "Help for FreePascal Compiler message"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
@@ -5068,7 +5088,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolparameters
 msgid "Parameters:"
-msgstr ""
+msgstr "Parametrit:"
 
 #: lazarusidestrconsts:liscodetoolsdefsparentnodecannotcontainch
 msgid "Parent node can not contain child nodes."
@@ -5584,7 +5604,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
-msgstr ""
+msgstr "Valitse projektista poistettava käännösyksikkö"
 
 #: lazarusidestrconsts:lislazdocdeletepathbutton
 msgid "Remove path"
@@ -5946,6 +5966,10 @@ msgstr "Tallennetaanko tiedosto %s%s%s%sennenkuin suljetaan lomake (form) %s%s%s
 msgid "Save file dialog"
 msgstr ""
 
+#: lazarusidestrconsts:fdmsaveformasxml
+msgid "Save form as xml"
+msgstr ""
+
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
 msgstr ""
@@ -6184,7 +6208,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisselectahelpitem
 msgid "Select a help item:"
-msgstr ""
+msgstr "Valitse ohje kohta seuraavista:"
 
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"

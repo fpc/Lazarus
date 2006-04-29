@@ -153,6 +153,10 @@ msgstr "Neuen Eintrag zufügen"
 msgid "Add page"
 msgstr "Seite zufügen"
 
+#: objinspstrconsts:tccesaddtab
+msgid "Add tab"
+msgstr ""
+
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
 msgstr "Zu Favoriten hinzufügen"
@@ -337,6 +341,10 @@ msgstr "Eintrags %s%s%s löschen?"
 msgid "Delete page"
 msgstr "Seite lsöchen"
 
+#: objinspstrconsts:tccesdeletetab
+msgid "Delete tab"
+msgstr ""
+
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Den Eintrag %s \"%s\" löschen?"
@@ -493,6 +501,10 @@ msgstr "Einfügen"
 msgid "Insert page"
 msgstr "Seite einfügen"
 
+#: objinspstrconsts:tccesinserttab
+msgid "Insert tab"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr "Int64"
@@ -576,6 +588,14 @@ msgstr "Seite nach links bewegen"
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
 msgstr "Seite nach rechts bewegen"
+
+#: objinspstrconsts:tccesmovetableft
+msgid "Move tab left"
+msgstr ""
+
+#: objinspstrconsts:tccesmovetabright
+msgid "Move tab right"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
