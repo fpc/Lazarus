@@ -173,6 +173,18 @@ begin
   //DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
+function TCustomPage.DialogChar(var Message: TLMKey): boolean;
+begin
+  Result := false;
+  if (not (csDesigning in ComponentState))
+  and IsAccel(Message.CharCode, Caption) and TabVisible then begin
+    Result := true;
+    if (Parent<>nil) and (Parent is TCustomNotebook) then
+      TCustomNotebook(Parent).PageIndex:=PageIndex;
+  end else
+    Result:=inherited DialogChar(Message);
+end;
+
 function TCustomPage.IsVisible: Boolean;
 begin
   if Parent is TCustomNotebook then

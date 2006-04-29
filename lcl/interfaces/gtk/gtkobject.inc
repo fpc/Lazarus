@@ -1291,7 +1291,9 @@ end;
 
   Sets the Caption of a gtklabel. If a accelerator is present, it is connected.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar);
+procedure TGtkWidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
+  const ACaption: String; const AComponent: TComponent;
+  const ASignalWidget: PGTKWidget; const ASignal: PChar);
 var
   Caption, Pattern: String;
   AccelKey: Char;

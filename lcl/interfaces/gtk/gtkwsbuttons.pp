@@ -201,7 +201,8 @@ begin
     gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
   end;
   
-  GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl, PGtkWidget(BtnWidget), 'clicked');   
+  GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl,
+                               PGtkWidget(BtnWidget), 'clicked');
 end;
 
 procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);

@@ -238,7 +238,7 @@ begin
     Result := true;
     FFocusControl.SetFocus;
   end else
-    Result := inherited;
+    Result:=inherited DialogChar(Message);
 end;
 
 procedure TCustomLabel.Loaded;

@@ -64,6 +64,7 @@ type
     procedure DestroyHandle; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
+    function  DialogChar(var Message: TLMKey): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;

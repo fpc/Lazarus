@@ -533,7 +533,7 @@ var
   TS : TTextStyle;
 begin
   ARect := GetClientRect;
-  Canvas.Color:=clWindow;
+  Canvas.Color:=clBackground;
   Canvas.FillRect(ARect);
   ARect:=GetDisplayRect;
   InflateRect(ARect,BorderWidth,BorderWidth);

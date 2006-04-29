@@ -4202,14 +4202,32 @@ var
   end;
 
   procedure UpdateTabLabel;
-  var TheCaption: PChar;
+  var
+    TheCaption: PChar;
+    CaptionStr: String;
+    Pattern: String;
+    AccelKey: Char;
   begin
-    TheCaption:=PChar(ThePage.Caption);
+    CaptionStr:=ThePage.Caption;
+    LabelFromAmpersands(CaptionStr, Pattern, AccelKey);
+    TheCaption:=PChar(CaptionStr);
     if TheCaption=nil then
       TheCaption:=#0;
-    gtk_label_set_text(PGtkLabel(TabLabelWidget),TheCaption);
-    if MenuLabelWidget<>nil then
+    gtk_label_set_text(PGtkLabel(TabLabelWidget), PChar(TheCaption));
+    {$ifdef gtk1}
+    gtk_label_set_pattern(PGtkLabel(TabLabelWidget), PChar(Pattern));
+    {$endif gtk1}
+    // update the Accelerator
+    {if AccelKey = #0
+    then Accelerate(ThePage, PageWidget, GDK_VOIDSYMBOL, 0, 'clicked')
+    else Accelerate(ThePage, PageWidget, Ord(AccelKey), 0, 'clicked');}
+
+    if MenuLabelWidget<>nil then begin
       gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
+      {$ifdef gtk1}
+      gtk_label_set_pattern(PGtkLabel(MenuLabelWidget), PChar(Pattern));
+      {$endif gtk1}
+    end;
   end;
 
   procedure UpdateTabCloseBtn;
