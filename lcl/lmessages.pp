@@ -585,16 +585,16 @@ type
     Result: LRESULT;
   end;
 
-//TODO: make compatible with WM_MOUSEWHEEL ?
   PLMMouseEvent = ^TLMMouseEvent;
   TLMMouseEvent = record
-    Msg : Cardinal;
-    Button : LongInt; // as TMouseButton, 1=left, 2=right, 3=middle
-    WheelDelta : Longint; { -1 for up, 1 for down }
-    State : TShiftState;
-    X     : Integer;
-    Y    : Integer;
-    UserData : Pointer;
+    Msg: cardinal;
+    Button: Word;         // 1=left, 2=right, 3=middle
+    WheelDelta: SmallInt; // -1 for up, 1 for down
+    X: Smallint;          // under gtk this is longint
+    Y: Smallint;          // ditto
+    Result: Longint;      // to fit std message size
+    UserData: pointer;    // used under gtk
+    State: TShiftState;   // in win is the equivalent of button
   end;
 
   TLMLButtonDown = TLMMouse;

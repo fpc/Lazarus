@@ -486,6 +486,7 @@ Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
       DataStream.Position:=0;
       if FormatID=CF_BITMAP then begin
         Bitmap:= TBitmap.Create;
+        Bitmap.TransparentColor := clNone;
         Bitmap.LoadFromStream(DataStream);
         Windows.SetClipboardData(FormatID, Bitmap.Handle);
         Bitmap.Free;

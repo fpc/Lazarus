@@ -1390,6 +1390,7 @@ Begin
         if lWinControl.FCompStyle <> csComboBox then
         begin
           Msg := LM_MOUSEWHEEL;
+          Button := Lo(WParam);
           WheelDelta := SmallInt(Hi(WParam));
           State := GetShiftState;
           UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
