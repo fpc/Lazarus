@@ -923,6 +923,7 @@ type
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+    procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
@@ -933,6 +934,7 @@ type
     procedure SetColor(Value: TColor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+    
   public
 
     // to easy user call
@@ -1177,6 +1179,7 @@ type
       procedure DoCutToClipboard; override;
       procedure DoPasteFromClipboard; override;
       procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+      procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
       function  GetEditText(aCol, aRow: Integer): string; override;
@@ -6418,6 +6421,12 @@ begin
   if OldRowCount<>RowCount then fGrid.RowCount:=RowCount;
 end;
 
+procedure TCustomDrawGrid.DrawCellAutonumbering(aCol, aRow: Integer;
+  aRect: TRect; const aValue: string);
+begin
+  Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, aValue);
+end;
+
 function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
@@ -6499,7 +6508,7 @@ begin
   end;
 
   if (goFixedRowNumbering in Options) and (FixedCols >= 1) and (aCol = 0) then
-    Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, IntTostr(aRow));
+    DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow));
 end;
 
 { TCustomStringGrid }
@@ -6793,6 +6802,13 @@ begin
     else
       DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
   end;
+end;
+
+procedure TCustomStringGrid.DrawCellAutonumbering(aCol, aRow: Integer;
+  aRect: TRect; const aValue: string);
+begin
+  if Cells[aCol,aRow]='' then
+    inherited DrawCellAutoNumbering(aCol,aRow,aRect,aValue);
 end;
 
 function TCustomStringGrid.GetEditText(aCol, aRow: Integer): string;
