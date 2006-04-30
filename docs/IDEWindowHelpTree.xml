@@ -14,14 +14,14 @@
     </Node1>
   </Node1>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
-    <Node1 Name="MainNotebook" Path="MainNotebook" ChildCount="7">
-      <Node1 Name="PathsPage" Path="_Paths" HasHelp="True"/>
-      <Node2 Name="ParsingPage" Path="_Parsing" HasHelp="True"/>
-      <Node3 Name="CodePage" Path="_Code" HasHelp="True"/>
-      <Node4 Name="LinkingPage" Path="_Linking" HasHelp="True"/>
-      <Node5 Name="MessagesPage" Path="_Messages" HasHelp="True"/>
-      <Node6 Name="OtherPage" Path="_Other" HasHelp="True"/>
-      <Node7 Name="CompilationPage" Path="_Compilation" HasHelp="True"/>
+    <Node1 Name="MainNotebook" ChildCount="7">
+      <Node1 Name="PathsPage" Path="#Paths" HasHelp="True"/>
+      <Node2 Name="ParsingPage" Path="#Parsing" HasHelp="True"/>
+      <Node3 Name="CodePage" Path="#Code" HasHelp="True"/>
+      <Node4 Name="LinkingPage" Path="#Linking" HasHelp="True"/>
+      <Node5 Name="MessagesPage" Path="#Messages" HasHelp="True"/>
+      <Node6 Name="OtherPage" Path="#Other" HasHelp="True"/>
+      <Node7 Name="CompilationPage" Path="#Compilation" HasHelp="True"/>
     </Node1>
   </Node2>
 </CONFIG>
