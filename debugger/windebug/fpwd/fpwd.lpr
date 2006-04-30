@@ -72,6 +72,12 @@ begin
   Write('FPWDebugger on ', {$I %FPCTARGETOS%}, ' for ', {$I %FPCTARGETCPU%});
   WriteLn(' (', {$I %DATE%}, ' ', {$I %TIME%}, ' FPC: ', {$I %FPCVERSION%}, ')' );
   WriteLN('starting....');
+  
+  if ParamCount > 0
+  then begin
+    GFileName := ParamStr(1);
+    WriteLN('Using file: ', GFileName);
+  end;
 
   SetConsoleCtrlHandler(@CtrlCHandler, True);
   repeat
