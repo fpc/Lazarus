@@ -349,6 +349,7 @@ begin
   end;
 
   nbMain := TNotebook.Create(Self);
+  nbMain.Name:='MainNotebook';
   nbMain.Parent := Self;
   nbMain.Height := Height - 50;
   nbMain.Width := Width - 4;
@@ -1200,6 +1201,7 @@ var
 begin
   // Setup the Parsing Tab
   ParsingPage:=nbMain.Page[Page];
+  ParsingPage.Name:='ParsingPage';
 
   grpStyle := TRadioGroup.Create(Self);
   with grpStyle do
@@ -1376,6 +1378,7 @@ procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
+  CodeGenPage.Name:='CodePage';
 
   grpSmartLinkUnit := TGroupBox.Create(Self);
   with grpSmartLinkUnit do
@@ -1668,6 +1671,7 @@ procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
   // Setup the Linking Tab
   LinkingPage:=nbMain.Page[Page];
+  LinkingPage.Name:='LinkingPage';
 
   grpDebugging := TGroupBox.Create(Self);
   with grpDebugging do
@@ -1839,6 +1843,7 @@ procedure TfrmCompilerOptions.SetupMessagesTab(Page: integer);
 begin
   // Setup the Messages Tab
   MsgPage:=nbMain.Page[Page];
+  MsgPage.Name:='MessagesPage';
 
   grpVerbosity := TGroupBox.Create(Self);
   with grpVerbosity do
@@ -2097,6 +2102,7 @@ procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
 begin
   {------------------------------------------------------------}
   OtherPage:=nbMain.Page[Page];
+  OtherPage.Name:='OtherPage';
 
   grpConfigFile := TGroupBox.Create(Self);
   with grpConfigFile do
@@ -2167,6 +2173,7 @@ procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
 begin
   InheritedPage:=nbMain.Page[Page];
   InheritedPage.OnResize:=@InheritedPageResize;
+  InheritedPage.Name:='InheritedPage';
 
   InhNoteLabel:=TLabel.Create(Self);
   with InhNoteLabel do begin
@@ -2241,6 +2248,8 @@ var
   cm: Integer; // Mid for controls
 begin
   CompilationPage := nbMain.Page[Page];
+  CompilationPage.Name:='CompilationPage';
+
   y := YMARGIN;
   w := nbMain.ClientWidth - 2 * XMARGIN-4;
   cm := w div 2 - 2 * XMARGIN;
@@ -2445,6 +2454,7 @@ var
 begin
   // Setup the Search Paths Tab
   PathPage:=nbMain.Page[Page];
+  PathPage.Name:='PathsPage';
 
   y:=5;
 

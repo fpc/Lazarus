@@ -324,7 +324,6 @@ function TContextHelpEditorDlg.FindHelpTreeNode(HelpNode: TIWHelpNode
     ParentTreeNode: TTreeNode;
   begin
     if HNode=nil then exit(nil);
-    DebugLn('Find ',HNode.Name,' ',HNode.Path);
     if HNode.Parent=nil then begin
       Result:=HelpNodesTreeView.Items.FindTopLvlNode(HNode.Name);
     end else begin
