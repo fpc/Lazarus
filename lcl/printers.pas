@@ -738,7 +738,7 @@ procedure TPaperSize.SetPaperName(const AName: string);
 begin
   if SupportedPapers.IndexOf(aName)<>-1 then
   begin
-    if aName<>DefaultPaperName then
+    if aName<>PaperName then
       fOwnedPrinter.DoSetPaperName(aName)
   end
   else
