@@ -196,6 +196,7 @@ end;
 procedure TIWHelpNode.DoRemove(AChild: TIWHelpNode);
 begin
   FItems.Remove(AChild);
+  AChild.FParent:=nil;
 end;
 
 constructor TIWHelpNode.Create;
@@ -383,6 +384,7 @@ function TIWHelpTree.FindNodeForControl(AControl: TControl;
     ParentHelpNode: TIWHelpNode;
     CurName: String;
   begin
+    Result:=nil;
     //DebugLn('TIWHelpTree.FindNodeForControl.Find ',dbgsName(TheControl));
     NextParent:=TheControl.Parent;
     if NextParent=nil then begin
@@ -446,13 +448,13 @@ var
     ParentHelpNode: TIWHelpNode;
     CurName: String;
   begin
+    Result:=nil;
     NextParent:=TheControl.Parent;
     if NextParent=nil then begin
       CurName:=TheControl.ClassName;
       ParentHelpNode:=Root;
     end else begin
       CurName:=TheControl.Name;
-      if CurName='' then exit;
       ParentHelpNode:=Find(NextParent);
       if ParentHelpNode=nil then exit;
     end;
