@@ -182,7 +182,7 @@ function CaretToSourcePosition(ACodeTool: TCodeTool;
   out CleanPos: Integer): boolean;
 // find the source position in the parsed
 // The parsed source is the source combined of all include files
-// stripped of irrelevant IFDEFs and parsed makros.
+// stripped of irrelevant IFDEFs and parsed macros.
 var
   CursorPos: TCodeXYPosition;
 begin

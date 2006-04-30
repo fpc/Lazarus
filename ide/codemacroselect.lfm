@@ -2,16 +2,16 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
   ActiveControl = MacrosListBox
   Caption = 'CodeMacroSelectDlg'
   ClientHeight = 319
-  ClientWidth = 560
+  ClientWidth = 561
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 112
-  HorzScrollBar.Page = 559
+  HorzScrollBar.Page = 560
   VertScrollBar.Page = 318
   Left = 318
   Height = 319
   Top = 200
-  Width = 560
+  Width = 561
   object MacrosGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'MacrosGroupBox'
@@ -35,12 +35,12 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'DescriptionGroupBox'
     ClientHeight = 193
-    ClientWidth = 356
+    ClientWidth = 357
     TabOrder = 1
     Left = 190
     Height = 210
     Top = 10
-    Width = 360
+    Width = 361
     object DescriptionMemo: TMemo
       Align = alClient
       Lines.Strings = (
@@ -49,7 +49,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
       ReadOnly = True
       TabOrder = 0
       Height = 193
-      Width = 356
+      Width = 357
     end
   end
   object OkButton: TButton
@@ -63,7 +63,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     AnchorSideTop.Control = CancelButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = CancelButton
-    Left = 394
+    Left = 395
     Height = 26
     Top = 284
     Width = 61
@@ -75,27 +75,27 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 3
-    Left = 465
+    Left = 466
     Height = 26
     Top = 284
     Width = 85
   end
   object ParameterGroupBox: TGroupBox
-    Anchors = [akLeft, akBottom]
+    Anchors = [akLeft, akRight, akBottom]
     Caption = 'ParameterGroupBox'
     ClientHeight = 32
-    ClientWidth = 536
+    ClientWidth = 537
     TabOrder = 4
     Left = 10
     Height = 49
     Top = 225
-    Width = 540
+    Width = 541
     object ParameterEdit: TEdit
       Align = alTop
       TabOrder = 0
       Text = 'ParameterEdit'
       Height = 23
-      Width = 536
+      Width = 537
     end
   end
 end

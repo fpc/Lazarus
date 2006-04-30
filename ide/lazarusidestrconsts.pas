@@ -898,9 +898,9 @@ resourcestring
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsChooseScheme = 'Choose Scheme';
   dlgEdHintCommand = 'Hint: click on the command you want to edit';
-  dlgLang = 'Language:';
-  dlgClrScheme = 'Color Scheme:';
-  dlgFileExts = 'File extensions:';
+  dlgLang = 'Language';
+  dlgClrScheme = 'Color Scheme';
+  dlgFileExts = 'File extensions';
   dlgEdElement = 'Element';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';

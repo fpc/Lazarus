@@ -1,18 +1,6 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="4">
-  <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True" ChildCount="1">
-    <Node1 Name="PairSplitter1" Path="PairSplitter1" ChildCount="1">
-      <Node1 Name="PairSplitter1Side2" Path="PairSplitter1Side2" ChildCount="1">
-        <Node1 Name="NoteBook" Path="NoteBook" ChildCount="1">
-          <Node1 Name="EventPage" Path="EventPage" ChildCount="1">
-            <Node1 Name="EventGrid" Path="EventGrid" ChildCount="1">
-              <Node1 Name="ValueEdit" Path="ValueEdit" HasHelp="True"/>
-            </Node1>
-          </Node1>
-        </Node1>
-      </Node1>
-    </Node1>
-  </Node1>
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="6">
+  <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
       <Node1 Name="PathsPage" Path="#Paths" HasHelp="True"/>
@@ -45,4 +33,14 @@
       <Node8 Name="LazDocPage" Path="#LazDoc" HasHelp="True"/>
     </Node1>
   </Node4>
+  <Node5 Name="TEditorOptionsForm" Path="Editor_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="MainNotebook" ChildCount="5">
+      <Node1 Name="ColorPage" Path="#Color" HasHelp="True"/>
+      <Node2 Name="GeneralPage" Path="#General" HasHelp="True"/>
+      <Node3 Name="DisplayPage" Path="#Display" HasHelp="True"/>
+      <Node4 Name="KeymappingPage" Path="#Key_Mappings" HasHelp="True"/>
+      <Node5 Name="CodetoolsPage" Path="#Codetools" HasHelp="True"/>
+    </Node1>
+  </Node5>
+  <Node6 Name="TCodeTemplateDialog" Path="Code_Templates" HasHelp="True"/>
 </CONFIG>

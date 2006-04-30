@@ -119,6 +119,8 @@ begin
   if Sender is TControl then begin
     LoadIDEWindowHelp;
     IDEWindowHelpNodes.InvokeHelp(TControl(Sender));
+  end else begin
+    DebugLn('ShowContextHelpForIDE Sender=',dbgsName(Sender));
   end;
 end;
 

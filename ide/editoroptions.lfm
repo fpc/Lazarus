@@ -14,7 +14,7 @@ object EditorOptionsForm: TEditorOptionsForm
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 4
     Height = 491
     Width = 477
     object GeneralPage: TPage
@@ -393,6 +393,8 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 2
         Width = 461
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -719,6 +721,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 6
@@ -891,6 +894,8 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         Width = 465
         OnMouseDown = ColorPreviewMouseUp
+        BookMarkOptions.OnChange = nil
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1217,6 +1222,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
         Cursor = crIBeam
         Left = 4
@@ -1258,8 +1264,8 @@ object EditorOptionsForm: TEditorOptionsForm
       object TextAttributesGroupBox: TGroupBox
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Attributes'
-        ClientHeight = 179
-        ClientWidth = 251
+        ClientHeight = 196
+        ClientWidth = 255
         TabOrder = 7
         Left = 212
         Height = 196
@@ -1318,7 +1324,7 @@ object EditorOptionsForm: TEditorOptionsForm
           Left = 94
           Height = 24
           Top = 15
-          Width = 144
+          Width = 148
         end
         object BackGroundUseDefaultCheckBox: TCheckBox
           Anchors = [akTop, akLeft, akRight]
@@ -1331,7 +1337,7 @@ object EditorOptionsForm: TEditorOptionsForm
           Left = 94
           Height = 24
           Top = 54
-          Width = 144
+          Width = 148
         end
         object TextBoldCheckBox: TCheckBox
           Align = alBottom
@@ -1341,8 +1347,8 @@ object EditorOptionsForm: TEditorOptionsForm
           TabOrder = 2
           Left = 6
           Height = 24
-          Top = 89
-          Width = 239
+          Top = 106
+          Width = 243
         end
         object TextItalicCheckBox: TCheckBox
           Align = alBottom
@@ -1352,8 +1358,8 @@ object EditorOptionsForm: TEditorOptionsForm
           TabOrder = 3
           Left = 6
           Height = 24
-          Top = 119
-          Width = 239
+          Top = 136
+          Width = 243
         end
         object TextUnderlineCheckBox: TCheckBox
           Align = alBottom
@@ -1363,8 +1369,8 @@ object EditorOptionsForm: TEditorOptionsForm
           TabOrder = 4
           Left = 6
           Height = 24
-          Top = 149
-          Width = 239
+          Top = 166
+          Width = 243
         end
       end
     end
@@ -1396,10 +1402,11 @@ object EditorOptionsForm: TEditorOptionsForm
           ParentColor = False
           Left = 6
           Height = 13
-          Top = 179
+          Top = 196
           Width = 445
         end
         object AutoDelayMinLabel: TLabel
+          BorderSpacing.Top = 2
           Caption = 'AutoDelayMinLabel'
           Color = clNone
           ParentColor = False
@@ -1407,12 +1414,13 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 13
-          Top = 149
+          Top = 168
           Width = 112
         end
         object AutoDelayMaxLabel: TLabel
           Alignment = taRightJustify
           Anchors = [akTop, akRight]
+          BorderSpacing.Top = 2
           Caption = 'AutoDelayMaxLabel'
           Color = clNone
           ParentColor = False
@@ -1420,7 +1428,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 328
           Height = 13
-          Top = 149
+          Top = 168
           Width = 115
         end
         object AutoIdentifierCompletionCheckBox: TCheckBox
@@ -1479,7 +1487,7 @@ object EditorOptionsForm: TEditorOptionsForm
           Position = 2
           ScalePos = trTop
           Left = 6
-          Height = 23
+          Height = 40
           Top = 126
           Width = 445
         end

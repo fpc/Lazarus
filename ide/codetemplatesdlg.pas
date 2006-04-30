@@ -603,6 +603,7 @@ begin
   OkButton.Caption:=lisLazBuildOk;
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMakrosCheckBox.Caption:=lisEnableMakros;
+  InsertMacroButton.Caption:=lisCTInsertMacro;
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 

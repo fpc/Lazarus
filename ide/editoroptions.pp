@@ -411,7 +411,7 @@ TEditorOptions = class(TPersistent)
 
     // Color options
     LanguageComboBox: TComboBox;
-    LanguageLabel:    TLabel;
+    LanguageLabel: TLabel;
     FileExtensionsComboBox: TComboBox;
     FileExtensionsLabel: TLabel;
     ColorSchemeComboBox: TComboBox;

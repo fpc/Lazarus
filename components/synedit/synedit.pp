@@ -188,12 +188,12 @@ type
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
     {$IFDEF SYN_LAZARUS}
-    eoBracketHighlight,        // highlight matching bracket
-    eoDoubleClickSelectsLine,  // select line on double click
-    eoHideRightMargin,         // hides the right margin line
-    eoPersistentCaret,         // do not hide caret when focus lost
-    eoShowCtrlMouseLinks,      // pressing Ctrl will highlight the word under the mouse cursor
-    eoAutoIndentOnPaste,       // indent text inserted from clipboard
+    eoBracketHighlight,        // Highlight matching bracket
+    eoDoubleClickSelectsLine,  // Select line on double click
+    eoHideRightMargin,         // Hides the right margin line
+    eoPersistentCaret,         // Do not hide caret when focus lost
+    eoShowCtrlMouseLinks,      // Pressing Ctrl will highlight the word under the mouse cursor
+    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
     {$ENDIF}
     );
@@ -201,7 +201,7 @@ type
   
   {$IFDEF SYN_LAZARUS}
   TSynEditorOption2 = (
-    eoCaretSkipsSelection,     // caret skips selection on VK_LEFT/VK_RIGHT
+    eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
     eoAlwaysVisibleCaret       // Move caret to be always visible when scrolling
   );
   TSynEditorOptions2 = set of TSynEditorOption2;

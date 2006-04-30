@@ -169,6 +169,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 2
       Caption = 'OkBitBtn'
+      Default = True
       ModalResult = 1
       NumGlyphs = 0
       OnClick = OkBitBtnClick
