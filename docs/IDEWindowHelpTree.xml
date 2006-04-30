@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="2">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="4">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True" ChildCount="1">
     <Node1 Name="PairSplitter1" Path="PairSplitter1" ChildCount="1">
       <Node1 Name="PairSplitter1Side2" Path="PairSplitter1Side2" ChildCount="1">
@@ -24,4 +24,25 @@
       <Node7 Name="CompilationPage" Path="#Compilation" HasHelp="True"/>
     </Node1>
   </Node2>
+  <Node3 Name="TProjectOptionsDialog" Path="Project_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="Notebook" ChildCount="5">
+      <Node1 Name="ApplicationPage" Path="#Application" HasHelp="True"/>
+      <Node2 Name="FormsPage" Path="#Forms" HasHelp="True"/>
+      <Node3 Name="MiscPage" Path="#Misc" HasHelp="True"/>
+      <Node4 Name="LazDocPage" Path="#LazDoc" HasHelp="True"/>
+      <Node5 Name="SavePage" Path="#Session" HasHelp="True"/>
+    </Node1>
+  </Node3>
+  <Node4 Name="TEnvironmentOptionsDialog" Path="Environment_Options" HasHelp="True" ChildCount="1">
+    <Node1 Name="Notebook" ChildCount="8">
+      <Node1 Name="FilesPage" Path="#Files" HasHelp="True"/>
+      <Node2 Name="DesktopPage" Path="#Desktop" HasHelp="True"/>
+      <Node3 Name="WindowsPage" Path="#Windows" HasHelp="True"/>
+      <Node4 Name="FormEditorPage" Path="#Form_Editor" HasHelp="True"/>
+      <Node5 Name="ObjectInspectorPage" Path="#Object_Inspector" HasHelp="True"/>
+      <Node6 Name="BackupPage" Path="#Backup" HasHelp="True"/>
+      <Node7 Name="NamingPage" Path="#Naming" HasHelp="True"/>
+      <Node8 Name="LazDocPage" Path="#LazDoc" HasHelp="True"/>
+    </Node1>
+  </Node4>
 </CONFIG>

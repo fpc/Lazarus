@@ -1211,7 +1211,7 @@ begin
     Left := 5;
     Height := 42;
     Width := 400;
-    Caption := dlgCOStyle+' (-r)';
+    Caption := dlgCOStyle+' (-R)';
     with Items do begin
       BeginUpdate;
       Items.Add('Default');
