@@ -930,10 +930,12 @@ type
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    procedure NotifyColRowChange(WasInsert,IsColumn:boolean; FromIndex,ToIndex:Integer);
     function  SelectCell(aCol,aRow: Integer): boolean; override;
     procedure SetColor(Value: TColor); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+
     
   public
 
@@ -1840,6 +1842,7 @@ begin
     SizeChanged(OldCount, OldValue);
   end;
   FixPosition;
+
 end;
 
 procedure TCustomGrid.SetColCount(AValue: Integer);
@@ -6354,16 +6357,14 @@ procedure TCustomDrawGrid.ColRowInserted(IsColumn: boolean; index: integer);
 begin
   if not IsColumn or not Columns.Enabled then
     FGrid.InsertColRow(IsColumn, Index);
-  if Assigned(OnColRowInserted) then
-    OnColRowInserted(Self, IsColumn, index, index);
+  NotifyColRowChange(True, IsColumn, Index, Index);
 end;
 
 procedure TCustomDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
   if not IsColumn or not Columns.Enabled then
     FGrid.DeleteColRow(IsColumn, index);
-  if Assigned(OnColRowDeleted) then
-    OnColRowDeleted(Self, IsColumn, index, index);
+  NotifyColRowChange(False, IsColumn, Index, Index);
 end;
 
 procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
@@ -6410,6 +6411,18 @@ begin
   if assigned(OnGetEditText) then OnGetEditText(self, aCol, aRow, Result);
 end;
 
+procedure TCustomDrawGrid.NotifyColRowChange(WasInsert, IsColumn: boolean;
+  FromIndex,ToIndex: Integer);
+begin
+  if WasInsert then begin
+    if assigned(OnColRowInserted) then
+      OnColRowInserted(Self, IsColumn, FromIndex, ToIndex)
+  end else begin
+    if assigned(OnColRowDeleted) then
+      OnColRowDeleted(Self, IsColumn, FromIndex, ToIndex);
+  end;
+end;
+
 procedure TCustomDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
   if Assigned(OnSetEditText) then OnSetEditText(Self, aCol, aRow, Value);
@@ -6417,8 +6430,20 @@ end;
 
 procedure TCustomDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
 begin
-  if OldColCount<>ColCount then fGrid.ColCount:=ColCOunt;
-  if OldRowCount<>RowCount then fGrid.RowCount:=RowCount;
+  if OldColCount<>ColCount then begin
+    fGrid.ColCount:=ColCount;
+    if OldColCount>ColCount then
+      NotifyColRowChange(False, True, ColCount, OldColCount-1)
+    else
+      NotifyColRowChange(True, True, OldColCount, ColCount-1);
+  end;
+  if OldRowCount<>RowCount then begin
+    fGrid.RowCount:=RowCount;
+    if OldRowCount>RowCount then
+      NotifyColRowChange(False, False, RowCount, OldRowCount-1)
+    else
+      NotifyColRowChange(True, False, OldRowCount, RowCount-1);
+  end;
 end;
 
 procedure TCustomDrawGrid.DrawCellAutonumbering(aCol, aRow: Integer;
