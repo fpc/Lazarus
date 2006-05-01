@@ -606,7 +606,7 @@ Var
   Handle: HWND;
 Begin
   Handle:=0;
-  If Integer(AObject) = 0 Then
+  If not assigned(AObject) Then
   Begin
     Assert (False, 'TRACE:[ObjectToHWND] Object not assigned');
   End
@@ -833,7 +833,7 @@ Begin
     Dec(ORect.Bottom, ARect.Bottom);
   end;
 {
-  if (Windows.GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
+  if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
   begin
     Dec(LeftOffset, Windows.GetSystemMetrics(SM_CXEDGE));
     Dec(TopOffset, Windows.GetSystemMetrics(SM_CYEDGE));
@@ -911,12 +911,12 @@ end;
 }
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 var
-  CurrentStyle: integer;
-  NewStyle: integer;
+  CurrentStyle,
+  NewStyle : PtrInt;
 begin
-  CurrentStyle := Windows.GetWindowLong(Handle, GWL_STYLE);
+  CurrentStyle := GetWindowLong(Handle, GWL_STYLE);
   NewStyle := (Style and StyleMask) or (CurrentStyle and (not StyleMask));
-  Windows.SetWindowLong(Handle, GWL_STYLE, NewStyle);
+  SetWindowLong(Handle, GWL_STYLE, NewStyle);
 end;
 
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
@@ -981,7 +981,7 @@ begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   WindowInfo^.DrawItemIndex := -1;
-  Windows.SetProp(Window, PChar(dword(WindowInfoAtom)), dword(WindowInfo));
+  Windows.SetProp(Window, PChar(PtrUInt(WindowInfoAtom)), PtrUInt(WindowInfo));
   Result := WindowInfo;
 end;
 
@@ -989,8 +989,8 @@ function DisposeWindowInfo(Window: HWND): boolean;
 var
   WindowInfo: PWindowInfo;
 begin
-  WindowInfo := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
-  Result := Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom)))<>0;
+  WindowInfo := PWindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
+  Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom)))<>0;
   if Result then
   begin
     WindowInfo^.DisabledWindowList.Free;
@@ -1000,7 +1000,7 @@ end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
-  Result := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
+  Result := PWindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;
@@ -1079,7 +1079,7 @@ begin
   if ChangedMenus.IndexOf(Pointer(Window)) = -1 then // Window handle is not yet in the list
     ChangedMenus.Add(Pointer(Window));
 end;
-    
+
 {------------------------------------------------------------------------------
   Method: RedrawMenus
   Params:  None

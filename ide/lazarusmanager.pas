@@ -75,7 +75,7 @@ unit LazarusManager;
 interface
 
 uses
-{$IFDEF win32}
+{$IFdef MSWindows}
   Windows,
 {$ENDIF}
 {$IFDEF unix}
@@ -215,7 +215,7 @@ end;
 
 procedure TLazarusManager.WaitForLazarus;
   procedure WaitForPid(PID: integer);
-  {$IFDEF win32}
+  {$IFdef MSWindows}
   var
     ProcessHandle: THandle;
   begin

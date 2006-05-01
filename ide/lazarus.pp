@@ -36,7 +36,7 @@ program Lazarus;
 
 {$I ide.inc}
 
-{$IFDEF WIN32}
+{$IFdef Win32}
   {$R *.res}
 {$ENDIF}
 
@@ -62,7 +62,7 @@ uses
   {$IFDEF BigIDE}
   RunTimeTypeInfoControls, Printer4Lazarus, CGILaz, CGILazIDE, MemDSLaz, SDFLaz,
   TurboPowerIPro, JPEGForLazarus, FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   SQLDBLaz, DBFLaz,
   {$ENDIF}
   {$IFDEF Linux}

@@ -245,7 +245,7 @@ begin
   Result:='undefined';
   
   {$IFDEF CPUi386}
-    {$IFDEF win32}
+    {$IFdef MSWindows}
     Result:='ppc386.exe';
     {$ELSE}
     Result:='ppc386';

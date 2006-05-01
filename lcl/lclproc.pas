@@ -63,7 +63,7 @@ type
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
-  
+
 type
   TStackTracePointers = array of Pointer;
 
@@ -79,7 +79,7 @@ type
     function AsString(WithStackTraces: boolean): string;
     destructor Destroy; override;
   end;
-  
+
   { TDebugLCLItems }
 
   TDebugLCLItems = class
@@ -95,7 +95,7 @@ type
     procedure MarkDestroyed(p: Pointer);
     function GetInfo(p: Pointer; WithStackTraces: boolean): string;
   end;
-  
+
   TLineInfoCacheItem = record
     Addr: Pointer;
     Info: string;
@@ -213,6 +213,7 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 function DbgS(const c: cardinal): string; overload;
 function DbgS(const i: longint): string; overload;
 function DbgS(const i: int64): string; overload;
+function DbgS(const q: qword): string; overload;
 function DbgS(const r: TRect): string; overload;
 function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
@@ -282,7 +283,7 @@ function CreateNextIdentifier(const Identifier: string): string;
 // MWE: maybe to RTL ?
 // inline ?
 //
-// These functions convert a BigEndian or LittleEndian number to 
+// These functions convert a BigEndian or LittleEndian number to
 // a machine Native number and vice versa.
 //
 // Note: Lazarus resources are streamed using LE. So when writing data
@@ -1079,7 +1080,7 @@ end;
 procedure InitializeDebugOutput;
 var
   DebugFileName: string;
-  
+
   function GetDebugFileName: string;
   const
     DebugLogStart = '--debug-log=';
@@ -1104,7 +1105,7 @@ var
     if (length(result)>0) then
       Result := ExpandFileName(Result);
   end;
-  
+
 begin
   DebugText := nil;
   DebugFileName := GetDebugFileName;
@@ -1347,6 +1348,11 @@ end;
 function DbgS(const i: int64): string;
 begin
   Result:=IntToStr(i);
+end;
+
+function DbgS(const q: qword): string;
+begin
+  Result:=IntToStr(q);
 end;
 
 function DbgS(const r: TRect): string;
@@ -1700,7 +1706,7 @@ begin
     idx := Pos(#13, ALine);
     if idx = 0
     then begin
-      Result := ALine; 
+      Result := ALine;
       Exit;
     end;
   end
@@ -1710,7 +1716,7 @@ begin
     then Dec(idx);
   end;
   Result := Copy(ALine, 1, idx - 1);
-end;           
+end;
 
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
 begin
@@ -1737,7 +1743,7 @@ var
   n, i, idx: Integer;
   S, Source, Match: String;
   HasEscape: Boolean;
-begin                  
+begin
   Source := ASource;
 
   if High(ASkipTo) >= 0
@@ -1771,7 +1777,7 @@ begin
     if idx > 0
     then Delete(Source, 1, idx + Length(Match) - 1);
   end;
-  
+
   if AnIgnoreCase
   then S := UpperCase(Source)
   else S := Source;
@@ -1794,7 +1800,7 @@ begin
     Result := Copy(Source, 1, idx - 1);
     Delete(Source, 1, idx - 1);
   end;
-  
+
   if AnUpdateSource
   then ASource := Source;
 end;
@@ -1817,7 +1823,7 @@ begin
   if AIgnoreCase
   then Search := UpperCase(AString)
   else Search := AString;
-  
+
   for Result := Low(ACase) to High(ACase) do
   begin
     if AIgnoreCase
@@ -1829,7 +1835,7 @@ begin
     if Length(Search) >= Length(S) then Continue;
     if StrLComp(PChar(Search), PChar(S), Length(Search)) = 0 then Exit;
   end;
-  
+
   Result := -1;
 end;
 

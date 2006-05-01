@@ -179,7 +179,7 @@ end;
 procedure TWatchesDlg.lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  {$IFDEF WIN32}
+  {$IFdef MSWindows}
   {$NOTE TODO repair TListView.PopupMenu and remove this hack}
   if Button in [mbRight] then mnuPopup.PopUp(X + lvWatches.Left + Left, Y + lvWatches.Top + Top);
   {$ENDIF}

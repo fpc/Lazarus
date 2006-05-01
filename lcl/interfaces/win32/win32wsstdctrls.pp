@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                            Win32WSStdCtrls.pp                             * 
- *                            ------------------                             * 
+ *                            Win32WSStdCtrls.pp                             *
+ *                            ------------------                             *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,14 +28,14 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Windows, LCLType, 
+  WSStdCtrls, WSLCLClasses, Windows, LCLType,
   Win32Int, Win32Proc, InterfaceBase, Win32WSControls;
 
 type
@@ -87,7 +87,7 @@ type
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
-    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
@@ -96,7 +96,7 @@ type
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-    
+
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
@@ -131,7 +131,7 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
-    
+
   { TWin32WSListBox }
 
   TWin32WSListBox = class(TWSListBox)
@@ -218,7 +218,7 @@ type
   private
   protected
   public
-    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer); override;
   end;
 
@@ -230,7 +230,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl; 
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
@@ -348,17 +348,17 @@ begin
   // customization of Params
   with Params do
   begin
-    if TWin32WidgetSet(WidgetSet).ThemesActive and (AWinControl.Parent <> nil) and 
+    if TWin32WidgetSet(WidgetSet).ThemesActive and (AWinControl.Parent <> nil) and
       (AWinControl.Parent is TCustomGroupBox) then
     begin
-      // the parent of this groupbox is another groupbox: there is a bug in 
+      // the parent of this groupbox is another groupbox: there is a bug in
       // drawing the caption in that case, the caption of the child groupbox
       // is drawn in system font, make an intermediate "ParentPanel", then
       // the bug is hidden. Use 'ParentPanel' property of groupbox window
       // to determine reference to this parent panel
       // do not use 'ParentPanel' property for other controls!
-      Buddy := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPCHILDREN or 
-        WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
+      Buddy := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPCHILDREN or
+        WS_CLIPSIBLINGS or (Flags and WS_VISIBLE),
         Left, Top, Width, Height, Parent, 0, HInstance, nil);
       Left := 0;
       Top := 0;
@@ -390,7 +390,7 @@ begin
   end;
   // if themed but does not have tabpage as parent
   // remember we are a groupbox in need of erasebackground hack
-  if TWin32WidgetSet(WidgetSet).ThemesActive 
+  if TWin32WidgetSet(WidgetSet).ThemesActive
       and not Params.WindowInfo^.hasTabParent then
     Params.WindowInfo^.isGroupBox := true;
   AWinControl.InvalidateClientRectCache(true);
@@ -412,7 +412,7 @@ begin
     Top := 0;
   end;
 end;
-  
+
 { TWin32WSCustomListBox }
 
 function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
@@ -508,7 +508,7 @@ end;
 procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
   if ACustomListBox.MultiSelect then
-    Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL, 
+    Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL,
       Windows.WParam(ASelected), Windows.LParam(AIndex))
   else
   if ASelected then
@@ -520,7 +520,7 @@ end;
 procedure TWin32WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;
-  StyleEx: dword;
+  StyleEx: PtrInt;
 begin
   Handle := ACustomListBox.Handle;
   StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
@@ -573,7 +573,7 @@ end;
 const
   ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
     CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
-    
+
 function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
 const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
@@ -655,7 +655,7 @@ var
   CurrentStyle: dword;
 begin
   CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
-  if (CurrentStyle and ComboBoxStylesMask) = 
+  if (CurrentStyle and ComboBoxStylesMask) =
         CalcComboBoxWinFlags(ACustomComboBox) then
     exit;
 
@@ -686,7 +686,7 @@ begin
   AText := GetControlText(AWinControl.Handle);
 end;
 
-procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
+procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
   NewTraverseList: boolean);
 begin
   // TODO: implement me?
@@ -923,7 +923,7 @@ procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AT
 var
   S: string;
 begin
-  if Length(AText) > 0 then 
+  if Length(AText) > 0 then
   begin
     GetText(ACustomMemo, S);
     S := S + AText;
@@ -985,7 +985,7 @@ end;
 
 { TWin32WSButtonControl }
 
-procedure TWin32WSButtonControl.GetPreferredSize(const AWinControl: TWinControl; 
+procedure TWin32WSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer);
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
@@ -1019,7 +1019,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl; 
+procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer);
 var
   iconHeight: integer;

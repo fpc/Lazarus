@@ -2816,7 +2816,7 @@ var
   begin
     Result:=false;
     if not FileWasAbsolute then exit;
-    {$IFDEF Win32}
+    {$IFdef MSWindows}
     // check that the file is on the same drive / filesystem
     if CompareText(ExtractFileDrive(AFilename),ExtractFileDrive(ProjectPath))<>0
     then exit;
@@ -2830,7 +2830,7 @@ begin
   if not fPathDelimChanged then begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end else begin
-    {$IFDEF Win32}
+    {$IFdef MSWindows}
     // PathDelim changed from '/' to '\'
     FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName);
     {$ELSE}

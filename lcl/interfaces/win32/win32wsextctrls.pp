@@ -1,7 +1,7 @@
 {
  *****************************************************************************
- *                            Win32WSExtCtrls.pp                             * 
- *                            ------------------                             * 
+ *                            Win32WSExtCtrls.pp                             *
+ *                            ------------------                             *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -27,14 +27,14 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   SysUtils, Windows, ExtCtrls, Classes, Controls, LCLType, LCLIntf,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase, 
+  WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase,
   Win32WSControls;
 
 type
@@ -61,12 +61,12 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
     class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
-    class procedure AddPage(const ANotebook: TCustomNotebook; 
+    class procedure AddPage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure MovePage(const ANotebook: TCustomNotebook; 
+    class procedure MovePage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const NewIndex: integer); override;
     class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
-    class procedure RemovePage(const ANotebook: TCustomNotebook; 
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
       const AIndex: integer); override;
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
@@ -315,7 +315,7 @@ begin
     // retrieve page handle from tab as extra check (in case page isn't added yet).
     TCI.mask := TCIF_PARAM;
     Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
-    if dword(TCI.lParam)=dword(AWinControl) then
+    if PtrUInt(TCI.lParam)=PtrUInt(AWinControl) then
     begin
       Assert(False, Format('Trace:TWin32WSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
@@ -352,7 +352,7 @@ begin
   Params.WindowInfo^.hasTabParent := false;
 end;
 
-procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
+procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 var
   TCI: TC_ITEM;
@@ -362,7 +362,7 @@ begin
     TCI.Mask := TCIF_TEXT or TCIF_PARAM;
     TCI.pszText := PChar(AChild.Caption);
     // store object as extra, so we can verify we got the right page later
-    TCI.lParam := dword(AChild);
+    TCI.lParam := PtrUInt(AChild);
     Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
@@ -371,14 +371,14 @@ begin
   end;
 end;
 
-procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
   RemovePage(ANotebook, AChild.PageIndex);
   AddPage(ANotebook,AChild,NewIndex);
 end;
 
-procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
+procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
@@ -405,11 +405,11 @@ begin
     // check if already shown
     TCI.Mask := TCIF_PARAM;
     Res := Windows.SendMessage(ANotebook.Handle, TCM_GETITEM, I, LPARAM(@TCI));
-    if (Res = 0) or (dword(TCI.lParam) <> dword(lPage)) then
+    if (Res = 0) or (PtrUInt(TCI.lParam) <> PtrUInt(lPage)) then
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM;
       TCI.pszText := PChar(lPage.Caption);
-      TCI.lParam := dword(lPage);
+      TCI.lParam := PtrUInt(lPage);
       Windows.SendMessage(WinHandle, TCM_INSERTITEM, I, LPARAM(@TCI));
     end;
   end;
@@ -481,7 +481,7 @@ begin
   DeliverMessage(ANotebook, Mess);
 end;
 
-function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook; 
+function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
   const AClientPos: TPoint): integer;
 var
   hittestInfo: TC_HITTESTINFO;
@@ -513,7 +513,7 @@ begin
     end;
     if (OldRealIndex >= 0) and (OldRealIndex <> NewRealIndex)
         and (OldRealIndex < ANotebook.PageCount)
-        and (ANotebook.CustomPage(OldRealIndex).HandleAllocated) then 
+        and (ANotebook.CustomPage(OldRealIndex).HandleAllocated) then
       ShowWindow(ANotebook.CustomPage(OldRealIndex).Handle, SW_HIDE);
   end;
 end;
@@ -521,11 +521,11 @@ end;
 procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 var
   NotebookHandle: HWND;
-  WindowStyle: dword;
+  WindowStyle: PtrInt;
 begin
   // VS: not tested
   NotebookHandle := ANotebook.Handle;
-  WindowStyle := Windows.GetWindowLong(NotebookHandle, GWL_STYLE);
+  WindowStyle := GetWindowLong(NotebookHandle, GWL_STYLE);
   case ATabPosition of
     tpTop:
       WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
@@ -536,7 +536,7 @@ begin
     tpRight:
       WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
   end;
-  Windows.SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
+  SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
 end;
 
 procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);

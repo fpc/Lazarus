@@ -303,12 +303,12 @@ var
   retVal, index: dword;
 Begin
   repeat
-{$ifdef DEBUG_ASYNCEVENTS}  
+{$ifdef DEBUG_ASYNCEVENTS}
     if Length(FWaitHandles) > 0 then
-      DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount), 
+      DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount),
         ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
-{$endif}        
-    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, 
+{$endif}
+    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
       FWaitHandles[0], false, 0, QS_ALLINPUT);
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
@@ -320,7 +320,7 @@ Begin
       while PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
       begin
         AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
-        if (AccelTable = HACCEL(nil)) 
+        if (AccelTable = HACCEL(nil))
           or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
         begin
           TranslateMessage(@AMessage);
@@ -378,7 +378,7 @@ begin
     timeout := 100
   else
     timeout := INFINITE;
-  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0], 
+  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0],
     false, timeout, QS_ALLINPUT);
   Assert(False,'Trace:Leave wait message');
 End;

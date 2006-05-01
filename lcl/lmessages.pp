@@ -518,7 +518,7 @@ type
 
   {PNCCalcSizeParams}
   PNCCalcSizeParams = ^TNCCalcSizeParams;
-  tagNCCalcSize_Params = packed record
+  tagNCCalcSize_Params = record
     rgrc: array[0..2] of TRect;
     lpPos: PWindowPos;
   end;
@@ -620,7 +620,7 @@ type
     Result: LRESULT;
   end;
 
-{$if defined(ver1_0) or not(defined(win32))}
+{$if defined(ver1_0) or not(defined(WINDOWS))}
   TLMSize = record
     Msg: Cardinal;
     SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
@@ -640,7 +640,7 @@ type
   end;
 
   PLMessage = ^TLMessage;
-{$if defined(ver1_0) or not(defined(win32))}
+{$if defined(ver1_0) or not(defined(mswindows))}
   TLMessage = record
     Msg : Cardinal;
     case Integer of
@@ -672,7 +672,7 @@ type
 // So POS: SmallInt -> LongInt and a win32compatible smallpos is added
 // Due to this, the record is a LongInt to large.
 
-{.$if defined(ver1_0) or not(defined(win32))}
+{.$if defined(ver1_0) or not(defined(WINDOWS))}
   TLMScroll = record
     Msg: Cardinal;
     ScrollCode: SmallInt; // SB_xxx
@@ -693,7 +693,7 @@ type
 //  TLMVScroll = TWMScroll;
 {.$endif}
 
-{$if defined(ver1_0) or not(defined(win32))}
+{$if defined(ver1_0) or not(defined(WINDOWS))}
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
@@ -707,7 +707,7 @@ type
   TLMShowWindow = TWMShowWindow;
 {$endif}
 
-{$if defined(ver1_0) or not(defined(win32))}
+{$if defined(ver1_0) or not(defined(WINDOWS))}
   TLMKILLFOCUS = TLMSetFocus;
 {$else}
   TLMKillFocus = TWMKillFocus;

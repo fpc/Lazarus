@@ -76,7 +76,7 @@ function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
 
 {$IFDEF WINDOWS}
 
-{$IFDEF Win32}
+{$IFDEF MSWindows}
 function GetTickCount:DWORD; stdcall; external 'kernel32.dll' name 'GetTickCount';
 {$ELSE}
 function GetTickCount:DWORD; stdcall; external KernelDLL name 'GetTickCount';

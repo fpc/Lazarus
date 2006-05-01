@@ -46,7 +46,7 @@ const
 Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
 Begin
   Result:=false;
-  if (DWORD(Str) and DWORD($FFFF0000)) = 0 then Exit; // global atom handle
+  if PtrUInt(Str) <= $FFFF then exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
   Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed',
     [String(Str), Data, Window]));
@@ -88,7 +88,7 @@ begin
     // to list of strings, and if appears in there, will set the text, and select it
     // WM_GETTEXTLENGTH, WM_GETTEXT, WM_SETTEXT, EM_SETSEL
     // combobox sends WM_SIZE to itself indirectly, check recursion
-    setComboWindow := (Msg = WM_SIZE) and (ComboBoxHandleSizeWindow = 0) 
+    setComboWindow := (Msg = WM_SIZE) and (ComboBoxHandleSizeWindow = 0)
         and GetWindowInfo(Windows.GetTopWindow(Window))^.isComboEdit;
     if setComboWindow then
       ComboBoxHandleSizeWindow := Window;
@@ -125,9 +125,9 @@ procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
 begin
 {$ifdef MSG_DEBUG}
   case Command of
-    ecDiscard: DebugLn(MessageStackDepth, 
+    ecDiscard: DebugLn(MessageStackDepth,
       ' *forcing next WM_ERASEBKGND to discard message');
-    ecDiscardNoRemove: DebugLn(MessageStackDepth, 
+    ecDiscardNoRemove: DebugLn(MessageStackDepth,
       ' *forcing next WM_ERASEBKGND to discard message, no remove');
   end;
   DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
@@ -262,14 +262,14 @@ Var
   var
     DC: HDC;
     DoubleBufferBitmapOld: HBITMAP;
-    PaintRegion: HRGN; 
+    PaintRegion: HRGN;
     PS : TPaintStruct;
     PaintMsg: TLMPaint;
     ORect: TRect;
     WindowOrg: Windows.POINT;
-{$ifdef DEBUG_DOUBLEBUFFER}  
+{$ifdef DEBUG_DOUBLEBUFFER}
     ClipBox: Windows.RECT;
-{$endif}    
+{$endif}
     ParentPaintWindow: HWND;
     WindowWidth, WindowHeight: Integer;
     DCIndex: integer;
@@ -293,10 +293,10 @@ Var
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
     ParentPaintWindow := 0;
-    // if hasTabParent and not isTabPage then background will be drawn in 
+    // if hasTabParent and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
-    if WindowInfo^.isTabPage or (WindowInfo^.hasTabParent 
+    if WindowInfo^.isTabPage or (WindowInfo^.hasTabParent
       and (not isNativeControl or (WParam <> 0))) then
     begin
       ParentPaintWindow := Window;
@@ -316,9 +316,9 @@ Var
       PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered 
+    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered
       or TWin32WidgetSet(WidgetSet).ThemesActive);
-{$ifdef MSG_DEBUG}      
+{$ifdef MSG_DEBUG}
     if useDoubleBuffer and (DoubleBufferDC <> 0) then
     begin
       DebugLn('ERROR: RECURSIVE PROBLEM! DOUBLEBUFFERED PAINT');
@@ -342,7 +342,7 @@ Var
       DoubleBufferBitmapOld := Windows.SelectObject(DoubleBufferDC, DoubleBufferBitmap);
       PaintMsg.DC := DoubleBufferDC;
     end;
-    
+
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer then
       DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(DoubleBufferDC, 8))
@@ -368,7 +368,7 @@ Var
           ORect.Right := DoubleBufferBitmapWidth;
           ORect.Bottom := DoubleBufferBitmapHeight;
           Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP));
-{$endif}          
+{$endif}
           PaintRegion := CreateRectRgn(0, 0, 1, 1);
           if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
           begin
@@ -382,13 +382,13 @@ Var
               Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
             end;
             Windows.SelectClipRgn(DoubleBufferDC, PaintRegion);
-          end;          
-{$ifdef DEBUG_DOUBLEBUFFER}          
-          Windows.GetClipBox(DoubleBufferDC, ClipBox);          
+          end;
+{$ifdef DEBUG_DOUBLEBUFFER}
+          Windows.GetClipBox(DoubleBufferDC, ClipBox);
           DebugLn('Double buffering in DC ', IntToHex(DoubleBufferDC, 8), ' with clipping rect (',
-            IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';', 
+            IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
             IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
-{$endif}            
+{$endif}
           // a copy of the region is selected into the DC, so we
           // can free our region immediately
           Windows.DeleteObject(PaintRegion);
@@ -414,9 +414,9 @@ Var
       if ParentPaintWindow <> 0 then
       begin
 {$ifdef MSG_DEBUG}
-        DebugLn(MessageStackDepth, ' *painting background by sending paint message to parent window ', 
+        DebugLn(MessageStackDepth, ' *painting background by sending paint message to parent window ',
           IntToHex(ParentPaintWindow, 8));
-{$endif}        
+{$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
@@ -427,12 +427,12 @@ Var
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
-{$ifdef DEBUG_DOUBLEBUFFER}        
+{$ifdef DEBUG_DOUBLEBUFFER}
         Windows.GetClipBox(PaintMsg.DC, ClipBox);
         DebugLn('LCL Drawing in DC ', IntToHex(PaintMsg.DC, 8), ' with clipping rect (',
-          IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';', 
+          IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
           IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
-{$endif}          
+{$endif}
         DeliverMessage(lWinControl, PaintMsg);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
@@ -455,7 +455,7 @@ Var
 //          Windows.CloseClipboard;
           CopyBitmapToClipboard := false;
         end;
-{$endif}        
+{$endif}
       end;
     end;
   end;
@@ -470,7 +470,7 @@ Var
     MousePos.Y := LMMouse.Pos.Y;
     for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
-      Windows.SendMessage(Window, LB_GETITEMRECT, I, LongInt(@ItemRect));
+      Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
       ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
@@ -546,7 +546,7 @@ Var
     ScrollbarHandle := HWND(LParam);
     if ScrollbarHandle<>0 then
       lWinControl := GetWindowInfo(ScrollbarHandle)^.WinControl;
-    if lWinControl is TCustomTrackBar then 
+    if lWinControl is TCustomTrackBar then
     begin
       LMessage.Msg := LM_CHANGED;
       exit;
@@ -589,34 +589,34 @@ Var
       then GetScrollInfo(Window, SB_HORZ, ScrollInfo)
       else GetScrollInfo(Window, SB_VERT, ScrollInfo);
     end;
-   
+
     with LMScroll do
-    begin     
+    begin
       if Lo(WParam) = SB_THUMBTRACK
       then Pos := ScrollInfo.nTrackPos
-      else Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);   
+      else Pos := (ScrollInfo.nPos and $FFFF0000) or Hi(WParam);
       // Note on the above
-      // When using the scrollwheel, windows sends SB_THUMBTRACK 
-      // messages, but only when scroll.max < 32K. So in that case 
+      // When using the scrollwheel, windows sends SB_THUMBTRACK
+      // messages, but only when scroll.max < 32K. So in that case
       // Hi(WParam) won't cycle.
-      // When ending scrollbar tracking we also get those 
+      // When ending scrollbar tracking we also get those
       // messages. Now Hi(WParam) is cycling.
       // To get the correct value you need to use GetScrollInfo.
       //
       // Now there is a problem. GetScrollInfo returns the old position
       // while using the wheelmouse, and during tracking it returns
-      // the new position.              
-      // To get around this, I use the most significant part of the 
+      // the new position.
+      // To get around this, I use the most significant part of the
       // value returned by ScrollInfo, since that is always correct
       // The missing least significant part is given by Hi(WParam)
       // (since it is cycling) and is also always valid.
       // So the combination of both also is.
-      // In the case of the wheelmouse this only works if the 
+      // In the case of the wheelmouse this only works if the
       // difference between the old pos and the new pos is < 64K.
       // I think we safely can asuume that (you wont get messages
       // anyhow if the range was > 32K :).
       // MWE.
-      
+
 
       if Pos < High(SmallPos)
       then SmallPos := Pos
@@ -728,7 +728,7 @@ Var
     Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
     WindowInfo^.spinValue := newValue;
   end;
-  
+
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
     procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
     var
@@ -736,7 +736,7 @@ Var
     begin
       // 0 means no constraint
       if (AWidth=0) and (AHeight=0) then exit;
-      
+
       IntfWidth := AWidth;
       IntfHeight := AHeight;
       LCLFormSizeToWin32Size(TCustomForm(lWinControl), IntfWidth, IntfHeight);
@@ -754,7 +754,7 @@ Var
       SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
     end;
   end;
-  
+
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1060,7 +1060,7 @@ Begin
           DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
         end
       end;
-      
+
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
@@ -1089,7 +1089,7 @@ Begin
           if WindowInfo <> @DefaultWindowInfo then
           begin
             WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
-            WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState 
+            WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState
               and ODS_SELECTED) = ODS_SELECTED;
           end;
           WinProcess := false;
@@ -1126,13 +1126,13 @@ Begin
     WM_ERASEBKGND:
     Begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
-{$ifdef MSG_DEBUG}      
+{$ifdef MSG_DEBUG}
       case eraseBkgndCommand of
         ecDefault: DebugLn(MessageStackDepth, ' *command: default');
         ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
       end;
       DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
-{$endif}      
+{$endif}
       if eraseBkgndCommand <> ecDiscardNoRemove then
         EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
       if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
@@ -1142,7 +1142,7 @@ Begin
       end;
       if not WindowInfo^.hasTabParent then
       begin
-        if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox 
+        if TWin32WidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox
             and (lWinControl <> nil) then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
@@ -1219,7 +1219,7 @@ Begin
     Begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_KILLFOCUS received for window ', IntToHex(Window, 8));
-{$endif}      
+{$endif}
       LMessage.Msg := LM_KILLFOCUS;
       LMessage.WParam := WParam;
     End;
@@ -1451,7 +1451,7 @@ Begin
         begin
           if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));
-        end; 
+        end;
       else
         PLMsg:=@LMNotify;
         With LMNotify Do
@@ -1527,7 +1527,7 @@ Begin
     Begin
 {$ifdef DEBUG_CARET}
       DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
-{$endif}      
+{$endif}
       // handle feature mouse-click, setfocus, mouse-click -> double-click
       if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
       begin
@@ -1736,8 +1736,8 @@ Begin
           GetClientRect(Window,R);
           writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
             ' NewSize=',Width,',',Height,
-            ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
-            ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
+            ' HasVScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
+            ' HasHScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
             ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
             ' NewClientSize=',R.Right,',',R.Bottom);
           {$ENDIF}
@@ -1921,7 +1921,7 @@ Begin
     begin
 {$ifdef MSG_DEBUG}
       writeln(MessageStackDepth, ' *ignore next character');
-{$endif}  
+{$endif}
       IgnoreNextCharWindow := Window;
     end else begin
       // stop ignoring if KEYUP has come by (not all keys generate CHAR)
@@ -1954,7 +1954,7 @@ End;
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
-  DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=', 
+  DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=',
     WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
   MessageStackDepth := MessageStackDepth + ' ';
 

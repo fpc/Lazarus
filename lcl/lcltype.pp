@@ -75,7 +75,7 @@ type
   PAnsiChar = ^AnsiChar;
   PWideChar = ^WideChar;}
 
-  TCriticalSection = longint;
+  TCriticalSection = PtrInt;
   PCriticalSection = ^TCriticalSection;
   TRTLCriticalSection = pointer;
 

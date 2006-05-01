@@ -75,7 +75,7 @@ rsts=lclstrconsts
 packages=fcl
 
 [prerules]
-ifeq ($(findstring $(OS_TARGET),win32 wince),)
+ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
 NONWIN32=nonwin32
 endif
 
@@ -105,7 +105,7 @@ lcldir=.
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS)
 

@@ -55,7 +55,7 @@ RCPP?=$(firstword $(strip $(subst /,$(PATHSEP),$(wildcard $(addsuffix /cpp$(SRCE
 #
 # LCL Platform
 ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
 LCL_PLATFORM=gtk

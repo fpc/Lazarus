@@ -44,7 +44,7 @@ Const
   Params:  DC - handle to device context
            Left - x-coordinate of bounding rectangle's upper-left corner
            Top - y-coordinate of bounding rectangle's upper-left corner
-           Right - x-coordinate of bounding rectangle's lower-right corner 
+           Right - x-coordinate of bounding rectangle's lower-right corner
            Bottom - y-coordinate of bounding rectangle's lower-right corner
            Angle1 - first angle
            Angle2 - second angle
@@ -472,7 +472,7 @@ End;
 Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
-  
+
   procedure PutOnClipBoard(FormatID: integer);
   var
     DataStream: TStream;
@@ -515,7 +515,7 @@ Var
   I: Integer;
 Begin
   Result := false;
-  
+
   {$IFDEF VerboseWin32Clipbrd}
   debugln('TWin32WidgetSet.ClipboardGetOwnerShip START FormatCount=',dbgs(FormatCount),' OnRequestProc=',dbgs(OnRequestProc=nil));
   {$ENDIF}
@@ -642,7 +642,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
 Begin
-  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  Assert(False, Format('Trace:> [TWin32WidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
   Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
   Assert(False, Format('Trace:< [TWin32WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 End;
@@ -1527,8 +1527,8 @@ begin
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
         WindowHandle, HMENU(nil), HInstance, nil);
     OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
-    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
+    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, PtrInt(@OverlayWindowProc)));
     OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
     WindowInfo^.Overlay := OverlayWindow;
   end;
@@ -1537,7 +1537,7 @@ begin
   Result := Windows.GetDC(OverlayWindow);
 end;
 
-function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC; 
+function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   DCOrg, winOrg: Windows.POINT;
@@ -1763,8 +1763,8 @@ begin
   Windows.DeleteObject(hMemBitmap);
 end;
 
-procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap; 
-  const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte; 
+procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
+  const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
   var Size: Cardinal);
 var
   bmInfoBuffer: array[0..sizeof(TBitmapInfo)+256*sizeof(Windows.RGBQUAD)] of byte;
@@ -1956,7 +1956,7 @@ End;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetROP2(DC: HDC): Integer;
 begin
-	Result := Windows.GetROP2(DC);	
+	Result := Windows.GetROP2(DC);
 end;
 
 {------------------------------------------------------------------------------
@@ -2067,7 +2067,11 @@ Function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 Begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+{$ifdef ver2_0}
   Result := Windows.GetWindowLong(Handle, int);
+{$else}
+  Result := Windows.GetWindowLongPtr(Handle, int);
+{$endif}
   Assert(False, Format('Trace:< [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 End;
 
@@ -2148,7 +2152,7 @@ Function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
 var
   WP: WINDOWPLACEMENT;
   R: TRect;
-  Style, ExStyle: LongInt;
+  Style, ExStyle: PtrInt;
   WindowInfo: PWindowInfo;
 
     procedure AdjustForBuddySize;
@@ -2184,8 +2188,8 @@ begin
   //debugln('TWin32WidgetSet.GetWindowSize ',DbgSName(WindowInfo^.WinControl),' SW_MAXIMIZE=',dbgs(WP.showCmd=SW_MAXIMIZE),' ',dbgs(WP.rcNormalPosition));
 
   // convert top level lcl window coordinaties to win32 coord
-  Style := Windows.GetWindowLong(Handle, GWL_STYLE);
-  ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
+  Style := GetWindowLong(Handle, GWL_STYLE);
+  ExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
   if (Style and WS_THICKFRAME) <> 0 then
   begin
     // thick, sizing border
@@ -2892,7 +2896,7 @@ End;
   Params:  HWnd - The handle of the window
   Returns: True if succesful
 
-  The SetForegroundWindow function brings the specified window to top 
+  The SetForegroundWindow function brings the specified window to top
     (highest z-index level).
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
@@ -2916,7 +2920,7 @@ End;
   NOTE: LCLLinux has no RemoveProp function but Windows API requires all set
   properties to be removed, so I'm keeping a list of windows with properties
   for a properties-enumeration function that's called when the program is quit.
-  
+
   MWE: that is not really needed anymore since the RemoveProp is now implemented
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
@@ -2929,8 +2933,8 @@ End;
 {------------------------------------------------------------------------------
   Method:  SetROP2
   Params:  DC			- Device Context
-           Mode		- Foreground mixing mode 
-       
+           Mode		- Foreground mixing mode
+
   Returns: 0 if unsuccessful or the old Mode if successful
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
@@ -3004,7 +3008,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Procedure: SetWindowLong
+  Procedure: GetWindowLong
   Params:  Handle  - handle of window
            Idx     - value to set
            NewLong - new value
@@ -3015,9 +3019,13 @@ End;
 Function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 Begin
   //TODO: Finish this;
-  Assert(False, Format('Trace:> [TWin32WidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
+  Assert(False, Format('Trace:> [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
+{$ifdef ver2_0}
   Result := Windows.SetWindowLong(Handle, Idx, NewLong);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
+{$else}
+  Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
+{$endif}
+  Assert(False, Format('Trace:< [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong, Result, Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -3052,12 +3060,12 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean;
 var
-  Style, ExStyle: Integer;
+  Style, ExStyle: PtrInt;
   OldRect, OldClientRect: Windows.RECT;
 Begin
   //debugln('[TWin32WidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
-  Style := Windows.GetWindowLong(HWnd, GWL_STYLE);
-  ExStyle := Windows.GetWindowLong(HWnd, GWL_EXSTYLE);
+  Style := GetWindowLong(HWnd, GWL_STYLE);
+  ExStyle := GetWindowLong(HWnd, GWL_EXSTYLE);
   Windows.GetWindowRect(HWnd, @OldRect);
   Windows.GetClientRect(HWnd, @OldClientRect);
   if (Style and WS_BORDER) <> 0 then

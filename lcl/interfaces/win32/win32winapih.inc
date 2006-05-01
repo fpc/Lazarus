@@ -81,7 +81,7 @@ function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
 { Draws a 3D border in GTK native style. }
 function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer; override;
-  
+
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;

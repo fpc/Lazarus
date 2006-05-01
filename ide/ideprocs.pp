@@ -214,7 +214,7 @@ procedure FreeListObjects(List: TList; FreeList: boolean);
 implementation
 
 
-{$IfNDef Win32}
+{$IfNdef MSWindows}
 // to get more detailed error messages consider the os
 uses
   Unix, BaseUnix;
@@ -940,7 +940,7 @@ begin
     // check for double path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
-      {$IFDEF win32}
+      {$IFdef MSWindows}
       if (DestPos>2)
       {$ELSE}
       if (DestPos>1)
@@ -978,7 +978,7 @@ begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
             continue;
-          {$IFDEF win32}
+          {$IFdef MSWindows}
           end else if (DestPos=3) and (Result[2]=':')
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
             //  3. C:..    -> copy
@@ -1241,7 +1241,7 @@ end;
 function BackupFile(const Filename, BackupFilename: string): boolean;
 var
   FHandle: Integer;
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
   OldInfo: Stat;
@@ -1250,7 +1250,7 @@ begin
   Result:=false;
 
   // store file attributes
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   OldAttr:=FileGetAttr(Filename);
   {$ELSE}
   FpStat(Filename,OldInfo);
@@ -1272,7 +1272,7 @@ begin
   end;
   
   // restore file attributes
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   FileSetAttr(FileName,OldAttr);
   {$ELSE}
   FpChmod(Filename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
@@ -2068,7 +2068,7 @@ function CopyFileWithMethods(const SrcFilename, DestFilename: string;
   OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
 var
   SrcFileStream, DestFileStream: TFileStream;
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
   OldInfo: Stat;
@@ -2078,7 +2078,7 @@ begin
   if CompareFilenames(SrcFilename,DestFilename)=0 then exit;
   
   // read file attributes
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   OldAttr:=FileGetAttr(SrcFilename);
   {$ELSE}
   FpStat(SrcFilename,OldInfo);
@@ -2104,7 +2104,7 @@ begin
   end;
   
   // copy file attributes
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   FileSetAttr(DestFileName,OldAttr);
   {$ELSE}
   FpChmod(DestFilename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU

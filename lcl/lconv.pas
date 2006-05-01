@@ -2,7 +2,7 @@ unit LConv;
 {This unit is to be inserted into LCL}
 {$mode objfpc}{$H+}
 //As iconv is Linux command, there is no sense in Windows
-{$IFDEF Win32}
+{$IFDEF MSWindows}
 {$DEFINE WINDOWS}
 {$ENDIF}
 {$IFDEF WINDOWS}

@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                            Win32WSControls.pp                             * 
- *                            ------------------                             * 
+ *                            Win32WSControls.pp                             *
+ *                            ------------------                             *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -28,12 +28,12 @@ interface
 
 uses
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Classes, Controls, Graphics,
+  Windows, Classes, Controls, Graphics,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, WSProc,
   { TODO: needs to move }
@@ -66,7 +66,7 @@ type
   protected
   public
     class procedure AddControl(const AControl: TControl); override;
-  
+
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -109,7 +109,7 @@ type
   public
   end;
 
-  
+
 type
   TCreateWindowExParams = record
     Buddy, Parent, Window: HWND;
@@ -128,13 +128,13 @@ type
 procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean);
-procedure WindowCreateInitBuddy(const AWinControl: TWinControl; 
+procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
   var Params: TCreateWindowExParams);
 
 implementation
 
 uses
-  Windows, Win32Int, Win32WSButtons;
+  Win32Int, Win32WSButtons;
 
 { Global helper routines }
 
@@ -201,7 +201,7 @@ begin
         MenuHandle := HMENU(nil);
       end;
       Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);  
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
       if Window = 0 then
       begin
         raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
@@ -216,7 +216,7 @@ begin
     Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
     }
   end;
-  
+
   with Params do
   begin
     if Window <> HWND(Nil) then
@@ -228,8 +228,8 @@ begin
       WindowInfo^.WinControl := AWinControl;
       AWinControl.Handle := Window;
       if SubClassWndProc <> nil then
-        WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
-          Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
+        WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+          Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
@@ -239,7 +239,7 @@ begin
   end;
 end;
 
-procedure WindowCreateInitBuddy(const AWinControl: TWinControl; 
+procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
   var Params: TCreateWindowExParams);
 var
   lhFont: HFONT;
@@ -249,8 +249,8 @@ begin
     begin
       BuddyWindowInfo := AllocWindowInfo(Buddy);
       BuddyWindowInfo^.AWinControl := AWinControl;
-      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
-        Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+        Buddy, GWL_WNDPROC, PtrInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
@@ -361,10 +361,10 @@ begin
         Break;
       end;
     end;
-    
+
     if AfterWnd = 0 then Exit; // nothing to do
   end;
-  
+
   Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
     SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
     SWP_NOSIZE or SWP_NOSENDCHANGING);
@@ -379,7 +379,7 @@ end;
 
   Resize a window
  ------------------------------------------------------------------------------}
-procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl; 
+procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;

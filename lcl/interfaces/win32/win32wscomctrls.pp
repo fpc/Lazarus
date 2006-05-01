@@ -398,9 +398,9 @@ begin
   begin
     { smooth and vertical need window recreation }
     if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
-         Integer(Smooth) * PBS_SMOOTH) or
+         PtrInt(Smooth) * PBS_SMOOTH) or
        ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
-         Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
+         PtrInt((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
       RecreateWnd(AProgressBar);
 
     SendMessage(Handle, PBM_SETRANGE32, Min, Max);

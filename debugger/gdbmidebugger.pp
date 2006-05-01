@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
   CmdLineDebugger, GDBTypeInfo, 
-{$IFDEF WIN32}
+{$IFdef MSWindows}
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
@@ -170,7 +170,7 @@ type
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
     procedure InterruptTarget; virtual;
-    {$IFDEF WIN32}
+    {$IFdef MSWindows}
     procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer); virtual;
     {$ENDIF}
     function  ParseInitialization: Boolean; virtual;
@@ -289,7 +289,7 @@ type
 { =========================================================================== }
 { Some win32 stuff }
 { =========================================================================== }
-{$IFDEF WIN32}
+{$IFdef MSWindows}
 var
   DebugBreakAddr: Pointer = nil;
   // use our own version. Win9x doesn't support this, so it is a nice check
@@ -525,7 +525,7 @@ begin
   FTargetFlags := [];
   FDebuggerFlags := [];
 
-{$IFDEF Win32}
+{$IFdef MSWindows}
   InitWin32;
 {$ENDIF}  
 
@@ -1331,7 +1331,7 @@ begin
 end;
 
 procedure TGDBMIDebugger.InterruptTarget;
-{$IFDEF WIN32}
+{$IFdef MSWindows}
   function TryNT: Boolean;
   var
     hProcess: THandle;
@@ -1373,7 +1373,7 @@ begin
   FpKill(TargetPID, SIGINT);
 {$ENDIF}
 
-{$IFDEF WIN32}
+{$IFdef MSWindows}
   // GenerateConsoleCtrlEvent is nice, but only works if both gdb and
   // our target have a console. On win95 and family this is our only
   // option, on NT4+ we have a choice. Since this is not likely that
@@ -1391,7 +1391,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF WIN32}
+{$IFdef MSWindows}
 procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
 var
   R: TGDBMIExecResult;
@@ -1786,7 +1786,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     // TODO: check to run (un)handled
 
     S := AList.Values['signal-name'];
-    {$IFDEF WIN32}
+    {$IFdef MSWindows}
     SigInt := S = 'SIGTRAP';
     {$ELSE}
     SigInt := S = 'SIGINT';

@@ -69,7 +69,7 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnDelete')
   then Exit;
-  
+
   hLV := ALV.Handle;
   hHdr := GetHeader(hLV);
   if hHdr = 0 then Exit; //???
@@ -209,7 +209,7 @@ begin
 
   lvc.lvc.Mask := LVCF_FMT;
   ListView_GetColumn(ALV.Handle, AIndex, lvc.lvc);
-  
+
   if AImageIndex = -1
   then begin
     lvc.lvc.Mask := LVCF_FMT;
@@ -404,7 +404,7 @@ function TWin32WSCustomListView.GetDropTarget(const ALV: TCustomListView): Integ
 begin
   if not WSCheckHandleAllocated(ALV, 'GetDropTarget')
   then Exit;
-  
+
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_DROPHILITED);
 end;
 
@@ -428,7 +428,7 @@ function TWin32WSCustomListView.GetSelCount(const ALV: TCustomListView): Integer
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelCount')
   then Exit;
-  
+
   Result := ListView_GetSelectedCount(ALV.Handle);
 end;
 
@@ -457,7 +457,7 @@ function TWin32WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): 
 begin
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
   then Exit;
-  
+
   case GetWindowLong(ALV.Handle, GWL_STYLE) and LVS_TYPEMASK of
     LVS_LIST,
     LVS_REPORT: Result := ListView_GetCountPerPage(ALV.Handle);
@@ -470,7 +470,7 @@ function TWin32WSCustomListView.GetHeader(const AHandle: THandle): THandle;
 begin
   Result := ListView_GetHeader(AHandle);
   if Result <> 0 then Exit;
-  
+
   // probably old version, try the first child
   Result := GetWindow(AHandle, GW_CHILD);
 end;
@@ -486,7 +486,7 @@ end;
 procedure TWin32WSCustomListView.PositionHeader(const AHandle: THandle);
 var
   hwndHeader: HWND;
-  dwStyle: DWORD;
+  dwStyle: PtrInt;
   rc: TRect;
   hdLayout: THDLAYOUT;
   wpos: TWINDOWPOS;
@@ -498,7 +498,7 @@ begin
 
   hwndHeader := GetHeader(AHandle);
   if hwndHeader = 0 then Exit; // nothing to do
-   
+
   Windows.GetClientRect(AHandle, rc);
   FillChar(hdLayout, SizeOf(hdLayout), 0);
   hdLayout.prc := @rc;
@@ -528,7 +528,7 @@ procedure TWin32WSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
   then Exit;
-  
+
   // TODO ???
 end;
 
@@ -540,19 +540,19 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetHotTrackStyles')
   then Exit;
-  
+
   if htHandPoint in AValue
   then Style := LVS_EX_ONECLICKACTIVATE
   else if [htUnderlineHot, htUnderlineCold] * AValue <> []
   then Style := LVS_EX_TWOCLICKACTIVATE
   else Style := 0;
-  
+
   if htUnderlineHot in AValue
   then Style := Style or LVS_EX_UNDERLINEHOT;
 
   if htUnderlineCold in AValue
   then Style := Style or LVS_EX_UNDERLINECOLD;
-  
+
   UpdateExStyle(ALV.Handle, MASK, Style);
 end;
 
@@ -568,7 +568,7 @@ procedure TWin32WSCustomListView.SetImageList(const ALV: TCustomListView; const 
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
-  
+
   //TODO: implement imagelist
 end;
 
@@ -603,19 +603,19 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperties')
   then Exit;
-  
+
   Style := 0;
   ExStyle := 0;
   Mask := 0;
   ExMask := 0;
-  
+
   for Prop := Low(Prop) to High(Prop) do
   begin
     case LV_STYLES[Prop].StyleType of
       lsStyle,
       lsInvert: begin
         Mask := Mask or LV_STYLES[Prop].Style;
-        
+
         if (LV_STYLES[Prop].StyleType = lsStyle) = (Prop in AProps)
         then Style := Style or LV_STYLES[Prop].Style
         else Style := Style and not LV_STYLES[Prop].Style;
@@ -629,7 +629,7 @@ begin
       end;
     end;
   end;
-  
+
   if Mask <> 0
   then UpdateStyle(ALV.Handle, Mask, Style);
   if ExMask <> 0
@@ -651,7 +651,7 @@ procedure TWin32WSCustomListView.SetScrolledLeft(const ALV: TCustomListView; con
 begin
   if not WSCheckHandleAllocated(ALV, 'SetScrolledLeft')
   then Exit;
-  
+
   ListView_Scroll(ALV.Handle, AValue, 0);
 end;
 
@@ -667,7 +667,7 @@ procedure TWin32WSCustomListView.SetSort(const ALV: TCustomListView; const AType
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
-  
+
   // TODO: implement
 end;
 
@@ -678,29 +678,29 @@ const
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle')
   then Exit;
-  
+
   UpdateStyle(ALV.Handle, LVS_TYPEMASK, STYLES[AValue]);
 end;
 
 procedure TWin32WSCustomListView.UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
 var
-  OldStyle, NewStyle: Integer;
+  OldStyle, NewStyle: PtrInt;
 begin
-  OldStyle := Windows.GetWindowLong(AHandle, GWL_STYLE);
+  OldStyle := GetWindowLong(AHandle, GWL_STYLE);
 
   NewStyle := (OldStyle and not AMask) or AStyle;
 
   if OldStyle = NewStyle then Exit;
 
-  Windows.SetWindowLong(AHandle, GWL_STYLE, NewStyle);
-  
+  SetWindowLong(AHandle, GWL_STYLE, NewStyle);
+
   // fix header if needed
   if (NewStyle and LVS_NOSCROLL)<> 0 then begin
     if (OldStyle and LVS_NOSCROLL = 0)
     or (NewStyle and LVS_REPORT <> 0)
     then PositionHeader(AHandle);
   end;
-  
+
   //Invalidate Listview, so that changes are made visible
   Windows.InvalidateRect(AHandle, nil, true);
 end;
@@ -710,11 +710,11 @@ var
   OldStyle, NewStyle: Integer;
 begin
   OldStyle := ListView_GetExtendedListViewStyle(AHandle);
-  
+
   NewStyle := (OldStyle and not AMask) or AStyle;
 
   if OldStyle = NewStyle then Exit;
-  
+
   ListView_SetExtendedListViewStyle(AHandle, NewStyle);
 
  //Invalidate Listview, so that changes are made visible

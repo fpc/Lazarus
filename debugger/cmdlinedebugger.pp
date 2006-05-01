@@ -77,7 +77,7 @@ implementation
 //////////////////////////////////////////////////
 
 uses
-{$IFDEF WIN32}
+{$IFdef MSWindows}
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
@@ -151,7 +151,7 @@ begin
       end;
   end;
 {$ELSE linux}
-{$IFDEF WIN32}
+{$IFdef MSWindows}
 var
   PipeHandle: Integer;
   TotalBytesAvailable: integer;
@@ -379,7 +379,7 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-{$ifdef win32}
+{$ifdef MSWindows}
     FDbgProcess.Input.Write(LineEnding[1], Length(LineEnding));
 {$else}
     FDbgProcess.Input.Write(LineEnding, Length(LineEnding));

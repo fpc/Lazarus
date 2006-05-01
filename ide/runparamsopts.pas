@@ -373,7 +373,7 @@ begin
   begin
     BeginUpdate;
     Add(DefaultLauncherApplication);
-      {$IFNDEF win32}
+      {$IFNdef MSWindows}
     Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
       + ' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
       {$ENDIF}

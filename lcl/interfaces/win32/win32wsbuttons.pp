@@ -111,7 +111,7 @@ procedure TWin32WSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton
 var
   WindowStyle: dword;
 begin
-  WindowStyle := Windows.GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
+  WindowStyle := GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
   If AButton.Active then
     WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
   else
