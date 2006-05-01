@@ -1149,7 +1149,7 @@ begin
      be less than it because we read the last line of all and it was
      short}
     StLen := FixedLineLength;
-    {$IFDEF Win32}
+    {$IFDEF MSWindows}
     SetLength(Result, StLen);
     {$ELSE}
     {$IFDEF IP_LAZARUS}
@@ -1164,7 +1164,7 @@ begin
       FillChar(Result[Len+1], StLen-Len, ' ');
   end
   else {LineTerminator is not ltNone} begin
-    {$IFDEF Win32}
+    {$IFDEF MSWindows}
     SetLength(Result, Len);
     {$ELSE}
     {$IFDEF IP_LAZARUS}

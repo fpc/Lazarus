@@ -398,7 +398,7 @@ procedure TMRUManager.SetRecentMenu(Value: TMenuItem);
 begin
   ClearRecentMenu;
   FRecentMenu := Value;
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
   if Value <> nil then Value.FreeNotification(Self);
 {$ENDIF}
   UpdateRecentMenu;

@@ -38,7 +38,7 @@ interface
 {$I ./unix/cupsprinters_h.inc}
 {$ENDIF}
 
-{$IFDEF WIN32}
+{$IFDEF MSWindows}
 {$I ./win32/winprinters_h.inc}
 {$ENDIF}
 
@@ -48,7 +48,7 @@ implementation
 {$I ./unix/cupsprinters.inc}
 {$ENDIF}
 
-{$IFDEF WIN32}
+{$IFDEF MSWindows}
 {$I ./win32/winprinters.inc}
 {$ENDIF}
 

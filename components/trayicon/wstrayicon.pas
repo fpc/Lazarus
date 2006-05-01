@@ -30,31 +30,31 @@ interface
 *  Compatibility code for Delphi for Windows.
 *******************************************************************}
 {$ifndef FPC}
-  {$define Win32}
+  {$define MSWindows}
 {$endif}
 
 
 uses
 
-{$ifdef Win32}
+{$ifdef MSWindows}
 
   wswin32trayicon,
-  
+
 {$endif}
 {$ifdef UNIX}
 
   {$ifdef LCLGtk}
     wsgtktrayicon,
   {$endif}
-  
+
   {$ifdef LCLGnome}
     wsgtktrayicon,
   {$endif}
-  
+
   {$ifdef LCLGtk2}
     wsgtk2trayicon,
   {$endif}
-  
+
 {$endif}
 
   Classes, SysUtils;

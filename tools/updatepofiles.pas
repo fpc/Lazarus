@@ -307,7 +307,7 @@ end;
 
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 const
-  {$IFDEF Win32}
+  {$IFdef MSWindows}
   FindMask = '*.*';
   {$ELSE}
   FindMask = '*';

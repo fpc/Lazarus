@@ -29,8 +29,8 @@ unit WinUtilPrn;
 
 interface
 
-{$IFNDEF WIN32}
-{$FATAL This unit is reserved to Win32}
+{$IFNDEF MSWindows}
+{$FATAL This unit is reserved to Win32/Win64}
 {$ENDIF}
 
 uses

@@ -455,7 +455,7 @@ var j,Wtmp:integer;
 begin
   Wtmp:=0;
   if BorderStyle=bsSingle then
-    {$IFDEF WIN32}
+    {$IFdef MSWindows}
     Wtmp:=Wtmp+2*GetSystemMetrics(SM_CXFIXEDFRAME);
     {$ELSE}
     Wtmp:=Wtmp+2*1;//GetSystemMetrics(SM_CXFIXEDFRAME);
@@ -474,7 +474,7 @@ var i,Htmp:integer;
 begin
   Htmp:=0;
   if BorderStyle=bsSingle then
-    {$IFDEF WIN32}
+    {$IFdef MSWindows}
     Htmp:=Htmp+2*GetSystemMetrics(SM_CYFIXEDFRAME);
     {$ELSE}
     Htmp:=Htmp+2*1;//GetSystemMetrics(SM_CYFIXEDFRAME);

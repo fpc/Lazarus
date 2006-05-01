@@ -53,7 +53,7 @@
 
 {$DEFINE SYNEDIT_INCLUDE}
 
-{$IFDEF WIN32}
+{$IFdef MSWindows}
   {$DEFINE SYN_WIN32}
 {$ENDIF}
 

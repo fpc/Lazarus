@@ -77,7 +77,7 @@ implementation
 {$I ./unix/cupsprndialogs.inc}
 {$ENDIF}
 
-{$IFDEF WIN32}
+{$IFDEF MSWindows}
 {$I win32/winprndialogs.inc}
 {$ENDIF}
 

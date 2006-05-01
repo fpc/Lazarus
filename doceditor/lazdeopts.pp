@@ -64,7 +64,7 @@ Const
   KeyCmdFpdoc         = 'fpdoc';
   KeyShowHints        = 'ShowHints';
 
-{$ifndef win32}
+{$ifndef MSWindows}
 Function GetOptionFileName : String;
 
 Const

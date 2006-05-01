@@ -603,11 +603,11 @@ begin
   //writeln('gtk_gl_area_share_new A ');
   if (share<>nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
-  {$IFNDEF win32}
+  {$IFNDEF MSWindows}
   //writeln('gtk_gl_area_share_new B ');
   visual := gdk_gl_choose_visual(attrlist);
   if (visual = nil) then exit;
-  {$ENDIF non win32}
+  {$ENDIF non MSWindows}
 
   //writeln('gtk_gl_area_share_new C ');
   sharelist := nil;
@@ -616,21 +616,21 @@ begin
   if (glcontext = nil) then exit;
   //writeln('gtk_gl_area_share_new D ');
 
-  {$IFNDEF win32}
+  {$IFNDEF MSWindows}
   // use colormap and visual suitable for OpenGL rendering
   gtk_widget_push_colormap(gdk_colormap_new(visual,gtk_TRUE));
   gtk_widget_push_visual(visual);
-  {$ENDIF non win32}
+  {$ENDIF non MSWindows}
 
   gl_area := gtk_type_new (gtk_gl_area_get_type);
   gl_area^.glcontext := glcontext;
   //writeln('gtk_gl_area_share_new E ',gl_area<>nil);
 
-  {$IFNDEF win32}
+  {$IFNDEF MSWindows}
   // pop back defaults
   gtk_widget_pop_visual;
   gtk_widget_pop_colormap;
-  {$ENDIF non win32}
+  {$ENDIF non MSWindows}
   Result:=PGtkWidget(gl_area);
 end;
 

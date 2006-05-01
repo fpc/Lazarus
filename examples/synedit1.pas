@@ -96,7 +96,7 @@ end;
 constructor TForm1.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  SetBounds(10,20,620,400);
+  SetBounds(10,20,980,700);
   OnResize:=@Form1Resize;
   
   SynEdit1:=TSynEdit.Create(Self);
@@ -116,8 +116,11 @@ begin
   end;
   
   SynEdit1.Highlighter:=PascalHighligher;
-  
-  LoadDefaultText;
+ 
+  if ParamCount > 0 then
+    LoadText(ParamStr(1))
+  else
+    LoadDefaultText;
   OnResize(nil);
 end;
 

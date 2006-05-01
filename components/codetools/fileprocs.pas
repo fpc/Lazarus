@@ -37,7 +37,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AVL_Tree,
   CodeToolsStrConsts;
-  
+
 type
   TFPCStreamSeekType = int64;
   TFPCMemStreamSeekType = integer;
@@ -45,15 +45,15 @@ type
 
 const
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
-  {$IFDEF win32}
+  {$IFDEF MSWindows}
   FileMask = '*.*';
   {$ELSE}
   FileMask = '*';
   {$ENDIF}
-  {$ifdef win32}
+  {$ifdef MSWindows}
   {$define CaseInsensitiveFilenames}
   {$endif}
-  
+
 type
   TCTSearchFileCase = (
     ctsfcDefault,  // e.g. case insensitive on windows
@@ -286,7 +286,7 @@ var
 implementation
 
 // to get more detailed error messages consider the os
-{$IFNDEF win32}
+{$IFNDEF MSWindows}
 uses
   Unix,BaseUnix;
 {$ENDIF}
@@ -294,7 +294,7 @@ uses
 var
   LineInfoCache: TAVLTree = nil;
   LastTick: int64 = 0;
-  
+
 {-------------------------------------------------------------------------------
   function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 -------------------------------------------------------------------------------}
@@ -374,7 +374,7 @@ begin
   Result:=Filename;
   // check every directory and filename
   StartPos:=1;
-  {$IFDEF Win32}
+  {$IFDEF MSWindows}
   // uppercase Drive letter and skip it
   if ((length(Result)>=2) and (Result[1] in ['A'..'Z','a'..'z'])
   and (Result[2]=':')) then begin
@@ -499,7 +499,7 @@ end;
 
 function FileIsExecutable(const AFilename: string): boolean;
 begin
-  {$IFDEF win32}
+  {$IFDEF MSWindows}
   Result:=true;
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
@@ -507,7 +507,7 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF win32}
+{$IFNDEF MSWindows}
 var AText: string;
 {$ENDIF}
 begin
@@ -516,7 +516,7 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
-  {$IFNDEF win32}
+  {$IFNDEF MSWindows}
   if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
   begin
     AText:='"'+AFilename+'"';
@@ -552,7 +552,7 @@ end;
 
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
-  {$IFDEF win32}
+  {$IFDEF MSWindows}
   // windows
   Result:=FilenameIsWinAbsolute(TheFilename);
   {$ELSE}
@@ -608,7 +608,7 @@ end;
 
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  {$IFDEF win32}
+  {$IFDEF MSWindows}
   Result:=true;
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
@@ -617,7 +617,7 @@ end;
 
 function FileIsWritable(const AFilename: string): boolean;
 begin
-  {$IFDEF win32}
+  {$IFDEF MSWindows}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
@@ -685,10 +685,10 @@ begin
     else begin
       inc(i);
       if i=NameLen then break;
-      
+
       // check for double path delimiter
       if (StartPos[i]=PathDelim) then exit;
-      
+
       if StartPos[i]='.' then begin
         inc(i);
         // check /./ or /. at end
@@ -729,7 +729,7 @@ begin
     // check for double path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
-      {$IFDEF win32}
+      {$IFDEF MSWindows}
       if (DestPos>2)
       {$ELSE}
       if (DestPos>1)
@@ -768,7 +768,7 @@ begin
             //  2. /..     -> skip .., keep /
             inc(SrcPos,2);
             continue;
-          {$IFDEF win32}
+          {$IFDEF MSWindows}
           end else if (DestPos=3) and (Result[2]=':')
           and (Result[1] in ['a'..'z','A'..'Z']) then begin
             //  3. C:..    -> copy
@@ -1356,12 +1356,12 @@ end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;
   SearchCase: TCTSearchFileCase): string;
-  
+
   procedure RaiseNotImplemented;
   begin
     raise Exception.Create('not implemented');
   end;
-  
+
 var
   Base: String;
   ShortFile: String;

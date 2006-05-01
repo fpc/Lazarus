@@ -7813,7 +7813,7 @@ procedure TIpHtml.SetDefaultProps;
 begin
   {$IFDEF IP_LAZARUS}
   if FDefaultTypeFace='' then begin
-    {$IFDEF WIN32}
+    {$IFDEF MSWindows}
     Defaultprops.FontName := 'Times New Roman';
     {$ELSE}
     Defaultprops.FontName := Graphics.DefFontData.Name

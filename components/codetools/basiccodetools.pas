@@ -22,7 +22,7 @@
 
   Abstract:
     Basic pascal code functions. Many of the functions have counterparts in the
-    code tools, which are faster, more flexible and aware of compiler settings 
+    code tools, which are faster, more flexible and aware of compiler settings
     and directives.
 }
 unit BasicCodeTools;
@@ -313,11 +313,11 @@ begin
           exit;
         end;
       end;
-    end;    
+    end;
   until Atom='';
 end;
 
-function SplitCompilerDirective(const Directive:string; 
+function SplitCompilerDirective(const Directive:string;
    var DirectiveName,Parameters:string):boolean;
 var EndPos,DirStart,DirEnd:integer;
 begin
@@ -407,10 +407,10 @@ begin
   until UsesStart<1;
 end;
 
-function RenameUnitInProgramUsesSection(Source:TSourceLog; 
+function RenameUnitInProgramUsesSection(Source:TSourceLog;
   const OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
-  ProgramTermStart,ProgramTermEnd, 
+  ProgramTermStart,ProgramTermEnd,
   UsesStart,UsesEnd:integer;
 begin
   Result:=false;
@@ -439,10 +439,10 @@ begin
     ,NewUnitName,NewInFile);
 end;
 
-function AddToProgramUsesSection(Source:TSourceLog; 
+function AddToProgramUsesSection(Source:TSourceLog;
   const AUnitName,InFileName:string):boolean;
 var
-  ProgramTermStart,ProgramTermEnd, 
+  ProgramTermStart,ProgramTermEnd,
   UsesStart,UsesEnd:integer;
 begin
   Result:=false;
@@ -472,10 +472,10 @@ begin
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
 
-function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
+function RenameUnitInInterfaceUsesSection(Source:TSourceLog;
   const OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
-  InterfaceStart,InterfaceWordEnd, 
+  InterfaceStart,InterfaceWordEnd,
   UsesStart,UsesEnd:integer;
 begin
   Result:=false;
@@ -499,10 +499,10 @@ begin
     ,NewUnitName,NewInFile);
 end;
 
-function AddToInterfaceUsesSection(Source:TSourceLog; 
+function AddToInterfaceUsesSection(Source:TSourceLog;
   const AUnitName,InFileName:string):boolean;
 var
-  InterfaceStart,InterfaceWordEnd, 
+  InterfaceStart,InterfaceWordEnd,
   UsesStart,UsesEnd:integer;
 begin
   Result:=false;
@@ -526,10 +526,10 @@ begin
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
 
-function RemoveFromProgramUsesSection(Source:TSourceLog; 
+function RemoveFromProgramUsesSection(Source:TSourceLog;
   const AUnitName:string):boolean;
 var
-  ProgramTermStart,ProgramTermEnd, 
+  ProgramTermStart,ProgramTermEnd,
   UsesStart,UsesEnd:integer;
   Atom:string;
 begin
@@ -551,10 +551,10 @@ begin
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
-function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
+function RemoveFromInterfaceUsesSection(Source:TSourceLog;
   const AUnitName:string):boolean;
 var
-  InterfaceStart,InterfaceWordEnd, 
+  InterfaceStart,InterfaceWordEnd,
   UsesStart,UsesEnd:integer;
   Atom:string;
 begin
@@ -571,7 +571,7 @@ begin
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
-function IsUnitUsedInUsesSection(const Source,UnitName:string; 
+function IsUnitUsedInUsesSection(const Source,UnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd:integer;
   Atom:string;
@@ -674,7 +674,7 @@ begin
       Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   until Atom<>',';
   // unit not used yet -> add it
-  if InFilename<>'' then 
+  if InFilename<>'' then
     NewUnitTerm:=UnitName+' in '''+InFileName+''''
   else
     NewUnitTerm:=UnitName;
@@ -715,7 +715,7 @@ begin
         Source.Delete(OldUsesEnd,UsesStart-OldUsesEnd);
       Result:=true;
       exit;
-    end else 
+    end else
       OldUsesEnd:=UsesEnd;
 
     // read til next comma or semicolon
@@ -980,7 +980,7 @@ var
 begin
   Result:=-1;
   if (Find='') or (StartPos>length(Source)) then exit;
-  
+
   FindLen:=length(Find);
   SrcLen:=length(Source);
 
@@ -999,7 +999,7 @@ begin
     ReadRawNextPascalAtom(Source,Position,AtomStart);
     if AtomStart>SrcLen then exit;
     AtomLen:=Position-AtomStart;
-    
+
     if (AtomLen=FindAtomLen)
     and (CompareText(@Find[FirstFindAtomStart],FindAtomLen,
                      @Source[AtomStart],AtomLen,CaseSensitive)=0)
@@ -1201,7 +1201,7 @@ begin
           inc(Result);
       end;
     end;
-    
+
   '{':
     begin
       CommentLvl:=1;
@@ -1220,12 +1220,12 @@ begin
               break;
             end;
           end;
-          
+
         end;
         inc(Result);
       end;
     end;
-      
+
   '(':
     if (Result<MaxPos) and (ASource[Result+1]='*') then begin
       inc(Result,2);
@@ -1238,15 +1238,15 @@ begin
         inc(Result);
       end;
     end;
-    
+
   end;
 end;
 
-procedure GetLineStartEndAtPosition(const Source:string; Position:integer; 
+procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
    var LineStart,LineEnd:integer);
 begin
   LineStart:=Position;
-  while (LineStart>0) and (not (Source[LineStart] in [#10,#13])) do 
+  while (LineStart>0) and (not (Source[LineStart] in [#10,#13])) do
     dec(LineStart);
   inc(LineStart);
   LineEnd:=Position;
@@ -1405,7 +1405,7 @@ begin
       end else begin
         DirStart:=4;
         DirEnd:=length(Result)-1;
-      end;        
+      end;
       EndPos:=DirStart;
       while (EndPos<DirEnd) and (IsIDChar[Result[EndPos]]) do inc(EndPos);
       DirectiveName:=lowercase(copy(Result,DirStart,EndPos-DirStart));
@@ -1453,7 +1453,7 @@ begin
         while (Position<=Len) and (not (Source[Position] in [#10,#13])) do
           inc(Position);
       end else
-        break;  
+        break;
      '(':  // comment, bracket or compiler directive
       if (Position<Len) and (Source[Position]='*') then begin
         if (Position+2<=Len) and (Source[Position]='$') then
@@ -1462,7 +1462,7 @@ begin
         else begin
           // comment start -> read til comment end
           inc(Position,2);
-          while (Position<Len) 
+          while (Position<Len)
           and ((Source[Position]<>'*') or (Source[Position]<>')')) do
             inc(Position);
           inc(Position,2);
@@ -1489,19 +1489,19 @@ begin
         begin
           inc(Position);
           // read numbers
-          while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
+          while (Position<=Len) and (Source[Position] in ['0'..'9']) do
             inc(Position);
           if (Position<Len) and (Source[Position]='.')
           and (Source[Position+1]<>'.') then begin
             // real type number
             inc(Position);
-            while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
+            while (Position<=Len) and (Source[Position] in ['0'..'9']) do
               inc(Position);
             if (Position<=Len) and (Source[Position] in ['e','E']) then begin
               // read exponent
               inc(Position);
               if (Position<=Len) and (Source[Position]='-') then inc(Position);
-              while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
+              while (Position<=Len) and (Source[Position] in ['0'..'9']) do
                 inc(Position);
             end;
           end;
@@ -1534,13 +1534,13 @@ begin
         begin
           inc(Position);
           while (Position<=Len)
-          and (Source[Position] in ['0'..'9','A'..'F','a'..'f']) do 
+          and (Source[Position] in ['0'..'9','A'..'F','a'..'f']) do
             inc(Position);
         end;
        '{':  // compiler directive
         begin
           inc(Position);
-          while (Position<=Len) and (Source[Position]<>'}') do 
+          while (Position<=Len) and (Source[Position]<>'}') do
             inc(Position);
           inc(Position);
         end;
@@ -1548,7 +1548,7 @@ begin
         if (Position<Len) and (Source[Position]='*') then begin
           // compiler directive -> read til comment end
           inc(Position,2);
-          while (Position<Len) 
+          while (Position<Len)
           and ((Source[Position]<>'*') or (Source[Position]<>')')) do
             inc(Position);
           inc(Position,2);
@@ -1704,27 +1704,27 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
   ignore line ends in comments or at the end of comment lines
    (comment lines are lines without code and at least one comment)
   Result is Position of Start of Line End
-  
+
   examples: Position points at char 'a'
-  
-    1:  | 
+
+    1:  |
     2: a:=1;
-    
+
     1:  b:=1; |
     2:  // comment
     3:  // comment
     4:  a:=1;
-    
+
     1:  |
     2: /* */
     3:  a:=1;
-    
+
     1: end;| /*
     2: */ a:=1;
-    
+
     1: b:=1; // comment |
     2: a:=1;
-    
+
     1: b:=1; /*
     2: comment */   |
     3: a:=1;
@@ -1789,7 +1789,7 @@ begin
     case Source[Result] of
       '}',')':
         if not ReadComment(Result) then exit;
-        
+
       #10,#13:
         begin
           // line end in code found
@@ -1808,8 +1808,8 @@ begin
             end else if Source[TestPos] in [#10,#13] then begin
               // no comment, the line end ist really there :)
               exit;
-            end else if OnlySpace 
-            and ((Source[TestPos]='}') 
+            end else if OnlySpace
+            and ((Source[TestPos]='}')
               or ((Source[TestPos]=')') and (Source[TestPos-1]='*'))) then begin
               // this is a comment line end -> search further
               break;
@@ -1820,10 +1820,10 @@ begin
           end;
           Result:=TestPos;
         end;
-        
+
       ' ',';',',':
         dec(Result);
-        
+
     else
       // code found
       inc(Result);
@@ -1957,7 +1957,7 @@ function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
   NestedComments: boolean): integer;
 var
   SrcLen: Integer;
-  
+
   procedure ReadComment;
   var
     CommentEndPos: Integer;
@@ -1975,7 +1975,7 @@ var
       // continue after the comment
       StartPos:=CommentEndPos;
   end;
-  
+
   procedure ReadBrackets(ClosingBracket: Char);
   begin
     while StartPos<EndPos do begin
@@ -1991,7 +1991,7 @@ var
           inc(StartPos);
           ReadBrackets(')');
         end;
-        
+
       '[':
         begin
           inc(Result);
@@ -2007,12 +2007,12 @@ var
             Result:=0; // for example: [)
           exit;
         end;
-        
+
       end;
       inc(StartPos);
     end;
   end;
-  
+
 begin
   Result:=0;
   SrcLen:=length(Src);
@@ -2230,7 +2230,7 @@ begin
           dec(CommentEndPos)
         else
           dec(CommentEndPos,2);
-        
+
         // skip directive name
         FilenameStartPos:=Result+Offset;
         while (FilenameStartPos<=CommentEndPos)
@@ -2592,7 +2592,7 @@ end;
 
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
   var NewSource: string);
-  
+
   function UnindentTxt(CopyChars: boolean): integer;
   var
     Unindent: Integer;
@@ -2650,7 +2650,7 @@ procedure IndentText(const Source: string; Indent, TabWidth: integer;
     end;
     Result:=NewSrcPos-1;
   end;
-  
+
 var
   LengthOfLastLine: integer;
   LineEndCnt: Integer;
@@ -2669,7 +2669,7 @@ var
       inc(NewSrcPos);
     end;
   end;
-  
+
 begin
   if (Indent=0) or (Source='') then begin
     NewSource:=Source;
@@ -2873,11 +2873,11 @@ function SplitStringConstant(const StringConstant: string;
               |      +'YZ'|
     Result:
       'ABCDEFGHIJKLM'#13#10      +'NOPQRSTUVWX'#13#10      +'YZ'
-      
+
   2.
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ',5,20,6
 
-  
+
 }
 const
   // string constant character types:
@@ -2974,7 +2974,7 @@ var
       end;
     end;
   end;
-  
+
   function SearchCharLeftToRight(c: char): integer;
   begin
     Result:=1;
@@ -2982,14 +2982,14 @@ var
       inc(Result);
     if Result>ParsedLen then Result:=-1;
   end;
-  
+
   function SearchDiffCharLeftToRight(StartPos: integer): integer;
   begin
     Result:=StartPos+1;
     while (Result<=ParsedLen) and (ParsedSrc[Result]=ParsedSrc[StartPos]) do
       inc(Result);
   end;
-  
+
   procedure SplitAtNewLineCharConstant;
   var
     HashPos: Integer;
@@ -3014,7 +3014,7 @@ var
     end;
     SplitPos:=NewSplitPos;
   end;
-  
+
   procedure SplitBetweenConstants;
   var
     APos: Integer;
@@ -3029,7 +3029,7 @@ var
       dec(APos);
     end;
   end;
-  
+
   procedure SplitAtWordBoundary;
   var
     APos: Integer;
@@ -3044,7 +3044,7 @@ var
       dec(APos);
     end;
   end;
-  
+
   procedure SplitDefault;
   begin
     if SplitPos>0 then exit;
@@ -3057,7 +3057,7 @@ var
       dec(SplitPos);
     end;
   end;
-  
+
   procedure Split;
   var
     CurIndent: Integer;
@@ -3277,7 +3277,7 @@ var
     if s='' then ;
     SearchedDirectories.Free;
   end;
-  
+
   function ExtensionFits(const Filename: string): boolean;
   var
     ExtStart: Integer;
@@ -3288,10 +3288,10 @@ var
     p: Integer;
   begin
     CompareCaseInsensitive:=CaseInsensitive;
-    {$IFDEF Win32}
+    {$IFDEF MSWindows}
     CompareCaseInsensitive:=true;
     {$ENDIF}
-    
+
     ExtStart:=length(Filename);
     while (ExtStart>=1) and (not (Filename[ExtStart] in [PathDelim,'.'])) do
       dec(ExtStart);
@@ -3334,7 +3334,7 @@ var
     end;
     Result:=false;
   end;
-  
+
   function SearchDirectory(const ADirectory: string): boolean;
   var
     FileInfo: TSearchRec;

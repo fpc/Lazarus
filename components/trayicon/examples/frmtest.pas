@@ -18,7 +18,7 @@ unit frmtest;
 
 {$ifdef fpc}
   {$mode delphi}{$H+}
-{$endif}  
+{$endif}
 
 interface
 
@@ -47,10 +47,10 @@ type
     procedure DoPaint(Sender: TObject);
   public
     { public declarations }
-  end; 
+  end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
 
 {$ifndef fpc}
   {$R frmtest.dfm}
@@ -59,7 +59,7 @@ var
 implementation
 
 uses
-{$ifdef win32}
+{$ifdef MSWindows}
  Windows,
 {$endif}
  TrayIcon;
@@ -98,9 +98,9 @@ const
   IDI_ICON1         = 101;
   IDI_ICON2         = 115;
 begin
-{$ifdef win32}
+{$ifdef MSWindows}
   SystrayIcon.Icon.Handle := LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
-  
+
 //  Loading from a file should also work
 //  SystrayIcon.Icon.LoadFromFile('icon.ico');
 {$else}

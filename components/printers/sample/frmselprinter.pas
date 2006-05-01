@@ -163,7 +163,7 @@ end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWindows}
   TWinPrinter(Printer).AdvancedProperties;
   {$ELSE}
   ShowMessage('Printer.AdvancedProperties is not yet implemented for this platform');

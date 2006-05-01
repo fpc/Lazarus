@@ -788,7 +788,7 @@ begin
 {$endif go32v2}
 
   { I don't know where the stack is in other OS !! }
-{$ifdef win32}
+{$ifdef MSWindows}
   { inside stack ? }
   if (ptruint(p)>ptruint(get_frame)) and
 {$ifdef ver2_0}
@@ -797,7 +797,7 @@ begin
      (p<StackTop) then
 {$endif}
     goto _exit;
-{$endif win32}
+{$endif MSWindows}
 
 {$ifdef linux}
   { inside stack ? }
@@ -1080,7 +1080,7 @@ begin
      end;
 end;
 
-{$ifdef win32}
+{$ifdef MSWindows}
    function GetEnvironmentStrings : pchar; stdcall;
      external 'kernel32' name 'GetEnvironmentStringsA';
    function FreeEnvironmentStrings(p : pchar) : longbool; stdcall;

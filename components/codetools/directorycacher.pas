@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, AVL_Tree, CodeToolsStructs;
 
-{$ifdef win32}
+{$ifdef MSWindows}
 {$define CaseInsensitiveFilenames}
 {$endif}
 
