@@ -216,6 +216,10 @@ type
     // filedialog
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
     procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
+    function SelectDirectory(const Title: string;
+                             MustExist: boolean = true;
+                             const InitialDir: string = '';
+                             const Directory: string = ''): string;
   public
     property Filename: string read FFilename write SetFilename;
 
@@ -276,7 +280,7 @@ const
 
 var
   InputHistories: TInputHistories;
-
+  
 
 implementation
 
@@ -577,6 +581,31 @@ begin
   if s<>'' then
     AddToRecentList(s,FFileDialogSettings.HistoryList,
                     FFileDialogSettings.MaxHistory);
+end;
+
+function TInputHistories.SelectDirectory(const Title: string;
+  MustExist: boolean; const InitialDir: string;
+  const Directory: string): string;
+var
+  WorkDirectoryDialog: TSelectDirectoryDialog;
+begin
+  Result:='';
+  WorkDirectoryDialog := TSelectDirectoryDialog.Create(nil);
+  try
+    ApplyFileDialogSettings(WorkDirectoryDialog);
+    if MustExist then
+      WorkDirectoryDialog.Options:=WorkDirectoryDialog.Options+[ofFileMustExist];
+    if InitialDir <> '' then
+      WorkDirectoryDialog.InitialDir := InitialDir;
+    if Directory<>'' then
+      WorkDirectoryDialog.Filename := Directory;
+    if WorkDirectoryDialog.Execute then begin
+      Result := WorkDirectoryDialog.Filename;
+    end;
+    InputHistories.StoreFileDialogSettings(WorkDirectoryDialog);
+  finally
+    WorkDirectoryDialog.Free;
+  end;
 end;
 
 { THistoryList }

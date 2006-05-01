@@ -31,14 +31,15 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg,
-  SynRegExpr, LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
+  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr,
+  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory;
 
 type
 
   { TCleanDirectoryDialog }
 
   TCleanDirectoryDialog = class(TForm)
+    DirBrowseButton: TButton;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     KeepTextFilesCheckbox: TCHECKBOX;
@@ -52,6 +53,7 @@ type
     DirGroupbox: TGROUPBOX;
     RemoveGroupbox: TGROUPBOX;
     procedure CleanDirectoryDialogCreate(Sender: TObject);
+    procedure DirBrowseButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
     FMacros: TTransferMacroList;
@@ -134,6 +136,16 @@ begin
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+end;
+
+procedure TCleanDirectoryDialog.DirBrowseButtonClick(Sender: TObject);
+var
+  NewDirectory: String;
+begin
+  NewDirectory:=InputHistories.SelectDirectory(lisMenuCleanDirectory, true,
+           ExtractFilePath(DirCombobox.Text),ExtractFilename(DirCombobox.Text));
+  if NewDirectory<>'' then
+    DirCombobox.Text:=NewDirectory;
 end;
 
 procedure TCleanDirectoryDialog.LoadSettings;

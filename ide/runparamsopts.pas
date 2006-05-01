@@ -461,27 +461,13 @@ end;
 
 procedure TRunParamsOptsDlg.WorkingDirectoryBtnClick(Sender: TObject);
 var
-  WorkDirectoryDialog: TSelectDirectoryDialog;
+  NewDirectory: String;
 begin
-  WorkDirectoryDialog := TSelectDirectoryDialog.Create(Self);
-  with WorkDirectoryDialog do
-  begin
-    InputHistories.ApplyFileDialogSettings(WorkDirectoryDialog);
-    if WorkingDirectoryEdit.Text <> '' then
-      WorkDirectoryDialog.InitialDir := ExtractFilePath(WorkingDirectoryEdit.Text);
-    WorkDirectoryDialog.Filename := HostApplicationEdit.Text;
-    if WorkDirectoryDialog.Execute then
-    begin
-      if (DirPathExists(WorkDirectoryDialog.Filename)) or
-        (MessageDlg(dlgDirectoryDoesNotExist, dlgTheDirectory +
-        WorkDirectoryDialog.Filename + dlgDoesNotExist, mtWarning, [mbIgnore, mbCancel], 0) =
-        mrIgnore) then
-      begin
-        WorkingDirectoryEdit.Text := WorkDirectoryDialog.Filename;
-      end;
-    end;
-    InputHistories.StoreFileDialogSettings(WorkDirectoryDialog);
-  end;
+  NewDirectory:=InputHistories.SelectDirectory('Working directory',true,
+                                    ExtractFilePath(WorkingDirectoryEdit.Text),
+                                    ExtractFilename(WorkingDirectoryEdit.Text));
+  if NewDirectory<>'' then
+    WorkingDirectoryEdit.Text:=NewDirectory;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="6">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="23">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -43,4 +43,27 @@
     </Node1>
   </Node5>
   <Node6 Name="TCodeTemplateDialog" Path="Code_Templates" HasHelp="True"/>
+  <Node7 Name="TCleanDirectoryDialog" Path="Clean_Directory" HasHelp="True"/>
+  <Node8 Name="TCondForm" Path="Conditional_Defines" HasHelp="True"/>
+  <Node9 Name="TSortSelectionDialog" Path="Sort_selection" HasHelp="True"/>
+  <Node10 Name="TCharacterMapDialog" Path="Character_Map" HasHelp="True"/>
+  <Node11 Name="TExtractProcDialog" Path="Extract_Procedure" HasHelp="True"/>
+  <Node12 Name="TLazFindReplaceDialog" Path="Find" HasHelp="True"/>
+  <Node13 Name="TLazFindInFilesDialog" Path="Find_in_files" HasHelp="True"/>
+  <Node14 Name="TFindRenameIdentifierDialog" Path="Find_or_Rename_identifier" HasHelp="True"/>
+  <Node15 Name="TCodeExplorerView" Path="Code_Explorer" HasHelp="True"/>
+  <Node16 Name="TLazDocForm" Path="LazDoc_Editor" HasHelp="True" ChildCount="1">
+    <Node1 Name="PageControl" Path="PageControl" ChildCount="1">
+      <Node1 Name="ShortTabSheet" Path="ShortTabSheet" ChildCount="1">
+        <Node1 Name="ShortEdit" Path="LazDoc_Editor" HasHelp="True"/>
+      </Node1>
+    </Node1>
+  </Node16>
+  <Node17 Name="TViewUnitDialog" Path="View_project_forms_units" HasHelp="True"/>
+  <Node18 Name="TUnitDependenciesView" Path="Unit_dependencies" HasHelp="True"/>
+  <Node19 Name="TUnitInfoDialog" Path="Unit_info" HasHelp="True"/>
+  <Node20 Name="TCodeToolsDefinesDialog" Path="Codetools_Directory_Values" HasHelp="True"/>
+  <Node21 Name="TAnchorDesigner" Path="Anchor_Editor" HasHelp="True"/>
+  <Node22 Name="TMessagesView" Path="Messages" HasHelp="True"/>
+  <Node23 Name="TSearchResultsView" Path="Search_Results" HasHelp="True"/>
 </CONFIG>

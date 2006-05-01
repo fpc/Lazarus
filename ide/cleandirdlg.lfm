@@ -26,27 +26,47 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 6
     Width = 419
     object DirCombobox: TComboBox
-      Align = alTop
+      Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
       Text = 'DirCombobox'
-      Left = 6
+      AnchorSideRight.Control = DirBrowseButton
+      Left = 7
       Height = 21
       Top = 6
-      Width = 403
+      Width = 374
     end
     object SubDirsCheckbox: TCheckBox
-      Align = alTop
       BorderSpacing.Around = 6
       Caption = 'Clean sub directories'
       TabOrder = 1
+      AnchorSideTop.Control = DirCombobox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
       Top = 33
       Width = 403
+    end
+    object DirBrowseButton: TButton
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 5
+      BorderSpacing.InnerBorder = 2
+      Caption = '...'
+      OnClick = DirBrowseButtonClick
+      TabOrder = 2
+      AnchorSideLeft.Control = DirCombobox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DirCombobox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = DirGroupbox
+      AnchorSideRight.Side = asrBottom
+      Left = 387
+      Height = 21
+      Top = 6
+      Width = 23
     end
   end
   object RemoveGroupbox: TGroupBox
