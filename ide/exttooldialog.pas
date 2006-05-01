@@ -465,6 +465,7 @@ end;
 constructor TExternalToolDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
+  Name:='ExternalToolDialog';
 
   Caption:=lisExtToolExternalTools;
 

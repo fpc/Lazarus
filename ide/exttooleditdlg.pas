@@ -300,6 +300,9 @@ var
   s: string;
 begin
   inherited Create(AnOwner);
+
+  Name:='ExternalToolOptionDlg';
+  
   GrabbingKey:=0;
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=560;
@@ -313,7 +316,6 @@ begin
       Parent:=Self;
       SetBounds(5,5,110,22);
       Caption:=dlgPOTitle;
-      Visible:=true; 
     end;
     
     TitleEdit:=TEdit.Create(Self);
@@ -324,7 +326,6 @@ begin
       Top:=TitleLabel.Top+2;
       Width:=Self.ClientWidth-Left-10;
       Height:=25;
-      Visible:=true; 
     end;
     
     FilenameLabel:=TLabel.Create(Self);
@@ -334,7 +335,6 @@ begin
       SetBounds(TitleLabel.Left,TitleLabel.Top+TitleLabel.Height+10,
         TitleLabel.Width,TitleLabel.Height);
       Caption:=lisEdtExtToolProgramfilename;
-      Visible:=true; 
     end;
     
     FilenameEdit:=TEdit.Create(Self);
@@ -343,7 +343,6 @@ begin
       Parent:=Self;
       SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width,
         TitleEdit.Height);
-      Visible:=true; 
     end;
     
     ParametersLabel:=TLabel.Create(Self);
@@ -353,7 +352,6 @@ begin
       SetBounds(FilenameLabel.Left,FilenameLabel.Top+FilenameLabel.Height+10,
         FilenameLabel.Width,FilenameLabel.Height);
       Caption:=lisEdtExtToolParameters;
-      Visible:=true; 
     end;
     
     ParametersEdit:=TEdit.Create(Self);
@@ -362,7 +360,6 @@ begin
       Parent:=Self;
       SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,FilenameEdit.Width,
         FilenameEdit.Height);
-      Visible:=true; 
     end;
     
     WorkingDirLabel:=TLabel.Create(Self);
@@ -373,7 +370,6 @@ begin
         ParametersLabel.Top+ParametersLabel.Height+10,ParametersLabel.Width,
         ParametersLabel.Height);
       Caption:=lisEdtExtToolWorkingDirectory;
-      Visible:=true; 
     end;
     
     WorkingDirEdit:=TEdit.Create(Self);
@@ -382,7 +378,6 @@ begin
       Parent:=Self;
       SetBounds(ParametersEdit.Left,WorkingDirLabel.Top+2,ParametersEdit.Width,
         ParametersEdit.Height);
-      Visible:=true; 
     end;
     
     OptionsGroupBox:=TGroupBox.Create(Self);
@@ -394,7 +389,6 @@ begin
       Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
       Width:=Self.ClientWidth-Left-Left;
       Height:=66;
-      Visible:=true; 
     end;
     
     OptionScanOutputForFPCMessagesCheckBox:=TCheckBox.Create(Self);

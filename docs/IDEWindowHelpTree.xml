@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="23">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="47">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -66,4 +66,28 @@
   <Node21 Name="TAnchorDesigner" Path="Anchor_Editor" HasHelp="True"/>
   <Node22 Name="TMessagesView" Path="Messages" HasHelp="True"/>
   <Node23 Name="TSearchResultsView" Path="Search_Results" HasHelp="True"/>
+  <Node24 Name="TWatchesDlg" Path="Watch_list" HasHelp="True"/>
+  <Node25 Name="TBreakPointsDlg" Path="Break_Points" HasHelp="True"/>
+  <Node26 Name="TLocalsDlg" Path="Local_Variables" HasHelp="True"/>
+  <Node27 Name="TCallStackDlg" Path="Call_Stack" HasHelp="True"/>
+  <Node28 Name="TDbgOutputForm" Path="Debug_Output" HasHelp="True"/>
+  <Node29 Name="TPublishProjectDialog" Path="Publish_Project_Package" HasHelp="True"/>
+  <Node30 Name="TProjectInspectorForm" Path="Project_Inspector" HasHelp="True"/>
+  <Node31 Name="TfrmTodo" Path="ToDo_List" HasHelp="True"/>
+  <Node32 Name="TRunParamsOptsDlg" Path="Run_parameters" HasHelp="True"/>
+  <Node33 Name="TBuildFileDialog" Path="Configure_Build_file" HasHelp="True"/>
+  <Node34 Name="TPackageEditorForm" Path="Package_Editor" HasHelp="True"/>
+  <Node35 Name="TAddToPackageDlg" Path="Add_to_Package" HasHelp="True"/>
+  <Node36 Name="TPackageOptionsDialog" Path="Package_Options" HasHelp="True"/>
+  <Node37 Name="TPkgGraphExplorerDlg" Path="Package_Graph" HasHelp="True"/>
+  <Node38 Name="TInstallPkgSetDialog" Path="Installed_Packages" HasHelp="True"/>
+  <Node39 Name="TExternalToolDialog" Path="External_Tools" HasHelp="True"/>
+  <Node40 Name="TExternalToolOptionDlg" Path="External_Tool" HasHelp="True"/>
+  <Node41 Name="TMakeResStrDialog" Path="Make_ResourceString" HasHelp="True"/>
+  <Node42 Name="TDiffDlg" Path="Diff" HasHelp="True"/>
+  <Node43 Name="TConfigureBuildLazarusDlg" Path="Configure_Build_Lazarus" HasHelp="True"/>
+  <Node44 Name="TDebuggerOptionsForm" Path="Debugger_Options" HasHelp="True"/>
+  <Node45 Name="TCodeToolsOptsDlg" Path="Codetools_Options" HasHelp="True"/>
+  <Node46 Name="TCodeToolsDefinesEditor" Path="Codetools_Defines_Editor" HasHelp="True"/>
+  <Node47 Name="THelpOptionsDialog" Path="Help_Options" HasHelp="True"/>
 </CONFIG>
