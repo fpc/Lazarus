@@ -269,8 +269,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)
 ifeq ($(OS_TARGET),win32)
-LAZARUS_OPT+= -WC
-BIG_IDE_OPTIONS+= -WC
+LAZARUS_OPT+= -WG
+BIG_IDE_OPTIONS+= -WG
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus
@@ -1824,6 +1824,7 @@ AS=$(ASPROG)
 LD=$(LDPROG)
 RC=$(RCPROG)
 AR=$(ARPROG)
+PPAS=ppas$(SRCBATCHEXT)
 ifdef inUnix
 LDCONFIG=ldconfig
 else
@@ -2900,8 +2901,10 @@ override FPCOPT+=$(CROSSOPT)
 endif
 override COMPILER:=$(FPC) $(FPCOPT)
 ifeq (,$(findstring -s ,$(COMPILER)))
+EXECPPAS=
 else
 ifeq ($(FULL_SOURCE),$(FULL_TARGET))
+EXECPPAS:=@$(PPAS)
 endif
 endif
 .PHONY: fpc_exes
@@ -2942,16 +2945,22 @@ $(COMPILER_TARGETDIR):
 	$(MKDIRTREE) $(COMPILER_TARGETDIR)
 %$(PPUEXT): %.pp
 	$(COMPILER) $<
+	$(EXECPPAS)
 %$(PPUEXT): %.pas
 	$(COMPILER) $<
+	$(EXECPPAS)
 %$(EXEEXT): %.pp
 	$(COMPILER) $<
+	$(EXECPPAS)
 %$(EXEEXT): %.pas
 	$(COMPILER) $<
+	$(EXECPPAS)
 %$(EXEEXT): %.lpr
 	$(COMPILER) $<
+	$(EXECPPAS)
 %$(EXEEXT): %.dpr
 	$(COMPILER) $<
+	$(EXECPPAS)
 %.res: %.rc
 	windres -i $< -o $@
 vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
@@ -3178,7 +3187,7 @@ endif
 ifdef LIB_NAME
 	-$(DEL) $(LIB_NAME) $(LIB_FULLNAME)
 endif
-	-$(DEL) $(FPCMADE) Package.fpc script.res link.res $(FPCEXTFILE) $(REDIRFILE)
+	-$(DEL) $(FPCMADE) Package.fpc $(PPAS) script.res link.res $(FPCEXTFILE) $(REDIRFILE)
 	-$(DEL) *$(ASMEXT) *_ppas$(BATCHEXT)
 fpc_cleanall: $(CLEANTARGET)
 ifdef CLEANEXEFILES
@@ -3201,7 +3210,7 @@ ifneq ($(PPUEXT),.ppu)
 	-$(DEL) *.o *.ppu *.a
 endif
 	-$(DELTREE) *$(SMARTEXT)
-	-$(DEL) fpcmade.* Package.fpc script.res link.res $(FPCEXTFILE) $(REDIRFILE)
+	-$(DEL) fpcmade.* Package.fpc $(PPAS) script.res link.res $(FPCEXTFILE) $(REDIRFILE)
 	-$(DEL) *_ppas$(BATCHEXT)
 ifdef AOUTEXT
 	-$(DEL) *$(AOUTEXT)
@@ -3355,12 +3364,10 @@ ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT=-s
+	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT)
 else
-	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='-s $(LAZARUS_OPT) $(OPT)'
+	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
-	../ppas.sh
-	rm ../ppas.sh
 idepkg: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=../lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 bigide: $(COMPILER_UNITTARGETDIR)

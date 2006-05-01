@@ -3738,7 +3738,7 @@ tools: lcl components
 	$(MAKE) -C tools
 examples: lcl components
 	$(MAKE) -C examples
-all: lcl components packager/registration ideintf designer packager ide
+all: lcl components packager/registration ideintf designer packager ide starter
 cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: clean cleanide
