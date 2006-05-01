@@ -109,6 +109,9 @@ begin
   // register messages
   AddFPCMessageHelpItem('Can''t find unit',
                         'FPC_message:_Can_not_find_unit',': Can''t find unit ');
+  AddFPCMessageHelpItem('Wrong number of parameters specified',
+                        'FPC_message:_Wrong_number_of_parameters_specified',
+                        ': Wrong number of parameters specified');
 end;
 
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string
