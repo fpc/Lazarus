@@ -6,6 +6,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   ClientWidth = 431
   OnCreate = CleanDirectoryDialogCreate
   PixelsPerInch = 112
+  Position = poScreenCenter
   HorzScrollBar.Page = 430
   VertScrollBar.Page = 331
   Left = 316
