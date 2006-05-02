@@ -877,7 +877,7 @@ type
     hwndItem: HWND;
     _hDC: HDC;
     rcItem: TRect;
-    itemData : DWord;
+    itemData : ULONG_PTR;
   end;
   TDrawItemStruct = tagDrawItemStruct;
   DrawItemStruct = tagDrawItemStruct;
@@ -906,7 +906,7 @@ type
     itemID : UINT;
     itemWidth : UINT;
     itemHeight : UINT;
-    itemData : DWORD;
+    itemData : ULONG_PTR;
   end;
 
   PPaintStruct = ^TPaintStruct;
