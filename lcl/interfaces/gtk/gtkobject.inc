@@ -6966,6 +6966,7 @@ var
 
   function FindLineEnd(LineStart: integer): integer;
   var
+    CharLen,
     LineStop,
     LineWidth, WordWidth, WordEnd, CharWidth: integer;
   begin
@@ -6999,14 +7000,18 @@ var
         Result:=LineStart;
         LineWidth:=0;
         repeat
-          CharWidth:=GetLineWidthInPixel(Result,1);
+          charLen:=UTF8CharacterLength(@AText[result]);
+          CharWidth:=GetLineWidthInPixel(Result,charLen);
           inc(LineWidth,CharWidth);
           if LineWidth>MaxWidthInPixel then break;
-          if result=lineStop then break;
-          inc(Result);
+          if result>=lineStop then break;
+          inc(Result,charLen);
         until false;
         // at least one char
-        if Result=LineStart then inc(Result);
+        if Result=LineStart then begin
+          charLen:=UTF8CharacterLength(@AText[result]);
+          inc(Result,charLen);
+        end;
       end;
     end;
   end;
