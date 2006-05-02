@@ -1895,7 +1895,7 @@ type
     procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;
-    property Items[Index: Integer]: TTreeNode read GetNodeFromIndex; default;
+    property Item[Index: Integer]: TTreeNode read GetNodeFromIndex; default;
     property KeepCollapsedNodes: boolean
       read FKeepCollapsedNodes write FKeepCollapsedNodes;
     property Owner: TCustomTreeView read FOwner;

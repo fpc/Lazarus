@@ -2157,7 +2157,7 @@ procedure TTreeNodes.DefineProperties(Filer: TFiler);
       Result := False;
       for I := 0 to Count - 1 do
       begin
-        Result := not Items[I].IsEqual(Nodes[I]);
+        Result := not Item[I].IsEqual(Nodes[I]);
         if Result then Break;
       end
     end;
@@ -3286,7 +3286,7 @@ begin
       lNode := lNode.GetNextExpanded
     else
     if Items.Count > 0 then
-      lNode := FTreeNodes.Items[0];
+      lNode := FTreeNodes.GetFirstNode;
     if lNode <> nil then
       Key:=VK_UNKNOWN;
   end;

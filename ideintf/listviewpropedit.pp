@@ -261,7 +261,7 @@ begin
       //Recreate new items or modify
       for I := 0 to TreeView1.Items.Count - 1 do
       begin
-        Node := TreeView1.Items.Items[I];
+        Node := TreeView1.Items[I];
         if Node.Level = 0 then
         begin
           Item := FListView.Items.Add;
