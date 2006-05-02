@@ -2316,12 +2316,12 @@ begin
 
     Xinc:=0;
     if Rnew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
-    else if (RNew.Right  + FGCache.TLColOff > FGCache.ClientWidth)
+    else if (RNew.Right  + FGCache.TLColOff > (FGCache.ClientWidth + GetBorderWidth))
             and (RNew.Left + FGCache.TLColOff - GetColWidths(aCol) >= FGCache.FixedWidth) then XInc:=1;
             // Only scroll left if the left edge of the cell does not become invisible as a result
     Yinc:=0;
     if RNew.Top  + FGCache.TLRowOff < FGCache.FixedHeight then Yinc:=-1
-    else if (RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight)
+    else if (RNew.Bottom + FGCache.TLRowOff > (FGCache.ClientHeight + GetBorderWidth))
             and (RNew.Top + FGCache.TLRowOff - GetRowHeights(aRow) >= FGCache.FixedHeight) then YInc:=1;
             // Only scroll up if the top edge of the cell does not become invisible as a result
 
