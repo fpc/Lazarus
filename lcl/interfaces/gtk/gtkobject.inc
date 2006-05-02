@@ -2792,15 +2792,21 @@ begin
     {$ENDIF}
 
     // See also GetWindowRawImageDescription
-    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_image_get uses rileByteBoundary
     RawImage.Description.AlphaBitsPerPixel:=GetPGdkImageBitsPerPixel(AnImage);
+    RawImage.Description.AlphaLineEnd:=rileByteBoundary;// gdk_image_get uses rileByteBoundary or rileDWordBoundary
+    BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
+                   RawImage.Description.AlphaBitsPerPixel,
+                   RawImage.Description.AlphaLineEnd);
+    if BytesPerLine<>AnImage^.bpl then begin
+      RawImage.Description.AlphaLineEnd:=rileDWordBoundary;// gdk_image_get uses rileByteBoundary
+      BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
+                     RawImage.Description.AlphaBitsPerPixel,
+                     RawImage.Description.AlphaLineEnd);
+    end;
 
     // consistency checks
     if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
       RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth '+IntToStr(RawImage.Description.AlphaBitsPerPixel)+'<>'+IntToStr(AnImage^.Depth));
-    BytesPerLine:=GetBytesPerLine(RawImage.Description.Width,
-                   RawImage.Description.AlphaBitsPerPixel,
-                   RawImage.Description.AlphaLineEnd);
     if BytesPerLine<>AnImage^.bpl then
       RaiseGDBException('AnImage^.bpl<>BytesPerLine '+IntToStr(AnImage^.bpl)+'<>'+IntToStr(BytesPerLine));
     if cardinal(AnImage^.Height)<>RawImage.Description.Height then
