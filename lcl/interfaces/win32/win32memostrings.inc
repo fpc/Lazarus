@@ -68,18 +68,18 @@ end;
 
 function TWin32MemoStrings.Get(Index: Integer): string;
 var
-textbuf: pchar;
-fLength: Integer;
+  len: Integer;
 begin
-  fLength := GetLineLength(Index);
-  if fLength = 0 then Result := ''
-  else begin
-    textbuf := AllocMem(sizeof(char)*fLength+1);
-    PWord(textbuf)^ := Word(sizeof(char)*fLength+1);
-    SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
-    Result := StrPas(textbuf);
-    ReAllocMem(textbuf, 0);
-  end;
+  len := GetLineLength(Index);
+  Setlength(Result, len);
+  if len = 0 then Exit;
+  
+  // no need for temp buf and moving
+  // the result is without null terminator.
+  PWord(@Result[1])^ := len;
+  len := SendMessage(fHandle, EM_GETLINE, Index, lparam(@Result[1]));
+  // readjust length in case somethng went wrong
+  Setlength(Result, len);
 end;
 
 constructor TWin32MemoStrings.Create(Handle: HWND; TheOwner: TWinControl);
