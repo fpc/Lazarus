@@ -746,6 +746,7 @@ type
     procedure InvalidateGrid;
     procedure InvalidateRow(ARow: Integer);
     procedure InvalidateFocused;
+    function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
@@ -836,6 +837,7 @@ type
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
     property GridWidth: Integer read FGCache.GridWidth;
     property InplaceEditor: TWinControl read FEditor;
+    property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property Options: TGridOptions read FOptions write SetOptions;
     property Row: Integer read FRow write SetRow;
@@ -887,7 +889,6 @@ type
     procedure EndUpdate; overload;
     procedure EraseBackground(DC: HDC); override;
 
-    function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
     function  MouseCoord(X,Y: Integer): TGridCoord;
@@ -966,6 +967,7 @@ type
     property GridLineColor;
     property GridLineStyle;
     property GridWidth;
+    property IsCellSelected;
     property LeftCol;
     property Row;
     property RowHeights;
@@ -2686,7 +2688,7 @@ begin
             (Rs and not(goRelaxedRowSelect in Options)) then
             include(gds, gdSelected);
         end else
-        if IsCellSelected(i, aRow) then
+        if IsCellSelected[i, aRow] then
           include(gds, gdSelected);
       end;
       DrawCell(i, aRow, R, gds);
@@ -3272,6 +3274,14 @@ begin
   Result := not PointIgual(OldTopleft,FTopLeft);
   if Result then
     doTopleftChange(False)
+end;
+
+function TCustomGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
+begin
+  Result:=  (FRange.Left<=aCol)   and
+            (aCol<=FRange.Right)  and
+            (FRange.Top<=aRow)    and
+            (aRow<=FRange.Bottom);
 end;
 
 function TCustomGrid.GetSelectedColumn: TGridColumn;
@@ -4884,14 +4894,6 @@ end;
 procedure TCustomGrid.EraseBackground(DC: HDC);
 begin
   //
-end;
-
-function TCustomGrid.IsCellSelected(aCol, aRow: Integer): Boolean;
-begin
-  Result:=  (FRange.Left<=aCol)   and
-            (aCol<=FRange.Right)  and
-            (FRange.Top<=aRow)    and
-            (aRow<=FRange.Bottom);
 end;
 
 procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer);
@@ -6928,54 +6930,6 @@ begin
   end;
 end;
 
-(*
-procedure TCustomStringGrid.DrawInteriorCells;
-var
-  i,j: Integer;
-  gds: TGridDrawState;
-  c: PCellProps;
-begin
-  with FGCache.VisibleGrid do
-  if goColSpanning in Options then begin
-    //
-    // Ordered draw should be done in order to this work
-    //
-    Gds:=[];
-    // Draw Empty (nil) cells First
-    For i:=Left to Right do
-      For j:=Top to Bottom do begin
-        if IsCellSelected(i,j) then Continue;
-        C:=Fgrid.Celda[i,j];
-        if (c=nil) then DrawCell(i,j, CellRect(i,j), gds);
-      end;
-     // Draw Cells Empty Cells (Text='') with Attribute
-    For i:=Left to Right do
-      For j:=Top to Bottom do begin
-        if IsCellSelected(i,j) then Continue;
-        if (i=FCol)or(j=FRow) then Continue;
-        C:=Fgrid.Celda[i,j];
-        if (c<>nil)and(C^.Text='') then
-          DrawCell(i,j, CellRect(i,j), gds);
-      end;
-    // Draw Cells not Empty (Text<>'')
-    For i:=Left to Right do
-      For j:=Top to Bottom do begin
-        if IsCellSelected(i,j) then Continue;
-        C:=Fgrid.Celda[i,j];
-        if (C<>nil)and(C^.Text<>'') then
-          DrawCell(i,j, CellRect(i,j), gds);
-      end;
-
-    gds:=[gdSelected];
-    For i:=Left To Right do
-      For j:=Top to Bottom do
-        if IsCellSelected(i,j) then begin
-          DrawCell(i,j, CellRect(i,j), gds);
-        end;
-
-  end else inherited DrawInteriorCells;
-end;
-*)
 procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
   Include(GridFlags, gfEditorUpdateLock);

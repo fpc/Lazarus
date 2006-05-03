@@ -50,6 +50,8 @@ uses
 type
   TCustomDbGrid = class;
   TColumn = class;
+  EInvalidGridOperation = class(Exception);
+
 
   TDBGridOption = (
     dgEditing,                          // Ya
@@ -65,7 +67,7 @@ type
     dgAlwaysShowSelection,              // Ya
     dgConfirmDelete,
     dgCancelOnExit,                     // Ya
-    dgMultiselect
+    dgMultiselect                       // Ya
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -92,6 +94,33 @@ type
     const CheckedState: TDbGridCheckboxState; ABitmap: TBitmap) of object;
 
 type
+
+  { TBookmarkList }
+
+  TBookmarkList=class
+  private
+    FList: TStringlist;
+    FGrid: TCustomDbGrid;
+    function GetCount: integer;
+    function GetCurrentRowSelected: boolean;
+    function GetItem(AIndex: Integer): TBookmarkStr;
+    procedure SetCurrentRowSelected(const AValue: boolean);
+    procedure CheckActive;
+  public
+    constructor Create(AGrid: TCustomDbGrid);
+    destructor Destroy; override;
+    
+    procedure Clear;
+    procedure Delete;
+    function  Find(const Item: TBookmarkStr; var AIndex: Integer): boolean;
+    function  IndexOf(const Item: TBookmarkStr): Integer;
+    function  Refresh: boolean;
+
+    property Count: integer read GetCount;
+    property CurrentRowSelected: boolean
+      read GetCurrentRowSelected write SetCurrentRowSelected;
+    property Items[AIndex: Integer]: TBookmarkStr read GetItem; default;
+  end;
 
   { TComponentDataLink }
 
@@ -253,6 +282,7 @@ type
     FSelectionLock: Boolean;
     FTempText : string;
     FDrawingActiveRecord: Boolean;
+    FDrawingMultiSelRecord: Boolean;
     FEditingColumn: Integer;
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
@@ -261,6 +291,7 @@ type
     FIsEditingCheckBox: Boolean;  // For checkbox column editing emulation (by SSY)
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FNeedUpdateWidths: boolean;
+    FSelectedRows: TBookmarkList;
     procedure EmptyGrid;
     procedure CheckWidths;
     function GetCurrentColumn: TColumn;
@@ -311,7 +342,9 @@ type
     procedure EndUpdating;
     function  UpdatingData: boolean;
     procedure SwapCheckBox;
-    function ValueMatch(const BaseValue, TestValue: string): Boolean;
+    function  ValueMatch(const BaseValue, TestValue: string): Boolean;
+    procedure ToggleSelectedRow;
+    procedure SelectRecord(AValue: boolean);
   protected
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -350,6 +383,7 @@ type
     function  GetFieldFromGridColumn(Column: Integer): TField;
     function  GetGridColumnFromField(F: TField): Integer;
     function  GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
+    function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GridCanModify: boolean;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
@@ -379,6 +413,7 @@ type
     property Options: TDbGridOptions read FOptions write SetOptions;
     property OptionsExtra: TDbgridExtraOptions read FExtraOptions write SetExtraOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
+    property SelectedRows: TBookmarkList read FSelectedRows;
 
     property OnCellClick: TDBGridClickEvent read FOnCellClick write FOnCellClick;
     property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
@@ -416,7 +451,7 @@ type
     property GridLineColor;
     property GridLineStyle;
     property SelectedColor;
-    //property SelectedRows;
+    property SelectedRows;
   published
     property Align;
     property AlternateColor;
@@ -568,14 +603,23 @@ begin
   RegisterComponents('Data Controls',[TDBGrid]);
 end;
 
-procedure DrawArrow(Canvas: TCanvas; R: TRect; Opt: TDataSetState);
+procedure DrawIndicator(Canvas: TCanvas; R: TRect; Opt: TDataSetState;
+  MultiSel: boolean);
 var
   dx,dy, x, y: Integer;
+  procedure CenterY;
+  begin
+    y := R.Top + (R.Bottom-R.Top) div 2-1;
+  end;
+  procedure CenterX;
+  begin
+    X := R.Left + (R.Right-R.Left) div 2-1;
+  end;
   procedure DrawEdit(clr: Tcolor);
   begin
     Canvas.Pen.Color := clr;
-    y := R.Top + (R.Bottom-R.Top) div 2 - 1;
-    X := R.Left + (R.Right-R.Left) div 2 - 1;
+    CenterY;
+    CenterX;
     Canvas.MoveTo(X-2, Y-Dy-1);
     Canvas.LineTo(X+3, Y-Dy-1);
     Canvas.MoveTo(X, Y-Dy);
@@ -591,15 +635,30 @@ begin
       begin //
         Canvas.Brush.Color:=clBlack;
         Canvas.Pen.Color:=clBlack;
-        y:= R.top+ (R.Bottom-R.Top) div 2-1;
-        x:= R.Left+2;
-        Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
+        CenterY;
+        x:= R.Left+3;
+        if MultiSel then begin
+          Canvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
+          Canvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
+          CenterX;
+          Dec(X,2);
+          Canvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
+        end else
+          Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
        end;
     dsEdit:
       DrawEdit(clBlack);
     dsInsert:
       DrawEdit(clGreen);
-   end;
+    else
+    if MultiSel then begin
+      Canvas.Brush.Color:=clBlack;
+      Canvas.Pen.Color:=clBlack;
+      CenterX;
+      CenterY;
+      Canvas.Ellipse(Rect(X-3,Y-3,X+3,Y+3));
+    end;
+  end;
 end;
 
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
@@ -895,8 +954,10 @@ end;
 procedure TCustomDbGrid.SetOptions(const AValue: TDbGridOptions);
 var
   OldOptions: TGridOptions;
+  MultiSel: boolean;
 begin
   if FOptions<>AValue then begin
+    MultiSel := dgMultiSelect in FOptions;
     FOptions:=AValue;
     OldOptions := inherited Options;
 
@@ -946,6 +1007,9 @@ begin
       Exclude(OldOptions, goTabs);
 
     inherited Options := OldOptions;
+    
+    if MultiSel and not (dgMultiSelect in FOptions) then
+      FSelectedRows.Clear;
 
     EndLayout;
   end;
@@ -1463,6 +1527,11 @@ begin
     Result := False;
 end;
 
+procedure TCustomDbGrid.ToggleSelectedRow;
+begin
+  SelectRecord(not FSelectedRows.CurrentRowSelected);
+end;
+
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
 begin
   if not Value then
@@ -1580,6 +1649,7 @@ end;
 
 procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
+
   function GetDatasetState: TDataSetState;
   begin
     if FDatalink.Active then
@@ -1587,17 +1657,21 @@ procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
     else
       result := dsInactive;
   end;
+
 var
   S: string;
   F: TField;
 begin
   if gdFixed in aState then begin
     if (ACol=0) and FDrawingActiveRecord then begin
-      DrawArrow(Canvas, aRect, GetDataSetState);
+      DrawIndicator(Canvas, aRect, GetDataSetState, FDrawingMultiSelRecord);
       {$ifdef dbgGridPaint}
       dbgOut('>');
       {$endif}
     end else
+    if (ACol=0) and FDrawingMultiSelRecord then
+      DrawIndicator(Canvas, aRect, dsCurValue{dummy}, True)
+    else
     if (aRow=0)and(ACol>=FixedCols) then
       DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
   end else begin
@@ -1863,6 +1937,12 @@ begin
           end;
         end;
       end;
+      
+    VK_MULTIPLY:
+      begin
+        if ssCtrl in Shift then
+          ToggleSelectedRow;
+      end;
 
     else
       inherited KeyDown(Key, Shift);
@@ -1936,18 +2016,24 @@ begin
         P:=MouseToCell(Point(X,Y));
         if P.Y=Row then begin
           //doAcceptValue;
-          doInherited
+          if ssCtrl in Shift then
+            ToggleSelectedRow
+          else
+            doInherited;
         end else begin
           doMouseDown;
           if ValidDataSet then begin
             if InsertCancelable and IsEOF then
               doCancel;
             doMoveBy;
+          end;
+          if ssCtrl in Shift then
+            ToggleSelectedRow
+          else
+            doMoveToColumn;
         end;
-          doMoveToColumn;
       end;
   end;
-end;
   {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown END'); {$Endif}
 end;
 
@@ -2187,6 +2273,12 @@ begin
     OnUserCheckboxBitmap(Self, CheckBoxView, Result);
 end;
 
+function TCustomDbGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
+begin
+  Result:=inherited GetIsCellSelected(aCol, aRow) or
+    FDrawingMultiSelRecord;
+end;
+
 function TCustomDbGrid.GridCanModify: boolean;
 begin
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
@@ -2241,8 +2333,12 @@ begin
     //if (Arow>=FixedRows) and FCanBrowse then
     FDataLink.ActiveRecord:=ARow-FixedRows;
     FDrawingActiveRecord := ARow = Row;
-  end else
+    FDrawingMultiSelRecord := (dgMultiSelect in Options) and
+      SelectedRows.CurrentRowSelected
+  end else begin
     FDrawingActiveRecord := False;
+    FDrawingMultiSelRecord := False;
+  end;
   {$ifdef dbgGridPaint}
   DbgOut('DrawRow Row=', IntToStr(ARow), ' Act=', Copy(BoolToStr(FDrawingActiveRecord),1,1));
   {$endif}
@@ -2440,6 +2536,8 @@ begin
   FDataLink.OnEditingChanged:=@OnEditingChanged;
   FDataLink.OnUpdateData:=@OnUpdateData;
   FDataLink.VisualControl:= True;
+  
+  FSelectedRows := TBookmarkList.Create(Self);
 
   FDefaultColWidths := True;
 
@@ -2491,6 +2589,7 @@ end;
 
 procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
+
   function GetDatasetState: TDataSetState;
   begin
     if FDatalink.Active then
@@ -2498,13 +2597,17 @@ procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
     else
       result := dsInactive;
   end;
+  
 var
   S: string;
   F: TField;
 begin
   if gdFixed in State then begin
-    if (DataCol=0)and FDrawingActiveRecord then
-      DrawArrow(Canvas, Rect, GetDataSetState)
+    if (DataCol=0) and FDrawingActiveRecord then
+      DrawIndicator(Canvas, Rect, GetDataSetState, FDrawingMultiSelRecord)
+    else
+    if (DataCol=0) and FDrawingMultiSelRecord then
+      DrawIndicator(Canvas, Rect, dsCurValue{dummy}, True)
     else
     if (DataCol>=FixedCols) then
       DrawCellText(0{dummy}, DataCol{dummy}, Rect, State,GetColumnTitle(DataCol));
@@ -2545,11 +2648,18 @@ begin
   end;
 end;
 
+procedure TCustomDbGrid.SelectRecord(AValue: boolean);
+begin
+  if dgMultiSelect in Options then
+    FSelectedRows.CurrentRowSelected := AValue;
+end;
+
 destructor TCustomDbGrid.Destroy;
 begin
   FUncheckedBitmap.Free;
   FCheckedBitmap.Free;
   FGrayedBitmap.Free;
+  FSelectedRows.Free;
   FDataLink.OnDataSetChanged:=nil;
   FDataLink.OnRecordChanged:=nil;
   FDataLink.Free;
@@ -3147,6 +3257,121 @@ begin
     end else
       Result := inherited GetDefaultCaption;
   end;
+end;
+
+{ TBookmarkList }
+
+function TBookmarkList.GetCount: integer;
+begin
+  result := FList.Count;
+end;
+
+function TBookmarkList.GetCurrentRowSelected: boolean;
+begin
+  CheckActive;
+  Result := IndexOf(FGrid.Datasource.Dataset.Bookmark)>=0;
+end;
+
+function TBookmarkList.GetItem(AIndex: Integer): TBookmarkStr;
+begin
+  Result := FList[AIndex];
+end;
+
+procedure TBookmarkList.SetCurrentRowSelected(const AValue: boolean);
+var
+  aBookStr: TBookmarkstr;
+  aIndex: Integer;
+begin
+  CheckActive;
+  
+  aBookStr := FGrid.Datasource.Dataset.Bookmark;
+  if ABookStr='' then
+    exit;
+    
+  if Find(ABookStr, aIndex) then begin
+    if not AValue then begin
+      FList.Delete(aIndex);
+      FGrid.Invalidate;
+    end;
+  end else begin
+    if AValue then begin
+      FList.Add(ABookStr);
+      FGrid.Invalidate;
+    end;
+  end;
+end;
+
+procedure TBookmarkList.CheckActive;
+begin
+  if not Fgrid.FDataLink.Active then
+    raise EInvalidGridOperation.Create('Dataset Inactive');
+end;
+
+constructor TBookmarkList.Create(AGrid: TCustomDbGrid);
+begin
+  inherited Create;
+  FGrid := AGrid;
+  FList := TStringList.Create;
+end;
+
+destructor TBookmarkList.Destroy;
+begin
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TBookmarkList.Clear;
+begin
+  FList.Clear;
+  FGrid.Invalidate;
+end;
+
+procedure TBookmarkList.Delete;
+var
+  i: Integer;
+  ds: TDataSet;
+begin
+  ds := FGrid.Datasource.Dataset;
+  for i:=0 to FList.Count-1 do begin
+    ds.Bookmark := Items[i];
+    ds.Delete;
+    FList.delete(i);
+  end;
+end;
+
+function TBookmarkList.Find(const Item: TBookmarkStr; var AIndex: Integer): boolean;
+var
+  Indx: integer;
+begin
+  Indx := FList.IndexOf(Item);
+  if indx<0 then
+    Result := False
+  else begin
+    Result := True;
+    AIndex := indx;
+  end;
+end;
+
+function TBookmarkList.IndexOf(const Item: TBookmarkStr): Integer;
+begin
+  result := FList.IndexOf(Item)
+end;
+
+function TBookmarkList.Refresh: boolean;
+var
+  ds: TDataset;
+  i: LongInt;
+begin
+  Result := False;
+  ds := FGrid.Datasource.Dataset;
+  for i:=FList.Count-1 downto 0 do
+    if not ds.BookmarkValid(TBookMark(Items[i])) then begin
+      Result := True;
+      Flist.Delete(i);
+    end;
+  if Result then
+    FGrid.Invalidate;
 end;
 
 end.
