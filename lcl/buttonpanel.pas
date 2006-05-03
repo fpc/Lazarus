@@ -277,6 +277,8 @@ end;
 constructor TCustomButtonPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  
+  ControlStyle:=ControlStyle+[csOwnedChildsSelectable];
 
   Align      := alBottom;
   BevelInner := bvNone;

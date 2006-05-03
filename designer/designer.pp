@@ -174,6 +174,7 @@ type
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
     // procedures for working with components and persistents
+    function GetDesignControl(AControl: TControl): TControl;
     function DoDeleteSelectedPersistents: boolean;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
@@ -1092,6 +1093,23 @@ begin
   end;
 end;
 
+function TDesigner.GetDesignControl(AControl: TControl): TControl;
+var
+  OwnerControl: TControl;
+begin
+  Result:=AControl;
+  if (Result=nil) or (Result.Owner=LookupRoot) then exit;
+  if (Result.Owner=nil) then exit(nil);
+  if (Result.Owner is TControl) then begin
+    OwnerControl:=TControl(Result.Owner);
+    if csOwnedChildsSelectable in OwnerControl.ControlStyle then
+      exit;
+    Result:=GetDesignControl(OwnerControl);
+  end else begin
+    Result:=nil;
+  end;
+end;
+
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
 begin
   Result:=true;
@@ -1119,11 +1137,13 @@ var
   NonVisualComp: TComponent;
   ParentForm: TCustomForm;
   Shift: TShiftState;
-Begin
+  DesignSender: TControl;
+begin
   FHintTimer.Enabled := False;
   Exclude(FFLags,dfHasSized);
   SetCaptureControl(nil);
-  ParentForm:=GetParentForm(Sender);
+  DesignSender:=GetDesignControl(Sender);
+  ParentForm:=GetParentForm(DesignSender);
   if (ParentForm=nil) then exit;
   
   MouseDownPos:=GetFormRelativeMousePosition(Form);
@@ -1142,7 +1162,7 @@ Begin
     MouseDownComponent:=ComponentAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
     if (MouseDownComponent=nil) then exit;
   end;
-  MouseDownSender:=Sender;
+  MouseDownSender:=DesignSender;
 
   case TheMessage.Msg of
   LM_LBUTTONDOWN,LM_MBUTTONDOWN,LM_RBUTTONDOWN:
@@ -1170,7 +1190,7 @@ Begin
   {$IFDEF VerboseDesigner}
   DebugLn('************************************************************');
   DbgOut('MouseDownOnControl');
-  DbgOut(' Sender=',dbgsName(Sender));
+  DbgOut(' Sender=',dbgsName(Sender),' DesignSender=',dbgsName(DesignSender));
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   //write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
   //writeln('');
@@ -1264,6 +1284,7 @@ var
   ParentClientOrigin, PopupPos: TPoint;
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
+  DesignSender: TControl;
 
   procedure GetShift;
   begin
@@ -1444,7 +1465,8 @@ Begin
 
   // check if the message is for the designed form
   // and there was a mouse down before
-  SenderParentForm:=GetParentForm(Sender);
+  DesignSender:=GetDesignControl(Sender);
+  SenderParentForm:=GetParentForm(DesignSender);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
   or ((ControlSelection.SelectionForm<>nil)
@@ -1465,7 +1487,7 @@ Begin
   {$IFDEF VerboseDesigner}
   DebugLn('************************************************************');
   DbgOut('MouseUpOnControl');
-  DbgOut(' ',Sender.Name,':',Sender.ClassName);
+  DbgOut(' Sender=',dbgsName(Sender),' DesignSender=',dbgsName(DesignSender));
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   DebugLn('');
   {$ENDIF}
@@ -1521,6 +1543,7 @@ var
   ACursor: TCursor;
   SelectedCompClass: TRegisteredComponent;
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
+  DesignSender: TControl;
 begin
   if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
@@ -1532,7 +1555,8 @@ begin
       FHintWindow.Visible := False;
   end;
 
-  SenderParentForm:= GetParentForm(Sender);
+  DesignSender:=GetDesignControl(Sender);
+  SenderParentForm:= GetParentForm(DesignSender);
   if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
 
   OldMouseMovePos:= LastMouseMovePos;

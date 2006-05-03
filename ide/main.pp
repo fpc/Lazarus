@@ -4778,7 +4778,6 @@ begin
         end;
 
         // select the new form (object inspector, formeditor, control selection)
-        DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
         if not (ofProjectLoading in Flags) then begin
           GlobalDesignHook.LookupRoot := NewComponent;
           TheControlSelection.AssignPersistent(NewComponent);
