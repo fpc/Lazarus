@@ -1098,7 +1098,7 @@ var
   OwnerControl: TControl;
 begin
   Result:=AControl;
-  if (Result=nil) or (Result.Owner=LookupRoot) then exit;
+  if (Result=nil) or (Result=LookupRoot) or (Result.Owner=LookupRoot) then exit;
   if (Result.Owner=nil) then exit(nil);
   if (Result.Owner is TControl) then begin
     OwnerControl:=TControl(Result.Owner);
@@ -1556,6 +1556,7 @@ begin
   end;
 
   DesignSender:=GetDesignControl(Sender);
+  //DebugLn('TDesigner.MouseMoveOnControl Sender=',dbgsName(Sender),' ',dbgsName(DesignSender));
   SenderParentForm:= GetParentForm(DesignSender);
   if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
 
@@ -1832,8 +1833,8 @@ Begin
       LM_PAINT,
       LM_INTERNALPAINT:
                       Result:=PaintControl(Sender,TLMPaint(TheMessage));
-      LM_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
-      LM_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
+      CN_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
+      CN_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
       LM_RBUTTONDOWN,
       LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
