@@ -113,6 +113,8 @@ type
   LPARAM = type PtrInt; //LongInt;
   LRESULT = type PtrInt; //LongInt;
 
+  ULONG_PTR = type PtrUInt;
+
 {$else}
   HKEY  = Windows.HKEY;
   HDC   = Windows.HDC;
@@ -137,6 +139,10 @@ type
   WPARAM = Windows.WPARAM;
   LPARAM = Windows.LPARAM;
   LRESULT = Windows.LRESULT;
+  
+{$if defined(VER2_0_2)}
+  ULONG_PTR = type PtrUInt;
+{$endif}
 {$endif}
 
   TLCLIntfHandle = type THandle;
