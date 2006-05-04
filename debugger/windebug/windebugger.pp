@@ -263,7 +263,7 @@ end;
 
 function TDbgProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 begin
-  Result := TDbgLibrary.Create(Self, FormatAddress(AInfo.lpBaseOfDll), AInfo);
+  Result := TDbgLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo);
   FLibMap.Add(TDbgPtr(AInfo.lpBaseOfDll), Result);
 end;
 
@@ -660,7 +660,7 @@ begin
   Context^.ContextFlags := CONTEXT_CONTROL;
   if not GetThreadContext(Thread.Handle, Context^)
   then begin
-    Log('Break $s: Unable to get context', [FormatAddress(FLocation)]);
+    Log('Break $s: Unable to get context', [HexValue(FLocation, SizeOf(Pointer), [hvfIncludeHexchar])]);
     Exit;
   end;
 
@@ -673,7 +673,7 @@ begin
 
   if not SetThreadContext(Thread.Handle, Context^)
   then begin
-    Log('Break %s: Unable to set context', [FormatAddress(FLocation)]);
+    Log('Break %s: Unable to set context', [HexValue(FLocation, SizeOf(Pointer), [hvfIncludeHexchar])]);
     Exit;
   end;
   Result := True;

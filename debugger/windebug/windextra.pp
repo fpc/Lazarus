@@ -43,11 +43,16 @@ uses
 type
   TDbgPtr = PtrUInt;
 
+type
+  THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
+  THexValueFormatFlags = set of THexValueFormatFlag;
+
+
 function GetLastErrorText(AErrorCode: Cardinal): String; {$IFNDEF FPC} overload; {$ENDIF}
 function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
 
-function FormatAddress(const P): String;
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 procedure Log(const AText: String; const AParams: array of const); overload;
 procedure Log(const AText: String); overload;
 
@@ -59,22 +64,52 @@ procedure Log(const AText: String); overload;
 implementation
 
 uses
-  SysUtils, FPWDGLobal;
+  SysUtils;
 
 //function OpenThread(dwDesiredAccess: DWORD; bInheritHandle: BOOL; dwThreadId: DWORD): THandle; stdcall; external 'kernel32';
 //function Wow64GetThreadContext(hThread: THandle; var lpContext: TContext): BOOL; stdcall; external 'kernel32';
 
 
-function FormatAddress(const P): String;
+function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
+var
+  i: Int64;
+  p: PByte;
 begin
-  case GMode of
-    dm32: Result := '$' + IntToHex(DWord(p), 8);
-    dm64: Result := '$' + IntToHex(int64(p), 16);
-  else
-    Result := 'Unknown mode';
+  if ASize > 8
+  then begin
+    Result := 'HexValue: size to large';
+    Exit;
+  end;
+  if ASize = 0
+  then begin
+    Result := '';
+    Exit;
   end;
 
+  p := @AValue;
+  if p[ASize - 1] < $80
+  then Exclude(AFlags, hvfSigned);
+
+  if hvfSigned in AFlags
+  then i := -1
+  else i := 0;
+
+  Move(AValue, i, ASize);
+  if hvfSigned in AFlags
+  then begin
+    i := not i + 1;
+    Result := '-';
+  end
+  else begin
+    if hvfPrefixPositive in AFlags
+    then Result := '+';
+  end;
+  if hvfIncludeHexchar in AFlags
+  then Result := Result + '$';
+
+  Result := Result + HexStr(i, ASize * 2);
 end;
+
 
 function GetLastErrorText: String;
 begin

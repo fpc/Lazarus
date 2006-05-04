@@ -36,7 +36,7 @@ unit FPWDGlobal;
 interface
 
 uses
-  SysUtils, Windows, FPWDType, Maps, WinDebugger;
+  SysUtils, Windows, FPWDType, Maps, WinDebugger, WinDExtra;
 
 type
   TMWDState = (dsStop, dsRun, dsPause, dsQuit, dsEvent);
@@ -60,6 +60,7 @@ var
   
 
 function GetProcess(const AID: Integer; var AProcess: TDbgProcess): Boolean;
+function FormatAddress(const AAddress): String;
 
 implementation
 
@@ -68,6 +69,13 @@ begin
   Result := GProcessMap.GetData(AID, AProcess) and (AProcess <> nil);
 //  if not Result
 //  then Log('Unknown Process ID %u', [AID]);
+end;
+
+function FormatAddress(const AAddress): String;
+const
+  SIZE: array[TMWDMode] of Integer = (4, 8);
+begin
+  Result := HexValue(AAddress, SIZE[GMode], [hvfIncludeHexchar]);
 end;
 
 

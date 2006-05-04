@@ -36,6 +36,7 @@ unit WinDisas;
 interface
 
 {.$define debug_OperandSize}
+{.$define verbose_string_instructions}
 
 uses
   SysUtils, Windows, WindExtra;
@@ -53,8 +54,9 @@ uses
 }  
 
 
-procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var Address: TDbgPtr; out ACodeBytes: String; out ACode: String);
-function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var Address: TDbgPtr): String;
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr; out ACodeBytes: String; out ACode: String);
+function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
 
 implementation
 
@@ -62,76 +64,64 @@ type
   TFlag = (flagRex, flagSib, flagModRM, rexB, rexX, rexR, rexW, preOpr, preAdr, preLock, preRep{N}, preRepNE);
   TFlags = set of TFlag;
   
-  TOperandSize = (os8, os16, os32, os64, os80);
+  // Keep 8,16,32,64 together
+  TOperandSize = (os8, os16, os32, os64, os48, os80, os128);
   TAddressSize = (as16, as32, as64);
-  TRegisterType = (reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug);
+  TRegisterType = (reg0, reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87);
+  TModRMType = (modReg, modMem);
+  TModRMTypes = set of TModRMType;
+  
 
 const
   ADDRESS_BYTES: array[TAddressSize] of Byte = (2, 4, 8);
-  OPERAND_BYTES: array[TOperandSize] of Byte = (1, 2, 4, 8, 10);
+  OPERAND_BYTES: array[TOperandSize] of Byte = (1, 2, 4, 8, 6, 10, 16);
   OPERAND_REG: array[os8..os64] of TRegisterType = (reg8, reg16, reg32, reg64);
+  STD_REGS = [reg8..reg64];
 
 type
-  THexValueFormatFlag = (hvfSigned, hvfPrefixPositive, hvfIncludeHexchar);
-  THexValueFormatFlags = set of THexValueFormatFlag;
+  TOperandFlag = (ofMemory);
+  TOperandFlags = set of TOperandFlag;
 
-function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
-var
-  i: Int64;
-  p: PByte;
-begin
-  if ASize > 8
-  then begin
-    Result := 'HexValue: size to large';
-    Exit;
-  end;
-  if ASize = 0
-  then begin
-    Result := '';
-    Exit;
-  end;
-
-  p := @AValue;
-  if p[ASize - 1] < $80
-  then Exclude(AFlags, hvfSigned);
-
-  if hvfSigned in AFlags
-  then i := -1
-  else i := 0;
-  
-  Move(AValue, i, ASize);
-  if hvfSigned in AFlags
-  then begin
-    i := not i + 1;
-    Result := '-';
-  end
-  else begin
-    if hvfPrefixPositive in AFlags
-    then Result := '+';
-  end;
-  if hvfIncludeHexchar in AFlags
-  then Result := Result + '$';
-  
-  Result := Result + HexStr(i, ASize * 2);
-end;
-
-function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var Address: TDbgPtr): String;
+function Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr): String;
 var
   S: String;
 begin
-  Disassemble(AProcess, A64bit, Address, S, Result);
+  Disassemble(AProcess, A64bit, AAddress, S, Result);
 end;
 
-procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var Address: TDbgPtr; out ACodeBytes: String; out ACode: String);
+procedure Disassemble(const AProcess: Handle; const A64Bit: Boolean; var AAddress: TDbgPtr; out ACodeBytes: String; out ACode: String);
+const
+  PTRSIZE: array[Boolean] of Byte = (4, 8);
 var
+  BytesRead: Cardinal;
   Code: array[0..20] of Byte;
+  p: Pointer;
+begin
+  BytesRead := 0;
+  if not ReadProcessMemory(AProcess, Pointer(AAddress), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
+  then begin
+    Log('Disassemble: Failed to read memory at %s, got %u bytes', [HexValue(AAddress, PTRSIZE[A64Bit], [hvfIncludeHexchar]), BytesRead]);
+    ACode := '??';
+    ACodeBytes := '??';
+    Inc(AAddress);
+    Exit;
+  end;
+  p := @Code;
+  Disassemble(p, A64Bit, ACodeBytes, ACode);
+  Inc(AAddress, PtrUInt(p) - PtrUInt(@Code));
+end;
+
+procedure Disassemble(var AAddress: Pointer; const A64Bit: Boolean; out ACodeBytes: String; out ACode: String);
+var
+  Code: PByte;
   CodeIdx: Byte;
   Operand: array[1..4] of record
     Value: String;
     Size: TOperandSize;
     ByteCount: Byte;
+    ByteCount2: Byte;
     FormatFlags: THexValueFormatFlags;
-    IsMemory: Boolean;
+    Flags: TOperandFlags;
   end;
   OperIdx: Byte;
   ModRMIdx: Byte;
@@ -170,14 +160,14 @@ var
     begin
       Result := True;
       for n := 1 to OperIdx do
-        if Operand[n].IsMemory then Exit;
+        if ofMemory in Operand[n].Flags then Exit;
       Result := False;
     end;
   begin
     if (preLock in Flags) and CheckMem
     then begin
       Exclude(Flags, preLock);
-      Result := 'lock: ' + AOpcode;
+      Result := 'lock ' + AOpcode;
       Exit;
     end;
     Result := AOpcode;
@@ -188,7 +178,7 @@ var
     if preRep in Flags
     then begin
       Exclude(Flags, preRep);
-      Result := 'rep: ' + AOpcode;
+      Result := 'rep ' + AOpcode;
       Exit;
     end;
     Result := AOpcode;
@@ -199,13 +189,13 @@ var
     if preRep in Flags
     then begin
       Exclude(Flags, preRep);
-      Result := 'repe: ' + AOpcode;
+      Result := 'repe ' + AOpcode;
       Exit;
     end;
     if preRepNE in Flags
     then begin
       Exclude(Flags, preRepNE);
-      Result := 'repe: ' + AOpcode;
+      Result := 'repne ' + AOpcode;
       Exit;
     end;
     Result := AOpcode;
@@ -274,7 +264,7 @@ var
     end;
   end;
 
-  procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AIsMemory: Boolean = False);
+  procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
   begin
     Inc(OperIdx);
     if OperIdx > High(Operand)
@@ -285,14 +275,15 @@ var
 
     Operand[OperIdx].Size := ASize;
     Operand[OperIdx].ByteCount := AByteCount;
+    Operand[OperIdx].ByteCount2 := AByteCount2;
     Operand[OperIdx].FormatFlags := AFormatFlags;
     Operand[OperIdx].Value := AValue;
-    Operand[OperIdx].IsMemory := AIsMemory;
+    Operand[OperIdx].Flags := AFlags;
   end;
 
-  procedure AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AIsMemory: Boolean = False);
+  procedure AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
   begin
-    AddOperand(AValue, OperandSize32, AByteCount, AFormatFlags, AIsMemory);
+    AddOperand(AValue, OperandSize32, AByteCount, AFormatFlags, AFlags);
   end;
 
   function SizeReg32(const AReg: String; ASize: TOperandSize): String;
@@ -345,6 +336,9 @@ var
         then Result := Format('r%d', [8 + AIndex]) + POSTFIX[AType]
         else Result := SizeReg32(REGS[AIndex], OSMAP[AType]);
       end;
+      regX87: begin
+        Result := Format('st(%d)', [AIndex]);
+      end;
       regMmx: begin
         Result := Format('mmx%d', [AIndex]);
       end;
@@ -370,22 +364,42 @@ var
   begin
     Result := StdReg(AIndex, OPERAND_REG[OperandSize32], rexR in Flags);
   end;
-  
+
+  procedure AddStdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean);
+  const
+    // reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87
+    REGSIZE: array[Boolean, reg8..High(TRegisterType)] of TOperandSize = (
+    {32}(os8, os16, os32, os64, os64, os128, os16, os32, os32, os80),
+    {64}(os8, os16, os32, os64, os64, os128, os16, os64, os64, os80)
+    );
+  begin
+    AddOperand(StdReg(AIndex, AType, AExtReg), REGSIZE[A64Bit, AType]);
+  end;
+
+  procedure AddStdReg(AIndex: Byte);
+  begin
+    AddOperand(StdReg(AIndex, OPERAND_REG[OperandSize32], rexR in Flags));
+  end;
+
+  procedure AddModReg(AType: TRegisterType; ASize: TOperandSize);
+  begin
+    Include(Flags, flagModRM);
+    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, False), ASize);
+  end;
 
   procedure AddModReg(AType: TRegisterType; AExtReg: Boolean);
   begin
     Include(Flags, flagModRM);
-    AddOperand(StdReg((Code[ModRMIdx] shr 3), AType, AExtReg));
+    AddStdReg(Code[ModRMIdx] shr 3, AType, AExtReg);
   end;
 
   procedure AddModReg;
   begin
     Include(Flags, flagModRM);
-    AddOperand(StdReg((Code[ModRMIdx] shr 3), OPERAND_REG[OperandSize32], rexR in Flags));
+    AddStdReg(Code[ModRMIdx] shr 3);
   end;
 
-  
-  procedure AddModRM(AAllowReg, AAllowMem: Boolean; ASize: TOperandSize);
+  procedure AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
   var
     Mode, Rm: Byte;
     procedure Mem16;
@@ -395,11 +409,11 @@ var
       case Mode of
         0: begin
           if rm = 6 // disp16 -> exeption to the regs
-          then AddOperand('%s', ASize, 2, [hvfSigned, hvfIncludeHexchar], True)
-          else AddOperand(REGS16[rm], ASize, 0, [], True);
+          then AddOperand('%s', ASize, 2, [hvfSigned, hvfIncludeHexchar], [ofMemory])
+          else AddOperand(REGS16[rm], ASize, 0, [], [ofMemory]);
         end;
-        1: AddOperand(REGS16[rm] + '%s', ASize, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], True);
-        2: AddOperand(REGS16[rm] + '%s', ASize, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], True);
+        1: AddOperand(REGS16[rm] + '%s', ASize, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
+        2: AddOperand(REGS16[rm] + '%s', ASize, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
       end;
     end;
     
@@ -421,16 +435,16 @@ var
     // Check for reg (mode = 3) first;
     if mode = 3
     then begin
-      if not AAllowReg
-      then AddOperand('**')
-      else AddOperand(StdReg(rm, OPERAND_REG[ASize], False), ASize);
+      if modReg in AReqTypes
+      then AddStdReg(rm, AType, False)
+      else AddOperand('**');
       Exit;
     end;
     
     // Check if mem is allowed
-    if not AAllowMem
+    if not (modMem in AReqTypes)
     then begin
-      AddOperand('**', 0, [], True);
+      AddOperand('**', 0, [], [ofMemory]);
       Exit;
     end;
     
@@ -520,13 +534,15 @@ var
         Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
       end;
     end;
-    AddOperand(Oper.Value, ASize, Oper.Size, Oper.Flags, True);
+    AddOperand(Oper.Value, ASize, Oper.Size, Oper.Flags, [ofMemory]);
   end;
   //===================
 
   procedure AddAp;
   begin
-    AddOperand('Ap');
+    if OperandSize32 = os16 //XXXX:XXXX
+    then AddOperand('$%1:s:%0:s', os32, 2, [], [], 2)
+    else AddOperand('$%1:s:%0:s', os48, 4, [], [], 2)
   end;
   
   procedure AddCd_q;
@@ -541,29 +557,29 @@ var
   
   procedure AddEb;
   begin
-    AddModRM(True, True, os8);
+    AddModRM([modReg, modMem], os8, reg8);
   end;
   
   procedure AddEd;
   begin
-    AddModRM(True, True, os32);
+    AddModRM([modReg, modMem], os32, reg32);
   end;
 
   procedure AddEd_q;
   begin
     if flagRex in Flags
-    then AddModRM(True, True, os64)
-    else AddModRM(True, True, os32);
+    then AddModRM([modReg, modMem], os64, reg64)
+    else AddModRM([modReg, modMem], os32, reg32);
   end;
   
   procedure AddEv;
   begin
-    AddModRM(True, True, OperandSize32);
+    AddModRM([modReg, modMem], OperandSize32, OPERAND_REG[OperandSize32]);
   end;
   
   procedure AddEw;
   begin
-    AddModRM(True, True, os16);
+    AddModRM([modReg, modMem], os16, reg16);
   end;
   
   procedure AddFv;
@@ -646,92 +662,104 @@ var
   
   procedure AddM;
   begin
-    AddModRM(False, True, OperandSize32);
+    AddModRM([modMem], OperandSize32, reg0 {dont care});
   end;
 
   procedure AddMa;
   begin
-    AddOperand('Ma');
+    AddModRM([modMem], OperandSize32, reg0 {dont care});
   end;
 
   procedure AddMb;
   begin
-    AddOperand('Ma');
+    AddModRM([modMem], os8, reg0 {dont care});
   end;
 
   procedure AddMd;
   begin
-    AddOperand('Md');
+    AddModRM([modMem], os32, reg0 {dont care});
   end;
   
   procedure AddMd_q;
   begin
-    AddOperand('Md/q');
+    if flagRex in Flags
+    then AddModRM([modMem], os64, reg0 {dont care})
+    else AddModRM([modMem], os32, reg0 {dont care});
   end;
 
   procedure AddMdq;
   begin
-    AddOperand('Mdq');
+    AddModRM([modMem], os128, reg0 {dont care})
   end;
 
   procedure AddMp;
   begin
-    AddOperand('Mp');
+    if OperandSize32 = os16 //XXXX:XXXX
+    then AddModRM([modMem], os32, reg0 {dont care})
+    else AddModRM([modMem], os48, reg0 {dont care});
   end;
 
   procedure AddMq;
   begin
-    AddOperand('Mq');
+    AddModRM([modMem], os64, reg0 {dont care});
   end;
 
   procedure AddMs;
   begin
-    AddOperand('Ms');
+    if A64Bit
+    then AddModRM([modMem], os80, reg0 {dont care})
+    else AddModRM([modMem], os48, reg0 {dont care});
   end;
 
   procedure AddMw_Rv;
   begin
-    AddOperand('Mw/Rv');
+    if Code[ModRMIdx] shr 6 = 3 // mode = 3 -> reg
+    then AddModRM([modReg], OperandSize32, OPERAND_REG[OperandSize32])
+    else AddModRM([modMem], os16, reg0 {dont care});
   end;
 
   procedure AddOb;
   begin
-    AddOperand('%s', os8, ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], True)
+    AddOperand('%s', os8, ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
   end;
 
   procedure AddOv;
   begin
-    AddOperand('%s', ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], True)
+    AddOperand('%s', ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
   end;
 
   procedure AddPd_q;
   begin
-    AddOperand('Pd/q');
+    if flagRex in Flags
+    then AddModReg(regMmx, os64)
+    else AddModReg(regMmx, os32);
   end;
 
   procedure AddPq;
   begin
-    AddOperand('Pq');
+    AddModReg(regMmx, False);
   end;
 
   procedure AddPRq;
   begin
-    AddOperand('PRq');
+    AddModRM([modReg], os64, regMmx);
   end;
   
   procedure AddQd;
   begin
-    AddOperand('Qd');
+    AddModRM([modReg, modMem], os32, regMmx);
   end;
   
   procedure AddQq;
   begin
-    AddOperand('Qq');
+    AddModRM([modReg, modMem], os64, regMmx);
   end;
 
   procedure AddRd_q;
   begin
-    AddModRM(True, False, OperandSize32);
+    if A64Bit
+    then AddModRM([modReg], os64, reg64)
+    else AddModRM([modReg], os32, reg32);
   end;
   
   procedure AddSw;
@@ -741,99 +769,102 @@ var
 
   procedure AddVd_q;
   begin
-    AddOperand('Vd/q');
+    if flagRex in Flags
+    then AddModReg(regXmm, os64)
+    else AddModReg(regXmm, os32);
   end;
 
   procedure AddVdq;
   begin
-    AddOperand('Vdq');
+    AddModReg(regXmm, os128);
   end;
 
   procedure AddVdq_sd;
   begin
-    AddOperand('Vdq/sd');
+    AddModReg(regXmm, os64); // only lower 64 bit
   end;
 
   procedure AddVdq_ss;
   begin
-    AddOperand('Vdq/ss');
+    AddModReg(regXmm, os32); // only lower 32 bit
   end;
 
   procedure AddVpd;
   begin
-    AddOperand('Vsd');
+    AddModReg(regXmm, os128);
   end;
 
   procedure AddVps;
   begin
-    AddOperand('Vps');
+    AddModReg(regXmm, os128);
   end;
 
   procedure AddVq;
   begin
-    AddOperand('Vq');
+    AddModReg(regXmm, os64);
   end;
 
   procedure AddVsd;
   begin
-    AddOperand('Vsd');
+    AddModReg(regXmm, os64);
   end;
 
   procedure AddVss;
   begin
-    AddOperand('Vss');
+    AddModReg(regXmm, os32);
   end;
 
   procedure AddVRdq;
   begin
-    AddOperand('VRdq');
+    AddModRM([modReg], os128, regXmm);
   end;
 
   procedure AddVRpd;
   begin
-    AddOperand('VRpd');
+    AddModRM([modReg], os128, regXmm);
   end;
 
   procedure AddVRps;
   begin
-    AddOperand('VRps');
+    AddModRM([modReg], os128, regXmm);
   end;
 
   procedure AddVRq;
   begin
-    AddOperand('VRq');
+    AddModRM([modReg], os64, regXmm);
   end;
 
   procedure AddWdq;
   begin
-    AddOperand('Wdq');
+    AddModRM([modReg, modMem], os128, regXmm);
   end;
   
   procedure AddWpd;
   begin
-    AddOperand('Wpd');
+    AddModRM([modReg, modMem], os128, regXmm);
   end;
 
   procedure AddWps;
   begin
-    AddOperand('Wps');
+    AddModRM([modReg, modMem], os128, regXmm);
   end;
 
   procedure AddWq;
   begin
-    AddOperand('Wq');
+    AddModRM([modReg, modMem], os64, regXmm);
   end;
 
   procedure AddWsd;
   begin
-    AddOperand('Wsd');
+    AddModRM([modReg, modMem], os64, regXmm);
   end;
 
   procedure AddWss;
   begin
-    AddOperand('Wss');
+    AddModRM([modReg, modMem], os32, regXmm);
   end;
 
+{$ifdef verbose_string_instructions}
   procedure AddXb;
   begin
     AddOperand('Xb');
@@ -863,7 +894,7 @@ var
   begin
     AddOperand('Yz');
   end;
-  
+{$endif}
   //===================
   
   procedure AddStdOperands(AIndex: Byte);
@@ -892,32 +923,32 @@ var
     
     procedure AddMem14_28Env;
     begin
-      AddModRM(False, True, OperandSize32);
+      AddModRM([modMem], OperandSize32, reg0 {dont care});
     end;
 
     procedure AddMem98_108Env;
     begin
-      AddModRM(False, True, OperandSize32);
+      AddModRM([modMem], OperandSize32, reg0 {dont care});
     end;
 
     procedure AddMem16;
     begin
-      AddModRM(False, True, os16);
+      AddModRM([modMem], os16, reg0 {dont care});
     end;
     
     procedure AddMem32;
     begin
-      AddModRM(False, True, os32);
+      AddModRM([modMem], os32, reg0 {dont care});
     end;
     
     procedure AddMem64;
     begin
-      AddModRM(False, True, os64);
+      AddModRM([modMem], os64, reg0 {dont care});
     end;
     
     procedure AddMem80;
     begin
-      AddModRM(False, True, os80);
+      AddModRM([modMem], os80, reg0 {dont care});
     end;
 
     procedure AddReg(AIndex: Byte);
@@ -1128,6 +1159,7 @@ var
     for n := 1 to OperIdx do
     begin
       Inc(idx, Operand[n].ByteCount);
+      Inc(idx, Operand[n].ByteCount2);
     end;
     // now we can lookup the opcode
     case Code[CodeIdx + idx] of
@@ -1701,7 +1733,7 @@ var
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
-            if Operand[2].IsMemory
+            if ofMemory in Operand[2].Flags
             then Opcode := 'movlps';
           end;
           1: begin AddVps; AddWps; end;
@@ -1738,7 +1770,7 @@ var
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
             AddVps; AddWq;
-            if Operand[2].IsMemory
+            if ofMemory in Operand[2].Flags
             then Opcode := 'movhps';
           end;
           1: begin AddVps; AddWps; end;
@@ -2271,7 +2303,7 @@ var
       end;
       $C8..$CF: begin
         Opcode := 'bswp';
-        AddOperand(StdReg(Code[CodeIdx]));
+        AddStdReg(Code[CodeIdx]);
       end;
       //---
       $D0: begin
@@ -2481,7 +2513,7 @@ var
             Include(Flags, flagRex);
           end
           else begin
-            AddOperand(StdReg(Code[CodeIdx]));
+            AddStdReg(Code[CodeIdx]);
             if Code[CodeIdx] <= $47
             then Opcode := CheckLock('inc')
             else Opcode := CheckLock('dec');
@@ -2490,11 +2522,11 @@ var
         //---
         $50..$57: begin
           Opcode := 'push';
-          AddOperand(StdReg(Code[CodeIdx]));
+          AddStdReg(Code[CodeIdx]);
         end;
         $58..$5F: begin
           Opcode := 'pop';
-          AddOperand(StdReg(Code[CodeIdx]));
+          AddStdReg(Code[CodeIdx]);
         end;
         //---
         $60: begin
@@ -2552,27 +2584,35 @@ var
         end;
         $6C: begin
           Opcode := CheckRepeat('insb');
+          {$ifdef verbose_string_instructions}
           AddYb;
           AddOperand('dx', os16);
+          {$endif}
         end;
         $6D: begin
           if OperandSize32 = os16
           then Opcode := CheckRepeat('insw')
           else Opcode := CheckRepeat('insd');
+          {$ifdef verbose_string_instructions}
           AddYz;
           AddOperand('dx', os16);
+          {$endif}
         end;
         $6E: begin
           Opcode := CheckRepeat('outsb');
+          {$ifdef verbose_string_instructions}
           AddOperand('dx', os16);
           AddXb;
+          {$endif}
         end;
         $6F: begin
           if OperandSize32 = os16
           then Opcode := CheckRepeat('outsw')
           else Opcode := CheckRepeat('outsd');
+          {$ifdef verbose_string_instructions}
           AddOperand('dx', os16);
           AddXz;
+          {$endif}
         end;
         $70..$7F: begin
           Opcode := 'j' + StdCond(Code[CodeIdx]);
@@ -2623,7 +2663,7 @@ var
           then Opcode := 'nop'
           else begin
             Opcode := 'xchg';
-            AddOperand(StdReg(Code[CodeIdx]));
+            AddStdReg(Code[CodeIdx]);
             AddOperand(SizeReg32('ax'));
           end;
         end;
@@ -2697,7 +2737,9 @@ var
         end;
         $A4: begin
           Opcode := CheckRepeat('movsb');
+          {$ifdef verbose_string_instructions}
           AddYb; AddXb;
+          {$endif}
         end;
         $A5: begin
           case OperandSize32 of
@@ -2706,12 +2748,15 @@ var
           else
             Opcode := CheckRepeat('movsw');
           end;
-          AddYv;
-          AddXv;
+          {$ifdef verbose_string_instructions}
+          AddYv; AddXv;
+          {$endif}
         end;
         $A6: begin
           Opcode := CheckRepeatX('cmpsb');
+          {$ifdef verbose_string_instructions}
           AddXb; AddYb;
+          {$endif}
         end;
         $A7: begin
           case OperandSize32 of
@@ -2720,7 +2765,9 @@ var
           else
             Opcode := CheckRepeatX('cmpsw');
           end;
+          {$ifdef verbose_string_instructions}
           AddYv; AddXv;
+          {$endif}
         end;
         $A8: begin
           Opcode := 'test';
@@ -2734,8 +2781,10 @@ var
         end;
         $AA: begin
           Opcode := CheckRepeat('stosb');
+          {$ifdef verbose_string_instructions}
           AddYb;
           AddOperand('al', os8);
+          {$endif}
         end;
         $AB: begin
           case OperandSize32 of
@@ -2744,13 +2793,17 @@ var
           else
             Opcode := CheckRepeat('stosw');
           end;
+          {$ifdef verbose_string_instructions}
           AddYv;
           AddOperand(SizeReg32('ax'));
+          {$endif}
         end;
         $AC: begin
           Opcode := CheckRepeat('lodsb');
+          {$ifdef verbose_string_instructions}
           AddOperand('al', os8);
           AddXb;
+          {$endif}
         end;
         $AD: begin
           case OperandSize32 of
@@ -2759,13 +2812,17 @@ var
           else
             Opcode := CheckRepeat('lodsw');
           end;
+          {$ifdef verbose_string_instructions}
           AddOperand(SizeReg32('ax'));
           AddXv;
+          {$endif}
         end;
         $AE: begin
           Opcode := CheckRepeatX('scasb');
+          {$ifdef verbose_string_instructions}
           AddOperand('al', os8);
           AddYb;
+          {$endif}
         end;
         $AF: begin
           case OperandSize32 of
@@ -2774,18 +2831,20 @@ var
           else
             Opcode := CheckRepeatX('scasw');
           end;
+          {$ifdef verbose_string_instructions}
           AddOperand(SizeReg32('ax'));
           AddYv;
+          {$endif}
         end;
         //---
         $B0..$B7: begin
           Opcode := 'mov';
-          AddOperand(StdReg(Code[CodeIdx], reg8, rexR in Flags), os8);
+          AddStdReg(Code[CodeIdx], reg8, rexR in Flags);
           AddIb;
         end;
         $B8..$BF: begin
           Opcode := 'mov';
-          AddOperand(StdReg(Code[CodeIdx]));
+          AddStdReg(Code[CodeIdx]);
           AddIv;
         end;
         //---
@@ -2984,33 +3043,25 @@ var
       end;
 
       Inc(CodeIdx);
-      if CodeIdx > High(Code)
+      if CodeIdx > 16 // max instruction length
       then begin
-        Log('Disassemble: instruction longer than %d bytes', [SizeOf(Code)]);
+        Log('Disassemble: instruction longer than 16 bytes');
         Exit;
       end;
     until Opcode <> '';
   end;
 
 const
-  MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', 'tbyte ptr ');
-  OSTEXT: array[TOperandSize] of string = ('os8', 'os16', 'os32', 'os64', 'os80');
-
+  MEMPTR: array[TOperandSize] of string = ('byte ptr ', 'word ptr ', 'dword ptr ', 'qword ptr ', '', 'tbyte ptr ', '16byte ptr ');
+{$ifdef debug_OperandSize}
+  OSTEXT: array[TOperandSize] of string = ('os8', 'os16', 'os32', 'os64', 'os48', 'os80', 'os128');
+{$endif}
 var
-  BytesRead: Cardinal;
   S, Soper: String;
   n: Integer;
   HasMem: Boolean;
 begin
-  BytesRead := 0;
-  if not ReadProcessMemory(AProcess, Pointer(Address), @Code, SizeOf(Code), BytesRead) and (BytesRead = SizeOf(Code))
-  then begin
-    Log('Disassemble: Failed to read memory at %s, got %u bytes', [FormatAddress(Address), BytesRead]);
-    ACode := '??';
-    ACodeBytes := '??';
-    Inc(Address);
-    Exit;
-  end;
+  Code := AAddress;
 
   Segment := '';
   Opcode := '';
@@ -3028,10 +3079,14 @@ begin
   begin
     if Operand[n].ByteCount = 0
     then S := Operand[n].Value
-    else S := Format(Operand[n].Value, [HexValue(Code[CodeIdx], Operand[n].ByteCount, Operand[n].FormatFlags)]);
+    else begin
+      if Operand[n].ByteCount2 = 0
+      then S := Format(Operand[n].Value, [HexValue(Code[CodeIdx], Operand[n].ByteCount, Operand[n].FormatFlags)])
+      else S := Format(Operand[n].Value, [HexValue(Code[CodeIdx], Operand[n].ByteCount, Operand[n].FormatFlags), HexValue(Code[CodeIdx + Operand[n].ByteCount], Operand[n].ByteCount2, Operand[n].FormatFlags)])
+    end;
 
     if Soper <> '' then Soper := Soper + ',';
-    if Operand[n].IsMemory
+    if ofMemory in Operand[n].Flags
     then begin
       if (OperIdx = 1)
 //      or (Operand[n].Size <> os32)
@@ -3042,6 +3097,7 @@ begin
     end
     else Soper := Soper + S;
     Inc(CodeIdx, Operand[n].ByteCount);
+    Inc(CodeIdx, Operand[n].ByteCount2);
   end;
 {$ifdef debug_OperandSize}
   Soper := Soper + ' | ';
@@ -3052,9 +3108,9 @@ begin
 {$endif}
 
   S := '';
-  if preLock in Flags then S := S + '**lock:**';
-  if preRep in Flags then S := S + '?rep:?';
-  if preRepNE in Flags then S := S + '?repne:?';
+  if preLock in Flags then S := S + '**lock**';
+  if preRep in Flags then S := S + '?rep?';
+  if preRepNE in Flags then S := S + '?repne?';
   S := S + Opcode;
   if not HasMem and (Segment <> '') then S := S + ' ?' + Segment + '?';
   ACode := S + ' ' + Soper;
@@ -3066,7 +3122,7 @@ begin
     S := S + HexStr(Code[n], 2);
   end;
   ACodeBytes := S;
-  Inc(Address, CodeIdx);
+  Inc(AAddress, CodeIdx);
 end;
 
 
