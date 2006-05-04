@@ -1,0 +1,73 @@
+object Form1: TForm1
+  Caption = 'AsmTest'
+  ClientHeight = 224
+  ClientWidth = 400
+  PixelsPerInch = 120
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 223
+  Left = 435
+  Height = 224
+  Top = 232
+  Width = 400
+  object Label1: TLabel
+    Caption = 'Enter hex values separated by spaces here'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 18
+    Top = 8
+    Width = 263
+  end
+  object Label2: TLabel
+    Anchors = [akLeft, akBottom]
+    Caption = 'Output'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 17
+    Top = 171
+    Width = 45
+  end
+  object txtCode: TMemo
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      '90'
+      '41'
+      'E8 12345678'
+      'C3'
+      'AA'
+      '0F0F A4 B6 12345678 A6'
+      '65 0F 01 92 12345678'
+      '43 DB 9C B1 55667788'
+      ''
+    )
+    ScrollBars = ssVertical
+    TabOrder = 0
+    Left = 8
+    Height = 135
+    Top = 32
+    Width = 384
+  end
+  object txtOutput: TEdit
+    Anchors = [akLeft, akRight, akBottom]
+    ReadOnly = True
+    TabOrder = 1
+    Left = 8
+    Height = 23
+    Top = 191
+    Width = 384
+  end
+  object chk64Bit: TCheckBox
+    Caption = '64 bit'
+    TabOrder = 2
+    Left = 304
+    Height = 17
+    Top = 9
+    Width = 55
+  end
+  object Timer1: TTimer
+    Interval = 250
+    OnTimer = Timer1Timer
+    top = 184
+  end
+end
