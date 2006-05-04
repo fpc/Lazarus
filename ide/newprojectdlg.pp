@@ -46,8 +46,7 @@ type
     procedure CreateButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxDblClick(Sender: TObject);
-    procedure ListBoxMouseUp(Sender:TObject;
-       Button: TMouseButton;  Shift:TShiftState;  X,Y:integer);
+    procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     procedure FillHelpLabel;
     procedure SetupComponents;
@@ -134,21 +133,19 @@ begin
       EndUpdate;
     end;
     ItemIndex:=0;
-    OnMouseUp:=@ListBoxMouseUp;
     OnDblClick:=@ListBoxDblClick;
+    OnSelectionChange:=@ListBoxSelectionChange;
   end;
 
   HelpLabel:=TLabel.Create(Self);
   with HelpLabel do begin
     Parent:=Self;
     Name:='HelpLabel';
-    Left:=ListBox.Left+ListBox.Width+10;
-    Top:=ListBox.Top+2;
-    Width:=MaxX-5-Left;
-    Height:=ListBox.Height-2;
     Anchors := [akTop,akRight,akBottom];
     WordWrap:=true;
     Caption:=lisNPSelectAProjectType;
+    AnchorToCompanion(akLeft,6,ListBox);
+    AnchorParallel(akRight,6,Parent);
   end;
 
   CreateButton:=TButton.Create(Self);
@@ -196,8 +193,8 @@ begin
   then CreateButtonClick(Self);
 end;
 
-procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;
-  Button: TMouseButton; Shift: TShiftState; X,Y:integer);
+procedure TNewProjectDialog.ListBoxSelectionChange(Sender: TObject;
+  User: boolean);
 begin
   FillHelpLabel;
 end;
