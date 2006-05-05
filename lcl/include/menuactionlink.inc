@@ -5,7 +5,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.LCL, included in this distribution,                 *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -138,4 +138,3 @@ end;
 
 
 // included by menus.pas
-

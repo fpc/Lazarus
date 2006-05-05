@@ -1,7 +1,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.LCL, included in this distribution,                 *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -48,4 +48,3 @@ function localtime(var __timer : ttime_t):Ptm;cdecl;external clib name 'localtim
 implementation
 
 end.
-
