@@ -581,6 +581,7 @@ debugger/windebug/test/asmtestunit.pas svneol=native#text/pascal
 debugger/windebug/windebugger.pp svneol=native#text/pascal
 debugger/windebug/windextra.pp svneol=native#text/pascal
 debugger/windebug/windisas.pp svneol=native#text/plain
+debugger/windebug/windpetypes.pp svneol=native#text/pascal
 designer/abstractcompiler.pp svneol=native#text/pascal
 designer/abstracteditor.pp svneol=native#text/pascal
 designer/abstractfilesystem.pp svneol=native#text/pascal
