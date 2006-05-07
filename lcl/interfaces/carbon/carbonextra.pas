@@ -99,4 +99,4 @@ begin
   Result := InstallEventHandler(GetApplicationEventTarget, inHandler, inNumTypes, inList, inUserData, outRef);
 end;
 *)
-end
+end.
