@@ -2067,7 +2067,7 @@ Function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 Begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
-{$ifdef ver2_0}
+{$ifdef win32}
   Result := Windows.GetWindowLong(Handle, int);
 {$else}
   Result := Windows.GetWindowLongPtr(Handle, int);
@@ -3020,7 +3020,7 @@ Function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrI
 Begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetWindowLong] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));
-{$ifdef ver2_0}
+{$ifdef win32}
   Result := Windows.SetWindowLong(Handle, Idx, NewLong);
 {$else}
   Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
