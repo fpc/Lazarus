@@ -91,11 +91,14 @@ end;
 procedure TCustomEdit.SetSelText(const Val : string);
 var
   OldText, NewText: string;
+  OldPos: Integer;
 begin
+  OldPos := SelStart;
   OldText:=Text;
   NewText:=LeftStr(OldText,SelStart)+Val
              +RightStr(OldText,length(OldText)-SelStart-SelLength);
   Text:=NewText;
+  SelStart := OldPos + Length(Val);
 end;
 
 {------------------------------------------------------------------------------
