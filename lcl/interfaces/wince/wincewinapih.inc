@@ -44,6 +44,7 @@ Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
 //function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
+Procedure CallDefaultWndHandler(Sender: TObject; var Message);override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
 Function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 {
@@ -67,6 +68,9 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;  wUsage: UINT): HBITMAP; override;
+function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; Override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 //function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 //function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
@@ -100,9 +104,14 @@ function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const St
 //function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 {Function GetActiveWindow : HWND; override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;}
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; override;
-function GetCapture: HWND; override;
+function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
+function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; Override;
+
+{function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;}
@@ -113,21 +122,19 @@ Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 {Function GetCmdLineParamDescForInterface: string; override;
 function GetCursorPos(var lpPoint: TPoint): Boolean; override;}
 function GetDC(hWnd: HWND): HDC;  override;
-{function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
-function GetDesignerDC(WindowHandle: HWND): HDC; override;}
+function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
+{function GetDesignerDC(WindowHandle: HWND): HDC; override;}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
-{function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
-function GetFontLanguageInfo(DC: HDC): DWord; override;
-function GetKeyState(nVirtKey: Integer): Smallint; override;}
+function GetForegroundWindow: HWND; override;
+//function GetFontLanguageInfo(DC: HDC): DWord; override;
+//function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 Function GetParent(Handle : HWND): HWND; override;
 {Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;}
-//Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
+Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;}
 {function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;}
@@ -136,7 +143,6 @@ function GetStockObject(Value: Integer): LongInt; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
-function UpdateWindow(Handle: HWND): Boolean;override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
@@ -201,9 +207,9 @@ function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
-function SetCursorPos(X, Y: Integer): Boolean; override;
+function SetCursorPos(X, Y: Integer): Boolean; override;}
 function SetFocus(hWnd: HWND): HWND; override;
-Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;}
+//Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
@@ -216,17 +222,16 @@ function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
 {function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;}
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
-{function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
-function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;}
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
+function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
+function UpdateWindow(Handle: HWND): Boolean;override;
 {function VkKeyScan(AChar: Char): Short; override;}
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
 
-
-Procedure CallDefaultWndHandler(Sender: TObject; var Message);override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

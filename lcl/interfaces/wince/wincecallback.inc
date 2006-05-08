@@ -729,14 +729,18 @@ Begin
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
-//  if WindowInfo^.myButton<> 0 then
-//  begin
-//  Writeln('call of button');
-//  if Msg = WM_PAINT then
-//  begin
-//       CallDefaultWindowProc(Window, Msg, WParam, LParam);
-//  end;
-//  end;
+
+//----------------------------------------
+//roozbeh added for testing paint messages
+//----------------------------------------
+
+  if WindowInfo^.myButton<> 0 then
+  begin
+  if Msg = WM_PAINT then
+  begin
+   //    CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end;
+  end;
   
   if WindowInfo^.isChildEdit then
   begin
@@ -1107,8 +1111,8 @@ Begin
       end;
       if not WindowInfo^.hasTabParent then
       begin
-        if TWinCEWidgetSet(WidgetSet).ThemesActive and WindowInfo^.isGroupBox
-            and (lWinControl <> nil) then
+        if {TWinCEWidgetSet(WidgetSet).ThemesActive and} WindowInfo^.isGroupBox
+           {and (lWinControl <> nil)} then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
           lWinControl.EraseBackground(WParam);
@@ -1667,7 +1671,7 @@ Begin
         end;
         if lWinControl <> nil then begin
           {$IFDEF VerboseSizeMsg}
-          writeln('Win32CallBack WM_MOVE ',lWinControl.Name,':',lWinControl.ClassName,
+          writeln('WinCECallBack WM_MOVE ',lWinControl.Name,':',lWinControl.ClassName,
             ' NewPos=',XPos,',',YPos);
           {$ENDIF}
           if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
@@ -1688,7 +1692,7 @@ Begin
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
+          writeln('WinCECallback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
             ' NewSize=',Width,',',Height,
             ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
             ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
@@ -1712,7 +1716,7 @@ Begin
       if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
         ClearSiblingRadioButtons(TRadioButton(lWinControl));
     end;
-{    WM_ENDSESSION:
+    WM_ENDSESSION:
     begin
       if (Application<>nil) and (TWinCEWidgetSet(WidgetSet).AppHandle=Window) and
          (WParam>0) and (LParam=0) then
@@ -1735,11 +1739,11 @@ Begin
           then LMessage.Result := 0
           else LMessage.Result := 1;
       end;
-    end;}
+    end;
 
   end;
 
-  // convert from win32 client to lcl client pos
+  // convert from wince client to lcl client pos
   if PLMsg = @LMMouseMove then
   begin
     if GetLCLClientBoundsOffset(Window, R) then
@@ -1965,3 +1969,35 @@ begin
   end;
 end;
 {$endif}
+
+
+{------------------------------------------------------------------------------
+ Function: ComboBoxWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles the messages sent to a combobox control by Windows or other
+  applications
+ ------------------------------------------------------------------------------}
+function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  // darn MS: if combobox has edit control, and combobox receives focus, it
+  // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
+  // also don't pass WM_SETFOCUS to the lcl,
+  // it will get one from the edit control
+  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
+     (GetTopWindow(Window) <> HWND(nil)) then
+  begin
+    // continue normal processing, don't send to lcl
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end else begin
+    // normal processing
+    Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
+

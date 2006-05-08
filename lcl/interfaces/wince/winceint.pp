@@ -32,6 +32,8 @@ interface
 {$ASSERTIONS ON}
 {$ENDIF}
 
+{$DEFINE OldToolbar}
+
 // defining the following will print all messages as they are being handled
 // valuable for investigation of message trees / interrelations
 { $define MSG_DEBUG}
@@ -122,6 +124,11 @@ type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
+    procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
+      const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+    procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
+    procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
+        Desc: PRawImageDescription);
 
 //    FWaitHandleCount: dword;
 //    FWaitHandles: array of HANDLE;
@@ -183,10 +190,16 @@ const
   CP_UTF7                  = 65000;         { UTF-7 translation }
   CP_UTF8                  = 65001;         { UTF-8 translation }
 
+function GetTopWindow(hWnd:HWND):HWND;
+
 { export for widgetset implementation }
 
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+  LParam: Windows.LParam): LResult;
 
 var
   WinCEWidgetSet: TWinCEWidgetSet;
@@ -207,7 +220,7 @@ uses
 // WinCEWSCalendar,
 // WinCEWSCheckLst,
 // WinCEWSCListBox,
-// WinCEWSComCtrls,
+ WinCEWSComCtrls,
 // WinCEWSControls,
 // WinCEWSDbCtrls,
 // WinCEWSDBGrids,
@@ -240,6 +253,13 @@ var
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use ye
+
+//roozbeh...move this to somewhere more meaningfull!
+function GetTopWindow(hWnd:HWND):HWND;
+begin
+  Result := GetWindow(hWnd,GW_CHILD);
+end;
+
 
 {$I wincelistsl.inc}
 {$I wincecallback.inc}

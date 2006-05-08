@@ -54,10 +54,10 @@ type
   private
   protected
   public
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
-          var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;}
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
   end;
 
   { TWinCEWSGroupBox }
@@ -74,7 +74,7 @@ type
   private
   protected
   public
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
@@ -95,7 +95,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
-    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TWinCEWSComboBox }
@@ -269,6 +269,7 @@ type
 
 implementation
 
+
 {$I wincememostrings.inc}
 
 
@@ -311,6 +312,255 @@ begin
     end;
     Assert(False, 'Trace:TODO: [TWinCEWSScrollBar.SetParams] Set up step and page increments for csScrollBar');
   end;
+end;
+
+{ TWinCEWSCustomGroupBox }
+
+//roozbeh:there are still some issues with group box!
+
+function GroupBoxPanelWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  // handle paint messages for theming
+  case Msg of
+    WM_ERASEBKGND, WM_NCPAINT, WM_PAINT, WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
+    begin
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+//      Result := WindowProc(Window, Msg, WParam, LParam);
+    end;
+  else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+//    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
+function TWinCEWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+    Flags := Flags Or BS_GROUPBOX;
+  end;
+  // create window
+  Params.SubClassWndProc := @GroupBoxPanelWindowProc;
+  FinishCreateWindow(AWinControl, Params, false);
+  // handle winxp panel hack
+  // if themed but does not have tabpage as parent
+  // remember we are a groupbox in need of erasebackground hack
+//  if TWinCEWidgetSet(WidgetSet).ThemesActive
+//      and not Params.WindowInfo^.hasTabParent then
+//  Params.WindowInfo^.isGroupBox := true;
+  AWinControl.InvalidateClientRectCache(true);
+  Result := Params.Window;
+end;
+
+procedure TWinCEWSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+var
+  WinHandle, BuddyHandle: HWND;
+begin
+  WinHandle := AWinControl.Handle;
+  // check if we have a ``container'', if so, move that
+  BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
+  if BuddyHandle <> 0 then
+  begin
+    MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
+    Left := 0;
+    Top := 0;
+  end;
+end;
+
+{ TWinCEWSCustomComboBox }
+
+const
+  ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
+    CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
+
+function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
+const
+  ComboBoxStyles: array[TComboBoxStyle] of dword = (
+    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
+    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+  ComboBoxReadOnlyStyles: array[boolean] of dword = (
+    CBS_DROPDOWN, CBS_DROPDOWNLIST);
+begin
+  Result := ComboBoxStyles[AComboBox.Style];
+  if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+    Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
+end;
+
+function TWinCEWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
+    If TComboBox(AWinControl).Sorted Then
+      Flags:= Flags or CBS_SORT;
+    pClassName := 'COMBOBOX';
+    Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
+    SubClassWndProc := @ComboBoxWindowProc;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  // combobox is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
+
+  // get edit window within
+  with Params do
+  begin
+    Buddy := GetTopWindow(Window);
+    // If the style is CBS_DROPDOWNLIST, GetTopWindow returns null,
+    // because the combobox has no edit in that case.
+    if Buddy<>HWND(nil) then begin
+      SubClassWndProc := @WindowProc;
+      WindowCreateInitBuddy(AWinControl, Params);
+      BuddyWindowInfo^.isChildEdit := true;
+      BuddyWindowInfo^.isComboEdit := true;
+    end else BuddyWindowInfo:=nil;
+  end;
+  Result := Params.Window;
+end;
+
+procedure TWinCEWSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+var
+  WinHandle: HWND;
+  StringList: TWinCEComboBoxStringList;
+begin
+  WinHandle := AWinControl.Handle;
+  StringList := TWinCEComboBoxStringList(GetWindowInfo(WinHandle)^.List);
+  if StringList <> nil then
+    Height := StringList.ComboHeight;
+end;
+
+function  TWinCEWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(@Result), Windows.LPARAM(nil));
+end;
+
+function  TWinCEWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+var
+  startPos, endPos: dword;
+begin
+  SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(@startPos), Windows.LPARAM(@endPos));
+  Result := endPos - startPos;
+end;
+
+procedure TWinCEWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+var
+  CurrentStyle: dword;
+begin
+  CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
+  if (CurrentStyle and ComboBoxStylesMask) =
+        CalcComboBoxWinFlags(ACustomComboBox) then
+    exit;
+
+  RecreateWnd(ACustomComboBox);
+end;
+
+function  TWinCEWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
+  if Result = LB_ERR Then
+  Begin
+    Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index '+
+        'via LM_GETITEMINDEX; try selecting an item first');
+    Result := -1;
+  End;
+end;
+
+function  TWinCEWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := GetWindowInfo(ACustomComboBox.Handle)^.MaxLength;
+end;
+
+function  TWinCEWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    exit;
+  AText := GetControlText(AWinControl.Handle);
+end;
+
+procedure TWinCEWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
+  NewTraverseList: boolean);
+begin
+  // TODO: implement me?
+end;
+
+procedure TWinCEWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+begin
+  SendMessage(ACustomComboBox.Handle, CB_SETEDITSEL, 0, MakeLParam(NewStart, NewStart));
+end;
+
+procedure TWinCEWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  startpos, endpos: integer;
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  SendMessage(winhandle, CB_GETEDITSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+  endpos := startpos + NewLength;
+  SendMessage(winhandle, CB_SETEDITSEL, 0, MakeLParam(startpos, endpos));
+end;
+
+procedure TWinCEWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+  SendMessage(ACustomComboBox.Handle, CB_SETCURSEL, Windows.WParam(NewIndex), 0);
+end;
+
+procedure TWinCEWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
+  GetWindowInfo(winhandle)^.MaxLength := NewLength;
+end;
+
+procedure TWinCEWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+begin
+  RecreateWnd(ACustomComboBox);
+end;
+
+procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  Handle: HWND;
+begin
+  Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
+  Handle := AWinControl.Handle;
+  if TCustomComboBox(AWinControl).ReadOnly then
+    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
+  else
+    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+end;
+
+function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+var
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  Result := TWinCEComboBoxStringList.Create(winhandle, ACustomComboBox);
+  GetWindowInfo(winhandle)^.List := Result;
+end;
+
+procedure TWinCEWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+  TWinCEListStringList(AList).Sorted := IsSorted;
 end;
 
 
@@ -864,9 +1114,9 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TScrollBar, TWinCEWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TWinCEWSCustomGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TWinCEWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWinCEWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TWinCEWSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TWinCEWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWinCEWSComboBox);
   RegisterWSComponent(TCustomListBox, TWinCEWSCustomListBox);
 //  RegisterWSComponent(TListBox, TWinCEWSListBox);

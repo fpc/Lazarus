@@ -220,6 +220,7 @@ begin
         MenuHandle := HMENU(nil);
       end;
 
+
       Window := CreateWindowEx(
        FlagsEx,            // Extra Flags
        pClassName,         // Name of the registered class

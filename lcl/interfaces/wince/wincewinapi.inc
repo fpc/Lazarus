@@ -538,16 +538,16 @@ Var
   R: TRect;
 Begin
   R := Rect;
-  Assert(False, Format('trace:> [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  Assert(False, Format('trace:> [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
   Result := Boolean(Windows.FillRect(DC, Windows.RECT(r), Brush));
-  Assert(False, Format('trace:< [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
+  Assert(False, Format('trace:< [TWinCEWidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
 End;
 
 {------------------------------------------------------------------------------
   Method: Frame3D
   Params: DC         - handle to device context
           Rect       - bounding rectangle
-          FrameWidth - width of the frame (ignored on win32)
+          FrameWidth - width of the frame (ignored on wince)
           Style      - frame style
   Returns: Whether the function was successful
 
@@ -748,31 +748,477 @@ begin
   Result := Windows.GetDeviceCaps(DC, Index);
 end;
 
-{function TWinCEWidgetSet.GetDeviceRawImageDescription(DC: HDC;
-  Desc: PRawImageDescription): boolean;
+function TWinCEWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  DCOrg, winOrg: Windows.POINT;
+  ORect: TRect;
 begin
-  Result:=inherited GetDeviceRawImageDescription(DC, Desc);
+  OriginDiff.X := 0;
+  OriginDiff.Y := 0;
+  //roozbeh changed
+  //Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
+  DCOrg.X := 0;
+  DCOrg.Y := 0;
+  Result:=true;
+  if not Result then exit;
+  winOrg.X := 0;
+  winOrg.Y := 0;
+  Result := Windows.ClientToScreen(WindowHandle, @winOrg);
+  if not Result then exit;
+  Result := GetLCLClientBoundsOffset(WindowHandle, ORect);
+  if not Result then exit;
+  OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
+  OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
+//  Result := Windows.GetWindowOrgEx(PaintDC, winOrg);
+  Result := true;
+  winOrg.X := 0;
+  winOrg.Y := 0;
+  if not Result then exit;
+  dec(OriginDiff.X, winOrg.X);
+  dec(OriginDiff.Y, winOrg.Y);
 end;
 
-function TWinCEWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+function TWinCEWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+var
+  hBitmap: HGDIOBJ;
+  hWindow: HWND;
+  BitmapInfo: BITMAP;
+  ClientRect: TRect;
 begin
-  Result:=inherited GetDeviceSize(DC, p);
+  // check if memory dc with bitmap
+  Result := false;
+  case GetObjectType(DC) of
+    OBJ_MEMDC:
+      begin
+        hBitmap := GetCurrentObject(DC, OBJ_BITMAP);
+        if hBitmap <> HGDIOBJ(nil) then
+        begin
+          GetObject(hBitmap, SizeOf(BITMAP), @BitmapInfo);
+          P.x := BitmapInfo.bmWidth;
+          P.y := BitmapInfo.bmHeight;
+          Result := true;
+        end;
+      end;
+ {   OBJ_DC:
+      begin
+        hWindow := WindowFromDC(DC);
+        if hWindow <> HWND(nil) then
+        begin
+          Result := GetClientRect(hWindow, ClientRect);
+          P.x := ClientRect.Right;
+          P.y := ClientRect.Bottom;
+        end;
+      end;}
+  else
+  end;
+
+  if not Result then
+  begin
+    // do default
+    Result := inherited GetDeviceSize(DC, P);
+  end;
 end;
 
-function TWinCEWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan,
-  NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT
-  ): Integer;
+function TWinCEWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  Result:=inherited GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, BitInfo,
-    Usage);
+  Result := 0;
+  //Result := Windows.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, Windows.PBitmapInfo(@BitInfo)^, Usage)
 end;
 
-function TWinCEWidgetSet.GetFocus: HWND;
+{function TWinCEWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 begin
-  Result:=inherited GetFocus;
+  Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
+end;}
+
+procedure TWinCEWidgetSet.FillRawImageDescriptionColors(Desc: PRawImageDescription);
+begin
+  case Desc^.BitsPerPixel of
+    1,4,8:
+      begin
+        // palette mode, no offsets
+        Desc^.Format := ricfGray;
+        Desc^.RedPrec := Desc^.BitsPerPixel;
+        Desc^.GreenPrec := 0;
+        Desc^.BluePrec := 0;
+        Desc^.RedShift := 0;
+        Desc^.GreenShift := 0;
+        Desc^.BlueShift := 0;
+      end;
+    16:
+      begin
+        // 5-6-5 mode
+        //roozbeh all changed from 5-5-5 to 5-6-5
+        Desc^.RedPrec := 5;
+        Desc^.GreenPrec := 6;
+        Desc^.BluePrec := 5;
+        Desc^.RedShift := 11;
+        Desc^.GreenShift := 5;
+        Desc^.BlueShift := 0;
+        Desc^.Depth := 16;
+      end;
+    24:
+      begin
+        // 8-8-8 mode
+        Desc^.RedPrec := 8;
+        Desc^.GreenPrec := 8;
+        Desc^.BluePrec := 8;
+        Desc^.RedShift := 16;
+        Desc^.GreenShift := 8;
+        Desc^.BlueShift := 0;
+      end;
+  else    //  32:
+    // 0-8-8-8 mode, high byte is not used
+    Desc^.RedPrec := 8;
+    Desc^.GreenPrec := 8;
+    Desc^.BluePrec := 8;
+    Desc^.RedShift := 16;
+    Desc^.GreenShift := 8;
+    Desc^.BlueShift := 0;
+    Desc^.Depth := 24;
+  end;
 end;
 
-function TWinCEWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
+procedure TWinCEWidgetSet.FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
+    Desc: PRawImageDescription);
+begin
+  Desc^.Format := ricfRGBA;
+  Desc^.HasPalette := BitmapInfo.bmBitsPixel <= 8;   // if true, each pixel is an index in the palette
+  Desc^.Depth := BitmapInfo.bmBitsPixel;          // used bits per pixel
+  Desc^.Width := BitmapInfo.bmWidth;
+  Desc^.Height := BitmapInfo.bmHeight;
+  Desc^.PaletteColorCount := 0;             // TODO, also `ColorCount'
+  Desc^.BitOrder := riboReversedBits;
+  Desc^.ByteOrder := riboLSBFirst;
+  Desc^.LineOrder := riloTopToBottom;
+  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
+  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
+  Desc^.LineEnd := rileDWordBoundary;
+  FillRawImageDescriptionColors(Desc);
+  Desc^.AlphaShift := 0;
+  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
+  // The next values are only valid, if there is a separate alpha mask
+  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
+  Desc^.AlphaPrec := 1;
+  Desc^.AlphaLineEnd := rileDWordBoundary;
+  Desc^.AlphaBitOrder := riboReversedBits;
+  Desc^.AlphaByteOrder := riboLSBFirst;
+end;
+
+function TWinCEWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): Boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+begin
+  Result := Windows.GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if Result then
+    FillRawImageDescription(BitmapInfo, Desc);
+end;
+
+function TWinCEWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
+begin
+  Result := true;
+
+  FillChar(Desc^, SizeOf(Desc^), 0);
+  Desc^.Format := ricfRGBA;
+  Desc^.HasPalette := (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0;
+  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
+  // Width and Height not relevant
+  Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+  Desc^.BitOrder := riboReversedBits;
+  Desc^.ByteOrder := riboLSBFirst;
+  Desc^.LineOrder := riloTopToBottom;
+  Desc^.ColorCount := Desc^.PaletteColorCount;
+  if Desc^.HasPalette then
+    Desc^.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES)
+  else
+    Desc^.BitsPerPixel := Desc^.Depth;
+  Desc^.LineEnd := rileDWordBoundary;
+  FillRawImageDescriptionColors(Desc);
+  Desc^.AlphaPrec := 1;
+  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
+  // The next values are only valid, if there is a separate alpha mask
+  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
+  Desc^.AlphaBitOrder := riboReversedBits;
+  Desc^.AlphaByteOrder := riboLSBFirst;
+  // CreateBitmap winapi call wants word-aligned data
+  Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaShift := 0;
+end;
+
+function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+var
+  SrcWidth, SrcHeight: Integer;
+  hMemDC: HDC;
+  hMemBitmap: HBITMAP;
+  hOldObject: HGDIOBJ;
+begin
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+
+  // make bitmap compatible to src device
+  SrcWidth := SrcRect.Right - SrcRect.Left;
+  SrcHeight := SrcRect.Bottom - SrcRect.Top;
+  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
+  Result := hMemBitmap <> 0;
+  if not Result then exit;
+
+  // make memory device context compatible to device, to select bitmap in for copying
+  hMemDC := Windows.CreateCompatibleDC(SrcDC);
+  Result := hMemDC <> 0;
+  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);
+
+  // copy srcdc -> membitmap
+  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
+        SrcDC, SrcRect.Left, SrcRect.Top, SRCCOPY);
+
+  // done copying, deselect bitmap from dc
+  Windows.SelectObject(hMemDC, hOldObject);
+
+  // copy membitmap -> rawimage
+  Result := Result and GetRawImageFromBitmap(hMemBitmap, 0,
+    Rect(0, 0, SrcWidth, SrcHeight), NewRawImage);
+
+  // free temporary stuff
+  Windows.DeleteDC(hMemDC);
+  Windows.DeleteObject(hMemBitmap);
+end;
+
+procedure TWinCEWidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
+  const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
+  var Size: Cardinal);
+var
+  bmInfoBuffer: array[0..sizeof(TBitmapInfo)+256*sizeof(Windows.RGBQUAD)] of byte;
+  bmInfo: TBitmapInfo absolute bmInfoBuffer;
+  ScreenDC: HDC;
+begin
+  // initialize bitmapinfo structure
+  bmInfo.bmiHeader.biSize := sizeof(bmInfo.bmiHeader);
+  bmInfo.bmiHeader.biWidth := BitmapInfo.bmWidth;
+  bmInfo.bmiHeader.biHeight := BitmapInfo.bmHeight;
+  // request a top-down DIB
+  if bmInfo.bmiHeader.biHeight > 0 then
+    bmInfo.bmiHeader.biHeight := -bmInfo.bmiHeader.biHeight;
+  bmInfo.bmiHeader.biPlanes := 1;
+  bmInfo.bmiHeader.biBitCount := BitmapInfo.bmBitsPixel;
+  if BitmapInfo.bmBitsPixel=16 then
+  bmInfo.bmiHeader.biCompression := BI_RGB
+  else
+  bmInfo.bmiHeader.biCompression := BI_BITFIELDS;
+
+  bmInfo.bmiHeader.biSizeImage := 0;
+  Size := ((BitmapInfo.bmWidthBytes+3) and not 3) * (SrcRect.Bottom-SrcRect.Top);
+  ScreenDC := GetDC(0);
+  GetMem(Data, Size);
+  GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
+  fillchar(data^,size,223);//roozbeh here just for test!
+  // release resources
+  ReleaseDC(0, ScreenDC);
+end;
+
+function TWinCEWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+  ARect: TRect;
+begin
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+  Result := Windows.GetObject(SrcBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if not Result then exit;
+
+  FillRawImageDescription(BitmapInfo, @NewRawImage.Description);
+  ARect := SrcRect;
+  if ARect.Top > BitmapInfo.bmHeight then
+    ARect.Top := BitmapInfo.bmHeight;
+  if ARect.Bottom > BitmapInfo.bmHeight then
+    ARect.Bottom := BitmapInfo.bmHeight;
+  if ARect.Left > BitmapInfo.bmWidth then
+    ARect.Left := BitmapInfo.bmWidth;
+  if ARect.Right > BitmapInfo.bmWidth then
+    ARect.Right := BitmapInfo.bmWidth;
+
+  // copy bitmap
+  AllocAndCopy(BitmapInfo, SrcBitmap, ARect, NewRawImage.Data, NewRawImage.DataSize);
+
+  // check mask
+  if SrcMaskBitmap <> 0 then
+  begin
+    Result := Windows.GetObject(SrcMaskBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+    if not Result then exit;
+
+    AllocAndCopy(BitmapInfo, SrcMaskBitmap, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
+    NewRawImage.Description.AlphaSeparate := true;
+  end;
+end;
+
+function BytesPerLine(nWidth,nBitsPerPixel:integer):integer;
+begin
+     result := ( (nWidth * nBitsPerPixel + 31) and (not 31) ) div 8;
+end;
+
+
+function TWinCEWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
+  dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
+  wUsage: UINT): HBITMAP;
+var
+hbit : HBITMAP;
+lpDestBits : PChar;
+dwLen : longint;
+lpH:TBitmapInfoHeader;
+orig_bitcount,nPadWidth,pad:integer;
+i,dwError:longint;
+d:PByte;
+s,s0:PWord;
+pixel:word;
+begin
+nPadWidth := 4;
+lpH := InfoHeader;
+lpH.biSize:=sizeof(TBitmapInfoHeader);
+
+if lpH.biWidth mod nPadWidth <> 0  then
+pad := nPadWidth - lpH.biWidth mod nPadWidth;
+// there are problems with padding. i dont know the rules
+// anymore...
+pad := 0;
+// This is wrong when the infoheader is followed by color data...
+// We hope that biSizeImage is set then...
+dwLen := ((lpH.biWidth+pad) * abs(lpH.biHeight) * lpH.biBitCount) div 8;
+// includes colordata, if any...
+if lpH.biSizeImage <> 0 then
+dwLen := lpH.biSizeImage;
+orig_bitcount := lpH.biBitCount;
+
+//if unaligned(InitInfo.bmiHeader.biBitCount) = 16 then
+//unaligned(InitInfo.bmiHeader.biBitCount) := 24;
+
+hbit := windows.CreateDIBSection( dc, windows.PBITMAPINFO(@lph)^,
+        DIB_RGB_COLORS, lpDestBits, 0, 0);
+
+//hbit := CreateDIBSection(dc, InitInfo, DIB_RGB_COLORS, lpDestBits, 0, 0);
+if (hbit <> 0) then
+ begin
+
+   if orig_bitcount = 16 then
+    begin
+      if lpH.biCompression = BI_RGB then
+        begin
+          s := PWord(InitBits);
+	  d := PByte(lpDestBits);
+	  //s0 := PWord(lpDestBits);
+		// There is a bug in this code when padding was used!
+		// how do you get the full color range from 5 bits???
+		// shifting left seems to be ok...
+          dwLen := dwLen shr 1;
+	  for i := 0 to  dwLen-1 do
+            begin
+              d^ := ((s^ shr 0) and $1F) shl 3;
+              inc(d);
+              d^ := ((s^ shr 5) and $1F) shl 3;
+              inc(d);
+              d^ := ((s^ shr 10) and $1F) shl 3;
+              inc(d);
+              s:=s+2;
+            end;
+	  end else begin
+                move(lpDestBits^, InitBits^, dwLen);
+                //fillchar(lpDestBits^,100,dwlen);
+            end;
+	end else begin
+	    move(lpDestBits^, InitBits^, dwLen);
+        end;
+	result := hbit;
+        exit;
+    end;
+    dwError := GetLastError();
+    //writeln('Cannot create bitmap: %d');
+    result := HBITMAP(GDI_ERROR);
+end;
+
+
+function TWinCEWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
+var
+  BitmapInfo: ^TBitmapInfo;
+  hScreenDC,hVidDC: HDC;
+  Mask:^longint;
+begin
+  BitmapInfo:=GetMem(sizeof(TBitmapInfo)+3*sizeof(TRGBQuad));
+  FillChar(BitmapInfo^, sizeof(TBitmapInfo)+3*sizeof(TRGBQuad), 0);
+  unaligned(BitmapInfo^.bmiHeader.biSize) := sizeof(TBITMAPINFOHEADER);
+  unaligned(BitmapInfo^.bmiHeader.biWidth) := RawImage.Description.Width;
+  unaligned(BitmapInfo^.bmiHeader.biHeight) := -RawImage.Description.Height;
+  unaligned(BitmapInfo^.bmiHeader.biPlanes) := 1;
+  unaligned(BitmapInfo^.bmiHeader.biBitCount) := RawImage.Description.BitsPerPixel;
+  if RawImage.Description.BitsPerPixel=16 then
+  unaligned(BitmapInfo^.bmiHeader.biCompression) := BI_BITFIELDS
+  else
+  unaligned(BitmapInfo^.bmiHeader.biCompression) := BI_RGB;
+
+  unaligned(BitmapInfo^.bmiHeader.biClrUsed) := 0;
+  unaligned(BitmapInfo^.bmiHeader.biClrImportant) := 0;
+//  unaligned(BitmapInfo^.bmiHeader.biSizeImage) := BytesPerLine(BitmapInfo^.bmiHeader.biWidth,BitmapInfo^.bmiHeader.biBitCount)*RawImage.Description.Height;
+
+  unaligned(BitmapInfo^.bmiColors[0]) := TRGBQuad($1f);
+  unaligned(BitmapInfo^.bmiColors[1]) := TRGBQuad($3f shl 5);
+  unaligned(BitmapInfo^.bmiColors[2]) := TRGBQuad($1f shl 11);
+
+  hScreenDC:= Windows.GetDC(0);
+//  hVidDC := Windows.CreateCompatibleDC(hScreenDC);
+  hVidDC := hScreenDC;
+//  Windows.ReleaseDC(0, hScreenDC);
+ 
+  MaskBitmap := 0;
+
+  Bitmap := CreateDIBitmap(hVidDC, BitmapInfo^.bmiHeader, CBM_INIT, PChar(RawImage.Data),
+    BitmapInfo^, DIB_RGB_COLORS);
+
+  Result := Bitmap <> 0;
+  if Result then
+  begin
+    if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true))) then
+    begin
+      if RawImage.Description.AlphaSeparate then
+      begin
+        MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width,
+                              RawImage.Description.Height, 1, 1, RawImage.Mask);
+        Result := Result and (MaskBitmap <> 0);
+      end;
+    end;
+  end;
+  FreeMem(BitmapInfo);
+  Windows.ReleaseDC(0, hVidDC);
+end;
+
+
+function TWinCEWidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+begin
+  Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetFocus
+  Params:  none
+  Returns: The handle of the window with focus
+
+  The GetFocus function retrieves the handle of the window that has the focus.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.GetFocus: HWND;
+Begin
+  Result := Windows.GetFocus;
+End;
+
+{------------------------------------------------------------------------------
+  Method:  GetForegroundWindow
+  Params:  none
+  Returns: The handle of the foreground window
+
+  The GetForegroundWindow function returns the window that the user is
+  currently working with, session wide.
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.GetForegroundWindow: HWND;
+begin
+  Result := Windows.GetForegroundWindow;
+end;
+{function TWinCEWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result:=inherited GetFontLanguageInfo(DC);
 end;
@@ -990,9 +1436,9 @@ End;
 Function TWinCEWidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 Begin
   //TODO:Started but not finished
-  Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
+  Assert(False, Format('Trace:> [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
   Result := Windows.GetWindowLong(Handle, int);
-  Assert(False, Format('Trace:< [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
+  Assert(False, Format('Trace:< [TWinCEWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1706,14 +2152,14 @@ end;
 function TWinCEWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 begin
   Result:=inherited SetCursorPos(X, Y);
-end;
+end;}
 
 function TWinCEWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
-  Result:=inherited SetFocus(hWnd);
+  Result:=Windows.SetFocus(hWnd);
 end;
 
-function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
+{function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
   ): Boolean;
 begin
   Result:=inherited SetProp(Handle, Str, Data);
@@ -1736,13 +2182,13 @@ end;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
 Begin
-//  Assert(False, 'Trace:[TWin32WidgetSet.SetScrollInfo]');
+//  Assert(False, 'Trace:[TWinCEWidgetSet.SetScrollInfo]');
   //With ScrollInfo Do
-   // Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
+   // Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   With ScrollInfo Do
-    Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
+    Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] --> %d', [Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1807,10 +2253,10 @@ End;
 
   Sets the window origin of the device context by using the specified coordinates.
  ------------------------------------------------------------------------------}
-//roozbeh:does this always work?it is heavily used in labels and some other drawing controls!
 Function TWinCEWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 Begin
+ { roozbeh:does this always work?it is heavily used in labels and some other drawing controls}
   Result := Boolean(SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
 //  Result:=inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
 End;
@@ -1834,7 +2280,7 @@ var
   Style, ExStyle: Integer;
   OldRect, OldClientRect: Windows.RECT;
 Begin
-  //debugln('[TWin32WidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
+  //debugln('[TWinCEWidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
   Style := Windows.GetWindowLong(HWnd, GWL_STYLE);
   ExStyle := Windows.GetWindowLong(HWnd, GWL_EXSTYLE);
   Windows.GetWindowRect(HWnd, @OldRect);
@@ -1881,22 +2327,87 @@ Function TWinCEWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   Result := Boolean(Windows.ShowWindow(hWnd, nCmdShow));
 end;
-{
-function TWinCEWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal
-  ): Boolean;
-begin
-  Result:=inherited StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
-    SrcWidth, SrcHeight, ROp);
+
+{------------------------------------------------------------------------------
+  Method:  StretchBlt
+  Params:  DestDC              - The destination device context
+           X, Y                - The left/top corner of the destination rectangle
+           Width, Height       - The size of the destination rectangle
+           SrcDC               - The source device context
+           XSrc, YSrc          - The left/top corner of the source rectangle
+           SrcWidth, SrcHeight - The size of the source rectangle
+           Rop                 - The raster operation to be performed
+  Returns: True if succesful
+
+  The StretchBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified raster operation. If needed it
+  resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
+  destination device context.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
+Begin
+  Assert(True, Format('Trace:> [TWinCEWidgetSet.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
+  Result := Boolean(Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop));
+//  Assert(True, Format('Trace:< [TWinCEWidgetSet.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
+End;
+
+{------------------------------------------------------------------------------
+  Method:  StretchMaskBlt
+  Params:  DestDC:                The destination devicecontext
+           X, Y:                  The left/top corner of the destination rectangle
+           Width, Height:         The size of the destination rectangle
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
+           SrcWidth, SrcHeight:   The size of the source rectangle
+           Mask:                  The handle of a monochrome bitmap
+           XMask, YMask:          The left/top corner of the mask rectangle
+           Rop:                   The raster operation to be performed
+  Returns: True if succesful
+
+  The StretchMaskBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified mask and raster operations. If
+  needed it resizes the bitmap to fit the dimensions of the destination
+  rectangle.  Sizing is done according to the stretching mode currently set in
+  the destination device context.
+ ------------------------------------------------------------------------------}
+Function TWinCEWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+Var
+  MaskDC: HDC;
+  SaveObj: HGDIOBJ;
+  PrevTextColor, PrevBkColor: COLORREF;
+Begin
+  if Mask = 0 then
+  begin
+    if (Width = SrcWidth) and (Height = SrcHeight) then
+    begin
+      Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
+    end else begin
+      Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
+    end;
+  end else begin
+    MaskDC := Windows.CreateCompatibleDC(0);
+    SaveObj := Windows.SelectObject(MaskDC, Mask);
+    PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
+    PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
+    if (Width = SrcWidth) and (Height = SrcHeight) then
+    begin
+      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+      Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
+      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+    end else begin
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+    end;
+    Windows.SetTextColor(DestDC, PrevTextColor);
+    Windows.SetBkColor(DestDC, PrevBkColor);
+    Windows.SelectObject(MaskDC, SaveObj);
+    Windows.DeleteDC(MaskDC);
+  end;
+  Result := true;
 end;
 
-function TWinCEWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
-  Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
-  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
-begin
-  Result:=inherited StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc,
-    YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
-end;}
 
 {------------------------------------------------------------------------------
   Method:  TextOut

@@ -51,6 +51,7 @@ procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   Handle: HWND;
   DC: HDC;
+  Flags : integer;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWidgetSet.AppInit');
@@ -63,7 +64,6 @@ begin
   end;
   
     //Init stock objects;
-//  LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := Windows.CreateSolidBrush(0);
   FStockBlackBrush := Windows.CreateSolidBrush($000000);
   FStockLtGrayBrush := Windows.CreateSolidBrush($C0C0C0);
@@ -72,26 +72,10 @@ begin
   FStockWhiteBrush := Windows.CreateSolidBrush($FFFFFF);
 
 
-{  LogBrush.lbStyle := BS_NULL;
-  FStockNullBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbStyle := BS_SOLID;
-  LogBrush.lbColor := $000000;
-  FStockBlackBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $C0C0C0;
-  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $808080;
-  FStockGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $404040;
-  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $FFFFFF;
-  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
-}
-
-
   // Create parent of all windows, `button on taskbar'
 //does this work on wince?!
-  FAppHandle := CreateWindow(@ClsName, CreatePWideCharFromString(Application.Title), WS_POPUP or
-    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+  FAppHandle := CreateWindow(@ClsName, CreatePWideCharFromString(Application.Title),
+  WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);

@@ -60,6 +60,8 @@ type
   private
   protected
   public
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TWinCEWSScrollBox }
@@ -68,6 +70,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWinCEWSCustomFrame }
@@ -145,6 +149,49 @@ implementation
 
 uses Winceint;
 
+{ TWin32WSScrollBox }
+
+function TWinCEWSScrollBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    //TODO: Make control respond to user scroll request
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := @ClsName;
+    Flags := Flags or WS_HSCROLL or WS_VSCROLL;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+{ TWinCEWSScrollingWinControl }
+
+function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll:lpRECT; prcClip:lpRECT;hrgnUpdate:HRGN;
+prcUpdate:LPRECT; flags:UINT):longint; external UserDLLCore name 'ScrollWindowEx';
+
+procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+  const DeltaX, DeltaY: integer);
+var
+  lVisible: boolean;
+  rgn : HRGN;
+  rect : trect;
+begin
+ lVisible := AWinControl.HandleAllocated and Windows.IsWindowVisible(AWinControl.Handle);
+ rgn := 0;//roozbeh : seems to be ok?
+// GetClipRgn(AWinControl.Handle,rgn);
+//roozbeh:which flags really are rewuired?!
+ if lVisible then
+    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,rgn,nil,SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
+end;
+
 { TWinCEWSCustomForm }
 
 function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
@@ -189,6 +236,7 @@ var
 //  hwnd: THandle;
 //  Str: array[0..255] of WideChar;
   Params: TCreateWindowExParams;
+  LForm : TCustomForm;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSCustomForm.CreateHandle');
@@ -200,9 +248,11 @@ begin
   with Params do
   begin
     //TODO: Make control respond to user scroll request
-    FlagsEx := 0;
     pClassName := @ClsName;
+    FlagsEx := 0;
     Flags := WS_OVERLAPPEDWINDOW;
+    lForm := TCustomForm(AWinControl);
+    CalcFormWindowFlags(lForm, Flags, FlagsEx);
     SubClassWndProc := nil;
     Parent := 0;
     Left:=CW_USEDEFAULT;
@@ -234,8 +284,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TWinCEWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TWinCEWSScrollBox);
+  RegisterWSComponent(TScrollingWinControl, TWinCEWSScrollingWinControl);
+  RegisterWSComponent(TScrollBox, TWinCEWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWinCEWSCustomFrame);
 //  RegisterWSComponent(TFrame, TWinCEWSFrame);
   RegisterWSComponent(TCustomForm, TWinCEWSCustomForm);

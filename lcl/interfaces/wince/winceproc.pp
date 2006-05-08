@@ -216,9 +216,9 @@ Begin
     GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
     // add the left frame border
-    ORect.Left := 2;
-    ORect.Right := -2;
-    ORect.Bottom := -2;
+    ORect.Left := 1;
+    ORect.Right := -1;
+    ORect.Bottom := -1;
     ReleaseDC(Handle, DC);
   End Else
   If TheWinControl is TCustomNoteBook then begin
