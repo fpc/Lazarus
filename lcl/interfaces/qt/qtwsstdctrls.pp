@@ -154,10 +154,10 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
-//    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
-//    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
+    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 //    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
-//    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); virtual;
+    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   public
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
@@ -166,8 +166,8 @@ type
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
-    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+}    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+{    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -278,8 +278,15 @@ type
   public
   end;
 
+{$DEFINE MEMOHEADER}
+{$I qtmemostrings.inc}
+{$UNDEF MEMOHEADER}
 
 implementation
+
+uses LMessages;
+
+{$I qtmemostrings.inc}
 
 { TQtWSCustomMemo }
 
@@ -294,7 +301,6 @@ var
   QtTextEdit: TQtTextEdit;
 begin
   QtTextEdit := TQtTextEdit.Create(AWinControl, AParams);
-
   Result := THandle(QtTextEdit);
 end;
 
@@ -308,7 +314,69 @@ begin
   TQtTextEdit(AWinControl.Handle).Free;
 end;
 
-{ TQtWSCustomEdit }
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.AppendText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
+var
+  Astr: WideString;
+begin
+  if Length(AText) = 0 then
+    exit;
+  Astr := WideString(AText);
+  //QTextEdit_append(QTextEditH(ACustomMemo.Handle),@Astr);
+  QTextEdit_append(QTextEditH(TQtWidget(ACustomMemo.Handle).Widget),@Astr);
+
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.GetStrings
+  Params:  None
+  Returns: Memo Contents as TStrings
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+var
+  TextEditH: QTextEditH;
+begin
+  TextEditH := QTextEditH((TQtWidget(ACustomMemo.Handle).Widget));  // set to proper type
+  Result := TQtMemoStrings.Create(TextEditH,ACustomMemo);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.SetWordWrap
+  Params:  NewWordWrap boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+var
+  TextEditH: QTextEditH;
+begin
+  TextEditH := QTextEditH((TQtWidget(ACustomMemo.Handle).Widget));  // set to proper type
+  if NewWordWrap then
+     QTextEdit_setLineWrapMode(TextEditH,QTextEditWidgetWidth)
+  else
+     QTextEdit_setLineWrapMode(TextEditH,QTextEditNoWrap);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.SetReadOnly
+  Params:  NewReadOnly boolean
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  TextEditH: QTextEditH;
+begin
+  TextEditH := QTextEditH((TQtWidget(ACustomEdit.Handle).Widget));  // set to proper type
+  QTextEdit_setReadOnly(TextEditH,NewReadOnly);
+end;
+
+{{ TQtWSCustomEdit }
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomEdit.CreateHandle

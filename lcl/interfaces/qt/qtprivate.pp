@@ -1690,6 +1690,7 @@ constructor TQtTextEdit.Create(const AWinControl: TWinControl;
 var
   Parent: QWidgetH;
   Str: WideString;
+
 begin
   // Initializes the properties
   LCLObject := AWinControl;
@@ -1699,12 +1700,17 @@ begin
     WriteLn('Calling QTextEdit_create');
   {$endif}
   Parent := TQtWidget(AWinControl.Parent.Handle).Widget;
-  Str := WideString((AWinControl as TCustomMemo).Lines.Text);
+  Str := (AWinControl as TCustomMemo).Text;
   Widget := QTextEdit_create(@Str, Parent);
 
   // Sets it´ s initial properties
   QWidget_setGeometry(Widget, AWinControl.Left, AWinControl.Top,
    AWinControl.Width, AWinControl.Height);
+  QTextEdit_setReadOnly(QTextEditH(Widget),(AWinControl as TCustomMemo).ReadOnly);
+  if (AWinControl as TCustomMemo).WordWrap then
+     QTextEdit_setLineWrapMode(QTextEditH(Widget),QTextEditWidgetWidth)
+  else
+     QTextEdit_setLineWrapMode(QTextEditH(Widget),QTextEditNoWrap);
 end;
 
 {------------------------------------------------------------------------------

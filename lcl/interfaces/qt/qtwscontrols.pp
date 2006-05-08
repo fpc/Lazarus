@@ -70,6 +70,9 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
 
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+
 {    class procedure AddControl(const AControl: TControl); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
@@ -237,6 +240,42 @@ begin
     if AWinControl.Visible then
      WriteLn('True') else WriteLn('False');
   {$endif}
+end;
+
+class function  TQtWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  AString: WideString;
+begin
+  Result := True;
+  if AWinControl = nil then exit;
+
+  if not AWinControl.HandleAllocated then exit;
+  case AWinControl.fCompStyle of
+    //csComboBox:
+    csEdit,csSpinedit:
+      QLineEdit_text(QLineEditH(TQtWidget(AWinControl.Handle).Widget),@AString);
+    csMemo:
+      QTextEdit_toPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget),@AString);
+  else
+    Result := false;
+  end;
+  if Result then AText := AString;
+end;
+
+class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  AString: WideString;
+begin
+  if AWinControl = nil then exit;
+  if not AWinControl.HandleAllocated then exit;
+  AString := AText;
+  case AWinControl.fCompStyle of
+    csEdit,csSpinedit:
+      QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget),@AString);
+    //csStaticText:
+    csMemo:
+      QTextEdit_append(QTextEditH(TQtWidget(AWinControl.Handle).Widget),@AString);
+    end;
 end;
 
 initialization
