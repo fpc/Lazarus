@@ -430,8 +430,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
-var
-  P : Pointer;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of

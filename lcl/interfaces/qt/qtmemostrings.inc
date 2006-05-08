@@ -186,13 +186,8 @@ end;
 function TQtMemoStrings.TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Mess: TLMessage;
-  // just for debugging
-  SenderView: QObjectH;
-  EventView: QEventH;
 begin
   if not FUpdating then begin
-    SenderView := Sender;
-    EventView := Event;
     FTextChanged := True;
     FillChar(Mess, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
