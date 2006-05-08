@@ -776,6 +776,8 @@ Procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
 function GetDefaultFontName: string;
 Procedure FillScreenFonts(ScreenFonts: TStrings);
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
+function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
+
 
 // decoration
 Function GetWindowDecorations(AForm: TCustomForm): Longint;

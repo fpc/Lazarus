@@ -8371,6 +8371,40 @@ end;
 {$ENDIF UseXinerama}
 {$ENDIF Gtk1}
 
+function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
+
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XWindow: TWindow;
+  AtomType: x.TAtom;
+  Format: gint;
+  nitems: gulong;
+  bytes_after: gulong;
+  current_desktop: pguint;
+  res   : Integer;
+begin
+  Result := -1;
+  xdisplay := gdk_display;
+  xscreen := XDefaultScreenOfDisplay(xdisplay);
+  xwindow := XRootWindowOfScreen(xscreen);
+  res:=XGetWindowProperty (xdisplay, xwindow,
+             XInternAtom(xdisplay, '_NET_WORKAREA', false),
+             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
+             @bytes_after, gpointer(@current_desktop));
+  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then begin
+    result:=res;
+    ax:=current_desktop[0];
+    ay:=current_desktop[1];
+    awidth:=current_desktop[2];
+    aheight:=current_desktop[3];
+    XFree (current_desktop);
+  end;
+end;
+
+
+
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}

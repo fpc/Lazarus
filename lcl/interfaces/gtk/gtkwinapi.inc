@@ -5586,6 +5586,7 @@ end;
 function TGtkWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   P : Pointer;
+  ax,ay,ah,aw : gint;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
@@ -5689,11 +5690,13 @@ begin
       end;
     SM_CXMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
+        if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=aw
+                                        else getSystemMetrics(SM_CXSCREEN);
       end;
     SM_CYMAXIMIZED:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
+         if XGetWorkarea(ax,ay,aw,ah)>=0 then result:=ah
+                                        else getSystemMetrics(SM_CYSCREEN);
       end;
     SM_CXMAXTRACK:
       begin
