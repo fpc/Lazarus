@@ -24,6 +24,7 @@ Evgen A. Palamarchuck
 Felipe Monteiro de Carvalho
 Florian Koeberle
 Francisco Manuel
+Giuliano Colla
 GongYu
 Hans-Joachim Ott
 Hwang Weng Sun

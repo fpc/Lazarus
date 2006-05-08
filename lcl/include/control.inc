@@ -2513,9 +2513,10 @@ begin
   FAlign := Value;
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
-  if Anchors=AnchorAlign[OldAlign] then
-    Anchors:=AnchorAlign[FAlign];
-  RequestAlign;
+  if (Anchors=AnchorAlign[OldAlign]) and (Anchors<>AnchorAlign[FAlign]) then
+    Anchors:=AnchorAlign[FAlign]
+  else
+    RequestAlign;
 end;
 
 {------------------------------------------------------------------------------

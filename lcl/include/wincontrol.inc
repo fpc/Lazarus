@@ -1507,9 +1507,12 @@ var
     Result := False;
     case AAlign of
       alTop: Result := Control1.Top < Control2.Top;
+      alLeft: Result := Control1.Left < Control2.Left;
+      // contrary to VCL, we use > for alBottom, alRight
+      // Maybe it is a bug in the VCL.
+      // This results in first control is put rightmost/bottommost
       alBottom: Result := (Control1.Top + Control1.Height)
                           > (Control2.Top + Control2.Height);
-      alLeft: Result := Control1.Left < Control2.Left;
       alRight: Result := (Control1.Left + Control1.Width)
                          > (Control2.Left + Control2.Width);
     end;
