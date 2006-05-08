@@ -27,7 +27,7 @@
 
 { $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
-const CheckPostionClassName = 'TMyPanel';
+const CheckPostionClassName = 'TButton';
 const CheckPostionName = 'WhereRadioGroup';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -35,7 +35,6 @@ begin
   Result:=(CompareText(AControl.ClassName,CheckPostionClassName)=0)
            or (CompareText(AControl.Name,CheckPostionName)=0);
 end;
-
 {$ENDIF}
 { $DEFINE VerboseMouseBugfix}
 
@@ -1509,10 +1508,10 @@ var
     case AAlign of
       alTop: Result := Control1.Top < Control2.Top;
       alBottom: Result := (Control1.Top + Control1.Height)
-                          >= (Control2.Top + Control2.Height);
+                          > (Control2.Top + Control2.Height);
       alLeft: Result := Control1.Left < Control2.Left;
       alRight: Result := (Control1.Left + Control1.Width)
-                         >= (Control2.Left + Control2.Width);
+                         > (Control2.Left + Control2.Width);
     end;
   end;
 
@@ -1540,7 +1539,7 @@ var
         and ((AAlign = alNone)
           or Control.IsControlVisible
           or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
-               [csAcceptsControls, csNoDesignVisible])) then
+                                   [csAcceptsControls, csNoDesignVisible])) then
       begin
         if Control = AControl then Continue;
 
@@ -1551,6 +1550,17 @@ var
         AlignList.Insert(X, Control);
       end;
     end;
+    {$IFDEF CHECK_POSITION}
+    if AlignList.Count>0 then begin
+      DbgOut('[TWinControl.AlignControls.DoAlign] Self=',DbgSName(Self),
+        ' current align=',AlignNames[AAlign],' AlignList=[');
+      for i:=0 to AlignList.Count-1 do begin
+        if i>0 then DbgOut(',');
+        DbgOut(DbgSName(TObject(AlignList[i])));
+      end;
+      DebugLn(']');
+    end;
+    {$ENDIF}
     
     if not DoAlignChildControls(AAlign,AControl,AlignList,RemainingClientRect) then
       for I := 0 to AlignList.Count - 1 do
@@ -2082,9 +2092,9 @@ begin
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl EnableAlign                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl EnableAlign
+------------------------------------------------------------------------------}
 procedure TWinControl.EnableAlign;
 begin
   Dec(FAlignLevel);
