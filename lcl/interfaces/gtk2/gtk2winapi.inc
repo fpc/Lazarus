@@ -417,8 +417,6 @@ var
   Underline,
   StrikeOut : Boolean;
 
-  RGBColor : Longint;
-
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;

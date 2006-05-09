@@ -37,17 +37,12 @@ uses
   {$endif}
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
-      baseunix, unix,
-    {$IFDEF GTK1}
-      X, XLib, XUtil, XAtom, //Font retrieval and Keyboard handling
-    {$ENDIF not Gtk1}
+    baseunix, unix, XAtom,
+    X, XLib, XUtil, //Font retrieval and Keyboard handling
   {$ENDIF}
   InterfaceBase,
   {$IFDEF gtk2}
     glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-    {$IFDEF UNIX}
-    X, XLib, XUtil, //Keyboard handling
-    {$ENDIF}
   {$ELSE}
     glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
