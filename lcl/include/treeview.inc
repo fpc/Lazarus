@@ -3830,13 +3830,17 @@ var
   function InvertColor(AColor: TColor): TColor;
   var Red, Green, Blue: integer;
   begin
-    Result:=clWhite;
-    Red:=(AColor shr 16) and $ff;
-    Green:=(AColor shr 8) and $ff;
-    Blue:=AColor and $ff;
-    if Red+Green+Blue>$180 then
-      Result:=clBlack;
+    if AColor<>clHighlight then begin
+      Result:=clWhite;
+      Red:=(AColor shr 16) and $ff;
+      Green:=(AColor shr 8) and $ff;
+      Blue:=AColor and $ff;
+      if Red+Green+Blue>$180 then
+        Result:=clBlack;
     //DebugLn('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
+    end
+    else
+      Result := clHighlightText;
   end;
 
   function DrawTreeLines(CurNode: TTreeNode): integer;
