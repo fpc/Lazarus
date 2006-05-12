@@ -8,7 +8,7 @@ LazarusResources.Add('TCalendarPopupForm','FORMDATA',[
   +'Caption'#6#17'CalendarPopupForm'#12'ClientHeight'#3#153#0#11'ClientWidth'#3
   +#162#0#7'OnClose'#7#9'FormClose'#12'OnDeactivate'#7#14'FormDeactivate'#13'Pi'
   +'xelsPerInch'#2'`'#0#9'TCalendar'#8'Calendar'#6'Height'#3#153#0#5'Width'#3
-  +#162#0#4'Date'#6#9'16-4-2006'#8'DateTime'#5#0#0#0#0#0#0#167#151#14'@'#15'Dis'
+  +#162#0#8'DateTime'#5#0#0#0#0#0#0#167#151#14'@'#15'Dis'
   +'playSettings'#11#14'dsShowHeadings'#14'dsShowDayNames'#0#10'OnDblClick'#7#16
   +'CalendarDblClick'#9'OnKeyDown'#7#15'CalendarKeyDown'#7'Tabstop'#9#0#0#0
 ]);

@@ -18,7 +18,6 @@ object CalendarPopupForm: TCalendarPopupForm
   object Calendar: TCalendar
     Height = 153
     Width = 162
-    Date = '16-4-2006'
     DateTime = 38823
     DisplaySettings = [dsShowHeadings, dsShowDayNames]
     OnDblClick = CalendarDblClick
