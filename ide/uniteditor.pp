@@ -50,7 +50,8 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  ProjectIntf, HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, IDEWindowIntf,
+  MacroIntf, ProjectIntf, HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
+  IDEWindowIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -567,9 +568,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure ShowLazDoc;  //DBlaszijk 11-sep-05
-    procedure UpdateLazDoc;  //DBlaszijk 11-sep-05
-    procedure LazDocNewPage; //DBlaszijk 11-sep-05
+    procedure ShowLazDoc;
+    procedure UpdateLazDoc;
+    procedure LazDocNewPage;
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
@@ -2812,52 +2813,70 @@ begin
   LazDocNewPage;
 end;
 
-function FindPathFromFile(FileNamePath: string): string;
+function FindLazDocPathFromFile(const AFileName: string): string;
 var
   i: integer;
   fn: string;
-  pathlist: TStrings;
+  SearchPaths: String;
+  PathList: TStrings;
 begin
   Result := '';
-  pathlist := TStringList.Create;
+  if not FilenameIsAbsolute(AFileName) then exit;
+  if not FilenameIsPascalSource(AFileName) then exit;
 
-  //get global lazdoc paths
-  pathlist.AddStrings(EnvironmentOptions.LazDocPathList);
-  //get project lazdoc paths
-  pathlist.AddStrings(LazarusIDE.ActiveProject.LazDocPathList);
-  
-  fn := SetDirSeparators('/') + ChangeFileExt(ExtractFileName(FileNamePath), '.xml');
-  for i:= 0 to Pred(pathlist.Count) do
-    if FileExists(pathlist[i] + fn) then
-    begin
-      Result := pathlist[i];
-      pathlist.Free;
-      Exit;
+  // add global lazdoc paths
+  SearchPaths:=EnvironmentOptions.LazDocPaths;
+  // if this is a project file then add project lazdoc paths
+  if Project1.UnitInfoWithFilename(AFileName,[pfsfOnlyProjectFiles])<>nil then
+    SearchPaths:=LazarusIDE.ActiveProject.LazDocPaths+';'+SearchPaths;
+
+  // replace macros
+  IDEMacros.SubstituteMacros(SearchPaths);
+  SearchPaths:=TrimSearchPath(SearchPaths,'');
+
+  //DebugLn('FindLazDocPathFromFile AFileName="',AFileName,'" SearchPaths="',SearchPaths,'"');
+
+  // search xml file in all directories
+  fn := PathDelim + ChangeFileExt(ExtractFileName(AFileName), '.xml');
+  PathList:=SplitString(SearchPaths,';');
+  try
+    for i:=0 to PathList.Count-1 do begin
+      if FilenameIsAbsolute(PathList[i])
+      and FileExistsCached(TrimFilename(PathList[i] + fn)) then
+      begin
+        Result := PathList[i];
+        break;
+      end;
+    end;
+  finally
+    PathList.Free;
   end;
-  pathlist.Free;
+  //DebugLn('FindLazDocPathFromFile Result="',Result,'"');
 end;
 
 procedure TSourceNotebook.LazDocNewPage;
 var
   SrcEdit: TSourceEditor;
   DocPath: string;
+  NewDocPath: string;
 begin
-  //try to find if the file belongs to LCL
-  //for other projects the location of the doc file could
-  //be found through the lpi file
+  //DebugLn('TSourceNotebook.LazDocNewPage ',dbgs(Assigned(LazDocForm)));
   if Assigned(LazDocForm) then
   begin
     SrcEdit:=GetActiveSE;
+    if SrcEdit=nil then exit;
 
-    DocPath := FindPathFromFile(SrcEdit.FileName);
-    
+    DocPath := FindLazDocPathFromFile(SrcEdit.FileName);
+
     if DocPath <> '' then
     begin
-      //load the .xml file
-      LazDocForm.DocFileName := DocPath + SetDirSeparators('/') +
+      // load the .xml file
+      NewDocPath:=DocPath + PathDelim +
                         ChangeFileExt(ExtractFileName(SrcEdit.FileName),'.xml');
-
-      UpdateLazDoc;
+      if NewDocPath<>LazDocForm.DocFileName then begin
+        LazDocForm.DocFileName := NewDocPath;
+        UpdateLazDoc;
+      end;
     end
     else
       LazDocForm.Reset;
@@ -2870,19 +2889,17 @@ var
   DocPath: string;
   CaretPos: TPoint;
 begin
+  if LazDocForm = nil then exit;
+  
   SrcEdit:=GetActiveSE;
 
-  //find a path that contains the .xml file
-  DocPath := FindPathFromFile(SrcEdit.FileName);
+  // find a path that contains the .xml file
+  DocPath := FindLazDocPathFromFile(SrcEdit.FileName);
 
   if DocPath <> '' then
   begin
     CaretPos := SrcEdit.EditorComponent.CaretXY;
-    Dec(CaretPos.x);
-    Dec(CaretPos.y);
-
-    LazDocForm.UpdateLazDoc(SrcEdit.EditorComponent.Lines,
-                            CaretPos);
+    LazDocForm.UpdateLazDoc(SrcEdit.Filename,CaretPos);
   end
   else
     LazDocForm.Reset;
@@ -5128,6 +5145,8 @@ begin
     Statusbar.Panels[3].Text := PanelFilename;
   end;
   Statusbar.EndUpdate;
+  
+  UpdateLazDoc;
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
@@ -5460,17 +5479,12 @@ begin
       FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
     end;
   end;
-  if Assigned(LazDocForm) then
-    UpdateLazDoc;
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if not Assigned(LazDocForm) then Exit;
 
-  if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME] then
-    UpdateLazDoc;
 end;
 
 procedure TSourceNotebook.ShowSynEditHint(const MousePos: TPoint);

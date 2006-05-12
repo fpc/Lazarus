@@ -4,8 +4,9 @@ object LazDocForm: TLazDocForm
   ClientHeight = 117
   ClientWidth = 753
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnResize = FormResize
-  PixelsPerInch = 96
+  PixelsPerInch = 95
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
   Left = 390
@@ -23,27 +24,30 @@ object LazDocForm: TLazDocForm
     Width = 736
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
-      Height = 91
-      Width = 728
+      ClientHeight = 87
+      ClientWidth = 732
+      Left = 2
+      Height = 87
+      Top = 2
+      Width = 732
       object ShortEdit: TEdit
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Right = 2
         OnChange = DocumentationTagChange
         TabOrder = 0
         Text = 'ShortEdit'
         Height = 23
-        Width = 726
+        Width = 730
       end
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
-      Height = 91
-      Width = 728
+      ClientHeight = 87
+      ClientWidth = 732
+      Left = 2
+      Height = 87
+      Top = 2
+      Width = 732
       object DescrMemo: TMemo
         Align = alClient
         BorderSpacing.Right = 2
@@ -53,19 +57,20 @@ object LazDocForm: TLazDocForm
         )
         OnChange = DocumentationTagChange
         TabOrder = 0
-        Height = 87
-        Width = 726
+        Height = 83
+        Width = 730
       end
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
-      Height = 91
-      Width = 728
+      ClientHeight = 87
+      ClientWidth = 732
+      Left = 2
+      Height = 87
+      Top = 2
+      Width = 732
       object ErrorsMemo: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
         Lines.Strings = (
@@ -73,56 +78,55 @@ object LazDocForm: TLazDocForm
         )
         OnChange = DocumentationTagChange
         TabOrder = 0
-        Height = 87
-        Width = 726
+        Height = 83
+        Width = 730
       end
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
-      Height = 91
-      Width = 728
+      ClientHeight = 87
+      ClientWidth = 732
+      Left = 2
+      Height = 87
+      Top = 2
+      Width = 732
       object LinkListBox: TListBox
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
-        BorderSpacing.OnChange = nil
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
         OnClick = LinkListBoxClick
         TabOrder = 0
-        Height = 60
+        TopIndex = -1
+        Height = 56
         Top = 27
-        Width = 726
+        Width = 730
       end
       object AddLinkButton: TButton
         Anchors = [akTop, akRight]
         AutoSize = True
-        BorderSpacing.OnChange = nil
         BorderSpacing.Right = 6
         BorderSpacing.InnerBorder = 2
         Caption = 'AddLinkButton'
         OnClick = AddLinkButtonClick
         TabOrder = 1
         AnchorSideRight.Control = DeleteLinkButton
-        Left = 570
+        Left = 574
         Height = 23
         Width = 75
       end
       object DeleteLinkButton: TButton
         Anchors = [akTop, akRight]
         AutoSize = True
-        BorderSpacing.OnChange = nil
         BorderSpacing.InnerBorder = 2
         Caption = 'DeleteLinkButton'
         OnClick = DeleteLinkButtonClick
         TabOrder = 2
-        Left = 651
+        Left = 655
         Height = 23
         Width = 75
       end
       object LinkTextEdit: TEdit
-        BorderSpacing.OnChange = nil
         OnChange = LinkChange
         TabOrder = 3
         Text = 'LinkTextEdit'
@@ -132,6 +136,7 @@ object LazDocForm: TLazDocForm
         Width = 328
       end
       object LinkIdComboBox: TComboBox
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         MaxLength = 0
         OnChange = LinkChange
         TabOrder = 4
@@ -143,29 +148,29 @@ object LazDocForm: TLazDocForm
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 91
-      ClientWidth = 728
-      Height = 91
-      Width = 728
+      ClientHeight = 87
+      ClientWidth = 732
+      Left = 2
+      Height = 87
+      Top = 2
+      Width = 732
       object ExampleEdit: TEdit
         Align = alTop
-        BorderSpacing.OnChange = nil
         BorderSpacing.Right = 2
         OnChange = DocumentationTagChange
         TabOrder = 0
         Text = 'ExampleEdit'
         Height = 23
-        Width = 726
+        Width = 730
       end
       object BrowseExampleButton: TButton
         Anchors = [akTop, akRight]
         AutoSize = True
-        BorderSpacing.OnChange = nil
         BorderSpacing.InnerBorder = 2
         Caption = 'BrowseExampleButton'
         OnClick = BrowseExampleButtonClick
         TabOrder = 1
-        Left = 651
+        Left = 655
         Height = 25
         Top = 28
         Width = 75
@@ -174,7 +179,6 @@ object LazDocForm: TLazDocForm
   end
   object Panel1: TPanel
     Align = alLeft
-    BorderSpacing.OnChange = nil
     BevelOuter = bvNone
     ClientHeight = 117
     ClientWidth = 17
@@ -186,7 +190,7 @@ object LazDocForm: TLazDocForm
     Width = 17
     object BoldFormatButton: TSpeedButton
       Align = alTop
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Glyph.Data = {
         B20100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
         69635B5D203D207B0A22313720313720322031222C0A222E2063204E6F6E6522
@@ -210,7 +214,7 @@ object LazDocForm: TLazDocForm
     end
     object ItalicFormatButton: TSpeedButton
       Align = alTop
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Glyph.Data = {
         C10100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
         69635B5D203D207B0A22313720313720332031222C0A222E2063204E6F6E6522
@@ -237,7 +241,7 @@ object LazDocForm: TLazDocForm
     end
     object UnderlineFormatButton: TSpeedButton
       Align = alTop
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Glyph.Data = {
         C10100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
         69635B5D203D207B0A22313720313720332031222C0A222E2063204E6F6E6522
@@ -264,6 +268,7 @@ object LazDocForm: TLazDocForm
     end
     object InsertCodeTagButton: TSpeedButton
       Align = alTop
+      Color = clBtnFace
       Glyph.Data = {
         F90900002F2A2058504D202A2F0D0A7374617469632063686172202A20496E73
         657274436F64655461675F78706D5B5D203D207B0D0A22313720313520313132
@@ -355,6 +360,7 @@ object LazDocForm: TLazDocForm
     end
     object InsertRemarkButton: TSpeedButton
       Align = alTop
+      Color = clBtnFace
       Glyph.Data = {
         D60100002F2A2058504D202A2F0D0A7374617469632063686172202A20496E73
         65727452656D61726B5F78706D5B5D203D207B0D0A2231372031372032203122
@@ -381,6 +387,7 @@ object LazDocForm: TLazDocForm
     end
     object InsertVarTagButton: TSpeedButton
       Align = alTop
+      Color = clBtnFace
       Glyph.Data = {
         D70200002F2A2058504D202A2F0D0A7374617469632063686172202A20496E73
         6572745661725461675F78706D5B5D203D207B0D0A2231372031372031382031

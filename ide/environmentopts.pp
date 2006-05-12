@@ -42,7 +42,7 @@ uses
   InputHistory, EditorOptions, IDETranslations;
 
 const
-  EnvOptsVersion: integer = 105;
+  EnvOptsVersion: integer = 106;
 
   //----------------------------------------------------------------------------
   
@@ -222,7 +222,7 @@ type
     fCharcaseFileAction : TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
     
-    FLazDocPathList: TStrings;
+    FLazDocPaths: string;
 
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
@@ -396,7 +396,7 @@ type
                                                      write fCharcaseFileAction;
 
     // lazdoc
-    property LazDocPathList: TStrings read FLazDocPathList write FLazDocPathList;
+    property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
 
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
@@ -649,6 +649,9 @@ procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                           MaxCount: integer);
 
+const
+  DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
+  
 implementation
 
 
@@ -892,7 +895,7 @@ begin
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
 
-  FLazDocPathList:=TStringList.Create;
+  FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -914,7 +917,6 @@ begin
   fIDEWindowLayoutList.Free;
   FConfigStore.Free;
   FXMLCfg.Free;
-  FLazDocPathList.Free;
   inherited Destroy;
 end;
 
@@ -1175,9 +1177,9 @@ begin
     LoadPascalFileExt(Path+'');
 
     //lazdoc
-    if FLazDocPathList<>nil then
-      FLazDocPathList.Text :=
-                  XMLConfig.GetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
+    FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
+    if FileVersion<=105 then
+      FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
 
     if FileVersion>=103 then begin
       fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
@@ -1399,8 +1401,7 @@ begin
       AmbiguousFileActionNames[afaAsk]);
 
     //lazdoc
-    if FLazDocPathList<>nil then
-      XMLConfig.SetValue(Path+'LazDoc/Paths', FLazDocPathList.Text);
+    XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
 
     // object inspector
     FObjectInspectorOptions.SaveBounds:=false;
@@ -2332,7 +2333,7 @@ begin
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
     
     //lazdoc
-    LazDocListBox.Items.AddStrings(LazDocPathList);
+    SplitString(LazDocPaths,';',LazDocListBox.Items);
   end;
 end;
 
@@ -2473,7 +2474,7 @@ begin
       PascalFileExtension:=petPAS;
 
     //lazdoc
-    LazDocPathList.Assign(LazDocListBox.Items);
+    LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
 
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);

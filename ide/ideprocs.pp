@@ -183,8 +183,11 @@ function CrossReplaceChars(const Src: string; PrefixChar: char;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
-function SplitString(const s: string; Delimiter: char): TStringList;
+function SplitString(const s: string; Delimiter: char): TStrings;
+procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
+                      ClearList: boolean = true);
 function SpecialCharsToSpaces(const s: string): string;
+function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean = false): string;
 
@@ -1471,6 +1474,30 @@ begin
   //DebugLn('TabsToSpaces ',dbgs(length(Result)));
 end;
 
+procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
+  ClearList: boolean);
+var
+  SLen: Integer;
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  if ClearList then AddTo.Clear;
+  SLen:=length(s);
+  StartPos:=1;
+  EndPos:=1;
+  repeat
+    if (EndPos<=sLen) and (s[EndPos]<>Delimiter) then
+      inc(EndPos)
+    else begin
+      if EndPos>StartPos then
+        AddTo.Add(copy(s,StartPos,EndPos-StartPos));
+      StartPos:=EndPos+1;
+      if StartPos>sLen then exit;
+      inc(EndPos);
+    end;
+  until false;
+end;
+
 {-------------------------------------------------------------------------------
   function SpecialCharsToSpaces(const s: string): string;
 -------------------------------------------------------------------------------}
@@ -1484,6 +1511,29 @@ begin
   if Result='' then exit;
   if (Result[1]=' ') or (Result[length(Result)]=' ') then
     Result:=Trim(Result);
+end;
+
+function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
+var
+  p: Integer;
+  StartPos: LongInt;
+begin
+  Result:=s;
+  p:=1;
+  while (p<=length(Result)) do begin
+    if Result[p] in [#10,#13] then begin
+      StartPos:=p;
+      repeat
+        inc(p);
+      until (p>length(Result)) or (not (Result[p] in [#10,#13]));
+      if p<=length(Result) then
+        Result:=copy(Result,1,StartPos-1)+Delimiter+copy(Result,p,length(Result))
+      else
+        Result:=copy(Result,1,StartPos-1);
+    end else begin
+      inc(p);
+    end;
+  end;
 end;
 
 function StringListToText(List: TStrings; const Delimiter: string;
@@ -1602,29 +1652,12 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function SplitString(const s: string; Delimiter: char): TStringList;
+  function SplitString(const s: string; Delimiter: char): TStrings;
 -------------------------------------------------------------------------------}
-function SplitString(const s: string; Delimiter: char): TStringList;
-var
-  SLen: Integer;
-  StartPos: Integer;
-  EndPos: Integer;
+function SplitString(const s: string; Delimiter: char): TStrings;
 begin
   Result:=TStringList.Create;
-  SLen:=length(s);
-  StartPos:=1;
-  EndPos:=1;
-  repeat
-    if (EndPos<=sLen) and (s[EndPos]<>Delimiter) then
-      inc(EndPos)
-    else begin
-      if EndPos>StartPos then
-        Result.Add(copy(s,StartPos,EndPos-StartPos));
-      StartPos:=EndPos+1;
-      if StartPos>sLen then exit;
-      inc(EndPos);
-    end;
-  until false;
+  SplitString(s,Delimiter,Result,false);
 end;
 
 {-------------------------------------------------------------------------------

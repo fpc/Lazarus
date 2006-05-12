@@ -546,7 +546,7 @@ var
   procedure ReadDelphiPackages;
   var
     DelphiPackages: String;
-    Pkgs: TStringList;
+    Pkgs: TStrings;
     i: Integer;
     Pkg: string;
   begin
@@ -554,11 +554,15 @@ var
     //DebugLn('ReadDelphiPackages DelphiPackages=',DelphiPackages);
     Pkgs:=SplitString(DelphiPackages,';');
     if Pkgs=nil then exit;
-    for i:=0 to Pkgs.Count-1 do begin
-      Pkg:=Pkgs[i];
-      DebugLn('ReadDelphiPackages Pkg=',Pkg);
-      AddPackageDependency(Pkg,'rtl,dbrtl','FCL');
-      AddPackageDependency('LCL');
+    try
+      for i:=0 to Pkgs.Count-1 do begin
+        Pkg:=Pkgs[i];
+        DebugLn('ReadDelphiPackages Pkg=',Pkg);
+        AddPackageDependency(Pkg,'rtl,dbrtl','FCL');
+        AddPackageDependency('LCL');
+      end;
+    finally
+      Pkgs.Free;
     end;
   end;
   
@@ -763,7 +767,7 @@ end;
 function ExpandDelphiSearchPath(const SearchPath: string;
   AProject: TProject): string;
 var
-  Paths: TStringList;
+  Paths: TStrings;
   i: Integer;
   CurPath: String;
   j: Integer;

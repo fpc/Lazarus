@@ -38,7 +38,7 @@ interface
 uses
   Arrow, Buttons, LCLProc, Classes, CodeToolManager, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, IDEOptionDefs, IDEWindowIntf, LazarusIDEStrConsts,
-  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils;
+  LCLIntf, LResources, Project, ProjectIntf, StdCtrls, SysUtils, IDEProcs;
 
 type
 
@@ -293,7 +293,7 @@ begin
   AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in AProject.Flags);
 
   //lazdoc
-  LazDocListBox.Items.Assign(Project.LazDocPathList);
+  SplitString(Project.LazDocPaths,';',LazDocListBox.Items,true);
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
@@ -347,7 +347,8 @@ begin
     SetProjectTitle;
     
     //lazdoc
-    Project.LazDocPathList.Assign(LazDocListBox.Items);
+
+    Project.LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);

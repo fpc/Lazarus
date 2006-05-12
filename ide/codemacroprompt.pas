@@ -79,7 +79,6 @@ begin
     LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
     
     // remove first line (i.e. macro enabled flag)
-    Pattern:=TemplateValue;
     i:=length(CodeTemplateMakroMagic);
     while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
     if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
@@ -89,7 +88,7 @@ begin
     
     if not SubstituteCodeMacros(SrcEdit,Pattern) then exit;
   end;
-  
+
   AEditor.BeginUpdate;
   try
     // get old caret position in text
@@ -115,7 +114,7 @@ begin
       if (p.y>0) and (p.y<=AEditor.Lines.Count) then begin
         s:=AEditor.Lines[p.y-1];
         while (IndentLen<p.x)
-        and ((IndentLen>length(s)) or (s[IndentLen]<=' ')) do
+        and ((IndentLen>length(s)) or (s[IndentLen] in [#9,' '])) do
           inc(IndentLen);
       end;
       IndentLen:=AEditor.LogicalToPhysicalCol(s,IndentLen);// consider tabs

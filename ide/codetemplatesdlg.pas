@@ -257,7 +257,7 @@ function CodeMakroProcedureHead(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
 var
-  Params: TStringList;
+  Params: TStrings;
   Param: string;
   i: Integer;
   Attributes: TProcHeadAttributes;
@@ -266,59 +266,61 @@ begin
 
   // parse attributes
   Params:=SplitString(Parameter,',');
-  try
-    Attributes:=[];
-    for i:=0 to Params.Count-1 do begin
-      Param:=Params[i];
-      if CompareText(Param,'WithStart')=0 then
-        Include(Attributes,phpWithStart)
-      else if CompareText(Param,'WithStart')=0 then
-        Include(Attributes,phpWithStart)
-      else if CompareText(Param,'WithoutClassKeyword')=0 then
-        Include(Attributes,phpWithoutClassKeyword)
-      else if CompareText(Param,'AddClassName')=0 then
-        Include(Attributes,phpAddClassName)
-      else if CompareText(Param,'WithoutClassName')=0 then
-        Include(Attributes,phpWithoutClassName)
-      else if CompareText(Param,'WithoutName')=0 then
-        Include(Attributes,phpWithoutName)
-      else if CompareText(Param,'WithoutParamList')=0 then
-        Include(Attributes,phpWithoutParamList)
-      else if CompareText(Param,'WithVarModifiers')=0 then
-        Include(Attributes,phpWithVarModifiers)
-      else if CompareText(Param,'WithParameterNames')=0 then
-        Include(Attributes,phpWithParameterNames)
-      else if CompareText(Param,'WithoutParamTypes')=0 then
-        Include(Attributes,phpWithoutParamTypes)
-      else if CompareText(Param,'WithDefaultValues')=0 then
-        Include(Attributes,phpWithDefaultValues)
-      else if CompareText(Param,'WithResultType')=0 then
-        Include(Attributes,phpWithResultType)
-      else if CompareText(Param,'WithOfObject')=0 then
-        Include(Attributes,phpWithOfObject)
-      else if CompareText(Param,'WithCallingSpecs')=0 then
-        Include(Attributes,phpWithCallingSpecs)
-      else if CompareText(Param,'WithProcModifiers')=0 then
-        Include(Attributes,phpWithProcModifiers)
-      else if CompareText(Param,'WithComments')=0 then
-        Include(Attributes,phpWithComments)
-      else if CompareText(Param,'InUpperCase')=0 then
-        Include(Attributes,phpInUpperCase)
-      else if CompareText(Param,'CommentsToSpace')=0 then
-        Include(Attributes,phpCommentsToSpace)
-      else if CompareText(Param,'WithoutBrackets')=0 then
-        Include(Attributes,phpWithoutBrackets)
-      else if CompareText(Param,'WithoutSemicolon')=0 then
-        Include(Attributes,phpWithoutSemicolon)
-      else begin
-        Result:=false;
-        ErrorMsg:='Unknown Option: "'+Param+'"';
-        exit;
+  if Params<>nil then begin
+    try
+      Attributes:=[];
+      for i:=0 to Params.Count-1 do begin
+        Param:=Params[i];
+        if CompareText(Param,'WithStart')=0 then
+          Include(Attributes,phpWithStart)
+        else if CompareText(Param,'WithStart')=0 then
+          Include(Attributes,phpWithStart)
+        else if CompareText(Param,'WithoutClassKeyword')=0 then
+          Include(Attributes,phpWithoutClassKeyword)
+        else if CompareText(Param,'AddClassName')=0 then
+          Include(Attributes,phpAddClassName)
+        else if CompareText(Param,'WithoutClassName')=0 then
+          Include(Attributes,phpWithoutClassName)
+        else if CompareText(Param,'WithoutName')=0 then
+          Include(Attributes,phpWithoutName)
+        else if CompareText(Param,'WithoutParamList')=0 then
+          Include(Attributes,phpWithoutParamList)
+        else if CompareText(Param,'WithVarModifiers')=0 then
+          Include(Attributes,phpWithVarModifiers)
+        else if CompareText(Param,'WithParameterNames')=0 then
+          Include(Attributes,phpWithParameterNames)
+        else if CompareText(Param,'WithoutParamTypes')=0 then
+          Include(Attributes,phpWithoutParamTypes)
+        else if CompareText(Param,'WithDefaultValues')=0 then
+          Include(Attributes,phpWithDefaultValues)
+        else if CompareText(Param,'WithResultType')=0 then
+          Include(Attributes,phpWithResultType)
+        else if CompareText(Param,'WithOfObject')=0 then
+          Include(Attributes,phpWithOfObject)
+        else if CompareText(Param,'WithCallingSpecs')=0 then
+          Include(Attributes,phpWithCallingSpecs)
+        else if CompareText(Param,'WithProcModifiers')=0 then
+          Include(Attributes,phpWithProcModifiers)
+        else if CompareText(Param,'WithComments')=0 then
+          Include(Attributes,phpWithComments)
+        else if CompareText(Param,'InUpperCase')=0 then
+          Include(Attributes,phpInUpperCase)
+        else if CompareText(Param,'CommentsToSpace')=0 then
+          Include(Attributes,phpCommentsToSpace)
+        else if CompareText(Param,'WithoutBrackets')=0 then
+          Include(Attributes,phpWithoutBrackets)
+        else if CompareText(Param,'WithoutSemicolon')=0 then
+          Include(Attributes,phpWithoutSemicolon)
+        else begin
+          Result:=false;
+          ErrorMsg:='Unknown Option: "'+Param+'"';
+          exit;
+        end;
       end;
-    end;
 
-  finally
-    Params.Free;
+    finally
+      Params.Free;
+    end;
   end;
 
   //debugln('CodeMakroProcedureHead B ');
@@ -916,6 +918,7 @@ begin
   if UseMakrosCheckBox.Checked then
     NewValue:=CodeTemplateMakroMagic+LineEnding+NewValue;
   SynAutoComplete.CompletionValues[a]:=NewValue;
+  //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate NewValue="',NewValue,'" SynAutoComplete.CompletionValues[a]="',SynAutoComplete.CompletionValues[a],'"');
 end;
 
 { TLazCodeMacros }

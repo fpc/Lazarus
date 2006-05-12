@@ -1628,7 +1628,7 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
 
       //lazdoc
-      xmlconfig.SetValue(Path+'LazDoc/Paths', LazDocPathList.Text);
+      xmlconfig.SetDeleteValue(Path+'LazDoc/Paths', LazDocPaths, '');
 
       // Save the compiler options
       CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
@@ -1973,7 +1973,7 @@ begin
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
 
       // Lazdoc
-      LazDocPathList.Text := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
+      LazDocPaths := xmlconfig.GetValue(Path+'LazDoc/Paths', '');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options

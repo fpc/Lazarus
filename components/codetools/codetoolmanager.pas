@@ -327,7 +327,8 @@ type
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): Boolean;
     function FindDeclarationAndOverload(Code: TCodeBuffer; X,Y: integer;
-          var ListOfPCodeXYPosition: TFPList): boolean;
+          var ListOfPCodeXYPosition: TFPList;
+          Flags: TFindDeclarationListFlags): boolean;
     function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
@@ -1596,7 +1597,8 @@ begin
 end;
 
 function TCodeToolManager.FindDeclarationAndOverload(Code: TCodeBuffer; X,
-  Y: integer; var ListOfPCodeXYPosition: TFPList): boolean;
+  Y: integer; var ListOfPCodeXYPosition: TFPList;
+  Flags: TFindDeclarationListFlags): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -1613,7 +1615,7 @@ begin
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindDeclarationAndOverload(CursorPos,
-                                                      ListOfPCodeXYPosition);
+                                                   ListOfPCodeXYPosition,Flags);
   except
     on e: Exception do Result:=HandleException(e);
   end;

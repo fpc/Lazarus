@@ -214,6 +214,7 @@ type
     procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewUnitDependenciesClicked(Sender: TObject);
     procedure mnuViewUnitInfoClicked(Sender: TObject);
+    procedure mnuViewLazDocClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
@@ -266,7 +267,6 @@ type
     procedure mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
     procedure mnuToolMakeResourceStringClicked(Sender: TObject);
     procedure mnuToolDiffClicked(Sender: TObject);
-    procedure mnuToolLazDocClicked(Sender: TObject);  //DBlaszijk 5-sep-05
     procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
@@ -1982,7 +1982,7 @@ begin
     itmViewInspector.OnClick := @mnuViewInspectorClicked;
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
-    itmViewLazDoc.OnClick := @mnuToolLazDocClicked;  //DBlaszijk 5-sep-05
+    itmViewLazDoc.OnClick := @mnuViewLazDocClicked;  //DBlaszijk 5-sep-05
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
@@ -3208,8 +3208,7 @@ begin
   DoDiff;
 end;
 
-//DBlaszijk 5-sep-05
-procedure TMainIDE.mnuToolLazDocClicked(Sender: TObject);
+procedure TMainIDE.mnuViewLazDocClicked(Sender: TObject);
 begin
   SourceNotebook.ShowLazDoc;
 end;

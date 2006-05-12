@@ -1724,7 +1724,8 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
     Cnt:=Pkg1.FileCount;
     for i:=0 to Cnt-1 do begin
       CurFile:=Pkg1.Files[i];
-      if CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]) then begin
+      if (CurFile.FileType in (PkgFileUnitTypes-[pftVirtualUnit]))
+      and (pffAddToPkgUsesSection in CurFile.Flags) then begin
         Result:=CheckUnitName(CurFile.UnitName);
         if Result then begin
           File1:=CurFile;

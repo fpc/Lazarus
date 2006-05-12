@@ -69,14 +69,14 @@ type
     procedure mnuHelpConfigureHelpClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
   private
-    FFCLHelpDBPath: THelpBasePathObject;
-    FLCLHelpDBPath: THelpBasePathObject;
+    FFCLHelpDBPath: THelpBaseURLObject;
+    FLCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FFCLHelpDB: THelpDatabase;
     FLCLHelpDB: THelpDatabase;
-    FRTLHelpDBPath: THelpBasePathObject;
+    FRTLHelpDBPath: THelpBaseURLObject;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
@@ -97,15 +97,20 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
+
+    function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
+               const Filename: string): TPascalHelpContextList; override;
+    function ConvertCodePosToPascalHelpContext(
+               ACodePos: PCodeXYPosition): TPascalHelpContextList;
   public
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
-    property FCLHelpDBPath: THelpBasePathObject read FFCLHelpDBPath;
+    property FCLHelpDBPath: THelpBaseURLObject read FFCLHelpDBPath;
     property LCLHelpDB: THelpDatabase read FLCLHelpDB;
-    property LCLHelpDBPath: THelpBasePathObject read FLCLHelpDBPath;
+    property LCLHelpDBPath: THelpBaseURLObject read FLCLHelpDBPath;
     property MainHelpDB: THelpDatabase read FMainHelpDB;
     property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
-    property RTLHelpDBPath: THelpBasePathObject read FRTLHelpDBPath;
+    property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
   end;
 
   { THelpSelectorDialog }
@@ -205,6 +210,8 @@ begin
         Selection:=Nodes[i];
         Result:=shrSuccess;
       end;
+    end else begin
+      Result:=shrCancel;
     end;
   finally
     Dialog.Free;
@@ -219,6 +226,7 @@ begin
   case ShowResult of
   shrNone: ErrorCaption:=lisCodeTemplError;
   shrSuccess: exit;
+  shrCancel: exit;
   shrDatabaseNotFound: ErrorCaption:=lisHelpDatabaseNotFound;
   shrContextNotFound: ErrorCaption:=lisHelpContextNotFound;
   shrViewerNotFound: ErrorCaption:=lisHelpViewerNotFound;
@@ -234,6 +242,7 @@ function TIDEHelpDatabases.GetBaseDirectoryForBasePathObject(
   BasePathObject: TObject): string;
 begin
   Result:='';
+  DebugLn('TIDEHelpDatabases.GetBaseDirectoryForBasePathObject BasePathObject=',dbgsName(BasePathObject));
   if (BasePathObject is THelpBasePathObject) then
     Result:=THelpBasePathObject(BasePathObject).BasePath
   else if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
@@ -302,7 +311,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FRTLHelpDB as TFPDocHTMLHelpDatabase;
     HTMLHelp.DefaultBaseURL:=lihRTLURL;
-    FRTLHelpDBPath:=THelpBasePathObject.Create;
+    FRTLHelpDBPath:=THelpBaseURLObject.Create;
     HTMLHelp.BasePathObject:=FRTLHelpDBPath;
 
     // FPDoc nodes for units in the RTL
@@ -325,7 +334,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FFCLHelpDB as TFPDocHTMLHelpDatabase;
     HTMLHelp.DefaultBaseURL:=lihFCLURL;
-    FFCLHelpDBPath:=THelpBasePathObject.Create;
+    FFCLHelpDBPath:=THelpBaseURLObject.Create;
     HTMLHelp.BasePathObject:=FFCLHelpDBPath;
 
     // FPDoc nodes for units in the FCL
@@ -348,7 +357,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
     HTMLHelp.DefaultBaseURL:=lihLCLURL;
-    FLCLHelpDBPath:=THelpBasePathObject.Create;
+    FLCLHelpDBPath:=THelpBaseURLObject.Create;
     HTMLHelp.BasePathObject:=FLCLHelpDBPath;
 
     // FPDoc nodes for units in the LCL
@@ -387,6 +396,7 @@ constructor THelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   HelpBoss:=Self;
+  LazarusHelp:=Self;
   HelpOpts:=THelpOptions.Create;
   HelpOpts.SetDefaultFilename;
   HelpDatabases:=TIDEHelpDatabases.Create;
@@ -410,6 +420,7 @@ begin
   FreeThenNil(FFCLHelpDBPath);
   FreeThenNil(FLCLHelpDBPath);
   HelpBoss:=nil;
+  LazarusHelp:=nil;
   inherited Destroy;
 end;
 
@@ -513,97 +524,6 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     Result:=ShowHelpForFPCKeyWord(KeyWord);
   end;
 
-  function ConvertCodePosToPascalHelpContext(ACodePos: PCodeXYPosition
-    ): TPascalHelpContextList;
-    
-    procedure AddContext(Descriptor: TPascalHelpContextType;
-      const Context: string);
-    var
-      CurContext: TPascalHelpContext;
-    begin
-      CurContext.Descriptor:=Descriptor;
-      CurContext.Context:=Context;
-      Result.Add(CurContext);
-      debugln('  AddContext Descriptor=',dbgs(ord(Descriptor)),' Context="',Context,'"');
-    end;
-    
-    procedure AddContextsBackwards(Tool: TCodeTool;
-      Node: TCodeTreeNode);
-    begin
-      if Node=nil then exit;
-      AddContextsBackwards(Tool,Node.Parent);
-      case Node.Desc of
-      ctnUnit, ctnPackage, ctnProgram, ctnLibrary:
-        AddContext(pihcSourceName,Tool.GetSourceName);
-      ctnVarDefinition:
-        AddContext(pihcVariable,Tool.ExtractDefinitionName(Node));
-      ctnTypeDefinition:
-        AddContext(pihcType,Tool.ExtractDefinitionName(Node));
-      ctnConstDefinition:
-        AddContext(pihcConst,Tool.ExtractDefinitionName(Node));
-      ctnProperty:
-        AddContext(pihcProperty,Tool.ExtractPropName(Node,false));
-      ctnProcedure:
-        AddContext(pihcProcedure,Tool.ExtractProcName(Node,
-                                                      [phpWithoutClassName]));
-      ctnProcedureHead:
-        AddContext(pihcParameterList,'');
-      end;
-    end;
-    
-  var
-    MainCodeBuffer: TCodeBuffer;
-    Tool: TCustomCodeTool;
-    CleanPos: integer;
-    i: Integer;
-    Node: TCodeTreeNode;
-    IncludeChain: TFPList;
-    ConversionResult: LongInt;
-  begin
-    Result:=nil;
-    // find code buffer
-    if ACodePos^.Code=nil then begin
-      debugln('WARNING: ConvertCodePosToPascalHelpContext ACodePos.Code=nil');
-      exit;
-    end;
-    Result:=TPascalHelpContextList.Create;
-    // add filename and all filenames of the include chain
-    IncludeChain:=nil;
-    try
-      CodeToolBoss.GetIncludeCodeChain(ACodePos^.Code,true,IncludeChain);
-      if IncludeChain=nil then begin
-        debugln('WARNING: ConvertCodePosToPascalHelpContext IncludeChain=nil');
-        exit;
-      end;
-      for i:=0 to IncludeChain.Count-1 do
-        AddContext(pihcFilename,TCodeBuffer(IncludeChain[i]).Filename);
-      MainCodeBuffer:=TCodeBuffer(IncludeChain[0]);
-    finally
-      IncludeChain.Free;
-    end;
-    // find code tool
-    Tool:=CodeToolBoss.FindCodeToolForSource(MainCodeBuffer);
-    if not (Tool is TCodeTool) then begin
-      debugln('WARNING: ConvertCodePosToPascalHelpContext not (Tool is TCodeTool) MainCodeBuffer=',MainCodeBuffer.Filename);
-      exit;
-    end;
-    // convert cursor position to clean position
-    ConversionResult:=Tool.CaretToCleanPos(ACodePos^,CleanPos);
-    if ConversionResult<>0 then begin
-      // position not in clean code, maybe a comment, maybe behind last line
-      // => ignore
-      exit;
-    end;
-    // find node
-    Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
-    if Node=nil then begin
-      // position not in a scanned pascal node, maybe in between
-      // => ignore
-      exit;
-    end;
-    AddContextsBackwards(TCodeTool(Tool),Node);
-  end;
-
   procedure CollectDeclarations(CodeBuffer: TCodeBuffer);
   var
     NewList: TPascalHelpContextList;
@@ -617,7 +537,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     try
       // get all possible declarations of this identifier
       if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
-        ListOfPCodeXYPosition) then
+        ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties]) then
       begin
         debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
         // convert the source positions in pascal help context list
@@ -666,6 +586,99 @@ begin
   Result:=CollectKeyWords(CodeBuffer);
   if Result=shrSuccess then exit;
   CollectDeclarations(CodeBuffer);
+end;
+
+function THelpManager.ConvertCodePosToPascalHelpContext(
+  ACodePos: PCodeXYPosition): TPascalHelpContextList;
+
+  procedure AddContext(Descriptor: TPascalHelpContextType;
+    const Context: string);
+  var
+    CurContext: TPascalHelpContext;
+  begin
+    CurContext.Descriptor:=Descriptor;
+    CurContext.Context:=Context;
+    Result.Add(CurContext);
+    //debugln('  AddContext Descriptor=',dbgs(ord(Descriptor)),' Context="',Context,'"');
+  end;
+
+  procedure AddContextsBackwards(Tool: TCodeTool;
+    Node: TCodeTreeNode);
+  begin
+    if Node=nil then exit;
+    AddContextsBackwards(Tool,Node.Parent);
+    case Node.Desc of
+    ctnUnit, ctnPackage, ctnProgram, ctnLibrary:
+      AddContext(pihcSourceName,Tool.GetSourceName);
+    ctnVarDefinition:
+      AddContext(pihcVariable,Tool.ExtractDefinitionName(Node));
+    ctnTypeDefinition:
+      AddContext(pihcType,Tool.ExtractDefinitionName(Node));
+    ctnConstDefinition:
+      AddContext(pihcConst,Tool.ExtractDefinitionName(Node));
+    ctnProperty:
+      AddContext(pihcProperty,Tool.ExtractPropName(Node,false));
+    ctnProcedure:
+      AddContext(pihcProcedure,Tool.ExtractProcName(Node,
+                                                    [phpWithoutClassName]));
+    ctnProcedureHead:
+      AddContext(pihcParameterList,Tool.ExtractProcHead(Node,
+                [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,
+                 phpWithoutSemicolon]));
+    end;
+  end;
+
+var
+  MainCodeBuffer: TCodeBuffer;
+  Tool: TCustomCodeTool;
+  CleanPos: integer;
+  i: Integer;
+  Node: TCodeTreeNode;
+  IncludeChain: TFPList;
+  ConversionResult: LongInt;
+begin
+  Result:=nil;
+  // find code buffer
+  if ACodePos^.Code=nil then begin
+    debugln('WARNING: ConvertCodePosToPascalHelpContext ACodePos.Code=nil');
+    exit;
+  end;
+  Result:=TPascalHelpContextList.Create;
+  // add filename and all filenames of the include chain
+  IncludeChain:=nil;
+  try
+    CodeToolBoss.GetIncludeCodeChain(ACodePos^.Code,true,IncludeChain);
+    if IncludeChain=nil then begin
+      debugln('WARNING: ConvertCodePosToPascalHelpContext IncludeChain=nil');
+      exit;
+    end;
+    for i:=0 to IncludeChain.Count-1 do
+      AddContext(pihcFilename,TCodeBuffer(IncludeChain[i]).Filename);
+    MainCodeBuffer:=TCodeBuffer(IncludeChain[0]);
+  finally
+    IncludeChain.Free;
+  end;
+  // find code tool
+  Tool:=CodeToolBoss.FindCodeToolForSource(MainCodeBuffer);
+  if not (Tool is TCodeTool) then begin
+    debugln('WARNING: ConvertCodePosToPascalHelpContext not (Tool is TCodeTool) MainCodeBuffer=',MainCodeBuffer.Filename);
+    exit;
+  end;
+  // convert cursor position to clean position
+  ConversionResult:=Tool.CaretToCleanPos(ACodePos^,CleanPos);
+  if ConversionResult<>0 then begin
+    // position not in clean code, maybe a comment, maybe behind last line
+    // => ignore
+    exit;
+  end;
+  // find node
+  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+  if Node=nil then begin
+    // position not in a scanned pascal node, maybe in between
+    // => ignore
+    exit;
+  end;
+  AddContextsBackwards(TCodeTool(Tool),Node);
 end;
 
 procedure THelpManager.ShowHelpForMessage(Line: integer);
@@ -718,6 +731,23 @@ begin
       ShowContextHelpForIDE(AnInspector);
     end;
   end;
+end;
+
+function THelpManager.ConvertSourcePosToPascalHelpContext(
+  const CaretPos: TPoint; const Filename: string): TPascalHelpContextList;
+var
+  CodePos: TCodeXYPosition;
+  Code: TCodeBuffer;
+  ACodeTool: TCodeTool;
+begin
+  Result:=nil;
+  Code:=CodeToolBoss.FindFile(Filename);
+  if Code=nil then exit;
+  CodePos.Code:=Code;
+  CodePos.X:=CaretPos.X;
+  CodePos.Y:=CaretPos.Y;
+  if not CodeToolBoss.Explore(Code,ACodeTool,false) then exit;
+  Result:=ConvertCodePosToPascalHelpContext(@CodePos);
 end;
 
 initialization

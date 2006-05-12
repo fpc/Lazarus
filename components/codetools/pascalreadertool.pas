@@ -1500,7 +1500,7 @@ begin
     ReadNextAtom; // read 'property'
   end;
   ReadNextAtom; // read name
-  ReadNextAtom;
+  ReadNextAtom; // read colon, skip parameters
   if CurPos.Flag=cafEdgedBracketOpen then begin
     ReadTilBracketClose(true);
     ReadNextAtom;

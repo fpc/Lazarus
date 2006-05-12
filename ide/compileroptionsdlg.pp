@@ -566,7 +566,7 @@ procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);
 var
   ANode: TTreeNode;
   ChildData: PInheritedNodeData;
-  sl: TStringList;
+  sl: TStrings;
 begin
   ANode:=InhTreeView.Selected;
   if (ANode=nil) or (ANode.Data=nil) then begin

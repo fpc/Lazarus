@@ -38,25 +38,14 @@ unit LazDocFrm;
 interface
 
 uses
-  Buttons,
-  Classes,
-  ComCtrls,
-  Controls,
-  Dialogs,
-  DOM,
-  ExtCtrls,
-  Forms,
-  Graphics,
-  IDEProcs,
-  LazarusIDEStrConsts,
-  LCLProc,
-  LResources,
-  StdCtrls,
-  StrUtils,
+  Classes, SysUtils, StrUtils,
+  LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
+  ExtCtrls, Forms, Graphics,
   SynEdit,
-  SysUtils,
-  XMLread,
-  XMLwrite;
+  CodeToolManager, CodeCache,
+  Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
+  HelpIntf,
+  IDEProcs, LazarusIDEStrConsts;
 
 const
   SHORT = 1;
@@ -101,43 +90,42 @@ type
     procedure DeleteLinkButtonClick(Sender: TObject);
     procedure DocumentationTagChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
     procedure LinkChange(Sender: TObject);
     procedure LinkListBoxClick(Sender: TObject);
   private
-    { private declarations }
-    FLinkIndex: Integer;
     FChanged:   Boolean;
+    FCurrentElement: TPascalHelpContextList;
+    FDoc: TXMLdocument;
     FDocFileName: String;
-    FCurrentElement: String;
-    FLastElement: String;
-    function GetModuleNode: TDOMNode;
-    function GetFirstElement: TDOMNode;
-    procedure GetElementList;
-    function MakeLink: String;
-    procedure SetDocFileName(Value: String);
-    procedure InsertElement(ElementName: String);
-    function NodeByName(ElementName: String): TDOMNode;
-    function GetFirstChildValue(n: TDOMNode): String;
+    FLinkIndex: Integer;
     function ElementFromNode(Node: TDOMNode): TFPDocNode;
-    function ExtractFuncProc(startpos: tpoint; keyword: String;
+    function ExtractFuncProc(const startpos: TPoint; const keyword: String;
       src: tStrings): String;
-    function GetNearestSourceElement(source: tStrings;
-      caretpos: tpoint): String;
-    procedure SetCaption;
+    function GetFirstChildValue(n: TDOMNode): String;
+    function GetFirstElement: TDOMNode;
+    function GetModuleNode: TDOMNode;
+    function GetNearestSourceElement(const SrcFilename: string;
+      const CaretPos: TPoint): TPascalHelpContextList;
+    function MakeLink: String;
+    function NodeByPascalContext(const AContext: TPascalHelpContextList): TDOMNode;
+    function GetElementName(const AContext: TPascalHelpContextList): string;
+    procedure GetElementList;
+    procedure InsertElement(const ElementName: String);
     procedure Save;
+    procedure SetDocFileName(const Value: String);
+    procedure UpdateCaption;
   public
-    { public declarations }
     procedure Reset;
-    procedure UpdateLazDoc(source: TStrings; pos: TPoint);
+    procedure UpdateLazDoc(const SrcFilename: string; const Caret: TPoint);
     property DocFileName: String read FDocFileName write SetDocFileName;
+    property Doc: TXMLdocument read FDoc;
   end;
 
 var
   LazDocForm: TLazDocForm;
-  doc: TXMLdocument = Nil;
-//maybe better to make it a member field of TLazFormDoc
 
 procedure DoShowLazDoc;
 
@@ -173,17 +161,17 @@ end;
 
 function TLazDocForm.GetFirstElement: TDOMNode;
 var
-  n: TDOMNode;
+  Node: TDOMNode;
 begin
   //get first module node
-  n := GetModuleNode;
+  Node := GetModuleNode;
 
   //proceed to element
-  n := n.FirstChild;
-  while n.NodeName <> 'element' do
-    n := n.NextSibling;
+  Node := Node.FirstChild;
+  while Node.NodeName <> 'element' do
+    Node := Node.NextSibling;
 
-  Result := n;
+  Result := Node;
 end;
 
 procedure TLazDocForm.GetElementList;
@@ -220,13 +208,13 @@ begin
   end;
 end;
 
-procedure TLazDocForm.SetDocFileName(Value: String);
+procedure TLazDocForm.SetDocFileName(const Value: String);
 begin
   LinkIdComboBox.Clear;
 
-  if FileExists(Value) and (Value <> FDocFileName) then
+  if FileExistsCached(Value) and (Value <> FDocFileName) then
   begin
-    //reset Self
+    // reset Self
     Reset;
 
     FDocFileName := Value;
@@ -236,7 +224,7 @@ begin
 
     ReadXMLFile(doc, FDocFileName);
 
-    SetCaption;
+    UpdateCaption;
 
     GetElementList;
 
@@ -275,8 +263,12 @@ begin
   BrowseExampleButton.Caption := lisLazDocBrowseExampleButton;
 
   Reset;
+end;
 
-  Resize;
+procedure TLazDocForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fDoc);
+  FreeAndNil(FCurrentElement);
 end;
 
 procedure TLazDocForm.FormResize(Sender: TObject);
@@ -355,7 +347,7 @@ begin
     LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
 end;
 
-procedure TLazDocForm.InsertElement(ElementName: String);
+procedure TLazDocForm.InsertElement(const ElementName: String);
 var
   n: TDOMNode;
   child: TDOMNode;
@@ -384,46 +376,73 @@ begin
   WriteXMLFile(doc, FDocFileName);
 end;
 
-function TLazDocForm.NodeByName(ElementName: String): TDOMNode;
+function TLazDocForm.NodeByPascalContext(
+  const AContext: TPascalHelpContextList): TDOMNode;
 var
-  n: TDOMNode;
+  Node: TDOMNode;
+  ElementName: String;
 begin
   Result := Nil;
 
-  if not Assigned(doc) then
-  begin
-    {$ifdef dbgLazDoc}
-    DebugLn('TLazDocForm.NodeByName: document is not set');
-    {$endif}
+  if not Assigned(doc) then Exit;
 
-    Exit;
-  end;
+  // get first element node
+  ElementName:=GetElementName(AContext);
 
-  //get first element node
-  n := GetFirstElement;
+  if ElementName='' then exit;
+  //DebugLn('TLazDocForm.NodeByPascalContext ElementName="',ElementName,'"');
 
-  //search elements for ElementName
-  while Assigned(n) and (TDomElement(n)['name'] <> ElementName) do
-  begin
-    n := n.NextSibling;
-
-    //no element found
-    if not Assigned(n) then
+  // search elements for ElementName
+  Node:=GetFirstElement;
+  while Node<>nil do begin
+    if (Node is TDomElement)
+    and (CompareText(TDomElement(Node).GetAttribute('name'),ElementName)=0) then
     begin
+      break;
+    end;
+    Node:=Node.NextSibling;
+  end;
+  
+  if Node=nil then begin
+    // no element found
+    if not Assigned(Node) then begin
+      // if there is no node, then fpdoc has not created an element
       InsertElement(ElementName);
       Exit;
     end;
-
-    while n.NodeName = '#comment' do
-      n := n.NextSibling;
   end;
 
   {$ifdef dbgLazDoc}
-  DebugLn('TLazDocForm.NodeByName: element node found where name is: ' +
+  DebugLn('TLazDocForm.NodeByPascalContext: element node found where name is: ' +
     ElementName);
   {$endif}
 
-  Result := n;
+  Result := Node;
+end;
+
+function TLazDocForm.GetElementName(const AContext: TPascalHelpContextList
+  ): string;
+var
+  Level: Integer;
+begin
+  // get first element node
+  Level:=0;
+  Result:='';
+  while (Level<AContext.Count) do begin
+    case AContext.Items[Level].Descriptor of
+    pihcProperty,pihcProcedure,pihcVariable,pihcType,pihcConst:
+      begin
+        if Result<>'' then Result:=Result+'.';
+        Result:=Result+AContext.Items[Level].Context;
+      end;
+    pihcFilename: ;
+    pihcSourceName: ;
+    else
+      DebugLn('TLazDocForm.NodeByPascalContext unsupported type: "',AContext.Items[Level].Context,'"');
+      exit; // unsupported type
+    end;
+    inc(Level);
+  end;
 end;
 
 function TLazDocForm.GetFirstChildValue(n: TDOMNode): String;
@@ -478,8 +497,8 @@ begin
   end;
 end;
 
-function TLazDocForm.ExtractFuncProc(startpos: tpoint;
-  keyword: String; src: tStrings): String;
+function TLazDocForm.ExtractFuncProc(const startpos: TPoint;
+  const keyword: String; src: tStrings): String;
 var
   xpos: Integer;
   ypos: Integer;
@@ -501,57 +520,23 @@ begin
   end;
 end;
 
-function TLazDocForm.GetNearestSourceElement(source: tStrings;
-  caretpos: tpoint): String;
-var
-  xpos: Integer;
-  ypos: Integer;
+function TLazDocForm.GetNearestSourceElement(const SrcFilename: string;
+  const CaretPos: TPoint): TPascalHelpContextList;
 begin
-  //find preceding keyword
-  xpos := Succ(caretpos.x);
-  ypos := caretpos.y;
-  while (xpos > 0) or (ypos > 0) do
-  begin
-    Dec(xpos);
+  Result:=LazarusHelp.ConvertSourcePosToPascalHelpContext(CaretPos,SrcFilename);
 
-    if xpos < 0 then
-    begin
-      Dec(ypos);
-      xpos := length(source[ypos]);
-    end;
-
-    //check for keywords
-    if PosEx('procedure', source[ypos], xpos) = 1 then
-    begin
-      Result := ExtractFuncProc(Point(xpos, ypos), 'procedure', source);
-      Exit;
-    end;
-    if PosEx('function', source[ypos], xpos) = 1 then
-    begin
-      Result := ExtractFuncProc(Point(xpos, ypos), 'function', source);
-      Exit;
-    end;
-    if PosEx('constructor', source[ypos], xpos) = 1 then
-    begin
-      Result := ExtractFuncProc(Point(xpos, ypos), 'constructor', source);
-      Exit;
-    end;
-    if PosEx('desctructor', source[ypos], xpos) = 1 then
-    begin
-      Result := ExtractFuncProc(Point(xpos, ypos), 'desctructor', source);
-      Exit;
-    end;
-  end;
+  //if Result<>nil then
+  //  DebugLn('TLazDocForm.GetNearestSourceElement Result=',Result.AsString);
 end;
 
-procedure TLazDocForm.SetCaption;
+procedure TLazDocForm.UpdateCaption;
 var
   strCaption: String;
 begin
   strCaption := lisLazDocMainFormCaption + ' - ';
 
-  if FCurrentElement <> '' then
-    strCaption := strCaption + FCurrentElement + ' - '
+  if FCurrentElement <> nil then
+    strCaption := strCaption + GetElementName(FCurrentElement) + ' - '
   else
     strCaption := strCaption + lisLazDocNoTagCaption + ' - ';
 
@@ -564,9 +549,9 @@ end;
 procedure TLazDocForm.Reset;
 begin
   FreeAndNil(Doc);
-  FCurrentElement := '';
+  FreeAndNil(FCurrentElement);
   FDocFileName    := '';
-  SetCaption;
+  UpdateCaption;
 
   //clear all element editors/viewers
   ShortEdit.Clear;
@@ -580,11 +565,13 @@ begin
   FChanged := False;
 end;
 
-procedure TLazDocForm.UpdateLazDoc(source: TStrings; pos: TPoint);
+procedure TLazDocForm.UpdateLazDoc(const SrcFilename: string;
+  const Caret: TPoint);
 var
   dn: TFPDocNode;
   n:  TDOMNode;
   EnabledState: Boolean;
+  NewElement: TPascalHelpContextList;
 begin
   if not Assigned(doc) then
   begin
@@ -595,21 +582,22 @@ begin
     Exit;
   end;
 
-  //save the current changes to documentation
+  // save the current changes to documentation
   Save;
 
-  FCurrentElement := GetNearestSourceElement(source, pos);
+  NewElement:=GetNearestSourceElement(SrcFilename, Caret);
+  // avoid circles and overhead
+  if (NewElement<>nil) and (FCurrentElement<>nil)
+  and (NewElement.IsEqual(FCurrentElement)) then begin
+    NewElement.Free;
+    exit;
+  end;
 
-  //do not continue if FCurrentElement=FLastElement
-  //or FCurrentElement is empty (J. Reyes)
-  if (FCurrentElement = FLastElement) or (FCurrentElement = '') then
-    Exit;
+  FCurrentElement := NewElement;
 
-  SetCaption;
+  UpdateCaption;
 
-  FLastElement := FCurrentElement;
-
-  n := NodeByName(FCurrentElement);
+  n := NodeByPascalContext(FCurrentElement);
 
   EnabledState := Assigned(n);
 
@@ -675,7 +663,7 @@ end;
 
 procedure TLazDocForm.Save;
 var
-  n: TDOMNode;
+  Node: TDOMNode;
   S: String;
   NodeWritten: array [1..NODEITEMS] of Boolean;
   i: Integer;
@@ -692,13 +680,13 @@ var
 
     if S = NodeName then
     begin
-      if not Assigned(n.FirstChild) then
+      if not Assigned(Node.FirstChild) then
       begin
         child := doc.CreateTextNode(ToUnixLineEnding(NodeText));
-        n.AppendChild(child);
+        Node.AppendChild(child);
       end
       else
-        n.FirstChild.NodeValue := ToUnixLineEnding(NodeText);
+        Node.FirstChild.NodeValue := ToUnixLineEnding(NodeText);
       NodeWritten[NodeIndex] := True;
     end;
   end;
@@ -714,30 +702,30 @@ var
 
     child := doc.CreateElement(ElementName);
     child.AppendChild(doc.CreateTextNode(ToUnixLineEnding(ElementText)));
-    n.AppendChild(child);
+    Node.AppendChild(child);
   end;
 
 begin
-  //nothing changed, so exit
+  // nothing changed, so exit
   if not FChanged then
     Exit;
 
-  n := NodeByName(FCurrentElement);
+  Node := NodeByPascalContext(FCurrentElement);
 
-  if not Assigned(n) then
+  if not Assigned(Node) then
     Exit;
 
-  //reset all nodes
+  // reset all nodes
   for i := 1 to NODEITEMS do
     NodeWritten[i] := False;
 
-  //write all known nodes to XML
-  n := n.FirstChild;
-  while Assigned(n) do
+  // write all known nodes to XML
+  Node := Node.FirstChild;
+  while Assigned(Node) do
   begin
-    if (n.NodeType = ELEMENT_NODE) then
+    if (Node.NodeType = ELEMENT_NODE) then
     begin
-      S := n.NodeName;
+      S := Node.NodeName;
 
       CheckAndWriteNode('short', ShortEdit.Text, SHORT);
       CheckAndWriteNode('descr', DescrMemo.Text, DESCR);
@@ -746,11 +734,11 @@ begin
       CheckAndWriteNode('example', '<example file="' +
         ExampleEdit.Text + '"/>', EXAMPLE);
     end;
-    n := n.NextSibling;
+    Node := Node.NextSibling;
   end;
 
-  //add new nodes to XML if not already updated
-  n := NodeByName(FCurrentElement);
+  // add new nodes to XML if not already updated
+  Node := NodeByPascalContext(FCurrentElement);
   for i := 1 to NODEITEMS do
     if NodeWritten[i] = False then
       case i of
@@ -819,8 +807,5 @@ end;
 
 initialization
   {$I lazdocfrm.lrs}
-
-finalization
-  FreeAndNil(doc)
 
 end.

@@ -189,7 +189,8 @@ begin
   end else if (BasePathObject<>nil) and (Databases<>nil) then begin
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using BasePathObject="',Result,'"');
-  end else if DefaultBaseURL<>'' then begin
+  end;
+  if (Result='') and (DefaultBaseURL<>'') then begin
     Result:=DefaultBaseURL;
     if (IDEMacros<>nil) then
       IDEMacros.SubstituteMacros(Result);

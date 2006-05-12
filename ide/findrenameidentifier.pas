@@ -352,13 +352,9 @@ end;
 
 procedure TFindRenameIdentifierDialog.SaveToOptions(
   Options: TFindRenameIdentifierOptions);
-var
-  ExtraFileList: TStringList;
 begin
   Options.Rename:=RenameCheckBox.Checked;
-  ExtraFileList:=SplitString(ExtraFilesEdit.Text,';');
-  Options.ExtraFiles.Assign(ExtraFileList);
-  ExtraFileList.Free;
+  SplitString(ExtraFilesEdit.Text,';',Options.ExtraFiles,true);
   Options.RenameTo:=NewEdit.Text;
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
   case ScopeRadioGroup.ItemIndex of

@@ -38,6 +38,7 @@ type
   TShowHelpResult = (
     shrNone,
     shrSuccess,
+    shrCancel,
     shrDatabaseNotFound,
     shrContextNotFound,
     shrViewerNotFound,
@@ -77,7 +78,6 @@ type
   TPascalHelpContextList = class(THelpQueryItem)
   private
     FCount: integer;
-    // TODO: convert to dynamic array, when fpc 1.0 support is removed.
     fItems: TPascalHelpContextPtr;
     function GetItems(Index: integer): TPascalHelpContext;
   public
@@ -706,12 +706,16 @@ type
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
     procedure ShowHelpForMessage(Line: integer); virtual; abstract;
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
+
+    function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
+                            const Filename: string): TPascalHelpContextList; virtual; abstract;
   end;
 
 
 var
   HelpDatabases: THelpDatabases; // initialized by the IDE
   HelpViewers: THelpViewers; // initialized by the IDE
+  LazarusHelp: TBaseHelpManager; // initialized by the IDE
 
 //==============================================================================
 { Showing help (how it works):
@@ -1540,9 +1544,9 @@ function THelpDatabases.GetBaseURLForBasePathObject(BasePathObject: TObject
 begin
   // this method will be overriden by the IDE
   // provide some useful defaults:
-  if (BasePathObject is THelpBaseURLObject) then
-    Result:=THelpBaseURLObject(BasePathObject).BaseURL
-  else begin
+  if (BasePathObject is THelpBaseURLObject) then begin
+    Result:=THelpBaseURLObject(BasePathObject).BaseURL;
+  end else begin
     // otherwise fetch a filename
     Result:=GetBaseDirectoryForBasePathObject(BasePathObject);
     if Result='' then exit;
@@ -1927,10 +1931,10 @@ end;
 function THelpDatabases.ShowHelpSelector(Query: THelpQuery;
   Nodes: THelpNodeQueryList; var ErrMsg: string;
   var Selection: THelpNodeQuery): TShowHelpResult;
+// to override
 // Nodes is a list of THelpNode
 begin
   Result:=shrSelectorError;
-  // TODO
   ErrMsg:='THelpDatabases.ShowHelpSelector not implemented';
 end;
 
@@ -2371,10 +2375,23 @@ begin
 end;
 
 function TPascalHelpContextList.AsString: string;
+var
+  i: Integer;
+  Item: TPascalHelpContext;
 begin
   Result:='';
-  if Count>0 then begin
-    Result:=fItems[0].Context;
+  for i:=0 to Count-1 do begin
+    Item:=Items[i];
+    case Item.Descriptor of
+    pihcFilename: Result:=Result+Item.Context;
+    pihcSourceName: ;
+    pihcProperty: Result:=Result+' property '+Item.Context;
+    pihcProcedure: Result:=Result+' procedure/function '+Item.Context;
+    pihcParameterList: Result:=Result+Item.Context;
+    pihcVariable: Result:=Result+' var '+Item.Context;
+    pihcType: Result:=Result+' type '+Item.Context;
+    pihcConst: Result:=Result+' const '+Item.Context;
+    end;
   end;
 end;
 

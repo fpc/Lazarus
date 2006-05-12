@@ -474,6 +474,9 @@ var
   BorlandDCI: boolean;
   i, j, Len: integer;
   s, sCompl, sComment, sComplValue: string;
+  {$IFDEF SYN_LAZARUS}
+  TemplateStarted: Boolean;
+  {$ENDIF}
 
   procedure SaveEntry;
   begin
@@ -497,6 +500,9 @@ begin
     sCompl := '';
     sComment := '';
     sComplValue := '';
+    {$IFDEF SYN_LAZARUS}
+    TemplateStarted:=false;
+    {$ENDIF}
     for i := 0 to fAutoCompleteList.Count - 1 do begin
       s := fAutoCompleteList[i];
       Len := Length(s);
@@ -521,9 +527,18 @@ begin
           sComment := Copy(s, j, Len);
           if sComment[Length(sComment)] = ']' then
             SetLength(sComment, Length(sComment) - 1);
+          {$IFDEF SYN_LAZARUS}
+          TemplateStarted:=true;
+          {$ENDIF}
         end else begin
+          {$IFDEF SYN_LAZARUS}
+          if not TemplateStarted then
+            sComplValue := sComplValue + #13#10;
+          TemplateStarted:=false;
+          {$ELSE}
           if sComplValue <> '' then
             sComplValue := sComplValue + #13#10;
+          {$ENDIF}
           sComplValue := sComplValue + s;
         end;
       end else begin
@@ -534,9 +549,18 @@ begin
             SaveEntry;
           // new completion entry
           sCompl := s;
+          {$IFDEF SYN_LAZARUS}
+          TemplateStarted:=true;
+          {$ENDIF}
         end else if (Len > 0) and (s[1] = '=') then begin
+          {$IFDEF SYN_LAZARUS}
+          if not TemplateStarted then
+            sComplValue := sComplValue + #13#10;
+          TemplateStarted:=false;
+          {$ELSE}
           if sComplValue <> '' then
             sComplValue := sComplValue + #13#10;
+          {$ENDIF}
           sComplValue := sComplValue + Copy(s, 2, Len);
         end;
       end;

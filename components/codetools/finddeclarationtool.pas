@@ -486,6 +486,11 @@ type
   TFindSrcStartType = (
     fsstIdentifier
     );
+
+  TFindDeclarationListFlag = (
+    fdlfWithoutEmptyProperties // omit properties without type and attributes
+    );
+  TFindDeclarationListFlags = set of TFindDeclarationListFlag;
   
 const
   AllFindSmartFlags = [fsfIncludeDirective];
@@ -713,7 +718,8 @@ type
       Node: TCodeTreeNode): TFindContext;
       
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
-      out ListOfPCodeXYPosition: TFPList): boolean;
+      out ListOfPCodeXYPosition: TFPList;
+      Flags: TFindDeclarationListFlags): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList): boolean;
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
@@ -3030,8 +3036,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindDeclarationAndOverload(
-  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList
-  ): boolean;
+  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList;
+  Flags: TFindDeclarationListFlags): boolean;
 var
   CurCursorPos: TCodeXYPosition;
   NewTool: TFindDeclarationTool;
@@ -3039,15 +3045,19 @@ var
   NewPos: TCodeXYPosition;
   NewTopLine: integer;
   CurTool: TFindDeclarationTool;
+  OldPositions: TFPList;
+  Add: Boolean;
 begin
   Result:=true;
   ListOfPCodeXYPosition:=nil;
   AddCodePosition(ListOfPCodeXYPosition,CursorPos);
   NewTool:=nil;
   NewNode:=nil;
+  OldPositions:=nil;
 
   ActivateGlobalWriteLock;
   try
+    AddCodePosition(OldPositions,CursorPos);
     CurCursorPos:=CursorPos;
     CurTool:=Self;
     try
@@ -3055,8 +3065,15 @@ begin
         +[fsfSearchSourceName],
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
-        if IndexOfCodePosition(ListOfPCodeXYPosition,@NewPos)>=0 then break;
-        AddCodePosition(ListOfPCodeXYPosition,NewPos);
+        if IndexOfCodePosition(OldPositions,@NewPos)>=0 then break;
+        AddCodePosition(OldPositions,NewPos);
+        Add:=true;
+        if (fdlfWithoutEmptyProperties in Flags)
+        and (NewNode.Desc=ctnProperty)
+        and (NewTool.PropNodeIsTypeLess(NewNode)) then
+          Add:=false;
+        if Add then
+          AddCodePosition(ListOfPCodeXYPosition,NewPos);
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
         {debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
@@ -3074,6 +3091,7 @@ begin
     end;
   finally
     DeactivateGlobalWriteLock;
+    FreeListOfPCodeXYPosition(OldPositions);
   end;
 end;
 
