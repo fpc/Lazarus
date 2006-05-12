@@ -1,48 +1,58 @@
 object EncloseSelectionDialog: TEncloseSelectionDialog
+  Left = 406
+  Height = 244
+  Top = 308
+  Width = 427
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 243
+  ActiveControl = OkButton
   Caption = 'Enclose Selection'
   ClientHeight = 244
   ClientWidth = 427
   OnCreate = EncloseSelectionDialogCREATE
   OnResize = EncloseSelectionDialogResize
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 426
-  VertScrollBar.Page = 243
-  Left = 406
-  Height = 244
-  Top = 308
-  Width = 427
   object OkButton: TButton
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = 'Ok'
-    ModalResult = 1
-    TabOrder = 0
     Left = 88
     Height = 25
     Top = 208
     Width = 107
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
   end
   object CancelButton: TButton
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
     Left = 224
     Height = 25
     Top = 208
     Width = 104
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
   object TypeRadiogroup: TRadioGroup
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = 'Type'
-    ParentColor = True
     Left = 8
     Height = 189
     Top = 8
     Width = 409
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    Caption = 'Type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
   end
 end
