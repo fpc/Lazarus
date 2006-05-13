@@ -530,8 +530,6 @@ type
   { THelpDatabases
     Class for storing all registered THelpDatabase }
 
-  { THelpDatabases }
-
   THelpDatabases = class
   private
     FItems: TList;
@@ -597,6 +595,7 @@ type
     function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                                 var ListOfNodes: THelpNodeQueryList;
                                 var ErrMsg: string): TShowHelpResult; virtual;
+    // Show the help selector
     function ShowHelpSelector(Query: THelpQuery; Nodes: THelpNodeQueryList;
                               var ErrMsg: string;
                               var Selection: THelpNodeQuery

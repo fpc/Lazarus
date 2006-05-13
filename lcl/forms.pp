@@ -927,6 +927,7 @@ type
     procedure IconChanged(Sender: TObject);
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
+    procedure SetFlags(const AValue: TApplicationFlags);
     procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure MouseIdle(const CurrentControl: TControl);
@@ -1035,6 +1036,7 @@ type
                                         write SetCaptureExceptions;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
                                                write FFindGlobalComponentEnabled;
+    property Flags: TApplicationFlags read FFlags write SetFlags;
     //property HelpSystem : IHelpSystem read FHelpSystem;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;

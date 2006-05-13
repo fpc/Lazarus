@@ -424,6 +424,12 @@ begin
   end;
 end;
 
+procedure TApplication.SetFlags(const AValue: TApplicationFlags);
+begin
+  { Only allow AppNoExceptionMessages to be changed }
+  FFlags := Flags - [AppNoExceptionMessages] + AValue*[AppNoExceptionMessages];
+end;
+
 procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions
   );
 begin
@@ -876,13 +882,15 @@ begin
   Include(FFlags,AppHandlingException);
   if StopOnException then
     inherited Terminate;
-  // before we do anything, write it down
-  if ExceptObject is Exception then begin
-    DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
-  end else begin
-    DebugLn('TApplication.HandleException Strange Exception ');
+  if not (AppNoExceptionMessages in FFlags) then begin
+    // before we do anything, write it down
+    if ExceptObject is Exception then begin
+      DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
+    end else begin
+      DebugLn('TApplication.HandleException Strange Exception ');
+    end;
+    DumpExceptionBackTrace;
   end;
-  DumpExceptionBackTrace;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
