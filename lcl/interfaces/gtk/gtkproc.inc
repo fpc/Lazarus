@@ -8097,6 +8097,17 @@ begin
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
 
+{$Ifdef GTK2}
+function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
+var
+  Font: PGdkFont;
+begin
+  Font:=gdk_font_from_description(TheFont);
+  Result:=FontIsDoubleByteCharsFont(Font);
+  gdk_font_unref(Font);
+end;
+{$ENDIF Gtk2}
+
 {------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB
   Params:

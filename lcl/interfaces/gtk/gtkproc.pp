@@ -757,12 +757,13 @@ Function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKCo
 procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
+function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 {$Ifdef GTK2}
+function FontIsDoubleByteCharsFont(TheFont: PPangoFontDescription): boolean;
 function LoadDefaultFontDesc: PPangoFontDescription;
 Procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
-function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 {$IFDEF GTK1}
 function LoadDefaultFont: PGDKFont;
 Procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;

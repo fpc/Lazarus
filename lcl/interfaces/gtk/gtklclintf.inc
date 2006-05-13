@@ -288,11 +288,7 @@ end;
 function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result:=IsValidGDIObject(Font) and
-{$IFDEF GTK2}
- FontIsDoubleByteCharsFont(gdk_font_from_description(PGdiObject(Font)^.GDIFontObject));
-{$ELSE GTK2}
- FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
-{$ENDIF GTK2}
+  FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
 end;
 
 {------------------------------------------------------------------------------
