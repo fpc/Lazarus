@@ -479,7 +479,7 @@ begin
     if not Bmp.Empty then
     begin
       Glyph := CreateGlyph(Bmp, ImageList.Width, ImageList.Height, gaNone);
-      I := ImageList.Add(Glyph, nil);
+      I := ImageList.AddDirect(Glyph, nil);
       
       New(P);
       P^.Bitmap := Bmp;

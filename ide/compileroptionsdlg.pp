@@ -323,7 +323,7 @@ constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
     Pixmap:=TPixmap.Create;
     Pixmap.TransparentColor:=clWhite;
     Pixmap.LoadFromLazarusResource(ResName);
-    ImageList.Add(Pixmap,nil)
+    ImageList.AddDirect(Pixmap,nil)
   end;
 
 var Page: integer;

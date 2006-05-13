@@ -274,7 +274,7 @@ procedure TPkgGraphExplorerDlg.SetupComponents;
     Pixmap:=TPixmap.Create;
     Pixmap.TransparentColor:=clWhite;
     Pixmap.LoadFromLazarusResource(ResName);
-    Result:=ImageList.Add(Pixmap,nil)
+    Result:=ImageList.AddDirect(Pixmap,nil)
   end;
 
 begin
