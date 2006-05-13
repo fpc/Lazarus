@@ -242,7 +242,7 @@ end;
 
 function GetDefaultCompilerFilename: string;
 begin
-  Result:='undefined';
+  Result:='fpc';
   
   {$IFDEF CPUi386}
     {$IFdef MSWindows}

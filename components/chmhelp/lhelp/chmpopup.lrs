@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('THelpPopupForm','FORMDATA',[
   'TPF0'#14'THelpPopupForm'#13'HelpPopupForm'#7'Caption'#6#13'HelpPopupForm'#12
   +'ClientHeight'#3'9'#1#11'ClientWidth'#3#200#0#13'PixelsPerInch'#2'Z'#8'Posit'

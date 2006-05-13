@@ -23,8 +23,8 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, LazHelpIntf, HelpManager, LazConfigStorage, PropEdits,
-  LHelpControl;
+  Classes, SysUtils, LazHelpIntf, HelpManager, HelpIntfs, LazConfigStorage,
+  PropEdits, LHelpControl;
   
 type
   
@@ -41,7 +41,7 @@ type
     procedure SetHelpEXE(AValue: String);
     procedure SetHelpLabel(AValue: String);
   public
-    constructor Create;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function SupportsTableOfContents: boolean; override;
     procedure ShowTableOfContents(Node: THelpNode); override;
@@ -90,9 +90,9 @@ begin
  fHelpLabel := AValue;
 end;
 
-constructor TChmHelpViewer.Create;
+constructor TChmHelpViewer.Create(TheOwner: TComponent);
 begin
-  inherited Create;
+  inherited Create(TheOwner);
   fHelpConnection := TLHelpConnection.Create;
   AddSupportedMimeType('text/html');
 end;
@@ -171,7 +171,7 @@ procedure Register;
 var
   ChmHelp: TChmHelpViewer;
 begin
-  ChmHelp := TChmHelpViewer.Create;
+  ChmHelp := TChmHelpViewer.Create(nil);
   HelpViewers.RegisterViewer(ChmHelp);
 end;
 

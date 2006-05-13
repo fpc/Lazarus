@@ -17,6 +17,8 @@
     This unit defines various base classes for the LCL Help System.
     
   ToDo:
+    - fix TCHMHelpViewer
+    - Make THelpDatabase and THelpViewer components usable in the designer.
     - localization support.
     - Add Help Editing functions
 }
@@ -282,7 +284,7 @@ type
   THelpDatabases = class;
   THelpViewer = class;
 
-  THelpDatabase = class(TPersistent)
+  THelpDatabase = class(TComponent)
   private
     FBasePathObject: TObject;
     FID: THelpDatabaseID;
@@ -297,7 +299,7 @@ type
     procedure SetSupportedMimeTypes(List: TStrings); virtual;
     procedure AddSupportedMimeType(const AMimeType: string); virtual;
   public
-    constructor Create(TheID: THelpDatabaseID); virtual;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Reference;
     procedure RegisterSelf;
@@ -441,7 +443,7 @@ type
   { THelpViewer
     base class for all Help viewers }
   
-  THelpViewer = class(TPersistent)
+  THelpViewer = class(TComponent)
   private
     FParameterHelp: string;
     FStorageName: string;
@@ -450,7 +452,7 @@ type
     procedure SetSupportedMimeTypes(List: TStrings); virtual;
     procedure AddSupportedMimeType(const AMimeType: string); virtual;
   public
-    constructor Create;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function SupportsTableOfContents: boolean; virtual;
     procedure ShowTableOfContents(Node: THelpNode); virtual;
@@ -750,9 +752,9 @@ begin
   FSupportedMimeTypes.Add(AMimeType);
 end;
 
-constructor THelpDatabase.Create(TheID: THelpDatabaseID);
+constructor THelpDatabase.Create(TheOwner: TComponent);
 begin
-  FID:=TheID;
+  inherited Create(TheOwner);
 end;
 
 destructor THelpDatabase.Destroy;
@@ -1165,7 +1167,8 @@ end;
 function THelpDatabases.CreateHelpDatabase(const WishID: string;
   HelpDataBaseClass: THelpDatabaseClass; AutoRegister: boolean): THelpDatabase;
 begin
-  Result:=HelpDataBaseClass.Create(CreateUniqueDatabaseID(WishID));
+  Result:=HelpDataBaseClass.Create(nil);
+  Result.FID:=CreateUniqueDatabaseID(WishID);
   if AutoRegister then Result.RegisterSelf;
 end;
 
@@ -1701,7 +1704,8 @@ begin
   i:=Count-1;
   while (i>=0) do begin
     if i<Count then begin
-      Items[i].Free;
+      if Items[i].Owner=nil then
+        Items[i].Free;
       FItems[i]:=nil;
     end;
     dec(i);
@@ -1790,8 +1794,9 @@ begin
   FSupportedMimeTypes.Add(AMimeType);
 end;
 
-constructor THelpViewer.Create;
+constructor THelpViewer.Create(TheOwner: TComponent);
 begin
+  inherited Create(TheOwner);
   FStorageName:=ClassName;
 end;
 

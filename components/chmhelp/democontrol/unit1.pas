@@ -36,7 +36,6 @@ begin
   if not OpenDialog1.Execute then exit;
   Help.StartHelpServer('letstestagain', '../lhelp/lhelp --display=192.168.0.250:0');
   Help.OpenFile(OpenDialog1.FileName);
-
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

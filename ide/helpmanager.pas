@@ -367,7 +367,7 @@ procedure THelpManager.RegisterDefaultIDEHelpViewers;
 var
   HelpViewer: THTMLBrowserHelpViewer;
 begin
-  HelpViewer:= THTMLBrowserHelpViewer.Create;
+  HelpViewer:= THTMLBrowserHelpViewer.Create(nil);
   HelpViewer.OnFindDefaultBrowser := @FindDefaultBrowser;
   HelpViewers.RegisterViewer(HelpViewer);
 end;

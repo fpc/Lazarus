@@ -47,7 +47,7 @@ type
     procedure SetBaseURL(const AValue: string);
     procedure SetDefaultBaseURL(const AValue: string);
   public
-    constructor Create(TheID: THelpDatabaseID); override;
+    constructor Create(TheOwner: TComponent); override;
     function ShowURL(const URL, Title: string;
                      var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
@@ -76,7 +76,7 @@ type
     procedure SetBrowserParams(const AValue: string);
     procedure SetBrowserPath(const AValue: string);
   public
-    constructor Create;
+    constructor Create(TheOwner: TComponent); override;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
     procedure FindDefaultBrowser(var Browser, Params: string); virtual;
     procedure Assign(Source: TPersistent); override;
@@ -118,9 +118,9 @@ begin
   Result:=FBaseURL<>DefaultBaseURL;
 end;
 
-constructor THTMLHelpDatabase.Create(TheID: THelpDatabaseID);
+constructor THTMLHelpDatabase.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheID);
+  inherited Create(TheOwner);
   AddSupportedMimeType('text/html');
 end;
 
@@ -237,9 +237,9 @@ begin
   FBrowserPath:=AValue;
 end;
 
-constructor THTMLBrowserHelpViewer.Create;
+constructor THTMLBrowserHelpViewer.Create(TheOwner: TComponent);
 begin
-  inherited Create;
+  inherited Create(TheOwner);
   AddSupportedMimeType('text/html');
   FBrowserParams:='%s';
   ParameterHelp:=hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL;

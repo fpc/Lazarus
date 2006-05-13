@@ -59,7 +59,7 @@ type
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
   public
-    constructor Create(TheID: THelpDatabaseID); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                                 var ListOfNodes: THelpNodeQueryList;
@@ -322,9 +322,9 @@ begin
   FLastMessage:=AValue;
 end;
 
-constructor TFPCMessagesHelpDatabase.Create(TheID: THelpDatabaseID);
+constructor TFPCMessagesHelpDatabase.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheID);
+  inherited Create(TheOwner);
   FDefaultNode:=THelpNode.CreateURL(Self,'FPC messages: Appendix',
      'http://lazarus-ccr.sourceforge.net/fpcdoc/user/userap3.html#x81-168000C');
 end;

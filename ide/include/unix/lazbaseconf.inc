@@ -149,6 +149,7 @@ end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
+  List.Add('/usr/local/bin/'+GetDefaultCompilerFilename);
   List.Add('/usr/bin/'+GetDefaultCompilerFilename);
   List.Add('/opt/fpc/'+GetDefaultCompilerFilename);
 end;
