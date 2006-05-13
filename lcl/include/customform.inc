@@ -1676,6 +1676,8 @@ procedure TCustomForm.IntfHelp(AComponent: TComponent);
 var
   AControl: TControl;
 begin
+  if csDesigning in ComponentState then exit;
+  
   if AComponent is TControl then begin
     AControl:=TControl(AComponent);
     repeat

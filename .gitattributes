@@ -1270,6 +1270,7 @@ ideintf/actionseditorstd.lfm svneol=native#text/plain
 ideintf/actionseditorstd.lrs svneol=native#text/pascal
 ideintf/actionseditorstd.pas svneol=native#text/pascal
 ideintf/allideintf.pas svneol=native#text/pascal
+ideintf/baseideintf.pas svneol=native#text/plain
 ideintf/checkgroupeditordlg.lfm svneol=native#text/plain
 ideintf/checkgroupeditordlg.lrs svneol=native#text/plain
 ideintf/checklistboxeditordlg.lfm svneol=native#text/plain
