@@ -4,17 +4,11 @@
     <Name Value="filefindlaz"/>
     <Author Value="bulsoft - for lazarus by barko"/>
     <CompilerOptions>
-      <Version Value="3"/>
+      <Version Value="5"/> 
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/;$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)/;$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/;$(LazarusDir)/components/custom/;$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)/"/>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib"/> 
       </SearchPaths>
-      <Parsing>
-        <SymantecChecking>
-          <DelphiCompat Value="True"/>
-          <UseAnsiStrings Value="True"/>
-        </SymantecChecking>
-      </Parsing>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
@@ -37,11 +31,14 @@
       </Item1>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2"> 
       <Item1>
+        <PackageName Value="LCL"/> 
+      </Item1> 
+      <Item2> 
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item1>
+      </Item2> 
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
