@@ -58,6 +58,7 @@ type
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
                                        var ErrMsg: string): TShowHelpResult; override;
+    function SubstituteMacros(var s: string): boolean; override;
   end;
   
   
@@ -261,6 +262,11 @@ function TIDEHelpDatabases.ShowHelpForSourcePosition(
 begin
   Result:=HelpBoss.ShowHelpForSourcePosition(Query.Filename,
                                              Query.SourcePosition,ErrMsg);
+end;
+
+function TIDEHelpDatabases.SubstituteMacros(var s: string): boolean;
+begin
+  Result:=LazarusIDE.SubstituteMacros(s);
 end;
 
 { THelpManager }

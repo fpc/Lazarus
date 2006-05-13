@@ -557,6 +557,7 @@ type
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; virtual;
     function FindViewer(const MimeType: string; var ErrMsg: string;
                         var Viewer: THelpViewer): TShowHelpResult; virtual;
+    function SubstituteMacros(var s: string): boolean; virtual;
   public
     // show help for ...
     function ShowHelpForNodes(Query: THelpQuery; Nodes: THelpNodeQueryList;
@@ -1591,6 +1592,11 @@ begin
   finally
     Viewers.Free;
   end;
+end;
+
+function THelpDatabases.SubstituteMacros(var s: string): boolean;
+begin
+  Result:=true;
 end;
 
 function THelpDatabases.ShowHelpForNodes(Query: THelpQuery;

@@ -1236,7 +1236,7 @@ var
     until false;
   end;
   
-  function ConvertPIMakrosToMakefileMakros(const s: string): string;
+  function ConvertPIMacrosToMakefileMacros(const s: string): string;
   begin
     Result:=s;
     Replace(Result,'%(','$(');
@@ -1244,7 +1244,7 @@ var
 
   function ConvertLazarusToMakefileSearchPath(const s: string): string;
   begin
-    Result:=ConvertPIMakrosToMakefileMakros(s);
+    Result:=ConvertPIMacrosToMakefileMacros(s);
     Result:=CreateRelativeSearchPath(TrimSearchPath(Result,''),APackage.Directory);
     Replace(Result,';',' ');
     if PathDelimNeedsReplace then
@@ -1253,7 +1253,7 @@ var
 
   function ConvertLazarusToMakefileDirectory(const s: string): string;
   begin
-    Result:=ConvertPIMakrosToMakefileMakros(s);
+    Result:=ConvertPIMacrosToMakefileMacros(s);
     Result:=CreateRelativePath(TrimFilename(Result),APackage.Directory);
     if PathDelimNeedsReplace then
       Replace(Result,PathDelim,'/');
@@ -1263,7 +1263,7 @@ var
   
   function ConvertLazarusOptionsToMakefileOptions(const s: string): string;
   begin
-    Result:=ConvertPIMakrosToMakefileMakros(s);
+    Result:=ConvertPIMacrosToMakefileMacros(s);
     if PathDelimNeedsReplace then
       Replace(Result,PathDelim,'/');
   end;
@@ -2719,7 +2719,7 @@ function TPkgManager.DoSavePackage(APackage: TLazPackage;
       if AFile.FileType=pftVirtualUnit then continue;
       AFilename:=AFile.Filename;
       if System.Pos('$(',AFilename)>0 then begin
-        // filename contains makros -> skip
+        // filename contains macros -> skip
       end;
       if FilenameIsAbsolute(AFilename) then begin
         if not FileExistsCached(AFilename) then begin

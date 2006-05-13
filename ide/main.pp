@@ -865,8 +865,8 @@ type
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 
-    // makros
-    function SubstituteMakros(var s: string): boolean; override;
+    // macros
+    function SubstituteMacros(var s: string): boolean; override;
   end;
 
 
@@ -1634,7 +1634,7 @@ begin
   MacroList.Add(TTransferMacro.Create('MakeExe','',
                     lisMakeExe,@OnMacroFuncMakeExe,[]));
   MacroList.Add(TTransferMacro.Create('Project','',
-                    lisProjectMakroProperties,@OnMacroFuncProject,[]));
+                    lisProjectMacroProperties,@OnMacroFuncProject,[]));
 
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
@@ -3400,7 +3400,7 @@ begin
   end;
 end;
 
-function TMainIDE.SubstituteMakros(var s: string): boolean;
+function TMainIDE.SubstituteMacros(var s: string): boolean;
 begin
   Result:=MacroList.SubstituteStr(s);
 end;
@@ -9237,7 +9237,7 @@ begin
     else if CompareText(Param,'UnitPath')=0 then
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else begin
-      Result:='<Invalid parameter for makro Project:'+Param+'>';
+      Result:='<Invalid parameter for macro Project:'+Param+'>';
       debugln('WARNING: TMainIDE.OnMacroFuncProject: ',Result);
     end;
   end else begin
@@ -10627,7 +10627,7 @@ begin
   else if CompareText(Param,'UnitPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false)
   else begin
-    FuncData^.Result:='<unknown parameter for CodeTools Makro project:"'+Param+'">';
+    FuncData^.Result:='<unknown parameter for CodeTools Macro project:"'+Param+'">';
     debugln('TMainIDE.MacroFunctionProject WARNING: ',FuncData^.Result);
   end;
 end;

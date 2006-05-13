@@ -47,7 +47,7 @@ type
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     InsertMacroButton: TButton;
-    UseMakrosCheckBox: TCheckBox;
+    UseMacrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
     TemplateListBox: TListBox;
@@ -127,30 +127,30 @@ function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
 procedure CreateStandardCodeMacros;
 
 // standard code macros
-function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroUpper(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroLower(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroPaste(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroProcedureHead(const Parameter: string;
+function CodeMacroProcedureHead(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroProcedureName(const Parameter: string;
+function CodeMacroProcedureName(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroDate(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroDate(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroTime(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroTime(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMakroDateTime(const Parameter: string;
+function CodeMacroDateTime(const Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
@@ -229,7 +229,7 @@ begin
   end;
 end;
 
-function CodeMakroUpper(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroUpper(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
@@ -237,7 +237,7 @@ begin
   Result:=true;
 end;
                         
-function CodeMakroLower(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroLower(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
@@ -245,7 +245,7 @@ begin
   Result:=true;
 end;
 
-function CodeMakroPaste(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroPaste(const Parameter: string; InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 begin
@@ -253,7 +253,7 @@ begin
   Result:=true;
 end;
 
-function CodeMakroProcedureHead(const Parameter: string;
+function CodeMacroProcedureHead(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
 var
@@ -262,7 +262,7 @@ var
   i: Integer;
   Attributes: TProcHeadAttributes;
 begin
-  //debugln('CodeMakroProcedureHead A ',Parameter);
+  //debugln('CodeMacroProcedureHead A ',Parameter);
 
   // parse attributes
   Params:=SplitString(Parameter,',');
@@ -323,7 +323,7 @@ begin
     end;
   end;
 
-  //debugln('CodeMakroProcedureHead B ');
+  //debugln('CodeMacroProcedureHead B ');
   if not CodeToolBoss.ExtractProcedureHeader(
     SrcEdit.CodeToolsBuffer as TCodeBuffer,
     SrcEdit.CursorTextXY.X,SrcEdit.CursorTextXY.Y,Attributes,Value) then
@@ -333,22 +333,22 @@ begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
-  //debugln('CodeMakroProcedureHead C Value="',Value,'"');
+  //debugln('CodeMacroProcedureHead C Value="',Value,'"');
 
   Result:=true;
 end;
 
-function CodeMakroProcedureName(const Parameter: string;
+function CodeMacroProcedureName(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
 begin
-  Result:=CodeMakroProcedureHead(
+  Result:=CodeMacroProcedureHead(
                           'WithoutParamList,WithoutBrackets,WithoutSemicolon',
                           InteractiveValue,SrcEdit,Value,ErrorMsg);
-  debugln('CodeMakroProcedureName ',Value);
+  debugln('CodeMacroProcedureName ',Value);
 end;
 
-function CodeMakroDate(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroDate(const Parameter: string; InteractiveValue: TPersistent;
   SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
 begin
   if Parameter<>'' then
@@ -358,7 +358,7 @@ begin
   Result:=true;
 end;
 
-function CodeMakroTime(const Parameter: string; InteractiveValue: TPersistent;
+function CodeMacroTime(const Parameter: string; InteractiveValue: TPersistent;
   SrcEdit: TSourceEditorInterface; var Value, ErrorMsg: string): boolean;
 begin
   if Parameter<>'' then
@@ -368,7 +368,7 @@ begin
   Result:=true;
 end;
 
-function CodeMakroDateTime(const Parameter: string;
+function CodeMacroDateTime(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
 begin
@@ -397,13 +397,13 @@ begin
   IDECodeMacros:=TLazCodeMacros.Create;
   RegisterCodeMacro('Upper','uppercase string',
                     'Uppercase string given as parameter',
-                    @CodeMakroUpper,nil);
+                    @CodeMacroUpper,nil);
   RegisterCodeMacro('Lower','lowercase string',
                     'Lowercase string given as parameter',
-                    @CodeMakroLower,nil);
+                    @CodeMacroLower,nil);
   RegisterCodeMacro('Paste','paste clipboard',
                     'Paste text from clipboard',
-                    @CodeMakroPaste,nil);
+                    @CodeMacroPaste,nil);
   RegisterCodeMacro('ProcedureHead','insert procedure head',
      'Insert header of current procedure'#13
     +#13
@@ -430,19 +430,19 @@ begin
     +'                      //    with this option you get ''Do ;'')'#13
     +'WithoutBrackets,    // skip start- and end-bracket of parameter list'#13
     +'WithoutSemicolon,   // skip semicolon at end'#13,
-    @CodeMakroProcedureHead,nil);
+    @CodeMacroProcedureHead,nil);
   RegisterCodeMacro('ProcedureName','insert procedure name',
                     'Insert name of current procedure',
-                    @CodeMakroProcedureName,nil);
+                    @CodeMacroProcedureName,nil);
   RegisterCodeMacro('Date','insert date',
                     'Insert date. Optional: format string',
-                    @CodeMakroDate,nil);
+                    @CodeMacroDate,nil);
   RegisterCodeMacro('Time','insert time',
                     'Insert time. Optional: format string',
-                    @CodeMakroTime,nil);
+                    @CodeMacroTime,nil);
   RegisterCodeMacro('DateTime','insert date and time',
                     'Insert date and time. Optional: format string',
-                    @CodeMakroDateTime,nil);
+                    @CodeMacroDateTime,nil);
 end;
 
 { TCodeTemplateEditForm }
@@ -604,7 +604,7 @@ begin
   TemplateGroupBox.Caption:=lisCTDTemplates;
   OkButton.Caption:=lisLazBuildOk;
   FilenameGroupBox.Caption:=lisToDoLFile;
-  UseMakrosCheckBox.Caption:=lisEnableMakros;
+  UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
@@ -841,13 +841,13 @@ end;
 
 procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
-  EnableMakros: boolean;
+  EnableMacros: boolean;
   LineCount: integer;
 
   procedure AddLine(const s: string);
   begin
-    if (LineCount=0) and (s=CodeTemplateMakroMagic) then
-      EnableMakros:=true
+    if (LineCount=0) and (s=CodeTemplateMacroMagic) then
+      EnableMacros:=true
     else
       TemplateSynEdit.Lines.Add(s);
     inc(LineCount);
@@ -857,7 +857,7 @@ var
   idx, a, sp, ep: integer;
   s: string;
 begin
-  EnableMakros:=false;
+  EnableMacros:=false;
   LineCount := 0;
   idx := TemplateListBox.ItemIndex;
   // search template
@@ -891,7 +891,7 @@ begin
   LastTemplate := a;
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
-  UseMakrosCheckBox.Checked:=EnableMakros;
+  UseMacrosCheckBox.Checked:=EnableMacros;
 end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
@@ -915,8 +915,8 @@ begin
       SetLength(NewValue,l);
     end;
   end;
-  if UseMakrosCheckBox.Checked then
-    NewValue:=CodeTemplateMakroMagic+LineEnding+NewValue;
+  if UseMacrosCheckBox.Checked then
+    NewValue:=CodeTemplateMacroMagic+LineEnding+NewValue;
   SynAutoComplete.CompletionValues[a]:=NewValue;
   //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate NewValue="',NewValue,'" SynAutoComplete.CompletionValues[a]="',SynAutoComplete.CompletionValues[a],'"');
 end;

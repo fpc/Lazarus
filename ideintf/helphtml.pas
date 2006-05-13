@@ -23,8 +23,19 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Process, FileUtil, LazConfigStorage,
-  PropEdits, ObjInspStrConsts, MacroIntf, HelpIntf;
+  HelpIntf;
   
+resourcestring
+  hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
+    +'unable to find file %s%s%s.';
+  hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
+    +'BrowserParams will be replaced by the URL.';
+  hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
+    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
+  hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
+  hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
+  hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
+
 type
   { THTMLHelpDatabase }
 
@@ -146,7 +157,7 @@ begin
     end;
     if (URLType='file') and (not FileExists(URLPath)) then begin
       Result:=shrContextNotFound;
-      ErrMsg:=Format(oisHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
+      ErrMsg:=Format(hhsHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
         '"', '"', URLPath, '"']);
       exit;
     end;
@@ -183,8 +194,8 @@ begin
   Result:='';
   if BaseURL<>'' then begin
     Result:=BaseURL;
-    if (IDEMacros<>nil) then
-      IDEMacros.SubstituteMacros(Result);
+    if (Databases<>nil) then
+      Databases.SubstituteMacros(Result);
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using BaseURL="',Result,'"');
   end else if (BasePathObject<>nil) and (Databases<>nil) then begin
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
@@ -192,8 +203,8 @@ begin
   end;
   if (Result='') and (DefaultBaseURL<>'') then begin
     Result:=DefaultBaseURL;
-    if (IDEMacros<>nil) then
-      IDEMacros.SubstituteMacros(Result);
+    if (Databases<>nil) then
+      Databases.SubstituteMacros(Result);
     //debugln('THTMLHelpDatabase.GetEffectiveBaseURL using DefaultBaseURL="',Result,'"');
   end;
   if (Result<>'') and (Result[length(Result)]<>'/') then
@@ -231,7 +242,7 @@ begin
   inherited Create;
   AddSupportedMimeType('text/html');
   FBrowserParams:='%s';
-  ParameterHelp:=oisHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL;
+  ParameterHelp:=hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL;
 end;
 
 function THTMLBrowserHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
@@ -259,16 +270,16 @@ begin
   if CommandLine='' then
     FindDefaultBrowser(CommandLine, Params);
   if CommandLine='' then begin
-    ErrMsg:=Format(oisHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe, [
+    ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe, [
       #13]);
     exit;
   end;
   if (not FileExists(CommandLine)) then begin
-    ErrMsg:=Format(oisHelpBrowserNotFound, ['"', CommandLine, '"']);
+    ErrMsg:=Format(hhsHelpBrowserNotFound, ['"', CommandLine, '"']);
     exit;
   end;
   if (not FileIsExecutable(CommandLine)) then begin
-    ErrMsg:=Format(oisHelpBrowserNotExecutable, ['"', CommandLine, '"']);
+    ErrMsg:=Format(hhsHelpBrowserNotExecutable, ['"', CommandLine, '"']);
     exit;
   end;
   
@@ -298,7 +309,7 @@ begin
     Result:=shrSuccess;
   except
     on E: Exception do begin
-      ErrMsg:=Format(oisHelpErrorWhileExecuting, ['"', CommandLine, '"', #13,
+      ErrMsg:=Format(hhsHelpErrorWhileExecuting, ['"', CommandLine, '"', #13,
         E.Message]);
     end;
   end;
@@ -342,10 +353,6 @@ function THTMLBrowserHelpViewer.GetLocalizedName: string;
 begin
   Result:='HTML Browser';
 end;
-
-initialization
-  RegisterPropertyEditor(TypeInfo(AnsiString),
-    THTMLBrowserHelpViewer,'BrowserPath',TFileNamePropertyEditor);
 
 end.
 

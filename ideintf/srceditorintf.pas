@@ -211,7 +211,7 @@ var
   IDECodeMacros: TIDECodeMacros = nil; // set by the IDE
 
 const
-  CodeTemplateMakroMagic = '$(EnableMakros)';
+  CodeTemplateMacroMagic = '$(EnableMakros)';
 
 
 function RegisterCodeMacro(const Name: string;

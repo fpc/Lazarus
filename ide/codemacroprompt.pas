@@ -73,13 +73,13 @@ begin
   AEditor:=SrcEdit.EditorControl as TCustomSynEdit;
   
   Pattern:=TemplateValue;
-  if copy(Pattern,1,length(CodeTemplateMakroMagic))=CodeTemplateMakroMagic
+  if copy(Pattern,1,length(CodeTemplateMacroMagic))=CodeTemplateMacroMagic
   then begin
     // macros enabled
     LazarusIDE.SaveSourceEditorChangesToCodeCache(-1);
     
     // remove first line (i.e. macro enabled flag)
-    i:=length(CodeTemplateMakroMagic);
+    i:=length(CodeTemplateMacroMagic);
     while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
     if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
     and (Pattern[i+1]<>Pattern[i]) then

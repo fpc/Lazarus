@@ -124,7 +124,7 @@ function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): stri
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function RebaseSearchPath(const SearchPath,
                           OldBaseDirectory, NewBaseDirectory: string;
-                          SkipPathsStartingWithMakro: boolean): string;
+                          SkipPathsStartingWithMacro: boolean): string;
 function ShortenSearchPath(const SearchPath, BaseDirectory,
                            ChompDirectory: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
@@ -438,7 +438,7 @@ begin
 end;
 
 function RebaseSearchPath(const SearchPath, OldBaseDirectory,
-  NewBaseDirectory: string; SkipPathsStartingWithMakro: boolean): string;
+  NewBaseDirectory: string; SkipPathsStartingWithMacro: boolean): string;
 // change every relative search path
 var
   EndPos: Integer;
@@ -459,7 +459,7 @@ begin
     if EndPos>StartPos then begin
       CurPath:=copy(Result,StartPos,EndPos-StartPos);
       if (not FilenameIsAbsolute(CurPath))
-      and ((not SkipPathsStartingWithMakro) or (CurPath[1]<>'$'))
+      and ((not SkipPathsStartingWithMacro) or (CurPath[1]<>'$'))
       then begin
         CurPath:=TrimFilename(AppendPathDelim(OldBaseDirectory)+CurPath);
         CurPath:=CreateRelativePath(CurPath,NewBaseDirectory);

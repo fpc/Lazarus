@@ -738,7 +738,7 @@ begin
   if Result='' then exit;
   Result:=TrimFilename(SetDirSeparators(Result));
 
-  // check for $(Delphi) makro
+  // check for $(Delphi) macro
   p:=System.Pos('$(DELPHI)',Result);
   //DebugLn('ExpandDelphiFilename Result="',Result,'" ',dbgs(p));
   if p>0 then begin
@@ -747,10 +747,10 @@ begin
     Result:='';
   end;
 
-  // check for other makros
+  // check for other macros
   p:=System.Pos('$(',Result);
   if p>0 then begin
-    // path makros are not supported
+    // path macros are not supported
     // -> ignore
     Result:='';
   end;

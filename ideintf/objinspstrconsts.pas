@@ -278,15 +278,6 @@ resourcestring
   oisNone = '(none)';
   oisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
-  oisHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
-    +'unable to find file %s%s%s.';
-  oisHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
-    +'BrowserParams will be replaced by the URL.';
-  oisHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
-    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
-  oisHelpBrowserNotFound = 'Browser %s%s%s not found.';
-  oisHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
-  oisHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
   oisHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
   oisHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
     +'s%s did not found a viewer for a help page of type %s';

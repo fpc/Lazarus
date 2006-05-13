@@ -177,7 +177,7 @@ begin
     OpenPackageMenuItem.Visible:=true;
     ShownFilename:=PkgComponent.PkgFile.Filename;
     UnitFilename:=APackage.SubstitutePkgMacro(ShownFilename,true);
-    LazarusIDE.SubstituteMakros(UnitFilename);
+    LazarusIDE.SubstituteMacros(UnitFilename);
     if not FileExists(UnitFilename) then begin
       UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
                                               APackage.Directory,[]);

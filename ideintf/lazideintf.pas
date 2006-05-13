@@ -22,7 +22,7 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, ProjectIntf, SrcEditorIntf;
+  Classes, SysUtils, Forms, PropEdits, HelpHTML, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -153,7 +153,7 @@ type
                           NewOwner: TObject; Flags: TSearchIDEFileFlags;
                           TryWithoutNumber: boolean): string; virtual; abstract;
        
-    function SubstituteMakros(var s: string): boolean; virtual; abstract;
+    function SubstituteMacros(var s: string): boolean; virtual; abstract;
 
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
@@ -199,6 +199,10 @@ function TLazIDEInterface.DoNewEditorFile(
 begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
 end;
+
+initialization
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    THTMLBrowserHelpViewer,'BrowserPath',TFileNamePropertyEditor);
 
 end.
 

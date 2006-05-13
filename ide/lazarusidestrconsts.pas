@@ -71,7 +71,7 @@ resourcestring
   // component palette
   lisSelectionTool = 'Selection tool';
   
-  // makros
+  // macros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
   lisCursorRowInCUrrentEditor = 'Cursor row in current editor';
   lisCompilerFilename = 'Compiler filename';
@@ -97,14 +97,14 @@ resourcestring
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
   lisMakeExe = 'Make Executable';
-  lisProjectMakroProperties = 'Project makro properties';
+  lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisOpenAsXmlFile = 'Open as XML file';
   lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
     +'at last startup while loading %s!%s%sLoad this project again?';
   lisOpenProjectAgain = 'Open project again';
   lisStartWithANewProject = 'Start with a new project';
-  lisProjectMakroUnitPath = 'makro ProjectUnitPath';
+  lisProjectMacroUnitPath = 'macro ProjectUnitPath';
   lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu
@@ -2958,7 +2958,7 @@ resourcestring
   lisLazDocDeleteLinkButton = 'Delete link';
   lisLazDocExampleTag = 'Example';
   lisLazDocBrowseExampleButton = 'Browse';
-  lisEnableMakros = 'Enable Makros';
+  lisEnableMacros = 'Enable Macros';
   lisCTSelectCodeMacro = 'Select Code Macro';
   lisPDProgress = 'Progress';
   lisPDAbort = 'Abort';
