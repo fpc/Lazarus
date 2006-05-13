@@ -22,7 +22,7 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, PropEdits, HelpHTML, ProjectIntf, SrcEditorIntf;
+  Classes, SysUtils, Forms, PropEdits, LazHelpHTML, ProjectIntf, SrcEditorIntf;
 
 type
   // open file flags

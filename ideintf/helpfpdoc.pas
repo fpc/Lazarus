@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, MacroIntf, HelpIntfs, LazHelpIntf,
-  HelpHTML;
+  LazHelpHTML;
 
 type
   { TFPDocHTMLHelpDatabase }

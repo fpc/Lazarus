@@ -274,6 +274,16 @@ ResourceString
   rsHelpSelectorError = 'Help Selector Error';
   rsUnknownErrorPleaseReportThisBug = 'Unknown Error, please report this bug';
 
+  hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
+    +'unable to find file %s%s%s.';
+  hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
+    +'BrowserParams will be replaced by the URL.';
+  hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
+    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
+  hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
+  hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
+  hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
+
 implementation
 
 end.

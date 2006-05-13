@@ -31,7 +31,6 @@ uses
   FrmSelectProps,
   GraphPropEdits,
   HelpFPDoc,
-  HelpHTML,
   IDECommands,
   IDEDialogs,
   IDEHelpIntf,

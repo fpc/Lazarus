@@ -948,6 +948,7 @@ begin
     AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('lazhelphtml.pas','LazHelpHTML',pftUnit,[],cpBase);
     AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpBase);
@@ -1080,7 +1081,6 @@ begin
     AddFile('frmselectprops.pas','FrmSelectProps',pftUnit,[],cpBase);
     AddFile('graphpropedits.pas','GraphPropEdits',pftUnit,[],cpBase);
     AddFile('helpfpdoc.pas','HelpFPDoc',pftUnit,[],cpBase);
-    AddFile('helphtml.pas','HelpHTML',pftUnit,[],cpBase);
     AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
     AddFile('idewindowintf.pas','IDEWindowIntf',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);

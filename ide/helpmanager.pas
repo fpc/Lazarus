@@ -38,7 +38,7 @@ uses
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
-  LazHelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
+  LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
   LazIDEIntf, HelpIntfs, IDEHelpIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,

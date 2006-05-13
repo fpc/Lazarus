@@ -26,7 +26,7 @@
     Interfaces to define the abstract HelpSystem.
     You can create your own HelpSystem based on these interfaces
     or use the LCL help system in lazhelpintf.pas.
-    The THTMLHelpDatabase and THTMLBrowserHelpViewer in helphtml.pas use the
+    The THTMLHelpDatabase and THTMLBrowserHelpViewer in lazhelphtml.pas use the
     LCL help system.
 }
 unit HelpIntfs;

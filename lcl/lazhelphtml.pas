@@ -15,7 +15,7 @@
   Abstract:
     Methods and types for simple HTML help.
 }
-unit HelpHTML;
+unit LazHelpHTML;
 
 {$mode objfpc}{$H+}
 
@@ -23,19 +23,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Process, FileUtil, LazConfigStorage,
-  HelpIntfs, LazHelpIntf;
+  LCLStrConsts, HelpIntfs, LazHelpIntf;
   
-resourcestring
-  hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
-    +'unable to find file %s%s%s.';
-  hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
-    +'BrowserParams will be replaced by the URL.';
-  hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
-    +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
-  hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
-  hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
-  hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
-
 type
   { THTMLHelpDatabase }
 
