@@ -34,7 +34,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
-  InterfaceBase, qt4, qtprivate,
+  InterfaceBase, qt4, qtprivate, qtobjects,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, LCLType;
 
@@ -129,6 +129,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -159,6 +161,8 @@ type
 //    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   public
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -278,15 +282,10 @@ type
   public
   end;
 
-{$DEFINE MEMOHEADER}
-{$I qtmemostrings.inc}
-{$UNDEF MEMOHEADER}
 
 implementation
 
 uses LMessages;
-
-{$I qtmemostrings.inc}
 
 { TQtWSCustomMemo }
 
@@ -364,6 +363,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.GetText
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomMemo.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  QTextEdit_toPlainText(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
+
+  AText := String(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomMemo.SetText
+  Params:
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  AString: WideString;
+begin
+  AString := WideString(AText);
+
+  QTextEdit_append(QTextEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
+end;
+
+{------------------------------------------------------------------------------
   Method: TQtWSCustomMemo.SetReadOnly
   Params:  NewReadOnly boolean
   Returns: Nothing
@@ -376,7 +405,7 @@ begin
   QTextEdit_setReadOnly(TextEditH,NewReadOnly);
 end;
 
-{{ TQtWSCustomEdit }
+{ TQtWSCustomEdit }
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomEdit.CreateHandle
@@ -401,6 +430,36 @@ end;
 class procedure TQtWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtLineEdit(AWinControl.Handle).Free;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomEdit.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  Str: WideString;
+begin
+  QLineEdit_text(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @Str);
+
+  AText := String(Str);
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomEdit.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  AString: WideString;
+begin
+  AString := WideString(AText);
+
+  QLineEdit_setText(QLineEditH(TQtWidget(AWinControl.Handle).Widget), @AString);
 end;
 
 { TQtWSStaticText }

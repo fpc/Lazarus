@@ -1,4 +1,10 @@
-{$IFDEF MEMOHEADER}
+unit qtobjects;
+
+{$mode delphi}{$H+}
+
+interface
+
+uses Classes, StdCtrls, Controls, Graphics, SysUtils, qt4;
 
 type
 
@@ -32,12 +38,11 @@ type
     property Owner: TWinControl read FOwner;
     function TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   end;
-{$ELSE}
-{
 
 Implementation
 
-}
+uses qtprivate, LMessages;
+
 {------------------------------------------------------------------------------
   DelphiOnChange sets Delphi compatibility for OnChange event:
   If defined, OnChange is generated whenever there's a change
@@ -186,8 +191,13 @@ end;
 function TQtMemoStrings.TextChangedHandler(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Mess: TLMessage;
+  // just for debugging
+  SenderView: QObjectH;
+  EventView: QEventH;
 begin
   if not FUpdating then begin
+    SenderView := Sender;
+    EventView := Event;
     FTextChanged := True;
     FillChar(Mess, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
@@ -313,4 +323,5 @@ begin
 end;
 
 
-{$ENDIF}
+end.
+
