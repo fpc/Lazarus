@@ -28,7 +28,7 @@ interface
 
 uses
 // libs
-  GLib2, Gtk2, Gdk2, Gdk2pixbuf,
+  GLib2, Gtk2, Gdk2, Gtk2Int,gtkProc,GtkDef,
   // LCL
   ExtCtrls, Classes, Controls, LCLType,
   // widgetset
@@ -152,7 +152,7 @@ type
 
   { TGtk2WSCheckGroup }
 
-  TGtk2WSCheckGroup = class(TWSCheckGroup)
+  TGtk2WSCheckGroup = class(TGtkWSCheckGroup)
   private
   protected
   public
@@ -176,7 +176,7 @@ type
 
   { TGtk2WSLabeledEdit }
 
-  TGtk2WSLabeledEdit = class(TWSLabeledEdit)
+  TGtk2WSLabeledEdit = class(TGtkWSLabeledEdit)
   private
   protected
   public
@@ -184,7 +184,7 @@ type
 
   { TGtk2WSCustomPanel }
 
-  TGtk2WSCustomPanel = class(TWSCustomPanel)
+  TGtk2WSCustomPanel = class(TGtkWSCustomPanel)
   private
   protected
   public
@@ -192,7 +192,7 @@ type
 
   { TGtk2WSPanel }
 
-  TGtk2WSPanel = class(TWSPanel)
+  TGtk2WSPanel = class(TGtkWSPanel)
   private
   protected
   public
@@ -239,6 +239,7 @@ begin
   P := PGtknotebook(WidgetSet.CreateComponent(AWinControl));
   Result := HWND(P);
 end;
+
 
 initialization
 

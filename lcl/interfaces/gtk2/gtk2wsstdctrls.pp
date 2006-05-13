@@ -119,6 +119,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
   end;
@@ -568,6 +569,27 @@ end;
 {$I gtk2wscustommemo.inc}
 
 { TGtk2WSCustomEdit }
+
+function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+
+  p: PGtkWidget;                 // ptr to the newly created GtkWidget
+  SetupProps : boolean;
+
+
+begin
+   SetupProps := false;
+   p :=  gtk_entry_new();
+   gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
+   gtk_widget_show_all(P);
+   Result := TLCLIntfHandle(P);
+   if result = 0 then exit;
+   gtk2WidgetSet.FinishComponentCreate(AWinControl, P, SetupProps);
+
+
+end;
+
 
 function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
