@@ -35,6 +35,7 @@ uses
   HelpIntf,
   IDECommands,
   IDEDialogs,
+  IDEHelpIntf,
   IDEMsgIntf,
   IDEWindowIntf,
   ImageListEditor,

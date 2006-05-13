@@ -278,19 +278,6 @@ resourcestring
   oisNone = '(none)';
   oisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
-  oisHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
-  oisHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
-    +'s%s did not found a viewer for a help page of type %s';
-  oisHelpAlreadyRegistered = '%s: Already registered';
-  oisHelpNotRegistered = '%s: Not registered';
-  oisHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
-  oisHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
-    +'Database %s%s%s.';
-  oisHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
-  oisHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
-    +'Database %s%s%s.';
-  oisHelpHelpContextNotFound = 'Help context %s not found.';
-  oisHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
   oisCancel = '&Cancel';

@@ -28,8 +28,22 @@ unit HelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, LazConfigStorage, MacroIntf,
-  TextTools, ObjInspStrConsts;
+  Classes, SysUtils, LCLProc, Controls, FileUtil, LazConfigStorage;
+
+resourcestring
+  rsHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
+  rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
+    +'s%s did not found a viewer for a help page of type %s';
+  rsHelpAlreadyRegistered = '%s: Already registered';
+  rsHelpNotRegistered = '%s: Not registered';
+  rsHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
+  rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
+    +'Database %s%s%s.';
+  rsHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
+  rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
+    +'Database %s%s%s.';
+  rsHelpHelpContextNotFound = 'Help context %s not found.';
+  rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
 
 type
   // All help-specific error messages should be thrown as this type.
@@ -281,29 +295,6 @@ type
   public
     function MessageMatches(const TheMessage: string; MessageParts: TStrings
                             ): boolean; virtual; abstract;
-  end;
-
-
-  { THelpDBIRegExprMessage
-    Help registration item for matching a message (e.g. a fpc warning) with
-    a regular expression.
-    For example a line like
-      "/usr/share/lazarus/components/synedit/syneditkeycmds.pp(532,10) Warning: Function result does not seem to be set"
-     could be matched with
-      Expression=') Warning: Function result does not seem to be set'
-    }
-
-  THelpDBIRegExprMessage = class(THelpDBIMessage)
-  private
-    FExpression: string;
-    FModifierStr: string;
-  public
-    constructor Create(TheNode: THelpNode; const RegularExpression,
-                       TheModifierStr: string);
-    function MessageMatches(const TheMessage: string; MessageParts: TStrings
-                            ): boolean; override;
-    property Expression: string read FExpression write FExpression;
-    property ModifierStr: string read FModifierStr write FModifierStr;
   end;
 
 
@@ -693,29 +684,9 @@ type
     property BaseURL: string read FBaseURL write SetBaseURL;
   end;
 
-  { TBaseHelpManager }
-
-  TBaseHelpManager = class(TComponent)
-  public
-    procedure ConnectMainBarEvents; virtual; abstract;
-    procedure LoadHelpOptions; virtual; abstract;
-    procedure SaveHelpOptions; virtual; abstract;
-
-    function ShowHelpForSourcePosition(const Filename: string;
-                                       const CodePos: TPoint;
-                                       var ErrMsg: string): TShowHelpResult; virtual; abstract;
-    procedure ShowHelpForMessage(Line: integer); virtual; abstract;
-    procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
-
-    function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
-                            const Filename: string): TPascalHelpContextList; virtual; abstract;
-  end;
-
-
 var
   HelpDatabases: THelpDatabases; // initialized by the IDE
   HelpViewers: THelpViewers; // initialized by the IDE
-  LazarusHelp: TBaseHelpManager; // initialized by the IDE
 
 //==============================================================================
 { Showing help (how it works):
@@ -1136,14 +1107,14 @@ end;
 procedure THelpDatabase.RegisterSelf;
 begin
   if Databases<>nil then
-    raise EHelpSystemException.Create(Format(oisHelpAlreadyRegistered, [ID]));
+    raise EHelpSystemException.Create(Format(rsHelpAlreadyRegistered, [ID]));
   Databases:=HelpDatabases;
 end;
 
 procedure THelpDatabase.UnregisterSelf;
 begin
   if Databases=nil then
-    raise EHelpSystemException.Create(Format(oisHelpNotRegistered, [ID]));
+    raise EHelpSystemException.Create(Format(rsHelpNotRegistered, [ID]));
   Databases:=nil;
 end;
 
@@ -1349,7 +1320,7 @@ begin
   Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
   try
     if (Viewers=nil) or (Viewers.Count=0) then begin
-      ErrMsg:=Format(oisHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType, [
+      ErrMsg:=Format(rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType, [
         '"', ID, '"', MimeType]);
       Result:=shrViewerNotFound;
     end else begin
@@ -1492,7 +1463,7 @@ begin
   if HelpDB=nil then begin
     Result:=false;
     HelpResult:=shrDatabaseNotFound;
-    ErrMsg:=Format(oisHelpHelpDatabaseNotFound, ['"', ID, '"']);
+    ErrMsg:=Format(rsHelpHelpDatabaseNotFound, ['"', ID, '"']);
   end else begin
     HelpResult:=shrSuccess;
     Result:=true;
@@ -1618,7 +1589,7 @@ begin
   // show node
   if NodeQuery.Node.Owner=nil then begin
     Result:=shrDatabaseNotFound;
-    ErrMsg:=Format(oisHelpHelpNodeHasNoHelpDatabase, ['"', NodeQuery.Node.Title, '"']);
+    ErrMsg:=Format(rsHelpHelpNodeHasNoHelpDatabase, ['"', NodeQuery.Node.Title, '"']);
     exit;
   end;
   Result:=NodeQuery.Node.Owner.ShowHelp(Query,nil,
@@ -1677,10 +1648,10 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(oisHelpHelpContextNotFoundInDatabase, [IntToStr(
+        ErrMsg:=Format(rsHelpHelpContextNotFoundInDatabase, [IntToStr(
           Query.Context), '"', Query.HelpDatabaseID, '"'])
       else
-        ErrMsg:=Format(oisHelpHelpContextNotFound,
+        ErrMsg:=Format(rsHelpHelpContextNotFound,
                        [IntToStr(Query.Context)]);
       exit;
     end;
@@ -1717,10 +1688,10 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(oisHelpHelpKeywordNotFoundInDatabase, ['"',Query.Keyword,
+        ErrMsg:=Format(rsHelpHelpKeywordNotFoundInDatabase, ['"',Query.Keyword,
           '"', '"', Query.HelpDatabaseID, '"'])
       else
-        ErrMsg:=Format(oisHelpHelpKeywordNotFound, ['"',Query.Keyword,'"']);
+        ErrMsg:=Format(rsHelpHelpKeywordNotFound, ['"',Query.Keyword,'"']);
       exit;
     end;
 
@@ -1749,7 +1720,7 @@ begin
     // check if at least one node found
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrHelpNotFound;
-      ErrMsg:=format(oisHelpNoHelpFoundForSource,
+      ErrMsg:=format(rsHelpNoHelpFoundForSource,
         [Query.SourcePosition.y, Query.SourcePosition.x, Query.Filename]);
       exit;
     end;
@@ -2429,7 +2400,7 @@ var
 begin
   ExpFilename:=FFilename;
   if (HelpDatabases<>nil) then
-    IDEMacros.SubstituteMacros(ExpFilename);
+    HelpDatabases.SubstituteMacros(ExpFilename);
   ExpFilename:=TrimFilename(ExpFilename);
   if FilenameIsAbsolute(ExpFilename) then
     Result:=ExpFilename
@@ -2576,22 +2547,6 @@ end;
 constructor THelpBasePathObject.Create(const TheBasePath: string);
 begin
   BasePath:=TheBasePath;
-end;
-
-{ THelpDBIRegExprMessage }
-
-constructor THelpDBIRegExprMessage.Create(TheNode: THelpNode;
-  const RegularExpression, TheModifierStr: string);
-begin
-  FNode:=TheNode;
-  FExpression:=RegularExpression;
-  FModifierStr:=TheModifierStr;
-end;
-
-function THelpDBIRegExprMessage.MessageMatches(const TheMessage: string;
-  MessageParts: TStrings): boolean;
-begin
-  Result:=REMatches(TheMessage,Expression,ModifierStr);
 end;
 
 { THelpNodeQuery }

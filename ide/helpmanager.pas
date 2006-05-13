@@ -39,7 +39,7 @@ uses
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
   HelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
-  LazIDEIntf,
+  LazIDEIntf, IDEHelpIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages,
