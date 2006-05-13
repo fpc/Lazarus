@@ -44,7 +44,7 @@ uses
   SynEdit,
   CodeToolManager, CodeCache,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
-  IDEHelpIntf, HelpIntf,
+  IDEHelpIntf, LazHelpIntf,
   IDEProcs, LazarusIDEStrConsts;
 
 const

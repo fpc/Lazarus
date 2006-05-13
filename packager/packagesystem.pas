@@ -1081,7 +1081,6 @@ begin
     AddFile('graphpropedits.pas','GraphPropEdits',pftUnit,[],cpBase);
     AddFile('helpfpdoc.pas','HelpFPDoc',pftUnit,[],cpBase);
     AddFile('helphtml.pas','HelpHTML',pftUnit,[],cpBase);
-    AddFile('helpintf.pas','HelpIntf',pftUnit,[],cpBase);
     AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
     AddFile('idewindowintf.pas','IDEWindowIntf',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);

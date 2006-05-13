@@ -38,6 +38,13 @@ interface
 uses
   Classes, SysUtils;
   
+type
+  THelpManager = class(TInterfacedObject)
+  
+  end;
+
+var
+  HelpManager: THelpManager = nil;
 
 implementation
 

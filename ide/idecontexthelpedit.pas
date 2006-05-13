@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, ButtonPanel, StdCtrls, ComCtrls,
   // IDEIntf
-  IDEWindowIntf, HelpIntf,
+  IDEWindowIntf, LazHelpIntf,
   // IDE
   IDEWindowHelp, LazarusIDEStrConsts, ExtCtrls;
 

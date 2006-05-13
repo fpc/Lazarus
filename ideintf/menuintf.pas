@@ -29,7 +29,8 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Menus, ImgList, Graphics, HelpIntf, IDECommands;
+  Classes, SysUtils, LCLProc, Menus, ImgList, Graphics, LazHelpIntf,
+  IDECommands;
   
 type
   TIDEMenuItem = class;

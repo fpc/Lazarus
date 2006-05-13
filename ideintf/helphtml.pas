@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Process, FileUtil, LazConfigStorage,
-  HelpIntf;
+  LazHelpIntf;
   
 resourcestring
   hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '

@@ -32,7 +32,6 @@ uses
   GraphPropEdits,
   HelpFPDoc,
   HelpHTML,
-  HelpIntf,
   IDECommands,
   IDEDialogs,
   IDEHelpIntf,

@@ -21,7 +21,7 @@
     - Add Help Editing functions
     - Standalone help system for LCL applications
 }
-unit HelpIntf;
+unit LazHelpIntf;
 
 {$mode objfpc}{$H+}
 

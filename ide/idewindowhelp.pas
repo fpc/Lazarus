@@ -30,7 +30,7 @@ unit IDEWindowHelp;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, Dialogs, HelpIntf,
+  Classes, SysUtils, LCLProc, Controls, FileUtil, Dialogs, LazHelpIntf,
   LazConfigStorage, EnvironmentOpts, Laz_XMLCfg, IDEOptionDefs;
   
 type

@@ -23,7 +23,7 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, HelpIntf, TextTools;
+  Classes, SysUtils, LazHelpIntf, TextTools;
 
 type
   { THelpDBIRegExprMessage

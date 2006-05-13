@@ -26,7 +26,7 @@ unit HelpFPDoc;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, MacroIntf, HelpIntf, HelpHTML;
+  Classes, SysUtils, LCLProc, FileUtil, MacroIntf, LazHelpIntf, HelpHTML;
 
 type
   { TFPDocHTMLHelpDatabase }

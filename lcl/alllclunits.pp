@@ -41,7 +41,7 @@ uses
   InterfaceBase,
   IntfGraphics,
   // components and functions
-  LCLClasses, AsyncProcess, Maps, HelpIntfs,
+  LCLClasses, AsyncProcess, Maps, HelpIntfs, LazHelpIntf,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit, ButtonPanel,

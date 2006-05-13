@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  MacroIntf, ProjectIntf, HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
+  MacroIntf, ProjectIntf, LazHelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
   IDEWindowIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
