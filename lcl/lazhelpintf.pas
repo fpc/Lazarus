@@ -14,12 +14,11 @@
   Author: Mattias Gaertner
   
   Abstract:
-    This unit defines various base classes for the Help System used by the IDE.
+    This unit defines various base classes for the LCL Help System.
     
   ToDo:
     - localization support.
     - Add Help Editing functions
-    - Standalone help system for LCL applications
 }
 unit LazHelpIntf;
 
@@ -28,41 +27,10 @@ unit LazHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, LazConfigStorage;
-
-resourcestring
-  rsHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
-  rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
-    +'s%s did not found a viewer for a help page of type %s';
-  rsHelpAlreadyRegistered = '%s: Already registered';
-  rsHelpNotRegistered = '%s: Not registered';
-  rsHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
-  rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
-    +'Database %s%s%s.';
-  rsHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
-  rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
-    +'Database %s%s%s.';
-  rsHelpHelpContextNotFound = 'Help context %s not found.';
-  rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
+  Classes, SysUtils, LCLProc, FileUtil, LCLStrConsts, Dialogs,
+  LazConfigStorage, HelpIntfs;
 
 type
-  // All help-specific error messages should be thrown as this type.
-  EHelpSystemException = class(Exception);
-
-  TShowHelpResult = (
-    shrNone,
-    shrSuccess,
-    shrCancel,
-    shrDatabaseNotFound,
-    shrContextNotFound,
-    shrViewerNotFound,
-    shrHelpNotFound,
-    shrViewerError,
-    shrSelectorError
-    );
-  TShowHelpResults = set of TShowHelpResult;
-
-
   { THelpQueryItem }
 
   THelpQueryItem = class
@@ -110,11 +78,10 @@ type
   
   
   THelpDatabase = class;
-  THelpDatabaseID = string;
 
   { THelpNode
     A help node is a position/place in a help database.
-    For example it points to Help file or to a Link on a HTML file. }
+    For example it points to a Help file or to a Link on a HTML file. }
   
   THelpNodeType = (
     hntURLIDContext, // URL, ID and Context valid
@@ -124,9 +91,6 @@ type
     hntContext,      // Context valid, ignore URL and ID
     hntURLContext    // URL and Context valid, ignore ID
     );
-
-
-  { THelpNode }
 
   THelpNode = class(TPersistent)
   private
@@ -298,18 +262,6 @@ type
   end;
 
 
-  { THelpQuery }
-  
-  THelpQuery = class(TPersistent)
-  private
-    FHelpDatabaseID: THelpDatabaseID;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID);
-    property HelpDatabaseID: THelpDatabaseID read FHelpDatabaseID
-                                             write FHelpDatabaseID;
-  end;
-  
-  
   { THelpQueryNode }
 
   THelpQueryNode = class(THelpQuery)
@@ -319,123 +271,6 @@ type
     constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
                        const TheNode: THelpNode);
     property Node: THelpNode read FNode write FNode;
-  end;
-
-
-  { THelpQueryTOC }
-
-  THelpQueryTOC = class(THelpQueryNode)
-  end;
-
-
-  { THelpQueryContext }
-  
-  THelpQueryContext = class(THelpQuery)
-  private
-    FContext: THelpContext;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheContext: THelpContext);
-    property Context: THelpContext read FContext write FContext;
-  end;
-
-
-  { THelpQueryKeyword }
-
-  THelpQueryKeyword = class(THelpQuery)
-  private
-    FKeyword: string;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheKeyWord: string);
-    property Keyword: string read FKeyword write FKeyword;
-  end;
-  
-
-  { THelpQuerySourcePosition }
-
-  THelpQuerySourcePosition = class(THelpQuery)
-  private
-    FFilename: string;
-    FSourcePosition: TPoint;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheFilename: string; const SrcPos: TPoint);
-    property Filename: string read FFilename write FFilename;
-    property SourcePosition: TPoint read FSourcePosition write FSourcePosition;
-  end;
-
-
-  { THelpQueryPascalContexts }
-
-  THelpQueryPascalContexts = class(THelpQuerySourcePosition)
-  private
-    FContextLists: TList;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheFilename: string; const SrcPos: TPoint;
-                       ContextLists: TList);
-    property ListOfPascalHelpContextList: TList read FContextLists
-                                                write FContextLists;
-  end;
-
-
-  { THelpQueryMessage
-    A query for messages, like the compiler warnings and errors.
-
-    'WholeMessage' is the complete line as string.
-    
-    'MessageParts' can be a list of Name=Value pairs, that has been extracted
-    by the IDE. Common names and values are:
-      Name    | Value
-      --------|-----------------------------------------------------------------
-      Stage    Indicates what part of the build process the message
-               belongs to. Common values are 'FPC', 'Linker' or 'make'
-      Type     For FPC: 'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic',
-               'Compiling', 'Assembling'
-               For make:
-               For Linker:
-      Line     An integer for the linenumber as given by FPC in brackets.
-      Column   An integer for the column as given by FPC in brackets.
-      Message  The message text without other parsed items.
-      
-
-    Example:
-      Message written by FPC:
-        unit1.pas(21,3) Warning: unit buttons not used
-       
-      Results in
-        Stage=FPC
-        Type=Warning
-        Line=21
-        Column=3
-        Message=unit buttons not used
-      
-    }
-
-  THelpQueryMessage = class(THelpQuery)
-  private
-    FMessageParts: TStrings;
-    FWholeMessage: string;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheMessage: string;
-                       TheMessageParts: TStrings);
-    destructor Destroy; override;
-    property WholeMessage: string read FWholeMessage write FWholeMessage;
-    property MessageParts: TStrings read FMessageParts write FMessageParts;
-  end;
-
-
-  { THelpQueryClass }
-
-  THelpQueryClass = class(THelpQuery)
-  private
-    FTheClass: TClass;
-  public
-    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const AClass: TClass);
-    property TheClass: TClass read FTheClass write FTheClass;
   end;
 
 
@@ -521,7 +356,7 @@ type
   { THelpDatabases
     Class for storing all registered THelpDatabase }
 
-  THelpDatabases = class
+  THelpDatabases = class(THelpManager)
   private
     FItems: TList;
     FHelpDBClasses: TList;
@@ -542,8 +377,8 @@ type
     function CreateHelpDatabase(const WishID: string;
                                 HelpDataBaseClass: THelpDatabaseClass;
                                 AutoRegister: boolean): THelpDatabase;
-    function ShowTableOfContents(var ErrMsg: string): TShowHelpResult;
-    procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual; abstract;
+    function ShowTableOfContents(var ErrMsg: string): TShowHelpResult; override;
+    procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); override;
     function GetBaseURLForBasePathObject(BasePathObject: TObject): string; virtual;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; virtual;
     function FindViewer(const MimeType: string; var ErrMsg: string;
@@ -554,23 +389,23 @@ type
     function ShowHelpForNodes(Query: THelpQuery; Nodes: THelpNodeQueryList;
                               var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForQuery(Query: THelpQuery; AutoFreeQuery: boolean;
-                              var ErrMsg: string): TShowHelpResult; virtual;
+                              var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForContext(Query: THelpQueryContext;
-                                var ErrMsg: string): TShowHelpResult; virtual;
+                                var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForKeyword(Query: THelpQueryKeyword;
-                                var ErrMsg: string): TShowHelpResult; virtual;
+                                var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForPascalContexts(Query: THelpQueryPascalContexts;
-                                       var ErrMsg: string): TShowHelpResult; virtual;
+                                       var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
-                                       var ErrMsg: string): TShowHelpResult; virtual;
+                                       var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForMessageLine(Query: THelpQueryMessage;
-                                    var ErrMsg: string): TShowHelpResult; virtual;
+                                    var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForClass(Query: THelpQueryClass;
-                              var ErrMsg: string): TShowHelpResult; virtual;
+                              var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpFile(const Filename, Title, MimeType: string;
-                      var ErrMsg: string): TShowHelpResult; virtual;
+                      var ErrMsg: string): TShowHelpResult; override;
     function ShowHelp(const URL, Title, MimeType: string;
-                      var ErrMsg: string): TShowHelpResult; virtual;
+                      var ErrMsg: string): TShowHelpResult; override;
     // search registered items in all databases
     function GetNodesForKeyword(const HelpKeyword: string;
                                 var ListOfNodes: THelpNodeQueryList;
@@ -688,58 +523,8 @@ var
   HelpDatabases: THelpDatabases = nil; // initialized by the IDE
   HelpViewers: THelpViewers = nil; // initialized by the IDE
 
-//==============================================================================
-{ Showing help (how it works):
-
-  - starts the help system, if not already started
-  - search all appropriate help Databases for the given context
-    If multiple contexts fit, a help selector is shown and the user chooses one.
-  - calls the help Database to show the context
-    The help Database will search an appropriate help viewer and starts it.
-}
-
-// table of contents
-function ShowTableOfContents: TShowHelpResult;
-function ShowTableOfContents(var ErrMsg: string): TShowHelpResult;
-
-// help by ID
-function ShowHelpOrErrorForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext): TShowHelpResult;
-function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult;
-function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
-  ): TShowHelpResult;
-
-// help by keyword
-function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string): TShowHelpResult;
-function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
-function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
-  ): TShowHelpResult;
-
-// help for pascal sources
-function ShowHelpForPascalContexts(const Filename: string;
-  const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
-  var ErrMsg: string): TShowHelpResult;
-function ShowHelpOrErrorForSourcePosition(const Filename: string;
-  const SourcePosition: TPoint): TShowHelpResult;
-
-// help for messages (compiler messages, codetools messages, make messages, ...)
-function ShowHelpForMessageLine(const MessageLine: string;
-  MessageParts: TStrings; var ErrMsg: string): TShowHelpResult;
-function ShowHelpOrErrorForMessageLine(const MessageLine: string;
-  MessageParts: TStrings): TShowHelpResult;
-  
-// view help
-function ShowHelpFile(const Filename, Title, MimeType: string;
-  var ErrMsg: string): TShowHelpResult;
-function ShowHelpFileOrError(const Filename, Title, MimeType: string
-  ): TShowHelpResult;
-function ShowHelp(const URL, Title, MimeType: string;
-  var ErrMsg: string): TShowHelpResult;
-function ShowHelpOrError(const URL, Title, MimeType: string
-  ): TShowHelpResult;
+procedure CreateLCLHelpSystem;
+procedure FreeLCLHelpSystem;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -760,141 +545,23 @@ procedure CreateNodeQueryListAndAdd(const ANode: THelpNode;
   const QueryItem: THelpQueryItem;
   var List: THelpNodeQueryList; OnlyIfNotExists: boolean);
 
+
 implementation
 
-function ShowTableOfContents: TShowHelpResult;
-var
-  ErrMsg: String;
+
+procedure CreateLCLHelpSystem;
 begin
-  ErrMsg:='';
-  Result:=ShowTableOfContents(ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
+  if (HelpDatabases<>nil) or (HelpManager<>nil) then exit;
+  HelpDatabases:=THelpDatabases.Create;
+  HelpManager:=HelpDatabases;
+  HelpViewers:=THelpViewers.Create;
 end;
 
-function ShowTableOfContents(var ErrMsg: string): TShowHelpResult;
+procedure FreeLCLHelpSystem;
 begin
-  Result:=HelpDatabases.ShowTableOfContents(ErrMsg);
-end;
-
-function ShowHelpOrErrorForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=ShowHelpForContext(HelpDatabaseID,HelpContext,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
-end;
-
-function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult;
-begin
-  Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQueryContext.Create(HelpDatabaseID,HelpContext),
-            true,ErrMsg);
-end;
-
-function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
-  ): TShowHelpResult;
-begin
-  Result:=ShowHelpForContext('',HelpContext,ErrMsg);
-end;
-
-function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=ShowHelpForKeyword(HelpDatabaseID,HelpKeyword,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
-end;
-
-function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
-begin
-  Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQueryKeyword.Create(HelpDatabaseID,HelpKeyword),
-            true,ErrMsg);
-end;
-
-function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
-  ): TShowHelpResult;
-begin
-  Result:=ShowHelpForKeyword('',HelpKeyword,ErrMsg);
-end;
-
-function ShowHelpForPascalContexts(const Filename: string;
-  const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
-  var ErrMsg: string): TShowHelpResult;
-begin
-  Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQueryPascalContexts.Create('',Filename,
-                                    SourcePosition,ListOfPascalHelpContextList),
-            true,ErrMsg);
-end;
-
-function ShowHelpOrErrorForSourcePosition(const Filename: string;
-  const SourcePosition: TPoint): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQuerySourcePosition.Create('',Filename,
-                                            SourcePosition),
-            true,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
-end;
-
-function ShowHelpForMessageLine(const MessageLine: string;
-  MessageParts: TStrings; var ErrMsg: string): TShowHelpResult;
-// MessageParts will be freed
-begin
-  Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQueryMessage.Create('',MessageLine,MessageParts),
-            true,ErrMsg);
-end;
-
-function ShowHelpOrErrorForMessageLine(const MessageLine: string;
-  MessageParts: TStrings): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=ShowHelpForMessageLine(MessageLine,MessageParts,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
-end;
-
-function ShowHelpFile(const Filename, Title, MimeType: string;
-  var ErrMsg: string): TShowHelpResult;
-begin
-  Result:=HelpDatabases.ShowHelpFile(Filename,Title,MimeType,ErrMsg);
-end;
-
-function ShowHelpFileOrError(const Filename, Title, MimeType: string
-  ): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=ShowHelpFile(Filename,Title,MimeType,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
-end;
-
-function ShowHelp(const URL, Title, MimeType: string; var ErrMsg: string
-  ): TShowHelpResult;
-begin
-  Result:=HelpDatabases.ShowHelp(URL,Title,MimeType,ErrMsg);
-end;
-
-function ShowHelpOrError(const URL, Title, MimeType: string): TShowHelpResult;
-var
-  ErrMsg: String;
-begin
-  ErrMsg:='';
-  Result:=ShowHelp(URL,Title,MimeType,ErrMsg);
-  HelpDatabases.ShowError(Result,ErrMsg);
+  FreeThenNil(HelpDatabases);
+  FreeThenNil(HelpViewers);
+  HelpManager:=nil;
 end;
 
 function FilenameToURL(const Filename: string): string;
@@ -1136,7 +803,7 @@ var
 begin
   if TOCNode=nil then exit;
   ErrMsg:='';
-  Query:=THelpQueryTOC.Create(ID,TOCNode);
+  Query:=THelpQueryTOC.Create(ID);
   try
     ShowResult:=ShowHelp(Query,nil,TOCNode,nil,ErrMsg);
   finally
@@ -1510,6 +1177,26 @@ begin
   // ToDo
 end;
 
+procedure THelpDatabases.ShowError(ShowResult: TShowHelpResult;
+  const ErrMsg: string);
+var
+  ErrorCaption: String;
+begin
+  case ShowResult of
+  shrNone: ErrorCaption:=rsHelpError;
+  shrSuccess: exit;
+  shrCancel: exit;
+  shrDatabaseNotFound: ErrorCaption:=rsHelpDatabaseNotFound;
+  shrContextNotFound: ErrorCaption:=rsHelpContextNotFound;
+  shrViewerNotFound: ErrorCaption:=rsHelpViewerNotFound;
+  shrHelpNotFound: ErrorCaption:=rsHelpNotFound;
+  shrViewerError: ErrorCaption:=rsHelpViewerError;
+  shrSelectorError: ErrorCaption:=rsHelpSelectorError;
+  else ErrorCaption:=rsUnknownErrorPleaseReportThisBug;
+  end;
+  MessageDlg(ErrorCaption,ErrMsg,mtError,[mbCancel],0);
+end;
+
 function THelpDatabases.GetBaseURLForBasePathObject(BasePathObject: TObject
   ): string;
 begin
@@ -1554,7 +1241,7 @@ begin
   Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
   try
     if (Viewers=nil) or (Viewers.Count=0) then begin
-      ErrMsg:='Did not find a viewer for help type "'+MimeType+'"';
+      ErrMsg:=Format(rsHelpThereIsNoViewerForHelpType, ['"', MimeType, '"']);
       Result:=shrViewerNotFound;
     end else begin
       Viewer:=THelpViewer(Viewers[0]);
@@ -1908,10 +1595,17 @@ function THelpDatabases.ShowHelpSelector(Query: THelpQuery;
   Nodes: THelpNodeQueryList; var ErrMsg: string;
   var Selection: THelpNodeQuery): TShowHelpResult;
 // to override
-// Nodes is a list of THelpNode
+// default is to always take the first node
 begin
-  Result:=shrSelectorError;
-  ErrMsg:='THelpDatabases.ShowHelpSelector not implemented';
+  if (Nodes=nil) or (Nodes.Count=0) then begin
+    Result:=shrSelectorError;
+    Selection:=nil;
+    ErrMsg:=rsHelpNoHelpNodesAvailable;
+  end else begin
+    Selection:=THelpNodeQuery(Nodes[0]);
+    Result:=shrSuccess;
+    ErrMsg:='';
+  end;
 end;
 
 procedure THelpDatabases.RegisterHelpDatabaseClass(NewHelpDB: THelpDatabaseClass
@@ -2449,77 +2143,6 @@ begin
   and (not FileInFilenameMasks(ExtractFilename(AFilename),FileMask)) then exit;
   //debugln('THelpDBISourceDirectory.FileMatches Success');
   Result:=true;
-end;
-
-{ THelpQuery }
-
-constructor THelpQuery.Create(const TheHelpDatabaseID: THelpDatabaseID);
-begin
-  FHelpDatabaseID:=TheHelpDatabaseID;
-end;
-
-{ THelpQueryContext }
-
-constructor THelpQueryContext.Create(const TheHelpDatabaseID: THelpDatabaseID;
-  const TheContext: THelpContext);
-begin
-  inherited Create(TheHelpDatabaseID);
-  FContext:=TheContext;
-end;
-
-{ THelpQueryKeyword }
-
-constructor THelpQueryKeyword.Create(const TheHelpDatabaseID: THelpDatabaseID;
-  const TheKeyWord: string);
-begin
-  inherited Create(TheHelpDatabaseID);
-  FKeyword:=TheKeyWord;
-end;
-
-{ THelpQuerySourcePosition }
-
-constructor THelpQuerySourcePosition.Create(
-  const TheHelpDatabaseID: THelpDatabaseID; const TheFilename: string;
-  const SrcPos: TPoint);
-begin
-  inherited Create(TheHelpDatabaseID);
-  FFilename:=TheFilename;
-  FSourcePosition:=SrcPos;
-end;
-
-{ THelpQueryPascalContext }
-
-constructor THelpQueryPascalContexts.Create(
-  const TheHelpDatabaseID: THelpDatabaseID; const TheFilename: string;
-  const SrcPos: TPoint; ContextLists: TList);
-begin
-  inherited Create(TheHelpDatabaseID,TheFilename,SrcPos);
-  FContextLists:=ContextLists;
-end;
-
-{ THelpQueryMessage }
-
-constructor THelpQueryMessage.Create(const TheHelpDatabaseID: THelpDatabaseID;
-  const TheMessage: string; TheMessageParts: TStrings);
-begin
-  inherited Create(TheHelpDatabaseID);
-  FWholeMessage:=TheMessage;
-  FMessageParts:=TheMessageParts;
-end;
-
-destructor THelpQueryMessage.Destroy;
-begin
-  FMessageParts.Free;
-  inherited Destroy;
-end;
-
-{ THelpQueryClass }
-
-constructor THelpQueryClass.Create(const TheHelpDatabaseID: THelpDatabaseID;
-  const AClass: TClass);
-begin
-  inherited Create(TheHelpDatabaseID);
-  FTheClass:=AClass;
 end;
 
 { THelpQueryNode }

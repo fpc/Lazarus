@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
-  LazarusIDEStrConsts, LazConfigStorage, IDEHelpIntf, LazHelpIntf, HelpHTML;
+  LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, LazHelpIntf,
+  HelpHTML;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';

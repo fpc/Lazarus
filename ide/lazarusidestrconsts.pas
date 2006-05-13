@@ -1842,13 +1842,6 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
-  lisHelpDatabaseNotFound = 'Help Database not found';
-  lisHelpContextNotFound = 'Help Context not found';
-  lisHelpViewerNotFound = 'Help Viewer not found';
-  lisHelpNotFound = 'Help not found';
-  lisHelpViewerError = 'Help Viewer Error';
-  lisHelpSelectorError = 'Help Selector Error';
-  lisUnknownErrorPleaseReportThisBug = 'Unknown Error, please report this bug';
 
   // make resource string dialog
   lisMakeResourceString = 'Make ResourceString';

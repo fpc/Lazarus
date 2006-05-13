@@ -39,7 +39,7 @@ uses
   PascalParserTool, FindDeclarationTool,
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
   LazHelpIntf, HelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
-  LazIDEIntf, IDEHelpIntf,
+  LazIDEIntf, HelpIntfs, IDEHelpIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages,
@@ -54,7 +54,6 @@ type
                               var ErrMsg: string;
                               var Selection: THelpNodeQuery
                               ): TShowHelpResult; override;
-    procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); override;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
                                        var ErrMsg: string): TShowHelpResult; override;
@@ -217,26 +216,6 @@ begin
   finally
     Dialog.Free;
   end;
-end;
-
-procedure TIDEHelpDatabases.ShowError(ShowResult: TShowHelpResult;
-  const ErrMsg: string);
-var
-  ErrorCaption: String;
-begin
-  case ShowResult of
-  shrNone: ErrorCaption:=lisCodeTemplError;
-  shrSuccess: exit;
-  shrCancel: exit;
-  shrDatabaseNotFound: ErrorCaption:=lisHelpDatabaseNotFound;
-  shrContextNotFound: ErrorCaption:=lisHelpContextNotFound;
-  shrViewerNotFound: ErrorCaption:=lisHelpViewerNotFound;
-  shrHelpNotFound: ErrorCaption:=lisHelpNotFound;
-  shrViewerError: ErrorCaption:=lisHelpViewerError;
-  shrSelectorError: ErrorCaption:=lisHelpSelectorError;
-  else ErrorCaption:=lisUnknownErrorPleaseReportThisBug;
-  end;
-  MessageDlg(ErrorCaption,ErrMsg,mtError,[mbCancel],0);
 end;
 
 function TIDEHelpDatabases.GetBaseDirectoryForBasePathObject(
@@ -406,6 +385,7 @@ begin
   HelpOpts:=THelpOptions.Create;
   HelpOpts.SetDefaultFilename;
   HelpDatabases:=TIDEHelpDatabases.Create;
+  HelpIntfs.HelpManager:=HelpDatabases;
   HelpViewers:=THelpViewers.Create;
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
@@ -420,6 +400,7 @@ begin
   FPCMessagesHelpDB:=nil;
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
+  HelpIntfs.HelpManager:=nil;
   FreeThenNil(HelpOpts);
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);

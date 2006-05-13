@@ -245,7 +245,34 @@ ResourceString
   ifsVK_NUMPAD     = 'Numpad %d';
   ifsVK_NUMLOCK    = 'Numlock';
   ifsVK_SCROLL     = 'Scroll';
+
+  // docking
   rsDocking = 'Docking';
+
+  // help
+  rsHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
+  rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type %s%s%s';
+  rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
+    +'s%s did not found a viewer for a help page of type %s';
+  rsHelpAlreadyRegistered = '%s: Already registered';
+  rsHelpNotRegistered = '%s: Not registered';
+  rsHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
+  rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
+    +'Database %s%s%s.';
+  rsHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
+  rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
+    +'Database %s%s%s.';
+  rsHelpHelpContextNotFound = 'Help context %s not found.';
+  rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
+  rsHelpNoHelpNodesAvailable = 'No help nodes available';
+  rsHelpError = 'Help Error';
+  rsHelpDatabaseNotFound = 'Help Database not found';
+  rsHelpContextNotFound = 'Help Context not found';
+  rsHelpViewerNotFound = 'Help Viewer not found';
+  rsHelpNotFound = 'Help not found';
+  rsHelpViewerError = 'Help Viewer Error';
+  rsHelpSelectorError = 'Help Selector Error';
+  rsUnknownErrorPleaseReportThisBug = 'Unknown Error, please report this bug';
 
 implementation
 

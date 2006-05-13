@@ -43,14 +43,14 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
-  Translations, ClipBrd, TypInfo, Extctrls, Menus,
+  Translations, ClipBrd, TypInfo, Extctrls, Menus, HelpIntfs, LazHelpIntf,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  MacroIntf, ProjectIntf, LazHelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
+  MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
   IDEWindowIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
