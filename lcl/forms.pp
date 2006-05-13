@@ -498,6 +498,7 @@ type
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
     function  IsShortcut(var Message: TLMKey): boolean;
+    procedure IntfHelp(AComponent: TComponent);
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
@@ -977,9 +978,11 @@ type
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
-    function HelpCommand(Command: Word; Data: Longint): Boolean;
+    function HelpContext(Sender: TObject; const Position: TPoint;
+                         Context: THelpContext): Boolean;
     function HelpContext(Context: THelpContext): Boolean;
-    function HelpJump(const JumpID: string): Boolean;
+    function HelpKeyword(Sender: TObject; const Position: TPoint;
+                         const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
     procedure HideAllFormsWithStayOnTop;
     function IsWaiting: boolean;

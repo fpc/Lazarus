@@ -920,18 +920,8 @@ begin
   if not Terminated then Idle(true);
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
-------------------------------------------------------------------------------}
-function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
-begin
-  Result := InvokeHelp(Command, Data);
-end;
-
-{------------------------------------------------------------------------------
-  function TApplication.HelpContext(Context: THelpContext): Boolean;
-------------------------------------------------------------------------------}
-function TApplication.HelpContext(Context: THelpContext): Boolean;
+function TApplication.HelpContext(Sender: TObject; const Position: TPoint;
+  Context: THelpContext): Boolean;
 begin
   if ValidateHelpSystem then begin
     Result := true;
@@ -941,13 +931,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TApplication.HelpJump(const JumpID: string): Boolean;
+  function TApplication.HelpContext(Context: THelpContext): Boolean;
 ------------------------------------------------------------------------------}
-function TApplication.HelpJump(const JumpID: string): Boolean;
+function TApplication.HelpContext(Context: THelpContext): Boolean;
+begin
+  Result:=HelpContext(nil,Point(0,0),Context);
+end;
+
+function TApplication.HelpKeyword(Sender: TObject; const Position: TPoint;
+  const Keyword: String): Boolean;
 begin
   if ValidateHelpSystem then begin
     Result := true;
-    //HelpSystem.ShowTopicHelp(JumpID, GetCurrentHelpFile);
+    //HelpSystem.ShowHelp(Keyword, GetCurrentHelpFile);
   end else
     Result := false;
 end;
@@ -957,11 +953,7 @@ end;
 ------------------------------------------------------------------------------}
 function TApplication.HelpKeyword(const Keyword: String): Boolean;
 begin
-  if ValidateHelpSystem then begin
-    Result := true;
-    //HelpSystem.ShowHelp(Keyword, GetCurrentHelpFile);
-  end else
-    Result := false;
+  Result:=HelpKeyword(nil,Point(0,0),Keyword);
 end;
 
 {------------------------------------------------------------------------------
@@ -1400,10 +1392,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TApplication.IntfEndSession();
+  procedure TApplication.IntfEndSession;
 ------------------------------------------------------------------------------}
-
-procedure TApplication.IntfEndSession();
+procedure TApplication.IntfEndSession;
 begin
   if Assigned(FOnEndSession) then FOnEndSession(Self);
 end;
@@ -1411,7 +1402,6 @@ end;
 {------------------------------------------------------------------------------
   procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
 ------------------------------------------------------------------------------}
-
 procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
 begin
   if Assigned(FOnQueryEndSession) then FOnQueryEndSession(Cancel);

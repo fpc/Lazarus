@@ -685,8 +685,8 @@ type
   end;
 
 var
-  HelpDatabases: THelpDatabases; // initialized by the IDE
-  HelpViewers: THelpViewers; // initialized by the IDE
+  HelpDatabases: THelpDatabases = nil; // initialized by the IDE
+  HelpViewers: THelpViewers = nil; // initialized by the IDE
 
 //==============================================================================
 { Showing help (how it works):
@@ -2676,9 +2676,6 @@ constructor THelpBaseURLObject.Create(const TheBaseURL: string);
 begin
   BaseURL:=TheBaseURL;
 end;
-
-initialization
-  HelpDatabases:=nil;
 
 end.
 
