@@ -28,7 +28,7 @@ unit HelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, ConfigStorage, MacroIntf,
+  Classes, SysUtils, LCLProc, Controls, FileUtil, LazConfigStorage, MacroIntf,
   TextTools, ObjInspStrConsts;
 
 type

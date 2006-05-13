@@ -27,7 +27,8 @@ uses
   ExtCtrls, Dialogs, Menus,
   CodeToolManager, CodeCache,
   LazIDEIntf, ProjectIntf, ObjectInspector, PropEdits,
-  DialogProcs, FileUtil, LazConf, ConfigStorage, LazarusIDEStrConsts;
+  DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
+  LazarusIDEStrConsts;
   
 type
   { TOIAddRemoveFavouriteDlg }

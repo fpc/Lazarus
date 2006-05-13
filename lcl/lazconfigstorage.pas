@@ -15,7 +15,7 @@
   Abstract:
     This unit defines various base classes for loading and saving of configs.
 }
-unit ConfigStorage;
+unit LazConfigStorage;
 
 {$mode objfpc}{$H+}
 
@@ -66,14 +66,6 @@ type
   end;
   
   TConfigStorageClass = class of TConfigStorage;
-  
-  TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
-                                  ): TConfigStorage;
-  
-var
-  DefaultConfigClass: TConfigStorageClass;   // will be set by the IDE
-  GetIDEConfigStorage: TGetIDEConfigStorage; // will be set by the IDE
-
   
 implementation
 
@@ -172,9 +164,6 @@ begin
   FCurrentBasePath:=FPathStack[FPathStack.Count-1];
   FPathStack.Delete(FPathStack.Count-1);
 end;
-
-initialization
-  DefaultConfigClass:=nil;
 
 end.
 

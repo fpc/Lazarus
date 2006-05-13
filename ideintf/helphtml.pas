@@ -22,7 +22,7 @@ unit HelpHTML;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, ConfigStorage,
+  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, LazConfigStorage,
   PropEdits, ObjInspStrConsts, MacroIntf, HelpIntf;
   
 type

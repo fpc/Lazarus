@@ -38,7 +38,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, LMessages,
-  LResources, PairSplitter, ConfigStorage, Menus, Dialogs, ObjInspStrConsts,
+  LResources, PairSplitter, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors;
 

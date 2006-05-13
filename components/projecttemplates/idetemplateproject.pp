@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  ProjectTemplates, ProjectIntf, LazIDEIntf;
+  ProjectTemplates, ProjectIntf, BaseIDEIntf, LazIDEIntf;
 
 type
 
@@ -37,8 +37,8 @@ procedure Register;
 implementation
 
 uses
-  contnrs,frmTemplateSettings,frmtemplateVariables,ConfigStorage,newitemintf,
-  menuintf,idecommands;
+  ContNrs, frmTemplateSettings, frmTemplateVariables, LazConfigStorage,
+  NewItemIntf, MenuIntf, IDECommands;
 
 Var
   TemplateProjectDescriptor : TTemplateProjectDescriptor;

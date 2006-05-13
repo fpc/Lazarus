@@ -21,10 +21,10 @@ interface
 
 uses
   ActionsEditor,
+  BaseIDEIntf,
   ComponentEditors,
   ComponentReg,
   ComponentTreeView,
-  ConfigStorage,
   DBPropEdits,
   FieldsEditor,
   FormEditingIntf,

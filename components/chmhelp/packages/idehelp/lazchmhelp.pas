@@ -23,7 +23,8 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, HelpIntf, HelpManager, ConfigStorage, PropEdits, LHelpControl;
+  Classes, SysUtils, HelpIntf, HelpManager, LazConfigStorage, PropEdits,
+  LHelpControl;
   
 type
   

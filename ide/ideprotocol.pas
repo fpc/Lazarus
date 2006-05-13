@@ -32,7 +32,7 @@ unit IDEProtocol;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LazConf, ConfigStorage;
+  Classes, SysUtils, LCLProc, LazConf, BaseIDEIntf, LazConfigStorage;
   
 const
   IDEProtocolOptsVersion: integer = 1;

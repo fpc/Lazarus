@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, LCLProc, FileUtil,
-  Forms, Controls, StdCtrls, Buttons, ConfigStorage,
+  Forms, Controls, StdCtrls, Buttons, BaseIDEIntf, LazConfigStorage,
   LazConf, LazarusIDEStrConsts;
 
 type

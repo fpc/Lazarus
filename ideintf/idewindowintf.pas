@@ -23,7 +23,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Classes, SysUtils, ConfigStorage, Forms, Controls;
+  Classes, SysUtils, LazConfigStorage, Forms, Controls;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE

@@ -1073,7 +1073,7 @@ begin
     AddFile('componenteditors.pas','ComponentEditors',pftUnit,[],cpBase);
     AddFile('componentreg.pas','ComponentReg',pftUnit,[],cpBase);
     AddFile('componenttreeview.pas','ComponentTreeview',pftUnit,[],cpBase);
-    AddFile('configstorage.pas','ConfigStorage',pftUnit,[],cpBase);
+    AddFile('baseideintf.pas','BaseIDEIntf',pftUnit,[],cpBase);
     AddFile('dbpropedits.pas','DBPropEdits',pftUnit,[],cpBase);
     AddFile('fieldseditor.pas','FieldsEditor',pftUnit,[],cpBase);
     AddFile('formeditingintf.pas','FormEditingIntf',pftUnit,[],cpBase);
