@@ -527,6 +527,7 @@ var
   procedure addStyle(const s: string);
   begin
     if (s<>'') and (s<>'*') and (s<>'r') then begin
+      // 'r' is regular
       if aStyle<>'' then
         aStyle := aStyle + ' ' + s
       else
@@ -569,6 +570,7 @@ var
         break;
     end;
   end;
+  
 begin
   aStyle := '';
   if IsFontNameXLogicalFontDesc(LongFontName) then begin
@@ -581,7 +583,7 @@ begin
     addStyle( ExtractXLFDItem(LongFontname, XLFD_SLANT));
     addStyle( ExtractXLFDItem(LongFontname, XLFD_WidthName));
   end else begin
-    // this could go trhough, but we want to know at least the pointSize from
+    // this could go through, but we want to know at least the pointSize from
     // the fontname
     aSize := StrToIntDef(GetSize,0);
     aFamily := Copy(LongFontName, 1, i);

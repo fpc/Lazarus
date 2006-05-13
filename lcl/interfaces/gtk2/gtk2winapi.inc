@@ -92,9 +92,9 @@ begin
       
       FontNameToPangoFontDescStr(LongFontname, aFamily, aStyle, aSize);
       
-      // if font specified size, prefer this instead of 'posibly' inacurate lfHeight
-      // note that lfHeight may actually have a most acurate value but there is no
-      // way to know this at this point.
+      // if font specified size, prefer this instead of 'posibly' inacurate
+      // lfHeight note that lfHeight may actually have a most acurate value
+      // but there is no way to know this at this point.
       
       // setting the size, this could be done in two ways
       // method 1: fontdesc using fontname like "helvetica 12"
@@ -107,8 +107,10 @@ begin
       // size information, and later modify font size
       
       // using method 2
-      if (aSize=0)  then FullString:='10'
-                    else FullString:=IntToStr(aSize);
+      if (aSize=0) and (lfHeight=0) then
+        FullString:='10' // use some default: TODO: find out the default size of the widget
+      else
+        FullString:=IntToStr(aSize);
       FullString := AFamily + ' ' + aStyle + ' ' + FullString;
       
 
@@ -194,7 +196,6 @@ var
   Underline,
   StrikeOut : Boolean;
 
-  RGBColor : Longint;
   Foreground : PGDKColor;
   
   Layout : PPangoLayout;
@@ -264,11 +265,11 @@ begin
         StrikeOut := CurrentFont^.StrikeOut;
       end;
       
-      GetStyle(lgsdefault);
       If (UseFontDesc = nil) or (GetStyleWidget(lgsdefault)=nil) then
         DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
       else begin
         // to reduce flickering calculate first and then paint
+        
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
         Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
@@ -504,7 +505,6 @@ var
   Underline,
   StrikeOut : Boolean;
 
-  RGBColor : Longint;
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;
