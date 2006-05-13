@@ -1673,29 +1673,11 @@ end;
   This function is called by the interface.
 ------------------------------------------------------------------------------}
 procedure TCustomForm.IntfHelp(AComponent: TComponent);
-var
-  AControl: TControl;
 begin
   if csDesigning in ComponentState then exit;
   
   if AComponent is TControl then begin
-    AControl:=TControl(AComponent);
-    repeat
-      if AControl.HelpType=htContext then begin
-        if AControl.HelpContext<>0 then begin
-          Application.HelpContext(Self,AControl.ClientToScreen(Point(0,0)),
-                                  AControl.HelpContext);
-          exit;
-        end;
-      end else begin
-        if AControl.HelpKeyword<>'' then begin
-          Application.HelpKeyword(Self,AControl.ClientToScreen(Point(0,0)),
-                                  AControl.HelpKeyword);
-          exit;
-        end;
-      end;
-      AControl:=AControl.Parent;
-    until AControl=nil;
+    TControl(AComponent).ShowHelp;
   end else begin
     DebugLn('TCustomForm.IntfHelp TODO help for ',DbgSName(AComponent));
   end;

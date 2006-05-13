@@ -42,7 +42,8 @@ uses
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
   Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
   StdActns, DBCtrls, DBGrids, DBActns, EditBtn, ActnList, FileCtrl, ButtonPanel,
-  LResources, XMLPropStorage, IniPropStorage, Graphics, Chart, ColorBox;
+  LResources, XMLPropStorage, IniPropStorage, Graphics, Chart, ColorBox,
+  LazHelpHTML;
   
 procedure Register;
 
@@ -80,6 +81,7 @@ begin
   RegisterUnit('ColorBox',@ColorBox.Register);
   RegisterUnit('ButtonPanel',@ButtonPanel.Register);
   RegisterUnit('LResources',@LResources.Register);
+  RegisterUnit('LazHelpHTML',@LazHelpHTML.Register);
 end;
 
 end.

@@ -1174,6 +1174,8 @@ type
     function ParentDestroyingHandle: boolean;
     function ParentHandlesAllocated: boolean; virtual;
     procedure InitiateAction; virtual;
+    procedure ShowHelp; virtual;
+    function HasHelp: Boolean;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;

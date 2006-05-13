@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd, CustApp, LCLClasses, Controls;
+  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
 
 type
   TProcedure = procedure;
@@ -849,7 +849,8 @@ type
   TApplicationNavigationOption = (
     anoTabToSelectNext,
     anoReturnForDefaultControl,
-    anoEscapeForCancelControl
+    anoEscapeForCancelControl,
+    anoF1ForHelp
     );
   TApplicationNavigationOptions = set of TApplicationNavigationOption;
 
@@ -984,6 +985,7 @@ type
     function HelpKeyword(Sender: TObject; const Position: TPoint;
                          const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
+    procedure ShowHelpForObjecct(Sender: TObject);
     procedure HideAllFormsWithStayOnTop;
     function IsWaiting: boolean;
     procedure CancelHint;

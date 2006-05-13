@@ -95,7 +95,7 @@ begin
   FOnIdle := nil;
   FIcon := nil;
   FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
-                  anoEscapeForCancelControl];
+                  anoEscapeForCancelControl,anoF1ForHelp];
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
 
@@ -517,7 +517,7 @@ end;
  ------------------------------------------------------------------------------}
 function TApplication.ValidateHelpSystem: Boolean;
 begin
-  Result:=false;
+  Result:=HelpManager<>nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -924,8 +924,7 @@ function TApplication.HelpContext(Sender: TObject; const Position: TPoint;
   Context: THelpContext): Boolean;
 begin
   if ValidateHelpSystem then begin
-    Result := true;
-    //HelpSystem.ShowContextHelp(Context, GetCurrentHelpFile);
+    Result := ShowHelpOrErrorForContext('',Context)=shrSuccess;
   end else
     Result := false;
 end;
@@ -942,8 +941,7 @@ function TApplication.HelpKeyword(Sender: TObject; const Position: TPoint;
   const Keyword: String): Boolean;
 begin
   if ValidateHelpSystem then begin
-    Result := true;
-    //HelpSystem.ShowHelp(Keyword, GetCurrentHelpFile);
+    Result := ShowHelpOrErrorForKeyword('',Keyword)=shrSuccess;
   end else
     Result := false;
 end;
@@ -954,6 +952,13 @@ end;
 function TApplication.HelpKeyword(const Keyword: String): Boolean;
 begin
   Result:=HelpKeyword(nil,Point(0,0),Keyword);
+end;
+
+procedure TApplication.ShowHelpForObjecct(Sender: TObject);
+begin
+  if Sender is TControl then begin
+    TControl(Sender).ShowHelp;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1257,6 +1262,8 @@ begin
   i:=FApplicationHandlers[ahtKeyDownAfter].Count;
   while FApplicationHandlers[ahtKeyDownAfter].NextDownIndex(i) do
     TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Sender,Key,Shift);
+  if (Shift=[]) and (Key=VK_F1) then
+    ShowHelpForObjecct(Sender);
 end;
 
 procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;

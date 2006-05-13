@@ -28,6 +28,8 @@
     or use the LCL help system in lazhelpintf.pas.
     The THTMLHelpDatabase and THTMLBrowserHelpViewer in lazhelphtml.pas use the
     LCL help system.
+    
+    To create your own help system, implement a descendant of THelpManager.
 }
 unit HelpIntfs;
 

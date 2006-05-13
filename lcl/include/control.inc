@@ -3055,6 +3055,30 @@ begin
   if ActionLink <> nil then ActionLink.Update;
 end;
 
+procedure TControl.ShowHelp;
+begin
+  if HelpType=htContext then begin
+    if HelpContext<>0 then begin
+      Application.HelpContext(Self,ClientToScreen(Point(0,0)),HelpContext);
+      exit;
+    end;
+  end else begin
+    if HelpKeyword<>'' then begin
+      Application.HelpKeyword(Self,ClientToScreen(Point(0,0)),HelpKeyword);
+      exit;
+    end;
+  end;
+  if Parent<>nil then Parent.ShowHelp;
+end;
+
+function TControl.HasHelp: Boolean;
+begin
+  if HelpType=htContext then
+    Result:=HelpContext<>0
+  else
+    Result:=HelpKeyword<>'';
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
   

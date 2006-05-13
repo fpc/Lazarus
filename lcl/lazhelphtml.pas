@@ -79,8 +79,15 @@ type
     property BrowserParams: string read FBrowserParams write SetBrowserParams;
   end;
   
+
+procedure Register;
   
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('System',[THTMLHelpDatabase,THTMLBrowserHelpViewer]);
+end;
 
 { THTMLHelpDatabase }
 
