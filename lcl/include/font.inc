@@ -526,7 +526,7 @@ var
   
   procedure addStyle(const s: string);
   begin
-    if (s<>'') and (s<>'*') then begin
+    if (s<>'') and (s<>'*') and (s<>'r') then begin
       if aStyle<>'' then
         aStyle := aStyle + ' ' + s
       else
@@ -575,7 +575,7 @@ begin
     aFamily := ExtractXLFDItem(LongFontName, XLFD_FAMILY);
     if aFamily='*' then
       aFamily:='';
-    aSize := StrToIntDef(ExtractXLFDItem(LongFontName, XLFD_POINTSIZE),12);
+    aSize := StrToIntDef(ExtractXLFDItem(LongFontName, XLFD_POINTSIZE),0) div 10;
     addStyle( ExtractXLFDItem(LongFontName, XLFD_STYLENAME ));
     addStyle( ExtractXLFDItem(LongFontname, XLFD_WEIGHTNAME));
     addStyle( ExtractXLFDItem(LongFontname, XLFD_SLANT));

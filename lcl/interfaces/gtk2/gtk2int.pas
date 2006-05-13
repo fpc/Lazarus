@@ -177,6 +177,7 @@ uses
 
 {$include gtk2object.inc}
 {$include gtk2winapi.inc}
+{$include gtk2lclintf.inc}
 
 const
   GtkListStoreItemGtkListTag = 'GtkList';

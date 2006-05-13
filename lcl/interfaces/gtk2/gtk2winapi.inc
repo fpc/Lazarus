@@ -87,6 +87,8 @@ begin
         Result := HFONT(GdiObject);
         exit;
       end;
+
+
       
       FontNameToPangoFontDescStr(LongFontname, aFamily, aStyle, aSize);
       
@@ -105,32 +107,34 @@ begin
       // size information, and later modify font size
       
       // using method 2
-      FullString := AFamily + ' ' + aStyle;
+      if (aSize=0)  then FullString:='10'
+                    else FullString:=IntToStr(aSize);
+      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
       
+
       GdiObject^.GDIFontObject :=
         pango_font_description_from_string(PChar(FullString));
 
       If lfWeight <> FW_DONTCARE then
         pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
 
-      if lfItalic = 0 then
-        pango_font_description_set_style(GdiObject^.GDIFontObject,
-                                         PANGO_STYLE_NORMAL)
-      else
+      if lfItalic <> 0 then
         pango_font_description_set_style(GdiObject^.GDIFontObject,
                                          PANGO_STYLE_ITALIC);
-                                         
-      if aSize=0 then begin
+
+      if (aSize=0) and (lfHeight<>0) then begin
         // a size is not specified, try to calculate one based on lfHeight
         // and use this value not in the font name but set this value appart
         // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
         // which would be great with the given lfheight value, but older gtk2 version
         // doesn't have this funtion
-        aSize:= (abs(lfheight) * 72) div ScreenInfo.PixelsPerInchX;
-        if aSize=0 then
-          aSize := 12;
+        if lfHeight<0 then
+          aSize:= (abs(lfheight) * 72) div ScreenInfo.PixelsPerInchX
+        else
+          aSize:=lfHeight;
+        pango_font_description_set_size( GdiObject^.GDIFontObject, aSize*PANGO_SCALE);
       end;
-      pango_font_description_set_size( GdiObject^.GDIFontObject, aSize*PANGO_SCALE);
+
 
       GdiObject^.StrikeOut := lfStrikeOut <> 0;
       GdiObject^.Underline := lfUnderline <> 0;
@@ -301,7 +305,7 @@ begin
           TopY := Y;
           UpdateDCTextMetric(TDeviceContext(DC));
           TxtPt.X := X + DCOrigin.X;
-          LineHeight := DCTextMetric.TextMetric.tmAscent;
+          LineHeight := DCTextMetric.TextMetric.tmHeight;
           TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
 
           SelectedColors := dcscCustom;
@@ -317,14 +321,6 @@ begin
           end;
 
           EnsureGCColor(DC, dccCurrentTextColor, True, False);
-          RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
-
-          Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
-                                            gushort(GetGValue(RGBColor)) shl 8,
-                                            gushort(GetBValue(RGBColor)) shl 8);
-
-          pango_attr_list_change(AttrList,Attr);
-
           pango_layout_set_attributes(Layout, AttrList);
 
           Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
@@ -509,7 +505,6 @@ var
   StrikeOut : Boolean;
 
   RGBColor : Longint;
-  Foreground : PGDKColor;
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;
@@ -562,21 +557,8 @@ begin
         pango_attr_list_change(AttrList,Attr);
 
         SelectedColors := dcscCustom;
-        EnsureGCColor(DC, dccCurrentBackColor, True, False);
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
-
-        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
-
-        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
-                                        gushort(GetGValue(RGBColor)) shl 8,
-                                        gushort(GetBValue(RGBColor)) shl 8);
-
-        pango_attr_list_change(AttrList,Attr);
-        
         pango_layout_set_attributes(Layout, AttrList);
-
-        Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
-
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
         pango_layout_set_width(Layout, -1);
 
@@ -595,7 +577,9 @@ begin
 
         OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
 
-        gdk_draw_layout_with_colors(drawable, GC, aRect.Left, aRect.Top, Layout, Foreground, nil);
+        EnsureGCColor(DC, dccCurrentTextColor, True, False);
+
+        gdk_draw_layout_with_colors(drawable, GC, aRect.Left, aRect.Top, Layout, nil, nil);
         g_object_unref(Layout);
         Result := True;
         If UnRef then
