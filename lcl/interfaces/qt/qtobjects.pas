@@ -19,6 +19,7 @@ type
     FUpdating: Boolean;       // We're changing Qt Widget
     procedure InternalUpdate;
     procedure ExternalUpdate(var Astr: WideString; Clear: Boolean = True);
+    procedure IsChanged; // OnChange triggered by program action
   protected
     function GetTextStr: string; override;
     function GetCount: integer; override;
@@ -44,15 +45,7 @@ Implementation
 uses qtprivate, LMessages;
 
 {------------------------------------------------------------------------------
-  DelphiOnChange sets Delphi compatibility for OnChange event:
-  If defined, OnChange is generated whenever there's a change
-  If undefined, OnChange is generated if change is caused by user action
- ------------------------------------------------------------------------------}
-
-{$define DelphiOnChange}
-
-{------------------------------------------------------------------------------
-  Method: TQtMemoStrings.InternalUpdate
+  Private Method: TQtMemoStrings.InternalUpdate
   Params:  None
   Returns: Nothing
 
@@ -68,28 +61,41 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtMemoStrings.ExternalUpdate
+  Private Method: TQtMemoStrings.ExternalUpdate
   Params:  Astr: Text for Qt Widget; Clear: if we must clear first
   Returns: Nothing
 
   Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; Clear: Boolean = True);
-{$ifdef DelphiOnChange}
-var
-  Mess: TLMessage;
-{$endif}
+{var
+  Mess: TLMessage;}
 begin
   FUpdating := True;
   if Clear then
     QTextEdit_clear(FQtTextEdit);
   QTextEdit_append(FQtTextEdit,@Astr);
   FUpdating := False;
-{$ifdef DelphiOnChange}
-  FillChar(Mess, SizeOf(Mess), #0);
-  Mess.Msg := CM_TEXTCHANGED;
-  FOwner.Dispatch(TLMessage(Mess));
-{$endif}
+  {FillChar(Mess, SizeOf(Mess), #0);
+  (FOwner as TCustomMemo).Modified := False;
+  FOwner.Dispatch(TLMessage(Mess));}
+  IsChanged;
+  FUpdating := False;
+end;
+
+{------------------------------------------------------------------------------
+  Private Method: TQtMemoStrings.IsChanged
+  Params:  None
+  Returns: Nothing
+
+  Triggers the OnChange Event, with modified set to false
+ ------------------------------------------------------------------------------}
+procedure TQtMemoStrings.IsChanged;
+begin
+  if Assigned((FOwner as TCustomMemo).OnChange) then begin
+    (FOwner as TCustomMemo).Modified := False;
+    (FOwner as TCustomMemo).OnChange(self);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -201,9 +207,10 @@ begin
     FTextChanged := True;
     FillChar(Mess, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
+    //(FOwner as TCustomMemo).Modified := True;
     FOwner.Dispatch(TLMessage(Mess));
     end;
-  Result := False;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -216,9 +223,6 @@ end;
 procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
   Astr: WideString;
-{$ifdef DelphiOnChange}
-  Mess: TLMessage;
-{$endif}
 begin
   if (Source=Self) or (Source=nil) then exit;
   if Source is TStrings then begin
@@ -227,11 +231,6 @@ begin
     Astr := FStringList.Text;
     ExternalUpdate(Astr,True);
     FTextChanged := False;
-{$ifdef DelphiOnChange}
-    FillChar(Mess, SizeOf(Mess), #0);
-    Mess.Msg := CM_TEXTCHANGED;
-    FOwner.Dispatch(TLMessage(Mess));
-{$endif}
     exit;
   end;
   Inherited Assign(Source);
@@ -245,21 +244,20 @@ end;
   Clears all.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
-{$ifdef DelphiOnChange}
 var
   Mess: TLMessage;
-{$endif}
 begin
   FUpdating := True;
   FStringList.Clear;
   QTextEdit_clear(FQtTextEdit);
   FTextChanged := False;
   FUpdating := False;
-{$ifdef DelphiOnChange}
+  {FillChar(Mess, SizeOf(Mess), #0);
   FillChar(Mess, SizeOf(Mess), #0);
   Mess.Msg := CM_TEXTCHANGED;
-  FOwner.Dispatch(TLMessage(Mess));
-{$endif}
+  (FOwner as TCustomMemo).Modified := False;
+  FOwner.Dispatch(TLMessage(Mess));}
+  IsChanged;
 end;
 
 {------------------------------------------------------------------------------
