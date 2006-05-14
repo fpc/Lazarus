@@ -529,6 +529,15 @@ var i, j, FilenameEndPos: integer;
     and (CompilerOptions.ShowAll or CompilerOptions.ShowExecInfo) then
       DoAddFilteredLine(s);
   end;
+  
+  { For example:
+    linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
+  }
+  function CheckForLinkingErrors: boolean;
+  begin
+  
+    Result:=false;
+  end;
 
 begin
   Result:=false;
@@ -553,6 +562,9 @@ begin
   if Result then exit;
   // check for -vx output
   Result:=CheckForExecutableInfo;
+  if Result then exit;
+  // check for linking errors
+  Result:=CheckForLinkingErrors;
   if Result then exit;
 
   // search for round bracket open

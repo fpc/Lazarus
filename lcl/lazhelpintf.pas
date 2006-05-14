@@ -332,7 +332,7 @@ type
                                 var ListOfNodes: THelpNodeQueryList;
                                 var ErrMsg: string): TShowHelpResult; virtual;
     function FindViewer(const MimeType: string; var ErrMsg: string;
-                        var Viewer: THelpViewer): TShowHelpResult; virtual;
+                        out Viewer: THelpViewer): TShowHelpResult; virtual;
   public
     // registration
     procedure RegisterItem(NewItem: THelpDBItem);
@@ -981,7 +981,7 @@ begin
 end;
 
 function THelpDatabase.FindViewer(const MimeType: string; var ErrMsg: string;
-  var Viewer: THelpViewer): TShowHelpResult;
+  out Viewer: THelpViewer): TShowHelpResult;
 var
   Viewers: TList;
 begin

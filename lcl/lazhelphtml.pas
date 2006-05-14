@@ -293,6 +293,8 @@ begin
   end;
   CommandLine:=CommandLine+' '+Params;
   
+  debugln('THTMLBrowserHelpViewer.ShowNode CommandLine=',CommandLine);
+
   // run
   try
     BrowserProcess:=TProcess.Create(nil);
