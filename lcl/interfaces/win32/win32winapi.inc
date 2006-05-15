@@ -179,7 +179,7 @@ var
     begin
       with TLMMouseEvent(Message) do
       begin
-        WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage) * 4) div (120 * 10));
+        WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage)) div (120 * 8));
         if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
           WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
         if WParam < ScrollInfo.nMin then
