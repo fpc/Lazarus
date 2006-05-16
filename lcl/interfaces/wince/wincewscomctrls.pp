@@ -23,7 +23,6 @@ unit WinCEWSComCtrls;
 
 {$mode objfpc}{$H+}
 interface
-{$define OldToolbar}
 
 uses
   // FCL
@@ -186,12 +185,13 @@ type
   private
   protected
   public
+{$ifdef OldToolbar}
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
     class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
-
+{$endif}
   end;
 
   { TWinCEWSTrackBar }
@@ -602,9 +602,9 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TWinCEWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWinCEWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWinCEWSToolButton);
-//{$ifdef OldToolbar}
+{$ifdef OldToolbar}
   RegisterWSComponent(TToolBar, TWinCEWSToolBar);
-//{$endif}
+{$endif}
   RegisterWSComponent(TCustomTrackBar, TWinCEWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWinCEWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWinCEWSTreeView);

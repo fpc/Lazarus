@@ -32,8 +32,6 @@ interface
 {$ASSERTIONS ON}
 {$ENDIF}
 
-{$DEFINE OldToolbar}
-
 // defining the following will print all messages as they are being handled
 // valuable for investigation of message trees / interrelations
 { $define MSG_DEBUG}
