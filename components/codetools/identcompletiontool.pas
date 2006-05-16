@@ -122,7 +122,8 @@ type
   TIdentifierListContextFlag = (
     ilcfStartInStatement, // context starts in statements. e.g. between begin..end
     ilcfStartIsLValue,    // position is start of one statement. e.g. 'A:='
-    ilcfNeedsEndSemicolon // after context a semicolon is needed. e.g. 'A end'
+    ilcfNeedsEndSemicolon,// after context a semicolon is needed. e.g. 'A end'
+    ilcfIsExpression      // is expression part of statement. e.g. 'if expr'
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1241,6 +1242,11 @@ begin
           then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
+          end;
+          if UpAtomIs('IF') or UpAtomIs('FOR') or UpAtomIs('DO')
+          or UpAtomIs('CASE') or UpAtomIs('OF') then begin
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
           end;
         end;
       end;

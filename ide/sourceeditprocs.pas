@@ -383,9 +383,8 @@ begin
   // add semicolon for statement ends
   if (ilcfNeedsEndSemicolon in IdentList.ContextFlags) then begin
     Result:=Result+';';
-    DebugLn('GetIdentCompletionValue ilcfStartIsLValue in IdentList.ContextFlags=',dbgs(ilcfStartIsLValue in IdentList.ContextFlags));
     if (not CursorAtEnd) or IdentItem.HasChilds
-    or (ilcfStartIsLValue in IdentList.ContextFlags) then
+    or ([ilcfStartIsLValue,ilcfIsExpression]*IdentList.ContextFlags<>[]) then
       inc(CursorToLeft);
   end;
 end;
