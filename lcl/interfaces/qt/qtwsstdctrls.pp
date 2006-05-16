@@ -478,7 +478,7 @@ begin
 
 //  SetSlots(QtStaticText);
 
-  QWidget_show(QtStaticText.Widget);
+  if AWinControl.Visible then QtStaticText.Show;
 
   Result := THandle(QtStaticText);
 end;
@@ -537,6 +537,11 @@ end;
 
 { TQtWSCustomCheckBox }
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.RetrieveState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   case TQtCheckBox(ACustomCheckBox.Handle).CheckState of
@@ -547,12 +552,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetShortCut
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   inherited SetShortCut(ACustomCheckBox, OldShortCut, NewShortCut);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetState
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
   case NewState of
@@ -563,6 +578,11 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.GetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class function TQtWSCustomCheckBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   Str: WideString;
@@ -574,6 +594,11 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomEdit.SetText
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.SetText(const AWinControl: TWinControl; const AText: String);
 var
   Str: WideString;
@@ -583,6 +608,13 @@ begin
   TQtAbstractButton(AWinControl.Handle).SetText(@Str);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckBox.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
 class function TQtWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtCheckBox: TQtCheckBox;
@@ -591,13 +623,20 @@ begin
 
 //  SetSlots(QtStaticText);
 
-  QWidget_show(QtCheckBox.Widget);
+  if AWinControl.Visible then QtCheckBox.Show;
 
   QWidget_setFocusPolicy(QtCheckBox.Widget, QtStrongFocus);
 
   Result := THandle(QtCheckBox);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomCheckBox.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtCheckBox(AWinControl.Handle).Free;
@@ -711,9 +750,11 @@ var
 begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
 
-  SetSlots(QtRadioButton);
+//  SetSlots(QtRadioButton);
 
-  QWidget_show(QtRadioButton.Widget);
+  if AWinControl.Visible then QtRadioButton.Show;
+
+  QWidget_setFocusPolicy(QtRadioButton.Widget, QtStrongFocus);
 
   Result := THandle(QtRadioButton);
 end;
@@ -727,7 +768,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
 begin
-//  TQtRadioButton(AWinControl.Handle).Free;
+  TQtRadioButton(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
@@ -735,7 +776,7 @@ end;
 { TQtWSCustomGroupBox }
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomCheckGroup.CreateHandle
+  Method: TQtWSCustomGroupBox.CreateHandle
   Params:  None
   Returns: Nothing
 
@@ -749,9 +790,11 @@ var
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
 
+// If SetSlots is uncommented, then TRadioGroup stops working
+// This needs further investigation
 //  SetSlots(QtButtonGroup);
 
-  QWidget_show(QtGroupBox.Widget);
+  if AWinControl.Visible then QtGroupBox.Show;
 
   Result := THandle(QtGroupBox);
   
@@ -760,7 +803,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomCheckGroup.DestroyHandle
+  Method: TQtWSCustomGroupBox.DestroyHandle
   Params:  None
   Returns: Nothing
 
@@ -775,6 +818,13 @@ end;
 
 { TQtWSCustomComboBox }
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -791,6 +841,13 @@ begin
 //  Str := WideString(AWinControl.Caption);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomComboBox.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtComboBox(AWinControl.Handle).Free;
@@ -798,20 +855,34 @@ begin
   AWinControl.Handle := 0;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.GetItemIndex
+  Params:  None
+  Returns: The state of the control
+ ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.SetItemIndex
+  Params:  None
+  Returns: The state of the control
+ ------------------------------------------------------------------------------}
 class procedure TQtWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
   TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
 end;
 
-class function TQtWSCustomComboBox.GetItems(
-  const ACustomComboBox: TCustomComboBox): TStrings;
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomComboBox.GetItems
+  Params:  None
+  Returns: The state of the control
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   Result := TStringList.Create;
   

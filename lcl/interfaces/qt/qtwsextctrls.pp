@@ -57,6 +57,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
 {    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);}
     class procedure AddPage(const ANotebook: TCustomNotebook;
@@ -218,6 +219,13 @@ implementation
 
 { TQtWSCustomPanel }
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomPanel.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
 function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -233,6 +241,13 @@ begin
   Result := THandle(QtFrame);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomGroupBox.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
 procedure TQtWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtFrame(AWinControl.Handle).Free;
@@ -242,6 +257,13 @@ end;
 
 { TQtWSCustomPage }
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomPage.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
 function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -254,6 +276,13 @@ begin
   Result := THandle(QtWidget);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomPage.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
 procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtWidget(AWinControl.Handle).Free;
@@ -269,8 +298,14 @@ end;
 
 { TQtWSCustomNotebook }
 
-function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomNotebook.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Allocates memory and resources for the control and shows it
+ ------------------------------------------------------------------------------}
+function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTabWidget: TQtTabWidget;
 begin
@@ -281,8 +316,21 @@ begin
   Result := THandle(QtTabWidget);
 end;
 
-class procedure TQtWSCustomNotebook.AddAllNBPages(
-  const ANotebook: TCustomNotebook);
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomNotebook.DestroyHandle
+  Params:  None
+  Returns: Nothing
+
+  Releases allocated memory and resources
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomNotebook.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TQtTabWidget(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+class procedure TQtWSCustomNotebook.AddAllNBPages(const ANotebook: TCustomNotebook);
 begin
 
 end;

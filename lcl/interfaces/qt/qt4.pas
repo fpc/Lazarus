@@ -12,7 +12,6 @@ uses Types;
 
 
 const
-{$linklib libqt4intf}
 {$IFDEF MSWINDOWS}
   QtNamePrefix = '_';
   QtShareName = 'libqt4intf.dll';
@@ -23,7 +22,7 @@ const
 {$ENDIF}
 {$IFDEF DARWIN}
   QtNamePrefix = '';
-  QtShareName = 'libqt4intf.dylib';
+  QtShareName = '';
 {$ENDIF}
 
 
@@ -1759,6 +1758,50 @@ const
     QPaletteForeground = 0 { $0 };
     QPaletteBackground = 10 { $a };
 
+
+function QPalette_create(): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create';
+procedure QPalette_destroy(handle: QPaletteH); cdecl; external QtShareName name QtNamePrefix + 'QPalette_destroy'; 
+function QPalette_create(button: PQColor): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create2';
+function QPalette_create(button: QtGlobalColor): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create3';
+function QPalette_create(button: PQColor; window: PQColor): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create4';
+function QPalette_create(windowText: QBrushH; button: QBrushH; light: QBrushH; dark: QBrushH; mid: QBrushH; text: QBrushH; bright_text: QBrushH; base: QBrushH; window: QBrushH): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create5';
+function QPalette_create(windowText: PQColor; window: PQColor; light: PQColor; dark: PQColor; mid: PQColor; text: PQColor; base: PQColor): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create6';
+function QPalette_create(palette: QPaletteH): QPaletteH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_create7';
+function QPalette_currentColorGroup(handle: QPaletteH): QPaletteColorGroup; cdecl; external QtShareName name QtNamePrefix + 'QPalette_currentColorGroup';
+procedure QPalette_setCurrentColorGroup(handle: QPaletteH; cg: QPaletteColorGroup); cdecl; external QtShareName name QtNamePrefix + 'QPalette_setCurrentColorGroup';
+function QPalette_color(handle: QPaletteH; cg: QPaletteColorGroup; cr: QPaletteColorRole): PQColor; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_color';
+function QPalette_brush(handle: QPaletteH; cg: QPaletteColorGroup; cr: QPaletteColorRole): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_brush';
+procedure QPalette_setColor(handle: QPaletteH; cg: QPaletteColorGroup; cr: QPaletteColorRole; color: PQColor); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_setColor';
+procedure QPalette_setColor(handle: QPaletteH; cr: QPaletteColorRole; color: PQColor); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_setColor2';
+procedure QPalette_setBrush(handle: QPaletteH; cr: QPaletteColorRole; brush: QBrushH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_setBrush';
+procedure QPalette_setBrush(handle: QPaletteH; cg: QPaletteColorGroup; cr: QPaletteColorRole; brush: QBrushH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_setBrush2';
+procedure QPalette_setColorGroup(handle: QPaletteH; cr: QPaletteColorGroup; windowText: QBrushH; button: QBrushH; light: QBrushH; dark: QBrushH; mid: QBrushH; text: QBrushH; bright_text: QBrushH; base: QBrushH; window: QBrushH); cdecl; external QtShareName name QtNamePrefix + 'QPalette_setColorGroup';
+function QPalette_isEqual(handle: QPaletteH; cr1: QPaletteColorGroup; cr2: QPaletteColorGroup): Boolean; cdecl; external QtShareName name QtNamePrefix + 'QPalette_isEqual';
+function QPalette_color(handle: QPaletteH; cr: QPaletteColorRole): PQColor; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_color2';
+function QPalette_brush(handle: QPaletteH; cr: QPaletteColorRole): QBrushH; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_brush2';
+function QPalette_foreground(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_foreground';
+function QPalette_windowText(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_windowText';
+function QPalette_button(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_button';
+function QPalette_light(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_light';
+function QPalette_dark(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_dark';
+function QPalette_mid(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_mid';
+function QPalette_text(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_text';
+function QPalette_base(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_base';
+function QPalette_alternateBase(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_alternateBase';
+function QPalette_background(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_background';
+function QPalette_window(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_window';
+function QPalette_midlight(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_midlight';
+function QPalette_brightText(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_brightText';
+function QPalette_buttonText(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_buttonText';
+function QPalette_shadow(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_shadow';
+function QPalette_highlight(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_highlight';
+function QPalette_highlightedText(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_highlightedText';
+function QPalette_link(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_link';
+function QPalette_linkVisited(handle: QPaletteH): QBrushH; cdecl; external QtShareName name QtNamePrefix + 'QPalette_linkVisited';
+function QPalette_serialNumber(handle: QPaletteH): Integer; cdecl; external QtShareName name QtNamePrefix + 'QPalette_serialNumber';
+procedure QPalette_resolve(handle: QPaletteH; retval: QPaletteH; p1: QPaletteH); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_resolve';
+function QPalette_resolve(handle: QPaletteH): Cardinal; overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_resolve2';
+procedure QPalette_resolve(handle: QPaletteH; mask: Cardinal); overload; cdecl; external QtShareName name QtNamePrefix + 'QPalette_resolve3';
 
 
 type

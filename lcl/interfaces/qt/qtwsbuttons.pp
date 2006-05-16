@@ -101,7 +101,7 @@ begin
 
   SetSlots(QtPushButton);
 
-  QWidget_show(QtPushButton.Widget);
+  if AWinControl.Visible then QtPushButton.Show;
 
   Result := THandle(QtPushButton);
 end;
@@ -210,7 +210,7 @@ begin
 
   SetSlots(QtPushButton);
 
-  QWidget_show(QtPushButton.Widget);
+  if AWinControl.Visible then QtPushButton.Show;
 
   Result := THandle(QtPushButton);
 end;

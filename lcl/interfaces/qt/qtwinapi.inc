@@ -80,6 +80,88 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function:  CreateBrushIndirect
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+var
+  QtBrush: TQtBrush;
+begin
+  Assert(False, Format('Trace:> [TQtWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+
+  result := 0;
+
+  QtBrush := TQtBrush.Create;
+
+  try
+    case LogBrush.lbStyle of
+//      BS_HOLLOW,         // Hollow brush.
+      BS_NULL:           // Same as BS_HOLLOW.
+      begin
+        QtBrush.setStyle(QtNoBrush);
+      end;
+
+      BS_SOLID:          // Solid brush.
+      begin
+        QtBrush.setStyle(QtSolidPattern);
+      end;
+
+      BS_HATCHED:        // Hatched brush.
+      begin
+        case LogBrush.lbHatch of
+          HS_BDIAGONAL: QtBrush.setStyle(QtBDiagPattern);
+          HS_CROSS: QtBrush.setStyle(QtCrossPattern);
+          HS_DIAGCROSS: QtBrush.setStyle(QtDiagCrossPattern);
+          HS_FDIAGONAL: QtBrush.setStyle(QtFDiagPattern);
+          HS_HORIZONTAL: QtBrush.setStyle(QtHorPattern);
+          HS_VERTICAL: QtBrush.setStyle(QtVerPattern);
+        else
+          RaiseGDBException('invalid lbHatch');
+        end;
+      end;
+
+      BS_DIBPATTERN,     // A pattern brush defined by a device-independent
+             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
+             // lbHatch member contains a handle to a packed DIB.Windows 95:
+             // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
+             // is not supported. If a larger bitmap is given, only a portion
+             // of the bitmap is used.
+      BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
+      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
+             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
+             // lbHatch member contains a pointer to a packed DIB.
+      BS_PATTERN,        // Pattern brush defined by a memory bitmap.
+      BS_PATTERN8X8:     // Same as BS_PATTERN.
+      begin
+      end;
+    else
+      RaiseGDBException(Format('unsupported Style %d',[LogBrush.lbStyle]));
+    end;
+
+    {   Other non-utilized Qt brushes:
+
+    QtDense1Pattern,
+    QtDense2Pattern,
+    QtDense3Pattern,
+    QtDense4Pattern,
+    QtDense5Pattern,
+    QtDense6Pattern,
+    QtDense7Pattern,
+    QtLinearGradientPattern,
+    QtRadialGradientPattern,
+    QtConicalGradientPattern,
+    QtTexturePattern = 24 );}
+  except
+    DebugLn('TQtWidgetSet.CreateBrushIndirect failed');
+  end;
+
+  Result := HBRUSH(QtBrush);
+
+  Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
+end;
+
+{------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  DC - handle to memory device context
   Returns: handle to a memory device context
@@ -93,6 +175,60 @@ begin
   {$endif}
 
   Result := GetDC(0);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateFontIndirect
+  Params:  const LogFont: TLogFont
+  Returns: HFONT
+
+  Creates a font GDIObject.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+var
+  QtFont: TQtFont;
+  FamilyName: string;
+begin
+  Result := 0;
+  
+  QtFont := TQtFont.Create;
+  try
+    with LogFont do
+    begin
+      if lfHeight > 0 then QtFont.setPointSize(lfHeight)
+      else if lfHeight < 0 then QtFont.setPointSize(-1 * lfHeight);
+    
+      // Some values at available on Qt documentation at a table
+      // Others are guesses. The best would be to test different values for those
+      // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
+      case lfWeight of
+        FW_THIN       : QtFont.setWeight(10);
+        FW_EXTRALIGHT : QtFont.setWeight(15);
+        FW_LIGHT      : QtFont.setWeight(25);
+        FW_NORMAL     : QtFont.setWeight(50);
+        FW_MEDIUM     : QtFont.setWeight(55);
+        FW_SEMIBOLD   : QtFont.setWeight(63);
+        FW_BOLD       : QtFont.setWeight(75);
+        FW_EXTRABOLD  : QtFont.setWeight(80);
+        FW_HEAVY      : QtFont.setWeight(87);
+      end;
+
+//    lfOrientation: Longint;
+
+      QtFont.setItalic(lfItalic = -1);
+      QtFont.setUnderline(lfUnderline = -1);
+      QtFont.setStrikeOut(lfStrikeOut = -1);
+
+      FamilyName := StrPas(lfFaceName);
+
+      if (CompareText(FamilyName,'default')<>0) then
+      begin
+        QtFont.setRawName(FamilyName);
+      end;
+    end;
+  finally
+    Result := HFONT(QtFont);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -161,7 +297,7 @@ begin
 
   Result := 1;
 
-  if (PS.HDC <> 0) then
+  if IsValidDC(PS.HDC) then
    if (TObject(PS.HDC) is TQtDeviceContext) then
    begin
      WriteLn('Freeing resources');
@@ -718,6 +854,53 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetTextColor
+  Params:  DC
+  Returns: TColorRef
+
+  Gets the Font Color currently assigned to the Device Context
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
+begin
+  Result := 0;
+  
+{  if IsValidDC(DC) then
+    with TQtDeviceContext(DC) do
+    begin
+      Result := CurrentTextColor.ColorRef;
+    end;}
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetTextExtentPoint
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+begin
+  Result := IsValidDC(DC);
+
+  if Result then
+  begin
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetTextMetrics
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+begin
+  Result := IsValidDC(DC);
+
+  if Result then
+  begin
+  end;
+end;
+
+
+{------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - handle of window
            Rect   - record for window coordinates
@@ -923,7 +1106,7 @@ begin
 
   Result := 0;
 
-  if DC <> 0 then TQtDeviceContext(DC).Free;
+  if IsValidDC(DC) then TQtDeviceContext(DC).Free;
   
   Result := 1;
 end;
@@ -960,6 +1143,25 @@ begin
   QCursor_setPos(X, Y);
   
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetWindowOrgEx
+  Params:  DC    - handle of device context
+           NewX  - new x-coordinate of window origin
+           NewY  - new y-coordinate of window origin
+           Point - record receiving original origin
+  Returns: Whether the call was successful
+
+  Sets the window origin of the device context by using the specified coordinates.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
+begin
+  if IsValidDC(DC) then
+  begin
+    TQtDeviceContext(DC).setBrushOrigin(NewX, NewY);
+    if OldPoint <> nil then TQtDeviceContext(DC).brushOrigin(OldPoint);
+  end;
 end;
 
 {------------------------------------------------------------------------------
