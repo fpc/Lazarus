@@ -177,7 +177,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.Select;
 begin
-  if Assigned(FOnSelect) then  FOnSelect(Self);
+  if Assigned(FOnSelect) then
+    FOnSelect(Self)
+  else
+    Change;
 end;
 
 {------------------------------------------------------------------------------
