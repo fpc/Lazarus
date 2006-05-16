@@ -1,11 +1,11 @@
 { This is an automatically generated lazarus resource file }
 
-LazarusResources.Add('TSourceNoteBook','FORMDATA',[
-  'TPF0'#15'TSourceNoteBook'#14'SourceNoteBook'#7'Caption'#6#14'SourceNoteBook'
-  +#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#13'PixelsPerInch'#2'`'#18'H'
-  +'orzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#4'Left'#3#21#2#6'H'
-  +'eight'#3','#1#3'Top'#3'v'#1#5'Width'#3#144#1#0#10'TStatusBar'#9'StatusBar'#6
-  +'Panels'#14#1#5'Width'#2'd'#0#1#5'Width'#3#150#0#0#1#5'Width'#2'2'#0#1#4'Tex'
-  +'t'#6#3'INS'#5'Width'#2'2'#0#0#10'SimpleText'#6#14'This is a test'#11'Simple'
-  +'Panel'#8#6'Height'#2#23#3'Top'#3#21#1#5'Width'#3#144#1#0#0#0
+
+LazarusResources.Add('TSourceNotebook','FORMDATA',[
+  'TPF0'#15'TSourceNotebook'#14'SourceNotebook'#4'Left'#3#21#2#6'Height'#3','#1
+  +#3'Top'#3'v'#1#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScroll'
+  +'Bar.Page'#3'+'#1#7'Caption'#6#14'SourceNotebook'#0#10'TStatusBar'#9'StatusB'
+  +'ar'#6'Height'#2#23#3'Top'#3#21#1#5'Width'#3#144#1#6'Panels'#14#1#5'Width'#2
+  +'d'#0#1#5'Width'#3#150#0#0#1#5'Width'#2'2'#0#1#4'Text'#6#3'INS'#5'Width'#2'2'
+  +#0#0#10'SimpleText'#6#14'This is a test'#11'SimplePanel'#8#0#0#0
 ]);
