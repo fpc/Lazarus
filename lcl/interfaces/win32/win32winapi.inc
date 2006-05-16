@@ -1084,7 +1084,7 @@ function TWin32WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
   lRect: Windows.RECT;
 begin
-  {$message warn TWin32WidgetSet.FrameRect TODO: optimize ARect copying?}
+  {$message warn TWin32WidgetSet.DrawFocusRect TODO: optimize Rect copying}
   lRect:=Rect;
   Result:= Windows.DrawFocusRect(DC, lRect);
 end;

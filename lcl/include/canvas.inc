@@ -38,7 +38,7 @@ end;
 procedure TCanvas.DrawFocusRect(const ARect: TRect);
 begin
   Changing;
-  RequiredState([csHandleValid, csBrushValid]);
+  RequiredState([csHandleValid]);
   LCLIntf.DrawFocusRect(FHandle, ARect);
   Changed;
 end;
