@@ -1996,12 +1996,14 @@ end;
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
   
+  {$IFDEF VER2_0_2}
   procedure RaiseInvalidName(ConflictComponent: TComponent);
   begin
     raise EComponentError.Create(Format(
       lisDesThereIsAlreadyAnotherComponentWithTheName, ['"',
       ConflictComponent.Name, '"']));
   end;
+  {$ENDIF}
   
 var
   i: Integer;
@@ -2012,6 +2014,7 @@ begin
   or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
     exit;
 
+  {$IFDEF VER2_0_2}
   // check, if there is already such a component
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     CurComponent:=FLookupRoot.Components[i];
@@ -2021,6 +2024,7 @@ begin
       RaiseInvalidName(CurComponent);
     end;
   end;
+  {$ENDIF}
 
   // check if component is the LookupRoot
   if AComponent=nil then AComponent:=FLookupRoot;

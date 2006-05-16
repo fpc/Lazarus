@@ -3384,8 +3384,10 @@ begin
     +';'+Dir+'rtl'+DS+SrcOS+DS;
   if (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
-  if (SrcOS2<>'') and (SrcOS2<>SrcOS) then
-    s:=s+';'+Dir+'rtl'+DS+SrcOS2+DS;
+  if (SrcOS2<>'') and (SrcOS2<>SrcOS) then begin
+    s:=s+';'+Dir+'rtl'+DS+SrcOS2+DS
+        +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor;
+  end;
   s:=s
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
