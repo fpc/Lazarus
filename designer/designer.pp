@@ -1099,7 +1099,7 @@ var
 begin
   Result:=AControl;
   if (Result=nil) or (Result=LookupRoot) or (Result.Owner=LookupRoot) then exit;
-  if (Result.Owner=nil) then exit(nil);
+  if (Result.Owner=nil) then exit(Result);
   if (Result.Owner is TControl) then begin
     OwnerControl:=TControl(Result.Owner);
     if csOwnedChildsSelectable in OwnerControl.ControlStyle then
