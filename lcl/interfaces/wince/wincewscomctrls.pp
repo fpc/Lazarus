@@ -297,9 +297,9 @@ function TWinCEWSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  init : INITCOMMONCONTROLSEX;
+  init : TINITCOMMONCONTROLSEX;
 begin
-  init.dwSize := Sizeof(INITCOMMONCONTROLSEX);
+  init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_BAR_CLASSES;
   InitCommonControlsEx_(@init);
   // general initialization of Params
@@ -388,9 +388,9 @@ function TWinCEWSProgressBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  init : INITCOMMONCONTROLSEX;
+  init : TINITCOMMONCONTROLSEX;
 begin
-  init.dwSize := Sizeof(INITCOMMONCONTROLSEX);
+  init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_PROGRESS_CLASS;
   InitCommonControlsEx_(@init);
   // general initialization of Params
@@ -446,14 +446,14 @@ end;
 
 { TWinCEWSToolbar}
 
-
+{$IFDEF OldToolbar}
 function TWinCEWSToolBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  init : INITCOMMONCONTROLSEX;
+  init : TINITCOMMONCONTROLSEX;
 begin
-  init.dwSize := Sizeof(INITCOMMONCONTROLSEX);
+  init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_BAR_CLASSES;
   InitCommonControlsEx_(@init);
   // general initialization of Params
@@ -520,7 +520,7 @@ begin
   // TODO: code buggy, Index of button to delete ?!
   SendMessage(AToolBar.Handle, TB_DELETEBUTTON, 0, 0);
 end;
-
+{$ENDIF}
 
 { TWinCEWSTrackBar }
 
@@ -528,9 +528,9 @@ function TWinCEWSTrackBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  init : INITCOMMONCONTROLSEX;
+  init : TINITCOMMONCONTROLSEX;
 begin
-  init.dwSize := Sizeof(INITCOMMONCONTROLSEX);
+  init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_BAR_CLASSES;
   InitCommonControlsEx_(@init);
   // general initialization of Params
