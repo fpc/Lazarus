@@ -120,9 +120,9 @@ type
   TIdentifierListFlags = set of TIdentifierListFlag;
   
   TIdentifierListContextFlag = (
-    ilcfStartInStatement,
-    ilcfStartIsLValue,
-    ilcfContextNeedsEndSemicolon
+    ilcfStartInStatement, // context starts in statements. e.g. between begin..end
+    ilcfStartIsLValue,    // position is start of one statement. e.g. 'A:='
+    ilcfNeedsEndSemicolon // after context a semicolon is needed. e.g. 'A end'
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -1117,6 +1117,7 @@ var
   ExprType: TExpressionType;
   ContextExprStartPos: Integer;
   StartInSubContext: Boolean;
+  StartPosOfVariable: LongInt;
 begin
   Result:=false;
   if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
@@ -1216,44 +1217,56 @@ begin
       GatherUsefulIdentifiers(IdentStartPos,GatherContext,BeautifyCodeOptions);
 
       // check for incomplete context
+      
       // context bracket level
       CurrentIdentifierList.StartBracketLvl:=
         GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
                       Scanner.NestedComments);
+      if CursorNode.Desc in AllPascalStatements then begin
+        CurrentIdentifierList.ContextFlags:=
+          CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
+      end;
+      // context in front of
+      StartPosOfVariable:=FindStartOfVariable(IdentStartPos);
+      if StartPosOfVariable>0 then begin
+        MoveCursorToCleanPos(StartPosOfVariable);
+        ReadPriorAtom;
+        CurrentIdentifierList.StartAtomInFront:=CurPos;
+        // check if LValue
+        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+        begin
+          if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
+             or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
+                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+          then begin
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
+          end;
+        end;
+      end;
       // context behind
       if IdentEndPos<SrcLen then begin
         MoveCursorToCleanPos(IdentEndPos);
         ReadNextAtom;
         CurrentIdentifierList.StartAtomBehind:=CurPos;
         // check if in statement
-        if CursorNode.Desc in AllPascalStatements then begin
-          CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
-          // check if at end of statement
-          if (CurPos.Flag in [cafEnd,cafBegin])
-          or ((not UpAtomIs('ELSE'))
-              and (CurPos.Flag=cafWord)
-              and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
-          then
-            if CurrentIdentifierList.StartBracketLvl=0 then begin
-              // TODO: improve heuristic to add semicolon
-              //CurrentIdentifierList.ContextFlags:=
-              //  CurrentIdentifierList.ContextFlags+[ilcfContextNeedsEndSemicolon];
+        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+        begin
+          if (CurrentIdentifierList.StartBracketLvl=0) then begin
+            // check if end needs semicolon
+            if (CurPos.Flag in [cafEnd,cafBegin])
+            or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
+                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+            or ((CurPos.Flag=cafWord)
+                and (not UpAtomIs('ELSE'))
+                and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
+            then begin
+              // add semicolon
+              CurrentIdentifierList.ContextFlags:=
+                CurrentIdentifierList.ContextFlags+[ilcfNeedsEndSemicolon];
             end;
+          end;
         end;
-      end;
-      // context in front of
-      MoveCursorToCleanPos(IdentStartPos);
-      ReadPriorAtom;
-      CurrentIdentifierList.StartAtomInFront:=CurPos;
-      // check if LValue
-      if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then begin
-        if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
-           or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
-                                    CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-        then
-          CurrentIdentifierList.ContextFlags:=
-            CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
       end;
     end;
 
