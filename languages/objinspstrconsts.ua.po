@@ -2,14 +2,6 @@
 msgid "%d lines, %d chars"
 msgstr "%d рядків, %d символів"
 
-#: objinspstrconsts:oishelpalreadyregistered
-msgid "%s: Already registered"
-msgstr "%s: Вже зареєстрований "
-
-#: objinspstrconsts:oishelpnotregistered
-msgid "%s: Not registered"
-msgstr "%s: Не зареєстрований"
-
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
 msgstr "%u елементів обрано"
@@ -181,14 +173,6 @@ msgstr "Доступні Action Classes:"
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Boolean"
-
-#: objinspstrconsts:oishelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
-msgstr "Переглядач %s%s%s недоступний."
-
-#: objinspstrconsts:oishelpbrowsernotfound
-msgid "Browser %s%s%s not found."
-msgstr "Переглядача %s%s%s не знайдено"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -394,10 +378,6 @@ msgstr "Помилка завантаження зображення"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Помилка завантаження зображення %s%s%s:%s%s"
 
-#: objinspstrconsts:oishelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
-msgstr "Помилка при виконанні %s%s%s:%s%s"
-
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Події"
@@ -433,34 +413,6 @@ msgstr "Допомога"
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
 msgstr "Допомога Зміст"
-
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "Довідкова база %s%s%s не знайшла переглядача для сторінки довідки типу %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "Довідкова база %s%s%s не знайдена"
-
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Контексту довідки %s не знайдено в базі даних %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Контексту довідки %s не знайдено."
-
-#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Ключа довідки %s%s%s не знайдено в базі даних %s%s%s"
-
-#: objinspstrconsts:oishelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
-msgstr "Ключа довідки %s%s%s не знайдено"
-
-#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
-msgstr "Елемент довідки %s%s%s не має довідкової бази"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
@@ -605,14 +557,6 @@ msgstr ""
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
 msgstr "Наступний"
-
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Переглядача HTML не знайдено.%Визначте його в Довідка->Налаштувати довідку->Переглядачі"
-
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "Допомогу до рядку %d не знайдено, колонки %d з %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -813,14 +757,6 @@ msgstr ""
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
-
-#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "Довідкова база %s%s%s не змогла знайти файл %s%s%s."
-
-#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
-msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "Макрос %s в BrowserParams має бути замінений на URL."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

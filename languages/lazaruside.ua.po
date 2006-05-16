@@ -1279,8 +1279,8 @@ msgid "Color"
 msgstr "Колір"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "Схема кольорів:"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2230,8 +2230,8 @@ msgstr "Інакше"
 msgid "ElseIf"
 msgstr "ElseIf"
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts:lisenabled
@@ -2571,8 +2571,8 @@ msgid "File already in package"
 msgstr "Файл вже є в пакунку"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "Розш. файлів:"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3062,29 +3062,9 @@ msgstr "Висота:"
 msgid "Help"
 msgstr "Довідка"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr "Контексту довідки не знайдено"
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr "Базу даних довідки не знайдено"
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Параметри довідки"
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr "Помилка вибору довідки"
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr "Помилка перегляду довідки"
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr "Не знайдений проглядач довідки"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3093,10 +3073,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Команди меню Довідка"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr "Довідку не знайдено"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3925,10 +3901,6 @@ msgstr "Мова"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr ""
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "Мова:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5374,9 +5346,9 @@ msgstr "Виявлено info-файл проекту"
 msgid "Project is runnable"
 msgstr "Проект є виконуваним"
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
-msgstr "Властивості макросів проекту"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -8082,10 +8054,6 @@ msgstr "Модулі..."
 msgid "Unknown"
 msgstr "Невідомий"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr "Невідома помилка, повідомте про неї"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Не збережений пакунок"
@@ -8618,8 +8586,8 @@ msgstr "параметри компонувальника"
 msgid "lowercase"
 msgstr "нижній регістр"
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

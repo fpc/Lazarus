@@ -1290,8 +1290,8 @@ msgid "Color"
 msgstr "Цвет"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "Цветовая схема:"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2241,9 +2241,9 @@ msgstr "Else"
 msgid "ElseIf"
 msgstr "ElseIf"
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
-msgstr "Включить Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2582,8 +2582,8 @@ msgid "File already in package"
 msgstr "Файл уже в пакете"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "Расш-я файлов:"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3073,29 +3073,9 @@ msgstr "Высота:"
 msgid "Help"
 msgstr "Справка"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr "Контекст справки не найден"
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr "База данных справки не найдена"
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Параметры справки"
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr "Ошибка выбора справки"
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr "Ошибка просмотра справки"
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr "Просмотрщик справки не найден"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3104,10 +3084,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Команды меню Справка"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr "Справки не найдено"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3936,10 +3912,6 @@ msgstr "Язык"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr ""
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "Язык:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5385,8 +5357,8 @@ msgstr "Обнаружен файл сведений проекта"
 msgid "Project is runnable"
 msgstr "Проект запускаемый"
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
@@ -8093,10 +8065,6 @@ msgstr "Модули..."
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr "Неизвестная ошибка, сообщите о ней"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Несохранённый пакет"
@@ -8629,8 +8597,8 @@ msgstr "параметры линкера"
 msgid "lowercase"
 msgstr "нижний регистр"
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

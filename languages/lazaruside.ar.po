@@ -1290,7 +1290,7 @@ msgid "Color"
 msgstr ""
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
+msgid "Color Scheme"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
@@ -2241,8 +2241,8 @@ msgstr ""
 msgid "ElseIf"
 msgstr ""
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts:lisenabled
@@ -2582,7 +2582,7 @@ msgid "File already in package"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
+msgid "File extensions"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
@@ -3073,28 +3073,8 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr ""
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
 msgstr ""
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
@@ -3103,10 +3083,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
 msgstr ""
 
 #: lazarusidestrconsts:lishelpselectordialog
@@ -3935,10 +3911,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
-msgstr ""
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcdtlast
@@ -5385,8 +5357,8 @@ msgstr ""
 msgid "Project is runnable"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
@@ -8093,10 +8065,6 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr ""
@@ -8629,8 +8597,8 @@ msgstr ""
 msgid "lowercase"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

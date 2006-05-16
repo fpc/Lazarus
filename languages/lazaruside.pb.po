@@ -1282,8 +1282,8 @@ msgid "Color"
 msgstr "Cor"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "Esquema de Cor:"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2233,9 +2233,9 @@ msgstr "Else"
 msgid "ElseIf"
 msgstr "ElseIf"
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
-msgstr "Ativar 'Makros'"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2574,8 +2574,8 @@ msgid "File already in package"
 msgstr "Arquivo já existe no pacote"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "Extensões de arquivo:"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3065,29 +3065,9 @@ msgstr "Altura:"
 msgid "Help"
 msgstr "Ajuda"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr "Contexto de Ajuda não encontrado"
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr "Banco de Dados de ajuda não foi encontrado"
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Opções de Ajuda"
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr "Erro no dispositivo de Ajuda"
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr "Erro do Vizualizador de Ajuda"
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr "Vizualizador de Ajuda não encontrado"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3096,10 +3076,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Comandos do menu Ajuda"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr "Ajuda não encontrada"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3928,10 +3904,6 @@ msgstr "Idioma"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr "Idiomas das Exceções"
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "Idioma:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5377,9 +5349,9 @@ msgstr "Arquivo de informação do projeto foi detectado"
 msgid "Project is runnable"
 msgstr "Projeto esta sendo executado"
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
-msgstr "Propriedades da 'makro' do Projeto"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -8085,10 +8057,6 @@ msgstr "Units..."
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr "Erro Desconhecido, por favor relate este bug"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Pacote não salvo"
@@ -8621,9 +8589,9 @@ msgstr "Opções de Linker"
 msgid "lowercase"
 msgstr "minusculas"
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
-msgstr "makro 'ProjectUnitPath'"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"

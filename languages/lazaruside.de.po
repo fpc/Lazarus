@@ -1293,8 +1293,8 @@ msgid "Color"
 msgstr "Farbe"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "Farbschema:"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2244,9 +2244,9 @@ msgstr "Else"
 msgid "ElseIf"
 msgstr "ElseIf"
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
-msgstr "Makros erlauben"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
+msgstr ""
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2585,8 +2585,8 @@ msgid "File already in package"
 msgstr "Datei bereits im Paket"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "Dateiendungen:"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3076,29 +3076,9 @@ msgstr "Höhe:"
 msgid "Help"
 msgstr "Hilfe"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr "Hilfeeintrag nicht gefunden"
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr "Hilfedatenbank nicht gefunden"
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Hilfeeinstellungen"
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr "Hilfeauswahl-Fehler"
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr "Hilfebetrachterfehler"
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr "Hilfebetrachter nicht gefunden"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3107,10 +3087,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Hilfemenübefehle"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr "Hilfe nicht gefunden"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3939,10 +3915,6 @@ msgstr "Sprache"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr "Sprach-Exceptions"
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "Sprache:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5388,9 +5360,9 @@ msgstr "Projekteinstellungsdatei gefunden"
 msgid "Project is runnable"
 msgstr "Projekt ist lauffähig"
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
-msgstr "Projekt-Makroeigenschaften"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -6054,7 +6026,7 @@ msgstr "Scrollen"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll by one less"
-msgstr "Eines weniger scrollen"
+msgstr "Eine Zeile weniger scrollen"
 
 #: lazarusidestrconsts:srkmecscrolldown
 msgid "Scroll down one line"
@@ -6066,11 +6038,11 @@ msgstr "Eine Zeichen nach links scrollen"
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll past end of file"
-msgstr "Scrollen bis zum Ende der Datei"
+msgstr "Scrollen über das Dateiende hinaus"
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll past end of line"
-msgstr "Scrollen bis ans Ende der Zeile"
+msgstr "Scrollen über das Zeilenende hinaus"
 
 #: lazarusidestrconsts:srkmecscrollright
 msgid "Scroll right one char"
@@ -8096,10 +8068,6 @@ msgstr "Units..."
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr "Unbekannter Fehler. Bitte melden Sie diesen Bug"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Nichtgespeichertes Paket"
@@ -8632,9 +8600,9 @@ msgstr "Linker-Einstellungen"
 msgid "lowercase"
 msgstr "Kleinbuchstaben"
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
-msgstr "Makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
+msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"

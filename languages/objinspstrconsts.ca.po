@@ -2,14 +2,6 @@
 msgid "%d lines, %d chars"
 msgstr ""
 
-#: objinspstrconsts:oishelpalreadyregistered
-msgid "%s: Already registered"
-msgstr "%s: Ja està registrat"
-
-#: objinspstrconsts:oishelpnotregistered
-msgid "%s: Not registered"
-msgstr "%s: No està registrat"
-
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
 msgstr "%u elements seleccionats"
@@ -181,14 +173,6 @@ msgstr "Classes d'acció disponibles:"
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Booleà"
-
-#: objinspstrconsts:oishelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
-msgstr "El navegador %s%s%s no és executable."
-
-#: objinspstrconsts:oishelpbrowsernotfound
-msgid "Browser %s%s%s not found."
-msgstr "No s'ha trobat el navegador %s%s%s."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
@@ -394,10 +378,6 @@ msgstr "S'ha produït un error mentre es carregava l'imatge"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "S'ha produït un error mentre es carregava l'imatge %s%s%s:%s%s"
 
-#: objinspstrconsts:oishelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
-msgstr "S'ha produït un error mentre s'executava %s%s%s:%s%s"
-
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Esdeveniments"
@@ -433,34 +413,6 @@ msgstr "Ajuda"
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
 msgstr "Contingut de l'ajuda"
-
-#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "La base de dades d'ajuda %s%s%s no ha trobat un visor per a la pàgina d'ajuda del tipus %s"
-
-#: objinspstrconsts:oishelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "No s'ha trobat la base de dades de l'ajuda %s%s%s"
-
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "No s'ha trobat el context de l'ajuda %s en la base de dades %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "No s'ha trobat el context de l'ajuda %s."
-
-#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "No s'ha trobat la paraula clau de l'ajuda %s%s%s en base de dades %s%s%s."
-
-#: objinspstrconsts:oishelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
-msgstr "No s'ha trobat la paraula clau de l'ajuda %s%s%s."
-
-#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
-msgstr "El node de l'ajuda %s%s%s no té base de dades de l'ajuda"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
@@ -605,14 +557,6 @@ msgstr ""
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
 msgstr "Següent"
-
-#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajuda -> Configura Ajuda -> Visors"
-
-#: objinspstrconsts:oishelpnohelpfoundforsource
-msgid "No help found for line %d, column %d of %s."
-msgstr "No s'ha trobat ajuda per la línia %d, columna %d de %s."
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -813,14 +757,6 @@ msgstr ""
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
 msgstr ""
-
-#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "La base de dades de l'ajuda %s%s%s no ha trobat el fitxer %s%s%s."
-
-#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
-msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "La macroinstrucció %s en el paràmetres del navegador serà reemplaçada per la URL."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

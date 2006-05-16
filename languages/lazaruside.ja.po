@@ -1289,8 +1289,8 @@ msgid "Color"
 msgstr "色"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "カラースキーム"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2240,8 +2240,8 @@ msgstr ""
 msgid "ElseIf"
 msgstr ""
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts:lisenabled
@@ -2581,8 +2581,8 @@ msgid "File already in package"
 msgstr "パッケージにファイルがすでに存在します"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "ファイル拡張子"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3072,29 +3072,9 @@ msgstr "高さ:"
 msgid "Help"
 msgstr "ヘルプ"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr "ヘルプコンテキストがみつかりません"
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr "ヘルプデータベースがみつかりません"
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "ヘルプオプション"
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr "ヘルプ選択エラー"
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr "ヘルプビューワーエラー"
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr "ヘルプビューワがみつかりません"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -3103,10 +3083,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "ヘルプメニューコマンド"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr "ヘルプがみつかりません"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3935,10 +3911,6 @@ msgstr "言語"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr ""
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "言語:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5384,8 +5356,8 @@ msgstr ""
 msgid "Project is runnable"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
@@ -8092,10 +8064,6 @@ msgstr "ユニット..."
 msgid "Unknown"
 msgstr "不明"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr "不明なエラー,このバグを報告してください"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr ""
@@ -8628,8 +8596,8 @@ msgstr ""
 msgid "lowercase"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

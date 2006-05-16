@@ -642,3 +642,107 @@ msgstr ""
 msgid "Docking"
 msgstr ""
 
+#: lclstrconsts:rshelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr ""
+
+#: lclstrconsts:rshelpthereisnoviewerforhelptype
+msgid "There is no viewer for help type %s%s%s"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: lclstrconsts:rshelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
+
+#: lclstrconsts:rshelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: lclstrconsts:rshelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: lclstrconsts:rshelpnohelpnodesavailable
+msgid "No help nodes available"
+msgstr ""
+
+#: lclstrconsts:rshelperror
+msgid "Help Error"
+msgstr ""
+
+#: lclstrconsts:rshelpdatabasenotfound
+msgid "Help Database not found"
+msgstr ""
+
+#: lclstrconsts:rshelpcontextnotfound
+msgid "Help Context not found"
+msgstr ""
+
+#: lclstrconsts:rshelpviewernotfound
+msgid "Help Viewer not found"
+msgstr ""
+
+#: lclstrconsts:rshelpnotfound
+msgid "Help not found"
+msgstr ""
+
+#: lclstrconsts:rshelpviewererror
+msgid "Help Viewer Error"
+msgstr ""
+
+#: lclstrconsts:rshelpselectorerror
+msgid "Help Selector Error"
+msgstr ""
+
+#: lclstrconsts:rsunknownerrorpleasereportthisbug
+msgid "Unknown Error, please report this bug"
+msgstr ""
+
+#: lclstrconsts:hhshelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
+#: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
+#: lclstrconsts:hhshelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts:hhshelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
+
+#: lclstrconsts:hhshelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr ""
+

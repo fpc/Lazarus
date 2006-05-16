@@ -162,8 +162,8 @@ msgstr ""
 msgid "Make Executable"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
 msgstr ""
 
 #: lazarusidestrconsts:lisopenproject2
@@ -186,8 +186,8 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisconfigdirectory
@@ -2651,15 +2651,15 @@ msgid "Hint: click on the command you want to edit"
 msgstr ""
 
 #: lazarusidestrconsts:dlglang
-msgid "Language:"
+msgid "Language"
 msgstr ""
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
+msgid "Color Scheme"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
+msgid "File extensions"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedelement
@@ -5818,34 +5818,6 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr ""
-
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr ""
-
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
 msgstr ""
@@ -8906,8 +8878,8 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts:lisctselectcodemacro

@@ -1290,8 +1290,8 @@ msgid "Color"
 msgstr "Kolor"
 
 #: lazarusidestrconsts:dlgclrscheme
-msgid "Color Scheme:"
-msgstr "Zestaw kolorów:"
+msgid "Color Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2241,8 +2241,8 @@ msgstr "Else"
 msgid "ElseIf"
 msgstr "ElseIf"
 
-#: lazarusidestrconsts:lisenablemakros
-msgid "Enable Makros"
+#: lazarusidestrconsts:lisenablemacros
+msgid "Enable Macros"
 msgstr ""
 
 #: lazarusidestrconsts:lisenabled
@@ -2582,8 +2582,8 @@ msgid "File already in package"
 msgstr "Plik już należy do pakietu"
 
 #: lazarusidestrconsts:dlgfileexts
-msgid "File extensions:"
-msgstr "Rozszerzenia:"
+msgid "File extensions"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3073,28 +3073,8 @@ msgstr "Wysokość"
 msgid "Help"
 msgstr "Help"
 
-#: lazarusidestrconsts:lishelpcontextnotfound
-msgid "Help Context not found"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpdatabasenotfound
-msgid "Help Database not found"
-msgstr ""
-
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpselectorerror
-msgid "Help Selector Error"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewererror
-msgid "Help Viewer Error"
-msgstr ""
-
-#: lazarusidestrconsts:lishelpviewernotfound
-msgid "Help Viewer not found"
 msgstr ""
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
@@ -3104,10 +3084,6 @@ msgstr ""
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Menu pomoc"
-
-#: lazarusidestrconsts:lishelpnotfound
-msgid "Help not found"
-msgstr ""
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
@@ -3936,10 +3912,6 @@ msgstr "Język"
 #: lazarusidestrconsts:lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
 msgstr ""
-
-#: lazarusidestrconsts:dlglang
-msgid "Language:"
-msgstr "Język:"
 
 #: lazarusidestrconsts:dlgcdtlast
 msgid "Last"
@@ -5385,8 +5357,8 @@ msgstr "Wykryłem plik z informacją o projekcie"
 msgid "Project is runnable"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectmakroproperties
-msgid "Project makro properties"
+#: lazarusidestrconsts:lisprojectmacroproperties
+msgid "Project macro properties"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
@@ -8093,10 +8065,6 @@ msgstr "Lista modułów"
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
-msgid "Unknown Error, please report this bug"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Niezapisany pakiet"
@@ -8629,8 +8597,8 @@ msgstr ""
 msgid "lowercase"
 msgstr "małymi literami"
 
-#: lazarusidestrconsts:lisprojectmakrounitpath
-msgid "makro ProjectUnitPath"
+#: lazarusidestrconsts:lisprojectmacrounitpath
+msgid "macro ProjectUnitPath"
 msgstr ""
 
 #: lazarusidestrconsts:lisoipmissing

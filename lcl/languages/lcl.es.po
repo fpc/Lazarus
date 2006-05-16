@@ -48,6 +48,14 @@ msgstr "%s ya está asociado con %s"
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr ""
 
+#: lclstrconsts:rshelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
+
+#: lclstrconsts:rshelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
+
 #: lclstrconsts:rsmball
 msgid "&All"
 msgstr "Todo"
@@ -160,6 +168,14 @@ msgstr ""
 msgid "Blank"
 msgstr "Vacío"
 
+#: lclstrconsts:hhshelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
+
+#: lclstrconsts:hhshelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
 #: lclstrconsts:rscalculator
 msgid "Calculator"
 msgstr "Calculadora"
@@ -252,6 +268,10 @@ msgstr "Ocurrió un error en %s en %s Dirección %s%s Marco %s"
 msgid "Error reading %s%s%s: %s"
 msgstr "Error leyendo %s%s%s: %s"
 
+#: lclstrconsts:hhshelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr ""
+
 #: lclstrconsts:rswin32error
 msgid "Error:"
 msgstr "Error:"
@@ -315,6 +335,62 @@ msgstr ""
 #: lclstrconsts:ifsvk_help
 msgid "Help"
 msgstr "Ayuda"
+
+#: lclstrconsts:rshelpcontextnotfound
+msgid "Help Context not found"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: lclstrconsts:rshelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: lclstrconsts:rshelpdatabasenotfound
+msgid "Help Database not found"
+msgstr ""
+
+#: lclstrconsts:rshelperror
+msgid "Help Error"
+msgstr ""
+
+#: lclstrconsts:rshelpselectorerror
+msgid "Help Selector Error"
+msgstr ""
+
+#: lclstrconsts:rshelpviewererror
+msgid "Help Viewer Error"
+msgstr ""
+
+#: lclstrconsts:rshelpviewernotfound
+msgid "Help Viewer not found"
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: lclstrconsts:rshelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts:rshelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr ""
+
+#: lclstrconsts:rshelpnotfound
+msgid "Help not found"
+msgstr ""
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
@@ -432,9 +508,21 @@ msgstr "Botón Derecho del Ratón"
 msgid "Next"
 msgstr "Siguiente"
 
+#: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
 msgstr "No hay formulario MDI presente"
+
+#: lclstrconsts:rshelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: lclstrconsts:rshelpnohelpnodesavailable
+msgid "No help nodes available"
+msgstr ""
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -580,9 +668,21 @@ msgstr "No existe el archivo \"%s\""
 msgid "The file \"%s\" is not writable."
 msgstr "No se puede escribir en el archivo \"%s\""
 
+#: lclstrconsts:hhshelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
 msgstr "No existe la ruta \"%s\""
+
+#: lclstrconsts:rshelpthereisnoviewerforhelptype
+msgid "There is no viewer for help type %s%s%s"
+msgstr ""
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -591,6 +691,10 @@ msgstr "No se ha podido cargar la fuente por defecto"
 #: lclstrconsts:ifsvk_unknown
 msgid "Unknown"
 msgstr "Desconocido"
+
+#: lclstrconsts:rsunknownerrorpleasereportthisbug
+msgid "Unknown Error, please report this bug"
+msgstr ""
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"

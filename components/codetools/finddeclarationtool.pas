@@ -6246,6 +6246,13 @@ begin
       Result:=ifrSuccess;
       exit;
     end;
+    
+    {if (fdfCollect in params.Flags)
+    and (FoundContext.Node.Parent<>nil)
+    and (FoundContext.Node.Parent.Desc in AllClassSections)
+    and () then begin
+
+    end;}
 
     Result:=ifrProceedSearch;
     if (Params.FoundProc=nil) then begin
