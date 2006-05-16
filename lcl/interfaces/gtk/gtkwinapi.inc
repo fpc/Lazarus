@@ -2595,6 +2595,80 @@ begin
   end;
 end;
 
+function TGTKWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+var
+  Origin: TPoint;
+  
+  procedure DrawPixel(X1,Y1: Integer);
+  begin
+    inc(X1,Origin.X);
+    inc(Y1,Origin.Y);
+    gdk_draw_point(TDeviceContext(DC).Drawable, TDeviceContext(DC).GC, X1, Y1);
+  end;
+  
+  procedure DrawVertLine(X1,Y1,Y2: integer);
+  begin
+    if Y2<Y1 then
+      while Y2<Y1 do begin
+        DrawPixel(X1, Y1);
+        dec(Y1, 2);
+      end
+    else
+      while Y1<Y2 do begin
+        DrawPixel(X1, Y1);
+        inc(Y1, 2);
+      end;
+  end;
+
+  procedure DrawHorzLine(X1,Y1,X2: integer);
+  begin
+    if X2<X1 then
+      while X2<X1 do begin
+        DrawPixel(X1, Y1);
+        dec(X1, 2);
+      end
+    else
+      while X1<X2 do begin
+        DrawPixel(X1, Y1);
+        inc(X1, 2);
+      end;
+  end;
+  
+var
+  OldROP: Integer;
+  APen, TempPen: HPEN;
+  LogPen : TLogPen;
+begin
+  Result := False;
+  if IsValidDC(DC) then begin
+    with LogPen do begin
+      lopnStyle   := PS_DOT;
+      lopnWidth.X := 2;
+      lopnColor   := clWhite;
+    end;
+    APen := CreatePenIndirect(LogPen);
+    TempPen := SelectObject(DC, APen);
+    OldRop := SetROP2(DC, R2_XORPEN);
+    
+    Origin := GetDCOffset(TDeviceContext(DC));
+    try
+
+      with Rect do begin
+        DrawHorzLine(Left, Top, Right-1);
+        DrawVertLine(Right-1, Top, Bottom-1);
+        DrawHorzLine(Right-1, Bottom-1, Left);
+        DrawVertLine(Left, Bottom-1, Top);
+      end;
+
+      Result := True;
+    finally
+      SelectObject(DC, TempPen);
+      DeleteObject(APen);
+      SetROP2(DC, OldROP);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: DrawEdge
   Params:   DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal
@@ -4417,14 +4491,14 @@ begin
   if ClientWidget<>nil then begin
     DebugLn('GetClientRect  Widget=',DbgS(handle),
        ' Client=',DbgS(ClientWidget),
-       ' WindowSize=',ARect.Right,',',ARect.Bottom,
-       ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
+       ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
+       ' Allocation=',dbgs(ClientWidget^.Allocation.Width),',',dbgs(ClientWidget^.Allocation.Height)
        );
   end else begin
     DebugLn('GetClientRect  Widget=',DbgS(handle),
        ' Client=',DbgS(ClientWidget),
-       ' WindowSize=',ARect.Right,',',ARect.Bottom,
-       ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
+       ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
+       ' Allocation=',dbgs(Widget^.Allocation.Width),',',dbgs(Widget^.Allocation.Height)
        );
   end;
   {$EndIf}

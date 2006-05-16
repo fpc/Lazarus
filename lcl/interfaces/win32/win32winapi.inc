@@ -1080,6 +1080,15 @@ Begin
   end;
 End;
 
+function TWin32WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+var
+  lRect: Windows.RECT;
+begin
+  {$message warn TWin32WidgetSet.FrameRect TODO: optimize ARect copying?}
+  lRect:=Rect;
+  Result:= Windows.DrawFocusRect(DC, lRect);
+end;
+
 {------------------------------------------------------------------------------
   Method:  DrawEdge
   Params: DC       - handle to device context

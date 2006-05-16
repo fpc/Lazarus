@@ -63,6 +63,7 @@ function DeleteDC(HDC: HDC): Boolean; Override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; Override;
 function DestroyCaret(Handle: HWND): Boolean; Override;
 function DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean; Override;
+function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 function DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; Override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 

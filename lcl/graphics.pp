@@ -943,6 +943,7 @@ type
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
     Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
+    Procedure DrawFocusRect(const ARect: TRect); virtual;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
     procedure Ellipse(const ARect: TRect); // already in fpcanvas
     procedure Ellipse(x1, y1, x2, y2: Integer); virtual; // already in fpcanvas

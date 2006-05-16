@@ -201,6 +201,11 @@ begin
   Result := False;
 end;
 
+function TWidgetset.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+begin
+  Result := false;
+end;
+
 function TWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 Begin
   Result := False;

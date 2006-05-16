@@ -33,6 +33,17 @@ begin
 end;
 
 {-----------------------------------------------}
+{--  TCanvas.DrawFocusRect --}
+{-----------------------------------------------}
+procedure TCanvas.DrawFocusRect(const ARect: TRect);
+begin
+  Changing;
+  RequiredState([csHandleValid, csBrushValid]);
+  LCLIntf.DrawFocusRect(FHandle, ARect);
+  Changed;
+end;
+
+{-----------------------------------------------}
 {--  TCanvas.StretchDraw --}
 {-----------------------------------------------}
 procedure TCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);

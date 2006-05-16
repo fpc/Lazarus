@@ -171,6 +171,11 @@ Begin
   Result := WidgetSet.DrawFrameControl(DC, Rect, uType, uState);
 end;
 
+function DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+begin
+  Result := WidgetSet.DrawFocusRect(DC, Rect);
+end;
+
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 Begin
   Result := WidgetSet.DrawEdge(DC, Rect, edge, grfFlags);
