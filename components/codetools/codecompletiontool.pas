@@ -2661,7 +2661,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                      fdfTopLvlResolving,fdfFindVariable];
-      if (not FindDeclarationOfIdentAtCursor(Params))
+      if (not FindDeclarationOfIdentAtParam(Params))
       or (Params.NewNode.Desc<>ctnProperty) then begin
         {$IFDEF CTDEBUG}
         DebugLn('FindEventTypeAtCursor not a property');

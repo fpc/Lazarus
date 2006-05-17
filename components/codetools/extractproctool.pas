@@ -366,7 +366,7 @@ var
       {$IFDEF CTDebug}
       DebugLn('AddVariableAtCursor Searching ',GetIdentifier(Params.Identifier));
       {$ENDIF}
-      if not FindDeclarationOfIdentAtCursor(Params) then begin
+      if not FindDeclarationOfIdentAtParam(Params) then begin
         {$IFDEF CTDebug}
         DebugLn('AddVariableAtCursor B not found');
         {$ENDIF}

@@ -496,23 +496,6 @@ const
   AllFindSmartFlags = [fsfIncludeDirective];
 
 type
-
-  { TCodeContextInfo }
-
-  TCodeContextInfo = class
-  private
-    FItems: PExpressionType;
-    FCount: integer;
-    function GetItems(Index: integer): TExpressionType;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function Count: integer;
-    property Items[Index: integer]: TExpressionType read GetItems; default;
-    function Add(const Context: TExpressionType): integer;
-    procedure Clear;
-  end;
-
   //----------------------------------------------------------------------------
   ECodeToolUnitNotFound = class(ECodeToolFileNotFound)
   end;
@@ -617,7 +600,7 @@ type
   protected
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
-    function FindDeclarationOfIdentAtCursor(
+    function FindDeclarationOfIdentAtParam(
       Params: TFindDeclarationParams): boolean;
     function IdentifierIsDefined(IdentAtom: TAtomPosition;
       ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
@@ -729,8 +712,6 @@ type
       
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
-    function FindCodeContext(const CursorPos: TCodeXYPosition;
-                             out CodeContexts: TCodeContextInfo): boolean;
 
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -1289,7 +1270,7 @@ begin
                        fdfTopLvlResolving,fdfSearchInAncestors];
         if not DirectSearch then begin
           // ToDo: DirtySrc
-          Result:=FindDeclarationOfIdentAtCursor(Params);
+          Result:=FindDeclarationOfIdentAtParam(Params);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
@@ -1881,7 +1862,7 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindDeclarationOfIdentAtCursor(
+function TFindDeclarationTool.FindDeclarationOfIdentAtParam(
   Params: TFindDeclarationParams): boolean;
 { searches an identifier in clean code, parses code in front and after the
   identifier
@@ -1902,7 +1883,7 @@ var
   ExprType: TExpressionType;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Identifier=',
+  DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Identifier=',
     '"',GetIdentifier(Params.Identifier),'"',
     ' ContextNode=',NodeDescriptionAsString(Params.ContextNode.Desc),
     ' "',copy(Src,Params.ContextNode.StartPos,20),'"');
@@ -1927,7 +1908,7 @@ begin
     Params.SetResult(CleanFindContext);
   end;
   {$IFDEF CTDEBUG}
-  DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Ident=',
+  DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
   if Params.NewNode<>nil then
     DebugLn('Node=',Params.NewNode.DescAsString,' ',Params.NewCodeTool.MainFilename)
@@ -3279,7 +3260,7 @@ var
           if fdfSearchForward in Params.Flags then
             Found:=FindIdentifierInContext(Params)
           else
-            Found:=FindDeclarationOfIdentAtCursor(Params);
+            Found:=FindDeclarationOfIdentAtParam(Params);
         except
           on E: ECodeToolError do
             if not IsComment then raise;
@@ -3588,100 +3569,6 @@ begin
       RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
     
   end;
-end;
-
-function TFindDeclarationTool.FindCodeContext(const CursorPos: TCodeXYPosition;
-  out CodeContexts: TCodeContextInfo): boolean;
-var
-  CleanCursorPos: integer;
-  CursorNode: TCodeTreeNode;
-  Params: TFindDeclarationParams;
-  
-  procedure AddContext(Tool: TFindDeclarationTool; Node: TCodeTreeNode);
-  begin
-    if CodeContexts=nil then
-      CodeContexts:=TCodeContextInfo.Create;
-    CodeContexts.Add(CreateExpressionType(xtContext,xtNone,
-                                          CreateFindContext(Tool,Node)));
-    //DebugLn('AddContext ',node.DescAsString,' ',copy(Src,Node.StartPos,Node.EndPos-Node.StartPos));
-  end;
-  
-  function CheckContextIsParameter(var Ok: boolean): boolean;
-  // returns true, on error or context is parameter
-  // returns false, if no error and context is not parameter
-  var
-    VarNameAtom, ProcNameAtom: TAtomPosition;
-    ParameterIndex: integer;
-    ParameterNode: TCodeTreeNode;
-  begin
-    Result:=false;
-    //DebugLn('CheckContextIsParameter ');
-    if not CheckParameterSyntax(CursorNode, CleanCursorPos,
-      VarNameAtom, ProcNameAtom, ParameterIndex) then exit;
-    if VarNameAtom.StartPos<1 then exit;
-    // it is a parameter
-    Result:=true;
-    ok:=true;
-    // find declaration of parameter list
-    Params.ContextNode:=CursorNode;
-    Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CheckSrcIdentifier);
-    Params.Flags:=fdfGlobals+[fdfSearchInParentNodes,fdfSearchInAncestors,
-                              fdfFindVariable,fdfIgnoreCurContextNode];
-    //DebugLn('CheckContextIsParameter searching procedure ...');
-    if not FindIdentifierInContext(Params) then exit;
-    if Params.NewNode<>nil then begin
-      //DebugLn('CheckContextIsParameter searching parameter node ...');
-      ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
-                                                             ParameterIndex);
-      if ParameterNode<>nil then begin
-        //DebugLn('CheckContextIsParameter adding parameter node to CodeContexts');
-        AddContext(Params.NewCodeTool,ParameterNode);
-        
-      end;
-      //DebugLn('  CompleteLocalVariableAsParameter Dont know: ',Params.NewNode.DescAsString);
-    end;
-  end;
-  
-begin
-  CodeContexts:=nil;
-  Result:=false;
-  ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;
-  try
-    // build code tree
-    {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindCodeContext A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
-    {$ENDIF}
-    if DirtySrc<>nil then DirtySrc.Clear;
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos,{$ENDIF}
-                   btLoadDirtySource,btCursorPosOutAllowed]);
-    {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindCodeContext C CleanCursorPos=',dbgs(CleanCursorPos));
-    {$ENDIF}
-    // find CodeTreeNode at cursor
-    if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
-      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,
-                                                      true);
-    end else begin
-      CursorNode:=nil;
-    end;
-    
-    if CursorNode<>nil then begin
-      if CheckContextIsParameter(Result) then exit;
-    end;
-    
-    if CodeContexts=nil then begin
-      // create default
-      AddContext(Self,CursorNode);
-    end;
-
-    Result:=true;
-  finally
-    Params.Free;
-    DeactivateGlobalWriteLock;
-  end;
-  Result:=false;
 end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
@@ -7878,43 +7765,6 @@ begin
   Items[0]:=ExprType;
 end;
 
-
-{ TCodeContextInfo }
-
-function TCodeContextInfo.GetItems(Index: integer): TExpressionType;
-begin
-  Result:=FItems[Index];
-end;
-
-constructor TCodeContextInfo.Create;
-begin
-
-end;
-
-destructor TCodeContextInfo.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-function TCodeContextInfo.Count: integer;
-begin
-  Result:=FCount;
-end;
-
-function TCodeContextInfo.Add(const Context: TExpressionType): integer;
-begin
-  inc(FCount);
-  Result:=Count;
-  ReAllocMem(FItems,SizeOf(TExpressionType)*FCount);
-  FItems[FCount-1]:=Context;
-end;
-
-procedure TCodeContextInfo.Clear;
-begin
-  FCount:=0;
-  ReAllocMem(FItems,0);
-end;
 
 end.
 

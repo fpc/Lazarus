@@ -209,6 +209,32 @@ type
     property Capacity: integer read FCapacity write SetCapacity;
   end;
 
+
+  //----------------------------------------------------------------------------
+  { TCodeContextInfo }
+
+  TCodeContextInfo = class
+  private
+    FEndPos: integer;
+    FItems: PExpressionType;
+    FCount: integer;
+    FParameterIndex: integer;
+    FProcName: string;
+    FStartPos: integer;
+    function GetItems(Index: integer): TExpressionType;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: integer;
+    property Items[Index: integer]: TExpressionType read GetItems; default;
+    function Add(const Context: TExpressionType): integer;
+    procedure Clear;
+    property ParameterIndex: integer read FParameterIndex write FParameterIndex;// 1 based
+    property ProcName: string read FProcName write FProcName;
+    property StartPos: integer read FStartPos write FStartPos;// context is valid from StartPos to EndPos
+    property EndPos: integer read FEndPos write FEndPos;
+  end;
+
   //----------------------------------------------------------------------------
   // TIdentCompletionTool
 
@@ -221,6 +247,7 @@ type
                                     // property names in source)
   protected
     CurrentIdentifierList: TIdentifierList;
+    CurrentContexts: TCodeContextInfo;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure GatherPredefinedIdentifiers(CleanPos: integer;
@@ -230,10 +257,25 @@ type
     procedure GatherUnitnames(CleanPos: integer;
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherSourceNames(const Context: TFindContext);
+    procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
+      var IdentifierList: TIdentifierList);
+    procedure ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
+      out CleanCursorPos: integer; out CursorNode: TCodeTreeNode;
+      out IdentStartPos, IdentEndPos: integer);
+    procedure FindCollectionContext(Params: TFindDeclarationParams;
+      IdentStartPos: integer; CursorNode: TCodeTreeNode;
+      out GatherContext: TFindContext; out ContextExprStartPos: LongInt;
+      out StartInSubContext: Boolean);
+    function CollectAllContexts(Params: TFindDeclarationParams;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
+    procedure AddCollectionContext(Tool: TFindDeclarationTool;
+                                   Node: TCodeTreeNode);
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList;
       BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
+    function FindCodeContext(const CursorPos: TCodeXYPosition;
+                             out CodeContexts: TCodeContextInfo): boolean;
   end;
   
 const
@@ -1087,10 +1129,50 @@ begin
   end;
 end;
 
-function TIdentCompletionTool.GatherIdentifiers(
-  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
-  BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
-  
+procedure TIdentCompletionTool.InitCollectIdentifiers(
+  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList);
+begin
+  if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
+  CurrentIdentifierList:=IdentifierList;
+  CurrentIdentifierList.Clear;
+  LastGatheredIdentParent:=nil;
+  LastGatheredIdentLevel:=0;
+  CurrentIdentifierList.StartContextPos:=CursorPos;
+  CurrentIdentifierList.StartContext.Tool:=Self;
+end;
+
+procedure TIdentCompletionTool.ParseSourceTillCollectionStart(
+  const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
+  out CursorNode: TCodeTreeNode; out IdentStartPos, IdentEndPos: integer);
+begin
+  CleanCursorPos:=0;
+  CursorNode:=nil;
+  IdentStartPos:=0;
+  IdentEndPos:=0;
+
+  // build code tree
+  {$IFDEF CTDEBUG}
+  DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
+  {$ENDIF}
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+
+  // find node at position
+  CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+  if CurrentIdentifierList<>nil then
+    CurrentIdentifierList.StartContext.Node:=CursorNode;
+
+  // get identifier position
+  GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+end;
+
+procedure TIdentCompletionTool.FindCollectionContext(
+  Params: TFindDeclarationParams; IdentStartPos: integer;
+  CursorNode: TCodeTreeNode;
+  out GatherContext: TFindContext;
+  out ContextExprStartPos: LongInt;
+  out StartInSubContext: Boolean);
+
   function GetContextExprStartPos(IdentStartPos: integer;
     ContextNode: TCodeTreeNode): integer;
   begin
@@ -1109,45 +1191,83 @@ function TIdentCompletionTool.GatherIdentifiers(
         Result:=IdentStartPos;
     end;
   end;
-  
+
+var
+  ExprType: TExpressionType;
+begin
+  GatherContext:=CreateFindContext(Self,CursorNode);
+
+  ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
+  if GatherContext.Node.Desc=ctnWithVariable then
+    GatherContext.Node:=GatherContext.Node.Parent;
+
+  StartInSubContext:=false;
+  if ContextExprStartPos<IdentStartPos then begin
+    MoveCursorToCleanPos(IdentStartPos);
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,nil,nil);
+    Params.Flags:=[fdfExceptionOnNotFound,
+                   fdfSearchInParentNodes,fdfSearchInAncestors];
+    ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
+                                           Params);
+    if (ExprType.Desc=xtContext) then begin
+      GatherContext:=ExprType.Context;
+      StartInSubContext:=true;
+    end;
+  end;
+end;
+
+function TIdentCompletionTool.CollectAllContexts(
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+begin
+  Result:=ifrProceedSearch;
+  if FoundContext.Node=nil then exit;
+  case FoundContext.Node.Desc of
+  ctnProcedure:
+    begin
+      if (CurrentContexts.ProcName='') then exit;
+      FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
+      if not FoundContext.Tool.CompareSrcIdentifier(
+        FoundContext.Tool.CurPos.StartPos,
+        CurrentContexts.ProcName) then exit;
+    end;
+  else
+    exit;
+  end;
+  AddCollectionContext(FoundContext.Tool,FoundContext.Node);
+end;
+
+procedure TIdentCompletionTool.AddCollectionContext(Tool: TFindDeclarationTool;
+  Node: TCodeTreeNode);
+begin
+  if CurrentContexts=nil then
+    CurrentContexts:=TCodeContextInfo.Create;
+  CurrentContexts.Add(CreateExpressionType(xtContext,xtNone,
+                                           CreateFindContext(Tool,Node)));
+  //DebugLn('TIdentCompletionTool.AddCollectionContext ',Node.DescAsString,' ',ExtractNode(Node,[]));
+end;
+
+function TIdentCompletionTool.GatherIdentifiers(
+  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
+  BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
 var
   CleanCursorPos, IdentStartPos, IdentEndPos: integer;
   CursorNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   GatherContext: TFindContext;
-  ExprType: TExpressionType;
   ContextExprStartPos: Integer;
   StartInSubContext: Boolean;
   StartPosOfVariable: LongInt;
 begin
   Result:=false;
-  if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
-  CurrentIdentifierList:=IdentifierList;
-  CurrentIdentifierList.Clear;
-  LastGatheredIdentParent:=nil;
-  LastGatheredIdentLevel:=0;
-  CurrentIdentifierList.StartContextPos:=CursorPos;
-  CurrentIdentifierList.StartContext.Tool:=Self;
-  
+
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    // build code tree
-    {$IFDEF CTDEBUG}
-    DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
-    {$ENDIF}
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
-
-    // find node at position
-    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
-    CurrentIdentifierList.StartContext.Node:=CursorNode;
-
-    // find class and ancestors if existing (needed for protected identifiers)
-    FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
-
-    // get identifier position
-    GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+    InitCollectIdentifiers(CursorPos,IdentifierList);
+    ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
+                                   IdentStartPos,IdentEndPos);
     
     // find context
     {$IFDEF CTDEBUG}
@@ -1162,30 +1282,11 @@ begin
     end else if CursorNode.Desc in AllSourceTypes then begin
       GatherSourceNames(GatherContext);
     end else begin
-      ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
-      if GatherContext.Node.Desc=ctnWithVariable then
-        GatherContext.Node:=GatherContext.Node.Parent;
+      // find class and ancestors if existing (needed for protected identifiers)
+      FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
 
-      {$IFDEF CTDEBUG}
-      DebugLn('TIdentCompletionTool.GatherIdentifiers C',
-        ' ContextExprStartPos=',dbgs(ContextExprStartPos),
-        ' Expr=',StringToPascalConst(copy(Src,ContextExprStartPos,
-                      IdentStartPos-ContextExprStartPos)));
-      {$ENDIF}
-      StartInSubContext:=false;
-      if ContextExprStartPos<IdentStartPos then begin
-        MoveCursorToCleanPos(IdentStartPos);
-        Params.ContextNode:=CursorNode;
-        Params.SetIdentifier(Self,nil,nil);
-        Params.Flags:=[fdfExceptionOnNotFound,
-                       fdfSearchInParentNodes,fdfSearchInAncestors];
-        ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
-                                               Params);
-        if (ExprType.Desc=xtContext) then begin
-          GatherContext:=ExprType.Context;
-          StartInSubContext:=true;
-        end;
-      end;
+      FindCollectionContext(Params,IdentStartPos,CursorNode,
+        GatherContext,ContextExprStartPos,StartInSubContext);
 
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
@@ -1283,11 +1384,119 @@ begin
     Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
+    CurrentIdentifierList:=nil;
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TIdentCompletionTool.GatherIdentifiers END');
   {$ENDIF}
 end;
+
+function TIdentCompletionTool.FindCodeContext(const CursorPos: TCodeXYPosition;
+  out CodeContexts: TCodeContextInfo): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+
+  function CheckContextIsParameter(var Ok: boolean): boolean;
+  // returns true, on error or context is parameter
+  // returns false, if no error and context is not parameter
+  var
+    VarNameAtom, ProcNameAtom: TAtomPosition;
+    ParameterIndex: integer;
+    GatherContext: TFindContext;
+    ContextExprStartPos: LongInt;
+    StartInSubContext: Boolean;
+  begin
+    Result:=false;
+    if (CursorNode.Desc<>ctnBeginBlock)
+    and (not CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
+    //DebugLn('CheckContextIsParameter ');
+    if not CheckParameterSyntax(CursorNode, CleanCursorPos,
+      VarNameAtom, ProcNameAtom, ParameterIndex) then exit;
+    if VarNameAtom.StartPos<1 then exit;
+    //DebugLn('CheckContextIsParameter Variable=',GetAtom(VarNameAtom),' Proc=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
+    
+    // it is a parameter -> save ParameterIndex
+    Result:=true;
+    if CurrentContexts=nil then
+      CurrentContexts:=TCodeContextInfo.Create;
+    CurrentContexts.ParameterIndex:=ParameterIndex+1;
+    CurrentContexts.ProcName:=GetAtom(ProcNameAtom);
+    MoveCursorToAtomPos(ProcNameAtom);
+    ReadNextAtom; // read opening bracket
+    CurrentContexts.StartPos:=CurPos.EndPos;
+    // read closing bracket
+    if ReadTilBracketClose(false) then
+      CurrentContexts.EndPos:=CurPos.StartPos
+    else
+      CurrentContexts.EndPos:=SrcLen+1;
+
+    FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
+      GatherContext,ContextExprStartPos,StartInSubContext);
+
+    // gather declarations of parameter lists
+    Params.ContextNode:=GatherContext.Node;
+    Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CollectAllContexts);
+    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+    if not StartInSubContext then
+      Include(Params.Flags,fdfSearchInParentNodes);
+    if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
+      Exclude(Params.Flags,fdfSearchInParentNodes);
+    CurrentIdentifierList.Context:=GatherContext;
+    //DebugLn('CheckContextIsParameter searching procedure ...');
+    GatherContext.Tool.FindIdentifierInContext(Params);
+    //DebugLn('CheckContextIsParameter END');
+    Ok:=true;
+  end;
+
+var
+  IdentifierList: TIdentifierList;
+  IdentStartPos, IdentEndPos: integer;
+begin
+  CodeContexts:=nil;
+  Result:=false;
+
+  IdentifierList:=nil;
+  CurrentContexts:=CodeContexts;
+
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    InitCollectIdentifiers(CursorPos,IdentifierList);
+    ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
+                                   IdentStartPos,IdentEndPos);
+
+    // find class and ancestors if existing (needed for protected identifiers)
+    FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
+
+    if CursorNode<>nil then begin
+      if CheckContextIsParameter(Result) then exit;
+    end;
+
+    if CodeContexts=nil then begin
+      // create default
+      AddCollectionContext(Self,CursorNode);
+    end;
+
+    Result:=true;
+  finally
+    if Result then begin
+      CodeContexts:=CurrentContexts;
+      CurrentContexts:=nil;
+    end else begin
+      FreeAndNil(CurrentContexts);
+    end;
+    FreeListOfPFindContext(ClassAndAncestors);
+    FreeAndNil(FoundPublicProperties);
+    Params.Free;
+    ClearIgnoreErrorAfter;
+    DeactivateGlobalWriteLock;
+    FreeAndNil(CurrentIdentifierList);
+  end;
+  Result:=false;
+end;
+
 
 { TIdentifierListItem }
 
@@ -1551,6 +1760,43 @@ end;
 function TIdentifierHistoryList.Count: integer;
 begin
   Result:=FItems.Count;
+end;
+
+{ TCodeContextInfo }
+
+function TCodeContextInfo.GetItems(Index: integer): TExpressionType;
+begin
+  Result:=FItems[Index];
+end;
+
+constructor TCodeContextInfo.Create;
+begin
+
+end;
+
+destructor TCodeContextInfo.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TCodeContextInfo.Count: integer;
+begin
+  Result:=FCount;
+end;
+
+function TCodeContextInfo.Add(const Context: TExpressionType): integer;
+begin
+  inc(FCount);
+  Result:=Count;
+  ReAllocMem(FItems,SizeOf(TExpressionType)*FCount);
+  FItems[FCount-1]:=Context;
+end;
+
+procedure TCodeContextInfo.Clear;
+begin
+  FCount:=0;
+  ReAllocMem(FItems,0);
 end;
 
 initialization
