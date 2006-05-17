@@ -682,10 +682,11 @@ var
   MsgItem: TIDEMessageLine;
   MessageParts: TStringList;
 begin
-  debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
+  //debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
   if MessagesView=nil then exit;
   if Line<0 then
     Line:=MessagesView.SelectedMessageIndex;
+  //DebugLn('THelpManager.ShowHelpForMessage B Line=',dbgs(Line),' ',dbgs(MessagesView.VisibleItemCount));
   if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
   MsgItem:=MessagesView.VisibleItems[Line];
   if MsgItem=nil then exit;

@@ -113,6 +113,8 @@ begin
   AddFPCMessageHelpItem('Wrong number of parameters specified',
                         'FPC_message:_Wrong_number_of_parameters_specified',
                         ': Wrong number of parameters specified');
+  AddFPCMessageHelpItem('cannot find -l',
+                        'Linker_message:_cannot_find_-l',': cannot find -l');
 end;
 
 function AddFPCMessageHelpItem(const Title, URL, RegularExpression: string

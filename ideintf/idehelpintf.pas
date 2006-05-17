@@ -85,6 +85,7 @@ function THelpDBIRegExprMessage.MessageMatches(const TheMessage: string;
   MessageParts: TStrings): boolean;
 begin
   Result:=REMatches(TheMessage,Expression,ModifierStr);
+  //writeln('THelpDBIRegExprMessage.MessageMatches TheMessage="',TheMessage,'" Expression="',Expression,'" Result=',Result);
 end;
 
 end.

@@ -370,7 +370,7 @@ var
   LastItem: TLazMessageLine;
 begin
   //ConsistencyCheck;
-  //DebugLn('TMessagesView.Add ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageListBox.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine));
+  //DebugLn('TMessagesView.Add START ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageListBox.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine),' OriginalIndex=',dbgs(OriginalIndex),' Msg="',Msg,'"');
   NewMsg:=nil;
   if ItemCount>0 then begin
     LastItem:=Items[ItemCount-1];

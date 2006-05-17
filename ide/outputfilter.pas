@@ -99,7 +99,7 @@ type
     fLastOutputTime: TDateTime;
     fLastSearchedShortIncFilename: string;
     fLastSearchedIncFilename: string;
-    procedure DoAddFilteredLine(const s: string);
+    procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
     function GetCurrentMessageParts: TStrings;
@@ -842,11 +842,11 @@ begin
     pos(SenderNotUsed, OutputLine)=Length(OutputLine)-Length(SenderNotUsed)+1;
 end;
 
-procedure TOutputFilter.DoAddFilteredLine(const s: string);
-var
-  OriginalIndex: Integer;
+procedure TOutputFilter.DoAddFilteredLine(const s: string;
+  OriginalIndex: integer);
 begin
-  OriginalIndex:=fOutput.Count-1;
+  if OriginalIndex=-1 then
+    OriginalIndex:=fOutput.Count-1;
   fFilteredOutput.Add(s);
   fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=OriginalIndex;
   if Assigned(OnAddFilteredLine) then
@@ -865,7 +865,7 @@ begin
   while (i<fOutput.Count) do begin
     if (fOutput[i].Msg<>'')
     and ((i<fOutput.Count-1) or (not SkipLastLine)) then
-      DoAddFilteredLine(fOutput[i].Msg);
+      DoAddFilteredLine(fOutput[i].Msg,i);
     inc(i);
   end;
 end;
@@ -882,7 +882,7 @@ begin
   if i<0 then exit;
   while (i<fOutput.Count-1) do begin
     if (fOutput[i].Msg<>'') then
-      DoAddFilteredLine(fOutput[i].Msg);
+      DoAddFilteredLine(fOutput[i].Msg,i);
     inc(i);
   end;
 end;

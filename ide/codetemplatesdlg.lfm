@@ -95,8 +95,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ParentColor = False
       TabOrder = 1
       Width = 469
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = ASynPasSyn
       Keystrokes = <      
@@ -423,7 +421,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
-      SelectedColor.OnChange = nil
       AnchorSideTop.Control = TemplateListBox
       AnchorSideTop.Side = asrBottom
       Cursor = crIBeam
@@ -479,9 +476,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Top = 78
       Width = 115
     end
-    object UseMakrosCheckBox: TCheckBox
+    object UseMacrosCheckBox: TCheckBox
       BorderSpacing.Top = 12
-      Caption = 'UseMakrosCheckBox'
+      Caption = 'UseMacrosCheckBox'
       TabOrder = 5
       AnchorSideLeft.Control = EditButton
       AnchorSideTop.Control = EditButton
@@ -489,7 +486,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Left = 360
       Height = 24
       Top = 120
-      Width = 146
+      Width = 147
     end
     object InsertMacroButton: TButton
       Anchors = [akTop, akRight]
@@ -499,7 +496,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Caption = 'InsertMacroButton'
       OnClick = InsertMacroButtonClick
       TabOrder = 6
-      AnchorSideTop.Control = UseMakrosCheckBox
+      AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = TemplateGroupBox
       AnchorSideRight.Side = asrBottom
