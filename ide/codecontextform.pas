@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  CodeCache, FindDeclarationTool, CodeToolManager, SynEdit;
+  CodeCache, FindDeclarationTool, IdentCompletionTool, CodeToolManager, SynEdit;
 
 type
 
