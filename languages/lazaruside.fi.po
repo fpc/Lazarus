@@ -1560,7 +1560,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemcopyfilename
 msgid "Copy filename"
-msgstr "Kopio tiedostonnimi leikepöydälle"
+msgstr "Kopio tiedoston nimi leikepöydälle"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -2572,7 +2572,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
-msgstr ""
+msgstr "Tiedostopäätteet"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3112,7 +3112,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
-msgstr ""
+msgstr "Home-näppäin siirtyy koodirivin alkuun sisennykset huomioiden"
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -5052,7 +5052,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissortselparagraphs
 msgid "Paragraphs"
-msgstr ""
+msgstr "Rivit (sisennykset ovat ed. riviä)"
 
 #: lazarusidestrconsts:liscmparameter
 msgid "Parameter"
@@ -6028,7 +6028,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll past end of line"
-msgstr ""
+msgstr "Kursoria liikuttaessa ('scrollatessa') ei välitetä rivinlopusta"
 
 #: lazarusidestrconsts:srkmecscrollright
 msgid "Scroll right one char"
