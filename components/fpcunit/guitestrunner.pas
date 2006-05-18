@@ -95,6 +95,7 @@ type
     procedure PaintNodeError(aNode: TTreeNode);
     procedure PaintNodeFailure(aNode: TTreeNode);
     procedure PaintNodeNonFailed(aNode: TTreeNode);
+    procedure PaintNodeBusy(aNode: TTreeNode);
     procedure MemoLog(LogEntry: string);
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
@@ -115,11 +116,13 @@ begin
   Clipboard.AsText := XMLMemo.Lines.Text;
 end;
 
+
 procedure TGUITestRunner.actCutExecute(Sender: TObject);
 begin
   Clipboard.AsText := XMLMemo.Lines.Text;
   XMLMemo.Lines.Clear;
 end;
+
 
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
 begin
@@ -127,6 +130,7 @@ begin
   TestTree.Items.Clear;
   BuildTree(TestTree.Items.AddObject(nil, 'All Tests', GetTestRegistry), GetTestRegistry);
 end;
+
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
 var
@@ -168,10 +172,12 @@ begin
   end;
 end;
 
+
 procedure TGUITestRunner.ActCloseFormExecute(Sender: TObject);
 begin
   Close;
 end;
+
 
 procedure TGUITestRunner.RunActionUpdate(Sender: TObject);
 begin
@@ -179,16 +185,19 @@ begin
     and (TestTree.Selected.Data <> nil)) or (not TestTree.Focused);
 end;
 
+
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
 begin
   if (ParamStr(1) = '--now') or (ParamStr(1) = '-n') then
     RunExecute(Self);
 end;
 
+
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
 begin
   Clipboard.AsText := Memo1.Lines.Text;
 end;
+
 
 procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
 begin
@@ -199,16 +208,19 @@ begin
     lblSelectedTest.Caption := '';
 end;
 
+
 procedure TGUITestRunner.actCopyErrorMsgExecute(Sender: TObject);
 begin
   ClipBoard.AsText := Copy(TestTree.Selected.text, 10, MaxInt)
 end;
+
 
 procedure TGUITestRunner.actCopyErrorMsgUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := Assigned(TestTree.selected) and
     (Copy(TestTree.Selected.Text, 1, 9) = 'Message: ');
 end;
+
 
 procedure TGUITestRunner.pbBarPaint(Sender: TObject);
 var
@@ -240,6 +252,7 @@ begin
   end;
 end;
 
+
 procedure TGUITestRunner.BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
 var
   node: TTreeNode;
@@ -260,6 +273,7 @@ begin
   ResetNodeColors;
 end;
 
+
 function TGUITestRunner.FindNode(aTest: TTest): TTreeNode;
 var
   i: integer;
@@ -273,6 +287,7 @@ begin
     end;
 end;
 
+
 procedure TGUITestRunner.ResetNodeColors;
 var
   i: integer;
@@ -284,6 +299,7 @@ begin
   end;
 end;
 
+
 procedure TGUITestRunner.PaintNodeError(aNode: TTreeNode);
 begin
   while Assigned(aNode) do
@@ -292,26 +308,28 @@ begin
     aNode.SelectedIndex := 2;
     aNode.Expand(True);
     aNode := aNode.Parent;
-    if Assigned(aNode) and (aNode.ImageIndex in [0, 3, 12, -1]) then
+    if Assigned(aNode) and (aNode.ImageIndex in [0, 3, 12, 13, -1]) then
       PaintNodeError(aNode);
   end;
 end;
+
 
 procedure TGUITestRunner.PaintNodeFailure(aNode: TTreeNode);
 begin
   while Assigned(aNode) do
   begin
-    if aNode.ImageIndex in [0, -1, 12] then
+    if aNode.ImageIndex in [0, -1, 12, 13] then
     begin
       aNode.ImageIndex := 3;
       aNode.SelectedIndex := 3;
       aNode.Expand(true);
     end;
     aNode := aNode.Parent;
-    if Assigned(aNode) and (aNode.ImageIndex in [0, -1, 12]) then
+    if Assigned(aNode) and (aNode.ImageIndex in [0, -1, 12, 13]) then
       PaintNodeFailure(aNode);
   end;
 end;
+
 
 procedure TGUITestRunner.PaintNodeNonFailed(aNode: TTreeNode);
 var
@@ -320,7 +338,7 @@ var
 begin
   if Assigned(aNode) then
   begin
-    if aNode.ImageIndex in [12, -1] then
+    if aNode.ImageIndex in [12, 13, -1] then
     begin
       aNode.ImageIndex := 0;
       aNode.SelectedIndex := 0;
@@ -336,10 +354,39 @@ begin
       if aNode.Items[i].ImageIndex <> 0 then
         noFailedSibling := false;;
     end;
-    if (aNode.ImageIndex = 12) and noFailedSibling then
+    if (aNode.ImageIndex = 13) and noFailedSibling then
       PaintNodeNonFailed(aNode);
     end;
 end;
+
+
+procedure TGUITestRunner.PaintNodeBusy(aNode: TTreeNode);
+var
+  BusySibling: boolean;
+  i: integer;
+begin
+  if Assigned(aNode) then
+  begin
+    aNode.ImageIndex := 13;
+    aNode.SelectedIndex := 13;
+  end;
+  if Assigned(aNode.Parent) then
+  begin
+    if aNode.Index = aNode.Parent.Count -1 then
+    begin
+      aNode := aNode.Parent;
+      BusySibling := true;
+      for i := 0 to aNode.Count -2 do
+      begin
+        if aNode.Items[i].ImageIndex <> 0 then
+          BusySibling := false;;
+      end;
+      if (aNode.ImageIndex = 12) and BusySibling then
+        PaintNodeBusy(aNode);
+    end;
+  end;
+end;
+
 
 procedure TGUITestRunner.MemoLog(LogEntry: string);
 begin
@@ -367,6 +414,7 @@ begin
   if errorCounter = 0 then
     barColor := clFuchsia;
 end;
+
 
 procedure TGUITestRunner.AddError(ATest: TTest; AError: TTestFailure);
 var
@@ -403,20 +451,31 @@ begin
   barColor := clRed;
 end;
 
+
 procedure TGUITestRunner.StartTest(ATest: TTest);
+var
+  Node: TTreeNode;
 begin
-  //if ATest=0 then ;
+  TestTree.BeginUpdate;
+  Node := FindNode(ATest);
+  PaintNodeBusy(Node);
+  Application.ProcessMessages;
+  TestTree.EndUpdate;
 end;
+
 
 procedure TGUITestRunner.EndTest(ATest: TTest);
 var
   Node: TTreeNode;
 begin
+  TestTree.BeginUpdate;
   Inc(testsCounter);
   Node := FindNode(ATest);
   PaintNodeNonFailed(Node);
   pbbar.Refresh;
   pbbar1.Refresh;
+  Application.ProcessMessages;
+  TestTree.EndUpdate;
 end;
 
 initialization

@@ -1,7 +1,7 @@
 object GUITestRunner: TGUITestRunner
   ActiveControl = tsTestTree
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 397
+  ClientHeight = 613
   ClientWidth = 574
   Constraints.MinHeight = 200
   Constraints.MinWidth = 250
@@ -24,13 +24,13 @@ object GUITestRunner: TGUITestRunner
   }
   OnCreate = GUITestRunnerCreate
   OnShow = GUITestRunnerShow
-  PixelsPerInch = 120
+  PixelsPerInch = 96
   Position = poDesktopCenter
   ShowHint = True
   HorzScrollBar.Page = 573
-  VertScrollBar.Page = 396
+  VertScrollBar.Page = 612
   Left = 429
-  Height = 397
+  Height = 613
   Top = 176
   Width = 574
   object Panel1: TPanel
@@ -55,6 +55,8 @@ object GUITestRunner: TGUITestRunner
       BorderSpacing.Bottom = 1
       BorderSpacing.Around = 1
       Caption = 'Selected Test Suite:'
+      Color = clNone
+      ParentColor = False
       Left = 144
       Height = 18
       Top = 10
@@ -266,12 +268,12 @@ object GUITestRunner: TGUITestRunner
   object Panel2: TPanel
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 341
+    ClientHeight = 557
     ClientWidth = 574
     FullRepaint = False
     TabOrder = 1
     TabStop = True
-    Height = 341
+    Height = 557
     Top = 56
     Width = 574
     object PageControl1: TPageControl
@@ -280,41 +282,44 @@ object GUITestRunner: TGUITestRunner
       Constraints.MinHeight = 150
       TabIndex = 0
       TabOrder = 0
+      TabStop = True
       Left = 1
-      Height = 339
+      Height = 555
       Top = 1
       Width = 572
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 310
-        ClientWidth = 564
-        Height = 310
-        Width = 564
+        ClientHeight = 523
+        ClientWidth = 568
+        Left = 2
+        Height = 523
+        Top = 30
+        Width = 568
         object Panel4: TPanel
           Align = alTop
           BevelOuter = bvNone
           ClientHeight = 63
-          ClientWidth = 564
+          ClientWidth = 568
           FullRepaint = False
           TabOrder = 0
           Height = 63
-          Width = 564
+          Width = 568
           object Panel6: TPanel
             Align = alTop
             Caption = 'Panel6'
             ClientHeight = 50
-            ClientWidth = 564
+            ClientWidth = 568
             FullRepaint = False
             TabOrder = 0
             Height = 50
-            Width = 564
+            Width = 568
             object pbBar: TPaintBox
               Align = alClient
               OnPaint = pbBarPaint
               Left = 1
               Height = 48
               Top = 1
-              Width = 562
+              Width = 566
             end
           end
         end
@@ -323,25 +328,25 @@ object GUITestRunner: TGUITestRunner
           AutoSize = True
           BevelOuter = bvNone
           Caption = 'Panel7'
-          ClientHeight = 158
-          ClientWidth = 564
+          ClientHeight = 371
+          ClientWidth = 568
           FullRepaint = False
           TabOrder = 1
-          Height = 158
+          Height = 371
           Top = 63
-          Width = 564
+          Width = 568
           object TestTree: TTreeView
             Align = alClient
             BackgroundColor = clBtnFace
             Color = clBtnFace
-            DefaultItemHeight = 19
+            DefaultItemHeight = 16
             Images = ImageList1
             PopupMenu = PopupMenu3
             ScrollBars = ssAutoBoth
             TabOrder = 0
             OnSelectionChanged = TestTreeSelectionChanged
-            Height = 158
-            Width = 564
+            Height = 371
+            Width = 568
           end
         end
         object Panel8: TPanel
@@ -349,50 +354,52 @@ object GUITestRunner: TGUITestRunner
           BevelOuter = bvNone
           Caption = 'Panel8'
           ClientHeight = 84
-          ClientWidth = 564
+          ClientWidth = 568
           Constraints.MinHeight = 80
           FullRepaint = False
           TabOrder = 2
           Height = 84
-          Top = 226
-          Width = 564
+          Top = 439
+          Width = 568
           object Memo1: TMemo
             Align = alClient
             PopupMenu = PopupMenu2
             ScrollBars = ssAutoVertical
             TabOrder = 0
             Height = 84
-            Width = 564
+            Width = 568
           end
         end
         object Splitter1: TSplitter
           Align = alBottom
           Cursor = crVSplit
           Height = 5
-          Width = 564
+          Width = 568
           ResizeAnchor = akBottom
           Cursor = crVSplit
           Height = 5
-          Top = 221
-          Width = 564
+          Top = 434
+          Width = 568
         end
       end
       object tsResultsXML: TTabSheet
         Caption = 'Results XML'
-        ClientHeight = 310
-        ClientWidth = 564
-        Height = 310
-        Width = 564
+        ClientHeight = 523
+        ClientWidth = 568
+        Left = 2
+        Height = 523
+        Top = 30
+        Width = 568
         object Panel3: TPanel
           Align = alClient
           BevelOuter = bvNone
           Caption = 'Panel3'
-          ClientHeight = 309
+          ClientHeight = 523
           ClientWidth = 568
           FullRepaint = False
           TabOrder = 0
           TabStop = True
-          Height = 309
+          Height = 523
           Width = 568
           object Panel5: TPanel
             Align = alTop
@@ -406,6 +413,7 @@ object GUITestRunner: TGUITestRunner
             Width = 568
             object SpeedButton1: TSpeedButton
               Action = actCopy
+              Color = clBtnFace
               Flat = True
               Glyph.Data = {
                 880D00002F2A2058504D202A2F0A7374617469632063686172202A2065646974
@@ -529,6 +537,7 @@ object GUITestRunner: TGUITestRunner
             end
             object SpeedButton2: TSpeedButton
               Action = actCut
+              Color = clBtnFace
               Flat = True
               Glyph.Data = {
                 CC0500002F2A2058504D202A2F0A7374617469632063686172202A2065646974
@@ -602,7 +611,7 @@ object GUITestRunner: TGUITestRunner
             Align = alClient
             PopupMenu = PopupMenu1
             TabOrder = 1
-            Height = 261
+            Height = 475
             Top = 48
             Width = 568
           end
@@ -614,7 +623,7 @@ object GUITestRunner: TGUITestRunner
     left = 16
     top = 432
     Bitmap = {
-      6C690D00000010000000100000009D0E00002F2A2058504D202A2F0A73746174
+      6C690E00000010000000100000009D0E00002F2A2058504D202A2F0A73746174
       69632063686172202A206C65646C69676874677265656E5F78706D5B5D203D20
       7B0A223136203136203139342032222C0A2220200963204E6F6E65222C0A222E
       2009632023303234323046222C0A222B2009632023313934383334222C0A2240
@@ -1500,7 +1509,55 @@ object GUITestRunner: TGUITestRunner
       203D2E2D2E3B2E3E2E3B2E2D2E3D2E4A20512020202020222C0A222020202020
       2020202C2E75206820272E292E272E202E212E7E2E202020202020222C0A2220
       20202020202020202020207E2E7B2E70205D2E5E2E2020202020202020202022
-      7D3B0A
+      7D3B0AFA0500002F2A2058504D202A2F0A7374617469632063686172202A2062
+      6C756562616C6C5F78706D5B5D203D207B0A2231362031362037372031222C0A
+      22200963204E6F6E65222C0A222E09632023303030303030222C0A222B096320
+      23443344434644222C0A224009632023453045354644222C0A22230963202343
+      4544384644222C0A222409632023423643364644222C0A222509632023413042
+      334643222C0A222609632023384141324642222C0A222A096320233431363846
+      39222C0A223D09632023413042334642222C0A222D0963202344364445464422
+      2C0A223B09632023463146344646222C0A223E09632023443544454645222C0A
+      222C09632023424143384644222C0A222709632023394542324643222C0A2229
+      09632023383339424643222C0A222109632023363738364641222C0A227E0963
+      2023353237364639222C0A227B09632023374539394641222C0A225D09632023
+      423443334644222C0A225E09632023434444374645222C0A222F096320234446
+      45364645222C0A222809632023444645354645222C0A225F0963202343434437
+      4645222C0A223A09632023423343344644222C0A223C09632023393941454643
+      222C0A225B09632023374639414642222C0A227D09632023363438344642222C
+      0A227C09632023343936454641222C0A223109632023334136324638222C0A22
+      3209632023354437454639222C0A223309632023384541354643222C0A223409
+      632023413642374644222C0A223509632023423943374644222C0A2236096320
+      23433444314644222C0A223709632023433544304644222C0A22380963202338
+      4641354642222C0A223909632023373639334642222C0A223009632023354437
+      444641222C0A226109632023343336394641222C0A2262096320233339363246
+      38222C0A226309632023354237434639222C0A22640963202337453938464222
+      2C0A226509632023393241384643222C0A226609632023413942424643222C0A
+      226709632023413142344644222C0A226809632023393141384642222C0A2269
+      09632023363838374641222C0A226A09632023353037354641222C0A226B0963
+      2023334136334638222C0A226C09632023353437364639222C0A226D09632023
+      364238394641222C0A226E09632023374239364642222C0A226F096320233837
+      41304643222C0A227009632023384541354642222C0A22710963202338384130
+      4643222C0A227209632023364138394641222C0A227309632023353737394641
+      222C0A227409632023343236384639222C0A227509632023343236394638222C
+      0A227609632023353437384639222C0A227709632023363338334641222C0A22
+      7809632023364338414641222C0A227909632023373238464642222C0A227A09
+      632023373238464641222C0A224109632023364438424642222C0A2242096320
+      23363238324641222C0A224309632023353437384641222C0A22440963202334
+      3436414639222C0A224509632023334536354639222C0A224609632023344136
+      454639222C0A224709632023353237364641222C0A2248096320233536373946
+      41222C0A224909632023344136464639222C0A224A0963202333443635463922
+      2C0A224B09632023334236334639222C0A224C09632023333936334638222C0A
+      2220202020202020202020202020202020222C0A22202020202E2E2E2E2E2E2E
+      2E20202020222C0A222020202E202B40232425262A2E202020222C0A22202E2E
+      3D2D3B3B3E2C2729217E2E2E20222C0A22202E7B5D5E2F285F3A3C5B7D7C312E
+      20222C0A222E32333435363735343839306131622E222C0A222E636465256666
+      676864696A316B622E222C0A222E6C6D6E6F7033716E72737462626B2E222C0A
+      222E75767778797A41424344623131622E222C0A222E62454647487347494A62
+      316231622E222C0A222E62316B314B4B62623162316B31622E222C0A222E3131
+      313162314C31313131626B622E222C0A22202E6231623131313131313162622E
+      20222C0A22202E2E6231314C62626B6231312E2E20222C0A222020202E626262
+      62626231622E202020222C0A22202020202E2E2E2E2E2E2E2E20202020227D3B
+      0A
     }
   end
   object ActionList1: TActionList

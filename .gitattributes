@@ -122,6 +122,7 @@ components/customform/lazcustforms.lpk svneol=native#text/plain
 components/customform/lazcustforms.pas svneol=native#text/plain
 components/fpcunit/Makefile svneol=native#text/plain
 components/fpcunit/Makefile.fpc svneol=native#text/plain
+components/fpcunit/blueball.xpm svneol=native#text/plain
 components/fpcunit/fpcunittestrunner.lpk svneol=native#text/pascal
 components/fpcunit/fpcunittestrunner.pas svneol=native#text/pascal
 components/fpcunit/guitestrunner.lfm svneol=native#text/plain
