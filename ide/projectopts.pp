@@ -379,7 +379,8 @@ end;
 
 procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
-  LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+  if (LazDocListBox.ItemIndex >= 0) then
+    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
