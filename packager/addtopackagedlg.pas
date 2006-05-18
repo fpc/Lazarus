@@ -38,8 +38,9 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc, NewItemIntf, ProjectIntf,
+  Classes, SysUtils, LResources, LCLType, Forms, Controls, Buttons, StdCtrls,
+  ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
+  NewItemIntf, ProjectIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
   
@@ -151,6 +152,8 @@ type
     procedure AddFileShortenButtonClick(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject;
                                    var CloseAction: TCloseAction);
+    procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word;
+                                     Shift: TShiftState);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitFileShortenButtonClick(Sender: TObject);
@@ -475,6 +478,13 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TAddToPackageDlg.AddToPackageDlgKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key=VK_ESCAPE) and (Shift=[]) then
+    ModalResult:=mrCancel;
+end;
+
 procedure TAddToPackageDlg.AddFilePageResize(Sender: TObject);
 var
   x: Integer;
@@ -774,23 +784,33 @@ begin
   ok:=false;
   try
     LastParams:=nil;
-    for i:=0 to FilesListView.Items.Count-1 do begin
+    i:=0;
+    while i<FilesListView.Items.Count do begin
       Filename:=FilesListView.Items[i].Caption;
       LazPackage.LongenFilename(Filename);
 
       // skip directories
-      if DirPathExists(Filename) then continue;
+      if DirPathExists(Filename) then begin
+        FilesListView.Items.Delete(i);
+        continue;
+      end;
       
+      // skip not existing files
+      if (not FileExists(Filename)) then begin
+        if QuestionDlg(lisFileNotFound,
+          Format(lisPkgMangFileNotFound, ['"', Filename, '"']),
+          mtError,[mrIgnore,mrCancel],0)<>mrIgnore
+        then
+          exit;
+        FilesListView.Items.Delete(i);
+        continue;
+      end;
+
       NewFileType:=FileNameToPkgFileType(Filename);
 
-      if (not FileExists(Filename)) then begin
-        MessageDlg(lisFileNotFound,
-          Format(lisPkgMangFileNotFound, ['"', Filename, '"']),
-          mtError,[mbCancel],0);
-        exit;
-      end;
       if LazPackage.FindPkgFile(Filename,true,true,false)<>nil then begin
         // file already in package
+        FilesListView.Items.Delete(i);
         continue;
       end;
 
@@ -811,7 +831,11 @@ begin
 
         // check filename
         if not CheckAddingUnitFilename(LazPackage,CurParams.AddType,
-          OnGetIDEFileInfo,CurParams.UnitFilename) then exit;
+          OnGetIDEFileInfo,CurParams.UnitFilename)
+        then begin
+          FilesListView.Items.Delete(i);
+          exit;
+        end;
 
         CurParams.AutoAddLFMFile:=true;
         CurParams.AutoAddLRSFile:=true;
@@ -829,11 +853,14 @@ begin
               Format(lisA2PTheUnitNameAndFilenameDiffer, ['"',
                 CurParams.UnitName, '"', #13, '"', CurParams.UnitFilename, '"']),
             mtError,[mbIgnore,mbCancel],0)<>mrIgnore
-          then
+          then begin
+            FilesListView.Items.Delete(i);
             exit;
+          end;
         end;
       end;
       LastParams:=CurParams;
+      inc(i);
     end;
     ok:=LastParams<>nil;
   finally
@@ -1913,6 +1940,8 @@ begin
   Params:=TAddToPkgResult.Create;
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
+  KeyPreview:=true;
+  OnKeyDown:=@AddToPackageDlgKeyDown;
   SetupComponents;
   OnClose:=@AddToPackageDlgClose;
 end;

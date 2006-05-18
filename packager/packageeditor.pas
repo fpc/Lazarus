@@ -1915,16 +1915,19 @@ begin
   ShortDirectory:=NewDirectory;
   LazPackage.ShortenFilename(ShortDirectory,false);
   if ShortDirectory='' then exit;
-  UnitPath:=LazPackage.GetUnitPath(true);
-  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,ShortDirectory,1);
+  LazPackage.LongenFilename(NewDirectory);
+  
+  UnitPath:=LazPackage.GetUnitPath(false);
+  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
   IncPathPos:=1;
   if AnIncludeFile<>'' then begin
     NewIncDirectory:=ExtractFilePath(AnIncludeFile);
     ShortIncDirectory:=NewIncDirectory;
     LazPackage.ShortenFilename(ShortIncDirectory,false);
     if ShortIncDirectory<>'' then begin
-      IncPath:=LazPackage.GetIncludePath(true);
-      IncPathPos:=SearchDirectoryInSearchPath(IncPath,ShortIncDirectory,1);
+      LazPackage.LongenFilename(NewIncDirectory);
+      IncPath:=LazPackage.GetIncludePath(false);
+      IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory,1);
     end;
   end;
   if UnitPathPos<1 then begin
@@ -1939,7 +1942,7 @@ begin
       OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDirectory);
   end;
   if IncPathPos<1 then begin
-    // the unit is in untipath, but the include file not in the incpath
+    // the unit is in unitpath, but the include file not in the incpath
     // -> auto extend the include path
     with LazPackage.CompilerOptions do
       IncludePath:=MergeSearchPaths(IncludePath,ShortIncDirectory);

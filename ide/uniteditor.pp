@@ -285,6 +285,7 @@ type
     procedure CenterCursor;
     function TextToScreenPosition(const Position: TPoint): TPoint; override;
     function ScreenToTextPosition(const Position: TPoint): TPoint; override;
+    function ScreenToPixelPosition(const Position: TPoint): TPoint; override;
     function GetCursorScreenXY: TPoint; override;
     function GetCursorTextXY: TPoint; override;
     procedure SetCursorScreenXY(const AValue: TPoint); override;
@@ -2417,6 +2418,11 @@ end;
 function TSourceEditor.ScreenToTextPosition(const Position: TPoint): TPoint;
 begin
   Result:=FEditor.PhysicalToLogicalPos(Position);
+end;
+
+function TSourceEditor.ScreenToPixelPosition(const Position: TPoint): TPoint;
+begin
+  Result:=FEditor.RowColumnToPixels(Position);
 end;
 
 function TSourceEditor.LineCount: Integer;

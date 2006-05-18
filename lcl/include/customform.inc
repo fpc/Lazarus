@@ -1114,14 +1114,6 @@ end;
 {       TCustomForm SetFormBorderStyle                                         }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(NewStyle: TFormBorderStyle);
-const
-  DefaultBorderIcons : array[TFormBorderStyle] of TBorderIcons =
-    ([],                                        // bsNone
-     [biSystemMenu, biMinimize],                // bsSingle
-     [biSystemMenu, biMinimize, biMaximize],    // bsSizeable
-     [biSystemMenu],                            // bsDialog
-     [biSystemMenu, biMinimize],                // bsToolWindow
-     [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
 var
   AdaptBorderIcons: boolean;
 begin

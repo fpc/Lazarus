@@ -220,7 +220,9 @@ type
     FCount: integer;
     FParameterIndex: integer;
     FProcName: string;
+    FProcNameAtom: TAtomPosition;
     FStartPos: integer;
+    FTool: TFindDeclarationTool;
     function GetItems(Index: integer): TExpressionType;
   public
     constructor Create;
@@ -229,8 +231,10 @@ type
     property Items[Index: integer]: TExpressionType read GetItems; default;
     function Add(const Context: TExpressionType): integer;
     procedure Clear;
+    property Tool: TFindDeclarationTool read FTool write FTool;
     property ParameterIndex: integer read FParameterIndex write FParameterIndex;// 1 based
     property ProcName: string read FProcName write FProcName;
+    property ProcNameAtom: TAtomPosition read FProcNameAtom write FProcNameAtom;
     property StartPos: integer read FStartPos write FStartPos;// context is valid from StartPos to EndPos
     property EndPos: integer read FEndPos write FEndPos;
   end;
@@ -1226,11 +1230,13 @@ begin
   case FoundContext.Node.Desc of
   ctnProcedure:
     begin
+      //DebugLn('TIdentCompletionTool.CollectAllContexts CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentContexts.ProcNameAtom.StartPos));
       if (CurrentContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
       if not FoundContext.Tool.CompareSrcIdentifier(
         FoundContext.Tool.CurPos.StartPos,
-        CurrentContexts.ProcName) then exit;
+        CurrentContexts.ProcName)
+      then exit;
     end;
   else
     exit;
@@ -1421,7 +1427,9 @@ var
     Result:=true;
     if CurrentContexts=nil then
       CurrentContexts:=TCodeContextInfo.Create;
+    CurrentContexts.Tool:=Self;
     CurrentContexts.ParameterIndex:=ParameterIndex+1;
+    CurrentContexts.ProcNameAtom:=ProcNameAtom;
     CurrentContexts.ProcName:=GetAtom(ProcNameAtom);
     MoveCursorToAtomPos(ProcNameAtom);
     ReadNextAtom; // read opening bracket

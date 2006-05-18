@@ -85,6 +85,7 @@ type
     function HeightInLines: Integer; virtual; abstract;
     function CharWidth: integer; virtual; abstract;
     function CursorInPixel: TPoint; virtual; abstract;
+    function ScreenToPixelPosition(const Position: TPoint): TPoint; virtual; abstract;
 
     // update
     procedure BeginUndoBlock; virtual; abstract;

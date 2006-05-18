@@ -6710,13 +6710,17 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
     //DebugLn('CheckBrackets ',GetAtom,' ',dbgs(BracketAtom));
     repeat
       ReadNextAtom;
-      if CurPos.Flag=cafWord then begin
-        if CheckIdentifierAndParameterList() then exit(true);
-      end;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-        if CheckBrackets then exit(true);
-      end;
-      if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+        if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+          //DebugLn('CheckBrackets check word+bracket open');
+          UndoReadNextAtom;
+          if CheckIdentifierAndParameterList() then exit(true);
+        end else begin
+          //DebugLn('CheckBrackets check bracket open');
+          if CheckBrackets then exit(true);
+        end;
+      end else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]
+      then begin
         if (BracketAtom.Flag=cafRoundBracketOpen)
            =(CurPos.Flag=cafRoundBracketClose)
         then begin
@@ -6784,17 +6788,18 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
             end;
           until false;
         end;
-        if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
-        and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
-          //DebugLn('CheckIdentifierAndParameterList check word+bracket');
-          UndoReadNextAtom;
-          if CheckIdentifierAndParameterList() then exit(true);
-        end;
-        if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-          //DebugLn('CheckIdentifierAndParameterList check bracket open');
-          if CheckBrackets then exit(true);
-        end;
-        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+        if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
+          if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+            //DebugLn('CheckIdentifierAndParameterList check word+bracket open');
+            UndoReadNextAtom;
+            if CheckIdentifierAndParameterList() then exit(true);
+          end else begin
+            //DebugLn('CheckIdentifierAndParameterList check bracket open');
+            if CheckBrackets then exit(true);
+          end;
+        end
+        else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then
+        begin
           //DebugLn('CheckIdentifierAndParameterList check bracket close');
           if (BracketAtom.Flag=cafRoundBracketOpen)
           =(CurPos.Flag=cafRoundBracketClose)

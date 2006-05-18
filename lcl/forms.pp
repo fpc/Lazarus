@@ -1270,6 +1270,15 @@ type
 var
   MessageBoxFunction: TMessageBoxFunction;
 
+const
+  DefaultBorderIcons : array[TFormBorderStyle] of TBorderIcons =
+    ([],                                        // bsNone
+     [biSystemMenu, biMinimize],                // bsSingle
+     [biSystemMenu, biMinimize, biMaximize],    // bsSizeable
+     [biSystemMenu],                            // bsDialog
+     [biSystemMenu, biMinimize],                // bsToolWindow
+     [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
+
 procedure FreeWidgetSet;
 
 procedure Register;

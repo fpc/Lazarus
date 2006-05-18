@@ -1216,16 +1216,12 @@ end;
 
 function TCustomSynEdit.RowColumnToPixels(
   {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
-// converts Caret position (screen position (1,1) based)
+// converts screen position (1,1) based
 // to client area coordinate
 begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
-  {$IFDEF SYN_LAZARUS}
-  Result.Y := RowToScreenRow(Result.Y) * fTextHeight + 1;
-  {$ELSE}
   Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1618,7 +1614,11 @@ end;
 
 function TCustomSynEdit.CaretYPix: Integer;
 begin
+  {$IFDEF SYN_LAZARUS}
+  Result := RowToScreenRow(fCaretY) * fTextHeight + 1;
+  {$ELSE}
   Result := RowColumnToPixels(Point(1, fCaretY)).Y;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);

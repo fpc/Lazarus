@@ -316,8 +316,9 @@ procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   end;
   
 begin
-  if AForm.ComponentState*[csDesigning,csLoading]=[csDesigning] then begin
-    RaiseNotImplemented;
+  if (AForm.ComponentState*[csDesigning,csLoading]=[csDesigning]) then begin
+    if (AForm.BorderIcons<>DefaultBorderIcons[AForm.BorderStyle]) then
+      RaiseNotImplemented;
   end;
   inherited SetBorderIcons(AForm, ABorderIcons);
 end;

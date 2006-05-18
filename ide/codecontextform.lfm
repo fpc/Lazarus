@@ -1,7 +1,12 @@
 object CodeContextFrm: TCodeContextFrm
+  BorderIcons = []
+  BorderStyle = bsNone
   Caption = 'CodeContextFrm'
   ClientHeight = 300
   ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnPaint = FormPaint
   PixelsPerInch = 112
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299

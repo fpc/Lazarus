@@ -276,7 +276,7 @@ function MakeWParam(l, h: Word): WPARAM; inline;
 function MakeLParam(l, h: Word): LPARAM; inline;
 function MakeLResult(l, h: Word): LRESULT; inline;
 
-function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
+function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 
 function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
