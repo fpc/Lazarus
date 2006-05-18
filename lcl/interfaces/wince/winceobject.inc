@@ -1,7 +1,7 @@
 {%MainUnit winceint.pp}
 
 {******************************************************************************
-                                   TGtkWidgetSet
+                                   winceobject.inc
  ******************************************************************************
 
  *****************************************************************************
@@ -155,6 +155,53 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.SetCallback
+  Params: Msg    - message for which to set a callback
+          Sender - object to which callback will be sent
+  Returns:  nothing
+
+  Applies a Message to the sender
+ ------------------------------------------------------------------------------}
+Procedure TWinCEWidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
+Var
+  Window: HWnd;
+Begin
+  Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Start');
+  Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
+  Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
+  If Sender Is TControlCanvas Then
+    Window := TControlCanvas(Sender).Handle
+  Else If Sender Is TCustomForm Then
+    Window := TCustomForm(Sender).Handle
+  Else
+    Window := TWinControl(Sender).Handle;
+  if Window=0 then exit;
+
+  Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Exit');
+End;
+
+{------------------------------------------------------------------------------
+  Method: TWinCEWidgetSet.RemoveCallbacks
+  Params:   Sender - object from which to remove callbacks
+  Returns:  nothing
+
+  Removes Call Back Signals from the sender
+ ------------------------------------------------------------------------------}
+Procedure TWinCEWidgetSet.RemoveCallbacks(Sender: TObject);
+Var
+  Window: HWnd;
+Begin
+  If Sender Is TControlCanvas Then
+    Window := TControlCanvas(Sender).Handle
+  Else If Sender Is TCustomForm Then
+    Window := TCustomForm(Sender).Handle
+  Else
+    Window := (Sender as TWinControl).Handle;
+  if Window=0 then exit;
+End;
+
+
+{------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppProcessMessages
   Params:  None
   Returns: Nothing
@@ -162,8 +209,70 @@ end;
   Handle all pending messages
  ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.AppProcessMessages;
-begin
+var
+  AMessage: TMsg;
+  AccelTable: HACCEL;
+  retVal, index: dword;
+Begin
+  repeat
+{$ifdef DEBUG_ASYNCEVENTS}
+    if Length(FWaitHandles) > 0 then
+      DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount),
+        ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
+{$endif}
+    retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
+      FWaitHandles[0], false, 0, QS_ALLINPUT);
+    if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    begin
+      index := retVal-WAIT_OBJECT_0;
+      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
+    end else
+    if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
+    begin
+      while PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+      begin
+        AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
+        if (AccelTable = HACCEL(nil))
+          or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
+        begin
+          TranslateMessage(@AMessage);
+          DispatchMessage(@AMessage);
+        end;
+      end;
+    end else
+    if retVal = WAIT_TIMEOUT then
+    begin
+      // check for pending to-be synchronized methods
+      CheckSynchronize;
+      CheckPipeEvents;
+      break;
+    end else
+    if retVal = $FFFFFFFF then
+    begin
+      DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
+      break;
+    end;
+  until false;
+End;
 
+procedure TWinCEWidgetSet.CheckPipeEvents;
+var
+  lHandler: PPipeEventInfo;
+  lBytesAvail: dword;
+begin
+  lHandler := FWaitPipeHandlers;
+  while lHandler <> nil do
+  begin
+    {
+    roozbeh : ooops not supported
+    if Windows.PeekNamedPipe(lHandler^.Handle, nil, 0, nil, @lBytesAvail, nil) then
+    begin
+      if lBytesAvail <> 0 then
+        lHandler^.OnEvent(lHandler^.UserData, [prDataAvailable]);
+    end else}
+      lHandler^.OnEvent(lHandler^.UserData, [prBroken]);
+    lHandler := lHandler^.Next;
+  end;
 end;
 
 procedure TWinCEWidgetSet.AppRun(const ALoop: TApplicationMainLoop);

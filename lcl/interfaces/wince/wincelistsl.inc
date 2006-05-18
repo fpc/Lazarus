@@ -187,7 +187,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    Item := SysAllocStringLen(nil,Windows.SendMessage(FWinCEList, FFlagGetTextLen, Index, 0));
+    Item := PWideChar(SysAllocStringLen(nil,Windows.SendMessage(FWinCEList, FFlagGetTextLen, Index, 0)));
     Windows.SendMessage(FWinCEList, FFlagGetText, Index, LPARAM(Item));
   End;
   Result := String(WideString(Item));//roozbeh:maybe WideStringToString?
@@ -580,7 +580,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    Item := SysAllocStringLen(nil,Windows.SendMessage(FWinCECList,LB_GETTEXTLEN,Index,0));
+    Item := PWideChar(SysAllocStringLen(nil,Windows.SendMessage(FWinCECList,LB_GETTEXTLEN,Index,0)));
     Windows.SendMessage(FWinCECList, LB_GETTEXT, Index, LPARAM(Item));
     Result := String(WideString(Item));//roozbeh maybe Widestringtostring later
     SysFreeString(Item);

@@ -68,7 +68,7 @@ begin
   fLength := GetLineLength(Index);
   if fLength = 0 then Result := ''
   else begin
-    textbuf := SysAllocStringLen(nil,fLength+1);
+    textbuf := PWideChar(SysAllocStringLen(nil,fLength+1));
     PWord(textbuf)^ := Word(fLength+1);
     SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
     Result := WideStringToString(WideString(textbuf));

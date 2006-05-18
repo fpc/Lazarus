@@ -779,6 +779,7 @@ begin
   dec(OriginDiff.Y, winOrg.Y);
 end;
 
+
 function TWinCEWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
 var
   hBitmap: HGDIOBJ;
@@ -820,6 +821,7 @@ begin
   end;
 end;
 
+
 function TWinCEWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
@@ -830,6 +832,7 @@ end;
 begin
   Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
 end;}
+
 
 procedure TWinCEWidgetSet.FillRawImageDescriptionColors(Desc: PRawImageDescription);
 begin
@@ -879,6 +882,7 @@ begin
   end;
 end;
 
+
 procedure TWinCEWidgetSet.FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
     Desc: PRawImageDescription);
 begin
@@ -905,6 +909,7 @@ begin
   Desc^.AlphaByteOrder := riboLSBFirst;
 end;
 
+
 function TWinCEWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): Boolean;
 var
@@ -914,6 +919,8 @@ begin
   if Result then
     FillRawImageDescription(BitmapInfo, Desc);
 end;
+
+
 
 function TWinCEWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
 begin
@@ -945,6 +952,8 @@ begin
   Desc^.AlphaLineEnd := rileWordBoundary;
   Desc^.AlphaShift := 0;
 end;
+
+
 
 function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
@@ -983,6 +992,8 @@ begin
   Windows.DeleteObject(hMemBitmap);
 end;
 
+
+
 procedure TWinCEWidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap;
   const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte;
   var Size: Cardinal);
@@ -1010,10 +1021,11 @@ begin
   ScreenDC := GetDC(0);
   GetMem(Data, Size);
   GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
-  fillchar(data^,size,223);//roozbeh here just for test!
   // release resources
   ReleaseDC(0, ScreenDC);
 end;
+
+
 
 function TWinCEWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
@@ -1049,17 +1061,20 @@ begin
   end;
 end;
 
+
+
 function BytesPerLine(nWidth,nBitsPerPixel:integer):integer;
 begin
      result := ( (nWidth * nBitsPerPixel + 31) and (not 31) ) div 8;
 end;
 
 
+
 function TWinCEWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
 var
-hbit : HBITMAP;
+hbit,htargetbit : HBITMAP;
 lpDestBits : PChar;
 dwLen : longint;
 lpH:TBitmapInfoHeader;
@@ -1068,6 +1083,7 @@ i,dwError:longint;
 d:PByte;
 s,s0:PWord;
 pixel:word;
+dc2:HDC;
 begin
 nPadWidth := 4;
 lpH := InfoHeader;
@@ -1086,19 +1102,33 @@ if lpH.biSizeImage <> 0 then
 dwLen := lpH.biSizeImage;
 orig_bitcount := lpH.biBitCount;
 
-//if unaligned(InitInfo.bmiHeader.biBitCount) = 16 then
-//unaligned(InitInfo.bmiHeader.biBitCount) := 24;
+{if unaligned(InitInfo.bmiHeader.biBitCount) = 16 then
+unaligned(InitInfo.bmiHeader.biBitCount) := 24;}
 
-hbit := windows.CreateDIBSection( dc, windows.PBITMAPINFO(@lph)^,
-        DIB_RGB_COLORS, lpDestBits, 0, 0);
+{hbit := windows.CreateDIBSection( dc, windows.PBITMAPINFO(@lph)^,
+        DIB_RGB_COLORS, lpDestBits, 0, 0);}
+//getmem(lpDestBits,dwLen);
+hbit := Windows.CreateBitmap( lpH.biWidth, abs(lpH.biHeight),1,InitInfo.bmiHeader.biBitCount,InitBits);
+
+//dc2:=windows.getdc(0);
+//htargetbit := Windows.CreateCompatibleBitmap( dc2,lpH.biWidth, abs(lpH.biHeight));
+
+//SelectObject(dc,hbit);
+//SelectObject(dc2,htargetbit);
+//BitBlt(dc2,0, 0, lpH.biWidth, abs(lpH.biHeight), Dc, 0, 0, SRCPAINT);
+result := hbit;
+//DeleteObject(dc2);
+//DeleteObject(hbit);
+
+exit;
 
 //hbit := CreateDIBSection(dc, InitInfo, DIB_RGB_COLORS, lpDestBits, 0, 0);
-if (hbit <> 0) then
+//if (hbit <> 0) then
  begin
 
-   if orig_bitcount = 16 then
+   if (orig_bitcount = 16) then
     begin
-      if lpH.biCompression = BI_RGB then
+      if  (lpH.biCompression = BI_RGB) then
         begin
           s := PWord(InitBits);
 	  d := PByte(lpDestBits);
@@ -1124,7 +1154,11 @@ if (hbit <> 0) then
 	end else begin
 	    move(lpDestBits^, InitBits^, dwLen);
         end;
+
+        hbit := Windows.CreateBitmap( lpH.biWidth, abs(lpH.biHeight), InitInfo.bmiHeader.biPlanes,
+                               InitInfo.bmiHeader.biBitCount, lpDestBits );
 	result := hbit;
+        freemem(lpDestBits);
         exit;
     end;
     dwError := GetLastError();
@@ -1133,12 +1167,12 @@ if (hbit <> 0) then
 end;
 
 
+
 function TWinCEWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 var
   BitmapInfo: ^TBitmapInfo;
   hScreenDC,hVidDC: HDC;
-  Mask:^longint;
 begin
   BitmapInfo:=GetMem(sizeof(TBitmapInfo)+3*sizeof(TRGBQuad));
   FillChar(BitmapInfo^, sizeof(TBitmapInfo)+3*sizeof(TRGBQuad), 0);
@@ -1154,17 +1188,14 @@ begin
 
   unaligned(BitmapInfo^.bmiHeader.biClrUsed) := 0;
   unaligned(BitmapInfo^.bmiHeader.biClrImportant) := 0;
-//  unaligned(BitmapInfo^.bmiHeader.biSizeImage) := BytesPerLine(BitmapInfo^.bmiHeader.biWidth,BitmapInfo^.bmiHeader.biBitCount)*RawImage.Description.Height;
+  unaligned(BitmapInfo^.bmiHeader.biSizeImage) := BytesPerLine(BitmapInfo^.bmiHeader.biWidth,BitmapInfo^.bmiHeader.biBitCount)*RawImage.Description.Height;
 
   unaligned(BitmapInfo^.bmiColors[0]) := TRGBQuad($1f);
   unaligned(BitmapInfo^.bmiColors[1]) := TRGBQuad($3f shl 5);
   unaligned(BitmapInfo^.bmiColors[2]) := TRGBQuad($1f shl 11);
 
-  hScreenDC:= Windows.GetDC(0);
-//  hVidDC := Windows.CreateCompatibleDC(hScreenDC);
-  hVidDC := hScreenDC;
-//  Windows.ReleaseDC(0, hScreenDC);
- 
+  hVidDC:= Windows.GetDC(0);
+
   MaskBitmap := 0;
 
   Bitmap := CreateDIBitmap(hVidDC, BitmapInfo^.bmiHeader, CBM_INIT, PChar(RawImage.Data),
@@ -1188,11 +1219,13 @@ begin
 end;
 
 
+
 function TWinCEWidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
 begin
   Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
 end;
+
 
 {------------------------------------------------------------------------------
   Method:  GetFocus
@@ -1201,6 +1234,7 @@ end;
 
   The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
+
 Function TWinCEWidgetSet.GetFocus: HWND;
 Begin
   Result := Windows.GetFocus;
@@ -2627,6 +2661,7 @@ begin
       Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   end;
 end;
+
 
 
 //##apiwiz##epi##   // Do not remove

@@ -33,60 +33,219 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-{function TWinCEWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
-  Horizontal: boolean): boolean;
+function TWinCEWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
+var
+  listlen: dword;
+  lListIndex: pdword;
 begin
-  Result:=inherited DrawSplitter(DC, ARect, Horizontal);
+  listlen := Length(FWaitHandles);
+  if FWaitHandleCount = listlen then
+  begin
+    inc(listlen, 16);
+    SetLength(FWaitHandles, listlen);
+    SetLength(FWaitHandlers, listlen);
+  end;
+  New(lListIndex);
+  FWaitHandles[FWaitHandleCount] := AHandle;
+  FWaitHandlers[FWaitHandleCount].ListIndex := lListIndex;
+  FWaitHandlers[FWaitHandleCount].UserData := AData;
+  FWaitHandlers[FWaitHandleCount].OnEvent := AEventHandler;
+  lListIndex^ := FWaitHandleCount;
+  Inc(FWaitHandleCount);
+{$ifdef DEBUG_ASYNCEVENTS}  
+  DebugLn('Waiting for handle: ', IntToHex(AHandle, 8));
+{$endif}
+  Result := lListIndex;
 end;
 
-function TWinCEWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
-  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+procedure TWinCEWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
+var
+  lListIndex: pdword absolute AHandler;
+  I: dword;
 begin
-  Result:=inherited ExtUTF8Out(DC, X, Y, Options, Rect, Str, Count, Dx);
+  if AHandler = nil then exit;
+{$ifdef DEBUG_ASYNCEVENTS}
+  DebugLn('Removing handle: ', IntToHex(FWaitHandles[lListIndex^], 8));
+  if Length(FWaitHandles) > 0 then
+    DebugLn(' WaitHandleCount=', IntToStr(FWaitHandleCount), ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
+{$endif}    
+  // swap with last one
+  if FWaitHandleCount >= 2 then
+  begin
+    I := lListIndex^;
+    FWaitHandles[I] := FWaitHandles[FWaitHandleCount-1];
+    FWaitHandlers[I] := FWaitHandlers[FWaitHandleCount-1];
+    FWaitHandlers[I].ListIndex^ := I;
+  end;
+  Dec(FWaitHandleCount);
+  Dispose(lListIndex);
+  AHandler := nil;
 end;
 
-function TWinCEWidgetSet.FontCanUTF8(Font: HFont): boolean;
+function TWinCEWidgetSet.AddPipeEventHandler(AHandle: THandle;
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
+var
+  lHandler: PPipeEventInfo;
 begin
-  Result:=inherited FontCanUTF8(Font);
+  if AEventHandler = nil then exit;
+  New(lHandler);
+  lHandler^.Handle := AHandle;
+  lHandler^.UserData := AData;
+  lHandler^.OnEvent := AEventHandler;
+  lHandler^.Prev := nil;
+  lHandler^.Next := FWaitPipeHandlers;
+  if FWaitPipeHandlers <> nil then
+    FWaitPipeHandlers^.Prev := lHandler;
+  FWaitPipeHandlers := lHandler;
+  Result := lHandler;
 end;
 
-function TWinCEWidgetSet.GetAcceleratorString(const AVKey: Byte;
-  const AShiftState: TShiftState): String;
+procedure TWinCEWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+var
+  lHandler: PPipeEventInfo absolute AHandler;
 begin
-  Result:=inherited GetAcceleratorString(AVKey, AShiftState);
+  if AHandler = nil then exit;
+  if lHandler^.Prev <> nil then
+    lHandler^.Prev^.Next := lHandler^.Next
+  else
+    FWaitPipeHandlers := lHandler^.Next;
+  if lHandler^.Next <> nil then
+    lHandler^.Next^.Prev := lHandler^.Prev;
+  Dispose(lHandler);
+  AHandler := nil;
 end;
 
+function TWinCEWidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+var
+  lProcessEvent: PProcessEvent;
+begin
+  if AEventHandler = nil then exit;
+  New(lProcessEvent);
+  lProcessEvent^.Handle := AHandle;
+  lProcessEvent^.UserData := AData;
+  lProcessEvent^.OnEvent := AEventHandler;
+  lProcessEvent^.Handler := AddEventHandler(AHandle, 0, 
+    @HandleProcessEvent, PtrInt(lProcessEvent));
+  Result := lProcessEvent;
+end;
+
+procedure TWinCEWidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
+var
+  lProcessEvent: PProcessEvent absolute AData;
+  exitcode: dword;
+begin
+  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode) then
+    exitcode := 0;
+  lProcessEvent^.OnEvent(lProcessEvent^.UserData, cerExit, exitcode);
+end;
+
+procedure TWinCEWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+var
+  lProcessEvent: PProcessEvent absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  RemoveEventHandler(lProcessEvent^.Handler);
+  Dispose(lProcessEvent);
+  AHandler := nil;
+end;
+
+procedure TWinCEWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+const
+    { up, down, left, right }
+  ArrowTypeToState: array[TArrowType] of dword = (DFCS_SCROLLUP, DFCS_SCROLLDOWN,
+    DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+var
+  drawRect: Windows.RECT;
+  canvasHandle: HDC;
+begin
+  drawRect := TControl(Arrow).ClientRect;
+  canvasHandle := TCanvas(Canvas).Handle;
+  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE));
+  dec(drawRect.Left, 2);
+  dec(drawRect.Top, 2);
+  inc(drawRect.Right, 2);
+  inc(drawRect.Bottom, 2);
+  Windows.DrawFrameControl(TCanvas(Canvas).Handle, @drawRect,
+	DFC_SCROLL, ArrowTypeToState[TArrow(Arrow).ArrowType]);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetAcceleratorString
+  Params: AVKey:
+          AShiftState:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+begin
+  //TODO: Implement
+  Result := '';
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds.
+ ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
+var
+  SizeConstraints: TSizeConstraints;
+  SizeRect: TRect;
+  Height, Width: Integer;
+  FixedHeight, FixedWidth: boolean;
 begin
-  Result:=inherited GetControlConstraints(Constraints);
+  Result:=true;
+  if Constraints is TSizeConstraints then begin
+    SizeConstraints:=TSizeConstraints(Constraints);
+
+    if (SizeConstraints.Control=nil) then exit;
+
+    FixedHeight := false;
+    FixedWidth := false;
+    {if SizeConstraints.Control is TCustomCalendar then
+    begin
+      FixedHeight := true;
+      FixedWidth := true;
+    end;}
+    
+    if (FixedHeight or FixedWidth)
+      and TWinControl(SizeConstraints.Control).HandleAllocated then 
+    begin
+      Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
+      if FixedHeight then
+        Height := SizeRect.Bottom - SizeRect.Top
+      else
+        Height := 0;
+      if FixedWidth then
+        Width := SizeRect.Right - SizeRect.Left
+      else
+        Width := 0;
+      SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
+    end;
+  end;
 end;
 
-function TWinCEWidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
+{------------------------------------------------------------------------------
+  Function: GetListBoxIndexAtY
+  Params: ListBox:
+          y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
 begin
-  Result:=inherited GetLCLOwnerObject(Handle);
+  Result := -1;
+  if ListBox is TCustomListBox then begin
+    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
+    if hi(Result)=0 then
+      Result := lo(Result)
+    else Result := -1;
+  end;
 end;
 
-function TWinCEWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer
-  ): integer;
-begin
-  Result:=inherited GetListBoxIndexAtY(ListBox, y);
-end;
-
-function TWinCEWidgetSet.GetListBoxItemRect(ListBox: TComponent;
-  Index: integer; var ARect: TRect): boolean;
-begin
-  Result:=inherited GetListBoxItemRect(ListBox, Index, ARect);
-end;
-
-function TWinCEWidgetSet.IntfSendsUTF8KeyPress: boolean;
-begin
-  Result:=inherited IntfSendsUTF8KeyPress;
-end;
-
-function TWinCEWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
-  NewMask: HBitmap): boolean;
-begin
-  Result:=inherited ReplaceBitmapMask(Image, Mask, NewMask);
-end;
-}
-//##apiwiz##epi##   // Do not remove
+//##apiwiz##eps##   // Do not remove, no wizard declaration after this line

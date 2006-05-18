@@ -5,7 +5,7 @@ unit winceproc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus;
+  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,WinCEWinAPIEmu;
   
   Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -73,12 +73,6 @@ function GetControlText(AHandle: HWND): string;
 
 procedure AddToChangedMenus(Window: HWnd);
 
-//roozbeh:this thing belong to windows unit...someone should move them there!
-function GetTextExtentPoint(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
-function GetTextExtentPoint32(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
-//becouse wince is only unicode,it allocs in unicode!
-function SysAllocStringLen(psz:pointer;len:dword):pointer;
-procedure SysFreeString(bstr:pointer);
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -98,32 +92,12 @@ uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
-function GetTextExtentPoint(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
-begin
-Windows.GetTextExtentExPoint(dc, Str, Count, 0, nil, nil, @Size);
-end;
 
-function GetTextExtentPoint32(DC: HDC; Str: PWideChar; Count: Integer; var Size: TSize): BOOL;
-begin
-GetTextExtentPoint(dc, Str, Count, Size);
-end;
-
-
-function SysAllocStringLen(psz:pointer;len:dword):pointer;stdcall;
- external 'oleaut32.dll' name 'SysAllocStringLen';
-
-procedure SysFreeString(bstr:pointer);stdcall;
- external 'oleaut32.dll' name 'SysFreeString';
-
-function SysReAllocStringLen(var bstr:pointer;psz: pointer;
-  len:dword): Integer; stdcall;external 'oleaut32.dll' name 'SysReAllocStringLen';
-
-//better name for this?!
 function CreatePWideCharFromString(inString : string): PWideChar;
 var
 tmpWideChar : PWideChar;
 begin
-    tmpWideChar := SysAllocStringLen(nil,Length(inString));//it automatically reserves +1 to string!
+    tmpWideChar := PWideChar(SysAllocStringLen(nil,Length(inString)));//it automatically reserves +1 to string!
     MultiByteToWideChar(CP_ACP, 0, PChar(inString), -1, tmpWideChar, Length(inString));
     Result := tmpWideChar;
 end;
@@ -498,112 +472,6 @@ Begin
 End;
 
 
-//roozbeh:
-//well becouse as far as i noticed to use win32 lcl implementations-which seems to working good enough so why not use it-
-//it depends heavilly on windowinfos for everything
-//unfortunatly there are not setprop or removeprops exist on wince...so we have to implement something similar!
-type
-  PTPropertyListWindows = ^TPropertyListWindows;
-  TPropertyListWindows = record
-   WindowHWND : HWND;
-   WindowInfo : HANDLE;//if you want to make it just like windows this also should be an array!
-   NextPropertyListWindows : PTPropertyListWindows;
-  end;
-
-var
-  ThePropertyLists : PTPropertyListWindows;
-
-function SetProp(hWnd:HWND; {lpString:LPCSTR;} hData:HANDLE):WINBOOL;
-var
-  pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
-begin
-  Result := true;
-  if ThePropertyLists = nil then
-  begin
-    New(ThePropertyLists);
-    writeln('new called + '+ inttostr(longint(ThePropertyLists)));
-    ThePropertyLists^.WindowInfo := 0;
-    ThePropertyLists^.WindowHWND := 0;
-    ThePropertyLists^.NextPropertyListWindows := nil;
-  end;
-  pPropertyLists := ThePropertyLists;
-  pPrevPropertyLists := nil;
-  repeat
-    if (pPropertyLists^.WindowHWND = hWnd) or (pPropertyLists^.WindowHWND = 0) then
-    begin
-      pPropertyLists^.WindowInfo := hData;
-      pPropertyLists^.WindowHWND := hWnd;//if it was 0 then make it hwnd
-      break;
-    end;
-    pPrevPropertyLists := pPropertyLists;
-    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-  until pPropertyLists = nil;
-
-  if pPropertyLists = nil then//not found in previously created ones
-  begin
-    New(pPrevPropertyLists^.NextPropertyListWindows);
-    pPropertyLists := pPrevPropertyLists^.NextPropertyListWindows;
-
-    pPropertyLists^.NextPropertyListWindows := nil;
-    pPropertyLists^.WindowHWND := hWnd;
-    pPropertyLists^.WindowInfo := hData;
-  end;
-end;
-
-
-function GetProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
-var
-  pPropertyLists : PTPropertyListWindows;
-begin
-  Result := 0;
-  pPropertyLists := ThePropertyLists;
-  if pPropertyLists = nil then
-  begin
-    writeln('getprop called with nil list');
-    exit;
-  end;
-  repeat
-    if (pPropertyLists^.WindowHWND = hWnd) then
-    begin
-      result := pPropertyLists^.WindowInfo;
-      break;
-    end;
-    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-  until pPropertyLists = nil;
-end;
-
-
-function RemoveProp(hWnd:HWND{; lpString:LPCSTR}):HANDLE;
-var
-  pPrevPropertyLists,pPropertyLists : PTPropertyListWindows;
-begin
-  exit;
-  writeln('remove called');
-  Result := 0;
-  pPropertyLists := ThePropertyLists;
-  pPrevPropertyLists := nil;
-  if pPropertyLists = nil then exit;
-  repeat
-    if (pPropertyLists^.WindowHWND = hWnd) then
-    begin
-      result := pPropertyLists^.WindowInfo;
-      if pPrevPropertyLists <> nil then
-      begin
-        pPrevPropertyLists^.NextPropertyListWindows := pPropertyLists^.NextPropertyListWindows;
-        Dispose(pPropertyLists);
-      end
-      else
-      begin//now the list contain nothing
-        Dispose(pPropertyLists);
-        ThePropertyLists := nil;
-      end;
-    break;
-    end;
-    pPrevPropertyLists := pPropertyLists;
-    pPropertyLists := pPropertyLists^.NextPropertyListWindows;
-  until pPropertyLists = nil;
-end;
-
 
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 var
@@ -612,7 +480,7 @@ begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
   WindowInfo^.DrawItemIndex := -1;
-  SetProp(Window, {PChar(dword(WindowInfoAtom)),} dword(WindowInfo));
+  WinCEWinAPIEmu.SetProp(Window, {PChar(dword(WindowInfoAtom)),} dword(WindowInfo));
   Result := WindowInfo;
 end;
 
@@ -620,8 +488,8 @@ function DisposeWindowInfo(Window: HWND): boolean;
 var
   WindowInfo: PWindowInfo;
 begin
-  WindowInfo := PWindowInfo(GetProp(Window{, PChar(dword(WindowInfoAtom))}));
-  Result := RemoveProp(Window{, PChar(dword(WindowInfoAtom))})<>0;
+  WindowInfo := PWindowInfo(WinCEWinAPIEmu.GetProp(Window{, PChar(dword(WindowInfoAtom))}));
+  Result := WinCEWinAPIEmu.RemoveProp(Window{, PChar(dword(WindowInfoAtom))})<>0;
   if Result then
   begin
     WindowInfo^.DisabledWindowList.Free;
@@ -631,10 +499,11 @@ end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
-  Result := PWindowInfo(GetProp(Window{, PChar(dword(WindowInfoAtom))}));
-  
+  Result := PWindowInfo(WinCEWinAPIEmu.GetProp(Window{, PChar(dword(WindowInfoAtom))}));
+
   if Result = nil then Result := @DefaultWindowInfo;
 end;
+
 
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
@@ -715,7 +584,7 @@ begin
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   DeleteAmpersands(Text);
   tmpText := CreatePWideCharFromString(Text);
-  Result := GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), textSize);
+  Result := Windows.GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), @textSize);
   DisposePWideChar(tmpText);
   if Result then
   begin
@@ -733,7 +602,7 @@ var
   tmpWideStr : PWideChar;
 begin
   TextLen := GetWindowTextLength(AHandle);
-  tmpWideStr := SysAllocStringLen(nil,TextLen + 1);
+  tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
   GetWindowText(AHandle, PWideChar(tmpWideStr), TextLen + 1);
   Result := WideStringToString(widestring(tmpWideStr));
   DisposePWideChar(tmpWideStr);
@@ -770,11 +639,6 @@ end;}
 
 
 initialization
-  New(ThePropertyLists);
-  ThePropertyLists^.WindowInfo := 0;
-  ThePropertyLists^.WindowHWND := 0;
-  ThePropertyLists^.NextPropertyListWindows := nil;
-
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   DefaultWindowInfo.DrawItemIndex := -1;
 

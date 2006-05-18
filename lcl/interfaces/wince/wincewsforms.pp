@@ -98,10 +98,11 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-          const ABorderIcons: TBorderIcons); override;
 
-{    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+{    class procedure DestroyHandle(const AWinControl: TWinControl); override;}
+
+    procedure SetBounds(const AWinControl: TWinControl;
+                                      const ALeft, ATop, AWidth, AHeight: Integer);
 
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
@@ -109,7 +110,7 @@ type
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
-                                   const ABorderIcons: TBorderIcons); override;}
+                                   const ABorderIcons: TBorderIcons); override;
   end;
 
   { TWinCEWSForm }
@@ -149,7 +150,7 @@ implementation
 
 uses Winceint;
 
-{ TWin32WSScrollBox }
+{ TWinCEWSScrollBox }
 
 function TWinCEWSScrollBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -233,8 +234,6 @@ end;
 class function TWinCEWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-//  hwnd: THandle;
-//  Str: array[0..255] of WideChar;
   Params: TCreateWindowExParams;
   LForm : TCustomForm;
 begin
@@ -263,6 +262,8 @@ begin
   
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // TODO: proper icon, for now set default icon
+  SetIcon(TCustomForm(AWinControl), 0);
   Result := Params.Window;
 
   {$ifdef VerboseWinCE}
@@ -277,6 +278,71 @@ begin
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
   SetIcon(AForm, 0);
 end;
+
+procedure TWinCEWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+          const AFormBorderStyle: TFormBorderStyle);
+begin
+  RecreateWnd(AForm);
+end;
+                            
+procedure TWinCEWSCustomForm.SetBounds(const AWinControl: TWinControl;
+    const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  SizeRect: Windows.RECT;
+  BorderStyle: TFormBorderStyle;
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  with SizeRect do
+  begin
+    Left := ALeft;
+    Top := ATop;
+    Right := ALeft + AWidth;
+    Bottom := ATop + AHeight;
+  end;
+  BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+      
+  // rect adjusted, pass to inherited to do real work
+  TWinCEWSWinControl.SetBounds(AWinControl, ALeft, ATop, SizeRect.Right - SizeRect.Left,
+    SizeRect.Bottom - SizeRect.Top);
+end;
+
+procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+var
+  winHandle: HWND;
+  iconHandle: HICON;
+begin
+  winHandle := AForm.Handle;
+  if GetDesigningBorderStyle(AForm) = bsDialog then
+    iconHandle := 0
+{ TODO: fix icon handling
+  else
+  if AIcon <> 0 then
+    iconHandle := AIcon
+}
+  else
+    iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
+  SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
+end;
+
+procedure TWinCEWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+  const AValue: TShowInTaskbar);
+begin
+  if not AForm.HandleAllocated then exit;
+  if (Application <> nil) and (AForm = Application.MainForm) then
+    exit;
+
+  RecreateWnd(AForm);
+end;
+
+procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+  DisableApplicationWindows(ACustomForm.Handle);
+  ShowWindow(ACustomForm.Handle, SW_SHOW);
+end;
+
 
 initialization
 

@@ -1,5 +1,4 @@
 {%MainUnit winceint.pp}
-{$ifndef roozbeh}
 {
  *****************************************************************************
  *                                                                           *
@@ -153,6 +152,8 @@ Function
     LParam: Windows.LParam): LResult; stdcall;
 Var
   LMessage: TLMessage;
+  menuItem: TObject;
+  menuHDC: HDC;
   PLMsg: PLMessage;
   R: TRect;
   P: TPoint;
@@ -421,7 +422,7 @@ Var
       end;
     end;
   end;
-{
+
   procedure CheckListBoxLButtonDown;
   var
     I: Integer;
@@ -444,7 +445,7 @@ Var
       end;
     end;
   end;
-}
+
   procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
   var
     Parent: TWinControl;
@@ -1007,10 +1008,10 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-///      if lWinControl is TCheckListBox then
-///        TWinCECheckListBoxStrings.DeleteItemRecords(Window);
-///      if lWinControl is TCustomFloatSpinEdit then
-///        DestroyFloatSpinEditBuddy(Window);
+      if lWinControl is TCheckListBox then
+        TWinCECheckListBoxStrings.DeleteItemRecords(Window);
+      if lWinControl is TCustomFloatSpinEdit then
+        DestroyFloatSpinEditBuddy(Window);
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -1030,6 +1031,17 @@ Begin
     End;*)
     WM_DRAWITEM:
     Begin
+      {
+      roozbeh : no menus yet
+      if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
+      begin
+        menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
+        if menuItem is TMenuItem then
+        begin
+          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
+        end
+      end;}
+
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
@@ -1053,7 +1065,7 @@ Begin
             ItemID := PDrawItemStruct(LParam)^.itemID;
             Area := PDrawItemStruct(LParam)^.rcItem;
             ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-            DC := LCLType.PDrawItemStruct(LParam)^._hDC;
+            DC := PDrawItemStruct(LParam)^._hDC;
           end;
           if WindowInfo <> @DefaultWindowInfo then
           begin
@@ -1068,7 +1080,7 @@ Begin
         begin
           Msg := LM_DRAWITEM;
           Ctl := 0;
-          DrawItemStruct := LCLType.PDrawItemStruct(LParam);
+          DrawItemStruct := PDrawItemStruct(LParam);
         end;
         WinProcess := false;
       end;
@@ -1083,8 +1095,8 @@ Begin
         else
           EnableApplicationWindows(Window);
 
-///      If (lWinControl is TCustomFloatSpinEdit) then
-///        EnableFloatSpinEditBuddy(Window, WParam<>0);
+      If (lWinControl is TCustomFloatSpinEdit) then
+        EnableFloatSpinEditBuddy(Window, WParam<>0);
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be
       // recreated when the enabled state is changed
@@ -1205,8 +1217,8 @@ Begin
       End;
 
       // CheckListBox functionality
-///      if lWinControl is TCheckListBox then
-///        CheckListBoxLButtonDown;
+      if lWinControl is TCheckListBox then
+        CheckListBoxLButtonDown;
     End;
     WM_LBUTTONDOWN:
     Begin
@@ -1235,8 +1247,8 @@ Begin
       End;
 
       // CheckListBox functionality
-///      if lWinControl is TCheckListBox then
-///        CheckListBoxLButtonDown;
+      if lWinControl is TCheckListBox then
+        CheckListBoxLButtonDown;
       // focus window
       if (Windows.GetFocus <> Window) and
           ((lWinControl = nil) or (lWinControl.CanFocus)) then
@@ -1358,6 +1370,7 @@ Begin
         if lWinControl.FCompStyle <> csComboBox then
         begin
           Msg := LM_MOUSEWHEEL;
+          Button := Lo(WParam);
           WheelDelta := SmallInt(Hi(WParam));
           State := GetShiftState;
           UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
@@ -1426,7 +1439,7 @@ Begin
         Begin
           Msg := LM_NOTIFY;
           IDCtrl := WParam;
-          NMHdr := LCLTYPE.PNMHDR(LParam);
+          NMHdr := PNMHDR(LParam);
           With NMHdr^ do
           case code of
             TCN_SELCHANGING:
@@ -1587,7 +1600,7 @@ Begin
       Begin
         Msg := LM_WINDOWPOSCHANGED;
         Unused := WParam;
-        WindowPos := LMESSAGES.PWindowPos(LParam);
+        WindowPos := PWindowPos(LParam);
       End;
       // cross-interface compatible: complete invalidate on resize
       if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
@@ -1595,6 +1608,20 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
+      {
+      roozbeh : no menues yet!
+      if WParam = 0 then begin
+        menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
+        if menuItem is TMenuItem then
+        begin
+          menuHDC := GetDC(Window);
+          PMeasureItemStruct(LParam)^.itemWidth := MenuItemLength(TMenuItem(menuItem), menuHDC);
+          PMeasureItemStruct(LParam)^.itemHeight := MenuItemHeight(TMenuItem(menuItem), menuHDC);
+          ReleaseDC(Window, menuHDC);
+          Winprocess := False;
+        end else
+          DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
+      end;}
       if LWinControl<>nil then begin
         if LWinControl is TCustomCombobox then begin
           LMessage.Msg := LM_MEASUREITEM;
@@ -1921,9 +1948,8 @@ begin
   setlength(MessageStackDepth, length(MessageStackDepth)-1);
 end;
 
-{$endif}
 
-{$else}
+{1$else}
 //here was everything previously on this source file
 
 {------------------------------------------------------------------------------
@@ -1970,7 +1996,6 @@ begin
 end;
 {$endif}
 
-
 {------------------------------------------------------------------------------
  Function: ComboBoxWindowProc
  Params: Window - The window that receives a message
@@ -2000,4 +2025,29 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+ Procedure: TimerCallBackProc
+ Params: window_hnd - handle of window for timer message, not set in this implementation
+         msg        - WM_TIMER message
+         idEvent    - timer identifier
+         dwTime     - current system time
 
+ Calls the timerfunction in the Timer Object in the LCL
+ ------------------------------------------------------------------------------}
+{
+Procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT; dwTime: DWORD); stdcall;
+Var
+  TimerInfo: PWin32TimerInfo;
+  n: Integer;
+begin
+  n := FTimerData.Count;
+  while (n>0) do begin
+    dec(n);
+    TimerInfo := FTimerData[n];
+    if TimerInfo^.TimerID=idEvent then begin
+      TimerInfo^.TimerFunc;
+      break;
+    end;
+  end;
+end;
+}

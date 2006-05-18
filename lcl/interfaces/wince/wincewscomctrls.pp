@@ -34,7 +34,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
   // wince widgetset
-   WinCEInt, WinCEProc, WinCEWSControls;
+   WinCEInt, WinCEProc, WinCEWSControls,WinCEWinAPIEmu;
 
 type
 
@@ -225,11 +225,6 @@ type
 
 
 implementation
-//missed in windows decleartion!
-const
-PBS_SMOOTH=01;
-PBS_VERTICAL=04;
-PBM_SETRANGE32=WM_USER+6;
 
 
 {$I wincewscustomlistview.inc }
@@ -249,6 +244,7 @@ procedure UpdateStatusBarPanel(const StatusPanel: TStatusPanel);
 var
   BevelType: integer;
   Text: string;
+  pwText : PWideChar;
 begin
   Text := StatusPanel.Text;
   case StatusPanel.Alignment of
@@ -260,7 +256,9 @@ begin
     pbLowered: BevelType := 0;
     pbRaised: BevelType := Windows.SBT_POPOUT;
   end;
-  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+  pwText := CreatePWideCharFromString(Text);
+  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(pwText));
+  DisposePWideChar(pwText);
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
@@ -272,7 +270,7 @@ begin
   if StatusBar.Panels.Count=0 then begin
     // SETPARTS 0,0 does not work :S
     Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
-    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PChar('')));
+    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PWideChar('')));
     exit;
   end;
   Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
@@ -290,8 +288,8 @@ begin
 end;
 
 { TWinCEWSStatusBar }
-function InitCommonControlsEx_(_para1:LPINITCOMMONCONTROLSEX):WINBOOL; external ComctlDLL name
-'InitCommonControlsEx';
+
+function InitCommonControlsEx_(_para1:LPINITCOMMONCONTROLSEX):WINBOOL; external ComctlDLL name 'InitCommonControlsEx';
 
 function TWinCEWSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;

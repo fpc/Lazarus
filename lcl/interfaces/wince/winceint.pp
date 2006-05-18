@@ -43,7 +43,7 @@ interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc;
+  LMessages, StdCtrls, SysUtils, Graphics, Menus,Winceproc,WinCEWinAPIEmu;
 //roozbeh:the following makes some errors in wincewinapih that some procedures cannot be overriden!
 //also causes some nasty problems too....
 //why so many common names?just by changing units order program should not be ok or wrong...!!
@@ -99,6 +99,23 @@ Uses
      IDC_ARROW, IDC_ARROW, IDC_ARROW); *)
 
 type
+
+  PPPipeEventInfo = ^PPipeEventInfo;
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
+    Handle: THandle;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+    Prev: PPipeEventInfo;
+    Next: PPipeEventInfo;
+  end;
+
+  TWaitHandler = record
+    ListIndex: pdword;
+    UserData: PtrInt;
+    OnEvent: TWaitHandleEvent;
+  end;
+
   { WinCE interface-object class }
 
   { TWinCEWidgetSet }
@@ -122,48 +139,59 @@ type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
+    FWaitHandleCount: dword;
+    FWaitHandles: array of HANDLE;
+    FWaitHandlers: array of TWaitHandler;
+    FWaitPipeHandlers: PPipeEventInfo;
     procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const BitmapHandle: HBITMAP;
       const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
         Desc: PRawImageDescription);
 
-//    FWaitHandleCount: dword;
-//    FWaitHandles: array of HANDLE;
-//    FWaitHandlers: array of TWaitHandler;
-//    FWaitPipeHandlers: PPipeEventInfo;
 
     FThemesActive: boolean;
-    
+
+    { event handler helper functions }
+    procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
+    procedure CheckPipeEvents;
+
+
     Function WinRegister: Boolean;
 
   public
+    { Creates a callback of Lazarus message Msg for Sender }
+    Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
+    { Removes all callbacks for Sender }
+    Procedure RemoveCallbacks(Sender: TObject); virtual;
+
     { Constructor of the class }
-    constructor Create;
+    Constructor Create;
     { Destructor of the class }
-    destructor Destroy; override;
+    Destructor Destroy; Override;
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
+    Procedure AppTerminate; Override;
+    Function  InitHintFont(HintFont: TObject): Boolean; override;
+    Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
+    procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
-    procedure AppProcessMessages; override;
-    procedure AppWaitMessage; override;
-    Procedure AppTerminate; override;
-    Function  InitHintFont(HintFont: TObject): Boolean; override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
-    procedure AppRun(const ALoop: TApplicationMainLoop); override;
 
+    procedure ShowHide(Sender: TObject);
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
 
-    procedure ShowHide(Sender: TObject);
+
 
     {$I wincewinapih.inc}
     {$I wincelclintfh.inc}
@@ -188,7 +216,6 @@ const
   CP_UTF7                  = 65000;         { UTF-7 translation }
   CP_UTF8                  = 65001;         { UTF-8 translation }
 
-function GetTopWindow(hWnd:HWND):HWND;
 
 { export for widgetset implementation }
 
@@ -213,19 +240,19 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // WinCEWSActnList,
-// WinCEWSArrow,
+ WinCEWSArrow,
  WinCEWSButtons,
 // WinCEWSCalendar,
-// WinCEWSCheckLst,
+ WinCEWSCheckLst,
 // WinCEWSCListBox,
  WinCEWSComCtrls,
-// WinCEWSControls,
+ WinCEWSControls,
 // WinCEWSDbCtrls,
 // WinCEWSDBGrids,
 // WinCEWSDialogs,
 // WinCEWSDirSel,
 // WinCEWSEditBtn,
-// WinCEWSExtCtrls,
+ WinCEWSExtCtrls,
 // WinCEWSExtDlgs,
 // WinCEWSFileCtrl,
  WinCEWSForms,
@@ -234,14 +261,22 @@ uses
 // WinCEWSMaskEdit,
 // WinCEWSMenus,//roozbeh:not yet ready for use!
 // WinCEWSPairSplitter,
-// WinCEWSSpin,
+ WinCEWSSpin,
  WinCEWSStdCtrls,
- WinCEWSExtCtrls,
 // WinCEWSToolwin,
 ////////////////////////////////////////////////////
-  LCLProc;
+  Arrow, Spin, CheckLst, LclProc;
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
+
+  PProcessEvent = ^TProcessEvent;
+  TProcessEvent = record
+    Handle: THandle;
+    Handler: PEventHandler;
+    UserData: PtrInt;
+    OnEvent: TChildExitEvent;
+  end;
+
 
 var
   MouseDownTime: dword;
@@ -249,14 +284,8 @@ var
   MouseDownWindow: HWND = 0;
   MouseDownFocusWindow: HWND;
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
+  ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use yet
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
-  ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use ye
-
-//roozbeh...move this to somewhere more meaningfull!
-function GetTopWindow(hWnd:HWND):HWND;
-begin
-  Result := GetWindow(hWnd,GW_CHILD);
-end;
 
 
 {$I wincelistsl.inc}

@@ -33,7 +33,7 @@ uses
   SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc ,
   InterfaceBase,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls;
+  WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls,WinCEWinAPIEmu;
 
 type
 
@@ -263,6 +263,13 @@ type
           const AParams: TCreateParams): HWND; override;
   end;
 
+{ useful helper functions }
+
+function  EditGetSelStart(WinHandle: HWND): integer;
+function  EditGetSelLength(WinHandle: HWND): integer;
+procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
+procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
+
 {$DEFINE MEMOHEADER}
 {$I wincememostrings.inc}
 {$UNDEF MEMOHEADER}
@@ -375,6 +382,163 @@ begin
     Left := 0;
     Top := 0;
   end;
+end;
+
+
+{ TWinCEWSCustomListBox }
+
+function TWinCEWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    with TCustomListBox(AWinControl) do
+    begin
+      if Sorted then
+        Flags := Flags or LBS_SORT;
+      if MultiSelect then
+        if ExtendedSelect then
+          Flags := Flags or LBS_EXTENDEDSEL
+        else
+          Flags := Flags or LBS_MULTIPLESEL;
+      if AWinControl.FCompStyle = csCheckListBox then
+        Flags := Flags or LBS_OWNERDRAWFIXED
+      else case Style of
+        lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
+        lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
+      end;
+      if BorderStyle=bsSingle then
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    end;
+    pClassName := 'LISTBOX';
+    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
+                       LBS_NOTIFY);
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  // listbox is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
+  Result := Params.Window;
+end;
+
+//this should not be called in multiple selection things
+function  TWinCEWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
+  if Result = LB_ERR then
+  begin
+    Assert(false, 'Trace:[TWinCEWSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
+    Result := -1;
+  end;
+end;
+
+function  TWinCEWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+begin
+  // GetSelCount only works for multiple-selection listboxes
+  if ACustomListBox.MultiSelect then
+    Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETSELCOUNT, 0, 0)
+  else begin
+    if Windows.SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0) = LB_ERR then
+      Result := 0
+    else
+      Result := 1;
+  end;
+end;
+
+function  TWinCEWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  WindowInfo: PWindowInfo;
+  winHandle: HWND;
+begin
+  winHandle := ACustomListBox.Handle;
+  WindowInfo := GetWindowInfo(winHandle);
+  // if we're handling a WM_DRAWITEM, then LB_GETSEL is not reliable, check stored info
+  if (WindowInfo^.DrawItemIndex <> -1) and (WindowInfo^.DrawItemIndex = AIndex) then
+    Result := WindowInfo^.DrawItemSelected
+  else
+    Result := Windows.SendMessage(winHandle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
+end;
+
+function  TWinCEWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  Handle: HWND;
+begin
+  Handle := ACustomListBox.Handle;
+  Result := TWinCEListStringList.Create(Handle, ACustomListBox);
+  GetWindowInfo(Handle)^.List := Result;
+end;
+
+function  TWinCEWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result:=Windows.SendMessage(ACustomListBox.Handle, LB_GETTOPINDEX, 0, 0);
+end;
+
+procedure TWinCEWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+begin
+  if ACustomListBox.MultiSelect then
+    Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL,
+      Windows.WParam(ASelected), Windows.LParam(AIndex))
+  else
+  if ASelected then
+    SetItemIndex(ACustomListBox, AIndex)
+  else
+    SetItemIndex(ACustomListBox, -1);
+end;
+
+procedure TWinCEWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+var
+  Handle: HWND;
+  StyleEx: dword;
+begin
+  Handle := ACustomListBox.Handle;
+  StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
+  if ACustomListBox.BorderStyle = TBorderStyle(bsSingle) Then
+    StyleEx := StyleEx or WS_EX_CLIENTEDGE
+  else
+    StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
+  SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
+end;
+
+procedure TWinCEWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+var
+  Handle: HWND;
+begin
+  Handle := ACustomListBox.Handle;
+  if ACustomListBox.MultiSelect then
+  begin
+    // deselect all items first
+    Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(false), -1);
+    if AIndex >= 0 then
+      Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
+  end else
+    Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
+end;
+
+procedure TWinCEWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+  const AExtendedSelect, AMultiSelect: boolean);
+begin
+  RecreateWnd(ACustomListBox);
+end;
+
+procedure TWinCEWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
+  // The listbox styles can't be updated, so recreate the listbox
+  RecreateWnd(ACustomListBox);
+end;
+
+procedure TWinCEWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  TWinCEListStringList(AList).Sorted := ASorted;
+end;
+
+procedure TWinCEWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+begin
+  Windows.SendMessage(ACustomListBox.Handle, LB_SETTOPINDEX, NewTopIndex, 0);
 end;
 
 { TWinCEWSCustomComboBox }
@@ -540,13 +704,16 @@ end;
 procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
+  pwAText : pWideChar;
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
+  pwAText := CreatePWideCharFromString(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
-    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
+    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(pwAText))
   else
-    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(pwAText));
+  DisposePWideChar(pwAText);
 end;
 
 function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
@@ -563,162 +730,6 @@ begin
   TWinCEListStringList(AList).Sorted := IsSorted;
 end;
 
-
-{ TWinCEWSCustomListBox }
-
-function TWinCEWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
-begin
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  // customization of Params
-  with Params do
-  begin
-    with TCustomListBox(AWinControl) do
-    begin
-      if Sorted then
-        Flags := Flags or LBS_SORT;
-      if MultiSelect then
-        if ExtendedSelect then
-          Flags := Flags or LBS_EXTENDEDSEL
-        else
-          Flags := Flags or LBS_MULTIPLESEL;
-      if AWinControl.FCompStyle = csCheckListBox then
-        Flags := Flags or LBS_OWNERDRAWFIXED
-      else case Style of
-        lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
-        lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
-      end;
-      if BorderStyle=bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    end;
-    pClassName := 'LISTBOX';
-    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
-                       LBS_NOTIFY);
-  end;
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.hasTabParent := false;
-  Result := Params.Window;
-end;
-
-//this should not be called in multiple selection things
-function  TWinCEWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
-begin
-  Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
-  if Result = LB_ERR then
-  begin
-    Assert(false, 'Trace:[TWinCEWSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
-    Result := -1;
-  end;
-end;
-
-function  TWinCEWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
-begin
-  // GetSelCount only works for multiple-selection listboxes
-  if ACustomListBox.MultiSelect then
-    Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETSELCOUNT, 0, 0)
-  else begin
-    if Windows.SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0) = LB_ERR then
-      Result := 0
-    else
-      Result := 1;
-  end;
-end;
-
-function  TWinCEWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
-var
-  WindowInfo: PWindowInfo;
-  winHandle: HWND;
-begin
-  winHandle := ACustomListBox.Handle;
-  WindowInfo := GetWindowInfo(winHandle);
-  // if we're handling a WM_DRAWITEM, then LB_GETSEL is not reliable, check stored info
-  if (WindowInfo^.DrawItemIndex <> -1) and (WindowInfo^.DrawItemIndex = AIndex) then
-    Result := WindowInfo^.DrawItemSelected
-  else
-    Result := Windows.SendMessage(winHandle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
-end;
-
-function  TWinCEWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
-var
-  Handle: HWND;
-begin
-  Handle := ACustomListBox.Handle;
-  Result := TWinCEListStringList.Create(Handle, ACustomListBox);
-  GetWindowInfo(Handle)^.List := Result;
-end;
-
-function  TWinCEWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
-begin
-  Result:=Windows.SendMessage(ACustomListBox.Handle, LB_GETTOPINDEX, 0, 0);
-end;
-
-procedure TWinCEWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
-begin
-  if ACustomListBox.MultiSelect then
-    Windows.SendMessage(ACustomListBox.Handle, LB_SETSEL,
-      Windows.WParam(ASelected), Windows.LParam(AIndex))
-  else
-  if ASelected then
-    SetItemIndex(ACustomListBox, AIndex)
-  else
-    SetItemIndex(ACustomListBox, -1);
-end;
-
-procedure TWinCEWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
-var
-  Handle: HWND;
-  StyleEx: dword;
-begin
-  Handle := ACustomListBox.Handle;
-  StyleEx := GetWindowLong(Handle, GWL_EXSTYLE);
-  if ACustomListBox.BorderStyle = TBorderStyle(bsSingle) Then
-    StyleEx := StyleEx or WS_EX_CLIENTEDGE
-  else
-    StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
-  SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
-end;
-
-procedure TWinCEWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
-var
-  Handle: HWND;
-begin
-  Handle := ACustomListBox.Handle;
-  if ACustomListBox.MultiSelect then
-  begin
-    // deselect all items first
-    Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(false), -1);
-    if AIndex >= 0 then
-      Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
-  end else
-    Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
-end;
-
-procedure TWinCEWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
-  const AExtendedSelect, AMultiSelect: boolean);
-begin
-  RecreateWnd(ACustomListBox);
-end;
-
-procedure TWinCEWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
-begin
-  // The listbox styles can't be updated, so recreate the listbox
-  RecreateWnd(ACustomListBox);
-end;
-
-procedure TWinCEWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
-begin
-  TWinCEListStringList(AList).Sorted := ASorted;
-end;
-
-procedure TWinCEWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
-begin
-  Windows.SendMessage(ACustomListBox.Handle, LB_SETTOPINDEX, NewTopIndex, 0);
-end;
 
 
 { TWinCEWSCustomEdit helper functions }
@@ -758,17 +769,18 @@ function TWinCEWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   hwnd: THandle;
-  Str: array[0..255] of WideChar;
+  Str: PWideChar;
+  
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSCustomEdit.CreateHandle');
   {$endif}
 
-  MultiByteToWideChar(CP_ACP, 0, PChar(AWinControl.Caption), -1, @Str, 256);
+  Str := CreatePWideCharFromString(AWinControl.Caption);
 
   hwnd := CreateWindow(
     @EditClsName,               // Name of the registered class
-    @Str,                       // Title of the window
+    Str,                       // Title of the window
     WS_CHILD or WS_VISIBLE,     // Style of the window
     AWinControl.Left,           // x-position (at beginning)
     AWinControl.Top,            // y-position (at beginning)
@@ -781,6 +793,7 @@ begin
 
   if (hwnd = 0) then WriteLn('CreateWindow failed');
 
+  DisposePWideChar(Str);
   Result := hwnd;
 end;
 
@@ -925,6 +938,46 @@ begin
   RecreateWnd(ACustomMemo);
 end;
 
+{ TWinCEWSCustomStaticText }
+const
+  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
+
+function CalcStaticTextFlags(const Alignment: TAlignment): dword;
+begin
+  Result := AlignmentToStaticTextFlags[Alignment];
+end;
+
+function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  {$ifdef VerboseWinCE}
+  WriteLn('TWinCEWSCustomStaticText.CreateHandle');
+  {$endif}
+
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @LabelClsName;
+    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
+    Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
+  end;
+
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  DisposePWideChar(Params.WindowTitle);
+  Result := Params.Window;
+end;
+
+procedure TWinCEWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+  // can not apply on the fly: needs window recreate
+  RecreateWnd(ACustomStaticText);
+end;
 { TWin32WSButtonControl }
 
 procedure TWinCEWSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
@@ -1063,46 +1116,6 @@ begin
   Result := Params.Window;
 end;
 
-{ TWinCEWSCustomStaticText }
-const
-  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
-
-function CalcStaticTextFlags(const Alignment: TAlignment): dword;
-begin
-  Result := AlignmentToStaticTextFlags[Alignment];
-end;
-
-function TWinCEWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
-begin
-  {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomStaticText.CreateHandle');
-  {$endif}
-
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  
-  // customization of Params
-  with Params do
-  begin
-    pClassName := @LabelClsName;
-    WindowTitle := CreatePWideCharFromString(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
-    Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
-  end;
-
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  DisposePWideChar(Params.WindowTitle);
-  Result := Params.Window;
-end;
-
-procedure TWinCEWSCustomStaticText.SetAlignment(
-  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
-begin
-  inherited SetAlignment(ACustomStaticText, NewAlignment);
-end;
 
 
 initialization
