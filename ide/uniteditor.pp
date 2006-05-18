@@ -62,7 +62,7 @@ uses
   BaseDebugManager, Debugger, MainIntf;
 
 type
-  TSourceNoteBook = class;
+  TSourceNotebook = class;
 
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
@@ -351,7 +351,7 @@ type
     property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Source: TStrings read GetSource write SetSource;
-    property SourceNoteBook: TSourceNotebook read FSourceNoteBook;
+    property SourceNotebook: TSourceNotebook read FSourceNoteBook;
     property SyntaxHighlighterType: TLazSyntaxHighlighter
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
   end;
@@ -948,8 +948,8 @@ begin
     FEditor.Parent:=nil;
     if SourceEditorMarks<>nil then
       SourceEditorMarks.DeleteAllForEditor(FEditor);
-    TSourceNoteBook(FAOwner).FSourceEditorList.Remove(Self);
-    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
+    TSourceNotebook(FAOwner).FSourceEditorList.Remove(Self);
+    TSourceNotebook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
   end;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
@@ -1002,9 +1002,9 @@ procedure TSourceEditor.ActivateHint(ClientPos: TPoint; const TheHint: string);
 var
   ScreenPos: TPoint;
 begin
-  if SourceNoteBook=nil then exit;
+  if SourceNotebook=nil then exit;
   ScreenPos:=EditorComponent.ClientToScreen(ClientPos);
-  SourceNoteBook.ActivateHint(ScreenPos,TheHint);
+  SourceNotebook.ActivateHint(ScreenPos,TheHint);
 end;
 
 {------------------------------S T A R T  F I N D-----------------------------}
@@ -1309,7 +1309,7 @@ Begin
     StartIdentCompletion(true);
 
   ecShowCodeContext :
-    SourceNoteBook.StartShowCodeContext(true);
+    SourceNotebook.StartShowCodeContext(true);
 
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
@@ -1714,7 +1714,7 @@ end;
 
 procedure TSourceEditor.InsertCharacterFromMap;
 begin
-  ShowCharacterMap(@SourceNoteBook.InsertCharacter);
+  ShowCharacterMap(@SourceNotebook.InsertCharacter);
 end;
 
 procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
@@ -1894,7 +1894,7 @@ begin
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
   EditorOpts.GetSynEditSelectedColor(FEditor);
-  SourceNoteBook.UpdateActiveEditColors;
+  SourceNotebook.UpdateActiveEditColors;
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
@@ -1917,7 +1917,7 @@ Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
-  SourceNoteBook.UpdateActiveEditColors;
+  SourceNotebook.UpdateActiveEditColors;
   if EditorOpts.CtrlMouseLinks then
     FEditor.Options:=FEditor.Options+[eoShowCtrlMouseLinks]
   else
@@ -1993,7 +1993,7 @@ begin
       FCodeBuffer.AssignTo(FEditor.Lines,true);
       FEditor.EndUpdate;
     end;
-    if IsActiveOnNoteBook then SourceNoteBook.UpdateStatusBar;
+    if IsActiveOnNoteBook then SourceNotebook.UpdateStatusBar;
   end;
 end;
 
@@ -2093,7 +2093,7 @@ var
 begin
   //debugln('TSourceEditor.StartIdentCompletion');
   if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
-  SourceNoteBook.fIdentCompletionJumpToError:=JumpToError;
+  SourceNotebook.fIdentCompletionJumpToError:=JumpToError;
   
   CurrentCompletionType:=ctIdentCompletion;
   TextS := FEditor.LineText;
@@ -4198,7 +4198,7 @@ begin
   end;
 end;
 
-procedure TSourceNoteBook.SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+procedure TSourceNotebook.SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
 begin
   if Assigned(ADialog) then
   begin
@@ -4215,7 +4215,7 @@ end;
 
 {Search All the files in a project and add the results to the SearchResultsView
  Dialog}
-procedure TSourceNoteBook.FIFSearchProject(AProject: TProject;
+procedure TSourceNotebook.FIFSearchProject(AProject: TProject;
                                            ADialog: TLazFindInFilesDialog);
 var
   AnUnitInfo:  TUnitInfo;
@@ -4241,7 +4241,7 @@ begin
   end;
 end;
 
-procedure TSourceNoteBook.FIFSearchDir(ADialog: TLazFindInFilesDialog);
+procedure TSourceNotebook.FIFSearchDir(ADialog: TLazFindInFilesDialog);
 var
   SearchForm: TSearchForm;
 begin
@@ -4254,7 +4254,7 @@ begin
   end;
 end;
 
-Procedure TSourceNoteBook.DoFindInFiles(ASearchForm: TSearchForm);
+Procedure TSourceNotebook.DoFindInFiles(ASearchForm: TSearchForm);
 var
   ListIndex: integer;
 begin
@@ -4285,7 +4285,7 @@ begin
   end;
 end;
 
-procedure TSourceNoteBook.FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
+procedure TSourceNotebook.FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
 var
   i: integer;
   TheFileList: TStringList;
@@ -4313,7 +4313,7 @@ end;//FIFSearchOpenFiles
 
 {Creates the search form and loads the options selected in the
  findinfilesdialog}
-function TSourceNoteBook.FIFCreateSearchForm
+function TSourceNotebook.FIFCreateSearchForm
                          (ADialog: TLazFindInFilesDialog): TSearchForm;
 begin
   result:= TSearchForm.Create(SearchResultsView);
@@ -4595,7 +4595,7 @@ begin
     FOnFindDeclarationClicked(Sender);
 end;
 
-Procedure TSourceNoteBook.CutClicked(Sender: TObject);
+Procedure TSourceNotebook.CutClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
@@ -4603,7 +4603,7 @@ begin
     ActSE.DoEditorExecuteCommand(ecCut);
 end;
 
-Procedure TSourceNoteBook.CopyClicked(Sender: TObject);
+Procedure TSourceNotebook.CopyClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
@@ -4611,7 +4611,7 @@ begin
     ActSE.DoEditorExecuteCommand(ecCopy);
 end;
 
-Procedure TSourceNoteBook.PasteClicked(Sender: TObject);
+Procedure TSourceNotebook.PasteClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
