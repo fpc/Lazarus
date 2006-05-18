@@ -7031,6 +7031,9 @@ begin
 
     // add and load default required packages
     PkgBoss.AddDefaultDependencies(Project1);
+    
+    Result:=DoCompleteLoadingProjectInfo;
+    if Result<>mrOk then exit;
   finally
     Project1.EndUpdate;
   end;

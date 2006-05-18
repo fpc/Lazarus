@@ -69,7 +69,8 @@ begin
     then
       exit;
     DebugLn('ShowCodeContext show TODO');
-
+    if CodeContextFrm=nil then
+      CodeContextFrm:=TCodeContextFrm.Create(nil);
     
   finally
     CodeContexts.Free;

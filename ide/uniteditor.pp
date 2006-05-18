@@ -2799,6 +2799,7 @@ begin
   FSourceEditorList.Free;
   Gotodialog.free;
 
+  FreeThenNil(CodeContextFrm);
   FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
