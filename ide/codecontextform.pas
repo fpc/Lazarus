@@ -84,7 +84,6 @@ begin
       CodeContexts))
     or (CodeContexts=nil) or (CodeContexts.Count=0) then
       exit;
-    DebugLn('ShowCodeContext show');
     {$IFNDEF EnableCodeContext}
     exit;
     {$ENDIF}

@@ -564,7 +564,6 @@ begin
   {$ENDIF}
 end;
 
-
 initialization
 
 {$I ../images/components_images.lrs}

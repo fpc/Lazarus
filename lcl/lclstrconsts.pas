@@ -280,6 +280,7 @@ ResourceString
     +'BrowserParams will be replaced by the URL.';
   hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe = 'No HTML '
     +'Browser found.%sPlease define one in Help -> Configure Help -> Viewers';
+  hhsHelpNoHTMLBrowserFound = 'Unable to find a HTML browser.';
   hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
   hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
   hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';

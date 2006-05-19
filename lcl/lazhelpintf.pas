@@ -286,13 +286,15 @@ type
 
   THelpDatabase = class(TComponent)
   private
+    FAutoRegister: boolean;
     FBasePathObject: TObject;
     FID: THelpDatabaseID;
     FDatabases: THelpDatabases;
     FRefCount: integer;
-    FSearchItems: TList;
+    FSearchItems: TFPList;
     FSupportedMimeTypes: TStrings;
     FTOCNode: THelpNode;
+    procedure SetAutoRegister(const AValue: boolean);
     procedure SetID(const AValue: THelpDatabaseID);
     procedure SetDatabases(const AValue: THelpDatabases);
   protected
@@ -350,6 +352,7 @@ type
     property SupportedMimeTypes: TStrings read FSupportedMimeTypes;
     property BasePathObject: TObject read FBasePathObject write FBasePathObject;
     property TOCNode: THelpNode read FTOCNode write FTOCNode;
+    property AutoRegister: boolean read FAutoRegister write SetAutoRegister;
   end;
 
   THelpDatabaseClass = class of THelpDatabase;
@@ -360,8 +363,8 @@ type
 
   THelpDatabases = class(THelpManager)
   private
-    FItems: TList;
-    FHelpDBClasses: TList;
+    FItems: TFPList;
+    FHelpDBClasses: TFPList;
     function GetItems(Index: integer): THelpDatabase;
     procedure DoRegisterDatabase(ADatabase: THelpDatabase);
     procedure DoUnregisterDatabase(ADatabase: THelpDatabase);
@@ -445,9 +448,11 @@ type
   
   THelpViewer = class(TComponent)
   private
+    FAutoRegister: boolean;
     FParameterHelp: string;
     FStorageName: string;
     FSupportedMimeTypes: TStrings;
+    procedure SetAutoRegister(const AValue: boolean);
   protected
     procedure SetSupportedMimeTypes(List: TStrings); virtual;
     procedure AddSupportedMimeType(const AMimeType: string); virtual;
@@ -463,10 +468,13 @@ type
     procedure Load(Storage: TConfigStorage); virtual;
     procedure Save(Storage: TConfigStorage); virtual;
     function GetLocalizedName: string; virtual;
+    procedure RegisterSelf; virtual;
+    procedure UnregisterSelf; virtual;
   public
     property SupportedMimeTypes: TStrings read FSupportedMimeTypes;
     property ParameterHelp: string read FParameterHelp write FParameterHelp;
     property StorageName: string read FStorageName write FStorageName;
+    property AutoRegister: boolean read FAutoRegister write SetAutoRegister;
   end;
 
   THelpViewerClass = class of THelpViewer;
@@ -476,7 +484,7 @@ type
   
   THelpViewers = class
   private
-    FItems: TList;
+    FItems: TFPList;
     function GetItems(Index: integer): THelpViewer;
   public
     constructor Create;
@@ -488,6 +496,7 @@ type
     procedure UnregisterViewer(AHelpViewer: THelpViewer);
     procedure Load(Storage: TConfigStorage); virtual;
     procedure Save(Storage: TConfigStorage); virtual;
+    function IndexOf(AHelpViewer: THelpViewer): integer;
   public
     property Items[Index: integer]: THelpViewer read GetItems; default;
   end;
@@ -527,6 +536,7 @@ var
 
 procedure CreateLCLHelpSystem;
 procedure FreeLCLHelpSystem;
+procedure FreeUnusedLCLHelpSystem;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -564,6 +574,13 @@ begin
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
   HelpManager:=nil;
+end;
+
+procedure FreeUnusedLCLHelpSystem;
+begin
+  if (HelpViewers<>nil) and (HelpViewers.Count>0) then exit;
+  if (HelpDatabases<>nil) and (HelpDatabases.Count>0) then exit;
+  FreeLCLHelpSystem;
 end;
 
 function FilenameToURL(const Filename: string): string;
@@ -730,6 +747,21 @@ begin
   if OldRegistered then RegisterSelf;
 end;
 
+procedure THelpDatabase.SetAutoRegister(const AValue: boolean);
+begin
+  if FAutoRegister=AValue then exit;
+  FAutoRegister:=AValue;
+  if not (csDesigning in ComponentState) then begin
+    if FAutoRegister then begin
+      if FID='' then
+        FID:=Name;
+      if Databases=nil then RegisterSelf;
+    end else begin
+      if Databases<>nil then UnregisterSelf;
+    end;
+  end;
+end;
+
 procedure THelpDatabase.SetDatabases(const AValue: THelpDatabases);
 begin
   if AValue=Databases then exit;
@@ -777,6 +809,7 @@ procedure THelpDatabase.RegisterSelf;
 begin
   if Databases<>nil then
     raise EHelpSystemException.Create(Format(rsHelpAlreadyRegistered, [ID]));
+  if HelpDatabases=nil then CreateLCLHelpSystem;
   Databases:=HelpDatabases;
 end;
 
@@ -785,6 +818,7 @@ begin
   if Databases=nil then
     raise EHelpSystemException.Create(Format(rsHelpNotRegistered, [ID]));
   Databases:=nil;
+  FreeUnusedLCLHelpSystem;
 end;
 
 function THelpDatabase.Registered: boolean;
@@ -861,6 +895,7 @@ var
 begin
   Result:=shrSuccess;
   ErrMsg:='';
+  if csDesigning in ComponentState then exit;
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
@@ -882,6 +917,7 @@ var
 begin
   Result:=shrSuccess;
   ErrMsg:='';
+  if csDesigning in ComponentState then exit;
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
@@ -908,6 +944,7 @@ var
 begin
   Result:=shrSuccess;
   ErrMsg:='';
+  if csDesigning in ComponentState then exit;
   if (ListOfPascalHelpContextList=nil)
   or (ListOfPascalHelpContextList.Count=0) then exit;
   // add the registered nodes
@@ -946,6 +983,7 @@ var
 begin
   Result:=shrSuccess;
   ErrMsg:='';
+  if csDesigning in ComponentState then exit;
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
@@ -968,6 +1006,7 @@ var
 begin
   Result:=shrSuccess;
   ErrMsg:='';
+  if csDesigning in ComponentState then exit;
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
@@ -1005,7 +1044,7 @@ procedure THelpDatabase.RegisterItem(NewItem: THelpDBItem);
 begin
   if NewItem=nil then
     raise EHelpSystemException.Create('THelpDatabase.RegisterItem NewItem=nil');
-  if FSearchItems=nil then FSearchItems:=TList.Create;
+  if FSearchItems=nil then FSearchItems:=TFPList.Create;
   if FSearchItems.IndexOf(NewItem)<0 then
     FSearchItems.Add(NewItem)
   else
@@ -1082,7 +1121,7 @@ end;
 procedure THelpDatabases.DoRegisterDatabase(ADatabase: THelpDatabase);
 begin
   ADatabase.Reference;
-  if FItems=nil then FItems:=TList.Create;
+  if FItems=nil then FItems:=TFPList.Create;
   FItems.Add(ADatabase);
 end;
 
@@ -1614,7 +1653,7 @@ end;
 procedure THelpDatabases.RegisterHelpDatabaseClass(NewHelpDB: THelpDatabaseClass
   );
 begin
-  if FHelpDBClasses=nil then FHelpDBClasses:=TList.Create;
+  if FHelpDBClasses=nil then FHelpDBClasses:=TFPList.Create;
   if FHelpDBClasses.IndexOf(NewHelpDB)<0 then
     FHelpDBClasses.Add(NewHelpDB);
 end;
@@ -1687,7 +1726,7 @@ end;
 
 constructor THelpViewers.Create;
 begin
-  FItems:=TList.Create;
+  FItems:=TFPList.Create;
 end;
 
 destructor THelpViewers.Destroy;
@@ -1780,7 +1819,25 @@ begin
   end;
 end;
 
+function THelpViewers.IndexOf(AHelpViewer: THelpViewer): integer;
+begin
+  Result:=FItems.IndexOf(AHelpViewer);
+end;
+
 { THelpViewer }
+
+procedure THelpViewer.SetAutoRegister(const AValue: boolean);
+begin
+  if FAutoRegister=AValue then exit;
+  FAutoRegister:=AValue;
+  if not (csDesigning in ComponentState) then begin
+    if FAutoRegister then begin
+      RegisterSelf;
+    end else begin
+      UnregisterSelf;
+    end;
+  end;
+end;
 
 procedure THelpViewer.SetSupportedMimeTypes(List: TStrings);
 begin
@@ -1802,7 +1859,8 @@ end;
 
 destructor THelpViewer.Destroy;
 begin
-  FSupportedMimeTypes.Free;
+  UnregisterSelf;
+  FreeAndNil(FSupportedMimeTypes);
   inherited Destroy;
 end;
 
@@ -1857,6 +1915,21 @@ end;
 function THelpViewer.GetLocalizedName: string;
 begin
   Result:=StorageName;
+end;
+
+procedure THelpViewer.RegisterSelf;
+begin
+  if (HelpViewers<>nil) and (HelpViewers.IndexOf(Self)>=0) then
+    raise EHelpSystemException.Create('help viewer is already registered');
+  CreateLCLHelpSystem;
+  HelpViewers.RegisterViewer(Self);
+end;
+
+procedure THelpViewer.UnregisterSelf;
+begin
+  if (HelpViewers=nil) or (HelpViewers.IndexOf(Self)<0) then exit;
+  HelpViewers.UnregisterViewer(Self);
+  FreeUnusedLCLHelpSystem;
 end;
 
 { THelpNode }

@@ -26,32 +26,63 @@ uses
   LCLStrConsts, HelpIntfs, LazHelpIntf;
   
 type
-  { THTMLHelpDatabase }
+  { THTMLHelpDatabase
+
+    KeywordPrefix: if set, then the database will handle all Keywords
+      beginning with this value. And when the path is created by replacing
+      the prefix with the BaseURL.
+      For example:
+        Put a THTMLHelpDatabase on a form.
+        Set AutoRegister to true.
+        Set KeywordPrefix to 'MyHelp/'
+        Set BaseURL to 'file://'
+        
+        Put a THTMLBrowserHelpViewer on the form.
+        Set AutoRegister to true.
+        Set BrowserPath to '/usr/bin/mozilla'
+
+        Put a TEdit on a form.
+        Set HelpType to htKeyword
+        Set HelpKeyword to 'MyHelp/page.html'
+        
+        Run the program.
+        Focus the edit field and press F1. The page 'page.html' will be shown.
+        }
 
   THTMLHelpDatabase = class(THelpDatabase)
   private
     FBaseURL: string;
     FDefaultBaseURL: string;
+    FKeywordPrefix: string;
+    FKeywordPrefixNode: THelpNode;
     function IsBaseURLStored: boolean;
     procedure SetBaseURL(const AValue: string);
     procedure SetDefaultBaseURL(const AValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     function ShowURL(const URL, Title: string;
                      var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
                       QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
+    function GetNodesForKeyword(const HelpKeyword: string;
+                                var ListOfNodes: THelpNodeQueryList;
+                                var ErrMsg: string): TShowHelpResult; override;
     function GetEffectiveBaseURL: string;
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
     property DefaultBaseURL: string read FDefaultBaseURL write SetDefaultBaseURL;// used, if BaseURL is empty
   published
     property BaseURL: string read FBaseURL write SetBaseURL stored IsBaseURLStored;
+    property AutoRegister;
+    property KeywordPrefix: string read FKeywordPrefix write FKeywordPrefix;// see above
   end;
   
   
-  { THTMLBrowserHelpViewer }
+  { THTMLBrowserHelpViewer
+
+    If no browser is specified it searches for a common browser. }
   
   TOnFindDefaultBrowser = procedure(var DefaultBrowser, Params: string) of object;
 
@@ -77,6 +108,7 @@ type
   published
     property BrowserPath: string read FBrowserPath write SetBrowserPath;
     property BrowserParams: string read FBrowserParams write SetBrowserParams;
+    property AutoRegister;
   end;
   
 
@@ -120,6 +152,12 @@ begin
   AddSupportedMimeType('text/html');
 end;
 
+destructor THTMLHelpDatabase.Destroy;
+begin
+  FreeAndNil(FKeywordPrefixNode);
+  inherited Destroy;
+end;
+
 function THTMLHelpDatabase.ShowURL(const URL, Title: string; var ErrMsg: string
   ): TShowHelpResult;
 var
@@ -151,6 +189,9 @@ begin
         URLType:=BaseURLType;
       end;
     end;
+    if (URLType='file') and (not FilenameIsUnixAbsolute(URLPath)) then
+      URLPath:=TrimFilename(GetCurrentDir+PathDelim+URLPath);
+    
     if (URLType='file') and (not FileExists(URLPath)) then begin
       Result:=shrContextNotFound;
       ErrMsg:=Format(hhsHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
@@ -181,7 +222,28 @@ begin
     Result:=ShowURL(NewNode.URL,NewNode.Title,ErrMsg);
   end else begin
     Result:=shrContextNotFound;
-    ErrMsg:='THTMLHelpDatabase.ShowHelp Node.URLValid=false';
+    ErrMsg:='THTMLHelpDatabase.ShowHelp Node.URLValid=false Node.URL="'+NewNode.URL+'"';
+  end;
+end;
+
+function THTMLHelpDatabase.GetNodesForKeyword(const HelpKeyword: string;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+var
+  Path: String;
+begin
+  Result:=inherited GetNodesForKeyword(HelpKeyword, ListOfNodes, ErrMsg);
+  if Result<>shrSuccess then exit;
+
+  if not (csDesigning in ComponentState)
+  and (KeywordPrefix<>'')
+  and (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then begin
+    // HelpKeyword starts with KeywordPrefix -> add default node
+    if FKeywordPrefixNode=nil then
+      FKeywordPrefixNode:=THelpNode.CreateURL(Self,'','');
+    Path:=copy(HelpKeyword,length(KeywordPrefix)+1,length(HelpKeyword));
+    FKeywordPrefixNode.Title:='Show page '+Path;
+    FKeywordPrefixNode.URL:='file://'+Path;
+    CreateNodeQueryListAndAdd(FKeywordPrefixNode,nil,ListOfNodes,true);
   end;
 end;
 
@@ -266,8 +328,12 @@ begin
   if CommandLine='' then
     FindDefaultBrowser(CommandLine, Params);
   if CommandLine='' then begin
-    ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe, [
-      #13]);
+    if (HelpDatabases<>nil)
+    and (CompareText(HelpDatabases.ClassName,'TIDEHelpDatabases')=0) then
+      ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe,
+        [ #13])
+    else
+      ErrMsg:=hhsHelpNoHTMLBrowserFound;
     exit;
   end;
   if (not FileExists(CommandLine)) then begin
@@ -313,14 +379,46 @@ begin
   end;
 end;
 
-procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser, Params: string);
+procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser,
+  Params: string);
+
+  function Find(const ShortFilename: string): boolean;
+  var
+    Ext: String;
+    Filename: String;
+  begin
+    {$IFDEF MSWindows}
+    Ext:='.exe';
+    {$ELSE}
+    Ext:='';
+    {$ENDIF}
+    Filename:=SearchFileInPath(ShortFilename+Ext,'',
+                      SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,[]);
+    Result:=Filename<>'';
+    if Result then begin
+      FDefaultBrowser:=Filename;
+      FDefaultBrowserParams:='%s';
+    end;
+  end;
+
 begin
   if FDefaultBrowser='' then begin
     if Assigned(OnFindDefaultBrowser) then
       OnFindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
   end;
+  if FDefaultBrowser='' then begin
+    // prefer open source ;)
+    if Find('mozilla')
+    or Find('galeon')
+    or Find('konqueror')
+    or Find('safari')
+    or Find('netscape')
+    or Find('opera')
+    or Find('iexplorer') then ;
+  end;
   Browser:=FDefaultBrowser;
   Params:=FDefaultBrowserParams;
+  DebugLn('THTMLBrowserHelpViewer.FindDefaultBrowser Browser=',Browser,' Params=',Params);
 end;
 
 procedure THTMLBrowserHelpViewer.Assign(Source: TPersistent);
