@@ -485,6 +485,7 @@ type
   THelpViewers = class
   private
     FItems: TFPList;
+    FDestroying: boolean;
     function GetItems(Index: integer): THelpViewer;
   public
     constructor Create;
@@ -1731,8 +1732,9 @@ end;
 
 destructor THelpViewers.Destroy;
 begin
+  FDestroying:=true;
   Clear;
-  FItems.Free;
+  FreeAndNil(fItems);
   inherited Destroy;
 end;
 
@@ -1743,9 +1745,12 @@ begin
   i:=Count-1;
   while (i>=0) do begin
     if i<Count then begin
-      if Items[i].Owner=nil then
+      if Items[i].Owner=nil then begin
         Items[i].Free;
-      FItems[i]:=nil;
+        if fItems=nil then exit;
+      end;
+      if i<Count then
+        FItems[i]:=nil;
     end;
     dec(i);
   end;
@@ -1754,7 +1759,10 @@ end;
 
 function THelpViewers.Count: integer;
 begin
-  Result:=FItems.Count;
+  if fItems<>nil then
+    Result:=FItems.Count
+  else
+    Result:=0;
 end;
 
 function THelpViewers.GetViewersSupportingMimeType(
@@ -1778,6 +1786,7 @@ end;
 
 procedure THelpViewers.UnregisterViewer(AHelpViewer: THelpViewer);
 begin
+  if FDestroying then exit;
   FItems.Remove(AHelpViewer);
 end;
 
