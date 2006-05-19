@@ -271,6 +271,7 @@ type
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
+    function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
 
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
@@ -2706,48 +2707,6 @@ end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
-  
-  function WarnAboutMissingPackageFiles: TModalResult;
-  var
-    i: Integer;
-    AFile: TPkgFile;
-    AFilename: String;
-  begin
-    Result:=mrOk;
-    for i:=0 to APackage.FileCount-1 do begin
-      AFile:=APackage.Files[i];
-      if AFile.FileType=pftVirtualUnit then continue;
-      AFilename:=AFile.Filename;
-      if System.Pos('$(',AFilename)>0 then begin
-        // filename contains macros -> skip
-      end;
-      if FilenameIsAbsolute(AFilename) then begin
-        if not FileExistsCached(AFilename) then begin
-          if not APackage.IsVirtual then
-            AFilename:=CreateRelativePath(AFilename,APackage.Directory);
-          Result:=QuestionDlg('Package file missing',
-            'The file "'+AFilename+'"'#13
-            +'of package '+APackage.IDAsString+' is missing.',
-            mtWarning,[mrIgnore,mrAbort],0);
-          if Result<>mrAbort then
-            Result:=mrOk;
-          // one warning is enough
-          exit;
-        end;
-      end else begin
-        if not APackage.IsVirtual then begin
-          // an unsaved file
-          Result:=QuestionDlg('Package file not saved',
-            'The file "'+AFilename+'"'#13
-            +'of package '+APackage.IDAsString+' needs to be saved first.',
-            mtWarning,[mrIgnore,'Ignore and save package now',mrAbort],0);
-          if Result<>mrAbort then
-            Result:=mrOk;
-        end;
-      end;
-    end;
-  end;
-  
 var
   XMLConfig: TXMLConfig;
   PkgLink: TPackageLink;
@@ -2779,7 +2738,7 @@ begin
   end;
   
   // warn about missing files
-  Result:=WarnAboutMissingPackageFiles;
+  Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
 
   // save editor files to codetools
@@ -2972,6 +2931,9 @@ begin
     if Result<>mrOk then exit;
   end;
   
+  Result:=WarnAboutMissingPackageFiles(APackage);
+  if Result<>mrOk then exit;
+
   PackageGraph.BeginUpdate(false);
   try
     // automatically compile required packages
@@ -3847,6 +3809,51 @@ begin
   end;
   
   Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc);
+end;
+
+function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage
+  ): TModalResult;
+var
+  i: Integer;
+  AFile: TPkgFile;
+  AFilename: String;
+begin
+  Result:=mrOk;
+  for i:=0 to APackage.FileCount-1 do begin
+    AFile:=APackage.Files[i];
+    if AFile.FileType=pftVirtualUnit then continue;
+    AFilename:=AFile.Filename;
+    if System.Pos('$(',AFilename)>0 then begin
+      // filename contains macros -> skip
+    end;
+    if (not APackage.IsVirtual) and FilenameIsAbsolute(AFilename) then
+      APackage.LongenFilename(AFilename);
+    if FilenameIsAbsolute(AFilename) then begin
+      if not FileExistsCached(AFilename) then begin
+        if not APackage.IsVirtual then
+          AFilename:=CreateRelativePath(AFilename,APackage.Directory);
+        Result:=QuestionDlg(lisPkgMangPackageFileMissing,
+          Format(lisPkgMangTheFileOfPackageIsMissing, ['"', AFilename, '"',
+            #13, APackage.IDAsString]),
+          mtWarning,[mrIgnore,mrAbort],0);
+        if Result<>mrAbort then
+          Result:=mrOk;
+        // one warning is enough
+        exit;
+      end;
+    end else begin
+      if not APackage.IsVirtual then begin
+        // an unsaved file
+        Result:=QuestionDlg(lisPkgMangPackageFileNotSaved,
+          Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst, ['"',
+            AFilename, '"', #13, APackage.IDAsString]),
+          mtWarning, [mrIgnore, lisPkgMangIgnoreAndSavePackageNow, mrAbort], 0
+            );
+        if Result<>mrAbort then
+          Result:=mrOk;
+      end;
+    end;
+  end;
 end;
 
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;

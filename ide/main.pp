@@ -11136,7 +11136,7 @@ begin
   writeln('[TMainIDE.DoShowCodeContext] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext A');{$ENDIF}
-  Result:=ShowCodeContext(ActiveUnitInfo.Source,ActiveSrcEdit.EditorComponent);
+  Result:=ShowCodeContext(ActiveUnitInfo.Source);
   if not Result then begin
     if JumpToError then
       DoJumpToCodeToolBossError;

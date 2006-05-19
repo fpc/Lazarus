@@ -4,8 +4,10 @@ object CodeContextFrm: TCodeContextFrm
   Caption = 'CodeContextFrm'
   ClientHeight = 300
   ClientWidth = 400
+  KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   PixelsPerInch = 112
   HorzScrollBar.Page = 399

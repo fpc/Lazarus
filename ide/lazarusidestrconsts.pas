@@ -2316,6 +2316,13 @@ resourcestring
     +'does not correspond to the package name %s%s%s in the file.%sChange '
     +'package name to %s%s%s?';
   lisPkgMangSavePackage2 = 'Save package?';
+  lisPkgMangPackageFileMissing = 'Package file missing';
+  lisPkgMangTheFileOfPackageIsMissing = 'The file %s%s%s%sof package %s is '
+    +'missing.';
+  lisPkgMangPackageFileNotSaved = 'Package file not saved';
+  lisPkgMangTheFileOfPackageNeedsToBeSavedFirst = 'The file %s%s%s%sof '
+    +'package %s needs to be saved first.';
+  lisPkgMangIgnoreAndSavePackageNow = 'Ignore and save package now';
   lisPkgMangPackageChangedSave = 'Package %s%s%s changed. Save?';
   lisPkgMangErrorWritingPackage = 'Error Writing Package';
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'

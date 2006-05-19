@@ -55,7 +55,7 @@ type
   PCodeXYPosition = ^TCodeXYPosition;
 
   TCommonAtomFlag = (
-    cafNone,
+    cafNone, // = none of the below
     cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
     cafRoundBracketOpen, cafRoundBracketClose,
     cafEdgedBracketOpen, cafEdgedBracketClose,

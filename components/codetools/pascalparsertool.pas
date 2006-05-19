@@ -3110,7 +3110,7 @@ begin
     CurKeyWordFuncList:=ClassInterfaceKeyWordFuncList;
     try
       repeat
-        if CurPos.Flag in [cafEnd,cafNone] then break;
+        if (CurPos.Flag=cafEnd) or (CurPos.StartPos>SrcLen) then break;
         if not DoAtom then break;
         ReadNextAtom;
       until false;
