@@ -27,9 +27,9 @@ unit Dialogs;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLIntf, InterfaceBase, FileUtil, LCLStrConsts,
-  LCLType, LMessages, LCLProc, Forms, Controls, GraphType, Graphics, Buttons,
-  StdCtrls, LCLClasses;
+  Types, Classes, LResources, SysUtils, LCLIntf, InterfaceBase, FileUtil,
+  LCLStrConsts, LCLType, LMessages, LCLProc, Forms, Controls,
+  GraphType, Graphics, Buttons, StdCtrls, ExtCtrls, LCLClasses;
 
 
 type
@@ -302,7 +302,65 @@ type
                  frHideUpDown, frMatchCase, frDisableMatchCase, frDisableUpDown,
                  frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp);
   TFindOptions = set of TFindOption;
-  
+
+  TFindDialog = class(TCommonDialog)
+  private
+    FFormLeft: integer;
+    FFormTop: integer;
+    function GetReplaceText: string;
+    function GetFindText: string;
+    function GetLeft: Integer;
+    function GetPosition: TPoint;
+    function GetTop: Integer;
+    procedure SetFindText(const AValue: string);
+    procedure SetLeft(const AValue: Integer);
+    procedure SetPosition(const AValue: TPoint);
+    procedure SetTop(const AValue: Integer);
+    procedure SetReplaceText(const AValue: string);
+  protected
+    FFindForm: TForm;
+    FOnReplace: TNotifyEvent;
+    FOnFind: TNotifyEvent;
+    FOptions: TFindOptions;
+    FReplaceText: string;
+    FFindText: string;
+    procedure UpdatePosition;
+    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
+    procedure Find; virtual;
+    procedure Replace; virtual;
+    function CreateForm:TForm;virtual;
+    procedure UpdateValues;virtual;
+    property ReplaceText: string read GetReplaceText write SetReplaceText;
+    property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure CloseDialog;
+    function Execute: Boolean;override;
+    property Left: Integer read GetLeft write SetLeft;
+    property Position: TPoint read GetPosition write SetPosition;
+    property Top: Integer read GetTop write SetTop;
+  published
+    property FindText: string read GetFindText write SetFindText;
+    property Options: TFindOptions read FOptions write FOptions default [frDown];
+    property OnFind: TNotifyEvent read FOnFind write FOnFind;
+  end;
+
+
+{ TReplaceDialog }
+
+  TReplaceDialog = class(TFindDialog)
+  protected
+    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);override;
+    function CreateForm:TForm;override;
+    procedure UpdateValues;override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property ReplaceText;
+    property OnReplace;
+  end;
+
 
 { TPrinterSetupDialog }
 
@@ -401,7 +459,8 @@ const
 procedure Register;
 begin
   RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,TSelectDirectoryDialog,
-                                TColorDialog,TFontDialog]);
+                                TColorDialog,TFontDialog,
+                                TFindDialog,TReplaceDialog]);
   RegisterComponents('Misc',[TColorButton]);
 end;
 
@@ -453,6 +512,8 @@ end;
 {$I colordialog.inc}
 {$I commondialog.inc}
 {$I filedialog.inc}
+{$I finddialog.inc}
+{$I replacedialog.inc}
 {$I fontdialog.inc}
 {$I inputdialog.inc}
 {$I messagedialogs.inc}
@@ -471,6 +532,7 @@ initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
+  {$I forms/finddlgunit.lrs}
 
 finalization
   InterfaceBase.InputDialogFunction:=nil;

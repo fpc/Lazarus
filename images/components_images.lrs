@@ -1623,6 +1623,21 @@ LazarusResources.Add('tfilenameedit','XPM',[
   +'oo#$          $$$$ ",'#10'"oooooo#$$$$$$$$$$$$$$$ ",'#10'"oooooo#          '
   +'      "'#10'};'#10
 ]);
+LazarusResources.Add('tfinddialog','XPM',[
+  '/* XPM */'#10'static char *TFindDialog[]={'#10'"24 24 6 1",'#10'". c None",'
+  +#10'"b c #000000",'#10'"c c #0000ff",'#10'"# c #808080",'#10'"d c #c0c0c0",'
+  +#10'"a c #ffffff",'#10'"........................",'#10'"....................'
+  +'....",'#10'".######################.",'#10'".#abccccccccccccccbabab.",'#10
+  +'".#bbbbbbbbbbbbbbbbbbbbb.",'#10'".#ddddddddddddddddddddb.",'#10'".#dddddddd'
+  +'#bb#ddddddddb.",'#10'".#dddddddb####bdddddddb.",'#10'".#ddddddb##ddd#bddddd'
+  +'db.",'#10'".#ddddd###aaddd##dddddb.",'#10'".#dddddb#daaddddbdddddb.",'#10'"'
+  +'.#dddddb#dddddadbdddddb.",'#10'".#dddddb#ddddad##dddddb.",'#10'".#dddddbb#d'
+  +'dad#bddddddb.",'#10'".#ddddbabb#dd#bdbbddddb.",'#10'".#dddbabbbbbb#d#bb#ddd'
+  +'b.",'#10'".#ddbabbbddddddbdbbdddb.",'#10'".#dbabbbdddddd#bbbb#ddb.",'#10'".'
+  +'#dbbbbdddddddbdddbbddb.",'#10'".#ddbbdddddddbb#d#bbbdb.",'#10'".#dddddddddd'
+  +'ddddddddddb.",'#10'".#bbbbbbbbbbbbbbbbbbbbb.",'#10'".......................'
+  +'.",'#10'"........................"};'#10
+]);
 LazarusResources.Add('tfloatspinedit','XPM',[
   '/* XPM */'#10'static char * tfloatspinedit_xpm[] = {'#10'"23 16 123 2",'#10
   +'"  '#9'c None",'#10'". '#9'c #929292",'#10'"+ '#9'c #747474",'#10'"@ '#9'c '
@@ -2984,6 +2999,21 @@ LazarusResources.Add('tradiogroup','XPM',[
   +'"+#@@+@@@@@@@@@@@@@+#",'#10'"+#@@@@@@@@@@@@@@@@+#",'#10'"+#@@+@@@@@@@@@@@@@'
   +'+#",'#10'"+#@+$+@%%%%%%%%%@@+#",'#10'"+#@@+@@@@@@@@@@@@@+#",'#10'"+#@@@@@@@'
   +'@@@@@@@@@+#",'#10'"+@+++++++++++++++++#",'#10'" ###################"};'#10
+]);
+LazarusResources.Add('treplacedialog','XPM',[
+  '/* XPM */'#10'static char *TReplaceDialog[]={'#10'"24 24 7 1",'#10'". c None'
+  +'",'#10'"b c #000000",'#10'"e c #000080",'#10'"c c #0000ff",'#10'"# c #80808'
+  +'0",'#10'"d c #c0c0c0",'#10'"a c #ffffff",'#10'"........................",'
+  +#10'"........................",'#10'".######################.",'#10'".#abccc'
+  +'cccccccccccbabab.",'#10'".#bbbbbbbbbbbbbbbbbbbbb.",'#10'".#dddddddddddddddd'
+  +'ddddb.",'#10'".#ddddbbdddddeddddddddb.",'#10'".#ddd#bb#dddeeddddddddb.",'#10
+  +'".#dddbdbbddeeeee#dddddb.",'#10'".#dd#bbbb#ddeedde#ddddb.",'#10'".#ddbdddbb'
+  +'dddedddeddddb.",'#10'".#dbb#d#bbbddddddeddddb.",'#10'".#ddddddddddddddddddd'
+  +'db.",'#10'".#dddddeddddddddddddddb.",'#10'".#dddddedddeddddbbbb#db.",'#10'"'
+  +'.#ddddd#eddeedddb#dbbdb.",'#10'".#dddddd#eeeeeddbbbb#db.",'#10'".#ddddddddd'
+  +'eedddb#dbbdb.",'#10'".#dddddddddeddddb#dbbdb.",'#10'".#ddddddddddddddbbbb#d'
+  +'b.",'#10'".#ddddddddddddddddddddb.",'#10'".#bbbbbbbbbbbbbbbbbbbbb.",'#10'".'
+  +'.......................",'#10'"........................"};'#10
 ]);
 LazarusResources.Add('tsavedialog','XPM',[
   '/* XPM */'#10'static char *graphic[] = {'#10'"23 23 171 2",'#10'".. c None",'

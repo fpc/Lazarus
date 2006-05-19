@@ -1,0 +1,150 @@
+object ReplaceDialogForm: TReplaceDialogForm
+  ActiveControl = EditFind
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'Replace text'
+  ClientHeight = 162
+  ClientWidth = 432
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 431
+  VertScrollBar.Page = 161
+  Left = 460
+  Height = 162
+  Top = 471
+  Width = 432
+  object Label1: TLabel
+    Caption = 'Text to find'
+    Color = clNone
+    FocusControl = EditFind
+    ParentColor = False
+    Left = 4
+    Height = 14
+    Top = 19
+    Width = 57
+  end
+  object Label2: TLabel
+    Caption = 'Replace with'
+    Color = clNone
+    FocusControl = EditReplace
+    ParentColor = False
+    Left = 4
+    Height = 14
+    Top = 48
+    Width = 62
+  end
+  object EditFind: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    Text = 'EditFind'
+    Left = 72
+    Height = 23
+    Top = 10
+    Width = 257
+  end
+  object EditReplace: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    Text = 'EditReplace'
+    Left = 72
+    Height = 23
+    Top = 42
+    Width = 257
+  end
+  object CheckBox1: TCheckBox
+    Caption = 'Whole words only'
+    TabOrder = 2
+    Left = 4
+    Height = 13
+    Top = 80
+    Width = 104
+  end
+  object CheckBox2: TCheckBox
+    Caption = 'Case sensitive'
+    TabOrder = 3
+    Left = 4
+    Height = 13
+    Top = 104
+    Width = 88
+  end
+  object Button1: TButton
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Find more'
+    ModalResult = 1
+    OnClick = btnReplaceAllClick
+    TabOrder = 4
+    Left = 337
+    Height = 25
+    Top = 11
+    Width = 91
+    Tag = 1
+  end
+  object btnReplace: TButton
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Replace'
+    ModalResult = 1
+    OnClick = btnReplaceAllClick
+    TabOrder = 5
+    Left = 337
+    Height = 25
+    Top = 40
+    Width = 91
+    Tag = 2
+  end
+  object btnReplaceAll: TButton
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Replace all'
+    ModalResult = 1
+    OnClick = btnReplaceAllClick
+    TabOrder = 6
+    Left = 337
+    Height = 25
+    Top = 68
+    Width = 91
+    Tag = 3
+  end
+  object Button4: TButton
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 7
+    Left = 337
+    Height = 25
+    Top = 96
+    Width = 91
+  end
+  object btnHelp: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Help'
+    TabOrder = 8
+    Left = 337
+    Height = 25
+    Top = 129
+    Width = 91
+  end
+  object RadioGroup1: TRadioGroup
+    AutoFill = True
+    Caption = 'Direction'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    Items.Strings = (
+      'Forward'
+      'Backward'
+    )
+    TabOrder = 9
+    Left = 128
+    Height = 45
+    Top = 80
+    Width = 184
+  end
+end
