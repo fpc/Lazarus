@@ -610,7 +610,7 @@ msgstr "as-is"
 
 #: lazarusidestrconsts:lissortselascending
 msgid "Ascending"
-msgstr "Absteigend"
+msgstr "Aufsteigend"
 
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
