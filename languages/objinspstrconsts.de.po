@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-18 17:50+0100\n"
+"PO-Revision-Date: 2006-05-18 20:17+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -147,7 +147,7 @@ msgstr "Seite zufügen"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Tab zufügen"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -195,7 +195,7 @@ msgstr "Abbrechen"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr ""
+msgstr "Titel:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -327,7 +327,7 @@ msgstr "Seite lsöchen"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Tab löschen"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -455,7 +455,7 @@ msgstr "Seite einfügen"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Tab einfügen"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -543,11 +543,11 @@ msgstr "Seite nach rechts bewegen"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Tab nach links bewegen"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Tab nach rechts bewegen"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"

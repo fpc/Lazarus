@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-18 17:23+0100\n"
+"PO-Revision-Date: 2006-05-18 20:27+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,11 +51,11 @@ msgstr "%s%sMit Ok wird ignoriert und Dateninkonsistenz riskiert.%sMit Abbrechen
 
 #: lclstrconsts:rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: Bereits registriert"
 
 #: lclstrconsts:rshelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: Nicht registriert"
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -171,11 +171,11 @@ msgstr "Leer"
 
 #: lclstrconsts:hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Browser %s%s%s nicht ausführbar."
 
 #: lclstrconsts:hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Browser %s%s%s nicht gefunden."
 
 #: lclstrconsts:rscalculator
 msgid "Calculator"
@@ -271,7 +271,7 @@ msgstr "Fehler beim Lesen %s%s%s: %s"
 
 #: lclstrconsts:hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Fehler beim Ausführen von %s%s%s:%s%s"
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -339,59 +339,59 @@ msgstr "Hilfe"
 
 #: lclstrconsts:rshelpcontextnotfound
 msgid "Help Context not found"
-msgstr ""
+msgstr "Hilfekontext nicht gefunden"
 
 #: lclstrconsts:rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "Die Hilfedatenbank %s%s%s fand keinen Betrachter für eine Hilfeseite des Typs %s"
 
 #: lclstrconsts:rshelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "Hilfedatenbank %s%s%s nicht gefunden"
 
 #: lclstrconsts:rshelpdatabasenotfound
 msgid "Help Database not found"
-msgstr ""
+msgstr "Hilfedatenbank nicht gefunden"
 
 #: lclstrconsts:rshelperror
 msgid "Help Error"
-msgstr ""
+msgstr "Hilfefehler"
 
 #: lclstrconsts:rshelpselectorerror
 msgid "Help Selector Error"
-msgstr ""
+msgstr "Hilfeauswahlfehler"
 
 #: lclstrconsts:rshelpviewererror
 msgid "Help Viewer Error"
-msgstr ""
+msgstr "Hilfebetrachterfehler"
 
 #: lclstrconsts:rshelpviewernotfound
 msgid "Help Viewer not found"
-msgstr ""
+msgstr "Hilfebetrachter nicht gefunden"
 
 #: lclstrconsts:rshelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "Hilfekontext %s nicht in der Datenbank %s%s%s gefunden."
 
 #: lclstrconsts:rshelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "Hilfekontext %s nicht gefunden."
 
 #: lclstrconsts:rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Hilfeschlüsselwort %s nicht in der Datenbank %s%s%s gefunden."
 
 #: lclstrconsts:rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "Hilfeschlüsselwort %s%s%s nciht gefunden."
 
 #: lclstrconsts:rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "Hilfeknoten %s%s%s besitzt keine Hilfedatenbank"
 
 #: lclstrconsts:rshelpnotfound
 msgid "Help not found"
-msgstr ""
+msgstr "Hilfe nicht gefunden"
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
@@ -511,7 +511,7 @@ msgstr "Nächster"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
+msgstr "Kein HTML-Browser gefunden.%sBitte definieren Sie ihn in Hilfe -> Hilfe konfigurieren -> Betrachter"
 
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
@@ -519,11 +519,11 @@ msgstr "Kein MDI-Formular vorhanden"
 
 #: lclstrconsts:rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr ""
+msgstr "Keine Hilfe für Zeile %d, Spalte %d von %s gefunden."
 
 #: lclstrconsts:rshelpnohelpnodesavailable
 msgid "No help nodes available"
-msgstr ""
+msgstr "Keine Hilfeknoten verfügbar"
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -671,11 +671,11 @@ msgstr "Die Datei \"%s\" ist schreibgeschützt."
 
 #: lclstrconsts:hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "Die Hilfedatenbank %s%s%s konnte die Datei %s%s%s nicht finden."
 
 #: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "Das Makros %s in BrowserParams wird durch den URL ersetzt."
 
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
@@ -683,7 +683,7 @@ msgstr "Der Pfad \"%s\" ist nicht vorhanden"
 
 #: lclstrconsts:rshelpthereisnoviewerforhelptype
 msgid "There is no viewer for help type %s%s%s"
-msgstr ""
+msgstr "Es gibt keinen Viewer für den Hilfetyp %s%s%s"
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -695,7 +695,7 @@ msgstr "Unbekannt"
 
 #: lclstrconsts:rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr ""
+msgstr "Unbekanntet Fehler, bitte melden Sie diesen Bug."
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"

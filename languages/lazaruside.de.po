@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-18 21:13+0100\n"
+"PO-Revision-Date: 2006-05-18 20:38+0100\n"
 "Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -238,7 +238,7 @@ msgstr "(unbekanntes Makro: %s)"
 
 #: lazarusidestrconsts:lislazdocnotagcaption
 msgid "<NONE>"
-msgstr ""
+msgstr "<KEINE>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -502,7 +502,7 @@ msgstr "Immer einen Build durchführen (selbst dann, wenn nichts geändert wurde
 
 #: lazarusidestrconsts:dlgalwaysvisiblecaret
 msgid "Always visible caret"
-msgstr ""
+msgstr "Immer sichtbares Caret"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -750,7 +750,7 @@ msgstr "Lesezeichen"
 
 #: lazarusidestrconsts:lisborderspace
 msgid "BorderSpace"
-msgstr ""
+msgstr "Randbreite"
 
 #: lazarusidestrconsts:lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
@@ -962,7 +962,7 @@ msgstr "Großbuchstabe"
 
 #: lazarusidestrconsts:dlgcaretskipsselection
 msgid "Caret skips selection"
-msgstr ""
+msgstr "Caret überspringt Auswahl"
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
@@ -1294,7 +1294,7 @@ msgstr "Farbe"
 
 #: lazarusidestrconsts:dlgclrscheme
 msgid "Color Scheme"
-msgstr ""
+msgstr "Farbschema"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -1870,7 +1870,7 @@ msgstr "Rekursion festlegen"
 
 #: lazarusidestrconsts:lisctdefdefinetemplates
 msgid "Define templates"
-msgstr ""
+msgstr "Schablonen definieren"
 
 #: lazarusidestrconsts:dlgeddelay
 msgid "Delay"
@@ -2202,7 +2202,7 @@ msgstr "Code-Vorlage bearbeiten"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
-msgstr ""
+msgstr "Kontextsensitive Hilfe bearbeiten"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
@@ -2246,7 +2246,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
-msgstr ""
+msgstr "Makros einschalten"
 
 #: lazarusidestrconsts:lisenabled
 msgid "Enabled"
@@ -2510,7 +2510,7 @@ msgstr "Prozedur extrahieren"
 
 #: lazarusidestrconsts:lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "FPC-Doc-HTML-Pfad"
 
 #: lazarusidestrconsts:liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -2586,7 +2586,7 @@ msgstr "Datei bereits im Paket"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
-msgstr ""
+msgstr "Dateiendungen"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3002,7 +3002,7 @@ msgstr "Gittergröße Y"
 
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
-msgstr ""
+msgstr "Gruppenrücknahme"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -3082,7 +3082,7 @@ msgstr "Hilfeeinstellungen"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
-msgstr ""
+msgstr "Hilfe für FreePascal-Compilermeldungen"
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -5362,7 +5362,7 @@ msgstr "Projekt ist lauffähig"
 
 #: lazarusidestrconsts:lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr ""
+msgstr "Projekt-Makroeigenschaften"
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5954,7 +5954,7 @@ msgstr "Datei-speichern-Dialog"
 
 #: lazarusidestrconsts:fdmsaveformasxml
 msgid "Save form as xml"
-msgstr ""
+msgstr "Form im XML-Format speichern"
 
 #: lazarusidestrconsts:lisposaveinlpifil
 msgid "Save in .lpi file"
@@ -6402,7 +6402,7 @@ msgstr "Schließen-Button im Notebook anzeigen"
 
 #: lazarusidestrconsts:srkmecshowcodecontext
 msgid "Show code context"
-msgstr ""
+msgstr "Code-Context anzeigen"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -8602,7 +8602,7 @@ msgstr "Kleinbuchstaben"
 
 #: lazarusidestrconsts:lisprojectmacrounitpath
 msgid "macro ProjectUnitPath"
-msgstr ""
+msgstr "Makro ProjectUnitPath"
 
 #: lazarusidestrconsts:lisoipmissing
 msgid "missing"
