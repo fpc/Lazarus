@@ -156,7 +156,6 @@ begin
   if fifSearchProject in NewOptions then WhereRadioGroup.ItemIndex := 0;
   if fifSearchOpen in NewOptions then WhereRadioGroup.ItemIndex := 1;
   if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex := 2;
-  DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
 
   UpdateReplaceCheck;
 end;

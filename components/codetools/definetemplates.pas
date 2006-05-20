@@ -3440,9 +3440,9 @@ begin
     ExternalMacroStart+'IncPath',
     IncPathMacro
     +';'+Dir+'fcl'+DS+'inc'+DS
-    +';'+Dir+'fcl'+DS+SrcOS+DS
     +';'+Dir+'fcl'+DS+'classes'+DS
-    +';'+Dir+'rtl'+DS+TargetOS+DS
+    +';'+Dir+'rtl'+DS+TargetOS+DS // TargetOS before SrcOS !
+    +';'+Dir+'fcl'+DS+SrcOS+DS
     ,da_DefineRecurse));
 
   // fcl/db
