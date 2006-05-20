@@ -804,7 +804,7 @@ begin
     if GTK_WIDGET_RC_STYLE(Widget) then
       Result:=Result+'St';
     if  GTK_WIDGET_PARENT_SENSITIVE(Widget) then
-       result:=result+'Pr';
+      Result:=Result+'Pr';
   end;
   Result:=Result+']';
 end;

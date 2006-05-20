@@ -4187,10 +4187,14 @@ begin
       if gtk_is_window(Window)
       then begin
         Widget := Window^.focus_widget;
+        if Widget=nil then Widget:=PGtkWidget(Window);
+        //DebugLn('TGtkWidgetSet.GetActiveWindow Window=',GetWidgetDebugReport(PgtkWidget(Window)),' Window^.focus_widget= ',GetWidgetDebugReport(Window^.focus_widget));
 
         if (Widget <> nil) and gtk_widget_has_focus(Widget)
         then begin
+          // return the window
           Result := HWND(GetMainWidget(PGtkWidget(Window)));
+          //DebugLn('TGtkWidgetSet.GetActiveWindow Result=',GetWidgetDebugReport(PgtkWidget(Result)));
           Break;
         end;
       end;
@@ -4318,27 +4322,6 @@ var
   //FocusObject: PGTKObject;
   modmask : TGDKModifierType;
 begin
-{  Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetCaretPos] finish');
-
-  FocusObject := PGTKObject(GetFocus);
-  Result := FocusObject <> nil;
-
-  if Result
-  then begin
-//    Assert(False, Format('Trace:[TGtkWidgetSet.GetCaretPos] Got focusObject 0x%x --> %s', [Integer(FocusObject), gtk_type_name(FocusObject^.Klass^.theType)]));
-
-    if gtk_type_is_a(gtk_object_type(FocusObject), GTKAPIWidget_GetType)
-    then begin
-      GTKAPIWidget_GetCaretPos(PGTKAPIWidget(FocusObject), lpPoint.X, lpPoint.Y);
-    end
-//    else if // TODO: other widgettypes
-    else begin
-      Result := False;
-    end;
-  end
-  else DebugLn('[TGtkWidgetSet.GetCaretPos] got focusObject nil');
- }
-
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
@@ -4994,6 +4977,7 @@ begin
     if (List^.Data <> nil)
     then begin
       gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+      
       if gtk_is_window(Window)
       then begin
         Widget := Window^.focus_widget;
@@ -5644,7 +5628,8 @@ begin
   then begin
     Result := 0;
     //RaiseException('');
-    DebugLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
+    DumpStack;
+    DebugLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %d. Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
   end
   else Result := SysColorMap[nIndex];
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetSysColor] Index %d --> %8x', [nIndex, Result]));

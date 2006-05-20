@@ -610,6 +610,7 @@ type
     property OnShow;
     property OnStartDock;
     property OnUnDock;
+    property OnUTF8KeyPress;
     property ParentFont;
     property PixelsPerInch;
     property PopupMenu;

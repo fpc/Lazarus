@@ -1715,8 +1715,8 @@ type
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl);
     procedure Repaint; override;
-    Procedure SetFocus; virtual;
-    Function FindChildControl(const ControlName: String): TControl;
+    procedure SetFocus; virtual;
+    function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
@@ -2080,7 +2080,6 @@ function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
 procedure MoveWindowOrg(dc: hdc; X,Y: Integer);
 
 // Interface support.
-
 procedure RecreateWnd(const AWinControl:TWinControl);
 
 
@@ -2098,7 +2097,7 @@ var
   NewStyleControls: Boolean;
   Mouse: TMouse;
 
-// cursor
+// mouse cursor
 function CursorToString(Cursor: TCursor): string;
 function StringToCursor(const S: string): TCursor;
 procedure GetCursorValues(Proc: TGetStrProc);

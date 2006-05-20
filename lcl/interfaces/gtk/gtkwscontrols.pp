@@ -329,7 +329,6 @@ begin
 end;
 
 procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
-//TODO: Remove ALCLObject when the creation splitup is finished
 begin
   GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);

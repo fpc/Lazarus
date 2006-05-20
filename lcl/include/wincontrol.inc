@@ -3543,7 +3543,7 @@ Begin
     FParentCtl3D := Value;
     if FParent <> nil then
     Begin
-      //Sendmessage to do something?
+      // Sendmessage to do something?
     End;
   end;
 end;

@@ -9,6 +9,7 @@ object CodeContextFrm: TCodeContextFrm
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnPaint = FormPaint
+  OnUTF8KeyPress = FormUTF8KeyPress
   PixelsPerInch = 112
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299

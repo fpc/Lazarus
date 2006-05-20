@@ -38,30 +38,43 @@ interface
 uses
   Classes, SysUtils, Types, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, LCLType, LCLIntf,
+  SynEdit, SynEditKeyCmds,
   BasicCodeTools, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SrcEditorIntf;
+  SrcEditorIntf,
+  IDEProcs;
 
 type
 
   { TCodeContextFrm }
 
-  TCodeContextFrm = class(TForm)
+  TCodeContextFrm = class(THintWindow)
+    procedure ApplicationIdle(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormPaint(Sender: TObject);
+    procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     FHints: TStrings;
+    FLastParameterIndex: integer;
+    FParamListBracketOpenCodeXYPos: TCodeXYPosition;
     FProcNameCodeXYPos: TCodeXYPosition;
     procedure CreateHints(const CodeContexts: TCodeContextInfo);
     procedure ClearMarksInHints;
     procedure MarkCurrentParameterInHints(ParameterIndex: integer); // 0 based
     procedure CalculateHintsBounds(const CodeContexts: TCodeContextInfo);
     procedure DrawHints(var MaxWidth, MaxHeight: Integer; Draw: boolean);
+  protected
+    procedure Paint; override;
   public
+    constructor Create(TheOwner: TComponent); override;
     procedure SetCodeContexts(const CodeContexts: TCodeContextInfo);
+    procedure UpdateHints;
     property ProcNameCodeXYPos: TCodeXYPosition read FProcNameCodeXYPos;
+    property ParamListBracketOpenCodeXYPos: TCodeXYPosition
+                                            read FParamListBracketOpenCodeXYPos;
+    property LastParameterIndex: integer read FLastParameterIndex;
   end;
 
 var
@@ -84,9 +97,6 @@ begin
       CodeContexts))
     or (CodeContexts=nil) or (CodeContexts.Count=0) then
       exit;
-    {$IFNDEF EnableCodeContext}
-    exit;
-    {$ENDIF}
     if CodeContextFrm=nil then
       CodeContextFrm:=TCodeContextFrm.Create(nil);
     CodeContextFrm.SetCodeContexts(CodeContexts);
@@ -99,9 +109,16 @@ end;
 
 { TCodeContextFrm }
 
+procedure TCodeContextFrm.ApplicationIdle(Sender: TObject);
+begin
+  if not Visible then exit;
+  UpdateHints;
+end;
+
 procedure TCodeContextFrm.FormCreate(Sender: TObject);
 begin
   FHints:=TStringList.Create;
+  Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 
 procedure TCodeContextFrm.FormDestroy(Sender: TObject);
@@ -111,8 +128,21 @@ end;
 
 procedure TCodeContextFrm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  SrcEdit: TSourceEditorInterface;
 begin
-  if (Key=VK_ESCAPE) and (Shift=[]) then Close;
+  if (Key=VK_ESCAPE) and (Shift=[]) then
+    Hide
+  else if SourceEditorWindow<>nil then begin
+    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    if SrcEdit=nil then
+      Hide
+    else begin
+      // redirect keys
+      SrcEdit.EditorControl.KeyDown(Key,Shift);
+      SetActiveWindow(SourceEditorWindow.Handle);
+    end;
+  end;
 end;
 
 procedure TCodeContextFrm.FormPaint(Sender: TObject);
@@ -125,18 +155,132 @@ begin
   DrawHints(DrawWidth,DrawHeight,true);
 end;
 
+procedure TCodeContextFrm.FormUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+var
+  SrcEdit: TSourceEditorInterface;
+  ASynEdit: TCustomSynEdit;
+begin
+  SrcEdit:=SourceEditorWindow.ActiveEditor;
+  if SrcEdit=nil then begin
+    Hide;
+  end else begin
+    ASynEdit:=(SrcEdit.EditorControl as TCustomSynEdit);
+    ASynEdit.CommandProcessor(ecChar,UTF8Key,nil);
+  end;
+end;
+
 procedure TCodeContextFrm.SetCodeContexts(const CodeContexts: TCodeContextInfo);
 begin
   FillChar(FProcNameCodeXYPos,SizeOf(FProcNameCodeXYPos),0);
+  FillChar(FParamListBracketOpenCodeXYPos,SizeOf(FParamListBracketOpenCodeXYPos),0);
 
   if CodeContexts<>nil then begin
-    if (CodeContexts.ProcNameAtom.StartPos>0) then
-      CodeContexts.Tool.CleanPosToCaret(CodeContexts.ProcNameAtom.StartPos,
+    if (CodeContexts.ProcNameAtom.StartPos>0) then begin
+      CodeContexts.Tool.MoveCursorToCleanPos(CodeContexts.ProcNameAtom.StartPos);
+      CodeContexts.Tool.CleanPosToCaret(CodeContexts.Tool.CurPos.StartPos,
                                         FProcNameCodeXYPos);
+      CodeContexts.Tool.ReadNextAtom;// read proc name
+      CodeContexts.Tool.ReadNextAtom;// read bracket open
+      if CodeContexts.Tool.CurPos.Flag
+        in [cafRoundBracketOpen,cafEdgedBracketOpen]
+      then begin
+        CodeContexts.Tool.CleanPosToCaret(CodeContexts.Tool.CurPos.StartPos,
+                                          FParamListBracketOpenCodeXYPos);
+      end;
+    end;
   end;
   
   CreateHints(CodeContexts);
   CalculateHintsBounds(CodeContexts);
+end;
+
+procedure TCodeContextFrm.UpdateHints;
+var
+  SrcEdit: TSourceEditorInterface;
+  CurTextXY: TPoint;
+  ASynEdit: TSynEdit;
+  NewParameterIndex: Integer;
+  BracketPos: TPoint;
+  Line: string;
+  Code: String;
+  TokenEnd: LongInt;
+  TokenStart: LongInt;
+  KeepOpen: Boolean;
+  BracketLevel: Integer;
+begin
+  if not Visible then exit;
+  
+  KeepOpen:=false;
+  NewParameterIndex:=-1;
+  try
+    // check Source Editor
+    if SourceEditorWindow=nil then exit;
+    SrcEdit:=SourceEditorWindow.ActiveEditor;
+    if (SrcEdit=nil) or (SrcEdit.CodeToolsBuffer<>ProcNameCodeXYPos.Code) then
+      exit;
+
+    CurTextXY:=SrcEdit.CursorTextXY;
+    BracketPos:=Point(ParamListBracketOpenCodeXYPos.X,
+                      ParamListBracketOpenCodeXYPos.Y);
+    if ComparePoints(CurTextXY,BracketPos)<=0 then begin
+      // cursor moved in front of parameter list
+      exit;
+    end;
+
+    // find out, if cursor is in procedure call and where
+    ASynEdit:=SrcEdit.EditorControl as TSynEdit;
+
+    Line:=ASynEdit.Lines[BracketPos.Y-1];
+    if (length(Line)<BracketPos.X) or (not (Line[BracketPos.X] in ['(','[']))
+    then begin
+      // bracket lost -> something changed -> hints became invalid
+      exit;
+    end;
+    
+    // collect the lines from bracket open to cursor
+    Code:=StringListPartToText(ASynEdit.Lines,BracketPos.Y-1,CurTextXY.Y-1,#10);
+    if CurTextXY.Y<=ASynEdit.Lines.Count then begin
+      Line:=ASynEdit.Lines[CurTextXY.Y-1];
+      if length(Line)>=CurTextXY.X then
+        SetLength(Code,length(Code)-length(Line)+CurTextXY.X-1);
+    end;
+    //DebugLn('TCodeContextFrm.UpdateHints Code="',DbgStr(Code),'"');
+    
+    // parse the code
+    TokenEnd:=BracketPos.X;
+    BracketLevel:=0;
+    repeat
+      ReadRawNextPascalAtom(Code,TokenEnd,TokenStart);
+      if TokenEnd=TokenStart then break;
+      case Code[TokenStart] of
+      '(','[':
+        begin
+          inc(BracketLevel);
+          if BracketLevel=1 then
+            NewParameterIndex:=0;
+        end;
+      ')',']':
+        begin
+          dec(BracketLevel);
+          if BracketLevel=0 then exit;// cursor behind procedure call
+        end;
+      ',':
+        if BracketLevel=1 then inc(NewParameterIndex);
+      else
+        if IsIdentStartChar[Code[TokenStart]] then begin
+          if CompareIdentifiers(@Code[TokenStart],'end')=0 then
+            break;// cursor behind procedure call
+        end;
+      end;
+    until false;
+    KeepOpen:=true;
+  finally
+    if not KeepOpen then
+      Hide
+    else if NewParameterIndex<>LastParameterIndex then
+      MarkCurrentParameterInHints(NewParameterIndex);
+  end;
 end;
 
 procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
@@ -177,7 +321,7 @@ begin
     FHints.Add(Trim(s));
   end;
   MarkCurrentParameterInHints(CodeContexts.ParameterIndex-1);
-  DebugLn('TCodeContextFrm.UpdateHints ',FHints.Text);
+  //DebugLn('TCodeContextFrm.UpdateHints ',FHints.Text);
 end;
 
 procedure TCodeContextFrm.ClearMarksInHints;
@@ -317,9 +461,12 @@ procedure TCodeContextFrm.MarkCurrentParameterInHints(ParameterIndex: integer);
 var
   i: Integer;
 begin
+  //DebugLn('TCodeContextFrm.MarkCurrentParameterInHints FLastParameterIndex=',dbgs(FLastParameterIndex),' ParameterIndex=',dbgs(ParameterIndex));
   ClearMarksInHints;
   for i:=0 to FHints.Count-1 do
     FHints[i]:=MarkCurrentParameterInHint(FHints[i]);
+  FLastParameterIndex:=ParameterIndex;
+  Invalidate;
 end;
 
 procedure TCodeContextFrm.CalculateHintsBounds(const
@@ -531,8 +678,19 @@ begin
   end;
 end;
 
-initialization
-  {$I codecontextform.lrs}
+procedure TCodeContextFrm.Paint;
+begin
+  FormPaint(Self);
+end;
+
+constructor TCodeContextFrm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  OnDestroy:=@FormDestroy;
+  OnKeyDown:=@FormKeyDown;
+  OnUTF8KeyPress:=@FormUTF8KeyPress;
+  FormCreate(Self);
+end;
 
 end.
 

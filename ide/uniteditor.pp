@@ -1221,12 +1221,21 @@ begin
 
   IdentCompletionTimer.AutoEnabled:=false;
 
+  if (Command=ecChar) and (AChar=#27) then begin
+    // close hint windows
+    if (CodeContextFrm<>nil) then
+      CodeContextFrm.Hide;
+  end;
+
   if (FSourceNoteBook<>nil)
   and (snIncrementalFind in FSourceNoteBook.States) then begin
     case Command of
     ecChar:
       begin
         if AChar=#27 then begin
+          if (CodeContextFrm<>nil) then
+            CodeContextFrm.Hide;
+
           FSourceNoteBook.IncrementalSearchStr:='';
         end else
           FSourceNoteBook.IncrementalSearchStr:=

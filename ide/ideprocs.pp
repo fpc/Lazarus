@@ -190,6 +190,9 @@ function SpecialCharsToSpaces(const s: string): string;
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean = false): string;
+function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
+                              const Delimiter: string;
+                              IgnoreEmptyLines: boolean = false): string;
 
 
 // environment
@@ -1538,19 +1541,29 @@ end;
 
 function StringListToText(List: TStrings; const Delimiter: string;
   IgnoreEmptyLines: boolean): string;
+begin
+  if List=nil then
+    Result:=''
+  else
+    Result:=StringListPartToText(List,0,List.Count-1,Delimiter,IgnoreEmptyLines);
+end;
+
+function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
+  const Delimiter: string; IgnoreEmptyLines: boolean): string;
 var
   i: Integer;
   s: string;
   Size: Integer;
   p: Integer;
 begin
-  if List=nil then begin
+  if (List=nil) or (FromIndex>ToIndex) or (FromIndex>=List.Count) then begin
     Result:='';
     exit;
   end;
+  if ToIndex>=List.Count then ToIndex:=List.Count-1;
   // calculate size
   Size:=0;
-  for i:=0 to List.Count-1 do begin
+  for i:=FromIndex to ToIndex do begin
     s:=List[i];
     if IgnoreEmptyLines and (s='') then continue;
     if Size>0 then
@@ -1560,7 +1573,7 @@ begin
   // build string
   SetLength(Result,Size);
   p:=1;
-  for i:=0 to List.Count-1 do begin
+  for i:=FromIndex to ToIndex do begin
     s:=List[i];
     if IgnoreEmptyLines and (s='') then continue;
     if (p>1) and (Delimiter<>'') then begin
