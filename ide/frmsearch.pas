@@ -298,7 +298,7 @@ var
   ReplacedText: PChar;
   ReplacedTextCapacity: integer;
   ReplacedTextLength: integer;
-  ReplacedTextOriginalPos: integer;// 1-based
+  ReplacedTextOriginalPos: integer;// 1-based. e.g. 2 bytes has been replaced => ReplacedTextOriginalPos=3.
 
   function FileIsOpenInSourceEditor: boolean;
   begin
@@ -434,7 +434,7 @@ var
     EndLocks;
     if ReplacedText<>nil then begin
       if not fAbort then begin
-        GapLength:=OriginalFile.SourceLength-ReplacedTextOriginalPos;
+        GapLength:=OriginalFile.SourceLength+1-ReplacedTextOriginalPos;
         NewLength:=ReplacedTextLength+GapLength;
         GrowNewText(NewLength);
         // copy the text between the last and this replacement
@@ -515,8 +515,7 @@ begin
     //writeln('TheFileName=',TheFileName,' len=',OriginalFile.SourceLength,' Cnt=',OriginalFile.LineCount,' TempSearch=',TempSearch);
     Application.ProcessMessages;
     CurLine:='';
-    for Line:= 0 to OriginalFile.LineCount -1 do
-    begin
+    for Line:= 0 to OriginalFile.LineCount -1 do begin
       if (Line and $fff)=0 then begin
         EndLocks;
         Application.ProcessMessages;
