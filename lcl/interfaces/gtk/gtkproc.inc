@@ -6613,6 +6613,7 @@ Function CreateFormContents(AForm: TCustomForm;
 var
   ScrolledWidget, ClientAreaWidget: PGtkWidget;
   WindowStyle: PGtkStyle;
+  Adjustment: PGtkAdjustment;
 begin
   // Create the VBox. We need that to place controls outside
   // the client area (like menu)
@@ -6644,6 +6645,17 @@ begin
                            GTK_CAN_FOCUS);
     gtk_scrolled_window_set_policy(PGtkScrolledWindow(ScrolledWidget),
                                    GTK_POLICY_NEVER,GTK_POLICY_NEVER);
+                                   
+    Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(ScrolledWidget));
+    if Adjustment <> nil
+    then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+                             PGTKScrolledWindow(ScrolledWidget)^.vscrollbar);
+
+    Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(ScrolledWidget));
+    if Adjustment <> nil
+    then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+                             PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
+
   end;
 end;
 

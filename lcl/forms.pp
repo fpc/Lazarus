@@ -151,6 +151,7 @@ type
   protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
+    function  GetClientScrollOffset: TPoint; override;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure DoOnResize; override;
@@ -179,8 +180,6 @@ type
   { TScrollBox }
 
   TScrollBox = class(TScrollingWinControl)
-  protected
-    function GetClientScrollOffset: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
   published

@@ -15,12 +15,6 @@
  *****************************************************************************
 }
 
-function TScrollBox.GetClientScrollOffset: TPoint;
-begin
-  Result.X:=HorzScrollBar.Position;
-  Result.Y:=VertScrollBar.Position;
-end;
-
 constructor TScrollBox.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);

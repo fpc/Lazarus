@@ -3549,9 +3549,39 @@ procedure TGtkWidgetSet.SetCallback(const AMsg: LongInt;
     ConnectSenderSignalAfter(AnObject,
       'key-release-event', @GTKKeyUpDownAfter, GDK_KEY_RELEASE_MASK);
   end;
+  
+  function GetAdjustment(const gObject: PGTKObject; vertical: boolean):PGtkObject;
+  var
+    Scroll: PGtkObject;
+  begin
+    if Vertical then begin
+      if ALCLObject is TScrollBar then
+        result := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+      else if (ALCLObject is TScrollBox) or (ALCLObject is TCustomForm) then begin
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Result := PGtkObject(gtk_scrolled_window_get_vadjustment(
+          PGTKScrolledWindow(Scroll)));
+      end
+      else
+        Result := PGtkObject(gtk_scrolled_window_get_vadjustment(
+          PGTKScrolledWindow(gObject)));
+
+    end else begin
+      if ALCLObject is TScrollBar then
+        Result := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
+      else if (ALCLObject is TScrollBox)  or (ALCLObject is TCustomForm) then begin
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(Scroll)));
+      end
+      else
+        Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(gObject)));
+    end;
+  end;
 
 var
-  gObject, gFixed, gCore, Scroll, Adjustment: PGTKObject;
+  gObject, gFixed, gCore, Adjustment: PGTKObject;
 begin
   //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
   if AGTKObject = nil
@@ -3912,31 +3942,13 @@ begin
 
     LM_HSCROLL:
     begin
-      if ALCLObject is TScrollBar then
-        Adjustment := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-      else if ALCLObject is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
-        Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
-          PGTKScrolledWindow(Scroll)));
-      end
-      else
-        Adjustment := PgtkObject(gtk_scrolled_window_get_hadjustment(
-          PGTKScrolledWindow(gObject)));
+      Adjustment := GetAdjustment(gObject, False);
       ConnectSenderSignal(Adjustment, 'value-changed', @GTKHScrollCB);
     end;
 
     LM_VSCROLL:
     begin
-      if ALCLObject is TScrollBar then
-        Adjustment := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-      else if ALCLObject is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
-        Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
-          PGTKScrolledWindow(Scroll)));
-      end
-      else
-        Adjustment := PGtkObject(gtk_scrolled_window_get_vadjustment(
-          PGTKScrolledWindow(gObject)));
+      Adjustment := GetAdjustment(gObject, True);
       ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
       ConnectSenderSignal(Adjustment, 'value-changed', @GTKVScrollCB);
     end;
@@ -4285,6 +4297,8 @@ begin
           SetCallback(LM_CONFIGUREEVENT, AGTKObject, ALCLObject);
           SetCallback(LM_CLOSEQUERY, AGTKObject, ALCLObject);
           SetCallBack(LM_Activate, AGTKObject, ALCLObject);
+          SetCallback(LM_HSCROLL, AGTKObject, ALCLObject);
+          SetCallback(LM_VSCROLL, AGTKObject, ALCLObject);
         end;
       end;
 

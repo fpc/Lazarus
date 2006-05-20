@@ -1785,8 +1785,13 @@ Begin
 
   end;
 
-  // convert from win32 client to lcl client pos
-  if PLMsg = @LMMouseMove then
+  // convert from win32 client to lcl client pos.
+  //
+  // hack to prevent GetLCLClientBoundsOffset from changing mouse client
+  // coordinates for TScrollingWinControls, this is required in
+  // IsControlMouseMsg and ControlAtPos where unscrolled client coordinates
+  // are expected.
+  if (PLMsg = @LMMouseMove) and not (lWinControl is TScrollingWinControl) then
   begin
     if GetLCLClientBoundsOffset(Window, R) then
     begin
@@ -1794,7 +1799,7 @@ Begin
       Dec(LMMouseMove.YPos, R.Top);
     end;
   end else
-  if PLMsg = @LMMouse then
+  if (PLMsg = @LMMouse) and not (lWinControl is TScrollingWinControl) then
   begin
     if GetLCLClientBoundsOffset(Window, R) then
     begin
