@@ -3128,7 +3128,8 @@ begin
   {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
-  DeliverMessage(Data, Mess);
+  if (data=nil) or (PGtkList(widget)^.selection<>nil) then
+    DeliverMessage(Data, Mess);
 end;
 
 function gtkListSelectChild(widget: PGtkWidget;child : PGtkWidget; data: gPointer
