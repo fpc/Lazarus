@@ -16,7 +16,7 @@
 
  Common code to all widgetsets.
 }
-unit wscommontrayicon;
+unit WSCommonTrayIcon;
 
 {$ifdef FPC}
   {$mode delphi}{$H+}

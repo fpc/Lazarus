@@ -5,7 +5,8 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)/"/>
+        <OtherUnitFiles Value="$(LazarusDir)/components/opengl/gtk2x11/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -19,7 +20,7 @@
       <Item1>
         <Filename Value="wswin32trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WSWin32TrayIcon"/>
+        <UnitName Value="wswin32trayicon"/>
       </Item1>
       <Item2>
         <Filename Value="trayicon.pas"/>
@@ -29,16 +30,16 @@
       <Item3>
         <Filename Value="wsgtk2trayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WSGtk2TrayIcon"/>
+        <UnitName Value="wsgtk2trayicon"/>
       </Item3>
       <Item4>
         <Filename Value="wsgtktrayicon.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WSGtkTrayIcon"/>
+        <UnitName Value="wsgtktrayicon"/>
       </Item4>
       <Item5>
         <Filename Value="wstrayicon.pas"/>
-        <UnitName Value="WSTrayIcon"/>
+        <UnitName Value="wstrayicon"/>
       </Item5>
     </Files>
     <Type Value="RunAndDesignTime"/>

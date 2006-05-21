@@ -18,7 +18,7 @@
 
  Gtk2 specific code.
 }
-unit wsgtk2trayicon;
+unit WSGtk2TrayIcon;
 
 {$ifdef FPC}
   {$mode delphi}{$H+}
@@ -30,7 +30,7 @@ interface
 
 uses
   Graphics, Classes, ExtCtrls, SysUtils, Forms, Controls, Dialogs,
-  Menus, wscommontrayicon, x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef;
+  Menus, WSCommonTrayIcon, x, xlib, xutil, gtk2, gdk2, gdk2x, glib2, gtkdef;
 
 type
 

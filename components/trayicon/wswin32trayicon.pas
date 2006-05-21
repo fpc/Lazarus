@@ -18,7 +18,7 @@
 
  Win32 specific code.
 }
-unit wswin32trayicon;
+unit WSWin32TrayIcon;
 
 {$ifdef FPC}
   {$mode delphi}{$H+}
@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, Graphics, Menus, Forms, Controls,
-  wscommontrayicon;
+  WSCommonTrayIcon;
 
 type
 

@@ -41,11 +41,11 @@ uses
 
 {$DEFINE read_forward_definitions}
 type
-{$I gdk2x11includes.inc}
+{$I include/gdk2x11includes.inc}
 {$UNDEF read_forward_definitions}
 
 {$DEFINE read_interface_rest}
-{$I gdk2x11includes.inc}
+{$I include/gdk2x11includes.inc}
 {$UNDEF read_interface_rest}
 
 implementation
@@ -57,7 +57,7 @@ implementation
 
 // call implementation parts of header files
 {$DEFINE read_implementation}
-{$I gdk2x11includes.inc}
+{$I include/gdk2x11includes.inc}
 {$UNDEF read_implementation}
 
 end.
