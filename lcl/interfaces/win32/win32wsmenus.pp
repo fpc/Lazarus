@@ -373,10 +373,12 @@ begin
 end;
 
 function BackgroundColorMenu(const aSelected: boolean; const aInMainMenu: boolean): COLORREF;
+var IsFlatMenu: Windows.BOOL;
 begin
   if aSelected then
     Result := GetSysColor(COLOR_HIGHLIGHT)
-  else if aInMainMenu and (GetSysColorBrush(COLOR_MENUBAR) <> 0) then // COLOR_MENUBAR is not supported on Windows version < XP
+  // SPI_GETFLATMENU = 0x1022, it is not yet defined in the FPC
+  else if aInMainMenu and (SystemParametersInfo($1022, 0, @IsFlatMenu, 0)) and IsFlatMenu then // COLOR_MENUBAR is not supported on Windows version < XP
     Result := GetSysColor(COLOR_MENUBAR)
   else
     Result := GetSysColor(COLOR_MENU);
