@@ -416,7 +416,7 @@ begin
     {$ENDIF}
   end;
   if FDefaultBrowser='' then begin
-    // then search in path prefer open source ;)
+    // Then search in path. Prefer open source ;)
     if Find('mozilla')
     or Find('galeon')
     or Find('konqueror')
