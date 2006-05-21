@@ -56,7 +56,7 @@ type
   end;
   
   TCTDirectoryUnitSources = (
-    ctdusUnitNormal, // e.g. unitname -> filename
+    ctdusUnitNormal, // e.g. unitname (case depends on OS) -> filename
     ctdusUnitCaseInsensitive, // unitname case insensitive -> filename
     ctdusInFilenameNormal, // unit 'in' filename -> filename
     ctdusInFilenameCaseInsenstive, // unit 'in' filename case insensitive -> filename
@@ -65,9 +65,9 @@ type
     );
 
 const
-  ctdusCaseSensitive = [ctdusUnitNormal,
-                        ctdusInFilenameNormal,
-                        ctdusUnitFileNormal];
+  ctdusCaseNormal      = [ctdusUnitNormal,
+                          ctdusInFilenameNormal,
+                          ctdusUnitFileNormal];
   ctdusCaseInsensitive = [ctdusUnitCaseInsensitive,
                           ctdusInFilenameCaseInsenstive,
                           ctdusUnitFileCaseInsensitive];
@@ -501,7 +501,11 @@ var
 begin
   Files:=FUnitSources[UnitSrc].Files;
   if Files=nil then begin
-    Files:=TStringToStringTree.Create(UnitSrc in ctdusCaseSensitive);
+    Files:=TStringToStringTree.Create({$IFDEF CaseInsensitiveFilenames}
+                                      false
+                                      {$ELSE}
+                                      UnitSrc in ctdusCaseNormal
+                                      {$ENDIF});
     FUnitSources[UnitSrc].Files:=Files;
   end;
   Files[Search]:=Filename;
