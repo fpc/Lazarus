@@ -393,7 +393,8 @@ procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser,
     Ext:='';
     {$ENDIF}
     Filename:=SearchFileInPath(ShortFilename+Ext,'',
-                      SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,[]);
+                      SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,
+                      [sffDontSearchInBasePath]);
     Result:=Filename<>'';
     if Result then begin
       FDefaultBrowser:=Filename;
@@ -407,7 +408,15 @@ begin
       OnFindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
   end;
   if FDefaultBrowser='' then begin
-    // prefer open source ;)
+    {$IFDEF MSWindows}
+    FDefaultBrowser:= SearchFileInPath('rundll32.exe','',
+                             SysUtils.GetEnvironmentVariable('PATH'),';',
+                             [sffDontSearchInBasePath]);
+    FDefaultBrowserParams:='url.dll,FileProtocolHandler %s';
+    {$ENDIF}
+  end;
+  if FDefaultBrowser='' then begin
+    // then search in path prefer open source ;)
     if Find('mozilla')
     or Find('galeon')
     or Find('konqueror')
