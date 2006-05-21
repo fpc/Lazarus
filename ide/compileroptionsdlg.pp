@@ -1390,6 +1390,9 @@ begin
     Width := 150;
     Caption := dlgCOUnitStyle;
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+    ChildSizing.LeftRightSpacing:=6;
+    ChildSizing.TopBottomSpacing:=6;
+    ChildSizing.VerticalSpacing:=6;
   end;
 
   chkSmartLinkUnit := TCheckBox.Create(Self);
@@ -1411,6 +1414,10 @@ begin
     Caption := dlgCOChecks;
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
     ChildSizing.ControlsPerLine:=2;
+    ChildSizing.LeftRightSpacing:=6;
+    ChildSizing.TopBottomSpacing:=6;
+    ChildSizing.HorizontalSpacing:=6;
+    ChildSizing.VerticalSpacing:=6;
   end;
 
   chkChecksIO := TCheckBox.Create(Self);
@@ -1453,6 +1460,8 @@ begin
     Width := 100;
     Caption := dlgHeapSize +' (-Ch):';
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+    ChildSizing.LeftRightSpacing:=6;
+    ChildSizing.TopBottomSpacing:=6;
   end;
 
   edtHeapSize := TEdit.Create(grpHeapSize);
@@ -1476,6 +1485,9 @@ begin
     Width := 150;
     Caption := dlgCOGenerate;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+    ChildSizing.LeftRightSpacing:=6;
+    ChildSizing.TopBottomSpacing:=6;
+    ChildSizing.VerticalSpacing:=6;
   end;
 
   radGenNormal := TRadioButton.Create(grpGenerate);
@@ -1553,7 +1565,7 @@ begin
   with lblTargetOS do begin
     Name := 'lblTargetOS';
     Parent := grpTargetPlatform;
-    Left := 4;
+    Left := 6;
     AnchorVerticalCenterTo(TargetOSComboBox);
     Caption :=dlgTargetOS+' (-T)';
   end;
@@ -1579,7 +1591,7 @@ begin
   with lblTargetCPU do begin
     Name := 'lblTargetCPU';
     Parent := grpTargetPlatform;
-    Left := 4;
+    Left := 6;
     AnchorVerticalCenterTo(TargetCPUComboBox);
     Caption :=dlgTargetCPU+' (-P)';
   end;
@@ -1602,7 +1614,7 @@ begin
   with lblTargeti386Proc do begin
     Name := 'lblTargeti386Proc';
     Parent := grpTargetPlatform;
-    Left := 4;
+    Left := 6;
     AnchorVerticalCenterTo(Targeti386ProcComboBox);
     Caption := dlgTargetProc;
   end;
@@ -1619,6 +1631,9 @@ begin
     Width := 360;
     Caption := dlgOptimiz;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+    ChildSizing.LeftRightSpacing:=6;
+    ChildSizing.TopBottomSpacing:=6;
+    ChildSizing.VerticalSpacing:=6;
     AutoSize:=true;
   end;
 
