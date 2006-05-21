@@ -1135,6 +1135,7 @@ begin
       ANode:=ANode.Parent;
     end;
   end;
+  Result:=nil;
 end;
 
 function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode

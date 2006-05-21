@@ -4542,11 +4542,11 @@ begin
       // or it is not yet a lazarus project ;)
       LPIFilename:=ChangeFileExt(AFilename,'.lpi');
       if FileExists(LPIFilename) then begin
-        AText:=Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarus, [
-          '"', AFilename, '"', #13, #13, #13]);
-        ACaption:=lisProjectInfoFileDetected;
-        if MessageDlg(ACaption, AText, mtconfirmation,
-             [mbok, mbcancel], 0)=mrOk then
+        if QuestionDlg(lisProjectInfoFileDetected,
+          Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
+            AFilename]), mtConfirmation,
+            [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource], 0)
+          =mrOk then
         begin
           Result:=DoOpenProjectFile(LPIFilename,[]);
           Handled:=true;

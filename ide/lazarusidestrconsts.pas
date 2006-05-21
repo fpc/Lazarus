@@ -99,6 +99,7 @@ resourcestring
   lisMakeExe = 'Make Executable';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
+  lisOpenTheFileAsNormalSource = 'Open the file as normal source';
   lisOpenAsXmlFile = 'Open as XML file';
   lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
     +'at last startup while loading %s!%s%sLoad this project again?';
@@ -385,10 +386,9 @@ resourcestring
   lisFileNotFound2 = 'File %s%s%s not found.%s';
   lisFileNotFoundDoYouWantToCreateIt = 'File %s%s%s not found.%sDo you want '
     +'to create it?%s';
-  lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarus = 'The file %s%s%s%'
-    +'sseems to be the program file of an existing lazarus Project1.%sOpen '
-    +'project?%sCancel will load the file as normal source.';
   lisProjectInfoFileDetected = 'Project info file detected';
+  lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP = 'The file %s seems '
+    +'to be the program file of an existing lazarus Project.';
   lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file %s%s%s%sseems to '
     +'be a program. Close current project and create a new lazarus project '
     +'for this program?%s"No" will load the file as normal source.';
