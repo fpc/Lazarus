@@ -805,7 +805,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TControl.CalculatePreferredSize(var PreferredWidth,
-    PreferredHeight: integer);
+    PreferredHeight: integer; WithThemeSpace: Boolean);
 
   Calculates the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
@@ -813,9 +813,14 @@ end;
   instead.
   TWinControl overrides this and asks the interface for theme dependent values.
   See TWinControl.GetPreferredSize for more information.
+
+  WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
+  has a minimum size. But for staking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it passed parameter to
+  the widgetset.
  ------------------------------------------------------------------------------}
 procedure TControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer);
+  PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   PreferredWidth:=0;
   PreferredHeight:=0;
@@ -3670,22 +3675,30 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TControl.GetPreferredSize(
-    var PreferredWidth, PreferredHeight: integer; Raw: boolean);
+    var PreferredWidth, PreferredHeight: integer; Raw: boolean;
+    WithThemeSpace: Boolean);
     
   Returns the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.
-  If not Raw then the values will be adjusted by the constraints and undefined
-  values will be replaced by the current width and height.
+
+  Raw: If not Raw then the values will be adjusted by the constraints and
+  undefined values will be replaced by the current width and height.
+
+  WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
+  has a minimum size. But for staking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it passed parameter to
+  the widgetset.
+
   TWinControl overrides this and asks the interface for theme dependent values.
   See TWinControl.GetPreferredSize for more information.
  ------------------------------------------------------------------------------}
 procedure TControl.GetPreferredSize(var PreferredWidth,
-  PreferredHeight: integer; Raw: boolean);
+  PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
 begin
   if not (cfPreferredSizeValid in FControlFlags) then begin
-    CalculatePreferredSize(FPreferredWidth,FPreferredHeight);
+    CalculatePreferredSize(FPreferredWidth,FPreferredHeight,WithThemeSpace);
     Include(FControlFlags,cfPreferredSizeValid);
   end;
   PreferredWidth:=FPreferredWidth;

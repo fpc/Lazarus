@@ -6182,7 +6182,7 @@ begin
 end;
 
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   Widget: PGtkWidget;
   Requisition: TGtkRequisition;
@@ -6194,6 +6194,9 @@ begin
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
+  if not WithThemeSpace then begin
+    // TODO
+  end;
   // set new size
   gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));

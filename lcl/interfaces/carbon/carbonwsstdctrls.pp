@@ -118,7 +118,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCarbonWSCustomMemo }
@@ -445,7 +445,8 @@ begin
   CFRelease(Pointer(CFString));
 end;
 
-procedure TCarbonWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer);
+procedure TCarbonWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   //TODO
 end;

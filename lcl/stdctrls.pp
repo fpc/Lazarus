@@ -608,7 +608,8 @@ type
     procedure SetPasswordChar(const AValue: Char);
     procedure SetReadOnly(Value: Boolean);
   protected
-    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
     procedure TextChanged; override;
     procedure Change; dynamic;

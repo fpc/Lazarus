@@ -55,7 +55,8 @@ type
   protected
   public
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TGtkWSGroupBox }
@@ -148,7 +149,8 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -204,7 +206,8 @@ type
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TGtkWSStaticText }
@@ -235,7 +238,8 @@ type
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
 
   end;
@@ -842,9 +846,10 @@ begin
 end;
 
 procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
   //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
@@ -866,9 +871,10 @@ begin
 end;
 
 procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
   //debugln('TGtkWSCustomStaticText.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
@@ -915,9 +921,10 @@ begin
 end;
 
 procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
   //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
@@ -1094,29 +1101,33 @@ end;
 { TGtkWSCustomGroupBox }
 
 procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   Widget: PGtkWidget;
   border_width: Integer;
 begin
   Widget:=PGtkWidget(AWinControl.Handle);
 
-  border_width:=(PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width)
-                 shr bp_TGtkContainer_border_width;
-  PreferredWidth := (border_width + gtk_widget_get_xthickness(Widget)) * 2
-{$ifdef gtk1}  
+  PreferredWidth := (gtk_widget_get_xthickness(Widget)) * 2
+                    {$ifdef gtk1}
                     +PGtkFrame(Widget)^.label_width;
-{$else}
+                    {$else}
                     +gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
-{$endif}		    
+                    {$endif}
   PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
-{$ifdef gtk1}  
+                         {$ifdef gtk1}
                          PGtkFrame(Widget)^.label_height)
-{$else}			 
+                         {$else}
                          gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget))
-{$endif}			 
-                     + gtk_widget_get_ythickness(Widget)
-                     + 2*border_width;
+                         {$endif}
+                     + gtk_widget_get_ythickness(Widget);
+
+  if WithThemeSpace then begin
+    border_width:=(PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width)
+                   shr bp_TGtkContainer_border_width;
+    inc(PreferredWidth, border_width);
+    inc(PreferredHeight,2*border_width);
+  end;
   //debugln('TGtkWSCustomGroupBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 

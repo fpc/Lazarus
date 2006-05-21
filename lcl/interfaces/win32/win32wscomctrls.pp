@@ -55,7 +55,8 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
       AWidth, AHeight: integer); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TWin32WSTabSheet }
@@ -326,7 +327,7 @@ begin
 end;
 
 procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   R: TRect;
 begin

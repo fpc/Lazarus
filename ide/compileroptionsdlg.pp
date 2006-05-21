@@ -1414,10 +1414,6 @@ begin
     Caption := dlgCOChecks;
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
     ChildSizing.ControlsPerLine:=2;
-    ChildSizing.LeftRightSpacing:=6;
-    ChildSizing.TopBottomSpacing:=6;
-    ChildSizing.HorizontalSpacing:=6;
-    ChildSizing.VerticalSpacing:=6;
   end;
 
   chkChecksIO := TCheckBox.Create(Self);
@@ -1460,8 +1456,6 @@ begin
     Width := 100;
     Caption := dlgHeapSize +' (-Ch):';
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
-    ChildSizing.LeftRightSpacing:=6;
-    ChildSizing.TopBottomSpacing:=6;
   end;
 
   edtHeapSize := TEdit.Create(grpHeapSize);
@@ -1469,7 +1463,6 @@ begin
   begin
     Parent := grpHeapSize;
     Caption := dlgHeapSize;
-    BorderSpacing.Around:=3;
     Text := '';
   end;
 
@@ -1485,9 +1478,6 @@ begin
     Width := 150;
     Caption := dlgCOGenerate;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    ChildSizing.LeftRightSpacing:=6;
-    ChildSizing.TopBottomSpacing:=6;
-    ChildSizing.VerticalSpacing:=6;
   end;
 
   radGenNormal := TRadioButton.Create(grpGenerate);
@@ -1631,9 +1621,6 @@ begin
     Width := 360;
     Caption := dlgOptimiz;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
-    ChildSizing.LeftRightSpacing:=6;
-    ChildSizing.TopBottomSpacing:=6;
-    ChildSizing.VerticalSpacing:=6;
     AutoSize:=true;
   end;
 

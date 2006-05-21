@@ -62,7 +62,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-          var PreferredWidth, PreferredHeight: integer); override;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl;
           const ALeft, ATop, AWidth, AHeight: integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -532,7 +533,7 @@ end;
 
 
 class procedure TWinCEWSBitBtn.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   BitmapInfo: BITMAP; // Buffer for bitmap
   BitBtn: TBitBtn absolute AWinControl;

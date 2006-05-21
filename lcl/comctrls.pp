@@ -132,7 +132,8 @@ type
     procedure Loaded; override;
     procedure UpdateHandleObject(PanelIndex: integer); virtual;
     procedure CalculatePreferredSize(
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
 
     //added.
     function CreatePanel: TStatusPanel; virtual;

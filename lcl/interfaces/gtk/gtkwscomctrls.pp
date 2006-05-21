@@ -51,7 +51,8 @@ type
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TGtkWSTabSheet }
@@ -423,7 +424,7 @@ begin
 end;
 
 procedure TGtkWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   StatusBarWidget: PGtkWidget;
   Requisition: TGtkRequisition;

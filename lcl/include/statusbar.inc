@@ -131,9 +131,9 @@ begin
 end;
 
 procedure TStatusBar.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer);
+  PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
+  inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
   PreferredWidth:=0;
   if PreferredHeight<=0 then PreferredHeight:=25;
 end;

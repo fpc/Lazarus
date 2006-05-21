@@ -19,9 +19,9 @@
 }
 
 procedure TCustomEdit.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer);
+  PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
+  inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
   // ignore width
   PreferredWidth:=0;
 end;

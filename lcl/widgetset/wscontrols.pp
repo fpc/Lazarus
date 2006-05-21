@@ -75,7 +75,7 @@ type
   TWSWinControl = class(TWSControl)
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; virtual;
-    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); virtual;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
@@ -185,7 +185,7 @@ begin
 end;
   
 procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
 end;
 

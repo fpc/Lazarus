@@ -65,7 +65,8 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer); override;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TGtkWSBitBtn }
@@ -234,9 +235,10 @@ end;
 
 
 procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
   //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 

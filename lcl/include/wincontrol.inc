@@ -1860,7 +1860,7 @@ begin
 
     // autosize control to preferred size
     if (not WidthIsFixed) or (not HeightIsFixed) then begin
-      GetPreferredSize(PreferredWidth,PreferredHeight,false);
+      GetPreferredSize(PreferredWidth,PreferredHeight);
       //if ControlCount>0 then
       //  DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
     end else begin
@@ -5595,7 +5595,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
-    PreferredHeight: integer);
+    PreferredHeight: integer; WithThemeSpace" Boolean);
     
   Calculates the default/preferred width and height for a TWinControl, which is
   used by the LCL autosizing algorithms as default size. Only positive values
@@ -5610,9 +5610,14 @@ end;
   
   This value is independent of constraints and siblings, only the inner parts
   are relevant.
+
+  WithThemeSpace: If true, adds space for stacking. For example: TRadioButton
+  has a minimum size. But for staking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so it passed parameter to
+  the widgetset.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer);
+  PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   ChildBounds: TRect;
   NewClientWidth: Integer;
@@ -5622,10 +5627,11 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
+  inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
+  
   if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
-                                               PreferredWidth, PreferredHeight);
+                               PreferredWidth, PreferredHeight, WithThemeSpace);
     if (PreferredWidth>0) then
       inc(PreferredWidth,BorderSpacing.InnerBorder*2);
     if PreferredHeight>0 then
@@ -5708,7 +5714,7 @@ begin
       if a in FixatedAnchors then FixateSide(a);
 
     if AControl.AutoSize then
-      AControl.GetPreferredSize(ChildWidth,ChildHeight,false)
+      AControl.GetPreferredSize(ChildWidth,ChildHeight)
     else begin
       ChildWidth:=AControl.Width;
       ChildHeight:=AControl.Height;

@@ -219,7 +219,8 @@ type
   protected
   public
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-          var PreferredWidth, PreferredHeight: integer); override;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
   end;
 
   { TWin32WSCustomCheckBox }
@@ -231,7 +232,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-          var PreferredWidth, PreferredHeight: integer); override;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
@@ -986,12 +988,16 @@ end;
 { TWin32WSButtonControl }
 
 procedure TWin32WSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
     Inc(PreferredWidth, 20);
     Inc(PreferredHeight, 12);
+    if WithThemeSpace then begin
+      Inc(PreferredWidth, 6);
+      Inc(PreferredHeight, 6);
+    end;
   end;
 end;
 
@@ -1020,7 +1026,7 @@ begin
 end;
 
 procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   iconHeight: integer;
 begin
@@ -1031,6 +1037,10 @@ begin
     iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
+    if WithThemeSpace then begin
+      Inc(PreferredWidth, 6);
+      Inc(PreferredHeight, 6);
+    end;
   end;
 end;
 

@@ -1162,6 +1162,7 @@ begin
     TQtDeviceContext(DC).setBrushOrigin(NewX, NewY);
     if OldPoint <> nil then TQtDeviceContext(DC).brushOrigin(OldPoint);
   end;
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------

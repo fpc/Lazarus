@@ -725,7 +725,7 @@ type
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: PHintInfo) of object;
   TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint;
                                  var Handled: Boolean) of object;
-  
+
   TControlFlag = (
     cfRequestAlignNeeded,
     cfAutoSizeNeeded,
@@ -832,8 +832,8 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
-    FPreferredWidth: integer;
-    FPreferredHeight: integer;
+    FPreferredWidth: integer;// with theme space
+    FPreferredHeight: integer;// with theme space
     FReadBounds: TRect;
     FSessionProperties: string;
     FShowHint: Boolean;
@@ -922,7 +922,8 @@ type
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;
     procedure CalculatePreferredSize(
-                         var PreferredWidth, PreferredHeight: integer); virtual;
+                         var PreferredWidth, PreferredHeight: integer;
+                         WithThemeSpace: Boolean); virtual;
     procedure DoOnResize; virtual;
     procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
@@ -1122,7 +1123,8 @@ type
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean = true); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
-                               Raw: boolean = false); virtual;
+                               Raw: boolean = false;
+                               WithThemeSpace: boolean = true); virtual;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     function GetBoundsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
@@ -1516,7 +1518,8 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
-                                     PreferredHeight: integer); override;
+                                     PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace: boolean); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;

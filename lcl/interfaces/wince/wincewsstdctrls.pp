@@ -216,7 +216,8 @@ type
   protected
   public
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-          var PreferredWidth, PreferredHeight: integer); override;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
   end;
 
   { TWinCEWSCustomCheckBox }
@@ -228,7 +229,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
-          var PreferredWidth, PreferredHeight: integer); override;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
@@ -981,7 +983,7 @@ end;
 { TWin32WSButtonControl }
 
 procedure TWinCEWSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
@@ -1021,7 +1023,7 @@ begin
 end;
 
 procedure TWinCEWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   iconHeight: integer;
 begin
