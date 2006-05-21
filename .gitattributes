@@ -739,6 +739,7 @@ docs/xml/lcl/graphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphmath.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/grids.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/helpintfs.xml svneol=native#text/plain
 docs/xml/lcl/imglist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/inipropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfacebase.xml svneol=LF#text/xml eol=lf
@@ -776,6 +777,8 @@ docs/xml/lcl/interfaces/gtk/gtkwsstdctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
+docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lclclasses.xml svneol=LF#text/xml eol=lf

@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LazHelpHTML
+  ====================================================================
+-->
+
+<module name="LazHelpHTML">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Process">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FileUtil">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LazConfigStorage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="HelpIntfs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LazHelpIntf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THTMLHelpDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLHelpDatabase.FBaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLHelpDatabase.FDefaultBaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLHelpDatabase.FKeywordPrefix">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLHelpDatabase.FKeywordPrefixNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="THTMLHelpDatabase.IsBaseURLStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLHelpDatabase.IsBaseURLStored.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THTMLHelpDatabase.SetBaseURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.SetBaseURL.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THTMLHelpDatabase.SetDefaultBaseURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.SetDefaultBaseURL.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THTMLHelpDatabase.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THTMLHelpDatabase.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLHelpDatabase.ShowURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLHelpDatabase.ShowURL.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowURL.URL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowURL.Title">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowURL.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLHelpDatabase.ShowHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.BaseNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.NewNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.QueryItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.ShowHelp.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLHelpDatabase.GetNodesForKeyword">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLHelpDatabase.GetNodesForKeyword.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.GetNodesForKeyword.HelpKeyword">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.GetNodesForKeyword.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.GetNodesForKeyword.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLHelpDatabase.GetEffectiveBaseURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLHelpDatabase.GetEffectiveBaseURL.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLHelpDatabase.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLHelpDatabase.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLHelpDatabase.Save.Storage">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THTMLHelpDatabase.DefaultBaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLHelpDatabase.BaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLHelpDatabase.AutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLHelpDatabase.KeywordPrefix">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnFindDefaultBrowser">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnFindDefaultBrowser.DefaultBrowser">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnFindDefaultBrowser.Params">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THTMLBrowserHelpViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLBrowserHelpViewer.FBrowserParams">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLBrowserHelpViewer.FBrowserPath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLBrowserHelpViewer.FDefaultBrowser">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLBrowserHelpViewer.FDefaultBrowserParams">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THTMLBrowserHelpViewer.FOnFindDefaultBrowser">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THTMLBrowserHelpViewer.SetBrowserParams">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.SetBrowserParams.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THTMLBrowserHelpViewer.SetBrowserPath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.SetBrowserPath.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THTMLBrowserHelpViewer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLBrowserHelpViewer.ShowNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLBrowserHelpViewer.ShowNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.ShowNode.Node">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.ShowNode.ErrMsg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLBrowserHelpViewer.FindDefaultBrowser">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Browser">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.FindDefaultBrowser.Params">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLBrowserHelpViewer.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLBrowserHelpViewer.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THTMLBrowserHelpViewer.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THTMLBrowserHelpViewer.Save.Storage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THTMLBrowserHelpViewer.GetLocalizedName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THTMLBrowserHelpViewer.GetLocalizedName.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THTMLBrowserHelpViewer.OnFindDefaultBrowser">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLBrowserHelpViewer.BrowserPath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLBrowserHelpViewer.BrowserParams">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THTMLBrowserHelpViewer.AutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- LazHelpHTML -->
+</package>
+</fpdoc-descriptions>

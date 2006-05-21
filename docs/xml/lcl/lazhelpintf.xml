@@ -1,0 +1,4535 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LazHelpIntf
+  ====================================================================
+-->
+
+<module name="LazHelpIntf">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FileUtil">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Dialogs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LazConfigStorage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="HelpIntfs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpQueryItem.AsString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpQueryItem.AsString.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpQueryItem.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpQueryItem.IsEqual.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryItem.IsEqual.QueryItem">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TPascalHelpContextType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcFilename">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcSourceName">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcProperty">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcProcedure">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcParameterList">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcVariable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcType">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TPascalHelpContextType.pihcConst">
+<short></short>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TPascalHelpContext">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPascalHelpContext.Descriptor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPascalHelpContext.Context">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="TPascalHelpContextPtr">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPascalHelpContextList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPascalHelpContextList.FCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPascalHelpContextList.fItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPascalHelpContextList.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPascalHelpContextList.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.GetItems.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPascalHelpContextList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.Add.Context">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPascalHelpContextList.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.Insert.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.Insert.Context">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPascalHelpContextList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TPascalHelpContextList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPascalHelpContextList.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPascalHelpContextList.IsEqual.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.IsEqual.QueryItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPascalHelpContextList.CompareList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPascalHelpContextList.CompareList.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.CompareList.AList">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPascalHelpContextList.AsString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPascalHelpContextList.AsString.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPascalHelpContextList.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPascalHelpContextList.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPascalHelpContextList.Items.Index">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPascalHelpContextList.List">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="THelpNodeType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntURLIDContext">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntURL">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntURLID">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntID">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntContext">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="THelpNodeType.hntURLContext">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.FContext">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.FURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.FHelpType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.fID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.FOwner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNode.FTitle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.Node">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheURL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Create.TheContext">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.CreateURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURL.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURL.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURL.TheURL">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.CreateID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateID.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateID.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateID.TheID">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.CreateURLID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLID.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLID.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLID.TheURL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLID.TheID">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.CreateContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateContext.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateContext.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateContext.TheContext">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNode.CreateURLContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLContext.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLContext.TheTitle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLContext.TheURL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.CreateURLContext.TheContext">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpNode.Owner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNode.URLValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNode.URLValid.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNode.IDValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNode.IDValid.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNode.ContextValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNode.ContextValid.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNode.AsString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNode.AsString.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpNode.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNode.Assign.Source">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpNode.Title">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpNode.HelpType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpNode.URL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpNode.ID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpNode.Context">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpNodeQuery">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNodeQuery.FNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNodeQuery.FQueryItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNodeQuery.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNodeQuery.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQuery.Create.TheNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQuery.Create.TheQueryItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQuery.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQuery.IsEqual.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQuery.IsEqual.TheNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQuery.IsEqual.TheQueryItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQuery.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQuery.IsEqual.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQuery.IsEqual.NodeQuery">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQuery.AsString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQuery.AsString.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpNodeQuery.Node">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpNodeQuery.QueryItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpNodeQueryList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpNodeQueryList.fItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="THelpNodeQueryList.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.GetItems.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpNodeQueryList.SetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.SetItems.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.SetItems.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpNodeQueryList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpNodeQueryList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQueryList.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.Count.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQueryList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.Add.NodeQuery">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQueryList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.Add.Node">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.Add.QueryItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpNodeQueryList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.Delete.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQueryList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.IndexOf.NodeQuery">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpNodeQueryList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpNodeQueryList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.IndexOf.Node">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.IndexOf.QueryItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpNodeQueryList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpNodeQueryList.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpNodeQueryList.Items.Index">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDBItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBItem.FNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpDBItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBItem.Create.TheNode">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpDBItem.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpDBItem.Node">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDBISourceFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBISourceFile.FBasePathObject">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBISourceFile.FFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDBISourceFile.SetFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceFile.SetFilename.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpDBISourceFile.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceFile.Create.TheNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceFile.Create.TheFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDBISourceFile.FileMatches">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDBISourceFile.FileMatches.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceFile.FileMatches.AFilename">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDBISourceFile.GetFullFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDBISourceFile.GetFullFilename.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDBISourceFile.GetBasePath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDBISourceFile.GetBasePath.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpDBISourceFile.BasePathObject">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpDBISourceFile.Filename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDBISourceDirectory">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBISourceDirectory.FFileMask">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBISourceDirectory.FWithSubDirectories">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpDBISourceDirectory.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceDirectory.Create.TheNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceDirectory.Create.TheFilename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceDirectory.Create.TheFileMask">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceDirectory.Create.Recursive">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDBISourceDirectory.FileMatches">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDBISourceDirectory.FileMatches.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBISourceDirectory.FileMatches.AFilename">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpDBISourceDirectory.FileMask">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="THelpDBISourceDirectory.WithSubDirectories">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDBIClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDBIClass.FTheClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDBIClass.TheClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDBIMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDBIMessage.MessageMatches">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDBIMessage.MessageMatches.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBIMessage.MessageMatches.TheMessage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDBIMessage.MessageMatches.MessageParts">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpQueryNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpQueryNode.FNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpQueryNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryNode.Create.TheHelpDatabaseID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpQueryNode.Create.TheNode">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpQueryNode.Node">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDatabases">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FAutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FBasePathObject">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FDatabases">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FRefCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FSearchItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FSupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabase.FTOCNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDatabase.SetAutoRegister">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.SetAutoRegister.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDatabase.SetID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.SetID.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDatabase.SetDatabases">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.SetDatabases.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpDatabase.SetSupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.SetSupportedMimeTypes.List">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpDatabase.AddSupportedMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.AddSupportedMimeType.AMimeType">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpDatabase.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpDatabase.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.Reference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.RegisterSelf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.Release">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.UnregisterSelf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.Registered">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.Registered.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.CanShowTableOfContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.CanShowTableOfContents.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.ShowTableOfContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.ShowError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowError.ShowResult">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowError.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.ShowHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.ShowHelp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelp.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelp.BaseNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelp.NewNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelp.QueryItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelp.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.ShowHelpFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.BaseNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.Title">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.Filename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.ShowHelpFile.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.SupportsMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.SupportsMimeType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.SupportsMimeType.AMimeType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetNodesForKeyword">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetNodesForKeyword.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForKeyword.HelpKeyword">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForKeyword.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForKeyword.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetNodesForContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetNodesForContext.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForContext.HelpContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForContext.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForContext.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetNodesForPascalContexts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetNodesForPascalContexts.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForPascalContexts.ListOfPascalHelpContextList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForPascalContexts.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForPascalContexts.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetNodesForClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetNodesForClass.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForClass.AClass">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForClass.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForClass.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetNodesForMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetNodesForMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForMessage.AMessage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForMessage.MessageParts">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForMessage.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetNodesForMessage.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.FindViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.FindViewer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.FindViewer.MimeType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.FindViewer.ErrMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.FindViewer.Viewer">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.RegisterItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.RegisterItem.NewItem">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.RegisterItemWithNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.RegisterItemWithNode.Node">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.RegisterFileItemWithNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.RegisterFileItemWithNode.Filename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.RegisterFileItemWithNode.Node">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.UnregisterItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.UnregisterItem.AnItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.RegisteredItemCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.RegisteredItemCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetRegisteredItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetRegisteredItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.GetRegisteredItem.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabase.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabase.Save.Storage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabase.GetLocalizedName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabase.GetLocalizedName.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.Databases">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.ID">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.SupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.BasePathObject">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.TOCNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabase.AutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="THelpDatabaseClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpDatabases">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabases.FItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpDatabases.FHelpDBClasses">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="THelpDatabases.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetItems.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDatabases.DoRegisterDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.DoRegisterDatabase.ADatabase">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpDatabases.DoUnregisterDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.DoUnregisterDatabase.ADatabase">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpDatabases.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpDatabases.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.Count.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpDatabases.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.Items.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.FindDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.FindDatabase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.FindDatabase.ID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetDatabase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetDatabase.ID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetDatabase.HelpDB">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetDatabase.HelpResult">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetDatabase.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.IndexOf.ID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.CreateUniqueDatabaseID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.CreateUniqueDatabaseID.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.CreateUniqueDatabaseID.WishID">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.CreateHelpDatabase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.CreateHelpDatabase.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.CreateHelpDatabase.WishID">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.CreateHelpDatabase.HelpDataBaseClass">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.CreateHelpDatabase.AutoRegister">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowTableOfContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowTableOfContents.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowTableOfContents.ErrMsg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabases.ShowError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowError.ShowResult">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowError.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetBaseURLForBasePathObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetBaseURLForBasePathObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetBaseURLForBasePathObject.BasePathObject">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetBaseDirectoryForBasePathObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetBaseDirectoryForBasePathObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetBaseDirectoryForBasePathObject.BasePathObject">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.FindViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.FindViewer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.FindViewer.MimeType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.FindViewer.ErrMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.FindViewer.Viewer">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.SubstituteMacros">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.SubstituteMacros.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.SubstituteMacros.s">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForNodes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForNodes.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForNodes.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForNodes.Nodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForNodes.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForQuery">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForQuery.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForQuery.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForQuery.AutoFreeQuery">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForQuery.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForContext.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForContext.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForContext.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForKeyword">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForKeyword.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForKeyword.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForKeyword.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForPascalContexts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForPascalContexts.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForPascalContexts.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForPascalContexts.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForSourcePosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForSourcePosition.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForSourcePosition.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForSourcePosition.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForMessageLine">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForMessageLine.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForMessageLine.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForMessageLine.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpForClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpForClass.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForClass.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpForClass.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpFile.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpFile.Filename">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpFile.Title">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpFile.MimeType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpFile.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelp.URL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelp.Title">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelp.MimeType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelp.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetNodesForKeyword">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetNodesForKeyword.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForKeyword.HelpKeyword">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForKeyword.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForKeyword.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetNodesForContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetNodesForContext.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForContext.HelpContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForContext.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForContext.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetNodesForPascalContexts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetNodesForPascalContexts.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForPascalContexts.ListOfPascalHelpContextList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForPascalContexts.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForPascalContexts.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetNodesForClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetNodesForClass.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForClass.AClass">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForClass.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForClass.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetNodesForMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetNodesForMessage.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForMessage.AMessage">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForMessage.MessageParts">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForMessage.ListOfNodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetNodesForMessage.ErrMsg">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.ShowHelpSelector">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.ShowHelpSelector.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpSelector.Query">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpSelector.Nodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpSelector.ErrMsg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.ShowHelpSelector.Selection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabases.RegisterHelpDatabaseClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.RegisterHelpDatabaseClass.NewHelpDB">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabases.UnregisterHelpDatabaseClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.UnregisterHelpDatabaseClass.AHelpDB">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.HelpDatabaseClassCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.HelpDatabaseClassCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpDatabases.GetHelpDatabaseClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpDatabases.GetHelpDatabaseClass.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.GetHelpDatabaseClass.Index">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabases.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpDatabases.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpDatabases.Save.Storage">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewer.FAutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewer.FParameterHelp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewer.FStorageName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewer.FSupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="THelpViewer.SetAutoRegister">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.SetAutoRegister.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpViewer.SetSupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.SetSupportedMimeTypes.List">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpViewer.AddSupportedMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.AddSupportedMimeType.AMimeType">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpViewer.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpViewer.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewer.SupportsTableOfContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewer.SupportsTableOfContents.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.ShowTableOfContents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.ShowTableOfContents.Node">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewer.SupportsMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewer.SupportsMimeType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.SupportsMimeType.AMimeType">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewer.ShowNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewer.ShowNode.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.ShowNode.Node">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.ShowNode.ErrMsg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.Hide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewer.Save.Storage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewer.GetLocalizedName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewer.GetLocalizedName.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.RegisterSelf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewer.UnregisterSelf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpViewer.SupportedMimeTypes">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpViewer.ParameterHelp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpViewer.StorageName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpViewer.AutoRegister">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="THelpViewerClass">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpViewers">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewers.FItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpViewers.FDestroying">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="THelpViewers.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewers.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.GetItems.Index">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpViewers.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="THelpViewers.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewers.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewers.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewers.Count.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewers.GetViewersSupportingMimeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewers.GetViewersSupportingMimeType.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.GetViewersSupportingMimeType.MimeType">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewers.RegisterViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.RegisterViewer.AHelpViewer">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewers.UnregisterViewer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.UnregisterViewer.AHelpViewer">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewers.Load">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.Load.Storage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="THelpViewers.Save">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.Save.Storage">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THelpViewers.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="THelpViewers.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.IndexOf.AHelpViewer">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpViewers.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpViewers.Items.Index">
+<short></short>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpBasePathObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpBasePathObject.FBasePath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpBasePathObject.SetBasePath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpBasePathObject.SetBasePath.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpBasePathObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpBasePathObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpBasePathObject.Create.TheBasePath">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpBasePathObject.BasePath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THelpBaseURLObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="THelpBaseURLObject.FBaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="THelpBaseURLObject.SetBaseURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpBaseURLObject.SetBaseURL.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpBaseURLObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="THelpBaseURLObject.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="THelpBaseURLObject.Create.TheBaseURL">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="THelpBaseURLObject.BaseURL">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="HelpDatabases">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="HelpViewers">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CreateLCLHelpSystem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeLCLHelpSystem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="FreeUnusedLCLHelpSystem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FilenameToURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FilenameToURL.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FilenameToURL.Filename">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SplitURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SplitURL.URL">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SplitURL.URLType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SplitURL.URLPath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SplitURL.URLParams">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="CombineURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CombineURL.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CombineURL.URLType">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CombineURL.URLPath">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CombineURL.URLParams">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="URLFilenameIsAbsolute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="URLFilenameIsAbsolute.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="URLFilenameIsAbsolute.Filename">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindURLPathStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindURLPathStart.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindURLPathStart.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindURLPathEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindURLPathEnd.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindURLPathEnd.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ChompURLParams">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ChompURLParams.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ChompURLParams.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ExtractURLPath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ExtractURLPath.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExtractURLPath.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ExtractURLDirectory">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ExtractURLDirectory.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ExtractURLDirectory.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TrimUrl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TrimUrl.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TrimUrl.URL">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="IsFileURL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="IsFileURL.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="IsFileURL.URL">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CreateListAndAdd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateListAndAdd.AnObject">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateListAndAdd.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateListAndAdd.OnlyIfNotExists">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CreateNodeQueryListAndAdd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateNodeQueryListAndAdd.ANode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateNodeQueryListAndAdd.QueryItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateNodeQueryListAndAdd.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateNodeQueryListAndAdd.OnlyIfNotExists">
+<short></short>
+</element>
+</module> <!-- LazHelpIntf -->
+</package>
+</fpdoc-descriptions>
