@@ -279,6 +279,8 @@ begin
   if FFlat and not FMouseInControl and not (FState in [bsDown, bsExclusive]) then
   begin
     Result := DFCS_FLAT;
+    if not Enabled then
+      inc(Result,DFCS_INACTIVE)
   end else begin
     Result:=DFCS_BUTTONPUSH;
     if FState in [bsDown, bsExclusive] then 
@@ -413,13 +415,9 @@ begin
   // do not draw anything if flat and mouse not in control (simplified)
   if Transparent then begin
     if (FLastDrawFlags and DFCS_FLAT) = 0 then begin
-      if MouseInControl then begin
        if (FLastDrawFlags and DFCS_PUSHED) <>0 then xBevel := bvLowered
                                                else xBevel := bvRaised;
         Canvas.Frame3D(PaintRect,1,xBevel);
-      end else if (FLastDrawFlags and DFCS_PUSHED) <>0 then begin
-        Canvas.Frame3D(PaintRect,1,bvLowered);
-      end;
       InflateRect(PaintRect, -1, -1);
     end;
   end else begin
@@ -745,7 +743,6 @@ procedure TCustomSpeedButton.MouseEnter;
 begin
   inherited MouseEnter;
   if csDesigning in ComponentState then exit;
-
   if not FMouseInControl
   and Enabled and (GetCapture = 0)
   then begin
