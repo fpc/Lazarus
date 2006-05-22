@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TAnchorDesigner','FORMDATA',[
   'TPF0'#15'TAnchorDesigner'#14'AnchorDesigner'#13'ActiveControl'#7#23'LeftBord'
   +'erSpaceSpinEdit'#7'Caption'#6#14'AnchorDesigner'#12'ClientHeight'#3#3#1#11

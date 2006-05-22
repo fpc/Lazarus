@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TfrmTodo','FORMDATA',[
   'TPF0'#8'TfrmTodo'#7'frmTodo'#13'ActiveControl'#7#6'lvTodo'#7'Caption'#6#7'fr'
   +'mTodo'#12'ClientHeight'#3','#1#11'ClientWidth'#3#244#1#10'KeyPreview'#9#9'O'

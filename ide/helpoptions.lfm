@@ -58,7 +58,7 @@ object HelpOptionsDialog: THelpOptionsDialog
       end
       object FPCDocHTMLBrowseButton: TButton
         Anchors = [akTop, akRight]
-        BorderSpacing.InnerBorder = 2
+        
         Caption = '...'
         OnClick = FPCDocHTMLBrowseButtonClick
         TabOrder = 1
@@ -173,7 +173,7 @@ object HelpOptionsDialog: THelpOptionsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -194,7 +194,7 @@ object HelpOptionsDialog: THelpOptionsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

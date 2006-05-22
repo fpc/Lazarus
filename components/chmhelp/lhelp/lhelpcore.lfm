@@ -197,7 +197,7 @@ object HelpForm: THelpForm
         end
         object SearchBttn: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'Search'
           TabOrder = 1
           Left = 99
@@ -475,7 +475,7 @@ object HelpForm: THelpForm
       object FindNextBttn: TButton
         Align = alLeft
         AutoSize = True
-        BorderSpacing.InnerBorder = 2
+        
         Caption = '&Next'
         OnClick = FindNextBttnClick
         TabOrder = 1
@@ -486,7 +486,7 @@ object HelpForm: THelpForm
       object FindPrevBttn: TButton
         Align = alLeft
         AutoSize = True
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'P&rev'
         OnClick = FindPrevBttnClick
         TabOrder = 2
@@ -497,7 +497,7 @@ object HelpForm: THelpForm
       object SearchHideBttn: TButton
         Align = alRight
         AutoSize = True
-        BorderSpacing.InnerBorder = 2
+        
         Caption = '&Hide'
         OnClick = SearchHideBttnClick
         TabOrder = 3

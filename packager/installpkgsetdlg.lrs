@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TInstallPkgSetDialog','FORMDATA',[
   'TPF0'#20'TInstallPkgSetDialog'#19'InstallPkgSetDialog'#13'ActiveControl'#7#14
   +'InstallListBox'#11'BorderStyle'#7#13'bsSizeToolWin'#7'Caption'#6#19'Install'
@@ -15,42 +13,39 @@ LazarusResources.Add('TInstallPkgSetDialog','FORMDATA',[
   +'rSpacing.Around'#2#6#16'ClickOnSelChange'#8#11'MultiSelect'#9#17'OnSelectio'
   +'nChange'#7#29'InstallListBoxSelectionChange'#8'TabOrder'#2#0#8'TopIndex'#2
   +#255#4'Left'#2#6#6'Height'#3#169#0#3'Top'#2#6#5'Width'#3#239#0#0#0#7'TButton'
-  +#15'UninstallButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#25
-  +'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#15'UninstallButton'#7'OnClick'#7
-  +#20'UninstallButtonClick'#8'TabOrder'#2#1#4'Left'#2#6#6'Height'#2#25#3'Top'#3
-  +#181#0#5'Width'#3#239#0#0#0#7'TButton'#12'ImportButton'#5'Align'#7#8'alBotto'
-  +'m'#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBorder'#2#2#7'Caption'
-  +#6#12'ImportButton'#7'OnClick'#7#17'ImportButtonClick'#8'TabOrder'#2#2#4'Lef'
-  +'t'#2#6#6'Height'#2#25#3'Top'#3#212#0#5'Width'#3#239#0#0#0#7'TButton'#12'Exp'
-  +'ortButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#25'BorderSpa'
-  +'cing.InnerBorder'#2#2#7'Caption'#6#12'ExportButton'#7'OnClick'#7#17'ExportB'
-  +'uttonClick'#8'TabOrder'#2#3#4'Left'#2#6#6'Height'#2#25#3'Top'#3#243#0#5'Wid'
-  +'th'#3#239#0#0#0#0#9'TGroupBox'#20'AvailablePkgGroupBox'#7'Anchors'#11#5'akT'
-  +'op'#6'akLeft'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#20'Av'
-  +'ailablePkgGroupBox'#12'ClientHeight'#3#18#1#11'ClientWidth'#3#251#0#8'TabOr'
-  +'der'#2#1#4'Left'#3#11#1#6'Height'#3'#'#1#3'Top'#2#6#5'Width'#3#255#0#0#8'TL'
-  +'istBox'#16'AvailableListBox'#5'Align'#7#8'alClient'#20'BorderSpacing.Around'
-  +#2#6#16'ClickOnSelChange'#8#11'MultiSelect'#9#17'OnSelectionChange'#7#31'Ava'
-  +'ilableListBoxSelectionChange'#8'TabOrder'#2#0#8'TopIndex'#2#255#4'Left'#2#6
-  +#6'Height'#3#231#0#3'Top'#2#6#5'Width'#3#239#0#0#0#7'TButton'#18'AddToInstal'
-  +'lButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#25'BorderSpaci'
-  +'ng.InnerBorder'#2#2#7'Caption'#6#18'AddToInstallButton'#7'OnClick'#7#23'Add'
-  +'ToInstallButtonClick'#8'TabOrder'#2#1#4'Left'#2#6#6'Height'#2#25#3'Top'#3
-  +#243#0#5'Width'#3#239#0#0#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'ak'
-  +'Left'#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#2#6'Cance'
-  +'l'#9#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#2#4'Le'
-  +'ft'#2#6#6'Height'#2#26#3'Top'#3#149#1#5'Width'#2'U'#0#0#7'TButton'#20'SaveA'
-  +'ndRebuildButton'#7'Anchors'#11#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing'
-  +'.InnerBorder'#2#2#7'Caption'#6#20'SaveAndRebuildButton'#7'OnClick'#7#18'Ins'
-  +'tallButtonClick'#8'TabOrder'#2#3#4'Left'#3#195#0#6'Height'#2#26#3'Top'#3#149
-  +#1#5'Width'#3#139#0#0#0#7'TButton'#17'SaveAndExitButton'#7'Anchors'#11#7'akR'
-  +'ight'#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#2#7'Capti'
-  +'on'#6#17'SaveAndExitButton'#7'OnClick'#7#22'SaveAndExitButtonClick'#8'TabOr'
-  +'der'#2#4#4'Left'#3#149#1#6'Height'#2#26#3'Top'#3#149#1#5'Width'#2'u'#0#0#9
-  +'TGroupBox'#15'PkgInfoGroupBox'#7'Anchors'#11#6'akLeft'#7'akRight'#8'akBotto'
-  +'m'#0#7'Caption'#6#15'PkgInfoGroupBox'#12'ClientHeight'#2'D'#11'ClientWidth'
-  +#3#255#1#8'TabOrder'#2#5#4'Left'#2#7#6'Height'#2'U'#3'Top'#3'2'#1#5'Width'#3
-  +#3#2#0#5'TMemo'#11'PkgInfoMemo'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
-  +'akBottom'#0#8'ReadOnly'#9#10'ScrollBars'#7#14'ssAutoVertical'#8'TabOrder'#2
-  +#0#4'Left'#2#5#6'Height'#2'8'#3'Top'#2#5#5'Width'#3#244#1#0#0#0#0
+  +#15'UninstallButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#7'C'
+  +'aption'#6#15'UninstallButton'#7'OnClick'#7#20'UninstallButtonClick'#8'TabOr'
+  +'der'#2#1#4'Left'#2#6#6'Height'#2#25#3'Top'#3#181#0#5'Width'#3#239#0#0#0#7'T'
+  +'Button'#12'ImportButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6
+  +#7'Caption'#6#12'ImportButton'#7'OnClick'#7#17'ImportButtonClick'#8'TabOrder'
+  +#2#2#4'Left'#2#6#6'Height'#2#25#3'Top'#3#212#0#5'Width'#3#239#0#0#0#7'TButto'
+  +'n'#12'ExportButton'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6#7'C'
+  +'aption'#6#12'ExportButton'#7'OnClick'#7#17'ExportButtonClick'#8'TabOrder'#2
+  +#3#4'Left'#2#6#6'Height'#2#25#3'Top'#3#243#0#5'Width'#3#239#0#0#0#0#9'TGroup'
+  +'Box'#20'AvailablePkgGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0
+  +#20'BorderSpacing.Around'#2#6#7'Caption'#6#20'AvailablePkgGroupBox'#12'Clien'
+  +'tHeight'#3#18#1#11'ClientWidth'#3#251#0#8'TabOrder'#2#1#4'Left'#3#11#1#6'He'
+  +'ight'#3'#'#1#3'Top'#2#6#5'Width'#3#255#0#0#8'TListBox'#16'AvailableListBox'
+  +#5'Align'#7#8'alClient'#20'BorderSpacing.Around'#2#6#16'ClickOnSelChange'#8
+  +#11'MultiSelect'#9#17'OnSelectionChange'#7#31'AvailableListBoxSelectionChang'
+  +'e'#8'TabOrder'#2#0#8'TopIndex'#2#255#4'Left'#2#6#6'Height'#3#231#0#3'Top'#2
+  +#6#5'Width'#3#239#0#0#0#7'TButton'#18'AddToInstallButton'#5'Align'#7#8'alBot'
+  +'tom'#20'BorderSpacing.Around'#2#6#7'Caption'#6#18'AddToInstallButton'#7'OnC'
+  +'lick'#7#23'AddToInstallButtonClick'#8'TabOrder'#2#1#4'Left'#2#6#6'Height'#2
+  +#25#3'Top'#3#243#0#5'Width'#3#239#0#0#0#0#7'TButton'#12'CancelButton'#7'Anch'
+  +'ors'#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#6'Cancel'#9#7'Caption'#6#12'C'
+  +'ancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#2#4'Left'#2#6#6'Height'#2#26
+  +#3'Top'#3#149#1#5'Width'#2'U'#0#0#7'TButton'#20'SaveAndRebuildButton'#7'Anch'
+  +'ors'#11#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6#20'SaveAndRebuildButton'#7
+  +'OnClick'#7#18'InstallButtonClick'#8'TabOrder'#2#3#4'Left'#3#195#0#6'Height'
+  +#2#26#3'Top'#3#149#1#5'Width'#3#139#0#0#0#7'TButton'#17'SaveAndExitButton'#7
+  +'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6#17'SaveAndE'
+  +'xitButton'#7'OnClick'#7#22'SaveAndExitButtonClick'#8'TabOrder'#2#4#4'Left'#3
+  +#149#1#6'Height'#2#26#3'Top'#3#149#1#5'Width'#2'u'#0#0#9'TGroupBox'#15'PkgIn'
+  +'foGroupBox'#7'Anchors'#11#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#15
+  +'PkgInfoGroupBox'#12'ClientHeight'#2'D'#11'ClientWidth'#3#255#1#8'TabOrder'#2
+  +#5#4'Left'#2#7#6'Height'#2'U'#3'Top'#3'2'#1#5'Width'#3#3#2#0#5'TMemo'#11'Pkg'
+  +'InfoMemo'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'ReadO'
+  +'nly'#9#10'ScrollBars'#7#14'ssAutoVertical'#8'TabOrder'#2#0#4'Left'#2#5#6'He'
+  +'ight'#2'8'#3'Top'#2#5#5'Width'#3#244#1#0#0#0#0
 ]);

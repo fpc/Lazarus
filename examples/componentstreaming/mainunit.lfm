@@ -62,7 +62,7 @@ object CompStreamDemoForm: TCompStreamDemoForm
     Width = 215
   end
   object WriteToStreamButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '1. Write AGroupBox to stream'
     OnClick = WriteToStreamButtonClick
     TabOrder = 2
@@ -103,7 +103,7 @@ object CompStreamDemoForm: TCompStreamDemoForm
   end
   object ReadStreamButton: TButton
     Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '2. Create component from stream'
     OnClick = ReadStreamButtonClick
     TabOrder = 4

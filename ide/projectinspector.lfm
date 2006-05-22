@@ -8,59 +8,55 @@ object ProjectInspectorForm: TProjectInspectorForm
   PixelsPerInch = 112
   HorzScrollBar.Page = 432
   VertScrollBar.Page = 308
-  Left = 460
+  Left = 457
   Height = 309
-  Top = 401
+  Top = 399
   Width = 433
   object OpenBitBtn: TBitBtn
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
     Caption = 'OpenBitBtn'
     NumGlyphs = 0
     OnClick = OpenBitBtnClick
     TabOrder = 0
     Height = 26
-    Width = 76
+    Width = 80
   end
   object AddBitBtn: TBitBtn
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
     Caption = 'AddBitBtn'
     NumGlyphs = 0
     OnClick = AddBitBtnClick
     TabOrder = 1
     AnchorSideLeft.Control = OpenBitBtn
     AnchorSideLeft.Side = asrBottom
-    Left = 76
+    Left = 80
     Height = 26
-    Width = 68
+    Width = 72
   end
   object RemoveBitBtn: TBitBtn
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
     Caption = 'RemoveBitBtn'
     NumGlyphs = 0
     OnClick = RemoveBitBtnClick
     TabOrder = 2
     AnchorSideLeft.Control = AddBitBtn
     AnchorSideLeft.Side = asrBottom
-    Left = 144
+    Left = 152
     Height = 26
-    Width = 90
+    Width = 94
   end
   object OptionsBitBtn: TBitBtn
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
     Caption = 'OptionsBitBtn'
     NumGlyphs = 0
     OnClick = OptionsBitBtnClick
     TabOrder = 3
     AnchorSideLeft.Control = RemoveBitBtn
     AnchorSideLeft.Side = asrBottom
-    Left = 234
+    Left = 246
     Height = 26
-    Width = 199
+    Width = 187
   end
   object ItemsTreeView: TTreeView
     Align = alBottom

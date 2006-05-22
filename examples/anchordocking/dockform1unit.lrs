@@ -5,8 +5,8 @@ LazarusResources.Add('TMainForm','FORMDATA',[
   +'lientHeight'#3','#1#11'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#9
   +'OnDestroy'#7#11'FormDestroy'#7'OnPaint'#7#9'FormPaint'#13'PixelsPerInch'#2
   +'_'#9'PopupMenu'#7#13'MainPopupMenu'#0#7'TButton'#19'CreateNewFormButton'#4
-  +'Left'#2'8'#6'Height'#2#26#3'Top'#2'"'#5'Width'#3#135#0#8'AutoSize'#9#25'Bor'
-  +'derSpacing.InnerBorder'#2#2#7'Caption'#6#19'CreateNewFormButton'#7'OnClick'
-  +#7#24'CreateNewFormButtonClick'#8'TabOrder'#2#0#0#0#10'TPopupMenu'#13'MainPo'
-  +'pupMenu'#4'left'#3#142#0#3'top'#3#141#0#0#0#0
+  +'Left'#2'8'#6'Height'#2#26#3'Top'#2'"'#5'Width'#3#135#0#8'AutoSize'#9#7'Capt'
+  +'ion'#6#19'CreateNewFormButton'#7'OnClick'#7#24'CreateNewFormButtonClick'#8
+  +'TabOrder'#2#0#0#0#10'TPopupMenu'#13'MainPopupMenu'#4'left'#3#142#0#3'top'#3
+  +#141#0#0#0#0
 ]);

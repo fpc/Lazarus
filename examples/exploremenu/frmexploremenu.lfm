@@ -61,7 +61,7 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
   object BCLose: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Close'
     Kind = bkClose
     ModalResult = 1

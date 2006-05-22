@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TBreakpointsDlg','FORMDATA',[
   'TPF0'#15'TBreakpointsDlg'#14'BreakpointsDlg'#7'Caption'#6#15'Breakpoint list'
   +#12'ClientHeight'#3#205#0#11'ClientWidth'#3'0'#2#8'OnCreate'#7#20'Breakpoint'

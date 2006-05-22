@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCallStackDlg','FORMDATA',[
   'TPF0'#13'TCallStackDlg'#12'CallStackDlg'#13'ActiveControl'#7#11'lvCallStack'
   +#7'Caption'#6#9'CallStack'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1

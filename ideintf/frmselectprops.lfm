@@ -152,7 +152,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     object BAdd: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&Add'
       OnClick = BAddClick
       TabOrder = 1
@@ -167,7 +167,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     object BDelete: TButton
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&Delete'
       OnClick = BDeleteClick
       TabOrder = 2
@@ -184,7 +184,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     object BClear: TButton
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'C&lear'
       OnClick = BClearClick
       TabOrder = 3
@@ -201,7 +201,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     object BOK: TButton
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&OK'
       Default = True
       ModalResult = 1
@@ -217,7 +217,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
     end
     object BCancel: TButton
       Anchors = [akRight, akBottom]
-      BorderSpacing.InnerBorder = 2
+      
       Cancel = True
       Caption = '&Cancel'
       ModalResult = 2

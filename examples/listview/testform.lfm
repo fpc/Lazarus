@@ -183,7 +183,7 @@ object Form1: TForm1
         Width = 65
       end
       object Button1: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Insert'
         OnClick = Button1Click
         TabOrder = 0
@@ -193,7 +193,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button2: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Delete'
         OnClick = Button2Click
         TabOrder = 1
@@ -203,7 +203,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button5: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Select'
         OnClick = Button5Click
         TabOrder = 2
@@ -213,7 +213,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button6: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Focus'
         OnClick = Button6Click
         TabOrder = 3
@@ -308,7 +308,7 @@ object Form1: TForm1
         Width = 65
       end
       object Button3: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Insert'
         OnClick = Button3Click
         TabOrder = 0
@@ -318,7 +318,7 @@ object Form1: TForm1
         Width = 75
       end
       object Button4: TButton
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'Delete'
         OnClick = Button4Click
         TabOrder = 1

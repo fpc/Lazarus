@@ -80,7 +80,7 @@ object frmMain: TfrmMain
     Width = 194
   end
   object Button2: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'apply filter'
     OnClick = Button2Click
     TabOrder = 2
@@ -133,7 +133,7 @@ object frmMain: TfrmMain
     Width = 194
   end
   object BtnFontDlg: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Font Dlg'
     OnClick = BtnFontDlgClick
     TabOrder = 7
@@ -159,7 +159,7 @@ object frmMain: TfrmMain
     Width = 82
   end
   object Button1: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Reset Sample Text'
     OnClick = Button1Click
     TabOrder = 10

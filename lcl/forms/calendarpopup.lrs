@@ -1,5 +1,3 @@
-{ Dit is een automatisch aangemaakte lazarus broncode bestand }
-
 LazarusResources.Add('TCalendarPopupForm','FORMDATA',[
   'TPF0'#18'TCalendarPopupForm'#17'CalendarPopupForm'#4'Left'#3'{'#2#6'Height'#3
   +#153#0#3'Top'#3#3#1#5'Width'#3#162#0#18'HorzScrollBar.Page'#3#161#0#18'VertS'
@@ -8,7 +6,7 @@ LazarusResources.Add('TCalendarPopupForm','FORMDATA',[
   +'Caption'#6#17'CalendarPopupForm'#12'ClientHeight'#3#153#0#11'ClientWidth'#3
   +#162#0#7'OnClose'#7#9'FormClose'#12'OnDeactivate'#7#14'FormDeactivate'#13'Pi'
   +'xelsPerInch'#2'`'#0#9'TCalendar'#8'Calendar'#6'Height'#3#153#0#5'Width'#3
-  +#162#0#8'DateTime'#5#0#0#0#0#0#0#167#151#14'@'#15'Dis'
-  +'playSettings'#11#14'dsShowHeadings'#14'dsShowDayNames'#0#10'OnDblClick'#7#16
-  +'CalendarDblClick'#9'OnKeyDown'#7#15'CalendarKeyDown'#7'Tabstop'#9#0#0#0
+  +#162#0#8'DateTime'#4#167#151#0#0#15'DisplaySettings'#11#14'dsShowHeadings'#14
+  +'dsShowDayNames'#0#10'OnDblClick'#7#16'CalendarDblClick'#9'OnKeyDown'#7#15'C'
+  +'alendarKeyDown'#7'Tabstop'#9#0#0#0
 ]);

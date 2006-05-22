@@ -180,8 +180,8 @@ type
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
     function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
     function GetSelectedComponentClass: TRegisteredComponent;
-    Procedure NudgeControl(DiffX, DiffY: Integer);
-    Procedure NudgeSize(DiffX, DiffY: Integer);
+    procedure NudgeControl(DiffX, DiffY: Integer);
+    procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     function GetPasteParent: TWinControl;

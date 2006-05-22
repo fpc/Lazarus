@@ -67,7 +67,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object Button1: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Find more'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -80,7 +80,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object btnReplace: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Replace'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -93,7 +93,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object btnReplaceAll: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Replace all'
     ModalResult = 1
     OnClick = btnReplaceAllClick
@@ -106,7 +106,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object Button4: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 7
@@ -117,7 +117,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object btnHelp: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Help'
     TabOrder = 8
     Left = 337

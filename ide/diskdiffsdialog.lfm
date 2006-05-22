@@ -17,7 +17,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'IgnoreDiskChangesButton'
     ModalResult = 5
     TabOrder = 0
@@ -30,7 +30,7 @@ object DiskDiffsDlg: TDiskDiffsDlg
   object RevertAllButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'RevertAllButton'
     Default = True
     ModalResult = 10

@@ -955,6 +955,11 @@ begin
     RequestAlign;
 end;
 
+function TControl.IsBorderSpacingInnerBorderStored: Boolean;
+begin
+  Result:=BorderSpacing.InnerBorder<>0;
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 ------------------------------------------------------------------------------}

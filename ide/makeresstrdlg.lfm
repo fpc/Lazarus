@@ -932,7 +932,7 @@ object MakeResStrDialog: TMakeResStrDialog
     Width = 51
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -950,7 +950,7 @@ object MakeResStrDialog: TMakeResStrDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

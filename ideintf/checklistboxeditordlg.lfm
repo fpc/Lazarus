@@ -23,7 +23,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     Width = 395
     object FBtnAdd: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'FBtnAdd'
       OnClick = AddItem
       TabOrder = 0
@@ -34,7 +34,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object FBtnDelete: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'FBtnDelete'
       OnClick = DeleteItem
       TabOrder = 1
@@ -47,7 +47,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object FBtnUp: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'FBtnUp'
       OnClick = MoveUpItem
       TabOrder = 2
@@ -60,7 +60,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object FBtnDown: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'FBtnDown'
       OnClick = MoveDownItem
       TabOrder = 3
@@ -73,7 +73,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object FBtnModify: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'FBtnModify'
       OnClick = ModifyItem
       TabOrder = 4
@@ -96,7 +96,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     Width = 395
     object FBtnOK: TBitBtn
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&OK'
       Default = True
       Kind = bkOK
@@ -110,7 +110,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object FBtnCancel: TBitBtn
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Cancel'
       Kind = bkCancel
       ModalResult = 2

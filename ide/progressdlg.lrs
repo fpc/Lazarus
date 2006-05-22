@@ -1,5 +1,3 @@
-{ Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei }
-
 LazarusResources.Add('TIDEProgressDialog','FORMDATA',[
   'TPF0'#18'TIDEProgressDialog'#17'IDEProgressDialog'#13'ActiveControl'#7#11'Ab'
   +'ortButton'#7'Caption'#6#17'IDEProgressDialog'#12'ClientHeight'#3#132#0#11'C'
@@ -10,9 +8,8 @@ LazarusResources.Add('TIDEProgressDialog','FORMDATA',[
   +'chors'#11#5'akTop'#0#8'AutoSize'#8#7'Caption'#6#16'DescriptionLabel'#5'Colo'
   +'r'#7#6'clNone'#11'ParentColor'#8#8'WordWrap'#9#4'Left'#3#152#0#6'Height'#2
   +#13#3'Top'#2#16#5'Width'#2'_'#0#0#7'TButton'#11'AbortButton'#7'Anchors'#11#8
-  +'akBottom'#0#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#11'AbortButton'
-  +#11'ModalResult'#2#3#8'TabOrder'#2#0#4'Left'#3#130#0#6'Height'#2'!'#3'Top'#2
-  +'\'#5'Width'#3#139#0#0#0#12'TProgressBar'#11'ProgressBar'#7'Anchors'#11#5'ak'
-  +'Top'#0#3'Max'#2'd'#4'Left'#2#15#6'Height'#2#20#3'Top'#2'@'#5'Width'#3'r'#1#0
-  +#0#0
+  +'akBottom'#0#7'Caption'#6#11'AbortButton'#11'ModalResult'#2#3#8'TabOrder'#2#0
+  +#4'Left'#3#130#0#6'Height'#2'!'#3'Top'#2'\'#5'Width'#3#139#0#0#0#12'TProgres'
+  +'sBar'#11'ProgressBar'#7'Anchors'#11#5'akTop'#0#3'Max'#2'd'#4'Left'#2#15#6'H'
+  +'eight'#2#20#3'Top'#2'@'#5'Width'#3'r'#1#0#0#0
 ]);

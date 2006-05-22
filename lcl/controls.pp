@@ -585,6 +585,7 @@ type
     FOnChange: TNotifyEvent;
     FRight: TSpacingSize;
     FTop: TSpacingSize;
+    function IsInnerBorderStored: boolean;
     procedure SetAround(const AValue: TSpacingSize);
     procedure SetBottom(const AValue: TSpacingSize);
     procedure SetCellAlignHorizontal(const AValue: TControlCellAlign);
@@ -614,7 +615,7 @@ type
     property Right: TSpacingSize read FRight write SetRight;
     property Bottom: TSpacingSize read FBottom write SetBottom;
     property Around: TSpacingSize read FAround write SetAround;
-    property InnerBorder: Integer read FInnerBorder write SetInnerBorder;
+    property InnerBorder: Integer read FInnerBorder write SetInnerBorder stored IsInnerBorderStored default -1;
     property CellAlignHorizontal: TControlCellAlign read FCellAlignHorizontal write SetCellAlignHorizontal;
     property CellAlignVertical: TControlCellAlign read FCellAlignVertical write SetCellAlignVertical;
   end;
@@ -918,6 +919,7 @@ type
     procedure DoConstraintsChange(Sender: TObject); virtual;
     procedure DoBorderSpacingChange(Sender: TObject;
                                     InnerSpaceChanged: Boolean); virtual;
+    function IsBorderSpacingInnerBorderStored: Boolean; virtual;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;
@@ -2554,6 +2556,11 @@ begin
   if FAround=AValue then exit;
   FAround:=AValue;
   Change(false);
+end;
+
+function TControlBorderSpacing.IsInnerBorderStored: boolean;
+begin
+  Result:=Control.IsBorderSpacingInnerBorderStored;
 end;
 
 procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);

@@ -19,21 +19,20 @@ LazarusResources.Add('TCompStreamDemoForm','FORMDATA',[
   +#2#15#5'Width'#3#128#0#0#0#0#9'TGroupBox'#19'DestinationGroupBox'#7'Anchors'
   +#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#11'Destination'#12'ClientHeight'#2
   +'\'#11'ClientWidth'#3#211#0#8'TabOrder'#2#1#4'Left'#2#30#6'Height'#2'm'#3'To'
-  +'p'#3'h'#1#5'Width'#3#215#0#0#0#7'TButton'#19'WriteToStreamButton'#25'Border'
-  +'Spacing.InnerBorder'#2#2#7'Caption'#6#28'1. Write AGroupBox to stream'#7'On'
-  +'Click'#7#24'WriteToStreamButtonClick'#8'TabOrder'#2#2#4'Left'#2#23#6'Height'
-  +#2#25#3'Top'#3#130#0#5'Width'#3#197#0#0#0#9'TGroupBox'#14'StreamGroupBox'#7
-  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6'3Strea'
-  +'m (special characters are shown as hexnumbers)'#12'ClientHeight'#2's'#11'Cl'
-  +'ientWidth'#3#236#1#8'TabOrder'#2#3#4'Left'#2#15#6'Height'#3#132#0#3'Top'#3
-  +#170#0#5'Width'#3#240#1#0#5'TMemo'#10'StreamMemo'#5'Align'#7#8'alClient'#13
-  +'Lines.Strings'#1#6'5First click on the button above, then on button below'#0
-  +#8'ReadOnly'#9#8'TabOrder'#2#0#6'Height'#2'['#5'Width'#3#236#1#0#0#9'TCheckB'
-  +'ox'#19'StreamAsLFMCheckBox'#5'Align'#7#8'alBottom'#7'Caption'#6#31'Show sre'
-  +'am in LFM format (text)'#8'OnChange'#7#25'StreamAsLFMCheckBoxChange'#8'TabO'
-  +'rder'#2#1#6'Height'#2#24#3'Top'#2'['#5'Width'#3#236#1#0#0#0#7'TButton'#16'R'
-  +'eadStreamButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.Inn'
-  +'erBorder'#2#2#7'Caption'#6#31'2. Create component from stream'#7'OnClick'#7
+  +'p'#3'h'#1#5'Width'#3#215#0#0#0#7'TButton'#19'WriteToStreamButton'#7'Caption'
+  +#6#28'1. Write AGroupBox to stream'#7'OnClick'#7#24'WriteToStreamButtonClick'
+  +#8'TabOrder'#2#2#4'Left'#2#23#6'Height'#2#25#3'Top'#3#130#0#5'Width'#3#197#0
+  +#0#0#9'TGroupBox'#14'StreamGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRi'
+  +'ght'#8'akBottom'#0#7'Caption'#6'3Stream (special characters are shown as he'
+  +'xnumbers)'#12'ClientHeight'#2's'#11'ClientWidth'#3#236#1#8'TabOrder'#2#3#4
+  +'Left'#2#15#6'Height'#3#132#0#3'Top'#3#170#0#5'Width'#3#240#1#0#5'TMemo'#10
+  +'StreamMemo'#5'Align'#7#8'alClient'#13'Lines.Strings'#1#6'5First click on th'
+  +'e button above, then on button below'#0#8'ReadOnly'#9#8'TabOrder'#2#0#6'Hei'
+  +'ght'#2'['#5'Width'#3#236#1#0#0#9'TCheckBox'#19'StreamAsLFMCheckBox'#5'Align'
+  +#7#8'alBottom'#7'Caption'#6#31'Show sream in LFM format (text)'#8'OnChange'#7
+  +#25'StreamAsLFMCheckBoxChange'#8'TabOrder'#2#1#6'Height'#2#24#3'Top'#2'['#5
+  +'Width'#3#236#1#0#0#0#7'TButton'#16'ReadStreamButton'#7'Anchors'#11#6'akLeft'
+  +#8'akBottom'#0#7'Caption'#6#31'2. Create component from stream'#7'OnClick'#7
   +#21'ReadStreamButtonClick'#8'TabOrder'#2#4#4'Left'#2#25#6'Height'#2#24#3'Top'
   +#3'<'#1#5'Width'#3#215#0#0#0#0
 ]);

@@ -16,7 +16,7 @@ object CodeExplorerView: TCodeExplorerView
   Top = 175
   Width = 206
   object RefreshButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Refresh'
     OnClick = RefreshButtonCLICK
     TabOrder = 0
@@ -24,7 +24,7 @@ object CodeExplorerView: TCodeExplorerView
     Width = 96
   end
   object OptionsButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Options'
     OnClick = OptionsButtonClick
     TabOrder = 1

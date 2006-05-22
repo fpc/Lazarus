@@ -84,6 +84,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    function IsBorderSpacingInnerBorderStored: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
@@ -200,6 +201,7 @@ type
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
     procedure TextChanged; override;
+    function IsBorderSpacingInnerBorderStored: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;

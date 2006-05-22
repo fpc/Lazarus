@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCharacterMapDialog','FORMDATA',[
   'TPF0'#19'TCharacterMapDialog'#18'CharacterMapDialog'#13'ActiveControl'#7#11
   +'CloseButton'#7'Caption'#6#18'CharacterMapDialog'#12'ClientHeight'#3#141#1#11
@@ -7,22 +5,22 @@ LazarusResources.Add('TCharacterMapDialog','FORMDATA',[
   +'ate'#7#10'FormCreate'#6'OnShow'#7#8'FormShow'#13'PixelsPerInch'#2'`'#18'Hor'
   +'zScrollBar.Page'#3'g'#1#18'VertScrollBar.Page'#3#140#1#4'Left'#3#16#2#6'Hei'
   +'ght'#3#141#1#3'Top'#3#142#0#5'Width'#3'h'#1#0#7'TButton'#11'CloseButton'#7
-  +'Anchors'#11#8'akBottom'#0#20'BorderSpacing.Around'#2#6#25'BorderSpacing.Inn'
-  +'erBorder'#2#2#6'Cancel'#9#7'Caption'#6#5'Close'#7'Default'#9#11'ModalResult'
-  +#2#1#7'OnClick'#7#16'CloseButtonClick'#8'TabOrder'#2#0#4'Left'#3#142#0#6'Hei'
-  +'ght'#2#25#3'Top'#3'p'#1#5'Width'#2'K'#0#0#9'TGroupBox'#18'CharactersGroupbo'
-  +'x'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSpaci'
-  +'ng.Around'#2#6#7'Caption'#6#10'Characters'#12'ClientHeight'#3'N'#1#11'Clien'
-  +'tWidth'#3'U'#1#11'ParentCtl3D'#8#8'TabOrder'#2#1#4'Left'#2#8#6'Height'#3'`'
-  +#1#3'Top'#2#8#5'Width'#3'Y'#1#0#6'TLabel'#13'CharInfoLabel'#5'Align'#7#8'alB'
-  +'ottom'#20'BorderSpacing.Around'#2#6#7'Caption'#6#13'CharInfoLabel'#5'Color'
-  +#7#6'clNone'#11'ParentColor'#8#4'Left'#2#6#6'Height'#2#14#3'Top'#3':'#1#5'Wi'
-  +'dth'#3'I'#1#0#0#11'TStringGrid'#11'StringGrid1'#7'Anchors'#11#5'akTop'#6'ak'
-  +'Left'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#8'ColCount'#2#17
-  +#15'DefaultColWidth'#2#16#10'FixedColor'#7#9'clBtnFace'#13'GridLineWidth'#2#0
-  +#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goH'
-  +'orzLine'#14'goSmoothScroll'#0#8'RowCount'#2#15#10'ScrollBars'#7#10'ssAutoBo'
-  +'th'#15'VisibleColCount'#2#16#15'VisibleRowCount'#2#14#11'OnMouseDown'#7#20
-  +'StringGrid1MouseDown'#11'OnMouseMove'#7#20'StringGrid1MouseMove'#4'Left'#2#6
-  +#6'Height'#3'0'#1#3'Top'#2#6#5'Width'#3'I'#1#0#0#0#0
+  +'Anchors'#11#8'akBottom'#0#20'BorderSpacing.Around'#2#6#6'Cancel'#9#7'Captio'
+  +'n'#6#5'Close'#7'Default'#9#11'ModalResult'#2#1#7'OnClick'#7#16'CloseButtonC'
+  +'lick'#8'TabOrder'#2#0#4'Left'#3#142#0#6'Height'#2#25#3'Top'#3'p'#1#5'Width'
+  +#2'K'#0#0#9'TGroupBox'#18'CharactersGroupbox'#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#10'Ch'
+  +'aracters'#12'ClientHeight'#3'N'#1#11'ClientWidth'#3'U'#1#11'ParentCtl3D'#8#8
+  +'TabOrder'#2#1#4'Left'#2#8#6'Height'#3'`'#1#3'Top'#2#8#5'Width'#3'Y'#1#0#6'T'
+  +'Label'#13'CharInfoLabel'#5'Align'#7#8'alBottom'#20'BorderSpacing.Around'#2#6
+  +#7'Caption'#6#13'CharInfoLabel'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Lef'
+  +'t'#2#6#6'Height'#2#14#3'Top'#3':'#1#5'Width'#3'I'#1#0#0#11'TStringGrid'#11
+  +'StringGrid1'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'B'
+  +'orderSpacing.Around'#2#6#8'ColCount'#2#17#15'DefaultColWidth'#2#16#10'Fixed'
+  +'Color'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLin'
+  +'e'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#14'goSmoothScroll'#0#8
+  +'RowCount'#2#15#10'ScrollBars'#7#10'ssAutoBoth'#15'VisibleColCount'#2#16#15
+  +'VisibleRowCount'#2#14#11'OnMouseDown'#7#20'StringGrid1MouseDown'#11'OnMouse'
+  +'Move'#7#20'StringGrid1MouseMove'#4'Left'#2#6#6'Height'#3'0'#1#3'Top'#2#6#5
+  +'Width'#3'I'#1#0#0#0#0
 ]);

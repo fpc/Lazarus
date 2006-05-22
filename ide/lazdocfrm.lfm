@@ -106,7 +106,7 @@ object LazDocForm: TLazDocForm
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'AddLinkButton'
         OnClick = AddLinkButtonClick
         TabOrder = 1
@@ -118,7 +118,7 @@ object LazDocForm: TLazDocForm
       object DeleteLinkButton: TButton
         Anchors = [akTop, akRight]
         AutoSize = True
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'DeleteLinkButton'
         OnClick = DeleteLinkButtonClick
         TabOrder = 2
@@ -166,7 +166,7 @@ object LazDocForm: TLazDocForm
       object BrowseExampleButton: TButton
         Anchors = [akTop, akRight]
         AutoSize = True
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'BrowseExampleButton'
         OnClick = BrowseExampleButtonClick
         TabOrder = 1

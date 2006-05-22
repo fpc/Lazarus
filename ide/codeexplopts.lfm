@@ -18,7 +18,7 @@ object CodeExplorerDlg: TCodeExplorerDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
@@ -32,7 +32,7 @@ object CodeExplorerDlg: TCodeExplorerDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1

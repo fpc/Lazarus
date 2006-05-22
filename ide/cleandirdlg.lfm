@@ -54,7 +54,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     object DirBrowseButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '...'
       OnClick = DirBrowseButtonClick
       TabOrder = 2
@@ -158,7 +158,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -179,7 +179,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

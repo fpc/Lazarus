@@ -41,7 +41,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object UninstallButton: TButton
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'UninstallButton'
       OnClick = UninstallButtonClick
       TabOrder = 1
@@ -53,7 +53,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ImportButton: TButton
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'ImportButton'
       OnClick = ImportButtonClick
       TabOrder = 2
@@ -65,7 +65,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportButton: TButton
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'ExportButton'
       OnClick = ExportButtonClick
       TabOrder = 3
@@ -102,7 +102,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object AddToInstallButton: TButton
       Align = alBottom
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'AddToInstallButton'
       OnClick = AddToInstallButtonClick
       TabOrder = 1
@@ -115,7 +115,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   object CancelButton: TButton
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'CancelButton'
     ModalResult = 2
@@ -128,7 +128,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   object SaveAndRebuildButton: TButton
     Anchors = [akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'SaveAndRebuildButton'
     OnClick = InstallButtonClick
     TabOrder = 3
@@ -140,7 +140,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   object SaveAndExitButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'SaveAndExitButton'
     OnClick = SaveAndExitButtonClick
     TabOrder = 4

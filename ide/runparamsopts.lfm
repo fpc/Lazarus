@@ -17,7 +17,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 0
@@ -31,7 +31,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 1
@@ -164,7 +164,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object HostApplicationBrowseBtn: TButton
           Align = alRight
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'HostApplicationBrowseBtn'
           OnClick = HostApplicationBrowseBtnClick
           TabOrder = 0
@@ -199,7 +199,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object WorkingDirectoryBtn: TButton
           Align = alRight
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'WorkingDirectoryBtn'
           OnClick = WorkingDirectoryBtnClick
           TabOrder = 0
@@ -252,7 +252,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'UserOverridesAddButton'
           OnClick = UserOverridesAddButtonClick
           TabOrder = 0
@@ -265,7 +265,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'UserOverridesEditButton'
           OnClick = UserOverridesEditButtonClick
           TabOrder = 1
@@ -280,7 +280,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'UserOverridesDeleteButton'
           OnClick = UserOverridesDeleteButtonClick
           TabOrder = 2

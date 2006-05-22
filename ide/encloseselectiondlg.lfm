@@ -19,7 +19,7 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
     Top = 208
     Width = 107
     Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Ok'
     Default = True
     ModalResult = 1
@@ -31,7 +31,7 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
     Top = 208
     Width = 104
     Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

@@ -17,7 +17,7 @@ object DiffDlg: TDiffDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Save Diff'
     OnClick = SaveDiffButtonClick
     TabOrder = 0
@@ -34,7 +34,7 @@ object DiffDlg: TDiffDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OpenInEditorButton'
     ModalResult = 6
     TabOrder = 1
@@ -50,7 +50,7 @@ object DiffDlg: TDiffDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'CloseButton'
     ModalResult = 1
@@ -109,7 +109,7 @@ object DiffDlg: TDiffDlg
     end
     object Text1FileOpenButton: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'File'
       OnClick = FileOpenClick
       TabOrder = 2
@@ -161,7 +161,7 @@ object DiffDlg: TDiffDlg
     end
     object Text2FileOpenButton: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'File'
       OnClick = FileOpenClick
       TabOrder = 2

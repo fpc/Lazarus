@@ -38,7 +38,7 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -56,7 +56,7 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2

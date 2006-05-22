@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TFrmComponentMan','FORMDATA',[
   'TPF0'#16'TFrmComponentMan'#15'FrmComponentMan'#7'CAPTION'#6#29'Component Man'
   +'ager for Lazarus'#12'CLIENTHEIGHT'#3'6'#1#11'CLIENTWIDTH'#3#3#2#21'CONSTRAI'

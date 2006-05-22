@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TMultiReplaceDialog','FORMDATA',[
   'TPF0'#19'TMultiReplaceDialog'#18'MultiReplaceDialog'#7'Caption'#6#16'Multipl'
   +'e Replace'#12'ClientHeight'#3#163#1#11'ClientWidth'#3'a'#2#18'HorzScrollBar'

@@ -30,7 +30,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Top = 5
       Width = 87
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'UndockButton'
       OnClick = UndockButtonClick
       TabOrder = 0
@@ -73,7 +73,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Width = 94
       AutoSize = True
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'DockLeftButton'
       OnClick = DockLeftButtonClick
       TabOrder = 0
@@ -88,7 +88,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Width = 102
       AutoSize = True
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'DockRightButton'
       OnClick = DockRightButtonClick
       TabOrder = 1
@@ -103,7 +103,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Width = 95
       AutoSize = True
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'DockTopButton'
       OnClick = DockTopButtonClick
       TabOrder = 2
@@ -118,7 +118,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Width = 111
       AutoSize = True
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'DockBottomButton'
       OnClick = DockBottomButtonClick
       TabOrder = 3
@@ -133,7 +133,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
       Width = 103
       AutoSize = True
       BorderSpacing.Top = 5
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'DockPageButton'
       OnClick = DockPageButtonClick
       TabOrder = 4
@@ -164,7 +164,7 @@ object LazDockControlEditorDlg: TLazDockControlEditorDlg
     Anchors = [akTop]
     AutoSize = True
     BorderSpacing.Top = 10
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2

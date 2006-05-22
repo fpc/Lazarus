@@ -29,7 +29,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object LoadButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Load'
       OnClick = LoadButtonClick
       TabOrder = 0
@@ -40,7 +40,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object SaveButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Save'
       OnClick = SaveButtonClick
       TabOrder = 1
@@ -52,7 +52,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     object ClearButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Clear'
       OnClick = ClearButtonClick
       TabOrder = 2
@@ -84,7 +84,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -99,7 +99,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   object CancelButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

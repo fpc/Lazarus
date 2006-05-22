@@ -57,7 +57,7 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Width = 124
   end
   object butCreate: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Create Table'
     OnClick = butOkClick
     TabOrder = 1
@@ -68,7 +68,7 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Width = 136
   end
   object butClose: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Close'
     OnClick = butCancelClick
     TabOrder = 2
@@ -98,7 +98,7 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Width = 136
   end
   object butAdd: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Add'
     OnClick = butAddClick
     TabOrder = 0
@@ -108,7 +108,7 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Width = 64
   end
   object butDelete: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Delete'
     OnClick = butDeleteClick
     TabOrder = 3

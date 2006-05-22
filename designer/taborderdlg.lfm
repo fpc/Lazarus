@@ -49,7 +49,7 @@ object TabOrderDialog: TTabOrderDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+
     Caption = '&OK'
     Kind = bkOK
     ModalResult = 1
@@ -69,7 +69,7 @@ object TabOrderDialog: TTabOrderDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

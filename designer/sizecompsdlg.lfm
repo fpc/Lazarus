@@ -17,7 +17,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -35,7 +35,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2

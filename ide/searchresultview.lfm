@@ -27,7 +27,7 @@ object SearchResultsView: TSearchResultsView
   end
   object btnSearchAgain: TButton
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Search Again'
     OnClick = btnSearchAgainClick
     OnKeyDown = ListBoxKeyDown

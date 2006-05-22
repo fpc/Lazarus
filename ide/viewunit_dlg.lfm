@@ -13,7 +13,7 @@ object ViewUnitDialog: TViewUnitDialog
   Width = 416
   object btnOK: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OK'
     OnClick = BTNOKCLICK
     TabOrder = 1
@@ -24,7 +24,7 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object btnCancel: TButton
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     OnClick = BTNCANCELCLICK
     TabOrder = 2

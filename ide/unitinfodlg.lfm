@@ -16,7 +16,7 @@ object UnitInfoDialog: TUnitInfoDialog
   object OkButton: TBitBtn
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = '&OK'
     Default = True
@@ -209,7 +209,7 @@ object UnitInfoDialog: TUnitInfoDialog
       object ClearIncludedBy: TButton
         AutoSize = True
         BorderSpacing.Top = 20
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'ClearIncludedBy'
         OnClick = clearIncludedByClick
         TabOrder = 0
@@ -278,7 +278,7 @@ object UnitInfoDialog: TUnitInfoDialog
   object CodeToolsDefsButton: TButton
     Anchors = [akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CodeToolsDefsButton'
     OnClick = CodeToolsDefsButtonClick
     TabOrder = 2

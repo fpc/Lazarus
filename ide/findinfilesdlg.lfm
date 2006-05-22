@@ -132,7 +132,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     end
     object DirectoryBrowse: TBitBtn
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '...'
       Layout = blGlyphTop
       NumGlyphs = 0
@@ -166,7 +166,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   object OKButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -179,7 +179,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

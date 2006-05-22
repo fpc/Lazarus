@@ -18,7 +18,7 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     ClientHeight = 240
     ClientWidth = 384
     TabOrder = 0
@@ -52,7 +52,7 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
     object SortButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Sort'
       OnClick = SortButtonClick
       TabOrder = 1
@@ -65,7 +65,7 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
   object OKButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -80,7 +80,7 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
   object CancelButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

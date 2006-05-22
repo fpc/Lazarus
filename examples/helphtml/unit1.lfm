@@ -30,7 +30,7 @@ object Form1: TForm1
     HelpKeyword = 'HTML/edit2.html'
   end
   object HelpButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Help'
     OnClick = HelpButtonClick
     TabOrder = 2

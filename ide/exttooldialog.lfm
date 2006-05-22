@@ -94,7 +94,7 @@ object ExternalToolDialog: TExternalToolDialog
   object OKButton: TBitBtn
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -112,7 +112,7 @@ object ExternalToolDialog: TExternalToolDialog
     Anchors = [akRight, akBottom]
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

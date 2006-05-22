@@ -332,7 +332,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 415
         end
         object LazDocAddPathButton: TButton
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -342,7 +342,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 75
         end
         object LazDocDeletePathButton: TButton
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -362,7 +362,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         end
         object LazDocBrowseButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
@@ -432,7 +432,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -444,7 +444,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
   end
   object OKButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OK'
     Default = True
     ModalResult = 1

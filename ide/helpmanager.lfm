@@ -14,7 +14,7 @@ object HelpSelectorDialog: THelpSelectorDialog
   Width = 500
   object OKButton: TBitBtn
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -29,7 +29,7 @@ object HelpSelectorDialog: THelpSelectorDialog
   object CancelButton: TBitBtn
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2

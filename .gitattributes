@@ -2511,6 +2511,7 @@ tools/install/win32/readme.txt svneol=native#text/plain
 tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
+tools/lfm_to_lrs.sh svneol=native#text/plain
 tools/runwait.sh -text svneol=native#application/x-sh
 tools/svn2revisioninc.lpi svneol=native#text/plain
 tools/svn2revisioninc.pas svneol=native#text/plain

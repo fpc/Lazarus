@@ -69,7 +69,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdOpenDebuggerPath: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = cmdOpenDebuggerPathCLICK
           TabOrder = 2
@@ -101,7 +101,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object cmdOpenAdditionalPath: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = cmdOpenAdditionalPathClick
           TabOrder = 1
@@ -308,7 +308,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'Remove'
           Enabled = False
           OnClick = cmdExceptionRemoveCLICK
@@ -326,7 +326,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'Add'
           OnClick = cmdExceptionAddCLICK
           TabOrder = 1
@@ -392,7 +392,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'Remove'
           Enabled = False
           TabOrder = 0
@@ -409,7 +409,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           Anchors = [akRight, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'Add'
           TabOrder = 1
           AnchorSideRight.Control = cmdSignalRemove
@@ -456,7 +456,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Constraints.MaxHeight = 29
     Kind = bkOK
@@ -477,7 +477,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Constraints.MaxHeight = 29

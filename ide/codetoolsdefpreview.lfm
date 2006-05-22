@@ -35,7 +35,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Width = 360
     end
     object DirectoryBrowseButton: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '...'
       OnClick = DirectoryBrowseButtonCLICK
       TabOrder = 1
@@ -416,7 +416,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   object CloseButton: TButton
     Align = alBottom
     Anchors = [akLeft, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CloseButton'
     ModalResult = 2
     TabOrder = 3

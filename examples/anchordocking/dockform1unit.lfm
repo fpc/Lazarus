@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Top = 34
     Width = 135
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CreateNewFormButton'
     OnClick = CreateNewFormButtonClick
     TabOrder = 0

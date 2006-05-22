@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TWatchesDlg','FORMDATA',[
   'TPF0'#11'TWatchesDlg'#10'WatchesDlg'#13'ActiveControl'#7#9'lvWatches'#7'Capt'
   +'ion'#6#10'Watch list'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#7'On'

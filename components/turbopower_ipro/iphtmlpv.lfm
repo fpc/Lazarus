@@ -62,7 +62,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 31
     end
     object btnPrint: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Print'
       Default = True
       OnClick = btnPrintClick
@@ -73,7 +73,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 75
     end
     object btnFirst: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '<<'
       OnClick = btnFirstClick
       TabOrder = 1
@@ -83,7 +83,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 32
     end
     object btnPrev: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '<'
       OnClick = btnPrevClick
       TabOrder = 2
@@ -93,7 +93,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 32
     end
     object btnNext: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '>'
       OnClick = btnNextClick
       TabOrder = 4
@@ -103,7 +103,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 32
     end
     object btnLast: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '>>'
       OnClick = btnLastClick
       TabOrder = 5
@@ -113,7 +113,7 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 32
     end
     object btnClose: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Cancel = True
       Caption = 'Close'
       ModalResult = 2

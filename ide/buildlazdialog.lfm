@@ -61,7 +61,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Width = 65
   end
   object BuildAllButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Set to "Build All"'
     OnClick = BuildAllButtonClick
     TabOrder = 0
@@ -108,7 +108,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   end
   object TargetDirectoryButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '...'
     OnClick = TargetDirectoryButtonClick
     TabOrder = 8
@@ -165,7 +165,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   end
   object OKButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OK'
     Default = True
     OnClick = OKButtonClick
@@ -177,7 +177,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     OnClick = CancelButtonClick

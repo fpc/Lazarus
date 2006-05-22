@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TDirSelDlg','FORMDATA',[
   'TPF0'#10'TDirSelDlg'#9'DirSelDlg'#13'ActiveControl'#7#2'TV'#11'BorderStyle'#7
   +#8'BSDIALOG'#7'Caption'#6#16'Select Directory'#12'ClientHeight'#3'J'#1#11'Cl'

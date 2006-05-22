@@ -799,7 +799,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
         end
         object MoveFilePathUpBitBtn: TBitBtn
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'MoveFilePathUpBitBtn'
           NumGlyphs = 0
           OnClick = MoveFilePathUpBitBtnClick
@@ -811,7 +811,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
         end
         object MoveFilePathDownBitBtn: TBitBtn
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'MoveFilePathDownBitBtn'
           NumGlyphs = 0
           OnClick = MoveNodeDownMenuItemClick
@@ -823,7 +823,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
         end
         object DeleteFilePathBitBtn: TBitBtn
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'DeleteFilePathBitBtn'
           NumGlyphs = 0
           OnClick = DeleteFilePathBitBtnClick
@@ -835,7 +835,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
         end
         object InsertFilePathBitBtn: TBitBtn
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'InsertFilePathBitBtn'
           NumGlyphs = 0
           OnClick = InsertFilePathBitBtnClick

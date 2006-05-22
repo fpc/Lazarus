@@ -52,7 +52,7 @@ object PublishProjectDialog: TPublishProjectDialog
     object BrowseDestDirBitBtn: TBitBtn
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '...'
       NumGlyphs = 0
       OnClick = BrowseDestDirBitBtnCLICK
@@ -144,7 +144,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Save settings'
     OnClick = SaveSettingsButtonCLICK
     TabOrder = 3
@@ -255,7 +255,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -275,7 +275,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel

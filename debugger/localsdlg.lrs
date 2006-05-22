@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TLocalsDlg','FORMDATA',[
   'TPF0'#10'TLocalsDlg'#9'LocalsDlg'#13'ActiveControl'#7#8'lvLocals'#7'Caption'
   +#6#6'Locals'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#244#1#13'PixelsPerIn'

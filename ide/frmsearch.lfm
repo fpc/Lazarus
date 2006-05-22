@@ -78,7 +78,7 @@ object SearchForm: TSearchForm
     end
     object btnCancel: TButton
       AutoSize = True
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Cancel'
       Default = True
       OnClick = btnAbortCLICK

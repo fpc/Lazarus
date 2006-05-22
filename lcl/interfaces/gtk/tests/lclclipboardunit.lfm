@@ -10,7 +10,7 @@ object Form1: TForm1
   Top = 163
   Width = 400
   object GetTargetsButton: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Get targets'
     OnClick = GetTargetsButtonClick
     TabOrder = 0

@@ -27,7 +27,7 @@ object IDEProgressDialog: TIDEProgressDialog
   end
   object AbortButton: TButton
     Anchors = [akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'AbortButton'
     ModalResult = 3
     TabOrder = 0

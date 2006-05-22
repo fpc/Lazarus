@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TMakeResStrDialog','FORMDATA',[
   'TPF0'#17'TMakeResStrDialog'#16'MakeResStrDialog'#4'Left'#3#183#1#6'Height'#3
   +#24#2#3'Top'#3'?'#1#5'Width'#3'B'#2#18'HorzScrollBar.Page'#3'A'#2#18'VertScr'
@@ -186,13 +184,12 @@ LazarusResources.Add('TMakeResStrDialog','FORMDATA',[
   +#7'Command'#3#250#0#8'ShortCut'#3'B`'#0#0#13'Lines.Strings'#1#6#17'SrcPrevie'
   +'wSynEdit'#0#22'SelectedColor.OnChange'#13#0#0#0#7'TBitBtn'#8'OKButton'#4'Le'
   +'ft'#3#9#2#6'Height'#2#28#3'Top'#3#246#1#5'Width'#2'3'#7'Anchors'#11#7'akRig'
-  +'ht'#8'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#2#7'Caption'
-  +#6#3'&OK'#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#9'NumGlyphs'#2#0
-  +#7'OnClick'#7#13'OkButtonClick'#8'TabOrder'#2#3#0#0#7'TBitBtn'#12'CancelButt'
-  +'on'#23'AnchorSideRight.Control'#7#8'OKButton'#4'Left'#3#186#1#6'Height'#2#28
-  +#3'Top'#3#246#1#5'Width'#2'I'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoS'
-  +'ize'#9#19'BorderSpacing.Right'#2#6#25'BorderSpacing.InnerBorder'#2#2#6'Canc'
-  +'el'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2#9'Nu'
-  ,'mGlyphs'#2#0#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2#4#0#0#10'TSyn'
-  +'PasSyn'#9'SynPasSyn'#7'Enabled'#8#4'left'#3';'#1#3'top'#2#10#0#0#0
+  +'ht'#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6#3'&OK'#7'Default'#9#4'Kind'#7#4
+  +'bkOK'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#13'OkButtonClick'#8
+  +'TabOrder'#2#3#0#0#7'TBitBtn'#12'CancelButton'#23'AnchorSideRight.Control'#7
+  +#8'OKButton'#4'Left'#3#186#1#6'Height'#2#28#3'Top'#3#246#1#5'Width'#2'I'#7'A'
+  +'nchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'#2
+  +#6#6'Cancel'#9#7'Caption'#6#6'Cancel'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2
+  +#2#9'NumGlyphs'#2#0#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2#4#0#0#10
+  ,'TSynPasSyn'#9'SynPasSyn'#7'Enabled'#8#4'left'#3';'#1#3'top'#2#10#0#0#0
 ]);

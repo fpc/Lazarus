@@ -26,7 +26,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     Width = 457
     object btnCancel1: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
@@ -38,7 +38,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     end
     object btnOk: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Ok'
       Default = True
       ModalResult = 1

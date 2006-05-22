@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCondForm','FORMDATA',[
   'TPF0'#9'TCondForm'#8'CondForm'#13'ActiveControl'#7#7'ListBox'#7'Caption'#6#19
   +'Conditional Defines'#12'ClientHeight'#3#239#0#11'ClientWidth'#3#218#0#7'OnC'

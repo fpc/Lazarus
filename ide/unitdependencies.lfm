@@ -70,7 +70,7 @@ object UnitDependenciesView: TUnitDependenciesView
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Close'
     Kind = bkClose
     NumGlyphs = 0

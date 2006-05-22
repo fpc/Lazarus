@@ -138,7 +138,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 8
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'FindOrRenameButton'
     OnClick = FindOrRenameButtonClick
     TabOrder = 3
@@ -151,7 +151,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 4

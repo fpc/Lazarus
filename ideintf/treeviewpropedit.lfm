@@ -17,7 +17,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   Width = 487
   object BtnOK: TBitBtn
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Kind = bkOK
     ModalResult = 1
@@ -30,7 +30,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   end
   object BtnCancel: TBitBtn
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
@@ -44,7 +44,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   end
   object BtnApply: TBitBtn
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Apply'
     NumGlyphs = 0
     OnClick = btnApplyClick
@@ -56,7 +56,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   end
   object BtnHelp: TBitBtn
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Help'
     Kind = bkHelp
     NumGlyphs = 0
@@ -89,7 +89,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnNewItem: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&New Item'
       Default = True
       OnClick = BtnNewItemClick
@@ -102,7 +102,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnNewSubItem: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'N&ew SubItem'
       OnClick = BtnNewItemClick
       TabOrder = 2
@@ -113,7 +113,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnDelete: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&Delete'
       OnClick = btnDeleteClick
       TabOrder = 3
@@ -124,7 +124,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnLoad: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&Load'
       OnClick = btnLoadClick
       TabOrder = 4
@@ -135,7 +135,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object BtnSave: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = '&Save'
       OnClick = btnSaveClick
       TabOrder = 5

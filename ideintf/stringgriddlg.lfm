@@ -52,7 +52,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     object BtnLoad: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Load...'
       OnClick = BtnLoadClick
       TabOrder = 1
@@ -64,7 +64,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     object BtnSave: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Save...'
       OnClick = BtnSaveClick
       TabOrder = 2
@@ -76,7 +76,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     object BtnClean: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Clean'
       OnClick = BtnCleanClick
       TabOrder = 3
@@ -90,7 +90,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Align = alRight
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Help'
     Kind = bkHelp
     NumGlyphs = 0
@@ -104,7 +104,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Align = alRight
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Apply'
     NumGlyphs = 0
     OnClick = BtnApplyClick
@@ -118,7 +118,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Align = alRight
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
@@ -134,7 +134,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Align = alRight
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&OK'
     Default = True
     Kind = bkOK

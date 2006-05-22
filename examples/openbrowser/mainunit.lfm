@@ -12,7 +12,7 @@ object Form1: TForm1
   Width = 439
   object OpenLazarusButton: TButton
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Open www.lazarus.freepascal.org'
     OnClick = OpenLazarusButtonClick
     TabOrder = 0

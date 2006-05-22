@@ -32,7 +32,7 @@ object MainForm: TMainForm
     Height = 42
     Width = 569
     object OpenHTMLFileButton1: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Open HTML File'
       OnClick = OpenHTMLFileButtonClick
       TabOrder = 0
@@ -42,7 +42,7 @@ object MainForm: TMainForm
       Width = 152
     end
     object Button1: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Preview'
       OnClick = Button1Click
       TabOrder = 1

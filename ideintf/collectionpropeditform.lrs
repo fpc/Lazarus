@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TCollectionPropertyEditorForm','FORMDATA',[
   'TPF0'#29'TCollectionPropertyEditorForm'#28'CollectionPropertyEditorForm'#13
   +'ActiveControl'#7#17'CollectionListBox'#11'BorderStyle'#7#13'bsSizeToolWin'#7

@@ -124,7 +124,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 280
     end
     object btnProp: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Properties ...'
       OnClick = btnPropCLICK
       TabOrder = 1
@@ -423,7 +423,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
     Width = 552
     object btnCancel: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
@@ -435,7 +435,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object btnPrint: TButton
       Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Print'
       Default = True
       ModalResult = 1
@@ -447,7 +447,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 99
     end
     object btnReduc: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'More ...'
       OnClick = btnReducCLICK
       TabOrder = 2
@@ -457,7 +457,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 88
     end
     object btnPreview: TButton
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'Preview'
       ModalResult = 6
       TabOrder = 3

@@ -22,7 +22,7 @@ object Form1: TForm1
     Width = 226
   end
   object Button2: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Execute TPrinterSetupDialog'
     OnClick = Button2Click
     TabOrder = 0
@@ -32,7 +32,7 @@ object Form1: TForm1
     Width = 320
   end
   object Button1: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Execute TPrintDialog'
     OnClick = Button1Click
     TabOrder = 1
@@ -68,7 +68,7 @@ object Form1: TForm1
     Width = 320
   end
   object Button3: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Get default printer info'
     OnClick = Button3Click
     TabOrder = 2
@@ -78,7 +78,7 @@ object Form1: TForm1
     Width = 320
   end
   object Button4: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Print test'
     OnClick = Button4Click
     TabOrder = 3
@@ -88,7 +88,7 @@ object Form1: TForm1
     Width = 69
   end
   object Button5: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Update printer state info'
     OnClick = Button5Click
     TabOrder = 4
@@ -98,7 +98,7 @@ object Form1: TForm1
     Width = 224
   end
   object Button6: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Show printer properties'
     OnClick = Button6Click
     TabOrder = 5
@@ -108,7 +108,7 @@ object Form1: TForm1
     Width = 224
   end
   object Button7: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Execute TPageSetupDialog'
     OnClick = Button7Click
     TabOrder = 6

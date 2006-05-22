@@ -56,7 +56,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 10
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OkButton'
     ModalResult = 1
     TabOrder = 2
@@ -71,7 +71,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 3

@@ -63,7 +63,7 @@ object MaskEditorForm: TMaskEditorForm
   object OkButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.OnChange = nil
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 2
@@ -75,7 +75,7 @@ object MaskEditorForm: TMaskEditorForm
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.OnChange = nil
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
@@ -87,7 +87,7 @@ object MaskEditorForm: TMaskEditorForm
   object HelpButton: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.OnChange = nil
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Help'
     TabOrder = 4
     Left = 423
@@ -98,7 +98,7 @@ object MaskEditorForm: TMaskEditorForm
   object LoadSampleMasksButton: TButton
     Anchors = [akLeft, akBottom]
     BorderSpacing.OnChange = nil
-    BorderSpacing.InnerBorder = 2
+    
     Caption = '&Masks...'
     OnClick = LoadSampleMasksButtonClick
     TabOrder = 5

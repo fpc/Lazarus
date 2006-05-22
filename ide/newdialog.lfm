@@ -56,7 +56,7 @@ object NewOtherDialog: TNewOtherDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
@@ -69,7 +69,7 @@ object NewOtherDialog: TNewOtherDialog
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OkButton'
     Enabled = False
     OnClick = OkButtonClick

@@ -12,7 +12,7 @@ object Form1: TForm1
   Top = 247
   Width = 400
   object Button1: TButton
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Click to load a chm'
     OnClick = Button1Click
     TabOrder = 0

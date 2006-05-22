@@ -1,5 +1,3 @@
-{ To jest automatycznie wygenerowany plik zasobów lazarusa }
-
 LazarusResources.Add('TActionListEditor','FORMDATA',[
   'TPF0'#17'TActionListEditor'#16'ActionListEditor'#7'Caption'#6#16'ActionListE'
   +'ditor'#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#10'KeyPreview'#9#7'O'

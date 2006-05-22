@@ -17,7 +17,7 @@ object CharacterMapDialog: TCharacterMapDialog
   object CloseButton: TButton
     Anchors = [akBottom]
     BorderSpacing.Around = 6
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Close'
     Default = True

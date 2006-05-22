@@ -41,7 +41,7 @@ object AboutForm: TAboutForm
   end
   object Button1: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = '&Close'
     Default = True

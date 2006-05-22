@@ -30,7 +30,7 @@ begin
   TabStop := true;
   // set default alignment
   Align := alNone;
-  BorderSpacing.InnerBorder:=2;
+  BorderSpacing.InnerBorder:=4;
   // setup default sizes
   SetInitialBounds(0,0,75,25);
 end;
@@ -283,6 +283,11 @@ function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs
   Result:=false;
+end;
+
+function TCustomButton.IsBorderSpacingInnerBorderStored: Boolean;
+begin
+  Result:=BorderSpacing.InnerBorder<>2;
 end;
 
 

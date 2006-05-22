@@ -332,7 +332,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontButton: TButton
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = EditorFontButtonClick
           TabOrder = 1
@@ -756,7 +756,7 @@ object EditorOptionsForm: TEditorOptionsForm
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'KeyMappingChooseSchemeButton'
         OnClick = KeyMappingChooseSchemeButtonClick
         TabOrder = 0
@@ -770,7 +770,7 @@ object EditorOptionsForm: TEditorOptionsForm
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'KeyMappingConsistencyCheckButton'
         OnClick = KeyMappingConsistencyCheckButtonClick
         TabOrder = 1
@@ -1241,7 +1241,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object SetAttributeToDefaultButton: TButton
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'SetAttributeToDefaultButton'
         OnClick = SetAttributeToDefaultButtonClick
         TabOrder = 5
@@ -1252,7 +1252,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object SetAllAttributesToDefaultButton: TButton
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.InnerBorder = 2
+        
         Caption = 'SetAllAttributesToDefaultButton'
         OnClick = SetAllAttributesToDefaultButtonClick
         TabOrder = 6
@@ -1496,7 +1496,7 @@ object EditorOptionsForm: TEditorOptionsForm
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'CancelButton'
     OnClick = CancelButtonClick
     TabOrder = 1
@@ -1507,7 +1507,7 @@ object EditorOptionsForm: TEditorOptionsForm
   end
   object OkButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 2

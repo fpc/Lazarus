@@ -78,7 +78,7 @@ object GUITestRunner: TGUITestRunner
     end
     object BtnRun: TBitBtn
       Action = RunAction
-      BorderSpacing.InnerBorder = 2
+      
       Glyph.Data = {
         1B0500002F2A2058504D202A2F0A7374617469632063686172202A2072756E5F
         78706D5B5D203D207B0A2232342032342033392031222C0A22200963204E6F6E
@@ -140,7 +140,7 @@ object GUITestRunner: TGUITestRunner
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 5
       BorderSpacing.Around = 5
-      BorderSpacing.InnerBorder = 2
+      
       Glyph.Data = {
         D60D00002F2A2058504D202A2F0A7374617469632063686172202A2065786974
         32345F78706D5B5D203D207B0A223234203234203134302032222C0A22202009

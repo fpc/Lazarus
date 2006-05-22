@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
   'TPF0'#23'TEncloseSelectionDialog'#22'EncloseSelectionDialog'#4'Left'#3#150#1
   +#6'Height'#3#244#0#3'Top'#3'4'#1#5'Width'#3#171#1#18'HorzScrollBar.Page'#3
@@ -8,18 +6,17 @@ LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
   +#1#8'OnCreate'#7#28'EncloseSelectionDialogCREATE'#8'OnResize'#7#28'EncloseSe'
   +'lectionDialogResize'#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScreenCenter'
   +#0#7'TButton'#8'OkButton'#4'Left'#2'X'#6'Height'#2#25#3'Top'#3#208#0#5'Width'
-  +#2'k'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#2
-  +#7'Caption'#6#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'T'
-  +'Button'#12'CancelButton'#4'Left'#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Wi'
-  +'dth'#2'h'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorde'
-  +'r'#2#2#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2
-  +#2#0#0#11'TRadioGroup'#14'TypeRadiogroup'#4'Left'#2#8#6'Height'#3#189#0#3'To'
-  +'p'#2#8#5'Width'#3#153#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBot'
-  +'tom'#0#8'AutoFill'#9#7'Caption'#6#4'Type'#28'ChildSizing.LeftRightSpacing'#2
-  +#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizontal'#7
-  +#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'crsHomoge'
-  +'nousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChilds'#26'C'
-  +'hildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layout'#7#29
-  +'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#8'TabOrd'
-  +'er'#2#0#0#0#0
+  +#2'k'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#2'Ok'#7'Default'#9
+  +#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#12'CancelButton'#4'Left'
+  +#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'h'#7'Anchors'#11#6'akLeft'
+  +#8'akBottom'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabO'
+  +'rder'#2#2#0#0#11'TRadioGroup'#14'TypeRadiogroup'#4'Left'#2#8#6'Height'#3#189
+  +#0#3'Top'#2#8#5'Width'#3#153#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
+  +'akBottom'#0#8'AutoFill'#9#7'Caption'#6#4'Type'#28'ChildSizing.LeftRightSpac'
+  +'ing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.EnlargeHorizon'
+  +'tal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7#24'cr'
+  +'sHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScaleChild'
+  +'s'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.Layou'
+  +'t'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'#2#1#8
+  +'TabOrder'#2#0#0#0#0
 ]);

@@ -43,7 +43,7 @@ object AboutForm: TAboutForm
   end
   object CloseButton: TBitBtn
     AutoSize = True
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'Close'
     Glyph.Data = {

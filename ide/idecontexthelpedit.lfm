@@ -36,7 +36,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     end
     object CreateHelpNodeForControlButton: TButton
       Align = alBottom
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'CreateHelpNodeForControlButton'
       OnClick = CreateHelpNodeForControlButtonClick
       TabOrder = 1
@@ -46,7 +46,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     end
     object TestButton: TButton
       Align = alBottom
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'TestButton'
       OnClick = TestButtonClick
       TabOrder = 2
@@ -152,7 +152,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Align = alRight
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'CancelBitBtn'
       ModalResult = 2
       NumGlyphs = 0
@@ -167,7 +167,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 15
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 2
+      
       Caption = 'OkBitBtn'
       Default = True
       ModalResult = 1

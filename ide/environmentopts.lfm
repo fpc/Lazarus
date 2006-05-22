@@ -112,7 +112,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 3
           Width = 20
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -145,7 +145,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 2
           Width = 20
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -178,7 +178,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 3
           Width = 20
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -211,7 +211,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 3
           Width = 20
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = FilesButtonClick
           TabOrder = 1
@@ -244,7 +244,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 2
           Width = 20
           Anchors = [akTop, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = DirectoriesButtonClick
           TabOrder = 1
@@ -368,7 +368,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 8
           Width = 484
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'SaveDesktopSettingsToFileButton'
           OnClick = SaveDesktopSettingsToFileButtonClick
           TabOrder = 0
@@ -379,7 +379,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 43
           Width = 484
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'LoadDesktopSettingsFromFileButton'
           OnClick = LoadDesktopSettingsFromFileButtonClick
           TabOrder = 1
@@ -1246,7 +1246,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 122
           Width = 136
           AutoSize = True
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'LazDocAddPathButton'
           OnClick = LazDocAddPathButtonClick
           TabOrder = 1
@@ -1260,7 +1260,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 149
           AutoSize = True
           BorderSpacing.Left = 10
-          BorderSpacing.InnerBorder = 2
+          
           Caption = 'LazDocDeletePathButton'
           OnClick = LazDocDeletePathButtonClick
           TabOrder = 2
@@ -1285,7 +1285,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Top = 156
           Width = 19
           BorderSpacing.Left = 6
-          BorderSpacing.InnerBorder = 2
+          
           Caption = '...'
           OnClick = LazDocBrowseButtonClick
           TabOrder = 4
@@ -1299,7 +1299,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Top = 485
     Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Cancel = True
     Caption = 'CancelButton'
     OnClick = CancelButtonClick
@@ -1311,7 +1311,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Top = 485
     Width = 75
     Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
+    
     Caption = 'Ok'
     Default = True
     OnClick = OkButtonClick
