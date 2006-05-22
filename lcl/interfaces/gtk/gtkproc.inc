@@ -6195,7 +6195,9 @@ begin
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
   if not WithThemeSpace then begin
-    // TODO
+    //DebugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ',dbgs(gtk_widget_get_ythickness(Widget)));
+    dec(PreferredWidth,2*gtk_widget_get_xthickness(Widget));
+    dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
   end;
   // set new size
   gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);

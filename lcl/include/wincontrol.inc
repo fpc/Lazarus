@@ -116,7 +116,10 @@ begin
   MaximumSize[asboHorizontal]:=Control.Constraints.EffectiveMaxWidth;
   MaximumSize[asboVertical]:=Control.Constraints.EffectiveMaxHeight;
   Control.GetPreferredSize(PreferredSize[asboHorizontal],
-                           PreferredSize[asboVertical]);
+                           PreferredSize[asboVertical],
+                           false, // with constraints
+                           false  // without them space
+                           );
   Control.BorderSpacing.GetSpaceAround(Border);
   BorderLeftTop[asboHorizontal]:=Border.Left;
   BorderLeftTop[asboVertical]:=Border.Top;
@@ -1860,7 +1863,7 @@ begin
 
     // autosize control to preferred size
     if (not WidthIsFixed) or (not HeightIsFixed) then begin
-      GetPreferredSize(PreferredWidth,PreferredHeight);
+      GetPreferredSize(PreferredWidth,PreferredHeight,false,false);
       //if ControlCount>0 then
       //  DebugLn('TWinControl.DoAutoSize ',DbgSName(Self),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
     end else begin
@@ -5714,7 +5717,7 @@ begin
       if a in FixatedAnchors then FixateSide(a);
 
     if AControl.AutoSize then
-      AControl.GetPreferredSize(ChildWidth,ChildHeight)
+      AControl.GetPreferredSize(ChildWidth,ChildHeight,false,false)
     else begin
       ChildWidth:=AControl.Width;
       ChildHeight:=AControl.Height;
