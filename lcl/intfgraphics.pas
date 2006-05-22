@@ -3097,10 +3097,9 @@ end;
 function TLazReaderBMP.ColorToTrans(const InColor: TFPColor): TFPColor;
 begin
   //DebugLn('TLazReaderBMP.ColorToTrans InColor=',dbgs(InColor),' FTransparentColor=',dbgs(FTransparentColor));
-  if (InColor <> FTransparentColor) then
-    Result := InColor
-  else
-    Result := FPImage.colTransparent;
+  Result := InColor;
+  if (InColor = FTransparentColor) then
+    Result.alpha := alphaTransparent;
 end;
 
 procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
