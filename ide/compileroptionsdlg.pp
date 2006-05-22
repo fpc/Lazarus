@@ -1390,9 +1390,7 @@ begin
     Width := 150;
     Caption := dlgCOUnitStyle;
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
-    ChildSizing.LeftRightSpacing:=6;
-    ChildSizing.TopBottomSpacing:=6;
-    ChildSizing.VerticalSpacing:=6;
+    ChildSizing.SetGridSpacing(6);
   end;
 
   chkSmartLinkUnit := TCheckBox.Create(Self);
@@ -1410,9 +1408,10 @@ begin
     Top := 5;
     Left := grpSmartLinkUnit.Left + grpSmartLinkUnit.Width + 10;
     Height := 80;
-    Width := 210;
+    Width := 220;
     Caption := dlgCOChecks;
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+    ChildSizing.SetGridSpacing(6);
     ChildSizing.ControlsPerLine:=2;
   end;
 
@@ -1456,6 +1455,7 @@ begin
     Width := 100;
     Caption := dlgHeapSize +' (-Ch):';
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
+    ChildSizing.SetGridSpacing(6);
   end;
 
   edtHeapSize := TEdit.Create(grpHeapSize);
@@ -1478,6 +1478,7 @@ begin
     Width := 150;
     Caption := dlgCOGenerate;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+    ChildSizing.SetGridSpacing(6);
   end;
 
   radGenNormal := TRadioButton.Create(grpGenerate);
@@ -1621,6 +1622,7 @@ begin
     Width := 360;
     Caption := dlgOptimiz;
     ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+    ChildSizing.SetGridSpacing(6);
     AutoSize:=true;
   end;
 

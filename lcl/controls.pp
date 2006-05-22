@@ -1377,6 +1377,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Sizing: TControlChildSizing): boolean;
+    procedure SetGridSpacing(Spacing: integer);
   public
     property Control: TWinControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2819,6 +2820,14 @@ begin
       and (FShrinkVertical=Sizing.ShrinkVertical)
       and (FControlsPerLine=Sizing.ControlsPerLine)
       and (FLayout=Sizing.Layout);
+end;
+
+procedure TControlChildSizing.SetGridSpacing(Spacing: integer);
+begin
+  LeftRightSpacing:=Spacing;
+  TopBottomSpacing:=Spacing;
+  HorizontalSpacing:=Spacing;
+  VerticalSpacing:=Spacing;
 end;
 
 procedure TControlChildSizing.Change;
