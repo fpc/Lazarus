@@ -145,7 +145,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    function Add(Image, Mask: TBitmap): Integer; // currently AddDirect
+    function Add(Image, Mask: TBitmap): Integer; // using AddCopy for Delphi compatibility
     function AddDirect(Image, Mask: TBitmap): Integer;
     function AddCopy(SrcImage, SrcMask: TBitmap): Integer;
     function AddIcon(Image: TIcon): Integer;

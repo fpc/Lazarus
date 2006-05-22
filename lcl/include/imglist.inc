@@ -52,14 +52,16 @@ end;
   Function: TCustomImageList.Add
   Params:   Image: a bitmap image
             Mask: a bitmap which defines the transparent parts of Image
-  Returns:  The index of the added image, -1 if unsuccesfull.
+  Returns:  The index of the added image, -1 if unsuccesful.
 
   Adds one or more (bitmap width / imagelist width) bitmaps to the list.
   If Mask is nil, the image has no transparent parts.
+
+  The image is copied. To add it directly use AddDirect.
  ------------------------------------------------------------------------------}
 function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
 begin
-  Result:=AddDirect(Image,Mask);
+  Result:=AddCopy(Image,Mask);
 end;
 
 function TCustomImageList.AddDirect(Image, Mask: TBitmap): Integer;
