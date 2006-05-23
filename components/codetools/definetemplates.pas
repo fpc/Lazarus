@@ -3559,11 +3559,11 @@ begin
   // clear src path
   MainDir.AddChild(TDefineTemplate.Create('Clear SrcPath','Clear SrcPath',
     ExternalMacroStart+'SrcPath','',da_DefineRecurse));
-  // if TargetOS<>win32
-  IfTemplate:=TDefineTemplate.Create('IF '''+TargetOS+'''<>''win32''',
-    ctsIfTargetOSIsNotWin32,'',''''+TargetOS+'''<>''win32''',da_If);
+  // if SrcOS<>win
+  IfTemplate:=TDefineTemplate.Create('IF '''+SrcOS+'''<>''win''',
+    ctsIfTargetOSIsNotWin32,'',''''+SrcOS+'''<>''win''',da_If);
     // then define #SrcPath := #SrcPath;lcl/nonwin32
-    IfTemplate.AddChild(TDefineTemplate.Create('win32api for non win32',
+    IfTemplate.AddChild(TDefineTemplate.Create('win32api for non win',
       Format(ctsAddsDirToSourcePath,[d(LazarusSrcDir+'/lcl/nonwin32')]),
       ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl/nonwin32;')+SrcPath,da_DefineRecurse));
