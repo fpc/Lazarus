@@ -10273,7 +10273,6 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   AFilename: string;
   UnitLinksChanged: boolean;
   TargetOS, TargetProcessor: string;
-  CompilerParameters: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
 
@@ -10321,15 +10320,16 @@ begin
     // start the compiler and ask for his settings
     TargetOS:='';
     TargetProcessor:='';
-    GetFPCCompilerParamsForEnvironmentTest(CompilerParameters);
-    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
-                       CompilerParameters,
+    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
+    CurDefinesCompilerOptions:='';
+    GetFPCCompilerParamsForEnvironmentTest(CurDefinesCompilerOptions);
+    //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
+    ADefTempl:=CreateFPCTemplate(CurDefinesCompilerFilename,
+                       CurDefinesCompilerOptions,
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
-    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    CurDefinesCompilerOptions:='';
 
     // create compiler macros to simulate the Makefiles of the FPC sources
     InputHistories.FPCConfigCache.CompilerPath:=
@@ -10423,7 +10423,7 @@ begin
   and (CurDefinesCompilerOptions=CurOptions) then
     exit;
   {$IFDEF VerboseFPCSrcScan}
-  debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
+  debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates CurOptions="',CurOptions,'"');
   {$ENDIF}
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
