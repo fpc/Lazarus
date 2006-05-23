@@ -1396,7 +1396,7 @@ begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
       end else if UpAtomIs('EXTERNAL') or UpAtomIs('PUBLIC') then begin
-        HasForwardModifier:=true;
+        HasForwardModifier:=UpAtomIs('EXTERNAL');
         ReadNextAtom;
         if CurPos.Flag<>cafSemicolon then begin
           if not UpAtomIs('NAME') then

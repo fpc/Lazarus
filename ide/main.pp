@@ -759,6 +759,7 @@ type
     // methods for codetools
     procedure InitCodeToolBoss;
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
+    procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
@@ -10272,6 +10273,7 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   AFilename: string;
   UnitLinksChanged: boolean;
   TargetOS, TargetProcessor: string;
+  CompilerParameters: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
 
@@ -10319,7 +10321,9 @@ begin
     // start the compiler and ask for his settings
     TargetOS:='';
     TargetProcessor:='';
-    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,'',
+    GetFPCCompilerParamsForEnvironmentTest(CompilerParameters);
+    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
+                       CompilerParameters,
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
@@ -10399,16 +10403,8 @@ var
   TargetOS, TargetProcessor: string;
   UnitLinksValid: boolean;
   i: Integer;
-  CurTargetOS: String;
-  CurTargetCPU: String;
 begin
-  CurOptions:='';
-  CurTargetOS:=GetTargetOS(false);
-  if CurTargetOS<>'' then
-    CurOptions:=AddCmdLineParameter(CurOptions,'-T'+CurTargetOS);
-  CurTargetCPU:=GetTargetCPU(false);
-  if CurTargetCPU<>'' then
-    CurOptions:=AddCmdLineParameter(CurOptions,'-P'+CurTargetCPU);
+  GetFPCCompilerParamsForEnvironmentTest(CurOptions);
   {$IFDEF VerboseFPCSrcScan}
   writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
@@ -10427,12 +10423,13 @@ begin
   and (CurDefinesCompilerOptions=CurOptions) then
     exit;
   {$IFDEF VerboseFPCSrcScan}
-  writeln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
+  debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
   {$ENDIF}
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
                     CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                     TargetOS,TargetProcessor,CodeToolsOpts);
+  //DebugLn('TMainIDE.RescanCompilerDefines CompilerUnitSearchPath="',CompilerUnitSearchPath,'"');
 
   if CompilerTemplate<>nil then begin
     CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
@@ -10444,22 +10441,24 @@ begin
       i:=InputHistories.FPCConfigCache.FindItem(CurOptions);
       if i<0 then begin
         UnitLinksValid:=false;
-      end else begin
-        if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
-          EnvironmentOptions.FPCSourceDirectory)<>0 then
-        begin
-          UnitLinksValid:=false;
-        end;
-      end;
+      end
+      else if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
+          EnvironmentOptions.FPCSourceDirectory)<>0
+      then
+        UnitLinksValid:=false;
     end;
     {$IFDEF VerboseFPCSrcScan}
-    writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    debugln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
     {$ENDIF}
 
     // create compiler macros to simulate the Makefiles of the FPC sources
     CompilerUnitLinks:='';
     if UnitLinksValid then
       CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
+    if System.Pos('system ',CompilerUnitLinks)<1 then begin
+      UnitLinksValid:=false;
+    end;
+
     FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
       CompilerUnitSearchPath,
@@ -10467,8 +10466,15 @@ begin
       TargetOS,TargetProcessor,
       UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
     {$IFDEF VerboseFPCSrcScan}
-    writeln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
+    debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     {$ENDIF}
+    if System.Pos('system ',CompilerUnitLinks)<1 then begin
+      MessageDlg('Error',
+        'The system.ppu was not found in the FPC directories. '
+        +'Make sure fpc is installed correctly and the fpc.cfg points to the right directory.',
+        mtError,[mbOk],0);
+    end;
+      
     if FPCSrcTemplate<>nil then begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                            FPCSrcTemplate.Name);
@@ -10489,6 +10495,20 @@ begin
     MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
       mtError,[mbOk],0);
   end;
+end;
+
+procedure TMainIDE.GetFPCCompilerParamsForEnvironmentTest(out Params: string);
+var
+  CurTargetOS: string;
+  CurTargetCPU: string;
+begin
+  Params:='';
+  CurTargetOS:=GetTargetOS(false);
+  if CurTargetOS<>'' then
+    Params:=AddCmdLineParameter(Params,'-T'+CurTargetOS);
+  CurTargetCPU:=GetTargetCPU(false);
+  if CurTargetCPU<>'' then
+    Params:=AddCmdLineParameter(Params,'-P'+CurTargetCPU);
 end;
 
 procedure TMainIDE.UpdateEnglishErrorMsgFilename;

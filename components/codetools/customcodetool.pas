@@ -1613,13 +1613,16 @@ begin
       UpperSrc:=UpperCaseStr(Src);
       SrcLen:=length(Src);
       FForceUpdateNeeded:=true;
-      if DeleteNodes then DoDeleteNodes;
       DirtySrc.Free;
       DirtySrc:=nil;
     end else begin
       if LastErrorPhase=CodeToolPhaseScan then
         RaiseLastError;
     end;
+    
+    // delete nodes
+    if DeleteNodes then DoDeleteNodes;
+
     // init parsing values
     CurPos:=StartAtomPosition;
     LastAtoms.Clear;

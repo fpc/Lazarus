@@ -412,7 +412,7 @@ type
     // FPC templates
     function CreateFPCTemplate(const CompilerPath, CompilerOptions,
                                TestPascalFile: string;
-                               var UnitSearchPath, TargetOS,
+                               out UnitSearchPath, TargetOS,
                                TargetProcessor: string;
                                Owner: TObject): TDefineTemplate;
     function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
@@ -2619,7 +2619,7 @@ end;
 
 function TDefinePool.CreateFPCTemplate(
   const CompilerPath, CompilerOptions, TestPascalFile: string;
-  var UnitSearchPath, TargetOS, TargetProcessor: string;
+  out UnitSearchPath, TargetOS, TargetProcessor: string;
   Owner: TObject): TDefineTemplate;
 // create symbol definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
@@ -2780,7 +2780,7 @@ begin
       //DebugLn('TDefinePool.CreateFPCTemplate OutputLine="',OutputLine,'"');
       TheProcess.Free;
     end;
-    //DebugLn('TDefinePool.CreateFPCTemplate First done');
+    //DebugLn('TDefinePool.CreateFPCTemplate First done UnitSearchPath="',UnitSearchPath,'"');
 
     // ask for target operating system -> ask compiler with switch -iTO
     CmdLine:=CompilerPath;
@@ -3205,6 +3205,7 @@ var
     if CurMask[1]<>'.' then
       CurMask:='.'+CurMask;
     CurMask:='*'+CurMask;
+    //DebugLn('FindStandardPPUSources UnitSearchPath="',UnitSearchPath,'"');
     while PathStart<=length(UnitSearchPath) do begin
       while (PathStart<=length(UnitSearchPath))
       and (UnitSearchPath[PathStart]=#13) do
