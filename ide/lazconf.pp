@@ -196,7 +196,7 @@ function GetExecutableExt(TargetOS: string): string;
 begin
   if TargetOS='' then
     TargetOS:=GetDefaultTargetOS;
-  if CompareText(TargetOS, 'win32') = 0 then
+  if CompareText(copy(TargetOS,1,3), 'win') = 0 then
      Result:='.exe'
   else
      Result:='';
@@ -206,7 +206,7 @@ function GetLibraryExt(TargetOS: string): string;
 begin
   if TargetOS='' then
     TargetOS:=GetDefaultTargetOS;
-  if CompareText(TargetOS, 'win32') = 0 then
+  if CompareText(copy(TargetOS,1,3), 'win') = 0 then
      Result:='.dll'
   else if CompareText(TargetOS, 'darwin') = 0 then
      Result:='.dylib'
