@@ -6005,10 +6005,19 @@ begin
   Image := gdk_drawable_get_image(aDC.Drawable,X,Y,1,1);
   if Image = nil then exit;
 
+  {$ifdef Gtk1}
+  // previously gdk_image_get_colormap(image) was used, implementation
+  // was casting GdkImage to GdkWindow which is not valid and cause AVs
+  if gdk_window_get_type(PGdkWindow(aDC.Drawable))= GDK_WINDOW_PIXMAP then
+    colormap := nil // pixmaps are created with null colormap, get system one instead
+  else
+    colormap := gdk_window_get_colormap(PGdkWindow(aDC.Drawable));
+  {$else}
   colormap := gdk_image_get_colormap(image);
-
   if colormap = nil then
     colormap := gdk_drawable_get_colormap(aDC.Drawable);
+  {$endif}
+
 
   if colormap = nil then
     colormap := gdk_colormap_get_system;

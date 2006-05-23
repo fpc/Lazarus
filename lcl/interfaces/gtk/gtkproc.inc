@@ -266,11 +266,6 @@ begin
   gdk_window_unref(PGdkWindow(Image));
 end;
 
-Function gdk_image_get_colormap(Image : PGDKImage) : PGdkColormap;
-begin
-  result := gdk_window_get_colormap(PGdkWindow(Image));
-end;
-
 Procedure gdk_colormap_query_color(colormap : PGDKColormap; Pixel : gulong; Result : PGDKColor);
 var
   GdkColorContext: PGdkColorContext;

@@ -836,7 +836,6 @@ function gtk_widget_get_ythickness(Style: PGTKWidget): gint; overload;
 
   //routines to mimic similar GDK2 routines/behaviour-->
   procedure gdk_image_unref(Image: PGdkImage);
-  Function gdk_image_get_colormap(Image: PGDKImage): PGdkColormap;
   Procedure gdk_colormap_query_color(colormap: PGDKColormap; Pixel: gulong;
                                      Result: PGDKColor);
 
