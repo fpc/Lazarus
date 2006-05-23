@@ -437,6 +437,12 @@ type
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
   end;
 
+  TGridPropertyBackup=record
+    ValidData: boolean;
+    FixedRowCount: Integer;
+    FixedColCount: Integer;
+  end;
+
   { TGridColumns }
 
   TGridColumns = class(TCollection)
@@ -560,6 +566,7 @@ type
     FPrevValue: Integer;
     FGridBorderStyle: TBorderStyle;
     FGridFlags: TGridFlags;
+    FGridPropBackup: TGridPropertyBackup;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -1819,8 +1826,11 @@ begin
     if (OldValue=0)and(NewValue>=0) then begin
       FTopLeft.X:=FFixedCols;
       if RowCount=0 then begin
-        FFixedRows:=0;
-        FTopLeft.Y:=0;
+        if Columns.Enabled then
+          FFixedRows := 1
+        else
+          FFixedRows := 0;
+        FTopLeft.Y:=FFixedRows;
         //DebugLn('TCustomGrid.AdjustCount A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
         AddDel(FRows, 1);
         FGCache.AccumHeight.Count:=1;
@@ -1863,6 +1873,22 @@ begin
   if AValue<1 then
     clear
   else begin
+    if (OldR=0) and Columns.Enabled then begin
+      // there are custom columns, setup first enough columns
+      if FGridPropBackup.ValidData then begin
+        // Take in count previus fixed columns too.
+        // This value will be used in ColumnsChanged get
+        // the right number of columns to setup
+        //
+        FFixedCols := FGridPropBackup.FixedColCount;
+        FGridPropBackup.ValidData:=False;
+      end;
+      // setup custom columns
+      Self.ColumnsChanged(nil);
+      // still need to adjust rowcount?
+      if AValue=FRows.Count then
+        exit;
+    end;
     CheckFixedCount(ColCount, AValue, FFixedCols, FFixedRows);
     CheckCount(ColCount, AValue);
     AdjustCount(False, OldR, AValue);
@@ -5901,6 +5927,12 @@ procedure TCustomGrid.Clear;
 var
   OldR,OldC: Integer;
 begin
+  // save some properties
+  FGridPropBackup.ValidData := True;
+  FGridPropBackup.FixedRowCount := FFixedRows;
+  FGridPropBackup.FixedColCount := FFixedCols;
+  
+  // clear structure
   OldR:=RowCount;
   OldC:=ColCount;
   FFixedCols:=0;
