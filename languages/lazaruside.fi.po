@@ -3198,6 +3198,10 @@ msgstr "Jätä välilyönnit huomiotta"
 msgid "Ignore amount of space chars"
 msgstr "Jätä huomiotta välilyöntien määrä merkkien välissä "
 
+#: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
+msgid "Ignore and save package now"
+msgstr ""
+
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
 msgstr ""
@@ -4842,6 +4846,10 @@ msgstr ""
 msgid "Open recent package"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenthefileasnormalsource
+msgid "Open the file as normal source"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
 msgstr ""
@@ -4994,8 +5002,16 @@ msgstr ""
 msgid "Package conflicts"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangpackagefilemissing
+msgid "Package file missing"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
@@ -7082,6 +7098,10 @@ msgstr "Kansio %s%s%s ei vielä ole käännösyksikön polussa.%sLisätäänkö 
 msgid "The directory \""
 msgstr ""
 
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
+msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgstr ""
+
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr ""
@@ -7114,13 +7134,17 @@ msgstr ""
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangthefileofpackageismissing
+msgid "The file %s%s%s%sof package %s is missing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
+msgid "The file %s%s%s%sof package %s needs to be saved first."
+msgstr ""
+
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Tiedosto %s%s%s%s näyttää olevan Pascal-ohjelma. Suljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\"-näppäin avaa sen vain lähdekoodina."
-
-#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
-msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr "Tiedosto %s%s%s%s näyttää olevan Lazarus-ohjelma.%sOk avaan sen normaalin Lazarus-projektin tavoin?%sPeru-näppäin avaa sen vain lähdekoodina."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"

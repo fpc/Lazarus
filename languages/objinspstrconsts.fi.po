@@ -120,7 +120,7 @@ msgstr "Toimintolistan muokkain"
 
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
-msgstr ""
+msgstr "Lisää"
 
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
@@ -132,11 +132,11 @@ msgstr "Lisää uusi kohta"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr "Lisää välilehti"
+msgstr "Lisää Page-välilehti"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Lisää Tab-välilehti"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -232,7 +232,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "Komponentin nimeksi ei käy %s%s%s (katso kohta Name) koska se ei ole sallittu tunniste"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -248,7 +248,7 @@ msgstr "Kopioi"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr ""
+msgstr "Luo uusi käännösyksikkö (unit)."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -312,15 +312,15 @@ msgstr ""
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr "Poista välilehti"
+msgstr "Poista Page-välilehti"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Poista Tab-välilehti"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr ""
+msgstr "Poistetaanko Item %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -332,7 +332,7 @@ msgstr "Alas"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
-msgstr ""
+msgstr "Alas"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -348,7 +348,7 @@ msgstr ""
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
-msgstr ""
+msgstr "Muokkaa StringGrid:ä..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
@@ -360,7 +360,7 @@ msgstr "Muokkaa toimintolistaa"
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
-msgstr ""
+msgstr "Muokkaa"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -440,11 +440,11 @@ msgstr ""
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr "Lisää välilehti eteen"
+msgstr "Lisää Page-välilehti eteen"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Lisää Tab-välilehti eteen"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -476,7 +476,7 @@ msgstr ""
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
-msgstr ""
+msgstr "Hyppää määrittelyyn"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -524,19 +524,19 @@ msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr "Siirrä välilehteä vasemmalle"
+msgstr "Siirrä Page-välilehteä vasemmalle"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr "Siirrä välilehteä oikealle"
+msgstr "Siirrä Page-välilehteä oikealle"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Siirrä Tab-välilehteä vasemmalle"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Siirrä Tab-välilehteä oikealle"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -600,7 +600,7 @@ msgstr "Liitä"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
-msgstr ""
+msgstr "Hiiren napsautus merkkaa(/vapauttaa) kyseisen kohdan"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
@@ -752,7 +752,7 @@ msgstr "Maskin testauspaikka"
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
-msgstr ""
+msgstr "Testaa dialogia ..."
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
@@ -784,7 +784,7 @@ msgstr ""
 
 #: objinspstrconsts:oicoleditup
 msgid "Up"
-msgstr ""
+msgstr "Ylös"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"

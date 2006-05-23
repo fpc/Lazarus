@@ -674,6 +674,10 @@ msgstr "No exiteix la trajectòria \"%s\"."
 msgid "There is no viewer for help type %s%s%s"
 msgstr ""
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "No es pot carregar la font predeterminada"

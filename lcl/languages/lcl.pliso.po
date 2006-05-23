@@ -685,6 +685,10 @@ msgstr "¦cie¿ka \"%s\" nie istnieje."
 msgid "There is no viewer for help type %s%s%s"
 msgstr ""
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "Nie mo¿na za³adowaæ domy¶lnej czcionki"

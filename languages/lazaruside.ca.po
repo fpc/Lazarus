@@ -3198,6 +3198,10 @@ msgstr "Ignora l'espai"
 msgid "Ignore amount of space chars"
 msgstr "Ignora la quantitat d'espais"
 
+#: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
+msgid "Ignore and save package now"
+msgstr ""
+
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
 msgstr ""
@@ -4842,6 +4846,10 @@ msgstr ""
 msgid "Open recent package"
 msgstr "Obre el paquet recent"
 
+#: lazarusidestrconsts:lisopenthefileasnormalsource
+msgid "Open the file as normal source"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
 msgstr ""
@@ -4994,9 +5002,17 @@ msgstr "Marca del directori font del paquet"
 msgid "Package conflicts"
 msgstr "Conflicte de paquets"
 
+#: lazarusidestrconsts:lispkgmangpackagefilemissing
+msgid "Package file missing"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
 msgstr "No s'ha trobat el fitxer del paquet"
+
+#: lazarusidestrconsts:lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -7082,6 +7098,10 @@ msgstr ""
 msgid "The directory \""
 msgstr "El directori \""
 
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
+msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgstr ""
+
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "El fitxer %s%s%s"
@@ -7114,13 +7134,17 @@ msgstr "El fitxer %s%s%s%sja és al paquet %s."
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr "El fitxer %s%s%s%sja no és a la trajectòria d'unitats del paquet.%s%sVoleu afegir %s%s%s a la trajectòria de les unitats? "
 
+#: lazarusidestrconsts:lispkgmangthefileofpackageismissing
+msgid "The file %s%s%s%sof package %s is missing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
+msgid "The file %s%s%s%sof package %s needs to be saved first."
+msgstr ""
+
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "El fitxer %s%s%s%ssembla ser un programa. voleu tancar el projecte actual i crear un nou projecte Lazarus per aquest programa?%s\"No\" carregarà el fitxer com un codi font normal."
-
-#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
-msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr "El fitxer %s%s%s%ssembla ser un fitxer de programa d'un projecte Lazarus que ja existeix.%sVoleu obrir el projecte?%sCancel·la carregarà el fitxer com un codi font normal."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"

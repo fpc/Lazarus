@@ -734,6 +734,10 @@ msgstr ""
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr ""
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
 msgstr ""

@@ -684,6 +684,10 @@ msgstr "No existe la ruta \"%s\""
 msgid "There is no viewer for help type %s%s%s"
 msgstr ""
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "No se ha podido cargar la fuente por defecto"

@@ -3212,6 +3212,10 @@ msgstr "Leerzeichen übergehen"
 msgid "Ignore amount of space chars"
 msgstr "Ignoriere Zahl der Leerzeichen"
 
+#: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
+msgid "Ignore and save package now"
+msgstr ""
+
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
 msgstr "Ignoriere Binärdateien"
@@ -4856,6 +4860,10 @@ msgstr "Projekt erneut öffnen"
 msgid "Open recent package"
 msgstr "Letztes Paket wieder öffnen"
 
+#: lazarusidestrconsts:lisopenthefileasnormalsource
+msgid "Open the file as normal source"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
 msgstr "Package %s öffnen?"
@@ -5008,9 +5016,17 @@ msgstr "Paketquellenverzeichnismaske"
 msgid "Package conflicts"
 msgstr "Paketkonflikte"
 
+#: lazarusidestrconsts:lispkgmangpackagefilemissing
+msgid "Package file missing"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
 msgstr "Paketkonflikte"
+
+#: lazarusidestrconsts:lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -7096,6 +7112,10 @@ msgstr "Das Verzeichnic %s%s%s ist noch nicht im Unit-Pfad.%sAufnehmen?"
 msgid "The directory \""
 msgstr "Das Verzeichnis \""
 
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
+msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgstr ""
+
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "Die Datei %s%s%s"
@@ -7128,13 +7148,17 @@ msgstr "Die Datei %s%s%s%s befindet sich bereits im Paket %s."
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr "Die Datei %s%s%s%sbefindet sich aktuell nicht im Unitpfad des Pakets.%s%s. %s%s%s in den Unitpfad aufnehmen?"
 
+#: lazarusidestrconsts:lispkgmangthefileofpackageismissing
+msgid "The file %s%s%s%sof package %s is missing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
+msgid "The file %s%s%s%sof package %s needs to be saved first."
+msgstr ""
+
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Die Datei %s%s%s%sscheint ein Programm zu sein. Aktuelle Projekt schließen ein neues Lazarus-Projekt für dieses Programm erzeugen?%s'Nein' lädt die Datei als normalen Quelltext."
-
-#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
-msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr "Die Datei %s%s%s%sscheint die Programmdatei eines vorhandenen Lazarus-Projekt1 zu sein.%sProjekt öffnen?%s'Abbrechen' lädt die Datei als normalen Quelltext."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"

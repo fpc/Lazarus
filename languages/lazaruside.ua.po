@@ -3198,6 +3198,10 @@ msgstr "Ігнорувати пробіли"
 msgid "Ignore amount of space chars"
 msgstr "Ігнорувати кількість пробілів"
 
+#: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
+msgid "Ignore and save package now"
+msgstr ""
+
 #: lazarusidestrconsts:lisignorebinaries
 msgid "Ignore binaries"
 msgstr "Ігнорувати двійкові"
@@ -4842,6 +4846,10 @@ msgstr ""
 msgid "Open recent package"
 msgstr "Відкрити попередній пакунок"
 
+#: lazarusidestrconsts:lisopenthefileasnormalsource
+msgid "Open the file as normal source"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenthepackage
 msgid "Open the package %s?"
 msgstr ""
@@ -4994,9 +5002,17 @@ msgstr "Відмітити теку кодів пакунку"
 msgid "Package conflicts"
 msgstr "Конфлікти в пакунку"
 
+#: lazarusidestrconsts:lispkgmangpackagefilemissing
+msgid "Package file missing"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
 msgstr "Файл пакунку не знайдений"
+
+#: lazarusidestrconsts:lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -7082,6 +7098,10 @@ msgstr ""
 msgid "The directory \""
 msgstr "Тека \""
 
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
+msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgstr ""
+
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "Файл %s%s%s"
@@ -7114,13 +7134,17 @@ msgstr "Файл %s%s%s%sвже в пакунку %s."
 msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr "Файл %s%s%s%sзараз не знаходиться в списку шляхів модулів пакунку.%s%sДодати його туди?"
 
+#: lazarusidestrconsts:lispkgmangthefileofpackageismissing
+msgid "The file %s%s%s%sof package %s is missing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
+msgid "The file %s%s%s%sof package %s needs to be saved first."
+msgstr ""
+
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Файл %s%s%s%sсхожий на програму. Закрити поточний проект і створити новий проект lazarus для цієї програми?%s\"Ні\" відкриє файл як звичайний код."
-
-#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
-msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr "Файл %s%s%s%s схожий на вже існуючий файл Project1 програми lazarus.%sВідкрити проект?%sВідміна завантажить файл як звичайний код."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"

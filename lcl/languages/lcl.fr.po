@@ -683,6 +683,10 @@ msgstr "Le répertoire \"%s\" n'existe pas"
 msgid "There is no viewer for help type %s%s%s"
 msgstr ""
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "Impossible de charger la police par défaut"

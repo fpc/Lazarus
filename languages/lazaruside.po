@@ -170,6 +170,10 @@ msgstr ""
 msgid "Open project"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenthefileasnormalsource
+msgid "Open the file as normal source"
+msgstr ""
+
 #: lazarusidestrconsts:lisopenasxmlfile
 msgid "Open as XML file"
 msgstr ""
@@ -1146,12 +1150,12 @@ msgstr ""
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr ""
 
-#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
-msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr ""
-
 #: lazarusidestrconsts:lisprojectinfofiledetected
 msgid "Project info file detected"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarusp
+msgid "The file %s seems to be the program file of an existing lazarus Project."
 msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
@@ -7088,6 +7092,26 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangsavepackage2
 msgid "Save package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagefilemissing
+msgid "Package file missing"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageismissing
+msgid "The file %s%s%s%sof package %s is missing."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangpackagefilenotsaved
+msgid "Package file not saved"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefileofpackageneedstobesavedfirst
+msgid "The file %s%s%s%sof package %s needs to be saved first."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
+msgid "Ignore and save package now"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagechangedsave

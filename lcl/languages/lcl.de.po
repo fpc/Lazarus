@@ -685,6 +685,10 @@ msgstr "Der Pfad \"%s\" ist nicht vorhanden"
 msgid "There is no viewer for help type %s%s%s"
 msgstr "Es gibt keinen Viewer für den Hilfetyp %s%s%s"
 
+#: lclstrconsts:hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr ""
+
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "Kann Default-Schriftart nicht laden"
