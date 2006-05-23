@@ -66,7 +66,7 @@ function GetBlockMinIndent(const Source: string;
     StartPos, EndPos: integer): integer;
 function GetIndentStr(Indent: integer): string;
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
-    var NewSource: string);
+    out NewSource: string);
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -251,7 +251,7 @@ function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // code search
 function SearchCodeInSource(const Source, Find: string; StartPos:integer;
-   var EndFoundPosition: integer; CaseSensitive: boolean):integer;
+   out EndFoundPosition: integer; CaseSensitive: boolean):integer;
 function ReadNextPascalAtom(const Source: string;
    var Position, AtomStart: integer): string;
 procedure ReadRawNextPascalAtom(const Source: string;
@@ -884,7 +884,7 @@ begin
   repeat
     // find a good position to insert the component
     // in front of next section and in front of procedures/functions
-    Atom:=lowercase(ReadNextPascalAtom(Source.SOurce,Position,AtomStart));
+    Atom:=lowercase(ReadNextPascalAtom(Source.Source,Position,AtomStart));
     if (Atom='procedure') or (Atom='function') or (Atom='end') or (Atom='class')
     or (Atom='constructor') or (Atom='destructor')
     or (Atom='public') or (Atom='private') or (Atom='protected')
@@ -961,7 +961,7 @@ begin
 end;
 
 function SearchCodeInSource(const Source, Find: string; StartPos: integer;
-  var EndFoundPosition: integer; CaseSensitive: boolean):integer;
+  out EndFoundPosition: integer; CaseSensitive: boolean):integer;
 // search pascal atoms of Find in Source
 // returns the start pos
 var
@@ -2591,7 +2591,7 @@ begin
 end;
 
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
-  var NewSource: string);
+  out NewSource: string);
 
   function UnindentTxt(CopyChars: boolean): integer;
   var

@@ -9027,12 +9027,18 @@ begin
       while nInLine > 0 do begin
         nFound := fTSearch.Results[n];
         {$IFDEF SYN_LAZARUS}
-        nSearchLen := fTSearch.ResultLengths[n];
-        CurReplace := fTSearch.GetReplace(n);
-        nReplaceLen := Length(CurReplace);
-        {$ENDIF}
+        repeat
+          nSearchLen := fTSearch.ResultLengths[n];
+          CurReplace := fTSearch.GetReplace(n);
+          nReplaceLen := Length(CurReplace);
+          if bBackward then Dec(n) else Inc(n);
+          Dec(nInLine);
+        until (nInLine<0) or (nSearchLen>0);
+        if nInLine<0 then break;
+        {$ELSE}
         if bBackward then Dec(n) else Inc(n);
         Dec(nInLine);
+        {$ENDIF}
         // Is the search result entirely in the search range?
         if not InValidSearchRange(nFound, nFound + nSearchLen) then continue;
         Inc(Result);

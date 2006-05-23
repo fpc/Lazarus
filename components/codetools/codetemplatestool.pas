@@ -116,7 +116,7 @@ type
   public
     function InsertCodeTemplate(CursorPos,EndPos: TCodeXYPosition;
       TopLine: integer; CodeTemplate: TCodeToolTemplate;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer;
       SourceChangeCache: TSourceChangeCache): boolean;
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
       Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
@@ -128,7 +128,7 @@ implementation
 
 function TCodeTemplatesTool.InsertCodeTemplate(CursorPos,
   EndPos: TCodeXYPosition; TopLine: integer; CodeTemplate: TCodeToolTemplate;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   NewText: TMemoryStream;

@@ -204,8 +204,14 @@ begin
     i := Pred(fResults.Count);
     while i >= 0 do begin
       {$IFDEF SYN_LAZARUS}
-      if GetResult(i)>=First then
+      if GetResult(i)>=First then begin
         dec(TSynEditSearchResult(fResults[i]).Start,Delta);
+        if GetResult(i)<First then begin
+          // search result overlaps with deletion -> delete this result
+          TSynEditSearchResult(fResults[i]).Free;
+          fResults.Delete(i);
+        end;
+      end;
       {$ELSE}
       if GetResult(i) <= First then break;
       fResults[i] := pointer(integer(fResults[i]) - Delta);

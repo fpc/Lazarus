@@ -579,10 +579,10 @@ implementation
 
 function CompareCodeToolMainSources(Data1, Data2: Pointer): integer;
 var
-  Src1, Src2: PtrInt;
+  Src1, Src2: Pointer;
 begin
-  Src1:=PtrInt(TCustomCodeTool(Data1).Scanner.MainCode);
-  Src2:=PtrInt(TCustomCodeTool(Data2).Scanner.MainCode);
+  Src1:=TCustomCodeTool(Data1).Scanner.MainCode;
+  Src2:=TCustomCodeTool(Data2).Scanner.MainCode;
   if Src1<Src2 then
     Result:=-1
   else if Src1>Src2 then
@@ -3230,7 +3230,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.ChangeCreateFormStatement(-1,OldClassName,OldVarName,
-                    NewClassName,NewVarName,true,
+                    NewClassName,NewVarName,OnlyIfExists,
                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);

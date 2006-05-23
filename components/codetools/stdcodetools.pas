@@ -83,7 +83,7 @@ type
           const UpperUnitName: string;
           var NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const UpperUnitName: string;
-          var NamePos, InPos: TAtomPosition): boolean;
+          out NamePos, InPos: TAtomPosition): boolean;
     function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
@@ -140,7 +140,7 @@ type
     // Application.Createform statements
     function FindCreateFormStatement(StartPos: integer;
           const UpperClassName, UpperVarName: string;
-          var Position: TAtomPosition): integer; // 0=found, -1=not found, 1=found, but wrong classname
+          out Position: TAtomPosition): integer; // 0=found, -1=not found, 1=found, but wrong classname
     function AddCreateFormStatement(const AClassName, AVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveCreateFormStatement(const UpperVarName: string;
@@ -155,7 +155,7 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;    
           
     // Application.Title:=<string const> statements
-    function FindApplicationTitleStatement(var StartPos, StringConstStartPos,
+    function FindApplicationTitleStatement(out StartPos, StringConstStartPos,
           EndPos: integer): boolean;
     function GetApplicationTitleStatement(StringConstStartPos, EndPos: integer;
           var Title: string): boolean;
@@ -396,10 +396,12 @@ begin
 end;
 
 function TStandardCodeTool.FindUnitInAllUsesSections(
-  const UpperUnitName: string; var NamePos, InPos: TAtomPosition): boolean;
+  const UpperUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
 var SectionNode, UsesNode: TCodeTreeNode;
 begin
   Result:=false;
+  NamePos.StartPos:=-1;
+  InPos.StartPos:=-1;
   if (UpperUnitName='') or (length(UpperUnitName)>255) then exit;
   BuildTree(false);
   SectionNode:=Tree.Root;
@@ -2045,12 +2047,13 @@ end;
 
 function TStandardCodeTool.FindCreateFormStatement(StartPos: integer;
   const UpperClassName, UpperVarName: string;
-  var Position: TAtomPosition): integer;
+  out Position: TAtomPosition): integer;
 // 0=found, -1=not found, 1=found, but wrong classname
 var MainBeginNode: TCodeTreeNode;
   ClassNameFits: boolean;
 begin
   Result:=-1;
+  Position.StartPos:=-1;
   if (UpperClassName='') or (UpperVarName='') or (length(UpperClassName)>255)
   or (length(UpperVarName)>255) then exit;
   if StartPos<1 then begin
@@ -2290,7 +2293,7 @@ begin
   Result:= Result and SourceChangeCache.Apply;
 end;
 
-function TStandardCodeTool.FindApplicationTitleStatement(var StartPos,
+function TStandardCodeTool.FindApplicationTitleStatement(out StartPos,
   StringConstStartPos, EndPos: integer): boolean;
 var
   MainBeginNode: TCodeTreeNode;

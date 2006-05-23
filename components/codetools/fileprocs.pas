@@ -186,7 +186,7 @@ type
     function FindFile(const Filename: string;
                       CreateIfNotExists: boolean): TFileStateCacheItem;
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
-                   var AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
+                   out AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
     procedure WriteDebugReport;
     procedure AddChangeTimeStampHandler(const Handler: TNotifyEvent);
     procedure RemoveChangeTimeStampHandler(const Handler: TNotifyEvent);
@@ -1929,7 +1929,7 @@ end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=HexStr(PtrInt(p),2*sizeof(PtrInt));
+  Result:=HexStr(p-nil,2*sizeof(PtrInt));
 end;
 
 function DbgS(const e: extended): string;
@@ -2331,7 +2331,7 @@ begin
 end;
 
 function TFileStateCache.Check(const Filename: string;
-  AFlag: TFileStateCacheItemFlag; var AFile: TFileStateCacheItem;
+  AFlag: TFileStateCacheItemFlag; out AFile: TFileStateCacheItem;
   var FlagIsSet: boolean): boolean;
 begin
   AFile:=FindFile(Filename,true);
