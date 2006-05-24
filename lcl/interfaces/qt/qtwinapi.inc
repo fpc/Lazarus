@@ -215,9 +215,9 @@ begin
 
 //    lfOrientation: Longint;
 
-      QtFont.setItalic(lfItalic = -1);
-      QtFont.setUnderline(lfUnderline = -1);
-      QtFont.setStrikeOut(lfStrikeOut = -1);
+      QtFont.setItalic(lfItalic = High(Byte));
+      QtFont.setUnderline(lfUnderline = High(Byte));
+      QtFont.setStrikeOut(lfStrikeOut = High(Byte));
 
       FamilyName := StrPas(lfFaceName);
 
@@ -239,6 +239,8 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
+var
+  WideStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('WinAPI DrawText');
@@ -251,17 +253,13 @@ begin
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
     Result := 30;
-  end
-  else
-  begin
-    Result := 40;
+    Exit;
   end;
 
-//  else
-//    TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
-//    Result := 30;
-//  end;
-  
+  WideStr := WideString(Str);
+
+  TQtDeviceContext(DC).drawText(Rect.Left, Rect.Top, @WideStr);
+
 //  if Rect.Right = 40 then raise Exception.create('Error');
 end;
 
@@ -348,10 +346,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('WinAPI GetBitmapRawImageDescription');
   {$endif}
-  Result:=false;
-{  Result := Windows.GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-  if Result then
-    FillRawImageDescription(BitmapInfo, Desc);}
+  Result := true;
+
+  FillStandardDescription(Desc^);
 end;
 
 {------------------------------------------------------------------------------
@@ -444,23 +441,7 @@ begin
   {$endif}
   Result := true;
 
-  FillChar(Desc^, SizeOf(Desc^), 0);
-  Desc^.Format := ricfRGBA;
-  Desc^.HasPalette := False;
-  Desc^.Depth := 32;
-  // Width and Height not relevant
-  Desc^.PaletteColorCount := 0;
-  Desc^.BitOrder := riboReversedBits;
-  Desc^.ByteOrder := riboLSBFirst;
-  Desc^.LineOrder := riloTopToBottom;
-  Desc^.ColorCount := Desc^.PaletteColorCount;
-  Desc^.BitsPerPixel := 32;
-  Desc^.LineEnd := rileDWordBoundary;
-//  FillRawImageDescriptionColors(Desc);
-  Desc^.AlphaPrec := 1;
-  Desc^.AlphaSeparate := False;
-  // CreateBitmap winapi call wants word-aligned data
-  Desc^.AlphaShift := 0;
+  FillStandardDescription(Desc^);
 end;
 
 {------------------------------------------------------------------------------
@@ -517,45 +498,53 @@ end;
   Params:  none
   Returns: The handle of the window with focus
 
-  The GetFocus function retrieves the handle of the window that has the focus.
+  Creates a raw image from a bitmap
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-{var
-  BitmapInfo: Windows.TBitmap;
-  ARect: TRect;}
+var
+  Image: QImageH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('WinAPI GetRawImageFromBitmap');
   {$endif}
-  Result:=false;
-{  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
-  Result := Windows.GetObject(SrcBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-  if not Result then exit;
+  Result := false;
+  
+  Image := QImageH(SrcBitmap);
+  
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
 
-  FillRawImageDescription(BitmapInfo, @NewRawImage.Description);
-  ARect := SrcRect;
-  if ARect.Top > BitmapInfo.bmHeight then
-    ARect.Top := BitmapInfo.bmHeight;
-  if ARect.Bottom > BitmapInfo.bmHeight then
-    ARect.Bottom := BitmapInfo.bmHeight;
-  if ARect.Left > BitmapInfo.bmWidth then
-    ARect.Left := BitmapInfo.bmWidth;
-  if ARect.Right > BitmapInfo.bmWidth then
-    ARect.Right := BitmapInfo.bmWidth;
+  FillStandardDescription(NewRawImage.Description);
+  
+  {
+    For now the image is simply enterely copyed and SrcRect is ignored.
+    
+    In the future this will need to change
+  }
+{  NewRawImage.Description.Width := SrcRect.Right - SrcRect.Left;
+  NewRawImage.Description.Height := SrcRect.Bottom - SrcRect.Top;
 
-  // copy bitmap
-  AllocAndCopy(BitmapInfo, SrcBitmap, ARect, NewRawImage.Data, NewRawImage.DataSize);
-
-  // check mask
-  if SrcMaskBitmap <> 0 then
-  begin
-    Result := Windows.GetObject(SrcMaskBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
-    if not Result then exit;
-
-    AllocAndCopy(BitmapInfo, SrcMaskBitmap, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
-    NewRawImage.Description.AlphaSeparate := true;
+  if (NewRawImage.Description.Width <= 0) or (NewRawImage.Description.Height <= 0)
+  then begin
+    DebugLn('WARNING: TQtWidgetSet.GetRawImageFromBitmap Intersection empty');
+    exit;
   end;}
+
+  NewRawImage.Description.Width := QImage_width(Image);
+  NewRawImage.Description.Height := QImage_height(Image);
+
+  try
+    NewRawImage.DataSize := QImage_numBytes(Image);
+
+    // copy data
+    ReAllocMem(NewRawImage.Data, NewRawImage.DataSize);
+    if NewRawImage.DataSize > 0 then
+     Move(QImage_bits(QImageH(SrcBitmap))^, NewRawImage.Data^, NewRawImage.DataSize);
+  except
+    // Free partially copied data
+  end;
+  
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -878,11 +867,13 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 begin
-  Result := IsValidDC(DC);
+  Result := False;
 
-  if Result then
-  begin
-  end;
+  if not IsValidDC(DC) then Exit;
+
+  // code here
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1157,12 +1148,15 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
 begin
+  Result := False;
+
   if IsValidDC(DC) then
   begin
     TQtDeviceContext(DC).setBrushOrigin(NewX, NewY);
     if OldPoint <> nil then TQtDeviceContext(DC).brushOrigin(OldPoint);
   end;
-  Result:=0;
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

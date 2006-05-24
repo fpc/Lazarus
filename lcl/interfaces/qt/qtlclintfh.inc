@@ -30,4 +30,6 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure FillStandardDescription(var Desc: TRawImageDescription);
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

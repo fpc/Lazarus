@@ -75,7 +75,7 @@ type
     function IsValidDC(const DC: HDC): Boolean; virtual;
   public
     {$I qtwinapih.inc}
-    {.$I qtlclintfh.inc}
+    {$I qtlclintfh.inc}
   end;
 
 
@@ -150,6 +150,7 @@ end;
 
 {$I qtobject.inc}
 {$I qtwinapi.inc}
+{$I qtlclintf.inc}
 {.$I qtcallback.inc}
 
 
