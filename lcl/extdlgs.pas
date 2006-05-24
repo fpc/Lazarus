@@ -1187,7 +1187,7 @@ begin
   DF.Caption:=FDialogTitle;
   DF.Position:=poMainFormCenter;
   DF.BorderStyle:=bsDialog;
-  DF.AutoSize:=true;
+  //DF.AutoSize:=true;
 
   FCalendar:=TCalendar.Create(Self);
   with FCalendar do begin
@@ -1233,6 +1233,8 @@ begin
     Align:=alLeft;
     Cancel:=True;
   end;
+  DF.ClientWidth := FCalendar.Width;
+  DF.ClientHeight := panel.Top+panel.Height;
 
   Result:=DF.ShowModal=mrOK;
   FreeAndNil(FCalendar);
