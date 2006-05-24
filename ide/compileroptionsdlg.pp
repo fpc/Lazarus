@@ -468,15 +468,10 @@ end;
      this function and its button when the function is working correctly.
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
-var
-  CurOptions: String;
 begin
   // Test MakeOptionsString function
   PutCompilerOptions(true);
-  CurOptions := CompilerOpts.MakeOptionsString(nil,
-                                          CompilerOpts.DefaultMakeOptionsFlags);
-  //DebugLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
-  ShowCompilerOptionsDialog(CurOptions);
+  ShowCompilerOptionsDialog(CompilerOpts);
 end;
 
 procedure TfrmCompilerOptions.ExecuteAfterGroupBoxResize(Sender: TObject);

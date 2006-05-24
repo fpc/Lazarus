@@ -1,14 +1,21 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TShowCompilerOptionsDlg','FORMDATA',[
-  'TPF0'#23'TShowCompilerOptionsDlg'#22'ShowCompilerOptionsDlg'#7'CAPTION'#6#16
-  +'Compiler Options'#12'CLIENTHEIGHT'#3#203#0#11'CLIENTWIDTH'#3#137#1#18'HORZS'
-  +'CROLLBAR.PAGE'#3#138#1#18'VERTSCROLLBAR.PAGE'#3#204#0#4'LEFT'#3'f'#1#6'HEIG'
-  +'HT'#3#203#0#3'TOP'#3'Q'#1#5'WIDTH'#3#137#1#0#7'TBUTTON'#8'OkButton'#7'ANCHO'
-  +'RS'#11#8'akbottom'#0#7'CAPTION'#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#0#7'ONCL'
-  +'ICK'#7#13'OkButtonCLICK'#4'LEFT'#3#159#0#6'HEIGHT'#2#25#3'TOP'#3#168#0#5'WI'
-  +'DTH'#2'K'#0#0#9'TGROUPBOX'#15'CmdLineGroupbox'#5'ALIGN'#7#5'altop'#7'ANCHOR'
-  +'S'#11#5'aktop'#6'akleft'#8'akbottom'#0#7'CAPTION'#6#23'Command line paramet'
-  +'ers'#12'CLIENTHEIGHT'#3#144#0#11'CLIENTWIDTH'#3#133#1#11'PARENTCTL3D'#8#8'T'
-  +'ABORDER'#2#1#6'HEIGHT'#3#161#0#5'WIDTH'#3#137#1#0#5'TMEMO'#11'CmdLineMemo'#5
-  +'ALIGN'#7#8'alclient'#13'LINES.Strings'#1#6#11'CmdLineMemo'#0#7'TABSTOP'#9#7
-  +'TABSTOP'#9#8'TABORDER'#2#0#6'HEIGHT'#3#144#0#5'WIDTH'#3#133#1#0#0#0#0
+  'TPF0'#23'TShowCompilerOptionsDlg'#22'ShowCompilerOptionsDlg'#13'ActiveContro'
+  +'l'#7#8'OkButton'#7'Caption'#6#16'Compiler Options'#12'ClientHeight'#3#194#0
+  +#11'ClientWidth'#3#134#1#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'p'
+  +#18'HorzScrollBar.Page'#3#133#1#18'VertScrollBar.Page'#3#193#0#4'Left'#3'f'#1
+  +#6'Height'#3#194#0#3'Top'#3'Q'#1#5'Width'#3#134#1#0#7'TButton'#8'OkButton'#7
+  +'Anchors'#11#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#2
+  +'Ok'#7'OnClick'#7#13'OkButtonCLICK'#8'TabOrder'#2#0#4'Left'#3#157#0#6'Height'
+  +#2#25#3'Top'#3#159#0#5'Width'#2'K'#0#0#9'TGroupBox'#15'CmdLineGroupbox'#5'Al'
+  +'ign'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#7'Caption'#6
+  +#23'Command line parameters'#12'ClientHeight'#3#135#0#11'ClientWidth'#3#130#1
+  +#11'ParentCtl3D'#8#8'TabOrder'#2#1#6'Height'#3#152#0#5'Width'#3#134#1#0#5'TM'
+  +'emo'#11'CmdLineMemo'#5'Align'#7#8'alClient'#13'Lines.Strings'#1#6#11'CmdLin'
+  +'eMemo'#0#8'TabOrder'#2#0#6'Height'#3#135#0#5'Width'#3#130#1#0#0#0#9'TCheckB'
+  +'ox'#21'RelativePathsCheckBox'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Capti'
+  +'on'#6#21'RelativePathsCheckBox'#7'Checked'#9#8'OnChange'#7#27'RelativePaths'
+  +'CheckBoxChange'#5'State'#7#9'cbChecked'#8'TabOrder'#2#2#4'Left'#2#11#6'Heig'
+  +'ht'#2#20#3'Top'#3#164#0#5'Width'#3#160#0#0#0#0
 ]);

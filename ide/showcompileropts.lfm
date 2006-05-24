@@ -1,44 +1,57 @@
 object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
-  CAPTION = 'Compiler Options'
-  CLIENTHEIGHT = 203
-  CLIENTWIDTH = 393
-  HORZSCROLLBAR.PAGE = 394
-  VERTSCROLLBAR.PAGE = 204
-  LEFT = 358
-  HEIGHT = 203
-  TOP = 337
-  WIDTH = 393
-  object OkButton: TBUTTON
-    ANCHORS = [akbottom]
-    CAPTION = 'Ok'
-    TABSTOP = True
-    TABORDER = 0
-    ONCLICK = OkButtonCLICK
-    LEFT = 159
-    HEIGHT = 25
-    TOP = 168
-    WIDTH = 75
+  ActiveControl = OkButton
+  Caption = 'Compiler Options'
+  ClientHeight = 194
+  ClientWidth = 390
+  OnCreate = FormCreate
+  PixelsPerInch = 112
+  HorzScrollBar.Page = 389
+  VertScrollBar.Page = 193
+  Left = 358
+  Height = 194
+  Top = 337
+  Width = 390
+  object OkButton: TButton
+    Anchors = [akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Ok'
+    OnClick = OkButtonCLICK
+    TabOrder = 0
+    Left = 157
+    Height = 25
+    Top = 159
+    Width = 75
   end
-  object CmdLineGroupbox: TGROUPBOX
-    ALIGN = altop
-    ANCHORS = [aktop, akleft, akbottom]
-    CAPTION = 'Command line parameters'
-    CLIENTHEIGHT = 144
-    CLIENTWIDTH = 389
-    PARENTCTL3D = False
-    TABORDER = 1
-    HEIGHT = 161
-    WIDTH = 393
-    object CmdLineMemo: TMEMO
-      ALIGN = alclient
-      LINES.Strings = (
+  object CmdLineGroupbox: TGroupBox
+    Align = alTop
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = 'Command line parameters'
+    ClientHeight = 135
+    ClientWidth = 386
+    ParentCtl3D = False
+    TabOrder = 1
+    Height = 152
+    Width = 390
+    object CmdLineMemo: TMemo
+      Align = alClient
+      Lines.Strings = (
         'CmdLineMemo'
       )
-      TABSTOP = True
-      TABSTOP = True
-      TABORDER = 0
-      HEIGHT = 144
-      WIDTH = 389
+      TabOrder = 0
+      Height = 135
+      Width = 386
     end
+  end
+  object RelativePathsCheckBox: TCheckBox
+    Anchors = [akLeft, akBottom]
+    Caption = 'RelativePathsCheckBox'
+    Checked = True
+    OnChange = RelativePathsCheckBoxChange
+    State = cbChecked
+    TabOrder = 2
+    Left = 11
+    Height = 20
+    Top = 164
+    Width = 160
   end
 end

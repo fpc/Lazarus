@@ -36,33 +36,43 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls;
+  StdCtrls, LazarusIDEStrConsts, CompilerOptions;
 
 type
+
+  { TShowCompilerOptionsDlg }
+
   TShowCompilerOptionsDlg = class(TForm)
+    RelativePathsCheckBox: TCheckBox;
     OkButton: TBUTTON;
     CmdLineGroupbox: TGROUPBOX;
     CmdLineMemo: TMEMO;
+    procedure FormCreate(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
+    procedure RelativePathsCheckBoxChange(Sender: TObject);
   private
+    FCompilerOpts: TBaseCompilerOptions;
+    procedure SetCompilerOpts(const AValue: TBaseCompilerOptions);
+    procedure UpdateMemo;
   public
+    property CompilerOpts: TBaseCompilerOptions read FCompilerOpts write SetCompilerOpts;
   end;
 
-function ShowCompilerOptionsDialog(const CmdLine: string): TModalResult;
+function ShowCompilerOptionsDialog(
+  CompilerOpts: TBaseCompilerOptions): TModalResult;
 
 implementation
 
-function ShowCompilerOptionsDialog(const CmdLine: string): TModalResult;
+function ShowCompilerOptionsDialog(
+  CompilerOpts: TBaseCompilerOptions): TModalResult;
 var
   ShowCompilerOptionsDlg: TShowCompilerOptionsDlg;
 begin
   Result:=mrOk;
   ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(nil);
-  with ShowCompilerOptionsDlg do begin
-    CmdLineMemo.Lines.Text:=CmdLine;
-    ShowModal;
-    Free;
-  end;
+  ShowCompilerOptionsDlg.CompilerOpts:=CompilerOpts;
+  ShowCompilerOptionsDlg.ShowModal;
+  ShowCompilerOptionsDlg.Free;
 end;
 
 { TShowCompilerOptionsDlg }
@@ -70,6 +80,36 @@ end;
 procedure TShowCompilerOptionsDlg.OkButtonCLICK(Sender: TObject);
 begin
   ModalResult:=mrOk;
+end;
+
+procedure TShowCompilerOptionsDlg.RelativePathsCheckBoxChange(Sender: TObject);
+begin
+  UpdateMemo;
+end;
+
+procedure TShowCompilerOptionsDlg.FormCreate(Sender: TObject);
+begin
+  RelativePathsCheckBox.Caption:=lisRelativePaths;
+end;
+
+procedure TShowCompilerOptionsDlg.SetCompilerOpts(
+  const AValue: TBaseCompilerOptions);
+begin
+  if FCompilerOpts=AValue then exit;
+  FCompilerOpts:=AValue;
+  UpdateMemo;
+end;
+
+procedure TShowCompilerOptionsDlg.UpdateMemo;
+var
+  Flags: TCompilerCmdLineOptions;
+  CurOptions: String;
+begin
+  Flags:=CompilerOpts.DefaultMakeOptionsFlags;
+  if not RelativePathsCheckBox.Checked then
+    Include(Flags,cclAbsolutePaths);
+  CurOptions := CompilerOpts.MakeOptionsString(nil,Flags);
+  CmdLineMemo.Lines.Text:=CurOptions;
 end;
 
 initialization

@@ -198,7 +198,8 @@ type
   TCompilerCmdLineOption = (
     ccloNoLinkerOpts,  // exclude linker options
     ccloAddVerboseAll,  // add -va
-    ccloDoNotAppendOutFileOption // do not add -o option
+    ccloDoNotAppendOutFileOption, // do not add -o option
+    cclAbsolutePaths
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
@@ -314,6 +315,8 @@ type
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
+    function GetObjectPath(RelativeToBaseDir: boolean;
+                           Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetPath(Option: TParsedCompilerOptString;
                      InheritedOption: TInheritedCompilerOption;
                      RelativeToBaseDir: boolean;
@@ -1446,6 +1449,12 @@ begin
     CreateAbsoluteSearchPath(Result,BaseDirectory);
 end;
 
+function TBaseCompilerOptions.GetObjectPath(RelativeToBaseDir: boolean;
+  Parsed: TCompilerOptionsParseType): string;
+begin
+  Result:=GetPath(pcosObjectPath,icoObjectPath,RelativeToBaseDir,Parsed);
+end;
+
 function TBaseCompilerOptions.GetPath(Option: TParsedCompilerOptString;
   InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType): string;
@@ -1476,11 +1485,13 @@ begin
     debugln('TBaseCompilerOptions.GetParsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
   {$ENDIF}
 
-  if (not RelativeToBaseDir) then
-    CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
+  if RelativeToBaseDir then
+    CurrentPath:=CreateRelativeSearchPath(CurrentPath,BaseDirectory)
+  else
+    CurrentPath:=CreateAbsoluteSearchPath(CurrentPath,BaseDirectory);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPath CreateAbsoluteSearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetParsedPath Absolute/Relative=',dbgs(RelativeToBaseDir),' SearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'" BaseDirectory="',BaseDirectory,'"');
   {$ENDIF}
 
   // inherited path
@@ -1641,7 +1652,6 @@ var
   CurUnitPath: String;
   CurOutputDir: String;
   CurLinkerOptions: String;
-  InhObjectPath: String;
   CurObjectPath: String;
   CurMainSrcFile: String;
   CurCustomOptions: String;
@@ -2075,42 +2085,38 @@ Processor specific options:
   { ------------- Search Paths ---------------- }
   
   // include path
-  CurIncludePath:=GetIncludePath(true);
+  CurIncludePath:=GetIncludePath(not (cclAbsolutePaths in Flags));
   if (CurIncludePath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
 
   // library path
   if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLibraryPath:=GetLibraryPath(true);
+    CurLibraryPath:=GetLibraryPath(not (cclAbsolutePaths in Flags));
     if (CurLibraryPath <> '') then
       switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
   end;
 
   // object path
-  CurObjectPath:=ParsedOpts.GetParsedValue(pcosObjectPath);
+  CurObjectPath:=GetObjectPath(not (cclAbsolutePaths in Flags));
   if (CurObjectPath <> '') then
     switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
-  // inherited object path
-  InhObjectPath:=GetInheritedOption(icoObjectPath,true,coptParsed);
-  if (InhObjectPath <> '') then
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', InhObjectPath);
-
   // unit path
-  CurUnitPath:=GetUnitPath(true);
+  CurUnitPath:=GetUnitPath(not (cclAbsolutePaths in Flags));
   //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
   // always add the current directory to the unit path, so that the compiler
   // checks for changed files in the directory
-  CurUnitPath:=CurUnitPath+';.';
+  CurUnitPath:=MergeSearchPaths(CurUnitPath,'.');
   switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
 
   { CompilerPath - Nothing needs to be done with this one }
   
   { Unit output directory }
-  if UnitOutputDirectory<>'' then
-    CurOutputDir:=CreateRelativePath(ParsedOpts.GetParsedValue(pcosOutputDir),
-                                     BaseDirectory)
-  else
+  if UnitOutputDirectory<>'' then begin
+    CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
+    if not (cclAbsolutePaths in Flags) then
+      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory);
+  end else
     CurOutputDir:='';
   if CurOutputDir<>'' then
     switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
@@ -2169,7 +2175,11 @@ Processor specific options:
     if (NewTargetFilename<>'')
     and ((CompareFileNames(NewTargetFilename,ChangeFileExt(CurMainSrcFile,''))<>0)
      or (CurOutputDir<>'')) then
+    begin
+      if not (cclAbsolutePaths in Flags) then
+        NewTargetFilename:=CreateRelativePath(NewTargetFilename,BaseDirectory);
       switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFilename);
+    end;
   end;
 
   // custom options

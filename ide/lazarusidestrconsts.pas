@@ -3028,6 +3028,7 @@ resourcestring
   lisDebugOptionsFrmResumeUnhandled = 'Resume Unhandled';
   lisHFMHelpForFreePascalCompilerMessage = 'Help for FreePascal Compiler '
     +'message';
+  lisRelativePaths = 'Relative paths';
 
 implementation
 end.

@@ -3312,9 +3312,9 @@ var
   InstallerDir: TDefineTemplate;
   IFTempl: TDefineTemplate;
 begin
-  { $IFDEF VerboseFPCSrcScan}
+  {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
-  { $ENDIF}
+  {$ENDIF}
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
