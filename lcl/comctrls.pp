@@ -871,6 +871,7 @@ type
     function GetMaxScrolledLeft : Integer;
     function GetMaxScrolledTop : Integer;
     procedure ImageChanged(Sender : TObject);
+    procedure Loaded; override;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
   protected

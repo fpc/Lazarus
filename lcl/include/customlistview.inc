@@ -654,6 +654,13 @@ begin
 //  end;
 end;
 
+procedure TCustomListView.Loaded;
+begin
+  // create interface columns if needed
+  FColumns.IntfCreateColumns;
+  inherited Loaded;
+end;
+
 procedure TCustomListView.SetScrollBars(const AValue: TScrollStyle);
 begin
   if (FScrollBars = AValue) then exit;

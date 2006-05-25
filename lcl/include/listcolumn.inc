@@ -106,6 +106,7 @@ begin
   Result := (Collection <> nil)
     and (TListColumns(Collection).FOwner <> nil)
     and TListColumns(Collection).FOwner.HandleAllocated
+    and not (csReading in TListColumns(Collection).FOwner.ComponentState)
     and not (csDestroying in TListColumns(Collection).FOwner.ComponentState);
 end;
 
