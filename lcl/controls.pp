@@ -1704,7 +1704,7 @@ type
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
     procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
-    function CanFocus: Boolean;
+    function CanFocus: Boolean; virtual;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     function Focused: Boolean; virtual;
