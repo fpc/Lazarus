@@ -1347,6 +1347,7 @@ ideintf/stringgriddlg.lfm svneol=native#text/plain
 ideintf/stringgriddlg.lrs svneol=native#text/plain
 ideintf/stringspropeditdlg.lfm svneol=native#text/plain
 ideintf/stringspropeditdlg.lrs svneol=native#text/plain
+ideintf/stringspropeditdlg.pas svneol=native#text/plain
 ideintf/texttools.pas svneol=native#text/pascal
 ideintf/treeviewpropedit.lfm svneol=native#text/plain
 ideintf/treeviewpropedit.lrs svneol=native#text/plain

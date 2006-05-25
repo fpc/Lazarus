@@ -19,12 +19,12 @@ object AnchorDesigner: TAnchorDesigner
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'BorderSpaceGroupBox'
     ClientHeight = 87
-    ClientWidth = 168
+    ClientWidth = 176
     TabOrder = 0
-    Left = 172
+    Left = 170
     Height = 104
     Top = 80
-    Width = 172
+    Width = 180
     object LeftBorderSpaceSpinEdit: TSpinEdit
       OnChange = BorderSpaceSpinEditChange
       ParentShowHint = False

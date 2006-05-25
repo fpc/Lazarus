@@ -38,7 +38,7 @@ uses
   LCLProc, Forms, Controls, GraphType,
   Graphics, StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf,
   Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
-  ColumnDlg, FileUtil, ObjInspStrConsts;
+  StringsPropEditDlg, ColumnDlg, FileUtil, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -1354,24 +1354,10 @@ type
 //==============================================================================
 
 
-//==============================================================================
-
-{ TStringsPropEditorDlg }
-  
 type
-  TStringsPropEditorDlg = class(TForm)
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
-    StatusLabel: TLabel;
-    SortButton: TButton;
-    GroupBox1: TGroupBox;
-    Memo: TMemo;
-    procedure FormCreate(Sender: TObject);
-    procedure MemoChange(Sender: TObject);
-    procedure SortButtonClick(Sender: TObject);
+  TStringsPropEditorDlg = class(TStringsPropEditorFrm)
   public
     Editor: TPropertyEditor;
-    procedure AddButtons; virtual;
   end;
 
 //==============================================================================
@@ -4509,62 +4495,6 @@ end;
 function TCaptionPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paAutoUpdate, paRevertable];
-end;
-
-{ TStringsPropEditorDlg }
-
-procedure TStringsPropEditorDlg.FormCreate(Sender: TObject);
-begin
-  Caption := oisStringsEditorDialog;
-  StatusLabel.Caption := ois0Lines0Chars;
-  SortButton.Caption := oisSort;
-
-  AddButtons;
-end;
-
-procedure TStringsPropEditorDlg.MemoChange(Sender: TObject);
-var
-  NumChars: Integer;
-  I: Integer;
-begin
-  NumChars := 0;
-  for I := 0 to Memo.Lines.Count - 1 do Inc(NumChars, Length(Memo.Lines[I]));
-
-  if Memo.Lines.Count = 1 then
-    StatusLabel.Text := Format(ois1LineDChars, [NumChars])
-  else
-    StatusLabel.Text := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
-end;
-
-procedure TStringsPropEditorDlg.SortButtonClick(Sender: TObject);
-var
-  OldText, NewSortedText: String;
-  SortOnlySelection: Boolean;
-begin
-  if not Assigned(ShowSortSelectionDialogFunc) then
-  begin
-    SortButton.Enabled := False;
-    Exit;
-  end;
-
-  SortOnlySelection := True;
-  OldText := Memo.SelText;
-  if OldText = '' then
-  begin
-    SortOnlySelection := False;
-    OldText := Memo.Lines.Text;
-  end;
-
-  if ShowSortSelectionDialogFunc(OldText, nil, NewSortedText) <> mrOk then Exit;
-  if SortOnlySelection then
-    Memo.SelText := NewSortedText
-  else
-    Memo.Lines.Text := NewSortedText;
-end;
-
-procedure TStringsPropEditorDlg.AddButtons;
-begin
-  //
 end;
 
 { TStringsPropertyEditor }

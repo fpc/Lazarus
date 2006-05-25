@@ -1,12 +1,12 @@
-object StringsPropEditorDlg: TStringsPropEditorDlg
+object StringsPropEditorFrm: TStringsPropEditorFrm
   ActiveControl = Memo
-  Caption = 'StringsPropEditorDlg'
+  Caption = 'StringsPropEditorFrm'
   ClientHeight = 300
   ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poScreenCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
@@ -18,12 +18,12 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    
-    ClientHeight = 240
+    ClientHeight = 238
     ClientWidth = 384
     TabOrder = 0
+    AnchorSideBottom.Control = OKButton
     Left = 6
-    Height = 258
+    Height = 255
     Top = 6
     Width = 388
     object StatusLabel: TLabel
@@ -34,7 +34,7 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
       ParentColor = False
       Left = 9
       Height = 14
-      Top = 218
+      Top = 216
       Width = 57
     end
     object Memo: TMemo
@@ -45,14 +45,14 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
       TabOrder = 0
       WordWrap = False
       Left = 6
-      Height = 208
+      Height = 206
       Top = 6
       Width = 290
     end
     object SortButton: TButton
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
-      
+      BorderSpacing.InnerBorder = 4
       Caption = 'Sort'
       OnClick = SortButtonClick
       TabOrder = 1
@@ -64,32 +64,34 @@ object StringsPropEditorDlg: TStringsPropEditorDlg
   end
   object OKButton: TBitBtn
     Anchors = [akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Around = 6
-    
     Caption = '&OK'
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 1
-    Left = 318
-    Height = 25
-    Top = 270
-    Width = 75
+    Left = 338
+    Height = 28
+    Top = 267
+    Width = 55
   end
   object CancelButton: TBitBtn
     Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
     BorderSpacing.Around = 6
-    
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 2
-    Left = 234
-    Height = 25
-    Top = 270
-    Width = 75
+    AnchorSideRight.Control = OKButton
+    Left = 249
+    Height = 28
+    Top = 267
+    Width = 77
   end
 end

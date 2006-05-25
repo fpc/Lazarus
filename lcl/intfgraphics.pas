@@ -275,9 +275,9 @@ type
   TArrayNodesTree = class
   public
     Root: TArrayNode;
-    function FindNode(IntArray: PInteger; Count: integer): TArrayNode;
-    function FindData(IntArray: PInteger; Count: integer): Pointer;
-    function SetNode(IntArray: PInteger; Count: integer;
+    function FindNode(Path: PInteger; Count: integer): TArrayNode;
+    function FindData(Path: PInteger; Count: integer): Pointer;
+    function SetNode(Path: PInteger; Count: integer;
                      Data: Pointer): TArrayNode;
     procedure Delete(Node: TArrayNode);
     procedure Clear;
@@ -2914,7 +2914,7 @@ end;
 
 { TArrayNodesTree }
 
-function TArrayNodesTree.FindNode(IntArray: PInteger; Count: integer
+function TArrayNodesTree.FindNode(Path: PInteger; Count: integer
   ): TArrayNode;
 var
   i: Integer;
@@ -2922,23 +2922,23 @@ begin
   Result:=Root;
   i:=0;
   while (Result<>nil) and (i<Count) do begin
-    Result:=Result.GetChildNode(IntArray[i],false);
+    Result:=Result.GetChildNode(Path[i],false);
     inc(i);
   end;
 end;
 
-function TArrayNodesTree.FindData(IntArray: PInteger; Count: integer): Pointer;
+function TArrayNodesTree.FindData(Path: PInteger; Count: integer): Pointer;
 var
   ANode: TArrayNode;
 begin
-  ANode:=FindNode(IntArray,Count);
+  ANode:=FindNode(Path,Count);
   if ANode<>nil then
     Result:=ANode.Data
   else
     Result:=nil;
 end;
 
-function TArrayNodesTree.SetNode(IntArray: PInteger; Count: integer;
+function TArrayNodesTree.SetNode(Path: PInteger; Count: integer;
   Data: Pointer): TArrayNode;
 var
   i: Integer;
@@ -2948,7 +2948,7 @@ begin
   Result:=Root;
   for i:=0 to Count-1 do begin
     //DebugLn('TArrayNodesTree.SetNode A ',DbgS(Result));
-    Result:=Result.GetChildNode(IntArray[i],true);
+    Result:=Result.GetChildNode(Path[i],true);
   end;
   Result.Data:=Data;
 end;

@@ -1,3 +1,5 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TAnchorDesigner','FORMDATA',[
   'TPF0'#15'TAnchorDesigner'#14'AnchorDesigner'#13'ActiveControl'#7#23'LeftBord'
   +'erSpaceSpinEdit'#7'Caption'#6#14'AnchorDesigner'#12'ClientHeight'#3#3#1#11
@@ -7,8 +9,8 @@ LazarusResources.Add('TAnchorDesigner','FORMDATA',[
   +#18'HorzScrollBar.Page'#3#7#2#18'VertScrollBar.Page'#3#2#1#4'Left'#3'*'#1#6
   +'Height'#3#3#1#3'Top'#3#179#0#5'Width'#3#8#2#0#9'TGroupBox'#19'BorderSpaceGr'
   +'oupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#7'Caption'#6#19'Bord'
-  +'erSpaceGroupBox'#12'ClientHeight'#2'W'#11'ClientWidth'#3#168#0#8'TabOrder'#2
-  +#0#4'Left'#3#172#0#6'Height'#2'h'#3'Top'#2'P'#5'Width'#3#172#0#0#9'TSpinEdit'
+  +'erSpaceGroupBox'#12'ClientHeight'#2'W'#11'ClientWidth'#3#176#0#8'TabOrder'#2
+  +#0#4'Left'#3#170#0#6'Height'#2'h'#3'Top'#2'P'#5'Width'#3#180#0#0#9'TSpinEdit'
   +#23'LeftBorderSpaceSpinEdit'#8'OnChange'#7#25'BorderSpaceSpinEditChange'#14
   +'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#0#5'Value'#2#1#6'Height'#2#20
   +#3'Top'#2#30#5'Width'#2'8'#0#0#9'TSpinEdit'#24'RightBorderSpaceSpinEdit'#8'O'

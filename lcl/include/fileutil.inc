@@ -1013,7 +1013,7 @@ end;
  ------------------------------------------------------------------------------}
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
 begin
-  result := CopyFile(SrcFilename, DestFilename, false);
+  Result := CopyFile(SrcFilename, DestFilename, false);
 end;
 
 {------------------------------------------------------------------------------
