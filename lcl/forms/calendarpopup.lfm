@@ -10,11 +10,8 @@ object CalendarPopupForm: TCalendarPopupForm
   BorderIcons = [biMinimize, biMaximize]
   BorderStyle = bsNone
   Caption = 'CalendarPopupForm'
-  ClientHeight = 153
-  ClientWidth = 162
   OnClose = FormClose
   OnDeactivate = FormDeactivate
-  PixelsPerInch = 96
   object Calendar: TCalendar
     Height = 153
     Width = 162

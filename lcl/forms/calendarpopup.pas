@@ -63,7 +63,9 @@ begin
   PopupForm := TCalendarPopupForm.Create(nil);
   PopupForm.Initialize(Position, ADate);
   PopupForm.FOnReturnDate := OnReturnDate;
-  PopupForm.Show;
+  //TODO: Change to PopupForm.Show when gtk supports non modal forms on top of
+  //modal forms.
+  PopupForm.ShowModal;
 end;
 
 { TCalendarPopupForm }
