@@ -191,7 +191,10 @@ begin
     FDateAsString := AValue;
     FDate := NewDate;
   except
-    raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
+    if not (csLoading in ComponentState) then
+      raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue])
+    else
+      exit;
   end;
   SetProps;
 end;

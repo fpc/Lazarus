@@ -176,7 +176,8 @@ function StackTraceAsString(const AStack: TStackTracePointers;
                             UseCache: boolean): string;
 function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
-procedure DebugLn(const S: String; Args: array of const);
+procedure DebugLn(Args: array of const);
+procedure DebugLn(const S: String; Args: array of const);// similar to Format(s,Args)
 procedure DebugLn;
 procedure DebugLn(const s: string);
 procedure DebugLn(const s1,s2: string);
@@ -1143,6 +1144,28 @@ begin
     Dispose(DebugText);
     DebugTextAllocated := false;
   end;
+end;
+
+procedure DebugLn(Args: array of const);
+var
+  i: Integer;
+begin
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+    vtInteger: DbgOut(dbgs(Args[i].vinteger));
+    vtBoolean: DbgOut(dbgs(Args[i].vboolean));
+    vtExtended: DbgOut(dbgs(Args[i].VExtended^));
+    vtCurrency: DbgOut(dbgs(Args[i].vcurrency));
+    vtString: DbgOut(Args[i].VString^);
+    vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
+    vtChar: DbgOut(Args[i].VChar);
+    vtPChar: DbgOut(Args[i].VPChar);
+    vtPWideChar: DbgOut(Args[i].VPWideChar);
+    vtWideChar: DbgOut(Args[i].VWideChar);
+    vtWidestring: DbgOut(WideString(Args[i].VWideString));
+    end;
+  end;
+  DebugLn;
 end;
 
 procedure DebugLn(const S: String; Args: array of const);

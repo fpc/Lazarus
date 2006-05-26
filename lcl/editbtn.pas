@@ -300,7 +300,6 @@ type
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
     FOnAcceptDate: TAcceptDateEvent;
-
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
     FDate: TDateTime;

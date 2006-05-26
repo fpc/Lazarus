@@ -26,8 +26,8 @@ unit CalendarPopup;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Calendar,
-  LCLType;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Calendar, LCLType;
   
 type
   TReturnDateEvent = procedure (Sender: TObject;const Date: TDateTime) of object;
