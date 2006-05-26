@@ -1153,9 +1153,11 @@ begin
   for i:=Low(Args) to High(Args) do begin
     case Args[i].VType of
     vtInteger: DbgOut(dbgs(Args[i].vinteger));
+    vtInt64: DbgOut(dbgs(Args[i].VInt64));
+    vtQWord: DbgOut(dbgs(Args[i].VQWord));
     vtBoolean: DbgOut(dbgs(Args[i].vboolean));
     vtExtended: DbgOut(dbgs(Args[i].VExtended^));
-    vtCurrency: DbgOut(dbgs(Args[i].vcurrency));
+    vtCurrency: DbgOut(dbgs(Args[i].vCurrency));
     vtString: DbgOut(Args[i].VString^);
     vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
     vtChar: DbgOut(Args[i].VChar);
@@ -1163,6 +1165,11 @@ begin
     vtPWideChar: DbgOut(Args[i].VPWideChar);
     vtWideChar: DbgOut(Args[i].VWideChar);
     vtWidestring: DbgOut(WideString(Args[i].VWideString));
+    vtObject: DbgOut(DbgSName(Args[i].VObject));
+    vtClass: DbgOut(DbgSName(Args[i].VClass));
+    vtPointer: DbgOut(Dbgs(Args[i].VPointer));
+    else
+      DbgOut('?unknown variant?');
     end;
   end;
   DebugLn;
