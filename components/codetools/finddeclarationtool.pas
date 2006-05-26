@@ -32,7 +32,6 @@
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
     - caching for procs
-    - variants
     - multi pass find declaration (i.e. searching with timeout)
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
@@ -5210,16 +5209,16 @@ var
         // the array type is the last child node
         //debugln('ResolveEdgedBracketOpen Open/RangedArray LastChild=',ExprType.Context.Node.LastChild.DescAsString);
         if ExprType.Context.Node.LastChild.Desc=ctnOfConstType then begin
-          // 'array of const'; the array type is 'TVarData'
+          // 'array of const'; the array type is 'TVarRec'
 
-          // => search 'TVarData'
+          // => search 'TVarRec'
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                          fdfExceptionOnNotFound]
                         +fdfGlobals*Params.Flags
                         -[fdfTopLvlResolving];
-          // special identifier for TVarData
-          Params.SetIdentifier(Self,'tvardata',nil);
+          // special identifier for TVarRec
+          Params.SetIdentifier(Self,'tvarrec',nil);
           Params.ContextNode:=ExprType.Context.Node;
           ExprType.Context.Tool.FindIdentifierInContext(Params);
           ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
