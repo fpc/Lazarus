@@ -90,5 +90,13 @@ begin
   if Assigned(FOnPaint) then FOnPaint(Self);
 end;
 
+procedure TGraphicControl.DoOnChangeBounds;
+begin
+  inherited DoOnChangeBounds;
+  // reset canvas handle in next access
+  if Canvas.HandleAllocated then
+    TControlCanvas(Canvas).FreeHandle;
+end;
+
 // included by controls.pp
 

@@ -1744,6 +1744,7 @@ type
   protected
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
+    procedure DoOnChangeBounds; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
