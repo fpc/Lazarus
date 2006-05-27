@@ -54,7 +54,7 @@ implementation
 
 { TWin32WSArrow }
 
-procedure TWin32WSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
+class procedure TWin32WSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 begin
   // TODO: implement me!
