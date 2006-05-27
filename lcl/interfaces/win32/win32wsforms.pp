@@ -135,7 +135,7 @@ implementation
 
 { TWin32WSScrollBox }
 
-function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -160,7 +160,7 @@ end;
 
 function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
 
-procedure TWin32WSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+class procedure TWin32WSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 var
   lVisible: boolean;
@@ -202,7 +202,7 @@ begin
   Flags := Flags or CalcBorderIconsFlags(AForm);
 end;
 
-function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -233,12 +233,12 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+class procedure TWin32WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   EnableApplicationWindows(ACustomForm.Handle);
 end;
 
-procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+class procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons);
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
@@ -246,13 +246,13 @@ begin
   SetIcon(AForm, 0);
 end;
 
-procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+class procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
           const AFormBorderStyle: TFormBorderStyle);
 begin
   RecreateWnd(AForm);
 end;
                             
-procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl; 
+class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   SizeRect: Windows.RECT;
@@ -276,7 +276,7 @@ begin
     SizeRect.Bottom - SizeRect.Top);
 end;
 
-procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 var
   winHandle: HWND;
   iconHandle: HICON;
@@ -294,7 +294,7 @@ begin
   SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
 end;
 
-procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
   if not AForm.HandleAllocated then exit;
@@ -304,7 +304,7 @@ begin
   RecreateWnd(AForm);
 end;
 
-procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);
@@ -312,7 +312,7 @@ end;
 
 { TWin32WSHintWindow }
 
-function TWin32WSHintWindow.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSHintWindow.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;

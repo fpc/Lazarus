@@ -288,7 +288,7 @@ end;
 
 { TWin32WSStatusBar }
 
-function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -313,20 +313,20 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TWin32WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
   UpdateStatusBarPanelWidths(AStatusBar);
   UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
 
-procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
+class procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: integer);
 begin
   // statusbars do their own resizing, post a size message to it's queue
   Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
 end;
 
-procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   R: TRect;
@@ -338,7 +338,7 @@ begin
   end;
 end;
 
-procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
   if AStatusBar.SimplePanel then
     Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(AStatusBar.SimpleText)))
@@ -346,13 +346,13 @@ begin
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
 
-procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl;
+class procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl;
   const AText: string);
 begin
   // inhibit. StatusBars do not have a caption, simpletext is set by SetPanelText
 end;
 
-procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
+class procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
 var
   PanelIndex: integer;
 begin
@@ -368,7 +368,7 @@ end;
 
 { TWin32WSProgressBar }
 
-function TWin32WSProgressBar.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSProgressBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -392,7 +392,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSProgressBar.ApplyChanges(
+class procedure TWin32WSProgressBar.ApplyChanges(
   const AProgressBar: TCustomProgressBar);
 begin
   with AProgressBar do
@@ -418,7 +418,7 @@ begin
   end;
 end;
 
-procedure TWin32WSProgressBar.SetPosition(
+class procedure TWin32WSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   Windows.SendMessage(AProgressBar.Handle, PBM_SETPOS, Windows.WPARAM(NewPosition), 0);
@@ -428,7 +428,7 @@ end;
 
 {$ifdef OldToolbar}
 
-function TWin32WSToolBar.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSToolBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -451,7 +451,7 @@ begin
   Result := SendMessage(AToolbar.Handle, TB_BUTTONCOUNT, 0, 0)
 end;
 
-procedure TWin32WSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
+class procedure TWin32WSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
 var
   PStr, PStr2: PChar;
   Num: Integer;
@@ -495,7 +495,7 @@ begin
   Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
 end;
 
-procedure TWin32WSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
+class procedure TWin32WSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
 begin
   // TODO: code buggy, Index of button to delete ?!
   SendMessage(AToolBar.Handle, TB_DELETEBUTTON, 0, 0);
@@ -505,7 +505,7 @@ end;
 
 { TWin32WSTrackBar }
 
-function TWin32WSTrackBar.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSTrackBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -523,7 +523,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+class procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
   NewStyle: integer;
@@ -552,12 +552,12 @@ begin
   end;
 end;
 
-function  TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+class function TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
   Result := SendMessage(ATrackBar.Handle, TBM_GETPOS, 0, 0)
 end;
 
-procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+class procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 begin
   Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
 end;

@@ -578,7 +578,7 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+class procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var 
   MenuInfo: MENUITEMINFO;
   ParentMenuHandle: HMenu;
@@ -635,12 +635,12 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-function  TWin32WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+class function TWin32WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
   Result := CreatePopupMenu;
 end;
 
-procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   if Assigned(AMenuItem.Parent) then
     DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
@@ -648,18 +648,18 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+class procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 begin
   UpdateCaption(AMenuItem, aCaption);
 end;
   
-procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
+class procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   UpdateCaption(AMenuItem, aMenuItem.Caption);
 end;
 
-function TWin32WSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+class function TWin32WSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 var
   EnableFlag: Integer;
 begin
@@ -670,7 +670,7 @@ begin
   TriggerFormUpdate(AMenuItem);
 end;
 
-function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
+class function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
   Result := ChangeMenuFlag(AMenuItem, MFT_RIGHTJUSTIFY, Justified);
 end;
@@ -678,19 +678,19 @@ end;
 
 { TWin32WSMenu }
 
-function  TWin32WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+class function TWin32WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := CreateMenu;
 end;
 
 { TWin32WSPopupMenu }
 
-function  TWin32WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
+class function TWin32WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := CreatePopupMenu;
 end;
 
-procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+class procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
   MenuHandle: HMENU;
   AppHandle: HWND;

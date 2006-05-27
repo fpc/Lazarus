@@ -273,7 +273,7 @@ end;
 
 { TWin32WSCustomPage }
 
-function TWin32WSCustomPage.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -299,7 +299,7 @@ begin
   end;
 end;
 
-procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
 var
   TCI: TC_ITEM;
   PageIndex: integer;
@@ -325,14 +325,14 @@ begin
   end;
 end;
 
-procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+class procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
   // TODO: implement me!
 end;
 
 { TWin32WSCustomNotebook }
 
-function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -352,7 +352,7 @@ begin
   Params.WindowInfo^.hasTabParent := false;
 end;
 
-procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+class procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 var
   TCI: TC_ITEM;
@@ -371,14 +371,14 @@ begin
   end;
 end;
 
-procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+class procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
   RemovePage(ANotebook, AChild.PageIndex);
   AddPage(ANotebook,AChild,NewIndex);
 end;
 
-procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+class procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
@@ -391,7 +391,7 @@ end;
 
   Adds all pages to notebook (showtabs becomes true)
  ------------------------------------------------------------------------------}
-procedure TWin32WSCustomNotebook.AddAllNBPages(const ANotebook: TCustomNotebook);
+class procedure TWin32WSCustomNotebook.AddAllNBPages(const ANotebook: TCustomNotebook);
 var
   TCI: TC_ITEM;
   I, Res: Integer;
@@ -416,7 +416,7 @@ begin
   AdjustSizeNotebookPages(ANotebook);
 end;
 
-procedure TWin32WSCustomNotebook.AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
+class procedure TWin32WSCustomNotebook.AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
 var
   I: Integer;
   R: TRect;
@@ -444,7 +444,7 @@ end;
 
   Removes all pages from a notebook control (showtabs becomes false)
  ------------------------------------------------------------------------------}
-procedure TWin32WSCustomNotebook.RemoveAllNBPages(const ANotebook: TCustomNotebook);
+class procedure TWin32WSCustomNotebook.RemoveAllNBPages(const ANotebook: TCustomNotebook);
 var
   I: Integer;
   WinHandle: HWND;
@@ -455,7 +455,7 @@ begin
   AdjustSizeNotebookPages(ANotebook);
 end;
 
-function TWin32WSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
+class function TWin32WSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
 var
 X: Integer;
 begin
@@ -478,10 +478,10 @@ begin
   NMHdr.hwndfrom := AHandle;
   NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
-  DeliverMessage(ANotebook, Mess);
+  DeliverMessage(ANotebook, TLMessage(Mess));
 end;
 
-function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
+class function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
   const AClientPos: TPoint): integer;
 var
   hittestInfo: TC_HITTESTINFO;
@@ -491,7 +491,7 @@ begin
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
-procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 var
   Handle: HWND;
   PageHandle: HWND;
@@ -518,7 +518,7 @@ begin
   end;
 end;
 
-procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+class procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 var
   NotebookHandle: HWND;
   WindowStyle: PtrInt;
@@ -539,7 +539,7 @@ begin
   SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
 end;
 
-procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+class procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
 begin
   if AShowTabs then
   begin
@@ -551,7 +551,7 @@ end;
 
 { TWin32WSCustomPanel }
 
-function TWin32WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -573,7 +573,7 @@ end;
 
 { TWin32WSCustomSplitter }
 
-procedure TWin32WSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
+class procedure TWin32WSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
   );
 begin
   // TODO: beveled

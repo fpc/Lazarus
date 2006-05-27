@@ -263,14 +263,14 @@ end;
 
 { TWin32WSControl }
 
-procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+class procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
   Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
 end;
 
 { TWin32WSWinControl }
 
-function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -289,7 +289,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSWinControl.AddControl(const AControl: TControl);
+class procedure TWin32WSWinControl.AddControl(const AControl: TControl);
 var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
 begin
@@ -314,18 +314,18 @@ begin
   SetParent(ChildHandle, ParentHandle);
 end;
 
-function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   AText := '';
   Result := false;
 end;
 
-procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+class procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   RecreateWnd(AWinControl);
 end;
 
-procedure TWin32WSWinControl.SetChildZPosition(
+class procedure TWin32WSWinControl.SetChildZPosition(
   const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer;
   const AChildren: TFPList);
 var
@@ -379,7 +379,7 @@ end;
 
   Resize a window
  ------------------------------------------------------------------------------}
-procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl;
+class procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
@@ -401,29 +401,29 @@ begin
   LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
-procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
+class procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   // TODO: to be implemented, had no implementation in LM_SETCOLOR message
 end;
 
-procedure TWin32WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+class procedure TWin32WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
   Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
 end;
 
-procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 Begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
   Windows.SetWindowText(AWinControl.Handle, PChar(AText));
 End;
 
-procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+class procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin
   // TODO: implement me!
 end;
 
-procedure TWin32WSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TWin32WSWinControl.DestroyHandle(const AWinControl: TWinControl);
 var
   Handle: HWND;
   AccelTable: HACCEL;
@@ -435,13 +435,13 @@ begin
   DestroyWindow(Handle);
 end;
 
-procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
+class procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   // lpRect = nil updates entire client area of window
   InvalidateRect(AWinControl.Handle, nil, true);
 end;
 
-procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
+class procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods also use ShowHide, can't move code
   TWin32WidgetSet(WidgetSet).ShowHide(AWinControl);

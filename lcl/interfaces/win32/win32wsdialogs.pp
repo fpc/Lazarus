@@ -147,7 +147,7 @@ end;
 
 { TWin32WSColorDialog }
 
-function  TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 const
   { 16 basic RGB colors; names listed in comments for debugging }
   CustomColors: array[1..16] of dword = (
@@ -327,7 +327,7 @@ begin
   end;
 end;
 
-function  TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 var
   OpenFile: OPENFILENAME;
   UserResult: WINBOOL;
@@ -341,7 +341,7 @@ end;
 
 { TWin32WSOpenDialog }
 
-function  TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 var
   OpenFile: OpenFileName;
   UserResult: WINBOOL;
@@ -355,7 +355,7 @@ end;
 
 { TWin32WSFontDialog }
 
-function  TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 
   function GetFlagsFromOptions(Options : TFontDialogOptions): dword;
   begin
@@ -424,13 +424,13 @@ end;
 
 { TWin32WSCommonDialog }
 
-function  TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 begin
   DebugLn('TWin32WSCommonDialog.CreateHandle: unhandled dialog!');
   Result := 0;
 end;
 
-procedure TWin32WSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+class procedure TWin32WSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
   DestroyWindow(ACommonDialog.Handle);
 end;
@@ -462,7 +462,7 @@ begin
   Result := 0;
 end;
 
-function  TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 var
   bi : TBrowseInfo;
   Buffer : PChar;

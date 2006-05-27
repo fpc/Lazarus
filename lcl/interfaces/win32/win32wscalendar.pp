@@ -63,7 +63,7 @@ uses
 
 { TWin32WSCustomCalendar }
 
-function TWin32WSCustomCalendar.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSCustomCalendar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -86,7 +86,7 @@ begin
   SetBounds(AWinControl, Params.Left, Params.Top, 0, 0);
 end;
 
-procedure TWin32WSCustomCalendar.AdaptBounds(const AWinControl: TWinControl;
+class procedure TWin32WSCustomCalendar.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle: HWND;
@@ -98,7 +98,7 @@ begin
   Height := lRect.Bottom;
 end;
 
-function  TWin32WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+class function  TWin32WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   ST: SystemTime;
 begin
@@ -107,7 +107,7 @@ begin
     Result := EncodeDate(WYear,WMonth,WDay);
 end;
 
-procedure TWin32WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+class procedure TWin32WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   ST: SystemTime;
 begin
@@ -115,12 +115,12 @@ begin
   SendMessage(ACalendar.Handle, MCM_SETCURSEL, 0, Windows.LParam(@ST));
 end;
 
-procedure TWin32WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
+class procedure TWin32WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
 begin
   // TODO: implement me!
 end;
 
-procedure TWin32WSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+class procedure TWin32WSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
 begin
   // TODO: implement me!
 end;

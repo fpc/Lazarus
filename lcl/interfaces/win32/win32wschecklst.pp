@@ -55,13 +55,13 @@ type
 
 implementation
 
-function  TWin32WSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
+class function  TWin32WSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer): boolean;
 begin
   Result := TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
 end;
 
-function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+class function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
   Handle: HWND;
 begin
@@ -70,7 +70,7 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
-procedure TWin32WSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
+class procedure TWin32WSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer; const AChecked: boolean);
 var
   SizeRect: Windows.RECT;

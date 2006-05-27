@@ -86,7 +86,7 @@ uses
 
 { TWin32WSButton }
 
-function TWin32WSButton.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -108,7 +108,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
+class procedure TWin32WSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 var
   WindowStyle: dword;
 begin
@@ -120,7 +120,7 @@ begin
   Windows.SendMessage(AButton.Handle, BM_SETSTYLE, WindowStyle, 1);
 end;
 
-procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
+class procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
 begin
   // TODO: implement me!
 end;
@@ -448,7 +448,7 @@ begin
   BitBtn.Invalidate;
 end;
 
-function TWin32WSBitBtn.CreateHandle(const AWinControl: TWinControl;
+class function TWin32WSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -471,7 +471,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSBitBtn.GetPreferredSize(const AWinControl: TWinControl; 
+class procedure TWin32WSBitBtn.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   BitmapInfo: BITMAP; // Buffer for bitmap
@@ -508,7 +508,7 @@ begin
   end;
 end;
 
-procedure TWin32WSBitBtn.SetBounds(const AWinControl: TWinControl;
+class procedure TWin32WSBitBtn.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: integer);
 begin
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
@@ -516,38 +516,38 @@ begin
     DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
+class procedure TWin32WSBitBtn.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 begin
   TWin32WSWinControl.SetFont(AWinControl, AFont);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AWinControl.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+class procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 begin
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+class procedure TWin32WSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 begin
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
+class procedure TWin32WSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
+class procedure TWin32WSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
-procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
+class procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AText));
 end;
