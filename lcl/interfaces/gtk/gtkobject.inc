@@ -2302,22 +2302,22 @@ var
     case Bitmap^.GDIBitmapType of
       gbBitmap:
         If Bitmap^.GDIBitmapObject <> nil then begin
-         {$IfNDef NoGDKPixbuflib}
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize A1');
-          {$ENDIF}
-           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
-             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
-           rowstride := gdk_pixbuf_get_rowstride(Source);
-           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
-          {$IFDEF VerboseGdkPixbuf}
-          debugln('DataSourceInitialize A2');
-          {$ENDIF}
-         {$else}
-           {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-           Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
-             StartScan + NumScans);
-         {$EndIf}
+          {$IfNDef NoGDKPixbuflib}
+            {$IFDEF VerboseGdkPixbuf}
+            debugln('DataSourceInitialize A1');
+            {$ENDIF}
+            Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
+               Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+             rowstride := gdk_pixbuf_get_rowstride(Source);
+             Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+            {$IFDEF VerboseGdkPixbuf}
+            debugln('DataSourceInitialize A2');
+            {$ENDIF}
+          {$else}
+            {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
+                                    StartScan + NumScans);
+          {$EndIf}
         end;
       gbPixmap:
         If Bitmap^.GDIPixmapObject <> nil then begin
@@ -2509,9 +2509,19 @@ begin
   Height:=0;
   IsGdkBitmap:=false;
 
-  If GDKWindow <> nil then begin
-    Visual:=gdk_window_get_visual(GDKWindow);
+  If (GDKWindow <> nil) then begin
+    {$IFDEF Gtk1}
+    if GDKWindow<>@gdk_root_window then begin
+      GDK_Window_Get_Size(GDKWindow,@Width,@Height);
+      Visual:=gdk_window_get_visual(GDKWindow);
+    end else begin
+      Width:=gdk_screen_width;
+      Height:=gdk_screen_height;
+    end;
+    {$ELSE}
     GDK_Window_Get_Size(GDKWindow,@Width,@Height);
+    Visual:=gdk_window_get_visual(GDKWindow);
+    {$ENDIF}
 //    if Visual=nil then begin
 //      WindowType:=gdk_window_get_type(GDKWindow);
 //      if WindowType=GDK_WINDOW_PIXMAP then begin
@@ -2638,7 +2648,7 @@ end;
 
 function TGtkWidgetSet.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
   MaskBitmap: PGdkBitmap; const SrcRect: TRect;
-  var NewRawImage: TRawImage): boolean;
+  out NewRawImage: TRawImage): boolean;
 var
   ARect: TRect;
   MaxRect: TRect;
@@ -2787,7 +2797,9 @@ begin
   end;
   try
     {$IFDEF VerboseRawImage}
-    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),' theType=',dbgs(AnImage^.thetype),' depth=',dbgs(AnImage^.depth),' AnImage^.bpp=',dbgs(AnImage^.bpp));
+    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),
+      ' theType=',dbgs({$IFDEF Gtk1}AnImage^.thetype{$ELSE}ord(AnImage^._type){$ENDIF}),
+      ' depth=',dbgs(AnImage^.depth),' AnImage^.bpp=',dbgs(AnImage^.bpp));
     DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
 
@@ -6273,6 +6285,7 @@ begin
 
   if TheWidget = nil
   then begin
+    // screen: ToDo: multiple desktops
     FillChar(GCValues, SizeOf(GCValues), #0);
   end
   else begin

@@ -220,7 +220,7 @@ type
       Desc: PRawImageDescription): boolean;
     function GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
       MaskBitmap: PGdkBitmap; const SrcRect: TRect;
-      var NewRawImage: TRawImage): boolean;
+      out NewRawImage: TRawImage): boolean;
     function GetRawImageMaskFromGdkBitmap(MaskBitmap: PGdkBitmap;
       const SrcRect: TRect; var RawImage: TRawImage): boolean;
     function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;

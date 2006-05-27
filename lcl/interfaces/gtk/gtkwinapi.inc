@@ -924,7 +924,7 @@ begin
         DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
           ' BytesPerLine=',dbgs(GdkImage^.bpl),
           ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
-          ' ByteOrder=',dbgs(GdkImage^.byte_order),
+          ' ByteOrder=',dbgs({$IFDEF Gtk1}GdkImage^.byte_order{$ELSE}ord(GdkImage^.byte_order){$ENDIF}),
           '');
         {$ENDIF}
         if (RawImage.Description.BitsPerPixel<>GetPGdkImageBitsPerPixel(GdkImage))
@@ -4867,16 +4867,22 @@ begin
   P := Point(0,0);
   If IsValidDC(DC) then
   with TDeviceContext(DC) do begin
-    if Drawable<>nil then begin
-      gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
-      Result := true;
+    if Wnd<>0 then begin
+      if Drawable<>nil then begin
+        gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
+        Result := true;
+      end else begin
+        {$IFDEF RaiseExceptionOnNilPointers}
+        RaiseException('TGtkWidgetSet.GetDeviceSize Window=nil');
+        {$ENDIF}
+        DebugLn('TGtkWidgetSet.GetDeviceSize:',
+          ' WARNING: DC ',DbgS(DC),' without gdkwindow.',
+          ' Widget=',DbgS(wnd));
+      end;
     end else begin
-      {$IFDEF RaiseExceptionOnNilPointers}
-      RaiseException('TGtkWidgetSet.GetDeviceSize Window=nil');
-      {$ENDIF}
-      DebugLn('TGtkWidgetSet.GetDeviceSize:',
-        ' WARNING: DC ',DbgS(DC),' without gdkwindow.',
-        ' Widget=',DbgS(wnd));
+      // screen size
+      p.x:=gdk_screen_width;
+      p.y:=gdk_screen_height;
     end;
   end;
 end;
@@ -5282,7 +5288,16 @@ begin
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
 
-  GDKWindow:=PGdkWindow(TDeviceContext(SrcDC).Drawable);
+  if TDeviceContext(SrcDC).Wnd<>0 then begin
+    GDKWindow:=PGdkWindow(TDeviceContext(SrcDC).Drawable);
+  end else begin
+    // get screen shot
+    {$IFDEF Gtk1}
+    exit;
+    {$ELSE}
+    GDKWindow:=gdk_screen_get_root_window(gdk_screen_get_default);
+    {$ENDIF}
+  end;
   Result:=GetRawImageFromGdkWindow(GDKWindow,nil,ARect,NewRawImage);
 end;
 
@@ -5325,7 +5340,7 @@ begin
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',DbgS(GdkPixmap),8),' SrcMaskBitmap=',DbgS(Cardinal(SrcMaskBitmap));
+    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',DbgS(GdkPixmap),' SrcMaskBitmap=',DbgS(SrcMaskBitmap));
     {$ENDIF}
 
     GDIMaskImg:=nil;

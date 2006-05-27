@@ -126,8 +126,10 @@ const
 // missing gtk2 functions/vars
 {$IFDEF GTK2}
 {$IFDEF UNIX}
-var
-  gdk_display: PDisplay; external gdkdll name 'gdk_display';
+  var
+    gdk_display: PDisplay; external gdkdll name 'gdk_display';
+
+  function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
 {$ENDIF UNIX}
 {$ENDIF GTK2}
 
