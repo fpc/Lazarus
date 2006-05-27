@@ -963,11 +963,12 @@ begin
   //DebugLn('SetComboBoxText ',DbgS(ComboWidget),' "',NewText,'"');
   // lock combobox, so that no OnChange event is fired
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
+  LockOnChange(PGtkObject(ComboWidget^.list),+1);
   // set text
   if NewText = nil then NewText:=#0; // gtk expects at least a #0
-  //DebugLn('SetComboBoxText A ',DbgS(NewText));
   gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
   // unlock combobox
+  LockOnChange(PGtkObject(ComboWidget^.list),-1);
   LockOnChange(PGtkObject(ComboWidget^.entry),-1);
 end;
 

@@ -2095,7 +2095,9 @@ begin
   Result := CallBackDefaultReturn;
 
   if (Widget=nil) then ;
+  {$IFDEF EventTrace}
   EventTrace('pressed', data);
+  {$ENDIF}
   Mess.msg := LM_PRESSED;
   DeliverMessage(Data, Mess);
 
@@ -2108,7 +2110,9 @@ var
 begin
   Result := CallBackDefaultReturn;
 
+  {$IFDEF EventTrace}
   EventTrace('enter', data);
+  {$ENDIF}
 
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
@@ -2127,7 +2131,9 @@ var
 begin
   Result := CallBackDefaultReturn;
 
+  {$IFDEF EventTrace}
   EventTrace('leave', data);
+  {$ENDIF}
 
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
@@ -2305,7 +2311,10 @@ begin
   Result := CallBackDefaultReturn;
 
   if (Widget=nil) then ;
+  {$IFDEF EventTrace}
+
   EventTrace('released', data);
+  {$ENDIF}
   Mess.msg := LM_RELEASED;
   DeliverMessage(Data, Mess);
 end;
@@ -3138,6 +3147,8 @@ var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
   {$IFDEF EventTrace}
   EventTrace('gtkListSelectChild', data);
   {$ENDIF}

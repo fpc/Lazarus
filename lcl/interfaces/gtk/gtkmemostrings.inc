@@ -269,7 +269,10 @@ end;
 
 procedure TGtkMemoStrings.Clear;
 begin
+  LockOnChange(PGtkObject(FGtkText),+1);
+
   gtk_editable_delete_text(PGtkEditable(FGtkText), 0, gtk_text_get_length(FGtkText));
+  LockOnChange(PGtkObject(FGtkText),-1);
   //SetCachedCount(0);
   //debugln('TGtkMemoStrings.Clear ',DbgSName(Owner));
 end;
@@ -326,7 +329,8 @@ StartPos: Integer;
 begin
   StartPos := 0;
   Clear;
-  gtk_editable_insert_text(PGtkEditable(FGtkText),TheText, Length(TheText), @StartPos);
+  if theText^<>#0 then
+    gtk_editable_insert_text(PGtkEditable(FGtkText),TheText, Length(TheText), @StartPos);
   //debugln('TGtkMemoStrings.SetText ',DbgSName(Owner),' "',TheText,'" ',dbgs(gtk_text_get_length(FGtkText)));
 end;
 {$ENDIF}

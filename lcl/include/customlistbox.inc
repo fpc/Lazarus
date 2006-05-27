@@ -495,7 +495,7 @@ begin
   if (Val >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Val,FItems.Count]);
   if Val<0 then Val:=-1;
-//DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
+//DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',dbgs(Val));
   FItemIndex:=Val;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
     SendItemIndex;

@@ -8225,6 +8225,7 @@ var
   DropDownWidget, ListWidget, FirstChildWidget: PGtkWidget;
   FirstChild: PGList;
   CurX, CurY, CurWidth, CurHeight, CurItemHeight, BorderX, BorderY,
+  OldWidth, OldHeight,
   NewWidth, NewHeight: integer;
   ComboPopup: PGtkScrolledWindow;
   item_requisition: TGtkRequisition;
@@ -8238,7 +8239,8 @@ begin
   ListWidget:=ComboWidget^.List;
   if ListWidget=nil then exit;
   CurWidth:=ListWidget^.Allocation.Width;
-  CurHeight:=ListWidget^.Allocation.Height;
+//  CurHeight:=ListWidget^.Allocation.Height;
+  CurHeight:=ListWidget^.requisition.Height;
   if MinItemCount>0 then begin
     FirstChild:=PGTkList(ListWidget)^.children;
     if FirstChild<>nil then begin
@@ -8254,33 +8256,43 @@ begin
   // calculate new width and height
   DropDownWidget:=ComboWidget^.popwin;
   if DropDownWidget=nil then exit;
-  CurX:=DropDownWidget^.Allocation.x;
-  CurY:=DropDownWidget^.Allocation.y;
   ComboPopup:=PGtkScrolledWindow(ComboWidget^.popup);
   if ComboPopup=nil then exit;
-  // ToDo: add scrollbars only if needed
-  BorderX:=DropDownWidget^.Allocation.Width-CurWidth;
+  
+  CurX:=DropDownWidget^.Allocation.x;
+  CurY:=DropDownWidget^.Allocation.y;
+  CurWidth:=pGtkWidget(ComboPopup)^.allocation.Width;
+  CurHeight:=pGtkWidget(ComboPopup)^.allocation.Height;
+
+  OldWidth:=DropDownWidget^.allocation.Width;
+  OldHeight:=DropDownWidget^.allocation.Height;
+  BorderX:=2*(OldWidth-CurWidth);
   if BorderX<0 then BorderX:=0;
-  inc(BorderX,
-    ComboPopup^.hscrollbar^.requisition.height
-    {+GTK_SCROLLED_WINDOW_GET_CLASS(ComboWidget^.popup)^.scrollbar_spacing});
-  BorderY:=DropDownWidget^.Allocation.Height-CurHeight;
+  BorderY:=2*(OldHeight-CurHeight);
   if BorderY<0 then BorderY:=0;
-  inc(BorderX,
-    ComboPopup^.vscrollbar^.requisition.width
-    {+GTK_SCROLLED_WINDOW_GET_CLASS(ComboWidget^.popup)^.scrollbar_spacing});
-  NewWidth := MinItemsWidth+BorderX;
-  NewHeight := MinItemsHeight+BorderY;
 
-  if NewWidth<CurWidth then NewWidth:=CurWidth;
-  if NewHeight<CurHeight then NewHeight:=CurHeight;
-  //DebugLn('NewWidth=',NewWidth,' NewHeight=',NewHeight,' CurWidth=',CurWidth,' CurHeight=',CurHeight);
-  if (NewWidth=CurWidth) and (NewHeight=CurHeight) then exit;
+  if Gtk_Widget_visible(ComboPopup^.hscrollbar) then
+    inc(BorderY, ComboPopup^.hscrollbar^.requisition.height
+     +GTK_SCROLLED_WINDOW_CLASS(gtk_object_get_class(comboWidget^.popup))^.scrollbar_spacing);
+  if Gtk_Widget_visible(ComboPopup^.vscrollbar) then
+    inc(BorderX,ComboPopup^.vscrollbar^.requisition.width
+     +GTK_SCROLLED_WINDOW_CLASS(gtk_object_get_class(comboWidget^.popup))^.scrollbar_spacing);
+  if minItemsWidth <>0 then NewWidth := MinItemsWidth+BorderX
+                       else NewWidth := OldWidth;
+  
+  if minItemsHeight<>0 then NewHeight := MinItemsHeight+BorderY
+                       else NewHeight := OldHeight;
 
-  //gtk_widget_set_uposition(DropDownWidget,NewX,NewY);
+  if (NewWidth=OldWidth) and (NewHeight=OldHeight) then exit;
+
   NewWidth:=Min(NewWidth, Screen.Width - CurX);
   NewHeight:=Min(NewHeight, Screen.Height - CurY);
-  gtk_widget_set_usize(DropDownWidget,NewWidth,NewHeight);
+  if assigned(dropdownWidget^.Window) then
+    // widget is realized, resize gdkwindow directly
+    gdk_window_resize(dropdownwidget^.Window,newWidth,newHeight)
+  else
+    // widget is not yet realized, force resize needed for shrinking under gtk1)
+    gtk_widget_set_usize(PGtkWidget(dropDownWidget), -1,-1);
 end;
 
 {------------------------------------------------------------------------------
