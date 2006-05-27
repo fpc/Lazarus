@@ -896,7 +896,7 @@ var
 
   Parses the command line for the IDE.
 -------------------------------------------------------------------------------}
-procedure TMainIDE.ParseCmdLineOptions;
+class procedure TMainIDE.ParseCmdLineOptions;
 const
   PrimaryConfPathOptLong='--primary-config-path=';
   PrimaryConfPathOptShort='--pcp=';

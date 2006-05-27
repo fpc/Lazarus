@@ -134,14 +134,14 @@ implementation
 
 { TGtkWSCustomForm }
 
-procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+class procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
 end;
 
 { TGtkWSScrollingWinControlPrivate }
 
-procedure TGtkWSScrollingWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+class procedure TGtkWSScrollingWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   Widget: PGtkWidget;
   ScrollWidget: PGtkScrolledWindow;
@@ -242,7 +242,7 @@ begin
   {$ENDIF}
 end;
 
-function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   AWidgetInfo: PWidgetInfo;
@@ -256,7 +256,7 @@ begin
   SetCallbacks(AWinControl, AWidgetInfo);
 end;
 
-procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+class procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
   inherited SetFormBorderStyle(AForm, AFormBorderStyle);
@@ -264,7 +264,7 @@ begin
   // This is Delphi compatible, so no Recreatewnd needed.
 end;
 
-procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 var
   FormIconGdiObject: PGdiObject;
   AWindow     : PGdkWindow;
@@ -286,13 +286,13 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+class procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
   SetFormShowInTaskbar(AForm,AValue);
 end;
 
-procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
   GtkWindow: PGtkWindow;
 begin
@@ -307,7 +307,7 @@ begin
   GtkWindowShowModal(GtkWindow);
 end;
 
-procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+class procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
   
   procedure RaiseNotImplemented;

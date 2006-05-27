@@ -1188,7 +1188,7 @@ begin
   until DefTempl=nil;
 end;
 
-procedure TDefineTemplate.MergeXMLConfig(ParentDefTempl: TDefineTemplate;
+class procedure TDefineTemplate.MergeXMLConfig(ParentDefTempl: TDefineTemplate;
   var FirstSibling, LastSibling: TDefineTemplate;
   XMLConfig: TXMLConfig; const Path, NewNamePrefix: string);
 var
@@ -1202,7 +1202,7 @@ begin
   SrcNode.Free;
 end;
 
-procedure TDefineTemplate.MergeTemplates(ParentDefTempl: TDefineTemplate;
+class procedure TDefineTemplate.MergeTemplates(ParentDefTempl: TDefineTemplate;
   var FirstSibling, LastSibling: TDefineTemplate;
   SourceTemplate: TDefineTemplate; WithSiblings: boolean;
   const NewNamePrefix: string);

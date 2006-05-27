@@ -121,43 +121,43 @@ implementation
 
 { TWSControl }
 
-procedure TWSControl.AddControl(const AControl: TControl);
+class procedure TWSControl.AddControl(const AControl: TControl);
 begin
 end;
 
-procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+class procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
 end;
 
 { TWSWinControl }
 
-procedure TWSWinControl.AdaptBounds(const AWinControl: TWinControl;
+class procedure TWSWinControl.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 begin
 end;
 
-procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+class procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin
 end;
 
-function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
+class function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 begin
   // For now default to the old creation routines
   Result := WidgetSet.CreateComponent(AWinControl);
 end;
 
-procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
 end;
 
-function TWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; 
+class function TWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   // for now default to the WinAPI version
   Result := WidgetSet.GetClientBounds(AWincontrol.Handle, ARect);
 end;
 
-function TWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; 
+class function TWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   // for now default to the WinAPI version
   Result := WidgetSet.GetClientRect(AWincontrol.Handle, ARect);
@@ -170,12 +170,12 @@ end;
 
   Retrieves the text from a control. 
  ------------------------------------------------------------------------------}
-function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
+class function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   Result := false;
 end;
   
-function TWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; 
+class function TWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
 var
   S: String;
 begin
@@ -184,43 +184,43 @@ begin
   then ALength := Length(S);
 end;
   
-procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
 end;
 
-procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
+class procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
 end;
 
-procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+class procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
 
 end;
     
-procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+class procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
 end;
 
-procedure TWSWinControl.SetChildZPosition(
+class procedure TWSWinControl.SetChildZPosition(
   const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer;
   const AChildren: TFPList);
 begin
 end;
 
-procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
+class procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
 end;
 
-procedure TWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+class procedure TWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
 end;
 
-procedure TWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 
+class procedure TWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer);
 begin
 end;
 
-procedure TWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); 
+class procedure TWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer);
 begin
 end;
 
@@ -232,11 +232,11 @@ end;
 
   Sets the label text on a widget
  ------------------------------------------------------------------------------}
-procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String); 
+class procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
 begin
 end;
 
-procedure TWSWinControl.ShowHide(const AWinControl: TWinControl);
+class procedure TWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
 end;
 

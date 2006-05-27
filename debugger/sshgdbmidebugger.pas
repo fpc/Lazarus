@@ -103,17 +103,17 @@ end;
 
 { TSSHGDBMIDebugger }
 
-function TSSHGDBMIDebugger.Caption: String;
+class function TSSHGDBMIDebugger.Caption: String;
 begin
   Result := 'GNU debugger through SSH (gdb)';
 end;
 
-function TSSHGDBMIDebugger.CreateProperties: TDebuggerProperties;
+class function TSSHGDBMIDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TSSHGDBMIDebuggerProperties.Create;
 end;
 
-function TSSHGDBMIDebugger.ExePaths: String;
+class function TSSHGDBMIDebugger.ExePaths: String;
 begin
   Result := '/usr/bin/ssh user@remote /usr/bin/gdb';
 end;

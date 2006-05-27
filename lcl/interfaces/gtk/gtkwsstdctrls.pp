@@ -312,7 +312,7 @@ end;
 
 { TGtkWSScrollBar }
 
-procedure TGtkWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+class procedure TGtkWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   Widget   : PGtkWidget;
 begin
@@ -330,7 +330,7 @@ end;
 
 { TGtkWSCustomListBox }
 
-function TGtkWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
+class function TGtkWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
   ): integer;
 var
   Widget: PGtkWidget;// pointer to gtk-widget
@@ -373,7 +373,7 @@ begin
   {!$EndIf}
 end;
 
-function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
+class function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
   ): integer;
 var
   Handle: HWND;
@@ -389,7 +389,7 @@ begin
   end;
 end;
 
-function TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
+class function TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
   const AIndex: integer): boolean;
 var
   Handle: HWND;
@@ -427,7 +427,7 @@ begin
   //  debugln('TGtkWSCustomListBox.GetSelected ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex),' Selected=',dbgs(Result));
 end;
 
-function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
+class function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
   ): TStrings;
 var
   Widget: PGtkWidget;// pointer to gtk-widget
@@ -458,13 +458,13 @@ begin
   end;
 end;
 
-function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
+class function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
   ): integer;
 begin
   Result:=TGtkWidgetSet(WidgetSet).GetListBoxIndexAtY(ACustomListBox, 0);
 end;
 
-procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
+class procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
   AIndex: integer; ASelected: boolean);
 var
   Widget: PGtkWidget;// pointer to gtk-widget (local use when neccessary)
@@ -491,7 +491,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+class procedure TGtkWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 var
   Handle: HWND;
   Widget: PGtkWidget;// pointer to gtk-widget
@@ -505,7 +505,7 @@ begin
     gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
 end;
 
-procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
+class procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
   const AIndex: integer);
 var
   Handle: HWND;
@@ -530,7 +530,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListBox.SetSelectionMode(
+class procedure TGtkWSCustomListBox.SetSelectionMode(
   const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
@@ -540,7 +540,7 @@ begin
     PGtkWidget(ACustomListBox.Handle), AMultiSelect, AExtendedSelect);
 end;
 
-procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+class procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
   //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
@@ -553,7 +553,7 @@ begin
     raise Exception.Create('');
 end;
 
-procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
+class procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 {$IFdef GTK2}
 begin
@@ -595,7 +595,7 @@ end;
 
 
 
-procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSCustomListBox.SetColor(const AWinControl: TWinControl);
 var
   aWidget,ListWidget : PGTKWidget;
 begin
@@ -606,14 +606,14 @@ end;
 
 { TGtkWSCustomComboBox }
 
-function  TGtkWSCustomComboBox.GetSelStart(
+class function  TGtkWSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := WidgetGetSelStart(PGtkWidget(PGtkCombo(ACustomComboBox.Handle
                               )^.entry));
 end;
 
-function  TGtkWSCustomComboBox.GetSelLength(
+class function  TGtkWSCustomComboBox.GetSelLength(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   with PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry)^ do begin
@@ -621,7 +621,7 @@ begin
   end;
 end;
 
-function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
 //  DebugLn('TGtkWSCustomComboBox.Gettext ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
 
@@ -629,20 +629,20 @@ begin
   result:=true;
 end;
 
-function TGtkWSCustomComboBox.GetItemIndex(
+class function TGtkWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   //DebugLn('TGtkWSCustomComboBox.GetItemIndex ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
   Result:=GetComboBoxItemIndex(ACustomComboBox);
 end;
 
-function  TGtkWSCustomComboBox.GetMaxLength(
+class function  TGtkWSCustomComboBox.GetMaxLength(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result:= PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry)^.text_max_length;
 end;
 
-procedure TGtkWSCustomComboBox.SetArrowKeysTraverseList(
+class procedure TGtkWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox;
   NewTraverseList: boolean);
 var
@@ -658,7 +658,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomComboBox.SetSelStart(
+class procedure TGtkWSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
   if NewStart < 0 then NewStart := 0; // prevent SegFault in gtk
@@ -666,26 +666,26 @@ begin
            PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry), NewStart);
 end;
 
-procedure TGtkWSCustomComboBox.SetSelLength(
+class procedure TGtkWSCustomComboBox.SetSelLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
   WidgetSetSelLength(PGtkCombo(ACustomComboBox.Handle)^.entry, NewLength);
 end;
 
-procedure TGtkWSCustomComboBox.SetItemIndex(
+class procedure TGtkWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
   SetComboBoxItemIndex(ACustomComboBox, NewIndex);
 end;
 
-procedure TGtkWSCustomComboBox.SetMaxLength(
+class procedure TGtkWSCustomComboBox.SetMaxLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
   gtk_entry_set_max_length(PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry),
                            guint16(NewLength));
 end;
 
-procedure TGtkWSCustomComboBox.SetStyle(
+class procedure TGtkWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 var
   GtkCombo: PGtkCombo;
@@ -709,7 +709,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+class procedure TGtkWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
   NewReadOnly: boolean);
 var
   Widget: PGtkWidget;
@@ -719,20 +719,20 @@ begin
     gtk_entry_set_editable(PGtkEntry(Widget), not ACustomComboBox.ReadOnly);
 end;
 
-function  TGtkWSCustomComboBox.GetItems(
+class function  TGtkWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   Result := TStrings(gtk_object_get_data(PGtkObject(ACustomComboBox.Handle),
                                          GtkListItemLCLListTag));
 end;
 
-procedure TGtkWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
+class procedure TGtkWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
   AList: TStrings; IsSorted: boolean);
 begin
   TGtkListStringList(AList).Sorted := IsSorted;
 end;
 
-procedure TGtkWSCustomComboBox.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSCustomComboBox.SetColor(const AWinControl: TWinControl);
 var
   AWidget,EntryWidget : PGTKWidget;
 begin
@@ -741,7 +741,7 @@ begin
   GtkWidgetSet.SetWidgetColor(EntryWidget, AWinControl.font.color, AWinControl.color,[GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,GTK_STYLE_BASE]);
 end;
 
-procedure TGtkWSCustomComboBox.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSCustomComboBox.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
   AWidget: PGTKWidget;
@@ -763,13 +763,13 @@ end;
 
 { TGtkWSCustomEdit }
 
-function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+class function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := WidgetGetSelStart(GetWidgetInfo(Pointer(ACustomEdit.Handle),
                               true)^.CoreWidget);
 end;
 
-function TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+class function TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.
     CoreWidget)^ do
@@ -778,13 +778,13 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
   // TODO: implement me!
 end;
 
-procedure TGtkWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
 begin
   // XXX TODO: GTK 1.x does not support EchoMode emNone.
@@ -792,7 +792,7 @@ begin
   SetPasswordChar(ACustomEdit, ACustomEdit.PasswordChar);
 end;
 
-procedure TGtkWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
   Widget: PGtkWidget;
@@ -802,7 +802,7 @@ begin
     gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
 end;
 
-procedure TGtkWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
   NewChar: char);
 var
   Widget: PGtkWidget;
@@ -813,7 +813,7 @@ begin
       (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
 end;
 
-procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 var
   Widget: PGtkWidget;
@@ -823,7 +823,7 @@ begin
     gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
 end;
 
-procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 var
 Widget: PGtkWidget;
@@ -838,14 +838,14 @@ begin
   WidgetSetSelLength(Widget,0); // Setting the selection start should cancel any selection
 end;
 
-procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
   WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle),true)^.CoreWidget,
                      NewLength);
 end;
 
-procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
@@ -853,7 +853,7 @@ begin
   //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
-procedure TGtkWSCustomEdit.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSCustomEdit.SetColor(const AWinControl: TWinControl);
 var
   aWidget : PGTKWidget;
 begin
@@ -864,13 +864,13 @@ end;
 
 { TGtkWSCustomStaticText }
 
-procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
+class procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
   const NewAlignment: TAlignment);
 begin
   SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),NewAlignment);
 end;
 
-procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
@@ -880,7 +880,7 @@ end;
 
 { TGtkWSCustomCheckBox }
 
-function  TGtkWSCustomCheckBox.RetrieveState(
+class function  TGtkWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
   ToggleButton: PGtkToggleButton;
@@ -894,7 +894,7 @@ begin
     Result := cbUnChecked;
 end;
 
-procedure TGtkWSCustomCheckBox.SetShortCut(
+class procedure TGtkWSCustomCheckBox.SetShortCut(
   const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
@@ -903,7 +903,7 @@ begin
     'activate_item');
 end;
 
-procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState);
+class procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState);
 var
   GtkObject: PGtkObject;
 begin
@@ -920,7 +920,7 @@ begin
   LockOnChange(GtkObject,-1);
 end;
 
-procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
@@ -928,7 +928,7 @@ begin
   //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
-procedure TGtkWSCustomCheckBox.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSCustomCheckBox.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
   Widget: PGTKWidget;
@@ -950,7 +950,7 @@ end;
 
 { TGtkWSCustomMemo }
 
-procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
+class procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
   const AText: string);
 var
   Widget: PGtkWidget;
@@ -971,7 +971,7 @@ end;
 
 {$ifdef GTK1}
 
-function TGtkWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+class function TGtkWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 var
 Widget: PGtkText;
 begin
@@ -979,13 +979,13 @@ begin
   Result:=TGtkMemoStrings.Create(Widget, ACustomMemo);
 end;
 
-procedure TGtkWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
 begin
   // no password char in memo
 end;
 
-procedure TGtkWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
   ImplWidget   : PGtkWidget;
@@ -1002,13 +1002,13 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomMemo.SetPasswordChar(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomMemo.SetPasswordChar(const ACustomEdit: TCustomEdit;
   NewChar: char);
 begin
   // no password char in memo
 end;
 
-procedure TGtkWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
+class procedure TGtkWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 var
   ImplWidget   : PGtkWidget;
@@ -1017,7 +1017,7 @@ begin
   gtk_text_set_editable (GTK_TEXT(ImplWidget), not ACustomEdit.ReadOnly);
 end;
 
-procedure TGtkWSCustomMemo.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSCustomMemo.SetColor(const AWinControl: TWinControl);
 var
   aWidget : PGTKWidget;
 begin
@@ -1029,7 +1029,7 @@ begin
      GTK_STYLE_BASE]);
 end;
 
-procedure TGtkWSCustomMemo.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSCustomMemo.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
   AWidget: PGTKWidget;
@@ -1050,7 +1050,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
+class procedure TGtkWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
   const NewScrollbars: TScrollStyle);
 var
   wHandle: HWND;
@@ -1081,7 +1081,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
+class procedure TGtkWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
   const NewWordWrap: boolean);
 var
   ImplWidget   : PGtkWidget;
@@ -1100,7 +1100,7 @@ end;
 
 { TGtkWSCustomGroupBox }
 
-procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   Widget: PGtkWidget;

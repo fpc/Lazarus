@@ -452,7 +452,7 @@ end;
 { TGDBMIDebugger }
 { =========================================================================== }
 
-function TGDBMIDebugger.Caption: String;
+class function TGDBMIDebugger.Caption: String;
 begin
   Result := 'GNU debugger (gdb)';
 end;
@@ -547,7 +547,7 @@ begin
   Result := TGDBMILocals.Create(Self);
 end;
 
-function TGDBMIDebugger.CreateProperties: TDebuggerProperties;
+class function TGDBMIDebugger.CreateProperties: TDebuggerProperties;
 begin
   Result := TGDBMIDebuggerProperties.Create;
 end;
@@ -716,7 +716,7 @@ begin
   until not R;
 end;
 
-function TGDBMIDebugger.ExePaths: String;
+class function TGDBMIDebugger.ExePaths: String;
 begin
   Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
 end;

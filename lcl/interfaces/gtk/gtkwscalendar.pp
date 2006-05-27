@@ -65,7 +65,7 @@ begin
   Result:=PGtkCalendar(WinWidgetInfo^.CoreWidget);
 end;
 
-function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+class function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   Year, Month, Day: word;  //used for csCalendar
 begin
@@ -74,7 +74,7 @@ begin
   Result := EncodeDate(Year,Month+1,Day);
 end;
 
-procedure TGtkWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+class procedure TGtkWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   Year, Month, Day: string;
   GtkCalendar: PGtkCalendar;
@@ -87,7 +87,7 @@ begin
   gtk_calendar_select_day(GtkCalendar,StrToInt(Day));
 end;
 
-procedure TGtkWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
+class procedure TGtkWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
 var
   num: dword;
@@ -113,7 +113,7 @@ begin
   gtk_Calendar_Display_options(GetGtkCalendar(ACalendar), gtkCalendarDisplayOptions);
 end;
 
-procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
+class procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
   const AReadOnly: boolean);
 var
   GtkCalendar: PGtkCalendar;

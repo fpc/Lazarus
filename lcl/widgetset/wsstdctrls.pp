@@ -200,217 +200,217 @@ implementation
 
 { TWSScrollBar }
 
-procedure TWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+class procedure TWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
 end;
 
 { TWSCustomListBox }
 
-function  TWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+class function  TWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
 end;
 
-function  TWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+class function  TWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
 end;
 
-function  TWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+class function  TWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 begin
   Result := false;
 end;
 
-function  TWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+class function  TWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 begin
   Result := nil;
 end;
 
-function  TWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+class function  TWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
 end;
 
-procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+class procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
 end;
 
-procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+class procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
 end;
 
-procedure TWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+class procedure TWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 begin
 end;
 
-procedure TWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; 
+class procedure TWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
 end;
 
-procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+class procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
 end;
 
-procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+class procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
 end;
 
-procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
+class procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
 end;
 
 { TWSCustomComboBox }
 
-function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox
+class function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
   Result := -1;
 end;
 
-function  TWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox
+class function  TWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
   Result := 0;
 end;
 
-function  TWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox
+class function  TWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
   Result := -1;
 end;
 
-function  TWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox
+class function  TWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
   Result := 0;
 end;
 
-procedure TWSCustomComboBox.SetArrowKeysTraverseList(
+class procedure TWSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
 begin
 end;
 
-procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox;
   NewLength: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
   NewStart: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
   NewLength: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox;
   NewIndex: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
   NewStyle: TComboBoxStyle);
 begin
 end;
 
-procedure TWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
   NewReadOnly: boolean);
 begin
 end;
 
-function  TWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox
+class function  TWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox
   ): TStrings;
 begin
   Result := nil;
 end;
 
-procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
+class procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
   AList: TStrings; IsSorted: boolean);
 begin
 end;
 
 { TWSCustomEdit }
 
-function  TWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+class function  TWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   result := -1;
 end;
 
-function  TWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+class function  TWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   result := 0;
 end;
 
-procedure TWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+class procedure TWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
 begin
 end;
 
-procedure TWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+class procedure TWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
 end;
 
-procedure TWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+class procedure TWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
 end;
 
-procedure TWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+class procedure TWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 begin
 end;
 
-procedure TWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+class procedure TWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
 end;
 
-procedure TWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+class procedure TWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 begin
 end;
 
-procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+class procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
 end;
 
 { TWSCustomMemo }
 
-procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
+class procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 begin
 end;
 
-function TWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+class function TWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 begin
   Result := ACustomMemo.Lines; //use default if the WS has not defined any
 end;
 
-procedure TWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+class procedure TWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
 end;
 
-procedure TWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+class procedure TWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 begin
 end;
 
 { TWSCustomStaticText }
 
-procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+class procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
 end;
 
 { TWSCustomCheckBox }
 
-function  TWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class function  TWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   Result := cbUnchecked;
 end;
 
-procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut, NewShortCut: TShortCut);
+class procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 
-procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 begin
 end;
 

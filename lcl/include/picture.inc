@@ -539,7 +539,7 @@ begin
     FGraphic.SaveToClipboardFormat(FormatID);
 end;
 
-function TPicture.SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
+class function TPicture.SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
 begin
   Result := GetPicClipboardFormats.FindFormat(FormatID) <> nil;
 end;
@@ -564,7 +564,7 @@ begin
   GetPicFileFormats.Add(AnExtension, ADescription, AGraphicClass);
 end;
 
-procedure TPicture.RegisterClipboardFormat(FormatID: TClipboardFormat;
+class procedure TPicture.RegisterClipboardFormat(FormatID: TClipboardFormat;
   AGraphicClass: TGraphicClass);
 begin
   GetPicClipboardFormats.Add(FormatID, AGraphicClass);

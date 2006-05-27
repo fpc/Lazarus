@@ -20,17 +20,17 @@
 
 { TPortableAnyMapGraphic }
 
-function TPortableAnyMapGraphic.GetFileExtensions: string;
+class function TPortableAnyMapGraphic.GetFileExtensions: string;
 begin
   Result:='pbm;pgm;ppm';
 end;
 
-function TPortableAnyMapGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TPortableAnyMapGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNM;
 end;
 
-function TPortableAnyMapGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TPortableAnyMapGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNM;
 end;

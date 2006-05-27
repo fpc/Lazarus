@@ -68,7 +68,7 @@ begin
   TSetDesigningComponent.SetDesigningOfComponent(AComponent,true);
 end;
 
-procedure TSetDesigningComponent.SetDesigningOfComponent(
+class procedure TSetDesigningComponent.SetDesigningOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
   AComponent.SetDesigning(Value);

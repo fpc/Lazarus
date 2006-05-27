@@ -20,17 +20,17 @@
 
 { TPortableNetworkGraphic }
 
-function TPortableNetworkGraphic.GetFileExtensions: string;
+class function TPortableNetworkGraphic.GetFileExtensions: string;
 begin
   Result:='png';
 end;
 
-function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNG;
 end;
 
-function TPortableNetworkGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TPortableNetworkGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNG;
 end;

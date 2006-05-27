@@ -119,7 +119,7 @@ begin
 end;
 
 
-function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
+class function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Button: TCustomButton;
@@ -142,7 +142,7 @@ begin
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
-procedure TGtkWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
+class procedure TGtkWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 begin
   if (AButton.Active)
   and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
@@ -157,13 +157,13 @@ begin
   end;
 end;
     
-function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
+class function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin             
   // The button text is static, so let the LCL fallback to FCaption
   Result := False;
 end;
 
-procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
+class procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin        
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
@@ -171,7 +171,7 @@ begin
   SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
 end;
 
-procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut);
+class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut);
 begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut')
   then Exit;
@@ -180,7 +180,7 @@ begin
   Accelerate(AButton, PGtkWidget(AButton.Handle), NewShortcut, 'clicked');
 end;
 
-procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String); 
+class procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String);
 var
   BtnWidget: PGtkButton;
   LblWidget: PGtkLabel;
@@ -206,7 +206,7 @@ begin
                                PGtkWidget(BtnWidget), 'clicked');
 end;
 
-procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSButton.SetColor(const AWinControl: TWinControl);
 var
   Widget: PGTKWidget;
 begin
@@ -214,7 +214,8 @@ begin
   GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
-procedure TGtkWSButton.SetFont(const AWinControl: TWinControl;
+
+class procedure TGtkWSButton.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
   Widget: PGTKWidget;
@@ -233,8 +234,7 @@ begin
   end;
 end;
 
-
-procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
@@ -256,7 +256,7 @@ end;
  To get a margin, a gtkInvisible is needed for bottom and 
  right, so the invisible is always in position 3. 
 }
-function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl;
+class function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   BitBtn: TCustomBitBtn;
@@ -303,7 +303,7 @@ begin
   TGtkWSButton.SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
-procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+class procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 var
   WidgetInfo: PWidgetInfo;
@@ -344,7 +344,7 @@ begin
   end;
 end;
 
-procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+class procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 var
   WidgetInfo: PWidgetInfo;
@@ -358,7 +358,7 @@ begin
   UpdateLayout(BitBtnInfo, AValue, ABitBtn.Margin);
 end;
 
-procedure TGtkWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
+class procedure TGtkWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -372,7 +372,7 @@ begin
   UpdateMargin(BitBtnInfo, ABitBtn.Layout, AValue);
 end;
 
-procedure TGtkWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
+class procedure TGtkWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -387,7 +387,7 @@ begin
   gtk_table_set_row_spacing(BitBtnInfo^.TableWidget, 1, AValue);
 end;
 
-procedure TGtkWSBitBtn.SetText(const AWinControl: TWinControl;
+class procedure TGtkWSBitBtn.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
   WidgetInfo: PWidgetInfo;
@@ -405,7 +405,7 @@ begin
                                WidgetInfo^.CoreWidget, 'clicked');
 end;
 
-procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSBitBtn.SetColor(const AWinControl: TWinControl);
 var
   Widget: PGTKWidget;
 begin
@@ -415,7 +415,7 @@ begin
      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
-procedure TGtkWSBitBtn.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSBitBtn.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
   WidgetInfo: PWidgetInfo;
@@ -436,7 +436,7 @@ begin
   GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
 end;
 
-procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
+class procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);
 begin
   if (AInfo^.ImageWidget = nil)
@@ -507,7 +507,7 @@ begin
   then UpdateMargin(AInfo, ALayout, AMargin)
 end;
 
-procedure TGtkWSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;
+class procedure TGtkWSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);
 begin
   if AMargin < 0 

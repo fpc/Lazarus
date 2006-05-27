@@ -421,7 +421,7 @@ end;
 
 { TWSLCLComponent }
 
-function TWSLCLComponent.WSPrivate: TWSPrivateClass; //inline;
+class function TWSLCLComponent.WSPrivate: TWSPrivateClass; //inline;
 begin
   Result := TWSPrivateClass(PClass(Pointer(Self) + vmtWSPrivate)^);
 end;

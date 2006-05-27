@@ -219,7 +219,7 @@ end;
 // Column code
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TGtkWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
+class procedure TGtkWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -237,7 +237,7 @@ begin
   RecreateWnd(ALV);
 end;
 
-function TGtkWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer;
+class function TGtkWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -259,7 +259,7 @@ begin
   Result := CListColumn^.width;
 end;
 
-procedure TGtkWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); 
+class procedure TGtkWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -276,7 +276,7 @@ begin
   RecreateWnd(ALV);
 end;
 
-procedure TGtkWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); 
+class procedure TGtkWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
   procedure CopyColumn(const AList: PGtkCList; const AIndex: Integer; const ASrc: PGtkCListColumn);
   begin                                      
     gtk_clist_set_column_title(AList, AIndex, ASrc^.title);
@@ -342,7 +342,7 @@ begin
   StrDispose(OldCListColumn.title);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
+class procedure TGtkWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
 const
   JUSTIFICATION: array[TAlignment] of TGtkJustification = (
     GTK_JUSTIFY_LEFT,
@@ -364,7 +364,7 @@ begin
   gtk_clist_set_column_justification(CListWidget, AIndex, JUSTIFICATION[AAlignment]);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
+class procedure TGtkWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -380,7 +380,7 @@ begin
   gtk_clist_set_column_auto_resize(CListWidget, AIndex, AAutoSize);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
+class procedure TGtkWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -396,7 +396,7 @@ begin
   gtk_clist_set_column_title(CListWidget, AIndex, PChar(ACaption));
 end;
 
-procedure TGtkWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+class procedure TGtkWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -413,7 +413,7 @@ begin
   if CListWidget=nil then exit;
 end;
 
-procedure TGtkWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
+class procedure TGtkWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -436,7 +436,7 @@ begin
   else gtk_clist_set_column_max_width(CListWidget, AIndex, AMaxWidth);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
+class procedure TGtkWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -452,7 +452,7 @@ begin
   gtk_clist_set_column_min_width(CListWidget, AIndex, AMinWidth);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+class procedure TGtkWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -468,7 +468,7 @@ begin
   gtk_clist_set_column_width(CListWidget, AIndex, AWidth);
 end;
 
-procedure TGtkWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
+class procedure TGtkWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -488,7 +488,7 @@ end;
 // Item code
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TGtkWSCustomListView.ItemChangeInternal(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
+class procedure TGtkWSCustomListView.ItemChangeInternal(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
   ImageBitmap, MaskBitmap: TBitmap;
   ImageRect: TRect;
@@ -526,7 +526,7 @@ begin
     gtk_clist_set_text(ACListWidget, AIndex, n, #0);
 end;
 
-procedure TGtkWSCustomListView.ItemDelete(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -541,7 +541,7 @@ begin
   gtk_clist_remove(CListWidget, AIndex);
 end;
 
-function TGtkWSCustomListView.ItemGetState(const ALV: TCustomListView;
+class function TGtkWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
 var
@@ -581,7 +581,7 @@ begin
   
 end;
   
-procedure TGtkWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
+class procedure TGtkWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -615,7 +615,7 @@ begin
   ItemChangeInternal(CListWidget, ALV, idx, AItem);
 end;
 
-procedure TGtkWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
+class procedure TGtkWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -703,7 +703,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); 
+class procedure TGtkWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -761,7 +761,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
+class procedure TGtkWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -804,7 +804,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+class procedure TGtkWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -844,7 +844,7 @@ end;
 // LV code
 ////////////////////////////////////////////////////////////////////////////////
 
-function TGtkWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TGtkWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   ListView: TLVHack; //TCustomListView
   WidgetInfo: PWidgetInfo;
@@ -903,7 +903,7 @@ begin
   SetCallbacks(PGtkWidget(ScrollWidget), PGtkWidget(CListWidget), WidgetInfo);
 end;
 
-procedure TGtkWSCustomListView.SetCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+class procedure TGtkWSCustomListView.SetCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
 
@@ -919,7 +919,7 @@ begin
   SignalConnect(AListWidget, 'end-selection',       @GtkWSCustomListView_EndSelection,      AWidgetInfo);
 end;
 
-procedure TGtkWSCustomListView.BeginUpdate(const ALV: TCustomListView);
+class procedure TGtkWSCustomListView.BeginUpdate(const ALV: TCustomListView);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -933,7 +933,7 @@ begin
   gtk_clist_freeze(CListWidget);
 end;
 
-procedure TGtkWSCustomListView.EndUpdate(const ALV: TCustomListView);
+class procedure TGtkWSCustomListView.EndUpdate(const ALV: TCustomListView);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -947,7 +947,7 @@ begin
   gtk_clist_thaw(CListWidget);
 end;
 
-function TGtkWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
+class function TGtkWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -970,7 +970,7 @@ begin
   end;
 end;
 
-function TGtkWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -987,7 +987,7 @@ begin
   Result := -1;
 end;
 
-function TGtkWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1001,7 +1001,7 @@ begin
   Result := CListWidget^.focus_row;
 end;
 
-function TGtkWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1018,7 +1018,7 @@ begin
   Result := -1; // = default
 end;
 
-function TGtkWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1034,7 +1034,7 @@ begin
   else Result := g_list_length(CListWidget^.selection);
 end;
 
-function TGtkWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1050,7 +1050,7 @@ begin
   else Result := Integer(CListWidget^.selection^.data);
 end;
 
-function TGtkWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1068,7 +1068,7 @@ begin
   Result := -CListWidget^.voffset div (CListWidget^.row_height + 1);
 end;
 
-function TGtkWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
+class function TGtkWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1082,7 +1082,7 @@ begin
   Result := CListWidget^.clist_window_height div (CListWidget^.row_height + 1);
 end;
 
-procedure TGtkWSCustomListView.SetAllocBy(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -1097,7 +1097,7 @@ begin
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView;
   const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -1112,7 +1112,7 @@ begin
   gtk_clist_set_row_height(CListWidget, AValue);
 end;
 
-procedure TGtkWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
   const AValue: TListHotTrackStyles);
 var
   WidgetInfo: PWidgetInfo;
@@ -1128,7 +1128,7 @@ begin
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetHoverTime(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetHoverTime(const ALV: TCustomListView;
   const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -1144,7 +1144,7 @@ begin
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetImageList(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetImageList(const ALV: TCustomListView;
   const AList: TListViewImageList; const AValue: TCustomImageList);
 var
   WidgetInfo: PWidgetInfo;
@@ -1160,7 +1160,7 @@ begin
   // TODO: implement
 end;
 
-procedure TGtkWSCustomListView.SetPropertyInternal(
+class procedure TGtkWSCustomListView.SetPropertyInternal(
   const ACListWidget: PGtkCList; const AInfo: PWidgetInfo;
   const AProp: TListViewProperty; const AIsSet: Boolean);
 var
@@ -1234,7 +1234,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.SetProperty(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetProperty(const ALV: TCustomListView;
   const AProp: TListViewProperty; const AIsSet: Boolean);
 var
   WidgetInfo: PWidgetInfo;
@@ -1249,7 +1249,7 @@ begin
   SetPropertyInternal(CListWidget, WidgetInfo, AProp, AIsSet);
 end;
 
-procedure TGtkWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
+class procedure TGtkWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1265,7 +1265,7 @@ begin
     SetPropertyInternal(CListWidget, WidgetInfo, Prop, Prop in AProps);
 end;
 
-procedure TGtkWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);
+class procedure TGtkWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);
 var
   ScrollWidget: PGtkScrolledWindow;
   hPolicy, vPolicy: TGtkPolicyType;
@@ -1292,7 +1292,7 @@ begin
   gtk_scrolled_window_set_policy(ScrollWidget, hPolicy, vPolicy);
 end;
 
-procedure TGtkWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
+class procedure TGtkWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1306,7 +1306,7 @@ begin
   gtk_adjustment_set_value(CListWidget^.hAdjustment, AValue);
 end;
 
-procedure TGtkWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
+class procedure TGtkWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1321,7 +1321,7 @@ begin
   gtk_adjustment_set_value(CListWidget^.vAdjustment, AValue);
 end;
 
-procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView;
+class procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView;
   const AType: TSortType; const AColumn: Integer);
 var
   WidgetInfo: PWidgetInfo;
@@ -1337,7 +1337,7 @@ begin
   // TODO implement
 end;
 
-procedure TGtkWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
+class procedure TGtkWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
 var
   WidgetInfo: PWidgetInfo;
   ListViewData: PCustomListViewData;

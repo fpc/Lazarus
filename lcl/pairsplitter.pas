@@ -357,7 +357,7 @@ begin
     PairSplitterSetPosition(Handle,FPosition);
 end;
 
-function TCustomPairSplitter.IsSupportedByInterface: boolean;
+class function TCustomPairSplitter.IsSupportedByInterface: boolean;
 begin
   Result:=PairSplitterGetInterfaceInfo;
 end;

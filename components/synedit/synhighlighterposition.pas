@@ -136,6 +136,7 @@ begin
   Result:=nil;
 end;
 
+{$IFNDEF SYN_CPPB_1} class {$ENDIF}
 function TSynPositionHighlighter.GetLanguageName: string;
 begin
   Result:='Position based highlighter';

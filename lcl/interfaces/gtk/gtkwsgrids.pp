@@ -69,7 +69,7 @@ implementation
 
 { TGtkWSCustomGrid }
 
-procedure TGtkWSCustomGrid.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSCustomGrid.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 begin
   //

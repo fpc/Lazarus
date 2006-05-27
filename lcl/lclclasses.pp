@@ -74,7 +74,7 @@ begin
   Destroying;
 end;
 
-function TLCLComponent.NewInstance: TObject;
+class function TLCLComponent.NewInstance: TObject;
 begin
   Result := inherited NewInstance; 
   TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);

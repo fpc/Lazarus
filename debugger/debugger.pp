@@ -1171,7 +1171,7 @@ end;
 { TDebugger }
 { =========================================================================== }
 
-function TDebugger.Caption: String;
+class function TDebugger.Caption: String;
 begin
   Result := 'No caption set';
 end;
@@ -1367,7 +1367,7 @@ begin
   Result := ReqCmd(dcEvaluate, [AExpression, @AResult]);
 end;
 
-function TDebugger.ExePaths: String;
+class function TDebugger.ExePaths: String;
 begin
   Result := '';
 end;

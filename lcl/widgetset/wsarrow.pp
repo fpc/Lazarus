@@ -62,7 +62,7 @@ implementation
 
 { TWSArrow }
 
-procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
+class procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 begin
 end;

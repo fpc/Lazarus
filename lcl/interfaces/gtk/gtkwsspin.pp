@@ -84,7 +84,7 @@ end;
 //const
 //  GtkValueEmpty: array[boolean] of integer = (0,1);
 
-function TGtkWSCustomFloatSpinEdit.GetSelStart(
+class function TGtkWSCustomFloatSpinEdit.GetSelStart(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit
   ): integer;
 begin
@@ -92,34 +92,34 @@ begin
            WidgetGetSelStart(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)));
 end;
 
-function TGtkWSCustomFloatSpinEdit.GetSelLength(
+class function TGtkWSCustomFloatSpinEdit.GetSelLength(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
   with GetSpinGtkEditable(ACustomFloatSpinEdit)^ do
     Result := Abs(integer(selection_end_pos)-integer(selection_start_pos));
 end;
 
-function TGtkWSCustomFloatSpinEdit.GetValue(
+class function TGtkWSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   Result:=gtk_spin_button_get_value_as_float(
                                    PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 end;
 
-procedure TGtkWSCustomFloatSpinEdit.SetSelStart(
+class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
   gtk_editable_set_position(GetSpinGtkEditable(ACustomFloatSpinEdit), NewStart);
 end;
 
-procedure TGtkWSCustomFloatSpinEdit.SetSelLength(
+class procedure TGtkWSCustomFloatSpinEdit.SetSelLength(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
   WidgetSetSelLength(PGtkWidget(GetSpinGtkEntry(ACustomFloatSpinEdit)),
                      NewLength);
 end;
 
-procedure TGtkWSCustomFloatSpinEdit.UpdateControl(
+class procedure TGtkWSCustomFloatSpinEdit.UpdateControl(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
   AnAdjustment: PGtkAdjustment;

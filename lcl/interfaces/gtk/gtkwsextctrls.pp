@@ -210,14 +210,14 @@ implementation
 
 { TGtkWSCustomPage }
 
-procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+class procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
   UpdateNotebookPageTab(nil, ACustomPage);
 end;
 
 { TGtkWSCustomNotebook }
 
-procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
+class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 {
   Inserts a new page to a notebook at position Index. The ANotebook is a
@@ -282,7 +282,7 @@ begin
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
-procedure TGtkWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+class procedure TGtkWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const NewIndex: integer);
 var
   NoteBookWidget: PGtkNotebook;
@@ -292,7 +292,7 @@ begin
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
-procedure TGtkWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
+class procedure TGtkWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 var
   PageWidget: PGtkWidget;
@@ -308,7 +308,7 @@ begin
   gtk_widget_hide(PageWidget);
 end;
 
-function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
+class function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 var
   NBWidget: PGTKWidget;
@@ -362,7 +362,7 @@ begin
     GetWidgetDebugReport(NBWidget));
 end;
 
-function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
+class function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
   Result:=inherited GetNotebookMinTabWidth(AWinControl);
@@ -377,7 +377,7 @@ end;
        end;
 }
 
-function TGtkWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
+class function TGtkWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
   const AClientPos: TPoint): integer;
 var
   NoteBookWidget: PGtkNotebook;
@@ -415,13 +415,13 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TGtkWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 begin
   gtk_notebook_set_page(PGtkNotebook(ANotebook.Handle), AIndex);
   UpdateNoteBookClientWidget(ANotebook);
 end;
 
-procedure TGtkWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+class procedure TGtkWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
 var
   GtkNotebook: PGtkNotebook;
 begin
@@ -434,14 +434,14 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
 begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
 { TGtkWSCustomSplitter }
 
-procedure TGtkWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
+class procedure TGtkWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
 var
   Widget: PGtkWidget;
   ClientWidget: Pointer;
@@ -491,7 +491,7 @@ begin
 end;
 
 
-procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);
 var
   MainWidget: PGtkWidget;
 

@@ -235,7 +235,7 @@ const
 
 { TGtkWSProgressBar }
 
-procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
+class procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 var
   wHandle: HWND;
 begin
@@ -273,7 +273,7 @@ begin
   end;
 end;
 
-procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
+class procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   gtk_progress_set_value(GTK_PROGRESS(Pointer(AProgressBar.Handle)), NewPosition);
 end;
@@ -334,7 +334,7 @@ end;
 
 { TGtkWSTrackBar }
 
-procedure TGtkWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+class procedure TGtkWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
   Widget: PGtkWidget;
@@ -367,7 +367,7 @@ begin
   end;
 end;
 
-function  TGtkWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+class function  TGtkWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
   if ATrackBar.HandleAllocated then 
   begin
@@ -377,7 +377,7 @@ begin
     Result := 0;
 end;
 
-procedure TGtkWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+class procedure TGtkWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 var
   Handle: HWND;
 begin
@@ -389,7 +389,7 @@ end;
 
 { TGtkWSStatusBar }
 
-procedure TGtkWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+class procedure TGtkWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 var
   HBox: PGtkWidget;
@@ -411,19 +411,19 @@ begin
   end;
 end;
 
-procedure TGtkWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+class procedure TGtkWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
   PanelUpdate(AStatusBar,PanelIndex);
 end;
 
-procedure TGtkWSStatusBar.Update(const AStatusBar: TStatusBar);
+class procedure TGtkWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
   UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
 end;
 
-procedure TGtkWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TGtkWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   StatusBarWidget: PGtkWidget;

@@ -51,7 +51,7 @@ implementation
 
 { TGtkWSArrow }
 
-procedure TGtkWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
+class procedure TGtkWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 var
   ArrowType : TGTKArrowType;

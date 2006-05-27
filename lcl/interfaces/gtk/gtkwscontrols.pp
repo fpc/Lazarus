@@ -189,7 +189,7 @@ type
   TWinControlHack = class(TWinControl)
   end;
 
-procedure TGtkWSWinControl.AddControl(const AControl: TControl);
+class procedure TGtkWSWinControl.AddControl(const AControl: TControl);
 var
   AParent: TWinControl;
   ParentWidget: PGTKWidget;
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+class procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 var
   Widget: PGtkWidget;
   Geometry: TGdkGeometry;
@@ -247,13 +247,13 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   //DebugLn('TGtkWSWinControl.DestroyHandle ',DbgSName(AWinControl));
   TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AWinControl);
 end;
 
-function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+class function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   CS: PChar;
   Handle: HWND;
@@ -280,7 +280,7 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
+class procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   Assert(false, 'Trace:Trying to invalidate window... !!!');
   //THIS DOESN'T WORK YET....
@@ -298,18 +298,18 @@ begin
   gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
 end;
 
-procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
+class procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods use ShowHide also, can't move code
   TGtkWidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
-procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+class procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   TGtkWidgetSet(WidgetSet).SetResizeRequest(PGtkWidget(AWinControl.Handle));
 end;
 
-procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
+class procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
   const ABorderStyle: TBorderStyle);
 var
   Widget: PGtkWidget;
@@ -328,7 +328,7 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
+class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
 begin
   GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);
@@ -349,7 +349,7 @@ begin
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
 end;
 
-procedure TGtkWSWinControl.SetChildZPosition(
+class procedure TGtkWSWinControl.SetChildZPosition(
   const AWinControl, AChild: TWinControl;
   const AOldPos, ANewPos: Integer; const AChildren: TFPList);
 var
@@ -381,13 +381,13 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.SetCursor(const AControl: TControl;
+class procedure TGtkWSWinControl.SetCursor(const AControl: TControl;
   const ACursor: TCursor);
 begin
   GtkProc.SetCursor(AControl as TWinControl, ACursor);
 end;
 
-procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
+class procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
   Widget: PGtkWidget;
@@ -406,7 +406,7 @@ begin
                                {$IFDEF GTK2},GTK_STYLE_TEXT{$ENDIF}]);
 end;
 
-procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;
+class procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
 var
   Widget: PGtkWidget;
@@ -420,7 +420,7 @@ begin
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
-procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl;
+class procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
 var
   Widget: PGtkWidget;
@@ -435,7 +435,7 @@ begin
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
-procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
+class procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   if not AWinControl.HandleAllocated then exit;
   if  ((csOpaque in AWinControl.ControlStyle)
@@ -450,7 +450,7 @@ begin
   UpdateWidgetStyleOfControl(AWinControl);
 end;
 
-procedure TGtkWSWinControl.SetText(const AWinControl: TWinControl;
+class procedure TGtkWSWinControl.SetText(const AWinControl: TWinControl;
   const AText: string);
 
   procedure SetNotebookPageTabLabel;
@@ -626,7 +626,7 @@ end;
 
 { TGtkWSWinControlPrivate }
 
-procedure TGtkWSWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+class procedure TGtkWSWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   Widget: PGtkWidget;
 begin
@@ -799,7 +799,7 @@ begin
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
 
-function TGtkWSBaseScrollingWinControl.CreateHandle(
+class function TGtkWSBaseScrollingWinControl.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   Widget: PGtkWidget;
@@ -836,7 +836,7 @@ begin
   // SetCallbacks isn't called here, it should be done in the 'derived' class
 end;
 
-procedure TGtkWSBaseScrollingWinControl.SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+class procedure TGtkWSBaseScrollingWinControl.SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
 
@@ -856,7 +856,7 @@ end;
 
 { TGtkWSScrollingPrivate }
 
-procedure TGtkWSScrollingPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+class procedure TGtkWSScrollingPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   ScrollWidget: PGtkScrolledWindow;
 //  WidgetInfo: PWidgetInfo;

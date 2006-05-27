@@ -62,13 +62,13 @@ type
 
 implementation
 
-function  TWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox; 
+class function  TWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer): boolean;
 begin
   Result := false;
 end;
 
-procedure TWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox; 
+class procedure TWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
   const AIndex: integer; const AChecked: boolean);
 begin
 end;

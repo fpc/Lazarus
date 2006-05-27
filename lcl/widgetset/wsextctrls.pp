@@ -167,7 +167,7 @@ implementation
 
 { TWSCustomPage }
 
-procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
 end;
 
@@ -182,7 +182,7 @@ end;
 
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
-procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
+class procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
 begin
 end;
 
@@ -195,7 +195,7 @@ end;
 
   Moves a page in a notebook control
  ------------------------------------------------------------------------------}
-procedure TWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+class procedure TWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
 end;
@@ -208,7 +208,7 @@ end;
 
   Removes a page from a notebook control
  ------------------------------------------------------------------------------}
-procedure TWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer);
 begin
 end;
 
@@ -219,7 +219,7 @@ end;
   Returns the minimum height of the horizontal tabs of a notebook. That is the
   Notebook with TabPosition in [tpTop,tpBottom] without the client panel.
 -------------------------------------------------------------------------------}
-function  TWSCustomNotebook.GetNotebookMinTabHeight(
+class function  TWSCustomNotebook.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 begin
   Result:=30;
@@ -232,40 +232,40 @@ end;
   Returns the minimum width of the vertical tabs of a notebook. That is the
   Notebook with TabPosition in [tpLeft,tpRight] without the client panel.
 -------------------------------------------------------------------------------}
-function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
+class function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
   ): integer;
 begin
   Result:=60;
 end;
 
-function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook;
+class function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook;
   AIndex: Integer): Integer;
 begin
   Result := AIndex;
 end;
 
-function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook; 
+class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
   const AClientPos: TPoint): integer;
 begin
   Result := -1;
 end;
 
-procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
+class procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
 end;
 
-procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
+class procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AText: string);
 begin
 end;
 
-procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
+class procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
   const ATabPosition: TTabPosition);
 begin
 end;
 
-procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+class procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
   AShowTabs: boolean);
 begin
 end;

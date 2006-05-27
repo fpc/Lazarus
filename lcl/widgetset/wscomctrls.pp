@@ -191,88 +191,88 @@ implementation
 
 { TWSStatusBar }
 
-procedure TWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
 end;
 
-procedure TWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+class procedure TWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
 end;
 
-procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
+class procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
 end;
     
 { TWSCustomListView }
 
-procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 begin
 end;
 
-function TWSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
+class function TWSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn): Integer;
 begin
   Result := -1;
 end;
 
-procedure TWSCustomListView.ColumnInsert(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn);
 begin
 end;
 
-procedure TWSCustomListView.ColumnMove(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnMove(const ALV: TCustomListView;
   const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn;
   const AAlignment: TAlignment);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
+class procedure TWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 begin
 end;
 
-function TWSCustomListView.ItemGetState(const ALV: TCustomListView;
+class function TWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
 begin
@@ -281,138 +281,138 @@ begin
   AIsSet:=false;
 end;
 
-procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem;
   const ASubIndex, AImageIndex: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetText(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemSetText(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
   const AText: String);
 begin
 end;
 
-procedure TWSCustomListView.ItemShow(const ALV: TCustomListView;
+class procedure TWSCustomListView.ItemShow(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.BeginUpdate(const ALV: TCustomListView);
+class procedure TWSCustomListView.BeginUpdate(const ALV: TCustomListView);
 begin
 end;
 
-procedure TWSCustomListView.EndUpdate(const ALV: TCustomListView);
+class procedure TWSCustomListView.EndUpdate(const ALV: TCustomListView);
 begin
 end;
 
-function TWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect; 
+class function TWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
   Result := Rect(0,0,0,0);
 end;
 
-function TWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 begin       
   Result := -1;
 end;
 
-function TWSCustomListView.GetFocused(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
 end;
 
-function TWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
 end;
 
-function TWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 begin
   Result := 0;
 end;
 
-function TWSCustomListView.GetSelection(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
 end;
 
-function TWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
 end;
 
-function TWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer; 
+class function TWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
   Result := 0;
 end;
 
-procedure TWSCustomListView.SetAllocBy(const ALV: TCustomListView; const AValue: Integer); 
+class procedure TWSCustomListView.SetAllocBy(const ALV: TCustomListView; const AValue: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); 
+class procedure TWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); 
+class procedure TWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
 begin
 end;
 
-procedure TWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer); 
+class procedure TWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); 
+class procedure TWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
 begin
 end;
 
-procedure TWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
+class procedure TWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
+class procedure TWSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
 begin
 end;
 
-procedure TWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); 
+class procedure TWSCustomListView.SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle);
 begin
 end;
 
-procedure TWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer); 
+class procedure TWSCustomListView.SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer); 
+class procedure TWSCustomListView.SetScrolledTop(const ALV: TCustomListView; const AValue: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+class procedure TWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
 begin
 end;
 
-procedure TWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); 
+class procedure TWSCustomListView.SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle);
 begin
 end;
 
 
 { TWSProgressBar }
 
-procedure TWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
+class procedure TWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 begin
 end;
 
-procedure TWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar;
+class procedure TWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar;
   const NewPosition: integer);
 begin
 end;
@@ -421,16 +421,16 @@ end;
 
 {$ifdef OldToolbar}
 
-function TWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
+class function TWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
   Result := 0;
 end;
 
-procedure TWSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
+class procedure TWSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
 begin
 end;
 
-procedure TWSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
+class procedure TWSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
 begin
 end;
 
@@ -438,16 +438,16 @@ end;
 
 { TWSTrackBar }
 
-procedure TWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+class procedure TWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 begin
 end;
 
-function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+class function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
   Result := 0;
 end;
 
-procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 begin
 end;
 

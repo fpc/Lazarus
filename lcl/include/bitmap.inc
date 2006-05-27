@@ -469,7 +469,7 @@ begin
     Result:=inherited GetDefaultMimeType;
 end;
 
-function TBitmap.GetFileExtensions: string;
+class function TBitmap.GetFileExtensions: string;
 begin
   Result:='bmp;xpm';
 end;
@@ -962,7 +962,7 @@ begin
   Result := 0;
 end;
 
-function TBitmap.GetFPReaderForFileExt(const FileExtension: string
+class function TBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
   Result:=nil;
@@ -977,7 +977,7 @@ begin
   end;
 end;
 
-function TBitmap.GetFPWriterForFileExt(const FileExtension: string
+class function TBitmap.GetFPWriterForFileExt(const FileExtension: string
   ): TFPCustomImageWriterClass;
 begin
   Result:=nil;
@@ -992,7 +992,7 @@ begin
   end;
 end;
 
-function TBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   if (AnsiCompareText(ClassName,'TBitmap')=0) then
     Result:=TLazReaderBMP
@@ -1000,7 +1000,7 @@ begin
     Result:=nil;
 end;
 
-function TBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   if ClassType=TBitmap then
     Result:=TFPWriterBMP

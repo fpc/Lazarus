@@ -1693,12 +1693,12 @@ end;
 
 { TFPImageBitmap }
 
-function TFPImageBitmap.GetFileExtensions: string;
+class function TFPImageBitmap.GetFileExtensions: string;
 begin
   Result:='';
 end;
 
-function TFPImageBitmap.IsFileExtensionSupported(
+class function TFPImageBitmap.IsFileExtensionSupported(
   const FileExtension: string): boolean;
 var
   Extensions: String;
@@ -1738,7 +1738,7 @@ begin
   end;
 end;
 
-function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
+class function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
   if IsFileExtensionSupported(FileExtension) then
@@ -1747,7 +1747,7 @@ begin
     Result:=nil;
 end;
 
-function TFPImageBitmap.GetFPWriterForFileExt(const FileExtension: string
+class function TFPImageBitmap.GetFPWriterForFileExt(const FileExtension: string
   ): TFPCustomImageWriterClass;
 begin
   if IsFileExtensionSupported(FileExtension) then
@@ -1756,12 +1756,12 @@ begin
     Result:=nil;
 end;
 
-function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=nil;
 end;
 
-function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=nil;
 end;
@@ -1838,7 +1838,7 @@ begin
     TLazReaderIcon(ImgReader).Icon := self;
 end;
 
-function TIcon.GetFileExtensions: string;
+class function TIcon.GetFileExtensions: string;
 begin
   Result:='ico';
 end;

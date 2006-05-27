@@ -299,12 +299,12 @@ begin
   WriteStreamWithFPImage(Stream,WriteSize,TLazWriterXPM);
 end;
 
-function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TLazReaderXPM;
 end;
 
-function TPixmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TPixmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TLazWriterXPM;
 end;

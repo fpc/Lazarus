@@ -52,7 +52,7 @@ type
 
 implementation
 
-function  TGtkWSCustomCheckListBox.GetChecked(
+class function  TGtkWSCustomCheckListBox.GetChecked(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): boolean;
 var
   Widget      : PGtkWidget; // pointer to gtk-widget (local use when neccessary)
@@ -73,7 +73,7 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomCheckListBox.SetChecked(
+class procedure TGtkWSCustomCheckListBox.SetChecked(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
   const AChecked: boolean);
 var

@@ -112,42 +112,42 @@ implementation
 
 { TWSScrollingWinControl }
 
-procedure TWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl; 
+class procedure TWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
 end;
   
 { TWSCustomForm }
 
-procedure TWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+class procedure TWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
 end;
 
-procedure TWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+class procedure TWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
         const ABorderIcons: TBorderIcons);
 begin
 end;
 
-procedure TWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+class procedure TWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
   // will be done in interface override
 end;
     
-procedure TWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 begin
 end;
 
-procedure TWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+class procedure TWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
 end;
 
-procedure TWSCustomForm.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+class procedure TWSCustomForm.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 begin
 end;
    
-procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
 end;
 

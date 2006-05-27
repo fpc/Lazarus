@@ -87,7 +87,7 @@ uses Controls;
 
 { TGtkWSMenuItem }
 
-procedure TGtkWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+class procedure TGtkWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
   //AccelKey: Integer;
   //AccelGroup: PGTKAccelGroup;
@@ -151,19 +151,19 @@ begin
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
 
-function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+class function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
   { TODO: cleanup }
   Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenuItem));
 end;
 
-procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+class procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
   TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
-procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+class procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 var
   MenuItemWidget: PGtkWidget;
 begin
@@ -172,7 +172,7 @@ begin
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
 end;
 
-procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; 
+class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
@@ -183,7 +183,7 @@ begin
     );
 end;
 
-procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
+class procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 var
   MenuItemWidget: PGtkWidget;
@@ -197,7 +197,7 @@ begin
     gtk_widget_hide(MenuItemWidget);
 end;
 
-function TGtkWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+class function TGtkWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
 var
   IsRadio: Boolean;
   Group: PGSList;
@@ -225,21 +225,21 @@ begin
   end;
 end;
 
-function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+class function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 begin
   gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
                            Enabled and (AMenuItem.Caption<>'-'));
   Result := True;
 end;
 
-function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+class function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
   AMenuItem.RecreateHandle;
   Result:=true;
 end;
 
-function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
+class function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 var
   MenuItemWidget: PGtkMenuItem;
 begin
@@ -251,7 +251,7 @@ end;
 
 { TGtkWSMenu }
 
-function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+class function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   { TODO: cleanup }
   Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenu));
@@ -266,7 +266,7 @@ begin
   Y^ := Point^.Y;
 end;
 
-procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+class procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
 APoint: TPoint;
 AProc: Pointer;

@@ -89,50 +89,50 @@ implementation
 
 { TWSMenuItem }
 
-procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+class procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
 end;
 
-function  TWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+class function  TWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
   Result := 0;
 end;
 
-procedure TWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+class procedure TWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
 end;
 
-procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+class procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 begin
 end;
 
-procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
+class procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 
-procedure TWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
+class procedure TWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 begin
 end;
 
-function TWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+class function TWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+class function TWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
+class function TWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; 
+class function TWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
   Result := false;
 end;
@@ -141,14 +141,14 @@ end;
           
 { TWSMenu }
 
-function  TWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+class function  TWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := 0;
 end;
 
 { TWSPopupMenu }
 
-procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+class procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 begin
 end;
 

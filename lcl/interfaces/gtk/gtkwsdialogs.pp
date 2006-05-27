@@ -132,7 +132,7 @@ begin
   gtk_color_selection_set_current_color(colorSel,@SelectionColor);
 end;
 
-procedure TGtkWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
+class procedure TGtkWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   GtkWindow: PGtkWindow;
   {$IFDEF Gtk1}
@@ -161,13 +161,13 @@ begin
   GtkWindowShowModal(GtkWindow);
 end;
 
-function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 begin
   { TODO: cleanup }
   Result := TGtkWidgetSet(WidgetSet).CreateComponent(ACommonDialog);
 end;
 
-procedure TGtkWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+class procedure TGtkWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
   { TODO: cleanup }
   TGtkWidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);

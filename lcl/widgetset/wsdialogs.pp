@@ -96,16 +96,16 @@ type
 
 implementation
 
-function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
 begin
   Result := 0;
 end;
 
-procedure TWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+class procedure TWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
 end;
 
-procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
+class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
 end;
 

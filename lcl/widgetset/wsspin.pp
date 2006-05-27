@@ -80,30 +80,30 @@ implementation
 
 { TWSCustomFloatSpinEdit }
 
-function  TWSCustomFloatSpinEdit.GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
+class function  TWSCustomFloatSpinEdit.GetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
   result := -1;
 end;
 
-function  TWSCustomFloatSpinEdit.GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
+class function  TWSCustomFloatSpinEdit.GetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): integer;
 begin
   result := 0;
 end;
 
-function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
+class function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
 begin
   result := 0.0;
 end;
 
-procedure TWSCustomFloatSpinEdit.SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
+class procedure TWSCustomFloatSpinEdit.SetSelStart(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewStart: integer);
 begin
 end;
 
-procedure TWSCustomFloatSpinEdit.SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
+class procedure TWSCustomFloatSpinEdit.SetSelLength(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewLength: integer);
 begin
 end;
 
-procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
+class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 begin
 end;
 

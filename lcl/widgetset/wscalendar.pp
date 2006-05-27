@@ -63,21 +63,21 @@ type
 
 implementation
 
-function  TWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+class function  TWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
   Result := 0.0;
 end;
 
-procedure TWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+class procedure TWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 begin
 end;
 
-procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
+class procedure TWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
   const ADisplaySettings: TDisplaySettings);
 begin
 end;
 
-procedure TWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+class procedure TWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
 begin
 end;
 

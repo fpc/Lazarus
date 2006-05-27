@@ -80,32 +80,32 @@ implementation
 
 { TWSButton }
 
-procedure TWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
+class procedure TWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 begin
 end;
 
-procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut);
+class procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 
 { TWSCustomBitBtn }
 
-procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+class procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 begin
 end;
 
-procedure TWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+class procedure TWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 begin
 end;
 
-procedure TWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
+class procedure TWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
 end;
 
-procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
+class procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
 end;

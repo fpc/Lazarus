@@ -726,7 +726,7 @@ begin
   end;
 end;
 
-function TAnchorDesigner.ControlToStr(AControl: TControl): string;
+class function TAnchorDesigner.ControlToStr(AControl: TControl): string;
 begin
   if AControl=nil then
     Result:=''

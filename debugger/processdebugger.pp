@@ -158,7 +158,7 @@ begin
   end;
 end;
 
-function TProcessDebugger.Caption: String;
+class function TProcessDebugger.Caption: String;
 begin
   {$IFDEF DoNotUseProcessDebugger}
   Result := 'Execute process only';
