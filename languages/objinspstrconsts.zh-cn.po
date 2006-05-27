@@ -1,0 +1,858 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lazarus中文文件\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-05-24 20:57+0800\n"
+"Last-Translator: \n"
+"Language-Team: newsfree <freefcw@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr "%d 行, %d 字符"
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr "%s: 已经注册"
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr "%s: 没有注册"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr "%u 个项目被选择"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "添加(&A)"
+
+#: objinspstrconsts:oistdactdatasetcancelheadline
+msgid "&Cancel"
+msgstr "取消(&C)"
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "目录(&C)"
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
+msgstr "复制(&C)"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "删除(&E)"
+
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "编辑(&E)"
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "首先(&F)"
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "关于(&H)"
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "插入(&I)"
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "最后(&L)"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr "载入(&L)"
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "下一个(&N)"
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr "确定(&O)"
+
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr "打开(&O)..."
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr "粘贴(&P)"
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "优先(&P)"
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "刷新(&R)"
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "保存(&S)"
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "搜索主题"
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
+msgstr "撤销(&U)"
+
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr "上移(&U)"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(所有)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(未知)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr "(没有)"
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr "0 行,0 字符"
+
+#: objinspstrconsts:ois1linedchars
+msgid "1 line, %d chars"
+msgstr "1 行,%d 字符"
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr "动作"
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr "动作列表编辑器"
+
+#: objinspstrconsts:oicoleditadd
+msgid "Add"
+msgstr "添加"
+
+#: objinspstrconsts:sccsiledtopendialog
+msgid "Add Images"
+msgstr "添加图像"
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr "添加新的标签"
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
+msgstr "添加页面"
+
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr "添加到收藏"
+
+#: objinspstrconsts:sccsiledtadd
+msgid "Add..."
+msgstr "添加..."
+
+#: objinspstrconsts:sccsiledtadjustment
+msgid "Adjustment"
+msgstr "调整"
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr "所有"
+
+#: objinspstrconsts:oisallfiles
+msgid "All files"
+msgstr "所有的文件"
+
+#: objinspstrconsts:sccstredtapply
+msgid "Apply"
+msgstr "应用"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr "排列"
+
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "可用的动作类:"
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr "Boolean"
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr "浏览 %s%s%s 不可执行."
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr "浏览 %s%s%s 未找到."
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr "清除(&L)"
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr "取消"
+
+#: objinspstrconsts:sccslvedtlabelcaption
+msgid "Caption:"
+msgstr "标题:"
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr "分类"
+
+#: objinspstrconsts:sccsiledtcenter
+msgid "Center"
+msgstr "中心"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr "Char"
+
+#: objinspstrconsts:oischaractersforblanks
+msgid "Characters for Blanks"
+msgstr "空白字符类型"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr "CheckGroup 编辑器"
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr "CheckListBox 编辑器"
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr "Class"
+
+#: objinspstrconsts:sccssgedtclean
+msgid "Clean"
+msgstr "清除"
+
+#: objinspstrconsts:sccsiledtclear
+msgid "Clear"
+msgstr "清除"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr "清除图片"
+
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr "选择颜色"
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr "组件 %s%s%s 不是一个有效的标识符"
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr "组件"
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr "确定删除"
+
+#: objinspstrconsts:oiscopy
+msgid "Copy"
+msgstr "复制"
+
+#: objinspstrconsts:oiscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "创建新的 pascal 单元"
+
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr "创建默认的事件"
+
+#: objinspstrconsts:sccsiledtcrop
+msgid "Crop"
+msgstr "裁剪"
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr "Ctrl+A"
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr "剪切(&T)"
+
+#: objinspstrconsts:oiscut
+msgid "Cut"
+msgstr "剪切"
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "数据库"
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "删除"
+
+#: objinspstrconsts:oisdelete
+msgid "Delete"
+msgstr "删除"
+
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "删除动作"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "删除项目 %s%s%s?"
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr "删除页面"
+
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr "删除项目 %d \"%s\"?"
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr "对话框"
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr "Do&wn"
+
+#: objinspstrconsts:oicoleditdown
+msgid "Down"
+msgstr "Down"
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr "退出(&X)"
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
+msgstr "编辑"
+
+#: objinspstrconsts:sccslvedt
+msgid "Edit ListView Items..."
+msgstr "编辑 ListView 标签..."
+
+#: objinspstrconsts:sccssgedt
+msgid "Edit StringGrid..."
+msgstr "编辑 StringGrid..."
+
+#: objinspstrconsts:sccstredt
+msgid "Edit TreeView Items..."
+msgstr "编辑 TreeView 标签..."
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "编辑动作列表..."
+
+#: objinspstrconsts:oicoleditediting
+msgid "Editing"
+msgstr "编辑"
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "枚举"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr "错误"
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr "装载图像时错误"
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "装载图像 %s%s%s:%s%s 时错误"
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr "当执行 %s%s%s:%s%s 时错误"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "事件"
+
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr "退出"
+
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr "收藏夹"
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr "文件"
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr "首先"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr "Float"
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr "选择字体"
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr "帮助"
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "帮助目录"
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "帮助数据库 %s%s%s 没有一个浏览器可以阅读 %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "帮助数据库 %s%s%s 没有找到"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "数据库 %s%s%s 中没有找到 %s 的帮助内容 ."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "帮助目录 %s 未找到."
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr "数据库 %s%s%s 中没有找到关键字 %s 的帮助."
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr "关键字 %s%s%s 未找到."
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr "帮助节点 %s%s%s 没有帮助数据库"
+
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "在线帮助"
+
+#: objinspstrconsts:sccstredtlabelimageindex
+msgid "Image Index:"
+msgstr "图像索引:"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "ImageList Editor"
+msgstr "ImageList 编辑器"
+
+#: objinspstrconsts:sccsiledtgrplcaption
+msgid "Images"
+msgstr "图片"
+
+#: objinspstrconsts:oisinputmask
+msgid "Input Mask:"
+msgstr "输入格式:"
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr "插入"
+
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr "插入页面"
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr "Int64"
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr "Integer"
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr "界面"
+
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "错误的属性值"
+
+#: objinspstrconsts:sccstredtitem
+msgid "Item"
+msgstr "项目"
+
+#: objinspstrconsts:sccstredtgrprcaption
+msgid "Item Properties"
+msgstr "项目属性"
+
+#: objinspstrconsts:sccstredtgrplcaption
+msgid "Items"
+msgstr "项目"
+
+#: objinspstrconsts:oisfinddeclaration
+msgid "Jump to declaration"
+msgstr "跳转到声明"
+
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr "最后"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView Items Editor"
+msgstr "ListView 标签编辑器"
+
+#: objinspstrconsts:sccstredtload
+msgid "Load"
+msgstr "载入"
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "载入 Image 对话框"
+
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr "装载图片"
+
+#: objinspstrconsts:sccssgedtload
+msgid "Load..."
+msgstr "载入..."
+
+#: objinspstrconsts:oismasks
+msgid "Masks..."
+msgstr "格式..."
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "方法"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr "更改项目"
+
+#: objinspstrconsts:sccsiledtmovedown
+msgid "Move Down"
+msgstr "下移"
+
+#: objinspstrconsts:sccsiledtmoveup
+msgid "Move Up"
+msgstr "上移"
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr "左移页面"
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr "右移页面"
+
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
+msgstr "新的动作"
+
+#: objinspstrconsts:sccstredtnewitem
+msgid "New Item"
+msgstr "新的项目"
+
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "新的标准动作"
+
+#: objinspstrconsts:sccstredtnewsubitem
+msgid "New SubItem"
+msgstr "新的子项目"
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr "下一个"
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "没有找到HTML浏览器.%s定义帮助-> 配置帮助 -> 查看器"
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "没有找到 %s 的行 %d, 列 %d ."
+
+#: objinspstrconsts:sccsiledtnone
+msgid "None"
+msgstr "无"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr "对象"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "对象浏览器"
+
+#: objinspstrconsts:oisok2
+msgid "Ok"
+msgstr "确定"
+
+#: objinspstrconsts:sccstredtopendialog
+msgid "Open"
+msgstr "打开"
+
+#: objinspstrconsts:oisopenmaskfile
+msgid "Open masks file (*.dem)"
+msgstr "打开格式文件 (*.dem)"
+
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr "选项"
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "P&ost"
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr "面板描述"
+
+#: objinspstrconsts:oispaste
+msgid "Paste"
+msgstr "粘贴"
+
+#: objinspstrconsts:clbdisable
+msgid "Popup to disable/enable items"
+msgstr "允许/禁止弹出菜单"
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr "Post"
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr "优先"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "属性"
+
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr "%s 的属性"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr "记录"
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "刷新"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr "从收藏中移除"
+
+#: objinspstrconsts:oissamplemasks
+msgid "Sample Masks:"
+msgstr "样例格式:"
+
+#: objinspstrconsts:sccstredtsave
+msgid "Save"
+msgstr "保存"
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr "另存为(&A)"
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr "另存为"
+
+#: objinspstrconsts:sccsiledtsavedialog
+msgid "Save Image"
+msgstr "保存图像"
+
+#: objinspstrconsts:oissaveliteralcharacters
+msgid "Save Literal Characters"
+msgstr "保存文字字符"
+
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr "保存图片"
+
+#: objinspstrconsts:sccsiledtsave
+msgid "Save..."
+msgstr "保存..."
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "全选(&A)"
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr "选择颜色(&C)"
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr "选择字体(&F)"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "全选"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "选择一个文件"
+
+#: objinspstrconsts:sccsiledtgrprcaption
+msgid "Selected Image"
+msgstr "选择的图像"
+
+#: objinspstrconsts:sccstredtlabelselindex
+msgid "Selected Index:"
+msgstr "选择索引:"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr "集合"
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr "设为默认值"
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr "设为默认: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr "显示组件树"
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr "显示提示"
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
+msgstr "显示页面..."
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "排序"
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "标准类动作"
+
+#: objinspstrconsts:sccstredtlabelstateindex
+msgid "State Index:"
+msgstr "索引状态:"
+
+#: objinspstrconsts:sccsiledtstretch
+msgid "Stretch"
+msgstr "伸展"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr "String"
+
+#: objinspstrconsts:sccssgedtgrp
+msgid "String Grid"
+msgstr "String 网格"
+
+#: objinspstrconsts:sccssgedtcaption
+msgid "StringGrid Editor"
+msgstr "StringGrid 编辑器"
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Strings 编辑对话框"
+
+#: objinspstrconsts:oistestinput
+msgid "Test Input"
+msgstr "测试输入"
+
+#: objinspstrconsts:oistestdialog
+msgid "Test dialog..."
+msgstr "测试对话框..."
+
+#: objinspstrconsts:sccstredtlabeltext
+msgid "Text:"
+msgstr "文本"
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr "帮助数据库 %s%s%s 无法找到文件 %s%s%s."
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr "浏览框里的 %s 将被URL所替代."
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "工具栏"
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "查找主题"
+
+#: objinspstrconsts:sccsiledtransparentcolor
+msgid "Transparent Color:"
+msgstr "透明的颜色"
+
+#: objinspstrconsts:sccstredtcaption
+msgid "TreeView Items Editor"
+msgstr "TreeView 标签编辑器"
+
+#: objinspstrconsts:oisundo
+msgid "Undo"
+msgstr "撤销"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr "未知"
+
+#: objinspstrconsts:oicoleditup
+msgid "Up"
+msgstr "Up"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "值:"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr "变量"
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr "Word"
+

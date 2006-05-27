@@ -1593,6 +1593,7 @@ resourcestring
   rsLanguageUkrainian   = 'Ukrainian';
   rsLanguageDutch       = 'Dutch';
   rsLanguageJapanese    = 'Japanese';
+  rsLanguageChinese     = 'Chinese';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
