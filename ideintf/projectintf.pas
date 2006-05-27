@@ -52,7 +52,7 @@ type
     cetProgram,
     cetLibrary
     );
-    
+
   { TLazCompilerOptions }
 
   TLazCompilerOptions = class(TPersistent)
@@ -77,7 +77,7 @@ type
     fAssemblerStyle: Integer;
 
     // syntax options
-    fD2Ext: Boolean;
+    fDelphi2Ext: Boolean;
     fCStyleOp: Boolean;
     fIncludeAssertionCode: Boolean;
     fDelphiCompat: Boolean;
@@ -184,7 +184,7 @@ type
 
     // parsing:
     property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
-    property D2Extensions: Boolean read fD2Ext write fD2Ext;
+    property Delphi2Extensions: Boolean read fDelphi2Ext write fDelphi2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
     property IncludeAssertionCode: Boolean
                          read fIncludeAssertionCode write fIncludeAssertionCode;
@@ -614,6 +614,12 @@ const
     'InProjectDir',
     'InIDEConfig',
     'None'
+    );
+
+  CompilationGenerateCodeNames: array[TCompilationGenerateCode] of string = (
+    'Normal',
+    'Faster',
+    'Smaller'
     );
 
   CompilationExecutableTypeNames: array[TCompilationExecutableType] of string =(

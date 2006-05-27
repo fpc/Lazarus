@@ -636,7 +636,7 @@ begin
   else
     grpStyle.ItemIndex:=0;
 
-  chkSymD2Ext.Checked := Options.D2Extensions;
+  chkSymD2Ext.Checked := Options.Delphi2Extensions;
   chkSymCOper.Checked := Options.CStyleOperators;
   chkSymIncludeAssertions.Checked := Options.IncludeAssertionCode;
   chkSymAllowLab.Checked := Options.AllowLabel;
@@ -908,7 +908,7 @@ begin
 
   // parsing;
   Options.AssemblerStyle := grpStyle.ItemIndex;
-  Options.D2Extensions := chkSymD2Ext.Checked;
+  Options.Delphi2Extensions := chkSymD2Ext.Checked;
   Options.CStyleOperators := chkSymCOper.Checked;
   Options.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
   Options.AllowLabel := chkSymAllowLab.Checked;

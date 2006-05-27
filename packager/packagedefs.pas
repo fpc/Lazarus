@@ -371,7 +371,8 @@ type
     function CreateTargetFilename(const MainSourceFileName: string): string; override;
 
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
+    procedure CreateDiff(CompOpts: TBaseCompilerOptions;
+                         Tool: TCompilerDiffTool); override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SkipCompiler: Boolean read FSkipCompiler write FSkipCompiler;
@@ -3414,11 +3415,16 @@ begin
   end;
 end;
 
-function TPkgCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+procedure TPkgCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Tool: TCompilerDiffTool);
 begin
-  Result := (CompOpts is TPkgCompilerOptions)
-        and (FSkipCompiler = TPkgCompilerOptions(CompOpts).FSkipCompiler)
-        and inherited IsEqual(CompOpts);
+  if (CompOpts is TPkgCompilerOptions) then begin
+    Tool.AddDiff('SkipCompiler',FSkipCompiler,
+                 TPkgCompilerOptions(CompOpts).FSkipCompiler);
+  end else begin
+    Tool.Differ:=true;
+  end;
+  inherited CreateDiff(CompOpts, Tool);
 end;
 
 { TPkgAdditionalCompilerOptions }

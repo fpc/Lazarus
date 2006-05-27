@@ -1293,7 +1293,7 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  if APackage.CompilerOptions.D2Extensions then
+  if APackage.CompilerOptions.Delphi2Extensions then
     CustomOptions:=CustomOptions+' -S2';
   if APackage.CompilerOptions.UseLineInfoUnit then
     CustomOptions:=CustomOptions+' -gl';
@@ -1301,7 +1301,7 @@ begin
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
-  // remove path delimeter at the end, or else it will fail on windows
+  // remove path delimiter at the end, or else it will fail on windows
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(
                                                 ChompPathDelim(UnitOutputPath));
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);

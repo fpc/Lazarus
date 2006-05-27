@@ -214,6 +214,32 @@ const
   
 type
 
+  { TCompilerDiffTool
+    A tool to create the difference between two option sets }
+
+  TCompilerDiffTool = class
+  private
+    FDiff: TStrings;
+    FDiffer: boolean;
+    FPath: string;
+    procedure SetDiff(const AValue: TStrings);
+    procedure SetDiffer(const AValue: boolean);
+    procedure SetPath(const AValue: string);
+  public
+    constructor Create(DiffList: TStrings);
+    procedure AddDiffItem(const PropertyName, Value: string);
+    procedure AddDiff(const PropertyName: string; const Old, New: string);
+    procedure AddDiff(const PropertyName: string; const Old, New: integer);
+    procedure AddDiff(const PropertyName: string; const Old, New: boolean);
+    procedure AddPathsDiff(const PropertyName: string; const Old, New: string);
+    procedure AddSetDiff(const PropertyName: string; const Old, New: integer;
+                         const EnumNames: PString);
+    property Diff: TStrings read FDiff write SetDiff;
+    property Path: string read FPath write SetPath;
+    property Differ: boolean read FDiffer write SetDiffer;
+  end;
+
+
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class
@@ -223,11 +249,13 @@ type
     ScanForMakeMessages: boolean;
     ShowAllMessages: boolean;
     procedure Clear; virtual;
-    function IsEqual(Params: TCompilationToolOptions): boolean; virtual;
+    function IsEqual(CompOpts: TCompilationToolOptions): boolean;
     procedure Assign(Src: TCompilationToolOptions); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure CreateDiff(CompOpts: TCompilationToolOptions;
+                         Tool: TCompilerDiffTool); virtual;
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
@@ -248,6 +276,7 @@ type
     fTargetFilename: string;
     fXMLFile: String;
     FXMLConfig: TXMLConfig;
+    FTargets: TFPList;// list of TCompileTarget
 
     // Compilation
     fCompilerPath: String;
@@ -287,8 +316,11 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
-    
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+    procedure CreateDiff(CompOpts: TBaseCompilerOptions; Diff: TStrings);
+    procedure CreateDiff(CompOpts: TBaseCompilerOptions;
+                         Tool: TCompilerDiffTool); virtual;
+
     function MakeOptionsString(Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String;
     function MakeOptionsString(const MainSourceFileName: string;
@@ -335,7 +367,7 @@ type
     function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetEffectiveLCLWidgetType: string;
   public
-    { Properties }
+    // Properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
@@ -413,8 +445,11 @@ type
 
   
 const
-  CompilationGenerateCodeNames: array [TCompilationGenerateCode] of string = (
-    'Normal', 'Faster', 'Smaller');
+  CompileReasonNames: array[TCompileReason] of string = (
+    'Compile',
+    'Build',
+    'Run'
+    );
 
 type
   TCompilerGraphStampIncreasedEvent = procedure of object;
@@ -715,7 +750,7 @@ function CompilationGenerateCodeNameToType(
   const Name: string): TCompilationGenerateCode;
 begin
   for Result:=Low(TCompilationGenerateCode) to High(TCompilationGenerateCode) do
-    if AnsiCompareText(Name,CompilationGenerateCodeNames[Result])=0 then exit;
+    if CompareText(Name,CompilationGenerateCodeNames[Result])=0 then exit;
   Result:=cgcNormalCode;
 end;
 
@@ -752,6 +787,7 @@ begin
   FParsedOpts := TParsedCompilerOptions.Create;
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
+  FTargets := TFPList.Create;
   Clear;
 end;
 
@@ -1030,7 +1066,7 @@ begin
     p:=Path+'Parsing/SyntaxOptions/'
   else
     p:=Path+'SymantecChecking/';
-  D2Extensions := XMLConfigFile.GetValue(p+'D2Extensions/Value', true);
+  Delphi2Extensions := XMLConfigFile.GetValue(p+'D2Extensions/Value', true);
   CStyleOperators := XMLConfigFile.GetValue(p+'CStyleOperator/Value', true);
   IncludeAssertionCode := XMLConfigFile.GetValue(p+'IncludeAssertionCode/Value', false);
   AllowLabel := XMLConfigFile.GetValue(p+'AllowLabel/Value', true);
@@ -1180,7 +1216,7 @@ begin
   
   { Syntax Options }
   p:=Path+'Parsing/SyntaxOptions/';
-  XMLConfigFile.SetDeleteValue(p+'D2Extensions/Value', D2Extensions,true);
+  XMLConfigFile.SetDeleteValue(p+'D2Extensions/Value', Delphi2Extensions,true);
   XMLConfigFile.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
   XMLConfigFile.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
   XMLConfigFile.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
@@ -1836,7 +1872,7 @@ Processor specific options:
   }
   tempsw := '';
 
-  if (D2Extensions) then
+  if (Delphi2Extensions) then
     tempsw := tempsw + '2';
   if (CStyleOperators) then
     tempsw := tempsw + 'c';
@@ -2228,7 +2264,7 @@ begin
   
   // parsing
   fAssemblerStyle := 0;
-  fD2Ext := true;
+  fDelphi2Ext := true;
   fCStyleOp := true;
   fIncludeAssertionCode := false;
   fAllowLabel := true;
@@ -2332,7 +2368,7 @@ begin
 
   // Parsing
   fAssemblerStyle := CompOpts.fAssemblerStyle;
-  fD2Ext := CompOpts.fD2Ext;
+  fDelphi2Ext := CompOpts.fDelphi2Ext;
   fCStyleOp := CompOpts.fCStyleOp;
   fIncludeAssertionCode := CompOpts.fIncludeAssertionCode;
   fAllowLabel := CompOpts.fAllowLabel;
@@ -2413,100 +2449,141 @@ begin
 end;
 
 function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+var
+  Tool: TCompilerDiffTool;
 begin
-  Result:=
-    // search paths
-        (fIncludePaths = CompOpts.fIncludePaths)
-    and (fLibraryPaths = CompOpts.fLibraryPaths)
-    and (fUnitPaths = CompOpts.fUnitPaths)
-    and (fUnitOutputDir = CompOpts.fUnitOutputDir)
-    and (FObjectPath = CompOpts.FObjectPath)
-    and (FSrcPath = CompOpts.FSrcPath)
-    and (fDebugPath = CompOpts.fDebugPath)
+  Tool:=TCompilerDiffTool.Create(nil);
+  CreateDiff(CompOpts,Tool);
+  Result:=Tool.Differ;
+  Tool.Free;
+end;
 
-    and (fLCLWidgetType = CompOpts.fLCLWidgetType)
+procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Diff: TStrings);
+var
+  Tool: TCompilerDiffTool;
+begin
+  Tool:=TCompilerDiffTool.Create(Diff);
+  CreateDiff(CompOpts,Tool);
+  Tool.Free;
+end;
 
-    // parsing
-    and (fAssemblerStyle = CompOpts.fAssemblerStyle)
-    and (fD2Ext = CompOpts.fD2Ext)
-    and (fCStyleOp = CompOpts.fCStyleOp)
-    and (fIncludeAssertionCode = CompOpts.fIncludeAssertionCode)
-    and (fAllowLabel = CompOpts.fAllowLabel)
-    and (fCPPInline = CompOpts.fCPPInline)
-    and (fCMacros = CompOpts.fCMacros)
-    and (fTPCompat = CompOpts.fTPCompat)
-    and (fInitConst = CompOpts.fInitConst)
-    and (fStaticKeyword = CompOpts.fStaticKeyword)
-    and (fDelphiCompat = CompOpts.fDelphiCompat)
-    and (fUseAnsiStr = CompOpts.fUseAnsiStr)
-    and (fGPCCompat = CompOpts.fGPCCompat)
+procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Tool: TCompilerDiffTool);
 
-    // code generation
-    and (fSmartLinkUnit = CompOpts.SmartLinkUnit)
-    and (fIOChecks = CompOpts.fIOChecks)
-    and (fRangeChecks = CompOpts.fRangeChecks)
-    and (fOverflowChecks = CompOpts.fOverflowChecks)
-    and (fStackChecks = CompOpts.fStackChecks)
-    and (FEmulatedFloatOpcodes = CompOpts.FEmulatedFloatOpcodes)
-    and (fHeapSize = CompOpts.fHeapSize)
-    and (fEmulatedFloatOpcodes = CompOpts.fEmulatedFloatOpcodes)
-    and (fGenerate = CompOpts.fGenerate)
-    and (fTargetProc = CompOpts.fTargetProc)
-    and (fTargetCPU = CompOpts.fTargetCPU)
-    and (fVarsInReg = CompOpts.fVarsInReg)
-    and (fUncertainOpt = CompOpts.fUncertainOpt)
-    and (fOptLevel = CompOpts.fOptLevel)
-    and (fTargetOS = CompOpts.fTargetOS)
+  procedure AddDiff(const PropertyName: string;
+    const Old, New: TCompilationGenerateCode);
+  begin
+    if Old=New then exit;
+    Tool.AddDiffItem(PropertyName,CompilationGenerateCodeNames[New]);
+  end;
 
-    // linking
-    and (fGenDebugInfo = CompOpts.fGenDebugInfo)
-    and (fGenDebugDBX = CompOpts.fGenDebugDBX)
-    and (fUseLineInfoUnit = CompOpts.fUseLineInfoUnit)
-    and (fUseHeaptrc = CompOpts.fUseHeaptrc)
-    and (fUseValgrind = CompOpts.fUseValgrind)
-    and (fGenGProfCode = CompOpts.fGenGProfCode)
-    and (fStripSymbols = CompOpts.fStripSymbols)
-    and (fLinkSmart = CompOpts.fLinkSmart)
-    and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
-    and (fLinkerOptions = CompOpts.fLinkerOptions)
-    and (FWin32GraphicApp = CompOpts.FWin32GraphicApp)
-    and (FExecutableType = CompOpts.FExecutableType)
+  procedure AddDiff(const PropertyName: string;
+    const Old, New: TCompilationExecutableType);
+  begin
+    if Old=New then exit;
+    Tool.AddDiffItem(PropertyName,CompilationExecutableTypeNames[New]);
+  end;
 
-    // messages
-    and (fShowErrors = CompOpts.fShowErrors)
-    and (fShowWarn = CompOpts.fShowWarn)
-    and (fShowNotes = CompOpts.fShowNotes)
-    and (fShowHints = CompOpts.fShowHints)
-    and (fShowGenInfo = CompOpts.fShowGenInfo)
-    and (fShowLineNum = CompOpts.fShowLineNum)
-    and (fShowAll = CompOpts.fShowAll)
-    and (fShowAllProcsOnError = CompOpts.fShowAllProcsOnError)
-    and (fShowDebugInfo = CompOpts.fShowDebugInfo)
-    and (fShowUsedFiles = CompOpts.fShowUsedFiles)
-    and (fShowTriedFiles = CompOpts.fShowTriedFiles)
-    and (fShowDefMacros = CompOpts.fShowDefMacros)
-    and (fShowCompProc = CompOpts.fShowCompProc)
-    and (fShowCond = CompOpts.fShowCond)
-    and (fShowExecInfo = CompOpts.fShowExecInfo)
-    and (fShowNothing = CompOpts.fShowNothing)
-    and (fShowSummary = CompOpts.fShowSummary)
-    and (fShowHintsForUnusedUnitsInMainSrc = CompOpts.fShowHintsForUnusedUnitsInMainSrc)
-    and (fShowHintsForSenderNotUsed = CompOpts.fShowHintsForSenderNotUsed)
-    and (fWriteFPCLogo = CompOpts.fWriteFPCLogo)
-    
-    // other
-    and (fDontUseConfigFile = CompOpts.fDontUseConfigFile)
-    and (fCustomConfigFile = CompOpts.fCustomConfigFile)
-    and (fConfigFilePath = CompOpts.fConfigFilePath)
-    and (fStopAfterErrCount = CompOpts.fStopAfterErrCount)
-    and (fCustomOptions = CompOpts.fCustomOptions)
+begin
+  // search paths
+  Tool.Path:='Paths';
+  Tool.AddPathsDiff('IncludePaths',fIncludePaths,CompOpts.fIncludePaths);
+  Tool.AddPathsDiff('LibraryPaths',fLibraryPaths,CompOpts.fLibraryPaths);
+  Tool.AddPathsDiff('UnitPaths',fUnitPaths,CompOpts.fUnitPaths);
+  Tool.AddPathsDiff('UnitOutputDir',fUnitOutputDir,CompOpts.fUnitOutputDir);
+  Tool.AddPathsDiff('ObjectPath',FObjectPath,CompOpts.FObjectPath);
+  Tool.AddPathsDiff('SrcPath',FSrcPath,CompOpts.FSrcPath);
+  Tool.AddPathsDiff('DebugPath',fDebugPath,CompOpts.fDebugPath);
 
-    // compilation
-    and (fCompilerPath = CompOpts.fCompilerPath)
-    and ExecuteBefore.IsEqual(CompOpts.ExecuteBefore)
-    and ExecuteAfter.IsEqual(CompOpts.ExecuteAfter)
-    and (CreateMakefileOnBuild=CompOpts.CreateMakefileOnBuild)
-   ;
+  Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
+
+  // parsing
+  Tool.Path:='Parsing';
+  Tool.AddDiff('AssemblerStyle',fAssemblerStyle,CompOpts.fAssemblerStyle);
+  Tool.AddDiff('Delphi2Ext',fDelphi2Ext,CompOpts.fDelphi2Ext);
+  Tool.AddDiff('CStyleOp',fCStyleOp,CompOpts.fCStyleOp);
+  Tool.AddDiff('IncludeAssertionCode',fIncludeAssertionCode,CompOpts.fIncludeAssertionCode);
+  Tool.AddDiff('AllowLabel',fAllowLabel,CompOpts.fAllowLabel);
+  Tool.AddDiff('CPPInline',fCPPInline,CompOpts.fCPPInline);
+  Tool.AddDiff('CMacros',fCMacros,CompOpts.fCMacros);
+  Tool.AddDiff('TPCompat',fTPCompat,CompOpts.fTPCompat);
+  Tool.AddDiff('InitConst',fInitConst,CompOpts.fInitConst);
+  Tool.AddDiff('StaticKeyword',fStaticKeyword,CompOpts.fStaticKeyword);
+  Tool.AddDiff('DelphiCompat',fDelphiCompat,CompOpts.fDelphiCompat);
+  Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr);
+  Tool.AddDiff('GPCCompat',fGPCCompat,CompOpts.fGPCCompat);
+
+  // code generation
+  Tool.Path:='Code';
+  Tool.AddDiff('SmartLinkUnit',fSmartLinkUnit,CompOpts.SmartLinkUnit);
+  Tool.AddDiff('IOChecks',fIOChecks,CompOpts.fIOChecks);
+  Tool.AddDiff('RangeChecks',fRangeChecks,CompOpts.fRangeChecks);
+  Tool.AddDiff('OverflowChecks',fOverflowChecks,CompOpts.fOverflowChecks);
+  Tool.AddDiff('StackChecks',fStackChecks,CompOpts.fStackChecks);
+  Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes);
+  Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize);
+  Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes);
+       AddDiff('Generate',fGenerate,CompOpts.fGenerate);
+  Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc);
+  Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU);
+  Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg);
+  Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt);
+  Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel);
+  Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS);
+
+  // linking
+  Tool.Path:='Linking';
+  Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo);
+  Tool.AddDiff('GenDebugDBX',fGenDebugDBX,CompOpts.fGenDebugDBX);
+  Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit);
+  Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc);
+  Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind);
+  Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode);
+  Tool.AddDiff('StripSymbols',fStripSymbols,CompOpts.fStripSymbols);
+  Tool.AddDiff('LinkSmart',fLinkSmart,CompOpts.fLinkSmart);
+  Tool.AddDiff('PassLinkerOpt',fPassLinkerOpt,CompOpts.fPassLinkerOpt);
+  Tool.AddDiff('LinkerOptions',fLinkerOptions,CompOpts.fLinkerOptions);
+  Tool.AddDiff('Win32GraphicApp',FWin32GraphicApp,CompOpts.FWin32GraphicApp);
+       AddDiff('ExecutableType',FExecutableType,CompOpts.FExecutableType);
+
+  // messages
+  Tool.Path:='Messages';
+  Tool.AddDiff('ShowErrors',fShowErrors,CompOpts.fShowErrors);
+  Tool.AddDiff('ShowWarn',fShowWarn,CompOpts.fShowWarn);
+  Tool.AddDiff('ShowNotes',fShowNotes,CompOpts.fShowNotes);
+  Tool.AddDiff('ShowHints',fShowHints,CompOpts.fShowHints);
+  Tool.AddDiff('ShowGenInfo',fShowGenInfo,CompOpts.fShowGenInfo);
+  Tool.AddDiff('ShowLineNum',fShowLineNum,CompOpts.fShowLineNum);
+  Tool.AddDiff('ShowAll',fShowAll,CompOpts.fShowAll);
+  Tool.AddDiff('ShowAllProcsOnError',fShowAllProcsOnError,CompOpts.fShowAllProcsOnError);
+  Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo);
+  Tool.AddDiff('ShowUsedFiles',fShowUsedFiles,CompOpts.fShowUsedFiles);
+  Tool.AddDiff('ShowTriedFiles',fShowTriedFiles,CompOpts.fShowTriedFiles);
+  Tool.AddDiff('ShowDefMacros',fShowDefMacros,CompOpts.fShowDefMacros);
+  Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc);
+  Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond);
+  Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo);
+  Tool.AddDiff('ShowNothing',fShowNothing,CompOpts.fShowNothing);
+  Tool.AddDiff('ShowSummary',fShowSummary,CompOpts.fShowSummary);
+  Tool.AddDiff('ShowHintsForUnusedUnitsInMainSrc',fShowHintsForUnusedUnitsInMainSrc,CompOpts.fShowHintsForUnusedUnitsInMainSrc);
+  Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed);
+  Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo);
+
+  // other
+  Tool.Path:='Other';
+  Tool.AddDiff('DontUseConfigFile',fDontUseConfigFile,CompOpts.fDontUseConfigFile);
+  Tool.AddDiff('CustomConfigFile',fCustomConfigFile,CompOpts.fCustomConfigFile);
+  Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath);
+  Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount);
+  Tool.AddDiff('CustomOptions',fCustomOptions,CompOpts.fCustomOptions);
+
+  // compilation
+  Tool.Path:='Compilation';
+  Tool.AddDiff('CompilerPath',fCompilerPath,CompOpts.fCompilerPath);
+  ExecuteBefore.CreateDiff(CompOpts.ExecuteBefore,Tool);
+  ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool);
+  Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild);
 end;
 
 
@@ -2817,14 +2894,15 @@ begin
   ShowAllMessages:=false;
 end;
 
-function TCompilationToolOptions.IsEqual(Params: TCompilationToolOptions
+function TCompilationToolOptions.IsEqual(CompOpts: TCompilationToolOptions
   ): boolean;
+var
+  Tool: TCompilerDiffTool;
 begin
-  Result:=  (Command=Params.Command)
-        and (ScanForFPCMessages=Params.ScanForFPCMessages)
-        and (ScanForMakeMessages=Params.ScanForMakeMessages)
-        and (ShowAllMessages=Params.ShowAllMessages)
-        ;
+  Tool:=TCompilerDiffTool.Create(nil);
+  CreateDiff(CompOpts,Tool);
+  Result:=Tool.Differ;
+  Tool.Free;
 end;
 
 procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
@@ -2857,6 +2935,15 @@ begin
                            ShowAllMessages,false);
 end;
 
+procedure TCompilationToolOptions.CreateDiff(CompOpts: TCompilationToolOptions;
+  Tool: TCompilerDiffTool);
+begin
+  Tool.AddDiff('Command',Command,CompOpts.Command);
+  Tool.AddDiff('ScanForFPCMessages',ScanForFPCMessages,CompOpts.ScanForFPCMessages);
+  Tool.AddDiff('ScanForMakeMessages',ScanForMakeMessages,CompOpts.ScanForMakeMessages);
+  Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages);
+end;
+
 { TGlobalCompilerOptions }
 
 procedure TGlobalCompilerOptions.SetTargetCPU(const AValue: string);
@@ -2869,6 +2956,94 @@ procedure TGlobalCompilerOptions.SetTargetOS(const AValue: string);
 begin
   if FTargetOS=AValue then exit;
   FTargetOS:=AValue;
+end;
+
+{ TCompilerDiffTool }
+
+procedure TCompilerDiffTool.SetDiff(const AValue: TStrings);
+begin
+  if FDiff=AValue then exit;
+  FDiff:=AValue;
+end;
+
+procedure TCompilerDiffTool.SetDiffer(const AValue: boolean);
+begin
+  if FDiffer=AValue then exit;
+  FDiffer:=AValue;
+end;
+
+procedure TCompilerDiffTool.SetPath(const AValue: string);
+begin
+  if FPath=AValue then exit;
+  FPath:=AValue;
+  // ! config path, not file path. Always /, not PathDelim
+  if (FPath<>'') and (Path[length(Path)]<>'/') then FPath:=FPath+'/';
+end;
+
+constructor TCompilerDiffTool.Create(DiffList: TStrings);
+begin
+  FDiff:=DiffList;
+  if Diff<>nil then
+    Diff.Clear;
+end;
+
+procedure TCompilerDiffTool.AddDiffItem(const PropertyName, Value: string);
+begin
+  Differ:=true;
+  if Diff<>nil then
+    Diff.Add(Path+PropertyName+'='+Value);
+end;
+
+procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: string);
+begin
+  if Old=New then exit;
+  AddDiffItem(PropertyName,New);
+end;
+
+procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: integer);
+begin
+  if Old=New then exit;
+  AddDiffItem(PropertyName,IntToStr(New));
+end;
+
+procedure TCompilerDiffTool.AddDiff(const PropertyName: string; const Old,
+  New: boolean);
+begin
+  if Old=New then exit;
+  AddDiffItem(PropertyName,dbgs(New));
+end;
+
+procedure TCompilerDiffTool.AddPathsDiff(const PropertyName: string; const Old,
+  New: string);
+begin
+  if Old=New then exit;
+  AddDiff(PropertyName,Old,New);
+end;
+
+procedure TCompilerDiffTool.AddSetDiff(const PropertyName: string; const Old,
+  New: integer; const EnumNames: PString);
+var
+  i: Integer;
+  Mask: LongInt;
+  s: String;
+begin
+  if Old=New then exit;
+  Mask := 1;
+  s:='';
+  for i := 0 to 31 do begin
+    if (New and Mask) <> (Old and Mask) then begin
+      if s<>'' then s:=s+',';
+      if (New and Mask) <> 0 then
+        s:=s+'+'
+      else
+        s:=s+'-';
+      s:=s+EnumNames[i];
+    end;
+    Mask := Mask shl 1;
+  end;
+  AddDiffItem(PropertyName,s);
 end;
 
 initialization

@@ -256,7 +256,8 @@ type
     CompileReasons: TCompileReasons;
     DefaultCompileReasons: TCompileReasons;
     procedure Clear; override;
-    function IsEqual(Params: TCompilationToolOptions): boolean; override;
+    procedure CreateDiff(CompOpts: TCompilationToolOptions;
+                         Tool: TCompilerDiffTool); override;
     procedure Assign(Src: TCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); override;
@@ -292,12 +293,14 @@ type
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
+    procedure CreateDiff(CompOpts: TBaseCompilerOptions;
+                         Tool: TCompilerDiffTool); override;
     procedure InvalidateOptions;
   public
     property OwnerProject: TProject read FOwnerProject;
     property Project: TProject read FOwnerProject;
     property Globals: TGlobalCompilerOptions read FGlobals;
+  published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
   
@@ -713,12 +716,23 @@ const
   ResourceFileExt = '.lrs';
 
 
+procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
+  const PropertyName: string; const Old, New: TCompileReasons);
+
+
 implementation
 
 
 const
   ProjectInfoFileVersion = 5;
 
+procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
+  const PropertyName: string; const Old, New: TCompileReasons);
+begin
+  if Old=New then exit;
+  Tool.AddSetDiff(PropertyName,integer(Old),integer(New),
+                  PString(@CompileReasonNames[Low(TCompileReasons)]));
+end;
 
 {------------------------------------------------------------------------------
   TUnitInfo Constructor
@@ -3604,11 +3618,16 @@ begin
   CompileReasons := crAll;
 end;
 
-function TProjectCompilationToolOptions.IsEqual(Params: TCompilationToolOptions): boolean;
+procedure TProjectCompilationToolOptions.CreateDiff(
+  CompOpts: TCompilationToolOptions; Tool: TCompilerDiffTool);
 begin
-  Result := (Params is TProjectCompilationToolOptions)
-        and (CompileReasons = TProjectCompilationToolOptions(Params).CompileReasons)
-        and inherited IsEqual(Params);
+  if (CompOpts is TProjectCompilationToolOptions) then begin
+    AddCompileReasonsDiff(Tool,'CompileReasons',CompileReasons,
+                       TProjectCompilationToolOptions(CompOpts).CompileReasons);
+  end else begin
+    Tool.Differ:=true;
+  end;
+  inherited CreateDiff(CompOpts, Tool);
 end;
 
 procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
@@ -3743,11 +3762,16 @@ begin
   UpdateGlobals;
 end;
 
-function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+procedure TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
+  Tool: TCompilerDiffTool);
 begin
-  Result := (CompOpts is TProjectCompilerOptions)
-        and (FCompileReasons = TProjectCompilerOptions(CompOpts).FCompileReasons)
-        and inherited IsEqual(CompOpts);
+  if (CompOpts is TProjectCompilerOptions) then begin
+    AddCompileReasonsDiff(Tool,'CompileReasons',FCompileReasons,
+                          TProjectCompilerOptions(CompOpts).FCompileReasons);
+  end else begin
+    Tool.Differ:=true;
+  end;
+  inherited CreateDiff(CompOpts, Tool);
 end;
 
 procedure TProjectCompilerOptions.InvalidateOptions;
