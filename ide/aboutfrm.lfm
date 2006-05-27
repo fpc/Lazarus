@@ -1,5 +1,5 @@
 object AboutForm: TAboutForm
-  ActiveControl = AboutPage
+  ActiveControl = AboutMemo
   Caption = 'About Lazarus'
   ClientHeight = 270
   ClientWidth = 608
@@ -43,7 +43,6 @@ object AboutForm: TAboutForm
   end
   object CloseButton: TBitBtn
     AutoSize = True
-    
     Cancel = True
     Caption = 'Close'
     Glyph.Data = {
@@ -76,9 +75,9 @@ object AboutForm: TAboutForm
     NumGlyphs = 0
     TabOrder = 1
     Left = 70
-    Height = 40
+    Height = 44
     Top = 225
-    Width = 77
+    Width = 81
   end
   object Notebook1: TNotebook
     Anchors = [akTop, akLeft, akRight, akBottom]
