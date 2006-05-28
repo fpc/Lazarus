@@ -108,7 +108,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+class procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 //var
 //  Selection: PGtkTreeSelection;
@@ -120,7 +120,7 @@ begin
   //SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
 
-function TGtk2WSCustomCheckListBox.GetChecked(
+class function TGtk2WSCustomCheckListBox.GetChecked(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): boolean;
 var
   Iter : TGtkTreeIter;
@@ -137,7 +137,7 @@ begin
     gtk_tree_model_get(ListStore, @Iter, [0, @Result, -1]);
 end;
 
-procedure TGtk2WSCustomCheckListBox.SetChecked(
+class procedure TGtk2WSCustomCheckListBox.SetChecked(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
   const AChecked: boolean);
 var
@@ -154,7 +154,7 @@ begin
     gtk_list_store_set(ListStore, @Iter, [0, AChecked, -1]);
 end;
 
-function TGtk2WSCustomCheckListBox.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomCheckListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   TempWidget: PGtkWidget;

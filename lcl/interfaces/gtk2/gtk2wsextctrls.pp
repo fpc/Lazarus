@@ -230,7 +230,7 @@ end;
 
 { TGtk2WSCustomNotebook }
 
-function TGtk2WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   P: PGtkNoteBook;

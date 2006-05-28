@@ -71,7 +71,7 @@ end;
 
 { TGtk2WSCustomMemo }
 
-procedure TGtk2WSCustomMemo.SetCallbacks(const AGtkWidget: PGtkWidget;
+class procedure TGtk2WSCustomMemo.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 var
 TextBuf: PGtkTextBuffer;
@@ -94,7 +94,7 @@ begin
 
 end;
 
-function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
 Widget,
@@ -130,7 +130,7 @@ begin
   SetCallbacks(Widget, WidgetInfo);
 end;
 
-function TGtk2WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
+class function TGtk2WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
   ): TStrings;
 var
 TextView: PGtkTextView;
@@ -140,7 +140,7 @@ begin
 end;
 
 
-procedure TGtk2WSCustomMemo.SetColor(const AWinControl: TWinControl);
+class procedure TGtk2WSCustomMemo.SetColor(const AWinControl: TWinControl);
 var
   AWidget : PGTKWidget;
 begin
@@ -150,7 +150,7 @@ begin
 
 end;
 
-procedure TGtk2WSCustomMemo.SetFont(const AWinControl: TWinControl;
+class procedure TGtk2WSCustomMemo.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
   AWidget: PGTKWidget;

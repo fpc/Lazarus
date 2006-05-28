@@ -254,7 +254,7 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
-function TGtk2WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
+class function TGtk2WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
   ): integer;
 var
   Handle: HWND;
@@ -287,13 +287,13 @@ begin
 
 end;
 
-function TGtk2WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
+class function TGtk2WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
   ): integer;
 begin
   Result:=inherited GetTopIndex(ACustomListBox);
 end;
 
-procedure TGtk2WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
+class procedure TGtk2WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
   AIndex: integer; ASelected: boolean);
 var
   Handle: HWND;
@@ -323,13 +323,13 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+class procedure TGtk2WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
   // TODO
   debugln('TGtk2WSCustomListBox.SetBorder TODO');
 end;
 
-procedure TGtk2WSCustomListBox.SetItemIndex(
+class procedure TGtk2WSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   Handle: HWND;
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListBox.SetSelectionMode(
+class procedure TGtk2WSCustomListBox.SetSelectionMode(
   const ACustomListBox: TCustomListBox; const AExtendedSelect,
   AMultiSelect: boolean);
 var
@@ -379,7 +379,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+class procedure TGtk2WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
   if AList is TGtkListStoreStringList then
@@ -390,13 +390,13 @@ begin
     raise Exception.Create('');
 end;
 
-procedure TGtk2WSCustomListBox.SetTopIndex(
+class procedure TGtk2WSCustomListBox.SetTopIndex(
   const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 begin
   inherited SetTopIndex(ACustomListBox, NewTopIndex);
 end;
 
-function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   TempWidget: PGtkWidget;
@@ -449,7 +449,7 @@ begin
   SetCallbacks(p, WidgetInfo);
 end;
 
-procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+class procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 var
 Selection: PGtkTreeSelection;
@@ -461,7 +461,7 @@ begin
   SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
 
-function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
+class function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
   ): integer;
 var
   Handle: HWND;
@@ -480,7 +480,7 @@ begin
   g_list_free(Rows);
 end;
 
-function TGtk2WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
+class function TGtk2WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
   const AIndex: integer): boolean;
 var
   Handle: HWND;
@@ -500,7 +500,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
+class function TGtk2WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
   ): TStrings;
 var
   Widget: PGtkWidget;// pointer to gtk-widget
@@ -536,7 +536,7 @@ end;
 { TGtk2WSCustomCheckBox }
 
 
-function TGtk2WSCustomCheckBox.RetrieveState(
+class function TGtk2WSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
   ToggleButton: PGtkToggleButton;
@@ -551,7 +551,7 @@ begin
     Result := cbUnChecked;
 end;
 
-procedure TGtk2WSCustomCheckBox.SetState(
+class procedure TGtk2WSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var
   GtkObject: PGtkObject;
@@ -570,7 +570,7 @@ end;
 
 { TGtk2WSCustomEdit }
 
-function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
 
@@ -591,7 +591,7 @@ begin
 end;
 
 
-function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
+class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var
   Entry: PGtkEntry;
@@ -600,7 +600,7 @@ begin
   Result :=  Min(Entry^.current_pos, Entry^.selection_bound);
 end;
 
-function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
+class function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
   ): integer;
 var
   Entry: PGtkEntry;
@@ -611,7 +611,7 @@ end;
 
 
 
-procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
+class procedure TGtk2WSCustomComboBox.SetFont(const AWinControl: TWinControl;
   const AFont : TFont);
 var
   AWidget: PGTKWidget;

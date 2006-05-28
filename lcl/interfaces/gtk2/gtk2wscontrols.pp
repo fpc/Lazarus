@@ -98,7 +98,7 @@ uses gtkproc, lcltype;
 
 { TGtk2WSWinControl }
 
-function TGtk2WSWinControl.GetText(const AWinControl: TWinControl;
+class function TGtk2WSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
   TextBuf: PGtkTextBuffer;
@@ -131,7 +131,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
+class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
   const AText: string);
 var
 P : Pointer;

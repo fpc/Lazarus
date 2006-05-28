@@ -211,13 +211,13 @@ end;
 
 
 
-function TGtk2WSCustomListView.IsIconView(const ALV: TCustomListView): Boolean;
+class function TGtk2WSCustomListView.IsIconView(const ALV: TCustomListView): Boolean;
 begin
   Result := False;
   if TLVHack(ALV).ViewStyle in [vsIcon{, vsTile?}] then Result := True;
 end;
 
-procedure TGtk2WSCustomListView.ReCreateListStore(const ALV: TCustomListView; const TVWidgets: PTVWidgets);
+class procedure TGtk2WSCustomListView.ReCreateListStore(const ALV: TCustomListView; const TVWidgets: PTVWidgets);
 var
 GTypeArray: PGType;
 NewListStore: PGtkListStore;
@@ -240,7 +240,7 @@ begin
   TVWidgets^.TreeModel := NewListStore;
 end;
 
-procedure TGtk2WSCustomListView.ReCreateItems(const ALV: TCustomListView);
+class procedure TGtk2WSCustomListView.ReCreateItems(const ALV: TCustomListView);
 var
 Widgets: PTVWidgets;
 i,x: Integer;
@@ -259,7 +259,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.SetPropertyInternal(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetPropertyInternal(const ALV: TCustomListView;
   const Widgets: PTVWidgets; const AProp: TListViewProperty;
   const AIsSet: Boolean);
 begin
@@ -327,7 +327,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
+class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
@@ -346,7 +346,7 @@ begin
   
 end;
 
-procedure TGtk2WSCustomListView.ColumnDelete(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var
   Widgets: PTVWidgets;
@@ -366,7 +366,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
+class function TGtk2WSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn): Integer;
 var
   Widgets: PTVWidgets;
@@ -386,7 +386,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnInsert(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn);
 var
   Widgets: PTVWidgets;
@@ -457,7 +457,7 @@ begin
 *)
 end;
 
-procedure TGtk2WSCustomListView.ColumnMove(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnMove(const ALV: TCustomListView;
   const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
 var
   Widgets: PTVWidgets;
@@ -476,7 +476,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn;
   const AAlignment: TAlignment);
 var
@@ -496,7 +496,7 @@ begin
 
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
 var
   Widgets: PTVWidgets;
@@ -520,7 +520,7 @@ begin
 
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
   Widgets: PTVWidgets;
@@ -536,7 +536,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetImage(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer
   );
 begin
@@ -546,7 +546,7 @@ begin
   //DebugLn('TODO: Gtk2. TGtk2WSCustomListView.ColumnSetImage');
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
 var
   Widgets: PTVWidgets;
@@ -562,7 +562,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
 var
   Widgets: PTVWidgets;
@@ -578,7 +578,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+class procedure TGtk2WSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 var
   Widgets: PTVWidgets;
   GtkColumn: PGtkTreeViewColumn;
@@ -593,7 +593,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
 var
   Widgets: PTVWidgets;
@@ -615,7 +615,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemDelete(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemDelete(const ALV: TCustomListView;
   const AIndex: Integer);
 var
   Widgets: PTVWidgets;
@@ -634,7 +634,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
+class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
 var
@@ -676,7 +676,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemInsert(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
 var
   Widgets: PTVWidgets;
@@ -713,7 +713,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex,
   AImageIndex: Integer);
 var
@@ -743,7 +743,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
 var
@@ -796,7 +796,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemSetText(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemSetText(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
   const AText: String);
 var
@@ -820,7 +820,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.ItemShow(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.ItemShow(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 var
   Widgets: PTVWidgets;
@@ -843,7 +843,7 @@ begin
 
 end;
 
-function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl;
+class function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Widgets: PTVWidgets;
@@ -922,7 +922,7 @@ begin
   *)
 end;
 
-procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
+class procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
 var
   Widgets: PTVWidgets;
 begin
@@ -935,7 +935,7 @@ begin
   gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), nil);
 end;
 
-procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
+class procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
 var
   Widgets: PTVWidgets;
 begin
@@ -948,7 +948,7 @@ begin
   g_object_unref(Widgets^.TreeModel);
 end;
 
-function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView
   ): TRect;
 begin
   Result:=Rect(0,0,0,0);
@@ -959,7 +959,7 @@ begin
   //DebugLn('TODO: TGtk2WSCustomListView.GetBoundingRect');
 end;
 
-function TGtk2WSCustomListView.GetDropTarget(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetDropTarget(const ALV: TCustomListView
   ): Integer;
 var
   Widgets: PTVWidgets;
@@ -974,7 +974,7 @@ begin
 
 end;
 
-function TGtk2WSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
+class function TGtk2WSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
@@ -994,7 +994,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListView.GetHoverTime(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetHoverTime(const ALV: TCustomListView
   ): Integer;
 var
   Widgets: PTVWidgets;
@@ -1014,7 +1014,7 @@ begin
 
 end;
 
-function TGtk2WSCustomListView.GetSelCount(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetSelCount(const ALV: TCustomListView
   ): Integer;
 var
   Widgets: PTVWidgets;
@@ -1033,7 +1033,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListView.GetSelection(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetSelection(const ALV: TCustomListView
   ): Integer;
 var
   Widgets: PTVWidgets;
@@ -1055,7 +1055,7 @@ begin
   end;
 end;
 
-function TGtk2WSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
+class function TGtk2WSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
   Result := -1;
   
@@ -1063,7 +1063,7 @@ begin
   then Exit;
 end;
 
-function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView
+class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView
   ): Integer;
 begin
   Result := -1;
@@ -1072,42 +1072,42 @@ begin
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetAllocBy(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetAllocBy')
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetDefaultItemHeight(
+class procedure TGtk2WSCustomListView.SetDefaultItemHeight(
   const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
   const AValue: TListHotTrackStyles);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetHotTrackStyles')
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetHoverTime(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetHoverTime(const ALV: TCustomListView;
   const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetHoverTime')
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetImageList(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetImageList(const ALV: TCustomListView;
   const AList: TListViewImageList; const AValue: TCustomImageList);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
 end;
 
-procedure TGtk2WSCustomListView.SetProperty(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetProperty(const ALV: TCustomListView;
   const AProp: TListViewProperty; const AIsSet: Boolean);
 var
   Widgets: PTVWidgets;
@@ -1120,7 +1120,7 @@ begin
   SetPropertyInternal(ALV, Widgets, AProp, AIsSet);
 end;
 
-procedure TGtk2WSCustomListView.SetProperties(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetProperties(const ALV: TCustomListView;
   const AProps: TListViewProperties);
 var
   Widgets: PTVWidgets;
@@ -1135,7 +1135,7 @@ begin
     SetPropertyInternal(ALV, Widgets, Prop, Prop in AProps);
 end;
 
-procedure TGtk2WSCustomListView.SetScrollBars(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetScrollBars(const ALV: TCustomListView;
   const AValue: TScrollStyle);
 var
   ScrollWidget: PGtkScrolledWindow;
@@ -1163,7 +1163,7 @@ begin
   gtk_scrolled_window_set_policy(ScrollWidget, hPolicy, vPolicy);
 end;
 
-procedure TGtk2WSCustomListView.SetScrolledLeft(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetScrolledLeft(const ALV: TCustomListView;
   const AValue: Integer);
 var
   Widgets: PTVWidgets;
@@ -1178,7 +1178,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.SetScrolledTop(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetScrolledTop(const ALV: TCustomListView;
   const AValue: Integer);
 var
   Widgets: PTVWidgets;
@@ -1193,7 +1193,7 @@ begin
   end;
 end;
 
-procedure TGtk2WSCustomListView.SetSort(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetSort(const ALV: TCustomListView;
   const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
@@ -1201,7 +1201,7 @@ begin
 //  inherited SetSort(ALV, AType, AColumn);
 end;
 
-procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
+class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
   const Avalue: TViewStyle);
       procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
       var
