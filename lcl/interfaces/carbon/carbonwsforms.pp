@@ -120,7 +120,7 @@ implementation
   { TCarbonWSCustomForm }
 
 
-function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
+class function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Window: FPCMacOSAll.WindowRef;
@@ -174,7 +174,7 @@ begin
   ShowWindow(Window);
 end;
 
-procedure TCarbonWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+class procedure TCarbonWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
   then Exit;
@@ -182,7 +182,7 @@ begin
   DisposeWindow(WindowRef(AWinControl.Handle));
 end;
 
-procedure TCarbonWSCustomForm.SetText(const AWinControl: TWinControl;
+class procedure TCarbonWSCustomForm.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
   CFString: CFStringRef;

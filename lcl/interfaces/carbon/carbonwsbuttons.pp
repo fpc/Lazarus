@@ -69,7 +69,7 @@ implementation
 
 { TCarbonWSButton }
 
-function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
+class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   //Button: TCustomButton;

@@ -73,7 +73,7 @@ end;
   { TCarbonWSWinControlPrivate }
 
 (*
-procedure TCarbonPrivateHiView.InstallControlHandler(AInfo: PWidgetInfo; AClass: UInt32; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
+class procedure TCarbonPrivateHiView.InstallControlHandler(AInfo: PWidgetInfo; AClass: UInt32; AKind: UInt32; AHandler: Pointer; var AUPP: EventHandlerUPP);
 var
   eventSpec: EventTypeSpec;
 begin
@@ -85,7 +85,7 @@ begin
 end;
 *)
 
-procedure TCarbonPrivateHiView.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateHiView.RegisterEvents(AInfo: PWidgetInfo);
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
@@ -110,7 +110,7 @@ begin
   DebugLN(TWinControl(Ainfo^.LCLObject).Name,':', TWinControl(Ainfo^.LCLObject).ClassName ,' Events set')
 end;
 
-procedure TCarbonPrivateHiView.UnregisterEvents;
+class procedure TCarbonPrivateHiView.UnregisterEvents;
 begin
   UnregisterEventHandler(@CarbonPrivateHIView_Dispose);
   UnregisterEventHandler(@CarbonPrivateHIView_Hit);

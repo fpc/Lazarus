@@ -114,11 +114,11 @@ implementation
 {$I carbonprivatecheckbox.inc}
 
 // move to inc
-procedure TCarbonPrivateHandle.RegisterEvents(AInfo: PWidgetInfo); 
+class procedure TCarbonPrivateHandle.RegisterEvents(AInfo: PWidgetInfo);
 begin
 end;
 
-procedure TCarbonPrivateHandle.UnregisterEvents; 
+class procedure TCarbonPrivateHandle.UnregisterEvents;
 begin
 end;
 

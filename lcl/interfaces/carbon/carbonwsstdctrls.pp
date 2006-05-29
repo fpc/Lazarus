@@ -225,7 +225,7 @@ type
 
 implementation
 
-function  TCarbonWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function  TCarbonWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   Edit: TCustomEdit;
   Control: ControlRef;
@@ -262,7 +262,7 @@ begin
   TCarbonPrivateHandleClass(WSPrivate).RegisterEvents(Info);
 end;
 
-function  TCarbonWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+class function TCarbonWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
@@ -280,7 +280,7 @@ begin
   Result := SelData.SelStart;
 end;
 
-function  TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+class function TCarbonWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
@@ -298,7 +298,7 @@ begin
   Result := SelData.SelEnd - SelData.SelStart;
 end;
 
-function TCarbonWSCustomEdit.GetText(const AWinControl: TWinControl;
+class function TCarbonWSCustomEdit.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
   Control: ControlRef;
@@ -332,25 +332,25 @@ begin
   AText := PChar(Str);
 end;
 
-procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
+class procedure TCarbonWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
  // TODO
 end;
 
-procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
+class procedure TCarbonWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
 begin
  //TODO
 end;
 
-procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+class procedure TCarbonWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
  //AFAICS this will have to be checked in a callback
 end;
 
-procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
+class procedure TCarbonWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
   NewChar: char);
 var
   NeedsPassword: Boolean;
@@ -370,7 +370,7 @@ begin
 
 end;
 
-procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
+class procedure TCarbonWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 var
   Control: ControlRef;
@@ -384,7 +384,7 @@ begin
                  SizeOf(Boolean), @NewReadOnly);
 end;
 
-procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+class procedure TCarbonWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
@@ -404,7 +404,7 @@ begin
 
 end;
 
-procedure TCarbonWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+class procedure TCarbonWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 var
   Control: ControlRef;
   SelData: ControlEditTextSelectionRec;
@@ -423,7 +423,7 @@ begin
 
 end;
 
-procedure TCarbonWSCustomEdit.SetText(const AWinControl: TWinControl;
+class procedure TCarbonWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
   Control: ControlRef;
@@ -445,7 +445,7 @@ begin
   CFRelease(Pointer(CFString));
 end;
 
-procedure TCarbonWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
+class procedure TCarbonWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   //TODO
@@ -453,7 +453,7 @@ end;
 
 { TCarbonWSCustomCheckBox }
 
-function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
+class function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   CheckBox:TCheckBox;

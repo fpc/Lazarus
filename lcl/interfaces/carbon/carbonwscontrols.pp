@@ -99,7 +99,7 @@ implementation
 
 { TCarbonWSWinControl }
 
-function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
+class function TCarbonWSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
   CFString: CFStringRef;
@@ -162,7 +162,7 @@ begin
   end;
 end;
 
-procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl;
+class procedure TCarbonWSWinControl.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
   CFString: CFStringRef;
@@ -178,7 +178,7 @@ begin
   CFRelease(Pointer(CFString));
 end;
 
-procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+class procedure TCarbonWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'DestroyHandle')
   then Exit;
@@ -187,7 +187,7 @@ begin
   DisposeControl(ControlRef(AWinControl.Handle));
 end;
 
-function TCarbonWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
+class function TCarbonWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
 var
   AHiRect: HIRect;
@@ -200,7 +200,7 @@ begin
   ARect.Bottom := ARect.Top + Trunc(AHIRect.size.height);
 end;
 
-function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
+class function TCarbonWSWinControl.GetClientRect(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
 var
   AHiRect: HIRect;
@@ -215,7 +215,7 @@ end;
 
 { TCarbonWSCustomControl }
 
-function TCarbonWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+class function TCarbonWSCustomControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   //Button: TCustomButton;

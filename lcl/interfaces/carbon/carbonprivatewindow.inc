@@ -819,7 +819,7 @@ end;
 
   { TCarbonPrivateWindow }
 
-procedure TCarbonPrivateWindow.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateWindow.RegisterEvents(AInfo: PWidgetInfo);
 var
   MouseSpec: array [0..6] of EventTypeSpec;
   TmpSpec: EventTypeSpec;
@@ -866,7 +866,7 @@ begin
     3, @KeySpecs[0], Pointer(AInfo), nil);
 end;
 
-procedure TCarbonPrivateWindow.UnregisterEvents;
+class procedure TCarbonPrivateWindow.UnregisterEvents;
 begin                      
   UnregisterEventHandler(@CarbonPrivateWindow_Close);
   UnregisterEventHandler(@CarbonPrivateWindow_Closed); 

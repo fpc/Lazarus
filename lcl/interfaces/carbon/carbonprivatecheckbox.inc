@@ -16,11 +16,11 @@
 }
 
 
-procedure TCarbonPrivateCheckBox.RegisterEvents(AInfo: PWidgetInfo);
+class procedure TCarbonPrivateCheckBox.RegisterEvents(AInfo: PWidgetInfo);
 begin
   // do we call inherited(AInfo); here?
 end;
 
-procedure TCarbonPrivateCheckBox.UnRegisterEvents;
+class procedure TCarbonPrivateCheckBox.UnRegisterEvents;
 begin
 end;
