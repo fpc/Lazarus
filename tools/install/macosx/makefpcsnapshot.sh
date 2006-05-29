@@ -38,7 +38,7 @@ $SVN export $FPCSVNDIR/fpcdocs $FPCBUILDDIR/fpcdocs
 
 cd $FPCBUILDDIR
 make distclean PP=$PPC_RELEASE
-make build PP=$PPC_RELEASE
+make build PP=$PPC_RELEASE DATA2INC=$FPCBUILDDIR/fpcsrc/utils/data2inc
 
 COMPILER=$FPCBUILDDIR/fpcsrc/compiler/$PPCARCH
 FPCVERSION=`$COMPILER -iV`
