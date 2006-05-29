@@ -226,7 +226,7 @@ implementation
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtFrame: TQtFrame;
@@ -248,7 +248,7 @@ end;
 
   Releases allocated memory and resources
  ------------------------------------------------------------------------------}
-procedure TQtWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtFrame(AWinControl.Handle).Free;
 
@@ -264,7 +264,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtWidget: TQtWidget;
@@ -283,14 +283,14 @@ end;
 
   Releases allocated memory and resources
  ------------------------------------------------------------------------------}
-procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtWidget(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
 end;
 
-procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl;
+class procedure TQtWSCustomPage.SetText(const AWinControl: TWinControl;
   const AText: string);
 begin
   inherited SetText(AWinControl, AText);
@@ -305,7 +305,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 var
   QtTabWidget: TQtTabWidget;
 begin
@@ -335,7 +335,7 @@ begin
 
 end;
 
-procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 var
   Str: WideString;

@@ -65,7 +65,7 @@ implementation
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
+class function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   QtSpinBox: TQtSpinBox;
@@ -82,7 +82,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
+class procedure TQtWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtSpinBox(AWinControl.Handle).Free;
 
