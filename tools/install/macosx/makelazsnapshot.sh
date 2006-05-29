@@ -44,6 +44,12 @@ make lcl LCL_PLATFORM=carbon PP=$COMPILER
 strip lazarus
 strip startlazarus
 
+# create symlinks
+mkdir -p $BUILDDIR\bin
+cd $BUILDDIR\bin
+ln -s ../share/lazarus/lazarus lazarus
+ln -s ../share/lazarus/startlazarus lazarus
+
 # copy license file, it must be a txt file.
 cp $LAZBUILDDIR/COPYING.GPL $BUILDDIR/License.txt
 
