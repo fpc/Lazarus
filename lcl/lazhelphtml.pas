@@ -189,8 +189,8 @@ begin
         URLType:=BaseURLType;
       end;
     end;
-    if (URLType='file') and (not FilenameIsUnixAbsolute(URLPath)) then
-      URLPath:=TrimFilename(GetCurrentDir+PathDelim+URLPath);
+    if (URLType='file') and (not URLFilenameIsAbsolute(URLPath)) then
+      URLPath:=FilenameToURLPath(TrimFilename(GetCurrentDir+PathDelim))+URLPath;
     
     if (URLType='file') and (not FileExists(URLPath)) then begin
       Result:=shrContextNotFound;

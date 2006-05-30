@@ -16,8 +16,9 @@ Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
 
 %description
-Lazarus is a free and opensource RAD tool for freepascal using the lazarus
-component library - LCL, which is also included in this package.
+Lazarus is a free and open source Rapid Application Development tool for
+the FreePascal compiler using the Lazarus component library - LCL. The LCL
+is included in this package.
 
 %prep
 %setup -c

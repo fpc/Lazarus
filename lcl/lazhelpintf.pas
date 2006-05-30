@@ -541,6 +541,8 @@ procedure FreeUnusedLCLHelpSystem;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
+function FilenameToURLPath(const Filename: string): string;
+function URLPathToFilename(const URLPath: string): string;
 procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
 function CombineURL(const URLType, URLPath, URLParams: string): string;
 function URLFilenameIsAbsolute(const Filename: string): boolean;
@@ -550,6 +552,7 @@ function ChompURLParams(const URL: string): string;
 function ExtractURLPath(const URL: string): string;
 function ExtractURLDirectory(const URL: string): string;
 function TrimUrl(const URL: string): string;
+function TrimURLPath(const URLPath: string): string;
 function IsFileURL(const URL: string): boolean;
 
 procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
@@ -597,6 +600,32 @@ begin
   {$warnings on}
   if Result<>'' then
     Result:='file://'+Result;
+end;
+
+function FilenameToURLPath(const Filename: string): string;
+var
+  i: Integer;
+begin
+  Result:=Filename;
+  {$warnings off}
+  if PathDelim<>'/' then
+    for i:=1 to length(Result) do
+      if Result[i]=PathDelim then
+        Result[i]:='/';
+  {$warnings on}
+end;
+
+function URLPathToFilename(const URLPath: string): string;
+var
+  i: Integer;
+begin
+  Result:=URLPath;
+  {$warnings off}
+  if PathDelim<>'/' then
+    for i:=1 to length(Result) do
+      if Result[i]='/' then
+        Result[i]:=PathDelim;
+  {$warnings on}
 end;
 
 procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
@@ -695,7 +724,12 @@ var
   URLType, URLPath, URLParams: string;
 begin
   SplitURL(URL,URLType,URLPath,URLParams);
-  Result:=CombineURL(URLType,TrimFilename(URLPath),URLParams);
+  Result:=CombineURL(URLType,TrimURLPath(URLPath),URLParams);
+end;
+
+function TrimURLPath(const URLPath: string): string;
+begin
+  Result:=FilenameToURLPath(TrimFilename(URLPathToFilename(URLPath)));
 end;
 
 function IsFileURL(const URL: string): boolean;
